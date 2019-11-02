@@ -21,7 +21,8 @@ using namespace std;    // std::cout, std::cin
 
 vector<vector<string>> userAccounts; // Steam64ID, Username, Remember password <0,1>
 HANDLE  hConsole;
-string LoginUsersVDF = "C:\\Program Files (x86)\\Steam\\config\\loginusers.vdf";
+string LoginUsersVDF = "C:\\Program Files (x86)\\Steam\\config\\loginusers2.vdf";
+std::vector<std::string> fLoginUsersLines;
 
 bool getSteamAccounts() 
 {
@@ -30,6 +31,8 @@ bool getSteamAccounts()
 	string username, steamID, rememberAccount, personaName;
 
 	while (std::getline(fLoginUsers, curline)) {
+		fLoginUsersLines.push_back(curline);
+
 		// Remove tabs
 		curline.erase(std::remove(curline.begin(), curline.end(), '\t'), curline.end());
 
@@ -111,14 +114,13 @@ void mostRecentUpdate(vector<string> accountName) {
 	// -----------------------------------
 	// ----- Manage "loginusers.vdf" -----
 	// -----------------------------------
-	std::ifstream fLoginUsers(LoginUsersVDF); // Change to input output stream -- No internet.
+	std::ofstream fLoginUsersOUT(LoginUsersVDF, ios::trunc);
 	string curline, lineNoQuot;
 	bool userIDMatch = false;
-
-	while (std::getline(fLoginUsers, curline)) {
-
-
-		break; // JUST FOR DEBUGGING
+	string outline = "";
+	for (string curline : fLoginUsersLines) {
+		outline = curline;
+		//break; // JUST FOR DEBUGGING
 
 
 		// Do we even need this?
@@ -140,14 +142,16 @@ void mostRecentUpdate(vector<string> accountName) {
 			//REPLACE LINE WITH:
 			string toreplace;
 			if (userIDMatch) {
-				toreplace = "\t\t\"mostrecent\"\t\t\"1\"";
+				outline = "\t\t\"mostrecent\"\t\t\"1\"";
 			}else{
-				toreplace = "\t\t\"mostrecent\"\t\t\"0\"";
+				outline = "\t\t\"mostrecent\"\t\t\"0\"";
 			}
 			cout << toreplace << endl; // DEBUG ONLY
 		}
 		else { cout << curline << endl; } // DEBUG ONLY
+		fLoginUsersOUT << outline << endl;
 	}
+	fLoginUsersOUT.close();
 
 	// -----------------------------------
 	// --------- Manage registry ---------
