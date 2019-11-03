@@ -2,6 +2,7 @@
 //
 #include <iostream>
 #include <windows.h>   // WinApi header
+#include <stdlib.h>
 #include <string>
 #include <vector>
 #include <cctype>
@@ -20,6 +21,7 @@
 #define KEY_ENTER '\r'  //Enter key charatcer
 
 using namespace std;    // std::cout, std::cin
+bool firstprint = true;
 
 
 vector<vector<string>> userAccounts; // Steam64ID, Username, Remember password <0,1>
@@ -77,8 +79,10 @@ bool getSteamAccounts()
 	return true;
 }
 void printSteamAccs(int& selectedLine) {
-	system("CLS");
-	cout << flush;
+	if (!firstprint) {
+		system("CLS");
+		cout << flush;
+	}
 
 	cout << "Welcome to TCNO Steam Account Switcher [https://tcno.co/]." << endl;
 	cout << "How to use:" << endl <<
@@ -233,10 +237,90 @@ VOID startup(LPCTSTR lpApplicationName)
 	CloseHandle(pi.hThread);
 }
 
+inline bool checkFileExist(const std::string& name) {
+	ifstream f(name.c_str());
+	return f.good();
+}
+
+void addTrailingBackslash(string &str){
+	if (str[str.size()] != '\\') { // Add final backslash if user missed it.
+		str += '\\';
+	}
+}
+
+void setSteamFolder() { // Set to x64 or x32 Steam install
+	/*
+		#include <direct.h>
+		#define GetCurrentDir _getcwd
+		// Get current working directory
+		char cCurrentPath[FILENAME_MAX];
+		GetCurrentDir(cCurrentPath, sizeof(cCurrentPath));
+		cCurrentPath[sizeof(cCurrentPath) - 1] = '\0';
+		printf("The current working directory is %s", cCurrentPath);
+	*/
+	SteamFolder = "C:\\Program Files (x86)\\Steam\\";
+	//string SteamFolder = "C:\\Program Files (x86)\\Steam\\",
+	//	LoginUsersVDF = SteamFolder + "config\\loginusers.vdf",
+	//	SteamEXE = SteamFolder + "Steam.exe";
+			//std::getline(fLoginUsers, curline)
+	if (checkFileExist("SteamLocation.txt")) {
+		std::ifstream steamloc("SteamLocation.txt");
+		getline(steamloc, SteamFolder);
+		addTrailingBackslash(SteamFolder);
+
+		LoginUsersVDF = SteamFolder + "config\\loginusers.vdf";
+		SteamEXE = SteamFolder + "Steam.exe";
+		cout << "Steam location set to: " << SteamFolder << endl;
+		if (!checkFileExist(SteamFolder + "Steam.exe")) {
+			cout << "Steam.exe was not found!" << endl << endl <<
+				"Press any key to exit..." << endl;
+			cin.get();
+			exit(EXIT_FAILURE);
+		}
+	}
+	else {
+		if (!checkFileExist(SteamFolder + "Steam.exe")) { // x64 does not exist.
+			if (checkFileExist("C:\\Program Files\\Steam\\Steam.exe")) { //x32 does exist.
+				SteamFolder = "C:\\Program Files\\Steam\\";
+				LoginUsersVDF = SteamFolder + "config\\loginusers.vdf";
+				SteamEXE = SteamFolder + "Steam.exe";
+			}
+			else {
+				cout << "Steam was not found!" << endl;
+				cout << "Enter Steam's location as such: \"C:\\Program Files\\Steam\\\"" << endl;
+
+				bool SteamFound = false;
+				while (!SteamFound)
+				{
+					cout << "Location: ";
+					cin >> SteamFolder;
+					cout << endl;
+					addTrailingBackslash(SteamFolder);
+
+					LoginUsersVDF = SteamFolder + "config\\loginusers.vdf";
+					SteamEXE = SteamFolder + "Steam.exe";
+
+					if (checkFileExist(SteamEXE)) {
+						SteamFound = true;
+						std::ofstream steamloc("SteamLocation.txt", ios::trunc);
+						steamloc << SteamFolder;
+						steamloc.close();
+
+					}
+					else {
+						cout << "Steam.exe was not found at: " << SteamEXE << endl;
+					}
+				}
+			}
+		}
+	}
+}
 int main()
 {
 	SetConsoleTitleW(L"TcNo Steam Account Switcher");
 	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	setSteamFolder();
 
 	static const string aoptions[] = { "1. Add currently logged in Steam account" };
 	vector<string> options(aoptions, aoptions + sizeof(aoptions) / sizeof(aoptions[0]));
@@ -247,6 +331,7 @@ int main()
 	// "Print accoutns on each line*"
 	int selectedLine = 0;
 	printSteamAccs(selectedLine);
+	firstprint = false;
 
 	// Adapted from: https://stackoverflow.com/questions/51410048/c-multiple-choice-with-arrow-keys
 	bool selecting = true;
