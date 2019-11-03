@@ -1,5 +1,4 @@
 ﻿  TCNO-Acc-Switcher.cpp
-C:\Users\TechNobo\Documents\GitHub\TCNO-Acc-Switcher\TCNO-Acc-Switcher\TCNO-Acc-Switcher.cpp(166,22): warning C4129: 'V': unrecognized character escape sequence
-C:\Users\TechNobo\Documents\GitHub\TCNO-Acc-Switcher\TCNO-Acc-Switcher\TCNO-Acc-Switcher.cpp(165,7): warning C4101: 'hKey': unreferenced local variable
-C:\Users\TechNobo\Documents\GitHub\TCNO-Acc-Switcher\TCNO-Acc-Switcher\TCNO-Acc-Switcher.cpp(221,21): warning C4018: '<': signed/unsigned mismatch
-  TCNO-Acc-Switcher.vcxproj -> C:\Users\TechNobo\Documents\GitHub\TCNO-Acc-Switcher\Debug\TCNO-Acc-Switcher.exe
+C:\Users\TechNobo\Documents\GitHub\TCNO-Acc-Switcher\TCNO-Acc-Switcher\TCNO-Acc-Switcher.cpp(175,22): warning C4129: 'V': unrecognized character escape sequence
+C:\Users\TechNobo\Documents\GitHub\TCNO-Acc-Switcher\TCNO-Acc-Switcher\TCNO-Acc-Switcher.cpp(268,21): warning C4018: '<': signed/unsigned mismatch
+  TCNO-Acc-Switcher.vcxproj -> C:\Users\TechNobo\Documents\GitHub\TCNO-Acc-Switcher\Debug\TcNo-Acc-Switcher.exe

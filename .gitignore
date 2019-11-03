@@ -1,0 +1,8 @@
+.vs/
+*.ipch
+Debug/
+Release/
+*.tlog
+*.log
+*.idb
+*.pdb

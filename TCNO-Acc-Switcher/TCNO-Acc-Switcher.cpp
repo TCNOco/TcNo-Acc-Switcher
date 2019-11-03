@@ -9,8 +9,11 @@
 #include <fstream>
 #include <algorithm>    // For std::remove()
 #include <conio.h>
-//#include <atlstr.h"> // Install ATL Libs for this
 
+#include <chrono>
+#include <thread>
+
+#include <atlstr.h>
 
 #define KEY_UP 72       //Up arrow character
 #define KEY_DOWN 80     //Down arrow character
@@ -21,7 +24,9 @@ using namespace std;    // std::cout, std::cin
 
 vector<vector<string>> userAccounts; // Steam64ID, Username, Remember password <0,1>
 HANDLE  hConsole;
-string LoginUsersVDF = "C:\\Program Files (x86)\\Steam\\config\\loginusers2.vdf";
+string SteamFolder = "C:\\Program Files (x86)\\Steam\\",
+	LoginUsersVDF = SteamFolder+"config\\loginusers.vdf",
+	SteamEXE = SteamFolder+"Steam.exe";
 std::vector<std::string> fLoginUsersLines;
 
 bool getSteamAccounts() 
@@ -75,12 +80,13 @@ void printSteamAccs(int& selectedLine) {
 	system("CLS");
 	cout << flush;
 
-	cout << "Welcome to TCNO Steam Account Switcher." << endl;
+	cout << "Welcome to TCNO Steam Account Switcher [https://tcno.co/]." << endl;
 	cout << "How to use:" << endl <<
-		"1. DO NOT change users or log out via Steam." << endl <<
+		"1. DO NOT change users or log out via Steam - You can exit as normal." << endl <<
+		" - You can start steam as normal, just use this to change accounts." << endl <<
 		"2. Check \"Remember password\" if asked for one." << endl <<
 		"3. To sign in with a new account, select the last option." << endl << 
-		"4. You can start steam as normal, just use this to change accounts." << endl <<
+		"4. As soon as you hit enter, steam will force kill and reopen immediately! Be aware of your data." << endl <<
 		"-- This program never accesses or asks for your actual password! --" << endl;
 
 	cout << "Options [Arrow keys, Enter]:" << endl << endl;
@@ -134,7 +140,7 @@ void mostRecentUpdate(vector<string> accountName) {
 			if (lineNoQuot == accountName[1]) { // Most recent ID matches! Set this account to active.
 				userIDMatch = true;
 			}
-			cout << curline << endl; // DEBUG ONLY
+			//cout << curline << endl; // DEBUG ONLY
 		}
 		else if (curline.find("mostrecent") != std::string::npos)
 		{
@@ -146,9 +152,12 @@ void mostRecentUpdate(vector<string> accountName) {
 			}else{
 				outline = "\t\t\"mostrecent\"\t\t\"0\"";
 			}
-			cout << toreplace << endl; // DEBUG ONLY
+			//cout << toreplace << endl; // DEBUG ONLY
 		}
-		else { cout << curline << endl; } // DEBUG ONLY
+		else 
+		{ 
+			//cout << curline << endl; // DEBUG ONLY
+		}
 		fLoginUsersOUT << outline << endl;
 	}
 	fLoginUsersOUT.close();
@@ -168,9 +177,19 @@ void mostRecentUpdate(vector<string> accountName) {
 	/*DWORD keyAutoLoginUserType = REG_SZ;
 	DWORD keyRememberPasswordType = REG_DWORD;*/
 
-	//RegOpenKeyEx(HKEY_CURRENT_USER, HKCUValve, 0, KEY_SET_VALUE, &hKey);
-	//TCHAR
-	//RegSetValueEx(hKey, TEXT("AutoLoginUser"), 0, REG_SZ, (LPBYTE), sizeof()));
+	RegOpenKeyEx(HKEY_CURRENT_USER, HKCUValve, 0, KEY_SET_VALUE, &hKey);
+
+	// String to TCHAR
+	TCHAR accname[64];
+	_tcscpy_s(accname, CA2T(accountName[0].c_str()));
+
+	RegSetValueEx(hKey, TEXT("AutoLoginUser"), 0, REG_SZ, (LPBYTE)accname, (accountName[0].size() + 1) * sizeof(wchar_t));
+	RegCloseKey(hKey);
+
+	RegOpenKeyEx(HKEY_CURRENT_USER, HKCUValve, 0, KEY_SET_VALUE, &hKey);
+	DWORD val = 1;
+	RegSetValueEx(hKey, TEXT("RememberPassword"), 0, REG_DWORD, (const BYTE*)&val, sizeof(val));
+	RegCloseKey(hKey);
 
 	//// READ VARIABLE
 	//char buf[255] = { 0 };
@@ -186,9 +205,37 @@ void mostRecentUpdate(vector<string> accountName) {
 	//cout << out;
 
 }
+VOID startup(LPCTSTR lpApplicationName)
+{
+	// additional information
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+
+	// set the size of the structures
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	ZeroMemory(&pi, sizeof(pi));
+
+	// start the program up
+	CreateProcess(lpApplicationName,   // the path
+		NULL,        // Command line
+		NULL,           // Process handle not inheritable
+		NULL,           // Thread handle not inheritable
+		FALSE,          // Set handle inheritance to FALSE
+		0,              // No creation flags
+		NULL,           // Use parent's environment block
+		NULL,           // Use parent's starting directory 
+		&si,            // Pointer to STARTUPINFO structure
+		&pi             // Pointer to PROCESS_INFORMATION structure (removed extra parentheses)
+	);
+	// Close process and thread handles. 
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
+}
 
 int main()
 {
+	SetConsoleTitleW(L"TcNo Steam Account Switcher");
 	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	static const string aoptions[] = { "1. Add currently logged in Steam account" };
@@ -247,10 +294,23 @@ int main()
 		account = userAccounts[selectedLine];
 		cout << endl << "Changing user accounts to: " << account[0] << endl;
 	}
+
+	system("TASKKILL /F /T /IM steam* >NUL 2> 1"); // Admin required to also kill Steam Service.
+	// Work on starting process without admin for the future.
+
 	mostRecentUpdate(account);
 
+	LPWSTR steam = new wchar_t[SteamEXE.size() + 1];
+	copy(SteamEXE.begin(), SteamEXE.end(), steam);
+	steam[SteamEXE.size()] = 0;
 
-	cin.get();
+	startup(steam);
+
+
+	// Closing in 3 seconds
+	cout << "Done!" << endl << "Closing in 3 seconds" << endl;
+	std::this_thread::sleep_for((chrono::seconds)3);
+
 	return 0;
 }
 
