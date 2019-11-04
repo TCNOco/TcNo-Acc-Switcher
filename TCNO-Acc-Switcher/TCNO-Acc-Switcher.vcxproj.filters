@@ -18,10 +18,16 @@
     <ClCompile Include="TCNO-Acc-Switcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="noadmin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="noadmin.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

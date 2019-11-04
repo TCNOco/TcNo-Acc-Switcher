@@ -113,6 +113,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -158,9 +159,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="noadmin.cpp" />
     <ClCompile Include="TCNO-Acc-Switcher.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="noadmin.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
