@@ -12,4 +12,5 @@
 - It ends any processes that start with "Steam", and then restarts Steam.exe once the switch is made. You don't need to do anything but use the arrow keys and press Enter.
 
 **To: Run Steam as Admin**: Create a file named *"admin.txt"* or *"admin"* in the same directory as the .exe
+
 **To: Choose a custom Steam install folder**: Create a file named *"SteamLocation.txt"* in the same directory as the .exe. Inside put only a folder path, *ie:* `C:\Steam\`
