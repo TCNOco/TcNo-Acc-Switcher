@@ -1,5 +1,7 @@
 // TCNO-Acc-Switcher.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
+#define CURL_STATICLIB
+
 #include <iostream>
 #include <windows.h>   // WinApi header
 #include <stdlib.h>
@@ -17,12 +19,18 @@
 // For unelevated program launch
 #include "noadmin.h"
 
+// For update check
+#include "curl/curl.h"
+#include <ctime>
+
 #define KEY_UP 72       //Up arrow character
 #define KEY_DOWN 80     //Down arrow character
 #define KEY_ENTER '\r'  //Enter key charatcer
 
 using namespace std;    // std::cout, std::cin
 bool firstprint = true;
+int version = 1300;
+string updateFile = "UpdateAvailable.txt";
 
 
 vector<vector<string>> userAccounts; // Steam64ID, Username, Remember password <0,1>
@@ -287,6 +295,75 @@ inline bool getRunAsSetting() {
 	return (checkFileExist("admin") || checkFileExist("admin.txt")); // Returns true if either file exists.
 }
 
+static size_t my_write(void* buffer, size_t size, size_t nmemb, void* param)
+{
+	std::string& text = *static_cast<std::string*>(param);
+	size_t totalsize = size * nmemb;
+	text.append(static_cast<char*>(buffer), totalsize);
+	return totalsize;
+}
+
+#include <iomanip> // put_time
+string dateTimeNow() {
+	auto t = std::time(nullptr);
+
+	std::tm tm;
+	localtime_s(&tm, &t);
+
+	std::ostringstream oss;
+	oss << std::put_time(&tm, "%d-%m-%Y %H:%M:%S");
+	return oss.str();
+}
+
+void updateCheck() {
+	try
+	{
+		string result;
+		CURL* curl;
+		CURLcode res;
+		curl_global_init(CURL_GLOBAL_DEFAULT);
+		curl = curl_easy_init();
+		if (curl) {
+			curl_easy_setopt(curl, CURLOPT_URL, "https://tcno.co/Projects/AccSwitcher/version.php");
+			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, my_write);
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
+			//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // DEBUG
+			res = curl_easy_perform(curl);
+			curl_easy_cleanup(curl);
+			if (CURLE_OK != res) {
+				std::cerr << "Update check error. CURL reports: " << res << '\n';
+			}
+		}
+		curl_global_cleanup();
+		int aversion = std::stoi(result.substr(0, 4)); // Substring to ignore PHP error, if there is one
+		//std::cout << "Current: " << version << " Available: " << aversion << "\n\n"; // DEBUG
+
+		if (version >= aversion) { // Current version is up to date.
+			if (checkFileExist(updateFile)) {
+				if (remove(updateFile.c_str()) != 0)
+					perror("Error deleting: UpdateAvailable.txt");
+			}
+		}
+		else if (aversion > version) { // Not up to date. Create notification toggle if not already exist.
+			std::ofstream updateloc(updateFile, ios::trunc);
+			updateloc << "Current version: " << version << " Available: " << aversion << endl << "Last check: " << dateTimeNow() << endl << "Check: https://github.com/TcNobo/TCNO-Acc-Switcher";
+			updateloc.close();
+		}
+	}
+	catch (char const*error)
+	{
+		cout << "Error while checking for updates: " << error << endl << endl;
+	}
+}
+void updateAvailable() {
+	SetConsoleTextAttribute(hConsole, 12); // Red on Black
+	cout << "An update was found last launch! Check: ";
+	SetConsoleTextAttribute(hConsole, 9); // Light Blue on Black
+	cout << "https://github.com/TcNobo/TCNO-Acc-Switcher" << endl << endl;
+	SetConsoleTextAttribute(hConsole, 7); //  Default
+	cout << "If you just updated, this message will dissapear next launch." << endl;
+}
+
 int main()
 {
 	SetConsoleTitleW(L"TcNo Steam Account Switcher");
@@ -298,12 +375,19 @@ int main()
 	PathRemoveFileSpec(path);
 	SetCurrentDirectory(path);
 
+
+	if (checkFileExist(updateFile))
+		updateAvailable();
+	// Start update check in another thread to run in background. Will not stop user using it. Notification will instead be given on next launch
+	thread updateThread(updateCheck);
+
+
 	setSteamFolder();
 	bool runasAdmin = getRunAsSetting();
 
 	// Push back other accounts here
 	getSteamAccounts();
-	cout << "Collected user accounts" << endl;
+	//cout << "Collected user accounts" << endl;
 	// "Print accoutns on each line*"
 	int selectedLine = 0;
 	printSteamAccs(selectedLine);
@@ -379,8 +463,6 @@ int main()
 
 	return 0;
 }
-
-
 //void showColourList() {
 //	HANDLE  hConsole;
 //	int k;
@@ -393,5 +475,6 @@ int main()
 //	}
 //	cin.get();
 //}
+
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
