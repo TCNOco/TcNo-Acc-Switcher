@@ -1,7 +1,7 @@
 
 # TCNO-Acc-Switcher
 **A Super fast account switcher for Steam**
-**Saves NO passwords** or any user information. It works purely off changing a file and 2 registry keys.
+**Saves NO passwords** or any user information*. It works purely off changing a file and 2 registry keys.
 *Wastes no time closing, switching and restarting Steam.*
 
 ### How does it work?
@@ -17,3 +17,5 @@
 
 ### Required libraries for building:
 - Curl (release uses 7.67.0) - [Download](https://curl.haxx.se/download.html), Build guide: https://youtu.be/q_mXVZ6VJs4
+
+*The program checks for updates each run. If found, it notifies user on next run. When the program checks for updates, it adds to a counter saying "Add 1 to the counter for my Province/State in country", purely for interest's sake. IP addresses and identifyable information is not collected.
