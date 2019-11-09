@@ -16,4 +16,4 @@
 **To: Choose a custom Steam install folder**: Create a file named *"SteamLocation.txt"* in the same directory as the .exe. Inside put only a folder path, *ie:* `C:\Steam\`
 
 ### Required libraries for building:
-- Curl (release uses 7.67.0) - [Download](https://curl.haxx.se/download.html), Build guide:https://youtu.be/q_mXVZ6VJs4
+- Curl (release uses 7.67.0) - [Download](https://curl.haxx.se/download.html), Build guide: https://youtu.be/q_mXVZ6VJs4
