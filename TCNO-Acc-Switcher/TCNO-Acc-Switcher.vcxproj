@@ -172,7 +172,7 @@
     <ClCompile Include="TCNO-Acc-Switcher.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="noadmin.h" />
+    <ClInclude Include="noadmin.hpp" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

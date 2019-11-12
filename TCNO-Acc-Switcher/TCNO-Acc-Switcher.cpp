@@ -17,7 +17,7 @@
 #include <atlstr.h>
 
 // For unelevated program launch
-#include "noadmin.h"
+#include "noadmin.hpp"
 
 // For update check
 #include "curl/curl.h"
