@@ -1,5 +1,5 @@
 
-# TCNO-Acc-Switcher
+# TcNo-Acc-Switcher
 **A Super fast account switcher for Steam**
 **Saves NO passwords** or any user information*. It works purely off changing a file and 2 registry keys.
 *Wastes no time closing, switching and restarting Steam.*
