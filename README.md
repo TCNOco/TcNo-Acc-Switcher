@@ -2,7 +2,7 @@
 
 <p align="center">
     <a href="">
-	<img src="/docs/img/banner1.png"></a>
+	<img src="/docs/img/Banner.png"></a>
 </p>
 <p align="center">
     <a href="https://tcno.co/">
