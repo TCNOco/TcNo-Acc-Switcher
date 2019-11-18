@@ -1,5 +1,20 @@
 
-# TcNo-Acc-Switcher
+
+<p align="center">
+    <a href="">
+	<img src="/docs/img/banner1.png"></a>
+</p>
+<p align="center">
+    <a href="https://tcno.co/">
+        <img alt="Website" src="/docs/img/web.svg" height=20"></a>
+    <a href="https://discord.gg/wkJp38m">
+        <img alt="Discord server" src="https://img.shields.io/discord/217649733915770880.svg?label=Discord&logo=discord&style=flat-square"></a>
+    <a href="https://twitter.com/TcNobo">
+        <img alt="Twitter" src="https://img.shields.io/twitter/follow/TcNobo.svg?label=Follow%20%40TcNobo&logo=Twitter&style=flat-square"></a>
+    <img alt="Last commit" src="https://img.shields.io/github/last-commit/TcNobo/TcNo-Acc-Switcher.svg?label=Last%20commit&logo=GitHub&style=flat-square">
+    <img alt="Repo size" src="https://img.shields.io/github/repo-size/TcNobo/TcNo-Acc-Switcher.svg?label=Repo%20size&logo=GitHub&style=flat-square">
+</p>
+                                                                                                                                         
 **A Super fast account switcher for Steam**
 **Saves NO passwords** or any user information*. It works purely off changing a file and 2 registry keys.
 *Wastes no time closing, switching and restarting Steam.*
