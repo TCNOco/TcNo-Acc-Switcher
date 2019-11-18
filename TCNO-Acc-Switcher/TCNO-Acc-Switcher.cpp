@@ -29,7 +29,7 @@
 
 using namespace std;    // std::cout, std::cin
 bool firstprint = true;
-int version = 1300;
+int version = 1301;
 string updateFile = "UpdateAvailable.txt";
 
 
