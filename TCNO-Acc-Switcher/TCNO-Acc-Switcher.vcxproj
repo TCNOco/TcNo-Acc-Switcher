@@ -178,6 +178,13 @@
   <ItemGroup>
     <ResourceCompile Include="TcNo-Acc-Switcher.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\docs\img\icon2.ico" />
+    <Image Include="..\docs\img\TcNoAccSw-Icon-1000x1000.png" />
+    <Image Include="..\docs\img\TcNoAccSw-Icon-multi.ico" />
+    <Image Include="..\docs\img\TcNoAccSw-Icon.ico" />
+    <Image Include="icon1.ico" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

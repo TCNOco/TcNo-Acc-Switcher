@@ -35,4 +35,21 @@
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\docs\img\TcNoAccSw-Icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\docs\img\TcNoAccSw-Icon-multi.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\docs\img\icon2.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\docs\img\TcNoAccSw-Icon-1000x1000.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
