@@ -1,0 +1,63 @@
+﻿<Window x:Class="TCNO_Acc_Switcher_CSharp_WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TCNO_Acc_Switcher_CSharp_WPF"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30px"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="45px"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Row 0: Header -->
+        <Border Grid.Row="0" Background="#14151E"/>
+        <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5 0 0 0">
+            <Canvas.RenderTransform>
+                <TranslateTransform X="0" Y="0"/>
+            </Canvas.RenderTransform>
+            <Canvas.Resources/>
+            <Canvas Name="g3859">
+                <Canvas Name="g3857">
+                    <Canvas Name="g3849">
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="O1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 0.889l6.25 0l0 8.27l-3.503 0l-2.747 -2.874l0 -3.28l2.115 0l0 4.086l2.019 0l0 -4.086l-4.134 0l0 -2.116"/>
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="O2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 7.487l1.598 1.672l-1.598 0l0 -1.672Z"/>
+                    </Canvas>
+                    <Canvas Name="g3853">
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="N1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M15.053 0l0 9.135l2.117 0l0 -3.844l4.471 4.709l0 -9.135l-2.117 0l0 3.846l-4.471 -4.711Z"/>
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="N2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M17.016 0.865l1.932 2.02l0 -2.02l-1.932 0Z"/>
+                    </Canvas>
+                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="C" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M7.697 0.841l0 8.318l6.25 0l0 -2.067l-4.134 0l0 -4.088l4.134 0l0 -2.163l-6.25 0"/>
+                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="T" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M0.341 0.841l0 2.117l1.78 0l0 6.201l2.115 0l0 -6.201l2.702 0l0 -2.117l-6.597 0Z"/>
+                </Canvas>
+            </Canvas>
+        </Canvas>
+        <Button Grid.Row="0" Content="-" HorizontalAlignment="Right" Background="#2B2D40" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}"></Button>
+        <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Background="#363952" Width="30px" Height="30px" Style="{StaticResource ExitButton}"></Button>
+
+        <!-- Row 1: Main content -->
+        <ListBox Grid.Row="1" Background="#28293A" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Top">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <Button Style="{StaticResource UserAccount}"></Button>
+            <Image Width="50px" Height="50px"></Image>
+            <Image Width="50px" Height="50px"></Image>
+            <Image Width="50px" Height="50px"></Image>
+            <Image Width="50px" Height="50px"></Image>
+        </ListBox>
+
+        <!-- Row 2: Footer -->
+        <Border Grid.Row="2" Background="#222222"/>
+        <Button Content="Login to selected user" HorizontalAlignment="Right" Grid.Row="2" Margin="5px" VerticalAlignment="Center" Foreground="White" Style="{StaticResource LoginButton}" Click="Button_Click"/>
+
+    </Grid>
+</Window>
