@@ -33,4 +33,7 @@
 ### Required libraries for building:
 - Curl (release uses 7.67.0) - [Download](https://curl.haxx.se/download.html), Build guide: https://youtu.be/q_mXVZ6VJs4
 
+### PLEASE NOTE: A GUI version is in the works.
+Users will have an update notification as usual, and it will be pushed here via GitHub Releases.
+
 *The program checks for updates each run. If found, it notifies user on next run. When the program checks for updates, it adds to a counter saying "Add 1 to the counter for my Province/State in country", purely for interest's sake. IP addresses and identifyable information is not collected.
