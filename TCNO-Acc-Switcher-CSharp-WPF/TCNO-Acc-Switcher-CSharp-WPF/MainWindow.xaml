@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TCNO_Acc_Switcher_CSharp_WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="804">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -14,10 +14,12 @@
             <RowDefinition Height="30px"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="45px"/>
+            <RowDefinition Height="27.5px"/>
         </Grid.RowDefinitions>
         
         <!-- Row 0: Header -->
         <Border Grid.Row="0" Background="#14151E"/>
+        <Label Name="HeaderInstruction" Grid.Row="0" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="1. Select an account"/>
         <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5 0 0 0">
             <Canvas.RenderTransform>
                 <TranslateTransform X="0" Y="0"/>
@@ -42,22 +44,56 @@
         <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Background="#363952" Width="30px" Height="30px" Style="{StaticResource ExitButton}"></Button>
 
         <!-- Row 1: Main content -->
-        <ListBox Grid.Row="1" Background="#28293A" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Top">
+        <ListBox SelectionChanged="SteamUserSelect" Name="listAccounts" IsSynchronizedWithCurrentItem="True" Grid.Row="1" Background="#28293A" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Top" ItemsSource="{Binding Path=SteamUsers}" SelectedItem="{Binding Path=SelectedSteamUser, Mode=TwoWay}">
+            <ListBox.Resources>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <!--<EventSetter Event="ListBoxItem.Selected" Handler="SteamUserSelect" HandledEventsToo="True"/>-->
+                    <!--<EventSetter Event="ListBoxItem.Unselected" Handler="SteamUserUnselect" HandledEventsToo="True"/>-->
+                </Style>
+            </ListBox.Resources>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <VirtualizingStackPanel Orientation="Horizontal" />
+                    <WrapPanel IsItemsHost="True" />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
-            <Button Style="{StaticResource UserAccount}"></Button>
-            <Image Width="50px" Height="50px"></Image>
-            <Image Width="50px" Height="50px"></Image>
-            <Image Width="50px" Height="50px"></Image>
-            <Image Width="50px" Height="50px"></Image>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <ListBoxItem Style="{StaticResource UserAccount}">
+                        <StackPanel IsHitTestVisible="False">
+                            <Image Source="{Binding ImgURL}" Stretch="UniformToFill" Width="65px" Height="65px" Margin="0 0 0 5px"/>
+                            <TextBlock Text="{Binding Name}"></TextBlock>
+                            <TextBlock Text="{Binding SteamID}" FontSize="9" TextAlignment="Center" FontWeight="Normal"></TextBlock>
+                        </StackPanel>
+                    </ListBoxItem>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
+        
+        
+        <!--<ListBox Grid.Row="1" Background="#28293A" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Top">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBoxItem>
+                <Button Style="{StaticResource UserAccount}">
+                    <StackPanel>
+                        <Image Source="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/c3/c3e4a6630aa6f74bcf3782f6ddda6e4bf61e8795_full.jpg" Stretch="UniformToFill" Width="65px" Height="65px" Margin="0 0 0 5px"/>
+                        <TextBlock>Account namasdasdasdasdasde</TextBlock>
+                        <TextBlock FontSize="9" TextAlignment="Center" FontWeight="Normal">76561198064588130</TextBlock>
+                    </StackPanel>
+                </Button>
+            </ListBoxItem>
+        </ListBox>-->
 
         <!-- Row 2: Footer -->
         <Border Grid.Row="2" Background="#222222"/>
-        <Button Content="Login to selected user" HorizontalAlignment="Right" Grid.Row="2" Margin="5px" VerticalAlignment="Center" Foreground="White" Style="{StaticResource LoginButton}" Click="Button_Click"/>
+        <Label Name="lblStatus" Grid.Row="2" HorizontalAlignment="Left" Margin="5px" VerticalAlignment="Center" Foreground="White" Content="Status: Starting"/>
+        <!--<ProgressBar Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5px 0 0 0" Width="100px" Height="10px" Background="#333333" Foreground="White"/>-->
+        <Button Name="btnLogin" IsEnabled="False" Content="Login" HorizontalAlignment="Right" Grid.Row="2" Margin="5px" VerticalAlignment="Center" Foreground="White" Style="{StaticResource LoginButton}" PreviewMouseDown="LoginMouseDown"/>
 
+        <Border Grid.Row="3" Background="#222222"/>
+        <CheckBox Margin="5px" Grid.Row="3" Foreground ="White" Content="Run Steam as Admin" VerticalAlignment="Center" IsChecked="{Binding startAsAdmin, Mode=TwoWay}"/>
     </Grid>
 </Window>

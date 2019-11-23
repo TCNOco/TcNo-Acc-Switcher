@@ -59,5 +59,15 @@ namespace TCNO_Acc_Switcher_CSharp_WPF.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] QuestionMark {
+            get {
+                object obj = ResourceManager.GetObject("QuestionMark", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
