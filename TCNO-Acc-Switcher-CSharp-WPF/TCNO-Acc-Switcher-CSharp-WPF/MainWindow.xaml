@@ -14,7 +14,7 @@
             <RowDefinition Height="30px"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="45px"/>
-            <RowDefinition Height="27.5px"/>
+            <RowDefinition Height="37.5px"/>
         </Grid.RowDefinitions>
         
         <!-- Row 0: Header -->
@@ -94,6 +94,9 @@
         <Button Name="btnLogin" IsEnabled="False" Content="Login" HorizontalAlignment="Right" Grid.Row="2" Margin="5px" VerticalAlignment="Center" Foreground="White" Style="{StaticResource LoginButton}" PreviewMouseDown="LoginMouseDown"/>
 
         <Border Grid.Row="3" Background="#222222"/>
-        <CheckBox Margin="5px" Grid.Row="3" Foreground ="White" Content="Run Steam as Admin" VerticalAlignment="Center" IsChecked="{Binding startAsAdmin, Mode=TwoWay}"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0 5">
+            <Button Name="btnPickSteamFolder" Margin="5 0" Foreground="White" Content="Pick Steam folder" Background="#333333" Click="btnPickSteamFolder_Click"/>
+            <CheckBox Name="RunasAdmin" Margin="5px" Foreground="White" Content="Run Steam as Admin" Checked="AdminCheckbox_CheckedChanged" Unchecked="AdminCheckbox_CheckedChanged"/>
+        </StackPanel>
     </Grid>
 </Window>

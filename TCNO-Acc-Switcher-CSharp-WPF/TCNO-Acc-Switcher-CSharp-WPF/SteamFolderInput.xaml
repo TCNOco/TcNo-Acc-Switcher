@@ -1,0 +1,66 @@
+﻿<Window x:Class="TCNO_Acc_Switcher_CSharp_WPF.SteamFolderInput"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TCNO_Acc_Switcher_CSharp_WPF"
+        mc:Ignorable="d"
+        Title="SteamFolderInput" Height="235" Width="850">
+    <Grid Background="#28293A">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30px"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Row 0: Header -->
+        <Border Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
+        <Label Name="FolderInputHeaderInstruction" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="Error: Steam not found." Grid.Column="1"/>
+        <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5,10,0,10">
+            <Canvas.RenderTransform>
+                <TranslateTransform X="0" Y="0"/>
+            </Canvas.RenderTransform>
+            <Canvas.Resources/>
+            <Canvas Name="g3859">
+                <Canvas Name="g3857">
+                    <Canvas Name="g3849">
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="O1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 0.889l6.25 0l0 8.27l-3.503 0l-2.747 -2.874l0 -3.28l2.115 0l0 4.086l2.019 0l0 -4.086l-4.134 0l0 -2.116"/>
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="O2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 7.487l1.598 1.672l-1.598 0l0 -1.672Z"/>
+                    </Canvas>
+                    <Canvas Name="g3853">
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="N1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M15.053 0l0 9.135l2.117 0l0 -3.844l4.471 4.709l0 -9.135l-2.117 0l0 3.846l-4.471 -4.711Z"/>
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="N2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M17.016 0.865l1.932 2.02l0 -2.02l-1.932 0Z"/>
+                    </Canvas>
+                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="C" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M7.697 0.841l0 8.318l6.25 0l0 -2.067l-4.134 0l0 -4.088l4.134 0l0 -2.163l-6.25 0"/>
+                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="T" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M0.341 0.841l0 2.117l1.78 0l0 6.201l2.115 0l0 -6.201l2.702 0l0 -2.117l-6.597 0Z"/>
+                </Canvas>
+            </Canvas>
+        </Canvas>
+        <Button Name="btnInputMinimize" Grid.Row="0" Content="-" HorizontalAlignment="Right" Background="#2B2D40" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Grid.Column="1"></Button>
+        <Button Name="btnInputClose" Grid.Row="0" Content="X" HorizontalAlignment="Right" Background="#363952" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Grid.Column="1" Margin="621,0,0,0"></Button>
+
+        <StackPanel Grid.Row="1" Background="#28293A" Margin="20,0,20,0" Grid.ColumnSpan="2">
+            <Label Margin="0 20px 0 0" Name="lblQuery" HorizontalAlignment="Left" Foreground="White" Content="Steam was not found in 'C:\Program Files\Steam' or 'C:\Program Files (x86)\Steam'."/>
+            <Label Name="lblQuery2" HorizontalAlignment="Left" Foreground="White" Content="Please enter Steam's directory, as such: C:\Program Files\Steam"/>
+
+            <Grid Margin="0 10px 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <TextBox Padding="5" Grid.Column="0" Name="txtResponse" Foreground="White" Background="#222222" Text="{Binding InputFolderDialogResponse, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" KeyUp="txtResponse_KeyUp"/>
+                <Button Padding="5" Grid.Column="1" Margin="5px 0" Content="Pick folder" Background="#333333" Foreground="White" Click="Button_Click"/>
+            </Grid>
+
+            
+            <StackPanel Orientation="Horizontal" Margin="0 15px 0 0">
+                <Border Name="rectSteamFound" HorizontalAlignment="Left" Background="Red" Width="5px"/>
+                <Label Name="lblQuery3" Margin="10px 0 0 0" HorizontalAlignment="Left" Foreground="White" Content="Steam.exe not found"/>
+            </StackPanel>
+        </StackPanel>
+        <!--<ProgressBar Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5px 0 0 0" Width="100px" Height="10px" Background="#333333" Foreground="White"/>-->
+        <Button Name="btnSetDirectory" IsEnabled="False" Content="Select Steam Folder" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1" Margin="0 0 25 10" Foreground="White"  Style="{StaticResource LoginButton}" Click="btnSetDirectory_Click" Grid.Column="1" MouseEnter="btnSetDirectory_MouseEnter" MouseLeave="btnSetDirectory_MouseLeave"/>
+    </Grid>
+</Window>

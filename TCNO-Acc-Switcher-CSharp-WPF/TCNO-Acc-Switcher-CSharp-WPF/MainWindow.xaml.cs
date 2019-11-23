@@ -21,6 +21,7 @@ using System.Xml;
 
 // For registry keys
 using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace TCNO_Acc_Switcher_CSharp_WPF
 {
@@ -30,15 +31,12 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
     public partial class MainWindow : Window
     {
         List<Steamuser> userAccounts = new List<Steamuser>();
-
-        string SteamFolder = "C:\\Program Files (x86)\\Steam\\",
-            //LoginUsersVDF = @"C:\Users\TechNobo\Documents\loginusers.vdf",
-            LoginUsersVDF = "C:\\Program Files (x86)\\Steam\\config\\loginusers.vdf",
-            SteamEXE = "C:\\Program Files (x86)\\Steam\\Steam.exe";
-        bool runasAdmin = false;
-
         List<string> fLoginUsersLines = new List<string>();
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
+
+
+        // Settings will load later. Just defined here.
+        UserSettings persistentSettings = new UserSettings { StartAsAdmin = false, SteamFolder = "C:\\Program Files (x86)\\Steam\\" };
 
         public MainWindow()
         {
@@ -49,9 +47,11 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
              * Add update check... Possibly autoupdater? Maybe not, user has decision power, usually not nessecary.
              * Display Date of last use under Steam User account, maybe even user account name AND 'ingame name'
              * Button to refresh all images? -- Counter in status saying image/images ie: "2/17 account images downloaded."
+             * Get quit/minimize buttons working.
              */
-
+            InitializeSettings(); // Load user settings
             InitializeComponent();
+            updateFromSettings(); // Update components
 
             // Create image folder
             Directory.CreateDirectory("images");
@@ -88,13 +88,55 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             this.DataContext = MainViewmodel;
             lblStatus.Content = "";
         }
+        void InitializeSettings()
+        {
+            if (!File.Exists("settings.json"))
+                saveSettings();
+            else
+                loadSettings();
+            bool validSteamFound = (File.Exists(persistentSettings.SteamEXE()));
+            //bool validSteamFound = false; // Testing
+            while (!validSteamFound)
+            {
+                validSteamFound = setAndCheckSteamFolder();
+            }
+        }
+        bool setAndCheckSteamFolder()
+        {
+            SteamFolderInput getInputFolderDialog = new SteamFolderInput();
+            getInputFolderDialog.DataContext = MainViewmodel;
+            getInputFolderDialog.ShowDialog();
+            persistentSettings.SteamFolder = MainViewmodel.InputFolderDialogResponse;
+            saveSettings();
+            return (File.Exists(persistentSettings.SteamEXE()));
+        }
+        void loadSettings()
+        {
+            using (StreamReader sr = new StreamReader(@"settings.json"))
+                persistentSettings = JsonConvert.DeserializeObject<UserSettings>(sr.ReadToEnd());
+        }
+        void updateFromSettings()
+        {
+            RunasAdmin.IsChecked = persistentSettings.StartAsAdmin;
+        }
+        void saveSettings()
+        {
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.NullValueHandling = NullValueHandling.Ignore;
+
+            using (StreamWriter sw = new StreamWriter(@"settings.json"))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, persistentSettings);
+            }
+        }
 
         void getSteamAccounts()
         {
             string line, lineNoQuot;
             string username = "", steamID = "", rememberAccount = "", personaName = "", timestamp = "";
 
-            System.IO.StreamReader file = new System.IO.StreamReader(LoginUsersVDF);
+            System.IO.StreamReader file = new System.IO.StreamReader(persistentSettings.LoginusersVDF());
             while ((line = file.ReadLine()) != null)
             {
                 fLoginUsersLines.Add(line);
@@ -173,7 +215,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             // ----- Manage "loginusers.vdf" -----
             // -----------------------------------
             Byte[] info;
-            using (FileStream fs = File.Open(LoginUsersVDF, FileMode.Truncate, FileAccess.Write, FileShare.None))
+            using (FileStream fs = File.Open(persistentSettings.LoginusersVDF(), FileMode.Truncate, FileAccess.Write, FileShare.None))
             {
                 lblStatus.Content = "Status: Editing loginusers.vdf";
                 string lineNoQuot;
@@ -249,13 +291,26 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             public string lastLogin { get; set; }
             public string AccName { get; set; }
         }
+        public class UserSettings
+        {
+            public bool StartAsAdmin;
+            public string SteamFolder;
+            public string LoginusersVDF()
+            {
+                return Path.Combine(SteamFolder, "config\\loginusers.vdf");
+            }
+            public string SteamEXE()
+            {
+                return Path.Combine(SteamFolder, "Steam.exe");
+            }
+        }
 
         public class MainWindowViewModel
         {
             public MainWindowViewModel()
             {
                 SteamUsers = new ObservableCollection<Steamuser>();
-                startAsAdmin = new bool();
+                InputFolderDialogResponse = "";
             }
 
             public ObservableCollection<Steamuser> SteamUsers { get; private set; }
@@ -269,21 +324,20 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     _SelectedSteamUser = value;
                 }
             }
-
-
-            private bool _startAsAdmin;
-            public bool startAsAdmin
+            private string _InputFolderDialogResponse;
+            public string InputFolderDialogResponse
             {
-                get { return _startAsAdmin; }
+                get { return _InputFolderDialogResponse; }
                 set
                 {
-                    _startAsAdmin = value;
+                    _InputFolderDialogResponse = value;
                 }
             }
         }
 
         private void LoginMouseDown(object sender, MouseButtonEventArgs e)
         {
+            saveSettings();
             LoginButtonAnimation("#0c0c0c", "#333333", 2000);
 
             lblStatus.Content = "Logging into: " + MainViewmodel.SelectedSteamUser.Name;
@@ -293,10 +347,10 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             closeSteam();
             mostRecentUpdate();
 
-            if (runasAdmin)
-                Process.Start(SteamEXE);
+            if (persistentSettings.StartAsAdmin)
+                Process.Start(persistentSettings.SteamEXE());
             else
-                Process.Start(new ProcessStartInfo("explorer.exe", SteamEXE));
+                Process.Start(new ProcessStartInfo("explorer.exe", persistentSettings.SteamEXE()));
             lblStatus.Content = "Status: Started Steam";
         }
 
@@ -310,6 +364,16 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
             btnLogin.Background = new SolidColorBrush(Colors.Orange);
             btnLogin.Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+        }
+
+        private void AdminCheckbox_CheckedChanged(object sender, RoutedEventArgs e)
+        {
+            persistentSettings.StartAsAdmin = (bool)RunasAdmin.IsChecked;
+        }
+
+        private void btnPickSteamFolder_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

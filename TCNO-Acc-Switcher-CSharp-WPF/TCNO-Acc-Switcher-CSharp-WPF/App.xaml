@@ -13,7 +13,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Name="border" Padding="70px 10px" BorderThickness="0" BorderBrush="White" Background="{TemplateBinding Background}">
+                        <Border Name="border" Padding="70px 10px" BorderThickness="1" BorderBrush="Gray" Background="{TemplateBinding Background}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <!--<ControlTemplate.Triggers>
