@@ -8,12 +8,12 @@
         <Style x:Key="LoginButton" TargetType="Button">
             <Setter Property="OverridesDefaultStyle" Value="True" />
             <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Padding" Value="70px 0"/>
+            <Setter Property="Padding" Value="70px 8px"/>
             <Setter Property="Background" Value="#333333"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Name="border" Padding="70px 10px" BorderThickness="1" BorderBrush="Gray" Background="{TemplateBinding Background}">
+                        <Border Name="border" Padding="70px 8px" BorderThickness="1" BorderBrush="Gray" Background="{TemplateBinding Background}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <!--<ControlTemplate.Triggers>
@@ -40,6 +40,7 @@
             <Setter Property="OverridesDefaultStyle" Value="True" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#363952" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -48,7 +49,11 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="Red"></Setter>
+                                <Setter Property="Foreground" Value="Black"></Setter>
+                                <Setter Property="Background" Value="Red"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="DarkRed"></Setter>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -60,12 +65,21 @@
             <Setter Property="OverridesDefaultStyle" Value="True" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#2B2D40" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Name="border" BorderThickness="0" BorderBrush="White" Background="{TemplateBinding Background}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#4B4D60"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#1B1D30"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -79,8 +93,8 @@
             <!--<Setter Property="Background" Value="#333333"/>-->
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Margin" Value="0"/>
-            <Setter Property="Height" Value="120"/>
-            <Setter Property="MaxHeight" Value="120"/>
+            <Setter Property="Height" Value="145"/>
+            <Setter Property="MaxHeight" Value="145"/>
             <Setter Property="Width" Value="100"/>
             <Setter Property="MaxWidth" Value="100"/>
             <Setter Property="Template">

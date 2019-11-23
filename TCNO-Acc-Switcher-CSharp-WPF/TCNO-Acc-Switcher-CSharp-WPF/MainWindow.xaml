@@ -5,7 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TCNO_Acc_Switcher_CSharp_WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="804">
+        Title="MainWindow" Height="454" Width="804"
+        Closed="Window_Closed">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="b2v" />
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -40,8 +44,8 @@
                 </Canvas>
             </Canvas>
         </Canvas>
-        <Button Grid.Row="0" Content="-" HorizontalAlignment="Right" Background="#2B2D40" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}"></Button>
-        <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Background="#363952" Width="30px" Height="30px" Style="{StaticResource ExitButton}"></Button>
+        <Button Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}"></Button>
+        <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}"></Button>
 
         <!-- Row 1: Main content -->
         <ListBox SelectionChanged="SteamUserSelect" Name="listAccounts" IsSynchronizedWithCurrentItem="True" Grid.Row="1" Background="#28293A" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Top" ItemsSource="{Binding Path=SteamUsers}" SelectedItem="{Binding Path=SelectedSteamUser, Mode=TwoWay}">
@@ -61,8 +65,10 @@
                     <ListBoxItem Style="{StaticResource UserAccount}">
                         <StackPanel IsHitTestVisible="False">
                             <Image Source="{Binding ImgURL}" Stretch="UniformToFill" Width="65px" Height="65px" Margin="0 0 0 5px"/>
-                            <TextBlock Text="{Binding Name}"></TextBlock>
-                            <TextBlock Text="{Binding SteamID}" FontSize="9" TextAlignment="Center" FontWeight="Normal"></TextBlock>
+                            <TextBlock Text="{Binding AccName}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
+                            <TextBlock Text="{Binding Name}" TextAlignment="Center"></TextBlock>
+                            <TextBlock Text="{Binding SteamID}" Visibility="{Binding IsChecked,ElementName=ShowSteamID,Converter={StaticResource b2v}}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
+                            <TextBlock Text="{Binding lastLogin}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
                         </StackPanel>
                     </ListBoxItem>
                 </DataTemplate>
@@ -91,12 +97,13 @@
         <Border Grid.Row="2" Background="#222222"/>
         <Label Name="lblStatus" Grid.Row="2" HorizontalAlignment="Left" Margin="5px" VerticalAlignment="Center" Foreground="White" Content="Status: Starting"/>
         <!--<ProgressBar Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5px 0 0 0" Width="100px" Height="10px" Background="#333333" Foreground="White"/>-->
-        <Button Name="btnLogin" IsEnabled="False" Content="Login" HorizontalAlignment="Right" Grid.Row="2" Margin="5px" VerticalAlignment="Center" Foreground="White" Style="{StaticResource LoginButton}" PreviewMouseDown="LoginMouseDown"/>
+        <Button Name="btnLogin" IsEnabled="False" Content="Login" HorizontalAlignment="Right" Grid.Row="2" Margin="5px" VerticalAlignment="Center" Foreground="White" Style="{StaticResource LoginButton}" PreviewMouseDown="LoginMouseDown" MouseEnter="btnLogin_MouseEnter" MouseLeave="btnLogin_MouseLeave"/>
 
         <Border Grid.Row="3" Background="#222222"/>
         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0 5">
-            <Button Name="btnPickSteamFolder" Margin="5 0" Foreground="White" Content="Pick Steam folder" Background="#333333" Click="btnPickSteamFolder_Click"/>
-            <CheckBox Name="RunasAdmin" Margin="5px" Foreground="White" Content="Run Steam as Admin" Checked="AdminCheckbox_CheckedChanged" Unchecked="AdminCheckbox_CheckedChanged"/>
+            <Button Name="btnPickSteamFolder" Padding="5 0" Margin="5 0" Foreground="White" Content="Pick Steam folder" Background="#333333" Click="btnPickSteamFolder_Click"/>
+            <CheckBox Name="RunasAdmin" Margin="5px" Foreground="White" Content="Run Steam as Admin"  IsChecked="{Binding StartAsAdmin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="AdminCheckbox_CheckedChanged" Unchecked="AdminCheckbox_CheckedChanged"/>
+            <CheckBox Name="ShowSteamID" Margin="5px" Foreground="White" Content="Show SteamID" IsChecked="{Binding ShowSteamID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="ShowSteamID_CheckedChanged" Unchecked="ShowSteamID_CheckedChanged"/>
         </StackPanel>
     </Grid>
 </Window>

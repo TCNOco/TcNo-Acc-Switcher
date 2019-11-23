@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -36,14 +37,11 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
 
         // Settings will load later. Just defined here.
-        UserSettings persistentSettings = new UserSettings { StartAsAdmin = false, SteamFolder = "C:\\Program Files (x86)\\Steam\\" };
+        UserSettings persistentSettings = new UserSettings { StartAsAdmin = false, SteamFolder = "C:\\Program Files (x86)\\Steam\\", ShowSteamID = false };
 
         public MainWindow()
         {
             /* TODO:
-             * MainViewmodel.startAsAdmin
-             * Save to and load from JSON file, for settings. Possibly an INI or something else?
-             * Add button next to checkbox for InuptBox to get Steam location, if not detected autopopup dialog.
              * Add update check... Possibly autoupdater? Maybe not, user has decision power, usually not nessecary.
              * Display Date of last use under Steam User account, maybe even user account name AND 'ingame name'
              * Button to refresh all images? -- Counter in status saying image/images ie: "2/17 account images downloaded."
@@ -117,7 +115,8 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         }
         void updateFromSettings()
         {
-            RunasAdmin.IsChecked = persistentSettings.StartAsAdmin;
+            MainViewmodel.StartAsAdmin = persistentSettings.StartAsAdmin;
+            MainViewmodel.ShowSteamID = persistentSettings.ShowSteamID;
         }
         void saveSettings()
         {
@@ -130,7 +129,14 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 serializer.Serialize(writer, persistentSettings);
             }
         }
-
+        public static string UnixTimeStampToDateTime(string unixTimeStampString)
+        {
+            double unixTimeStamp = Convert.ToDouble(unixTimeStampString);
+            // Unix timestamp is seconds past epoch
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime.ToString("dd/mm/yyyy hh:mm:ss");
+        }
         void getSteamAccounts()
         {
             string line, lineNoQuot;
@@ -149,7 +155,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 } 
                 else if (lineNoQuot.All(char.IsDigit) && !string.IsNullOrEmpty(steamID)) // If steamID isn't empty, save account details, empty temp vars for collection.
                 {
-                    userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamID, ImgURL = Path.Combine("images", $"{steamID}.jpg"), lastLogin = timestamp });
+                    userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamID, ImgURL = Path.Combine("images", $"{steamID}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
                     username = "";
                     rememberAccount = "";
                     personaName = "";
@@ -175,7 +181,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 System.Console.WriteLine(line);
             }
             // While loop adds account when new one started. Will not include the last one, so that's done here.
-            userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamID, ImgURL = Path.Combine("images", $"{steamID}.jpg"), lastLogin = timestamp });
+            userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamID, ImgURL = Path.Combine("images", $"{steamID}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
 
             file.Close();
         }
@@ -294,6 +300,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         public class UserSettings
         {
             public bool StartAsAdmin;
+            public bool ShowSteamID;
             public string SteamFolder;
             public string LoginusersVDF()
             {
@@ -311,6 +318,8 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             {
                 SteamUsers = new ObservableCollection<Steamuser>();
                 InputFolderDialogResponse = "";
+                StartAsAdmin = new bool();
+                ShowSteamID = new bool();
             }
 
             public ObservableCollection<Steamuser> SteamUsers { get; private set; }
@@ -333,6 +342,36 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     _InputFolderDialogResponse = value;
                 }
             }
+            private bool _ShowSteamID;
+            public bool ShowSteamID
+            {
+                get
+                {
+                    return _ShowSteamID;
+                }
+                set
+                {
+                    _ShowSteamID = value;
+                }
+            }
+            private bool _StartAsAdmin;
+            public bool StartAsAdmin
+            {
+                get
+                {
+                    return _StartAsAdmin;
+                }
+                set
+                {
+                    _StartAsAdmin = value;
+                }
+            }
+            public event PropertyChangedEventHandler PropertyChanged;
+            protected void OnPropertyChanged(string propertyName)
+            {
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         private void LoginMouseDown(object sender, MouseButtonEventArgs e)
@@ -352,6 +391,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             else
                 Process.Start(new ProcessStartInfo("explorer.exe", persistentSettings.SteamEXE()));
             lblStatus.Content = "Status: Started Steam";
+            btnLogin.IsEnabled = true;
         }
 
         private void LoginButtonAnimation(string colFrom, string colTo, int len)
@@ -373,7 +413,34 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
         private void btnPickSteamFolder_Click(object sender, RoutedEventArgs e)
         {
-
+            bool validSteamFound = false;
+            while (!validSteamFound)
+            {
+                validSteamFound = setAndCheckSteamFolder();
+            }
         }
+
+        private void ShowSteamID_CheckedChanged(object sender, RoutedEventArgs e)
+        {
+            persistentSettings.ShowSteamID = (bool)ShowSteamID.IsChecked;
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            saveSettings();
+        }
+
+        Color DarkGreen = (Color)(ColorConverter.ConvertFromString("#053305"));
+        Color DefaultGray = (Color)(ColorConverter.ConvertFromString("#333333"));
+        private void btnLogin_MouseEnter(object sender, MouseEventArgs e)
+        {
+            btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? Colors.Green : DefaultGray);
+        }
+
+        private void btnLogin_MouseLeave(object sender, MouseEventArgs e)
+        {
+            btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser !=null ? DarkGreen : DefaultGray);
+        }
+
     }
 }
