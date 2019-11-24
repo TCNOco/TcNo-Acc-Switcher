@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TCNO_Acc_Switcher_CSharp_WPF.Properties {
+namespace TcNo_Acc_Switcher_Updater.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TCNO_Acc_Switcher_CSharp_WPF.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TcNo_Acc_Switcher_Updater.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,60 +63,37 @@ namespace TCNO_Acc_Switcher_CSharp_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] QuestionMark {
+        internal static byte[] _7za {
             get {
-                object obj = ResourceManager.GetObject("QuestionMark", resourceCulture);
+                object obj = ResourceManager.GetObject("_7za", resourceCulture);
                 return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized string similar to       7-Zip Extra
+        ///      ~~~~~~~~~~~
+        ///      License for use and distribution
+        ///      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ///
+        ///      Copyright (C) 1999-2018 Igor Pavlov.
+        ///
+        ///      7-Zip Extra files are under the GNU LGPL license.
+        ///
+        ///      
+        ///      Notes: 
+        ///        You can use 7-Zip Extra on any computer, including a computer in a commercial 
+        ///        organization. You don&apos;t need to register or pay for 7-Zip.
+        ///
+        ///
+        ///      GNU LGPL information
+        ///      --------------------
+        ///
+        ///        This library is free software; you can [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static byte[] SettingsIcon {
+        internal static string License {
             get {
-                object obj = ResourceManager.GetObject("SettingsIcon", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] SettingsSmall {
-            get {
-                object obj = ResourceManager.GetObject("SettingsSmall", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] Updater_dll {
-            get {
-                object obj = ResourceManager.GetObject("Updater_dll", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] Updater_exe {
-            get {
-                object obj = ResourceManager.GetObject("Updater_exe", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] Updater_json {
-            get {
-                object obj = ResourceManager.GetObject("Updater_json", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("License", resourceCulture);
             }
         }
     }

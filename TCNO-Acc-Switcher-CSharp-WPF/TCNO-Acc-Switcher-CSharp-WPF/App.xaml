@@ -10,6 +10,7 @@
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Padding" Value="70px 8px"/>
             <Setter Property="Background" Value="#333333"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -30,6 +31,29 @@
                                 </Trigger.EnterActions>
                             </Trigger>--><!--
                         </ControlTemplate.Triggers>-->
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Pick Steam Folder button -->
+        <Style x:Key="pickSteamFolder" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Padding="5 0" BorderThickness="1.5" BorderBrush="Gray" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#222222"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#111111"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -130,3 +154,4 @@
         <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource ControlBaseStyle}"/>
     </Application.Resources>
 </Application>
+

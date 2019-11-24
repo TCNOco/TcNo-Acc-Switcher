@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,30 +24,89 @@ using System.Xml;
 // For registry keys
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace TCNO_Acc_Switcher_CSharp_WPF
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    public static class getChild
+    {
+        public static T GetChildOfType<T>(this DependencyObject depObj)
+        where T : DependencyObject
+        {
+            if (depObj == null) return null;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                var child = VisualTreeHelper.GetChild(depObj, i);
+
+                var result = (child as T) ?? GetChildOfType<T>(child);
+                if (result != null) return result;
+            }
+            return null;
+        }
+    }
     public partial class MainWindow : Window
     {
         List<Steamuser> userAccounts = new List<Steamuser>();
         List<string> fLoginUsersLines = new List<string>();
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
+        //int version = 1;
+        int version = 2000;
+        bool DeleteImagesOnClose = false;
+        
 
         // Settings will load later. Just defined here.
-        UserSettings persistentSettings = new UserSettings { StartAsAdmin = false, SteamFolder = "C:\\Program Files (x86)\\Steam\\", ShowSteamID = false };
-
+        UserSettings persistentSettings = new UserSettings();
+        
         public MainWindow()
         {
             /* TODO:
-             * Add update check... Possibly autoupdater? Maybe not, user has decision power, usually not nessecary.
-             * Display Date of last use under Steam User account, maybe even user account name AND 'ingame name'
              * Button to refresh all images? -- Counter in status saying image/images ie: "2/17 account images downloaded."
-             * Get quit/minimize buttons working.
              */
+            if (File.Exists(Path.Combine("Resources", "7za.exe")))
+            {
+                new DirectoryInfo("Resources").Delete(true);
+                File.Delete("UpdateInformation.txt");
+                File.Delete("x64.zip");
+                File.Delete("x32.zip");
+                bool deleted = false;
+                while (!deleted)
+                {
+                    try
+                    {
+                        File.Delete("TcNo-Acc-Switcher-Updater.exe");
+                        File.Delete("TcNo-Acc-Switcher-Updater.dll");
+                        File.Delete("TcNo-Acc-Switcher-Updater.runtimeconfig.json");
+                        deleted = true;
+                    }
+                    catch (Exception)
+                    {
+                        Thread.Sleep(500);
+                    }
+                }
+            }
+            else
+            {
+                if (File.Exists("UpdateFound.txt"))
+                    downloadUpdateDialog();
+                else
+                {
+                    Thread updateCheckThread = new Thread(updateCheck);
+                    updateCheckThread.Start();
+                }
+            }
+
+            if (File.Exists("DeleteImagesOnStart"))
+            {
+                File.Delete("DeleteImagesOnStart");
+                new DirectoryInfo("Images").Delete(true);
+            }
+
+            this.DataContext = MainViewmodel;
             InitializeSettings(); // Load user settings
             InitializeComponent();
             updateFromSettings(); // Update components
@@ -58,33 +118,143 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             lblStatus.Content = "Status: Collecting Steam Accounts";
             getSteamAccounts();
 
-            // Check if profile images exist, otherwise queue in other threads
-            lblStatus.Content = "Status: Downloading missing profile images";
+            // Check if profile images exist, otherwise queue
+            List<Steamuser> ImagesToDownload = new List<Steamuser>();
             foreach (Steamuser su in userAccounts)
             {
                 if (!File.Exists(su.ImgURL))
                 {
-                    string imageURL = getUserImageURL(su.SteamID);
+                    ImagesToDownload.Add(su);
+                }
+                else
+                {
+                    su.ImgURL = Path.GetFullPath(su.ImgURL);
+                    MainViewmodel.SteamUsers.Add(su);
+                }
+            }
 
-                    if (!string.IsNullOrEmpty(imageURL))
+            resizeWindow();
+
+            if (ImagesToDownload.Count > 0)
+            {
+                Thread t = new Thread(new ParameterizedThreadStart(DownloadImages));
+                t.Start(ImagesToDownload);
+                lblStatus.Content = "Status: Starting image download.";
+            }
+            else
+            {
+                lblStatus.Content = "Status: Ready";
+            }
+        }
+        void downloadUpdateDialog()
+        {
+            MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Update now?", "Update was found", System.Windows.MessageBoxButton.YesNo);
+            if (messageBoxResult == MessageBoxResult.Yes)
+            {
+                if (File.Exists("UpdateFound.txt"))
+                    File.Delete("UpdateFound.txt");
+
+                // Extract update.exe
+                File.WriteAllBytes("TcNo-Acc-Switcher-Updater.exe", Properties.Resources.Updater_exe);
+                File.WriteAllBytes("TcNo-Acc-Switcher-Updater.dll", Properties.Resources.Updater_dll);
+                File.WriteAllBytes("TcNo-Acc-Switcher-Updater.runtimeconfig.json", Properties.Resources.Updater_json);
+
+                using (FileStream fs = File.Create("UpdateInformation.txt"))
+                {
+                    byte[] info = new UTF8Encoding(true).GetBytes(System.AppDomain.CurrentDomain.FriendlyName + ".exe|" + (IntPtr.Size == 8 ? "x64" : "x32") + "|" + version.ToString());
+                    fs.Write(info, 0, info.Length);
+                }
+
+                // Run update.exe
+                string processName = "TcNo-Acc-Switcher-Updater.exe";
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.FileName = processName;
+                startInfo.CreateNoWindow = false;
+                startInfo.UseShellExecute = true;
+                Process.Start(startInfo);
+                Environment.Exit(1);
+            }
+        }
+        void updateCheck()
+        {
+            System.Net.WebClient wc = new System.Net.WebClient();
+            int webVersion = int.Parse(wc.DownloadString("https://tcno.co/Projects/AccSwitcher/version.php").Substring(0,4));
+            
+            if (webVersion > version)
+            {
+                using (FileStream fs = File.Create("UpdateFound.txt"))
+                {
+                    byte[] info = new UTF8Encoding(true).GetBytes("An update was found last launch" + DateTime.Now.ToString());
+                    fs.Write(info, 0, info.Length);
+                }
+                downloadUpdateDialog();
+            }
+            else
+            {
+                if (File.Exists("UpdateFound.txt"))
+                    File.Delete("UpdateFound.txt");
+            }
+        }
+        void DownloadImages(object oin)
+        {
+            List<Steamuser> ImagesToDownload = (List<Steamuser>)oin;
+
+            int totalUsers = ImagesToDownload.Count();
+            int currentUser = 0;
+            // DISABLE LISTBOX
+            foreach (Steamuser su in ImagesToDownload)
+            {
+                currentUser++;
+                this.Dispatcher.Invoke(() =>
+                {
+                    lblStatus.Content = $"Status: Downloading profile image: {currentUser.ToString()}/{totalUsers}";
+                });
+                string imageURL = getUserImageURL(su.SteamID);
+
+                if (!string.IsNullOrEmpty(imageURL))
+                {
+                    using (WebClient client = new WebClient())
                     {
-                        using (WebClient client = new WebClient())
-                        {
-                            client.DownloadFile(new Uri(imageURL), su.ImgURL);
-                        }
+                        client.DownloadFile(new Uri(imageURL), su.ImgURL);
                     }
-                    else
-                    {
-                        File.WriteAllBytes(su.ImgURL, Properties.Resources.QuestionMark);
-                    }
+                }
+                else
+                {
+                    File.WriteAllBytes(su.ImgURL, Properties.Resources.QuestionMark);
                 }
                 su.ImgURL = Path.GetFullPath(su.ImgURL);
 
-                MainViewmodel.SteamUsers.Add(su);
+                this.Dispatcher.Invoke(() =>
+                {
+                    MainViewmodel.SteamUsers.Add(su);
+                    this.DataContext = MainViewmodel;
+                });
             }
+            this.Dispatcher.Invoke(() =>
+            {
+                lblStatus.Content = "Status: Ready";
+            });
+            // ENABLE LISTBOX
+        }
+        void resizeWindow()
+        {
+            this.Width = persistentSettings.WindowSize.Width;
+            this.Height = persistentSettings.WindowSize.Height;
 
-            this.DataContext = MainViewmodel;
-            lblStatus.Content = "";
+            if (this.Width == 772 && MainViewmodel.SteamUsers.Count > 14) // Default window size, and scrollbar visible.
+            {
+                this.Width = 790;
+            }
+            this.MinHeight = persistentSettings.ShowSettings ? 420 : 380; // If settings showing, change minimum height
+            this.Height = (this.Height == 420 || this.Height == 380) && !persistentSettings.ShowSettings ? 380 : this.Height; // If default height, and settings shown, resize to smaller.
+        }
+        public void Window_SizeUpdated(object sender, RoutedEventArgs e)
+        {
+            //if (resultsTab.IsSelected)
+            //{
+            //    Grid.SetRowSpan(dataGrid1, 2);
+            //    Grid.SetRowSpan(dataGrid2, 2);
+            //}
         }
         void InitializeSettings()
         {
@@ -94,48 +264,100 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 loadSettings();
             bool validSteamFound = (File.Exists(persistentSettings.SteamEXE()));
             //bool validSteamFound = false; // Testing
-            while (!validSteamFound)
+            validSteamFound = setAndCheckSteamFolder(false);
+            if (!validSteamFound)
             {
-                validSteamFound = setAndCheckSteamFolder();
+                MessageBox.Show("You are required to pick a Steam directory for this program to work. Please check you have it installed and run this program again");
+                Environment.Exit(1);
+                // this.Close() won't work, because the main window hasn't appeared just yet. Still needs to be populated with Steam Accounts.
             }
         }
-        bool setAndCheckSteamFolder()
+        bool setAndCheckSteamFolder(bool manual)
         {
+            if (!manual)
+            {
+                MainViewmodel.SteamNotFound = true;
+                string ProgramFiles = "C:\\Program Files\\Steam\\Steam.exe",
+                       ProgramFiles86 = "C:\\Program Files (x86)\\Steam\\Steam.exe";
+                bool exists = File.Exists(ProgramFiles),
+                     exists86 = File.Exists(ProgramFiles86);
+
+                if (exists86)
+                    persistentSettings.SteamFolder = Directory.GetParent(ProgramFiles86).ToString();
+                else if (exists)
+                    persistentSettings.SteamFolder = Directory.GetParent(ProgramFiles).ToString();
+
+                if (exists86 || exists)
+                {
+                    saveSettings();
+                    return (File.Exists(persistentSettings.SteamEXE()));
+                }
+            }
+            else
+            {
+                MainViewmodel.SteamNotFound = false;
+            }
+
             SteamFolderInput getInputFolderDialog = new SteamFolderInput();
             getInputFolderDialog.DataContext = MainViewmodel;
             getInputFolderDialog.ShowDialog();
-            persistentSettings.SteamFolder = MainViewmodel.InputFolderDialogResponse;
-            saveSettings();
-            return (File.Exists(persistentSettings.SteamEXE()));
+            if (!String.IsNullOrEmpty(MainViewmodel.InputFolderDialogResponse))
+            {
+                persistentSettings.SteamFolder = MainViewmodel.InputFolderDialogResponse;
+                saveSettings();
+                return (File.Exists(persistentSettings.SteamEXE()));
+            }
+            else
+                return false;
         }
         void loadSettings()
         {
+            JsonSerializer serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
             using (StreamReader sr = new StreamReader(@"settings.json"))
-                persistentSettings = JsonConvert.DeserializeObject<UserSettings>(sr.ReadToEnd());
+            {
+                // persistentSettings = JsonConvert.DeserializeObject<UserSettings>(sr.ReadToEnd()); -- Entirely replaces, instead of merging. New variables won't have values.
+                // Using a JSON Union Merge means that settings that are missing will have default values, set at the top of this file.
+                JObject jCurrent = JObject.Parse(JsonConvert.SerializeObject(persistentSettings));
+
+                jCurrent.Merge(JObject.Parse(sr.ReadToEnd()), new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+                persistentSettings = jCurrent.ToObject<UserSettings>();
+            }
         }
         void updateFromSettings()
         {
             MainViewmodel.StartAsAdmin = persistentSettings.StartAsAdmin;
             MainViewmodel.ShowSteamID = persistentSettings.ShowSteamID;
+            MainViewmodel.ShowSettings = persistentSettings.ShowSettings;
+            MainViewmodel.InputFolderDialogResponse = persistentSettings.SteamFolder;
+        }
+        void saveOtherVarsToSettings()
+        {
+            persistentSettings.WindowSize = new Size(this.Width, this.Height);
         }
         void saveSettings()
         {
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.NullValueHandling = NullValueHandling.Ignore;
-
-            using (StreamWriter sw = new StreamWriter(@"settings.json"))
-            using (JsonWriter writer = new JsonTextWriter(sw))
+            if (!Double.IsNaN(this.Height))
             {
-                serializer.Serialize(writer, persistentSettings);
+                // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.
+                saveOtherVarsToSettings();
+                JsonSerializer serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
+
+                using (StreamWriter sw = new StreamWriter(@"settings.json"))
+                using (JsonWriter writer = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(writer, persistentSettings);
+                }
             }
         }
         public static string UnixTimeStampToDateTime(string unixTimeStampString)
         {
             double unixTimeStamp = Convert.ToDouble(unixTimeStampString);
             // Unix timestamp is seconds past epoch
-            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-            return dtDateTime.ToString("dd/mm/yyyy hh:mm:ss");
+            var localDateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(long.Parse(unixTimeStampString)).DateTime.ToLocalTime();
+            return localDateTimeOffset.ToString("dd/MM/yyyy hh:mm:ss");
         }
         void getSteamAccounts()
         {
@@ -208,6 +430,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             lblStatus.Content = "Selected " + su.Name;
             HeaderInstruction.Content = "2. Press Login";
             btnLogin.IsEnabled = true;
+            btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? DarkGreen : DefaultGray);
         }
         //private void SteamUserUnselect(object sender, RoutedEventArgs e)
         //{
@@ -299,9 +522,12 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         }
         public class UserSettings
         {
-            public bool StartAsAdmin;
-            public bool ShowSteamID;
-            public string SteamFolder;
+            //UserSettings defaultSettings = new UserSettings { StartAsAdmin = false, SteamFolder = "C:\\Program Files (x86)\\Steam\\", ShowSteamID = false, ShowSettings = false, WindowSize = new Size(773, 420) };
+            public bool StartAsAdmin { get; set; } = false;
+            public bool ShowSteamID { get; set; } = false;
+            public bool ShowSettings { get; set; } = false;
+            public string SteamFolder { get; set; } = "C:\\Program Files (x86)\\Steam\\";
+            public Size WindowSize { get; set; } = new Size(773, 420);
             public string LoginusersVDF()
             {
                 return Path.Combine(SteamFolder, "config\\loginusers.vdf");
@@ -312,14 +538,16 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             }
         }
 
-        public class MainWindowViewModel
+        public class MainWindowViewModel : INotifyPropertyChanged
         {
             public MainWindowViewModel()
             {
                 SteamUsers = new ObservableCollection<Steamuser>();
                 InputFolderDialogResponse = "";
+                SteamNotFound = new bool();
                 StartAsAdmin = new bool();
                 ShowSteamID = new bool();
+                ShowSettings = new bool();
             }
 
             public ObservableCollection<Steamuser> SteamUsers { get; private set; }
@@ -354,6 +582,18 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     _ShowSteamID = value;
                 }
             }
+            private bool _ShowSettings;
+            public bool ShowSettings
+            {
+                get
+                {
+                    return _ShowSettings;
+                }
+                set
+                {
+                    _ShowSettings = value;
+                }
+            }
             private bool _StartAsAdmin;
             public bool StartAsAdmin
             {
@@ -366,11 +606,27 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     _StartAsAdmin = value;
                 }
             }
+            private bool _SteamNotFound;
+            public bool SteamNotFound
+            {
+                get
+                {
+                    return _SteamNotFound;
+                }
+                set
+                {
+                    _SteamNotFound = value;
+                }
+            }
+
             public event PropertyChangedEventHandler PropertyChanged;
-            protected void OnPropertyChanged(string propertyName)
+
+            protected void NotifyPropertyChanged(String info)
             {
                 if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs(info));
+                }
             }
         }
 
@@ -413,10 +669,15 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
         private void btnPickSteamFolder_Click(object sender, RoutedEventArgs e)
         {
-            bool validSteamFound = false;
-            while (!validSteamFound)
+            bool validSteamFound = (File.Exists(persistentSettings.SteamEXE()));
+            string OldLocation = persistentSettings.SteamFolder;
+
+            validSteamFound = setAndCheckSteamFolder(true);
+            if (!validSteamFound)
             {
-                validSteamFound = setAndCheckSteamFolder();
+                persistentSettings.SteamFolder = OldLocation;
+                MainViewmodel.InputFolderDialogResponse = OldLocation;
+                MessageBox.Show("Steam location not chosen. Resetting to old value: " + OldLocation);
             }
         }
 
@@ -425,10 +686,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             persistentSettings.ShowSteamID = (bool)ShowSteamID.IsChecked;
         }
 
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            saveSettings();
-        }
 
         Color DarkGreen = (Color)(ColorConverter.ConvertFromString("#053305"));
         Color DefaultGray = (Color)(ColorConverter.ConvertFromString("#333333"));
@@ -441,6 +698,69 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         {
             btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser !=null ? DarkGreen : DefaultGray);
         }
+        private void btnExit(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
 
+        private void btnMinimize(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void dragWindow(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        private void chkShowSettings_CheckedChanged(object sender, RoutedEventArgs e)
+        {
+            persistentSettings.ShowSettings = (bool)chkShowSettings.IsChecked;
+            this.MinHeight = persistentSettings.ShowSettings ? 420 : 380;
+            this.Height = (this.Height == 420 || this.Height == 380) && !persistentSettings.ShowSettings ? 380 : this.Height; // If default height, and settings shown, resize to smaller.
+        }
+        private void chkShowSettings_MouseEnter(object sender, MouseEventArgs e)
+        {
+            getChild.GetChildOfType<Border>(chkShowSettings).Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#444444")));
+        }
+
+        private void chkShowSettings_MouseLeave(object sender, MouseEventArgs e)
+        {
+            getChild.GetChildOfType<Border>(chkShowSettings).Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#333333")));
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (!Double.IsNaN(this.Height)) // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.
+                saveSettings();
+        }
+
+        private void btnResetSettings_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Are you sure?", "Reset settings", System.Windows.MessageBoxButton.YesNo);
+            if (messageBoxResult == MessageBoxResult.Yes)
+            {
+                persistentSettings = new UserSettings();
+                updateFromSettings();
+                resizeWindow();
+                setAndCheckSteamFolder(false);
+                this.DataContext = MainViewmodel;
+                chkShowSettings.IsChecked = persistentSettings.ShowSettings;
+            }
+        }
+        private void btnResetImages_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Are you sure?", "Reset settings", System.Windows.MessageBoxButton.YesNo);
+            if (messageBoxResult == MessageBoxResult.Yes)
+            {
+                File.Create("DeleteImagesOnStart");
+                MessageBox.Show("The program will now close. Once opened, new images will download.");
+                this.Close();
+            }
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+        }
     }
 }

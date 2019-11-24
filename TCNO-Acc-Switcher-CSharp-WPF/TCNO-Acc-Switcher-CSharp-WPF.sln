@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCNO-Acc-Switcher-CSharp-WPF", "TCNO-Acc-Switcher-CSharp-WPF\TCNO-Acc-Switcher-CSharp-WPF.csproj", "{941D0347-CD63-4AF3-8E3E-C18299ABF7DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCNO-Acc-Switcher-CSharp-WPF", "TCNO-Acc-Switcher-CSharp-WPF\TCNO-Acc-Switcher-CSharp-WPF.csproj", "{941D0347-CD63-4AF3-8E3E-C18299ABF7DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcNo-Acc-Switcher-Updater", "TcNo-Acc-Switcher-Updater\TcNo-Acc-Switcher-Updater.csproj", "{9ACA0DF5-4E71-4F9C-952A-CCBCD1ABF3B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{941D0347-CD63-4AF3-8E3E-C18299ABF7DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{941D0347-CD63-4AF3-8E3E-C18299ABF7DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{941D0347-CD63-4AF3-8E3E-C18299ABF7DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ACA0DF5-4E71-4F9C-952A-CCBCD1ABF3B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ACA0DF5-4E71-4F9C-952A-CCBCD1ABF3B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ACA0DF5-4E71-4F9C-952A-CCBCD1ABF3B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ACA0DF5-4E71-4F9C-952A-CCBCD1ABF3B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
