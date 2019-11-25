@@ -59,42 +59,5 @@ namespace TcNo_Acc_Switcher_Updater.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] _7za {
-            get {
-                object obj = ResourceManager.GetObject("_7za", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to       7-Zip Extra
-        ///      ~~~~~~~~~~~
-        ///      License for use and distribution
-        ///      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        ///
-        ///      Copyright (C) 1999-2018 Igor Pavlov.
-        ///
-        ///      7-Zip Extra files are under the GNU LGPL license.
-        ///
-        ///      
-        ///      Notes: 
-        ///        You can use 7-Zip Extra on any computer, including a computer in a commercial 
-        ///        organization. You don&apos;t need to register or pay for 7-Zip.
-        ///
-        ///
-        ///      GNU LGPL information
-        ///      --------------------
-        ///
-        ///        This library is free software; you can [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string License {
-            get {
-                return ResourceManager.GetString("License", resourceCulture);
-            }
-        }
     }
 }

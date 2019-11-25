@@ -55,8 +55,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 2000;
-        bool DeleteImagesOnClose = false;
+        int version = 1;
         
 
         // Settings will load later. Just defined here.
@@ -88,6 +87,12 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                         Thread.Sleep(500);
                     }
                 }
+                // Because closing a messagebox before the window shows causes it to crash for some reason...
+                MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Open GitHub to see what's new?", "Finished updating.", System.Windows.MessageBoxButton.YesNo);
+                if (messageBoxResult == MessageBoxResult.Yes)
+                {
+                    Process.Start(new ProcessStartInfo("https://github.com/TcNobo/TcNo-Acc-Switcher/releases") { UseShellExecute = true });
+                }
             }
             else
             {
@@ -99,6 +104,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     updateCheckThread.Start();
                 }
             }
+            MainViewmodel.ProgramVersion = "Version: " + version.ToString();
 
             if (File.Exists("DeleteImagesOnStart"))
             {
@@ -132,9 +138,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     MainViewmodel.SteamUsers.Add(su);
                 }
             }
-
-            resizeWindow();
-
             if (ImagesToDownload.Count > 0)
             {
                 Thread t = new Thread(new ParameterizedThreadStart(DownloadImages));
@@ -154,14 +157,36 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 if (File.Exists("UpdateFound.txt"))
                     File.Delete("UpdateFound.txt");
 
-                // Extract update.exe
-                File.WriteAllBytes("TcNo-Acc-Switcher-Updater.exe", Properties.Resources.Updater_exe);
-                File.WriteAllBytes("TcNo-Acc-Switcher-Updater.dll", Properties.Resources.Updater_dll);
-                File.WriteAllBytes("TcNo-Acc-Switcher-Updater.runtimeconfig.json", Properties.Resources.Updater_json);
+                // Extract embedded files
+                if (!Directory.Exists("Resources"))
+                    Directory.CreateDirectory("Resources");
+                File.WriteAllBytes(Path.Join("Resources", "7za.exe"), Properties.Resources._7za);
+                File.WriteAllText(Path.Join("Resources", "7za-license.txt"), Properties.Resources.License);
+                string  zPath = Path.Combine("Resources", "7za.exe"),
+                        updzip = "upd.7z",
+                        ePath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+#if X64
+                string arch = "x64";
+                File.WriteAllBytes(updzip, Properties.Resources.update64);
+#else
+                string arch = "x32";
+                File.WriteAllBytes(updzip, Properties.Resources.update32);
+#endif
 
+                ProcessStartInfo pro = new ProcessStartInfo();
+                pro.WindowStyle = ProcessWindowStyle.Hidden;
+                pro.FileName = zPath;
+                pro.Arguments = string.Format("x \"{0}\" -y -o\"{1}\"", updzip, ePath);
+                pro.UseShellExecute = false;
+                pro.RedirectStandardOutput = true;
+                pro.CreateNoWindow = true;
+                Process x = Process.Start(pro);
+                x.WaitForExit();
+
+                File.Delete("UpdateInformation.txt");
                 using (FileStream fs = File.Create("UpdateInformation.txt"))
                 {
-                    byte[] info = new UTF8Encoding(true).GetBytes(System.AppDomain.CurrentDomain.FriendlyName + ".exe|" + (IntPtr.Size == 8 ? "x64" : "x32") + "|" + version.ToString());
+                    byte[] info = new UTF8Encoding(true).GetBytes(System.AppDomain.CurrentDomain.FriendlyName + ".exe|" + arch + "|" + version.ToString());
                     fs.Write(info, 0, info.Length);
                 }
 
@@ -187,7 +212,10 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     byte[] info = new UTF8Encoding(true).GetBytes("An update was found last launch" + DateTime.Now.ToString());
                     fs.Write(info, 0, info.Length);
                 }
-                downloadUpdateDialog();
+                this.Dispatcher.Invoke(() =>
+                {
+                    downloadUpdateDialog();
+                });
             }
             else
             {
@@ -227,7 +255,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 this.Dispatcher.Invoke(() =>
                 {
                     MainViewmodel.SteamUsers.Add(su);
-                    this.DataContext = MainViewmodel;
                 });
             }
             this.Dispatcher.Invoke(() =>
@@ -235,18 +262,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 lblStatus.Content = "Status: Ready";
             });
             // ENABLE LISTBOX
-        }
-        void resizeWindow()
-        {
-            this.Width = persistentSettings.WindowSize.Width;
-            this.Height = persistentSettings.WindowSize.Height;
-
-            if (this.Width == 772 && MainViewmodel.SteamUsers.Count > 14) // Default window size, and scrollbar visible.
-            {
-                this.Width = 790;
-            }
-            this.MinHeight = persistentSettings.ShowSettings ? 420 : 380; // If settings showing, change minimum height
-            this.Height = (this.Height == 420 || this.Height == 380) && !persistentSettings.ShowSettings ? 380 : this.Height; // If default height, and settings shown, resize to smaller.
         }
         public void Window_SizeUpdated(object sender, RoutedEventArgs e)
         {
@@ -328,10 +343,14 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         }
         void updateFromSettings()
         {
+            fixMinHeight();
             MainViewmodel.StartAsAdmin = persistentSettings.StartAsAdmin;
             MainViewmodel.ShowSteamID = persistentSettings.ShowSteamID;
             MainViewmodel.ShowSettings = persistentSettings.ShowSettings;
             MainViewmodel.InputFolderDialogResponse = persistentSettings.SteamFolder;
+            this.Width = persistentSettings.WindowSize.Width;
+            this.Height = persistentSettings.WindowSize.Height;
+            chkShowSettings.IsChecked = persistentSettings.ShowSettings;
         }
         void saveOtherVarsToSettings()
         {
@@ -548,6 +567,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 StartAsAdmin = new bool();
                 ShowSteamID = new bool();
                 ShowSettings = new bool();
+                ProgramVersion = "";
             }
 
             public ObservableCollection<Steamuser> SteamUsers { get; private set; }
@@ -618,6 +638,18 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     _SteamNotFound = value;
                 }
             }
+            private string _ProgramVersion;
+            public string ProgramVersion
+            {
+                get
+                {
+                    return _ProgramVersion;
+                }
+                set
+                {
+                    _ProgramVersion = value;
+                }
+            }
 
             public event PropertyChangedEventHandler PropertyChanged;
 
@@ -632,11 +664,22 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
         private void LoginMouseDown(object sender, MouseButtonEventArgs e)
         {
+            LoginSelected();
+        }
+        private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            LoginSelected();
+        }
+        private void LoginSelected()
+        {
             saveSettings();
             LoginButtonAnimation("#0c0c0c", "#333333", 2000);
 
             lblStatus.Content = "Logging into: " + MainViewmodel.SelectedSteamUser.Name;
             btnLogin.IsEnabled = false;
+
+            MainViewmodel.SelectedSteamUser.lastLogin = DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss");
+            listAccounts.Items.Refresh();
 
             lblStatus.Content = "Status: Closing Steam";
             closeSteam();
@@ -716,17 +759,23 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         private void chkShowSettings_CheckedChanged(object sender, RoutedEventArgs e)
         {
             persistentSettings.ShowSettings = (bool)chkShowSettings.IsChecked;
+            fixMinHeight();
+            this.Height -= persistentSettings.ShowSettings ? 0 : 40;
+        }
+        private void fixMinHeight()
+        {
             this.MinHeight = persistentSettings.ShowSettings ? 420 : 380;
-            this.Height = (this.Height == 420 || this.Height == 380) && !persistentSettings.ShowSettings ? 380 : this.Height; // If default height, and settings shown, resize to smaller.
         }
         private void chkShowSettings_MouseEnter(object sender, MouseEventArgs e)
         {
             getChild.GetChildOfType<Border>(chkShowSettings).Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#444444")));
+            getChild.GetChildOfType<Border>(chkShowSettings).BorderBrush = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#0685d1")));
         }
 
         private void chkShowSettings_MouseLeave(object sender, MouseEventArgs e)
         {
             getChild.GetChildOfType<Border>(chkShowSettings).Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#333333")));
+            getChild.GetChildOfType<Border>(chkShowSettings).BorderBrush = new SolidColorBrush(Colors.Gray);
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -742,9 +791,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             {
                 persistentSettings = new UserSettings();
                 updateFromSettings();
-                resizeWindow();
                 setAndCheckSteamFolder(false);
-                this.DataContext = MainViewmodel;
                 chkShowSettings.IsChecked = persistentSettings.ShowSettings;
             }
         }
@@ -761,6 +808,26 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
         private void Window_Closed(object sender, EventArgs e)
         {
+        }
+
+        private void btnShowInfo_MouseEnter(object sender, MouseEventArgs e)
+        {
+            getChild.GetChildOfType<Border>(btnShowInfo).Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#444444")));
+            getChild.GetChildOfType<Border>(btnShowInfo).BorderBrush = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#0685d1")));
+        }
+
+        private void btnShowInfo_MouseLeave(object sender, MouseEventArgs e)
+        {
+            getChild.GetChildOfType<Border>(btnShowInfo).Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#333333")));
+            getChild.GetChildOfType<Border>(btnShowInfo).BorderBrush = new SolidColorBrush(Colors.Gray);
+        }
+
+        private void btnShowInfo_Click(object sender, RoutedEventArgs e)
+        {
+            InfoWindow infoWindow = new InfoWindow();
+            infoWindow.DataContext = MainViewmodel;
+            infoWindow.Owner = this;
+            infoWindow.ShowDialog();
         }
     }
 }

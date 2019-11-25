@@ -109,6 +109,14 @@
             </Setter>
         </Style>
 
+        <Style x:Key="windowResizeGrab" TargetType="Canvas">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <!-- User account items -->
         <Style x:Key="UserAccount" TargetType="ListBoxItem">
             <Setter Property="OverridesDefaultStyle" Value="True" />

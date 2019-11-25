@@ -63,6 +63,43 @@ namespace TCNO_Acc_Switcher_CSharp_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] _7za {
+            get {
+                object obj = ResourceManager.GetObject("_7za", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to       7-Zip Extra
+        ///      ~~~~~~~~~~~
+        ///      License for use and distribution
+        ///      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ///
+        ///      Copyright (C) 1999-2018 Igor Pavlov.
+        ///
+        ///      7-Zip Extra files are under the GNU LGPL license.
+        ///
+        ///      
+        ///      Notes: 
+        ///        You can use 7-Zip Extra on any computer, including a computer in a commercial 
+        ///        organization. You don&apos;t need to register or pay for 7-Zip.
+        ///
+        ///
+        ///      GNU LGPL information
+        ///      --------------------
+        ///
+        ///        This library is free software; you can [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string License {
+            get {
+                return ResourceManager.GetString("License", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] QuestionMark {
             get {
                 object obj = ResourceManager.GetObject("QuestionMark", resourceCulture);
@@ -93,9 +130,9 @@ namespace TCNO_Acc_Switcher_CSharp_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] Updater_dll {
+        internal static byte[] update32 {
             get {
-                object obj = ResourceManager.GetObject("Updater_dll", resourceCulture);
+                object obj = ResourceManager.GetObject("update32", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -103,19 +140,9 @@ namespace TCNO_Acc_Switcher_CSharp_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] Updater_exe {
+        internal static byte[] update64 {
             get {
-                object obj = ResourceManager.GetObject("Updater_exe", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] Updater_json {
-            get {
-                object obj = ResourceManager.GetObject("Updater_json", resourceCulture);
+                object obj = ResourceManager.GetObject("update64", resourceCulture);
                 return ((byte[])(obj));
             }
         }

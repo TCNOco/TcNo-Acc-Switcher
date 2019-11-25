@@ -5,7 +5,6 @@ using System.Net;
 using System.Text;
 using System.Threading;
 
-
 namespace TcNo_Acc_Switcher_Updater
 {
     class Program
@@ -16,13 +15,6 @@ namespace TcNo_Acc_Switcher_Updater
             // Get main process .exe name, as users might set it to their own
             if (!File.Exists("UpdateInformation.txt"))
                 Environment.Exit(1);
-
-            // Extract embedded files
-            if (!Directory.Exists("Resources"))
-                Directory.CreateDirectory("Resources");
-            File.WriteAllBytes(Path.Join("Resources", "7za.exe"), Properties.Resources._7za);
-            File.WriteAllText(Path.Join("Resources", "7za-license.txt"), Properties.Resources.License);
-
 
             // Wait until the program has finished closing
             string[] information = File.ReadAllText("UpdateInformation.txt").Split("|");
@@ -41,20 +33,17 @@ namespace TcNo_Acc_Switcher_Updater
                     Thread.Sleep(500);
                 }
             }
-            Thread.Sleep(1000);
-            if (File.Exists(MainExeName))
-                File.Delete(MainExeName);
-            Thread.Sleep(1000);
-
             Console.WriteLine("TcNo Account Switcher closed!");
             Console.WriteLine($"Old version [{Version}] was deleted");
             Console.WriteLine();
 
             using (WebClient wc = new WebClient())
             {
+
                 string[] updateInfo = wc.DownloadString("https://tcno.co/Projects/AccSwitcher/update.php").Split("|");
-                string  downloadLink = updateInfo[(Arch == "x64" ? 1 : 0)],
+                string downloadLink = updateInfo[(Arch == "x64" ? 0 : 1)],
                         downloadZip = Arch + ".zip";
+
                 Console.WriteLine("Downloading: " + downloadLink);
 
                 if (File.Exists(downloadZip))
@@ -86,7 +75,7 @@ namespace TcNo_Acc_Switcher_Updater
                 Console.WriteLine("");
                 Console.WriteLine("Starting TcNo Account Switcher");
 
-                string processName = "TcNo.Account.Switcher" + (Arch == "x64" ? ".x64.exe" : ".exe");
+                string processName = "TcNo Account Switcher.exe";
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.FileName = processName;
                 startInfo.CreateNoWindow = false;

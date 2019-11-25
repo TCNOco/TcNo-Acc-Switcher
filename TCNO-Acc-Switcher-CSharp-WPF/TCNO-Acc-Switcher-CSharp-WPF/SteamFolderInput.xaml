@@ -5,11 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TCNO_Acc_Switcher_CSharp_WPF"
         mc:Ignorable="d"
-        Title="TcNo Steam Account Switcher - Pick Steam Directory" Height="214" Width="850"
-        MinHeight="198" MaxHeight="198" MinWidth="450"
-        WindowStyle="None" AllowsTransparency="False"
+        Title="TcNo Steam Account Switcher - Pick Steam Directory" Height="254" Width="890"
+        MinHeight="238" MaxHeight="238" MinWidth="490"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterScreen"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        PreviewMouseMove="Window_PreviewMouseMove"
+        PreviewKeyDown="Window_PreviewKeyDown">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0"
             CornerRadius="2"
@@ -20,7 +22,7 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="b2v" />
     </Window.Resources>
-    <Grid Background="#28293A">
+    <Grid Background="#28293A" Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -28,6 +30,9 @@
             <RowDefinition Height="30px"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+        </Grid.Effect>
 
         <!-- Row 0: Header -->
         <Border MouseDown="dragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
@@ -76,6 +81,23 @@
                 <Button Name="btnSetDirectory" IsEnabled="False" Content="Select Steam Folder" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1" Margin="0 0 5 0" Foreground="White"  Style="{StaticResource LoginButton}" Click="btnSetDirectory_Click" Grid.Column="1" MouseEnter="btnSetDirectory_MouseEnter" MouseLeave="btnSetDirectory_MouseLeave"/>
             </DockPanel>
         </StackPanel>
-        <!--<ProgressBar Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5px 0 0 0" Width="100px" Height="10px" Background="#333333" Foreground="White"/>-->
+        <Canvas Name="resizeGrip" Grid.Row="1" Grid.Column="0" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Width="14" Height="14" VerticalAlignment="Bottom" HorizontalAlignment="Right" PreviewMouseLeftButtonDown="resizeGrip_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="resizeGrip_PreviewMouseLeftButtonUp" Style="{StaticResource windowResizeGrab}">
+            <Canvas.RenderTransform>
+                <TranslateTransform X="0" Y="0"/>
+            </Canvas.RenderTransform>
+            <Canvas.Resources/>
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="0" Canvas.Top="0" Width="14" Height="14" Name="rectBG" Fill="#00000000" StrokeMiterLimit="2" StrokeLineJoin="Round"/>
+
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="12" Canvas.Top="12" Width="2" Height="2" Name="rect2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round"/>
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="12" Canvas.Top="8" Width="2" Height="2" Name="rect4" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round"/>
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="12" Canvas.Top="4" Width="2" Height="2" Name="rect6" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round"/>
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="8" Canvas.Top="8" Width="2" Height="2" Name="rect8" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round"/>
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="8" Canvas.Top="12" Width="2" Height="2" Name="rect10" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round"/>
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="4" Canvas.Top="12" Width="2" Height="2" Name="rect12" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round"/>
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="8" Canvas.Top="4" Width="2" Height="2" Name="rect14" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round"/>
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="0" Canvas.Top="12" Width="2" Height="2" Name="rect16" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round"/>
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="12" Canvas.Top="0" Width="2" Height="2" Name="rect18" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round"/>
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="4" Canvas.Top="8" Width="2" Height="2" Name="rect20" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round"/>
+        </Canvas>
     </Grid>
 </Window>

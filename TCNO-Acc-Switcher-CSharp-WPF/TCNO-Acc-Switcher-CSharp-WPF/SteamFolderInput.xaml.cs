@@ -100,5 +100,46 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         {
             verifySteamPath();
         }
+
+
+        Point _startPosition;
+        bool _isResizing = false;
+        private void resizeGrip_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Mouse.Capture(resizeGrip))
+            {
+                _isResizing = true;
+                _startPosition = Mouse.GetPosition(this);
+            }
+        }
+
+        private void Window_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_isResizing)
+            {
+                Point currentPosition = Mouse.GetPosition(this);
+                double diffX = currentPosition.X - _startPosition.X;
+                double diffY = currentPosition.Y - _startPosition.Y;
+                this.Width = Math.Max(this.Width + diffX, this.MinWidth);
+                this.Height = Math.Max(this.Height + diffY, this.MinHeight);
+                _startPosition = currentPosition;
+            }
+        }
+
+        private void resizeGrip_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (_isResizing == true)
+            {
+                _isResizing = false;
+                Mouse.Capture(null);
+            }
+
+        }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                Close();
+        }
     }
 }

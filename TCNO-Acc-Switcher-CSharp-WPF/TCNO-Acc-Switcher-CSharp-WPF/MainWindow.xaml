@@ -9,7 +9,7 @@
         MinWidth="475"
         Closing="Window_Closing"
         Closed="Window_Closed"
-        WindowStyle="None" AllowsTransparency="False"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         SizeChanged="Window_SizeUpdated"
         WindowStartupLocation="CenterScreen">
     <!-- Min size: 2 Rows, 4 Columns-->
@@ -204,6 +204,7 @@
             </Setter>
         </Style>
     </Window.Resources>
+    <!--<Grid Background="#28293A" Margin="20">-->
     <Grid Background="#28293A">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -213,6 +214,9 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <!--<Grid.Effect>
+            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+        </Grid.Effect>-->
 
         <!-- Row 0: Header -->
         <Border MouseDown="dragWindow" Grid.Row="0" Background="#14151E" Height="30" Panel.ZIndex="3"/>
@@ -271,6 +275,11 @@
                     <WrapPanel IsItemsHost="True" />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <ListBoxItem Style="{StaticResource UserAccount}">
@@ -318,6 +327,15 @@
                                 </ControlTemplate>
                             </CheckBox.Template>
                         </CheckBox>
+                        <Button BorderBrush="Gray" BorderThickness="1.5" Background="#333333" HorizontalAlignment="Right" Grid.Row="2" Width="34" Height="34" Margin="0 0 5 0" Name="btnShowInfo" MouseEnter="btnShowInfo_MouseEnter" MouseLeave="btnShowInfo_MouseLeave" Click="btnShowInfo_Click">
+                            <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg4" Width="24" Height="24">
+                                <Canvas.RenderTransform>
+                                    <TranslateTransform X="0" Y="0"/>
+                                </Canvas.RenderTransform>
+                                <Canvas.Resources/>
+                                <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path2" Fill="#FFFFFFFF" StrokeThickness="0.625" Data="m 13.625547 17.9375 c 0 0.8625 -0.6975 1.5625 -1.561875 1.5625 -0.86125 0 -1.561875 -0.7 -1.561875 -1.5625 0 -0.8625 0.700625 -1.5625 1.561875 -1.5625 0.864375 0 1.561875 0.699375 1.561875 1.5625 z M 12.113047 4.5 c -2.5181251 0 -4.4125001 1.683125 -4.4125001 5 h 2.4718751 c 0 -1.44 0.56625 -2.618125 1.89 -2.618125 0.779375 0 1.60625 0.5175 1.6775 1.506875 0.07687 1.04125 -0.479375 1.569375 -1.1825 2.23875 -1.8275 1.7375 -1.76 2.530625 -1.76 4.4975 h 2.464375 c 0 -0.9075 -0.09812 -1.5675 1.14875 -2.911875 0.831875 -0.8975 1.86625 -2.01375 1.888125 -3.714375 C 16.328047 6.021875 14.579297 4.5 12.113047 4.5 Z"/>
+                            </Canvas>
+                        </Button>
                     </DockPanel>
                 </DockPanel>
             </Border>
@@ -328,7 +346,7 @@
                 <CheckBox Panel.ZIndex="6" Name="RunasAdmin" Margin="5px" VerticalAlignment="Center" DockPanel.Dock="left" Foreground="White" Content="Run Steam as Admin"  IsChecked="{Binding StartAsAdmin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="AdminCheckbox_CheckedChanged" Unchecked="AdminCheckbox_CheckedChanged"/>
                 <CheckBox Panel.ZIndex="6" Name="ShowSteamID" Margin="5px" VerticalAlignment="Center" DockPanel.Dock="left" Foreground="White" Content="Show SteamID" IsChecked="{Binding ShowSteamID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="ShowSteamID_CheckedChanged" Unchecked="ShowSteamID_CheckedChanged"/>
                 <Button Panel.ZIndex="6" Name="btnResetSettings" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Height="36" Margin="5 2" Foreground="White" Width="100" Style="{StaticResource pickSteamFolder}" Content="Reset settings" Click="btnResetSettings_Click"/>
-                <Button Panel.ZIndex="6" Name="btnResetImages" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Height="36" Margin="5 2" Foreground="White" Width="100" Style="{StaticResource pickSteamFolder}" Content="Reset images" Click="btnResetImages_Click"/>
+                <Button Panel.ZIndex="6" Name="btnResetImages" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Height="36" Margin="0 2" Foreground="White" Width="100" Style="{StaticResource pickSteamFolder}" Content="Reset images" Click="btnResetImages_Click"/>
             </DockPanel>
         </StackPanel>
     </Grid>
