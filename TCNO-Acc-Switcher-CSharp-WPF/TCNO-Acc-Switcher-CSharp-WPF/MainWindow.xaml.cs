@@ -55,16 +55,19 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 1;
+        int version = 3000;
         
 
         // Settings will load later. Just defined here.
         UserSettings persistentSettings = new UserSettings();
-        
+        SolidColorBrush vacRedBrush = (SolidColorBrush)(new BrushConverter().ConvertFromString("#FFFF293A"));
+
+
         public MainWindow()
         {
             /* TODO:
-             * Button to refresh all images? -- Counter in status saying image/images ie: "2/17 account images downloaded."
+             * Move settings to a new dialog instead of expanding. Fixes small flash between height adjustments, and it's getting a little cluttered.
+             * Add a settings checkbox to show VAC status for accounts or not, on by default.
              */
             if (File.Exists(Path.Combine("Resources", "7za.exe")))
             {
@@ -138,6 +141,10 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     MainViewmodel.SteamUsers.Add(su);
                 }
             }
+
+            if (File.Exists("Users.json"))
+                loadVacInformation();
+
             if (ImagesToDownload.Count > 0)
             {
                 Thread t = new Thread(new ParameterizedThreadStart(DownloadImages));
@@ -223,6 +230,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     File.Delete("UpdateFound.txt");
             }
         }
+        bool vacBanned = false;
         void DownloadImages(object oin)
         {
             List<Steamuser> ImagesToDownload = (List<Steamuser>)oin;
@@ -251,6 +259,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     File.WriteAllBytes(su.ImgURL, Properties.Resources.QuestionMark);
                 }
                 su.ImgURL = Path.GetFullPath(su.ImgURL);
+                su.vacStatus = vacBanned ? vacRedBrush : Brushes.Transparent;
 
                 this.Dispatcher.Invoke(() =>
                 {
@@ -259,6 +268,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             }
             this.Dispatcher.Invoke(() =>
             {
+                saveVacInformation();
                 lblStatus.Content = "Status: Ready";
             });
             // ENABLE LISTBOX
@@ -434,6 +444,9 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             try
             {
                 imageURL = profileXML.DocumentElement.SelectNodes("/profile/avatarFull")[0].InnerText;
+                bool isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")[0].InnerText == "1" ? true : false;
+                bool isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")[0].InnerText == "1" ? true : false;
+                vacBanned = isVAC || isLimited;
             }
             catch (NullReferenceException) // User has not set up their account, or does not have an image.
             {
@@ -538,6 +551,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             public string ImgURL { get; set; }
             public string lastLogin { get; set; }
             public string AccName { get; set; }
+            public System.Windows.Media.Brush vacStatus { get; set; }
         }
         public class UserSettings
         {
@@ -567,6 +581,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 StartAsAdmin = new bool();
                 ShowSteamID = new bool();
                 ShowSettings = new bool();
+                vacStatus = Brushes.Black;
                 ProgramVersion = "";
             }
 
@@ -648,6 +663,18 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 set
                 {
                     _ProgramVersion = value;
+                }
+            } 
+            private System.Windows.Media.Brush _vacStatus;
+            public System.Windows.Media.Brush vacStatus
+            {
+                get
+                {
+                    return _vacStatus;
+                }
+                set
+                {
+                    _vacStatus = value;
                 }
             }
 
@@ -829,5 +856,125 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             infoWindow.Owner = this;
             infoWindow.ShowDialog();
         }
+
+        private void btnCheckVac_Click(object sender, RoutedEventArgs e)
+        {
+            lblStatus.Content = "Status: Checking VAC status for each account.";
+
+            foreach (Steamuser su in MainViewmodel.SteamUsers)
+            {
+                su.vacStatus = Brushes.Transparent;
+            }
+            listAccounts.Items.Refresh();
+            
+
+            Thread t = new Thread(new ParameterizedThreadStart(checkVacForeach));
+            t.Start(MainViewmodel.SteamUsers);
+        }
+        void checkVacForeach(object oin)
+        {
+            ObservableCollection<Steamuser> SteamUsers = (ObservableCollection<Steamuser>)oin;
+            int currentCount = 0;
+            string totalCount = SteamUsers.Count().ToString();
+
+            foreach (Steamuser su in SteamUsers)
+            {
+                currentCount++;
+                this.Dispatcher.Invoke(() =>
+                {
+                    lblStatus.Content = $"Status: Checking VAC status: {currentCount.ToString()}/{totalCount}";
+                });
+                //su.vacStatus = GetVacStatus(su.SteamID).Result ? vacRedBrush : Brushes.Transparent; 
+                bool VacOrLimited = false;
+                XmlDocument profileXML = new XmlDocument();
+                profileXML.Load($"https://steamcommunity.com/profiles/{su.SteamID}?xml=1");
+                try
+                {
+                    bool isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")[0].InnerText == "1" ? true : false;
+                    bool isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")[0].InnerText == "1" ? true : false;
+                    VacOrLimited =  isVAC || isLimited;
+                }
+                catch (NullReferenceException) // User has not set up their account
+                {
+                    VacOrLimited = false;
+                }
+                this.Dispatcher.Invoke(() =>
+                {
+                    su.vacStatus = VacOrLimited ? vacRedBrush : Brushes.Transparent;
+                    UpdateListFromAsyncVacCheck(su);
+                });
+            }
+
+            this.Dispatcher.Invoke(() =>
+            {
+                lblStatus.Content = "Status: Ready";
+                saveVacInformation();
+            });
+        }
+        void UpdateListFromAsyncVacCheck(Steamuser UpdatedUser)
+        {
+            foreach (Steamuser su in MainViewmodel.SteamUsers)
+            {
+                if (su.SteamID == UpdatedUser.SteamID)
+                {
+                    su.vacStatus = UpdatedUser.vacStatus;
+                }
+            }
+            listAccounts.Items.Refresh();
+        }
+        void saveVacInformation()
+        {
+            if (!Double.IsNaN(this.Height))
+            {
+                // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.
+
+                Dictionary<string, bool> VacInformation = new Dictionary<string, bool>{ };
+                foreach (Steamuser su in MainViewmodel.SteamUsers)
+                {
+                    VacInformation.Add(su.SteamID, su.vacStatus == vacRedBrush ? true : false); // If red >> Vac or Limited
+                }
+
+                JsonSerializer serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
+
+                using (StreamWriter sw = new StreamWriter(@"Users.json"))
+                using (JsonWriter writer = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(writer, VacInformation);
+                }
+            }
+        }
+        void loadVacInformation()
+        {
+            JsonSerializer serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
+            using (StreamReader sr = new StreamReader(@"Users.json"))
+            {
+                Dictionary<string, bool> VacInformation = JsonConvert.DeserializeObject<Dictionary<string, bool>>(sr.ReadToEnd());
+                foreach (Steamuser su in MainViewmodel.SteamUsers)
+                {
+                    if (VacInformation.ContainsKey(su.SteamID))
+                        su.vacStatus = VacInformation[su.SteamID] ? vacRedBrush : Brushes.Transparent;
+                    else
+                        su.vacStatus = Brushes.Transparent;
+                }
+            }
+        }
+        //void DownloadImages(object oin)
+        //{
+        //    List<Steamuser> ImagesToDownload = (List<Steamuser>)oin;
+        //private static async Task<bool> GetVacStatus(string steamID)
+        //{
+        //    XmlDocument profileXML = new XmlDocument();
+        //    profileXML.Load($"https://steamcommunity.com/profiles/{steamID}?xml=1");
+        //    try
+        //    {
+        //        bool isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")[0].InnerText == "1" ? true : false;
+        //        bool isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")[0].InnerText == "1" ? true : false;
+        //        return isVAC || isLimited;
+        //    }
+        //    catch (NullReferenceException) // User has not set up their account
+        //    {
+        //        return false;
+        //    }
+        //}
     }
 }

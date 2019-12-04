@@ -284,7 +284,9 @@
                 <DataTemplate>
                     <ListBoxItem Style="{StaticResource UserAccount}">
                         <StackPanel IsHitTestVisible="False">
-                            <Image Source="{Binding ImgURL}" Stretch="UniformToFill" Width="65px" Height="65px" Margin="0 0 0 5px"/>
+                            <Border BorderThickness="2" BorderBrush="{Binding vacStatus}" Width="65px" Height="65px" Margin="0 0 0 5px">
+                                <Image Source="{Binding ImgURL}" Stretch="UniformToFill" />
+                            </Border>
                             <TextBlock Text="{Binding AccName}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
                             <TextBlock Text="{Binding Name}" TextAlignment="Center"></TextBlock>
                             <TextBlock Text="{Binding SteamID}" Visibility="{Binding IsChecked,ElementName=ShowSteamID,Converter={StaticResource b2v}}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
@@ -345,8 +347,9 @@
                 <Button Panel.ZIndex="6" Name="btnPickSteamFolder" VerticalAlignment="Center" DockPanel.Dock="left" Height="36" Margin="5 0" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Pick Steam folder" Click="btnPickSteamFolder_Click"/>
                 <CheckBox Panel.ZIndex="6" Name="RunasAdmin" Margin="5px" VerticalAlignment="Center" DockPanel.Dock="left" Foreground="White" Content="Run Steam as Admin"  IsChecked="{Binding StartAsAdmin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="AdminCheckbox_CheckedChanged" Unchecked="AdminCheckbox_CheckedChanged"/>
                 <CheckBox Panel.ZIndex="6" Name="ShowSteamID" Margin="5px" VerticalAlignment="Center" DockPanel.Dock="left" Foreground="White" Content="Show SteamID" IsChecked="{Binding ShowSteamID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="ShowSteamID_CheckedChanged" Unchecked="ShowSteamID_CheckedChanged"/>
-                <Button Panel.ZIndex="6" Name="btnResetSettings" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Height="36" Margin="5 2" Foreground="White" Width="100" Style="{StaticResource pickSteamFolder}" Content="Reset settings" Click="btnResetSettings_Click"/>
-                <Button Panel.ZIndex="6" Name="btnResetImages" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Height="36" Margin="0 2" Foreground="White" Width="100" Style="{StaticResource pickSteamFolder}" Content="Reset images" Click="btnResetImages_Click"/>
+                <Button Panel.ZIndex="6" Name="btnResetSettings" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Height="36" Margin="2.5 2 5 2" Foreground="White" Width="100" Style="{StaticResource pickSteamFolder}" Content="Reset settings" Click="btnResetSettings_Click"/>
+                <Button Panel.ZIndex="6" Name="btnResetImages" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Height="36" Margin="2.5 2" Foreground="White" Width="100" Style="{StaticResource pickSteamFolder}" Content="Reset images" Click="btnResetImages_Click"/>
+                <Button Panel.ZIndex="6" Name="btnCheckVac" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Height="36" Margin="2.5 2" Foreground="White" Width="100" Style="{StaticResource pickSteamFolder}" Content="VAC Scan" Click="btnCheckVac_Click"/>
             </DockPanel>
         </StackPanel>
     </Grid>
