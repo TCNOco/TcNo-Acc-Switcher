@@ -890,8 +890,8 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 profileXML.Load($"https://steamcommunity.com/profiles/{su.SteamID}?xml=1");
                 try
                 {
-                    bool isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")[0].InnerText == "1" ? true : false;
-                    bool isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")[0].InnerText == "1" ? true : false;
+                    bool isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")[0].InnerText == "1";
+                    bool isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")[0].InnerText == "1";
                     VacOrLimited =  isVAC || isLimited;
                 }
                 catch (NullReferenceException) // User has not set up their account
