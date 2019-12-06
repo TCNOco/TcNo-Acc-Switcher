@@ -55,7 +55,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 3000;
+        int version = 2003;
         
 
         // Settings will load later. Just defined here.
@@ -142,7 +142,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 }
             }
 
-            if (File.Exists("Users.json"))
+            if (File.Exists("Users.json") && persistentSettings.ShowVACStatus)
                 loadVacInformation();
 
             if (ImagesToDownload.Count > 0)
@@ -259,7 +259,8 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     File.WriteAllBytes(su.ImgURL, Properties.Resources.QuestionMark);
                 }
                 su.ImgURL = Path.GetFullPath(su.ImgURL);
-                su.vacStatus = vacBanned ? vacRedBrush : Brushes.Transparent;
+                if (persistentSettings.ShowVACStatus)
+                    su.vacStatus = vacBanned ? vacRedBrush : Brushes.Transparent;
 
                 this.Dispatcher.Invoke(() =>
                 {
@@ -353,18 +354,21 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         }
         void updateFromSettings()
         {
-            fixMinHeight();
             MainViewmodel.StartAsAdmin = persistentSettings.StartAsAdmin;
             MainViewmodel.ShowSteamID = persistentSettings.ShowSteamID;
-            MainViewmodel.ShowSettings = persistentSettings.ShowSettings;
+            MainViewmodel.ShowVACStatus = persistentSettings.ShowVACStatus;
             MainViewmodel.InputFolderDialogResponse = persistentSettings.SteamFolder;
             this.Width = persistentSettings.WindowSize.Width;
             this.Height = persistentSettings.WindowSize.Height;
-            chkShowSettings.IsChecked = persistentSettings.ShowSettings;
+            ShowSteamIDHidden.IsChecked = persistentSettings.ShowSteamID;
+            toggleVACStatus(persistentSettings.ShowVACStatus);
         }
         void saveOtherVarsToSettings()
         {
             persistentSettings.WindowSize = new Size(this.Width, this.Height);
+            persistentSettings.StartAsAdmin = MainViewmodel.StartAsAdmin;
+            persistentSettings.ShowVACStatus = MainViewmodel.ShowVACStatus;
+            persistentSettings.SteamFolder = MainViewmodel.InputFolderDialogResponse;
         }
         void saveSettings()
         {
@@ -555,10 +559,10 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         }
         public class UserSettings
         {
-            //UserSettings defaultSettings = new UserSettings { StartAsAdmin = false, SteamFolder = "C:\\Program Files (x86)\\Steam\\", ShowSteamID = false, ShowSettings = false, WindowSize = new Size(773, 420) };
+            //UserSettings defaultSettings = new UserSettings { StartAsAdmin = false, SteamFolder = "C:\\Program Files (x86)\\Steam\\", ShowSteamID = false, WindowSize = new Size(773, 420) };
             public bool StartAsAdmin { get; set; } = false;
             public bool ShowSteamID { get; set; } = false;
-            public bool ShowSettings { get; set; } = false;
+            public bool ShowVACStatus { get; set; } = true;
             public string SteamFolder { get; set; } = "C:\\Program Files (x86)\\Steam\\";
             public Size WindowSize { get; set; } = new Size(773, 420);
             public string LoginusersVDF()
@@ -571,7 +575,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             }
         }
 
-        public class MainWindowViewModel : INotifyPropertyChanged
+        public class MainWindowViewModel : INotifyPropertyChanged 
         {
             public MainWindowViewModel()
             {
@@ -580,7 +584,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 SteamNotFound = new bool();
                 StartAsAdmin = new bool();
                 ShowSteamID = new bool();
-                ShowSettings = new bool();
+                ShowVACStatus = new bool();
                 vacStatus = Brushes.Black;
                 ProgramVersion = "";
             }
@@ -617,16 +621,16 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     _ShowSteamID = value;
                 }
             }
-            private bool _ShowSettings;
-            public bool ShowSettings
+            private bool _ShowVACStatus;
+            public bool ShowVACStatus
             {
                 get
                 {
-                    return _ShowSettings;
+                    return _ShowVACStatus;
                 }
                 set
                 {
-                    _ShowSettings = value;
+                    _ShowVACStatus = value;
                 }
             }
             private bool _StartAsAdmin;
@@ -732,31 +736,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             btnLogin.Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);
         }
 
-        private void AdminCheckbox_CheckedChanged(object sender, RoutedEventArgs e)
-        {
-            persistentSettings.StartAsAdmin = (bool)RunasAdmin.IsChecked;
-        }
-
-        private void btnPickSteamFolder_Click(object sender, RoutedEventArgs e)
-        {
-            bool validSteamFound = (File.Exists(persistentSettings.SteamEXE()));
-            string OldLocation = persistentSettings.SteamFolder;
-
-            validSteamFound = setAndCheckSteamFolder(true);
-            if (!validSteamFound)
-            {
-                persistentSettings.SteamFolder = OldLocation;
-                MainViewmodel.InputFolderDialogResponse = OldLocation;
-                MessageBox.Show("Steam location not chosen. Resetting to old value: " + OldLocation);
-            }
-        }
-
-        private void ShowSteamID_CheckedChanged(object sender, RoutedEventArgs e)
-        {
-            persistentSettings.ShowSteamID = (bool)ShowSteamID.IsChecked;
-        }
-
-
         Color DarkGreen = (Color)(ColorConverter.ConvertFromString("#053305"));
         Color DefaultGray = (Color)(ColorConverter.ConvertFromString("#333333"));
         private void btnLogin_MouseEnter(object sender, MouseEventArgs e)
@@ -783,16 +762,12 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             this.DragMove();
         }
 
-        private void chkShowSettings_CheckedChanged(object sender, RoutedEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
-            persistentSettings.ShowSettings = (bool)chkShowSettings.IsChecked;
-            fixMinHeight();
-            this.Height -= persistentSettings.ShowSettings ? 0 : 40;
+            if (!Double.IsNaN(this.Height)) // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.
+                saveSettings();
         }
-        private void fixMinHeight()
-        {
-            this.MinHeight = persistentSettings.ShowSettings ? 420 : 380;
-        }
+
         private void chkShowSettings_MouseEnter(object sender, MouseEventArgs e)
         {
             getChild.GetChildOfType<Border>(chkShowSettings).Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#444444")));
@@ -804,37 +779,56 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             getChild.GetChildOfType<Border>(chkShowSettings).Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#333333")));
             getChild.GetChildOfType<Border>(chkShowSettings).BorderBrush = new SolidColorBrush(Colors.Gray);
         }
-
-        private void Window_Closing(object sender, CancelEventArgs e)
+        public void ResetSettings()
         {
-            if (!Double.IsNaN(this.Height)) // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.
-                saveSettings();
+            persistentSettings = new UserSettings();
+            updateFromSettings();
+            setAndCheckSteamFolder(false);
+            listAccounts.Items.Refresh();
+
         }
-
-        private void btnResetSettings_Click(object sender, RoutedEventArgs e)
+        public void PickSteamFolder()
         {
-            MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Are you sure?", "Reset settings", System.Windows.MessageBoxButton.YesNo);
-            if (messageBoxResult == MessageBoxResult.Yes)
+            bool validSteamFound = (File.Exists(persistentSettings.SteamEXE()));
+            string OldLocation = persistentSettings.SteamFolder;
+
+            validSteamFound = setAndCheckSteamFolder(true);
+            if (!validSteamFound)
             {
-                persistentSettings = new UserSettings();
-                updateFromSettings();
-                setAndCheckSteamFolder(false);
-                chkShowSettings.IsChecked = persistentSettings.ShowSettings;
+                persistentSettings.SteamFolder = OldLocation;
+                MainViewmodel.InputFolderDialogResponse = OldLocation;
+                MessageBox.Show("Steam location not chosen. Resetting to old value: " + OldLocation);
             }
         }
-        private void btnResetImages_Click(object sender, RoutedEventArgs e)
+        public void ResetImages()
         {
-            MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Are you sure?", "Reset settings", System.Windows.MessageBoxButton.YesNo);
-            if (messageBoxResult == MessageBoxResult.Yes)
-            {
                 File.Create("DeleteImagesOnStart");
                 MessageBox.Show("The program will now close. Once opened, new images will download.");
                 this.Close();
+        }
+        public bool VACCheckRunning = false;
+        public void CheckVac()
+        {
+            if (!VACCheckRunning)
+            {
+                VACCheckRunning = true;
+                lblStatus.Content = "Status: Checking VAC status for each account.";
+
+                foreach (Steamuser su in MainViewmodel.SteamUsers)
+                {
+                    su.vacStatus = Brushes.Transparent;
+                }
+                listAccounts.Items.Refresh();
+
+
+                Thread t = new Thread(new ParameterizedThreadStart(checkVacForeach));
+                t.Start(MainViewmodel.SteamUsers);
             }
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            Environment.Exit(1);
         }
 
         private void btnShowInfo_MouseEnter(object sender, MouseEventArgs e)
@@ -857,20 +851,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             infoWindow.ShowDialog();
         }
 
-        private void btnCheckVac_Click(object sender, RoutedEventArgs e)
-        {
-            lblStatus.Content = "Status: Checking VAC status for each account.";
-
-            foreach (Steamuser su in MainViewmodel.SteamUsers)
-            {
-                su.vacStatus = Brushes.Transparent;
-            }
-            listAccounts.Items.Refresh();
-            
-
-            Thread t = new Thread(new ParameterizedThreadStart(checkVacForeach));
-            t.Start(MainViewmodel.SteamUsers);
-        }
         void checkVacForeach(object oin)
         {
             ObservableCollection<Steamuser> SteamUsers = (ObservableCollection<Steamuser>)oin;
@@ -909,6 +889,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             {
                 lblStatus.Content = "Status: Ready";
                 saveVacInformation();
+                VACCheckRunning = false;
             });
         }
         void UpdateListFromAsyncVacCheck(Steamuser UpdatedUser)
@@ -957,6 +938,32 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                         su.vacStatus = Brushes.Transparent;
                 }
             }
+        }
+
+        private void chkShowSettings_Click(object sender, RoutedEventArgs e)
+        {
+            Settings settingsDialog = new Settings();
+            settingsDialog.ShareMainWindow(this);
+            settingsDialog.DataContext = MainViewmodel;
+            settingsDialog.Owner = this;
+            settingsDialog.ShowDialog();
+        }
+        public void toggleVACStatus(bool VACEnabled)
+        {
+            if (!VACEnabled)
+            {
+                foreach (Steamuser su in MainViewmodel.SteamUsers)
+                {
+                    su.vacStatus = Brushes.Transparent;
+                }
+            }
+            else if (File.Exists("Users.json"))
+            {
+                loadVacInformation();
+            }
+            listAccounts.Items.Refresh();
+            persistentSettings.ShowVACStatus = VACEnabled;
+            MainViewmodel.ShowVACStatus = VACEnabled;
         }
         //void DownloadImages(object oin)
         //{

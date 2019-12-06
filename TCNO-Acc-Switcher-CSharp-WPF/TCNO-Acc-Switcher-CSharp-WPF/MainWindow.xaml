@@ -23,8 +23,6 @@
             ResizeBorderThickness="3"/>
     </WindowChrome.WindowChrome>
     <Window.Resources>
-        <BitmapImage x:Key="SettingsIcon" UriSource="Resources/SettingsSmall.png" />
-        
         <BooleanToVisibilityConverter x:Key="b2v" />
         <SolidColorBrush x:Key="StandardBorderBrush" Color="#888" />
         <SolidColorBrush x:Key="StandardBackgroundBrush" Color="Black" />
@@ -289,7 +287,7 @@
                             </Border>
                             <TextBlock Text="{Binding AccName}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
                             <TextBlock Text="{Binding Name}" TextAlignment="Center"></TextBlock>
-                            <TextBlock Text="{Binding SteamID}" Visibility="{Binding IsChecked,ElementName=ShowSteamID,Converter={StaticResource b2v}}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
+                            <TextBlock Text="{Binding SteamID}" Visibility="{Binding IsChecked,ElementName=ShowSteamIDHidden,Converter={StaticResource b2v}}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
                             <TextBlock Text="{Binding lastLogin}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
                         </StackPanel>
                     </ListBoxItem>
@@ -314,21 +312,15 @@
                     <!--<ProgressBar Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5px 0 0 0" Width="100px" Height="10px" Background="#333333" Foreground="White"/>-->
                     <DockPanel Panel.ZIndex="6" HorizontalAlignment="Right" Margin="0 5">
                         <Button Name="btnLogin" IsEnabled="False" Content="Login" HorizontalAlignment="Right" Grid.Row="2" Margin="5 0 5 0" VerticalAlignment="Center" Foreground="White" Style="{StaticResource LoginButton}" PreviewMouseDown="LoginMouseDown" MouseEnter="btnLogin_MouseEnter" MouseLeave="btnLogin_MouseLeave"/>
-                        <CheckBox HorizontalAlignment="Right" Grid.Row="2" Width="34" Height="34" Margin="0 0 5 0" Name="chkShowSettings" IsChecked="{Binding ShowSettings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="chkShowSettings_CheckedChanged" Unchecked="chkShowSettings_CheckedChanged" MouseEnter="chkShowSettings_MouseEnter" MouseLeave="chkShowSettings_MouseLeave">
-                            <CheckBox.Template>
-                                <ControlTemplate TargetType="{x:Type CheckBox}">
-                                    <Border Name="SettingsButtonBorder" BorderBrush="Gray" BorderThickness="1.5" Background="#333333">
-                                        <Image x:Name="settingscheckmark" Source="{StaticResource SettingsIcon}" Width="15" Height="15"/>
-                                        <!--Source="{StaticResource SettingsIcon}"-->
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsChecked" Value="False">
-                                            <Setter TargetName="settingscheckmark" Property="Opacity" Value="0.5" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </CheckBox.Template>
-                        </CheckBox>
+                        <Button BorderBrush="Gray" BorderThickness="1.5" Background="#333333" HorizontalAlignment="Right" Grid.Row="2" Width="34" Height="34" Margin="0 0 5 0" Name="chkShowSettings"  MouseEnter="chkShowSettings_MouseEnter" MouseLeave="chkShowSettings_MouseLeave" Click="chkShowSettings_Click">
+                            <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svgsettings" Width="24" Height="24">
+                                <Canvas.RenderTransform>
+                                    <TranslateTransform X="0" Y="0"/>
+                                </Canvas.RenderTransform>
+                                <Canvas.Resources/>
+                                <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path4" Fill="#FFFFFFFF" StrokeThickness="0.75" Data="M 21 13.212 V 10.788 C 19.76175 10.34775 18.9795 10.224 18.58575 9.27375 V 9.273 C 18.1905 8.31975 18.66075 7.6725 19.221 6.49275 L 17.50725 4.779 C 16.3365 5.3355 15.6825 5.81025 14.727 5.41425 h -7.5e-4 C 13.7745 5.01975 13.65 4.23225 13.212 3 H 10.788 C 10.3515 4.22625 10.22625 5.019 9.27375 5.41425 H 9.273 C 8.31975 5.81025 7.674 5.34075 6.49275 4.779 L 4.779 6.49275 C 5.33775 7.66875 5.81025 8.31825 5.41425 9.273 5.019 10.22625 4.22625 10.3515 3 10.788 v 2.424 c 1.224 0.435 2.019 0.56175 2.41425 1.51425 0.3975 0.9615 -0.0855 1.6245 -0.63525 2.78025 l 1.71375 1.7145 c 1.1715 -0.55725 1.8255 -1.03125 2.78025 -0.63525 h 7.5e-4 C 10.22625 18.98025 10.35075 19.77 10.788 21 h 2.424 c 0.4365 -1.227 0.5625 -2.0175 1.52025 -2.4165 h 7.5e-4 c 0.9465 -0.393 1.59 0.07575 2.7735 0.63825 l 1.71375 -1.7145 C 18.66225 16.335 18.189 15.6825 18.58425 14.72775 18.9795 13.7745 19.77525 13.64775 21 13.212 Z M 12 15 c -1.65675 0 -3 -1.34325 -3 -3 0 -1.65675 1.34325 -3 3 -3 1.65675 0 3 1.34325 3 3 0 1.65675 -1.34325 3 -3 3 z"/>
+                            </Canvas>
+                        </Button>
                         <Button BorderBrush="Gray" BorderThickness="1.5" Background="#333333" HorizontalAlignment="Right" Grid.Row="2" Width="34" Height="34" Margin="0 0 5 0" Name="btnShowInfo" MouseEnter="btnShowInfo_MouseEnter" MouseLeave="btnShowInfo_MouseLeave" Click="btnShowInfo_Click">
                             <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg4" Width="24" Height="24">
                                 <Canvas.RenderTransform>
@@ -341,16 +333,8 @@
                     </DockPanel>
                 </DockPanel>
             </Border>
-
-            <DockPanel Panel.ZIndex="5" Grid.Row="2" Background="#222222" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Visibility="{Binding IsChecked,ElementName=chkShowSettings,Converter={StaticResource b2v}}">
-            <!--<DockPanel Panel.ZIndex="5" Grid.Row="2" Background="#222222" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">-->
-                <Button Panel.ZIndex="6" Name="btnPickSteamFolder" VerticalAlignment="Center" DockPanel.Dock="left" Height="36" Margin="5 0" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Pick Steam folder" Click="btnPickSteamFolder_Click"/>
-                <CheckBox Panel.ZIndex="6" Name="RunasAdmin" Margin="5px" VerticalAlignment="Center" DockPanel.Dock="left" Foreground="White" Content="Run Steam as Admin"  IsChecked="{Binding StartAsAdmin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="AdminCheckbox_CheckedChanged" Unchecked="AdminCheckbox_CheckedChanged"/>
-                <CheckBox Panel.ZIndex="6" Name="ShowSteamID" Margin="5px" VerticalAlignment="Center" DockPanel.Dock="left" Foreground="White" Content="Show SteamID" IsChecked="{Binding ShowSteamID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="ShowSteamID_CheckedChanged" Unchecked="ShowSteamID_CheckedChanged"/>
-                <Button Panel.ZIndex="6" Name="btnResetSettings" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Height="36" Margin="2.5 2 5 2" Foreground="White" Width="100" Style="{StaticResource pickSteamFolder}" Content="Reset settings" Click="btnResetSettings_Click"/>
-                <Button Panel.ZIndex="6" Name="btnResetImages" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Height="36" Margin="2.5 2" Foreground="White" Width="100" Style="{StaticResource pickSteamFolder}" Content="Reset images" Click="btnResetImages_Click"/>
-                <Button Panel.ZIndex="6" Name="btnCheckVac" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Height="36" Margin="2.5 2" Foreground="White" Width="100" Style="{StaticResource pickSteamFolder}" Content="VAC Scan" Click="btnCheckVac_Click"/>
-            </DockPanel>
         </StackPanel>
+        <CheckBox Panel.ZIndex="0" Name="ShowSteamIDHidden" IsChecked="{Binding ShowSteamID, Mode=OneWay}" Visibility="Hidden" Width="0" Height="0" />
+        <!-- Best way I can think of, can't get a normal binding to work. There is probably a better way... but I have no idea -->
     </Grid>
 </Window>

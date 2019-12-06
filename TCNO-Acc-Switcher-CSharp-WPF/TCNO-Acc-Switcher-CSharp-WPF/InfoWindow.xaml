@@ -84,5 +84,6 @@
             </DockPanel>
             <Label Name="lblVersion" HorizontalAlignment="Left" Foreground="White" Content="{Binding ProgramVersion, Mode=OneWay}"/>
         </StackPanel>
+        <Button Panel.ZIndex="6" Grid.Row="1" Name="btnCloseSettings" Margin="5px" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Close" Click="btnExit"/>
     </Grid>
 </Window>
