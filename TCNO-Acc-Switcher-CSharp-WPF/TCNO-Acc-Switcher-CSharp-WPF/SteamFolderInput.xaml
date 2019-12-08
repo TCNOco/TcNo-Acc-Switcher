@@ -36,7 +36,7 @@
 
         <!-- Row 0: Header -->
         <Border MouseDown="dragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
-        <Label IsHitTestVisible="False" Name="FolderInputHeaderInstruction" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="Error: Steam not found." Grid.Column="1"/>
+        <Label IsHitTestVisible="False" Name="FolderInputHeaderInstruction" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="Locate Steam" Grid.Column="1"/>
         <Canvas IsHitTestVisible="False" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5,10,0,10">
             <Canvas.RenderTransform>
                 <TranslateTransform X="0" Y="0"/>
