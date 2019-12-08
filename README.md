@@ -1,7 +1,5 @@
-
-
 <p align="center">
-    <a href="">
+    <a href="https://tcno.co/">
 	<img src="/docs/img/Banner.png"></a>
 </p>
 <p align="center">
@@ -15,7 +13,7 @@
     <img alt="Repo size" src="https://img.shields.io/github/repo-size/TcNobo/TcNo-Acc-Switcher.svg?label=Repo%20size&logo=GitHub&style=flat-square">
 </p>
                                                                                                                                          
-**A Super fast account switcher for Steam**
+**A Super fast account switcher for Steam** [Now with GUI]
 **Saves NO passwords** or any user information*. It works purely off changing a file and 2 registry keys.
 *Wastes no time closing, switching and restarting Steam.*
 
@@ -26,14 +24,23 @@
 
 - It ends any processes that start with "Steam", and then restarts Steam.exe once the switch is made. You don't need to do anything but use the arrow keys and press Enter.
 
-**To: Run Steam as Admin**: Create a file named *"admin.txt"* or *"admin"* in the same directory as the .exe
+**Options available**: Start Steam as Administrator, Change Steam install folder, Hide VAC Status for each account and Show Steam ID. 
 
-**To: Choose a custom Steam install folder**: Create a file named *"SteamLocation.txt"* in the same directory as the .exe. Inside put only a folder path, *ie:* `C:\Steam\`
+## 2.0 Update: GUI added. Auto update added.
+Users can still download updates via the GitHub Releases page, but they will be prompted when an update is detected, and the program will update when you choose. Nothing is forced.
 
-### Required libraries for building:
+*When the program checks for updates, it adds to a counter saying "Add 1 to the counter for my Province/State in country", purely for interest's sake. IP addresses and identifiable information are not collected.
+## Required runtimes (Download and install):
+Microsoft .NET Core 3.0 Runtime: [x86](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-3.0.1-windows-x86-installer) [x64](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-3.0.1-windows-x64-installer)
+Microsoft .NET Core 3.0 Desktop Runtime: [x86](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-desktop-3.0.1-windows-x86-installer) [x64](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-desktop-3.0.1-windows-x64-installer)
+**Running the program:** After downloading your .zip from the [GitHub Releases](https://github.com/TcNobo/TcNo-Acc-Switcher/releases) page, extract everything to a folder of your choice and run `TcNo Account Switcher.exe`
+
+### Screenshots:
+[imgur library](https://imgur.com/prhdlks)
+<p><a href="https://imgur.com/a/iIlPtrW">
+  <img alt="Main window screenshot" src="https://i.imgur.com/prhdlks.png" height=420">
+  <img alt="Other windows (Combined screenshot)" src="https://i.imgur.com/YXFUAIA.png" width=773">
+</a></p>
+
+### Required libraries for building (Developers only):
 - Curl (release uses 7.67.0) - [Download](https://curl.haxx.se/download.html), Build guide: https://youtu.be/q_mXVZ6VJs4
-
-### PLEASE NOTE: A GUI version is in the works.
-Users will have an update notification as usual, and it will be pushed here via GitHub Releases.
-
-*The program checks for updates each run. If found, it notifies user on next run. When the program checks for updates, it adds to a counter saying "Add 1 to the counter for my Province/State in country", purely for interest's sake. IP addresses and identifyable information is not collected.
