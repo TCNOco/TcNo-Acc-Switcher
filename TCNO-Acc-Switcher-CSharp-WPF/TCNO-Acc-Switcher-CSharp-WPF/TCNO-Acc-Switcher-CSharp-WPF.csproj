@@ -1,0 +1,118 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <RootNamespace>TCNO_Acc_Switcher_CSharp_WPF</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Copyright>Copyright (c) TechNobo (Wesley Pyburn) 2019</Copyright>
+    <Version>2.0.0.0</Version>
+    <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
+    <PackageIconUrl>https://github.com/TcNobo/TcNo-Acc-Switcher/raw/master/docs/img/TcNoAccSw-Icon-1000x1000.png</PackageIconUrl>
+    <PackageId>TCNO-Acc-Switcher</PackageId>
+    <Authors>TechNobo (Wesley Pyburn)</Authors>
+    <Company>TechNobo (Wesley Pyburn)</Company>
+    <Product>TCNO-Acc-Switcher</Product>
+    <Description>Fast Steam Account Switcher. https://github.com/TcNobo/TcNo-Acc-Switcher</Description>
+    <NeutralLanguage></NeutralLanguage>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <AssemblyName>TcNo Account Switcher</AssemblyName>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>TRACE;X64</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>TRACE;X64</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\7za.exe" />
+    <None Remove="Resources\License.txt" />
+    <None Remove="Resources\QuestionMark.jpg" />
+    <None Remove="Resources\Settings.png" />
+    <None Remove="Resources\SettingsSmall.png" />
+    <None Remove="Resources\update32.7z" />
+    <None Remove="Resources\update64.7z" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\7za.exe" />
+    <Resource Include="Resources\License.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\QuestionMark.jpg" />
+    <Resource Include="Resources\Settings.png" />
+    <Resource Include="Resources\SettingsSmall.png" />
+    <Resource Include="Resources\update32.7z" />
+    <Resource Include="Resources\update64.7z" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Requirements.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

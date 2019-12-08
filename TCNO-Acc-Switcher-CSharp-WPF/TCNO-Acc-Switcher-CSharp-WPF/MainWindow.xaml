@@ -1,0 +1,340 @@
+﻿<Window x:Class="TCNO_Acc_Switcher_CSharp_WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TCNO_Acc_Switcher_CSharp_WPF"
+        mc:Ignorable="d"
+        Title="TcNo Steam Account Switcher" Height="420" Width="773"
+        MinWidth="475"
+        Closing="Window_Closing"
+        Closed="Window_Closed"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        SizeChanged="Window_SizeUpdated"
+        WindowStartupLocation="CenterScreen">
+    <!-- Min size: 2 Rows, 4 Columns-->
+    <!--When scrollbar invisible: MinWidth="772"-->
+    <!--When scrollbar visible:   MinWidth="789"-->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0"
+            CornerRadius="2"
+            GlassFrameThickness="0"
+            NonClientFrameEdges="None"
+            ResizeBorderThickness="3"/>
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="b2v" />
+        <SolidColorBrush x:Key="StandardBorderBrush" Color="#888" />
+        <SolidColorBrush x:Key="StandardBackgroundBrush" Color="Black" />
+        <SolidColorBrush x:Key="HoverBorderBrush" Color="#DDD" />
+        <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="Gray" />
+        <SolidColorBrush x:Key="SelectedForegroundBrush" Color="White" />
+        <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
+        <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
+        <SolidColorBrush x:Key="NormalBrush" Color="#888" />
+        <SolidColorBrush x:Key="NormalBorderBrush" Color="#888" />
+        <SolidColorBrush x:Key="HorizontalNormalBrush" Color="#515164" />
+        <SolidColorBrush x:Key="HorizontalNormalBorderBrush" Color="#888" />
+        
+        <LinearGradientBrush x:Key="ListBoxBackgroundBrush" StartPoint="0,0" EndPoint="1,0.001">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="White" Offset="0.0" />
+                    <GradientStop Color="White" Offset="0.6" />
+                    <GradientStop Color="#DDDDDD" Offset="1.2"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="StandardBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#FFF" Offset="0.0"/>
+                    <GradientStop Color="#CCC" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="PressedBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#BBB" Offset="0.0"/>
+                    <GradientStop Color="#EEE" Offset="0.1"/>
+                    <GradientStop Color="#EEE" Offset="0.9"/>
+                    <GradientStop Color="#FFF" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <Style x:Key="ScrollBarLineButton" TargetType="{x:Type RepeatButton}">
+            <Setter Property="Visibility" Value="Hidden"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Name="Border" Margin="1" CornerRadius="2" Background="{StaticResource NormalBrush}" BorderBrush="{StaticResource NormalBorderBrush}" BorderThickness="1">
+                            <Path HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{StaticResource GlyphBrush}" Data="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource PressedBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">
+            <Setter Property="Visibility" Value="Hidden"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Background="Black" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ScrollBarThumb" TargetType="{x:Type Thumb}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border CornerRadius="4" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0"  Width="8" Margin="8,0,-2,0"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition MaxHeight="0"/>
+                    <RowDefinition Height="0.00001*"/>
+                    <RowDefinition MaxHeight="0"/>
+                </Grid.RowDefinitions>
+                <Border Grid.RowSpan="3" CornerRadius="2" Background="Transparent" Width="0" />
+                <RepeatButton Grid.Row="0" Style="{StaticResource ScrollBarLineButton}" Height="18" Command="ScrollBar.LineUpCommand" Content="M 0 4 L 8 4 L 4 0 Z" />
+                <Track Name="PART_Track" Grid.Row="1" IsDirectionReversed="true">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource ScrollBarPageButton}" Command="ScrollBar.PageUpCommand" />
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource ScrollBarThumb}" Margin="1,0,1,0" Background="{StaticResource HorizontalNormalBrush}" BorderBrush="{StaticResource HorizontalNormalBorderBrush}" />
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource ScrollBarPageButton}" Command="ScrollBar.PageDownCommand" />
+                    </Track.IncreaseRepeatButton>
+                </Track>
+                <RepeatButton Grid.Row="2" Style="{StaticResource ScrollBarLineButton}" Height="18" Command="ScrollBar.LineDownCommand" Content="M 0 0 L 4 4 L 8 0 Z"/>
+            </Grid>
+        </ControlTemplate>
+        <ControlTemplate x:Key="HorizontalScrollBar" TargetType="{x:Type ScrollBar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MaxWidth="18"/>
+                    <ColumnDefinition Width="0.00001*"/>
+                    <ColumnDefinition MaxWidth="18"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.ColumnSpan="3" CornerRadius="2" Background="#F0F0F0"/>
+                <RepeatButton Grid.Column="0"  Style="{StaticResource ScrollBarLineButton}" Width="18" Command="ScrollBar.LineLeftCommand" Content="M 4 0 L 4 8 L 0 4 Z" />
+                <Track Name="PART_Track" Grid.Column="1" IsDirectionReversed="False">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource ScrollBarPageButton}" Command="ScrollBar.PageLeftCommand" />
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource ScrollBarThumb}" Margin="0,1,0,1" Background="{StaticResource NormalBrush}" BorderBrush="{StaticResource NormalBorderBrush}" />
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource ScrollBarPageButton}" Command="ScrollBar.PageRightCommand" />
+                    </Track.IncreaseRepeatButton>
+                </Track>
+                <RepeatButton Grid.Column="3" Style="{StaticResource ScrollBarLineButton}" Width="18" Command="ScrollBar.LineRightCommand" Content="M 0 0 L 4 4 L 0 8 Z"/>
+            </Grid>
+        </ControlTemplate>
+        <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="Height" Value="18" />
+                    <Setter Property="Template" Value="{StaticResource HorizontalScrollBar}" />
+                </Trigger>
+                <Trigger Property="Orientation" Value="Vertical">
+                    <Setter Property="Width" Value="18"/>
+                    <Setter Property="Height" Value="Auto" />
+                    <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="FavsScrollViewer" TargetType="{x:Type ScrollViewer}">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <ScrollContentPresenter Grid.Column="1"/>
+                            <ScrollBar Name="PART_VerticalScrollBar" Value="{TemplateBinding VerticalOffset}" Maximum="{TemplateBinding ScrollableHeight}" ViewportSize="{TemplateBinding ViewportHeight}" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
+                            <ScrollBar Name="PART_HorizontalScrollBar" Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Value="{TemplateBinding HorizontalOffset}" Maximum="{TemplateBinding ScrollableWidth}" ViewportSize="{TemplateBinding ViewportWidth}" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <!--<Grid Background="#28293A" Margin="20">-->
+    <Grid Background="#28293A">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30px"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <!--<Grid.Effect>
+            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+        </Grid.Effect>-->
+
+        <!-- Row 0: Header -->
+        <Border MouseDown="dragWindow" Grid.Row="0" Background="#14151E" Height="30" Panel.ZIndex="3"/>
+        <Label Panel.ZIndex="3" IsHitTestVisible="False" Name="HeaderInstruction" Grid.Row="0" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="1. Select an account"/>
+        <Canvas Panel.ZIndex="3" IsHitTestVisible="False" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5 0 0 0">
+            <Canvas.RenderTransform>
+                <TranslateTransform X="0" Y="0"/>
+            </Canvas.RenderTransform>
+            <Canvas.Resources/>
+            <Canvas Name="g3859">
+                <Canvas Name="g3857">
+                    <Canvas Name="g3849">
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="O1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 0.889l6.25 0l0 8.27l-3.503 0l-2.747 -2.874l0 -3.28l2.115 0l0 4.086l2.019 0l0 -4.086l-4.134 0l0 -2.116"/>
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="O2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 7.487l1.598 1.672l-1.598 0l0 -1.672Z"/>
+                    </Canvas>
+                    <Canvas Name="g3853">
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="N1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M15.053 0l0 9.135l2.117 0l0 -3.844l4.471 4.709l0 -9.135l-2.117 0l0 3.846l-4.471 -4.711Z"/>
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="N2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M17.016 0.865l1.932 2.02l0 -2.02l-1.932 0Z"/>
+                    </Canvas>
+                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="C" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M7.697 0.841l0 8.318l6.25 0l0 -2.067l-4.134 0l0 -4.088l4.134 0l0 -2.163l-6.25 0"/>
+                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="T" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M0.341 0.841l0 2.117l1.78 0l0 6.201l2.115 0l0 -6.201l2.702 0l0 -2.117l-6.597 0Z"/>
+                </Canvas>
+            </Canvas>
+        </Canvas>
+        <Button Panel.ZIndex="3" Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="btnMinimize"></Button>
+        <Button Panel.ZIndex="3" Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="btnExit"></Button>
+
+        <!-- Row 1: Main content -->
+        <Border Grid.Row="1" Height="10" VerticalAlignment="Top" Margin="0 -10 0 0" Panel.ZIndex="2" Background="#14151E">
+            <Border.Effect>
+                <DropShadowEffect Color="Black"
+                      ShadowDepth="2"
+                      Direction="270"
+                      Opacity="1"
+                     BlurRadius="4"/>
+            </Border.Effect>
+        </Border>
+        <ListBox Margin="0 3 0 3" Panel.ZIndex="1" BorderThickness="0" SelectionChanged="SteamUserSelect" Name="listAccounts" IsSynchronizedWithCurrentItem="True" Grid.Row="1" Background="#28293A" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Top" ItemsSource="{Binding Path=SteamUsers}" SelectedItem="{Binding Path=SelectedSteamUser, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ListBox.Resources>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <!--<EventSetter Event="ListBoxItem.Selected" Handler="SteamUserSelect" HandledEventsToo="True"/>-->
+                    <!--<EventSetter Event="ListBoxItem.Unselected" Handler="SteamUserUnselect" HandledEventsToo="True"/>-->
+                </Style>
+                <!--<Style TargetType="ScrollBar">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ScrollBar">
+                                <TextBlock>I am a ScrollBar!</TextBlock>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>-->
+            </ListBox.Resources>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <ListBoxItem Style="{StaticResource UserAccount}">
+                        <StackPanel IsHitTestVisible="False">
+                            <Border BorderThickness="2" BorderBrush="{Binding vacStatus}" Width="65px" Height="65px" Margin="0 0 0 5px">
+                                <Image Source="{Binding ImgURL}" Stretch="UniformToFill" />
+                            </Border>
+                            <TextBlock Text="{Binding AccName}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
+                            <TextBlock Text="{Binding Name}" TextAlignment="Center"></TextBlock>
+                            <TextBlock Text="{Binding SteamID}" Visibility="{Binding IsChecked,ElementName=ShowSteamIDHidden,Converter={StaticResource b2v}}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
+                            <TextBlock Text="{Binding lastLogin}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
+                        </StackPanel>
+                    </ListBoxItem>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- Row 2: Footer -->
+        <Border Name="BottomDropshadow" Grid.Row="2" Height="10" VerticalAlignment="Top" Panel.ZIndex="2" Background="#222222">
+            <Border.Effect>
+                <DropShadowEffect Color="Black"
+                      ShadowDepth="2"
+                      Direction="90"
+                      Opacity="0.8"
+                     BlurRadius="4"/>
+            </Border.Effect>
+        </Border>
+        <StackPanel Panel.ZIndex="5" Height="Auto" Grid.Row="2">
+            <Border BorderBrush="#222222" BorderThickness="0" Grid.Row="2" Background="#222222" VerticalAlignment="Top">
+                <DockPanel HorizontalAlignment="Stretch">
+                    <Label Panel.ZIndex="6" Name="lblStatus" Grid.Row="2" HorizontalAlignment="Left" Margin="5px" VerticalAlignment="Center" Foreground="White" Content="Status: Starting"/>
+                    <!--<ProgressBar Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5px 0 0 0" Width="100px" Height="10px" Background="#333333" Foreground="White"/>-->
+                    <DockPanel Panel.ZIndex="6" HorizontalAlignment="Right" Margin="0 5">
+                        <Button Name="btnLogin" IsEnabled="False" Content="Login" HorizontalAlignment="Right" Grid.Row="2" Margin="5 0 5 0" VerticalAlignment="Center" Foreground="White" Style="{StaticResource LoginButton}" PreviewMouseDown="LoginMouseDown" MouseEnter="btnLogin_MouseEnter" MouseLeave="btnLogin_MouseLeave"/>
+                        <Button BorderBrush="Gray" BorderThickness="1.5" Background="#333333" HorizontalAlignment="Right" Grid.Row="2" Width="34" Height="34" Margin="0 0 5 0" Name="chkShowSettings"  MouseEnter="chkShowSettings_MouseEnter" MouseLeave="chkShowSettings_MouseLeave" Click="chkShowSettings_Click">
+                            <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svgsettings" Width="24" Height="24">
+                                <Canvas.RenderTransform>
+                                    <TranslateTransform X="0" Y="0"/>
+                                </Canvas.RenderTransform>
+                                <Canvas.Resources/>
+                                <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path4" Fill="#FFFFFFFF" StrokeThickness="0.75" Data="M 21 13.212 V 10.788 C 19.76175 10.34775 18.9795 10.224 18.58575 9.27375 V 9.273 C 18.1905 8.31975 18.66075 7.6725 19.221 6.49275 L 17.50725 4.779 C 16.3365 5.3355 15.6825 5.81025 14.727 5.41425 h -7.5e-4 C 13.7745 5.01975 13.65 4.23225 13.212 3 H 10.788 C 10.3515 4.22625 10.22625 5.019 9.27375 5.41425 H 9.273 C 8.31975 5.81025 7.674 5.34075 6.49275 4.779 L 4.779 6.49275 C 5.33775 7.66875 5.81025 8.31825 5.41425 9.273 5.019 10.22625 4.22625 10.3515 3 10.788 v 2.424 c 1.224 0.435 2.019 0.56175 2.41425 1.51425 0.3975 0.9615 -0.0855 1.6245 -0.63525 2.78025 l 1.71375 1.7145 c 1.1715 -0.55725 1.8255 -1.03125 2.78025 -0.63525 h 7.5e-4 C 10.22625 18.98025 10.35075 19.77 10.788 21 h 2.424 c 0.4365 -1.227 0.5625 -2.0175 1.52025 -2.4165 h 7.5e-4 c 0.9465 -0.393 1.59 0.07575 2.7735 0.63825 l 1.71375 -1.7145 C 18.66225 16.335 18.189 15.6825 18.58425 14.72775 18.9795 13.7745 19.77525 13.64775 21 13.212 Z M 12 15 c -1.65675 0 -3 -1.34325 -3 -3 0 -1.65675 1.34325 -3 3 -3 1.65675 0 3 1.34325 3 3 0 1.65675 -1.34325 3 -3 3 z"/>
+                            </Canvas>
+                        </Button>
+                        <Button BorderBrush="Gray" BorderThickness="1.5" Background="#333333" HorizontalAlignment="Right" Grid.Row="2" Width="34" Height="34" Margin="0 0 5 0" Name="btnShowInfo" MouseEnter="btnShowInfo_MouseEnter" MouseLeave="btnShowInfo_MouseLeave" Click="btnShowInfo_Click">
+                            <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg4" Width="24" Height="24">
+                                <Canvas.RenderTransform>
+                                    <TranslateTransform X="0" Y="0"/>
+                                </Canvas.RenderTransform>
+                                <Canvas.Resources/>
+                                <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path2" Fill="#FFFFFFFF" StrokeThickness="0.625" Data="m 13.625547 17.9375 c 0 0.8625 -0.6975 1.5625 -1.561875 1.5625 -0.86125 0 -1.561875 -0.7 -1.561875 -1.5625 0 -0.8625 0.700625 -1.5625 1.561875 -1.5625 0.864375 0 1.561875 0.699375 1.561875 1.5625 z M 12.113047 4.5 c -2.5181251 0 -4.4125001 1.683125 -4.4125001 5 h 2.4718751 c 0 -1.44 0.56625 -2.618125 1.89 -2.618125 0.779375 0 1.60625 0.5175 1.6775 1.506875 0.07687 1.04125 -0.479375 1.569375 -1.1825 2.23875 -1.8275 1.7375 -1.76 2.530625 -1.76 4.4975 h 2.464375 c 0 -0.9075 -0.09812 -1.5675 1.14875 -2.911875 0.831875 -0.8975 1.86625 -2.01375 1.888125 -3.714375 C 16.328047 6.021875 14.579297 4.5 12.113047 4.5 Z"/>
+                            </Canvas>
+                        </Button>
+                    </DockPanel>
+                </DockPanel>
+            </Border>
+        </StackPanel>
+        <CheckBox Panel.ZIndex="0" Name="ShowSteamIDHidden" IsChecked="{Binding ShowSteamID, Mode=OneWay}" Visibility="Hidden" Width="0" Height="0" />
+        <!-- Best way I can think of, can't get a normal binding to work. There is probably a better way... but I have no idea -->
+    </Grid>
+</Window>
