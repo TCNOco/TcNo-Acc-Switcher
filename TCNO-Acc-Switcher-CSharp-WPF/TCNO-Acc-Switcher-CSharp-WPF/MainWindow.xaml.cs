@@ -66,8 +66,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         public MainWindow()
         {
             /* TODO:
-             * Move settings to a new dialog instead of expanding. Fixes small flash between height adjustments, and it's getting a little cluttered.
-             * Add a settings checkbox to show VAC status for accounts or not, on by default.
              */
             if (File.Exists(Path.Combine("Resources", "7za.exe")))
             {
