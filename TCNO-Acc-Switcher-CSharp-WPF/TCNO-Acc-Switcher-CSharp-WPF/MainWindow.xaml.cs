@@ -62,32 +62,13 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         UserSettings persistentSettings = new UserSettings();
         SolidColorBrush vacRedBrush = (SolidColorBrush)(new BrushConverter().ConvertFromString("#FFFF293A"));
 
-
         public MainWindow()
         {
             /* TODO:
              */
-            if (File.Exists(Path.Combine("Resources", "7za.exe")))
+            if (Directory.Exists("Resources"))
             {
-                new DirectoryInfo("Resources").Delete(true);
-                File.Delete("UpdateInformation.txt");
-                File.Delete("x64.zip");
-                File.Delete("x32.zip");
-                bool deleted = false;
-                while (!deleted)
-                {
-                    try
-                    {
-                        File.Delete("TcNo-Acc-Switcher-Updater.exe");
-                        File.Delete("TcNo-Acc-Switcher-Updater.dll");
-                        File.Delete("TcNo-Acc-Switcher-Updater.runtimeconfig.json");
-                        deleted = true;
-                    }
-                    catch (Exception)
-                    {
-                        Thread.Sleep(500);
-                    }
-                }
+                updateClean();
                 // Because closing a messagebox before the window shows causes it to crash for some reason...
                 MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Open GitHub to see what's new?", "Finished updating.", System.Windows.MessageBoxButton.YesNo);
                 if (messageBoxResult == MessageBoxResult.Yes)
@@ -965,6 +946,31 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             listAccounts.Items.Refresh();
             persistentSettings.ShowVACStatus = VACEnabled;
             MainViewmodel.ShowVACStatus = VACEnabled;
+        }
+        private void updateClean()
+        {
+            new DirectoryInfo("Resources").Delete(true);
+            string[] delFileNames = { "x64.zip", "x32.zip", "upd.7z", "UpdateInformation.txt" };
+            foreach (string f in delFileNames)
+            {
+                if (File.Exists(f))
+                    File.Delete(f);
+            }
+            bool deleted = false;
+            delFileNames = new string[] { "TcNo-Acc-Switcher-Updater.exe", "TcNo-Acc-Switcher-Updater.dll", "TcNo-Acc-Switcher-Updater.runtimeconfig.json" };
+            while (!deleted)
+            {
+                try
+                {
+                    foreach (string f in delFileNames)
+                        File.Delete(f);
+                    deleted = true;
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(500);
+                }
+            }
         }
         //void DownloadImages(object oin)
         //{
