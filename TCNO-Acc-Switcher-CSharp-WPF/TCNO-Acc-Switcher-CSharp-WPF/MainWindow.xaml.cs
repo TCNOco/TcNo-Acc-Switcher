@@ -55,7 +55,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 2003;
+        int version = 2004;
         
 
         // Settings will load later. Just defined here.
@@ -288,12 +288,15 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 loadSettings();
             bool validSteamFound = (File.Exists(persistentSettings.SteamEXE()));
             //bool validSteamFound = false; // Testing
-            validSteamFound = setAndCheckSteamFolder(false);
             if (!validSteamFound)
             {
-                MessageBox.Show("You are required to pick a Steam directory for this program to work. Please check you have it installed and run this program again");
-                Environment.Exit(1);
-                // this.Close() won't work, because the main window hasn't appeared just yet. Still needs to be populated with Steam Accounts.
+                validSteamFound = setAndCheckSteamFolder(false);
+                if (!validSteamFound)
+                {
+                    MessageBox.Show("You are required to pick a Steam directory for this program to work. Please check you have it installed and run this program again");
+                    Environment.Exit(1);
+                    // this.Close() won't work, because the main window hasn't appeared just yet. Still needs to be populated with Steam Accounts.
+                }
             }
         }
         bool setAndCheckSteamFolder(bool manual)
