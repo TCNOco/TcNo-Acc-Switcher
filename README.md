@@ -17,6 +17,8 @@
 **Saves NO passwords** or any user information*. It works purely off changing a file and 2 registry keys.
 *Wastes no time closing, switching and restarting Steam.*
 
+### Visit the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch
+
 ### How does it work?
 1. It lists your accounts based on the names in "C:\Program Files (x86)\Steam\config\loginusers.vdf"
 2. After picking one, it edits that file so that the one you chose is the latest, and makes sure Remember Password is set to true.
