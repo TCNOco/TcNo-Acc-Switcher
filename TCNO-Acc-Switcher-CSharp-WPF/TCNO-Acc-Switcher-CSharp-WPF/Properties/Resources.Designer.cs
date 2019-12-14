@@ -110,26 +110,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] SettingsIcon {
-            get {
-                object obj = ResourceManager.GetObject("SettingsIcon", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] SettingsSmall {
-            get {
-                object obj = ResourceManager.GetObject("SettingsSmall", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
         internal static byte[] update32 {
             get {
                 object obj = ResourceManager.GetObject("update32", resourceCulture);

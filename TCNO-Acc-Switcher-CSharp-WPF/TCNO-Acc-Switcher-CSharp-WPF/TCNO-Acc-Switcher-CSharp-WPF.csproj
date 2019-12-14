@@ -71,8 +71,6 @@
     <None Remove="Resources\7za.exe" />
     <None Remove="Resources\License.txt" />
     <None Remove="Resources\QuestionMark.jpg" />
-    <None Remove="Resources\Settings.png" />
-    <None Remove="Resources\SettingsSmall.png" />
     <None Remove="Resources\update32.7z" />
     <None Remove="Resources\update64.7z" />
   </ItemGroup>
@@ -88,8 +86,6 @@
 
   <ItemGroup>
     <Resource Include="Resources\QuestionMark.jpg" />
-    <Resource Include="Resources\Settings.png" />
-    <Resource Include="Resources\SettingsSmall.png" />
     <Resource Include="Resources\update32.7z" />
     <Resource Include="Resources\update64.7z" />
   </ItemGroup>
