@@ -47,3 +47,5 @@ Users can still download updates via the GitHub Releases page, but they will be 
 
 ### Required libraries for building (Developers only):
 - Curl (release uses 7.67.0) - [Download](https://curl.haxx.se/download.html), Build guide: https://youtu.be/q_mXVZ6VJs4
+
+Downloaded from a different source? Verify hashes [HERE](https://tcno.co/Projects/AccSwitcher/Hashes.html)
