@@ -135,7 +135,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             }
 
         }
-
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)

@@ -55,7 +55,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 2005;
+        int version = 2100;
         
 
         // Settings will load later. Just defined here.
@@ -65,6 +65,10 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         public MainWindow()
         {
             /* TODO:
+                - Open Steam folder button
+                - Clear forgotten button (Clears/Deletes the folder)
+                - Restore forgotten button (Shows past backup times user can restore to)
+                [Line 738 and on, DeleteSelected()]
              */
             if (Directory.Exists("Resources"))
             {
@@ -340,6 +344,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             MainViewmodel.ShowSteamID = persistentSettings.ShowSteamID;
             MainViewmodel.ShowVACStatus = persistentSettings.ShowVACStatus;
             MainViewmodel.InputFolderDialogResponse = persistentSettings.SteamFolder;
+            MainViewmodel.ForgetAccountEnabled = persistentSettings.ForgetAccountEnabled;
             this.Width = persistentSettings.WindowSize.Width;
             this.Height = persistentSettings.WindowSize.Height;
             ShowSteamIDHidden.IsChecked = persistentSettings.ShowSteamID;
@@ -351,6 +356,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             persistentSettings.StartAsAdmin = MainViewmodel.StartAsAdmin;
             persistentSettings.ShowVACStatus = MainViewmodel.ShowVACStatus;
             persistentSettings.SteamFolder = MainViewmodel.InputFolderDialogResponse;
+            persistentSettings.ForgetAccountEnabled = MainViewmodel.ForgetAccountEnabled;
         }
         void saveSettings()
         {
@@ -445,10 +451,16 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             if (!listAccounts.IsLoaded) return;
             var item = (ListBox)sender;
             var su = (Steamuser)item.SelectedItem;
-            lblStatus.Content = "Selected " + su.Name;
-            HeaderInstruction.Content = "2. Press Login";
-            btnLogin.IsEnabled = true;
-            btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? DarkGreen : DefaultGray);
+            try
+            {
+                lblStatus.Content = "Selected " + su.Name;
+                HeaderInstruction.Content = "2. Press Login";
+                btnLogin.IsEnabled = true;
+                btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? DarkGreen : DefaultGray);
+            }
+            catch { 
+                // Non-existent user account is selected, or none are available.
+            }
         }
         //private void SteamUserUnselect(object sender, RoutedEventArgs e)
         //{
@@ -545,6 +557,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             public bool StartAsAdmin { get; set; } = false;
             public bool ShowSteamID { get; set; } = false;
             public bool ShowVACStatus { get; set; } = true;
+            public bool ForgetAccountEnabled { get; set; } = false;
             public string SteamFolder { get; set; } = "C:\\Program Files (x86)\\Steam\\";
             public Size WindowSize { get; set; } = new Size(773, 420);
             public string LoginusersVDF()
@@ -569,6 +582,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 ShowVACStatus = new bool();
                 vacStatus = Brushes.Black;
                 ProgramVersion = "";
+                ForgetAccountEnabled = new bool();
             }
 
             public ObservableCollection<Steamuser> SteamUsers { get; private set; }
@@ -639,6 +653,18 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     _SteamNotFound = value;
                 }
             }
+            private bool _ForgetAccountEnabled;
+            public bool ForgetAccountEnabled
+            {
+                get
+                {
+                    return _ForgetAccountEnabled;
+                }
+                set
+                {
+                    _ForgetAccountEnabled = value;
+                }
+            }
             private string _ProgramVersion;
             public string ProgramVersion
             {
@@ -705,7 +731,116 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             lblStatus.Content = "Status: Started Steam";
             btnLogin.IsEnabled = true;
         }
+        private void ShowForgetRememberDialog()
+        {
+            ForgetAccountCheck ForgetAccountCheckDialog = new ForgetAccountCheck();
+            ForgetAccountCheckDialog.ShareMainWindow(this);
+            ForgetAccountCheckDialog.DataContext = MainViewmodel;
+            ForgetAccountCheckDialog.Owner = this;
+            ForgetAccountCheckDialog.ShowDialog();
+        }
+        private void DeleteSelected()
+        {
+            btnLogin.IsEnabled = false;
 
+            // Check if user understands what "forget" does.
+            if (!MainViewmodel.ForgetAccountEnabled)
+            {
+                ShowForgetRememberDialog();
+                return;
+            }
+
+
+
+
+
+                // Backup loginusers.vdf
+                string backupFileName = $"loginusers-{ DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss.fff")}.vdf",
+                 backupdir = Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\");
+            if (!Directory.Exists(backupdir))
+                Directory.CreateDirectory(backupdir);
+            try
+            {
+                File.Copy(persistentSettings.LoginusersVDF(), Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\{backupFileName}"));
+            }
+            catch (IOException e) when (e.HResult == -2147024816) // File already exists -- User deleting > 1 account per second
+            {
+                File.Copy(persistentSettings.LoginusersVDF(), Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\{backupFileName}"));
+            }
+
+            // ---------------------------------------------
+            // ----- Remove user from "loginusers.vdf" -----
+            // ---------------------------------------------
+            Byte[] info;
+            using (FileStream fs = File.Open(persistentSettings.LoginusersVDF(), FileMode.Truncate, FileAccess.Write, FileShare.None))
+            {
+                lblStatus.Content = $"Status: Removing {MainViewmodel.SelectedSteamUser.Name} from loginusers.vdf";
+                string lineNoQuot;
+                bool userIDMatch = false,
+                     completedRemove = false;
+                string outline = "", SelectedSteamID = MainViewmodel.SelectedSteamUser.SteamID;
+                List<string> newfLoginUsersLines = new List<string>();
+                foreach (string curline in fLoginUsersLines)
+                {
+                    outline = curline;
+
+                    lineNoQuot = curline;
+                    lineNoQuot = lineNoQuot.Replace("\t", "").Replace("\"", "");
+                    if (!completedRemove)
+                    {
+                        if (!userIDMatch)
+                        {
+                            if (lineNoQuot.All(char.IsDigit)) // Check if line is JUST digits -> SteamID
+                            {
+                                userIDMatch = false;
+                                if (lineNoQuot == SelectedSteamID)
+                                {
+                                    // Most recent ID matches! Start ignoring lines until "}" found.
+                                    userIDMatch = true;
+                                    continue; // Skip line output
+                                }
+                            }
+                        }
+                        else // Currently going through a user
+                        {
+                            if (lineNoQuot.Contains("}")) 
+                                completedRemove = true; // Found the end of the user to remove
+                            continue; // Skip line output
+                        }
+                    }
+                    newfLoginUsersLines.Add(curline);
+                    info = new UTF8Encoding(true).GetBytes(outline + "\n");
+                    fs.Write(info, 0, info.Length);
+                }
+                fLoginUsersLines = newfLoginUsersLines;
+            }
+
+            // Remove from list in memory
+            MainViewmodel.SteamUsers.Remove(MainViewmodel.SelectedSteamUser);
+            listAccounts.Items.Refresh();
+        }
+        private void AccountItem_Forget(object sender, RoutedEventArgs e)
+        {
+            DeleteSelected();
+        }
+
+        private void listAccounts_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (listAccounts.SelectedIndex != -1 && e.Key == Key.Delete)
+                DeleteSelected();
+        }
+        private void AccountItem_CopySteamID(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Clipboard.SetText(MainViewmodel.SelectedSteamUser.SteamID);
+        }
+        private void AccountItem_CopyUsername(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Clipboard.SetText(MainViewmodel.SelectedSteamUser.AccName);
+        }
+        private void AccountItem_CopyFriendName(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Clipboard.SetText(MainViewmodel.SelectedSteamUser.Name);
+        }
         private void LoginButtonAnimation(string colFrom, string colTo, int len)
         {
             ColorAnimation animation;
@@ -972,6 +1107,8 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 }
             }
         }
+
+
         //void DownloadImages(object oin)
         //{
         //    List<Steamuser> ImagesToDownload = (List<Steamuser>)oin;

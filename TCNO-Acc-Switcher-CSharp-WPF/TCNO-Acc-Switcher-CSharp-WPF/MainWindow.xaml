@@ -252,7 +252,7 @@
                      BlurRadius="4"/>
             </Border.Effect>
         </Border>
-        <ListBox Margin="0 3 0 3" Panel.ZIndex="1" BorderThickness="0" SelectionChanged="SteamUserSelect" Name="listAccounts" IsSynchronizedWithCurrentItem="True" Grid.Row="1" Background="#28293A" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Top" ItemsSource="{Binding Path=SteamUsers}" SelectedItem="{Binding Path=SelectedSteamUser, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <ListBox Margin="0 3 0 3" Panel.ZIndex="1" BorderThickness="0" SelectionChanged="SteamUserSelect" Name="listAccounts" IsSynchronizedWithCurrentItem="True" Grid.Row="1" Background="#28293A" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Top" ItemsSource="{Binding Path=SteamUsers}" SelectedItem="{Binding Path=SelectedSteamUser, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewKeyDown="listAccounts_PreviewKeyDown">
             <ListBox.Resources>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <!--<EventSetter Event="ListBoxItem.Selected" Handler="SteamUserSelect" HandledEventsToo="True"/>-->
@@ -267,6 +267,18 @@
                         </Setter.Value>
                     </Setter>
                 </Style>-->
+                <Style x:Key="ForgetStyle" TargetType="MenuItem">
+                    <EventSetter Event="Click" Handler="AccountItem_Forget"/>
+                </Style>
+                <Style x:Key="CopyIDStyle" TargetType="MenuItem">
+                    <EventSetter Event="Click" Handler="AccountItem_CopySteamID"/>
+                </Style>
+                <Style x:Key="CopyLoginUsernameStyle" TargetType="MenuItem">
+                    <EventSetter Event="Click" Handler="AccountItem_CopyUsername"/>
+                </Style>
+                <Style x:Key="CopyFriendNameStyle" TargetType="MenuItem">
+                    <EventSetter Event="Click" Handler="AccountItem_CopyFriendName"/>
+                </Style>
             </ListBox.Resources>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -276,6 +288,21 @@
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Header="Forget" Style="{StaticResource ForgetStyle}"/>
+                                <MenuItem Header="Copy Login Username" Style="{StaticResource CopyLoginUsernameStyle}"/>
+                                <MenuItem Header="Copy SteamID" Style="{StaticResource CopyIDStyle}"/>
+                                <MenuItem Header="Copy Username" Style="{StaticResource CopyFriendNameStyle}"/>
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedItems.Count, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" Value="0">
+                            <Setter Property="ContextMenu" Value="{x:Null}" />
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
