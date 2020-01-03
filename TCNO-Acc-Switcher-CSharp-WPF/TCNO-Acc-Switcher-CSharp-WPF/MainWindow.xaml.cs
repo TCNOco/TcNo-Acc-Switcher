@@ -55,7 +55,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 2100;
+        int version = 2101;
         
 
         // Settings will load later. Just defined here.
@@ -65,10 +65,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         public MainWindow()
         {
             /* TODO:
-                - Open Steam folder button
-                - Clear forgotten button (Clears/Deletes the folder)
-                - Restore forgotten button (Shows past backup times user can restore to)
-                [Line 738 and on, DeleteSelected()]
              */
             if (Directory.Exists("Resources"))
             {
@@ -105,10 +101,17 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
             // Create image folder
             Directory.CreateDirectory("images");
-
+            RefreshSteamAccounts();
+        }
+        public void RefreshSteamAccounts()
+        {
             // Collect Steam Account basic info from Steam file
             lblStatus.Content = "Status: Collecting Steam Accounts";
             getSteamAccounts();
+
+            // Clear incase it's a refresh
+            MainViewmodel.SteamUsers.Clear();
+            listAccounts.Items.Refresh();
 
             // Check if profile images exist, otherwise queue
             List<Steamuser> ImagesToDownload = new List<Steamuser>();
@@ -384,6 +387,10 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         {
             string line, lineNoQuot;
             string username = "", steamID = "", rememberAccount = "", personaName = "", timestamp = "";
+
+            // Clear incase it's a refresh
+            fLoginUsersLines.Clear();
+            userAccounts.Clear();
 
             System.IO.StreamReader file = new System.IO.StreamReader(persistentSettings.LoginusersVDF());
             while ((line = file.ReadLine()) != null)
@@ -739,6 +746,32 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             ForgetAccountCheckDialog.Owner = this;
             ForgetAccountCheckDialog.ShowDialog();
         }
+         public string GetForgottenBackupPath() { return Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\"); }
+         public string GetPersistentFolder() { return Path.Combine(persistentSettings.SteamFolder, "config\\"); }
+         public string GetSteamDirectory() { return persistentSettings.SteamFolder; }
+
+        public void RestoreForgotten()
+        {
+
+        }
+        public void ClearForgottenBackups()
+        {
+            if (MessageBox.Show("Are you sure you want to clear backups of forgotten accounts?", "Clear backups", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                string BackupPath = GetForgottenBackupPath();
+                try
+                {
+                    if (Directory.Exists(BackupPath))
+                        Directory.Delete(BackupPath, true);
+                } catch (Exception ex){
+                    MessageBox.Show("Could not recursively delete directory! Error: " + ex.ToString(), "Error deleting files");
+                }
+            }
+        }
+        public void OpenSteamFolder()
+        {
+            Process.Start(persistentSettings.SteamFolder);
+        }
         private void DeleteSelected()
         {
             btnLogin.IsEnabled = false;
@@ -749,10 +782,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 ShowForgetRememberDialog();
                 return;
             }
-
-
-
-
 
                 // Backup loginusers.vdf
                 string backupFileName = $"loginusers-{ DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss.fff")}.vdf",

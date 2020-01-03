@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -65,7 +66,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         }
         private void btnResetImages_Click(object sender, RoutedEventArgs e)
         {
-            if (!mw.VACCheckRunning)
+           if (!mw.VACCheckRunning)
             {
                 MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Are you sure?", "Reset settings", System.Windows.MessageBoxButton.YesNo);
                 if (messageBoxResult == MessageBoxResult.Yes)
@@ -87,6 +88,31 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         private void ShowVACStatus_CheckChanged(object sender, RoutedEventArgs e)
         {
             mw.toggleVACStatus((bool)ShowVACStatus.IsChecked);
+        }
+
+        private void btnRestoreForgotten_Click(object sender, RoutedEventArgs e)
+        {
+            if (Directory.Exists(mw.GetForgottenBackupPath()))
+            {
+                RestoreForgotten restoreForgottenDialog = new RestoreForgotten();
+                restoreForgottenDialog.ShareMainWindow(mw);
+                restoreForgottenDialog.Owner = this;
+                restoreForgottenDialog.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show($"No backups available. ({mw.GetForgottenBackupPath()})");
+            }
+        }
+
+        private void btnClearForgottenBackups_Click(object sender, RoutedEventArgs e)
+        {
+            mw.ClearForgottenBackups();
+        }
+
+        private void btnOpenSteamFolder_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("explorer.exe", mw.GetSteamDirectory() );
         }
     }
 }

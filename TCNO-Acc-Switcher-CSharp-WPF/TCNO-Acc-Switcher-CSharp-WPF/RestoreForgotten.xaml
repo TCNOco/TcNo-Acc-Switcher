@@ -1,0 +1,73 @@
+﻿<Window x:Class="TCNO_Acc_Switcher_CSharp_WPF.RestoreForgotten"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TCNO_Acc_Switcher_CSharp_WPF"
+        mc:Ignorable="d"
+        Title="RestoreForgotten" Height="450" Width="800"
+        MinHeight="360" MinWidth="600"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        WindowStartupLocation="CenterOwner"
+        PreviewKeyDown="Window_PreviewKeyDown">
+    <!--MinHeight="198" MaxHeight="198" MinWidth="450"-->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0"
+            CornerRadius="2"
+            GlassFrameThickness="0"
+            NonClientFrameEdges="None"
+            ResizeBorderThickness="3"/>
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="b2v" />
+    </Window.Resources>
+    <Grid Background="#28293A" Margin="20" Name="gridContainer">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30px"/>
+            <RowDefinition Height="40px"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+        </Grid.Effect>
+
+        <!-- Row 0: Header -->
+        <Border MouseDown="dragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
+        <Label IsHitTestVisible="False" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="Forget Account?" Grid.Column="1"/>
+        <Canvas IsHitTestVisible="False" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5,10,0,10">
+            <Canvas.RenderTransform>
+                <TranslateTransform X="0" Y="0"/>
+            </Canvas.RenderTransform>
+            <Canvas.Resources/>
+            <Canvas Name="g3859">
+                <Canvas Name="g3857">
+                    <Canvas Name="g3849">
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="O1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 0.889l6.25 0l0 8.27l-3.503 0l-2.747 -2.874l0 -3.28l2.115 0l0 4.086l2.019 0l0 -4.086l-4.134 0l0 -2.116"/>
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="O2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 7.487l1.598 1.672l-1.598 0l0 -1.672Z"/>
+                    </Canvas>
+                    <Canvas Name="g3853">
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="N1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M15.053 0l0 9.135l2.117 0l0 -3.844l4.471 4.709l0 -9.135l-2.117 0l0 3.846l-4.471 -4.711Z"/>
+                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="N2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M17.016 0.865l1.932 2.02l0 -2.02l-1.932 0Z"/>
+                    </Canvas>
+                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="C" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M7.697 0.841l0 8.318l6.25 0l0 -2.067l-4.134 0l0 -4.088l4.134 0l0 -2.163l-6.25 0"/>
+                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="T" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M0.341 0.841l0 2.117l1.78 0l0 6.201l2.115 0l0 -6.201l2.702 0l0 -2.117l-6.597 0Z"/>
+                </Canvas>
+            </Canvas>
+        </Canvas>
+        <Button Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="btnMinimize"></Button>
+        <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="btnExit"></Button>
+
+
+        <TextBlock Panel.ZIndex="6" Grid.Row="1" Name="txtForgetText" Foreground="White" TextWrapping="Wrap" Margin="10px">
+            <Run Text="List of available backups:" FontSize="15"/>
+        </TextBlock>
+        <ListView Panel.ZIndex="6" Grid.Row="2" x:Name="filenamesList" Margin="10px 0 10px 45px" Background="#222222" Foreground="White" />
+        <StackPanel Panel.ZIndex="6" Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Button Name="btnRestore" Margin="5px" Width="150" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Restore selected" Click="btnRestore_Click"/>
+            <Button Name="btnCloseMessage" Margin="5px 0 10px 0 " Width="150" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Cancel" Click="btnExit"/>
+        </StackPanel>
+    </Grid>
+</Window>
