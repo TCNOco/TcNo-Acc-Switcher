@@ -1185,7 +1185,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         }
         private void singleFileUpdateClean()
         {
-            string[] delFileNames = new string[] { "Newtonsoft.Json.dll", "TcNo Account Switcher.deps.json", "TcNo Account Switcher.dll", "TcNo Account Switcher.runtimeconfig.json" };
+            string[] delFileNames = new string[] { "Newtonsoft.Json.dll", "TcNo Account Switcher.deps.json", "TcNo Account Switcher.dll", "TcNo Account Switcher.runtimeconfig.json", "TcNo-Acc-Switcher-Updater.dll", "TcNo-Acc-Switcher-Updater.runtimeconfig.json" };
             try
             {
                 foreach (string f in delFileNames)
