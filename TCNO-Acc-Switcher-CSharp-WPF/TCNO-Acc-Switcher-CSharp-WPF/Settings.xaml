@@ -69,30 +69,31 @@
                     <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="22" />
+                    <RowDefinition Height="26" />
                     <RowDefinition Height="46" />
                     <RowDefinition Height="46" />
-                    <RowDefinition Height="22" />
+                    <RowDefinition Height="26" />
                     <RowDefinition Height="46" />
                     <RowDefinition Height="46" />
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal" Panel.ZIndex="6" Grid.Row="0" Grid.Column="0">
-                    <Separator Width="20px" Height="20px"/>
-                    <Label Name="lblGeneralSettings" Margin="0" Foreground="White" Content="General" FontSize="10" FontWeight="Bold"/>
-                    <Separator Width="100px" Height="20px"/>
+                    <Separator Width="20px" Height="24px"/>
+                    <Label Name="lblGeneralSettings" Margin="0" Foreground="White" Content="General" FontSize="11" FontWeight="Bold"/>
+                    <Separator Width="100px" Height="24px"/>
                 </StackPanel>
                 <Button Panel.ZIndex="6" Grid.Row="1" Grid.Column="0" Name="btnPickSteamFolder" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Pick Steam folder" Click="btnPickSteamFolder_Click"/>
                 <Button Panel.ZIndex="6" Grid.Row="1" Grid.Column="1" Name="btnCheckVac" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Check account VAC Status" Click="btnCheckVac_Click"/>
                 <Button Panel.ZIndex="6" Grid.Row="2" Grid.Column="0"  Name="btnResetSettings" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Reset settings" Click="btnResetSettings_Click"/>
                 <Button Panel.ZIndex="6" Grid.Row="2" Grid.Column="1" Name="btnResetImages" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Reset images" Click="btnResetImages_Click"/>
                 <StackPanel Orientation="Horizontal" Panel.ZIndex="6" Grid.Row="3" Grid.Column="0">
-                    <Separator Width="20px" Height="20px"/>
-                    <Label Name="lblSteamTools" Margin="0" Foreground="White" Content="Steam Tools" FontSize="10" FontWeight="Bold"/>
-                    <Separator Width="100px" Height="20px"/>
+                    <Separator Width="20px" Height="24px"/>
+                    <Label Name="lblSteamTools" Margin="0" Foreground="White" Content="Steam Tools" FontSize="11" FontWeight="Bold"/>
+                    <Separator Width="100px" Height="24px"/>
                 </StackPanel>
                 <Button Panel.ZIndex="6" Grid.Row="4" Grid.Column="0" Name="btnRestoreForgotten" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Restore forgotten account" Click="btnRestoreForgotten_Click"/>
                 <Button Panel.ZIndex="6" Grid.Row="4" Grid.Column="1" Name="btnClearForgottenBackups" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Clear forgotten backups" Click="btnClearForgottenBackups_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="1" Name="btnOpenSteamFolder" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Open Steam Folder" Click="btnOpenSteamFolder_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="0" Name="btnOpenSteamFolder" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Open Steam Folder" Click="btnOpenSteamFolder_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="1" Name="btnAdvancedCleaning" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Advanced cleaning" Click="btnAdvancedCleaning_Click"/>
             </Grid>
         </StackPanel>
         <Button Panel.ZIndex="6" Grid.Row="1" Name="btnCloseSettings" Margin="5px" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Close" Click="btnExit"/>

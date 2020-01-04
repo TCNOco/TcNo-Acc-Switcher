@@ -114,5 +114,13 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         {
             Process.Start("explorer.exe", mw.GetSteamDirectory() );
         }
+
+        private void btnAdvancedCleaning_Click(object sender, RoutedEventArgs e)
+        {
+            ClearLogins clearLoginsDialog = new ClearLogins();
+            clearLoginsDialog.ShareMainWindow(mw);
+            clearLoginsDialog.Owner = this;
+            clearLoginsDialog.ShowDialog();
+        }
     }
 }
