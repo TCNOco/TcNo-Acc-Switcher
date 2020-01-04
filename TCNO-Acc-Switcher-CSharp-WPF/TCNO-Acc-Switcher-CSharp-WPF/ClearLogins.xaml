@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TCNO_Acc_Switcher_CSharp_WPF"
         mc:Ignorable="d"
-        Title="TcNo Steam Account Switcher - Cleaning" Height="520" Width="829"
+        Title="TcNo Steam Account Switcher - Cleaning" Height="573" Width="829"
         MinHeight="329" MinWidth="502"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterOwner"
@@ -67,7 +67,7 @@
                 <LineBreak/>
                 <Run Text="You will need to login to them using Steam to get them back."/>
             </TextBlock>
-            <CheckBox Panel.ZIndex="6" Name="chkUnderstand" Margin="5px" VerticalAlignment="Center"  Foreground="White" Content="I understand what these buttons do." />
+            <CheckBox Panel.ZIndex="6" Name="chkUnderstand" Margin="0 10px 0 15px" VerticalAlignment="Center"  Foreground="White" Content="I understand what these buttons do." />
             <Grid IsEnabled="{Binding ElementName=chkUnderstand, Path=IsChecked}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -75,6 +75,7 @@
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="46" />
                     <RowDefinition Height="26" />
                     <RowDefinition Height="46" />
                     <RowDefinition Height="26" />
@@ -83,36 +84,53 @@
                     <RowDefinition Height="46" />
                     <RowDefinition Height="46" />
                 </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal" Panel.ZIndex="6" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+
+                <Rectangle Canvas.ZIndex="10" Grid.Row="0" Grid.Column="0" Fill="Black" Opacity="0.5" Grid.RowSpan="10" Grid.ColumnSpan="10" IsHitTestVisible="False">
+                    <Rectangle.Style>
+                        <Style TargetType="{x:Type Rectangle}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=chkUnderstand, Path=IsChecked}" Value="True">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
+
+                <Button Panel.ZIndex="6" Grid.Row="0" Grid.Column="0" Name="btnKillSteam" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Kill Steam processes" Click="btnKillSteam_Click"/>
+                
+                <StackPanel Orientation="Horizontal" Panel.ZIndex="6" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
                     <Separator Width="20px" Height="24px"/>
                     <Label Name="lblGeneralSettings" Margin="0" Foreground="White" Content="General" FontSize="11" FontWeight="Bold"/>
                     <Separator Width="100px" Height="24px"/>
                 </StackPanel>
-                <Button Panel.ZIndex="6" Grid.Row="1" Grid.Column="0" Name="btnClearLogs" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="..\Steam\Logs" Click="btnClearLogs_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="1" Grid.Column="1" Name="btnClearDumps" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="..\Steam\Dumps" Click="btnClearDumps_Click"/>
-                <StackPanel Orientation="Horizontal" Panel.ZIndex="6" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                <Button Panel.ZIndex="6" Grid.Row="2" Grid.Column="0" Name="btnClearLogs" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="..\Steam\Logs" Click="btnClearLogs_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="2" Grid.Column="1" Name="btnClearDumps" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="..\Steam\Dumps" Click="btnClearDumps_Click"/>
+                <StackPanel Orientation="Horizontal" Panel.ZIndex="6" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
                     <Separator Width="20px" Height="24px"/>
                     <Label Name="lblSteamTools" Margin="0" Foreground="White" Content="Clean my login history" FontSize="11" FontWeight="Bold"/>
                     <Separator Width="100px" Height="24px"/>
                 </StackPanel>
-                <Button Panel.ZIndex="6" Grid.Row="3" Grid.Column="0" Name="btnClearBackups" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Forgotten account backups" Click="btnClearBackups_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="3" Grid.Column="1" Name="btnClearConfigVDF" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="..\Steam\config\config.vdf" Click="btnClearConfigVDF_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="4" Grid.Column="0" Name="btnClearLoginusersVDF" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="..\Steam\config\loginusers.vdf" Click="btnClearLoginusersVDF_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="4" Grid.Column="1" Name="btnClearSSFN" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="..\Steam\ssfn*" Click="btnClearSSFN_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="0" Name="btnClearRLastName" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="HKCU\..\AutoLoginUser" Click="btnClearRLastName_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="1" Name="btnClearRAutoLogin" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="HKCU\..\LastGameNameUsed" Click="btnClearRAutoLogin_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="6" Grid.Column="0" Name="btnClearRRemember" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="HKCU\..\PseudoUIID" Click="btnClearRRemember_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="6" Grid.Column="1" Name="btnClearRUID" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="HKCU\..\RememberPassword" Click="btnClearRUID_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="4" Grid.Column="0" Name="btnClearBackups" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Forgotten account backups" Click="btnClearBackups_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="4" Grid.Column="1" Name="btnClearConfigVDF" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="..\Steam\config\config.vdf" Click="btnClearConfigVDF_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="0" Name="btnClearLoginusersVDF" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="..\Steam\config\loginusers.vdf" Click="btnClearLoginusersVDF_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="1" Name="btnClearSSFN" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="..\Steam\ssfn*" Click="btnClearSSFN_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="6" Grid.Column="0" Name="btnClearRAutoLogin" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="HKCU\..\AutoLoginUser" Click="btnClearRAutoLogin_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="6" Grid.Column="1" Name="btnClearRLastName" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="HKCU\..\LastGameNameUsed" Click="btnClearRLastName_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="7" Grid.Column="0" Name="btnClearRUID" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="HKCU\..\PseudoUUID" Click="btnClearRUID_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="7" Grid.Column="1" Name="btnClearRRemember" Margin="5,5,5,5" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="HKCU\..\RememberPassword" Click="btnClearRRemember_Click"/>
 
 
-                <StackPanel Orientation="Horizontal" Panel.ZIndex="6" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2">
+                <StackPanel Orientation="Horizontal" Panel.ZIndex="6" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2">
                     <Separator Width="20px" Height="20px"/>
                     <Label Name="lblClearOutput" Margin="0" Foreground="White" Content="Output" FontSize="10" FontWeight="Bold"/>
                     <Separator Width="100px" Height="20px"/>
                 </StackPanel>
-                <TextBox Panel.ZIndex="6" Grid.Row="1" Grid.Column="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Background="#222222" Foreground="White" Grid.RowSpan="6" Name="CleaningOutput" TextWrapping="Wrap" Padding="5px"/>
+                <TextBox Panel.ZIndex="6" Grid.Row="2" Grid.Column="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Background="#222222" Foreground="White" Grid.RowSpan="6" Name="CleaningOutput" TextWrapping="Wrap" Padding="5px"/>
             </Grid>
         </StackPanel>
+        <TextBlock Panel.ZIndex="6" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" LineHeight="18px" Margin="12px" Grid.Column="1"><Hyperlink Foreground="White" NavigateUri="https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Steam-Cleaning" RequestNavigate="Hyperlink_RequestNavigate">More information (Wiki)</Hyperlink></TextBlock>
         <Button Panel.ZIndex="6" Grid.Row="1" Name="btnCloseCleaning" Margin="5px" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Close" Click="btnExit"/>
     </Grid>
 </Window>

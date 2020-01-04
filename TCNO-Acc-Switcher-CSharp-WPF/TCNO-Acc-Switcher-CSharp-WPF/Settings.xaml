@@ -93,7 +93,7 @@
                 <Button Panel.ZIndex="6" Grid.Row="4" Grid.Column="0" Name="btnRestoreForgotten" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Restore forgotten account" Click="btnRestoreForgotten_Click"/>
                 <Button Panel.ZIndex="6" Grid.Row="4" Grid.Column="1" Name="btnClearForgottenBackups" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Clear forgotten backups" Click="btnClearForgottenBackups_Click"/>
                 <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="0" Name="btnOpenSteamFolder" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Open Steam Folder" Click="btnOpenSteamFolder_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="1" Name="btnAdvancedCleaning" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Advanced cleaning" Click="btnAdvancedCleaning_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="1" Name="btnAdvancedCleaning" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Advanced cleaning..." Click="btnAdvancedCleaning_Click"/>
             </Grid>
         </StackPanel>
         <Button Panel.ZIndex="6" Grid.Row="1" Name="btnCloseSettings" Margin="5px" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Close" Click="btnExit"/>

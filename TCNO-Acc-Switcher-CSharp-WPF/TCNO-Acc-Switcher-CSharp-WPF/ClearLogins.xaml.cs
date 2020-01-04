@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -9,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, uncomment.
 
 namespace TCNO_Acc_Switcher_CSharp_WPF
@@ -54,22 +57,45 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         private void clearFolder(string fldName, string fld)
         {
             logPrint(fldName);
+            int count = 0;
             if (Directory.Exists(fld))
             {
                 DirectoryInfo d = new DirectoryInfo(fld);
                 foreach (var file in d.GetFiles("*.*"))
                 {
+                    count++;
                     logPrint($"Deleting: {file.Name}");
                     try
                     {
-                        //Directory.Delete(file.FullName);
+                        File.Delete(file.FullName);
                     }
                     catch (Exception ex)
                     {
                         logPrint($"ERROR: {ex.ToString()}");
                     }
                 }
-                logPrint("___Done___");
+
+                foreach (var subd in d.GetDirectories())
+                {
+                    count++;
+                    logPrint($"Deleting: {subd.Name} subfolder and contents");
+                    try
+                    {
+                        Directory.Delete(subd.FullName, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        logPrint($"ERROR: {ex.ToString()}");
+                    }
+                }
+                if (count == 0)
+                {
+                    logPrint($"{fld} is empty.");
+                }
+                else
+                {
+                    logPrint("Done.");
+                }
                 CleaningOutput.AppendText(Environment.NewLine);
             }
             else
@@ -84,37 +110,71 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 logPrint($"Deleting: {f.Name}");
                 try
                 {
-                    //Directory.Delete(fl.FullName);
+                    File.Delete(f.FullName);
                 }
                 catch (Exception ex)
                 {
                     logPrint($"ERROR: {ex.ToString()}");
                 }
-                logPrint("___Done___");
+                logPrint("Done.");
+                if (fl == "config\\loginusers.vdf")
+                {
+                    logPrint("[ Don't forget to clear forgotten account backups as well ]");
+                    CleaningOutput.AppendText(Environment.NewLine);
+                }
                 CleaningOutput.AppendText(Environment.NewLine);
             }
             else
             {
-                logPrint($"File was not found: {f.FullName}");
+                logPrint($"{f.Name} was not found.");
             }
         }
         private void clearSSFN(string steamDIR)
         {
             DirectoryInfo d = new DirectoryInfo(steamDIR);
+            int count = 0;
             foreach (var file in d.GetFiles("ssfn*"))
             {
+                count++;
                 logPrint($"Deleting: {file.Name}");
                 try
                 {
-                    //Directory.Delete(file.FullName);
+                   File.Delete(file.FullName);
                 }
                 catch (Exception ex)
                 {
                     logPrint($"ERROR: {ex.ToString()}");
                 }
             }
-            logPrint("___Done___");
-            CleaningOutput.AppendText(Environment.NewLine);
+            if (count > 0)
+            {
+                logPrint("Done.");
+                CleaningOutput.AppendText(Environment.NewLine);
+            }
+            else
+            {
+                logPrint("No SSFN files found.");
+            }
+        }
+        private void deleteRegKey(string subkey, string value)
+        {
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(subkey, true))
+            {
+                if (key == null)
+                {
+                    logPrint($"{subkey} does not exist.");
+                }
+                else if (key.GetValue(value) == null)
+                {
+                    logPrint($"{subkey} does not contain {value}");
+                }
+                else
+                {
+                    logPrint($"Removing {subkey}\\{value}");
+                    key.DeleteValue(value);
+                    logPrint("Done.");
+                }
+            }
         }
         private void btnClearLogs_Click(object sender, RoutedEventArgs e)
         {
@@ -134,8 +194,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         private void btnClearLoginusersVDF_Click(object sender, RoutedEventArgs e)
         {
             clearFile(Path.Combine(mw.GetSteamDirectory(), "config\\loginusers.vdf"));
-            logPrint("[ Don't forget to clear forgotten account backups as well ]");
-            CleaningOutput.AppendText(Environment.NewLine);
         }
 
         private void btnClearSSFN_Click(object sender, RoutedEventArgs e)
@@ -145,34 +203,39 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
         private void btnClearRLastName_Click(object sender, RoutedEventArgs e)
         {
-            logPrint(":");
-            logPrint("___Done___");
+            deleteRegKey(@"Software\Valve\Steam", "LastGameNameUsed");
         }
 
         private void btnClearRAutoLogin_Click(object sender, RoutedEventArgs e)
         {
-            logPrint(":");
-            logPrint("___Done___");
+            deleteRegKey(@"Software\Valve\Steam", "AutoLoginuser");
         }
 
         private void btnClearRRemember_Click(object sender, RoutedEventArgs e)
         {
-            logPrint(":");
-            logPrint("___Done___");
+            deleteRegKey(@"Software\Valve\Steam", "RememberPassword");
         }
 
         private void btnClearRUID_Click(object sender, RoutedEventArgs e)
         {
-            logPrint(":");
-            logPrint("___Done___");
+            deleteRegKey(@"Software\Valve\Steam", "PseudoUUID");
         }
 
         private void btnClearBackups_Click(object sender, RoutedEventArgs e)
         {
             logPrint("Clearing forgotten account backups:");
             mw.ClearForgottenBackups();
-            logPrint("___Done___");
+            logPrint("Done.");
             CleaningOutput.AppendText(Environment.NewLine);
+        }
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            e.Handled = true;
+        }
+        private void btnKillSteam_Click(object sender, RoutedEventArgs e)
+        {
+            mw.closeSteam();
         }
     }
 }

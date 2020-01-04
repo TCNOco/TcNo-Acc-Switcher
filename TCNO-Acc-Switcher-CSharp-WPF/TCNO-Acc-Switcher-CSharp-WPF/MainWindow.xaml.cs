@@ -55,7 +55,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 2102;
+        int version = 2200;
         
 
         // Settings will load later. Just defined here.
@@ -392,48 +392,59 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             fLoginUsersLines.Clear();
             userAccounts.Clear();
 
-            System.IO.StreamReader file = new System.IO.StreamReader(persistentSettings.LoginusersVDF());
-            while ((line = file.ReadLine()) != null)
+            try
             {
-                fLoginUsersLines.Add(line);
-                line = line.Replace("\t", "");
-                lineNoQuot = line.Replace("\"","");
+                System.IO.StreamReader file = new System.IO.StreamReader(persistentSettings.LoginusersVDF());
 
-                if (lineNoQuot.All(char.IsDigit) && string.IsNullOrEmpty(steamID)) // Line is SteamID and steamID is empty >> New user.
+                while ((line = file.ReadLine()) != null)
                 {
-                    steamID = lineNoQuot;
-                } 
-                else if (lineNoQuot.All(char.IsDigit) && !string.IsNullOrEmpty(steamID)) // If steamID isn't empty, save account details, empty temp vars for collection.
-                {
-                    userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamID, ImgURL = Path.Combine("images", $"{steamID}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
-                    username = "";
-                    rememberAccount = "";
-                    personaName = "";
-                    timestamp = "";
-                    steamID = lineNoQuot;
-                }
-                else if (line.Contains("AccountName"))
-                {
-                    username = lineNoQuot.Substring(11, lineNoQuot.Length-11);
-                } else if (line.Contains("RememberPassword"))
-                {
-                    rememberAccount = lineNoQuot.Substring(lineNoQuot.Length - 1);
-                }
-                else if (line.Contains("PersonaName"))
-                {
-                    personaName = lineNoQuot.Substring(11, lineNoQuot.Length - 11);
-                }
-                else if (line.Contains("Timestamp"))
-                {
-                    timestamp = lineNoQuot.Substring(9, lineNoQuot.Length - 9);
-                }
+                    fLoginUsersLines.Add(line);
+                    line = line.Replace("\t", "");
+                    lineNoQuot = line.Replace("\"", "");
 
-                System.Console.WriteLine(line);
+                    if (lineNoQuot.All(char.IsDigit) && string.IsNullOrEmpty(steamID)) // Line is SteamID and steamID is empty >> New user.
+                    {
+                        steamID = lineNoQuot;
+                    }
+                    else if (lineNoQuot.All(char.IsDigit) && !string.IsNullOrEmpty(steamID)) // If steamID isn't empty, save account details, empty temp vars for collection.
+                    {
+                        userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamID, ImgURL = Path.Combine("images", $"{steamID}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
+                        username = "";
+                        rememberAccount = "";
+                        personaName = "";
+                        timestamp = "";
+                        steamID = lineNoQuot;
+                    }
+                    else if (line.Contains("AccountName"))
+                    {
+                        username = lineNoQuot.Substring(11, lineNoQuot.Length - 11);
+                    }
+                    else if (line.Contains("RememberPassword"))
+                    {
+                        rememberAccount = lineNoQuot.Substring(lineNoQuot.Length - 1);
+                    }
+                    else if (line.Contains("PersonaName"))
+                    {
+                        personaName = lineNoQuot.Substring(11, lineNoQuot.Length - 11);
+                    }
+                    else if (line.Contains("Timestamp"))
+                    {
+                        timestamp = lineNoQuot.Substring(9, lineNoQuot.Length - 9);
+                    }
+
+                    System.Console.WriteLine(line);
+                }
+                // While loop adds account when new one started. Will not include the last one, so that's done here.
+                userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamID, ImgURL = Path.Combine("images", $"{steamID}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
+
+                file.Close();
             }
-            // While loop adds account when new one started. Will not include the last one, so that's done here.
-            userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamID, ImgURL = Path.Combine("images", $"{steamID}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
-
-            file.Close();
+            catch (System.IO.FileNotFoundException ex)
+            {
+                MessageBox.Show("Can't start account switcher when loginusers.vdf does not exist. Verify Steam's installation and try again.\nIf you just deleted loginusers.vdf, try starting and logging with Steam at least once.", "TcNo Account Switcher ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error information: " + ex.ToString(), "TcNo Account Switcher ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(2);
+            }
         }
         string getUserImageURL(string steamID)
         {
@@ -536,7 +547,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 key.SetValue("RememberPassword", 1);
             }
         }
-        private void closeSteam()
+        public void closeSteam()
         {
             // This is what Administrator permissions are required for.
             System.Diagnostics.Process process = new System.Diagnostics.Process();
