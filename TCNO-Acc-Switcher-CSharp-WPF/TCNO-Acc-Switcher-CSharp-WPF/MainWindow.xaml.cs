@@ -55,7 +55,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 2200;
+        int version = 2201;
         
 
         // Settings will load later. Just defined here.
@@ -66,6 +66,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         {
             /* TODO:
              */
+            singleFileUpdateClean(); // Clean extra files from before the 2.2.1 update (When the program was made single file)
             if (Directory.Exists("Resources"))
             {
                 updateClean();
@@ -1169,13 +1170,11 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     File.Delete(f);
             }
             bool deleted = false;
-            delFileNames = new string[] { "TcNo-Acc-Switcher-Updater.exe", "TcNo-Acc-Switcher-Updater.dll", "TcNo-Acc-Switcher-Updater.runtimeconfig.json" };
             while (!deleted)
             {
                 try
                 {
-                    foreach (string f in delFileNames)
-                        File.Delete(f);
+                    File.Delete("TcNo-Acc-Switcher-Updater.exe");
                     deleted = true;
                 }
                 catch (Exception)
@@ -1183,6 +1182,19 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     Thread.Sleep(500);
                 }
             }
+        }
+        private void singleFileUpdateClean()
+        {
+            string[] delFileNames = new string[] { "Newtonsoft.Json.dll", "TcNo Account Switcher.deps.json", "TcNo Account Switcher.dll", "TcNo Account Switcher.runtimeconfig.json" };
+            try
+            {
+                foreach (string f in delFileNames)
+                {
+                    if (File.Exists(f))
+                        File.Delete(f);
+                }
+            }
+            catch (Exception) { }
         }
 
 

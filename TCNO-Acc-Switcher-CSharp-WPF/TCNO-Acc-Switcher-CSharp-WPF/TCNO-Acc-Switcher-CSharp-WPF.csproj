@@ -7,7 +7,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Copyright>Copyright (c) TechNobo (Wesley Pyburn) 2019</Copyright>
-    <Version>2.0.0.0</Version>
+    <Version>2.2.1</Version>
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <PackageIconUrl>https://github.com/TcNobo/TcNo-Acc-Switcher/raw/master/docs/img/TcNoAccSw-Icon-1000x1000.png</PackageIconUrl>
@@ -20,6 +20,7 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <AssemblyName>TcNo Account Switcher</AssemblyName>
     <Platforms>AnyCPU;x64;x86</Platforms>
+    <FileVersion>2.2.1.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
