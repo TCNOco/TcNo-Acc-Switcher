@@ -107,6 +107,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         {
             // Collect Steam Account basic info from Steam file
             lblStatus.Content = "Status: Collecting Steam Accounts";
+            checkBrokenImages();
             getSteamAccounts();
 
             // Clear incase it's a refresh
@@ -382,6 +383,42 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             // Unix timestamp is seconds past epoch
             var localDateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(long.Parse(unixTimeStampString)).DateTime.ToLocalTime();
             return localDateTimeOffset.ToString("dd/MM/yyyy hh:mm:ss");
+        }
+        public bool IsValidGDIPlusImage(string filename)
+        {
+            //From https://stackoverflow.com/questions/8846654/read-image-and-determine-if-its-corrupt-c-sharp
+            try
+            {
+                using (var bmp = new System.Drawing.Bitmap(filename))
+                {
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        private void checkBrokenImages()
+        {
+            if (Directory.Exists("images"))
+            {
+                DirectoryInfo d = new DirectoryInfo("images");
+                foreach (var file in d.GetFiles("*.jpg"))
+                {
+                    try
+                    {
+                        if (!IsValidGDIPlusImage(file.FullName)) // Delete image if is not as valid, working image.
+                        {
+                            File.Delete(file.FullName);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Empty profile image detected (0 bytes). Can't delete to redownload.\n\nError information: " + ex.ToString(), "TcNo Account Switcher ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
         }
         void getSteamAccounts()
         {
