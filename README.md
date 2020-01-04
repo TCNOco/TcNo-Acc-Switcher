@@ -42,7 +42,7 @@ Users can still download updates via the GitHub Releases page, but they will be 
 [imgur library](https://imgur.com/prhdlks)
 <p><a href="https://imgur.com/a/iIlPtrW">
   <img alt="Main window screenshot" src="https://i.imgur.com/prhdlks.png" height=420">
-  <img alt="Other windows (Combined screenshot)" src="https://i.imgur.com/psrHUAW.png" width=773">
+  <img alt="Other windows (Combined screenshot)" src="https://i.imgur.com/7wti1KR.png" width=773">
 </a></p>
 
 ### Required libraries for building (Developers only):
