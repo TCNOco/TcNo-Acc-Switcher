@@ -1,16 +1,9 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, uncomment.
 
@@ -106,7 +99,8 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         private void clearFile(string fl)
         {
             FileInfo f = new FileInfo(fl);
-            if (File.Exists(f.FullName)){
+            if (File.Exists(f.FullName))
+            {
                 logPrint($"Deleting: {f.Name}");
                 try
                 {
@@ -139,7 +133,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 logPrint($"Deleting: {file.Name}");
                 try
                 {
-                   File.Delete(file.FullName);
+                    File.Delete(file.FullName);
                 }
                 catch (Exception ex)
                 {

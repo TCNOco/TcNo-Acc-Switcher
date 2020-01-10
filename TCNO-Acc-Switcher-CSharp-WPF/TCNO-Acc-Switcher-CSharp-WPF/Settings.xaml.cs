@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 
 namespace TCNO_Acc_Switcher_CSharp_WPF
@@ -18,7 +9,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
     /// <summary>
     /// Interaction logic for Settings.xaml
     /// </summary>+
-    
+
     public partial class Settings : Window
     {
         MainWindow mw;
@@ -66,7 +57,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         }
         private void btnResetImages_Click(object sender, RoutedEventArgs e)
         {
-           if (!mw.VACCheckRunning)
+            if (!mw.VACCheckRunning)
             {
                 MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Are you sure?", "Reset settings", System.Windows.MessageBoxButton.YesNo);
                 if (messageBoxResult == MessageBoxResult.Yes)
@@ -112,7 +103,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
         private void btnOpenSteamFolder_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("explorer.exe", mw.GetSteamDirectory() );
+            Process.Start("explorer.exe", mw.GetSteamDirectory());
         }
 
         private void btnAdvancedCleaning_Click(object sender, RoutedEventArgs e)

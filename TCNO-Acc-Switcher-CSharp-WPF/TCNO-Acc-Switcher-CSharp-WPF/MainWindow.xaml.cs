@@ -1,4 +1,8 @@
-﻿using System;
+﻿// For registry keys
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,23 +12,13 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, uncomment.
 using System.Xml;
-
-// For registry keys
-using Microsoft.Win32;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace TCNO_Acc_Switcher_CSharp_WPF
 {
@@ -56,7 +50,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
         //int version = 1;
         int version = 2202;
-        
+
 
         // Settings will load later. Just defined here.
         UserSettings persistentSettings = new UserSettings();
@@ -157,7 +151,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     Directory.CreateDirectory("Resources");
                 File.WriteAllBytes(Path.Join("Resources", "7za.exe"), Properties.Resources._7za);
                 File.WriteAllText(Path.Join("Resources", "7za-license.txt"), Properties.Resources.License);
-                string  zPath = Path.Combine("Resources", "7za.exe"),
+                string zPath = Path.Combine("Resources", "7za.exe"),
                         updzip = "upd.7z",
                         ePath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
 #if X64
@@ -429,7 +423,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 }
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -548,7 +542,8 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 btnLogin.IsEnabled = true;
                 btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? DarkGreen : DefaultGray);
             }
-            catch { 
+            catch
+            {
                 // Non-existent user account is selected, or none are available.
             }
         }
@@ -660,7 +655,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             }
         }
 
-        public class MainWindowViewModel : INotifyPropertyChanged 
+        public class MainWindowViewModel : INotifyPropertyChanged
         {
             public MainWindowViewModel()
             {
@@ -766,7 +761,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 {
                     _ProgramVersion = value;
                 }
-            } 
+            }
             private System.Windows.Media.Brush _vacStatus;
             public System.Windows.Media.Brush vacStatus
             {
@@ -829,9 +824,9 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             ForgetAccountCheckDialog.Owner = this;
             ForgetAccountCheckDialog.ShowDialog();
         }
-         public string GetForgottenBackupPath() { return Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\"); }
-         public string GetPersistentFolder() { return Path.Combine(persistentSettings.SteamFolder, "config\\"); }
-         public string GetSteamDirectory() { return persistentSettings.SteamFolder; }
+        public string GetForgottenBackupPath() { return Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\"); }
+        public string GetPersistentFolder() { return Path.Combine(persistentSettings.SteamFolder, "config\\"); }
+        public string GetSteamDirectory() { return persistentSettings.SteamFolder; }
 
         public void RestoreForgotten()
         {
@@ -846,7 +841,9 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 {
                     if (Directory.Exists(BackupPath))
                         Directory.Delete(BackupPath, true);
-                } catch (Exception ex){
+                }
+                catch (Exception ex)
+                {
                     MessageBox.Show("Could not recursively delete directory! Error: " + ex.ToString(), "Error deleting files");
                 }
             }
@@ -866,9 +863,9 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 return;
             }
 
-                // Backup loginusers.vdf
-                string backupFileName = $"loginusers-{ DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss.fff")}.vdf",
-                 backupdir = Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\");
+            // Backup loginusers.vdf
+            string backupFileName = $"loginusers-{ DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss.fff")}.vdf",
+             backupdir = Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\");
             if (!Directory.Exists(backupdir))
                 Directory.CreateDirectory(backupdir);
             try
@@ -915,7 +912,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                         }
                         else // Currently going through a user
                         {
-                            if (lineNoQuot.Contains("}")) 
+                            if (lineNoQuot.Contains("}"))
                                 completedRemove = true; // Found the end of the user to remove
                             continue; // Skip line output
                         }
@@ -974,7 +971,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
         private void btnLogin_MouseLeave(object sender, MouseEventArgs e)
         {
-            btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser !=null ? DarkGreen : DefaultGray);
+            btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? DarkGreen : DefaultGray);
         }
         private void btnExit(object sender, RoutedEventArgs e)
         {
@@ -1031,9 +1028,9 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         }
         public void ResetImages()
         {
-                File.Create("DeleteImagesOnStart");
-                MessageBox.Show("The program will now close. Once opened, new images will download.");
-                this.Close();
+            File.Create("DeleteImagesOnStart");
+            MessageBox.Show("The program will now close. Once opened, new images will download.");
+            this.Close();
         }
         public bool VACCheckRunning = false;
         public void CheckVac()
@@ -1101,7 +1098,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 {
                     bool isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")[0].InnerText == "1";
                     bool isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")[0].InnerText == "1";
-                    VacOrLimited =  isVAC || isLimited;
+                    VacOrLimited = isVAC || isLimited;
                 }
                 catch (NullReferenceException) // User has not set up their account
                 {
@@ -1138,7 +1135,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             {
                 // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.
 
-                Dictionary<string, bool> VacInformation = new Dictionary<string, bool>{ };
+                Dictionary<string, bool> VacInformation = new Dictionary<string, bool> { };
                 foreach (Steamuser su in MainViewmodel.SteamUsers)
                 {
                     VacInformation.Add(su.SteamID, su.vacStatus == vacRedBrush ? true : false); // If red >> Vac or Limited
