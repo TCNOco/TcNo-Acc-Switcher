@@ -55,7 +55,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 2201;
+        int version = 2202;
         
 
         // Settings will load later. Just defined here.
@@ -197,25 +197,32 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         }
         void updateCheck()
         {
-            System.Net.WebClient wc = new System.Net.WebClient();
-            int webVersion = int.Parse(wc.DownloadString("https://tcno.co/Projects/AccSwitcher/version.php").Substring(0,4));
-            
-            if (webVersion > version)
+            try
             {
-                using (FileStream fs = File.Create("UpdateFound.txt"))
+                System.Net.WebClient wc = new System.Net.WebClient();
+                int webVersion = int.Parse(wc.DownloadString("https://tcno.co/Projects/AccSwitcher/version.php").Substring(0, 4));
+
+                if (webVersion > version)
                 {
-                    byte[] info = new UTF8Encoding(true).GetBytes("An update was found last launch" + DateTime.Now.ToString());
-                    fs.Write(info, 0, info.Length);
+                    using (FileStream fs = File.Create("UpdateFound.txt"))
+                    {
+                        byte[] info = new UTF8Encoding(true).GetBytes("An update was found last launch" + DateTime.Now.ToString());
+                        fs.Write(info, 0, info.Length);
+                    }
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        downloadUpdateDialog();
+                    });
                 }
-                this.Dispatcher.Invoke(() =>
+                else
                 {
-                    downloadUpdateDialog();
-                });
+                    if (File.Exists("UpdateFound.txt"))
+                        File.Delete("UpdateFound.txt");
+                }
             }
-            else
+            catch (WebException ex)
             {
-                if (File.Exists("UpdateFound.txt"))
-                    File.Delete("UpdateFound.txt");
+                MessageBox.Show("Could not connect to https://tcno.co/ to check for updates.\n\nDetails: " + ex.ToString(), "TcNo Account Switcher - Update check error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         bool vacBanned = false;
@@ -225,6 +232,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
             int totalUsers = ImagesToDownload.Count();
             int currentUser = 0;
+            bool downloadError = false;
             // DISABLE LISTBOX
             foreach (Steamuser su in ImagesToDownload)
             {
@@ -237,9 +245,21 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
                 if (!string.IsNullOrEmpty(imageURL))
                 {
-                    using (WebClient client = new WebClient())
+                    try
                     {
-                        client.DownloadFile(new Uri(imageURL), su.ImgURL);
+                        using (WebClient client = new WebClient())
+                        {
+                            client.DownloadFile(new Uri(imageURL), su.ImgURL);
+                        }
+                    }
+                    catch (WebException ex)
+                    {
+                        if (!downloadError)
+                        {
+                            downloadError = true; // Show error only once
+                            File.WriteAllBytes(su.ImgURL, Properties.Resources.QuestionMark); // Give the user's profile picture a question mark.
+                            MessageBox.Show("Could not connect and downlost Steam profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " + ex.ToString(), "TcNo Account Switcher - Update check error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
                 }
                 else
@@ -335,12 +355,26 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 // persistentSettings = JsonConvert.DeserializeObject<UserSettings>(sr.ReadToEnd()); -- Entirely replaces, instead of merging. New variables won't have values.
                 // Using a JSON Union Merge means that settings that are missing will have default values, set at the top of this file.
                 JObject jCurrent = JObject.Parse(JsonConvert.SerializeObject(persistentSettings));
-
-                jCurrent.Merge(JObject.Parse(sr.ReadToEnd()), new JsonMergeSettings
+                try
                 {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                persistentSettings = jCurrent.ToObject<UserSettings>();
+                    jCurrent.Merge(JObject.Parse(sr.ReadToEnd()), new JsonMergeSettings
+                    {
+                        MergeArrayHandling = MergeArrayHandling.Union
+                    });
+                    persistentSettings = jCurrent.ToObject<UserSettings>();
+                }
+                catch (Exception)
+                {
+                    if (File.Exists("settings.json"))
+                    {
+                        if (File.Exists("settings.old.json"))
+                            File.Delete("settings.old.json");
+                        File.Copy("settings.json", "settings.old.json");
+                    }
+
+                    saveSettings();
+                    MessageBox.Show("Settings.json failed to load properly.\nOld settings are saved in settings.old.json, and a new config has been loaded.", "TcNo Account Switcher - Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
         void updateFromSettings()
