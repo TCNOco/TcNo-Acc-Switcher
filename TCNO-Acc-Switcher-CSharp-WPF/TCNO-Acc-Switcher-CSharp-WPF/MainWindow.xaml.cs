@@ -1292,11 +1292,12 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             }
             catch (Exception) { }
         }
+
         private void CheckShortcuts()
         {
             MainViewmodel.DesktopShortcut = shortcutExist(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory));
             MainViewmodel.StartWithWindows = shortcutExist(Environment.GetFolderPath(Environment.SpecialFolder.Startup));
-            MainViewmodel.StartMenuIcon = shortcutExist(Environment.GetFolderPath(Environment.SpecialFolder.Programs));
+            MainViewmodel.StartMenuIcon = shortcutExist(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\"));
         }
         public void DesktopShortcut(bool bEnabled)
         {
@@ -1346,7 +1347,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 Properties.Resources.icon.Save(fs);
 
             IWshRuntimeLibrary.WshShellClass shellClass = new IWshRuntimeLibrary.WshShellClass();
-            //Create First Shortcut for Application Settings
             IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shellClass.CreateShortcut(settingsLink);
             shortcut.TargetPath = selfexe;
             shortcut.IconLocation = iconDirectory;
