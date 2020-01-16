@@ -33,8 +33,8 @@ Users can still download updates via the GitHub Releases page, but they will be 
 
 *When the program checks for updates, it adds to a counter saying "Add 1 to the counter for my Province/State in country", purely for interest's sake. IP addresses and identifiable information are not collected.
 ## Required runtimes (Download and install):
-- Microsoft .NET Core 3.0 Runtime: [x86](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-3.0.1-windows-x86-installer) [x64](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-3.0.1-windows-x64-installer)
-- Microsoft .NET Core 3.0 Desktop Runtime: [x86](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-desktop-3.0.1-windows-x86-installer) [x64](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-desktop-3.0.1-windows-x64-installer)
+- Microsoft .NET Core 3.1 Runtime: [x86](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-3.1.1-windows-x86-installer) [x64](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-3.1.1-windows-x64-installer)
+- Microsoft .NET Core 3.1 Desktop Runtime: [x86](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-desktop-3.1.1-windows-x86-installer) [x64](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-desktop-3.1.1-windows-x64-installer)
 
 **Running the program:** After downloading your .zip from the [GitHub Releases](https://github.com/TcNobo/TcNo-Acc-Switcher/releases) page, extract everything to a folder of your choice and run `TcNo Account Switcher.exe`
 
