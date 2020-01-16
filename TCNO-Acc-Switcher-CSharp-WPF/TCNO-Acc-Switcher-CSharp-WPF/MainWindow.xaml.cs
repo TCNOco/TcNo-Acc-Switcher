@@ -49,7 +49,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 2202;
+        int version = 2203;
 
 
         // Settings will load later. Just defined here.
@@ -60,6 +60,11 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         {
             /* TODO:
              */
+             // Crash handler
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
+
+
             singleFileUpdateClean(); // Clean extra files from before the 2.2.1 update (When the program was made single file)
             if (Directory.Exists("Resources"))
             {
@@ -97,6 +102,19 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             // Create image folder
             Directory.CreateDirectory("images");
             RefreshSteamAccounts();
+        }
+
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            // Log Unhandled Exception
+            string exceptionStr = e.ExceptionObject.ToString();
+            using (StreamWriter sw = File.AppendText("AccSwitcher-Crashlog.txt"))
+            {
+                sw.WriteLine(DateTime.Now.ToString() + "\t" + "UNHANDLED CRASH: " + exceptionStr + Environment.NewLine + Environment.NewLine);
+            }
+            MessageBox.Show("A fatal unhandled exception caused the program to crash. Information saved in \"AccSwitcher-Crashlog.txt\".", "TcNo Account Switcher Unhandled exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("Please submit the crashlog and more information to the Discord, or the GitHub page.\nDiscord: https://s.tcno.co/AccSwitcherDiscord\nGitHub: https://github.com/TcNobo/TcNo-Acc-Switcher", "TcNo Account Switcher Unhandled exception", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         public void RefreshSteamAccounts()
         {
@@ -444,7 +462,15 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Empty profile image detected (0 bytes). Can't delete to redownload.\n\nError information: " + ex.ToString(), "TcNo Account Switcher ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                        try
+                        {
+                            File.Delete(file.FullName);
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Empty profile image detected (0 bytes). Can't delete to redownload.\n\nError information: " + ex.ToString(), "TcNo Account Switcher ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                            throw;
+                        }
                     }
                 }
             }
