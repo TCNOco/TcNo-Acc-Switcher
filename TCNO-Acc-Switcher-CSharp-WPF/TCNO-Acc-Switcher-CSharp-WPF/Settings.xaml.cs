@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -112,6 +113,36 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             clearLoginsDialog.ShareMainWindow(mw);
             clearLoginsDialog.Owner = this;
             clearLoginsDialog.ShowDialog();
+        }
+
+        private void ToggleStartShortcut_Checked(object sender, RoutedEventArgs e)
+        {
+            mw.StartMenuShortcut(true);
+        }
+
+        private void ToggleStartShortcut_Unchecked(object sender, RoutedEventArgs e)
+        {
+            mw.StartMenuShortcut(false);
+        }
+
+        private void ToggleStartWithWindows_Checked(object sender, RoutedEventArgs e)
+        {
+            mw.StartWithWindows(true);
+        }
+
+        private void ToggleStartWithWindows_Unchecked(object sender, RoutedEventArgs e)
+        {
+            mw.StartWithWindows(false);
+        }
+
+        private void ToggleDesktopShortcut_Checked(object sender, RoutedEventArgs e)
+        {
+            mw.DesktopShortcut(true);
+        }
+
+        private void ToggleDesktopShortcut_Unchecked(object sender, RoutedEventArgs e)
+        {
+            mw.DesktopShortcut(false);
         }
     }
 }

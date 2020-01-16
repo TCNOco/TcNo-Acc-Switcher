@@ -49,7 +49,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 2203;
+        int version = 2204;
 
 
         // Settings will load later. Just defined here.
@@ -60,7 +60,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         {
             /* TODO:
              */
-             // Crash handler
+            // Crash handler
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
 
@@ -97,6 +97,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             InitializeSettings(); // Load user settings
             InitializeComponent();
             updateFromSettings(); // Update components
+            CheckShortcuts();
 
             // Create image folder
             Directory.CreateDirectory("images");
@@ -690,6 +691,9 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 StartAsAdmin = new bool();
                 ShowSteamID = new bool();
                 ShowVACStatus = new bool();
+                StartMenuIcon = new bool();
+                StartWithWindows = new bool();
+                DesktopShortcut = new bool();
                 vacStatus = Brushes.Black;
                 ProgramVersion = "";
                 ForgetAccountEnabled = new bool();
@@ -737,6 +741,42 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 set
                 {
                     _ShowVACStatus = value;
+                }
+            }
+            private bool _StartMenuIcon;
+            public bool StartMenuIcon
+            {
+                get
+                {
+                    return _StartMenuIcon;
+                }
+                set
+                {
+                    _StartMenuIcon = value;
+                }
+            }
+            private bool _DesktopShortcut;
+            public bool DesktopShortcut
+            {
+                get
+                {
+                    return _DesktopShortcut;
+                }
+                set
+                {
+                    _DesktopShortcut = value;
+                }
+            }
+            private bool _StartWithWindows;
+            public bool StartWithWindows
+            {
+                get
+                {
+                    return _StartWithWindows;
+                }
+                set
+                {
+                    _StartWithWindows = value;
                 }
             }
             private bool _StartAsAdmin;
@@ -1251,6 +1291,81 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 }
             }
             catch (Exception) { }
+        }
+        private void CheckShortcuts()
+        {
+            MainViewmodel.DesktopShortcut = shortcutExist(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory));
+            MainViewmodel.StartWithWindows = shortcutExist(Environment.GetFolderPath(Environment.SpecialFolder.Startup));
+            MainViewmodel.StartMenuIcon = shortcutExist(Environment.GetFolderPath(Environment.SpecialFolder.Programs));
+        }
+        public void DesktopShortcut(bool bEnabled)
+        {
+            MainViewmodel.DesktopShortcut = bEnabled;
+            string desktop_path = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            if (bEnabled)
+                createShortcut(desktop_path);
+            else
+                deleteShortcut(desktop_path, false);
+        }
+        public void StartWithWindows(bool bEnabled)
+        {
+            MainViewmodel.StartWithWindows = bEnabled;
+            string startup_path = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+            if (bEnabled)
+                createShortcut(startup_path);
+            else
+                deleteShortcut(startup_path, false);
+        }
+        public void StartMenuShortcut(bool bEnabled)
+        {
+            MainViewmodel.StartMenuIcon = bEnabled;
+            string programs_path = Environment.GetFolderPath(Environment.SpecialFolder.Programs),
+                   shortcutFolder = Path.Combine(programs_path, @"TcNo Account Switcher\");
+            if (bEnabled)
+                createShortcut(shortcutFolder);
+            else
+                deleteShortcut(shortcutFolder, true);
+        }
+        private bool shortcutExist(string location)
+        {
+            string settingsShortcut = Path.Combine(location, "TcNo Account Switcher.lnk");
+            return File.Exists(settingsShortcut);
+        }
+        private void createShortcut(string location)
+        {
+            if (!Directory.Exists(location))
+            {
+                Directory.CreateDirectory(location);
+            }
+            string selfexe = Path.ChangeExtension(System.Reflection.Assembly.GetEntryAssembly().Location, "exe"), // Changes .dll to .exe. .NET Core returns the .dll instead of the .exe required for the shortcut.
+                   selflocation = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location),
+                   iconDirectory = Path.Combine(selflocation, "icon.ico"),
+                   settingsLink = Path.Combine(location, "TcNo Account Switcher.lnk");
+
+            using (FileStream fs = new FileStream(iconDirectory, FileMode.Create))
+                Properties.Resources.icon.Save(fs);
+
+            IWshRuntimeLibrary.WshShellClass shellClass = new IWshRuntimeLibrary.WshShellClass();
+            //Create First Shortcut for Application Settings
+            IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shellClass.CreateShortcut(settingsLink);
+            shortcut.TargetPath = selfexe;
+            shortcut.IconLocation = iconDirectory;
+            shortcut.Arguments = "";
+            shortcut.Description = "TcNo Account Switcher";
+            shortcut.Save();
+        }
+        private void deleteShortcut(string location, bool delFolder)
+        {
+            string settingsLink = Path.Combine(location, "TcNo Account Switcher.lnk");
+            if (File.Exists(settingsLink))
+                File.Delete(settingsLink);
+            if (delFolder)
+            {
+                if (Directory.GetFiles(location).Length == 0)
+                    Directory.Delete(location);
+                else
+                    MessageBox.Show("Unable to delete folder because it's not empty: " + location);
+            }
         }
 
 

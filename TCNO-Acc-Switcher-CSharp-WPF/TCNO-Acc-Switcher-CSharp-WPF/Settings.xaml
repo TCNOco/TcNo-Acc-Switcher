@@ -63,6 +63,9 @@
             <CheckBox Panel.ZIndex="6" Name="RunasAdmin" Margin="5px" VerticalAlignment="Center"  Foreground="White" Content="Run Steam as Admin"  IsChecked="{Binding StartAsAdmin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <CheckBox Panel.ZIndex="6" Name="ShowSteamID" Margin="5px" VerticalAlignment="Center" Foreground="White" Content="Show SteamID" IsChecked="{Binding ShowSteamID, Mode=TwoWay}" Checked="ShowSteamID_CheckChanged" Unchecked="ShowSteamID_CheckChanged" />
             <CheckBox Panel.ZIndex="6" Name="ShowVACStatus" Margin="5px" Foreground="White" Content="Show VAC Status" IsChecked="{Binding ShowVACStatus, Mode=TwoWay}" Checked="ShowVACStatus_CheckChanged" Unchecked="ShowVACStatus_CheckChanged" />
+            <CheckBox Panel.ZIndex="6" Name="ToggleDesktopShortcut" Margin="5px" Foreground="White" Content="Dsektop shortcut" IsChecked="{Binding DesktopShortcut, Mode=TwoWay}" Checked="ToggleDesktopShortcut_Checked" Unchecked="ToggleDesktopShortcut_Unchecked" />
+            <CheckBox Panel.ZIndex="6" Name="ToggleStartShortcut" Margin="5px" Foreground="White" Content="Start menu shortcut" IsChecked="{Binding StartMenuIcon, Mode=TwoWay}" Checked="ToggleStartShortcut_Checked" Unchecked="ToggleStartShortcut_Unchecked" />
+            <CheckBox Panel.ZIndex="6" Name="ToggleStartWithWindows" Margin="5px" Foreground="White" Content="Start with Windows" IsChecked="{Binding StartWithWindows, Mode=TwoWay}" Checked="ToggleStartWithWindows_Checked" Unchecked="ToggleStartWithWindows_Unchecked" />
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.5*" />
