@@ -64,7 +64,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
 
-
             singleFileUpdateClean(); // Clean extra files from before the 2.2.1 update (When the program was made single file)
             if (Directory.Exists("Resources"))
             {

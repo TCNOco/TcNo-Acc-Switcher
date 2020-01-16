@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>TCNO_Acc_Switcher_CSharp_WPF</RootNamespace>
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Copyright>Copyright (c) TechNobo (Wesley Pyburn) 2019</Copyright>
-    <Version>2.2.1</Version>
+    <Version>2.2.3</Version>
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <PackageIconUrl>https://github.com/TcNobo/TcNo-Acc-Switcher/raw/master/docs/img/TcNoAccSw-Icon-1000x1000.png</PackageIconUrl>
