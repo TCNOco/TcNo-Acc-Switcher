@@ -48,8 +48,8 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         List<string> fLoginUsersLines = new List<string>();
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
-        int version = 1;
-        //int version = 2205;
+        //int version = 1;
+        int version = 2206;
 
 
         // Settings will load later. Just defined here.
@@ -171,7 +171,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 File.WriteAllText(Path.Join("Resources", "7za-license.txt"), Properties.Resources.License);
                 string zPath = Path.Combine("Resources", "7za.exe"),
                         updzip = "upd.7z",
-                        ePath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+                        ePath = Directory.GetCurrentDirectory();
 #if X64
                 string arch = "x64";
                 File.WriteAllBytes(updzip, Properties.Resources.update64);
@@ -1338,13 +1338,16 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             {
                 Directory.CreateDirectory(location);
             }
-            string selfexe = Path.ChangeExtension(System.Reflection.Assembly.GetEntryAssembly().Location, "exe"), // Changes .dll to .exe. .NET Core returns the .dll instead of the .exe required for the shortcut.
-                   selflocation = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location),
+            // Has to be done in such a strange way because .NET Core points it to the .DLL inside of %temp% instead of the actual .exe...
+            string selfexe = Path.Combine(Directory.GetCurrentDirectory(), System.AppDomain.CurrentDomain.FriendlyName + ".exe"), // Changes .dll to .exe. .NET Core returns the .dll instead of the .exe required for the shortcut.
+                   selflocation = Directory.GetCurrentDirectory(),
                    iconDirectory = Path.Combine(selflocation, "icon.ico"),
                    settingsLink = Path.Combine(location, "TcNo Account Switcher.lnk");
 
             if (!File.Exists(settingsLink))
             {
+                if (File.Exists("CreateShortcut.vbs"))
+                    File.Delete("CreateShortcut.vbs");
 
                 using (FileStream fs = new FileStream(iconDirectory, FileMode.Create))
                     Properties.Resources.icon.Save(fs);
