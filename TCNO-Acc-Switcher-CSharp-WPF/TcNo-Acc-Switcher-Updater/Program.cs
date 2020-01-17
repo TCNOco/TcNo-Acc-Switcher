@@ -52,7 +52,7 @@ namespace TcNo_Acc_Switcher_Updater
                 wc.DownloadFile(downloadLink, downloadZip);
 
                 Console.WriteLine("Extracting Zip");
-                string ePath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location),
+                string ePath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName),
                        zPath = Path.Combine("Resources", "7za.exe");
                 try
                 {
@@ -63,6 +63,10 @@ namespace TcNo_Acc_Switcher_Updater
                     pro.UseShellExecute = false;
                     pro.RedirectStandardOutput = true;
                     pro.CreateNoWindow = true;
+
+                    //Console.WriteLine(pro.FileName + " | " + pro.Arguments);
+                    //Console.ReadLine();
+
                     Process x = Process.Start(pro);
                     x.WaitForExit();
                 }
@@ -75,16 +79,37 @@ namespace TcNo_Acc_Switcher_Updater
                 Console.WriteLine("");
                 Console.WriteLine("Starting TcNo Account Switcher");
 
-                string processName = "TcNo Account Switcher.exe";
-                ProcessStartInfo startInfo = new ProcessStartInfo();
-                startInfo.FileName = processName;
-                startInfo.CreateNoWindow = false;
-                startInfo.UseShellExecute = true;
-                Process.Start(startInfo);
+                int attempts = 0;
+
+                while (attempts < 3)
+                {
+                    try
+                    {
+                        attempts++;
+                        string processName = "TcNo Account Switcher.exe";
+                        ProcessStartInfo startInfo = new ProcessStartInfo();
+                        startInfo.FileName = processName;
+                        startInfo.CreateNoWindow = false;
+                        startInfo.UseShellExecute = true;
+
+                        //Console.WriteLine(startInfo.FileName);
+                        //Console.ReadLine();
+
+                        Process.Start(startInfo);
+                        break;
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Failed to start. Trying again in 3 seconds. (Attempt " + attempts + "/3)");
+                        Thread.Sleep(3000);
+                    }
+                }
                 Console.WriteLine("Closing in 2 seconds");
                 Thread.Sleep(3000);
                 Environment.Exit(1);
             }
+            Console.WriteLine("Failed to update.");
+            Console.WriteLine("Please extract either x64.zip or x32.zip manually and start TcNo Account Switcher.exe");
         }
         static string versionToString(string version)
         {

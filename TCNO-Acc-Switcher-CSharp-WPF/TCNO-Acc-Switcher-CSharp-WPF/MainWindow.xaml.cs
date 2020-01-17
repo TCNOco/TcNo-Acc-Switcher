@@ -48,8 +48,8 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         List<string> fLoginUsersLines = new List<string>();
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
-        //int version = 1;
-        int version = 2204;
+        int version = 1;
+        //int version = 2205;
 
 
         // Settings will load later. Just defined here.
@@ -1343,16 +1343,42 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                    iconDirectory = Path.Combine(selflocation, "icon.ico"),
                    settingsLink = Path.Combine(location, "TcNo Account Switcher.lnk");
 
-            using (FileStream fs = new FileStream(iconDirectory, FileMode.Create))
-                Properties.Resources.icon.Save(fs);
+            if (!File.Exists(settingsLink))
+            {
 
-            IWshRuntimeLibrary.WshShellClass shellClass = new IWshRuntimeLibrary.WshShellClass();
-            IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shellClass.CreateShortcut(settingsLink);
-            shortcut.TargetPath = selfexe;
-            shortcut.IconLocation = iconDirectory;
-            shortcut.Arguments = "";
-            shortcut.Description = "TcNo Account Switcher";
-            shortcut.Save();
+                using (FileStream fs = new FileStream(iconDirectory, FileMode.Create))
+                    Properties.Resources.icon.Save(fs);
+
+
+                string[] Lines = {"set WshShell = WScript.CreateObject(\"WScript.Shell\")",
+                       "set oShellLink = WshShell.CreateShortcut(\"" + settingsLink  + "\")",
+                       "oShellLink.TargetPath = \"" + selfexe + "\"",
+                       "oShellLink.WindowStyle = 1",
+                       "oShellLink.IconLocation = \"" + iconDirectory + "\"",
+                       "oShellLink.Description = \"TcNo Account Switcher\"",
+                       "oShellLink.WorkingDirectory = \"" + selflocation + "\"",
+                       "oShellLink.Save()"
+            };
+                File.WriteAllLines("CreateShortcut.vbs", Lines);
+
+
+                string result_string = "";
+                Process vbsProcess = new Process();
+
+                vbsProcess.StartInfo.FileName = "cscript";
+                vbsProcess.StartInfo.Arguments = "//nologo \"" + Path.Combine(selflocation, "CreateShortcut.vbs") + "\"";
+                vbsProcess.StartInfo.UseShellExecute = false;
+                vbsProcess.StartInfo.RedirectStandardOutput = true;
+                vbsProcess.StartInfo.CreateNoWindow = true;
+
+                vbsProcess.Start();
+                result_string = vbsProcess.StandardOutput.ReadToEnd();
+                vbsProcess.Close();
+
+                result_string = result_string.Replace("\r\n", "");
+                File.Delete("CreateShortcut.vbs");
+                MessageBox.Show("Shortcut created!\n\nLocation: " + location);
+            }
         }
         private void deleteShortcut(string location, bool delFolder)
         {
@@ -1366,6 +1392,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 else
                     MessageBox.Show("Unable to delete folder because it's not empty: " + location);
             }
+            MessageBox.Show("Shortcut deleted!");
         }
 
 
