@@ -1,5 +1,6 @@
 ﻿// For registry keys
 using Microsoft.Win32;
+using Microsoft.Win32.TaskScheduler;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -49,7 +50,8 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 2206;
+        int version = 2300;
+        int trayversion = 1000;
 
 
         // Settings will load later. Just defined here.
@@ -60,6 +62,14 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         {
             /* TODO:
              */
+             // Single instance check
+            if (SelfAlreadyRunning())
+            {
+                Console.WriteLine("TcNo Account Switcher is already running");
+                MessageBox.Show("TcNo Account Switcher is already running", "TcNo Account Switcher - Duplicate start", MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(99);
+            }
+
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
@@ -67,7 +77,11 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             singleFileUpdateClean(); // Clean extra files from before the 2.2.1 update (When the program was made single file)
             if (Directory.Exists("Resources"))
             {
-                updateClean();
+                resourceClean(true);
+                if (File.Exists("RestartTray")){
+                    File.Delete("RestartTray");
+                    startTray();
+                }
                 // Because closing a messagebox before the window shows causes it to crash for some reason...
                 MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Open GitHub to see what's new?", "Finished updating.", System.Windows.MessageBoxButton.YesNo);
                 if (messageBoxResult == MessageBoxResult.Yes)
@@ -102,6 +116,19 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             // Create image folder
             Directory.CreateDirectory("images");
             RefreshSteamAccounts();
+        }
+        private static bool SelfAlreadyRunning()
+        {
+            Process[] processes = Process.GetProcesses();
+            Process currentProc = Process.GetCurrentProcess();
+            foreach (Process process in processes)
+            {
+                if (currentProc.ProcessName == process.ProcessName && currentProc.Id != process.Id)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
 
@@ -156,6 +183,12 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 lblStatus.Content = "Status: Ready";
             }
         }
+        private void extract7zip() {
+            if (!Directory.Exists("Resources"))
+                Directory.CreateDirectory("Resources");
+            File.WriteAllBytes(Path.Join("Resources", "7za.exe"), Properties.Resources._7za);
+            File.WriteAllText(Path.Join("Resources", "7za-license.txt"), Properties.Resources.License);
+        }
         void downloadUpdateDialog()
         {
             MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Update now?", "Update was found", System.Windows.MessageBoxButton.YesNo);
@@ -165,10 +198,8 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     File.Delete("UpdateFound.txt");
 
                 // Extract embedded files
-                if (!Directory.Exists("Resources"))
-                    Directory.CreateDirectory("Resources");
-                File.WriteAllBytes(Path.Join("Resources", "7za.exe"), Properties.Resources._7za);
-                File.WriteAllText(Path.Join("Resources", "7za-license.txt"), Properties.Resources.License);
+                extract7zip();
+
                 string zPath = Path.Combine("Resources", "7za.exe"),
                         updzip = "upd.7z",
                         ePath = Directory.GetCurrentDirectory();
@@ -197,6 +228,14 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                     fs.Write(info, 0, info.Length);
                 }
 
+                // Close tray application
+                var proc = Process.GetProcessesByName("TcNo Account Switcher Tray").FirstOrDefault();
+                if (proc != null)
+                {
+                    File.Create("RestartTray");
+                    closeTray();
+                }
+
                 // Run update.exe
                 string processName = "TcNo-Acc-Switcher-Updater.exe";
                 ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -206,6 +245,37 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 Process.Start(startInfo);
                 Environment.Exit(1);
             }
+        }
+        private void startTray()
+        {
+            try
+            {
+                string processName = "TcNo Account Switcher Tray.exe";
+                if (File.Exists(processName))
+                {
+                    ProcessStartInfo startInfo = new ProcessStartInfo();
+                    startInfo.FileName = Path.GetFullPath(processName);
+                    startInfo.CreateNoWindow = false;
+                    startInfo.UseShellExecute = false;
+                    Process.Start(startInfo);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Unable to start Tray process. Try starting it yourself using 'TcNo Account Switcher Tray.exe'", "TcNo Account Switcher - Tray start fail", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void closeTray()
+        {
+            // This is what Administrator permissions are required for.
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.FileName = "cmd.exe";
+            startInfo.Arguments = "/C TASKKILL /F /T /IM \"TcNo Account Switcher Tray*\"";
+            process.StartInfo = startInfo;
+            process.Start();
+            process.WaitForExit();
         }
         void updateCheck()
         {
@@ -1256,26 +1326,35 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             persistentSettings.ShowVACStatus = VACEnabled;
             MainViewmodel.ShowVACStatus = VACEnabled;
         }
-        private void updateClean()
+        private void resourceClean(bool update)
         {
             new DirectoryInfo("Resources").Delete(true);
-            string[] delFileNames = { "x64.zip", "x32.zip", "upd.7z", "UpdateInformation.txt" };
+            string[] delFileNames;
+            if (update)
+                delFileNames = new string[] { "x64.zip", "x32.zip", "upd.7z", "UpdateInformation.txt" };
+            else
+                delFileNames = new string[] { "x64.zip", "x32.zip", "upd.7z"};
+
             foreach (string f in delFileNames)
             {
                 if (File.Exists(f))
                     File.Delete(f);
             }
-            bool deleted = false;
-            while (!deleted)
+
+            if (update)
             {
-                try
+                bool deleted = false;
+                while (!deleted)
                 {
-                    File.Delete("TcNo-Acc-Switcher-Updater.exe");
-                    deleted = true;
-                }
-                catch (Exception)
-                {
-                    Thread.Sleep(500);
+                    try
+                    {
+                        File.Delete("TcNo-Acc-Switcher-Updater.exe");
+                        deleted = true;
+                    }
+                    catch (Exception)
+                    {
+                        Thread.Sleep(500);
+                    }
                 }
             }
         }
@@ -1296,7 +1375,11 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         private void CheckShortcuts()
         {
             MainViewmodel.DesktopShortcut = shortcutExist(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory));
-            MainViewmodel.StartWithWindows = shortcutExist(Environment.GetFolderPath(Environment.SpecialFolder.Startup));
+            using (TaskService ts = new TaskService())
+            {
+                TaskCollection tasks = ts.RootFolder.Tasks;
+                MainViewmodel.StartWithWindows = tasks.Exists("TcNo Account Switcher - Tray start with logon");
+            }
             MainViewmodel.StartMenuIcon = shortcutExist(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\"));
         }
         public void DesktopShortcut(bool bEnabled)
@@ -1306,16 +1389,38 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             if (bEnabled)
                 createShortcut(desktop_path);
             else
-                deleteShortcut(desktop_path, false);
+                deleteShortcut(desktop_path, "TcNo Account Switcher.lnk", false);
         }
         public void StartWithWindows(bool bEnabled)
         {
             MainViewmodel.StartWithWindows = bEnabled;
-            string startup_path = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+
+            extractTrayExe();
+
             if (bEnabled)
-                createShortcut(startup_path);
+            {
+                TaskService ts = new TaskService();
+                TaskDefinition td = ts.NewTask();
+                td.Principal.RunLevel = TaskRunLevel.Highest;
+                td.Triggers.AddNew(TaskTriggerType.Logon);
+                string program_path = Path.GetFullPath("TcNo Account Switcher Tray.exe");
+                td.Actions.Add(new ExecAction(program_path, null));
+                ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Tray start with logon", td);
+                MessageBox.Show("TcNo Account Switcher will start in the Windows Tray on user login/startup (The small icons on the bottom right of your Windows Start bar.)");
+            }
             else
-                deleteShortcut(startup_path, false);
+            {
+                TaskService ts = new TaskService();
+                ts.RootFolder.DeleteTask("TcNo Account Switcher - Tray start with logon");
+                MessageBox.Show("TcNo Account Switcher will no longer start with user login/startup.");
+            }
+            
+            
+            //string startup_path = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+            //if (bEnabled)
+            //    createShortcut(startup_path);
+            //else
+            //    deleteShortcut(startup_path, "TcNo Account Switcher.lnk", false);
         }
         public void StartMenuShortcut(bool bEnabled)
         {
@@ -1323,9 +1428,15 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             string programs_path = Environment.GetFolderPath(Environment.SpecialFolder.Programs),
                    shortcutFolder = Path.Combine(programs_path, @"TcNo Account Switcher\");
             if (bEnabled)
+            {
                 createShortcut(shortcutFolder);
+                createTrayShortcut(shortcutFolder);
+            }
             else
-                deleteShortcut(shortcutFolder, true);
+            {
+                deleteShortcut(shortcutFolder, "TcNo Account Switcher.lnk", false);
+                deleteShortcut(shortcutFolder, "TcNo Account Switcher - System tray.lnk", true);
+            }
         }
         private bool shortcutExist(string location)
         {
@@ -1342,8 +1453,58 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             string selfexe = Path.Combine(Directory.GetCurrentDirectory(), System.AppDomain.CurrentDomain.FriendlyName + ".exe"), // Changes .dll to .exe. .NET Core returns the .dll instead of the .exe required for the shortcut.
                    selflocation = Directory.GetCurrentDirectory(),
                    iconDirectory = Path.Combine(selflocation, "icon.ico"),
-                   settingsLink = Path.Combine(location, "TcNo Account Switcher.lnk");
+                   settingsLink = Path.Combine(location, "TcNo Account Switcher.lnk"),
+                   description = "TcNo Account Switcher";
 
+            writeShortcut(location, selfexe, selflocation, iconDirectory, description, settingsLink);
+        }
+        private void extractTrayExe()
+        { 
+            // Extract tray .exe from compressed .7z resource.
+            int curTrayVersion = 0;
+            if (File.Exists("trayversion"))
+                curTrayVersion = int.Parse(File.ReadAllText("trayversion"));
+            if (trayversion > curTrayVersion || !File.Exists("TcNo Account Switcher Tray.exe")) // Update
+            {
+                extract7zip();
+                string zPath = Path.Combine("Resources", "7za.exe"),
+                        trayzip = "tray.7z",
+                        ePath = Directory.GetCurrentDirectory();
+#if X64
+                File.WriteAllBytes(trayzip, Properties.Resources.tray64);
+#else
+            File.WriteAllBytes(trayzip, Properties.Resources.tray32);
+#endif
+
+                ProcessStartInfo pro = new ProcessStartInfo();
+                pro.WindowStyle = ProcessWindowStyle.Hidden;
+                pro.FileName = zPath;
+                pro.Arguments = string.Format("x \"{0}\" -y -o\"{1}\"", trayzip, ePath);
+                pro.UseShellExecute = false;
+                pro.RedirectStandardOutput = true;
+                pro.CreateNoWindow = true;
+                Process x = Process.Start(pro);
+                x.WaitForExit();
+
+                File.WriteAllText("trayversion", trayversion.ToString());
+                File.Delete(trayzip);
+                resourceClean(false);
+            }
+        }
+        private void createTrayShortcut(string location)
+        {
+            extractTrayExe();
+
+            string selfexe = Path.Combine(Directory.GetCurrentDirectory(), "TcNo Account Switcher Tray.exe"), // Changes .dll to .exe. .NET Core returns the .dll instead of the .exe required for the shortcut.
+                selflocation = Directory.GetCurrentDirectory(),
+                iconDirectory = Path.Combine(selflocation, "icon.ico"),
+                settingsLink = Path.Combine(location, "TcNo Account Switcher - System tray.lnk"),
+                description = "TcNo Account Switcher - System tray";
+
+            writeShortcut(location, selfexe, selflocation, iconDirectory, description, settingsLink);
+        }
+        private void writeShortcut(string location, string exe, string selflocation, string iconDirectory, string description, string settingsLink)
+        {
             if (!File.Exists(settingsLink))
             {
                 if (File.Exists("CreateShortcut.vbs"))
@@ -1355,10 +1516,10 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
                 string[] Lines = {"set WshShell = WScript.CreateObject(\"WScript.Shell\")",
                        "set oShellLink = WshShell.CreateShortcut(\"" + settingsLink  + "\")",
-                       "oShellLink.TargetPath = \"" + selfexe + "\"",
+                       "oShellLink.TargetPath = \"" + exe + "\"",
                        "oShellLink.WindowStyle = 1",
                        "oShellLink.IconLocation = \"" + iconDirectory + "\"",
-                       "oShellLink.Description = \"TcNo Account Switcher\"",
+                       "oShellLink.Description = \"" + description + "\"",
                        "oShellLink.WorkingDirectory = \"" + selflocation + "\"",
                        "oShellLink.Save()"
             };
@@ -1380,12 +1541,12 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
                 result_string = result_string.Replace("\r\n", "");
                 File.Delete("CreateShortcut.vbs");
-                MessageBox.Show("Shortcut created!\n\nLocation: " + location);
+                MessageBox.Show("Shortcut created!\n\nLocation: " + settingsLink);
             }
         }
-        private void deleteShortcut(string location, bool delFolder)
+        private void deleteShortcut(string location, string name, bool delFolder)
         {
-            string settingsLink = Path.Combine(location, "TcNo Account Switcher.lnk");
+            string settingsLink = Path.Combine(location, name);
             if (File.Exists(settingsLink))
                 File.Delete(settingsLink);
             if (delFolder)
@@ -1395,7 +1556,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 else
                     MessageBox.Show("Unable to delete folder because it's not empty: " + location);
             }
-            MessageBox.Show("Shortcut deleted!");
+            MessageBox.Show("Shortcut to: " + name + " was deleted!");
         }
 
 

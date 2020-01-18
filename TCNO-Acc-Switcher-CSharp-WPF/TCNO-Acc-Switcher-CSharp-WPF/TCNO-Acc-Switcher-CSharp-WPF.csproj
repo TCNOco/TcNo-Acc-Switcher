@@ -6,15 +6,15 @@
     <RootNamespace>TCNO_Acc_Switcher_CSharp_WPF</RootNamespace>
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Copyright>Copyright (c) TechNobo (Wesley Pyburn) 2019</Copyright>
-    <Version>2.2.6</Version>
+    <Copyright>Copyright (c) TechNobo (Wesley Pyburn) 2020</Copyright>
+    <Version>2.3.0</Version>
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <PackageIconUrl>https://github.com/TcNobo/TcNo-Acc-Switcher/raw/master/docs/img/TcNoAccSw-Icon-1000x1000.png</PackageIconUrl>
     <PackageId>TCNO-Acc-Switcher</PackageId>
     <Authors>TechNobo (Wesley Pyburn)</Authors>
     <Company>TechNobo (Wesley Pyburn)</Company>
-    <Product>TCNO-Acc-Switcher</Product>
+    <Product>TcNo Account Switcher</Product>
     <Description>Fast Steam Account Switcher. https://github.com/TcNobo/TcNo-Acc-Switcher</Description>
     <NeutralLanguage></NeutralLanguage>
     <ApplicationIcon>icon.ico</ApplicationIcon>
@@ -84,6 +84,7 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="TaskScheduler" Version="2.8.18" />
   </ItemGroup>
 
   <ItemGroup>

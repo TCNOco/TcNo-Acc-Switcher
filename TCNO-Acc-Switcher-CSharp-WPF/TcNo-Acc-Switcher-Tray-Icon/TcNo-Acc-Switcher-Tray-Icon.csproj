@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>TcNo_Acc_Switcher_Tray_Icon</RootNamespace>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>TcNo Account Switcher Tray</AssemblyName>
+    <Authors>TechNobo (Wesley Pyburn)</Authors>
+    <Description>Tray process for TcNo Steam Account Switcher. https://github.com/TcNobo/TcNo-Acc-Switcher</Description>
+    <Copyright>Copyright (c) TechNobo (Wesley Pyburn) 2020</Copyright>
+    <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
+    <SignAssembly>false</SignAssembly>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
