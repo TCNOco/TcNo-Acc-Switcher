@@ -61,6 +61,11 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         public MainWindow()
         {
             /* TODO:
+             - Make "Installer" .exe. Maybe from C++ so it can run everywhere? Check for the correct .NET Core Desktop version, and download it if not found. Then run the installer.
+             Download the .exe and place it where the user specifies.
+             Start the Account Swicther with an argument that automatically makes the Start Menu and or Desktop Shortcuts, if specified.
+             Change it so that the correct Tray application is extracted by default on first launch, instead of whenever the shortcut button is clicked. Of course, check for it then as well to make sure it's copied.
+             -- Get the .NET Core version from PC, and compare with a version file on https://tcno.co, that also has the latest download links for users.
              */
              // Single instance check
             if (SelfAlreadyRunning())
