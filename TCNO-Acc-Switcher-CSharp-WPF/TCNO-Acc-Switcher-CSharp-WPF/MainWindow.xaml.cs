@@ -50,7 +50,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 2300;
+        int version = 2301;
         int trayversion = 1000;
 
 
@@ -1380,12 +1380,16 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         private void CheckShortcuts()
         {
             MainViewmodel.DesktopShortcut = shortcutExist(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory));
+            MainViewmodel.StartWithWindows = CheckStartWithWindows();
+            MainViewmodel.StartMenuIcon = shortcutExist(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\"));
+        }
+        private bool CheckStartWithWindows()
+        {
             using (TaskService ts = new TaskService())
             {
                 TaskCollection tasks = ts.RootFolder.Tasks;
-                MainViewmodel.StartWithWindows = tasks.Exists("TcNo Account Switcher - Tray start with logon");
+                return tasks.Exists("TcNo Account Switcher - Tray start with logon");
             }
-            MainViewmodel.StartMenuIcon = shortcutExist(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\"));
         }
         public void DesktopShortcut(bool bEnabled)
         {
@@ -1404,14 +1408,17 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 
             if (bEnabled)
             {
-                TaskService ts = new TaskService();
-                TaskDefinition td = ts.NewTask();
-                td.Principal.RunLevel = TaskRunLevel.Highest;
-                td.Triggers.AddNew(TaskTriggerType.Logon);
-                string program_path = Path.GetFullPath("TcNo Account Switcher Tray.exe");
-                td.Actions.Add(new ExecAction(program_path, null));
-                ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Tray start with logon", td);
-                MessageBox.Show("TcNo Account Switcher will start in the Windows Tray on user login/startup (The small icons on the bottom right of your Windows Start bar.)");
+                if (!CheckStartWithWindows())
+                {
+                    TaskService ts = new TaskService();
+                    TaskDefinition td = ts.NewTask();
+                    td.Principal.RunLevel = TaskRunLevel.Highest;
+                    td.Triggers.AddNew(TaskTriggerType.Logon);
+                    string program_path = Path.GetFullPath("TcNo Account Switcher Tray.exe");
+                    td.Actions.Add(new ExecAction(program_path, null));
+                    ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Tray start with logon", td);
+                    MessageBox.Show("TcNo Account Switcher will start in the Windows Tray on user login/startup (The small icons on the bottom right of your Windows Start bar.)");
+                }
             }
             else
             {
