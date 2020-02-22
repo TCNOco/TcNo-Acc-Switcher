@@ -51,4 +51,4 @@ Users can still download updates via the GitHub Releases page, but they will be 
 Downloaded from a different source? Verify hashes [HERE](https://tcno.co/Projects/AccSwitcher/Hashes.html)
 
 ### Known issues
-- Clearing `%temp%` with program running leads to prompt to install .NET Core on next launch.<br>To solve: Delete the `.net` folder from `%temp%`, with the account switcher closed.
+- Clearing `%temp%` with program running leads to prompt to install .NET Core on next launch.<br>To solve: Delete the `.net` folder from `%temp%`, with the account switcher closed.<br>Acknowledged by Microsoft. Issue with Single-file builds. https://github.com/dotnet/runtime/issues/3778
