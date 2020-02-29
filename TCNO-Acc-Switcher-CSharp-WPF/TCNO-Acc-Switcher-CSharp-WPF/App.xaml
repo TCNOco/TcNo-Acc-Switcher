@@ -58,6 +58,32 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
+        <!-- Pick Steam Folder button -->
+        <Style x:Key="mainMenuButtons" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Padding="5 0" BorderThickness="1.5" BorderBrush="Gray" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#444444"></Setter>
+                                <Setter Property="BorderBrush" Value="#0685d1"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#333333"></Setter>
+                                <Setter Property="BorderBrush" Value="#808080"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <!-- Header bar buttons -->
         <Style x:Key="ExitButton" TargetType="Button">

@@ -26,23 +26,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public static class getChild
-    {
-        public static T GetChildOfType<T>(this DependencyObject depObj)
-        where T : DependencyObject
-        {
-            if (depObj == null) return null;
-
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-            {
-                var child = VisualTreeHelper.GetChild(depObj, i);
-
-                var result = (child as T) ?? GetChildOfType<T>(child);
-                if (result != null) return result;
-            }
-            return null;
-        }
-    }
     public partial class MainWindow : Window
     {
         List<Steamuser> userAccounts = new List<Steamuser>();
@@ -50,7 +33,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 2301;
+        int version = 2302;
         int trayversion = 1000;
 
 
@@ -1134,17 +1117,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 saveSettings();
         }
 
-        private void chkShowSettings_MouseEnter(object sender, MouseEventArgs e)
-        {
-            getChild.GetChildOfType<Border>(chkShowSettings).Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#444444")));
-            getChild.GetChildOfType<Border>(chkShowSettings).BorderBrush = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#0685d1")));
-        }
-
-        private void chkShowSettings_MouseLeave(object sender, MouseEventArgs e)
-        {
-            getChild.GetChildOfType<Border>(chkShowSettings).Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#333333")));
-            getChild.GetChildOfType<Border>(chkShowSettings).BorderBrush = new SolidColorBrush(Colors.Gray);
-        }
         public void ResetSettings()
         {
             persistentSettings = new UserSettings();
@@ -1195,18 +1167,6 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
         private void Window_Closed(object sender, EventArgs e)
         {
             Environment.Exit(1);
-        }
-
-        private void btnShowInfo_MouseEnter(object sender, MouseEventArgs e)
-        {
-            getChild.GetChildOfType<Border>(btnShowInfo).Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#444444")));
-            getChild.GetChildOfType<Border>(btnShowInfo).BorderBrush = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#0685d1")));
-        }
-
-        private void btnShowInfo_MouseLeave(object sender, MouseEventArgs e)
-        {
-            getChild.GetChildOfType<Border>(btnShowInfo).Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#333333")));
-            getChild.GetChildOfType<Border>(btnShowInfo).BorderBrush = new SolidColorBrush(Colors.Gray);
         }
 
         private void btnShowInfo_Click(object sender, RoutedEventArgs e)
