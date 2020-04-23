@@ -93,6 +93,9 @@ namespace Origin_test
                     }
                 }
                 catch { }
+
+            // Unfortunately the lower quality image... No idea how to get the higher quality cached one :/
+            File.Copy(profileimage, username + "\\user.jpg");
             Console.WriteLine("Image URL: " + profileimage);
         }
 
