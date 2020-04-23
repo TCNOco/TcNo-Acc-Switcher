@@ -28,6 +28,10 @@ namespace Origin_test
             //Console.WriteLine(OriginProgramFiles);
             Console.WriteLine(OriginRoaming);
 
+            // Get user image from cache
+            GetAccountImage("7589");
+
+
             // Copy account files out
             //copyout("7589");
             // Setup Origin for a new account
@@ -60,7 +64,37 @@ namespace Origin_test
             CopyUserIn(name);
         }
 
-
+        static void GetAccountImage(string username)
+        {
+            string OriginStorageRoaming = Path.Combine(username, "Roaming");
+            FileInfo[] filesRoaming = new DirectoryInfo(OriginStorageRoaming).GetFiles().ToArray();
+            string profileimage = "";
+            foreach (FileInfo fileRoaming in filesRoaming)
+                try
+                {
+                    if (fileRoaming.Extension == ".xml" && fileRoaming.Name != "local.xml")
+                    {
+                        using (XmlReader reader = XmlReader.Create(fileRoaming.FullName))
+                        {
+                            reader.MoveToContent();
+                            reader.ReadStartElement("Settings");
+                            reader.Read();
+                            while (!reader.EOF)
+                            {
+                                if (reader.GetAttribute("key") != "UserAvatarCacheURL")
+                                    reader.Skip();
+                                else
+                                {
+                                    profileimage = reader.GetAttribute("value");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                catch { }
+            Console.WriteLine("Image URL: " + profileimage);
+        }
 
         static void ClearCacheOrigin()
         {
@@ -88,7 +122,6 @@ namespace Origin_test
         {
             // Clean ProgramData
             TryDeleteFolder(Path.Combine(OriginProgramData, "Subscription"));
-            DirectoryInfo diProgramData = new DirectoryInfo(OriginProgramData);
             FileInfo[] filesProgramData = new DirectoryInfo(OriginProgramData).GetFiles().ToArray();
             foreach (FileInfo fileProgramData in filesProgramData)
                 try
@@ -168,7 +201,6 @@ namespace Origin_test
             // Move all Subscription files
             CopyFoldersInFolder(OriginProgramDataSubscription, OriginStorageProgramDataSubscription);
 
-            DirectoryInfo diProgramData = new DirectoryInfo(OriginProgramData);
             FileInfo[] filesProgramData = new DirectoryInfo(OriginProgramData).GetFiles().ToArray();
             foreach (FileInfo fileProgramData in filesProgramData)
                 try
@@ -302,5 +334,6 @@ namespace Origin_test
                 CopyAll(diSourceSubDir, nextTargetSubDir);
             }
         }
+
     }
 }
