@@ -7,7 +7,7 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, uncomment.
 
-namespace TCNO_Acc_Switcher_CSharp_WPF
+namespace TcNo_Acc_Switcher
 {
     /// <summary>
     /// Interaction logic for ClearLogins.xaml

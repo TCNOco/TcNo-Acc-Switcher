@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
 
-namespace TCNO_Acc_Switcher_CSharp_WPF
+namespace TcNo_Acc_Switcher
 {
     /// <summary>
     /// Interaction logic for InfoWindow.xaml

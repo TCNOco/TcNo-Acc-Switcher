@@ -6,7 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 //using System.Windows.Shapes;
 
-namespace TCNO_Acc_Switcher_CSharp_WPF
+namespace TcNo_Acc_Switcher
 {
     /// <summary>
     /// Interaction logic for SteamFolderInput.xaml

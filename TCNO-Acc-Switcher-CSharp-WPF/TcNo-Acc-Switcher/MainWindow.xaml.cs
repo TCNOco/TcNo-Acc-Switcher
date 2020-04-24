@@ -21,7 +21,7 @@ using System.Windows.Media.Animation;
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, uncomment.
 using System.Xml;
 
-namespace TCNO_Acc_Switcher_CSharp_WPF
+namespace TcNo_Acc_Switcher
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -50,7 +50,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
              Change it so that the correct Tray application is extracted by default on first launch, instead of whenever the shortcut button is clicked. Of course, check for it then as well to make sure it's copied.
              -- Get the .NET Core version from PC, and compare with a version file on https://tcno.co, that also has the latest download links for users.
              */
-             // Single instance check
+            // Single instance check
             if (SelfAlreadyRunning())
             {
                 Console.WriteLine("TcNo Account Switcher is already running");
@@ -66,7 +66,8 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             if (Directory.Exists("Resources"))
             {
                 resourceClean(true);
-                if (File.Exists("RestartTray")){
+                if (File.Exists("RestartTray"))
+                {
                     File.Delete("RestartTray");
                     startTray();
                 }
@@ -171,11 +172,12 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 lblStatus.Content = "Status: Ready";
             }
         }
-        private void extract7zip() {
+        private void extract7zip()
+        {
             if (!Directory.Exists("Resources"))
                 Directory.CreateDirectory("Resources");
-            File.WriteAllBytes(Path.Join("Resources", "7za.exe"), Properties.Resources._7za);
-            File.WriteAllText(Path.Join("Resources", "7za-license.txt"), Properties.Resources.License);
+            File.WriteAllBytes(Path.Combine("Resources", "7za.exe"), Properties.Resources._7za);
+            File.WriteAllText(Path.Combine("Resources", "7za-license.txt"), Properties.Resources.License);
         }
         void downloadUpdateDialog()
         {
@@ -212,7 +214,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 File.Delete("UpdateInformation.txt");
                 using (FileStream fs = File.Create("UpdateInformation.txt"))
                 {
-                    byte[] info = new UTF8Encoding(true).GetBytes(System.AppDomain.CurrentDomain.FriendlyName + ".exe|" + arch + "|" + version.ToString());
+                    byte[] info = new UTF8Encoding(true).GetBytes(System.AppDomain.CurrentDomain.FriendlyName + "|" + arch + "|" + version.ToString());
                     fs.Write(info, 0, info.Length);
                 }
 
@@ -327,14 +329,16 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                         if (!downloadError)
                         {
                             downloadError = true; // Show error only once
-                            File.WriteAllBytes(su.ImgURL, Properties.Resources.QuestionMark); // Give the user's profile picture a question mark.
+                            // .net Core way: File.WriteAllBytes(su.ImgURL, Properties.Resources.QuestionMark); // Give the user's profile picture a question mark.
+                            Properties.Resources.QuestionMark.Save(su.ImgURL);
                             MessageBox.Show("Could not connect and downlost Steam profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " + ex.ToString(), "TcNo Account Switcher - Update check error", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                 }
                 else
                 {
-                    File.WriteAllBytes(su.ImgURL, Properties.Resources.QuestionMark);
+                    // .net Core way: File.WriteAllBytes(su.ImgURL, Properties.Resources.QuestionMark);
+                    Properties.Resources.QuestionMark.Save(su.ImgURL);
                 }
                 su.ImgURL = Path.GetFullPath(su.ImgURL);
                 if (persistentSettings.ShowVACStatus)
@@ -601,16 +605,20 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             string imageURL = "";
             XmlDocument profileXML = new XmlDocument();
             profileXML.Load($"https://steamcommunity.com/profiles/{steamID}?xml=1");
-            try
+            imageURL = "";
+            if (profileXML.DocumentElement.SelectNodes("/profile/privacyMessage").Count == 0) // Fix for accounts that haven't set up their Community Profile
             {
-                imageURL = profileXML.DocumentElement.SelectNodes("/profile/avatarFull")[0].InnerText;
-                bool isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")[0].InnerText == "1" ? true : false;
-                bool isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")[0].InnerText == "1" ? true : false;
-                vacBanned = isVAC || isLimited;
-            }
-            catch (NullReferenceException) // User has not set up their account, or does not have an image.
-            {
-                imageURL = "";
+                try
+                {
+                    imageURL = profileXML.DocumentElement.SelectNodes("/profile/avatarFull")[0].InnerText;
+                    bool isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")[0].InnerText == "1" ? true : false;
+                    bool isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")[0].InnerText == "1" ? true : false;
+                    vacBanned = isVAC || isLimited;
+                }
+                catch (NullReferenceException) // User has not set up their account, or does not have an image.
+                {
+                    imageURL = "";
+                }
             }
             return imageURL;
         }
@@ -1265,7 +1273,12 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 }
             }
         }
-
+        private void btnNewLogin_Click(object sender, RoutedEventArgs e)
+        {
+            // Kill Steam
+            // Set all accounts to 'not used last' status
+            // Start Steam
+        }
         private void chkShowSettings_Click(object sender, RoutedEventArgs e)
         {
             Settings settingsDialog = new Settings();
@@ -1298,7 +1311,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             if (update)
                 delFileNames = new string[] { "x64.zip", "x32.zip", "upd.7z", "UpdateInformation.txt" };
             else
-                delFileNames = new string[] { "x64.zip", "x32.zip", "upd.7z"};
+                delFileNames = new string[] { "x64.zip", "x32.zip", "upd.7z" };
 
             foreach (string f in delFileNames)
             {
@@ -1386,8 +1399,8 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 ts.RootFolder.DeleteTask("TcNo Account Switcher - Tray start with logon");
                 MessageBox.Show("TcNo Account Switcher will no longer start with user login/startup.");
             }
-            
-            
+
+
             //string startup_path = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
             //if (bEnabled)
             //    createShortcut(startup_path);
@@ -1422,7 +1435,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
                 Directory.CreateDirectory(location);
             }
             // Has to be done in such a strange way because .NET Core points it to the .DLL inside of %temp% instead of the actual .exe...
-            string selfexe = Path.Combine(Directory.GetCurrentDirectory(), System.AppDomain.CurrentDomain.FriendlyName + ".exe"), // Changes .dll to .exe. .NET Core returns the .dll instead of the .exe required for the shortcut.
+            string selfexe = Path.Combine(Directory.GetCurrentDirectory(), System.AppDomain.CurrentDomain.FriendlyName), // Changes .dll to .exe. .NET Core returns the .dll instead of the .exe required for the shortcut.
                    selflocation = Directory.GetCurrentDirectory(),
                    iconDirectory = Path.Combine(selflocation, "icon.ico"),
                    settingsLink = Path.Combine(location, "TcNo Account Switcher.lnk"),
@@ -1431,7 +1444,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
             writeShortcut(location, selfexe, selflocation, iconDirectory, description, settingsLink);
         }
         private void extractTrayExe()
-        { 
+        {
             // Extract tray .exe from compressed .7z resource.
             int curTrayVersion = 0;
             if (File.Exists("trayversion"))
@@ -1445,7 +1458,7 @@ namespace TCNO_Acc_Switcher_CSharp_WPF
 #if X64
                 File.WriteAllBytes(trayzip, Properties.Resources.tray64);
 #else
-            File.WriteAllBytes(trayzip, Properties.Resources.tray32);
+                File.WriteAllBytes(trayzip, Properties.Resources.tray32);
 #endif
 
                 ProcessStartInfo pro = new ProcessStartInfo();

@@ -1,9 +1,9 @@
-﻿<Window x:Class="TCNO_Acc_Switcher_CSharp_WPF.Settings"
+﻿<Window x:Class="TcNo_Acc_Switcher.Settings"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TCNO_Acc_Switcher_CSharp_WPF"
+        xmlns:local="clr-namespace:TcNo_Acc_Switcher"
         mc:Ignorable="d"
         Title="TcNo Steam Account Switcher - Settings" Height="555" Width="502"
         MinHeight="329" MinWidth="502"
@@ -74,8 +74,8 @@
                 <CheckBox Panel.ZIndex="6" Name="ToggleStartShortcut" Margin="5px" Foreground="White" Content="Start menu shortcut" IsChecked="{Binding StartMenuIcon, Mode=TwoWay}" Checked="ToggleStartShortcut_Checked" Unchecked="ToggleStartShortcut_Unchecked" />
                 <CheckBox Panel.ZIndex="6" Name="ToggleStartWithWindows" Margin="5px" Foreground="White" Content="Start with Windows" IsChecked="{Binding StartWithWindows, Mode=TwoWay}" Checked="ToggleStartWithWindows_Checked" Unchecked="ToggleStartWithWindows_Unchecked" />
             </StackPanel>
-            
-            
+
+
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.5*" />

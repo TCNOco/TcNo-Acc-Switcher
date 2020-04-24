@@ -1,4 +1,4 @@
-Find more information on GitHub: https://github.com/TcNobo/TcNo-Acc-Switcher
+﻿Find more information on GitHub: https://github.com/TcNobo/TcNo-Acc-Switcher
 Join the Discord for bug reports/feature requests: https://s.tcno.co/AccSwitcherDiscord
   - This is a short link so it can be updated if needed later.
 

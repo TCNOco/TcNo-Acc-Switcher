@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 
 
-namespace TCNO_Acc_Switcher_CSharp_WPF
+namespace TcNo_Acc_Switcher
 {
     /// <summary>
     /// Interaction logic for Settings.xaml

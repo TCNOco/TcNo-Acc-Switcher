@@ -1,11 +1,11 @@
-﻿<Window x:Class="TCNO_Acc_Switcher_CSharp_WPF.RestoreForgotten"
+﻿<Window x:Class="TcNo_Acc_Switcher.ForgetAccountCheck"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TCNO_Acc_Switcher_CSharp_WPF"
+        xmlns:local="clr-namespace:TcNo_Acc_Switcher"
         mc:Ignorable="d"
-        Title="RestoreForgotten" Height="450" Width="800"
+        Title="TcNo Steam Account Switcher - Forget" Height="423" Width="540"
         MinHeight="360" MinWidth="600"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterOwner"
@@ -27,7 +27,6 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="30px"/>
-            <RowDefinition Height="40px"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.Effect>
@@ -61,13 +60,41 @@
         <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="btnExit"></Button>
 
 
-        <TextBlock Panel.ZIndex="6" Grid.Row="1" Name="txtForgetText" Foreground="White" TextWrapping="Wrap" Margin="10px">
-            <Run Text="List of available backups:" FontSize="15"/>
+        <TextBlock Panel.ZIndex="6" Grid.Row="1" Name="txtForgetText" Margin="14px" Foreground="White" TextWrapping="Wrap">
+            <Run Text="You are about to forget an account!" FontWeight="ExtraBold" Foreground="Red" FontSize="15"/>
+            <LineBreak/>
+            <LineBreak/>
+            <Run Text="What does this mean?" FontSize="13" FontWeight="Bold"/>
+            <LineBreak/>
+            <Run Text="- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password."/>
+            <LineBreak/>
+            <Run Text="- TcNo Account Switcher will also no longer show the account, until it's signed into again via Steam."/>
+            <LineBreak/>
+            <LineBreak/>
+            <Run Text="You account will remain untouched. It is just forgotten on this computer."/>
+            <LineBreak/>
+            <LineBreak/>
+            <Run Text="What if something goes wrong?" FontSize="13" FontWeight="Bold"/>
+            <LineBreak/>
+            <Run Text="Don't panic, you can bring back forgotton accounts via backups in the Settings window."/>
+            <LineBreak/>
+            <Run Text="You can also remove previous backups from there when you are sure everything is working as expected."/>
+            <LineBreak/>
+            <LineBreak/>
+            <Run Text="Right-click >> Forget and using the Delete key will both work."/>
         </TextBlock>
-        <ListView Panel.ZIndex="6" Grid.Row="2" x:Name="filenamesList" Margin="10px 0 10px 45px" Background="#222222" Foreground="White" />
-        <StackPanel Panel.ZIndex="6" Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <Button Name="btnRestore" Margin="5px" Width="150" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Restore selected" Click="btnRestore_Click"/>
-            <Button Name="btnCloseMessage" Margin="5px 0 10px 0 " Width="150" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Cancel" Click="btnExit"/>
+        <StackPanel Panel.ZIndex="7" Grid.Row="1" Background="#28293A" Margin="20,20,20,20" Grid.ColumnSpan="2" VerticalAlignment="Bottom">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition Width="0.5*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="46" />
+                </Grid.RowDefinitions>
+                <CheckBox Grid.Row="0" Grid.Column="0" Name="RunasAdmin" Margin="14px" HorizontalAlignment="Left" Foreground="White" Content="I have read and understand" IsChecked="{Binding ForgetAccountEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Button Grid.Row="0" Grid.Column="1" Name="btnCloseMessage" Margin="5px" Width="150" Height="36" HorizontalAlignment="Right" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Close" Click="btnExit"/>
+            </Grid>
         </StackPanel>
     </Grid>
 </Window>
