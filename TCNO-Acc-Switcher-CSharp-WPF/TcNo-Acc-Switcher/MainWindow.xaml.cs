@@ -645,7 +645,7 @@ namespace TcNo_Acc_Switcher
         //    //MessageBox.Show("You have selected a ListBoxItem!");
         //    MessageBox.Show(MainViewmodel.SelectedSteamUser.Name);
         //}
-        private void mostRecentUpdate()
+        private void UpdateLoginusers(bool loginnone)
         {
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
@@ -656,7 +656,7 @@ namespace TcNo_Acc_Switcher
                 lblStatus.Content = "Status: Editing loginusers.vdf";
                 string lineNoQuot;
                 bool userIDMatch = false;
-                string outline = "", SelectedSteamID = MainViewmodel.SelectedSteamUser.SteamID;
+                string outline = "", SelectedSteamID = (loginnone ? "" : MainViewmodel.SelectedSteamUser.SteamID);
                 foreach (string curline in fLoginUsersLines)
                 {
                     outline = curline;
@@ -676,7 +676,7 @@ namespace TcNo_Acc_Switcher
                     else if (curline.Contains("mostrecent"))
                     {
                         // Set every mostrecent to 0, unless it's the one you want to switch to.
-                        if (userIDMatch)
+                        if (!loginnone && userIDMatch)
                         {
                             outline = "\t\t\"mostrecent\"\t\t\"1\"";
                         }
@@ -702,8 +702,16 @@ namespace TcNo_Acc_Switcher
             lblStatus.Content = "Status: Editing Steam's Registry keys";
             using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam"))
             {
-                key.SetValue("AutoLoginUser", MainViewmodel.SelectedSteamUser.AccName);
-                key.SetValue("RememberPassword", 1);
+                if (loginnone)
+                {
+                    key.SetValue("AutoLoginUser", "");
+                    key.SetValue("RememberPassword", 1);
+                }
+                else
+                {
+                    key.SetValue("AutoLoginUser", MainViewmodel.SelectedSteamUser.AccName);
+                    key.SetValue("RememberPassword", 1);
+                }
             }
         }
         public void closeSteam()
@@ -938,7 +946,7 @@ namespace TcNo_Acc_Switcher
 
             lblStatus.Content = "Status: Closing Steam";
             closeSteam();
-            mostRecentUpdate();
+            UpdateLoginusers(false);
 
             if (persistentSettings.StartAsAdmin)
                 Process.Start(persistentSettings.SteamEXE());
@@ -1276,8 +1284,15 @@ namespace TcNo_Acc_Switcher
         private void btnNewLogin_Click(object sender, RoutedEventArgs e)
         {
             // Kill Steam
+            closeSteam();
             // Set all accounts to 'not used last' status
+            UpdateLoginusers(true);
             // Start Steam
+            if (persistentSettings.StartAsAdmin)
+                Process.Start(persistentSettings.SteamEXE());
+            else
+                Process.Start(new ProcessStartInfo("explorer.exe", persistentSettings.SteamEXE()));
+            lblStatus.Content = "Status: Started Steam";
         }
         private void chkShowSettings_Click(object sender, RoutedEventArgs e)
         {
