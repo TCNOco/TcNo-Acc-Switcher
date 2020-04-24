@@ -1,2 +1,4 @@
 Moved codebase from .NET Core 3.1 to .NET Framework 4.7 -- Effort
 Fix for accounts that haven't set up their Community Profile
+Easy Add New button added to let you login to a new Steam user account.
+settings.json & Users.json renamed to SteamSettings.json & SteamVACCache.json - For more clear seperation between platforms

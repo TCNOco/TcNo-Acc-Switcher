@@ -158,7 +158,7 @@ namespace TcNo_Acc_Switcher
                 }
             }
 
-            if (File.Exists("Users.json") && persistentSettings.ShowVACStatus)
+            if (File.Exists("SteamVACCache.json") && persistentSettings.ShowVACStatus)
                 loadVacInformation();
 
             if (ImagesToDownload.Count > 0)
@@ -366,7 +366,7 @@ namespace TcNo_Acc_Switcher
         }
         void InitializeSettings()
         {
-            if (!File.Exists("settings.json"))
+            if (!File.Exists("SteamSettings.json"))
                 saveSettings();
             else
                 loadSettings();
@@ -424,7 +424,7 @@ namespace TcNo_Acc_Switcher
         void loadSettings()
         {
             JsonSerializer serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
-            using (StreamReader sr = new StreamReader(@"settings.json"))
+            using (StreamReader sr = new StreamReader(@"SteamSettings.json"))
             {
                 // persistentSettings = JsonConvert.DeserializeObject<UserSettings>(sr.ReadToEnd()); -- Entirely replaces, instead of merging. New variables won't have values.
                 // Using a JSON Union Merge means that settings that are missing will have default values, set at the top of this file.
@@ -439,15 +439,15 @@ namespace TcNo_Acc_Switcher
                 }
                 catch (Exception)
                 {
-                    if (File.Exists("settings.json"))
+                    if (File.Exists("SteamSettings.json"))
                     {
-                        if (File.Exists("settings.old.json"))
-                            File.Delete("settings.old.json");
-                        File.Copy("settings.json", "settings.old.json");
+                        if (File.Exists("SteamSettings.old.json"))
+                            File.Delete("SteamSettings.old.json");
+                        File.Copy("SteamSettings.json", "SteamSettings.old.json");
                     }
 
                     saveSettings();
-                    MessageBox.Show("Settings.json failed to load properly.\nOld settings are saved in settings.old.json, and a new config has been loaded.", "TcNo Account Switcher - Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("SteamSettings.json failed to load properly.\nOld settings are saved in settings.old.json, and a new config has been loaded.", "TcNo Account Switcher - Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -479,7 +479,7 @@ namespace TcNo_Acc_Switcher
                 saveOtherVarsToSettings();
                 JsonSerializer serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
 
-                using (StreamWriter sw = new StreamWriter(@"settings.json"))
+                using (StreamWriter sw = new StreamWriter(@"SteamSettings.json"))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {
                     serializer.Serialize(writer, persistentSettings);
@@ -1259,7 +1259,7 @@ namespace TcNo_Acc_Switcher
 
                 JsonSerializer serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
 
-                using (StreamWriter sw = new StreamWriter(@"Users.json"))
+                using (StreamWriter sw = new StreamWriter(@"SteamVACCache.json"))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {
                     serializer.Serialize(writer, VacInformation);
@@ -1269,7 +1269,7 @@ namespace TcNo_Acc_Switcher
         void loadVacInformation()
         {
             JsonSerializer serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
-            using (StreamReader sr = new StreamReader(@"Users.json"))
+            using (StreamReader sr = new StreamReader(@"SteamVACCache.json"))
             {
                 Dictionary<string, bool> VacInformation = JsonConvert.DeserializeObject<Dictionary<string, bool>>(sr.ReadToEnd());
                 foreach (Steamuser su in MainViewmodel.SteamUsers)
@@ -1311,7 +1311,7 @@ namespace TcNo_Acc_Switcher
                     su.vacStatus = Brushes.Transparent;
                 }
             }
-            else if (File.Exists("Users.json"))
+            else if (File.Exists("SteamVACCache.json"))
             {
                 loadVacInformation();
             }
