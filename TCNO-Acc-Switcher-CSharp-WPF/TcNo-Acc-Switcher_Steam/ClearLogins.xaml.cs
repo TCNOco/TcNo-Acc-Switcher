@@ -7,7 +7,7 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, uncomment.
 
-namespace TcNo_Acc_Switcher
+namespace TcNo_Acc_Switcher_Steam
 {
     /// <summary>
     /// Interaction logic for ClearLogins.xaml
@@ -35,7 +35,10 @@ namespace TcNo_Acc_Switcher
         }
         private void dragWindow(object sender, MouseButtonEventArgs e)
         {
-            this.DragMove();
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
         }
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {

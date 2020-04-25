@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 
-namespace TcNo_Acc_Switcher
+namespace TcNo_Acc_Switcher_Steam
 {
     /// <summary>
     /// Interaction logic for RestoreForgotten.xaml
@@ -42,7 +42,10 @@ namespace TcNo_Acc_Switcher
 
         private void dragWindow(object sender, MouseButtonEventArgs e)
         {
-            this.DragMove();
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
         }
 
         private void btnRestore_Click(object sender, RoutedEventArgs e)

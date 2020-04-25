@@ -4,98 +4,6 @@
              xmlns:local="clr-namespace:TcNo_Acc_Switcher"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <!-- Login button -->
-        <Style x:Key="LoginButton" TargetType="Button">
-            <Setter Property="OverridesDefaultStyle" Value="True" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Padding" Value="70px 8px"/>
-            <Setter Property="Background" Value="#333333"/>
-            <Setter Property="HorizontalAlignment" Value="Right"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Padding="70px 8px" BorderThickness="1" BorderBrush="Gray" Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <!-- New account button -->
-        <Style x:Key="NewLoginButton" TargetType="Button">
-            <Setter Property="OverridesDefaultStyle" Value="True" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Padding" Value="10px 8px"/>
-            <Setter Property="Background" Value="#333333"/>
-            <Setter Property="HorizontalAlignment" Value="Right"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Padding="15px 8px" BorderThickness="1" BorderBrush="Gray" Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#222222"></Setter>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#111111"></Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <!-- Pick Steam Folder button -->
-        <Style x:Key="pickSteamFolder" TargetType="Button">
-            <Setter Property="OverridesDefaultStyle" Value="True" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Background" Value="#333333"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Padding="5 0" BorderThickness="1.5" BorderBrush="Gray" Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#222222"></Setter>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#111111"></Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Pick Steam Folder button -->
-        <Style x:Key="mainMenuButtons" TargetType="Button">
-            <Setter Property="OverridesDefaultStyle" Value="True" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Background" Value="#333333"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Padding="5 0" BorderThickness="1.5" BorderBrush="Gray" Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#444444"></Setter>
-                                <Setter Property="BorderBrush" Value="#0685d1"></Setter>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#333333"></Setter>
-                                <Setter Property="BorderBrush" Value="#808080"></Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <!-- Header bar buttons -->
         <Style x:Key="ExitButton" TargetType="Button">
             <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -154,51 +62,44 @@
             </Style.Triggers>
         </Style>
 
-        <!-- User account items -->
-        <Style x:Key="UserAccount" TargetType="ListBoxItem">
-            <Setter Property="OverridesDefaultStyle" Value="True" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Padding" Value="10px"/>
-            <!--<Setter Property="Background" Value="#333333"/>-->
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="Height" Value="145"/>
-            <Setter Property="MaxHeight" Value="145"/>
-            <Setter Property="Width" Value="100"/>
-            <Setter Property="MaxWidth" Value="100"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
-                        <Border Name="border" Padding="5px" BorderThickness="0" BorderBrush="White" Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <!--<ControlTemplate.Triggers>
-                            -->
-                        <!--<Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="Orange" />
-                            </Trigger>-->
-                        <!--<Trigger Property="IsPressed" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" To="#0c0c0c" SpeedRatio="20"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.EnterActions>
-                            </Trigger>-->
-                        <!--
-                        </ControlTemplate.Triggers>-->
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <!-- All listbox items-->
         <Style x:Key="ControlBaseStyle" TargetType="{x:Type Control}">
             <Setter Property="Margin" Value="5px" />
             <Setter Property="Padding" Value="0" />
         </Style>
         <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource ControlBaseStyle}"/>
+
+        <!-- Platform items -->
+        <Style x:Key="StylePlatform" TargetType="ListBoxItem">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Padding" Value="10px"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Height" Value="100"/>
+            <Setter Property="MaxHeight" Value="100"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="MaxWidth" Value="100"/>
+            <Setter Property="Background" Value="#00000000"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border Name="border" Padding="5px" BorderThickness="0" BorderBrush="White" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#414258" />
+                            </Trigger>
+                            <!--<Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#15151e" />
+                            </Trigger>-->
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </Application.Resources>
 </Application>
 

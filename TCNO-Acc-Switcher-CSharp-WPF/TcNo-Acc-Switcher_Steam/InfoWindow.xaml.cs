@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
 
-namespace TcNo_Acc_Switcher
+namespace TcNo_Acc_Switcher_Steam
 {
     /// <summary>
     /// Interaction logic for InfoWindow.xaml
@@ -25,7 +25,10 @@ namespace TcNo_Acc_Switcher
         }
         private void dragWindow(object sender, MouseButtonEventArgs e)
         {
-            this.DragMove();
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
         }
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
