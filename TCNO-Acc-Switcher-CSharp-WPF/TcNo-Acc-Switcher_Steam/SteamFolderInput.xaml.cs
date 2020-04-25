@@ -4,20 +4,30 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.Win32;
+
 //using System.Windows.Shapes;
 
 namespace TcNo_Acc_Switcher_Steam
 {
     /// <summary>
-    /// Interaction logic for SteamFolderInput.xaml
+    ///     Interaction logic for SteamFolderInput.xaml
     /// </summary>
     public partial class SteamFolderInput : Window
     {
-        bool SteamFound = false;
+        private readonly Color _darkGreen = Color.FromRgb(5, 51, 5);
+        private readonly Color _defaultGray = Color.FromRgb(51, 51, 51);
+        private bool _isResizing;
+
+
+        private Point _startPosition;
+        private bool SteamFound;
+
         public SteamFolderInput()
         {
             InitializeComponent();
         }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             lblQuery2.Margin = lblQuery.IsVisible ? new Thickness(0, 0, 0, 0) : new Thickness(0, 16, 0, 0);
@@ -26,71 +36,71 @@ namespace TcNo_Acc_Switcher_Steam
 
         private void btnSetDirectory_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
-        Color DarkGreen = (Color)(ColorConverter.ConvertFromString("#053305"));
-        Color DefaultGray = (Color)(ColorConverter.ConvertFromString("#333333"));
+
         private void verifySteamPath()
         {
             if (File.Exists(Path.Combine(txtResponse.Text, "Steam.exe")))
             {
                 SteamFound = true;
                 rectSteamFound.Background = new SolidColorBrush(Colors.Green);
-                lblQuery3.Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#040")));
+                lblQuery3.Background = new SolidColorBrush(Color.FromRgb(0, 68, 0));
                 lblQuery3.Content = "Steam.exe found!";
-                btnSetDirectory.Background = new SolidColorBrush(DarkGreen);
+                btnSetDirectory.Background = new SolidColorBrush(_darkGreen);
                 btnSetDirectory.IsEnabled = true;
             }
             else
             {
                 SteamFound = false;
                 rectSteamFound.Background = new SolidColorBrush(Colors.Red);
-                lblQuery3.Background = new SolidColorBrush((Color)(ColorConverter.ConvertFromString("#400")));
+                lblQuery3.Background = new SolidColorBrush(Color.FromRgb(68, 0, 0));
                 lblQuery3.Content = "Steam.exe not found";
-                btnSetDirectory.Background = new SolidColorBrush(DefaultGray);
+                btnSetDirectory.Background = new SolidColorBrush(_defaultGray);
                 btnSetDirectory.IsEnabled = false;
             }
         }
 
         private void btnSetDirectory_MouseEnter(object sender, MouseEventArgs e)
         {
-            btnSetDirectory.Background = new SolidColorBrush(SteamFound ? Colors.Green : DefaultGray);
+            btnSetDirectory.Background = new SolidColorBrush(SteamFound ? Colors.Green : _defaultGray);
         }
 
         private void btnSetDirectory_MouseLeave(object sender, MouseEventArgs e)
         {
-            btnSetDirectory.Background = new SolidColorBrush(SteamFound ? DarkGreen : DefaultGray);
+            btnSetDirectory.Background = new SolidColorBrush(SteamFound ? _darkGreen : _defaultGray);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.FileName = "Steam";
-            dlg.DefaultExt = ".exe";
-            dlg.Filter = "Steam.exe|Steam.exe";
+            var dlg = new OpenFileDialog
+            {
+                FileName = "Steam",
+                DefaultExt = ".exe",
+                Filter = "Steam.exe|Steam.exe"
+            };
 
-            Nullable<bool> result = dlg.ShowDialog();
+            var result = dlg.ShowDialog();
             if (result == true)
             {
                 txtResponse.Text = Path.GetDirectoryName(dlg.FileName);
                 verifySteamPath();
             }
         }
+
         private void btnExit(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void btnMinimize(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            WindowState = WindowState.Minimized;
         }
+
         private void dragWindow(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                this.DragMove();
-            }
+            if (e.LeftButton == MouseButtonState.Pressed) DragMove();
         }
 
         private void txtResponse_TextChanged(object sender, TextChangedEventArgs e)
@@ -98,9 +108,6 @@ namespace TcNo_Acc_Switcher_Steam
             verifySteamPath();
         }
 
-
-        Point _startPosition;
-        bool _isResizing = false;
         private void resizeGrip_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (Mouse.Capture(resizeGrip))
@@ -114,24 +121,24 @@ namespace TcNo_Acc_Switcher_Steam
         {
             if (_isResizing)
             {
-                Point currentPosition = Mouse.GetPosition(this);
-                double diffX = currentPosition.X - _startPosition.X;
-                double diffY = currentPosition.Y - _startPosition.Y;
-                this.Width = Math.Max(this.Width + diffX, this.MinWidth);
-                this.Height = Math.Max(this.Height + diffY, this.MinHeight);
+                var currentPosition = Mouse.GetPosition(this);
+                var diffX = currentPosition.X - _startPosition.X;
+                var diffY = currentPosition.Y - _startPosition.Y;
+                Width = Math.Max(Width + diffX, MinWidth);
+                Height = Math.Max(Height + diffY, MinHeight);
                 _startPosition = currentPosition;
             }
         }
 
         private void resizeGrip_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (_isResizing == true)
+            if (_isResizing)
             {
                 _isResizing = false;
                 Mouse.Capture(null);
             }
-
         }
+
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)

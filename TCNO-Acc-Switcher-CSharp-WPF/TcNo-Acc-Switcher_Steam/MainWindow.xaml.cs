@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -33,13 +34,15 @@ namespace TcNo_Acc_Switcher_Steam
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         //int version = 1;
-        int version = 2302;
-        int trayversion = 1000;
+        readonly int version = 2302;
+        readonly int trayversion = 1000;
+        readonly Color DarkGreen = Color.FromRgb(5, 51, 5);
+        readonly Color DefaultGray = Color.FromRgb(51, 51, 51);
 
 
         // Settings will load later. Just defined here.
         UserSettings persistentSettings = new UserSettings();
-        SolidColorBrush vacRedBrush = (SolidColorBrush)(new BrushConverter().ConvertFromString("#FFFF293A"));
+        readonly SolidColorBrush _vacRedBrush = new SolidColorBrush(Color.FromRgb(255,41,58));
 
         public MainWindow()
         {
@@ -53,8 +56,8 @@ namespace TcNo_Acc_Switcher_Steam
             // Single instance check
             if (SelfAlreadyRunning())
             {
-                Console.WriteLine("TcNo Account Switcher is already running");
-                MessageBox.Show("TcNo Account Switcher is already running", "TcNo Account Switcher - Duplicate start", MessageBoxButton.OK, MessageBoxImage.Error);
+                Console.WriteLine(Strings.SwitcherAlreadyRunning);
+                MessageBox.Show(Strings.SwitcherAlreadyRunning, Strings.SwitcherAlreadyRunningHeading, MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(99);
             }
 
@@ -72,7 +75,7 @@ namespace TcNo_Acc_Switcher_Steam
                     startTray();
                 }
                 // Because closing a messagebox before the window shows causes it to crash for some reason...
-                MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Open GitHub to see what's new?", "Finished updating.", System.Windows.MessageBoxButton.YesNo);
+                MessageBoxResult messageBoxResult = MessageBox.Show(Strings.GitHubWhatsNew, Strings.FinishedUpdating, System.Windows.MessageBoxButton.YesNo);
                 if (messageBoxResult == MessageBoxResult.Yes)
                 {
                     Process.Start(new ProcessStartInfo("https://github.com/TcNobo/TcNo-Acc-Switcher/releases") { UseShellExecute = true });
@@ -88,7 +91,7 @@ namespace TcNo_Acc_Switcher_Steam
                     updateCheckThread.Start();
                 }
             }
-            MainViewmodel.ProgramVersion = "Version: " + version.ToString();
+            MainViewmodel.ProgramVersion = Strings.Version + ": " + version.ToString();
 
             if (File.Exists("DeleteImagesOnStart"))
             {
@@ -127,15 +130,15 @@ namespace TcNo_Acc_Switcher_Steam
             string exceptionStr = e.ExceptionObject.ToString();
             using (StreamWriter sw = File.AppendText("AccSwitcher-Crashlog.txt"))
             {
-                sw.WriteLine(DateTime.Now.ToString() + "\t" + "UNHANDLED CRASH: " + exceptionStr + Environment.NewLine + Environment.NewLine);
+                sw.WriteLine(DateTime.Now.ToString() + "\t" + Strings.ErrUnhandledCrash + ": " + exceptionStr + Environment.NewLine + Environment.NewLine);
             }
-            MessageBox.Show("A fatal unhandled exception caused the program to crash. Information saved in \"AccSwitcher-Crashlog.txt\".", "TcNo Account Switcher Unhandled exception", MessageBoxButton.OK, MessageBoxImage.Error);
-            MessageBox.Show("Please submit the crashlog and more information to the Discord, or the GitHub page.\nDiscord: https://s.tcno.co/AccSwitcherDiscord\nGitHub: https://github.com/TcNobo/TcNo-Acc-Switcher", "TcNo Account Switcher Unhandled exception", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(Strings.ErrUnhandledException, Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(Strings.ErrSubmitCrashlog, Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Information);
         }
         public void RefreshSteamAccounts()
         {
             // Collect Steam Account basic info from Steam file
-            lblStatus.Content = "Status: Collecting Steam Accounts";
+            lblStatus.Content = Strings.StatusCollectingAccounts;
             checkBrokenImages();
             getSteamAccounts();
 
@@ -165,11 +168,11 @@ namespace TcNo_Acc_Switcher_Steam
             {
                 Thread t = new Thread(new ParameterizedThreadStart(DownloadImages));
                 t.Start(ImagesToDownload);
-                lblStatus.Content = "Status: Starting image download.";
+                lblStatus.Content = Strings.StatusImageDownloadStart;
             }
             else
             {
-                lblStatus.Content = "Status: Ready";
+                lblStatus.Content = Strings.StatusReady;
             }
         }
         private void extract7zip()
@@ -181,7 +184,7 @@ namespace TcNo_Acc_Switcher_Steam
         }
         void downloadUpdateDialog()
         {
-            MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Update now?", "Update was found", System.Windows.MessageBoxButton.YesNo);
+            MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show(Strings.UpdateNow, Strings.UpdateFound, System.Windows.MessageBoxButton.YesNo);
             if (messageBoxResult == MessageBoxResult.Yes)
             {
                 if (File.Exists("UpdateFound.txt"))
@@ -252,7 +255,7 @@ namespace TcNo_Acc_Switcher_Steam
             }
             catch (Exception)
             {
-                MessageBox.Show("Unable to start Tray process. Try starting it yourself using 'TcNo Account Switcher Tray.exe'", "TcNo Account Switcher - Tray start fail", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Strings.ErrTrayProcessStart, Strings.ErrTrayProcessStartHead, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         private void closeTray()
@@ -278,7 +281,7 @@ namespace TcNo_Acc_Switcher_Steam
                 {
                     using (FileStream fs = File.Create("UpdateFound.txt"))
                     {
-                        byte[] info = new UTF8Encoding(true).GetBytes("An update was found last launch" + DateTime.Now.ToString());
+                        byte[] info = new UTF8Encoding(true).GetBytes(Strings.UpdateLastLaunch + DateTime.Now.ToString());
                         fs.Write(info, 0, info.Length);
                     }
                     this.Dispatcher.Invoke(() =>
@@ -294,7 +297,7 @@ namespace TcNo_Acc_Switcher_Steam
             }
             catch (WebException ex)
             {
-                MessageBox.Show("Could not connect to https://tcno.co/ to check for updates.\n\nDetails: " + ex.ToString(), "TcNo Account Switcher - Update check error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Strings.UpdateLastLaunch + ex.ToString(), Strings.ErrUpdateCheckFail, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         bool vacBanned = false;
@@ -311,7 +314,7 @@ namespace TcNo_Acc_Switcher_Steam
                 currentUser++;
                 this.Dispatcher.Invoke(() =>
                 {
-                    lblStatus.Content = $"Status: Downloading profile image: {currentUser.ToString()}/{totalUsers}";
+                    lblStatus.Content = $"{Strings.StatusDownloadingProfile} {currentUser.ToString()}/{totalUsers}";
                 });
                 string imageURL = getUserImageURL(su.SteamID);
 
@@ -331,7 +334,7 @@ namespace TcNo_Acc_Switcher_Steam
                             downloadError = true; // Show error only once
                             // .net Core way: File.WriteAllBytes(su.ImgURL, Properties.Resources.QuestionMark); // Give the user's profile picture a question mark.
                             Properties.Resources.QuestionMark.Save(su.ImgURL);
-                            MessageBox.Show("Could not connect and downlost Steam profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " + ex.ToString(), "TcNo Account Switcher - Update check error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show($"{Strings.ErrImageDownloadFail} {ex.ToString()}", Strings.ErrProfileImageDlFail, MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                 }
@@ -342,7 +345,7 @@ namespace TcNo_Acc_Switcher_Steam
                 }
                 su.ImgURL = Path.GetFullPath(su.ImgURL);
                 if (persistentSettings.ShowVACStatus)
-                    su.vacStatus = vacBanned ? vacRedBrush : Brushes.Transparent;
+                    su.vacStatus = vacBanned ? _vacRedBrush : Brushes.Transparent;
 
                 this.Dispatcher.Invoke(() =>
                 {
@@ -352,7 +355,7 @@ namespace TcNo_Acc_Switcher_Steam
             this.Dispatcher.Invoke(() =>
             {
                 saveVacInformation();
-                lblStatus.Content = "Status: Ready";
+                lblStatus.Content = Strings.StatusReady;
             });
             // ENABLE LISTBOX
         }
@@ -377,7 +380,7 @@ namespace TcNo_Acc_Switcher_Steam
                 validSteamFound = setAndCheckSteamFolder(false);
                 if (!validSteamFound)
                 {
-                    MessageBox.Show("You are required to pick a Steam directory for this program to work. Please check you have it installed and run this program again");
+                    MessageBox.Show(Strings.RequiredPickSteamDir);
                     Environment.Exit(1);
                     // this.Close() won't work, because the main window hasn't appeared just yet. Still needs to be populated with Steam Accounts.
                 }
@@ -447,7 +450,7 @@ namespace TcNo_Acc_Switcher_Steam
                     }
 
                     saveSettings();
-                    MessageBox.Show("SteamSettings.json failed to load properly.\nOld settings are saved in settings.old.json, and a new config has been loaded.", "TcNo Account Switcher - Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(Strings.ErrSteamSettingsLoadFail, Strings.ErrSteamSettingsLoadFailHeader, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -530,7 +533,7 @@ namespace TcNo_Acc_Switcher_Steam
                         }
                         catch (Exception)
                         {
-                            MessageBox.Show("Empty profile image detected (0 bytes). Can't delete to redownload.\n\nError information: " + ex.ToString(), "TcNo Account Switcher ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show($"{Strings.ErrEmptyImage} {ex.ToString()}", Strings.ErrEmptyImageHeader, MessageBoxButton.OK, MessageBoxImage.Error);
                             throw;
                         }
                     }
@@ -595,8 +598,8 @@ namespace TcNo_Acc_Switcher_Steam
             }
             catch (System.IO.FileNotFoundException ex)
             {
-                MessageBox.Show("Can't start account switcher when loginusers.vdf does not exist. Verify Steam's installation and try again.\nIf you just deleted loginusers.vdf, try starting and logging with Steam at least once.", "TcNo Account Switcher ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
-                MessageBox.Show("Error information: " + ex.ToString(), "TcNo Account Switcher ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Strings.ErrLoginusersNonExist, Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{Strings.ErrInformation} {ex.ToString()}", Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(2);
             }
         }
@@ -629,8 +632,8 @@ namespace TcNo_Acc_Switcher_Steam
             var su = (Steamuser)item.SelectedItem;
             try
             {
-                lblStatus.Content = "Selected " + su.Name;
-                HeaderInstruction.Content = "2. Press Login";
+                lblStatus.Content = $"{Strings.StatusAccountSelected} {su.Name}";
+                HeaderInstruction.Content = Strings.StatusPressLogin;
                 btnLogin.IsEnabled = true;
                 btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? DarkGreen : DefaultGray);
             }
@@ -653,7 +656,7 @@ namespace TcNo_Acc_Switcher_Steam
             Byte[] info;
             using (FileStream fs = File.Open(persistentSettings.LoginusersVDF(), FileMode.Truncate, FileAccess.Write, FileShare.None))
             {
-                lblStatus.Content = "Status: Editing loginusers.vdf";
+                lblStatus.Content = Strings.StatusEditingLoginusers;
                 string lineNoQuot;
                 bool userIDMatch = false;
                 string outline = "", SelectedSteamID = (loginnone ? "" : MainViewmodel.SelectedSteamUser.SteamID);
@@ -699,7 +702,7 @@ namespace TcNo_Acc_Switcher_Steam
                 --> AutoLoginUser = username
                 --> RememberPassword = 1
             */
-            lblStatus.Content = "Status: Editing Steam's Registry keys";
+            lblStatus.Content = Strings.StatusEditingRegistry;
             using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam"))
             {
                 if (loginnone)
@@ -936,7 +939,7 @@ namespace TcNo_Acc_Switcher_Steam
         private void LoginSelected()
         {
             saveSettings();
-            LoginButtonAnimation("#0c0c0c", "#333333", 2000);
+            LoginButtonAnimation(Color.FromRgb(12,12,12), DefaultGray, 2000);
 
             lblStatus.Content = "Logging into: " + MainViewmodel.SelectedSteamUser.Name;
             btnLogin.IsEnabled = false;
@@ -944,7 +947,7 @@ namespace TcNo_Acc_Switcher_Steam
             MainViewmodel.SelectedSteamUser.lastLogin = DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss");
             listAccounts.Items.Refresh();
 
-            lblStatus.Content = "Status: Closing Steam";
+            lblStatus.Content = Strings.StatusClosingSteam;
             closeSteam();
             UpdateLoginusers(false);
 
@@ -952,7 +955,7 @@ namespace TcNo_Acc_Switcher_Steam
                 Process.Start(persistentSettings.SteamEXE());
             else
                 Process.Start(new ProcessStartInfo("explorer.exe", persistentSettings.SteamEXE()));
-            lblStatus.Content = "Status: Started Steam";
+            lblStatus.Content = Strings.StatusStartedSteam;
             btnLogin.IsEnabled = true;
         }
         private void ShowForgetRememberDialog()
@@ -973,7 +976,7 @@ namespace TcNo_Acc_Switcher_Steam
         }
         public void ClearForgottenBackups()
         {
-            if (MessageBox.Show("Are you sure you want to clear backups of forgotten accounts?", "Clear backups", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            if (MessageBox.Show(Strings.ClearBackups, Strings.AreYouSure, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
                 string BackupPath = GetForgottenBackupPath();
                 try
@@ -983,7 +986,7 @@ namespace TcNo_Acc_Switcher_Steam
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Could not recursively delete directory! Error: " + ex.ToString(), "Error deleting files");
+                    MessageBox.Show($"{Strings.ErrRecursivelyDelete} {ex.ToString()}", Strings.ErrDeleteFilesHeader);
                 }
             }
         }
@@ -1022,7 +1025,7 @@ namespace TcNo_Acc_Switcher_Steam
             Byte[] info;
             using (FileStream fs = File.Open(persistentSettings.LoginusersVDF(), FileMode.Truncate, FileAccess.Write, FileShare.None))
             {
-                lblStatus.Content = $"Status: Removing {MainViewmodel.SelectedSteamUser.Name} from loginusers.vdf";
+                lblStatus.Content = $"{Strings.StatusRemoving} {MainViewmodel.SelectedSteamUser.Name} {Strings.StatusFromLoginusers}";
                 string lineNoQuot;
                 bool userIDMatch = false,
                      completedRemove = false;
@@ -1089,20 +1092,17 @@ namespace TcNo_Acc_Switcher_Steam
         {
             System.Windows.Clipboard.SetText(MainViewmodel.SelectedSteamUser.Name);
         }
-        private void LoginButtonAnimation(string colFrom, string colTo, int len)
+        private void LoginButtonAnimation(Color colFrom, Color colTo, int len)
         {
-            ColorAnimation animation;
-            animation = new ColorAnimation();
-            animation.From = (Color)(ColorConverter.ConvertFromString(colFrom));
-            animation.To = (Color)(ColorConverter.ConvertFromString(colTo));
-            animation.Duration = new Duration(TimeSpan.FromMilliseconds(len));
+            ColorAnimation animation = new ColorAnimation
+            {
+                From = colFrom, To = colTo, Duration = new Duration(TimeSpan.FromMilliseconds(len))
+            };
 
             btnLogin.Background = new SolidColorBrush(Colors.Orange);
             btnLogin.Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);
         }
 
-        Color DarkGreen = (Color)(ColorConverter.ConvertFromString("#053305"));
-        Color DefaultGray = (Color)(ColorConverter.ConvertFromString("#333333"));
         private void btnLogin_MouseEnter(object sender, MouseEventArgs e)
         {
             btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? Colors.Green : DefaultGray);
@@ -1154,13 +1154,13 @@ namespace TcNo_Acc_Switcher_Steam
             {
                 persistentSettings.SteamFolder = OldLocation;
                 MainViewmodel.InputFolderDialogResponse = OldLocation;
-                MessageBox.Show("Steam location not chosen. Resetting to old value: " + OldLocation);
+                MessageBox.Show($"{Strings.ErrSteamLocation} {OldLocation}");
             }
         }
         public void ResetImages()
         {
             File.Create("DeleteImagesOnStart");
-            MessageBox.Show("The program will now close. Once opened, new images will download.");
+            MessageBox.Show(Strings.InfoReopenImageDl);
             this.Close();
         }
         public bool VACCheckRunning = false;
@@ -1169,7 +1169,7 @@ namespace TcNo_Acc_Switcher_Steam
             if (!VACCheckRunning)
             {
                 VACCheckRunning = true;
-                lblStatus.Content = "Status: Checking VAC status for each account.";
+                lblStatus.Content = Strings.StatusCheckingVac;
 
                 foreach (Steamuser su in MainViewmodel.SteamUsers)
                 {
@@ -1207,16 +1207,16 @@ namespace TcNo_Acc_Switcher_Steam
                 currentCount++;
                 this.Dispatcher.Invoke(() =>
                 {
-                    lblStatus.Content = $"Status: Checking VAC status: {currentCount.ToString()}/{totalCount}";
+                    lblStatus.Content = $"{Strings.StatusCheckingVacActive} {currentCount.ToString()}/{totalCount}";
                 });
-                //su.vacStatus = GetVacStatus(su.SteamID).Result ? vacRedBrush : Brushes.Transparent; 
+                //su.vacStatus = GetVacStatus(su.SteamID).Result ? _vacRedBrush : Brushes.Transparent; 
                 bool VacOrLimited = false;
                 XmlDocument profileXML = new XmlDocument();
                 profileXML.Load($"https://steamcommunity.com/profiles/{su.SteamID}?xml=1");
                 try
                 {
-                    bool isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")[0].InnerText == "1";
-                    bool isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")[0].InnerText == "1";
+                    bool isVAC = profileXML.DocumentElement != null && profileXML.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
+                    bool isLimited = profileXML.DocumentElement != null && profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
                     VacOrLimited = isVAC || isLimited;
                 }
                 catch (NullReferenceException) // User has not set up their account
@@ -1225,14 +1225,14 @@ namespace TcNo_Acc_Switcher_Steam
                 }
                 this.Dispatcher.Invoke(() =>
                 {
-                    su.vacStatus = VacOrLimited ? vacRedBrush : Brushes.Transparent;
+                    su.vacStatus = VacOrLimited ? _vacRedBrush : Brushes.Transparent;
                     UpdateListFromAsyncVacCheck(su);
                 });
             }
 
             this.Dispatcher.Invoke(() =>
             {
-                lblStatus.Content = "Status: Ready";
+                lblStatus.Content = Strings.StatusReady;
                 saveVacInformation();
                 VACCheckRunning = false;
             });
@@ -1257,7 +1257,7 @@ namespace TcNo_Acc_Switcher_Steam
                 Dictionary<string, bool> VacInformation = new Dictionary<string, bool> { };
                 foreach (Steamuser su in MainViewmodel.SteamUsers)
                 {
-                    VacInformation.Add(su.SteamID, su.vacStatus == vacRedBrush ? true : false); // If red >> Vac or Limited
+                    VacInformation.Add(su.SteamID, su.vacStatus == _vacRedBrush ? true : false); // If red >> Vac or Limited
                 }
 
                 JsonSerializer serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
@@ -1278,7 +1278,7 @@ namespace TcNo_Acc_Switcher_Steam
                 foreach (Steamuser su in MainViewmodel.SteamUsers)
                 {
                     if (VacInformation.ContainsKey(su.SteamID))
-                        su.vacStatus = VacInformation[su.SteamID] ? vacRedBrush : Brushes.Transparent;
+                        su.vacStatus = VacInformation[su.SteamID] ? _vacRedBrush : Brushes.Transparent;
                     else
                         su.vacStatus = Brushes.Transparent;
                 }
@@ -1295,7 +1295,7 @@ namespace TcNo_Acc_Switcher_Steam
                 Process.Start(persistentSettings.SteamEXE());
             else
                 Process.Start(new ProcessStartInfo("explorer.exe", persistentSettings.SteamEXE()));
-            lblStatus.Content = "Status: Started Steam";
+            lblStatus.Content = Strings.StatusStartedSteam;
         }
         private void chkShowSettings_Click(object sender, RoutedEventArgs e)
         {
@@ -1408,14 +1408,14 @@ namespace TcNo_Acc_Switcher_Steam
                     string program_path = Path.GetFullPath("TcNo Account Switcher Tray.exe");
                     td.Actions.Add(new ExecAction(program_path, null));
                     ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Tray start with logon", td);
-                    MessageBox.Show("TcNo Account Switcher will start in the Windows Tray on user login/startup (The small icons on the bottom right of your Windows Start bar.)");
+                    MessageBox.Show(Strings.InfoTrayWindowsStart);
                 }
             }
             else
             {
                 TaskService ts = new TaskService();
                 ts.RootFolder.DeleteTask("TcNo Account Switcher - Tray start with logon");
-                MessageBox.Show("TcNo Account Switcher will no longer start with user login/startup.");
+                MessageBox.Show(Strings.InfoTrayWindowsStartOff);
             }
 
 
@@ -1557,9 +1557,9 @@ namespace TcNo_Acc_Switcher_Steam
                 if (Directory.GetFiles(location).Length == 0)
                     Directory.Delete(location);
                 else
-                    MessageBox.Show("Unable to delete folder because it's not empty: " + location);
+                    MessageBox.Show($"{Strings.ErrDeleteFolderNonempty} {location}");
             }
-            MessageBox.Show("Shortcut to: " + name + " was deleted!");
+            MessageBox.Show(Strings.InfoShortcutDeleted.Replace("{}", name));
         }
 
 

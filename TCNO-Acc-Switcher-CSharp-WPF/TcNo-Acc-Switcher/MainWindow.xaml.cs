@@ -93,7 +93,7 @@ namespace TcNo_Acc_Switcher
         {
             var item = (ListBox)sender;
             var su = (ListBoxItem)item.SelectedItem;
-            su.Background = new SolidColorBrush() { Color = Color.FromArgb(255, 21, 21, 30) };
+            su.Background = new SolidColorBrush(Color.FromArgb(255, 21, 21, 30));
         }
         private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -114,6 +114,16 @@ namespace TcNo_Acc_Switcher
             // Check if Steam is in the default location
             // Otherwise
             // Check if Steam is running, and get the .exe location
+            // Otherwise
+            // Ask the user where Steam is
+            this.Hide();
+        }
+
+        private void PickerOrigin(object sender, MouseButtonEventArgs e)
+        {
+            // Check if Origin is in the default location
+            // Otherwise
+            // Check if Origin is running, and get the .exe location
             // Otherwise
             // Ask the user where Steam is
             this.Hide();

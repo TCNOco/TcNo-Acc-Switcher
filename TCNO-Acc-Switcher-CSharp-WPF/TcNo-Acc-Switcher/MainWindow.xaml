@@ -268,7 +268,7 @@
                 </Style>
             </ListBox.ItemContainerStyle>
             <!-- Origin -->
-            <ListBoxItem Style="{StaticResource StylePlatform}">
+            <ListBoxItem Style="{StaticResource StylePlatform}" PreviewMouseUp="PickerOrigin">
                 <StackPanel IsHitTestVisible="False">
                     <Border BorderThickness="2" Width="48px" Height="66px" Margin="0 0 0 3px">
                         <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svgOrigin" Width="70" Height="70">
