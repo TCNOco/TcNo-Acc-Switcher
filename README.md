@@ -1,19 +1,17 @@
 <p align="center">
-    <a href="https://tcno.co/">
-	<img src="/docs/img/Banner.png"></a>
+  <a href="https://tcno.co/">
+    <img src="/docs/img/Banner.png"></a>
 </p>
 <p align="center">
-    <img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/TcNobo/TcNo-Acc-Switcher/total?logo=GitHub&style=flat-square">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/TcNobo/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
-    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/TcNobo/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
-</p>
-<p align="center">
-    <a href="https://tcno.co/">
-        <img alt="Website" src="/docs/img/web.svg" height=20"></a>
-    <a href="https://discord.gg/wkJp38m">
-        <img alt="Discord server" src="https://img.shields.io/discord/217649733915770880?label=Discord&logo=discord&style=flat-square"></a>
-    <a href="https://twitter.com/TcNobo">
-        <img alt="Twitter" src="https://img.shields.io/twitter/follow/TcNobo?label=Follow%20%40TcNobo&logo=Twitter&style=flat-square"></a></a>
+  <img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/TcNobo/TcNo-Acc-Switcher/total?logo=GitHub&style=flat-square">
+  <a href="https://tcno.co/">
+    <img alt="Website" src="/docs/img/web.svg" height=20"></a>
+  <a href="https://discord.gg/wkJp38m">
+    <img alt="Discord server" src="https://img.shields.io/discord/217649733915770880?label=Discord&logo=discord&style=flat-square"></a>
+  <a href="https://twitter.com/TcNobo">
+    <img alt="Twitter" src="https://img.shields.io/twitter/follow/TcNobo?label=Follow%20%40TcNobo&logo=Twitter&style=flat-square"></a>
+  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/TcNobo/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
+  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/TcNobo/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
 </p>
                                                                                                                                          
 **A Super fast account switcher for Steam** [Now with GUI]
