@@ -178,8 +178,7 @@ namespace Origin_test
             //
 
             // Create user storage folder
-            if (!Directory.Exists(username))
-                Directory.CreateDirectory(username);
+            Directory.CreateDirectory(username);
 
             // Subfolders to copy
             string OriginProgramDataSubscription = Path.Combine(OriginProgramData, "Subscription");
@@ -313,7 +312,7 @@ namespace Origin_test
         }
         static void CreateFolder(string fld)
         {
-            if (!Directory.Exists(fld)) Directory.CreateDirectory(fld);
+            Directory.CreateDirectory(fld);
         }
 
 

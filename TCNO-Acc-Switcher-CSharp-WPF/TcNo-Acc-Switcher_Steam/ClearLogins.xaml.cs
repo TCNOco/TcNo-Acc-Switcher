@@ -1,7 +1,10 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
@@ -47,58 +50,103 @@ namespace TcNo_Acc_Switcher_Steam
         }
         private void logPrint(string text)
         {
-            CleaningOutput.AppendText(text + Environment.NewLine);
-            CleaningOutput.ScrollToEnd();
+            this.Dispatcher.Invoke(() =>
+            {
+                CleaningOutput.AppendText(text + Environment.NewLine);
+                CleaningOutput.ScrollToEnd();
+            });
         }
+
+
+        public string[] getFiles(string SourceFolder, string Filter, System.IO.SearchOption searchOption)
+        {
+            ArrayList alFiles = new ArrayList();
+            string[] MultipleFilters = Filter.Split('|');
+            foreach (string FileFilter in MultipleFilters)
+                alFiles.AddRange(Directory.GetFiles(SourceFolder, FileFilter, searchOption));
+
+            return (string[])alFiles.ToArray(typeof(string));
+        }
+        struct PossibleClearArgs
+        {
+            public string fldName;
+            public string folderName;
+            public string fileExtensions;
+            public SearchOption searchOption;
+        }
+        private readonly object LockClearFilesOfType = new object();
+        private readonly object LockClearFolder = new object();
+
+
+
+
+
         private void clearFolder(string fldName, string fld)
         {
-            logPrint(fldName);
-            int count = 0;
-            if (Directory.Exists(fld))
+            Thread t = new Thread(new ParameterizedThreadStart(Task_clearFolder));
+            PossibleClearArgs args = new PossibleClearArgs
             {
-                DirectoryInfo d = new DirectoryInfo(fld);
-                foreach (var file in d.GetFiles("*.*"))
+                fldName = fldName,
+                folderName = fld
+            };
+            t.Start(args);
+        }
+        private void Task_clearFolder(object oin)
+        {
+            // Only allow one to be run at a time
+            if (Monitor.TryEnter(LockClearFolder))
+            {
+                try
                 {
-                    count++;
-                    logPrint($"Deleting: {file.Name}");
-                    try
+                    PossibleClearArgs options = (PossibleClearArgs)oin;
+                    logPrint(options.fldName);
+                    int count = 0;
+                    if (Directory.Exists(options.folderName))
                     {
-                        File.Delete(file.FullName);
-                    }
-                    catch (Exception ex)
-                    {
-                        logPrint($"ERROR: {ex.ToString()}");
-                    }
-                }
+                        DirectoryInfo d = new DirectoryInfo(options.folderName);
+                        foreach (var file in d.GetFiles("*.*"))
+                        {
+                            count++;
+                            logPrint($"Deleting: {file.Name}");
+                            try
+                            {
+                                File.Delete(file.FullName);
+                            }
+                            catch (Exception ex)
+                            {
+                                logPrint($"ERROR: {ex.ToString()}");
+                            }
+                        }
 
-                foreach (var subd in d.GetDirectories())
-                {
-                    count++;
-                    logPrint($"Deleting: {subd.Name} subfolder and contents");
-                    try
-                    {
-                        Directory.Delete(subd.FullName, true);
+                        foreach (var subd in d.GetDirectories())
+                        {
+                            count++;
+                            logPrint($"Deleting: {subd.Name} subfolder and contents");
+                            try
+                            {
+                                Directory.Delete(subd.FullName, true);
+                            }
+                            catch (Exception ex)
+                            {
+                                logPrint($"ERROR: {ex.ToString()}");
+                            }
+                        }
+                        if (count == 0)
+                            logPrint($"{options.folderName} is empty.");
+                        else
+                            logPrint("Done.");
+                        CleaningOutput.AppendText(Environment.NewLine);
                     }
-                    catch (Exception ex)
-                    {
-                        logPrint($"ERROR: {ex.ToString()}");
-                    }
+                    else
+                        logPrint($"Directory not found: {options.folderName}");
                 }
-                if (count == 0)
+                finally
                 {
-                    logPrint($"{fld} is empty.");
+                    Monitor.Exit(LockClearFolder);
                 }
-                else
-                {
-                    logPrint("Done.");
-                }
-                CleaningOutput.AppendText(Environment.NewLine);
-            }
-            else
-            {
-                logPrint($"Directory not found: {fld}");
             }
         }
+        // Used for deleting small individual files. Multithreading not nessecary.
         private void clearFile(string fl)
         {
             FileInfo f = new FileInfo(fl);
@@ -126,6 +174,58 @@ namespace TcNo_Acc_Switcher_Steam
                 logPrint($"{f.Name} was not found.");
             }
         }
+        private void clearFilesOfType(string fldName, string folderName, string fileExtensions, SearchOption searchOption)
+        {
+            Thread t = new Thread(new ParameterizedThreadStart(Task_clearFilesOfType));
+            PossibleClearArgs args = new PossibleClearArgs
+            {
+                fldName = fldName,
+                folderName = folderName,
+                fileExtensions = fileExtensions,
+                searchOption = searchOption
+            };
+            t.Start(args);
+        }
+        private void Task_clearFilesOfType(object oin)
+        {
+            // Only allow one to be run at a time
+            if (Monitor.TryEnter(LockClearFilesOfType))
+            {
+                try
+                {
+                    PossibleClearArgs options = (PossibleClearArgs)oin;
+                    logPrint(options.fldName);
+                    int count = 0;
+                    if (Directory.Exists(options.folderName))
+                    {
+                        foreach (var file in getFiles(options.folderName, options.fileExtensions, options.searchOption))
+                        {
+                            count++;
+                            logPrint($"Deleting: {file}");
+                            try
+                            {
+                                File.Delete(file);
+                            }
+                            catch (Exception ex)
+                            {
+                                logPrint($"ERROR: {ex.ToString()}");
+                            }
+                        }
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            CleaningOutput.AppendText(Environment.NewLine);
+                        });
+                    }
+                    else
+                        logPrint($"Directory not found: {options.folderName}");
+                }
+                finally
+                {
+                    Monitor.Exit(LockClearFilesOfType);
+                }
+            }
+        }
+        // SSFN very small, so multithreading isn't needed. Super tiny freeze of UI is OK.
         private void clearSSFN(string steamDIR)
         {
             DirectoryInfo d = new DirectoryInfo(steamDIR);
@@ -149,9 +249,7 @@ namespace TcNo_Acc_Switcher_Steam
                 CleaningOutput.AppendText(Environment.NewLine);
             }
             else
-            {
                 logPrint("No SSFN files found.");
-            }
         }
         private void deleteRegKey(string subkey, string value)
         {
@@ -233,6 +331,38 @@ namespace TcNo_Acc_Switcher_Steam
         private void btnKillSteam_Click(object sender, RoutedEventArgs e)
         {
             mw.closeSteam();
+        }
+
+        private void BtnClearHTMLCache_OnClick(object sender, RoutedEventArgs e)
+        {
+            // HTML Cache - %USERPROFILE%\AppData\Local\Steam\htmlcache
+            clearFolder("Clearing htmlcache:", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Steam\\htmlcache"));
+        }
+
+        private void BtnClearUILogs_OnClick(object sender, RoutedEventArgs e)
+        {
+            // Overlay UI logs -
+            //   Steam\GameOverlayUI.exe.log
+            //   Steam\GameOverlayRenderer.log
+            clearFilesOfType("Clearing .log & .last from Steam:", mw.GetSteamDirectory(), "*.log|*.last", SearchOption.TopDirectoryOnly);
+        }
+
+        private void BtnClearAppCache_OnClick(object sender, RoutedEventArgs e)
+        {
+            // App Cache - Steam\appcache
+            clearFilesOfType("Clearing appcache:", Path.Combine(mw.GetSteamDirectory(), "appcache"),"*.*", SearchOption.TopDirectoryOnly);
+        }
+
+        private void BtnClearHTTPCache_OnClick(object sender, RoutedEventArgs e)
+        {
+            // HTTP cache - Steam\appcache\httpcache\
+            clearFilesOfType("Clearing appcache\\httpcache:", Path.Combine(mw.GetSteamDirectory(), "appcache\\httpcache"), "*.*", SearchOption.AllDirectories);
+        }
+
+        private void BtnClearDepotCache_OnClick(object sender, RoutedEventArgs e)
+        {
+            // Depot - Steam\depotcache\
+            clearFilesOfType("Clearing depotcache:", Path.Combine(mw.GetSteamDirectory(), "depotcache"), "*.*", SearchOption.TopDirectoryOnly);
         }
     }
 }

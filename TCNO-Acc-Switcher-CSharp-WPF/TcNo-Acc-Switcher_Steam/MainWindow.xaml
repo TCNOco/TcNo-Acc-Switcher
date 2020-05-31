@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TcNo_Acc_Switcher_Steam"
         mc:Ignorable="d"
-        Title="TcNo Steam Account Switcher" Height="420" Width="773"
+        Title="TcNo Steam Account Switcher" Height="360" Width="605"
         MinWidth="475"
+        MinHeight="360"
         Closing="Window_Closing"
         Closed="Window_Closed"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
@@ -273,6 +274,9 @@
                 <Style x:Key="CopyIDStyle" TargetType="MenuItem">
                     <EventSetter Event="Click" Handler="AccountItem_CopySteamID"/>
                 </Style>
+                <Style x:Key="CopyProfileLink" TargetType="MenuItem">
+                    <EventSetter Event="Click" Handler="AccountItem_CopyProfileLink"/>
+                </Style>
                 <Style x:Key="CopyLoginUsernameStyle" TargetType="MenuItem">
                     <EventSetter Event="Click" Handler="AccountItem_CopyUsername"/>
                 </Style>
@@ -294,6 +298,7 @@
                                 <MenuItem Header="Forget" Style="{StaticResource ForgetStyle}"/>
                                 <MenuItem Header="Copy Login Username" Style="{StaticResource CopyLoginUsernameStyle}"/>
                                 <MenuItem Header="Copy SteamID" Style="{StaticResource CopyIDStyle}"/>
+                                <MenuItem Header="Copy Profile Link" Style="{StaticResource CopyProfileLink}"/>
                                 <MenuItem Header="Copy Username" Style="{StaticResource CopyFriendNameStyle}"/>
                             </ContextMenu>
                         </Setter.Value>

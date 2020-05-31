@@ -297,6 +297,16 @@ namespace TcNo_Acc_Switcher_Steam {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click the &quot;Check account VAC Status&quot; button to see changes.
+        ///Note: Steam shows game banned accounts as Limited..
+        /// </summary>
+        internal static string InfoRefreshLimitedAsVac {
+            get {
+                return ResourceManager.GetString("InfoRefreshLimitedAsVac", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The program will now close. Once opened, new images will download..
         /// </summary>
         internal static string InfoReopenImageDl {

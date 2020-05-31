@@ -203,6 +203,10 @@ Details:</value>
   <data name="GitHubWhatsNew" xml:space="preserve">
     <value>Open GitHub to see what's new?</value>
   </data>
+  <data name="InfoRefreshLimitedAsVac" xml:space="preserve">
+    <value>Click the "Check account VAC Status" button to see changes.
+Note: Steam shows game banned accounts as Limited.</value>
+  </data>
   <data name="InfoReopenImageDl" xml:space="preserve">
     <value>The program will now close. Once opened, new images will download.</value>
   </data>

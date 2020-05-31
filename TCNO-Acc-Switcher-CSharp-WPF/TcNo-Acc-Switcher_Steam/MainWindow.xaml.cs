@@ -47,6 +47,12 @@ namespace TcNo_Acc_Switcher_Steam
         public MainWindow()
         {
             /* TODO:
+            -- Add arguments for program
+            ---> Recieves SteamID, loads persistent settings, switches to it, closes.
+            ---> This will be used with the Tray App
+
+
+
              - Make "Installer" .exe. Maybe from C++ so it can run everywhere? Check for the correct .NET Core Desktop version, and download it if not found. Then run the installer.
              Download the .exe and place it where the user specifies.
              Start the Account Swicther with an argument that automatically makes the Start Menu and or Desktop Shortcuts, if specified.
@@ -128,7 +134,8 @@ namespace TcNo_Acc_Switcher_Steam
         {
             // Log Unhandled Exception
             string exceptionStr = e.ExceptionObject.ToString();
-            using (StreamWriter sw = File.AppendText("AccSwitcher-Crashlog.txt"))
+            System.IO.Directory.CreateDirectory("Errors");
+            using (StreamWriter sw = File.AppendText($"Errors\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
             {
                 sw.WriteLine(DateTime.Now.ToString() + "\t" + Strings.ErrUnhandledCrash + ": " + exceptionStr + Environment.NewLine + Environment.NewLine);
             }
@@ -177,8 +184,7 @@ namespace TcNo_Acc_Switcher_Steam
         }
         private void extract7zip()
         {
-            if (!Directory.Exists("Resources"))
-                Directory.CreateDirectory("Resources");
+            Directory.CreateDirectory("Resources");
             File.WriteAllBytes(Path.Combine("Resources", "7za.exe"), Properties.Resources._7za);
             File.WriteAllText(Path.Combine("Resources", "7za-license.txt"), Properties.Resources.License);
         }
@@ -459,6 +465,7 @@ namespace TcNo_Acc_Switcher_Steam
             MainViewmodel.StartAsAdmin = persistentSettings.StartAsAdmin;
             MainViewmodel.ShowSteamID = persistentSettings.ShowSteamID;
             MainViewmodel.ShowVACStatus = persistentSettings.ShowVACStatus;
+            MainViewmodel.LimitedAsVAC = persistentSettings.LimitedAsVAC;
             MainViewmodel.InputFolderDialogResponse = persistentSettings.SteamFolder;
             MainViewmodel.ForgetAccountEnabled = persistentSettings.ForgetAccountEnabled;
             this.Width = persistentSettings.WindowSize.Width;
@@ -471,6 +478,7 @@ namespace TcNo_Acc_Switcher_Steam
             persistentSettings.WindowSize = new Size(this.Width, this.Height);
             persistentSettings.StartAsAdmin = MainViewmodel.StartAsAdmin;
             persistentSettings.ShowVACStatus = MainViewmodel.ShowVACStatus;
+            persistentSettings.LimitedAsVAC = MainViewmodel.LimitedAsVAC;
             persistentSettings.SteamFolder = MainViewmodel.InputFolderDialogResponse;
             persistentSettings.ForgetAccountEnabled = MainViewmodel.ForgetAccountEnabled;
         }
@@ -565,6 +573,15 @@ namespace TcNo_Acc_Switcher_Steam
                     }
                     else if (lineNoQuot.All(char.IsDigit) && !string.IsNullOrEmpty(steamID)) // If steamID isn't empty, save account details, empty temp vars for collection.
                     {
+                        string lastLogin;
+                        try
+                        {
+                            lastLogin = UnixTimeStampToDateTime(timestamp);
+                        }
+                        catch (Exception e)
+                        {
+                            lastLogin = "-";
+                        }
                         userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamID, ImgURL = Path.Combine("images", $"{steamID}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
                         username = "";
                         rememberAccount = "";
@@ -607,20 +624,50 @@ namespace TcNo_Acc_Switcher_Steam
         {
             string imageURL = "";
             XmlDocument profileXML = new XmlDocument();
-            profileXML.Load($"https://steamcommunity.com/profiles/{steamID}?xml=1");
-            imageURL = "";
-            if (profileXML.DocumentElement.SelectNodes("/profile/privacyMessage").Count == 0) // Fix for accounts that haven't set up their Community Profile
+            try
             {
-                try
+                profileXML.Load($"https://steamcommunity.com/profiles/{steamID}?xml=1");
+                imageURL = "";
+                if (profileXML.DocumentElement.SelectNodes("/profile/privacyMessage").Count == 0) // Fix for accounts that haven't set up their Community Profile
                 {
-                    imageURL = profileXML.DocumentElement.SelectNodes("/profile/avatarFull")[0].InnerText;
-                    bool isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")[0].InnerText == "1" ? true : false;
-                    bool isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")[0].InnerText == "1" ? true : false;
-                    vacBanned = isVAC || isLimited;
+                    try
+                    {
+                        imageURL = profileXML.DocumentElement.SelectNodes("/profile/avatarFull")[0].InnerText;
+                        bool isVAC = false;
+                        bool isLimited = true;
+                        if (profileXML.DocumentElement != null)
+                        {
+                            if (profileXML.DocumentElement.SelectNodes("/profile/vacBanned")?[0] != null)
+                                isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
+                            if (profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
+                                isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
+                        }
+
+                        if (!persistentSettings.LimitedAsVAC) // Ignores limited accounts
+                            isLimited = false;
+                        vacBanned = isVAC || isLimited;
+                    }
+                    catch (NullReferenceException) // User has not set up their account, or does not have an image.
+                    {
+                        imageURL = "";
+                    }
                 }
-                catch (NullReferenceException) // User has not set up their account, or does not have an image.
+            }
+            catch (Exception e)
+            {
+                vacBanned = false;
+                imageURL = "";
+
+
+                string exceptionStr = e.ToString();
+                System.IO.Directory.CreateDirectory("Errors");
+                using (StreamWriter sw = File.AppendText($"Errors\\AccSwitcher-Error-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
                 {
-                    imageURL = "";
+                    sw.WriteLine(DateTime.Now.ToString() + "\t" + Strings.ErrUnhandledCrash + ": " + exceptionStr + Environment.NewLine + Environment.NewLine);
+                }
+                using (StreamWriter sw = File.AppendText($"Errors\\AccSwitcher-Error-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
+                {
+                    sw.WriteLine(JsonConvert.SerializeObject(profileXML));
                 }
             }
             return imageURL;
@@ -648,7 +695,7 @@ namespace TcNo_Acc_Switcher_Steam
         //    //MessageBox.Show("You have selected a ListBoxItem!");
         //    MessageBox.Show(MainViewmodel.SelectedSteamUser.Name);
         //}
-        private void UpdateLoginusers(bool loginnone)
+        private void UpdateLoginusers(bool loginnone, string SelectedSteamID)
         {
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
@@ -659,7 +706,7 @@ namespace TcNo_Acc_Switcher_Steam
                 lblStatus.Content = Strings.StatusEditingLoginusers;
                 string lineNoQuot;
                 bool userIDMatch = false;
-                string outline = "", SelectedSteamID = (loginnone ? "" : MainViewmodel.SelectedSteamUser.SteamID);
+                string outline = "";
                 foreach (string curline in fLoginUsersLines)
                 {
                     outline = curline;
@@ -745,6 +792,7 @@ namespace TcNo_Acc_Switcher_Steam
             public bool StartAsAdmin { get; set; } = false;
             public bool ShowSteamID { get; set; } = false;
             public bool ShowVACStatus { get; set; } = true;
+            public bool LimitedAsVAC { get; set; } = true;
             public bool ForgetAccountEnabled { get; set; } = false;
             public string SteamFolder { get; set; } = "C:\\Program Files (x86)\\Steam\\";
             public Size WindowSize { get; set; } = new Size(773, 420);
@@ -768,6 +816,7 @@ namespace TcNo_Acc_Switcher_Steam
                 StartAsAdmin = new bool();
                 ShowSteamID = new bool();
                 ShowVACStatus = new bool();
+                LimitedAsVAC = new bool();
                 StartMenuIcon = new bool();
                 StartWithWindows = new bool();
                 DesktopShortcut = new bool();
@@ -818,6 +867,18 @@ namespace TcNo_Acc_Switcher_Steam
                 set
                 {
                     _ShowVACStatus = value;
+                }
+            }
+            private bool _LimitedAsVAC;
+            public bool LimitedAsVAC
+            {
+                get
+                {
+                    return _LimitedAsVAC;
+                }
+                set
+                {
+                    _LimitedAsVAC = value;
                 }
             }
             private bool _StartMenuIcon;
@@ -948,16 +1009,47 @@ namespace TcNo_Acc_Switcher_Steam
             listAccounts.Items.Refresh();
 
             lblStatus.Content = Strings.StatusClosingSteam;
-            closeSteam();
-            UpdateLoginusers(false);
-
-            if (persistentSettings.StartAsAdmin)
-                Process.Start(persistentSettings.SteamEXE());
-            else
-                Process.Start(new ProcessStartInfo("explorer.exe", persistentSettings.SteamEXE()));
+            SwapSteamAccounts(false, MainViewmodel.SelectedSteamUser.SteamID);
             lblStatus.Content = Strings.StatusStartedSteam;
             btnLogin.IsEnabled = true;
         }
+        bool IsDigitsOnly(string str)
+        {
+            foreach (char c in str)
+            {
+                if (c < '0' || c > '9')
+                    return false;
+            }
+
+            return true;
+        }
+        private bool verifySteamID(string steamid)
+        {
+            if (IsDigitsOnly(steamid) && steamid.Length == 17)
+            {
+                // Size check: https://stackoverflow.com/questions/33933705/steamid64-minimum-and-maximum-length#40810076
+                double steamid_val = double.Parse(steamid);
+                if (steamid_val > 0x0110000100000001 && steamid_val < 0x01100001FFFFFFFF)
+                    return true;
+            }
+            return false;
+        }
+        private void SwapSteamAccounts(bool loginnone, string steamid)
+        {
+            if (verifySteamID(steamid))
+            {
+                closeSteam();
+                UpdateLoginusers(loginnone, steamid);
+
+                if (persistentSettings.StartAsAdmin)
+                    Process.Start(persistentSettings.SteamEXE()); // Maybe get steamID from elsewhere? Or load persistent settings first...
+                else
+                    Process.Start(new ProcessStartInfo("explorer.exe", persistentSettings.SteamEXE()));
+            }
+            else
+                MessageBox.Show("Invalid SteamID: " + steamid);
+        }
+
         private void ShowForgetRememberDialog()
         {
             ForgetAccountCheck ForgetAccountCheckDialog = new ForgetAccountCheck();
@@ -1007,9 +1099,8 @@ namespace TcNo_Acc_Switcher_Steam
 
             // Backup loginusers.vdf
             string backupFileName = $"loginusers-{ DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss.fff")}.vdf",
-             backupdir = Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\");
-            if (!Directory.Exists(backupdir))
-                Directory.CreateDirectory(backupdir);
+            backupdir = Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\");
+            Directory.CreateDirectory(backupdir);
             try
             {
                 File.Copy(persistentSettings.LoginusersVDF(), Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\{backupFileName}"));
@@ -1083,6 +1174,10 @@ namespace TcNo_Acc_Switcher_Steam
         private void AccountItem_CopySteamID(object sender, RoutedEventArgs e)
         {
             System.Windows.Clipboard.SetText(MainViewmodel.SelectedSteamUser.SteamID);
+        }
+        private void AccountItem_CopyProfileLink(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Clipboard.SetText("https://steamcommunity.com/profiles/" + MainViewmodel.SelectedSteamUser.SteamID);
         }
         private void AccountItem_CopyUsername(object sender, RoutedEventArgs e)
         {
@@ -1215,8 +1310,18 @@ namespace TcNo_Acc_Switcher_Steam
                 profileXML.Load($"https://steamcommunity.com/profiles/{su.SteamID}?xml=1");
                 try
                 {
-                    bool isVAC = profileXML.DocumentElement != null && profileXML.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
-                    bool isLimited = profileXML.DocumentElement != null && profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
+                    bool isVAC = false;
+                    bool isLimited = true;
+                    if (profileXML.DocumentElement != null)
+                    {
+                        if (profileXML.DocumentElement.SelectNodes("/profile/vacBanned")?[0] != null)
+                            isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
+                        if (profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
+                            isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
+                    }
+
+                    if (!persistentSettings.LimitedAsVAC) // Ignores limited accounts
+                        isLimited = false;
                     VacOrLimited = isVAC || isLimited;
                 }
                 catch (NullReferenceException) // User has not set up their account
@@ -1289,7 +1394,7 @@ namespace TcNo_Acc_Switcher_Steam
             // Kill Steam
             closeSteam();
             // Set all accounts to 'not used last' status
-            UpdateLoginusers(true);
+            UpdateLoginusers(true, "");
             // Start Steam
             if (persistentSettings.StartAsAdmin)
                 Process.Start(persistentSettings.SteamEXE());
@@ -1321,6 +1426,13 @@ namespace TcNo_Acc_Switcher_Steam
             listAccounts.Items.Refresh();
             persistentSettings.ShowVACStatus = VACEnabled;
             MainViewmodel.ShowVACStatus = VACEnabled;
+        }
+
+        public void ToggleLimitedAsVAC(bool lav)
+        {
+            persistentSettings.LimitedAsVAC = lav;
+            MainViewmodel.LimitedAsVAC = lav;
+            MessageBox.Show(Strings.InfoRefreshLimitedAsVac);
         }
         private void resourceClean(bool update)
         {
@@ -1417,13 +1529,6 @@ namespace TcNo_Acc_Switcher_Steam
                 ts.RootFolder.DeleteTask("TcNo Account Switcher - Tray start with logon");
                 MessageBox.Show(Strings.InfoTrayWindowsStartOff);
             }
-
-
-            //string startup_path = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-            //if (bEnabled)
-            //    createShortcut(startup_path);
-            //else
-            //    deleteShortcut(startup_path, "TcNo Account Switcher.lnk", false);
         }
         public void StartMenuShortcut(bool bEnabled)
         {
@@ -1448,10 +1553,7 @@ namespace TcNo_Acc_Switcher_Steam
         }
         private void createShortcut(string location)
         {
-            if (!Directory.Exists(location))
-            {
-                Directory.CreateDirectory(location);
-            }
+            Directory.CreateDirectory(location);
             // Has to be done in such a strange way because .NET Core points it to the .DLL inside of %temp% instead of the actual .exe...
             string selfexe = Path.Combine(Directory.GetCurrentDirectory(), System.AppDomain.CurrentDomain.FriendlyName), // Changes .dll to .exe. .NET Core returns the .dll instead of the .exe required for the shortcut.
                    selflocation = Directory.GetCurrentDirectory(),
@@ -1561,25 +1663,5 @@ namespace TcNo_Acc_Switcher_Steam
             }
             MessageBox.Show(Strings.InfoShortcutDeleted.Replace("{}", name));
         }
-
-
-        //void DownloadImages(object oin)
-        //{
-        //    List<Steamuser> ImagesToDownload = (List<Steamuser>)oin;
-        //private static async Task<bool> GetVacStatus(string steamID)
-        //{
-        //    XmlDocument profileXML = new XmlDocument();
-        //    profileXML.Load($"https://steamcommunity.com/profiles/{steamID}?xml=1");
-        //    try
-        //    {
-        //        bool isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")[0].InnerText == "1" ? true : false;
-        //        bool isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")[0].InnerText == "1" ? true : false;
-        //        return isVAC || isLimited;
-        //    }
-        //    catch (NullReferenceException) // User has not set up their account
-        //    {
-        //        return false;
-        //    }
-        //}
     }
 }

@@ -14,10 +14,25 @@ namespace TcNo_Acc_Switcher_Steam
     public partial class Settings : Window
     {
         MainWindow mw;
+        private bool enableButtons = false;
         public Settings()
         {
             InitializeComponent();
         }
+        bool _shown;
+        protected override void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+
+            if (_shown)
+                return;
+
+            _shown = true;
+            // Enables buttons once the settings page has loaded. This stops them being fired by .NET setting values.
+            enableButtons = true;
+        }
+
+
         public void ShareMainWindow(MainWindow imw)
         {
             mw = imw;
@@ -72,17 +87,26 @@ namespace TcNo_Acc_Switcher_Steam
         }
         private void btnCheckVac_Click(object sender, RoutedEventArgs e)
         {
-            mw.CheckVac();
+            if (enableButtons)
+                mw.CheckVac();
         }
 
         private void ShowSteamID_CheckChanged(object sender, RoutedEventArgs e)
         {
-            mw.ShowSteamIDHidden.IsChecked = (bool)ShowSteamID.IsChecked;
+            if (enableButtons)
+                mw.ShowSteamIDHidden.IsChecked = (bool)ShowSteamID.IsChecked;
         }
 
         private void ShowVACStatus_CheckChanged(object sender, RoutedEventArgs e)
         {
-            mw.toggleVACStatus((bool)ShowVACStatus.IsChecked);
+            if (enableButtons)
+                mw.toggleVACStatus((bool)ShowVACStatus.IsChecked);
+        }
+
+        private void LimitedAsVAC_CheckChanged(object sender, RoutedEventArgs e)
+        {
+            if (enableButtons)
+                mw.ToggleLimitedAsVAC((bool)LimitedAsVAC.IsChecked);
         }
 
         private void btnRestoreForgotten_Click(object sender, RoutedEventArgs e)
@@ -118,34 +142,20 @@ namespace TcNo_Acc_Switcher_Steam
             clearLoginsDialog.ShowDialog();
         }
 
-        private void ToggleStartShortcut_Checked(object sender, RoutedEventArgs e)
+        private void ToggleStartShortcut_CheckChanged(object sender, RoutedEventArgs e)
         {
-            mw.StartMenuShortcut(true);
+            if (enableButtons)
+                mw.StartMenuShortcut((bool)ToggleStartShortcut.IsChecked);
         }
-
-        private void ToggleStartShortcut_Unchecked(object sender, RoutedEventArgs e)
+        private void ToggleStartWithWindows_CheckChanged(object sender, RoutedEventArgs e)
         {
-            mw.StartMenuShortcut(false);
+            if (enableButtons)
+                mw.StartWithWindows((bool)ToggleStartWithWindows.IsChecked);
         }
-
-        private void ToggleStartWithWindows_Checked(object sender, RoutedEventArgs e)
+        private void ToggleDesktopShortcut_CheckChanged(object sender, RoutedEventArgs e)
         {
-            mw.StartWithWindows(true);
-        }
-
-        private void ToggleStartWithWindows_Unchecked(object sender, RoutedEventArgs e)
-        {
-            mw.StartWithWindows(false);
-        }
-
-        private void ToggleDesktopShortcut_Checked(object sender, RoutedEventArgs e)
-        {
-            mw.DesktopShortcut(true);
-        }
-
-        private void ToggleDesktopShortcut_Unchecked(object sender, RoutedEventArgs e)
-        {
-            mw.DesktopShortcut(false);
+            if (enableButtons)
+                mw.DesktopShortcut((bool)ToggleDesktopShortcut.IsChecked);
         }
     }
 }
