@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 
@@ -156,6 +158,35 @@ namespace TcNo_Acc_Switcher_Steam
         {
             if (enableButtons)
                 mw.DesktopShortcut((bool)ToggleDesktopShortcut.IsChecked);
+        }
+
+        private void ToggleAccNames_CheckChanged(object sender, RoutedEventArgs e)
+        {
+            if (enableButtons)
+                mw.toggleAccNames((bool)ToggleAccNames.IsChecked);
+        }
+
+        private void NumberRecentAccounts_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (enableButtons)
+            {
+                if ((string) NumberRecentAccounts.Text == "")
+                {
+                    NumberRecentAccounts.Text = "0";
+                    return;
+                }
+
+                int x;
+                if (Int32.TryParse((string)NumberRecentAccounts.Text, out x))
+                {
+                    mw.setTotalRecentAccount((string)NumberRecentAccounts.Text);
+                }
+                else
+                {
+                    NumberRecentAccounts.Text = new string(((string)NumberRecentAccounts.Text).Where(c => "0123456789".Contains(c)).ToArray());
+                }
+
+            }
         }
     }
 }

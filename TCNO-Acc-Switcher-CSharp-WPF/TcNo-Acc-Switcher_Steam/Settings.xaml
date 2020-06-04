@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TcNo_Acc_Switcher_Steam"
         mc:Ignorable="d"
-        Title="TcNo Steam Account Switcher - Settings" Height="555" Width="502"
+        Title="TcNo Steam Account Switcher - Settings" Height="618.138" Width="502"
         MinHeight="329" MinWidth="502"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterOwner"
@@ -73,7 +73,23 @@
             <StackPanel Orientation="Horizontal">
                 <CheckBox Panel.ZIndex="6" Name="ToggleDesktopShortcut" Margin="5px" Foreground="White" Content="Desktop shortcut" IsChecked="{Binding DesktopShortcut, Mode=TwoWay}" Checked="ToggleDesktopShortcut_CheckChanged" Unchecked="ToggleDesktopShortcut_CheckChanged" />
                 <CheckBox Panel.ZIndex="6" Name="ToggleStartShortcut" Margin="5px" Foreground="White" Content="Start menu shortcut" IsChecked="{Binding StartMenuIcon, Mode=TwoWay}" Checked="ToggleStartShortcut_CheckChanged" Unchecked="ToggleStartShortcut_CheckChanged" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Panel.ZIndex="6" Grid.Row="0" Grid.Column="0">
+                <Separator Width="20px" Height="24px"/>
+                <Label Name="lblTray" Margin="0" Foreground="White" Content="Tray settings" FontSize="11" FontWeight="Bold"/>
+                <Separator Width="100px" Height="24px"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
                 <CheckBox Panel.ZIndex="6" Name="ToggleStartWithWindows" Margin="5px" Foreground="White" Content="Start with Windows" IsChecked="{Binding StartWithWindows, Mode=TwoWay}" Checked="ToggleStartWithWindows_CheckChanged" Unchecked="ToggleStartWithWindows_CheckChanged" />
+                <CheckBox Panel.ZIndex="6" Name="ToggleAccNames" Margin="5px" Foreground="White" Content="Show account name [not friend name]" IsChecked="{Binding TrayAccountAccNames, Mode=TwoWay}" Checked="ToggleAccNames_CheckChanged" Unchecked="ToggleAccNames_CheckChanged" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <local:IntToStringConverter x:Key="IntToStr"/>
+                </StackPanel.Resources>
+                <Label Panel.ZIndex="6" Name="LblAccountsTotal" Foreground="White" Content="Max number of accounts to remember:"></Label>
+                <TextBox Panel.ZIndex="6" Name="NumberRecentAccounts" Margin="5px" Foreground="White" Background="#14151E" Text="{Binding TrayAccounts, Converter={StaticResource IntToStr}, Mode=TwoWay}" Width="40" TextChanged="NumberRecentAccounts_OnTextChanged"/>
             </StackPanel>
 
 

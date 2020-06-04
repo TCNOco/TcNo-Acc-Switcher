@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TcNo_Acc_Switcher_Steam"
+        
         mc:Ignorable="d"
         Title="TcNo Steam Account Switcher" Height="360" Width="605"
         MinWidth="475"

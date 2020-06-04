@@ -16,6 +16,8 @@ namespace TcNo_Acc_Switcher_SteamTray
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
+        public static TrayUsers trayUsers = new TrayUsers();
+        
         [STAThread]
         static void Main()
         {
@@ -24,6 +26,7 @@ namespace TcNo_Acc_Switcher_SteamTray
                 Console.WriteLine("TcNo Account Switcher SteamTray is already running");
                 Environment.Exit(99);
             }
+            trayUsers.LoadTrayUsers();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new AppCont());
@@ -63,6 +66,24 @@ namespace TcNo_Acc_Switcher_SteamTray
             // Name will be number from top.
             // Then start main program to switch? Yeah.
             // - Launch argument
+            if (File.Exists("Tray_Users.json"))
+            {
+                if (Program.trayUsers.ListTrayUsers != null && Program.trayUsers.ListTrayUsers.Count >= 1)
+                {
+                    Program.trayUsers.ListTrayUsers.Reverse(); // Last item was last to be logged into.
+                    foreach (TrayUsers.TrayUser trayUser in Program.trayUsers.ListTrayUsers)
+                    {
+                        contextMenu.Items.Add(new ToolStripMenuItem()
+                        {
+                            Name = trayUser.SteamID,
+                            Text = $@"Switch to: {trayUser.DisplayAs}",
+                            ForeColor = Color.White,
+                            BackColor = Color.FromArgb(255, 34, 34, 34)
+                        });
+                    }
+                }
+            }
+
             contextMenu.Items.Add(new ToolStripMenuItem()
             {
                 Name = "EXIT",
@@ -82,9 +103,28 @@ namespace TcNo_Acc_Switcher_SteamTray
             };
             trayIcon.DoubleClick += new EventHandler(NotifyIcon_DoubleClick);
         }
+        void contextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            ToolStripItem item = e.ClickedItem;
+            if (item.Name == "START")
+            {
+                startSwitcher("");
+            }
+            else if (item.Name == "EXIT")
+            {
+                trayIcon.Visible = false;
+                closeMainProcess();
+                Application.Exit();
+            }
+            else
+            {
+                if (Program.trayUsers.AlreadyInList(item.Name))
+                    startSwitcher($"+{item.Name} quit");
+            }
+        }
         private void NotifyIcon_DoubleClick(object sender, System.EventArgs e)
         {
-            startSwitcher();
+            startSwitcher("");
         }
 
         // Function to check if the .exe is already running
@@ -121,7 +161,7 @@ namespace TcNo_Acc_Switcher_SteamTray
                 proc.WaitForExit();
             }
         }
-        private void startSwitcher() {
+        private void startSwitcher(string args) {
             if (alreadyRunning())
             {
                 // Already open
@@ -136,25 +176,13 @@ namespace TcNo_Acc_Switcher_SteamTray
                     startInfo.FileName = processName;
                     startInfo.CreateNoWindow = false;
                     startInfo.UseShellExecute = false;
+                    startInfo.Arguments = args;
                     Process.Start(startInfo);
                 }
                 else
                 {
                     MessageBox.Show("Could not open the main .exe. Make sure it exists.\n\nI attempted to open: " + mainProgram, "TcNo Account Switcher - Tray launch fail");
                 }
-            }
-        }
-        void contextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-            ToolStripItem item = e.ClickedItem;
-            if (item.Name == "START")
-            {
-                startSwitcher();
-            } else if (item.Name == "EXIT")
-            {
-                trayIcon.Visible = false;
-                closeMainProcess();
-                Application.Exit();
             }
         }
         void Exit(object sender, EventArgs e)

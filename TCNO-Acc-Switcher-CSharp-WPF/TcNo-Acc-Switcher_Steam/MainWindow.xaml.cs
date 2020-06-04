@@ -12,6 +12,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -32,6 +33,7 @@ namespace TcNo_Acc_Switcher_Steam
         List<Steamuser> userAccounts = new List<Steamuser>();
         List<string> fLoginUsersLines = new List<string>();
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
+        private TrayUsers trayUsers = new TrayUsers();
 
         //int version = 1;
         readonly int version = 2302;
@@ -47,12 +49,6 @@ namespace TcNo_Acc_Switcher_Steam
         public MainWindow()
         {
             /* TODO:
-            -- Add arguments for program
-            ---> Recieves SteamID, loads persistent settings, switches to it, closes.
-            ---> This will be used with the Tray App
-
-
-
              - Make "Installer" .exe. Maybe from C++ so it can run everywhere? Check for the correct .NET Core Desktop version, and download it if not found. Then run the installer.
              Download the .exe and place it where the user specifies.
              Start the Account Swicther with an argument that automatically makes the Start Menu and or Desktop Shortcuts, if specified.
@@ -369,7 +365,7 @@ namespace TcNo_Acc_Switcher_Steam
         {
             //if (resultsTab.IsSelected)
             //{
-            //    Grid.SetRowSpan(dataGrid1, 2);
+            //    Grid.SetRoLoadTrayUserswSpan(dataGrid1, 2);
             //    Grid.SetRowSpan(dataGrid2, 2);
             //}
         }
@@ -391,6 +387,8 @@ namespace TcNo_Acc_Switcher_Steam
                     // this.Close() won't work, because the main window hasn't appeared just yet. Still needs to be populated with Steam Accounts.
                 }
             }
+            if (File.Exists("Tray_Users.json"))
+                trayUsers.LoadTrayUsers();
         }
         bool setAndCheckSteamFolder(bool manual)
         {
@@ -468,6 +466,8 @@ namespace TcNo_Acc_Switcher_Steam
             MainViewmodel.LimitedAsVAC = persistentSettings.LimitedAsVAC;
             MainViewmodel.InputFolderDialogResponse = persistentSettings.SteamFolder;
             MainViewmodel.ForgetAccountEnabled = persistentSettings.ForgetAccountEnabled;
+            MainViewmodel.TrayAccounts = persistentSettings.TrayAccounts;
+            MainViewmodel.TrayAccountAccNames = persistentSettings.TrayAccountAccNames;
             this.Width = persistentSettings.WindowSize.Width;
             this.Height = persistentSettings.WindowSize.Height;
             ShowSteamIDHidden.IsChecked = persistentSettings.ShowSteamID;
@@ -481,6 +481,8 @@ namespace TcNo_Acc_Switcher_Steam
             persistentSettings.LimitedAsVAC = MainViewmodel.LimitedAsVAC;
             persistentSettings.SteamFolder = MainViewmodel.InputFolderDialogResponse;
             persistentSettings.ForgetAccountEnabled = MainViewmodel.ForgetAccountEnabled;
+            persistentSettings.TrayAccounts = MainViewmodel.TrayAccounts;
+            persistentSettings.TrayAccountAccNames = MainViewmodel.TrayAccountAccNames;
         }
         void saveSettings()
         {
@@ -695,7 +697,7 @@ namespace TcNo_Acc_Switcher_Steam
         //    //MessageBox.Show("You have selected a ListBoxItem!");
         //    MessageBox.Show(MainViewmodel.SelectedSteamUser.Name);
         //}
-        private void UpdateLoginusers(bool loginnone, string SelectedSteamID)
+        private void UpdateLoginusers(bool loginnone, string SelectedSteamID, string AccName)
         {
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
@@ -759,7 +761,7 @@ namespace TcNo_Acc_Switcher_Steam
                 }
                 else
                 {
-                    key.SetValue("AutoLoginUser", MainViewmodel.SelectedSteamUser.AccName);
+                    key.SetValue("AutoLoginUser", AccName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel).
                     key.SetValue("RememberPassword", 1);
                 }
             }
@@ -804,6 +806,9 @@ namespace TcNo_Acc_Switcher_Steam
             {
                 return Path.Combine(SteamFolder, "Steam.exe");
             }
+
+            public int TrayAccounts { get; set; } = 3; // Default: Up to 3 accounts.
+            public bool TrayAccountAccNames { get; set; } = false; // Use account names instead of friendly names.
         }
 
         public class MainWindowViewModel : INotifyPropertyChanged
@@ -823,6 +828,8 @@ namespace TcNo_Acc_Switcher_Steam
                 vacStatus = Brushes.Black;
                 ProgramVersion = "";
                 ForgetAccountEnabled = new bool();
+                TrayAccounts = 3;
+                TrayAccountAccNames = new bool();
             }
 
             public ObservableCollection<Steamuser> SteamUsers { get; private set; }
@@ -965,6 +972,32 @@ namespace TcNo_Acc_Switcher_Steam
                     _ProgramVersion = value;
                 }
             }
+
+            private int _TrayAccounts;
+            public int TrayAccounts
+            {
+                get
+                {
+                    return _TrayAccounts;
+                }
+                set
+                {
+                    _TrayAccounts = value;
+                }
+            }
+
+            private bool _TrayAccountAccNames;
+            public bool TrayAccountAccNames
+            {
+                get
+                {
+                    return _TrayAccountAccNames;
+                }
+                set
+                {
+                    _TrayAccountAccNames = value;
+                }
+            }
             private System.Windows.Media.Brush _vacStatus;
             public System.Windows.Media.Brush vacStatus
             {
@@ -1008,8 +1041,32 @@ namespace TcNo_Acc_Switcher_Steam
             MainViewmodel.SelectedSteamUser.lastLogin = DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss");
             listAccounts.Items.Refresh();
 
+            // Add to tray access accounts for tray icon.
+            // Can switch to this account quickly later.
+            if (persistentSettings.TrayAccounts > 0)
+            {
+                // Add to list, or move to most recent spot.
+                if (trayUsers.AlreadyInList(MainViewmodel.SelectedSteamUser.SteamID))
+                    trayUsers.MoveItemToLast(MainViewmodel.SelectedSteamUser.SteamID);
+                else{
+                    while (trayUsers.ListTrayUsers.Count >= persistentSettings.TrayAccounts) // Add to list, drop first item if full.
+                        trayUsers.ListTrayUsers.RemoveAt(0);
+
+                    trayUsers.ListTrayUsers.Add(new TrayUsers.TrayUser()
+                        {
+                            AccName = MainViewmodel.SelectedSteamUser.AccName,
+                            Name = MainViewmodel.SelectedSteamUser.Name,
+                            DisplayAs = (persistentSettings.TrayAccountAccNames ? MainViewmodel.SelectedSteamUser.AccName : MainViewmodel.SelectedSteamUser.Name),
+                            SteamID = MainViewmodel.SelectedSteamUser.SteamID
+                        }
+                    );
+                }
+
+                trayUsers.SaveTrayUsers();
+            }
+
             lblStatus.Content = Strings.StatusClosingSteam;
-            SwapSteamAccounts(false, MainViewmodel.SelectedSteamUser.SteamID);
+            SwapSteamAccounts(false, MainViewmodel.SelectedSteamUser.SteamID, MainViewmodel.SelectedSteamUser.AccName);
             lblStatus.Content = Strings.StatusStartedSteam;
             btnLogin.IsEnabled = true;
         }
@@ -1034,12 +1091,12 @@ namespace TcNo_Acc_Switcher_Steam
             }
             return false;
         }
-        private void SwapSteamAccounts(bool loginnone, string steamid)
+        public void SwapSteamAccounts(bool loginnone, string steamid, string AccName)
         {
             if (verifySteamID(steamid))
             {
                 closeSteam();
-                UpdateLoginusers(loginnone, steamid);
+                UpdateLoginusers(loginnone, steamid, AccName);
 
                 if (persistentSettings.StartAsAdmin)
                     Process.Start(persistentSettings.SteamEXE()); // Maybe get steamID from elsewhere? Or load persistent settings first...
@@ -1049,7 +1106,6 @@ namespace TcNo_Acc_Switcher_Steam
             else
                 MessageBox.Show("Invalid SteamID: " + steamid);
         }
-
         private void ShowForgetRememberDialog()
         {
             ForgetAccountCheck ForgetAccountCheckDialog = new ForgetAccountCheck();
@@ -1394,7 +1450,7 @@ namespace TcNo_Acc_Switcher_Steam
             // Kill Steam
             closeSteam();
             // Set all accounts to 'not used last' status
-            UpdateLoginusers(true, "");
+            UpdateLoginusers(true, "", MainViewmodel.SelectedSteamUser.AccName);
             // Start Steam
             if (persistentSettings.StartAsAdmin)
                 Process.Start(persistentSettings.SteamEXE());
@@ -1426,6 +1482,26 @@ namespace TcNo_Acc_Switcher_Steam
             listAccounts.Items.Refresh();
             persistentSettings.ShowVACStatus = VACEnabled;
             MainViewmodel.ShowVACStatus = VACEnabled;
+        }
+
+        public void toggleAccNames(bool val)
+        {
+            persistentSettings.TrayAccountAccNames = val;
+            MainViewmodel.TrayAccountAccNames = val;
+
+            for (int i = 0; i < trayUsers.ListTrayUsers.Count; i++)
+            {
+                trayUsers.ListTrayUsers[i].DisplayAs = (val
+                    ? trayUsers.ListTrayUsers[i].AccName
+                    : trayUsers.ListTrayUsers[i].Name);
+            }
+            trayUsers.SaveTrayUsers();
+        }
+
+        public void setTotalRecentAccount(string val)
+        {
+            persistentSettings.TrayAccounts = Int32.Parse(val);
+            MainViewmodel.TrayAccounts = Int32.Parse(val);
         }
 
         public void ToggleLimitedAsVAC(bool lav)
