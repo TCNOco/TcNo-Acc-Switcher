@@ -9,7 +9,8 @@
         MinHeight="329" MinWidth="502"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterOwner"
-        PreviewKeyDown="Window_PreviewKeyDown">
+        PreviewKeyDown="Window_PreviewKeyDown"
+        Closing="Settings_OnClosing">
     <!--MinHeight="198" MaxHeight="198" MinWidth="450"-->
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0"
@@ -65,6 +66,14 @@
             <CheckBox Panel.ZIndex="6" Name="ShowVACStatus" Margin="5px" Foreground="White" Content="Show VAC Status" IsChecked="{Binding ShowVACStatus, Mode=TwoWay}" Checked="ShowVACStatus_CheckChanged" Unchecked="ShowVACStatus_CheckChanged" />
             <CheckBox Panel.ZIndex="6" Name="LimitedAsVAC" Margin="5px" Foreground="White" Content="Show Limited accounts as VAC" IsChecked="{Binding LimitedAsVAC, Mode=TwoWay}" Checked="LimitedAsVAC_CheckChanged" Unchecked="LimitedAsVAC_CheckChanged" />
 
+            <ComboBox Panel.ZIndex="6" Name="MenuImageLifetime" Margin="5px" HorizontalAlignment="Left" Style="{StaticResource DarkCombo}">
+                <ComboBoxItem BorderThickness="0" Style="{StaticResource BaseStyle}">1 Day</ComboBoxItem> 
+                <ComboBoxItem BorderThickness="0" Style="{StaticResource BaseStyle}">1 Week</ComboBoxItem>
+                <ComboBoxItem BorderThickness="0" Style="{StaticResource BaseStyle}">2 Weeks</ComboBoxItem>
+                <ComboBoxItem BorderThickness="0" Style="{StaticResource BaseStyle}">1 Month</ComboBoxItem>
+                <ComboBoxItem BorderThickness="0" Style="{StaticResource BaseStyle}">Never</ComboBoxItem>
+            </ComboBox>
+
             <StackPanel Orientation="Horizontal" Panel.ZIndex="6" Grid.Row="0" Grid.Column="0">
                 <Separator Width="20px" Height="24px"/>
                 <Label Name="lblShortcuts" Margin="0" Foreground="White" Content="Shortcuts" FontSize="11" FontWeight="Bold"/>
@@ -88,7 +97,7 @@
                 <StackPanel.Resources>
                     <local:IntToStringConverter x:Key="IntToStr"/>
                 </StackPanel.Resources>
-                <Label Panel.ZIndex="6" Name="LblAccountsTotal" Foreground="White" Content="Max number of accounts to remember:"></Label>
+                <Label Panel.ZIndex="6" Name="LblAccountsTotal" Foreground="White" Content="Max number of accounts to remember:" />
                 <TextBox Panel.ZIndex="6" Name="NumberRecentAccounts" Margin="5px" Foreground="White" Background="#14151E" Text="{Binding TrayAccounts, Converter={StaticResource IntToStr}, Mode=TwoWay}" Width="40" TextChanged="NumberRecentAccounts_OnTextChanged"/>
             </StackPanel>
 

@@ -153,6 +153,10 @@ namespace TcNo_Acc_Switcher_Steam
             List<Steamuser> ImagesToDownload = new List<Steamuser>();
             foreach (Steamuser su in userAccounts)
             {
+                FileInfo fi = new FileInfo(su.ImgURL);
+                if (fi.LastAccessTime < persistentSettings.ImageLifetime)//////
+                    fi.Delete();
+
                 if (!File.Exists(su.ImgURL))
                 {
                     ImagesToDownload.Add(su);
@@ -331,7 +335,7 @@ namespace TcNo_Acc_Switcher_Steam
                     }
                     catch (WebException ex)
                     {
-                        if (!downloadError)
+                        if (!downloadError && ex.HResult != -2146233079) // Ignore currently in use error, for when program is still writing to file.
                         {
                             downloadError = true; // Show error only once
                             // .net Core way: File.WriteAllBytes(su.ImgURL, Properties.Resources.QuestionMark); // Give the user's profile picture a question mark.
@@ -468,6 +472,7 @@ namespace TcNo_Acc_Switcher_Steam
             MainViewmodel.ForgetAccountEnabled = persistentSettings.ForgetAccountEnabled;
             MainViewmodel.TrayAccounts = persistentSettings.TrayAccounts;
             MainViewmodel.TrayAccountAccNames = persistentSettings.TrayAccountAccNames;
+            MainViewmodel.ImageLifetime = persistentSettings.ImageLifetime;
             this.Width = persistentSettings.WindowSize.Width;
             this.Height = persistentSettings.WindowSize.Height;
             ShowSteamIDHidden.IsChecked = persistentSettings.ShowSteamID;
@@ -483,6 +488,7 @@ namespace TcNo_Acc_Switcher_Steam
             persistentSettings.ForgetAccountEnabled = MainViewmodel.ForgetAccountEnabled;
             persistentSettings.TrayAccounts = MainViewmodel.TrayAccounts;
             persistentSettings.TrayAccountAccNames = MainViewmodel.TrayAccountAccNames;
+            persistentSettings.ImageLifetime = MainViewmodel.ImageLifetime;
         }
         void saveSettings()
         {
@@ -796,6 +802,7 @@ namespace TcNo_Acc_Switcher_Steam
             public bool ShowVACStatus { get; set; } = true;
             public bool LimitedAsVAC { get; set; } = true;
             public bool ForgetAccountEnabled { get; set; } = false;
+            public DateTime ImageLifetime { get; set; } = DateTime.Now.AddDays(-7);
             public string SteamFolder { get; set; } = "C:\\Program Files (x86)\\Steam\\";
             public Size WindowSize { get; set; } = new Size(773, 420);
             public string LoginusersVDF()
@@ -830,6 +837,7 @@ namespace TcNo_Acc_Switcher_Steam
                 ForgetAccountEnabled = new bool();
                 TrayAccounts = 3;
                 TrayAccountAccNames = new bool();
+                ImageLifetime = DateTime.Now.AddDays(-7);
             }
 
             public ObservableCollection<Steamuser> SteamUsers { get; private set; }
@@ -972,7 +980,6 @@ namespace TcNo_Acc_Switcher_Steam
                     _ProgramVersion = value;
                 }
             }
-
             private int _TrayAccounts;
             public int TrayAccounts
             {
@@ -984,6 +991,13 @@ namespace TcNo_Acc_Switcher_Steam
                 {
                     _TrayAccounts = value;
                 }
+            }
+
+            private DateTime _ImageLifetime;
+            public DateTime ImageLifetime
+            {
+                get => _ImageLifetime;
+                set => _ImageLifetime = value;
             }
 
             private bool _TrayAccountAccNames;
@@ -1498,6 +1512,15 @@ namespace TcNo_Acc_Switcher_Steam
             trayUsers.SaveTrayUsers();
         }
 
+        public void CapTotalTrayUsers()
+        {
+            if (persistentSettings.TrayAccounts > 0)
+                while (trayUsers.ListTrayUsers.Count >= persistentSettings.TrayAccounts) // Add to list, drop first item if full.
+                    trayUsers.ListTrayUsers.RemoveAt(0);
+            else
+                trayUsers.ListTrayUsers.Clear();
+            trayUsers.SaveTrayUsers();
+        }
         public void setTotalRecentAccount(string val)
         {
             persistentSettings.TrayAccounts = Int32.Parse(val);

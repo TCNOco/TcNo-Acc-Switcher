@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -187,6 +188,11 @@ namespace TcNo_Acc_Switcher_Steam
                 }
 
             }
+        }
+
+        private void Settings_OnClosing(object sender, CancelEventArgs e)
+        {
+            mw.CapTotalTrayUsers();
         }
     }
 }
