@@ -176,23 +176,49 @@ namespace TcNo_Acc_Switcher_Steam
                     NumberRecentAccounts.Text = "0";
                     return;
                 }
+                else if (((string)NumberRecentAccounts.Text).Length > 1)
+                {
+                    while (((string)NumberRecentAccounts.Text)[0] == '0')
+                    {
+                        NumberRecentAccounts.Text = (string)NumberRecentAccounts.Text.Substring(1);
+                    }
+                }
 
                 int x;
                 if (Int32.TryParse((string)NumberRecentAccounts.Text, out x))
-                {
                     mw.setTotalRecentAccount((string)NumberRecentAccounts.Text);
-                }
                 else
-                {
                     NumberRecentAccounts.Text = new string(((string)NumberRecentAccounts.Text).Where(c => "0123456789".Contains(c)).ToArray());
-                }
-
             }
         }
 
         private void Settings_OnClosing(object sender, CancelEventArgs e)
         {
             mw.CapTotalTrayUsers();
+        }
+
+        private void ImageExpiry_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (enableButtons)
+            {
+                if ((string)ImageExpiry.Text == "")
+                {
+                    ImageExpiry.Text = "0";
+                    return;
+                } else if (((string)ImageExpiry.Text).Length > 1)
+                {
+                    while (((string)ImageExpiry.Text)[0] == '0')
+                    {
+                        ImageExpiry.Text = (string)ImageExpiry.Text.Substring(1);
+                    }
+                }
+
+                int x;
+                if (Int32.TryParse((string)ImageExpiry.Text, out x))
+                    mw.setImageExpiry((string)ImageExpiry.Text);
+                else
+                    ImageExpiry.Text = new string(((string)ImageExpiry.Text).Where(c => "0123456789".Contains(c)).ToArray());
+            }
         }
     }
 }

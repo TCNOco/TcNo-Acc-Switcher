@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:TcNo_Acc_Switcher_Steam"
         
         mc:Ignorable="d"
-        Title="TcNo Steam Account Switcher" Height="360" Width="605"
-        MinWidth="475"
+        Title="TcNo Steam Account Switcher" Height="360" Width="680"
+        MinWidth="680"
         MinHeight="360"
         Closing="Window_Closing"
         Closed="Window_Closed"
@@ -254,7 +254,7 @@
                      BlurRadius="4"/>
             </Border.Effect>
         </Border>
-        <ListBox Margin="0 3 0 3" Panel.ZIndex="1" BorderThickness="0" SelectionChanged="SteamUserSelect" Name="listAccounts" IsSynchronizedWithCurrentItem="True" Grid.Row="1" Background="#28293A" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Top" ItemsSource="{Binding Path=SteamUsers}" SelectedItem="{Binding Path=SelectedSteamUser, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewKeyDown="listAccounts_PreviewKeyDown">
+        <ListBox Margin="0 0 0 3" Panel.ZIndex="1" BorderThickness="0" SelectionChanged="SteamUserSelect" Name="listAccounts" IsSynchronizedWithCurrentItem="True" Grid.Row="1" Background="#28293A" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Top" ItemsSource="{Binding Path=SteamUsers}" SelectedItem="{Binding Path=SelectedSteamUser, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewKeyDown="listAccounts_PreviewKeyDown">
             <ListBox.Resources>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <!--<EventSetter Event="ListBoxItem.Selected" Handler="SteamUserSelect" HandledEventsToo="True"/>-->

@@ -154,10 +154,10 @@ namespace TcNo_Acc_Switcher_Steam
             foreach (Steamuser su in userAccounts)
             {
                 FileInfo fi = new FileInfo(su.ImgURL);
-                if (fi.LastAccessTime < persistentSettings.ImageLifetime)//////
+                if (fi.LastWriteTime < DateTime.Now.AddDays(-1 * persistentSettings.ImageLifetime)){
+                    ImagesToDownload.Add(su);
                     fi.Delete();
-
-                if (!File.Exists(su.ImgURL))
+                } else if (!File.Exists(su.ImgURL))
                 {
                     ImagesToDownload.Add(su);
                 }
@@ -802,9 +802,9 @@ namespace TcNo_Acc_Switcher_Steam
             public bool ShowVACStatus { get; set; } = true;
             public bool LimitedAsVAC { get; set; } = true;
             public bool ForgetAccountEnabled { get; set; } = false;
-            public DateTime ImageLifetime { get; set; } = DateTime.Now.AddDays(-7);
+            public int ImageLifetime { get; set; } = 7;
             public string SteamFolder { get; set; } = "C:\\Program Files (x86)\\Steam\\";
-            public Size WindowSize { get; set; } = new Size(773, 420);
+            public Size WindowSize { get; set; } = new Size(680, 360);
             public string LoginusersVDF()
             {
                 return Path.Combine(SteamFolder, "config\\loginusers.vdf");
@@ -837,7 +837,7 @@ namespace TcNo_Acc_Switcher_Steam
                 ForgetAccountEnabled = new bool();
                 TrayAccounts = 3;
                 TrayAccountAccNames = new bool();
-                ImageLifetime = DateTime.Now.AddDays(-7);
+                ImageLifetime = 7;
             }
 
             public ObservableCollection<Steamuser> SteamUsers { get; private set; }
@@ -993,8 +993,8 @@ namespace TcNo_Acc_Switcher_Steam
                 }
             }
 
-            private DateTime _ImageLifetime;
-            public DateTime ImageLifetime
+            private int _ImageLifetime;
+            public int ImageLifetime
             {
                 get => _ImageLifetime;
                 set => _ImageLifetime = value;
@@ -1525,6 +1525,11 @@ namespace TcNo_Acc_Switcher_Steam
         {
             persistentSettings.TrayAccounts = Int32.Parse(val);
             MainViewmodel.TrayAccounts = Int32.Parse(val);
+        }
+        public void setImageExpiry(string val)
+        {
+            persistentSettings.ImageLifetime = Int32.Parse(val);
+            MainViewmodel.ImageLifetime = Int32.Parse(val);
         }
 
         public void ToggleLimitedAsVAC(bool lav)

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TcNo_Acc_Switcher_Steam"
         mc:Ignorable="d"
-        Title="TcNo Steam Account Switcher - Settings" Height="618.138" Width="502"
+        Title="TcNo Steam Account Switcher - Settings" Height="641.471" Width="502"
         MinHeight="329" MinWidth="502"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterOwner"
@@ -66,13 +66,16 @@
             <CheckBox Panel.ZIndex="6" Name="ShowVACStatus" Margin="5px" Foreground="White" Content="Show VAC Status" IsChecked="{Binding ShowVACStatus, Mode=TwoWay}" Checked="ShowVACStatus_CheckChanged" Unchecked="ShowVACStatus_CheckChanged" />
             <CheckBox Panel.ZIndex="6" Name="LimitedAsVAC" Margin="5px" Foreground="White" Content="Show Limited accounts as VAC" IsChecked="{Binding LimitedAsVAC, Mode=TwoWay}" Checked="LimitedAsVAC_CheckChanged" Unchecked="LimitedAsVAC_CheckChanged" />
 
-            <ComboBox Panel.ZIndex="6" Name="MenuImageLifetime" Margin="5px" HorizontalAlignment="Left" Style="{StaticResource DarkCombo}">
-                <ComboBoxItem BorderThickness="0" Style="{StaticResource BaseStyle}">1 Day</ComboBoxItem> 
-                <ComboBoxItem BorderThickness="0" Style="{StaticResource BaseStyle}">1 Week</ComboBoxItem>
-                <ComboBoxItem BorderThickness="0" Style="{StaticResource BaseStyle}">2 Weeks</ComboBoxItem>
-                <ComboBoxItem BorderThickness="0" Style="{StaticResource BaseStyle}">1 Month</ComboBoxItem>
-                <ComboBoxItem BorderThickness="0" Style="{StaticResource BaseStyle}">Never</ComboBoxItem>
-            </ComboBox>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <local:IntToStringConverter x:Key="IntToStr"/>
+                </StackPanel.Resources>
+                <Label Panel.ZIndex="6" Name="lblImageExpiry" Foreground="White" Content="Profile images expire after:" />
+                <TextBox Panel.ZIndex="6" Name="ImageExpiry" Margin="5px" Foreground="White" Background="#14151E" Text="{Binding ImageLifetime, Converter={StaticResource IntToStr}, Mode=TwoWay}" Width="40" TextChanged="ImageExpiry_OnTextChanged"/>
+                <Label Panel.ZIndex="6" Name="lblImageExpiry2" Foreground="White" Content="Days" />
+            </StackPanel>
+
+
 
             <StackPanel Orientation="Horizontal" Panel.ZIndex="6" Grid.Row="0" Grid.Column="0">
                 <Separator Width="20px" Height="24px"/>
