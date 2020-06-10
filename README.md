@@ -28,13 +28,17 @@
 
 **Options available**: Start Steam as Administrator, Change Steam install folder, Hide VAC Status for each account and Show Steam ID. 
 
+## 3.0 Update [Alpha]: Support for more platforms!
+Origin and more are coming to the TcNo Account Switcher! Easily handle multiple accounts with a few clicks!
+With an all-new tray, you can switch accounts directly from the tray as well!
+Tons more features to come.
+
 ## 2.0 Update: GUI added. Auto update added.
 Users can still download updates via the GitHub Releases page, but they will be prompted when an update is detected, and the program will update when you choose. Nothing is forced.
 
 *When the program checks for updates, it adds to a counter saying "Add 1 to the counter for my Province/State in country", purely for interest's sake. IP addresses and identifiable information are not collected.
 ## Required runtimes (Download and install):
-- Microsoft .NET Core 3.1 Runtime: [x86](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-3.1.1-windows-x86-installer) [x64](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-3.1.1-windows-x64-installer)
-- Microsoft .NET Core 3.1 Desktop Runtime: [x86](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-desktop-3.1.1-windows-x86-installer) [x64](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-desktop-3.1.1-windows-x64-installer)
+- Microsoft .NET Framework 4.8 Runtime: [Web Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer), [Offline Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-offline-installer), [Other languages](https://dotnet.microsoft.com/download/dotnet-framework/net48)
 
 **Running the program:** After downloading your .zip from the [GitHub Releases](https://github.com/TcNobo/TcNo-Acc-Switcher/releases) page, extract everything to a folder of your choice and run `TcNo Account Switcher.exe`
 
@@ -45,10 +49,7 @@ Users can still download updates via the GitHub Releases page, but they will be 
   <img alt="Other windows (Combined screenshot)" src="https://i.imgur.com/7wti1KR.png" width=773">
 </a></p>
 
-### Required libraries for building (Developers only):
-- Curl (release uses 7.67.0) - [Download](https://curl.haxx.se/download.html), Build guide: https://youtu.be/q_mXVZ6VJs4
-
 Downloaded from a different source? Verify hashes [HERE](https://tcno.co/Projects/AccSwitcher/Hashes.html)
 
 ### Known issues
-- Clearing `%temp%` with program running leads to prompt to install .NET Core on next launch.<br>To solve: Delete the `.net` folder from `%temp%`, with the account switcher closed.<br>Acknowledged by Microsoft. Issue with Single-file builds. https://github.com/dotnet/runtime/issues/3778
+- Issues caused by .NET Core (TcNo Account Switcher 2.0) are solved. No more issues clearing your `%temp%`
