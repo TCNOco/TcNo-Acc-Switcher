@@ -1,4 +1,4 @@
-2302
+3000
 <?php
 /*
     GOAL:
@@ -10,6 +10,7 @@
 
 function ip_info($ip = NULL, $purpose = "location", $deep_detect = TRUE) {
     $output = NULL;
+    if (filter_var($ip, FILTER_VALIDATE_IP) === FALSE) {
     if (filter_var($ip, FILTER_VALIDATE_IP) === FALSE) {
         $ip = $_SERVER["REMOTE_ADDR"];
         if ($deep_detect) {
@@ -53,7 +54,7 @@ $details = ip_info("Visitor", "Location");
 ///echo($details["state"].", ".$details["country"].", ".$details["continent"]."<br>");
 
 // Today's JSON file
-$filename = __DIR__ ."/NetCore_data/".date("Y-m-d").".json";
+$filename = __DIR__ ."/data/".date("Y-m-d").".json";
 ///echo("Opening: ".$filename."<br>");
 $jsToday = json_decode(@file_get_contents($filename), true); // "@" ignores non-exist error
 

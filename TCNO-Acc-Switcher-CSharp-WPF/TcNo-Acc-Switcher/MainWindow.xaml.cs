@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -27,7 +28,14 @@ namespace TcNo_Acc_Switcher
     {
         public MainWindow()
         {
+            // Bypass this platform picker launcher for now.
+            // This keeps shortcuts working, and can be repalced with an update.
+            Process.Start("TcNo Account Switcher Steam.exe");
+            Environment.Exit(1);
+
             InitializeComponent();
+
+
 
             //List<Platform> Platforms = new List<Platform>();
             //Platforms.Add(new Platform() { Icon = BitmapToImageSource(Properties.Resources.Origin), Name = "Steam" }); 
@@ -110,7 +118,6 @@ namespace TcNo_Acc_Switcher
 
         private void PickerSteam(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show("Launching Steam");
             // Check if Steam is in the default location
             // Otherwise
             // Check if Steam is running, and get the .exe location

@@ -36,7 +36,7 @@ namespace TcNo_Acc_Switcher_Steam
         private TrayUsers trayUsers = new TrayUsers();
 
         //int version = 1;
-        readonly int version = 2302;
+        readonly int version = 3000;
         readonly int trayversion = 1000;
         readonly Color DarkGreen = Color.FromRgb(5, 51, 5);
         readonly Color DefaultGray = Color.FromRgb(51, 51, 51);
@@ -281,7 +281,7 @@ namespace TcNo_Acc_Switcher_Steam
             try
             {
                 System.Net.WebClient wc = new System.Net.WebClient();
-                int webVersion = int.Parse(wc.DownloadString("https://tcno.co/Projects/AccSwitcher/version.php").Substring(0, 4));
+                int webVersion = int.Parse(wc.DownloadString("https://tcno.co/Projects/AccSwitcher/net_version.php").Substring(0, 4));
 
                 if (webVersion > version)
                 {
@@ -839,194 +839,24 @@ namespace TcNo_Acc_Switcher_Steam
                 TrayAccountAccNames = new bool();
                 ImageLifetime = 7;
             }
-
             public ObservableCollection<Steamuser> SteamUsers { get; private set; }
-
-            private Steamuser _SelectedSteamUser;
-            public Steamuser SelectedSteamUser
-            {
-                get { return _SelectedSteamUser; }
-                set
-                {
-                    _SelectedSteamUser = value;
-                }
-            }
-            private string _InputFolderDialogResponse;
-            public string InputFolderDialogResponse
-            {
-                get { return _InputFolderDialogResponse; }
-                set
-                {
-                    _InputFolderDialogResponse = value;
-                }
-            }
-            private bool _ShowSteamID;
-            public bool ShowSteamID
-            {
-                get
-                {
-                    return _ShowSteamID;
-                }
-                set
-                {
-                    _ShowSteamID = value;
-                }
-            }
-            private bool _ShowVACStatus;
-            public bool ShowVACStatus
-            {
-                get
-                {
-                    return _ShowVACStatus;
-                }
-                set
-                {
-                    _ShowVACStatus = value;
-                }
-            }
-            private bool _LimitedAsVAC;
-            public bool LimitedAsVAC
-            {
-                get
-                {
-                    return _LimitedAsVAC;
-                }
-                set
-                {
-                    _LimitedAsVAC = value;
-                }
-            }
-            private bool _StartMenuIcon;
-            public bool StartMenuIcon
-            {
-                get
-                {
-                    return _StartMenuIcon;
-                }
-                set
-                {
-                    _StartMenuIcon = value;
-                }
-            }
-            private bool _DesktopShortcut;
-            public bool DesktopShortcut
-            {
-                get
-                {
-                    return _DesktopShortcut;
-                }
-                set
-                {
-                    _DesktopShortcut = value;
-                }
-            }
-            private bool _StartWithWindows;
-            public bool StartWithWindows
-            {
-                get
-                {
-                    return _StartWithWindows;
-                }
-                set
-                {
-                    _StartWithWindows = value;
-                }
-            }
-            private bool _StartAsAdmin;
-            public bool StartAsAdmin
-            {
-                get
-                {
-                    return _StartAsAdmin;
-                }
-                set
-                {
-                    _StartAsAdmin = value;
-                }
-            }
-            private bool _SteamNotFound;
-            public bool SteamNotFound
-            {
-                get
-                {
-                    return _SteamNotFound;
-                }
-                set
-                {
-                    _SteamNotFound = value;
-                }
-            }
-            private bool _ForgetAccountEnabled;
-            public bool ForgetAccountEnabled
-            {
-                get
-                {
-                    return _ForgetAccountEnabled;
-                }
-                set
-                {
-                    _ForgetAccountEnabled = value;
-                }
-            }
-            private string _ProgramVersion;
-            public string ProgramVersion
-            {
-                get
-                {
-                    return _ProgramVersion;
-                }
-                set
-                {
-                    _ProgramVersion = value;
-                }
-            }
-            private int _TrayAccounts;
-            public int TrayAccounts
-            {
-                get
-                {
-                    return _TrayAccounts;
-                }
-                set
-                {
-                    _TrayAccounts = value;
-                }
-            }
-
-            private int _ImageLifetime;
-            public int ImageLifetime
-            {
-                get => _ImageLifetime;
-                set => _ImageLifetime = value;
-            }
-
-            private bool _TrayAccountAccNames;
-            public bool TrayAccountAccNames
-            {
-                get
-                {
-                    return _TrayAccountAccNames;
-                }
-                set
-                {
-                    _TrayAccountAccNames = value;
-                }
-            }
-            private System.Windows.Media.Brush _vacStatus;
-            public System.Windows.Media.Brush vacStatus
-            {
-                get
-                {
-                    return _vacStatus;
-                }
-                set
-                {
-                    _vacStatus = value;
-                }
-            }
-
+            public Steamuser SelectedSteamUser { get; set; }
+            public string InputFolderDialogResponse { get; set; }
+            public bool ShowSteamID { get; set; }
+            public bool ShowVACStatus { get; set; }
+            public bool LimitedAsVAC { get; set; }
+            public bool StartMenuIcon { get; set; }
+            public bool DesktopShortcut { get; set; }
+            public bool StartWithWindows { get; set; }
+            public bool StartAsAdmin { get; set; }
+            public bool SteamNotFound { get; set; }
+            public bool ForgetAccountEnabled { get; set; }
+            public string ProgramVersion { get; set; }
+            public int TrayAccounts { get; set; }
+            public int ImageLifetime { get; set; }
+            public bool TrayAccountAccNames { get; set; }
+            public System.Windows.Media.Brush vacStatus { get; set; }
             public event PropertyChangedEventHandler PropertyChanged;
-
             protected void NotifyPropertyChanged(String info)
             {
                 if (PropertyChanged != null)

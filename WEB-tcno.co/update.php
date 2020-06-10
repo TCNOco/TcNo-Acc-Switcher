@@ -1,8 +1,8 @@
-https://tcno.co/Projects/AccSwitcher/TcNo.Account.Switcher.zip|https://tcno.co/Projects/AccSwitcher/TcNo.Account.Switcher.x64.zip
+https://tcno.co/Projects/AccSwitcher/TcNo.Account.Switcher.Core.x64.zip|https://tcno.co/Projects/AccSwitcher/TcNo.Account.Switcher.Core.x32.zip
 <?php
 /*
     GOAL:
-    Collect the number of program "uses" from each country, eventually to showcase the program's popularity, for interest's sake.
+    Collect the number of program "uses" that are updating from each country, eventually to showcase the program's popularity, for interest's sake.
 */
 // Taken from: https://stackoverflow.com/questions/12553160/getting-visitors-country-from-their-ip/13600004#13600004
 // Collecting user City is a bit more invasive IMO and unnecessary, so that was removed.
@@ -53,7 +53,7 @@ $details = ip_info("Visitor", "Location");
 ///echo($details["state"].", ".$details["country"].", ".$details["continent"]."<br>");
 
 // Today's JSON file
-$filename = __DIR__ ."/updatedata/".date("d-m-Y").".json";
+$filename = __DIR__ ."/NetCore_updatedata/".date("Y-m-d").".json";
 ///echo("Opening: ".$filename."<br>");
 $jsToday = json_decode(@file_get_contents($filename), true); // "@" ignores non-exist error
 

@@ -11,14 +11,14 @@ namespace TcNo_Acc_Switcher_Updater
     {
         static void Main(string[] args)
         {
-            Console.Title = "TcNo Account Switcher - Autoupdater";
+            Console.Title = "TcNo Account Switcher - Auto-updater";
             // Get main process .exe name, as users might set it to their own
             if (!File.Exists("UpdateInformation.txt"))
                 Environment.Exit(1);
 
             // Wait until the program has finished closing
-            string[] information = File.ReadAllText("UpdateInformation.txt").Split("|");
-            string  MainExeName = information[0],
+            string[] information = File.ReadAllText("UpdateInformation.txt").Split('|');
+            string MainExeName = information[0],
                     Arch = information[1],
                     Version = versionToString(information[2]);
             Console.WriteLine("Waiting for TcNo Account Switcher to close...");
@@ -40,7 +40,7 @@ namespace TcNo_Acc_Switcher_Updater
             using (WebClient wc = new WebClient())
             {
 
-                string[] updateInfo = wc.DownloadString("https://tcno.co/Projects/AccSwitcher/update.php").Split("|");
+                string[] updateInfo = wc.DownloadString("https://tcno.co/Projects/AccSwitcher/net_update.php").Split('|');
                 string downloadLink = updateInfo[(Arch == "x64" ? 0 : 1)],
                         downloadZip = Arch + ".zip";
 
