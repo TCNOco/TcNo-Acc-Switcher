@@ -117,4 +117,30 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ErrTrayProcessStart" xml:space="preserve">
+    <value>TcNo Account Switcher - Tray start fail</value>
+  </data>
+  <data name="ErrTrayProcessStartHead" xml:space="preserve">
+    <value>Unable to start Tray process. Try starting it yourself using 'TcNo Acc Switcher SteamTray.exe'</value>
+  </data>
+  <data name="ErrUpdateCheckFail" xml:space="preserve">
+    <value>Could not connect to https://tcno.co/ to check for updates.
+
+Details:</value>
+  </data>
+  <data name="FinishedUpdating" xml:space="preserve">
+    <value>Finished updating.</value>
+  </data>
+  <data name="GitHubWhatsNew" xml:space="preserve">
+    <value>Open GitHub to see what's new?</value>
+  </data>
+  <data name="UpdateFound" xml:space="preserve">
+    <value>Update was found</value>
+  </data>
+  <data name="UpdateLastLaunch" xml:space="preserve">
+    <value>An update was found last launch</value>
+  </data>
+  <data name="UpdateNow" xml:space="preserve">
+    <value>Update now?</value>
+  </data>
 </root>

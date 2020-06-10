@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TcNo_Acc_Switcher_Steam.Properties {
+namespace TcNo_Acc_Switcher_Updater.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace TcNo_Acc_Switcher_Steam.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TcNo_Acc_Switcher_Steam.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TcNo_Acc_Switcher_Updater.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -71,16 +71,6 @@ namespace TcNo_Acc_Switcher_Steam.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon icon {
-            get {
-                object obj = ResourceManager.GetObject("icon", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to       7-Zip Extra
         ///      ~~~~~~~~~~~
         ///      License for use and distribution
@@ -104,16 +94,6 @@ namespace TcNo_Acc_Switcher_Steam.Properties {
         internal static string License {
             get {
                 return ResourceManager.GetString("License", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap QuestionMark {
-            get {
-                object obj = ResourceManager.GetObject("QuestionMark", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

@@ -174,12 +174,6 @@ Old settings are saved in settings.old.json, and a new config has been loaded.</
 Discord: https://s.tcno.co/AccSwitcherDiscord
 GitHub: https://github.com/TcNobo/TcNo-Acc-Switcher</value>
   </data>
-  <data name="ErrTrayProcessStart" xml:space="preserve">
-    <value>Unable to start Tray process. Try starting it yourself using 'TcNo Account Switcher Tray.exe'</value>
-  </data>
-  <data name="ErrTrayProcessStartHead" xml:space="preserve">
-    <value>TcNo Account Switcher - Tray start fail</value>
-  </data>
   <data name="ErrUnhandledCrash" xml:space="preserve">
     <value>UNHANDLED CRASH</value>
   </data>
@@ -189,19 +183,8 @@ GitHub: https://github.com/TcNobo/TcNo-Acc-Switcher</value>
   <data name="ErrUnhandledExceptionHeader" xml:space="preserve">
     <value>TcNo Account Switcher Unhandled exception</value>
   </data>
-  <data name="ErrUpdateCheckFail" xml:space="preserve">
-    <value>Could not connect to https://tcno.co/ to check for updates.
-
-Details:</value>
-  </data>
   <data name="ErrUpdateCheckHeader" xml:space="preserve">
     <value>TcNo Account Switcher - Update check error</value>
-  </data>
-  <data name="FinishedUpdating" xml:space="preserve">
-    <value>Finished updating.</value>
-  </data>
-  <data name="GitHubWhatsNew" xml:space="preserve">
-    <value>Open GitHub to see what's new?</value>
   </data>
   <data name="InfoRefreshLimitedAsVac" xml:space="preserve">
     <value>Click the "Check account VAC Status" button to see changes.
@@ -269,15 +252,6 @@ Note: Steam shows game banned accounts as Limited.</value>
   </data>
   <data name="SwitcherAlreadyRunningHeading" xml:space="preserve">
     <value>TcNo Account Switcher - Duplicate start</value>
-  </data>
-  <data name="UpdateFound" xml:space="preserve">
-    <value>Update was found</value>
-  </data>
-  <data name="UpdateLastLaunch" xml:space="preserve">
-    <value>An update was found last launch</value>
-  </data>
-  <data name="UpdateNow" xml:space="preserve">
-    <value>Update now?</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>Version</value>

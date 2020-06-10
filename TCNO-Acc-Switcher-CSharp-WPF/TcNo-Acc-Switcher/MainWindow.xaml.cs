@@ -6,7 +6,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,16 +28,11 @@ namespace TcNo_Acc_Switcher
     /// </summary>
     public partial class MainWindow : Window
     {
+        readonly int steam_version = 3000;
+        readonly int steam_trayversion = 1000;
         public MainWindow()
         {
-            // Bypass this platform picker launcher for now.
-            // This keeps shortcuts working, and can be repalced with an update.
-            Process.Start("TcNo Account Switcher Steam.exe");
-            Environment.Exit(1);
-
             InitializeComponent();
-
-
 
             //List<Platform> Platforms = new List<Platform>();
             //Platforms.Add(new Platform() { Icon = BitmapToImageSource(Properties.Resources.Origin), Name = "Steam" }); 
@@ -46,6 +43,126 @@ namespace TcNo_Acc_Switcher
             //    MainViewmodel.Platforms.Add(pl);
             //}
             //ListPlatforms.Items.Add(Platforms[0]);
+        }
+
+        public void Process_Update()
+        {
+            Thread updateCheckThread = new Thread(UpdateCheck);
+            // Check if cleanup needed for update
+            if (File.Exists("Update_Complete"))
+            {
+                File.Delete("Update_Complete");
+                ResourceClean();
+                if (File.Exists("Restart_SteamTray"))
+                {
+                    File.Delete("Restart_SteamTray");
+                    Start_SteamTray();
+                }
+                // Because closing a messagebox before the window shows causes it to crash for some reason...
+                MessageBoxResult messageBoxResult = MessageBox.Show(Strings.GitHubWhatsNew, Strings.FinishedUpdating, System.Windows.MessageBoxButton.YesNo);
+                if (messageBoxResult == MessageBoxResult.Yes)
+                {
+                    Process.Start(new ProcessStartInfo("https://github.com/TcNobo/TcNo-Acc-Switcher/releases") { UseShellExecute = true });
+                }
+            }
+            else
+            {
+                if (File.Exists("UpdateFound.txt"))
+                    DownloadUpdateDialog();
+                else
+                    updateCheckThread.Start();
+            }
+
+            // Will exit after the update check thread is done
+            if (updateCheckThread.IsAlive)
+                updateCheckThread.Join();
+            Environment.Exit(1);
+        }
+        private void Start_SteamTray()
+        {
+            try
+            {
+                string processName = "Steam\\TcNo Acc Switcher SteamTray.exe";
+                if (File.Exists(processName))
+                {
+                    ProcessStartInfo startInfo = new ProcessStartInfo();
+                    startInfo.FileName = System.IO.Path.GetFullPath(processName);
+                    startInfo.CreateNoWindow = false;
+                    startInfo.UseShellExecute = false;
+                    Process.Start(startInfo);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(Strings.ErrTrayProcessStart, Strings.ErrTrayProcessStartHead, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        /// <summary>
+        /// Checks for an update, and downloads it.
+        /// This downloads and replaces all files from .zip.
+        /// Used for updating everything, and not individual files.
+        /// </summary>
+        void UpdateCheck()
+        {
+            try
+            {
+                System.Net.WebClient wc = new System.Net.WebClient();
+                int webVersion = int.Parse(wc.DownloadString("https://tcno.co/Projects/AccSwitcher/net_version.php").Substring(0, 4));
+
+                // Currently only set to work with Steam, until another update.
+                if (webVersion > steam_version)
+                {
+                    using (FileStream fs = File.Create("UpdateFound.txt"))
+                    {
+                        byte[] info = new UTF8Encoding(true).GetBytes(Strings.UpdateLastLaunch + DateTime.Now.ToString());
+                        fs.Write(info, 0, info.Length);
+                    }
+                    this.Dispatcher.Invoke(DownloadUpdateDialog);
+                }
+                else
+                {
+                    if (File.Exists("UpdateFound.txt"))
+                        File.Delete("UpdateFound.txt");
+                }
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show(Strings.UpdateLastLaunch + ex.ToString(), Strings.ErrUpdateCheckFail, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        /// <summary>
+        /// Presents option for user to download an update.
+        /// </summary>
+        public void DownloadUpdateDialog()
+        {
+            MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show(Strings.UpdateNow, Strings.UpdateFound, System.Windows.MessageBoxButton.YesNo);
+            if (messageBoxResult == MessageBoxResult.Yes)
+            {
+                if (File.Exists("UpdateFound.txt"))
+                    File.Delete("UpdateFound.txt");
+
+                // Run updater -- This is the Steam version, so the version update check will be here
+                string processName = "TcNo Acc Switcher Updater.exe";
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.FileName = processName;
+                startInfo.CreateNoWindow = false;
+                startInfo.UseShellExecute = true;
+                Process.Start(startInfo);
+                Environment.Exit(1);
+            }
+        }
+        /// <summary>
+        /// Cleans up directory after an update
+        /// </summary>
+        private void ResourceClean()
+        {
+            string[] delFileNames = new string[] { "7za-license.txt", "7za.exe", "x64.zip", "x32.zip", "upd.7z", "UpdateInformation.txt" };
+
+            foreach (string f in delFileNames)
+            {
+                if (File.Exists(f))
+                    File.Delete(f);
+            }
         }
 
         //public class Platform

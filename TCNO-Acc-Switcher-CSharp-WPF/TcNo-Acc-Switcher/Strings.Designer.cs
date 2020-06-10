@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TcNo_Acc_Switcher_Steam.Properties {
+namespace TcNo_Acc_Switcher {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace TcNo_Acc_Switcher_Steam.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    internal class Strings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal Strings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace TcNo_Acc_Switcher_Steam.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TcNo_Acc_Switcher_Steam.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TcNo_Acc_Switcher.Strings", typeof(Strings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,59 +61,76 @@ namespace TcNo_Acc_Switcher_Steam.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized string similar to TcNo Account Switcher - Tray start fail.
         /// </summary>
-        internal static byte[] _7za {
+        internal static string ErrTrayProcessStart {
             get {
-                object obj = ResourceManager.GetObject("_7za", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("ErrTrayProcessStart", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        ///   Looks up a localized string similar to Unable to start Tray process. Try starting it yourself using &apos;TcNo Acc Switcher SteamTray.exe&apos;.
         /// </summary>
-        internal static System.Drawing.Icon icon {
+        internal static string ErrTrayProcessStartHead {
             get {
-                object obj = ResourceManager.GetObject("icon", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ResourceManager.GetString("ErrTrayProcessStartHead", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to       7-Zip Extra
-        ///      ~~~~~~~~~~~
-        ///      License for use and distribution
-        ///      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ///   Looks up a localized string similar to Could not connect to https://tcno.co/ to check for updates.
         ///
-        ///      Copyright (C) 1999-2018 Igor Pavlov.
-        ///
-        ///      7-Zip Extra files are under the GNU LGPL license.
-        ///
-        ///      
-        ///      Notes: 
-        ///        You can use 7-Zip Extra on any computer, including a computer in a commercial 
-        ///        organization. You don&apos;t need to register or pay for 7-Zip.
-        ///
-        ///
-        ///      GNU LGPL information
-        ///      --------------------
-        ///
-        ///        This library is free software; you can [rest of string was truncated]&quot;;.
+        ///Details:.
         /// </summary>
-        internal static string License {
+        internal static string ErrUpdateCheckFail {
             get {
-                return ResourceManager.GetString("License", resourceCulture);
+                return ResourceManager.GetString("ErrUpdateCheckFail", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized string similar to Finished updating..
         /// </summary>
-        internal static System.Drawing.Bitmap QuestionMark {
+        internal static string FinishedUpdating {
             get {
-                object obj = ResourceManager.GetObject("QuestionMark", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("FinishedUpdating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open GitHub to see what&apos;s new?.
+        /// </summary>
+        internal static string GitHubWhatsNew {
+            get {
+                return ResourceManager.GetString("GitHubWhatsNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update was found.
+        /// </summary>
+        internal static string UpdateFound {
+            get {
+                return ResourceManager.GetString("UpdateFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An update was found last launch.
+        /// </summary>
+        internal static string UpdateLastLaunch {
+            get {
+                return ResourceManager.GetString("UpdateLastLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update now?.
+        /// </summary>
+        internal static string UpdateNow {
+            get {
+                return ResourceManager.GetString("UpdateNow", resourceCulture);
             }
         }
     }

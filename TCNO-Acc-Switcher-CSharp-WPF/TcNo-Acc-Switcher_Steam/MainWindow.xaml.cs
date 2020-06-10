@@ -36,13 +36,12 @@ namespace TcNo_Acc_Switcher_Steam
         private TrayUsers trayUsers = new TrayUsers();
 
         //int version = 1;
-        readonly int version = 3000;
-        readonly int trayversion = 1000;
         readonly Color DarkGreen = Color.FromRgb(5, 51, 5);
         readonly Color DefaultGray = Color.FromRgb(51, 51, 51);
 
 
         // Settings will load later. Just defined here.
+        readonly int steam_version = 3000;
         UserSettings persistentSettings = new UserSettings();
         readonly SolidColorBrush _vacRedBrush = new SolidColorBrush(Color.FromRgb(255,41,58));
 
@@ -62,38 +61,12 @@ namespace TcNo_Acc_Switcher_Steam
                 MessageBox.Show(Strings.SwitcherAlreadyRunning, Strings.SwitcherAlreadyRunningHeading, MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(99);
             }
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)); // Set working directory to the same as the actual .exe
 
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-
-            SingleFileUpdateClean(); // Clean extra files from before the 2.2.1 update (When the program was made single file)
-            if (Directory.Exists("Resources"))
-            {
-                ResourceClean(true);
-                if (File.Exists("RestartTray"))
-                {
-                    File.Delete("RestartTray");
-                    StartTray();
-                }
-                // Because closing a messagebox before the window shows causes it to crash for some reason...
-                MessageBoxResult messageBoxResult = MessageBox.Show(Strings.GitHubWhatsNew, Strings.FinishedUpdating, System.Windows.MessageBoxButton.YesNo);
-                if (messageBoxResult == MessageBoxResult.Yes)
-                {
-                    Process.Start(new ProcessStartInfo("https://github.com/TcNobo/TcNo-Acc-Switcher/releases") { UseShellExecute = true });
-                }
-            }
-            else
-            {
-                if (File.Exists("UpdateFound.txt"))
-                    DownloadUpdateDialog();
-                else
-                {
-                    Thread updateCheckThread = new Thread(UpdateCheck);
-                    updateCheckThread.Start();
-                }
-            }
-            MainViewmodel.ProgramVersion = Strings.Version + ": " + version.ToString();
+            MainViewmodel.ProgramVersion = Strings.Version + ": " + steam_version.ToString();
 
             if (File.Exists("DeleteImagesOnStart"))
             {
@@ -180,130 +153,6 @@ namespace TcNo_Acc_Switcher_Steam
             else
             {
                 lblStatus.Content = Strings.StatusReady;
-            }
-        }
-        private void Extract7Zip()
-        {
-            Directory.CreateDirectory("Resources");
-            File.WriteAllBytes(Path.Combine("Resources", "7za.exe"), Properties.Resources._7za);
-            File.WriteAllText(Path.Combine("Resources", "7za-license.txt"), Properties.Resources.License);
-        }
-        void DownloadUpdateDialog()
-        {
-            MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show(Strings.UpdateNow, Strings.UpdateFound, System.Windows.MessageBoxButton.YesNo);
-            if (messageBoxResult == MessageBoxResult.Yes)
-            {
-                if (File.Exists("UpdateFound.txt"))
-                    File.Delete("UpdateFound.txt");
-
-                // Extract embedded files
-                Extract7Zip();
-
-                string zPath = Path.Combine("Resources", "7za.exe"),
-                        updzip = "upd.7z",
-                        ePath = Directory.GetCurrentDirectory();
-#if X64
-                string arch = "x64";
-                File.WriteAllBytes(updzip, Properties.Resources.update64);
-#else
-                string arch = "x32";
-                File.WriteAllBytes(updzip, Properties.Resources.update32);
-#endif
-
-                ProcessStartInfo pro = new ProcessStartInfo();
-                pro.WindowStyle = ProcessWindowStyle.Hidden;
-                pro.FileName = zPath;
-                pro.Arguments = string.Format("x \"{0}\" -y -o\"{1}\"", updzip, ePath);
-                pro.UseShellExecute = false;
-                pro.RedirectStandardOutput = true;
-                pro.CreateNoWindow = true;
-                Process x = Process.Start(pro);
-                x.WaitForExit();
-
-                File.Delete("UpdateInformation.txt");
-                using (FileStream fs = File.Create("UpdateInformation.txt"))
-                {
-                    byte[] info = new UTF8Encoding(true).GetBytes(System.AppDomain.CurrentDomain.FriendlyName + "|" + arch + "|" + version.ToString());
-                    fs.Write(info, 0, info.Length);
-                }
-
-                // Close tray application
-                var proc = Process.GetProcessesByName("TcNo Account Switcher Tray").FirstOrDefault();
-                if (proc != null)
-                {
-                    File.Create("RestartTray");
-                    CloseTray();
-                }
-
-                // Run update.exe
-                string processName = "TcNo-Acc-Switcher-Updater.exe";
-                ProcessStartInfo startInfo = new ProcessStartInfo();
-                startInfo.FileName = processName;
-                startInfo.CreateNoWindow = false;
-                startInfo.UseShellExecute = true;
-                Process.Start(startInfo);
-                Environment.Exit(1);
-            }
-        }
-        private void StartTray()
-        {
-            try
-            {
-                string processName = "TcNo Account Switcher Tray.exe";
-                if (File.Exists(processName))
-                {
-                    ProcessStartInfo startInfo = new ProcessStartInfo();
-                    startInfo.FileName = Path.GetFullPath(processName);
-                    startInfo.CreateNoWindow = false;
-                    startInfo.UseShellExecute = false;
-                    Process.Start(startInfo);
-                }
-            }
-            catch (Exception)
-            {
-                MessageBox.Show(Strings.ErrTrayProcessStart, Strings.ErrTrayProcessStartHead, MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-        private void CloseTray()
-        {
-            // This is what Administrator permissions are required for.
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
-            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-            startInfo.FileName = "cmd.exe";
-            startInfo.Arguments = "/C TASKKILL /F /T /IM \"TcNo Account Switcher Tray*\"";
-            process.StartInfo = startInfo;
-            process.Start();
-            process.WaitForExit();
-        }
-        void UpdateCheck()
-        {
-            try
-            {
-                System.Net.WebClient wc = new System.Net.WebClient();
-                int webVersion = int.Parse(wc.DownloadString("https://tcno.co/Projects/AccSwitcher/net_version.php").Substring(0, 4));
-
-                if (webVersion > version)
-                {
-                    using (FileStream fs = File.Create("UpdateFound.txt"))
-                    {
-                        byte[] info = new UTF8Encoding(true).GetBytes(Strings.UpdateLastLaunch + DateTime.Now.ToString());
-                        fs.Write(info, 0, info.Length);
-                    }
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        DownloadUpdateDialog();
-                    });
-                }
-                else
-                {
-                    if (File.Exists("UpdateFound.txt"))
-                        File.Delete("UpdateFound.txt");
-                }
-            }
-            catch (WebException ex)
-            {
-                MessageBox.Show(Strings.UpdateLastLaunch + ex.ToString(), Strings.ErrUpdateCheckFail, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         bool vacBanned = false;
@@ -1383,51 +1232,6 @@ namespace TcNo_Acc_Switcher_Steam
             MainViewmodel.LimitedAsVAC = lav;
             MessageBox.Show(Strings.InfoRefreshLimitedAsVac);
         }
-        private void ResourceClean(bool update)
-        {
-            new DirectoryInfo("Resources").Delete(true);
-            string[] delFileNames;
-            if (update)
-                delFileNames = new string[] { "x64.zip", "x32.zip", "upd.7z", "UpdateInformation.txt" };
-            else
-                delFileNames = new string[] { "x64.zip", "x32.zip", "upd.7z" };
-
-            foreach (string f in delFileNames)
-            {
-                if (File.Exists(f))
-                    File.Delete(f);
-            }
-
-            if (update)
-            {
-                bool deleted = false;
-                while (!deleted)
-                {
-                    try
-                    {
-                        File.Delete("TcNo-Acc-Switcher-Updater.exe");
-                        deleted = true;
-                    }
-                    catch (Exception)
-                    {
-                        Thread.Sleep(500);
-                    }
-                }
-            }
-        }
-        private void SingleFileUpdateClean()
-        {
-            string[] delFileNames = new string[] { "TcNo Account Switcher.deps.json", "TcNo Account Switcher.dll", "TcNo Account Switcher.runtimeconfig.json", "TcNo-Acc-Switcher-Updater.dll", "TcNo-Acc-Switcher-Updater.runtimeconfig.json" };
-            try
-            {
-                foreach (string f in delFileNames)
-                {
-                    if (File.Exists(f))
-                        File.Delete(f);
-                }
-            }
-            catch (Exception) { }
-        }
 
         private void CheckShortcuts()
         {
@@ -1450,13 +1254,11 @@ namespace TcNo_Acc_Switcher_Steam
             if (bEnabled)
                 CreateShortcut(desktop_path);
             else
-                DeleteShortcut(desktop_path, "TcNo Account Switcher.lnk", false);
+                DeleteShortcut(desktop_path, "TcNo Account Switcher - Steam.lnk", false);
         }
         public void StartWithWindows(bool bEnabled)
         {
             MainViewmodel.StartWithWindows = bEnabled;
-
-            ExtractTrayExe();
 
             if (bEnabled)
             {
@@ -1466,16 +1268,16 @@ namespace TcNo_Acc_Switcher_Steam
                     TaskDefinition td = ts.NewTask();
                     td.Principal.RunLevel = TaskRunLevel.Highest;
                     td.Triggers.AddNew(TaskTriggerType.Logon);
-                    string program_path = Path.GetFullPath("TcNo Account Switcher Tray.exe");
+                    string program_path = Path.GetFullPath("TcNo Acc Switcher SteamTray.exe");
                     td.Actions.Add(new ExecAction(program_path, null));
-                    ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Tray start with logon", td);
+                    ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Steam Tray start with logon", td);
                     MessageBox.Show(Strings.InfoTrayWindowsStart);
                 }
             }
             else
             {
                 TaskService ts = new TaskService();
-                ts.RootFolder.DeleteTask("TcNo Account Switcher - Tray start with logon");
+                ts.RootFolder.DeleteTask("TcNo Account Switcher - Steam Tray start with logon");
                 MessageBox.Show(Strings.InfoTrayWindowsStartOff);
             }
         }
@@ -1491,73 +1293,45 @@ namespace TcNo_Acc_Switcher_Steam
             }
             else
             {
-                DeleteShortcut(shortcutFolder, "TcNo Account Switcher.lnk", false);
-                DeleteShortcut(shortcutFolder, "TcNo Account Switcher - System tray.lnk", true);
+                DeleteShortcut(shortcutFolder, "TcNo Account Switcher - Steam.lnk", false);
+                DeleteShortcut(shortcutFolder, "TcNo Account Switcher - Steam tray.lnk", true);
             }
         }
         private bool ShortcutExist(string location)
         {
-            string settingsShortcut = Path.Combine(location, "TcNo Account Switcher.lnk");
+            string settingsShortcut = Path.Combine(location, "TcNo Account Switcher - Steam.lnk");
             return File.Exists(settingsShortcut);
+        }
+
+        private string ParentDirectory(string dir)
+        {
+            return dir.Substring(0, dir.LastIndexOf(Path.DirectorySeparatorChar));
         }
         private void CreateShortcut(string location)
         {
             Directory.CreateDirectory(location);
-            // Has to be done in such a strange way because .NET Core points it to the .DLL inside of %temp% instead of the actual .exe...
-            string selfexe = Path.Combine(Directory.GetCurrentDirectory(), System.AppDomain.CurrentDomain.FriendlyName), // Changes .dll to .exe. .NET Core returns the .dll instead of the .exe required for the shortcut.
-                   selflocation = Directory.GetCurrentDirectory(),
+            // Starts the main picker, with the Steam argument.
+            string selfexe = Path.Combine(ParentDirectory(Directory.GetCurrentDirectory()), "TcNo Account Switcher.exe"),
+                   selflocation = ParentDirectory(Directory.GetCurrentDirectory()),
                    iconDirectory = Path.Combine(selflocation, "icon.ico"),
-                   settingsLink = Path.Combine(location, "TcNo Account Switcher.lnk"),
-                   description = "TcNo Account Switcher";
+                   settingsLink = Path.Combine(location, "TcNo Account Switcher - Steam.lnk"),
+                   description = "TcNo Account Switcher - Steam",
+                   arguments = "+steam";
 
-            WriteShortcut(location, selfexe, selflocation, iconDirectory, description, settingsLink);
-        }
-        private void ExtractTrayExe()
-        {
-            // Extract tray .exe from compressed .7z resource.
-            int curTrayVersion = 0;
-            if (File.Exists("trayversion"))
-                curTrayVersion = int.Parse(File.ReadAllText("trayversion"));
-            if (trayversion > curTrayVersion || !File.Exists("TcNo Account Switcher Tray.exe")) // Update
-            {
-                Extract7Zip();
-                string zPath = Path.Combine("Resources", "7za.exe"),
-                        trayzip = "tray.7z",
-                        ePath = Directory.GetCurrentDirectory();
-#if X64
-                File.WriteAllBytes(trayzip, Properties.Resources.tray64);
-#else
-                File.WriteAllBytes(trayzip, Properties.Resources.tray32);
-#endif
-
-                ProcessStartInfo pro = new ProcessStartInfo();
-                pro.WindowStyle = ProcessWindowStyle.Hidden;
-                pro.FileName = zPath;
-                pro.Arguments = string.Format("x \"{0}\" -y -o\"{1}\"", trayzip, ePath);
-                pro.UseShellExecute = false;
-                pro.RedirectStandardOutput = true;
-                pro.CreateNoWindow = true;
-                Process x = Process.Start(pro);
-                x.WaitForExit();
-
-                File.WriteAllText("trayversion", trayversion.ToString());
-                File.Delete(trayzip);
-                ResourceClean(false);
-            }
+            WriteShortcut(location, selfexe, selflocation, iconDirectory, description, settingsLink, arguments);
         }
         private void CreateTrayShortcut(string location)
         {
-            ExtractTrayExe();
-
-            string selfexe = Path.Combine(Directory.GetCurrentDirectory(), "TcNo Account Switcher Tray.exe"), // Changes .dll to .exe. .NET Core returns the .dll instead of the .exe required for the shortcut.
+            string selfexe = Path.Combine(Directory.GetCurrentDirectory(), "TcNo Acc Switcher SteamTray.exe"),
                 selflocation = Directory.GetCurrentDirectory(),
                 iconDirectory = Path.Combine(selflocation, "icon.ico"),
-                settingsLink = Path.Combine(location, "TcNo Account Switcher - System tray.lnk"),
-                description = "TcNo Account Switcher - System tray";
+                settingsLink = Path.Combine(location, "TcNo Account Switcher - Steam tray.lnk"),
+                description = "TcNo Account Switcher - Steam tray",
+                arguments = "";
 
-            WriteShortcut(location, selfexe, selflocation, iconDirectory, description, settingsLink);
+            WriteShortcut(location, selfexe, selflocation, iconDirectory, description, settingsLink, arguments);
         }
-        private void WriteShortcut(string location, string exe, string selflocation, string iconDirectory, string description, string settingsLink)
+        private void WriteShortcut(string location, string exe, string selflocation, string iconDirectory, string description, string settingsLink, string arguments)
         {
             if (!File.Exists(settingsLink))
             {
@@ -1575,10 +1349,10 @@ namespace TcNo_Acc_Switcher_Steam
                        "oShellLink.IconLocation = \"" + iconDirectory + "\"",
                        "oShellLink.Description = \"" + description + "\"",
                        "oShellLink.WorkingDirectory = \"" + selflocation + "\"",
+                       "oShellLink.Arguments = \"" + arguments + "\"",
                        "oShellLink.Save()"
             };
                 File.WriteAllLines("CreateShortcut.vbs", Lines);
-
 
                 string resultString = "";
                 Process vbsProcess = new Process
@@ -1586,7 +1360,7 @@ namespace TcNo_Acc_Switcher_Steam
                     StartInfo =
                     {
                         FileName = "cscript",
-                        Arguments = "//nologo \"" + Path.Combine(selflocation, "CreateShortcut.vbs") + "\"",
+                        Arguments = "//nologo \"" + Path.GetFullPath("CreateShortcut.vbs") + "\"",
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
                         CreateNoWindow = true

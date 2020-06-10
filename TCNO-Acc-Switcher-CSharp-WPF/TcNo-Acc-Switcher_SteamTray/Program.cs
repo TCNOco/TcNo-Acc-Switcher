@@ -23,7 +23,7 @@ namespace TcNo_Acc_Switcher_SteamTray
         {
             if (SelfAlreadyRunning())
             {
-                Console.WriteLine("TcNo Account Switcher SteamTray is already running");
+                Console.WriteLine(@"TcNo Account Switcher SteamTray is already running");
                 Environment.Exit(99);
             }
             trayUsers.LoadTrayUsers();

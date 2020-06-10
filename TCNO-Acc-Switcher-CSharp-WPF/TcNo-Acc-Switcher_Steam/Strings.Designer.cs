@@ -214,24 +214,6 @@ namespace TcNo_Acc_Switcher_Steam {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to start Tray process. Try starting it yourself using &apos;TcNo Account Switcher Tray.exe&apos;.
-        /// </summary>
-        internal static string ErrTrayProcessStart {
-            get {
-                return ResourceManager.GetString("ErrTrayProcessStart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to TcNo Account Switcher - Tray start fail.
-        /// </summary>
-        internal static string ErrTrayProcessStartHead {
-            get {
-                return ResourceManager.GetString("ErrTrayProcessStartHead", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to UNHANDLED CRASH.
         /// </summary>
         internal static string ErrUnhandledCrash {
@@ -259,40 +241,11 @@ namespace TcNo_Acc_Switcher_Steam {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not connect to https://tcno.co/ to check for updates.
-        ///
-        ///Details:.
-        /// </summary>
-        internal static string ErrUpdateCheckFail {
-            get {
-                return ResourceManager.GetString("ErrUpdateCheckFail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to TcNo Account Switcher - Update check error.
         /// </summary>
         internal static string ErrUpdateCheckHeader {
             get {
                 return ResourceManager.GetString("ErrUpdateCheckHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Finished updating..
-        /// </summary>
-        internal static string FinishedUpdating {
-            get {
-                return ResourceManager.GetString("FinishedUpdating", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open GitHub to see what&apos;s new?.
-        /// </summary>
-        internal static string GitHubWhatsNew {
-            get {
-                return ResourceManager.GetString("GitHubWhatsNew", resourceCulture);
             }
         }
         
@@ -492,33 +445,6 @@ namespace TcNo_Acc_Switcher_Steam {
         internal static string SwitcherAlreadyRunningHeading {
             get {
                 return ResourceManager.GetString("SwitcherAlreadyRunningHeading", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update was found.
-        /// </summary>
-        internal static string UpdateFound {
-            get {
-                return ResourceManager.GetString("UpdateFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An update was found last launch.
-        /// </summary>
-        internal static string UpdateLastLaunch {
-            get {
-                return ResourceManager.GetString("UpdateLastLaunch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update now?.
-        /// </summary>
-        internal static string UpdateNow {
-            get {
-                return ResourceManager.GetString("UpdateNow", resourceCulture);
             }
         }
         
