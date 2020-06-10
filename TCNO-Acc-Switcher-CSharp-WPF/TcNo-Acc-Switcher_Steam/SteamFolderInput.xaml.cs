@@ -31,7 +31,7 @@ namespace TcNo_Acc_Switcher_Steam
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             lblQuery2.Margin = lblQuery.IsVisible ? new Thickness(0, 0, 0, 0) : new Thickness(0, 16, 0, 0);
-            verifySteamPath();
+            VerifySteamPath();
         }
 
         private void btnSetDirectory_Click(object sender, RoutedEventArgs e)
@@ -39,7 +39,7 @@ namespace TcNo_Acc_Switcher_Steam
             Close();
         }
 
-        private void verifySteamPath()
+        private void VerifySteamPath()
         {
             if (File.Exists(Path.Combine(txtResponse.Text, "Steam.exe")))
             {
@@ -84,28 +84,28 @@ namespace TcNo_Acc_Switcher_Steam
             if (result == true)
             {
                 txtResponse.Text = Path.GetDirectoryName(dlg.FileName);
-                verifySteamPath();
+                VerifySteamPath();
             }
         }
 
-        private void btnExit(object sender, RoutedEventArgs e)
+        private void BtnExit(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        private void btnMinimize(object sender, RoutedEventArgs e)
+        private void BtnMinimize(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
         }
 
-        private void dragWindow(object sender, MouseButtonEventArgs e)
+        private void DragWindow(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed) DragMove();
         }
 
         private void txtResponse_TextChanged(object sender, TextChangedEventArgs e)
         {
-            verifySteamPath();
+            VerifySteamPath();
         }
 
         private void resizeGrip_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

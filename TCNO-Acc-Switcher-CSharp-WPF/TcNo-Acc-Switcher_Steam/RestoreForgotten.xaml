@@ -35,7 +35,7 @@
         </Grid.Effect>
 
         <!-- Row 0: Header -->
-        <Border MouseDown="dragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
+        <Border MouseDown="DragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
         <Label IsHitTestVisible="False" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="Forget Account?" Grid.Column="1"/>
         <Canvas IsHitTestVisible="False" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5,10,0,10">
             <Canvas.RenderTransform>
@@ -57,8 +57,8 @@
                 </Canvas>
             </Canvas>
         </Canvas>
-        <Button Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="btnMinimize"></Button>
-        <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="btnExit"></Button>
+        <Button Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="BtnMinimize"></Button>
+        <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="BtnExit"></Button>
 
 
         <TextBlock Panel.ZIndex="6" Grid.Row="1" Name="txtForgetText" Foreground="White" TextWrapping="Wrap" Margin="10px">
@@ -67,7 +67,7 @@
         <ListView Panel.ZIndex="6" Grid.Row="2" x:Name="filenamesList" Margin="10px 0 10px 45px" Background="#222222" Foreground="White" />
         <StackPanel Panel.ZIndex="6" Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <Button Name="btnRestore" Margin="5px" Width="150" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Restore selected" Click="btnRestore_Click"/>
-            <Button Name="btnCloseMessage" Margin="5px 0 10px 0 " Width="150" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Cancel" Click="btnExit"/>
+            <Button Name="btnCloseMessage" Margin="5px 0 10px 0 " Width="150" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Cancel" Click="BtnExit"/>
         </StackPanel>
     </Grid>
 </Window>

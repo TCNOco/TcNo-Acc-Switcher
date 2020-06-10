@@ -30,17 +30,17 @@ namespace TcNo_Acc_Switcher_Steam
             if (e.Key == Key.Escape)
                 Close();
         }
-        private void btnExit(object sender, RoutedEventArgs e)
+        private void BtnExit(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        private void btnMinimize(object sender, RoutedEventArgs e)
+        private void BtnMinimize(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
         }
 
-        private void dragWindow(object sender, MouseButtonEventArgs e)
+        private void DragWindow(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {

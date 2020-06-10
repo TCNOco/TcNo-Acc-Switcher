@@ -40,16 +40,16 @@ namespace TcNo_Acc_Switcher_Steam
         {
             mw = imw;
         }
-        private void btnExit(object sender, RoutedEventArgs e)
+        private void BtnExit(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        private void btnMinimize(object sender, RoutedEventArgs e)
+        private void BtnMinimize(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
         }
-        private void dragWindow(object sender, MouseButtonEventArgs e)
+        private void DragWindow(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -103,13 +103,13 @@ namespace TcNo_Acc_Switcher_Steam
         private void ShowVACStatus_CheckChanged(object sender, RoutedEventArgs e)
         {
             if (enableButtons)
-                mw.toggleVACStatus((bool)ShowVACStatus.IsChecked);
+                mw.ToggleVacStatus((bool)ShowVACStatus.IsChecked);
         }
 
         private void LimitedAsVAC_CheckChanged(object sender, RoutedEventArgs e)
         {
             if (enableButtons)
-                mw.ToggleLimitedAsVAC((bool)LimitedAsVAC.IsChecked);
+                mw.ToggleLimitedAsVac((bool)LimitedAsVAC.IsChecked);
         }
 
         private void btnRestoreForgotten_Click(object sender, RoutedEventArgs e)
@@ -164,7 +164,7 @@ namespace TcNo_Acc_Switcher_Steam
         private void ToggleAccNames_CheckChanged(object sender, RoutedEventArgs e)
         {
             if (enableButtons)
-                mw.toggleAccNames((bool)ToggleAccNames.IsChecked);
+                mw.ToggleAccNames((bool)ToggleAccNames.IsChecked);
         }
 
         private void NumberRecentAccounts_OnTextChanged(object sender, TextChangedEventArgs e)
@@ -186,7 +186,7 @@ namespace TcNo_Acc_Switcher_Steam
 
                 int x;
                 if (Int32.TryParse((string)NumberRecentAccounts.Text, out x))
-                    mw.setTotalRecentAccount((string)NumberRecentAccounts.Text);
+                    mw.SetTotalRecentAccount((string)NumberRecentAccounts.Text);
                 else
                     NumberRecentAccounts.Text = new string(((string)NumberRecentAccounts.Text).Where(c => "0123456789".Contains(c)).ToArray());
             }
@@ -215,7 +215,7 @@ namespace TcNo_Acc_Switcher_Steam
 
                 int x;
                 if (Int32.TryParse((string)ImageExpiry.Text, out x))
-                    mw.setImageExpiry((string)ImageExpiry.Text);
+                    mw.SetImageExpiry((string)ImageExpiry.Text);
                 else
                     ImageExpiry.Text = new string(((string)ImageExpiry.Text).Where(c => "0123456789".Contains(c)).ToArray());
             }

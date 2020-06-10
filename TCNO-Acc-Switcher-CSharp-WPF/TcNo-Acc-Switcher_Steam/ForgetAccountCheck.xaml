@@ -34,7 +34,7 @@
         </Grid.Effect>
 
         <!-- Row 0: Header -->
-        <Border MouseDown="dragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
+        <Border MouseDown="DragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
         <Label IsHitTestVisible="False" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="Forget Account?" Grid.Column="1"/>
         <Canvas IsHitTestVisible="False" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5,10,0,10">
             <Canvas.RenderTransform>
@@ -56,8 +56,8 @@
                 </Canvas>
             </Canvas>
         </Canvas>
-        <Button Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="btnMinimize"></Button>
-        <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="btnExit"></Button>
+        <Button Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="BtnMinimize"></Button>
+        <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="BtnExit"></Button>
 
 
         <TextBlock Panel.ZIndex="6" Grid.Row="1" Name="txtForgetText" Margin="14px" Foreground="White" TextWrapping="Wrap">
@@ -93,7 +93,7 @@
                     <RowDefinition Height="46" />
                 </Grid.RowDefinitions>
                 <CheckBox Grid.Row="0" Grid.Column="0" Name="RunasAdmin" Margin="14px" HorizontalAlignment="Left" Foreground="White" Content="I have read and understand" IsChecked="{Binding ForgetAccountEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <Button Grid.Row="0" Grid.Column="1" Name="btnCloseMessage" Margin="5px" Width="150" Height="36" HorizontalAlignment="Right" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Close" Click="btnExit"/>
+                <Button Grid.Row="0" Grid.Column="1" Name="btnCloseMessage" Margin="5px" Width="150" Height="36" HorizontalAlignment="Right" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Close" Click="BtnExit"/>
             </Grid>
         </StackPanel>
     </Grid>

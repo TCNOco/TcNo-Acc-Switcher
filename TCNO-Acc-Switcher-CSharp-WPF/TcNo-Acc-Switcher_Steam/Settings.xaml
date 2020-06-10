@@ -35,7 +35,7 @@
         </Grid.Effect>
 
         <!-- Row 0: Header -->
-        <Border MouseDown="dragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
+        <Border MouseDown="DragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
         <Label IsHitTestVisible="False" Name="FolderInputHeaderInstruction" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="TcNo Account Switcher Settings" Grid.Column="1"/>
         <Canvas IsHitTestVisible="False" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5,10,0,10">
             <Canvas.RenderTransform>
@@ -57,8 +57,8 @@
                 </Canvas>
             </Canvas>
         </Canvas>
-        <Button Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="btnMinimize"></Button>
-        <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="btnExit"></Button>
+        <Button Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="BtnMinimize"></Button>
+        <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="BtnExit"></Button>
 
         <StackPanel Grid.Row="1" Background="#28293A" Margin="20,20,20,20" Grid.ColumnSpan="2">
             <CheckBox Panel.ZIndex="6" Name="RunasAdmin" Margin="5px" VerticalAlignment="Center"  Foreground="White" Content="Run Steam as Admin"  IsChecked="{Binding StartAsAdmin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -138,6 +138,6 @@
                 <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="1" Name="btnAdvancedCleaning" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Advanced cleaning..." Click="btnAdvancedCleaning_Click"/>
             </Grid>
         </StackPanel>
-        <Button Panel.ZIndex="6" Grid.Row="1" Name="btnCloseSettings" Margin="5px" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Close" Click="btnExit"/>
+        <Button Panel.ZIndex="6" Grid.Row="1" Name="btnCloseSettings" Margin="5px" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Close" Click="BtnExit"/>
     </Grid>
 </Window>

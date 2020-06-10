@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:TcNo_Acc_Switcher_Steam"
         
         mc:Ignorable="d"
-        Title="TcNo Steam Account Switcher" Height="360" Width="680"
+        Title="TcNo Steam Account Switcher" Height="377" Width="680"
         MinWidth="680"
-        MinHeight="360"
+        MinHeight="377"
         Closing="Window_Closing"
         Closed="Window_Closed"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
@@ -219,7 +219,7 @@
         </Grid.Effect>-->
 
         <!-- Row 0: Header -->
-        <Border MouseDown="dragWindow" Grid.Row="0" Background="#14151E" Height="30" Panel.ZIndex="3"/>
+        <Border MouseDown="DragWindow" Grid.Row="0" Background="#14151E" Height="30" Panel.ZIndex="3"/>
         <Label Panel.ZIndex="3" IsHitTestVisible="False" Name="HeaderInstruction" Grid.Row="0" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="1. Select an account"/>
         <Canvas Panel.ZIndex="3" IsHitTestVisible="False" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5 0 0 0">
             <Canvas.RenderTransform>
@@ -241,8 +241,8 @@
                 </Canvas>
             </Canvas>
         </Canvas>
-        <Button Panel.ZIndex="3" Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="btnMinimize"></Button>
-        <Button Panel.ZIndex="3" Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="btnExit"></Button>
+        <Button Panel.ZIndex="3" Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="BtnMinimize"></Button>
+        <Button Panel.ZIndex="3" Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="BtnExit"></Button>
 
         <!-- Row 1: Main content -->
         <Border Grid.Row="1" Height="10" VerticalAlignment="Top" Margin="0 -10 0 0" Panel.ZIndex="2" Background="#14151E">
