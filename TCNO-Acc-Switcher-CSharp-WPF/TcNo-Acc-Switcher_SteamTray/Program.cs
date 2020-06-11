@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_SteamTray
 {
@@ -21,6 +22,8 @@ namespace TcNo_Acc_Switcher_SteamTray
         [STAThread]
         static void Main()
         {
+            // Crash handler
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(Globals.CurrentDomain_UnhandledException);
             if (SelfAlreadyRunning())
             {
                 Console.WriteLine(@"TcNo Account Switcher SteamTray is already running");

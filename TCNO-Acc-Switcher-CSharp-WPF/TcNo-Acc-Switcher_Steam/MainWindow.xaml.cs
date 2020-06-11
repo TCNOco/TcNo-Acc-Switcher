@@ -64,7 +64,7 @@ namespace TcNo_Acc_Switcher_Steam
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)); // Set working directory to the same as the actual .exe
 
             // Crash handler
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(Globals.CurrentDomain_UnhandledException);
 
             // Version/update handling
             MainViewmodel.ProgramVersion = Strings.Version + ": " + steam_version.ToString();
@@ -102,18 +102,6 @@ namespace TcNo_Acc_Switcher_Steam
         }
 
 
-        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            // Log Unhandled Exception
-            string exceptionStr = e.ExceptionObject.ToString();
-            System.IO.Directory.CreateDirectory("Errors");
-            using (StreamWriter sw = File.AppendText($"Errors\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
-            {
-                sw.WriteLine(DateTime.Now.ToString() + "\t" + Strings.ErrUnhandledCrash + ": " + exceptionStr + Environment.NewLine + Environment.NewLine);
-            }
-            MessageBox.Show(Strings.ErrUnhandledException, Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Error);
-            MessageBox.Show(Strings.ErrSubmitCrashlog, Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Information);
-        }
         public void RefreshSteamAccounts()
         {
             // Collect Steam Account basic info from Steam file
@@ -1161,7 +1149,7 @@ namespace TcNo_Acc_Switcher_Steam
             // Kill Steam
             CloseSteam();
             // Set all accounts to 'not used last' status
-            UpdateLoginusers(true, "", MainViewmodel.SelectedSteamUser.AccName);
+            UpdateLoginusers(true, "", "");
             // Start Steam
             if (persistentSettings.StartAsAdmin)
                 Process.Start(persistentSettings.SteamExe());

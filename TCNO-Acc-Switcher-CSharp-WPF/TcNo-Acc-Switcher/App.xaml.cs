@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher
 {
@@ -18,11 +19,22 @@ namespace TcNo_Acc_Switcher
     {
         static void AssemblyResolver()
         {
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler((sender, args) => Assembly.LoadFrom("libs\\TcNo-Acc-Switcher-Globals.dll"));
+            Assembly a = Assembly.LoadFrom("libs\\TcNo-Acc-Switcher-Globals.dll");
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler((sender, args) => a);
         }
         protected override void OnStartup(StartupEventArgs e)
         {
+            string Names = "";
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Names += assembly.FullName + '\n';
+            }
+
+            MessageBox.Show(Names);
             AssemblyResolver();
+
+            // Crash handler
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(Globals.CurrentDomain_UnhandledException);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)); // Set working directory to the same as the actual .exe
             MainWindow mainWindow = new MainWindow();
@@ -60,15 +72,23 @@ namespace TcNo_Acc_Switcher
                 }
             }
 
-            // Bypass this platform picker launcher for now.
-            // This keeps shortcuts working, and can be replaced with an update.
-            //ProcessStartInfo startInfo = new ProcessStartInfo();
-            //startInfo.FileName = System.IO.Path.GetFullPath("Steam\\TcNo Account Switcher Steam.exe");
-            //startInfo.WorkingDirectory = Path.GetDirectoryName("Steam\\TcNo Account Switcher Steam.exe");
-            //startInfo.CreateNoWindow = false;
-            //startInfo.UseShellExecute = false;
-            //Process.Start(startInfo);
-            Process.Start("Steam\\TcNo Account Switcher Steam.exe");
+            //Bypass this platform picker launcher for now.
+            //This keeps shortcuts working, and can be replaced with an update.
+            try
+            { 
+                var startInfo = new ProcessStartInfo();
+                startInfo.FileName = Path.GetFullPath("Steam\\TcNo Account Switcher Steam.exe");
+                startInfo.WorkingDirectory = Path.GetFullPath(Path.GetDirectoryName("Steam\\TcNo Account Switcher Steam.exe"));
+                startInfo.CreateNoWindow = false;
+                startInfo.UseShellExecute = false;
+                Process.Start(startInfo);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.ToString());
+                throw;
+            }
+            //Process.Start("Steam\\TcNo Account Switcher Steam.exe");
 
             mainWindow.Process_Update(false);
             Environment.Exit(1);

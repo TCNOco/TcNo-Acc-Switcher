@@ -203,40 +203,11 @@ namespace TcNo_Acc_Switcher_Steam {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please submit the crashlog and more information to the Discord, or the GitHub page.
-        ///Discord: https://s.tcno.co/AccSwitcherDiscord
-        ///GitHub: https://github.com/TcNobo/TcNo-Acc-Switcher.
-        /// </summary>
-        internal static string ErrSubmitCrashlog {
-            get {
-                return ResourceManager.GetString("ErrSubmitCrashlog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to UNHANDLED CRASH.
         /// </summary>
         internal static string ErrUnhandledCrash {
             get {
                 return ResourceManager.GetString("ErrUnhandledCrash", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A fatal unhandled exception caused the program to crash. Information saved in &quot;AccSwitcher-Crashlog.txt&quot;..
-        /// </summary>
-        internal static string ErrUnhandledException {
-            get {
-                return ResourceManager.GetString("ErrUnhandledException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to TcNo Account Switcher Unhandled exception.
-        /// </summary>
-        internal static string ErrUnhandledExceptionHeader {
-            get {
-                return ResourceManager.GetString("ErrUnhandledExceptionHeader", resourceCulture);
             }
         }
         

@@ -112,5 +112,12 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TcNo-Acc-Switcher-Globals\TcNo-Acc-Switcher-Globals.csproj">
+      <Project>{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}</Project>
+      <Name>TcNo-Acc-Switcher-Globals</Name>
+	  <DestinationSubDirectory>libs\</DestinationSubDirectory>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

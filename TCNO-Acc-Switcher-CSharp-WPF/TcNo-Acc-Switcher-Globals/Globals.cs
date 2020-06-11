@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Newtonsoft.Json;
 
 namespace TcNo_Acc_Switcher_Globals
@@ -80,6 +81,24 @@ namespace TcNo_Acc_Switcher_Globals
             {
                 Console.WriteLine("Failed to start for update check.");
             }
+        }
+
+
+
+
+
+
+        public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            // Log Unhandled Exception
+            string exceptionStr = e.ExceptionObject.ToString();
+            System.IO.Directory.CreateDirectory("Errors");
+            using (StreamWriter sw = File.AppendText($"Errors\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
+            {
+                sw.WriteLine(DateTime.Now.ToString() + "\t" + Strings.ErrUnhandledCrash + ": " + exceptionStr + Environment.NewLine + Environment.NewLine);
+            }
+            MessageBox.Show(Strings.ErrUnhandledException, Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(Strings.ErrSubmitCrashlog, Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

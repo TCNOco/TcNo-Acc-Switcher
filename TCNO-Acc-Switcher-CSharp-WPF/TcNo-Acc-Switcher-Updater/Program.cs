@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Updater
 {
@@ -13,6 +14,8 @@ namespace TcNo_Acc_Switcher_Updater
     {
         static void Main(string[] args)
         {
+            // Crash handler
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(Globals.CurrentDomain_UnhandledException);
             Console.Title = @"TcNo Account Switcher - Auto-updater";
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)); // Set working directory to the same as the actual .exe
 #if X64
