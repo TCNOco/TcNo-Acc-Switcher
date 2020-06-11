@@ -62,14 +62,15 @@ namespace TcNo_Acc_Switcher
 
             // Bypass this platform picker launcher for now.
             // This keeps shortcuts working, and can be replaced with an update.
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = System.IO.Path.GetFullPath("Steam\\TcNo Account Switcher Steam.exe");
-            startInfo.WorkingDirectory = Path.GetDirectoryName("Steam\\TcNo Account Switcher Steam.exe");
-            startInfo.CreateNoWindow = false;
-            startInfo.UseShellExecute = false;
-            Process.Start(startInfo);
+            //ProcessStartInfo startInfo = new ProcessStartInfo();
+            //startInfo.FileName = System.IO.Path.GetFullPath("Steam\\TcNo Account Switcher Steam.exe");
+            //startInfo.WorkingDirectory = Path.GetDirectoryName("Steam\\TcNo Account Switcher Steam.exe");
+            //startInfo.CreateNoWindow = false;
+            //startInfo.UseShellExecute = false;
+            //Process.Start(startInfo);
+            Process.Start("Steam\\TcNo Account Switcher Steam.exe");
 
-            mainWindow.Process_Update();
+            mainWindow.Process_Update(false);
             Environment.Exit(1);
         }
     }
