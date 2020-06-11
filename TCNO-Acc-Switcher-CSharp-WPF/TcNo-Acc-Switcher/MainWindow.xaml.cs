@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -18,8 +19,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using TcNo_Acc_Switcher;
+using TcNo_Acc_Switcher_Globals;
 using Color = System.Windows.Media.Color;
+using Path = System.IO.Path;
 
 namespace TcNo_Acc_Switcher
 {
@@ -28,7 +30,9 @@ namespace TcNo_Acc_Switcher
     /// </summary>
     public partial class MainWindow : Window
     {
-        readonly int steam_version = 3000;
+        private Globals _globals = Globals.LoadExisting(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+        //readonly int steam_version = 3000;
+        readonly int steam_version = 1000;
         readonly int steam_trayversion = 1000;
         public MainWindow()
         {
@@ -45,9 +49,9 @@ namespace TcNo_Acc_Switcher
             //ListPlatforms.Items.Add(Platforms[0]);
         }
 
-        public void Process_Update()
+        public void Process_Update(bool async = false)
         {
-            Thread updateCheckThread = new Thread(UpdateCheck);
+            Thread updateCheckThread = async ? new Thread(AsyncUpdateCheck) : new Thread(UpdateCheck);
             // Check if cleanup needed for update
             if (File.Exists("Update_Complete"))
             {
@@ -58,8 +62,12 @@ namespace TcNo_Acc_Switcher
                     File.Delete("Restart_SteamTray");
                     Start_SteamTray();
                 }
-                // Because closing a messagebox before the window shows causes it to crash for some reason...
-                MessageBoxResult messageBoxResult = MessageBox.Show(Strings.GitHubWhatsNew, Strings.FinishedUpdating, System.Windows.MessageBoxButton.YesNo);
+                //MessageBoxResult messageBoxResult = MessageBox.Show(new Window { Topmost = true }, Strings.GitHubWhatsNew, Strings.FinishedUpdating,
+                //    MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.Yes,
+                //    MessageBoxOptions.DefaultDesktopOnly);
+                MessageBoxResult messageBoxResult = MessageBox.Show(Strings.GitHubWhatsNew, Strings.FinishedUpdating,
+                    MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.Yes,
+                    MessageBoxOptions.DefaultDesktopOnly);
                 if (messageBoxResult == MessageBoxResult.Yes)
                 {
                     Process.Start(new ProcessStartInfo("https://github.com/TcNobo/TcNo-Acc-Switcher/releases") { UseShellExecute = true });
@@ -76,7 +84,6 @@ namespace TcNo_Acc_Switcher
             // Will exit after the update check thread is done
             if (updateCheckThread.IsAlive)
                 updateCheckThread.Join();
-            Environment.Exit(1);
         }
         private void Start_SteamTray()
         {
@@ -97,27 +104,41 @@ namespace TcNo_Acc_Switcher
                 MessageBox.Show(Strings.ErrTrayProcessStart, Strings.ErrTrayProcessStartHead, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
         /// <summary>
         /// Checks for an update, and downloads it.
         /// This downloads and replaces all files from .zip.
         /// Used for updating everything, and not individual files.
         /// </summary>
+        void AsyncUpdateCheck()
+        {
+            UpdateCheck(true);
+        }
+
         void UpdateCheck()
         {
+            UpdateCheck(false);
+        }
+        public void UpdateCheck(bool async = false)
+        {
+            _globals.LastCheckedNow();
+            Globals.Save(_globals);
+
             try
             {
-                System.Net.WebClient wc = new System.Net.WebClient();
-                int webVersion = int.Parse(wc.DownloadString("https://tcno.co/Projects/AccSwitcher/net_version.php").Substring(0, 4));
+                var wc = new System.Net.WebClient();
+                var webVersion = int.Parse(wc.DownloadString("https://tcno.co/Projects/AccSwitcher/net_version.php").Substring(0, 4));
 
                 // Currently only set to work with Steam, until another update.
                 if (webVersion > steam_version)
                 {
                     using (FileStream fs = File.Create("UpdateFound.txt"))
                     {
-                        byte[] info = new UTF8Encoding(true).GetBytes(Strings.UpdateLastLaunch + DateTime.Now.ToString());
+                        byte[] info = new UTF8Encoding(true).GetBytes(Strings.UpdateLastLaunch + DateTime.Now.ToString(CultureInfo.InvariantCulture));
                         fs.Write(info, 0, info.Length);
                     }
-                    this.Dispatcher.Invoke(DownloadUpdateDialog);
+                    if (async) this.Dispatcher.Invoke(DownloadUpdateDialog);
+                    else DownloadUpdateDialog();
                 }
                 else
                 {
@@ -129,6 +150,7 @@ namespace TcNo_Acc_Switcher
             {
                 MessageBox.Show(Strings.UpdateLastLaunch + ex.ToString(), Strings.ErrUpdateCheckFail, MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
         }
         /// <summary>
         /// Presents option for user to download an update.

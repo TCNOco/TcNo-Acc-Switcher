@@ -22,6 +22,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, uncomment.
 using System.Xml;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Steam
 {
@@ -45,14 +46,13 @@ namespace TcNo_Acc_Switcher_Steam
         UserSettings persistentSettings = new UserSettings();
         readonly SolidColorBrush _vacRedBrush = new SolidColorBrush(Color.FromRgb(255,41,58));
 
+        Globals _globals;
+
         public MainWindow()
         {
             /* TODO:
              - Make "Installer" .exe. Maybe from C++ so it can run everywhere? Check for the correct .NET Core Desktop version, and download it if not found. Then run the installer.
              Download the .exe and place it where the user specifies.
-             Start the Account Swicther with an argument that automatically makes the Start Menu and or Desktop Shortcuts, if specified.
-             Change it so that the correct Tray application is extracted by default on first launch, instead of whenever the shortcut button is clicked. Of course, check for it then as well to make sure it's copied.
-             -- Get the .NET Core version from PC, and compare with a version file on https://tcno.co, that also has the latest download links for users.
              */
             // Single instance check
             if (SelfAlreadyRunning())
@@ -66,7 +66,10 @@ namespace TcNo_Acc_Switcher_Steam
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
+            // Version/update handling
             MainViewmodel.ProgramVersion = Strings.Version + ": " + steam_version.ToString();
+            _globals = Globals.LoadExisting(Path.GetDirectoryName(Directory.GetCurrentDirectory()));
+            if (_globals.NeedsUpdateCheck()) _globals.RunUpdateCheck();
 
             if (File.Exists("DeleteImagesOnStart"))
             {

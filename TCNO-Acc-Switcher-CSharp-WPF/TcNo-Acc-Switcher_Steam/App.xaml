@@ -1,9 +1,7 @@
 ﻿<Application x:Class="TcNo_Acc_Switcher_Steam.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:TcNo_Acc_Switcher_Steam"
-             StartupUri="MainWindow.xaml"
-             Startup="App_OnStartup">
+             xmlns:local="clr-namespace:TcNo_Acc_Switcher_Steam">
     <Application.Resources>
         <!-- Login button -->
         <Style x:Key="LoginButton" TargetType="Button">

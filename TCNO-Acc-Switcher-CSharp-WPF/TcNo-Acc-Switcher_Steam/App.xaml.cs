@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -24,9 +25,17 @@ namespace TcNo_Acc_Switcher_Steam
     /// </summary>
     public partial class App : Application
     {
-        private TrayUsers trayUsers = new TrayUsers();
-        private void App_OnStartup(object sender, StartupEventArgs e)
+        static void AssemblyResolver()
         {
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler((sender, args) => Assembly.LoadFrom("..\\libs\\TcNo-Acc-Switcher-Globals.dll"));
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler((sender, args) => Assembly.LoadFrom("..\\libs\\System.Drawing.Common.dll"));
+        }
+        private TrayUsers trayUsers = new TrayUsers();
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            AssemblyResolver();
+
+            base.OnStartup(e);
             MainWindow mainWindow = new MainWindow();
             bool quitArg = false;
             for (int i = 0; i != e.Args.Length; ++i)
@@ -53,6 +62,8 @@ namespace TcNo_Acc_Switcher_Steam
 
             if (quitArg)
                 Environment.Exit(1);
+            this.MainWindow = mainWindow;
+            mainWindow.Show();
         }
     }
 }

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcNo-Acc-Switcher_SteamTray
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcNo-Acc-Switcher-Updater", "TcNo-Acc-Switcher-Updater\TcNo-Acc-Switcher-Updater.csproj", "{DA483AE1-58D6-4436-A8F6-4CCCA46E5830}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcNo-Acc-Switcher-Globals", "TcNo-Acc-Switcher-Globals\TcNo-Acc-Switcher-Globals.csproj", "{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{DA483AE1-58D6-4436-A8F6-4CCCA46E5830}.Release|x64.Build.0 = Release|x64
 		{DA483AE1-58D6-4436-A8F6-4CCCA46E5830}.Release|x86.ActiveCfg = Release|x86
 		{DA483AE1-58D6-4436-A8F6-4CCCA46E5830}.Release|x86.Build.0 = Release|x86
+		{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}.Debug|x64.Build.0 = Debug|Any CPU
+		{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}.Debug|x86.Build.0 = Debug|Any CPU
+		{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}.Release|x64.ActiveCfg = Release|Any CPU
+		{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}.Release|x64.Build.0 = Release|Any CPU
+		{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}.Release|x86.ActiveCfg = Release|Any CPU
+		{5713CFBB-F6E2-48B8-BF9F-191D26C8E971}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -99,6 +99,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Drawing.Common.4.7.0\lib\net461\System.Drawing.Common.dll</HintPath>
+	  <DestinationSubDirectory>..\libs\</DestinationSubDirectory>
     </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net" />
@@ -241,6 +242,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Requirements.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TcNo-Acc-Switcher-Globals\TcNo-Acc-Switcher-Globals.csproj">
+      <Project>{5713cfbb-f6e2-48b8-bf9f-191d26c8e971}</Project>
+      <Name>TcNo-Acc-Switcher-Globals</Name>
+	  <DestinationSubDirectory>..\libs\</DestinationSubDirectory>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

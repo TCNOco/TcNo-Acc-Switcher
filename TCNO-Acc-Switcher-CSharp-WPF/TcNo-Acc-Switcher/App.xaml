@@ -1,9 +1,7 @@
 ﻿<Application x:Class="TcNo_Acc_Switcher.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:TcNo_Acc_Switcher"
-             StartupUri="MainWindow.xaml"
-             Startup="App_OnStartup">
+             xmlns:local="clr-namespace:TcNo_Acc_Switcher">
     <Application.Resources>
         <!-- Header bar buttons -->
         <Style x:Key="ExitButton" TargetType="Button">
