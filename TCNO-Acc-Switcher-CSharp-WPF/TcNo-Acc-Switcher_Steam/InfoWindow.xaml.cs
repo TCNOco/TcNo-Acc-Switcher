@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Steam
 {
@@ -14,31 +15,23 @@ namespace TcNo_Acc_Switcher_Steam
         {
             InitializeComponent();
         }
+
         private void BtnExit(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Globals.WindowHandling.BtnExit(sender, e, this);
         }
-
         private void BtnMinimize(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            Globals.WindowHandling.BtnMinimize(sender, e, this);
         }
         private void DragWindow(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                this.DragMove();
-            }
+            Globals.WindowHandling.DragWindow(sender, e, this);
         }
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
-        }
-
-        private void Window_PreviewMouseUp(object sender, MouseButtonEventArgs e)
-        {
-
         }
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)

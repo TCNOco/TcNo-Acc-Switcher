@@ -12,6 +12,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading;
@@ -964,22 +965,16 @@ namespace TcNo_Acc_Switcher_Steam
         }
         private void BtnExit(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Globals.WindowHandling.BtnExit(sender, e, this);
         }
-
         private void BtnMinimize(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            Globals.WindowHandling.BtnMinimize(sender, e, this);
         }
-
         private void DragWindow(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                this.DragMove();
-            }
+            Globals.WindowHandling.DragWindow(sender, e, this);
         }
-
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             if (!Double.IsNaN(this.Height)) // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.

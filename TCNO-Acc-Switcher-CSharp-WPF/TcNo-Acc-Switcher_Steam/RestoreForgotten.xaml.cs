@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Steam
 {
@@ -30,22 +31,18 @@ namespace TcNo_Acc_Switcher_Steam
             if (e.Key == Key.Escape)
                 Close();
         }
+
         private void BtnExit(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Globals.WindowHandling.BtnExit(sender, e, this);
         }
-
         private void BtnMinimize(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            Globals.WindowHandling.BtnMinimize(sender, e, this);
         }
-
         private void DragWindow(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                this.DragMove();
-            }
+            Globals.WindowHandling.DragWindow(sender, e, this);
         }
 
         private void btnRestore_Click(object sender, RoutedEventArgs e)

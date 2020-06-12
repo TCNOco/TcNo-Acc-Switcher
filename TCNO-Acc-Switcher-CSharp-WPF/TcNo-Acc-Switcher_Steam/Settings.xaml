@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TcNo_Acc_Switcher_Steam"
         mc:Ignorable="d"
-        Title="TcNo Steam Account Switcher - Settings" Height="641.471" Width="502"
+        Title="TcNo Steam Account Switcher - Settings" Height="642" Width="502"
         MinHeight="329" MinWidth="502"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterOwner"

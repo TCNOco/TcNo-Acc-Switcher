@@ -63,13 +63,15 @@ namespace TcNo_Acc_Switcher
             //This keeps shortcuts working, and can be replaced with an update.
             try
             {
-                var startInfo = new ProcessStartInfo();
-                startInfo.FileName = Path.GetFullPath("Steam\\TcNo Account Switcher Steam.exe");
-                startInfo.WorkingDirectory =
-                    Path.GetFullPath(Path.GetDirectoryName("Steam\\TcNo Account Switcher Steam.exe"));
-                startInfo.CreateNoWindow = false;
-                startInfo.UseShellExecute = true;
-                startInfo.Verb = "runas";
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = Path.GetFullPath("Steam\\TcNo Account Switcher Steam.exe"),
+                    WorkingDirectory =
+                        Path.GetFullPath(Path.GetDirectoryName("Steam\\TcNo Account Switcher Steam.exe")),
+                    CreateNoWindow = false,
+                    UseShellExecute = true,
+                    Verb = "runas"
+                };
                 Process.Start(startInfo);
             }
             catch (System.ComponentModel.Win32Exception win32Exception2)
@@ -84,6 +86,8 @@ namespace TcNo_Acc_Switcher
 
             mainWindow.Process_OptionalUpdate(false);
             Environment.Exit(1);
+
+            //mainWindow.Show();
         }
     }
 }

@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
+using TcNo_Acc_Switcher_Globals;
+
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, uncomment.
 
 namespace TcNo_Acc_Switcher_Steam
@@ -29,19 +31,15 @@ namespace TcNo_Acc_Switcher_Steam
 
         private void BtnExit(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Globals.WindowHandling.BtnExit(sender, e, this);
         }
-
         private void BtnMinimize(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            Globals.WindowHandling.BtnMinimize(sender, e, this);
         }
         private void DragWindow(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                this.DragMove();
-            }
+            Globals.WindowHandling.DragWindow(sender, e, this);
         }
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -61,9 +59,9 @@ namespace TcNo_Acc_Switcher_Steam
         public string[] GetFiles(string sourceFolder, string filter, System.IO.SearchOption searchOption)
         {
             ArrayList alFiles = new ArrayList();
-            string[] MultipleFilters = filter.Split('|');
-            foreach (string FileFilter in MultipleFilters)
-                alFiles.AddRange(Directory.GetFiles(sourceFolder, FileFilter, searchOption));
+            string[] multipleFilters = filter.Split('|');
+            foreach (string fileFilter in multipleFilters)
+                alFiles.AddRange(Directory.GetFiles(sourceFolder, fileFilter, searchOption));
 
             return (string[])alFiles.ToArray(typeof(string));
         }

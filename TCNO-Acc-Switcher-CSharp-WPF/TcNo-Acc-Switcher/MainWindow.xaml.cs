@@ -154,7 +154,7 @@ namespace TcNo_Acc_Switcher
             }
             catch (WebException ex)
             {
-                MessageBox.Show(Strings.UpdateLastLaunch + ex.ToString(), Strings.ErrUpdateCheckFail, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Strings.ErrUpdateCheckFail + ex.ToString(), Strings.ErrUpdateCheckFailHead, MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
@@ -215,22 +215,17 @@ namespace TcNo_Acc_Switcher
         //}
 
         // Window interaction
-        private void btnExit(object sender, RoutedEventArgs e)
+        private void BtnExit(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Globals.WindowHandling.BtnExit(sender, e, this);
         }
-
-        private void btnMinimize(object sender, RoutedEventArgs e)
+        private void BtnMinimize(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            Globals.WindowHandling.BtnMinimize(sender, e, this);
         }
-
-        private void dragWindow(object sender, MouseButtonEventArgs e)
+        private void DragWindow(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                this.DragMove();
-            }
+            Globals.WindowHandling.DragWindow(sender, e, this);
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)

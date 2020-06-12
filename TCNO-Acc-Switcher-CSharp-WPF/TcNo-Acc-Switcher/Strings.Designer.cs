@@ -79,13 +79,20 @@ namespace TcNo_Acc_Switcher {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not connect to https://tcno.co/ to check for updates.
-        ///
-        ///Details:.
+        ///   Looks up a localized string similar to Details:.
         /// </summary>
         internal static string ErrUpdateCheckFail {
             get {
                 return ResourceManager.GetString("ErrUpdateCheckFail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not connect to https://tcno.co/ to check for updates..
+        /// </summary>
+        internal static string ErrUpdateCheckFailHead {
+            get {
+                return ResourceManager.GetString("ErrUpdateCheckFailHead", resourceCulture);
             }
         }
         

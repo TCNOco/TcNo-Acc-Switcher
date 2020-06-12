@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
+using TcNo_Acc_Switcher_Globals;
 
 //using System.Windows.Shapes;
 
@@ -88,26 +89,24 @@ namespace TcNo_Acc_Switcher_Steam
             }
         }
 
-        private void BtnExit(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void BtnMinimize(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void DragWindow(object sender, MouseButtonEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed) DragMove();
-        }
 
         private void txtResponse_TextChanged(object sender, TextChangedEventArgs e)
         {
             VerifySteamPath();
         }
 
+        private void BtnExit(object sender, RoutedEventArgs e)
+        {
+            Globals.WindowHandling.BtnExit(sender, e, this);
+        }
+        private void BtnMinimize(object sender, RoutedEventArgs e)
+        {
+            Globals.WindowHandling.BtnMinimize(sender, e, this);
+        }
+        private void DragWindow(object sender, MouseButtonEventArgs e)
+        {
+            Globals.WindowHandling.DragWindow(sender, e, this);
+        }
         private void resizeGrip_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (Mouse.Capture(resizeGrip))
