@@ -17,22 +17,8 @@ namespace TcNo_Acc_Switcher
     /// </summary>
     public partial class App : Application
     {
-        static void AssemblyResolver()
-        {
-            Assembly a = Assembly.LoadFrom("libs\\TcNo-Acc-Switcher-Globals.dll");
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler((sender, args) => a);
-        }
         protected override void OnStartup(StartupEventArgs e)
         {
-            string Names = "";
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                Names += assembly.FullName + '\n';
-            }
-
-            MessageBox.Show(Names);
-            AssemblyResolver();
-
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(Globals.CurrentDomain_UnhandledException);
 

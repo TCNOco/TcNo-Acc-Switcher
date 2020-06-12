@@ -177,7 +177,6 @@
       <Project>{5713cfbb-f6e2-48b8-bf9f-191d26c8e971}</Project>
       <Name>TcNo-Acc-Switcher-Globals</Name>
       <Private>True</Private>
-	  <DestinationSubDirectory>\libs\</DestinationSubDirectory>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

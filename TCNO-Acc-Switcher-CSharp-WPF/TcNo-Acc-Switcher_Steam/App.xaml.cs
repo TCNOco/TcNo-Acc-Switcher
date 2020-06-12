@@ -25,16 +25,9 @@ namespace TcNo_Acc_Switcher_Steam
     /// </summary>
     public partial class App : Application
     {
-        static void AssemblyResolver()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler((sender, args) => Assembly.LoadFrom("..\\libs\\TcNo-Acc-Switcher-Globals.dll"));
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler((sender, args) => Assembly.LoadFrom("..\\libs\\System.Drawing.Common.dll"));
-        }
         private TrayUsers trayUsers = new TrayUsers();
         protected override void OnStartup(StartupEventArgs e)
         {
-            AssemblyResolver();
-
             base.OnStartup(e);
             MainWindow mainWindow = new MainWindow();
             bool quitArg = false;
