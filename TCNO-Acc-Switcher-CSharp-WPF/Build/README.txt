@@ -1,0 +1,13 @@
+Find more information on GitHub: https://github.com/TcNobo/TcNo-Acc-Switcher
+Join the Discord for bug reports/feature requests: https://s.tcno.co/AccSwitcherDiscord
+  - This is a short link so it can be updated if needed later.
+  - It's recommended to join, and select to be notified for updates, incase the auto-updater doesn't work as expected.
+
+To use the program, you need the corresponding .NET Framework runtime. Those can be found below:
+[Either will work. Offline is a larger download, but shouldn't download anything while installing]
+
+.NET Framework 4.8:
+- Web installer: https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer
+- Offline installer: https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-offline-installer
+
+- Other languages: https://dotnet.microsoft.com/download/dotnet-framework/net48

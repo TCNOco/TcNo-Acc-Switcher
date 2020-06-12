@@ -1,4 +1,4 @@
-1301
+2302
 <?php
 /*
     GOAL:
@@ -53,7 +53,7 @@ $details = ip_info("Visitor", "Location");
 ///echo($details["state"].", ".$details["country"].", ".$details["continent"]."<br>");
 
 // Today's JSON file
-$filename = __DIR__ ."/data/".date("d-m-Y").".json";
+$filename = __DIR__ ."/NetCore_data/".date("Y-m-d").".json";
 ///echo("Opening: ".$filename."<br>");
 $jsToday = json_decode(@file_get_contents($filename), true); // "@" ignores non-exist error
 
