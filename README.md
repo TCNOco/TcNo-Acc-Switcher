@@ -29,7 +29,7 @@
 
 **Options available**: Start Steam as Administrator, Change Steam install folder, Hide VAC Status for each account and Show Steam ID. 
 
-## 3.0 Update [Alpha]: Support for more platforms!
+## 3.0 Update [Beta]: Support for more platforms!
 Origin and more are coming to the TcNo Account Switcher! Easily handle multiple accounts with a few clicks!
 With an all-new tray, you can switch accounts directly from the tray as well!
 Tons more features to come.
