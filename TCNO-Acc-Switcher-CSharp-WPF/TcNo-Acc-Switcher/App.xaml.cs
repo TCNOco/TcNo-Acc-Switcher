@@ -37,7 +37,7 @@ namespace TcNo_Acc_Switcher
                     {
                         case "steam":
                             Process.Start("Steam\\TcNo Account Switcher Steam.exe");
-                            mainWindow.Process_Update(true);
+                            mainWindow.Process_OptionalUpdate(true);
                             Environment.Exit(1);
                             break;
                         //case "origin":
@@ -49,6 +49,7 @@ namespace TcNo_Acc_Switcher
                     string arg = e.Args[i].Substring(1); // Get command
                     switch (arg)
                     {
+                        case "update":
                         case "updatecheck":
                             mainWindow.Process_Update(true);
                             Environment.Exit(1);
@@ -61,22 +62,27 @@ namespace TcNo_Acc_Switcher
             //Bypass this platform picker launcher for now.
             //This keeps shortcuts working, and can be replaced with an update.
             try
-            { 
+            {
                 var startInfo = new ProcessStartInfo();
                 startInfo.FileName = Path.GetFullPath("Steam\\TcNo Account Switcher Steam.exe");
-                startInfo.WorkingDirectory = Path.GetFullPath(Path.GetDirectoryName("Steam\\TcNo Account Switcher Steam.exe"));
+                startInfo.WorkingDirectory =
+                    Path.GetFullPath(Path.GetDirectoryName("Steam\\TcNo Account Switcher Steam.exe"));
                 startInfo.CreateNoWindow = false;
-                startInfo.UseShellExecute = false;
+                startInfo.UseShellExecute = true;
+                startInfo.Verb = "runas";
                 Process.Start(startInfo);
+            }
+            catch (System.ComponentModel.Win32Exception win32Exception2)
+            {
+                if (win32Exception2.HResult != -2147467259) throw; // Throw is error is not: cancelled by user
             }
             catch (Exception exception)
             {
-                MessageBox.Show(exception.ToString());
                 throw;
             }
             //Process.Start("Steam\\TcNo Account Switcher Steam.exe");
 
-            mainWindow.Process_Update(false);
+            mainWindow.Process_OptionalUpdate(false);
             Environment.Exit(1);
         }
     }

@@ -29,6 +29,7 @@ namespace TcNo_Acc_Switcher_SteamTray
                 Console.WriteLine(@"TcNo Account Switcher SteamTray is already running");
                 Environment.Exit(99);
             }
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)); // Set working directory to the same as the actual .exe
             trayUsers.LoadTrayUsers();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -176,11 +177,33 @@ namespace TcNo_Acc_Switcher_SteamTray
                 if (File.Exists(mainProgram))
                 {
                     ProcessStartInfo startInfo = new ProcessStartInfo();
-                    startInfo.FileName = processName;
-                    startInfo.CreateNoWindow = false;
-                    startInfo.UseShellExecute = false;
-                    startInfo.Arguments = args;
-                    Process.Start(startInfo);
+                    try
+                    {
+                        startInfo.FileName = processName;
+                        startInfo.CreateNoWindow = false;
+                        startInfo.UseShellExecute = false;
+                        startInfo.Arguments = args;
+                        Process.Start(startInfo);
+                    }
+                    catch (System.ComponentModel.Win32Exception win32Exception)
+                    {
+                        if (win32Exception.HResult != -2147467259) throw; // Throw is error is not: Requires elevation
+                        try
+                        {
+                            startInfo.UseShellExecute = true;
+                            startInfo.Verb = "runas";
+                            Process.Start(startInfo);
+                        }
+
+                        catch (System.ComponentModel.Win32Exception win32Exception2)
+                        {
+                            if (win32Exception2.HResult != -2147467259) throw; // Throw is error is not: cancelled by user
+                        }
+                        catch (Exception exception)
+                        {
+                            throw;
+                        }
+                    }
                 }
                 else
                 {

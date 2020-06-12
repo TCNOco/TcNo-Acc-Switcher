@@ -1232,7 +1232,7 @@ namespace TcNo_Acc_Switcher_Steam
         }
         private bool CheckStartWithWindows()
         {
-            using (TaskService ts = new TaskService())
+            using (var ts = new TaskService())
             {
                 TaskCollection tasks = ts.RootFolder.Tasks;
                 return tasks.Exists("TcNo Account Switcher - Tray start with logon");

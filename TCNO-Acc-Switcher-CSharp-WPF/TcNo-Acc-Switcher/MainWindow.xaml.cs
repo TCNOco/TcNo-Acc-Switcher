@@ -49,6 +49,12 @@ namespace TcNo_Acc_Switcher
             //ListPlatforms.Items.Add(Platforms[0]);
         }
 
+        public void Process_OptionalUpdate(bool async = false)
+        {
+
+            if (_globals.NeedsUpdateCheck_Launch()) Process_Update(async);
+        }
+
         public void Process_Update(bool async = false)
         {
             Thread updateCheckThread = async ? new Thread(AsyncUpdateCheck) : new Thread(UpdateCheck);

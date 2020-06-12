@@ -56,7 +56,13 @@ namespace TcNo_Acc_Switcher_Globals
         {
             return (UpdateLastChecked < DateTime.Now.AddDays(-1));
         }
-        
+        // Was the account switcher launched within the last few minutes?
+        // It reports launches, so I know how many people are using it from where, but it won't count launches < 5 mins apart.
+        public bool NeedsUpdateCheck_Launch()
+        {
+            return (UpdateLastChecked < DateTime.Now.AddMinutes(-5));
+        }
+
         // Launch main software and check for updates if not already running
         public void RunUpdateCheck()
         {
