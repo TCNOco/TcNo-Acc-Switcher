@@ -124,9 +124,10 @@
     <value>Unable to start Tray process. Try starting it yourself using 'TcNo Acc Switcher SteamTray.exe'</value>
   </data>
   <data name="ErrUpdateCheckFail" xml:space="preserve">
-    <value>Could not connect to https://tcno.co/ to check for updates.
-
-Details:</value>
+    <value>Details:</value>
+  </data>
+  <data name="ErrUpdateCheckFailHead" xml:space="preserve">
+    <value>Could not connect to https://tcno.co/ to check for updates.</value>
   </data>
   <data name="FinishedUpdating" xml:space="preserve">
     <value>Finished updating.</value>
