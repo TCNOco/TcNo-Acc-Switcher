@@ -353,4 +353,4 @@ MigrationBackup/
 .ionide/
 *.zip
 NSIS/TcNo Account Switcher - Installer x64.exe
-NSIS/TcNo Account Switcher - Installer x86.exe
+NSIS/TcNo Account Switcher - Installer x32.exe
