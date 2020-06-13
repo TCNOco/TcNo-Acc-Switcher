@@ -32,7 +32,7 @@ namespace TcNo_Acc_Switcher
     {
         private Globals _globals = Globals.LoadExisting(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
         //readonly int steam_version = 3000;
-        readonly int steam_version = 3000;
+        readonly int steam_version = 3001;
         readonly int steam_trayversion = 1000;
         public MainWindow()
         {

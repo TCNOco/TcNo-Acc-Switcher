@@ -43,7 +43,7 @@ namespace TcNo_Acc_Switcher_Steam
 
 
         // Settings will load later. Just defined here.
-        readonly int steam_version = 3000;
+        readonly int steam_version = 3001;
         UserSettings persistentSettings = new UserSettings();
         readonly SolidColorBrush _vacRedBrush = new SolidColorBrush(Color.FromRgb(255,41,58));
 

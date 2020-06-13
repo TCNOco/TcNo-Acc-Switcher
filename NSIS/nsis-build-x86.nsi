@@ -14,7 +14,7 @@
 !define LNK_NAME "TcNo Account Switcher.lnk"
 !define COMP_NAME "TechNobo (Wesley Pyburn)"
 !define WEB_SITE "https://tcno.co"
-!define VERSION "3.00.00.00"
+!define VERSION "3.0.0.1"
 !define COPYRIGHT "TechNobo (Wesley Pyburn) © 2020"
 !define DESCRIPTION "TcNo Account Switcher"
 !define LICENSE_TXT "..\LICENSE"

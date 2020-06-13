@@ -59,7 +59,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>..\Build\Release\x64\Steam\</OutputPath>
+    <OutputPath>..\Build\Release\TcNo.Account.Switcher.x64\Steam\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>embedded</DebugType>
@@ -82,7 +82,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>..\Build\Release\x86\Steam\</OutputPath>
+    <OutputPath>..\Build\Release\TcNo.Account.Switcher.x32\Steam\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>embedded</DebugType>
