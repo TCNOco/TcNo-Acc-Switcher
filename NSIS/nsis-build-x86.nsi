@@ -42,8 +42,8 @@ VIAddVersionKey "FileVersion"  "${VERSION}"
 ;;;;!define INSTALLER_NAME "TcNo Account Switcher - Installer x64.exe"
 !define INSTALLER_NAME "TcNo Account Switcher - Installer x86.exe"
 
-;;;;!define INSTALLER_FILES "..\TCNO-Acc-Switcher-CSharp-WPF\Build\Release\x64\*"
-!define INSTALLER_FILES "..\TCNO-Acc-Switcher-CSharp-WPF\Build\Release\x86\*"
+;;;;!define INSTALLER_FILES "..\TCNO-Acc-Switcher-CSharp-WPF\Build\Release\TcNo.Account.Switcher.x64\*"
+!define INSTALLER_FILES "..\TCNO-Acc-Switcher-CSharp-WPF\Build\Release\TcNo.Account.Switcher.x32\*"
 
 ;;;;!define INSTALL_DIR "$PROGRAMFILES64\TcNo Account Switcher"
 !define INSTALL_DIR "$PROGRAMFILES\TcNo Account Switcher"
