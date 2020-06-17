@@ -154,7 +154,7 @@ namespace TcNo_Acc_Switcher
             }
             catch (WebException ex)
             {
-                MessageBox.Show(Strings.ErrUpdateCheckFail + ex.ToString(), Strings.ErrUpdateCheckFailHead, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Strings.ErrUpdateCheckFail + ex, Strings.ErrUpdateCheckFailHead, MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }

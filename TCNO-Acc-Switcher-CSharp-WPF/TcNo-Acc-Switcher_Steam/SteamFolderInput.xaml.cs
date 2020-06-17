@@ -14,7 +14,7 @@ namespace TcNo_Acc_Switcher_Steam
     /// <summary>
     ///     Interaction logic for SteamFolderInput.xaml
     /// </summary>
-    public partial class SteamFolderInput : Window
+    public partial class SteamFolderInput
     {
         private readonly Color _darkGreen = Color.FromRgb(5, 51, 5);
         private readonly Color _defaultGray = Color.FromRgb(51, 51, 51);
@@ -22,7 +22,7 @@ namespace TcNo_Acc_Switcher_Steam
 
 
         private Point _startPosition;
-        private bool SteamFound;
+        private bool _steamFound;
 
         public SteamFolderInput()
         {
@@ -44,7 +44,7 @@ namespace TcNo_Acc_Switcher_Steam
         {
             if (File.Exists(Path.Combine(txtResponse.Text, "Steam.exe")))
             {
-                SteamFound = true;
+                _steamFound = true;
                 rectSteamFound.Background = new SolidColorBrush(Colors.Green);
                 lblQuery3.Background = new SolidColorBrush(Color.FromRgb(0, 68, 0));
                 lblQuery3.Content = "Steam.exe found!";
@@ -53,7 +53,7 @@ namespace TcNo_Acc_Switcher_Steam
             }
             else
             {
-                SteamFound = false;
+                _steamFound = false;
                 rectSteamFound.Background = new SolidColorBrush(Colors.Red);
                 lblQuery3.Background = new SolidColorBrush(Color.FromRgb(68, 0, 0));
                 lblQuery3.Content = "Steam.exe not found";
@@ -64,12 +64,12 @@ namespace TcNo_Acc_Switcher_Steam
 
         private void btnSetDirectory_MouseEnter(object sender, MouseEventArgs e)
         {
-            btnSetDirectory.Background = new SolidColorBrush(SteamFound ? Colors.Green : _defaultGray);
+            btnSetDirectory.Background = new SolidColorBrush(_steamFound ? Colors.Green : _defaultGray);
         }
 
         private void btnSetDirectory_MouseLeave(object sender, MouseEventArgs e)
         {
-            btnSetDirectory.Background = new SolidColorBrush(SteamFound ? _darkGreen : _defaultGray);
+            btnSetDirectory.Background = new SolidColorBrush(_steamFound ? _darkGreen : _defaultGray);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -82,11 +82,9 @@ namespace TcNo_Acc_Switcher_Steam
             };
 
             var result = dlg.ShowDialog();
-            if (result == true)
-            {
-                txtResponse.Text = Path.GetDirectoryName(dlg.FileName);
-                VerifySteamPath();
-            }
+            if (result != true) return;
+            txtResponse.Text = Path.GetDirectoryName(dlg.FileName) ?? string.Empty;
+            VerifySteamPath();
         }
 
 

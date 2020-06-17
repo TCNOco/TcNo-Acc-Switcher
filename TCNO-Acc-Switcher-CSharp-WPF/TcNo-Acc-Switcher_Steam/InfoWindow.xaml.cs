@@ -9,25 +9,16 @@ namespace TcNo_Acc_Switcher_Steam
     /// <summary>
     /// Interaction logic for InfoWindow.xaml
     /// </summary>
-    public partial class InfoWindow : Window
+    public partial class InfoWindow
     {
         public InfoWindow()
         {
             InitializeComponent();
         }
 
-        private void BtnExit(object sender, RoutedEventArgs e)
-        {
-            Globals.WindowHandling.BtnExit(sender, e, this);
-        }
-        private void BtnMinimize(object sender, RoutedEventArgs e)
-        {
-            Globals.WindowHandling.BtnMinimize(sender, e, this);
-        }
-        private void DragWindow(object sender, MouseButtonEventArgs e)
-        {
-            Globals.WindowHandling.DragWindow(sender, e, this);
-        }
+        private void BtnExit(object sender, RoutedEventArgs e) => Globals.WindowHandling.BtnExit(sender, e, this);
+        private void BtnMinimize(object sender, RoutedEventArgs e) => Globals.WindowHandling.BtnMinimize(sender, e, this);
+        private void DragWindow(object sender, MouseButtonEventArgs e) => Globals.WindowHandling.DragWindow(sender, e, this);
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });

@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace TcNo_Acc_Switcher_Steam
@@ -23,15 +17,15 @@ namespace TcNo_Acc_Switcher_Steam
     /// - Ability to create these shortcuts may be added to the right-click menu at some stage in the future.
     /// 
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
-        private TrayUsers trayUsers = new TrayUsers();
+        private readonly TrayUsers _trayUsers = new TrayUsers();
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            MainWindow mainWindow = new MainWindow();
-            bool quitArg = false;
-            for (int i = 0; i != e.Args.Length; ++i)
+            var mainWindow = new MainWindow();
+            var quitArg = false;
+            for (var i = 0; i != e.Args.Length; ++i)
             {
                 if (e.Args[i]?[0] == '+')
                 {
@@ -41,16 +35,21 @@ namespace TcNo_Acc_Switcher_Steam
                         Environment.Exit(1);
                     }
 
-                    string SteamID = e.Args[i].Substring(1);// Get SteamID from launch options
-                    trayUsers.LoadTrayUsers();
-                    string AccName = trayUsers.GetAccName(SteamID); // Get account name from JSON
+                    var steamId = e.Args[i].Substring(1);// Get SteamID from launch options
+                    _trayUsers.LoadTrayUsers();
+                    var accName = _trayUsers.GetAccName(steamId); // Get account name from JSON
 
-                    mainWindow.SwapSteamAccounts(false, SteamID, AccName);
+                    mainWindow.SwapSteamAccounts(false, steamId, accName);
                 }
-                else if (e.Args[i] == "logout")
-                    mainWindow.SwapSteamAccounts(true, "", "");
-                else if (e.Args[i] == "quit")
-                    quitArg = true;
+                else switch (e.Args[i])
+                {
+                    case "logout":
+                        mainWindow.SwapSteamAccounts(true, "", "");
+                        break;
+                    case "quit":
+                        quitArg = true;
+                        break;
+                }
             }
 
             if (quitArg)

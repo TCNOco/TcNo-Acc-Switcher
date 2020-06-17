@@ -4,7 +4,6 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
@@ -17,30 +16,19 @@ namespace TcNo_Acc_Switcher_Steam
     /// <summary>
     /// Interaction logic for ClearLogins.xaml
     /// </summary>
-    public partial class ClearLogins : Window
+    public partial class ClearLogins
     {
-        MainWindow mw;
+        MainWindow _mw;
         public ClearLogins()
         {
             InitializeComponent();
         }
-        public void ShareMainWindow(MainWindow imw)
-        {
-            mw = imw;
-        }
+        public void ShareMainWindow(MainWindow imw) =>
+            _mw = imw;
 
-        private void BtnExit(object sender, RoutedEventArgs e)
-        {
-            Globals.WindowHandling.BtnExit(sender, e, this);
-        }
-        private void BtnMinimize(object sender, RoutedEventArgs e)
-        {
-            Globals.WindowHandling.BtnMinimize(sender, e, this);
-        }
-        private void DragWindow(object sender, MouseButtonEventArgs e)
-        {
-            Globals.WindowHandling.DragWindow(sender, e, this);
-        }
+        private void BtnExit(object sender, RoutedEventArgs e) => Globals.WindowHandling.BtnExit(sender, e, this);
+        private void BtnMinimize(object sender, RoutedEventArgs e) => Globals.WindowHandling.BtnMinimize(sender, e, this);
+        private void DragWindow(object sender, MouseButtonEventArgs e) => Globals.WindowHandling.DragWindow(sender, e, this);
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
@@ -56,98 +44,91 @@ namespace TcNo_Acc_Switcher_Steam
         }
 
 
-        public string[] GetFiles(string sourceFolder, string filter, System.IO.SearchOption searchOption)
+        public string[] GetFiles(string sourceFolder, string filter, SearchOption searchOption)
         {
-            ArrayList alFiles = new ArrayList();
-            string[] multipleFilters = filter.Split('|');
-            foreach (string fileFilter in multipleFilters)
+            var alFiles = new ArrayList();
+            var multipleFilters = filter.Split('|');
+            foreach (var fileFilter in multipleFilters)
                 alFiles.AddRange(Directory.GetFiles(sourceFolder, fileFilter, searchOption));
 
             return (string[])alFiles.ToArray(typeof(string));
         }
-        struct PossibleClearArgs
+
+        private struct PossibleClearArgs
         {
-            public string fldName;
-            public string folderName;
-            public string fileExtensions;
-            public SearchOption searchOption;
+            public string FldName;
+            public string FolderName;
+            public string FileExtensions;
+            public SearchOption SearchOption;
         }
-        private readonly object LockClearFilesOfType = new object();
-        private readonly object LockClearFolder = new object();
-
-
-
-
+        private readonly object _lockClearFilesOfType = new object();
+        private readonly object _lockClearFolder = new object();
 
         private void ClearFolder(string fldName, string fld)
         {
-            Thread t = new Thread(new ParameterizedThreadStart(Task_clearFolder));
-            PossibleClearArgs args = new PossibleClearArgs
+            var t = new Thread(Task_clearFolder);
+            var args = new PossibleClearArgs
             {
-                fldName = fldName,
-                folderName = fld
+                FldName = fldName,
+                FolderName = fld
             };
             t.Start(args);
         }
         private void Task_clearFolder(object oin)
         {
             // Only allow one to be run at a time
-            if (Monitor.TryEnter(LockClearFolder))
+            if (!Monitor.TryEnter(_lockClearFolder)) return;
+            try
             {
-                try
+                var options = (PossibleClearArgs)oin;
+                LogPrint(options.FldName);
+                var count = 0;
+                if (Directory.Exists(options.FolderName))
                 {
-                    PossibleClearArgs options = (PossibleClearArgs)oin;
-                    LogPrint(options.fldName);
-                    int count = 0;
-                    if (Directory.Exists(options.folderName))
+                    var d = new DirectoryInfo(options.FolderName);
+                    foreach (var file in d.GetFiles("*.*"))
                     {
-                        DirectoryInfo d = new DirectoryInfo(options.folderName);
-                        foreach (var file in d.GetFiles("*.*"))
+                        count++;
+                        LogPrint($"Deleting: {file.Name}");
+                        try
                         {
-                            count++;
-                            LogPrint($"Deleting: {file.Name}");
-                            try
-                            {
-                                File.Delete(file.FullName);
-                            }
-                            catch (Exception ex)
-                            {
-                                LogPrint($"ERROR: {ex.ToString()}");
-                            }
+                            File.Delete(file.FullName);
                         }
-
-                        foreach (var subd in d.GetDirectories())
+                        catch (Exception ex)
                         {
-                            count++;
-                            LogPrint($"Deleting: {subd.Name} subfolder and contents");
-                            try
-                            {
-                                Directory.Delete(subd.FullName, true);
-                            }
-                            catch (Exception ex)
-                            {
-                                LogPrint($"ERROR: {ex.ToString()}");
-                            }
+                            LogPrint($"ERROR: {ex}");
                         }
-                        if (count == 0)
-                            LogPrint($"{options.folderName} is empty.");
-                        else
-                            LogPrint("Done.");
-                        CleaningOutput.AppendText(Environment.NewLine);
                     }
-                    else
-                        LogPrint($"Directory not found: {options.folderName}");
+
+                    foreach (var subDir in d.GetDirectories())
+                    {
+                        count++;
+                        LogPrint($"Deleting: {subDir.Name} subfolder and contents");
+                        try
+                        {
+                            Directory.Delete(subDir.FullName, true);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogPrint($"ERROR: {ex}");
+                        }
+                    }
+
+                    LogPrint(count == 0 ? $"{options.FolderName} is empty." : "Done.");
+                    CleaningOutput.AppendText(Environment.NewLine);
                 }
-                finally
-                {
-                    Monitor.Exit(LockClearFolder);
-                }
+                else
+                    LogPrint($"Directory not found: {options.FolderName}");
+            }
+            finally
+            {
+                Monitor.Exit(_lockClearFolder);
             }
         }
-        // Used for deleting small individual files. Multithreading not nessecary.
+        // Used for deleting small individual files. Multi-threading not necessary.
         private void ClearFile(string fl)
         {
-            FileInfo f = new FileInfo(fl);
+            var f = new FileInfo(fl);
             if (File.Exists(f.FullName))
             {
                 LogPrint($"Deleting: {f.Name}");
@@ -157,7 +138,7 @@ namespace TcNo_Acc_Switcher_Steam
                 }
                 catch (Exception ex)
                 {
-                    LogPrint($"ERROR: {ex.ToString()}");
+                    LogPrint($"ERROR: {ex}");
                 }
                 LogPrint("Done.");
                 if (fl == "config\\loginusers.vdf")
@@ -168,66 +149,60 @@ namespace TcNo_Acc_Switcher_Steam
                 CleaningOutput.AppendText(Environment.NewLine);
             }
             else
-            {
                 LogPrint($"{f.Name} was not found.");
-            }
         }
         private void ClearFilesOfType(string fldName, string folderName, string fileExtensions, SearchOption searchOption)
         {
-            Thread t = new Thread(new ParameterizedThreadStart(Task_clearFilesOfType));
-            PossibleClearArgs args = new PossibleClearArgs
+            var t = new Thread(Task_clearFilesOfType);
+            var args = new PossibleClearArgs
             {
-                fldName = fldName,
-                folderName = folderName,
-                fileExtensions = fileExtensions,
-                searchOption = searchOption
+                FldName = fldName,
+                FolderName = folderName,
+                FileExtensions = fileExtensions,
+                SearchOption = searchOption
             };
             t.Start(args);
         }
         private void Task_clearFilesOfType(object oin)
         {
             // Only allow one to be run at a time
-            if (Monitor.TryEnter(LockClearFilesOfType))
+            if (!Monitor.TryEnter(_lockClearFilesOfType)) return;
+            try
             {
-                try
+                var options = (PossibleClearArgs)oin;
+                LogPrint(options.FldName);
+                if (Directory.Exists(options.FolderName))
                 {
-                    PossibleClearArgs options = (PossibleClearArgs)oin;
-                    LogPrint(options.fldName);
-                    int count = 0;
-                    if (Directory.Exists(options.folderName))
+                    foreach (var file in GetFiles(options.FolderName, options.FileExtensions, options.SearchOption))
                     {
-                        foreach (var file in GetFiles(options.folderName, options.fileExtensions, options.searchOption))
+                        LogPrint($"Deleting: {file}");
+                        try
                         {
-                            count++;
-                            LogPrint($"Deleting: {file}");
-                            try
-                            {
-                                File.Delete(file);
-                            }
-                            catch (Exception ex)
-                            {
-                                LogPrint($"ERROR: {ex.ToString()}");
-                            }
+                            File.Delete(file);
                         }
-                        this.Dispatcher.Invoke(() =>
+                        catch (Exception ex)
                         {
-                            CleaningOutput.AppendText(Environment.NewLine);
-                        });
+                            LogPrint($"ERROR: {ex}");
+                        }
                     }
-                    else
-                        LogPrint($"Directory not found: {options.folderName}");
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        CleaningOutput.AppendText(Environment.NewLine);
+                    });
                 }
-                finally
-                {
-                    Monitor.Exit(LockClearFilesOfType);
-                }
+                else
+                    LogPrint($"Directory not found: {options.FolderName}");
+            }
+            finally
+            {
+                Monitor.Exit(_lockClearFilesOfType);
             }
         }
-        // SSFN very small, so multithreading isn't needed. Super tiny freeze of UI is OK.
+        // SSFN very small, so multi-threading isn't needed. Super tiny freeze of UI is OK.
         private void ClearSsfn(string steamDir)
         {
-            DirectoryInfo d = new DirectoryInfo(steamDir);
-            int count = 0;
+            var d = new DirectoryInfo(steamDir);
+            var count = 0;
             foreach (var file in d.GetFiles("ssfn*"))
             {
                 count++;
@@ -238,7 +213,7 @@ namespace TcNo_Acc_Switcher_Steam
                 }
                 catch (Exception ex)
                 {
-                    LogPrint($"ERROR: {ex.ToString()}");
+                    LogPrint($"ERROR: {ex}");
                 }
             }
             if (count > 0)
@@ -249,75 +224,35 @@ namespace TcNo_Acc_Switcher_Steam
             else
                 LogPrint("No SSFN files found.");
         }
-        private void DeleteRegKey(string subkey, string value)
+        private void DeleteRegKey(string subKey, string value)
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(subkey, true))
+            using (var key = Registry.CurrentUser.OpenSubKey(subKey, true))
             {
                 if (key == null)
-                {
-                    LogPrint($"{subkey} does not exist.");
-                }
+                    LogPrint($"{subKey} does not exist.");
                 else if (key.GetValue(value) == null)
-                {
-                    LogPrint($"{subkey} does not contain {value}");
-                }
+                    LogPrint($"{subKey} does not contain {value}");
                 else
                 {
-                    LogPrint($"Removing {subkey}\\{value}");
+                    LogPrint($"Removing {subKey}\\{value}");
                     key.DeleteValue(value);
                     LogPrint("Done.");
                 }
             }
         }
-        private void btnClearLogs_Click(object sender, RoutedEventArgs e)
-        {
-            ClearFolder("Clearing logs:", Path.Combine(mw.GetSteamDirectory(), "logs\\"));
-        }
-
-        private void btnClearDumps_Click(object sender, RoutedEventArgs e)
-        {
-            ClearFolder("Clearing dumps:", Path.Combine(mw.GetSteamDirectory(), "dumps\\"));
-        }
-
-        private void btnClearConfigVDF_Click(object sender, RoutedEventArgs e)
-        {
-            ClearFile(Path.Combine(mw.GetSteamDirectory(), "config\\config.vdf"));
-        }
-
-        private void btnClearLoginusersVDF_Click(object sender, RoutedEventArgs e)
-        {
-            ClearFile(Path.Combine(mw.GetSteamDirectory(), "config\\loginusers.vdf"));
-        }
-
-        private void btnClearSSFN_Click(object sender, RoutedEventArgs e)
-        {
-            ClearSsfn(mw.GetSteamDirectory());
-        }
-
-        private void btnClearRLastName_Click(object sender, RoutedEventArgs e)
-        {
-            DeleteRegKey(@"Software\Valve\Steam", "LastGameNameUsed");
-        }
-
-        private void btnClearRAutoLogin_Click(object sender, RoutedEventArgs e)
-        {
-            DeleteRegKey(@"Software\Valve\Steam", "AutoLoginuser");
-        }
-
-        private void btnClearRRemember_Click(object sender, RoutedEventArgs e)
-        {
-            DeleteRegKey(@"Software\Valve\Steam", "RememberPassword");
-        }
-
-        private void btnClearRUID_Click(object sender, RoutedEventArgs e)
-        {
-            DeleteRegKey(@"Software\Valve\Steam", "PseudoUUID");
-        }
-
+        private void btnClearLogs_Click(object sender, RoutedEventArgs e) => ClearFolder("Clearing logs:", Path.Combine(_mw.GetSteamDirectory(), "logs\\"));
+        private void btnClearDumps_Click(object sender, RoutedEventArgs e) => ClearFolder("Clearing dumps:", Path.Combine(_mw.GetSteamDirectory(), "dumps\\"));
+        private void btnClearConfigVDF_Click(object sender, RoutedEventArgs e) => ClearFile(Path.Combine(_mw.GetSteamDirectory(), "config\\config.vdf"));
+        private void btnClearLoginusersVDF_Click(object sender, RoutedEventArgs e) => ClearFile(Path.Combine(_mw.GetSteamDirectory(), "config\\loginusers.vdf"));
+        private void btnClearSSFN_Click(object sender, RoutedEventArgs e) => ClearSsfn(_mw.GetSteamDirectory());
+        private void btnClearRLastName_Click(object sender, RoutedEventArgs e) => DeleteRegKey(@"Software\Valve\Steam", "LastGameNameUsed");
+        private void btnClearRAutoLogin_Click(object sender, RoutedEventArgs e) => DeleteRegKey(@"Software\Valve\Steam", "AutoLoginuser");
+        private void btnClearRRemember_Click(object sender, RoutedEventArgs e) => DeleteRegKey(@"Software\Valve\Steam", "RememberPassword");
+        private void btnClearRUID_Click(object sender, RoutedEventArgs e) => DeleteRegKey(@"Software\Valve\Steam", "PseudoUUID");
         private void btnClearBackups_Click(object sender, RoutedEventArgs e)
         {
             LogPrint("Clearing forgotten account backups:");
-            mw.ClearForgottenBackups();
+            _mw.ClearForgottenBackups();
             LogPrint("Done.");
             CleaningOutput.AppendText(Environment.NewLine);
         }
@@ -326,41 +261,29 @@ namespace TcNo_Acc_Switcher_Steam
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
         }
-        private void btnKillSteam_Click(object sender, RoutedEventArgs e)
-        {
-            mw.CloseSteam();
-        }
+        private void btnKillSteam_Click(object sender, RoutedEventArgs e) => _mw.CloseSteam();
 
-        private void BtnClearHTMLCache_OnClick(object sender, RoutedEventArgs e)
-        {
+        private void BtnClearHTMLCache_OnClick(object sender, RoutedEventArgs e) =>
             // HTML Cache - %USERPROFILE%\AppData\Local\Steam\htmlcache
             ClearFolder("Clearing htmlcache:", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Steam\\htmlcache"));
-        }
+        
 
-        private void BtnClearUILogs_OnClick(object sender, RoutedEventArgs e)
-        {
+        private void BtnClearUILogs_OnClick(object sender, RoutedEventArgs e) =>
             // Overlay UI logs -
             //   Steam\GameOverlayUI.exe.log
             //   Steam\GameOverlayRenderer.log
-            ClearFilesOfType("Clearing .log & .last from Steam:", mw.GetSteamDirectory(), "*.log|*.last", SearchOption.TopDirectoryOnly);
-        }
-
-        private void BtnClearAppCache_OnClick(object sender, RoutedEventArgs e)
-        {
+            ClearFilesOfType("Clearing .log & .last from Steam:", _mw.GetSteamDirectory(), "*.log|*.last", SearchOption.TopDirectoryOnly);
+        
+        private void BtnClearAppCache_OnClick(object sender, RoutedEventArgs e) =>
             // App Cache - Steam\appcache
-            ClearFilesOfType("Clearing appcache:", Path.Combine(mw.GetSteamDirectory(), "appcache"),"*.*", SearchOption.TopDirectoryOnly);
-        }
-
-        private void BtnClearHTTPCache_OnClick(object sender, RoutedEventArgs e)
-        {
+            ClearFilesOfType("Clearing appcache:", Path.Combine(_mw.GetSteamDirectory(), "appcache"),"*.*", SearchOption.TopDirectoryOnly);
+        
+        private void BtnClearHTTPCache_OnClick(object sender, RoutedEventArgs e) =>
             // HTTP cache - Steam\appcache\httpcache\
-            ClearFilesOfType("Clearing appcache\\httpcache:", Path.Combine(mw.GetSteamDirectory(), "appcache\\httpcache"), "*.*", SearchOption.AllDirectories);
-        }
-
-        private void BtnClearDepotCache_OnClick(object sender, RoutedEventArgs e)
-        {
+            ClearFilesOfType("Clearing appcache\\httpcache:", Path.Combine(_mw.GetSteamDirectory(), "appcache\\httpcache"), "*.*", SearchOption.AllDirectories);
+        
+        private void BtnClearDepotCache_OnClick(object sender, RoutedEventArgs e) =>
             // Depot - Steam\depotcache\
-            ClearFilesOfType("Clearing depotcache:", Path.Combine(mw.GetSteamDirectory(), "depotcache"), "*.*", SearchOption.TopDirectoryOnly);
-        }
+            ClearFilesOfType("Clearing depotcache:", Path.Combine(_mw.GetSteamDirectory(), "depotcache"), "*.*", SearchOption.TopDirectoryOnly);
     }
 }

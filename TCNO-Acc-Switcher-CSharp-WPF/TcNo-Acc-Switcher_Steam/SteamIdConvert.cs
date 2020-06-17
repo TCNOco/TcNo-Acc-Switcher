@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TcNo_Acc_Switcher_Steam
 {
@@ -23,11 +20,11 @@ namespace TcNo_Acc_Switcher_Steam
         private const byte SteamId = 1, SteamId3 = 2, SteamId32 = 3, SteamId64 = 4;
         private const long ChangeVal = 76561197960265728;
 
-        public SteamIdConvert(string AnySteamId)
+        public SteamIdConvert(string anySteamId)
         {
             try
             {
-                GetIdType(AnySteamId);
+                GetIdType(anySteamId);
                 ConvertAll();
             }
             catch (SteamIdConvertException e)
@@ -65,17 +62,12 @@ namespace TcNo_Acc_Switcher_Steam
             return (int.Parse(input) % 2).ToString();
         }
 
-        private string FloorDivide(float input)
-        {
-            return Math.Floor(input).ToString(CultureInfo.InvariantCulture);
-        }
-
         private string FloorDivide(string sIn, int divIn)
         {
             return Math.Floor((double) (int.Parse(sIn) / divIn)).ToString(CultureInfo.InvariantCulture);
         }
 
-        private string CalcSteamID()
+        private string CalcSteamId()
         {
             if (_inputType == SteamId)
             {
@@ -164,7 +156,7 @@ namespace TcNo_Acc_Switcher_Steam
 
         public void ConvertAll()
         {
-            CalcSteamID();
+            CalcSteamId();
             CalcSteamId3();
             CalcSteamId32();
             CalcSteamId64();

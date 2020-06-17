@@ -13,7 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -30,29 +29,28 @@ namespace TcNo_Acc_Switcher_Steam
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        List<Steamuser> userAccounts = new List<Steamuser>();
-        List<string> fLoginUsersLines = new List<string>();
+        List<Steamuser> _userAccounts = new List<Steamuser>();
+        private List<string> _fLoginUsersLines = new List<string>();
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
         private TrayUsers trayUsers = new TrayUsers();
 
         //int version = 1;
-        readonly Color DarkGreen = Color.FromRgb(5, 51, 5);
-        readonly Color DefaultGray = Color.FromRgb(51, 51, 51);
+        private readonly Color _darkGreen = Color.FromRgb(5, 51, 5);
+        private readonly Color _defaultGray = Color.FromRgb(51, 51, 51);
 
 
         // Settings will load later. Just defined here.
-        readonly int steam_version = 3001;
-        UserSettings persistentSettings = new UserSettings();
-        readonly SolidColorBrush _vacRedBrush = new SolidColorBrush(Color.FromRgb(255,41,58));
-
-        Globals _globals;
+        private const int SteamVersion = 3001;
+        private UserSettings _persistentSettings = new UserSettings();
+        private readonly SolidColorBrush _vacRedBrush = new SolidColorBrush(Color.FromRgb(255,41,58));
 
         public MainWindow()
         {
             /* TODO:
              - Test extract and replace of 7-zip while updating. Don't think it's working, but haven't been able to test just yet.
+             - Reset images. Start a program that restarts the main program, or restart the program in another way.
              */
             // Single instance check
             if (SelfAlreadyRunning())
@@ -67,9 +65,9 @@ namespace TcNo_Acc_Switcher_Steam
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(Globals.CurrentDomain_UnhandledException);
 
             // Version/update handling
-            MainViewmodel.ProgramVersion = Strings.Version + ": " + steam_version.ToString();
-            _globals = Globals.LoadExisting(Path.GetDirectoryName(Directory.GetCurrentDirectory()));
-            if (_globals.NeedsUpdateCheck()) _globals.RunUpdateCheck();
+            MainViewmodel.ProgramVersion = Strings.Version + ": " + SteamVersion;
+            var globals = Globals.LoadExisting(Path.GetDirectoryName(Directory.GetCurrentDirectory()));
+            if (globals.NeedsUpdateCheck()) globals.RunUpdateCheck();
 
             if (File.Exists("DeleteImagesOnStart"))
             {
@@ -89,16 +87,9 @@ namespace TcNo_Acc_Switcher_Steam
         }
         private static bool SelfAlreadyRunning()
         {
-            Process[] processes = Process.GetProcesses();
-            Process currentProc = Process.GetCurrentProcess();
-            foreach (Process process in processes)
-            {
-                if (currentProc.ProcessName == process.ProcessName && currentProc.Id != process.Id)
-                {
-                    return true;
-                }
-            }
-            return false;
+            var processes = Process.GetProcesses();
+            var currentProc = Process.GetCurrentProcess();
+            return processes.Any(process => currentProc.ProcessName == process.ProcessName && currentProc.Id != process.Id);
         }
 
 
@@ -109,22 +100,20 @@ namespace TcNo_Acc_Switcher_Steam
             CheckBrokenImages();
             GetSteamAccounts();
 
-            // Clear incase it's a refresh
+            // Clear in-case it's a refresh
             MainViewmodel.SteamUsers.Clear();
             listAccounts.Items.Refresh();
 
             // Check if profile images exist, otherwise queue
-            List<Steamuser> ImagesToDownload = new List<Steamuser>();
-            foreach (Steamuser su in userAccounts)
+            var imagesToDownload = new List<Steamuser>();
+            foreach (var su in _userAccounts)
             {
-                FileInfo fi = new FileInfo(su.ImgURL);
-                if (fi.LastWriteTime < DateTime.Now.AddDays(-1 * persistentSettings.ImageLifetime)){
-                    ImagesToDownload.Add(su);
+                var fi = new FileInfo(su.ImgURL);
+                if (fi.LastWriteTime < DateTime.Now.AddDays(-1 * _persistentSettings.ImageLifetime)){
+                    imagesToDownload.Add(su);
                     fi.Delete();
                 } else if (!File.Exists(su.ImgURL))
-                {
-                    ImagesToDownload.Add(su);
-                }
+                    imagesToDownload.Add(su);
                 else
                 {
                     su.ImgURL = Path.GetFullPath(su.ImgURL);
@@ -132,45 +121,46 @@ namespace TcNo_Acc_Switcher_Steam
                 }
             }
 
-            if (File.Exists("SteamVACCache.json") && persistentSettings.ShowVACStatus)
+            if (File.Exists("SteamVACCache.json") && _persistentSettings.ShowVACStatus)
                 LoadVacInformation();
 
-            if (ImagesToDownload.Count > 0)
+            if (imagesToDownload.Count > 0)
             {
-                Thread t = new Thread(new ParameterizedThreadStart(DownloadImages));
-                t.Start(ImagesToDownload);
+                var t = new Thread(DownloadImages);
+                t.Start(imagesToDownload);
                 lblStatus.Content = Strings.StatusImageDownloadStart;
             }
             else
-            {
                 lblStatus.Content = Strings.StatusReady;
-            }
         }
-        bool vacBanned = false;
-        void DownloadImages(object oin)
-        {
-            List<Steamuser> ImagesToDownload = (List<Steamuser>)oin;
 
-            int totalUsers = ImagesToDownload.Count();
-            int currentUser = 0;
-            bool downloadError = false;
+        private bool _vacBanned;
+
+        private void DownloadImages(object oin)
+        {
+            var imagesToDownload = (List<Steamuser>)oin;
+
+            var totalUsers = imagesToDownload.Count();
+            var currentUser = 0;
+            var downloadError = false;
             // DISABLE LISTBOX
-            foreach (Steamuser su in ImagesToDownload)
+            foreach (var su in imagesToDownload)
             {
                 currentUser++;
+                var user = currentUser;
                 this.Dispatcher.Invoke(() =>
                 {
-                    lblStatus.Content = $"{Strings.StatusDownloadingProfile} {currentUser.ToString()}/{totalUsers}";
+                    lblStatus.Content = $"{Strings.StatusDownloadingProfile} {user.ToString()}/{totalUsers}";
                 });
-                string imageURL = GetUserImageUrl(su.SteamID);
+                var imageUrl = GetUserImageUrl(su.SteamID);
 
-                if (!string.IsNullOrEmpty(imageURL))
+                if (!string.IsNullOrEmpty(imageUrl))
                 {
                     try
                     {
-                        using (WebClient client = new WebClient())
+                        using (var client = new WebClient())
                         {
-                            client.DownloadFile(new Uri(imageURL), su.ImgURL);
+                            client.DownloadFile(new Uri(imageUrl), su.ImgURL);
                         }
                     }
                     catch (WebException ex)
@@ -180,14 +170,14 @@ namespace TcNo_Acc_Switcher_Steam
                             downloadError = true; // Show error only once
                             // .net Core way: File.WriteAllBytes(su.ImgURL, Properties.Resources.QuestionMark); // Give the user's profile picture a question mark.
                             Properties.Resources.QuestionMark.Save(su.ImgURL);
-                            MessageBox.Show($"{Strings.ErrImageDownloadFail} {ex.ToString()}", Strings.ErrProfileImageDlFail, MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show($"{Strings.ErrImageDownloadFail} {ex}", Strings.ErrProfileImageDlFail, MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                 }
                 else
                 {
                     // .net Core way: File.WriteAllBytes(su.ImgURL, Properties.Resources.QuestionMark);
-                    int written = 0;
+                    var written = 0;
                     while (written < 3 && written != -1)
                     {
                         try
@@ -196,7 +186,7 @@ namespace TcNo_Acc_Switcher_Steam
                             Properties.Resources.QuestionMark.Save(su.ImgURL);
                             written = -1;
                         }
-                        catch (System.Runtime.InteropServices.ExternalException e)
+                        catch (ExternalException)
                         {
                             // Error saving properly. Often happens on first run.
                             // Ignoring this error seems to work well, without causing other issues.
@@ -205,8 +195,8 @@ namespace TcNo_Acc_Switcher_Steam
                     }
                 }
                 su.ImgURL = Path.GetFullPath(su.ImgURL);
-                if (persistentSettings.ShowVACStatus)
-                    su.vacStatus = vacBanned ? _vacRedBrush : Brushes.Transparent;
+                if (_persistentSettings.ShowVACStatus)
+                    su.vacStatus = _vacBanned ? _vacRedBrush : Brushes.Transparent;
 
                 this.Dispatcher.Invoke(() =>
                 {
@@ -224,17 +214,18 @@ namespace TcNo_Acc_Switcher_Steam
         {
             //if (resultsTab.IsSelected)
             //{
-            //    Grid.SetRoLoadTrayUserswSpan(dataGrid1, 2);
+            //    Grid.SetRoLoadTrayUsersSpan(dataGrid1, 2);
             //    Grid.SetRowSpan(dataGrid2, 2);
             //}
         }
-        void InitializeSettings()
+
+        private void InitializeSettings()
         {
             if (!File.Exists("SteamSettings.json"))
                 SaveSettings();
             else
                 LoadSettings();
-            bool validSteamFound = (File.Exists(persistentSettings.SteamExe()));
+            var validSteamFound = (File.Exists(_persistentSettings.SteamExe()));
             //bool validSteamFound = false; // Testing
             if (!validSteamFound)
             {
@@ -249,59 +240,57 @@ namespace TcNo_Acc_Switcher_Steam
             if (File.Exists("Tray_Users.json"))
                 trayUsers.LoadTrayUsers();
         }
-        bool SetAndCheckSteamFolder(bool manual)
+
+        private bool SetAndCheckSteamFolder(bool manual)
         {
             if (!manual)
             {
                 MainViewmodel.SteamNotFound = true;
-                string ProgramFiles = "C:\\Program Files\\Steam\\Steam.exe",
-                       ProgramFiles86 = "C:\\Program Files (x86)\\Steam\\Steam.exe";
-                bool exists = File.Exists(ProgramFiles),
-                     exists86 = File.Exists(ProgramFiles86);
+                const string programFiles = "C:\\Program Files\\Steam\\Steam.exe";
+                const string programFiles86 = "C:\\Program Files (x86)\\Steam\\Steam.exe";
+                bool exists = File.Exists(programFiles),
+                     exists86 = File.Exists(programFiles86);
 
                 if (exists86)
-                    persistentSettings.SteamFolder = Directory.GetParent(ProgramFiles86).ToString();
+                    _persistentSettings.SteamFolder = Directory.GetParent(programFiles86).ToString();
                 else if (exists)
-                    persistentSettings.SteamFolder = Directory.GetParent(ProgramFiles).ToString();
+                    _persistentSettings.SteamFolder = Directory.GetParent(programFiles).ToString();
 
                 if (exists86 || exists)
                 {
                     SaveSettings();
-                    return (File.Exists(persistentSettings.SteamExe()));
+                    return (File.Exists(_persistentSettings.SteamExe()));
                 }
             }
             else
-            {
                 MainViewmodel.SteamNotFound = false;
-            }
 
-            SteamFolderInput getInputFolderDialog = new SteamFolderInput();
-            getInputFolderDialog.DataContext = MainViewmodel;
+            var getInputFolderDialog = new SteamFolderInput {DataContext = MainViewmodel};
             getInputFolderDialog.ShowDialog();
-            if (!String.IsNullOrEmpty(MainViewmodel.InputFolderDialogResponse))
+            if (!string.IsNullOrEmpty(MainViewmodel.InputFolderDialogResponse))
             {
-                persistentSettings.SteamFolder = MainViewmodel.InputFolderDialogResponse;
+                _persistentSettings.SteamFolder = MainViewmodel.InputFolderDialogResponse;
                 SaveSettings();
-                return (File.Exists(persistentSettings.SteamExe()));
+                return (File.Exists(_persistentSettings.SteamExe()));
             }
             else
                 return false;
         }
-        void LoadSettings()
+
+        private void LoadSettings()
         {
-            JsonSerializer serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
-            using (StreamReader sr = new StreamReader(@"SteamSettings.json"))
+            using (var sr = new StreamReader(@"SteamSettings.json"))
             {
                 // persistentSettings = JsonConvert.DeserializeObject<UserSettings>(sr.ReadToEnd()); -- Entirely replaces, instead of merging. New variables won't have values.
                 // Using a JSON Union Merge means that settings that are missing will have default values, set at the top of this file.
-                JObject jCurrent = JObject.Parse(JsonConvert.SerializeObject(persistentSettings));
+                var jCurrent = JObject.Parse(JsonConvert.SerializeObject(_persistentSettings));
                 try
                 {
                     jCurrent.Merge(JObject.Parse(sr.ReadToEnd()), new JsonMergeSettings
                     {
                         MergeArrayHandling = MergeArrayHandling.Union
                     });
-                    persistentSettings = jCurrent.ToObject<UserSettings>();
+                    _persistentSettings = jCurrent.ToObject<UserSettings>();
                 }
                 catch (Exception)
                 {
@@ -317,148 +306,132 @@ namespace TcNo_Acc_Switcher_Steam
                 }
             }
         }
-        void UpdateFromSettings()
-        {
-            MainViewmodel.StartAsAdmin = persistentSettings.StartAsAdmin;
-            MainViewmodel.ShowSteamID = persistentSettings.ShowSteamID;
-            MainViewmodel.ShowVACStatus = persistentSettings.ShowVACStatus;
-            MainViewmodel.LimitedAsVAC = persistentSettings.LimitedAsVAC;
-            MainViewmodel.InputFolderDialogResponse = persistentSettings.SteamFolder;
-            MainViewmodel.ForgetAccountEnabled = persistentSettings.ForgetAccountEnabled;
-            MainViewmodel.TrayAccounts = persistentSettings.TrayAccounts;
-            MainViewmodel.TrayAccountAccNames = persistentSettings.TrayAccountAccNames;
-            MainViewmodel.ImageLifetime = persistentSettings.ImageLifetime;
-            this.Width = persistentSettings.WindowSize.Width;
-            this.Height = persistentSettings.WindowSize.Height;
-            ShowSteamIDHidden.IsChecked = persistentSettings.ShowSteamID;
-            ToggleVacStatus(persistentSettings.ShowVACStatus);
-        }
-        void SaveOtherVarsToSettings()
-        {
-            persistentSettings.WindowSize = new Size(this.Width, this.Height);
-            persistentSettings.StartAsAdmin = MainViewmodel.StartAsAdmin;
-            persistentSettings.ShowVACStatus = MainViewmodel.ShowVACStatus;
-            persistentSettings.LimitedAsVAC = MainViewmodel.LimitedAsVAC;
-            persistentSettings.SteamFolder = MainViewmodel.InputFolderDialogResponse;
-            persistentSettings.ForgetAccountEnabled = MainViewmodel.ForgetAccountEnabled;
-            persistentSettings.TrayAccounts = MainViewmodel.TrayAccounts;
-            persistentSettings.TrayAccountAccNames = MainViewmodel.TrayAccountAccNames;
-            persistentSettings.ImageLifetime = MainViewmodel.ImageLifetime;
-        }
-        void SaveSettings()
-        {
-            if (!Double.IsNaN(this.Height))
-            {
-                // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.
-                SaveOtherVarsToSettings();
-                JsonSerializer serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
 
-                using (StreamWriter sw = new StreamWriter(@"SteamSettings.json"))
-                using (JsonWriter writer = new JsonTextWriter(sw))
-                {
-                    serializer.Serialize(writer, persistentSettings);
-                }
+        private void UpdateFromSettings()
+        {
+            MainViewmodel.StartAsAdmin = _persistentSettings.StartAsAdmin;
+            MainViewmodel.ShowSteamID = _persistentSettings.ShowSteamID;
+            MainViewmodel.ShowVACStatus = _persistentSettings.ShowVACStatus;
+            MainViewmodel.LimitedAsVAC = _persistentSettings.LimitedAsVAC;
+            MainViewmodel.InputFolderDialogResponse = _persistentSettings.SteamFolder;
+            MainViewmodel.ForgetAccountEnabled = _persistentSettings.ForgetAccountEnabled;
+            MainViewmodel.TrayAccounts = _persistentSettings.TrayAccounts;
+            MainViewmodel.TrayAccountAccNames = _persistentSettings.TrayAccountAccNames;
+            MainViewmodel.ImageLifetime = _persistentSettings.ImageLifetime;
+            this.Width = _persistentSettings.WindowSize.Width;
+            this.Height = _persistentSettings.WindowSize.Height;
+            ShowSteamIDHidden.IsChecked = _persistentSettings.ShowSteamID;
+            ToggleVacStatus(_persistentSettings.ShowVACStatus);
+        }
+
+        private void SaveOtherVarsToSettings()
+        {
+            _persistentSettings.WindowSize = new Size(this.Width, this.Height);
+            _persistentSettings.StartAsAdmin = MainViewmodel.StartAsAdmin;
+            _persistentSettings.ShowVACStatus = MainViewmodel.ShowVACStatus;
+            _persistentSettings.LimitedAsVAC = MainViewmodel.LimitedAsVAC;
+            _persistentSettings.SteamFolder = MainViewmodel.InputFolderDialogResponse;
+            _persistentSettings.ForgetAccountEnabled = MainViewmodel.ForgetAccountEnabled;
+            _persistentSettings.TrayAccounts = MainViewmodel.TrayAccounts;
+            _persistentSettings.TrayAccountAccNames = MainViewmodel.TrayAccountAccNames;
+            _persistentSettings.ImageLifetime = MainViewmodel.ImageLifetime;
+        }
+
+        private void SaveSettings()
+        {
+            if (double.IsNaN(this.Height)) return;
+            // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.
+            SaveOtherVarsToSettings();
+            var serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
+
+            using (var sw = new StreamWriter(@"SteamSettings.json"))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, _persistentSettings);
             }
         }
-        public static string UnixTimeStampToDateTime(string unixTimeStampString)
+        private static string UnixTimeStampToDateTime(string unixTimeStampString)
         {
-            double unixTimeStamp = Convert.ToDouble(unixTimeStampString);
             // Unix timestamp is seconds past epoch
             var localDateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(long.Parse(unixTimeStampString)).DateTime.ToLocalTime();
             return localDateTimeOffset.ToString("dd/MM/yyyy hh:mm:ss");
         }
-        public bool IsValidGdiPlusImage(string filename)
+        private static bool IsValidGdiPlusImage(string filename)
         {
             //From https://stackoverflow.com/questions/8846654/read-image-and-determine-if-its-corrupt-c-sharp
             try
             {
                 using (var bmp = new System.Drawing.Bitmap(filename))
-                {
-                }
-                return true;
+                    return true;
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }
         }
         private void CheckBrokenImages()
         {
-            if (Directory.Exists("images"))
+            if (!Directory.Exists("images")) return;
+            var d = new DirectoryInfo("images");
+            foreach (var file in d.GetFiles("*.jpg"))
             {
-                DirectoryInfo d = new DirectoryInfo("images");
-                foreach (var file in d.GetFiles("*.jpg"))
+                try
+                {
+                    if (!IsValidGdiPlusImage(file.FullName)) // Delete image if is not as valid, working image.
+                    {
+                        File.Delete(file.FullName);
+                    }
+                }
+                catch (Exception ex)
                 {
                     try
                     {
-                        if (!IsValidGdiPlusImage(file.FullName)) // Delete image if is not as valid, working image.
-                        {
-                            File.Delete(file.FullName);
-                        }
+                        File.Delete(file.FullName);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        try
-                        {
-                            File.Delete(file.FullName);
-                        }
-                        catch (Exception)
-                        {
-                            MessageBox.Show($"{Strings.ErrEmptyImage} {ex.ToString()}", Strings.ErrEmptyImageHeader, MessageBoxButton.OK, MessageBoxImage.Error);
-                            throw;
-                        }
+                        MessageBox.Show($"{Strings.ErrEmptyImage} {ex}", Strings.ErrEmptyImageHeader, MessageBoxButton.OK, MessageBoxImage.Error);
+                        throw;
                     }
                 }
             }
         }
-        void GetSteamAccounts()
-        {
-            string line, lineNoQuot;
-            string username = "", steamID = "", rememberAccount = "", personaName = "", timestamp = "";
 
-            // Clear incase it's a refresh
-            fLoginUsersLines.Clear();
-            userAccounts.Clear();
+        private void GetSteamAccounts()
+        {
+            string username = "", steamId = "", personaName = "", timestamp = "";
+
+            // Clear in-case it's a refresh
+            _fLoginUsersLines.Clear();
+            _userAccounts.Clear();
 
             try
             {
-                System.IO.StreamReader file = new System.IO.StreamReader(persistentSettings.LoginusersVdf());
+                var file = new StreamReader(_persistentSettings.LoginusersVdf());
 
+                string line;
                 while ((line = file.ReadLine()) != null)
                 {
-                    fLoginUsersLines.Add(line);
+                    _fLoginUsersLines.Add(line);
                     line = line.Replace("\t", "");
-                    lineNoQuot = line.Replace("\"", "");
+                    var lineNoQuot = line.Replace("\"", "");
 
-                    if (lineNoQuot.All(char.IsDigit) && string.IsNullOrEmpty(steamID)) // Line is SteamID and steamID is empty >> New user.
+                    if (lineNoQuot.All(char.IsDigit) && string.IsNullOrEmpty(steamId)) // Line is SteamID and steamID is empty >> New user.
                     {
-                        steamID = lineNoQuot;
+                        steamId = lineNoQuot;
                     }
-                    else if (lineNoQuot.All(char.IsDigit) && !string.IsNullOrEmpty(steamID)) // If steamID isn't empty, save account details, empty temp vars for collection.
+                    else if (lineNoQuot.All(char.IsDigit) && !string.IsNullOrEmpty(steamId)) // If steamID isn't empty, save account details, empty temp vars for collection.
                     {
-                        string lastLogin;
-                        try
-                        {
-                            lastLogin = UnixTimeStampToDateTime(timestamp);
-                        }
-                        catch (Exception e)
-                        {
-                            lastLogin = "-";
-                        }
-                        userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamID, ImgURL = Path.Combine("images", $"{steamID}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
+                        //lastLogin = UnixTimeStampToDateTime(timestamp);
+                        _userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
                         username = "";
-                        rememberAccount = "";
                         personaName = "";
                         timestamp = "";
-                        steamID = lineNoQuot;
+                        steamId = lineNoQuot;
                     }
                     else if (line.Contains("AccountName"))
                     {
                         username = lineNoQuot.Substring(11, lineNoQuot.Length - 11);
-                    }
-                    else if (line.Contains("RememberPassword"))
-                    {
-                        rememberAccount = lineNoQuot.Substring(lineNoQuot.Length - 1);
                     }
                     else if (line.Contains("PersonaName"))
                     {
@@ -472,68 +445,65 @@ namespace TcNo_Acc_Switcher_Steam
                     System.Console.WriteLine(line);
                 }
                 // While loop adds account when new one started. Will not include the last one, so that's done here.
-                userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamID, ImgURL = Path.Combine("images", $"{steamID}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
+                _userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
 
                 file.Close();
             }
-            catch (System.IO.FileNotFoundException ex)
+            catch (FileNotFoundException ex)
             {
                 MessageBox.Show(Strings.ErrLoginusersNonExist, Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
-                MessageBox.Show($"{Strings.ErrInformation} {ex.ToString()}", Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{Strings.ErrInformation} {ex}", Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(2);
             }
         }
-        string GetUserImageUrl(string steamId)
+
+        private string GetUserImageUrl(string steamId)
         {
-            string imageURL = "";
-            XmlDocument profileXML = new XmlDocument();
+            var imageUrl = "";
+            var profileXml = new XmlDocument();
             try
             {
-                profileXML.Load($"https://steamcommunity.com/profiles/{steamId}?xml=1");
-                imageURL = "";
-                if (profileXML.DocumentElement.SelectNodes("/profile/privacyMessage").Count == 0) // Fix for accounts that haven't set up their Community Profile
+                profileXml.Load($"https://steamcommunity.com/profiles/{steamId}?xml=1");
+                if (profileXml.DocumentElement != null && profileXml.DocumentElement.SelectNodes("/profile/privacyMessage").Count == 0) // Fix for accounts that haven't set up their Community Profile
                 {
                     try
                     {
-                        imageURL = profileXML.DocumentElement.SelectNodes("/profile/avatarFull")[0].InnerText;
-                        bool isVAC = false;
-                        bool isLimited = true;
-                        if (profileXML.DocumentElement != null)
+                        imageUrl = profileXml.DocumentElement.SelectNodes("/profile/avatarFull")[0].InnerText;
+                        var isVac = false;
+                        var isLimited = true;
+                        if (profileXml.DocumentElement != null)
                         {
-                            if (profileXML.DocumentElement.SelectNodes("/profile/vacBanned")?[0] != null)
-                                isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
-                            if (profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
-                                isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
+                            if (profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0] != null)
+                                isVac = profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
+                            if (profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
+                                isLimited = profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
                         }
 
-                        if (!persistentSettings.LimitedAsVAC) // Ignores limited accounts
+                        if (!_persistentSettings.LimitedAsVAC) // Ignores limited accounts
                             isLimited = false;
-                        vacBanned = isVAC || isLimited;
+                        _vacBanned = isVac || isLimited;
                     }
                     catch (NullReferenceException) // User has not set up their account, or does not have an image.
                     {
-                        imageURL = "";
+                        imageUrl = "";
                     }
                 }
             }
             catch (Exception e)
             {
-                vacBanned = false;
-                imageURL = "";
-
-
-                string exceptionStr = e.ToString();
-                System.IO.Directory.CreateDirectory("Errors");
-                using (StreamWriter sw = File.AppendText($"Errors\\AccSwitcher-Error-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
+                _vacBanned = false;
+                imageUrl = "";
+                Directory.CreateDirectory("Errors");
+                using (var sw = File.AppendText($"Errors\\AccSwitcher-Error-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
                 {
-                    sw.WriteLine(DateTime.Now.ToString() + "\t" + Strings.ErrUnhandledCrash + ": " + exceptionStr + Environment.NewLine + Environment.NewLine);
+                    sw.WriteLine(DateTime.Now.ToString(CultureInfo.InvariantCulture) + "\t" + Strings.ErrUnhandledCrash + ": " + e + Environment.NewLine + Environment.NewLine);
                 }
-                using (StreamWriter sw = File.AppendText($"Errors\\AccSwitcher-Error-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
+                using (var sw = File.AppendText($"Errors\\AccSwitcher-Error-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
                 {
-                    sw.WriteLine(JsonConvert.SerializeObject(profileXML));
+                    sw.WriteLine(JsonConvert.SerializeObject(profileXml));
                 }
             }
-            return imageURL;
+            return imageUrl;
         }
         private void SteamUserSelect(object sender, SelectionChangedEventArgs e)
         {
@@ -545,7 +515,7 @@ namespace TcNo_Acc_Switcher_Steam
                 lblStatus.Content = $"{Strings.StatusAccountSelected} {su.Name}";
                 HeaderInstruction.Content = Strings.StatusPressLogin;
                 btnLogin.IsEnabled = true;
-                btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? DarkGreen : DefaultGray);
+                btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? _darkGreen : _defaultGray);
             }
             catch
             {
@@ -558,38 +528,31 @@ namespace TcNo_Acc_Switcher_Steam
         //    //MessageBox.Show("You have selected a ListBoxItem!");
         //    MessageBox.Show(MainViewmodel.SelectedSteamUser.Name);
         //}
-        private void UpdateLoginusers(bool loginnone, string SelectedSteamID, string accName)
+        private void UpdateLoginUsers(bool loginNone, string selectedSteamId, string accName)
         {
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
             // -----------------------------------
-            Byte[] info;
-            using (FileStream fs = File.Open(persistentSettings.LoginusersVdf(), FileMode.Truncate, FileAccess.Write, FileShare.None))
+            using (var fs = File.Open(_persistentSettings.LoginusersVdf(), FileMode.Truncate, FileAccess.Write, FileShare.None))
             {
                 lblStatus.Content = Strings.StatusEditingLoginusers;
-                string lineNoQuot;
-                bool userIDMatch = false;
-                string outline = "";
-                foreach (string curline in fLoginUsersLines)
+                var userIdMatch = false;
+                foreach (var line in _fLoginUsersLines)
                 {
-                    outline = curline;
+                    var outline = line;
 
-                    lineNoQuot = curline;
+                    var lineNoQuot = line;
                     lineNoQuot = lineNoQuot.Replace("\t", "").Replace("\"", "");
 
                     if (lineNoQuot.All(char.IsDigit)) // Check if line is JUST digits -> SteamID
                     {
-                        userIDMatch = false;
-                        if (lineNoQuot == SelectedSteamID)
-                        {
-                            // Most recent ID matches! Set this account to active.
-                            userIDMatch = true;
-                        }
+                        // Most recent ID matches! Set this account to active.
+                        userIdMatch = lineNoQuot == selectedSteamId;
                     }
-                    else if (curline.Contains("mostrecent"))
+                    else if (line.Contains("mostrecent"))
                     {
                         // Set every mostrecent to 0, unless it's the one you want to switch to.
-                        if (!loginnone && userIDMatch)
+                        if (!loginNone && userIdMatch)
                         {
                             outline = "\t\t\"mostrecent\"\t\t\"1\"";
                         }
@@ -598,7 +561,7 @@ namespace TcNo_Acc_Switcher_Steam
                             outline = "\t\t\"mostrecent\"\t\t\"0\"";
                         }
                     }
-                    info = new UTF8Encoding(true).GetBytes(outline + "\n");
+                    var info = new UTF8Encoding(true).GetBytes(outline + "\n");
                     fs.Write(info, 0, info.Length);
                 }
             }
@@ -613,9 +576,9 @@ namespace TcNo_Acc_Switcher_Steam
                 --> RememberPassword = 1
             */
             lblStatus.Content = Strings.StatusEditingRegistry;
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam"))
+            using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam"))
             {
-                if (loginnone)
+                if (loginNone)
                 {
                     key.SetValue("AutoLoginUser", "");
                     key.SetValue("RememberPassword", 1);
@@ -630,12 +593,13 @@ namespace TcNo_Acc_Switcher_Steam
         public void CloseSteam()
         {
             // This is what Administrator permissions are required for.
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
-            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-            startInfo.FileName = "cmd.exe";
-            startInfo.Arguments = "/C TASKKILL /F /T /IM steam*";
-            process.StartInfo = startInfo;
+            var startInfo = new ProcessStartInfo
+            {
+                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                FileName = "cmd.exe",
+                Arguments = "/C TASKKILL /F /T /IM steam*"
+            };
+            var process = new Process {StartInfo = startInfo};
             process.Start();
             process.WaitForExit();
         }
@@ -712,27 +676,19 @@ namespace TcNo_Acc_Switcher_Steam
             public bool TrayAccountAccNames { get; set; }
             public System.Windows.Media.Brush vacStatus { get; set; }
             public event PropertyChangedEventHandler PropertyChanged;
-            protected void NotifyPropertyChanged(String info)
+            protected void NotifyPropertyChanged(string info)
             {
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(info));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
             }
         }
 
-        private void LoginMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            LoginSelected();
-        }
-        private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            LoginSelected();
-        }
+        private void LoginMouseDown(object sender, MouseButtonEventArgs e) => LoginSelected();
+        private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e) => LoginSelected();
+        private static bool IsDigitsOnly(string str) => str.All(c => c >= '0' && c <= '9');
         private void LoginSelected()
         {
             SaveSettings();
-            LoginButtonAnimation(Color.FromRgb(12,12,12), DefaultGray, 2000);
+            LoginButtonAnimation(Color.FromRgb(12,12,12), _defaultGray, 2000);
 
             lblStatus.Content = "Logging into: " + MainViewmodel.SelectedSteamUser.Name;
             btnLogin.IsEnabled = false;
@@ -742,20 +698,20 @@ namespace TcNo_Acc_Switcher_Steam
 
             // Add to tray access accounts for tray icon.
             // Can switch to this account quickly later.
-            if (persistentSettings.TrayAccounts > 0)
+            if (_persistentSettings.TrayAccounts > 0)
             {
                 // Add to list, or move to most recent spot.
                 if (trayUsers.AlreadyInList(MainViewmodel.SelectedSteamUser.SteamID))
                     trayUsers.MoveItemToLast(MainViewmodel.SelectedSteamUser.SteamID);
                 else{
-                    while (trayUsers.ListTrayUsers.Count >= persistentSettings.TrayAccounts) // Add to list, drop first item if full.
+                    while (trayUsers.ListTrayUsers.Count >= _persistentSettings.TrayAccounts) // Add to list, drop first item if full.
                         trayUsers.ListTrayUsers.RemoveAt(0);
 
                     trayUsers.ListTrayUsers.Add(new TrayUsers.TrayUser()
                         {
                             AccName = MainViewmodel.SelectedSteamUser.AccName,
                             Name = MainViewmodel.SelectedSteamUser.Name,
-                            DisplayAs = (persistentSettings.TrayAccountAccNames ? MainViewmodel.SelectedSteamUser.AccName : MainViewmodel.SelectedSteamUser.Name),
+                            DisplayAs = (_persistentSettings.TrayAccountAccNames ? MainViewmodel.SelectedSteamUser.AccName : MainViewmodel.SelectedSteamUser.Name),
                             SteamID = MainViewmodel.SelectedSteamUser.SteamID
                         }
                     );
@@ -769,77 +725,58 @@ namespace TcNo_Acc_Switcher_Steam
             lblStatus.Content = Strings.StatusStartedSteam;
             btnLogin.IsEnabled = true;
         }
-        bool IsDigitsOnly(string str)
-        {
-            foreach (char c in str)
-            {
-                if (c < '0' || c > '9')
-                    return false;
-            }
 
-            return true;
-        }
-        private bool VerifySteamId(string steamid)
+
+        private static bool VerifySteamId(string steamid)
         {
-            if (IsDigitsOnly(steamid) && steamid.Length == 17)
-            {
-                // Size check: https://stackoverflow.com/questions/33933705/steamid64-minimum-and-maximum-length#40810076
-                double steamid_val = double.Parse(steamid);
-                if (steamid_val > 0x0110000100000001 && steamid_val < 0x01100001FFFFFFFF)
-                    return true;
-            }
-            return false;
+            if (!IsDigitsOnly(steamid) || steamid.Length != 17) return false;
+            // Size check: https://stackoverflow.com/questions/33933705/steamid64-minimum-and-maximum-length#40810076
+            var steamidVal = double.Parse(steamid);
+            return steamidVal > 0x0110000100000001 && steamidVal < 0x01100001FFFFFFFF;
         }
-        public void SwapSteamAccounts(bool loginnone, string steamid, string AccName)
+        public void SwapSteamAccounts(bool loginNone, string steamid, string accName)
         {
             if (VerifySteamId(steamid))
             {
                 CloseSteam();
-                UpdateLoginusers(loginnone, steamid, AccName);
+                UpdateLoginUsers(loginNone, steamid, accName);
 
-                if (persistentSettings.StartAsAdmin)
-                    Process.Start(persistentSettings.SteamExe()); // Maybe get steamID from elsewhere? Or load persistent settings first...
+                if (_persistentSettings.StartAsAdmin)
+                    Process.Start(_persistentSettings.SteamExe()); // Maybe get steamID from elsewhere? Or load persistent settings first...
                 else
-                    Process.Start(new ProcessStartInfo("explorer.exe", persistentSettings.SteamExe()));
+                    Process.Start(new ProcessStartInfo("explorer.exe", _persistentSettings.SteamExe()));
             }
             else
                 MessageBox.Show("Invalid SteamID: " + steamid);
         }
         private void ShowForgetRememberDialog()
         {
-            ForgetAccountCheck ForgetAccountCheckDialog = new ForgetAccountCheck();
-            ForgetAccountCheckDialog.ShareMainWindow(this);
-            ForgetAccountCheckDialog.DataContext = MainViewmodel;
-            ForgetAccountCheckDialog.Owner = this;
-            ForgetAccountCheckDialog.ShowDialog();
+            var forgetAccountCheckDialog = new ForgetAccountCheck(){ DataContext = MainViewmodel, Owner = this };
+            forgetAccountCheckDialog.ShareMainWindow(this);
+            forgetAccountCheckDialog.ShowDialog();
         }
-        public string GetForgottenBackupPath() { return Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\"); }
-        public string GetPersistentFolder() { return Path.Combine(persistentSettings.SteamFolder, "config\\"); }
-        public string GetSteamDirectory() { return persistentSettings.SteamFolder; }
+        public string GetForgottenBackupPath() { return Path.Combine(_persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\"); }
+        public string GetPersistentFolder() { return Path.Combine(_persistentSettings.SteamFolder, "config\\"); }
+        public string GetSteamDirectory() { return _persistentSettings.SteamFolder; }
 
-        public void RestoreForgotten()
-        {
-
-        }
         public void ClearForgottenBackups()
         {
-            if (MessageBox.Show(Strings.ClearBackups, Strings.AreYouSure, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            if (MessageBox.Show(Strings.ClearBackups, Strings.AreYouSure, MessageBoxButton.YesNo,
+                MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+            var backupPath = GetForgottenBackupPath();
+            try
             {
-                string BackupPath = GetForgottenBackupPath();
-                try
-                {
-                    if (Directory.Exists(BackupPath))
-                        Directory.Delete(BackupPath, true);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"{Strings.ErrRecursivelyDelete} {ex.ToString()}", Strings.ErrDeleteFilesHeader);
-                }
+                if (Directory.Exists(backupPath))
+                    Directory.Delete(backupPath, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{Strings.ErrRecursivelyDelete} {ex}", Strings.ErrDeleteFilesHeader);
             }
         }
         public void OpenSteamFolder()
         {
-            Process.Start(persistentSettings.SteamFolder);
+            Process.Start(_persistentSettings.SteamFolder);
         }
         private void DeleteSelected()
         {
@@ -853,47 +790,44 @@ namespace TcNo_Acc_Switcher_Steam
             }
 
             // Backup loginusers.vdf
-            string backupFileName = $"loginusers-{ DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss.fff")}.vdf",
-            backupdir = Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\");
-            Directory.CreateDirectory(backupdir);
+            string backupFileName = $"loginusers-{ DateTime.Now:dd-MM-yyyy_HH-mm-ss.fff}.vdf",
+            backup = Path.Combine(_persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\");
+            Directory.CreateDirectory(backup);
             try
             {
-                File.Copy(persistentSettings.LoginusersVdf(), Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\{backupFileName}"));
+                File.Copy(_persistentSettings.LoginusersVdf(), Path.Combine(_persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\{backupFileName}"));
             }
             catch (IOException e) when (e.HResult == -2147024816) // File already exists -- User deleting > 1 account per second
             {
-                File.Copy(persistentSettings.LoginusersVdf(), Path.Combine(persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\{backupFileName}"));
+                File.Copy(_persistentSettings.LoginusersVdf(), Path.Combine(_persistentSettings.SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\{backupFileName}"));
             }
 
             // ---------------------------------------------
             // ----- Remove user from "loginusers.vdf" -----
             // ---------------------------------------------
-            Byte[] info;
-            using (FileStream fs = File.Open(persistentSettings.LoginusersVdf(), FileMode.Truncate, FileAccess.Write, FileShare.None))
+            using (var fs = File.Open(_persistentSettings.LoginusersVdf(), FileMode.Truncate, FileAccess.Write, FileShare.None))
             {
                 lblStatus.Content = $"{Strings.StatusRemoving} {MainViewmodel.SelectedSteamUser.Name} {Strings.StatusFromLoginusers}";
-                string lineNoQuot;
-                bool userIDMatch = false,
+                bool userIdMatch = false,
                      completedRemove = false;
-                string outline = "", SelectedSteamID = MainViewmodel.SelectedSteamUser.SteamID;
-                List<string> newfLoginUsersLines = new List<string>();
-                foreach (string curline in fLoginUsersLines)
+                var selectedSteamId = MainViewmodel.SelectedSteamUser.SteamID;
+                var newLoginUsersLines = new List<string>();
+                foreach (var line in _fLoginUsersLines)
                 {
-                    outline = curline;
+                    var outline = line;
 
-                    lineNoQuot = curline;
+                    var lineNoQuot = line;
                     lineNoQuot = lineNoQuot.Replace("\t", "").Replace("\"", "");
                     if (!completedRemove)
                     {
-                        if (!userIDMatch)
+                        if (!userIdMatch)
                         {
                             if (lineNoQuot.All(char.IsDigit)) // Check if line is JUST digits -> SteamID
                             {
-                                userIDMatch = false;
-                                if (lineNoQuot == SelectedSteamID)
+                                if (lineNoQuot == selectedSteamId)
                                 {
                                     // Most recent ID matches! Start ignoring lines until "}" found.
-                                    userIDMatch = true;
+                                    userIdMatch = true;
                                     continue; // Skip line output
                                 }
                             }
@@ -905,21 +839,18 @@ namespace TcNo_Acc_Switcher_Steam
                             continue; // Skip line output
                         }
                     }
-                    newfLoginUsersLines.Add(curline);
-                    info = new UTF8Encoding(true).GetBytes(outline + "\n");
+                    newLoginUsersLines.Add(line);
+                    var info = new UTF8Encoding(true).GetBytes(outline + "\n");
                     fs.Write(info, 0, info.Length);
                 }
-                fLoginUsersLines = newfLoginUsersLines;
+                _fLoginUsersLines = newLoginUsersLines;
             }
 
             // Remove from list in memory
             MainViewmodel.SteamUsers.Remove(MainViewmodel.SelectedSteamUser);
             listAccounts.Items.Refresh();
         }
-        private void AccountItem_Forget(object sender, RoutedEventArgs e)
-        {
-            DeleteSelected();
-        }
+        private void AccountItem_Forget(object sender, RoutedEventArgs e) => DeleteSelected();
 
         private void listAccounts_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -930,18 +861,18 @@ namespace TcNo_Acc_Switcher_Steam
         // Context Menu (Right-Click on Steam Account) handling
         private void AccountItem_CopyProfile(object sender, RoutedEventArgs e)
         {
-            var steamId = MainViewmodel.SelectedSteamUser.SteamID;
+            var selected = MainViewmodel.SelectedSteamUser;
             var menuItem = (MenuItem)e.OriginalSource;
             switch (menuItem.Header.ToString())
             {
                 case "Community URL":
-                    Clipboard.SetText("https://steamcommunity.com/profiles/" + MainViewmodel.SelectedSteamUser.SteamID);
+                    Clipboard.SetText("https://steamcommunity.com/profiles/" + selected.SteamID);
                     break;
                 case "Community Username":
-                    Clipboard.SetText(MainViewmodel.SelectedSteamUser.Name);
+                    Clipboard.SetText(selected.Name);
                     break;
                 case "Login Username":
-                    Clipboard.SetText(MainViewmodel.SelectedSteamUser.AccName);
+                    Clipboard.SetText(selected.AccName);
                     break;
             }
         }
@@ -990,7 +921,7 @@ namespace TcNo_Acc_Switcher_Steam
 
         private void LoginButtonAnimation(Color colFrom, Color colTo, int len)
         {
-            ColorAnimation animation = new ColorAnimation
+            var animation = new ColorAnimation
             {
                 From = colFrom, To = colTo, Duration = new Duration(TimeSpan.FromMilliseconds(len))
             };
@@ -1000,10 +931,10 @@ namespace TcNo_Acc_Switcher_Steam
         }
 
         private void btnLogin_MouseEnter(object sender, MouseEventArgs e) =>
-            btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? Colors.Green : DefaultGray);
+            btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? Colors.Green : _defaultGray);
 
         private void btnLogin_MouseLeave(object sender, MouseEventArgs e) =>
-            btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? DarkGreen : DefaultGray);
+            btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? _darkGreen : _defaultGray);
         private void BtnExit(object sender, RoutedEventArgs e) =>
             Globals.WindowHandling.BtnExit(sender, e, this);
         private void BtnMinimize(object sender, RoutedEventArgs e) =>
@@ -1012,13 +943,13 @@ namespace TcNo_Acc_Switcher_Steam
             Globals.WindowHandling.DragWindow(sender, e, this);
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            if (!Double.IsNaN(this.Height)) // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.
+            if (!double.IsNaN(this.Height)) // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.
                 SaveSettings();
         }
 
         public void ResetSettings()
         {
-            persistentSettings = new UserSettings();
+            _persistentSettings = new UserSettings();
             UpdateFromSettings();
             SetAndCheckSteamFolder(false);
             listAccounts.Items.Refresh();
@@ -1026,16 +957,13 @@ namespace TcNo_Acc_Switcher_Steam
         }
         public void PickSteamFolder()
         {
-            bool validSteamFound = (File.Exists(persistentSettings.SteamExe()));
-            string OldLocation = persistentSettings.SteamFolder;
+            var oldLocation = _persistentSettings.SteamFolder;
 
-            validSteamFound = SetAndCheckSteamFolder(true);
-            if (!validSteamFound)
-            {
-                persistentSettings.SteamFolder = OldLocation;
-                MainViewmodel.InputFolderDialogResponse = OldLocation;
-                MessageBox.Show($"{Strings.ErrSteamLocation} {OldLocation}");
-            }
+            var validSteamFound = SetAndCheckSteamFolder(true);
+            if (validSteamFound) return;
+            _persistentSettings.SteamFolder = oldLocation;
+            MainViewmodel.InputFolderDialogResponse = oldLocation;
+            MessageBox.Show($"{Strings.ErrSteamLocation} {oldLocation}");
         }
         public void ResetImages()
         {
@@ -1043,24 +971,22 @@ namespace TcNo_Acc_Switcher_Steam
             MessageBox.Show(Strings.InfoReopenImageDl);
             this.Close();
         }
-        public bool VACCheckRunning = false;
+        public bool VacCheckRunning;
         public void CheckVac()
         {
-            if (!VACCheckRunning)
+            if (VacCheckRunning) return;
+            VacCheckRunning = true;
+            lblStatus.Content = Strings.StatusCheckingVac;
+
+            foreach (var su in MainViewmodel.SteamUsers)
             {
-                VACCheckRunning = true;
-                lblStatus.Content = Strings.StatusCheckingVac;
-
-                foreach (Steamuser su in MainViewmodel.SteamUsers)
-                {
-                    su.vacStatus = Brushes.Transparent;
-                }
-                listAccounts.Items.Refresh();
-
-
-                Thread t = new Thread(new ParameterizedThreadStart(CheckVacForeach));
-                t.Start(MainViewmodel.SteamUsers);
+                su.vacStatus = Brushes.Transparent;
             }
+            listAccounts.Items.Refresh();
+
+
+            var t = new Thread(CheckVacForeach);
+            t.Start(MainViewmodel.SteamUsers);
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -1070,52 +996,51 @@ namespace TcNo_Acc_Switcher_Steam
 
         private void btnShowInfo_Click(object sender, RoutedEventArgs e)
         {
-            InfoWindow infoWindow = new InfoWindow();
-            infoWindow.DataContext = MainViewmodel;
-            infoWindow.Owner = this;
+            var infoWindow = new InfoWindow {DataContext = MainViewmodel, Owner = this};
             infoWindow.ShowDialog();
         }
 
-        void CheckVacForeach(object oin)
+        private void CheckVacForeach(object oin)
         {
-            ObservableCollection<Steamuser> SteamUsers = (ObservableCollection<Steamuser>)oin;
-            int currentCount = 0;
-            string totalCount = SteamUsers.Count().ToString();
+            var steamUsers = (ObservableCollection<Steamuser>)oin;
+            var currentCount = 0;
+            var totalCount = steamUsers.Count().ToString();
 
-            foreach (Steamuser su in SteamUsers)
+            foreach (var su in steamUsers)
             {
                 currentCount++;
+                var count = currentCount;
                 this.Dispatcher.Invoke(() =>
                 {
-                    lblStatus.Content = $"{Strings.StatusCheckingVacActive} {currentCount.ToString()}/{totalCount}";
+                    lblStatus.Content = $"{Strings.StatusCheckingVacActive} {count.ToString()}/{totalCount}";
                 });
                 //su.vacStatus = GetVacStatus(su.SteamID).Result ? _vacRedBrush : Brushes.Transparent; 
-                bool VacOrLimited = false;
-                XmlDocument profileXML = new XmlDocument();
-                profileXML.Load($"https://steamcommunity.com/profiles/{su.SteamID}?xml=1");
+                bool vacOrLimited;
+                var profileXml = new XmlDocument();
+                profileXml.Load($"https://steamcommunity.com/profiles/{su.SteamID}?xml=1");
                 try
                 {
-                    bool isVAC = false;
-                    bool isLimited = true;
-                    if (profileXML.DocumentElement != null)
+                    var isVac = false;
+                    var isLimited = true;
+                    if (profileXml.DocumentElement != null)
                     {
-                        if (profileXML.DocumentElement.SelectNodes("/profile/vacBanned")?[0] != null)
-                            isVAC = profileXML.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
-                        if (profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
-                            isLimited = profileXML.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
+                        if (profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0] != null)
+                            isVac = profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
+                        if (profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
+                            isLimited = profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
                     }
 
-                    if (!persistentSettings.LimitedAsVAC) // Ignores limited accounts
+                    if (!_persistentSettings.LimitedAsVAC) // Ignores limited accounts
                         isLimited = false;
-                    VacOrLimited = isVAC || isLimited;
+                    vacOrLimited = isVac || isLimited;
                 }
                 catch (NullReferenceException) // User has not set up their account
                 {
-                    VacOrLimited = false;
+                    vacOrLimited = false;
                 }
                 this.Dispatcher.Invoke(() =>
                 {
-                    su.vacStatus = VacOrLimited ? _vacRedBrush : Brushes.Transparent;
+                    su.vacStatus = vacOrLimited ? _vacRedBrush : Brushes.Transparent;
                     UpdateListFromAsyncVacCheck(su);
                 });
             }
@@ -1124,51 +1049,49 @@ namespace TcNo_Acc_Switcher_Steam
             {
                 lblStatus.Content = Strings.StatusReady;
                 SaveVacInformation();
-                VACCheckRunning = false;
+                VacCheckRunning = false;
             });
         }
-        void UpdateListFromAsyncVacCheck(Steamuser UpdatedUser)
+
+        private void UpdateListFromAsyncVacCheck(Steamuser updatedUser)
         {
-            foreach (Steamuser su in MainViewmodel.SteamUsers)
+            foreach (var su in MainViewmodel.SteamUsers)
             {
-                if (su.SteamID == UpdatedUser.SteamID)
+                if (su.SteamID == updatedUser.SteamID)
                 {
-                    su.vacStatus = UpdatedUser.vacStatus;
+                    su.vacStatus = updatedUser.vacStatus;
                 }
             }
             listAccounts.Items.Refresh();
         }
-        void SaveVacInformation()
+
+        private void SaveVacInformation()
         {
-            if (!Double.IsNaN(this.Height))
+            if (double.IsNaN(this.Height)) return;
+            // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.
+
+            var vacInformation = new Dictionary<string, bool> { };
+            foreach (var su in MainViewmodel.SteamUsers)
+                vacInformation.Add(su.SteamID, su.vacStatus == _vacRedBrush); // If red >> Vac or Limited
+
+            var serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
+
+            using (var sw = new StreamWriter(@"SteamVACCache.json"))
+            using (JsonWriter writer = new JsonTextWriter(sw))
             {
-                // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.
-
-                Dictionary<string, bool> VacInformation = new Dictionary<string, bool> { };
-                foreach (Steamuser su in MainViewmodel.SteamUsers)
-                {
-                    VacInformation.Add(su.SteamID, su.vacStatus == _vacRedBrush ? true : false); // If red >> Vac or Limited
-                }
-
-                JsonSerializer serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
-
-                using (StreamWriter sw = new StreamWriter(@"SteamVACCache.json"))
-                using (JsonWriter writer = new JsonTextWriter(sw))
-                {
-                    serializer.Serialize(writer, VacInformation);
-                }
+                serializer.Serialize(writer, vacInformation);
             }
         }
-        void LoadVacInformation()
+
+        private void LoadVacInformation()
         {
-            JsonSerializer serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
-            using (StreamReader sr = new StreamReader(@"SteamVACCache.json"))
+            using (var sr = new StreamReader(@"SteamVACCache.json"))
             {
-                Dictionary<string, bool> VacInformation = JsonConvert.DeserializeObject<Dictionary<string, bool>>(sr.ReadToEnd());
-                foreach (Steamuser su in MainViewmodel.SteamUsers)
+                var vacInformation = JsonConvert.DeserializeObject<Dictionary<string, bool>>(sr.ReadToEnd());
+                foreach (var su in MainViewmodel.SteamUsers)
                 {
-                    if (VacInformation.ContainsKey(su.SteamID))
-                        su.vacStatus = VacInformation[su.SteamID] ? _vacRedBrush : Brushes.Transparent;
+                    if (vacInformation.ContainsKey(su.SteamID))
+                        su.vacStatus = vacInformation[su.SteamID] ? _vacRedBrush : Brushes.Transparent;
                     else
                         su.vacStatus = Brushes.Transparent;
                 }
@@ -1179,27 +1102,25 @@ namespace TcNo_Acc_Switcher_Steam
             // Kill Steam
             CloseSteam();
             // Set all accounts to 'not used last' status
-            UpdateLoginusers(true, "", "");
+            UpdateLoginUsers(true, "", "");
             // Start Steam
-            if (persistentSettings.StartAsAdmin)
-                Process.Start(persistentSettings.SteamExe());
+            if (_persistentSettings.StartAsAdmin)
+                Process.Start(_persistentSettings.SteamExe());
             else
-                Process.Start(new ProcessStartInfo("explorer.exe", persistentSettings.SteamExe()));
+                Process.Start(new ProcessStartInfo("explorer.exe", _persistentSettings.SteamExe()));
             lblStatus.Content = Strings.StatusStartedSteam;
         }
         private void chkShowSettings_Click(object sender, RoutedEventArgs e)
         {
-            Settings settingsDialog = new Settings();
+            var settingsDialog = new Settings(){ DataContext = MainViewmodel, Owner = this };
             settingsDialog.ShareMainWindow(this);
-            settingsDialog.DataContext = MainViewmodel;
-            settingsDialog.Owner = this;
             settingsDialog.ShowDialog();
         }
         public void ToggleVacStatus(bool vacEnabled)
         {
             if (!vacEnabled)
             {
-                foreach (Steamuser su in MainViewmodel.SteamUsers)
+                foreach (var su in MainViewmodel.SteamUsers)
                 {
                     su.vacStatus = Brushes.Transparent;
                 }
@@ -1209,28 +1130,24 @@ namespace TcNo_Acc_Switcher_Steam
                 LoadVacInformation();
             }
             listAccounts.Items.Refresh();
-            persistentSettings.ShowVACStatus = vacEnabled;
+            _persistentSettings.ShowVACStatus = vacEnabled;
             MainViewmodel.ShowVACStatus = vacEnabled;
         }
 
         public void ToggleAccNames(bool val)
         {
-            persistentSettings.TrayAccountAccNames = val;
+            _persistentSettings.TrayAccountAccNames = val;
             MainViewmodel.TrayAccountAccNames = val;
 
-            for (int i = 0; i < trayUsers.ListTrayUsers.Count; i++)
-            {
-                trayUsers.ListTrayUsers[i].DisplayAs = (val
-                    ? trayUsers.ListTrayUsers[i].AccName
-                    : trayUsers.ListTrayUsers[i].Name);
-            }
+            foreach (var t in trayUsers.ListTrayUsers)
+                t.DisplayAs = (val ? t.AccName : t.Name);
             trayUsers.SaveTrayUsers();
         }
 
         public void CapTotalTrayUsers()
         {
-            if (persistentSettings.TrayAccounts > 0)
-                while (trayUsers.ListTrayUsers.Count >= persistentSettings.TrayAccounts) // Add to list, drop first item if full.
+            if (_persistentSettings.TrayAccounts > 0)
+                while (trayUsers.ListTrayUsers.Count >= _persistentSettings.TrayAccounts) // Add to list, drop first item if full.
                     trayUsers.ListTrayUsers.RemoveAt(0);
             else
                 trayUsers.ListTrayUsers.Clear();
@@ -1238,18 +1155,18 @@ namespace TcNo_Acc_Switcher_Steam
         }
         public void SetTotalRecentAccount(string val)
         {
-            persistentSettings.TrayAccounts = Int32.Parse(val);
-            MainViewmodel.TrayAccounts = Int32.Parse(val);
+            _persistentSettings.TrayAccounts = int.Parse(val);
+            MainViewmodel.TrayAccounts = int.Parse(val);
         }
         public void SetImageExpiry(string val)
         {
-            persistentSettings.ImageLifetime = Int32.Parse(val);
-            MainViewmodel.ImageLifetime = Int32.Parse(val);
+            _persistentSettings.ImageLifetime = int.Parse(val);
+            MainViewmodel.ImageLifetime = int.Parse(val);
         }
 
         public void ToggleLimitedAsVac(bool lav)
         {
-            persistentSettings.LimitedAsVAC = lav;
+            _persistentSettings.LimitedAsVAC = lav;
             MainViewmodel.LimitedAsVAC = lav;
             MessageBox.Show(Strings.InfoRefreshLimitedAsVac);
         }
@@ -1260,22 +1177,22 @@ namespace TcNo_Acc_Switcher_Steam
             MainViewmodel.StartWithWindows = CheckStartWithWindows();
             MainViewmodel.StartMenuIcon = ShortcutExist(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\"));
         }
-        private bool CheckStartWithWindows()
+        private static bool CheckStartWithWindows()
         {
             using (var ts = new TaskService())
             {
-                TaskCollection tasks = ts.RootFolder.Tasks;
+                var tasks = ts.RootFolder.Tasks;
                 return tasks.Exists("TcNo Account Switcher - Tray start with logon");
             }
         }
         public void DesktopShortcut(bool bEnabled)
         {
             MainViewmodel.DesktopShortcut = bEnabled;
-            string desktop_path = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             if (bEnabled)
-                CreateShortcut(desktop_path);
+                CreateShortcut(desktopPath);
             else
-                DeleteShortcut(desktop_path, "TcNo Account Switcher - Steam.lnk", false);
+                DeleteShortcut(desktopPath, "TcNo Account Switcher - Steam.lnk", false);
         }
         public void StartWithWindows(bool bEnabled)
         {
@@ -1283,21 +1200,19 @@ namespace TcNo_Acc_Switcher_Steam
 
             if (bEnabled)
             {
-                if (!CheckStartWithWindows())
-                {
-                    TaskService ts = new TaskService();
-                    TaskDefinition td = ts.NewTask();
-                    td.Principal.RunLevel = TaskRunLevel.Highest;
-                    td.Triggers.AddNew(TaskTriggerType.Logon);
-                    string program_path = Path.GetFullPath("TcNo Acc Switcher SteamTray.exe");
-                    td.Actions.Add(new ExecAction(program_path, null));
-                    ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Steam Tray start with logon", td);
-                    MessageBox.Show(Strings.InfoTrayWindowsStart);
-                }
+                if (CheckStartWithWindows()) return;
+                var ts = new TaskService();
+                var td = ts.NewTask();
+                td.Principal.RunLevel = TaskRunLevel.Highest;
+                td.Triggers.AddNew(TaskTriggerType.Logon);
+                var programPath = Path.GetFullPath("TcNo Acc Switcher SteamTray.exe");
+                td.Actions.Add(new ExecAction(programPath));
+                ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Steam Tray start with logon", td);
+                MessageBox.Show(Strings.InfoTrayWindowsStart);
             }
             else
             {
-                TaskService ts = new TaskService();
+                var ts = new TaskService();
                 ts.RootFolder.DeleteTask("TcNo Account Switcher - Steam Tray start with logon");
                 MessageBox.Show(Strings.InfoTrayWindowsStartOff);
             }
@@ -1305,8 +1220,8 @@ namespace TcNo_Acc_Switcher_Steam
         public void StartMenuShortcut(bool bEnabled)
         {
             MainViewmodel.StartMenuIcon = bEnabled;
-            string programs_path = Environment.GetFolderPath(Environment.SpecialFolder.Programs),
-                   shortcutFolder = Path.Combine(programs_path, @"TcNo Account Switcher\");
+            string programsPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs),
+                   shortcutFolder = Path.Combine(programsPath, @"TcNo Account Switcher\");
             if (bEnabled)
             {
                 CreateShortcut(shortcutFolder);
@@ -1318,89 +1233,80 @@ namespace TcNo_Acc_Switcher_Steam
                 DeleteShortcut(shortcutFolder, "TcNo Account Switcher - Steam tray.lnk", true);
             }
         }
-        private bool ShortcutExist(string location)
-        {
-            string settingsShortcut = Path.Combine(location, "TcNo Account Switcher - Steam.lnk");
-            return File.Exists(settingsShortcut);
-        }
+        private static bool ShortcutExist(string location) =>
+            File.Exists(Path.Combine(location, "TcNo Account Switcher - Steam.lnk"));
 
-        private string ParentDirectory(string dir)
-        {
-            return dir.Substring(0, dir.LastIndexOf(Path.DirectorySeparatorChar));
-        }
+        private string ParentDirectory(string dir) =>
+             dir.Substring(0, dir.LastIndexOf(Path.DirectorySeparatorChar));
         private void CreateShortcut(string location)
         {
             Directory.CreateDirectory(location);
             // Starts the main picker, with the Steam argument.
-            string selfexe = Path.Combine(ParentDirectory(Directory.GetCurrentDirectory()), "TcNo Account Switcher.exe"),
-                   selflocation = ParentDirectory(Directory.GetCurrentDirectory()),
-                   iconDirectory = Path.Combine(selflocation, "icon.ico"),
-                   settingsLink = Path.Combine(location, "TcNo Account Switcher - Steam.lnk"),
-                   description = "TcNo Account Switcher - Steam",
-                   arguments = "+steam";
+            string selfExe = Path.Combine(ParentDirectory(Directory.GetCurrentDirectory()), "TcNo Account Switcher.exe"),
+                   selfLocation = ParentDirectory(Directory.GetCurrentDirectory()),
+                   iconDirectory = Path.Combine(selfLocation, "icon.ico"),
+                   settingsLink = Path.Combine(location, "TcNo Account Switcher - Steam.lnk");
+            const string description = "TcNo Account Switcher - Steam";
+            const string arguments = "+steam";
 
-            WriteShortcut(location, selfexe, selflocation, iconDirectory, description, settingsLink, arguments);
+            WriteShortcut(selfExe, selfLocation, iconDirectory, description, settingsLink, arguments);
         }
-        private void CreateTrayShortcut(string location)
+        private static void CreateTrayShortcut(string location)
         {
-            string selfexe = Path.Combine(Directory.GetCurrentDirectory(), "TcNo Acc Switcher SteamTray.exe"),
-                selflocation = Directory.GetCurrentDirectory(),
-                iconDirectory = Path.Combine(selflocation, "icon.ico"),
-                settingsLink = Path.Combine(location, "TcNo Account Switcher - Steam tray.lnk"),
-                description = "TcNo Account Switcher - Steam tray",
-                arguments = "";
+            string selfExe = Path.Combine(Directory.GetCurrentDirectory(), "TcNo Acc Switcher SteamTray.exe"),
+                selfLocation = Directory.GetCurrentDirectory(),
+                iconDirectory = Path.Combine(selfLocation, "icon.ico"),
+                settingsLink = Path.Combine(location, "TcNo Account Switcher - Steam tray.lnk");
+            const string description = "TcNo Account Switcher - Steam tray";
+            const string arguments = "";
 
-            WriteShortcut(location, selfexe, selflocation, iconDirectory, description, settingsLink, arguments);
+            WriteShortcut(selfExe, selfLocation, iconDirectory, description, settingsLink, arguments);
         }
-        private void WriteShortcut(string location, string exe, string selflocation, string iconDirectory, string description, string settingsLink, string arguments)
+        private static void WriteShortcut(string exe, string selfLocation, string iconDirectory, string description, string settingsLink, string arguments)
         {
-            if (!File.Exists(settingsLink))
-            {
-                if (File.Exists("CreateShortcut.vbs"))
-                    File.Delete("CreateShortcut.vbs");
-
-                using (FileStream fs = new FileStream(iconDirectory, FileMode.Create))
-                    Properties.Resources.icon.Save(fs);
-
-
-                string[] Lines = {"set WshShell = WScript.CreateObject(\"WScript.Shell\")",
-                       "set oShellLink = WshShell.CreateShortcut(\"" + settingsLink  + "\")",
-                       "oShellLink.TargetPath = \"" + exe + "\"",
-                       "oShellLink.WindowStyle = 1",
-                       "oShellLink.IconLocation = \"" + iconDirectory + "\"",
-                       "oShellLink.Description = \"" + description + "\"",
-                       "oShellLink.WorkingDirectory = \"" + selflocation + "\"",
-                       "oShellLink.Arguments = \"" + arguments + "\"",
-                       "oShellLink.Save()"
-            };
-                File.WriteAllLines("CreateShortcut.vbs", Lines);
-
-                string resultString = "";
-                Process vbsProcess = new Process
-                {
-                    StartInfo =
-                    {
-                        FileName = "cscript",
-                        Arguments = "//nologo \"" + Path.GetFullPath("CreateShortcut.vbs") + "\"",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        CreateNoWindow = true
-                    }
-                };
-
-
-                vbsProcess.Start();
-                resultString = vbsProcess.StandardOutput.ReadToEnd();
-                vbsProcess.Close();
-
-                resultString = resultString.Replace("\r\n", "");
+            if (File.Exists(settingsLink)) return;
+            if (File.Exists("CreateShortcut.vbs"))
                 File.Delete("CreateShortcut.vbs");
-                MessageBox.Show("Shortcut created!\n\nLocation: " + settingsLink);
-            }
+
+            using (var fs = new FileStream(iconDirectory, FileMode.Create))
+                Properties.Resources.icon.Save(fs);
+
+
+            string[] lines = {"set WshShell = WScript.CreateObject(\"WScript.Shell\")",
+                "set oShellLink = WshShell.CreateShortcut(\"" + settingsLink  + "\")",
+                "oShellLink.TargetPath = \"" + exe + "\"",
+                "oShellLink.WindowStyle = 1",
+                "oShellLink.IconLocation = \"" + iconDirectory + "\"",
+                "oShellLink.Description = \"" + description + "\"",
+                "oShellLink.WorkingDirectory = \"" + selfLocation + "\"",
+                "oShellLink.Arguments = \"" + arguments + "\"",
+                "oShellLink.Save()"
+            };
+            File.WriteAllLines("CreateShortcut.vbs", lines);
+
+            var vbsProcess = new Process
+            {
+                StartInfo =
+                {
+                    FileName = "cscript",
+                    Arguments = "//nologo \"" + Path.GetFullPath("CreateShortcut.vbs") + "\"",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                }
+            };
+
+
+            vbsProcess.Start();
+            vbsProcess.StandardOutput.ReadToEnd();
+            vbsProcess.Close();
+
+            File.Delete("CreateShortcut.vbs");
+            MessageBox.Show("Shortcut created!\n\nLocation: " + settingsLink);
         }
-        private void DeleteShortcut(string location, string name, bool delFolder)
+        private static void DeleteShortcut(string location, string name, bool delFolder)
         {
-            string settingsLink = Path.Combine(location, name);
+            var settingsLink = Path.Combine(location, name);
             if (File.Exists(settingsLink))
                 File.Delete(settingsLink);
             if (delFolder)
