@@ -272,17 +272,14 @@
                 <Style x:Key="ForgetStyle" TargetType="MenuItem">
                     <EventSetter Event="Click" Handler="AccountItem_Forget"/>
                 </Style>
-                <Style x:Key="CopyIDStyle" TargetType="MenuItem">
-                    <EventSetter Event="Click" Handler="AccountItem_CopySteamID"/>
+                <Style x:Key="CopySteamIds" TargetType="MenuItem">
+                    <EventSetter Event="Click" Handler="AccountItem_CopySteamIds"/>
                 </Style>
-                <Style x:Key="CopyProfileLink" TargetType="MenuItem">
-                    <EventSetter Event="Click" Handler="AccountItem_CopyProfileLink"/>
+                <Style x:Key="CopyProfile" TargetType="MenuItem">
+                    <EventSetter Event="Click" Handler="AccountItem_CopyProfile"/>
                 </Style>
-                <Style x:Key="CopyLoginUsernameStyle" TargetType="MenuItem">
-                    <EventSetter Event="Click" Handler="AccountItem_CopyUsername"/>
-                </Style>
-                <Style x:Key="CopyFriendNameStyle" TargetType="MenuItem">
-                    <EventSetter Event="Click" Handler="AccountItem_CopyFriendName"/>
+                <Style x:Key="OtherSitesClick" TargetType="MenuItem">
+                    <EventSetter Event="Click" Handler="AccountItem_OtherSites"/>
                 </Style>
             </ListBox.Resources>
             <ListBox.ItemsPanel>
@@ -295,12 +292,26 @@
                     <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
                     <Setter Property="ContextMenu">
                         <Setter.Value>
+                            <!--<ContextMenu Background="#222222" Foreground="White" Style="{DynamicResource MenuItemStyle}">-->
                             <ContextMenu>
+                                <MenuItem Header="Copy Profile..." Style="{StaticResource CopyProfile}">
+                                    <MenuItem Header="Community URL"/>
+                                    <MenuItem Header="Community Username"/>
+                                    <MenuItem Header="Login Username"/>
+                                </MenuItem>
+                                <MenuItem Header="Copy SteamID..." Style="{StaticResource CopySteamIds}">
+                                    <MenuItem Header="SteamID [STEAM_0:~]"/>
+                                    <MenuItem Header="SteamID3 [U:1:~]"/>
+                                    <MenuItem Header="SteamID32"/>
+                                    <MenuItem Header="SteamID64 7656~"/>
+                                </MenuItem>
+                                <MenuItem Header="Copy other..." Style="{StaticResource OtherSitesClick}">
+                                    <MenuItem Header="SteamRep"/>
+                                    <MenuItem Header="SteamID.uk"/>
+                                    <MenuItem Header="SteamID.io"/>
+                                    <MenuItem Header="SteamIDFinder.com"/>
+                                </MenuItem>
                                 <MenuItem Header="Forget" Style="{StaticResource ForgetStyle}"/>
-                                <MenuItem Header="Copy Login Username" Style="{StaticResource CopyLoginUsernameStyle}"/>
-                                <MenuItem Header="Copy SteamID" Style="{StaticResource CopyIDStyle}"/>
-                                <MenuItem Header="Copy Profile Link" Style="{StaticResource CopyProfileLink}"/>
-                                <MenuItem Header="Copy Username" Style="{StaticResource CopyFriendNameStyle}"/>
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>

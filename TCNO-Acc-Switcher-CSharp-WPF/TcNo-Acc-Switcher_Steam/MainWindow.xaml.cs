@@ -52,8 +52,7 @@ namespace TcNo_Acc_Switcher_Steam
         public MainWindow()
         {
             /* TODO:
-             - Make "Installer" .exe. Maybe from C++ so it can run everywhere? Check for the correct .NET Core Desktop version, and download it if not found. Then run the installer.
-             Download the .exe and place it where the user specifies.
+             - Test extract and replace of 7-zip while updating. Don't think it's working, but haven't been able to test just yet.
              */
             // Single instance check
             if (SelfAlreadyRunning())
@@ -927,22 +926,68 @@ namespace TcNo_Acc_Switcher_Steam
             if (listAccounts.SelectedIndex != -1 && e.Key == Key.Delete)
                 DeleteSelected();
         }
-        private void AccountItem_CopySteamID(object sender, RoutedEventArgs e)
+
+        // Context Menu (Right-Click on Steam Account) handling
+        private void AccountItem_CopyProfile(object sender, RoutedEventArgs e)
         {
-            System.Windows.Clipboard.SetText(MainViewmodel.SelectedSteamUser.SteamID);
+            var steamId = MainViewmodel.SelectedSteamUser.SteamID;
+            var menuItem = (MenuItem)e.OriginalSource;
+            switch (menuItem.Header.ToString())
+            {
+                case "Community URL":
+                    Clipboard.SetText("https://steamcommunity.com/profiles/" + MainViewmodel.SelectedSteamUser.SteamID);
+                    break;
+                case "Community Username":
+                    Clipboard.SetText(MainViewmodel.SelectedSteamUser.Name);
+                    break;
+                case "Login Username":
+                    Clipboard.SetText(MainViewmodel.SelectedSteamUser.AccName);
+                    break;
+            }
         }
-        private void AccountItem_CopyProfileLink(object sender, RoutedEventArgs e)
+        private void AccountItem_CopySteamIds(object sender, RoutedEventArgs e)
         {
-            System.Windows.Clipboard.SetText("https://steamcommunity.com/profiles/" + MainViewmodel.SelectedSteamUser.SteamID);
+            var steamId = MainViewmodel.SelectedSteamUser.SteamID;
+            var menuItem = (MenuItem)e.OriginalSource;
+            var sel = menuItem.Header.ToString().ToLower();
+            sel = (sel.Contains(' ') ? sel.Split(' ')[0] : sel); // Remove example from string
+            switch (sel)
+            {
+                case "steamid":
+                    Clipboard.SetText(new SteamIdConvert(steamId).Id);
+                    break;
+                case "steamid3":
+                    Clipboard.SetText(new SteamIdConvert(steamId).Id3);
+                    break;
+                case "steamid32":
+                    Clipboard.SetText(new SteamIdConvert(steamId).Id32);
+                    break;
+                case "steamid64":
+                    Clipboard.SetText(new SteamIdConvert(steamId).Id64);
+                    break;
+            }
         }
-        private void AccountItem_CopyUsername(object sender, RoutedEventArgs e)
+        private void AccountItem_OtherSites(object sender, RoutedEventArgs e)
         {
-            System.Windows.Clipboard.SetText(MainViewmodel.SelectedSteamUser.AccName);
+            var steamId = MainViewmodel.SelectedSteamUser.SteamID;
+            var menuItem = (MenuItem)e.OriginalSource;
+            switch (menuItem.Header.ToString().ToLower())
+            {
+                case "steamrep":
+                    Clipboard.SetText($"https://steamrep.com/search?q={steamId}");
+                    break;
+                case "steamid.uk":
+                    Clipboard.SetText($"https://steamid.uk/profile/{steamId}");
+                    break;
+                case "steamid.io":
+                    Clipboard.SetText($"https://steamid.io/lookup/{steamId}");
+                    break;
+                case "steamidfinder.com":
+                    Clipboard.SetText($"https://steamidfinder.com/lookup/{steamId}/");
+                    break;
+            }
         }
-        private void AccountItem_CopyFriendName(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Clipboard.SetText(MainViewmodel.SelectedSteamUser.Name);
-        }
+
         private void LoginButtonAnimation(Color colFrom, Color colTo, int len)
         {
             ColorAnimation animation = new ColorAnimation
@@ -954,27 +999,17 @@ namespace TcNo_Acc_Switcher_Steam
             btnLogin.Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);
         }
 
-        private void btnLogin_MouseEnter(object sender, MouseEventArgs e)
-        {
+        private void btnLogin_MouseEnter(object sender, MouseEventArgs e) =>
             btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? Colors.Green : DefaultGray);
-        }
 
-        private void btnLogin_MouseLeave(object sender, MouseEventArgs e)
-        {
+        private void btnLogin_MouseLeave(object sender, MouseEventArgs e) =>
             btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? DarkGreen : DefaultGray);
-        }
-        private void BtnExit(object sender, RoutedEventArgs e)
-        {
+        private void BtnExit(object sender, RoutedEventArgs e) =>
             Globals.WindowHandling.BtnExit(sender, e, this);
-        }
-        private void BtnMinimize(object sender, RoutedEventArgs e)
-        {
+        private void BtnMinimize(object sender, RoutedEventArgs e) =>
             Globals.WindowHandling.BtnMinimize(sender, e, this);
-        }
-        private void DragWindow(object sender, MouseButtonEventArgs e)
-        {
+        private void DragWindow(object sender, MouseButtonEventArgs e) =>
             Globals.WindowHandling.DragWindow(sender, e, this);
-        }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             if (!Double.IsNaN(this.Height)) // Verifies that the program has started properly. Can be any property to do with the window. Just using Width.
@@ -1377,5 +1412,6 @@ namespace TcNo_Acc_Switcher_Steam
             }
             MessageBox.Show(Strings.InfoShortcutDeleted.Replace("{}", name));
         }
+
     }
 }

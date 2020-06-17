@@ -183,6 +183,19 @@
             <Setter Property="Padding" Value="0" />
         </Style>
         <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource ControlBaseStyle}"/>
+
+        <!-- Right-Click Context Menu --><!--
+        <ItemsPanelTemplate x:Key="MenuItemPanelTemplate">
+            <StackPanel Margin="-20,0,0,0" Background="White"/>
+        </ItemsPanelTemplate>
+        <Style TargetType="{x:Type ContextMenu}">
+            <Setter Property="ItemsPanel" Value="{StaticResource MenuItemPanelTemplate}"/>
+            <Setter Property="Background" Value="#222222"/>
+        </Style>
+        <Style TargetType="{x:Type MenuItem}">
+            <Setter Property="ItemsPanel" Value="{StaticResource MenuItemPanelTemplate}"/>
+            <Setter Property="Background" Value="#222222"/>
+        </Style>-->
     </Application.Resources>
 </Application>
 
