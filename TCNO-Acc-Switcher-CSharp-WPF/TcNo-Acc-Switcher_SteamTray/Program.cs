@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TcNo_Acc_Switcher_SteamTray.Properties;
 using System.Drawing;
@@ -12,53 +10,45 @@ using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_SteamTray
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
-        public static TrayUsers trayUsers = new TrayUsers();
+        public static TrayUsers TrayUsers = new TrayUsers();
         
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             // Crash handler
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(Globals.CurrentDomain_UnhandledException);
+            AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             if (SelfAlreadyRunning())
             {
                 Console.WriteLine(@"TcNo Account Switcher SteamTray is already running");
                 Environment.Exit(99);
             }
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)); // Set working directory to the same as the actual .exe
-            trayUsers.LoadTrayUsers();
+            TrayUsers.LoadTrayUsers();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new AppCont());
         }
         private static bool SelfAlreadyRunning()
         {
-            Process[] processes = Process.GetProcesses();
-            Process currentProc = Process.GetCurrentProcess();
-            foreach (Process process in processes)
-            {
-                if (currentProc.ProcessName == process.ProcessName && currentProc.Id != process.Id)
-                {
-                    return true;
-                }
-            }
-            return false;
+            var processes = Process.GetProcesses();
+            var currentProc = Process.GetCurrentProcess();
+            return processes.Any(process => currentProc.ProcessName == process.ProcessName && currentProc.Id != process.Id);
         }
     }
     public class AppCont : ApplicationContext
     {
-        string mainProgram = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "TcNo Account Switcher Steam.exe");
+        private readonly string _mainProgram = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "TcNo Account Switcher Steam.exe");
 
-        private NotifyIcon trayIcon;
+        private readonly NotifyIcon _trayIcon;
 
         public AppCont()
         {
-            ContextMenuStrip contextMenu = new ContextMenuStrip();
-            contextMenu.Renderer = new ContentRenderer();
+            var contextMenu = new ContextMenuStrip {Renderer = new ContentRenderer()};
             contextMenu.Items.Add(new ToolStripMenuItem()
             {
                 Name = "START",
@@ -71,22 +61,18 @@ namespace TcNo_Acc_Switcher_SteamTray
             // Then start main program to switch? Yeah.
             // - Launch argument
             if (File.Exists("Tray_Users.json"))
-            {
-                if (Program.trayUsers.ListTrayUsers != null && Program.trayUsers.ListTrayUsers.Count >= 1)
+                if (Program.TrayUsers.ListTrayUsers != null && Program.TrayUsers.ListTrayUsers.Count >= 1)
                 {
-                    Program.trayUsers.ListTrayUsers.Reverse(); // Last item was last to be logged into.
-                    foreach (TrayUsers.TrayUser trayUser in Program.trayUsers.ListTrayUsers)
-                    {
+                    Program.TrayUsers.ListTrayUsers.Reverse(); // Last item was last to be logged into.
+                    foreach (var trayUser in Program.TrayUsers.ListTrayUsers)
                         contextMenu.Items.Add(new ToolStripMenuItem()
                         {
-                            Name = trayUser.SteamID,
+                            Name = trayUser.SteamId,
                             Text = $@"Switch to: {trayUser.DisplayAs}",
                             ForeColor = Color.White,
                             BackColor = Color.FromArgb(255, 34, 34, 34)
                         });
-                    }
                 }
-            }
 
             contextMenu.Items.Add(new ToolStripMenuItem()
             {
@@ -95,50 +81,42 @@ namespace TcNo_Acc_Switcher_SteamTray
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(255, 34, 34, 34)
             });
-            contextMenu.ItemClicked += new ToolStripItemClickedEventHandler(contextMenu_ItemClicked);
+            contextMenu.ItemClicked += contextMenu_ItemClicked;
 
 
             // Initialize Tray Icon
-            trayIcon = new NotifyIcon()
+            _trayIcon = new NotifyIcon()
             {
                 Icon = Resources.icon,
                 ContextMenuStrip = contextMenu,
                 Visible = true
             };
-            trayIcon.DoubleClick += new EventHandler(NotifyIcon_DoubleClick);
+            _trayIcon.DoubleClick += NotifyIcon_DoubleClick;
         }
-        void contextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+
+        private void contextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            ToolStripItem item = e.ClickedItem;
-            if (item.Name == "START")
+            var item = e.ClickedItem;
+            if (item.Name != "START")
             {
-                startSwitcher("");
-            }
-            else if (item.Name == "EXIT")
-            {
-                trayIcon.Visible = false;
-                closeMainProcess();
-                Application.Exit();
+                if (item.Name == "EXIT")
+                {
+                    _trayIcon.Visible = false;
+                    CloseMainProcess();
+                    Application.Exit();
+                }
+                else if (Program.TrayUsers.AlreadyInList(item.Name))
+                        StartSwitcher($"+{item.Name} quit");
             }
             else
-            {
-                if (Program.trayUsers.AlreadyInList(item.Name))
-                    startSwitcher($"+{item.Name} quit");
-            }
+                StartSwitcher("");
         }
-        private void NotifyIcon_DoubleClick(object sender, System.EventArgs e)
-        {
-            startSwitcher("");
-        }
+        private void NotifyIcon_DoubleClick(object sender, EventArgs e) => StartSwitcher("");
 
-        // Function to check if the .exe is already running
-        bool alreadyRunning()
-        {
-            return Process.GetProcessesByName("TcNo Account Switcher Steam").Length > 0;
-        }
+        private static bool AlreadyRunning() => Process.GetProcessesByName("TcNo Account Switcher Steam").Length > 0;
 
         // Start with Windows login, using https://stackoverflow.com/questions/15191129/selectively-disabling-uac-for-specific-programs-on-windows-programatically for automatic administrator.
-        // Adding to Start Menu shortcut also creats "Start in Tray", which is a shortcut to this program. 
+        // Adding to Start Menu shortcut also creates "Start in Tray", which is a shortcut to this program. 
 
 
         [DllImport("user32")]
@@ -146,37 +124,31 @@ namespace TcNo_Acc_Switcher_SteamTray
         [DllImport("user32")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-        void bringToFront()
+        private static void BringToFront()
         {
             var proc = Process.GetProcessesByName("TcNo Account Switcher Steam").FirstOrDefault();
-            if (proc != null && proc.MainWindowHandle != IntPtr.Zero)
-            {
-                int SW_RESTORE = 9;
-                ShowWindow(proc.MainWindowHandle, SW_RESTORE);
-                SetForegroundWindow(proc.MainWindowHandle);
-            }
+            if (proc == null || proc.MainWindowHandle == IntPtr.Zero) return;
+            const int swRestore = 9;
+            ShowWindow(proc.MainWindowHandle, swRestore);
+            SetForegroundWindow(proc.MainWindowHandle);
         }
-        void closeMainProcess()
+
+        private static void CloseMainProcess()
         {
             var proc = Process.GetProcessesByName("TcNo Account Switcher Steam").FirstOrDefault();
-            if (proc != null && proc.MainWindowHandle != IntPtr.Zero)
-            {
-                proc.CloseMainWindow();
-                proc.WaitForExit();
-            }
+            if (proc == null || proc.MainWindowHandle == IntPtr.Zero) return;
+            proc.CloseMainWindow();
+            proc.WaitForExit();
         }
-        private void startSwitcher(string args) {
-            if (alreadyRunning())
-            {
-                // Already open
-                bringToFront();
-            }
+        private void StartSwitcher(string args) {
+            if (AlreadyRunning())
+                BringToFront();
             else
             {
-                string processName = mainProgram;
-                if (File.Exists(mainProgram))
+                var processName = _mainProgram;
+                if (File.Exists(_mainProgram))
                 {
-                    ProcessStartInfo startInfo = new ProcessStartInfo();
+                    var startInfo = new ProcessStartInfo();
                     try
                     {
                         startInfo.FileName = processName;
@@ -199,21 +171,16 @@ namespace TcNo_Acc_Switcher_SteamTray
                         {
                             if (win32Exception2.HResult != -2147467259) throw; // Throw is error is not: cancelled by user
                         }
-                        catch (Exception exception)
-                        {
-                            throw;
-                        }
                     }
                 }
                 else
-                {
-                    MessageBox.Show("Could not open the main .exe. Make sure it exists.\n\nI attempted to open: " + mainProgram, "TcNo Account Switcher - Tray launch fail");
-                }
+                    MessageBox.Show("Could not open the main .exe. Make sure it exists.\n\nI attempted to open: " + _mainProgram, "TcNo Account Switcher - Tray launch fail");
             }
         }
-        void Exit(object sender, EventArgs e)
+
+        private void Exit(object sender, EventArgs e)
         {
-            trayIcon.Visible = false;
+            _trayIcon.Visible = false;
             Application.Exit();
         }
 
@@ -225,18 +192,9 @@ namespace TcNo_Acc_Switcher_SteamTray
 
         private class MyColors : ProfessionalColorTable
         {
-            public override Color MenuItemSelected
-            {
-                get { return Color.FromArgb(255, 24, 24, 24); }
-            }
-            public override Color MenuItemSelectedGradientBegin
-            {
-                get { return Color.FromArgb(255, 34, 34, 34); }
-            }
-            public override Color MenuItemSelectedGradientEnd
-            {
-                get { return Color.FromArgb(255, 34, 34, 34); }
-            }
+            public override Color MenuItemSelected => Color.FromArgb(255, 24, 24, 24);
+            public override Color MenuItemSelectedGradientBegin => Color.FromArgb(255, 34, 34, 34);
+            public override Color MenuItemSelectedGradientEnd => Color.FromArgb(255, 34, 34, 34);
         }
         #endregion
     }

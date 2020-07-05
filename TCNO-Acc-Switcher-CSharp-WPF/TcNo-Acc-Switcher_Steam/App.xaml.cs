@@ -9,7 +9,7 @@ namespace TcNo_Acc_Switcher_Steam
     ///
     /// Also contains launch options/argument handling
     /// Possible launch options:
-    /// +[SteamID]  : Sets selected account as 'last login', and opens Steam.
+    /// +[SteamId]  : Sets selected account as 'last login', and opens Steam.
     /// logout      : Sets no account to 'last login' state, to allow another account to be signed in.
     /// quit        : Closes TcNo Steam Account Switcher upon argument handling completion.
     ///
