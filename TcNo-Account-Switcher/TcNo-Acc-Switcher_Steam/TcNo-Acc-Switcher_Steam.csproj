@@ -148,6 +148,9 @@
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
     <Compile Include="TrayUser.cs" />
+    <Compile Include="UserDataWindow.xaml.cs">
+      <DependentUpon>UserDataWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="ClearLogins.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -190,6 +193,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SteamFolderInput.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
