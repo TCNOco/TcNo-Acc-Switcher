@@ -1,11 +1,11 @@
 <p align="center">
   <a href="https://tcno.co/">
-    <img src="/docs/img/Banner.png"></a>
+    <img src="/other/img/Banner.png"></a>
 </p>
 <p align="center">
   <img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/TcNobo/TcNo-Acc-Switcher/total?logo=GitHub&style=flat-square">
   <a href="https://tcno.co/">
-    <img alt="Website" src="/docs/img/web.svg" height=20"></a>
+    <img alt="Website" src="/other/img/web.svg" height=20"></a>
   <a href="https://discord.gg/wkJp38m">
     <img alt="Discord server" src="https://img.shields.io/discord/217649733915770880?label=Discord&logo=discord&style=flat-square"></a>
   <a href="https://twitter.com/TcNobo">
@@ -29,15 +29,6 @@
 
 **Options available**: Start Steam as Administrator, Change Steam install folder, Hide VAC Status for each account and Show Steam ID. 
 
-## 3.0 Update [Beta]: Support for more platforms!
-Origin and more are coming to the TcNo Account Switcher! Easily handle multiple accounts with a few clicks!
-With an all-new tray, you can switch accounts directly from the tray as well!
-Tons more features to come.
-
-## 2.0 Update: GUI added. Auto update added.
-Users can still download updates via the GitHub Releases page, but they will be prompted when an update is detected, and the program will update when you choose. Nothing is forced.
-
-*When the program checks for updates, it adds to a counter saying "Add 1 to the counter for my Province/State in country", purely for interest's sake. IP addresses and identifiable information are not collected.
 ## Required runtimes (Download and install):
 - Microsoft .NET Framework 4.8 Runtime: [Web Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer), [Offline Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-offline-installer), [Other languages](https://dotnet.microsoft.com/download/dotnet-framework/net48)
 
@@ -54,3 +45,9 @@ Downloaded from a different source? Verify hashes [HERE](https://tcno.co/Project
 
 ### Known issues
 - Issues caused by .NET Core (TcNo Account Switcher 2.0) are solved. No more issues clearing your `%temp%`
+
+# Major updates
+## 3.0 Update [Beta]: Support for more platforms!
+Origin and more are coming to the TcNo Account Switcher! Easily handle multiple accounts with a few clicks!
+With an all-new tray, you can switch accounts directly from the tray as well!
+Tons more features to come.
