@@ -36,13 +36,12 @@ namespace TcNo_Acc_Switcher_Steam
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
         private TrayUsers trayUsers = new TrayUsers();
 
-        //int version = 1;
         private readonly Color _darkGreen = Color.FromRgb(5, 51, 5);
         private readonly Color _defaultGray = Color.FromRgb(51, 51, 51);
 
 
         // Settings will load later. Just defined here.
-        private const int SteamVersion = 3001;
+        private const int SteamVersion = 3002;
         private UserSettings _persistentSettings = new UserSettings();
         private readonly SolidColorBrush _vacRedBrush = new SolidColorBrush(Color.FromRgb(255,41,58));
 

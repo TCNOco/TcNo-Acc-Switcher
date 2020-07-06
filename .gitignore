@@ -352,5 +352,5 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 *.zip
-NSIS/TcNo Account Switcher - Installer x64.exe
-NSIS/TcNo Account Switcher - Installer x32.exe
+other/NSIS/TcNo Account Switcher - Installer x64.exe
+other/NSIS/TcNo Account Switcher - Installer x32.exe
