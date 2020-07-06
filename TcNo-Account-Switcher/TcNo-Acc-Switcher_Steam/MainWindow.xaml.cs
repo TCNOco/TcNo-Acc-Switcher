@@ -95,13 +95,13 @@ namespace TcNo_Acc_Switcher_Steam
         public void RefreshSteamAccounts()
         {
             // Collect Steam Account basic info from Steam file
-            lblStatus.Content = Strings.StatusCollectingAccounts;
+            LblStatus.Content = Strings.StatusCollectingAccounts;
             CheckBrokenImages();
             GetSteamAccounts();
 
             // Clear in-case it's a refresh
             MainViewmodel.SteamUsers.Clear();
-            listAccounts.Items.Refresh();
+            ListAccounts.Items.Refresh();
 
             // Check if profile images exist, otherwise queue
             var imagesToDownload = new List<Steamuser>();
@@ -127,10 +127,10 @@ namespace TcNo_Acc_Switcher_Steam
             {
                 var t = new Thread(DownloadImages);
                 t.Start(imagesToDownload);
-                lblStatus.Content = Strings.StatusImageDownloadStart;
+                LblStatus.Content = Strings.StatusImageDownloadStart;
             }
             else
-                lblStatus.Content = Strings.StatusReady;
+                LblStatus.Content = Strings.StatusReady;
         }
 
         private bool _vacBanned;
@@ -149,7 +149,7 @@ namespace TcNo_Acc_Switcher_Steam
                 var user = currentUser;
                 this.Dispatcher.Invoke(() =>
                 {
-                    lblStatus.Content = $"{Strings.StatusDownloadingProfile} {user.ToString()}/{totalUsers}";
+                    LblStatus.Content = $"{Strings.StatusDownloadingProfile} {user.ToString()}/{totalUsers}";
                 });
                 var imageUrl = GetUserImageUrl(su.SteamID);
 
@@ -205,7 +205,7 @@ namespace TcNo_Acc_Switcher_Steam
             this.Dispatcher.Invoke(() =>
             {
                 SaveVacInformation();
-                lblStatus.Content = Strings.StatusReady;
+                LblStatus.Content = Strings.StatusReady;
             });
             // ENABLE LISTBOX
         }
@@ -319,7 +319,7 @@ namespace TcNo_Acc_Switcher_Steam
             MainViewmodel.ImageLifetime = _persistentSettings.ImageLifetime;
             this.Width = _persistentSettings.WindowSize.Width;
             this.Height = _persistentSettings.WindowSize.Height;
-            ShowSteamIDHidden.IsChecked = _persistentSettings.ShowSteamID;
+            ShowSteamIdHidden.IsChecked = _persistentSettings.ShowSteamID;
             ToggleVacStatus(_persistentSettings.ShowVACStatus);
         }
 
@@ -507,15 +507,15 @@ namespace TcNo_Acc_Switcher_Steam
         }
         private void SteamUserSelect(object sender, SelectionChangedEventArgs e)
         {
-            if (!listAccounts.IsLoaded) return;
+            if (!ListAccounts.IsLoaded) return;
             var item = (ListBox)sender;
             var su = (Steamuser)item.SelectedItem;
             try
             {
-                lblStatus.Content = $"{Strings.StatusAccountSelected} {su.Name}";
+                LblStatus.Content = $"{Strings.StatusAccountSelected} {su.Name}";
                 HeaderInstruction.Content = Strings.StatusPressLogin;
-                btnLogin.IsEnabled = true;
-                btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? _darkGreen : _defaultGray);
+                BtnLogin.IsEnabled = true;
+                BtnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? _darkGreen : _defaultGray);
             }
             catch
             {
@@ -538,7 +538,7 @@ namespace TcNo_Acc_Switcher_Steam
             File.Delete(tempFile);
             using (var fs = File.Create(tempFile))
             {
-                lblStatus.Content = Strings.StatusEditingLoginusers;
+                LblStatus.Content = Strings.StatusEditingLoginusers;
                 var userIdMatch = false;
                 foreach (var line in _fLoginUsersLines)
                 {
@@ -587,7 +587,7 @@ namespace TcNo_Acc_Switcher_Steam
                 --> AutoLoginUser = username
                 --> RememberPassword = 1
             */
-            lblStatus.Content = Strings.StatusEditingRegistry;
+            LblStatus.Content = Strings.StatusEditingRegistry;
             using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam"))
             {
                 if (loginNone)
@@ -702,11 +702,11 @@ namespace TcNo_Acc_Switcher_Steam
             SaveSettings();
             LoginButtonAnimation(Color.FromRgb(12,12,12), _defaultGray, 2000);
 
-            lblStatus.Content = "Logging into: " + MainViewmodel.SelectedSteamUser.Name;
-            btnLogin.IsEnabled = false;
+            LblStatus.Content = "Logging into: " + MainViewmodel.SelectedSteamUser.Name;
+            BtnLogin.IsEnabled = false;
 
             MainViewmodel.SelectedSteamUser.lastLogin = DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss");
-            listAccounts.Items.Refresh();
+            ListAccounts.Items.Refresh();
 
             // Add to tray access accounts for tray icon.
             // Can switch to this account quickly later.
@@ -732,10 +732,10 @@ namespace TcNo_Acc_Switcher_Steam
                 trayUsers.SaveTrayUsers();
             }
 
-            lblStatus.Content = Strings.StatusClosingSteam;
+            LblStatus.Content = Strings.StatusClosingSteam;
             SwapSteamAccounts(false, MainViewmodel.SelectedSteamUser.SteamID, MainViewmodel.SelectedSteamUser.AccName);
-            lblStatus.Content = Strings.StatusStartedSteam;
-            btnLogin.IsEnabled = true;
+            LblStatus.Content = Strings.StatusStartedSteam;
+            BtnLogin.IsEnabled = true;
         }
 
 
@@ -793,7 +793,7 @@ namespace TcNo_Acc_Switcher_Steam
         }
         private void DeleteSelected()
         {
-            btnLogin.IsEnabled = false;
+            BtnLogin.IsEnabled = false;
 
             // Check if user understands what "forget" does.
             if (!MainViewmodel.ForgetAccountEnabled)
@@ -820,7 +820,7 @@ namespace TcNo_Acc_Switcher_Steam
             // ---------------------------------------------
             using (var fs = File.Open(_persistentSettings.LoginusersVdf(), FileMode.Truncate, FileAccess.Write, FileShare.None))
             {
-                lblStatus.Content = $"{Strings.StatusRemoving} {MainViewmodel.SelectedSteamUser.Name} {Strings.StatusFromLoginusers}";
+                LblStatus.Content = $"{Strings.StatusRemoving} {MainViewmodel.SelectedSteamUser.Name} {Strings.StatusFromLoginusers}";
                 bool userIdMatch = false,
                      completedRemove = false;
                 var selectedSteamId = MainViewmodel.SelectedSteamUser.SteamID;
@@ -861,13 +861,13 @@ namespace TcNo_Acc_Switcher_Steam
 
             // Remove from list in memory
             MainViewmodel.SteamUsers.Remove(MainViewmodel.SelectedSteamUser);
-            listAccounts.Items.Refresh();
+            ListAccounts.Items.Refresh();
         }
         private void AccountItem_Forget(object sender, RoutedEventArgs e) => DeleteSelected();
 
         private void listAccounts_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (listAccounts.SelectedIndex != -1 && e.Key == Key.Delete)
+            if (ListAccounts.SelectedIndex != -1 && e.Key == Key.Delete)
                 DeleteSelected();
         }
 
@@ -945,15 +945,15 @@ namespace TcNo_Acc_Switcher_Steam
                 From = colFrom, To = colTo, Duration = new Duration(TimeSpan.FromMilliseconds(len))
             };
 
-            btnLogin.Background = new SolidColorBrush(Colors.Orange);
-            btnLogin.Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+            BtnLogin.Background = new SolidColorBrush(Colors.Orange);
+            BtnLogin.Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);
         }
 
         private void btnLogin_MouseEnter(object sender, MouseEventArgs e) =>
-            btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? Colors.Green : _defaultGray);
+            BtnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? Colors.Green : _defaultGray);
 
         private void btnLogin_MouseLeave(object sender, MouseEventArgs e) =>
-            btnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? _darkGreen : _defaultGray);
+            BtnLogin.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? _darkGreen : _defaultGray);
         private void BtnExit(object sender, RoutedEventArgs e) =>
             Globals.WindowHandling.BtnExit(sender, e, this);
         private void BtnMinimize(object sender, RoutedEventArgs e) =>
@@ -971,7 +971,7 @@ namespace TcNo_Acc_Switcher_Steam
             _persistentSettings = new UserSettings();
             UpdateFromSettings();
             SetAndCheckSteamFolder(false);
-            listAccounts.Items.Refresh();
+            ListAccounts.Items.Refresh();
 
         }
         public void PickSteamFolder()
@@ -995,13 +995,13 @@ namespace TcNo_Acc_Switcher_Steam
         {
             if (VacCheckRunning) return;
             VacCheckRunning = true;
-            lblStatus.Content = Strings.StatusCheckingVac;
+            LblStatus.Content = Strings.StatusCheckingVac;
 
             foreach (var su in MainViewmodel.SteamUsers)
             {
                 su.vacStatus = Brushes.Transparent;
             }
-            listAccounts.Items.Refresh();
+            ListAccounts.Items.Refresh();
 
 
             var t = new Thread(CheckVacForeach);
@@ -1031,7 +1031,7 @@ namespace TcNo_Acc_Switcher_Steam
                 var count = currentCount;
                 this.Dispatcher.Invoke(() =>
                 {
-                    lblStatus.Content = $"{Strings.StatusCheckingVacActive} {count.ToString()}/{totalCount}";
+                    LblStatus.Content = $"{Strings.StatusCheckingVacActive} {count.ToString()}/{totalCount}";
                 });
                 //su.vacStatus = GetVacStatus(su.SteamID).Result ? _vacRedBrush : Brushes.Transparent; 
                 bool vacOrLimited;
@@ -1066,7 +1066,7 @@ namespace TcNo_Acc_Switcher_Steam
 
             this.Dispatcher.Invoke(() =>
             {
-                lblStatus.Content = Strings.StatusReady;
+                LblStatus.Content = Strings.StatusReady;
                 SaveVacInformation();
                 VacCheckRunning = false;
             });
@@ -1081,7 +1081,7 @@ namespace TcNo_Acc_Switcher_Steam
                     su.vacStatus = updatedUser.vacStatus;
                 }
             }
-            listAccounts.Items.Refresh();
+            ListAccounts.Items.Refresh();
         }
 
         private void SaveVacInformation()
@@ -1127,7 +1127,7 @@ namespace TcNo_Acc_Switcher_Steam
                 Process.Start(_persistentSettings.SteamExe());
             else
                 Process.Start(new ProcessStartInfo("explorer.exe", _persistentSettings.SteamExe()));
-            lblStatus.Content = Strings.StatusStartedSteam;
+            LblStatus.Content = Strings.StatusStartedSteam;
         }
         private void chkShowSettings_Click(object sender, RoutedEventArgs e)
         {
@@ -1148,7 +1148,7 @@ namespace TcNo_Acc_Switcher_Steam
             {
                 LoadVacInformation();
             }
-            listAccounts.Items.Refresh();
+            ListAccounts.Items.Refresh();
             _persistentSettings.ShowVACStatus = vacEnabled;
             MainViewmodel.ShowVACStatus = vacEnabled;
         }

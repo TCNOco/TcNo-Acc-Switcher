@@ -4,27 +4,26 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Updater
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // Crash handler
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(Globals.CurrentDomain_UnhandledException);
+            AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             Console.Title = @"TcNo Account Switcher - Auto-updater";
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)); // Set working directory to the same as the actual .exe
 #if X64
-            string arch = "x64";
+            const string arch = "x64";
 #else
-            string arch = "x32";
+            const string arch = "x32";
 #endif
-            string updzip = arch + ".zip";
-            string currentDirectory = Directory.GetCurrentDirectory();
+            var updZip = arch + ".zip";
+            var currentDirectory = Directory.GetCurrentDirectory();
 
 
             // Extract 7-zip for update
@@ -34,14 +33,14 @@ namespace TcNo_Acc_Switcher_Updater
             // Download update package
             // -- Will later have platforms separated, and download individual updates.
             Console.WriteLine(@"Starting download");
-            Thread thread = new Thread(new ParameterizedThreadStart(DownloadUpdate));
+            var thread = new Thread(DownloadUpdate);
             thread.Start(arch);
 
 
             // Get running all running applications in the program's directory
             Console.WriteLine(@"Checking for running processes...");
             var exeList = DirSearch(currentDirectory).Where(path => path.EndsWith(".exe")).ToList();
-            List<string> runningPrograms = GetRunningProgramsList(exeList);
+            var runningPrograms = GetRunningProgramsList(exeList);
 
             RestartTrayCheck(runningPrograms);
 
@@ -57,35 +56,35 @@ namespace TcNo_Acc_Switcher_Updater
             // Run 7-zip.
             // Extracts and replaces existing files with updated ones (-aoa)
             Console.WriteLine(@"Extracting ZIP");
-            ProcessStartInfo pro = new ProcessStartInfo
+            var pro = new ProcessStartInfo
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
                 FileName = "7za.exe",
-                Arguments = string.Format("x \"{0}\" -y -aoa -o\"{1}\"", updzip, currentDirectory),
+                Arguments = $"x \"{updZip}\" -y -aoa -o\"{currentDirectory}\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true
             };
-            Process x = Process.Start(pro);
-            x.WaitForExit();
+            var x = Process.Start(pro);
+            x?.WaitForExit();
 
             File.Create("Update_Complete");
 
             Console.WriteLine();
             Console.WriteLine(@"Starting TcNo Account Switcher");
 
-            int attempts = 0;
+            var attempts = 0;
 
             while (attempts < 3)
             {
                 try
                 {
                     attempts++;
-                    string processName = "TcNo Account Switcher.exe";
-                    ProcessStartInfo startInfo = new ProcessStartInfo();
-                    startInfo.FileName = processName;
-                    startInfo.CreateNoWindow = false;
-                    startInfo.UseShellExecute = true;
+                    const string processName = "TcNo Account Switcher.exe";
+                    var startInfo = new ProcessStartInfo
+                    {
+                        FileName = processName, CreateNoWindow = false, UseShellExecute = true
+                    };
 
                     Process.Start(startInfo);
                     break;
@@ -103,19 +102,16 @@ namespace TcNo_Acc_Switcher_Updater
 
         private static void RestartTrayCheck(List<string> runningPrograms)
         {
-            foreach (string runningProgram in runningPrograms)
-            {
-                if (runningProgram.Contains("TcNo Acc Switcher SteamTray"))
-                {
-                    if (!File.Exists("Restart_SteamTray")) File.Create("Restart_SteamTray");
-                }
-            }
+            foreach (var unused in runningPrograms.Where(runningProgram => 
+                runningProgram.Contains("TcNo Acc Switcher SteamTray")).Where(runningProgram => 
+                !File.Exists("Restart_SteamTray")))
+                File.Create("Restart_SteamTray");
         }
         private static void DownloadUpdate(object arch)
         {
-            using (WebClient wc = new WebClient())
+            using (var wc = new WebClient())
             {
-                string[] updateInfo = wc.DownloadString("https://tcno.co/Projects/AccSwitcher/net_update.php").Split('|');
+                var updateInfo = wc.DownloadString("https://tcno.co/Projects/AccSwitcher/net_update.php").Split('|');
                 string downloadLink = updateInfo[((string)arch == "x64" ? 0 : 1)].Replace("\n", ""),
                     downloadZip = (string)arch + ".zip";
 
@@ -128,20 +124,18 @@ namespace TcNo_Acc_Switcher_Updater
         }
 
         // Recursively check <string>Folder, and return a string array of files.
-        static List<string> DirSearch(string sDir)
+        private static IEnumerable<string> DirSearch(string sDir)
         {
-            List<string> paths = new List<string>();
+            var paths = new List<string>();
             try
             {
                 // Loop through files in directory
-                foreach (string f in Directory.GetFiles(sDir))
-                    paths.Add(f);
+                paths.AddRange(Directory.GetFiles(sDir));
                 // Search through each subfolder
-                foreach (string d in Directory.GetDirectories(sDir))
+                foreach (var d in Directory.GetDirectories(sDir))
                     paths.AddRange(DirSearch(d));
-                
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
@@ -154,7 +148,7 @@ namespace TcNo_Acc_Switcher_Updater
         private static List<string> GetRunningProgramsList(List<string> fullPaths)
         {
             var runningProgramList = new List<string>();
-            foreach (string fullPath in fullPaths)
+            foreach (var fullPath in fullPaths)
             {
                 // Skip self
                 if (fullPath.EndsWith("TcNo Acc Switcher Updater.exe")) continue;
@@ -162,9 +156,9 @@ namespace TcNo_Acc_Switcher_Updater
                 var filePath = Path.GetDirectoryName(fullPath);
                 var fileName = Path.GetFileNameWithoutExtension(fullPath).ToLower();
 
-                Process[] pList = Process.GetProcessesByName(fileName);
+                var pList = Process.GetProcessesByName(fileName);
 
-                foreach (Process p in pList)
+                foreach (var p in pList)
                 {
                     try
                     {
@@ -175,7 +169,6 @@ namespace TcNo_Acc_Switcher_Updater
                     catch (Exception)
                     {
                         // Relatively save to ignore errors here.
-                        continue;
                     }
                 }
             }
@@ -184,20 +177,17 @@ namespace TcNo_Acc_Switcher_Updater
         }
 
         // Close applications in list
-        private static void CloseRunningPrograms(List<string> fullPaths)
+        private static void CloseRunningPrograms(IEnumerable<string> fullPaths)
         {
-            var runningProgramList = new List<string>();
-            foreach (string fullPath in fullPaths)
+            foreach (var fullPath in fullPaths)
             {
                 Console.WriteLine($@"Closing: {fullPath}");
-                if (!KillProgram(fullPath))
+                if (KillProgram(fullPath)) continue;
+                Console.WriteLine($@"ERROR: Could not close: {fullPath}");
+                while (!KillProgram(fullPath))
                 {
-                    Console.WriteLine($@"ERROR: Could not close: {fullPath}");
-                    while (!KillProgram(fullPath))
-                    {
-                        Console.WriteLine(@"Please exit the running program, and press any key to continue.");
-                        Console.ReadKey();
-                    }
+                    Console.WriteLine(@"Please exit the running program, and press any key to continue.");
+                    Console.ReadKey();
                 }
             }
         }
@@ -205,8 +195,8 @@ namespace TcNo_Acc_Switcher_Updater
         {
             var filePath = Path.GetDirectoryName(fullPath);
             var fileName = Path.GetFileNameWithoutExtension(fullPath).ToLower();
-            Process[] pList = Process.GetProcessesByName(fileName);
-            foreach (Process p in pList)
+            var pList = Process.GetProcessesByName(fileName);
+            foreach (var p in pList)
             {
                 try
                 {

@@ -21,7 +21,7 @@ namespace TcNo_Acc_Switcher_Steam
         {
             string[] fileEntries = Directory.GetFiles(_mw.GetForgottenBackupPath());
             foreach (string fileName in fileEntries)
-                filenamesList.Items.Add(fileName);
+                FileNamesList.Items.Add(fileName);
         }
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -34,7 +34,7 @@ namespace TcNo_Acc_Switcher_Steam
         private void DragWindow(object sender, MouseButtonEventArgs e) => Globals.WindowHandling.DragWindow(sender, e, this);
         private void btnRestore_Click(object sender, RoutedEventArgs e)
         {
-            File.Copy(filenamesList.SelectedItem.ToString(), Path.Combine(_mw.GetPersistentFolder(), "loginusers.vdf"), true);
+            File.Copy(FileNamesList.SelectedItem.ToString(), Path.Combine(_mw.GetPersistentFolder(), "loginusers.vdf"), true);
             MessageBox.Show("Restored! Refreshing Steam accounts now. This may take a second.");
             _mw.RefreshSteamAccounts();
             this.Close();

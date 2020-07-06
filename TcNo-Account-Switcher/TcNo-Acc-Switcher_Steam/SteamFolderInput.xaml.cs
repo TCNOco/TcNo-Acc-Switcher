@@ -31,7 +31,7 @@ namespace TcNo_Acc_Switcher_Steam
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            lblQuery2.Margin = lblQuery.IsVisible ? new Thickness(0, 0, 0, 0) : new Thickness(0, 16, 0, 0);
+            LblQuery2.Margin = LblQuery.IsVisible ? new Thickness(0, 0, 0, 0) : new Thickness(0, 16, 0, 0);
             VerifySteamPath();
         }
 
@@ -42,34 +42,34 @@ namespace TcNo_Acc_Switcher_Steam
 
         private void VerifySteamPath()
         {
-            if (File.Exists(Path.Combine(txtResponse.Text, "Steam.exe")))
+            if (File.Exists(Path.Combine(TxtResponse.Text, "Steam.exe")))
             {
                 _steamFound = true;
-                rectSteamFound.Background = new SolidColorBrush(Colors.Green);
-                lblQuery3.Background = new SolidColorBrush(Color.FromRgb(0, 68, 0));
-                lblQuery3.Content = "Steam.exe found!";
-                btnSetDirectory.Background = new SolidColorBrush(_darkGreen);
-                btnSetDirectory.IsEnabled = true;
+                RectSteamFound.Background = new SolidColorBrush(Colors.Green);
+                LblQuery3.Background = new SolidColorBrush(Color.FromRgb(0, 68, 0));
+                LblQuery3.Content = "Steam.exe found!";
+                BtnSetDirectory.Background = new SolidColorBrush(_darkGreen);
+                BtnSetDirectory.IsEnabled = true;
             }
             else
             {
                 _steamFound = false;
-                rectSteamFound.Background = new SolidColorBrush(Colors.Red);
-                lblQuery3.Background = new SolidColorBrush(Color.FromRgb(68, 0, 0));
-                lblQuery3.Content = "Steam.exe not found";
-                btnSetDirectory.Background = new SolidColorBrush(_defaultGray);
-                btnSetDirectory.IsEnabled = false;
+                RectSteamFound.Background = new SolidColorBrush(Colors.Red);
+                LblQuery3.Background = new SolidColorBrush(Color.FromRgb(68, 0, 0));
+                LblQuery3.Content = "Steam.exe not found";
+                BtnSetDirectory.Background = new SolidColorBrush(_defaultGray);
+                BtnSetDirectory.IsEnabled = false;
             }
         }
 
         private void btnSetDirectory_MouseEnter(object sender, MouseEventArgs e)
         {
-            btnSetDirectory.Background = new SolidColorBrush(_steamFound ? Colors.Green : _defaultGray);
+            BtnSetDirectory.Background = new SolidColorBrush(_steamFound ? Colors.Green : _defaultGray);
         }
 
         private void btnSetDirectory_MouseLeave(object sender, MouseEventArgs e)
         {
-            btnSetDirectory.Background = new SolidColorBrush(_steamFound ? _darkGreen : _defaultGray);
+            BtnSetDirectory.Background = new SolidColorBrush(_steamFound ? _darkGreen : _defaultGray);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -83,7 +83,7 @@ namespace TcNo_Acc_Switcher_Steam
 
             var result = dlg.ShowDialog();
             if (result != true) return;
-            txtResponse.Text = Path.GetDirectoryName(dlg.FileName) ?? string.Empty;
+            TxtResponse.Text = Path.GetDirectoryName(dlg.FileName) ?? string.Empty;
             VerifySteamPath();
         }
 
@@ -107,7 +107,7 @@ namespace TcNo_Acc_Switcher_Steam
         }
         private void resizeGrip_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (Mouse.Capture(resizeGrip))
+            if (Mouse.Capture(ResizeGrip))
             {
                 _isResizing = true;
                 _startPosition = Mouse.GetPosition(this);

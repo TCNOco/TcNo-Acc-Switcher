@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TcNo_Acc_Switcher"
         mc:Ignorable="d"
         Title="TcNo Steam Account Switcher" Height="420" Width="773"
         MinWidth="475"
@@ -12,8 +11,6 @@
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterScreen">
     <!-- Min size: 2 Rows, 4 Columns-->
-    <!--When scrollbar invisible: MinWidth="772"-->
-    <!--When scrollbar visible:   MinWidth="789"-->
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0"
             CornerRadius="2"
@@ -22,12 +19,6 @@
             ResizeBorderThickness="3"/>
     </WindowChrome.WindowChrome>
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="b2v" />
-        <SolidColorBrush x:Key="StandardBorderBrush" Color="#888" />
-        <SolidColorBrush x:Key="StandardBackgroundBrush" Color="Black" />
-        <SolidColorBrush x:Key="HoverBorderBrush" Color="#DDD" />
-        <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="Gray" />
-        <SolidColorBrush x:Key="SelectedForegroundBrush" Color="White" />
         <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
         <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
         <SolidColorBrush x:Key="NormalBrush" Color="#888" />
@@ -35,23 +26,6 @@
         <SolidColorBrush x:Key="HorizontalNormalBrush" Color="#515164" />
         <SolidColorBrush x:Key="HorizontalNormalBorderBrush" Color="#888" />
 
-        <LinearGradientBrush x:Key="ListBoxBackgroundBrush" StartPoint="0,0" EndPoint="1,0.001">
-            <GradientBrush.GradientStops>
-                <GradientStopCollection>
-                    <GradientStop Color="White" Offset="0.0" />
-                    <GradientStop Color="White" Offset="0.6" />
-                    <GradientStop Color="#DDDDDD" Offset="1.2"/>
-                </GradientStopCollection>
-            </GradientBrush.GradientStops>
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="StandardBrush" StartPoint="0,0" EndPoint="0,1">
-            <GradientBrush.GradientStops>
-                <GradientStopCollection>
-                    <GradientStop Color="#FFF" Offset="0.0"/>
-                    <GradientStop Color="#CCC" Offset="1.0"/>
-                </GradientStopCollection>
-            </GradientBrush.GradientStops>
-        </LinearGradientBrush>
         <LinearGradientBrush x:Key="PressedBrush" StartPoint="0,0" EndPoint="0,1">
             <GradientBrush.GradientStops>
                 <GradientStopCollection>
@@ -144,6 +118,7 @@
                     <ColumnDefinition MaxWidth="18"/>
                     <ColumnDefinition Width="0.00001*"/>
                     <ColumnDefinition MaxWidth="18"/>
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Border Grid.ColumnSpan="3" CornerRadius="2" Background="#F0F0F0"/>
                 <RepeatButton Grid.Column="0"  Style="{StaticResource ScrollBarLineButton}" Width="18" Command="ScrollBar.LineLeftCommand" Content="M 4 0 L 4 8 L 0 4 Z" />
@@ -213,23 +188,23 @@
         </Grid.RowDefinitions>
         <Border MouseDown="DragWindow" Grid.Row="0" Background="#14151E" Height="30" Panel.ZIndex="3"/>
         <Label Panel.ZIndex="3" IsHitTestVisible="False" Name="HeaderInstruction" Grid.Row="0" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="Select a platform"/>
-        <Canvas Panel.ZIndex="3" IsHitTestVisible="False" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5 0 0 0">
+        <Canvas Grid.Row="0" Panel.ZIndex="3" IsHitTestVisible="False"  Name="Svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5 0 0 0">
             <Canvas.RenderTransform>
                 <TranslateTransform X="0" Y="0"/>
             </Canvas.RenderTransform>
             <Canvas.Resources/>
-            <Canvas Name="g3859">
-                <Canvas Name="g3857">
-                    <Canvas Name="g3849">
-                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="O1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 0.889l6.25 0l0 8.27l-3.503 0l-2.747 -2.874l0 -3.28l2.115 0l0 4.086l2.019 0l0 -4.086l-4.134 0l0 -2.116"/>
-                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="O2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 7.487l1.598 1.672l-1.598 0l0 -1.672Z"/>
+            <Canvas Name="G3859">
+                <Canvas Name="G3857">
+                    <Canvas Name="G3849">
+                        <Path  Name="O1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 0.889l6.25 0l0 8.27l-3.503 0l-2.747 -2.874l0 -3.28l2.115 0l0 4.086l2.019 0l0 -4.086l-4.134 0l0 -2.116"/>
+                        <Path  Name="O2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 7.487l1.598 1.672l-1.598 0l0 -1.672Z"/>
                     </Canvas>
-                    <Canvas Name="g3853">
-                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="N1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M15.053 0l0 9.135l2.117 0l0 -3.844l4.471 4.709l0 -9.135l-2.117 0l0 3.846l-4.471 -4.711Z"/>
-                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="N2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M17.016 0.865l1.932 2.02l0 -2.02l-1.932 0Z"/>
+                    <Canvas Name="G3853">
+                        <Path  Name="N1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M15.053 0l0 9.135l2.117 0l0 -3.844l4.471 4.709l0 -9.135l-2.117 0l0 3.846l-4.471 -4.711Z"/>
+                        <Path  Name="N2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M17.016 0.865l1.932 2.02l0 -2.02l-1.932 0Z"/>
                     </Canvas>
-                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="C" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M7.697 0.841l0 8.318l6.25 0l0 -2.067l-4.134 0l0 -4.088l4.134 0l0 -2.163l-6.25 0"/>
-                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="T" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M0.341 0.841l0 2.117l1.78 0l0 6.201l2.115 0l0 -6.201l2.702 0l0 -2.117l-6.597 0Z"/>
+                    <Path  Name="C" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M7.697 0.841l0 8.318l6.25 0l0 -2.067l-4.134 0l0 -4.088l4.134 0l0 -2.163l-6.25 0"/>
+                    <Path  Name="T" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M0.341 0.841l0 2.117l1.78 0l0 6.201l2.115 0l0 -6.201l2.702 0l0 -2.117l-6.597 0Z"/>
                 </Canvas>
             </Canvas>
         </Canvas>
@@ -271,12 +246,12 @@
             <ListBoxItem Style="{StaticResource StylePlatform}" PreviewMouseUp="PickerOrigin">
                 <StackPanel IsHitTestVisible="False">
                     <Border BorderThickness="2" Width="48px" Height="66px" Margin="0 0 0 3px">
-                        <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svgOrigin" Width="70" Height="70">
+                        <Canvas  Name="SvgOrigin" Width="70" Height="70">
                             <Canvas.RenderTransform>
                                 <ScaleTransform ScaleX="0.12" ScaleY="0.12"/>
                             </Canvas.RenderTransform>
                             <Canvas.Resources/>
-                            <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="OriginPath" Fill="#BFBFBF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M180.92 23.91C183.51 22.47 187.34 23.54 188.23 26.53C189.19 29 187.53 31.26 186.17 33.17C176.54 46.82 170.15 62.68 167.13 79.09C165.3 79.87 164.77 81.79 165.34 83.6C166.24 83.93 167.15 84.22 168.07 84.5C186.76 82.86 205.72 83.2 224.12 87.13C257.6 93.87 288.89 110.81 312.94 135.03C336.92 159 353.75 190.06 360.56 223.29C368.11 259.27 363.89 297.57 348.79 331.08C316.77 399.51 262.79 457.39 196.74 494.08C194.61 495.07 191.54 495.11 190.08 492.99C188.36 490.77 189.07 487.61 190.77 485.59C199.68 473.16 205.9 458.87 209.28 443.97C209.93 440.88 210.82 437.75 210.55 434.57C209.46 433.15 207.66 433.58 206.13 433.63C174.07 436.84 141.08 431.11 112.11 416.95C81.08 402 54.75 377.56 37.34 347.85C21.21 320.52 12.73 288.69 13.32 256.94C13.43 227.8 21.38 198.9 35.38 173.39C67.97 110.82 119.14 58.02 180.92 23.91M179.12 191.12C160.05 193.68 142.46 204.88 131.78 220.84C124.55 231.8 120.17 244.82 120.26 258C119.72 275.66 126.76 293.35 138.96 306.07C149.62 317.55 164.43 325.03 179.96 327.03C195.77 329.12 212.28 325.42 225.67 316.73C239.28 308.09 249.65 294.45 254.29 279C263 252.18 252.56 220.76 229.84 204.19C215.57 193.33 196.86 188.51 179.12 191.12Z"/>
+                            <Path  Name="OriginPath" Fill="#BFBFBF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M180.92 23.91C183.51 22.47 187.34 23.54 188.23 26.53C189.19 29 187.53 31.26 186.17 33.17C176.54 46.82 170.15 62.68 167.13 79.09C165.3 79.87 164.77 81.79 165.34 83.6C166.24 83.93 167.15 84.22 168.07 84.5C186.76 82.86 205.72 83.2 224.12 87.13C257.6 93.87 288.89 110.81 312.94 135.03C336.92 159 353.75 190.06 360.56 223.29C368.11 259.27 363.89 297.57 348.79 331.08C316.77 399.51 262.79 457.39 196.74 494.08C194.61 495.07 191.54 495.11 190.08 492.99C188.36 490.77 189.07 487.61 190.77 485.59C199.68 473.16 205.9 458.87 209.28 443.97C209.93 440.88 210.82 437.75 210.55 434.57C209.46 433.15 207.66 433.58 206.13 433.63C174.07 436.84 141.08 431.11 112.11 416.95C81.08 402 54.75 377.56 37.34 347.85C21.21 320.52 12.73 288.69 13.32 256.94C13.43 227.8 21.38 198.9 35.38 173.39C67.97 110.82 119.14 58.02 180.92 23.91M179.12 191.12C160.05 193.68 142.46 204.88 131.78 220.84C124.55 231.8 120.17 244.82 120.26 258C119.72 275.66 126.76 293.35 138.96 306.07C149.62 317.55 164.43 325.03 179.96 327.03C195.77 329.12 212.28 325.42 225.67 316.73C239.28 308.09 249.65 294.45 254.29 279C263 252.18 252.56 220.76 229.84 204.19C215.57 193.33 196.86 188.51 179.12 191.12Z"/>
                         </Canvas>
                     </Border>
                     <TextBlock Text="Origin" FontSize="10" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
@@ -289,12 +264,12 @@
                 <StackPanel IsHitTestVisible="False">
                     <!--<Border BorderThickness="2" Width="66px" Height="66px" Margin="0 0 0 3px" Background="Black">  // For testing & fitting new icons. -->
                     <Border BorderThickness="2" Width="66px" Height="66px" Margin="0 0 0 3px">
-                        <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svgSteam" Width="66" Height="33">
+                        <Canvas  Name="svgSteam" Width="66" Height="33">
                             <Canvas.RenderTransform>
                                 <ScaleTransform ScaleX="0.9" ScaleY="0.9"/>
                             </Canvas.RenderTransform>
                             <Canvas.Resources/>
-                            <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="SteamPath" Fill="#BFBFBF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M56.542 5C52.171 5 48.616 8.555 48.616 12.925C48.616 12.96 48.616 12.995 48.618 13.028L43.512 20.432C42.685 20.396 41.855 20.54 41.068 20.864C40.721 21.005 40.396 21.179 40.091 21.379L17.08 11.867C16.693 10.076 15.468 8.495 13.652 7.737C10.707 6.511 7.313 7.909 6.085 10.855C4.858 13.799 6.257 17.193 9.202 18.42C10.628 19.014 12.2 19.017 13.63 18.43C13.959 18.294 14.269 18.126 14.565 17.939L37.627 27.473C38.025 29.247 39.245 30.805 41.045 31.554C43.99 32.783 47.385 31.383 48.611 28.441C48.929 27.673 49.078 26.866 49.056 26.061L56.362 20.849C56.422 20.851 56.482 20.852 56.542 20.852C60.913 20.852 64.467 17.295 64.467 12.925C64.467 8.555 60.913 5 56.542 5M9.711 17.199C7.999 16.486 6.964 14.823 6.964 13.073C6.964 12.501 7.074 11.922 7.308 11.364C8.253 9.091 10.872 8.012 13.143 8.958C14.215 9.404 15.014 10.222 15.468 11.199L12.827 10.107C11.153 9.41 9.229 10.202 8.53 11.877C7.833 13.553 8.626 15.479 10.3 16.176L12.949 17.27C11.894 17.655 10.752 17.635 9.711 17.199M47.392 27.93C46.443 30.202 43.827 31.281 41.553 30.335C40.504 29.898 39.712 29.099 39.255 28.146L41.835 29.214C43.512 29.912 45.436 29.118 46.133 27.444C46.832 25.769 46.039 23.845 44.363 23.147L41.696 22.044C42.725 21.654 43.895 21.64 44.988 22.094C46.09 22.552 46.945 23.413 47.398 24.515C47.852 25.617 47.85 26.832 47.392 27.93M56.542 18.207C53.631 18.207 51.262 15.837 51.262 12.925C51.262 10.015 53.631 7.645 56.542 7.645C59.453 7.645 61.823 10.015 61.823 12.925C61.823 15.837 59.453 18.207 56.542 18.207M56.55 16.883C54.361 16.883 52.585 15.108 52.585 12.917C52.585 10.726 54.361 8.949 56.55 8.949C58.741 8.949 60.518 10.726 60.518 12.917C60.518 15.108 58.741 16.883 56.55 16.883"/>
+                            <Path  Name="SteamPath" Fill="#BFBFBF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M56.542 5C52.171 5 48.616 8.555 48.616 12.925C48.616 12.96 48.616 12.995 48.618 13.028L43.512 20.432C42.685 20.396 41.855 20.54 41.068 20.864C40.721 21.005 40.396 21.179 40.091 21.379L17.08 11.867C16.693 10.076 15.468 8.495 13.652 7.737C10.707 6.511 7.313 7.909 6.085 10.855C4.858 13.799 6.257 17.193 9.202 18.42C10.628 19.014 12.2 19.017 13.63 18.43C13.959 18.294 14.269 18.126 14.565 17.939L37.627 27.473C38.025 29.247 39.245 30.805 41.045 31.554C43.99 32.783 47.385 31.383 48.611 28.441C48.929 27.673 49.078 26.866 49.056 26.061L56.362 20.849C56.422 20.851 56.482 20.852 56.542 20.852C60.913 20.852 64.467 17.295 64.467 12.925C64.467 8.555 60.913 5 56.542 5M9.711 17.199C7.999 16.486 6.964 14.823 6.964 13.073C6.964 12.501 7.074 11.922 7.308 11.364C8.253 9.091 10.872 8.012 13.143 8.958C14.215 9.404 15.014 10.222 15.468 11.199L12.827 10.107C11.153 9.41 9.229 10.202 8.53 11.877C7.833 13.553 8.626 15.479 10.3 16.176L12.949 17.27C11.894 17.655 10.752 17.635 9.711 17.199M47.392 27.93C46.443 30.202 43.827 31.281 41.553 30.335C40.504 29.898 39.712 29.099 39.255 28.146L41.835 29.214C43.512 29.912 45.436 29.118 46.133 27.444C46.832 25.769 46.039 23.845 44.363 23.147L41.696 22.044C42.725 21.654 43.895 21.64 44.988 22.094C46.09 22.552 46.945 23.413 47.398 24.515C47.852 25.617 47.85 26.832 47.392 27.93M56.542 18.207C53.631 18.207 51.262 15.837 51.262 12.925C51.262 10.015 53.631 7.645 56.542 7.645C59.453 7.645 61.823 10.015 61.823 12.925C61.823 15.837 59.453 18.207 56.542 18.207M56.55 16.883C54.361 16.883 52.585 15.108 52.585 12.917C52.585 10.726 54.361 8.949 56.55 8.949C58.741 8.949 60.518 10.726 60.518 12.917C60.518 15.108 58.741 16.883 56.55 16.883"/>
                         </Canvas>
                     </Border>
                     <TextBlock Text="Steam" FontSize="10" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>

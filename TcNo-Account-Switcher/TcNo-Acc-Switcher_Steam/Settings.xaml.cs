@@ -72,19 +72,19 @@ namespace TcNo_Acc_Switcher_Steam
         private void ShowSteamID_CheckChanged(object sender, RoutedEventArgs e)
         {
             if (_enableButtons)
-                _mw.ShowSteamIDHidden.IsChecked = ShowSteamID.IsChecked != null && (bool)ShowSteamID.IsChecked;
+                _mw.ShowSteamIdHidden.IsChecked = ShowSteamId.IsChecked != null && (bool)ShowSteamId.IsChecked;
         }
 
         private void ShowVACStatus_CheckChanged(object sender, RoutedEventArgs e)
         {
             if (_enableButtons)
-                _mw.ToggleVacStatus(ShowVACStatus.IsChecked != null && (bool)ShowVACStatus.IsChecked);
+                _mw.ToggleVacStatus(ShowVacStatus.IsChecked != null && (bool)ShowVacStatus.IsChecked);
         }
 
         private void LimitedAsVAC_CheckChanged(object sender, RoutedEventArgs e)
         {
             if (_enableButtons)
-                _mw.ToggleLimitedAsVac(LimitedAsVAC.IsChecked != null && (bool)LimitedAsVAC.IsChecked);
+                _mw.ToggleLimitedAsVac(LimitedAsVac.IsChecked != null && (bool)LimitedAsVac.IsChecked);
         }
 
         private void btnRestoreForgotten_Click(object sender, RoutedEventArgs e)

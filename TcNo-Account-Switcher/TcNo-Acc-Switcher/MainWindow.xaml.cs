@@ -1,24 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using TcNo_Acc_Switcher_Globals;
 using Color = System.Windows.Media.Color;
 using Path = System.IO.Path;
@@ -28,12 +19,12 @@ namespace TcNo_Acc_Switcher
     /// <summary>
     /// Interaction logic for PlatformPicker.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        private Globals _globals = Globals.LoadExisting(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+        private readonly Globals _globals = Globals.LoadExisting(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
         //readonly int steam_version = 3000;
-        readonly int steam_version = 3002;
-        readonly int steam_trayversion = 1000;
+        private const int SteamVersion = 3002;
+        private readonly int _steamTrayVersion = 1000;
         public MainWindow()
         {
             InitializeComponent();
@@ -57,7 +48,7 @@ namespace TcNo_Acc_Switcher
 
         public void Process_Update(bool async = false)
         {
-            Thread updateCheckThread = async ? new Thread(AsyncUpdateCheck) : new Thread(UpdateCheck);
+            var updateCheckThread = async ? new Thread(AsyncUpdateCheck) : new Thread(UpdateCheck);
             // Check if cleanup needed for update
             if (File.Exists("Update_Complete"))
             {
@@ -71,13 +62,11 @@ namespace TcNo_Acc_Switcher
                 //MessageBoxResult messageBoxResult = MessageBox.Show(new Window { Topmost = true }, Strings.GitHubWhatsNew, Strings.FinishedUpdating,
                 //    MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.Yes,
                 //    MessageBoxOptions.DefaultDesktopOnly);
-                MessageBoxResult messageBoxResult = MessageBox.Show(Strings.GitHubWhatsNew, Strings.FinishedUpdating,
+                var messageBoxResult = MessageBox.Show(Strings.GitHubWhatsNew, Strings.FinishedUpdating,
                     MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.Yes,
                     MessageBoxOptions.DefaultDesktopOnly);
                 if (messageBoxResult == MessageBoxResult.Yes)
-                {
                     Process.Start(new ProcessStartInfo("https://github.com/TcNobo/TcNo-Acc-Switcher/releases") { UseShellExecute = true });
-                }
             }
             else
             {
@@ -91,19 +80,19 @@ namespace TcNo_Acc_Switcher
             if (updateCheckThread.IsAlive)
                 updateCheckThread.Join();
         }
-        private void Start_SteamTray()
+        private static void Start_SteamTray()
         {
             try
             {
-                string processName = "Steam\\TcNo Acc Switcher SteamTray.exe";
-                if (File.Exists(processName))
+                var processName = "Steam\\TcNo Acc Switcher SteamTray.exe";
+                if (!File.Exists(processName)) return;
+                var startInfo = new ProcessStartInfo
                 {
-                    ProcessStartInfo startInfo = new ProcessStartInfo();
-                    startInfo.FileName = System.IO.Path.GetFullPath(processName);
-                    startInfo.CreateNoWindow = false;
-                    startInfo.UseShellExecute = false;
-                    Process.Start(startInfo);
-                }
+                    FileName = System.IO.Path.GetFullPath(processName),
+                    CreateNoWindow = false,
+                    UseShellExecute = false
+                };
+                Process.Start(startInfo);
             }
             catch (Exception)
             {
@@ -116,16 +105,16 @@ namespace TcNo_Acc_Switcher
         /// This downloads and replaces all files from .zip.
         /// Used for updating everything, and not individual files.
         /// </summary>
-        void AsyncUpdateCheck()
+        private void AsyncUpdateCheck()
         {
             UpdateCheck(true);
         }
 
-        void UpdateCheck()
+        private void UpdateCheck()
         {
             UpdateCheck(false);
         }
-        public void UpdateCheck(bool async = false)
+        public void UpdateCheck(bool async)
         {
             _globals.LastCheckedNow();
             Globals.Save(_globals);
@@ -136,11 +125,11 @@ namespace TcNo_Acc_Switcher
                 var webVersion = int.Parse(wc.DownloadString("https://tcno.co/Projects/AccSwitcher/net_version.php").Substring(0, 4));
 
                 // Currently only set to work with Steam, until another update.
-                if (webVersion > steam_version)
+                if (webVersion > SteamVersion)
                 {
-                    using (FileStream fs = File.Create("UpdateFound.txt"))
+                    using (var fs = File.Create("UpdateFound.txt"))
                     {
-                        byte[] info = new UTF8Encoding(true).GetBytes(Strings.UpdateLastLaunch + DateTime.Now.ToString(CultureInfo.InvariantCulture));
+                        var info = new UTF8Encoding(true).GetBytes(Strings.UpdateLastLaunch + DateTime.Now.ToString(CultureInfo.InvariantCulture));
                         fs.Write(info, 0, info.Length);
                     }
                     if (async) this.Dispatcher.Invoke(DownloadUpdateDialog);
@@ -163,30 +152,28 @@ namespace TcNo_Acc_Switcher
         /// </summary>
         public void DownloadUpdateDialog()
         {
-            MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show(Strings.UpdateNow, Strings.UpdateFound, System.Windows.MessageBoxButton.YesNo);
-            if (messageBoxResult == MessageBoxResult.Yes)
-            {
-                if (File.Exists("UpdateFound.txt"))
-                    File.Delete("UpdateFound.txt");
+            var messageBoxResult = System.Windows.MessageBox.Show(Strings.UpdateNow, Strings.UpdateFound, System.Windows.MessageBoxButton.YesNo);
+            if (messageBoxResult != MessageBoxResult.Yes) return;
+            if (File.Exists("UpdateFound.txt"))
+                File.Delete("UpdateFound.txt");
 
-                // Run updater -- This is the Steam version, so the version update check will be here
-                string processName = "TcNo Acc Switcher Updater.exe";
-                ProcessStartInfo startInfo = new ProcessStartInfo();
-                startInfo.FileName = processName;
-                startInfo.CreateNoWindow = false;
-                startInfo.UseShellExecute = true;
-                Process.Start(startInfo);
-                Environment.Exit(1);
-            }
+            // Run updater -- This is the Steam version, so the version update check will be here
+            var processName = "TcNo Acc Switcher Updater.exe";
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = processName, CreateNoWindow = false, UseShellExecute = true
+            };
+            Process.Start(startInfo);
+            Environment.Exit(1);
         }
         /// <summary>
         /// Cleans up directory after an update
         /// </summary>
-        private void ResourceClean()
+        private static void ResourceClean()
         {
-            string[] delFileNames = new string[] { "7za-license.txt", "7za.exe", "x64.zip", "x32.zip", "upd.7z", "UpdateInformation.txt" };
+            var delFileNames = new[] { "7za-license.txt", "7za.exe", "x64.zip", "x32.zip", "upd.7z", "UpdateInformation.txt" };
 
-            foreach (string f in delFileNames)
+            foreach (var f in delFileNames)
             {
                 if (File.Exists(f))
                     File.Delete(f);

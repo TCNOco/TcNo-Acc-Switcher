@@ -240,16 +240,16 @@ namespace TcNo_Acc_Switcher_Steam
                 }
             }
         }
-        private void btnClearLogs_Click(object sender, RoutedEventArgs e) => ClearFolder("Clearing logs:", Path.Combine(_mw.GetSteamDirectory(), "logs\\"));
-        private void btnClearDumps_Click(object sender, RoutedEventArgs e) => ClearFolder("Clearing dumps:", Path.Combine(_mw.GetSteamDirectory(), "dumps\\"));
-        private void btnClearConfigVDF_Click(object sender, RoutedEventArgs e) => ClearFile(Path.Combine(_mw.GetSteamDirectory(), "config\\config.vdf"));
-        private void btnClearLoginusersVDF_Click(object sender, RoutedEventArgs e) => ClearFile(Path.Combine(_mw.GetSteamDirectory(), "config\\loginusers.vdf"));
+        private void BtnClearLogs_Click(object sender, RoutedEventArgs e) => ClearFolder("Clearing logs:", Path.Combine(_mw.GetSteamDirectory(), "logs\\"));
+        private void BtnClearDumps_Click(object sender, RoutedEventArgs e) => ClearFolder("Clearing dumps:", Path.Combine(_mw.GetSteamDirectory(), "dumps\\"));
+        private void BtnClearConfigVdf_Click(object sender, RoutedEventArgs e) => ClearFile(Path.Combine(_mw.GetSteamDirectory(), "config\\config.vdf"));
+        private void BtnClearLoginusersVdf_Click(object sender, RoutedEventArgs e) => ClearFile(Path.Combine(_mw.GetSteamDirectory(), "config\\loginusers.vdf"));
         private void btnClearSSFN_Click(object sender, RoutedEventArgs e) => ClearSsfn(_mw.GetSteamDirectory());
         private void btnClearRLastName_Click(object sender, RoutedEventArgs e) => DeleteRegKey(@"Software\Valve\Steam", "LastGameNameUsed");
         private void btnClearRAutoLogin_Click(object sender, RoutedEventArgs e) => DeleteRegKey(@"Software\Valve\Steam", "AutoLoginuser");
         private void btnClearRRemember_Click(object sender, RoutedEventArgs e) => DeleteRegKey(@"Software\Valve\Steam", "RememberPassword");
         private void btnClearRUID_Click(object sender, RoutedEventArgs e) => DeleteRegKey(@"Software\Valve\Steam", "PseudoUUID");
-        private void btnClearBackups_Click(object sender, RoutedEventArgs e)
+        private void BtnClearBackups_Click(object sender, RoutedEventArgs e)
         {
             LogPrint("Clearing forgotten account backups:");
             _mw.ClearForgottenBackups();
@@ -261,14 +261,14 @@ namespace TcNo_Acc_Switcher_Steam
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
         }
-        private void btnKillSteam_Click(object sender, RoutedEventArgs e) => _mw.CloseSteam();
+        private void BtnKillSteam_Click(object sender, RoutedEventArgs e) => _mw.CloseSteam();
 
-        private void BtnClearHTMLCache_OnClick(object sender, RoutedEventArgs e) =>
+        private void BtnClearHtmlCache_OnClick(object sender, RoutedEventArgs e) =>
             // HTML Cache - %USERPROFILE%\AppData\Local\Steam\htmlcache
             ClearFolder("Clearing htmlcache:", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Steam\\htmlcache"));
         
 
-        private void BtnClearUILogs_OnClick(object sender, RoutedEventArgs e) =>
+        private void BtnClearUiLogs_OnClick(object sender, RoutedEventArgs e) =>
             // Overlay UI logs -
             //   Steam\GameOverlayUI.exe.log
             //   Steam\GameOverlayRenderer.log
@@ -278,7 +278,7 @@ namespace TcNo_Acc_Switcher_Steam
             // App Cache - Steam\appcache
             ClearFilesOfType("Clearing appcache:", Path.Combine(_mw.GetSteamDirectory(), "appcache"),"*.*", SearchOption.TopDirectoryOnly);
         
-        private void BtnClearHTTPCache_OnClick(object sender, RoutedEventArgs e) =>
+        private void BtnClearHttpCache_OnClick(object sender, RoutedEventArgs e) =>
             // HTTP cache - Steam\appcache\httpcache\
             ClearFilesOfType("Clearing appcache\\httpcache:", Path.Combine(_mw.GetSteamDirectory(), "appcache\\httpcache"), "*.*", SearchOption.AllDirectories);
         

@@ -42,7 +42,7 @@
   <PropertyGroup />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\Build\Debug\x64\Steam\</OutputPath>
+    <OutputPath>..\Build\Debug\TcNo.Account.Switcher.x64\Steam\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -65,7 +65,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\Build\Debug\x86\Steam\</OutputPath>
+    <OutputPath>..\Build\Debug\TcNo.Account.Switcher.x32\Steam\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <DebugType>portable</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -90,6 +90,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Gameloop.Vdf, Version=0.6.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Gameloop.Vdf.0.6.1\lib\net45\Gameloop.Vdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Gameloop.Vdf.JsonConverter, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Gameloop.Vdf.JsonConverter.0.2.1\lib\net45\Gameloop.Vdf.JsonConverter.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Win32.TaskScheduler, Version=2.8.19.0, Culture=neutral, PublicKeyToken=c416bc1b32d97233, processorArchitecture=MSIL">
       <HintPath>..\packages\TaskScheduler.2.8.19\lib\net452\Microsoft.Win32.TaskScheduler.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -106,6 +112,7 @@
     </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
