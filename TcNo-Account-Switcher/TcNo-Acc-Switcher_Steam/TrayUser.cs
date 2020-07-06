@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -26,10 +27,19 @@ namespace TcNo_Acc_Switcher_Steam
             ListTrayUsers = JsonConvert.DeserializeObject<List<TrayUser>>(json);
         }
 
-        public string GetAccName(string steamId) =>
+        public string GetAccName(string steamId)
+        {
             // IF AccName == ""  and it's trying to change accounts,
             // Get the account name from the original file --> This is for accounts that are being logged into that aren't in the quick launch ones.
-            ListTrayUsers.Single(r => r.SteamID == steamId)?.AccName;
+            try
+            {
+                return ListTrayUsers.Single(r => r.SteamID == steamId)?.AccName;
+            }
+            catch
+            {
+                return ""; // Not found
+            }
+        }
 
         public string GetName(string steamId) =>
             // IF AccName == ""  and it's trying to change accounts,

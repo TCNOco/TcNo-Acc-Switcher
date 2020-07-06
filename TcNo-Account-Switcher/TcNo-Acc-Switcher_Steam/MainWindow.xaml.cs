@@ -46,14 +46,14 @@ namespace TcNo_Acc_Switcher_Steam
         private UserSettings _persistentSettings = new UserSettings();
         private readonly SolidColorBrush _vacRedBrush = new SolidColorBrush(Color.FromRgb(255,41,58));
 
-        public MainWindow()
+        public MainWindow(bool argumentLaunch = false)
         {
             /* TODO:
              - Test extract and replace of 7-zip while updating. Don't think it's working, but haven't been able to test just yet.
              - Reset images. Start a program that restarts the main program, or restart the program in another way.
              */
             // Single instance check
-            if (SelfAlreadyRunning())
+            if (!argumentLaunch && SelfAlreadyRunning())
             {
                 Console.WriteLine(Strings.SwitcherAlreadyRunning);
                 MessageBox.Show(Strings.SwitcherAlreadyRunning, Strings.SwitcherAlreadyRunningHeading, MessageBoxButton.OK, MessageBoxImage.Error);
@@ -87,9 +87,9 @@ namespace TcNo_Acc_Switcher_Steam
         }
         private static bool SelfAlreadyRunning()
         {
-            var processes = Process.GetProcesses();
-            var currentProc = Process.GetCurrentProcess();
-            return processes.Any(process => currentProc.ProcessName == process.ProcessName && currentProc.Id != process.Id);
+                var processes = Process.GetProcesses();
+                var currentProc = Process.GetCurrentProcess();
+                return processes.Any(process => currentProc.ProcessName == process.ProcessName && currentProc.Id != process.Id);
         }
 
 
@@ -445,7 +445,8 @@ namespace TcNo_Acc_Switcher_Steam
                     System.Console.WriteLine(line);
                 }
                 // While loop adds account when new one started. Will not include the last one, so that's done here.
-                _userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
+                if (!String.IsNullOrEmpty(steamId))
+                    _userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
 
                 file.Close();
             }
@@ -533,14 +534,16 @@ namespace TcNo_Acc_Switcher_Steam
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
             // -----------------------------------
-            using (var fs = File.Open(_persistentSettings.LoginusersVdf(), FileMode.Truncate, FileAccess.Write, FileShare.None))
+            var targetUsername = accName;
+            var tempFile = _persistentSettings.LoginusersVdf() + "_temp";
+            File.Delete(tempFile);
+            using (var fs = File.Create(tempFile))
             {
                 lblStatus.Content = Strings.StatusEditingLoginusers;
                 var userIdMatch = false;
                 foreach (var line in _fLoginUsersLines)
                 {
                     var outline = line;
-
                     var lineNoQuot = line;
                     lineNoQuot = lineNoQuot.Replace("\t", "").Replace("\"", "");
 
@@ -549,6 +552,8 @@ namespace TcNo_Acc_Switcher_Steam
                         // Most recent ID matches! Set this account to active.
                         userIdMatch = lineNoQuot == selectedSteamId;
                     }
+                    else if (line.Contains("AccountName") && userIdMatch) // Username not supplied
+                            targetUsername = lineNoQuot.Substring(11);
                     else if (line.Contains("mostrecent"))
                     {
                         // Set every mostrecent to 0, unless it's the one you want to switch to.
@@ -561,10 +566,18 @@ namespace TcNo_Acc_Switcher_Steam
                             outline = "\t\t\"mostrecent\"\t\t\"0\"";
                         }
                     }
+                    else if (line.Contains("}"))
+                    {
+                        // Reset variables for next user.
+                        if (userIdMatch && string.IsNullOrEmpty(targetUsername))
+                            MessageBox.Show(Strings.ErrSwitchingAcc, Strings.ErrSwitchingAcc_MissingUsername, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                     var info = new UTF8Encoding(true).GetBytes(outline + "\n");
                     fs.Write(info, 0, info.Length);
                 }
             }
+            // Replace original file with temp
+            File.Replace(tempFile, _persistentSettings.LoginusersVdf(), _persistentSettings.LoginusersVdf() + "_last");
 
             // -----------------------------------
             // --------- Manage registry ---------
@@ -585,7 +598,7 @@ namespace TcNo_Acc_Switcher_Steam
                 }
                 else
                 {
-                    key.SetValue("AutoLoginUser", accName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel).
+                    key.SetValue("AutoLoginUser", targetUsername); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel).
                     key.SetValue("RememberPassword", 1);
                 }
             }
@@ -736,18 +749,19 @@ namespace TcNo_Acc_Switcher_Steam
         }
         public void SwapSteamAccounts(bool loginNone, string steamid, string accName)
         {
-            if (VerifySteamId(steamid))
-            {
-                CloseSteam();
-                UpdateLoginUsers(loginNone, steamid, accName);
-
-                if (_persistentSettings.StartAsAdmin)
-                    Process.Start(_persistentSettings.SteamExe()); // Maybe get steamID from elsewhere? Or load persistent settings first...
-                else
-                    Process.Start(new ProcessStartInfo("explorer.exe", _persistentSettings.SteamExe()));
-            }
-            else
+            if (!VerifySteamId(steamid)) {
                 MessageBox.Show("Invalid SteamID: " + steamid);
+                return;
+            }
+
+            CloseSteam();
+            UpdateLoginUsers(loginNone, steamid, accName);
+
+            if (_persistentSettings.StartAsAdmin)
+                Process.Start(_persistentSettings
+                    .SteamExe()); // Maybe get steamID from elsewhere? Or load persistent settings first...
+            else
+                Process.Start(new ProcessStartInfo("explorer.exe", _persistentSettings.SteamExe()));
         }
         private void ShowForgetRememberDialog()
         {
@@ -917,6 +931,12 @@ namespace TcNo_Acc_Switcher_Steam
                     Clipboard.SetText($"https://steamidfinder.com/lookup/{steamId}/");
                     break;
             }
+        }
+        private void AccountItem_SwitchShortcut(object sender, RoutedEventArgs e)
+        {
+            var steamId = MainViewmodel.SelectedSteamUser.SteamID;
+            var username = MainViewmodel.SelectedSteamUser.AccName;
+            CreateSwitchShortcut(steamId, username);
         }
 
         private void LoginButtonAnimation(Color colFrom, Color colTo, int len)
@@ -1243,11 +1263,23 @@ namespace TcNo_Acc_Switcher_Steam
             Directory.CreateDirectory(location);
             // Starts the main picker, with the Steam argument.
             string selfExe = Path.Combine(ParentDirectory(Directory.GetCurrentDirectory()), "TcNo Account Switcher.exe"),
-                   selfLocation = ParentDirectory(Directory.GetCurrentDirectory()),
-                   iconDirectory = Path.Combine(selfLocation, "icon.ico"),
-                   settingsLink = Path.Combine(location, "TcNo Account Switcher - Steam.lnk");
+                selfLocation = ParentDirectory(Directory.GetCurrentDirectory()),
+                iconDirectory = Path.Combine(selfLocation, "icon.ico"),
+                settingsLink = Path.Combine(location, "TcNo Account Switcher - Steam.lnk");
             const string description = "TcNo Account Switcher - Steam";
             const string arguments = "+steam";
+
+            WriteShortcut(selfExe, selfLocation, iconDirectory, description, settingsLink, arguments);
+        }
+        private void CreateSwitchShortcut(string steamId, string username)
+        {
+            // Starts the main picker, with the Steam argument.
+            string selfExe = Path.Combine(Directory.GetCurrentDirectory(), "TcNo Account Switcher Steam.exe"),
+                selfLocation = ParentDirectory(Directory.GetCurrentDirectory()),
+                iconDirectory = Path.Combine(selfLocation, "icon.ico"),
+                settingsLink = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), $"Switch to {username}.lnk"),
+                description = $"TcNo Account Switcher - Steam: Switches to {username}",
+                arguments = $"+{steamId}";
 
             WriteShortcut(selfExe, selfLocation, iconDirectory, description, settingsLink, arguments);
         }

@@ -203,6 +203,24 @@ namespace TcNo_Acc_Switcher_Steam {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error switching account!.
+        /// </summary>
+        internal static string ErrSwitchingAcc {
+            get {
+                return ResourceManager.GetString("ErrSwitchingAcc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A username was not found in loginusers.vdf, but we looked for one with the provided SteamID. .
+        /// </summary>
+        internal static string ErrSwitchingAcc_MissingUsername {
+            get {
+                return ResourceManager.GetString("ErrSwitchingAcc_MissingUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to UNHANDLED CRASH.
         /// </summary>
         internal static string ErrUnhandledCrash {

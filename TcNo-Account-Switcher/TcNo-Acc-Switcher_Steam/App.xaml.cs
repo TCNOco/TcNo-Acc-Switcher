@@ -23,31 +23,30 @@ namespace TcNo_Acc_Switcher_Steam
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            var mainWindow = new MainWindow();
+            var mainWindow = new MainWindow(true);
             var quitArg = false;
             for (var i = 0; i != e.Args.Length; ++i)
             {
                 if (e.Args[i]?[0] == '+')
                 {
-                    if (!File.Exists("Tray_Users.json"))
-                    {
-                        MessageBox.Show("Error! There are no accounts for the Tray menu!");
-                        Environment.Exit(1);
-                    }
-
                     var steamId = e.Args[i].Substring(1);// Get SteamID from launch options
                     _trayUsers.LoadTrayUsers();
                     var accName = _trayUsers.GetAccName(steamId); // Get account name from JSON
 
                     mainWindow.SwapSteamAccounts(false, steamId, accName);
+                    quitArg = true;
                 }
                 else switch (e.Args[i])
                 {
                     case "logout":
                         mainWindow.SwapSteamAccounts(true, "", "");
+                        quitArg = true;
                         break;
                     case "quit":
                         quitArg = true;
+                        break;
+                    default:
+                        Console.WriteLine($"Unknown argument: \"{e.Args[i]}\"");
                         break;
                 }
             }

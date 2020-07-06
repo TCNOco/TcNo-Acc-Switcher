@@ -281,6 +281,9 @@
                 <Style x:Key="OtherSitesClick" TargetType="MenuItem">
                     <EventSetter Event="Click" Handler="AccountItem_OtherSites"/>
                 </Style>
+                <Style x:Key="SwitchShortcut" TargetType="MenuItem">
+                    <EventSetter Event="Click" Handler="AccountItem_SwitchShortcut"/>
+                </Style>
             </ListBox.Resources>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -311,6 +314,7 @@
                                     <MenuItem Header="SteamID.io"/>
                                     <MenuItem Header="SteamIDFinder.com"/>
                                 </MenuItem>
+                                <MenuItem Header="Create Desktop Shortcut" Style="{StaticResource SwitchShortcut}" />
                                 <MenuItem Header="Forget" Style="{StaticResource ForgetStyle}"/>
                             </ContextMenu>
                         </Setter.Value>

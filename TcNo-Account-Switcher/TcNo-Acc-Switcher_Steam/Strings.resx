@@ -169,6 +169,12 @@ Old settings are saved in settings.old.json, and a new config has been loaded.</
   <data name="ErrSteamSettingsLoadFailHeader" xml:space="preserve">
     <value>TcNo Account Switcher - Load Error</value>
   </data>
+  <data name="ErrSwitchingAcc" xml:space="preserve">
+    <value>Error switching account!</value>
+  </data>
+  <data name="ErrSwitchingAcc_MissingUsername" xml:space="preserve">
+    <value>A username was not found in loginusers.vdf, but we looked for one with the provided SteamID. </value>
+  </data>
   <data name="ErrUnhandledCrash" xml:space="preserve">
     <value>UNHANDLED CRASH</value>
   </data>
