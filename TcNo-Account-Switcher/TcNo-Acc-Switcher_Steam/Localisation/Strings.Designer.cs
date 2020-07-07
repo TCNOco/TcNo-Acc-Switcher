@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TcNo_Acc_Switcher_Steam {
+namespace TcNo_Acc_Switcher_Steam.Localisation {
     using System;
     
     
@@ -22,7 +22,7 @@ namespace TcNo_Acc_Switcher_Steam {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Strings {
+    public class Strings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,10 +36,10 @@ namespace TcNo_Acc_Switcher_Steam {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TcNo_Acc_Switcher_Steam.Strings", typeof(Strings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TcNo_Acc_Switcher_Steam.Localisation.Strings", typeof(Strings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace TcNo_Acc_Switcher_Steam {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Clear backups.
         /// </summary>
-        internal static string AreYouSure {
+        public static string AreYouSure {
             get {
                 return ResourceManager.GetString("AreYouSure", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to clear backups of forgotten accounts?.
         /// </summary>
-        internal static string ClearBackups {
+        public static string ClearBackups {
             get {
                 return ResourceManager.GetString("ClearBackups", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Error deleting files.
         /// </summary>
-        internal static string ErrDeleteFilesHeader {
+        public static string ErrDeleteFilesHeader {
             get {
                 return ResourceManager.GetString("ErrDeleteFilesHeader", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Unable to delete folder because it&apos;s not empty:.
         /// </summary>
-        internal static string ErrDeleteFolderNonempty {
+        public static string ErrDeleteFolderNonempty {
             get {
                 return ResourceManager.GetString("ErrDeleteFolderNonempty", resourceCulture);
             }
@@ -101,7 +101,7 @@ namespace TcNo_Acc_Switcher_Steam {
         ///
         ///Error information:.
         /// </summary>
-        internal static string ErrEmptyImage {
+        public static string ErrEmptyImage {
             get {
                 return ResourceManager.GetString("ErrEmptyImage", resourceCulture);
             }
@@ -110,7 +110,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to TcNo Account Switcher - Empty Image Error.
         /// </summary>
-        internal static string ErrEmptyImageHeader {
+        public static string ErrEmptyImageHeader {
             get {
                 return ResourceManager.GetString("ErrEmptyImageHeader", resourceCulture);
             }
@@ -122,7 +122,7 @@ namespace TcNo_Acc_Switcher_Steam {
         ///
         ///Details:.
         /// </summary>
-        internal static string ErrImageDownloadFail {
+        public static string ErrImageDownloadFail {
             get {
                 return ResourceManager.GetString("ErrImageDownloadFail", resourceCulture);
             }
@@ -131,7 +131,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Error information:.
         /// </summary>
-        internal static string ErrInformation {
+        public static string ErrInformation {
             get {
                 return ResourceManager.GetString("ErrInformation", resourceCulture);
             }
@@ -141,7 +141,7 @@ namespace TcNo_Acc_Switcher_Steam {
         ///   Looks up a localized string similar to Can&apos;t start account switcher when loginusers.vdf does not exist. Verify Steam&apos;s installation and try again.
         ///If you just deleted loginusers.vdf, try starting and logging with Steam at least once..
         /// </summary>
-        internal static string ErrLoginusersNonExist {
+        public static string ErrLoginusersNonExist {
             get {
                 return ResourceManager.GetString("ErrLoginusersNonExist", resourceCulture);
             }
@@ -150,7 +150,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to TcNo Account Switcher - loginusers.vdf doesn&apos;t exist.
         /// </summary>
-        internal static string ErrLoginusersNonExistHeader {
+        public static string ErrLoginusersNonExistHeader {
             get {
                 return ResourceManager.GetString("ErrLoginusersNonExistHeader", resourceCulture);
             }
@@ -159,7 +159,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to TcNo Account Switcher - Image download error.
         /// </summary>
-        internal static string ErrProfileImageDlFail {
+        public static string ErrProfileImageDlFail {
             get {
                 return ResourceManager.GetString("ErrProfileImageDlFail", resourceCulture);
             }
@@ -168,7 +168,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Could not recursively delete directory! Error:.
         /// </summary>
-        internal static string ErrRecursivelyDelete {
+        public static string ErrRecursivelyDelete {
             get {
                 return ResourceManager.GetString("ErrRecursivelyDelete", resourceCulture);
             }
@@ -177,7 +177,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Steam location not chosen. Resetting to old value:.
         /// </summary>
-        internal static string ErrSteamLocation {
+        public static string ErrSteamLocation {
             get {
                 return ResourceManager.GetString("ErrSteamLocation", resourceCulture);
             }
@@ -187,7 +187,7 @@ namespace TcNo_Acc_Switcher_Steam {
         ///   Looks up a localized string similar to SteamSettings.json failed to load properly.
         ///Old settings are saved in settings.old.json, and a new config has been loaded..
         /// </summary>
-        internal static string ErrSteamSettingsLoadFail {
+        public static string ErrSteamSettingsLoadFail {
             get {
                 return ResourceManager.GetString("ErrSteamSettingsLoadFail", resourceCulture);
             }
@@ -196,7 +196,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to TcNo Account Switcher - Load Error.
         /// </summary>
-        internal static string ErrSteamSettingsLoadFailHeader {
+        public static string ErrSteamSettingsLoadFailHeader {
             get {
                 return ResourceManager.GetString("ErrSteamSettingsLoadFailHeader", resourceCulture);
             }
@@ -205,7 +205,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Error switching account!.
         /// </summary>
-        internal static string ErrSwitchingAcc {
+        public static string ErrSwitchingAcc {
             get {
                 return ResourceManager.GetString("ErrSwitchingAcc", resourceCulture);
             }
@@ -214,7 +214,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to A username was not found in loginusers.vdf, but we looked for one with the provided SteamID. .
         /// </summary>
-        internal static string ErrSwitchingAcc_MissingUsername {
+        public static string ErrSwitchingAcc_MissingUsername {
             get {
                 return ResourceManager.GetString("ErrSwitchingAcc_MissingUsername", resourceCulture);
             }
@@ -223,7 +223,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to UNHANDLED CRASH.
         /// </summary>
-        internal static string ErrUnhandledCrash {
+        public static string ErrUnhandledCrash {
             get {
                 return ResourceManager.GetString("ErrUnhandledCrash", resourceCulture);
             }
@@ -232,7 +232,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to TcNo Account Switcher - Update check error.
         /// </summary>
-        internal static string ErrUpdateCheckHeader {
+        public static string ErrUpdateCheckHeader {
             get {
                 return ResourceManager.GetString("ErrUpdateCheckHeader", resourceCulture);
             }
@@ -242,7 +242,7 @@ namespace TcNo_Acc_Switcher_Steam {
         ///   Looks up a localized string similar to Click the &quot;Check account VAC Status&quot; button to see changes.
         ///Note: Steam shows game banned accounts as Limited..
         /// </summary>
-        internal static string InfoRefreshLimitedAsVac {
+        public static string InfoRefreshLimitedAsVac {
             get {
                 return ResourceManager.GetString("InfoRefreshLimitedAsVac", resourceCulture);
             }
@@ -251,7 +251,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to The program will now close. Once opened, new images will download..
         /// </summary>
-        internal static string InfoReopenImageDl {
+        public static string InfoReopenImageDl {
             get {
                 return ResourceManager.GetString("InfoReopenImageDl", resourceCulture);
             }
@@ -260,7 +260,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Shortcut to: {} was deleted!.
         /// </summary>
-        internal static string InfoShortcutDeleted {
+        public static string InfoShortcutDeleted {
             get {
                 return ResourceManager.GetString("InfoShortcutDeleted", resourceCulture);
             }
@@ -269,7 +269,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to TcNo Account Switcher will start in the Windows Tray on user login/startup (The small icons on the bottom right of your Windows Start bar.).
         /// </summary>
-        internal static string InfoTrayWindowsStart {
+        public static string InfoTrayWindowsStart {
             get {
                 return ResourceManager.GetString("InfoTrayWindowsStart", resourceCulture);
             }
@@ -278,7 +278,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to TcNo Account Switcher will no longer start with user login/startup..
         /// </summary>
-        internal static string InfoTrayWindowsStartOff {
+        public static string InfoTrayWindowsStartOff {
             get {
                 return ResourceManager.GetString("InfoTrayWindowsStartOff", resourceCulture);
             }
@@ -287,7 +287,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to You are required to pick a Steam directory for this program to work. Please check you have it installed and run this program again..
         /// </summary>
-        internal static string RequiredPickSteamDir {
+        public static string RequiredPickSteamDir {
             get {
                 return ResourceManager.GetString("RequiredPickSteamDir", resourceCulture);
             }
@@ -296,7 +296,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Selected.
         /// </summary>
-        internal static string StatusAccountSelected {
+        public static string StatusAccountSelected {
             get {
                 return ResourceManager.GetString("StatusAccountSelected", resourceCulture);
             }
@@ -305,7 +305,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Status: Checking VAC status for each account..
         /// </summary>
-        internal static string StatusCheckingVac {
+        public static string StatusCheckingVac {
             get {
                 return ResourceManager.GetString("StatusCheckingVac", resourceCulture);
             }
@@ -314,7 +314,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Status: Checking VAC status:.
         /// </summary>
-        internal static string StatusCheckingVacActive {
+        public static string StatusCheckingVacActive {
             get {
                 return ResourceManager.GetString("StatusCheckingVacActive", resourceCulture);
             }
@@ -323,7 +323,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Status: Closing Steam.
         /// </summary>
-        internal static string StatusClosingSteam {
+        public static string StatusClosingSteam {
             get {
                 return ResourceManager.GetString("StatusClosingSteam", resourceCulture);
             }
@@ -332,7 +332,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Status: Collecting Steam Accounts..
         /// </summary>
-        internal static string StatusCollectingAccounts {
+        public static string StatusCollectingAccounts {
             get {
                 return ResourceManager.GetString("StatusCollectingAccounts", resourceCulture);
             }
@@ -341,7 +341,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Status: Downloading profile image:.
         /// </summary>
-        internal static string StatusDownloadingProfile {
+        public static string StatusDownloadingProfile {
             get {
                 return ResourceManager.GetString("StatusDownloadingProfile", resourceCulture);
             }
@@ -350,7 +350,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Status: Editing loginusers.vdf.
         /// </summary>
-        internal static string StatusEditingLoginusers {
+        public static string StatusEditingLoginusers {
             get {
                 return ResourceManager.GetString("StatusEditingLoginusers", resourceCulture);
             }
@@ -359,7 +359,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Status: Editing Steam&apos;s Registry keys.
         /// </summary>
-        internal static string StatusEditingRegistry {
+        public static string StatusEditingRegistry {
             get {
                 return ResourceManager.GetString("StatusEditingRegistry", resourceCulture);
             }
@@ -368,7 +368,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to from loginusers.vdf.
         /// </summary>
-        internal static string StatusFromLoginusers {
+        public static string StatusFromLoginusers {
             get {
                 return ResourceManager.GetString("StatusFromLoginusers", resourceCulture);
             }
@@ -377,7 +377,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Status: Starting image download..
         /// </summary>
-        internal static string StatusImageDownloadStart {
+        public static string StatusImageDownloadStart {
             get {
                 return ResourceManager.GetString("StatusImageDownloadStart", resourceCulture);
             }
@@ -386,7 +386,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to 2. Press Login.
         /// </summary>
-        internal static string StatusPressLogin {
+        public static string StatusPressLogin {
             get {
                 return ResourceManager.GetString("StatusPressLogin", resourceCulture);
             }
@@ -395,7 +395,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Status: Ready.
         /// </summary>
-        internal static string StatusReady {
+        public static string StatusReady {
             get {
                 return ResourceManager.GetString("StatusReady", resourceCulture);
             }
@@ -404,7 +404,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Status: Removing.
         /// </summary>
-        internal static string StatusRemoving {
+        public static string StatusRemoving {
             get {
                 return ResourceManager.GetString("StatusRemoving", resourceCulture);
             }
@@ -413,7 +413,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Status: Started Steam.
         /// </summary>
-        internal static string StatusStartedSteam {
+        public static string StatusStartedSteam {
             get {
                 return ResourceManager.GetString("StatusStartedSteam", resourceCulture);
             }
@@ -422,7 +422,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to TcNo Account Switcher is already running.
         /// </summary>
-        internal static string SwitcherAlreadyRunning {
+        public static string SwitcherAlreadyRunning {
             get {
                 return ResourceManager.GetString("SwitcherAlreadyRunning", resourceCulture);
             }
@@ -431,7 +431,7 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to TcNo Account Switcher - Duplicate start.
         /// </summary>
-        internal static string SwitcherAlreadyRunningHeading {
+        public static string SwitcherAlreadyRunningHeading {
             get {
                 return ResourceManager.GetString("SwitcherAlreadyRunningHeading", resourceCulture);
             }
@@ -440,9 +440,101 @@ namespace TcNo_Acc_Switcher_Steam {
         /// <summary>
         ///   Looks up a localized string similar to Version.
         /// </summary>
-        internal static string Version {
+        public static string Version {
             get {
                 return ResourceManager.GetString("Version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string XBtnClose {
+            get {
+                return ResourceManager.GetString("XBtnClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kill Steam processes.
+        /// </summary>
+        public static string XClearLoginsBtnKillSteam {
+            get {
+                return ResourceManager.GetString("XClearLoginsBtnKillSteam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clicking a button will delete the related file(s) from your Steam installation.
+        ///Deleting loginusers.vdf will result in this account switcher showing no accounts.
+        ///You will need to login to them using Steam to get them back..
+        /// </summary>
+        public static string XClearLoginsDescription {
+            get {
+                return ResourceManager.GetString("XClearLoginsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More information (Wiki).
+        /// </summary>
+        public static string XClearLoginsMoreInfo {
+            get {
+                return ResourceManager.GetString("XClearLoginsMoreInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TcNo Account Switcher - Steam Cleaning.
+        /// </summary>
+        public static string XClearLoginsTitle {
+            get {
+                return ResourceManager.GetString("XClearLoginsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I understand what these buttons do..
+        /// </summary>
+        public static string XClearLoginsUnderstand {
+            get {
+                return ResourceManager.GetString("XClearLoginsUnderstand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add New.
+        /// </summary>
+        public static string XMainAddNew {
+            get {
+                return ResourceManager.GetString("XMainAddNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login.
+        /// </summary>
+        public static string XMainLogin {
+            get {
+                return ResourceManager.GetString("XMainLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1. Select an account.
+        /// </summary>
+        public static string XMainSelect {
+            get {
+                return ResourceManager.GetString("XMainSelect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status: Starting.
+        /// </summary>
+        public static string XMainStartingStatus {
+            get {
+                return ResourceManager.GetString("XMainStartingStatus", resourceCulture);
             }
         }
     }

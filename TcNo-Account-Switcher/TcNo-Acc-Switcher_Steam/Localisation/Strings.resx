@@ -251,4 +251,36 @@ Note: Steam shows game banned accounts as Limited.</value>
   <data name="Version" xml:space="preserve">
     <value>Version</value>
   </data>
+  <data name="XBtnClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="XClearLoginsBtnKillSteam" xml:space="preserve">
+    <value>Kill Steam processes</value>
+  </data>
+  <data name="XClearLoginsDescription" xml:space="preserve">
+    <value>Clicking a button will delete the related file(s) from your Steam installation.
+Deleting loginusers.vdf will result in this account switcher showing no accounts.
+You will need to login to them using Steam to get them back.</value>
+  </data>
+  <data name="XClearLoginsMoreInfo" xml:space="preserve">
+    <value>More information (Wiki)</value>
+  </data>
+  <data name="XClearLoginsTitle" xml:space="preserve">
+    <value>TcNo Account Switcher - Steam Cleaning</value>
+  </data>
+  <data name="XClearLoginsUnderstand" xml:space="preserve">
+    <value>I understand what these buttons do.</value>
+  </data>
+  <data name="XMainAddNew" xml:space="preserve">
+    <value>Add New</value>
+  </data>
+  <data name="XMainLogin" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="XMainSelect" xml:space="preserve">
+    <value>1. Select an account</value>
+  </data>
+  <data name="XMainStartingStatus" xml:space="preserve">
+    <value>Status: Starting</value>
+  </data>
 </root>

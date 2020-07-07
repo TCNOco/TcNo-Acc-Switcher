@@ -23,6 +23,7 @@ using System.Windows.Media.Animation;
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, uncomment.
 using System.Xml;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Steam.Localisation;
 
 namespace TcNo_Acc_Switcher_Steam
 {

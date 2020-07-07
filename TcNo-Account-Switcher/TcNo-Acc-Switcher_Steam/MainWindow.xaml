@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:localisation="clr-namespace:TcNo_Acc_Switcher_Steam.Localisation"
 
         mc:Ignorable="d"
         Title="TcNo Steam Account Switcher" Height="377" Width="680"
@@ -197,7 +198,7 @@
 
         <!-- Row 0: Header -->
         <Border MouseDown="DragWindow" Grid.Row="0" Background="#14151E" Height="30" Panel.ZIndex="3"/>
-        <Label Panel.ZIndex="3" IsHitTestVisible="False" Name="HeaderInstruction" Grid.Row="0" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="1. Select an account"/>
+        <Label Panel.ZIndex="3" IsHitTestVisible="False" Name="HeaderInstruction" Grid.Row="0" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="{x:Static localisation:Strings.XMainSelect}"/>
         <Canvas Grid.Row="0" Panel.ZIndex="3" IsHitTestVisible="False"  Name="Svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5 0 0 0">
             <Canvas.RenderTransform>
                 <TranslateTransform X="0" Y="0"/>
@@ -333,11 +334,11 @@
         <StackPanel Panel.ZIndex="5" Height="Auto" Grid.Row="2">
             <Border BorderBrush="#222222" BorderThickness="0" Background="#222222" VerticalAlignment="Top">
                 <DockPanel HorizontalAlignment="Stretch">
-                    <Label Panel.ZIndex="6" Name="LblStatus" HorizontalAlignment="Left" Margin="5px" VerticalAlignment="Center" Foreground="White" Content="Status: Starting"/>
+                    <Label Panel.ZIndex="6" Name="LblStatus" HorizontalAlignment="Left" Margin="5px" VerticalAlignment="Center" Foreground="White" Content="{x:Static localisation:Strings.XMainStartingStatus}"/>
                     <!--<ProgressBar Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5px 0 0 0" Width="100px" Height="10px" Background="#333333" Foreground="White"/>-->
                     <DockPanel Panel.ZIndex="6" HorizontalAlignment="Right" Margin="0 5">
-                        <Button Name="BtnNewLogin" IsEnabled="True" Content="Add New" Margin="5 0 0 0" VerticalAlignment="Center" Foreground="White" Style="{StaticResource NewLoginButton}" Click="btnNewLogin_Click"/>
-                        <Button Name="BtnLogin" IsEnabled="False" Content="Login" Margin="5 0 5 0" VerticalAlignment="Center" Foreground="White" Style="{StaticResource LoginButton}" PreviewMouseDown="LoginMouseDown" MouseEnter="btnLogin_MouseEnter" MouseLeave="btnLogin_MouseLeave"/>
+                        <Button Name="BtnNewLogin" IsEnabled="True" Content="{x:Static localisation:Strings.XMainAddNew}" Margin="5 0 0 0" VerticalAlignment="Center" Foreground="White" Style="{StaticResource NewLoginButton}" Click="btnNewLogin_Click"/>
+                        <Button Name="BtnLogin" IsEnabled="False" Content="{x:Static localisation:Strings.XMainLogin}" Margin="5 0 5 0" VerticalAlignment="Center" Foreground="White" Style="{StaticResource LoginButton}" PreviewMouseDown="LoginMouseDown" MouseEnter="btnLogin_MouseEnter" MouseLeave="btnLogin_MouseLeave"/>
                         <Button BorderBrush="Gray" BorderThickness="1.5" HorizontalAlignment="Right" Width="34" Height="34" Margin="0 0 5 0" Name="ChkShowSettings" Click="chkShowSettings_Click" Style="{StaticResource mainMenuButtons}">
                             <Canvas  Name="SvgSettings" Width="24" Height="24">
                                 <Canvas.RenderTransform>

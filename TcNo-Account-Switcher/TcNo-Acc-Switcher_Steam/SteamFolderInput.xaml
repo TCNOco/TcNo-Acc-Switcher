@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:localisation="clr-namespace:TcNo_Acc_Switcher_Steam.Localisation"
         mc:Ignorable="d"
         Title="TcNo Steam Account Switcher - Pick Steam Directory" Height="254" Width="890"
         MinHeight="238" MaxHeight="238" MinWidth="490"
