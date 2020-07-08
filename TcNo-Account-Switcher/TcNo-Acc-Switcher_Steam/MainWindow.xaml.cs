@@ -632,7 +632,7 @@ namespace TcNo_Acc_Switcher_Steam
             public bool StartAsAdmin { get; set; } = false;
             public bool ShowSteamID { get; set; } = false;
             public bool ShowVACStatus { get; set; } = true;
-            public bool LimitedAsVAC { get; set; } = true;
+            public bool LimitedAsVAC { get; set; } = false;
             public bool ForgetAccountEnabled { get; set; } = false;
             public int ImageLifetime { get; set; } = 7;
             public string SteamFolder { get; set; } = "C:\\Program Files (x86)\\Steam\\";
