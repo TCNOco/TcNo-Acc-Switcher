@@ -447,11 +447,101 @@ namespace TcNo_Acc_Switcher_Steam.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string XBtnCancel {
+            get {
+                return ResourceManager.GetString("XBtnCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string XBtnClose {
             get {
                 return ResourceManager.GetString("XBtnClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locate Steam.exe.
+        /// </summary>
+        public static string XBtnLocateSteamExe {
+            get {
+                return ResourceManager.GetString("XBtnLocateSteamExe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore selected.
+        /// </summary>
+        public static string XBtnRestoreSelected {
+            get {
+                return ResourceManager.GetString("XBtnRestoreSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Steam Folder.
+        /// </summary>
+        public static string XBtnSelectSteamFolder {
+            get {
+                return ResourceManager.GetString("XBtnSelectSteamFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Limited accounts as VAC.
+        /// </summary>
+        public static string XChkLimitedAsVac {
+            get {
+                return ResourceManager.GetString("XChkLimitedAsVac", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run Steam as Admin.
+        /// </summary>
+        public static string XChkRunSteamAsAdmin {
+            get {
+                return ResourceManager.GetString("XChkRunSteamAsAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show account name [not friend name].
+        /// </summary>
+        public static string XChkShowAccName {
+            get {
+                return ResourceManager.GetString("XChkShowAccName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show SteamID.
+        /// </summary>
+        public static string XChkShowSteamId {
+            get {
+                return ResourceManager.GetString("XChkShowSteamId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show VAC Status.
+        /// </summary>
+        public static string XChkShowVACStatus {
+            get {
+                return ResourceManager.GetString("XChkShowVACStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start with Windows.
+        /// </summary>
+        public static string XChkStartWindows {
+            get {
+                return ResourceManager.GetString("XChkStartWindows", resourceCulture);
             }
         }
         
@@ -503,6 +593,66 @@ namespace TcNo_Acc_Switcher_Steam.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You are about to forget an account!.
+        /// </summary>
+        public static string XForgetP1Title {
+            get {
+                return ResourceManager.GetString("XForgetP1Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.
+        ///- TcNo Account Switcher will also no longer show the account, until it&apos;s signed into again via Steam.
+        ///
+        ///You account will remain untouched. It is just forgotten on this computer..
+        /// </summary>
+        public static string XForgetP2 {
+            get {
+                return ResourceManager.GetString("XForgetP2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What does this mean?.
+        /// </summary>
+        public static string XForgetP2Title {
+            get {
+                return ResourceManager.GetString("XForgetP2Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t panic, you can bring back forgotten accounts via backups in the Settings window.
+        ///You can also remove previous backups from there when you are sure everything is working as expected.
+        ///
+        ///Right-click &gt;&gt; Forget and using the Delete key will both work..
+        /// </summary>
+        public static string XForgetP3 {
+            get {
+                return ResourceManager.GetString("XForgetP3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What if something goes wrong?.
+        /// </summary>
+        public static string XForgetP3Title {
+            get {
+                return ResourceManager.GetString("XForgetP3Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forget Account?.
+        /// </summary>
+        public static string XForgetTitle {
+            get {
+                return ResourceManager.GetString("XForgetTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add New.
         /// </summary>
         public static string XMainAddNew {
@@ -535,6 +685,258 @@ namespace TcNo_Acc_Switcher_Steam.Localisation {
         public static string XMainStartingStatus {
             get {
                 return ResourceManager.GetString("XMainStartingStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I have read and understand.
+        /// </summary>
+        public static string XReadAndUnderstand {
+            get {
+                return ResourceManager.GetString("XReadAndUnderstand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List of available backups:.
+        /// </summary>
+        public static string XRestoreList {
+            get {
+                return ResourceManager.GetString("XRestoreList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max number of accounts to remember:.
+        /// </summary>
+        public static string XSettingsAccountsTotal {
+            get {
+                return ResourceManager.GetString("XSettingsAccountsTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Advanced cleaning....
+        /// </summary>
+        public static string XSettingsAdvCleaning {
+            get {
+                return ResourceManager.GetString("XSettingsAdvCleaning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Desktop shortcut.
+        /// </summary>
+        public static string XSettingsChkDesktopShortcuts {
+            get {
+                return ResourceManager.GetString("XSettingsChkDesktopShortcuts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start menu shortcut.
+        /// </summary>
+        public static string XSettingsChkStartMenu {
+            get {
+                return ResourceManager.GetString("XSettingsChkStartMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear forgotten backups.
+        /// </summary>
+        public static string XSettingsClearForgotten {
+            get {
+                return ResourceManager.GetString("XSettingsClearForgotten", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile images expire after:.
+        /// </summary>
+        public static string XSettingsImagesExpire {
+            get {
+                return ResourceManager.GetString("XSettingsImagesExpire", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Days.
+        /// </summary>
+        public static string XSettingsImagesExpire2 {
+            get {
+                return ResourceManager.GetString("XSettingsImagesExpire2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Steam Folder.
+        /// </summary>
+        public static string XSettingsOpenSteam {
+            get {
+                return ResourceManager.GetString("XSettingsOpenSteam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset images.
+        /// </summary>
+        public static string XSettingsResetImages {
+            get {
+                return ResourceManager.GetString("XSettingsResetImages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset settings.
+        /// </summary>
+        public static string XSettingsResetSettings {
+            get {
+                return ResourceManager.GetString("XSettingsResetSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore forgotten account.
+        /// </summary>
+        public static string XSettingsRestore {
+            get {
+                return ResourceManager.GetString("XSettingsRestore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string XSettingsSepGeneral {
+            get {
+                return ResourceManager.GetString("XSettingsSepGeneral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shortcuts.
+        /// </summary>
+        public static string XSettingsSepShortcuts {
+            get {
+                return ResourceManager.GetString("XSettingsSepShortcuts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steam Tools.
+        /// </summary>
+        public static string XSettingsSepSteamTools {
+            get {
+                return ResourceManager.GetString("XSettingsSepSteamTools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tray settings.
+        /// </summary>
+        public static string XSettingsSepTray {
+            get {
+                return ResourceManager.GetString("XSettingsSepTray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick Steam folder.
+        /// </summary>
+        public static string XSettingsSteamFolder {
+            get {
+                return ResourceManager.GetString("XSettingsSteamFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TcNo Account Switcher - Steam Settings.
+        /// </summary>
+        public static string XSettingsTitle {
+            get {
+                return ResourceManager.GetString("XSettingsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check account VAC Status.
+        /// </summary>
+        public static string XSettingsVacStatus {
+            get {
+                return ResourceManager.GetString("XSettingsVacStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steam.exe found!.
+        /// </summary>
+        public static string XSteamInputFound {
+            get {
+                return ResourceManager.GetString("XSteamInputFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steam.exe not found.
+        /// </summary>
+        public static string XSteamInputNotFound {
+            get {
+                return ResourceManager.GetString("XSteamInputNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steam was not found in.
+        /// </summary>
+        public static string XSteamInputText1 {
+            get {
+                return ResourceManager.GetString("XSteamInputText1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Program Files.
+        /// </summary>
+        public static string XSteamInputText2 {
+            get {
+                return ResourceManager.GetString("XSteamInputText2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to or.
+        /// </summary>
+        public static string XSteamInputText3 {
+            get {
+                return ResourceManager.GetString("XSteamInputText3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Program Files (x86)..
+        /// </summary>
+        public static string XSteamInputText4 {
+            get {
+                return ResourceManager.GetString("XSteamInputText4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter Steam&apos;s directory, as such: C:\Program Files\Steam.
+        /// </summary>
+        public static string XSteamInputText5 {
+            get {
+                return ResourceManager.GetString("XSteamInputText5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locate Steam.
+        /// </summary>
+        public static string XSteamInputTitle {
+            get {
+                return ResourceManager.GetString("XSteamInputTitle", resourceCulture);
             }
         }
     }

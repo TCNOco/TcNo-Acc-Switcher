@@ -938,6 +938,27 @@ namespace TcNo_Acc_Switcher_Steam
             var username = MainViewmodel.SelectedSteamUser.AccName;
             CreateSwitchShortcut(steamId, username);
         }
+        private void AccountItem_SwitchStart(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+            // Ask user to input game ID, or select name from list, or search for name in list
+            // Select game
+
+            // Switch to account
+            LoginSelected();
+            Thread.Sleep(5000);
+            // Launch selected application
+
+
+
+
+
+
+
+
+
+
+        }
 
         private void LoginButtonAnimation(Color colFrom, Color colTo, int len)
         {

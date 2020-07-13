@@ -36,7 +36,7 @@
 
         <!-- Row 0: Header -->
         <Border MouseDown="DragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
-        <Label Grid.Row="0" IsHitTestVisible="False" Name="FolderInputHeaderInstruction" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="Locate Steam"/>
+        <Label Grid.Row="0" IsHitTestVisible="False" Name="FolderInputHeaderInstruction" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="{x:Static localisation:Strings.XSteamInputTitle}"/>
         <Canvas Grid.Row="0" IsHitTestVisible="False"  Name="Svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5,10,0,10">
             <Canvas.RenderTransform>
                 <TranslateTransform X="0" Y="0"/>
@@ -61,8 +61,8 @@
         <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="BtnExit"></Button>
 
         <StackPanel Grid.Row="1" Background="#28293A" Margin="20,0,20,0" Grid.ColumnSpan="2">
-            <TextBlock Margin="5 20px 0 0" Name="LblQuery" HorizontalAlignment="Left" Foreground="White" Visibility="{Binding SteamNotFound,Converter={StaticResource B2V}}"><Span Foreground="Red">Steam was not found in</Span> <Italic>Program Files</Italic> <Span Foreground="Red">or</Span> <Italic>Program Files (x86)</Italic>.</TextBlock>
-            <Label Name="LblQuery2" HorizontalAlignment="Left" Foreground="White" Content="Please enter Steam's directory, as such: C:\Program Files\Steam"/>
+            <TextBlock Margin="5 20px 0 0" Name="LblQuery" HorizontalAlignment="Left" Foreground="White" Visibility="{Binding SteamNotFound,Converter={StaticResource B2V}}"><Label Content="{x:Static localisation:Strings.XSteamInputText1}" Foreground="Red" /><Label Content="{x:Static localisation:Strings.XSteamInputText2}" Foreground="White" FontStyle="Italic" /><Label Content="{x:Static localisation:Strings.XSteamInputText3}" Foreground="Red" /><Label Content="{x:Static localisation:Strings.XSteamInputText4}" Foreground="White" FontStyle="Italic"/></TextBlock>
+            <Label Name="LblQuery2" HorizontalAlignment="Left" Foreground="White" Content="{x:Static localisation:Strings.XSteamInputText5}"/>
 
             <Grid Margin="0 10px 0 0">
                 <Grid.ColumnDefinitions>
@@ -70,15 +70,15 @@
                     <ColumnDefinition Width="136" />
                 </Grid.ColumnDefinitions>
                 <TextBox Padding="5" Grid.Column="0" BorderBrush="Gray" VerticalContentAlignment="Center" Name="TxtResponse" Foreground="White" Background="#222222" Text="{Binding InputFolderDialogResponse, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="txtResponse_TextChanged"/>
-                <Button Padding="5" Grid.Column="1" Content="Locate Steam.exe"  VerticalAlignment="Center" Height="36" Width="125" Margin="5 0" Foreground="White"  Click="Button_Click" Style="{StaticResource pickSteamFolder}"/>
+                <Button Padding="5" Grid.Column="1" Content="{x:Static localisation:Strings.XBtnLocateSteamExe}"  VerticalAlignment="Center" Height="36" Width="125" Margin="5 0" Foreground="White"  Click="Button_Click" Style="{StaticResource pickSteamFolder}"/>
             </Grid>
 
 
             <DockPanel Margin="0 15px 0 10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
                 <Border Name="RectSteamFound" HorizontalAlignment="Left" Background="Red" Width="5px"/>
-                <Label Name="LblQuery3" Padding="10 10.02" HorizontalAlignment="Right" Foreground="White" Content="Steam.exe not found" Background="#400"/>
+                <Label Name="LblSteamFolderInput_SteamStatus" Padding="10 10.02" HorizontalAlignment="Right" Foreground="White" Content="{x:Static localisation:Strings.XSteamInputNotFound}" Background="#400"/>
 
-                <Button Name="BtnSetDirectory" IsEnabled="False" Content="Select Steam Folder"
+                <Button Name="BtnSetDirectory" IsEnabled="False" Content="{x:Static localisation:Strings.XBtnSelectSteamFolder}"
                         VerticalAlignment="Bottom" Margin="0 0 5 0" Foreground="White"  Style="{StaticResource LoginButton}" Click="btnSetDirectory_Click"
                         MouseEnter="btnSetDirectory_MouseEnter" MouseLeave="btnSetDirectory_MouseLeave"/>
             </DockPanel>

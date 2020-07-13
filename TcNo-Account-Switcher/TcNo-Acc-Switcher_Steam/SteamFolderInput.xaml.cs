@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Steam.Localisation;
 
 //using System.Windows.Shapes;
 
@@ -46,8 +47,8 @@ namespace TcNo_Acc_Switcher_Steam
             {
                 _steamFound = true;
                 RectSteamFound.Background = new SolidColorBrush(Colors.Green);
-                LblQuery3.Background = new SolidColorBrush(Color.FromRgb(0, 68, 0));
-                LblQuery3.Content = "Steam.exe found!";
+                LblSteamFolderInput_SteamStatus.Background = new SolidColorBrush(Color.FromRgb(0, 68, 0));
+                LblSteamFolderInput_SteamStatus.Content = Strings.XSteamInputFound;
                 BtnSetDirectory.Background = new SolidColorBrush(_darkGreen);
                 BtnSetDirectory.IsEnabled = true;
             }
@@ -55,8 +56,8 @@ namespace TcNo_Acc_Switcher_Steam
             {
                 _steamFound = false;
                 RectSteamFound.Background = new SolidColorBrush(Colors.Red);
-                LblQuery3.Background = new SolidColorBrush(Color.FromRgb(68, 0, 0));
-                LblQuery3.Content = "Steam.exe not found";
+                LblSteamFolderInput_SteamStatus.Background = new SolidColorBrush(Color.FromRgb(68, 0, 0));
+                LblSteamFolderInput_SteamStatus.Content = Strings.XSteamInputNotFound;
                 BtnSetDirectory.Background = new SolidColorBrush(_defaultGray);
                 BtnSetDirectory.IsEnabled = false;
             }
@@ -107,33 +108,27 @@ namespace TcNo_Acc_Switcher_Steam
         }
         private void resizeGrip_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (Mouse.Capture(ResizeGrip))
-            {
-                _isResizing = true;
-                _startPosition = Mouse.GetPosition(this);
-            }
+            if (!Mouse.Capture(ResizeGrip)) return;
+            _isResizing = true;
+            _startPosition = Mouse.GetPosition(this);
         }
 
         private void Window_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (_isResizing)
-            {
-                var currentPosition = Mouse.GetPosition(this);
-                var diffX = currentPosition.X - _startPosition.X;
-                var diffY = currentPosition.Y - _startPosition.Y;
-                Width = Math.Max(Width + diffX, MinWidth);
-                Height = Math.Max(Height + diffY, MinHeight);
-                _startPosition = currentPosition;
-            }
+            if (!_isResizing) return;
+            var currentPosition = Mouse.GetPosition(this);
+            var diffX = currentPosition.X - _startPosition.X;
+            var diffY = currentPosition.Y - _startPosition.Y;
+            Width = Math.Max(Width + diffX, MinWidth);
+            Height = Math.Max(Height + diffY, MinHeight);
+            _startPosition = currentPosition;
         }
 
         private void resizeGrip_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (_isResizing)
-            {
-                _isResizing = false;
-                Mouse.Capture(null);
-            }
+            if (!_isResizing) return;
+            _isResizing = false;
+            Mouse.Capture(null);
         }
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)

@@ -262,6 +262,9 @@
                 <Style x:Key="SwitchShortcut" TargetType="MenuItem">
                     <EventSetter Event="Click" Handler="AccountItem_SwitchShortcut"/>
                 </Style>
+                <Style x:Key="SwitchStart" TargetType="MenuItem">
+                    <EventSetter Event="Click" Handler="AccountItem_SwitchStart"/>
+                </Style>
             </ListBox.Resources>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -275,6 +278,7 @@
                         <Setter.Value>
                             <!--<ContextMenu Background="#222222" Foreground="White" Style="{DynamicResource MenuItemStyle}">-->
                             <ContextMenu>
+                                <MenuItem Header="Switch and Start app" Style="{StaticResource SwitchStart}" />
                                 <MenuItem Header="Copy Profile..." Style="{StaticResource CopyProfile}">
                                     <MenuItem Header="Community URL"/>
                                     <MenuItem Header="Community Username"/>

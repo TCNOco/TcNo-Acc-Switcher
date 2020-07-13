@@ -251,8 +251,38 @@ Note: Steam shows game banned accounts as Limited.</value>
   <data name="Version" xml:space="preserve">
     <value>Version</value>
   </data>
+  <data name="XBtnCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="XBtnClose" xml:space="preserve">
     <value>Close</value>
+  </data>
+  <data name="XBtnLocateSteamExe" xml:space="preserve">
+    <value>Locate Steam.exe</value>
+  </data>
+  <data name="XBtnRestoreSelected" xml:space="preserve">
+    <value>Restore selected</value>
+  </data>
+  <data name="XBtnSelectSteamFolder" xml:space="preserve">
+    <value>Select Steam Folder</value>
+  </data>
+  <data name="XChkLimitedAsVac" xml:space="preserve">
+    <value>Show Limited accounts as VAC</value>
+  </data>
+  <data name="XChkRunSteamAsAdmin" xml:space="preserve">
+    <value>Run Steam as Admin</value>
+  </data>
+  <data name="XChkShowAccName" xml:space="preserve">
+    <value>Show account name [not friend name]</value>
+  </data>
+  <data name="XChkShowSteamId" xml:space="preserve">
+    <value>Show SteamID</value>
+  </data>
+  <data name="XChkShowVACStatus" xml:space="preserve">
+    <value>Show VAC Status</value>
+  </data>
+  <data name="XChkStartWindows" xml:space="preserve">
+    <value>Start with Windows</value>
   </data>
   <data name="XClearLoginsBtnKillSteam" xml:space="preserve">
     <value>Kill Steam processes</value>
@@ -271,6 +301,30 @@ You will need to login to them using Steam to get them back.</value>
   <data name="XClearLoginsUnderstand" xml:space="preserve">
     <value>I understand what these buttons do.</value>
   </data>
+  <data name="XForgetP1Title" xml:space="preserve">
+    <value>You are about to forget an account!</value>
+  </data>
+  <data name="XForgetP2" xml:space="preserve">
+    <value>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.
+- TcNo Account Switcher will also no longer show the account, until it's signed into again via Steam.
+
+You account will remain untouched. It is just forgotten on this computer.</value>
+  </data>
+  <data name="XForgetP2Title" xml:space="preserve">
+    <value>What does this mean?</value>
+  </data>
+  <data name="XForgetP3" xml:space="preserve">
+    <value>Don't panic, you can bring back forgotten accounts via backups in the Settings window.
+You can also remove previous backups from there when you are sure everything is working as expected.
+
+Right-click &gt;&gt; Forget and using the Delete key will both work.</value>
+  </data>
+  <data name="XForgetP3Title" xml:space="preserve">
+    <value>What if something goes wrong?</value>
+  </data>
+  <data name="XForgetTitle" xml:space="preserve">
+    <value>Forget Account?</value>
+  </data>
   <data name="XMainAddNew" xml:space="preserve">
     <value>Add New</value>
   </data>
@@ -282,5 +336,89 @@ You will need to login to them using Steam to get them back.</value>
   </data>
   <data name="XMainStartingStatus" xml:space="preserve">
     <value>Status: Starting</value>
+  </data>
+  <data name="XReadAndUnderstand" xml:space="preserve">
+    <value>I have read and understand</value>
+  </data>
+  <data name="XRestoreList" xml:space="preserve">
+    <value>List of available backups:</value>
+  </data>
+  <data name="XSettingsAccountsTotal" xml:space="preserve">
+    <value>Max number of accounts to remember:</value>
+  </data>
+  <data name="XSettingsAdvCleaning" xml:space="preserve">
+    <value>Advanced cleaning...</value>
+  </data>
+  <data name="XSettingsChkDesktopShortcuts" xml:space="preserve">
+    <value>Desktop shortcut</value>
+  </data>
+  <data name="XSettingsChkStartMenu" xml:space="preserve">
+    <value>Start menu shortcut</value>
+  </data>
+  <data name="XSettingsClearForgotten" xml:space="preserve">
+    <value>Clear forgotten backups</value>
+  </data>
+  <data name="XSettingsImagesExpire" xml:space="preserve">
+    <value>Profile images expire after:</value>
+  </data>
+  <data name="XSettingsImagesExpire2" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="XSettingsOpenSteam" xml:space="preserve">
+    <value>Open Steam Folder</value>
+  </data>
+  <data name="XSettingsResetImages" xml:space="preserve">
+    <value>Reset images</value>
+  </data>
+  <data name="XSettingsResetSettings" xml:space="preserve">
+    <value>Reset settings</value>
+  </data>
+  <data name="XSettingsRestore" xml:space="preserve">
+    <value>Restore forgotten account</value>
+  </data>
+  <data name="XSettingsSepGeneral" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="XSettingsSepShortcuts" xml:space="preserve">
+    <value>Shortcuts</value>
+  </data>
+  <data name="XSettingsSepSteamTools" xml:space="preserve">
+    <value>Steam Tools</value>
+  </data>
+  <data name="XSettingsSepTray" xml:space="preserve">
+    <value>Tray settings</value>
+  </data>
+  <data name="XSettingsSteamFolder" xml:space="preserve">
+    <value>Pick Steam folder</value>
+  </data>
+  <data name="XSettingsTitle" xml:space="preserve">
+    <value>TcNo Account Switcher - Steam Settings</value>
+  </data>
+  <data name="XSettingsVacStatus" xml:space="preserve">
+    <value>Check account VAC Status</value>
+  </data>
+  <data name="XSteamInputFound" xml:space="preserve">
+    <value>Steam.exe found!</value>
+  </data>
+  <data name="XSteamInputNotFound" xml:space="preserve">
+    <value>Steam.exe not found</value>
+  </data>
+  <data name="XSteamInputText1" xml:space="preserve">
+    <value>Steam was not found in</value>
+  </data>
+  <data name="XSteamInputText2" xml:space="preserve">
+    <value>Program Files</value>
+  </data>
+  <data name="XSteamInputText3" xml:space="preserve">
+    <value>or</value>
+  </data>
+  <data name="XSteamInputText4" xml:space="preserve">
+    <value>Program Files (x86).</value>
+  </data>
+  <data name="XSteamInputText5" xml:space="preserve">
+    <value>Please enter Steam's directory, as such: C:\Program Files\Steam</value>
+  </data>
+  <data name="XSteamInputTitle" xml:space="preserve">
+    <value>Locate Steam</value>
   </data>
 </root>

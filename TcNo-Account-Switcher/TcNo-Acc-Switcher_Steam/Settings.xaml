@@ -36,7 +36,7 @@
 
         <!-- Row 0: Header -->
         <Border MouseDown="DragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
-        <Label IsHitTestVisible="False" Name="FolderInputHeaderInstruction" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="TcNo Account Switcher - Steam Settings"
+        <Label IsHitTestVisible="False" Name="FolderInputHeaderInstruction" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="{x:Static localisation:Strings.XSettingsTitle}"
                Grid.Row="0"/>
         <Canvas Grid.Row="0" IsHitTestVisible="False"  Name="Svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5,10,0,10">
             <Canvas.RenderTransform>
@@ -62,46 +62,46 @@
         <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="BtnExit"></Button>
 
         <StackPanel Grid.Row="1" Background="#28293A" Margin="20,20,20,20" Grid.ColumnSpan="2">
-            <CheckBox Panel.ZIndex="6" Name="RunAsAdmin" Margin="5px" VerticalAlignment="Center"  Foreground="White" Content="Run Steam as Admin"  IsChecked="{Binding StartAsAdmin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <CheckBox Panel.ZIndex="6" Name="ShowSteamId" Margin="5px" VerticalAlignment="Center" Foreground="White" Content="Show SteamID" IsChecked="{Binding ShowSteamID, Mode=TwoWay}" Checked="ShowSteamID_CheckChanged" Unchecked="ShowSteamID_CheckChanged" />
-            <CheckBox Panel.ZIndex="6" Name="ShowVacStatus" Margin="5px" Foreground="White" Content="Show VAC Status" IsChecked="{Binding ShowVACStatus, Mode=TwoWay}" Checked="ShowVACStatus_CheckChanged" Unchecked="ShowVACStatus_CheckChanged" />
-            <CheckBox Panel.ZIndex="6" Name="LimitedAsVac" Margin="5px" Foreground="White" Content="Show Limited accounts as VAC" IsChecked="{Binding LimitedAsVAC, Mode=TwoWay}" Checked="LimitedAsVAC_CheckChanged" Unchecked="LimitedAsVAC_CheckChanged" />
+            <CheckBox Panel.ZIndex="6" Name="RunAsAdmin" Margin="5px" VerticalAlignment="Center"  Foreground="White" Content="{x:Static localisation:Strings.XChkRunSteamAsAdmin}"  IsChecked="{Binding StartAsAdmin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <CheckBox Panel.ZIndex="6" Name="ShowSteamId" Margin="5px" VerticalAlignment="Center" Foreground="White" Content="{x:Static localisation:Strings.XChkShowSteamId}" IsChecked="{Binding ShowSteamID, Mode=TwoWay}" Checked="ShowSteamID_CheckChanged" Unchecked="ShowSteamID_CheckChanged" />
+            <CheckBox Panel.ZIndex="6" Name="ShowVacStatus" Margin="5px" Foreground="White" Content="{x:Static localisation:Strings.XChkShowVACStatus}" IsChecked="{Binding ShowVACStatus, Mode=TwoWay}" Checked="ShowVACStatus_CheckChanged" Unchecked="ShowVACStatus_CheckChanged" />
+            <CheckBox Panel.ZIndex="6" Name="LimitedAsVac" Margin="5px" Foreground="White" Content="{x:Static localisation:Strings.XChkLimitedAsVac}" IsChecked="{Binding LimitedAsVAC, Mode=TwoWay}" Checked="LimitedAsVAC_CheckChanged" Unchecked="LimitedAsVAC_CheckChanged" />
 
             <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
                     <local:IntToStringConverter x:Key="IntToStr"/>
                 </StackPanel.Resources>
-                <Label Panel.ZIndex="6" Name="LblImageExpiry" Foreground="White" Content="Profile images expire after:" />
+                <Label Panel.ZIndex="6" Name="LblImageExpiry" Foreground="White" Content="{x:Static localisation:Strings.XSettingsImagesExpire}" />
                 <TextBox Panel.ZIndex="6" Name="ImageExpiry" Margin="5px" Foreground="White" Background="#14151E" Text="{Binding ImageLifetime, Converter={StaticResource IntToStr}, Mode=TwoWay}" Width="40" TextChanged="ImageExpiry_OnTextChanged"/>
-                <Label Panel.ZIndex="6" Name="LblImageExpiry2" Foreground="White" Content="Days" />
+                <Label Panel.ZIndex="6" Name="LblImageExpiry2" Foreground="White" Content="{x:Static localisation:Strings.XSettingsImagesExpire2}" />
             </StackPanel>
 
 
 
             <StackPanel Orientation="Horizontal" Panel.ZIndex="6">
                 <Separator Width="20px" Height="24px"/>
-                <Label Name="LblShortcuts" Margin="0" Foreground="White" Content="Shortcuts" FontSize="11" FontWeight="Bold"/>
+                <Label Name="LblShortcuts" Margin="0" Foreground="White" Content="{x:Static localisation:Strings.XSettingsSepShortcuts}" FontSize="11" FontWeight="Bold"/>
                 <Separator Width="100px" Height="24px"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <CheckBox Panel.ZIndex="6" Name="ToggleDesktopShortcut" Margin="5px" Foreground="White" Content="Desktop shortcut" IsChecked="{Binding DesktopShortcut, Mode=TwoWay}" Checked="ToggleDesktopShortcut_CheckChanged" Unchecked="ToggleDesktopShortcut_CheckChanged" />
-                <CheckBox Panel.ZIndex="6" Name="ToggleStartShortcut" Margin="5px" Foreground="White" Content="Start menu shortcut" IsChecked="{Binding StartMenuIcon, Mode=TwoWay}" Checked="ToggleStartShortcut_CheckChanged" Unchecked="ToggleStartShortcut_CheckChanged" />
+                <CheckBox Panel.ZIndex="6" Name="ToggleDesktopShortcut" Margin="5px" Foreground="White" Content="{x:Static localisation:Strings.XSettingsChkDesktopShortcuts}" IsChecked="{Binding DesktopShortcut, Mode=TwoWay}" Checked="ToggleDesktopShortcut_CheckChanged" Unchecked="ToggleDesktopShortcut_CheckChanged" />
+                <CheckBox Panel.ZIndex="6" Name="ToggleStartShortcut" Margin="5px" Foreground="White" Content="{x:Static localisation:Strings.XSettingsChkStartMenu}" IsChecked="{Binding StartMenuIcon, Mode=TwoWay}" Checked="ToggleStartShortcut_CheckChanged" Unchecked="ToggleStartShortcut_CheckChanged" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Panel.ZIndex="6">
                 <Separator Width="20px" Height="24px"/>
-                <Label Name="LblTray" Margin="0" Foreground="White" Content="Tray settings" FontSize="11" FontWeight="Bold"/>
+                <Label Name="LblTray" Margin="0" Foreground="White" Content="{x:Static localisation:Strings.XSettingsSepTray}" FontSize="11" FontWeight="Bold"/>
                 <Separator Width="100px" Height="24px"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <CheckBox Panel.ZIndex="6" Name="ToggleStartWithWindows" Margin="5px" Foreground="White" Content="Start with Windows" IsChecked="{Binding StartWithWindows, Mode=TwoWay}" Checked="ToggleStartWithWindows_CheckChanged" Unchecked="ToggleStartWithWindows_CheckChanged" />
-                <CheckBox Panel.ZIndex="6" Name="ToggleAccNames" Margin="5px" Foreground="White" Content="Show account name [not friend name]" IsChecked="{Binding TrayAccountAccNames, Mode=TwoWay}" Checked="ToggleAccNames_CheckChanged" Unchecked="ToggleAccNames_CheckChanged" />
+                <CheckBox Panel.ZIndex="6" Name="ToggleStartWithWindows" Margin="5px" Foreground="White" Content="{x:Static localisation:Strings.XChkStartWindows}" IsChecked="{Binding StartWithWindows, Mode=TwoWay}" Checked="ToggleStartWithWindows_CheckChanged" Unchecked="ToggleStartWithWindows_CheckChanged" />
+                <CheckBox Panel.ZIndex="6" Name="ToggleAccNames" Margin="5px" Foreground="White" Content="{x:Static localisation:Strings.XChkShowAccName}" IsChecked="{Binding TrayAccountAccNames, Mode=TwoWay}" Checked="ToggleAccNames_CheckChanged" Unchecked="ToggleAccNames_CheckChanged" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
                     <local:IntToStringConverter x:Key="IntToStr"/>
                 </StackPanel.Resources>
-                <Label Panel.ZIndex="6" Name="LblAccountsTotal" Foreground="White" Content="Max number of accounts to remember:" />
+                <Label Panel.ZIndex="6" Name="LblAccountsTotal" Foreground="White" Content="{x:Static localisation:Strings.XSettingsAccountsTotal}" />
                 <TextBox Panel.ZIndex="6" Name="NumberRecentAccounts" Margin="5px" Foreground="White" Background="#14151E" Text="{Binding TrayAccounts, Converter={StaticResource IntToStr}, Mode=TwoWay}" Width="40" TextChanged="NumberRecentAccounts_OnTextChanged"/>
             </StackPanel>
 
@@ -121,24 +121,24 @@
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal" Panel.ZIndex="6" Grid.Row="0" Grid.Column="0">
                     <Separator Width="20px" Height="24px"/>
-                    <Label Name="LblGeneralSettings" Margin="0" Foreground="White" Content="General" FontSize="11" FontWeight="Bold"/>
+                    <Label Name="LblGeneralSettings" Margin="0" Foreground="White" Content="{x:Static localisation:Strings.XSettingsSepGeneral}" FontSize="11" FontWeight="Bold"/>
                     <Separator Width="100px" Height="24px"/>
                 </StackPanel>
-                <Button Panel.ZIndex="6" Grid.Row="1" Grid.Column="0" Name="BtnPickSteamFolder" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Pick Steam folder" Click="btnPickSteamFolder_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="1" Grid.Column="1" Name="BtnCheckVac" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Check account VAC Status" Click="btnCheckVac_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="2" Grid.Column="0"  Name="BtnResetSettings" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Reset settings" Click="btnResetSettings_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="2" Grid.Column="1" Name="BtnResetImages" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Reset images" Click="btnResetImages_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="1" Grid.Column="0" Name="BtnPickSteamFolder" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="{x:Static localisation:Strings.XSettingsSteamFolder}" Click="btnPickSteamFolder_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="1" Grid.Column="1" Name="BtnCheckVac" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="{x:Static localisation:Strings.XSettingsVacStatus}" Click="btnCheckVac_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="2" Grid.Column="0"  Name="BtnResetSettings" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="{x:Static localisation:Strings.XSettingsResetSettings}" Click="btnResetSettings_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="2" Grid.Column="1" Name="BtnResetImages" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="{x:Static localisation:Strings.XSettingsResetImages}" Click="btnResetImages_Click"/>
                 <StackPanel Orientation="Horizontal" Panel.ZIndex="6" Grid.Row="3" Grid.Column="0">
                     <Separator Width="20px" Height="24px"/>
-                    <Label Name="LblSteamTools" Margin="0" Foreground="White" Content="Steam Tools" FontSize="11" FontWeight="Bold"/>
+                    <Label Name="LblSteamTools" Margin="0" Foreground="White" Content="{x:Static localisation:Strings.XSettingsSepSteamTools}" FontSize="11" FontWeight="Bold"/>
                     <Separator Width="100px" Height="24px"/>
                 </StackPanel>
-                <Button Panel.ZIndex="6" Grid.Row="4" Grid.Column="0" Name="BtnRestoreForgotten" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Restore forgotten account" Click="btnRestoreForgotten_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="4" Grid.Column="1" Name="BtnClearForgottenBackups" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Clear forgotten backups" Click="btnClearForgottenBackups_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="0" Name="BtnOpenSteamFolder" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Open Steam Folder" Click="btnOpenSteamFolder_Click"/>
-                <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="1" Name="BtnAdvancedCleaning" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Advanced cleaning..." Click="btnAdvancedCleaning_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="4" Grid.Column="0" Name="BtnRestoreForgotten" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="{x:Static localisation:Strings.XSettingsRestore}" Click="btnRestoreForgotten_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="4" Grid.Column="1" Name="BtnClearForgottenBackups" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="{x:Static localisation:Strings.XSettingsClearForgotten}" Click="btnClearForgottenBackups_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="0" Name="BtnOpenSteamFolder" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="{x:Static localisation:Strings.XSettingsOpenSteam}" Click="btnOpenSteamFolder_Click"/>
+                <Button Panel.ZIndex="6" Grid.Row="5" Grid.Column="1" Name="BtnAdvancedCleaning" Margin="5px" Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="{x:Static localisation:Strings.XSettingsAdvCleaning}" Click="btnAdvancedCleaning_Click"/>
             </Grid>
         </StackPanel>
-        <Button Panel.ZIndex="6" Grid.Row="1" Name="BtnCloseSettings" Margin="5px" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Close" Click="BtnExit"/>
+        <Button Panel.ZIndex="6" Grid.Row="1" Name="BtnCloseSettings" Margin="5px" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="{x:Static localisation:Strings.XBtnClose}" Click="BtnExit"/>
     </Grid>
 </Window>
