@@ -698,7 +698,7 @@ namespace TcNo_Acc_Switcher_Steam
         private void LoginMouseDown(object sender, MouseButtonEventArgs e) => LoginSelected();
         private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e) => LoginSelected();
         private static bool IsDigitsOnly(string str) => str.All(c => c >= '0' && c <= '9');
-        private void LoginSelected()
+        private void LoginSelected(bool autoStartSteam = true)
         {
             SaveSettings();
             LoginButtonAnimation(Color.FromRgb(12,12,12), _defaultGray, 2000);
@@ -734,7 +734,7 @@ namespace TcNo_Acc_Switcher_Steam
             }
 
             LblStatus.Content = Strings.StatusClosingSteam;
-            SwapSteamAccounts(false, MainViewmodel.SelectedSteamUser.SteamID, MainViewmodel.SelectedSteamUser.AccName);
+            SwapSteamAccounts(false, MainViewmodel.SelectedSteamUser.SteamID, MainViewmodel.SelectedSteamUser.AccName, autoStartSteam);
             LblStatus.Content = Strings.StatusStartedSteam;
             BtnLogin.IsEnabled = true;
         }
@@ -747,7 +747,7 @@ namespace TcNo_Acc_Switcher_Steam
             var steamidVal = double.Parse(steamid);
             return steamidVal > 0x0110000100000001 && steamidVal < 0x01100001FFFFFFFF;
         }
-        public void SwapSteamAccounts(bool loginNone, string steamid, string accName)
+        public void SwapSteamAccounts(bool loginNone, string steamid, string accName, bool autoStartSteam = true)
         {
             if (!VerifySteamId(steamid)) {
                 MessageBox.Show("Invalid SteamID: " + steamid);
@@ -757,6 +757,7 @@ namespace TcNo_Acc_Switcher_Steam
             CloseSteam();
             UpdateLoginUsers(loginNone, steamid, accName);
 
+            if (!autoStartSteam) return;
             if (_persistentSettings.StartAsAdmin)
                 Process.Start(_persistentSettings
                     .SteamExe()); // Maybe get steamID from elsewhere? Or load persistent settings first...
@@ -941,14 +942,30 @@ namespace TcNo_Acc_Switcher_Steam
         private void AccountItem_SwitchStart(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
+
             // Ask user to input game ID, or select name from list, or search for name in list
             // Select game
 
-            // Switch to account
-            LoginSelected();
-            Thread.Sleep(5000);
+            //// Switch to account
+            //LoginSelected(false);
+            
             // Launch selected application
-
+            if (_persistentSettings.StartAsAdmin)
+                _ = Process.Start(_persistentSettings.SteamExe(), "-applaunch 730 +connect 102.130.127.23:27015");
+            else
+            {
+                // Long, but interesting way around launching a game and connecting to a server.
+                //// Create launch .bat for explorer. to run (Allows arguments to be sent to Steam, while launching through explorer.exe -- To start with no admin perms)
+                //// .bat file deletes self after app launch
+                ////var tempFile = Path.GetTempPath() + Guid.NewGuid().ToString() + ".bat";
+                ////File.WriteAllText(tempFile, $@"""{_persistentSettings.SteamExe()}"" -applaunch 730 +connect 102.130.127.23:27015{Environment.NewLine}(goto) 2>nul & del ""{tempFile}""");
+                ////_ = Process.Start(new ProcessStartInfo("explorer.exe", tempFile));
+                
+                // Start game
+                _ = Process.Start("explorer.exe", "steam://rungameid/730");
+                // Connect to server
+                _ = Process.Start("explorer.exe", "steam://connect/102.130.127.23:27015");
+            }
 
 
 

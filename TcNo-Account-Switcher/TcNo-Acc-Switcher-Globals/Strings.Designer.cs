@@ -81,7 +81,9 @@ namespace TcNo_Acc_Switcher_Globals {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A fatal unhandled exception caused the program to crash. Information saved in &quot;AccSwitcher-Crashlog.txt&quot;..
+        ///   Looks up a localized string similar to A fatal unhandled exception caused the program to crash. Information saved in &quot;AccSwitcher-Crashlog.txt&quot;.
+        ///
+        ///Full path: .
         /// </summary>
         internal static string ErrUnhandledException {
             get {

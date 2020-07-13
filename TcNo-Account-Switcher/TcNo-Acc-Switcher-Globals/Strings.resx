@@ -126,7 +126,9 @@ GitHub: https://github.com/TcNobo/TcNo-Acc-Switcher</value>
     <value>UNHANDLED CRASH</value>
   </data>
   <data name="ErrUnhandledException" xml:space="preserve">
-    <value>A fatal unhandled exception caused the program to crash. Information saved in "AccSwitcher-Crashlog.txt".</value>
+    <value>A fatal unhandled exception caused the program to crash. Information saved in "AccSwitcher-Crashlog.txt".
+
+Full path: </value>
   </data>
   <data name="ErrUnhandledExceptionHeader" xml:space="preserve">
     <value>TcNo Account Switcher Unhandled exception</value>
