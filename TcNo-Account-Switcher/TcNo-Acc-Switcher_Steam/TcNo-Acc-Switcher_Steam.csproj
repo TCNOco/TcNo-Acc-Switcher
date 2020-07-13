@@ -147,6 +147,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Include="SwitchStart.xaml.cs">
+      <DependentUpon>SwitchStart.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TrayUser.cs" />
     <Compile Include="UserDataWindow.xaml.cs">
       <DependentUpon>UserDataWindow.xaml</DependentUpon>
@@ -193,6 +196,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SteamFolderInput.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SwitchStart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
