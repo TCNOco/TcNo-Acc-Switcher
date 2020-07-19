@@ -22,6 +22,8 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, uncomment.
 using System.Xml;
+using Gameloop.Vdf;
+using Gameloop.Vdf.JsonConverter;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Steam.Localisation;
 
@@ -33,10 +35,10 @@ namespace TcNo_Acc_Switcher_Steam
     public partial class MainWindow
     {
         List<Steamuser> _userAccounts = new List<Steamuser>();
-        private List<string> _fLoginUsersLines = new List<string>();
         MainWindowViewModel MainViewmodel = new MainWindowViewModel();
         private TrayUsers trayUsers = new TrayUsers();
 
+        private List<string> _fLoginUsersLines = new List<string>();
         private readonly Color _darkGreen = Color.FromRgb(5, 51, 5);
         private readonly Color _defaultGray = Color.FromRgb(51, 51, 51);
 
@@ -353,8 +355,17 @@ namespace TcNo_Acc_Switcher_Steam
         private static string UnixTimeStampToDateTime(string unixTimeStampString)
         {
             // Unix timestamp is seconds past epoch
-            var localDateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(long.Parse(unixTimeStampString)).DateTime.ToLocalTime();
-            return localDateTimeOffset.ToString("dd/MM/yyyy hh:mm:ss");
+            string localDateTimeOffset;
+            try
+            {
+                localDateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(long.Parse(unixTimeStampString)).DateTime.ToLocalTime().ToString("dd/MM/yyyy hh:mm:ss");
+            }
+            catch
+            {
+                localDateTimeOffset = "-ERR-";
+            }
+
+            return localDateTimeOffset;
         }
         private static bool IsValidGdiPlusImage(string filename)
         {
@@ -399,56 +410,81 @@ namespace TcNo_Acc_Switcher_Steam
 
         private void GetSteamAccounts()
         {
-            string username = "", steamId = "", personaName = "", timestamp = "";
-
             // Clear in-case it's a refresh
-            _fLoginUsersLines.Clear();
+            //_fLoginUsersLines.Clear(); ---------------------------------
             _userAccounts.Clear();
 
             try
             {
-                var file = new StreamReader(_persistentSettings.LoginusersVdf());
+                //var file = new StreamReader(_persistentSettings.LoginusersVdf());
+                var loginUsersVToken = VdfConvert.Deserialize(File.ReadAllText(_persistentSettings.LoginusersVdf()));
+                var loginUsers = new JObject() {loginUsersVToken.ToJson()};
 
-                string line;
-                while ((line = file.ReadLine()) != null)
+                if (loginUsers["users"] != null)
                 {
-                    _fLoginUsersLines.Add(line);
-                    line = line.Replace("\t", "");
-                    var lineNoQuot = line.Replace("\"", "");
-
-                    if (lineNoQuot.All(char.IsDigit) && string.IsNullOrEmpty(steamId)) // Line is SteamID and steamID is empty >> New user.
+                    foreach (var user in loginUsers["users"])
                     {
-                        steamId = lineNoQuot;
-                    }
-                    else if (lineNoQuot.All(char.IsDigit) && !string.IsNullOrEmpty(steamId)) // If steamID isn't empty, save account details, empty temp vars for collection.
-                    {
-                        //lastLogin = UnixTimeStampToDateTime(timestamp);
-                        _userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
-                        username = "";
-                        personaName = "";
-                        timestamp = "";
-                        steamId = lineNoQuot;
-                    }
-                    else if (line.Contains("AccountName"))
-                    {
-                        username = lineNoQuot.Substring(11, lineNoQuot.Length - 11);
-                    }
-                    else if (line.Contains("PersonaName"))
-                    {
-                        personaName = lineNoQuot.Substring(11, lineNoQuot.Length - 11);
-                    }
-                    else if (line.Contains("Timestamp"))
-                    {
-                        timestamp = lineNoQuot.Substring(9, lineNoQuot.Length - 9);
+                        var s = user.Values<string>();
+                        //_userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
+                        Console.WriteLine(user);
                     }
 
-                    System.Console.WriteLine(line);
+
+                    File.WriteAllText(_persistentSettings.LoginusersVdf() + "TEST.json", loginUsers["users"].ToString());
+                    File.WriteAllText(_persistentSettings.LoginusersVdf() + "TEST.vdf",
+                        loginUsers["users"].ToVdf().ToString());
                 }
-                // While loop adds account when new one started. Will not include the last one, so that's done here.
-                if (!String.IsNullOrEmpty(steamId))
-                    _userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
+                else
+                {
+                    MessageBox.Show("There was an error loading the 'loginusers.vdf' file: " +
+                                    _persistentSettings.LoginusersVdf());
+                }
 
-                file.Close();
+
+                //while ((line = file.ReadLine()) != null)
+                //{
+                //    _fLoginUsersLines.Add(line);
+                //    line = line.Replace("\t", "");
+                //    var lineNoQuot = line.Replace("\"", "");
+
+                //    if (lineNoQuot.All(char.IsDigit) && string.IsNullOrEmpty(steamId)) // Line is SteamID and steamID is empty >> New user.
+                //    {
+                //        steamId = lineNoQuot;
+                //    }
+                //    else if (lineNoQuot.All(char.IsDigit) && !string.IsNullOrEmpty(steamId)) // If steamID isn't empty, save account details, empty temp vars for collection.
+                //    {
+                //        //lastLogin = UnixTimeStampToDateTime(timestamp);
+                //        _userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
+                //        username = "";
+                //        personaName = "";
+                //        timestamp = "";
+                //        steamId = lineNoQuot;
+                //    }
+                //    else if (line.Contains("AccountName"))
+                //    {
+                //        username = lineNoQuot.Substring(11, lineNoQuot.Length - 11);
+                //    }
+                //    else if (line.Contains("PersonaName"))
+                //    {
+                //        personaName = lineNoQuot.Substring(11, lineNoQuot.Length - 11);
+                //    }
+                //    else if (line.Contains("Timestamp"))
+                //    {
+                //        timestamp = lineNoQuot.Substring(9, lineNoQuot.Length - 9);
+                //    }
+
+                //    System.Console.WriteLine(line);
+                //}
+                //// While loop adds account when new one started. Will not include the last one, so that's done here.
+                //if (!String.IsNullOrEmpty(steamId))
+                //    _userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
+
+                //file.Close();
+
+
+
+
+
             }
             catch (FileNotFoundException ex)
             {
