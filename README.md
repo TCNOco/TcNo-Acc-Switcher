@@ -51,3 +51,6 @@ Downloaded from a different source? Verify hashes [HERE](https://tcno.co/Project
 Origin and more are coming to the TcNo Account Switcher! Easily handle multiple accounts with a few clicks!
 With an all-new tray, you can switch accounts directly from the tray as well!
 Tons more features to come.
+
+All trademarks and materials are property of their respective owners and their licensors.
+This project is not affiliated with Steam or Valve Corporation.
