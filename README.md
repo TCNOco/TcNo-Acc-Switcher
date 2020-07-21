@@ -52,5 +52,8 @@ Origin and more are coming to the TcNo Account Switcher! Easily handle multiple 
 With an all-new tray, you can switch accounts directly from the tray as well!
 Tons more features to come.
 
-All trademarks and materials are property of their respective owners and their licensors.
-This project is not affiliated with Steam or Valve Corporation.
+#### Disclaimer
+All trademarks and materials are property of their respective owners and their licensors.<br>
+This project is not affiliated with Steam or Valve Corporation.<br>
+I am not responsible for the contents of external links.<br>
+USE THIS SOFTWARE AT YOUR OWN RISK. I AM NOT RESPONSIBLE FOR ANY DAMAGES IF YOU CHOOSE TO USE THIS SOFTWARE. COMPONENTS ARE PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITHOUT ANY WARRANTIES OF ANY KIND TO THE FULLEST EXTENT PERMITTED BY LAW, AND I EXPRESSLY DISCLAIM ANY AND ALL WARRANTIES, WHETHER EXPRESS OR IMPLIED.
