@@ -515,7 +515,7 @@ namespace TcNo_Acc_Switcher_Steam
                 if (ua.SteamID == selectedSteamId) ua.MostRec = "1";
                 outJObject[ua.SteamID] = (JObject)JToken.FromObject(ua);
             }
-            File.WriteAllText(tempFile, outJObject.ToVdf().ToString());
+            File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
             File.Replace(tempFile, _persistentSettings.LoginusersVdf(), _persistentSettings.LoginusersVdf() + "_last");
 
             // -----------------------------------
@@ -563,13 +563,7 @@ namespace TcNo_Acc_Switcher_Steam
             [JsonProperty("PersonaName", Order = 1)] public string Name { get; set; }
             [JsonProperty("RememberPassword", Order = 2)] private readonly string _remPass = "1"; // Should always be 1
             [JsonProperty("mostrecent", Order = 3)] public string MostRec = "0";
-            private string _lastLogin = "";
-            [JsonProperty("Timestamp", Order = 4)]
-            public string lastLogin
-            {
-                get => _lastLogin;
-                set { if (string.IsNullOrEmpty(_lastLogin)) _lastLogin = value; } // Only set once, on initial load. -- Binding set to one way on WPF, but it seems to ignore this?!
-            }
+            [JsonProperty("Timestamp", Order = 4)] public string lastLogin { get; set; }
             [JsonProperty("WantsOfflineMode", Order = 5)] public string OfflineMode = "0";
 
             [JsonIgnore] public string ImgURL { get; set; }
@@ -655,7 +649,7 @@ namespace TcNo_Acc_Switcher_Steam
             LblStatus.Content = "Logging into: " + MainViewmodel.SelectedSteamUser.Name;
             BtnLogin.IsEnabled = false;
 
-            MainViewmodel.SelectedSteamUser.lastLogin = DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss");
+            MainViewmodel.SelectedSteamUser.lastLogin = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
             ListAccounts.Items.Refresh();
 
             // Add to tray access accounts for tray icon.
