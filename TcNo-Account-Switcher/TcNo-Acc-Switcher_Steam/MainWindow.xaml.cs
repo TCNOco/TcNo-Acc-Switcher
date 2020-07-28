@@ -95,6 +95,90 @@ namespace TcNo_Acc_Switcher_Steam
         }
 
 
+        private void GetSteamAccounts()
+        {
+            _userAccounts.Clear();
+            try
+            {
+                var loginUsersVToken = VdfConvert.Deserialize(File.ReadAllText(_persistentSettings.LoginusersVdf()));
+                var loginUsers = new JObject() { loginUsersVToken.ToJson() };
+
+                if (loginUsers["users"] != null)
+                {
+                    foreach (var user in loginUsers["users"])
+                    {
+                        var steamId = user.ToObject<JProperty>()?.Name;
+                        if (string.IsNullOrEmpty(steamId) || string.IsNullOrEmpty(user.First?["AccountName"]?.ToString())) continue;
+                        _userAccounts.Add(new Steamuser()
+                        {
+                            Name = user.First?["PersonaName"]?.ToString(),
+                            AccName = user.First?["AccountName"]?.ToString(),
+                            SteamID = steamId,
+                            ImgURL = Path.Combine("images", $"{steamId}.jpg"),
+                            lastLogin = user.First?["Timestamp"]?.ToString(),
+                            OfflineMode = (!string.IsNullOrEmpty(user.First?["WantsOfflineMode"]?.ToString()) ? user.First?["WantsOfflineMode"]?.ToString() : "0")
+                        });
+                    }
+                }
+                else
+                    MessageBox.Show(Strings.ErrLoadingLoginusers + _persistentSettings.LoginusersVdf());
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show(Strings.ErrLoginusersNonExist, Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{Strings.ErrInformation} {ex}", Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(2);
+            }
+        }
+
+        private string GetUserImageUrl(string steamId)
+        {
+            var imageUrl = "";
+            var profileXml = new XmlDocument();
+            try
+            {
+                profileXml.Load($"https://steamcommunity.com/profiles/{steamId}?xml=1");
+                if (profileXml.DocumentElement != null && profileXml.DocumentElement.SelectNodes("/profile/privacyMessage")?.Count == 0) // Fix for accounts that haven't set up their Community Profile
+                {
+                    try
+                    {
+                        imageUrl = profileXml.DocumentElement.SelectNodes("/profile/avatarFull")[0].InnerText;
+                        var isVac = false;
+                        var isLimited = true;
+                        if (profileXml.DocumentElement != null)
+                        {
+                            if (profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0] != null)
+                                isVac = profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
+                            if (profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
+                                isLimited = profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
+                        }
+
+                        if (!_persistentSettings.LimitedAsVAC) // Ignores limited accounts
+                            isLimited = false;
+                        _vacBanned = isVac || isLimited;
+                    }
+                    catch (NullReferenceException) // User has not set up their account, or does not have an image.
+                    {
+                        imageUrl = "";
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _vacBanned = false;
+                imageUrl = "";
+                Directory.CreateDirectory("Errors");
+                using (var sw = File.AppendText($"Errors\\AccSwitcher-Error-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
+                {
+                    sw.WriteLine(DateTime.Now.ToString(CultureInfo.InvariantCulture) + "\t" + Strings.ErrUnhandledCrash + ": " + e + Environment.NewLine + Environment.NewLine);
+                }
+                using (var sw = File.AppendText($"Errors\\AccSwitcher-Error-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
+                {
+                    sw.WriteLine(JsonConvert.SerializeObject(profileXml));
+                }
+            }
+            return imageUrl;
+        }
         public void RefreshSteamAccounts()
         {
             // Collect Steam Account basic info from Steam file
@@ -393,103 +477,6 @@ namespace TcNo_Acc_Switcher_Steam
             }
         }
 
-        private void GetSteamAccounts()
-        {
-            // Clear in-case it's a refresh
-            //_fLoginUsersLines.Clear(); ---------------------------------
-            _userAccounts.Clear();
-
-            try
-            {
-                //var file = new StreamReader(_persistentSettings.LoginusersVdf());
-                var loginUsersVToken = VdfConvert.Deserialize(File.ReadAllText(_persistentSettings.LoginusersVdf()));
-                var loginUsers = new JObject() {loginUsersVToken.ToJson()};
-
-                if (loginUsers["users"] != null)
-                {
-                    foreach (var user in loginUsers["users"])
-                    {
-                        var steamId = user.ToObject<JProperty>()?.Name;
-                        if (!string.IsNullOrEmpty(steamId) && !string.IsNullOrEmpty(user.First?["AccountName"]?.ToString()))
-                            _userAccounts.Add(new Steamuser()
-                            {
-                                Name = user.First?["PersonaName"]?.ToString(),
-                                AccName = user.First?["AccountName"]?.ToString(),
-                                SteamID = steamId,
-                                ImgURL = Path.Combine("images", $"{steamId}.jpg"),
-                                lastLogin = user.First?["Timestamp"]?.ToString()
-                            });
-
-                        //Console.WriteLine(user.ToObject<JProperty>()?.Name);
-                    }
-
-
-                    //File.WriteAllText(_persistentSettings.LoginusersVdf() + "TEST.json", loginUsers["users"].ToString());
-                    //File.WriteAllText(_persistentSettings.LoginusersVdf() + "TEST.vdf",
-                    //    loginUsers["users"].ToVdf().ToString());
-                }
-                else
-                {
-                    MessageBox.Show("There was an error loading the 'loginusers.vdf' file: " +
-                                    _persistentSettings.LoginusersVdf());
-                }
-            }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show(Strings.ErrLoginusersNonExist, Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
-                MessageBox.Show($"{Strings.ErrInformation} {ex}", Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
-                Environment.Exit(2);
-            }
-        }
-
-        private string GetUserImageUrl(string steamId)
-        {
-            var imageUrl = "";
-            var profileXml = new XmlDocument();
-            try
-            {
-                profileXml.Load($"https://steamcommunity.com/profiles/{steamId}?xml=1");
-                if (profileXml.DocumentElement != null && profileXml.DocumentElement.SelectNodes("/profile/privacyMessage").Count == 0) // Fix for accounts that haven't set up their Community Profile
-                {
-                    try
-                    {
-                        imageUrl = profileXml.DocumentElement.SelectNodes("/profile/avatarFull")[0].InnerText;
-                        var isVac = false;
-                        var isLimited = true;
-                        if (profileXml.DocumentElement != null)
-                        {
-                            if (profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0] != null)
-                                isVac = profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
-                            if (profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
-                                isLimited = profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
-                        }
-
-                        if (!_persistentSettings.LimitedAsVAC) // Ignores limited accounts
-                            isLimited = false;
-                        _vacBanned = isVac || isLimited;
-                    }
-                    catch (NullReferenceException) // User has not set up their account, or does not have an image.
-                    {
-                        imageUrl = "";
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                _vacBanned = false;
-                imageUrl = "";
-                Directory.CreateDirectory("Errors");
-                using (var sw = File.AppendText($"Errors\\AccSwitcher-Error-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
-                {
-                    sw.WriteLine(DateTime.Now.ToString(CultureInfo.InvariantCulture) + "\t" + Strings.ErrUnhandledCrash + ": " + e + Environment.NewLine + Environment.NewLine);
-                }
-                using (var sw = File.AppendText($"Errors\\AccSwitcher-Error-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
-                {
-                    sw.WriteLine(JsonConvert.SerializeObject(profileXml));
-                }
-            }
-            return imageUrl;
-        }
         private void SteamUserSelect(object sender, SelectionChangedEventArgs e)
         {
             if (!ListAccounts.IsLoaded) return;
@@ -521,46 +508,14 @@ namespace TcNo_Acc_Switcher_Steam
             var targetUsername = accName;
             var tempFile = _persistentSettings.LoginusersVdf() + "_temp";
             File.Delete(tempFile);
-            using (var fs = File.Create(tempFile))
-            {
-                LblStatus.Content = Strings.StatusEditingLoginusers;
-                var userIdMatch = false;
-                foreach (var line in _fLoginUsersLines)
-                {
-                    var outline = line;
-                    var lineNoQuot = line;
-                    lineNoQuot = lineNoQuot.Replace("\t", "").Replace("\"", "");
 
-                    if (lineNoQuot.All(char.IsDigit)) // Check if line is JUST digits -> SteamID
-                    {
-                        // Most recent ID matches! Set this account to active.
-                        userIdMatch = lineNoQuot == selectedSteamId;
-                    }
-                    else if (line.Contains("AccountName") && userIdMatch) // Username not supplied
-                            targetUsername = lineNoQuot.Substring(11);
-                    else if (line.Contains("mostrecent"))
-                    {
-                        // Set every mostrecent to 0, unless it's the one you want to switch to.
-                        if (!loginNone && userIdMatch)
-                        {
-                            outline = "\t\t\"mostrecent\"\t\t\"1\"";
-                        }
-                        else
-                        {
-                            outline = "\t\t\"mostrecent\"\t\t\"0\"";
-                        }
-                    }
-                    else if (line.Contains("}"))
-                    {
-                        // Reset variables for next user.
-                        if (userIdMatch && string.IsNullOrEmpty(targetUsername))
-                            MessageBox.Show(Strings.ErrSwitchingAcc, Strings.ErrSwitchingAcc_MissingUsername, MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    var info = new UTF8Encoding(true).GetBytes(outline + "\n");
-                    fs.Write(info, 0, info.Length);
-                }
+            var outJObject = new JObject();
+            foreach (var ua in _userAccounts)
+            {
+                if (ua.SteamID == selectedSteamId) ua.MostRec = "1";
+                outJObject[ua.SteamID] = (JObject)JToken.FromObject(ua);
             }
-            // Replace original file with temp
+            File.WriteAllText(tempFile, outJObject.ToVdf().ToString());
             File.Replace(tempFile, _persistentSettings.LoginusersVdf(), _persistentSettings.LoginusersVdf() + "_last");
 
             // -----------------------------------
@@ -606,9 +561,15 @@ namespace TcNo_Acc_Switcher_Steam
             [JsonIgnore] public string SteamID { get; set; }
             [JsonProperty("AccountName", Order = 0)] public string AccName { get; set; }
             [JsonProperty("PersonaName", Order = 1)] public string Name { get; set; }
-            [JsonProperty("RememberPassword", Order = 2)] private string _remPass = "1";
-            [JsonProperty("mostrecent", Order = 3)] private string _mostRec = "0";
-            [JsonProperty("Timestamp", Order = 4)] public string lastLogin { get; set; }
+            [JsonProperty("RememberPassword", Order = 2)] private readonly string _remPass = "1"; // Should always be 1
+            [JsonProperty("mostrecent", Order = 3)] public string MostRec = "0";
+            private string _lastLogin = "";
+            [JsonProperty("Timestamp", Order = 4)]
+            public string lastLogin
+            {
+                get => _lastLogin;
+                set { if (string.IsNullOrEmpty(_lastLogin)) _lastLogin = value; } // Only set once, on initial load. -- Binding set to one way on WPF, but it seems to ignore this?!
+            }
             [JsonProperty("WantsOfflineMode", Order = 5)] public string OfflineMode = "0";
 
             [JsonIgnore] public string ImgURL { get; set; }

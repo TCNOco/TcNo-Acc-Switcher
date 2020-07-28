@@ -146,6 +146,9 @@ Details:</value>
   <data name="ErrInformation" xml:space="preserve">
     <value>Error information:</value>
   </data>
+  <data name="ErrLoadingLoginusers" xml:space="preserve">
+    <value>There was an error loading the 'loginusers.vdf' file:</value>
+  </data>
   <data name="ErrLoginusersNonExist" xml:space="preserve">
     <value>Can't start account switcher when loginusers.vdf does not exist. Verify Steam's installation and try again.
 If you just deleted loginusers.vdf, try starting and logging with Steam at least once.</value>

@@ -138,6 +138,15 @@ namespace TcNo_Acc_Switcher_Steam.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There was an error loading the &apos;loginusers.vdf&apos; file:.
+        /// </summary>
+        public static string ErrLoadingLoginusers {
+            get {
+                return ResourceManager.GetString("ErrLoadingLoginusers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can&apos;t start account switcher when loginusers.vdf does not exist. Verify Steam&apos;s installation and try again.
         ///If you just deleted loginusers.vdf, try starting and logging with Steam at least once..
         /// </summary>

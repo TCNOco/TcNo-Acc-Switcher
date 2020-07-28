@@ -320,7 +320,7 @@
                             <TextBlock Text="{Binding AccName}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
                             <TextBlock Text="{Binding Name}" TextAlignment="Center"></TextBlock>
                             <TextBlock Text="{Binding SteamID}" Visibility="{Binding IsChecked,ElementName=ShowSteamIdHidden,Converter={StaticResource B2V}}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
-                            <TextBlock Text="{Binding lastLogin, Converter={StaticResource TimestampToText}}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
+                            <TextBlock Text="{Binding lastLogin, Mode=OneWay, Converter={StaticResource TimestampToText}}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
                         </StackPanel>
                     </ListBoxItem>
                 </DataTemplate>
