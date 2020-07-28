@@ -352,21 +352,6 @@ namespace TcNo_Acc_Switcher_Steam
                 serializer.Serialize(writer, _persistentSettings);
             }
         }
-        private static string UnixTimeStampToDateTime(string unixTimeStampString)
-        {
-            // Unix timestamp is seconds past epoch
-            string localDateTimeOffset;
-            try
-            {
-                localDateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(long.Parse(unixTimeStampString)).DateTime.ToLocalTime().ToString("dd/MM/yyyy hh:mm:ss");
-            }
-            catch
-            {
-                localDateTimeOffset = "-ERR-";
-            }
-
-            return localDateTimeOffset;
-        }
         private static bool IsValidGdiPlusImage(string filename)
         {
             //From https://stackoverflow.com/questions/8846654/read-image-and-determine-if-its-corrupt-c-sharp
@@ -425,8 +410,15 @@ namespace TcNo_Acc_Switcher_Steam
                     foreach (var user in loginUsers["users"])
                     {
                         var steamId = user.ToObject<JProperty>()?.Name;
-                        if (!string.IsNullOrEmpty(steamId))
-                            _userAccounts.Add(new Steamuser() { Name = user.First?["PersonaName"]?.ToString(), AccName = user.First?["AccountName"]?.ToString(), SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(user.First?["Timestamp"]?.ToString()) });
+                        if (!string.IsNullOrEmpty(steamId) && !string.IsNullOrEmpty(user.First?["AccountName"]?.ToString()))
+                            _userAccounts.Add(new Steamuser()
+                            {
+                                Name = user.First?["PersonaName"]?.ToString(),
+                                AccName = user.First?["AccountName"]?.ToString(),
+                                SteamID = steamId,
+                                ImgURL = Path.Combine("images", $"{steamId}.jpg"),
+                                lastLogin = user.First?["Timestamp"]?.ToString()
+                            });
 
                         //Console.WriteLine(user.ToObject<JProperty>()?.Name);
                     }
@@ -611,12 +603,16 @@ namespace TcNo_Acc_Switcher_Steam
 
         public class Steamuser
         {
-            public string Name { get; set; }
-            public string SteamID { get; set; }
-            public string ImgURL { get; set; }
-            public string lastLogin { get; set; }
-            public string AccName { get; set; }
-            public System.Windows.Media.Brush vacStatus { get; set; }
+            [JsonIgnore] public string SteamID { get; set; }
+            [JsonProperty("AccountName", Order = 0)] public string AccName { get; set; }
+            [JsonProperty("PersonaName", Order = 1)] public string Name { get; set; }
+            [JsonProperty("RememberPassword", Order = 2)] private string _remPass = "1";
+            [JsonProperty("mostrecent", Order = 3)] private string _mostRec = "0";
+            [JsonProperty("Timestamp", Order = 4)] public string lastLogin { get; set; }
+            [JsonProperty("WantsOfflineMode", Order = 5)] public string OfflineMode = "0";
+
+            [JsonIgnore] public string ImgURL { get; set; }
+            [JsonIgnore] public System.Windows.Media.Brush vacStatus { get; set; }
         }
         public class UserSettings
         {

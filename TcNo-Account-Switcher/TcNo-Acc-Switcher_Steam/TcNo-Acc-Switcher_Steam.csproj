@@ -129,6 +129,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\Converters.cs" />
     <Compile Include="IntToStringConverter.cs" />
     <Compile Include="RestoreForgotten.xaml.cs">
       <DependentUpon>RestoreForgotten.xaml</DependentUpon>

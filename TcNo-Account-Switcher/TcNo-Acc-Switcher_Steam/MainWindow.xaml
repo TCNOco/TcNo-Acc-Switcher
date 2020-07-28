@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:localisation="clr-namespace:TcNo_Acc_Switcher_Steam.Localisation"
+        xmlns:converters="clr-namespace:TcNo_Acc_Switcher_Steam.Converters"
 
         mc:Ignorable="d"
         Title="TcNo Steam Account Switcher" Height="377" Width="680"
@@ -25,6 +26,7 @@
             ResizeBorderThickness="3"/>
     </WindowChrome.WindowChrome>
     <Window.Resources>
+        <converters:TimestampToText x:Key="TimestampToText" />
         <BooleanToVisibilityConverter x:Key="B2V" />
         <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
         <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
@@ -318,7 +320,7 @@
                             <TextBlock Text="{Binding AccName}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
                             <TextBlock Text="{Binding Name}" TextAlignment="Center"></TextBlock>
                             <TextBlock Text="{Binding SteamID}" Visibility="{Binding IsChecked,ElementName=ShowSteamIdHidden,Converter={StaticResource B2V}}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
-                            <TextBlock Text="{Binding lastLogin}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
+                            <TextBlock Text="{Binding lastLogin, Converter={StaticResource TimestampToText}}" FontSize="9" TextAlignment="Center" FontWeight="Normal" Foreground="#CCCCCC"></TextBlock>
                         </StackPanel>
                     </ListBoxItem>
                 </DataTemplate>
