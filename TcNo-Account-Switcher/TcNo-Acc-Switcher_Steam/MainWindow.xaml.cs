@@ -424,67 +424,23 @@ namespace TcNo_Acc_Switcher_Steam
                 {
                     foreach (var user in loginUsers["users"])
                     {
-                        var s = user.Values<string>();
-                        //_userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
-                        Console.WriteLine(user);
+                        var steamId = user.ToObject<JProperty>()?.Name;
+                        if (!string.IsNullOrEmpty(steamId))
+                            _userAccounts.Add(new Steamuser() { Name = user.First?["PersonaName"]?.ToString(), AccName = user.First?["AccountName"]?.ToString(), SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(user.First?["Timestamp"]?.ToString()) });
+
+                        //Console.WriteLine(user.ToObject<JProperty>()?.Name);
                     }
 
 
-                    File.WriteAllText(_persistentSettings.LoginusersVdf() + "TEST.json", loginUsers["users"].ToString());
-                    File.WriteAllText(_persistentSettings.LoginusersVdf() + "TEST.vdf",
-                        loginUsers["users"].ToVdf().ToString());
+                    //File.WriteAllText(_persistentSettings.LoginusersVdf() + "TEST.json", loginUsers["users"].ToString());
+                    //File.WriteAllText(_persistentSettings.LoginusersVdf() + "TEST.vdf",
+                    //    loginUsers["users"].ToVdf().ToString());
                 }
                 else
                 {
                     MessageBox.Show("There was an error loading the 'loginusers.vdf' file: " +
                                     _persistentSettings.LoginusersVdf());
                 }
-
-
-                //while ((line = file.ReadLine()) != null)
-                //{
-                //    _fLoginUsersLines.Add(line);
-                //    line = line.Replace("\t", "");
-                //    var lineNoQuot = line.Replace("\"", "");
-
-                //    if (lineNoQuot.All(char.IsDigit) && string.IsNullOrEmpty(steamId)) // Line is SteamID and steamID is empty >> New user.
-                //    {
-                //        steamId = lineNoQuot;
-                //    }
-                //    else if (lineNoQuot.All(char.IsDigit) && !string.IsNullOrEmpty(steamId)) // If steamID isn't empty, save account details, empty temp vars for collection.
-                //    {
-                //        //lastLogin = UnixTimeStampToDateTime(timestamp);
-                //        _userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
-                //        username = "";
-                //        personaName = "";
-                //        timestamp = "";
-                //        steamId = lineNoQuot;
-                //    }
-                //    else if (line.Contains("AccountName"))
-                //    {
-                //        username = lineNoQuot.Substring(11, lineNoQuot.Length - 11);
-                //    }
-                //    else if (line.Contains("PersonaName"))
-                //    {
-                //        personaName = lineNoQuot.Substring(11, lineNoQuot.Length - 11);
-                //    }
-                //    else if (line.Contains("Timestamp"))
-                //    {
-                //        timestamp = lineNoQuot.Substring(9, lineNoQuot.Length - 9);
-                //    }
-
-                //    System.Console.WriteLine(line);
-                //}
-                //// While loop adds account when new one started. Will not include the last one, so that's done here.
-                //if (!String.IsNullOrEmpty(steamId))
-                //    _userAccounts.Add(new Steamuser() { Name = personaName, AccName = username, SteamID = steamId, ImgURL = Path.Combine("images", $"{steamId}.jpg"), lastLogin = UnixTimeStampToDateTime(timestamp) });
-
-                //file.Close();
-
-
-
-
-
             }
             catch (FileNotFoundException ex)
             {
@@ -977,7 +933,7 @@ namespace TcNo_Acc_Switcher_Steam
         }
         private void AccountItem_SwitchStart(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
 
             // Ask user to input game ID, or select name from list, or search for name in list
             // Select game
@@ -987,7 +943,8 @@ namespace TcNo_Acc_Switcher_Steam
             
             // Launch selected application
             if (_persistentSettings.StartAsAdmin)
-                _ = Process.Start(_persistentSettings.SteamExe(), "-applaunch 730 +connect 102.130.127.23:27015");
+                _ = Process.Start("explorer.exe", "steam://rungameid/730");
+                //_ = Process.Start(_persistentSettings.SteamExe(), "-applaunch 730 +connect 102.130.127.23:27015");
             else
             {
                 // Long, but interesting way around launching a game and connecting to a server.

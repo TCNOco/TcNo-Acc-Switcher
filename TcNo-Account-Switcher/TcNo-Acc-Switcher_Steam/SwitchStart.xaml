@@ -3,10 +3,77 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TcNo_Acc_Switcher_Steam"
+        xmlns:localisation="clr-namespace:TcNo_Acc_Switcher_Steam.Localisation"
         mc:Ignorable="d"
-        Title="SwitchStart" Height="450" Width="800">
-    <Grid>
-        
+        Title="TcNo Steam Account Switcher - Switch and Start" Height="254" Width="890"
+        MinHeight="238" MaxHeight="238" MinWidth="490"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        WindowStartupLocation="CenterScreen">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0"
+            CornerRadius="2"
+            GlassFrameThickness="0"
+            NonClientFrameEdges="None"
+            ResizeBorderThickness="3"/>
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="B2V" />
+    </Window.Resources>
+    <Grid Background="#28293A" Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30px"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+        </Grid.Effect>
+
+        <!-- Row 0: Header -->
+        <Border MouseDown="DragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
+        <Label Grid.Row="0" IsHitTestVisible="False" Name="FolderInputHeaderInstruction" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="{x:Static localisation:Strings.XSteamInputTitle}"/>
+        <Canvas Grid.Row="0" IsHitTestVisible="False"  Name="Svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5,10,0,10">
+            <Canvas.RenderTransform>
+                <TranslateTransform X="0" Y="0"/>
+            </Canvas.RenderTransform>
+            <Canvas.Resources/>
+            <Canvas Name="G3859">
+                <Canvas Name="G3857">
+                    <Canvas Name="G3849">
+                        <Path  Name="O1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 0.889l6.25 0l0 8.27l-3.503 0l-2.747 -2.874l0 -3.28l2.115 0l0 4.086l2.019 0l0 -4.086l-4.134 0l0 -2.116"/>
+                        <Path  Name="O2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 7.487l1.598 1.672l-1.598 0l0 -1.672Z"/>
+                    </Canvas>
+                    <Canvas Name="G3853">
+                        <Path  Name="N1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M15.053 0l0 9.135l2.117 0l0 -3.844l4.471 4.709l0 -9.135l-2.117 0l0 3.846l-4.471 -4.711Z"/>
+                        <Path  Name="N2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M17.016 0.865l1.932 2.02l0 -2.02l-1.932 0Z"/>
+                    </Canvas>
+                    <Path  Name="C" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M7.697 0.841l0 8.318l6.25 0l0 -2.067l-4.134 0l0 -4.088l4.134 0l0 -2.163l-6.25 0"/>
+                    <Path  Name="T" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M0.341 0.841l0 2.117l1.78 0l0 6.201l2.115 0l0 -6.201l2.702 0l0 -2.117l-6.597 0Z"/>
+                </Canvas>
+            </Canvas>
+        </Canvas>
+        <Button Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="BtnMinimize"></Button>
+        <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="BtnExit"></Button>
+
+        <StackPanel Grid.Row="1" Background="#28293A" Margin="20,0,20,0" Grid.ColumnSpan="2">
+            <TextBlock Margin="5 20px 0 0" Name="LblQuery" HorizontalAlignment="Left" Foreground="White" Visibility="{Binding SteamNotFound,Converter={StaticResource B2V}}"><Label Content="{x:Static localisation:Strings.XSteamInputText1}" Foreground="Red" /><Label Content="{x:Static localisation:Strings.XSteamInputText2}" Foreground="White" FontStyle="Italic" /><Label Content="{x:Static localisation:Strings.XSteamInputText3}" Foreground="Red" /><Label Content="{x:Static localisation:Strings.XSteamInputText4}" Foreground="White" FontStyle="Italic"/></TextBlock>
+            <Label Name="LblQuery2" HorizontalAlignment="Left" Foreground="White" Content="{x:Static localisation:Strings.XSteamInputText5}"/>
+
+            <Grid Margin="0 10px 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="136" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Margin="10,3,10,0">
+                    <RadioButton GroupName="SteamCommands" Foreground="White" Name="Connect" FontSize="14px" >steam://connect/IP</RadioButton>
+                    <RadioButton GroupName="SteamCommands" Foreground="White" Name="RunGameId" FontSize="14px" >steam://rungameid/ID</RadioButton>
+                </StackPanel>
+                <TextBox Padding="5" Grid.Column="1" BorderBrush="Gray" VerticalContentAlignment="Center" Name="TxtSwitchInput" Foreground="White" Background="#222222"/>
+                <Button Padding="5" Grid.Column="2" Content="{x:Static localisation:Strings.XBtnLocateSteamExe}"  VerticalAlignment="Center" Height="36" Width="125" Margin="5 0" Foreground="White"  Click="BtnSwitchSave" Style="{StaticResource pickSteamFolder}"/>
+            </Grid>
+        </StackPanel>
     </Grid>
 </Window>
