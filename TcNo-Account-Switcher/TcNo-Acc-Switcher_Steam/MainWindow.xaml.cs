@@ -25,6 +25,7 @@ using System.Xml;
 using Gameloop.Vdf;
 using Gameloop.Vdf.JsonConverter;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Steam.Classes;
 using TcNo_Acc_Switcher_Steam.Localisation;
 
 namespace TcNo_Acc_Switcher_Steam
@@ -682,13 +683,14 @@ namespace TcNo_Acc_Switcher_Steam
             BtnLogin.IsEnabled = true;
         }
 
-
-        private static bool VerifySteamId(string steamid)
+        private static bool VerifySteamId(string steamId)
         {
-            if (!IsDigitsOnly(steamid) || steamid.Length != 17) return false;
+            const long steamIdMin = 0x0110000100000001;
+            const long steamIdMax = 0x01100001FFFFFFFF;
+            if (!IsDigitsOnly(steamId) || steamId.Length != 17) return false;
             // Size check: https://stackoverflow.com/questions/33933705/steamid64-minimum-and-maximum-length#40810076
-            var steamidVal = double.Parse(steamid);
-            return steamidVal > 0x0110000100000001 && steamidVal < 0x01100001FFFFFFFF;
+            var steamIdVal = double.Parse(steamId);
+            return steamIdVal > steamIdMin && steamIdVal < steamIdMax;
         }
         public void SwapSteamAccounts(bool loginNone, string steamid, string accName, bool autoStartSteam = true)
         {
@@ -843,16 +845,16 @@ namespace TcNo_Acc_Switcher_Steam
             switch (sel)
             {
                 case "steamid":
-                    Clipboard.SetText(new SteamIdConvert(steamId).Id);
+                    Clipboard.SetText(new Converters.SteamIdConvert(steamId).Id);
                     break;
                 case "steamid3":
-                    Clipboard.SetText(new SteamIdConvert(steamId).Id3);
+                    Clipboard.SetText(new Converters.SteamIdConvert(steamId).Id3);
                     break;
                 case "steamid32":
-                    Clipboard.SetText(new SteamIdConvert(steamId).Id32);
+                    Clipboard.SetText(new Converters.SteamIdConvert(steamId).Id32);
                     break;
                 case "steamid64":
-                    Clipboard.SetText(new SteamIdConvert(steamId).Id64);
+                    Clipboard.SetText(new Converters.SteamIdConvert(steamId).Id64);
                     break;
             }
         }

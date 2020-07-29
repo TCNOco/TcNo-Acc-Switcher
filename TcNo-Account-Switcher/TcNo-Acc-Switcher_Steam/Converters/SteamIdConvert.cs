@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Linq;
 
-namespace TcNo_Acc_Switcher_Steam
+namespace TcNo_Acc_Switcher_Steam.Converters
 {
     internal class SteamIdConvert
     {

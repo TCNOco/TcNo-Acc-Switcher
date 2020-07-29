@@ -129,8 +129,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Converters\Converters.cs" />
-    <Compile Include="IntToStringConverter.cs" />
+    <Compile Include="Converters\TimestampToString.cs" />
+    <Compile Include="Converters\IntToStringConverter.cs" />
     <Compile Include="RestoreForgotten.xaml.cs">
       <DependentUpon>RestoreForgotten.xaml</DependentUpon>
     </Compile>
@@ -140,7 +140,7 @@
     <Compile Include="SteamFolderInput.xaml.cs">
       <DependentUpon>SteamFolderInput.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SteamIdConvert.cs" />
+    <Compile Include="Converters\SteamIdConvert.cs" />
     <Compile Include="Localisation\Strings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -149,7 +149,7 @@
     <Compile Include="SwitchStart.xaml.cs">
       <DependentUpon>SwitchStart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TrayUser.cs" />
+    <Compile Include="Classes\TrayUser.cs" />
     <Compile Include="UserDataWindow.xaml.cs">
       <DependentUpon>UserDataWindow.xaml</DependentUpon>
     </Compile>

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace TcNo_Acc_Switcher_Steam
+namespace TcNo_Acc_Switcher_Steam.Classes
 {
     public class TrayUsers
     {
@@ -51,12 +51,10 @@ namespace TcNo_Acc_Switcher_Steam
 
         public void MoveItemToLast(string steamId)
         {
-            TrayUser cur = ListTrayUsers.Single(r => r.SteamID == steamId);
-            if (ListTrayUsers.IndexOf(cur) != ListTrayUsers.Count - 1)
-            {
-                ListTrayUsers.Remove(cur);
-                ListTrayUsers.Add(cur);
-            }
+            var cur = ListTrayUsers.Single(r => r.SteamID == steamId);
+            if (ListTrayUsers.IndexOf(cur) == ListTrayUsers.Count - 1) return;
+            ListTrayUsers.Remove(cur);
+            ListTrayUsers.Add(cur);
         }
     }
     

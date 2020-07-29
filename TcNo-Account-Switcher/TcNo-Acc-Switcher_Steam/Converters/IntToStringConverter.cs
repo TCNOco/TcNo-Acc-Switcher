@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace TcNo_Acc_Switcher_Steam
+namespace TcNo_Acc_Switcher_Steam.Converters
 {
     public class IntToStringConverter : IValueConverter
     {

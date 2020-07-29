@@ -42,7 +42,7 @@ namespace TcNo_Acc_Switcher_Steam
 
         public void InitUserDataWindow(string steamId)
         {
-            var steamId32 = new SteamIdConvert(steamId).Id32;
+            var steamId32 = new Converters.SteamIdConvert(steamId).Id32;
             var userDataFolder = Path.Combine(_mw.GetSteamDirectory(), "userdata", steamId32);  // Contains list of Steam32 IDs
             var screenshotsFolder = Path.Combine(userDataFolder, "760\\remote\\");              // Contains folders of appIDs. */screenshots/ subfolder contains images and a */thumbnails/ folder.
 

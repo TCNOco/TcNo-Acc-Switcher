@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TcNo_Acc_Switcher_Steam"
         xmlns:localisation="clr-namespace:TcNo_Acc_Switcher_Steam.Localisation"
+        xmlns:converters="clr-namespace:TcNo_Acc_Switcher_Steam.Converters"
         mc:Ignorable="d"
         Title="TcNo Steam Account Switcher - Settings" Height="642" Width="502"
         MinHeight="329" MinWidth="502"
@@ -69,7 +70,7 @@
 
             <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
-                    <local:IntToStringConverter x:Key="IntToStr"/>
+                    <converters:IntToStringConverter x:Key="IntToStr"/>
                 </StackPanel.Resources>
                 <Label Panel.ZIndex="6" Name="LblImageExpiry" Foreground="White" Content="{x:Static localisation:Strings.XSettingsImagesExpire}" />
                 <TextBox Panel.ZIndex="6" Name="ImageExpiry" Margin="5px" Foreground="White" Background="#14151E" Text="{Binding ImageLifetime, Converter={StaticResource IntToStr}, Mode=TwoWay}" Width="40" TextChanged="ImageExpiry_OnTextChanged"/>
@@ -99,7 +100,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
-                    <local:IntToStringConverter x:Key="IntToStr"/>
+                    <converters:IntToStringConverter x:Key="IntToStr"/>
                 </StackPanel.Resources>
                 <Label Panel.ZIndex="6" Name="LblAccountsTotal" Foreground="White" Content="{x:Static localisation:Strings.XSettingsAccountsTotal}" />
                 <TextBox Panel.ZIndex="6" Name="NumberRecentAccounts" Margin="5px" Foreground="White" Background="#14151E" Text="{Binding TrayAccounts, Converter={StaticResource IntToStr}, Mode=TwoWay}" Width="40" TextChanged="NumberRecentAccounts_OnTextChanged"/>
