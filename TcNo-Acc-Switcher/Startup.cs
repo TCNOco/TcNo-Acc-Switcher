@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ElectronNET.API;
+using ElectronNET.API.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -53,7 +54,7 @@ namespace TcNo_Acc_Switcher
                 endpoints.MapFallbackToPage("/_Host");
             });
 
-            Task.Run(async ()=> await Electron.WindowManager.CreateWindowAsync());
+            Task.Run(async ()=> await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions{Frame = false}));
         }
     }
 }

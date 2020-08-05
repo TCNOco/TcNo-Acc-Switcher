@@ -3,6 +3,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>TcNo_Acc_Switcher</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="9.31.2" />
   </ItemGroup>
