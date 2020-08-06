@@ -1,7 +1,19 @@
 ﻿@page "/"
+@using TcNo_Acc_Switcher.Data
+@inject AppData AppData
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+    Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+<span>
+    Window title: 
+</span>
+<input type="text" @bind="AppData.WindowTitle">
+
+@code
+{
+    //AppData.WindowTitle = "test";
+
+}

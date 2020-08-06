@@ -1,17 +1,17 @@
 {
   "executable": "TcNo-Acc-Switcher",
   "splashscreen": {
-    "imageFile": ""
+    "imageFile": "../../../../other/img/TcNoAccSw-Icon-100x100.png"
   },
-  "name": "TcNo-Acc-Switcher",
-  "author": "",
-  "singleInstance": false,
+  "name": "TcNo Account Switcher",
+  "author": "Wesley Pyburn (TechNobo)",
+  "singleInstance": true,
   "environment": "Production",
   "build": {
     "appId": "com.TcNo-Acc-Switcher.app",
     "productName": "TcNo-Acc-Switcher",
-    "copyright": "Copyright © 2020",
-    "buildVersion": "1.0.0",
+    "copyright": "Copyright Wesley Pyburn (TechNobo) © 2020",
+    "buildVersion": "3.1.0",
     "compression": "maximum",
     "directories": {
       "output": "../../../bin/Desktop"
