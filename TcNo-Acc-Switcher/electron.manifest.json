@@ -1,9 +1,9 @@
 {
   "executable": "TcNo-Acc-Switcher",
   "splashscreen": {
-    "imageFile": "../../../../other/img/TcNoAccSw-Icon-100x100.png"
+    "imageFile": "TcNoAccSw-Icon-100x100.png"
   },
-  "name": "TcNo Account Switcher",
+  "name": "TcNo-Account-Switcher",
   "author": "Wesley Pyburn (TechNobo)",
   "singleInstance": true,
   "environment": "Production",

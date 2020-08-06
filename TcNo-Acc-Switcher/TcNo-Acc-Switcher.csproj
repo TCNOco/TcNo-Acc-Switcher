@@ -15,11 +15,29 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="wwwroot\img\TcNo_Logo_Flat.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="TcNoAccSw-Icon-100x100.png" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="9.31.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TcNoAccSw-Icon-100x100.png" />
+    <Resource Include="wwwroot\img\TcNo_Logo_Flat.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Startup.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Update="electron.manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\img\TcNoAccSw-Icon-100x100.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
