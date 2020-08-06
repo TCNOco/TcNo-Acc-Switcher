@@ -15,9 +15,6 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="wwwroot\img\TcNo_Logo_Flat.svg" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="TcNoAccSw-Icon-100x100.png" />
   </ItemGroup>
   <ItemGroup>
