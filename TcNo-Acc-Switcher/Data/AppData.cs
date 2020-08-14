@@ -18,7 +18,19 @@ namespace TcNo_Acc_Switcher.Data
             {
                 _windowTitle = value;
                 NotifyDataChanged();
-                Console.WriteLine("Property changed to: " + _windowTitle);
+                Console.WriteLine("Window Title changed to: " + _windowTitle);
+            }
+        }
+
+        private string _currentStatus = "Status: Initializing";
+        public string CurrentStatus
+        {
+            get => _currentStatus;
+            set
+            {
+                _currentStatus = value;
+                NotifyDataChanged();
+                Console.WriteLine("CurrentStatus changed to: " + _windowTitle);
             }
         }
 

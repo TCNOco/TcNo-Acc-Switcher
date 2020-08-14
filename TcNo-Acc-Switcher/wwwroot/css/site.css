@@ -2,6 +2,8 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #28293A;
+    font-size: 12px; /* THIS SCALES EVERYTHING UP AND DOWN */
 }
 
 a, .btn-link {
@@ -18,6 +20,8 @@ app {
     position: relative;
     display: flex;
     flex-direction: column;
+    height: 100vh;
+    width: 100vw;
 }
 
 .top-row {
@@ -51,8 +55,7 @@ app {
 /* Based on https://github.com/binaryfunt/electron-seamless-titlebar-tutorial */
 .headerbar {
     background-color: #14151E;
-    display: block;
-    position: fixed;
+    position: relative;
     height: 32px;
     width: 100%;
     -webkit-app-region: drag;
@@ -172,8 +175,6 @@ app {
     height: calc(100% - 32px);
     padding: 0;
     margin: 32px 0 0 0;
-    overflow-y: auto;
-    overflow-x: auto;
     width: 100vw;
 }
 
@@ -284,7 +285,7 @@ app {
 
 @media (min-width: 768px) {
     app {
-        flex-direction: row;
+        flex-direction: column;
     }
 
     .sidebar {

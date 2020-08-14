@@ -2,7 +2,144 @@
 @using TcNo_Acc_Switcher.Data
 @inject AppData AppData
 
-<h1>Hello, world!</h1>
+
+<div id="acc_list" class="acc_list">
+    <input type="radio" id="usernamehere" class="acc" name="accounts" />
+    <label for="usernamehere" class="acc">
+        <img src="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" />
+        <p>usernamehere</p>
+        <h6>Tyler, The Creator This is supposed to be super long</h6>
+        <p>10/08/2020 03:07:09</p>
+    </label>
+
+    <input type="radio" id="usernamehere1" class="acc" name="accounts" />
+    <label for="usernamehere1" class="acc">
+        <img src="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" />
+        <p>usernamehere</p>
+        <h6>Tyler, The Creator This is supposed to be super long</h6>
+        <p>10/08/2020 03:07:09</p>
+    </label>
+
+    <input type="radio" id="usernamehere2" class="acc" name="accounts" />
+    <label for="usernamehere2" class="acc vac">
+        <img src="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" />
+        <p>usernamehere</p>
+        <h6>Tyler, The Creator This is supposed to be super long</h6>
+        <p>10/08/2020 03:07:09</p>
+    </label>
+
+    <input type="radio" id="usernamehere3" class="acc" name="accounts" />
+    <label for="usernamehere3" class="acc">
+        <img src="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" />
+        <p>usernamehere</p>
+        <h6>Tyler, The Creator This is supposed to be super long</h6>
+        <p>10/08/2020 03:07:09</p>
+    </label>
+
+    <input type="radio" id="usernamehere4" class="acc" name="accounts" />
+    <label for="usernamehere4" class="acc vac">
+        <img src="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" />
+        <p>usernamehere</p>
+        <h6>Tyler, The Creator This is supposed to be super long</h6>
+        <p>10/08/2020 03:07:09</p>
+    </label>
+
+    <input type="radio" id="usernamehere5" class="acc" name="accounts" />
+    <label for="usernamehere5" class="acc">
+        <img src="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" />
+        <p>usernamehere</p>
+        <h6>Tyler, The Creator This is supposed to be super long</h6>
+        <p>10/08/2020 03:07:09</p>
+    </label>
+
+    <input type="radio" id="usernamehere6" class="acc" name="accounts" />
+    <label for="usernamehere6" class="acc">
+        <img src="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" />
+        <p>usernamehere</p>
+        <h6>Tyler, The Creator This is supposed to be super long</h6>
+        <p>10/08/2020 03:07:09</p>
+    </label>
+
+    <input type="radio" id="usernamehere7" class="acc" name="accounts" />
+    <label for="usernamehere7" class="acc">
+        <img src="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" />
+        <p>usernamehere</p>
+        <h6>Tyler, The Creator This is supposed to be super long</h6>
+        <p>10/08/2020 03:07:09</p>
+    </label>
+
+    <input type="radio" id="usernamehere8" class="acc" name="accounts" />
+    <label for="usernamehere8" class="acc">
+        <img src="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" />
+        <p>usernamehere</p>
+        <h6>Tyler, The Creator This is supposed to be super long</h6>
+        <p>10/08/2020 03:07:09</p>
+    </label>
+        
+        
+        
+        
+
+        
+    <ul class="contextmenu">
+        <li><a href="#">Copy Profile...</a>
+            <ul class="submenu">
+                <li><a href="">Community URL</a></li>
+                <li><a href="">Community Username</a></li>
+                <li><a href="">Login username</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Copy SteamID...</a>
+            <ul class="submenu">
+                <li><a href="">SteamID [STEAM0:~]</a></li>
+                <li><a href="">SteamID3 [U:1:~]</a></li>
+                <li><a href="">SteamID32</a></li>
+                <li><a href="">SteamID64 7656~</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Copy other...</a>
+            <ul class="submenu">
+                <li><a href="">SteamRep</a></li>
+                <li><a href="">SteamID.uk</a></li>
+                <li><a href="">SteamID.io</a></li>
+                <li><a href="">SteamIDFinder.com</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Create Desktop Shortcut</a></li>
+        <li><a href="#">Forget</a></li>
+    </ul>
+</div>
+<div class="acc_list_actionbar">
+    <span>@AppData.CurrentStatus</span>
+    <div>
+        <div class="button" id="btnAddNew">
+            <span>Add New</span>
+        </div>
+        <div class="button btn_login" id="btnLogin">
+            <span>Login</span>
+        </div>
+        <div class="button" id="btnSettings">
+            <img src="img/icons/ico_settings.svg"/>
+        </div>
+        <div class="button" id="btnHelp">
+            <img src="img/icons/ico_question.svg"/>
+        </div>
+    </div>
+
+</div>
+@code {
+    [Inject]
+    protected IJSRuntime JsRuntime { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+            JsRuntime.InvokeVoidAsync("onBlazorReady");
+    }
+}
+
+
+@*<h1>Hello, world!</h1>
 
     Welcome to your new app.
 
@@ -16,4 +153,4 @@
 {
     //AppData.WindowTitle = "test";
 
-}
+}*@

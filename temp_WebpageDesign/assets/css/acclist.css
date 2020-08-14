@@ -76,3 +76,51 @@ label.acc p {
   color: #DDD;
 }
 
+.acc_list_actionbar {
+  width: 100%;
+  height: 3.5em;
+  background-color: #222;
+  display: flex;
+  flex-direction: row;
+  color: white;
+  padding: 0.25em 0.25em;
+  position: absolute;
+  bottom: 0;
+}
+
+.acc_list_actionbar span {
+  line-height: 3em;
+  width: inherit;
+}
+
+.acc_list_actionbar div {
+  height: 3em;
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.acc_list_actionbar div .button {
+  user-select: none;
+  background-color: #333333;
+  padding: 0.25em 0.651em;
+  margin: 0 0.25em;
+  width: auto;
+  border-style: solid;
+  border-color: #888;
+  border-width: 0.1em;
+}
+
+.acc_list_actionbar div .btn_login {
+  padding: 0.25em 5em;
+}
+
+.acc_list_actionbar div .button span {
+  line-height: 2.5em;
+}
+
+.acc_list_actionbar div .button img {
+  width: 1.5em;
+}
+
