@@ -1,0 +1,16 @@
+﻿<input type="radio" id="@Username" class="acc" name="accounts" />
+<label for="@Username" class="acc @ExtraClasses">
+    <img src="@ImageUrl" />
+    <p>@Line1</p>
+    <h6>@Line2</h6>
+    <p>@Line3</p>
+</label>
+
+@code {
+    [Parameter] public string Username { get; set; }
+    [Parameter] public string ImageUrl { get; set; }
+    [Parameter] public string Line1 { get; set; }
+    [Parameter] public string Line2 { get; set; }
+    [Parameter] public string Line3 { get; set; }
+    [Parameter] public string ExtraClasses { get; set; }
+}
