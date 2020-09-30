@@ -147,11 +147,13 @@ app {
     }
 
     #window-title span {
+        position: absolute;
+        width: 100%;
+        pointer-events: none;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         line-height: 1.5;
-        width: calc(100% - 154px);
         text-align: center;
     }
     .maximized #titlebar {

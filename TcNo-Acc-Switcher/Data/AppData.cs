@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ElectronNET.API.Entities;
+using Microsoft.JSInterop;
 
 namespace TcNo_Acc_Switcher.Data
 {
@@ -33,6 +34,7 @@ namespace TcNo_Acc_Switcher.Data
                 Console.WriteLine("CurrentStatus changed to: " + _windowTitle);
             }
         }
+        public void SetCurrentStatus(string status) => CurrentStatus = status;
 
         public event Action OnChange;
 

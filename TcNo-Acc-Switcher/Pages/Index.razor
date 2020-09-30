@@ -1,26 +1,27 @@
 ﻿@page "/"
 @using TcNo_Acc_Switcher.Data
-@inject AppData AppData
+@inject AppData CurAppData
 
 
 <div id="acc_list" class="acc_list">
-    <AccountDisplay Username="usernamehere" SteamId64="76561198064588130" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg"  Line1="usernamehere" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
-    <AccountDisplay Username="usernamehere1" SteamId64="76561198064588131" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere1" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="vac" />
-    <AccountDisplay Username="usernamehere2" SteamId64="76561198064588132" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere2" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="vac" />
-    <AccountDisplay Username="usernamehere3" SteamId64="76561198064588133" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere3" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
-    <AccountDisplay Username="usernamehere4" SteamId64="76561198064588134" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere4" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
-    <AccountDisplay Username="usernamehere5" SteamId64="76561198064588135" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere5" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
-    <AccountDisplay Username="usernamehere6" SteamId64="76561198064588136" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere6" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
-    <AccountDisplay Username="usernamehere7" SteamId64="76561198064588137" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere7" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
-    <AccountDisplay Username="usernamehere8" SteamId64="76561198064588138" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere8" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="vac" />
-    
+    <AccountDisplay Username="usernamehere" SteamId64="76561198064588130" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
+    <AccountDisplay Username="usernamehere1" SteamId64="76561198064588131" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere1" Line2="Steven, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="vac" />
+    <AccountDisplay Username="usernamehere2" SteamId64="76561198064588132" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere2" Line2="Kevin, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="vac" />
+    <AccountDisplay Username="usernamehere3" SteamId64="76561198064588133" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere3" Line2="Jacob, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
+    <AccountDisplay Username="usernamehere4" SteamId64="76561198064588134" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere4" Line2="Waldo, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
+    <AccountDisplay Username="usernamehere5" SteamId64="76561198064588135" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere5" Line2="Wesley, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
+    <AccountDisplay Username="usernamehere6" SteamId64="76561198064588136" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere6" Line2="Mish, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
+    <AccountDisplay Username="usernamehere7" SteamId64="76561198064588137" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere7" Line2="Bob, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
+    <AccountDisplay Username="usernamehere8" SteamId64="76561198064588138" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere8" Line2="Kirby, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="vac" />
+
 
 
 
 
 
     <ul class="contextmenu">
-        <li><a href="#">Copy Profile...</a>
+        <li>
+            <a href="#">Copy Profile...</a>
             <ul class="submenu">
                 @*<li><a @onclick="Steam.SteamSwitcherBase.CopyProfileURL" href="">Community URL</a></li>*@
                 <li><a onclick="copy('URL')" href="">Community URL</a></li>
@@ -29,7 +30,8 @@
                 <li><a onclick="copy('Username')" href="">Login username</a></li>
             </ul>
         </li>
-        <li><a href="#">Copy SteamID...</a>
+        <li>
+            <a href="#">Copy SteamID...</a>
             <ul class="submenu">
                 <li><a onclick="copy('SteamId')" href="">SteamID [STEAM0:~]</a></li>
                 <li><a onclick="copy('SteamId3')" href="">SteamID3 [U:1:~]</a></li>
@@ -37,7 +39,8 @@
                 <li><a onclick="copy('SteamId64')" href="">SteamID64 7656~</a></li>
             </ul>
         </li>
-        <li><a href="#">Copy other...</a>
+        <li>
+            <a href="#">Copy other...</a>
             <ul class="submenu">
                 <li><a onclick="copy('SteamRep')" href="">SteamRep</a></li>
                 <li><a onclick="copy('SteamID.uk')" href="">SteamID.uk</a></li>
@@ -50,7 +53,7 @@
     </ul>
 </div>
 <div class="acc_list_actionbar">
-    <span>@AppData.CurrentStatus</span>
+    <input id="CurrentStatus" @bind="@CurAppData.CurrentStatus">
     <div>
         <div class="button" id="btnAddNew">
             <span>Add New</span>
@@ -59,10 +62,10 @@
             <span>Login</span>
         </div>
         <div class="button" id="btnSettings">
-            <img src="img/icons/ico_settings.svg"/>
+            <img src="img/icons/ico_settings.svg" />
         </div>
         <div class="button" id="btnHelp">
-            <img src="img/icons/ico_question.svg"/>
+            <img src="img/icons/ico_question.svg" />
         </div>
     </div>
 
@@ -80,6 +83,8 @@
 
 
 
+
+
     //[JSInvokable]
     //public static Task<int> CopyProfileURL()
     //{
@@ -90,16 +95,16 @@
 
 @*<h1>Hello, world!</h1>
 
-    Welcome to your new app.
+        Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
-<span>
-    Window title: 
-</span>
-<input type="text" @bind="AppData.WindowTitle">
+    <SurveyPrompt Title="How is Blazor working for you?" />
+    <span>
+        Window title:
+    </span>
+    <input type="text" @bind="AppData.WindowTitle">
 
-@code
-{
-    //AppData.WindowTitle = "test";
+    @code
+    {
+        //AppData.WindowTitle = "test";
 
-}*@
+    }*@

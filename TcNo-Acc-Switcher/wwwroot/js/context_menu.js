@@ -31,55 +31,59 @@
 var SelectedElem = "";
 
 function onBlazorReady() {
-    //Show contextmenu:
-  $(".acc").contextmenu(function(e) {
-    // Select item that was right-clicked.
-    $(e.currentTarget).click();
-    //$('[id="' + e.currentTarget.for + '"]').click();
-    //console.log($('[id="' + $(e.currentTarget).attr("for") + '"]'));
+    //Show contextmenu on Right-Click:
+    $(".acc").contextmenu(function(e) {
+        // Select item that was right-clicked.
+        $(e.currentTarget).click();
+        //$('[id="' + e.currentTarget.for + '"]').click();
+        //console.log($('[id="' + $(e.currentTarget).attr("for") + '"]'));
 
-    // Set currently selected element
-    SelectedElem = $('[id="' + $(e.currentTarget).attr("for") + '"]')[0];
 
-    //#region POSITIONING OF CONTEXT MENU
-    //Get window size:
-    var winWidth = $(document).width();
-    var winHeight = $(document).height();
-    //Get pointer position:
-    var posX = e.pageX;
-    var posY = e.pageY;
-    //Get contextmenu size:
-    var menuWidth = $(".contextmenu").width();
-    var menuHeight = $(".contextmenu").height();
-    //Security margin:
-    var secMargin = 10;
-    //Prevent page overflow:
-    if (posX + menuWidth + secMargin >= winWidth &&
-      posY + menuHeight + secMargin >= winHeight) {
-      //Case 1: right-bottom overflow:
-      posLeft = posX - menuWidth - secMargin + "px";
-      posTop = posY - menuHeight - secMargin + "px";
-    } else if (posX + menuWidth + secMargin >= winWidth) {
-      //Case 2: right overflow:
-      posLeft = posX - menuWidth - secMargin + "px";
-      posTop = posY + secMargin + "px";
-    } else if (posY + menuHeight + secMargin >= winHeight) {
-      //Case 3: bottom overflow:
-      posLeft = posX + secMargin + "px";
-      posTop = posY - menuHeight - secMargin + "px";
-    } else {
-      //Case 4: default values:
-      posLeft = posX + secMargin + "px";
-      posTop = posY + secMargin + "px";
-    };
-        //Display contextmenu:
-        $(".contextmenu").css({
-          "left": posLeft,
-          "top": posTop
-        }).show();
-        //Prevent browser default contextmenu.
-        return false;
-    });
+        // Set currently selected element
+        SelectedElem = $('[id="' + $(e.currentTarget).attr("for") + '"]')[0];
+        // Update status for element
+        $("#CurrentStatus").val("Selected: " + $(SelectedElem).attr("Line2"));
+
+
+        //#region POSITIONING OF CONTEXT MENU
+        //Get window size:
+        var winWidth = $(document).width();
+        var winHeight = $(document).height();
+        //Get pointer position:
+        var posX = e.pageX;
+        var posY = e.pageY;
+        //Get contextmenu size:
+        var menuWidth = $(".contextmenu").width();
+        var menuHeight = $(".contextmenu").height();
+        //Security margin:
+        var secMargin = 10;
+        //Prevent page overflow:
+        if (posX + menuWidth + secMargin >= winWidth &&
+          posY + menuHeight + secMargin >= winHeight) {
+          //Case 1: right-bottom overflow:
+          posLeft = posX - menuWidth - secMargin + "px";
+          posTop = posY - menuHeight - secMargin + "px";
+        } else if (posX + menuWidth + secMargin >= winWidth) {
+          //Case 2: right overflow:
+          posLeft = posX - menuWidth - secMargin + "px";
+          posTop = posY + secMargin + "px";
+        } else if (posY + menuHeight + secMargin >= winHeight) {
+          //Case 3: bottom overflow:
+          posLeft = posX + secMargin + "px";
+          posTop = posY - menuHeight - secMargin + "px";
+        } else {
+          //Case 4: default values:
+          posLeft = posX + secMargin + "px";
+          posTop = posY + secMargin + "px";
+        };
+            //Display contextmenu:
+            $(".contextmenu").css({
+              "left": posLeft,
+              "top": posTop
+            }).show();
+            //Prevent browser default contextmenu.
+            return false;
+        });
     
     // Check element fits on page, and move if it doesn't
     // This function moves the element to the left if it doesn't fit.
@@ -101,9 +105,15 @@ function onBlazorReady() {
         resizeObserver.observe(item);
     }
     //#endregion
-
+    
     //Hide contextmenu:
     $(document).click(function () {
         $(".contextmenu").hide();
     });
 };
+
+function SelectedItemChanged() {
+    console.log("click!");
+    console.log(this);
+    $("#CurrentStatus").val("Selected: " + $("input[name=accounts]:checked").attr("Line2"));
+}

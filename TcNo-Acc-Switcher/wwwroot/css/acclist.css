@@ -91,9 +91,15 @@ label.acc p {
     overflow: hidden;
 }
 
-    .acc_list_actionbar span {
+    /* Status section */
+    .acc_list_actionbar input {
+        padding-left: 1em;
         line-height: 3em;
         width: inherit;
+        outline: none;
+        border: none;
+        background: none;
+        color: #DDD;
     }
 
     .acc_list_actionbar div {
