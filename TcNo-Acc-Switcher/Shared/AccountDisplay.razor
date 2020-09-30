@@ -1,4 +1,4 @@
-﻿<input type="radio" id="@Username" class="acc" name="accounts" />
+﻿<input type="radio" id="@Username" class="acc" name="accounts" Username="@Username" SteamId64="@SteamId64" Line1="@Line1" Line2="@Line2" Line3="@Line3" ExtraClasses="@ExtraClasses" />
 <label for="@Username" class="acc @ExtraClasses">
     <img src="@ImageUrl" />
     <p>@Line1</p>
@@ -9,6 +9,7 @@
 @code {
     [Parameter] public string Username { get; set; }
     [Parameter] public string ImageUrl { get; set; }
+    [Parameter] public string SteamId64 { get; set; }
     [Parameter] public string Line1 { get; set; }
     [Parameter] public string Line2 { get; set; }
     [Parameter] public string Line3 { get; set; }

@@ -26,6 +26,10 @@
 //Namespace.Deferred.execute(addContextMenu);
 
 //function addContextMenu() {
+
+// Selected Element on list, for use in other JS functions
+var SelectedElem = "";
+
 function onBlazorReady() {
     //Show contextmenu:
   $(".acc").contextmenu(function(e) {
@@ -33,7 +37,11 @@ function onBlazorReady() {
     $(e.currentTarget).click();
     //$('[id="' + e.currentTarget.for + '"]').click();
     //console.log($('[id="' + $(e.currentTarget).attr("for") + '"]'));
-      
+
+    // Set currently selected element
+    SelectedElem = $('[id="' + $(e.currentTarget).attr("for") + '"]')[0];
+
+    //#region POSITIONING OF CONTEXT MENU
     //Get window size:
     var winWidth = $(document).width();
     var winHeight = $(document).height();
@@ -72,10 +80,6 @@ function onBlazorReady() {
         //Prevent browser default contextmenu.
         return false;
     });
-    //Hide contextmenu:
-    $(document).click(function() {
-        $(".contextmenu").hide();
-    });
     
     // Check element fits on page, and move if it doesn't
     // This function moves the element to the left if it doesn't fit.
@@ -96,4 +100,10 @@ function onBlazorReady() {
     for (let item of document.getElementsByClassName("submenu")) {
         resizeObserver.observe(item);
     }
+    //#endregion
+
+    //Hide contextmenu:
+    $(document).click(function () {
+        $(".contextmenu").hide();
+    });
 };
