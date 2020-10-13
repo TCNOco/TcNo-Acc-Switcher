@@ -13,7 +13,10 @@
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/TcNobo/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/TcNobo/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
 </p>
-                                                                                                                                         
+                                                                                                                                  
+<p align="center"><a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest">
+  <img alt="JetBrains Support - Open Source License" src="/other/img/DownloadLatest.png" height=70"></a></p>
+  
 **A Super fast account switcher for Steam** [Now with GUI]
 **Saves NO passwords** or any user information*. It works purely off changing a file and 2 registry keys.
 *Wastes no time closing, switching and restarting Steam.*
@@ -60,5 +63,5 @@ This project is not affiliated with Steam or Valve Corporation.<br>
 I am not responsible for the contents of external links.<br>
 USE THIS SOFTWARE AT YOUR OWN RISK. I AM NOT RESPONSIBLE FOR ANY DAMAGES IF YOU CHOOSE TO USE THIS SOFTWARE. COMPONENTS ARE PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITHOUT ANY WARRANTIES OF ANY KIND TO THE FULLEST EXTENT PERMITTED BY LAW, AND I EXPRESSLY DISCLAIM ANY AND ALL WARRANTIES, WHETHER EXPRESS OR IMPLIED.
 
-<a href="https://www.jetbrains.com/?from=TcNo-Account-Switcher">
-  <img alt="JetBrains Support - Open Source License" src="https://i.imgur.com/IJmPBnu.png" height=70"></a>
+<p align="center"><a target="_blank" align="center" href="https://www.jetbrains.com/?from=TcNo-Account-Switcher">
+  <img alt="JetBrains Support - Open Source License" src="/other/img/JetBrains_Banner.png" height=70"></a></p>
