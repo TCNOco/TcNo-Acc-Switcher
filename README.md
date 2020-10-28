@@ -20,6 +20,7 @@
 **A Super fast account switcher for Steam** [Now with GUI]
 **Saves NO passwords** or any user information*. It works purely off changing a file and 2 registry keys.
 *Wastes no time closing, switching and restarting Steam.*
+NOTE: Not created for cheating purposes. All it does is change accounts. Use it as you see fit, accepting responsibility.
 
 ### Visit the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch
 
