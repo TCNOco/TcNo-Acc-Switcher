@@ -55,7 +55,7 @@ namespace TcNo_Acc_Switcher
                 endpoints.MapFallbackToPage("/_Host");
             });
 
-            Task.Run(async ()=> await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions{Frame = false}));
+            Task.Run(async ()=> await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions{Frame = false, WebPreferences = { EnableRemoteModule = true} }));
         }
     }
 }
