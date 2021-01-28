@@ -1,0 +1,9 @@
+Developing:
+Inside the TcNo-Acc-Switcher folder, make sure to run the following to run the program properly while debugging if you encounter issues:
+1. dotnet new tool-manifest
+[ Notice the new .config folder ]
+2. dotnet tool install ElectronNET.CLI
+
+If the program is complaining, you may need to copy "TcNoAccSw-Icon-100x100.png" into `TcNo-Acc-Switcher\obj\Host\bin`
+
+If for some reason the program is unable to start again after debugging, it's likely still open. Try running `_KillAllElectron.bat` to stop electron and TcNo-Acc-Switcher
