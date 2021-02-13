@@ -46,13 +46,12 @@ namespace TcNo_Acc_Switcher_Client
             MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
             //MView2.MouseDown += MViewMDown;
         }
-
         //private void MViewMDown()
         //{
 
         //}
 
-        
+
 
         // For draggable regions:
         // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200

@@ -6,11 +6,63 @@
         xmlns:local="clr-namespace:TcNo_Acc_Switcher_Client" xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
+        MinHeight="450" MinWidth="800"
         WindowStyle="None"
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip">
-    <Grid>
-        <wpf:WebView2 x:Name="MView2"></wpf:WebView2>
+    <Grid Background="#28293A">
+        <wpf:WebView2 x:Name="MView2" Margin="5,5,5,5"></wpf:WebView2>
+
+        <!-- https://stackoverflow.com/a/27157947/5165437 -->
+        <Rectangle x:Name="leftSizeGrip"
+                   Width="7"
+                   HorizontalAlignment="Left"
+                   Cursor="SizeWE"
+                   Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="rightSizeGrip"
+                   Width="7"
+                   HorizontalAlignment="Right"
+                   Cursor="SizeWE"
+                   Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="topSizeGrip"
+                   Height="7"
+                   VerticalAlignment="Top"
+                   Cursor="SizeNS"
+                   Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="bottomSizeGrip"
+                   Height="7"
+                   VerticalAlignment="Bottom"
+                   Cursor="SizeNS"
+                   Style="{StaticResource RectBorderStyle}" />
+        <!--  Corners  -->
+        <Rectangle Name="topLeftSizeGrip"
+                   Width="7"
+                   Height="7"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Cursor="SizeNWSE"
+                   Style="{StaticResource RectBorderStyle}" />
+        <Rectangle Name="bottomRightSizeGrip"
+                   Width="7"
+                   Height="7"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Bottom"
+                   Cursor="SizeNWSE"
+                   Style="{StaticResource RectBorderStyle}" />
+        <Rectangle Name="topRightSizeGrip"
+                   Width="7"
+                   Height="7"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Top"
+                   Cursor="SizeNESW"
+                   Style="{StaticResource RectBorderStyle}" />
+        <Rectangle Name="bottomLeftSizeGrip"
+                   Width="7"
+                   Height="7"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   Cursor="SizeNESW"
+                   Style="{StaticResource RectBorderStyle}" />
     </Grid>
 
 </Window>
