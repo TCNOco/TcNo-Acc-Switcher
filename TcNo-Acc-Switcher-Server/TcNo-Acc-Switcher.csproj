@@ -30,7 +30,6 @@
     <Content Update="wwwroot\**\*.*">
 		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <DeploymentContent>true</DeploymentContent>
-        <Link>wwwroot\%(RecursiveDir)\%(Filename)%(Extension)</Link>
     </Content>
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
