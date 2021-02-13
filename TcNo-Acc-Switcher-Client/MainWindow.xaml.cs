@@ -34,7 +34,8 @@ namespace TcNo_Acc_Switcher_Client
             // Initialise and connect to web server above
             // Somehow check ports and find a different one if it doesn't work? We'll see...
             InitializeComponent();
-            MView2.Source = new Uri("http://localhost:5000/");
+            MView2.Source = new Uri("http://localhost:44305/");
+            //MView2.Source = new Uri("http://localhost:5000/");
         }
     }
 }

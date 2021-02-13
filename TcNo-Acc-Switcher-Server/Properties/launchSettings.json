@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/TcNo-Acc-Switcher",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:62455",
       "sslPort": 0
