@@ -68,7 +68,7 @@
         <div class="button" id="btnSettings">
             <img src="img/icons/ico_settings.svg" />
         </div>
-        <div class="button" id="btnHelp" @onclick="RefreshList">
+        <div class="button" id="btnHelp" @*@onclick="RefreshList"*@>
             <img src="img/icons/ico_question.svg" />
         </div>
     </div>
@@ -97,10 +97,11 @@
         }
     }
 
-    private async void RefreshList()
-    {
-        await SteamSwitcherFuncs.LoadProfiles(JsRuntime);
-    }
+    // Reloading the page is better for now
+    //private async void RefreshList()
+    //{
+    //    await SteamSwitcherFuncs.LoadProfiles(JsRuntime);
+    //}
 
 
     public class Steamuser

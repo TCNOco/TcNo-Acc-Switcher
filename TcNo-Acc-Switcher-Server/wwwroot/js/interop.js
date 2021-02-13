@@ -9,4 +9,5 @@ jQueryAppend = (jQuerySelector, strToInsert) => {
     $(jQuerySelector).append(strToInsert);
 };
 
-jQueryClearInner = (jQuerySelector) => { $(jQuerySelector).empty() }
+// Reloading the page is better for now.
+//jQueryClearInner = (jQuerySelector) => { $(jQuerySelector).empty() }

@@ -71,7 +71,7 @@ namespace TcNo_Acc_Switcher.Pages.Steam
         public static async Task LoadProfiles(IJSRuntime JsRuntime)
         {
             Console.WriteLine("LOADING PROFILES!");
-            await JsRuntime.InvokeVoidAsync("jQueryClearInner", "#acc_list");
+            //await JsRuntime.InvokeVoidAsync("jQueryClearInner", "#acc_list");
             List<Steamuser> _userAccounts = GetSteamUsers("C:\\Program Files (x86)\\Steam\\config\\loginusers.vdf");
 
             foreach (Steamuser ua in _userAccounts)
