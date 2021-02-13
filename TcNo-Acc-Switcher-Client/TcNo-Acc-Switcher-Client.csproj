@@ -12,7 +12,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TcNo-Acc-Switcher-Server\TcNo-Acc-Switcher.csproj" />
+    <ProjectReference Include="..\TcNo-Acc-Switcher-Server\TcNo-Acc-Switcher.csproj">
+      <EmbedInteropTypes>false</EmbedInteropTypes>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="inc\TcNo-Acc-Switcher.runtimeconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

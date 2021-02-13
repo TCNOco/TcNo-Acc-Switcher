@@ -27,13 +27,10 @@
     <Resource Include="wwwroot\img\TcNo_Logo_Flat.svg" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Startup.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Update="wwwroot\img\TcNoAccSw-Icon-100x100.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Update="wwwroot\**\*.*">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <DeploymentContent>true</DeploymentContent>
+        <Link>wwwroot\%(RecursiveDir)\%(Filename)%(Extension)</Link>
     </Content>
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">

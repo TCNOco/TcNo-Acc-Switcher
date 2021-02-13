@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,11 +32,13 @@ namespace TcNo_Acc_Switcher_Client
             server.IsBackground = true;
             server.Start();
 
+            //Process.Start("TcNo-Acc-Switcher.exe");
+
             // Initialise and connect to web server above
             // Somehow check ports and find a different one if it doesn't work? We'll see...
             InitializeComponent();
-            MView2.Source = new Uri("http://localhost:44305/");
-            //MView2.Source = new Uri("http://localhost:5000/");
+            //MView2.Source = new Uri("http://localhost:44305/");
+            MView2.Source = new Uri("http://localhost:5000/");
         }
     }
 }
