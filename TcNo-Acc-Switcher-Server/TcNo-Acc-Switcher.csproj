@@ -18,7 +18,6 @@
     <None Remove="TcNoAccSw-Icon-100x100.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ElectronNET.API" Version="11.5.1" />
     <PackageReference Include="Gameloop.Vdf" Version="0.6.1" />
     <PackageReference Include="Gameloop.Vdf.JsonConverter" Version="0.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
@@ -33,9 +32,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Update="electron.manifest.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Update="wwwroot\img\TcNoAccSw-Icon-100x100.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

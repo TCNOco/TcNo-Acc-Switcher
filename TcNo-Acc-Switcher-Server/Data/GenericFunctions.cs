@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using ElectronNET.API;
 using Microsoft.JSInterop;
 
 namespace TcNo_Acc_Switcher.Data

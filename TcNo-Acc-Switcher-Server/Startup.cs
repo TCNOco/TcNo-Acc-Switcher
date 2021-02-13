@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ElectronNET.API;
-using ElectronNET.API.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -54,9 +52,6 @@ namespace TcNo_Acc_Switcher
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
-
-            WebPreferences pref = new WebPreferences() {EnableRemoteModule = true};
-            Task.Run(async ()=> await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions{Frame = false, WebPreferences = pref }));
         }
     }
 }
