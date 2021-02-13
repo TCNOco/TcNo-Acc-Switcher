@@ -8,27 +8,20 @@
 @using System.Security.Cryptography.X509Certificates
 @using Microsoft.VisualBasic
 @using TcNo_Acc_Switcher.Shared
+@using TcNo_Acc_Switcher.Pages.Steam
 @inject AppData CurAppData
+@inject IJSRuntime JS;
 
 
 <div id="acc_list" class="acc_list">
-    @*<AccountDisplay Username="usernamehere" SteamId64="76561198064588130" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
-    <AccountDisplay Username="usernamehere1" SteamId64="76561198064588131" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere1" Line2="Steven, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="vac" />
-    <AccountDisplay Username="usernamehere2" SteamId64="76561198064588132" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere2" Line2="Kevin, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="vac" />
-    <AccountDisplay Username="usernamehere3" SteamId64="76561198064588133" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere3" Line2="Jacob, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
-    <AccountDisplay Username="usernamehere4" SteamId64="76561198064588134" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere4" Line2="Waldo, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
-    <AccountDisplay Username="usernamehere5" SteamId64="76561198064588135" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere5" Line2="Wesley, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
-    <AccountDisplay Username="usernamehere6" SteamId64="76561198064588136" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere6" Line2="Mish, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
-    <AccountDisplay Username="usernamehere7" SteamId64="76561198064588137" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere7" Line2="Bob, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />
-    <AccountDisplay Username="usernamehere8" SteamId64="76561198064588138" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere8" Line2="Kirby, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="vac" />*@
+    @*<AccountDisplay Username="usernamehere" SteamId64="76561198064588130" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />*@
 
-    @foreach (var i in loadProfiles())
-    {
-        <AccountDisplay Username="@(i.AccName)" SteamId64="@(i.SteamID)" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="@(i.AccName)" Line2="@(i.Name)" Line3="@(i.lastLogin)" ExtraClasses="" />
+    @* Will do this ASYNC rather, using JS
+            @foreach (var i in SteamSwitcherFuncs.loadProfiles())
+        {
+            <AccountDisplay Username="@(i.AccName)" SteamId64="@(i.SteamID)" ImageUrl="@(i.ImgURL)" Line1="@(i.AccName)" Line2="@(i.Name)" Line3="@(i.lastLogin)" ExtraClasses="@(i.ExtraClasses)" />
 
-    }
-
-
+        }*@
 
     <ul class="contextmenu">
         <li>
@@ -75,7 +68,7 @@
         <div class="button" id="btnSettings">
             <img src="img/icons/ico_settings.svg" />
         </div>
-        <div class="button" id="btnHelp">
+        <div class="button" id="btnHelp" @onclick="RefreshList">
             <img src="img/icons/ico_question.svg" />
         </div>
     </div>
@@ -86,13 +79,28 @@
     [Inject]
     protected IJSRuntime JsRuntime { get; set; }
 
-    protected override void OnAfterRender(bool firstRender)
+    //protected override void OnAfterRender(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        JsRuntime.InvokeVoidAsync("onBlazorReady");
+    //    }
+    //}
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-            JsRuntime.InvokeVoidAsync("onBlazorReady");
-
+        {
+            //SomeStartupMethod();
+            //await SomeStartupTask();
+            await SteamSwitcherFuncs.LoadProfiles(JsRuntime);
+        }
     }
 
+    private async void RefreshList()
+    {
+        await SteamSwitcherFuncs.LoadProfiles(JsRuntime);
+    }
 
 
     public class Steamuser
@@ -104,51 +112,12 @@
         [JsonProperty("mostrecent", Order = 3)] public string MostRec = "0";
         [JsonProperty("Timestamp", Order = 4)] public string lastLogin { get; set; }
         [JsonProperty("WantsOfflineMode", Order = 5)] public string OfflineMode = "0";
+        [JsonProperty("ExtraClasses", Order = 5)] public string ExtraClasses = "";
+        [JsonProperty("ImgURL", Order = 6)] public string ImgURL { get; set; }
 
-        [JsonIgnore] public string ImgURL { get; set; }
-        [JsonIgnore] public string vacStatus { get; set; } // WAS System.Windows.Media.Brush
+        //[JsonIgnore] public string vacStatus { get; set; } // WAS System.Windows.Media.Brush
     }
-    public List<Steamuser> loadProfiles()
-    {
-        Console.WriteLine("LOADING PROFILES!");
-        List<Steamuser> _userAccounts = new List<Steamuser>();
 
-        _userAccounts.Clear();
-        try
-        {
-            var loginUsersVToken = VdfConvert.Deserialize(File.ReadAllText("C:\\Program Files (x86)\\Steam\\config\\loginusers.vdf"));
-            var loginUsers = new JObject() { loginUsersVToken.ToJson() };
-
-            if (loginUsers["users"] != null)
-            {
-                foreach (var user in loginUsers["users"])
-                {
-                    var steamId = user.ToObject<JProperty>()?.Name;
-                    if (string.IsNullOrEmpty(steamId) || string.IsNullOrEmpty(user.First?["AccountName"]?.ToString())) continue;
-                    _userAccounts.Add(new Steamuser()
-                    {
-                        Name = user.First?["PersonaName"]?.ToString(),
-                        AccName = user.First?["AccountName"]?.ToString(),
-                        SteamID = steamId,
-                        ImgURL = Path.Combine("images", $"{steamId}.jpg"),
-                        lastLogin = user.First?["Timestamp"]?.ToString(),
-                        OfflineMode = (!string.IsNullOrEmpty(user.First?["WantsOfflineMode"]?.ToString()) ? user.First?["WantsOfflineMode"]?.ToString() : "0")
-                    });
-                }
-            }
-            else
-            {
-                //MessageBox.Show(Strings.ErrLoadingLoginusers + _persistentSettings.LoginusersVdf());
-            }
-        }
-        catch (FileNotFoundException ex)
-        {
-            //MessageBox.Show(Strings.ErrLoginusersNonExist, Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
-            //MessageBox.Show($"{Strings.ErrInformation} {ex}", Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
-            Environment.Exit(2);
-        }
-        return _userAccounts;
-    }
 
 
 
@@ -158,20 +127,3 @@
     //    return Task.FromResult(new Random().Next());
     //}
 }
-
-
-@*<h1>Hello, world!</h1>
-
-        Welcome to your new app.
-
-    <SurveyPrompt Title="How is Blazor working for you?" />
-    <span>
-        Window title:
-    </span>
-    <input type="text" @bind="AppData.WindowTitle">
-
-    @code
-    {
-        //AppData.WindowTitle = "test";
-
-    }*@

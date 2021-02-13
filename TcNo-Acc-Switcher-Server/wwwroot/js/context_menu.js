@@ -30,7 +30,7 @@
 // Selected Element on list, for use in other JS functions
 var SelectedElem = "";
 
-function onBlazorReady() {
+function initContextMenu() {
     //Show contextmenu on Right-Click:
     $(".acc").contextmenu(function(e) {
         // Select item that was right-clicked.

@@ -21,6 +21,10 @@
     <PackageReference Include="Gameloop.Vdf" Version="0.6.1" />
     <PackageReference Include="Gameloop.Vdf.JsonConverter" Version="0.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TcNo-Acc-Switcher-Globals\TcNo-Acc-Switcher-Globals.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="TcNoAccSw-Icon-100x100.png" />

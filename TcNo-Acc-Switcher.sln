@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcNo-Acc-Switcher", "TcNo-Acc-Switcher-Server\TcNo-Acc-Switcher.csproj", "{F4A4C45B-BDC0-4443-A707-EE8D935972C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcNo-Acc-Switcher-Client", "TcNo-Acc-Switcher-Client\TcNo-Acc-Switcher-Client.csproj", "{1EFC2E49-9A26-4470-B133-A7EA11F3FBF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcNo-Acc-Switcher-Client", "TcNo-Acc-Switcher-Client\TcNo-Acc-Switcher-Client.csproj", "{1EFC2E49-9A26-4470-B133-A7EA11F3FBF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcNo-Acc-Switcher-Globals", "TcNo-Acc-Switcher-Globals\TcNo-Acc-Switcher-Globals.csproj", "{5ACA23EB-2EF2-4256-A168-E02E71D89FBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{1EFC2E49-9A26-4470-B133-A7EA11F3FBF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EFC2E49-9A26-4470-B133-A7EA11F3FBF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EFC2E49-9A26-4470-B133-A7EA11F3FBF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ACA23EB-2EF2-4256-A168-E02E71D89FBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ACA23EB-2EF2-4256-A168-E02E71D89FBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ACA23EB-2EF2-4256-A168-E02E71D89FBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ACA23EB-2EF2-4256-A168-E02E71D89FBB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
