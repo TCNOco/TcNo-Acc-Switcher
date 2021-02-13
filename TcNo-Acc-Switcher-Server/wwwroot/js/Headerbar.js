@@ -14,13 +14,15 @@ function handleWindowControls() {
 
     document.getElementById('btnMax').addEventListener("click", event => {
         console.log("Maximizing window!");
+        document.body.classList.add('maximized');
         // remote.getCurrentWindow().maximize();
         window.location = "Win_max";
     });
 
     document.getElementById('btnRestore').addEventListener("click", event => {
         console.log("Restoring window!");
-        // remote.getCurrentWindow().unmaximize();
+        document.body.classList.remove('maximized');
+        // remote.getCurrentWindow().unmaximize();M
         window.location = "Win_restore";
     });
 
@@ -30,7 +32,22 @@ function handleWindowControls() {
         window.location = "Win_close";
     });
 
-    toggleMaxRestoreButtons();
+    // For draggable regions:
+    // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
+        document.body.addEventListener('mousedown', evt => {
+            // ES is actually 11, set in project file. This error can be ignored (if you see one about ES5)
+            const { target } = evt;
+            const appRegion = getComputedStyle(target)['-webkit-app-region'];
+            //const appRegion = getComputedStyle(target);
+            console.log(appRegion);
+            if (appRegion === 'drag') {
+                chrome.webview.hostObjects.sync.eventForwarder.MouseDownDrag();
+                evt.preventDefault();
+                evt.stopPropagation();
+            }
+        });
+
+    //toggleMaxRestoreButtons();
     // remote.getCurrentWindow().on('maximize', toggleMaxRestoreButtons);
     // remote.getCurrentWindow().on('unmaximize', toggleMaxRestoreButtons);
 

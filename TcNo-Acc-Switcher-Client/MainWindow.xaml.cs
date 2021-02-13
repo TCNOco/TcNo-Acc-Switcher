@@ -15,6 +15,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TcNo_Acc_Switcher;
 using System.Threading;
+using System.Windows.Interop;
+using Microsoft.Web.WebView2.Core;
+using TcNo_Acc_Switcher.Shared;
 
 namespace TcNo_Acc_Switcher_Client
 {
@@ -39,6 +42,56 @@ namespace TcNo_Acc_Switcher_Client
             InitializeComponent();
             //MView2.Source = new Uri("http://localhost:44305/");
             MView2.Source = new Uri("http://localhost:5000/");
+            MView2.NavigationStarting += UrlChanged;
+            MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
+            //MView2.MouseDown += MViewMDown;
+        }
+
+        //private void MViewMDown()
+        //{
+
+        //}
+
+        
+
+        // For draggable regions:
+        // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
+        private void WebView_CoreWebView2Ready(object sender, EventArgs e)
+        {
+            var eventForwarder = new Headerbar.EventForwarder(new WindowInteropHelper(this).Handle);
+
+            MView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
+        }
+
+        private void UrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
+        {
+            String uri = args.Uri.Split("/").Last();
+            Console.WriteLine(args.Uri);
+            switch (uri)
+            {
+                case "Win_min":
+                    args.Cancel = true;
+                    this.WindowState = WindowState.Minimized;
+                    break;
+                case "Win_max":
+                    args.Cancel = true;
+                    this.WindowState = WindowState.Maximized;
+                    break;
+                case "Win_restore":
+                    args.Cancel = true;
+                    this.WindowState = WindowState.Normal;
+                    break;
+                case "Win_close":
+                    args.Cancel = true;
+                    Environment.Exit(1);
+                    break;
+
+            }
+            if (uri.Contains("Win_min"))
+            {
+                args.Cancel = true;
+                this.WindowState = WindowState.Minimized;
+            }
         }
     }
 }

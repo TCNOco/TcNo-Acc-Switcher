@@ -1,6 +1,7 @@
 ﻿@inject IJSRuntime JSRuntime
 
 @using TcNo_Acc_Switcher.Data
+@using System.Runtime.InteropServices
 @inject AppData AppData
 
 <div id="window-title">
@@ -20,7 +21,7 @@
             <img class="icon" srcset="img/icons/restore-w-10.png 1x, img/icons/restore-w-12.png 1.25x, img/icons/restore-w-15.png 1.5x, img/icons/restore-w-15.png 1.75x, img/icons/restore-w-20.png 2x, img/icons/restore-w-20.png 2.25x, img/icons/restore-w-24.png 2.5x, img/icons/restore-w-30.png 3x, img/icons/restore-w-30.png 3.5x" draggable="false" />
         </div>
 
-        <div onclick="win.close()" class="button" id="btnClose">
+        <div class="button" id="btnClose">
             <img class="icon" srcset="img/icons/close-w-10.png 1x, img/icons/close-w-12.png 1.25x, img/icons/close-w-15.png 1.5x, img/icons/close-w-15.png 1.75x, img/icons/close-w-20.png 2x, img/icons/close-w-20.png 2.25x, img/icons/close-w-24.png 2.5x, img/icons/close-w-30.png 3x, img/icons/close-w-30.png 3.5x" draggable="false" />
         </div>
 
@@ -45,7 +46,35 @@
     {
         if (firstRender)
         {
-            //// await JSRuntime.InvokeVoidAsync("handleWindowControls");
+            await JSRuntime.InvokeVoidAsync("handleWindowControls");
+        }
+    }
+
+    // For draggable regions:
+    // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
+    [ClassInterface(ClassInterfaceType.AutoDual)]
+    [ComVisible(true)]
+    public class EventForwarder
+    {
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int HT_CAPTION = 0x2;
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        [DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+
+        readonly IntPtr target;
+
+        public EventForwarder(IntPtr target)
+        {
+            this.target = target;
+        }
+
+        public void MouseDownDrag()
+        {
+            ReleaseCapture();
+            SendMessage(target, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
         }
     }
 }

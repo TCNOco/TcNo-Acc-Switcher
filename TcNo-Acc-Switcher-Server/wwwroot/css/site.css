@@ -144,7 +144,11 @@ app {
         overflow: hidden;
         font-family: "Segoe UI", sans-serif;
         font-size: 12px;
+        pointer-events: none
     }
+        #window-title #window-controls {
+            pointer-events: all;
+        }
 
     #window-title span {
         position: absolute;
