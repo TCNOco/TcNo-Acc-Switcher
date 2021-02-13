@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,15 +18,19 @@ using TcNo_Acc_Switcher;
 using System.Threading;
 using System.Windows.Interop;
 using Microsoft.Web.WebView2.Core;
+using TcNo_Acc_Switcher.Pages.Steam;
 using TcNo_Acc_Switcher.Shared;
+using Index = TcNo_Acc_Switcher.Pages.Index;
 
 namespace TcNo_Acc_Switcher_Client
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+
     public partial class MainWindow : Window
     {
+        Index.UserSteamSettings _persistentSettings = new Index.UserSteamSettings();
         private Thread server = new Thread(RunServer);
         private static void RunServer() { TcNo_Acc_Switcher.Program.Main(new string[0]); }
 
@@ -34,22 +39,29 @@ namespace TcNo_Acc_Switcher_Client
             // Start web server
             server.IsBackground = true;
             server.Start();
-
-            //Process.Start("TcNo-Acc-Switcher.exe");
-
+            
             // Initialise and connect to web server above
             // Somehow check ports and find a different one if it doesn't work? We'll see...
             InitializeComponent();
+
+            // Load settings (If they exist, otherwise creates).
+            _persistentSettings = SteamSwitcherFuncs.LoadSettings(_persistentSettings);
+
             //MView2.Source = new Uri("http://localhost:44305/");
             MView2.Source = new Uri("http://localhost:5000/");
             MView2.NavigationStarting += UrlChanged;
             MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
             //MView2.MouseDown += MViewMDown;
-        }
-        //private void MViewMDown()
-        //{
 
-        //}
+            this.Height = _persistentSettings.WindowSize.Height;
+            this.Width = _persistentSettings.WindowSize.Width;
+        }
+
+        private void SaveAndClose()
+        {
+            _persistentSettings.WindowSize = new System.Drawing.Size(Convert.ToInt32(this.Width), Convert.ToInt32(this.Height));
+            SteamSwitcherFuncs.SaveSettings(_persistentSettings);
+        }
 
 
 
@@ -82,6 +94,7 @@ namespace TcNo_Acc_Switcher_Client
                     break;
                 case "Win_close":
                     args.Cancel = true;
+                    SaveAndClose();
                     Environment.Exit(1);
                     break;
 

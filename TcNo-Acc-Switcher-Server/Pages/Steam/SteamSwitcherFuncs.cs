@@ -17,11 +17,13 @@ using TcNo_Acc_Switcher.Pages.General;
 using TcNo_Acc_Switcher_Globals;
 
 using Steamuser = TcNo_Acc_Switcher.Pages.Index.Steamuser;
+using UserSteamSettings = TcNo_Acc_Switcher.Pages.Index.UserSteamSettings;
 
 namespace TcNo_Acc_Switcher.Pages.Steam
 {
     public class SteamSwitcherFuncs
     {
+        #region Profiles
         public static List<Steamuser> GetSteamUsers(string loginUserPath)
         {
             List<Steamuser> _userAccounts = new List<Steamuser>();
@@ -94,6 +96,9 @@ namespace TcNo_Acc_Switcher.Pages.Steam
             //return _userAccounts;
         }
         
+
+
+
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
@@ -142,14 +147,6 @@ namespace TcNo_Acc_Switcher.Pages.Steam
                 su.ImgURL = $"img/profiles/{su.SteamID}.jpg";
             }
         }
-
-
-
-
-
-
-
-
         private static string GetUserImageUrl(Steamuser su)
         {
             var imageUrl = "";
@@ -195,5 +192,55 @@ namespace TcNo_Acc_Switcher.Pages.Steam
             }
             return imageUrl;
         }
+        #endregion
+
+        #region Settings
+
+        public static void SaveSettings(UserSteamSettings _persistentSettings)
+        {
+            //_persistentSettings.WindowSize = new Size(this.Width, this.Height);
+            var serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
+
+            using (var sw = new StreamWriter(@"SteamSettings.json"))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, _persistentSettings);
+            }
+        }
+        public static UserSteamSettings LoadSettings(UserSteamSettings _persistentSettings)
+        {
+            if (!File.Exists("SteamSettings.json")) { SaveSettings(_persistentSettings);
+                return _persistentSettings;
+            }
+
+            using (var sr = new StreamReader(@"SteamSettings.json"))
+            {
+                // persistentSettings = JsonConvert.DeserializeObject<UserSettings>(sr.ReadToEnd()); -- Entirely replaces, instead of merging. New variables won't have values.
+                // Using a JSON UnionUnion Merge means that settings that are missing will have default values, set at the top of this file.
+                var jCurrent = JObject.Parse(JsonConvert.SerializeObject(_persistentSettings));
+                try
+                {
+                    jCurrent.Merge(JObject.Parse(sr.ReadToEnd()), new JsonMergeSettings
+                    {
+                        MergeArrayHandling = MergeArrayHandling.Union
+                    });
+                    _persistentSettings = jCurrent.ToObject<UserSteamSettings>();
+                }
+                catch (Exception)
+                {
+                    if (File.Exists("SteamSettings.json"))
+                    {
+                        if (File.Exists("SteamSettings.old.json"))
+                            File.Delete("SteamSettings.old.json");
+                        File.Copy("SteamSettings.json", "SteamSettings.old.json");
+                    }
+
+                    SaveSettings(_persistentSettings);
+                    //MessageBox.Show(Strings.ErrSteamSettingsLoadFail, Strings.ErrSteamSettingsLoadFailHeader, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            return _persistentSettings;
+        }
+        #endregion
     }
 }
