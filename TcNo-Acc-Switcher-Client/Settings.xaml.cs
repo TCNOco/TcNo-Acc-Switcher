@@ -115,12 +115,7 @@ namespace TcNo_Acc_Switcher_Client
         {
             _persistentSettings.ShowVACStatus = ShowVacStatus.IsChecked != null && (bool) ShowVacStatus.IsChecked;
         }
-
-        private void LimitedAsVAC_CheckChanged(object sender, RoutedEventArgs e)
-        {
-            _persistentSettings.LimitedAsVAC = LimitedAsVac.IsChecked != null && (bool) LimitedAsVac.IsChecked;
-        }
-
+        
         public static string GetForgottenBackupPath()
         {
             return Path.Combine(SteamSwitcherFuncs.LoadSettings().SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\"); }

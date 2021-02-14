@@ -184,10 +184,6 @@ Old settings are saved in settings.old.json, and a new config has been loaded.</
   <data name="ErrUpdateCheckHeader" xml:space="preserve">
     <value>TcNo Account Switcher - Update check error</value>
   </data>
-  <data name="InfoRefreshLimitedAsVac" xml:space="preserve">
-    <value>Click the "Check account VAC Status" button to see changes.
-Note: Steam shows game banned accounts as Limited.</value>
-  </data>
   <data name="InfoReopenImageDl" xml:space="preserve">
     <value>The program will now close. Once opened, new images will download.</value>
   </data>
@@ -268,9 +264,6 @@ Note: Steam shows game banned accounts as Limited.</value>
   </data>
   <data name="XBtnSelectSteamFolder" xml:space="preserve">
     <value>Select Steam Folder</value>
-  </data>
-  <data name="XChkLimitedAsVac" xml:space="preserve">
-    <value>Show Limited accounts as VAC</value>
   </data>
   <data name="XChkRunSteamAsAdmin" xml:space="preserve">
     <value>Run Steam as Admin</value>

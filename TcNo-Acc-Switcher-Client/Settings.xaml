@@ -66,8 +66,7 @@
             <CheckBox Panel.ZIndex="6" Name="RunAsAdmin" Margin="5px" VerticalAlignment="Center"  Foreground="White" Content="{x:Static localisation:Strings.XChkRunSteamAsAdmin}"  IsChecked="{Binding StartAsAdmin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <CheckBox Panel.ZIndex="6" Name="ShowSteamId" Margin="5px" VerticalAlignment="Center" Foreground="White" Content="{x:Static localisation:Strings.XChkShowSteamId}" IsChecked="{Binding ShowSteamID, Mode=TwoWay}" Checked="ShowSteamID_CheckChanged" Unchecked="ShowSteamID_CheckChanged" />
             <CheckBox Panel.ZIndex="6" Name="ShowVacStatus" Margin="5px" Foreground="White" Content="{x:Static localisation:Strings.XChkShowVACStatus}" IsChecked="{Binding ShowVACStatus, Mode=TwoWay}" Checked="ShowVACStatus_CheckChanged" Unchecked="ShowVACStatus_CheckChanged" />
-            <CheckBox Panel.ZIndex="6" Name="LimitedAsVac" Margin="5px" Foreground="White" Content="{x:Static localisation:Strings.XChkLimitedAsVac}" IsChecked="{Binding LimitedAsVAC, Mode=TwoWay}" Checked="LimitedAsVAC_CheckChanged" Unchecked="LimitedAsVAC_CheckChanged" />
-
+            
             <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
                     <converters:IntToStringConverter x:Key="IntToStr"/>

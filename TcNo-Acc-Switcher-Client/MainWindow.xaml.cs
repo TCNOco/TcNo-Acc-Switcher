@@ -67,20 +67,134 @@ namespace TcNo_Acc_Switcher_Client
 
             this.Height = _persistentSettings.WindowSize.Height;
             this.Width = _persistentSettings.WindowSize.Width;
-
-            // Check Windows shortcuts
-            CheckShortcuts();
         }
 
         #region Windows Shortcuts
-        private void CheckShortcuts()
-        {
-            MainViewmodel.DesktopShortcut = ShortcutExist(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory));
-            MainViewmodel.StartWithWindows = CheckStartWithWindows();
-            MainViewmodel.StartMenuIcon = ShortcutExist(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\"));
-        }
+        //private void CheckShortcuts()
+        //{
+        //    //MainViewmodel.DesktopShortcut = ;
+        //   //MainViewmodel.StartWithWindows = CheckStartWithWindows();
+        //    //MainViewmodel.StartMenuIcon = ShortcutExist(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\"));
+        //}
+
+        // Library class used to see if a shortcut exists.
         private static bool ShortcutExist(string location) => File.Exists(System.IO.Path.Combine(location, "TcNo Account Switcher - Steam.lnk"));
-        private static bool CheckStartWithWindows()
+        private string ParentDirectory(string dir) =>
+            dir.Substring(0, dir.LastIndexOf(System.IO.Path.DirectorySeparatorChar));
+        private static void WriteShortcut(string exe, string selfLocation, string iconDirectory, string description, string settingsLink, string arguments)
+        {
+            if (File.Exists(settingsLink)) return;
+            if (File.Exists("CreateShortcut.vbs"))
+                File.Delete("CreateShortcut.vbs");
+            
+            string[] lines = {"set WshShell = WScript.CreateObject(\"WScript.Shell\")",
+                "set oShellLink = WshShell.CreateShortcut(\"" + settingsLink  + "\")",
+                "oShellLink.TargetPath = \"" + exe + "\"",
+                "oShellLink.WindowStyle = 1",
+                "oShellLink.IconLocation = \"" + iconDirectory + "\"",
+                "oShellLink.Description = \"" + description + "\"",
+                "oShellLink.WorkingDirectory = \"" + selfLocation + "\"",
+                "oShellLink.Arguments = \"" + arguments + "\"",
+                "oShellLink.Save()"
+            };
+            File.WriteAllLines("CreateShortcut.vbs", lines);
+
+            var vbsProcess = new Process
+            {
+                StartInfo =
+                {
+                    FileName = "cscript",
+                    Arguments = "//nologo \"" + System.IO.Path.GetFullPath("CreateShortcut.vbs") + "\"",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                }
+            };
+
+
+            vbsProcess.Start();
+            vbsProcess.StandardOutput.ReadToEnd();
+            vbsProcess.Close();
+
+            File.Delete("CreateShortcut.vbs");
+            MessageBox.Show("Shortcut created!\n\nLocation: " + settingsLink);
+        }
+
+        private static void CreateShortcut(string location)
+        {
+            Directory.CreateDirectory(location);
+            // Starts the main picker, with the Steam argument.
+            string selfExe = System.IO.Path.Combine(ParentDirectory(Directory.GetCurrentDirectory()), "TcNo Account Switcher.exe"),
+                selfLocation = ParentDirectory(Directory.GetCurrentDirectory()),
+                iconDirectory = System.IO.Path.Combine(selfLocation, "wwwroot/favicon.ico"),
+                settingsLink = System.IO.Path.Combine(location, "TcNo Account Switcher - Steam.lnk");
+            const string description = "TcNo Account Switcher - Steam";
+            const string arguments = "+steam";
+
+            WriteShortcut(selfExe, selfLocation, iconDirectory, description, settingsLink, arguments);
+        }
+        private static void DeleteShortcut(string location, string name, bool delFolder)
+        {
+            var settingsLink = System.IO.Path.Combine(location, name);
+            if (File.Exists(settingsLink))
+                File.Delete(settingsLink);
+            if (delFolder)
+            {
+                if (Directory.GetFiles(location).Length == 0)
+                    Directory.Delete(location);
+                else
+                    MessageBox.Show($"{Strings.ErrDeleteFolderNonempty} {location}");
+            }
+            MessageBox.Show(Strings.InfoShortcutDeleted.Replace("{}", name));
+        }
+        private static void CreateTrayShortcut(string location)
+        {
+            string selfExe = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "TcNo Acc Switcher SteamTray.exe"),
+                selfLocation = Directory.GetCurrentDirectory(),
+                iconDirectory = System.IO.Path.Combine(selfLocation, "icon.ico"),
+                settingsLink = System.IO.Path.Combine(location, "TcNo Account Switcher - Steam tray.lnk");
+            const string description = "TcNo Account Switcher - Steam tray";
+            const string arguments = "";
+
+            WriteShortcut(selfExe, selfLocation, iconDirectory, description, settingsLink, arguments);
+        }
+
+        // ICON - Desktop Icon
+        private static bool DesktopShortcut_Exists() =>
+            ShortcutExist(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory));
+        private static void DesktopShortcut_Toggle()
+        {
+            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            if (!DesktopShortcut_Exists())
+                CreateShortcut(desktopPath);
+            else
+                DeleteShortcut(desktopPath, "TcNo Account Switcher - Steam.lnk", false);
+        }
+        // -------------------
+
+        // ICON - Start Menu
+        private static bool StartMenuIcon_Exists() => ShortcutExist(
+            System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs),
+                @"TcNo Account Switcher\"));
+        private static void StartMenuIcon_Toggle()
+        {
+            string programsPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs),
+                shortcutFolder = System.IO.Path.Combine(programsPath, @"TcNo Account Switcher\");
+            if (!StartMenuIcon_Exists())
+            {
+                CreateShortcut(shortcutFolder);
+                CreateTrayShortcut(shortcutFolder);
+            }
+            else
+            {
+                DeleteShortcut(shortcutFolder, "TcNo Account Switcher - Steam.lnk", false);
+                DeleteShortcut(shortcutFolder, "TcNo Account Switcher - Steam tray.lnk", true);
+            }
+        }
+        // -------------------
+
+        // TRAY - Run when Windows starts
+        private static bool StartWithWindows_Enabled()
         {
             using (var ts = new TaskService())
             {
@@ -88,6 +202,27 @@ namespace TcNo_Acc_Switcher_Client
                 return tasks.Exists("TcNo Account Switcher - Tray start with logon");
             }
         }
+        private static void StartWithWindows_Toggle()
+        {
+            if (!StartWithWindows_Enabled())
+            {
+                var ts = new TaskService();
+                var td = ts.NewTask();
+                td.Principal.RunLevel = TaskRunLevel.Highest;
+                td.Triggers.AddNew(TaskTriggerType.Logon);
+                var programPath = System.IO.Path.GetFullPath("TcNo Acc Switcher SteamTray.exe");
+                td.Actions.Add(new ExecAction(programPath));
+                ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Steam Tray start with logon", td);
+                MessageBox.Show(Strings.InfoTrayWindowsStart);
+            }
+            else
+            {
+                var ts = new TaskService();
+                ts.RootFolder.DeleteTask("TcNo Account Switcher - Steam Tray start with logon");
+                MessageBox.Show(Strings.InfoTrayWindowsStartOff);
+            }
+        }
+        // -------------------
         #endregion
 
 
@@ -181,7 +316,6 @@ namespace TcNo_Acc_Switcher_Client
                 StartAsAdmin = new bool();
                 ShowSteamID = new bool();
                 ShowVACStatus = new bool();
-                LimitedAsVAC = new bool();
                 StartMenuIcon = new bool();
                 StartWithWindows = new bool();
                 DesktopShortcut = new bool();
@@ -194,7 +328,6 @@ namespace TcNo_Acc_Switcher_Client
             public string InputFolderDialogResponse { get; set; }
             public bool ShowSteamID { get; set; }
             public bool ShowVACStatus { get; set; }
-            public bool LimitedAsVAC { get; set; }
             public bool StartMenuIcon { get; set; }
             public bool DesktopShortcut { get; set; }
             public bool StartWithWindows { get; set; }
