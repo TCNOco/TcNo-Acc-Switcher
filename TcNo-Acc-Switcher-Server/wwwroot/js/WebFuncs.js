@@ -54,6 +54,12 @@ function copy(request) {
         }
     }
 }
+// Swapping accounts
+function SwapTo() {
+    var steamId64 = $(SelectedElem).attr("SteamID64");
+    var accName = $(SelectedElem).attr("Username");
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "SwapTo", steamId64, accName);
+}
 
 
 

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using TcNo_Acc_Switcher_Client.Classes;
 
 namespace TcNo_Acc_Switcher_Client
 {
@@ -15,6 +16,41 @@ namespace TcNo_Acc_Switcher_Client
     /// </summary>
     public partial class App : Application
     {
+        private readonly TrayUsers _trayUsers = new TrayUsers();
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            var quitArg = false;
+            for (var i = 0; i != e.Args.Length; ++i)
+            {
+                if (e.Args[i]?[0] == '+')
+                {
+                    var steamId = e.Args[i].Substring(1);// Get SteamID from launch options
+                    _trayUsers.LoadTrayUsers();
+                    var accName = _trayUsers.GetAccName(steamId); // Get account name from JSON
+
+                    TcNo_Acc_Switcher.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(false, steamId, accName);
+                    quitArg = true;
+                }
+                else switch (e.Args[i])
+                {
+                    case "logout":
+                        TcNo_Acc_Switcher.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(true, "", "");
+                        quitArg = true;
+                        break;
+                    case "quit":
+                        quitArg = true;
+                        break;
+                    default:
+                        Console.WriteLine($"Unknown argument: \"{e.Args[i]}\"");
+                        break;
+                }
+            }
+
+            if (quitArg)
+                Environment.Exit(1);
+        }
+
         #region ResizeWindows
         // https://stackoverflow.com/a/27157947/5165437
         bool ResizeInProcess = false;

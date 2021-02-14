@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Xml;
 using Gameloop.Vdf;
 using Gameloop.Vdf.JsonConverter;
 using Microsoft.JSInterop;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher.Pages.General;
@@ -70,11 +72,11 @@ namespace TcNo_Acc_Switcher.Pages.Steam
 
 
         //public static List<Steamuser> loadProfiles()
-        public static async Task LoadProfiles(IJSRuntime JsRuntime)
+        public static async Task LoadProfiles(UserSteamSettings _persistentSettings, IJSRuntime JsRuntime)
         {
             Console.WriteLine("LOADING PROFILES!");
             //await JsRuntime.InvokeVoidAsync("jQueryClearInner", "#acc_list");
-            List<Steamuser> _userAccounts = GetSteamUsers("C:\\Program Files (x86)\\Steam\\config\\loginusers.vdf");
+            List<Steamuser> _userAccounts = GetSteamUsers(Path.Combine(_persistentSettings.SteamFolder, "config\\loginusers.vdf"));
 
             foreach (Steamuser ua in _userAccounts)
             {
@@ -96,9 +98,6 @@ namespace TcNo_Acc_Switcher.Pages.Steam
             //return _userAccounts;
         }
         
-
-
-
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
@@ -192,6 +191,107 @@ namespace TcNo_Acc_Switcher.Pages.Steam
             }
             return imageUrl;
         }
+
+
+        #region SteamSwapper
+        public static async Task SwapSteamAccounts(bool loginNone, string steamId, string accName, bool autoStartSteam = true)
+        {
+            Index.UserSteamSettings _persistentSettings = SteamSwitcherFuncs.LoadSettings();
+            if (!VerifySteamId(steamId))
+            {
+                // await JsRuntime.InvokeVoidAsync("createAlert", "Invalid SteamID" + steamid);
+                return;
+            }
+
+            CloseSteam();
+            UpdateLoginUsers(_persistentSettings, loginNone, steamId, accName);
+
+            if (!autoStartSteam) return;
+            if (_persistentSettings.StartAsAdmin)
+                Process.Start(_persistentSettings.SteamExe());
+            else
+                Process.Start(new ProcessStartInfo("explorer.exe", _persistentSettings.SteamExe()));
+        }
+
+
+        #region Verification and Checks
+        public static bool VerifySteamId(string steamId)
+        {
+            const long steamIdMin = 0x0110000100000001;
+            const long steamIdMax = 0x01100001FFFFFFFF;
+            if (!IsDigitsOnly(steamId) || steamId.Length != 17) return false;
+            // Size check: https://stackoverflow.com/questions/33933705/steamid64-minimum-and-maximum-length#40810076
+            var steamIdVal = double.Parse(steamId);
+            return steamIdVal > steamIdMin && steamIdVal < steamIdMax;
+        }
+        private static bool IsDigitsOnly(string str) => str.All(c => c >= '0' && c <= '9');
+        #endregion
+
+
+
+        #region SteamManagement
+
+        public static void CloseSteam()
+        {
+            // This is what Administrator permissions are required for.
+            var startInfo = new ProcessStartInfo
+            {
+                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                FileName = "cmd.exe",
+                Arguments = "/C TASKKILL /F /T /IM steam*"
+            };
+            var process = new Process { StartInfo = startInfo };
+            process.Start();
+            process.WaitForExit();
+        }
+        public static void UpdateLoginUsers(Index.UserSteamSettings _persistentSettings, bool loginNone, string selectedSteamId, string accName)
+        {
+            List<Index.Steamuser> _userAccounts = SteamSwitcherFuncs.GetSteamUsers(Path.Combine(_persistentSettings.SteamFolder, "config\\loginusers.vdf"));
+            // -----------------------------------
+            // ----- Manage "loginusers.vdf" -----
+            // -----------------------------------
+            var targetUsername = accName;
+            var tempFile = _persistentSettings.LoginusersVdf() + "_temp";
+            File.Delete(tempFile);
+
+            var outJObject = new JObject();
+            foreach (var ua in _userAccounts)
+            {
+                if (ua.SteamID == selectedSteamId) ua.MostRec = "1";
+                outJObject[ua.SteamID] = (JObject)JToken.FromObject(ua);
+            }
+            File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
+            File.Replace(tempFile, _persistentSettings.LoginusersVdf(), _persistentSettings.LoginusersVdf() + "_last");
+
+            // -----------------------------------
+            // --------- Manage registry ---------
+            // -----------------------------------
+            /*
+            ------------ Structure ------------
+            HKEY_CURRENT_USER\Software\Valve\Steam\
+                --> AutoLoginUser = username
+                --> RememberPassword = 1
+            */
+            ////////LblStatus.Content = Strings.StatusEditingRegistry; --------------------
+            using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam"))
+            {
+                if (loginNone)
+                {
+                    key.SetValue("AutoLoginUser", "");
+                    key.SetValue("RememberPassword", 1);
+                }
+                else
+                {
+                    key.SetValue("AutoLoginUser", targetUsername); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel).
+                    key.SetValue("RememberPassword", 1);
+                }
+            }
+        }
+
+        #endregion
+        #endregion
+
+
         #endregion
 
         #region Settings
@@ -207,8 +307,9 @@ namespace TcNo_Acc_Switcher.Pages.Steam
                 serializer.Serialize(writer, _persistentSettings);
             }
         }
-        public static UserSteamSettings LoadSettings(UserSteamSettings _persistentSettings)
+        public static UserSteamSettings LoadSettings()
         {
+            UserSteamSettings _persistentSettings = new UserSteamSettings();
             if (!File.Exists("SteamSettings.json")) { SaveSettings(_persistentSettings);
                 return _persistentSettings;
             }

@@ -25,6 +25,7 @@
         }*@
 
     <ul class="contextmenu">
+        <li><a onclick="SwapTo()" href="">Swap to account</a></li>
         <li>
             <a href="#">Copy Profile...</a>
             <ul class="submenu">
@@ -53,7 +54,7 @@
                 <li><a onclick="copy('SteamIDFinder.com')" href="">SteamIDFinder.com</a></li>
             </ul>
         </li>
-        <li><a href="#">Create Desktop Shortcut</a></li>
+        <li><a href="">Create Desktop Shortcut</a></li>
         <li><a href="#">Forget</a></li>
     </ul>
 </div>
@@ -95,8 +96,8 @@
         {
             //SomeStartupMethod();
             //await SomeStartupTask();
-            _persistentSettings = SteamSwitcherFuncs.LoadSettings(_persistentSettings);
-            await SteamSwitcherFuncs.LoadProfiles(JsRuntime);
+            _persistentSettings = SteamSwitcherFuncs.LoadSettings();
+            await SteamSwitcherFuncs.LoadProfiles(_persistentSettings, JsRuntime);
         }
     }
 
@@ -105,7 +106,7 @@
     //{
     //    await SteamSwitcherFuncs.LoadProfiles(JsRuntime);
     //}
-
+    
 
     public class Steamuser
     {

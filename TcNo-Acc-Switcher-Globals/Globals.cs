@@ -90,90 +90,24 @@ namespace TcNo_Acc_Switcher_Globals
 
 
 
-        ///// <summary>
-        ///// Exception handling for all programs
-        ///// </summary>
-        //public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        //{
-        //    // Log Unhandled Exception
-        //    var exceptionStr = e.ExceptionObject.ToString();
-        //    Directory.CreateDirectory("Errors");
-        //    var filePath = $"Errors\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
-        //    using (var sw = File.AppendText(filePath))
-        //    {
-        //        sw.WriteLine(DateTime.Now.ToString(CultureInfo.InvariantCulture) + "\t" + Strings.ErrUnhandledCrash + ": " + exceptionStr + Environment.NewLine + Environment.NewLine);
-        //    }
-        //    MessageBox.Show(Strings.ErrUnhandledException + Path.GetFullPath(filePath), Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Error);
-        //    MessageBox.Show(Strings.ErrSubmitCrashlog, Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Information);
-        //}
+        /// <summary>
+        /// Exception handling for all programs
+        /// </summary>
+        public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            // Log Unhandled Exception
+            var exceptionStr = e.ExceptionObject.ToString();
+            Directory.CreateDirectory("Errors");
+            var filePath = $"Errors\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
+            using (var sw = File.AppendText(filePath))
+            {
+                sw.WriteLine(DateTime.Now.ToString(CultureInfo.InvariantCulture) + "\t" + Strings.ErrUnhandledCrash + ": " + exceptionStr + Environment.NewLine + Environment.NewLine);
+            }
+            Console.WriteLine(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
+            //MessageBox.Show(Strings.ErrUnhandledException + Path.GetFullPath(filePath), Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Error);
+            Console.WriteLine(Strings.ErrSubmitCrashlog);
+            //MessageBox.Show(Strings.ErrSubmitCrashlog, Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Information);
+        }
 
-        ///// <summary>
-        ///// Handles window buttons, resizing and dragging
-        ///// </summary>
-        //public class WindowHandling
-        //{
-        //    public static void BtnMinimize(object sender, RoutedEventArgs e, Window window)
-        //    {
-        //        window.WindowState = WindowState.Minimized;
-        //    }
-        //    public static void BtnExit(object sender, RoutedEventArgs e, Window window)
-        //    {
-        //        window.Close();
-        //    }
-        //    public static void DragWindow(object sender, MouseButtonEventArgs e, Window window)
-        //    {
-        //        if (e.LeftButton == MouseButtonState.Pressed)
-        //        {
-        //            if (e.ClickCount == 2)
-        //            {
-        //                SwitchState(window);
-        //            }
-        //            else
-        //            {
-        //                if (window.WindowState == WindowState.Maximized)
-        //                {
-        //                    var percentHorizontal = e.GetPosition(window).X / window.ActualWidth;
-        //                    var targetHorizontal = window.RestoreBounds.Width * percentHorizontal;
-
-        //                    var percentVertical = e.GetPosition(window).Y / window.ActualHeight;
-        //                    var targetVertical = window.RestoreBounds.Height * percentVertical;
-
-        //                    window.WindowState = WindowState.Normal;
-
-        //                    GetCursorPos(out var lMousePosition);
-
-        //                    window.Left = lMousePosition.X - targetHorizontal;
-        //                    window.Top = lMousePosition.Y - targetVertical;
-        //                }
-
-
-        //                window.DragMove();
-        //            }
-        //        }
-        //    }
-        //    [DllImport("user32.dll")]
-        //    [return: MarshalAs(UnmanagedType.Bool)]
-        //    private static extern bool GetCursorPos(out Point lpPoint);
-
-
-        //    [StructLayout(LayoutKind.Sequential)]
-        //    public struct Point
-        //    {
-        //        public int X;
-        //        public int Y;
-        //    }
-        //    public static void SwitchState(Window window)
-        //    {
-        //        switch (window.WindowState)
-        //        {
-        //            case WindowState.Normal:
-        //                window.WindowState = WindowState.Maximized;
-        //                break;
-        //            case WindowState.Maximized:
-        //                window.WindowState = WindowState.Normal;
-        //                break;
-        //        }
-        //    }
-        //}
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +23,9 @@ using System.Windows.Interop;
 using Microsoft.Web.WebView2.Core;
 using TcNo_Acc_Switcher.Pages.Steam;
 using TcNo_Acc_Switcher.Shared;
+using TcNo_Acc_Switcher_Client.Classes;
 using Index = TcNo_Acc_Switcher.Pages.Index;
+using Strings = TcNo_Acc_Switcher_Client.Localisation.Strings;
 
 namespace TcNo_Acc_Switcher_Client
 {
@@ -33,6 +38,9 @@ namespace TcNo_Acc_Switcher_Client
         Index.UserSteamSettings _persistentSettings = new Index.UserSteamSettings();
         private Thread server = new Thread(RunServer);
         private static void RunServer() { TcNo_Acc_Switcher.Program.Main(new string[0]); }
+        private TrayUsers trayUsers = new TrayUsers();
+
+        MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         public MainWindow()
         {
@@ -45,7 +53,9 @@ namespace TcNo_Acc_Switcher_Client
             InitializeComponent();
 
             // Load settings (If they exist, otherwise creates).
-            _persistentSettings = SteamSwitcherFuncs.LoadSettings(_persistentSettings);
+            _persistentSettings = SteamSwitcherFuncs.LoadSettings();
+            CheckSteamLocation();
+
 
             //MView2.Source = new Uri("http://localhost:44305/");
             MView2.Source = new Uri("http://localhost:5000/");
@@ -56,12 +66,135 @@ namespace TcNo_Acc_Switcher_Client
             this.Height = _persistentSettings.WindowSize.Height;
             this.Width = _persistentSettings.WindowSize.Width;
         }
+        
 
-        private void SaveAndClose()
+
+
+
+
+
+
+
+
+
+        private void SaveSettings()
         {
             _persistentSettings.WindowSize = new System.Drawing.Size(Convert.ToInt32(this.Width), Convert.ToInt32(this.Height));
             SteamSwitcherFuncs.SaveSettings(_persistentSettings);
         }
+
+
+        public void PickSteamFolder()
+        {
+            var oldLocation = _persistentSettings.SteamFolder;
+
+            var validSteamFound = SetAndCheckSteamFolder(true);
+            if (validSteamFound) return;
+            _persistentSettings.SteamFolder = oldLocation;
+            MainViewmodel.InputFolderDialogResponse = oldLocation;
+            MessageBox.Show($"{Strings.ErrSteamLocation} {oldLocation}");
+        }
+        private void CheckSteamLocation()
+        {
+            var validSteamFound = (File.Exists(_persistentSettings.SteamExe()));
+            //bool validSteamFound = false; // Testing
+            if (!validSteamFound)
+            {
+                validSteamFound = SetAndCheckSteamFolder(false);
+                if (!validSteamFound)
+                {
+                    MessageBox.Show(Strings.RequiredPickSteamDir);
+                    Environment.Exit(1);
+                    // this.Close() won't work, because the main window hasn't appeared just yet. Still needs to be populated with Steam Accounts.
+                }
+            }
+            if (File.Exists("Tray_Users.json"))
+                trayUsers.LoadTrayUsers();
+        }
+
+        private bool SetAndCheckSteamFolder(bool manual)
+        {
+            if (!manual)
+            {
+                MainViewmodel.SteamNotFound = true;
+                const string programFiles = "C:\\Program Files\\Steam\\Steam.exe";
+                const string programFiles86 = "C:\\Program Files (x86)\\Steam\\Steam.exe";
+                bool exists = File.Exists(programFiles),
+                    exists86 = File.Exists(programFiles86);
+
+                if (exists86)
+                    _persistentSettings.SteamFolder = Directory.GetParent(programFiles86).ToString();
+                else if (exists)
+                    _persistentSettings.SteamFolder = Directory.GetParent(programFiles).ToString();
+
+                if (exists86 || exists)
+                {
+                    SaveSettings();
+                    return (File.Exists(_persistentSettings.SteamExe()));
+                }
+            }
+            else
+                MainViewmodel.SteamNotFound = false;
+
+            var getInputFolderDialog = new SteamFolderInput { DataContext = MainViewmodel };
+            getInputFolderDialog.ShowDialog();
+            if (!string.IsNullOrEmpty(MainViewmodel.InputFolderDialogResponse))
+            {
+                _persistentSettings.SteamFolder = MainViewmodel.InputFolderDialogResponse;
+                SaveSettings();
+                return (File.Exists(_persistentSettings.SteamExe()));
+            }
+            else
+                return false;
+        }
+
+
+        public class MainWindowViewModel : INotifyPropertyChanged
+        {
+            public MainWindowViewModel()
+            {
+                InputFolderDialogResponse = "";
+                SteamNotFound = new bool();
+                StartAsAdmin = new bool();
+                ShowSteamID = new bool();
+                ShowVACStatus = new bool();
+                LimitedAsVAC = new bool();
+                StartMenuIcon = new bool();
+                StartWithWindows = new bool();
+                DesktopShortcut = new bool();
+                ProgramVersion = "";
+                ForgetAccountEnabled = new bool();
+                TrayAccounts = 3;
+                TrayAccountAccNames = new bool();
+                ImageLifetime = 7;
+            }
+            public string InputFolderDialogResponse { get; set; }
+            public bool ShowSteamID { get; set; }
+            public bool ShowVACStatus { get; set; }
+            public bool LimitedAsVAC { get; set; }
+            public bool StartMenuIcon { get; set; }
+            public bool DesktopShortcut { get; set; }
+            public bool StartWithWindows { get; set; }
+            public bool StartAsAdmin { get; set; }
+            public bool SteamNotFound { get; set; }
+            public bool ForgetAccountEnabled { get; set; }
+            public string ProgramVersion { get; set; }
+            public int TrayAccounts { get; set; }
+            public int ImageLifetime { get; set; }
+            public bool TrayAccountAccNames { get; set; }
+            public event PropertyChangedEventHandler PropertyChanged;
+            protected void NotifyPropertyChanged(string info)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
+            }
+        }
+
+
+
+
+
+
+
 
 
 
@@ -94,7 +227,7 @@ namespace TcNo_Acc_Switcher_Client
                     break;
                 case "Win_close":
                     args.Cancel = true;
-                    SaveAndClose();
+                    SaveSettings();
                     Environment.Exit(1);
                     break;
 

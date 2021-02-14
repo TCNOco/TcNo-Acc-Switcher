@@ -1,0 +1,427 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AreYouSure" xml:space="preserve">
+    <value>Clear backups</value>
+  </data>
+  <data name="ClearBackups" xml:space="preserve">
+    <value>Are you sure you want to clear backups of forgotten accounts?</value>
+  </data>
+  <data name="ErrDeleteFilesHeader" xml:space="preserve">
+    <value>Error deleting files</value>
+  </data>
+  <data name="ErrDeleteFolderNonempty" xml:space="preserve">
+    <value>Unable to delete folder because it's not empty:</value>
+  </data>
+  <data name="ErrEmptyImage" xml:space="preserve">
+    <value>Empty profile image detected (0 bytes). Can't delete to redownload.
+
+Error information:</value>
+  </data>
+  <data name="ErrEmptyImageHeader" xml:space="preserve">
+    <value>TcNo Account Switcher - Empty Image Error</value>
+  </data>
+  <data name="ErrImageDownloadFail" xml:space="preserve">
+    <value>Could not connect and download Steam profile's image from Steam servers.
+Check your internet connection.
+
+Details:</value>
+  </data>
+  <data name="ErrInformation" xml:space="preserve">
+    <value>Error information:</value>
+  </data>
+  <data name="ErrLoadingLoginusers" xml:space="preserve">
+    <value>There was an error loading the 'loginusers.vdf' file:</value>
+  </data>
+  <data name="ErrLoginusersNonExist" xml:space="preserve">
+    <value>Can't start account switcher when loginusers.vdf does not exist. Verify Steam's installation and try again.
+If you just deleted loginusers.vdf, try starting and logging with Steam at least once.</value>
+  </data>
+  <data name="ErrLoginusersNonExistHeader" xml:space="preserve">
+    <value>TcNo Account Switcher - loginusers.vdf doesn't exist</value>
+  </data>
+  <data name="ErrProfileImageDlFail" xml:space="preserve">
+    <value>TcNo Account Switcher - Image download error</value>
+  </data>
+  <data name="ErrRecursivelyDelete" xml:space="preserve">
+    <value>Could not recursively delete directory! Error:</value>
+  </data>
+  <data name="ErrSteamLocation" xml:space="preserve">
+    <value>Steam location not chosen. Resetting to old value:</value>
+  </data>
+  <data name="ErrSteamSettingsLoadFail" xml:space="preserve">
+    <value>SteamSettings.json failed to load properly.
+Old settings are saved in settings.old.json, and a new config has been loaded.</value>
+  </data>
+  <data name="ErrSteamSettingsLoadFailHeader" xml:space="preserve">
+    <value>TcNo Account Switcher - Load Error</value>
+  </data>
+  <data name="ErrSwitchingAcc" xml:space="preserve">
+    <value>Error switching account!</value>
+  </data>
+  <data name="ErrSwitchingAcc_MissingUsername" xml:space="preserve">
+    <value>A username was not found in loginusers.vdf, but we looked for one with the provided SteamID. </value>
+  </data>
+  <data name="ErrUnhandledCrash" xml:space="preserve">
+    <value>UNHANDLED CRASH</value>
+  </data>
+  <data name="ErrUpdateCheckHeader" xml:space="preserve">
+    <value>TcNo Account Switcher - Update check error</value>
+  </data>
+  <data name="InfoRefreshLimitedAsVac" xml:space="preserve">
+    <value>Click the "Check account VAC Status" button to see changes.
+Note: Steam shows game banned accounts as Limited.</value>
+  </data>
+  <data name="InfoReopenImageDl" xml:space="preserve">
+    <value>The program will now close. Once opened, new images will download.</value>
+  </data>
+  <data name="InfoShortcutDeleted" xml:space="preserve">
+    <value>Shortcut to: {} was deleted!</value>
+  </data>
+  <data name="InfoTrayWindowsStart" xml:space="preserve">
+    <value>TcNo Account Switcher will start in the Windows Tray on user login/startup (The small icons on the bottom right of your Windows Start bar.)</value>
+  </data>
+  <data name="InfoTrayWindowsStartOff" xml:space="preserve">
+    <value>TcNo Account Switcher will no longer start with user login/startup.</value>
+  </data>
+  <data name="RequiredPickSteamDir" xml:space="preserve">
+    <value>You are required to pick a Steam directory for this program to work. Please check you have it installed and run this program again.</value>
+  </data>
+  <data name="StatusAccountSelected" xml:space="preserve">
+    <value>Selected</value>
+  </data>
+  <data name="StatusCheckingVac" xml:space="preserve">
+    <value>Status: Checking VAC status for each account.</value>
+  </data>
+  <data name="StatusCheckingVacActive" xml:space="preserve">
+    <value>Status: Checking VAC status:</value>
+  </data>
+  <data name="StatusClosingSteam" xml:space="preserve">
+    <value>Status: Closing Steam</value>
+  </data>
+  <data name="StatusCollectingAccounts" xml:space="preserve">
+    <value>Status: Collecting Steam Accounts.</value>
+  </data>
+  <data name="StatusDownloadingProfile" xml:space="preserve">
+    <value>Status: Downloading profile image:</value>
+  </data>
+  <data name="StatusEditingLoginusers" xml:space="preserve">
+    <value>Status: Editing loginusers.vdf</value>
+  </data>
+  <data name="StatusEditingRegistry" xml:space="preserve">
+    <value>Status: Editing Steam's Registry keys</value>
+  </data>
+  <data name="StatusFromLoginusers" xml:space="preserve">
+    <value>from loginusers.vdf</value>
+  </data>
+  <data name="StatusImageDownloadStart" xml:space="preserve">
+    <value>Status: Starting image download.</value>
+  </data>
+  <data name="StatusPressLogin" xml:space="preserve">
+    <value>2. Press Login</value>
+  </data>
+  <data name="StatusReady" xml:space="preserve">
+    <value>Status: Ready</value>
+  </data>
+  <data name="StatusRemoving" xml:space="preserve">
+    <value>Status: Removing</value>
+  </data>
+  <data name="StatusStartedSteam" xml:space="preserve">
+    <value>Status: Started Steam</value>
+  </data>
+  <data name="SwitcherAlreadyRunning" xml:space="preserve">
+    <value>TcNo Account Switcher is already running</value>
+  </data>
+  <data name="SwitcherAlreadyRunningHeading" xml:space="preserve">
+    <value>TcNo Account Switcher - Duplicate start</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="XBtnCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="XBtnClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="XBtnLocateSteamExe" xml:space="preserve">
+    <value>Locate Steam.exe</value>
+  </data>
+  <data name="XBtnRestoreSelected" xml:space="preserve">
+    <value>Restore selected</value>
+  </data>
+  <data name="XBtnSelectSteamFolder" xml:space="preserve">
+    <value>Select Steam Folder</value>
+  </data>
+  <data name="XChkLimitedAsVac" xml:space="preserve">
+    <value>Show Limited accounts as VAC</value>
+  </data>
+  <data name="XChkRunSteamAsAdmin" xml:space="preserve">
+    <value>Run Steam as Admin</value>
+  </data>
+  <data name="XChkShowAccName" xml:space="preserve">
+    <value>Show account name [not friend name]</value>
+  </data>
+  <data name="XChkShowSteamId" xml:space="preserve">
+    <value>Show SteamID</value>
+  </data>
+  <data name="XChkShowVACStatus" xml:space="preserve">
+    <value>Show VAC Status</value>
+  </data>
+  <data name="XChkStartWindows" xml:space="preserve">
+    <value>Start with Windows</value>
+  </data>
+  <data name="XClearLoginsBtnKillSteam" xml:space="preserve">
+    <value>Kill Steam processes</value>
+  </data>
+  <data name="XClearLoginsDescription" xml:space="preserve">
+    <value>Clicking a button will delete the related file(s) from your Steam installation.
+Deleting loginusers.vdf will result in this account switcher showing no accounts.
+You will need to login to them using Steam to get them back.</value>
+  </data>
+  <data name="XClearLoginsMoreInfo" xml:space="preserve">
+    <value>More information (Wiki)</value>
+  </data>
+  <data name="XClearLoginsTitle" xml:space="preserve">
+    <value>TcNo Account Switcher - Steam Cleaning</value>
+  </data>
+  <data name="XClearLoginsUnderstand" xml:space="preserve">
+    <value>I understand what these buttons do.</value>
+  </data>
+  <data name="XForgetP1Title" xml:space="preserve">
+    <value>You are about to forget an account!</value>
+  </data>
+  <data name="XForgetP2" xml:space="preserve">
+    <value>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.
+- TcNo Account Switcher will also no longer show the account, until it's signed into again via Steam.
+
+You account will remain untouched. It is just forgotten on this computer.</value>
+  </data>
+  <data name="XForgetP2Title" xml:space="preserve">
+    <value>What does this mean?</value>
+  </data>
+  <data name="XForgetP3" xml:space="preserve">
+    <value>Don't panic, you can bring back forgotten accounts via backups in the Settings window.
+You can also remove previous backups from there when you are sure everything is working as expected.
+
+Right-click &gt;&gt; Forget and using the Delete key will both work.</value>
+  </data>
+  <data name="XForgetP3Title" xml:space="preserve">
+    <value>What if something goes wrong?</value>
+  </data>
+  <data name="XForgetTitle" xml:space="preserve">
+    <value>Forget Account?</value>
+  </data>
+  <data name="XMainAddNew" xml:space="preserve">
+    <value>Add New</value>
+  </data>
+  <data name="XMainLogin" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="XMainSelect" xml:space="preserve">
+    <value>1. Select an account</value>
+  </data>
+  <data name="XMainStartingStatus" xml:space="preserve">
+    <value>Status: Starting</value>
+  </data>
+  <data name="XReadAndUnderstand" xml:space="preserve">
+    <value>I have read and understand</value>
+  </data>
+  <data name="XRestoreList" xml:space="preserve">
+    <value>List of available backups:</value>
+  </data>
+  <data name="XSettingsAccountsTotal" xml:space="preserve">
+    <value>Max number of accounts to remember:</value>
+  </data>
+  <data name="XSettingsAdvCleaning" xml:space="preserve">
+    <value>Advanced cleaning...</value>
+  </data>
+  <data name="XSettingsChkDesktopShortcuts" xml:space="preserve">
+    <value>Desktop shortcut</value>
+  </data>
+  <data name="XSettingsChkStartMenu" xml:space="preserve">
+    <value>Start menu shortcut</value>
+  </data>
+  <data name="XSettingsClearForgotten" xml:space="preserve">
+    <value>Clear forgotten backups</value>
+  </data>
+  <data name="XSettingsImagesExpire" xml:space="preserve">
+    <value>Profile images expire after:</value>
+  </data>
+  <data name="XSettingsImagesExpire2" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="XSettingsOpenSteam" xml:space="preserve">
+    <value>Open Steam Folder</value>
+  </data>
+  <data name="XSettingsResetImages" xml:space="preserve">
+    <value>Reset images</value>
+  </data>
+  <data name="XSettingsResetSettings" xml:space="preserve">
+    <value>Reset settings</value>
+  </data>
+  <data name="XSettingsRestore" xml:space="preserve">
+    <value>Restore forgotten account</value>
+  </data>
+  <data name="XSettingsSepGeneral" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="XSettingsSepShortcuts" xml:space="preserve">
+    <value>Shortcuts</value>
+  </data>
+  <data name="XSettingsSepSteamTools" xml:space="preserve">
+    <value>Steam Tools</value>
+  </data>
+  <data name="XSettingsSepTray" xml:space="preserve">
+    <value>Tray settings</value>
+  </data>
+  <data name="XSettingsSteamFolder" xml:space="preserve">
+    <value>Pick Steam folder</value>
+  </data>
+  <data name="XSettingsTitle" xml:space="preserve">
+    <value>TcNo Account Switcher - Steam Settings</value>
+  </data>
+  <data name="XSettingsVacStatus" xml:space="preserve">
+    <value>Check account VAC Status</value>
+  </data>
+  <data name="XSteamInputFound" xml:space="preserve">
+    <value>Steam.exe found!</value>
+  </data>
+  <data name="XSteamInputNotFound" xml:space="preserve">
+    <value>Steam.exe not found</value>
+  </data>
+  <data name="XSteamInputText1" xml:space="preserve">
+    <value>Steam was not found in</value>
+  </data>
+  <data name="XSteamInputText2" xml:space="preserve">
+    <value>Program Files</value>
+  </data>
+  <data name="XSteamInputText3" xml:space="preserve">
+    <value>or</value>
+  </data>
+  <data name="XSteamInputText4" xml:space="preserve">
+    <value>Program Files (x86).</value>
+  </data>
+  <data name="XSteamInputText5" xml:space="preserve">
+    <value>Please enter Steam's directory, as such: C:\Program Files\Steam</value>
+  </data>
+  <data name="XSteamInputTitle" xml:space="preserve">
+    <value>Locate Steam</value>
+  </data>
+</root>
