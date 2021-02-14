@@ -84,7 +84,7 @@ namespace TcNo_Acc_Switcher.Pages.Steam
 
                 string element =
                     $"<input type=\"radio\" id=\"{ua.AccName}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamID}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.lastLogin}\" ExtraClasses=\"{ua.ExtraClasses}\" onchange=\"SelectedItemChanged()\" />\r\n" +
-                    $"<label for=\"{ua.AccName}\" class=\"acc @ExtraClasses\">\r\n" +
+                    $"<label for=\"{ua.AccName}\" class=\"acc {ua.ExtraClasses}\">\r\n" +
                     $"<img class=\"{ua.ExtraClasses}\" src=\"{ua.ImgURL}\" />\r\n" +
                     $"<p>{ua.AccName}</p>\r\n" +
                     $"<h6>{ua.Name}</h6>\r\n" +
@@ -221,7 +221,7 @@ namespace TcNo_Acc_Switcher.Pages.Steam
 
 
         #region SteamSwapper
-        public static async Task SwapSteamAccounts(bool loginNone, string steamId, string accName, bool autoStartSteam = true)
+        public static void SwapSteamAccounts(bool loginNone, string steamId, string accName, bool autoStartSteam = true)
         {
             Index.UserSteamSettings _persistentSettings = SteamSwitcherFuncs.LoadSettings();
             if (!VerifySteamId(steamId))
@@ -240,13 +240,13 @@ namespace TcNo_Acc_Switcher.Pages.Steam
                 Process.Start(new ProcessStartInfo("explorer.exe", _persistentSettings.SteamExe()));
         }
 
-        public static async Task NewSteamLogin()
+        public static void NewSteamLogin()
         {
             Index.UserSteamSettings _persistentSettings = SteamSwitcherFuncs.LoadSettings();
             // Kill Steam
             CloseSteam();
             // Set all accounts to 'not used last' status
-            UpdateLoginUsers(true, "", "");
+            UpdateLoginUsers(_persistentSettings, true, "", "");
             // Start Steam
             if (_persistentSettings.StartAsAdmin)
                 Process.Start(_persistentSettings.SteamExe());

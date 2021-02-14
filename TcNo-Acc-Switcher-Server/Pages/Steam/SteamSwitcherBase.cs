@@ -56,12 +56,12 @@ namespace TcNo_Acc_Switcher.Pages.Steam
         [JSInvokable]
         public static async void SwapTo(string steamID, string accName)
         {
-            await SteamSwitcherFuncs.SwapSteamAccounts(false, steamID, accName);
+            SteamSwitcherFuncs.SwapSteamAccounts(false, steamID, accName);
         }
         [JSInvokable]
         public static async void NewSteamLogin()
         {
-            await SteamSwitcherFuncs.NewSteamLogin();
+            SteamSwitcherFuncs.NewSteamLogin();
         }
 
 

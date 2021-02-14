@@ -113,7 +113,6 @@ namespace TcNo_Acc_Switcher_Client.Converters
             }
             else
             {
-                var s = "";
                 switch (_inputType)
                 {
                     case SteamId:

@@ -56,10 +56,16 @@ function copy(request) {
 }
 // Swapping accounts
 function SwapTo() {
-    var steamId64 = $(SelectedElem).attr("SteamID64");
-    var accName = $(SelectedElem).attr("Username");
-    if (steamId64 !== null && accName !== null) { DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "SwapTo", steamId64, accName); }
+    var selected = $(".acc:checked");
+    if (selected === "") { return; }
+    var steamId64 = selected.attr("SteamID64");
+    var accName = selected.attr("Username");
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "SwapTo", steamId64, accName);
 }
+$(".acc").dblclick(function () {
+    alert("Handler for .dblclick() called.");
+    SwapTo();
+});
 
 
 

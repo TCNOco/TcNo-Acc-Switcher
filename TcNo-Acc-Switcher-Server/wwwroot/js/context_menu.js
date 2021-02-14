@@ -31,6 +31,11 @@
 var SelectedElem = "";
 
 function initContextMenu() {
+    // Ready accounts for double-click
+    $(".acc").dblclick(function () {
+        SwapTo();
+    });
+
     //Show contextmenu on Right-Click:
     $(".acc").contextmenu(function(e) {
         // Select item that was right-clicked.
@@ -113,7 +118,7 @@ function initContextMenu() {
 };
 
 function SelectedItemChanged() {
-    console.log("click!");
-    console.log(this);
+    //console.log("click!");
+    //console.log(this);
     $("#CurrentStatus").val("Selected: " + $("input[name=accounts]:checked").attr("Line2"));
 }
