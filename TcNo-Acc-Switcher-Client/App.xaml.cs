@@ -53,37 +53,37 @@ namespace TcNo_Acc_Switcher_Client
 
         #region ResizeWindows
         // https://stackoverflow.com/a/27157947/5165437
-        bool ResizeInProcess = false;
+        bool _resizeInProcess = false;
         private void Resize_Init(object sender, MouseButtonEventArgs e)
         {
-            Rectangle senderRect = sender as Rectangle;
+            var senderRect = sender as Rectangle;
             if (senderRect != null)
             {
-                ResizeInProcess = true;
+                _resizeInProcess = true;
                 senderRect.CaptureMouse();
             }
         }
 
         private void Resize_End(object sender, MouseButtonEventArgs e)
         {
-            Rectangle senderRect = sender as Rectangle;
+            var senderRect = sender as Rectangle;
             if (senderRect != null)
             {
-                ResizeInProcess = false; ;
+                _resizeInProcess = false; ;
                 senderRect.ReleaseMouseCapture();
             }
         }
 
         private void Resizeing_Form(object sender, MouseEventArgs e)
         {
-            if (ResizeInProcess)
+            if (_resizeInProcess)
             {
-                Rectangle senderRect = sender as Rectangle;
-                Window mainWindow = senderRect.Tag as Window;
+                var senderRect = sender as Rectangle;
+                var mainWindow = senderRect.Tag as Window;
                 if (senderRect != null)
                 {
-                    double width = e.GetPosition(mainWindow).X;
-                    double height = e.GetPosition(mainWindow).Y;
+                    var width = e.GetPosition(mainWindow).X;
+                    var height = e.GetPosition(mainWindow).Y;
                     senderRect.CaptureMouse();
                     if (senderRect.Name.ToLower().Contains("right"))
                     {

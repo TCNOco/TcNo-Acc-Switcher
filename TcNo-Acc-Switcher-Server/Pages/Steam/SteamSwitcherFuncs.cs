@@ -28,9 +28,9 @@ namespace TcNo_Acc_Switcher.Pages.Steam
         #region Profiles
         public static List<Steamuser> GetSteamUsers(string loginUserPath)
         {
-            List<Steamuser> _userAccounts = new List<Steamuser>();
+            var userAccounts = new List<Steamuser>();
             
-            _userAccounts.Clear();
+            userAccounts.Clear();
             Directory.CreateDirectory("wwwroot/img/profiles");
             try
             {
@@ -46,16 +46,16 @@ namespace TcNo_Acc_Switcher.Pages.Steam
                         double timestampLastLogin = 0;
                         Double.TryParse(user.First?["Timestamp"]?.ToString(), out timestampLastLogin);
 
-                        Steamuser newSU = new Steamuser()
+                        var newSu = new Steamuser()
                         {
                             Name = user.First?["PersonaName"]?.ToString(),
                             AccName = user.First?["AccountName"]?.ToString(),
-                            SteamID = steamId,
-                            ImgURL = "img/QuestionMark.jpg",
-                            lastLogin = UnixTimeStampToDateTime(timestampLastLogin).ToString(),
+                            SteamId = steamId,
+                            ImgUrl = "img/QuestionMark.jpg",
+                            LastLogin = UnixTimeStampToDateTime(timestampLastLogin).ToString(),
                             OfflineMode = (!string.IsNullOrEmpty(user.First?["WantsOfflineMode"]?.ToString()) ? user.First?["WantsOfflineMode"]?.ToString() : "0")
                         };
-                        _userAccounts.Add(newSU);
+                        userAccounts.Add(newSu);
                     }
                 }
             }
@@ -66,39 +66,40 @@ namespace TcNo_Acc_Switcher.Pages.Steam
                 Environment.Exit(2);
             }
 
-            return _userAccounts;
+            return userAccounts;
         }
 
 
-        private static string SteamVacCacheFile = "profilecache/SteamVACCache.json";
-        public static bool LoadVacInfo(ref List<vac_status> vsl)
+        private const string SteamVacCacheFile = "profilecache/SteamVACCache.json";
+
+        public static bool LoadVacInfo(ref List<VacStatus> vsl)
         {
             GeneralFuncs.DeletedOutdatedFile(SteamVacCacheFile);
             if (File.Exists(SteamVacCacheFile))
             {
-                vsl = JsonConvert.DeserializeObject<List<vac_status>>(File.ReadAllText(SteamVacCacheFile));
+                vsl = JsonConvert.DeserializeObject<List<VacStatus>>(File.ReadAllText(SteamVacCacheFile));
                 return true;
             }
             return false;
         }
-        public static void SaveVacInfo(List<vac_status> vsList) => File.WriteAllText(SteamVacCacheFile, JsonConvert.SerializeObject(vsList));
+        public static void SaveVacInfo(List<VacStatus> vsList) => File.WriteAllText(SteamVacCacheFile, JsonConvert.SerializeObject(vsList));
 
         //public static List<Steamuser> loadProfiles()
-        public static async Task LoadProfiles(UserSteamSettings _persistentSettings, IJSRuntime JsRuntime)
+        public static async Task LoadProfiles(UserSteamSettings persistentSettings, IJSRuntime jsRuntime)
         {
             Console.WriteLine("LOADING PROFILES!");
             //await JsRuntime.InvokeVoidAsync("jQueryClearInner", "#acc_list");
-            List<Steamuser> _userAccounts = GetSteamUsers(Path.Combine(_persistentSettings.SteamFolder, "config\\loginusers.vdf"));
-            List<vac_status> vacStatusList = new List<vac_status>();
-            bool loadedVacCache = LoadVacInfo(ref vacStatusList);
+            var userAccounts = GetSteamUsers(Path.Combine(persistentSettings.SteamFolder, "config\\loginusers.vdf"));
+            var vacStatusList = new List<VacStatus>();
+            var loadedVacCache = LoadVacInfo(ref vacStatusList);
 
-            foreach (Steamuser ua in _userAccounts)
+            foreach (var ua in userAccounts)
             {
-                vac_status va = new vac_status();
+                var va = new VacStatus();
                 if (loadedVacCache)
                 {
                     PrepareProfileImage(ua); // Just get images
-                    foreach (var vsi in vacStatusList.Where(vsi => vsi.SteamID == ua.SteamID))
+                    foreach (var vsi in vacStatusList.Where(vsi => vsi.SteamId == ua.SteamId))
                     {
                         va = vsi;
                         break;
@@ -107,26 +108,26 @@ namespace TcNo_Acc_Switcher.Pages.Steam
                 else
                 {
                     va = PrepareProfileImage(ua); // Get VAC status as well
-                    va.SteamID = ua.SteamID;
+                    va.SteamId = ua.SteamId;
                     vacStatusList.Add(va);
                 }
 
 
-                string ExtraClasses = (va.Vac ? " status_vac" : "") + (va.Ltd ? " status_limited" : "");
+                var extraClasses = (va.Vac ? " status_vac" : "") + (va.Ltd ? " status_limited" : "");
 
-                string element =
-                    $"<input type=\"radio\" id=\"{ua.AccName}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamID}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.lastLogin}\" ExtraClasses=\"{ExtraClasses}\" onchange=\"SelectedItemChanged()\" />\r\n" +
-                    $"<label for=\"{ua.AccName}\" class=\"acc {ExtraClasses}\">\r\n" +
-                    $"<img class=\"{ExtraClasses}\" src=\"{ua.ImgURL}\" />\r\n" +
+                var element =
+                    $"<input type=\"radio\" id=\"{ua.AccName}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.LastLogin}\" ExtraClasses=\"{extraClasses}\" onchange=\"SelectedItemChanged()\" />\r\n" +
+                    $"<label for=\"{ua.AccName}\" class=\"acc {extraClasses}\">\r\n" +
+                    $"<img class=\"{extraClasses}\" src=\"{ua.ImgUrl}\" />\r\n" +
                     $"<p>{ua.AccName}</p>\r\n" +
                     $"<h6>{ua.Name}</h6>\r\n" +
-                    $"<p>{ua.lastLogin}</p>\r\n</label>";
+                    $"<p>{ua.LastLogin}</p>\r\n</label>";
 
-                await JsRuntime.InvokeVoidAsync("jQueryAppend", new string[] { "#acc_list", element });
+                await jsRuntime.InvokeVoidAsync("jQueryAppend", new string[] { "#acc_list", element });
             }
 
             SaveVacInfo(vacStatusList);
-            await JsRuntime.InvokeVoidAsync("initContextMenu");
+            await jsRuntime.InvokeVoidAsync("initContextMenu");
             
             //return _userAccounts;
         }
@@ -134,28 +135,28 @@ namespace TcNo_Acc_Switcher.Pages.Steam
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
-            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            var dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
         }
 
 
-        public class vac_status
+        public class VacStatus
         {
-            [JsonProperty("SteamID", Order = 0)] public string SteamID { get; set; }
+            [JsonProperty("SteamID", Order = 0)] public string SteamId { get; set; }
             [JsonProperty("Vac", Order = 1)] public bool Vac { get; set; }
             [JsonProperty("Ltd", Order = 2)] public bool Ltd { get; set; }
         }
 
-        private static vac_status PrepareProfileImage(Steamuser su)
+        private static VacStatus PrepareProfileImage(Steamuser su)
         { 
-            var dlDir = $"wwwroot/img/profiles/{su.SteamID}.jpg";
+            var dlDir = $"wwwroot/img/profiles/{su.SteamId}.jpg";
             // Delete outdated file, if it exists
             GeneralFuncs.DeletedOutdatedFile(dlDir);
             // ... & invalid files
             GeneralFuncs.DeletedInvalidImage(dlDir);
 
-            vac_status vs = new vac_status();
+            var vs = new VacStatus();
 
 
             // Download new copy of the file
@@ -170,13 +171,13 @@ namespace TcNo_Acc_Switcher.Pages.Steam
                         {
                             client.DownloadFile(new Uri(imageUrl), dlDir);
                         }
-                        su.ImgURL = $"img/profiles/{su.SteamID}.jpg";
+                        su.ImgUrl = $"img/profiles/{su.SteamId}.jpg";
                     }
                     catch (WebException ex)
                     {
                         if (ex.HResult != -2146233079) // Ignore currently in use error, for when program is still writing to file.
                         {
-                            su.ImgURL = "img/QuestionMark.jpg";
+                            su.ImgUrl = "img/QuestionMark.jpg";
                             Console.WriteLine("ERROR: Could not connect and download Steam profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " + ex);
                             //MessageBox.Show($"{Strings.ErrImageDownloadFail} {ex}", Strings.ErrProfileImageDlFail, MessageBoxButton.OK, MessageBoxImage.Error);
                         }
@@ -185,45 +186,45 @@ namespace TcNo_Acc_Switcher.Pages.Steam
             }
             else
             {
-                su.ImgURL = $"img/profiles/{su.SteamID}.jpg";
+                su.ImgUrl = $"img/profiles/{su.SteamId}.jpg";
                 var profileXml = new XmlDocument();
-                string CachedFile = $"profilecache/{su.SteamID}.xml";
-                profileXml.Load((File.Exists(CachedFile))? CachedFile : $"https://steamcommunity.com/profiles/{su.SteamID}?xml=1");
-                if (!File.Exists(CachedFile)) profileXml.Save(CachedFile);
+                var cachedFile = $"profilecache/{su.SteamId}.xml";
+                profileXml.Load((File.Exists(cachedFile))? cachedFile : $"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
+                if (!File.Exists(cachedFile)) profileXml.Save(cachedFile);
 
                 if (profileXml.DocumentElement != null && profileXml.DocumentElement.SelectNodes("/profile/privacyMessage")?.Count == 0)
+                {
+                    try
                     {
-                        try
+                        var isVac = false;
+                        var isLimited = true;
+                        if (profileXml.DocumentElement != null)
                         {
-                            var isVac = false;
-                            var isLimited = true;
-                            if (profileXml.DocumentElement != null)
-                            {
-                                if (profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0] != null)
-                                    isVac = profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
-                                if (profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
-                                    isLimited = profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
-                            }
-
-                            vs.Vac = isVac;
-                            vs.Ltd = isLimited;
+                            if (profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0] != null)
+                                isVac = profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
+                            if (profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
+                                isLimited = profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
                         }
-                        catch (NullReferenceException) { }
+
+                        vs.Vac = isVac;
+                        vs.Ltd = isLimited;
                     }
+                    catch (NullReferenceException) { }
                 }
+            }
 
             return vs;
         }
-        private static string GetUserImageUrl(ref vac_status vs, Steamuser su)
+        private static string GetUserImageUrl(ref VacStatus vs, Steamuser su)
         {
             var imageUrl = "";
             var profileXml = new XmlDocument();
             try
             {
-                profileXml.Load($"https://steamcommunity.com/profiles/{su.SteamID}?xml=1");
+                profileXml.Load($"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
                 // Cache for later
                 Directory.CreateDirectory("profilecache");
-                profileXml.Save($"profilecache/{su.SteamID}.xml");
+                profileXml.Save($"profilecache/{su.SteamId}.xml");
 
                 if (profileXml.DocumentElement != null && profileXml.DocumentElement.SelectNodes("/profile/privacyMessage")?.Count == 0) // Fix for accounts that haven't set up their Community Profile
                 {
@@ -269,7 +270,7 @@ namespace TcNo_Acc_Switcher.Pages.Steam
         #region SteamSwapper
         public static void SwapSteamAccounts(bool loginNone, string steamId, string accName, bool autoStartSteam = true)
         {
-            Index.UserSteamSettings _persistentSettings = SteamSwitcherFuncs.LoadSettings();
+            var persistentSettings = SteamSwitcherFuncs.LoadSettings();
             if (!VerifySteamId(steamId))
             {
                 // await JsRuntime.InvokeVoidAsync("createAlert", "Invalid SteamID" + steamid);
@@ -277,27 +278,27 @@ namespace TcNo_Acc_Switcher.Pages.Steam
             }
 
             CloseSteam();
-            UpdateLoginUsers(_persistentSettings, loginNone, steamId, accName);
+            UpdateLoginUsers(persistentSettings, loginNone, steamId, accName);
 
             if (!autoStartSteam) return;
-            if (_persistentSettings.StartAsAdmin)
-                Process.Start(_persistentSettings.SteamExe());
+            if (persistentSettings.StartAsAdmin)
+                Process.Start(persistentSettings.SteamExe());
             else
-                Process.Start(new ProcessStartInfo("explorer.exe", _persistentSettings.SteamExe()));
+                Process.Start(new ProcessStartInfo("explorer.exe", persistentSettings.SteamExe()));
         }
 
         public static void NewSteamLogin()
         {
-            Index.UserSteamSettings _persistentSettings = SteamSwitcherFuncs.LoadSettings();
+            var persistentSettings = SteamSwitcherFuncs.LoadSettings();
             // Kill Steam
             CloseSteam();
             // Set all accounts to 'not used last' status
-            UpdateLoginUsers(_persistentSettings, true, "", "");
+            UpdateLoginUsers(persistentSettings, true, "", "");
             // Start Steam
-            if (_persistentSettings.StartAsAdmin)
-                Process.Start(_persistentSettings.SteamExe());
+            if (persistentSettings.StartAsAdmin)
+                Process.Start(persistentSettings.SteamExe());
             else
-                Process.Start(new ProcessStartInfo("explorer.exe", _persistentSettings.SteamExe()));
+                Process.Start(new ProcessStartInfo("explorer.exe", persistentSettings.SteamExe()));
             //LblStatus.Content = Strings.StatusStartedSteam;
         }
 
@@ -332,24 +333,24 @@ namespace TcNo_Acc_Switcher.Pages.Steam
             process.Start();
             process.WaitForExit();
         }
-        public static void UpdateLoginUsers(Index.UserSteamSettings _persistentSettings, bool loginNone, string selectedSteamId, string accName)
+        public static void UpdateLoginUsers(Index.UserSteamSettings persistentSettings, bool loginNone, string selectedSteamId, string accName)
         {
-            List<Index.Steamuser> _userAccounts = SteamSwitcherFuncs.GetSteamUsers(Path.Combine(_persistentSettings.SteamFolder, "config\\loginusers.vdf"));
+            var userAccounts = SteamSwitcherFuncs.GetSteamUsers(Path.Combine(persistentSettings.SteamFolder, "config\\loginusers.vdf"));
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
             // -----------------------------------
             var targetUsername = accName;
-            var tempFile = _persistentSettings.LoginusersVdf() + "_temp";
+            var tempFile = persistentSettings.LoginusersVdf() + "_temp";
             File.Delete(tempFile);
 
             var outJObject = new JObject();
-            foreach (var ua in _userAccounts)
+            foreach (var ua in userAccounts)
             {
-                if (ua.SteamID == selectedSteamId) ua.MostRec = "1";
-                outJObject[ua.SteamID] = (JObject)JToken.FromObject(ua);
+                if (ua.SteamId == selectedSteamId) ua.MostRec = "1";
+                outJObject[ua.SteamId] = (JObject)JToken.FromObject(ua);
             }
             File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
-            File.Replace(tempFile, _persistentSettings.LoginusersVdf(), _persistentSettings.LoginusersVdf() + "_last");
+            File.Replace(tempFile, persistentSettings.LoginusersVdf(), persistentSettings.LoginusersVdf() + "_last");
 
             // -----------------------------------
             // --------- Manage registry ---------
@@ -361,18 +362,16 @@ namespace TcNo_Acc_Switcher.Pages.Steam
                 --> RememberPassword = 1
             */
             ////////LblStatus.Content = Strings.StatusEditingRegistry; --------------------
-            using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam"))
+            using var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam");
+            if (loginNone)
             {
-                if (loginNone)
-                {
-                    key.SetValue("AutoLoginUser", "");
-                    key.SetValue("RememberPassword", 1);
-                }
-                else
-                {
-                    key.SetValue("AutoLoginUser", targetUsername); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel).
-                    key.SetValue("RememberPassword", 1);
-                }
+                key.SetValue("AutoLoginUser", "");
+                key.SetValue("RememberPassword", 1);
+            }
+            else
+            {
+                key.SetValue("AutoLoginUser", targetUsername); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel).
+                key.SetValue("RememberPassword", 1);
             }
         }
 
@@ -384,51 +383,48 @@ namespace TcNo_Acc_Switcher.Pages.Steam
 
         #region Settings
 
-        public static void SaveSettings(UserSteamSettings _persistentSettings)
+        public static void SaveSettings(UserSteamSettings persistentSettings)
         {
             //_persistentSettings.WindowSize = new Size(this.Width, this.Height);
             var serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
 
-            using (var sw = new StreamWriter(@"SteamSettings.json"))
-            using (JsonWriter writer = new JsonTextWriter(sw))
-            {
-                serializer.Serialize(writer, _persistentSettings);
-            }
+            using var sw = new StreamWriter(@"SteamSettings.json");
+            using JsonWriter writer = new JsonTextWriter(sw);
+            serializer.Serialize(writer, persistentSettings);
         }
         public static UserSteamSettings LoadSettings()
         {
-            UserSteamSettings _persistentSettings = new UserSteamSettings();
-            if (!File.Exists("SteamSettings.json")) { SaveSettings(_persistentSettings);
-                return _persistentSettings;
+            var persistentSettings = new UserSteamSettings();
+            if (!File.Exists("SteamSettings.json")) { SaveSettings(persistentSettings);
+                return persistentSettings;
             }
 
-            using (var sr = new StreamReader(@"SteamSettings.json"))
+            using var sr = new StreamReader(@"SteamSettings.json");
+            // persistentSettings = JsonConvert.DeserializeObject<UserSettings>(sr.ReadToEnd()); -- Entirely replaces, instead of merging. New variables won't have values.
+            // Using a JSON UnionUnion Merge means that settings that are missing will have default values, set at the top of this file.
+            var jCurrent = JObject.Parse(JsonConvert.SerializeObject(persistentSettings));
+            try
             {
-                // persistentSettings = JsonConvert.DeserializeObject<UserSettings>(sr.ReadToEnd()); -- Entirely replaces, instead of merging. New variables won't have values.
-                // Using a JSON UnionUnion Merge means that settings that are missing will have default values, set at the top of this file.
-                var jCurrent = JObject.Parse(JsonConvert.SerializeObject(_persistentSettings));
-                try
+                jCurrent.Merge(JObject.Parse(sr.ReadToEnd()), new JsonMergeSettings
                 {
-                    jCurrent.Merge(JObject.Parse(sr.ReadToEnd()), new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                    _persistentSettings = jCurrent.ToObject<UserSteamSettings>();
-                }
-                catch (Exception)
-                {
-                    if (File.Exists("SteamSettings.json"))
-                    {
-                        if (File.Exists("SteamSettings.old.json"))
-                            File.Delete("SteamSettings.old.json");
-                        File.Copy("SteamSettings.json", "SteamSettings.old.json");
-                    }
-
-                    SaveSettings(_persistentSettings);
-                    //MessageBox.Show(Strings.ErrSteamSettingsLoadFail, Strings.ErrSteamSettingsLoadFailHeader, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+                persistentSettings = jCurrent.ToObject<UserSteamSettings>();
             }
-            return _persistentSettings;
+            catch (Exception)
+            {
+                if (File.Exists("SteamSettings.json"))
+                {
+                    if (File.Exists("SteamSettings.old.json"))
+                        File.Delete("SteamSettings.old.json");
+                    File.Copy("SteamSettings.json", "SteamSettings.old.json");
+                }
+
+                SaveSettings(persistentSettings);
+                //MessageBox.Show(Strings.ErrSteamSettingsLoadFail, Strings.ErrSteamSettingsLoadFailHeader, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            return persistentSettings;
         }
         #endregion
     }

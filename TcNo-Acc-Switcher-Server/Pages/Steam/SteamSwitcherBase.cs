@@ -34,29 +34,29 @@ namespace TcNo_Acc_Switcher.Pages.Steam
         }
 
         [JSInvokable]
-        public static void CopySteamIDType(string request, string SteamId64)
+        public static void CopySteamIdType(string request, string steamId64)
         {
             switch (request)
             {
                 case "SteamId":
-                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(SteamId64).Id);
+                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(steamId64).Id);
                     break;
                 case "SteamId3":
-                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(SteamId64).Id3);
+                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(steamId64).Id3);
                     break;
                 case "SteamId32":
-                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(SteamId64).Id32);
+                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(steamId64).Id32);
                     break;
                 case "SteamId64":
-                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(SteamId64).Id64);
+                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(steamId64).Id64);
                     break;
             }
         }
 
         [JSInvokable]
-        public static async void SwapTo(string steamID, string accName)
+        public static async void SwapTo(string steamId, string accName)
         {
-            SteamSwitcherFuncs.SwapSteamAccounts(false, steamID, accName);
+            SteamSwitcherFuncs.SwapSteamAccounts(false, steamId, accName);
         }
         [JSInvokable]
         public static async void NewSteamLogin()

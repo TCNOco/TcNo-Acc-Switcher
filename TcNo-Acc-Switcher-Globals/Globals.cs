@@ -61,10 +61,10 @@ namespace TcNo_Acc_Switcher_Globals
         // Launch main software and check for updates if not already running
         public void RunUpdateCheck()
         {
-            string mainExeName = "TcNo Account Switcher.exe";
-            string mainExeFullName = Path.Combine(WorkingDirectory, mainExeName);
+            var mainExeName = "TcNo Account Switcher.exe";
+            var mainExeFullName = Path.Combine(WorkingDirectory, mainExeName);
             if (!File.Exists(mainExeFullName)) return;
-            Process[] pList = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(mainExeName).ToLower());
+            var pList = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(mainExeName).ToLower());
             if (pList.Length > 0) return; // Return because software is already running.
 
             try

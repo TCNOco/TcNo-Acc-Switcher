@@ -37,18 +37,18 @@ namespace TcNo_Acc_Switcher_Client
 
     public partial class MainWindow : Window
     {
-        Index.UserSteamSettings _persistentSettings = new Index.UserSteamSettings();
-        private Thread server = new Thread(RunServer);
+        readonly Index.UserSteamSettings _persistentSettings = new Index.UserSteamSettings();
+        private readonly Thread _server = new Thread(RunServer);
         private static void RunServer() { TcNo_Acc_Switcher.Program.Main(new string[0]); }
-        private TrayUsers trayUsers = new TrayUsers();
+        private readonly TrayUsers _trayUsers = new TrayUsers();
 
         public MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         public MainWindow()
         {
             // Start web server
-            server.IsBackground = true;
-            server.Start();
+            _server.IsBackground = true;
+            _server.Start();
             
             // Initialise and connect to web server above
             // Somehow check ports and find a different one if it doesn't work? We'll see...
@@ -267,7 +267,7 @@ namespace TcNo_Acc_Switcher_Client
                 }
             }
             if (File.Exists("Tray_Users.json"))
-                trayUsers.LoadTrayUsers();
+                _trayUsers.LoadTrayUsers();
         }
 
         private bool SetAndCheckSteamFolder(bool manual)
@@ -314,8 +314,8 @@ namespace TcNo_Acc_Switcher_Client
                 InputFolderDialogResponse = "";
                 SteamNotFound = new bool();
                 StartAsAdmin = new bool();
-                ShowSteamID = new bool();
-                ShowVACStatus = new bool();
+                ShowSteamId = new bool();
+                ShowVacStatus = new bool();
                 StartMenuIcon = new bool();
                 StartWithWindows = new bool();
                 DesktopShortcut = new bool();
@@ -326,8 +326,8 @@ namespace TcNo_Acc_Switcher_Client
                 ImageLifetime = 7;
             }
             public string InputFolderDialogResponse { get; set; }
-            public bool ShowSteamID { get; set; }
-            public bool ShowVACStatus { get; set; }
+            public bool ShowSteamId { get; set; }
+            public bool ShowVacStatus { get; set; }
             public bool StartMenuIcon { get; set; }
             public bool DesktopShortcut { get; set; }
             public bool StartWithWindows { get; set; }
@@ -365,7 +365,7 @@ namespace TcNo_Acc_Switcher_Client
 
         private void UrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
-            String uri = args.Uri.Split("/").Last();
+            var uri = args.Uri.Split("/").Last();
             Console.WriteLine(args.Uri);
             switch (uri)
             {

@@ -94,8 +94,8 @@ function initContextMenu() {
     // This function moves the element to the left if it doesn't fit.
     var contextMenu = document.getElementsByClassName("contextmenu")[0]; 
     var rightSpace = 0;
-    function moveContextMenu(submenu_size) {
-        rightSpace = $(contextMenu).position().left + $(contextMenu).width() + submenu_size - window.innerWidth;
+    function moveContextMenu(submenuSize) {
+        rightSpace = $(contextMenu).position().left + $(contextMenu).width() + submenuSize - window.innerWidth;
         if (rightSpace > 0){
             $(contextMenu).css('left', $(contextMenu).position().left - rightSpace);
         }

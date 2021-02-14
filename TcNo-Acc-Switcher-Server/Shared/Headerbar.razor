@@ -1,4 +1,4 @@
-﻿@inject IJSRuntime JSRuntime
+﻿@inject IJSRuntime JsRuntime
 
 @using TcNo_Acc_Switcher.Data
 @using System.Runtime.InteropServices
@@ -40,13 +40,13 @@
         await InvokeAsync(() => StateHasChanged());
     }
 
-    private ElementReference divElement;
+    private ElementReference _divElement;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("handleWindowControls");
+            await JsRuntime.InvokeVoidAsync("handleWindowControls");
         }
     }
 
@@ -56,25 +56,25 @@
     [ComVisible(true)]
     public class EventForwarder
     {
-        public const int WM_NCLBUTTONDOWN = 0xA1;
-        public const int HT_CAPTION = 0x2;
+        public const int WmNclbuttondown = 0xA1;
+        public const int HtCaption = 0x2;
 
         [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
 
-        readonly IntPtr target;
+        readonly IntPtr _target;
 
         public EventForwarder(IntPtr target)
         {
-            this.target = target;
+            this._target = target;
         }
 
         public void MouseDownDrag()
         {
             ReleaseCapture();
-            SendMessage(target, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            SendMessage(_target, WmNclbuttondown, HtCaption, 0);
         }
     }
 }

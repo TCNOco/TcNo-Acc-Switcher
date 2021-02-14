@@ -12,10 +12,10 @@ namespace TcNo_Acc_Switcher.Data
     public class GenericFunctions
     {
         [JSInvokable]
-        public static void CopyToClipboard(string ToCopy)
+        public static void CopyToClipboard(string toCopy)
         {
-            Console.WriteLine("Copying: " + ToCopy);
-            WindowsClipboard.SetText(ToCopy);
+            Console.WriteLine("Copying: " + toCopy);
+            WindowsClipboard.SetText(toCopy);
         }
     }
 }
@@ -55,7 +55,7 @@ static class WindowsClipboard
                 GlobalUnlock(target);
             }
 
-            if (SetClipboardData(cfUnicodeText, hGlobal) == default)
+            if (SetClipboardData(CfUnicodeText, hGlobal) == default)
             {
                 ThrowWin32();
             }
@@ -92,7 +92,7 @@ static class WindowsClipboard
         }
     }
 
-    const uint cfUnicodeText = 13;
+    const uint CfUnicodeText = 13;
 
     static void ThrowWin32()
     {

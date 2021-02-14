@@ -10,12 +10,9 @@ namespace TcNo_Acc_Switcher.Pages.General
     {
         public static bool DeletedOutdatedFile(string filename)
         {
-            if (DateTime.Now.Subtract(File.GetLastWriteTime(filename)).Days > 7)
-            {
-                File.Delete(filename);
-                return true;
-            }
-            return false;
+            if (DateTime.Now.Subtract(File.GetLastWriteTime(filename)).Days <= 7) return false;
+            File.Delete(filename);
+            return true;
         }
 
         public static bool DeletedInvalidImage(string filename)

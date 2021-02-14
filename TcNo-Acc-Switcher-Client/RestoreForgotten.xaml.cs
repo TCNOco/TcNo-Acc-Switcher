@@ -20,8 +20,8 @@ namespace TcNo_Acc_Switcher_Client
         public void ShareMainWindow(MainWindow imw) => _mw = imw;
         private void PageLoaded(object sender, RoutedEventArgs e)
         {
-            string[] fileEntries = Directory.GetFiles(Settings.GetForgottenBackupPath());
-            foreach (string fileName in fileEntries)
+            var fileEntries = Directory.GetFiles(Settings.GetForgottenBackupPath());
+            foreach (var fileName in fileEntries)
                 FileNamesList.Items.Add(fileName);
         }
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)

@@ -13,7 +13,7 @@ namespace TcNo_Acc_Switcher_Client.Classes
         public class TrayUser
         {
             public string Name { get; set; } = "";
-            public string SteamID { get; set; } = "";
+            public string SteamId { get; set; } = "";
             public string AccName { get; set; } = "";
             public string DisplayAs { get; set; } = "";
         }
@@ -35,7 +35,7 @@ namespace TcNo_Acc_Switcher_Client.Classes
             // Get the account name from the original file --> This is for accounts that are being logged into that aren't in the quick launch ones.
             try
             {
-                return ListTrayUsers.Single(r => r.SteamID == steamId)?.AccName;
+                return ListTrayUsers.Single(r => r.SteamId == steamId)?.AccName;
             }
             catch
             {
@@ -47,13 +47,13 @@ namespace TcNo_Acc_Switcher_Client.Classes
             // IF AccName == ""  and it's trying to change accounts,
             // Get the account name from the original file --> This is for accounts that are being logged into that aren't in the quick launch ones.
 
-            ListTrayUsers.Single(r => r.SteamID == steamId)?.Name;
+            ListTrayUsers.Single(r => r.SteamId == steamId)?.Name;
 
-        public bool AlreadyInList(string steamId) => ListTrayUsers.Count(r => r.SteamID == steamId) != 0;
+        public bool AlreadyInList(string steamId) => ListTrayUsers.Count(r => r.SteamId == steamId) != 0;
 
         public void MoveItemToLast(string steamId)
         {
-            var cur = ListTrayUsers.Single(r => r.SteamID == steamId);
+            var cur = ListTrayUsers.Single(r => r.SteamId == steamId);
             if (ListTrayUsers.IndexOf(cur) == ListTrayUsers.Count - 1) return;
             ListTrayUsers.Remove(cur);
             ListTrayUsers.Add(cur);

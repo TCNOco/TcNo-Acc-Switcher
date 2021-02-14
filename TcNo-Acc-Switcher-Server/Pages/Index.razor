@@ -11,7 +11,7 @@
 @using TcNo_Acc_Switcher.Pages.Steam
 @using System.Drawing
 @inject AppData CurAppData
-@inject IJSRuntime JS;
+@inject IJSRuntime Js;
 
 
 <div id="acc_list" class="acc_list">
@@ -110,14 +110,14 @@
 
     public class Steamuser
     {
-        [JsonIgnore] public string SteamID { get; set; }
+        [JsonIgnore] public string SteamId { get; set; }
         [JsonProperty("AccountName", Order = 0)] public string AccName { get; set; }
         [JsonProperty("PersonaName", Order = 1)] public string Name { get; set; }
         [JsonProperty("RememberPassword", Order = 2)] private readonly string _remPass = "1"; // Should always be 1
         [JsonProperty("mostrecent", Order = 3)] public string MostRec = "0";
-        [JsonProperty("Timestamp", Order = 4)] public string lastLogin { get; set; }
+        [JsonProperty("Timestamp", Order = 4)] public string LastLogin { get; set; }
         [JsonProperty("WantsOfflineMode", Order = 5)] public string OfflineMode = "0";
-        [JsonProperty("ImgURL", Order = 5)] public string ImgURL { get; set; }
+        [JsonProperty("ImgURL", Order = 5)] public string ImgUrl { get; set; }
 
         //[JsonIgnore] public string vacStatus { get; set; } // WAS System.Windows.Media.Brush
     }
@@ -125,8 +125,8 @@
     {
         //UserSettings defaultSettings = new UserSettings { StartAsAdmin = false, SteamFolder = "C:\\Program Files (x86)\\Steam\\", ShowSteamID = false, WindowSize = new Size(773, 420) };
         public bool StartAsAdmin { get; set; } = false;
-        public bool ShowSteamID { get; set; } = false;
-        public bool ShowVACStatus { get; set; } = true;
+        public bool ShowSteamId { get; set; } = false;
+        public bool ShowVacStatus { get; set; } = true;
         public bool ForgetAccountEnabled { get; set; } = false;
         public int ImageLifetime { get; set; } = 7;
         public string SteamFolder { get; set; } = "C:\\Program Files (x86)\\Steam\\";

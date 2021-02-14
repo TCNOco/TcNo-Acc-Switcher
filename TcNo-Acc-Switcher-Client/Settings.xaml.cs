@@ -20,7 +20,7 @@ namespace TcNo_Acc_Switcher_Client
 
     public partial class Settings
     {
-        private Index.UserSteamSettings _persistentSettings;
+        private readonly Index.UserSteamSettings _persistentSettings;
         private MainWindow _mw;
         private bool _enableButtons;
 
@@ -108,12 +108,12 @@ namespace TcNo_Acc_Switcher_Client
 
         private void ShowSteamID_CheckChanged(object sender, RoutedEventArgs e)
         {
-            _persistentSettings.ShowSteamID = ShowSteamId.IsChecked != null && (bool) ShowSteamId.IsChecked;
+            _persistentSettings.ShowSteamId = ShowSteamId.IsChecked != null && (bool) ShowSteamId.IsChecked;
         }
 
         private void ShowVACStatus_CheckChanged(object sender, RoutedEventArgs e)
         {
-            _persistentSettings.ShowVACStatus = ShowVacStatus.IsChecked != null && (bool) ShowVacStatus.IsChecked;
+            _persistentSettings.ShowVacStatus = ShowVacStatus.IsChecked != null && (bool) ShowVacStatus.IsChecked;
         }
         
         public static string GetForgottenBackupPath()

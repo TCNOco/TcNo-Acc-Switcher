@@ -6,23 +6,23 @@ function CopyToClipboard(str) {
 }
 
 function copy(request) {
-    var RequestResult = $(SelectedElem).attr(request);
+    var requestResult = $(SelectedElem).attr(request);
 
-    if (RequestResult == null) {
+    if (requestResult == null) {
         // Different function groups based on platform
         switch (currentpage) {
             case "Steam":
-                Steam();
+                steam();
         default:
         }
     } else {
-        console.log(`Copying: ${request}, result: ${RequestResult}`);
-        CopyToClipboard(RequestResult).then(r => console.log(r));
+        console.log(`Copying: ${request}, result: ${requestResult}`);
+        CopyToClipboard(requestResult).then(r => console.log(r));
     }
 
 
     // Steam:
-    function Steam() {
+    function steam() {
         var steamId64 = $(SelectedElem).attr("SteamID64");
         switch (request){
             case "URL":
