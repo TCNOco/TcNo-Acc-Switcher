@@ -8,7 +8,7 @@ namespace TcNo_Acc_Switcher.Pages.General
 {
     public class GeneralFuncs
     {
-        public static bool DeletedOutdatedImage(string filename)
+        public static bool DeletedOutdatedFile(string filename)
         {
             if (DateTime.Now.Subtract(File.GetLastWriteTime(filename)).Days > 7)
             {

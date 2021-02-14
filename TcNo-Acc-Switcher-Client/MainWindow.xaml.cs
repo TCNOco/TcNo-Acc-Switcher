@@ -79,7 +79,7 @@ namespace TcNo_Acc_Switcher_Client
 
         // Library class used to see if a shortcut exists.
         private static bool ShortcutExist(string location) => File.Exists(System.IO.Path.Combine(location, "TcNo Account Switcher - Steam.lnk"));
-        private string ParentDirectory(string dir) =>
+        private static string ParentDirectory(string dir) =>
             dir.Substring(0, dir.LastIndexOf(System.IO.Path.DirectorySeparatorChar));
         private static void WriteShortcut(string exe, string selfLocation, string iconDirectory, string description, string settingsLink, string arguments)
         {

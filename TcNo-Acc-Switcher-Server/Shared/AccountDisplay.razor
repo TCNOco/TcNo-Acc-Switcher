@@ -1,5 +1,5 @@
-﻿<input type="radio" id="@Username" class="acc" name="accounts" Username="@Username" SteamId64="@SteamId64" Line1="@Line1" Line2="@Line2" Line3="@Line3" ExtraClasses="@ExtraClasses" onchange="SelectedItemChanged()" />
-<label for="@Username" class="acc @ExtraClasses">
+﻿<input type="radio" id="@Username" class="acc" name="accounts" Username="@Username" SteamId64="@SteamId64" Line1="@Line1" Line2="@Line2" Line3="@Line3" ExtraClasses="" onchange="SelectedItemChanged()" />
+<label for="@Username" class="acc">
     <img src="@ImageUrl" />
     <p>@Line1</p>
     <h6>@Line2</h6>
@@ -13,5 +13,4 @@
     [Parameter] public string Line1 { get; set; }
     [Parameter] public string Line2 { get; set; }
     [Parameter] public string Line3 { get; set; }
-    [Parameter] public string ExtraClasses { get; set; }
 }

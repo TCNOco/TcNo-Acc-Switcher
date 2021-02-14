@@ -53,8 +53,7 @@ namespace TcNo_Acc_Switcher.Pages.Steam
                             SteamID = steamId,
                             ImgURL = "img/QuestionMark.jpg",
                             lastLogin = UnixTimeStampToDateTime(timestampLastLogin).ToString(),
-                            OfflineMode = (!string.IsNullOrEmpty(user.First?["WantsOfflineMode"]?.ToString()) ? user.First?["WantsOfflineMode"]?.ToString() : "0"),
-                            ExtraClasses = ""
+                            OfflineMode = (!string.IsNullOrEmpty(user.First?["WantsOfflineMode"]?.ToString()) ? user.First?["WantsOfflineMode"]?.ToString() : "0")
                         };
                         _userAccounts.Add(newSU);
                     }
@@ -71,28 +70,62 @@ namespace TcNo_Acc_Switcher.Pages.Steam
         }
 
 
+        private static string SteamVacCacheFile = "profilecache/SteamVACCache.json";
+        public static bool LoadVacInfo(ref List<vac_status> vsl)
+        {
+            GeneralFuncs.DeletedOutdatedFile(SteamVacCacheFile);
+            if (File.Exists(SteamVacCacheFile))
+            {
+                vsl = JsonConvert.DeserializeObject<List<vac_status>>(File.ReadAllText(SteamVacCacheFile));
+                return true;
+            }
+            return false;
+        }
+        public static void SaveVacInfo(List<vac_status> vsList) => File.WriteAllText(SteamVacCacheFile, JsonConvert.SerializeObject(vsList));
+
         //public static List<Steamuser> loadProfiles()
         public static async Task LoadProfiles(UserSteamSettings _persistentSettings, IJSRuntime JsRuntime)
         {
             Console.WriteLine("LOADING PROFILES!");
             //await JsRuntime.InvokeVoidAsync("jQueryClearInner", "#acc_list");
             List<Steamuser> _userAccounts = GetSteamUsers(Path.Combine(_persistentSettings.SteamFolder, "config\\loginusers.vdf"));
+            List<vac_status> vacStatusList = new List<vac_status>();
+            bool loadedVacCache = LoadVacInfo(ref vacStatusList);
 
             foreach (Steamuser ua in _userAccounts)
             {
-                PrepareProfileImages(ua);
+                vac_status va = new vac_status();
+                if (loadedVacCache)
+                {
+                    PrepareProfileImage(ua); // Just get images
+                    foreach (var vsi in vacStatusList.Where(vsi => vsi.SteamID == ua.SteamID))
+                    {
+                        va = vsi;
+                        break;
+                    }
+                }
+                else
+                {
+                    va = PrepareProfileImage(ua); // Get VAC status as well
+                    va.SteamID = ua.SteamID;
+                    vacStatusList.Add(va);
+                }
+
+
+                string ExtraClasses = (va.Vac ? " status_vac" : "") + (va.Ltd ? " status_limited" : "");
 
                 string element =
-                    $"<input type=\"radio\" id=\"{ua.AccName}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamID}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.lastLogin}\" ExtraClasses=\"{ua.ExtraClasses}\" onchange=\"SelectedItemChanged()\" />\r\n" +
-                    $"<label for=\"{ua.AccName}\" class=\"acc {ua.ExtraClasses}\">\r\n" +
-                    $"<img class=\"{ua.ExtraClasses}\" src=\"{ua.ImgURL}\" />\r\n" +
+                    $"<input type=\"radio\" id=\"{ua.AccName}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamID}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.lastLogin}\" ExtraClasses=\"{ExtraClasses}\" onchange=\"SelectedItemChanged()\" />\r\n" +
+                    $"<label for=\"{ua.AccName}\" class=\"acc {ExtraClasses}\">\r\n" +
+                    $"<img class=\"{ExtraClasses}\" src=\"{ua.ImgURL}\" />\r\n" +
                     $"<p>{ua.AccName}</p>\r\n" +
                     $"<h6>{ua.Name}</h6>\r\n" +
                     $"<p>{ua.lastLogin}</p>\r\n</label>";
 
                 await JsRuntime.InvokeVoidAsync("jQueryAppend", new string[] { "#acc_list", element });
             }
-            
+
+            SaveVacInfo(vacStatusList);
             await JsRuntime.InvokeVoidAsync("initContextMenu");
             
             //return _userAccounts;
@@ -106,20 +139,29 @@ namespace TcNo_Acc_Switcher.Pages.Steam
             return dtDateTime;
         }
 
-        private static void PrepareProfileImages(Steamuser su)
+
+        public class vac_status
+        {
+            [JsonProperty("SteamID", Order = 0)] public string SteamID { get; set; }
+            [JsonProperty("Vac", Order = 1)] public bool Vac { get; set; }
+            [JsonProperty("Ltd", Order = 2)] public bool Ltd { get; set; }
+        }
+
+        private static vac_status PrepareProfileImage(Steamuser su)
         { 
             var dlDir = $"wwwroot/img/profiles/{su.SteamID}.jpg";
             // Delete outdated file, if it exists
-            GeneralFuncs.DeletedOutdatedImage(dlDir);
+            GeneralFuncs.DeletedOutdatedFile(dlDir);
             // ... & invalid files
             GeneralFuncs.DeletedInvalidImage(dlDir);
 
-            var temp = DateTime.Now.Subtract(File.GetLastWriteTime(dlDir)).Days;
-            
+            vac_status vs = new vac_status();
+
+
             // Download new copy of the file
             if (!File.Exists(dlDir))
             {
-                var imageUrl = GetUserImageUrl(su);
+                var imageUrl = GetUserImageUrl(ref vs, su);
                 if (!string.IsNullOrEmpty(imageUrl))
                 {
                     try
@@ -144,11 +186,12 @@ namespace TcNo_Acc_Switcher.Pages.Steam
             else
             {
                 su.ImgURL = $"img/profiles/{su.SteamID}.jpg";
-                if (File.Exists($"profilecache /{su.SteamID}.xml"))
-                {
-                    var profileXml = new XmlDocument();
-                    profileXml.Load($"profilecache/{su.SteamID}.xml");
-                    if (profileXml.DocumentElement != null && profileXml.DocumentElement.SelectNodes("/profile/privacyMessage")?.Count == 0)
+                var profileXml = new XmlDocument();
+                string CachedFile = $"profilecache/{su.SteamID}.xml";
+                profileXml.Load((File.Exists(CachedFile))? CachedFile : $"https://steamcommunity.com/profiles/{su.SteamID}?xml=1");
+                if (!File.Exists(CachedFile)) profileXml.Save(CachedFile);
+
+                if (profileXml.DocumentElement != null && profileXml.DocumentElement.SelectNodes("/profile/privacyMessage")?.Count == 0)
                     {
                         try
                         {
@@ -162,14 +205,16 @@ namespace TcNo_Acc_Switcher.Pages.Steam
                                     isLimited = profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
                             }
 
-                            su.ExtraClasses += (isVac ? "status_vac" : "") + (isLimited ? "status_limited" : "");
+                            vs.Vac = isVac;
+                            vs.Ltd = isLimited;
                         }
                         catch (NullReferenceException) { }
                     }
                 }
-            }
+
+            return vs;
         }
-        private static string GetUserImageUrl(Steamuser su)
+        private static string GetUserImageUrl(ref vac_status vs, Steamuser su)
         {
             var imageUrl = "";
             var profileXml = new XmlDocument();
@@ -195,7 +240,8 @@ namespace TcNo_Acc_Switcher.Pages.Steam
                                 isLimited = profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
                         }
 
-                        su.ExtraClasses += (isVac ? "status_vac" : "") + (isLimited ? "status_limited" : "");
+                        vs.Vac = isVac;
+                        vs.Ltd = isLimited;
                     }
                     catch (NullReferenceException) // User has not set up their account, or does not have an image.
                     {

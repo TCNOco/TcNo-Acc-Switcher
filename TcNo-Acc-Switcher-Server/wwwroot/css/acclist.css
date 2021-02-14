@@ -46,6 +46,14 @@ input.acc:checked + label.acc {
     border-color: #26A0DA;
 }
 
+label.acc img.status_vac {
+    border: 2px solid red!important;
+}
+
+label.acc img.status_limited {
+    border: 2px solid yellow !important;
+}
+
 label.acc img {
     width: 6em;
     height: 6em;
