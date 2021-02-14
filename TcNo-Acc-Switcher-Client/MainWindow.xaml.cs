@@ -21,9 +21,11 @@ using TcNo_Acc_Switcher;
 using System.Threading;
 using System.Windows.Interop;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.Win32.TaskScheduler;
 using TcNo_Acc_Switcher.Pages.Steam;
 using TcNo_Acc_Switcher.Shared;
 using TcNo_Acc_Switcher_Client.Classes;
+
 using Index = TcNo_Acc_Switcher.Pages.Index;
 using Strings = TcNo_Acc_Switcher_Client.Localisation.Strings;
 
@@ -40,7 +42,7 @@ namespace TcNo_Acc_Switcher_Client
         private static void RunServer() { TcNo_Acc_Switcher.Program.Main(new string[0]); }
         private TrayUsers trayUsers = new TrayUsers();
 
-        MainWindowViewModel MainViewmodel = new MainWindowViewModel();
+        public MainWindowViewModel MainViewmodel = new MainWindowViewModel();
 
         public MainWindow()
         {
@@ -65,8 +67,29 @@ namespace TcNo_Acc_Switcher_Client
 
             this.Height = _persistentSettings.WindowSize.Height;
             this.Width = _persistentSettings.WindowSize.Width;
+
+            // Check Windows shortcuts
+            CheckShortcuts();
         }
-        
+
+        #region Windows Shortcuts
+        private void CheckShortcuts()
+        {
+            MainViewmodel.DesktopShortcut = ShortcutExist(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory));
+            MainViewmodel.StartWithWindows = CheckStartWithWindows();
+            MainViewmodel.StartMenuIcon = ShortcutExist(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\"));
+        }
+        private static bool ShortcutExist(string location) => File.Exists(System.IO.Path.Combine(location, "TcNo Account Switcher - Steam.lnk"));
+        private static bool CheckStartWithWindows()
+        {
+            using (var ts = new TaskService())
+            {
+                var tasks = ts.RootFolder.Tasks;
+                return tasks.Exists("TcNo Account Switcher - Tray start with logon");
+            }
+        }
+        #endregion
+
 
 
 
@@ -229,6 +252,17 @@ namespace TcNo_Acc_Switcher_Client
                     args.Cancel = true;
                     SaveSettings();
                     Environment.Exit(1);
+                    break;
+                case "show_info":
+                    args.Cancel = true;
+                    var infoWindow = new InfoWindow { DataContext = MainViewmodel, Owner = this };
+                    infoWindow.ShowDialog();
+                    break;
+                case "show_settings":
+                    args.Cancel = true;
+                    var settingsWindow = new Settings { DataContext = MainViewmodel, Owner = this };
+                    settingsWindow.ShareMainWindow(this);
+                    settingsWindow.ShowDialog();
                     break;
 
             }

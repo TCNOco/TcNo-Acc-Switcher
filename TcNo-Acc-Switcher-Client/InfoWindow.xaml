@@ -1,0 +1,92 @@
+﻿<Window x:Class="TcNo_Acc_Switcher_Client.InfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:localisation="clr-namespace:TcNo_Acc_Switcher_Client.Localisation"
+        mc:Ignorable="d"
+        Title="TcNo Steam Account Switcher - Information" Height="287" Width="502"
+        MinHeight="287" MinWidth="502"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        WindowStartupLocation="CenterOwner"
+        PreviewKeyDown="Window_PreviewKeyDown">
+    <!--MinHeight="198" MaxHeight="198" MinWidth="450"-->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0"
+            CornerRadius="2"
+            GlassFrameThickness="0"
+            NonClientFrameEdges="None"
+            ResizeBorderThickness="3"/>
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+    </Window.Resources>
+    <Grid Background="#28293A" Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30px"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+        </Grid.Effect>
+
+        <!-- Row 0: Header -->
+        <Border MouseDown="DragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
+        <Label Grid.Row="0" IsHitTestVisible="False" Name="FolderInputHeaderInstruction" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="TcNo Account Switcher Information"/>
+        <Canvas Grid.Row="0" IsHitTestVisible="False"  Name="Svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5,10,0,10">
+            <Canvas.RenderTransform>
+                <TranslateTransform X="0" Y="0"/>
+            </Canvas.RenderTransform>
+            <Canvas.Resources/>
+            <Canvas Name="G3859">
+                <Canvas Name="G3857">
+                    <Canvas Name="G3849">
+                        <Path  Name="O1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 0.889l6.25 0l0 8.27l-3.503 0l-2.747 -2.874l0 -3.28l2.115 0l0 4.086l2.019 0l0 -4.086l-4.134 0l0 -2.116"/>
+                        <Path  Name="O2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M22.409 7.487l1.598 1.672l-1.598 0l0 -1.672Z"/>
+                    </Canvas>
+                    <Canvas Name="G3853">
+                        <Path  Name="N1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M15.053 0l0 9.135l2.117 0l0 -3.844l4.471 4.709l0 -9.135l-2.117 0l0 3.846l-4.471 -4.711Z"/>
+                        <Path  Name="N2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M17.016 0.865l1.932 2.02l0 -2.02l-1.932 0Z"/>
+                    </Canvas>
+                    <Path  Name="C" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M7.697 0.841l0 8.318l6.25 0l0 -2.067l-4.134 0l0 -4.088l4.134 0l0 -2.163l-6.25 0"/>
+                    <Path  Name="T" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M0.341 0.841l0 2.117l1.78 0l0 6.201l2.115 0l0 -6.201l2.702 0l0 -2.117l-6.597 0Z"/>
+                </Canvas>
+            </Canvas>
+        </Canvas>
+        <Button Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="BtnMinimize"></Button>
+        <Button Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="BtnExit"></Button>
+
+        <StackPanel Grid.Row="1" Background="#28293A" Margin="20,20,20,20" Grid.ColumnSpan="2">
+            <DockPanel>
+                <Image Source="https://avatars2.githubusercontent.com/u/10319195?s=100" Width="100" Margin="5"/>
+                <TextBlock Name="LblQuery" Margin="5" HorizontalAlignment="Left" Foreground="White">
+                    <Bold>TcNo Account Switcher</Bold><LineBreak/>Created by TechNobo [Wesley Pyburn]<LineBreak/>
+                    <Grid Width="Auto" Margin="0 5px">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="24px" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30px"/>
+                            <RowDefinition Height="30px"/>
+                            <RowDefinition Height="30px"/>
+                        </Grid.RowDefinitions>
+                        <Canvas Grid.Row="0" Grid.Column="0"  Name="GitHubIconmonstr" Width="24" Height="24" Margin="0 3"><Canvas.RenderTransform><TranslateTransform X="0" Y="0"/></Canvas.RenderTransform><Canvas.Resources/><Path  Name="Path2" Fill="#FFFFFFFF" Data="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 6c-3.313 0-6 2.686-6 6 0 2.651 1.719 4.9 4.104 5.693.3.056.396-.13.396-.289v-1.117c-1.669.363-2.017-.707-2.017-.707-.272-.693-.666-.878-.666-.878-.544-.373.041-.365.041-.365.603.042.92.619.92.619.535.917 1.403.652 1.746.499.054-.388.209-.652.381-.802-1.333-.152-2.733-.667-2.733-2.965 0-.655.234-1.19.618-1.61-.062-.153-.268-.764.058-1.59 0 0 .504-.161 1.65.615.479-.133.992-.199 1.502-.202.51.002 1.023.069 1.503.202 1.146-.776 1.648-.615 1.648-.615.327.826.121 1.437.06 1.588.385.42.617.955.617 1.61 0 2.305-1.404 2.812-2.74 2.96.216.186.412.551.412 1.111v1.646c0 .16.096.347.4.288 2.383-.793 4.1-3.041 4.1-5.691 0-3.314-2.687-6-6-6z"/></Canvas>
+                        <TextBlock LineHeight="18px" VerticalAlignment="Center" Margin="5px 0 0 0" Grid.Row="0" Grid.Column="1"><Hyperlink Foreground="White" NavigateUri="https://github.com/TcNobo/TcNo-Acc-Switcher" RequestNavigate="Hyperlink_RequestNavigate">View on GitHub</Hyperlink></TextBlock>
+                        
+                        <Canvas Grid.Row="1" Grid.Column="0"  Name="GitHubIconmonstr2" Width="24" Height="24" Margin="0 3"><Canvas.RenderTransform><TranslateTransform X="0" Y="0"/></Canvas.RenderTransform><Canvas.Resources/><Path  Name="Path24" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M9.828 10.068c-0.684 0 -1.224 0.6 -1.224 1.332c0 0.732 0.552 1.332 1.224 1.332c0.684 0 1.224 -0.6 1.224 -1.332c0.012 -0.732 -0.54 -1.332 -1.224 -1.332Zm4.38 0c-0.684 0 -1.224 0.6 -1.224 1.332c0 0.732 0.552 1.332 1.224 1.332c0.684 0 1.224 -0.6 1.224 -1.332c0 -0.732 -0.54 -1.332 -1.224 -1.332Z"/><Path  Name="Path23" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M20.04 0l-16.08 0c-1.356 0 -2.46 1.104 -2.46 2.472l0 16.224c0 1.368 1.104 2.472 2.46 2.472l13.608 0l-0.636 -2.22l1.536 1.428l1.452 1.344l2.58 2.28l0 -21.528c0 -1.368 -1.104 -2.472 -2.46 -2.472Zm-4.632 15.672c0 0 -0.432 -0.516 -0.792 -0.972c1.572 -0.444 2.172 -1.428 2.172 -1.428c-0.492 0.324 -0.96 0.552 -1.38 0.708c-0.6 0.252 -1.176 0.42 -1.74 0.516c-1.152 0.216 -2.208 0.156 -3.108 -0.012c-0.684 -0.132 -1.272 -0.324 -1.764 -0.516c-0.276 -0.108 -0.576 -0.24 -0.876 -0.408c-0.036 -0.024 -0.072 -0.036 -0.108 -0.06c-0.024 -0.012 -0.036 -0.024 -0.048 -0.036c-0.216 -0.12 -0.336 -0.204 -0.336 -0.204c0 0 0.576 0.96 2.1 1.416c-0.36 0.456 -0.804 0.996 -0.804 0.996c-2.652 -0.084 -3.66 -1.824 -3.66 -1.824c0 -3.864 1.728 -6.996 1.728 -6.996c1.728 -1.296 3.372 -1.26 3.372 -1.26l0.12 0.144c-2.16 0.624 -3.156 1.572 -3.156 1.572c0 0 0.264 -0.144 0.708 -0.348c1.284 -0.564 2.304 -0.72 2.724 -0.756c0.072 -0.012 0.132 -0.024 0.204 -0.024c0.732 -0.096 1.56 -0.12 2.424 -0.024c1.14 0.132 2.364 0.468 3.612 1.152c0 0 -0.948 -0.9 -2.988 -1.524l0.168 -0.192c0 0 1.644 -0.036 3.372 1.26c0 0 1.728 3.132 1.728 6.996c0 0 -1.02 1.74 -3.672 1.824Z"/></Canvas>
+                        <TextBlock LineHeight="18px" VerticalAlignment="Center" Margin="5px 0 0 0" Grid.Row="1" Grid.Column="1"><Hyperlink Foreground="White" NavigateUri="https://s.tcno.co/AccSwitcherDiscord" RequestNavigate="Hyperlink_RequestNavigate">Bug report/Feature request</Hyperlink></TextBlock>
+                        
+                        <Canvas Grid.Row="2" Grid.Column="0"   Name="NetworkIconmonstr" Width="24" Height="24"  Margin="0 3"><Canvas.RenderTransform><TranslateTransform X="0" Y="0"/></Canvas.RenderTransform><Canvas.Resources/><Path  Name="Path4" Fill="#FFFFFFFF" Data="M12.74 9.524c-.022-.043.222-.065.266-.065.048.005-.127.291-.266.065zm-1.39-1.986l.07-.02-.033.087c.056.101.014.161.005.214l-.096.061c-.034.042.167.048.169.055.008.021-.243.058-.196.111.062.088.532-.126.458-.114.145-.073.02-.081-.062-.124-.028-.139-.052-.354-.139-.439l.058-.065c-.135-.194-.234.234-.234.234zm8.65 4.462c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-5.612-3.473c-.003-.095-.123-.184-.246-.021-.087.112-.072.284-.12.36-.067.114.368.22.368.113.017-.179.473-.041.562-.016.16.045.416-.146.137-.246-.231-.083-.352-.173-.372-.337 0 0 .121-.114.068-.107-.141.016-.397.507-.397.254zm4.072 3.473c0-.669-.114-1.345-.231-1.702-.037-.112-.123-.202-.232-.244-.166-.064-.865.386-.971.164l-.369.005c-.078-.043-.293-.333-.393-.297-.198.072.307.624.445.696.131-.099.55-.301.641-.025.174.521-.477 1.089-.808 1.39-.497.449-.405-.291-.743-.551-.178-.136-.176-.427-.355-.527-.08-.045-.447-.469-.445-.526l-.009.107c-.061.046-.19-.173-.204-.208 0 .191.311.495.412.647.176.262.27.644.483.857.116.116.556.591.67.581l.589-.279c.416.099-.979 2.073-1.111 2.317-.109.205.088.711.072.954-.02.28-.24.371-.447.523-.225.163-.172.481-.361.598-.334.206-.573.875-1.048.872-.14 0-.737.233-.817.004-.061-.165-.141-.291-.227-.455-.084-.16-.01-.326-.111-.467-.072-.099-.308-.322-.329-.438-.001-.1.075-.405.181-.458.148-.076.029-.296.011-.424-.03-.228-.172-.417-.343-.55-.252-.193-.121-.347-.062-.623 0-.132-.08-.306-.257-.253-.366.106-.255-.285-.521-.267-.191.014-.348.135-.525.188-.225.067-.453-.053-.674-.081-.91-.115-1.207-1.155-.971-1.906l-.03-.445c.103-.228.311-.483.493-.656.102-.097.233-.072.354-.147.186-.117.188-.358.369-.505.259-.21.612-.206.949-.251.18-.024.864-.172.973-.039 0 .024.123.391-.013.37.279.015.679.484.944.375.137-.057.088-.476.367-.273.17.122.929.176 1.087.045.098-.08.151-.602.033-.66.074.074-.397.08-.441.063-.077-.028-.149.074-.274.017.075.035-.417-.229-.141-.432l-.349.069-.083.178c-.194.099-.342-.34-.416-.389-.075-.05-.656-.457-.498-.191l.512.508c-.025.017-.135-.185-.135-.038.033-.087.014.375-.067.224l.003-.173c0-.055-.146-.108-.176-.146-.08-.101-.295-.322-.412-.375-.031-.015-.493.057-.532.072l-.116.201-.271.138-.1.228c-.046.039-.496.188-.498.194.02-.049-.314-.111-.293-.208.025-.106.139-.439.109-.562-.031-.128.694.184.741-.152.019-.145.029-.315-.204-.339.046.005.45-.159.518-.233.095-.108.312-.286.468-.286.184 0 .144-.267.229-.397.085.034-.046.243.057.328-.007-.066.288.037.316.021.067-.035.442-.015.384-.191-.063-.18.033-.126.117-.164-.014.006.22-.4.261-.267-.028-.137-.272.048-.357.041-.196-.016-.114-.336-.04-.43.057-.075-.156-.166-.16-.023-.002.213-.2.405-.154.688.068.426-.477-.103-.523-.074-.182.109-.33-.138-.236-.288l.422-.308c.067-.115.146-.249.249-.336.347-.291.441-.058.786-.026.338.031.113.08.068.209-.045.124.186.167.265.064.046-.06.147-.209.192-.319.058-.143.582-.127.216-.347-.241-.144-1.296-.435-2.002-.435-.153 0-.259.17-.376.267-.23.19-.819.565-1.148.452-.335-.116-1.054.427-1.168.43-.043.002 0-.411.23-.441-.1.015.805-.457.781-.556-.029-.116-1.81.532-1.73.662.038.06.193.06-.01.19-.117.07-.242.518-.35.518-.327.143-.35-.281-.712.265l-.579.233c-.859.912-1.453 2.067-1.668 3.352-.008.051.215.146.244.181.072.087.072.46.107.583.09.309.311.481.479.762.101.167.265.591.213.767.07-.115.692.527.806.661.268.315.475.697.039 1.008-.14.101.213.73.031.885l-.234.06c-.229.141-.126.488.014.635 1.177 1.229 2.834 1.996 4.67 1.996 3.566 0 6.46-2.892 6.46-6.46zm-7.442-4.111c.081-.036.189-.034.201-.142l.051-.064c.023-.034-.043-.089-.069-.095l-.097.067-.047.012-.044.056.005.031-.057.068c-.055.056.002.091.057.067zm-8.694 1.629c-1.383-1.859-3.034-4.614-2.001-6.379.304-.519.959-1.139 2.355-1.139 1.375 0 3.048.605 4.467 1.266-.604.336-1.165.735-1.683 1.185-1.163-.464-2.117-.696-2.784-.696-.255 0-.702.035-.84.271-.195.333-.109 1.434 1.235 3.492-.318.631-.569 1.301-.749 2zm16.214-5.067c.758-.302 3.212-1.129 3.624-.425.404.689-.521 2.385-1.236 3.491.319.632.57 1.302.75 2.001 1.382-1.858 3.033-4.614 2.001-6.378-.304-.52-.959-1.14-2.355-1.14-1.374 0-3.047.605-4.466 1.266.603.336 1.165.735 1.682 1.185zm3.138 10.031c-.18.699-.431 1.369-.75 2.001 1.342 2.055 1.432 3.157 1.236 3.491-.412.705-2.862-.126-3.621-.428-.52.451-1.082.852-1.688 1.189 1.386.645 3.08 1.265 4.469 1.265 1.396 0 2.051-.62 2.354-1.139 1.042-1.778-.645-4.555-2-6.379zm-16.217 5.065c-.759.302-3.209 1.133-3.621.428-.195-.334-.105-1.436 1.236-3.491-.318-.632-.569-1.301-.749-2-1.356 1.823-3.042 4.601-2.002 6.377.304.519.959 1.139 2.355 1.139 1.39 0 3.083-.62 4.469-1.264-.606-.338-1.168-.738-1.688-1.189z"/></Canvas>
+                        <TextBlock LineHeight="18px" VerticalAlignment="Center" Margin="5px 0 0 0" Grid.Row="2" Grid.Column="1"><Hyperlink Foreground="White" NavigateUri="https://tcno.co" RequestNavigate="Hyperlink_RequestNavigate">Visit tcno.co</Hyperlink></TextBlock>
+                    </Grid>
+                </TextBlock>
+
+            </DockPanel>
+            <Label Name="LblVersion" HorizontalAlignment="Left" Foreground="White" Content="{Binding ProgramVersion, Mode=OneWay}"/>
+        </StackPanel>
+        <Button Panel.ZIndex="6" Grid.Row="1" Name="BtnCloseSettings" Margin="5px" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="Close" Click="BtnExit"/>
+    </Grid>
+</Window>

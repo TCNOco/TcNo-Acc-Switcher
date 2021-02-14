@@ -85,7 +85,7 @@ namespace TcNo_Acc_Switcher.Pages.Steam
                 string element =
                     $"<input type=\"radio\" id=\"{ua.AccName}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamID}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.lastLogin}\" ExtraClasses=\"{ua.ExtraClasses}\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{ua.AccName}\" class=\"acc @ExtraClasses\">\r\n" +
-                    $"<img src=\"{ua.ImgURL}\" />\r\n" +
+                    $"<img class=\"{ua.ExtraClasses}\" src=\"{ua.ImgURL}\" />\r\n" +
                     $"<p>{ua.AccName}</p>\r\n" +
                     $"<h6>{ua.Name}</h6>\r\n" +
                     $"<p>{ua.lastLogin}</p>\r\n</label>";
@@ -144,6 +144,29 @@ namespace TcNo_Acc_Switcher.Pages.Steam
             else
             {
                 su.ImgURL = $"img/profiles/{su.SteamID}.jpg";
+                if (File.Exists($"profilecache /{su.SteamID}.xml"))
+                {
+                    var profileXml = new XmlDocument();
+                    profileXml.Load($"profilecache/{su.SteamID}.xml");
+                    if (profileXml.DocumentElement != null && profileXml.DocumentElement.SelectNodes("/profile/privacyMessage")?.Count == 0)
+                    {
+                        try
+                        {
+                            var isVac = false;
+                            var isLimited = true;
+                            if (profileXml.DocumentElement != null)
+                            {
+                                if (profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0] != null)
+                                    isVac = profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
+                                if (profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
+                                    isLimited = profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
+                            }
+
+                            su.ExtraClasses += (isVac ? "status_vac" : "") + (isLimited ? "status_limited" : "");
+                        }
+                        catch (NullReferenceException) { }
+                    }
+                }
             }
         }
         private static string GetUserImageUrl(Steamuser su)
@@ -153,6 +176,10 @@ namespace TcNo_Acc_Switcher.Pages.Steam
             try
             {
                 profileXml.Load($"https://steamcommunity.com/profiles/{su.SteamID}?xml=1");
+                // Cache for later
+                Directory.CreateDirectory("profilecache");
+                profileXml.Save($"profilecache/{su.SteamID}.xml");
+
                 if (profileXml.DocumentElement != null && profileXml.DocumentElement.SelectNodes("/profile/privacyMessage")?.Count == 0) // Fix for accounts that haven't set up their Community Profile
                 {
                     try
@@ -211,6 +238,21 @@ namespace TcNo_Acc_Switcher.Pages.Steam
                 Process.Start(_persistentSettings.SteamExe());
             else
                 Process.Start(new ProcessStartInfo("explorer.exe", _persistentSettings.SteamExe()));
+        }
+
+        public static async Task NewSteamLogin()
+        {
+            Index.UserSteamSettings _persistentSettings = SteamSwitcherFuncs.LoadSettings();
+            // Kill Steam
+            CloseSteam();
+            // Set all accounts to 'not used last' status
+            UpdateLoginUsers(true, "", "");
+            // Start Steam
+            if (_persistentSettings.StartAsAdmin)
+                Process.Start(_persistentSettings.SteamExe());
+            else
+                Process.Start(new ProcessStartInfo("explorer.exe", _persistentSettings.SteamExe()));
+            //LblStatus.Content = Strings.StatusStartedSteam;
         }
 
 

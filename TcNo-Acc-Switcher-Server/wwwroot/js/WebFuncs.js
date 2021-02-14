@@ -58,7 +58,7 @@ function copy(request) {
 function SwapTo() {
     var steamId64 = $(SelectedElem).attr("SteamID64");
     var accName = $(SelectedElem).attr("Username");
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "SwapTo", steamId64, accName);
+    if (steamId64 !== null && accName !== null) { DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "SwapTo", steamId64, accName); }
 }
 
 
