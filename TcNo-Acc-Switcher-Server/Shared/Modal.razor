@@ -4,26 +4,16 @@
 @using System.Runtime.InteropServices
 @inject AppData AppData
 
-<div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" @*style="display: none;"*@>
+<div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">
     <div class="modalFG">
         <div id="window-title-modal">
-            <img src="img/TcNo_Logo_Flat.svg" class="header_icon" /><span id="modalTitle">Modal title here</span>
+            <img src="img/TcNo_Logo_Flat.svg" draggable="false" class="header_icon" /><span id="modalTitle">TcNo Account Switcher Information</span>
             <div id="window-controls-modal">
                 <div class="button" id="btnClose-modal" onclick="$('.modalBG').fadeOut();"><img class="icon" srcset="img/icons/close-w-10.png 1x, img/icons/close-w-12.png 1.25x, img/icons/close-w-15.png 1.5x, img/icons/close-w-15.png 1.75x, img/icons/close-w-20.png 2x, img/icons/close-w-20.png 2.25x, img/icons/close-w-24.png 2.5x, img/icons/close-w-30.png 3x, img/icons/close-w-30.png 3.5x" draggable="false" /></div>
             </div>
         </div>
-        
-        <div class="infoWindow">
-            <div class="imgDiv"><img width="100" margin="5" src="img/TcNo500.png"></div>
-            <div class="rightContent">
-                <h2>TcNo Account Switcher</h2>
-                <p>Created by TechNobo [Wesley Pyburn]</p>
-                <div class="linksList">
-                    <a href="github"><img src="img/icons/ico_discord.svg">View on GitHub</a>
-                    <a href="discord"><img src="img/icons/ico_github.svg">Bug report/Feature request</a>
-                    <a href="https://tcno.co"><img src="img/icons/ico_networking.svg">Visit tcno.co</a>
-                </div>
-            </div>
+        <div id="modal_contents">
+            
         </div>
 
 

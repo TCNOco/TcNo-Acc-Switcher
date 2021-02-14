@@ -386,11 +386,6 @@ namespace TcNo_Acc_Switcher_Client
                     SaveSettings();
                     Environment.Exit(1);
                     break;
-                case "show_info":
-                    args.Cancel = true;
-                    var infoWindow = new InfoWindow { DataContext = MainViewmodel, Owner = this };
-                    infoWindow.ShowDialog();
-                    break;
                 case "show_settings":
                     args.Cancel = true;
                     var settingsWindow = new Settings { DataContext = MainViewmodel, Owner = this };

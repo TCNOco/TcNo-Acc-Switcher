@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
@@ -57,6 +58,16 @@ namespace TcNo_Acc_Switcher.Pages.Steam
         public static async void SwapTo(string steamId, string accName)
         {
             SteamSwitcherFuncs.SwapSteamAccounts(false, steamId, accName);
+        }
+        [JSInvokable]
+        public static async void OpenLinkInBrowser(string link)
+        {
+            var ps = new ProcessStartInfo(link)
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            };
+            Process.Start(ps);
         }
         [JSInvokable]
         public static async void NewSteamLogin()
