@@ -57,7 +57,7 @@ function copy(request) {
 // Swapping accounts
 function SwapTo() {
     var selected = $(".acc:checked");
-    if (selected === "") { return; }
+    if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
     var steamId64 = selected.attr("SteamID64");
     var accName = selected.attr("Username");
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "SwapTo", steamId64, accName);

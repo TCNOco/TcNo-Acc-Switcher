@@ -1,0 +1,67 @@
+.modalBG {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    background: #00000055;
+    cursor: pointer;
+}
+
+.modalFG {
+    background-color: #28293A;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    min-width: 200px;
+    max-width: 90%;
+    min-height: 100px;
+    max-height: 90%;
+    -webkit-box-shadow: 0px 0px 15px 3px rgba(0,0,0,0.84);
+    -moz-box-shadow: 0px 0px 15px 3px rgba(0,0,0,0.84);
+    box-shadow: 0px 0px 15px 3px rgba(0,0,0,0.84);
+    cursor: default;
+}
+
+/*Info window*/
+.infoWindow {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    padding: 5%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 450px;
+}
+    .infoWindow .imgDiv {
+        width: 100px;
+    }
+    .infoWindow .rightContent {
+        color: white;
+        margin-left: 1em;
+    }
+        .infoWindow .rightContent h2 {
+            font-weight: bold;
+        }
+        .infoWindow .rightContent .linksList {
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+        }
+            .infoWindow .rightContent .linksList a {
+                color: white;
+            }
+                .infoWindow .rightContent .linksList a:visited {
+                    color: #FFAA00;
+                }
+                .infoWindow .rightContent .linksList a:hover {
+                    color: #FFDD00;
+                }
+                .infoWindow .rightContent .linksList a:active {
+                    color: #CC7700;
+                }
+                .infoWindow .rightContent .linksList a img {
+                    width: 2em;
+                    margin-right: 1em;
+                }

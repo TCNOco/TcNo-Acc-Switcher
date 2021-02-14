@@ -60,28 +60,36 @@ app {
     width: 100%;
     -webkit-app-region: drag;
 }
-    .headerbar .header_icon {
+    .header_icon {
         height: 10px;
         margin: 12px;
         display: block;
     }
-    .headerbar #window-controls {
-        display: grid;
-        grid-template-columns: repeat(3, 46px);
-        position: absolute;
-        top: 0;
-        right: 0;
-        height: 100%;
-    }
+#window-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 46px);
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+}
+#window-controls-modal {
+    display: grid;
+    grid-template-columns: repeat(1, 46px);
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+}
 
-    .headerbar  #window-controls .button {
-        grid-row: 1 / span 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-    }
+#window-controls .button, #window-controls-modal .button {
+    grid-row: 1 / span 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
 
     .headerbar  #btnMin {
         grid-column: 1;
@@ -116,15 +124,15 @@ app {
         background: rgba(255,255,255,0.2);
     }
 
-    #btnClose:hover {
-        background: #E81123 !important;
-    }
+#btnClose:hover, #btnClose-modal:hover {
+    background: #E81123 !important;
+}
 
-    #btnClose:active {
-        background: #F1707A !important;
-    }
+#btnClose:active, #btnClose-modal:active {
+    background: #F1707A !important;
+}
 
-    #btnClose:active .icon {
+    #btnClose:active .icon, #btnClose-modal:active .icon {
         filter: invert(1);
     }
 
@@ -135,22 +143,26 @@ app {
         display: grid;
         grid-template-columns: auto 138px;
     }
-
-    #window-title {
-        color: white;
-        grid-column: 1;
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        font-family: "Segoe UI", sans-serif;
-        font-size: 12px;
-        pointer-events: none
+#window-title-modal {
+    position: relative;
+    background-color: #14151E;
+}
+#window-title, #window-title-modal {
+    color: white;
+    grid-column: 1;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 12px;
+    pointer-events: none
+}
+    #window-title #window-controls, #window-title-modal #window-controls-modal {
+        cursor: pointer;
+        pointer-events: all;
     }
-        #window-title #window-controls {
-            pointer-events: all;
-        }
 
-    #window-title span {
+    #window-title span, #window-title-modal span {
         position: absolute;
         width: 100%;
         pointer-events: none;
