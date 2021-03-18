@@ -62,6 +62,12 @@ function SwapTo() {
     var accName = selected.attr("Username");
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "SwapTo", steamId64, accName);
 }
+
+// New Steam accounts
+function NewSteamLogin() {
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "SwapTo", "", "");
+}
+
 $(".acc").dblclick(function () {
     alert("Handler for .dblclick() called.");
     SwapTo();
@@ -77,7 +83,7 @@ function ShowModal(modaltype) {
     if (modaltype == "info") {
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
-        <div class= "imgDiv" ><img width="100" margin="5" src="img/TcNo500.png"></div>
+        <div class= "imgDiv" ><img width="100" margin="5" src="img/TcNo500.png" draggable="false"></div>
         <div class="rightContent">
             <h2>TcNo Account Switcher</h2>
             <p>Created by TechNobo [Wesley Pyburn]</p>

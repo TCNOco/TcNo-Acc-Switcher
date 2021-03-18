@@ -271,7 +271,7 @@ namespace TcNo_Acc_Switcher.Pages.Steam
         public static void SwapSteamAccounts(bool loginNone, string steamId, string accName, bool autoStartSteam = true)
         {
             var persistentSettings = SteamSwitcherFuncs.LoadSettings();
-            if (!VerifySteamId(steamId))
+            if (steamId != "" && !VerifySteamId(steamId))
             {
                 // await JsRuntime.InvokeVoidAsync("createAlert", "Invalid SteamID" + steamid);
                 return;
