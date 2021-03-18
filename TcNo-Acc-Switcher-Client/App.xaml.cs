@@ -29,13 +29,13 @@ namespace TcNo_Acc_Switcher_Client
                     _trayUsers.LoadTrayUsers();
                     var accName = _trayUsers.GetAccName(steamId); // Get account name from JSON
 
-                    TcNo_Acc_Switcher.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(false, steamId, accName);
+                    TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(false, steamId, accName);
                     quitArg = true;
                 }
                 else switch (e.Args[i])
                 {
                     case "logout":
-                        TcNo_Acc_Switcher.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(true, "", "");
+                        TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(true, "", "");
                         quitArg = true;
                         break;
                     case "quit":

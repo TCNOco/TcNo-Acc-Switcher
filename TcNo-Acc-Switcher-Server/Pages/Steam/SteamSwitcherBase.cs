@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 
-namespace TcNo_Acc_Switcher.Pages.Steam
+namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public class SteamSwitcherBase
     {

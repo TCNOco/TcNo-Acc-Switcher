@@ -60,12 +60,12 @@ function SwapTo() {
     if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
     var steamId64 = selected.attr("SteamID64");
     var accName = selected.attr("Username");
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "SwapTo", steamId64, accName);
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo", steamId64, accName);
 }
 
 // New Steam accounts
 function NewSteamLogin() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "SwapTo", "", "");
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo", "", "");
 }
 
 $(".acc").dblclick(function () {
@@ -74,7 +74,7 @@ $(".acc").dblclick(function () {
 });
 // Link handling
 function OpenLinkInBrowser(link) {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "OpenLinkInBrowser", link);
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "OpenLinkInBrowser", link);
 }
 
 
@@ -98,4 +98,4 @@ function ShowModal(modaltype) {
     $('.modalBG').fadeIn();
 }
 
-//DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "CopyCommunityUsername", $(SelectedElem).attr(request)).then(r => console.log(r));
+//DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyCommunityUsername", $(SelectedElem).attr(request)).then(r => console.log(r));

@@ -22,11 +22,11 @@ using System.Threading;
 using System.Windows.Interop;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Win32.TaskScheduler;
-using TcNo_Acc_Switcher.Pages.Steam;
-using TcNo_Acc_Switcher.Shared;
+using TcNo_Acc_Switcher_Server.Pages.Steam;
+using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Client.Classes;
 
-using Index = TcNo_Acc_Switcher.Pages.Index;
+using Index = TcNo_Acc_Switcher_Server.Pages.Index;
 using Strings = TcNo_Acc_Switcher_Client.Localisation.Strings;
 
 namespace TcNo_Acc_Switcher_Client

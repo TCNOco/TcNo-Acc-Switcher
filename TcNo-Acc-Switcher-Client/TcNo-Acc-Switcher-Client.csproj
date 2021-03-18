@@ -13,6 +13,7 @@
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
     <PackageIcon>TcNoAccSw-Icon-100x100.png</PackageIcon>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
+    <AssemblyName>TcNo-Acc-Switcher</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TcNo-Acc-Switcher-Server\TcNo-Acc-Switcher.csproj">
+    <ProjectReference Include="..\TcNo-Acc-Switcher-Server\TcNo-Acc-Switcher-Server.csproj">
       <EmbedInteropTypes>false</EmbedInteropTypes>
     </ProjectReference>
   </ItemGroup>

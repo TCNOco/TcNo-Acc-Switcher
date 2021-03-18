@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TcNo_Acc_Switcher.Data
+namespace TcNo_Acc_Switcher_Server.Data
 {
     public class WeatherForecastService
     {

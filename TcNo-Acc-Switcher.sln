@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcNo-Acc-Switcher", "TcNo-Acc-Switcher-Server\TcNo-Acc-Switcher.csproj", "{F4A4C45B-BDC0-4443-A707-EE8D935972C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcNo-Acc-Switcher-Server", "TcNo-Acc-Switcher-Server\TcNo-Acc-Switcher-Server.csproj", "{F4A4C45B-BDC0-4443-A707-EE8D935972C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcNo-Acc-Switcher-Client", "TcNo-Acc-Switcher-Client\TcNo-Acc-Switcher-Client.csproj", "{1EFC2E49-9A26-4470-B133-A7EA11F3FBF0}"
 EndProject

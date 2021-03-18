@@ -1,6 +1,6 @@
 using System;
 
-namespace TcNo_Acc_Switcher.Data
+namespace TcNo_Acc_Switcher_Server.Data
 {
     public class WeatherForecast
     {

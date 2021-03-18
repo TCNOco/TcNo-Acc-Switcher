@@ -6,10 +6,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using TcNo_Acc_Switcher.Pages.Steam;
+using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Client.Localisation;
 using TcNo_Acc_Switcher_Globals;
-using Index = TcNo_Acc_Switcher.Pages.Index;
+using Index = TcNo_Acc_Switcher_Server.Pages.Index;
 
 
 namespace TcNo_Acc_Switcher_Client

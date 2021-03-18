@@ -7,7 +7,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
-using TcNo_Acc_Switcher.Pages.Steam;
+using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Globals;
 
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, uncomment.

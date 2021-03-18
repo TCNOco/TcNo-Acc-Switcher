@@ -15,13 +15,13 @@ using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TcNo_Acc_Switcher.Pages.General;
+using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Globals;
 
-using Steamuser = TcNo_Acc_Switcher.Pages.Index.Steamuser;
-using UserSteamSettings = TcNo_Acc_Switcher.Pages.Index.UserSteamSettings;
+using Steamuser = TcNo_Acc_Switcher_Server.Pages.Index.Steamuser;
+using UserSteamSettings = TcNo_Acc_Switcher_Server.Pages.Index.UserSteamSettings;
 
-namespace TcNo_Acc_Switcher.Pages.Steam
+namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public class SteamSwitcherFuncs
     {

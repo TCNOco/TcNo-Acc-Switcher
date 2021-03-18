@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 
-namespace TcNo_Acc_Switcher.Data
+namespace TcNo_Acc_Switcher_Server.Data
 {
     public class GenericFunctions
     {
