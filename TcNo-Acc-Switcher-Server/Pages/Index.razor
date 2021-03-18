@@ -106,7 +106,7 @@
     //{
     //    await SteamSwitcherFuncs.LoadProfiles(JsRuntime);
     //}
-    
+
 
     public class Steamuser
     {
@@ -117,7 +117,7 @@
         [JsonProperty("mostrecent", Order = 3)] public string MostRec = "0";
         [JsonProperty("Timestamp", Order = 4)] public string LastLogin { get; set; }
         [JsonProperty("WantsOfflineMode", Order = 5)] public string OfflineMode = "0";
-        [JsonProperty("ImgURL", Order = 5)] public string ImgUrl { get; set; }
+        [JsonIgnore] public string ImgUrl { get; set; }
 
         //[JsonIgnore] public string vacStatus { get; set; } // WAS System.Windows.Media.Brush
     }

@@ -43,8 +43,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     {
                         var steamId = user.ToObject<JProperty>()?.Name;
                         if (string.IsNullOrEmpty(steamId) || string.IsNullOrEmpty(user.First?["AccountName"]?.ToString())) continue;
-                        double timestampLastLogin = 0;
-                        Double.TryParse(user.First?["Timestamp"]?.ToString(), out timestampLastLogin);
 
                         var newSu = new Steamuser()
                         {
@@ -52,7 +50,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                             AccName = user.First?["AccountName"]?.ToString(),
                             SteamId = steamId,
                             ImgUrl = "img/QuestionMark.jpg",
-                            LastLogin = UnixTimeStampToDateTime(timestampLastLogin).ToString(),
+                            LastLogin = user.First?["Timestamp"]?.ToString(),
                             OfflineMode = (!string.IsNullOrEmpty(user.First?["WantsOfflineMode"]?.ToString()) ? user.First?["WantsOfflineMode"]?.ToString() : "0")
                         };
                         userAccounts.Add(newSu);
@@ -121,7 +119,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     $"<img class=\"{extraClasses}\" src=\"{ua.ImgUrl}\" draggable=\"false\" />\r\n" +
                     $"<p>{ua.AccName}</p>\r\n" +
                     $"<h6>{ua.Name}</h6>\r\n" +
-                    $"<p>{ua.LastLogin}</p>\r\n</label>";
+                    $"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";
 
                 await jsRuntime.InvokeVoidAsync("jQueryAppend", new string[] { "#acc_list", element });
             }
@@ -132,12 +130,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             //return _userAccounts;
         }
         
-        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+        public static string UnixTimeStampToDateTime(string stringUnixTimeStamp)
         {
+            double.TryParse(stringUnixTimeStamp, out var unixTimeStamp);
             // Unix timestamp is seconds past epoch
             var dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-            return dtDateTime;
+            return dtDateTime.ToString(CultureInfo.InvariantCulture);
         }
 
 
