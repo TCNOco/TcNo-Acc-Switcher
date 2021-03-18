@@ -10,6 +10,7 @@ namespace TcNo_Acc_Switcher.Pages.General
     {
         public static bool DeletedOutdatedFile(string filename)
         {
+            if (!File.Exists(filename)) return true;
             if (DateTime.Now.Subtract(File.GetLastWriteTime(filename)).Days <= 7) return false;
             File.Delete(filename);
             return true;
