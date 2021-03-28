@@ -6,9 +6,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Client.Localisation;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Pages.General;
 using Index = TcNo_Acc_Switcher_Server.Pages.Index;
 
 
@@ -20,7 +22,7 @@ namespace TcNo_Acc_Switcher_Client
 
     public partial class Settings
     {
-        private readonly Index.UserSteamSettings _persistentSettings;
+        private readonly JObject settingsJObject;
         private MainWindow _mw;
         private bool _enableButtons;
 
@@ -28,7 +30,7 @@ namespace TcNo_Acc_Switcher_Client
         {
             InitializeComponent();
 
-            _persistentSettings = SteamSwitcherFuncs.LoadSettings();
+            settingsJObject = GeneralFuncs.LoadSettings("SteamSettings");
             // Set tickboxes from here, rather than with a model.
         }
 
@@ -66,11 +68,11 @@ namespace TcNo_Acc_Switcher_Client
         {
             var messageBoxResult = MessageBox.Show("Are you sure?", "Reset settings", MessageBoxButton.YesNo);
             if (messageBoxResult != MessageBoxResult.Yes) return;
-            ResetSettings();
+            GeneralFuncs.ResetSettings_Steam();
             this.Close();
         }
 
-        private void btnPickSteamFolder_Click(object sender, RoutedEventArgs e) => _mw.PickSteamFolder();
+        //private void btnPickSteamFolder_Click(object sender, RoutedEventArgs e) => _mw.PickSteamFolder();
 
         private void btnResetImages_Click(object sender, RoutedEventArgs e)
         {
@@ -90,13 +92,6 @@ namespace TcNo_Acc_Switcher_Client
             }
         }
 
-        private static void ResetSettings()
-        {
-            SteamSwitcherFuncs.SaveSettings(new Index.UserSteamSettings());
-        }
-
-
-
 
 
 
@@ -108,34 +103,34 @@ namespace TcNo_Acc_Switcher_Client
 
         private void ShowSteamID_CheckChanged(object sender, RoutedEventArgs e)
         {
-            _persistentSettings.ShowSteamId = ShowSteamId.IsChecked != null && (bool) ShowSteamId.IsChecked;
+            //_persistentSettings.ShowSteamId = ShowSteamId.IsChecked != null && (bool) ShowSteamId.IsChecked;
         }
 
         private void ShowVACStatus_CheckChanged(object sender, RoutedEventArgs e)
         {
-            _persistentSettings.ShowVacStatus = ShowVacStatus.IsChecked != null && (bool) ShowVacStatus.IsChecked;
+            //_persistentSettings.ShowVacStatus = ShowVacStatus.IsChecked != null && (bool) ShowVacStatus.IsChecked;
         }
         
         public static string GetForgottenBackupPath()
         {
-            return Path.Combine(SteamSwitcherFuncs.LoadSettings().SteamFolder, $"config\\TcNo-Acc-Switcher-Backups\\"); }
+            return Path.Combine("SteamSwitcherFuncs.LoadSettings().SteamFolder", $"config\\TcNo-Acc-Switcher-Backups\\"); }
 
         public static string GetPersistentFolder()
         {
-            return Path.Combine(SteamSwitcherFuncs.LoadSettings().SteamFolder, "config\\");
+            return Path.Combine("SteamSwitcherFuncs.LoadSettings().SteamFolder", "config\\");
         }
 
         public static string GetSteamDirectory()
         {
-            return SteamSwitcherFuncs.LoadSettings().SteamFolder;
+            return "SteamSwitcherFuncs.LoadSettings().SteamFolder";
         }
 
 
         private void ShowForgetRememberDialog()
         {
-            var forgetAccountCheckDialog = new ForgetAccountCheck() { DataContext = _mw.MainViewmodel, Owner = this };
-            forgetAccountCheckDialog.ShareMainWindow(_mw);
-            forgetAccountCheckDialog.ShowDialog();
+            //var forgetAccountCheckDialog = new ForgetAccountCheck() { DataContext = _mw.MainViewmodel, Owner = this };
+            //forgetAccountCheckDialog.ShareMainWindow(_mw);
+            //forgetAccountCheckDialog.ShowDialog();
         }
 
         public static void ClearForgottenBackups()
@@ -210,42 +205,44 @@ namespace TcNo_Acc_Switcher_Client
 
         private void NumberRecentAccounts_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!_enableButtons) return;
-            if (NumberRecentAccounts.Text == "")
-            {
-                NumberRecentAccounts.Text = "0";
-                return;
-            }
+            //if (!_enableButtons) return;
+            //if (NumberRecentAccounts.Text == "")
+            //{
+            //    NumberRecentAccounts.Text = "0";
+            //    return;
+            //}
 
-            if ((NumberRecentAccounts.Text).Length > 1)
-                while ((NumberRecentAccounts.Text)[0] == '0')
-                    NumberRecentAccounts.Text = NumberRecentAccounts.Text.Substring(1);
+            //if ((NumberRecentAccounts.Text).Length > 1)
+            //    while ((NumberRecentAccounts.Text)[0] == '0')
+            //        NumberRecentAccounts.Text = NumberRecentAccounts.Text.Substring(1);
 
-            //if (int.TryParse(NumberRecentAccounts.Text, out _))
-            //    _mw.SetTotalRecentAccount(NumberRecentAccounts.Text);
-            //else
-            //    NumberRecentAccounts.Text = new string((NumberRecentAccounts.Text).Where(c => "0123456789".Contains(c)).ToArray());
+            //// BELOW WAS COMMENTED OUT FROM BEFORE
+            ////if (int.TryParse(NumberRecentAccounts.Text, out _))
+            ////    _mw.SetTotalRecentAccount(NumberRecentAccounts.Text);
+            ////else
+            ////    NumberRecentAccounts.Text = new string((NumberRecentAccounts.Text).Where(c => "0123456789".Contains(c)).ToArray());
         }
 
         private void Settings_OnClosing(object sender, CancelEventArgs e) => Console.WriteLine("Temp");//_mw.CapTotalTrayUsers();
 
         private void ImageExpiry_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!_enableButtons) return;
-            if (ImageExpiry.Text == "")
-            {
-                ImageExpiry.Text = "0";
-                return;
-            }
+            //if (!_enableButtons) return;
+            //if (ImageExpiry.Text == "")
+            //{
+            //    ImageExpiry.Text = "0";
+            //    return;
+            //}
 
-            if (ImageExpiry.Text.Length > 1)
-                while (ImageExpiry.Text[0] == '0')
-                    ImageExpiry.Text = ImageExpiry.Text.Substring(1);
+            //if (ImageExpiry.Text.Length > 1)
+            //    while (ImageExpiry.Text[0] == '0')
+            //        ImageExpiry.Text = ImageExpiry.Text.Substring(1);
 
-            //if (int.TryParse(ImageExpiry.Text, out _))
-            //    _mw.SetImageExpiry(ImageExpiry.Text);
-            //else
-            //    ImageExpiry.Text = new string(ImageExpiry.Text.Where(c => "0123456789".Contains(c)).ToArray());
+            //// BELOW WAS COMMENTED OUT FROM BEFORE
+            ////if (int.TryParse(ImageExpiry.Text, out _))
+            ////    _mw.SetImageExpiry(ImageExpiry.Text);
+            ////else
+            ////    ImageExpiry.Text = new string(ImageExpiry.Text.Where(c => "0123456789".Contains(c)).ToArray());
         }
     }
 }

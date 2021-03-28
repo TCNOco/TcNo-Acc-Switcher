@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using TcNo_Acc_Switcher_Server.Pages.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
 {
@@ -55,5 +57,74 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 return false;
             }
         }
+
+        #region SETTINGS
+
+        public static void ResetSettings_Steam()
+        {
+            SaveSettings("SteamSettings", SteamSwitcherFuncs.DefaultSettings_Steam());
+        }
+
+        public static void SaveSettings(string file, JObject joNewSettings)
+        {
+            string sFilename = file + ".json";
+
+            // Get existing settings
+            JObject joSettings = new JObject();
+            try
+            {
+                joSettings = JObject.Parse(File.ReadAllText(sFilename));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            // Merge existing settings with settings from site
+            joSettings.Merge(joNewSettings, new JsonMergeSettings
+            {
+                MergeArrayHandling = MergeArrayHandling.Union
+            });
+
+            // Save all settings back into file
+            File.WriteAllText(sFilename, joSettings.ToString());
+        }
+
+        public static JObject LoadSettings(string file)
+        {
+            string sFilename = file + ".json";
+            if (File.Exists(sFilename))
+            {
+                try
+                {
+                    return JObject.Parse(File.ReadAllText(sFilename));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+
+            switch (file)
+            {
+                case "SteamSettings":
+                    return SteamSwitcherFuncs.DefaultSettings_Steam();
+                case "WindowSettings":
+                    return DefaultSettings();
+            }
+
+            return new JObject();
+        }
+        public static JObject DefaultSettings() => JObject.Parse(@"WindowSize: ""800, 450""");
+
+        public static string LoginusersVDF(JObject settings)
+        {
+            return Path.Combine((string)settings["SteamFolder"], "config\\loginusers.vdf");
+        }
+        public static string SteamExe(JObject settings)
+        {
+            return Path.Combine((string)settings["SteamFolder"], "Steam.exe");
+        }
+        #endregion
     }
 }

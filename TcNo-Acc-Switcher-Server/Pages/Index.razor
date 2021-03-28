@@ -92,15 +92,13 @@
     //    }
     //}
 
-    UserSteamSettings _persistentSettings = new UserSteamSettings();
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             //SomeStartupMethod();
             //await SomeStartupTask();
-            _persistentSettings = SteamSwitcherFuncs.LoadSettings();
-            await SteamSwitcherFuncs.LoadProfiles(_persistentSettings, JsRuntime);
+            await SteamSwitcherFuncs.LoadProfiles(JsRuntime);
         }
     }
 
@@ -124,28 +122,7 @@
 
         //[JsonIgnore] public string vacStatus { get; set; } // WAS System.Windows.Media.Brush
     }
-    public class UserSteamSettings
-    {
-        //UserSettings defaultSettings = new UserSettings { StartAsAdmin = false, SteamFolder = "C:\\Program Files (x86)\\Steam\\", ShowSteamID = false, WindowSize = new Size(773, 420) };
-        public bool StartAsAdmin { get; set; } = false;
-        public bool ShowSteamId { get; set; } = false;
-        public bool ShowVacStatus { get; set; } = true;
-        public bool ForgetAccountEnabled { get; set; } = false;
-        public int ImageLifetime { get; set; } = 7;
-        public string SteamFolder { get; set; } = "C:\\Program Files (x86)\\Steam\\";
-        public Size WindowSize { get; set; } = new Size(680, 360);
-        public string LoginusersVdf()
-        {
-            return Path.Combine(SteamFolder, "config\\loginusers.vdf");
-        }
-        public string SteamExe()
-        {
-            return Path.Combine(SteamFolder, "Steam.exe");
-        }
 
-        public int TrayAccounts { get; set; } = 3; // Default: Up to 3 accounts.
-        public bool TrayAccountAccNames { get; set; } = false; // Use account names instead of friendly names.
-    }
 
 
     //[JSInvokable]

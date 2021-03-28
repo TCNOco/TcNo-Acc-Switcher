@@ -19,7 +19,6 @@ using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Globals;
 
 using Steamuser = TcNo_Acc_Switcher_Server.Pages.Index.Steamuser;
-using UserSteamSettings = TcNo_Acc_Switcher_Server.Pages.Index.UserSteamSettings;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
@@ -83,11 +82,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void SaveVacInfo(List<VacStatus> vsList) => File.WriteAllText(SteamVacCacheFile, JsonConvert.SerializeObject(vsList));
 
         //public static List<Steamuser> loadProfiles()
-        public static async Task LoadProfiles(UserSteamSettings persistentSettings, IJSRuntime jsRuntime)
+        public static async Task LoadProfiles(IJSRuntime jsRuntime)
         {
             Console.WriteLine("LOADING PROFILES!");
-            //await JsRuntime.InvokeVoidAsync("jQueryClearInner", "#acc_list");
-            var userAccounts = GetSteamUsers(Path.Combine(persistentSettings.SteamFolder, "config\\loginusers.vdf"));
+            JObject settings = GeneralFuncs.LoadSettings("SteamSettings");
+            var userAccounts = GetSteamUsers(Path.Combine((string)settings["SteamFolder"], "config\\loginusers.vdf"));  //////////////// TO GET TO: CHECK IF NULL, ASK USER IN POPUP
             var vacStatusList = new List<VacStatus>();
             var loadedVacCache = LoadVacInfo(ref vacStatusList);
 
@@ -269,7 +268,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         #region SteamSwapper
         public static void SwapSteamAccounts(bool loginNone, string steamId, string accName, bool autoStartSteam = true)
         {
-            var persistentSettings = SteamSwitcherFuncs.LoadSettings();
+            JObject settings = GeneralFuncs.LoadSettings("SteamSettings");
             if (steamId != "" && !VerifySteamId(steamId))
             {
                 // await JsRuntime.InvokeVoidAsync("createAlert", "Invalid SteamID" + steamid);
@@ -277,27 +276,27 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
 
             CloseSteam();
-            UpdateLoginUsers(persistentSettings, loginNone, steamId, accName);
+            UpdateLoginUsers(settings, loginNone, steamId, accName);
 
             if (!autoStartSteam) return;
-            if (persistentSettings.StartAsAdmin)
-                Process.Start(persistentSettings.SteamExe());
+            if ((bool)settings["Steam_Admin"])
+                Process.Start((string)settings["SteamFolder"]);
             else
-                Process.Start(new ProcessStartInfo("explorer.exe", persistentSettings.SteamExe()));
+                Process.Start(new ProcessStartInfo("explorer.exe", (string)settings["SteamFolder"]));
         }
 
         public static void NewSteamLogin()
         {
-            var persistentSettings = SteamSwitcherFuncs.LoadSettings();
+            JObject settings = GeneralFuncs.LoadSettings("SteamSettings");
             // Kill Steam
             CloseSteam();
             // Set all accounts to 'not used last' status
-            UpdateLoginUsers(persistentSettings, true, "", "");
+            UpdateLoginUsers(settings, true, "", "");
             // Start Steam
-            if (persistentSettings.StartAsAdmin)
-                Process.Start(persistentSettings.SteamExe());
+            if ((bool)settings["Steam_Admin"])
+                Process.Start(GeneralFuncs.SteamExe(settings));
             else
-                Process.Start(new ProcessStartInfo("explorer.exe", persistentSettings.SteamExe()));
+                Process.Start(new ProcessStartInfo("explorer.exe", GeneralFuncs.SteamExe(settings)));
             //LblStatus.Content = Strings.StatusStartedSteam;
         }
 
@@ -332,14 +331,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             process.Start();
             process.WaitForExit();
         }
-        public static void UpdateLoginUsers(Index.UserSteamSettings persistentSettings, bool loginNone, string selectedSteamId, string accName)
+        public static void UpdateLoginUsers(JObject settings, bool loginNone, string selectedSteamId, string accName)
         {
-            var userAccounts = SteamSwitcherFuncs.GetSteamUsers(Path.Combine(persistentSettings.SteamFolder, "config\\loginusers.vdf"));
+            var userAccounts = SteamSwitcherFuncs.GetSteamUsers(GeneralFuncs.LoginusersVDF(settings));
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
             // -----------------------------------
             var targetUsername = accName;
-            var tempFile = persistentSettings.LoginusersVdf() + "_temp";
+            var tempFile = GeneralFuncs.LoginusersVDF(settings) + "_temp";
             File.Delete(tempFile);
 
             var outJObject = new JObject();
@@ -349,7 +348,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 outJObject[ua.SteamId] = (JObject)JToken.FromObject(ua);
             }
             File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
-            File.Replace(tempFile, persistentSettings.LoginusersVdf(), persistentSettings.LoginusersVdf() + "_last");
+            File.Replace(tempFile, GeneralFuncs.LoginusersVDF(settings), GeneralFuncs.LoginusersVDF(settings) + "_last");
 
             // -----------------------------------
             // --------- Manage registry ---------
@@ -382,48 +381,23 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         #region Settings
 
-        public static void SaveSettings(UserSteamSettings persistentSettings)
+        public static JObject DefaultSettings_Steam()
         {
-            //_persistentSettings.WindowSize = new Size(this.Width, this.Height);
-            var serializer = new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore };
-
-            using var sw = new StreamWriter(@"SteamSettings.json");
-            using JsonWriter writer = new JsonTextWriter(sw);
-            serializer.Serialize(writer, persistentSettings);
-        }
-        public static UserSteamSettings LoadSettings()
-        {
-            var persistentSettings = new UserSteamSettings();
-            if (!File.Exists("SteamSettings.json")) { SaveSettings(persistentSettings);
-                return persistentSettings;
-            }
-
-            using var sr = new StreamReader(@"SteamSettings.json");
-            // persistentSettings = JsonConvert.DeserializeObject<UserSettings>(sr.ReadToEnd()); -- Entirely replaces, instead of merging. New variables won't have values.
-            // Using a JSON UnionUnion Merge means that settings that are missing will have default values, set at the top of this file.
-            var jCurrent = JObject.Parse(JsonConvert.SerializeObject(persistentSettings));
-            try
-            {
-                jCurrent.Merge(JObject.Parse(sr.ReadToEnd()), new JsonMergeSettings
-                {
-                    MergeArrayHandling = MergeArrayHandling.Union
-                });
-                persistentSettings = jCurrent.ToObject<UserSteamSettings>();
-            }
-            catch (Exception)
-            {
-                if (File.Exists("SteamSettings.json"))
-                {
-                    if (File.Exists("SteamSettings.old.json"))
-                        File.Delete("SteamSettings.old.json");
-                    File.Copy("SteamSettings.json", "SteamSettings.old.json");
-                }
-
-                SaveSettings(persistentSettings);
-                //MessageBox.Show(Strings.ErrSteamSettingsLoadFail, Strings.ErrSteamSettingsLoadFailHeader, MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            return persistentSettings;
+            return JObject.Parse(@"{
+                ForgetAccountEnabled: false,
+                SteamFolder: ""C:\\Program Files (x86)\\Steam\\"",
+                WindowSize: ""800, 450"",
+                Steam_Admin: false,
+                Steam_ShowSteamID: false,
+                Steam_ShowVAC: true,
+                Steam_ShowLimited: false,
+                Steam_DesktopShortcut: false,
+                Steam_StartMenu: false,
+                Steam_TrayStartup: false,
+                Steam_TrayAccountName: false,
+                Steam_ImageExpiryTime: ""7"",
+                Steam_TrayAccNumber: ""3""
+            }");
         }
         #endregion
     }
