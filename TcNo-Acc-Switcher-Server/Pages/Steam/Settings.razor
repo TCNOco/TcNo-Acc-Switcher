@@ -1,34 +1,10 @@
 ﻿@page "/Steam/Settings"
 @using TcNo_Acc_Switcher_Server.Shared
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@{
-    Layout = null;
-}
+@inject NavigationManager NavManager
+<link href="css/settings.css" rel="stylesheet" />
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TcNo-Acc-Switcher</title>
-    <base href="~/" />
-    <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
-    <script src="js/jquery.3.5.1.min.js"></script>
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
-    <link href="css/site.css" rel="stylesheet" />
-    <link href="css/modal.css" rel="stylesheet" />
-    <link href="css/scrollbar.css" rel="stylesheet" />
-    <link href="css/settings.css" rel="stylesheet" />
-    <script>if (window.module) module = window.module;</script>
-    <script src="js/interop.js"></script>
-</head>
-<body>
-    <div class="headerbar">
-        <component type="typeof(Headerbar)" render-mode="ServerPrerendered" />
-    </div>
-
-    <div class="container settings_cont">
+    <div class="container settings_cont mainblock">
         <div class="row">
             <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
                 <div>
@@ -77,12 +53,11 @@
                 </div>
                 <div class="buttoncol"><button class="btn" type="button"><span>Restore forgotten account</span></button><button class="btn" type="button"><span>Clear forgotten backups</span></button></div>
                 <div class="buttoncol"><button class="btn" id="Steam_OpenSteamFolder" type="button"><span>Open Steam Folder</span></button><button class="btn" id="Steam_AdvancedClearing" type="button"><span>Advanced cleaning...</span></button></div>
-                <div class="buttoncol col_close"><button class="btn btn_close" type="button"><span>Close</span></button></div>
+                <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="ClickSaveSettings"><span>Close</span></button></div>
             </div>
         </div>
     </div>
-
-<div id="blazor-error-ui">
+    <div id="blazor-error-ui">
         <environment include="Staging,Production">
             An error has occurred. This application may no longer respond until reloaded.
         </environment>
@@ -92,9 +67,18 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-
-    <script src="_framework/blazor.server.js"></script>
-    <script src="js/WebFuncs.js"></script>
-    <script src="js/Headerbar.js"></script>
-</body>
-</html>
+@code {
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; }
+    private IJSObjectReference _jsModule;
+    protected override async Task OnInitializedAsync()
+    {
+        _jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/steam/settings.js");
+        await _jsModule.InvokeAsync<string>("jsLoadSettings");
+    }
+    public async Task ClickSaveSettings()
+    {
+        await _jsModule.InvokeAsync<string>("jsSaveSettings");
+        NavManager.NavigateTo("/");
+    }
+}

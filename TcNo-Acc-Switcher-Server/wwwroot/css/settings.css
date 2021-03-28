@@ -105,10 +105,6 @@ label {
     margin-right: 1em;
 }
 
-.settings_cont {
-    margin-top: 2em;
-}
-
 /* Checkbox */
 
 .form-check {
@@ -151,6 +147,10 @@ input[type='checkbox'] {
     }
 
 /* Buttons */
+
+.settingsCol:first-child {
+    margin-top: 1em;
+}
 
 .settingsCol .buttoncol {
     width: 100%;

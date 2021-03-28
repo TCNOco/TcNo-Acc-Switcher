@@ -10,6 +10,14 @@ a, .btn-link {
     color: #0366d6;
 }
 
+.mainblock {
+    width: 100%;
+    height: 100%;
+    background-color: #28293A;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;
