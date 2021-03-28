@@ -21,13 +21,17 @@ using TcNo_Acc_Switcher;
 using System.Threading;
 using System.Windows.Interop;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
+using Microsoft.Win32;
 using Microsoft.Win32.TaskScheduler;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Client.Classes;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using Index = TcNo_Acc_Switcher_Server.Pages.Index;
+using Path = System.IO.Path;
 using Point = System.Windows.Point;
 using Strings = TcNo_Acc_Switcher_Client.Localisation.Strings;
 
@@ -42,7 +46,7 @@ namespace TcNo_Acc_Switcher_Client
         private readonly Thread _server = new Thread(RunServer);
         private static void RunServer() { TcNo_Acc_Switcher.Program.Main(new string[0]); }
         private readonly TrayUsers _trayUsers = new TrayUsers();
-        private JObject settings = new JObject();
+        private JObject _settings = new JObject();
 
 
         public MainWindow()
@@ -56,7 +60,7 @@ namespace TcNo_Acc_Switcher_Client
             InitializeComponent();
 
             // Load settings (If they exist, otherwise creates).
-            settings = GeneralFuncs.LoadSettings("WindowSetting");
+            _settings = GeneralFuncs.LoadSettings("WindowSetting");
 
 
             //MView2.Source = new Uri("http://localhost:44305/");
@@ -65,7 +69,7 @@ namespace TcNo_Acc_Switcher_Client
             MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
             //MView2.MouseDown += MViewMDown;
 
-            Point windowSize = Point.Parse((string)settings["WindowSize"] ?? "800,450");
+            Point windowSize = Point.Parse((string)_settings["WindowSize"] ?? "800,450");
             this.Width = windowSize.X;
             this.Height = windowSize.Y;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
@@ -321,13 +325,13 @@ namespace TcNo_Acc_Switcher_Client
             MView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
         }
 
-        private void SaveSettings(string windowURL)
+        private void SaveSettings(string windowUrl)
         {
             // IN THE FUTURE: ONLY DO THIS FOR THE MAIN PAGE WHERE YOU CAN CHOOSE WHAT PLATFORM TO SWAP ACCOUNTS ON
             // This will only be when that's implimented. Easier to leave it until then.
-            MessageBox.Show(windowURL);
-            settings["WindowSize"] = Convert.ToInt32(this.Width).ToString() + ',' + Convert.ToInt32(this.Height).ToString();
-            GeneralFuncs.SaveSettings("WindowSetting", settings);
+            MessageBox.Show(windowUrl);
+            _settings["WindowSize"] = Convert.ToInt32(this.Width).ToString() + ',' + Convert.ToInt32(this.Height).ToString();
+            GeneralFuncs.SaveSettings("WindowSetting", _settings);
         }
 
         private void UrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
@@ -359,6 +363,45 @@ namespace TcNo_Acc_Switcher_Client
                 args.Cancel = true;
                 this.WindowState = WindowState.Minimized;
             }
+
+            if (args.Uri.Contains("?"))
+            {
+                // Needs to be here as:
+                // Importing Microsoft.Win32 and System.Windows didn't get OpenFileDialog to work.
+                var uriArg = args.Uri.Split("?").Last();
+                if (uriArg.StartsWith("selectFile"))
+                {
+                    args.Cancel = true;
+                    var argValue = uriArg.Split("=")[1];
+                    var dlg = new OpenFileDialog
+                    {
+                        FileName = Path.GetFileNameWithoutExtension(argValue),
+                        DefaultExt = Path.GetExtension(argValue),
+                        Filter = $"{argValue}|{argValue}"
+                    };
+
+                    var result = dlg.ShowDialog();
+                    if (result != true) return;
+                    MView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
+                    MView2.ExecuteScriptAsync("Modal_SetFilepath(" + JsonConvert.SerializeObject(dlg.FileName.Substring(0, dlg.FileName.LastIndexOf('\\'))) + ")");
+                    //VerifySteamPath();
+                }
+            }
+
+        }
+        public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)
+        {
+            string script = functionName + "(";
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                script += JsonConvert.SerializeObject(parameters[i]);
+                if (i < parameters.Length - 1)
+                {
+                    script += ", ";
+                }
+            }
+            script += ");";
+            return await webView2.ExecuteScriptAsync(script);
         }
     }
 }

@@ -67,7 +67,7 @@ div.form-text {
     color: white;
 }
 
-input[type=number] {
+input[type=number], input[type=text] {
     display: inline-block;
     background-color: #212529;
     color: white;
@@ -76,9 +76,10 @@ input[type=number] {
     outline: 0;
     border-bottom: none;
     margin: 0 0.5em 2px 0.5em;
+    -moz-appearance: textfield;
 }
 
-    input[type=number]:focus {
+    input[type=number]:focus, input[type=text]:focus {
         border-bottom: 2px solid #FFAA00;
         margin: 0 0.5em;
     }
@@ -87,10 +88,7 @@ input[type=number] {
         -webkit-appearance: none;
         margin: 0;
     }
-
-input[type=number] {
-    -moz-appearance: textfield;
-}
+    
 
 label {
     margin-left: 0.5em;

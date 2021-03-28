@@ -2,7 +2,6 @@
 @using TcNo_Acc_Switcher_Server.Shared
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager NavManager
-<link href="css/settings.css" rel="stylesheet" />
 
     <div class="container settings_cont mainblock">
         <div class="row">
@@ -79,6 +78,6 @@
     public async Task ClickSaveSettings()
     {
         await _jsModule.InvokeAsync<string>("jsSaveSettings");
-        NavManager.NavigateTo("/");
+        NavManager.NavigateTo("/Steam");
     }
 }

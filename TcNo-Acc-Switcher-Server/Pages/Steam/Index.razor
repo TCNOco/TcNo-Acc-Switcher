@@ -1,0 +1,135 @@
+﻿@page "/Steam/"
+@using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Server.Shared
+@using TcNo_Acc_Switcher_Server.Pages.Steam
+@using Microsoft.JSInterop
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq
+@using Gameloop.Vdf
+@using Gameloop.Vdf.JsonConverter
+@using System.IO
+@using System.Security.Cryptography.X509Certificates
+@using Microsoft.VisualBasic
+@using System.Drawing
+@inject AppData CurAppData
+@inject IJSRuntime Js;
+
+
+
+<div id="acc_list" class="acc_list">
+    @*<AccountDisplay Username="usernamehere" SteamId64="76561198064588130" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />*@
+
+    @* Will do this ASYNC rather, using JS
+            @foreach (var i in SteamSwitcherFuncs.loadProfiles())
+        {
+            <AccountDisplay Username="@(i.AccName)" SteamId64="@(i.SteamID)" ImageUrl="@(i.ImgURL)" Line1="@(i.AccName)" Line2="@(i.Name)" Line3="@(i.lastLogin)" ExtraClasses="@(i.ExtraClasses)" />
+
+        }*@
+
+    <ul class="contextmenu">
+        <li><a onclick="SwapTo();return false;" href="">Swap to account</a></li>
+        <li>
+            <a href="#">Copy Profile...</a>
+            <ul class="submenu">
+                @*<li><a @onclick="Steam.SteamSwitcherBase.CopyProfileURL" href="">Community URL</a></li>*@
+                <li><a onclick="copy('URL')" href="">Community URL</a></li>
+                <li><a onclick="copy('Line2')" href="">Community Username</a></li>
+                @*<li><a @onclick="@(e => Steam.SteamSwitcherBase.CopyCommunityUsername("username"))" href="">Community Username</a></li>*@
+                <li><a onclick="copy('Username')" href="">Login username</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">Copy SteamID...</a>
+            <ul class="submenu">
+                <li><a onclick="copy('SteamId')" href="">SteamID [STEAM0:~]</a></li>
+                <li><a onclick="copy('SteamId3')" href="">SteamID3 [U:1:~]</a></li>
+                <li><a onclick="copy('SteamId32')" href="">SteamID32</a></li>
+                <li><a onclick="copy('SteamId64')" href="">SteamID64 7656~</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">Copy other...</a>
+            <ul class="submenu">
+                <li><a onclick="copy('SteamRep')" href="">SteamRep</a></li>
+                <li><a onclick="copy('SteamID.uk')" href="">SteamID.uk</a></li>
+                <li><a onclick="copy('SteamID.io')" href="">SteamID.io</a></li>
+                <li><a onclick="copy('SteamIDFinder.com')" href="">SteamIDFinder.com</a></li>
+            </ul>
+        </li>
+        <li><a href="">Create Desktop Shortcut</a></li>
+        <li><a href="#">Forget</a></li>
+    </ul>
+</div>
+<div class="acc_list_actionbar">
+    <input id="CurrentStatus" @bind="@CurAppData.CurrentStatus">
+    <div>
+        <div class="button" id="btnAddNew" onclick="NewSteamLogin()">
+            <span>Add New</span>
+        </div>
+        <div class="button btn_login" id="btnLogin" onclick="SwapTo()">
+            <span>Login</span>
+        </div>
+        @*<div class="button" id="btnSettings" onclick="window.location = 'show_settings';">*@
+        <NavLink href="Steam/Settings">
+            <div class="button" id="btnSettings">
+                <img src="img/icons/ico_settings.svg" draggable="false" />
+            </div>
+        </NavLink>
+        <div class="button" id="btnHelp" onclick="ShowModal('info');">
+            <img src="img/icons/ico_question.svg" draggable="false" />
+        </div>
+    </div>
+
+</div>
+
+@code {
+    [Inject]
+    protected IJSRuntime JsRuntime { get; set; }
+
+    //protected override void OnAfterRender(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        JsRuntime.InvokeVoidAsync("onBlazorReady");
+    //    }
+    //}
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //SomeStartupMethod();
+            //await SomeStartupTask();
+            await SteamSwitcherFuncs.LoadProfiles(JsRuntime);
+        }
+    }
+
+    // Reloading the page is better for now
+    //private async void RefreshList()
+    //{
+    //    await SteamSwitcherFuncs.LoadProfiles(JsRuntime);
+    //}
+
+
+    public class Steamuser
+    {
+        [JsonIgnore] public string SteamId { get; set; }
+        [JsonProperty("AccountName", Order = 0)] public string AccName { get; set; }
+        [JsonProperty("PersonaName", Order = 1)] public string Name { get; set; }
+        [JsonProperty("RememberPassword", Order = 2)] private readonly string _remPass = "1"; // Should always be 1
+        [JsonProperty("mostrecent", Order = 3)] public string MostRec = "0";
+        [JsonProperty("Timestamp", Order = 4)] public string LastLogin { get; set; }
+        [JsonProperty("WantsOfflineMode", Order = 5)] public string OfflineMode = "0";
+        [JsonIgnore] public string ImgUrl { get; set; }
+
+        //[JsonIgnore] public string vacStatus { get; set; } // WAS System.Windows.Media.Brush
+    }
+
+
+
+    //[JSInvokable]
+    //public static Task<int> CopyProfileURL()
+    //{
+    //    return Task.FromResult(new Random().Next());
+    //}
+}

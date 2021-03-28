@@ -22,7 +22,7 @@ namespace TcNo_Acc_Switcher_Client
 
     public partial class Settings
     {
-        private readonly JObject settingsJObject;
+        private readonly JObject _settingsJObject;
         private MainWindow _mw;
         private bool _enableButtons;
 
@@ -30,7 +30,7 @@ namespace TcNo_Acc_Switcher_Client
         {
             InitializeComponent();
 
-            settingsJObject = GeneralFuncs.LoadSettings("SteamSettings");
+            _settingsJObject = GeneralFuncs.LoadSettings("SteamSettings");
             // Set tickboxes from here, rather than with a model.
         }
 

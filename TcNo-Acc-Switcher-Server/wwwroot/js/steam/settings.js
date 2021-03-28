@@ -11,7 +11,7 @@ function setSettings(settingsJsonString) {
 }
 // Load settings
 export function jsLoadSettings() {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GILoadSettings", "SteamSettings").then(r => {
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLoadSettings", "SteamSettings").then(r => {
         console.log("GOT SETTINGS");
         console.log(r);
         setSettings(r);
@@ -35,6 +35,6 @@ function getSettings() {
 }
 // Save settings
 export function jsSaveSettings() {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GISaveSettings", "SteamSettings", getSettings());
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveSettings", "SteamSettings", getSettings());
 }
 

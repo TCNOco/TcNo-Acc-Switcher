@@ -18,7 +18,7 @@ using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Globals;
 
-using Steamuser = TcNo_Acc_Switcher_Server.Pages.Index.Steamuser;
+using Steamuser = TcNo_Acc_Switcher_Server.Pages.Steam.Index.Steamuser;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
@@ -86,7 +86,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Console.WriteLine("LOADING PROFILES!");
             JObject settings = GeneralFuncs.LoadSettings("SteamSettings");
-            var userAccounts = GetSteamUsers(Path.Combine((string)settings["SteamFolder"], "config\\loginusers.vdf"));  //////////////// TO GET TO: CHECK IF NULL, ASK USER IN POPUP
+            var userAccounts = GetSteamUsers(Path.Combine(GeneralFuncs.LoginusersVdf(settings)));  //////////////// TO GET TO: CHECK IF NULL, ASK USER IN POPUP
             var vacStatusList = new List<VacStatus>();
             var loadedVacCache = LoadVacInfo(ref vacStatusList);
 
@@ -280,9 +280,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             if (!autoStartSteam) return;
             if ((bool)settings["Steam_Admin"])
-                Process.Start((string)settings["SteamFolder"]);
+                Process.Start(GeneralFuncs.SteamExe(settings));
             else
-                Process.Start(new ProcessStartInfo("explorer.exe", (string)settings["SteamFolder"]));
+                Process.Start(new ProcessStartInfo("explorer.exe", GeneralFuncs.SteamExe(settings)));
         }
 
         public static void NewSteamLogin()
@@ -333,12 +333,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
         public static void UpdateLoginUsers(JObject settings, bool loginNone, string selectedSteamId, string accName)
         {
-            var userAccounts = SteamSwitcherFuncs.GetSteamUsers(GeneralFuncs.LoginusersVDF(settings));
+            var userAccounts = SteamSwitcherFuncs.GetSteamUsers(GeneralFuncs.LoginusersVdf(settings));
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
             // -----------------------------------
             var targetUsername = accName;
-            var tempFile = GeneralFuncs.LoginusersVDF(settings) + "_temp";
+            var tempFile = GeneralFuncs.LoginusersVdf(settings) + "_temp";
             File.Delete(tempFile);
 
             var outJObject = new JObject();
@@ -348,7 +348,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 outJObject[ua.SteamId] = (JObject)JToken.FromObject(ua);
             }
             File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
-            File.Replace(tempFile, GeneralFuncs.LoginusersVDF(settings), GeneralFuncs.LoginusersVDF(settings) + "_last");
+            File.Replace(tempFile, GeneralFuncs.LoginusersVdf(settings), GeneralFuncs.LoginusersVdf(settings) + "_last");
 
             // -----------------------------------
             // --------- Manage registry ---------
@@ -385,7 +385,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             return JObject.Parse(@"{
                 ForgetAccountEnabled: false,
-                SteamFolder: ""C:\\Program Files (x86)\\Steam\\"",
+                Path: ""C:\\Program Files (x86)\\Steam\\"",
                 WindowSize: ""800, 450"",
                 Steam_Admin: false,
                 Steam_ShowSteamID: false,
