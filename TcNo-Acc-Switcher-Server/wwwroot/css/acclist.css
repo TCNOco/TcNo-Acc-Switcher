@@ -127,7 +127,7 @@ label.acc p {
         justify-content: flex-end;
     }
 
-        .acc_list_actionbar div .button {
+        .acc_list_actionbar div .button, .settingsCol button {
             user-select: none;
             background-color: #333;
             padding: 0.25em 0.651em;
@@ -137,22 +137,24 @@ label.acc p {
             border-color: #888;
             border-width: 0.1em;
             cursor: pointer;
+            transition: ease-in-out 60ms;
         }
-            .acc_list_actionbar div .button:active {
-                background-color: #222!important;
+            .acc_list_actionbar div .button:active, .settingsCol button:active {
+                background-color: #222 !important;
+                border-color: #FFAA00;
             }
-            .acc_list_actionbar div .button:hover {
+            .acc_list_actionbar div .button:hover, .settingsCol button:hover {
                 background-color: #444;
             }
 
-            .acc_list_actionbar div .btn_login {
+            .acc_list_actionbar div .btn_login, .btn_close span {
                 padding: 0.25em 5em;
             }
 
-        .acc_list_actionbar div .button span {
+        .acc_list_actionbar div .button span, .settingsCol button span {
             line-height: 2.5em;
         }
 
-        .acc_list_actionbar div .button img {
+        .acc_list_actionbar div .button img, .settingsCol button img {
             width: 1.5em;
         }
