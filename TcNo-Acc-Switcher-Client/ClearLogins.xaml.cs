@@ -241,11 +241,11 @@ namespace TcNo_Acc_Switcher_Client
                 }
             }
         }
-        private void BtnClearLogs_Click(object sender, RoutedEventArgs e) => ClearFolder("Clearing logs:", Path.Combine(Settings.GetSteamDirectory(), "logs\\"));
-        private void BtnClearDumps_Click(object sender, RoutedEventArgs e) => ClearFolder("Clearing dumps:", Path.Combine(Settings.GetSteamDirectory(), "dumps\\"));
-        private void BtnClearConfigVdf_Click(object sender, RoutedEventArgs e) => ClearFile(Path.Combine(Settings.GetSteamDirectory(), "config\\config.vdf"));
-        private void BtnClearLoginusersVdf_Click(object sender, RoutedEventArgs e) => ClearFile(Path.Combine(Settings.GetSteamDirectory(), "config\\loginusers.vdf"));
-        private void btnClearSSFN_Click(object sender, RoutedEventArgs e) => ClearSsfn(Settings.GetSteamDirectory());
+        private void BtnClearLogs_Click(object sender, RoutedEventArgs e) => ClearFolder("Clearing logs:", Path.Combine(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder(), "logs\\"));
+        private void BtnClearDumps_Click(object sender, RoutedEventArgs e) => ClearFolder("Clearing dumps:", Path.Combine(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder(), "dumps\\"));
+        private void BtnClearConfigVdf_Click(object sender, RoutedEventArgs e) => ClearFile(Path.Combine(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder(), "config\\config.vdf"));
+        private void BtnClearLoginusersVdf_Click(object sender, RoutedEventArgs e) => ClearFile(Path.Combine(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder(), "config\\loginusers.vdf"));
+        private void btnClearSSFN_Click(object sender, RoutedEventArgs e) => ClearSsfn(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder());
         private void btnClearRLastName_Click(object sender, RoutedEventArgs e) => DeleteRegKey(@"Software\Valve\Steam", "LastGameNameUsed");
         private void btnClearRAutoLogin_Click(object sender, RoutedEventArgs e) => DeleteRegKey(@"Software\Valve\Steam", "AutoLoginuser");
         private void btnClearRRemember_Click(object sender, RoutedEventArgs e) => DeleteRegKey(@"Software\Valve\Steam", "RememberPassword");
@@ -273,18 +273,18 @@ namespace TcNo_Acc_Switcher_Client
             // Overlay UI logs -
             //   Steam\GameOverlayUI.exe.log
             //   Steam\GameOverlayRenderer.log
-            ClearFilesOfType("Clearing .log & .last from Steam:", Settings.GetSteamDirectory(), "*.log|*.last", SearchOption.TopDirectoryOnly);
+            ClearFilesOfType("Clearing .log & .last from Steam:", TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder(), "*.log|*.last", SearchOption.TopDirectoryOnly);
 
         private void BtnClearAppCache_OnClick(object sender, RoutedEventArgs e) =>
             // App Cache - Steam\appcache
-            ClearFilesOfType("Clearing appcache:", Path.Combine(Settings.GetSteamDirectory(), "appcache"), "*.*", SearchOption.TopDirectoryOnly);
+            ClearFilesOfType("Clearing appcache:", Path.Combine(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder(), "appcache"), "*.*", SearchOption.TopDirectoryOnly);
 
         private void BtnClearHttpCache_OnClick(object sender, RoutedEventArgs e) =>
             // HTTP cache - Steam\appcache\httpcache\
-            ClearFilesOfType("Clearing appcache\\httpcache:", Path.Combine(Settings.GetSteamDirectory(), "appcache\\httpcache"), "*.*", SearchOption.AllDirectories);
+            ClearFilesOfType("Clearing appcache\\httpcache:", Path.Combine(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder(), "appcache\\httpcache"), "*.*", SearchOption.AllDirectories);
 
         private void BtnClearDepotCache_OnClick(object sender, RoutedEventArgs e) =>
             // Depot - Steam\depotcache\
-            ClearFilesOfType("Clearing depotcache:", Path.Combine(Settings.GetSteamDirectory(), "depotcache"), "*.*", SearchOption.TopDirectoryOnly);
+            ClearFilesOfType("Clearing depotcache:", Path.Combine(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder(), "depotcache"), "*.*", SearchOption.TopDirectoryOnly);
     }
 }

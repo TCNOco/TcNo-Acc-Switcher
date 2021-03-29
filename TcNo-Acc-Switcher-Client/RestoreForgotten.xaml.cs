@@ -20,7 +20,7 @@ namespace TcNo_Acc_Switcher_Client
         public void ShareMainWindow(MainWindow imw) => _mw = imw;
         private void PageLoaded(object sender, RoutedEventArgs e)
         {
-            var fileEntries = Directory.GetFiles(Settings.GetForgottenBackupPath());
+            var fileEntries = Directory.GetFiles(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.GetForgottenBackupPath());
             foreach (var fileName in fileEntries)
                 FileNamesList.Items.Add(fileName);
         }
@@ -35,7 +35,7 @@ namespace TcNo_Acc_Switcher_Client
         private void DragWindow(object sender, MouseButtonEventArgs e) => Globals.WindowHandling.DragWindow(sender, e, this);
         private void btnRestore_Click(object sender, RoutedEventArgs e)
         {
-            File.Copy(FileNamesList.SelectedItem.ToString(), Path.Combine(Settings.GetPersistentFolder(), "loginusers.vdf"), true);
+            File.Copy(FileNamesList.SelectedItem.ToString(), Path.Combine(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamConfigFolder(), "loginusers.vdf"), true);
             MessageBox.Show("Restored! Refreshing Steam accounts now. This may take a second.");
             _mw.MView2.Reload();
             this.Close();

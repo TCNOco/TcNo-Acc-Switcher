@@ -99,6 +99,8 @@ namespace TcNo_Acc_Switcher_Client
         {
             _mw.MView2.Reload();
             // Currently checks VAC status every time loaded.
+            // At least did
+            //Check to see if reloading the page maks it reinit
         }
 
         private void ShowSteamID_CheckChanged(object sender, RoutedEventArgs e)
@@ -111,21 +113,6 @@ namespace TcNo_Acc_Switcher_Client
             //_persistentSettings.ShowVacStatus = ShowVacStatus.IsChecked != null && (bool) ShowVacStatus.IsChecked;
         }
         
-        public static string GetForgottenBackupPath()
-        {
-            return Path.Combine("SteamSwitcherFuncs.LoadSettings().SteamFolder", $"config\\TcNo-Acc-Switcher-Backups\\"); }
-
-        public static string GetPersistentFolder()
-        {
-            return Path.Combine("SteamSwitcherFuncs.LoadSettings().SteamFolder", "config\\");
-        }
-
-        public static string GetSteamDirectory()
-        {
-            return "SteamSwitcherFuncs.LoadSettings().SteamFolder";
-        }
-
-
         private void ShowForgetRememberDialog()
         {
             //var forgetAccountCheckDialog = new ForgetAccountCheck() { DataContext = _mw.MainViewmodel, Owner = this };
@@ -137,7 +124,7 @@ namespace TcNo_Acc_Switcher_Client
         {
             if (MessageBox.Show(Strings.ClearBackups, Strings.AreYouSure, MessageBoxButton.YesNo,
                 MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
-            var backupPath = GetForgottenBackupPath();
+            var backupPath = TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.GetForgottenBackupPath();
             try
             {
                 if (Directory.Exists(backupPath))
@@ -151,7 +138,7 @@ namespace TcNo_Acc_Switcher_Client
 
         private void btnRestoreForgotten_Click(object sender, RoutedEventArgs e)
         {
-            if (Directory.Exists(GetForgottenBackupPath()))
+            if (Directory.Exists(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.GetForgottenBackupPath()))
             {
                 var restoreForgottenDialog = new RestoreForgotten();
                 restoreForgottenDialog.ShareMainWindow(_mw);
@@ -160,7 +147,7 @@ namespace TcNo_Acc_Switcher_Client
             }
             else
             {
-                MessageBox.Show($"No backups available. ({GetForgottenBackupPath()})");
+                MessageBox.Show($"No backups available. ({TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.GetForgottenBackupPath()})");
             }
         }
 
@@ -171,7 +158,7 @@ namespace TcNo_Acc_Switcher_Client
 
         private void btnOpenSteamFolder_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("explorer.exe", GetSteamDirectory());
+            Process.Start("explorer.exe", TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder());
         }
 
         private void btnAdvancedCleaning_Click(object sender, RoutedEventArgs e)

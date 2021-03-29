@@ -86,7 +86,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Console.WriteLine("LOADING PROFILES!");
             JObject settings = GeneralFuncs.LoadSettings("SteamSettings");
-            var userAccounts = GetSteamUsers(Path.Combine(GeneralFuncs.LoginusersVdf(settings)));  //////////////// TO GET TO: CHECK IF NULL, ASK USER IN POPUP
+            var userAccounts = GetSteamUsers(Path.Combine(SteamSwitcherFuncs.LoginUsersVdf(settings))); 
             var vacStatusList = new List<VacStatus>();
             var loadedVacCache = LoadVacInfo(ref vacStatusList);
 
@@ -280,9 +280,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             if (!autoStartSteam) return;
             if ((bool)settings["Steam_Admin"])
-                Process.Start(GeneralFuncs.SteamExe(settings));
+                Process.Start(SteamSwitcherFuncs.SteamExe(settings));
             else
-                Process.Start(new ProcessStartInfo("explorer.exe", GeneralFuncs.SteamExe(settings)));
+                Process.Start(new ProcessStartInfo("explorer.exe", SteamSwitcherFuncs.SteamExe(settings)));
         }
 
         public static void NewSteamLogin()
@@ -294,9 +294,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             UpdateLoginUsers(settings, true, "", "");
             // Start Steam
             if ((bool)settings["Steam_Admin"])
-                Process.Start(GeneralFuncs.SteamExe(settings));
+                Process.Start(SteamSwitcherFuncs.SteamExe(settings));
             else
-                Process.Start(new ProcessStartInfo("explorer.exe", GeneralFuncs.SteamExe(settings)));
+                Process.Start(new ProcessStartInfo("explorer.exe", SteamSwitcherFuncs.SteamExe(settings)));
             //LblStatus.Content = Strings.StatusStartedSteam;
         }
 
@@ -333,12 +333,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
         public static void UpdateLoginUsers(JObject settings, bool loginNone, string selectedSteamId, string accName)
         {
-            var userAccounts = SteamSwitcherFuncs.GetSteamUsers(GeneralFuncs.LoginusersVdf(settings));
+            var userAccounts = SteamSwitcherFuncs.GetSteamUsers(SteamSwitcherFuncs.LoginUsersVdf(settings));
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
             // -----------------------------------
             var targetUsername = accName;
-            var tempFile = GeneralFuncs.LoginusersVdf(settings) + "_temp";
+            var tempFile = SteamSwitcherFuncs.LoginUsersVdf(settings) + "_temp";
             File.Delete(tempFile);
 
             var outJObject = new JObject();
@@ -348,7 +348,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 outJObject[ua.SteamId] = (JObject)JToken.FromObject(ua);
             }
             File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
-            File.Replace(tempFile, GeneralFuncs.LoginusersVdf(settings), GeneralFuncs.LoginusersVdf(settings) + "_last");
+            File.Replace(tempFile, SteamSwitcherFuncs.LoginUsersVdf(settings), SteamSwitcherFuncs.LoginUsersVdf(settings) + "_last");
 
             // -----------------------------------
             // --------- Manage registry ---------
@@ -380,7 +380,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         #endregion
 
         #region Settings
-
         public static JObject DefaultSettings_Steam()
         {
             return JObject.Parse(@"{
@@ -399,6 +398,39 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 Steam_TrayAccNumber: ""3""
             }");
         }
+
+        /* OTHER FUNCTIONS*/
+        // STEAM SPECIFIC -- Move to a new file in the future.
+        public static string LoginUsersVdf(JObject settings = null)
+        {
+            //////////////// TO GET TO: CHECK IF NULL, ASK USER IN POPUP
+            GeneralFuncs.InitSettingsIfNull(ref settings, "SteamSettings");
+            return Path.Combine(SteamFolder(settings), "config\\loginusers.vdf");
+        }
+
+        public static string GetForgottenBackupPath(JObject settings = null)
+        {
+            GeneralFuncs.InitSettingsIfNull(ref settings, "SteamSettings");
+            return Path.Combine(SteamFolder(settings), "config\\\\TcNo-Acc-Switcher-Backups\\\\");
+        }
+
+        public static string SteamConfigFolder(JObject settings = null)
+        {
+            GeneralFuncs.InitSettingsIfNull(ref settings, "SteamSettings");
+            return Path.Combine(SteamFolder(settings), "config\\");
+        }
+        public static string SteamExe(JObject settings = null)
+        {
+            GeneralFuncs.InitSettingsIfNull(ref settings, "SteamSettings");
+            return Path.Combine(SteamFolder(settings), "Steam.exe");
+        }
+
+        public static string SteamFolder(JObject settings = null)
+        {
+            GeneralFuncs.InitSettingsIfNull(ref settings, "SteamSettings");
+            return (string)settings["Path"];
+        }
+
         #endregion
     }
 }

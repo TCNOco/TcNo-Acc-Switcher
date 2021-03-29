@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Pages.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Pages
 {
@@ -26,7 +27,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
             //await JsRuntime.InvokeAsync<string>("alert", "TEST");
             JObject settings = GeneralFuncs.LoadSettings("SteamSettings");
             //if (false)
-            if (Directory.Exists((string)settings["Path"]) && File.Exists(GeneralFuncs.SteamExe(settings)))
+            if (Directory.Exists(SteamSwitcherFuncs.SteamFolder(settings)) && File.Exists(SteamSwitcherFuncs.SteamExe(settings)))
             {
                 NavManager.NavigateTo("/Steam/");
             }

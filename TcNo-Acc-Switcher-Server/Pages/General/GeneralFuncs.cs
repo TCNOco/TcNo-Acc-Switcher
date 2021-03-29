@@ -117,14 +117,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
         public static JObject DefaultSettings() => JObject.Parse(@"WindowSize: ""800, 450""");
 
-        public static string LoginusersVdf(JObject settings)
-        {
-            return Path.Combine((string)settings["Path"], "config\\loginusers.vdf");
-        }
-        public static string SteamExe(JObject settings)
-        {
-            return Path.Combine((string)settings["Path"], "Steam.exe");
-        }
+        public static void InitSettingsIfNull(ref JObject settings, string settingsType) => settings ??= GeneralFuncs.LoadSettings(settingsType);
+
         #endregion
     }
 }
