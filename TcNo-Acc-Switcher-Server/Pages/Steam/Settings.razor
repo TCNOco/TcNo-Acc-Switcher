@@ -66,18 +66,3 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-@code {
-    [Inject]
-    public IJSRuntime JSRuntime { get; set; }
-    private IJSObjectReference _jsModule;
-    protected override async Task OnInitializedAsync()
-    {
-        _jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/steam/settings.js");
-        await _jsModule.InvokeAsync<string>("jsLoadSettings");
-    }
-    public async Task ClickSaveSettings()
-    {
-        await _jsModule.InvokeAsync<string>("jsSaveSettings");
-        NavManager.NavigateTo("/Steam");
-    }
-}
