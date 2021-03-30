@@ -20,17 +20,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         //        JsRuntime.InvokeVoidAsync("onBlazorReady");
         //    }
         //}
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
-            {
-                //SomeStartupMethod();
-                //await SomeStartupTask();
-                await SteamSwitcherFuncs.LoadProfiles(JsRuntime);
-            }
-        }
-
+        
         // Reloading the page is better for now
         //private async void RefreshList()
         //{

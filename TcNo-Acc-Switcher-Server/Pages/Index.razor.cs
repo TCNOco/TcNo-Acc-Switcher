@@ -30,12 +30,14 @@ namespace TcNo_Acc_Switcher_Server.Pages
             if (Directory.Exists(SteamSwitcherFuncs.SteamFolder(settings)) && File.Exists(SteamSwitcherFuncs.SteamExe(settings)))
             {
                 NavManager.NavigateTo("/Steam/");
+                return;
             }
-            else
-            {
-                await JsRuntime.InvokeAsync<string>("ShowModal", "find:Steam:Steam.exe:SteamSettings");
-                // When found: await JsRuntime.InvokeAsync<string>("Modal_RequestedLocated", "true");
-            }
+            await ShowModal("find:Steam:Steam.exe:SteamSettings");
+        }
+
+        public async Task ShowModal(string args)
+        {
+            await JsRuntime.InvokeAsync<string>("ShowModal", args);
         }
     }
 }

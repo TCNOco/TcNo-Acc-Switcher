@@ -63,17 +63,7 @@ namespace TcNo_Acc_Switcher_Client
             if (e.Key == Key.Escape)
                 Close();
         }
-
-        private void btnResetSettings_Click(object sender, RoutedEventArgs e)
-        {
-            var messageBoxResult = MessageBox.Show("Are you sure?", "Reset settings", MessageBoxButton.YesNo);
-            if (messageBoxResult != MessageBoxResult.Yes) return;
-            GeneralFuncs.ResetSettings_Steam();
-            this.Close();
-        }
-
-        //private void btnPickSteamFolder_Click(object sender, RoutedEventArgs e) => _mw.PickSteamFolder();
-
+        
         private void btnResetImages_Click(object sender, RoutedEventArgs e)
         {
             var messageBoxResult = MessageBox.Show("Are you sure?", "Reset settings", MessageBoxButton.YesNo);
@@ -92,16 +82,7 @@ namespace TcNo_Acc_Switcher_Client
             }
         }
 
-
-
-
-        private void btnCheckVac_Click(object sender, RoutedEventArgs e)
-        {
-            _mw.MView2.Reload();
-            // Currently checks VAC status every time loaded.
-            // At least did
-            //Check to see if reloading the page maks it reinit
-        }
+        
 
         private void ShowSteamID_CheckChanged(object sender, RoutedEventArgs e)
         {
@@ -155,12 +136,7 @@ namespace TcNo_Acc_Switcher_Client
         {
             ClearForgottenBackups();
         }
-
-        private void btnOpenSteamFolder_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start("explorer.exe", TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder());
-        }
-
+        
         private void btnAdvancedCleaning_Click(object sender, RoutedEventArgs e)
         {
             var clearLoginsDialog = new ClearLogins() { Owner = this };

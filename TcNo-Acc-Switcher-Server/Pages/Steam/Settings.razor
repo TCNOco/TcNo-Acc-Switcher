@@ -6,6 +6,10 @@
     <div class="container settings_cont mainblock">
         <div class="row">
             <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
+                <div class="SettingsHeader">
+                    <hr><span>General settings</span>
+                    <hr>
+                </div>
                 <div>
                     <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label>Run Steam as Admin<br></label>
                 </div>
@@ -44,14 +48,14 @@
                     <hr><span>General</span>
                     <hr>
                 </div>
-                <div class="buttoncol"><button class="btn" id="Steam_PickFolder" type="button"><span>Pick Steam folder</span></button><button class="btn" id="Steam_CheckVAC" type="button"><span>Check account VAC status</span></button></div>
-                <div class="buttoncol"><button class="btn" id="Steam_ResetSettings" type="button"><span>Reset settings</span></button><button class="btn" id="Steam_ResetImages" type="button"><span>Reset images</span></button></div>
+                <div class="buttoncol"><button class="btn" id="Steam_PickFolder" type="button" @onclick="PickSteamFolder"><span>Pick Steam folder</span></button><button class="btn" id="Steam_CheckVAC" type="button" @onclick="ClearVacStatus"><span>Check account VAC status</span></button></div>
+                <div class="buttoncol"><button class="btn" id="Steam_ResetSettings" type="button" @onclick="ClearSettings"><span>Reset settings (todo:sure modal?)</span></button><button class="btn" id="Steam_ResetImages" type="button" @onclick="ClearImages"><span>Reset images</span></button></div>
                 <div class="SettingsHeader">
                     <hr><span>Steam tools</span>
                     <hr>
                 </div>
                 <div class="buttoncol"><button class="btn" type="button"><span>Restore forgotten account</span></button><button class="btn" type="button"><span>Clear forgotten backups</span></button></div>
-                <div class="buttoncol"><button class="btn" id="Steam_OpenSteamFolder" type="button"><span>Open Steam Folder</span></button><button class="btn" id="Steam_AdvancedClearing" type="button"><span>Advanced cleaning...</span></button></div>
+                <div class="buttoncol"><button class="btn" id="Steam_OpenSteamFolder" type="button" @onclick="OpenSteamFolder"><span>Open Steam Folder</span></button><button class="btn" id="Steam_AdvancedClearing" type="button"><span>Advanced cleaning...</span></button></div>
                 <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="ClickSaveSettings"><span>Close</span></button></div>
             </div>
         </div>

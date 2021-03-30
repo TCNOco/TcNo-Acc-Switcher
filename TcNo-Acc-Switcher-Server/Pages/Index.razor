@@ -3,9 +3,32 @@
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using Newtonsoft.Json.Linq
 @using System.IO
+@using Microsoft.AspNetCore.WebUtilities
+@using TcNo_Acc_Switcher_Server.Pages.Steam
 @inject IJSRuntime JsRuntime;
 @inject NavigationManager NavManager
 
 <div class="button" id="SwitcherSteam" @onclick="CheckSteam">
     <img src="img/icons/ico_settings.svg" draggable="false" />
 </div>
+
+@code
+{
+    // This has to be here for NavManager.
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("modal", out var queryValue))
+            {
+                switch (queryValue)
+                {
+                    case "Steam_Path":
+                        await ShowModal("find:Steam:Steam.exe:SteamSettings");
+                        break;
+                }
+            }
+        }
+    }
+}

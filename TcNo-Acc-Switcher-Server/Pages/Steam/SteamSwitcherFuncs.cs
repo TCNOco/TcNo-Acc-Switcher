@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Gameloop.Vdf;
 using Gameloop.Vdf.JsonConverter;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -69,6 +70,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         private const string SteamVacCacheFile = "profilecache/SteamVACCache.json";
 
+        public static bool DeleteVacCacheFile()
+        {
+            if (!File.Exists(SteamVacCacheFile)) return true;
+            File.Delete(SteamVacCacheFile);
+            return true;
+        }
+
         public static bool LoadVacInfo(ref List<VacStatus> vsl)
         {
             GeneralFuncs.DeletedOutdatedFile(SteamVacCacheFile);
@@ -82,11 +90,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void SaveVacInfo(List<VacStatus> vsList) => File.WriteAllText(SteamVacCacheFile, JsonConvert.SerializeObject(vsList));
 
         //public static List<Steamuser> loadProfiles()
-        public static async Task LoadProfiles(IJSRuntime jsRuntime)
+        public static async ValueTask<bool> LoadProfiles(IJSRuntime jsRuntime)
         {
             Console.WriteLine("LOADING PROFILES!");
             JObject settings = GeneralFuncs.LoadSettings("SteamSettings");
-            var userAccounts = GetSteamUsers(Path.Combine(SteamSwitcherFuncs.LoginUsersVdf(settings))); 
+            string steamPath = SteamSwitcherFuncs.LoginUsersVdf(settings);
+            if (steamPath == "RESET_PATH") return false;
+            var userAccounts = GetSteamUsers(steamPath); 
             var vacStatusList = new List<VacStatus>();
             var loadedVacCache = LoadVacInfo(ref vacStatusList);
 
@@ -125,15 +135,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             SaveVacInfo(vacStatusList);
             await jsRuntime.InvokeVoidAsync("initContextMenu");
-            
-            //return _userAccounts;
+
+            return true;
         }
         
         public static string UnixTimeStampToDateTime(string stringUnixTimeStamp)
         {
             double.TryParse(stringUnixTimeStamp, out var unixTimeStamp);
             // Unix timestamp is seconds past epoch
-            var dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            var dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime.ToString(CultureInfo.InvariantCulture);
         }
@@ -323,7 +333,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // This is what Administrator permissions are required for.
             var startInfo = new ProcessStartInfo
             {
-                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                WindowStyle = ProcessWindowStyle.Hidden,
                 FileName = "cmd.exe",
                 Arguments = "/C TASKKILL /F /T /IM steam*"
             };
@@ -401,10 +411,32 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         /* OTHER FUNCTIONS*/
         // STEAM SPECIFIC -- Move to a new file in the future.
+
+        public static void ResetSettings_Steam()
+        {
+            GeneralFuncs.SaveSettings("SteamSettings", SteamSwitcherFuncs.DefaultSettings_Steam());
+        }
+
+        public static bool ClearImages()
+        {
+            if (!Directory.Exists("wwwroot/img/profiles/")) return false;
+            foreach (var file in Directory.GetFiles("wwwroot/img/profiles/"))
+            {
+                File.Delete(file);
+            }
+            return true;
+        }
+
         public static string LoginUsersVdf(JObject settings = null)
         {
             //////////////// TO GET TO: CHECK IF NULL, ASK USER IN POPUP
             GeneralFuncs.InitSettingsIfNull(ref settings, "SteamSettings");
+            var path = Path.Combine(SteamFolder(settings), "config\\loginusers.vdf");
+            if (!File.Exists(path))
+            {
+                ResetSteamFolder();
+                return "RESET_PATH";
+            }
             return Path.Combine(SteamFolder(settings), "config\\loginusers.vdf");
         }
 
@@ -429,6 +461,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             GeneralFuncs.InitSettingsIfNull(ref settings, "SteamSettings");
             return (string)settings["Path"];
+        }
+        public static void ResetSteamFolder(JObject settings = null)
+        {
+            GeneralFuncs.InitSettingsIfNull(ref settings, "SteamSettings");
+            settings["Path"] = "";
+            GeneralFuncs.SaveSettings("SteamSettings", settings);
+            return;
         }
 
         #endregion

@@ -59,12 +59,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         #region SETTINGS
-
-        public static void ResetSettings_Steam()
-        {
-            SaveSettings("SteamSettings", SteamSwitcherFuncs.DefaultSettings_Steam());
-        }
-
+        
         public static void SaveSettings(string file, JObject joNewSettings)
         {
             string sFilename = file + ".json";
@@ -117,7 +112,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
         public static JObject DefaultSettings() => JObject.Parse(@"WindowSize: ""800, 450""");
 
-        public static void InitSettingsIfNull(ref JObject settings, string settingsType) => settings ??= GeneralFuncs.LoadSettings(settingsType);
+        public static void InitSettingsIfNull(ref JObject settings, string file) => settings ??= GeneralFuncs.LoadSettings(file);
 
         #endregion
     }

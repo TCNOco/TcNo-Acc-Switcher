@@ -13,6 +13,7 @@
 @using System.Drawing
 @inject AppData CurAppData
 @inject IJSRuntime Js;
+@inject NavigationManager NavManager; 
 
 
 
@@ -81,3 +82,16 @@
     </div>
 
 </div>
+
+
+@code
+{
+    // This has to be here for NavManager.
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (await SteamSwitcherFuncs.LoadProfiles(JsRuntime) == false) NavManager.NavigateTo("/?modal=Steam_Path");
+        }
+    }
+}
