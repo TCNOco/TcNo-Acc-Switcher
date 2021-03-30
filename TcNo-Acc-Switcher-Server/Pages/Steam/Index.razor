@@ -91,7 +91,8 @@
     {
         if (firstRender)
         {
-            if (await SteamSwitcherFuncs.LoadProfiles(JsRuntime) == false) NavManager.NavigateTo("/?modal=Steam_Path");
+            if (await SteamSwitcherFuncs.LoadProfiles(JsRuntime) == false) NavManager.NavigateTo("/?modal=" + Uri.EscapeUriString("find:Steam:Steam.exe:SteamSettings"));
+    //  HANDLE TOAST HERE AS WELL
         }
     }
 }

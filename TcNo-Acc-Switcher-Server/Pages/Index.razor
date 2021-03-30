@@ -22,12 +22,7 @@
             var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
             if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("modal", out var queryValue))
             {
-                switch (queryValue)
-                {
-                    case "Steam_Path":
-                        await ShowModal("find:Steam:Steam.exe:SteamSettings");
-                        break;
-                }
+                await ShowModal(Uri.UnescapeDataString(queryValue));
             }
         }
     }

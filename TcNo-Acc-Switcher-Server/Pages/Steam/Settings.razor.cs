@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -25,7 +26,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             await _jsModule.InvokeAsync<string>("jsSaveSettings");
             NavManager.NavigateTo("/Steam");
         }
-
+        
         #region SETTINGS_GENERAL
         // BUTTON: Pick Steam folder
         public async Task PickSteamFolder()
@@ -37,10 +38,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void ClearVacStatus() => SteamSwitcherFuncs.DeleteVacCacheFile();
 
         // BUTTON: Reset settings
-        public static void ClearSettings() => SteamSwitcherFuncs.ResetSettings_Steam();
+        public static void ClearSettings(NavigationManager navManager)
+        {
+            SteamSwitcherFuncs.ResetSettings_Steam();
+            navManager.NavigateTo("/Steam?toast=" + Uri.EscapeUriString("Cleared Steam switcher settings"));
+        }
 
         // BUTTON: Reset images
-        public static void ClearImages() => SteamSwitcherFuncs.ClearImages();
+        public static void ClearImages() => SteamSwitcherFuncs.ClearImages(); // ADD A TOAST TO THIS
         #endregion
 
         #region SETTINGS_STEAM_TOOLS
