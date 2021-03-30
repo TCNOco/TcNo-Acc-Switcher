@@ -94,7 +94,7 @@
     {
         if (firstRender)
         {
-            if (await SteamSwitcherFuncs.LoadProfiles(JsRuntime) == false) NavManager.NavigateTo("/?modal=" + Uri.EscapeUriString("find:Steam:Steam.exe:SteamSettings"));
+            if (await SteamSwitcherFuncs.LoadProfiles(Js) == false) NavManager.NavigateTo("/?modal=" + Uri.EscapeUriString("find:Steam:Steam.exe:SteamSettings"));
             //  HANDLE TOAST HERE AS WELL
             var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
             if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("toast_type", out var toastType))

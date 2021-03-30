@@ -8,7 +8,7 @@
 @inject IJSRuntime JsRuntime;
 @inject NavigationManager NavManager
 
-<div class="button" id="SwitcherSteam" @onclick="CheckSteam">
+<div class="button" id="SwitcherSteam" @onclick="() => CheckSteam(JsRuntime)">
     <img src="img/icons/ico_settings.svg" draggable="false" />
 </div>
 

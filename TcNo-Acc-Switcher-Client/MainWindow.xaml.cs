@@ -17,7 +17,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using TcNo_Acc_Switcher;
 using System.Threading;
 using System.Windows.Interop;
 using Microsoft.Web.WebView2.Core;
@@ -29,6 +28,7 @@ using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Client.Classes;
+using TcNo_Acc_Switcher_Server;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using Index = TcNo_Acc_Switcher_Server.Pages.Index;
 using Path = System.IO.Path;
@@ -44,7 +44,7 @@ namespace TcNo_Acc_Switcher_Client
     public partial class MainWindow : Window
     {
         private readonly Thread _server = new Thread(RunServer);
-        private static void RunServer() { TcNo_Acc_Switcher.Program.Main(new string[0]); }
+        private static void RunServer() { Program.Main(new string[0]); }
         private readonly TrayUsers _trayUsers = new TrayUsers();
         private JObject _settings = new JObject();
 

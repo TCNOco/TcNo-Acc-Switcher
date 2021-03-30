@@ -9,31 +9,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public class SteamSwitcherBase
     {
-        //[JSInvokable]
-        //public static Task<int> CopyProfileURL()
-        //{
-        //    Console.WriteLine("ffffffffffffffffffffff");
-        //    return Task.FromResult(0);
-        //}
-        //[JSInvokable]
-        //public static void CopyCommunityUsername(string id)
-        //{
-        //    Console.WriteLine("YOUR ID IS HERE: " + id);
-        //}
-
-        [JSInvokable]
-        public static void CopySpecial(string request)
-        {
-            switch (request)
-            {
-                case "URL":
-                    return;
-            }
-            var url = "";
-
-            Data.GenericFunctions.CopyToClipboard(url);
-        }
-
+        /// <summary>
+        /// Converts input SteamID64 into the requested format, then copies it to clipboard.
+        /// </summary>
+        /// <param name="request">SteamId, SteamId3, SteamId32, SteamId64</param>
+        /// <param name="steamId64"></param>
         [JSInvokable]
         public static void CopySteamIdType(string request, string steamId64)
         {
@@ -54,13 +34,23 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
         }
 
+        /// <summary>
+        /// JS function handler for swapping to another Steam account.
+        /// </summary>
+        /// <param name="steamId">Requested account's SteamID</param>
+        /// <param name="accName">Requested account's Login Username</param>
         [JSInvokable]
-        public static async void SwapTo(string steamId, string accName)
+        public static void SwapTo(string steamId, string accName)
         {
-            SteamSwitcherFuncs.SwapSteamAccounts(false, steamId, accName);
+            SteamSwitcherFuncs.SwapSteamAccounts( steamId, accName);
         }
+
+        /// <summary>
+        /// Opens a link in user's browser through Shell
+        /// </summary>
+        /// <param name="link">URL string</param>
         [JSInvokable]
-        public static async void OpenLinkInBrowser(string link)
+        public static void OpenLinkInBrowser(string link)
         {
             var ps = new ProcessStartInfo(link)
             {
@@ -69,18 +59,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             };
             Process.Start(ps);
         }
+
+        /// <summary>
+        /// JS function handler for swapping to a new Steam account (No inputs)
+        /// </summary>
         [JSInvokable]
         public static async void NewSteamLogin()
         {
-            SteamSwitcherFuncs.NewSteamLogin();
+            SteamSwitcherFuncs.SwapSteamAccounts();
         }
-
-
-
-        //[JSInvokable]
-        //public static Task<int> CopyProfileUrl()
-        //{
-        //    return Task.FromResult(new Random().Next());
-        //}
     }
 }

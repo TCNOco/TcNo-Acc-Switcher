@@ -13,19 +13,10 @@ namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Index : ComponentBase
     {
-        [Inject]
-        public IJSRuntime JSRuntime { get; set; }
-        private IJSObjectReference _jsModule;
-        //private IJSObjectReference _jsModule;
-        //protected override async Task OnInitializedAsync()
-        //{
-        //    _jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/steam/settings.js");
-        //    await _jsModule.InvokeAsync<string>("jsLoadSettings");
-        //}
-        public async Task CheckSteam()
+        public async Task CheckSteam(IJSRuntime JSRuntime)
         {
             //await JsRuntime.InvokeAsync<string>("alert", "TEST");
-            JObject settings = GeneralFuncs.LoadSettings("SteamSettings");
+            var settings = GeneralFuncs.LoadSettings("SteamSettings");
             //if (false)
             if (Directory.Exists(SteamSwitcherFuncs.SteamFolder(settings)) && File.Exists(SteamSwitcherFuncs.SteamExe(settings)))
             {

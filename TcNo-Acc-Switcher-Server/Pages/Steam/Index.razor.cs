@@ -10,24 +10,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class Index : ComponentBase
     {
-        [Inject]
-        protected IJSRuntime JsRuntime { get; set; }
-
-        //protected override void OnAfterRender(bool firstRender)
-        //{
-        //    if (firstRender)
-        //    {
-        //        JsRuntime.InvokeVoidAsync("onBlazorReady");
-        //    }
-        //}
-        
-        // Reloading the page is better for now
-        //private async void RefreshList()
-        //{
-        //    await SteamSwitcherFuncs.LoadProfiles(JsRuntime);
-        //}
-
-
+        /// <summary>
+        /// Simple class for storing info related to Steam account, for switching and displaying.
+        /// </summary>
         public class Steamuser
         {
             [JsonIgnore] public string SteamId { get; set; }
@@ -38,15 +23,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             [JsonProperty("Timestamp", Order = 4)] public string LastLogin { get; set; }
             [JsonProperty("WantsOfflineMode", Order = 5)] public string OfflineMode = "0";
             [JsonIgnore] public string ImgUrl { get; set; }
-
-            //[JsonIgnore] public string vacStatus { get; set; } // WAS System.Windows.Media.Brush
         }
-
-
-        //[JSInvokable]
-        //public static Task<int> CopyProfileURL()
-        //{
-        //    return Task.FromResult(new Random().Next());
-        //}
     }
 }

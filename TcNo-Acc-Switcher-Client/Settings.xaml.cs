@@ -81,18 +81,6 @@ namespace TcNo_Acc_Switcher_Client
                 }
             }
         }
-
-        
-
-        private void ShowSteamID_CheckChanged(object sender, RoutedEventArgs e)
-        {
-            //_persistentSettings.ShowSteamId = ShowSteamId.IsChecked != null && (bool) ShowSteamId.IsChecked;
-        }
-
-        private void ShowVACStatus_CheckChanged(object sender, RoutedEventArgs e)
-        {
-            //_persistentSettings.ShowVacStatus = ShowVacStatus.IsChecked != null && (bool) ShowVacStatus.IsChecked;
-        }
         
         private void ShowForgetRememberDialog()
         {
@@ -143,29 +131,7 @@ namespace TcNo_Acc_Switcher_Client
             clearLoginsDialog.ShareMainWindow(_mw);
             clearLoginsDialog.ShowDialog();
         }
-
-        private void ToggleStartShortcut_CheckChanged(object sender, RoutedEventArgs e)
-        {
-            //if (_enableButtons)
-            //    _mw.StartMenuShortcut(ToggleStartShortcut.IsChecked != null && (bool)ToggleStartShortcut.IsChecked);
-        }
-        private void ToggleStartWithWindows_CheckChanged(object sender, RoutedEventArgs e)
-        {
-            //if (_enableButtons)
-            //    _mw.StartWithWindows(ToggleStartWithWindows.IsChecked != null && (bool)ToggleStartWithWindows.IsChecked);
-        }
-        private void ToggleDesktopShortcut_CheckChanged(object sender, RoutedEventArgs e)
-        {
-            //if (_enableButtons)
-            //    _mw.DesktopShortcut(ToggleDesktopShortcut.IsChecked != null && (bool)ToggleDesktopShortcut.IsChecked);
-        }
-
-        private void ToggleAccNames_CheckChanged(object sender, RoutedEventArgs e)
-        {
-            //if (_enableButtons)
-            //    _mw.ToggleAccNames(ToggleAccNames.IsChecked != null && (bool)ToggleAccNames.IsChecked);
-        }
-
+        
         private void NumberRecentAccounts_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             //if (!_enableButtons) return;

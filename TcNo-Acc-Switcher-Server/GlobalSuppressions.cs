@@ -5,4 +5,3 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.UpdateLoginUsers(TcNo_Acc_Switcher_Server.Pages.Index.UserSteamSettings,System.Boolean,System.String,System.String)")]

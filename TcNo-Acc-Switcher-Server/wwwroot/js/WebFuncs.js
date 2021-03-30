@@ -26,7 +26,6 @@ function copy(request) {
         var steamId64 = $(SelectedElem).attr("SteamID64");
         switch (request){
             case "URL":
-                //DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "CopySpecial", request);
                 CopyToClipboard("https://steamcommunity.com/profiles/" + steamId64);
                 break;
             case "SteamId32":
