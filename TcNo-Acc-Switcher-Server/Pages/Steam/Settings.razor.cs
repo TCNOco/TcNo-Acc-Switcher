@@ -41,7 +41,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void ClearSettings(NavigationManager navManager)
         {
             SteamSwitcherFuncs.ResetSettings_Steam();
-            navManager.NavigateTo("/Steam?toast=" + Uri.EscapeUriString("Cleared Steam switcher settings"));
+            navManager.NavigateTo("/Steam?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Steam switcher settings"));
         }
 
         // BUTTON: Reset images

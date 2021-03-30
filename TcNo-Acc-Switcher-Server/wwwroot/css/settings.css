@@ -1,4 +1,10 @@
-﻿.container {
+﻿toastarea {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+}
+
+.container {
     color: white;
 }
 

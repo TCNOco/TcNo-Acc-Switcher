@@ -22,7 +22,7 @@
             var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
             if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("modal", out var queryValue))
             {
-                await ShowModal(Uri.UnescapeDataString(queryValue));
+                await GeneralInvocableFuncs.ShowModal(JsRuntime, Uri.UnescapeDataString(queryValue));
             }
         }
     }

@@ -11,6 +11,7 @@ using TcNo_Acc_Switcher_Server.Pages.Steam;
 
 using Microsoft.Win32;
 using System.Windows;
+using Microsoft.AspNetCore.Components;
 
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
@@ -35,6 +36,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             JObject settings = GeneralFuncs.LoadSettings(file);
             settings["Path"] = path;
             GeneralFuncs.SaveSettings(file, settings);
+        }
+
+        public static async Task ShowModal(IJSRuntime jsRuntime, string args)
+        {
+            await jsRuntime.InvokeAsync<string>("ShowModal", args);
+        }
+        public static async Task ShowToast(IJSRuntime jsRuntime, string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", string position = "button-right", int duration = 5000)
+        {
+            //dynamic testD = new { type = toastType, title = toastTitle, message = toastMessage };
+            await jsRuntime.InvokeVoidAsync($"window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo = renderTo, duration = duration, position = position });
         }
     }
 }

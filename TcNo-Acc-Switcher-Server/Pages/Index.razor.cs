@@ -32,12 +32,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 NavManager.NavigateTo("/Steam/");
                 return;
             }
-            await ShowModal("find:Steam:Steam.exe:SteamSettings");
-        }
-
-        public async Task ShowModal(string args)
-        {
-            await JsRuntime.InvokeAsync<string>("ShowModal", args);
+            await GeneralInvocableFuncs.ShowModal(JSRuntime, "find:Steam:Steam.exe:SteamSettings");
         }
     }
 }

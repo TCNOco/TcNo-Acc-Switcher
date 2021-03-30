@@ -43,7 +43,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
 
-
         //[JSInvokable]
         //public static Task<int> CopyProfileURL()
         //{
