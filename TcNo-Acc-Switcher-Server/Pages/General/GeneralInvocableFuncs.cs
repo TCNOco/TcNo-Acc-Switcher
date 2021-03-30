@@ -42,10 +42,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             await jsRuntime.InvokeAsync<string>("ShowModal", args);
         }
-        public static async Task ShowToast(IJSRuntime jsRuntime, string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", string position = "button-right", int duration = 5000)
+        public static async Task ShowToast(IJSRuntime jsRuntime, string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
         {
             //dynamic testD = new { type = toastType, title = toastTitle, message = toastMessage };
-            await jsRuntime.InvokeVoidAsync($"window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo = renderTo, duration = duration, position = position });
+            await jsRuntime.InvokeVoidAsync($"window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo = renderTo, duration = duration });
         }
     }
 }

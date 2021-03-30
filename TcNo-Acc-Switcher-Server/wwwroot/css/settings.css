@@ -31,7 +31,14 @@
         margin: 0 0.75em;
         font-weight: bold;
     }
-
+.settingsCol {
+    position: relative;
+}
+    .settingsCol toastarea {
+        position: absolute;
+        top: 3px;
+        right: 3px;
+    }
 .acc_list_actionbar div .button, .settingsCol button {
     user-select: none;
     background-color: #333;

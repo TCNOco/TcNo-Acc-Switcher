@@ -35,7 +35,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         // BUTTON: Check account VAC status
-        public static void ClearVacStatus() => SteamSwitcherFuncs.DeleteVacCacheFile();
+        public static async void ClearVacStatus(IJSRuntime Js)
+        {
+            if (SteamSwitcherFuncs.DeleteVacCacheFile())
+                await GeneralInvocableFuncs.ShowToast(Js, "success", "VAC status for accounts was cleared", renderTo: "toastarea");
+            else
+                await GeneralInvocableFuncs.ShowToast(Js, "error", "Could not delete 'profilecache/SteamVACCache.json'", "Error", "toastarea");
+        }
 
         // BUTTON: Reset settings
         public static void ClearSettings(NavigationManager navManager)
