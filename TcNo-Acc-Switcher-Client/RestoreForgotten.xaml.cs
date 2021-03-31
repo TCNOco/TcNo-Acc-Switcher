@@ -17,28 +17,20 @@ namespace TcNo_Acc_Switcher_Client
             InitializeComponent();
             Loaded += PageLoaded;
         }
-        public void ShareMainWindow(MainWindow imw) => _mw = imw;
+
         private void PageLoaded(object sender, RoutedEventArgs e)
         {
-            var fileEntries = Directory.GetFiles(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.GetForgottenBackupPath());
-            foreach (var fileName in fileEntries)
-                FileNamesList.Items.Add(fileName);
-        }
-        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-                Close();
+            //var fileEntries = Directory.GetFiles(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.GetForgottenBackupPath());
+            //foreach (var fileName in fileEntries)
+            //    FileNamesList.Items.Add(fileName);
         }
 
-        private void BtnExit(object sender, RoutedEventArgs e) => Globals.WindowHandling.BtnExit(sender, e, this);
-        private void BtnMinimize(object sender, RoutedEventArgs e) => Globals.WindowHandling.BtnMinimize(sender, e, this);
-        private void DragWindow(object sender, MouseButtonEventArgs e) => Globals.WindowHandling.DragWindow(sender, e, this);
         private void btnRestore_Click(object sender, RoutedEventArgs e)
         {
-            File.Copy(FileNamesList.SelectedItem.ToString(), Path.Combine(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamConfigFolder(), "loginusers.vdf"), true);
-            MessageBox.Show("Restored! Refreshing Steam accounts now. This may take a second.");
-            _mw.MView2.Reload();
-            this.Close();
+            //File.Copy(FileNamesList.SelectedItem.ToString(), Path.Combine(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamConfigFolder(), "loginusers.vdf"), true);
+            //MessageBox.Show("Restored! Refreshing Steam accounts now. This may take a second.");
+            //_mw.MView2.Reload();
+            //this.Close();
         }
     }
 }

@@ -28,17 +28,6 @@ namespace TcNo_Acc_Switcher_Client
         {
             InitializeComponent();
         }
-        public void ShareMainWindow(MainWindow imw) =>
-            _mw = imw;
-        private void BtnExit(object sender, RoutedEventArgs e) => Globals.WindowHandling.BtnExit(sender, e, this);
-        private void BtnMinimize(object sender, RoutedEventArgs e) => Globals.WindowHandling.BtnMinimize(sender, e, this);
-        private void DragWindow(object sender, MouseButtonEventArgs e) => Globals.WindowHandling.DragWindow(sender, e, this);
-        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-                Close();
-        }
-
 
         public void InitUserDataWindow(string steamId)
         {

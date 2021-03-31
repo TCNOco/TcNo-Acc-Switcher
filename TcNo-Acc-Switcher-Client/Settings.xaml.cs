@@ -47,22 +47,6 @@ namespace TcNo_Acc_Switcher_Client
             // Enables buttons once the settings page has loaded. This stops them being fired by .NET setting values.
             _enableButtons = true;
         }
-
-
-        public void ShareMainWindow(MainWindow imw) => _mw = imw;
-        private void BtnExit(object sender, RoutedEventArgs e) => Globals.WindowHandling.BtnExit(sender, e, this);
-
-        private void BtnMinimize(object sender, RoutedEventArgs e) =>
-            Globals.WindowHandling.BtnMinimize(sender, e, this);
-
-        private void DragWindow(object sender, MouseButtonEventArgs e) =>
-            Globals.WindowHandling.DragWindow(sender, e, this);
-
-        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-                Close();
-        }
         
         private void btnResetImages_Click(object sender, RoutedEventArgs e)
         {
@@ -110,7 +94,7 @@ namespace TcNo_Acc_Switcher_Client
             if (Directory.Exists(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.GetForgottenBackupPath()))
             {
                 var restoreForgottenDialog = new RestoreForgotten();
-                restoreForgottenDialog.ShareMainWindow(_mw);
+                //restoreForgottenDialog.ShareMainWindow(_mw);
                 restoreForgottenDialog.Owner = this;
                 restoreForgottenDialog.ShowDialog();
             }
@@ -128,7 +112,7 @@ namespace TcNo_Acc_Switcher_Client
         private void btnAdvancedCleaning_Click(object sender, RoutedEventArgs e)
         {
             var clearLoginsDialog = new ClearLogins() { Owner = this };
-            clearLoginsDialog.ShareMainWindow(_mw);
+            //clearLoginsDialog.ShareMainWindow(_mw);
             clearLoginsDialog.ShowDialog();
         }
         

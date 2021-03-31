@@ -9,7 +9,7 @@
         MinHeight="238" MaxHeight="238" MinWidth="490"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterScreen">
-    <WindowChrome.WindowChrome>
+    <!--<WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0"
             CornerRadius="2"
             GlassFrameThickness="0"
@@ -31,7 +31,7 @@
             <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
         </Grid.Effect>
 
-        <!-- Row 0: Header -->
+        --><!-- Row 0: Header --><!--
         <Border MouseDown="DragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
         <Label Grid.Row="0" IsHitTestVisible="False" Name="FolderInputHeaderInstruction" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="{x:Static localisation:Strings.XSteamInputTitle}"/>
         <Canvas Grid.Row="0" IsHitTestVisible="False"  Name="Svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5,10,0,10">
@@ -75,5 +75,5 @@
                 <Button Padding="5" Grid.Column="2" Content="{x:Static localisation:Strings.XBtnLocateSteamExe}"  VerticalAlignment="Center" Height="36" Width="125" Margin="5 0" Foreground="White"  Click="BtnSwitchSave" Style="{StaticResource pickSteamFolder}"/>
             </Grid>
         </StackPanel>
-    </Grid>
+    </Grid>-->
 </Window>

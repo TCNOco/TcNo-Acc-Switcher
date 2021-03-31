@@ -9,8 +9,9 @@
         MinHeight="329" MinWidth="502"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterOwner"
-        PreviewKeyDown="Window_PreviewKeyDown">
-    <!--MinHeight="198" MaxHeight="198" MinWidth="450"-->
+        >
+        <!--PreviewKeyDown="Window_PreviewKeyDown"-->
+    <!--MinHeight="198" MaxHeight="198" MinWidth="450"--><!--
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0"
             CornerRadius="2"
@@ -32,7 +33,7 @@
             <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
         </Grid.Effect>
 
-        <!-- Row 0: Header -->
+        --><!-- Row 0: Header --><!--
         <Border MouseDown="DragWindow" Grid.Row="0" Background="#14151E" Grid.ColumnSpan="2"/>
         <Label IsHitTestVisible="False" Name="FolderInputHeaderInstruction" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="{x:Static localisation:Strings.XClearLoginsTitle}" Grid.Column="1"/>
         <Canvas IsHitTestVisible="False"  Name="Svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5,10,0,10">
@@ -135,5 +136,5 @@
         </StackPanel>
         <TextBlock Panel.ZIndex="6" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" LineHeight="18px" Margin="12px" Grid.Column="1"><Hyperlink Foreground="White" NavigateUri="https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Steam-Cleaning" RequestNavigate="Hyperlink_RequestNavigate"><TextBlock Text="{x:Static localisation:Strings.XClearLoginsMoreInfo}"/></Hyperlink></TextBlock>
         <Button Panel.ZIndex="6" Grid.Row="1" Name="btnCloseCleaning" Margin="5px" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Height="36" Foreground="White" Style="{StaticResource pickSteamFolder}" Content="{x:Static localisation:Strings.XBtnClose}" Click="BtnExit"/>
-    </Grid>
+    </Grid>-->
 </Window>

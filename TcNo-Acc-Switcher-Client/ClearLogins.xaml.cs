@@ -24,25 +24,6 @@ namespace TcNo_Acc_Switcher_Client
         {
             InitializeComponent();
         }
-        public void ShareMainWindow(MainWindow imw) =>
-            _mw = imw;
-
-        private void BtnExit(object sender, RoutedEventArgs e) => Globals.WindowHandling.BtnExit(sender, e, this);
-        private void BtnMinimize(object sender, RoutedEventArgs e) => Globals.WindowHandling.BtnMinimize(sender, e, this);
-        private void DragWindow(object sender, MouseButtonEventArgs e) => Globals.WindowHandling.DragWindow(sender, e, this);
-        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-                Close();
-        }
-        private void LogPrint(string text)
-        {
-            this.Dispatcher.Invoke(() =>
-            {
-                CleaningOutput.AppendText(text + Environment.NewLine);
-                CleaningOutput.ScrollToEnd();
-            });
-        }
 
 
         public string[] GetFiles(string sourceFolder, string filter, SearchOption searchOption)
@@ -77,80 +58,80 @@ namespace TcNo_Acc_Switcher_Client
         }
         private void Task_clearFolder(object oin)
         {
-            // Only allow one to be run at a time
-            if (!Monitor.TryEnter(_lockClearFolder)) return;
-            try
-            {
-                var options = (PossibleClearArgs)oin;
-                LogPrint(options.FldName);
-                var count = 0;
-                if (Directory.Exists(options.FolderName))
-                {
-                    var d = new DirectoryInfo(options.FolderName);
-                    foreach (var file in d.GetFiles("*.*"))
-                    {
-                        count++;
-                        LogPrint($"Deleting: {file.Name}");
-                        try
-                        {
-                            File.Delete(file.FullName);
-                        }
-                        catch (Exception ex)
-                        {
-                            LogPrint($"ERROR: {ex}");
-                        }
-                    }
+            //// Only allow one to be run at a time
+            //if (!Monitor.TryEnter(_lockClearFolder)) return;
+            //try
+            //{
+            //    var options = (PossibleClearArgs)oin;
+            //    LogPrint(options.FldName);
+            //    var count = 0;
+            //    if (Directory.Exists(options.FolderName))
+            //    {
+            //        var d = new DirectoryInfo(options.FolderName);
+            //        foreach (var file in d.GetFiles("*.*"))
+            //        {
+            //            count++;
+            //            LogPrint($"Deleting: {file.Name}");
+            //            try
+            //            {
+            //                File.Delete(file.FullName);
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                LogPrint($"ERROR: {ex}");
+            //            }
+            //        }
 
-                    foreach (var subDir in d.GetDirectories())
-                    {
-                        count++;
-                        LogPrint($"Deleting: {subDir.Name} subfolder and contents");
-                        try
-                        {
-                            Directory.Delete(subDir.FullName, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            LogPrint($"ERROR: {ex}");
-                        }
-                    }
+            //        foreach (var subDir in d.GetDirectories())
+            //        {
+            //            count++;
+            //            LogPrint($"Deleting: {subDir.Name} subfolder and contents");
+            //            try
+            //            {
+            //                Directory.Delete(subDir.FullName, true);
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                LogPrint($"ERROR: {ex}");
+            //            }
+            //        }
 
-                    LogPrint(count == 0 ? $"{options.FolderName} is empty." : "Done.");
-                    CleaningOutput.AppendText(Environment.NewLine);
-                }
-                else
-                    LogPrint($"Directory not found: {options.FolderName}");
-            }
-            finally
-            {
-                Monitor.Exit(_lockClearFolder);
-            }
+            //        LogPrint(count == 0 ? $"{options.FolderName} is empty." : "Done.");
+            //        CleaningOutput.AppendText(Environment.NewLine);
+            //    }
+            //    else
+            //        LogPrint($"Directory not found: {options.FolderName}");
+            //}
+            //finally
+            //{
+            //    Monitor.Exit(_lockClearFolder);
+            //}
         }
         // Used for deleting small individual files. Multi-threading not necessary.
         private void ClearFile(string fl)
         {
-            var f = new FileInfo(fl);
-            if (File.Exists(f.FullName))
-            {
-                LogPrint($"Deleting: {f.Name}");
-                try
-                {
-                    File.Delete(f.FullName);
-                }
-                catch (Exception ex)
-                {
-                    LogPrint($"ERROR: {ex}");
-                }
-                LogPrint("Done.");
-                if (fl == "config\\loginusers.vdf")
-                {
-                    LogPrint("[ Don't forget to clear forgotten account backups as well ]");
-                    CleaningOutput.AppendText(Environment.NewLine);
-                }
-                CleaningOutput.AppendText(Environment.NewLine);
-            }
-            else
-                LogPrint($"{f.Name} was not found.");
+            //var f = new FileInfo(fl);
+            //if (File.Exists(f.FullName))
+            //{
+            //    LogPrint($"Deleting: {f.Name}");
+            //    try
+            //    {
+            //        File.Delete(f.FullName);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        LogPrint($"ERROR: {ex}");
+            //    }
+            //    LogPrint("Done.");
+            //    if (fl == "config\\loginusers.vdf")
+            //    {
+            //        LogPrint("[ Don't forget to clear forgotten account backups as well ]");
+            //        CleaningOutput.AppendText(Environment.NewLine);
+            //    }
+            //    CleaningOutput.AppendText(Environment.NewLine);
+            //}
+            //else
+            //    LogPrint($"{f.Name} was not found.");
         }
         private void ClearFilesOfType(string fldName, string folderName, string fileExtensions, SearchOption searchOption)
         {
@@ -166,80 +147,80 @@ namespace TcNo_Acc_Switcher_Client
         }
         private void Task_clearFilesOfType(object oin)
         {
-            // Only allow one to be run at a time
-            if (!Monitor.TryEnter(_lockClearFilesOfType)) return;
-            try
-            {
-                var options = (PossibleClearArgs)oin;
-                LogPrint(options.FldName);
-                if (Directory.Exists(options.FolderName))
-                {
-                    foreach (var file in GetFiles(options.FolderName, options.FileExtensions, options.SearchOption))
-                    {
-                        LogPrint($"Deleting: {file}");
-                        try
-                        {
-                            File.Delete(file);
-                        }
-                        catch (Exception ex)
-                        {
-                            LogPrint($"ERROR: {ex}");
-                        }
-                    }
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        CleaningOutput.AppendText(Environment.NewLine);
-                    });
-                }
-                else
-                    LogPrint($"Directory not found: {options.FolderName}");
-            }
-            finally
-            {
-                Monitor.Exit(_lockClearFilesOfType);
-            }
+            //// Only allow one to be run at a time
+            //if (!Monitor.TryEnter(_lockClearFilesOfType)) return;
+            //try
+            //{
+            //    var options = (PossibleClearArgs)oin;
+            //    LogPrint(options.FldName);
+            //    if (Directory.Exists(options.FolderName))
+            //    {
+            //        foreach (var file in GetFiles(options.FolderName, options.FileExtensions, options.SearchOption))
+            //        {
+            //            LogPrint($"Deleting: {file}");
+            //            try
+            //            {
+            //                File.Delete(file);
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                LogPrint($"ERROR: {ex}");
+            //            }
+            //        }
+            //        this.Dispatcher.Invoke(() =>
+            //        {
+            //            CleaningOutput.AppendText(Environment.NewLine);
+            //        });
+            //    }
+            //    else
+            //        LogPrint($"Directory not found: {options.FolderName}");
+            //}
+            //finally
+            //{
+            //    Monitor.Exit(_lockClearFilesOfType);
+            //}
         }
         // SSFN very small, so multi-threading isn't needed. Super tiny freeze of UI is OK.
         private void ClearSsfn(string steamDir)
         {
-            var d = new DirectoryInfo(steamDir);
-            var count = 0;
-            foreach (var file in d.GetFiles("ssfn*"))
-            {
-                count++;
-                LogPrint($"Deleting: {file.Name}");
-                try
-                {
-                    File.Delete(file.FullName);
-                }
-                catch (Exception ex)
-                {
-                    LogPrint($"ERROR: {ex}");
-                }
-            }
-            if (count > 0)
-            {
-                LogPrint("Done.");
-                CleaningOutput.AppendText(Environment.NewLine);
-            }
-            else
-                LogPrint("No SSFN files found.");
+            //var d = new DirectoryInfo(steamDir);
+            //var count = 0;
+            //foreach (var file in d.GetFiles("ssfn*"))
+            //{
+            //    count++;
+            //    LogPrint($"Deleting: {file.Name}");
+            //    try
+            //    {
+            //        File.Delete(file.FullName);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        LogPrint($"ERROR: {ex}");
+            //    }
+            //}
+            //if (count > 0)
+            //{
+            //    LogPrint("Done.");
+            //    CleaningOutput.AppendText(Environment.NewLine);
+            //}
+            //else
+            //    LogPrint("No SSFN files found.");
         }
         private void DeleteRegKey(string subKey, string value)
         {
-            using (var key = Registry.CurrentUser.OpenSubKey(subKey, true))
-            {
-                if (key == null)
-                    LogPrint($"{subKey} does not exist.");
-                else if (key.GetValue(value) == null)
-                    LogPrint($"{subKey} does not contain {value}");
-                else
-                {
-                    LogPrint($"Removing {subKey}\\{value}");
-                    key.DeleteValue(value);
-                    LogPrint("Done.");
-                }
-            }
+            //using (var key = Registry.CurrentUser.OpenSubKey(subKey, true))
+            //{
+            //    if (key == null)
+            //        LogPrint($"{subKey} does not exist.");
+            //    else if (key.GetValue(value) == null)
+            //        LogPrint($"{subKey} does not contain {value}");
+            //    else
+            //    {
+            //        LogPrint($"Removing {subKey}\\{value}");
+            //        key.DeleteValue(value);
+            //        LogPrint("Done.");
+            //    }
+            //}
         }
         private void BtnClearLogs_Click(object sender, RoutedEventArgs e) => ClearFolder("Clearing logs:", Path.Combine(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder(), "logs\\"));
         private void BtnClearDumps_Click(object sender, RoutedEventArgs e) => ClearFolder("Clearing dumps:", Path.Combine(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder(), "dumps\\"));
@@ -252,10 +233,10 @@ namespace TcNo_Acc_Switcher_Client
         private void btnClearRUID_Click(object sender, RoutedEventArgs e) => DeleteRegKey(@"Software\Valve\Steam", "PseudoUUID");
         private void BtnClearBackups_Click(object sender, RoutedEventArgs e)
         {
-            LogPrint("Clearing forgotten account backups:");
-            Settings.ClearForgottenBackups();
-            LogPrint("Done.");
-            CleaningOutput.AppendText(Environment.NewLine);
+            //LogPrint("Clearing forgotten account backups:");
+            //Settings.ClearForgottenBackups();
+            //LogPrint("Done.");
+            //CleaningOutput.AppendText(Environment.NewLine);
         }
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {

@@ -11,8 +11,8 @@
         MinHeight="329" MinWidth="502"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterOwner"
-        PreviewKeyDown="Window_PreviewKeyDown"
         Closing="Settings_OnClosing">
+        <!--PreviewKeyDown="Window_PreviewKeyDown"-->
     <!--MinHeight="198" MaxHeight="198" MinWidth="450"--><!--
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0"

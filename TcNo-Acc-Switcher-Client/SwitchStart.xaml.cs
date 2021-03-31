@@ -34,13 +34,6 @@ namespace TcNo_Acc_Switcher_Client
         {
             InitializeComponent();
         }
-        private void BtnExit(object sender, RoutedEventArgs e) =>
-            Globals.WindowHandling.BtnExit(sender, e, this);
-        private void BtnMinimize(object sender, RoutedEventArgs e) =>
-            Globals.WindowHandling.BtnMinimize(sender, e, this);
-        private void DragWindow(object sender, MouseButtonEventArgs e) =>
-            Globals.WindowHandling.DragWindow(sender, e, this);
-
         private void BtnSwitchSave(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
