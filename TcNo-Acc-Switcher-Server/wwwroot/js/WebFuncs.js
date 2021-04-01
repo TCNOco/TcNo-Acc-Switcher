@@ -99,7 +99,7 @@ function ShowModal(modaltype) {
         // USAGE: "find:<Program_name>:<Program_exe>:<SettingsFile>" -- example: "find:Steam:Steam.exe:SteamSettings"
         console.log(modaltype);
         console.log(modaltype.split(":"));
-        var platform = modaltype.split(":")[1].replace("_", " ");
+        var platform = modaltype.split(":")[1].replaceAll("_", " ");
         var platform_exe = modaltype.split(":")[2];
         var platformSettingsPath = modaltype.split(":")[3];
         Modal_RequestedLocated(false);
@@ -119,6 +119,26 @@ function ShowModal(modaltype) {
 		        <div class="folder_indicator_bg notfound"><span>` + platform_exe + `</span></div>
 		        <button class="btn" type="button" id="select_program" onclick="Modal_Finalize('` + platform + `', '` + platformSettingsPath + `')"><span>Select ` + platform + ` Folder</span></button>
 	        </div>
+        </div>`);
+    } else if (modaltype.startsWith("confirm:")) {
+        // USAGE: "confirm:<prompt>
+        // GOAL: To return true/false
+        console.log(modaltype);
+
+        var action = modaltype.split(":")[1];
+        var message = modaltype.split(":")[2].replaceAll("_", " ");
+
+        $('#modalTitle').text("TcNo Account Switcher Confirm Action");
+        $("#modal_contents").empty();
+        $("#modal_contents").append(`<div class="infoWindow">
+        <div class="fullWidthContent">
+            <h3>Confirm action:</h3>
+            <p>` + message + `</p>
+            <div class="YesNo">
+		        <button class="btn" type="button" id="modal_true" onclick="Modal_Confirm('` + action + `', true)"><span>Yes</span></button>
+		        <button class="btn" type="button" id="modal_true" onclick="Modal_Confirm('` + action + `', false)"><span>No</span></button>
+            </div>
+        </div>
         </div>`);
     }
     $('.modalBG').fadeIn();
@@ -141,5 +161,9 @@ function Modal_Finalize(platform, platformSettingsPath) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
     $('.modalBG').fadeOut();
     $('#Switcher' + platform).click();
+}
+function Modal_Confirm(action, value) {
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value);
+    $('.modalBG').fadeOut();
 }
 //DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyCommunityUsername", $(SelectedElem).attr(request)).then(r => console.log(r));

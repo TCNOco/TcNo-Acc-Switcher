@@ -53,6 +53,28 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             GeneralFuncs.SaveSettings(file, settings);
         }
 
+        [JSInvokable]
+        public static void GiConfirmAction(string action, bool value)
+        {
+            Console.WriteLine(action);
+            Console.WriteLine(value);
+        }
+
+        /// <summary>
+        /// Opens a link in user's browser through Shell
+        /// </summary>
+        /// <param name="link">URL string</param>
+        [JSInvokable]
+        public static void OpenLinkInBrowser(string link)
+        {
+            var ps = new ProcessStartInfo(link)
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            };
+            Process.Start(ps);
+        }
+
         /// <summary>
         /// JS function handler for running ShowModal JS function, with input arguments.
         /// </summary>

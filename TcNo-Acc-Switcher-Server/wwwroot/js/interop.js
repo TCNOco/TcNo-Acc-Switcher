@@ -9,5 +9,9 @@ jQueryAppend = (jQuerySelector, strToInsert) => {
     $(jQuerySelector).append(strToInsert);
 };
 
+SteamAdvancedClearingAddLine = (text) => {
+    $("#lines").append("<p>" + text + "</p>");
+}
+
 // Reloading the page is better for now.
 //jQueryClearInner = (jQuerySelector) => { $(jQuerySelector).empty() }

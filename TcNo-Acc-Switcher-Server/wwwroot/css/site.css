@@ -32,6 +32,10 @@ app {
     width: 100vw;
 }
 
+label {
+    vertical-align: middle;
+}
+
 .top-row {
     height: 3.5rem;
     display: flex;
@@ -55,6 +59,7 @@ app {
             white-space: nowrap;
             margin-left: 1.5rem;
         }
+
 
 .main .top-row a:first-child {
     overflow: hidden;
@@ -341,3 +346,34 @@ app {
     }
 }
 
+/* Steam/Settings/Advanced Clearing screen */
+div.restoreRow {
+    display: flex;
+}
+div.restoreLeft {
+    float: left;
+    margin-right: 1%;
+    width: 59%;
+}
+div.restoreRight {
+    word-break: break-word;
+    overflow: auto;
+    background-color: #222;
+    width: 40%;
+    border:solid #888 0.1em
+}
+div.advancedClearingButtonCol {
+    font-size: 0.9rem;
+}
+    div.advancedClearingButtonCol .buttoncol {
+        margin: 0.5em 0 0 0;
+    }
+#restoreUnderstand{
+    margin-bottom: 1em;
+}
+.restorePage button {
+    margin: 0 !important;
+}
+.restoreRight #lines p {
+    margin: 0;
+}

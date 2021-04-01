@@ -393,6 +393,23 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             key.SetValue("AutoLoginUser", accName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
             key.SetValue("RememberPassword", 1);
         }
+
+        /// <summary>
+        /// Clears backups of forgotten accounts
+        /// </summary>
+        public static void ClearForgottenBackups(IJSRuntime js = null, string jsDest = "")
+        {
+            var backupPath = SteamSwitcherFuncs.GetForgottenBackupPath();
+            try
+            {
+                if (Directory.Exists(backupPath))
+                    Directory.Delete(backupPath, true);
+            }
+            catch (Exception ex)
+            {
+                js?.InvokeVoidAsync(jsDest, $"Could not recursively delete directory! Error: {ex}");
+            }
+        }
         #endregion
 
         #region Settings

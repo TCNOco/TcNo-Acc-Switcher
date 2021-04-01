@@ -25,6 +25,70 @@
     cursor: default;
 }
 
+/*Info window*/
+.infoWindow {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    padding: 5%;
+    align-items: center;
+    width: 500px;
+    white-space: nowrap;
+    overflow: auto;
+    text-align: center;
+    display: flex;
+}
+
+.infoWindow .imgDiv {
+    width: 100%;
+    align-items: center;
+    display: flex;
+}
+
+.infoWindow .fullWidthContent {
+    width: 100%;
+    color: white;
+    display: block;
+}
+
+.infoWindow .fullWidthContent .YesNo button {
+    padding: 0.25em 3em!important;
+}
+
+.infoWindow .rightContent {
+    color: white;
+    margin-left: 1em;
+    text-align: left;
+}
+
+.infoWindow .rightContent h2 {
+    font-weight: bold;
+}
+
+.infoWindow .rightContent .linksList {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+}
+
+.infoWindow .rightContent .linksList a, .fancyLink {
+    color: #FFAA00;
+    cursor: pointer;
+}
+
+    .infoWindow .rightContent .linksList a:hover, .fancyLink:hover {
+        color: #FFDD00;
+    }
+
+    .infoWindow .rightContent .linksList a:active, .fancyLink:active {
+        color: #CC7700;
+    }
+
+.infoWindow .rightContent .linksList a img {
+    width: 2em;
+    margin-right: 0.5em;
+}
+
 #modal_contents {
     position: relative;
     width: 100%;
@@ -134,49 +198,3 @@
         .folder_indicator_bg.notfound span::after {
             content: " not found!";
         }
-
-/*Info window*/
-.infoWindow {
-    position: relative;
-    width: 80%;
-    height: 80%;
-    padding: 5%;
-    align-items: center;
-    width: 500px;
-    white-space: nowrap;
-    overflow: auto;
-    text-align: center;
-    display: flex;
-}
-    .infoWindow .imgDiv {
-        width: 100px;
-        align-items: center;
-        display: flex;
-    }
-    .infoWindow .rightContent {
-        color: white;
-        margin-left: 1em;
-        text-align: left;
-    }
-        .infoWindow .rightContent h2 {
-            font-weight: bold;
-        }
-        .infoWindow .rightContent .linksList {
-            display: flex;
-            flex-direction: column;
-            align-items: left;
-        }
-            .infoWindow .rightContent .linksList a {
-                color: #FFAA00;
-                cursor: pointer;
-            }
-                .infoWindow .rightContent .linksList a:hover {
-                    color: #FFDD00;
-                }
-                .infoWindow .rightContent .linksList a:active {
-                    color: #CC7700;
-                }
-                .infoWindow .rightContent .linksList a img {
-                    width: 2em;
-                    margin-right: 0.5em;
-                }

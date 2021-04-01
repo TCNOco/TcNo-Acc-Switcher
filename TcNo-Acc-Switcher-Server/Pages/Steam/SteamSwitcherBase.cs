@@ -46,21 +46,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         /// <summary>
-        /// Opens a link in user's browser through Shell
-        /// </summary>
-        /// <param name="link">URL string</param>
-        [JSInvokable]
-        public static void OpenLinkInBrowser(string link)
-        {
-            var ps = new ProcessStartInfo(link)
-            {
-                UseShellExecute = true,
-                Verb = "open"
-            };
-            Process.Start(ps);
-        }
-
-        /// <summary>
         /// JS function handler for swapping to a new Steam account (No inputs)
         /// </summary>
         [JSInvokable]
