@@ -136,7 +136,7 @@ function ShowModal(modaltype) {
             <p>` + message + `</p>
             <div class="YesNo">
 		        <button class="btn" type="button" id="modal_true" onclick="Modal_Confirm('` + action + `', true)"><span>Yes</span></button>
-		        <button class="btn" type="button" id="modal_true" onclick="Modal_Confirm('` + action + `', false)"><span>No</span></button>
+		        <button class="btn" type="button" id="modal_false" onclick="Modal_Confirm('` + action + `', false)"><span>No</span></button>
             </div>
         </div>
         </div>`);
@@ -166,4 +166,31 @@ function Modal_Confirm(action, value) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value);
     $('.modalBG').fadeOut();
 }
+
+
+var appendDelay = 100; // Milliseconds
+var recentlyAppend = false;
+var pendingQueue = {};
+function queuedJQueryAppend(jQuerySelector, strToInsert) {
+    if (recentlyAppend) {
+        if (jQuerySelector in pendingQueue) pendingQueue[jQuerySelector] += strToInsert;
+        else pendingQueue[jQuerySelector] = strToInsert;
+    } else {
+        recentlyAppend = true;
+        setTimeout(flushJQueryAppendQueue, appendDelay);
+        $(jQuerySelector).append([strToInsert]);
+        // have this as detect and run at some point. For now the only use for this function is the Steam Cleaning list thingy
+        $(".restoreRight")[0].scrollTop = $(".restoreRight")[0].scrollHeight;
+    }
+}
+function flushJQueryAppendQueue() {
+    for (const [key, value] of Object.entries(pendingQueue)) {
+        $(key).append(value);
+    }
+    pendingQueue = {};
+    recentlyAppend = false;
+    // have this as detect and run at some point. For now the only use for this function is the Steam Cleaning list thingy
+    $(".restoreRight")[0].scrollTop = $(".restoreRight")[0].scrollHeight;
+}
+
 //DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyCommunityUsername", $(SelectedElem).attr(request)).then(r => console.log(r));

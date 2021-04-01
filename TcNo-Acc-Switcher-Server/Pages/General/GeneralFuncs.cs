@@ -79,6 +79,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
         }
 
+        public static void JsDestNewline(IJSRuntime js, string jsDest)
+        {
+            js?.InvokeVoidAsync(jsDest, "<br />"); //Newline
+        }
+
         /// <summary>
         /// Deletes a single file
         /// </summary>
@@ -88,11 +93,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="jsDest">Place to send responses (if any)</param>
         public static void DeleteFile(string file = "", FileInfo fileInfo = null, IJSRuntime js = null, string jsDest = "")
         {
-             var f = fileInfo != null ? new FileInfo(file) : fileInfo;
+             var f = fileInfo ?? new FileInfo(file);
 
             try
             {
-                if (f == null) js?.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
+                if (!f.Exists) js?.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
                 else
                 {
                     f.IsReadOnly = false;
@@ -104,7 +109,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 js?.InvokeVoidAsync(jsDest, "ERROR: COULDN'T DELETE: " + f.FullName);
                 js?.InvokeVoidAsync(jsDest, e.ToString());
-                throw;
+                JsDestNewline(js, jsDest);
             }
         }
 
@@ -135,13 +140,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             var files = baseDir.GetFiles();
             foreach (var file in files)
             {
-                js?.InvokeVoidAsync(jsDest, "Deleting: " + file.FullName);
                 DeleteFile(fileInfo: file, js: js, jsDest: jsDest);
             }
 
             if (keepFolders) return;
             baseDir.Delete();
             js?.InvokeVoidAsync(jsDest, "Deleting Folder: " + baseDir.FullName);
+            JsDestNewline(js, jsDest);
         }
 
         /// <summary>
@@ -163,6 +168,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 js?.InvokeVoidAsync(jsDest, $"Removing {subKey}\\{val}");
                 key.DeleteValue(val);
             }
+            JsDestNewline(js, jsDest);
         }
 
         /// <summary>
@@ -194,6 +200,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (!Directory.Exists(folder))
             {
                 js?.InvokeVoidAsync(jsDest, $"Directory not found: {folder}");
+                JsDestNewline(js, jsDest);
                 return;
             }
             foreach (var file in GetFiles(folder, extensions, so))
@@ -208,6 +215,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     js?.InvokeVoidAsync(jsDest, $"ERROR: {ex.ToString()}");
                 }
             }
+            JsDestNewline(js, jsDest);
         }
         #endregion
 

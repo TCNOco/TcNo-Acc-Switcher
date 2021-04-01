@@ -58,6 +58,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             Console.WriteLine(action);
             Console.WriteLine(value);
+            if (value)
+            {
+                switch (action)
+                {
+                    case "ClearSteamBackups": SteamSwitcherFuncs.ClearForgottenBackups_Confirmed();
+                        break;
+                }
+            }
         }
 
         /// <summary>

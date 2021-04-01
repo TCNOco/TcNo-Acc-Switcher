@@ -198,3 +198,14 @@
         .folder_indicator_bg.notfound span::after {
             content: " not found!";
         }
+#modal_false {
+    color: #FFAA00!important;
+}
+
+.clearLogDiv {
+    text-align: right;
+    margin-top: 0.5em;
+}
+    .clearLogDiv button {
+        width: 40%!important;
+    }

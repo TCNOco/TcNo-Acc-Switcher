@@ -397,8 +397,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <summary>
         /// Clears backups of forgotten accounts
         /// </summary>
-        public static void ClearForgottenBackups(IJSRuntime js = null, string jsDest = "")
+        public static async void ClearForgottenBackups(IJSRuntime js = null)
         {
+            await GeneralInvocableFuncs.ShowModal(js, "confirm:ClearSteamBackups:" + "Are you sure you want to clear backups of forgotten accounts?".Replace(' ', '_'));
+            // Confirmed in GeneralInvocableFuncs.GiConfirmAction for rest of function
+        }
+        public static void ClearForgottenBackups_Confirmed() {
             var backupPath = SteamSwitcherFuncs.GetForgottenBackupPath();
             try
             {
@@ -407,7 +411,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
             catch (Exception ex)
             {
-                js?.InvokeVoidAsync(jsDest, $"Could not recursively delete directory! Error: {ex}");
+                throw;
+                // Handle this better in the future somehow
             }
         }
         #endregion

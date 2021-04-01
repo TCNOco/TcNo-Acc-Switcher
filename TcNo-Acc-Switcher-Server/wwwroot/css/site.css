@@ -374,6 +374,9 @@ div.advancedClearingButtonCol {
 .restorePage button {
     margin: 0 !important;
 }
+.restoreRight #lines {
+    max-height: 1px;
+}
 .restoreRight #lines p {
     margin: 0;
 }

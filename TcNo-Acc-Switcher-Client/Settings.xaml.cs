@@ -111,9 +111,9 @@ namespace TcNo_Acc_Switcher_Client
         
         private void btnAdvancedCleaning_Click(object sender, RoutedEventArgs e)
         {
-            var clearLoginsDialog = new ClearLogins() { Owner = this };
-            //clearLoginsDialog.ShareMainWindow(_mw);
-            clearLoginsDialog.ShowDialog();
+            //var clearLoginsDialog = new ClearLogins() { Owner = this };
+            ////clearLoginsDialog.ShareMainWindow(_mw);
+            //clearLoginsDialog.ShowDialog();
         }
         
         private void NumberRecentAccounts_OnTextChanged(object sender, TextChangedEventArgs e)

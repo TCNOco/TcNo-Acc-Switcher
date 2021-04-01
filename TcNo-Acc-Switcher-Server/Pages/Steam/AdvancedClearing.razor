@@ -35,8 +35,8 @@
                         <button class="btn" id="Steam_Clear_Dumps" type="button" @onclick="() => Steam_Clear_Dumps(JsRuntime)"><span>..\Steam\Dumps</span></button>
                     </div>
                     <div class="buttoncol">
-                        <button class="btn" id="Steam_Clear_AppCache" type="button" @onclick="() => Steam_Clear_HtmlCache(JsRuntime)"><span>%Local%\Steam\htmlcache</span></button>
-                        <button class="btn" id="Steam_Clear_HttpCache" type="button" @onclick="() => Steam_Clear_UiLogs(JsRuntime)"><span>..\Steam\GameOverlay*.log</span></button>
+                        <button class="btn" id="Steam_Clear_HtmlCache" type="button" @onclick="() => Steam_Clear_HtmlCache(JsRuntime)"><span>%Local%\Steam\htmlcache</span></button>
+                        <button class="btn" id="Steam_Clear_UiLogs" type="button" @onclick="() => Steam_Clear_UiLogs(JsRuntime)"><span>..\Steam\*.log</span></button>
                     </div>
                     <div class="buttoncol">
                         <button class="btn" id="Steam_Clear_AppCache" type="button" @onclick="() => Steam_Clear_AppCache(JsRuntime)"><span>..\Steam\appcache</span></button>
@@ -70,6 +70,7 @@
                     <div id="lines"></div>
                 </div>
             </div>
+            <div class="clearLogDiv"><button onclick="document.getElementById('lines').innerHTML = ''"><span>Clear log</span></button></div>
 
 
             <div class="buttoncol col_close">
