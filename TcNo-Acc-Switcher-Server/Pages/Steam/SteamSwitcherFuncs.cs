@@ -569,18 +569,36 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         /// <summary>
+        /// Purely a class used for backing up forgotten Steam users, used in ForgetAccount() and TODO: RestoreAccount()
+        /// </summary>
+        public class ForgottenSteamuser
+        {
+            [JsonProperty("SteamId", Order = 0)] public string SteamId { get; set; }
+            [JsonProperty("SteamUser", Order = 1)] public Steamuser Steamuser { get; set; }
+        }
+
+        /// <summary>
         /// Remove requested account from loginusers.vdf
         /// </summary>
         /// <param name="steamId"></param>
         public static void ForgetAccount(string steamId)
         {
-            JObject settings = GeneralFuncs.LoadSettings("SteamSettings");
-            BackupLoginUsers(settings: settings);
+            var settings = GeneralFuncs.LoadSettings("SteamSettings");
 
             // Load and remove account that matches SteamID above.
             var steamPath = SteamSwitcherFuncs.LoginUsersVdf(settings);
             var userAccounts = GetSteamUsers(steamPath);
+            var forgottenUser = userAccounts.Where(x => x.SteamId == steamId)?.First(); // Get the removed user to save into restore file
             userAccounts.RemoveAll(x => x.SteamId == steamId);
+
+            // Instead of backing up EVERY TIME like the previous version (if used now, it's updated to: BackupLoginUsers(settings: settings);)
+            // Rather just save the users in a file, for better restoring later if necessary.
+            const string fFile = "SteamForgotten.json";
+            var fFileContents = File.Exists(fFile) ? File.ReadAllText(fFile) : "";
+            var fUsers = fFileContents == "" ? new List<ForgottenSteamuser>() : JsonConvert.DeserializeObject<List<ForgottenSteamuser>>(fFileContents);
+            if (fUsers.All(x => x.SteamId != forgottenUser.SteamId)) fUsers.Add(new ForgottenSteamuser() { SteamId = forgottenUser.SteamId, Steamuser = forgottenUser }); // Add to list if user with SteamID doesn't exist in it.
+            File.WriteAllText(fFile, JsonConvert.SerializeObject(fUsers));
+
 
             // Convert list to JObject list, ready to save into vdf.
             var outJObject = new JObject();
