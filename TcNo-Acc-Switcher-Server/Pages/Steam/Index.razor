@@ -33,35 +33,35 @@
     <ul class="contextmenu">
         <li><a onclick="SwapTo();return false;" href="">Swap to account</a></li>
         <li>
-            <a href="#">Copy Profile...</a>
+            <a onclick="event.preventDefault();">Copy Profile...</a>
             <ul class="submenu">
                 @*<li><a @onclick="Steam.SteamSwitcherBase.CopyProfileURL" href="">Community URL</a></li>*@
-                <li><a onclick="copy('URL')" href="">Community URL</a></li>
-                <li><a onclick="copy('Line2')" href="">Community Username</a></li>
+                <li><a onclick="copy('URL', event)" href="">Community URL</a></li>
+                <li><a onclick="copy('Line2', event)" href="">Community Username</a></li>
                 @*<li><a @onclick="@(e => Steam.SteamSwitcherBase.CopyCommunityUsername("username"))" href="">Community Username</a></li>*@
-                <li><a onclick="copy('Username')" href="">Login username</a></li>
+                <li><a onclick="copy('Username', event)" href="">Login username</a></li>
             </ul>
         </li>
         <li>
-            <a href="#">Copy SteamID...</a>
+            <a onclick="event.preventDefault();">Copy SteamID...</a>
             <ul class="submenu">
-                <li><a onclick="copy('SteamId')" href="">SteamID [STEAM0:~]</a></li>
-                <li><a onclick="copy('SteamId3')" href="">SteamID3 [U:1:~]</a></li>
-                <li><a onclick="copy('SteamId32')" href="">SteamID32</a></li>
-                <li><a onclick="copy('SteamId64')" href="">SteamID64 7656~</a></li>
+                <li><a onclick="copy('SteamId', event)" href="">SteamID [STEAM0:~]</a></li>
+                <li><a onclick="copy('SteamId3', event)" href="">SteamID3 [U:1:~]</a></li>
+                <li><a onclick="copy('SteamId32', event)" href="">SteamID32</a></li>
+                <li><a onclick="copy('SteamId64', event)" href="">SteamID64 7656~</a></li>
             </ul>
         </li>
         <li>
-            <a href="#">Copy other...</a>
+            <a onclick="event.preventDefault();">Copy other...</a>
             <ul class="submenu">
-                <li><a onclick="copy('SteamRep')" href="">SteamRep</a></li>
-                <li><a onclick="copy('SteamID.uk')" href="">SteamID.uk</a></li>
-                <li><a onclick="copy('SteamID.io')" href="">SteamID.io</a></li>
-                <li><a onclick="copy('SteamIDFinder.com')" href="">SteamIDFinder.com</a></li>
+                <li><a onclick="copy('SteamRep', event)" href="">SteamRep</a></li>
+                <li><a onclick="copy('SteamID.uk', event)" href="">SteamID.uk</a></li>
+                <li><a onclick="copy('SteamID.io', event)" href="">SteamID.io</a></li>
+                <li><a onclick="copy('SteamIDFinder.com', event)" href="">SteamIDFinder.com</a></li>
             </ul>
         </li>
         <li><a href="">Create Desktop Shortcut</a></li>
-        <li><a href="#">Forget</a></li>
+        <li><a onclick="forget(event)">Forget</a></li>
     </ul>
 </div>
 <div class="acc_list_actionbar">

@@ -19,7 +19,7 @@
         .contextmenu li a {
             display: block;
             padding: 10px;
-            color: #B9C9DD;
+            color: #B9C9DD!important;
             text-decoration: none;
             transition: ease .2s;
         }

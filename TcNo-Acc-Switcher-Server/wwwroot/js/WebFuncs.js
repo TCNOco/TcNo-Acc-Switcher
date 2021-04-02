@@ -5,7 +5,26 @@ function CopyToClipboard(str) {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "CopyToClipboard", str);
 }
 
-function copy(request) {
+function forget(e) {
+    e.preventDefault();
+    switch (currentpage) {
+        case "Steam":
+            forgetSteam();
+        default:
+    }
+
+    function forgetSteam() {
+        const reqSteamId = $(SelectedElem).attr("steamid64");
+
+        // Check whether user has accepted what forgetting an account is
+        ShowModal("confirm:AcceptForgetSteamAcc:" + reqSteamId);
+
+        // Remove account
+    }
+}
+
+function copy(request, e) {
+    e.preventDefault();
     var requestResult = $(SelectedElem).attr(request);
 
     if (requestResult == null) {
@@ -13,7 +32,7 @@ function copy(request) {
         switch (currentpage) {
             case "Steam":
                 steam();
-        default:
+            default:
         }
     } else {
         console.log(`Copying: ${request}, result: ${requestResult}`);
@@ -125,15 +144,23 @@ function ShowModal(modaltype) {
         // GOAL: To return true/false
         console.log(modaltype);
 
-        var action = modaltype.split(":")[1];
-        var message = modaltype.split(":")[2].replaceAll("_", " ");
+        const action = modaltype.slice(8);
+
+        let message = "";
+        let header = "";
+        if (action.startsWith("AcceptForgetSteamAcc")) {
+            message = forgetAccountSteamPrompt;
+        } else {
+            header = "<h3>Confirm action:</h3>";
+            message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
+        }
 
         $('#modalTitle').text("TcNo Account Switcher Confirm Action");
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">
-            <h3>Confirm action:</h3>
-            <p>` + message + `</p>
+            ` + header + `
+            ` + message + `
             <div class="YesNo">
 		        <button class="btn" type="button" id="modal_true" onclick="Modal_Confirm('` + action + `', true)"><span>Yes</span></button>
 		        <button class="btn" type="button" id="modal_false" onclick="Modal_Confirm('` + action + `', false)"><span>No</span></button>
@@ -162,8 +189,11 @@ function Modal_Finalize(platform, platformSettingsPath) {
     $('.modalBG').fadeOut();
     $('#Switcher' + platform).click();
 }
-function Modal_Confirm(action, value) {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value);
+async function Modal_Confirm(action, value) {
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value).then(r => {
+        if (r === "refresh") location.reload();
+    });
+    var result = await promise;
     $('.modalBG').fadeOut();
 }
 
@@ -194,3 +224,17 @@ function flushJQueryAppendQueue() {
 }
 
 //DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyCommunityUsername", $(SelectedElem).attr(request)).then(r => console.log(r));
+
+
+
+
+const forgetAccountSteamPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
+<h4>What does this mean?</h4>
+<p>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.<br/>
+- TcNo Account Switcher will also no longer show the account, until it's signed into again through Steam.</p>
+<p>Your account will remain untouched. It is just forgotten on this computer.</p>
+<h4>What if something goes wrong?</h4>
+<p>Don't panic, you can bring back forgotten accounts via backups in the Settings screen.<br/>
+You can also remove previous backups from there when you are sure everything is working as expected.</p>
+<p>Right-click &gt;&gt; Forget and using the Delete key will both work.</p>
+<h4>Do you understand?</h4>`;

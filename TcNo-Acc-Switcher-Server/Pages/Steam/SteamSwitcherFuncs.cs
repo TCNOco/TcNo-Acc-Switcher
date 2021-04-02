@@ -536,6 +536,68 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             return;
         }
 
+        /// <summary>
+        /// Updatse the ForgetAccountEnabled bool in Steam settings file
+        /// </summary>
+        /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
+        /// <param name="settings">(Optional) Existing settings loaded into memory by another function</param>
+        public static void UpdateSteamForgetAcc(bool enabled, JObject settings = null)
+        {
+            GeneralFuncs.InitSettingsIfNull(ref settings, "SteamSettings");
+            if ((bool)settings["ForgetAccountEnabled"] == enabled) return; // Ignore if already set
+            settings["ForgetAccountEnabled"] = enabled;
+            GeneralFuncs.SaveSettings("SteamSettings", settings);
+            return;
+        }
+
+        /// <summary>
+        /// Creates a backup of the LoginUsers.vdf file
+        /// </summary>
+        /// <param name="backupName">(Optional) Name for the backup file (including .vdf)</param>
+        /// <param name="settings">(Optional) Existing settings loaded into memory by another function</param>
+        public static void BackupLoginUsers(string backupName = "", JObject settings = null)
+        {
+            GeneralFuncs.InitSettingsIfNull(ref settings, "SteamSettings");
+            var steamFolder = SteamFolder(settings);
+            var steamVdf = LoginUsersVdf(settings);
+
+            var backup = Path.Combine(steamFolder, $"config\\TcNo-Acc-Switcher-Backups\\");
+            var backupFileName = backupName != "" ? backupName : $"loginusers-{DateTime.Now:dd-MM-yyyy_HH-mm-ss.fff}.vdf";
+
+            Directory.CreateDirectory(backup);
+            File.Copy(steamVdf, Path.Combine(backup, backupFileName), true);
+        }
+
+        /// <summary>
+        /// Remove requested account from loginusers.vdf
+        /// </summary>
+        /// <param name="steamId"></param>
+        public static void ForgetAccount(string steamId)
+        {
+            JObject settings = GeneralFuncs.LoadSettings("SteamSettings");
+            BackupLoginUsers(settings: settings);
+
+            // Load and remove account that matches SteamID above.
+            var steamPath = SteamSwitcherFuncs.LoginUsersVdf(settings);
+            var userAccounts = GetSteamUsers(steamPath);
+            userAccounts.RemoveAll(x => x.SteamId == steamId);
+
+            // Convert list to JObject list, ready to save into vdf.
+            var outJObject = new JObject();
+            foreach (var ua in userAccounts)
+            {
+                outJObject[ua.SteamId] = (JObject)JToken.FromObject(ua);
+            }
+
+            // Write changes to files.
+            var tempFile = steamPath + "_temp";
+            File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
+            File.Replace(tempFile, steamPath, steamPath + "_last");
+
+            // Refresh browser page, to show new list.
+
+        }
+
         #endregion
     }
 }

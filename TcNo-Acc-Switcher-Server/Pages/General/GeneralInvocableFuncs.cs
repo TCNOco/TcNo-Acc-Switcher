@@ -54,18 +54,27 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         [JSInvokable]
-        public static void GiConfirmAction(string action, bool value)
+        public static Task<string> GiConfirmAction(string action, bool value)
         {
             Console.WriteLine(action);
             Console.WriteLine(value);
-            if (value)
+
+            if (action.StartsWith("AcceptForgetSteamAcc:"))
             {
-                switch (action)
-                {
-                    case "ClearSteamBackups": SteamSwitcherFuncs.ClearForgottenBackups_Confirmed();
-                        break;
-                }
+                string username = action.Split(":")[1];
+                SteamSwitcherFuncs.UpdateSteamForgetAcc(true);
+                SteamSwitcherFuncs.ForgetAccount(username);
+                return Task.FromResult("refresh");
             }
+
+            if (!value) Task.FromResult("");
+            switch (action)
+            {
+                case "ClearSteamBackups": SteamSwitcherFuncs.ClearForgottenBackups_Confirmed();
+                    break;
+            }
+
+            return Task.FromResult("");
         }
 
         /// <summary>
