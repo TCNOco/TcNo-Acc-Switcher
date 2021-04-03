@@ -50,7 +50,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 var va = new VacStatus();
                 if (loadedVacCache)
                 {
-                    PrepareProfileImage(ua); // Just get images
+                    PrepareProfileImage(ua, settings); // Just get images
                     foreach (var vsi in vacStatusList.Where(vsi => vsi.SteamId == ua.SteamId))
                     {
                         va = vsi;
@@ -59,7 +59,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 }
                 else
                 {
-                    va = PrepareProfileImage(ua); // Get VAC status as well
+                    va = PrepareProfileImage(ua, settings); // Get VAC status as well
                     va.SteamId = ua.SteamId;
                     vacStatusList.Add(va);
                 }
@@ -182,11 +182,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         /// <param name="su"></param>
         /// <returns></returns>
-        private static VacStatus PrepareProfileImage(Steamuser su)
+        private static VacStatus PrepareProfileImage(Steamuser su, JObject settings)
         { 
             var dlDir = $"wwwroot/img/profiles/{su.SteamId}.jpg";
             // Delete outdated file, if it exists
-            GeneralFuncs.DeletedOutdatedFile(dlDir);
+            GeneralFuncs.DeletedOutdatedFile(dlDir, (int)settings["Steam_ImageExpiryTime"]);
             // ... & invalid files
             GeneralFuncs.DeletedInvalidImage(dlDir);
 

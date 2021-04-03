@@ -15,15 +15,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
     public class GeneralFuncs
     {
         #region FILE_OPERATIONS
+
         /// <summary>
         /// Checks if input file is older than 7 days, then deletes if it is
         /// </summary>
         /// <param name="filename">File path to be checked, and possibly deleted</param>
+        /// <param name="daysOld">How many days old the file needs to be to be deleted</param>
         /// <returns>Whether file was deleted or not (Outdated or not)</returns>
-        public static bool DeletedOutdatedFile(string filename)
+        public static bool DeletedOutdatedFile(string filename, int daysOld= 7)
         {
             if (!File.Exists(filename)) return true;
-            if (DateTime.Now.Subtract(File.GetLastWriteTime(filename)).Days <= 7) return false;
+            if (DateTime.Now.Subtract(File.GetLastWriteTime(filename)).Days <= daysOld) return false;
             File.Delete(filename);
             return true;
         }
