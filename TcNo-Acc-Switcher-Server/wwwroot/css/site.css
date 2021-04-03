@@ -380,3 +380,22 @@ div.advancedClearingButtonCol {
 .restoreRight #lines p {
     margin: 0;
 }
+
+/* Forgotten Steam account */
+.forgottenList {
+    display: flex;
+}
+    .forgottenList select {
+        background-color: #222;
+        border: solid #888 0.1em;
+        color: white;
+        width: 100%;
+    }
+        .forgottenList select option:checked {
+            box-shadow: 0 0 10px 100px #ffff00 inset;
+        }
+        .forgottenList select option:before {
+            content: ">";
+            color: #FFAA00;
+            margin-right: 0.5em;
+        }
