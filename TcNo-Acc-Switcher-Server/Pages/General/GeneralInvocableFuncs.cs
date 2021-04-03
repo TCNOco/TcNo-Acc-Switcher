@@ -41,6 +41,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         /// <summary>
+        /// JS function handler for returning string contents of a *.* file
+        /// </summary>
+        /// <param name="file">Name of file to be read and contents returned in string format</param>
+        /// <returns>string of file contents</returns>
+        [JSInvokable]
+        public static Task GiFileReadAllText(string file)
+        {
+            return Task.FromResult(File.Exists(file) ? File.ReadAllText(file) : "");
+        }
+
+        /// <summary>
         /// JS function handler for for updates to platform's path in settings file from modal GUI
         /// </summary>
         /// <param name="file">Platform specific filename (has .json appended later)</param>

@@ -347,20 +347,20 @@ label {
 }
 
 /* Steam/Settings/Advanced Clearing screen */
-div.restoreRow {
+div.clearingRow {
     display: flex;
 }
-div.restoreLeft {
+div.clearingLeft {
     float: left;
     margin-right: 1%;
     width: 59%;
 }
-div.restoreRight {
+div.clearingRight {
     word-break: break-word;
     overflow: auto;
     background-color: #222;
     width: 40%;
-    border:solid #888 0.1em
+    border: solid #888 0.1em
 }
 div.advancedClearingButtonCol {
     font-size: 0.9rem;
@@ -371,19 +371,20 @@ div.advancedClearingButtonCol {
 #restoreUnderstand{
     margin-bottom: 1em;
 }
-.restorePage button {
+.clearingPage button {
     margin: 0 !important;
 }
-.restoreRight #lines {
+.clearingRight #lines {
     max-height: 1px;
 }
-.restoreRight #lines p {
-    margin: 0;
-}
+    .clearingRight #lines p {
+        margin: 0;
+    }
 
 /* Forgotten Steam account */
 .forgottenList {
     display: flex;
+    margin-bottom: 2em;
 }
     .forgottenList select {
         background-color: #222;
@@ -392,10 +393,31 @@ div.advancedClearingButtonCol {
         width: 100%;
     }
         .forgottenList select option:checked {
-            box-shadow: 0 0 10px 100px #ffff00 inset;
+            box-shadow: 0 0 10px 100px #FFAA00 inset;
+            color: white;
         }
+        /* 
+            Workaround to set color BECAUSE YOU CAN'T SET TEXT COLOR?!
+            This is for showing the arrow before, and the SteamID afterwards in a different color
+        */
         .forgottenList select option:before {
             content: ">";
             color: #FFAA00;
             margin-right: 0.5em;
         }
+        .forgottenList select option:checked:before {
+            color: #945300;
+            margin-left: 0.5em;
+        }
+        .forgottenList select option:after {
+            content: attr(visible-content);
+            color: #3DFF89;
+        }
+        .forgottenList select option:checked:after {
+            content: attr(visible-content);
+            color: #00A340;
+        }
+    .btn_RestoreSelected {
+        margin-right: 1em !important;
+        padding: 0.25em 3em!important;
+    }

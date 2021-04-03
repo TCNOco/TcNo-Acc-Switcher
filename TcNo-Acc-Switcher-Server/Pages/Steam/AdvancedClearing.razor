@@ -8,7 +8,7 @@
 
 <div class="container settings_cont mainblock">
     <div class="row">
-        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol restorePage">
+        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol clearingPage">
             <toastarea />
             <div class="SettingsHeader">
                 <hr><span>Important info:</span><hr>
@@ -25,8 +25,8 @@
             </div>
             <button class="btn" id="Steam_Close" type="button" @onclick="() => Steam_Close(JsRuntime)"><span>Kill Steam process</span></button>
 
-            <div class="restoreRow">
-                <div class="restoreLeft advancedClearingButtonCol">
+            <div class="clearingRow">
+                <div class="clearingLeft advancedClearingButtonCol">
                     <div class="SettingsHeader">
                         <hr><span>General</span><hr>
                     </div>
@@ -66,7 +66,7 @@
                         <button class="btn" id="Steam_Clear_RememberPassword" type="button" @onclick="() => Steam_Clear_RememberPassword(JsRuntime)"><span>HKCU\..\RememberPassword</span></button>
                     </div>
                 </div>
-                <div class="restoreRight">
+                <div class="clearingRight">
                     <div id="lines"></div>
                 </div>
             </div>

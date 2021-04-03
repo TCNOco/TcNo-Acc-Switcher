@@ -3,26 +3,30 @@
 @using Microsoft.AspNetCore.Http.Extensions
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager NavManager
+@inject IJSRuntime JsRuntime;
 
 <div class="container mainblock">
     <div class="row">
-        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
+        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol restorePage">
             <toastarea />
             <div class="SettingsHeader">
                 <hr><span>Restore forgotten accounts</span>
                 <hr>
             </div>
-            <p>If you previously "forgot" an account, you can restore them here.<br />
-                This adds them back into your loginusers.vdf file, allowing you to switch to them.</p>
+            <p>
+                If you previously "forgot" an account, you can restore them here.<br />
+                This adds them back into your loginusers.vdf file, allowing you to switch to them.
+            </p>
             <div class="forgottenList">
-                <select name="ForgottenSteamAccounts" size="15">  
-                    <option value="Merceders"> Mercedes </option>  
-                    <option value="BMW"> BMW </option>  
-                    <option value="Jaguar"> Jaguar </option>  
-                    <option value="Lamborghini"> Lamborghini </option>  
-                    <option value="Ferrari"> Ferrari </option>  
-                    <option value="Ford"> Ford </option>  
-                </select>  
+                <select name="ForgottenSteamAccounts" size="15" multiple id="ForgottenSteamAccounts">
+                </select>
+            </div>
+            <div>
+                <button class="btn btn_RestoreSelected" type="button" onclick='restoreSteamAccounts()'><span>Restore selected</span></button>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ForgottenShowId"><label class="form-check-label" for="Steam_ForgottenShowId"></label></div><label>Show SteamID<br></label>
+                </div>
+            <div class="buttoncol col_close">
+                <button class="btn btn_close" type="button" @onclick='() => NavManager.NavigateTo("/Steam/Settings")'><span>Close</span></button>
             </div>
         </div>
     </div>

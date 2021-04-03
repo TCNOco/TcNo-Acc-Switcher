@@ -5,6 +5,7 @@ function CopyToClipboard(str) {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "CopyToClipboard", str);
 }
 
+// FORGETTING STEAM ACCOUNTS
 function forget(e) {
     e.preventDefault();
     switch (currentpage) {
@@ -27,6 +28,40 @@ async function forgetSteam(reqSteamId) {
         _ => {
             location.reload();
         });
+    var result = await promise;
+}
+
+// RESTORING STEAM ACCOUNTS
+async function restoreSteamAccounts() {
+    //const reqSteamId = $("#ForgottenSteamAccounts").children("option:selected")
+    //    .each((_, e) => { console.log($(e).attr("value")) });
+    const reqSteamIds = $("#ForgottenSteamAccounts").children("option:selected").toArray().map((item) => {
+        return $(item).attr("value");
+    });
+
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "Steam_RestoreSelected", reqSteamIds).then(r => {
+        if (r === true) {
+            reqSteamIds.forEach((e) => {
+                $("#ForgottenSteamAccounts").find(`option[value="${e}"]`).remove();
+                window.notification.new({
+                    type: "success",
+                    title: "",
+                    message: "Restored accounts!",
+                    renderTo: "toastarea",
+                    duration: 5000
+                });
+            });
+        } else {
+            console.log(r);
+            window.notification.new({
+                type: "error",
+                title: "",
+                message: "Failed to restore accounts (See console)",
+                renderTo: "toastarea",
+                duration: 5000
+            });
+        }
+    });
     var result = await promise;
 }
 
@@ -160,10 +195,10 @@ function ShowModal(modaltype) {
         } else {
             header = "<h3>Confirm action:</h3>";
             message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
+            // The only exception to confirm:<prompt> was AcceptForgetSteamAcc, as that was confirm:AcceptForgetSteamAcc:steamId
+            // Could be more in the future.
+            action = action.split(":")[0];
         }
-        // The only exception to confirm:<prompt> was AcceptForgetSteamAcc, as that was confirm:AcceptForgetSteamAcc:steamId
-        // Could be more in the future.
-        action = action.split(":")[0];
 
         $('#modalTitle').text("TcNo Account Switcher Confirm Action");
         $("#modal_contents").empty();
@@ -220,7 +255,7 @@ function queuedJQueryAppend(jQuerySelector, strToInsert) {
         setTimeout(flushJQueryAppendQueue, appendDelay);
         $(jQuerySelector).append([strToInsert]);
         // have this as detect and run at some point. For now the only use for this function is the Steam Cleaning list thingy
-        $(".restoreRight")[0].scrollTop = $(".restoreRight")[0].scrollHeight;
+        $(".clearingRight")[0].scrollTop = $(".clearingRight")[0].scrollHeight;
     }
 }
 function flushJQueryAppendQueue() {
@@ -230,7 +265,7 @@ function flushJQueryAppendQueue() {
     pendingQueue = {};
     recentlyAppend = false;
     // have this as detect and run at some point. For now the only use for this function is the Steam Cleaning list thingy
-    $(".restoreRight")[0].scrollTop = $(".restoreRight")[0].scrollHeight;
+    $(".clearingRight")[0].scrollTop = $(".clearingRight")[0].scrollHeight;
 }
 
 //DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyCommunityUsername", $(SelectedElem).attr(request)).then(r => console.log(r));

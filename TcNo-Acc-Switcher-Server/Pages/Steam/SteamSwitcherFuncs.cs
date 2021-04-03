@@ -356,7 +356,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         /// <summary>
-        /// 
+        /// Updates loginusers and registry to select an account as "most recent"
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="loginNone">Whether it's a fresh account or not</param>
@@ -371,14 +371,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             var tempFile = SteamSwitcherFuncs.LoginUsersVdf(settings) + "_temp";
             File.Delete(tempFile);
 
-            var outJObject = new JObject();
-            foreach (var ua in userAccounts)
-            {
-                if (ua.SteamId == selectedSteamId) ua.MostRec = "1";
-                outJObject[ua.SteamId] = (JObject)JToken.FromObject(ua);
-            }
-            File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
-            File.Replace(tempFile, SteamSwitcherFuncs.LoginUsersVdf(settings), SteamSwitcherFuncs.LoginUsersVdf(settings) + "_last");
+            // MostRec is "00" by default, just update the one that matches SteamID.
+            userAccounts.Single(x => x.SteamId == selectedSteamId).MostRec = "1";
+            
+            // Save updated loginusers.vdf
+            SaveSteamUsersIntoVdf(userAccounts, SteamSwitcherFuncs.LoginUsersVdf(settings));
 
             // -----------------------------------
             // --------- Manage registry ---------
@@ -392,6 +389,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             using var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam");
             key.SetValue("AutoLoginUser", accName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
             key.SetValue("RememberPassword", 1);
+        }
+
+        /// <summary>
+        /// Save updated list of Steamuser into loginusers.vdf, in vdf format.
+        /// </summary>
+        /// <param name="userAccounts">List of Steamuser to save into loginusers.vdf</param>
+        /// <param name="steamPath">Path of loginusers.vdf</param>
+        public static void SaveSteamUsersIntoVdf(List<Steamuser> userAccounts, string steamPath)
+        {
+            // Convert list to JObject list, ready to save into vdf.
+            var outJObject = new JObject();
+            foreach (var ua in userAccounts)
+            {
+                outJObject[ua.SteamId] = (JObject)JToken.FromObject(ua);
+            }
+
+            // Write changes to files.
+            var tempFile = steamPath + "_temp";
+            File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
+            File.Replace(tempFile, steamPath, steamPath + "_last");
         }
 
         /// <summary>
@@ -591,21 +608,42 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             if (fUsers.All(x => x.SteamId != forgottenUser.SteamId)) fUsers.Add(new ForgottenSteamuser() { SteamId = forgottenUser.SteamId, Steamuser = forgottenUser }); // Add to list if user with SteamID doesn't exist in it.
             File.WriteAllText(fFile, JsonConvert.SerializeObject(fUsers));
 
-
-            // Convert list to JObject list, ready to save into vdf.
-            var outJObject = new JObject();
-            foreach (var ua in userAccounts)
-            {
-                outJObject[ua.SteamId] = (JObject)JToken.FromObject(ua);
-            }
-
-            // Write changes to files.
-            var tempFile = steamPath + "_temp";
-            File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
-            File.Replace(tempFile, steamPath, steamPath + "_last");
-            
+            // Save updated loginusers.vdf file
+            SaveSteamUsersIntoVdf(userAccounts, steamPath);
             return true;
         }
+
+        public static bool RestoreAccounts(string[] requestedSteamIds)
+        {
+            const string fFile = "SteamForgotten.json";
+            if (!File.Exists(fFile)) return false;
+            var forgottenAccounts = JsonConvert.DeserializeObject<List<ForgottenSteamuser>>(File.ReadAllText(fFile));
+
+            // Load existing accounts
+            var settings = GeneralFuncs.LoadSettings("SteamSettings");
+            var steamPath = SteamSwitcherFuncs.LoginUsersVdf(settings);
+            var userAccounts = GetSteamUsers(steamPath);
+            // Create list of existing SteamIds (as to not add duplicates)
+            var existingIds = userAccounts.Select(ua => ua.SteamId).ToList();
+
+            var selectedForgottenPossibleDuplicates = forgottenAccounts.Where(fsu => requestedSteamIds.Contains(fsu.SteamId)).ToList(); // To remove items in Loginusers from forgotten list
+            var selectedForgotten = selectedForgottenPossibleDuplicates.Where(fsu => !existingIds.Contains(fsu.SteamId)).ToList(); // To add new items to Loginusers (So there's no duplicates)
+            foreach (var fa in selectedForgotten)
+            {
+                var su = fa.Steamuser;
+                su.SteamId = fa.SteamId;
+                userAccounts.Add(su);
+            }
+            
+            // Save updated loginusers.vdf file
+            SaveSteamUsersIntoVdf(userAccounts, steamPath);
+
+            // Update & Save SteamForgotten.json
+            forgottenAccounts = forgottenAccounts.Except(selectedForgottenPossibleDuplicates).ToList<ForgottenSteamuser>();
+            File.WriteAllText(fFile, JsonConvert.SerializeObject(forgottenAccounts));
+            return true;
+        }
+
         /// <summary>
         /// Only runs ForgetAccount, but allows Javascript to wait for it's completion before refreshing, instead of just doing it instantly >> Not showing proper results.
         /// </summary>
@@ -616,6 +654,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             return Task.FromResult(ForgetAccount(steamId));
         }
+
 
         #endregion
     }
