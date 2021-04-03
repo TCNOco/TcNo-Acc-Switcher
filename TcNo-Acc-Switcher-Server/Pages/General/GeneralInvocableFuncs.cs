@@ -61,9 +61,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             if (action.StartsWith("AcceptForgetSteamAcc:"))
             {
-                string username = action.Split(":")[1];
+                string steamId = action.Split(":")[1];
                 SteamSwitcherFuncs.UpdateSteamForgetAcc(true);
-                SteamSwitcherFuncs.ForgetAccount(username);
+                SteamSwitcherFuncs.ForgetAccount(steamId);
                 return Task.FromResult("refresh");
             }
 

@@ -550,6 +550,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             return;
         }
 
+        [JSInvokable]
+        public static Task<bool> GetSteamForgetAcc()
+        {
+            JObject settings = GeneralFuncs.LoadSettings("SteamSettings");
+            return Task.FromResult((bool) settings["ForgetAccountEnabled"]);
+        }
+
         /// <summary>
         /// Creates a backup of the LoginUsers.vdf file
         /// </summary>
@@ -580,8 +587,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <summary>
         /// Remove requested account from loginusers.vdf
         /// </summary>
-        /// <param name="steamId"></param>
-        public static void ForgetAccount(string steamId)
+        /// <param name="steamId">SteamId of account to be removed</param>
+        public static bool ForgetAccount(string steamId)
         {
             var settings = GeneralFuncs.LoadSettings("SteamSettings");
 
@@ -611,9 +618,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             var tempFile = steamPath + "_temp";
             File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
             File.Replace(tempFile, steamPath, steamPath + "_last");
-
-            // Refresh browser page, to show new list.
-
+            
+            return true;
+        }
+        /// <summary>
+        /// Only runs ForgetAccount, but allows Javascript to wait for it's completion before refreshing, instead of just doing it instantly >> Not showing proper results.
+        /// </summary>
+        /// <param name="steamId">SteamId of account to be removed</param>
+        /// <returns>true</returns>
+        [JSInvokable]
+        public static Task<bool> ForgetAccountJs(string steamId)
+        {
+            return Task.FromResult(ForgetAccount(steamId));
         }
 
         #endregion

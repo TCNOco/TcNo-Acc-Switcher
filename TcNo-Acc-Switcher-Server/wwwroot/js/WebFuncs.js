@@ -9,18 +9,25 @@ function forget(e) {
     e.preventDefault();
     switch (currentpage) {
         case "Steam":
-            forgetSteam();
+            promptForgetSteam();
         default:
     }
-
-    function forgetSteam() {
-        const reqSteamId = $(SelectedElem).attr("steamid64");
-
-        // Check whether user has accepted what forgetting an account is
-        ShowModal("confirm:AcceptForgetSteamAcc:" + reqSteamId);
-
-        // Remove account
-    }
+}
+async function promptForgetSteam() {
+    const reqSteamId = $(SelectedElem).attr("steamid64");
+    
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetSteamForgetAcc").then(r => {
+        if (!r) ShowModal("confirm:AcceptForgetSteamAcc:" + reqSteamId);
+        else forgetSteam(reqSteamId);
+    });
+    var result = await promise;
+}
+async function forgetSteam(reqSteamId) {
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ForgetAccountJs", reqSteamId).then(
+        _ => {
+            location.reload();
+        });
+    var result = await promise;
 }
 
 function copy(request, e) {
