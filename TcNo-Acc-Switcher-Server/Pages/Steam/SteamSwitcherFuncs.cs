@@ -397,23 +397,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <summary>
         /// Clears backups of forgotten accounts
         /// </summary>
-        public static async void ClearForgottenBackups(IJSRuntime js = null)
+        public static async void ClearForgotten(IJSRuntime js = null)
         {
             await GeneralInvocableFuncs.ShowModal(js, "confirm:ClearSteamBackups:" + "Are you sure you want to clear backups of forgotten accounts?".Replace(' ', '_'));
             // Confirmed in GeneralInvocableFuncs.GiConfirmAction for rest of function
         }
-        public static void ClearForgottenBackups_Confirmed() {
-            var backupPath = SteamSwitcherFuncs.GetForgottenBackupPath();
-            try
-            {
-                if (Directory.Exists(backupPath))
-                    Directory.Delete(backupPath, true);
-            }
-            catch (Exception ex)
-            {
-                throw;
-                // Handle this better in the future somehow
-            }
+        public static void ClearForgotten_Confirmed()
+        {
+            var settings = GeneralFuncs.LoadSettings("SteamSettings");
+            var legacyBackupPath = Path.Combine(SteamFolder(settings), "config\\\\TcNo-Acc-Switcher-Backups\\\\");
+            if (Directory.Exists(legacyBackupPath))
+                    Directory.Delete(legacyBackupPath, true);
+
+            // Handle new method:
+            if (File.Exists("SteamForgotten.json")) File.Delete("SteamForgotten.json");
         }
         #endregion
 
@@ -477,18 +474,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 return "RESET_PATH";
             }
             return Path.Combine(SteamFolder(settings), "config\\loginusers.vdf");
-        }
-
-        /// <summary>
-        /// Get path of folder containing forgotten Steam accounts
-        /// </summary>
-        /// <param name="settings">(Optional) Existing settings loaded into memory by another function</param>
-        /// <returns>(Steam's directory)\config\TcNo-Acc-Switcher-Backups\</returns>
-        public static string GetForgottenBackupPath(JObject settings = null)
-        {
-            // TODO: Currently unused.
-            GeneralFuncs.InitSettingsIfNull(ref settings, "SteamSettings");
-            return Path.Combine(SteamFolder(settings), "config\\\\TcNo-Acc-Switcher-Backups\\\\");
         }
 
         /// <summary>

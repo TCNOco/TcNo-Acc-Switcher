@@ -64,7 +64,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void OpenSteamFolder() => Process.Start("explorer.exe", SteamSwitcherFuncs.SteamFolder());
 
         // BUTTON: Advanced Cleaning...
-        // - TODO: Handle in button -> Navigate to another page.
+        // Handled on page
 
         #endregion
 

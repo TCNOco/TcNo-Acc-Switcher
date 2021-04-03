@@ -88,7 +88,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         public void Steam_Clear_Forgotten(IJSRuntime jsRuntime)
         {
-            SteamSwitcherFuncs.ClearForgottenBackups(jsRuntime);
+            SteamSwitcherFuncs.ClearForgotten(jsRuntime);
             WriteLine(jsRuntime, "Cleared forgotten account backups");
             NewLine(jsRuntime);
         }

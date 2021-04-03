@@ -56,7 +56,7 @@
                     <hr><span>Steam tools</span>
                     <hr>
                 </div>
-                <div class="buttoncol"><button class="btn" type="button"><span>Restore forgotten account</span></button><button class="btn" type="button" @onclick="() => SteamSwitcherFuncs.ClearForgottenBackups(JsRuntime)"><span>Clear forgotten backups</span></button></div>
+                <div class="buttoncol"><button class="btn" type="button"><span>Restore forgotten account</span></button><button class="btn" type="button" @onclick="() => SteamSwitcherFuncs.ClearForgotten(JsRuntime)"><span>Clear forgotten accounts</span></button></div>
                 <div class="buttoncol"><button class="btn" id="Steam_OpenSteamFolder" type="button" @onclick="OpenSteamFolder"><span>Open Steam Folder</span></button><button class="btn" id="Steam_AdvancedClearing" type="button" @onclick='() => NavManager.NavigateTo("/Steam/AdvancedClearing")'><span>Advanced cleaning...</span></button></div>
                 <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="ClickSaveSettings"><span>Close</span></button></div>
             </div>

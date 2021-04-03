@@ -151,7 +151,7 @@ function ShowModal(modaltype) {
         // GOAL: To return true/false
         console.log(modaltype);
 
-        const action = modaltype.slice(8);
+        let action = modaltype.slice(8);
 
         let message = "";
         let header = "";
@@ -161,6 +161,9 @@ function ShowModal(modaltype) {
             header = "<h3>Confirm action:</h3>";
             message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
         }
+        // The only exception to confirm:<prompt> was AcceptForgetSteamAcc, as that was confirm:AcceptForgetSteamAcc:steamId
+        // Could be more in the future.
+        action = action.split(":")[0];
 
         $('#modalTitle').text("TcNo Account Switcher Confirm Action");
         $("#modal_contents").empty();

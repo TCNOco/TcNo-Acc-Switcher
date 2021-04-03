@@ -70,7 +70,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (!value) Task.FromResult("");
             switch (action)
             {
-                case "ClearSteamBackups": SteamSwitcherFuncs.ClearForgottenBackups_Confirmed();
+                case "ClearSteamBackups": SteamSwitcherFuncs.ClearForgotten_Confirmed();
                     break;
             }
 
