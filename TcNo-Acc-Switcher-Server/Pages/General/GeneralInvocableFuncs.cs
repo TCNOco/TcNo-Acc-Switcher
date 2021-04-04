@@ -18,6 +18,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralInvocableFuncs
     {
+        private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
         /// <summary>
         /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file
         /// </summary>
@@ -73,7 +74,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (action.StartsWith("AcceptForgetSteamAcc:"))
             {
                 string steamId = action.Split(":")[1];
-                SteamSwitcherFuncs.UpdateSteamForgetAcc(true);
+                Steam.UpdateSteamForgetAcc(true);
                 SteamSwitcherFuncs.ForgetAccount(steamId);
                 return Task.FromResult("refresh");
             }

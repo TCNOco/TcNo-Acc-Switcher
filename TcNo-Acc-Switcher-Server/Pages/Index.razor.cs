@@ -15,10 +15,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
     {
         public async Task CheckSteam(IJSRuntime JSRuntime)
         {
-            //await JsRuntime.InvokeAsync<string>("alert", "TEST");
-            var settings = GeneralFuncs.LoadSettings("SteamSettings");
-            //if (false)
-            if (Directory.Exists(SteamSwitcherFuncs.SteamFolder(settings)) && File.Exists(SteamSwitcherFuncs.SteamExe(settings)))
+            if (Directory.Exists(Steam.FolderPath) && File.Exists(Steam.SteamExe()))
             {
                 NavManager.NavigateTo("/Steam/");
                 return;

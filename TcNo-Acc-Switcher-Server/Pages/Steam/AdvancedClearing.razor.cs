@@ -13,7 +13,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
     public partial class AdvancedClearing : ComponentBase
     {
         [Inject]
-        public Data.AppData AppData { get; set; }
+        protected Data.AppData AppData { get; set; }
+        private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
+
         protected override async Task OnInitializedAsync()
         {
             AppData.WindowTitle = "TcNo Account Switcher - Steam Cleaning";
@@ -42,14 +44,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         public void Steam_Clear_Logs(IJSRuntime jsRuntime)
         {
-            GeneralFuncs.ClearFolder(Path.Combine(SteamSwitcherFuncs.SteamFolder(), "logs\\"), jsRuntime, SteamReturn);
+            GeneralFuncs.ClearFolder(Path.Combine(Steam.FolderPath, "logs\\"), jsRuntime, SteamReturn);
             WriteLine(jsRuntime, "Cleared logs folder.");
             NewLine(jsRuntime);
         }
 
         public void Steam_Clear_Dumps(IJSRuntime jsRuntime)
         {
-            GeneralFuncs.ClearFolder(Path.Combine(SteamSwitcherFuncs.SteamFolder(), "dumps\\"), jsRuntime, SteamReturn);
+            GeneralFuncs.ClearFolder(Path.Combine(Steam.FolderPath, "dumps\\"), jsRuntime, SteamReturn);
             WriteLine(jsRuntime, "Cleared dumps folder.");
             NewLine(jsRuntime);
         }
@@ -67,7 +69,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // Overlay UI logs -
             //   Steam\GameOverlayUI.exe.log
             //   Steam\GameOverlayRenderer.log
-            GeneralFuncs.ClearFilesOfType(SteamSwitcherFuncs.SteamFolder(), "*.log|*.last", SearchOption.TopDirectoryOnly, jsRuntime, SteamReturn);
+            GeneralFuncs.ClearFilesOfType(Steam.FolderPath, "*.log|*.last", SearchOption.TopDirectoryOnly, jsRuntime, SteamReturn);
             WriteLine(jsRuntime, "Cleared UI Logs.");
             NewLine(jsRuntime);
         }
@@ -75,21 +77,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public void Steam_Clear_AppCache(IJSRuntime jsRuntime)
         {
             // App Cache - Steam\appcache
-            GeneralFuncs.ClearFilesOfType(Path.Combine(SteamSwitcherFuncs.SteamFolder(), "appcache"), "*.*", SearchOption.TopDirectoryOnly, jsRuntime, SteamReturn);
+            GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "appcache"), "*.*", SearchOption.TopDirectoryOnly, jsRuntime, SteamReturn);
             WriteLine(jsRuntime, "Cleared AppCache.");
             NewLine(jsRuntime);
         }
 
         public void Steam_Clear_HttpCache(IJSRuntime jsRuntime)
         {
-            GeneralFuncs.ClearFilesOfType(Path.Combine(SteamSwitcherFuncs.SteamFolder(), "appcache\\httpcache"), "*.*", SearchOption.AllDirectories, jsRuntime, SteamReturn);
+            GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "appcache\\httpcache"), "*.*", SearchOption.AllDirectories, jsRuntime, SteamReturn);
             WriteLine(jsRuntime, "Cleared HTTPCache.");
             NewLine(jsRuntime);
         }
 
         public void Steam_Clear_DepotCache(IJSRuntime jsRuntime)
         {
-            GeneralFuncs.ClearFilesOfType(Path.Combine(SteamSwitcherFuncs.SteamFolder(), "depotcache"), "*.*", SearchOption.TopDirectoryOnly, jsRuntime, SteamReturn);
+            GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "depotcache"), "*.*", SearchOption.TopDirectoryOnly, jsRuntime, SteamReturn);
             WriteLine(jsRuntime, "Cleared DepotCache.");
             NewLine(jsRuntime);
         }
@@ -103,7 +105,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         public void Steam_Clear_Config(IJSRuntime jsRuntime)
         {
-            GeneralFuncs.DeleteFile(Path.Combine(SteamSwitcherFuncs.SteamFolder(), "config\\config.vdf"), js: jsRuntime, jsDest: SteamReturn);
+            GeneralFuncs.DeleteFile(Path.Combine(Steam.FolderPath, "config\\config.vdf"), js: jsRuntime, jsDest: SteamReturn);
             WriteLine(jsRuntime, "[ Don't forget to clear forgotten account backups as well ]");
             WriteLine(jsRuntime, "Cleared config\\config.vdf");
             NewLine(jsRuntime);
@@ -111,14 +113,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         public void Steam_Clear_LoginUsers(IJSRuntime jsRuntime)
         {
-            GeneralFuncs.DeleteFile(Path.Combine(SteamSwitcherFuncs.SteamFolder(), "config\\loginusers.vdf"), js: jsRuntime, jsDest: SteamReturn);
+            GeneralFuncs.DeleteFile(Path.Combine(Steam.FolderPath, "config\\loginusers.vdf"), js: jsRuntime, jsDest: SteamReturn);
             WriteLine(jsRuntime, "Cleared config\\loginusers.vdf");
             NewLine(jsRuntime);
         }
 
         public void Steam_Clear_Ssfn(IJSRuntime jsRuntime)
         {
-            var d = new DirectoryInfo(SteamSwitcherFuncs.SteamFolder());
+            var d = new DirectoryInfo(Steam.FolderPath);
             var i = 0;
             foreach (var f in d.GetFiles("ssfn*"))
             {

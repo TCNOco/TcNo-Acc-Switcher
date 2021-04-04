@@ -229,7 +229,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="joNewSettings">JObject of settings to be saved</param>
         public static void SaveSettings(string file, JObject joNewSettings)
         {
-            var sFilename = file + ".json";
+            var sFilename = file.EndsWith(".json") ? file : file + ".json";
 
             // Get existing settings
             var joSettings = new JObject();
@@ -257,10 +257,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="file">JSON file to be read</param>
         /// <returns>JObject created from file</returns>
-        public static JObject LoadSettings(string file)
+        public static JObject LoadSettings(string file, JObject defJO = null)
         {
             var sFilename = file + ".json";
-            if (File.Exists(sFilename))
+            if (File.Exists(sFilename)) 
             {
                 try
                 {
@@ -268,13 +268,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    // ignored
                 }
             }
-
             return file switch
             {
-                "SteamSettings" => SteamSwitcherFuncs.DefaultSettings_Steam(),
+                //"SteamSettings.json" => Data.Settings.Steam.DefaultSettings(), Removed the default for this
                 "WindowSettings" => DefaultSettings(),
                 _ => new JObject()
             };
@@ -284,14 +283,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// Returns default settings for program (Just the Window size currently)
         /// </summary>
         public static JObject DefaultSettings() => JObject.Parse(@"WindowSize: ""800, 450""");
-
-        /// <summary>
-        /// If input settings from another function are null, load settings from file OR default settings for [Platform]
-        /// </summary>
-        /// <param name="settings">JObject of settings to be initialized if null</param>
-        /// <param name="file">"[Platform]Settings" to be used later in reading file, and setting default if can't</param>
-        public static void InitSettingsIfNull(ref JObject settings, string file) => settings ??= GeneralFuncs.LoadSettings(file);
-
+        
         #endregion
     }
 }

@@ -9,12 +9,15 @@
 @inject NavigationManager NavManager
 @inject AppData AppData
 
+@inject Data.Settings.Steam Steam
+
 <div class="button" id="SwitcherSteam" @onclick="() => CheckSteam(JsRuntime)">
     <img src="img/icons/ico_settings.svg" draggable="false" />
 </div>
 
 @code
 {
+
     // This has to be here for NavManager.
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
