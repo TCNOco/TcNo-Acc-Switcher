@@ -13,9 +13,9 @@
 @using System.Drawing
 @using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Server.Pages.General
-@inject AppData CurAppData
-@inject IJSRuntime Js;
-@inject NavigationManager NavManager; 
+@inject AppData AppData
+@inject IJSRuntime Js
+@inject NavigationManager NavManager
 
 
 
@@ -65,7 +65,7 @@
     </ul>
 </div>
 <div class="acc_list_actionbar">
-    <input id="CurrentStatus" @bind="@CurAppData.CurrentStatus">
+    <input id="CurrentStatus" @bind="@AppData.CurrentStatus">
     <div>
         <div class="button" id="btnAddNew" onclick="NewSteamLogin()">
             <span>Add New</span>
@@ -92,6 +92,7 @@
     // This has to be here for NavManager.
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        AppData.WindowTitle = "TcNo Account Switcher - Steam";
         if (firstRender)
         {
             if (await SteamSwitcherFuncs.LoadProfiles(Js) == false) NavManager.NavigateTo("/?modal=" + Uri.EscapeUriString("find:Steam:Steam.exe:SteamSettings"));

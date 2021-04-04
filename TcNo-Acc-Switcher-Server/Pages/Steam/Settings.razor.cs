@@ -15,9 +15,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
     {
         [Inject]
         public IJSRuntime JsRuntime { get; set; }
+        [Inject]
+        public Data.AppData AppData { get; set; }
         private IJSObjectReference _jsModule;
         protected override async Task OnInitializedAsync()
         {
+            AppData.WindowTitle = "TcNo Account Switcher - Steam Settings";
             _jsModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/steam/settings.js");
             await _jsModule.InvokeAsync<string>("jsLoadSettings");
         }

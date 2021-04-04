@@ -12,6 +12,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class AdvancedClearing : ComponentBase
     {
+        [Inject]
+        public Data.AppData AppData { get; set; }
+        protected override async Task OnInitializedAsync()
+        {
+            AppData.WindowTitle = "TcNo Account Switcher - Steam Cleaning";
+        }
+
+
         public const string SteamReturn = "SteamAdvancedClearingAddLine";
 
         private async void WriteLine(IJSRuntime jsRuntime, string text)
