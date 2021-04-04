@@ -98,6 +98,8 @@
         if (firstRender)
         {
             if (await SteamSwitcherFuncs.LoadProfiles(Js) == false) NavManager.NavigateTo("/?modal=" + Uri.EscapeUriString("find:Steam:Steam.exe:SteamSettings"));
+            Steam.SaveSettings(!File.Exists(Steam.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
+
             //  HANDLE TOAST HERE AS WELL
             var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
             if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("toast_type", out var toastType))

@@ -21,7 +21,7 @@ namespace TcNo_Acc_Switcher_Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<AppData>();
             services.AddSingleton<Data.Settings.Steam>();

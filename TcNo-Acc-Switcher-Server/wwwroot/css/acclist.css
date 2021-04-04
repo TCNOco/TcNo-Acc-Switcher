@@ -129,6 +129,7 @@ label.acc p {
     }
 
         .acc_list_actionbar div .button, .settingsCol button {
+            box-shadow: none!important;
             user-select: none;
             background-color: #333;
             padding: 0.25em 0.651em;

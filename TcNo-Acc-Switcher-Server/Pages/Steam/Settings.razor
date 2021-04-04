@@ -13,39 +13,39 @@
                     <hr>
                 </div>
                 <div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label for="Steam_Admin">Run Steam as Admin<br></label>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin" @bind="Steam.Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label for="Steam_Admin">Run Steam as Admin<br></label>
                 </div>
                 <div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowSteamID"><label class="form-check-label" for="Steam_ShowSteamID"></label></div><label for="Steam_ShowSteamID">Show SteamID<br></label>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowSteamID" @bind="Steam.ShowSteamId"><label class="form-check-label" for="Steam_ShowSteamID"></label></div><label for="Steam_ShowSteamID">Show SteamID<br></label>
                 </div>
                 <div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowVAC"><label class="form-check-label" for="Steam_ShowVAC"></label></div><label for="Steam_ShowVAC">Show VAC Status<br></label>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowVAC" @bind="Steam.ShowVac"><label class="form-check-label" for="Steam_ShowVAC"></label></div><label for="Steam_ShowVAC">Show VAC Status<br></label>
                 </div>
                 <div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowLimited"><label class="form-check-label" for="Steam_ShowLimited"></label></div><label for="Steam_ShowLimited">Show Limited Status<br></label>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowLimited" @bind="Steam.ShowLimited"><label class="form-check-label" for="Steam_ShowLimited"></label></div><label for="Steam_ShowLimited">Show Limited Status<br></label>
                 </div>
-                <div class="form-text"><span>Profile images expire after:</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" value="7"><span>Days</span></div>
+                <div class="form-text"><span>Profile images expire after:</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="Steam.ImageExpiryTime"><span>Days</span></div>
                 <div class="SettingsHeader">
                     <hr><span>Shortcuts</span>
                     <hr>
                 </div>
                 <div class="columnSetting">
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut"><label class="form-check-label" for="Steam_DesktopShortcut"></label></div><label for="Steam_DesktopShortcut">Desktop shortcut<br></label>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="Steam.DesktopShortcut"><label class="form-check-label" for="Steam_DesktopShortcut"></label></div><label for="Steam_DesktopShortcut">Desktop shortcut<br></label>
                 </div>
                 <div class="columnSetting">
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_StartMenu"><label class="form-check-label" for="Steam_StartMenu"></label></div><label for="Steam_StartMenu">Start menu shortcut<br></label>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_StartMenu" @bind="Steam.StartMenu"><label class="form-check-label" for="Steam_StartMenu"></label></div><label for="Steam_StartMenu">Start menu shortcut<br></label>
                 </div>
                 <div class="SettingsHeader">
                     <hr><span>Tray settings</span>
                     <hr>
                 </div>
                 <div class="columnSetting">
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_TrayStartup"><label class="form-check-label" for="Steam_TrayStartup"></label></div><label for="Steam_TrayStartup">Start with Windows<br></label>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_TrayStartup"  @bind="Steam.TrayStartup"><label class="form-check-label" for="Steam_TrayStartup"></label></div><label for="Steam_TrayStartup">Start with Windows<br></label>
                 </div>
                 <div class="columnSetting">
-                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_TrayAccountName"><label class="form-check-label" for="Steam_TrayAccountName"></label></div><label for="Steam_TrayAccountName">Show account name [not friend name]<br></label>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_TrayAccountName"  @bind="Steam.TrayAccName"><label class="form-check-label" for="Steam_TrayAccountName"></label></div><label for="Steam_TrayAccountName">Show account name [not friend name]<br></label>
                 </div>
-                <div class="form-text"><span>Max number of accounts to remember:</span><input type="number" id="Steam_TrayAccNumber" min="0" max="365" value="7"></div>
+                <div class="form-text"><span>Max number of accounts to remember:</span><input type="number" id="Steam_TrayAccNumber" min="0" max="365"  @bind="Steam.TrayAccNumber"></div>
                 <div class="SettingsHeader">
                     <hr><span>General</span>
                     <hr>
@@ -58,7 +58,7 @@
                 </div>
                 <div class="buttoncol"><button class="btn" type="button" @onclick='() => NavManager.NavigateTo("/Steam/RestoreForgotten")'><span>Restore forgotten account</span></button><button class="btn" type="button" @onclick="() => SteamSwitcherFuncs.ClearForgotten(JsRuntime)"><span>Clear forgotten accounts</span></button></div>
                 <div class="buttoncol"><button class="btn" id="Steam_OpenSteamFolder" type="button" @onclick="OpenSteamFolder"><span>Open Steam Folder</span></button><button class="btn" id="Steam_AdvancedClearing" type="button" @onclick='() => NavManager.NavigateTo("/Steam/AdvancedClearing")'><span>Advanced cleaning...</span></button></div>
-                <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="ClickSaveSettings"><span>Close</span></button></div>
+                <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick='() => { Steam.SaveSettings(); NavManager.NavigateTo("/Steam"); }'><span>Close</span></button></div>
             </div>
         </div>
     </div>

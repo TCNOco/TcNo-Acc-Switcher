@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -19,6 +20,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
     public class Steam
     {
         private static Steam _instance = new Steam();
+
         public Steam() { }
         private static readonly object LockObj = new();
         public static Steam Instance
@@ -62,11 +64,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Steam_TrayAccNumber", Order = 12)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
         
         // Constants
-        public string VacCacheFile = "profilecache/SteamVACCache.json";
-        public string SettingsFile = "SteamSettings.json";
-        public string ForgottenFile = "SteamForgotten.json";
-        public string SteamImagePath = "wwwroot/img/profiles/steam/";
-        public string SteamImagePathHtml = "img/profiles/steam/";
+        [JsonIgnore] public string VacCacheFile = "profilecache/SteamVACCache.json";
+        [JsonIgnore] public string SettingsFile = "SteamSettings.json";
+        [JsonIgnore] public string ForgottenFile = "SteamForgotten.json";
+        [JsonIgnore] public string SteamImagePath = "wwwroot/img/profiles/steam/";
+        [JsonIgnore] public string SteamImagePathHtml = "img/profiles/steam/";
 
         /// <summary>
         /// Default settings for SteamSettings.json
@@ -111,7 +113,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         public JObject GetJObject() => JObject.FromObject(this);
 
-        public void SaveSettings() => GeneralFuncs.SaveSettings("SteamSettings", GetJObject());
+        [JSInvokable]
+        public void SaveSettings(bool reverse = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), reverse);
 
         /// <summary>
         /// Get path of loginusers.vdf, resets & returns "RESET_PATH" if invalid.

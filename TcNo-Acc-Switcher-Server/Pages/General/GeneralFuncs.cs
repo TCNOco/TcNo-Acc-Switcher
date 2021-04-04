@@ -227,7 +227,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="file">File path to save JSON string to</param>
         /// <param name="joNewSettings">JObject of settings to be saved</param>
-        public static void SaveSettings(string file, JObject joNewSettings)
+        /// <param name="reverse">True merges old with new settings, false merges new with old</param>
+        public static void SaveSettings(string file, JObject joNewSettings, bool reverse = false)
         {
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
 
@@ -242,14 +243,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 Console.WriteLine(e);
             }
 
-            // Merge existing settings with settings from site
-            joSettings.Merge(joNewSettings, new JsonMergeSettings
+            if (reverse)
             {
-                MergeArrayHandling = MergeArrayHandling.Union
-            });
-
-            // Save all settings back into file
-            File.WriteAllText(sFilename, joSettings.ToString());
+                // Merge new settings with existing settings --> Adds missing variables etc
+                joNewSettings.Merge(joSettings, new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+                // Save all settings back into file
+                File.WriteAllText(sFilename, joNewSettings.ToString());
+            }
+            else
+            {
+                // Merge existing settings with settings from site
+                joSettings.Merge(joNewSettings, new JsonMergeSettings
+                {
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
+                // Save all settings back into file
+                File.WriteAllText(sFilename, joSettings.ToString());
+            }
         }
 
         /// <summary>
@@ -259,7 +272,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <returns>JObject created from file</returns>
         public static JObject LoadSettings(string file, JObject defJO = null)
         {
-            var sFilename = file + ".json";
+            var sFilename = file.EndsWith(".json") ? file : file + ".json";
             if (File.Exists(sFilename)) 
             {
                 try

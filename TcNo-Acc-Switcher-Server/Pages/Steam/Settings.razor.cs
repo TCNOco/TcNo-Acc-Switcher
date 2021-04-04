@@ -23,8 +23,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         protected override async Task OnInitializedAsync()
         {
             AppData.WindowTitle = "TcNo Account Switcher - Steam Settings";
-            _jsModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/steam/settings.js");
-            await _jsModule.InvokeAsync<string>("jsLoadSettings");
+            //_jsModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/steam/settings.js");
+            //await _jsModule.InvokeAsync<string>("jsLoadSettings");
         }
         public async Task ClickSaveSettings()
         {
