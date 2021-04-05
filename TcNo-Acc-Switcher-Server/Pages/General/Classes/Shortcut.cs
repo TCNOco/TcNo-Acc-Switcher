@@ -21,16 +21,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         {
         }
 
-        public Shortcut(string exe, string workingDir, string iconDir, string shortcutPath, string desc, string args)
-        {
-            Exe = exe;
-            WorkingDir = workingDir;
-            IconDir = iconDir;
-            ShortcutPath = shortcutPath;
-            Desc = desc;
-            Args = args;
-        }
-
         public static string Desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         public static string StartMenu = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\");
 
@@ -41,7 +31,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         public string GetSelfPath() => System.Reflection.Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe");
 
 
-
+        /// <summary>
+        /// Write Shortcut using WShell. Not too sure how else to do this, and it works.
+        /// Probably will find another way of doing this at some stage.
+        /// </summary>
         private void WriteShortcut()
         {
             Directory.CreateDirectory(ShortcutDir());
@@ -79,6 +72,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             File.Delete("CreateShortcut.vbs");
         }
 
+        /// <summary>
+        /// Delete shortcut if it exists
+        /// </summary>
+        /// <param name="delFolder">(Optional) Whether to delete parent folder if it's enpty</param>
         public void DeleteShortcut(bool delFolder)
         {
             if (File.Exists(ShortcutPath))
@@ -88,18 +85,31 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 Directory.Delete(ShortcutDir());
         }
 
+        /// <summary>
+        /// Toggles whether a shortcut exists (Creates/Deletes depending on state)
+        /// </summary>
+        /// <param name="shouldExist">Whether the shortcut SHOULD exist</param>
+        /// <param name="shouldFolderExist">Whether the shortcut ALREADY Exists</param>
         public void ToggleShortcut(bool shouldExist, bool shouldFolderExist = true)
         {
             if (shouldExist && !ShortcutExist()) WriteShortcut();
             else if (!shouldExist  && ShortcutExist()) DeleteShortcut(!shouldFolderExist);
         }
 
+        /// <summary>
+        /// Write shortcut to file if doesn't already exist
+        /// </summary>
         public void TryWrite()
         {
             if (!ShortcutExist()) WriteShortcut();
         }
 
         #region PROGRAM_SHORTCUTS
+        /// <summary>
+        /// Fills in necessary info to create a shortcut to the TcNo Account Switcher
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
         public Shortcut Shortcut_Switcher(string location)
         {
             // Starts the main picker, with the Steam argument.
@@ -122,7 +132,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <summary>
         /// Sets up Steam shortcut
         /// </summary>
-        /// <param name="location">Places to put shortcut</param>
+        /// <param name="location">Place to put shortcut</param>
         /// <param name="shortcutName">(Optional) Full name for shortcut FILE</param>
         /// <param name="descAdd">(Optional) Additional description to add to "TcNo Account Switcher - Steam</param>
         /// <param name="args">(Optional) Arguments to add, default "steam" to open Steam page of switcher</param>
@@ -138,6 +148,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             Args = args;
             return this;
         }
+        /// <summary>
+        /// Sets up a Steam Tray shortcut
+        /// </summary>
+        /// <param name="location">Place to put shortcut</param>
+        /// <returns></returns>
         public Shortcut Shortcut_SteamTray(string location)
         {
             Exe = Path.Combine(ParentDirectory(GetSelfPath()), "TcNo-Acc-Switcher-Tray.exe");

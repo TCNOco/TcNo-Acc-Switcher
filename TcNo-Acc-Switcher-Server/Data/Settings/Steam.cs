@@ -180,6 +180,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
             s.Shortcut_Switcher(Shortcut.StartMenu);
             s.ToggleShortcut(!StartMenu, false);
+
+            s.Shortcut_SteamTray(Shortcut.StartMenu);
+            s.ToggleShortcut(!StartMenu, false);
         }
         public void Task_Toggle()
         {
