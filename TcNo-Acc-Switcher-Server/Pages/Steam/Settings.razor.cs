@@ -13,8 +13,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class Settings : ComponentBase
     {
-        private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
-
         [Inject]
         public IJSRuntime JsRuntime { get; set; }
         [Inject]
@@ -51,7 +49,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         // BUTTON: Reset settings
         public static void ClearSettings(NavigationManager navManager)
         {
-            Steam.ResetSettings();
+            new Data.Settings.Steam().ResetSettings();
             navManager.NavigateTo("/Steam?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Steam switcher settings"));
         }
 
@@ -66,7 +64,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         // BUTTON: Open Steam Folder
         // - TODO: Also add this to the Right-Click menu, when no Steam account is selected (whitespace).
-        public static void OpenSteamFolder() => Process.Start("explorer.exe", Steam.FolderPath);
+        public static void OpenSteamFolder() => Process.Start("explorer.exe", new Data.Settings.Steam().FolderPath);
 
         // BUTTON: Advanced Cleaning...
         // Handled on page

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -296,6 +297,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// Returns default settings for program (Just the Window size currently)
         /// </summary>
         public static JObject DefaultSettings() => JObject.Parse(@"WindowSize: ""800, 450""");
+
+        #endregion
+
+        #region SHORTCUTS
+
+        
         
         #endregion
     }

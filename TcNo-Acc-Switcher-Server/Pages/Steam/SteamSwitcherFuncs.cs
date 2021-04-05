@@ -27,6 +27,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
     {
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
 
+        #region STEAM_SWITCHER_MAIN
         /// <summary>
         /// Main function for Steam Account Switcher. Run on load.
         /// Collects accounts from Steam's loginusers.vdf
@@ -336,8 +337,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             return steamIdVal > steamIdMin && steamIdVal < steamIdMax;
         }
         private static bool IsDigitsOnly(string str) => str.All(c => c >= '0' && c <= '9');
+        #endregion
 
-        #region SteamManagement
+        #region STEAM_MANAGEMENT
         /// <summary>
         /// Kills Steam processes when run via cmd.exe
         /// </summary>
@@ -448,7 +450,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
         #endregion
 
-        #region Settings
+        #region STEAM_SETTINGS
         /* OTHER FUNCTIONS*/
         // STEAM SPECIFIC -- Move to a new file in the future.
 

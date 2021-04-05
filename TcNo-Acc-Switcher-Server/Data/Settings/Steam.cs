@@ -9,6 +9,7 @@ using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
@@ -102,12 +103,15 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.ShowSteamId = curSettings.ShowSteamId;
             _instance.ShowVac = curSettings.ShowVac;
             _instance.ShowLimited = curSettings.ShowLimited;
-            _instance.DesktopShortcut = curSettings.DesktopShortcut;
-            _instance.StartMenu = curSettings.StartMenu;
-            _instance.TrayStartup = curSettings.TrayStartup;
+            //_instance.DesktopShortcut = curSettings.DesktopShortcut;
+            //_instance.StartMenu = curSettings.StartMenu;
+            //_instance.TrayStartup = curSettings.TrayStartup;
             _instance.TrayAccName = curSettings.TrayAccName;
             _instance.ImageExpiryTime = curSettings.ImageExpiryTime;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
+
+            CheckShortcuts();
+            Pages.General.Classes.Task.StartWithWindows_Enabled();
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile));
 
@@ -152,5 +156,39 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             SaveSettings();
         }
 
+
+        #region SHORTCUTS
+
+        public void CheckShortcuts()
+        {
+            _instance._desktopShortcut = File.Exists(Path.Combine(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
+            _instance._startMenu = File.Exists(Path.Combine(Shortcut.StartMenu, "TcNo Account Switcher.lnk"));
+            _instance._trayStartup = Pages.General.Classes.Task.StartWithWindows_Enabled();
+        }
+
+        public void DesktopShortcut_Toggle()
+        {
+            var s = new Shortcut();
+            s.Shortcut_Steam(Shortcut.Desktop);
+            s.ToggleShortcut(!DesktopShortcut, true);
+
+            s.Shortcut_Switcher(Shortcut.Desktop);
+            s.ToggleShortcut(!DesktopShortcut, true);
+        }
+        public void StartMenu_Toggle()
+        {
+            var s = new Shortcut();
+            s.Shortcut_Steam(Shortcut.StartMenu);
+            s.ToggleShortcut(!StartMenu, false);
+
+            s.Shortcut_Switcher(Shortcut.StartMenu);
+            s.ToggleShortcut(!StartMenu, false);
+        }
+        public void Task_Toggle()
+        {
+            Pages.General.Classes.Task.StartWithWindows_Toggle(!TrayStartup);
+        }
+
+        #endregion
     }
 }

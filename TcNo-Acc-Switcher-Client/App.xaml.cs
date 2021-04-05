@@ -17,6 +17,8 @@ namespace TcNo_Acc_Switcher_Client
     public partial class App : Application
     {
         private readonly TrayUsers _trayUsers = new TrayUsers();
+        public static string StartPage = "";
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -34,6 +36,9 @@ namespace TcNo_Acc_Switcher_Client
                 }
                 else switch (e.Args[i])
                 {
+                    case "steam":
+                        StartPage = "Steam";
+                        break;
                     case "logout":
                         TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts("", "");
                         quitArg = true;
