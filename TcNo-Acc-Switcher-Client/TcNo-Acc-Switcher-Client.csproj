@@ -8,8 +8,8 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <Version>4.0.0</Version>
     <Authors>TechNobo (Wesley Pyburn)</Authors>
-    <Product>TcNo Account Switcher - Steam</Product>
-    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2020</Copyright>
+    <Product>TcNo Account Switcher</Product>
+    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2019-2021</Copyright>
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
     <PackageIcon>TcNoAccSw-Icon-100x100.png</PackageIcon>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
@@ -24,6 +24,7 @@
     <ProjectReference Include="..\TcNo-Acc-Switcher-Server\TcNo-Acc-Switcher-Server.csproj">
       <EmbedInteropTypes>false</EmbedInteropTypes>
     </ProjectReference>
+    <ProjectReference Include="..\TcNo-Acc-Switcher-Tray\TcNo-Acc-Switcher-Tray.csproj" />
   </ItemGroup>
 
   <ItemGroup>

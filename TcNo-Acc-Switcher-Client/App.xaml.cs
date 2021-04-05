@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shapes;
-using TcNo_Acc_Switcher_Client.Classes;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Client
 {
@@ -16,7 +16,7 @@ namespace TcNo_Acc_Switcher_Client
     /// </summary>
     public partial class App : Application
     {
-        private readonly TrayUsers _trayUsers = new TrayUsers();
+        private readonly Dictionary<string, List<TrayUser>> TrayUsers = new();
         public static string StartPage = "";
 
         protected override void OnStartup(StartupEventArgs e)
@@ -27,11 +27,17 @@ namespace TcNo_Acc_Switcher_Client
             {
                 if (e.Args[i]?[0] == '+')
                 {
-                    var steamId = e.Args[i].Substring(1);// Get SteamID from launch options
-                    _trayUsers.LoadTrayUsers();
-                    var accName = _trayUsers.GetAccName(steamId); // Get account name from JSON
+                    var command = e.Args[i].Substring(1); // Drop '+'
+                    var platform = command.Split(':')[0];
+                    var account = command.Split(':')[1];
 
-                    TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts( steamId, accName);
+                    switch (platform)
+                    {
+                        case "s": // Steam
+                            TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account);
+                            break;
+                    }
+
                     quitArg = true;
                 }
                 else switch (e.Args[i])

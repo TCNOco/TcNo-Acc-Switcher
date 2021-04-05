@@ -3,6 +3,12 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>TcNo_Acc_Switcher_Globals</RootNamespace>
+    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2019-2021</Copyright>
+    <Authors>TechNobo (Wesley Pyburn)</Authors>
+    <Company>TechNobo (Wesley Pyburn)</Company>
+    <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
+    <PackageIcon>TcNoAccSw-Icon-100x100.png</PackageIcon>
+    <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +28,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\TcNo-Acc-Switcher-Server\wwwroot\img\TcNoAccSw-Icon-100x100.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

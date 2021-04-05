@@ -52,17 +52,17 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private bool _showLimited = true;
         [JsonProperty("Steam_ShowLimited", Order = 6)] public bool ShowLimited { get => _instance._showLimited; set => _instance._showLimited = value; }
         private bool _desktopShortcut;
-        [JsonProperty("Steam_DesktopShortcut", Order = 7)] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
+        [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
         private bool _startMenu;
-        [JsonProperty("Steam_StartMenu", Order = 8)] public bool StartMenu { get => _instance._startMenu; set => _instance._startMenu = value; }
+        [JsonIgnore] public bool StartMenu { get => _instance._startMenu; set => _instance._startMenu = value; }
         private bool _trayStartup;
-        [JsonProperty("Steam_TrayStartup", Order = 9)] public bool TrayStartup { get => _instance._trayStartup; set => _instance._trayStartup = value; }
+        [JsonIgnore] public bool TrayStartup { get => _instance._trayStartup; set => _instance._trayStartup = value; }
         private bool _trayAccName;
-        [JsonProperty("Steam_TrayAccountName", Order = 10)] public bool TrayAccName { get => _instance._trayAccName; set => _instance._trayAccName = value; }
+        [JsonProperty("Steam_TrayAccountName", Order = 7)] public bool TrayAccName { get => _instance._trayAccName; set => _instance._trayAccName = value; }
         private int _imageExpiryTime = 7;
-        [JsonProperty("Steam_ImageExpiryTime", Order = 11)] public int ImageExpiryTime { get => _instance._imageExpiryTime; set => _instance._imageExpiryTime = value; }
+        [JsonProperty("Steam_ImageExpiryTime", Order = 8)] public int ImageExpiryTime { get => _instance._imageExpiryTime; set => _instance._imageExpiryTime = value; }
         private int _trayAccNumber = 3;
-        [JsonProperty("Steam_TrayAccNumber", Order = 12)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
+        [JsonProperty("Steam_TrayAccNumber", Order = 9)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
         
         // Constants
         [JsonIgnore] public string VacCacheFile = "profilecache/SteamVACCache.json";
@@ -83,12 +83,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.ShowSteamId = false;
             _instance.ShowVac = true;
             _instance.ShowLimited = true;
-            _instance.DesktopShortcut = false; // Replace with check later
-            _instance.StartMenu = false; // Replace with check later
-            _instance.TrayStartup = false; // Replace with check later
             _instance.TrayAccName = false;
             _instance.ImageExpiryTime = 7;
             _instance.TrayAccNumber = 3;
+
+            CheckShortcuts();
+            Pages.General.Classes.Task.StartWithWindows_Enabled();
 
             SaveSettings();
         }
@@ -103,9 +103,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.ShowSteamId = curSettings.ShowSteamId;
             _instance.ShowVac = curSettings.ShowVac;
             _instance.ShowLimited = curSettings.ShowLimited;
-            //_instance.DesktopShortcut = curSettings.DesktopShortcut;
-            //_instance.StartMenu = curSettings.StartMenu;
-            //_instance.TrayStartup = curSettings.TrayStartup;
             _instance.TrayAccName = curSettings.TrayAccName;
             _instance.ImageExpiryTime = curSettings.ImageExpiryTime;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;

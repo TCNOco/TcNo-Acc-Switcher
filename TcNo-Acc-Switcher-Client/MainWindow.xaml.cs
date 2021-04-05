@@ -26,7 +26,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared;
-using TcNo_Acc_Switcher_Client.Classes;
+using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using Index = TcNo_Acc_Switcher_Server.Pages.Index;
@@ -44,8 +44,7 @@ namespace TcNo_Acc_Switcher_Client
     {
         private readonly Thread _server = new Thread(RunServer);
         private static void RunServer() { Program.Main(new string[0]); }
-        private readonly TrayUsers _trayUsers = new TrayUsers();
-        private JObject _settings = new JObject();
+        private readonly JObject _settings = new JObject();
 
 
         public MainWindow()
@@ -68,7 +67,7 @@ namespace TcNo_Acc_Switcher_Client
             MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
             //MView2.MouseDown += MViewMDown;
 
-            Point windowSize = Point.Parse((string)_settings["WindowSize"] ?? "800,450");
+            var windowSize = Point.Parse((string)_settings["WindowSize"] ?? "800,450");
             this.Width = windowSize.X;
             this.Height = windowSize.Y;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
@@ -86,7 +85,7 @@ namespace TcNo_Acc_Switcher_Client
         private void SaveSettings(string windowUrl)
         {
             // IN THE FUTURE: ONLY DO THIS FOR THE MAIN PAGE WHERE YOU CAN CHOOSE WHAT PLATFORM TO SWAP ACCOUNTS ON
-            // This will only be when that's implimented. Easier to leave it until then.
+            // This will only be when that's implemented. Easier to leave it until then.
             MessageBox.Show(windowUrl);
             _settings["WindowSize"] = Convert.ToInt32(this.Width).ToString() + ',' + Convert.ToInt32(this.Height).ToString();
             GeneralFuncs.SaveSettings("WindowSetting", _settings);
@@ -122,29 +121,25 @@ namespace TcNo_Acc_Switcher_Client
                 this.WindowState = WindowState.Minimized;
             }
 
-            if (args.Uri.Contains("?"))
+            if (!args.Uri.Contains("?")) return;
+            // Needs to be here as:
+            // Importing Microsoft.Win32 and System.Windows didn't get OpenFileDialog to work.
+            var uriArg = args.Uri.Split("?").Last();
+            if (!uriArg.StartsWith("selectFile")) return;
+            args.Cancel = true;
+            var argValue = uriArg.Split("=")[1];
+            var dlg = new OpenFileDialog
             {
-                // Needs to be here as:
-                // Importing Microsoft.Win32 and System.Windows didn't get OpenFileDialog to work.
-                var uriArg = args.Uri.Split("?").Last();
-                if (uriArg.StartsWith("selectFile"))
-                {
-                    args.Cancel = true;
-                    var argValue = uriArg.Split("=")[1];
-                    var dlg = new OpenFileDialog
-                    {
-                        FileName = Path.GetFileNameWithoutExtension(argValue),
-                        DefaultExt = Path.GetExtension(argValue),
-                        Filter = $"{argValue}|{argValue}"
-                    };
+                FileName = Path.GetFileNameWithoutExtension(argValue),
+                DefaultExt = Path.GetExtension(argValue),
+                Filter = $"{argValue}|{argValue}"
+            };
 
-                    var result = dlg.ShowDialog();
-                    if (result != true) return;
-                    MView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
-                    MView2.ExecuteScriptAsync("Modal_SetFilepath(" + JsonConvert.SerializeObject(dlg.FileName.Substring(0, dlg.FileName.LastIndexOf('\\'))) + ")");
-                    //VerifySteamPath();
-                }
-            }
+            var result = dlg.ShowDialog();
+            if (result != true) return;
+            MView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
+            MView2.ExecuteScriptAsync("Modal_SetFilepath(" + JsonConvert.SerializeObject(dlg.FileName.Substring(0, dlg.FileName.LastIndexOf('\\'))) + ")");
+            //VerifySteamPath();
 
         }
         public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)

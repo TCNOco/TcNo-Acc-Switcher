@@ -377,6 +377,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // Save updated loginusers.vdf
             SaveSteamUsersIntoVdf(userAccounts);
 
+            var user = userAccounts.Single(x => x.SteamId == selectedSteamId);
             // -----------------------------------
             // --------- Manage registry ---------
             // -----------------------------------
@@ -387,8 +388,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 --> RememberPassword = 1
             */
             using var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam");
-            key.SetValue("AutoLoginUser", accName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
+            key.SetValue("AutoLoginUser", user.AccName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
             key.SetValue("RememberPassword", 1);
+
+            // -----------------------------------
+            // ------Update Tray users list ------
+            // -----------------------------------
+            var trayUsers = TrayUser.ReadTrayUsers();
+            TrayUser.AddUser(ref trayUsers, "Steam", new TrayUser() { Arg = "+s:" + user.SteamId, Name = Steam.TrayAccName ? user.AccName : user.Name });
+            TrayUser.SaveUsers(trayUsers);
         }
 
         /// <summary>
