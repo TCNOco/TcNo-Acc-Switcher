@@ -94,6 +94,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             else if (!shouldExist  && ShortcutExist()) DeleteShortcut(!shouldFolderExist);
         }
 
+        public void TryWrite()
+        {
+            if (!ShortcutExist()) WriteShortcut();
+        }
+
         #region PROGRAM_SHORTCUTS
         public Shortcut Shortcut_Switcher(string location)
         {
@@ -110,18 +115,27 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 
         #region STEAM_SHORTCUTS
         // Usage:
-        // Shortcut steam = new Shortcut.Shortcut_Steam(Shortcut.Desktop);
-        // if (!steam.ShortcutExist()) steam.WriteShortcut();
-        // 
-        public Shortcut Shortcut_Steam(string location)
+        // var s = new Shortcut();
+        // s.Shortcut_Steam(Shortcut.Desktop);
+        // s.ToggleShortcut(!DesktopShortcut, true);
+        
+        /// <summary>
+        /// Sets up Steam shortcut
+        /// </summary>
+        /// <param name="location">Places to put shortcut</param>
+        /// <param name="shortcutName">(Optional) Full name for shortcut FILE</param>
+        /// <param name="descAdd">(Optional) Additional description to add to "TcNo Account Switcher - Steam</param>
+        /// <param name="args">(Optional) Arguments to add, default "steam" to open Steam page of switcher</param>
+        /// <returns></returns>
+        public Shortcut Shortcut_Steam(string location, string shortcutName = "TcNo Account Switcher - Steam.lnk", string descAdd = "", string args = "steam")
         { 
             // Starts the main picker, with the Steam argument.
             Exe = GetSelfPath();
             WorkingDir = Directory.GetCurrentDirectory();
             IconDir = Path.Combine(WorkingDir, "wwwroot\\prog_icons\\steam.ico");
-            ShortcutPath = Path.Combine(location, "TcNo Account Switcher - Steam.lnk");
-            Desc = "TcNo Account Switcher - Steam";
-            Args = "steam";
+            ShortcutPath = Path.Combine(location, shortcutName);
+            Desc = "TcNo Account Switcher - Steam" + descAdd != "" ? descAdd : "";
+            Args = args;
             return this;
         }
         public Shortcut Shortcut_SteamTray(string location)

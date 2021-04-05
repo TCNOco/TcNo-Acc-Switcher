@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
+using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
@@ -42,7 +43,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         [JSInvokable]
         public static void SwapTo(string steamId, string accName)
         {
-            SteamSwitcherFuncs.SwapSteamAccounts( steamId, accName);
+            SteamSwitcherFuncs.SwapSteamAccounts(steamId, accName);
+        }
+
+        /// <summary>
+        /// Creates a shortcut to start the Account Switcher, and swap to the account related to provided SteamID.
+        /// </summary>
+        /// <param name="steamId">SteamID of account to swap to</param>
+        [JSInvokable]
+        public static void CreateShortcut(string steamId, string accName)
+        {
+            var s = new Shortcut();
+            s.Shortcut_Steam(Shortcut.Desktop, $"Switch to {accName}.lnk", $"Switch to {accName} in TcNo Account Switcher", $"+s:{steamId}");
+            s.TryWrite();
         }
 
         /// <summary>

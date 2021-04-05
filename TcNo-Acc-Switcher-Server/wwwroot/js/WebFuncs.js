@@ -118,9 +118,14 @@ function copy(request, e) {
 function SwapTo() {
     var selected = $(".acc:checked");
     if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
-    var steamId64 = selected.attr("SteamID64");
-    var accName = selected.attr("Username");
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo", steamId64, accName);
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo", selected.attr("SteamID64"), selected.attr("Username"));
+}
+
+// Create shortcut for selected icon
+function CreateShortcut() {
+    var selected = $(".acc:checked");
+    if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CreateShortcut", selected.attr("SteamID64"), selected.attr("Username"));
 }
 
 // New Steam accounts
