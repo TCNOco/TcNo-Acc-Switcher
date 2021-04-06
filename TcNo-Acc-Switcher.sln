@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcNo-Acc-Switcher-Client", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcNo-Acc-Switcher-Globals", "TcNo-Acc-Switcher-Globals\TcNo-Acc-Switcher-Globals.csproj", "{5ACA23EB-2EF2-4256-A168-E02E71D89FBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcNo-Acc-Switcher-Tray", "TcNo-Acc-Switcher-Tray\TcNo-Acc-Switcher-Tray.csproj", "{3DCA295C-2BD4-43F4-925D-62AB7BAD1A7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcNo-Acc-Switcher-Tray", "TcNo-Acc-Switcher-Tray\TcNo-Acc-Switcher-Tray.csproj", "{3DCA295C-2BD4-43F4-925D-62AB7BAD1A7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

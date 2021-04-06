@@ -5,11 +5,11 @@
 }
 
 .container {
-    color: white;
+    color: var(--defaultTextColor);
 }
 
 .SettingsHeader {
-    color: white;
+    color: var(--settingsHeaderColor);
 }
 
     .SettingsHeader hr:first-of-type {
@@ -21,7 +21,7 @@
     }
 
     .SettingsHeader hr {
-        border: 1px solid #BBB;
+        border: 1px solid var(--settingsHeaderHrBorder);
         display: inline-block;
         vertical-align: middle;
     }
@@ -39,20 +39,20 @@
         top: 3px;
         right: 3px;
     }
-.acc_list_actionbar div .button, .settingsCol button {
-    user-select: none;
-    background-color: #333;
-    padding: 0.25em 0.651em;
-    margin: 0 0.25em;
-    width: auto;
-    color: white;
-    border-style: solid;
-    border-color: #888;
-    border-width: 0.1em;
-    cursor: pointer;
-    border-radius: 0 !important;
-    transition: ease-in-out 60ms;
-}
+    .acc_list_actionbar div .button, .settingsCol button {
+        user-select: none;
+        background-color: var(--buttonBackground);
+        padding: 0.25em 0.651em;
+        margin: 0 0.25em;
+        width: auto;
+        color: var(--buttonColor);
+        border-style: solid;
+        border-color: var(--buttonBorder);
+        border-width: 0.1em;
+        cursor: pointer;
+        border-radius: 0 !important;
+        transition: ease-in-out 60ms;
+    }
 
     .acc_list_actionbar div .button span, .settingsCol button span {
         line-height: 2.5em;
@@ -62,14 +62,14 @@
         width: 1.5em;
     }
 
-    .acc_list_actionbar div .button:active, .settingsCol button:active {
-        background-color: #222 !important;
-        border-color: #FFAA00;
-    }
+        .acc_list_actionbar div .button:active, .settingsCol button:active {
+            background-color: var(--buttonBackground-active) !important;
+            border-color: var(--buttonBorder-active);
+        }
 
-    .acc_list_actionbar div .button:hover, .settingsCol button:hover {
-        background-color: #444;
-    }
+        .acc_list_actionbar div .button:hover, .settingsCol button:hover {
+            background-color: var(--buttonBackground-hover);
+        }
 
 .acc_list_actionbar div .btn_login, .btn_close span {
     padding: 0.25em 5em;
@@ -77,13 +77,13 @@
 
 div.form-text {
     font-size: 12px !important;
-    color: white;
+    color: var(--defaultTextColor);
 }
 
 input[type=number], input[type=text] {
     display: inline-block;
-    background-color: #212529;
-    color: white;
+    background-color: var(--inputBackground);
+    color: var(--inputColor);
     padding: 0.5em;
     border: 0;
     outline: 0;
@@ -92,14 +92,14 @@ input[type=number], input[type=text] {
     -moz-appearance: textfield;
 }
 input[type=number] {
-    box-shadow: 0px 0px 0px 1px #888;
+    box-shadow: 0px 0px 0px 1px var(--borderedItemBorderColor);
 }
     input[type=number]:focus {
-        box-shadow: 0px 0px 0px 0.5px #FFAA00;
+        box-shadow: 0px 0px 0px 0.5px var(--linkColor);
     }
 
     input[type=number]:focus, input[type=text]:focus {
-        border-bottom: 2px solid #FFAA00;
+        border-bottom: 2px solid var(--checkboxBorder-checked);
         margin: 0 0.5em;
     }
 
@@ -137,21 +137,14 @@ input[type='checkbox'] {
     input[type='checkbox'] + label {
         width: 20px;
         height: 20px;
-        /*display: block;*/
         position: relative;
         display: inline-block;
-        /*box-sizing: border-box;*/
-        /*-webkit-box-sizing: border-box;*/
-        /*-moz-box-sizing: border-box;*/
-        /*text-indent: -999px;*/
         overflow: hidden;
-        /*border: 6px solid #FFAA00;*/
         cursor: pointer;
     }
 
     input[type='checkbox'] + label {
-        border: 1px solid white;
-        /*background: transparent;*/
+        border: 1px solid var(--defaultTextColor);
         transition: 0.5s ease all;
         -moz-transition: 0.5s ease all;
         -webkit-transition: 0.5s ease all;
@@ -159,8 +152,8 @@ input[type='checkbox'] {
     }
 
     input[type='checkbox']:checked + label {
-        border: 1px solid white;
-        background: #FFAA00;
+        border: 1px solid var(--defaultTextColor);
+        background: var(--checkboxBorder-checked);
     }
 
 /* Buttons */
@@ -193,7 +186,7 @@ input[type='checkbox'] {
     }
 
 .btn:hover {
-    color: white !important;
+    color: var(--defaultTextColor) !important;
 }
 .btn_close {
     right: 0 !important;

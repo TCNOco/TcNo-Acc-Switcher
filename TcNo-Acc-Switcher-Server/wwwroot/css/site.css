@@ -2,26 +2,16 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #28293A;
+    background-color: var(--mainBackground);
     font-size: 12px; /* THIS SCALES EVERYTHING UP AND DOWN */
-}
-
-a, .btn-link {
-    color: #0366d6;
 }
 
 .mainblock {
     width: 100%;
     height: 100%;
-    background-color: #28293A;
+    background-color: var(--mainBackground);
     overflow-y: auto;
     overflow-x: auto;
-}
-
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
 }
 
 app {
@@ -38,38 +28,10 @@ label {
     user-select: none;
 }
 
-.top-row {
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
-}
 
-.main {
-    flex: 1;
-    float: right;
-    width: calc(100% - 250px);
-    height: calc(100% - 32px);
-}
-
-    .main .top-row {
-        background-color: #f7f7f7;
-        border-bottom: 1px solid #d6d5d5;
-        justify-content: flex-end;
-    }
-
-        .main .top-row > a, .main .top-row .btn-link {
-            white-space: nowrap;
-            margin-left: 1.5rem;
-        }
-
-
-.main .top-row a:first-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
 /* Based on https://github.com/binaryfunt/electron-seamless-titlebar-tutorial */
 .headerbar {
-    background-color: #14151E;
+    background-color: var(--headerbarBackground);
     position: relative;
     height: 32px;
     width: 100%;
@@ -131,20 +93,20 @@ label {
         user-select: none;
     }
 
-    #window-controls .button:hover {
-        background: rgba(255,255,255,0.1);
-    }
+        #window-controls .button:hover {
+            background: var(--windowControlsBackground-hover);
+        }
 
-    #window-controls .button:active {
-        background: rgba(255,255,255,0.2);
-    }
+        #window-controls .button:active {
+            background: var(--windowControlsBackground-active);
+        }
 
 #btnClose:hover, #btnClose-modal:hover {
-    background: #E81123 !important;
+    background: var(--windowControlsCloseBackground) !important;
 }
 
 #btnClose:active, #btnClose-modal:active {
-    background: #F1707A !important;
+    background: var(--windowControlsCloseBackground-active) !important;
 }
 
     #btnClose:active .icon, #btnClose-modal:active .icon {
@@ -160,10 +122,10 @@ label {
     }
 #window-title-modal {
     position: relative;
-    background-color: #14151E;
+    background-color: var(--headerbarBackground);
 }
 #window-title, #window-title-modal {
-    color: white;
+    color: var(--windowTitleColor);
     grid-column: 1;
     display: flex;
     align-items: center;
@@ -211,76 +173,8 @@ label {
     width: 100vw;
 }
 
-.sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
-    float: left;
-}
-
-    .sidebar .top-row {
-        background-color: rgba(0,0,0,0.4);
-    }
-
-    .sidebar .navbar-brand {
-        font-size: 1.1rem;
-    }
-
-    .sidebar .oi {
-        width: 2rem;
-        font-size: 1.1rem;
-        vertical-align: text-top;
-        top: -2px;
-    }
-
-    .sidebar .nav-item {
-        font-size: 0.9rem;
-        padding-bottom: 0.5rem;
-    }
-
-        .sidebar .nav-item:first-of-type {
-            padding-top: 1rem;
-        }
-
-        .sidebar .nav-item:last-of-type {
-            padding-bottom: 1rem;
-        }
-
-        .sidebar .nav-item a {
-            color: #d7d7d7;
-            border-radius: 4px;
-            height: 3rem;
-            display: flex;
-            align-items: center;
-            line-height: 3rem;
-        }
-
-            .sidebar .nav-item a.active {
-                background-color: rgba(255,255,255,0.25);
-                color: white;
-            }
-
-            .sidebar .nav-item a:hover {
-                background-color: rgba(255,255,255,0.1);
-                color: white;
-            }
-
 .content {
     padding-top: 1.1rem;
-}
-
-.navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
-}
-
-.invalid {
-    outline: 1px solid red;
-}
-
-.validation-message {
-    color: red;
 }
 
 #blazor-error-ui {
@@ -302,52 +196,6 @@ label {
     top: 0.5rem;
 }
 
-@media (max-width: 767.98px) {
-    .main .top-row:not(.auth) {
-        display: none;
-    }
-
-    .main .top-row.auth {
-        justify-content: space-between;
-    }
-
-    .main .top-row a, .main .top-row .btn-link {
-        margin-left: 0;
-    }
-}
-
-@media (min-width: 768px) {
-    app {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 250px;
-        height: calc(100vh - 32px);
-        position: sticky;
-        top: 0;
-    }
-
-    .main .top-row {
-        position: sticky;
-        top: 0;
-    }
-
-    .main > div {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
-    }
-
-    .navbar-toggler {
-        display: none;
-    }
-
-    .sidebar .collapse, .headerbar .collapse {
-        /* Never collapse the sidebar for wide screens */
-        display: block;
-    }
-}
-
 /* Steam/Settings/Advanced Clearing screen */
 div.clearingRow {
     display: flex;
@@ -360,9 +208,9 @@ div.clearingLeft {
 div.clearingRight {
     word-break: break-word;
     overflow: auto;
-    background-color: #222;
+    background-color: var(--listBackground);
     width: 40%;
-    border: solid #888 0.1em
+    border: solid var(--borderedItemBorderColor) 0.1em
 }
 div.advancedClearingButtonCol {
     font-size: 0.9rem;
@@ -389,14 +237,14 @@ div.advancedClearingButtonCol {
     margin-bottom: 2em;
 }
     .forgottenList select {
-        background-color: #222;
-        border: solid #888 0.1em;
-        color: white;
+        background-color: var(--listBackground);
+        border: solid var(--borderedItemBorderColor) 0.1em;
+        color: var(--listColor);
         width: 100%;
     }
         .forgottenList select option:checked {
-            box-shadow: 0 0 10px 100px #FFAA00 inset;
-            color: white;
+            box-shadow: 0 0 10px 100px var(--checkboxBorder-checked) inset;
+            color: var(--defaultTextColor);
         }
         /* 
             Workaround to set color BECAUSE YOU CAN'T SET TEXT COLOR?!
@@ -404,20 +252,20 @@ div.advancedClearingButtonCol {
         */
         .forgottenList select option:before {
             content: ">";
-            color: #FFAA00;
+            color: var(--listTextColor-before);
             margin-right: 0.5em;
         }
         .forgottenList select option:checked:before {
-            color: #945300;
+            color: var(--listTextColor-before-checked);
             margin-left: 0.5em;
         }
         .forgottenList select option:after {
             content: attr(visible-content);
-            color: #3DFF89;
+            color: var(--listTextColor-after);
         }
         .forgottenList select option:checked:after {
             content: attr(visible-content);
-            color: #00A340;
+            color: var(--listTextColor-after-checked);
         }
     .btn_RestoreSelected {
         margin-right: 1em !important;
