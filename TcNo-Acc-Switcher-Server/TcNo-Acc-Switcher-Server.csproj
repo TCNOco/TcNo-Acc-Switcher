@@ -23,6 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Gameloop.Vdf" Version="0.6.1" />
     <PackageReference Include="Gameloop.Vdf.JsonConverter" Version="0.2.1" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.23.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
     <PackageReference Include="TaskScheduler" Version="2.9.1" />
@@ -39,6 +40,11 @@
 		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <DeploymentContent>true</DeploymentContent>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Additional Licenses.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES11</TypeScriptTarget>
