@@ -85,16 +85,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             Console.WriteLine(action);
             Console.WriteLine(value);
+            if (!value) return Task.FromResult("");
 
             if (action.StartsWith("AcceptForgetSteamAcc:"))
             {
-                string steamId = action.Split(":")[1];
+                var steamId = action.Split(":")[1];
                 Steam.UpdateSteamForgetAcc(true);
                 SteamSwitcherFuncs.ForgetAccount(steamId);
                 return Task.FromResult("refresh");
             }
 
-            if (!value) Task.FromResult("");
             switch (action)
             {
                 case "ClearSteamBackups": SteamSwitcherFuncs.ClearForgotten_Confirmed();

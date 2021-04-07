@@ -241,6 +241,9 @@ div.advancedClearingButtonCol {
     }
 
 /* Forgotten Steam account */
+.forgottenListActions {
+    text-align: end;
+}
 .forgottenList {
     display: flex;
     margin-bottom: 2em;

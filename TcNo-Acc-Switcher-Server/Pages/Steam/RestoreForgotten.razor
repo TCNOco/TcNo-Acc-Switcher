@@ -21,7 +21,7 @@
 
 <div class="container mainblock">
     <div class="row">
-        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol restorePage">
+        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
             <toastarea />
             <div class="SettingsHeader">
                 <hr><span>Restore forgotten accounts</span>
@@ -35,9 +35,9 @@
                 <select name="ForgottenSteamAccounts" size="15" multiple id="ForgottenSteamAccounts">
                 </select>
             </div>
-            <div>
-                <button class="btn btn_RestoreSelected" type="button" onclick='restoreSteamAccounts()'><span>Restore selected</span></button>
+            <div class="forgottenListActions">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ForgottenShowId"><label class="form-check-label" for="Steam_ForgottenShowId"></label></div><label for="Steam_ForgottenShowId">Show SteamID<br></label>
+                <button class="btn btn_RestoreSelected" type="button" onclick='restoreSteamAccounts()'><span>Restore selected</span></button>
             </div>
             <div class="buttoncol col_close">
                 <button class="btn btn_close" type="button" @onclick='() => NavManager.NavigateTo("/Steam/Settings")'><span>Close</span></button>
