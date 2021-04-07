@@ -76,7 +76,6 @@
     .infoWindow .rightContent .linksList a, .fancyLink {
         color: var(--linkColor);
         cursor: pointer;
-        user-select: none;
     }
 
         .infoWindow .rightContent .linksList a:hover, .fancyLink:hover {

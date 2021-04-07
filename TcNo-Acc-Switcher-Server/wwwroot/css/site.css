@@ -22,6 +22,10 @@ app {
     width: 100vw;
 }
 
+img {
+    user-select: none;
+}
+
 label {
     vertical-align: middle;
     cursor: pointer;

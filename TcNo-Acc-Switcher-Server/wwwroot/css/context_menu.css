@@ -26,13 +26,22 @@
         }
 
         .contextmenu li:hover {
-            background: #1B2737;
-            border-left: 2px solid var(--contextMenuBackground-hover);
+            background: var(--contextMenuBackground-hover);
+            border-left: 2px solid var(--contextMenuLeftBorder-hover);
         }
 
             .contextmenu li:hover a {
                 color: var(--contextMenuTextColor-hover);
             }
+
+.versionIdentifier {
+    text-align: right;
+}
+
+.versionIdentifier span {
+    color: var(--defaultTextColor)
+}
+
 
 .submenu {
     display: none;

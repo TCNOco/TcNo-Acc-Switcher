@@ -1,4 +1,7 @@
-﻿
+﻿var currentVersion = 0001;
+
+
+// This will be changed later on to NOT be in this file, as each different account switcher will have their own file.
 var currentpage = "Steam";
 
 // Clear Cache reload: 
@@ -179,7 +182,7 @@ function ShowModal(modaltype) {
                 <a onclick="OpenLinkInBrowser('https://tcno.co');"><img src="img/icons/ico_networking.svg" draggable="false">Visit tcno.co</a>
             </div>
         </div>
-        </div>`);
+        </div><div class="versionIdentifier"><span>Version: 00001</span></div>`);
     }
     else if (modaltype.startsWith("find:")) {
         // USAGE: "find:<Program_name>:<Program_exe>:<SettingsFile>" -- example: "find:Steam:Steam.exe:SteamSettings"
