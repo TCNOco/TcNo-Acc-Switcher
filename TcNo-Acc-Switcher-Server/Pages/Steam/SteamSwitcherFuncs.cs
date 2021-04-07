@@ -43,6 +43,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
 
         #region STEAM_SWITCHER_MAIN
+        public static bool SteamSettingsValid()
+        {
+            // Checks if Steam path set properly, and can load.
+            Steam.LoadFromFile();
+            return Steam.LoginUsersVdf() != "RESET_PATH";
+        }
+
         /// <summary>
         /// Main function for Steam Account Switcher. Run on load.
         /// Collects accounts from Steam's loginusers.vdf
@@ -51,12 +58,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         /// <param name="jsRuntime"></param>
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
-        public static async ValueTask<bool> LoadProfiles(IJSRuntime jsRuntime)
+        public static async void LoadProfiles(IJSRuntime jsRuntime)
         {
-            // Checks if Steam path set properly, and can load.
-            Steam.LoadFromFile();
-            if (Steam.LoginUsersVdf() == "RESET_PATH") return false;
-            
             var userAccounts = GetSteamUsers(Steam.LoginUsersVdf()); 
             var vacStatusList = new List<VacStatus>();
             var loadedVacCache = LoadVacInfo(ref vacStatusList);
@@ -88,6 +91,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     $"<img class=\"{extraClasses}\" src=\"{ua.ImgUrl}\" draggable=\"false\" />\r\n" +
                     $"<p>{ua.AccName}</p>\r\n" +
                     $"<h6>{ua.Name}</h6>\r\n" +
+                    $"<p class=\"steamId\">{ua.SteamId}</p>\r\n" +
                     $"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";
 
                 await jsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
@@ -95,8 +99,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             SaveVacInfo(vacStatusList);
             await jsRuntime.InvokeVoidAsync("initContextMenu");
-
-            return true;
         }
 
         /// <summary>

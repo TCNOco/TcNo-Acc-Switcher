@@ -167,9 +167,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             SaveSettings();
         }
 
+        public string GetSteamIdCssBlock() => ".steamId { display: " + (_instance._showSteamId ? "block" : "none") + " }";
+        
 
         #region SHORTCUTS
-
         public void CheckShortcuts()
         {
             _instance._desktopShortcut = File.Exists(Path.Combine(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
