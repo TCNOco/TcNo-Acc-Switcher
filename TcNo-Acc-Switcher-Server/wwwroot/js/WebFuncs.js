@@ -1,8 +1,16 @@
 ﻿
 var currentpage = "Steam";
 
+// Clear Cache reload: 
+var winUrl = window.location.href.split("?");
+if (winUrl.length > 1 && winUrl[1].contains("cacheReload")) {
+    history.pushState({}, null, window.location.href.replace("cacheReload&", "").replace("cacheReload", ""));
+    location.reload(true);
+}
+
+
 function CopyToClipboard(str) {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "CopyToClipboard", str);
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyToClipboard", str);
 }
 
 // FORGETTING STEAM ACCOUNTS
@@ -67,19 +75,16 @@ async function restoreSteamAccounts() {
 
 function copy(request, e) {
     e.preventDefault();
-    var requestResult = $(SelectedElem).attr(request);
-
-    if (requestResult == null) {
-        // Different function groups based on platform
-        switch (currentpage) {
-            case "Steam":
-                steam();
-            default:
-        }
-    } else {
-        console.log(`Copying: ${request}, result: ${requestResult}`);
-        CopyToClipboard(requestResult).then(r => console.log(r));
+    const requestResult = $(SelectedElem).attr(request);
+    
+    // Different function groups based on platform
+    switch (currentpage) {
+        case "Steam":
+            steam();
+        default:
+            CopyToClipboard(requestResult);
     }
+    return;
 
 
     // Steam:
@@ -92,7 +97,7 @@ function copy(request, e) {
             case "SteamId32":
             case "SteamId3":
             case "SteamId":
-                DotNet.invokeMethodAsync('TcNo-Acc-Switcher', "CopySteamIDType", request, steamId64);
+                DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopySteamIdType", request, steamId64);
                 break;
 
             // Links
@@ -108,17 +113,32 @@ function copy(request, e) {
             case "SteamIDFinder.com":
                 CopyToClipboard(`https://steamidfinder.com/lookup/${steamId64}/`);
                 break;
-
             default:
-
+                CopyToClipboard(requestResult);
         }
     }
 }
+
 // Swapping accounts
-function SwapTo() {
-    var selected = $(".acc:checked");
-    if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo", selected.attr("SteamID64"), selected.attr("Username"));
+function SwapTo(request, e) {
+    if (e !== undefined) e.preventDefault();
+
+    // Different function groups based on platform
+    switch (currentpage) {
+        case "Steam":
+            steam();
+        default:
+    }
+
+    //Steam: 
+    function steam() {
+        // This may be unnecessary.
+        var selected = $(".acc:checked");
+        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
+
+        var steamId64 = $(SelectedElem).attr("SteamID64");
+        DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo", selected.attr("SteamID64"), selected.attr("Username"), request);
+    }
 }
 
 // Create shortcut for selected icon

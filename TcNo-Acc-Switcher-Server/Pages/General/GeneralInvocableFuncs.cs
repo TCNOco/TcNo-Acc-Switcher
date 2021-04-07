@@ -26,6 +26,7 @@ using TcNo_Acc_Switcher_Server.Pages.Steam;
 using Microsoft.Win32;
 using System.Windows;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.WebUtilities;
 
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
@@ -142,6 +143,34 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static async Task ShowToast(IJSRuntime jsRuntime, string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
         {
             await jsRuntime.InvokeVoidAsync($"window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo = renderTo, duration = duration });
+        }
+        
+        /// <summary>
+        /// For handling queries in URI
+        /// </summary>
+        /// <param name="navMan">Navigation Manager to get URI from</param>
+        /// <param name="jsr">JSRuntime to interact with webpage</param>
+        public static async void HandleQueries(NavigationManager navMan, IJSRuntime jsr)
+        {
+            var uri = navMan.ToAbsoluteUri(navMan.Uri);
+            // Clear cache reload
+            var queries = QueryHelpers.ParseQuery(uri.Query);
+            // cacheReload handled in JS
+
+            //Modal
+            if (queries.TryGetValue("modal", out var modalValue))
+                foreach (var stringValue in modalValue) await ShowModal(jsr, Uri.UnescapeDataString(stringValue));
+
+            // Toast
+            if (queries.TryGetValue("toast_type", out var toastType) &&
+                queries.TryGetValue("toast_title", out var toastTitle) &&
+                queries.TryGetValue("toast_message", out var toastMessage))
+            {
+                for (var i = 0; i < toastType.Count; i++)
+                {
+                    await GeneralInvocableFuncs.ShowToast(jsr, toastType[i], toastMessage[i], toastTitle[i], "toastarea");
+                }
+            }
         }
     }
 }

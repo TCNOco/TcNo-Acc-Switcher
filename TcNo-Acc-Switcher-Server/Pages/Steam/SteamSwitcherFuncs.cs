@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -32,7 +33,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Globals;
-
+using TcNo_Acc_Switcher_Server.Converters;
 using Steamuser = TcNo_Acc_Switcher_Server.Pages.Steam.Index.Steamuser;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
@@ -320,7 +321,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="steamId">(Optional) User's SteamID</param>
         /// <param name="accName">(Optional) User's login username</param>
         /// <param name="autoStartSteam">(Optional) Whether Steam should start after switching [Default: true]</param>
-        public static void SwapSteamAccounts(string steamId = "", string accName = "", bool autoStartSteam = true)
+        /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
+        public static void SwapSteamAccounts(string steamId = "", string accName = "", bool autoStartSteam = true, int ePersonaState = -1)
         {
             if (steamId != "" && !VerifySteamId(steamId))
             {
@@ -329,7 +331,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
 
             CloseSteam();
-            UpdateLoginUsers(steamId, accName);
+            UpdateLoginUsers(steamId, accName, ePersonaState);
 
             if (!autoStartSteam) return;
             if (Steam.Admin)
@@ -337,7 +339,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             else
                 Process.Start(new ProcessStartInfo("explorer.exe", Steam.SteamExe()));
         }
-        
+
         /// <summary>
         /// Verify whether input Steam64ID is valid or not
         /// </summary>
@@ -374,9 +376,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <summary>
         /// Updates loginusers and registry to select an account as "most recent"
         /// </summary>
-        /// <param name="selectedSteamId"></param>
-        /// <param name="accName"></param>
-        public static void UpdateLoginUsers(string selectedSteamId, string accName = "")
+        /// <param name="selectedSteamId">Steam ID64 to switch to</param>
+        /// <param name="accName">Account username to be logged into</param>
+        /// <param name="pS">[PersonaState]0-7 custom persona state [0: Offline, 1: Online...]</param>
+        public static void UpdateLoginUsers(string selectedSteamId, string accName = "", int pS = -1)
         {
             var userAccounts = SteamSwitcherFuncs.GetSteamUsers(Steam.LoginUsersVdf());
             // -----------------------------------
@@ -386,10 +389,23 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             File.Delete(tempFile);
 
             // MostRec is "00" by default, just update the one that matches SteamID.
-            userAccounts.Single(x => x.SteamId == selectedSteamId).MostRec = "1";
+            userAccounts.Where(x => x.SteamId == selectedSteamId).ToList().ForEach(u =>
+            {
+                u.MostRec = "1";
+                u.OfflineMode = (pS == -1 ? u.OfflineMode : (pS > 1 ? "0" : (pS == 1 ? "0" : "1")));
+                // u.OfflineMode: Set ONLY if defined above
+                // If defined & > 1, it's custom, therefor: Online
+                // Otherwise, invert [0 == Offline => Online, 1 == Online => Offline]
+            });
+            //userAccounts.Single(x => x.SteamId == selectedSteamId).MostRec = "1";
             
             // Save updated loginusers.vdf
             SaveSteamUsersIntoVdf(userAccounts);
+
+            // -----------------------------------
+            // - Update localconfig.vdf for user -
+            // -----------------------------------
+            if (pS != -1) SetPersonaState(selectedSteamId, pS); // Update persona state, if defined above.
 
             var user = userAccounts.Single(x => x.SteamId == selectedSteamId);
             // -----------------------------------
@@ -417,7 +433,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// Save updated list of Steamuser into loginusers.vdf, in vdf format.
         /// </summary>
         /// <param name="userAccounts">List of Steamuser to save into loginusers.vdf</param>
-        /// <param name="steamPath">Path of loginusers.vdf</param>
         public static void SaveSteamUsersIntoVdf(List<Steamuser> userAccounts)
         {
             // Convert list to JObject list, ready to save into vdf.
@@ -458,7 +473,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// Clears images folder of contents, to re-download them on next load.
         /// </summary>
         /// <returns>Whether files were deleted or not</returns>
-        public static async void ClearImages(IJSRuntime js = null)
+        public static async void ClearImages(IJSRuntime js = null, NavigationManager NavManager = null)
         {
             if (!Directory.Exists(Steam.SteamImagePath))
             {
@@ -468,7 +483,58 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 File.Delete(file);
             }
-            await GeneralInvocableFuncs.ShowToast(js, "success", "Cleared images", renderTo: "toastarea");
+            // Reload page, then display notification using a new thread.
+            NavManager?.NavigateTo("/steam/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared images"), true);
+        }
+
+        /// <summary>
+        /// Sets whether the user is invisible or not
+        /// </summary>
+        /// <param name="steamId">SteamID of user to update</param>
+        /// <param name="ePersonaState">Persona state enum for user (0-7)</param>
+        public static void SetPersonaState(string steamId, int ePersonaState = 1)
+        {
+            // Values:
+            // 0: Offline, 1: Online, 2: Busy, 3: Away, 4: Snooze, 5: Looking to Trade, 6: Looking to Play, 7: Invisible
+            var id32 = new Converters.SteamIdConvert(steamId).Id32; // Get SteamID
+            var localConfigFilePath = Path.Join(Steam.FolderPath, "userdata", id32, "config", "localconfig.vdf");
+            if (!File.Exists(localConfigFilePath)) return;
+            var localConfigText = File.ReadAllText(localConfigFilePath); // Read relevant localconfig.vdf
+
+            // Find index of range needing to be changed.
+            var positionOfVar = localConfigText.IndexOf("ePersonaState", StringComparison.Ordinal); // Find where the variable is being set
+            if (positionOfVar == -1) return;
+            var indexOfBefore = localConfigText.IndexOf(":", positionOfVar, StringComparison.Ordinal) + 1; // Find where the start of the variable's value is
+            var indexOfAfter = localConfigText.IndexOf(",", positionOfVar, StringComparison.Ordinal); // Find where the end of the variable's value is
+
+            // The variable is now in-between the above numbers. Remove it and insert something different here.
+            var sb = new StringBuilder(localConfigText);
+            sb.Remove(indexOfBefore, indexOfAfter - indexOfBefore);
+            sb.Insert(indexOfBefore, ePersonaState);
+            localConfigText = sb.ToString();
+
+            // Output
+            File.WriteAllText(localConfigFilePath, localConfigText);
+
+            ////// The below code works!
+            ////// BUT: Every escaped character in each string becomes unescaped for some reason...
+            ////// Here is the reason: https://github.com/shravan2x/Gameloop.Vdf.JsonConverter/blob/master/Gameloop.Vdf.JsonConverter/JTokenExtensions.cs#L40
+            ////// Right there, it's un-escaping string's characters. I understand why, but here it's just not supposed to be
+            ////// Will remove this at a later date. Just want to keep it here to say it's possible, but I'm just a bit lost ~ Also hi, welcome to the code :)
+
+            //var localConfigVToken = VdfConvert.Deserialize(File.ReadAllText(localConfigFilePath));
+            //var localConfigJO = new JObject() { localConfigVToken.ToJson() };
+            //var f = localConfigJO["UserLocalConfigStore"];
+            //var g = f["WebStorage"];
+            //var key = "";
+            //foreach (var (s, _) in (JObject)g) if (s.StartsWith("FriendStoreLocalPrefs")) key = s;
+
+            //var editedJObject = JObject.Parse((string)g[key]);
+            //editedJObject["ePersonaState"] = ePersonaState;
+            //g[key] = (string)editedJObject.ToString().Replace("\"", "\\\"").Replace("\n", ""); // Escape quotes and remove newlines
+
+            //var tempFile = localConfigFilePath + "_temp.vdf";
+            //File.WriteAllText(tempFile, @"""UserLocalConfigStore""" + Environment.NewLine + localConfigJO.ToVdf());
         }
         #endregion
 

@@ -56,10 +56,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         /// <param name="steamId">Requested account's SteamID</param>
         /// <param name="accName">Requested account's Login Username</param>
+        /// <param name="ePersonaState">(Optional) Persona State [0: Offline, 1: Online...]</param>
         [JSInvokable]
-        public static void SwapTo(string steamId, string accName)
+        public static void SwapTo(string steamId, string accName, int ePersonaState = -1)
         {
-            SteamSwitcherFuncs.SwapSteamAccounts(steamId, accName);
+            SteamSwitcherFuncs.SwapSteamAccounts(steamId, accName, ePersonaState: ePersonaState);
         }
 
         /// <summary>
@@ -83,7 +84,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// JS function handler for swapping to a new Steam account (No inputs)
         /// </summary>
         [JSInvokable]
-        public static async void NewSteamLogin()
+        public static void NewSteamLogin()
         {
             SteamSwitcherFuncs.SwapSteamAccounts();
         }

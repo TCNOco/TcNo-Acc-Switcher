@@ -17,6 +17,10 @@
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using Newtonsoft.Json.Linq
 @using System.IO
+@using System.Text
+@using System.Windows.Markup
+@using Gameloop.Vdf
+@using Gameloop.Vdf.JsonConverter
 @using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Server.Pages.Steam
 @inject IJSRuntime JsRuntime
@@ -39,11 +43,7 @@
         AppData.WindowTitle = "TcNo Account Switcher";
         if (firstRender)
         {
-            var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("modal", out var queryValue))
-            {
-                await GeneralInvocableFuncs.ShowModal(JsRuntime, Uri.UnescapeDataString(queryValue));
-            }
+            GeneralInvocableFuncs.HandleQueries(NavManager, JsRuntime);
         }
     }
 }

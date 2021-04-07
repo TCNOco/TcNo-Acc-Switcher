@@ -127,18 +127,13 @@ namespace TcNo_Acc_Switcher_Client.Converters
             }
             else
             {
-                switch (_inputType)
+                Id32 = _inputType switch
                 {
-                    case SteamId:
-                        Id32 = (int.Parse(_input.Substring(10)) * 2 + int.Parse($"{_input[8]}")).ToString();
-                        break;
-                    case SteamId3:
-                        Id32 = _input.Substring(4);
-                        break;
-                    case SteamId64:
-                        Id32 = (long.Parse(_input) - ChangeVal).ToString();
-                        break;
-                }
+                    SteamId => (int.Parse(_input.Substring(10)) * 2 + int.Parse($"{_input[8]}")).ToString(),
+                    SteamId3 => _input.Substring(4),
+                    SteamId64 => (long.Parse(_input) - ChangeVal).ToString(),
+                    _ => Id32
+                };
             }
 
             return Id32;

@@ -19,7 +19,7 @@
         .contextmenu li a {
             display: block;
             padding: 10px;
-            color: var(--contextMenuTextColor);
+            color: var(--contextMenuTextColor)!important;
             text-decoration: none;
             transition: ease .2s;
             cursor: pointer;
@@ -36,6 +36,7 @@
 
 .submenu {
     display: none;
+    min-height: 100%;
 }
 
 li:hover .submenu {

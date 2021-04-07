@@ -32,8 +32,8 @@ var SelectedElem = "";
 
 function initContextMenu() {
     // Ready accounts for double-click
-    $(".acc").dblclick(function () {
-        SwapTo();
+    $(".acc").dblclick(function (event) {
+        SwapTo(-1, event);
     });
 
     //Show contextmenu on Right-Click:

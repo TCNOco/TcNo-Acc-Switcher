@@ -39,6 +39,7 @@ static class WindowsClipboard
 {
     public static void SetText(string text)
     {
+        if (text == null) return;
         OpenClipboard();
 
         EmptyClipboard();

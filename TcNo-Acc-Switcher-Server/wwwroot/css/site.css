@@ -28,6 +28,11 @@ label {
     user-select: none;
 }
 
+::selection {
+    color: var(--selectionColor);
+    background: var(--selectionBackground);
+}
+
 
 /* Based on https://github.com/binaryfunt/electron-seamless-titlebar-tutorial */
 .headerbar {

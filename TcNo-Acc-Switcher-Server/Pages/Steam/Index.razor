@@ -35,18 +35,22 @@
 
 
 <div id="acc_list" class="acc_list">
-    @*<AccountDisplay Username="usernamehere" SteamId64="76561198064588130" ImageUrl="https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/5c/5ca224cb2707e977b182b95905d84fafe9643779_full.jpg" Line1="usernamehere" Line2="Tyler, The Creator" Line3="10/08/2020 03:07:09" ExtraClasses="" />*@
-
-    @* Will do this ASYNC rather, using JS
-            @foreach (var i in SteamSwitcherFuncs.loadProfiles())
-        {
-            <AccountDisplay Username="@(i.AccName)" SteamId64="@(i.SteamID)" ImageUrl="@(i.ImgURL)" Line1="@(i.AccName)" Line2="@(i.Name)" Line3="@(i.lastLogin)" ExtraClasses="@(i.ExtraClasses)" />
-
-        }*@
-
     <toastarea />
     <ul class="contextmenu">
-        <li><a onclick="SwapTo();">Swap to account</a></li>
+        <li><a onclick="SwapTo(-1, event);">Swap to account</a></li>
+        <li>
+            <a onclick="event.preventDefault();">Login as...</a>
+            <ul class="submenu">
+                <li><a onclick="SwapTo(7, event)" href="">Invisible</a></li>
+                <li><a onclick="SwapTo(0, event)" href="">Offline</a></li>
+                <li><a onclick="SwapTo(1, event)" href="">Online</a></li>
+                <li><a onclick="SwapTo(2, event)" href="">Busy</a></li>
+                <li><a onclick="SwapTo(3, event)" href="">Away</a></li>
+                <li><a onclick="SwapTo(4, event)" href="">Snooze</a></li>
+                <li><a onclick="SwapTo(5, event)" href="">Looking to Trade</a></li>
+                <li><a onclick="SwapTo(6, event)" href="">Looking to Play</a></li>
+            </ul>
+        </li>
         <li>
             <a onclick="event.preventDefault();">Copy Profile...</a>
             <ul class="submenu">
@@ -85,7 +89,7 @@
         <div class="button" id="btnAddNew" onclick="NewSteamLogin()">
             <span>Add New</span>
         </div>
-        <div class="button btn_login" id="btnLogin" onclick="SwapTo()">
+        <div class="button btn_login" id="btnLogin" onclick="SwapTo(-1, event)">
             <span>Login</span>
         </div>
         @*<div class="button" id="btnSettings" onclick="window.location = 'show_settings';">*@
@@ -113,18 +117,7 @@
             if (await SteamSwitcherFuncs.LoadProfiles(Js) == false) NavManager.NavigateTo("/?modal=" + Uri.EscapeUriString("find:Steam:Steam.exe:SteamSettings"));
             Steam.SaveSettings(!File.Exists(Steam.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
 
-            //  HANDLE TOAST HERE AS WELL
-            var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("toast_type", out var toastType))
-            {
-                if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("toast_title", out var toastTitle))
-                {
-                    if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("toast_message", out var toastMessage))
-                    {
-                        await GeneralInvocableFuncs.ShowToast(Js, toastType, toastMessage, toastTitle, "toastarea");
-                    }
-                }
-            }
+            GeneralInvocableFuncs.HandleQueries(NavManager, Js);
         }
     }
 }

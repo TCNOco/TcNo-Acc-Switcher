@@ -16,12 +16,15 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using Path = System.IO.Path;
 
 namespace TcNo_Acc_Switcher_Client
 {
@@ -44,11 +47,15 @@ namespace TcNo_Acc_Switcher_Client
                     var command = e.Args[i].Substring(1); // Drop '+'
                     var platform = command.Split(':')[0];
                     var account = command.Split(':')[1];
-
+                    
                     switch (platform)
                     {
                         case "s": // Steam
-                            TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account);
+                            // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
+                            if (!account.Contains(":"))
+                                TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account);
+                            else TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(
+                                    account.Split(":")[0], ePersonaState: int.Parse(account.Split(":")[1])); // Request has a PersonaState in it
                             break;
                     }
 

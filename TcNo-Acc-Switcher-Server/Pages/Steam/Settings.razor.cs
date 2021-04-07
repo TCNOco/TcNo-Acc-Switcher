@@ -68,7 +68,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         // BUTTON: Reset images
-        public static void ClearImages(IJSRuntime js) => SteamSwitcherFuncs.ClearImages(js); // ADD A TOAST TO THIS
+        public static void ClearImages(IJSRuntime js, NavigationManager NavManager) => SteamSwitcherFuncs.ClearImages(js, NavManager); // ADD A TOAST TO THIS
         #endregion
 
         #region SETTINGS_STEAM_TOOLS
