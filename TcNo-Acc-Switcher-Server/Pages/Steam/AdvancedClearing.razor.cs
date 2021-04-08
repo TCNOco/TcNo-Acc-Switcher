@@ -48,6 +48,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             await jsRuntime.InvokeVoidAsync(SteamReturn, "<br />");
         }
 
+        // BUTTON: Kill Steam process
         public void Steam_Close(IJSRuntime jsRuntime)
         {
             SteamSwitcherFuncs.CloseSteam();
@@ -55,7 +56,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NewLine(jsRuntime);
         }
 
-
+        // BUTTON: ..\Steam\Logs
         public void Steam_Clear_Logs(IJSRuntime jsRuntime)
         {
             GeneralFuncs.ClearFolder(Path.Combine(Steam.FolderPath, "logs\\"), jsRuntime, SteamReturn);
@@ -63,6 +64,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NewLine(jsRuntime);
         }
 
+        // BUTTON:..\Steam\*.log
         public void Steam_Clear_Dumps(IJSRuntime jsRuntime)
         {
             GeneralFuncs.ClearFolder(Path.Combine(Steam.FolderPath, "dumps\\"), jsRuntime, SteamReturn);
@@ -70,6 +72,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NewLine(jsRuntime);
         }
 
+        // BUTTON: %Local%\Steam\htmlcache
         public void Steam_Clear_HtmlCache(IJSRuntime jsRuntime)
         {
             // HTML Cache - %USERPROFILE%\AppData\Local\Steam\htmlcache
@@ -78,6 +81,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NewLine(jsRuntime);
         }
 
+        // BUTTON: ..\Steam\*.log
         public void Steam_Clear_UiLogs(IJSRuntime jsRuntime)
         {
             // Overlay UI logs -
@@ -88,6 +92,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NewLine(jsRuntime);
         }
 
+        // BUTTON: ..\Steam\appcache
         public void Steam_Clear_AppCache(IJSRuntime jsRuntime)
         {
             // App Cache - Steam\appcache
@@ -96,6 +101,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NewLine(jsRuntime);
         }
 
+        // BUTTON: ..\Steam\appcache\httpcache
         public void Steam_Clear_HttpCache(IJSRuntime jsRuntime)
         {
             GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "appcache\\httpcache"), "*.*", SearchOption.AllDirectories, jsRuntime, SteamReturn);
@@ -103,6 +109,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NewLine(jsRuntime);
         }
 
+        // BUTTON: ..\Steam\depotcache
         public void Steam_Clear_DepotCache(IJSRuntime jsRuntime)
         {
             GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "depotcache"), "*.*", SearchOption.TopDirectoryOnly, jsRuntime, SteamReturn);
@@ -110,6 +117,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NewLine(jsRuntime);
         }
 
+        // BUTTON: Forgotten account backups
         public void Steam_Clear_Forgotten(IJSRuntime jsRuntime)
         {
             SteamSwitcherFuncs.ClearForgotten(jsRuntime);
@@ -117,6 +125,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NewLine(jsRuntime);
         }
 
+        // BUTTON: ..\Steam\config\config.vdf
         public void Steam_Clear_Config(IJSRuntime jsRuntime)
         {
             GeneralFuncs.DeleteFile(Path.Combine(Steam.FolderPath, "config\\config.vdf"), js: jsRuntime, jsDest: SteamReturn);
@@ -125,6 +134,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NewLine(jsRuntime);
         }
 
+        // BUTTON: ..\Steam\config\loginusers.vdf
         public void Steam_Clear_LoginUsers(IJSRuntime jsRuntime)
         {
             GeneralFuncs.DeleteFile(Path.Combine(Steam.FolderPath, "config\\loginusers.vdf"), js: jsRuntime, jsDest: SteamReturn);
@@ -132,6 +142,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NewLine(jsRuntime);
         }
 
+        // BUTTON: ..\Steam\ssfn*
         public void Steam_Clear_Ssfn(IJSRuntime jsRuntime)
         {
             var d = new DirectoryInfo(Steam.FolderPath);
@@ -146,9 +157,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NewLine(jsRuntime);
         }
 
+        // BUTTON: HKCU\..\AutoLoginUser
         public void Steam_Clear_AutoLoginUser(IJSRuntime jsRuntime) => GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "AutoLoginuser", jsRuntime, SteamReturn);
+        // BUTTON: HKCU\..\LastGameNameUsed
         public void Steam_Clear_LastGameNameUsed(IJSRuntime jsRuntime) => GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "LastGameNameUsed", jsRuntime, SteamReturn);
+        // BUTTON: HKCU\..\PseudoUUID
         public void Steam_Clear_PseudoUUID(IJSRuntime jsRuntime) => GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "PseudoUUID", jsRuntime, SteamReturn);
+        // BUTTON: HKCU\..\RememberPassword
         public void Steam_Clear_RememberPassword(IJSRuntime jsRuntime) => GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "RememberPassword", jsRuntime, SteamReturn);
     }
 }

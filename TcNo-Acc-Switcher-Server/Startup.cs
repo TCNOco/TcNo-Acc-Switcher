@@ -36,8 +36,9 @@ namespace TcNo_Acc_Switcher_Server
         {
             services.AddRazorPages();
             services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
-            services.AddSingleton<AppData>();
-            services.AddSingleton<Data.Settings.Steam>();
+            services.AddSingleton<AppSettings>(); // Persistent app settings
+            services.AddSingleton<AppData>(); // Temporary app data
+            services.AddSingleton<Data.Settings.Steam>(); // Persistent Steam settings
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

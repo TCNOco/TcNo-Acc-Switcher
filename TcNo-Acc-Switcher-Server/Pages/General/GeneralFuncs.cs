@@ -314,10 +314,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         #endregion
 
-        #region SHORTCUTS
-
-        
-        
+        #region WINDOW SETTINGS
+        private static readonly Data.AppSettings AppSettings = Data.AppSettings.Instance;
+        public static bool WindowSettingsValid()
+        {
+            AppSettings.LoadFromFile();
+            return true;
+        }
         #endregion
     }
 }

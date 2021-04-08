@@ -167,6 +167,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             SaveSettings();
         }
 
+        /// <summary>
+        /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
+        /// </summary>
         public string GetSteamIdCssBlock() => ".steamId { display: " + (_instance._showSteamId ? "block" : "none") + " }";
         
 

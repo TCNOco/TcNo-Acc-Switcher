@@ -139,6 +139,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 
         #endregion
 
+        /// <summary>
+        /// Creates multiple images that are added to a single .ico file.
+        /// Images are a combination of the platform's icon and the user accounts icon, for a good shortcut icon.
+        /// </summary>
+        /// <param name="sBgImg">Background image (platform's image)</param>
+        /// <param name="sFgImg">User's profile image, for the foreground</param>
+        /// <param name="icoOutput">Output filename</param>
         public static void CreateIcon(string sBgImg, string sFgImg, ref string icoOutput)
         {
             Directory.CreateDirectory("temp");
@@ -161,6 +168,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             Directory.Delete("temp", true);
         }
 
+        /// <summary>
+        /// Creates a combination of the platform's icon and the user accounts icon, for a good shortcut icon.
+        /// </summary>
+        /// <param name="sBgImg">Background image (platform's image)</param>
+        /// <param name="sFgImg">User's profile image, for the foreground</param>
+        /// <param name="output">Output filename</param>
+        /// <param name="imgSize">Requested dimensions for the image</param>
         public static void CreateImage(string sBgImg, string sFgImg, string output, Size imgSize)
         {
             using MagickImage bgImg = new MagickImage(sBgImg);

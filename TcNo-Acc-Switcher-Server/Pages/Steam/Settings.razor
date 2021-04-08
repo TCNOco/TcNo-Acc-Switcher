@@ -18,11 +18,19 @@
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager NavManager
 @inject Data.Settings.Steam Steam
+@inject Data.AppSettings AppSett
 
 <div class="container settings_cont mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
             <toastarea />
+            <div class="SettingsHeader">
+                <hr><span>App-wide settings</span>
+                <hr>
+            </div>
+            <div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="StreamerMode" @bind="AppSett.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label></div><label for="StreamerMode">Enable streamer mode<br></label>
+            </div>
             <div class="SettingsHeader">
                 <hr><span>General settings</span>
                 <hr>
@@ -73,7 +81,7 @@
             </div>
             <div class="buttoncol"><button class="btn" type="button" @onclick='() => NavManager.NavigateTo("/Steam/RestoreForgotten")'><span>Restore forgotten account</span></button><button class="btn" type="button" @onclick="() => SteamSwitcherFuncs.ClearForgotten(JsRuntime)"><span>Clear forgotten accounts</span></button></div>
             <div class="buttoncol"><button class="btn" id="Steam_OpenSteamFolder" type="button" @onclick="OpenSteamFolder"><span>Open Steam Folder</span></button><button class="btn" id="Steam_AdvancedClearing" type="button" @onclick='() => NavManager.NavigateTo("/Steam/AdvancedClearing")'><span>Advanced cleaning...</span></button></div>
-            <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick='() => { Steam.SaveSettings(); NavManager.NavigateTo("/Steam"); }'><span>Close</span></button></div>
+            <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick='SaveAndClose'><span>Close</span></button></div>
         </div>
     </div>
 </div>
@@ -87,3 +95,14 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code
+{
+    public void SaveAndClose()
+    {
+        AppSett.SaveSettings();
+        Steam.SaveSettings();
+
+        NavManager.NavigateTo("/Steam");
+    }
+}

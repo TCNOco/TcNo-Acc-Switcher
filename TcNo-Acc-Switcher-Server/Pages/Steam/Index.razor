@@ -32,8 +32,10 @@
 @inject NavigationManager NavManager
 
 @inject Data.Settings.Steam Steam
-
 <style>@(new Data.Settings.Steam().GetSteamIdCssBlock())</style>
+@inject AppSettings AppSettings
+<style>@(new AppSettings().GetCssBlock())</style>
+
 
 <div id="acc_list" class="acc_list">
     <toastarea />
@@ -111,9 +113,10 @@
 {
     // This has to be here for NavManager.
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
-    protected override async void OnParametersSet()
+    protected override void OnParametersSet()
     {
         if (!SteamSwitcherFuncs.SteamSettingsValid()) NavManager.NavigateTo("/?modal=" + Uri.EscapeUriString("find:Steam:Steam.exe:SteamSettings"));
+        AppSettings.StreamerModeCheck();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -121,6 +124,8 @@
         AppData.WindowTitle = "TcNo Account Switcher - Steam";
         if (firstRender)
         {
+            if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered) await Js.InvokeVoidAsync($"window.notification.new", new { type = "info", title = "Streamer mode", message = "Private info is hidden! - See settings", renderTo = "toastarea", duration = 5000 });// Show notification that streamer mode was enabled.
+            
             SteamSwitcherFuncs.LoadProfiles(Js);
             Steam.SaveSettings(!File.Exists(Steam.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
 

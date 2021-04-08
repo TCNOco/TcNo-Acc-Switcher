@@ -36,8 +36,16 @@
 
 @code
 {
+    // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
+    protected override void OnParametersSet()
+    {
+        if (!GeneralFuncs.WindowSettingsValid())
+        {
+            // Do something here if necessary.
+            // For now this is just being used to load settings.
+        }
+    }
 
-    // This has to be here for NavManager.
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         AppData.WindowTitle = "TcNo Account Switcher";

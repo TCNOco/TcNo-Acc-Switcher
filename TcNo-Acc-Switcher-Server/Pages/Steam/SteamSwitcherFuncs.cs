@@ -89,9 +89,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     $"<input type=\"radio\" id=\"{ua.AccName}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.LastLogin}\" ExtraClasses=\"{extraClasses}\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{ua.AccName}\" class=\"acc {extraClasses}\">\r\n" +
                     $"<img class=\"{extraClasses}\" src=\"{ua.ImgUrl}\" draggable=\"false\" />\r\n" +
-                    $"<p>{ua.AccName}</p>\r\n" +
+                    $"<p class=\"streamerCensor\">{ua.AccName}</p>\r\n" +
                     $"<h6>{ua.Name}</h6>\r\n" +
-                    $"<p class=\"steamId\">{ua.SteamId}</p>\r\n" +
+                    $"<p class=\"steamId streamerCensor\">{ua.SteamId}</p>\r\n" +
                     $"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";
 
                 await jsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
@@ -596,6 +596,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             return true;
         }
 
+        /// <summary>
+        /// Restores requested SteamIds: Moves them from ForgottenFile, back into loginusers.vdf
+        /// </summary>
+        /// <param name="requestedSteamIds">List of SteamID64s (strings)</param>
+        /// <returns>Whether the forgotten file even exists or not</returns>
         public static bool RestoreAccounts(string[] requestedSteamIds)
         {
             if (!File.Exists(Steam.ForgottenFile)) return false;

@@ -23,12 +23,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 {
     public class Task
     {
+        /// <summary>
+        /// Checks if the TcNo Account Switcher Tray application has a Task to start with Windows
+        /// </summary>
         public static bool StartWithWindows_Enabled()
         {
             using var ts = new TaskService();
             var tasks = ts.RootFolder.Tasks;
             return tasks.Exists("TcNo Account Switcher - Tray start with logon");
         }
+
+        /// <summary>
+        /// Toggles whether the TcNo Account Switcher Tray application starts with Windows or not
+        /// </summary>
+        /// <param name="shouldExist">Whether it should start with Windows, or not</param>
         public static void StartWithWindows_Toggle(bool shouldExist)
         {
             if (shouldExist && !StartWithWindows_Enabled())

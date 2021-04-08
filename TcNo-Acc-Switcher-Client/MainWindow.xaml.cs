@@ -72,7 +72,7 @@ namespace TcNo_Acc_Switcher_Client
             InitializeComponent();
 
             // Load settings (If they exist, otherwise creates).
-            _settings = GeneralFuncs.LoadSettings("WindowSetting");
+            _settings = GeneralFuncs.LoadSettings("WindowSettings");
 
 
             //MView2.Source = new Uri("http://localhost:44305/");
@@ -102,7 +102,7 @@ namespace TcNo_Acc_Switcher_Client
             // This will only be when that's implemented. Easier to leave it until then.
             MessageBox.Show(windowUrl);
             _settings["WindowSize"] = Convert.ToInt32(this.Width).ToString() + ',' + Convert.ToInt32(this.Height).ToString();
-            GeneralFuncs.SaveSettings("WindowSetting", _settings);
+            GeneralFuncs.SaveSettings("WindowSettings", _settings);
         }
 
         private void UrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
