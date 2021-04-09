@@ -285,7 +285,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="file">JSON file to be read</param>
         /// <returns>JObject created from file</returns>
-        public static JObject LoadSettings(string file, JObject defJO = null)
+        public static JObject LoadSettings(string file)
         {
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
             if (File.Exists(sFilename)) 

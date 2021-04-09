@@ -47,9 +47,70 @@ namespace TcNo_Acc_Switcher_Server.Data
         // Variables
         private bool _streamerModeEnabled = true;
         [JsonProperty("StreamerModeEnabled", Order = 0)] public bool StreamerModeEnabled { get => _instance._streamerModeEnabled; set => _instance._streamerModeEnabled = value; }
+        // Variables loaded from other files:
+        private Dictionary<string, string> _stylesheet = new()
+        {
+            { "selectionColor", "#402B00" },
+            { "selectionBackground", "#FFAA00" },
+            { "contextMenuBackground", "#14151E" },
+            { "contextMenuBackground-hover", "#1B2737" },
+            { "contextMenuLeftBorder-hover", "#364E6E" },
+            { "contextMenuTextColor", "#B0BEC5" },
+            { "contextMenuTextColor-hover", "#FFFFFF" },
+            { "headerbarBackground", "#14151E" },
+            { "windowControlsBackground-hover", "rgba(255,255,255,0.1)" },
+            { "windowControlsBackground-active", "rgba(255,255,255,0.2)" },
+            { "windowControlsCloseBackground", "#E81123" },
+            { "windowControlsCloseBackground-active", "#F1707A" },
+            { "windowTitleColor", "white"},
+            { "footerBackground", "#222"},
+            { "footerColor", "#DDD"},
+            { "scrollbarTrackBackground", "#1F202D" },
+            { "scrollbarThumbBackground", "#515164" },
+            { "scrollbarThumbBackground-hover", "#555" },
+            { "accountPColor", "#DDD" },
+            { "accountColor", "white" },
+            { "accountBackground-hover", "#28374E" },
+            { "accountBorder-hover", "#2777A4" },
+            { "accountBackground-checked", "#274560" },
+            { "accountBorder-checked", "#26A0DA" },
+            { "mainBackground", "#28293A" },
+            { "borderedItemBorderColor", "#888" },
+            { "defaultTextColor", "white" },
+            { "linkColor", "#FFAA00" },
+            { "linkColor-hover", "#FFDD00" },
+            { "linkColor-active", "#CC7700" },
+            { "buttonBackground", "#333" },
+            { "buttonBackground-active", "#222" },
+            { "buttonBackground-hover", "#444" },
+            { "buttonBorder", "#888" },
+            { "buttonBorder-active", "#FFAA00" },
+            { "buttonColor", "white" },
+            { "checkboxBorder-checked", "#FFAA00" },
+            { "inputBackground", "#212529" },
+            { "inputColor", "white" },
+            { "listBackground", "#222" },
+            { "listColor", "white" },
+            { "listTextColor-before", "#FFAA00" },
+            { "listTextColor-before-checked", "#945300" },
+            { "listTextColor-after", "#3DFF89" },
+            { "listTextColor-after-checked", "#00A340" },
+            { "settingsHeaderColor", "white" },
+            {"settingsHeaderHrBorder", "#BBB" },
+            { "modalBackground", "#00000055" },
+            { "modalInputBackground", "#222" },
+            { "foundColor", "lime" },
+            { "foundBackground", "green" },
+            { "notFoundColor", "red" },
+            { "notFoundBackground", "darkred" },
+            { "limited", "yellow" },
+            { "vac", "red" },
+        };
+        [JsonIgnore] public Dictionary<string, string> Stylesheet { get => _instance._stylesheet; set => _instance._stylesheet = value; }
 
         // Constants
         [JsonIgnore] public string SettingsFile = "WindowSettings.json";
+        [JsonIgnore] public string StylesheetFile = "StyleSettings.json";
         [JsonIgnore] public bool StreamerModeTriggered = false;
 
         /// <summary>
@@ -109,11 +170,23 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (curSettings == null) return;
             _instance.StreamerModeEnabled = curSettings.StreamerModeEnabled;
         }
-        public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile));
+
+        public void LoadFromFile()
+        {
+            SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile));
+            var s = GeneralFuncs.LoadSettings(StylesheetFile).ToObject<Dictionary<string, string>>();
+            _instance._stylesheet = s.Count != 0 ? s : _instance._stylesheet;
+            SaveStyles();
+        }
 
         public JObject GetJObject() => JObject.FromObject(this);
 
         [JSInvokable]
         public void SaveSettings(bool reverse = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), reverse);
+
+        public JObject GetStylesJObject() => JObject.FromObject(this.Stylesheet);
+
+        [JSInvokable]
+        public void SaveStyles(bool reverse = false) => GeneralFuncs.SaveSettings(StylesheetFile, GetStylesJObject(), reverse);
     }
 }
