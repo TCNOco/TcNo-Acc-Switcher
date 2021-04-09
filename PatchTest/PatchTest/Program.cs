@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using SevenZipExtractor;
 using VCDiff.Encoders;
 using VCDiff.Decoders;
 using VCDiff.Includes;
@@ -20,13 +21,33 @@ namespace PatchTest
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            var oldFolder = "net5.0-windows-Release";
-            var newFolder = "net5.0-windows-Debug";
+            // 1. Move all files except self into a working folder.
+            // 2. Download update.7z
+            // 3. Extract
+            // 4. Delete files that need to be removed.
+            // 5. Run patches from working folder and patches
+            // 6. Copy in new files
+            // 7. Move out of working into base
+            // 8. Delete working temp folder, and update
+            // --> Update the updater through the main program with a simple hash check there.
+            // ----> Just re-download the whole thing, or make a copy of it to update itself with,
+            // ----> then get the main program to replace the updater (Most likely).
+
+
+            var oldFolder = "releasetest";
             var outputFolder = "output";
-            List<string> filesToDelete = new(); // Simply ignore these later
-            CreateFolderPatches(oldFolder, newFolder, outputFolder, filesToDelete);
+            // Patches, Compression and the rest to be done manually by me.
+            // update.7z or version.7z, something along those lines is downloaded
+            // Decompressed to a test area
+            Directory.CreateDirectory("temp_update");
+            using (ArchiveFile archiveFile = new ArchiveFile(Path.Combine("output", "update.7z")))
+            {
+                archiveFile.Extract("temp_update", true); // extract all
+            }
             ApplyPatches(oldFolder, outputFolder);
+
+            // Remove files that need to be removed:
+            List<string> filesToDelete = File.ReadAllLines("filesToDelete.txt").ToList();
 
             var patchedFolder = "ALLPATCHED";
             CopyFilesRecursive(oldFolder, patchedFolder);
@@ -37,7 +58,37 @@ namespace PatchTest
                 File.Delete(Path.Join(patchedFolder, f));
             }
 
-            Console.WriteLine("test");
+
+
+
+
+
+
+
+
+
+
+            //// Main test of the program v
+            //Console.WriteLine("Hello World!");
+            //var oldFolder = "net5.0-windows-Release";
+            //var newFolder = "net5.0-windows-Debug";
+            //var outputFolder = "output";
+            //List<string> filesToDelete = new(); // Simply ignore these later
+            //CreateFolderPatches(oldFolder, newFolder, outputFolder, filesToDelete);
+            //ApplyPatches(oldFolder, outputFolder);
+            //File.WriteAllLines("filesToDelete.txt",filesToDelete);
+
+
+            //var patchedFolder = "ALLPATCHED";
+            //CopyFilesRecursive(oldFolder, patchedFolder);
+            //CopyFilesRecursive(Path.Join(outputFolder, "patched"), patchedFolder);
+
+            //foreach (var f in filesToDelete)
+            //{
+            //    File.Delete(Path.Join(patchedFolder, f));
+            //}
+
+            //Console.WriteLine("test");
         }
 
         static void CopyFilesRecursive(string inputFolder, string outputFolder)

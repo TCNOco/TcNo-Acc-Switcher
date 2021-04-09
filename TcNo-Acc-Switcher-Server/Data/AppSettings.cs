@@ -73,11 +73,18 @@ namespace TcNo_Acc_Switcher_Server.Data
                 //    continue;
                 //}
 
-                switch (p.ProcessName)
+                switch (p.ProcessName.ToLower())
                 {
                     case "obs":
+                    case "obs32":
                     case "obs64":
+                    case "streamlabs obs":
+                    case "wirecast":
+                    case "xsplit.core":
+                    case "xsplit.gamecaster":
+                    case "twitchstudio":
                         _instance.StreamerModeTriggered = true;
+                        Console.WriteLine(p.ProcessName);
                         return true;
                 }
             }
