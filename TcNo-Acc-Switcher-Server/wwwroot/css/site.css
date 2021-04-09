@@ -4,6 +4,8 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background-color: var(--mainBackground);
     font-size: 12px; /* THIS SCALES EVERYTHING UP AND DOWN */
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .mainblock {
@@ -38,6 +40,12 @@ label {
 }
 
 
+.programMain {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
 /* Based on https://github.com/binaryfunt/electron-seamless-titlebar-tutorial */
 .headerbar {
     background-color: var(--headerbarBackground);
@@ -255,12 +263,13 @@ div.advancedClearingButtonCol {
         border: solid var(--borderedItemBorderColor) 0.1em;
         color: var(--listColor);
         width: 100%;
+        padding: 0.5em;
     }
         .forgottenList select:focus {
             border: solid var(--borderedItemBorderColor-focus) 0.1em;
         }
         .forgottenList select option:checked {
-            box-shadow: 0 0 10px 100px var(--checkboxBorder-checked) inset;
+            box-shadow: 0 0 10px 100px var(--listBackgroundColor-checked) inset;
             color: var(--listColor-checked);
         }
         /* 
@@ -274,7 +283,7 @@ div.advancedClearingButtonCol {
         }
         .forgottenList select option:checked:before {
             color: var(--listTextColor-before-checked);
-            margin-left: 0.5em;
+            /*margin-left: 0.5em;*/
         }
         .forgottenList select option:after {
             content: attr(visible-content);

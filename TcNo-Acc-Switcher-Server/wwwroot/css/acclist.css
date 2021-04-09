@@ -9,7 +9,7 @@
 
 .acc_list {
     width: 100%;
-    height: calc(100% - 3.5em - 32px);
+    height: calc(100% - 42px);
     position: relative;
     background-color: var(--mainBackground);
     overflow-y: auto;
@@ -147,6 +147,7 @@ label.acc p {
             }
             .acc_list_actionbar div .button:hover, .settingsCol button:hover {
                 background-color: var(--buttonBackground-hover);
+                border-color: var(--buttonBorder-hover);
             }
 
             .acc_list_actionbar div .btn_login, .btn_close span {

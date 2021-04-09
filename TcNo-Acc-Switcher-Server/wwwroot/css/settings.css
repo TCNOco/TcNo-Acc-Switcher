@@ -6,6 +6,7 @@
 
 .container {
     color: var(--defaultTextColor);
+    overflow: visible;
 }
 
 .SettingsHeader {
@@ -69,6 +70,7 @@
 
         .acc_list_actionbar div .button:hover, .settingsCol button:hover {
             background-color: var(--buttonBackground-hover);
+            border-color: var(--buttonBorder-hover);
         }
 
 .acc_list_actionbar div .btn_login, .btn_close span {

@@ -117,6 +117,7 @@
 
         #modal_contents button:hover {
             background-color: var(--buttonBackground-hover);
+            border-color: var(--buttonBorder-hover);
         }
 
         #modal_contents button:active {
