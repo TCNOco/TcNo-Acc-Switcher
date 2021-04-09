@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
@@ -76,6 +77,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             { "accountBorder-checked", "#26A0DA" },
             { "mainBackground", "#28293A" },
             { "borderedItemBorderColor", "#888" },
+            { "borderedItemBorderColor-focus", "#888" },
+            { "borderedItemBorderColorBottom-focus", "#FFAA00" },
             { "defaultTextColor", "white" },
             { "linkColor", "#FFAA00" },
             { "linkColor-hover", "#FFDD00" },
@@ -86,17 +89,21 @@ namespace TcNo_Acc_Switcher_Server.Data
             { "buttonBorder", "#888" },
             { "buttonBorder-active", "#FFAA00" },
             { "buttonColor", "white" },
-            { "checkboxBorder-checked", "#FFAA00" },
+            { "checkboxBorder", "white" },
+            { "checkboxBorder-checked", "white" },
+            { "checkboxBackground", "#FFAA00" },
+            { "checkboxBackground-checked", "#FFAA00" },
             { "inputBackground", "#212529" },
             { "inputColor", "white" },
             { "listBackground", "#222" },
             { "listColor", "white" },
+            { "listColor-checked", "white" },
             { "listTextColor-before", "#FFAA00" },
             { "listTextColor-before-checked", "#945300" },
             { "listTextColor-after", "#3DFF89" },
             { "listTextColor-after-checked", "#00A340" },
             { "settingsHeaderColor", "white" },
-            {"settingsHeaderHrBorder", "#BBB" },
+            { "settingsHeaderHrBorder", "#BBB" },
             { "modalBackground", "#00000055" },
             { "modalInputBackground", "#222" },
             { "foundColor", "lime" },
@@ -173,10 +180,13 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public void LoadFromFile()
         {
-            SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile));
-            var s = GeneralFuncs.LoadSettings(StylesheetFile).ToObject<Dictionary<string, string>>();
+            // Main settings
+            SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
+            // Stylesheet
+            if (!File.Exists(StylesheetFile)) SaveStyles();
+            //var s = GeneralFuncs.LoadSettings(StylesheetFile, GetStylesJObject()).ToObject<Dictionary<string, string>>();
+            var s = GeneralFuncs.LoadSettings(StylesheetFile, GetStylesJObject()).ToObject<Dictionary<string, string>>();
             _instance._stylesheet = s.Count != 0 ? s : _instance._stylesheet;
-            SaveStyles();
         }
 
         public JObject GetJObject() => JObject.FromObject(this);
@@ -184,7 +194,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JSInvokable]
         public void SaveSettings(bool reverse = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), reverse);
 
-        public JObject GetStylesJObject() => JObject.FromObject(this.Stylesheet);
+        public JObject GetStylesJObject() => JObject.FromObject(_instance._stylesheet);
 
         [JSInvokable]
         public void SaveStyles(bool reverse = false) => GeneralFuncs.SaveSettings(StylesheetFile, GetStylesJObject(), reverse);

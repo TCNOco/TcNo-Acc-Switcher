@@ -24,7 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
         WindowStyle="None"
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip">
-    <Grid Background="#28293A">
+    <Grid x:Name="MainBackground" Background="#28293A">
         <wpf:WebView2 x:Name="MView2" Margin="5,5,5,5"></wpf:WebView2>
 
         <!-- https://stackoverflow.com/a/27157947/5165437 -->

@@ -124,7 +124,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             CheckShortcuts();
             Pages.General.Classes.Task.StartWithWindows_Enabled();
         }
-        public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile));
+        public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
 
         public JObject GetJObject() => JObject.FromObject(this);
 

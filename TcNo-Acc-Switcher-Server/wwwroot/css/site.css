@@ -219,7 +219,8 @@ div.clearingRight {
     overflow: auto;
     background-color: var(--listBackground);
     width: 40%;
-    border: solid var(--borderedItemBorderColor) 0.1em
+    border: solid var(--borderedItemBorderColor) 0.1em;
+    padding: 0.5em;
 }
 div.advancedClearingButtonCol {
     font-size: 0.9rem;
@@ -249,14 +250,18 @@ div.advancedClearingButtonCol {
     margin-bottom: 2em;
 }
     .forgottenList select {
+        overflow: auto;
         background-color: var(--listBackground);
         border: solid var(--borderedItemBorderColor) 0.1em;
         color: var(--listColor);
         width: 100%;
     }
+        .forgottenList select:focus {
+            border: solid var(--borderedItemBorderColor-focus) 0.1em;
+        }
         .forgottenList select option:checked {
             box-shadow: 0 0 10px 100px var(--checkboxBorder-checked) inset;
-            color: var(--defaultTextColor);
+            color: var(--listColor-checked);
         }
         /* 
             Workaround to set color BECAUSE YOU CAN'T SET TEXT COLOR?!

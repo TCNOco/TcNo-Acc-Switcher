@@ -59,6 +59,7 @@ namespace TcNo_Acc_Switcher_Client
         private readonly Thread _server = new Thread(RunServer);
         private static void RunServer() { Program.Main(new string[0]); }
         private readonly JObject _settings = new JObject();
+        public static readonly TcNo_Acc_Switcher_Server.Data.AppSettings AppSettings = TcNo_Acc_Switcher_Server.Data.AppSettings.Instance;
 
 
         public MainWindow()
@@ -71,8 +72,10 @@ namespace TcNo_Acc_Switcher_Client
             // Somehow check ports and find a different one if it doesn't work? We'll see...
             InitializeComponent();
 
+            AppSettings.LoadFromFile();
+            MainBackground.Background = (Brush)new BrushConverter().ConvertFromString(AppSettings.Stylesheet["headerbarBackground"]);
             // Load settings (If they exist, otherwise creates).
-            _settings = GeneralFuncs.LoadSettings("WindowSettings");
+            _settings = GeneralFuncs.LoadSettings("WindowSettings", JObject.FromObject(new TcNo_Acc_Switcher_Server.Data.AppSettings()));
 
 
             //MView2.Source = new Uri("http://localhost:44305/");

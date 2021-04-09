@@ -22,6 +22,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 
@@ -284,19 +285,36 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// Loads settings from input file (JSON string to JObject)
         /// </summary>
         /// <param name="file">JSON file to be read</param>
+        /// <param name="defaultSettings">(Optional) Default JObject, for merging in missing parameters</param>
         /// <returns>JObject created from file</returns>
-        public static JObject LoadSettings(string file)
+        public static JObject LoadSettings(string file, JObject defaultSettings = null)
         {
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
             if (File.Exists(sFilename)) 
             {
                 try
                 {
-                    return JObject.Parse(File.ReadAllText(sFilename));
+                    if (defaultSettings == null) return JObject.Parse(File.ReadAllText(sFilename));
+
+                    var fileSettingsText = File.ReadAllText(sFilename);
+                    var fileSettings = JObject.Parse(fileSettingsText);
+                    var addedKey = false;
+                    // Add missing keys from default
+                    foreach (var kvp in defaultSettings)
+                    {
+                        if (fileSettings.ContainsKey(kvp.Key)) continue;
+                        fileSettings[kvp.Key] = kvp.Value;
+                        addedKey = true;
+                    }
+                    // Save all settings back into file
+                    if (addedKey) File.WriteAllText(sFilename, fileSettings.ToString());
+                    return fileSettings;
                 }
                 catch (Exception e)
                 {
                     // ignored
+                    Console.WriteLine(e);
+                    throw;
                 }
             }
             return file switch
@@ -306,6 +324,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 _ => new JObject()
             };
         }
+
+        //public static JObject SortJObject(JObject joIn)
+        //{
+        //    return new JObject( joIn.Properties().OrderByDescending(p => p.Name) );
+        //}
 
         /// <summary>
         /// Returns default settings for program (Just the Window size currently)
