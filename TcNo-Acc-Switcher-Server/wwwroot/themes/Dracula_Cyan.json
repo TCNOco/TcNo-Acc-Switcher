@@ -53,7 +53,7 @@
   "settingsHeaderColor": "white",
   "settingsHeaderHrBorder": "#BBB",
   "modalBackground": "#00000055",
-  "modalInputBackground": "#0E1419",
+  "modalInputBackground": "#212529",
   "foundColor": "lime",
   "foundBackground": "green",
   "notFoundColor": "red",

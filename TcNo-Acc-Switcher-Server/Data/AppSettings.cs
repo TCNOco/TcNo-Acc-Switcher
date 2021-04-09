@@ -107,7 +107,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             { "settingsHeaderColor", "white" },
             { "settingsHeaderHrBorder", "#BBB" },
             { "modalBackground", "#00000055" },
-            { "modalInputBackground", "#222" },
+            { "modalInputBackground", "#212529" },
             { "foundColor", "lime" },
             { "foundBackground", "green" },
             { "notFoundColor", "red" },

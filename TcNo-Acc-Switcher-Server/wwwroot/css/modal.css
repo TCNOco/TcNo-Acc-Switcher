@@ -140,10 +140,17 @@
 
     #modal_contents input[type=text] {
         padding-bottom: 2px;
-        -webkit-box-shadow: 0px 0px 0px 1px rgba(153,153,153,1);
-        -moz-box-shadow: 0px 0px 0px 1px rgba(153,153,153,1);
-        box-shadow: 0px 0px 0px 1px rgba(153,153,153,1);
+        background-color: var(--modalInputBackground) !important;
+        padding-bottom: 0;
+        margin: 0;
+        border-bottom: 2px solid var(--borderedItemBorderColor);
+        background-color: var(--modalInputBackground);
     }
+
+        #modal_contents input[type=text]:focus {
+            border-bottom: 2px solid var(--borderedItemBorderColorBottom-focus);
+        }
+
     #modal_contents .inputAndButton {
         display: flex;
         margin: 1em 0.5em 1em 0.5em;
@@ -152,12 +159,6 @@
             margin-left: 0.5em;
         }
 
-    #modal_contents input[type=text]:focus {
-        padding-bottom: 0;
-        margin: 0;
-        background-color: var(--modalInputBackground) !important;
-        box-shadow: none;
-    }
 
     #modal_contents .modal-text {
         margin: 0em 0.5em 2px 0.5em;
