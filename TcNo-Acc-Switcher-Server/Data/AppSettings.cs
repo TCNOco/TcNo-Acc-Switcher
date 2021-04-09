@@ -91,7 +91,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             { "buttonColor", "white" },
             { "checkboxBorder", "white" },
             { "checkboxBorder-checked", "white" },
-            { "checkboxBackground", "#FFAA00" },
+            { "checkboxBackground", "#28293A" },
             { "checkboxBackground-checked", "#FFAA00" },
             { "inputBackground", "#212529" },
             { "inputColor", "white" },

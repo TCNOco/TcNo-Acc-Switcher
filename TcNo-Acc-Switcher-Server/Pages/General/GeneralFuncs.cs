@@ -294,10 +294,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 try
                 {
-                    if (defaultSettings == null) return JObject.Parse(File.ReadAllText(sFilename));
-
                     var fileSettingsText = File.ReadAllText(sFilename);
+                    if (fileSettingsText.Length == 0 && defaultSettings != null)
+                    {
+                        File.WriteAllText(sFilename, defaultSettings.ToString());
+                        return defaultSettings;
+                    }
+
                     var fileSettings = JObject.Parse(fileSettingsText);
+                    if (defaultSettings == null) return fileSettings;
+
                     var addedKey = false;
                     // Add missing keys from default
                     foreach (var kvp in defaultSettings)
