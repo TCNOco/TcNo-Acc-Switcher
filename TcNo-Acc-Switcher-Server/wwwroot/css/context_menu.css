@@ -7,8 +7,8 @@
     background: var(--contextMenuBackground);
     border-radius: 0.2em;
     list-style: none;
-    box-shadow: 0 15px 35px rgba(50, 50, 90, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
     z-index: 999999;
+    box-shadow: var(--contextMenuBoxShadow);
 }
 
     .contextmenu li {
@@ -46,6 +46,7 @@
 .submenu {
     display: none;
     min-height: 100%;
+    box-shadow: var(--contextMenuBoxShadow);
 }
 
 li:hover .submenu {

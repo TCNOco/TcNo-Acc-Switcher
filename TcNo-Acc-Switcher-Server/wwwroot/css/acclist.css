@@ -11,7 +11,7 @@
     width: 100%;
     height: calc(100% - 42px);
     position: relative;
-    background-color: var(--mainBackground);
+    background: var(--accountListBackground);
     overflow-y: auto;
     overflow-x: auto;
 }
@@ -139,9 +139,9 @@ label.acc p {
             cursor: pointer;
             transition: ease-in-out 60ms;
         }
-            .acc_list_actionbar div .button:active, .settingsCol button:active {
+            .acc_list_actionbar div .button:active, .settingsCol button:active, .settingsCol button:focus, .settingsCol button:target {
                 background-color: var(--buttonBackground-active) !important;
-                border-color: var(--buttonBorder-active);
+                border-color: var(--buttonBorder-active)!important;
             }
             .acc_list_actionbar div .button:hover, .settingsCol button:hover {
                 background-color: var(--buttonBackground-hover);

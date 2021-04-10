@@ -10,9 +10,10 @@
 
 .modalFG {
     width: fit-content;
-    background-color: var(--mainBackground);
+    padding: 6px;
+    background-color: var(--headerbarBackground);
     position: absolute;
-    top: calc(50% - 42px);
+    top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
     min-width: 200px;
@@ -97,6 +98,7 @@
     height: 100%;
     padding: 1em;
     display: grid;
+    background-color: var(--modalFgBackground);
 }
 
     #modal_contents button {
