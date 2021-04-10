@@ -25,58 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip">
     <Grid x:Name="MainBackground" Background="#28293A">
-        <wpf:WebView2 x:Name="MView2" Margin="5,5,5,5"></wpf:WebView2>
-
-        <!-- https://stackoverflow.com/a/27157947/5165437 -->
-        <Rectangle x:Name="leftSizeGrip"
-                   Width="7"
-                   HorizontalAlignment="Left"
-                   Cursor="SizeWE"
-                   Style="{StaticResource RectBorderStyle}" />
-        <Rectangle x:Name="rightSizeGrip"
-                   Width="7"
-                   HorizontalAlignment="Right"
-                   Cursor="SizeWE"
-                   Style="{StaticResource RectBorderStyle}" />
-        <Rectangle x:Name="topSizeGrip"
-                   Height="7"
-                   VerticalAlignment="Top"
-                   Cursor="SizeNS"
-                   Style="{StaticResource RectBorderStyle}" />
-        <Rectangle x:Name="bottomSizeGrip"
-                   Height="7"
-                   VerticalAlignment="Bottom"
-                   Cursor="SizeNS"
-                   Style="{StaticResource RectBorderStyle}" />
-        <!--  Corners  -->
-        <Rectangle Name="topLeftSizeGrip"
-                   Width="7"
-                   Height="7"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Top"
-                   Cursor="SizeNWSE"
-                   Style="{StaticResource RectBorderStyle}" />
-        <Rectangle Name="bottomRightSizeGrip"
-                   Width="7"
-                   Height="7"
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Bottom"
-                   Cursor="SizeNWSE"
-                   Style="{StaticResource RectBorderStyle}" />
-        <Rectangle Name="topRightSizeGrip"
-                   Width="7"
-                   Height="7"
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Top"
-                   Cursor="SizeNESW"
-                   Style="{StaticResource RectBorderStyle}" />
-        <Rectangle Name="bottomLeftSizeGrip"
-                   Width="7"
-                   Height="7"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Bottom"
-                   Cursor="SizeNESW"
-                   Style="{StaticResource RectBorderStyle}" />
+        <wpf:WebView2 x:Name="MView2"></wpf:WebView2>
     </Grid>
 
 </Window>

@@ -104,8 +104,6 @@ label.acc p {
     flex-direction: row;
     color: var(--defaultTextColor);
     padding: 0.25em 0.25em;
-    position: absolute;
-    bottom: 0;
     overflow: hidden;
 }
 

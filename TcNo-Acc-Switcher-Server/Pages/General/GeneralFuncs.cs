@@ -290,56 +290,43 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static JObject LoadSettings(string file, JObject defaultSettings = null)
         {
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
-            if (File.Exists(sFilename)) 
+            if (!File.Exists(sFilename)) return defaultSettings ?? new JObject();
+            try
             {
-                try
+                var fileSettingsText = File.ReadAllText(sFilename);
+                if (fileSettingsText.Length == 0 && defaultSettings != null)
                 {
-                    var fileSettingsText = File.ReadAllText(sFilename);
-                    if (fileSettingsText.Length == 0 && defaultSettings != null)
-                    {
-                        File.WriteAllText(sFilename, defaultSettings.ToString());
-                        return defaultSettings;
-                    }
-
-                    var fileSettings = JObject.Parse(fileSettingsText);
-                    if (defaultSettings == null) return fileSettings;
-
-                    var addedKey = false;
-                    // Add missing keys from default
-                    foreach (var kvp in defaultSettings)
-                    {
-                        if (fileSettings.ContainsKey(kvp.Key)) continue;
-                        fileSettings[kvp.Key] = kvp.Value;
-                        addedKey = true;
-                    }
-                    // Save all settings back into file
-                    if (addedKey) File.WriteAllText(sFilename, fileSettings.ToString());
-                    return fileSettings;
+                    File.WriteAllText(sFilename, defaultSettings.ToString());
+                    return defaultSettings;
                 }
-                catch (Exception e)
+
+                var fileSettings = JObject.Parse(fileSettingsText);
+                if (defaultSettings == null) return fileSettings;
+
+                var addedKey = false;
+                // Add missing keys from default
+                foreach (var kvp in defaultSettings)
                 {
-                    // ignored
-                    Console.WriteLine(e);
-                    throw;
+                    if (fileSettings.ContainsKey(kvp.Key)) continue;
+                    fileSettings[kvp.Key] = kvp.Value;
+                    addedKey = true;
                 }
+                // Save all settings back into file
+                if (addedKey) File.WriteAllText(sFilename, fileSettings.ToString());
+                return fileSettings;
             }
-            return file switch
+            catch (Exception e)
             {
-                //"SteamSettings.json" => Data.Settings.Steam.DefaultSettings(), Removed the default for this
-                "WindowSettings" => DefaultSettings(),
-                _ => new JObject()
-            };
+                // ignored
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         //public static JObject SortJObject(JObject joIn)
         //{
         //    return new JObject( joIn.Properties().OrderByDescending(p => p.Name) );
         //}
-
-        /// <summary>
-        /// Returns default settings for program (Just the Window size currently)
-        /// </summary>
-        public static JObject DefaultSettings() => JObject.Parse(@"WindowSize: ""800, 450""");
 
         #endregion
 

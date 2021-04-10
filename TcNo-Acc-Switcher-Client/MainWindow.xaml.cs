@@ -58,7 +58,6 @@ namespace TcNo_Acc_Switcher_Client
     {
         private readonly Thread _server = new Thread(RunServer);
         private static void RunServer() { Program.Main(new string[0]); }
-        private readonly JObject _settings = new JObject();
         public static readonly TcNo_Acc_Switcher_Server.Data.AppSettings AppSettings = TcNo_Acc_Switcher_Server.Data.AppSettings.Instance;
 
 
@@ -73,10 +72,7 @@ namespace TcNo_Acc_Switcher_Client
             InitializeComponent();
 
             AppSettings.LoadFromFile();
-            MainBackground.Background = (Brush)new BrushConverter().ConvertFromString(AppSettings.Stylesheet["headerbarBackground"]);
-            // Load settings (If they exist, otherwise creates).
-            _settings = GeneralFuncs.LoadSettings("WindowSettings", JObject.FromObject(new TcNo_Acc_Switcher_Server.Data.AppSettings()));
-
+            //MainBackground.Background = (Brush)new BrushConverter().ConvertFromString(AppSettings.Stylesheet["headerbarBackground"]);
 
             //MView2.Source = new Uri("http://localhost:44305/");
             MView2.Source = new Uri("http://localhost:5000/" + App.StartPage);
@@ -84,9 +80,9 @@ namespace TcNo_Acc_Switcher_Client
             MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
             //MView2.MouseDown += MViewMDown;
 
-            var windowSize = Point.Parse((string)_settings["WindowSize"] ?? "800,450");
-            this.Width = windowSize.X;
-            this.Height = windowSize.Y;
+            this.Width = AppSettings.WindowSize.X;
+            this.Height = AppSettings.WindowSize.Y;
+            StateChanged += WindowStateChange;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
         }
         
@@ -99,44 +95,39 @@ namespace TcNo_Acc_Switcher_Client
             MView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
         }
 
+        private void WindowStateChange(object sender, EventArgs e)
+        {
+            var state = "";
+            switch (WindowState)
+            {
+                case WindowState.Maximized:
+                    state = "add";
+                    break;
+                case WindowState.Normal:
+                    state = "remove";
+                    break;
+            }
+            MView2.ExecuteScriptAsync("document.body.classList." + state + "('maximized')");
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            SaveSettings(MView2.Source.AbsolutePath);
+        }
+
         private void SaveSettings(string windowUrl)
         {
             // IN THE FUTURE: ONLY DO THIS FOR THE MAIN PAGE WHERE YOU CAN CHOOSE WHAT PLATFORM TO SWAP ACCOUNTS ON
             // This will only be when that's implemented. Easier to leave it until then.
             MessageBox.Show(windowUrl);
-            _settings["WindowSize"] = Convert.ToInt32(this.Width).ToString() + ',' + Convert.ToInt32(this.Height).ToString();
-            GeneralFuncs.SaveSettings("WindowSettings", _settings);
+            AppSettings.WindowSize = new System.Drawing.Point(){ X = Convert.ToInt32(this.Width), Y = Convert.ToInt32(this.Height) };
+            AppSettings.SaveSettings();
         }
 
         private void UrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
             var uri = args.Uri.Split("/").Last();
             Console.WriteLine(args.Uri);
-            switch (uri)
-            {
-                case "Win_min":
-                    args.Cancel = true;
-                    this.WindowState = WindowState.Minimized;
-                    break;
-                case "Win_max":
-                    args.Cancel = true;
-                    this.WindowState = WindowState.Maximized;
-                    break;
-                case "Win_restore":
-                    args.Cancel = true;
-                    this.WindowState = WindowState.Normal;
-                    break;
-                case "Win_close":
-                    args.Cancel = true;
-                    SaveSettings(args.Uri);
-                    Environment.Exit(1);
-                    break;
-            }
-            if (uri.Contains("Win_min"))
-            {
-                args.Cancel = true;
-                this.WindowState = WindowState.Minimized;
-            }
 
             if (!args.Uri.Contains("?")) return;
             // Needs to be here as:

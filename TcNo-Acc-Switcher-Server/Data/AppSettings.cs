@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,6 +49,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         // Variables
         private bool _streamerModeEnabled = true;
         [JsonProperty("StreamerModeEnabled", Order = 0)] public bool StreamerModeEnabled { get => _instance._streamerModeEnabled; set => _instance._streamerModeEnabled = value; }
+
+        private Point _windowSize = new() { X = 800, Y = 450 };
+        [JsonProperty("WindowSize", Order = 2)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
+
         // Variables loaded from other files:
         private Dictionary<string, string> _stylesheet = new()
         {
