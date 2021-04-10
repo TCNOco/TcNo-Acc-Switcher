@@ -30,8 +30,8 @@ namespace TcNo_Acc_Switcher_Server.Data
     public class AppSettings
     {
         private static AppSettings _instance = new();
-
         public AppSettings() { }
+
         private static readonly object LockObj = new();
 
         public static AppSettings Instance
@@ -49,6 +49,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         // Variables
         private bool _streamerModeEnabled = true;
         [JsonProperty("StreamerModeEnabled", Order = 0)] public bool StreamerModeEnabled { get => _instance._streamerModeEnabled; set => _instance._streamerModeEnabled = value; }
+
+        private int _serverPort = 5000 ;
+        [JsonProperty("ServerPort", Order = 1)] public int ServerPort { get => _instance._serverPort; set => _instance._serverPort = value; }
 
         private Point _windowSize = new() { X = 800, Y = 450 };
         [JsonProperty("WindowSize", Order = 2)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }

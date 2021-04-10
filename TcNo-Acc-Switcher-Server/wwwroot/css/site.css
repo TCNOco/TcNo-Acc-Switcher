@@ -2,10 +2,15 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: var(--mainBackground);
     font-size: 12px; /* THIS SCALES EVERYTHING UP AND DOWN */
     max-width: 100%;
     overflow-x: hidden;
+}
+html {
+    background-color: var(--headerbarBackground);
+}
+body {
+    background-color: var(--mainBackground);
 }
 
 .mainblock {

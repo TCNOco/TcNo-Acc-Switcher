@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -57,12 +58,16 @@ namespace TcNo_Acc_Switcher_Client
     public partial class MainWindow : Window
     {
         private readonly Thread _server = new Thread(RunServer);
-        private static void RunServer() { Program.Main(new string[0]); }
         public static readonly TcNo_Acc_Switcher_Server.Data.AppSettings AppSettings = TcNo_Acc_Switcher_Server.Data.AppSettings.Instance;
-
+        private static string _address = "";
+        private static void RunServer() { Program.Main(new string[1] { _address }); }
 
         public MainWindow()
         {
+            AppSettings.LoadFromFile();
+            FindOpenPort();
+            _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
+
             // Start web server
             _server.IsBackground = true;
             _server.Start();
@@ -71,11 +76,9 @@ namespace TcNo_Acc_Switcher_Client
             // Somehow check ports and find a different one if it doesn't work? We'll see...
             InitializeComponent();
 
-            AppSettings.LoadFromFile();
-            //MainBackground.Background = (Brush)new BrushConverter().ConvertFromString(AppSettings.Stylesheet["headerbarBackground"]);
-
-            //MView2.Source = new Uri("http://localhost:44305/");
-            MView2.Source = new Uri("http://localhost:5000/" + App.StartPage);
+            MainBackground.Background = (Brush)new BrushConverter().ConvertFromString(AppSettings.Stylesheet["headerbarBackground"]);
+            
+            MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
             MView2.NavigationStarting += UrlChanged;
             MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
             //MView2.MouseDown += MViewMDown;
@@ -85,7 +88,25 @@ namespace TcNo_Acc_Switcher_Client
             StateChanged += WindowStateChange;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
         }
-        
+
+        /// <summary>
+        /// Find first available port up from requested
+        /// </summary>
+        private static void FindOpenPort()
+        {
+            var originalPort = AppSettings.ServerPort;
+            // Check if port available:
+            var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+            var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
+            while (true)
+            {
+                if (tcpConnInfoArray.Count(x => x.LocalEndPoint.Port == AppSettings.ServerPort) == 0) break;
+                else AppSettings.ServerPort++;
+            }
+
+            if (AppSettings.ServerPort != originalPort) AppSettings.SaveSettings();
+        }
+
         // For draggable regions:
         // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
         private void WebView_CoreWebView2Ready(object sender, EventArgs e)
@@ -95,6 +116,9 @@ namespace TcNo_Acc_Switcher_Client
             MView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
         }
 
+        /// <summary>
+        /// Rungs on WindowStateChange, to update window controls in the WebView2.
+        /// </summary>
         private void WindowStateChange(object sender, EventArgs e)
         {
             var state = "";
@@ -110,11 +134,18 @@ namespace TcNo_Acc_Switcher_Client
             MView2.ExecuteScriptAsync("document.body.classList." + state + "('maximized')");
         }
 
+        /// <summary>
+        /// Runs just before window is closed
+        /// </summary>
         protected override void OnClosing(CancelEventArgs e)
         {
             SaveSettings(MView2.Source.AbsolutePath);
         }
 
+        /// <summary>
+        /// Saves settings, run on close.
+        /// </summary>
+        /// <param name="windowUrl">Current URI from the WebView2</param>
         private void SaveSettings(string windowUrl)
         {
             // IN THE FUTURE: ONLY DO THIS FOR THE MAIN PAGE WHERE YOU CAN CHOOSE WHAT PLATFORM TO SWAP ACCOUNTS ON
@@ -124,6 +155,9 @@ namespace TcNo_Acc_Switcher_Client
             AppSettings.SaveSettings();
         }
 
+        /// <summary>
+        /// Rungs on URI change in the WebView.
+        /// </summary>
         private void UrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
             var uri = args.Uri.Split("/").Last();

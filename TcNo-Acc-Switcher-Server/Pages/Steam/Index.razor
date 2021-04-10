@@ -37,54 +37,54 @@
 <style>@(new AppSettings().GetCssBlock())</style>
 
 
+<ul class="contextmenu">
+    <li><a onclick="SwapTo(-1, event);">Swap to account</a></li>
+    <li>
+        <a onclick="event.preventDefault();">Login as...</a>
+        <ul class="submenu">
+            <li><a onclick="SwapTo(7, event)" href="">Invisible</a></li>
+            <li><a onclick="SwapTo(0, event)" href="">Offline</a></li>
+            <li><a onclick="SwapTo(1, event)" href="">Online</a></li>
+            <li><a onclick="SwapTo(2, event)" href="">Busy</a></li>
+            <li><a onclick="SwapTo(3, event)" href="">Away</a></li>
+            <li><a onclick="SwapTo(4, event)" href="">Snooze</a></li>
+            <li><a onclick="SwapTo(5, event)" href="">Looking to Trade</a></li>
+            <li><a onclick="SwapTo(6, event)" href="">Looking to Play</a></li>
+        </ul>
+    </li>
+    <li>
+        <a onclick="event.preventDefault();">Copy Profile...</a>
+        <ul class="submenu">
+            @*<li><a @onclick="Steam.SteamSwitcherBase.CopyProfileURL" href="">Community URL</a></li>*@
+            <li><a onclick="copy('URL', event)" href="">Community URL</a></li>
+            <li><a onclick="copy('Line2', event)" href="">Community Username</a></li>
+            @*<li><a @onclick="@(e => Steam.SteamSwitcherBase.CopyCommunityUsername("username"))" href="">Community Username</a></li>*@
+            <li><a onclick="copy('Username', event)" href="">Login username</a></li>
+        </ul>
+    </li>
+    <li>
+        <a onclick="event.preventDefault();">Copy SteamID...</a>
+        <ul class="submenu">
+            <li><a onclick="copy('SteamId', event)" href="">SteamID [STEAM0:~]</a></li>
+            <li><a onclick="copy('SteamId3', event)" href="">SteamID3 [U:1:~]</a></li>
+            <li><a onclick="copy('SteamId32', event)" href="">SteamID32</a></li>
+            <li><a onclick="copy('SteamId64', event)" href="">SteamID64 7656~</a></li>
+        </ul>
+    </li>
+    <li>
+        <a onclick="event.preventDefault();">Copy other...</a>
+        <ul class="submenu">
+            <li><a onclick="copy('SteamRep', event)" href="">SteamRep</a></li>
+            <li><a onclick="copy('SteamID.uk', event)" href="">SteamID.uk</a></li>
+            <li><a onclick="copy('SteamID.io', event)" href="">SteamID.io</a></li>
+            <li><a onclick="copy('SteamIDFinder.com', event)" href="">SteamIDFinder.com</a></li>
+        </ul>
+    </li>
+    <li><a onclick="CreateShortcut()">Create Desktop Shortcut</a></li>
+    <li><a onclick="forget(event)">Forget</a></li>
+</ul>
 <div id="acc_list" class="acc_list">
     <toastarea />
-    <ul class="contextmenu">
-        <li><a onclick="SwapTo(-1, event);">Swap to account</a></li>
-        <li>
-            <a onclick="event.preventDefault();">Login as...</a>
-            <ul class="submenu">
-                <li><a onclick="SwapTo(7, event)" href="">Invisible</a></li>
-                <li><a onclick="SwapTo(0, event)" href="">Offline</a></li>
-                <li><a onclick="SwapTo(1, event)" href="">Online</a></li>
-                <li><a onclick="SwapTo(2, event)" href="">Busy</a></li>
-                <li><a onclick="SwapTo(3, event)" href="">Away</a></li>
-                <li><a onclick="SwapTo(4, event)" href="">Snooze</a></li>
-                <li><a onclick="SwapTo(5, event)" href="">Looking to Trade</a></li>
-                <li><a onclick="SwapTo(6, event)" href="">Looking to Play</a></li>
-            </ul>
-        </li>
-        <li>
-            <a onclick="event.preventDefault();">Copy Profile...</a>
-            <ul class="submenu">
-                @*<li><a @onclick="Steam.SteamSwitcherBase.CopyProfileURL" href="">Community URL</a></li>*@
-                <li><a onclick="copy('URL', event)" href="">Community URL</a></li>
-                <li><a onclick="copy('Line2', event)" href="">Community Username</a></li>
-                @*<li><a @onclick="@(e => Steam.SteamSwitcherBase.CopyCommunityUsername("username"))" href="">Community Username</a></li>*@
-                <li><a onclick="copy('Username', event)" href="">Login username</a></li>
-            </ul>
-        </li>
-        <li>
-            <a onclick="event.preventDefault();">Copy SteamID...</a>
-            <ul class="submenu">
-                <li><a onclick="copy('SteamId', event)" href="">SteamID [STEAM0:~]</a></li>
-                <li><a onclick="copy('SteamId3', event)" href="">SteamID3 [U:1:~]</a></li>
-                <li><a onclick="copy('SteamId32', event)" href="">SteamID32</a></li>
-                <li><a onclick="copy('SteamId64', event)" href="">SteamID64 7656~</a></li>
-            </ul>
-        </li>
-        <li>
-            <a onclick="event.preventDefault();">Copy other...</a>
-            <ul class="submenu">
-                <li><a onclick="copy('SteamRep', event)" href="">SteamRep</a></li>
-                <li><a onclick="copy('SteamID.uk', event)" href="">SteamID.uk</a></li>
-                <li><a onclick="copy('SteamID.io', event)" href="">SteamID.io</a></li>
-                <li><a onclick="copy('SteamIDFinder.com', event)" href="">SteamIDFinder.com</a></li>
-            </ul>
-        </li>
-        <li><a onclick="CreateShortcut()">Create Desktop Shortcut</a></li>
-        <li><a onclick="forget(event)">Forget</a></li>
-    </ul>
 </div>
 <div class="acc_list_actionbar">
     <input id="CurrentStatus" @bind="@AppData.CurrentStatus">
@@ -125,7 +125,7 @@
         if (firstRender)
         {
             if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered) await Js.InvokeVoidAsync($"window.notification.new", new { type = "info", title = "Streamer mode", message = "Private info is hidden! - See settings", renderTo = "toastarea", duration = 5000 });// Show notification that streamer mode was enabled.
-            
+
             SteamSwitcherFuncs.LoadProfiles(Js);
             Steam.SaveSettings(!File.Exists(Steam.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
 
