@@ -47,7 +47,7 @@ function initContextMenu() {
         // Set currently selected element
         SelectedElem = $('[id="' + $(e.currentTarget).attr("for") + '"]')[0];
         // Update status for element
-        $("#CurrentStatus").val("Selected: " + $(SelectedElem).attr("Line2"));
+        updateStatus("Selected: " + $(SelectedElem).attr("Line2"));
 
 
         //#region POSITIONING OF CONTEXT MENU
@@ -120,5 +120,5 @@ function initContextMenu() {
 function SelectedItemChanged() {
     //console.log("click!");
     //console.log(this);
-    $("#CurrentStatus").val("Selected: " + $("input[name=accounts]:checked").attr("Line2"));
+    updateStatus("Selected: " + $("input[name=accounts]:checked").attr("Line2"));
 }

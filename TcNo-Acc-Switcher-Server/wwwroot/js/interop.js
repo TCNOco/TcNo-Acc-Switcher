@@ -9,6 +9,10 @@ jQueryAppend = (jQuerySelector, strToInsert) => {
     $(jQuerySelector).append(strToInsert);
 };
 
+updateStatus = (status) => {
+    $("#CurrentStatus").val(status);
+}
+
 UpdateDynamicCss = (rule, value) => {
     // Check if stylesheet exists, otherwise create the "dynamic stylesheet"
     let style = document.getElementById("dynamicStyles");

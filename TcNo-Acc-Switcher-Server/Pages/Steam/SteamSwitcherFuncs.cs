@@ -333,10 +333,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 // await JsRuntime.InvokeVoidAsync("createAlert", "Invalid SteamID" + steamid);
                 return;
             }
-
+            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Steam");
             CloseSteam();
             UpdateLoginUsers(steamId, accName, ePersonaState);
-
+            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Steam");
             if (!autoStartSteam) return;
             if (Steam.Admin)
                 Process.Start(Steam.SteamExe());
@@ -383,6 +383,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
             // -----------------------------------
+            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Updating loginusers.vdf");
             var tempFile = Steam.LoginUsersVdf() + "_temp";
             File.Delete(tempFile);
 
@@ -415,6 +416,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 --> AutoLoginUser = username
                 --> RememberPassword = 1
             */
+            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Updating registry");
             using var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam");
             key.SetValue("AutoLoginUser", user.AccName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
             key.SetValue("RememberPassword", 1);

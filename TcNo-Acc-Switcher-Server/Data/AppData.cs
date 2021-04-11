@@ -69,7 +69,6 @@ namespace TcNo_Acc_Switcher_Server.Data
                 Console.WriteLine("\nCurrentStatus changed to: " + _windowTitle);
             }
         }
-        public void SetCurrentStatus(string status) => CurrentStatus = status;
 
         public event Action OnChange;
 
