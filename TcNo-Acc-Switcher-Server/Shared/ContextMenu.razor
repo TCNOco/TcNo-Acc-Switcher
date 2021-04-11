@@ -1,4 +1,20 @@
-﻿<ul class="contextmenu">
+﻿@code
+{
+    public RenderFragment GetSomeRawHtml()
+    {
+        return builder => { builder.AddContent(0, GetContextMenu()); };
+    }
+}
+@GetSomeRawHtml()
+
+@*
+    Figure out what in the heck is going on here https://github.com/dotnet/aspnetcore/issues/16469
+    Probably going to have to read through all this:
+        Suchiman commented on Jul 23, 2018
+        @masonwheeler You can render raw html like this: https://github.com/aspnet/Blazor/pull/1146/files#diff-0a1a9a2202c82156228acbfecab64aa2R25
+*@
+
+<!--<ul class="contextmenu">
     <li><a onclick="SwapTo(-1, event);">Swap to account</a></li>
     <li>
         <a onclick="event.preventDefault();">Login as...</a>
@@ -15,12 +31,12 @@
     </li>
     <li>
         <a onclick="event.preventDefault();">Copy Profile...</a>
-        <ul class="submenu">
-            @*<li><a @onclick="Steam.SteamSwitcherBase.CopyProfileURL" href="">Community URL</a></li>*@
-            <li><a onclick="copy('URL', event)" href="">Community URL</a></li>
-            <li><a onclick="copy('Line2', event)" href="">Community Username</a></li>
-            @*<li><a @onclick="@(e => Steam.SteamSwitcherBase.CopyCommunityUsername("username"))" href="">Community Username</a></li>*@
-            <li><a onclick="copy('Username', event)" href="">Login username</a></li>
+        <ul class="submenu">-->
+@*<li><a @onclick="Steam.SteamSwitcherBase.CopyProfileURL" href="">Community URL</a></li>*@
+<!--<li><a onclick="copy('URL', event)" href="">Community URL</a></li>
+<li><a onclick="copy('Line2', event)" href="">Community Username</a></li>-->
+@*<li><a @onclick="@(e => Steam.SteamSwitcherBase.CopyCommunityUsername("username"))" href="">Community Username</a></li>*@
+<!--<li><a onclick="copy('Username', event)" href="">Login username</a></li>
         </ul>
     </li>
     <li>
@@ -43,4 +59,4 @@
     </li>
     <li><a onclick="CreateShortcut()">Create Desktop Shortcut</a></li>
     <li><a onclick="forget(event)">Forget</a></li>
-</ul>
+</ul>-->
