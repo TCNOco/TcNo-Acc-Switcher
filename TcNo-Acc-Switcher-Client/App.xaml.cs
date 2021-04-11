@@ -18,6 +18,7 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -36,8 +37,27 @@ namespace TcNo_Acc_Switcher_Client
         private readonly Dictionary<string, List<TrayUser>> TrayUsers = new();
         public static string StartPage = "";
 
+
+        internal static class NativeMethods
+        {
+            // http://msdn.microsoft.com/en-us/library/ms681944(VS.85).aspx
+            // See: http://www.codeproject.com/tips/68979/Attaching-a-Console-to-a-WinForms-application.aspx
+            // And: https://stackoverflow.com/questions/2669463/console-writeline-does-not-show-up-in-output-window/2669596#2669596
+            [DllImport("kernel32.dll", SetLastError = true)]
+            internal static extern int AllocConsole();
+        }
+
+        public bool debugMode = true;
         protected override void OnStartup(StartupEventArgs e)
         {
+            #if DEBUG
+            if (debugMode)
+            {
+                NativeMethods.AllocConsole();
+                Console.WriteLine("Debug Console started");
+            }
+            #endif
+            
             base.OnStartup(e);
             var quitArg = false;
             for (var i = 0; i != e.Args.Length; ++i)

@@ -94,6 +94,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// </summary>
         public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
             // Log Unhandled Exception
             var exceptionStr = e.ExceptionObject.ToString();
             Directory.CreateDirectory("Errors");
@@ -106,6 +107,13 @@ namespace TcNo_Acc_Switcher_Globals
             //MessageBox.Show(Strings.ErrUnhandledException + Path.GetFullPath(filePath), Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Error);
             Console.WriteLine(Strings.ErrSubmitCrashlog);
             //MessageBox.Show(Strings.ErrSubmitCrashlog, Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        public static void WriteLogLine(string line)
+        {
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
+            Directory.CreateDirectory("Errors");
+            File.AppendAllText("log.txt", $"{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}: {line}\r\n");
         }
 
     }

@@ -363,16 +363,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         public static void CloseSteam()
         {
-            // This is what Administrator permissions are required for.
+            var outputText = "";
             var startInfo = new ProcessStartInfo
             {
+                UseShellExecute = false,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 FileName = "cmd.exe",
-                Arguments = "/C TASKKILL /F /T /IM steam*"
+                Arguments = "/C TASKKILL /F /T /IM steam*",
+                //Arguments = "/C echo this is a test2",
+                CreateNoWindow = true,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true
             };
             var process = new Process { StartInfo = startInfo };
+            process.OutputDataReceived += (s, e) => outputText += e.Data;
             process.Start();
+            process.BeginOutputReadLine();
             process.WaitForExit();
+
+            Console.WriteLine(outputText);
+            Globals.WriteLogLine($"Tried to close Steam. Unexpected output from cmd:\r\n{outputText}");
         }
 
         /// <summary>

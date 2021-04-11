@@ -60,11 +60,31 @@ namespace TcNo_Acc_Switcher_Client
         private readonly Thread _server = new Thread(RunServer);
         public static readonly TcNo_Acc_Switcher_Server.Data.AppSettings AppSettings = TcNo_Acc_Switcher_Server.Data.AppSettings.Instance;
         private static string _address = "";
-        private static void RunServer() { Program.Main(new string[1] { _address }); }
+
+        private static void RunServer()
+        {
+            //Program.Main(new string[1] { _address });
+            var startInfo = new ProcessStartInfo
+            {
+                UseShellExecute = false,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+
+                FileName = "TcNo-Acc-Switcher-Server.exe",
+                Arguments = _address
+            };
+            var process = new Process { StartInfo = startInfo };
+            process.OutputDataReceived += (s, e) => Console.WriteLine(e.Data);
+            process.Start();
+            process.BeginOutputReadLine();
+            process.WaitForExit();
+        }
 
         public MainWindow()
         {
-            TestingArea();
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
 
             AppSettings.LoadFromFile();
             FindOpenPort();
@@ -90,97 +110,7 @@ namespace TcNo_Acc_Switcher_Client
             StateChanged += WindowStateChange;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
         }
-
-        private void TestingArea()
-        {
-            string jText = @"[
-              {""Swap to account"": ""SwapTo(-1, event)""},
-              {""Login as..."": [
-                {""Invisible"": ""SwapTo(7, event)""},
-                {""Offline"": ""SwapTo(0, event)""},
-                {""Online"": ""SwapTo(1, event)""},
-                {""Busy"": ""SwapTo(2, event)""},
-                {""Away"": ""SwapTo(3, event)""},
-                {""Snooze"": ""SwapTo(4, event)""},
-                {""Looking to Trade"": ""SwapTo(5, event)""},
-                {""Looking to Play"": ""SwapTo(6, event)""}
-              ]},
-              {""Copy Profile..."": [
-                {""Community URL"": ""copy('URL', event)""},
-                {""Community Username"": ""copy('Line2', event)""},
-                {""Login username"": ""copy('Username', event)""}
-              ]},
-              {""Copy SteamID..."": [
-                {""SteamID [STEAM0:~]"": ""copy('SteamId', event)""},
-                {""SteamID3 [U:1:~]"": ""copy('SteamId3', event)""},
-                {""SteamID32"": ""copy('SteamId32', event)""},
-                {""SteamID64 7656~"": ""copy('SteamId64', event)""}
-              ]},
-              {""Copy other..."": [
-                {""SteamRep"": ""copy('SteamRep', event)""},
-                {""SteamID.uk"": ""copy('SteamID.uk', event)""},
-                {""SteamID.io"": ""copy('SteamID.io', event)""},
-                {""SteamIDFinder.com"": ""copy('SteamIDFinder.com', event)""}
-              ]},
-              {""Create Desktop Shortcut"": ""CreateShortcut()""},
-              {""Forget"": ""forget(event)""}
-            ]";
-
-            var jO = JArray.Parse(jText);
-            foreach (var kvp in jO) // Main list
-            {
-                // Each item
-                foreach (var (key, value) in JObject.FromObject(kvp))
-                {
-                    ProcessContextItem(key, value);
-                }
-            }
-        }
-
-        private static string tempOut = "";
-        private void ProcessContextItem(string s, object o)
-        {
-            var j = JToken.FromObject(o);
-            // See if it's a string
-            try
-            {
-                var action = j.Value<string>();
-                // Add key and string item
-                tempOut += $"<li><a onclick=\"{action}\">{s}</a></li>\n";
-                return;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            // See if it's an array
-            try
-            {
-                // Add key and string item
-                var jArray = j.Value<JArray>();
-                tempOut += $"<li><a onclick=\"event.preventDefault();\">{s}</a>\n\t<ul class=\"submenu\">";
-                // Foreach
-                foreach (var jToken in jArray)
-                {
-                    // Each item
-                    foreach (var (key, value) in JObject.FromObject(jToken))
-                    {
-                        ProcessContextItem(key, value);
-                    }
-                }
-                tempOut += "\t</ul>\n</li>";
-                return;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-
-
-
-
+        
         /// <summary>
         /// Find first available port up from requested
         /// </summary>
