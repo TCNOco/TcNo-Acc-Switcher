@@ -19,6 +19,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -45,11 +46,31 @@ namespace TcNo_Acc_Switcher_Client
             // And: https://stackoverflow.com/questions/2669463/console-writeline-does-not-show-up-in-output-window/2669596#2669596
             [DllImport("kernel32.dll", SetLastError = true)]
             internal static extern int AllocConsole();
+            [DllImport("kernel32.dll", SetLastError = true)]
+            internal static extern int FreeConsole();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            NativeMethods.FreeConsole();
+            TcNo_Acc_Switcher_Client.MainWindow.KillServer();
+            mutex.ReleaseMutex();
         }
 
         public bool debugMode = true;
+
+        static Mutex mutex = new Mutex(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
+        [STAThread]
         protected override void OnStartup(StartupEventArgs e)
         {
+            // Single instance:
+            if (!mutex.WaitOne(TimeSpan.Zero, true))
+            {
+                MessageBox.Show("Another TcNo Account Switcher instance has been detected.");
+                Environment.Exit(1056); // 1056	An instance of the service is already running.
+            }
+
+
             #if DEBUG
             if (debugMode)
             {

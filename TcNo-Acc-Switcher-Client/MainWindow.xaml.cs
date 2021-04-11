@@ -57,12 +57,19 @@ namespace TcNo_Acc_Switcher_Client
 
     public partial class MainWindow : Window
     {
-        private readonly Thread _server = new Thread(RunServer);
+        private static readonly Thread _server = new Thread(RunServer);
         public static readonly TcNo_Acc_Switcher_Server.Data.AppSettings AppSettings = TcNo_Acc_Switcher_Server.Data.AppSettings.Instance;
         private static string _address = "";
+        private static Process process;
 
         private static void RunServer()
         {
+            var serverPath = "TcNo-Acc-Switcher-Server.exe";
+            if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(serverPath)).Length > 0)
+            {
+                Console.WriteLine("Server was already running. Killing process."); 
+                Globals.KillProcess(serverPath); // Kill server if already running
+            }
             //Program.Main(new string[1] { _address });
             var startInfo = new ProcessStartInfo
             {
@@ -72,15 +79,22 @@ namespace TcNo_Acc_Switcher_Client
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
 
-                FileName = "TcNo-Acc-Switcher-Server.exe",
+                FileName = serverPath,
                 Arguments = _address
             };
-            var process = new Process { StartInfo = startInfo };
-            process.OutputDataReceived += (s, e) => Console.WriteLine(e.Data);
+            process = new Process { StartInfo = startInfo };
+            process.OutputDataReceived += WriteOutput;
             process.Start();
             process.BeginOutputReadLine();
             process.WaitForExit();
         }
+        public static void KillServer()
+        {
+            process.OutputDataReceived -= WriteOutput;
+            process.Kill();
+        }
+        private static void WriteOutput(object s, DataReceivedEventArgs e) => Console.WriteLine(e.Data);
+
 
         public MainWindow()
         {

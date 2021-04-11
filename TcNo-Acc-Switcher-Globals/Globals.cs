@@ -116,6 +116,34 @@ namespace TcNo_Acc_Switcher_Globals
             File.AppendAllText("log.txt", $"{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}: {line}\r\n");
         }
 
+
+        /// <summary>
+        /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Anything more than "") 
+        /// </summary>
+        /// <param name="procName">Process name to kill (Will be used as {name}*)</param>
+        public static void KillProcess(string procName)
+        {
+
+            var outputText = "";
+            var startInfo = new ProcessStartInfo
+            {
+                UseShellExecute = false,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                FileName = "cmd.exe",
+                Arguments = $"/C TASKKILL /F /T /IM {procName}*",
+                CreateNoWindow = true,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true
+            };
+            var process = new Process { StartInfo = startInfo };
+            process.OutputDataReceived += (s, e) => outputText += e.Data;
+            process.Start();
+            process.BeginOutputReadLine();
+            process.WaitForExit();
+
+            Console.WriteLine(outputText);
+            Globals.WriteLogLine($"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
+        }
     }
 
     public class TrayUser
