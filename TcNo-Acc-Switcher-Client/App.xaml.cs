@@ -53,7 +53,6 @@ namespace TcNo_Acc_Switcher_Client
         protected override void OnExit(ExitEventArgs e)
         {
             NativeMethods.FreeConsole();
-            TcNo_Acc_Switcher_Client.MainWindow.KillServer();
             mutex.ReleaseMutex();
         }
 

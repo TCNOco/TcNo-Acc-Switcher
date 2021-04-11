@@ -70,30 +70,8 @@ namespace TcNo_Acc_Switcher_Client
                 Console.WriteLine("Server was already running. Killing process."); 
                 Globals.KillProcess(serverPath); // Kill server if already running
             }
-            //Program.Main(new string[1] { _address });
-            var startInfo = new ProcessStartInfo
-            {
-                UseShellExecute = false,
-                WindowStyle = ProcessWindowStyle.Hidden,
-                CreateNoWindow = true,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-
-                FileName = serverPath,
-                Arguments = _address
-            };
-            process = new Process { StartInfo = startInfo };
-            process.OutputDataReceived += WriteOutput;
-            process.Start();
-            process.BeginOutputReadLine();
-            process.WaitForExit();
+            Program.Main(new string[1] { _address });
         }
-        public static void KillServer()
-        {
-            process.OutputDataReceived -= WriteOutput;
-            process.Kill();
-        }
-        private static void WriteOutput(object s, DataReceivedEventArgs e) => Console.WriteLine(e.Data);
 
 
         public MainWindow()
