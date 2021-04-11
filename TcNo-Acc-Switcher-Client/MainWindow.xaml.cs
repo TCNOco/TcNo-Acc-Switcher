@@ -77,7 +77,7 @@ namespace TcNo_Acc_Switcher_Client
         public MainWindow()
         {
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
-
+            
             AppSettings.LoadFromFile();
             FindOpenPort();
             _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
@@ -108,6 +108,7 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         private static void FindOpenPort()
         {
+            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.FindOpenPort]");
             var originalPort = AppSettings.ServerPort;
             // Check if port available:
             var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
@@ -125,6 +126,7 @@ namespace TcNo_Acc_Switcher_Client
         // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
         private void WebView_CoreWebView2Ready(object sender, EventArgs e)
         {
+            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.WebView_CoreWebView2Ready]");
             var eventForwarder = new Headerbar.EventForwarder(new WindowInteropHelper(this).Handle);
 
             MView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
@@ -135,6 +137,7 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         private void WindowStateChange(object sender, EventArgs e)
         {
+            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.WindowStateChange]");
             var state = "";
             switch (WindowState)
             {
@@ -153,6 +156,7 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         protected override void OnClosing(CancelEventArgs e)
         {
+            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.OnClosing]");
             SaveSettings(MView2.Source.AbsolutePath);
         }
 
@@ -162,6 +166,7 @@ namespace TcNo_Acc_Switcher_Client
         /// <param name="windowUrl">Current URI from the WebView2</param>
         private void SaveSettings(string windowUrl)
         {
+            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.SaveSettings] windowUrl={windowUrl}");
             // IN THE FUTURE: ONLY DO THIS FOR THE MAIN PAGE WHERE YOU CAN CHOOSE WHAT PLATFORM TO SWAP ACCOUNTS ON
             // This will only be when that's implemented. Easier to leave it until then.
             MessageBox.Show(windowUrl);
@@ -174,6 +179,7 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         private void UrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
+            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
             var uri = args.Uri.Split("/").Last();
             Console.WriteLine(args.Uri);
 
@@ -200,6 +206,7 @@ namespace TcNo_Acc_Switcher_Client
         }
         public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)
         {
+            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.ExecuteScriptFunctionAsync]");
             string script = functionName + "(";
             for (int i = 0; i < parameters.Length; i++)
             {

@@ -16,6 +16,14 @@ namespace TcNo_Acc_Switcher_Globals
     {
         public string WorkingDirectory { get; set; }
         public DateTime UpdateLastChecked { get; set; } = DateTime.Now;
+        public static bool VerboseMode = false;
+
+        public static void DebugWriteLine(string s)
+        {
+            // Toggle here so it only shows in Verbose mode etc.
+            if (VerboseMode) Console.WriteLine(s);
+        }
+
 
         // Read existing settings. If they don't exist, create them.
         // --> Reads from current directory. This will only work with the main TcNo Account Switcher app.
@@ -136,13 +144,12 @@ namespace TcNo_Acc_Switcher_Globals
                 RedirectStandardOutput = true
             };
             var process = new Process { StartInfo = startInfo };
-            process.OutputDataReceived += (s, e) => outputText += e.Data;
+            process.OutputDataReceived += (s, e) => outputText += e.Data + "\n";
             process.Start();
             process.BeginOutputReadLine();
             process.WaitForExit();
 
-            Console.WriteLine(outputText);
-            Globals.WriteLogLine($"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
+            Console.WriteLine($"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
         }
     }
 

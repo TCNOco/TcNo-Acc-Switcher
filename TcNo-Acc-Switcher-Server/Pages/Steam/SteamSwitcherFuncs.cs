@@ -60,6 +60,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
         public static async void LoadProfiles()
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.LoadProfiles] Loading Steam profiles");
             var userAccounts = GetSteamUsers(Steam.LoginUsersVdf()); 
             var vacStatusList = new List<VacStatus>();
             var loadedVacCache = LoadVacInfo(ref vacStatusList);
@@ -108,6 +109,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns>List of Steamuser classes, from loginusers.vdf</returns>
         public static List<Steamuser> GetSteamUsers(string loginUserPath)
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.GetSteamUsers] Getting list of Steam users from {loginUserPath}");
             var userAccounts = new List<Steamuser>();
 
             userAccounts.Clear();
@@ -149,6 +151,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns>Whether deletion successful</returns>
         public static bool DeleteVacCacheFile()
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.DeleteVacCacheFile] Deleting VAC cache file: {Steam.VacCacheFile}");
             if (!File.Exists(Steam.VacCacheFile)) return true;
             File.Delete(Steam.VacCacheFile);
             return true;
@@ -161,6 +164,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns>Whether file was loaded. False if deleted ~ failed to load.</returns>
         public static bool LoadVacInfo(ref List<VacStatus> vsl)
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.LoadVacInfo] Loading VAC info: {Steam.VacCacheFile}");
             GeneralFuncs.DeletedOutdatedFile(Steam.VacCacheFile);
             if (!File.Exists(Steam.VacCacheFile)) return false;
             vsl = JsonConvert.DeserializeObject<List<VacStatus>>(File.ReadAllText(Steam.VacCacheFile));
@@ -202,6 +206,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns></returns>
         private static VacStatus PrepareProfileImage(Steamuser su)
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.PrepareProfileImage] Preparing profile image for: {su.SteamId.Substring(su.SteamId.Length-4, 4)}");
             Directory.CreateDirectory(Steam.SteamImagePath);
             var dlDir = $"{Steam.SteamImagePath}{su.SteamId}.jpg";
             // Delete outdated file, if it exists
@@ -260,6 +265,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns>User's image URL for downloading</returns>
         private static string GetUserImageUrl(ref VacStatus vs, Steamuser su)
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.GetUserImageUrl] Reading XML for: {su.SteamId.Substring(su.SteamId.Length - 4, 4)}");
             var imageUrl = "";
             var profileXml = new XmlDocument();
             try
@@ -284,17 +290,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
             catch (Exception e)
             {
-                // TODO: Is this necessary? Catch errors from the whole project later in crash handler?
                 imageUrl = "";
-                Directory.CreateDirectory("Errors");
-                using (var sw = File.AppendText($"Errors\\AccSwitcher-Error-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
-                {
-                    sw.WriteLine(DateTime.Now.ToString(CultureInfo.InvariantCulture) + "\t" + /*Strings.ErrUnhandledCrash +*/ "Unhandled error crash: " + e + Environment.NewLine + Environment.NewLine);
-                }
-                using (var sw = File.AppendText($"Errors\\AccSwitcher-Error-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt"))
-                {
-                    sw.WriteLine(JsonConvert.SerializeObject(profileXml));
-                }
+                Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.GetUserImageUrl] ERROR: {e}");
             }
             return imageUrl;
         }
@@ -306,6 +303,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="profileXml">User's profile XML string</param>
         private static void XmlGetVacLimitedStatus(ref VacStatus vs, XmlDocument profileXml)
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.XmlGetVacLimitedStatus] Get VAC/Limited status for account.");
             if (profileXml.DocumentElement == null) return;
             try
             {
@@ -314,7 +312,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 if (profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
                     vs.Ltd = profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
             }
-            catch (NullReferenceException) { }
+            catch (NullReferenceException)
+            {
+                Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.XmlGetVacLimitedStatus] SUPPRESSED ERROR: NullReferenceException");
+            }
         }
 
         /// <summary>
@@ -326,6 +327,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
         public static void SwapSteamAccounts(string steamId = "", string accName = "", bool autoStartSteam = true, int ePersonaState = -1)
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SwapSteamAccounts] Swapping to: {steamId} - {accName}. autoStartSteam={autoStartSteam.ToString()}, ePersonaState={ePersonaState}");
             if (steamId != "" && !VerifySteamId(steamId))
             {
                 // await JsRuntime.InvokeVoidAsync("createAlert", "Invalid SteamID" + steamid);
@@ -347,6 +349,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         public static bool VerifySteamId(string steamId)
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.VerifySteamId] Verifying SteamID: {steamId.Substring(steamId.Length - 4, 4)}");
             const long steamIdMin = 0x0110000100000001;
             const long steamIdMax = 0x01100001FFFFFFFF;
             if (!IsDigitsOnly(steamId) || steamId.Length != 17) return false;
@@ -375,6 +378,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="pS">[PersonaState]0-7 custom persona state [0: Offline, 1: Online...]</param>
         public static void UpdateLoginUsers(string selectedSteamId, string accName = "", int pS = -1)
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.UpdateLoginUsers] Updating loginusers: selectedSteamId={selectedSteamId.Substring(selectedSteamId.Length - 4, 4)}, accName=hidden, pS={pS}");
             var userAccounts = SteamSwitcherFuncs.GetSteamUsers(Steam.LoginUsersVdf());
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
@@ -429,6 +433,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="userAccounts">List of Steamuser to save into loginusers.vdf</param>
         public static void SaveSteamUsersIntoVdf(List<Steamuser> userAccounts)
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SaveSteamUsersIntoVdf] Saving updated loginusers.vdf. Count: {userAccounts.Count}");
             // Convert list to JObject list, ready to save into vdf.
             var outJObject = new JObject();
             foreach (var ua in userAccounts)
@@ -447,6 +452,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         public static async void ClearForgotten()
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.ClearForgotten] Clearing forgotten backups.");
             await GeneralInvocableFuncs.ShowModal("confirm:ClearSteamBackups:" + "Are you sure you want to clear backups of forgotten accounts?".Replace(' ', '_'));
             // Confirmed in GeneralInvocableFuncs.GiConfirmAction for rest of function
         }
@@ -455,6 +461,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         public static void ClearForgotten_Confirmed()
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.ClearForgotten_Confirmed] Confirmation received to clear forgotten backups.");
             var legacyBackupPath = Path.Combine(Steam.FolderPath, "config\\\\TcNo-Acc-Switcher-Backups\\\\");
             if (Directory.Exists(legacyBackupPath))
                     Directory.Delete(legacyBackupPath, true);
@@ -469,6 +476,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns>Whether files were deleted or not</returns>
         public static async void ClearImages()
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.ClearImages] Clearing images.");
             if (!Directory.Exists(Steam.SteamImagePath))
             {
                 await GeneralInvocableFuncs.ShowToast("error", "Could not clear images", "Error", "toastarea"); 
@@ -488,6 +496,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="ePersonaState">Persona state enum for user (0-7)</param>
         public static void SetPersonaState(string steamId, int ePersonaState = 1)
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SetPersonaState] Setting persona state for: {steamId.Substring(steamId.Length - 4, 4)}, To: {ePersonaState}");
             // Values:
             // 0: Offline, 1: Online, 2: Busy, 3: Away, 4: Snooze, 5: Looking to Trade, 6: Looking to Play, 7: Invisible
             var id32 = new Converters.SteamIdConvert(steamId).Id32; // Get SteamID
@@ -509,26 +518,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             // Output
             File.WriteAllText(localConfigFilePath, localConfigText);
-
-            ////// The below code works!
-            ////// BUT: Every escaped character in each string becomes unescaped for some reason...
-            ////// Here is the reason: https://github.com/shravan2x/Gameloop.Vdf.JsonConverter/blob/master/Gameloop.Vdf.JsonConverter/JTokenExtensions.cs#L40
-            ////// Right there, it's un-escaping string's characters. I understand why, but here it's just not supposed to be
-            ////// Will remove this at a later date. Just want to keep it here to say it's possible, but I'm just a bit lost ~ Also hi, welcome to the code :)
-
-            //var localConfigVToken = VdfConvert.Deserialize(File.ReadAllText(localConfigFilePath));
-            //var localConfigJO = new JObject() { localConfigVToken.ToJson() };
-            //var f = localConfigJO["UserLocalConfigStore"];
-            //var g = f["WebStorage"];
-            //var key = "";
-            //foreach (var (s, _) in (JObject)g) if (s.StartsWith("FriendStoreLocalPrefs")) key = s;
-
-            //var editedJObject = JObject.Parse((string)g[key]);
-            //editedJObject["ePersonaState"] = ePersonaState;
-            //g[key] = (string)editedJObject.ToString().Replace("\"", "\\\"").Replace("\n", ""); // Escape quotes and remove newlines
-
-            //var tempFile = localConfigFilePath + "_temp.vdf";
-            //File.WriteAllText(tempFile, @"""UserLocalConfigStore""" + Environment.NewLine + localConfigJO.ToVdf());
         }
         #endregion
 
@@ -542,19 +531,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns></returns>
         [JSInvokable]
         public static Task<bool> GetSteamForgetAcc() => Task.FromResult(Steam.ForgetAccountEnabled);
-
-        /// <summary>
-        /// Creates a backup of the LoginUsers.vdf file
-        /// </summary>
-        /// <param name="backupName">(Optional) Name for the backup file (including .vdf)</param>
-        public static void BackupLoginUsers(string backupName = "")
-        {
-            var backup = Path.Combine(Steam.FolderPath, $"config\\TcNo-Acc-Switcher-Backups\\");
-            var backupFileName = backupName != "" ? backupName : $"loginusers-{DateTime.Now:dd-MM-yyyy_HH-mm-ss.fff}.vdf";
-
-            Directory.CreateDirectory(backup);
-            File.Copy(Steam.LoginUsersVdf(), Path.Combine(backup, backupFileName), true);
-        }
 
         /// <summary>
         /// Purely a class used for backing up forgotten Steam users, used in ForgetAccount() and TODO: RestoreAccount()
@@ -571,12 +547,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="steamId">SteamId of account to be removed</param>
         public static bool ForgetAccount(string steamId)
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.ForgetAccount] Forgetting account: {steamId.Substring(steamId.Length - 4, 4)}");
             // Load and remove account that matches SteamID above.
             var userAccounts = GetSteamUsers(Steam.LoginUsersVdf());
             var forgottenUser = userAccounts.Where(x => x.SteamId == steamId)?.First(); // Get the removed user to save into restore file
             userAccounts.RemoveAll(x => x.SteamId == steamId);
 
-            // Instead of backing up EVERY TIME like the previous version (if used now, it's updated to: BackupLoginUsers(settings: settings);)
+            // Instead of backing up EVERY TIME like the previous version (Was: BackupLoginUsers(settings: settings);)
             // Rather just save the users in a file, for better restoring later if necessary.
             var fFileContents = File.Exists(Steam.ForgottenFile) ? File.ReadAllText(Steam.ForgottenFile) : "";
             var fUsers = fFileContents == "" ? new List<ForgottenSteamuser>() : JsonConvert.DeserializeObject<List<ForgottenSteamuser>>(fFileContents);
@@ -595,6 +572,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns>Whether the forgotten file even exists or not</returns>
         public static bool RestoreAccounts(string[] requestedSteamIds)
         {
+            foreach (var s in requestedSteamIds) Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.RestoreAccounts] Restoring account: {s.Substring(s.Length - 4, 4)}");
+            
             if (!File.Exists(Steam.ForgottenFile)) return false;
             var forgottenAccounts = JsonConvert.DeserializeObject<List<ForgottenSteamuser>>(File.ReadAllText(Steam.ForgottenFile));
 
@@ -629,6 +608,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         [JSInvokable]
         public static Task<bool> ForgetAccountJs(string steamId)
         {
+            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherFuncs.ForgetAccountJs] {steamId.Substring(steamId.Length - 4, 4)}");
             return Task.FromResult(ForgetAccount(steamId));
         }
 

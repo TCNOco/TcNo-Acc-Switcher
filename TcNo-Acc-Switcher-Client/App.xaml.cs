@@ -92,6 +92,7 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         case "s": // Steam
                             // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
+                            Console.WriteLine("Steam switch requested");
                             if (!account.Contains(":"))
                                 TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account);
                             else TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(
@@ -112,6 +113,11 @@ namespace TcNo_Acc_Switcher_Client
                         break;
                     case "quit":
                         quitArg = true;
+                        break;
+                    case "v":
+                    case "vv":
+                    case "verbose":
+                        Globals.VerboseMode = true;
                         break;
                     default:
                         Console.WriteLine($"Unknown argument: \"{e.Args[i]}\"");

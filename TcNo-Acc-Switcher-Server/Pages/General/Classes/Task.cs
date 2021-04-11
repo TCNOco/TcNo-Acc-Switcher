@@ -18,6 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic;
 using Microsoft.Win32.TaskScheduler;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 {
@@ -28,6 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// </summary>
         public static bool StartWithWindows_Enabled()
         {
+            Globals.DebugWriteLine($@"[Func:General\Classes\Task.StartWithWindows_Enabled]");
             using var ts = new TaskService();
             var tasks = ts.RootFolder.Tasks;
             return tasks.Exists("TcNo Account Switcher - Tray start with logon");
@@ -39,22 +41,28 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="shouldExist">Whether it should start with Windows, or not</param>
         public static void StartWithWindows_Toggle(bool shouldExist)
         {
-            if (shouldExist && !StartWithWindows_Enabled())
+            Globals.DebugWriteLine($@"[Func:General\Classes\Task.StartWithWindows_Toggle] shouldExist={shouldExist}");
+            switch (shouldExist)
             {
-                var ts = new TaskService();
-                var td = ts.NewTask();
-                td.Principal.RunLevel = TaskRunLevel.Highest;
-                td.Triggers.AddNew(TaskTriggerType.Logon);
-                var programPath = System.IO.Path.GetFullPath("TcNo-Acc-Switcher-Tray.exe");
-                td.Actions.Add(new ExecAction(programPath));
-                ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Tray start with logon", td);
-                //MessageBox.Show(Strings.InfoTrayWindowsStart);
-            }
-            else if (!shouldExist && StartWithWindows_Enabled())
-            {
-                var ts = new TaskService();
-                ts.RootFolder.DeleteTask("TcNo Account Switcher - Tray start with logon");
-                //MessageBox.Show(Strings.InfoTrayWindowsStartOff);
+                case true when !StartWithWindows_Enabled():
+                {
+                    var ts = new TaskService();
+                    var td = ts.NewTask();
+                    td.Principal.RunLevel = TaskRunLevel.Highest;
+                    td.Triggers.AddNew(TaskTriggerType.Logon);
+                    var programPath = System.IO.Path.GetFullPath("TcNo-Acc-Switcher-Tray.exe");
+                    td.Actions.Add(new ExecAction(programPath));
+                    ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Tray start with logon", td);
+                    //MessageBox.Show(Strings.InfoTrayWindowsStart);
+                    break;
+                }
+                case false when StartWithWindows_Enabled():
+                {
+                    var ts = new TaskService();
+                    ts.RootFolder.DeleteTask("TcNo Account Switcher - Tray start with logon");
+                    //MessageBox.Show(Strings.InfoTrayWindowsStartOff);
+                    break;
+                }
             }
         }
     }

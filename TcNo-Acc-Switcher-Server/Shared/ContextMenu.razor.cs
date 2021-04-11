@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json.Linq;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Shared
 {
@@ -17,6 +18,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
         /// <returns>String of HTML elements, making up the context menu</returns>
         private static string GetContextMenu(string contextMenuText)
         {
+            Globals.DebugWriteLine($@"[Func:Shared\ContextMenu.GetContextMenu]");
             _htmlOut = "<ul class=\"contextmenu\">";
 
             var jO = JArray.Parse(contextMenuText);
@@ -49,7 +51,11 @@ namespace TcNo_Acc_Switcher_Server.Shared
                 _htmlOut += $"<li><a onclick=\"{action}\">{s}</a></li>\n";
                 return;
             }
-            catch (Exception e)
+            catch (InvalidCastException e)
+            {
+                // Left blank
+            }
+            catch(Exception e)
             {
                 Console.WriteLine(e);
             }
@@ -71,6 +77,10 @@ namespace TcNo_Acc_Switcher_Server.Shared
                 }
                 _htmlOut += "\t</ul>\n</li>";
                 return;
+            }
+            catch (InvalidCastException e)
+            {
+                // Left blank
             }
             catch (Exception e)
             {

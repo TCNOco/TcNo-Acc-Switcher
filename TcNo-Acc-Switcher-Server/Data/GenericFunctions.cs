@@ -20,6 +20,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -28,6 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JSInvokable]
         public static void CopyToClipboard(string toCopy)
         {
+            Globals.DebugWriteLine($@"[JSInvoke:Data\GenericFunctions.CopyToClipboard] toCopy=hidden");
             Console.WriteLine("Copying: " + toCopy);
             WindowsClipboard.SetText(toCopy);
         }
@@ -39,6 +41,7 @@ static class WindowsClipboard
 {
     public static void SetText(string text)
     {
+        Globals.DebugWriteLine($@"[Func:Data\GenericFunctions.SetText] text=hidden");
         if (text == null) return;
         OpenClipboard();
 
@@ -90,6 +93,7 @@ static class WindowsClipboard
 
     public static void OpenClipboard()
     {
+        Globals.DebugWriteLine($@"[Func:Data\GenericFunctions.OpenClipboard]");
         var num = 10;
         while (true)
         {

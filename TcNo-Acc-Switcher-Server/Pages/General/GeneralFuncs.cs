@@ -24,6 +24,7 @@ using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 
@@ -41,6 +42,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <returns>Whether file was deleted or not (Outdated or not)</returns>
         public static bool DeletedOutdatedFile(string filename, int daysOld= 7)
         {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeletedOutdatedFile] filename={filename.Substring(filename.Length - 8, 8)}, daysOld={daysOld}");
             if (!File.Exists(filename)) return true;
             if (DateTime.Now.Subtract(File.GetLastWriteTime(filename)).Days <= daysOld) return false;
             File.Delete(filename);
@@ -54,6 +56,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <returns>Whether file was deleted, or file was not deleted and was valid</returns>
         public static bool DeletedInvalidImage(string filename)
         {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeletedInvalidImage] filename={filename.Substring(filename.Length - 8, 8)}");
             try
             {
                 if (!IsValidGdiPlusImage(filename)) // Delete image if is not as valid, working image.
@@ -86,6 +89,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <returns>Whether image is a valid file or not</returns>
         private static bool IsValidGdiPlusImage(string filename)
         {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.IsValidGdiPlusImage] filename={filename.Substring(filename.Length - 8, 8)}");
             //From https://stackoverflow.com/questions/8846654/read-image-and-determine-if-its-corrupt-c-sharp
             try
             {
@@ -100,6 +104,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         public static void JsDestNewline(string jsDest)
         {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.JsDestNewline] jsDest={jsDest}");
             AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, "<br />"); //Newline
         }
 
@@ -111,7 +116,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="jsDest">Place to send responses (if any)</param>
         public static void DeleteFile(string file = "", FileInfo fileInfo = null, string jsDest = "")
         {
-             var f = fileInfo ?? new FileInfo(file);
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteFile] file={file}, jsDest={jsDest}");
+            var f = fileInfo ?? new FileInfo(file);
 
             try
             {
@@ -136,6 +142,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         public static void ClearFolder(string folder, string jsDest = "")
         {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFolder] folder={folder}, jsDest={jsDest}");
             RecursiveDelete(new DirectoryInfo(folder), true, jsDest);
         }
 
@@ -147,6 +154,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="jsDest">Place to send responses (if any)</param>
         public static void RecursiveDelete(DirectoryInfo baseDir, bool keepFolders, string jsDest = "")
         {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.RecursiveDelete] baseDir={baseDir.Name}, jsDest={jsDest}");
             if (!baseDir.Exists)
                 return;
 
@@ -174,6 +182,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="jsDest">Place to send responses (if any)</param>
         public static void DeleteRegKey(string subKey, string val, string jsDest = "")
         {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteRegKey] subKey={subKey}, val={val}, jsDest={jsDest}");
             using var key = Registry.CurrentUser.OpenSubKey(subKey, true);
             if (key == null)
                 AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"{subKey} does not exist.");
@@ -195,6 +204,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="searchOption">Option: ie: Subfolders, TopLevel only etc.</param>
         private static string[] GetFiles(string sourceFolder, string filter, SearchOption searchOption)
         {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.GetFiles] sourceFolder={sourceFolder}, filter={filter}");
             var alFiles = new ArrayList();
             var multipleFilters = filter.Split('|');
             foreach (var fileFilter in multipleFilters)
@@ -212,6 +222,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="jsDest">Place to send responses (if any)</param>
         public static void ClearFilesOfType(string folder, string extensions, SearchOption so, string jsDest = "")
         {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFilesOfType] folder={folder}, extensions={extensions}, jsDest={jsDest}");
             if (!Directory.Exists(folder))
             {
                 AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"Directory not found: {folder}");
@@ -243,6 +254,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="reverse">True merges old with new settings, false merges new with old</param>
         public static void SaveSettings(string file, JObject joNewSettings, bool reverse = false)
         {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.SaveSettings] file={file}, joNewSettings=hidden, reverse={reverse}");
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
 
             // Get existing settings
@@ -286,6 +298,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <returns>JObject created from file</returns>
         public static JObject LoadSettings(string file, JObject defaultSettings = null)
         {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.LoadSettings] file={file}, defaultSettings=hidden");
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
             if (!File.Exists(sFilename)) return defaultSettings ?? new JObject();
             try
@@ -331,6 +344,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         private static readonly Data.AppSettings AppSettings = Data.AppSettings.Instance;
         public static bool WindowSettingsValid()
         {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.WindowSettingsValid]");
             AppSettings.LoadFromFile();
             return true;
         }

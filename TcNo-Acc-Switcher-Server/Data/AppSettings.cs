@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
@@ -154,6 +155,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <returns>True when streaming software is running</returns>
         public bool StreamerModeCheck()
         {
+            Globals.DebugWriteLine($@"[Func:Data\AppSettings.StreamerModeCheck]");
             if (!_streamerModeEnabled) return false; // Don't hide anything if disabled.
             _instance.StreamerModeTriggered = false;
             foreach (var p in Process.GetProcesses())
@@ -201,6 +203,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public void SetFromJObject(JObject j)
         {
+            Globals.DebugWriteLine($@"[Func:Data\AppSettings.SetFromJObject]");
             var curSettings = j.ToObject<AppSettings>();
             if (curSettings == null) return;
             _instance.StreamerModeEnabled = curSettings.StreamerModeEnabled;
@@ -208,6 +211,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public void LoadFromFile()
         {
+            Globals.DebugWriteLine($@"[Func:Data\AppSettings.LoadFromFile]");
             // Main settings
             SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
             // Stylesheet

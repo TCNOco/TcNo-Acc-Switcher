@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
+using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 
@@ -29,6 +30,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
     {
         public async Task CheckSteam()
         {
+            Globals.DebugWriteLine($@"[Func:Index.CheckSteam]");
             if (SteamSwitcherFuncs.SteamSettingsValid() && Directory.Exists(Steam.FolderPath) && File.Exists(Steam.SteamExe()))
             {
                 NavManager.NavigateTo("/Steam/");

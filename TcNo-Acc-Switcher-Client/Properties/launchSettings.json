@@ -1,7 +1,8 @@
 {
   "profiles": {
     "TcNo-Acc-Switcher-Client": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "verbose"
     }
   }
 }

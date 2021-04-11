@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
+using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
@@ -31,6 +32,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         private IJSObjectReference _jsModule;
         protected override async Task OnInitializedAsync()
         {
+            Globals.DebugWriteLine($@"[Auto:Steam\RestoreForgotten.razor.cs.OnInitializedAsync]");
             AppData.WindowTitle = "TcNo Account Switcher - Restore forgotten Steam account";
             _jsModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/steam/RestoreForgotten.js");
             await _jsModule.InvokeAsync<string>("jsLoadForgotten");
@@ -44,6 +46,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         [JSInvokable]
         public static Task<bool> Steam_RestoreSelected(string[] selectedIds)
         {
+            foreach (var s in selectedIds) Globals.DebugWriteLine($@"[JSInvoke:Steam\RestoreForgotten.razor.cs.Steam_RestoreSelected] Restoring account: {s.Substring(s.Length - 4, 4)}");
             return Task.FromResult(SteamSwitcherFuncs.RestoreAccounts(selectedIds));
         }
     }

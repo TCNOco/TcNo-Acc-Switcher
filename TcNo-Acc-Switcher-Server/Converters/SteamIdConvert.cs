@@ -15,6 +15,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Converters
 {
@@ -36,6 +37,7 @@ namespace TcNo_Acc_Switcher_Server.Converters
 
         public SteamIdConvert(string anySteamId)
         {
+            Globals.DebugWriteLine($@"[Func:Converters\SteamIdConvert.SteamIdConvert] anySteamId={anySteamId.Substring(anySteamId.Length - 4, 4)}");
             try
             {
                 GetIdType(anySteamId);
@@ -162,6 +164,7 @@ namespace TcNo_Acc_Switcher_Server.Converters
 
         public string PrintAll()
         {
+            Globals.DebugWriteLine($@"[Func:Converters\SteamIdConvert.PrintAll]");
             return $"SteamID: {Id}\nSteamID3: {Id3}\nSteamID32: {Id32}\nSteamID64: {Id64}";
         }
 
@@ -169,6 +172,7 @@ namespace TcNo_Acc_Switcher_Server.Converters
         {
             public SteamIdConvertException(string message) : base(message)
             {
+                Globals.DebugWriteLine($@"[Exception:Converters\SteamIdConvert.SteamIdConvertException] {message}");
             }
         }
     }

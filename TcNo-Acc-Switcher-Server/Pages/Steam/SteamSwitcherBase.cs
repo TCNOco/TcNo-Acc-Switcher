@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
+using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 
@@ -30,23 +31,24 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// Converts input SteamID64 into the requested format, then copies it to clipboard.
         /// </summary>
         /// <param name="request">SteamId, SteamId3, SteamId32, SteamId64</param>
-        /// <param name="steamId64"></param>
+        /// <param name="anySteamId">Any format of SteamId to convert</param>
         [JSInvokable]
-        public static void CopySteamIdType(string request, string steamId64)
+        public static void CopySteamIdType(string request, string anySteamId)
         {
+            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.CopySteamIdType] {anySteamId.Substring(anySteamId.Length - 4, 4)} to: {request}");
             switch (request)
             {
                 case "SteamId":
-                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(steamId64).Id);
+                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id);
                     break;
                 case "SteamId3":
-                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(steamId64).Id3);
+                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id3);
                     break;
                 case "SteamId32":
-                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(steamId64).Id32);
+                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id32);
                     break;
                 case "SteamId64":
-                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(steamId64).Id64);
+                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id64);
                     break;
             }
         }
@@ -60,6 +62,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         [JSInvokable]
         public static void SwapTo(string steamId, string accName, int ePersonaState = -1)
         {
+            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.SwapTo] {steamId.Substring(steamId.Length - 4, 4)}, accName:hidden, ePersonaState: {ePersonaState}");
             SteamSwitcherFuncs.SwapSteamAccounts(steamId, accName, ePersonaState: ePersonaState);
         }
 
@@ -71,6 +74,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         [JSInvokable]
         public static void CreateShortcut(string steamId, string accName)
         {
+            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.CreateShortcut] {steamId.Substring(steamId.Length - 4, 4)}, accName:hidden");
             var s = new Shortcut();
             s.Shortcut_Steam(Shortcut.Desktop, $"Switch to {accName}.lnk", $"Switch to {accName} in TcNo Account Switcher", $"+s:{steamId}");
             s.CreateCombinedIcon(
@@ -86,6 +90,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         [JSInvokable]
         public static void NewSteamLogin()
         {
+            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.NewSteamLogin]");
             SteamSwitcherFuncs.SwapSteamAccounts();
         }
     }

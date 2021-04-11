@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 {
@@ -51,6 +52,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// </summary>
         private void WriteShortcut()
         {
+            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.WriteShortcut]");
             Directory.CreateDirectory(ShortcutDir());
             if (File.Exists(ShortcutPath)) return;
             if (File.Exists("CreateShortcut.vbs")) File.Delete("CreateShortcut.vbs");
@@ -92,6 +94,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="delFolder">(Optional) Whether to delete parent folder if it's enpty</param>
         public void DeleteShortcut(bool delFolder)
         {
+            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.DeleteShortcut] delFolder={delFolder}");
             if (File.Exists(ShortcutPath))
                 File.Delete(ShortcutPath);
             if (!delFolder) return;
@@ -106,6 +109,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="shouldFolderExist">Whether the shortcut ALREADY Exists</param>
         public void ToggleShortcut(bool shouldExist, bool shouldFolderExist = true)
         {
+            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.ToggleShortcut] shouldExist={shouldExist}, shouldFolderExist={shouldFolderExist}");
             if (shouldExist && !ShortcutExist()) WriteShortcut();
             else if (!shouldExist  && ShortcutExist()) DeleteShortcut(!shouldFolderExist);
         }
@@ -115,6 +119,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// </summary>
         public void TryWrite()
         {
+            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.TryWrite]");
             if (!ShortcutExist()) WriteShortcut();
         }
 
@@ -126,6 +131,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <returns></returns>
         public Shortcut Shortcut_Switcher(string location)
         {
+            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.Shortcut_Switcher] location={location}");
             // Starts the main picker, with the Steam argument.
             Exe = GetSelfPath();
             WorkingDir = Directory.GetCurrentDirectory();
@@ -144,6 +150,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="iconName">Filename, unique so stored without being overwritten</param>
         public void CreateCombinedIcon(string bgImg, string fgImg, string iconName)
         {
+            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateCombinedIcon] bgImg={bgImg}, fgImg={fgImg.Substring(fgImg.Length - 6, 6)}, iconName=hidden");
             IconFactory.CreateIcon(bgImg, fgImg, ref iconName);
             IconDir = Path.GetFullPath(iconName);
         }
@@ -164,7 +171,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="args">(Optional) Arguments to add, default "steam" to open Steam page of switcher</param>
         /// <returns></returns>
         public Shortcut Shortcut_Steam(string location, string shortcutName = "TcNo Account Switcher - Steam.lnk", string descAdd = "", string args = "steam")
-        { 
+        {
+            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.Shortcut_Steam] location={location}, shortcutName={shortcutName}, descAdd={descAdd}, args={args}");
             // Starts the main picker, with the Steam argument.
             Exe = GetSelfPath();
             WorkingDir = Directory.GetCurrentDirectory();
@@ -181,6 +189,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <returns></returns>
         public Shortcut Shortcut_SteamTray(string location)
         {
+            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.Shortcut_SteamTray] location={location}");
             Exe = Path.Combine(ParentDirectory(GetSelfPath()), "TcNo-Acc-Switcher-Tray.exe");
             WorkingDir = Directory.GetCurrentDirectory();
             IconDir = Path.Combine(WorkingDir, "wwwroot\\prog_icons\\steam.ico");

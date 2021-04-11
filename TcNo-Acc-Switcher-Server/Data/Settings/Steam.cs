@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 
@@ -122,6 +123,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// </summary>
         public void ResetSettings()
         {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.ResetSettings]");
             _instance.ForgetAccountEnabled = false;
             _instance.FolderPath = "C:\\Program Files (x86)\\Steam\\";
             _instance.WindowSize = new Point() {X = 800, Y = 450};
@@ -139,7 +141,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             SaveSettings();
         }
 
-        public void SetFromJObject(JObject j) {
+        public void SetFromJObject(JObject j)
+        {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.SetFromJObject]");
             var curSettings = j.ToObject<Steam>();
             if (curSettings == null) return;
             _instance.ForgetAccountEnabled = curSettings.ForgetAccountEnabled;
@@ -169,6 +173,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// <returns>(Steam's path)\config\loginuisers.vdf</returns>
         public string LoginUsersVdf()
         {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.LoginUsersVdf]");
             var path = Path.Combine(FolderPath, "config\\loginusers.vdf");
             if (File.Exists(path)) return path;
             FolderPath = "";
@@ -194,6 +199,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
         public void UpdateSteamForgetAcc(bool enabled)
         {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.UpdateSteamForgetAcc]");
             if (ForgetAccountEnabled == enabled) return; // Ignore if already set
             ForgetAccountEnabled = enabled;
             SaveSettings();
@@ -208,6 +214,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         #region SHORTCUTS
         public void CheckShortcuts()
         {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.CheckShortcuts]");
             _instance._desktopShortcut = File.Exists(Path.Combine(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
             _instance._startMenu = File.Exists(Path.Combine(Shortcut.StartMenu, "TcNo Account Switcher.lnk"));
             _instance._trayStartup = Pages.General.Classes.Task.StartWithWindows_Enabled();
@@ -215,6 +222,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         public void DesktopShortcut_Toggle()
         {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
             var s = new Shortcut();
             s.Shortcut_Steam(Shortcut.Desktop);
             s.ToggleShortcut(!DesktopShortcut, true);
@@ -224,6 +232,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
         public void StartMenu_Toggle()
         {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.StartMenu_Toggle]");
             var s = new Shortcut();
             s.Shortcut_Steam(Shortcut.StartMenu);
             s.ToggleShortcut(!StartMenu, false);
@@ -236,6 +245,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
         public void Task_Toggle()
         {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.Task_Toggle]");
             Pages.General.Classes.Task.StartWithWindows_Toggle(!TrayStartup);
         }
 

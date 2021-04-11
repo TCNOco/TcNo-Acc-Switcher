@@ -27,6 +27,7 @@ using Microsoft.Win32;
 using System.Windows;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
+using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 
 
@@ -43,6 +44,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static void GiSaveSettings(string file, string jsonString)
         {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiSaveSettings] file={file}, jsonString.length={jsonString.Length}");
             GeneralFuncs.SaveSettings(file, JObject.Parse(jsonString));
         }
 
@@ -54,6 +56,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static Task GiLoadSettings(string file)
         {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiLoadSettings] file={file}");
             return Task.FromResult(GeneralFuncs.LoadSettings(file).ToString());
         }
 
@@ -65,6 +68,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static Task GiFileReadAllText(string file)
         {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiFileReadAllText] file={file}");
             return Task.FromResult(File.Exists(file) ? File.ReadAllText(file) : "");
         }
 
@@ -76,6 +80,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static void GiUpdatePath(string file, string path)
         {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiUpdatePath] file={file}, path={path}");
             var settings = GeneralFuncs.LoadSettings(file);
             settings["FolderPath"] = path;
             GeneralFuncs.SaveSettings(file, settings);
@@ -90,6 +95,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static Task<string> GiConfirmAction(string action, bool value)
         {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiConfirmAction] action={action}, value={value}");
             Console.WriteLine(action);
             Console.WriteLine(value);
             if (!value) return Task.FromResult("");
@@ -118,6 +124,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static void OpenLinkInBrowser(string link)
         {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.OpenLinkInBrowser] link={link}");
             var ps = new ProcessStartInfo(link)
             {
                 UseShellExecute = true,
@@ -133,6 +140,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <returns></returns>
         public static async Task ShowModal(string args)
         {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowModal] args={args}");
             await AppData.ActiveIJsRuntime.InvokeAsync<string>("ShowModal", args);
         }
 
@@ -147,15 +155,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <returns></returns>
         public static async Task ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
         {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowToast] type={toastType}, message={toastMessage}, title={toastTitle}, renderTo={renderTo}, duration={duration}");
             await AppData.ActiveIJsRuntime.InvokeVoidAsync($"window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo = renderTo, duration = duration });
         }
         
         /// <summary>
         /// For handling queries in URI
         /// </summary>
-        /// <param name="navMan">Navigation Manager to get URI from</param>
         public static async void HandleQueries()
         {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.HandleQueries]");
             var uri = AppData.ActiveNavMan.ToAbsoluteUri(AppData.ActiveNavMan.Uri);
             // Clear cache reload
             var queries = QueryHelpers.ParseQuery(uri.Query);

@@ -54,7 +54,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 _windowTitle = value;
                 NotifyDataChanged();
-                Console.WriteLine("Window Title changed to: " + _windowTitle);
+                Console.WriteLine("\n\nWindow Title changed to: " + _windowTitle);
             }
         }
 
@@ -66,7 +66,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 _currentStatus = value;
                 NotifyDataChanged();
-                Console.WriteLine("CurrentStatus changed to: " + _windowTitle);
+                Console.WriteLine("\nCurrentStatus changed to: " + _windowTitle);
             }
         }
         public void SetCurrentStatus(string status) => CurrentStatus = status;
