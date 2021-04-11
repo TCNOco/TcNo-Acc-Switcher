@@ -28,8 +28,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
     public partial class Settings : ComponentBase
     {
         [Inject]
-        public IJSRuntime JsRuntime { get; set; }
-        [Inject]
         public Data.AppData AppData { get; set; }
         private IJSObjectReference _jsModule;
         protected override async Task OnInitializedAsync()

@@ -84,6 +84,38 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public string ForgottenFile = "SteamForgotten.json";
         [JsonIgnore] public string SteamImagePath = "wwwroot/img/profiles/steam/";
         [JsonIgnore] public string SteamImagePathHtml = "img/profiles/steam/";
+        [JsonIgnore] public string ContextMenuJson = @"[
+              {""Swap to account"": ""SwapTo(-1, event)""},
+              {""Login as..."": [
+                {""Invisible"": ""SwapTo(7, event)""},
+                {""Offline"": ""SwapTo(0, event)""},
+                {""Online"": ""SwapTo(1, event)""},
+                {""Busy"": ""SwapTo(2, event)""},
+                {""Away"": ""SwapTo(3, event)""},
+                {""Snooze"": ""SwapTo(4, event)""},
+                {""Looking to Trade"": ""SwapTo(5, event)""},
+                {""Looking to Play"": ""SwapTo(6, event)""}
+              ]},
+              {""Copy Profile..."": [
+                {""Community URL"": ""copy('URL', event)""},
+                {""Community Username"": ""copy('Line2', event)""},
+                {""Login username"": ""copy('Username', event)""}
+              ]},
+              {""Copy SteamID..."": [
+                {""SteamID [STEAM0:~]"": ""copy('SteamId', event)""},
+                {""SteamID3 [U:1:~]"": ""copy('SteamId3', event)""},
+                {""SteamID32"": ""copy('SteamId32', event)""},
+                {""SteamID64 7656~"": ""copy('SteamId64', event)""}
+              ]},
+              {""Copy other..."": [
+                {""SteamRep"": ""copy('SteamRep', event)""},
+                {""SteamID.uk"": ""copy('SteamID.uk', event)""},
+                {""SteamID.io"": ""copy('SteamID.io', event)""},
+                {""SteamRep"": ""copy('SteamIDFinder.com', event)""}
+              ]},
+              {""Create Desktop Shortcut"": ""CreateShortcut()""},
+              {""Forget"": ""forget(event)""}
+            ]";
 
         /// <summary>
         /// Default settings for SteamSettings.json

@@ -28,7 +28,8 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Server.Pages.General
 @inject AppData AppData
-@inject IJSRuntime Js
+@inject IJSRuntime JsRuntime
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
 
 @inject Data.Settings.Steam Steam
@@ -37,7 +38,7 @@
 <style>@(new AppSettings().GetCssBlock())</style>
 
 
-<ContextMenu />
+<ContextMenu ContextMenuString=@Steam.ContextMenuJson />
 <div id="acc_list" class="acc_list">
     <toastarea />
 </div>

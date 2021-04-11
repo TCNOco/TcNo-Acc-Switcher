@@ -10,43 +10,16 @@ namespace TcNo_Acc_Switcher_Server.Shared
     public partial class ContextMenu : ComponentBase
     {
         private static string _htmlOut = "";
-        private static string GetContextMenu()
+        /// <summary>
+        /// Creates a context menu from input json
+        /// </summary>
+        /// <param name="contextMenuText">JSON string making up context menu</param>
+        /// <returns>String of HTML elements, making up the context menu</returns>
+        private static string GetContextMenu(string contextMenuText)
         {
             _htmlOut = "<ul class=\"contextmenu\">";
-            string jText = @"[
-              {""Swap to account"": ""SwapTo(-1, event)""},
-              {""Login as..."": [
-                {""Invisible"": ""SwapTo(7, event)""},
-                {""Offline"": ""SwapTo(0, event)""},
-                {""Online"": ""SwapTo(1, event)""},
-                {""Busy"": ""SwapTo(2, event)""},
-                {""Away"": ""SwapTo(3, event)""},
-                {""Snooze"": ""SwapTo(4, event)""},
-                {""Looking to Trade"": ""SwapTo(5, event)""},
-                {""Looking to Play"": ""SwapTo(6, event)""}
-              ]},
-              {""Copy Profile..."": [
-                {""Community URL"": ""copy('URL', event)""},
-                {""Community Username"": ""copy('Line2', event)""},
-                {""Login username"": ""copy('Username', event)""}
-              ]},
-              {""Copy SteamID..."": [
-                {""SteamID [STEAM0:~]"": ""copy('SteamId', event)""},
-                {""SteamID3 [U:1:~]"": ""copy('SteamId3', event)""},
-                {""SteamID32"": ""copy('SteamId32', event)""},
-                {""SteamID64 7656~"": ""copy('SteamId64', event)""}
-              ]},
-              {""Copy other..."": [
-                {""SteamRep"": ""copy('SteamRep', event)""},
-                {""SteamID.uk"": ""copy('SteamID.uk', event)""},
-                {""SteamID.io"": ""copy('SteamID.io', event)""},
-                {""SteamRep"": ""copy('SteamIDFinder.com', event)""}
-              ]},
-              {""Create Desktop Shortcut"": ""CreateShortcut()""},
-              {""Forget"": ""forget(event)""}
-            ]";
 
-            var jO = JArray.Parse(jText);
+            var jO = JArray.Parse(contextMenuText);
             foreach (var kvp in jO) // Main list
             {
                 // Each item
@@ -60,6 +33,11 @@ namespace TcNo_Acc_Switcher_Server.Shared
             return _htmlOut;
         }
 
+        /// <summary>
+        /// Iterates through input JObject and adds HTML strings to existing _htmlOut, for Context Menu
+        /// </summary>
+        /// <param name="s">Text to display on current element</param>
+        /// <param name="o">Either string with action, or JToken containing more (string, string) or (string, JArray) pairs</param>
         private static void ProcessContextItem(string s, object o)
         {
             var j = JToken.FromObject(o);

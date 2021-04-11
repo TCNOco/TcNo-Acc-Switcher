@@ -1,18 +1,9 @@
-﻿@code
-{
-    public RenderFragment GetSomeRawHtml()
-    {
-        return builder => { builder.AddContent(0, GetContextMenu()); };
-    }
+﻿@code{
+    [Parameter]
+    public string ContextMenuString { get; set; }
 }
-@GetSomeRawHtml()
 
-@*
-    Figure out what in the heck is going on here https://github.com/dotnet/aspnetcore/issues/16469
-    Probably going to have to read through all this:
-        Suchiman commented on Jul 23, 2018
-        @masonwheeler You can render raw html like this: https://github.com/aspnet/Blazor/pull/1146/files#diff-0a1a9a2202c82156228acbfecab64aa2R25
-*@
+@(new MarkupString(GetContextMenu(ContextMenuString)))
 
 <!--<ul class="contextmenu">
     <li><a onclick="SwapTo(-1, event);">Swap to account</a></li>

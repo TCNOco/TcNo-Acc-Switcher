@@ -19,6 +19,8 @@
 @inject NavigationManager NavManager
 @inject Data.Settings.Steam Steam
 @inject Data.AppSettings AppSett
+@inject IJSRuntime JsRuntime
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 
 <div class="container settings_cont mainblock">
     <div class="row">

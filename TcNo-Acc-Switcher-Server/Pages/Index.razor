@@ -24,6 +24,7 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Server.Pages.Steam
 @inject IJSRuntime JsRuntime
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
 @inject AppData AppData
 

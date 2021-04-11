@@ -18,12 +18,31 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
+using Newtonsoft.Json;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
 
     public class AppData
     {
+        private static AppData _instance = new();
+        public AppData() { }
+
+        private static readonly object LockObj = new();
+
+        public static AppData Instance
+        {
+            get
+            {
+                lock (LockObj)
+                {
+                    return _instance ??= new AppData();
+                }
+            }
+            set => _instance = value;
+        }
+
+
         // Window stuff
         private string _windowTitle = "Default window title";
 
@@ -54,5 +73,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         public event Action OnChange;
 
         private void NotifyDataChanged() => OnChange?.Invoke();
+
+
+        private IJSRuntime _activeIJsRuntime = null;
+        [JsonIgnore] public IJSRuntime ActiveIJsRuntime { get => _instance._activeIJsRuntime; set => _instance._activeIJsRuntime = value; }
+        public void SetActiveIJsRuntime(IJSRuntime jsr) => _instance._activeIJsRuntime = jsr;
     }
 }

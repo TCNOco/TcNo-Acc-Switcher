@@ -17,7 +17,8 @@
 @using Microsoft.AspNetCore.Http.Extensions
 @using TcNo_Acc_Switcher_Server.Pages.General
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
-@inject IJSRuntime JsRuntime;
+@inject IJSRuntime JsRuntime
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager;
 
 <div class="container settings_cont mainblock">
