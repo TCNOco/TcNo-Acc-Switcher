@@ -19,7 +19,8 @@
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
-@inject NavigationManager NavManager;
+@inject NavigationManager NavManager
+@{ AppData.SetActiveNavMan(NavManager); }
 
 <div class="container settings_cont mainblock">
     <div class="row">
@@ -38,7 +39,7 @@
             <div id="restoreUnderstand">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Clearing_Understand" @bind="_notAccepted"><label class="form-check-label" for="Steam_Clearing_Understand"></label></div><label for="Steam_Clearing_Understand">I understand what these buttons do.<br></label>
             </div>
-            <button class="btn" id="Steam_Close" type="button" @onclick="() => Steam_Close(JsRuntime)" disabled="@Accepted"><span>Kill Steam process</span></button>
+            <button class="btn" id="Steam_Close" type="button" @onclick="Steam_Close" disabled="@Accepted"><span>Kill Steam process</span></button>
 
             <div class="clearingRow">
                 <div class="clearingLeft advancedClearingButtonCol">
@@ -46,39 +47,39 @@
                         <hr><span>General</span><hr>
                     </div>
                     <div class="buttoncol">
-                        <button class="btn" id="Steam_Clear_Logs" type="button" @onclick="() => Steam_Clear_Logs(JsRuntime)" disabled="@Accepted"><span>..\Steam\Logs</span></button>
-                        <button class="btn" id="Steam_Clear_Dumps" type="button" @onclick="() => Steam_Clear_Dumps(JsRuntime)" disabled="@Accepted"><span>..\Steam\Dumps</span></button>
+                        <button class="btn" id="Steam_Clear_Logs" type="button" @onclick="Steam_Clear_Logs" disabled="@Accepted"><span>..\Steam\Logs</span></button>
+                        <button class="btn" id="Steam_Clear_Dumps" type="button" @onclick="Steam_Clear_Dumps" disabled="@Accepted"><span>..\Steam\Dumps</span></button>
                     </div>
                     <div class="buttoncol">
-                        <button class="btn" id="Steam_Clear_HtmlCache" type="button" @onclick="() => Steam_Clear_HtmlCache(JsRuntime)" disabled="@Accepted"><span>%Local%\Steam\htmlcache</span></button>
-                        <button class="btn" id="Steam_Clear_UiLSteam_Clear_Dumpsogs" type="button" @onclick="() => Steam_Clear_UiLogs(JsRuntime)" disabled="@Accepted"><span>..\Steam\*.log</span></button>
+                        <button class="btn" id="Steam_Clear_HtmlCache" type="button" @onclick="Steam_Clear_HtmlCache" disabled="@Accepted"><span>%Local%\Steam\htmlcache</span></button>
+                        <button class="btn" id="Steam_Clear_UiLSteam_Clear_Dumpsogs" type="button" @onclick="Steam_Clear_UiLogs" disabled="@Accepted"><span>..\Steam\*.log</span></button>
                     </div>
                     <div class="buttoncol">
-                        <button class="btn" id="Steam_Clear_AppCache" type="button" @onclick="() => Steam_Clear_AppCache(JsRuntime)" disabled="@Accepted"><span>..\Steam\appcache</span></button>
-                        <button class="btn" id="Steam_Clear_HttpCache" type="button" @onclick="() => Steam_Clear_HttpCache(JsRuntime)" disabled="@Accepted"><span>..\Steam\appcache\httpcache</span></button>
+                        <button class="btn" id="Steam_Clear_AppCache" type="button" @onclick="Steam_Clear_AppCache" disabled="@Accepted"><span>..\Steam\appcache</span></button>
+                        <button class="btn" id="Steam_Clear_HttpCache" type="button" @onclick="Steam_Clear_HttpCache" disabled="@Accepted"><span>..\Steam\appcache\httpcache</span></button>
                     </div>
                     <div class="buttoncol">
-                        <button class="btn" id="Steam_Clear_DepotCache" type="button" @onclick="() => Steam_Clear_DepotCache(JsRuntime)" disabled="@Accepted"><span>..\Steam\depotcache</span></button>
+                        <button class="btn" id="Steam_Clear_DepotCache" type="button" @onclick="Steam_Clear_DepotCache" disabled="@Accepted"><span>..\Steam\depotcache</span></button>
                     </div>
 
                     <div class="SettingsHeader">
                         <hr><span>Clean my login history</span><hr>
                     </div>
                     <div class="buttoncol">
-                        <button class="btn" id="Steam_Clear_Forgotten" type="button" @onclick="() => Steam_Clear_Forgotten(JsRuntime)" disabled="@Accepted"><span>Forgotten account backups</span></button>
-                        <button class="btn" id="Steam_Clear_Config" type="button" @onclick="() => Steam_Clear_Config(JsRuntime)" disabled="@Accepted"><span>..\Steam\config\config.vdf</span></button>
+                        <button class="btn" id="Steam_Clear_Forgotten" type="button" @onclick="Steam_Clear_Forgotten" disabled="@Accepted"><span>Forgotten account backups</span></button>
+                        <button class="btn" id="Steam_Clear_Config" type="button" @onclick="Steam_Clear_Config" disabled="@Accepted"><span>..\Steam\config\config.vdf</span></button>
                     </div>
                     <div class="buttoncol">
-                        <button class="btn" id="Steam_Clear_LoginUsers" type="button" @onclick="() => Steam_Clear_LoginUsers(JsRuntime)" disabled="@Accepted"><span>..\Steam\config\loginusers.vdf</span></button>
-                        <button class="btn" id="Steam_Clear_Ssfn" type="button" @onclick="() => Steam_Clear_Ssfn(JsRuntime)" disabled="@Accepted"><span>..\Steam\ssfn*</span></button>
+                        <button class="btn" id="Steam_Clear_LoginUsers" type="button" @onclick="Steam_Clear_LoginUsers" disabled="@Accepted"><span>..\Steam\config\loginusers.vdf</span></button>
+                        <button class="btn" id="Steam_Clear_Ssfn" type="button" @onclick="Steam_Clear_Ssfn" disabled="@Accepted"><span>..\Steam\ssfn*</span></button>
                     </div>
                     <div class="buttoncol">
-                        <button class="btn" id="Steam_Clear_AutoLoginUser" type="button" @onclick="() => Steam_Clear_AutoLoginUser(JsRuntime)" disabled="@Accepted"><span>HKCU\..\AutoLoginUser</span></button>
-                        <button class="btn" id="Steam_Clear_LastGameNameUsed" type="button" @onclick="() => Steam_Clear_LastGameNameUsed(JsRuntime)" disabled="@Accepted"><span>HKCU\..\LastGameNameUsed</span></button>
+                        <button class="btn" id="Steam_Clear_AutoLoginUser" type="button" @onclick="Steam_Clear_AutoLoginUser" disabled="@Accepted"><span>HKCU\..\AutoLoginUser</span></button>
+                        <button class="btn" id="Steam_Clear_LastGameNameUsed" type="button" @onclick="Steam_Clear_LastGameNameUsed" disabled="@Accepted"><span>HKCU\..\LastGameNameUsed</span></button>
                     </div>
                     <div class="buttoncol">
-                        <button class="btn" id="Steam_Clear_PseudoUUID" type="button" @onclick="() => Steam_Clear_PseudoUUID(JsRuntime)" disabled="@Accepted"><span>HKCU\..\PseudoUUID</span></button>
-                        <button class="btn" id="Steam_Clear_RememberPassword" type="button" @onclick="() => Steam_Clear_RememberPassword(JsRuntime)" disabled="@Accepted"><span>HKCU\..\RememberPassword</span></button>
+                        <button class="btn" id="Steam_Clear_PseudoUUID" type="button" @onclick="Steam_Clear_PseudoUUID" disabled="@Accepted"><span>HKCU\..\PseudoUUID</span></button>
+                        <button class="btn" id="Steam_Clear_RememberPassword" type="button" @onclick="Steam_Clear_RememberPassword" disabled="@Accepted"><span>HKCU\..\RememberPassword</span></button>
                     </div>
                 </div>
                 <div class="clearingRight">

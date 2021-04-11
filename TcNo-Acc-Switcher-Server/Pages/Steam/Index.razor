@@ -31,11 +31,12 @@
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
+@{ AppData.SetActiveNavMan(NavManager); }
 
-@inject Data.Settings.Steam Steam
-<style>@(new Data.Settings.Steam().GetSteamIdCssBlock())</style>
 @inject AppSettings AppSettings
 <style>@(new AppSettings().GetCssBlock())</style>
+@inject Data.Settings.Steam Steam
+<style>@(new Data.Settings.Steam().GetSteamIdCssBlock())</style>
 
 
 <ContextMenu ContextMenuString=@Steam.ContextMenuJson />
@@ -71,7 +72,6 @@
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
     {
-        if (!SteamSwitcherFuncs.SteamSettingsValid()) NavManager.NavigateTo("/?modal=" + Uri.EscapeUriString("find:Steam:Steam.exe:SteamSettings"));
         AppSettings.StreamerModeCheck();
     }
 
@@ -80,12 +80,12 @@
         AppData.WindowTitle = "TcNo Account Switcher - Steam";
         if (firstRender)
         {
-            if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered) await Js.InvokeVoidAsync($"window.notification.new", new { type = "info", title = "Streamer mode", message = "Private info is hidden! - See settings", renderTo = "toastarea", duration = 5000 });// Show notification that streamer mode was enabled.
+            if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered) await JsRuntime.InvokeVoidAsync($"window.notification.new", new { type = "info", title = "Streamer mode", message = "Private info is hidden! - See settings", renderTo = "toastarea", duration = 5000 });// Show notification that streamer mode was enabled.
 
-            SteamSwitcherFuncs.LoadProfiles(Js);
+            SteamSwitcherFuncs.LoadProfiles();
             Steam.SaveSettings(!File.Exists(Steam.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
 
-            GeneralInvocableFuncs.HandleQueries(NavManager, Js);
+            GeneralInvocableFuncs.HandleQueries();
         }
     }
 }

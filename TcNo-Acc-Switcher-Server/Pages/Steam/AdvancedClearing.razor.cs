@@ -20,6 +20,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
@@ -38,132 +39,132 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         public const string SteamReturn = "SteamAdvancedClearingAddLine";
 
-        private async void WriteLine(IJSRuntime jsRuntime, string text)
+        private async void WriteLine(string text)
         {
-            await jsRuntime.InvokeVoidAsync(SteamReturn, text);
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync(SteamReturn, text);
         }
 
-        private async void NewLine(IJSRuntime jsRuntime)
+        private async void NewLine()
         {
-            await jsRuntime.InvokeVoidAsync(SteamReturn, "<br />");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync(SteamReturn, "<br />");
         }
 
         // BUTTON: Kill Steam process
-        public void Steam_Close(IJSRuntime jsRuntime)
+        public void Steam_Close()
         {
             SteamSwitcherFuncs.CloseSteam();
-            WriteLine(jsRuntime, "Closing Steam.");
-            NewLine(jsRuntime);
+            WriteLine("Closing Steam.");
+            NewLine();
         }
 
         // BUTTON: ..\Steam\Logs
-        public void Steam_Clear_Logs(IJSRuntime jsRuntime)
+        public void Steam_Clear_Logs()
         {
-            GeneralFuncs.ClearFolder(Path.Combine(Steam.FolderPath, "logs\\"), jsRuntime, SteamReturn);
-            WriteLine(jsRuntime, "Cleared logs folder.");
-            NewLine(jsRuntime);
+            GeneralFuncs.ClearFolder(Path.Combine(Steam.FolderPath, "logs\\"), SteamReturn);
+            WriteLine("Cleared logs folder.");
+            NewLine();
         }
 
         // BUTTON:..\Steam\*.log
-        public void Steam_Clear_Dumps(IJSRuntime jsRuntime)
+        public void Steam_Clear_Dumps()
         {
-            GeneralFuncs.ClearFolder(Path.Combine(Steam.FolderPath, "dumps\\"), jsRuntime, SteamReturn);
-            WriteLine(jsRuntime, "Cleared dumps folder.");
-            NewLine(jsRuntime);
+            GeneralFuncs.ClearFolder(Path.Combine(Steam.FolderPath, "dumps\\"), SteamReturn);
+            WriteLine("Cleared dumps folder.");
+            NewLine();
         }
 
         // BUTTON: %Local%\Steam\htmlcache
-        public void Steam_Clear_HtmlCache(IJSRuntime jsRuntime)
+        public void Steam_Clear_HtmlCache()
         {
             // HTML Cache - %USERPROFILE%\AppData\Local\Steam\htmlcache
-            GeneralFuncs.ClearFolder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Steam\\htmlcache"), jsRuntime, SteamReturn);
-            WriteLine(jsRuntime, "Cleared HTMLCache.");
-            NewLine(jsRuntime);
+            GeneralFuncs.ClearFolder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Steam\\htmlcache"), SteamReturn);
+            WriteLine("Cleared HTMLCache.");
+            NewLine();
         }
 
         // BUTTON: ..\Steam\*.log
-        public void Steam_Clear_UiLogs(IJSRuntime jsRuntime)
+        public void Steam_Clear_UiLogs()
         {
             // Overlay UI logs -
             //   Steam\GameOverlayUI.exe.log
             //   Steam\GameOverlayRenderer.log
-            GeneralFuncs.ClearFilesOfType(Steam.FolderPath, "*.log|*.last", SearchOption.TopDirectoryOnly, jsRuntime, SteamReturn);
-            WriteLine(jsRuntime, "Cleared UI Logs.");
-            NewLine(jsRuntime);
+            GeneralFuncs.ClearFilesOfType(Steam.FolderPath, "*.log|*.last", SearchOption.TopDirectoryOnly, SteamReturn);
+            WriteLine("Cleared UI Logs.");
+            NewLine();
         }
 
         // BUTTON: ..\Steam\appcache
-        public void Steam_Clear_AppCache(IJSRuntime jsRuntime)
+        public void Steam_Clear_AppCache()
         {
             // App Cache - Steam\appcache
-            GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "appcache"), "*.*", SearchOption.TopDirectoryOnly, jsRuntime, SteamReturn);
-            WriteLine(jsRuntime, "Cleared AppCache.");
-            NewLine(jsRuntime);
+            GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "appcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
+            WriteLine("Cleared AppCache.");
+            NewLine();
         }
 
         // BUTTON: ..\Steam\appcache\httpcache
-        public void Steam_Clear_HttpCache(IJSRuntime jsRuntime)
+        public void Steam_Clear_HttpCache()
         {
-            GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "appcache\\httpcache"), "*.*", SearchOption.AllDirectories, jsRuntime, SteamReturn);
-            WriteLine(jsRuntime, "Cleared HTTPCache.");
-            NewLine(jsRuntime);
+            GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "appcache\\httpcache"), "*.*", SearchOption.AllDirectories, SteamReturn);
+            WriteLine("Cleared HTTPCache.");
+            NewLine();
         }
 
         // BUTTON: ..\Steam\depotcache
-        public void Steam_Clear_DepotCache(IJSRuntime jsRuntime)
+        public void Steam_Clear_DepotCache()
         {
-            GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "depotcache"), "*.*", SearchOption.TopDirectoryOnly, jsRuntime, SteamReturn);
-            WriteLine(jsRuntime, "Cleared DepotCache.");
-            NewLine(jsRuntime);
+            GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "depotcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
+            WriteLine("Cleared DepotCache.");
+            NewLine();
         }
 
         // BUTTON: Forgotten account backups
-        public void Steam_Clear_Forgotten(IJSRuntime jsRuntime)
+        public void Steam_Clear_Forgotten()
         {
-            SteamSwitcherFuncs.ClearForgotten(jsRuntime);
-            WriteLine(jsRuntime, "Cleared forgotten account backups");
-            NewLine(jsRuntime);
+            SteamSwitcherFuncs.ClearForgotten();
+            WriteLine("Cleared forgotten account backups");
+            NewLine();
         }
 
         // BUTTON: ..\Steam\config\config.vdf
-        public void Steam_Clear_Config(IJSRuntime jsRuntime)
+        public void Steam_Clear_Config()
         {
-            GeneralFuncs.DeleteFile(Path.Combine(Steam.FolderPath, "config\\config.vdf"), js: jsRuntime, jsDest: SteamReturn);
-            WriteLine(jsRuntime, "[ Don't forget to clear forgotten account backups as well ]");
-            WriteLine(jsRuntime, "Cleared config\\config.vdf");
-            NewLine(jsRuntime);
+            GeneralFuncs.DeleteFile(Path.Combine(Steam.FolderPath, "config\\config.vdf"), jsDest: SteamReturn);
+            WriteLine("[ Don't forget to clear forgotten account backups as well ]");
+            WriteLine("Cleared config\\config.vdf");
+            NewLine();
         }
 
         // BUTTON: ..\Steam\config\loginusers.vdf
-        public void Steam_Clear_LoginUsers(IJSRuntime jsRuntime)
+        public void Steam_Clear_LoginUsers()
         {
-            GeneralFuncs.DeleteFile(Path.Combine(Steam.FolderPath, "config\\loginusers.vdf"), js: jsRuntime, jsDest: SteamReturn);
-            WriteLine(jsRuntime, "Cleared config\\loginusers.vdf");
-            NewLine(jsRuntime);
+            GeneralFuncs.DeleteFile(Path.Combine(Steam.FolderPath, "config\\loginusers.vdf"), jsDest: SteamReturn);
+            WriteLine("Cleared config\\loginusers.vdf");
+            NewLine();
         }
 
         // BUTTON: ..\Steam\ssfn*
-        public void Steam_Clear_Ssfn(IJSRuntime jsRuntime)
+        public void Steam_Clear_Ssfn()
         {
             var d = new DirectoryInfo(Steam.FolderPath);
             var i = 0;
             foreach (var f in d.GetFiles("ssfn*"))
             {
-                GeneralFuncs.DeleteFile(fileInfo: f, js: jsRuntime, jsDest: SteamReturn);
+                GeneralFuncs.DeleteFile(fileInfo: f, jsDest: SteamReturn);
                 i++;
             }
 
-            WriteLine(jsRuntime, i == 0 ? "No SSFN files found." : "Cleared SSFN files.");
-            NewLine(jsRuntime);
+            WriteLine(i == 0 ? "No SSFN files found." : "Cleared SSFN files.");
+            NewLine();
         }
 
         // BUTTON: HKCU\..\AutoLoginUser
-        public void Steam_Clear_AutoLoginUser(IJSRuntime jsRuntime) => GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "AutoLoginuser", jsRuntime, SteamReturn);
+        public void Steam_Clear_AutoLoginUser() => GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "AutoLoginuser", SteamReturn);
         // BUTTON: HKCU\..\LastGameNameUsed
-        public void Steam_Clear_LastGameNameUsed(IJSRuntime jsRuntime) => GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "LastGameNameUsed", jsRuntime, SteamReturn);
+        public void Steam_Clear_LastGameNameUsed() => GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "LastGameNameUsed", SteamReturn);
         // BUTTON: HKCU\..\PseudoUUID
-        public void Steam_Clear_PseudoUUID(IJSRuntime jsRuntime) => GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "PseudoUUID", jsRuntime, SteamReturn);
+        public void Steam_Clear_PseudoUUID() => GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "PseudoUUID", SteamReturn);
         // BUTTON: HKCU\..\RememberPassword
-        public void Steam_Clear_RememberPassword(IJSRuntime jsRuntime) => GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "RememberPassword", jsRuntime, SteamReturn);
+        public void Steam_Clear_RememberPassword() => GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "RememberPassword", SteamReturn);
     }
 }

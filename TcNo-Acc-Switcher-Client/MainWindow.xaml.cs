@@ -120,7 +120,7 @@ namespace TcNo_Acc_Switcher_Client
                 {""SteamRep"": ""copy('SteamRep', event)""},
                 {""SteamID.uk"": ""copy('SteamID.uk', event)""},
                 {""SteamID.io"": ""copy('SteamID.io', event)""},
-                {""SteamRep"": ""copy('SteamIDFinder.com', event)""}
+                {""SteamIDFinder.com"": ""copy('SteamIDFinder.com', event)""}
               ]},
               {""Create Desktop Shortcut"": ""CreateShortcut()""},
               {""Forget"": ""forget(event)""}

@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
+using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
@@ -50,23 +51,23 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         // BUTTON: Check account VAC status
-        public static async void ClearVacStatus(IJSRuntime Js)
+        public static async void ClearVacStatus()
         {
             if (SteamSwitcherFuncs.DeleteVacCacheFile())
-                await GeneralInvocableFuncs.ShowToast(Js, "success", "VAC status for accounts was cleared", renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("success", "VAC status for accounts was cleared", renderTo: "toastarea");
             else
-                await GeneralInvocableFuncs.ShowToast(Js, "error", "Could not delete 'profilecache/SteamVACCache.json'", "Error", "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", "Could not delete 'profilecache/SteamVACCache.json'", "Error", "toastarea");
         }
 
         // BUTTON: Reset settings
-        public static void ClearSettings(NavigationManager navManager)
+        public static void ClearSettings()
         {
             new Data.Settings.Steam().ResetSettings();
-            navManager.NavigateTo("/Steam?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Steam switcher settings"));
+            AppData.ActiveNavMan.NavigateTo("/Steam?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Steam switcher settings"));
         }
 
         // BUTTON: Reset images
-        public static void ClearImages(IJSRuntime js, NavigationManager NavManager) => SteamSwitcherFuncs.ClearImages(js, NavManager); // ADD A TOAST TO THIS
+        public static void ClearImages() => SteamSwitcherFuncs.ClearImages(); // ADD A TOAST TO THIS
         #endregion
 
         #region SETTINGS_STEAM_TOOLS

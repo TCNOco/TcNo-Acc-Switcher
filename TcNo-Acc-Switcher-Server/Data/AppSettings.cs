@@ -155,6 +155,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public bool StreamerModeCheck()
         {
             if (!_streamerModeEnabled) return false; // Don't hide anything if disabled.
+            _instance.StreamerModeTriggered = false;
             foreach (var p in Process.GetProcesses())
             {
                 //try
@@ -189,7 +190,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
         /// </summary>
-        public string GetCssBlock() => ".streamerCensor { display: " + (_instance.StreamerModeEnabled && _instance.StreamerModeTriggered ? "none" : "block") + "!important }";
+        public string GetCssBlock() => ".streamerCensor { display: " + (_instance.StreamerModeEnabled && _instance.StreamerModeTriggered ? "none!important" : "block") + "}";
 
         public void ResetSettings()
         {

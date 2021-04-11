@@ -26,11 +26,12 @@
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
+@{ AppData.SetActiveNavMan(NavManager); }
 @inject AppData AppData
 
 @inject Data.Settings.Steam Steam
 
-<div class="button" id="SwitcherSteam" @onclick="() => CheckSteam(JsRuntime)">
+<div class="button" id="SwitcherSteam" @onclick="CheckSteam">
     <img src="img/icons/ico_settings.svg" draggable="false" />
 </div>
 
@@ -50,9 +51,6 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         AppData.WindowTitle = "TcNo Account Switcher";
-        if (firstRender)
-        {
-            GeneralInvocableFuncs.HandleQueries(NavManager, JsRuntime);
-        }
+        if (firstRender) GeneralInvocableFuncs.HandleQueries();
     }
 }

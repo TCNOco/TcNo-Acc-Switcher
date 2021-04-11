@@ -27,6 +27,7 @@ using Microsoft.Win32;
 using System.Windows;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
+using TcNo_Acc_Switcher_Server.Data;
 
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
@@ -76,8 +77,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static void GiUpdatePath(string file, string path)
         {
             var settings = GeneralFuncs.LoadSettings(file);
-            settings["Path"] = path;
+            settings["FolderPath"] = path;
             GeneralFuncs.SaveSettings(file, settings);
+            switch (file)
+            {
+                case "SteamSettings":
+                    Steam.FolderPath = path;
+                    break;
+            }
         }
 
         [JSInvokable]
@@ -122,44 +129,41 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <summary>
         /// JS function handler for running ShowModal JS function, with input arguments.
         /// </summary>
-        /// <param name="jsRuntime">JS Runtime where JS function is run</param>
         /// <param name="args">Argument string, containing a command to be handled later by modal</param>
         /// <returns></returns>
-        public static async Task ShowModal(IJSRuntime jsRuntime, string args)
+        public static async Task ShowModal(string args)
         {
-            await jsRuntime.InvokeAsync<string>("ShowModal", args);
+            await AppData.ActiveIJsRuntime.InvokeAsync<string>("ShowModal", args);
         }
 
         /// <summary>
         /// JS function handler for showing Toast message.
         /// </summary>
-        /// <param name="jsRuntime">JS Runtime where JS function is run</param>
         /// <param name="toastType">success, info, warning, error</param>
         /// <param name="toastMessage">Message to be shown in toast</param>
         /// <param name="toastTitle">(Optional) Title to be shown in toast (Empty doesn't show any title)</param>
         /// <param name="renderTo">(Optional) Part of the document to append the toast to (Empty = Default, document.body)</param>
         /// <param name="duration">(Optional) Duration to show the toast before fading</param>
         /// <returns></returns>
-        public static async Task ShowToast(IJSRuntime jsRuntime, string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
+        public static async Task ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
         {
-            await jsRuntime.InvokeVoidAsync($"window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo = renderTo, duration = duration });
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync($"window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo = renderTo, duration = duration });
         }
         
         /// <summary>
         /// For handling queries in URI
         /// </summary>
         /// <param name="navMan">Navigation Manager to get URI from</param>
-        /// <param name="jsr">JSRuntime to interact with webpage</param>
-        public static async void HandleQueries(NavigationManager navMan, IJSRuntime jsr)
+        public static async void HandleQueries()
         {
-            var uri = navMan.ToAbsoluteUri(navMan.Uri);
+            var uri = AppData.ActiveNavMan.ToAbsoluteUri(AppData.ActiveNavMan.Uri);
             // Clear cache reload
             var queries = QueryHelpers.ParseQuery(uri.Query);
             // cacheReload handled in JS
 
             //Modal
             if (queries.TryGetValue("modal", out var modalValue))
-                foreach (var stringValue in modalValue) await ShowModal(jsr, Uri.UnescapeDataString(stringValue));
+                foreach (var stringValue in modalValue) await ShowModal(Uri.UnescapeDataString(stringValue));
 
             // Toast
             if (queries.TryGetValue("toast_type", out var toastType) &&
@@ -168,7 +172,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 for (var i = 0; i < toastType.Count; i++)
                 {
-                    await GeneralInvocableFuncs.ShowToast(jsr, toastType[i], toastMessage[i], toastTitle[i], "toastarea");
+                    await GeneralInvocableFuncs.ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
                 }
             }
         }

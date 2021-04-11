@@ -24,6 +24,7 @@ using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
@@ -97,9 +98,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
         }
 
-        public static void JsDestNewline(IJSRuntime js, string jsDest)
+        public static void JsDestNewline(string jsDest)
         {
-            js?.InvokeVoidAsync(jsDest, "<br />"); //Newline
+            AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, "<br />"); //Newline
         }
 
         /// <summary>
@@ -107,36 +108,35 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="file">(Optional) File string to delete</param>
         /// <param name="fileInfo">(Optional) FileInfo of file to delete</param>
-        /// <param name="js">JSRuntime to send progress to</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
-        public static void DeleteFile(string file = "", FileInfo fileInfo = null, IJSRuntime js = null, string jsDest = "")
+        public static void DeleteFile(string file = "", FileInfo fileInfo = null, string jsDest = "")
         {
              var f = fileInfo ?? new FileInfo(file);
 
             try
             {
-                if (!f.Exists) js?.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
+                if (!f.Exists) AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
                 else
                 {
                     f.IsReadOnly = false;
                     f.Delete();
-                    js?.InvokeVoidAsync(jsDest, "Deleted: " + f.FullName);
+                    AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, "Deleted: " + f.FullName);
                 }
             }
             catch (Exception e)
             {
-                js?.InvokeVoidAsync(jsDest, "ERROR: COULDN'T DELETE: " + f.FullName);
-                js?.InvokeVoidAsync(jsDest, e.ToString());
-                JsDestNewline(js, jsDest);
+                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, "ERROR: COULDN'T DELETE: " + f.FullName);
+                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, e.ToString());
+                JsDestNewline(jsDest);
             }
         }
 
         /// <summary>
         /// Shorter RecursiveDelete (Sets keep folders to true)
         /// </summary>
-        public static void ClearFolder(string folder, IJSRuntime js = null, string jsDest = "")
+        public static void ClearFolder(string folder, string jsDest = "")
         {
-            RecursiveDelete(new DirectoryInfo(folder), true, js, jsDest);
+            RecursiveDelete(new DirectoryInfo(folder), true, jsDest);
         }
 
         /// <summary>
@@ -144,27 +144,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="baseDir">Folder to start working inwards from (as DirectoryInfo)</param>
         /// <param name="keepFolders">Set to False to delete folders as well as files</param>
-        /// <param name="js">JSRuntime to send progress to</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
-        public static void RecursiveDelete(DirectoryInfo baseDir, bool keepFolders, IJSRuntime js = null, string jsDest = "")
+        public static void RecursiveDelete(DirectoryInfo baseDir, bool keepFolders, string jsDest = "")
         {
             if (!baseDir.Exists)
                 return;
 
             foreach (var dir in baseDir.EnumerateDirectories())
             {
-                RecursiveDelete(dir, keepFolders, js, jsDest);
+                RecursiveDelete(dir, keepFolders, jsDest);
             }
             var files = baseDir.GetFiles();
             foreach (var file in files)
             {
-                DeleteFile(fileInfo: file, js: js, jsDest: jsDest);
+                DeleteFile(fileInfo: file, jsDest: jsDest);
             }
 
             if (keepFolders) return;
             baseDir.Delete();
-            js?.InvokeVoidAsync(jsDest, "Deleting Folder: " + baseDir.FullName);
-            JsDestNewline(js, jsDest);
+            AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, "Deleting Folder: " + baseDir.FullName);
+            JsDestNewline(jsDest);
         }
 
         /// <summary>
@@ -172,21 +171,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="subKey">Subkey to delete</param>
         /// <param name="val">Value to delete</param>
-        /// <param name="js">JSRuntime to send progress to</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
-        public static void DeleteRegKey(string subKey, string val, IJSRuntime js = null, string jsDest = "")
+        public static void DeleteRegKey(string subKey, string val, string jsDest = "")
         {
             using var key = Registry.CurrentUser.OpenSubKey(subKey, true);
             if (key == null)
-                js?.InvokeVoidAsync(jsDest, $"{subKey} does not exist.");
+                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"{subKey} does not exist.");
             else if (key.GetValue(val) == null)
-                js?.InvokeVoidAsync(jsDest, $"{subKey} does not contain {val}");
+                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"{subKey} does not contain {val}");
             else
             {
-                js?.InvokeVoidAsync(jsDest, $"Removing {subKey}\\{val}");
+                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"Removing {subKey}\\{val}");
                 key.DeleteValue(val);
             }
-            JsDestNewline(js, jsDest);
+            JsDestNewline(jsDest);
         }
 
         /// <summary>
@@ -211,29 +209,28 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="folder">Folder to search for files in</param>
         /// <param name="extensions">Extensions of files to delete</param>
         /// <param name="so">SeachOption of where to look for files</param>
-        /// <param name="js">JSRuntime to send progress to</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
-        public static void ClearFilesOfType(string folder, string extensions, SearchOption so, IJSRuntime js = null, string jsDest = "")
+        public static void ClearFilesOfType(string folder, string extensions, SearchOption so, string jsDest = "")
         {
             if (!Directory.Exists(folder))
             {
-                js?.InvokeVoidAsync(jsDest, $"Directory not found: {folder}");
-                JsDestNewline(js, jsDest);
+                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"Directory not found: {folder}");
+                JsDestNewline(jsDest);
                 return;
             }
             foreach (var file in GetFiles(folder, extensions, so))
             {
-                js?.InvokeVoidAsync(jsDest, $"Deleting: {file}");
+                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"Deleting: {file}");
                 try
                 {
                     File.Delete(file);
                 }
                 catch (Exception ex)
                 {
-                    js?.InvokeVoidAsync(jsDest, $"ERROR: {ex.ToString()}");
+                    AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"ERROR: {ex.ToString()}");
                 }
             }
-            JsDestNewline(js, jsDest);
+            JsDestNewline(jsDest);
         }
         #endregion
 

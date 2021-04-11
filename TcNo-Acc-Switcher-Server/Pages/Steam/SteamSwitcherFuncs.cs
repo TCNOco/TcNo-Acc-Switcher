@@ -34,6 +34,7 @@ using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
+using TcNo_Acc_Switcher_Server.Data;
 using Steamuser = TcNo_Acc_Switcher_Server.Pages.Steam.Index.Steamuser;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
@@ -56,9 +57,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// Prepares images and VAC/Limited status
         /// Prepares HTML Elements string for insertion into the account switcher GUI.
         /// </summary>
-        /// <param name="jsRuntime"></param>
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
-        public static async void LoadProfiles(IJSRuntime jsRuntime)
+        public static async void LoadProfiles()
         {
             var userAccounts = GetSteamUsers(Steam.LoginUsersVdf()); 
             var vacStatusList = new List<VacStatus>();
@@ -91,14 +91,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     $"<img class=\"{extraClasses}\" src=\"{ua.ImgUrl}\" draggable=\"false\" />\r\n" +
                     $"<p class=\"streamerCensor\">{ua.AccName}</p>\r\n" +
                     $"<h6>{ua.Name}</h6>\r\n" +
-                    $"<p class=\"steamId streamerCensor\">{ua.SteamId}</p>\r\n" +
+                    $"<p class=\"streamerCensor steamId\">{ua.SteamId}</p>\r\n" +
                     $"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";
 
-                await jsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
+                await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
             }
 
             SaveVacInfo(vacStatusList);
-            await jsRuntime.InvokeVoidAsync("initContextMenu");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
         }
 
         /// <summary>
@@ -453,9 +453,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <summary>
         /// Clears backups of forgotten accounts
         /// </summary>
-        public static async void ClearForgotten(IJSRuntime js = null)
+        public static async void ClearForgotten()
         {
-            await GeneralInvocableFuncs.ShowModal(js, "confirm:ClearSteamBackups:" + "Are you sure you want to clear backups of forgotten accounts?".Replace(' ', '_'));
+            await GeneralInvocableFuncs.ShowModal("confirm:ClearSteamBackups:" + "Are you sure you want to clear backups of forgotten accounts?".Replace(' ', '_'));
             // Confirmed in GeneralInvocableFuncs.GiConfirmAction for rest of function
         }
         /// <summary>
@@ -475,18 +475,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// Clears images folder of contents, to re-download them on next load.
         /// </summary>
         /// <returns>Whether files were deleted or not</returns>
-        public static async void ClearImages(IJSRuntime js = null, NavigationManager NavManager = null)
+        public static async void ClearImages()
         {
             if (!Directory.Exists(Steam.SteamImagePath))
             {
-                await GeneralInvocableFuncs.ShowToast(js, "error", "Could not clear images", "Error", "toastarea"); 
+                await GeneralInvocableFuncs.ShowToast("error", "Could not clear images", "Error", "toastarea"); 
             }
             foreach (var file in Directory.GetFiles(Steam.SteamImagePath))
             {
                 File.Delete(file);
             }
             // Reload page, then display notification using a new thread.
-            NavManager?.NavigateTo("/steam/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared images"), true);
+            AppData.ActiveNavMan?.NavigateTo("/steam/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared images"), true);
         }
 
         /// <summary>

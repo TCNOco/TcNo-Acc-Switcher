@@ -17,6 +17,7 @@
 @using Microsoft.AspNetCore.Http.Extensions
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager NavManager
+@{ AppData.SetActiveNavMan(NavManager); }
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
 

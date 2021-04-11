@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 
@@ -76,7 +77,11 @@ namespace TcNo_Acc_Switcher_Server.Data
 
 
         private IJSRuntime _activeIJsRuntime = null;
-        [JsonIgnore] public IJSRuntime ActiveIJsRuntime { get => _instance._activeIJsRuntime; set => _instance._activeIJsRuntime = value; }
+        [JsonIgnore] public static IJSRuntime ActiveIJsRuntime { get => _instance._activeIJsRuntime; set => _instance._activeIJsRuntime = value; }
         public void SetActiveIJsRuntime(IJSRuntime jsr) => _instance._activeIJsRuntime = jsr;
+
+        private NavigationManager _activeNavMan = null;
+        [JsonIgnore] public static NavigationManager ActiveNavMan { get => _instance._activeNavMan; set => _instance._activeNavMan = value; }
+        public void SetActiveNavMan(NavigationManager nm) => _instance._activeNavMan = nm;
     }
 }

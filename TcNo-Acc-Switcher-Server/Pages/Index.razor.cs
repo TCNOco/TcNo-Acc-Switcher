@@ -27,14 +27,16 @@ namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Index : ComponentBase
     {
-        public async Task CheckSteam(IJSRuntime jsRuntime)
+        public async Task CheckSteam()
         {
-            if (Directory.Exists(Steam.FolderPath) && File.Exists(Steam.SteamExe()))
+            if (SteamSwitcherFuncs.SteamSettingsValid() && Directory.Exists(Steam.FolderPath) && File.Exists(Steam.SteamExe()))
             {
                 NavManager.NavigateTo("/Steam/");
-                return;
             }
-            await GeneralInvocableFuncs.ShowModal(jsRuntime, "find:Steam:Steam.exe:SteamSettings");
+            else
+            {
+                await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
+            }
         }
     }
 }
