@@ -79,7 +79,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             var s = new Shortcut();
             s.Shortcut_Steam(Shortcut.Desktop, $"Switch to {accName}.lnk", $"Switch to {accName} in TcNo Account Switcher", $"+s:{steamId}");
             s.CreateCombinedIcon(
-                Path.Join(GeneralFuncs.WwwRoot, "\\prog_icons\\steam.ico"),
+                //Path.Join(GeneralFuncs.WwwRoot, "\\prog_icons\\steam.ico"),
+                Path.Join(GeneralFuncs.WwwRoot, "\\img\\platform\\steam.svg"),
                 Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\{steamId}.jpg"), 
                 $"{steamId}.ico");
             s.TryWrite();

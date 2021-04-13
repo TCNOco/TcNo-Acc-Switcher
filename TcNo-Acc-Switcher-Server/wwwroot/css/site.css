@@ -372,3 +372,23 @@ div.advancedClearingButtonCol {
         margin-right: 1em !important;
         padding: 0.25em 3em!important;
     }
+.platformContainer {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.platformIcon {
+    width: 25vw;
+    /*max-width: calc(100vw / 4.106);*/
+    display: inline-block;
+    cursor: pointer;
+    border: var(--linkColor) 1px solid;
+}
+.platformIcon:hover {
+    background-color: #00000033;
+}
+.platformIcon:active {
+    background-color: #00000055;
+}

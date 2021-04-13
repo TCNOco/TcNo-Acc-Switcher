@@ -20,6 +20,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ImageMagick;
+using SkiaSharp;
+using Svg.Skia;
 using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
@@ -154,25 +156,40 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="icoOutput">Output filename</param>
         public static void CreateIcon(string sBgImg, string sFgImg, ref string icoOutput)
         {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateIcon]");
-            Directory.CreateDirectory("temp");
-            var pngOutput = "temp" + icoOutput.Split(".ico")[0];
-            CreateImage(sBgImg, sFgImg, $"{pngOutput}_16.png", new Size(16, 16));
-            CreateImage(sBgImg, sFgImg, $"{pngOutput}_32.png", new Size(32, 32));
-            CreateImage(sBgImg, sFgImg, $"{pngOutput}_48.png", new Size(48, 48));
-            CreateImage(sBgImg, sFgImg, $"{pngOutput}_256.png", new Size(256, 256));
+            var ms = new MemoryStream();
+            // If input is SVG, create PNG
+            if (sBgImg.EndsWith(".svg"))
+            {
+                using var svg = new SKSvg();
+                if (svg.Load(sBgImg) is { })
+                {
+                    //var tempBg =  Path.Join("temp", Path.GetFileNameWithoutExtension(sBgImg) + ".png");
+                    //using var svgToPngStream = File.OpenWrite(tempBg);
+                    svg.Save(ms,new SKColor(0, 0, 0, 255), SKEncodedImageFormat.Png, 100, 1f, 1f);
+                    //sBgImg = tempBg;
+                }
+            }
+            else
+            {
+                using var file = new FileStream(sBgImg, FileMode.Open, FileAccess.Read);
+                file.CopyTo(ms);
+            }
 
-            using var png16 = (Bitmap)Image.FromFile($"{pngOutput}_16.png");
-            using var png32 = (Bitmap)Image.FromFile($"{pngOutput}_32.png");
-            using var png48 = (Bitmap)Image.FromFile($"{pngOutput}_48.png");
-            using var png256 = (Bitmap)Image.FromFile($"{pngOutput}_256.png");
+
+            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateIcon]");
+            using var ms16 = new MemoryStream();
+            using var ms32 = new MemoryStream();
+            using var ms48 = new MemoryStream();
+            using var ms256 = new MemoryStream();
+            CreateImage(ms, sFgImg, ms16, new Size(16, 16));
+            CreateImage(ms, sFgImg, ms32, new Size(32, 32));
+            CreateImage(ms, sFgImg, ms48, new Size(48, 48));
+            CreateImage(ms, sFgImg, ms256, new Size(256, 256));
 
             Directory.CreateDirectory("IconCache");
             icoOutput = Path.Join("IconCache", icoOutput);
             using var stream = new FileStream(icoOutput, FileMode.Create);
-            IconFactory.SavePngsAsIcon(new[] { png16, png32, png48, png256 }, stream);
-
-            Directory.Delete("temp", true);
+            IconFactory.SavePngsAsIcon(new[] { new Bitmap(ms16), new Bitmap(ms32), new Bitmap(ms48), new Bitmap(ms256) }, stream);
         }
 
         /// <summary>
@@ -182,16 +199,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="sFgImg">User's profile image, for the foreground</param>
         /// <param name="output">Output filename</param>
         /// <param name="imgSize">Requested dimensions for the image</param>
-        public static void CreateImage(string sBgImg, string sFgImg, string output, Size imgSize)
+        public static void CreateImage(MemoryStream sBgImg, string sFgImg, MemoryStream output, Size imgSize)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateImage]");
+            sBgImg.Seek(0, SeekOrigin.Begin);
             using MagickImage bgImg = new MagickImage(sBgImg);
             using MagickImage fgImg = new MagickImage(sFgImg);
             bgImg.Resize(imgSize.Width, imgSize.Height);
             fgImg.Resize(imgSize.Width / 2, imgSize.Height / 2);
 
             bgImg.Composite(fgImg, Gravity.Southeast, CompositeOperator.Copy);
-            bgImg.Write(output);
+            bgImg.Write(output, MagickFormat.Png32);
+            output.Seek(0, SeekOrigin.Begin);
         }
     }
 }
