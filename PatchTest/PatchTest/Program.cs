@@ -24,9 +24,11 @@ namespace PatchTest
         private static List<string> patchList = new();
 
 
-        const string CurrentVersion = "2021-03-25";
+        const string CurrentVersion = "2021-03-12";
         static void Main(string[] args)
         {
+            //var updaterDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location); // Where this program is located
+            //Directory.SetCurrentDirectory(Directory.GetParent(updaterDirectory!)!.ToString()); // Set working directory to same as .exe
             //CreateUpdate();
 
 
@@ -48,51 +50,71 @@ namespace PatchTest
             // Get info on updates, and get updates since last:
             var updatesAndChanges = new Dictionary<string, string>();
             GetUpdatesList(ref updatesAndChanges);
+            if (updatesAndChanges.Count == 0)
+            {
+                Console.WriteLine("No updates found!");
+                Console.WriteLine("Press any key to exit...");
+                Console.ReadLine();
+                Environment.Exit(0);
+            }
+            Console.WriteLine("Updates found: " + updatesAndChanges.Count);
+            updatesAndChanges = updatesAndChanges.Reverse().ToDictionary(x => x.Key, x => x.Value);
 
             // Check if files are in use
             CloseIfRunning(currentDir);
-            
+
             // APPLY UPDATE
             // Cleanup previous updates
             if (Directory.Exists("temp_update")) Directory.Delete("temp_update", true);
-            
 
+
+            var client = new WebClient();
             foreach (var kvp in updatesAndChanges)
             {
                 // This update .exe exists inside an "update" folder, in the TcNo Account Switcher directory.
                 // Set the working folder as the parent to this one, where the main program files are located.
-                // TODO: Query and download update into new own folder.
-
+                Console.WriteLine("Downloading update: " + kvp.Key);
+                Console.WriteLine("Changes in this update: " + kvp.Value);
+                var downloadUrl = "https://tcno.co/Projects/AccSwitcher/updates/" + kvp.Key + ".7z";
+                var updateFilePath = Path.Combine(updaterDirectory, kvp.Key + ".7z");
+                client.DownloadFile(new Uri(downloadUrl), updateFilePath);
+                Console.WriteLine("Download complete.");
 
                 // Apply update
-                var updateFilePath = Path.Combine(updaterDirectory, "update1.7z");
                 ApplyUpdate(updateFilePath);
+                Console.WriteLine("Patch applied.");
+                Console.WriteLine("");
 
-
-                // Compare hash list to files, and download any files that don't match
-                //var client = new WebClient();
-                var client = new WebClient();
-                var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(Path.Join("temp_update", "hashes.json")));
-                if (verifyDictionary != null)
-                    foreach (var (key, value) in verifyDictionary)
-                    {
-                        if (!File.Exists(key)) continue;
-                        var md5 = GetFileMD5(key);
-                        if (value == md5) continue;
-
-                        Console.WriteLine("File: " + key + " has MD5: " + md5 + " EXPECTED: " + value);
-                        Console.WriteLine("Deleting: " + key);
-                        DeleteFile(key);
-                        Console.Write("Downloading file from website... ");
-                        var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'));
-                        client.DownloadFile(uri, key);
-                        Console.WriteLine("Done.");
-                    }
+                // Cleanup
+                Directory.Delete("temp_update", true);
+                File.Delete(updateFilePath);
+                oldDict = new Dictionary<string, string>();
+                newDict = new Dictionary<string, string>();
+                patchList = new List<string>();
             }
+            // Compare hash list to files, and download any files that don't match
+            Console.WriteLine("--- VERIFYING ---");
+            Console.Write("Downloading latest hash list... ");
+            var hashFilePath = "hashes.json";
+            client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
+            Console.WriteLine("Done.");
+            var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
+            if (verifyDictionary != null)
+                foreach (var (key, value) in verifyDictionary)
+                {
+                    if (!File.Exists(key)) continue;
+                    var md5 = GetFileMD5(key);
+                    if (value == md5) continue;
 
-
-            
-            Directory.Delete("temp_update", true);
+                    Console.WriteLine("File: " + key + " has MD5: " + md5 + " EXPECTED: " + value);
+                    Console.WriteLine("Deleting: " + key);
+                    DeleteFile(key);
+                    Console.Write("Downloading file from website... ");
+                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'));
+                    client.DownloadFile(uri, key);
+                    Console.WriteLine("Done.");
+                }
+            File.Delete(hashFilePath);
         }
 
         static void CloseIfRunning(string currentDir)
