@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SevenZipExtractor" Version="1.0.15" />
     <PackageReference Include="VCDiff" Version="3.3.2" />
   </ItemGroup>
