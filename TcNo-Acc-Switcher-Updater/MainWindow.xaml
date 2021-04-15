@@ -5,10 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TcNo_Acc_Switcher_Updater"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="397" Width="523"
         Closed="Window_Closed"
         Background="#28293A" WindowStyle="None" AllowsTransparency="True"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        ContentRendered="MainWindow_OnContentRendered">
     <Window.Resources>
         <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
         <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
@@ -199,8 +200,10 @@
         </Border>
         <Border Grid.Row="1" BorderBrush="#14151E" BorderThickness="4, 0, 4, 4">
             <Grid>
-                <Label Content="Downloading: xyz.zip" HorizontalAlignment="Left" Margin="151,225,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <ProgressBar HorizontalAlignment="Center" Height="44" Margin="0,252,0,0" VerticalAlignment="Top" Width="496"/>
+                <Label Name="StatusLabel" Content="Downloading: xyz.zip" HorizontalAlignment="Left" Margin="10,233,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <ProgressBar Name="ProgressBar" HorizontalAlignment="Center" Height="44" Margin="0,264,0,0" VerticalAlignment="Top" Width="495"/>
+                <Button Name="StartButton" HorizontalAlignment="Left" Height="40" Margin="329,313,0,0" VerticalAlignment="Top" Width="176" Click="StartUpdate_Click"/>
+                <TextBox Name="LogBox" Margin="10,10,10,135" Background="#14151E" Foreground="White" />
             </Grid>
         </Border>
 

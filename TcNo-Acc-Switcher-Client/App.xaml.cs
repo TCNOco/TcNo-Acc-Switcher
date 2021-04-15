@@ -37,8 +37,7 @@ namespace TcNo_Acc_Switcher_Client
     {
         private readonly Dictionary<string, List<TrayUser>> TrayUsers = new();
         public static string StartPage = "";
-
-
+        
         internal static class NativeMethods
         {
             // http://msdn.microsoft.com/en-us/library/ms681944(VS.85).aspx

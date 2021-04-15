@@ -1,4 +1,10 @@
-{"updates":{"2021-04-14": "Latest changes go here", "2021-04-11": "Second latest changes go here", "2021-03-12": "init"} }
+{
+    "updates":{
+        "2021-04-14": ["Latest changes go here", 10844221],
+        "2021-04-11": ["Second latest changes go here", 45250093], 
+        "2021-03-12": ["init", 0]
+    }
+}
 <?php
 /*
     GOAL:
