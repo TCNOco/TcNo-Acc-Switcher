@@ -34,7 +34,7 @@
                     <ControlTemplate TargetType="ProgressBar">
                         <Border BorderBrush="#FFFFFF" BorderThickness="0" Background="#14151E" CornerRadius="0" Padding="0">
                             <Grid x:Name="PART_Track">
-                                <Rectangle x:Name="PART_Progress" HorizontalAlignment="Left" Fill="#FFAA00" />
+                                <Rectangle x:Name="PART_Indicator" HorizontalAlignment="Left" Fill="#FFAA00" />
                             </Grid>
                         </Border>
                     </ControlTemplate>

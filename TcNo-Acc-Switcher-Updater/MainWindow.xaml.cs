@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -59,6 +60,7 @@ namespace TcNo_Acc_Switcher_Updater
         private void LaunchAccSwitcher(object sender, RoutedEventArgs e)
         {
             Process.Start("TcNo-Acc-Switcher.exe");
+            Environment.Exit(0);
         }
         // Window interaction
         private void BtnExit(object sender, RoutedEventArgs e)
@@ -94,13 +96,12 @@ namespace TcNo_Acc_Switcher_Updater
                 StatusLabel.Content = s;
             }), DispatcherPriority.Normal);
         }
-        private void SetStatusAndLog(string s, string logOutput = "")
+        private void SetStatusAndLog(string s)
         {
             Dispatcher.BeginInvoke(new Action(() => {
                 Debug.WriteLine("Status/Log: " + s);
                 StatusLabel.Content = s;
-                if (logOutput == "") return;
-                LogBox.Text += "\n" + logOutput;
+                LogBox.Text += "\n" + s;
                 LogBox.ScrollToEnd();
             }), DispatcherPriority.Normal);
         }
@@ -126,6 +127,11 @@ namespace TcNo_Acc_Switcher_Updater
 
         private void MainWindow_OnContentRendered(object? sender, EventArgs e)
         {
+            new Thread(Init).Start();
+        }
+
+        private void Init()
+        {
             ButtonHandler(false, "...");
             SetStatus("Checking for updates");
             Directory.SetCurrentDirectory(Directory.GetParent(updaterDirectory!)!.ToString()); // Set working directory to same as .exe
@@ -140,6 +146,31 @@ namespace TcNo_Acc_Switcher_Updater
                 Environment.Exit(0);
             }
             updatesAndChanges = updatesAndChanges.Reverse().ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        public void DownloadFile(Uri uri, string desintaion)
+        {
+            using (var wc = new WebClient())
+            {
+                wc.DownloadProgressChanged += OnClientOnDownloadProgressChanged;
+                wc.DownloadFileCompleted += HandleDownloadComplete;
+
+                var syncObject = new Object();
+                lock (syncObject)
+                {
+                    wc.DownloadFileAsync(uri, desintaion, syncObject);
+                    //This would block the thread until download completes
+                    Monitor.Wait(syncObject);
+                }
+            }
+
+        }
+        public void HandleDownloadComplete(object sender, AsyncCompletedEventArgs args)
+        {
+            lock (args.UserState)
+            {
+                Monitor.Pulse(args.UserState);
+            }
         }
 
         /// <summary>
@@ -172,9 +203,7 @@ namespace TcNo_Acc_Switcher_Updater
             // Cleanup previous updates
             if (Directory.Exists("temp_update")) Directory.Delete("temp_update", true);
 
-
-            var client = new WebClient();
-            client.DownloadProgressChanged += OnClientOnDownloadProgressChanged;
+            
             foreach (var kvp in updatesAndChanges)
             {
                 // This update .exe exists inside an "update" folder, in the TcNo Account Switcher directory.
@@ -182,7 +211,7 @@ namespace TcNo_Acc_Switcher_Updater
                 SetStatusAndLog("Downloading update: " + kvp.Key);
                 var downloadUrl = "https://tcno.co/Projects/AccSwitcher/updates/" + kvp.Key + ".7z";
                 var updateFilePath = Path.Combine(updaterDirectory, kvp.Key + ".7z");
-                client.DownloadFile(new Uri(downloadUrl), updateFilePath);
+                DownloadFile(new Uri(downloadUrl), updateFilePath);
                 SetStatusAndLog("Download complete.");
 
                 // Apply update
@@ -200,6 +229,7 @@ namespace TcNo_Acc_Switcher_Updater
 
 
             // Compare hash list to files, and download any files that don't match
+            var client = new WebClient();
             client.DownloadProgressChanged -= OnClientOnDownloadProgressChanged;
             Debug.WriteLine("--- VERIFYING ---");
             SetStatusAndLog("Verifying...");
@@ -213,10 +243,11 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 var verifyDictTotal = verifyDictionary.Count;
                 var cur = 0;
+                UpdateProgress(0);
                 foreach (var (key, value) in verifyDictionary)
                 {
                     cur++;
-                    UpdateProgress(cur / verifyDictTotal);
+                    UpdateProgress((cur * 100) / verifyDictTotal);
                     if (!File.Exists(key)) continue;
                     var md5 = GetFileMd5(key);
                     if (value == md5) continue;
@@ -232,7 +263,8 @@ namespace TcNo_Acc_Switcher_Updater
             }
 
             File.Delete(hashFilePath);
-            SetStatusAndLog("Done.");
+            WriteLine("");
+            SetStatusAndLog("All updates complete!");
             ButtonHandler(true, "Start Acc Switcher");
             Dispatcher.BeginInvoke(new Action(() => {
                 StartButton.Click -= StartUpdate_Click;
