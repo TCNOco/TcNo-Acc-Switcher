@@ -18,6 +18,74 @@
         <SolidColorBrush x:Key="HorizontalNormalBrush" Color="#515164" />
         <SolidColorBrush x:Key="HorizontalNormalBorderBrush" Color="#888" />
 
+        <SolidColorBrush x:Key="HighlightColor" Color="#FFAA00"/>
+        <SolidColorBrush x:Key="MainBackground" Color="#28293A"/>
+        <SolidColorBrush x:Key="HeaderColor" Color="#14151E"/>
+        <SolidColorBrush x:Key="ListBackground" Color="#14151E"/>
+        <SolidColorBrush x:Key="BorderedItemBorderColor" Color="#888888"/>
+        <SolidColorBrush x:Key="ButtonBackground" Color="#333333"/>
+        <SolidColorBrush x:Key="ButtonBackgroundHover" Color="#444444"/>
+        <SolidColorBrush x:Key="ButtonBackgroundActive" Color="#222222"/>
+        <SolidColorBrush x:Key="ButtonColor" Color="white"/>
+        <SolidColorBrush x:Key="ButtonBorder" Color="#888888"/>
+        <SolidColorBrush x:Key="ButtonBorderHover" Color="#888888"/>
+        <SolidColorBrush x:Key="ButtonBorderActive" Color="#FFAA00"/>
+
+        <SolidColorBrush x:Key="WindowControlsBackgroundHover" Color="#19FFFFFF"/>
+        <SolidColorBrush x:Key="WindowControlsBackgroundActive" Color="#32FFFFFF"/>
+        <SolidColorBrush x:Key="WindowControlsCloseBackground" Color="#E81123"/>
+        <SolidColorBrush x:Key="WindowControlsCloseBackgroundActive" Color="#F1707A"/>
+
+        <!-- Header bar buttons -->
+        <Style x:Key="ExitButton" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#00000000" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" BorderThickness="0" BorderBrush="White" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="Black"></Setter>
+                                <Setter Property="Background" Value="{DynamicResource WindowControlsCloseBackground}"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource WindowControlsCloseBackgroundActive}"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="MinimizeButton" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#00000000" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" BorderThickness="0" BorderBrush="White" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource WindowControlsBackgroundHover}"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource WindowControlsBackgroundActive}"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <LinearGradientBrush x:Key="PressedBrush" StartPoint="0,0" EndPoint="0,1">
             <GradientBrush.GradientStops>
                 <GradientStopCollection>
@@ -28,13 +96,36 @@
                 </GradientStopCollection>
             </GradientBrush.GradientStops>
         </LinearGradientBrush>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ButtonBackgroundHover}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderHover}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ButtonBackgroundActive}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderActive}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="{x:Type ProgressBar}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ProgressBar">
-                        <Border BorderBrush="#FFFFFF" BorderThickness="0" Background="#14151E" CornerRadius="0" Padding="0">
+                        <Border BorderBrush="{DynamicResource BorderedItemBorderColor}" BorderThickness="1" Background="{DynamicResource ListBackground}" CornerRadius="0" Padding="0">
                             <Grid x:Name="PART_Track">
-                                <Rectangle x:Name="PART_Indicator" HorizontalAlignment="Left" Fill="#FFAA00" />
+                                <Rectangle x:Name="PART_Indicator" HorizontalAlignment="Left" Fill="{DynamicResource HighlightColor}" />
                             </Grid>
                         </Border>
                     </ControlTemplate>
@@ -158,7 +249,7 @@
         </Style>
     </Window.Resources>
 
-    <Grid Background="#28293A">
+    <Grid Background="{DynamicResource MainBackground}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -167,8 +258,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Border MouseDown="DragWindow" Grid.Row="0" Background="#14151E" Height="30" Panel.ZIndex="3"/>
-        <Label Panel.ZIndex="3" IsHitTestVisible="False" Name="HeaderInstruction" Grid.Row="0" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="Select a platform"/>
+        <Border MouseDown="DragWindow" Grid.Row="0" Name="Headerbar" Background="{DynamicResource HeaderColor}" Height="30" Panel.ZIndex="3"/>
+        <Label Panel.ZIndex="3" IsHitTestVisible="False" Name="HeaderInstruction" Grid.Row="0" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="TcNo Account Switcher Updater"/>
         <Canvas Grid.Row="0" Panel.ZIndex="3" IsHitTestVisible="False"  Name="Svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5 0 0 0">
             <Canvas.RenderTransform>
                 <TranslateTransform X="0" Y="0"/>
@@ -193,17 +284,12 @@
         <Button Panel.ZIndex="3" Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="BtnExit"></Button>
 
         <!-- Row 1: Main content -->
-        <Border Grid.Row="1" Height="10" VerticalAlignment="Top" Margin="0 -10 0 0" Panel.ZIndex="2" Background="#14151E">
-            <Border.Effect>
-                <DropShadowEffect Color="Black" ShadowDepth="2" Direction="270" Opacity="1" BlurRadius="4"/>
-            </Border.Effect>
-        </Border>
-        <Border Grid.Row="1" BorderBrush="#14151E" BorderThickness="4, 0, 4, 4">
+        <Border Grid.Row="1" Name="BorderBlock" BorderBrush="{DynamicResource HeaderColor}" BorderThickness="4, 0, 4, 4">
             <Grid>
                 <Label Name="StatusLabel" Content="Downloading: xyz.zip" HorizontalAlignment="Left" Margin="10,233,0,0" VerticalAlignment="Top" Foreground="White"/>
                 <ProgressBar Name="ProgressBar" HorizontalAlignment="Center" Height="44" Margin="0,264,0,0" VerticalAlignment="Top" Width="495"/>
-                <Button Name="StartButton" HorizontalAlignment="Left" Height="40" Margin="329,313,0,0" VerticalAlignment="Top" Width="176" Click="StartUpdate_Click"/>
-                <TextBox Name="LogBox" Margin="10,10,10,135" Background="#14151E" Foreground="White" />
+                <Button Name="StartButton" HorizontalAlignment="Left" Height="40" Margin="329,313,0,0" VerticalAlignment="Top" Width="176" Click="StartUpdate_Click" Foreground="{DynamicResource ButtonColor}"/>
+                <TextBox Name="LogBox" Margin="10,10,10,135" BorderBrush="{DynamicResource BorderedItemBorderColor}" BorderThickness="1" Background="{DynamicResource ListBackground}" Foreground="White" />
             </Grid>
         </Border>
 

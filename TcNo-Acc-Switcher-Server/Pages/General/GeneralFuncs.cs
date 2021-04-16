@@ -259,14 +259,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             // Get existing settings
             var joSettings = new JObject();
-            try
-            {
-                joSettings = JObject.Parse(File.ReadAllText(sFilename));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+            if (File.Exists(sFilename))
+                try
+                {
+                    joSettings = JObject.Parse(File.ReadAllText(sFilename));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
 
             if (reverse)
             {

@@ -60,7 +60,6 @@ namespace TcNo_Acc_Switcher_Client
         private static readonly Thread _server = new Thread(RunServer);
         public static readonly TcNo_Acc_Switcher_Server.Data.AppSettings AppSettings = TcNo_Acc_Switcher_Server.Data.AppSettings.Instance;
         private static string _address = "";
-        private static Process process;
 
         private static void RunServer()
         {
@@ -138,16 +137,12 @@ namespace TcNo_Acc_Switcher_Client
         private void WindowStateChange(object sender, EventArgs e)
         {
             Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.WindowStateChange]");
-            var state = "";
-            switch (WindowState)
+            var state = WindowState switch
             {
-                case WindowState.Maximized:
-                    state = "add";
-                    break;
-                case WindowState.Normal:
-                    state = "remove";
-                    break;
-            }
+                WindowState.Maximized => "add",
+                WindowState.Normal => "remove",
+                _ => ""
+            };
             MView2.ExecuteScriptAsync("document.body.classList." + state + "('maximized')");
         }
 
@@ -180,7 +175,6 @@ namespace TcNo_Acc_Switcher_Client
         private void UrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
             Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
-            var uri = args.Uri.Split("/").Last();
             Console.WriteLine(args.Uri);
 
             if (!args.Uri.Contains("?")) return;
@@ -201,14 +195,13 @@ namespace TcNo_Acc_Switcher_Client
             if (result != true) return;
             MView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
             MView2.ExecuteScriptAsync("Modal_SetFilepath(" + JsonConvert.SerializeObject(dlg.FileName.Substring(0, dlg.FileName.LastIndexOf('\\'))) + ")");
-            //VerifySteamPath();
 
         }
         public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)
         {
             Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.ExecuteScriptFunctionAsync]");
-            string script = functionName + "(";
-            for (int i = 0; i < parameters.Length; i++)
+            var script = functionName + "(";
+            for (var i = 0; i < parameters.Length; i++)
             {
                 script += JsonConvert.SerializeObject(parameters[i]);
                 if (i < parameters.Length - 1)

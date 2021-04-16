@@ -48,6 +48,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         // Variables
+        private string _version = "2021-04-16";
+        [JsonProperty("Version", Order = 2)] public string Version { get => _instance._version; set => _instance._version = value; }
+
         private bool _streamerModeEnabled = true;
         [JsonProperty("StreamerModeEnabled", Order = 0)] public bool StreamerModeEnabled { get => _instance._streamerModeEnabled; set => _instance._streamerModeEnabled = value; }
 
@@ -56,6 +59,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private Point _windowSize = new() { X = 800, Y = 450 };
         [JsonProperty("WindowSize", Order = 2)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
+        
 
         // Variables loaded from other files:
         private Dictionary<string, string> _stylesheet = new()
@@ -213,7 +217,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             Globals.DebugWriteLine($@"[Func:Data\AppSettings.LoadFromFile]");
             // Main settings
-            SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
+            if (!File.Exists(SettingsFile)) SaveSettings();
+            else SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
             // Stylesheet
             if (!File.Exists(StylesheetFile)) SaveStyles();
             //var s = GeneralFuncs.LoadSettings(StylesheetFile, GetStylesJObject()).ToObject<Dictionary<string, string>>();

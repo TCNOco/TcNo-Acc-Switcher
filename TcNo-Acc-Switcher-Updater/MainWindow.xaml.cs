@@ -2,25 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Threading;
-using System.Xml;
-using Microsoft.VisualBasic.CompilerServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SevenZipExtractor;
@@ -36,56 +28,46 @@ namespace TcNo_Acc_Switcher_Updater
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         // Dictionaries of file paths, as well as MD5 Hashes
-        private static Dictionary<string, string> oldDict = new();
-        private static Dictionary<string, string> newDict = new();
-        private static List<string> patchList = new();
+        private static Dictionary<string, string> _oldDict = new();
+        private static Dictionary<string, string> _newDict = new();
+        private static List<string> _patchList = new();
 
 
-        const string CurrentVersion = "2021-03-12";
+        private string _currentVersion = "0";
 
 
         #region WINDOW_BUTTONS
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
-        private void StartUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            new Thread(DoUpdate).Start();
-        }
+        public MainWindow() => InitializeComponent();
+        private void StartUpdate_Click(object sender, RoutedEventArgs e) => new Thread(DoUpdate).Start();
 
-        private void LaunchAccSwitcher(object sender, RoutedEventArgs e)
+        private static void LaunchAccSwitcher(object sender, RoutedEventArgs e)
         {
             Process.Start("TcNo-Acc-Switcher.exe");
             Environment.Exit(0);
         }
+        private static void ExitProgram(object sender, RoutedEventArgs e) => Environment.Exit(0);
+        
         // Window interaction
-        private void BtnExit(object sender, RoutedEventArgs e)
-        {
-            WindowHandling.BtnExit(sender, e, this);
-        }
-        private void BtnMinimize(object sender, RoutedEventArgs e)
-        {
-            WindowHandling.BtnMinimize(sender, e, this);
-        }
-        private void DragWindow(object sender, MouseButtonEventArgs e)
-        {
-            WindowHandling.DragWindow(sender, e, this);
-        }
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            Environment.Exit(1);
-        }
+        private void BtnExit(object sender, RoutedEventArgs e) => WindowHandling.BtnExit(sender, e, this);
+        private void BtnMinimize(object sender, RoutedEventArgs e) => WindowHandling.BtnMinimize(sender, e, this);
+        private void DragWindow(object sender, MouseButtonEventArgs e) => WindowHandling.DragWindow(sender, e, this);
+        private void Window_Closed(object sender, EventArgs e) => Environment.Exit(1);
         #endregion
         
-        private void WriteLine(string line)
+        private void CreateExitButton()
+        {
+            StartButton.Click -= StartUpdate_Click;
+            StartButton.Click += ExitProgram;
+            ButtonHandler(true, "Exit");
+        }
+        private void WriteLine(string line, string lineBreak = "\n")
         {
             Dispatcher.BeginInvoke(new Action(() => {
                 Debug.WriteLine(line);
-                LogBox.Text += "\n" + line;
+                LogBox.Text += lineBreak + line;
                 LogBox.ScrollToEnd();
             }), DispatcherPriority.Normal);
         }
@@ -96,12 +78,12 @@ namespace TcNo_Acc_Switcher_Updater
                 StatusLabel.Content = s;
             }), DispatcherPriority.Normal);
         }
-        private void SetStatusAndLog(string s)
+        private void SetStatusAndLog(string s, string lineBreak ="\n")
         {
             Dispatcher.BeginInvoke(new Action(() => {
                 Debug.WriteLine("Status/Log: " + s);
                 StatusLabel.Content = s;
-                LogBox.Text += "\n" + s;
+                LogBox.Text += lineBreak + s;
                 LogBox.ScrollToEnd();
             }), DispatcherPriority.Normal);
         }
@@ -121,52 +103,102 @@ namespace TcNo_Acc_Switcher_Updater
             }), DispatcherPriority.Normal);
         }
 
-        private Dictionary<string, string> updatesAndChanges = new Dictionary<string, string>();
-        private string currentDir = Directory.GetCurrentDirectory();
-        private string updaterDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location); // Where this program is located
+        private Dictionary<string, string> _updatesAndChanges = new();
+        private readonly string _currentDir = Directory.GetCurrentDirectory();
+        private readonly string _updaterDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location); // Where this program is located
 
-        private void MainWindow_OnContentRendered(object? sender, EventArgs e)
-        {
-            new Thread(Init).Start();
-        }
-
+        private void MainWindow_OnContentRendered(object? sender, EventArgs e) => new Thread(Init).Start();
+        
         private void Init()
         {
+            Directory.SetCurrentDirectory(Directory.GetParent(_updaterDirectory!)!.ToString()); // Set working directory to same as .exe
+            SetStatus("Checking version");
+            try
+            {
+                if (File.Exists("WindowSettings.json"))
+                {
+                    var o = JObject.Parse(File.ReadAllText("WindowSettings.json"));
+                    _currentVersion = o["Version"]?.ToString();
+                    WriteLine("Current version: " + _currentVersion + " \n", "");
+                }
+                else
+                {
+                    SetStatusAndLog("Missing settings file.", "");
+                    WriteLine("There is no settings file. Please launch the application if it's installed at all first.");
+                    WriteLine("(Located in parent folder, next to 'TcNo-Acc-Switcher.exe' you should see 'WindowSettings.json'");
+                    CreateExitButton();
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                SetStatusAndLog("Corrupt settings file.", "");
+                WriteLine("The settings file is missing the 'Version' variable.");
+                WriteLine("(Located in parent folder, next to 'TcNo-Acc-Switcher.exe' you should see 'WindowSettings.json'");
+                CreateExitButton();
+                return;
+            }
+            // Styling
+            if (File.Exists("StyleSettings.json"))
+                try
+                {
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        var o = JObject.Parse(File.ReadAllText("StyleSettings.json"));
+                        Resources["HighlightColor"] = (Brush)new BrushConverter().ConvertFromString(o["linkColor"]?.ToString()); // Add a specific Highlight color later?
+                        Resources["HeaderColor"] = (Brush)new BrushConverter().ConvertFromString(o["headerbarBackground"]?.ToString());
+                        Resources["MainBackground"] = (Brush)new BrushConverter().ConvertFromString(o["mainBackground"]?.ToString());
+                        Resources["ListBackground"] = (Brush)new BrushConverter().ConvertFromString(o["modalInputBackground"]?.ToString());
+                        Resources["BorderedItemBorderColor"] = (Brush)new BrushConverter().ConvertFromString(o["borderedItemBorderColor"]?.ToString());
+                        Resources["ButtonBackground"] = (Brush)new BrushConverter().ConvertFromString(o["buttonBackground"]?.ToString());
+                        Resources["ButtonBackgroundHover"] = (Brush)new BrushConverter().ConvertFromString(o["buttonBackground-hover"]?.ToString());
+                        Resources["ButtonBackgroundActive"] = (Brush)new BrushConverter().ConvertFromString(o["buttonBackground-active"]?.ToString());
+                        Resources["ButtonColor"] = (Brush)new BrushConverter().ConvertFromString(o["buttonColor"]?.ToString());
+                        Resources["ButtonBorder"] = (Brush)new BrushConverter().ConvertFromString(o["buttonBorder"]?.ToString());
+                        Resources["ButtonBorderHover"] = (Brush)new BrushConverter().ConvertFromString(o["buttonBorder-hover"]?.ToString());
+                        Resources["ButtonBorderActive"] = (Brush)new BrushConverter().ConvertFromString(o["buttonBorder-active"]?.ToString());
+
+                        Resources["WindowControlsBackground"] = (Brush)new BrushConverter().ConvertFromString(o["windowControlsBackground-hover"]?.ToString());
+                        Resources["WindowControlsBackgroundActive"] = (Brush)new BrushConverter().ConvertFromString(o["windowControlsBackground-active"]?.ToString());
+                        Resources["WindowControlsCloseBackground"] = (Brush)new BrushConverter().ConvertFromString(o["windowControlsCloseBackground"]?.ToString());
+                        Resources["WindowControlsCloseBackgroundActive"] = (Brush)new BrushConverter().ConvertFromString(o["windowControlsCloseBackground-active"]?.ToString());
+                    }), DispatcherPriority.Normal);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Can't find or properly assign colors from StyleSettings.json");
+                    Debug.WriteLine(e);
+                }
+
             ButtonHandler(false, "...");
             SetStatus("Checking for updates");
-            Directory.SetCurrentDirectory(Directory.GetParent(updaterDirectory!)!.ToString()); // Set working directory to same as .exe
 
             // Get info on updates, and get updates since last:
-            GetUpdatesList(ref updatesAndChanges);
-            if (updatesAndChanges.Count == 0)
+            GetUpdatesList(ref _updatesAndChanges);
+            if (_updatesAndChanges.Count == 0)
             {
                 Debug.WriteLine("No updates found!");
                 Debug.WriteLine("Press any key to exit...");
-                Console.ReadLine();
-                Environment.Exit(0);
             }
-            updatesAndChanges = updatesAndChanges.Reverse().ToDictionary(x => x.Key, x => x.Value);
+            _updatesAndChanges = _updatesAndChanges.Reverse().ToDictionary(x => x.Key, x => x.Value);
         }
 
-        public void DownloadFile(Uri uri, string desintaion)
+        public void DownloadFile(Uri uri, string destination)
         {
-            using (var wc = new WebClient())
+            using var wc = new WebClient();
+            wc.DownloadProgressChanged += OnClientOnDownloadProgressChanged;
+            wc.DownloadFileCompleted += HandleDownloadComplete;
+
+            var syncObject = new Object();
+            lock (syncObject)
             {
-                wc.DownloadProgressChanged += OnClientOnDownloadProgressChanged;
-                wc.DownloadFileCompleted += HandleDownloadComplete;
-
-                var syncObject = new Object();
-                lock (syncObject)
-                {
-                    wc.DownloadFileAsync(uri, desintaion, syncObject);
-                    //This would block the thread until download completes
-                    Monitor.Wait(syncObject);
-                }
+                wc.DownloadFileAsync(uri, destination, syncObject);
+                //This would block the thread until download completes
+                Monitor.Wait(syncObject);
             }
-
         }
         public void HandleDownloadComplete(object sender, AsyncCompletedEventArgs args)
         {
+            Debug.Assert(args.UserState != null, "args.UserState != null");
             lock (args.UserState)
             {
                 Monitor.Pulse(args.UserState);
@@ -197,20 +229,20 @@ namespace TcNo_Acc_Switcher_Updater
             ButtonHandler(false, "Started");
             SetStatusAndLog("Closing TcNo Account Switcher instances (if any).");
             // Check if files are in use
-            CloseIfRunning(currentDir);
+            CloseIfRunning(_currentDir);
 
             // APPLY UPDATE
             // Cleanup previous updates
             if (Directory.Exists("temp_update")) Directory.Delete("temp_update", true);
 
             
-            foreach (var kvp in updatesAndChanges)
+            foreach (var (key, _) in _updatesAndChanges)
             {
                 // This update .exe exists inside an "update" folder, in the TcNo Account Switcher directory.
                 // Set the working folder as the parent to this one, where the main program files are located.
-                SetStatusAndLog("Downloading update: " + kvp.Key);
-                var downloadUrl = "https://tcno.co/Projects/AccSwitcher/updates/" + kvp.Key + ".7z";
-                var updateFilePath = Path.Combine(updaterDirectory, kvp.Key + ".7z");
+                SetStatusAndLog("Downloading update: " + key);
+                var downloadUrl = "https://tcno.co/Projects/AccSwitcher/updates/" + key + ".7z";
+                var updateFilePath = Path.Combine(_updaterDirectory, key + ".7z");
                 DownloadFile(new Uri(downloadUrl), updateFilePath);
                 SetStatusAndLog("Download complete.");
 
@@ -222,9 +254,9 @@ namespace TcNo_Acc_Switcher_Updater
                 // Cleanup
                 Directory.Delete("temp_update", true);
                 File.Delete(updateFilePath);
-                oldDict = new Dictionary<string, string>();
-                newDict = new Dictionary<string, string>();
-                patchList = new List<string>();
+                _oldDict = new Dictionary<string, string>();
+                _newDict = new Dictionary<string, string>();
+                _patchList = new List<string>();
             }
 
 
@@ -279,42 +311,85 @@ namespace TcNo_Acc_Switcher_Updater
 
 
         /// <summary>
+        /// Checks whether the program version is equal to or newer than the servers
+        /// </summary>
+        /// <param name="latest">Latest version provided by server</param>
+        /// <returns>Whether the program is up-to-date or ahead</returns>
+        private bool CheckLatest(string latest)
+        {
+            DateTime latestDate, currentDate;
+            if (DateTime.TryParseExact(latest, "yyyy-mm-dd", null, DateTimeStyles.None, out latestDate))
+            {
+                if (DateTime.TryParseExact(_currentVersion, "yyyy-mm-dd", null, DateTimeStyles.None, out currentDate))
+                {
+                    if (latestDate.Equals(currentDate) || currentDate.Subtract(latestDate) > TimeSpan.Zero) return true;
+                }
+                else
+                    Console.WriteLine("Unable to convert '{0}' to a date and time.", latest);
+            }
+            else
+                Console.WriteLine("Unable to convert '{0}' to a date and time.", latest);
+            return false;
+        }
+
+
+        /// <summary>
         /// Gets list of updates from https://tcno.co
         /// </summary>
         /// <param name="updatesAndChanges"></param>
         private void GetUpdatesList(ref Dictionary<string, string> updatesAndChanges)
         {
-            double totalFilesize = 0;
+            double totalFileSize = 0;
 
             var client = new WebClient();
             client.Headers.Add("Cache-Control", "no-cache");
             var vUri = new Uri("https://tcno.co/Projects/AccSwitcher/api_v4.php");
             var versions = client.DownloadString(vUri);
             var jUpdates = JObject.Parse(versions)["updates"];
+            Debug.Assert(jUpdates != null, nameof(jUpdates) + " != null");
+            var firstChecked = false;
             foreach (var jToken in jUpdates)
             {
                 var jUpdate = (JProperty) jToken;
-                if (jUpdate.Name == CurrentVersion) break; // Get up to the current version
-                var updateDetails = jUpdate.Value[0].ToString();
-                var updateSize = FilesizeString((double) jUpdate.Value[1]);
-                totalFilesize += (double) jUpdate.Value[1];
+                if (jUpdate.Name == _currentVersion) break; // Get up to the current version
+                if (!firstChecked)
+                {
+                    firstChecked = true;
+                    if (CheckLatest(jUpdate.Name)) // If up to date or newer
+                        break;
+                }
+                var updateDetails = jUpdate.Value[0]!.ToString();
+                var updateSize = FileSizeString((double) jUpdate.Value[1]);
+                totalFileSize += (double) jUpdate.Value[1];
 
                 updatesAndChanges.Add(jUpdate.Name, jUpdate.Value.ToString());
-                WriteLine($"Update found: {jUpdate.Name}, {updateSize}");
-                WriteLine(updateDetails);
+                WriteLine($"Update found: {jUpdate.Name} [{updateSize}]");
+                WriteLine("- " + updateDetails);
                 WriteLine("");
             }
             WriteLine("-------------------------------------------");
             WriteLine($"Total updates found: {updatesAndChanges.Count}");
-            WriteLine($"Total size: {FilesizeString(totalFilesize)}");
-            WriteLine("-------------------------------------------");
-            WriteLine("Click the button below to start the update.");
-            ButtonHandler(true, "Start update");
-            SetStatus("Waiting for user input...");
+            if (updatesAndChanges.Count > 0)
+            {
+                WriteLine($"Total size: {FileSizeString(totalFileSize)}");
+                WriteLine("-------------------------------------------");
+                WriteLine("Click the button below to start the update.");
+                ButtonHandler(true, "Start update");
+                SetStatus("Waiting for user input...");
+            }
+            else
+            {
+                WriteLine("-------------------------------------------");
+                WriteLine($"You're up to date.");
+                SetStatus(":)");
+                CreateExitButton();
+            }
+
         }
 
-        private string FilesizeString(double len)
+        private static string FileSizeString(double len)
         {
+            if (len == 0) return "0 bytes";
             string[] sizes = { "B", "KB", "MB", "GB" };
             var n2 = (int)Math.Log10(len) / 3;
             var n3 = len / Math.Pow(1e3, n2);
@@ -325,7 +400,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// Closes TcNo Account Switcher's processes if any are running. (Searches program's folder recursively)
         /// </summary>
         /// <param name="currentDir"></param>
-        private void CloseIfRunning(string currentDir)
+        private static void CloseIfRunning(string currentDir)
         {
             Debug.WriteLine("Checking for running instances of TcNo Account Switcher");
             foreach (var exe in Directory.GetFiles(currentDir, "*.exe", SearchOption.AllDirectories))
@@ -378,7 +453,7 @@ namespace TcNo_Acc_Switcher_Updater
             ApplyPatches(currentDir, "temp_update");
 
             // Remove files that need to be removed:
-            List<string> filesToDelete = File.ReadAllLines(Path.Join("temp_update", "filesToDelete.txt")).ToList();
+            var filesToDelete = File.ReadAllLines(Path.Join("temp_update", "filesToDelete.txt")).ToList();
 
             SetStatusAndLog("Moving files...");
             MoveFilesRecursive(Path.Join("temp_update", "new"), currentDir);
@@ -395,7 +470,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         /// <param name="inputFolder">Folder to move files recursively from</param>
         /// <param name="outputFolder">Destination folder</param>
-        private void MoveFilesRecursive(string inputFolder, string outputFolder)
+        private static void MoveFilesRecursive(string inputFolder, string outputFolder)
         {
             //Now Create all of the directories
             foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
@@ -404,22 +479,6 @@ namespace TcNo_Acc_Switcher_Updater
             //Copy all the files & Replaces any files with the same name
             foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
                 File.Move(newPath, newPath.Replace(inputFolder, outputFolder), true);
-        }
-
-        /// <summary>
-        /// Recursively copy files and directories
-        /// </summary>
-        /// <param name="inputFolder">Folder to copy files recursively from</param>
-        /// <param name="outputFolder">Destination folder</param>
-        private void CopyFilesRecursive(string inputFolder, string outputFolder)
-        {
-            //Now Create all of the directories
-            foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
-                Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
-
-            //Copy all the files & Replaces any files with the same name
-            foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
-                File.Copy(newPath, newPath.Replace(inputFolder, outputFolder), true);
         }
 
         /// <summary>
@@ -454,20 +513,19 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         /// <param name="baseDir">Folder to start working inwards from (as DirectoryInfo)</param>
         /// <param name="keepFolders">Set to False to delete folders as well as files</param>
-        /// <param name="jsDest">Place to send responses (if any)</param>
-        private static void RecursiveDelete(DirectoryInfo baseDir, bool keepFolders, string jsDest = "")
+        private static void RecursiveDelete(DirectoryInfo baseDir, bool keepFolders)
         {
             if (!baseDir.Exists)
                 return;
 
             foreach (var dir in baseDir.EnumerateDirectories())
             {
-                RecursiveDelete(dir, keepFolders, jsDest);
+                RecursiveDelete(dir, keepFolders);
             }
             var files = baseDir.GetFiles();
             foreach (var file in files)
             {
-                DeleteFile(fileInfo: file, jsDest: jsDest);
+                DeleteFile(fileInfo: file);
             }
 
             if (keepFolders) return;
@@ -479,8 +537,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         /// <param name="file">(Optional) File string to delete</param>
         /// <param name="fileInfo">(Optional) FileInfo of file to delete</param>
-        /// <param name="jsDest">Place to send responses (if any)</param>
-        private static void DeleteFile(string file = "", FileInfo fileInfo = null, string jsDest = "")
+        private static void DeleteFile(string file = "", FileInfo fileInfo = null)
         {
             var f = fileInfo ?? new FileInfo(file);
 
@@ -493,9 +550,9 @@ namespace TcNo_Acc_Switcher_Updater
                     f.Delete();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-
+                // ignored
             }
         }
 
@@ -506,8 +563,8 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="outputFolder">Path to folder with patches folder in it</param>
         private void ApplyPatches(string oldFolder, string outputFolder)
         {
-            DirSearch(Path.Join(outputFolder, "patches"), ref patchList);
-            foreach (var p in patchList)
+            DirSearch(Path.Join(outputFolder, "patches"), ref _patchList);
+            foreach (var p in _patchList)
             {
                 var relativePath = p.Remove(0, p.Split("\\")[0].Length + 1);
                 var patchFile = Path.Join(outputFolder, "patches", relativePath);
@@ -528,34 +585,34 @@ namespace TcNo_Acc_Switcher_Updater
         {
             Directory.CreateDirectory(outputFolder);
 
-            DirSearchWithHash(oldFolder, ref oldDict);
-            DirSearchWithHash(newFolder, ref newDict);
+            DirSearchWithHash(oldFolder, ref _oldDict);
+            DirSearchWithHash(newFolder, ref _newDict);
 
             // -----------------------------------
             // SAVE DICT OF NEW FILES & HASHES
             // -----------------------------------
-            File.WriteAllText(Path.Join(outputFolder, "hashes.json"), JsonConvert.SerializeObject(newDict, Newtonsoft.Json.Formatting.Indented));
+            File.WriteAllText(Path.Join(outputFolder, "hashes.json"), JsonConvert.SerializeObject(_newDict, Formatting.Indented));
 
 
             List<string> differentFiles = new();
             // Files left in newDict are completely new files.
 
             // COMPARE THE 2 FOLDERS
-            foreach (var kvp in oldDict) // Foreach entry in old dictionary:
+            foreach (var kvp in _oldDict) // Foreach entry in old dictionary:
             {
-                if (newDict.TryGetValue(kvp.Key, out string sVal)) // If new dictionary has it, get it's value
+                if (_newDict.TryGetValue(kvp.Key, out string sVal)) // If new dictionary has it, get it's value
                 {
                     if (kvp.Value != sVal) // Compare the values. If they don't match ==> FILES ARE DIFFERENT
                     {
                         differentFiles.Add(kvp.Key);
                     }
-                    oldDict.Remove(kvp.Key); // Remove from both old
-                    newDict.Remove(kvp.Key); // and new dictionaries
+                    _oldDict.Remove(kvp.Key); // Remove from both old
+                    _newDict.Remove(kvp.Key); // and new dictionaries
                 }
                 else // New dictionary does NOT have this file
                 {
                     filesToDelete.Add(kvp.Key); // Add to list of files to delete
-                    oldDict.Remove(kvp.Key); // Remove from old dictionary. They have been added to delete list.
+                    _oldDict.Remove(kvp.Key); // Remove from old dictionary. They have been added to delete list.
                 }
             }
 
@@ -565,7 +622,7 @@ namespace TcNo_Acc_Switcher_Updater
             // Copy new files into output\\new
             string outputNewFolder = Path.Join(outputFolder, "new");
             Directory.CreateDirectory(outputNewFolder);
-            foreach (var newFile in newDict.Keys)
+            foreach (var newFile in _newDict.Keys)
             {
                 var newFileInput = Path.Join(newFolder, newFile);
                 var newFileOutput = Path.Join(outputNewFolder, newFile);
@@ -594,7 +651,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// Search through a directory for all files, and add files to dictionary
         /// </summary>
         /// <param name="sDir">Directory to recursively search</param>
-        /// <param name="dict">Dict of strings for files</param>
+        /// <param name="list">Dict of strings for files</param>
         private void DirSearch(string sDir, ref List<string> list)
         {
             try
@@ -612,9 +669,9 @@ namespace TcNo_Acc_Switcher_Updater
                     DirSearch(d, ref list);
                 }
             }
-            catch (System.Exception excpt)
+            catch (Exception e)
             {
-                Debug.WriteLine(excpt.Message);
+                Debug.WriteLine(e.Message);
             }
         }
 
@@ -652,9 +709,9 @@ namespace TcNo_Acc_Switcher_Updater
                     DirSearchWithHash(d, ref dict);
                 }
             }
-            catch (System.Exception excpt)
+            catch (Exception e)
             {
-                Debug.WriteLine(excpt.Message);
+                Debug.WriteLine(e.Message);
             }
         }
 
@@ -695,8 +752,7 @@ namespace TcNo_Acc_Switcher_Updater
             VcDecoder decoder = new VcDecoder(dict, target, output);
 
             // The header of the delta file must be available before the first call to decoder.Decode().
-            long bytesWritten = 0;
-            VCDiffResult result = decoder.Decode(out bytesWritten);
+            VCDiffResult result = decoder.Decode(out var bytesWritten);
 
             if (result != VCDiffResult.SUCCESS)
             {
@@ -706,7 +762,6 @@ namespace TcNo_Acc_Switcher_Updater
 
             // if success bytesWritten will contain the number of bytes that were decoded
         }
-
     }
 
 
