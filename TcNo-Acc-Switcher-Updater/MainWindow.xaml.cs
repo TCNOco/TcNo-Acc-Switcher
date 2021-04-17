@@ -199,12 +199,12 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 if (VerifyAndClose) // Verify and close only works if up to date
                 {
-                    VerifyFiles();
-                    CreateExitButton();
+                    VerifyAndExitButton();
                     return;
                 }
+                else
+                    CreateVerifyAndExitButton();
                 Debug.WriteLine("No updates found!");
-                Debug.WriteLine("Press any key to exit...");
             }
             else if (VerifyAndClose)
                 WriteLine("To verify files you need to update first.");
@@ -309,6 +309,19 @@ namespace TcNo_Acc_Switcher_Updater
             }), DispatcherPriority.Normal);
         }
 
+        private void CreateVerifyAndExitButton()
+        {
+            StartButton.Click -= StartUpdate_Click;
+            StartButton.Click += VerifyAndExitButton;
+            ButtonHandler(true, "Verify files");
+        }
+
+        private void VerifyAndExitButton(object sender = null, RoutedEventArgs e = null)
+        {
+            VerifyFiles();
+            CreateExitButton();
+        }
+
         private void VerifyFiles()
         {
             // Compare hash list to files, and download any files that don't match
@@ -324,6 +337,7 @@ namespace TcNo_Acc_Switcher_Updater
             var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
             if (verifyDictionary != null)
             {
+                if (!Directory.Exists("newUpdater")) CopyFilesRecursive("updater", "newUpdater");
                 var verifyDictTotal = verifyDictionary.Count;
                 var cur = 0;
                 UpdateProgress(0);
@@ -435,7 +449,6 @@ namespace TcNo_Acc_Switcher_Updater
                 WriteLine("-------------------------------------------");
                 WriteLine($"You're up to date.");
                 SetStatus(":)");
-                CreateExitButton();
             }
 
         }
