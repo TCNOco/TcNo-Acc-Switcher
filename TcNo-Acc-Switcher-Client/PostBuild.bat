@@ -24,7 +24,8 @@ RMDIR /Q/S "runtimes\osx"
 RMDIR /Q/S "runtimes\osx-x64"
 RMDIR /Q/S "runtimes\unix"
 RMDIR /Q/S "runtimes\win-arm64"
-
+RMDIR /Q x64
+RMDIR /Q x86
 
 REM Move updater files in Release folder:
 cd ..\..\Release\net5.0-windows\
@@ -49,3 +50,5 @@ RMDIR /Q/S "runtimes\osx"
 RMDIR /Q/S "runtimes\osx-x64"
 RMDIR /Q/S "runtimes\unix"
 RMDIR /Q/S "runtimes\win-arm64"
+RMDIR /Q x64
+RMDIR /Q x86
