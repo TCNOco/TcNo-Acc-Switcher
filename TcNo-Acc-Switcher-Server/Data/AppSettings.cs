@@ -17,13 +17,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Data
@@ -234,11 +231,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         public JObject GetJObject() => JObject.FromObject(this);
 
         [JSInvokable]
-        public void SaveSettings(bool reverse = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), reverse);
+        public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
 
         public JObject GetStylesJObject() => JObject.FromObject(_instance._stylesheet);
 
         [JSInvokable]
-        public void SaveStyles(bool reverse = false) => GeneralFuncs.SaveSettings(StylesheetFile, GetStylesJObject(), reverse);
+        public void SaveStyles(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(StylesheetFile, GetStylesJObject(), mergeNewIntoOld);
     }
 }

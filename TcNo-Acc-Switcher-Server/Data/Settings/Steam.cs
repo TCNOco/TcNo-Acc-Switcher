@@ -12,13 +12,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Windows;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -165,7 +160,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public JObject GetJObject() => JObject.FromObject(this);
 
         [JSInvokable]
-        public void SaveSettings(bool reverse = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), reverse);
+        public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
 
         /// <summary>
         /// Get path of loginusers.vdf, resets & returns "RESET_PATH" if invalid.

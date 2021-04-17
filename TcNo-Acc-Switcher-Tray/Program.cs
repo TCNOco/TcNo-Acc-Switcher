@@ -19,15 +19,13 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Tray.Properties;
 
 namespace TcNo_Acc_Switcher_Tray
 {
-    static class Program
+    internal static class Program
     {
         public static Dictionary<string, List<TrayUser>> TrayUsers = new();
 
@@ -35,7 +33,7 @@ namespace TcNo_Acc_Switcher_Tray
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
@@ -79,12 +77,12 @@ namespace TcNo_Acc_Switcher_Tray
                 BackColor = Color.FromArgb(255, 34, 34, 34)
             });
 
-            foreach (var trayUsersGroup in Program.TrayUsers)
+            foreach (var (key, value) in Program.TrayUsers)
             {
-                var tsi = (ToolStripMenuItem)contextMenu.Items.Add(trayUsersGroup.Key, null, null);
+                var tsi = (ToolStripMenuItem)contextMenu.Items.Add(key, null, null);
                 tsi.ForeColor = Color.White;
                 tsi.BackColor = Color.FromArgb(255, 34, 34, 34);
-                foreach (var trayUsers in trayUsersGroup.Value)
+                foreach (var trayUsers in value)
                 {
                     tsi.DropDownItems.Add(new ToolStripMenuItem()
                     {

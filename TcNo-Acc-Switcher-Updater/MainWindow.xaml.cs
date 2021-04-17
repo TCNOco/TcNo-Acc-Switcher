@@ -134,7 +134,7 @@ namespace TcNo_Acc_Switcher_Updater
                     return;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 SetStatusAndLog("Corrupt settings file.", "");
                 WriteLine("The settings file is missing the 'Version' variable.");
@@ -555,7 +555,7 @@ namespace TcNo_Acc_Switcher_Updater
             var newFolder = Path.Join("temp_update", "new");
             var patchedFolder = Path.Join("temp_update", "patched");
             // Copy existing files to upgrade and verify against hashes later
-            if (Directory.Exists(Path.Join(newFolder, "updater")) || Directory.Exists(Path.Join(patchedFolder, "updater"))) CopyFilesRecursive("updater", "newUpdater");
+            if ((Directory.Exists(Path.Join(newFolder, "updater")) || Directory.Exists(Path.Join(patchedFolder, "updater"))) && !Directory.Exists("newUpdater") ) CopyFilesRecursive("updater", "newUpdater");
             if (Directory.Exists(Path.Join(newFolder, "updater"))) MoveFilesRecursive(Path.Join(newFolder, "updater"), "newUpdater");
             if (Directory.Exists(Path.Join(patchedFolder, "updater"))) MoveFilesRecursive(Path.Join(patchedFolder, "updater"), "newUpdater");
             
@@ -803,7 +803,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         /// <param name="filePath">Path to file to get hash of</param>
         /// <returns></returns>
-        private string GetFileMd5(string filePath)
+        private static string GetFileMd5(string filePath)
         {
             using var md5 = MD5.Create();
             using var stream = File.OpenRead(filePath);
@@ -846,14 +846,12 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="patchFileOutput">Output of patch file (Differences encoded)</param>
         private void DoEncode(string oldFile, string newFile, string patchFileOutput)
         {
-            using FileStream output = new FileStream(patchFileOutput, FileMode.Create, FileAccess.Write);
-            using FileStream dict = new FileStream(oldFile, FileMode.Open, FileAccess.Read);
-            using FileStream target = new FileStream(newFile, FileMode.Open, FileAccess.Read);
+            using FileStream output = new(patchFileOutput, FileMode.Create, FileAccess.Write);
+            using FileStream dict = new(oldFile, FileMode.Open, FileAccess.Read);
+            using FileStream target = new(newFile, FileMode.Open, FileAccess.Read);
 
-            VcEncoder coder = new VcEncoder(dict, target, output);
-            VCDiffResult
-                result = coder.Encode(interleaved: true,
-                    checksumFormat: ChecksumFormat.SDCH); //encodes with no checksum and not interleaved
+            VcEncoder coder = new(dict, target, output);
+            var result = coder.Encode(true, ChecksumFormat.SDCH); //encodes with no checksum and not interleaved
             if (result != VCDiffResult.SUCCESS)
             {
                 //error was not able to encode properly
@@ -869,13 +867,13 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="outputNewFile">Output of new file (that's been updated)</param>
         private void DoDecode(string oldFile, string patchFile, string outputNewFile)
         {
-            using FileStream dict = new FileStream(oldFile, FileMode.Open, FileAccess.Read);
-            using FileStream target = new FileStream(patchFile, FileMode.Open, FileAccess.Read);
-            using FileStream output = new FileStream(outputNewFile, FileMode.Create, FileAccess.Write);
-            VcDecoder decoder = new VcDecoder(dict, target, output);
+            using FileStream dict = new(oldFile, FileMode.Open, FileAccess.Read);
+            using FileStream target = new(patchFile, FileMode.Open, FileAccess.Read);
+            using FileStream output = new(outputNewFile, FileMode.Create, FileAccess.Write);
+            VcDecoder decoder = new(dict, target, output);
 
             // The header of the delta file must be available before the first call to decoder.Decode().
-            VCDiffResult result = decoder.Decode(out var bytesWritten);
+            var result = decoder.Decode(out var bytesWritten);
 
             if (result != VCDiffResult.SUCCESS)
             {
@@ -904,33 +902,31 @@ namespace TcNo_Acc_Switcher_Updater
         }
         public static void DragWindow(object sender, MouseButtonEventArgs e, Window window)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton != MouseButtonState.Pressed) return;
+            if (e.ClickCount == 2)
             {
-                if (e.ClickCount == 2)
+                SwitchState(window);
+            }
+            else
+            {
+                if (window.WindowState == WindowState.Maximized)
                 {
-                    SwitchState(window);
+                    var percentHorizontal = e.GetPosition(window).X / window.ActualWidth;
+                    var targetHorizontal = window.RestoreBounds.Width * percentHorizontal;
+
+                    var percentVertical = e.GetPosition(window).Y / window.ActualHeight;
+                    var targetVertical = window.RestoreBounds.Height * percentVertical;
+
+                    window.WindowState = WindowState.Normal;
+
+                    GetCursorPos(out var lMousePosition);
+
+                    window.Left = lMousePosition.X - targetHorizontal;
+                    window.Top = lMousePosition.Y - targetVertical;
                 }
-                else
-                {
-                    if (window.WindowState == WindowState.Maximized)
-                    {
-                        var percentHorizontal = e.GetPosition(window).X / window.ActualWidth;
-                        var targetHorizontal = window.RestoreBounds.Width * percentHorizontal;
-
-                        var percentVertical = e.GetPosition(window).Y / window.ActualHeight;
-                        var targetVertical = window.RestoreBounds.Height * percentVertical;
-
-                        window.WindowState = WindowState.Normal;
-
-                        GetCursorPos(out var lMousePosition);
-
-                        window.Left = lMousePosition.X - targetHorizontal;
-                        window.Top = lMousePosition.Y - targetVertical;
-                    }
 
 
-                    window.DragMove();
-                }
+                window.DragMove();
             }
         }
         [DllImport("user32.dll")]
@@ -946,15 +942,12 @@ namespace TcNo_Acc_Switcher_Updater
         }
         public static void SwitchState(Window window)
         {
-            switch (window.WindowState)
+            window.WindowState = window.WindowState switch
             {
-                case WindowState.Normal:
-                    window.WindowState = WindowState.Maximized;
-                    break;
-                case WindowState.Maximized:
-                    window.WindowState = WindowState.Normal;
-                    break;
-            }
+                WindowState.Normal => WindowState.Maximized,
+                WindowState.Maximized => WindowState.Normal,
+                _ => window.WindowState
+            };
         }
     }
 }

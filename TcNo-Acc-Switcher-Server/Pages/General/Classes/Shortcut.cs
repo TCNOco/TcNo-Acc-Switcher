@@ -13,11 +13,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes

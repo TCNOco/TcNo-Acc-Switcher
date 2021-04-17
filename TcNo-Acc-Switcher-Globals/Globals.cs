@@ -4,10 +4,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Input;
 using Newtonsoft.Json;
 
 namespace TcNo_Acc_Switcher_Globals
@@ -41,6 +37,7 @@ namespace TcNo_Acc_Switcher_Globals
                 File.WriteAllText(globalsFile, JsonConvert.SerializeObject(g));
             }
 
+            Debug.Assert(g != null, nameof(g) + " != null");
             g.WorkingDirectory = fromDir;
             return g;
         }
@@ -98,7 +95,7 @@ namespace TcNo_Acc_Switcher_Globals
                 RedirectStandardOutput = true
             };
             var process = new Process { StartInfo = startInfo };
-            process.OutputDataReceived += (s, e) => outputText += e.Data + "\n";
+            process.OutputDataReceived += (_, e) => outputText += e.Data + "\n";
             process.Start();
             process.BeginOutputReadLine();
             process.WaitForExit();

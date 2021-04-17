@@ -13,33 +13,25 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shapes;
-using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
-using Path = System.IO.Path;
 
 namespace TcNo_Acc_Switcher_Client
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
-        private readonly Dictionary<string, List<TrayUser>> TrayUsers = new();
         public static string StartPage = "";
         
         internal static class NativeMethods
@@ -56,17 +48,17 @@ namespace TcNo_Acc_Switcher_Client
         protected override void OnExit(ExitEventArgs e)
         {
             NativeMethods.FreeConsole();
-            mutex.ReleaseMutex();
+            Mutex.ReleaseMutex();
         }
 
         public bool DebugMode = true;
 
-        static Mutex mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
+        static readonly Mutex Mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
         [STAThread]
         protected override void OnStartup(StartupEventArgs e)
         {
             // Single instance:
-            if (!mutex.WaitOne(TimeSpan.Zero, true))
+            if (!Mutex.WaitOne(TimeSpan.Zero, true))
             {
                 MessageBox.Show("Another TcNo Account Switcher instance has been detected.");
                 Environment.Exit(1056); // 1056	An instance of the service is already running.
@@ -183,21 +175,18 @@ namespace TcNo_Acc_Switcher_Client
 
         #region ResizeWindows
         // https://stackoverflow.com/a/27157947/5165437
-        bool _resizeInProcess = false;
+        private bool _resizeInProcess;
         private void Resize_Init(object sender, MouseButtonEventArgs e)
         {
-            var senderRect = sender as Rectangle;
-            if (senderRect != null)
-            {
-                _resizeInProcess = true;
-                senderRect.CaptureMouse();
-            }
+            if (sender is not Rectangle senderRect) return;
+            _resizeInProcess = true;
+            senderRect.CaptureMouse();
         }
 
         private void Resize_End(object sender, MouseButtonEventArgs e)
         {
             if (sender is not Rectangle senderRect) return;
-            _resizeInProcess = false; ;
+            _resizeInProcess = false;
             senderRect.ReleaseMouseCapture();
         }
 
@@ -233,7 +222,8 @@ namespace TcNo_Acc_Switcher_Client
             {
                 height += 5;
                 if (height > 0)
-                    mainWindow.Height = height;
+                    if (mainWindow != null)
+                        mainWindow.Height = height;
             }
 
             if (!senderRect.Name.ToLower().Contains("top")) return;

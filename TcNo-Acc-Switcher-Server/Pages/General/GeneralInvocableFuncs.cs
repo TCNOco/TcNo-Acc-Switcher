@@ -13,19 +13,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
-
-using Microsoft.Win32;
-using System.Windows;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
@@ -156,7 +149,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static async Task ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowToast] type={toastType}, message={toastMessage}, title={toastTitle}, renderTo={renderTo}, duration={duration}");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync($"window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo = renderTo, duration = duration });
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync($"window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
         }
         
         /// <summary>

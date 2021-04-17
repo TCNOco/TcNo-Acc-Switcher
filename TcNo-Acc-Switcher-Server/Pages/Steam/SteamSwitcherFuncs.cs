@@ -19,21 +19,18 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Gameloop.Vdf;
 using Gameloop.Vdf.JsonConverter;
-using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Converters;
 using TcNo_Acc_Switcher_Server.Data;
 using Steamuser = TcNo_Acc_Switcher_Server.Pages.Steam.Index.Steamuser;
 
@@ -135,7 +132,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     });
                 }
             }
-            catch (FileNotFoundException ex)
+            catch (FileNotFoundException)
             {
                 //MessageBox.Show(Strings.ErrLoginusersNonExist, Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
                 //MessageBox.Show($"{Strings.ErrInformation} {ex}", Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
@@ -231,12 +228,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 }
                 catch (WebException ex)
                 {
-                    if (ex.HResult != -2146233079) // Ignore currently in use error, for when program is still writing to file.
-                    {
-                        su.ImgUrl = "img/QuestionMark.jpg";
-                        Console.WriteLine("ERROR: Could not connect and download Steam profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " + ex);
-                        //MessageBox.Show($"{Strings.ErrImageDownloadFail} {ex}", Strings.ErrProfileImageDlFail, MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+                    if (ex.HResult == -2146233079) return vs;
+                    su.ImgUrl = "img/QuestionMark.jpg";
+                    Console.WriteLine("ERROR: Could not connect and download Steam profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " + ex);
+                    //MessageBox.Show($"{Strings.ErrImageDownloadFail} {ex}", Strings.ErrProfileImageDlFail, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             else
@@ -368,7 +363,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.KillProcess("steam");
         }
-        
+
 
         /// <summary>
         /// Updates loginusers and registry to select an account as "most recent"
@@ -376,6 +371,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="selectedSteamId">Steam ID64 to switch to</param>
         /// <param name="accName">Account username to be logged into</param>
         /// <param name="pS">[PersonaState]0-7 custom persona state [0: Offline, 1: Online...]</param>
+        [SupportedOSPlatform("windows")]
         public static void UpdateLoginUsers(string selectedSteamId, string accName = "", int pS = -1)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.UpdateLoginUsers] Updating loginusers: selectedSteamId={selectedSteamId.Substring(selectedSteamId.Length - 4, 4)}, accName=hidden, pS={pS}");
@@ -535,7 +531,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static Task<bool> GetSteamForgetAcc() => Task.FromResult(Steam.ForgetAccountEnabled);
 
         /// <summary>
-        /// Purely a class used for backing up forgotten Steam users, used in ForgetAccount() and TODO: RestoreAccount()
+        /// Purely a class used for backing up forgotten Steam users, used in ForgetAccount() and RestoreAccount()
         /// </summary>
         public class ForgottenSteamuser
         {

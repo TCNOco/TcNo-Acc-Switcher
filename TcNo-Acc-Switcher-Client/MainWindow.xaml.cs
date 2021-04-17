@@ -13,41 +13,24 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Threading;
 using System.Windows.Interop;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using Microsoft.Win32;
-using Microsoft.Win32.TaskScheduler;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
-using TcNo_Acc_Switcher_Server.Pages.General;
-using Index = TcNo_Acc_Switcher_Server.Pages.Index;
 using Path = System.IO.Path;
-using Point = System.Windows.Point;
-using Strings = TcNo_Acc_Switcher_Client.Localisation.Strings;
 
 namespace TcNo_Acc_Switcher_Client
 {
@@ -57,13 +40,13 @@ namespace TcNo_Acc_Switcher_Client
 
     public partial class MainWindow : Window
     {
-        private static readonly Thread _server = new Thread(RunServer);
+        private static readonly Thread Server = new(RunServer);
         public static readonly TcNo_Acc_Switcher_Server.Data.AppSettings AppSettings = TcNo_Acc_Switcher_Server.Data.AppSettings.Instance;
         private static string _address = "";
 
         private static void RunServer()
         {
-            var serverPath = "TcNo-Acc-Switcher-Server.exe";
+            const string serverPath = "TcNo-Acc-Switcher-Server.exe";
             if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(serverPath)).Length > 0)
             {
                 Console.WriteLine("Server was already running. Killing process."); 
@@ -82,8 +65,8 @@ namespace TcNo_Acc_Switcher_Client
             _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
 
             // Start web server
-            _server.IsBackground = true;
-            _server.Start();
+            Server.IsBackground = true;
+            Server.Start();
             
             // Initialise and connect to web server above
             // Somehow check ports and find a different one if it doesn't work? We'll see...
@@ -162,9 +145,9 @@ namespace TcNo_Acc_Switcher_Client
         private void SaveSettings(string windowUrl)
         {
             Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.SaveSettings] windowUrl={windowUrl}");
-            // IN THE FUTURE: ONLY DO THIS FOR THE MAIN PAGE WHERE YOU CAN CHOOSE WHAT PLATFORM TO SWAP ACCOUNTS ON
+            // TODO: IN THE FUTURE: ONLY DO THIS FOR THE MAIN PAGE WHERE YOU CAN CHOOSE WHAT PLATFORM TO SWAP ACCOUNTS ON
             // This will only be when that's implemented. Easier to leave it until then.
-            MessageBox.Show(windowUrl);
+            //MessageBox.Show(windowUrl);
             AppSettings.WindowSize = new System.Drawing.Point(){ X = Convert.ToInt32(this.Width), Y = Convert.ToInt32(this.Height) };
             AppSettings.SaveSettings();
         }

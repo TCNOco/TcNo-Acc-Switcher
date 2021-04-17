@@ -14,19 +14,13 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Runtime.Versioning;
 using Microsoft.JSInterop;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Pages.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
 {
@@ -180,6 +174,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="subKey">Subkey to delete</param>
         /// <param name="val">Value to delete</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
+        [SupportedOSPlatform("windows")]
         public static void DeleteRegKey(string subKey, string val, string jsDest = "")
         {
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteRegKey] subKey={subKey}, val={val}, jsDest={jsDest}");
@@ -251,10 +246,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="file">File path to save JSON string to</param>
         /// <param name="joNewSettings">JObject of settings to be saved</param>
-        /// <param name="reverse">True merges old with new settings, false merges new with old</param>
-        public static void SaveSettings(string file, JObject joNewSettings, bool reverse = false)
+        /// <param name="mergeNewIntoOld">True merges old with new settings, false merges new with old</param>
+        public static void SaveSettings(string file, JObject joNewSettings, bool mergeNewIntoOld = false)
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.SaveSettings] file={file}, joNewSettings=hidden, reverse={reverse}");
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.SaveSettings] file={file}, joNewSettings=hidden, mergeNewIntoOld={mergeNewIntoOld}");
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
 
             // Get existing settings
@@ -269,7 +264,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     Console.WriteLine(e);
                 }
 
-            if (reverse)
+            if (mergeNewIntoOld)
             {
                 // Merge new settings with existing settings --> Adds missing variables etc
                 joNewSettings.Merge(joSettings, new JsonMergeSettings

@@ -18,7 +18,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using ImageMagick;
 using SkiaSharp;
 using Svg.Skia;
@@ -60,84 +59,82 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 throw new ArgumentNullException("images");
             if (stream == null)
                 throw new ArgumentNullException("stream");
-            IconFactory.ThrowForInvalidPngs(images);
-            Bitmap[] orderedImages = images.OrderBy(i => i.Width)
+            var enumerable = images as Bitmap[] ?? images.ToArray();
+            ThrowForInvalidPng(enumerable);
+            var orderedImages = enumerable.OrderBy(i => i.Width)
                                            .ThenBy(i => i.Height)
                                            .ToArray();
             using var writer = new BinaryWriter(stream);
-            writer.Write(IconFactory.HeaderReserved);
-            writer.Write(IconFactory.HeaderIconType);
+            writer.Write(HeaderReserved);
+            writer.Write(HeaderIconType);
             writer.Write((ushort)orderedImages.Length);
-            Dictionary<uint, byte[]> buffers = new Dictionary<uint, byte[]>();
+            var buffers = new Dictionary<uint, byte[]>();
             uint lengthSum = 0;
-            uint baseOffset = (uint)(IconFactory.HeaderLength +
-                                     IconFactory.EntryLength * orderedImages.Length);
+            var baseOffset = (uint)(HeaderLength +
+                                    EntryLength * orderedImages.Length);
             foreach (var image in orderedImages)
             {
-                byte[] buffer = IconFactory.CreateImageBuffer(image);
-                uint offset = (baseOffset + lengthSum);
-                writer.Write(IconFactory.GetIconWidth(image));
-                writer.Write(IconFactory.GetIconHeight(image));
-                writer.Write(IconFactory.PngColorsInPalette);
-                writer.Write(IconFactory.EntryReserved);
-                writer.Write(IconFactory.PngColorPlanes);
+                var buffer = CreateImageBuffer(image);
+                var offset = (baseOffset + lengthSum);
+                writer.Write(GetIconWidth(image));
+                writer.Write(GetIconHeight(image));
+                writer.Write(PngColorsInPalette);
+                writer.Write(EntryReserved);
+                writer.Write(PngColorPlanes);
                 writer.Write((ushort)Image.GetPixelFormatSize(image.PixelFormat));
                 writer.Write((uint)buffer.Length);
                 writer.Write(offset);
                 lengthSum += (uint)buffer.Length;
                 buffers.Add(offset, buffer);
             }
-            foreach (var kvp in buffers)
+            foreach (var (key, value) in buffers)
             {
-                writer.BaseStream.Seek(kvp.Key, SeekOrigin.Begin);
-                writer.Write(kvp.Value);
+                writer.BaseStream.Seek(key, SeekOrigin.Begin);
+                writer.Write(value);
             }
         }
 
-        private static void ThrowForInvalidPngs(IEnumerable<Bitmap> images)
+        private static void ThrowForInvalidPng(IEnumerable<Bitmap> images)
         {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.ThrowForInvalidPngs]");
+            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.ThrowForInvalidPng]");
             foreach (var image in images)
             {
                 if (image.PixelFormat != PixelFormat.Format32bppArgb)
                 {
                     throw new InvalidOperationException
-                        (string.Format("Required pixel format is PixelFormat.{0}.",
-                                       PixelFormat.Format32bppArgb.ToString()));
+                        ($"Required pixel format is PixelFormat.{PixelFormat.Format32bppArgb.ToString()}.");
                 }
                 if (image.RawFormat.Guid != ImageFormat.Png.Guid)
                 {
                     throw new InvalidOperationException
                         ("Required image format is a portable network graphic (png).");
                 }
-                if (image.Width > IconFactory.MaxIconWidth ||
-                    image.Height > IconFactory.MaxIconHeight)
+                if (image.Width > MaxIconWidth ||
+                    image.Height > MaxIconHeight)
                 {
                     throw new InvalidOperationException
-                        (string.Format("Dimensions must be less than or equal to {0}x{1}",
-                                       IconFactory.MaxIconWidth,
-                                       IconFactory.MaxIconHeight));
+                        ($"Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}");
                 }
             }
         }
 
-        private static byte GetIconHeight(Bitmap image)
+        private static byte GetIconHeight(Image image)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.GetIconHeight]");
-            if (image.Height == IconFactory.MaxIconHeight)
+            if (image.Height == MaxIconHeight)
                 return 0;
             return (byte)image.Height;
         }
 
-        private static byte GetIconWidth(Bitmap image)
+        private static byte GetIconWidth(Image image)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.GetIconWidth]");
-            if (image.Width == IconFactory.MaxIconWidth)
+            if (image.Width == MaxIconWidth)
                 return 0;
             return (byte)image.Width;
         }
 
-        private static byte[] CreateImageBuffer(Bitmap image)
+        private static byte[] CreateImageBuffer(Image image)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateImageBuffer]");
             using var stream = new MemoryStream();
@@ -165,7 +162,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 {
                     //var tempBg =  Path.Join("temp", Path.GetFileNameWithoutExtension(sBgImg) + ".png");
                     //using var svgToPngStream = File.OpenWrite(tempBg);
-                    svg.Save(ms,new SKColor(0, 0, 0, 255), SKEncodedImageFormat.Png, 100, 1f, 1f);
+                    svg.Save(ms,new SKColor(0, 0, 0, 255));
                     //sBgImg = tempBg;
                 }
             }
@@ -203,8 +200,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateImage]");
             sBgImg.Seek(0, SeekOrigin.Begin);
-            using MagickImage bgImg = new MagickImage(sBgImg);
-            using MagickImage fgImg = new MagickImage(sFgImg);
+            using MagickImage bgImg = new(sBgImg);
+            using MagickImage fgImg = new(sFgImg);
             bgImg.Resize(imgSize.Width, imgSize.Height);
             fgImg.Resize(imgSize.Width / 2, imgSize.Height / 2);
 

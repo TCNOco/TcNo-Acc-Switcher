@@ -60,10 +60,12 @@ namespace TcNo_Acc_Switcher_Client.Converters
             }
             else if (char.IsNumber(_input[0]))
             {
-                if (_input.Length < 17)
-                    _inputType = 3; // SteamID32
-                else if (_input.Length == 17)
-                    _inputType = 4; // SteamID64
+                _inputType = _input.Length switch
+                {
+                    < 17 => 3,
+                    17 => 4,
+                    _ => _inputType
+                };
             }
             else
             {
@@ -89,19 +91,13 @@ namespace TcNo_Acc_Switcher_Client.Converters
             }
             else
             {
-                var s = "";
-                switch (_inputType)
+                var s = _inputType switch
                 {
-                    case SteamId3:
-                        s = _input.Substring(4);
-                        break;
-                    case SteamId32:
-                        s = _input;
-                        break;
-                    case SteamId64:
-                        s = CalcSteamId32();
-                        break;
-                }
+                    SteamId3 => _input.Substring(4),
+                    SteamId32 => _input,
+                    SteamId64 => CalcSteamId32(),
+                    _ => ""
+                };
 
                 Id += GetOddity(s) + ":" + FloorDivide(s, 2);
             }
@@ -144,19 +140,13 @@ namespace TcNo_Acc_Switcher_Client.Converters
             if (_inputType == SteamId64)
                 Id64 = _input;
             else
-                switch (_inputType)
+                Id64 = _inputType switch
                 {
-                    case SteamId:
-                        Id64 =
-                            (int.Parse(_input.Substring(10)) * 2 + int.Parse($"{_input[8]}") + ChangeVal).ToString();
-                        break;
-                    case SteamId3:
-                        Id64 = (int.Parse(_input.Substring(4)) + ChangeVal).ToString();
-                        break;
-                    case SteamId32:
-                        Id64 = (int.Parse(_input) + ChangeVal).ToString();
-                        break;
-                }
+                    SteamId => (int.Parse(_input.Substring(10)) * 2 + int.Parse($"{_input[8]}") + ChangeVal).ToString(),
+                    SteamId3 => (int.Parse(_input.Substring(4)) + ChangeVal).ToString(),
+                    SteamId32 => (int.Parse(_input) + ChangeVal).ToString(),
+                    _ => Id64
+                };
 
             return Id64;
         }

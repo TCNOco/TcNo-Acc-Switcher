@@ -12,11 +12,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.VisualBasic;
 using Microsoft.Win32.TaskScheduler;
 using TcNo_Acc_Switcher_Globals;
 

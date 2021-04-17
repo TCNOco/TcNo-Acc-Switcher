@@ -13,8 +13,6 @@
     along with this program.  If not, see <https: //www.gnu.org/licenses />.*@
 
 @page "/Steam/AdvancedClearing"
-@using TcNo_Acc_Switcher_Server.Shared
-@using Microsoft.AspNetCore.Http.Extensions
 @using TcNo_Acc_Switcher_Server.Pages.General
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject IJSRuntime JsRuntime
@@ -22,7 +20,7 @@
 @inject NavigationManager NavManager
 @{ AppData.SetActiveNavMan(NavManager); }
 
-<div class="container settings_cont mainblock">
+<div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol clearingPage">
             <toastarea />
