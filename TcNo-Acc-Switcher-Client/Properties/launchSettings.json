@@ -2,7 +2,9 @@
   "profiles": {
     "TcNo-Acc-Switcher-Client": {
       "commandName": "Project",
-      "commandLineArgs": "verbose"
+      "remoteDebugEnabled": true,
+      "remoteDebugMachine": "TCNO-Laptop",
+      "authenticationMode": "Windows"
     }
   }
 }

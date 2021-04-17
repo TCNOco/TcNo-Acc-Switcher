@@ -128,8 +128,10 @@ namespace TcNo_Acc_Switcher_Updater
         private void Init()
         {
             Directory.SetCurrentDirectory(Directory.GetParent(_updaterDirectory!)!.ToString()); // Set working directory to same as .exe
+            GenerateHashes();
             //CreateUpdate();
-            
+
+
             SetStatus("Checking version");
             try
             {
@@ -224,6 +226,13 @@ namespace TcNo_Acc_Switcher_Updater
                 WriteLine("To verify files you need to update first.");
 
             _updatesAndChanges = _updatesAndChanges.Reverse().ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        private void GenerateHashes()
+        {
+            const string newFolder = "NewVersion";
+            DirSearchWithHash(newFolder, ref _newDict);
+            File.WriteAllText(Path.Join(newFolder, "hashes.json"), JsonConvert.SerializeObject(_newDict, Formatting.Indented));
         }
 
         /// <summary>

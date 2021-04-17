@@ -15,6 +15,7 @@
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <AssemblyName>TcNo-Acc-Switcher</AssemblyName>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

@@ -74,17 +74,24 @@ namespace TcNo_Acc_Switcher_Client
 
             MainBackground.Background = (Brush)new BrushConverter().ConvertFromString(AppSettings.Stylesheet["headerbarBackground"]);
             
-            MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
-            MView2.NavigationStarting += UrlChanged;
-            MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
-            //MView2.MouseDown += MViewMDown;
-
             this.Width = AppSettings.WindowSize.X;
             this.Height = AppSettings.WindowSize.Y;
             StateChanged += WindowStateChange;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
         }
-        
+        private void MainWindow_OnContentRendered(object? sender, EventArgs e)
+        {
+            InitAsync();
+            MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
+            MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
+            MView2.NavigationStarting += UrlChanged;
+            //MView2.MouseDown += MViewMDown;
+        }
+        private async void InitAsync()
+        {
+            await MView2.EnsureCoreWebView2Async();
+        }
+
         /// <summary>
         /// Find first available port up from requested
         /// </summary>
@@ -195,5 +202,6 @@ namespace TcNo_Acc_Switcher_Client
             script += ");";
             return await webView2.ExecuteScriptAsync(script);
         }
+
     }
 }
