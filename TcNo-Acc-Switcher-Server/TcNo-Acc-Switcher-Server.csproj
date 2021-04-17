@@ -47,6 +47,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\css\font\" />
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES11</TypeScriptTarget>
     <TypeScriptJSXEmit>React</TypeScriptJSXEmit>

@@ -1,7 +1,13 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+@font-face {
+    font-family: 'Catamaran', sans-serif;
+    src: url("/css/font/Catamaran-VariableFont_wght.ttf") format("ttf");
+}
+
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Catamaran', sans-serif;
+    font-weight: 500;
     font-size: 12px; /* THIS SCALES EVERYTHING UP AND DOWN */
     max-width: 100%;
     overflow-x: hidden;
