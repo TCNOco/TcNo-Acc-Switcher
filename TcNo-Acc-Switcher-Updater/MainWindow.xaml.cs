@@ -113,6 +113,8 @@ namespace TcNo_Acc_Switcher_Updater
         private void Init()
         {
             Directory.SetCurrentDirectory(Directory.GetParent(_updaterDirectory!)!.ToString()); // Set working directory to same as .exe
+            //CreateUpdate();
+            
             SetStatus("Checking version");
             try
             {
@@ -382,7 +384,7 @@ namespace TcNo_Acc_Switcher_Updater
             foreach (var jToken in jUpdates)
             {
                 var jUpdate = (JProperty) jToken;
-                if (jUpdate.Name == _currentVersion) break; // Get up to the current version
+                if (CheckLatest(jUpdate.Name)) break; // Get up to the current version
                 if (!firstChecked)
                 {
                     firstChecked = true;
@@ -437,7 +439,6 @@ namespace TcNo_Acc_Switcher_Updater
             Debug.WriteLine("Checking for running instances of TcNo Account Switcher");
             foreach (var exe in Directory.GetFiles(currentDir, "*.exe", SearchOption.AllDirectories))
             {
-                WriteLine(exe);
                 if (exe.Contains(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly()?.Location)!)) continue;
                 var eName = Path.GetFileNameWithoutExtension(exe);
                 if (Process.GetProcessesByName(eName).Length <= 0) continue;
@@ -464,6 +465,7 @@ namespace TcNo_Acc_Switcher_Updater
             Debug.WriteLine("Please 7z the update folder.");
             Debug.WriteLine("Please 7z the update folder.");
             Debug.WriteLine("Please 7z the update folder.");
+            Environment.Exit(1);
         }
 
         /// <summary>
