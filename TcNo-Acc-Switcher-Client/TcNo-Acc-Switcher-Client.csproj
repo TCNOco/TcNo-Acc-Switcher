@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <RootNamespace>TcNo_Acc_Switcher_Client</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <Version>4.0.0</Version>
+    <Authors>TechNobo (Wesley Pyburn)</Authors>
+    <Product>TcNo Account Switcher</Product>
+    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2019-2021</Copyright>
+    <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
+    <PackageIcon>TcNoAccSw-Icon-100x100.png</PackageIcon>
+    <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
+    <AssemblyName>TcNo-Acc-Switcher</AssemblyName>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.774.44" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TcNo-Acc-Switcher-Server\TcNo-Acc-Switcher-Server.csproj">
+      <EmbedInteropTypes>false</EmbedInteropTypes>
+    </ProjectReference>
+    <ProjectReference Include="..\TcNo-Acc-Switcher-Tray\TcNo-Acc-Switcher-Tray.csproj" />
+    <ProjectReference Include="..\TcNo-Acc-Switcher-Updater\TcNo-Acc-Switcher-Updater.csproj">
+      <Private>true</Private>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="inc\TcNo-Acc-Switcher.runtimeconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\TcNo-Acc-Switcher-Server\wwwroot\img\TcNoAccSw-Icon-100x100.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call &quot;$(ProjectDir)\PostBuild.bat&quot;" IgnoreExitCode="true" />
+  </Target>
+
+</Project>

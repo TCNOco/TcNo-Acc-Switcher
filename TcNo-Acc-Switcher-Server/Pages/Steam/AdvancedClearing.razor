@@ -1,0 +1,117 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2021 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https: //www.gnu.org/licenses />.*@
+
+@page "/Steam/AdvancedClearing"
+@using TcNo_Acc_Switcher_Server.Pages.General
+@namespace TcNo_Acc_Switcher_Server.Pages.Steam
+@inject IJSRuntime JsRuntime
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
+@inject NavigationManager NavManager
+@{ AppData.SetActiveNavMan(NavManager); }
+
+<div class="container mainblock">
+    <div class="row">
+        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol clearingPage">
+            <toastarea />
+            <div class="SettingsHeader">
+                <hr><span>Important info:</span><hr>
+            </div>
+            <div>
+                <p>
+                    Clicking a button will delete the related file(s) from your Steam installation.<br />
+                    Deleting loginusers.vdf will result in this account switcher showing no accounts.<br />
+                    You will need to login to them using Steam to get them back.
+                </p>
+            </div>
+            <div id="restoreUnderstand">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Clearing_Understand" @bind="_notAccepted"><label class="form-check-label" for="Steam_Clearing_Understand"></label></div><label for="Steam_Clearing_Understand">I understand what these buttons do.<br></label>
+            </div>
+            <button class="btn" id="Steam_Close" type="button" @onclick="Steam_Close" disabled="@Accepted"><span>Kill Steam process</span></button>
+
+            <div class="clearingRow">
+                <div class="clearingLeft advancedClearingButtonCol">
+                    <div class="SettingsHeader">
+                        <hr><span>General</span><hr>
+                    </div>
+                    <div class="buttoncol">
+                        <button class="btn" id="Steam_Clear_Logs" type="button" @onclick="Steam_Clear_Logs" disabled="@Accepted"><span>..\Steam\Logs</span></button>
+                        <button class="btn" id="Steam_Clear_Dumps" type="button" @onclick="Steam_Clear_Dumps" disabled="@Accepted"><span>..\Steam\Dumps</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button class="btn" id="Steam_Clear_HtmlCache" type="button" @onclick="Steam_Clear_HtmlCache" disabled="@Accepted"><span>%Local%\Steam\htmlcache</span></button>
+                        <button class="btn" id="Steam_Clear_UiLSteam_Clear_Dumpsogs" type="button" @onclick="Steam_Clear_UiLogs" disabled="@Accepted"><span>..\Steam\*.log</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button class="btn" id="Steam_Clear_AppCache" type="button" @onclick="Steam_Clear_AppCache" disabled="@Accepted"><span>..\Steam\appcache</span></button>
+                        <button class="btn" id="Steam_Clear_HttpCache" type="button" @onclick="Steam_Clear_HttpCache" disabled="@Accepted"><span>..\Steam\appcache\httpcache</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button class="btn" id="Steam_Clear_DepotCache" type="button" @onclick="Steam_Clear_DepotCache" disabled="@Accepted"><span>..\Steam\depotcache</span></button>
+                    </div>
+
+                    <div class="SettingsHeader">
+                        <hr><span>Clean my login history</span><hr>
+                    </div>
+                    <div class="buttoncol">
+                        <button class="btn" id="Steam_Clear_Forgotten" type="button" @onclick="Steam_Clear_Forgotten" disabled="@Accepted"><span>Forgotten account backups</span></button>
+                        <button class="btn" id="Steam_Clear_Config" type="button" @onclick="Steam_Clear_Config" disabled="@Accepted"><span>..\Steam\config\config.vdf</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button class="btn" id="Steam_Clear_LoginUsers" type="button" @onclick="Steam_Clear_LoginUsers" disabled="@Accepted"><span>..\Steam\config\loginusers.vdf</span></button>
+                        <button class="btn" id="Steam_Clear_Ssfn" type="button" @onclick="Steam_Clear_Ssfn" disabled="@Accepted"><span>..\Steam\ssfn*</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button class="btn" id="Steam_Clear_AutoLoginUser" type="button" @onclick="Steam_Clear_AutoLoginUser" disabled="@Accepted"><span>HKCU\..\AutoLoginUser</span></button>
+                        <button class="btn" id="Steam_Clear_LastGameNameUsed" type="button" @onclick="Steam_Clear_LastGameNameUsed" disabled="@Accepted"><span>HKCU\..\LastGameNameUsed</span></button>
+                    </div>
+                    <div class="buttoncol">
+                        <button class="btn" id="Steam_Clear_PseudoUUID" type="button" @onclick="Steam_Clear_PseudoUUID" disabled="@Accepted"><span>HKCU\..\PseudoUUID</span></button>
+                        <button class="btn" id="Steam_Clear_RememberPassword" type="button" @onclick="Steam_Clear_RememberPassword" disabled="@Accepted"><span>HKCU\..\RememberPassword</span></button>
+                    </div>
+                </div>
+                <div class="clearingRight">
+                    <div id="lines"></div>
+                </div>
+            </div>
+            <div class="clearLogDiv"><button onclick="document.getElementById('lines').innerHTML = ''"><span>Clear log</span></button></div>
+
+
+            <div class="buttoncol col_close">
+                <a @onclick='() => GeneralInvocableFuncs.OpenLinkInBrowser("https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Steam-Cleaning")' class="fancyLink">More Info (Wiki)</a>
+                <button class="btn btn_close" type="button" @onclick='() => NavManager.NavigateTo("/Steam/Settings")'><span>Close</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="blazor-error-ui">
+    <environment include="Staging,Production">
+        An error has occurred. This application may no longer respond until reloaded.
+    </environment>
+    <environment include="Development">
+        An unhandled exception has occurred. See browser dev tools for details.
+    </environment>
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code
+{
+    private bool _notAccepted = false;
+
+    public bool Accepted
+    {
+        get => !_notAccepted;
+        set => _notAccepted = !value;
+    }
+}

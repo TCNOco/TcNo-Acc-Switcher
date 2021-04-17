@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcNo-Acc-Switcher-Server", "TcNo-Acc-Switcher-Server\TcNo-Acc-Switcher-Server.csproj", "{F4A4C45B-BDC0-4443-A707-EE8D935972C0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcNo-Acc-Switcher-Client", "TcNo-Acc-Switcher-Client\TcNo-Acc-Switcher-Client.csproj", "{1EFC2E49-9A26-4470-B133-A7EA11F3FBF0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcNo-Acc-Switcher-Globals", "TcNo-Acc-Switcher-Globals\TcNo-Acc-Switcher-Globals.csproj", "{5ACA23EB-2EF2-4256-A168-E02E71D89FBB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcNo-Acc-Switcher-Tray", "TcNo-Acc-Switcher-Tray\TcNo-Acc-Switcher-Tray.csproj", "{3DCA295C-2BD4-43F4-925D-62AB7BAD1A7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcNo-Acc-Switcher-Updater", "TcNo-Acc-Switcher-Updater\TcNo-Acc-Switcher-Updater.csproj", "{FAAD2F0A-4948-47F6-B9B0-8824C5341738}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F4A4C45B-BDC0-4443-A707-EE8D935972C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4A4C45B-BDC0-4443-A707-EE8D935972C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4A4C45B-BDC0-4443-A707-EE8D935972C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4A4C45B-BDC0-4443-A707-EE8D935972C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EFC2E49-9A26-4470-B133-A7EA11F3FBF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EFC2E49-9A26-4470-B133-A7EA11F3FBF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EFC2E49-9A26-4470-B133-A7EA11F3FBF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EFC2E49-9A26-4470-B133-A7EA11F3FBF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ACA23EB-2EF2-4256-A168-E02E71D89FBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ACA23EB-2EF2-4256-A168-E02E71D89FBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ACA23EB-2EF2-4256-A168-E02E71D89FBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ACA23EB-2EF2-4256-A168-E02E71D89FBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DCA295C-2BD4-43F4-925D-62AB7BAD1A7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DCA295C-2BD4-43F4-925D-62AB7BAD1A7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DCA295C-2BD4-43F4-925D-62AB7BAD1A7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DCA295C-2BD4-43F4-925D-62AB7BAD1A7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAAD2F0A-4948-47F6-B9B0-8824C5341738}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAAD2F0A-4948-47F6-B9B0-8824C5341738}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAAD2F0A-4948-47F6-B9B0-8824C5341738}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAAD2F0A-4948-47F6-B9B0-8824C5341738}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3E9BFC04-84A9-4B21-9651-680E0D3D4979}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,127 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2021 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https: //www.gnu.org/licenses />.*@
+
+@inject IJSRuntime JsRuntime
+
+@using TcNo_Acc_Switcher_Server.Data
+@using System.Runtime.InteropServices
+@inject AppData AppData
+
+<div id="window-title">
+    <img src="img/TcNo_Logo_Flat.svg" class="header_icon" draggable="false" alt="TCNO"/>
+    <span>@AppData.WindowTitle</span>
+    <div id="window-controls">
+
+        <div class="button" id="btnMin">
+            <div class="resizeTop"></div>
+            <img class="icon" srcset="img/icons/min-w-10.png 1x, img/icons/min-w-12.png 1.25x, img/icons/min-w-15.png 1.5x, img/icons/min-w-15.png 1.75x, img/icons/min-w-20.png 2x, img/icons/min-w-20.png 2.25x, img/icons/min-w-24.png 2.5x, img/icons/min-w-30.png 3x, img/icons/min-w-30.png 3.5x" draggable="false" alt="-"/>
+        </div>
+
+        <div class="button" id="btnMax">
+            <div class="resizeTop"></div>
+            <img class="icon" srcset="img/icons/max-w-10.png 1x, img/icons/max-w-12.png 1.25x, img/icons/max-w-15.png 1.5x, img/icons/max-w-15.png 1.75x, img/icons/max-w-20.png 2x, img/icons/max-w-20.png 2.25x, img/icons/max-w-24.png 2.5x, img/icons/max-w-30.png 3x, img/icons/max-w-30.png 3.5x" draggable="false" alt="M"/>
+        </div>
+
+        <div class="button" id="btnRestore">
+            <div class="resizeTop"></div>
+            <img class="icon" srcset="img/icons/restore-w-10.png 1x, img/icons/restore-w-12.png 1.25x, img/icons/restore-w-15.png 1.5x, img/icons/restore-w-15.png 1.75x, img/icons/restore-w-20.png 2x, img/icons/restore-w-20.png 2.25x, img/icons/restore-w-24.png 2.5x, img/icons/restore-w-30.png 3x, img/icons/restore-w-30.png 3.5x" draggable="false" alt="R"/>
+        </div>
+
+        <div class="button" id="btnClose">
+            <div class="resizeTop"></div>
+            <div class="resizeTopRight"></div>
+            <div class="resizeRight"></div>
+            <img class="icon" srcset="img/icons/close-w-10.png 1x, img/icons/close-w-12.png 1.25x, img/icons/close-w-15.png 1.5x, img/icons/close-w-15.png 1.75x, img/icons/close-w-20.png 2x, img/icons/close-w-20.png 2.25x, img/icons/close-w-24.png 2.5x, img/icons/close-w-30.png 3x, img/icons/close-w-30.png 3.5x" draggable="false" alt="X"/>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        AppData.OnChange += OnMyChangeHandler;
+    }
+    private async void OnMyChangeHandler()
+    {
+        // InvokeAsync is inherited, it syncs the call back to the render thread
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private ElementReference _divElement;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JsRuntime.InvokeVoidAsync("handleWindowControls");
+        }
+    }
+
+    // For draggable regions:
+    // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
+    [ClassInterface(ClassInterfaceType.AutoDual)]
+    [ComVisible(true)]
+    public class EventForwarder
+    {
+        public const int WmNclButtonDown = 0xA1;
+        public const int WmSysCommand = 0x112;
+        public const int HtCaption = 0x2;
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+        [DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+
+        readonly IntPtr _target;
+
+        public EventForwarder(IntPtr target)
+        {
+            this._target = target;
+        }
+
+        public void MouseDownDrag()
+        {
+            ReleaseCapture();
+            SendMessage(_target, WmNclButtonDown, HtCaption, 0);
+        }
+
+        public void MouseResizeDrag(int wParam)
+        {
+            if (wParam == 0) return;
+            ReleaseCapture();
+            SendMessage(_target, WmNclButtonDown, wParam, 0);
+        }
+
+        public void WindowAction(int action)
+        {
+            ReleaseCapture();
+            if (action != 0x0010) SendMessage(_target, WmSysCommand, action, 0);
+            else SendMessage(_target, 0x0010, 0, 0);
+        }
+
+    }
+    // This is not used here, but these values are used in js for MouseResizeDrag.
+    // Checking once through everything is better than comparing things multiple times.
+    public enum SysCommandSize : int {
+        ScSizeHtLeft = 0xA, // 1 + 9
+        ScSizeHtRight = 0xB,
+        ScSizeHtTop = 0xC,
+        ScSizeHtTopLeft = 0xD,
+        ScSizeHtTopRight = 0xE,
+        ScSizeHtBottom = 0xF,
+        ScSizeHtBottomLeft = 0x10,
+        ScSizeHtBottomRight = 0x11
+    }
+}

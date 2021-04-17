@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <RootNamespace>TcNo_Acc_Switcher_Updater</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <Product>TcNo Account Switcher - Server</Product>
+    <Authors>TechNobo (Wesley Pyburn)</Authors>
+    <Description>Updater for the TcNo Account Switcher</Description>
+    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2020</Copyright>
+    <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="SevenZipExtractor" Version="1.0.15" />
+    <PackageReference Include="VCDiff" Version="3.3.2" />
+  </ItemGroup>
+
+</Project>

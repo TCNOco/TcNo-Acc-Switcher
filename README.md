@@ -1,3 +1,4 @@
+
 <p align="center">
   <a href="https://tcno.co/">
     <img src="/other/img/Banner.png"></a>
@@ -21,6 +22,17 @@
 **Saves NO passwords** or any user information*. It works purely off changing a file and 2 registry keys.
 *Wastes no time closing, switching and restarting Steam.*<br />
 **NOTE:** Not created for cheating purposes. All it does is change accounts. Use it as you see fit, accepting responsibility.
+
+# Indev version
+THIS IS THE IN DEV VERSION OF THE ACCOUNT SWITCHER.
+THIS IS A WORK IN PROGRESS AND HAS NO COMPLETION DATE.
+### News:
+- [13 Feb 2021] Moved from .NET 3.1 + Blazor + Electron to .NET 5 + Blazor + WebView2
+
+### Current progress:
+Not much. it has a semi-functional list of users from Steam's `loginusers.vdf` and a good looking right-click menu. No options orsettings have been added to the program (Still trying to understand how this would work with Blazor.
+
+<hr>
 
 ### Visit the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch
 
