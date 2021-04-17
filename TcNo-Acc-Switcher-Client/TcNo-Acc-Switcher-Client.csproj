@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="call &quot;$(ProjectDir)\PostBuild.bat&quot;" />
+    <Exec Command="call &quot;$(ProjectDir)\PostBuild.bat&quot;" IgnoreExitCode="true" />
   </Target>
 
 </Project>

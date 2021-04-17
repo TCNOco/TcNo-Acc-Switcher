@@ -49,8 +49,8 @@ function handleWindowControls() {
         const { target } = evt;
         const appRegion = getComputedStyle(target)['-webkit-app-region'];
         //const appRegion = getComputedStyle(target);
-        console.log(evt);
-        console.log(appRegion);
+        //console.log(evt);
+        //console.log(appRegion);
         if (evt.button === 0 && appRegion === 'drag') {
             if (target.classList.length != 0) {
                 let c = target.classList[0];

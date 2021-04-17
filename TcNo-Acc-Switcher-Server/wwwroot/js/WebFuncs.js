@@ -171,18 +171,22 @@ function ShowModal(modaltype) {
     if (modaltype == "info") {
         $('#modalTitle').text("TcNo Account Switcher Information");
         $("#modal_contents").empty();
-        $("#modal_contents").append(`<div class="infoWindow">
-        <div class= "imgDiv" ><img width="100" margin="5" src="img/TcNo500.png" draggable="false"></div>
-        <div class="rightContent">
-            <h2>TcNo Account Switcher</h2>
-            <p>Created by TechNobo [Wesley Pyburn]</p>
-            <div class="linksList">
-                <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');"><img src="img/icons/ico_discord.svg" draggable="false">View on GitHub</a>
-                <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');"><img src="img/icons/ico_github.svg" draggable="false">Bug report/Feature request</a>
-                <a onclick="OpenLinkInBrowser('https://tcno.co');"><img src="img/icons/ico_networking.svg" draggable="false">Visit tcno.co</a>
-            </div>
-        </div>
-        </div><div class="versionIdentifier"><span>Version: 00001</span></div>`);
+        currentVersion = "";
+        var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetVersion").then(r => {
+            currentVersion = r;
+            $("#modal_contents").append(`<div class="infoWindow">
+                <div class= "imgDiv" ><img width="100" margin="5" src="img/TcNo500.png" draggable="false"></div>
+                <div class="rightContent">
+                    <h2>TcNo Account Switcher</h2>
+                    <p>Created by TechNobo [Wesley Pyburn]</p>
+                    <div class="linksList">
+                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');"><img src="img/icons/ico_discord.svg" draggable="false">View on GitHub</a>
+                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');"><img src="img/icons/ico_github.svg" draggable="false">Bug report/Feature request</a>
+                        <a onclick="OpenLinkInBrowser('https://tcno.co');"><img src="img/icons/ico_networking.svg" draggable="false">Visit tcno.co</a>
+                    </div>
+                </div>
+                </div><div class="versionIdentifier"><span>Version: ` + currentVersion + `</span></div>`);
+        });
     }
     else if (modaltype.startsWith("find:")) {
         // USAGE: "find:<Program_name>:<Program_exe>:<SettingsFile>" -- example: "find:Steam:Steam.exe:SteamSettings"
@@ -192,7 +196,6 @@ function ShowModal(modaltype) {
         var platform_exe = modaltype.split(":")[2];
         var platformSettingsPath = modaltype.split(":")[3];
         Modal_RequestedLocated(false);
-
         $('#modalTitle').text("Please locate the " + platform + " directory");
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div id="modal_contents">
