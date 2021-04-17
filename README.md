@@ -1,4 +1,5 @@
 
+
 <p align="center">
   <a href="https://tcno.co/">
     <img src="/other/img/Banner.png"></a>
@@ -18,25 +19,41 @@
 <p align="center"><a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest">
   <img alt="JetBrains Support - Open Source License" src="/other/img/DownloadLatest.png" height=70"></a></p>
   
-**A Super fast account switcher for Steam** [Now with GUI]
-**Saves NO passwords** or any user information*. It works purely off changing a file and 2 registry keys.
-*Wastes no time closing, switching and restarting Steam.*<br />
+**A Super fast account switcher for Steam (and more soon)** [New version now in Beta]
+**Saves NO passwords** or any user information*. Steam switcher works purely off changing a file and 2 registry keys.
+*Wastes no time closing, switching and restarting Steam and other platforms.*<br />
 **NOTE:** Not created for cheating purposes. All it does is change accounts. Use it as you see fit, accepting responsibility.
 
-# Indev version
-THIS IS THE IN DEV VERSION OF THE ACCOUNT SWITCHER.
-THIS IS A WORK IN PROGRESS AND HAS NO COMPLETION DATE.
-### News:
-- [13 Feb 2021] Moved from .NET 3.1 + Blazor + Electron to .NET 5 + Blazor + WebView2
+# STABLE VERSION:
+New users should use the Download button above, or click [HERE](https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest). You'll also need the .NET Framework 4.8 Runtime, below.
 
-### Current progress:
-Not much. it has a semi-functional list of users from Steam's `loginusers.vdf` and a good looking right-click menu. No options orsettings have been added to the program (Still trying to understand how this would work with Blazor.
+### Required runtimes (Download and install):
+- Microsoft .NET Framework 4.8 Runtime: [Web Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer), [Offline Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-offline-installer), [Other languages](https://dotnet.microsoft.com/download/dotnet-framework/net48)
 
-<hr>
+**Running the program:**
+After installing using the installer, or downloading your .zip (portable version) from the [GitHub Releases](https://github.com/TcNobo/TcNo-Acc-Switcher/releases) page, extract everything to a folder of your choice and run `TcNo Account Switcher.exe`
 
-### Visit the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch
 
-### How does it work?
+> If [HardenTools](https://github.com/securitywithoutborders/hardentools) was used, ensure that cmd.exe (Command Prompt) access is still allowed; if access is denied, TcNo Account Switcher will encounter a fatal unhandled exception (crash).
+> 
+# New beta version
+The new Beta version is available for testing. Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord). Download the Beta in the Discord (This is to prevent confusion here)
+**New in this version:**
+- **NEW:** Better UI, with animations. Fully user/community customisable theme system. 2 Themes built in (so far).
+- **NEW:** Streamer mode to hide SteamIDs and more while Stream software is running (ie OBS, XSplit...)
+- **NEW:** Easier ability to expand into other platforms (Yes, this is coming soon)
+- **NEW:** WAY smaller updates, due to using a new Patch system. No more redownloading the entire app. Only a few MB at a time.
+- **STEAM:** Log in as Invisible, Offline and more! Copy profile links, SteamID and create quick-switch desktop shortcuts!
+
+
+
+
+# FAQ
+
+### Visit the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch.
+(Steps for Beta are not available yet)
+
+### How does the Steam switcher work?
 1. It lists your accounts based on the names in "C:\Program Files (x86)\Steam\config\loginusers.vdf"
 2. After picking one, it edits that file so that the one you chose is the latest, and makes sure Remember Password is set to true.
 3. It edits "HKEY_CURRENT_USER\Software\Valve\Steam\AutoLoginUser" to your selected username, and also sets the RememberPassword DWORD to True.
@@ -44,15 +61,6 @@ Not much. it has a semi-functional list of users from Steam's `loginusers.vdf` a
 - It ends any processes that start with "Steam", and then restarts Steam.exe once the switch is made. You don't need to do anything but use the arrow keys and press Enter.
 
 **Options available**: Start Steam as Administrator, Change Steam install folder, Hide VAC Status for each account and Show Steam ID. 
-
-## Required runtimes (Download and install):
-- Microsoft .NET Framework 4.8 Runtime: [Web Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer), [Offline Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-offline-installer), [Other languages](https://dotnet.microsoft.com/download/dotnet-framework/net48)
-
-**Running the program:**
-After downloading your .zip from the [GitHub Releases](https://github.com/TcNobo/TcNo-Acc-Switcher/releases) page, extract everything to a folder of your choice and run `TcNo Account Switcher.exe`
-
-
-> If [HardenTools](https://github.com/securitywithoutborders/hardentools) was used, ensure that cmd.exe (Command Prompt) access is still allowed; if access is denied, TcNo Account Switcher will encounter a fatal unhandled exception (crash).
 
 ### Screenshots:
 [imgur library](https://imgur.com/prhdlks)
@@ -63,12 +71,8 @@ After downloading your .zip from the [GitHub Releases](https://github.com/TcNobo
 
 ### Known issues
 - Issues caused by .NET Core (TcNo Account Switcher 2.0) are solved. No more issues clearing your `%temp%`
+(This is not an issue in the new Beta version, hence no fix)
 
-# Major updates
-## 3.0 Update [Beta]: Support for more platforms!
-Origin and more are coming to the TcNo Account Switcher! Easily handle multiple accounts with a few clicks!
-With an all-new tray, you can switch accounts directly from the tray as well!
-Tons more features to come.
 
 #### Disclaimer
 All trademarks and materials are property of their respective owners and their licensors.<br>
