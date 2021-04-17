@@ -35,6 +35,7 @@ namespace TcNo_Acc_Switcher_Updater
         private static Dictionary<string, string> _newDict = new();
         private static List<string> _patchList = new();
 
+        public static bool VerifyAndClose = false;
 
         private string _currentVersion = "0";
         private string _latestVersion = "";
@@ -196,9 +197,18 @@ namespace TcNo_Acc_Switcher_Updater
             GetUpdatesList(ref _updatesAndChanges);
             if (_updatesAndChanges.Count == 0)
             {
+                if (VerifyAndClose) // Verify and close only works if up to date
+                {
+                    VerifyFiles();
+                    CreateExitButton();
+                    return;
+                }
                 Debug.WriteLine("No updates found!");
                 Debug.WriteLine("Press any key to exit...");
             }
+            else if (VerifyAndClose)
+                WriteLine("To verify files you need to update first.");
+
             _updatesAndChanges = _updatesAndChanges.Reverse().ToDictionary(x => x.Key, x => x.Value);
         }
 
@@ -279,44 +289,7 @@ namespace TcNo_Acc_Switcher_Updater
                 _patchList = new List<string>();
             }
 
-
-            // Compare hash list to files, and download any files that don't match
-            var client = new WebClient();
-            client.DownloadProgressChanged -= OnClientOnDownloadProgressChanged;
-            Debug.WriteLine("--- VERIFYING ---");
-            SetStatusAndLog("Verifying...");
-            WriteLine("Downloading latest hash list... ");
-            var hashFilePath = "hashes.json";
-            client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
-            Debug.WriteLine("Done.");
-
-            var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
-            if (verifyDictionary != null)
-            {
-                var verifyDictTotal = verifyDictionary.Count;
-                var cur = 0;
-                UpdateProgress(0);
-                foreach (var (key, value) in verifyDictionary)
-                {
-                    var path = key;
-                    if (path.Contains("updater")) path = path.Replace("updater\\", "newUpdater\\"); // Handle updater updated files
-                    cur++;
-                    UpdateProgress((cur * 100) / verifyDictTotal);
-                    if (!File.Exists(path)) continue;
-                    var md5 = GetFileMd5(path);
-                    if (value == md5) continue;
-
-                    WriteLine("File: " + path + " has MD5: " + md5 + " EXPECTED: " + value);
-                    WriteLine("Deleting: " + path);
-                    DeleteFile(path);
-                    WriteLine("Downloading file from website... ");
-                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + path.Replace('\\', '/'));
-                    client.DownloadFile(uri, path);
-                    WriteLine("Done.");
-                }
-            }
-
-            File.Delete(hashFilePath);
+            VerifyFiles();
 
             if (File.Exists("WindowSettings.json"))
             {
@@ -334,6 +307,52 @@ namespace TcNo_Acc_Switcher_Updater
                 StartButton.Click -= StartUpdate_Click;
                 StartButton.Click += LaunchAccSwitcher;
             }), DispatcherPriority.Normal);
+        }
+
+        private void VerifyFiles()
+        {
+            // Compare hash list to files, and download any files that don't match
+            var client = new WebClient();
+            client.DownloadProgressChanged -= OnClientOnDownloadProgressChanged;
+            Debug.WriteLine("--- VERIFYING ---");
+            SetStatusAndLog("Verifying...");
+            WriteLine("Downloading latest hash list... ");
+            const string hashFilePath = "hashes.json";
+            client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
+            Debug.WriteLine("Done.");
+
+            var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
+            if (verifyDictionary != null)
+            {
+                var verifyDictTotal = verifyDictionary.Count;
+                var cur = 0;
+                UpdateProgress(0);
+                foreach (var (key, value) in verifyDictionary)
+                {
+                    var path = key;
+                    if (path.Contains("updater")) path = path.Replace("updater\\", "newUpdater\\"); // Handle updater updated files
+                    cur++;
+                    UpdateProgress((cur * 100) / verifyDictTotal);
+                    if (!File.Exists(path))
+                        WriteLine("FILE MISSING: " + path);
+                    else
+                    {
+                        var md5 = GetFileMd5(path);
+                        if (value == md5) continue;
+
+                        WriteLine("File: " + path + " has MD5: " + md5 + " EXPECTED: " + value);
+                        WriteLine("Deleting: " + path);
+                        DeleteFile(path);
+                    }
+                    WriteLine("Downloading file from website... ");
+                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + path.Replace('\\', '/'));
+                    client.DownloadFile(uri, path);
+                    WriteLine("Done.");
+                }
+            }
+
+            File.Delete(hashFilePath);
+            WriteLine("Files verified!");
         }
 
         private void OnClientOnDownloadProgressChanged(object o, DownloadProgressChangedEventArgs e)
