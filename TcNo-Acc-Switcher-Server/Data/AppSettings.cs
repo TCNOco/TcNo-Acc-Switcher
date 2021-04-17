@@ -49,7 +49,10 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         // Variables
         private string _version = "2021-04-16";
-        [JsonProperty("Version", Order = 2)] public string Version { get => _instance._version; set => _instance._version = value; }
+        [JsonProperty("Version", Order = 2)] public string Version => _instance._version;
+
+        private bool _updateAvailable;
+        [JsonIgnore] public bool UpdateAvailable { get => _instance._updateAvailable; set => _instance._updateAvailable = value; }
 
         private bool _streamerModeEnabled = true;
         [JsonProperty("StreamerModeEnabled", Order = 0)] public bool StreamerModeEnabled { get => _instance._streamerModeEnabled; set => _instance._streamerModeEnabled = value; }
@@ -143,7 +146,9 @@ namespace TcNo_Acc_Switcher_Server.Data
             { "notification-color-warning-lighter", "#17132C" },
             { "notification-color-error", "rgb(244, 67, 54)" },
             { "notification-color-error-light", "rgba(244, 67, 54, .25)" },
-            { "notification-color-error-lighter", "#17132C" }
+            { "notification-color-error-lighter", "#17132C" },
+            { "updateBarBackground", "#FFAA00" },
+            { "updateBarColor", "black" }
         };
         [JsonIgnore] public Dictionary<string, string> Stylesheet { get => _instance._stylesheet; set => _instance._stylesheet = value; }
 

@@ -16,8 +16,10 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +28,8 @@ using System.Windows.Input;
 using System.Windows.Shapes;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Pages.General;
 using Path = System.IO.Path;
 
 namespace TcNo_Acc_Switcher_Client
@@ -55,9 +59,9 @@ namespace TcNo_Acc_Switcher_Client
             mutex.ReleaseMutex();
         }
 
-        public bool debugMode = true;
+        public bool DebugMode = true;
 
-        static Mutex mutex = new Mutex(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
+        static Mutex mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
         [STAThread]
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -70,7 +74,7 @@ namespace TcNo_Acc_Switcher_Client
 
 
             #if DEBUG
-            if (debugMode)
+            if (DebugMode)
             {
                 NativeMethods.AllocConsole();
                 Console.WriteLine("Debug Console started");
@@ -126,7 +130,56 @@ namespace TcNo_Acc_Switcher_Client
 
             if (quitArg)
                 Environment.Exit(1);
+
+            // See if updater was updated, and move files:
+            if (Directory.Exists("newUpdater"))
+            {
+                GeneralFuncs.RecursiveDelete(new DirectoryInfo("updater"), false);
+                Directory.Move("newUpdater", "updater");
+            }
+
+            // Check for update in another thread
+            new Thread(CheckForUpdate).Start();
         }
+
+        /// <summary>
+        /// Checks for an update
+        /// </summary>
+        /// <returns>True if update found, show notification</returns>
+        public static void CheckForUpdate()
+        {
+#if DEBUG
+            var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + AppSettings.Instance.Version));
+#else
+            var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?v=" + AppSettings.Instance.Version));
+#endif
+            if (CheckLatest(latestVersion)) return;
+            // Show notification
+            AppSettings.Instance.UpdateAvailable = true;
+        }
+
+        /// <summary>
+        /// Checks whether the program version is equal to or newer than the servers
+        /// </summary>
+        /// <param name="latest">Latest version provided by server</param>
+        /// <returns>True when the program is up-to-date or ahead</returns>
+        private static bool CheckLatest(string latest)
+        {
+            latest = latest.Replace("\r", "").Replace("\n", "");
+            if (DateTime.TryParseExact(latest, "yyyy-MM-dd", null, DateTimeStyles.None, out var latestDate))
+            {
+                if (DateTime.TryParseExact(AppSettings.Instance.Version, "yyyy-MM-dd", null, DateTimeStyles.None, out var currentDate))
+                {
+                    if (latestDate.Equals(currentDate) || currentDate.Subtract(latestDate) > TimeSpan.Zero) return true;
+                }
+                else
+                    Console.WriteLine("Unable to convert '{0}' to a date and time.", latest);
+            }
+            else
+                Console.WriteLine("Unable to convert '{0}' to a date and time.", latest);
+            return false;
+        }
+
 
         #region ResizeWindows
         // https://stackoverflow.com/a/27157947/5165437
@@ -143,58 +196,54 @@ namespace TcNo_Acc_Switcher_Client
 
         private void Resize_End(object sender, MouseButtonEventArgs e)
         {
-            var senderRect = sender as Rectangle;
-            if (senderRect != null)
-            {
-                _resizeInProcess = false; ;
-                senderRect.ReleaseMouseCapture();
-            }
+            if (sender is not Rectangle senderRect) return;
+            _resizeInProcess = false; ;
+            senderRect.ReleaseMouseCapture();
         }
 
-        private void Resizeing_Form(object sender, MouseEventArgs e)
+        private void Resizing_Form(object sender, MouseEventArgs e)
         {
-            if (_resizeInProcess)
+            if (!_resizeInProcess) return;
+            if (!(sender is Rectangle senderRect)) return;
+            var mainWindow = senderRect.Tag as Window;
+            var width = e.GetPosition(mainWindow).X;
+            var height = e.GetPosition(mainWindow).Y;
+            senderRect.CaptureMouse();
+            if (senderRect.Name.ToLower().Contains("right"))
             {
-                var senderRect = sender as Rectangle;
-                var mainWindow = senderRect.Tag as Window;
-                if (senderRect != null)
+                width += 5;
+                if (width > 0)
+                    if (mainWindow != null)
+                        mainWindow.Width = width;
+            }
+            if (senderRect.Name.ToLower().Contains("left"))
+            {
+                width -= 5;
+                if (mainWindow != null)
                 {
-                    var width = e.GetPosition(mainWindow).X;
-                    var height = e.GetPosition(mainWindow).Y;
-                    senderRect.CaptureMouse();
-                    if (senderRect.Name.ToLower().Contains("right"))
+                    mainWindow.Left += width;
+                    width = mainWindow.Width - width;
+                    if (width > 0)
                     {
-                        width += 5;
-                        if (width > 0)
-                            mainWindow.Width = width;
-                    }
-                    if (senderRect.Name.ToLower().Contains("left"))
-                    {
-                        width -= 5;
-                        mainWindow.Left += width;
-                        width = mainWindow.Width - width;
-                        if (width > 0)
-                        {
-                            mainWindow.Width = width;
-                        }
-                    }
-                    if (senderRect.Name.ToLower().Contains("bottom"))
-                    {
-                        height += 5;
-                        if (height > 0)
-                            mainWindow.Height = height;
-                    }
-                    if (senderRect.Name.ToLower().Contains("top"))
-                    {
-                        height -= 5;
-                        mainWindow.Top += height;
-                        height = mainWindow.Height - height;
-                        if (height > 0)
-                        {
-                            mainWindow.Height = height;
-                        }
+                        mainWindow.Width = width;
                     }
                 }
+            }
+            if (senderRect.Name.ToLower().Contains("bottom"))
+            {
+                height += 5;
+                if (height > 0)
+                    mainWindow.Height = height;
+            }
+
+            if (!senderRect.Name.ToLower().Contains("top")) return;
+            height -= 5;
+            if (mainWindow == null) return;
+            mainWindow.Top += height;
+            height = mainWindow.Height - height;
+            if (height > 0)
+            {
+                mainWindow.Height = height;
             }
         }
         #endregion

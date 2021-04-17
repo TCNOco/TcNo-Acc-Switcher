@@ -78,5 +78,7 @@
   "notification-color-warning-lighter": "#274560",
   "notification-color-error": "rgb(255 85 85)",
   "notification-color-error-light": "rgba(255 85 85: .25)",
-  "notification-color-error-lighter": "#274560"
+  "notification-color-error-lighter": "#274560",
+  "updateBarBackground": "#8BE9FD",
+  "updateBarColor": "black"
 }

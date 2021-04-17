@@ -50,52 +50,6 @@ namespace TcNo_Acc_Switcher_Globals
             var globalsFile = Path.Combine(g.WorkingDirectory, "globals.json");
             File.WriteAllText(globalsFile, JsonConvert.SerializeObject(g, Formatting.Indented));
         }
-
-        // Saves the last time an update was checked.
-        public void LastCheckedNow()
-        {
-            UpdateLastChecked = DateTime.Now;
-        }
-
-        // Did the account switcher check for an update within the last day?
-        public bool NeedsUpdateCheck()
-        {
-            return (UpdateLastChecked < DateTime.Now.AddDays(-1));
-        }
-        // Was the account switcher launched within the last few minutes?
-        // It reports launches, so I know how many people are using it from where, but it won't count launches < 5 mins apart.
-        public bool NeedsUpdateCheck_Launch()
-        {
-            return (UpdateLastChecked < DateTime.Now.AddMinutes(-5));
-        }
-
-        // Launch main software and check for updates if not already running
-        public void RunUpdateCheck()
-        {
-            var mainExeName = "TcNo Account Switcher.exe";
-            var mainExeFullName = Path.Combine(WorkingDirectory, mainExeName);
-            if (!File.Exists(mainExeFullName)) return;
-            var pList = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(mainExeName).ToLower());
-            if (pList.Length > 0) return; // Return because software is already running.
-
-            try
-            {
-                var processName = mainExeFullName;
-                var startInfo = new ProcessStartInfo
-                {
-                    FileName = processName,
-                    CreateNoWindow = false,
-                    UseShellExecute = true,
-                    Arguments = "-updatecheck"
-                };
-
-                Process.Start(startInfo);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine(@"Failed to start for update check.");
-            }
-        }
         
         /// <summary>
         /// Exception handling for all programs

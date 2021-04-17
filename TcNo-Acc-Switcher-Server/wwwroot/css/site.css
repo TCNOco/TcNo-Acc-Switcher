@@ -70,6 +70,18 @@ label {
         display: block;
     }
 
+.updateBar {
+    width: 100%;
+    height: 2rem;
+    line-height: 2rem;
+    background-color: var(--updateBarBackground);
+    color: var(--updateBarColor);
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+}
+
 #window-controls {
     display: grid;
     grid-template-columns: repeat(3, 46px);

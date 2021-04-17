@@ -116,7 +116,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="jsDest">Place to send responses (if any)</param>
         public static void DeleteFile(string file = "", FileInfo fileInfo = null, string jsDest = "")
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteFile] file={file}, jsDest={jsDest}");
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteFile] file={(file != "" ? file : fileInfo?.FullName ?? "")}{(jsDest != "" ? ", jsDest=" + jsDest : "")}");
             var f = fileInfo ?? new FileInfo(file);
 
             try

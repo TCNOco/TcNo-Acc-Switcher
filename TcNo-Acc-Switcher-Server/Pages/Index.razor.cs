@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,6 +40,12 @@ namespace TcNo_Acc_Switcher_Server.Pages
             {
                 await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
             }
+        }
+
+        public void UpdateNow()
+        {
+            Process.Start(new ProcessStartInfo(@"updater\\TcNo-Acc-Switcher-Updater.exe") { UseShellExecute = true });
+            Process.GetCurrentProcess().Kill();
         }
     }
 }

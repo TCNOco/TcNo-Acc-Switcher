@@ -24,7 +24,7 @@ along with this program.  If not, see<https://www.gnu.org/licenses/> .-->
             <Setter Property="Tag" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
             <EventSetter Event="MouseLeftButtonDown" Handler="Resize_Init"/>
             <EventSetter Event="MouseLeftButtonUp" Handler="Resize_End"/>
-            <EventSetter Event="MouseMove" Handler="Resizeing_Form"/>
+            <EventSetter Event="MouseMove" Handler="Resizing_Form"/>
         </Style>
     </Application.Resources>
 </Application>

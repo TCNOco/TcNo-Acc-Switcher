@@ -25,6 +25,10 @@
       <EmbedInteropTypes>false</EmbedInteropTypes>
     </ProjectReference>
     <ProjectReference Include="..\TcNo-Acc-Switcher-Tray\TcNo-Acc-Switcher-Tray.csproj" />
+    <ProjectReference Include="..\TcNo-Acc-Switcher-Updater\TcNo-Acc-Switcher-Updater.csproj">
+      <Private>true</Private>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -51,5 +55,9 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call &quot;$(ProjectDir)\PostBuild.bat&quot;" />
+  </Target>
 
 </Project>

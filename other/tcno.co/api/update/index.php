@@ -59,7 +59,7 @@ $details = ip_info("Visitor", "Location");
 ///echo($details["state"].", ".$details["country"].", ".$details["continent"]."<br>");
 
 // Today's JSON file
-$filename = __DIR__ ."/data_v4/".date("Y-m-d").".json";
+$filename = __DIR__ .(!isset($_GET['debug']) ? "/../stats/update/" : "/../statsDEBUG/update/").date("Y-m-d").".json";
 ///echo("Opening: ".$filename."<br>");
 $jsToday = json_decode(@file_get_contents($filename), true); // "@" ignores non-exist error
 
@@ -68,6 +68,7 @@ $currentCount = 0;
 $jsToday["total"] += 1; // Total users +1
 ///$jsToday["Africa"]["South Africa"]["Gauteng"]
 $jsToday[$details["continent_code"]][$details["country"]][$details["state"]] += 1; // Get and incriment value, set value in array if not already set
+$jsToday["update_from"][$_GET['v']] += 1;
 
 ///print_r($jsToday);
 file_put_contents($filename, json_encode($jsToday));

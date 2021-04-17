@@ -37,6 +37,7 @@ namespace TcNo_Acc_Switcher_Updater
 
 
         private string _currentVersion = "0";
+        private string _latestVersion = "";
 
 
         #region WINDOW_BUTTONS
@@ -45,8 +46,8 @@ namespace TcNo_Acc_Switcher_Updater
 
         private static void LaunchAccSwitcher(object sender, RoutedEventArgs e)
         {
-            Process.Start("TcNo-Acc-Switcher.exe");
-            Environment.Exit(0);
+            Process.Start(new ProcessStartInfo(@"TcNo-Acc-Switcher.exe") { UseShellExecute = true });
+            Process.GetCurrentProcess().Kill();
         }
         private static void ExitProgram(object sender, RoutedEventArgs e) => Environment.Exit(0);
         
@@ -140,34 +141,51 @@ namespace TcNo_Acc_Switcher_Updater
             }
             // Styling
             if (File.Exists("StyleSettings.json"))
-                try
-                {
-                    Dispatcher.BeginInvoke(new Action(() => {
+                Dispatcher.BeginInvoke(new Action(() => {
+                    try
+                    {
+                        // Separated so colors aren't only half changed, and a color from the file is missing
                         var o = JObject.Parse(File.ReadAllText("StyleSettings.json"));
-                        Resources["HighlightColor"] = (Brush)new BrushConverter().ConvertFromString(o["linkColor"]?.ToString()); // Add a specific Highlight color later?
-                        Resources["HeaderColor"] = (Brush)new BrushConverter().ConvertFromString(o["headerbarBackground"]?.ToString());
-                        Resources["MainBackground"] = (Brush)new BrushConverter().ConvertFromString(o["mainBackground"]?.ToString());
-                        Resources["ListBackground"] = (Brush)new BrushConverter().ConvertFromString(o["modalInputBackground"]?.ToString());
-                        Resources["BorderedItemBorderColor"] = (Brush)new BrushConverter().ConvertFromString(o["borderedItemBorderColor"]?.ToString());
-                        Resources["ButtonBackground"] = (Brush)new BrushConverter().ConvertFromString(o["buttonBackground"]?.ToString());
-                        Resources["ButtonBackgroundHover"] = (Brush)new BrushConverter().ConvertFromString(o["buttonBackground-hover"]?.ToString());
-                        Resources["ButtonBackgroundActive"] = (Brush)new BrushConverter().ConvertFromString(o["buttonBackground-active"]?.ToString());
-                        Resources["ButtonColor"] = (Brush)new BrushConverter().ConvertFromString(o["buttonColor"]?.ToString());
-                        Resources["ButtonBorder"] = (Brush)new BrushConverter().ConvertFromString(o["buttonBorder"]?.ToString());
-                        Resources["ButtonBorderHover"] = (Brush)new BrushConverter().ConvertFromString(o["buttonBorder-hover"]?.ToString());
-                        Resources["ButtonBorderActive"] = (Brush)new BrushConverter().ConvertFromString(o["buttonBorder-active"]?.ToString());
+                        var highlightColor = (Brush)new BrushConverter().ConvertFromString((string)o["linkColor"]); // Add a specific Highlight color later?
+                        var headerColor = (Brush)new BrushConverter().ConvertFromString((string)o["headerbarBackground"]);
+                        var mainBackground = (Brush)new BrushConverter().ConvertFromString((string)o["mainBackground"]);
+                        var listBackground = (Brush) new BrushConverter().ConvertFromString((string) o["modalInputBackground"]);
+                        var borderedItemBorderColor = (Brush) new BrushConverter().ConvertFromString((string) o["borderedItemBorderColor"]);
+                        var buttonBackground = (Brush) new BrushConverter().ConvertFromString((string) o["buttonBackground"]);
+                        var buttonBackgroundHover = (Brush) new BrushConverter().ConvertFromString((string) o["buttonBackground-hover"]);
+                        var buttonBackgroundActive = (Brush) new BrushConverter().ConvertFromString((string) o["buttonBackground-active"]);
+                        var buttonColor = (Brush)new BrushConverter().ConvertFromString((string)o["buttonColor"]);
+                        var buttonBorder = (Brush)new BrushConverter().ConvertFromString((string)o["buttonBorder"]);
+                        var buttonBorderHover = (Brush)new BrushConverter().ConvertFromString((string)o["buttonBorder-hover"]);
+                        var buttonBorderActive = (Brush)new BrushConverter().ConvertFromString((string)o["buttonBorder-active"]);
+                        var windowControlsBackground = (Brush)new BrushConverter().ConvertFromString((string)o["windowControlsBackground"]);
+                        var windowControlsBackgroundActive = (Brush)new BrushConverter().ConvertFromString((string)o["windowControlsBackground-active"]);
+                        var windowControlsCloseBackground = (Brush)new BrushConverter().ConvertFromString((string)o["windowControlsCloseBackground"]);
+                        var windowControlsCloseBackgroundActive = (Brush)new BrushConverter().ConvertFromString((string)o["windowControlsCloseBackground-active"]);
 
-                        Resources["WindowControlsBackground"] = (Brush)new BrushConverter().ConvertFromString(o["windowControlsBackground-hover"]?.ToString());
-                        Resources["WindowControlsBackgroundActive"] = (Brush)new BrushConverter().ConvertFromString(o["windowControlsBackground-active"]?.ToString());
-                        Resources["WindowControlsCloseBackground"] = (Brush)new BrushConverter().ConvertFromString(o["windowControlsCloseBackground"]?.ToString());
-                        Resources["WindowControlsCloseBackgroundActive"] = (Brush)new BrushConverter().ConvertFromString(o["windowControlsCloseBackground-active"]?.ToString());
-                    }), DispatcherPriority.Normal);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine("Can't find or properly assign colors from StyleSettings.json");
-                    Debug.WriteLine(e);
-                }
+                        Resources["HighlightColor"] = highlightColor;
+                        Resources["HeaderColor"] = headerColor;
+                        Resources["MainBackground"] = mainBackground;
+                        Resources["ListBackground"] = listBackground;
+                        Resources["BorderedItemBorderColor"] = borderedItemBorderColor;
+                        Resources["ButtonBackground"] = buttonBackground;
+                        Resources["ButtonBackgroundHover"] = buttonBackgroundHover;
+                        Resources["ButtonBackgroundActive"] = buttonBackgroundActive;
+                        Resources["ButtonColor"] = buttonColor;
+                        Resources["ButtonBorder"] = buttonBorder;
+                        Resources["ButtonBorderHover"] = buttonBorderHover;
+                        Resources["ButtonBorderActive"] = buttonBorderActive;
+                        Resources["WindowControlsBackground"] = windowControlsBackground;
+                        Resources["WindowControlsBackgroundActive"] = windowControlsBackgroundActive;
+                        Resources["WindowControlsCloseBackground"] = windowControlsCloseBackground;
+                        Resources["WindowControlsCloseBackgroundActive"] = windowControlsCloseBackgroundActive;
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("Can't find or properly assign colors from StyleSettings.json");
+                        Debug.WriteLine(e);
+                    }
+                }), DispatcherPriority.Normal);
 
             ButtonHandler(false, "...");
             SetStatus("Checking for updates");
@@ -278,23 +296,35 @@ namespace TcNo_Acc_Switcher_Updater
                 UpdateProgress(0);
                 foreach (var (key, value) in verifyDictionary)
                 {
+                    var path = key;
+                    if (path.Contains("updater")) path = path.Replace("updater\\", "newUpdater\\"); // Handle updater updated files
                     cur++;
                     UpdateProgress((cur * 100) / verifyDictTotal);
-                    if (!File.Exists(key)) continue;
-                    var md5 = GetFileMd5(key);
+                    if (!File.Exists(path)) continue;
+                    var md5 = GetFileMd5(path);
                     if (value == md5) continue;
 
-                    WriteLine("File: " + key + " has MD5: " + md5 + " EXPECTED: " + value);
-                    WriteLine("Deleting: " + key);
-                    DeleteFile(key);
+                    WriteLine("File: " + path + " has MD5: " + md5 + " EXPECTED: " + value);
+                    WriteLine("Deleting: " + path);
+                    DeleteFile(path);
                     WriteLine("Downloading file from website... ");
-                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'));
-                    client.DownloadFile(uri, key);
+                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + path.Replace('\\', '/'));
+                    client.DownloadFile(uri, path);
                     WriteLine("Done.");
                 }
             }
 
             File.Delete(hashFilePath);
+
+            if (File.Exists("WindowSettings.json"))
+            {
+                var o = JObject.Parse(File.ReadAllText("WindowSettings.json"));
+                o["Version"] = _latestVersion;
+                // Save all settings back into file
+                File.WriteAllText("WindowSettings.json", o.ToString());
+            }
+
+
             WriteLine("");
             SetStatusAndLog("All updates complete!");
             ButtonHandler(true, "Start Acc Switcher");
@@ -314,13 +344,12 @@ namespace TcNo_Acc_Switcher_Updater
         /// Checks whether the program version is equal to or newer than the servers
         /// </summary>
         /// <param name="latest">Latest version provided by server</param>
-        /// <returns>Whether the program is up-to-date or ahead</returns>
+        /// <returns>True when the program is up-to-date or ahead</returns>
         private bool CheckLatest(string latest)
         {
-            DateTime latestDate, currentDate;
-            if (DateTime.TryParseExact(latest, "yyyy-mm-dd", null, DateTimeStyles.None, out latestDate))
+            if (DateTime.TryParseExact(latest, "yyyy-MM-dd", null, DateTimeStyles.None, out var latestDate))
             {
-                if (DateTime.TryParseExact(_currentVersion, "yyyy-mm-dd", null, DateTimeStyles.None, out currentDate))
+                if (DateTime.TryParseExact(_currentVersion, "yyyy-MM-dd", null, DateTimeStyles.None, out var currentDate))
                 {
                     if (latestDate.Equals(currentDate) || currentDate.Subtract(latestDate) > TimeSpan.Zero) return true;
                 }
@@ -332,7 +361,6 @@ namespace TcNo_Acc_Switcher_Updater
             return false;
         }
 
-
         /// <summary>
         /// Gets list of updates from https://tcno.co
         /// </summary>
@@ -343,8 +371,11 @@ namespace TcNo_Acc_Switcher_Updater
 
             var client = new WebClient();
             client.Headers.Add("Cache-Control", "no-cache");
-            var vUri = new Uri("https://tcno.co/Projects/AccSwitcher/api_v4.php");
-            var versions = client.DownloadString(vUri);
+#if DEBUG
+            var versions = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api/update?debug&v=" + _currentVersion));
+#else
+            var versions = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api/update?v=" + _currentVersion));
+#endif
             var jUpdates = JObject.Parse(versions)["updates"];
             Debug.Assert(jUpdates != null, nameof(jUpdates) + " != null");
             var firstChecked = false;
@@ -355,7 +386,8 @@ namespace TcNo_Acc_Switcher_Updater
                 if (!firstChecked)
                 {
                     firstChecked = true;
-                    if (CheckLatest(jUpdate.Name)) // If up to date or newer
+                    _latestVersion = jUpdate.Name;
+                    if (CheckLatest(_latestVersion)) // If up to date or newer
                         break;
                 }
                 var updateDetails = jUpdate.Value[0]!.ToString();
@@ -400,15 +432,16 @@ namespace TcNo_Acc_Switcher_Updater
         /// Closes TcNo Account Switcher's processes if any are running. (Searches program's folder recursively)
         /// </summary>
         /// <param name="currentDir"></param>
-        private static void CloseIfRunning(string currentDir)
+        private void CloseIfRunning(string currentDir)
         {
             Debug.WriteLine("Checking for running instances of TcNo Account Switcher");
             foreach (var exe in Directory.GetFiles(currentDir, "*.exe", SearchOption.AllDirectories))
             {
+                WriteLine(exe);
                 if (exe.Contains(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly()?.Location)!)) continue;
-                if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(exe)).Length <= 0) continue;
-                Debug.WriteLine("Killing: " + exe);
-                KillProcess(exe);
+                var eName = Path.GetFileNameWithoutExtension(exe);
+                if (Process.GetProcessesByName(eName).Length <= 0) continue;
+                KillProcess(eName);
             }
         }
 
@@ -455,13 +488,26 @@ namespace TcNo_Acc_Switcher_Updater
             // Remove files that need to be removed:
             var filesToDelete = File.ReadAllLines(Path.Join("temp_update", "filesToDelete.txt")).ToList();
 
+
             SetStatusAndLog("Moving files...");
-            MoveFilesRecursive(Path.Join("temp_update", "new"), currentDir);
-            MoveFilesRecursive(Path.Join("temp_update", "patched"), currentDir);
+            
+            // Move updater files, if any. Will be moved to replace currently running process when main process launched.
+            var newFolder = Path.Join("temp_update", "new");
+            var patchedFolder = Path.Join("temp_update", "patched");
+            // Copy existing files to upgrade and verify against hashes later
+            if (Directory.Exists(Path.Join(newFolder, "updater")) || Directory.Exists(Path.Join(patchedFolder, "updater"))) CopyFilesRecursive("updater", "newUpdater");
+            if (Directory.Exists(Path.Join(newFolder, "updater"))) MoveFilesRecursive(Path.Join(newFolder, "updater"), "newUpdater");
+            if (Directory.Exists(Path.Join(patchedFolder, "updater"))) MoveFilesRecursive(Path.Join(patchedFolder, "updater"), "newUpdater");
+            
+            // Move main files
+            MoveFilesRecursive(newFolder, currentDir);
+            MoveFilesRecursive(patchedFolder, currentDir);
 
             foreach (var f in filesToDelete)
             {
-                File.Delete(f);
+                var path = f;
+                if (path.Contains("updater")) path = path.Replace("updater\\", "newUpdater\\");
+                File.Delete(path);
             }
         }
 
@@ -476,16 +522,32 @@ namespace TcNo_Acc_Switcher_Updater
             foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
                 Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
 
-            //Copy all the files & Replaces any files with the same name
+            //Move all the files & Replaces any files with the same name
             foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
                 File.Move(newPath, newPath.Replace(inputFolder, outputFolder), true);
+        }
+
+        /// <summary>
+        /// Recursively copy files and directories
+        /// </summary>
+        /// <param name="inputFolder">Folder to copy files recursively from</param>
+        /// <param name="outputFolder">Destination folder</param>
+        private static void CopyFilesRecursive(string inputFolder, string outputFolder)
+        {
+            //Now Create all of the directories
+            foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
+                Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
+
+            //Copy all the files & Replaces any files with the same name
+            foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
+                File.Copy(newPath, newPath.Replace(inputFolder, outputFolder), true);
         }
 
         /// <summary>
         /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Anything more than "") 
         /// </summary>
         /// <param name="procName">Process name to kill (Will be used as {name}*)</param>
-        private static void KillProcess(string procName)
+        private void KillProcess(string procName)
         {
 
             var outputText = "";
@@ -505,6 +567,7 @@ namespace TcNo_Acc_Switcher_Updater
             process.BeginOutputReadLine();
             process.WaitForExit();
 
+            WriteLine($"/C TASKKILL /F /T /IM {procName}*");
             Debug.WriteLine($"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
         }
 
