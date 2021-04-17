@@ -14,6 +14,7 @@
     <PackageIcon>TcNoAccSw-Icon-100x100.png</PackageIcon>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <AssemblyName>TcNo-Acc-Switcher</AssemblyName>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

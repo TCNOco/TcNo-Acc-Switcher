@@ -8,9 +8,9 @@
 <?php
 /*
     GOAL:
-    Collect the number of program "uses" from each country, eventually to showcase the program's popularity, for interest's sake.
+    Collect the number of program update checks, eventually to showcase the program's popularity, for interest's sake.
 */
-// Taken from: https://stackoverflow.com/questions/12553160/getting-visitors-country-from-their-ip/13600004#13600004
+// ip_info() Taken from: https://stackoverflow.com/questions/12553160/getting-visitors-country-from-their-ip/13600004#13600004
 // Collecting user City is a bit more invasive IMO and unnecessary, so that was removed.
 // Going to impliment something like https://datamaps.github.io/ when I get to it.
 

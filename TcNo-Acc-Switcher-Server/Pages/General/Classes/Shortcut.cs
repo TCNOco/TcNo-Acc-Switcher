@@ -135,7 +135,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             // Starts the main picker, with the Steam argument.
             Exe = GetSelfPath();
             WorkingDir = Directory.GetCurrentDirectory();
-            IconDir = Path.Combine(WorkingDir, "wwwroot\\prog_icons\\steam.ico"); // To change soon
+            IconDir = Path.Combine(WorkingDir, "wwwroot\\prog_icons\\program.ico"); // To change soon
             ShortcutPath = Path.Combine(location, "TcNo Account Switcher.lnk");
             Desc = "TcNo Account Switcher";
             Args = "";

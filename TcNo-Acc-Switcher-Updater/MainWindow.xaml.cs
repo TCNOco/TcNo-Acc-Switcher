@@ -212,6 +212,11 @@ namespace TcNo_Acc_Switcher_Updater
             _updatesAndChanges = _updatesAndChanges.Reverse().ToDictionary(x => x.Key, x => x.Value);
         }
 
+        /// <summary>
+        /// Downloads requested file to supplied destination, with progress bar
+        /// </summary>
+        /// <param name="uri">Download from</param>
+        /// <param name="destination">Download to</param>
         public void DownloadFile(Uri uri, string destination)
         {
             using var wc = new WebClient();
@@ -226,6 +231,10 @@ namespace TcNo_Acc_Switcher_Updater
                 Monitor.Wait(syncObject);
             }
         }
+
+        /// <summary>
+        /// For progress bar 
+        /// </summary>
         public void HandleDownloadComplete(object sender, AsyncCompletedEventArgs args)
         {
             Debug.Assert(args.UserState != null, "args.UserState != null");
@@ -309,6 +318,9 @@ namespace TcNo_Acc_Switcher_Updater
             }), DispatcherPriority.Normal);
         }
 
+        /// <summary>
+        /// Creates button to verify files and once finished, presents exit button
+        /// </summary>
         private void CreateVerifyAndExitButton()
         {
             StartButton.Click -= StartUpdate_Click;
@@ -316,12 +328,18 @@ namespace TcNo_Acc_Switcher_Updater
             ButtonHandler(true, "Verify files");
         }
 
+        /// <summary>
+        /// Click handler for verify and exit button. After verification, changes to exit button
+        /// </summary>
         private void VerifyAndExitButton(object sender = null, RoutedEventArgs e = null)
         {
             VerifyFiles();
             CreateExitButton();
         }
 
+        /// <summary>
+        /// Verifies existing files. Download different or missing files
+        /// </summary>
         private void VerifyFiles()
         {
             // Compare hash list to files, and download any files that don't match
@@ -369,6 +387,9 @@ namespace TcNo_Acc_Switcher_Updater
             WriteLine("Files verified!");
         }
 
+        /// <summary>
+        /// Progress bar handler
+        /// </summary>
         private void OnClientOnDownloadProgressChanged(object o, DownloadProgressChangedEventArgs e)
         {
             UpdateProgress(e.ProgressPercentage);
@@ -453,6 +474,11 @@ namespace TcNo_Acc_Switcher_Updater
 
         }
 
+        /// <summary>
+        /// Converts file length to easily read string.
+        /// </summary>
+        /// <param name="len"></param>
+        /// <returns></returns>
         private static string FileSizeString(double len)
         {
             if (len == 0) return "0 bytes";
