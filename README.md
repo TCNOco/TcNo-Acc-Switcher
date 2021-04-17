@@ -46,7 +46,8 @@ The new Beta version is available for testing. Please report any and all bugs, a
 - **STEAM:** Log in as Invisible, Offline and more! Copy profile links, SteamID and create quick-switch desktop shortcuts!
 
 ### Required runtimes (Download and install):
-- Microsoft .NET 5 Desktop Runtime: [Web Installer](https://dotnet.microsoft.com/download/dotnet/5.0/runtime) (Download and install either x64 or x84)
+- **Microsoft .NET 5 Desktop Runtime AND: ASP.NET Core 5.0 Runtime:** Click [HERE](https://dotnet.microsoft.com/download/dotnet/5.0/runtime) and click either `x64` or `x86` from the left, and `Download Hosting Bundle` on the right. [IMPORTANT TO HAVE BOTH **x64 or x86** AND **BUNDLE**]
+- **WebView2 Runtime**:  Click [HERE](https://go.microsoft.com/fwlink/p/?LinkId=2124703) and install.
 
 
 # FAQ
