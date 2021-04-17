@@ -45,7 +45,8 @@ The new Beta version is available for testing. Please report any and all bugs, a
 - **NEW:** WAY smaller updates, due to using a new Patch system. No more redownloading the entire app. Only a few MB at a time.
 - **STEAM:** Log in as Invisible, Offline and more! Copy profile links, SteamID and create quick-switch desktop shortcuts!
 
-
+### Required runtimes (Download and install):
+- Microsoft .NET 5 Desktop Runtime: [Web Installer](https://dotnet.microsoft.com/download/dotnet/5.0/runtime) (Download and install either x64 or x84)
 
 
 # FAQ
