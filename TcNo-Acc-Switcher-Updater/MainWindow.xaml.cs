@@ -403,9 +403,9 @@ namespace TcNo_Acc_Switcher_Updater
         /// <returns>True when the program is up-to-date or ahead</returns>
         private bool CheckLatest(string latest)
         {
-            if (DateTime.TryParseExact(latest, "yyyy-MM-dd", null, DateTimeStyles.None, out var latestDate))
+            if (DateTime.TryParseExact(latest, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var latestDate))
             {
-                if (DateTime.TryParseExact(_currentVersion, "yyyy-MM-dd", null, DateTimeStyles.None, out var currentDate))
+                if (DateTime.TryParseExact(_currentVersion, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var currentDate))
                 {
                     if (latestDate.Equals(currentDate) || currentDate.Subtract(latestDate) > TimeSpan.Zero) return true;
                 }

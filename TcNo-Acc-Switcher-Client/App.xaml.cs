@@ -158,9 +158,9 @@ namespace TcNo_Acc_Switcher_Client
         private static bool CheckLatest(string latest)
         {
             latest = latest.Replace("\r", "").Replace("\n", "");
-            if (DateTime.TryParseExact(latest, "yyyy-MM-dd", null, DateTimeStyles.None, out var latestDate))
+            if (DateTime.TryParseExact(latest, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var latestDate))
             {
-                if (DateTime.TryParseExact(AppSettings.Instance.Version, "yyyy-MM-dd", null, DateTimeStyles.None, out var currentDate))
+                if (DateTime.TryParseExact(AppSettings.Instance.Version, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var currentDate))
                 {
                     if (latestDate.Equals(currentDate) || currentDate.Subtract(latestDate) > TimeSpan.Zero) return true;
                 }
