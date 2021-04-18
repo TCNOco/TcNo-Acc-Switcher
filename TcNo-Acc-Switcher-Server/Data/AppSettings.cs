@@ -45,7 +45,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         // Variables
-        private string _version = "2021-04-18_01";
+        private string _version = "2021-04-18_02";
         [JsonProperty("Version", Order = 2)] public string Version => _instance._version;
 
         private bool _updateAvailable;
