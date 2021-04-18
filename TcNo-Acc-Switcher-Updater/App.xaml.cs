@@ -42,6 +42,12 @@ namespace TcNo_Acc_Switcher_Updater
                     case "verify":
                         TcNo_Acc_Switcher_Updater.MainWindow.VerifyAndClose = true;
                         break;
+                    case "hashlist":
+                        TcNo_Acc_Switcher_Updater.MainWindow.QueueHashList = true;
+                        break;
+                    case "createupdate":
+                        TcNo_Acc_Switcher_Updater.MainWindow.QueueCreateUpdate = true;
+                        break;
                     default:
                         Console.WriteLine($"Unknown argument: \"{e.Args[i]}\"");
                         break;

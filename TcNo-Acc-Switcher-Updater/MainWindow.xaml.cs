@@ -50,6 +50,8 @@ namespace TcNo_Acc_Switcher_Updater
         private static List<string> _patchList = new();
 
         public static bool VerifyAndClose = false;
+        public static bool QueueHashList = false;
+        public static bool QueueCreateUpdate = false;
 
         private string _currentVersion = "0";
         private string _latestVersion = "";
@@ -128,9 +130,17 @@ namespace TcNo_Acc_Switcher_Updater
         private void Init()
         {
             Directory.SetCurrentDirectory(Directory.GetParent(_updaterDirectory!)!.ToString()); // Set working directory to same as .exe
-            GenerateHashes();
-            //CreateUpdate();
+            if (QueueHashList)
+            {
+                GenerateHashes();
+                Environment.Exit(0);
+            }
 
+            if (QueueCreateUpdate)
+            {
+                CreateUpdate();
+                Environment.Exit(0);
+            }
 
             SetStatus("Checking version");
             try
