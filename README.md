@@ -39,6 +39,7 @@ After installing using the installer, or downloading your .zip (portable version
 # New beta version
 The new Beta version is available for testing. Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord). Download the Beta in the Discord (This is to prevent confusion here)
 **New in this version:**
+- **NEW: Origin account switcher** (Very early in development, but functional).
 - **NEW:** Better UI, with animations. Fully user/community customisable theme system. 2 Themes built in (so far).
 - **NEW:** Streamer mode to hide SteamIDs and more while Stream software is running (ie OBS, XSplit...)
 - **NEW:** Easier ability to expand into other platforms (Yes, this is coming soon)
