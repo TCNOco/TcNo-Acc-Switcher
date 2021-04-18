@@ -21,6 +21,7 @@
 @{ AppData.SetActiveNavMan(NavManager); }
 @inject AppData AppData
 
+@inject Data.Settings.Origin Origin
 @inject Data.Settings.Steam Steam
 
 @if (AppSettings.Instance.UpdateAvailable) {
@@ -31,6 +32,9 @@
 <div class="platformContainer">
     <div class="button platformIcon" id="SwitcherSteam" @onclick="CheckSteam">
         <img src="img/platform/steam.svg" draggable="false" alt="Steam" />
+    </div>
+    <div class="button platformIcon" id="SwitcherOrigin" @onclick="CheckOrigin">
+        <img src="img/platform/origin.svg" draggable="false" alt="Steam" />
     </div>
 </div>
 

@@ -1,12 +1,25 @@
 ﻿var currentVersion = 0001;
 
+var currentpage = "";
+    //window.addEventListener('popstate', function (e) {
+    //    currentpage = (window.location.pathname.split("/")[0] !== ""
+    //        ? window.location.pathname.split("/")[0]
+    //        : window.location.pathname.split("/")[1]);
+    //});
+function docReady(fn) {
+    // see if DOM is already available
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        // call on next available tick
+        setTimeout(fn, 1);
+    } else {
+        document.addEventListener("DOMContentLoaded", fn);
+    }
+}  
 
-// This will be changed later on to NOT be in this file, as each different account switcher will have their own file.
-var currentpage = "Steam";
 
 // Clear Cache reload: 
 var winUrl = window.location.href.split("?");
-if (winUrl.length > 1 && winUrl[1].contains("cacheReload")) {
+if (winUrl.length > 1 && winUrl[1].indexOf("cacheReload") !== -1) {
     history.pushState({}, null, window.location.href.replace("cacheReload&", "").replace("cacheReload", ""));
     location.reload(true);
 }
@@ -22,7 +35,12 @@ function forget(e) {
     switch (currentpage) {
         case "Steam":
             promptForgetSteam();
+            break;
+        case "Origin":
+            promptForgetOrigin();
+            break;
         default:
+            break;
     }
 }
 async function promptForgetSteam() {
@@ -36,6 +54,23 @@ async function promptForgetSteam() {
 }
 async function forgetSteam(reqSteamId) {
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ForgetAccountJs", reqSteamId).then(
+        _ => {
+            location.reload();
+        });
+    var result = await promise;
+}
+
+async function promptForgetOrigin() {
+    const reqAccName = $(SelectedElem).attr("id");
+
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetOriginForgetAcc").then(r => {
+        if (!r) ShowModal("confirm:AcceptForgetOriginAcc:" + reqAccName);
+        else forgetOrigin(reqAccName);
+    });
+    var result = await promise;
+}
+async function forgetOrigin(reqAccName) {
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ForgetOriginAccountJs", reqAccName).then(
         _ => {
             location.reload();
         });
@@ -84,8 +119,12 @@ function copy(request, e) {
     switch (currentpage) {
         case "Steam":
             steam();
+            break;
+        //case "Origin":
+        //    origin();
         default:
             CopyToClipboard(requestResult);
+            break;
     }
     return;
 
@@ -120,6 +159,11 @@ function copy(request, e) {
                 CopyToClipboard(requestResult);
         }
     }
+    //// Origin:
+    //function origin() {
+    //    var accName = $(SelectedElem).attr("AccName");
+
+    //}
 }
 
 // Swapping accounts
@@ -130,7 +174,12 @@ function SwapTo(request, e) {
     switch (currentpage) {
         case "Steam":
             steam();
+            break;
+        case "Origin":
+            origin();
+            break;
         default:
+            break;
     }
 
     //Steam: 
@@ -138,9 +187,18 @@ function SwapTo(request, e) {
         // This may be unnecessary.
         var selected = $(".acc:checked");
         if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
+        
+        DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToSteam", selected.attr("SteamID64"), selected.attr("Username"), request);
+        return;
+    }
+    //Origin:
+    function origin() {
+        // This may be unnecessary.
+        var selected = $(".acc:checked");
+        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
 
-        var steamId64 = $(SelectedElem).attr("SteamID64");
-        DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo", selected.attr("SteamID64"), selected.attr("Username"), request);
+        DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToOrigin", selected.attr("id"), request);
+        return;
     }
 }
 
@@ -153,7 +211,15 @@ function CreateShortcut() {
 
 // New Steam accounts
 function NewSteamLogin() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo", "", "");
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToSteam", "", "");
+}
+// New Origin accounts
+function NewOriginLogin() {
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToOrigin", "", 0);
+}
+// Add currently logged in Origin account
+function CurrentOriginLogin() {
+    ShowModal("accString:Origin");
 }
 
 $(".acc").dblclick(function () {
@@ -212,7 +278,8 @@ function ShowModal(modaltype) {
 		        <button class="btn" type="button" id="select_program" onclick="Modal_Finalize('` + platform + `', '` + platformSettingsPath + `')"><span>Select ` + platform + ` Folder</span></button>
 	        </div>
         </div>`);
-    } else if (modaltype.startsWith("confirm:")) {
+    }
+    else if (modaltype.startsWith("confirm:")) {
         // USAGE: "confirm:<prompt>
         // GOAL: To return true/false
         console.log(modaltype);
@@ -223,6 +290,8 @@ function ShowModal(modaltype) {
         let header = "";
         if (action.startsWith("AcceptForgetSteamAcc")) {
             message = forgetAccountSteamPrompt;
+        } else if (action.startsWith("AcceptForgetOriginAcc")) {
+            message = forgetAccountOriginPrompt;
         } else {
             header = "<h3>Confirm action:</h3>";
             message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
@@ -244,6 +313,26 @@ function ShowModal(modaltype) {
         </div>
         </div>`);
     }
+    else if (modaltype.startsWith("accString:")) {
+        // USAGE: "accString:<platform>" -- example: "accString:Origin"
+        console.log(modaltype);
+        console.log(modaltype.split(":"));
+        var platform = modaltype.split(":")[1].replaceAll("_", " ");
+        Modal_RequestedLocated(false);
+        $('#modalTitle').text("Add new " + platform + " account");
+        $("#modal_contents").empty();
+        $("#modal_contents").append(`<div id="modal_contents">
+	        <div>
+		        <span class="modal-text">Please enter a name for the ` + platform + ` account you're logged into.</span>
+	        </div>
+	        <div class="inputAndButton">
+		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;">
+	        </div>
+	        <div class="settingsCol inputAndButton">
+		        <button class="btn" type="button" id="select_program" onclick="Modal_FinalizeAccString('` + platform + `')"><span>Add current ` + platform + ` account</span></button>
+	        </div>
+        </div>`);
+    }
     $('.modalBG').fadeIn();
 }
 
@@ -263,7 +352,7 @@ function Modal_RequestedLocated(found) {
 function Modal_Finalize(platform, platformSettingsPath) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
     $('.modalBG').fadeOut();
-    $('#Switcher' + platform).click();
+    $('#acc_list').click();
 }
 async function Modal_Confirm(action, value) {
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value).then(r => {
@@ -271,6 +360,18 @@ async function Modal_Confirm(action, value) {
     });
     var result = await promise;
     $('.modalBG').fadeOut();
+}
+
+function Modal_FinalizeAccString(platform) {
+    switch (platform) {
+        case "Origin":
+            DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "OriginAddCurrent", $("#CurrentAccountName").val());
+            break;
+        default:
+            break;
+    }
+    $('.modalBG').fadeOut();
+    $('#acc_list').click();
 }
 
 
@@ -303,7 +404,6 @@ function flushJQueryAppendQueue() {
 
 
 
-
 const forgetAccountSteamPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
 <h4>What does this mean?</h4>
 <p>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.<br/>
@@ -312,5 +412,11 @@ const forgetAccountSteamPrompt = `<h3 style='color:red'>You are about to forget 
 <h4>What if something goes wrong?</h4>
 <p>Don't panic, you can bring back forgotten accounts via backups in the Settings screen.<br/>
 You can also remove previous backups from there when you are sure everything is working as expected.</p>
-<p>Right-click &gt;&gt; Forget and using the Delete key will both work.</p>
 <h4>Do you understand?</h4>`;
+
+const forgetAccountOriginPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
+<h4>What does this mean?</h4>
+<p>TcNo Account Switcher will also no longer show the account,<br/>
+until it's signed into again through Origin, and added to the list.</p>
+<p>Your account will remain untouched. It is just forgotten on this computer.</p>
+<h4>Do you understand?</h4>`

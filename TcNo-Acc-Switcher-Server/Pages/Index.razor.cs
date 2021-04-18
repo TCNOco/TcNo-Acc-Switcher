@@ -36,6 +36,18 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
             }
         }
+        public async Task CheckOrigin()
+        {
+            Globals.DebugWriteLine($@"[Func:Index.CheckOrigin]");
+            if (Directory.Exists(Origin.FolderPath) && File.Exists(Origin.OriginExe()))
+            {
+                NavManager.NavigateTo("/Origin/");
+            }
+            else
+            {
+                await GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
+            }
+        }
 
         public void UpdateNow()
         {

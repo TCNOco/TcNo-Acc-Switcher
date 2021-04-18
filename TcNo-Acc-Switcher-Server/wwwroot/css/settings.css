@@ -45,7 +45,7 @@
         background-color: var(--buttonBackground);
         padding: 0.25em 0.651em;
         margin: 0 0.25em;
-        width: auto;
+        width: max-content;
         color: var(--buttonColor);
         border-style: solid;
         border-color: var(--buttonBorder);

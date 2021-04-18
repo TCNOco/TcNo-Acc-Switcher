@@ -16,6 +16,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Runtime.Versioning;
+using System.Security.Cryptography;
 using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
@@ -237,6 +238,50 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 }
             }
             JsDestNewline(jsDest);
+        }
+
+        /// <summary>
+        /// Recursively move files and directories
+        /// </summary>
+        /// <param name="inputFolder">Folder to move files recursively from</param>
+        /// <param name="outputFolder">Destination folder</param>
+        public static void MoveFilesRecursive(string inputFolder, string outputFolder)
+        {
+            //Now Create all of the directories
+            foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
+                Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
+
+            //Move all the files & Replaces any files with the same name
+            foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
+                File.Move(newPath, newPath.Replace(inputFolder, outputFolder), true);
+        }
+
+        /// <summary>
+        /// Recursively copy files and directories
+        /// </summary>
+        /// <param name="inputFolder">Folder to copy files recursively from</param>
+        /// <param name="outputFolder">Destination folder</param>
+        public static void CopyFilesRecursive(string inputFolder, string outputFolder)
+        {
+            Directory.CreateDirectory(outputFolder);
+            //Now Create all of the directories
+            foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
+                Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
+
+            //Copy all the files & Replaces any files with the same name
+            foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
+                File.Copy(newPath, newPath.Replace(inputFolder, outputFolder), true);
+        }
+        /// <summary>
+        /// Gets a file's MD5 Hash
+        /// </summary>
+        /// <param name="filePath">Path to file to get hash of</param>
+        /// <returns></returns>
+        public static string GetFileMd5(string filePath)
+        {
+            using var md5 = MD5.Create();
+            using var stream = File.OpenRead(filePath);
+            return stream.Length != 0 ? BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLowerInvariant() : "0";
         }
         #endregion
 

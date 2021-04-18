@@ -105,6 +105,20 @@ label {
     height: 100%;
 }
 
+#btnBack {
+    width: 46px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    pointer-events: all;
+    margin-top: -2px;
+}
+    #btnBack .resizeTop {
+        width: 46px !important;
+        background: none !important;
+    }
 #window-controls .button, #window-controls-modal .button {
     grid-row: 1 / span 1;
     display: flex;
@@ -142,11 +156,11 @@ label {
         user-select: none;
     }
 
-        #window-controls .button:hover {
+        #window-controls .button:hover, #btnBack:hover {
             background: var(--windowControlsBackground-hover);
         }
 
-        #window-controls .button:active {
+        #window-controls .button:active, ##btnBack:active {
             background: var(--windowControlsBackground-active);
         }
 
@@ -171,6 +185,8 @@ label {
 /* Sides */
 .resizeTop {
     width: calc(100% - 138px);
+    pointer-events: all;
+    background: none !important;
 }
 .resizeBottom {
     width: 100%;
@@ -187,11 +203,11 @@ label {
     /*background-color: lime;*/
 }
 /* Sides in window buttons */
-#btnClose .resizeTop, #btnMin .resizeTop, #btnMax .resizeTop, #btnRestore .resizeTop {
+#btnClose .resizeTop, #btnMin .resizeTop, #btnMax .resizeTop, #btnRestore .resizeTop, #btnBack .resizeTop {
     width: 100%;
     background-color: transparent;
 }
-#btnClose .resizeRight, #btnClose .resizeTopRight {
+#btnClose .resizeRight, #btnClose .resizeTopRight, #btnBack .resizeTop, #btnBack .resizeLeft, #btnBack .resizeTopLeft {
     background-color: transparent;
 }
 /* Cursors */
@@ -399,7 +415,7 @@ div.advancedClearingButtonCol {
 }
 .platformIcon {
     width: 25vw;
-    /*max-width: calc(100vw / 4.106);*/
+    max-width: calc(100vw / 4.106);
     display: inline-block;
     cursor: pointer;
     border: var(--linkColor) 1px solid;

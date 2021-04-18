@@ -55,9 +55,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="accName">Requested account's Login Username</param>
         /// <param name="ePersonaState">(Optional) Persona State [0: Offline, 1: Online...]</param>
         [JSInvokable]
-        public static void SwapTo(string steamId, string accName, int ePersonaState = -1)
+        public static void SwapToSteam(string steamId, string accName, int ePersonaState = -1)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.SwapTo] {steamId.Substring(steamId.Length - 4, 4)}, accName:hidden, ePersonaState: {ePersonaState}");
+            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.SwapToSteam] {steamId.Substring(steamId.Length - 4, 4)}, accName:hidden, ePersonaState: {ePersonaState}");
             SteamSwitcherFuncs.SwapSteamAccounts(steamId, accName, ePersonaState: ePersonaState);
         }
 

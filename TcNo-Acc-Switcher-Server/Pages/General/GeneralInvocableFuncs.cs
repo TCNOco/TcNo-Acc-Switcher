@@ -22,6 +22,7 @@ using TcNo_Acc_Switcher_Server.Pages.Steam;
 using Microsoft.AspNetCore.WebUtilities;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Pages.Origin;
 
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
@@ -29,6 +30,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
     public class GeneralInvocableFuncs
     {
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
+        private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
+
         /// <summary>
         /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file
         /// </summary>
@@ -82,6 +85,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "SteamSettings":
                     Steam.FolderPath = path;
                     break;
+                case "OriginSettings":
+                    Origin.FolderPath = path;
+                    break;
             }
         }
 
@@ -98,6 +104,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 var steamId = action.Split(":")[1];
                 Steam.UpdateSteamForgetAcc(true);
                 SteamSwitcherFuncs.ForgetAccount(steamId);
+                return Task.FromResult("refresh");
+            }
+
+            if (action.StartsWith("AcceptForgetOriginAcc:"))
+            {
+                var accName = action.Split(":")[1];
+                Origin.UpdateOriginForgetAcc(true);
+                OriginSwitcherFuncs.ForgetAccount(accName);
                 return Task.FromResult("refresh");
             }
 
@@ -172,14 +186,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 foreach (var stringValue in modalValue) await ShowModal(Uri.UnescapeDataString(stringValue));
 
             // Toast
-            if (queries.TryGetValue("toast_type", out var toastType) &&
-                queries.TryGetValue("toast_title", out var toastTitle) &&
-                queries.TryGetValue("toast_message", out var toastMessage))
+            if (!queries.TryGetValue("toast_type", out var toastType) ||
+                !queries.TryGetValue("toast_title", out var toastTitle) ||
+                !queries.TryGetValue("toast_message", out var toastMessage)) return;
+            for (var i = 0; i < toastType.Count; i++)
             {
-                for (var i = 0; i < toastType.Count; i++)
-                {
-                    await GeneralInvocableFuncs.ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
-                }
+                await ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
             }
         }
     }

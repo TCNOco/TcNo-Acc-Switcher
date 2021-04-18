@@ -469,7 +469,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         /// <summary>
-        /// Clears images folder of contents, to re-download them on next load.
+        /// Clears ismages folder of contents, to re-download them on next load.
         /// </summary>
         /// <returns>Whether files were deleted or not</returns>
         public static async void ClearImages()

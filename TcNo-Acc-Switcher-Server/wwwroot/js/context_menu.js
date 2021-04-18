@@ -31,6 +31,11 @@
 var SelectedElem = "";
 
 function initContextMenu() {
+    // Handle currentpage variable.
+    currentpage = (window.location.pathname.split("/")[0] !== ""
+        ? window.location.pathname.split("/")[0]
+        : window.location.pathname.split("/")[1]);
+
     // Ready accounts for double-click
     $(".acc").dblclick(function (event) {
         SwapTo(-1, event);
@@ -47,7 +52,13 @@ function initContextMenu() {
         // Set currently selected element
         SelectedElem = $('[id="' + $(e.currentTarget).attr("for") + '"]')[0];
         // Update status for element
-        updateStatus("Selected: " + $(SelectedElem).attr("Line2"));
+        switch (currentpage) {
+            case "Steam":
+                updateStatus("Selected: " + $(SelectedElem).attr("Line2"));
+            case "Origin":
+                updateStatus("Selected: " + $(SelectedElem).attr("id"));
+        default:
+        }
 
 
         //#region POSITIONING OF CONTEXT MENU
@@ -120,5 +131,12 @@ function initContextMenu() {
 function SelectedItemChanged() {
     //console.log("click!");
     //console.log(this);
-    updateStatus("Selected: " + $("input[name=accounts]:checked").attr("Line2"));
+    // Different function groups based on platform
+    switch (currentpage) {
+    case "Steam":
+        updateStatus("Selected: " + $("input[name=accounts]:checked").attr("Line2"));
+    case "Origin":
+        updateStatus("Selected: " + $("input[name=accounts]:checked").attr("id"));
+    default:
+    }
 }
