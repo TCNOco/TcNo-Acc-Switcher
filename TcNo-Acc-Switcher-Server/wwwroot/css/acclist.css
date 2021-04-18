@@ -116,7 +116,13 @@ label.acc p {
         border: none;
         background: none;
         color: var(--footerColor);
+        user-select: none;
     }
+        .acc_list_actionbar input::selection {
+            background: none;
+            color: var(--footerColor);
+            user-select: none;
+        }
 
     .acc_list_actionbar div {
         height: 3em;
@@ -159,3 +165,18 @@ label.acc p {
         .acc_list_actionbar div .button img, .settingsCol button img {
             width: 1.5em;
         }
+
+.statusBar {
+    position: relative;
+}
+    .statusBar div, .statusBar input {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+    .statusBar div {
+        z-index: 5
+    }
+    .statusBar input {
+        z-index: 1
+    }

@@ -75,7 +75,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             s.CreateCombinedIcon(
                 //Path.Join(GeneralFuncs.WwwRoot, "\\prog_icons\\steam.ico"),
                 Path.Join(GeneralFuncs.WwwRoot, "\\img\\platform\\steam.svg"),
-                Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\{steamId}.jpg"), 
+                Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\steam\\{steamId}.jpg"), 
                 $"{steamId}.ico");
             s.TryWrite();
         }

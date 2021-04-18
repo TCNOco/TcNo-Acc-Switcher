@@ -33,7 +33,7 @@
     <toastarea />
 </div>
 <div class="acc_list_actionbar">
-    <input id="CurrentStatus" @bind="@AppData.CurrentStatus">
+    <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@AppData.CurrentStatus" spellcheck="false" disabled></div>
     <div>
         <div class="button" id="btnAddNew" onclick="NewSteamLogin()">
             <span>Add New</span>
