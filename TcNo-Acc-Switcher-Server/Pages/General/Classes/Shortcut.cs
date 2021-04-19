@@ -179,6 +179,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             Args = args;
             return this;
         }
+
         /// <summary>
         /// Sets up a Steam Tray shortcut
         /// </summary>
@@ -191,13 +192,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             WorkingDir = Directory.GetCurrentDirectory();
             IconDir = Path.Combine(WorkingDir, "wwwroot\\prog_icons\\steam.ico");
             ShortcutPath = Path.Combine(location, "TcNo Account Switcher - Steam tray.lnk");
-            Desc = "TcNo Account Switcher - Steam tray";
+            Desc = "TcNo Account Switcher - Tray";
             Args = "";
             return this;
         }
-        
-
-
         #endregion
 
     }

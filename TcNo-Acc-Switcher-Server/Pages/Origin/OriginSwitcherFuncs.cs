@@ -22,16 +22,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         static string OriginRoaming;
         static string OriginProgramData;
         /// <summary>
-        /// Main function for Steam Account Switcher. Run on load.
-        /// Collects accounts from Steam's loginusers.vdf
-        /// Prepares images and VAC/Limited status
+        /// Main function for Origin Account Switcher. Run on load.
+        /// Collects accounts from cache folder
         /// Prepares HTML Elements string for insertion into the account switcher GUI.
         /// </summary>
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
         public static async void LoadProfiles()
         {
             // Normal:
-            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.LoadProfiles] Loading Steam profiles");
+            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.LoadProfiles] Loading Origin profiles");
             OriginRoaming = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Origin");
             OriginProgramData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Origin");
 
@@ -64,7 +63,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// <summary>
         /// Remove requested account from loginusers.vdf
         /// </summary>
-        /// <param name="accName">SteamId of account to be removed</param>
+        /// <param name="accName">Origin account name</param>
         public static bool ForgetAccount(string accName)
         {
             Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.ForgetAccount] Forgetting account: {accName}");
@@ -278,13 +277,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             //    File.Delete(file);
             //}
             //// Reload page, then display notification using a new thread.
-            AppData.ActiveNavMan?.NavigateTo("/origin/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared images"), true);
+            AppData.ActiveNavMan?.NavigateTo("/Origin/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared images"), true);
         }
 
         /// <summary>
         /// Only runs ForgetAccount, but allows Javascript to wait for it's completion before refreshing, instead of just doing it instantly >> Not showing proper results.
         /// </summary>
-        /// <param name="accName">SteamId of account to be removed</param>
+        /// <param name="accName">Origin account name to be removed from cache</param>
         /// <returns>true</returns>
         [JSInvokable]
         public static Task<bool> ForgetOriginAccountJs(string accName)

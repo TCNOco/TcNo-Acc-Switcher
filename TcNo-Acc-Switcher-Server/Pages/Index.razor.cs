@@ -48,6 +48,18 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 await GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
             }
         }
+        public async Task CheckUbisoft()
+        {
+            Globals.DebugWriteLine($@"[Func:Index.CheckUbisoft]");
+            if (Directory.Exists(Ubisoft.FolderPath) && File.Exists(Ubisoft.UbisoftExe()))
+            {
+                NavManager.NavigateTo("/Ubisoft/");
+            }
+            else
+            {
+                await GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
+            }
+        }
 
         public void UpdateNow()
         {

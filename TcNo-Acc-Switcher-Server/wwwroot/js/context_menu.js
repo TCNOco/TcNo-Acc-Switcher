@@ -55,9 +55,15 @@ function initContextMenu() {
         switch (currentpage) {
             case "Steam":
                 updateStatus("Selected: " + $(SelectedElem).attr("Line2"));
+                break;
             case "Origin":
                 updateStatus("Selected: " + $(SelectedElem).attr("id"));
-        default:
+                break;
+            case "Ubisoft":
+                updateStatus("Selected: " + $(SelectedElem).attr("Username"));
+                break;
+            default:
+                break;
         }
 
 
@@ -133,10 +139,16 @@ function SelectedItemChanged() {
     //console.log(this);
     // Different function groups based on platform
     switch (currentpage) {
-    case "Steam":
-        updateStatus("Selected: " + $("input[name=accounts]:checked").attr("Line2"));
-    case "Origin":
-        updateStatus("Selected: " + $("input[name=accounts]:checked").attr("id"));
-    default:
+        case "Steam":
+            updateStatus("Selected: " + $("input[name=accounts]:checked").attr("Line2"));
+            break;
+        case "Origin":
+            updateStatus("Selected: " + $("input[name=accounts]:checked").attr("id"));
+            break;
+        case "Ubisoft":
+            updateStatus("Selected: " + $("input[name=accounts]:checked").attr("Username"));
+            break;
+        default:
+            break;
     }
 }

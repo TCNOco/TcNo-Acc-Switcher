@@ -39,6 +39,9 @@ function forget(e) {
         case "Origin":
             promptForgetOrigin();
             break;
+        case "Ubisoft":
+            promptForgetUbisoft();
+            break;
         default:
             break;
     }
@@ -71,6 +74,23 @@ async function promptForgetOrigin() {
 }
 async function forgetOrigin(reqAccName) {
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ForgetOriginAccountJs", reqAccName).then(
+        _ => {
+            location.reload();
+        });
+    var result = await promise;
+}
+
+async function promptForgetUbisoft() {
+    const reqAccName = $(SelectedElem).attr("id");
+
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetUbisoftForgetAcc").then(r => {
+        if (!r) ShowModal("confirm:AcceptForgetUbisoftAcc:" + reqAccName);
+        else forgetUbisoft(reqAccName);
+    });
+    var result = await promise;
+}
+async function forgetUbisoft(reqAccName) {
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ForgetUbisoftAccountJs", reqAccName).then(
         _ => {
             location.reload();
         });
@@ -178,6 +198,9 @@ function SwapTo(request, e) {
         case "Origin":
             origin();
             break;
+        case "Ubisoft":
+            ubisoft();
+            break;
         default:
             break;
     }
@@ -200,6 +223,15 @@ function SwapTo(request, e) {
         DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToOrigin", selected.attr("id"), request);
         return;
     }
+    //Ubisoft:
+    function ubisoft() {
+        // This may be unnecessary.
+        var selected = $(".acc:checked");
+        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
+
+        DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToUbisoft", selected.attr("id"), request);
+        return;
+    }
 }
 
 // Create shortcut for selected icon
@@ -213,6 +245,8 @@ function CreateShortcut() {
 function NewSteamLogin() {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToSteam", "", "");
 }
+
+
 // New Origin accounts
 function NewOriginLogin() {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToOrigin", "", 0);
@@ -221,6 +255,17 @@ function NewOriginLogin() {
 function CurrentOriginLogin() {
     ShowModal("accString:Origin");
 }
+
+
+// New Ubisoft accounts
+function NewUbisoftLogin() {
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToUbisoft", "", 0);
+}
+// Add currently logged in Ubisoft account
+function CurrentUbisoftLogin() {
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftAddCurrent");
+}
+
 
 $(".acc").dblclick(function () {
     alert("Handler for .dblclick() called.");
@@ -292,7 +337,10 @@ function ShowModal(modaltype) {
             message = forgetAccountSteamPrompt;
         } else if (action.startsWith("AcceptForgetOriginAcc")) {
             message = forgetAccountOriginPrompt;
-        } else {
+        } else if (action.startsWith("AcceptForgetUbisoftAcc")) {
+            message = forgetAccountUbisoftPrompt;
+        }
+        else {
             header = "<h3>Confirm action:</h3>";
             message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
             // The only exception to confirm:<prompt> was AcceptForgetSteamAcc, as that was confirm:AcceptForgetSteamAcc:steamId
@@ -418,5 +466,12 @@ const forgetAccountOriginPrompt = `<h3 style='color:red'>You are about to forget
 <h4>What does this mean?</h4>
 <p>TcNo Account Switcher will also no longer show the account,<br/>
 until it's signed into again through Origin, and added to the list.</p>
+<p>Your account will remain untouched. It is just forgotten on this computer.</p>
+<h4>Do you understand?</h4>`
+
+const forgetAccountUbisoftPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
+<h4>What does this mean?</h4>
+<p>TcNo Account Switcher will also no longer show the account,<br/>
+until it's signed into again through Ubisoft, and added to the list.</p>
 <p>Your account will remain untouched. It is just forgotten on this computer.</p>
 <h4>Do you understand?</h4>`

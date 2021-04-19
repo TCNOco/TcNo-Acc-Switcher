@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.Origin;
+using TcNo_Acc_Switcher_Server.Pages.Ubisoft;
 
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
@@ -31,6 +32,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
     {
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
         private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
+        private static readonly Data.Settings.Ubisoft Ubisoft = Data.Settings.Ubisoft.Instance;
 
         /// <summary>
         /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file
@@ -88,6 +90,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "OriginSettings":
                     Origin.FolderPath = path;
                     break;
+                case "UbisoftSettings":
+                    Origin.FolderPath = path;
+                    break;
             }
         }
 
@@ -112,6 +117,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 var accName = action.Split(":")[1];
                 Origin.UpdateOriginForgetAcc(true);
                 OriginSwitcherFuncs.ForgetAccount(accName);
+                return Task.FromResult("refresh");
+            }
+
+            if (action.StartsWith("AcceptForgetUbisoftAcc:"))
+            {
+                var accName = action.Split(":")[1];
+                Ubisoft.UpdateUbisoftForgetAcc(true);
+                UbisoftSwitcherFuncs.ForgetAccount(accName);
                 return Task.FromResult("refresh");
             }
 

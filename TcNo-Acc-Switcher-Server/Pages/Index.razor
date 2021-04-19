@@ -23,6 +23,7 @@
 
 @inject Data.Settings.Origin Origin
 @inject Data.Settings.Steam Steam
+@inject Data.Settings.Ubisoft Ubisoft
 
 @if (AppSettings.Instance.UpdateAvailable) {
 @*@if (true) {*@ 
@@ -34,7 +35,10 @@
         <img src="img/platform/steam.svg" draggable="false" alt="Steam" />
     </div>
     <div class="button platformIcon" id="SwitcherOrigin" @onclick="CheckOrigin">
-        <img src="img/platform/origin.svg" draggable="false" alt="Steam" />
+        <img src="img/platform/origin.svg" draggable="false" alt="Origin" />
+    </div>
+    <div class="button platformIcon" id="SwitcherUbisoft" @onclick="CheckUbisoft">
+        <img src="img/platform/ubisoft.svg" draggable="false" alt="Ubisoft" />
     </div>
 </div>
 
