@@ -57,6 +57,8 @@ namespace TcNo_Acc_Switcher_Client
         [STAThread]
         protected override void OnStartup(StartupEventArgs e)
         {
+            // Crash handler
+            AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             // Single instance:
             if (!Mutex.WaitOne(TimeSpan.Zero, true))
             {

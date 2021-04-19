@@ -56,16 +56,14 @@ namespace TcNo_Acc_Switcher_Globals
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
             // Log Unhandled Exception
             var exceptionStr = e.ExceptionObject.ToString();
-            Directory.CreateDirectory("Errors");
-            var filePath = $"Errors\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
+            Directory.CreateDirectory("CrashLogs");
+            var filePath = $"CrashLogs\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
             using (var sw = File.AppendText(filePath))
             {
                 sw.WriteLine(DateTime.Now.ToString(CultureInfo.InvariantCulture) + "\t" + Strings.ErrUnhandledCrash + ": " + exceptionStr + Environment.NewLine + Environment.NewLine);
             }
             Console.WriteLine(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
-            //MessageBox.Show(Strings.ErrUnhandledException + Path.GetFullPath(filePath), Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Error);
             Console.WriteLine(Strings.ErrSubmitCrashlog);
-            //MessageBox.Show(Strings.ErrSubmitCrashlog, Strings.ErrUnhandledExceptionHeader, MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         public static void WriteLogLine(string line)

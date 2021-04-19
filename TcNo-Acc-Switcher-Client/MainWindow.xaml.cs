@@ -67,7 +67,7 @@ namespace TcNo_Acc_Switcher_Client
             // Start web server
             Server.IsBackground = true;
             Server.Start();
-            
+
             // Initialise and connect to web server above
             // Somehow check ports and find a different one if it doesn't work? We'll see...
             InitializeComponent();

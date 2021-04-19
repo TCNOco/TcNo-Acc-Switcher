@@ -20,4 +20,8 @@
     <PackageReference Include="VCDiff" Version="3.3.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TcNo-Acc-Switcher-Globals\TcNo-Acc-Switcher-Globals.csproj" />
+  </ItemGroup>
+
 </Project>

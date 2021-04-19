@@ -15,6 +15,7 @@
 using System;
 using System.Threading;
 using System.Windows;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Updater
 {
@@ -27,6 +28,8 @@ namespace TcNo_Acc_Switcher_Updater
         [STAThread]
         protected override void OnStartup(StartupEventArgs e)
         {
+            // Crash handler
+            AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             // Single instance:
             if (!Mutex.WaitOne(TimeSpan.Zero, true))
             {

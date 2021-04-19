@@ -6,6 +6,7 @@ cd bin\x64\Debug\net5.0-windows\
 mkdir updater
 mkdir updater\x64
 mkdir updater\x86
+mkdir updater\ref
 copy /B /Y "VCDiff.dll" "updater\VCDiff.dll"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
@@ -18,6 +19,11 @@ move /Y "x86\7z.dll" "updater\x86\7z.dll"
 move /Y "x64\7z.dll" "updater\x64\7z.dll"
 copy /B /Y "ref\TcNo-Acc-Switcher-Updater.dll" "updater\ref\TcNo-Acc-Switcher-Updater.dll"
 copy /B /Y "Newtonsoft.Json.dll" "updater\Newtonsoft.Json.dll"
+copy /B /Y "TcNo-Acc-Switcher-Globals.deps.json" "updater\TcNo-Acc-Switcher-Globals.deps.json"
+copy /B /Y "TcNo-Acc-Switcher-Globals.dll" "updater\TcNo-Acc-Switcher-Globals.dll"
+copy /B /Y "TcNo-Acc-Switcher-Globals.pdb" "updater\TcNo-Acc-Switcher-Globals.pdb"
+copy /B /Y "TcNo-Acc-Switcher-Globals.pdb" "updater\TcNo-Acc-Switcher-Globals.pdb"
+copy /B /Y "ref\TcNo-Acc-Switcher-Globals.dll" "updater\ref\TcNo-Acc-Switcher-Globals.dll"
 RMDIR /Q/S "runtimes\linux-musl-x64"
 RMDIR /Q/S "runtimes\linux-x64"
 RMDIR /Q/S "runtimes\osx"
@@ -32,6 +38,7 @@ cd ..\..\Release\net5.0-windows\
 mkdir updater
 mkdir updater\x64
 mkdir updater\x86
+mkdir updater\ref
 copy /B /Y "VCDiff.dll" "updater\VCDiff.dll"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
@@ -44,6 +51,11 @@ move /Y "x86\7z.dll" "updater\x86\7z.dll"
 move /Y "x64\7z.dll" "updater\x64\7z.dll"
 copy /B /Y "ref\TcNo-Acc-Switcher-Updater.dll" "updater\ref\TcNo-Acc-Switcher-Updater.dll"
 copy /B /Y "Newtonsoft.Json.dll" "updater\Newtonsoft.Json.dll"
+copy /B /Y "TcNo-Acc-Switcher-Globals.deps.json" "updater\TcNo-Acc-Switcher-Globals.deps.json"
+copy /B /Y "TcNo-Acc-Switcher-Globals.dll" "updater\TcNo-Acc-Switcher-Globals.dll"
+copy /B /Y "TcNo-Acc-Switcher-Globals.pdb" "updater\TcNo-Acc-Switcher-Globals.pdb"
+copy /B /Y "TcNo-Acc-Switcher-Globals.pdb" "updater\TcNo-Acc-Switcher-Globals.pdb"
+copy /B /Y "ref\TcNo-Acc-Switcher-Globals.dll" "updater\ref\TcNo-Acc-Switcher-Globals.dll"
 RMDIR /Q/S "runtimes\linux-musl-x64"
 RMDIR /Q/S "runtimes\linux-x64"
 RMDIR /Q/S "runtimes\osx"
