@@ -33,6 +33,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
         private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
         private static readonly Data.Settings.Ubisoft Ubisoft = Data.Settings.Ubisoft.Instance;
+        private static readonly Data.Settings.BattleNet BattleNet = Data.Settings.BattleNet.Instance;
 
         /// <summary>
         /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file

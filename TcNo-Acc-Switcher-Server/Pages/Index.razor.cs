@@ -61,6 +61,19 @@ namespace TcNo_Acc_Switcher_Server.Pages
             }
         }
 
+        public async Task CheckBattleNet()
+        {
+            Globals.DebugWriteLine($@"[Func:Index.CheckBattleNet]");
+            if (Directory.Exists(BattleNet.FolderPath) && File.Exists(BattleNet.BattleNetExe()))
+            {
+                NavManager.NavigateTo("/BattleNet/");
+            }
+            else
+            {
+                await GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
+            }
+        }
+
         public void UpdateNow()
         {
             Process.Start(new ProcessStartInfo(@"updater\\TcNo-Acc-Switcher-Updater.exe") { UseShellExecute = true });
