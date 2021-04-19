@@ -70,7 +70,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
             }
             else
             {
-                await GeneralInvocableFuncs.ShowModal("find:OrBigin:Origin.exe:OriginSettings");
+                await GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
             }
         }
 

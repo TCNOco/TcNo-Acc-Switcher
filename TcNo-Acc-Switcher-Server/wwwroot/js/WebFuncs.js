@@ -16,7 +16,6 @@ function docReady(fn) {
     }
 }  
 
-
 // Clear Cache reload: 
 var winUrl = window.location.href.split("?");
 if (winUrl.length > 1 && winUrl[1].indexOf("cacheReload") !== -1) {
@@ -41,6 +40,9 @@ function forget(e) {
             break;
         case "Ubisoft":
             promptForgetUbisoft();
+            break;
+        case "BattleNet":
+            promptForgetBattleNet();
             break;
         default:
             break;
@@ -266,6 +268,14 @@ function NewOriginLogin() {
 // New BattleNet accounts
 function NewBattleNetLogin() {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToBattleNet", "", 0);
+}
+// Delete the assigned BattleTag
+function DeleteBTag() {
+    var selected = $(".acc:checked");
+    if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
+
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "DeleteBattleTag", selected.attr("id"));
+    return;
 }
 // Add currently logged in Origin account
 function CurrentOriginLogin() {

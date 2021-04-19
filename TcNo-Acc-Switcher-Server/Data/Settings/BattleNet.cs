@@ -52,21 +52,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public string ContextMenuJson = @"[
               {""Swap to account"": ""SwapTo(-1, event)""},
               {""Set BattleTag"": ""ShowModal('setBTag')""},
-              {""Forget"": ""forget(event)""}
+              {""Delete BattleTag"": ""DeleteBTag()""},
             ]";
-
-
-        /// <summary>
-        /// Updates the ForgetAccountEnabled bool in Steam settings file
-        /// </summary>
-        /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
-        public void UpdateBattleNetForgetAcc(bool enabled)
-        {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\BattleNet.UpdateBattleNetForgetAcc]");
-            if (ForgetAccountEnabled == enabled) return; // Ignore if already set
-            ForgetAccountEnabled = enabled;
-            SaveSettings();
-        }
+        
 
         /// <summary>
         /// Default settings for BattleNetSettings.json
@@ -78,7 +66,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = new Point() { X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
-            
+            _instance.BTags = new Dictionary<string, string>();
             SaveSettings();
         }
         public void SetFromJObject(JObject j)
@@ -90,7 +78,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = curSettings.WindowSize;
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
-            _instance._bTags = curSettings._bTags;
+            _instance._bTags = JsonConvert.DeserializeObject<Dictionary<string,string>>(j.SelectToken("BTags").ToString());
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
         public JObject GetJObject() => JObject.FromObject(this);

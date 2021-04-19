@@ -34,6 +34,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             BattleNetSwitcherFuncs.SetBattleTag(accName, bTag);
         }
 
+        /// <summary>
+        /// JS function handler for deleting the corresponding BattleTag
+        /// </summary>
+        /// <param name="accName">Requested account's email</param>
+        /// <param name="bTag">The BattleTag to be set</param>
+        [JSInvokable]
+        public static void DeleteBattleTag(string accName)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:BattleNet\BattleNetSwitcherBase.DeleteBattleTag] accName:{accName}");
+            BattleNetSwitcherFuncs.DeleteBattleTag(accName);
+        }
+
         public class BattleNetUser
         {
             [JsonProperty("Email", Order = 0)] public string Email { get; set; }

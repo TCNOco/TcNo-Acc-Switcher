@@ -42,57 +42,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             string file = File.ReadAllText(BattleNetRoaming + "\\Battle.net.config");
             foreach (string mail in (Newtonsoft.Json.JsonConvert.DeserializeObject(file) as JObject)?.SelectToken("Client.SavedAccountNames")?.ToString()?.Split(','))
             {
-                Accounts.Add(new BattleNetSwitcherBase.BattleNetUser() { Email = mail, BTag = BattleNet.BTags.ContainsKey(mail) ? BattleNet.BTags[mail] : null});
+                Accounts.Add(new BattleNetSwitcherBase.BattleNetUser() { Email = mail, BTag = BattleNet.BTags.ContainsKey(mail) ? BattleNet.BTags[mail] : null });
+                
             }
-            
-            
             foreach (var acc in Accounts)
             {
                 var element =
                     $"<input type=\"radio\" id=\"{acc.Email}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{acc.Email}\" class=\"acc\">\r\n" +
-                    $"<img src=\"" + $"\\img\\profiles\\origin\\{Uri.EscapeUriString(acc.Email)}.jpg" + "\" draggable=\"false\" />\r\n" +
+                    $"<img src=\"\\img\\icons\\battleNetDefault.jpg\" draggable=\"false\" />\r\n" +
                     $"<h6>{acc.BTag ?? acc.Email}</h6>\r\n";
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                 await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
             }
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
         }
-
-        /// <summary>
-        /// Used in JS. Gets whether forget account is enabled (Whether to NOT show prompt, or show it).
-        /// </summary>
-        /// <returns></returns>
-        [JSInvokable]
-        public static Task<bool> GetBattleNetForgetAcc() => Task.FromResult(BattleNet.ForgetAccountEnabled);
-
-        /// <summary>
-        /// Remove requested account from Battle.net.config
-        /// </summary>
-        /// <param name="accName">email of account to be removed</param>
-        public static bool ForgetAccount(string accName)
-        {
-            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.ForgetAccount] Forgetting account: {accName}");
-            string file = File.ReadAllText(BattleNetRoaming + "\\Battle.net.config");
-            JObject jObject = Newtonsoft.Json.JsonConvert.DeserializeObject(file) as JObject;
-            JToken jToken = jObject?.SelectToken("Client.SavedAccountNames");
-            
-            string replaceString = "";
-            for (int i = 0; i < Accounts.Count; i++)
-            {
-                if (Accounts[i].Email != accName)
-                {
-                    replaceString += Accounts[i].Email;
-                    if (i < Accounts.Count - 1)
-                    {
-                        replaceString += ",";
-                    }
-                }
-            }
-            jToken?.Replace(replaceString);
-            File.WriteAllText(BattleNetRoaming + "\\Battle.net.config", jObject?.ToString());
-            return true;
-        }
+        
 
         /// <summary>
         /// Restart BattleNet with a new account selected. Leave args empty to log into a new account.
@@ -101,9 +66,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static void SwapBattleNetAccounts(string accName = "")
         {
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SwapBattleNetAccounts] Swapping to: {accName}.");
-            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing BattleNet");
+            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting BattleNet");
             CloseBattleNet();
-            // DO ACTUAL SWITCHING HERE
+            
             BattleNetSwitcherBase.BattleNetUser account = Accounts.First(x => x.Email == accName);           
             // Load settings into JObject
             string file = File.ReadAllText(BattleNetRoaming + "\\Battle.net.config");
@@ -130,14 +95,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             // Replace and write the new Json
             jToken?.Replace(replaceString);
             File.WriteAllText(BattleNetRoaming + "\\Battle.net.config", jObject?.ToString());
-            
-            
-            
-            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting BattleNet");
-            if (BattleNet.Admin)
-                Process.Start(BattleNet.BattleNetExe());
-            else
-                Process.Start(new ProcessStartInfo("explorer.exe", BattleNet.BattleNetExe()));
+
+            Process.Start(BattleNet.BattleNetExe());
         }
 
         /// <summary>
@@ -150,8 +109,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
         public static void SetBattleTag(string accName, string bTag)
         {
-            BattleNet.BTags.Add(accName,bTag);
-            BattleNet.SaveSettings(true);
+            Data.Settings.BattleNet.Instance.BTags.Remove(accName);
+            Data.Settings.BattleNet.Instance.BTags.Add(accName,bTag);
+            File.WriteAllText(Data.Settings.BattleNet.Instance.SettingsFile, Data.Settings.BattleNet.Instance.GetJObject().ToString());
+            AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+        }
+
+        public static void DeleteBattleTag(string accName)
+        {
+            Data.Settings.BattleNet.Instance.BTags.Remove(accName);
+            File.WriteAllText(Data.Settings.BattleNet.Instance.SettingsFile, Data.Settings.BattleNet.Instance.GetJObject().ToString());
+            AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
         }
     }
 }
