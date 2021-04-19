@@ -201,6 +201,9 @@ function SwapTo(request, e) {
         case "Ubisoft":
             ubisoft();
             break;
+        case "BattleNet":
+            battleNet();
+            break;
         default:
             break;
     }
@@ -232,6 +235,15 @@ function SwapTo(request, e) {
         DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToUbisoft", selected.attr("id"), request);
         return;
     }
+    //BattleNet:
+    function battleNet() {
+        // This may be unnecessary.
+        var selected = $(".acc:checked");
+        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
+
+        DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToBattleNet", selected.attr("id"));
+        return;
+    }
 }
 
 // Create shortcut for selected icon
@@ -250,6 +262,10 @@ function NewSteamLogin() {
 // New Origin accounts
 function NewOriginLogin() {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToOrigin", "", 0);
+}
+// New BattleNet accounts
+function NewBattleNetLogin() {
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToBattleNet", "", 0);
 }
 // Add currently logged in Origin account
 function CurrentOriginLogin() {
@@ -381,6 +397,23 @@ function ShowModal(modaltype) {
 	        </div>
         </div>`);
     }
+    else if (modaltype.startsWith("setBTag")) {
+        console.log(modaltype);
+        Modal_RequestedLocated(false);
+        $('#modalTitle').text("Set BattleTag for " + $(".acc:checked").attr("id"));
+        $("#modal_contents").empty();
+        $("#modal_contents").append(`<div id="modal_contents">
+	        <div>
+		        <span class="modal-text">Please enter the BattleTag for  ` + $(".acc:checked").attr("id") + ` </span>
+	        </div>
+	        <div class="inputAndButton">
+		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;">
+	        </div>
+	        <div class="settingsCol inputAndButton">
+		        <button class="btn" type="button" id="select_program" onclick="Modal_FinalizeAccString('BattleNet')"><span>Set BattleTag</span></button>
+	        </div>
+        </div>`);
+    }
     $('.modalBG').fadeIn();
 }
 
@@ -414,6 +447,9 @@ function Modal_FinalizeAccString(platform) {
     switch (platform) {
         case "Origin":
             DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "OriginAddCurrent", $("#CurrentAccountName").val());
+            break;
+        case "BattleNet":
+            DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetBattleTag", $(".acc:checked").attr("id"), $("#CurrentAccountName").val());
             break;
         default:
             break;
@@ -450,6 +486,9 @@ function flushJQueryAppendQueue() {
 
 //DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyCommunityUsername", $(SelectedElem).attr(request)).then(r => console.log(r));
 
+function SetBTag(event){
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToBattleNet", "", 0);
+}
 
 
 const forgetAccountSteamPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>

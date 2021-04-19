@@ -41,6 +41,7 @@ namespace TcNo_Acc_Switcher_Server
             services.AddSingleton<Data.Settings.Steam>(); // Persistent Steam settings
             services.AddSingleton<Data.Settings.Origin>(); // Persistent Origin settings
             services.AddSingleton<Data.Settings.Ubisoft>(); // Persistent Ubisoft settings
+            services.AddSingleton<Data.Settings.BattleNet>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -12,7 +12,7 @@ namespace TcNo_Acc_Switcher_Globals
     {
         public string WorkingDirectory { get; set; }
         public DateTime UpdateLastChecked { get; set; } = DateTime.Now;
-        public static bool VerboseMode = false;
+        public static bool VerboseMode = true;
 
         public static void DebugWriteLine(string s)
         {

@@ -24,6 +24,7 @@
 @inject Data.Settings.Origin Origin
 @inject Data.Settings.Steam Steam
 @inject Data.Settings.Ubisoft Ubisoft
+@inject Data.Settings.BattleNet BattleNet
 
 @if (AppSettings.Instance.UpdateAvailable) {
 @*@if (true) {*@ 
@@ -40,6 +41,9 @@
     <div class="button platformIcon" id="SwitcherUbisoft" @onclick="CheckUbisoft">
         <img src="img/platform/ubisoft.svg" draggable="false" alt="Ubisoft" />
     </div>
+    <div class="button platformIcon" id="SwitcherBattleNet" @onclick="CheckBattleNet">
+            <img src="img/platform/steam.svg.svg" draggable="false" alt="BattleNet" />
+        </div>
 </div>
 
 
