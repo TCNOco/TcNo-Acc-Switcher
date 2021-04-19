@@ -12,7 +12,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
     public class BattleNetSwitcherBase
     {
         /// <summary>
-        /// JS function handler for swapping to another BattleNet account.
+        /// JS function handler for swapping to another Battle.net account.
         /// </summary>
         /// <param name="accName">Requested account's Login Username</param>
         [JSInvokable]
@@ -38,7 +38,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// JS function handler for deleting the corresponding BattleTag
         /// </summary>
         /// <param name="accName">Requested account's email</param>
-        /// <param name="bTag">The BattleTag to be set</param>
         [JSInvokable]
         public static void DeleteBattleTag(string accName)
         {

@@ -19,9 +19,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
     public class UbisoftSwitcherFuncs
     {
         private static readonly Data.Settings.Ubisoft Ubisoft = Data.Settings.Ubisoft.Instance;
-        private static string UbisoftAppData;
-        private static string UbisoftLogFile;
-        private static string UbisoftAvatarFolder;
+        private static string _ubisoftAppData;
+        private static string _ubisoftLogFile;
+        private static string _ubisoftAvatarFolder;
         /// <summary>
         /// Main function for Ubisoft Account Switcher. Run on load.
         /// Collects accounts from Ubisoft Connect's files
@@ -32,9 +32,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         {
             // Normal:
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.LoadProfiles] Loading Steam profiles");
-            UbisoftAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
-            UbisoftLogFile = Path.Combine(Ubisoft.FolderPath, "logs", "launcher_log.txt");
-            UbisoftAvatarFolder = Path.Combine(Ubisoft.FolderPath, "cache", "avatars");
+            _ubisoftAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
+            _ubisoftLogFile = Path.Combine(Ubisoft.FolderPath, "logs", "launcher_log.txt");
+            _ubisoftAvatarFolder = Path.Combine(Ubisoft.FolderPath, "cache", "avatars");
             
             var localCachePath = $"LoginCache\\Ubisoft\\";
             if (!Directory.Exists(localCachePath) || !File.Exists(Path.Join(localCachePath, "ids.json"))) return;
@@ -75,7 +75,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         private static string GetLastLoginUserId()
         {
-            File.Copy(UbisoftLogFile, "templog");
+            File.Copy(_ubisoftLogFile, "templog");
             var lastUser = "";
             using (var reader = new StreamReader("templog"))
             {
@@ -98,7 +98,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         {
             Directory.CreateDirectory("LoginCache\\Ubisoft\\temp\\");
             var tempUsersDat = $"LoginCache\\Ubisoft\\temp\\users.dat";
-            File.Copy(Path.Join(UbisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\temp\\users.dat", true);
+            File.Copy(Path.Join(_ubisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\temp\\users.dat", true);
 
             var username = "";
             using (var reader = new StreamReader(File.Open(tempUsersDat, FileMode.Open)))
@@ -120,8 +120,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             GeneralFuncs.RecursiveDelete(new DirectoryInfo("LoginCache\\Ubisoft\\temp\\"), false);
             Directory.CreateDirectory($"LoginCache\\Ubisoft\\{userId}\\");
-            File.Copy(Path.Join(UbisoftAppData, "settings.yml"), $"LoginCache\\Ubisoft\\{userId}\\settings.yml", true);
-            File.Copy(Path.Join(UbisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\{userId}\\users.dat", true);
+            File.Copy(Path.Join(_ubisoftAppData, "settings.yml"), $"LoginCache\\Ubisoft\\{userId}\\settings.yml", true);
+            File.Copy(Path.Join(_ubisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\{userId}\\users.dat", true);
             return username;
         }
         public static Dictionary<string, string> ReadAllIds()
@@ -145,10 +145,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         public static void ImportAvatar(string userId)
         {
-            string i64 = Path.Join(UbisoftAvatarFolder, userId + "_64.png"),
-                i128 = Path.Join(UbisoftAvatarFolder, userId + "_128.png"),
-                i256 = Path.Join(UbisoftAvatarFolder, userId + "_256.png");
-            Directory.CreateDirectory($"\\img\\profiles\\Ubisoft\\");
+            string i64 = Path.Join(_ubisoftAvatarFolder, userId + "_64.png"),
+                i128 = Path.Join(_ubisoftAvatarFolder, userId + "_128.png"),
+                i256 = Path.Join(_ubisoftAvatarFolder, userId + "_256.png");
+            Directory.CreateDirectory($"wwwroot\\img\\profiles\\Ubisoft\\");
             var outPath = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\Ubisoft\\{userId}.png");
             if (File.Exists(i256)) File.Copy(i256, outPath, true);
             else if (File.Exists(i128)) File.Copy(i128, outPath, true);
@@ -245,7 +245,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         private static void ClearCurrentUser()
         {
-            var settingsYml = File.ReadAllLines(Path.Join(UbisoftAppData, "settings.yml"));
+            var settingsYml = File.ReadAllLines(Path.Join(_ubisoftAppData, "settings.yml"));
             for (var i = 0; i < settingsYml.Length; i++)
             {
                 if (settingsYml[i].Contains("height:"))
@@ -266,20 +266,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 if (settingsYml[i].Contains("username: "))
                     settingsYml[i] = "  username: \"\"";
             }
-            File.WriteAllLines(Path.Join(UbisoftAppData, "settings.yml"), settingsYml);
+            File.WriteAllLines(Path.Join(_ubisoftAppData, "settings.yml"), settingsYml);
         }
 
         private static void UbisoftCopyInAccount(string userId, int state = 0)
         {
-            var lineToReplace = "LINE HERE";
+            using var fs = new StreamWriter(Path.Join(_ubisoftAppData, "settings.yml"));
             foreach (var l in File.ReadAllLines($"LoginCache\\Ubisoft\\{userId}\\settings.yml"))
-                if (l.Contains("forceoffline")) lineToReplace = l;
-
-            var settingsFile = File.ReadAllText($"LoginCache\\Ubisoft\\{userId}\\settings.yml");
-            settingsFile.Replace(lineToReplace, $"  forceoffline: {(state == 0 ? "false" : "true")}");
-            File.WriteAllText(Path.Join(UbisoftAppData, "settings.yml"), settingsFile);
-            File.Copy($"LoginCache\\Ubisoft\\{userId}\\users.dat", Path.Join(UbisoftAppData, "users.dat"), true);
-            
+            {
+                if (l.Contains("forceoffline")) fs.WriteLine("  forceoffline: " + (state != 0 ? "true" : "false")); 
+                else fs.WriteLine(l);
+            }
+            fs.Close();
         }
         
 

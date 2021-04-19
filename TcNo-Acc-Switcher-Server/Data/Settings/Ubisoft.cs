@@ -50,19 +50,15 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public string SettingsFile = "UbisoftSettings.json";
         [JsonIgnore] public string UbisoftImagePath = "wwwroot/img/profiles/ubi/";
         [JsonIgnore] public string UbisoftImagePathHtml = "img/profiles/ubi/";
-        //[JsonIgnore] public string ContextMenuJson = @"[
-        //      {""Swap to account"": ""SwapTo(-1, event)""},
-        //      {""Login as..."": [
-        //        {""Invisible"": ""SwapTo(10, event)""},
-        //      ]},
-        //      {""Create Desktop Shortcut"": ""CreateShortcut()""},
-        //      {""Forget"": ""forget(event)""}
-        //    ]";
         [JsonIgnore] public string ContextMenuJson = @"[
               {""Swap to account"": ""SwapTo(-1, event)""},
+              {""Login as..."": [
+                {""Online"": ""SwapTo(0, event)""},
+                {""Offline"": ""SwapTo(10, event)""},
+              ]},
               {""Forget"": ""forget(event)""}
             ]";
-
+        // {""Create Desktop Shortcut"": ""CreateShortcut()""},
 
         /// <summary>
         /// Updates the ForgetAccountEnabled bool in settings file
