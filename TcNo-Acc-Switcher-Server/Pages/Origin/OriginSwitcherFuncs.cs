@@ -88,9 +88,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             }
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Origin");
             if (Origin.Admin)
-                Process.Start(Origin.OriginExe());
+                Process.Start(Origin.Exe());
             else
-                Process.Start(new ProcessStartInfo("explorer.exe", Origin.OriginExe()));
+                Process.Start(new ProcessStartInfo("explorer.exe", Origin.Exe()));
         }
 
 

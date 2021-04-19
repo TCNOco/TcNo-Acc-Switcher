@@ -27,7 +27,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
         public async Task CheckSteam()
         {
             Globals.DebugWriteLine($@"[Func:Index.CheckSteam]");
-            if (SteamSwitcherFuncs.SteamSettingsValid() && Directory.Exists(Steam.FolderPath) && File.Exists(Steam.SteamExe()))
+            if (SteamSwitcherFuncs.SteamSettingsValid() && Directory.Exists(Steam.FolderPath) && File.Exists(Steam.Exe()))
             {
                 NavManager.NavigateTo("/Steam/");
             }
@@ -39,7 +39,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
         public async Task CheckOrigin()
         {
             Globals.DebugWriteLine($@"[Func:Index.CheckOrigin]");
-            if (Directory.Exists(Origin.FolderPath) && File.Exists(Origin.OriginExe()))
+            if (Directory.Exists(Origin.FolderPath) && File.Exists(Origin.Exe()))
             {
                 NavManager.NavigateTo("/Origin/");
             }
@@ -51,7 +51,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
         public async Task CheckUbisoft()
         {
             Globals.DebugWriteLine($@"[Func:Index.CheckUbisoft]");
-            if (Directory.Exists(Ubisoft.FolderPath) && File.Exists(Ubisoft.UbisoftExe()))
+            if (Directory.Exists(Ubisoft.FolderPath) && File.Exists(Ubisoft.Exe()))
             {
                 NavManager.NavigateTo("/Ubisoft/");
             }

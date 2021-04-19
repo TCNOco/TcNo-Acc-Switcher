@@ -61,19 +61,16 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Steam_ShowVAC", Order = 5)] public bool ShowVac { get => _instance._showVac; set => _instance._showVac = value; }
         private bool _showLimited = true;
         [JsonProperty("Steam_ShowLimited", Order = 6)] public bool ShowLimited { get => _instance._showLimited; set => _instance._showLimited = value; }
-        private bool _desktopShortcut;
-        [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
-        private bool _startMenu;
-        [JsonIgnore] public bool StartMenu { get => _instance._startMenu; set => _instance._startMenu = value; }
-        private bool _trayStartup;
-        [JsonIgnore] public bool TrayStartup { get => _instance._trayStartup; set => _instance._trayStartup = value; }
         private bool _trayAccName;
         [JsonProperty("Steam_TrayAccountName", Order = 7)] public bool TrayAccName { get => _instance._trayAccName; set => _instance._trayAccName = value; }
         private int _imageExpiryTime = 7;
         [JsonProperty("Steam_ImageExpiryTime", Order = 8)] public int ImageExpiryTime { get => _instance._imageExpiryTime; set => _instance._imageExpiryTime = value; }
         private int _trayAccNumber = 3;
         [JsonProperty("Steam_TrayAccNumber", Order = 9)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
-        
+
+        private bool _desktopShortcut;
+        [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
+
         // Constants
         [JsonIgnore] public string VacCacheFile = "profilecache/SteamVACCache.json";
         [JsonIgnore] public string SettingsFile = "SteamSettings.json";
@@ -136,6 +133,50 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             SaveSettings();
         }
 
+        /// <summary>
+        /// Get path of loginusers.vdf, resets & returns "RESET_PATH" if invalid.
+        /// </summary>
+        /// <returns>(Steam's path)\config\loginuisers.vdf</returns>
+        public string LoginUsersVdf()
+        {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.LoginUsersVdf]");
+            var path = Path.Combine(FolderPath, "config\\loginusers.vdf");
+            if (File.Exists(path)) return path;
+            FolderPath = "";
+            SaveSettings();
+            return "RESET_PATH";
+        }
+
+        /// <summary>
+        /// Get Steam.exe path from SteamSettings.json 
+        /// </summary>
+        /// <returns>Steam.exe's path string</returns>
+        public string Exe() => Path.Combine(FolderPath, "Steam.exe");
+
+        /// <summary>
+        /// Get Steam's config folder
+        /// </summary>
+        /// <returns>(Steam's Path)\config\</returns>
+        public string SteamConfigFolder() => Path.Combine(FolderPath, "config\\");
+
+        /// <summary>
+        /// Updates the ForgetAccountEnabled bool in Steam settings file
+        /// </summary>
+        /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
+        public void UpdateSteamForgetAcc(bool enabled)
+        {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.UpdateSteamForgetAcc]");
+            if (ForgetAccountEnabled == enabled) return; // Ignore if already set
+            ForgetAccountEnabled = enabled;
+            SaveSettings();
+        }
+
+        /// <summary>
+        /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
+        /// </summary>
+        public string GetSteamIdCssBlock() => ".steamId { display: " + (_instance._showSteamId ? "block" : "none") + " }";
+
+        #region SETTINGS
         public void SetFromJObject(JObject j)
         {
             Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.SetFromJObject]");
@@ -161,89 +202,23 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         [JSInvokable]
         public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
-
-        /// <summary>
-        /// Get path of loginusers.vdf, resets & returns "RESET_PATH" if invalid.
-        /// </summary>
-        /// <returns>(Steam's path)\config\loginuisers.vdf</returns>
-        public string LoginUsersVdf()
-        {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.LoginUsersVdf]");
-            var path = Path.Combine(FolderPath, "config\\loginusers.vdf");
-            if (File.Exists(path)) return path;
-            FolderPath = "";
-            SaveSettings();
-            return "RESET_PATH";
-        }
-
-        /// <summary>
-        /// Get Steam.exe path from SteamSettings.json 
-        /// </summary>
-        /// <returns>Steam.exe's path string</returns>
-        public string SteamExe() => Path.Combine(FolderPath, "Steam.exe");
-
-        /// <summary>
-        /// Get Steam's config folder
-        /// </summary>
-        /// <returns>(Steam's Path)\config\</returns>
-        public string SteamConfigFolder() => Path.Combine(FolderPath, "config\\");
+        #endregion
         
-        /// <summary>
-        /// Updates the ForgetAccountEnabled bool in Steam settings file
-        /// </summary>
-        /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
-        public void UpdateSteamForgetAcc(bool enabled)
-        {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.UpdateSteamForgetAcc]");
-            if (ForgetAccountEnabled == enabled) return; // Ignore if already set
-            ForgetAccountEnabled = enabled;
-            SaveSettings();
-        }
-
-        /// <summary>
-        /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
-        /// </summary>
-        public string GetSteamIdCssBlock() => ".steamId { display: " + (_instance._showSteamId ? "block" : "none") + " }";
-        
-
         #region SHORTCUTS
         public void CheckShortcuts()
         {
             Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.CheckShortcuts]");
-            _instance._desktopShortcut = File.Exists(Path.Combine(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
-            _instance._startMenu = File.Exists(Path.Combine(Shortcut.StartMenu, "TcNo Account Switcher.lnk"));
-            _instance._trayStartup = Pages.General.Classes.Task.StartWithWindows_Enabled();
+            _instance._desktopShortcut = File.Exists(Path.Combine(Shortcut.Desktop, "Steam - TcNo Account Switcher.lnk"));
+            AppSettings.Instance.CheckShortcuts();
         }
 
         public void DesktopShortcut_Toggle()
         {
             Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
             var s = new Shortcut();
-            s.Shortcut_Steam(Shortcut.Desktop);
-            s.ToggleShortcut(!DesktopShortcut, true);
-
-            s.Shortcut_Switcher(Shortcut.Desktop);
+            s.Shortcut_Platform(Shortcut.Desktop, "Steam", "steam");
             s.ToggleShortcut(!DesktopShortcut, true);
         }
-        public void StartMenu_Toggle()
-        {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.StartMenu_Toggle]");
-            var s = new Shortcut();
-            s.Shortcut_Steam(Shortcut.StartMenu);
-            s.ToggleShortcut(!StartMenu, false);
-
-            s.Shortcut_Switcher(Shortcut.StartMenu);
-            s.ToggleShortcut(!StartMenu, false);
-
-            s.Shortcut_SteamTray(Shortcut.StartMenu);
-            s.ToggleShortcut(!StartMenu, false);
-        }
-        public void Task_Toggle()
-        {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.Task_Toggle]");
-            Pages.General.Classes.Task.StartWithWindows_Toggle(!TrayStartup);
-        }
-
         #endregion
     }
 }

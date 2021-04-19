@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
@@ -42,6 +43,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private bool _forgetAccountEnabled;
         [JsonProperty("ForgetAccountEnabled", Order = 4)] public bool ForgetAccountEnabled { get => _instance._forgetAccountEnabled; set => _instance._forgetAccountEnabled = value; }
 
+        private bool _desktopShortcut;
+        [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
 
         // Constants
         [JsonIgnore] public string SettingsFile = "OriginSettings.json";
@@ -62,7 +65,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
 
         /// <summary>
-        /// Updates the ForgetAccountEnabled bool in Steam settings file
+        /// Updates the ForgetAccountEnabled bool in settings file
         /// </summary>
         /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
         public void UpdateOriginForgetAcc(bool enabled)
@@ -74,6 +77,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
 
         /// <summary>
+        /// Get Origin.exe path from OriginSettings.json 
+        /// </summary>
+        /// <returns>Origin.exe's path string</returns>
+        public string Exe() => Path.Combine(FolderPath, "Origin.exe");
+
+
+        #region SETTINGS
+        /// <summary>
         /// Default settings for OriginSettings.json
         /// </summary>
         public void ResetSettings()
@@ -83,7 +94,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = new Point() { X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
-            
+
+            CheckShortcuts();
+
             SaveSettings();
         }
         public void SetFromJObject(JObject j)
@@ -95,16 +108,30 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = curSettings.WindowSize;
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
+
+            CheckShortcuts();
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
         public JObject GetJObject() => JObject.FromObject(this);
         [JSInvokable]
         public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
+        #endregion
 
-        /// <summary>
-        /// Get Origin.exe path from OriginSettings.json 
-        /// </summary>
-        /// <returns>Origin.exe's path string</returns>
-        public string OriginExe() => Path.Combine(FolderPath, "Origin.exe");
+        #region SHORTCUTS
+        public void CheckShortcuts()
+        {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Origin.CheckShortcuts]");
+            _instance._desktopShortcut = File.Exists(Path.Combine(Shortcut.Desktop, "Origin - TcNo Account Switcher.lnk"));
+            AppSettings.Instance.CheckShortcuts();
+        }
+
+        public void DesktopShortcut_Toggle()
+        {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Origin.DesktopShortcut_Toggle]");
+            var s = new Shortcut();
+            s.Shortcut_Platform(Shortcut.Desktop, "Origin", "origin");
+            s.ToggleShortcut(!DesktopShortcut, true);
+        }
+        #endregion
     }
 }

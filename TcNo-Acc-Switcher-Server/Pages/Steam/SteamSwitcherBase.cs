@@ -71,7 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.CreateShortcut] {steamId.Substring(steamId.Length - 4, 4)}, accName:hidden");
             var s = new Shortcut();
-            s.Shortcut_Steam(Shortcut.Desktop, $"Switch to {accName}.lnk", $"Switch to {accName} in TcNo Account Switcher", $"+s:{steamId}");
+            s.Shortcut_Platform(Shortcut.Desktop, $"Switch to {accName}", $"+s:{steamId}", $"Switch to {accName} in TcNo Account Switcher", true);
             s.CreateCombinedIcon(
                 //Path.Join(GeneralFuncs.WwwRoot, "\\prog_icons\\steam.ico"),
                 Path.Join(GeneralFuncs.WwwRoot, "\\img\\platform\\steam.svg"),
