@@ -334,9 +334,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Steam");
             if (!autoStartSteam) return;
             if (Steam.Admin)
-                Process.Start(Steam.SteamExe());
+                Process.Start(Steam.Exe());
             else
-                Process.Start(new ProcessStartInfo("explorer.exe", Steam.SteamExe()));
+                Process.Start(new ProcessStartInfo("explorer.exe", Steam.Exe()));
         }
 
         /// <summary>

@@ -45,11 +45,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
-        private bool _startMenu;
-        [JsonIgnore] public bool StartMenu { get => _instance._startMenu; set => _instance._startMenu = value; }
-        private bool _trayStartup;
-        [JsonIgnore] public bool TrayStartup { get => _instance._trayStartup; set => _instance._trayStartup = value; }
-
 
         // Constants
         [JsonIgnore] public string SettingsFile = "UbisoftSettings.json";
@@ -70,7 +65,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
 
         /// <summary>
-        /// Updates the ForgetAccountEnabled bool in Steam settings file
+        /// Updates the ForgetAccountEnabled bool in settings file
         /// </summary>
         /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
         public void UpdateUbisoftForgetAcc(bool enabled)
@@ -82,6 +77,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
 
         /// <summary>
+        /// Get Ubisoft.exe path from UbisoftSettings.json 
+        /// </summary>
+        /// <returns>Ubisoft.exe's path string</returns>
+        public string Exe() => Path.Combine(FolderPath, "upc.exe");
+
+        #region SETTINGS
+        /// <summary>
         /// Default settings for UbisoftSettings.json
         /// </summary>
         public void ResetSettings()
@@ -91,6 +93,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = new Point() { X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
+
+            CheckShortcuts();
 
             SaveSettings();
         }
@@ -103,57 +107,30 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = curSettings.WindowSize;
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
+
+            CheckShortcuts();
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
         public JObject GetJObject() => JObject.FromObject(this);
         [JSInvokable]
         public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
-
-        /// <summary>
-        /// Get Ubisoft.exe path from UbisoftSettings.json 
-        /// </summary>
-        /// <returns>Ubisoft.exe's path string</returns>
-        public string UbisoftExe() => Path.Combine(FolderPath, "upc.exe");
-
+        #endregion
 
         #region SHORTCUTS
         public void CheckShortcuts()
         {
             Globals.DebugWriteLine($@"[Func:Data\Settings\Ubisoft.CheckShortcuts]");
-            _instance._desktopShortcut = File.Exists(Path.Combine(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
-            _instance._startMenu = File.Exists(Path.Combine(Shortcut.StartMenu, "TcNo Account Switcher.lnk"));
-            _instance._trayStartup = Pages.General.Classes.Task.StartWithWindows_Enabled();
+            _instance._desktopShortcut = File.Exists(Path.Combine(Shortcut.Desktop, "Ubisoft - TcNo Account Switcher.lnk"));
+            AppSettings.Instance.CheckShortcuts();
         }
 
         public void DesktopShortcut_Toggle()
         {
             Globals.DebugWriteLine($@"[Func:Data\Settings\Ubisoft.DesktopShortcut_Toggle]");
             var s = new Shortcut();
-            s.Shortcut_Steam(Shortcut.Desktop);
-            s.ToggleShortcut(!DesktopShortcut, true);
-
-            s.Shortcut_Switcher(Shortcut.Desktop);
+            s.Shortcut_Platform(Shortcut.Desktop, "Ubisoft", "ubisoft");
             s.ToggleShortcut(!DesktopShortcut, true);
         }
-        public void StartMenu_Toggle()
-        {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Ubisoft.StartMenu_Toggle]");
-            var s = new Shortcut();
-            s.Shortcut_Steam(Shortcut.StartMenu);
-            s.ToggleShortcut(!StartMenu, false);
-
-            s.Shortcut_Switcher(Shortcut.StartMenu);
-            s.ToggleShortcut(!StartMenu, false);
-
-            s.Shortcut_SteamTray(Shortcut.StartMenu);
-            s.ToggleShortcut(!StartMenu, false);
-        }
-        public void Task_Toggle()
-        {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.Task_Toggle]");
-            Pages.General.Classes.Task.StartWithWindows_Toggle(!TrayStartup);
-        }
-
         #endregion
     }
 }

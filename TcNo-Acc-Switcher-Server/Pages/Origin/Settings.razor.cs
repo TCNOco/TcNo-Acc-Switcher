@@ -21,7 +21,7 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
-namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
+namespace TcNo_Acc_Switcher_Server.Pages.Origin
 {
     public partial class Settings : ComponentBase
     {
@@ -41,13 +41,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             Globals.DebugWriteLine($@"[ButtonClicked:Ubisoft\Settings.razor.cs.PickSteamFolder]");
             await JsRuntime.InvokeAsync<string>("ShowModal", "find:Ubisoft:upc.exe:UbisoftSettings");
         }
-        
+
         // BUTTON: Reset settings
         public static void ClearSettings()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Ubisoft\Settings.razor.cs.ClearSettings]");
-            new Data.Settings.Ubisoft().ResetSettings();
-            AppData.ActiveNavMan.NavigateTo("/Ubisoft?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Ubisoft switcher settings"));
+            Globals.DebugWriteLine($@"[ButtonClicked:Origin\Settings.razor.cs.ClearSettings]");
+            new Data.Settings.Origin().ResetSettings();
+            AppData.ActiveNavMan.NavigateTo("/Origin?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Ubisoft switcher settings"));
         }
         #endregion
 
@@ -58,18 +58,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             Globals.DebugWriteLine($@"[ButtonClicked:Ubisoft\Settings.razor.cs.OpenUbisoftFolder]");
             Process.Start("explorer.exe", new Data.Settings.Ubisoft().FolderPath);
         }
-
-        // BUTTON: RefreshImages
-        public static void RefreshImages()
-        {
-            var allIds = UbisoftSwitcherFuncs.ReadAllIds();
-            foreach (var (userId, username) in allIds)
-            {
-                UbisoftSwitcherFuncs.ImportAvatar(userId);
-            }
-            GeneralInvocableFuncs.ShowToast("success", "Refreshed images", "Done", "toastarea");
-        }
-
+        
 
         // BUTTON: Advanced Cleaning...
         // Might add later

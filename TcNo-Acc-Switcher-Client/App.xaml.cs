@@ -102,6 +102,12 @@ namespace TcNo_Acc_Switcher_Client
                     case "steam":
                         StartPage = "Steam";
                         break;
+                    case "origin":
+                        StartPage = "origin";
+                        break;
+                    case "ubisoft":
+                        StartPage = "ubisoft";
+                        break;
                     case "logout":
                         TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts("", "");
                         quitArg = true;

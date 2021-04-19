@@ -140,6 +140,23 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         }
 
         /// <summary>
+        /// Sets up a Steam Tray shortcut
+        /// </summary>
+        /// <param name="location">Place to put shortcut</param>
+        /// <returns></returns>
+        public Shortcut Shortcut_Tray(string location)
+        {
+            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.Shortcut_Tray] location={location}");
+            Exe = Path.Combine(ParentDirectory(GetSelfPath()), "TcNo-Acc-Switcher-Tray.exe");
+            WorkingDir = Directory.GetCurrentDirectory();
+            IconDir = Path.Combine(WorkingDir, "wwwroot\\prog_icons\\program.ico");
+            ShortcutPath = Path.Combine(location, "TcNo Account Switcher - Tray.lnk");
+            Desc = "TcNo Account Switcher - Tray";
+            Args = "";
+            return this;
+        }
+
+        /// <summary>
         /// Creates an icon file with multiple sizes, and combines the BG and FG images.
         /// </summary>
         /// <param name="bgImg">Background image, platform</param>
@@ -153,47 +170,31 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         }
         #endregion
 
-        #region STEAM_SHORTCUTS
+        #region SPECIFIC_SHORTCUTS
         // Usage:
         // var s = new Shortcut();
-        // s.Shortcut_Steam(Shortcut.Desktop);
+        // s.Shortcut_Platform(Shortcut.Desktop, platformName = "Steam", args = "steam");
         // s.ToggleShortcut(!DesktopShortcut, true);
 
         /// <summary>
-        /// Sets up Steam shortcut
+        /// Sets up a platform specific shortcut
         /// </summary>
         /// <param name="location">Place to put shortcut</param>
-        /// <param name="shortcutName">(Optional) Full name for shortcut FILE</param>
-        /// <param name="descAdd">(Optional) Additional description to add to "TcNo Account Switcher - Steam</param>
+        /// <param name="platformName">(Optional) Name of the platform this shortcut is for (eg. steam)</param>
         /// <param name="args">(Optional) Arguments to add, default "steam" to open Steam page of switcher</param>
+        /// <param name="descAdd">(Optional) Additional description to add to "TcNo Account Switcher - Steam</param>
+        /// <param name="platformNameIsFullName">Whether the platformName is the fill name, or just to be appended</param>
         /// <returns></returns>
-        public Shortcut Shortcut_Steam(string location, string shortcutName = "TcNo Account Switcher - Steam.lnk", string descAdd = "", string args = "steam")
+        public Shortcut Shortcut_Platform(string location, string platformName = "Steam", string args = "steam", string descAdd = "", bool platformNameIsFullName = false)
         {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.Shortcut_Steam] location={location}, shortcutName={shortcutName}, descAdd={descAdd}, args={args}");
-            // Starts the main picker, with the Steam argument.
+            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.Shortcut_Platform] location={location}, platformName={platformName}, descAdd={descAdd}, args={args}");
+            // Starts the main picker, with the platform argument, eg: "steam", "origin".
             Exe = GetSelfPath();
             WorkingDir = Directory.GetCurrentDirectory();
-            IconDir = Path.Combine(WorkingDir, "wwwroot\\prog_icons\\steam.ico");
-            ShortcutPath = Path.Combine(location, shortcutName);
-            Desc = "TcNo Account Switcher - Steam" + descAdd != "" ? descAdd : "";
+            IconDir = Path.Combine(WorkingDir, "wwwroot\\prog_icons\\program.ico"); // TODO: May add platform specific icons here at some point.
+            ShortcutPath = Path.Combine(location, (platformNameIsFullName ? platformName : $"{platformName} - TcNo Account Switcher") + ".lnk");
+            Desc = $"TcNo Account Switcher - {platformName}" + descAdd != "" ? descAdd : "";
             Args = args;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets up a Steam Tray shortcut
-        /// </summary>
-        /// <param name="location">Place to put shortcut</param>
-        /// <returns></returns>
-        public Shortcut Shortcut_SteamTray(string location)
-        {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.Shortcut_SteamTray] location={location}");
-            Exe = Path.Combine(ParentDirectory(GetSelfPath()), "TcNo-Acc-Switcher-Tray.exe");
-            WorkingDir = Directory.GetCurrentDirectory();
-            IconDir = Path.Combine(WorkingDir, "wwwroot\\prog_icons\\steam.ico");
-            ShortcutPath = Path.Combine(location, "TcNo Account Switcher - Steam tray.lnk");
-            Desc = "TcNo Account Switcher - Tray";
-            Args = "";
             return this;
         }
         #endregion

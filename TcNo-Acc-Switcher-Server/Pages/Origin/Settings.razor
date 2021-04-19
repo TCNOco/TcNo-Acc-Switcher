@@ -12,11 +12,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https: //www.gnu.org/licenses />.*@
 
-@page "/Ubisoft/Settings"
-@namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
+@page "/Origin/Settings"
+@namespace TcNo_Acc_Switcher_Server.Pages.Origin
 @inject NavigationManager NavManager
 @{ AppData.SetActiveNavMan(NavManager); }
-@inject Data.Settings.Ubisoft Ubisoft
+@inject Data.Settings.Origin Origin
 @inject Data.AppSettings AppSett
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
@@ -49,10 +49,10 @@
                 <hr>
             </div>
             <div class="columnSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="Ubisoft.DesktopShortcut" @onclick="() => Ubisoft.DesktopShortcut_Toggle()"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">Ubisoft Switcher Desktop shortcut<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="Origin.DesktopShortcut" @onclick="() => Origin.DesktopShortcut_Toggle()"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">Origin Switcher Desktop shortcut<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="Ubisoft.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">Run Ubisoft as Admin<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="Origin.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">Run Origin as Admin<br></label>
             </div>
 
 
@@ -60,22 +60,21 @@
                 <hr><span>Tray settings</span>
                 <hr>
             </div>
-            <div class="form-text"><span>Max number of accounts to remember:</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="Ubisoft.TrayAccNumber"></div>
+            <div class="form-text"><span>Max number of accounts to remember:</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="Origin.TrayAccNumber"></div>
 
 
             <div class="SettingsHeader">
                 <hr><span>General</span>
                 <hr>
             </div>
-            <div class="buttoncol"><button class="btn" id="PickFolder" type="button" @onclick="PickFolder"><span>Pick Ubisoft folder</span></button><button class="btn" id="Steam_ResetImages" type="button" @onclick="RefreshImages"><span>Refresh images</span></button></div>
-            <div class="buttoncol"><button class="btn" id="ResetSettings" type="button" @onclick="ClearSettings"><span>Reset settings</span></button></div>
+            <div class="buttoncol"><button class="btn" id="PickFolder" type="button" @onclick="PickFolder"><span>Pick Origin folder</span></button><button class="btn" id="ResetSettings" type="button" @onclick="ClearSettings"><span>Reset settings</span></button></div>
 
 
             <div class="SettingsHeader">
                 <hr><span>Other tools</span>
                 <hr>
             </div>
-            <div class="buttoncol"><button class="btn" id="OpenFolder" type="button" @onclick="OpenFolder"><span>Open Ubisoft Folder</span></button></div>
+            <div class="buttoncol"><button class="btn" id="OpenFolder" type="button" @onclick="OpenFolder"><span>Open Origin Folder</span></button></div>
             <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>Close</span></button></div>
         </div>
     </div>
@@ -96,8 +95,8 @@
     public void SaveAndClose()
     {
         AppSett.SaveSettings();
-        Ubisoft.SaveSettings();
+        Origin.SaveSettings();
 
-        NavManager.NavigateTo("/Ubisoft");
+        NavManager.NavigateTo("/Origin");
     }
 }

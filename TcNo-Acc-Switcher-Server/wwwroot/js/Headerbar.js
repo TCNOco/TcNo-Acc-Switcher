@@ -30,6 +30,12 @@ function handleWindowControls() {
         chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMinimize);
     });
 
+    document.getElementById('btnBack').addEventListener("click", event => {
+        let tempUri = document.location.href.split('?')[0];
+        document.location.href = tempUri + (tempUri.endsWith('/') ? '../' : '/../');
+
+    });
+
     document.getElementById('btnMax').addEventListener("click", event => {
         chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMaximize);
     });

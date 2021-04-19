@@ -124,7 +124,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             File.Copy(Path.Join(UbisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\{userId}\\users.dat", true);
             return username;
         }
-        private static Dictionary<string, string> ReadAllIds()
+        public static Dictionary<string, string> ReadAllIds()
         {
             var localAllIds = $"LoginCache\\Ubisoft\\ids.json";
             var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
@@ -143,7 +143,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
         }
 
-        private static void ImportAvatar(string userId)
+        public static void ImportAvatar(string userId)
         {
             string i64 = Path.Join(UbisoftAvatarFolder, userId + "_64.png"),
                 i128 = Path.Join(UbisoftAvatarFolder, userId + "_128.png"),
@@ -238,9 +238,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Ubisoft");
             if (Ubisoft.Admin)
-                Process.Start(Ubisoft.UbisoftExe());
+                Process.Start(Ubisoft.Exe());
             else
-                Process.Start(new ProcessStartInfo("explorer.exe", Ubisoft.UbisoftExe()));
+                Process.Start(new ProcessStartInfo("explorer.exe", Ubisoft.Exe()));
         }
 
         private static void ClearCurrentUser()

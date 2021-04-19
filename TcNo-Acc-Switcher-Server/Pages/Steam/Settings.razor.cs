@@ -35,8 +35,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
         
         #region SETTINGS_GENERAL
-        // BUTTON: Pick Steam folder
-        public async Task PickSteamFolder()
+        // BUTTON: Pick folder
+        public async Task PickFolder()
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\Settings.razor.cs.PickSteamFolder]");
             await JsRuntime.InvokeAsync<string>("ShowModal", "find:Steam:Steam.exe:SteamSettings");
@@ -68,13 +68,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
         #endregion
 
-        #region SETTINGS_STEAM_TOOLS
+        #region SETTINGS_TOOLS
         // Restore forgotten accounts
 
         // BUTTON: Clear forgotten backups
 
-        // BUTTON: Open Steam Folder
-        public static void OpenSteamFolder()
+        // BUTTON: Open Folder
+        public static void OpenFolder()
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\Settings.razor.cs.OpenSteamFolder]");
             Process.Start("explorer.exe", new Data.Settings.Steam().FolderPath);

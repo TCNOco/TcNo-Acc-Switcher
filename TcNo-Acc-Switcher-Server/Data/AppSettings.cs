@@ -22,6 +22,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -59,7 +60,14 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private Point _windowSize = new() { X = 800, Y = 450 };
         [JsonProperty("WindowSize", Order = 2)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
-        
+
+
+        private bool _desktopShortcut;
+        [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
+        private bool _startMenu;
+        [JsonIgnore] public bool StartMenu { get => _instance._startMenu; set => _instance._startMenu = value; }
+        private bool _trayStartup;
+        [JsonIgnore] public bool TrayStartup { get => _instance._trayStartup; set => _instance._trayStartup = value; }
 
         // Variables loaded from other files:
         private Dictionary<string, string> _stylesheet = new()
@@ -237,5 +245,55 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         [JSInvokable]
         public void SaveStyles(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(StylesheetFile, GetStylesJObject(), mergeNewIntoOld);
+
+        #region SHORTCUTS
+        public void CheckShortcuts()
+        {
+            Globals.DebugWriteLine($@"[Func:Data\AppSettings.CheckShortcuts]");
+            _instance._desktopShortcut = File.Exists(Path.Combine(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
+            _instance._startMenu = File.Exists(Path.Combine(Shortcut.StartMenu, "TcNo Account Switcher.lnk")) && Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
+            _instance._trayStartup = Task.StartWithWindows_Enabled();
+        }
+
+        public void DesktopShortcut_Toggle()
+        {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
+            var s = new Shortcut();
+            s.Shortcut_Switcher(Shortcut.Desktop);
+            s.ToggleShortcut(!DesktopShortcut, true);
+        }
+        public void StartMenu_Toggle()
+        {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.StartMenu_Toggle]");
+            var platformsFolder = Path.Join(Shortcut.StartMenu, "Platforms");
+            if (Directory.Exists(platformsFolder)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(Shortcut.StartMenu, "Platforms")), false);
+            else
+            {
+                Directory.CreateDirectory(platformsFolder);
+                CreatePlatformShortcut(platformsFolder, "Steam", "steam");
+                CreatePlatformShortcut(platformsFolder, "Origin", "origin");
+                CreatePlatformShortcut(platformsFolder, "Ubisoft", "ubisoft");
+            }
+
+            var s = new Shortcut();
+            s.Shortcut_Switcher(Shortcut.StartMenu);
+            s.ToggleShortcut(!StartMenu, false);
+
+            s.Shortcut_Tray(Shortcut.StartMenu);
+            s.ToggleShortcut(!StartMenu, false);
+        }
+        public void Task_Toggle()
+        {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.Task_Toggle]");
+            Task.StartWithWindows_Toggle(!TrayStartup);
+        }
+
+        private void CreatePlatformShortcut(string folder, string platformName, string args)
+        {
+            var s = new Shortcut();
+            s.Shortcut_Platform(folder, platformName, args);
+            s.ToggleShortcut(!StartMenu, false);
+        }
+        #endregion
     }
 }
