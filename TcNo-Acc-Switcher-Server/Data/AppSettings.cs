@@ -46,20 +46,20 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         // Variables
-        private string _version = "2021-04-19_01";
-        [JsonProperty("Version", Order = 2)] public string Version => _instance._version;
+        private string _version = "2021-04-19_02";
+        [JsonProperty("Version", Order = 0)] public string Version => _instance._version;
 
         private bool _updateAvailable;
         [JsonIgnore] public bool UpdateAvailable { get => _instance._updateAvailable; set => _instance._updateAvailable = value; }
 
         private bool _streamerModeEnabled = true;
-        [JsonProperty("StreamerModeEnabled", Order = 0)] public bool StreamerModeEnabled { get => _instance._streamerModeEnabled; set => _instance._streamerModeEnabled = value; }
+        [JsonProperty("StreamerModeEnabled", Order = 1)] public bool StreamerModeEnabled { get => _instance._streamerModeEnabled; set => _instance._streamerModeEnabled = value; }
 
         private int _serverPort = 5000 ;
-        [JsonProperty("ServerPort", Order = 1)] public int ServerPort { get => _instance._serverPort; set => _instance._serverPort = value; }
+        [JsonProperty("ServerPort", Order = 2)] public int ServerPort { get => _instance._serverPort; set => _instance._serverPort = value; }
 
         private Point _windowSize = new() { X = 800, Y = 450 };
-        [JsonProperty("WindowSize", Order = 2)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
+        [JsonProperty("WindowSize", Order = 3)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
 
 
         private bool _desktopShortcut;
