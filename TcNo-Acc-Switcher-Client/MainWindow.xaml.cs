@@ -55,8 +55,7 @@ namespace TcNo_Acc_Switcher_Client
             }
             Program.Main(new string[1] { _address });
         }
-
-        private bool _initialized = false;
+        
         public MainWindow()
         {
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
@@ -80,9 +79,6 @@ namespace TcNo_Acc_Switcher_Client
             StateChanged += WindowStateChange;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
         }
-        private async void MView2_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
-        {
-        }
 
         private async void MView2_OnInitialized(object? sender, EventArgs e)
         {
@@ -97,8 +93,7 @@ namespace TcNo_Acc_Switcher_Client
             MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
             MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown").DevToolsProtocolEventReceived += ConsoleMessage;
             await MView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
-            MView2.CoreWebView2.OpenDevToolsWindow();
-            _initialized = true;
+            //MView2.CoreWebView2.OpenDevToolsWindow();
         }
 
         /// <summary>
