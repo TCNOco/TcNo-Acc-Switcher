@@ -78,6 +78,8 @@ label {
     }
 
 .updateBar {
+    position: absolute;
+    z-index: 50;
     width: 100%;
     height: 2rem;
     line-height: 2rem;

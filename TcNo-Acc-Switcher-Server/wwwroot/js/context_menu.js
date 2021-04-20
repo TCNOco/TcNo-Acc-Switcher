@@ -72,8 +72,8 @@ function initContextMenu() {
         var winWidth = $(document).width();
         var winHeight = $(document).height();
         //Get pointer position:
-        var posX = e.pageX;
-        var posY = e.pageY - 32; // Offset for header bar
+        var posX = e.pageX - 14;
+        var posY = e.pageY - 42; // Offset for header bar
         //Get contextmenu size:
         var menuWidth = $(".contextmenu").width();
         var menuHeight = $(".contextmenu").height();

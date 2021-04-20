@@ -129,10 +129,6 @@ namespace TcNo_Acc_Switcher_Client
             //Console.WriteLine("WebView2: " + e.ToString());
         }
 
-        private async void MainWindow_OnContentRendered(object? sender, EventArgs e)
-        {
-        }
-
         /// <summary>
         /// Find first available port up from requested
         /// </summary>
