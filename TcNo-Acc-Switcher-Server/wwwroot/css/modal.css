@@ -1,9 +1,8 @@
 .modalBG {
-    position: absolute;
-    height: calc(100% - 32px);
-    top: 32px;
-    width: 100%;
-    z-index: 1;
+    position: fixed;
+    height: calc(100% - var(--resizeBarSize) - 32px);
+    width: calc(100% - (var(--resizeBarSize) * 2));
+    z-index: 100;
     background: var(--modalBackground);
     cursor: pointer;
 }
@@ -13,7 +12,7 @@
     padding: 6px;
     background-color: var(--headerbarBackground);
     position: absolute;
-    top: 50%;
+    top: calc(50% - 18px);
     left: 50%;
     transform: translate(-50%,-50%);
     min-width: 200px;

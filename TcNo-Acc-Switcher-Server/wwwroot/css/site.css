@@ -54,6 +54,7 @@ label {
 }
 
 .programMain {
+    position: relative;
     width: calc(100% - (var(--resizeBarSize) * 2));
     height: calc(100% - var(--resizeBarSize));
     margin: 0 var(--resizeBarSize) var(--resizeBarSize) var(--resizeBarSize);
