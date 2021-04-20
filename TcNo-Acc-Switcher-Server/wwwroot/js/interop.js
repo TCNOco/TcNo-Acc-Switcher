@@ -3,8 +3,8 @@
 }
 
 jQueryAppend = (jQuerySelector, strToInsert) => {
-    console.log(jQuerySelector);
-    console.log(strToInsert);
+    console.log("\nInserting: " + strToInsert);
+    console.log("... into: " + jQuerySelector + "\n");
 
     $(jQuerySelector).append(strToInsert);
 };

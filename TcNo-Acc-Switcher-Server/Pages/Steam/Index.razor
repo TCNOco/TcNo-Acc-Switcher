@@ -75,6 +75,7 @@
             Steam.SaveSettings(!File.Exists(Steam.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
 
             GeneralInvocableFuncs.HandleQueries();
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");
         }
     }
 }

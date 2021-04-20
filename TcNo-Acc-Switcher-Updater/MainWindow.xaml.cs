@@ -84,7 +84,7 @@ namespace TcNo_Acc_Switcher_Updater
         private void WriteLine(string line, string lineBreak = "\n")
         {
             Dispatcher.BeginInvoke(new Action(() => {
-                Debug.WriteLine(line);
+                Console.WriteLine(line);
                 LogBox.Text += lineBreak + line;
                 LogBox.ScrollToEnd();
             }), DispatcherPriority.Normal);
@@ -92,14 +92,14 @@ namespace TcNo_Acc_Switcher_Updater
         private void SetStatus(string s)
         {
             Dispatcher.BeginInvoke(new Action(() => {
-                Debug.WriteLine("Status: " + s);
+                Console.WriteLine("Status: " + s);
                 StatusLabel.Content = s;
             }), DispatcherPriority.Normal);
         }
         private void SetStatusAndLog(string s, string lineBreak ="\n")
         {
             Dispatcher.BeginInvoke(new Action(() => {
-                Debug.WriteLine("Status/Log: " + s);
+                Console.WriteLine("Status/Log: " + s);
                 StatusLabel.Content = s;
                 LogBox.Text += lineBreak + s;
                 LogBox.ScrollToEnd();
@@ -211,8 +211,8 @@ namespace TcNo_Acc_Switcher_Updater
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine("Can't find or properly assign colors from StyleSettings.json");
-                        Debug.WriteLine(e);
+                        Console.WriteLine("Can't find or properly assign colors from StyleSettings.json");
+                        Console.WriteLine(e);
                     }
                 }), DispatcherPriority.Normal);
 
@@ -230,7 +230,7 @@ namespace TcNo_Acc_Switcher_Updater
                 }
                 else
                     CreateVerifyAndExitButton();
-                Debug.WriteLine("No updates found!");
+                Console.WriteLine("No updates found!");
             }
             else if (VerifyAndClose)
                 WriteLine("To verify files you need to update first.");
@@ -378,12 +378,12 @@ namespace TcNo_Acc_Switcher_Updater
             // Compare hash list to files, and download any files that don't match
             var client = new WebClient();
             client.DownloadProgressChanged -= OnClientOnDownloadProgressChanged;
-            Debug.WriteLine("--- VERIFYING ---");
+            Console.WriteLine("--- VERIFYING ---");
             SetStatusAndLog("Verifying...");
             WriteLine("Downloading latest hash list... ");
             const string hashFilePath = "hashes.json";
             client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
-            Debug.WriteLine("Done.");
+            Console.WriteLine("Done.");
 
             var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
             if (verifyDictionary != null)
@@ -527,7 +527,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="currentDir"></param>
         private void CloseIfRunning(string currentDir)
         {
-            Debug.WriteLine("Checking for running instances of TcNo Account Switcher");
+            Console.WriteLine("Checking for running instances of TcNo Account Switcher");
             foreach (var exe in Directory.GetFiles(currentDir, "*.exe", SearchOption.AllDirectories))
             {
                 if (exe.Contains(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly()?.Location)!)) continue;
@@ -553,9 +553,9 @@ namespace TcNo_Acc_Switcher_Updater
             List<string> filesToDelete = new(); // Simply ignore these later
             CreateFolderPatches(oldFolder, newFolder, outputFolder, ref filesToDelete);
             File.WriteAllLines(deleteFileList, filesToDelete);
-            Debug.WriteLine("Please 7z the update folder.");
-            Debug.WriteLine("Please 7z the update folder.");
-            Debug.WriteLine("Please 7z the update folder.");
+            Console.WriteLine("Please 7z the update folder.");
+            Console.WriteLine("Please 7z the update folder.");
+            Console.WriteLine("Please 7z the update folder.");
             Environment.Exit(1);
         }
 
@@ -661,7 +661,7 @@ namespace TcNo_Acc_Switcher_Updater
             process.WaitForExit();
 
             WriteLine($"/C TASKKILL /F /T /IM {procName}*");
-            Debug.WriteLine($"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
+            Console.WriteLine($"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
         }
 
         /// <summary>
@@ -699,7 +699,7 @@ namespace TcNo_Acc_Switcher_Updater
 
             try
             {
-                if (!f.Exists) Debug.WriteLine("err");
+                if (!f.Exists) Console.WriteLine("err");
                 else
                 {
                     f.IsReadOnly = false;
@@ -785,7 +785,7 @@ namespace TcNo_Acc_Switcher_Updater
 
                 Directory.CreateDirectory(Path.GetDirectoryName(newFileOutput)!);
                 File.Copy(newFileInput, newFileOutput, true);
-                Debug.WriteLine("Copied new file to output: " + newFileOutput);
+                Console.WriteLine("Copied new file to output: " + newFileOutput);
             }
 
 
@@ -799,7 +799,7 @@ namespace TcNo_Acc_Switcher_Updater
                 var patchFileOutput = Path.Join(outputFolder, "patches", differentFile);
                 Directory.CreateDirectory(Path.GetDirectoryName(patchFileOutput)!);
                 DoEncode(oldFileInput, newFileInput, patchFileOutput);
-                Debug.WriteLine("Created patch: " + patchFileOutput);
+                Console.WriteLine("Created patch: " + patchFileOutput);
             }
         }
 
@@ -815,7 +815,7 @@ namespace TcNo_Acc_Switcher_Updater
                 // Foreach file in directory
                 foreach (var f in Directory.GetFiles(sDir))
                 {
-                    Debug.WriteLine(f + "|" + GetFileMd5(f));
+                    Console.WriteLine(f + "|" + GetFileMd5(f));
                     list.Add(f.Remove(0, f.Split("\\")[0].Length + 1));
                 }
 
@@ -827,7 +827,7 @@ namespace TcNo_Acc_Switcher_Updater
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -855,7 +855,7 @@ namespace TcNo_Acc_Switcher_Updater
                 // Foreach file in directory
                 foreach (var f in Directory.GetFiles(sDir))
                 {
-                    Debug.WriteLine(f + "|");
+                    Console.WriteLine(f + "|");
                     dict.Add(f.Remove(0, f.Split("\\")[0].Length + 1), GetFileMd5(f));
                 }
 
@@ -867,7 +867,7 @@ namespace TcNo_Acc_Switcher_Updater
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -888,7 +888,7 @@ namespace TcNo_Acc_Switcher_Updater
             if (result != VCDiffResult.SUCCESS)
             {
                 //error was not able to encode properly
-                Debug.WriteLine("oops :(");
+                Console.WriteLine("oops :(");
             }
         }
 
@@ -911,7 +911,7 @@ namespace TcNo_Acc_Switcher_Updater
             if (result != VCDiffResult.SUCCESS)
             {
                 //error decoding
-                Debug.WriteLine(result + " - " + bytesWritten);
+                Console.WriteLine(result + " - " + bytesWritten);
             }
 
             // if success bytesWritten will contain the number of bytes that were decoded

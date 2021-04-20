@@ -13,11 +13,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shapes;
@@ -67,14 +69,23 @@ namespace TcNo_Acc_Switcher_Client
             }
 
 
-            #if DEBUG
+#if DEBUG
             if (DebugMode)
             {
                 NativeMethods.AllocConsole();
                 Console.WriteLine("Debug Console started");
             }
+#else
+            // Logging:
+            // Redirects all Console.WriteLines to Log.txt, which cleans itself every launch.
+            var fs = new FileStream("log.txt", FileMode.Create);
+            var sw = new StreamWriter(fs) {AutoFlush = true};
+            Console.SetOut(sw);
+            Console.SetError(sw);
             #endif
-            
+
+
+
             base.OnStartup(e);
             var quitArg = false;
             for (var i = 0; i != e.Args.Length; ++i)
@@ -148,14 +159,22 @@ namespace TcNo_Acc_Switcher_Client
         /// <returns>True if update found, show notification</returns>
         public static void CheckForUpdate()
         {
-#if DEBUG
-            var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + AppSettings.Instance.Version));
-#else
-            var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?v=" + AppSettings.Instance.Version));
-#endif
-            if (CheckLatest(latestVersion)) return;
-            // Show notification
-            AppSettings.Instance.UpdateAvailable = true;
+            try
+            {
+            #if DEBUG
+                var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + AppSettings.Instance.Version));
+            #else
+                var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?v=" + AppSettings.Instance.Version));
+            #endif
+                if (CheckLatest(latestVersion)) return;
+                // Show notification
+                AppSettings.Instance.UpdateAvailable = true;
+            }
+            catch (WebException e)
+            {
+                MessageBox.Show("Could not reach https://tcno.co/ to check for updates.", "Unable to check for updates", MessageBoxButton.OK, MessageBoxImage.Error);
+                Console.WriteLine(@"Could not reach https://tcno.co/ to check for updates.\n" + e);
+            }
         }
 
         /// <summary>

@@ -48,7 +48,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                     $"<h6>{accName}</h6>\r\n";
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                 await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
-                Debug.WriteLine(f);
+                Console.WriteLine(f);
             }
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
         }

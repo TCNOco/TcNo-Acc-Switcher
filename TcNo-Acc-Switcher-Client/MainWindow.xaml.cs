@@ -27,6 +27,7 @@ using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
@@ -55,7 +56,6 @@ namespace TcNo_Acc_Switcher_Client
             Program.Main(new string[1] { _address });
         }
 
-
         public MainWindow()
         {
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
@@ -72,6 +72,9 @@ namespace TcNo_Acc_Switcher_Client
             // Somehow check ports and find a different one if it doesn't work? We'll see...
             InitializeComponent();
 
+            // Enable console logging
+            MView2.EnsureCoreWebView2Async();
+
             MainBackground.Background = (Brush)new BrushConverter().ConvertFromString(AppSettings.Stylesheet["headerbarBackground"]);
             
             this.Width = AppSettings.WindowSize.X;
@@ -79,6 +82,44 @@ namespace TcNo_Acc_Switcher_Client
             StateChanged += WindowStateChange;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
         }
+
+        private async void MView2_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Handles console messages, and logs them to a file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ConsoleMessage(object sender, CoreWebView2DevToolsProtocolEventReceivedEventArgs e)
+        {
+            if (e?.ParameterObjectAsJson == null) return;
+            var message = JObject.Parse(e.ParameterObjectAsJson);
+            if (message.ContainsKey("exceptionDetails"))
+            {
+                Console.WriteLine(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION: " + message?.SelectToken("exceptionDetails.exception.description"));
+            }
+            else
+            {
+#if RELEASE
+                try
+                {
+                    // ReSharper disable once PossibleNullReferenceException
+                    foreach (var jo in message?.SelectToken("args"))
+                    {
+                        Console.WriteLine(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2: " + jo.SelectToken("value")?.ToString().Replace("\n", "\n\t"));
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                }
+#endif
+            }
+            //Console.WriteLine("WebView2: " + e.ToString());
+        }
+
         private void MainWindow_OnContentRendered(object? sender, EventArgs e)
         {
             InitAsync();
@@ -90,6 +131,10 @@ namespace TcNo_Acc_Switcher_Client
         private async void InitAsync()
         {
             await MView2.EnsureCoreWebView2Async();
+            MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
+            MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown").DevToolsProtocolEventReceived += ConsoleMessage;
+            await MView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
+            MView2.CoreWebView2.OpenDevToolsWindow();
         }
 
         /// <summary>

@@ -15,8 +15,10 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Linq;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
@@ -342,36 +344,59 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.LoadSettings] file={file}, defaultSettings=hidden");
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
             if (!File.Exists(sFilename)) return defaultSettings ?? new JObject();
-            try
+
+            var fileSettingsText = File.ReadAllLines(sFilename);
+            if (fileSettingsText.Length == 0 && defaultSettings != null)
             {
-                var fileSettingsText = File.ReadAllText(sFilename);
-                if (fileSettingsText.Length == 0 && defaultSettings != null)
+                File.WriteAllText(sFilename, defaultSettings.ToString());
+                return defaultSettings;
+            }
+
+            var fileSettings = new JObject();
+            var tryAgain = true;
+            var handledError = false;
+            while (tryAgain)
+                try
                 {
-                    File.WriteAllText(sFilename, defaultSettings.ToString());
-                    return defaultSettings;
+                    fileSettings = JObject.Parse(string.Join(Environment.NewLine, fileSettingsText));
+                    tryAgain = false;
+                    if (handledError)
+                        File.WriteAllLines(sFilename, fileSettingsText);
+                }
+                catch (Newtonsoft.Json.JsonReaderException e)
+                {
+                    if (handledError) // Only try once
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+
+                    // Possible error: Fixes single slashes in string, where there should be double.
+                    for (var i = 0; i < fileSettingsText.Length; i++)
+                        if (fileSettingsText[i].Contains("FolderPath"))
+                            fileSettingsText[i] = Regex.Replace(fileSettingsText[i], @"(?<=[^\\])(\\)(?=[^\\])", @"\\");
+                    // Other fixes go here
+                    handledError = true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
                 }
 
-                var fileSettings = JObject.Parse(fileSettingsText);
-                if (defaultSettings == null) return fileSettings;
+            if (defaultSettings == null) return fileSettings;
 
-                var addedKey = false;
-                // Add missing keys from default
-                foreach (var kvp in defaultSettings)
-                {
-                    if (fileSettings.ContainsKey(kvp.Key)) continue;
-                    fileSettings[kvp.Key] = kvp.Value;
-                    addedKey = true;
-                }
-                // Save all settings back into file
-                if (addedKey) File.WriteAllText(sFilename, fileSettings.ToString());
-                return fileSettings;
-            }
-            catch (Exception e)
+            var addedKey = false;
+            // Add missing keys from default
+            foreach (var kvp in defaultSettings)
             {
-                // ignored
-                Console.WriteLine(e);
-                throw;
+                if (fileSettings.ContainsKey(kvp.Key)) continue;
+                fileSettings[kvp.Key] = kvp.Value;
+                addedKey = true;
             }
+            // Save all settings back into file
+            if (addedKey) File.WriteAllText(sFilename, fileSettings.ToString());
+            return fileSettings;
         }
 
         //public static JObject SortJObject(JObject joIn)
