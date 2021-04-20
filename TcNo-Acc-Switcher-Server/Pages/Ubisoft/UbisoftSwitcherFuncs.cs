@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -31,7 +32,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public static async void LoadProfiles()
         {
             // Normal:
-            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.LoadProfiles] Loading Steam profiles");
+            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.LoadProfiles] Loading Steam profiles");
             _ubisoftAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
             _ubisoftLogFile = Path.Combine(Ubisoft.FolderPath, "logs", "launcher_log.txt");
             _ubisoftAvatarFolder = Path.Combine(Ubisoft.FolderPath, "cache", "avatars");
@@ -54,6 +55,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         public static void UbisoftAddCurrent()
         {
+            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.UbisoftAddCurrent]");
 
             // To add account section:
             var userId = GetLastLoginUserId();
@@ -65,7 +67,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             // Find username from users.dat file
             var username = FindUsername(userId);
-
+            if (username == "ERR") return;
             // Import profile picture to $"LoginCache\\Ubisoft\\{userId}\\pfp.png"
             ImportAvatar(userId);
 
@@ -75,6 +77,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         private static string GetLastLoginUserId()
         {
+            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.GetLastLoginUserId]");
             File.Copy(_ubisoftLogFile, "templog");
             var lastUser = "";
             using (var reader = new StreamReader("templog"))
@@ -94,23 +97,48 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             return (lastUser != "" ? lastUser : "NOTFOUND");
         }
 
-        private static string FindUsername(string userId)
+        //private static string FindUsername(string userId)
+        public static string FindUsername(string userId)
         {
+            _ubisoftAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
+
+
+            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.FindUsername]");
             Directory.CreateDirectory("LoginCache\\Ubisoft\\temp\\");
             var tempUsersDat = $"LoginCache\\Ubisoft\\temp\\users.dat";
             File.Copy(Path.Join(_ubisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\temp\\users.dat", true);
 
             var username = "";
+            var nextLineIsUsername = false;
             using (var reader = new StreamReader(File.Open(tempUsersDat, FileMode.Open)))
             {
                 var line = "";
                 while ((line = reader.ReadLine()) != null)
                 {
-                    if (!line.Contains(userId)) continue;
-                    username = line.Split(userId)[1].Split(":")[0];
-                    username = username.Substring(2, username.Length - 2);
+                    if (!nextLineIsUsername) // Will only be true if character separating userId and username is counted as a newline.
+                    {
+                        var userIdIndex = line.IndexOf(userId, StringComparison.Ordinal);
+                        if (userIdIndex == -1) continue; // userId is not on this line >> Next
+
+                        var indexAfterUserId = userIdIndex + userId.Length; // Find end of userId in string
+                        if (indexAfterUserId == line.Length) // If username is on 'next line', grab it on next iteration.
+                        {
+                            nextLineIsUsername = true;
+                            continue;
+                        }
+                        // Otherwise: it was found on this line, grab it.
+                        line = line.Substring(indexAfterUserId, line.Length - indexAfterUserId);
+                    }
+                    // This grabs the username if on the line after userId
+                    username = new Regex(@"[^a-zA-Z0-9_\-.-]").Replace(line.Split(":")[0], "");
                     break;
                 }
+            }
+
+            if (username == "")
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", "Could not find username", "Error", "toastarea");
+                return "ERR";
             }
 
             var allIds = ReadAllIds();
@@ -124,8 +152,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             File.Copy(Path.Join(_ubisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\{userId}\\users.dat", true);
             return username;
         }
+
         public static Dictionary<string, string> ReadAllIds()
         {
+            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ReadAllIds]");
             var localAllIds = $"LoginCache\\Ubisoft\\ids.json";
             var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
             if (File.Exists(localAllIds))
@@ -145,6 +175,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         public static void ImportAvatar(string userId)
         {
+            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ImportAvatar] userId: {userId}");
             string i64 = Path.Join(_ubisoftAvatarFolder, userId + "_64.png"),
                 i128 = Path.Join(_ubisoftAvatarFolder, userId + "_128.png"),
                 i256 = Path.Join(_ubisoftAvatarFolder, userId + "_256.png");
@@ -245,6 +276,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         private static void ClearCurrentUser()
         {
+            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ClearCurrentUser]");
             var settingsYml = File.ReadAllLines(Path.Join(_ubisoftAppData, "settings.yml"));
             for (var i = 0; i < settingsYml.Length; i++)
             {
@@ -269,8 +301,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             File.WriteAllLines(Path.Join(_ubisoftAppData, "settings.yml"), settingsYml);
         }
 
+        /// <summary>
+        /// Copies user's account files from LoginCache\\Ubisoft\\{userId} to 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="state"></param>
         private static void UbisoftCopyInAccount(string userId, int state = 0)
         {
+            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.UbisoftCopyInAccount]");
+            if (state == -1)
+            {
+                File.Copy($"LoginCache\\Ubisoft\\{userId}\\settings.yml", Path.Join(_ubisoftAppData, "settings.yml"), true);
+                File.Copy($"LoginCache\\Ubisoft\\{userId}\\users.dat", Path.Join(_ubisoftAppData, "users.dat"), true);
+                return;
+            }
             using var fs = new StreamWriter(Path.Join(_ubisoftAppData, "settings.yml"));
             foreach (var l in File.ReadAllLines($"LoginCache\\Ubisoft\\{userId}\\settings.yml"))
             {
@@ -278,6 +322,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 else fs.WriteLine(l);
             }
             fs.Close();
+
+            File.Copy($"LoginCache\\Ubisoft\\{userId}\\users.dat", Path.Join(_ubisoftAppData, "users.dat"), true);
+            File.Copy(Path.Join(_ubisoftAppData, "settings.yml"), $"LoginCache\\Ubisoft\\{userId}\\settings.yml", true);
         }
         
 
@@ -287,8 +334,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         /// </summary>
         public static void CloseUbisoft()
         {
+            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.CloseUbisoft]");
             Globals.KillProcess("upc");
         }
+
         /// <summary>
         /// Clears images folder of contents, to re-download them on next load.
         /// </summary>
