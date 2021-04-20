@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -58,7 +59,7 @@ namespace TcNo_Acc_Switcher_Client
         
         public MainWindow()
         {
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
             
             AppSettings.LoadFromFile();
             FindOpenPort();
@@ -204,6 +205,8 @@ namespace TcNo_Acc_Switcher_Client
             Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
             Console.WriteLine(args.Uri);
 
+            if (args.Uri.Contains("RESTART_AS_ADMIN")) RestartAsAdmin();
+
             if (!args.Uri.Contains("?")) return;
             // Needs to be here as:
             // Importing Microsoft.Win32 and System.Windows didn't get OpenFileDialog to work.
@@ -224,6 +227,28 @@ namespace TcNo_Acc_Switcher_Client
             MView2.ExecuteScriptAsync("Modal_SetFilepath(" + JsonConvert.SerializeObject(dlg.FileName.Substring(0, dlg.FileName.LastIndexOf('\\'))) + ")");
 
         }
+
+        private void RestartAsAdmin()
+        {
+            var proc = new ProcessStartInfo
+            {
+                WorkingDirectory = Environment.CurrentDirectory,
+                FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher.exe",
+                UseShellExecute = true,
+                Verb = "runas"
+            };
+            try
+            {
+                Process.Start(proc);
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("This program must be run as an administrator! \n\n" + ex.ToString());
+                Environment.Exit(0);
+            }
+        }
+
         public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)
         {
             Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.ExecuteScriptFunctionAsync]");

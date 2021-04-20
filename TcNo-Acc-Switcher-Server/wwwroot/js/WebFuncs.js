@@ -365,8 +365,7 @@ function ShowModal(modaltype) {
             message = forgetAccountOriginPrompt;
         } else if (action.startsWith("AcceptForgetUbisoftAcc")) {
             message = forgetAccountUbisoftPrompt;
-        }
-        else {
+        } else {
             header = "<h3>Confirm action:</h3>";
             message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
             // The only exception to confirm:<prompt> was AcceptForgetSteamAcc, as that was confirm:AcceptForgetSteamAcc:steamId
@@ -383,6 +382,36 @@ function ShowModal(modaltype) {
             <div class="YesNo">
 		        <button class="btn" type="button" id="modal_true" onclick="Modal_Confirm('` + action + `', true)"><span>Yes</span></button>
 		        <button class="btn" type="button" id="modal_false" onclick="Modal_Confirm('` + action + `', false)"><span>No</span></button>
+            </div>
+        </div>
+        </div>`);
+    }
+    else if (modaltype.startsWith("notice:")) {
+        // USAGE: "notice:<prompt>
+        // GOAL: Runs function when OK clicked.
+        console.log(modaltype);
+
+        let action = modaltype.slice(7);
+
+        let message = "";
+        let header = "";
+        if (action.startsWith("RestartAsAdmin")) {
+            message = restartAsAdminPrompt;
+            action = "location = 'RESTART_AS_ADMIN'";
+        } else {
+            header = "<h3>Confirm action:</h3>";
+            message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
+            action = action.split(":")[0];
+        }
+
+        $('#modalTitle').text("TcNo Account Switcher Confirm Action");
+        $("#modal_contents").empty();
+        $("#modal_contents").append(`<div class="infoWindow">
+        <div class="fullWidthContent">
+            ` + header + `
+            ` + message + `
+            <div class="YesNo">
+		        <button class="btn" type="button" id="modal_true" onclick="` + action + `"><span>OK</span></button>
             </div>
         </div>
         </div>`);
@@ -524,3 +553,6 @@ const forgetAccountUbisoftPrompt = `<h3 style='color:red'>You are about to forge
 until it's signed into again through Ubisoft, and added to the list.</p>
 <p>Your account will remain untouched. It is just forgotten on this computer.</p>
 <h4>Do you understand?</h4>`
+
+const restartAsAdminPrompt = `<h3><bold>This program will restart as Admin</bold></h3>
+<p>Hit "Yes" when prompted for admin.</p>`;

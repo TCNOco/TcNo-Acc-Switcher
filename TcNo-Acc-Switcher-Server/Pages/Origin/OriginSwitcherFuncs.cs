@@ -79,7 +79,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         {
             Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: {accName}.");
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Origin");
-            CloseOrigin();
+            if (!CloseOrigin()) return;
             // DO ACTUAL SWITCHING HERE
             ClearCurrentLoginOrigin();
             if (accName != "")
@@ -87,15 +87,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                 OriginCopyInAccount(accName, state);
             }
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Origin");
-            if (Origin.Admin)
-                Process.Start(Origin.Exe());
-            else
-                Process.Start(new ProcessStartInfo("explorer.exe", Origin.Exe()));
+
+            GeneralFuncs.StartProgram(Origin.Exe(), Origin.Admin);
         }
 
 
         private static void ClearCurrentLoginOrigin()
         {
+            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.ClearCurrentLoginOrigin]");
             // Get current information for logged in user, and save into files:
             var currentOlcHashes = (from f in new DirectoryInfo(_originProgramData).GetFiles() where f.Name.EndsWith(".olc") select GeneralFuncs.GetFileMd5(f.FullName)).ToList();
 
@@ -141,6 +140,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 
         private static void OriginCopyInAccount(string accName, int state = 0)
         {
+            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.OriginCopyInAccount]");
             var localCachePath = $"LoginCache\\Origin\\{accName}\\";
             var localCachePathData = $"LoginCache\\Origin\\{accName}\\Data\\";
 
@@ -178,6 +178,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 
         public static void OriginAddCurrent(string accName)
         {
+            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.OriginAddCurrent]");
             var localCachePath = $"LoginCache\\Origin\\{accName}\\";
             var localCachePathData = $"LoginCache\\Origin\\{accName}\\Data\\";
             Directory.CreateDirectory(localCachePath);
@@ -235,6 +236,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 
         private static Dictionary<string, List<string>> ReadAllOlc()
         {
+            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.ReadAllOlc]");
             var localAllOlc = $"LoginCache\\Origin\\olc.json";
             var s = JsonConvert.SerializeObject(new Dictionary<string, List<string>>());
             if (File.Exists(localAllOlc))
@@ -257,9 +259,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// <summary>
         /// Kills Origin processes when run via cmd.exe
         /// </summary>
-        public static void CloseOrigin()
+        public static bool CloseOrigin()
         {
+            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.CloseSteam]");
+            if (!GeneralFuncs.CanKillProcess("origin")) return false;
             Globals.KillProcess("origin");
+            return true;
         }
         /// <summary>
         /// Clears images folder of contents, to re-download them on next load.

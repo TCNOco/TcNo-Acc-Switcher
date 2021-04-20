@@ -329,14 +329,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 return;
             }
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Steam");
-            CloseSteam();
+            if (!CloseSteam()) return;
             UpdateLoginUsers(steamId, accName, ePersonaState);
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Steam");
             if (!autoStartSteam) return;
-            if (Steam.Admin)
-                Process.Start(Steam.Exe());
-            else
-                Process.Start(new ProcessStartInfo("explorer.exe", Steam.Exe()));
+
+            GeneralFuncs.StartProgram(Steam.Exe(), Steam.Admin);
         }
 
         /// <summary>
@@ -359,9 +357,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <summary>
         /// Kills Steam processes when run via cmd.exe
         /// </summary>
-        public static void CloseSteam()
+        public static bool CloseSteam()
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.CloseSteam]");
+            if (!GeneralFuncs.CanKillProcess("steam")) return false;
             Globals.KillProcess("steam");
+            return true;
         }
 
 

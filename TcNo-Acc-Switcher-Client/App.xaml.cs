@@ -64,8 +64,19 @@ namespace TcNo_Acc_Switcher_Client
             // Single instance:
             if (!Mutex.WaitOne(TimeSpan.Zero, true))
             {
-                MessageBox.Show("Another TcNo Account Switcher instance has been detected.");
-                Environment.Exit(1056); // 1056	An instance of the service is already running.
+                Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
+                try
+                {
+                    if (!Mutex.WaitOne(TimeSpan.Zero, true))
+                    {
+                        MessageBox.Show("Another TcNo Account Switcher instance has been detected.");
+                        Environment.Exit(1056); // 1056	An instance of the service is already running.
+                    }
+                }
+                catch (AbandonedMutexException e2)
+                {
+                    // Just restarted 
+                }
             }
 
 

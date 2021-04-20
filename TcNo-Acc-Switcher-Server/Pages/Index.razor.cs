@@ -14,11 +14,14 @@
 
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
+using Task = System.Threading.Tasks.Task;
 
 namespace TcNo_Acc_Switcher_Server.Pages
 {
@@ -27,6 +30,9 @@ namespace TcNo_Acc_Switcher_Server.Pages
         public async Task CheckSteam()
         {
             Globals.DebugWriteLine($@"[Func:Index.CheckSteam]");
+
+            if (!GeneralFuncs.CanKillProcess("steam")) return;
+
             Steam.LoadFromFile();
             if (SteamSwitcherFuncs.SteamSettingsValid() && Directory.Exists(Steam.FolderPath) && File.Exists(Steam.Exe()))
             {
@@ -40,6 +46,9 @@ namespace TcNo_Acc_Switcher_Server.Pages
         public async Task CheckOrigin()
         {
             Globals.DebugWriteLine($@"[Func:Index.CheckOrigin]");
+
+            if (!GeneralFuncs.CanKillProcess("Origin")) return;
+
             Origin.LoadFromFile();
             if (Directory.Exists(Origin.FolderPath) && File.Exists(Origin.Exe()))
             {
@@ -53,6 +62,9 @@ namespace TcNo_Acc_Switcher_Server.Pages
         public async Task CheckUbisoft()
         {
             Globals.DebugWriteLine($@"[Func:Index.CheckUbisoft]");
+
+            if (!GeneralFuncs.CanKillProcess("upc")) return;
+
             Ubisoft.LoadFromFile();
             if (Directory.Exists(Ubisoft.FolderPath) && File.Exists(Ubisoft.Exe()))
             {
@@ -67,8 +79,11 @@ namespace TcNo_Acc_Switcher_Server.Pages
         public async Task CheckBattleNet()
         {
             Globals.DebugWriteLine($@"[Func:Index.CheckBattleNet]");
+
+            if (!GeneralFuncs.CanKillProcess("Battle.net")) return;
+
             BattleNet.LoadFromFile();
-            if (Directory.Exists(BattleNet.FolderPath) && File.Exists(BattleNet.BattleNetExe()))
+            if (Directory.Exists(BattleNet.FolderPath) && File.Exists(BattleNet.Exe()))
             {
                 NavManager.NavigateTo("/BattleNet/");
             }

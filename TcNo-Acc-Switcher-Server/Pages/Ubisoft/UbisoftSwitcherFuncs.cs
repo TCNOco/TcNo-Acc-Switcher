@@ -130,7 +130,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                         line = line.Substring(indexAfterUserId, line.Length - indexAfterUserId);
                     }
                     // This grabs the username if on the line after userId
-                    username = new Regex(@"[^a-zA-Z0-9_\-.-]").Replace(line.Split(":")[0], "");
+                    line = line.Split(":")[0];
+                    username = new Regex(@"[^a-zA-Z0-9_\-.-]").Split(line).Last();
                     break;
                 }
             }
@@ -257,7 +258,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         {
             Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.SwapUbisoftAccounts] Swapping to: {userId}.");
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Ubisoft");
-            CloseUbisoft();
+            if (!CloseUbisoft()) return;
             UbisoftAddCurrent();
 
             if (userId != "")
@@ -268,10 +269,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 ClearCurrentUser();
 
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Ubisoft");
-            if (Ubisoft.Admin)
-                Process.Start(Ubisoft.Exe());
-            else
-                Process.Start(new ProcessStartInfo("explorer.exe", Ubisoft.Exe()));
+
+            GeneralFuncs.StartProgram(Ubisoft.Exe(), Ubisoft.Admin);
         }
 
         private static void ClearCurrentUser()
@@ -332,10 +331,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         /// <summary>
         /// Kills Origin processes when run via cmd.exe
         /// </summary>
-        public static void CloseUbisoft()
+        public static bool CloseUbisoft()
         {
             Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.CloseUbisoft]");
+            if (!GeneralFuncs.CanKillProcess("upc")) return false;
             Globals.KillProcess("upc");
+            return true;
         }
 
         /// <summary>

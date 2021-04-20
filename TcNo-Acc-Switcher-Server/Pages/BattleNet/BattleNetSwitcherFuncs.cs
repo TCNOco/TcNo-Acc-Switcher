@@ -31,6 +31,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
         public static async void LoadProfiles()
         {
+            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.LoadProfiles]");
             _accounts = new List<BattleNetSwitcherBase.BattleNetUser>();
             
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.LoadProfiles] Loading BattleNet profiles");
@@ -64,7 +65,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         {
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SwapBattleNetAccounts] Swapping to: {accName}.");
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting BattleNet");
-            CloseBattleNet();
+            if (!CloseBattleNet()) return;
             
             var account = _accounts.First(x => x.Email == accName);
             // Load settings into JObject
@@ -93,19 +94,23 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             jToken?.Replace(replaceString);
             File.WriteAllText(_battleNetRoaming + "\\Battle.net.config", jObject?.ToString());
 
-            Process.Start(BattleNet.BattleNetExe());
+            GeneralFuncs.StartProgram(BattleNet.Exe(), BattleNet.Admin);
         }
 
         /// <summary>
         /// Kills Battle.net processes when run via cmd.exe
         /// </summary>
-        public static void CloseBattleNet()
+        public static bool CloseBattleNet()
         {
+            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.CloseBattleNet]");
+            if (!GeneralFuncs.CanKillProcess("Battle.net")) return false;
             Globals.KillProcess("Battle.net");
+            return true;
         }
 
         public static void SetBattleTag(string accName, string bTag)
         {
+            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SetBattleTag] accName:{accName}, bTag:{bTag}");
             Data.Settings.BattleNet.Instance.BTags.Remove(accName);
             Data.Settings.BattleNet.Instance.BTags.Add(accName,bTag);
             File.WriteAllText(Data.Settings.BattleNet.Instance.SettingsFile, Data.Settings.BattleNet.Instance.GetJObject().ToString());
@@ -114,6 +119,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
         public static void DeleteBattleTag(string accName)
         {
+            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.DeleteBattleTag] accName:{accName}");
             Data.Settings.BattleNet.Instance.BTags.Remove(accName);
             File.WriteAllText(Data.Settings.BattleNet.Instance.SettingsFile, Data.Settings.BattleNet.Instance.GetJObject().ToString());
             AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");

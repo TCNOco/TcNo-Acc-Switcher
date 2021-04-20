@@ -89,6 +89,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Get Origin.exe path from OriginSettings.json 
         /// </summary>
         /// <returns>Origin.exe's path string</returns>
-        public string BattleNetExe() =>  FolderPath + "\\Battle.net.exe";
+        public string Exe() =>  FolderPath + "\\Battle.net.exe";
     }
 }

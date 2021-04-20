@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -24,11 +25,53 @@ using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralFuncs
     {
+        #region PROCESS_OPERATIONS
+
+        /// <summary>
+        /// Starts a process with or without Admin
+        /// </summary>
+        /// <param name="path">Path of process to start</param>
+        /// <param name="elevated">Whether the process should start elevated or not</param>
+        public static void StartProgram(string path, bool elevated = false)
+        {
+
+            if (!elevated)
+                Process.Start(new ProcessStartInfo("explorer.exe", path)); // Starts without admin, through Windows explorer.
+            else
+            {
+                var proc = new Process
+                {
+                    StartInfo =
+                    {
+                        FileName = path, 
+                        UseShellExecute = true, 
+                        Verb = "runas"
+                    }
+                };
+                proc.Start();
+            }
+
+        }
+        public static bool CanKillProcess(string processName)
+        {
+            bool canKill;
+            if (AppSettings.Instance.CurrentlyElevated)
+                canKill = true; // Elevated process can kill most other processes.
+            else canKill = !ProcessHelper.IsProcessAdmin(processName); // If other process is admin, this process can't kill it (because it's not admin)
+
+            // Restart self as admin.
+            if (!canKill) AppData.ActiveIJsRuntime.InvokeAsync<string>("ShowModal", "notice:RestartAsAdmin");
+
+            return canKill;
+        }
+        #endregion
+
         #region FILE_OPERATIONS
         public static string WwwRoot = Path.Join(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? throw new InvalidOperationException(), "\\wwwroot");
         /// <summary>

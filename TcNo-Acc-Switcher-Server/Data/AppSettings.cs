@@ -46,7 +46,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         // Variables
-        private string _version = "2021-04-20_01";
+        private string _version = "2021-04-20_02";
         [JsonProperty("Version", Order = 0)] public string Version => _instance._version;
 
         private bool _updateAvailable;
@@ -68,6 +68,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] public bool StartMenu { get => _instance._startMenu; set => _instance._startMenu = value; }
         private bool _trayStartup;
         [JsonIgnore] public bool TrayStartup { get => _instance._trayStartup; set => _instance._trayStartup = value; }
+
+        private bool _currentlyElevated;
+        [JsonIgnore] public bool CurrentlyElevated { get => _instance._currentlyElevated; set => _instance._currentlyElevated = value; }
 
         // Variables loaded from other files:
         private Dictionary<string, string> _stylesheet = new()
