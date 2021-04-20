@@ -30,7 +30,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         private IJSObjectReference _jsModule;
         protected override async Task OnInitializedAsync()
         {
-            AppData.WindowTitle = "TcNo Account Switcher - Ubisoft Settings";
+            AppData.WindowTitle = "TcNo Account Switcher - Origin Settings";
             Globals.DebugWriteLine($@"[Auto:Ubisoft\Settings.razor.cs.OnInitializedAsync]");
         }
 

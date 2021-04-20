@@ -27,7 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
         ContentRendered="MainWindow_OnContentRendered">
     <!--<Grid x:Name="MainBackground" Background="#28293A">-->
     <Grid x:Name="MainBackground">
-        <wpf:WebView2 x:Name="MView2" CoreWebView2InitializationCompleted="MView2_CoreWebView2InitializationCompleted"></wpf:WebView2>
+        <wpf:WebView2 x:Name="MView2" Initialized="MView2_OnInitialized" CoreWebView2InitializationCompleted="MView2_CoreWebView2InitializationCompleted"></wpf:WebView2>
     </Grid>
 
 </Window>

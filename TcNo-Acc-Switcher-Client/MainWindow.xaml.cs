@@ -56,6 +56,7 @@ namespace TcNo_Acc_Switcher_Client
             Program.Main(new string[1] { _address });
         }
 
+        private bool _initialized = false;
         public MainWindow()
         {
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
@@ -71,10 +72,7 @@ namespace TcNo_Acc_Switcher_Client
             // Initialise and connect to web server above
             // Somehow check ports and find a different one if it doesn't work? We'll see...
             InitializeComponent();
-
-            // Enable console logging
-            MView2.EnsureCoreWebView2Async();
-
+            
             MainBackground.Background = (Brush)new BrushConverter().ConvertFromString(AppSettings.Stylesheet["headerbarBackground"]);
             
             this.Width = AppSettings.WindowSize.X;
@@ -82,9 +80,25 @@ namespace TcNo_Acc_Switcher_Client
             StateChanged += WindowStateChange;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
         }
-
         private async void MView2_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
         {
+        }
+
+        private async void MView2_OnInitialized(object? sender, EventArgs e)
+        {
+            MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
+            await MView2.EnsureCoreWebView2Async(null);
+            MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
+            //MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
+            MView2.NavigationStarting += UrlChanged;
+            //MView2.MouseDown += MViewMDown;
+
+
+            MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
+            MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown").DevToolsProtocolEventReceived += ConsoleMessage;
+            await MView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
+            MView2.CoreWebView2.OpenDevToolsWindow();
+            _initialized = true;
         }
 
         /// <summary>
@@ -120,21 +134,8 @@ namespace TcNo_Acc_Switcher_Client
             //Console.WriteLine("WebView2: " + e.ToString());
         }
 
-        private void MainWindow_OnContentRendered(object? sender, EventArgs e)
+        private async void MainWindow_OnContentRendered(object? sender, EventArgs e)
         {
-            InitAsync();
-            MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
-            MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
-            MView2.NavigationStarting += UrlChanged;
-            //MView2.MouseDown += MViewMDown;
-        }
-        private async void InitAsync()
-        {
-            await MView2.EnsureCoreWebView2Async();
-            MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
-            MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown").DevToolsProtocolEventReceived += ConsoleMessage;
-            await MView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
-            MView2.CoreWebView2.OpenDevToolsWindow();
         }
 
         /// <summary>
@@ -247,6 +248,5 @@ namespace TcNo_Acc_Switcher_Client
             script += ");";
             return await webView2.ExecuteScriptAsync(script);
         }
-
     }
 }
