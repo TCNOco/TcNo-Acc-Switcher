@@ -134,6 +134,39 @@ async function restoreSteamAccounts() {
     var result = await promise;
 }
 
+// STOP IGNORING BATTLENET ACCOUNTS
+async function restoreBattleNetAccounts() {
+    //const reqBattleNetId = $("#IgnoredBattleNetAccounts").children("option:selected")
+    //    .each((_, e) => { console.log($(e).attr("value")) });
+    const reqBattleNetId = $("#IgnoredAccounts").children("option:selected").toArray().map((item) => { return $(item).attr("value"); });
+
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BattleNet_RestoreSelected", reqBattleNetId).then(r => {
+        if (r === true) {
+            reqBattleNetId.forEach((e) => {
+                $("#IgnoredAccounts").find(`option[value="${e}"]`).remove();
+                window.notification.new({
+                    type: "success",
+                    title: "",
+                    message: "Restored accounts!",
+                    renderTo: "toastarea",
+                    duration: 5000
+                });
+            });
+        } else {
+            console.log(r);
+            window.notification.new({
+                type: "error",
+                title: "",
+                message: "Failed to restore accounts (See console)",
+                renderTo: "toastarea",
+                duration: 5000
+            });
+        }
+    });
+    var result = await promise;
+}
+
+
 function copy(request, e) {
     e.preventDefault();
     const requestResult = $(SelectedElem).attr(request);

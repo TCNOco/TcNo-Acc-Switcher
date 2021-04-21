@@ -1,4 +1,21 @@
-﻿using System;
+﻿// TcNo Account Switcher - A Super fast account switcher
+// Copyright (C) 2019-2021 TechNobo (Wesley Pyburn)
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+// Special thanks to iR3turnZ for contributing to this platform's account switcher
+// iR3turnZ: https://github.com/HoeblingerDaniel
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -54,11 +71,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public string SettingsFile = "BattleNetSettings.json";
         [JsonIgnore] public string BattleNetImagePath = "wwwroot/img/profiles/battlenet/";
         [JsonIgnore] public string BattleNetImagePathHtml = "img/profiles/battlenet/";
-        [JsonIgnore] public string BattleNetIgnoredPath = $"LoginCache\\BattleNet\\IgnoredAccounts.json";
+        [JsonIgnore] public string IgnoredAccPath = $"LoginCache\\BattleNet\\IgnoredAccounts.json";
         [JsonIgnore] public string ContextMenuJson = @"[
               {""Swap to account"": ""SwapTo(-1, event)""},
               {""Set BattleTag"": ""ShowModal('changeUsername')""},
-              {""Forget"": ""forget(event)""}
+              {""Ignore"": ""forget(event)""}
             ]";
 
         /// <summary>
@@ -79,6 +96,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// <returns>Origin.exe's path string</returns>
         public string Exe() => FolderPath + "\\Battle.net.exe";
 
+        #region IGNORING_ACCOUNTS
         /// <summary>
         /// Saves accounts to cache file
         /// </summary>
@@ -86,8 +104,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public void AddIgnoredAccount(string ignoredAccountName)
         {
             _ignoredAccounts.Add(ignoredAccountName, _bTags[ignoredAccountName]);
-            Directory.CreateDirectory(Path.GetDirectoryName(BattleNetIgnoredPath)!);
-            File.WriteAllText(BattleNetIgnoredPath, JsonConvert.SerializeObject(_ignoredAccounts));
+            Directory.CreateDirectory(Path.GetDirectoryName(IgnoredAccPath)!);
+            File.WriteAllText(IgnoredAccPath, JsonConvert.SerializeObject(_ignoredAccounts));
         }
 
         /// <summary>
@@ -95,8 +113,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// </summary>
         public void LoadIgnoredAccounts()
         {
-            if (File.Exists(BattleNetIgnoredPath)) _ignoredAccounts = File.Exists(BattleNetIgnoredPath) ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(BattleNetIgnoredPath)) : new Dictionary<string, string>();
+            if (File.Exists(IgnoredAccPath)) _ignoredAccounts = File.Exists(IgnoredAccPath) ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(IgnoredAccPath)) : new Dictionary<string, string>();
         }
+        #endregion
 
         #region SETTINGS
         /// <summary>

@@ -1,4 +1,21 @@
-﻿using System;
+﻿// TcNo Account Switcher - A Super fast account switcher
+// Copyright (C) 2019-2021 TechNobo (Wesley Pyburn)
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+// Special thanks to iR3turnZ for contributing to this platform's account switcher
+// iR3turnZ: https://github.com/HoeblingerDaniel
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -59,10 +76,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
 
         /// <summary>
-        /// Restart Battle.net with a new account selected. Leave args empty to log into a new account.
+        /// Restart Battle.net with a new account selected.
         /// </summary>
-        /// <param name="accName">(Optional) User's login username</param>
-        public static void SwapBattleNetAccounts(string accName = "")
+        /// <param name="accName">User's account email</param>
+        public static void SwapBattleNetAccounts(string accName)
         {
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SwapBattleNetAccounts] Swapping to: {accName}.");
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting BattleNet");
@@ -116,6 +133,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             return true;
         }
 
+        /// <summary>
+        /// Changes an accounts name on the TcNo Account Switcher
+        /// </summary>
+        /// <param name="id">BattleNet email address</param>
+        /// <param name="newName">New name for user</param>
         public static void ChangeUsername(string id, string newName)
         {
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SetBattleTag] id:{id}, newName:{newName}");
@@ -125,6 +147,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed username"), true);
         }
 
+        #region IGNORING_ACCOUNTS
+        /// <summary>
+        /// Adds an account to the ignore list, so it won't show on the account switcher list anymore.
+        /// </summary>
+        /// <param name="accName">Email address of Blizzard account to ignore.</param>
         public static void ForgetAccount(string accName)
         {
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.ForgetAccount] accName:{accName}");
@@ -133,5 +160,44 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             BattleNet.SaveSettings();
             AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Forgot account"), true);
         }
+
+        /// <summary>
+        /// Clears list of ignored accounts
+        /// </summary>
+        public static async void ClearIgnored()
+        {
+            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.ClearForgotten] Clearing ignored list.");
+            await GeneralInvocableFuncs.ShowModal("confirm:ClearBattleNetIgnored:" + "Are you sure you want to clear backups of forgotten accounts?".Replace(' ', '_'));
+            // Confirmed in GeneralInvocableFuncs.GiConfirmAction for rest of function
+        }
+
+        /// <summary>
+        /// Fires after being confirmed by above function, and actually performs task.
+        /// </summary>
+        public static void ClearIgnored_Confirmed()
+        {
+            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.ClearForgotten_Confirmed] Confirmation received to clear ignored list.");
+            if (File.Exists(BattleNet.IgnoredAccPath)) File.WriteAllText(BattleNet.IgnoredAccPath, "{}");
+        }
+
+        /// <summary>
+        /// Restores a list of accounts, by removing them from the ignore list.
+        /// </summary>
+        /// <param name="requestedAccs">Array of account emails to remove from ignore list</param>
+        /// <returns>Whether it was successful or not</returns>
+        public static bool RestoreSelected(string[] requestedAccs)
+        {
+            if (!File.Exists(BattleNet.IgnoredAccPath)) return false;
+            var ignoredAccounts = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(BattleNet.IgnoredAccPath));
+            foreach (var s in requestedAccs)
+            {
+                Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.RestoreAccounts] Restoring account: {s}");
+                ignoredAccounts?.Remove(s);
+            }
+            File.WriteAllText(BattleNet.IgnoredAccPath, JsonConvert.SerializeObject(ignoredAccounts));
+            return true;
+        }
+        #endregion
+
     }
 }

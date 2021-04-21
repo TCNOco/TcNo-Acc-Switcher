@@ -145,6 +145,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 case "ClearSteamBackups": SteamSwitcherFuncs.ClearForgotten_Confirmed();
                     break;
+                case "ClearBattleNetIgnored": BattleNetSwitcherFuncs.ClearIgnored_Confirmed();
+                    break;
                 case "RestartAsAdmin": 
                     break;
             }

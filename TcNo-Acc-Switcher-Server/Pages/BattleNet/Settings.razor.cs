@@ -12,6 +12,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+// Special thanks to iR3turnZ for contributing to this platform's account switcher
+// iR3turnZ: https://github.com/HoeblingerDaniel
+
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;

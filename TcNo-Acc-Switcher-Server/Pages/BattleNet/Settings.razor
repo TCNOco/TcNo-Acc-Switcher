@@ -10,7 +10,11 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https: //www.gnu.org/licenses />.*@
+    along with this program.  If not, see <https: //www.gnu.org/licenses />.
+
+
+    Special thanks to iR3turnZ for contributing to this platform's account switcher
+    iR3turnZ: https://github.com/HoeblingerDaniel*@
 
 @page "/BattleNet/Settings"
 @namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
@@ -58,6 +62,7 @@
                 <hr><span>Other tools</span>
                 <hr>
             </div>
+            <div class="buttoncol"><button class="btn" type="button" @onclick='() => NavManager.NavigateTo("/BattleNet/ManageIgnored")'><span>Manage Ignored List</span></button><button class="btn" type="button" @onclick="BattleNetSwitcherFuncs.ClearIgnored"><span>Clear Ignored List</span></button></div>
             <div class="buttoncol"><button class="btn" id="OpenFolder" type="button" @onclick="OpenFolder"><span>Open BattleNet Folder</span></button></div>
             <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>Close</span></button></div>
         </div>

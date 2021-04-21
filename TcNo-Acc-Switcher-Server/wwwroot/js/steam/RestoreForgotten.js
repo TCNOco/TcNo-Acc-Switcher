@@ -17,7 +17,7 @@ $("select[name='ForgottenSteamAccounts']").mousedown(function (e) {
 
 // Set list of users
 function setForgotten(listForgotten) {
-    const listAccounts = document.getElementById("ForgottenSteamAccounts");
+    const listAccounts = document.getElementById("IgnoredAccounts");
 
     var forgottenUsers = JSON.parse(listForgotten);
     forgottenUsers.forEach(usr => {
