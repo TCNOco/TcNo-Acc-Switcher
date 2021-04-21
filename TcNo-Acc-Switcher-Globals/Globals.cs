@@ -104,12 +104,14 @@ namespace TcNo_Acc_Switcher_Globals
         /// <summary>
         /// Adds a user to the tray cache
         /// </summary>
+        /// <param name="platform">Platform to switch account on</param>
         /// <param name="arg">Argument to launch and switch</param>
         /// <param name="name">Name to be displayed in the Tray</param>
-        public static void AddTrayUser(string platform, string arg, string name)
+        /// <param name="maxAccounts">(Optional) Number of accounts to keep and show in tray</param>
+        public static void AddTrayUser(string platform, string arg, string name, int maxAccounts = 3)
         {
             var trayUsers = TrayUser.ReadTrayUsers();
-            TrayUser.AddUser(ref trayUsers, platform, new TrayUser() { Arg = arg, Name = name});
+            TrayUser.AddUser(ref trayUsers, platform, new TrayUser() { Arg = arg, Name = name}, maxAccounts);
             TrayUser.SaveUsers(trayUsers);
         }
     }
@@ -136,7 +138,8 @@ namespace TcNo_Acc_Switcher_Globals
         /// <param name="trayUsers">Reference to Dictionary of keys & list of TrayUsers</param>
         /// <param name="key">Key to add user to</param>
         /// <param name="newUser">user to add to aforementioned key in dictionary</param>
-        public static void AddUser(ref Dictionary<string, List<TrayUser>> trayUsers, string key, TrayUser newUser)
+        /// <param name="maxAccounts">(Optional) Number of accounts to keep and show in tray</param>
+        public static void AddUser(ref Dictionary<string, List<TrayUser>> trayUsers, string key, TrayUser newUser, int maxAccounts = 3)
         {
             // Create key and add item if doesn't exist already
             if (!trayUsers.ContainsKey(key))
@@ -149,8 +152,8 @@ namespace TcNo_Acc_Switcher_Globals
             trayUsers[key] = trayUsers[key].Where(x => x.Arg != newUser.Arg).ToList();
             // Add item into first slot
             trayUsers[key].Insert(0, newUser);
-            // Shorten list to be a max of 3
-            while (trayUsers[key].Count > 3) trayUsers[key].RemoveAt(trayUsers[key].Count - 1);
+            // Shorten list to be a max of 3 (default)
+            while (trayUsers[key].Count > maxAccounts) trayUsers[key].RemoveAt(trayUsers[key].Count - 1);
         }
 
         /// <summary>

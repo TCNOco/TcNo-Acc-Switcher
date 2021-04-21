@@ -421,9 +421,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // -----------------------------------
             // ------Update Tray users list ------
             // -----------------------------------
-            var trayUsers = TrayUser.ReadTrayUsers();
-            TrayUser.AddUser(ref trayUsers, "Steam", new TrayUser() { Arg = "+s:" + user.SteamId, Name = Steam.TrayAccName ? user.AccName : user.Name });
-            TrayUser.SaveUsers(trayUsers);
+            Globals.AddTrayUser("Steam", "+s:" + user.SteamId, Steam.TrayAccName ? user.AccName : user.Name, Steam.TrayAccNumber);
         }
 
         /// <summary>

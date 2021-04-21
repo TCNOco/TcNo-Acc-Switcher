@@ -276,7 +276,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             if (userId != "")
             {
                 UbisoftCopyInAccount(userId, state);
-                Globals.AddTrayUser("Ubisoft", "+u:" + userId, ReadAllIds()[userId]); // Add to Tray list
+                Globals.AddTrayUser("Ubisoft", "+u:" + userId, ReadAllIds()[userId], Ubisoft.TrayAccNumber); // Add to Tray list
             }
             else
                 ClearCurrentUser();

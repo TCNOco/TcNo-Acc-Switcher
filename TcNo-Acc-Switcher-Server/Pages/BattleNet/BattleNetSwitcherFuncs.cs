@@ -105,7 +105,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 _accounts.Remove(account);
                 _accounts.Insert(0, account);
 
-                Globals.AddTrayUser("BattleNet", "+b:" + email, account.BTag ?? email); // Add to Tray list
+                Globals.AddTrayUser("BattleNet", "+b:" + email, account.BTag ?? email, BattleNet.TrayAccNumber); // Add to Tray list
             }
             else
             {

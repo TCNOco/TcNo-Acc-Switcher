@@ -87,7 +87,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             }
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Origin");
 
-            Globals.AddTrayUser("Origin", "+o:" + accName, accName); // Add to Tray list
+            Globals.AddTrayUser("Origin", "+o:" + accName, accName, Origin.TrayAccNumber); // Add to Tray list
 
             GeneralFuncs.StartProgram(Origin.Exe(), Origin.Admin);
         }
