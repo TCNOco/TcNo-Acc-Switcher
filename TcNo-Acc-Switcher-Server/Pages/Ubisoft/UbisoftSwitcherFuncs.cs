@@ -20,9 +20,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
     public class UbisoftSwitcherFuncs
     {
         private static readonly Data.Settings.Ubisoft Ubisoft = Data.Settings.Ubisoft.Instance;
-        private static string _ubisoftAppData;
-        private static string _ubisoftLogFile;
-        private static string _ubisoftAvatarFolder;
+        private static string _ubisoftAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
+        private static string _ubisoftAvatarFolder = Path.Join(Ubisoft.FolderPath, "cache", "avatars");
         /// <summary>
         /// Main function for Ubisoft Account Switcher. Run on load.
         /// Collects accounts from Ubisoft Connect's files
@@ -33,9 +32,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         {
             // Normal:
             Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.LoadProfiles] Loading Steam profiles");
-            _ubisoftAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
-            _ubisoftLogFile = Path.Join(Ubisoft.FolderPath, "logs", "launcher_log.txt");
-            _ubisoftAvatarFolder = Path.Join(Ubisoft.FolderPath, "cache", "avatars");
             
             var localCachePath = $"LoginCache\\Ubisoft\\";
             if (!Directory.Exists(localCachePath) || !File.Exists(Path.Join(localCachePath, "ids.json"))) return;
@@ -48,7 +44,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                     $"<img src=\"" + $"\\img\\profiles\\Ubisoft\\{userId}.png" + "\" draggable=\"false\" />\r\n" +
                     $"<h6>{username}</h6>\r\n";
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
-                await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
+                try
+                {
+                    await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
+                }
+                catch (TaskCanceledException e)
+                {
+                    Console.WriteLine(e);  
+                }
             }
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
         }
@@ -78,7 +81,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         private static string GetLastLoginUserId()
         {
             Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.GetLastLoginUserId]");
-            File.Copy(_ubisoftLogFile, "templog");
+            File.Copy(Path.Join(Ubisoft.FolderPath, "logs", "launcher_log.txt"), "templog");
             var lastUser = "";
             using (var reader = new StreamReader("templog"))
             {
@@ -273,12 +276,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             if (userId != "")
             {
                 UbisoftCopyInAccount(userId, state);
+                Globals.AddTrayUser("Ubisoft", "+u:" + userId, ReadAllIds()[userId]); // Add to Tray list
             }
             else
                 ClearCurrentUser();
 
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Ubisoft");
-
+            
             GeneralFuncs.StartProgram(Ubisoft.Exe(), Ubisoft.Admin);
         }
 

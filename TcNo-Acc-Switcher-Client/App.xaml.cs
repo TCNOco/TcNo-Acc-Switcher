@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
@@ -26,6 +27,7 @@ using System.Windows.Shapes;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using Path = System.IO.Path;
 
 namespace TcNo_Acc_Switcher_Client
 {
@@ -59,26 +61,9 @@ namespace TcNo_Acc_Switcher_Client
         [STAThread]
         protected override void OnStartup(StartupEventArgs e)
         {
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
-            // Single instance:
-            if (!Mutex.WaitOne(TimeSpan.Zero, true))
-            {
-                Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
-                try
-                {
-                    if (!Mutex.WaitOne(TimeSpan.Zero, true))
-                    {
-                        MessageBox.Show("Another TcNo Account Switcher instance has been detected.");
-                        Environment.Exit(1056); // 1056	An instance of the service is already running.
-                    }
-                }
-                catch (AbandonedMutexException e2)
-                {
-                    // Just restarted 
-                }
-            }
-
 
 #if DEBUG
             if (DebugMode)
@@ -103,19 +88,35 @@ namespace TcNo_Acc_Switcher_Client
             {
                 if (e.Args[i]?[0] == '+')
                 {
-                    var command = e.Args[i].Substring(1); // Drop '+'
-                    var platform = command.Split(':')[0];
-                    var account = command.Split(':')[1];
+                    var command = e.Args[i].Substring(1).Split(':'); // Drop '+' and split
+                    var platform = command[0];
+                    var account = command[1];
                     
                     switch (platform)
                     {
+                        case "b": // Battle.net
+                            // Blizzard format: +b:<email>
+                            Console.WriteLine("Battle.net switch requested");
+                            TcNo_Acc_Switcher_Server.Data.Settings.BattleNet.Instance.LoadFromFile();
+                            TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);
+                            break;
+                        case "o": // Origin
+                            // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
+                            Console.WriteLine("Origin switch requested");
+                            TcNo_Acc_Switcher_Server.Data.Settings.Origin.Instance.LoadFromFile();
+                            TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account, (command.Length > 2 ? int.Parse(command[3]) : 0));
+                            break;
                         case "s": // Steam
                             // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
                             Console.WriteLine("Steam switch requested");
-                            if (!account.Contains(":"))
-                                TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account);
-                            else TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(
-                                    account.Split(":")[0], ePersonaState: int.Parse(account.Split(":")[1])); // Request has a PersonaState in it
+                            TcNo_Acc_Switcher_Server.Data.Settings.Steam.Instance.LoadFromFile();
+                            TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0], ePersonaState: (command.Length > 2 ? int.Parse(command[3]) : -1)); // Request has a PersonaState in it
+                            break;
+                        case "u": // Ubisoft Connect
+                            // Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]
+                            Console.WriteLine("Ubisoft Connect switch requested");
+                            TcNo_Acc_Switcher_Server.Data.Settings.Ubisoft.Instance.LoadFromFile();
+                            TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account, (command.Length > 2 ? int.Parse(command[3]) : -1));
                             break;
                     }
 
@@ -155,6 +156,24 @@ namespace TcNo_Acc_Switcher_Client
 
             if (quitArg)
                 Environment.Exit(1);
+
+            // Single instance:
+            if (!Mutex.WaitOne(TimeSpan.Zero, true))
+            {
+                Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
+                try
+                {
+                    if (!Mutex.WaitOne(TimeSpan.Zero, true))
+                    {
+                        MessageBox.Show("Another TcNo Account Switcher instance has been detected.");
+                        Environment.Exit(1056); // 1056	An instance of the service is already running.
+                    }
+                }
+                catch (AbandonedMutexException e2)
+                {
+                    // Just restarted 
+                }
+            }
 
             // See if updater was updated, and move files:
             if (Directory.Exists("newUpdater"))

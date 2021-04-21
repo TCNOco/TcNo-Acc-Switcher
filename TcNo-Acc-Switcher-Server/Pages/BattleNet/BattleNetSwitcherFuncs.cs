@@ -37,9 +37,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
     public class BattleNetSwitcherFuncs
     {
         private static readonly Data.Settings.BattleNet BattleNet = Data.Settings.BattleNet.Instance;
-        private static string _battleNetRoaming;
-        private static string _battleNetProgramData;
-        private static List<BattleNetSwitcherBase.BattleNetUser> _accounts;
+        private static string _battleNetRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battle.net");
+        private static string _battleNetProgramData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Battle.net");
+        private static List<BattleNetSwitcherBase.BattleNetUser> _accounts = new();
         
         /// <summary>
         /// Main function for Battle.net Account Switcher. Run on load.
@@ -50,17 +50,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         {
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.LoadProfiles] Loading BattleNet profiles");
             _accounts = new List<BattleNetSwitcherBase.BattleNetUser>();
-            _battleNetRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battle.net");
-            _battleNetProgramData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Battle.net");
+            LoadAccounts(ref _accounts);
 
-            BattleNet.LoadIgnoredAccounts();
-
-            var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config");
-            foreach (var mail in (JsonConvert.DeserializeObject(file) as JObject)?.SelectToken("Client.SavedAccountNames")?.ToString()?.Split(','))
-            {
-                if (BattleNet.IgnoredAccounts.Count(x => x.Key == mail) == 0 && mail != "TempUsername") // If not on IgnoredAccounts list
-                    _accounts.Add(new BattleNetSwitcherBase.BattleNetUser() { Email = mail, BTag = BattleNet.BTags.ContainsKey(mail) ? BattleNet.BTags[mail] : null });
-            }
             foreach (var acc in _accounts)
             {
                 var element =
@@ -74,14 +65,27 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
         }
 
+        private static void LoadAccounts(ref List<BattleNetSwitcherBase.BattleNetUser> _accounts)
+        {
+            BattleNet.LoadIgnoredAccounts();
+            var file = File.ReadAllText(_battleNetRoaming + "\\Battle.net.config");
+            foreach (var mail in (JsonConvert.DeserializeObject(file) as JObject)?.SelectToken("Client.SavedAccountNames")?.ToString()?.Split(','))
+            {
+                if (BattleNet.IgnoredAccounts.Count(x => x.Key == mail) == 0 && mail != "TempUsername") // If not on IgnoredAccounts list
+                    _accounts.Add(new BattleNetSwitcherBase.BattleNetUser() { Email = mail, BTag = BattleNet.BTags.ContainsKey(mail) ? BattleNet.BTags[mail] : null });
+            }
+        }
+
 
         /// <summary>
         /// Restart Battle.net with a new account selected.
         /// </summary>
-        /// <param name="accName">User's account email</param>
-        public static void SwapBattleNetAccounts(string accName)
+        /// <param name="email">User's account email</param>
+        public static void SwapBattleNetAccounts(string email)
         {
-            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SwapBattleNetAccounts] Swapping to: {accName}.");
+            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SwapBattleNetAccounts] Swapping to: {email}.");
+            if (_accounts.Count == 0) LoadAccounts(ref _accounts);
+
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting BattleNet");
             if (!CloseBattleNet()) return;
 
@@ -94,13 +98,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
             var replaceString = "";
 
-            if (accName != "") // New account
+            if (email != "") // New account
             {
-                var account = _accounts.First(x => x.Email == accName);
+                var account = _accounts.First(x => x.Email == email);
                 // Set the to be logged in Account to idx 0
                 _accounts.Remove(account);
                 _accounts.Insert(0, account);
 
+                Globals.AddTrayUser("BattleNet", "+b:" + email, account.BTag ?? email); // Add to Tray list
             }
             else
             {

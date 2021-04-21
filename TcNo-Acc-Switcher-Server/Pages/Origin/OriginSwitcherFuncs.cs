@@ -19,8 +19,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
     public class OriginSwitcherFuncs
     {
         private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
-        private static string _originRoaming;
-        private static string _originProgramData;
+        private static string _originRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Origin");
+        private static string _originProgramData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Origin");
         /// <summary>
         /// Main function for Origin Account Switcher. Run on load.
         /// Collects accounts from cache folder
@@ -31,8 +31,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         {
             // Normal:
             Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.LoadProfiles] Loading Origin profiles");
-            _originRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Origin");
-            _originProgramData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Origin");
 
 
             var localCachePath = $"LoginCache\\Origin\\";
@@ -75,6 +73,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// Restart Origin with a new account selected. Leave args empty to log into a new account.
         /// </summary>
         /// <param name="accName">(Optional) User's login username</param>
+        /// <param name="state">(Optional) 10 = Invisible, 0 = Default</param>
         public static void SwapOriginAccounts(string accName = "", int state = 0)
         {
             Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: {accName}.");
@@ -87,6 +86,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                 OriginCopyInAccount(accName, state);
             }
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Origin");
+
+            Globals.AddTrayUser("Origin", "+o:" + accName, accName); // Add to Tray list
 
             GeneralFuncs.StartProgram(Origin.Exe(), Origin.Admin);
         }

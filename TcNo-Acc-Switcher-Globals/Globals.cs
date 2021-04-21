@@ -100,6 +100,18 @@ namespace TcNo_Acc_Switcher_Globals
 
             Console.WriteLine($"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
         }
+
+        /// <summary>
+        /// Adds a user to the tray cache
+        /// </summary>
+        /// <param name="arg">Argument to launch and switch</param>
+        /// <param name="name">Name to be displayed in the Tray</param>
+        public static void AddTrayUser(string platform, string arg, string name)
+        {
+            var trayUsers = TrayUser.ReadTrayUsers();
+            TrayUser.AddUser(ref trayUsers, platform, new TrayUser() { Arg = arg, Name = name});
+            TrayUser.SaveUsers(trayUsers);
+        }
     }
 
     public class TrayUser

@@ -221,7 +221,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 !queries.TryGetValue("toast_message", out var toastMessage)) return;
             for (var i = 0; i < toastType.Count; i++)
             {
-                await ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
+                try
+                {
+                    await ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
+                }
+                catch (TaskCanceledException e)
+                {
+                    Console.WriteLine(e);
+                }
             }
         }
 
