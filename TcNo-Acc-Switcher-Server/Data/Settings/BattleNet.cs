@@ -41,21 +41,61 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Origin_TrayAccNumber", Order = 4)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
         private bool _forgetAccountEnabled;
         [JsonProperty("ForgetAccountEnabled", Order = 5)] public bool ForgetAccountEnabled { get => _instance._forgetAccountEnabled; set => _instance._forgetAccountEnabled = value; }
-        private Dictionary<string, string> _bTags = new Dictionary<string, string>();
+        private Dictionary<string, string> _bTags = new();
         [JsonProperty("BTags", Order = 6)] public Dictionary<string, string> BTags { get => _instance._bTags; set => _instance._bTags = value; }
-        
-        
+
+        private List<string> _ignoredAccounts = new();
+        [JsonIgnore] public List<string> IgnoredAccounts { get => _instance._ignoredAccounts; set => _instance._ignoredAccounts = value; }
+
         // Constants
         [JsonIgnore] public string SettingsFile = "BattleNetSettings.json";
         [JsonIgnore] public string BattleNetImagePath = "wwwroot/img/profiles/battlenet/";
         [JsonIgnore] public string BattleNetImagePathHtml = "img/profiles/battlenet/";
+        [JsonIgnore] public string BattleNetIgnoredPath = $"LoginCache\\BattleNet\\IgnoredAccounts.json";
         [JsonIgnore] public string ContextMenuJson = @"[
               {""Swap to account"": ""SwapTo(-1, event)""},
-              {""Set BattleTag"": ""ShowModal('setBTag')""},
-              {""Delete BattleTag"": ""DeleteBTag()""},
+              {""Set BattleTag"": ""ShowModal('changeUsername')""},
+              {""Forget"": ""forget(event)""}
             ]";
-        
 
+        /// <summary>
+        /// Updates the ForgetAccountEnabled bool in settings file
+        /// </summary>
+        /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
+        public void SetForgetAcc(bool enabled)
+        {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\BattleNet.SetForgetAcc]");
+            if (_forgetAccountEnabled == enabled) return; // Ignore if already set
+            _forgetAccountEnabled = enabled;
+            SaveSettings();
+        }
+
+        /// <summary>
+        /// Get Origin.exe path from OriginSettings.json 
+        /// </summary>
+        /// <returns>Origin.exe's path string</returns>
+        public string Exe() => FolderPath + "\\Battle.net.exe";
+
+        /// <summary>
+        /// Saves accounts to cache file
+        /// </summary>
+        /// <param name="ignoredAccountName">Account email to ignore</param>
+        public void AddIgnoredAccount(string ignoredAccountName)
+        {
+            _ignoredAccounts.Add(ignoredAccountName);
+            Directory.CreateDirectory(Path.GetDirectoryName(BattleNetIgnoredPath)!);
+            File.WriteAllText(BattleNetIgnoredPath, JsonConvert.SerializeObject(_ignoredAccounts));
+        }
+
+        /// <summary>
+        /// Loads list of ignored accounts from file.
+        /// </summary>
+        public void LoadIgnoredAccounts()
+        {
+            if (File.Exists(BattleNetIgnoredPath)) _ignoredAccounts = File.Exists(BattleNetIgnoredPath) ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(BattleNetIgnoredPath)) : new List<string>();
+        }
+
+        #region SETTINGS
         /// <summary>
         /// Default settings for BattleNetSettings.json
         /// </summary>
@@ -66,7 +106,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = new Point() { X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
-            _instance.BTags = new Dictionary<string, string>();
             SaveSettings();
         }
         public void SetFromJObject(JObject j)
@@ -78,17 +117,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = curSettings.WindowSize;
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
-            _instance._bTags = JsonConvert.DeserializeObject<Dictionary<string,string>>(j.SelectToken("BTags").ToString());
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
         public JObject GetJObject() => JObject.FromObject(this);
+
         [JSInvokable]
         public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
-
-        /// <summary>
-        /// Get Origin.exe path from OriginSettings.json 
-        /// </summary>
-        /// <returns>Origin.exe's path string</returns>
-        public string Exe() =>  FolderPath + "\\Battle.net.exe";
+        #endregion
     }
 }

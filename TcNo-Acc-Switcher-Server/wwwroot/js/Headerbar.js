@@ -24,6 +24,26 @@ const SysCommandSize = { // Reverses for april fools
 const WindowNotifications = {
     WmClose: 0x0010
 }
+
+var possibleAnimations = [
+    'rotateY',
+    'rotateX',
+    'rotateZ'
+];
+var lastDeg = 360;
+function RandomAni(e) {
+    lastDeg = -lastDeg;
+    ani = possibleAnimations[Math.floor(Math.random() * possibleAnimations.length)];
+
+    $({ deg: 0 }).animate({ deg: lastDeg, easing: 'swing' }, {
+        duration: 500,
+        step: function (now) {
+            $(e).css({
+                transform: ani + "(" + now + "deg)"
+            });
+        }
+    });
+}
 function handleWindowControls() {
     console.log("HandleWindowControls() was called!");
     document.getElementById('btnMin').addEventListener("click", event => {
@@ -31,9 +51,11 @@ function handleWindowControls() {
     });
 
     document.getElementById('btnBack').addEventListener("click", event => {
-        let tempUri = document.location.href.split('?')[0];
-        document.location.href = tempUri + (tempUri.endsWith('/') ? '../' : '/../');
-
+        if (window.location.pathname === "/") RandomAni("#btnBack .icon");
+        else {
+            let tempUri = document.location.href.split('?')[0];
+            document.location.href = tempUri + (tempUri.endsWith('/') ? '../' : '/../');
+        }
     });
 
     document.getElementById('btnMax').addEventListener("click", event => {

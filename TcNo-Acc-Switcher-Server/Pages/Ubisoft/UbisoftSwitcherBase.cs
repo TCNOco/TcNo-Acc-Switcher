@@ -28,5 +28,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             Globals.DebugWriteLine($@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.UbisoftAddCurrent]");
             UbisoftSwitcherFuncs.UbisoftAddCurrent();
         }
+
+        [JSInvokable]
+        public static void UbisoftRefreshUsername(string userId)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.UbisoftRefreshUsername]");
+            UbisoftSwitcherFuncs.FindUsername(userId, false);
+        }
     }
 }

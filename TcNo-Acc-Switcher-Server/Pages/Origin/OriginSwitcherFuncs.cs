@@ -225,13 +225,38 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                     olcHashes.Add(GeneralFuncs.GetFileMd5(f.FullName)); // Add hashes to list
                 }
             }
+
             var allOlc = ReadAllOlc();
             allOlc[accName] = olcHashes;
-
-            var olcHashString = JsonConvert.SerializeObject(allOlc);
-            File.WriteAllText("LoginCache\\Origin\\olc.json", olcHashString);
-            
+            File.WriteAllText("LoginCache\\Origin\\olc.json", JsonConvert.SerializeObject(allOlc));
             AppData.ActiveNavMan?.NavigateTo("/Origin/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
+        }
+
+        public static void ChangeUsername(string oldName, string newName, bool reload = false)
+        {
+            var allOlc = ReadAllOlc();
+            if (!ChangeKey(ref allOlc, oldName, newName)) // Rename account in olc.json
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", "Could not change username", "Error", "toastarea");
+                return;
+            }
+            File.WriteAllText("LoginCache\\Origin\\olc.json", JsonConvert.SerializeObject(allOlc));
+
+            File.Move(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\origin\\{Uri.EscapeUriString(oldName)}.jpg"),
+                Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\origin\\{Uri.EscapeUriString(newName)}.jpg")); // Rename image
+            Directory.Move($"LoginCache\\Origin\\{oldName}\\", $"LoginCache\\Origin\\{newName}\\"); // Rename login cache folder
+
+            if (reload) AppData.ActiveNavMan?.NavigateTo("/Origin/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed username"), true);
+        }
+
+        public static bool ChangeKey<TKey, TValue>(ref Dictionary<TKey, TValue> dict, TKey oldKey, TKey newKey)
+        {
+            TValue value;
+            if (!dict.Remove(oldKey, out value))
+                return false;
+
+            dict[newKey] = value;
+            return true;
         }
 
         private static Dictionary<string, List<string>> ReadAllOlc()

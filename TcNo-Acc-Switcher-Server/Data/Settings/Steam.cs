@@ -163,9 +163,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Updates the ForgetAccountEnabled bool in Steam settings file
         /// </summary>
         /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
-        public void UpdateSteamForgetAcc(bool enabled)
+        public void SetForgetAcc(bool enabled)
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.UpdateSteamForgetAcc]");
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.SetForgetAcc]");
             if (ForgetAccountEnabled == enabled) return; // Ignore if already set
             ForgetAccountEnabled = enabled;
             SaveSettings();

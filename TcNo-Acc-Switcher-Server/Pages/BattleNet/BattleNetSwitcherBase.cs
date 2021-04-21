@@ -21,29 +21,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Globals.DebugWriteLine($@"[JSInvoke:BattleNet\BattleNetSwitcherBase.SwapToBattleNet] accName:{accName}");
             BattleNetSwitcherFuncs.SwapBattleNetAccounts(accName);
         }
-        
-        /// <summary>
-        /// JS function handler for setting the corresponding BattleTag
-        /// </summary>
-        /// <param name="accName">Requested account's email</param>
-        /// <param name="bTag">The BattleTag to be set</param>
-        [JSInvokable]
-        public static void SetBattleTag(string accName, string bTag)
-        {
-            Globals.DebugWriteLine($@"[JSInvoke:BattleNet\BattleNetSwitcherBase.SetBattleTag] accName:{accName} bTag:{bTag}");
-            BattleNetSwitcherFuncs.SetBattleTag(accName, bTag);
-        }
-
-        /// <summary>
-        /// JS function handler for deleting the corresponding BattleTag
-        /// </summary>
-        /// <param name="accName">Requested account's email</param>
-        [JSInvokable]
-        public static void DeleteBattleTag(string accName)
-        {
-            Globals.DebugWriteLine($@"[JSInvoke:BattleNet\BattleNetSwitcherBase.DeleteBattleTag] accName:{accName}");
-            BattleNetSwitcherFuncs.DeleteBattleTag(accName);
-        }
 
         public class BattleNetUser
         {

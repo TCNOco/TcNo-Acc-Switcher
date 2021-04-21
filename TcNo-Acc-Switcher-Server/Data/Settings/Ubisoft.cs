@@ -56,6 +56,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 {""Online"": ""SwapTo(0, event)""},
                 {""Offline"": ""SwapTo(10, event)""},
               ]},
+              {""Username..."": [
+                {""Change switcher name"": ""ShowModal('changeUsername')""},
+                {""Refresh name"": ""RefreshUsername()""},
+              ]},
               {""Forget"": ""forget(event)""}
             ]";
         // {""Create Desktop Shortcut"": ""CreateShortcut()""},
@@ -64,9 +68,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Updates the ForgetAccountEnabled bool in settings file
         /// </summary>
         /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
-        public void UpdateUbisoftForgetAcc(bool enabled)
+        public void SetForgetAcc(bool enabled)
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Ubisoft.UpdateUbisoftForgetAcc]");
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Ubisoft.SetForgetAcc]");
             if (ForgetAccountEnabled == enabled) return; // Ignore if already set
             ForgetAccountEnabled = enabled;
             SaveSettings();

@@ -74,8 +74,9 @@
         if (firstRender)
         {
             if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered) await JsRuntime.InvokeVoidAsync($"window.notification.new", new { type = "info", title = "Streamer mode", message = "Private info is hidden! - See settings", renderTo = "toastarea", duration = 5000 });// Show notification that streamer mode was enabled.
+
             BattleNetSwitcherFuncs.LoadProfiles();
-            Data.Settings.BattleNet.Instance.SaveSettings(!File.Exists(Data.Settings.BattleNet.Instance.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
+            BattleNet.SaveSettings(!File.Exists(BattleNet.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
 
             GeneralInvocableFuncs.HandleQueries();
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");

@@ -98,7 +98,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         }
 
         //private static string FindUsername(string userId)
-        public static string FindUsername(string userId)
+        public static string FindUsername(string userId, bool copyFiles = true)
         {
             _ubisoftAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
 
@@ -142,17 +142,28 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 return "ERR";
             }
 
-            var allIds = ReadAllIds();
-            allIds[userId] = username;
-            File.WriteAllText($"LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
-
-
+            SetUsername(userId, username);
             GeneralFuncs.RecursiveDelete(new DirectoryInfo("LoginCache\\Ubisoft\\temp\\"), false);
+
+            if (!copyFiles)
+            {
+                AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Refreshed username from file"), true);
+                return username; // Used for refreshing username.
+            }
             Directory.CreateDirectory($"LoginCache\\Ubisoft\\{userId}\\");
             File.Copy(Path.Join(_ubisoftAppData, "settings.yml"), $"LoginCache\\Ubisoft\\{userId}\\settings.yml", true);
             File.Copy(Path.Join(_ubisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\{userId}\\users.dat", true);
             return username;
         }
+
+        public static void SetUsername(string id, string username, bool reload = false)
+        {
+            var allIds = ReadAllIds();
+            allIds[id] = username;
+            File.WriteAllText($"LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
+            if (reload) AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Set username"), true);
+        }
+
 
         public static Dictionary<string, string> ReadAllIds()
         {
@@ -222,14 +233,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         //}
 
-
-
-
-
-
-
-
-
+        
         /// <summary>
         /// Used in JS. Gets whether forget account is enabled (Whether to NOT show prompt, or show it).
         /// </summary>
@@ -245,6 +249,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         {
             Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ForgetAccount] Forgetting account: {userId}");
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Ubisoft\\{userId}"), false);
+
+            var allIds = ReadAllIds();
+            allIds.Remove(userId);
+            File.WriteAllText("LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
+
             File.Delete(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\Ubisoft\\{userId}.png"));
             return true;
         }
@@ -357,22 +366,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             ////// Reload page, then display notification using a new thread.
             //AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared images"), true);
         }
-
-        /// <summary>
-        /// Only runs ForgetAccount, but allows Javascript to wait for it's completion before refreshing, instead of just doing it instantly >> Not showing proper results.
-        /// </summary>
-        /// <param name="userId">Account ID to remove.</param>
-        /// <returns>true</returns>
-        [JSInvokable]
-        public static Task<bool> ForgetUbisoftAccountJs(string userId)
-        {
-            Globals.DebugWriteLine($@"[JSInvoke:Ubisoft\UbisoftSwitcherFuncs.ForgetUbisoftAccountJs] accName:{userId}");
-            var allIds = ReadAllIds();
-            allIds.Remove(userId);
-            File.WriteAllText("LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
-            return Task.FromResult(ForgetAccount(userId));
-        }
-
         #endregion
     }
 }

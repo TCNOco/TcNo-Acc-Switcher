@@ -48,56 +48,57 @@ function forget(e) {
             break;
     }
 }
+
+
+
 async function promptForgetSteam() {
     const reqSteamId = $(SelectedElem).attr("steamid64");
-    
+
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetSteamForgetAcc").then(r => {
         if (!r) ShowModal("confirm:AcceptForgetSteamAcc:" + reqSteamId);
-        else forgetSteam(reqSteamId);
+        else Modal_Confirm("AcceptForgetSteamAcc:" + reqSteamId, true);
     });
     var result = await promise;
 }
-async function forgetSteam(reqSteamId) {
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ForgetAccountJs", reqSteamId).then(
-        _ => {
-            location.reload();
-        });
+
+
+
+async function promptForgetBattleNet() {
+    const reqId = $(SelectedElem).attr("id");
+
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetBattleNetForgetAcc").then(r => {
+        if (!r) ShowModal("confirm:AcceptForgetBattleNetAcc:" + reqId);
+        else Modal_Confirm("AcceptForgetBattleNetAcc:" + reqId, true);
+    });
     var result = await promise;
 }
+
+
 
 async function promptForgetOrigin() {
     const reqAccName = $(SelectedElem).attr("id");
 
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetOriginForgetAcc").then(r => {
         if (!r) ShowModal("confirm:AcceptForgetOriginAcc:" + reqAccName);
-        else forgetOrigin(reqAccName);
+        else Modal_Confirm("AcceptForgetOriginAcc:" + reqAccName, true);
     });
     var result = await promise;
 }
-async function forgetOrigin(reqAccName) {
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ForgetOriginAccountJs", reqAccName).then(
-        _ => {
-            location.reload();
-        });
-    var result = await promise;
-}
+
+
 
 async function promptForgetUbisoft() {
-    const reqAccName = $(SelectedElem).attr("id");
+    const reqId = $(SelectedElem).attr("id");
 
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetUbisoftForgetAcc").then(r => {
-        if (!r) ShowModal("confirm:AcceptForgetUbisoftAcc:" + reqAccName);
-        else forgetUbisoft(reqAccName);
+        if (!r) ShowModal("confirm:AcceptForgetUbisoftAcc:" + reqId);
+        else Modal_Confirm("AcceptForgetUbisoftAcc:" + reqId, true);
     });
     var result = await promise;
 }
-async function forgetUbisoft(reqAccName) {
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ForgetUbisoftAccountJs", reqAccName).then(
-        _ => {
-            location.reload();
-        });
-    var result = await promise;
-}
+
+
+
 
 // RESTORING STEAM ACCOUNTS
 async function restoreSteamAccounts() {
@@ -255,32 +256,37 @@ function CreateShortcut() {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CreateShortcut", selected.attr("SteamID64"), selected.attr("Username"));
 }
 
+function RefreshUsername() {
+    var selected = $(".acc:checked");
+    if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "UbisoftRefreshUsername", selected.attr("id"));
+}
+
+
+
 // New Steam accounts
 function NewSteamLogin() {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToSteam", "", "");
 }
 
 
+
 // New Origin accounts
 function NewOriginLogin() {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToOrigin", "", 0);
-}
-// New BattleNet accounts
-function NewBattleNetLogin() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToBattleNet", "", 0);
-}
-// Delete the assigned BattleTag
-function DeleteBTag() {
-    var selected = $(".acc:checked");
-    if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
-
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "DeleteBattleTag", selected.attr("id"));
-    return;
 }
 // Add currently logged in Origin account
 function CurrentOriginLogin() {
     ShowModal("accString:Origin");
 }
+
+
+
+// New BattleNet accounts
+function NewBattleNetLogin() {
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToBattleNet", "", 0);
+}
+
 
 
 // New Ubisoft accounts
@@ -291,6 +297,7 @@ function NewUbisoftLogin() {
 function CurrentUbisoftLogin() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftAddCurrent");
 }
+
 
 
 $(".acc").dblclick(function () {
@@ -305,7 +312,7 @@ function OpenLinkInBrowser(link) {
 
 // Info Window
 function ShowModal(modaltype) {
-    if (modaltype == "info") {
+    if (modaltype === "info") {
         $('#modalTitle').text("TcNo Account Switcher Information");
         $("#modal_contents").empty();
         currentVersion = "";
@@ -324,6 +331,24 @@ function ShowModal(modaltype) {
                 </div>
                 </div><div class="versionIdentifier"><span>Version: ` + currentVersion + `</span></div>`);
         });
+    }
+    else if (modaltype === "changeUsername") {
+        // USAGE: "changeUsername"
+        console.log(modaltype);
+        Modal_RequestedLocated(false);
+        $('#modalTitle').text("Change username");
+        $("#modal_contents").empty();
+        $("#modal_contents").append(`<div id="modal_contents">
+	        <div>
+		        <span class="modal-text">Please enter a new name for your account (Only changes it in the TcNo Account Switcher).</span>
+	        </div>
+	        <div class="inputAndButton">
+		        <input type="text" id="NewAccountName" style="width: 100%;padding: 8px;">
+	        </div>
+	        <div class="settingsCol inputAndButton">
+		        <button class="btn" type="button" id="select_program" onclick="Modal_FinalizeAccNameChange()"><span>Change username</span></button>
+	        </div>
+        </div>`);
     }
     else if (modaltype.startsWith("find:")) {
         // USAGE: "find:<Program_name>:<Program_exe>:<SettingsFile>" -- example: "find:Steam:Steam.exe:SteamSettings"
@@ -365,6 +390,8 @@ function ShowModal(modaltype) {
             message = forgetAccountOriginPrompt;
         } else if (action.startsWith("AcceptForgetUbisoftAcc")) {
             message = forgetAccountUbisoftPrompt;
+        } else if (action.startsWith("AcceptForgetBattleNetAcc")) {
+            message = forgetAccountBattleNetPrompt;
         } else {
             header = "<h3>Confirm action:</h3>";
             message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
@@ -436,23 +463,6 @@ function ShowModal(modaltype) {
 	        </div>
         </div>`);
     }
-    else if (modaltype.startsWith("setBTag")) {
-        console.log(modaltype);
-        Modal_RequestedLocated(false);
-        $('#modalTitle').text("Set BattleTag for " + $(".acc:checked").attr("id"));
-        $("#modal_contents").empty();
-        $("#modal_contents").append(`<div id="modal_contents">
-	        <div>
-		        <span class="modal-text">Please enter the BattleTag for  ` + $(".acc:checked").attr("id") + ` </span>
-	        </div>
-	        <div class="inputAndButton">
-		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;">
-	        </div>
-	        <div class="settingsCol inputAndButton">
-		        <button class="btn" type="button" id="select_program" onclick="Modal_FinalizeAccString('BattleNet')"><span>Set BattleTag</span></button>
-	        </div>
-        </div>`);
-    }
     $('.modalBG').fadeIn();
 }
 
@@ -487,9 +497,6 @@ function Modal_FinalizeAccString(platform) {
         case "Origin":
             DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "OriginAddCurrent", $("#CurrentAccountName").val());
             break;
-        case "BattleNet":
-            DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetBattleTag", $(".acc:checked").attr("id"), $("#CurrentAccountName").val());
-            break;
         default:
             break;
     }
@@ -497,6 +504,9 @@ function Modal_FinalizeAccString(platform) {
     $('#acc_list').click();
 }
 
+function Modal_FinalizeAccNameChange() {
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), $("#NewAccountName").val(), currentpage);
+}
 
 var appendDelay = 100; // Milliseconds
 var recentlyAppend = false;
@@ -540,19 +550,28 @@ const forgetAccountSteamPrompt = `<h3 style='color:red'>You are about to forget 
 You can also remove previous backups from there when you are sure everything is working as expected.</p>
 <h4>Do you understand?</h4>`;
 
+
+// Find a better way to display these. A placeholder that gets replaced for the platform name?
 const forgetAccountOriginPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
 <h4>What does this mean?</h4>
 <p>TcNo Account Switcher will also no longer show the account,<br/>
 until it's signed into again through Origin, and added to the list.</p>
 <p>Your account will remain untouched. It is just forgotten on this computer.</p>
-<h4>Do you understand?</h4>`
+<h4>Do you understand?</h4>`;
 
 const forgetAccountUbisoftPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
 <h4>What does this mean?</h4>
 <p>TcNo Account Switcher will also no longer show the account,<br/>
 until it's signed into again through Ubisoft, and added to the list.</p>
 <p>Your account will remain untouched. It is just forgotten on this computer.</p>
-<h4>Do you understand?</h4>`
+<h4>Do you understand?</h4>`;
+
+const forgetAccountBattleNetPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
+<h4>What does this mean?</h4>
+<p>TcNo Account Switcher will also no longer show the account,<br/>
+until it's signed into again through BattleNet, and added to the list.</p>
+<p>Your account will remain untouched. It is just forgotten on this computer.</p>
+<h4>Do you understand?</h4>`;
 
 const restartAsAdminPrompt = `<h3><bold>This program will restart as Admin</bold></h3>
 <p>Hit "Yes" when prompted for admin.</p>`;

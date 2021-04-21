@@ -22,6 +22,7 @@ using TcNo_Acc_Switcher_Server.Pages.Steam;
 using Microsoft.AspNetCore.WebUtilities;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.Origin;
 using TcNo_Acc_Switcher_Server.Pages.Ubisoft;
 
@@ -108,7 +109,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (action.StartsWith("AcceptForgetSteamAcc:"))
             {
                 var steamId = action.Split(":")[1];
-                Steam.UpdateSteamForgetAcc(true);
+                Steam.SetForgetAcc(true);
                 SteamSwitcherFuncs.ForgetAccount(steamId);
                 return Task.FromResult("refresh");
             }
@@ -116,7 +117,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (action.StartsWith("AcceptForgetOriginAcc:"))
             {
                 var accName = action.Split(":")[1];
-                Origin.UpdateOriginForgetAcc(true);
+                Origin.SetForgetAcc(true);
                 OriginSwitcherFuncs.ForgetAccount(accName);
                 return Task.FromResult("refresh");
             }
@@ -124,8 +125,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (action.StartsWith("AcceptForgetUbisoftAcc:"))
             {
                 var accName = action.Split(":")[1];
-                Ubisoft.UpdateUbisoftForgetAcc(true);
+                Ubisoft.SetForgetAcc(true);
                 UbisoftSwitcherFuncs.ForgetAccount(accName);
+                return Task.FromResult("refresh");
+            }
+
+            if (action.StartsWith("AcceptForgetBattleNetAcc:"))
+            {
+                var accName = action.Split(":")[1];
+                BattleNet.SetForgetAcc(true);
+                BattleNetSwitcherFuncs.ForgetAccount(accName);
                 return Task.FromResult("refresh");
             }
 
@@ -208,6 +217,31 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             for (var i = 0; i < toastType.Count; i++)
             {
                 await ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
+            }
+        }
+
+
+        /// <summary>
+        /// JS function handler for changing selected username on a platform
+        /// </summary>
+        /// <param name="id">Unique identifier for account</param>
+        /// <param name="reqName">Requested new username</param>
+        /// <param name="platform">Platform to change username for unique id</param>
+        [JSInvokable]
+        public static void ChangeUsername(string id, string reqName, string platform)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ChangeUsername] id:{id}, reqName:{reqName}, platform:{platform}");
+            switch (platform)
+            {
+                case "BattleNet":
+                    BattleNetSwitcherFuncs.ChangeUsername(id, reqName);
+                    break;
+                case "Origin":
+                    OriginSwitcherFuncs.ChangeUsername(id, reqName, true);
+                    break;
+                case "Ubisoft":
+                    UbisoftSwitcherFuncs.SetUsername(id, reqName, true);
+                    break;
             }
         }
     }

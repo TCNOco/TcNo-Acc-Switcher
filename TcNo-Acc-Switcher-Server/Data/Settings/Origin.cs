@@ -60,6 +60,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         //    ]";
         [JsonIgnore] public string ContextMenuJson = @"[
               {""Swap to account"": ""SwapTo(-1, event)""},
+              {""Change switcher name"": ""ShowModal('changeUsername')""},
               {""Forget"": ""forget(event)""}
             ]";
 
@@ -68,9 +69,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Updates the ForgetAccountEnabled bool in settings file
         /// </summary>
         /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
-        public void UpdateOriginForgetAcc(bool enabled)
+        public void SetForgetAcc(bool enabled)
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Origin.UpdateOriginForgetAcc]");
+            Globals.DebugWriteLine($@"[Func:Data\Settings\Origin.SetForgetAcc]");
             if (ForgetAccountEnabled == enabled) return; // Ignore if already set
             ForgetAccountEnabled = enabled;
             SaveSettings();
