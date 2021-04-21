@@ -83,7 +83,7 @@ The new Beta version is available for testing. Please report any and all bugs, a
 
 #### Disclaimer
 All trademarks and materials are property of their respective owners and their licensors.<br>
-This project is not affiliated with Steam or Valve Corporation.<br>
+This project is not affiliated with Battle.net or Blizzard Entertainment Inc, Origin or Electronic Arts Inc, Steam or Valve Corporation, Ubisoft Connect or Ubisoft Entertainment, or any other companies or groups that this software may have reference to. This project should not be considered "Official" or related to platforms mentioned in any way, other than letting you move your files around on your computer.<br>
 I am not responsible for the contents of external links.<br>
 USE THIS SOFTWARE AT YOUR OWN RISK. I AM NOT RESPONSIBLE FOR ANY DAMAGES IF YOU CHOOSE TO USE THIS SOFTWARE. COMPONENTS ARE PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITHOUT ANY WARRANTIES OF ANY KIND TO THE FULLEST EXTENT PERMITTED BY LAW, AND I EXPRESSLY DISCLAIM ANY AND ALL WARRANTIES, WHETHER EXPRESS OR IMPLIED.
 
