@@ -26,7 +26,7 @@ namespace TcNo_Acc_Switcher_Globals
         //     Other apps will need to find the correct directory first.
         public static Globals LoadExisting(string fromDir)
         {
-            var globalsFile = Path.Combine(fromDir, "globals.json");
+            var globalsFile = Path.Join(fromDir, "globals.json");
 
             Globals g;
             if (File.Exists(globalsFile))
@@ -44,7 +44,7 @@ namespace TcNo_Acc_Switcher_Globals
 
         public static void Save(Globals g)
         {
-            var globalsFile = Path.Combine(g.WorkingDirectory, "globals.json");
+            var globalsFile = Path.Join(g.WorkingDirectory, "globals.json");
             File.WriteAllText(globalsFile, JsonConvert.SerializeObject(g, Formatting.Indented));
         }
         

@@ -38,7 +38,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         // BUTTON: Pick folder
         public async Task PickFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Ubisoft\Settings.razor.cs.PickSteamFolder]");
+            Globals.DebugWriteLine($@"[ButtonClicked:Ubisoft\Settings.razor.cs.PickFolder]");
             await JsRuntime.InvokeAsync<string>("ShowModal", "find:Ubisoft:upc.exe:UbisoftSettings");
         }
 

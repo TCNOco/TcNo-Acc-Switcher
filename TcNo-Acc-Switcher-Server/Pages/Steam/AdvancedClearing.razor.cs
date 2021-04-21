@@ -61,7 +61,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public void Steam_Clear_Logs()
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Logs]");
-            GeneralFuncs.ClearFolder(Path.Combine(Steam.FolderPath, "logs\\"), SteamReturn);
+            GeneralFuncs.ClearFolder(Path.Join(Steam.FolderPath, "logs\\"), SteamReturn);
             WriteLine("Cleared logs folder.");
             NewLine();
         }
@@ -70,7 +70,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public void Steam_Clear_Dumps()
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Dumps]");
-            GeneralFuncs.ClearFolder(Path.Combine(Steam.FolderPath, "dumps\\"), SteamReturn);
+            GeneralFuncs.ClearFolder(Path.Join(Steam.FolderPath, "dumps\\"), SteamReturn);
             WriteLine("Cleared dumps folder.");
             NewLine();
         }
@@ -80,7 +80,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_HtmlCache]");
             // HTML Cache - %USERPROFILE%\AppData\Local\Steam\htmlcache
-            GeneralFuncs.ClearFolder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Steam\\htmlcache"), SteamReturn);
+            GeneralFuncs.ClearFolder(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Steam\\htmlcache"), SteamReturn);
             WriteLine("Cleared HTMLCache.");
             NewLine();
         }
@@ -102,7 +102,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_AppCache]");
             // App Cache - Steam\appcache
-            GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "appcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
+            GeneralFuncs.ClearFilesOfType(Path.Join(Steam.FolderPath, "appcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
             WriteLine("Cleared AppCache.");
             NewLine();
         }
@@ -111,7 +111,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public void Steam_Clear_HttpCache()
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_HttpCache]");
-            GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "appcache\\httpcache"), "*.*", SearchOption.AllDirectories, SteamReturn);
+            GeneralFuncs.ClearFilesOfType(Path.Join(Steam.FolderPath, "appcache\\httpcache"), "*.*", SearchOption.AllDirectories, SteamReturn);
             WriteLine("Cleared HTTPCache.");
             NewLine();
         }
@@ -120,7 +120,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public void Steam_Clear_DepotCache()
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_DepotCache]");
-            GeneralFuncs.ClearFilesOfType(Path.Combine(Steam.FolderPath, "depotcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
+            GeneralFuncs.ClearFilesOfType(Path.Join(Steam.FolderPath, "depotcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
             WriteLine("Cleared DepotCache.");
             NewLine();
         }
@@ -138,7 +138,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public void Steam_Clear_Config()
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Config]");
-            GeneralFuncs.DeleteFile(Path.Combine(Steam.FolderPath, "config\\config.vdf"), jsDest: SteamReturn);
+            GeneralFuncs.DeleteFile(Path.Join(Steam.FolderPath, "config\\config.vdf"), jsDest: SteamReturn);
             WriteLine("[ Don't forget to clear forgotten account backups as well ]");
             WriteLine("Cleared config\\config.vdf");
             NewLine();
@@ -148,7 +148,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public void Steam_Clear_LoginUsers()
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_LoginUsers]");
-            GeneralFuncs.DeleteFile(Path.Combine(Steam.FolderPath, "config\\loginusers.vdf"), jsDest: SteamReturn);
+            GeneralFuncs.DeleteFile(Path.Join(Steam.FolderPath, "config\\loginusers.vdf"), jsDest: SteamReturn);
             WriteLine("Cleared config\\loginusers.vdf");
             NewLine();
         }

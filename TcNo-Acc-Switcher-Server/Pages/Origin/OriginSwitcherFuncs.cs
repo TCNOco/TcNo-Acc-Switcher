@@ -31,8 +31,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         {
             // Normal:
             Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.LoadProfiles] Loading Origin profiles");
-            _originRoaming = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Origin");
-            _originProgramData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Origin");
+            _originRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Origin");
+            _originProgramData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Origin");
 
 
             var localCachePath = $"LoginCache\\Origin\\";

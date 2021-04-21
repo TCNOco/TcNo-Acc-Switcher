@@ -21,7 +21,7 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
-namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
+namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 {
     public partial class Settings : ComponentBase
     {
@@ -30,24 +30,24 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         private IJSObjectReference _jsModule;
         protected override async Task OnInitializedAsync()
         {
-            AppData.WindowTitle = "TcNo Account Switcher - Ubisoft Settings";
-            Globals.DebugWriteLine($@"[Auto:Ubisoft\Settings.razor.cs.OnInitializedAsync]");
+            AppData.WindowTitle = "TcNo Account Switcher - BattleNet Settings";
+            Globals.DebugWriteLine($@"[Auto:BattleNet\Settings.razor.cs.OnInitializedAsync]");
         }
 
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
         public async Task PickFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Ubisoft\Settings.razor.cs.PickFolder]");
-            await JsRuntime.InvokeAsync<string>("ShowModal", "find:Ubisoft:upc.exe:UbisoftSettings");
+            Globals.DebugWriteLine($@"[ButtonClicked:BattleNet\Settings.razor.cs.PickFolder]");
+            await JsRuntime.InvokeAsync<string>("ShowModal", "find:BattleNet:Battle.net.exe:BattleNetSettings");
         }
-        
+
         // BUTTON: Reset settings
         public static void ClearSettings()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Ubisoft\Settings.razor.cs.ClearSettings]");
-            new Data.Settings.Ubisoft().ResetSettings();
-            AppData.ActiveNavMan.NavigateTo("/Ubisoft?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Ubisoft switcher settings"));
+            Globals.DebugWriteLine($@"[ButtonClicked:Origin\Settings.razor.cs.ClearSettings]");
+            new Data.Settings.BattleNet().ResetSettings();
+            AppData.ActiveNavMan.NavigateTo("/BattleNet?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared BattleNet switcher settings"));
         }
         #endregion
 
@@ -55,19 +55,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         // BUTTON: Open Folder
         public static void OpenFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Ubisoft\Settings.razor.cs.OpenUbisoftFolder]");
-            Process.Start("explorer.exe", new Data.Settings.Ubisoft().FolderPath);
-        }
-
-        // BUTTON: RefreshImages
-        public static void RefreshImages()
-        {
-            var allIds = UbisoftSwitcherFuncs.ReadAllIds();
-            foreach (var (userId, username) in allIds)
-            {
-                UbisoftSwitcherFuncs.ImportAvatar(userId);
-            }
-            GeneralInvocableFuncs.ShowToast("success", "Refreshed images", "Done", "toastarea");
+            Globals.DebugWriteLine($@"[ButtonClicked:BattleNet\Settings.razor.cs.OpenBattleNetFolder]");
+            Process.Start("explorer.exe", new Data.Settings.BattleNet().FolderPath);
         }
 
 

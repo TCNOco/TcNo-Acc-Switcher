@@ -80,7 +80,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Get Ubisoft.exe path from UbisoftSettings.json 
         /// </summary>
         /// <returns>Ubisoft.exe's path string</returns>
-        public string Exe() => Path.Combine(FolderPath, "upc.exe");
+        public string Exe() => Path.Join(FolderPath, "upc.exe");
 
         #region SETTINGS
         /// <summary>
@@ -120,7 +120,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public void CheckShortcuts()
         {
             Globals.DebugWriteLine($@"[Func:Data\Settings\Ubisoft.CheckShortcuts]");
-            _instance._desktopShortcut = File.Exists(Path.Combine(Shortcut.Desktop, "Ubisoft - TcNo Account Switcher.lnk"));
+            _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "Ubisoft - TcNo Account Switcher.lnk"));
             AppSettings.Instance.CheckShortcuts();
         }
 

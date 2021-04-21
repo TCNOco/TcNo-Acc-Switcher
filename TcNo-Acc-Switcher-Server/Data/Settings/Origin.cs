@@ -81,7 +81,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Get Origin.exe path from OriginSettings.json 
         /// </summary>
         /// <returns>Origin.exe's path string</returns>
-        public string Exe() => Path.Combine(FolderPath, "Origin.exe");
+        public string Exe() => Path.Join(FolderPath, "Origin.exe");
 
 
         #region SETTINGS
@@ -122,7 +122,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public void CheckShortcuts()
         {
             Globals.DebugWriteLine($@"[Func:Data\Settings\Origin.CheckShortcuts]");
-            _instance._desktopShortcut = File.Exists(Path.Combine(Shortcut.Desktop, "Origin - TcNo Account Switcher.lnk"));
+            _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "Origin - TcNo Account Switcher.lnk"));
             AppSettings.Instance.CheckShortcuts();
         }
 

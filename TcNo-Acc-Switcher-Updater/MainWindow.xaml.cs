@@ -314,7 +314,7 @@ namespace TcNo_Acc_Switcher_Updater
                 // Set the working folder as the parent to this one, where the main program files are located.
                 SetStatusAndLog("Downloading update: " + key);
                 var downloadUrl = "https://tcno.co/Projects/AccSwitcher/updates/" + key + ".7z";
-                var updateFilePath = Path.Combine(_updaterDirectory, key + ".7z");
+                var updateFilePath = Path.Join(_updaterDirectory, key + ".7z");
                 DownloadFile(new Uri(downloadUrl), updateFilePath);
                 SetStatusAndLog("Download complete.");
 

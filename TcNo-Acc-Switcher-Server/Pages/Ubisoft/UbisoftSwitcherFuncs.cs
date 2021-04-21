@@ -33,9 +33,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         {
             // Normal:
             Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.LoadProfiles] Loading Steam profiles");
-            _ubisoftAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
-            _ubisoftLogFile = Path.Combine(Ubisoft.FolderPath, "logs", "launcher_log.txt");
-            _ubisoftAvatarFolder = Path.Combine(Ubisoft.FolderPath, "cache", "avatars");
+            _ubisoftAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
+            _ubisoftLogFile = Path.Join(Ubisoft.FolderPath, "logs", "launcher_log.txt");
+            _ubisoftAvatarFolder = Path.Join(Ubisoft.FolderPath, "cache", "avatars");
             
             var localCachePath = $"LoginCache\\Ubisoft\\";
             if (!Directory.Exists(localCachePath) || !File.Exists(Path.Join(localCachePath, "ids.json"))) return;
@@ -100,7 +100,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         //private static string FindUsername(string userId)
         public static string FindUsername(string userId, bool copyFiles = true)
         {
-            _ubisoftAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
+            _ubisoftAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
 
 
             Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.FindUsername]");

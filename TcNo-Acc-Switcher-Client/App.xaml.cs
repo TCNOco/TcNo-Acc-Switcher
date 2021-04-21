@@ -123,14 +123,17 @@ namespace TcNo_Acc_Switcher_Client
                 }
                 else switch (e.Args[i])
                 {
+                    case "battlenet":
+                        StartPage = "BattleNet"; 
+                        break;
                     case "steam":
                         StartPage = "Steam";
                         break;
-                    case "origin":
-                        StartPage = "origin";
+                        case "origin":
+                        StartPage = "Origin";
                         break;
                     case "ubisoft":
-                        StartPage = "ubisoft";
+                        StartPage = "Ubisoft";
                         break;
                     case "logout":
                         TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts("", "");

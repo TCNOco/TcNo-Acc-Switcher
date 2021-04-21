@@ -38,7 +38,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         // BUTTON: Pick folder
         public async Task PickFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Steam\Settings.razor.cs.PickSteamFolder]");
+            Globals.DebugWriteLine($@"[ButtonClicked:Steam\Settings.razor.cs.PickFolder]");
             await JsRuntime.InvokeAsync<string>("ShowModal", "find:Steam:Steam.exe:SteamSettings");
         }
 

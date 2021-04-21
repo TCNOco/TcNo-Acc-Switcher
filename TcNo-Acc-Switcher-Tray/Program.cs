@@ -62,7 +62,7 @@ namespace TcNo_Acc_Switcher_Tray
 
     public class AppCont : ApplicationContext
     {
-        private readonly string _mainProgram = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess()?.MainModule?.FileName)!, "TcNo-Acc-Switcher.exe");
+        private readonly string _mainProgram = Path.Join(Path.GetDirectoryName(Process.GetCurrentProcess()?.MainModule?.FileName)!, "TcNo-Acc-Switcher.exe");
 
         private readonly NotifyIcon _trayIcon;
 

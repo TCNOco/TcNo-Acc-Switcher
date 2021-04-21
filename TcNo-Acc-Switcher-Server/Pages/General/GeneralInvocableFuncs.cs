@@ -86,6 +86,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             GeneralFuncs.SaveSettings(file, settings);
             switch (file)
             {
+                case "BattleNetSettings":
+                    BattleNet.FolderPath = path;
+                    break;
                 case "SteamSettings":
                     Steam.FolderPath = path;
                     break;

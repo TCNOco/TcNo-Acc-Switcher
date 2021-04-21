@@ -33,15 +33,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         {
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.LoadProfiles] Loading BattleNet profiles");
             _accounts = new List<BattleNetSwitcherBase.BattleNetUser>();
-            _battleNetRoaming = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battle.net");
-            _battleNetProgramData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Battle.net");
+            _battleNetRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battle.net");
+            _battleNetProgramData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Battle.net");
 
             BattleNet.LoadIgnoredAccounts();
 
             var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config");
             foreach (var mail in (JsonConvert.DeserializeObject(file) as JObject)?.SelectToken("Client.SavedAccountNames")?.ToString()?.Split(','))
             {
-                if (!BattleNet.IgnoredAccounts.Contains(mail)) _accounts.Add(new BattleNetSwitcherBase.BattleNetUser() { Email = mail, BTag = BattleNet.BTags.ContainsKey(mail) ? BattleNet.BTags[mail] : null });
+                if (BattleNet.IgnoredAccounts.Count(x => x.Key == mail) == 0) // If not on IgnoredAccounts list
+                    _accounts.Add(new BattleNetSwitcherBase.BattleNetUser() { Email = mail, BTag = BattleNet.BTags.ContainsKey(mail) ? BattleNet.BTags[mail] : null });
             }
             foreach (var acc in _accounts)
             {
@@ -127,8 +128,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static void ForgetAccount(string accName)
         {
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.ForgetAccount] accName:{accName}");
-            BattleNet.BTags.Remove(accName);
             BattleNet.AddIgnoredAccount(accName);
+            BattleNet.BTags.Remove(accName);
             BattleNet.SaveSettings();
             AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Forgot account"), true);
         }

@@ -461,7 +461,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void ClearForgotten_Confirmed()
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.ClearForgotten_Confirmed] Confirmation received to clear forgotten backups.");
-            var legacyBackupPath = Path.Combine(Steam.FolderPath, "config\\\\TcNo-Acc-Switcher-Backups\\\\");
+            var legacyBackupPath = Path.Join(Steam.FolderPath, "config\\\\TcNo-Acc-Switcher-Backups\\\\");
             if (Directory.Exists(legacyBackupPath))
                     Directory.Delete(legacyBackupPath, true);
 

@@ -253,8 +253,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void CheckShortcuts()
         {
             Globals.DebugWriteLine($@"[Func:Data\AppSettings.CheckShortcuts]");
-            _instance._desktopShortcut = File.Exists(Path.Combine(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
-            _instance._startMenu = File.Exists(Path.Combine(Shortcut.StartMenu, "TcNo Account Switcher.lnk")) && Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
+            _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
+            _instance._startMenu = File.Exists(Path.Join(Shortcut.StartMenu, "TcNo Account Switcher.lnk")) && Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
             _instance._trayStartup = Task.StartWithWindows_Enabled();
         }
 

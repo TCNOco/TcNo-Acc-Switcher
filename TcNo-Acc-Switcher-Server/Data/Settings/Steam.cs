@@ -140,7 +140,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public string LoginUsersVdf()
         {
             Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.LoginUsersVdf]");
-            var path = Path.Combine(FolderPath, "config\\loginusers.vdf");
+            var path = Path.Join(FolderPath, "config\\loginusers.vdf");
             if (File.Exists(path)) return path;
             FolderPath = "";
             SaveSettings();
@@ -151,13 +151,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Get Steam.exe path from SteamSettings.json 
         /// </summary>
         /// <returns>Steam.exe's path string</returns>
-        public string Exe() => Path.Combine(FolderPath, "Steam.exe");
+        public string Exe() => Path.Join(FolderPath, "Steam.exe");
 
         /// <summary>
         /// Get Steam's config folder
         /// </summary>
         /// <returns>(Steam's Path)\config\</returns>
-        public string SteamConfigFolder() => Path.Combine(FolderPath, "config\\");
+        public string SteamConfigFolder() => Path.Join(FolderPath, "config\\");
 
         /// <summary>
         /// Updates the ForgetAccountEnabled bool in Steam settings file
@@ -208,7 +208,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public void CheckShortcuts()
         {
             Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.CheckShortcuts]");
-            _instance._desktopShortcut = File.Exists(Path.Combine(Shortcut.Desktop, "Steam - TcNo Account Switcher.lnk"));
+            _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "Steam - TcNo Account Switcher.lnk"));
             AppSettings.Instance.CheckShortcuts();
         }
 

@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
@@ -44,8 +45,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private Dictionary<string, string> _bTags = new();
         [JsonProperty("BTags", Order = 6)] public Dictionary<string, string> BTags { get => _instance._bTags; set => _instance._bTags = value; }
 
-        private List<string> _ignoredAccounts = new();
-        [JsonIgnore] public List<string> IgnoredAccounts { get => _instance._ignoredAccounts; set => _instance._ignoredAccounts = value; }
+        private bool _desktopShortcut;
+        [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
+        private Dictionary<string, string> _ignoredAccounts = new();
+        [JsonIgnore] public Dictionary<string, string> IgnoredAccounts { get => _instance._ignoredAccounts; set => _instance._ignoredAccounts = value; }
 
         // Constants
         [JsonIgnore] public string SettingsFile = "BattleNetSettings.json";
@@ -82,7 +85,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// <param name="ignoredAccountName">Account email to ignore</param>
         public void AddIgnoredAccount(string ignoredAccountName)
         {
-            _ignoredAccounts.Add(ignoredAccountName);
+            _ignoredAccounts.Add(ignoredAccountName, _bTags[ignoredAccountName]);
             Directory.CreateDirectory(Path.GetDirectoryName(BattleNetIgnoredPath)!);
             File.WriteAllText(BattleNetIgnoredPath, JsonConvert.SerializeObject(_ignoredAccounts));
         }
@@ -92,7 +95,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// </summary>
         public void LoadIgnoredAccounts()
         {
-            if (File.Exists(BattleNetIgnoredPath)) _ignoredAccounts = File.Exists(BattleNetIgnoredPath) ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(BattleNetIgnoredPath)) : new List<string>();
+            if (File.Exists(BattleNetIgnoredPath)) _ignoredAccounts = File.Exists(BattleNetIgnoredPath) ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(BattleNetIgnoredPath)) : new Dictionary<string, string>();
         }
 
         #region SETTINGS
@@ -106,6 +109,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = new Point() { X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
+            // Should this also clear ignored accounts?
+
+            CheckShortcuts();
+
             SaveSettings();
         }
         public void SetFromJObject(JObject j)
@@ -117,12 +124,31 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = curSettings.WindowSize;
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
+
+            CheckShortcuts();
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
         public JObject GetJObject() => JObject.FromObject(this);
 
         [JSInvokable]
         public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
+        #endregion
+
+        #region SHORTCUTS
+        public void CheckShortcuts()
+        {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\BattleNet.CheckShortcuts]");
+            _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "BattleNet - TcNo Account Switcher.lnk"));
+            AppSettings.Instance.CheckShortcuts();
+        }
+
+        public void DesktopShortcut_Toggle()
+        {
+            Globals.DebugWriteLine($@"[Func:Data\Settings\BattleNet.DesktopShortcut_Toggle]");
+            var s = new Shortcut();
+            s.Shortcut_Platform(Shortcut.Desktop, "BattleNet", "battlenet");
+            s.ToggleShortcut(!DesktopShortcut, true);
+        }
         #endregion
     }
 }

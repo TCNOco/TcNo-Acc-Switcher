@@ -34,7 +34,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         }
 
         public static string Desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-        public static string StartMenu = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\");
+        public static string StartMenu = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\");
 
         // Library class used to see if a shortcut exists.
         public static string ParentDirectory(string dir) => dir.Substring(0, dir.LastIndexOf(Path.DirectorySeparatorChar));
@@ -132,8 +132,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             // Starts the main picker, with the Steam argument.
             Exe = GetSelfPath();
             WorkingDir = Directory.GetCurrentDirectory();
-            IconDir = Path.Combine(WorkingDir, "wwwroot\\prog_icons\\program.ico"); // To change soon
-            ShortcutPath = Path.Combine(location, "TcNo Account Switcher.lnk");
+            IconDir = Path.Join(WorkingDir, "wwwroot\\prog_icons\\program.ico"); // To change soon
+            ShortcutPath = Path.Join(location, "TcNo Account Switcher.lnk");
             Desc = "TcNo Account Switcher";
             Args = "";
             return this;
@@ -147,10 +147,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         public Shortcut Shortcut_Tray(string location)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.Shortcut_Tray] location={location}");
-            Exe = Path.Combine(ParentDirectory(GetSelfPath()), "TcNo-Acc-Switcher-Tray.exe");
+            Exe = Path.Join(ParentDirectory(GetSelfPath()), "TcNo-Acc-Switcher-Tray.exe");
             WorkingDir = Directory.GetCurrentDirectory();
-            IconDir = Path.Combine(WorkingDir, "wwwroot\\prog_icons\\program.ico");
-            ShortcutPath = Path.Combine(location, "TcNo Account Switcher - Tray.lnk");
+            IconDir = Path.Join(WorkingDir, "wwwroot\\prog_icons\\program.ico");
+            ShortcutPath = Path.Join(location, "TcNo Account Switcher - Tray.lnk");
             Desc = "TcNo Account Switcher - Tray";
             Args = "";
             return this;
@@ -191,8 +191,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             // Starts the main picker, with the platform argument, eg: "steam", "origin".
             Exe = GetSelfPath();
             WorkingDir = Directory.GetCurrentDirectory();
-            IconDir = Path.Combine(WorkingDir, "wwwroot\\prog_icons\\program.ico"); // TODO: May add platform specific icons here at some point.
-            ShortcutPath = Path.Combine(location, (platformNameIsFullName ? platformName : $"{platformName} - TcNo Account Switcher") + ".lnk");
+            IconDir = Path.Join(WorkingDir, "wwwroot\\prog_icons\\program.ico"); // TODO: May add platform specific icons here at some point.
+            ShortcutPath = Path.Join(location, (platformNameIsFullName ? platformName : $"{platformName} - TcNo Account Switcher") + ".lnk");
             Desc = $"TcNo Account Switcher - {platformName}" + descAdd != "" ? descAdd : "";
             Args = args;
             return this;
