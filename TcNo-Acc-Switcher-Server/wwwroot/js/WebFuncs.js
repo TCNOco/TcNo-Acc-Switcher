@@ -317,7 +317,7 @@ function CurrentOriginLogin() {
 
 // New BattleNet accounts
 function NewBattleNetLogin() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToBattleNet", "", 0);
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToBattleNet", "");
 }
 
 
@@ -567,11 +567,6 @@ function flushJQueryAppendQueue() {
 }
 
 //DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyCommunityUsername", $(SelectedElem).attr(request)).then(r => console.log(r));
-
-function SetBTag(event){
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToBattleNet", "", 0);
-}
-
 
 const forgetAccountSteamPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
 <h4>What does this mean?</h4>

@@ -33,7 +33,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// </summary>
         /// <param name="accName">Requested account's Login Username</param>
         [JSInvokable]
-        public static void SwapToBattleNet(string accName)
+        public static void SwapToBattleNet(string accName = "")
         {
             Globals.DebugWriteLine($@"[JSInvoke:BattleNet\BattleNetSwitcherBase.SwapToBattleNet] accName:{accName}");
             BattleNetSwitcherFuncs.SwapBattleNetAccounts(accName);

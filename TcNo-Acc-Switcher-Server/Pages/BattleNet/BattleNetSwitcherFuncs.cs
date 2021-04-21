@@ -58,7 +58,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config");
             foreach (var mail in (JsonConvert.DeserializeObject(file) as JObject)?.SelectToken("Client.SavedAccountNames")?.ToString()?.Split(','))
             {
-                if (BattleNet.IgnoredAccounts.Count(x => x.Key == mail) == 0) // If not on IgnoredAccounts list
+                if (BattleNet.IgnoredAccounts.Count(x => x.Key == mail) == 0 && mail != "TempUsername") // If not on IgnoredAccounts list
                     _accounts.Add(new BattleNetSwitcherBase.BattleNetUser() { Email = mail, BTag = BattleNet.BTags.ContainsKey(mail) ? BattleNet.BTags[mail] : null });
             }
             foreach (var acc in _accounts)
@@ -84,21 +84,32 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SwapBattleNetAccounts] Swapping to: {accName}.");
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting BattleNet");
             if (!CloseBattleNet()) return;
-            
-            var account = _accounts.First(x => x.Email == accName);
+
             // Load settings into JObject
             var file = File.ReadAllText(_battleNetRoaming + "\\Battle.net.config");
             var jObject = JsonConvert.DeserializeObject(file) as JObject;
 
             // Select the JToken with the Account Emails
             var jToken = jObject?.SelectToken("Client.SavedAccountNames");
-            
-            // Set the to be logged in Account to idx 0
-            _accounts.Remove(account);
-            _accounts.Insert(0, account);
+
+            var replaceString = "";
+
+            if (accName != "") // New account
+            {
+                var account = _accounts.First(x => x.Email == accName);
+                // Set the to be logged in Account to idx 0
+                _accounts.Remove(account);
+                _accounts.Insert(0, account);
+
+            }
+            else
+            {
+                var account = new BattleNetSwitcherBase.BattleNetUser() {Email = "TempUsername"};
+                _accounts.Remove(account);
+                _accounts.Insert(0, account);
+            }
 
             // Build the string with the Emails with the Email that's should get logged in at first
-            var replaceString = "";
             for (var i = 0; i < _accounts.Count; i++)
             {
                 replaceString += _accounts[i].Email;
