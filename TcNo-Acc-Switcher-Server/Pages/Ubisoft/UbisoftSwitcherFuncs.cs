@@ -39,10 +39,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             foreach (var (userId, username) in allIds)
             {
                 var element =
-                    $"<input type=\"radio\" id=\"{userId}\" Username=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
+                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{userId}\" Username=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{userId}\" class=\"acc\">\r\n" +
                     $"<img src=\"" + $"\\img\\profiles\\Ubisoft\\{userId}.png" + "\" draggable=\"false\" />\r\n" +
-                    $"<h6>{username}</h6>\r\n";
+                    $"<h6>{username}</h6></div>\r\n";
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                 try
                 {
@@ -54,6 +54,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 }
             }
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
         }
 
         public static void UbisoftAddCurrent()

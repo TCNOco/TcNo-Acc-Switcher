@@ -55,14 +55,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             foreach (var acc in _accounts)
             {
                 var element =
-                    $"<input type=\"radio\" id=\"{acc.Email}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
+                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{acc.Email}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{acc.Email}\" class=\"acc\">\r\n" +
                     $"<img src=\"\\img\\BattleNetDefault.png\" draggable=\"false\" />\r\n" +
-                    $"<h6>{acc.BTag ?? acc.Email}</h6>\r\n";
+                    $"<h6>{acc.BTag ?? acc.Email}</h6></div>\r\n";
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                 await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
             }
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
         }
 
         private static void LoadAccounts(ref List<BattleNetSwitcherBase.BattleNetUser> _accounts)

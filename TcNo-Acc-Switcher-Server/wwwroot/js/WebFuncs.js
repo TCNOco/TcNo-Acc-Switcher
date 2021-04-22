@@ -299,7 +299,7 @@ function RefreshUsername() {
 
 // New Steam accounts
 function NewSteamLogin() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToSteam", "", "");
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToSteam", "", "", -1);
 }
 
 

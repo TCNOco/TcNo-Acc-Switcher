@@ -40,15 +40,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                 var lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1;
                 var accName = f.Substring(lastSlash, f.Length - lastSlash);
                 var element =
-                    $"<input type=\"radio\" id=\"{accName}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
+                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{accName}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{accName}\" class=\"acc\">\r\n" +
                     $"<img src=\"" + $"\\img\\profiles\\origin\\{Uri.EscapeUriString(accName)}.jpg" + "\" draggable=\"false\" />\r\n" +
-                    $"<h6>{accName}</h6>\r\n";
+                    $"<h6>{accName}</h6></div>\r\n";
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                 await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
                 Console.WriteLine(f);
             }
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
         }
 
         /// <summary>

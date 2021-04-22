@@ -84,19 +84,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 var extraClasses = (va.Vac ? " status_vac" : "") + (va.Ltd ? " status_limited" : "");
 
                 var element =
-                    $"<input type=\"radio\" id=\"{ua.AccName}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.LastLogin}\" ExtraClasses=\"{extraClasses}\" onchange=\"SelectedItemChanged()\" />\r\n" +
+                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{ua.AccName}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.LastLogin}\" ExtraClasses=\"{extraClasses}\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{ua.AccName}\" class=\"acc {extraClasses}\">\r\n" +
                     $"<img class=\"{extraClasses}\" src=\"{ua.ImgUrl}\" draggable=\"false\" />\r\n" +
                     $"<p class=\"streamerCensor\">{ua.AccName}</p>\r\n" +
                     $"<h6>{ua.Name}</h6>\r\n" +
                     $"<p class=\"streamerCensor steamId\">{ua.SteamId}</p>\r\n" +
-                    $"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";
+                    $"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p></label></div>\r\n";
 
                 await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
             }
 
             SaveVacInfo(vacStatusList);
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
         }
 
         /// <summary>

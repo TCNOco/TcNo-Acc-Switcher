@@ -7,6 +7,11 @@
     user-select: none;
 }
 
+:root {
+    --accountBackground-placeholder: #28374E;
+    --accountBorder-placeholder: #2777A4;
+}
+
 .acc_list {
     width: 100%;
     height: calc(100% - 42px);
@@ -14,6 +19,28 @@
     background: var(--accountListBackground);
     overflow-y: auto;
     overflow-x: auto;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 100px);
+    grid-template-rows: repeat(auto-fill, 135px);
+    gap: 4px;
+}
+.acc_list_item {
+    border: 0.1em solid transparent;
+}
+.acc_list_item > * {
+    pointer-events: none;
+}
+.placeHolderAcc {
+    background: var(--accountBackground-placeholder);
+    border: 2px dashed var(--accountBorder-placeholder);
+    height: 135px;
+    width: 100px;
+}
+.accountHover {
+    /*Seperate because added by sortable*/
+    background-color: var(--accountBackground-hover);
+    border: 0.1em solid var(--accountBorder-hover);
 }
 
 input.acc {
@@ -26,12 +53,17 @@ input.acc {
 }
 
 label.acc {
+    min-width: 100px;
+    max-width: 100px;
+    min-height: 135px;
+    max-width: 100px;
+
+
     padding: 0.5em;
     margin: 0;
     color: var(--accountColor);
     text-align: center;
     cursor: pointer;
-    display: inline-block;
     border-style: solid;
     border-color: #00000000;
     border-width: 0.1em;
@@ -45,11 +77,6 @@ label.acc {
     -ms-user-select: none;
     user-select: none;
 }
-
-    label.acc:hover {
-        background-color: var(--accountBackground-hover);
-        border-color: var(--accountBorder-hover);
-    }
 
 input.acc:checked + label.acc {
     background-color: var(--accountBackground-checked);

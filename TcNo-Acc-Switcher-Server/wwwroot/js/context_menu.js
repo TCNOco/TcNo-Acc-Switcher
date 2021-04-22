@@ -35,22 +35,27 @@ function initContextMenu() {
     currentpage = (window.location.pathname.split("/")[0] !== ""
         ? window.location.pathname.split("/")[0]
         : window.location.pathname.split("/")[1]);
-
+    
     // Ready accounts for double-click
-    $(".acc").dblclick(function (event) {
+    $(".acc_list_item").dblclick(function (event) {
         SwapTo(-1, event);
     });
 
+    // Handle Left-clicks:
+    $(".acc_list_item").click(function (e) {
+        $(e.currentTarget).children('input')[0].click();
+    });
+
     //Show contextmenu on Right-Click:
-    $(".acc").contextmenu(function(e) {
+    $(".acc_list_item").contextmenu(function(e) {
         // Select item that was right-clicked.
-        $(e.currentTarget).click();
+        $(e.currentTarget).children('input').click();
         //$('[id="' + e.currentTarget.for + '"]').click();
         //console.log($('[id="' + $(e.currentTarget).attr("for") + '"]'));
 
 
         // Set currently selected element
-        SelectedElem = $('[id="' + $(e.currentTarget).attr("for") + '"]')[0];
+        SelectedElem = $(e.currentTarget).children('input')[0];
         // Update status for element
         switch (currentpage) {
             case "Steam":

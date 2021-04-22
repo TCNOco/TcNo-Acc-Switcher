@@ -13,6 +13,14 @@ updateStatus = (status) => {
     $("#CurrentStatus").val(status);
 }
 
+initAccListSortable = () => {
+    sortable('.acc_list', {
+        forcePlaceholderSize: true,
+        placeholderClass: 'placeHolderAcc',
+        hoverClass: 'accountHover'
+    });
+}
+
 UpdateDynamicCss = (rule, value) => {
     // Check if stylesheet exists, otherwise create the "dynamic stylesheet"
     let style = document.getElementById("dynamicStyles");
