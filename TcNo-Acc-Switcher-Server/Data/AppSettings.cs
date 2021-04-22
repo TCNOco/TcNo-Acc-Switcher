@@ -94,6 +94,12 @@ namespace TcNo_Acc_Switcher_Server.Data
             { "scrollbarTrackBackground", "#1F202D" },
             { "scrollbarThumbBackground", "#515164" },
             { "scrollbarThumbBackground-hover", "#555" },
+            
+            { "accountListItemWidth", "100px" },
+            { "accountListItemHeight", "135px" },
+            { "accountBackground-placeholder", "#28374E" },
+            { "accountBorder-placeholder", "2px dashed #2777A4" },
+
             { "accountPColor", "#DDD" },
             { "accountColor", "white" },
             { "accountBackground-hover", "#28374E" },

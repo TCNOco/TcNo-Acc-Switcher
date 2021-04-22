@@ -7,11 +7,6 @@
     user-select: none;
 }
 
-:root {
-    --accountBackground-placeholder: #28374E;
-    --accountBorder-placeholder: #2777A4;
-}
-
 .acc_list {
     width: 100%;
     height: calc(100% - 42px);
@@ -27,13 +22,15 @@
 }
 .acc_list_item {
     border: 0.1em solid transparent;
+/*    width: var(--accountListItemWidth);
+    height: var(--accountListItemHeight);*/
 }
 .acc_list_item > * {
     pointer-events: none;
 }
 .placeHolderAcc {
     background: var(--accountBackground-placeholder);
-    border: 2px dashed var(--accountBorder-placeholder);
+    border: var(--accountBorder-placeholder);
     height: 135px;
     width: 100px;
 }
@@ -53,11 +50,10 @@ input.acc {
 }
 
 label.acc {
-    min-width: 100px;
-    max-width: 100px;
-    min-height: 135px;
-    max-width: 100px;
-
+    min-width: var(--accountListItemWidth);
+    max-width: var(--accountListItemWidth);
+    min-height: var(--accountListItemHeight);
+    max-height: var(--accountListItemHeight);
 
     padding: 0.5em;
     margin: 0;

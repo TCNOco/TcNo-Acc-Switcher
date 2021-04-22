@@ -35,7 +35,15 @@ function initContextMenu() {
     currentpage = (window.location.pathname.split("/")[0] !== ""
         ? window.location.pathname.split("/")[0]
         : window.location.pathname.split("/")[1]);
-    
+
+    $(".acc_list").on("click", function () {
+        console.log('e');
+        $("input:checked").each(function (_, e) {
+            $(e).prop("checked", false);
+            console.log(e);
+        });
+    });
+
     // Ready accounts for double-click
     $(".acc_list_item").dblclick(function (event) {
         SwapTo(-1, event);
@@ -44,6 +52,7 @@ function initContextMenu() {
     // Handle Left-clicks:
     $(".acc_list_item").click(function (e) {
         $(e.currentTarget).children('input')[0].click();
+        e.stopPropagation();
     });
 
     //Show contextmenu on Right-Click:
