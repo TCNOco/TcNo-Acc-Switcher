@@ -67,10 +67,13 @@ function handleWindowControls() {
     });
 
     document.getElementById('btnClose').addEventListener("click", event => {
-        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(WindowNotifications.WmClose);
-        // Check if enabled in AppSettings, and use this, or the above function to hide window.
-        // Just too tired to add this currently.
-        //chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
+        var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetTrayMinimizeNotExit").then(r => {
+            if (r) {
+                chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
+            } else {
+                chrome.webview.hostObjects.sync.eventForwarder.WindowAction(WindowNotifications.WmClose);
+            }
+        });
     });
 
     // For draggable regions:

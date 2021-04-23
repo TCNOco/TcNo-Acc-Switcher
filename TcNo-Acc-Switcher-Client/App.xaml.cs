@@ -47,6 +47,17 @@ namespace TcNo_Acc_Switcher_Client
             internal static extern int AllocConsole();
             [DllImport("kernel32.dll", SetLastError = true)]
             internal static extern int FreeConsole();
+            [DllImport("kernel32.dll")]
+            static extern IntPtr GetConsoleWindow();
+            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+            static extern bool SetWindowText(IntPtr hwnd, String lpString);
+
+            public static void SetWindowText(string text)
+            {
+                var handle = GetConsoleWindow();
+
+                SetWindowText(handle, text);
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -69,6 +80,7 @@ namespace TcNo_Acc_Switcher_Client
             if (DebugMode)
             {
                 NativeMethods.AllocConsole();
+                NativeMethods.SetWindowText("Debug console");
                 Console.WriteLine("Debug Console started");
             }
 #else

@@ -17,12 +17,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
+using Task = TcNo_Acc_Switcher_Server.Pages.General.Classes.Task;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -60,6 +62,9 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private Point _windowSize = new() { X = 800, Y = 450 };
         [JsonProperty("WindowSize", Order = 3)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
+
+        private bool _trayMinimizeNotExit = true;
+        [JsonProperty("TrayMinimizeNotExit", Order = 4)] public bool TrayMinimizeNotExit { get => _instance._trayMinimizeNotExit; set => _instance._trayMinimizeNotExit = value; }
 
 
         private bool _desktopShortcut;
@@ -213,6 +218,13 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
             return false;
         }
+
+        /// <summary>
+        /// Used in JS. Gets whether forget account is enabled (Whether to NOT show prompt, or show it).
+        /// </summary>
+        /// <returns></returns>
+        [JSInvokable]
+        public static Task<bool> GetTrayMinimizeNotExit() => System.Threading.Tasks.Task.FromResult(_instance.TrayMinimizeNotExit);
 
         /// <summary>
         /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
