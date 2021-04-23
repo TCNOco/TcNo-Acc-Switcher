@@ -96,25 +96,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 InitOverwatchMode();
         }
 
-        public static async Task InitOverwatchMode()
+        public static void InitOverwatchMode()
         {
-            if (BattleNet.OverwatchMode){
-                bool accountFetched = false;
-                foreach (var acc in BattleNet.Accounts.Where(x => x.BTag != null))
-                {
-                    if (DateTime.Now - acc.LastTimeChecked > TimeSpan.FromDays(1))
-                    {
-                        accountFetched = true;
-                        await acc.FetchRank();
-                    }
-                }
-
-                if (accountFetched)
-                {
-                    AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
-                    BattleNet.SaveAccounts();
-                }
+            if (!BattleNet.OverwatchMode) return;
+            var accountFetched = false;
+            foreach (var acc in BattleNet.Accounts.Where(x => x.BTag != null))
+            {
+                if (DateTime.Now - acc.LastTimeChecked <= TimeSpan.FromDays(1)) continue;
+                accountFetched = true;
+                acc.FetchRank();
             }
+
+            if (!accountFetched) return;
+            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+            BattleNet.SaveAccounts();
         }
         
         /// <summary>
@@ -198,14 +193,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// </summary>
         /// <param name="email">BattleNet email address</param>
         /// <param name="bTag">New name for user</param>
-        public static void ChangeUsername(string email, string bTag)
+        public static void ChangeBTag(string email, string bTag)
         {
-            BattleNet.Accounts.First(x => x.Email == email).BTag = bTag;
-            BattleNet.Accounts.First(x => x.Email == email).LastTimeChecked = new DateTime();
-            BattleNet.SaveAccounts();
-            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SetBattleTag] accName:{email}, bTag:{bTag}");
-            AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed BattleTag"), true);
-            
+            if (ValidateBTag(bTag))
+            {
+                BattleNet.Accounts.First(x => x.Email == email).BTag = bTag;
+                BattleNet.Accounts.First(x => x.Email == email).LastTimeChecked = new DateTime();
+                BattleNet.SaveAccounts();
+                Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SetBattleTag] accName:{email}, bTag:{bTag}");
+                AppData.ActiveNavMan?.NavigateTo( "/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed BattleTag"), true);
+            }
+            else
+                GeneralInvocableFuncs.ShowToast("error", "BattleTag did not match naming policy.");
+        }
+
+        public static bool ValidateBTag(string bTag)
+        {
+            var parts = bTag.Split('#');
+            if (parts.Length != 2) return false; // Checks has 2 parts.
+            if (!(parts[1].Length >= 4 && parts[1].Length <= 7)) return false; // Checks BTag number length
+            return IntPtr.TryParse(parts[1], out _); // Checks if BTag numbers part is just numbers
         }
 
         /// <summary>
@@ -234,10 +241,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         [JSInvokable]
         public static void RefetchRank(string email)
         {
-            BattleNet.Accounts.First(x => x.Email == email).LastTimeChecked = new DateTime();
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.DeleteBattleTag] accName:{email}");
-            LoadProfiles();
-            AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Refetched Rank"), true);
+            if (BattleNet.Accounts.First(x => x.Email == email).FetchRank()) AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Refetched Rank"), true);
         }
         
         

@@ -366,21 +366,22 @@ function ShowModal(modaltype) {
                 </div><div class="versionIdentifier"><span>Version: ` + currentVersion + `</span></div>`);
         });
     }
-    else if (modaltype === "changeUsername") {
+    else if (modaltype.startsWith("changeUsername")) {
         // USAGE: "changeUsername"
         console.log(modaltype);
         Modal_RequestedLocated(false);
+        var platformName = modaltype.split(":")[1] ?? "username";
         $('#modalTitle').text("Change username");
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div id="modal_contents">
 	        <div>
-		        <span class="modal-text">Please enter a new name for your account (Only changes it in the TcNo Account Switcher).</span>
+		        <span class="modal-text">Please enter a new ` + platformName + ` for your account` + (platformName === "username" ? " (Only changes it in the TcNo Account Switcher)" : ".") + `.</span>
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="NewAccountName" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('change_username').click();">
 	        </div>
 	        <div class="settingsCol inputAndButton">
-		        <button class="btn modalOK" type="button" id="change_username" onclick="Modal_FinalizeAccNameChange()"><span>Change username</span></button>
+		        <button class="btn modalOK" type="button" id="change_username" onclick="Modal_FinalizeAccNameChange()"><span>Change ` + platformName + `</span></button>
 	        </div>
         </div>`);
         input = document.getElementById('NewAccountName');
@@ -542,27 +543,6 @@ function Modal_FinalizeAccString(platform) {
     }
     $('.modalBG').fadeOut();
     $('#acc_list').click();
-    
-    function BattleTagIsValid(battleTag){
-        let split = battleTag.split("#");
-        if (typeof split !== undefined && split.length === 2)
-        {
-            if (split[1].length > 4 && split[1].length < 7 && IsDigitsOnly(split[1]))
-                return true;
-        }
-
-        return false;
-
-        function IsDigitsOnly(str)
-        {
-            for(let c in str)
-            {
-                if (c < '0' || c > '9')
-                    return false;
-            }
-            return true;
-        }
-    }
 }
 
 function Modal_FinalizeAccNameChange() {

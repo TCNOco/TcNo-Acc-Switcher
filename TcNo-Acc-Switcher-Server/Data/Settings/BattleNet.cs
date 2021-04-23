@@ -88,7 +88,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public string IgnoredAccPath = $"LoginCache\\BattleNet\\IgnoredAccounts.json";
         [JsonIgnore] public string ContextMenuJson = @"[
               {""Swap to account"": ""SwapTo(-1, event)""},
-              {""Set BattleTag"": ""ShowModal('changeUsername')""},
+              {""Set BattleTag"": ""ShowModal('changeUsername:BattleTag')""},
               {""Delete BattleTag"": ""ForgetBattleTag()""},
               {""Refetch Rank"": ""RefetchRank()""},
               {""Forget"": ""forget(event)""}

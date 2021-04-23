@@ -55,14 +55,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             [JsonProperty("LastTimeChecked", Order = 6)] public DateTime LastTimeChecked { get; set; }
 
             
-            public Task FetchRank()
+            public bool FetchRank()
             {
+                if (!BattleNetSwitcherFuncs.ValidateBTag(this.BTag)) return false;
                 var split = this.BTag.Split("#");
-                WebRequest req = HttpWebRequest.Create($"https://playoverwatch.com/en-us/career/pc/{split[0]}-{split[1]}/");
+                var req = WebRequest.Create($"https://playoverwatch.com/en-us/career/pc/{split[0]}-{split[1]}/");
                 req.Method = "GET";
             
                 var doc = new HtmlDocument();
-                using (StreamReader reader = new StreamReader(req.GetResponse().GetResponseStream()))
+                var responseStream = req.GetResponse().GetResponseStream();
+                if (responseStream == null)
+                {
+                    _ = GeneralInvocableFuncs.ShowToast("error", $"Error trying to get stats for {BTag}", renderTo: "toastarea");
+                    return false;
+                }
+                using (var reader = new StreamReader(responseStream))
                 {
                     doc.LoadHtml(reader.ReadToEnd());
                 }
@@ -70,8 +77,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 // If the playoverwatch site is overloaded
                 if (doc.DocumentNode.SelectSingleNode("/html/body/section[1]/section/div/h1") != null)
                 {
-                    GeneralInvocableFuncs.ShowToast("error", $"Error trying to get stats for {BTag}", renderTo: "toastarea");
-                    return Task.CompletedTask;
+                    _ = GeneralInvocableFuncs.ShowToast("error", $"Error trying to get stats for {BTag}", renderTo: "toastarea");
+                    return false;
                 }
 
                 // If the Profile is private
@@ -81,17 +88,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     ImgUrl = doc.DocumentNode
                         .SelectSingleNode("/html/body/section[1]/div[1]/section/div/div/div/div/div[2]/img")
                         .Attributes["src"].Value;
-                    GeneralInvocableFuncs.ShowToast("warning", $"{BTag}'s profile is private", renderTo: "toastarea");
-                    LastTimeChecked = DateTime.Now - TimeSpan.FromMinutes(55);
-                    return Task.CompletedTask;
+                    _ = GeneralInvocableFuncs.ShowToast("warning", $"{BTag}'s profile is private", renderTo: "toastarea");
+                    LastTimeChecked = DateTime.Now - TimeSpan.FromMinutes(1435); // 23 Hours 55 Minutes
+                    return false;
                 }
                 
                 // If BattleTag is invalid
                 if (doc.DocumentNode.SelectSingleNode(
                     "/html/body/section[1]/section/div/h1")?.InnerHtml == "PROFILE NOT FOUND")
                 {
-                    GeneralInvocableFuncs.ShowToast("error", $"{BTag} was not found", renderTo: "toastarea");
-                    return Task.CompletedTask;
+                    _ = GeneralInvocableFuncs.ShowToast("error", $"{BTag} was not found", renderTo: "toastarea");
+                    return false;
                 }
                 
                 LastTimeChecked = DateTime.Now;
@@ -110,19 +117,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     switch (node.LastChild.FirstChild.Attributes["data-ow-tooltip-text"].Value.Split(" ").First())
                     {
                         case "Tank":
-                            this.OwTankSr = sr;
+                            OwTankSr = sr;
                             break;
                         case "Damage":
-                            this.OwDpsSr = sr;
+                            OwDpsSr = sr;
                             break;
                         case "Support":
-                            this.OwSupportSr = sr;
+                            OwSupportSr = sr;
                             break;
                         default:
                             continue;
                     }
                 }
-                return Task.CompletedTask;
+                return true;
             }
         }
     }

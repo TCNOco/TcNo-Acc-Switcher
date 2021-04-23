@@ -246,7 +246,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             switch (platform)
             {
                 case "BattleNet":
-                    BattleNetSwitcherFuncs.ChangeUsername(id, reqName);
+                    BattleNetSwitcherFuncs.ChangeBTag(id, reqName);
                     break;
                 case "Origin":
                     OriginSwitcherFuncs.ChangeUsername(id, reqName, true);
