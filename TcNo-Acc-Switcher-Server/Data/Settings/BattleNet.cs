@@ -20,11 +20,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Svg.ExCSS.Model.Extensions;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 
@@ -48,36 +51,54 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             set => _instance = value;
         }
 
-        // Variables
+        #region VARIABLES
+
         private string _folderPath = "C:\\Program Files (x86)\\Battle.net";
         [JsonProperty("FolderPath", Order = 1)] public string FolderPath { get => _instance._folderPath; set => _instance._folderPath = value; }
+        
         private Point _windowSize = new() { X = 800, Y = 450 };
         [JsonProperty("WindowSize", Order = 2)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
+        
         private bool _admin;
-        [JsonProperty("Origin_Admin", Order = 3)] public bool Admin { get => _instance._admin; set => _instance._admin = value; }
+        [JsonProperty("BattleNet_Admin", Order = 3)] public bool Admin { get => _instance._admin; set => _instance._admin = value; }
+        
         private int _trayAccNumber = 3;
-        [JsonProperty("Origin_TrayAccNumber", Order = 4)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
+        [JsonProperty("BattleNet_TrayAccNumber", Order = 4)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
+        
         private bool _forgetAccountEnabled;
         [JsonProperty("ForgetAccountEnabled", Order = 5)] public bool ForgetAccountEnabled { get => _instance._forgetAccountEnabled; set => _instance._forgetAccountEnabled = value; }
-        private Dictionary<string, string> _bTags = new();
-        [JsonProperty("BTags", Order = 6)] public Dictionary<string, string> BTags { get => _instance._bTags; set => _instance._bTags = value; }
-
+        
+        private bool _overwatchMode = true;
+        [JsonProperty("OverwatchMode", Order = 6)] public bool OverwatchMode { get => _instance._overwatchMode; set => _instance._overwatchMode = value; }
+        
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
-        private Dictionary<string, string> _ignoredAccounts = new();
-        [JsonIgnore] public Dictionary<string, string> IgnoredAccounts { get => _instance._ignoredAccounts; set => _instance._ignoredAccounts = value; }
-
+        
+        private List<BattleNetSwitcherBase.BattleNetUser> _accounts = new();
+        [JsonProperty("Accounts", Order = 6)] public List<BattleNetSwitcherBase.BattleNetUser> Accounts { get => _instance._accounts; set => _instance._accounts = value; }
+        
+        private List<BattleNetSwitcherBase.BattleNetUser> _ignoredAccounts = new();
+        [JsonIgnore] public List<BattleNetSwitcherBase.BattleNetUser> IgnoredAccounts { get => _instance._ignoredAccounts; set => _instance._ignoredAccounts = value; }
+        
         // Constants
         [JsonIgnore] public string SettingsFile = "BattleNetSettings.json";
         [JsonIgnore] public string BattleNetImagePath = "wwwroot/img/profiles/battlenet/";
         [JsonIgnore] public string BattleNetImagePathHtml = "img/profiles/battlenet/";
+        [JsonIgnore] public string StoredAccPath = "LoginCache\\BattleNet\\StoredAccounts.json";
         [JsonIgnore] public string IgnoredAccPath = $"LoginCache\\BattleNet\\IgnoredAccounts.json";
         [JsonIgnore] public string ContextMenuJson = @"[
               {""Swap to account"": ""SwapTo(-1, event)""},
               {""Set BattleTag"": ""ShowModal('changeUsername')""},
-              {""Ignore"": ""forget(event)""}
+              {""Delete BattleTag"": ""ForgetBattleTag()""},
+              {""Refetch Rank"": ""RefetchRank()""},
+              {""Forget"": ""forget(event)""}
             ]";
 
+
+        #endregion
+
+        #region FORGETTING_ACCOUNTS
+    
         /// <summary>
         /// Updates the ForgetAccountEnabled bool in settings file
         /// </summary>
@@ -89,33 +110,28 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _forgetAccountEnabled = enabled;
             SaveSettings();
         }
-
+        
         /// <summary>
-        /// Get Origin.exe path from OriginSettings.json 
+        /// Deletes the account from the settings file and from the roaming config
         /// </summary>
-        /// <returns>Origin.exe's path string</returns>
-        public string Exe() => FolderPath + "\\Battle.net.exe";
-
-        #region IGNORING_ACCOUNTS
-        /// <summary>
-        /// Saves accounts to cache file
-        /// </summary>
-        /// <param name="ignoredAccountName">Account email to ignore</param>
-        public void AddIgnoredAccount(string ignoredAccountName)
+        /// <param name="accountEmail">Account email to forget</param>
+        public void ForgetAccount(string accountEmail)
         {
-            _ignoredAccounts.Add(ignoredAccountName, _bTags[ignoredAccountName]);
-            Directory.CreateDirectory(Path.GetDirectoryName(IgnoredAccPath)!);
-            File.WriteAllText(IgnoredAccPath, JsonConvert.SerializeObject(_ignoredAccounts));
+            var acc = Accounts.Find(x => x.Email == accountEmail);
+            Accounts.Remove(acc);
+            IgnoredAccounts.Add(acc);
+            SaveAccounts();
         }
 
-        /// <summary>
-        /// Loads list of ignored accounts from file.
-        /// </summary>
-        public void LoadIgnoredAccounts()
-        {
-            if (File.Exists(IgnoredAccPath)) _ignoredAccounts = File.Exists(IgnoredAccPath) ? JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(IgnoredAccPath)) : new Dictionary<string, string>();
-        }
         #endregion
+        
+
+        /// <summary>
+        /// Get Battle.net.exe path from OriginSettings.json 
+        /// </summary>
+        /// <returns>Battle.net.exe's path string</returns>
+        public string Exe() => FolderPath + "\\Battle.net.exe";
+        
 
         #region SETTINGS
         /// <summary>
@@ -128,10 +144,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = new Point() { X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
+            _instance._overwatchMode = true;
             // Should this also clear ignored accounts?
 
             CheckShortcuts();
-
             SaveSettings();
         }
         public void SetFromJObject(JObject j)
@@ -143,7 +159,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = curSettings.WindowSize;
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
-
+            _instance._overwatchMode = curSettings._overwatchMode;
             CheckShortcuts();
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
@@ -151,6 +167,41 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         [JSInvokable]
         public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
+
+        /// <summary>
+        /// Load the Stored Accounts and Ignored Accounts
+        /// </summary>
+        public void LoadAccounts()
+        {
+            if (!Directory.Exists("LoginCache"))
+            {
+                Directory.CreateDirectory("LoginCache");
+            }
+            if (!Directory.Exists("LoginCache\\BattleNet"))
+            {
+                Directory.CreateDirectory("LoginCache\\BattleNet");
+            }
+            if (File.Exists(StoredAccPath) )
+            {
+                Accounts = JsonConvert.DeserializeObject<List<BattleNetSwitcherBase.BattleNetUser>>(File.ReadAllText(StoredAccPath)) ?? new();
+            }
+
+            if (File.Exists(IgnoredAccPath))
+            {
+                IgnoredAccounts = JsonConvert.DeserializeObject<List<BattleNetSwitcherBase.BattleNetUser>>(File.ReadAllText(IgnoredAccPath)) ?? new();
+            }
+        }
+
+        /// <summary>
+        /// Load the Stored Accounts and Ignored Accounts
+        /// </summary>
+        public void SaveAccounts()
+        {
+            File.WriteAllText(StoredAccPath, JsonConvert.SerializeObject(Accounts));
+            File.WriteAllText(IgnoredAccPath, JsonConvert.SerializeObject(IgnoredAccounts));
+        }
+        
+        
         #endregion
 
         #region SHORTCUTS
@@ -169,5 +220,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             s.ToggleShortcut(!DesktopShortcut, true);
         }
         #endregion
+        
+        
     }
 }

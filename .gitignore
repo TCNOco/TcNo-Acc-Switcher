@@ -354,3 +354,7 @@ MigrationBackup/
 *.zip
 other/NSIS/TcNo Account Switcher - Installer x64.exe
 other/NSIS/TcNo Account Switcher - Installer x32.exe
+
+
+# Rider Project folder
+.idea

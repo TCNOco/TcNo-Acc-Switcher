@@ -16,6 +16,7 @@
 // iR3turnZ: https://github.com/HoeblingerDaniel
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -52,6 +53,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             new Data.Settings.BattleNet().ResetSettings();
             AppData.ActiveNavMan.NavigateTo("/BattleNet?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared BattleNet switcher settings"));
         }
+
+        // BUTTON: Clear Forgotten
+        public static void ClearForgotten()
+        {
+            Data.Settings.BattleNet.Instance.IgnoredAccounts.Clear();
+            Data.Settings.BattleNet.Instance.SaveAccounts();
+        }
+        
+        // BUTTON: Clear accounts
+        public static void ClearAccounts()
+        {
+            Data.Settings.BattleNet.Instance.Accounts = new List<BattleNetSwitcherBase.BattleNetUser>();
+            Data.Settings.BattleNet.Instance.IgnoredAccounts = new List<BattleNetSwitcherBase.BattleNetUser>();
+            Data.Settings.BattleNet.Instance.SaveAccounts();
+        }
         #endregion
 
         #region SETTINGS_TOOLS
@@ -61,12 +77,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Globals.DebugWriteLine($@"[ButtonClicked:BattleNet\Settings.razor.cs.OpenBattleNetFolder]");
             Process.Start("explorer.exe", new Data.Settings.BattleNet().FolderPath);
         }
-
-
-        // BUTTON: Advanced Cleaning...
-        // Might add later
-
+        
+        
         #endregion
-
     }
 }

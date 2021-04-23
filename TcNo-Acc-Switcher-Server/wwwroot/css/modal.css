@@ -215,3 +215,10 @@
     .clearLogDiv button {
         width: 40%!important;
     }
+    
+#invalidBattleTag > p {
+    float: bottom;
+    color: red;
+    font-size: 13px;
+    font-weight: bold;
+}
