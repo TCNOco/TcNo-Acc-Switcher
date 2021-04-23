@@ -72,6 +72,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         private bool _currentlyElevated;
         [JsonIgnore] public bool CurrentlyElevated { get => _instance._currentlyElevated; set => _instance._currentlyElevated = value; }
 
+
+
         // Variables loaded from other files:
         private Dictionary<string, string> _stylesheet = new()
         {

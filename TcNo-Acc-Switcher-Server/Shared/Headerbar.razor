@@ -16,6 +16,8 @@
 
 @using TcNo_Acc_Switcher_Server.Data
 @using System.Runtime.InteropServices
+@using TcNo_Acc_Switcher_Globals
+@using System.IO
 @inject AppData AppData
 
 <div id="window-title">
@@ -118,6 +120,13 @@
             else SendMessage(_target, 0x0010, 0, 0);
         }
 
+        public void HideWindow()
+        {
+            ReleaseCapture();
+            SendMessage(_target, WmSysCommand, 0xF020, 0); // Minimize
+            Globals.HideWindow(_target); // Hide from start bar
+            Globals.StartTrayIfNotRunning();
+        }
     }
     // This is not used here, but these values are used in js for MouseResizeDrag.
     // Checking once through everything is better than comparing things multiple times.

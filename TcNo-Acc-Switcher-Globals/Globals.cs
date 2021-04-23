@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 
 namespace TcNo_Acc_Switcher_Globals
@@ -114,6 +115,56 @@ namespace TcNo_Acc_Switcher_Globals
             TrayUser.AddUser(ref trayUsers, platform, new TrayUser() { Arg = arg, Name = name}, maxAccounts);
             TrayUser.SaveUsers(trayUsers);
         }
+
+
+
+        #region Hide and Show main window
+        // For 'minimizing to tray' while not being connected to it
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+        [DllImport("user32.dll")]
+        static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        private const int GWL_EX_STYLE = -20;
+        private const int WS_EX_APPWINDOW = 0x00040000, WS_EX_TOOLWINDOW = 0x00000080;
+
+        public static void HideWindow(IntPtr handle)
+        {
+            SetWindowLong(handle, GWL_EX_STYLE, (GetWindowLong(handle, GWL_EX_STYLE) | WS_EX_TOOLWINDOW) & ~WS_EX_APPWINDOW);
+        }
+
+        public static void ShowWindow(IntPtr handle)
+        {
+            SetWindowLong(handle, GWL_EX_STYLE, (GetWindowLong(handle, GWL_EX_STYLE) ^ WS_EX_TOOLWINDOW) | WS_EX_APPWINDOW);
+        }
+
+        public static int GetWindow(IntPtr handle) => GetWindowLong(handle, GWL_EX_STYLE);
+
+        public static void StartTrayIfNotRunning()
+        {
+            if (Process.GetProcessesByName("TcNo-Acc-Switcher-Tray").Length > 0) return;
+            var startInfo = new ProcessStartInfo { FileName = "TcNo-Acc-Switcher-Tray.exe", CreateNoWindow = false, UseShellExecute = false };
+            try
+            {
+                Process.Start(startInfo);
+            }
+            catch (System.ComponentModel.Win32Exception win32Exception)
+            {
+                if (win32Exception.HResult != -2147467259) throw; // Throw is error is not: Requires elevation
+                try
+                {
+                    startInfo.UseShellExecute = true;
+                    startInfo.Verb = "runas";
+                    Process.Start(startInfo);
+                }
+
+                catch (System.ComponentModel.Win32Exception win32Exception2)
+                {
+                    if (win32Exception2.HResult != -2147467259) throw; // Throw is error is not: cancelled by user
+                }
+            }
+        }
+        #endregion
     }
 
     public class TrayUser

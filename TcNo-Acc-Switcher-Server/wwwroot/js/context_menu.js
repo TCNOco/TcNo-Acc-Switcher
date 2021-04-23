@@ -40,7 +40,6 @@ function initContextMenu() {
         console.log('e');
         $("input:checked").each(function (_, e) {
             $(e).prop("checked", false);
-            console.log(e);
         });
     });
 

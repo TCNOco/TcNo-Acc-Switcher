@@ -133,7 +133,7 @@ namespace TcNo_Acc_Switcher_Tray
         }
         private void NotifyIcon_DoubleClick(object sender, EventArgs e) => StartSwitcher("");
 
-        private static bool AlreadyRunning() => Process.GetProcessesByName("TcNo Account Switcher").Length > 0;
+        private static bool AlreadyRunning() => Process.GetProcessesByName("TcNo-Acc-Switcher").Length > 0;
 
         // Start with Windows login, using https://stackoverflow.com/questions/15191129/selectively-disabling-uac-for-specific-programs-on-windows-programatically for automatic administrator.
         // Adding to Start Menu shortcut also creates "Start in Tray", which is a shortcut to this program. 
@@ -146,16 +146,19 @@ namespace TcNo_Acc_Switcher_Tray
 
         private static void BringToFront()
         {
-            var proc = Process.GetProcessesByName("TcNo Account Switcher").FirstOrDefault();
+            // This does not work in debug, as the console has the same name
+            var proc = Process.GetProcessesByName("TcNo-Acc-Switcher").FirstOrDefault();
             if (proc == null || proc.MainWindowHandle == IntPtr.Zero) return;
             const int swRestore = 9;
-            ShowWindow(proc.MainWindowHandle, swRestore);
-            SetForegroundWindow(proc.MainWindowHandle);
+            var hwnd = proc.MainWindowHandle;
+            Globals.ShowWindow(hwnd); // This seems to take ownership of some kind over the main process... So closing the tray closes the main switcher too ~
+            ShowWindow(hwnd, swRestore);
+            SetForegroundWindow(hwnd);
         }
 
         private static void CloseMainProcess()
         {
-            var proc = Process.GetProcessesByName("TcNo Account Switcher").FirstOrDefault();
+            var proc = Process.GetProcessesByName("TcNo-Acc-Switcher").FirstOrDefault();
             if (proc == null || proc.MainWindowHandle == IntPtr.Zero) return;
             proc.CloseMainWindow();
             proc.WaitForExit();

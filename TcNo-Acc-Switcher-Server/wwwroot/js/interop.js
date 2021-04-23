@@ -24,7 +24,6 @@ initAccListSortable = () => {
     sortable('.acc_list')[0].addEventListener('sortstart', function (e) {
         $("input:checked").each(function (_, e) {
             $(e).prop("checked", false);
-            console.log(e);
         });
     });
 }
