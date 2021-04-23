@@ -67,7 +67,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             {
                 UbisoftSwitcherFuncs.ImportAvatar(userId);
             }
-            GeneralInvocableFuncs.ShowToast("success", "Refreshed images", "Done", "toastarea");
+            _ = GeneralInvocableFuncs.ShowToast("success", "Refreshed images", "Done", "toastarea");
         }
 
 

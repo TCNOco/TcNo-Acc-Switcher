@@ -103,8 +103,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             foreach (var acc in BattleNet.Accounts.Where(x => x.BTag != null))
             {
                 if (DateTime.Now - acc.LastTimeChecked <= TimeSpan.FromDays(1)) continue;
-                accountFetched = true;
-                acc.FetchRank();
+                accountFetched = acc.FetchRank();
             }
 
             if (!accountFetched) return;
@@ -204,7 +203,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 AppData.ActiveNavMan?.NavigateTo( "/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed BattleTag"), true);
             }
             else
-                GeneralInvocableFuncs.ShowToast("error", "BattleTag did not match naming policy.");
+                _ = GeneralInvocableFuncs.ShowToast("error", "BattleTag did not match naming policy.");
         }
 
         public static bool ValidateBTag(string bTag)

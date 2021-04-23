@@ -65,7 +65,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             var userId = GetLastLoginUserId();
             if (userId == "NOTFOUND")
             {
-                GeneralInvocableFuncs.ShowToast("error", "Could not find last logged in user. Try logging into Ubisoft again first.", "Error", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", "Could not find last logged in user. Try logging into Ubisoft again first.", "Error", "toastarea");
                 return;
             }
 
