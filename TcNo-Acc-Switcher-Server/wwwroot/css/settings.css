@@ -118,12 +118,12 @@ label {
     margin: 0;
 }
 
-.columnSetting {
+.rowSetting {
     display: inline-block;
     margin-right: 1em;
     width: 100%;
 }
-    .columnSetting > div:not(:first-child) {
+    .rowSetting > div:not(:first-child) {
         margin-left: 1rem;
     }
     /* Checkbox */

@@ -27,23 +27,21 @@
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
-            <toastarea/>
-            <SharedSettings/>
+            <toastarea />
+            <SharedSettings />
 
             <div class="SettingsHeader">
                 <hr><span>General settings</span>
                 <hr>
             </div>
-            <div class="columnSetting">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="BattleNet.DesktopShortcut" @onclick="() => BattleNet.DesktopShortcut_Toggle()"><label class="form-check-label" for="DesktopShortcut"></label>
-                </div><label for="DesktopShortcut">BattleNet Switcher Desktop shortcut<br></label><br>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="Admin" @bind="BattleNet.Admin"><label class="form-check-label" for="Admin"></label>
-                </div><label for="Admin">Run BattleNet as Admin<br></label><br>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="OverwatchMode" @bind="BattleNet.OverwatchMode"><label class="form-check-label" for="OverwatchMode"></label>
-                </div><label for="OverwatchMode">Show Overwatch SR beneath a Account and use the Overwatch profile picture.<br></label>
+            <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="BattleNet.DesktopShortcut" @onclick="() => BattleNet.DesktopShortcut_Toggle()"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">BattleNet Switcher Desktop shortcut</label>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="BattleNet.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">Run BattleNet as Admin<br></label>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="OverwatchMode" @bind="BattleNet.OverwatchMode"><label class="form-check-label" for="OverwatchMode"></label></div><label for="OverwatchMode">Show Overwatch SR beneath a Account and use the Overwatch profile picture.<br></label>
             </div>
 
             <div class="SettingsHeader">
@@ -74,9 +72,9 @@
                 </button>
             </div>
             <div class="buttoncol">
-                            <button class="btn" id="ClearAccounts" type="button" @onclick="ClearAccounts">
-                                <span>Clear Accounts</span>
-                            </button>
+                <button class="btn" id="ClearAccounts" type="button" @onclick="ClearAccounts">
+                    <span>Clear Accounts</span>
+                </button>
             </div>
             <div class="buttoncol col_close">
                 <button class="btn btn_close" type="button" @onclick="SaveAndClose">

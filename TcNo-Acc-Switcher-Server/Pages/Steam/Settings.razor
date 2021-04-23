@@ -32,7 +32,7 @@
                 <hr><span>General settings</span>
                 <hr>
             </div>
-            <div class="columnSetting">
+            <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="Steam.DesktopShortcut" @onclick="() => Steam.DesktopShortcut_Toggle()"><label class="form-check-label" for="Steam_DesktopShortcut"></label></div><label for="Steam_DesktopShortcut">Steam Switcher desktop shortcut<br></label>
             </div>
             <div>
@@ -54,7 +54,7 @@
                 <hr><span>Tray settings</span>
                 <hr>
             </div>
-            <div class="columnSetting">
+            <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_TrayAccountName" @bind="Steam.TrayAccName"><label class="form-check-label" for="Steam_TrayAccountName"></label></div><label for="Steam_TrayAccountName">Show account name [not friend name]<br></label>
             </div>
             <div class="form-text"><span>Max number of accounts to remember:</span><input type="number" id="Steam_TrayAccNumber" min="0" max="365" @bind="Steam.TrayAccNumber"></div>

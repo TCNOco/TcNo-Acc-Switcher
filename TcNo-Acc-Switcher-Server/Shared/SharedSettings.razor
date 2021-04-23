@@ -21,16 +21,16 @@
 <div>
     <div class="form-check"><input class="form-check-input" type="checkbox" id="StreamerMode" @bind="AppSett.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label></div><label for="StreamerMode">Enable streamer mode<br></label>
 </div>
-<div class="columnSetting">
+<div class="rowSetting">
     <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="AppSett.TrayMinimizeNotExit"><label class="form-check-label" for="TrayMinimizeNotExit"></label></div><label for="TrayMinimizeNotExit">Exit minimizes to tray<br></label>
     <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeLessMem" @bind="AppSett.TrayMinimizeLessMem"><label class="form-check-label" for="TrayMinimizeLessMem"></label></div><label for="TrayMinimizeLessMem">Use less RAM while in tray<br></label>
 </div>
-<div class="columnSetting">
+<div class="rowSetting">
     <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="AppSett.DesktopShortcut" @onclick="() => AppSett.DesktopShortcut_Toggle()"><label class="form-check-label" for="AppSett_DesktopShortcut"></label></div><label for="AppSett_DesktopShortcut">Desktop shortcut<br></label>
 </div>
-<div class="columnSetting">
+<div class="rowSetting">
     <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="AppSett.StartMenu" @onclick="() => AppSett.StartMenu_Toggle()"><label class="form-check-label" for="AppSett_StartMenu"></label></div><label for="AppSett_StartMenu">Start menu shortcuts<br></label>
 </div>
-<div class="columnSetting">
+<div class="rowSetting">
     <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="AppSett.TrayStartup" @onclick="() => { AppSett.Task_Toggle(); }"><label class="form-check-label" for="AppSett_TrayStartup"></label></div><label for="AppSett_TrayStartup">Start (tray) with Windows<br></label>
 </div>
