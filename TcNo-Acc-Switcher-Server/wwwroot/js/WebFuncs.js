@@ -345,6 +345,7 @@ function OpenLinkInBrowser(link) {
 
 // Info Window
 function ShowModal(modaltype) {
+    let input;
     if (modaltype === "info") {
         $('#modalTitle').text("TcNo Account Switcher Information");
         $("#modal_contents").empty();
@@ -376,12 +377,14 @@ function ShowModal(modaltype) {
 		        <span class="modal-text">Please enter a new name for your account (Only changes it in the TcNo Account Switcher).</span>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="NewAccountName" style="width: 100%;padding: 8px;">
+		        <input type="text" id="NewAccountName" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('change_username').click();">
 	        </div>
 	        <div class="settingsCol inputAndButton">
-		        <button class="btn" type="button" id="select_program" onclick="Modal_FinalizeAccNameChange()"><span>Change username</span></button>
+		        <button class="btn modalOK" type="button" id="change_username" onclick="Modal_FinalizeAccNameChange()"><span>Change username</span></button>
 	        </div>
         </div>`);
+        input = document.getElementById('NewAccountName');
+        dragElement(document.getElementById("modalFG"));
     }
     else if (modaltype.startsWith("find:")) {
         // USAGE: "find:<Program_name>:<Program_exe>:<SettingsFile>" -- example: "find:Steam:Steam.exe:SteamSettings"
@@ -398,15 +401,16 @@ function ShowModal(modaltype) {
 		        <span class="modal-text">Please enter ` + platform + `'s directory, as such: C:\\Program Files\\` + platform + `</span>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="FolderLocation">
+		        <input type="text" id="FolderLocation" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
 		        <button class="btn" type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFile=` + platform_exe + `';"><span>Locate ` + platform_exe + `</span></button>
 	        </div>
 	        <div class="settingsCol inputAndButton">
 		        <div class="folder_indicator notfound"><div id="folder_indicator_text"></div></div>
 		        <div class="folder_indicator_bg notfound"><span>` + platform_exe + `</span></div>
-		        <button class="btn" type="button" id="select_program" onclick="Modal_Finalize('` + platform + `', '` + platformSettingsPath + `')"><span>Select ` + platform + ` Folder</span></button>
+		        <button class="btn modalOK" type="button" id="select_location" onclick="Modal_Finalize('` + platform + `', '` + platformSettingsPath + `')"><span>Select ` + platform + ` Folder</span></button>
 	        </div>
         </div>`);
+        input = document.getElementById('FolderLocation');
     }
     else if (modaltype.startsWith("confirm:")) {
         // USAGE: "confirm:<prompt>
@@ -475,6 +479,7 @@ function ShowModal(modaltype) {
             </div>
         </div>
         </div>`);
+        input = document.getElementById('modal_true');
     }
     else if (modaltype.startsWith("accString:")) {
         // USAGE: "accString:<platform>" -- example: "accString:Origin"
@@ -489,14 +494,17 @@ function ShowModal(modaltype) {
 		        <span class="modal-text">Please enter a name for the ` + platform + ` account you're logged into.</span>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;">
+		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;"  onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();">
 	        </div>
 	        <div class="settingsCol inputAndButton">
-		        <button class="btn" type="button" id="select_program" onclick="Modal_FinalizeAccString('` + platform + `')"><span>Add current ` + platform + ` account</span></button>
+		        <button class="btn modalOK" type="button" id="set_account_name" onclick="Modal_FinalizeAccString('` + platform + `')"><span>Add current ` + platform + ` account</span></button>
 	        </div>
         </div>`);
+        input = document.getElementById('CurrentAccountName');
     }
     $('.modalBG').fadeIn();
+    input.focus();
+    input.select();
 }
 
 function Modal_SetFilepath(path) { $("#FolderLocation").val(path); }
