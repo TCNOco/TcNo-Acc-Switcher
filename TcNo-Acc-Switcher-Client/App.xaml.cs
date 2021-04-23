@@ -22,11 +22,15 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using MessageBox = System.Windows.MessageBox;
+using MessageBoxOptions = System.Windows.MessageBoxOptions;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using Path = System.IO.Path;
 
 namespace TcNo_Acc_Switcher_Client
@@ -90,7 +94,7 @@ namespace TcNo_Acc_Switcher_Client
             var sw = new StreamWriter(fs) {AutoFlush = true};
             Console.SetOut(sw);
             Console.SetError(sw);
-            #endif
+#endif
 
 
 
@@ -177,7 +181,10 @@ namespace TcNo_Acc_Switcher_Client
                 {
                     if (!Mutex.WaitOne(TimeSpan.Zero, true))
                     {
-                        MessageBox.Show("Another TcNo Account Switcher instance has been detected.");
+                        // Try to show from tray, as user may not know it's hidden there.
+                        MessageBox.Show(!Globals.BringToFront()
+                            ? "Another TcNo Account Switcher instance has been detected."
+                            : "TcNo Account Switcher was running.\nI've brought it to the top.\nMake sure to check your Windows Task Tray for the icon :)\n- You can exit it from there too", "TcNo Account Switcher Notice", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
                         Environment.Exit(1056); // 1056	An instance of the service is already running.
                     }
                 }

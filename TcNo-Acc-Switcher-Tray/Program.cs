@@ -139,23 +139,6 @@ namespace TcNo_Acc_Switcher_Tray
         // Adding to Start Menu shortcut also creates "Start in Tray", which is a shortcut to this program. 
 
 
-        [DllImport("user32")]
-        private static extern bool SetForegroundWindow(IntPtr hwnd);
-        [DllImport("user32")]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        private static void BringToFront()
-        {
-            // This does not work in debug, as the console has the same name
-            var proc = Process.GetProcessesByName("TcNo-Acc-Switcher").FirstOrDefault();
-            if (proc == null || proc.MainWindowHandle == IntPtr.Zero) return;
-            const int swRestore = 9;
-            var hwnd = proc.MainWindowHandle;
-            Globals.ShowWindow(hwnd); // This seems to take ownership of some kind over the main process... So closing the tray closes the main switcher too ~
-            ShowWindow(hwnd, swRestore);
-            SetForegroundWindow(hwnd);
-        }
-
         private static void CloseMainProcess()
         {
             var proc = Process.GetProcessesByName("TcNo-Acc-Switcher").FirstOrDefault();
@@ -166,7 +149,7 @@ namespace TcNo_Acc_Switcher_Tray
         private void StartSwitcher(string args)
         {
             if (AlreadyRunning())
-                BringToFront();
+                Globals.BringToFront();
             else
             {
                 var processName = _mainProgram;

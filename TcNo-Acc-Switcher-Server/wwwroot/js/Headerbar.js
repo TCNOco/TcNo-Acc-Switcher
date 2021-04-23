@@ -68,7 +68,7 @@ function handleWindowControls() {
 
     document.getElementById('btnClose').addEventListener("click", event => {
         var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetTrayMinimizeNotExit").then(r => {
-            if (r) {
+            if (r && !event.ctrlKey) { // If enabled, and NOT control held
                 chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
             } else {
                 chrome.webview.hostObjects.sync.eventForwarder.WindowAction(WindowNotifications.WmClose);

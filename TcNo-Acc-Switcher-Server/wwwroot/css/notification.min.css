@@ -52,7 +52,7 @@
     color: white;
     cursor: pointer;
     display: flex;
-    font-size: .9em;
+    font-size: 1em;
     height: auto;
     margin: var(--notification-margin);
     min-width: var(--notification-min-width);

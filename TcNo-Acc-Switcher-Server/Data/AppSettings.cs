@@ -63,8 +63,26 @@ namespace TcNo_Acc_Switcher_Server.Data
         private Point _windowSize = new() { X = 800, Y = 450 };
         [JsonProperty("WindowSize", Order = 3)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
 
-        private bool _trayMinimizeNotExit = true;
-        [JsonProperty("TrayMinimizeNotExit", Order = 4)] public bool TrayMinimizeNotExit { get => _instance._trayMinimizeNotExit; set => _instance._trayMinimizeNotExit = value; }
+        private bool _trayMinimizeNotExit = false;
+
+        [JsonProperty("TrayMinimizeNotExit", Order = 4)]
+        public bool TrayMinimizeNotExit
+        {
+            get => _instance._trayMinimizeNotExit;
+            set
+            {
+                if (value)
+                {
+                    _ = GeneralInvocableFuncs.ShowToast("info", "On clicking the Exit button: I'll be on the Windows Tray! (Right of Start Bar)", duration: 15000, renderTo: "toastarea");
+                    _ = GeneralInvocableFuncs.ShowToast("info", "Hint: Ctrl+Click the 'X' to close me completely, or via the Tray > 'Exit'", duration: 15000, renderTo: "toastarea");
+                }
+                _instance._trayMinimizeNotExit = value; 
+
+            }
+        }
+
+        private bool _trayMinimizeLessMem = false;
+        [JsonProperty("TrayMinimizeLessMem", Order = 4)] public bool TrayMinimizeLessMem { get => _instance._trayMinimizeLessMem; set => _instance._trayMinimizeLessMem = value; }
 
 
         private bool _desktopShortcut;

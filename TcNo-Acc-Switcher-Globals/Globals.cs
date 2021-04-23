@@ -126,7 +126,25 @@ namespace TcNo_Acc_Switcher_Globals
         [DllImport("user32.dll")]
         static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
         private const int GWL_EX_STYLE = -20;
-        private const int WS_EX_APPWINDOW = 0x00040000, WS_EX_TOOLWINDOW = 0x00000080;
+        public const int WS_EX_APPWINDOW = 0x00040000, WS_EX_TOOLWINDOW = 0x00000080;
+
+        [DllImport("user32")]
+        private static extern bool SetForegroundWindow(IntPtr hwnd);
+        [DllImport("user32")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        public static bool BringToFront()
+        {
+            // This does not work in debug, as the console has the same name
+            var proc = Process.GetProcessesByName("TcNo-Acc-Switcher").FirstOrDefault();
+            if (proc == null || proc.MainWindowHandle == IntPtr.Zero) return false;
+            const int swRestore = 9;
+            var hwnd = proc.MainWindowHandle;
+            Globals.ShowWindow(hwnd); // This seems to take ownership of some kind over the main process... So closing the tray closes the main switcher too ~
+            ShowWindow(hwnd, swRestore);
+            SetForegroundWindow(hwnd);
+            return true;
+        }
 
         public static void HideWindow(IntPtr handle)
         {

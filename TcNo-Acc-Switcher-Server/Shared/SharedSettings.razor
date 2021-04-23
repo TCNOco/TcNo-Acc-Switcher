@@ -21,8 +21,9 @@
 <div>
     <div class="form-check"><input class="form-check-input" type="checkbox" id="StreamerMode" @bind="AppSett.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label></div><label for="StreamerMode">Enable streamer mode<br></label>
 </div>
-<div>
+<div class="columnSetting">
     <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="AppSett.TrayMinimizeNotExit"><label class="form-check-label" for="TrayMinimizeNotExit"></label></div><label for="TrayMinimizeNotExit">Exit minimizes to tray<br></label>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeLessMem" @bind="AppSett.TrayMinimizeLessMem"><label class="form-check-label" for="TrayMinimizeLessMem"></label></div><label for="TrayMinimizeLessMem">Use less RAM while in tray<br></label>
 </div>
 <div class="columnSetting">
     <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="AppSett.DesktopShortcut" @onclick="() => AppSett.DesktopShortcut_Toggle()"><label class="form-check-label" for="AppSett_DesktopShortcut"></label></div><label for="AppSett_DesktopShortcut">Desktop shortcut<br></label>

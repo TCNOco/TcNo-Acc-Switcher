@@ -36,9 +36,13 @@
     position: relative;
 }
     .settingsCol toastarea {
-        position: absolute;
-        top: 3px;
-        right: 3px;
+        position: fixed;
+        top: 35px;
+        right: 16px;
+        bottom: auto;
+        align-items: flex-end;
+        display: flex;
+        flex-direction: column;
     }
     .acc_list_actionbar div .button, .settingsCol button {
         user-select: none;
@@ -117,14 +121,16 @@ label {
 .columnSetting {
     display: inline-block;
     margin-right: 1em;
+    width: 100%;
 }
-
-/* Checkbox */
-
-.form-check {
-    display: inline-block;
-    padding: 0;
-}
+    .columnSetting > div:not(:first-child) {
+        margin-left: 1rem;
+    }
+    /* Checkbox */
+    .form-check {
+        display: inline-block;
+        padding: 0;
+    }
 
 input[type='checkbox'] {
     opacity: 0;

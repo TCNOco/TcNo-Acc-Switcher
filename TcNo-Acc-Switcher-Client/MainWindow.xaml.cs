@@ -23,15 +23,17 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Threading;
+using System.Windows.Forms;
 using System.Windows.Interop;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
-using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
+using MessageBox = System.Windows.MessageBox;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using Path = System.IO.Path;
 
 namespace TcNo_Acc_Switcher_Client
@@ -165,6 +167,9 @@ namespace TcNo_Acc_Switcher_Client
         private void WindowStateChange(object sender, EventArgs e)
         {
             Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.WindowStateChange]");
+
+            if (AppSettings.TrayMinimizeLessMem) new Thread(CheckVisibility).Start();
+
             var state = WindowState switch
             {
                 WindowState.Maximized => "add",
@@ -172,6 +177,34 @@ namespace TcNo_Acc_Switcher_Client
                 _ => ""
             };
             MView2.ExecuteScriptAsync("document.body.classList." + state + "('maximized')");
+        }
+
+        private void CheckVisibility()
+        {
+            Thread.Sleep(100);
+            // While this could handle WindowState == WindowState.Minimized/Normal etc, it's only going to work off the hidden part.
+            // As currently this is only going to create/dispose the WebView for better performance when minimizing to tray.
+            Dispatcher.Invoke(() =>
+            {
+                // Check if hidden or not:
+                var windowLong = Globals.GetWindow(new WindowInteropHelper(this).Handle);
+                var ch = (windowLong & ~Globals.WS_EX_APPWINDOW);
+                if (windowLong == (windowLong & ~Globals.WS_EX_APPWINDOW)) // Hidden
+                {
+                    MainBackground.Children.Remove(MView2);
+                    MView2.Dispose();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+                }
+                else // Not hidden
+                {
+                    MView2 = new WebView2();
+                    MView2.Initialized += MView2_OnInitialized;
+                    MainBackground.Children.Add(MView2);
+                    MView2.BeginInit();
+                }
+            });
         }
 
         /// <summary>
