@@ -535,6 +535,27 @@ function Modal_FinalizeAccString(platform) {
     }
     $('.modalBG').fadeOut();
     $('#acc_list').click();
+    
+    function BattleTagIsValid(battleTag){
+        let split = battleTag.split("#");
+        if (typeof split !== undefined && split.length === 2)
+        {
+            if (split[1].length > 4 && split[1].length < 7 && IsDigitsOnly(split[1]))
+                return true;
+        }
+
+        return false;
+
+        function IsDigitsOnly(str)
+        {
+            for(let c in str)
+            {
+                if (c < '0' || c > '9')
+                    return false;
+            }
+            return true;
+        }
+    }
 }
 
 function Modal_FinalizeAccNameChange() {
@@ -567,6 +588,14 @@ function flushJQueryAppendQueue() {
 }
 
 //DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyCommunityUsername", $(SelectedElem).attr(request)).then(r => console.log(r));
+
+function ForgetBattleTag(){
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "DeleteUsername", $(".acc:checked").attr("id"));
+}
+
+function RefetchRank(){ 
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RefetchRank", $(".acc:checked").attr("id"));
+}
 
 const forgetAccountSteamPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
 <h4>What does this mean?</h4>

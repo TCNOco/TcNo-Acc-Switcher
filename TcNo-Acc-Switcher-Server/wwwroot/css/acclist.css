@@ -203,3 +203,9 @@ label.acc p {
     .statusBar input {
         z-index: 1
     }
+    
+label h6 svg{
+    fill: white;
+    margin: 2px;
+    vertical-align: center;
+}

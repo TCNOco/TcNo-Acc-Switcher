@@ -3,8 +3,8 @@
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
     This program is distributed in the hope that it will be useful,
+    (at your option) any later version.
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
@@ -24,47 +24,65 @@
 @inject Data.AppSettings AppSett
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
-
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
-            <toastarea />
-            <SharedSettings />
-
+            <toastarea/>
+            <SharedSettings/>
 
             <div class="SettingsHeader">
                 <hr><span>General settings</span>
                 <hr>
             </div>
             <div class="columnSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="BattleNet.DesktopShortcut" @onclick="() => BattleNet.DesktopShortcut_Toggle()"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">BattleNet Switcher Desktop shortcut<br></label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="BattleNet.DesktopShortcut" @onclick="() => BattleNet.DesktopShortcut_Toggle()"><label class="form-check-label" for="DesktopShortcut"></label>
+                </div><label for="DesktopShortcut">BattleNet Switcher Desktop shortcut<br></label><br>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="Admin" @bind="BattleNet.Admin"><label class="form-check-label" for="Admin"></label>
+                </div><label for="Admin">Run BattleNet as Admin<br></label><br>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="OverwatchMode" @bind="BattleNet.OverwatchMode"><label class="form-check-label" for="OverwatchMode"></label>
+                </div><label for="OverwatchMode">Show Overwatch SR beneath a Account and use the Overwatch profile picture.<br></label>
             </div>
-            <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="BattleNet.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">Run BattleNet as Admin<br></label>
-            </div>
-
 
             <div class="SettingsHeader">
                 <hr><span>Tray settings</span>
                 <hr>
             </div>
-            <div class="form-text"><span>Max number of accounts to remember:</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="BattleNet.TrayAccNumber"></div>
-
-
+            <div class="form-text">
+                <span>Max number of accounts to remember:</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="BattleNet.TrayAccNumber">
+            </div>
             <div class="SettingsHeader">
                 <hr><span>General</span>
                 <hr>
             </div>
-            <div class="buttoncol"><button class="btn" id="PickFolder" type="button" @onclick="PickFolder"><span>Pick BattleNet folder</span></button><button class="btn" id="ResetSettings" type="button" @onclick="ClearSettings"><span>Reset settings</span></button></div>
-
-
-            <div class="SettingsHeader">
-                <hr><span>Other tools</span>
-                <hr>
+            <div class="buttoncol">
+                <button class="btn" id="PickFolder" type="button" @onclick="PickFolder">
+                    <span>Pick BattleNet folder</span>
+                </button>
+                <button class="btn" id="ResetSettings" type="button" @onclick="ClearSettings">
+                    <span>Reset settings</span>
+                </button>
             </div>
-            <div class="buttoncol"><button class="btn" type="button" @onclick='() => NavManager.NavigateTo("/BattleNet/ManageIgnored")'><span>Manage Ignored List</span></button><button class="btn" type="button" @onclick="BattleNetSwitcherFuncs.ClearIgnored"><span>Clear Ignored List</span></button></div>
-            <div class="buttoncol"><button class="btn" id="OpenFolder" type="button" @onclick="OpenFolder"><span>Open BattleNet Folder</span></button></div>
-            <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>Close</span></button></div>
+            <div class="buttoncol">
+                <button class="btn" id="OpenFolder" type="button" @onclick="OpenFolder">
+                    <span>Open BattleNet Folder</span>
+                </button>
+                <button class="btn" id="ClearForgotten" type="button" @onclick="ClearForgotten">
+                    <span>Clear Forgotten</span>
+                </button>
+            </div>
+            <div class="buttoncol">
+                            <button class="btn" id="ClearAccounts" type="button" @onclick="ClearAccounts">
+                                <span>Clear Accounts</span>
+                            </button>
+            </div>
+            <div class="buttoncol col_close">
+                <button class="btn btn_close" type="button" @onclick="SaveAndClose">
+                    <span>Close</span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
