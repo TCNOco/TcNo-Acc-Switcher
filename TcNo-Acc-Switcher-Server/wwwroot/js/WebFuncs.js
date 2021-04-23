@@ -384,7 +384,6 @@ function ShowModal(modaltype) {
 	        </div>
         </div>`);
         input = document.getElementById('NewAccountName');
-        dragElement(document.getElementById("modalFG"));
     }
     else if (modaltype.startsWith("find:")) {
         // USAGE: "find:<Program_name>:<Program_exe>:<SettingsFile>" -- example: "find:Steam:Steam.exe:SteamSettings"
