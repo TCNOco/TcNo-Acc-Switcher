@@ -36,6 +36,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             var localCachePath = $"LoginCache\\Ubisoft\\";
             if (!Directory.Exists(localCachePath) || !File.Exists(Path.Join(localCachePath, "ids.json"))) return;
             var allIds = ReadAllIds();
+
+            // Order
+            if (File.Exists("LoginCache\\Ubisoft\\order.json"))
+            {
+                Dictionary<string, string> newIds = new();
+                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Ubisoft\\order.json"));
+                if (savedOrder != null && savedOrder.Count > 0)
+                    foreach (var (key, value) in from i in savedOrder where allIds.Any(x => x.Key == i) select allIds.Single(x => x.Key == i))
+                        newIds.Add(key, value);
+                allIds = newIds;
+            }
+
             foreach (var (userId, username) in allIds)
             {
                 var element =

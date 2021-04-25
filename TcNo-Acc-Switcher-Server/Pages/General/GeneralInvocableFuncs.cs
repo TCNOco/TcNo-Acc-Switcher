@@ -48,6 +48,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             GeneralFuncs.SaveSettings(file, JObject.Parse(jsonString));
         }
 
+        [JSInvokable]
+        public static void GiSaveOrder(string file, string jsonString)
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiSaveOrder] file={file}, jsonString.length={jsonString.Length}");
+            GeneralFuncs.SaveOrder(file, JArray.Parse(jsonString));
+        }
+
         /// <summary>
         /// JS function handler for returning JObject of settings from [Platform]Settings.json file
         /// </summary>

@@ -381,6 +381,23 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         /// <summary>
+        /// Saves input JArray of items to input file path
+        /// </summary>
+        /// <param name="file">File path to save JSON string to</param>
+        /// <param name="joOrder">JArray order of items on page</param>
+        public static void SaveOrder(string file, JArray joOrder)
+        {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.SaveOrder] file={file}, joOrder=hidden");
+            var sFilename = file.EndsWith(".json") ? file : file + ".json";
+
+            // Create folder if it doesn't exist:
+            var folder = Path.GetDirectoryName(file);
+            if (folder != "") Directory.CreateDirectory(folder);
+
+            File.WriteAllText(sFilename, joOrder.ToString());
+        }
+
+        /// <summary>
         /// Loads settings from input file (JSON string to JObject)
         /// </summary>
         /// <param name="file">JSON file to be read</param>

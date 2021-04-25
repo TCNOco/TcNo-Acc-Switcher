@@ -62,6 +62,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             var vacStatusList = new List<VacStatus>();
             var loadedVacCache = LoadVacInfo(ref vacStatusList);
 
+            // Order
+            if (File.Exists("LoginCache\\Steam\\order.json"))
+            {
+                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Steam\\order.json"));
+                var index = 0;
+                if (savedOrder != null && savedOrder.Count > 0)
+                    foreach (var acc in from i in savedOrder where userAccounts.Any(x => x.AccName == i) select userAccounts.Single(x => x.AccName == i))
+                    {
+                        userAccounts.Remove(acc);
+                        userAccounts.Insert(index, acc);
+                        index++;
+                    }
+            }
+
             foreach (var ua in userAccounts)
             {
                 var va = new VacStatus();
