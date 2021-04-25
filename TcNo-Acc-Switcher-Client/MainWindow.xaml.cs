@@ -159,6 +159,7 @@ namespace TcNo_Acc_Switcher_Client
             var eventForwarder = new Headerbar.EventForwarder(new WindowInteropHelper(this).Handle);
 
             MView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
+            MView2.Focus();
         }
 
         /// <summary>
