@@ -12,7 +12,6 @@ jQueryAppend = (jQuerySelector, strToInsert) => {
 updateStatus = (status) => {
     $("#CurrentStatus").val(status);
 }
-
 initAccListSortable = () => {
     // Create sortable list
     sortable('.acc_list', {
@@ -26,7 +25,49 @@ initAccListSortable = () => {
             $(e).prop("checked", false);
         });
     });
+    // On drag end, save list of items.
+    sortable('.acc_list')[0].addEventListener('sortupdate', function (e) {
+        let order = {order: []};
+        e.detail.destination.items.forEach((e) => {
+            if (!$(e).is("div")) return; // Ignore <toastarea>
+            order["order"].push(e.getElementsByTagName('input')[0].getAttribute("id"));
+        });
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveSettings", `LoginCache\\${currentpage}\\order.json`, JSON.stringify(order));
+    });
+
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLoadSettings", `LoginCache\\${currentpage}\\order.json`).then(r => {
+        let order = JSON.parse(r);
+        let cur = 0;
+        if (order["order"] === void 0) return;
+        // Set order from saved list
+        order["order"].forEach((e) => {
+            try {
+                document.getElementById(e).parentElement.setAttribute("index", cur);
+            } catch (_) {} // Elements might have been removed since last saved list order
+            cur++;
+        });
+        // Set order for elements not on list
+        $('.acc_list').children().each((_, e) => {
+            if (!e.hasAttribute("index")) {
+                e.setAttribute("index", cur);
+            }
+            cur++;
+        });
+
+        // Sort
+        var sortIndex = function (a, b) {
+            return a.getAttribute("index").localeCompare(b.getAttribute("index"));
+        }
+
+        var list = $(".acc_list").children();
+        list.sort(sortIndex);
+        for (var i = 0; i < list.length; i++) {
+            $(".acc_list")[0].appendChild(list[i]);
+        }
+        console.log(order);
+    });
 }
+
 
 UpdateDynamicCss = (rule, value) => {
     // Check if stylesheet exists, otherwise create the "dynamic stylesheet"

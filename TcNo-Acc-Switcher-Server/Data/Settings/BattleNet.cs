@@ -75,7 +75,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
         
         private List<BattleNetSwitcherBase.BattleNetUser> _accounts = new();
-        [JsonProperty("Accounts", Order = 6)] public List<BattleNetSwitcherBase.BattleNetUser> Accounts { get => _instance._accounts; set => _instance._accounts = value; }
+        [JsonIgnore] public List<BattleNetSwitcherBase.BattleNetUser> Accounts { get => _instance._accounts; set => _instance._accounts = value; }
         
         private List<BattleNetSwitcherBase.BattleNetUser> _ignoredAccounts = new();
         [JsonIgnore] public List<BattleNetSwitcherBase.BattleNetUser> IgnoredAccounts { get => _instance._ignoredAccounts; set => _instance._ignoredAccounts = value; }

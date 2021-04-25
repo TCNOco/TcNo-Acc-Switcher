@@ -342,6 +342,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.SaveSettings] file={file}, joNewSettings=hidden, mergeNewIntoOld={mergeNewIntoOld}");
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
 
+            // Create folder if it doesn't exist:
+            var folder = Path.GetDirectoryName(file);
+            if (folder != "") Directory.CreateDirectory(folder);
+
             // Get existing settings
             var joSettings = new JObject();
             if (File.Exists(sFilename))
@@ -369,7 +373,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 // Merge existing settings with settings from site
                 joSettings.Merge(joNewSettings, new JsonMergeSettings
                 {
-                    MergeArrayHandling = MergeArrayHandling.Union
+                    MergeArrayHandling = MergeArrayHandling.Merge
                 });
                 // Save all settings back into file
                 File.WriteAllText(sFilename, joSettings.ToString());
