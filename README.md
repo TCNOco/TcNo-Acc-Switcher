@@ -40,7 +40,8 @@ After installing using the installer, or downloading your .zip (portable version
 > 
 # New beta version
 The new Beta version is available for testing. Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord). Download the Beta in the Discord (This is to prevent confusion here)
-**Guides:** [BattleNet](https://youtu.be/cvbo_VY05bo), [Origin](https://youtu.be/qRYra_fQt0I), [Steam](https://youtu.be/rLXGs1Yr3m8), [UPlay](https://youtu.be/XKBkIQaJzOA)
+
+<p><img alt="Youtube" src="/other/img/youtube.svg" height=18"> **Guides:** <a href="https://youtu.be/cvbo_VY05bo">BattleNet</a>, <a href="https://youtu.be/qRYra_fQt0I">Origin</a>, <a href="https://youtu.be/rLXGs1Yr3m8">Steam</a>, <a href="https://youtu.be/XKBkIQaJzOA">UPlay</a></p>
 
 **New in this version:**
 - **NEW: Battle.net account switcher** Thank's to [iR3turnZ](https://github.com/HoeblingerDaniel) :)
