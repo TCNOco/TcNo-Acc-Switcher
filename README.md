@@ -18,8 +18,7 @@
 </p>
                                                                                                                                   
 <p align="center"><a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest">
-  <img alt="Download latest" src="/other/img/DownloadLatest.png" height=70"></a></p>
-<p align="center"><a target="_blank" href="https://tcno.co/Projects/AccSwitcher/LatestRelease">
+  <img alt="Download latest" src="/other/img/DownloadLatest.png" height=70"></a><a target="_blank" href="https://tcno.co/Projects/AccSwitcher/LatestRelease">
   <img alt="Download Beta" src="/other/img/DownloadBeta.png" height=70"></a></p>
   
 **A Super fast account switcher for Steam (and more soon)** [New version now in Beta]
