@@ -410,7 +410,7 @@ namespace TcNo_Acc_Switcher_Updater
                         DeleteFile(path);
                     }
                     WriteLine("Downloading file from website... ");
-                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + path.Replace('\\', '/'));
+                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + path.Replace('\\', '/').Replace("newUpdater", "updater"));
                     client.DownloadFile(uri, path);
                     WriteLine("Done.");
                 }

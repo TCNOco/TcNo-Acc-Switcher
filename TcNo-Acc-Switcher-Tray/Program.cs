@@ -19,6 +19,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Tray.Properties;
@@ -28,6 +29,7 @@ namespace TcNo_Acc_Switcher_Tray
     internal static class Program
     {
         public static Dictionary<string, List<TrayUser>> TrayUsers = new();
+        public static string lastHash = "";
 
         /// <summary>
         ///  The main entry point for the application.
@@ -64,10 +66,21 @@ namespace TcNo_Acc_Switcher_Tray
     {
         private readonly string _mainProgram = Path.Join(Path.GetDirectoryName(Process.GetCurrentProcess()?.MainModule?.FileName)!, "TcNo-Acc-Switcher.exe");
 
-        private readonly NotifyIcon _trayIcon;
+        private NotifyIcon _trayIcon;
 
         public AppCont()
         {
+            InitMenu();
+        }
+
+        private void InitMenu(bool first = true)
+        {
+            if (!File.Exists("Tray_Users.json")) Environment.Exit(1);
+            if (string.Equals(Program.lastHash, GetFileMd5("Tray_Users.json"), StringComparison.Ordinal)) return; // Don't init again
+            Program.lastHash = GetFileMd5("Tray_Users.json");
+
+            Program.TrayUsers = TrayUser.ReadTrayUsers();
+            
             var contextMenu = new ContextMenuStrip { Renderer = new ContentRenderer() };
             contextMenu.Items.Add(new ToolStripMenuItem()
             {
@@ -106,13 +119,35 @@ namespace TcNo_Acc_Switcher_Tray
 
 
             // Initialize Tray Icon
-            _trayIcon = new NotifyIcon()
-            {
-                Icon = Resources.icon,
-                ContextMenuStrip = contextMenu,
-                Visible = true
-            };
+            if (first)
+                _trayIcon = new NotifyIcon()
+                {
+                    Icon = Resources.icon,
+                    ContextMenuStrip = contextMenu,
+                    Visible = true
+                };
+            else
+                _trayIcon.ContextMenuStrip = contextMenu;
+
+            _trayIcon.MouseDown += TrayIconOnMouseDown;
             _trayIcon.DoubleClick += NotifyIcon_DoubleClick;
+        }
+        
+        private void TrayIconOnMouseDown(object? sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+                InitMenu(false);
+        }
+        /// <summary>
+        /// Gets a file's MD5 Hash
+        /// </summary>
+        /// <param name="filePath">Path to file to get hash of</param>
+        /// <returns></returns>
+        public static string GetFileMd5(string filePath)
+        {
+            using var md5 = MD5.Create();
+            using var stream = File.OpenRead(filePath);
+            return stream.Length != 0 ? BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLowerInvariant() : "0";
         }
 
         private void contextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -146,9 +181,9 @@ namespace TcNo_Acc_Switcher_Tray
             proc.CloseMainWindow();
             proc.WaitForExit();
         }
-        private void StartSwitcher(string args)
+        private void StartSwitcher(string args = "")
         {
-            if (AlreadyRunning())
+            if (AlreadyRunning() && args == "")
                 Globals.BringToFront();
             else
             {

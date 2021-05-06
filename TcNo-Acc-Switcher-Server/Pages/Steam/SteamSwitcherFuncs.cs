@@ -390,7 +390,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         [SupportedOSPlatform("windows")]
         public static void UpdateLoginUsers(string selectedSteamId, string accName = "", int pS = -1)
         {
-            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.UpdateLoginUsers] Updating loginusers: selectedSteamId={selectedSteamId.Substring(selectedSteamId.Length - 4, 4)}, accName=hidden, pS={pS}");
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.UpdateLoginUsers] Updating loginusers: selectedSteamId={(selectedSteamId.Length > 0 ? selectedSteamId.Substring(selectedSteamId.Length - 4, 4) : "")}, accName=hidden, pS={pS}");
             var userAccounts = SteamSwitcherFuncs.GetSteamUsers(Steam.LoginUsersVdf());
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
@@ -418,7 +418,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // -----------------------------------
             if (pS != -1) SetPersonaState(selectedSteamId, pS); // Update persona state, if defined above.
 
-            var user = userAccounts.Single(x => x.SteamId == selectedSteamId);
+            Steamuser user = new() { AccName = "" };
+            if (selectedSteamId != "")
+                user = userAccounts.Single(x => x.SteamId == selectedSteamId);
             // -----------------------------------
             // --------- Manage registry ---------
             // -----------------------------------
@@ -436,7 +438,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // -----------------------------------
             // ------Update Tray users list ------
             // -----------------------------------
-            Globals.AddTrayUser("Steam", "+s:" + user.SteamId, Steam.TrayAccName ? user.AccName : user.Name, Steam.TrayAccNumber);
+            if (selectedSteamId != "")
+                Globals.AddTrayUser("Steam", "+s:" + user.SteamId, Steam.TrayAccName ? user.AccName : user.Name, Steam.TrayAccNumber);
         }
 
         /// <summary>

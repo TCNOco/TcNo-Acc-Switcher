@@ -48,7 +48,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         // Variables
-        private string _version = "2021-04-25_00";
+        private string _version = "2021-05-06_02";
         [JsonProperty("Version", Order = 0)] public string Version => _instance._version;
 
         private bool _updateAvailable;
@@ -327,6 +327,17 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.Task_Toggle]");
             Task.StartWithWindows_Toggle(!TrayStartup);
+        }
+
+        public void StartNow()
+        {
+            _ = Globals.StartTrayIfNotRunning() switch
+            {
+                "Started Tray" => GeneralInvocableFuncs.ShowToast("success", "Tray started!", renderTo: "toastarea"),
+                "Already running" => GeneralInvocableFuncs.ShowToast("info", "Tray already open", renderTo: "toastarea"),
+                "Tray users not found" => GeneralInvocableFuncs.ShowToast("error", "No tray users saved", renderTo: "toastarea"),
+                _ => GeneralInvocableFuncs.ShowToast("error", "Could not start tray application!", renderTo: "toastarea")
+            };
         }
 
         private void CreatePlatformShortcut(string folder, string platformName, string args)

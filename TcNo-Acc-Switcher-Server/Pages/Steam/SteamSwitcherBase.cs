@@ -57,7 +57,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         [JSInvokable]
         public static void SwapToSteam(string steamId, string accName, int ePersonaState = -1)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.SwapToSteam] {steamId.Substring(steamId.Length - 4, 4)}, accName:hidden, ePersonaState: {ePersonaState}");
+            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.SwapToSteam] {(steamId.Length > 0 ? steamId.Substring(steamId.Length - 4, 4) : "")}, accName:hidden, ePersonaState: {ePersonaState}");
             SteamSwitcherFuncs.SwapSteamAccounts(steamId, accName, ePersonaState: ePersonaState);
         }
 
