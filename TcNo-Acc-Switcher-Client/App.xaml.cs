@@ -197,7 +197,16 @@ namespace TcNo_Acc_Switcher_Client
             // See if updater was updated, and move files:
             if (Directory.Exists("newUpdater"))
             {
-                GeneralFuncs.RecursiveDelete(new DirectoryInfo("updater"), false);
+                try
+                {
+                    GeneralFuncs.RecursiveDelete(new DirectoryInfo("updater"), false);
+                }
+                catch (IOException ioE)
+                {
+                    // Catch first IOException and try to kill the updater, if it's running... Then continue.
+                    Globals.KillProcess("TcNo-Acc-Switcher-Updater");
+                    GeneralFuncs.RecursiveDelete(new DirectoryInfo("updater"), false);
+                }
                 Directory.Move("newUpdater", "updater");
             }
 
