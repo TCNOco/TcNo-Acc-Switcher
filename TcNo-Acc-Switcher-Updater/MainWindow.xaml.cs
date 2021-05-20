@@ -47,6 +47,7 @@ namespace TcNo_Acc_Switcher_Updater
         // Dictionaries of file paths, as well as MD5 Hashes
         private static Dictionary<string, string> _oldDict = new();
         private static Dictionary<string, string> _newDict = new();
+        private static Dictionary<string, string> _allNewDict = new();
         private static List<string> _patchList = new();
 
         public static bool VerifyAndClose = false;
@@ -388,14 +389,12 @@ namespace TcNo_Acc_Switcher_Updater
             var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
             if (verifyDictionary != null)
             {
-                if (!Directory.Exists("newUpdater")) CopyFilesRecursive("updater", "newUpdater");
                 var verifyDictTotal = verifyDictionary.Count;
                 var cur = 0;
                 UpdateProgress(0);
                 foreach (var (key, value) in verifyDictionary)
                 {
                     var path = key;
-                    if (path.Contains("updater")) path = path.Replace("updater\\", "newUpdater\\"); // Handle updater updated files
                     cur++;
                     UpdateProgress((cur * 100) / verifyDictTotal);
                     if (!File.Exists(path))
@@ -410,7 +409,7 @@ namespace TcNo_Acc_Switcher_Updater
                         DeleteFile(path);
                     }
                     WriteLine("Downloading file from website... ");
-                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + path.Replace('\\', '/').Replace("newUpdater", "updater"));
+                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + path.Replace('\\', '/'));
                     client.DownloadFile(uri, path);
                     WriteLine("Done.");
                 }
@@ -580,17 +579,12 @@ namespace TcNo_Acc_Switcher_Updater
 
             // Remove files that need to be removed:
             var filesToDelete = File.ReadAllLines(Path.Join("temp_update", "filesToDelete.txt")).ToList();
-
-
+            
             SetStatusAndLog("Moving files...");
             
             // Move updater files, if any. Will be moved to replace currently running process when main process launched.
             var newFolder = Path.Join("temp_update", "new");
             var patchedFolder = Path.Join("temp_update", "patched");
-            // Copy existing files to upgrade and verify against hashes later
-            if ((Directory.Exists(Path.Join(newFolder, "updater")) || Directory.Exists(Path.Join(patchedFolder, "updater"))) && !Directory.Exists("newUpdater") ) CopyFilesRecursive("updater", "newUpdater");
-            if (Directory.Exists(Path.Join(newFolder, "updater"))) MoveFilesRecursive(Path.Join(newFolder, "updater"), "newUpdater");
-            if (Directory.Exists(Path.Join(patchedFolder, "updater"))) MoveFilesRecursive(Path.Join(patchedFolder, "updater"), "newUpdater");
             
             // Move main files
             MoveFilesRecursive(newFolder, currentDir);
@@ -599,7 +593,6 @@ namespace TcNo_Acc_Switcher_Updater
             foreach (var f in filesToDelete)
             {
                 var path = f;
-                if (path.Contains("updater")) path = path.Replace("updater\\", "newUpdater\\");
                 File.Delete(path);
             }
         }
@@ -743,11 +736,12 @@ namespace TcNo_Acc_Switcher_Updater
 
             DirSearchWithHash(oldFolder, ref _oldDict);
             DirSearchWithHash(newFolder, ref _newDict);
+            DirSearchWithHash(newFolder, ref _allNewDict, true);
 
             // -----------------------------------
             // SAVE DICT OF NEW FILES & HASHES
             // -----------------------------------
-            File.WriteAllText(Path.Join(outputFolder, "hashes.json"), JsonConvert.SerializeObject(_newDict, Formatting.Indented));
+            File.WriteAllText(Path.Join(outputFolder, "hashes.json"), JsonConvert.SerializeObject(_allNewDict, Formatting.Indented));
 
 
             List<string> differentFiles = new();
@@ -815,7 +809,7 @@ namespace TcNo_Acc_Switcher_Updater
                 // Foreach file in directory
                 foreach (var f in Directory.GetFiles(sDir))
                 {
-                    Console.WriteLine(f + "|" + GetFileMd5(f));
+                    //Console.WriteLine(f + "|" + GetFileMd5(f));
                     list.Add(f.Remove(0, f.Split("\\")[0].Length + 1));
                 }
 
@@ -848,7 +842,8 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         /// <param name="sDir">Directory to recursively search</param>
         /// <param name="dict">Dict of strings for files and MD5 hashes</param>
-        private void DirSearchWithHash(string sDir, ref Dictionary<string, string> dict)
+        /// <param name="includeUpdater">Whether to include updater folder -- This is verified and downloaded in the main program.</param>
+        private void DirSearchWithHash(string sDir, ref Dictionary<string, string> dict, bool includeUpdater = false)
         {
             try
             {
@@ -862,6 +857,7 @@ namespace TcNo_Acc_Switcher_Updater
                 // Foreach directory in file
                 foreach (var d in Directory.GetDirectories(sDir))
                 {
+                    if (!includeUpdater && d.EndsWith("updater")) continue; // Ignore updater folder, as this is verified in the main program now.
                     DirSearchWithHash(d, ref dict);
                 }
             }

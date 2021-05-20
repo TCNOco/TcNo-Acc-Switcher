@@ -1,7 +1,8 @@
 {
   "profiles": {
     "TcNo-Acc-Switcher-Updater": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "createupdate"
     }
   }
 }

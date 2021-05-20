@@ -303,7 +303,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
                 <Label Name="StatusLabel" Content="Downloading: xyz.zip" HorizontalAlignment="Left" Margin="10,233,0,0" VerticalAlignment="Top" Foreground="White"/>
                 <ProgressBar Name="ProgressBar" HorizontalAlignment="Center" Height="44" Margin="0,264,0,0" VerticalAlignment="Top" Width="495"/>
                 <Button Name="StartButton" HorizontalAlignment="Left" Height="40" Margin="329,313,0,0" VerticalAlignment="Top" Width="176" Click="StartUpdate_Click" Foreground="{DynamicResource ButtonColor}"/>
-                <TextBox Name="LogBox" Margin="10,10,10,135" BorderBrush="{DynamicResource BorderedItemBorderColor}" BorderThickness="1" Background="{DynamicResource ListBackground}" Foreground="White" />
+                <TextBox Name="LogBox" Margin="10,10,10,135" BorderBrush="{DynamicResource BorderedItemBorderColor}" TextWrapping="Wrap" BorderThickness="1" Background="{DynamicResource ListBackground}" Foreground="White" />
             </Grid>
         </Border>
 

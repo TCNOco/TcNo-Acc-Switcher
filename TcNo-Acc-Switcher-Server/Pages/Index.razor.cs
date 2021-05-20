@@ -12,10 +12,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Net;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -85,6 +90,34 @@ namespace TcNo_Acc_Switcher_Server.Pages
 
         public void UpdateNow()
         {
+            // Download latest hash list
+            const string hashFilePath = "hashes.json";
+            var client = new WebClient();
+            client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
+
+            // Verify updater files
+            var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
+            if (verifyDictionary == null)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error",
+                    "Can verify updater files. Download latest version and replace files in your directory.");
+                return;
+            }
+
+            var updaterDict = verifyDictionary.Where(pair => pair.Key.StartsWith("updater")).ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            // Download and replace broken files
+            if (Directory.Exists("newUpdater")) GeneralFuncs.RecursiveDelete(new DirectoryInfo("newUpdater"), false);
+            foreach (var (key, value) in updaterDict)
+            {
+                if (File.Exists(key))
+                    if (value == GeneralFuncs.GetFileMd5(key))
+                        continue;
+                var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'));
+                client.DownloadFile(uri, key);
+            }
+
+            // Run updater
             Process.Start(new ProcessStartInfo(@"updater\\TcNo-Acc-Switcher-Updater.exe") { UseShellExecute = true });
             Process.GetCurrentProcess().Kill();
         }
