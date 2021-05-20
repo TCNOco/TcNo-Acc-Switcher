@@ -27,23 +27,25 @@ namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Index : ComponentBase
     {
-        public async Task CheckSteam()
+        public async void CheckSteam()
         {
             Globals.DebugWriteLine($@"[Func:Index.CheckSteam]");
 
             if (!GeneralFuncs.CanKillProcess("steam")) return;
 
             Steam.LoadFromFile();
-            if (SteamSwitcherFuncs.SteamSettingsValid() && Directory.Exists(Steam.FolderPath) && File.Exists(Steam.Exe()))
-            {
-                NavManager.NavigateTo("/Steam/");
-            }
-            else
+            if (!Directory.Exists(Steam.FolderPath) || !File.Exists(Steam.Exe()))
             {
                 await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
+                return;
             }
+            
+            if (SteamSwitcherFuncs.SteamSettingsValid())
+                NavManager.NavigateTo("/Steam/");
+            else
+                await GeneralInvocableFuncs.ShowModal("Cannot locate '.../Steam/config/loginusers.vdf'. Try signing into an account first.");
         }
-        public async Task CheckOrigin()
+        public async void CheckOrigin()
         {
             Globals.DebugWriteLine($@"[Func:Index.CheckOrigin]");
 
@@ -51,15 +53,11 @@ namespace TcNo_Acc_Switcher_Server.Pages
 
             Origin.LoadFromFile();
             if (Directory.Exists(Origin.FolderPath) && File.Exists(Origin.Exe()))
-            {
                 NavManager.NavigateTo("/Origin/");
-            }
             else
-            {
                 await GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
-            }
         }
-        public async Task CheckUbisoft()
+        public async void CheckUbisoft()
         {
             Globals.DebugWriteLine($@"[Func:Index.CheckUbisoft]");
 
@@ -67,16 +65,12 @@ namespace TcNo_Acc_Switcher_Server.Pages
 
             Ubisoft.LoadFromFile();
             if (Directory.Exists(Ubisoft.FolderPath) && File.Exists(Ubisoft.Exe()))
-            {
                 NavManager.NavigateTo("/Ubisoft/");
-            }
             else
-            {
                 await GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
-            }
         }
 
-        public async Task CheckBattleNet()
+        public async void CheckBattleNet()
         {
             Globals.DebugWriteLine($@"[Func:Index.CheckBattleNet]");
 
@@ -84,13 +78,9 @@ namespace TcNo_Acc_Switcher_Server.Pages
 
             BattleNet.LoadFromFile();
             if (Directory.Exists(BattleNet.FolderPath) && File.Exists(BattleNet.Exe()))
-            {
                 NavManager.NavigateTo("/BattleNet/");
-            }
             else
-            {
                 await GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
-            }
         }
 
         public void UpdateNow()

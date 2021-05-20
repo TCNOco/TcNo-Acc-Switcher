@@ -189,7 +189,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static async Task ShowModal(string args)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowModal] args={args}");
-            await AppData.ActiveIJsRuntime.InvokeAsync<string>("ShowModal", args);
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("ShowModal", args);
         }
 
         /// <summary>

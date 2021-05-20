@@ -12,8 +12,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using Microsoft.JSInterop;
 using Microsoft.Win32.TaskScheduler;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 {
@@ -37,6 +40,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         public static void StartWithWindows_Toggle(bool shouldExist)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Task.StartWithWindows_Toggle] shouldExist={shouldExist}");
+            try
+            {
+                StartWithWindows(shouldExist);
+            }
+            catch (System.UnauthorizedAccessException)
+            {
+                AppData.ActiveIJsRuntime.InvokeAsync<string>("ShowModal", "notice:RestartAsAdmin");
+            }
+            
+        }
+        private static void StartWithWindows(bool shouldExist){
             switch (shouldExist)
             {
                 case true when !StartWithWindows_Enabled():

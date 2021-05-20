@@ -455,13 +455,17 @@ function ShowModal(modaltype) {
         // GOAL: Runs function when OK clicked.
         console.log(modaltype);
 
-        let action = modaltype.slice(7);
+        let action = modaltype.slice(7); let args = "";
+        if (modaltype.split(":").length > 2) {
+            action = modaltype.slice(7).split(":")[0];
+            args = modaltype.slice(7).split(":")[1];
+        }
 
         let message = "";
         let header = "";
         if (action.startsWith("RestartAsAdmin")) {
             message = restartAsAdminPrompt;
-            action = "location = 'RESTART_AS_ADMIN'";
+            action = (args !== "" ? "location = 'RESTART_AS_ADMIN?arg=" + args + "'" : "location = 'RESTART_AS_ADMIN'");
         } else {
             header = "<h3>Confirm action:</h3>";
             message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
@@ -491,18 +495,33 @@ function ShowModal(modaltype) {
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div id="modal_contents">
 	        <div>
-		        <span class="modal-text">Please enter a name for the ` + platform + ` account you're logged into.</span>
+		        <span class="modal-text">Please enter a name for the ` +
+            platform +
+            ` account you're logged into.</span>
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;"  onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();">
 	        </div>
 	        <div class="settingsCol inputAndButton">
-		        <button class="btn modalOK" type="button" id="set_account_name" onclick="Modal_FinalizeAccString('` + platform + `')"><span>Add current ` + platform + ` account</span></button>
+		        <button class="btn modalOK" type="button" id="set_account_name" onclick="Modal_FinalizeAccString('` +
+            platform +
+            `')"><span>Add current ` +
+            platform +
+            ` account</span></button>
 	        </div>
         </div>`);
         input = document.getElementById('CurrentAccountName');
+    } else {
+        $('#modalTitle').text("Notice");
+        $("#modal_contents").empty();
+        $("#modal_contents").append(`<div class="infoWindow">
+        <div class="fullWidthContent">
+            ` + modaltype + `
+        </div>
+        </div>`);
     }
     $('.modalBG').fadeIn();
+    if (input === undefined) return;
     input.focus();
     input.select();
 }
@@ -523,7 +542,7 @@ function Modal_RequestedLocated(found) {
 function Modal_Finalize(platform, platformSettingsPath) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
     $('.modalBG').fadeOut();
-    $('#acc_list').click();
+    location.reload();
 }
 async function Modal_Confirm(action, value) {
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value).then(r => {
@@ -618,4 +637,4 @@ until it's signed into again through BattleNet, and added to the list.</p>
 <h4>Do you understand?</h4>`;
 
 const restartAsAdminPrompt = `<h3><bold>This program will restart as Admin</bold></h3>
-<p>Hit "Yes" when prompted for admin.</p>`;
+<p>Hit "Yes" in UAC when prompted for admin.</p>`;

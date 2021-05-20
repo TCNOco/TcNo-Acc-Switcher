@@ -239,7 +239,7 @@ namespace TcNo_Acc_Switcher_Client
             Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
             Console.WriteLine(args.Uri);
 
-            if (args.Uri.Contains("RESTART_AS_ADMIN")) RestartAsAdmin();
+            if (args.Uri.Contains("RESTART_AS_ADMIN")) RestartAsAdmin((args.Uri.Contains("arg=") ? args.Uri.Split("arg=")[1] : ""));
 
             if (!args.Uri.Contains("?")) return;
             // Needs to be here as:
@@ -262,13 +262,14 @@ namespace TcNo_Acc_Switcher_Client
 
         }
 
-        private void RestartAsAdmin()
+        private void RestartAsAdmin(string args = "")
         {
             var proc = new ProcessStartInfo
             {
                 WorkingDirectory = Environment.CurrentDirectory,
                 FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher.exe",
                 UseShellExecute = true,
+                Arguments = args,
                 Verb = "runas"
             };
             try
