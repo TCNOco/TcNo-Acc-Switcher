@@ -182,6 +182,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             File.WriteAllText(_battleNetRoaming + "\\Battle.net.config", jObject?.ToString());
 
             GeneralFuncs.StartProgram(BattleNet.Exe(), BattleNet.Admin);
+
+            Globals.RefreshTrayArea();
         }
 
         /// <summary>

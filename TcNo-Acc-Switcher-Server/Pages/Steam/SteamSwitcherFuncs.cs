@@ -350,6 +350,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             if (!autoStartSteam) return;
 
             GeneralFuncs.StartProgram(Steam.Exe(), Steam.Admin);
+
+            Globals.RefreshTrayArea();
         }
 
         /// <summary>

@@ -111,6 +111,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             Globals.AddTrayUser("Epic", "+o:" + accName, accName, Epic.TrayAccNumber); // Add to Tray list
 
             GeneralFuncs.StartProgram(Epic.Exe(), Epic.Admin);
+
+            Globals.RefreshTrayArea();
         }
 
         [SupportedOSPlatform("windows")]
@@ -141,6 +143,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             key.SetValue("AccountId", File.ReadAllText(Path.Join(localCachePath, "AccountId")));
         }
 
+        [SupportedOSPlatform("windows")]
         public static void EpicAddCurrent(string accName)
         {
             Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.EpicAddCurrent]");

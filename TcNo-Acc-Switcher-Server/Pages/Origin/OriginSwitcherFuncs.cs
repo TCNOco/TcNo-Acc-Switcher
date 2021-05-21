@@ -107,6 +107,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             Globals.AddTrayUser("Origin", "+o:" + accName, accName, Origin.TrayAccNumber); // Add to Tray list
 
             GeneralFuncs.StartProgram(Origin.Exe(), Origin.Admin);
+
+            Globals.RefreshTrayArea();
         }
 
 
