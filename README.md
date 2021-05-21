@@ -45,6 +45,7 @@ The new Beta version is available for testing. Please report any and all bugs, a
 
 **New in this version:**
 - **NEW: Battle.net account switcher** Thank's to [iR3turnZ](https://github.com/HoeblingerDaniel) :)
+- **NEW: Epic Games account switcher** (Very early in development, but functional).
 - **NEW: Origin account switcher** (Very early in development, but functional).
 - **NEW: Ubisoft Connect account switcher** (Very early in development, but functional).
 - **NEW:** Better UI, with animations. Fully user/community customisable theme system. 2 Themes built in (so far).
@@ -52,6 +53,8 @@ The new Beta version is available for testing. Please report any and all bugs, a
 - **NEW:** Easier ability to expand into other platforms (Yes, this is coming soon)
 - **NEW:** WAY smaller updates, due to using a new Patch system. No more redownloading the entire app. Only a few MB at a time.
 - **STEAM:** Log in as Invisible, Offline and more! Copy profile links, SteamID and create quick-switch desktop shortcuts!
+
+[For info on how any of these work, see the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki)]
 
 ### Required runtimes (Download and install):
 - **WebView2 Runtime**:  Click [HERE](https://go.microsoft.com/fwlink/p/?LinkId=2124703) and install.
@@ -87,7 +90,7 @@ The new Beta version is available for testing. Please report any and all bugs, a
 
 #### Disclaimer
 All trademarks and materials are property of their respective owners and their licensors.<br>
-This project is not affiliated with Battle.net or Blizzard Entertainment Inc, Origin or Electronic Arts Inc, Steam or Valve Corporation, Ubisoft Connect or Ubisoft Entertainment, or any other companies or groups that this software may have reference to. This project should not be considered "Official" or related to platforms mentioned in any way, other than letting you move your files around on your computer.<br>
+This project is not affiliated with Battle.net or Blizzard Entertainment Inc, Epic Games Inc or the Epic Games Launcher, Origin or Electronic Arts Inc, Steam or Valve Corporation, Ubisoft Connect or Ubisoft Entertainment, or any other companies or groups that this software may have reference to. This project should not be considered "Official" or related to platforms mentioned in any way, other than letting you move your files around on your computer.<br>
 I am not responsible for the contents of external links.<br>
 USE THIS SOFTWARE AT YOUR OWN RISK. I AM NOT RESPONSIBLE FOR ANY DAMAGES IF YOU CHOOSE TO USE THIS SOFTWARE. COMPONENTS ARE PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITHOUT ANY WARRANTIES OF ANY KIND TO THE FULLEST EXTENT PERMITTED BY LAW, AND I EXPRESSLY DISCLAIM ANY AND ALL WARRANTIES, WHETHER EXPRESS OR IMPLIED.
 
