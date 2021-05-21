@@ -86,6 +86,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public static bool ForgetAccount(string accName)
         {
             Globals.DebugWriteLine($@"[Func:EpicEpicSwitcherFuncs.ForgetAccount] Forgetting account: {accName}");
+            var allIds = ReadAllIds();
+            allIds.Remove(allIds.Single(x => x.Value == accName).Key);
+            File.WriteAllText("LoginCache\\Epic\\ids.json", JsonConvert.SerializeObject(allIds));
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Epic\\{accName}"), false);
             return true;
         }
@@ -140,7 +143,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             File.Copy(Path.Join(localCachePath, "GameUserSettings.ini"), _epicGameUserSettings);
 
             using var key = Registry.CurrentUser.CreateSubKey(@"Software\Epic Games\Unreal Engine\Identifiers");
-            key.SetValue("AccountId", File.ReadAllText(Path.Join(localCachePath, "AccountId")));
+
+            var allIds = ReadAllIds();
+            key.SetValue("AccountId", allIds.Single(x => x.Value == accName).Key);
         }
 
         [SupportedOSPlatform("windows")]
@@ -157,8 +162,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             }
             // Save files
             File.Copy(_epicGameUserSettings, Path.Join(localCachePath, "GameUserSettings.ini"), true);
-            using var key = Registry.CurrentUser.OpenSubKey(@"Software\Epic Games\Unreal Engine\Identifiers");
-            File.WriteAllText(Path.Join(localCachePath, "AccountId"), (string)key.GetValue("AccountId"));
             // Save registry key
             var currentAccountId = (string)Registry.CurrentUser.OpenSubKey(@"Software\Epic Games\Unreal Engine\Identifiers")?.GetValue("AccountId");
             if (currentAccountId == null)
@@ -255,6 +258,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             var allIds = ReadAllIds();
             allIds.Remove(allIds.Single(x => x.Value == accName).Key);
             File.WriteAllText("LoginCache\\Epic\\ids.json", JsonConvert.SerializeObject(allIds));
+            GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Epic\\{accName}"), false);
 
             return Task.FromResult(ForgetAccount(accName));
         }
