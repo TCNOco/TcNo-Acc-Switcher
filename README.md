@@ -54,6 +54,8 @@ The new Beta version is available for testing. Please report any and all bugs, a
 - **NEW:** WAY smaller updates, due to using a new Patch system. No more redownloading the entire app. Only a few MB at a time.
 - **STEAM:** Log in as Invisible, Offline and more! Copy profile links, SteamID and create quick-switch desktop shortcuts!
 
+[For info on how any of these work, see the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki)]
+
 ### Required runtimes (Download and install):
 - **WebView2 Runtime**:  Click [HERE](https://go.microsoft.com/fwlink/p/?LinkId=2124703) and install.
 - **Microsoft .NET 5 Desktop Runtime AND: ASP.NET Core 5.0 Runtime:** Click [HERE](https://dotnet.microsoft.com/download/dotnet/5.0/runtime) and click `x64`, as well as `Download Hosting Bundle`. **See below:**
