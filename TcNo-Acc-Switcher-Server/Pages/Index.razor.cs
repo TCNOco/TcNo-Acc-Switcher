@@ -88,6 +88,19 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 await GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
         }
 
+        public async void CheckEpic()
+        {
+            Globals.DebugWriteLine($@"[Func:Index.CheckEpic]");
+
+            if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) return;
+
+            Epic.LoadFromFile();
+            if (Directory.Exists(Epic.FolderPath) && File.Exists(Epic.Exe()))
+                NavManager.NavigateTo("/Epic/");
+            else
+                await GeneralInvocableFuncs.ShowModal("find:Epic:EpicGamesLauncher.exe:EpicSettings");
+        }
+
         public void UpdateNow()
         {
             // Download latest hash list

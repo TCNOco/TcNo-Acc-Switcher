@@ -143,6 +143,9 @@ namespace TcNo_Acc_Switcher_Client
                     case "battlenet":
                         StartPage = "BattleNet"; 
                         break;
+                    case "epic":
+                        StartPage = "Epic";
+                        break;
                     case "steam":
                         StartPage = "Steam";
                         break;

@@ -22,13 +22,15 @@
 @{ AppData.SetActiveNavMan(NavManager); }
 @inject AppData AppData
 
+@inject Data.Settings.BattleNet BattleNet
+@inject Data.Settings.Epic Epic
 @inject Data.Settings.Origin Origin
 @inject Data.Settings.Steam Steam
 @inject Data.Settings.Ubisoft Ubisoft
-@inject Data.Settings.BattleNet BattleNet
 
-@if (AppSettings.Instance.UpdateAvailable) {
-@*@if (true) {*@ 
+@if (AppSettings.Instance.UpdateAvailable)
+{
+    @*@if (true) {*@
     <div class="updateBar" @onclick="UpdateNow"><span>Update available! Click here to start it.</span></div>
 }
 
@@ -43,8 +45,11 @@
         <img src="img/platform/ubisoft.svg" draggable="false" alt="Ubisoft" />
     </div>
     <div class="button platformIcon" id="SwitcherBattleNet" @onclick="CheckBattleNet">
-            <img src="img/platform/blizzard.svg" draggable="false" alt="BattleNet" />
-        </div>
+        <img src="img/platform/blizzard.svg" draggable="false" alt="BattleNet" />
+    </div>
+    <div class="button platformIcon" id="SwitcherEpic" @onclick="CheckEpic">
+        <img src="img/platform/blizzard.svg" draggable="false" alt="Epic Games" />
+    </div>
 </div>
 
 

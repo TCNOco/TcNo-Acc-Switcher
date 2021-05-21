@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Pages.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Origin
 {

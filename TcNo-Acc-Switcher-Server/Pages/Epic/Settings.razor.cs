@@ -21,7 +21,7 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
-namespace TcNo_Acc_Switcher_Server.Pages.Origin
+namespace TcNo_Acc_Switcher_Server.Pages.Epic
 {
     public partial class Settings : ComponentBase
     {
@@ -30,24 +30,24 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         private IJSObjectReference _jsModule;
         protected override async Task OnInitializedAsync()
         {
-            AppData.WindowTitle = "TcNo Account Switcher - Origin Settings";
-            Globals.DebugWriteLine($@"[Auto:Origin\Settings.razor.cs.OnInitializedAsync]");
+            AppData.WindowTitle = "TcNo Account Switcher - Epic Settings";
+            Globals.DebugWriteLine($@"[Auto:Epic\Settings.razor.cs.OnInitializedAsync]");
         }
 
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
         public async Task PickFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Origin\Settings.razor.cs.PickFolder]");
-            await JsRuntime.InvokeAsync<string>("ShowModal", "find:Origin:Origin.exe:OriginSettings");
+            Globals.DebugWriteLine($@"[ButtonClicked:Epic\Settings.razor.cs.PickFolder]");
+            await JsRuntime.InvokeAsync<string>("ShowModal", "find:Epic:upc.exe:EpicSettings");
         }
 
         // BUTTON: Reset settings
         public static void ClearSettings()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Origin\Settings.razor.cs.ClearSettings]");
-            new Data.Settings.Origin().ResetSettings();
-            AppData.ActiveNavMan.NavigateTo("/Origin?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Origin switcher settings"));
+            Globals.DebugWriteLine($@"[ButtonClicked:Epic\Settings.razor.cs.ClearSettings]");
+            new Data.Settings.Epic().ResetSettings();
+            AppData.ActiveNavMan.NavigateTo("/Epic?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Epic switcher settings"));
         }
         #endregion
 
@@ -55,8 +55,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         // BUTTON: Open Folder
         public static void OpenFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Origin\Settings.razor.cs.OpenOriginFolder]");
-            Process.Start("explorer.exe", new Data.Settings.Origin().FolderPath);
+            Globals.DebugWriteLine($@"[ButtonClicked:Epic\Settings.razor.cs.OpenEpicFolder]");
+            Process.Start("explorer.exe", new Data.Settings.Epic().FolderPath);
         }
         
 
