@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.BattleNet;
+using TcNo_Acc_Switcher_Server.Pages.Epic;
 using TcNo_Acc_Switcher_Server.Pages.Origin;
 using TcNo_Acc_Switcher_Server.Pages.Ubisoft;
 
@@ -31,6 +32,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralInvocableFuncs
     {
+        private static readonly Data.Settings.Epic Epic = Data.Settings.Epic.Instance;
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
         private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
         private static readonly Data.Settings.Ubisoft Ubisoft = Data.Settings.Ubisoft.Instance;
@@ -96,6 +98,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "BattleNetSettings":
                     BattleNet.FolderPath = path;
                     break;
+                case "EpicSettings":
+                    Epic.FolderPath = path;
+                    break;
                 case "SteamSettings":
                     Steam.FolderPath = path;
                     break;
@@ -115,18 +120,25 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Console.WriteLine(action);
             Console.WriteLine(value);
             if (!value) return Task.FromResult("");
+            
+            var accName = action.Split(":")[1];
+
+            if (action.StartsWith("AcceptForgetEpicAcc:"))
+            {
+                Epic.SetForgetAcc(true);
+                EpicSwitcherFuncs.ForgetAccount(accName);
+                return Task.FromResult("refresh");
+            }
 
             if (action.StartsWith("AcceptForgetSteamAcc:"))
             {
-                var steamId = action.Split(":")[1];
                 Steam.SetForgetAcc(true);
-                SteamSwitcherFuncs.ForgetAccount(steamId);
+                SteamSwitcherFuncs.ForgetAccount(accName);
                 return Task.FromResult("refresh");
             }
 
             if (action.StartsWith("AcceptForgetOriginAcc:"))
             {
-                var accName = action.Split(":")[1];
                 Origin.SetForgetAcc(true);
                 OriginSwitcherFuncs.ForgetAccount(accName);
                 return Task.FromResult("refresh");
@@ -134,7 +146,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             if (action.StartsWith("AcceptForgetUbisoftAcc:"))
             {
-                var accName = action.Split(":")[1];
                 Ubisoft.SetForgetAcc(true);
                 UbisoftSwitcherFuncs.ForgetAccount(accName);
                 return Task.FromResult("refresh");
@@ -142,7 +153,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             if (action.StartsWith("AcceptForgetBattleNetAcc:"))
             {
-                var accName = action.Split(":")[1];
                 BattleNet.SetForgetAcc(true);
                 BattleNetSwitcherFuncs.ForgetAccount(accName);
                 return Task.FromResult("refresh");
@@ -254,6 +264,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 case "BattleNet":
                     BattleNetSwitcherFuncs.ChangeBTag(id, reqName);
+                    break;
+                case "Epic":
+                    EpicSwitcherFuncs.ChangeUsername(id, reqName);
                     break;
                 case "Origin":
                     OriginSwitcherFuncs.ChangeUsername(id, reqName, true);

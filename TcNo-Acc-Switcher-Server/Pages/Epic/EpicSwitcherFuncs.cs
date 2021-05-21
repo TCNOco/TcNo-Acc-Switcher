@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.JSInterop;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
@@ -20,7 +22,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
     {
         private static readonly Data.Settings.Epic Epic = Data.Settings.Epic.Instance;
         private static string _epicRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Epic");
-        private static string _epicProgramData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Epic");
+        private static string _epicLocalAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EpicGamesLauncher");
+        private static string _epicSavedConfigWin = Path.Join(_epicLocalAppData, "Saved\\Config\\Windows");
+        private static string _epicGameUserSettings = Path.Join(_epicSavedConfigWin, "GameUserSettings.ini");
         /// <summary>
         /// Main function for Epic Account Switcher. Run on load.
         /// Collects accounts from cache folder
@@ -90,8 +94,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         /// Restart Epic with a new account selected. Leave args empty to log into a new account.
         /// </summary>
         /// <param name="accName">(Optional) User's login username</param>
-        /// <param name="state">(Optional) 10 = Invisible, 0 = Default</param>
-        public static void SwapEpicAccounts(string accName = "", int state = 0)
+        [SupportedOSPlatform("windows")]
+        public static void SwapEpicAccounts(string accName = "")
         {
             Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.SwapEpicAccounts] Swapping to: {accName}.");
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Epic");
@@ -100,7 +104,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             ClearCurrentLoginEpic();
             if (accName != "")
             {
-                EpicCopyInAccount(accName, state);
+                EpicCopyInAccount(accName);
             }
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Epic");
 
@@ -109,157 +113,82 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             GeneralFuncs.StartProgram(Epic.Exe(), Epic.Admin);
         }
 
-
+        [SupportedOSPlatform("windows")]
         private static void ClearCurrentLoginEpic()
         {
             Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.ClearCurrentLoginEpic]");
             // Get current information for logged in user, and save into files:
-            var currentOlcHashes = (from f in new DirectoryInfo(_epicProgramData).GetFiles() where f.Name.EndsWith(".olc") select GeneralFuncs.GetFileMd5(f.FullName)).ToList();
+            var currentAccountId = (string)Registry.CurrentUser.OpenSubKey(@"Software\Epic Games\Unreal Engine\Identifiers")?.GetValue("AccountId");
 
-            var activeAccount = "";
-            var allOlc = ReadAllOlc();
-            foreach (var (key, val) in allOlc)
-            {
-                if (activeAccount != "") break;
-                if (currentOlcHashes.Any(cH => val.Contains(cH)))
-                {
-                    activeAccount = key;
-                }
-            }
-            // Copy files in:
-            if (activeAccount != "")
-            {
-                EpicAddCurrent(activeAccount);
-            }
-
-            // Clear for next login
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(_epicRoaming, "ConsolidatedCache")), true);
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(_epicRoaming, "NucleusCache")), true);
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(_epicRoaming, "Logs")), true);
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(_epicProgramData, "Subscription")), false);
-            Directory.CreateDirectory(Path.Join(_epicProgramData, "Subscription"));
-
-            foreach (var f in new DirectoryInfo(_epicRoaming).GetFiles())
-            {
-                if (f.Name.StartsWith("local") && f.Name.EndsWith(".xml"))
-                {
-                    File.Delete(f.FullName);
-                }
-            }
-            foreach (var f in new DirectoryInfo(_epicProgramData).GetFiles())
-            {
-                if (f.Name.EndsWith(".xml") || f.Name.EndsWith(".olc"))
-                {
-                    File.Delete(f.FullName);
-                }
-            }
-            File.WriteAllText(_epicProgramData + "\\local.xml", "<?xml version=\"1.0\"?><Settings><Setting key=\"OfflineLoginUrl\" value=\"https://signin.ea.com/p/originX/offline\" type=\"10\"/></Settings>");
+            var allIds = ReadAllIds();
+            if (currentAccountId != null && allIds.ContainsKey(currentAccountId))
+                EpicAddCurrent(allIds[currentAccountId]);
+            
+            if (File.Exists(_epicGameUserSettings)) File.Delete(_epicGameUserSettings); // Delete GameUserSettings.ini file
+            using var key = Registry.CurrentUser.CreateSubKey(@"Software\Epic Games\Unreal Engine\Identifiers");
+            key.SetValue("AccountId", ""); // Clear logged in account in registry, but leave MachineId
         }
 
-        private static void EpicCopyInAccount(string accName, int state = 0)
+        [SupportedOSPlatform("windows")]
+        private static void EpicCopyInAccount(string accName)
         {
             Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.EpicCopyInAccount]");
             var localCachePath = $"LoginCache\\Epic\\{accName}\\";
-            var localCachePathData = $"LoginCache\\Epic\\{accName}\\Data\\";
 
-            GeneralFuncs.CopyFilesRecursive($"{localCachePath}ConsolidatedCache", Path.Join(_epicRoaming, "ConsolidatedCache"));
-            GeneralFuncs.CopyFilesRecursive($"{localCachePath}NucleusCache", Path.Join(_epicRoaming, "NucleusCache"));
-            GeneralFuncs.CopyFilesRecursive($"{localCachePath}Logs", Path.Join(_epicRoaming, "Logs"));
-            GeneralFuncs.CopyFilesRecursive($"{localCachePathData}Subscription", Path.Join(_epicProgramData, "Subscription"));
+            File.Copy(Path.Join(localCachePath, "GameUserSettings.ini"), _epicGameUserSettings);
 
-            foreach (var f in new DirectoryInfo(localCachePath).GetFiles())
-            {
-                if (!f.Name.StartsWith("local") || !f.Name.EndsWith(".xml")) continue;
-                File.Copy(f.FullName, Path.Join(_epicRoaming, f.Name), true);
-                if (f.Name == "local.xml") continue;
-                //LoginAsInvisible
-                var profileXml = new XmlDocument();
-                profileXml.Load(f.FullName);
-                if (profileXml.DocumentElement == null) continue;
-                foreach (XmlNode n in profileXml.DocumentElement.SelectNodes("/Settings/Setting"))
-                {
-                    if (n.Attributes?["key"]?.Value != "LoginAsInvisible") continue;
-                    n.Attributes["value"].Value = (state == 10 ? "true" : "false");
-                    profileXml.Save(Path.Join(_epicRoaming, f.Name));
-                    break;
-                }
-            }
-
-            foreach (var f in new DirectoryInfo(localCachePathData).GetFiles())
-            {
-                if (f.Name.EndsWith(".xml") || f.Name.EndsWith(".olc"))
-                {
-                    File.Copy(f.FullName, Path.Join(_epicProgramData, f.Name), true);
-                }
-            }
+            using var key = Registry.CurrentUser.CreateSubKey(@"Software\Epic Games\Unreal Engine\Identifiers");
+            key.SetValue("AccountId", File.ReadAllText(Path.Join(localCachePath, "AccountId")));
         }
 
         public static void EpicAddCurrent(string accName)
         {
             Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.EpicAddCurrent]");
             var localCachePath = $"LoginCache\\Epic\\{accName}\\";
-            var localCachePathData = $"LoginCache\\Epic\\{accName}\\Data\\";
             Directory.CreateDirectory(localCachePath);
+
+            if (!File.Exists(_epicGameUserSettings))
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", "Could not locate logged in user");
+                return;
+            }
+            // Save files
+            File.Copy(_epicGameUserSettings, Path.Join(localCachePath, "GameUserSettings.ini"), true);
+            using var key = Registry.CurrentUser.OpenSubKey(@"Software\Epic Games\Unreal Engine\Identifiers");
+            File.WriteAllText(Path.Join(localCachePath, "AccountId"), (string)key.GetValue("AccountId"));
+            // Save registry key
+            var currentAccountId = (string)Registry.CurrentUser.OpenSubKey(@"Software\Epic Games\Unreal Engine\Identifiers")?.GetValue("AccountId");
+            if (currentAccountId == null)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", "Failed to get AccountId from Registry!");
+                return;
+            }
+
+            var allIds = ReadAllIds();
+            allIds[currentAccountId] = accName;
+            File.WriteAllText("LoginCache\\Epic\\ids.json", JsonConvert.SerializeObject(allIds));
+
+            // Copy in profile image from default
+            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\epic"));
+            File.Copy(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\EpicDefault.png"), Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\epic\\{Uri.EscapeUriString(accName)}.jpg"), true);
             
-            GeneralFuncs.CopyFilesRecursive(Path.Join(_epicRoaming, "ConsolidatedCache"), $"{localCachePath}ConsolidatedCache");
-            GeneralFuncs.CopyFilesRecursive(Path.Join(_epicRoaming, "NucleusCache"), $"{localCachePath}NucleusCache");
-            GeneralFuncs.CopyFilesRecursive(Path.Join(_epicRoaming, "Logs"), $"{localCachePath}Logs");
-            GeneralFuncs.CopyFilesRecursive(Path.Join(_epicProgramData, "Subscription"), $"{localCachePathData}Subscription");
-
-            var pfpFilePath = "";
-            foreach (var f in new DirectoryInfo(_epicRoaming).GetFiles())
-            {
-                if (f.Name.StartsWith("local") && f.Name.EndsWith(".xml"))
-                {
-                    File.Copy(f.FullName, $"{localCachePath}{f.Name}", true);
-                }
-
-                if (f.Name == "local.xml") continue;
-                if (pfpFilePath != "") continue;
-                // Handle profile picture (Unfortunately the low-res one. No idea how to find the file name of the full one...)
-                var profileXml = new XmlDocument();
-                profileXml.Load(f.FullName);
-                if (profileXml.DocumentElement == null) continue;
-                foreach (XmlNode n in profileXml.DocumentElement.SelectNodes("/Settings/Setting"))
-                {
-                    if (n.Attributes?["key"]?.Value != "UserAvatarCacheURL") continue;
-                    pfpFilePath = n.Attributes["value"]?.Value;
-                    break;
-                }
-            }
-
-            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\epic\\"));
-            File.Copy((pfpFilePath != "" ? pfpFilePath :  Path.Join(GeneralFuncs.WwwRoot,"img\\QuestionMark.jpg"))!, Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\epic\\{Uri.EscapeUriString(accName)}.jpg"), true);
-
-            var olcHashes = new List<string>();
-            foreach (var f in new DirectoryInfo(_epicProgramData).GetFiles())
-            {
-                if (f.Name.EndsWith(".xml"))
-                {
-                    File.Copy(f.FullName, $"{localCachePathData}{f.Name}", true);
-                }else if (f.Name.EndsWith(".olc"))
-                {
-                    File.Copy(f.FullName, $"{localCachePathData}{f.Name}", true);
-                    olcHashes.Add(GeneralFuncs.GetFileMd5(f.FullName)); // Add hashes to list
-                }
-            }
-
-            var allOlc = ReadAllOlc();
-            allOlc[accName] = olcHashes;
-            File.WriteAllText("LoginCache\\Epic\\olc.json", JsonConvert.SerializeObject(allOlc));
             AppData.ActiveNavMan?.NavigateTo("/Epic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
         }
 
-        public static void ChangeUsername(string oldName, string newName, bool reload = false)
+        public static void ChangeUsername(string oldName, string newName, bool reload = true)
         {
-            var allOlc = ReadAllOlc();
-            if (!ChangeKey(ref allOlc, oldName, newName)) // Rename account in olc.json
+            var allIds = ReadAllIds();
+            try
+            {
+                allIds[allIds.Single(x => x.Value == oldName).Key] = newName;
+                File.WriteAllText("LoginCache\\Epic\\ids.json", JsonConvert.SerializeObject(allIds));
+            }
+            catch (Exception e)
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", "Could not change username", "Error", "toastarea");
                 return;
             }
-            File.WriteAllText("LoginCache\\Epic\\olc.json", JsonConvert.SerializeObject(allOlc));
-
+            
             File.Move(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\epic\\{Uri.EscapeUriString(oldName)}.jpg"),
                 Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\epic\\{Uri.EscapeUriString(newName)}.jpg")); // Rename image
             Directory.Move($"LoginCache\\Epic\\{oldName}\\", $"LoginCache\\Epic\\{newName}\\"); // Rename login cache folder
@@ -277,16 +206,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             return true;
         }
 
-        private static Dictionary<string, List<string>> ReadAllOlc()
+        private static Dictionary<string, string> ReadAllIds()
         {
-            Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.ReadAllOlc]");
-            var localAllOlc = $"LoginCache\\Epic\\olc.json";
-            var s = JsonConvert.SerializeObject(new Dictionary<string, List<string>>());
-            if (File.Exists(localAllOlc))
+            Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.ReadAllIds]");
+            var localAllIds = $"LoginCache\\Epic\\ids.json";
+            var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
+            if (File.Exists(localAllIds))
             {
                 try
                 {
-                     s = File.ReadAllText(localAllOlc);
+                     s = File.ReadAllText(localAllIds);
                 }
                 catch (Exception)
                 {
@@ -294,7 +223,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
                 }
             }
 
-            return JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(s);
+            return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
         }
 
 
@@ -305,27 +234,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public static bool CloseEpic()
         {
             Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.CloseSteam]");
-            if (!GeneralFuncs.CanKillProcess("epic")) return false;
-            Globals.KillProcess("epic");
+            if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher")) return false;
+            Globals.KillProcess("EpicGamesLauncher");
             return true;
-        }
-        /// <summary>
-        /// Clears images folder of contents, to re-download them on next load.
-        /// </summary>
-        /// <returns>Whether files were deleted or not</returns>
-        public static async void ClearImages()
-        {
-            Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.ClearImages] Clearing images.");
-            //if (!Directory.Exists(Steam.SteamImagePath))
-            //{
-            //    await GeneralInvocableFuncs.ShowToast("error", "Could not clear images", "Error", "toastarea");
-            //}
-            //foreach (var file in Directory.GetFiles(Epic.EpicImage))
-            //{
-            //    File.Delete(file);
-            //}
-            //// Reload page, then display notification using a new thread.
-            AppData.ActiveNavMan?.NavigateTo("/Epic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared images"), true);
         }
 
         /// <summary>
@@ -337,10 +248,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public static Task<bool> ForgetEpicAccountJs(string accName)
         {
             Globals.DebugWriteLine($@"[JSInvoke:Epic\EpicSwitcherFuncs.ForgetEpicAccountJs] accName:{accName}");
-            var allOlc = ReadAllOlc();
-            allOlc.Remove(accName);
-            var olcHashString = JsonConvert.SerializeObject(allOlc);
-            File.WriteAllText("LoginCache\\Epic\\olc.json", olcHashString);
+
+            var allIds = ReadAllIds();
+            allIds.Remove(allIds.Single(x => x.Value == accName).Key);
+            File.WriteAllText("LoginCache\\Epic\\ids.json", JsonConvert.SerializeObject(allIds));
+
             return Task.FromResult(ForgetAccount(accName));
         }
 

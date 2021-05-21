@@ -13,12 +13,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         /// JS function handler for swapping to another Epic account.
         /// </summary>
         /// <param name="accName">Requested account's Login Username</param>
-        /// <param name="state">Requested account's Login state</param>
         [JSInvokable]
-        public static void SwapToEpic(string accName, int state = 0)
+        public static void SwapToEpic(string accName)
         {
             Globals.DebugWriteLine($@"[JSInvoke:Epic\EpicSwitcherBase.SwapToEpic] accName:{accName}");
-            EpicSwitcherFuncs.SwapEpicAccounts(accName, state);
+            EpicSwitcherFuncs.SwapEpicAccounts(accName);
         }
 
         [JSInvokable]

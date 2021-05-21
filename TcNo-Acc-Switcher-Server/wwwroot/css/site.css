@@ -413,19 +413,26 @@ div.advancedClearingButtonCol {
     margin: 0;
     position: absolute;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    left: 25%;
+    transform: translate(-17.5%, -50%);
+    text-align: center;
 }
 .platformIcon {
-    width: 25vw;
+    width: 20vw;
     max-width: calc(100vw / 4.106);
     display: inline-block;
     cursor: pointer;
     border: var(--linkColor) 1px solid;
+    margin: 10px;
+    transition: all 100ms ease-in-out;
 }
-.platformIcon:hover {
-    background-color: #00000033;
-}
-.platformIcon:active {
-    background-color: #00000055;
-}
+    .platformIcon:hover {
+        background-color: #00000033;
+        transform: scale(1.025);
+        filter: brightness(110%) saturate(1.10) drop-shadow(0 0 0.1rem var(--linkColor));
+    }
+    .platformIcon:active {
+        background-color: #00000055;
+        transform: scale(0.975);
+        filter: brightness(95%) saturate(1.20) contrast(105%) drop-shadow(0 0 0.2rem var(--linkColor));
+    }

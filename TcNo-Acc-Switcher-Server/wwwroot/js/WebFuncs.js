@@ -28,10 +28,13 @@ function CopyToClipboard(str) {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyToClipboard", str);
 }
 
-// FORGETTING STEAM ACCOUNTS
+// FORGETTING ACCOUNTS
 function forget(e) {
     e.preventDefault();
     switch (currentpage) {
+        case "Epic":
+            promptForgetEpic();
+                break;
         case "Steam":
             promptForgetSteam();
             break;
@@ -61,6 +64,15 @@ async function promptForgetSteam() {
     var result = await promise;
 }
 
+async function promptForgetEpic() {
+    const reqId = $(SelectedElem).attr("id");
+
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetEpicForgetAcc").then(r => {
+        if (!r) ShowModal("confirm:AcceptForgetEpicAcc:" + reqId);
+        else Modal_Confirm("AcceptForgetEpicAcc:" + reqId, true);
+    });
+    var result = await promise;
+}
 
 
 async function promptForgetBattleNet() {
@@ -228,6 +240,9 @@ function SwapTo(request, e) {
 
     // Different function groups based on platform
     switch (currentpage) {
+        case "Epic":
+            epic();
+                break;
         case "Steam":
             steam();
             break;
@@ -244,40 +259,43 @@ function SwapTo(request, e) {
             break;
     }
 
+    // General function: Get selected account
+    var selected;
+    function getSelected() {
+        // This may be unnecessary.
+        selected = $(".acc:checked");
+        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return false; }
+        return true;
+    }
+
     //Steam: 
     function steam() {
-        // This may be unnecessary.
-        var selected = $(".acc:checked");
-        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
-        
+        if (!getSelected()) return;
         DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToSteam", selected.attr("SteamID64"), selected.attr("Username"), request);
         return;
     }
     //Origin:
     function origin() {
-        // This may be unnecessary.
-        var selected = $(".acc:checked");
-        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
-
+        if (!getSelected()) return;
         DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToOrigin", selected.attr("id"), request);
         return;
     }
     //Ubisoft:
     function ubisoft() {
-        // This may be unnecessary.
-        var selected = $(".acc:checked");
-        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
-
+        if (!getSelected()) return;
         DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToUbisoft", selected.attr("id"), request);
         return;
     }
     //BattleNet:
     function battleNet() {
-        // This may be unnecessary.
-        var selected = $(".acc:checked");
-        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
-
+        if (!getSelected()) return;
         DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToBattleNet", selected.attr("id"));
+        return;
+    }
+    //Epic:
+    function epic() {
+        if (!getSelected()) return;
+        DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToEpic", selected.attr("id"));
         return;
     }
 }
@@ -313,6 +331,15 @@ function CurrentOriginLogin() {
     ShowModal("accString:Origin");
 }
 
+
+// New Epic accounts
+function NewEpicLogin() {
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToEpic", "");
+}
+// Add currently logged in Origin account
+function CurrentEpicLogin() {
+    ShowModal("accString:Epic");
+}
 
 
 // New BattleNet accounts
@@ -429,6 +456,8 @@ function ShowModal(modaltype) {
             message = forgetAccountUbisoftPrompt;
         } else if (action.startsWith("AcceptForgetBattleNetAcc")) {
             message = forgetAccountBattleNetPrompt;
+        } else if (action.startsWith("AcceptForgetEpicAcc")){
+            message = forgetAccountEpicPrompt;
         } else {
             header = "<h3>Confirm action:</h3>";
             message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
@@ -556,6 +585,9 @@ function Modal_FinalizeAccString(platform) {
     switch (platform) {
         case "Origin":
             DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "OriginAddCurrent", $("#CurrentAccountName").val());
+                break;
+        case "Epic":
+            DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "EpicAddCurrent", $("#CurrentAccountName").val());
             break;
         default:
             break;
@@ -633,6 +665,13 @@ const forgetAccountBattleNetPrompt = `<h3 style='color:red'>You are about to for
 <h4>What does this mean?</h4>
 <p>TcNo Account Switcher will also no longer show the account,<br/>
 until it's signed into again through BattleNet, and added to the list.</p>
+<p>Your account will remain untouched. It is just forgotten on this computer.</p>
+<h4>Do you understand?</h4>`;
+
+const forgetAccountEpicPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
+<h4>What does this mean?</h4>
+<p>TcNo Account Switcher will also no longer show the account,<br/>
+until it's signed into again through the Epic Games Launcher, and added to the list.</p>
 <p>Your account will remain untouched. It is just forgotten on this computer.</p>
 <h4>Do you understand?</h4>`;
 
