@@ -12,12 +12,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -143,7 +139,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Globals.DebugWriteLine($@"[Func:Data\Settings\Ubisoft.DesktopShortcut_Toggle]");
             var s = new Shortcut();
             s.Shortcut_Platform(Shortcut.Desktop, "Ubisoft", "ubisoft");
-            s.ToggleShortcut(!DesktopShortcut, true);
+            s.ToggleShortcut(!DesktopShortcut);
         }
         #endregion
     }

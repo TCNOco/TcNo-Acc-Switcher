@@ -13,16 +13,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks.Dataflow;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using TcNo_Acc_Switcher_Globals;
@@ -156,7 +153,7 @@ namespace TcNo_Acc_Switcher_Client
                         StartPage = "Ubisoft";
                         break;
                     case "logout":
-                        TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts("", "");
+                        TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts();
                         quitArg = true;
                         break;
                     case "quit":

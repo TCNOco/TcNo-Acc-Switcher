@@ -19,14 +19,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
-using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
-using Task = System.Threading.Tasks.Task;
 
 namespace TcNo_Acc_Switcher_Server.Pages
 {

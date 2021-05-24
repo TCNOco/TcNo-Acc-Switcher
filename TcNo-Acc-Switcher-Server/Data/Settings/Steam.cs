@@ -216,8 +216,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         {
             Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
             var s = new Shortcut();
-            s.Shortcut_Platform(Shortcut.Desktop, "Steam", "steam");
-            s.ToggleShortcut(!DesktopShortcut, true);
+            s.Shortcut_Platform(Shortcut.Desktop);
+            s.ToggleShortcut(!DesktopShortcut);
         }
         #endregion
     }

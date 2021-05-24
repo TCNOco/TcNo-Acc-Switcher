@@ -15,17 +15,12 @@
 // Special thanks to iR3turnZ for contributing to this platform's account switcher
 // iR3turnZ: https://github.com/HoeblingerDaniel
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Svg.ExCSS.Model.Extensions;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -217,7 +212,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Globals.DebugWriteLine($@"[Func:Data\Settings\BattleNet.DesktopShortcut_Toggle]");
             var s = new Shortcut();
             s.Shortcut_Platform(Shortcut.Desktop, "BattleNet", "battlenet");
-            s.ToggleShortcut(!DesktopShortcut, true);
+            s.ToggleShortcut(!DesktopShortcut);
         }
         #endregion
         

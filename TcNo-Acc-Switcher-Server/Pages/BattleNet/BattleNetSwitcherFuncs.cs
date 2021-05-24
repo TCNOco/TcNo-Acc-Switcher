@@ -17,20 +17,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
-using TcNo_Acc_Switcher_Server.Pages.BattleNet;
-using Formatting = System.Xml.Formatting;
 
 namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 {

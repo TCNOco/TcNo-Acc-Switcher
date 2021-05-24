@@ -20,22 +20,21 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
-using System.Threading;
-using System.Windows.Forms;
 using System.Windows.Interop;
+using System.Windows.Media;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
-using MessageBox = System.Windows.MessageBox;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
-using Path = System.IO.Path;
+using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Shared;
+using Point = System.Drawing.Point;
 
 namespace TcNo_Acc_Switcher_Client
 {
@@ -46,7 +45,7 @@ namespace TcNo_Acc_Switcher_Client
     public partial class MainWindow : Window
     {
         private static readonly Thread Server = new(RunServer);
-        public static readonly TcNo_Acc_Switcher_Server.Data.AppSettings AppSettings = TcNo_Acc_Switcher_Server.Data.AppSettings.Instance;
+        public static readonly AppSettings AppSettings = AppSettings.Instance;
         private static string _address = "";
 
         private static void RunServer()
@@ -57,7 +56,7 @@ namespace TcNo_Acc_Switcher_Client
                 Console.WriteLine("Server was already running. Killing process."); 
                 Globals.KillProcess(serverPath); // Kill server if already running
             }
-            Program.Main(new string[1] { _address });
+            Program.Main(new[] { _address });
         }
         
         public MainWindow()
@@ -78,8 +77,8 @@ namespace TcNo_Acc_Switcher_Client
             
             MainBackground.Background = (Brush)new BrushConverter().ConvertFromString(AppSettings.Stylesheet["headerbarBackground"]);
             
-            this.Width = AppSettings.WindowSize.X;
-            this.Height = AppSettings.WindowSize.Y;
+            Width = AppSettings.WindowSize.X;
+            Height = AppSettings.WindowSize.Y;
             StateChanged += WindowStateChange;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
         }
@@ -87,7 +86,7 @@ namespace TcNo_Acc_Switcher_Client
         private async void MView2_OnInitialised(object? sender, EventArgs e)
         {
             MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
-            await MView2.EnsureCoreWebView2Async(null);
+            await MView2.EnsureCoreWebView2Async();
             MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
             //MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
             MView2.NavigationStarting += UrlChanged;
@@ -111,7 +110,7 @@ namespace TcNo_Acc_Switcher_Client
             var message = JObject.Parse(e.ParameterObjectAsJson);
             if (message.ContainsKey("exceptionDetails"))
             {
-                Console.WriteLine(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION: " + message?.SelectToken("exceptionDetails.exception.description"));
+                Console.WriteLine(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION: " + message.SelectToken("exceptionDetails.exception.description"));
             }
             else
             {
@@ -138,7 +137,7 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         private static void FindOpenPort()
         {
-            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.FindOpenPort]");
+            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.FindOpenPort]");
             var originalPort = AppSettings.ServerPort;
             // Check if port available:
             var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
@@ -146,7 +145,7 @@ namespace TcNo_Acc_Switcher_Client
             while (true)
             {
                 if (tcpConnInfoArray.Count(x => x.LocalEndPoint.Port == AppSettings.ServerPort) == 0) break;
-                else AppSettings.ServerPort++;
+                AppSettings.ServerPort++;
             }
 
             if (AppSettings.ServerPort != originalPort) AppSettings.SaveSettings();
@@ -156,7 +155,7 @@ namespace TcNo_Acc_Switcher_Client
         // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
         private void WebView_CoreWebView2Ready(object sender, EventArgs e)
         {
-            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.WebView_CoreWebView2Ready]");
+            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.WebView_CoreWebView2Ready]");
             var eventForwarder = new Headerbar.EventForwarder(new WindowInteropHelper(this).Handle);
 
             MView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
@@ -168,7 +167,7 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         private void WindowStateChange(object sender, EventArgs e)
         {
-            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.WindowStateChange]");
+            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.WindowStateChange]");
 
             if (AppSettings.TrayMinimizeLessMem) new Thread(CheckVisibility).Start();
 
@@ -214,7 +213,7 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         protected override void OnClosing(CancelEventArgs e)
         {
-            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.OnClosing]");
+            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.OnClosing]");
             SaveSettings(MView2.Source.AbsolutePath);
         }
 
@@ -228,7 +227,7 @@ namespace TcNo_Acc_Switcher_Client
             // TODO: IN THE FUTURE: ONLY DO THIS FOR THE MAIN PAGE WHERE YOU CAN CHOOSE WHAT PLATFORM TO SWAP ACCOUNTS ON
             // This will only be when that's implemented. Easier to leave it until then.
             //MessageBox.Show(windowUrl);
-            AppSettings.WindowSize = new System.Drawing.Point(){ X = Convert.ToInt32(this.Width), Y = Convert.ToInt32(this.Height) };
+            AppSettings.WindowSize = new Point { X = Convert.ToInt32(Width), Y = Convert.ToInt32(Height) };
             AppSettings.SaveSettings();
         }
 
@@ -237,7 +236,7 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         private void UrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
-            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
+            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
             Console.WriteLine(args.Uri);
 
             if (args.Uri.Contains("RESTART_AS_ADMIN")) RestartAsAdmin((args.Uri.Contains("arg=") ? args.Uri.Split("arg=")[1] : ""));
@@ -280,14 +279,14 @@ namespace TcNo_Acc_Switcher_Client
             }
             catch (Exception ex)
             {
-                Console.WriteLine("This program must be run as an administrator! \n\n" + ex.ToString());
+                Console.WriteLine("This program must be run as an administrator! \n\n" + ex);
                 Environment.Exit(0);
             }
         }
 
         public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)
         {
-            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.ExecuteScriptFunctionAsync]");
+            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.ExecuteScriptFunctionAsync]");
             var script = functionName + "(";
             for (var i = 0; i < parameters.Length; i++)
             {

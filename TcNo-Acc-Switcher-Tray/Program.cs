@@ -18,7 +18,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Windows.Forms;
 using TcNo_Acc_Switcher_Globals;
@@ -64,7 +63,7 @@ namespace TcNo_Acc_Switcher_Tray
 
     public class AppCont : ApplicationContext
     {
-        private readonly string _mainProgram = Path.Join(Path.GetDirectoryName(Process.GetCurrentProcess()?.MainModule?.FileName)!, "TcNo-Acc-Switcher.exe");
+        private readonly string _mainProgram = Path.Join(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!, "TcNo-Acc-Switcher.exe");
 
         private NotifyIcon _trayIcon;
 
@@ -164,9 +163,9 @@ namespace TcNo_Acc_Switcher_Tray
                 else StartSwitcher($"{item.Name} quit");
             }
             else
-                StartSwitcher("");
+                StartSwitcher();
         }
-        private void NotifyIcon_DoubleClick(object sender, EventArgs e) => StartSwitcher("");
+        private void NotifyIcon_DoubleClick(object sender, EventArgs e) => StartSwitcher();
 
         private static bool AlreadyRunning() => Process.GetProcessesByName("TcNo-Acc-Switcher").Length > 0;
 

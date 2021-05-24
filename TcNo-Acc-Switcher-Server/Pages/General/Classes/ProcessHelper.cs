@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Security.Principal;
-using System.Threading.Tasks;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 {
@@ -58,10 +57,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             return true;
         }
 
+        [SupportedOSPlatform("windows")]
         private static bool isHandleAdmin(IntPtr handle)
         {
-            var ph = IntPtr.Zero;
-            OpenProcessToken(handle, TokenAllAccess, out ph);
+            OpenProcessToken(handle, TokenAllAccess, out var ph);
 
             if (ph == IntPtr.Zero) return true;
 

@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TcNo_Acc_Switcher_Client" xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         MinHeight="450" MinWidth="800"
@@ -26,7 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
         ResizeMode="CanResizeWithGrip">
     <!--<Grid x:Name="MainBackground" Background="#28293A">-->
     <Grid x:Name="MainBackground">
-        <wpf:WebView2 x:Name="MView2" Initialized="MView2_OnInitialised"></wpf:WebView2>
+        <wpf:WebView2 x:Name="MView2" Initialized="MView2_OnInitialised" />
     </Grid>
 
 </Window>

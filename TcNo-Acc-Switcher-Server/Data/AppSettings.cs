@@ -301,7 +301,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
             var s = new Shortcut();
             s.Shortcut_Switcher(Shortcut.Desktop);
-            s.ToggleShortcut(!DesktopShortcut, true);
+            s.ToggleShortcut(!DesktopShortcut);
         }
         public void StartMenu_Toggle()
         {

@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TcNo_Acc_Switcher_Updater"
         mc:Ignorable="d"
         Title="MainWindow" Height="397" Width="523"
         Closed="Window_Closed"
@@ -64,11 +63,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="Black"></Setter>
-                                <Setter Property="Background" Value="{DynamicResource WindowControlsCloseBackground}"></Setter>
+                                <Setter Property="Foreground" Value="Black" />
+                                <Setter Property="Background" Value="{DynamicResource WindowControlsCloseBackground}" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource WindowControlsCloseBackgroundActive}"></Setter>
+                                <Setter Property="Background" Value="{DynamicResource WindowControlsCloseBackgroundActive}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -89,10 +88,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource WindowControlsBackgroundHover}"></Setter>
+                                <Setter Property="Background" Value="{DynamicResource WindowControlsBackgroundHover}" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource WindowControlsBackgroundActive}"></Setter>
+                                <Setter Property="Background" Value="{DynamicResource WindowControlsBackgroundActive}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -294,8 +293,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
                 </Canvas>
             </Canvas>
         </Canvas>
-        <Button Panel.ZIndex="3" Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="BtnMinimize"></Button>
-        <Button Panel.ZIndex="3" Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="BtnExit"></Button>
+        <Button Panel.ZIndex="3" Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="BtnMinimize" />
+        <Button Panel.ZIndex="3" Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="BtnExit" />
 
         <!-- Row 1: Main content -->
         <Border Grid.Row="1" Name="BorderBlock" BorderBrush="{DynamicResource HeaderColor}" BorderThickness="4, 0, 4, 4">
