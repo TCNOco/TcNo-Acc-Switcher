@@ -29,7 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class Ubisoft
     {
-        private static Ubisoft _instance = new Ubisoft();
+        private static Ubisoft _instance = new();
 
         public Ubisoft() { }
         private static readonly object LockObj = new();

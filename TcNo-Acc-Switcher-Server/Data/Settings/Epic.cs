@@ -29,7 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class Epic
     {
-        private static Epic _instance = new Epic();
+        private static Epic _instance = new();
 
         public Epic() { }
         private static readonly object LockObj = new();

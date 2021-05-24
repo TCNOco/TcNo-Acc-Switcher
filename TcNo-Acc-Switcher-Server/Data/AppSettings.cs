@@ -156,7 +156,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             { "listBackground", "#222" },
             { "listColor", "white" },
             { "listColor-checked", "white" },
-            { "listBackgroundColor-checked", "FFAA00" },
+            { "listBackgroundColor-checked", "#FFAA00" },
             { "listTextColor-before", "#FFAA00" },
             { "listTextColor-before-checked", "#945300" },
             { "listTextColor-after", "#3DFF89" },
@@ -274,7 +274,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!File.Exists(StylesheetFile)) SaveStyles();
             //var s = GeneralFuncs.LoadSettings(StylesheetFile, GetStylesJObject()).ToObject<Dictionary<string, string>>();
             var s = GeneralFuncs.LoadSettings(StylesheetFile, GetStylesJObject()).ToObject<Dictionary<string, string>>();
-            _instance._stylesheet = s.Count != 0 ? s : _instance._stylesheet;
+            _instance._stylesheet = s != null && s.Count != 0 ? s : _instance._stylesheet;
         }
 
         public JObject GetJObject() => JObject.FromObject(this);

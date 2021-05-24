@@ -52,7 +52,7 @@ namespace TcNo_Acc_Switcher_Updater
                         TcNo_Acc_Switcher_Updater.MainWindow.QueueCreateUpdate = true;
                         break;
                     default:
-                        Console.WriteLine($"Unknown argument: \"{e.Args[i]}\"");
+                        Console.WriteLine($@"Unknown argument: ""{e.Args[i]}""");
                         break;
                 }
             }

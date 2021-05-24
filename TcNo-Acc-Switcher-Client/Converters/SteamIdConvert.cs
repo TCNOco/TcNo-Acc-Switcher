@@ -78,9 +78,9 @@ namespace TcNo_Acc_Switcher_Client.Converters
             return (int.Parse(input) % 2).ToString();
         }
 
-        private string FloorDivide(string sIn, int divIn)
+        private string FloorDivide(string sIn, double divIn)
         {
-            return Math.Floor((double)(int.Parse(sIn) / divIn)).ToString(CultureInfo.InvariantCulture);
+            return Math.Floor((int.Parse(sIn) / divIn)).ToString(CultureInfo.InvariantCulture);
         }
 
         private string CalcSteamId()

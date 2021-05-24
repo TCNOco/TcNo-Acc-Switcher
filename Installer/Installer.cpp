@@ -39,7 +39,7 @@ int main()
 	// Loop through each of the vectors, and see if installed at all or up-to-date.
 	// Download and install any that are missing.
 
-	// Maybe verifies proram files, and downloads broken files?
+	// Maybe verifies program files, and downloads broken files?
 	system("pause");
 }
 

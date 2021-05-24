@@ -22,7 +22,7 @@ function setIgnored(listIgnored) {
     var ignoredUsers = JSON.parse(listIgnored);
     Object.keys(ignoredUsers).forEach(function (key) {
         $(listAccounts).append(`<option value="${key}">${ignoredUsers[key]} [${key}]</option>`);
-    })
+    });
 }
 // Load list of users
 export function jsLoadIgnored() {

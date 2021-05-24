@@ -79,8 +79,7 @@ function initContextMenu() {
                 break;
         }
 
-
-        //#region POSITIONING OF CONTEXT MENU
+        
         //Get window size:
         var winWidth = $(document).width();
         var winHeight = $(document).height();
@@ -139,7 +138,6 @@ function initContextMenu() {
     for (let item of document.getElementsByClassName("submenu")) {
         resizeObserver.observe(item);
     }
-    //#endregion
     
     //Hide contextmenu:
     $(document).click(function () {

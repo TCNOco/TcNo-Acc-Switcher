@@ -54,7 +54,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        private string _currentStatus = "Status: Initializing";
+        private string _currentStatus = "Status: Initialising";
         public string CurrentStatus
         {
             get => _currentStatus;

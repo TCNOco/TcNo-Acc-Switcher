@@ -74,7 +74,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     doc.LoadHtml(reader.ReadToEnd());
                 }
                 
-                // If the playoverwatch site is overloaded
+                // If the PlayOverwatch site is overloaded
                 if (doc.DocumentNode.SelectSingleNode("/html/body/section[1]/section/div/h1") != null)
                 {
                     _ = GeneralInvocableFuncs.ShowToast("error", $"Error trying to get stats for {BTag}", renderTo: "toastarea");

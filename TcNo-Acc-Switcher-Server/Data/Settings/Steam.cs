@@ -30,7 +30,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
     public class Steam
     {
-        private static Steam _instance = new Steam();
+        private static Steam _instance = new();
 
         public Steam() { }
         private static readonly object LockObj = new();
@@ -136,7 +136,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// <summary>
         /// Get path of loginusers.vdf, resets & returns "RESET_PATH" if invalid.
         /// </summary>
-        /// <returns>(Steam's path)\config\loginuisers.vdf</returns>
+        /// <returns>(Steam's path)\config\loginusers.vdf</returns>
         public string LoginUsersVdf()
         {
             Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.LoginUsersVdf]");

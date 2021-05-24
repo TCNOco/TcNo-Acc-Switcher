@@ -256,10 +256,10 @@ namespace TcNo_Acc_Switcher_Client
                     if (latestDate.Equals(currentDate) || currentDate.Subtract(latestDate) > TimeSpan.Zero) return true;
                 }
                 else
-                    Console.WriteLine("Unable to convert '{0}' to a date and time.", latest);
+                    Console.WriteLine(@"Unable to convert '{0}' to a date and time.", latest);
             }
             else
-                Console.WriteLine("Unable to convert '{0}' to a date and time.", latest);
+                Console.WriteLine(@"Unable to convert '{0}' to a date and time.", latest);
             return false;
         }
 

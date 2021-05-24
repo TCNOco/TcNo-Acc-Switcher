@@ -119,14 +119,14 @@ namespace TcNo_Acc_Switcher_Globals
 
 
         #region Hide and Show main window
-        // For 'minimizing to tray' while not being connected to it
+        // For 'minimising to tray' while not being connected to it
 
         [DllImport("user32.dll", SetLastError = true)]
         static extern int GetWindowLong(IntPtr hWnd, int nIndex);
         [DllImport("user32.dll")]
         static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-        private const int GWL_EX_STYLE = -20;
-        public const int WS_EX_APPWINDOW = 0x00040000, WS_EX_TOOLWINDOW = 0x00000080;
+        private const int GwlExStyle = -20;
+        public const int WsExAppWindow = 0x00040000, WsExToolWindow = 0x00000080;
 
         [DllImport("user32")]
         private static extern bool SetForegroundWindow(IntPtr hwnd);
@@ -148,15 +148,15 @@ namespace TcNo_Acc_Switcher_Globals
 
         public static void HideWindow(IntPtr handle)
         {
-            SetWindowLong(handle, GWL_EX_STYLE, (GetWindowLong(handle, GWL_EX_STYLE) | WS_EX_TOOLWINDOW) & ~WS_EX_APPWINDOW);
+            SetWindowLong(handle, GwlExStyle, (GetWindowLong(handle, GwlExStyle) | WsExToolWindow) & ~WsExAppWindow);
         }
 
         public static void ShowWindow(IntPtr handle)
         {
-            SetWindowLong(handle, GWL_EX_STYLE, (GetWindowLong(handle, GWL_EX_STYLE) ^ WS_EX_TOOLWINDOW) | WS_EX_APPWINDOW);
+            SetWindowLong(handle, GwlExStyle, (GetWindowLong(handle, GwlExStyle) ^ WsExToolWindow) | WsExAppWindow);
         }
 
-        public static int GetWindow(IntPtr handle) => GetWindowLong(handle, GWL_EX_STYLE);
+        public static int GetWindow(IntPtr handle) => GetWindowLong(handle, GwlExStyle);
 
         public static string StartTrayIfNotRunning()
         {
@@ -217,7 +217,7 @@ namespace TcNo_Acc_Switcher_Globals
         {
             // NOTE:
             // "User Promoted Notification Area", and "Notification Area"
-            // Need to be translated into other localized languages to work across computers that are NOT english.
+            // Need to be translated into other localised languages to work across computers that are NOT english.
             // Not entirely sure where I can get the other locale strings for Windows for something like this.
             // Not to mention detecting language.
             // So, tldr this only works for English Windows at the moment, which is the majority of users.

@@ -10,7 +10,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https: //www.gnu.org/licenses />.
+    along with this program.  If not, see <https://www.gnu.org/licenses />.
     
 
     Special thanks to iR3turnZ for contributing to this platform's account switcher
@@ -77,7 +77,7 @@
             if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered) await JsRuntime.InvokeVoidAsync($"window.notification.new", new { type = "info", title = "Streamer mode", message = "Private info is hidden! - See settings", renderTo = "toastarea", duration = 5000 });// Show notification that streamer mode was enabled.
 
             BattleNetSwitcherFuncs.LoadProfiles();
-            BattleNet.SaveSettings(!File.Exists(BattleNet.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
+            BattleNet.SaveSettings(!File.Exists(BattleNet.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialised (adds missing settings when true)
 
             GeneralInvocableFuncs.HandleQueries();
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");

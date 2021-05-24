@@ -1,4 +1,5 @@
-﻿// TcNo Account Switcher - A Super fast account switcher
+﻿
+// TcNo Account Switcher - A Super fast account switcher
 // Copyright (C) 2019-2021 TechNobo (Wesley Pyburn)
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -83,7 +84,7 @@ namespace TcNo_Acc_Switcher_Client
             // Each window in the program would have its own size. IE Resize for Steam, and more.
         }
 
-        private async void MView2_OnInitialized(object? sender, EventArgs e)
+        private async void MView2_OnInitialised(object? sender, EventArgs e)
         {
             MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
             await MView2.EnsureCoreWebView2Async(null);
@@ -177,20 +178,20 @@ namespace TcNo_Acc_Switcher_Client
                 WindowState.Normal => "remove",
                 _ => ""
             };
-            MView2.ExecuteScriptAsync("document.body.classList." + state + "('maximized')");
+            MView2.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
         }
 
         private void CheckVisibility()
         {
             Thread.Sleep(100);
-            // While this could handle WindowState == WindowState.Minimized/Normal etc, it's only going to work off the hidden part.
-            // As currently this is only going to create/dispose the WebView for better performance when minimizing to tray.
+            // While this could handle WindowState == WindowState.Minimised/Normal etc, it's only going to work off the hidden part.
+            // As currently this is only going to create/dispose the WebView for better performance when minimising to tray.
             Dispatcher.Invoke(() =>
             {
                 // Check if hidden or not:
                 var windowLong = Globals.GetWindow(new WindowInteropHelper(this).Handle);
-                var ch = (windowLong & ~Globals.WS_EX_APPWINDOW);
-                if (windowLong == (windowLong & ~Globals.WS_EX_APPWINDOW)) // Hidden
+                var ch = (windowLong & ~Globals.WsExAppWindow);
+                if (windowLong == (windowLong & ~Globals.WsExAppWindow)) // Hidden
                 {
                     MainBackground.Children.Remove(MView2);
                     MView2.Dispose();
@@ -201,7 +202,7 @@ namespace TcNo_Acc_Switcher_Client
                 else // Not hidden
                 {
                     MView2 = new WebView2();
-                    MView2.Initialized += MView2_OnInitialized;
+                    MView2.Initialized += MView2_OnInitialised;
                     MainBackground.Children.Add(MView2);
                     MView2.BeginInit();
                 }

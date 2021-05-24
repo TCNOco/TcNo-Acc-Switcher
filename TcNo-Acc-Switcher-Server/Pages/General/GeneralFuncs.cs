@@ -242,7 +242,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="sourceFolder">Folder to search for files in</param>
         /// <param name="filter">Filter for files in folder</param>
-        /// <param name="searchOption">Option: ie: Subfolders, TopLevel only etc.</param>
+        /// <param name="searchOption">Option: ie: Sub-folders, TopLevel only etc.</param>
         private static string[] GetFiles(string sourceFolder, string filter, SearchOption searchOption)
         {
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.GetFiles] sourceFolder={sourceFolder}, filter={filter}");
@@ -259,7 +259,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="folder">Folder to search for files in</param>
         /// <param name="extensions">Extensions of files to delete</param>
-        /// <param name="so">SeachOption of where to look for files</param>
+        /// <param name="so">SearchOption of where to look for files</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
         public static void ClearFilesOfType(string folder, string extensions, SearchOption so, string jsDest = "")
         {

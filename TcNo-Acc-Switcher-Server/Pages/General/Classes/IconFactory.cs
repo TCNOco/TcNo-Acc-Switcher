@@ -43,7 +43,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         private const byte EntryReserved = 0;
         private const byte EntryLength = 16;
 
-        private const byte PngColorsInPalette = 0;
+        private const byte PngColoursInPalette = 0;
         private const ushort PngColorPlanes = 1;
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.SavePngsAsIcon]");
             if (images == null)
-                throw new ArgumentNullException("images");
+                throw new ArgumentNullException(nameof(images));
             if (stream == null)
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
             var enumerable = images as Bitmap[] ?? images.ToArray();
             ThrowForInvalidPng(enumerable);
             var orderedImages = enumerable.OrderBy(i => i.Width)
@@ -78,7 +78,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 var offset = (baseOffset + lengthSum);
                 writer.Write(GetIconWidth(image));
                 writer.Write(GetIconHeight(image));
-                writer.Write(PngColorsInPalette);
+                writer.Write(PngColoursInPalette);
                 writer.Write(EntryReserved);
                 writer.Write(PngColorPlanes);
                 writer.Write((ushort)Image.GetPixelFormatSize(image.PixelFormat));

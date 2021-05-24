@@ -16,7 +16,7 @@ using System.IO;
 using System.Net;
 using System.Windows;
 
-//using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, uncomment.
+//using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, un-comment.
 
 namespace TcNo_Acc_Switcher_Client
 {
@@ -35,7 +35,7 @@ namespace TcNo_Acc_Switcher_Client
         {
             var steamId32 = new Converters.SteamIdConvert(steamId).Id32;
             //var userDataFolder = Path.Join(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder(), "userdata", steamId32);  // Contains list of Steam32 IDs
-            //var screenshotsFolder = Path.Join(userDataFolder, "760\\remote\\");              // Contains folders of appIDs. */screenshots/ subfolder contains images and a */thumbnails/ folder.
+            //var screenshotsFolder = Path.Join(userDataFolder, "760\\remote\\");              // Contains folders of appIDs. */screenshots/ sub-folder contains images and a */thumbnails/ folder.
 
             // GetAppNames() <== for screen shot folder
             // Add list of app names and numbers to screenshots list, for user:
@@ -66,11 +66,9 @@ namespace TcNo_Acc_Switcher_Client
 
             if (!File.Exists("cache\\SteamMasterAppList.json") || overwrite)
             {
-                using (var client = new WebClient())
-                {
-                    client.DownloadFile("https://api.steampowered.com/ISteamApps/GetAppList/v2/", "cache\\SteamMasterAppList.json");
-                    // Contains "applist":{ "apps":[ {"appid":<appid>,"name":<name>}, {}... ] }
-                }
+                using var client = new WebClient();
+                client.DownloadFile("https://api.steampowered.com/ISteamApps/GetAppList/v2/", "cache\\SteamMasterAppList.json");
+                // Contains "applist":{ "apps":[ {"appid":<appid>,"name":<name>}, {}... ] }
             }
             else
             {

@@ -478,6 +478,7 @@ namespace TcNo_Acc_Switcher_Updater
                     if (CheckLatest(_latestVersion)) // If up to date or newer
                         break;
                 }
+
                 var updateDetails = jUpdate.Value[0]!.ToString();
                 var updateSize = FileSizeString((double) jUpdate.Value[1]);
                 totalFileSize += (double) jUpdate.Value[1];
@@ -487,6 +488,7 @@ namespace TcNo_Acc_Switcher_Updater
                 WriteLine("- " + updateDetails);
                 WriteLine("");
             }
+
             WriteLine("-------------------------------------------");
             WriteLine($"Total updates found: {updatesAndChanges.Count}");
             if (updatesAndChanges.Count > 0)

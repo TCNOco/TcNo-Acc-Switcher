@@ -148,9 +148,9 @@ input[type='checkbox'] {
 
     input[type='checkbox'] + label {
         border: 1px solid var(--checkboxBorder);
-        transition: 0.5s ease all;
         -moz-transition: 0.5s ease all;
         -webkit-transition: 0.5s ease all;
+        transition: 0.5s ease all;
         vertical-align: middle;
         background: var(--checkboxBackground);
     }

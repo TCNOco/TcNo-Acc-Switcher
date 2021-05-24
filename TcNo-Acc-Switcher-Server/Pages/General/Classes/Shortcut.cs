@@ -88,7 +88,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <summary>
         /// Delete shortcut if it exists
         /// </summary>
-        /// <param name="delFolder">(Optional) Whether to delete parent folder if it's enpty</param>
+        /// <param name="delFolder">(Optional) Whether to delete parent folder if it's empty</param>
         public void DeleteShortcut(bool delFolder)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.DeleteShortcut] delFolder={delFolder}");

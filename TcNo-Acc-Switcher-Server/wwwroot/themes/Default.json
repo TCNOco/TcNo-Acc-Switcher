@@ -53,7 +53,7 @@
   "listBackground": "#222",
   "listColor": "white",
   "listColor-checked": "white",
-  "listBackgroundColor-checked": "FFAA00",
+  "listBackgroundColor-checked": "#FFAA00",
   "listTextColor-before": "#FFAA00",
   "listTextColor-before-checked": "#945300",
   "listTextColor-after": "#3DFF89",

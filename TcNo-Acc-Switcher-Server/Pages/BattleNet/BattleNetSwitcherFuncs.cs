@@ -39,11 +39,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         private static readonly Data.Settings.BattleNet BattleNet = Data.Settings.BattleNet.Instance;
         private static string _battleNetRoaming;
         private static int IconSize = 15;
-        private static string DamageIcon = 
+        private static readonly string DamageIcon = 
             $"<svg width=\"{IconSize}\" height=\"{IconSize}\" version=\"1.1\" viewBox=\"0 0 60.325 60.325\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m36.451 58.73v-9.6006h-12.577v9.6006zm0-12.997v-34.224c0-5.2977-5.0459-9.8967-6.2886-9.8967s-6.2886 4.599-6.2886 9.8967v34.224zm18.777 12.997v-9.6006h-12.577v9.6006zm0-12.997v-34.224c0-5.2977-5.0459-9.8967-6.2886-9.8967s-6.2886 4.599-6.2886 9.8967v34.224zm-37.553 12.997v-9.6006h-12.577v9.6006zm0-12.997v-34.224c0-5.2977-5.0459-9.8967-6.2886-9.8967s-6.2886 4.599-6.2886 9.8967v34.224z\"/></svg>";
-        private static string TankIcon =
+        private static readonly string TankIcon =
             $"<svg width=\"{IconSize}\" height=\"{IconSize}\" version=\"1.1\" viewBox=\"0 0 60.325 60.325\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m5.4398 34.59v-24.069c0-3.8588 8.0447-8.9157 24.723-8.9157 16.678 0 24.723 5.0568 24.723 8.9157v24.069c0 5.821-19.817 24.133-24.723 24.133-4.9053 0-24.723-18.312-24.723-24.133z\"/></svg>";
-        private static string SupportIcon = 
+        private static readonly string SupportIcon = 
             $"<svg width=\"{IconSize}\" height=\"{IconSize}\" version=\"1.1\" viewBox=\"0 0 60.325 60.325\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m40.777 54.38c0 1.8962-1.6187 4.3473-3.6536 4.3473h-13.922c-2.0349 0-3.6536-2.4511-3.6536-4.3473v-13.597h-13.597c-1.8962 0-4.3473-1.6187-4.3473-3.6536v-13.922c0-2.0349 2.4511-3.6536 4.3473-3.6536h13.597v-13.597c0-1.8962 1.6187-4.3473 3.6536-4.3473h13.922c2.0349 0 3.6536 2.4511 3.6536 4.3473v13.597h13.597c1.8962 0 4.3473 1.6187 4.3473 3.6536v13.922c0 2.0349-2.4511 3.6536-4.3473 3.6536h-13.597z\"/></svg>";
 
 
@@ -71,7 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             {
                 var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\BattleNet\\order.json"));
                 var index = 0;
-                if (savedOrder != null && savedOrder.Count > 0)
+                if (savedOrder is {Count: > 0})
                     foreach (var acc in from i in savedOrder where BattleNet.Accounts.Any(x => x.Email == i) select BattleNet.Accounts.Single(x => x.Email == i))
                     {
                         BattleNet.Accounts.Remove(acc);
@@ -227,8 +227,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         {
             var parts = bTag.Split('#');
             if (parts.Length != 2) return false; // Checks has 2 parts.
-            if (!(parts[1].Length >= 4 && parts[1].Length <= 7)) return false; // Checks BTag number length
-            return IntPtr.TryParse(parts[1], out _); // Checks if BTag numbers part is just numbers
+            // Checks BTag number length & Checks if BTag numbers part is just numbers
+            return parts[1].Length is >= 4 and <= 7 && IntPtr.TryParse(parts[1], out _);
         }
 
         /// <summary>
@@ -251,14 +251,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         }
         
         /// <summary>
-        /// Refetches the rank of the account
+        /// Refetch the rank of the account
         /// </summary>
         /// <param name="email">The email of the account</param>
         [JSInvokable]
         public static void RefetchRank(string email)
         {
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.DeleteBattleTag] accName:{email}");
-            if (BattleNet.Accounts.First(x => x.Email == email).FetchRank()) AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Refetched Rank"), true);
+            if (BattleNet.Accounts.First(x => x.Email == email).FetchRank()) AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Fetched Rank"), true);
         }
         
         

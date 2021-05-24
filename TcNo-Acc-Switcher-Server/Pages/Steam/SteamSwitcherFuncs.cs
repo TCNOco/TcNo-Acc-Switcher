@@ -67,7 +67,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Steam\\order.json"));
                 var index = 0;
-                if (savedOrder != null && savedOrder.Count > 0)
+                if (savedOrder is {Count: > 0})
                     foreach (var acc in from i in savedOrder where userAccounts.Any(x => x.AccName == i) select userAccounts.Single(x => x.AccName == i))
                     {
                         userAccounts.Remove(acc);
@@ -335,6 +335,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="accName">(Optional) User's login username</param>
         /// <param name="autoStartSteam">(Optional) Whether Steam should start after switching [Default: true]</param>
         /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
+        [SupportedOSPlatform("windows")]
         public static void SwapSteamAccounts(string steamId = "", string accName = "", bool autoStartSteam = true, int ePersonaState = -1)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SwapSteamAccounts] Swapping to: {steamId} - {accName}. autoStartSteam={autoStartSteam.ToString()}, ePersonaState={ePersonaState}");
@@ -365,9 +366,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             if (!IsDigitsOnly(steamId) || steamId.Length != 17) return false;
             // Size check: https://stackoverflow.com/questions/33933705/steamid64-minimum-and-maximum-length#40810076
             var steamIdVal = double.Parse(steamId);
-            return steamIdVal > steamIdMin && steamIdVal < steamIdMax;
+            return steamIdVal is > steamIdMin and < steamIdMax;
         }
-        private static bool IsDigitsOnly(string str) => str.All(c => c >= '0' && c <= '9');
+        private static bool IsDigitsOnly(string str) => str.All(c => c is >= '0' and <= '9');
         #endregion
 
         #region STEAM_MANAGEMENT
@@ -488,7 +489,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         /// <summary>
-        /// Clears ismages folder of contents, to re-download them on next load.
+        /// Clears images folder of contents, to re-download them on next load.
         /// </summary>
         /// <returns>Whether files were deleted or not</returns>
         public static async void ClearImages()

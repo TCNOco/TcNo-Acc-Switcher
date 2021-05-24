@@ -35,7 +35,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class BattleNet
     {
-        private static BattleNet _instance = new BattleNet();
+        private static BattleNet _instance = new();
 
         public BattleNet(){}
         private static readonly object LockObj = new();

@@ -19,8 +19,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
     public class OriginSwitcherFuncs
     {
         private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
-        private static string _originRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Origin");
-        private static string _originProgramData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Origin");
+        private static readonly string OriginRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Origin");
+        private static readonly string OriginProgramData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Origin");
         /// <summary>
         /// Main function for Origin Account Switcher. Run on load.
         /// Collects accounts from cache folder
@@ -47,7 +47,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             {
                 var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Origin\\order.json"));
                 var index = 0;
-                if (savedOrder != null && savedOrder.Count > 0)
+                if (savedOrder is {Count: > 0})
                     foreach (var acc in from i in savedOrder where accList.Any(x => x == i) select accList.Single(x => x == i))
                     {
                         accList.Remove(acc);
@@ -116,7 +116,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         {
             Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.ClearCurrentLoginOrigin]");
             // Get current information for logged in user, and save into files:
-            var currentOlcHashes = (from f in new DirectoryInfo(_originProgramData).GetFiles() where f.Name.EndsWith(".olc") select GeneralFuncs.GetFileMd5(f.FullName)).ToList();
+            var currentOlcHashes = (from f in new DirectoryInfo(OriginProgramData).GetFiles() where f.Name.EndsWith(".olc") select GeneralFuncs.GetFileMd5(f.FullName)).ToList();
 
             var activeAccount = "";
             var allOlc = ReadAllOlc();
@@ -135,27 +135,27 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             }
 
             // Clear for next login
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(_originRoaming, "ConsolidatedCache")), true);
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(_originRoaming, "NucleusCache")), true);
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(_originRoaming, "Logs")), true);
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(_originProgramData, "Subscription")), false);
-            Directory.CreateDirectory(Path.Join(_originProgramData, "Subscription"));
+            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(OriginRoaming, "ConsolidatedCache")), true);
+            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(OriginRoaming, "NucleusCache")), true);
+            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(OriginRoaming, "Logs")), true);
+            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(OriginProgramData, "Subscription")), false);
+            Directory.CreateDirectory(Path.Join(OriginProgramData, "Subscription"));
 
-            foreach (var f in new DirectoryInfo(_originRoaming).GetFiles())
+            foreach (var f in new DirectoryInfo(OriginRoaming).GetFiles())
             {
                 if (f.Name.StartsWith("local") && f.Name.EndsWith(".xml"))
                 {
                     File.Delete(f.FullName);
                 }
             }
-            foreach (var f in new DirectoryInfo(_originProgramData).GetFiles())
+            foreach (var f in new DirectoryInfo(OriginProgramData).GetFiles())
             {
                 if (f.Name.EndsWith(".xml") || f.Name.EndsWith(".olc"))
                 {
                     File.Delete(f.FullName);
                 }
             }
-            File.WriteAllText(_originProgramData + "\\local.xml", "<?xml version=\"1.0\"?><Settings><Setting key=\"OfflineLoginUrl\" value=\"https://signin.ea.com/p/originX/offline\" type=\"10\"/></Settings>");
+            File.WriteAllText(OriginProgramData + "\\local.xml", "<?xml version=\"1.0\"?><Settings><Setting key=\"OfflineLoginUrl\" value=\"https://signin.ea.com/p/originX/offline\" type=\"10\"/></Settings>");
         }
 
         private static void OriginCopyInAccount(string accName, int state = 0)
@@ -164,15 +164,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             var localCachePath = $"LoginCache\\Origin\\{accName}\\";
             var localCachePathData = $"LoginCache\\Origin\\{accName}\\Data\\";
 
-            GeneralFuncs.CopyFilesRecursive($"{localCachePath}ConsolidatedCache", Path.Join(_originRoaming, "ConsolidatedCache"));
-            GeneralFuncs.CopyFilesRecursive($"{localCachePath}NucleusCache", Path.Join(_originRoaming, "NucleusCache"));
-            GeneralFuncs.CopyFilesRecursive($"{localCachePath}Logs", Path.Join(_originRoaming, "Logs"));
-            GeneralFuncs.CopyFilesRecursive($"{localCachePathData}Subscription", Path.Join(_originProgramData, "Subscription"));
+            GeneralFuncs.CopyFilesRecursive($"{localCachePath}ConsolidatedCache", Path.Join(OriginRoaming, "ConsolidatedCache"));
+            GeneralFuncs.CopyFilesRecursive($"{localCachePath}NucleusCache", Path.Join(OriginRoaming, "NucleusCache"));
+            GeneralFuncs.CopyFilesRecursive($"{localCachePath}Logs", Path.Join(OriginRoaming, "Logs"));
+            GeneralFuncs.CopyFilesRecursive($"{localCachePathData}Subscription", Path.Join(OriginProgramData, "Subscription"));
 
             foreach (var f in new DirectoryInfo(localCachePath).GetFiles())
             {
                 if (!f.Name.StartsWith("local") || !f.Name.EndsWith(".xml")) continue;
-                File.Copy(f.FullName, Path.Join(_originRoaming, f.Name), true);
+                File.Copy(f.FullName, Path.Join(OriginRoaming, f.Name), true);
                 if (f.Name == "local.xml") continue;
                 //LoginAsInvisible
                 var profileXml = new XmlDocument();
@@ -182,7 +182,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                 {
                     if (n.Attributes?["key"]?.Value != "LoginAsInvisible") continue;
                     n.Attributes["value"].Value = (state == 10 ? "true" : "false");
-                    profileXml.Save(Path.Join(_originRoaming, f.Name));
+                    profileXml.Save(Path.Join(OriginRoaming, f.Name));
                     break;
                 }
             }
@@ -191,7 +191,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             {
                 if (f.Name.EndsWith(".xml") || f.Name.EndsWith(".olc"))
                 {
-                    File.Copy(f.FullName, Path.Join(_originProgramData, f.Name), true);
+                    File.Copy(f.FullName, Path.Join(OriginProgramData, f.Name), true);
                 }
             }
         }
@@ -203,13 +203,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             var localCachePathData = $"LoginCache\\Origin\\{accName}\\Data\\";
             Directory.CreateDirectory(localCachePath);
             
-            GeneralFuncs.CopyFilesRecursive(Path.Join(_originRoaming, "ConsolidatedCache"), $"{localCachePath}ConsolidatedCache");
-            GeneralFuncs.CopyFilesRecursive(Path.Join(_originRoaming, "NucleusCache"), $"{localCachePath}NucleusCache");
-            GeneralFuncs.CopyFilesRecursive(Path.Join(_originRoaming, "Logs"), $"{localCachePath}Logs");
-            GeneralFuncs.CopyFilesRecursive(Path.Join(_originProgramData, "Subscription"), $"{localCachePathData}Subscription");
+            GeneralFuncs.CopyFilesRecursive(Path.Join(OriginRoaming, "ConsolidatedCache"), $"{localCachePath}ConsolidatedCache");
+            GeneralFuncs.CopyFilesRecursive(Path.Join(OriginRoaming, "NucleusCache"), $"{localCachePath}NucleusCache");
+            GeneralFuncs.CopyFilesRecursive(Path.Join(OriginRoaming, "Logs"), $"{localCachePath}Logs");
+            GeneralFuncs.CopyFilesRecursive(Path.Join(OriginProgramData, "Subscription"), $"{localCachePathData}Subscription");
 
             var pfpFilePath = "";
-            foreach (var f in new DirectoryInfo(_originRoaming).GetFiles())
+            foreach (var f in new DirectoryInfo(OriginRoaming).GetFiles())
             {
                 if (f.Name.StartsWith("local") && f.Name.EndsWith(".xml"))
                 {
@@ -234,7 +234,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             File.Copy((pfpFilePath != "" ? pfpFilePath :  Path.Join(GeneralFuncs.WwwRoot,"img\\QuestionMark.jpg"))!, Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\origin\\{Uri.EscapeUriString(accName)}.jpg"), true);
 
             var olcHashes = new List<string>();
-            foreach (var f in new DirectoryInfo(_originProgramData).GetFiles())
+            foreach (var f in new DirectoryInfo(OriginProgramData).GetFiles())
             {
                 if (f.Name.EndsWith(".xml"))
                 {
@@ -271,8 +271,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 
         public static bool ChangeKey<TKey, TValue>(ref Dictionary<TKey, TValue> dict, TKey oldKey, TKey newKey)
         {
-            TValue value;
-            if (!dict.Remove(oldKey, out value))
+            if (!dict.Remove(oldKey, out var value))
                 return false;
 
             dict[newKey] = value;

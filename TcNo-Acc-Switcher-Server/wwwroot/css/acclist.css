@@ -61,7 +61,8 @@ label.acc {
     text-align: center;
     cursor: pointer;
     border-style: solid;
-    border-color: #00000000;
+    border-color: #000000;
+    border-color: rgba(0, 0, 0, 0);
     border-width: 0.1em;
     -webkit-transition: all 50ms ease-in;
     -moz-transition: all 50ms ease-in;
@@ -97,7 +98,8 @@ label.acc img {
     -moz-user-drag: none;
     -o-user-drag: none;
     user-drag: none;
-    border: 2px solid #00000000;
+    border: 2px solid #000000;
+    border: 2px solid rgba(0, 0, 0, 0);
 }
 
 label.acc.vac img {

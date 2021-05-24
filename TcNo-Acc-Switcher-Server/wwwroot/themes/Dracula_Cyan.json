@@ -49,7 +49,7 @@
   "inputBackground": "#070A0D",
   "inputColor": "white",
   "listBackground": "#0E1419",
-  "listBackgroundColor-checked": "FFAA00",
+  "listBackgroundColor-checked": "#FFAA00",
   "listColor": "white",
   "listColor-checked": "white",
   "listTextColor-before": "#8BE9FD",

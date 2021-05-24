@@ -21,7 +21,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
     {
         private static readonly Data.Settings.Ubisoft Ubisoft = Data.Settings.Ubisoft.Instance;
         private static string _ubisoftAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
-        private static string _ubisoftAvatarFolder = Path.Join(Ubisoft.FolderPath, "cache", "avatars");
+        private static readonly string UbisoftAvatarFolder = Path.Join(Ubisoft.FolderPath, "cache", "avatars");
         /// <summary>
         /// Main function for Ubisoft Account Switcher. Run on load.
         /// Collects accounts from Ubisoft Connect's files
@@ -42,7 +42,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             {
                 Dictionary<string, string> newIds = new();
                 var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Ubisoft\\order.json"));
-                if (savedOrder != null && savedOrder.Count > 0)
+                if (savedOrder is {Count: > 0})
                     foreach (var (key, value) in from i in savedOrder where allIds.Any(x => x.Key == i) select allIds.Single(x => x.Key == i))
                         newIds.Add(key, value);
                 allIds = newIds;
@@ -204,9 +204,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public static void ImportAvatar(string userId)
         {
             Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ImportAvatar] userId: {userId}");
-            string i64 = Path.Join(_ubisoftAvatarFolder, userId + "_64.png"),
-                i128 = Path.Join(_ubisoftAvatarFolder, userId + "_128.png"),
-                i256 = Path.Join(_ubisoftAvatarFolder, userId + "_256.png");
+            string i64 = Path.Join(UbisoftAvatarFolder, userId + "_64.png"),
+                i128 = Path.Join(UbisoftAvatarFolder, userId + "_128.png"),
+                i256 = Path.Join(UbisoftAvatarFolder, userId + "_256.png");
             Directory.CreateDirectory($"wwwroot\\img\\profiles\\Ubisoft\\");
             var outPath = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\Ubisoft\\{userId}.png");
             if (File.Exists(i256)) File.Copy(i256, outPath, true);

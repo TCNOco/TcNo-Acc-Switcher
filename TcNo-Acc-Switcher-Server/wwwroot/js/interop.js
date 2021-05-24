@@ -3,8 +3,8 @@
 }
 
 jQueryAppend = (jQuerySelector, strToInsert) => {
-    console.log("\nInserting: " + strToInsert);
-    console.log("... into: " + jQuerySelector + "\n");
+    console.log(`\nInserting: ${strToInsert}`);
+    console.log(`... into: ${jQuerySelector}\n`);
 
     $(jQuerySelector).append(strToInsert);
 };
@@ -14,23 +14,23 @@ updateStatus = (status) => {
 }
 initAccListSortable = () => {
     // Create sortable list
-    sortable('.acc_list', {
+    sortable(".acc_list", {
         forcePlaceholderSize: true,
-        placeholderClass: 'placeHolderAcc',
-        hoverClass: 'accountHover'
+        placeholderClass: "placeHolderAcc",
+        hoverClass: "accountHover"
     });
-    // On drag start, unselect all items.
-    sortable('.acc_list')[0].addEventListener('sortstart', function (e) {
+    // On drag start, un-select all items.
+    sortable(".acc_list")[0].addEventListener("sortstart", function (e) {
         $("input:checked").each(function (_, e) {
             $(e).prop("checked", false);
         });
     });
     // On drag end, save list of items.
-    sortable('.acc_list')[0].addEventListener('sortupdate', function (e) {
+    sortable(".acc_list")[0].addEventListener("sortupdate", function (e) {
         let order = [];
         e.detail.destination.items.forEach((e) => {
             if (!$(e).is("div")) return; // Ignore <toastarea>
-            order.push(e.getElementsByTagName('input')[0].getAttribute("id"));
+            order.push(e.getElementsByTagName("input")[0].getAttribute("id"));
         });
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", `LoginCache\\${currentpage}\\order.json`, JSON.stringify(order));
     });

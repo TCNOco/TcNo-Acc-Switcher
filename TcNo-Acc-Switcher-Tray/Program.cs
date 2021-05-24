@@ -118,7 +118,7 @@ namespace TcNo_Acc_Switcher_Tray
             contextMenu.ItemClicked += contextMenu_ItemClicked;
 
 
-            // Initialize Tray Icon
+            // Initialise Tray Icon
             if (first)
                 _trayIcon = new NotifyIcon()
                 {

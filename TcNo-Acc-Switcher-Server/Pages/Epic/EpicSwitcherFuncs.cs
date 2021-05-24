@@ -22,9 +22,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
     {
         private static readonly Data.Settings.Epic Epic = Data.Settings.Epic.Instance;
         private static string _epicRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Epic");
-        private static string _epicLocalAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EpicGamesLauncher");
-        private static string _epicSavedConfigWin = Path.Join(_epicLocalAppData, "Saved\\Config\\Windows");
-        private static string _epicGameUserSettings = Path.Join(_epicSavedConfigWin, "GameUserSettings.ini");
+        private static readonly string EpicLocalAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EpicGamesLauncher");
+        private static readonly string EpicSavedConfigWin = Path.Join(EpicLocalAppData, "Saved\\Config\\Windows");
+        private static readonly string EpicGameUserSettings = Path.Join(EpicSavedConfigWin, "GameUserSettings.ini");
         /// <summary>
         /// Main function for Epic Account Switcher. Run on load.
         /// Collects accounts from cache folder
@@ -51,7 +51,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             {
                 var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Epic\\order.json"));
                 var index = 0;
-                if (savedOrder != null && savedOrder.Count > 0)
+                if (savedOrder is {Count: > 0})
                     foreach (var acc in from i in savedOrder where accList.Any(x => x == i) select accList.Single(x => x == i))
                     {
                         accList.Remove(acc);
@@ -129,9 +129,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             if (currentAccountId != null && allIds.ContainsKey(currentAccountId))
                 EpicAddCurrent(allIds[currentAccountId]);
             
-            if (File.Exists(_epicGameUserSettings)) File.Delete(_epicGameUserSettings); // Delete GameUserSettings.ini file
+            if (File.Exists(EpicGameUserSettings)) File.Delete(EpicGameUserSettings); // Delete GameUserSettings.ini file
             using var key = Registry.CurrentUser.CreateSubKey(@"Software\Epic Games\Unreal Engine\Identifiers");
-            key.SetValue("AccountId", ""); // Clear logged in account in registry, but leave MachineId
+            key?.SetValue("AccountId", ""); // Clear logged in account in registry, but leave MachineId
         }
 
         [SupportedOSPlatform("windows")]
@@ -140,12 +140,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.EpicCopyInAccount]");
             var localCachePath = $"LoginCache\\Epic\\{accName}\\";
 
-            File.Copy(Path.Join(localCachePath, "GameUserSettings.ini"), _epicGameUserSettings);
+            File.Copy(Path.Join(localCachePath, "GameUserSettings.ini"), EpicGameUserSettings);
 
             using var key = Registry.CurrentUser.CreateSubKey(@"Software\Epic Games\Unreal Engine\Identifiers");
 
             var allIds = ReadAllIds();
-            key.SetValue("AccountId", allIds.Single(x => x.Value == accName).Key);
+            key?.SetValue("AccountId", allIds.Single(x => x.Value == accName).Key);
         }
 
         [SupportedOSPlatform("windows")]
@@ -155,13 +155,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             var localCachePath = $"LoginCache\\Epic\\{accName}\\";
             Directory.CreateDirectory(localCachePath);
 
-            if (!File.Exists(_epicGameUserSettings))
+            if (!File.Exists(EpicGameUserSettings))
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", "Could not locate logged in user");
                 return;
             }
             // Save files
-            File.Copy(_epicGameUserSettings, Path.Join(localCachePath, "GameUserSettings.ini"), true);
+            File.Copy(EpicGameUserSettings, Path.Join(localCachePath, "GameUserSettings.ini"), true);
             // Save registry key
             var currentAccountId = (string)Registry.CurrentUser.OpenSubKey(@"Software\Epic Games\Unreal Engine\Identifiers")?.GetValue("AccountId");
             if (currentAccountId == null)
@@ -204,8 +204,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 
         public static bool ChangeKey<TKey, TValue>(ref Dictionary<TKey, TValue> dict, TKey oldKey, TKey newKey)
         {
-            TValue value;
-            if (!dict.Remove(oldKey, out value))
+            if (!dict.Remove(oldKey, out var value))
                 return false;
 
             dict[newKey] = value;

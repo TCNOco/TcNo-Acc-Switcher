@@ -29,7 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class Origin
     {
-        private static Origin _instance = new Origin();
+        private static Origin _instance = new();
 
         public Origin() { }
         private static readonly object LockObj = new();

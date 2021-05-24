@@ -14,6 +14,7 @@
 
 using System;
 using System.IO;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -31,7 +32,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         protected override async Task OnInitializedAsync()
         {
-            Globals.DebugWriteLine($@"[Auto:Steam\AdvancedClearing.razor.cs.OnInitializedAsync]");
+            Globals.DebugWriteLine($@"[Auto:Steam\AdvancedClearing.razor.cs.OnInitialisedAsync]");
             AppData.WindowTitle = "TcNo Account Switcher - Steam Cleaning";
         }
 
@@ -170,12 +171,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         // BUTTON: HKCU\..\AutoLoginUser
+        [SupportedOSPlatform("windows")]
         public void Steam_Clear_AutoLoginUser()
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_AutoLoginUser]");
             GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "AutoLoginuser", SteamReturn);
         }
         // BUTTON: HKCU\..\LastGameNameUsed
+        [SupportedOSPlatform("windows")]
         public void Steam_Clear_LastGameNameUsed()
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_LastGameNameUsed]");
@@ -183,12 +186,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         // BUTTON: HKCU\..\PseudoUUID
+        [SupportedOSPlatform("windows")]
         public void Steam_Clear_PseudoUUID()
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_PseudoUUID]");
             GeneralFuncs.DeleteRegKey(@"Software\Valve\Steam", "PseudoUUID", SteamReturn);
         }
         // BUTTON: HKCU\..\RememberPassword
+        [SupportedOSPlatform("windows")]
         public void Steam_Clear_RememberPassword()
         {
             Globals.DebugWriteLine($@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_RememberPassword]");

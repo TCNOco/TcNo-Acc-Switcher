@@ -408,7 +408,7 @@ function ShowModal(modaltype) {
 		        <input type="text" id="NewAccountName" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('change_username').click();">
 	        </div>
 	        <div class="settingsCol inputAndButton">
-		        <button class="btn modalOK" type="button" id="change_username" onclick="Modal_FinalizeAccNameChange()"><span>Change ` + platformName + `</span></button>
+		        <button class="btn modalOK" type="button" id="change_username" onclick="Modal_FinaliseAccNameChange()"><span>Change ` + platformName + `</span></button>
 	        </div>
         </div>`);
         input = document.getElementById('NewAccountName');
@@ -434,7 +434,7 @@ function ShowModal(modaltype) {
 	        <div class="settingsCol inputAndButton">
 		        <div class="folder_indicator notfound"><div id="folder_indicator_text"></div></div>
 		        <div class="folder_indicator_bg notfound"><span>` + platform_exe + `</span></div>
-		        <button class="btn modalOK" type="button" id="select_location" onclick="Modal_Finalize('` + platform + `', '` + platformSettingsPath + `')"><span>Select ` + platform + ` Folder</span></button>
+		        <button class="btn modalOK" type="button" id="select_location" onclick="Modal_Finalise('` + platform + `', '` + platformSettingsPath + `')"><span>Select ` + platform + ` Folder</span></button>
 	        </div>
         </div>`);
         input = document.getElementById('FolderLocation');
@@ -532,7 +532,7 @@ function ShowModal(modaltype) {
 		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;"  onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();">
 	        </div>
 	        <div class="settingsCol inputAndButton">
-		        <button class="btn modalOK" type="button" id="set_account_name" onclick="Modal_FinalizeAccString('` +
+		        <button class="btn modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('` +
             platform +
             `')"><span>Add current ` +
             platform +
@@ -560,7 +560,7 @@ function Modal_SetFilepath(path) { $("#FolderLocation").val(path); }
 function Modal_RequestedLocated(found) {
     $(".folder_indicator").removeClass("notfound found");
     $(".folder_indicator_bg").removeClass("notfound found");
-    if (found == true) {
+    if (found === true) {
         $(".folder_indicator").addClass("found");
         $(".folder_indicator_bg").addClass("found");
     } else {
@@ -568,7 +568,7 @@ function Modal_RequestedLocated(found) {
         $(".folder_indicator_bg").addClass("notfound");
     }
 }
-function Modal_Finalize(platform, platformSettingsPath) {
+function Modal_Finalise(platform, platformSettingsPath) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
     $('.modalBG').fadeOut();
     location.reload();
@@ -581,7 +581,7 @@ async function Modal_Confirm(action, value) {
     $('.modalBG').fadeOut();
 }
 
-function Modal_FinalizeAccString(platform) {
+function Modal_FinaliseAccString(platform) {
     switch (platform) {
         case "Origin":
             DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "OriginAddCurrent", $("#CurrentAccountName").val());
@@ -596,7 +596,7 @@ function Modal_FinalizeAccString(platform) {
     $('#acc_list').click();
 }
 
-function Modal_FinalizeAccNameChange() {
+function Modal_FinaliseAccNameChange() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), $("#NewAccountName").val(), currentpage);
 }
 
