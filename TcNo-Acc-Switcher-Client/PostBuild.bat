@@ -132,7 +132,7 @@ IF NOT EXIST bin\Release\net5.0-windows\ GOTO end
 IF EXIST bin\Release\net5.0-windows\updater GOTO end
 cd %origDir%
 ECHO -----------------------------------
-ECHO Moving files for x64 Release in Visual Studio
+ECHO Moving files for x64 Release in GitHub
 ECHO -----------------------------------
 mkdir bin\Release\net5.0-windows\updater
 mkdir bin\Release\net5.0-windows\updater\x64
