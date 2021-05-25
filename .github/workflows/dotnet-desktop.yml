@@ -1,4 +1,4 @@
-name: Public GitHub build $(date +'%Y-%m-%d')
+name: Public GitHub build
 
 on:
   workflow_dispatch:
@@ -8,13 +8,19 @@ on:
         required: true
         default: 'warning'
       tags:
-        description: "Manual build from source"
+        description: "Description:"
+        default: "Manual build from source"
 
 jobs:
 
   build:
     runs-on: windows-latest
     steps:
+    
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      
     - name: Checkout
       uses: actions/checkout@v2
       with:
@@ -42,12 +48,12 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v2
       with:
-        name: Debug
+        name: Debug ${{ steps.date.outputs.date }}
         path: TcNo-Acc-Switcher-Client\bin\Debug\net5.0-windows
         
     # Release
     - name: Upload
       uses: actions/upload-artifact@v2
       with:
-        name: Release
+        name: Release ${{ steps.date.outputs.date }}
         path: TcNo-Acc-Switcher-Client\bin\Release\net5.0-windows
