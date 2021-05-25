@@ -37,22 +37,22 @@ jobs:
       run: dotnet restore
 
     # Build Debug
-    - name: Build
+    - name: Build Debug
       run: dotnet build TcNo-Acc-Switcher-Client\TcNo-Acc-Switcher-Client.csproj --configuration Debug
         
     # Build Debug
-    - name: Build
+    - name: Build Release
       run: dotnet build TcNo-Acc-Switcher-Client\TcNo-Acc-Switcher-Client.csproj --configuration Release
 
     # Debug
-    - name: Upload
+    - name: Upload Debug
       uses: actions/upload-artifact@v2
       with:
         name: Debug ${{ steps.date.outputs.date }}
         path: TcNo-Acc-Switcher-Client\bin\Debug\net5.0-windows
         
     # Release
-    - name: Upload
+    - name: Upload Release
       uses: actions/upload-artifact@v2
       with:
         name: Release ${{ steps.date.outputs.date }}
