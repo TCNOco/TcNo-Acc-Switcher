@@ -66,3 +66,7 @@ RMDIR /Q/S "runtimes\win-arm64"
 RMDIR /Q x64
 RMDIR /Q x86
 cd %origDir%
+
+REM TEMP test for GitHub build action
+cd D:\a\TcNo-Acc-Switcher\TcNo-Acc-Switcher\TcNo-Acc-Switcher-Client
+tree
