@@ -220,7 +220,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <summary>
         /// For handling queries in URI
         /// </summary>
-        public static async void HandleQueries()
+        public static async Task<bool> HandleQueries()
         {
             Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.HandleQueries]");
             var uri = AppData.ActiveNavMan.ToAbsoluteUri(AppData.ActiveNavMan.Uri);
@@ -235,7 +235,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             // Toast
             if (!queries.TryGetValue("toast_type", out var toastType) ||
                 !queries.TryGetValue("toast_title", out var toastTitle) ||
-                !queries.TryGetValue("toast_message", out var toastMessage)) return;
+                !queries.TryGetValue("toast_message", out var toastMessage)) return true;
             for (var i = 0; i < toastType.Count; i++)
             {
                 try
@@ -247,6 +247,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     Console.WriteLine(e);
                 }
             }
+
+            return true;
         }
 
 

@@ -13,6 +13,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.IO;
+using System.Runtime.Versioning;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -55,6 +56,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="accName">Requested account's Login Username</param>
         /// <param name="ePersonaState">(Optional) Persona State [0: Offline, 1: Online...]</param>
         [JSInvokable]
+        [SupportedOSPlatform("windows")]
         public static void SwapToSteam(string steamId, string accName, int ePersonaState = -1)
         {
             Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.SwapToSteam] {(steamId.Length > 0 ? steamId.Substring(steamId.Length - 4, 4) : "")}, accName:hidden, ePersonaState: {ePersonaState}");

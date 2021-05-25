@@ -27,7 +27,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
     {
         [Inject]
         public AppData AppData { get; set; }
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             AppData.WindowTitle = "TcNo Account Switcher - Steam Settings";
             Globals.DebugWriteLine(@"[Auto:Steam\Settings.razor.cs.OnInitializedAsync]");

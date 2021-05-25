@@ -72,6 +72,9 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         _appData.WindowTitle = "TcNo Account Switcher";
-        if (firstRender) GeneralInvocableFuncs.HandleQueries();
+        if (firstRender)
+        {
+            await GeneralInvocableFuncs.HandleQueries();
+        }
     }
 }

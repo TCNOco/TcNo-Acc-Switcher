@@ -27,7 +27,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         [Inject]
         public Data.AppData AppData { get; set; }
         private IJSObjectReference _jsModule;
-        protected override async Task OnInitializedAsync()
+        protected override async void OnInitialized()
         {
             Globals.DebugWriteLine(@"[Auto:BattleNet\ManageForgotten.razor.cs.OnInitializedAsync]");
             AppData.WindowTitle = "TcNo Account Switcher - Manage ignored BattleNet accounts";

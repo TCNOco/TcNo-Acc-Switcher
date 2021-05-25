@@ -57,6 +57,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
 
         }
+        
         public static bool CanKillProcess(string processName)
         {
             bool canKill;

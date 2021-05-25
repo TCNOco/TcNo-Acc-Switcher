@@ -30,7 +30,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
     {
         [Inject]
         public AppData AppData { get; set; }
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             AppData.WindowTitle = "TcNo Account Switcher - BattleNet Settings";
             Globals.DebugWriteLine(@"[Auto:BattleNet\Settings.razor.cs.OnInitializedAsync]");

@@ -24,7 +24,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         [Inject]
         public Data.AppData AppData { get; set; }
         private IJSObjectReference _jsModule;
-        protected override async Task OnInitializedAsync()
+        protected override async void OnInitialized()
         {
             Globals.DebugWriteLine(@"[Auto:Steam\RestoreForgotten.razor.cs.OnInitializedAsync]");
             AppData.WindowTitle = "TcNo Account Switcher - Restore forgotten Steam account";

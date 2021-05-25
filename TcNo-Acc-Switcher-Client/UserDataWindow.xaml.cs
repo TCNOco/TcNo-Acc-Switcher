@@ -14,7 +14,6 @@
 
 using System.IO;
 using System.Net;
-using System.Windows;
 
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, un-comment.
 

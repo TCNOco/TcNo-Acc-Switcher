@@ -26,7 +26,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
     {
         [Inject]
         public AppData AppData { get; set; }
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             AppData.WindowTitle = "TcNo Account Switcher - Epic Settings";
             Globals.DebugWriteLine(@"[Auto:Epic\Settings.razor.cs.OnInitializedAsync]");

@@ -79,7 +79,7 @@
             OriginSwitcherFuncs.LoadProfiles();
             _origin.SaveSettings(!File.Exists(_origin.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
 
-            GeneralInvocableFuncs.HandleQueries();
+            await GeneralInvocableFuncs.HandleQueries();
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");
         }
     }

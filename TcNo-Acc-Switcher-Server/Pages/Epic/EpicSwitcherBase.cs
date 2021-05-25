@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using System.Runtime.Versioning;
+using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Epic
@@ -10,6 +11,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         /// </summary>
         /// <param name="accName">Requested account's Login Username</param>
         [JSInvokable]
+        [SupportedOSPlatform("windows")]
         public static void SwapToEpic(string accName)
         {
             Globals.DebugWriteLine($@"[JSInvoke:Epic\EpicSwitcherBase.SwapToEpic] accName:{accName}");
@@ -17,6 +19,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         }
 
         [JSInvokable]
+        [SupportedOSPlatform("windows")]
         public static void EpicAddCurrent(string accName)
         {
             Globals.DebugWriteLine($@"[JSInvoke:Epic\EpicSwitcherBase.EpicAddCurrent] accName:{accName}");

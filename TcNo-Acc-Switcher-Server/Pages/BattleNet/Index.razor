@@ -79,7 +79,7 @@
             BattleNetSwitcherFuncs.LoadProfiles();
             _battleNet.SaveSettings(!File.Exists(_battleNet.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialised (adds missing settings when true)
 
-            GeneralInvocableFuncs.HandleQueries();
+            await GeneralInvocableFuncs.HandleQueries();
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");
         }
     }

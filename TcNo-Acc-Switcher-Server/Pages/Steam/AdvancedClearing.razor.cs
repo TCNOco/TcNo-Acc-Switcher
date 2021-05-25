@@ -15,7 +15,6 @@
 using System;
 using System.IO;
 using System.Runtime.Versioning;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
@@ -30,7 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         protected AppData AppData { get; set; }
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             Globals.DebugWriteLine(@"[Auto:Steam\AdvancedClearing.razor.cs.OnInitialisedAsync]");
             AppData.WindowTitle = "TcNo Account Switcher - Steam Cleaning";
