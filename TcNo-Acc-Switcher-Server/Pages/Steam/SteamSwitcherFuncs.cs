@@ -334,7 +334,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="accName">(Optional) User's login username</param>
         /// <param name="autoStartSteam">(Optional) Whether Steam should start after switching [Default: true]</param>
         /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
-        [SupportedOSPlatform("windows")]
         public static void SwapSteamAccounts(string steamId = "", string accName = "", bool autoStartSteam = true, int ePersonaState = -1)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SwapSteamAccounts] Swapping to: {steamId} - {accName}. autoStartSteam={autoStartSteam.ToString()}, ePersonaState={ePersonaState}");
@@ -345,7 +344,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Steam");
             if (!CloseSteam()) return;
-            UpdateLoginUsers(steamId, accName, ePersonaState);
+            if (OperatingSystem.IsWindows()) UpdateLoginUsers(steamId, accName, ePersonaState);
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Steam");
             if (!autoStartSteam) return;
 
@@ -405,6 +404,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             userAccounts.Where(x => x.SteamId == selectedSteamId).ToList().ForEach(u =>
             {
                 u.MostRec = "1";
+                u.RememberPass = "1";
                 u.OfflineMode = (pS == -1 ? u.OfflineMode : (pS > 1 ? "0" : (pS == 1 ? "0" : "1")));
                 // u.OfflineMode: Set ONLY if defined above
                 // If defined & > 1, it's custom, therefor: Online

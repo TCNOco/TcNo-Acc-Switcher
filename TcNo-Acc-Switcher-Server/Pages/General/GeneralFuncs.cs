@@ -63,7 +63,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             bool canKill;
             if (AppSettings.Instance.CurrentlyElevated)
                 canKill = true; // Elevated process can kill most other processes.
-            else canKill = !ProcessHelper.IsProcessAdmin(processName); // If other process is admin, this process can't kill it (because it's not admin)
+            else
+            {
+                if (OperatingSystem.IsWindows())
+                    canKill = !ProcessHelper.IsProcessAdmin(processName); // If other process is admin, this process can't kill it (because it's not admin)
+                else 
+                    canKill = false;
+            }
 
             // Restart self as admin.
             if (!canKill) AppData.ActiveIJsRuntime.InvokeAsync<string>("ShowModal", "notice:RestartAsAdmin");
