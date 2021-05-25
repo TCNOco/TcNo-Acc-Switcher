@@ -48,12 +48,12 @@ jobs:
     - name: Upload Debug
       uses: actions/upload-artifact@v2
       with:
-        name: Debug ${{ steps.date.outputs.date }}
+        name: ${{ steps.date.outputs.date }} Debug
         path: TcNo-Acc-Switcher-Client\bin\Debug\net5.0-windows
         
     # Release
     - name: Upload Release
       uses: actions/upload-artifact@v2
       with:
-        name: Release ${{ steps.date.outputs.date }}
+        name: ${{ steps.date.outputs.date }} Release
         path: TcNo-Acc-Switcher-Client\bin\Release\net5.0-windows
