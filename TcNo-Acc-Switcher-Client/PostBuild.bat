@@ -9,8 +9,8 @@ REM Move updater files in Debug folder (for Visual Studio):
 IF not exist bin\x64\Debug\net5.0-windows\ GOTO vsRel
 IF EXIST bin\x64\Debug\net5.0-windows\updater GOTO vsRel
 cd %origDir%\bin\x64\Debug\net5.0-windows\
+ECHO -----------------------------------
 ECHO Moving files for x64 Debug in Visual Studio
-DIR
 ECHO -----------------------------------
 mkdir updater
 mkdir updater\x64
@@ -49,8 +49,8 @@ REM Move updater files in Release folder (for Visual Studio):
 IF NOT EXIST bin\x64\Release\net5.0-windows\ GOTO ghDebug
 IF EXIST bin\x64\Release\net5.0-windows\updater GOTO end
 cd %origDir%\bin\x64\Release\net5.0-windows\
+ECHO -----------------------------------
 ECHO Moving files for x64 Release in Visual Studio
-DIR
 ECHO -----------------------------------
 mkdir updater
 mkdir updater\x64
@@ -91,8 +91,8 @@ REM Move updater files in Debug folder (for GitHub Actions):
 IF NOT EXIST bin\Debug\net5.0-windows\ GOTO ghRel
 IF EXIST bin\Debug\net5.0-windows\updater GOTO ghRel
 cd %origDir%
+ECHO -----------------------------------
 ECHO Moving files for x64 Debug in GitHub
-DIR
 ECHO -----------------------------------
 mkdir bin\Debug\net5.0-windows\updater
 mkdir bin\Debug\net5.0-windows\updater\x64
@@ -131,8 +131,8 @@ REM Move updater files in Release folder (for GitHub Actions):
 IF NOT EXIST bin\Release\net5.0-windows\ GOTO end
 IF EXIST bin\Release\net5.0-windows\updater GOTO end
 cd %origDir%
+ECHO -----------------------------------
 ECHO Moving files for x64 Release in Visual Studio
-DIR
 ECHO -----------------------------------
 mkdir bin\Release\net5.0-windows\updater
 mkdir bin\Release\net5.0-windows\updater\x64
