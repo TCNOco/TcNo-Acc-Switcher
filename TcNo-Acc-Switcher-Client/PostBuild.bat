@@ -87,78 +87,78 @@ GOTO end
 REM Move updater files in Debug folder (for GitHub Actions):
 :ghDebug
 IF not exist bin\Debug\net5.0-windows\ GOTO ghRel
-cd %origDir%\bin\Debug\net5.0-windows\
+cd %origDir%
 ECHO Moving files for x64 Debug in GitHub
 DIR
 ECHO -----------------------------------
-mkdir updater
-mkdir updater\x64
-mkdir updater\x86
-mkdir updater\ref
-copy /B /Y "VCDiff.dll" "updater\VCDiff.dll"
-move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
-move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
-move /Y "TcNo-Acc-Switcher-Updater.pdb" "updater\TcNo-Acc-Switcher-Updater.pdb"
-move /Y "TcNo-Acc-Switcher-Updater.exe" "updater\TcNo-Acc-Switcher-Updater.exe"
-copy /B /Y "TcNo-Acc-Switcher-Updater.dll" "updater\TcNo-Acc-Switcher-Updater.dll"
-move /Y "TcNo-Acc-Switcher-Updater.deps.json" "updater\TcNo-Acc-Switcher-Updater.deps.json"
-copy /B /Y "SevenZipExtractor.dll" "updater\SevenZipExtractor.dll"
-move /Y "x86\7z.dll" "updater\x86\7z.dll"
-move /Y "x64\7z.dll" "updater\x64\7z.dll"
-copy /B /Y "ref\TcNo-Acc-Switcher-Updater.dll" "updater\ref\TcNo-Acc-Switcher-Updater.dll"
-copy /B /Y "Newtonsoft.Json.dll" "updater\Newtonsoft.Json.dll"
-copy /B /Y "TcNo-Acc-Switcher-Globals.deps.json" "updater\TcNo-Acc-Switcher-Globals.deps.json"
-copy /B /Y "TcNo-Acc-Switcher-Globals.dll" "updater\TcNo-Acc-Switcher-Globals.dll"
-copy /B /Y "TcNo-Acc-Switcher-Globals.pdb" "updater\TcNo-Acc-Switcher-Globals.pdb"
-copy /B /Y "TcNo-Acc-Switcher-Globals.pdb" "updater\TcNo-Acc-Switcher-Globals.pdb"
-copy /B /Y "ref\TcNo-Acc-Switcher-Globals.dll" "updater\ref\TcNo-Acc-Switcher-Globals.dll"
-RMDIR /Q/S "runtimes\linux-musl-x64"
-RMDIR /Q/S "runtimes\linux-x64"
-RMDIR /Q/S "runtimes\osx"
-RMDIR /Q/S "runtimes\osx-x64"
-RMDIR /Q/S "runtimes\unix"
-RMDIR /Q/S "runtimes\win-arm64"
-RMDIR /Q x64
-RMDIR /Q x86
+mkdir bin\Debug\net5.0-windows\updater
+mkdir bin\Debug\net5.0-windows\updater\x64
+mkdir bin\Debug\net5.0-windows\updater\x86
+mkdir bin\Debug\net5.0-windows\updater\ref
+copy /B /Y "bin\Debug\net5.0-windows\VCDiff.dll" "bin\Debug\net5.0-windows\updater\VCDiff.dll"
+move /Y "bin\Debug\net5.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.json" "bin\Debug\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
+move /Y "bin\Debug\net5.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "bin\Debug\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
+move /Y "bin\Debug\net5.0-windows\TcNo-Acc-Switcher-Updater.pdb" "bin\Debug\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.pdb"
+move /Y "bin\Debug\net5.0-windows\TcNo-Acc-Switcher-Updater.exe" "bin\Debug\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.exe"
+copy /B /Y "bin\Debug\net5.0-windows\TcNo-Acc-Switcher-Updater.dll" "bin\Debug\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.dll"
+move /Y "bin\Debug\net5.0-windows\TcNo-Acc-Switcher-Updater.deps.json" "bin\Debug\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.deps.json"
+copy /B /Y "bin\Debug\net5.0-windows\SevenZipExtractor.dll" "bin\Debug\net5.0-windows\updater\SevenZipExtractor.dll"
+move /Y "bin\Debug\net5.0-windows\x86\7z.dll" "bin\Debug\net5.0-windows\updater\x86\7z.dll"
+move /Y "bin\Debug\net5.0-windows\x64\7z.dll" "bin\Debug\net5.0-windows\updater\x64\7z.dll"
+copy /B /Y "bin\Debug\net5.0-windows\ref\TcNo-Acc-Switcher-Updater.dll" "bin\Debug\net5.0-windows\updater\ref\TcNo-Acc-Switcher-Updater.dll"
+copy /B /Y "bin\Debug\net5.0-windows\Newtonsoft.Json.dll" "bin\Debug\net5.0-windows\updater\Newtonsoft.Json.dll"
+copy /B /Y "bin\Debug\net5.0-windows\TcNo-Acc-Switcher-Globals.deps.json" "bin\Debug\net5.0-windows\updater\TcNo-Acc-Switcher-Globals.deps.json"
+copy /B /Y "bin\Debug\net5.0-windows\TcNo-Acc-Switcher-Globals.dll" "bin\Debug\net5.0-windows\updater\TcNo-Acc-Switcher-Globals.dll"
+copy /B /Y "bin\Debug\net5.0-windows\TcNo-Acc-Switcher-Globals.pdb" "bin\Debug\net5.0-windows\updater\TcNo-Acc-Switcher-Globals.pdb"
+copy /B /Y "bin\Debug\net5.0-windows\TcNo-Acc-Switcher-Globals.pdb" "bin\Debug\net5.0-windows\updater\TcNo-Acc-Switcher-Globals.pdb"
+copy /B /Y "bin\Debug\net5.0-windows\ref\TcNo-Acc-Switcher-Globals.dll" "bin\Debug\net5.0-windows\updater\ref\TcNo-Acc-Switcher-Globals.dll"
+RMDIR /Q/S "bin\Debug\net5.0-windows\runtimes\linux-musl-x64"
+RMDIR /Q/S "bin\Debug\net5.0-windows\runtimes\linux-x64"
+RMDIR /Q/S "bin\Debug\net5.0-windows\runtimes\osx"
+RMDIR /Q/S "bin\Debug\net5.0-windows\runtimes\osx-x64"
+RMDIR /Q/S "bin\Debug\net5.0-windows\runtimes\unix"
+RMDIR /Q/S "bin\Debug\net5.0-windows\runtimes\win-arm64"
+RMDIR /Q "bin\Release\net5.0-windows\x64"
+RMDIR /Q "bin\Release\net5.0-windows\x86"
 cd %origDir%
 GOTO end
 
 REM Move updater files in Release folder (for GitHub Actions):
 :ghRel
 IF not exist bin\Release\net5.0-windows\ GOTO end
-cd %origDir%\bin\Release\net5.0-windows\
+cd %origDir%
 ECHO Moving files for x64 Release in Visual Studio
 DIR
 ECHO -----------------------------------
-mkdir updater
-mkdir updater\x64
-mkdir updater\x86
-mkdir updater\ref
-copy /B /Y "VCDiff.dll" "updater\VCDiff.dll"
-move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
-move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
-move /Y "TcNo-Acc-Switcher-Updater.pdb" "updater\TcNo-Acc-Switcher-Updater.pdb"
-move /Y "TcNo-Acc-Switcher-Updater.exe" "updater\TcNo-Acc-Switcher-Updater.exe"
-copy /B /Y "TcNo-Acc-Switcher-Updater.dll" "updater\TcNo-Acc-Switcher-Updater.dll"
-move /Y "TcNo-Acc-Switcher-Updater.deps.json" "updater\TcNo-Acc-Switcher-Updater.deps.json"
-copy /B /Y "SevenZipExtractor.dll" "updater\SevenZipExtractor.dll"
-move /Y "x86\7z.dll" "updater\x86\7z.dll"
-move /Y "x64\7z.dll" "updater\x64\7z.dll"
-copy /B /Y "ref\TcNo-Acc-Switcher-Updater.dll" "updater\ref\TcNo-Acc-Switcher-Updater.dll"
-copy /B /Y "Newtonsoft.Json.dll" "updater\Newtonsoft.Json.dll"
-copy /B /Y "TcNo-Acc-Switcher-Globals.deps.json" "updater\TcNo-Acc-Switcher-Globals.deps.json"
-copy /B /Y "TcNo-Acc-Switcher-Globals.dll" "updater\TcNo-Acc-Switcher-Globals.dll"
-copy /B /Y "TcNo-Acc-Switcher-Globals.pdb" "updater\TcNo-Acc-Switcher-Globals.pdb"
-copy /B /Y "TcNo-Acc-Switcher-Globals.pdb" "updater\TcNo-Acc-Switcher-Globals.pdb"
-copy /B /Y "ref\TcNo-Acc-Switcher-Globals.dll" "updater\ref\TcNo-Acc-Switcher-Globals.dll"
-RMDIR /Q/S "runtimes\linux-musl-x64"
-RMDIR /Q/S "runtimes\linux-x64"
-RMDIR /Q/S "runtimes\osx"
-RMDIR /Q/S "runtimes\osx-x64"
-RMDIR /Q/S "runtimes\unix"
-RMDIR /Q/S "runtimes\win-arm64"
-RMDIR /Q x64
-RMDIR /Q x86
+mkdir bin\Release\net5.0-windows\updater
+mkdir bin\Release\net5.0-windows\updater\x64
+mkdir bin\Release\net5.0-windows\updater\x86
+mkdir bin\Release\net5.0-windows\updater\ref
+copy /B /Y "bin\Release\net5.0-windows\VCDiff.dll" "bin\Release\net5.0-windows\updater\VCDiff.dll"
+move /Y "bin\Release\net5.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.json" "bin\Release\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
+move /Y "bin\Release\net5.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "bin\Release\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
+move /Y "bin\Release\net5.0-windows\TcNo-Acc-Switcher-Updater.pdb" "bin\Release\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.pdb"
+move /Y "bin\Release\net5.0-windows\TcNo-Acc-Switcher-Updater.exe" "bin\Release\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.exe"
+copy /B /Y "bin\Release\net5.0-windows\TcNo-Acc-Switcher-Updater.dll" "bin\Release\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.dll"
+move /Y "bin\Release\net5.0-windows\TcNo-Acc-Switcher-Updater.deps.json" "bin\Release\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.deps.json"
+copy /B /Y "bin\Release\net5.0-windows\SevenZipExtractor.dll" "bin\Release\net5.0-windows\updater\SevenZipExtractor.dll"
+move /Y "bin\Release\net5.0-windows\x86\7z.dll" "bin\Release\net5.0-windows\updater\x86\7z.dll"
+move /Y "bin\Release\net5.0-windows\x64\7z.dll" "bin\Release\net5.0-windows\updater\x64\7z.dll"
+copy /B /Y "bin\Release\net5.0-windows\ref\TcNo-Acc-Switcher-Updater.dll" "bin\Release\net5.0-windows\updater\ref\TcNo-Acc-Switcher-Updater.dll"
+copy /B /Y "bin\Release\net5.0-windows\Newtonsoft.Json.dll" "bin\Release\net5.0-windows\updater\Newtonsoft.Json.dll"
+copy /B /Y "bin\Release\net5.0-windows\TcNo-Acc-Switcher-Globals.deps.json" "bin\Release\net5.0-windows\updater\TcNo-Acc-Switcher-Globals.deps.json"
+copy /B /Y "bin\Release\net5.0-windows\TcNo-Acc-Switcher-Globals.dll" "bin\Release\net5.0-windows\updater\TcNo-Acc-Switcher-Globals.dll"
+copy /B /Y "bin\Release\net5.0-windows\TcNo-Acc-Switcher-Globals.pdb" "bin\Release\net5.0-windows\updater\TcNo-Acc-Switcher-Globals.pdb"
+copy /B /Y "bin\Release\net5.0-windows\TcNo-Acc-Switcher-Globals.pdb" "bin\Release\net5.0-windows\updater\TcNo-Acc-Switcher-Globals.pdb"
+copy /B /Y "bin\Release\net5.0-windows\ref\TcNo-Acc-Switcher-Globals.dll" "bin\Release\net5.0-windows\updater\ref\TcNo-Acc-Switcher-Globals.dll"
+RMDIR /Q/S "bin\Release\net5.0-windows\runtimes\linux-musl-x64"
+RMDIR /Q/S "bin\Release\net5.0-windows\runtimes\linux-x64"
+RMDIR /Q/S "bin\Release\net5.0-windows\runtimes\osx"
+RMDIR /Q/S "bin\Release\net5.0-windows\runtimes\osx-x64"
+RMDIR /Q/S "bin\Release\net5.0-windows\runtimes\unix"
+RMDIR /Q/S "bin\Release\net5.0-windows\runtimes\win-arm64"
+RMDIR /Q "bin\Release\net5.0-windows\x64"
+RMDIR /Q "bin\Release\net5.0-windows\x86"
 cd %origDir%
 GOTO end
 
