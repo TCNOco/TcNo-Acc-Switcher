@@ -50,7 +50,7 @@ jobs:
 
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        configuration: [Release]
 
     runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
@@ -87,6 +87,6 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: $env:Configuration Build
-        path: TcNo-Acc-Switcher-Client\bin\x64\$env:Configuration\net5.0-windows
+        path: TcNo-Acc-Switcher-Client\bin\x64\Release\net5.0-windows
       env:
         Configuration: ${{ matrix.configuration }}
