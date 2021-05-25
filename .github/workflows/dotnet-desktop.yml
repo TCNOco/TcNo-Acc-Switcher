@@ -1,4 +1,4 @@
-name: Public GitHub build
+name: Public GitHub build $(date +'%Y-%m-%d')
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
         required: true
         default: 'warning'
       tags:
-        description: "Manual build from source $(date +'%Y-%m-%d')"
+        description: "Manual build from source"
 
 jobs:
 
