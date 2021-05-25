@@ -1,7 +1,8 @@
 REM Move is currently only for build, as moving the files seems to prevent the program from running properly...
 
 REM Move updater files in Debug folder:
-echo %CD%
+echo Current directory: %cd%
+set origDir=%cd%
 cd bin\x64\Debug\net5.0-windows\
 mkdir updater
 mkdir updater\x64
@@ -34,7 +35,7 @@ RMDIR /Q x64
 RMDIR /Q x86
 
 REM Move updater files in Release folder:
-cd ..\..\Release\net5.0-windows\
+cd %origDir%\bin\x64\Release\net5.0-windows\
 mkdir updater
 mkdir updater\x64
 mkdir updater\x86
@@ -64,3 +65,4 @@ RMDIR /Q/S "runtimes\unix"
 RMDIR /Q/S "runtimes\win-arm64"
 RMDIR /Q x64
 RMDIR /Q x86
+cd %origDir%
