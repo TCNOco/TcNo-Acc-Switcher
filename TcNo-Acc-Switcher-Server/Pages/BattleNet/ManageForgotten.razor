@@ -18,12 +18,12 @@
 
 @page "/BattleNet/ManageIgnored"
 @namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
-@inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
-@inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
+@inject NavigationManager _navManager
+@{ AppData.SetActiveNavMan(_navManager); }
+@inject IJSRuntime _jsRuntime
+@{ AppData.SetActiveIJsRuntime(_jsRuntime); }
 
-@inject Data.Settings.BattleNet BattleNet
+@inject Data.Settings.BattleNet _battleNet
 
 <div class="container mainblock">
     <div class="row">
@@ -44,7 +44,7 @@
                 <button class="btn btn_RestoreSelected" type="button" onclick='restoreBattleNetAccounts()'><span>Stop ignoring selected</span></button>
             </div>
             <div class="buttoncol col_close">
-                <button class="btn btn_close" type="button" @onclick='() => NavManager.NavigateTo("/BattleNet/Settings")'><span>Close</span></button>
+                <button class="btn btn_close" type="button" @onclick='() => _navManager.NavigateTo("/BattleNet/Settings")'><span>Close</span></button>
             </div>
         </div>
     </div>

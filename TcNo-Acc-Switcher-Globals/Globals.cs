@@ -12,35 +12,12 @@ namespace TcNo_Acc_Switcher_Globals
     public class Globals
     {
         public string WorkingDirectory { get; set; }
-        public DateTime UpdateLastChecked { get; set; } = DateTime.Now;
         public static bool VerboseMode = false;
 
         public static void DebugWriteLine(string s)
         {
             // Toggle here so it only shows in Verbose mode etc.
             if (VerboseMode) Console.WriteLine(s);
-        }
-
-
-        // Read existing settings. If they don't exist, create them.
-        // --> Reads from current directory. This will only work with the main TcNo Account Switcher app.
-        //     Other apps will need to find the correct directory first.
-        public static Globals LoadExisting(string fromDir)
-        {
-            var globalsFile = Path.Join(fromDir, "globals.json");
-
-            Globals g;
-            if (File.Exists(globalsFile))
-                g = JsonConvert.DeserializeObject<Globals>(File.ReadAllText(globalsFile));
-            else
-            {
-                g = new Globals();
-                File.WriteAllText(globalsFile, JsonConvert.SerializeObject(g));
-            }
-
-            Debug.Assert(g != null, nameof(g) + " != null");
-            g.WorkingDirectory = fromDir;
-            return g;
         }
 
         public static void Save(Globals g)
@@ -66,14 +43,6 @@ namespace TcNo_Acc_Switcher_Globals
             Console.WriteLine(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
             Console.WriteLine(Strings.ErrSubmitCrashlog);
         }
-
-        public static void WriteLogLine(string line)
-        {
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
-            Directory.CreateDirectory("Errors");
-            File.AppendAllText("log.txt", $"{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}: {line}\r\n");
-        }
-
 
         /// <summary>
         /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Anything more than "") 
@@ -140,7 +109,7 @@ namespace TcNo_Acc_Switcher_Globals
             if (proc == null || proc.MainWindowHandle == IntPtr.Zero) return false;
             const int swRestore = 9;
             var hwnd = proc.MainWindowHandle;
-            Globals.ShowWindow(hwnd); // This seems to take ownership of some kind over the main process... So closing the tray closes the main switcher too ~
+            ShowWindow(hwnd); // This seems to take ownership of some kind over the main process... So closing the tray closes the main switcher too ~
             ShowWindow(hwnd, swRestore);
             SetForegroundWindow(hwnd);
             return true;
@@ -239,7 +208,7 @@ namespace TcNo_Acc_Switcher_Globals
                 }
                 RefreshTrayArea(notificationAreaHandle);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //
             }

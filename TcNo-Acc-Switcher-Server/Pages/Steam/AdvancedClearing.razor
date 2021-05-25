@@ -15,10 +15,10 @@
 @page "/Steam/AdvancedClearing"
 @using TcNo_Acc_Switcher_Server.Pages.General
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
-@inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
-@inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
+@inject IJSRuntime _jsRuntime
+@{ AppData.SetActiveIJsRuntime(_jsRuntime); }
+@inject NavigationManager _navManager
+@{ AppData.SetActiveNavMan(_navManager); }
 
 <div class="container mainblock">
     <div class="row">
@@ -94,7 +94,7 @@
 
             <div class="buttoncol col_close">
                 <a @onclick='() => GeneralInvocableFuncs.OpenLinkInBrowser("https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Steam-Cleaning")' class="fancyLink">More Info (Wiki)</a>
-                <button class="btn btn_close" type="button" @onclick='() => NavManager.NavigateTo("/Steam/Settings")'><span>Close</span></button>
+                <button class="btn btn_close" type="button" @onclick='() => _navManager.NavigateTo("/Steam/Settings")'><span>Close</span></button>
             </div>
         </div>
     </div>
@@ -112,7 +112,7 @@
 
 @code
 {
-    private bool _notAccepted = false;
+    private bool _notAccepted;
 
     public bool Accepted
     {

@@ -26,29 +26,28 @@ using TcNo_Acc_Switcher_Server.Data;
 
 namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 {
-    public partial class Settings : ComponentBase
+    public partial class Settings
     {
         [Inject]
-        public Data.AppData AppData { get; set; }
-        private IJSObjectReference _jsModule;
+        public AppData AppData { get; set; }
         protected override async Task OnInitializedAsync()
         {
             AppData.WindowTitle = "TcNo Account Switcher - BattleNet Settings";
-            Globals.DebugWriteLine($@"[Auto:BattleNet\Settings.razor.cs.OnInitializedAsync]");
+            Globals.DebugWriteLine(@"[Auto:BattleNet\Settings.razor.cs.OnInitializedAsync]");
         }
 
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
         public async Task PickFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:BattleNet\Settings.razor.cs.PickFolder]");
-            await JsRuntime.InvokeAsync<string>("ShowModal", "find:BattleNet:Battle.net.exe:BattleNetSettings");
+            Globals.DebugWriteLine(@"[ButtonClicked:BattleNet\Settings.razor.cs.PickFolder]");
+            await _jsRuntime.InvokeAsync<string>("ShowModal", "find:BattleNet:Battle.net.exe:BattleNetSettings");
         }
 
         // BUTTON: Reset settings
         public static void ClearSettings()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Origin\Settings.razor.cs.ClearSettings]");
+            Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.ClearSettings]");
             new Data.Settings.BattleNet().ResetSettings();
             AppData.ActiveNavMan.NavigateTo("/BattleNet?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared BattleNet switcher settings"));
         }
@@ -73,7 +72,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         // BUTTON: Open Folder
         public static void OpenFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:BattleNet\Settings.razor.cs.OpenBattleNetFolder]");
+            Globals.DebugWriteLine(@"[ButtonClicked:BattleNet\Settings.razor.cs.OpenBattleNetFolder]");
             Process.Start("explorer.exe", new Data.Settings.BattleNet().FolderPath);
         }
         

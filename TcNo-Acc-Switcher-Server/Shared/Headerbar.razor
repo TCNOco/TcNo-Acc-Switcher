@@ -12,13 +12,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
-@inject IJSRuntime JsRuntime
+@inject IJSRuntime _jsRuntime
 
 @using TcNo_Acc_Switcher_Server.Data
 @using System.Runtime.InteropServices
 @using TcNo_Acc_Switcher_Globals
 @using System.IO
-@inject AppData AppData
+@inject AppData _appData
 
 <div id="window-title">
     <div class="resizeTop"></div>
@@ -29,7 +29,7 @@
         <img class="icon" srcset="img/icons/back-w-10.png 1x, img/icons/back-w-12.png 1.25x, img/icons/back-w-15.png 1.5x, img/icons/back-w-15.png 1.75x, img/icons/back-w-20.png 2x, img/icons/back-w-20.png 2.25x, img/icons/back-w-24.png 2.5x, img/icons/back-w-30.png 3x, img/icons/back-w-30.png 3.5x" draggable="false" alt="-" />
     </div>
     <img src="img/TcNo_Logo_Flat.svg" class="header_icon" draggable="false" alt="TCNO" />
-    <span>@AppData.WindowTitle</span>
+    <span>@_appData.WindowTitle</span>
     <div id="window-controls">
 
         <div class="button" id="btnMin">
@@ -60,7 +60,7 @@
 @code {
     protected override void OnInitialized()
     {
-        AppData.OnChange += OnMyChangeHandler;
+        _appData.OnChange += OnMyChangeHandler;
     }
     private async void OnMyChangeHandler()
     {
@@ -74,7 +74,7 @@
     {
         if (firstRender)
         {
-            await JsRuntime.InvokeVoidAsync("handleWindowControls");
+            await _jsRuntime.InvokeVoidAsync("handleWindowControls");
         }
     }
 
@@ -97,7 +97,7 @@
 
         public EventForwarder(IntPtr target)
         {
-            this._target = target;
+            _target = target;
         }
 
         public void MouseDownDrag()
@@ -130,7 +130,8 @@
     }
     // This is not used here, but these values are used in js for MouseResizeDrag.
     // Checking once through everything is better than comparing things multiple times.
-    public enum SysCommandSize : int {
+    public enum SysCommandSize
+    {
         ScSizeHtLeft = 0xA, // 1 + 9
         ScSizeHtRight = 0xB,
         ScSizeHtTop = 0xC,

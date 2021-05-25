@@ -32,7 +32,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
     {
         private static Steam _instance = new();
 
-        public Steam() { }
         private static readonly object LockObj = new();
         public static Steam Instance
         {
@@ -115,7 +114,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// </summary>
         public void ResetSettings()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.ResetSettings]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.ResetSettings]");
             _instance.ForgetAccountEnabled = false;
             _instance.FolderPath = "C:\\Program Files (x86)\\Steam\\";
             _instance.WindowSize = new Point() {X = 800, Y = 450};
@@ -128,7 +127,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.TrayAccNumber = 3;
 
             CheckShortcuts();
-            Pages.General.Classes.Task.StartWithWindows_Enabled();
+            Task.StartWithWindows_Enabled();
 
             SaveSettings();
         }
@@ -139,7 +138,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// <returns>(Steam's path)\config\loginusers.vdf</returns>
         public string LoginUsersVdf()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.LoginUsersVdf]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.LoginUsersVdf]");
             var path = Path.Join(FolderPath, "config\\loginusers.vdf");
             if (File.Exists(path)) return path;
             FolderPath = "";
@@ -154,18 +153,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public string Exe() => Path.Join(FolderPath, "Steam.exe");
 
         /// <summary>
-        /// Get Steam's config folder
-        /// </summary>
-        /// <returns>(Steam's Path)\config\</returns>
-        public string SteamConfigFolder() => Path.Join(FolderPath, "config\\");
-
-        /// <summary>
         /// Updates the ForgetAccountEnabled bool in Steam settings file
         /// </summary>
         /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
         public void SetForgetAcc(bool enabled)
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.SetForgetAcc]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.SetForgetAcc]");
             if (ForgetAccountEnabled == enabled) return; // Ignore if already set
             ForgetAccountEnabled = enabled;
             SaveSettings();
@@ -179,7 +172,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         #region SETTINGS
         public void SetFromJObject(JObject j)
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.SetFromJObject]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.SetFromJObject]");
             var curSettings = j.ToObject<Steam>();
             if (curSettings == null) return;
             _instance.ForgetAccountEnabled = curSettings.ForgetAccountEnabled;
@@ -194,7 +187,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
 
             CheckShortcuts();
-            Pages.General.Classes.Task.StartWithWindows_Enabled();
+            Task.StartWithWindows_Enabled();
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
 
@@ -207,14 +200,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         #region SHORTCUTS
         public void CheckShortcuts()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.CheckShortcuts]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.CheckShortcuts]");
             _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "Steam - TcNo Account Switcher.lnk"));
             AppSettings.Instance.CheckShortcuts();
         }
 
         public void DesktopShortcut_Toggle()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
             var s = new Shortcut();
             s.Shortcut_Platform(Shortcut.Desktop);
             s.ToggleShortcut(!DesktopShortcut);

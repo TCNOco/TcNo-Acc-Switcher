@@ -188,7 +188,7 @@ namespace TcNo_Acc_Switcher_Client
                         Environment.Exit(1056); // 1056	An instance of the service is already running.
                     }
                 }
-                catch (AbandonedMutexException e2)
+                catch (AbandonedMutexException)
                 {
                     // Just restarted 
                 }
@@ -201,7 +201,7 @@ namespace TcNo_Acc_Switcher_Client
                 {
                     GeneralFuncs.RecursiveDelete(new DirectoryInfo("updater"), false);
                 }
-                catch (IOException ioE)
+                catch (IOException)
                 {
                     // Catch first IOException and try to kill the updater, if it's running... Then continue.
                     Globals.KillProcess("TcNo-Acc-Switcher-Updater");

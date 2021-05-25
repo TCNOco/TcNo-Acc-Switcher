@@ -126,7 +126,7 @@ namespace TcNo_Acc_Switcher_Updater
         private readonly string _currentDir = Directory.GetCurrentDirectory();
         private readonly string _updaterDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location); // Where this program is located
 
-        private void MainWindow_OnContentRendered(object? sender, EventArgs e) => new Thread(Init).Start();
+        private void MainWindow_OnContentRendered(object sender, EventArgs e) => new Thread(Init).Start();
         
         private void Init()
         {
@@ -502,7 +502,7 @@ namespace TcNo_Acc_Switcher_Updater
             else
             {
                 WriteLine("-------------------------------------------");
-                WriteLine($"You're up to date.");
+                WriteLine("You're up to date.");
                 SetStatus(":)");
             }
 
@@ -616,22 +616,6 @@ namespace TcNo_Acc_Switcher_Updater
         }
 
         /// <summary>
-        /// Recursively copy files and directories
-        /// </summary>
-        /// <param name="inputFolder">Folder to copy files recursively from</param>
-        /// <param name="outputFolder">Destination folder</param>
-        private static void CopyFilesRecursive(string inputFolder, string outputFolder)
-        {
-            //Now Create all of the directories
-            foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
-                Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
-
-            //Copy all the files & Replaces any files with the same name
-            foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
-                File.Copy(newPath, newPath.Replace(inputFolder, outputFolder), true);
-        }
-
-        /// <summary>
         /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Anything more than "") 
         /// </summary>
         /// <param name="procName">Process name to kill (Will be used as {name}*)</param>
@@ -650,7 +634,7 @@ namespace TcNo_Acc_Switcher_Updater
                 RedirectStandardOutput = true
             };
             var process = new Process { StartInfo = startInfo };
-            process.OutputDataReceived += (s, e) => outputText += e.Data + "\n";
+            process.OutputDataReceived += (_, e) => outputText += e.Data + "\n";
             process.Start();
             process.BeginOutputReadLine();
             process.WaitForExit();

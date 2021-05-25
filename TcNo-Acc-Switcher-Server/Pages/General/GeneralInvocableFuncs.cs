@@ -214,7 +214,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static async Task ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowToast] type={toastType}, message={toastMessage}, title={toastTitle}, renderTo={renderTo}, duration={duration}");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync($"window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
         }
         
         /// <summary>
@@ -222,7 +222,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         public static async void HandleQueries()
         {
-            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.HandleQueries]");
+            Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.HandleQueries]");
             var uri = AppData.ActiveNavMan.ToAbsoluteUri(AppData.ActiveNavMan.Uri);
             // Clear cache reload
             var queries = QueryHelpers.ParseQuery(uri.Query);

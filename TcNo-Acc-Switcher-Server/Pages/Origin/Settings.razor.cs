@@ -22,29 +22,28 @@ using TcNo_Acc_Switcher_Server.Data;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Origin
 {
-    public partial class Settings : ComponentBase
+    public partial class Settings
     {
         [Inject]
-        public Data.AppData AppData { get; set; }
-        private IJSObjectReference _jsModule;
+        public AppData AppData { get; set; }
         protected override async Task OnInitializedAsync()
         {
             AppData.WindowTitle = "TcNo Account Switcher - Origin Settings";
-            Globals.DebugWriteLine($@"[Auto:Origin\Settings.razor.cs.OnInitializedAsync]");
+            Globals.DebugWriteLine(@"[Auto:Origin\Settings.razor.cs.OnInitializedAsync]");
         }
 
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
         public async Task PickFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Origin\Settings.razor.cs.PickFolder]");
-            await JsRuntime.InvokeAsync<string>("ShowModal", "find:Origin:Origin.exe:OriginSettings");
+            Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.PickFolder]");
+            await _jsRuntime.InvokeAsync<string>("ShowModal", "find:Origin:Origin.exe:OriginSettings");
         }
 
         // BUTTON: Reset settings
         public static void ClearSettings()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Origin\Settings.razor.cs.ClearSettings]");
+            Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.ClearSettings]");
             new Data.Settings.Origin().ResetSettings();
             AppData.ActiveNavMan.NavigateTo("/Origin?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Origin switcher settings"));
         }
@@ -54,7 +53,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         // BUTTON: Open Folder
         public static void OpenFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Origin\Settings.razor.cs.OpenOriginFolder]");
+            Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.OpenOriginFolder]");
             Process.Start("explorer.exe", new Data.Settings.Origin().FolderPath);
         }
         

@@ -26,7 +26,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// </summary>
         public static bool StartWithWindows_Enabled()
         {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Task.StartWithWindows_Enabled]");
+            Globals.DebugWriteLine(@"[Func:General\Classes\Task.StartWithWindows_Enabled]");
             using var ts = new TaskService();
             var tasks = ts.RootFolder.Tasks;
             return tasks.Exists("TcNo Account Switcher - Tray start with logon");

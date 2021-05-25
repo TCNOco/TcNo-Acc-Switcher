@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
-    public partial class Index : ComponentBase
+    public partial class Index
     {
         /// <summary>
         /// Simple class for storing info related to Steam account, for switching and displaying.

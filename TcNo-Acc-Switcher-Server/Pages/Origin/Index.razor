@@ -16,25 +16,25 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using System.IO
 @using TcNo_Acc_Switcher_Server.Pages.General
-@inject AppData AppData
-@inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
-@inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
+@inject AppData _appData
+@inject IJSRuntime _jsRuntime
+@{ _appData.SetActiveIJsRuntime(_jsRuntime); }
+@inject NavigationManager _navManager
+@{ _appData.SetActiveNavMan(_navManager); }
 
-@inject AppSettings AppSettings
+@inject AppSettings _appSettings
 <style>@(new AppSettings().GetCssBlock())</style>
 
 
-@inject Data.Settings.Origin Origin
+@inject Data.Settings.Origin _origin
 
 
-<ContextMenu ContextMenuString=@Origin.ContextMenuJson />
+<ContextMenu ContextMenuString=@_origin.ContextMenuJson />
 <div id="acc_list" class="acc_list">
     <toastarea />
 </div>
 <div class="acc_list_actionbar">
-    <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@AppData.CurrentStatus" spellcheck="false" disabled></div>
+    <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@_appData.CurrentStatus" spellcheck="false" disabled></div>
     <div>
         <div class="button" id="btnAddNew" onclick="NewOriginLogin()">
             <span>Add New</span>
@@ -66,18 +66,18 @@
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
     {
-        AppSettings.StreamerModeCheck();
+        _appSettings.StreamerModeCheck();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        AppData.WindowTitle = "TcNo Account Switcher - Origin";
+        _appData.WindowTitle = "TcNo Account Switcher - Origin";
         if (firstRender)
         {
-            if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered) await JsRuntime.InvokeVoidAsync($"window.notification.new", new { type = "info", title = "Streamer mode", message = "Private info is hidden! - See settings", renderTo = "toastarea", duration = 5000 });// Show notification that streamer mode was enabled.
+            if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered) await _jsRuntime.InvokeVoidAsync("window.notification.new", new { type = "info", title = "Streamer mode", message = "Private info is hidden! - See settings", renderTo = "toastarea", duration = 5000 });// Show notification that streamer mode was enabled.
 
             OriginSwitcherFuncs.LoadProfiles();
-            Origin.SaveSettings(!File.Exists(Origin.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
+            _origin.SaveSettings(!File.Exists(_origin.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
 
             GeneralInvocableFuncs.HandleQueries();
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");

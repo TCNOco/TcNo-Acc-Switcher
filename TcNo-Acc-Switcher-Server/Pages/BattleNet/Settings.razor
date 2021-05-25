@@ -18,12 +18,12 @@
 
 @page "/BattleNet/Settings"
 @namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
-@inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
-@inject Data.Settings.BattleNet BattleNet
-@inject Data.AppSettings AppSett
-@inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
+@inject NavigationManager _navManager
+@{ AppData.SetActiveNavMan(_navManager); }
+@inject Data.Settings.BattleNet _battleNet
+@inject Data.AppSettings _appSett
+@inject IJSRuntime _jsRuntime
+@{ AppData.SetActiveIJsRuntime(_jsRuntime); }
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
@@ -35,13 +35,13 @@
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="BattleNet.DesktopShortcut" @onclick="() => BattleNet.DesktopShortcut_Toggle()"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">BattleNet Switcher Desktop shortcut</label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_battleNet.DesktopShortcut" @onclick="() => _battleNet.DesktopShortcut_Toggle()"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">BattleNet Switcher Desktop shortcut</label>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="BattleNet.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">Run BattleNet as Admin<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_battleNet.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">Run BattleNet as Admin<br></label>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="OverwatchMode" @bind="BattleNet.OverwatchMode"><label class="form-check-label" for="OverwatchMode"></label></div><label for="OverwatchMode">Show Overwatch SR and use the Overwatch profile picture.<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="OverwatchMode" @bind="_battleNet.OverwatchMode"><label class="form-check-label" for="OverwatchMode"></label></div><label for="OverwatchMode">Show Overwatch SR and use the Overwatch profile picture.<br></label>
             </div>
 
             <div class="SettingsHeader">
@@ -49,7 +49,7 @@
                 <hr>
             </div>
             <div class="form-text">
-                <span>Max number of accounts to remember:</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="BattleNet.TrayAccNumber">
+                <span>Max number of accounts to remember:</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="_battleNet.TrayAccNumber">
             </div>
             <div class="SettingsHeader">
                 <hr><span>General</span>
@@ -99,9 +99,9 @@
 {
     public void SaveAndClose()
     {
-        AppSett.SaveSettings();
-        BattleNet.SaveSettings();
+        _appSett.SaveSettings();
+        _battleNet.SaveSettings();
 
-        NavManager.NavigateTo("/BattleNet");
+        _navManager.NavigateTo("/BattleNet");
     }
 }

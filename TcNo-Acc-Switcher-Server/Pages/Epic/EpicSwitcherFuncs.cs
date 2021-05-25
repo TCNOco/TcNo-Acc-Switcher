@@ -16,7 +16,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
     public class EpicSwitcherFuncs
     {
         private static readonly Data.Settings.Epic Epic = Data.Settings.Epic.Instance;
+/*
         private static string _epicRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Epic");
+*/
         private static readonly string EpicLocalAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EpicGamesLauncher");
         private static readonly string EpicSavedConfigWin = Path.Join(EpicLocalAppData, "Saved\\Config\\Windows");
         private static readonly string EpicGameUserSettings = Path.Join(EpicSavedConfigWin, "GameUserSettings.ini");
@@ -29,9 +31,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public static async void LoadProfiles()
         {
             // Normal:
-            Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.LoadProfiles] Loading Epic profiles");
+            Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.LoadProfiles] Loading Epic profiles");
             
-            var localCachePath = $"LoginCache\\Epic\\";
+            var localCachePath = "LoginCache\\Epic\\";
             if (!Directory.Exists(localCachePath)) return;
             var accList = new List<string>();
             foreach (var f in Directory.GetDirectories(localCachePath))
@@ -61,7 +63,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
                     $"<label for=\"{accName}\" class=\"acc\">\r\n" +
                     $"<img src=\"\\img\\profiles\\epic\\{Uri.EscapeUriString(accName)}.jpg\" draggable=\"false\" />\r\n" +
                     $"<h6>{accName}</h6></div>\r\n"))
-                await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
+                await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
 
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
@@ -116,7 +118,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         [SupportedOSPlatform("windows")]
         private static void ClearCurrentLoginEpic()
         {
-            Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.ClearCurrentLoginEpic]");
+            Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.ClearCurrentLoginEpic]");
             // Get current information for logged in user, and save into files:
             var currentAccountId = (string)Registry.CurrentUser.OpenSubKey(@"Software\Epic Games\Unreal Engine\Identifiers")?.GetValue("AccountId");
 
@@ -132,7 +134,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         [SupportedOSPlatform("windows")]
         private static void EpicCopyInAccount(string accName)
         {
-            Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.EpicCopyInAccount]");
+            Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.EpicCopyInAccount]");
             var localCachePath = $"LoginCache\\Epic\\{accName}\\";
 
             File.Copy(Path.Join(localCachePath, "GameUserSettings.ini"), EpicGameUserSettings);
@@ -146,7 +148,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         [SupportedOSPlatform("windows")]
         public static void EpicAddCurrent(string accName)
         {
-            Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.EpicAddCurrent]");
+            Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.EpicAddCurrent]");
             var localCachePath = $"LoginCache\\Epic\\{accName}\\";
             Directory.CreateDirectory(localCachePath);
 
@@ -170,8 +172,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             File.WriteAllText("LoginCache\\Epic\\ids.json", JsonConvert.SerializeObject(allIds));
 
             // Copy in profile image from default
-            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\epic"));
-            File.Copy(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\EpicDefault.png"), Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\epic\\{Uri.EscapeUriString(accName)}.jpg"), true);
+            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot, "\\img\\profiles\\epic"));
+            File.Copy(Path.Join(GeneralFuncs.WwwRoot, "\\img\\EpicDefault.png"), Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\epic\\{Uri.EscapeUriString(accName)}.jpg"), true);
             
             AppData.ActiveNavMan?.NavigateTo("/Epic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
         }
@@ -184,7 +186,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
                 allIds[allIds.Single(x => x.Value == oldName).Key] = newName;
                 File.WriteAllText("LoginCache\\Epic\\ids.json", JsonConvert.SerializeObject(allIds));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", "Could not change username", "Error", "toastarea");
                 return;
@@ -197,19 +199,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Epic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed username"), true);
         }
 
-        public static bool ChangeKey<TKey, TValue>(ref Dictionary<TKey, TValue> dict, TKey oldKey, TKey newKey)
-        {
-            if (!dict.Remove(oldKey, out var value))
-                return false;
-
-            dict[newKey] = value;
-            return true;
-        }
-
         private static Dictionary<string, string> ReadAllIds()
         {
-            Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.ReadAllIds]");
-            var localAllIds = $"LoginCache\\Epic\\ids.json";
+            Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.ReadAllIds]");
+            var localAllIds = "LoginCache\\Epic\\ids.json";
             var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
             if (File.Exists(localAllIds))
             {
@@ -233,7 +226,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         /// </summary>
         public static bool CloseEpic()
         {
-            Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.CloseSteam]");
+            Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.CloseSteam]");
             if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher")) return false;
             Globals.KillProcess("EpicGamesLauncher");
             return true;

@@ -20,7 +20,7 @@ initAccListSortable = () => {
         hoverClass: "accountHover"
     });
     // On drag start, un-select all items.
-    sortable(".acc_list")[0].addEventListener("sortstart", function (e) {
+    sortable(".acc_list")[0].addEventListener("sortstart", function () {
         $("input:checked").each(function (_, e) {
             $(e).prop("checked", false);
         });

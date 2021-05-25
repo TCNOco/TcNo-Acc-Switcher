@@ -278,12 +278,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 }
                 catch (Exception ex)
                 {
-                    AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"ERROR: {ex.ToString()}");
+                    AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"ERROR: {ex}");
                 }
             }
             JsDestNewline(jsDest);
         }
 
+/*
         /// <summary>
         /// Recursively move files and directories
         /// </summary>
@@ -299,6 +300,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
                 File.Move(newPath, newPath.Replace(inputFolder, outputFolder), true);
         }
+*/
 
         /// <summary>
         /// Recursively copy files and directories
@@ -343,7 +345,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             // Create folder if it doesn't exist:
             var folder = Path.GetDirectoryName(file);
-            if (folder != "") Directory.CreateDirectory(folder);
+            if (folder != "") Directory.CreateDirectory(folder ?? string.Empty);
 
             // Get existing settings
             var joSettings = new JObject();
@@ -391,7 +393,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             // Create folder if it doesn't exist:
             var folder = Path.GetDirectoryName(file);
-            if (folder != "") Directory.CreateDirectory(folder);
+            if (folder != "") Directory.CreateDirectory(folder ?? string.Empty);
 
             File.WriteAllText(sFilename, joOrder.ToString());
         }
@@ -470,10 +472,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         #endregion
 
         #region WINDOW SETTINGS
-        private static readonly Data.AppSettings AppSettings = Data.AppSettings.Instance;
+        private static readonly AppSettings AppSettings = AppSettings.Instance;
         public static bool WindowSettingsValid()
         {
-            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.WindowSettingsValid]");
+            Globals.DebugWriteLine(@"[Func:General\GeneralFuncs.WindowSettingsValid]");
             AppSettings.LoadFromFile();
             return true;
         }

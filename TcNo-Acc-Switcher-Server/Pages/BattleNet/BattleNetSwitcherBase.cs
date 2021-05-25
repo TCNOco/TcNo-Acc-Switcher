@@ -53,8 +53,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             
             public bool FetchRank()
             {
-                if (!BattleNetSwitcherFuncs.ValidateBTag(this.BTag)) return false;
-                var split = this.BTag.Split("#");
+                if (!BattleNetSwitcherFuncs.ValidateBTag(BTag)) return false;
+                var split = BTag.Split("#");
                 var req = WebRequest.Create($"https://playoverwatch.com/en-us/career/pc/{split[0]}-{split[1]}/");
                 req.Method = "GET";
             

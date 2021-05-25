@@ -46,11 +46,11 @@ function RandomAni(e) {
 }
 function handleWindowControls() {
     console.log("HandleWindowControls() was called!");
-    document.getElementById("btnMin").addEventListener("click", event => {
+    document.getElementById("btnMin").addEventListener("click", () => {
         chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMinimise);
     });
 
-    document.getElementById("btnBack").addEventListener("click", event => {
+    document.getElementById("btnBack").addEventListener("click", () => {
         if (window.location.pathname === "/") RandomAni("#btnBack .icon");
         else {
             let tempUri = document.location.href.split("?")[0];
@@ -58,16 +58,16 @@ function handleWindowControls() {
         }
     });
 
-    document.getElementById("btnMax").addEventListener("click", event => {
+    document.getElementById("btnMax").addEventListener("click", () => {
         chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMaximise);
     });
 
-    document.getElementById("btnRestore").addEventListener("click", event => {
+    document.getElementById("btnRestore").addEventListener("click", () => {
         chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScRestore);
     });
 
-    document.getElementById("btnClose").addEventListener("click", event => {
-        var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetTrayMinimizeNotExit").then(r => {
+    document.getElementById("btnClose").addEventListener("click", () => {
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetTrayMinimizeNotExit").then(r => {
             if (r && !event.ctrlKey) { // If enabled, and NOT control held
                 chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
             } else {

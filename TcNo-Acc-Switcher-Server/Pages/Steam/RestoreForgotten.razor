@@ -14,10 +14,10 @@
 
 @page "/Steam/RestoreForgotten"
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
-@inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
-@inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
+@inject NavigationManager _navManager
+@{ AppData.SetActiveNavMan(_navManager); }
+@inject IJSRuntime _jsRuntime
+@{ AppData.SetActiveIJsRuntime(_jsRuntime); }
 
 <div class="container mainblock">
     <div class="row">
@@ -40,7 +40,7 @@
                 <button class="btn btn_RestoreSelected" type="button" onclick='restoreSteamAccounts()'><span>Restore selected</span></button>
             </div>
             <div class="buttoncol col_close">
-                <button class="btn btn_close" type="button" @onclick='() => NavManager.NavigateTo("/Steam/Settings")'><span>Close</span></button>
+                <button class="btn btn_close" type="button" @onclick='() => _navManager.NavigateTo("/Steam/Settings")'><span>Close</span></button>
             </div>
         </div>
     </div>

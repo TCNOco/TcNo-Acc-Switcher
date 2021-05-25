@@ -27,7 +27,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
     {
         private static Origin _instance = new();
 
-        public Origin() { }
         private static readonly object LockObj = new();
         public static Origin Instance
         {
@@ -58,16 +57,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         // Constants
         [JsonIgnore] public string SettingsFile = "OriginSettings.json";
+        /*
         [JsonIgnore] public string OriginImagePath = "wwwroot/img/profiles/origin/";
         [JsonIgnore] public string OriginImagePathHtml = "img/profiles/origin/";
-        //[JsonIgnore] public string ContextMenuJson = @"[
-        //      {""Swap to account"": ""SwapTo(-1, event)""},
-        //      {""Login as..."": [
-        //        {""Invisible"": ""SwapTo(10, event)""},
-        //      ]},
-        //      {""Create Desktop Shortcut"": ""CreateShortcut()""},
-        //      {""Forget"": ""forget(event)""}
-        //    ]";
+        */
         [JsonIgnore] public string ContextMenuJson = @"[
               {""Swap to account"": ""SwapTo(-1, event)""},
               {""Change switcher name"": ""ShowModal('changeUsername')""},
@@ -81,7 +74,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
         public void SetForgetAcc(bool enabled)
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Origin.SetForgetAcc]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Origin.SetForgetAcc]");
             if (ForgetAccountEnabled == enabled) return; // Ignore if already set
             ForgetAccountEnabled = enabled;
             SaveSettings();
@@ -100,7 +93,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// </summary>
         public void ResetSettings()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Origin.ResetSettings]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Origin.ResetSettings]");
             _instance.FolderPath = "C:\\Program Files (x86)\\Origin\\";
             _instance.WindowSize = new Point() { X = 800, Y = 450 };
             _instance.Admin = false;
@@ -112,7 +105,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
         public void SetFromJObject(JObject j)
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Origin.SetFromJObject]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Origin.SetFromJObject]");
             var curSettings = j.ToObject<Origin>();
             if (curSettings == null) return;
             _instance.FolderPath = curSettings.FolderPath;
@@ -131,14 +124,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         #region SHORTCUTS
         public void CheckShortcuts()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Origin.CheckShortcuts]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Origin.CheckShortcuts]");
             _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "Origin - TcNo Account Switcher.lnk"));
             AppSettings.Instance.CheckShortcuts();
         }
 
         public void DesktopShortcut_Toggle()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Origin.DesktopShortcut_Toggle]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Origin.DesktopShortcut_Toggle]");
             var s = new Shortcut();
             s.Shortcut_Platform(Shortcut.Desktop, "Origin", "origin");
             s.ToggleShortcut(!DesktopShortcut);

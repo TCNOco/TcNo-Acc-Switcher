@@ -86,7 +86,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         [JSInvokable]
         public static void NewSteamLogin()
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.NewSteamLogin]");
+            Globals.DebugWriteLine(@"[JSInvoke:Steam\SteamSwitcherBase.NewSteamLogin]");
             SteamSwitcherFuncs.SwapSteamAccounts();
         }
     }

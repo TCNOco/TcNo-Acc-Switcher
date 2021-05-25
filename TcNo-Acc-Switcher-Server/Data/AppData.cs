@@ -23,7 +23,6 @@ namespace TcNo_Acc_Switcher_Server.Data
     public class AppData
     {
         private static AppData _instance = new();
-        public AppData() { }
 
         private static readonly object LockObj = new();
 
@@ -71,11 +70,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         private void NotifyDataChanged() => OnChange?.Invoke();
 
 
-        private IJSRuntime _activeIJsRuntime = null;
+        private IJSRuntime _activeIJsRuntime;
         [JsonIgnore] public static IJSRuntime ActiveIJsRuntime { get => _instance._activeIJsRuntime; set => _instance._activeIJsRuntime = value; }
         public void SetActiveIJsRuntime(IJSRuntime jsr) => _instance._activeIJsRuntime = jsr;
 
-        private NavigationManager _activeNavMan = null;
+        private NavigationManager _activeNavMan;
         [JsonIgnore] public static NavigationManager ActiveNavMan { get => _instance._activeNavMan; set => _instance._activeNavMan = value; }
         public void SetActiveNavMan(NavigationManager nm) => _instance._activeNavMan = nm;
     }

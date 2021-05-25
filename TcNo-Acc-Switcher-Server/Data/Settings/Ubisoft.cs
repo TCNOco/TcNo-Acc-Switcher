@@ -27,7 +27,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
     {
         private static Ubisoft _instance = new();
 
-        public Ubisoft() { }
         private static readonly object LockObj = new();
         public static Ubisoft Instance
         {
@@ -58,8 +57,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         // Constants
         [JsonIgnore] public string SettingsFile = "UbisoftSettings.json";
-        [JsonIgnore] public string UbisoftImagePath = "wwwroot/img/profiles/ubi/";
-        [JsonIgnore] public string UbisoftImagePathHtml = "img/profiles/ubi/";
+        /*
+            [JsonIgnore] public string UbisoftImagePath = "wwwroot/img/profiles/ubi/";
+            [JsonIgnore] public string UbisoftImagePathHtml = "img/profiles/ubi/";
+        */
         [JsonIgnore] public string ContextMenuJson = @"[
               {""Swap to account"": ""SwapTo(-1, event)""},
               {""Login as..."": [
@@ -80,7 +81,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
         public void SetForgetAcc(bool enabled)
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Ubisoft.SetForgetAcc]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Ubisoft.SetForgetAcc]");
             if (ForgetAccountEnabled == enabled) return; // Ignore if already set
             ForgetAccountEnabled = enabled;
             SaveSettings();
@@ -98,7 +99,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// </summary>
         public void ResetSettings()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Ubisoft.ResetSettings]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Ubisoft.ResetSettings]");
             _instance.FolderPath = "C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher\\";
             _instance.WindowSize = new Point() { X = 800, Y = 450 };
             _instance.Admin = false;
@@ -110,7 +111,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
         public void SetFromJObject(JObject j)
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Ubisoft.SetFromJObject]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Ubisoft.SetFromJObject]");
             var curSettings = j.ToObject<Ubisoft>();
             if (curSettings == null) return;
             _instance.FolderPath = curSettings.FolderPath;
@@ -129,14 +130,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         #region SHORTCUTS
         public void CheckShortcuts()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Ubisoft.CheckShortcuts]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Ubisoft.CheckShortcuts]");
             _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "Ubisoft - TcNo Account Switcher.lnk"));
             AppSettings.Instance.CheckShortcuts();
         }
 
         public void DesktopShortcut_Toggle()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Ubisoft.DesktopShortcut_Toggle]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Ubisoft.DesktopShortcut_Toggle]");
             var s = new Shortcut();
             s.Shortcut_Platform(Shortcut.Desktop, "Ubisoft", "ubisoft");
             s.ToggleShortcut(!DesktopShortcut);

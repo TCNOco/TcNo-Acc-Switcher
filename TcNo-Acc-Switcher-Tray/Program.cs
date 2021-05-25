@@ -28,7 +28,7 @@ namespace TcNo_Acc_Switcher_Tray
     internal static class Program
     {
         public static Dictionary<string, List<TrayUser>> TrayUsers = new();
-        public static string lastHash = "";
+        public static string LastHash = "";
 
         /// <summary>
         ///  The main entry point for the application.
@@ -75,8 +75,8 @@ namespace TcNo_Acc_Switcher_Tray
         private void InitMenu(bool first = true)
         {
             if (!File.Exists("Tray_Users.json")) Environment.Exit(1);
-            if (string.Equals(Program.lastHash, GetFileMd5("Tray_Users.json"), StringComparison.Ordinal)) return; // Don't init again
-            Program.lastHash = GetFileMd5("Tray_Users.json");
+            if (string.Equals(Program.LastHash, GetFileMd5("Tray_Users.json"), StringComparison.Ordinal)) return; // Don't init again
+            Program.LastHash = GetFileMd5("Tray_Users.json");
 
             Program.TrayUsers = TrayUser.ReadTrayUsers();
             
@@ -132,7 +132,7 @@ namespace TcNo_Acc_Switcher_Tray
             _trayIcon.DoubleClick += NotifyIcon_DoubleClick;
         }
         
-        private void TrayIconOnMouseDown(object? sender, MouseEventArgs e)
+        private void TrayIconOnMouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
                 InitMenu(false);
@@ -217,12 +217,6 @@ namespace TcNo_Acc_Switcher_Tray
                 else
                     MessageBox.Show("Could not open the main .exe. Make sure it exists.\n\nI attempted to open: " + _mainProgram, "TcNo Account Switcher - Tray launch fail");
             }
-        }
-
-        private void Exit(object sender, EventArgs e)
-        {
-            _trayIcon.Visible = false;
-            Application.Exit();
         }
 
         #region ContextMenuStrip Style Section

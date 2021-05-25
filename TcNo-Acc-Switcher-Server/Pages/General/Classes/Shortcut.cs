@@ -29,10 +29,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         public string Desc { get; set; }
         public string Args { get; set; }
 
-        public Shortcut()
-        {
-        }
-
         public static string Desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         public static string StartMenu = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\");
 
@@ -49,7 +45,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// </summary>
         private void WriteShortcut()
         {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.WriteShortcut]");
+            Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.WriteShortcut]");
             Directory.CreateDirectory(ShortcutDir());
             if (File.Exists(ShortcutPath)) return;
             if (File.Exists("CreateShortcut.vbs")) File.Delete("CreateShortcut.vbs");
@@ -116,7 +112,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// </summary>
         public void TryWrite()
         {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.TryWrite]");
+            Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.TryWrite]");
             if (!ShortcutExist()) WriteShortcut();
         }
 

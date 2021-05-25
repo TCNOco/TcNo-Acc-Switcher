@@ -54,7 +54,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="stream">The output stream.</param>
         public static void SavePngsAsIcon(IEnumerable<Bitmap> images, Stream stream)
         {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.SavePngsAsIcon]");
+            Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.SavePngsAsIcon]");
             if (images == null)
                 throw new ArgumentNullException(nameof(images));
             if (stream == null)
@@ -96,7 +96,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 
         private static void ThrowForInvalidPng(IEnumerable<Bitmap> images)
         {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.ThrowForInvalidPng]");
+            Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.ThrowForInvalidPng]");
             foreach (var image in images)
             {
                 if (image.PixelFormat != PixelFormat.Format32bppArgb)
@@ -120,7 +120,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 
         private static byte GetIconHeight(Image image)
         {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.GetIconHeight]");
+            Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.GetIconHeight]");
             if (image.Height == MaxIconHeight)
                 return 0;
             return (byte)image.Height;
@@ -128,7 +128,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 
         private static byte GetIconWidth(Image image)
         {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.GetIconWidth]");
+            Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.GetIconWidth]");
             if (image.Width == MaxIconWidth)
                 return 0;
             return (byte)image.Width;
@@ -136,7 +136,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 
         private static byte[] CreateImageBuffer(Image image)
         {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateImageBuffer]");
+            Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.CreateImageBuffer]");
             using var stream = new MemoryStream();
             image.Save(stream, image.RawFormat);
             return stream.ToArray();
@@ -173,7 +173,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             }
 
 
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateIcon]");
+            Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.CreateIcon]");
             using var ms16 = new MemoryStream();
             using var ms32 = new MemoryStream();
             using var ms48 = new MemoryStream();
@@ -186,7 +186,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             Directory.CreateDirectory("IconCache");
             icoOutput = Path.Join("IconCache", icoOutput);
             using var stream = new FileStream(icoOutput, FileMode.Create);
-            IconFactory.SavePngsAsIcon(new[] { new Bitmap(ms16), new Bitmap(ms32), new Bitmap(ms48), new Bitmap(ms256) }, stream);
+            SavePngsAsIcon(new[] { new Bitmap(ms16), new Bitmap(ms32), new Bitmap(ms48), new Bitmap(ms256) }, stream);
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="imgSize">Requested dimensions for the image</param>
         public static void CreateImage(MemoryStream sBgImg, string sFgImg, MemoryStream output, Size imgSize)
         {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateImage]");
+            Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.CreateImage]");
             sBgImg.Seek(0, SeekOrigin.Begin);
             using MagickImage bgImg = new(sBgImg);
             using MagickImage fgImg = new(sFgImg);

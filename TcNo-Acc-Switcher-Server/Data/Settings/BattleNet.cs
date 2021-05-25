@@ -32,7 +32,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
     {
         private static BattleNet _instance = new();
 
-        public BattleNet(){}
         private static readonly object LockObj = new();
         public static BattleNet Instance
         {
@@ -77,10 +76,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         
         // Constants
         [JsonIgnore] public string SettingsFile = "BattleNetSettings.json";
-        [JsonIgnore] public string BattleNetImagePath = "wwwroot/img/profiles/battlenet/";
-        [JsonIgnore] public string BattleNetImagePathHtml = "img/profiles/battlenet/";
+        /*
+                // Unused:
+                [JsonIgnore] public string BattleNetImagePath = "wwwroot/img/profiles/battlenet/";
+                [JsonIgnore] public string BattleNetImagePathHtml = "img/profiles/battlenet/";
+        */
         [JsonIgnore] public string StoredAccPath = "LoginCache\\BattleNet\\StoredAccounts.json";
-        [JsonIgnore] public string IgnoredAccPath = $"LoginCache\\BattleNet\\IgnoredAccounts.json";
+        [JsonIgnore] public string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
         [JsonIgnore] public string ContextMenuJson = @"[
               {""Swap to account"": ""SwapTo(-1, event)""},
               {""Set BattleTag"": ""ShowModal('changeUsername:BattleTag')""},
@@ -100,22 +102,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
         public void SetForgetAcc(bool enabled)
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\BattleNet.SetForgetAcc]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\BattleNet.SetForgetAcc]");
             if (_forgetAccountEnabled == enabled) return; // Ignore if already set
             _forgetAccountEnabled = enabled;
             SaveSettings();
-        }
-        
-        /// <summary>
-        /// Deletes the account from the settings file and from the roaming config
-        /// </summary>
-        /// <param name="accountEmail">Account email to forget</param>
-        public void ForgetAccount(string accountEmail)
-        {
-            var acc = Accounts.Find(x => x.Email == accountEmail);
-            Accounts.Remove(acc);
-            IgnoredAccounts.Add(acc);
-            SaveAccounts();
         }
 
         #endregion
@@ -134,7 +124,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// </summary>
         public void ResetSettings()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\BattleNet.ResetSettings]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\BattleNet.ResetSettings]");
             _instance.FolderPath = "C:\\Program Files (x86)\\Battle.net";
             _instance.WindowSize = new Point() { X = 800, Y = 450 };
             _instance.Admin = false;
@@ -147,7 +137,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
         public void SetFromJObject(JObject j)
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\BattleNet.SetFromJObject]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\BattleNet.SetFromJObject]");
             var curSettings = j.ToObject<BattleNet>();
             if (curSettings == null) return;
             _instance.FolderPath = curSettings.FolderPath;
@@ -202,14 +192,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         #region SHORTCUTS
         public void CheckShortcuts()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\BattleNet.CheckShortcuts]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\BattleNet.CheckShortcuts]");
             _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "BattleNet - TcNo Account Switcher.lnk"));
             AppSettings.Instance.CheckShortcuts();
         }
 
         public void DesktopShortcut_Toggle()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\BattleNet.DesktopShortcut_Toggle]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\BattleNet.DesktopShortcut_Toggle]");
             var s = new Shortcut();
             s.Shortcut_Platform(Shortcut.Desktop, "BattleNet", "battlenet");
             s.ToggleShortcut(!DesktopShortcut);

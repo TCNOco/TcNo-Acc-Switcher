@@ -417,8 +417,8 @@ function ShowModal(modaltype) {
         // USAGE: "find:<Program_name>:<Program_exe>:<SettingsFile>" -- example: "find:Steam:Steam.exe:SteamSettings"
         console.log(modaltype);
         console.log(modaltype.split(":"));
-        var platform = modaltype.split(":")[1].replaceAll("_", " ");
-        var platform_exe = modaltype.split(":")[2];
+        platform = modaltype.split(":")[1].replaceAll("_", " ");
+        var platformExe = modaltype.split(":")[2];
         var platformSettingsPath = modaltype.split(":")[3];
         Modal_RequestedLocated(false);
         $('#modalTitle').text("Please locate the " + platform + " directory");
@@ -429,11 +429,11 @@ function ShowModal(modaltype) {
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="FolderLocation" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
-		        <button class="btn" type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFile=` + platform_exe + `';"><span>Locate ` + platform_exe + `</span></button>
+		        <button class="btn" type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFile=` + platformExe + `';"><span>Locate ` + platformExe + `</span></button>
 	        </div>
 	        <div class="settingsCol inputAndButton">
 		        <div class="folder_indicator notfound"><div id="folder_indicator_text"></div></div>
-		        <div class="folder_indicator_bg notfound"><span>` + platform_exe + `</span></div>
+		        <div class="folder_indicator_bg notfound"><span>` + platformExe + `</span></div>
 		        <button class="btn modalOK" type="button" id="select_location" onclick="Modal_Finalise('` + platform + `', '` + platformSettingsPath + `')"><span>Select ` + platform + ` Folder</span></button>
 	        </div>
         </div>`);
@@ -518,7 +518,7 @@ function ShowModal(modaltype) {
         // USAGE: "accString:<platform>" -- example: "accString:Origin"
         console.log(modaltype);
         console.log(modaltype.split(":"));
-        var platform = modaltype.split(":")[1].replaceAll("_", " ");
+        platform = modaltype.split(":")[1].replaceAll("_", " ");
         Modal_RequestedLocated(false);
         $('#modalTitle').text("Add new " + platform + " account");
         $("#modal_contents").empty();

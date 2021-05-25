@@ -12,25 +12,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
-@inject Data.AppSettings AppSett
+@inject Data.AppSettings _appSett
 
 <div class="SettingsHeader">
     <hr><span>App-wide settings</span>
     <hr>
 </div>
 <div>
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="StreamerMode" @bind="AppSett.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label></div><label for="StreamerMode">Enable streamer mode<br></label>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="StreamerMode" @bind="_appSett.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label></div><label for="StreamerMode">Enable streamer mode<br></label>
 </div>
 <div class="rowSetting">
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="AppSett.TrayMinimizeNotExit"><label class="form-check-label" for="TrayMinimizeNotExit"></label></div><label for="TrayMinimizeNotExit">Exit minimises to tray<br></label>
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeLessMem" @bind="AppSett.TrayMinimizeLessMem"><label class="form-check-label" for="TrayMinimizeLessMem"></label></div><label for="TrayMinimizeLessMem">Use less RAM while in tray<br></label>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="_appSett.TrayMinimizeNotExit"><label class="form-check-label" for="TrayMinimizeNotExit"></label></div><label for="TrayMinimizeNotExit">Exit minimises to tray<br></label>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeLessMem" @bind="_appSett.TrayMinimizeLessMem"><label class="form-check-label" for="TrayMinimizeLessMem"></label></div><label for="TrayMinimizeLessMem">Use less RAM while in tray<br></label>
 </div>
 <div class="rowSetting">
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="AppSett.DesktopShortcut" @onclick="() => AppSett.DesktopShortcut_Toggle()"><label class="form-check-label" for="AppSett_DesktopShortcut"></label></div><label for="AppSett_DesktopShortcut">Desktop shortcut<br></label>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="_appSett.DesktopShortcut" @onclick="() => _appSett.DesktopShortcut_Toggle()"><label class="form-check-label" for="AppSett_DesktopShortcut"></label></div><label for="AppSett_DesktopShortcut">Desktop shortcut<br></label>
 </div>
 <div class="rowSetting">
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="AppSett.StartMenu" @onclick="() => AppSett.StartMenu_Toggle()"><label class="form-check-label" for="AppSett_StartMenu"></label></div><label for="AppSett_StartMenu">Start menu shortcuts<br></label>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="_appSett.StartMenu" @onclick="() => _appSett.StartMenu_Toggle()"><label class="form-check-label" for="AppSett_StartMenu"></label></div><label for="AppSett_StartMenu">Start menu shortcuts<br></label>
 </div>
 <div class="rowSetting">
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="AppSett.TrayStartup" @onclick="() => AppSett.Task_Toggle()"><label class="form-check-label" for="AppSett_TrayStartup"></label></div><label for="AppSett_TrayStartup">Start Tray with Windows<br></label>&nbsp;<a class="fancyLink" @onclick="() => AppSett.StartNow()">[Start Tray now]</a>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="_appSett.TrayStartup" @onclick="() => _appSett.Task_Toggle()"><label class="form-check-label" for="AppSett_TrayStartup"></label></div><label for="AppSett_TrayStartup">Start Tray with Windows<br></label>&nbsp;<a class="fancyLink" @onclick="() => _appSett.StartNow()">[Start Tray now]</a>
 </div>

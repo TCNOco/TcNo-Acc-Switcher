@@ -42,7 +42,8 @@ namespace TcNo_Acc_Switcher_Client
     /// Interaction logic for MainWindow.xaml
     /// </summary>
 
-    public partial class MainWindow : Window
+    // This is reported as "never used" by JetBrains Inspector... what?
+    public partial class MainWindow
     {
         private static readonly Thread Server = new(RunServer);
         public static readonly AppSettings AppSettings = AppSettings.Instance;
@@ -83,7 +84,7 @@ namespace TcNo_Acc_Switcher_Client
             // Each window in the program would have its own size. IE Resize for Steam, and more.
         }
 
-        private async void MView2_OnInitialised(object? sender, EventArgs e)
+        private async void MView2_OnInitialised(object sender, EventArgs e)
         {
             MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
             await MView2.EnsureCoreWebView2Async();
@@ -189,7 +190,6 @@ namespace TcNo_Acc_Switcher_Client
             {
                 // Check if hidden or not:
                 var windowLong = Globals.GetWindow(new WindowInteropHelper(this).Handle);
-                var ch = (windowLong & ~Globals.WsExAppWindow);
                 if (windowLong == (windowLong & ~Globals.WsExAppWindow)) // Hidden
                 {
                     MainBackground.Children.Remove(MView2);
@@ -284,6 +284,7 @@ namespace TcNo_Acc_Switcher_Client
             }
         }
 
+/*
         public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.ExecuteScriptFunctionAsync]");
@@ -299,5 +300,6 @@ namespace TcNo_Acc_Switcher_Client
             script += ");";
             return await webView2.ExecuteScriptAsync(script);
         }
+*/
     }
 }

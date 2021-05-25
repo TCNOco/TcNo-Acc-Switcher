@@ -19,7 +19,7 @@ using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Converters
 {
-    internal class SteamIdConvert
+    public class SteamIdConvert
     {
         // Usage:
         // - Console.WriteLine(new SteamIdConvert("STEAM_0:0:52161201").PrintAll());
@@ -85,7 +85,7 @@ namespace TcNo_Acc_Switcher_Server.Converters
             return Math.Floor((int.Parse(sIn) / divIn)).ToString(CultureInfo.InvariantCulture);
         }
 
-        private string CalcSteamId()
+        private void CalcSteamId()
         {
             if (_inputType == SteamId)
             {
@@ -103,18 +103,15 @@ namespace TcNo_Acc_Switcher_Server.Converters
 
                 Id += GetOddity(s) + ":" + FloorDivide(s, 2);
             }
-
-            return Id;
         }
 
-        private string CalcSteamId3()
+        private void CalcSteamId3()
         {
             if (_inputType == SteamId3)
                 Id3 = _input;
             else
                 Id3 += CalcSteamId32();
             Id3 = $"[{Id3}]";
-            return Id3;
         }
 
         private string CalcSteamId32()
@@ -137,7 +134,7 @@ namespace TcNo_Acc_Switcher_Server.Converters
             return Id32;
         }
 
-        private string CalcSteamId64()
+        private void CalcSteamId64()
         {
             if (_inputType == SteamId64)
                 Id64 = _input;
@@ -149,8 +146,6 @@ namespace TcNo_Acc_Switcher_Server.Converters
                     SteamId32 => (int.Parse(_input) + ChangeVal).ToString(),
                     _ => Id64
                 };
-
-            return Id64;
         }
 
 
@@ -164,7 +159,7 @@ namespace TcNo_Acc_Switcher_Server.Converters
 
         public string PrintAll()
         {
-            Globals.DebugWriteLine($@"[Func:Converters\SteamIdConvert.PrintAll]");
+            Globals.DebugWriteLine(@"[Func:Converters\SteamIdConvert.PrintAll]");
             return $"SteamID: {Id}\nSteamID3: {Id3}\nSteamID32: {Id32}\nSteamID64: {Id64}";
         }
 

@@ -26,9 +26,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public static async void LoadProfiles()
         {
             // Normal:
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.LoadProfiles] Loading Steam profiles");
+            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.LoadProfiles] Loading Steam profiles");
             
-            var localCachePath = $"LoginCache\\Ubisoft\\";
+            var localCachePath = "LoginCache\\Ubisoft\\";
             if (!Directory.Exists(localCachePath) || !File.Exists(Path.Join(localCachePath, "ids.json"))) return;
             var allIds = ReadAllIds();
 
@@ -48,12 +48,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 var element =
                     $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{userId}\" Username=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{userId}\" class=\"acc\">\r\n" +
-                    $"<img src=\"" + $"\\img\\profiles\\Ubisoft\\{userId}.png" + "\" draggable=\"false\" />\r\n" +
+                    "<img src=\"" + $"\\img\\profiles\\Ubisoft\\{userId}.png" + "\" draggable=\"false\" />\r\n" +
                     $"<h6>{username}</h6></div>\r\n";
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                 try
                 {
-                    await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
+                    await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
                 }
                 catch (TaskCanceledException e)
                 {
@@ -66,7 +66,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         public static void UbisoftAddCurrent()
         {
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.UbisoftAddCurrent]");
+            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.UbisoftAddCurrent]");
 
             // To add account section:
             var userId = GetLastLoginUserId();
@@ -88,12 +88,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         private static string GetLastLoginUserId()
         {
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.GetLastLoginUserId]");
+            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.GetLastLoginUserId]");
             File.Copy(Path.Join(Ubisoft.FolderPath, "logs", "launcher_log.txt"), "templog");
             var lastUser = "";
             using (var reader = new StreamReader("templog"))
             {
-                var line = "";
+                string line;
 
                 while ((line = reader.ReadLine()) != null)
                 {
@@ -114,16 +114,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             _ubisoftAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
 
 
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.FindUsername]");
+            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.FindUsername]");
             Directory.CreateDirectory("LoginCache\\Ubisoft\\temp\\");
-            var tempUsersDat = $"LoginCache\\Ubisoft\\temp\\users.dat";
-            File.Copy(Path.Join(_ubisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\temp\\users.dat", true);
+            var tempUsersDat = "LoginCache\\Ubisoft\\temp\\users.dat";
+            File.Copy(Path.Join(_ubisoftAppData, "users.dat"), "LoginCache\\Ubisoft\\temp\\users.dat", true);
 
             var username = "";
             var nextLineIsUsername = false;
             using (var reader = new StreamReader(File.Open(tempUsersDat, FileMode.Open)))
             {
-                var line = "";
+                string line;
                 while ((line = reader.ReadLine()) != null)
                 {
                     if (!nextLineIsUsername) // Will only be true if character separating userId and username is counted as a newline.
@@ -171,15 +171,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         {
             var allIds = ReadAllIds();
             allIds[id] = username;
-            File.WriteAllText($"LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
+            File.WriteAllText("LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Set username"), true);
         }
 
 
         public static Dictionary<string, string> ReadAllIds()
         {
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ReadAllIds]");
-            var localAllIds = $"LoginCache\\Ubisoft\\ids.json";
+            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.ReadAllIds]");
+            var localAllIds = "LoginCache\\Ubisoft\\ids.json";
             var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
             if (File.Exists(localAllIds))
             {
@@ -202,7 +202,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             string i64 = Path.Join(UbisoftAvatarFolder, userId + "_64.png"),
                 i128 = Path.Join(UbisoftAvatarFolder, userId + "_128.png"),
                 i256 = Path.Join(UbisoftAvatarFolder, userId + "_256.png");
-            Directory.CreateDirectory($"wwwroot\\img\\profiles\\Ubisoft\\");
+            Directory.CreateDirectory("wwwroot\\img\\profiles\\Ubisoft\\");
             var outPath = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\Ubisoft\\{userId}.png");
             if (File.Exists(i256)) File.Copy(i256, outPath, true);
             else if (File.Exists(i128)) File.Copy(i128, outPath, true);
@@ -298,7 +298,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         private static void ClearCurrentUser()
         {
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ClearCurrentUser]");
+            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.ClearCurrentUser]");
             var settingsYml = File.ReadAllLines(Path.Join(_ubisoftAppData, "settings.yml"));
             for (var i = 0; i < settingsYml.Length; i++)
             {
@@ -330,7 +330,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         /// <param name="state"></param>
         private static void UbisoftCopyInAccount(string userId, int state = 0)
         {
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.UbisoftCopyInAccount]");
+            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.UbisoftCopyInAccount]");
             if (state == -1)
             {
                 File.Copy($"LoginCache\\Ubisoft\\{userId}\\settings.yml", Path.Join(_ubisoftAppData, "settings.yml"), true);
@@ -356,30 +356,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         /// </summary>
         public static bool CloseUbisoft()
         {
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.CloseUbisoft]");
+            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.CloseUbisoft]");
             if (!GeneralFuncs.CanKillProcess("upc")) return false;
             Globals.KillProcess("upc");
             return true;
         }
 
-        /// <summary>
-        /// Clears images folder of contents, to re-download them on next load.
-        /// </summary>
-        /// <returns>Whether files were deleted or not</returns>
-        public static async void ClearImages()
-        {
-            //Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ClearImages] Clearing images.");
-            ////if (!Directory.Exists(Steam.SteamImagePath))
-            ////{
-            ////    await GeneralInvocableFuncs.ShowToast("error", "Could not clear images", "Error", "toastarea");
-            ////}
-            ////foreach (var file in Directory.GetFiles(Origin.OriginImage))
-            ////{
-            ////    File.Delete(file);
-            ////}
-            ////// Reload page, then display notification using a new thread.
-            //AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared images"), true);
-        }
         #endregion
     }
 }

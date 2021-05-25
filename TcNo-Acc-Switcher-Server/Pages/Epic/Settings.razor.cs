@@ -22,29 +22,28 @@ using TcNo_Acc_Switcher_Server.Data;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Epic
 {
-    public partial class Settings : ComponentBase
+    public partial class Settings
     {
         [Inject]
-        public Data.AppData AppData { get; set; }
-        private IJSObjectReference _jsModule;
+        public AppData AppData { get; set; }
         protected override async Task OnInitializedAsync()
         {
             AppData.WindowTitle = "TcNo Account Switcher - Epic Settings";
-            Globals.DebugWriteLine($@"[Auto:Epic\Settings.razor.cs.OnInitializedAsync]");
+            Globals.DebugWriteLine(@"[Auto:Epic\Settings.razor.cs.OnInitializedAsync]");
         }
 
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
         public async Task PickFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Epic\Settings.razor.cs.PickFolder]");
-            await JsRuntime.InvokeAsync<string>("ShowModal", "find:Epic:upc.exe:EpicSettings");
+            Globals.DebugWriteLine(@"[ButtonClicked:Epic\Settings.razor.cs.PickFolder]");
+            await _jsRuntime.InvokeAsync<string>("ShowModal", "find:Epic:upc.exe:EpicSettings");
         }
 
         // BUTTON: Reset settings
         public static void ClearSettings()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Epic\Settings.razor.cs.ClearSettings]");
+            Globals.DebugWriteLine(@"[ButtonClicked:Epic\Settings.razor.cs.ClearSettings]");
             new Data.Settings.Epic().ResetSettings();
             AppData.ActiveNavMan.NavigateTo("/Epic?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Epic switcher settings"));
         }
@@ -54,7 +53,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         // BUTTON: Open Folder
         public static void OpenFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Epic\Settings.razor.cs.OpenEpicFolder]");
+            Globals.DebugWriteLine(@"[ButtonClicked:Epic\Settings.razor.cs.OpenEpicFolder]");
             Process.Start("explorer.exe", new Data.Settings.Epic().FolderPath);
         }
         

@@ -22,16 +22,16 @@ using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 {
-    public partial class ManageForgotten : ComponentBase
+    public partial class ManageForgotten
     {
         [Inject]
         public Data.AppData AppData { get; set; }
         private IJSObjectReference _jsModule;
         protected override async Task OnInitializedAsync()
         {
-            Globals.DebugWriteLine($@"[Auto:BattleNet\ManageForgotten.razor.cs.OnInitializedAsync]");
+            Globals.DebugWriteLine(@"[Auto:BattleNet\ManageForgotten.razor.cs.OnInitializedAsync]");
             AppData.WindowTitle = "TcNo Account Switcher - Manage ignored BattleNet accounts";
-            _jsModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/battlenet/ManageIgnored.js");
+            _jsModule = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/battlenet/ManageIgnored.js");
             await _jsModule.InvokeAsync<string>("jsLoadIgnored");
         }
 

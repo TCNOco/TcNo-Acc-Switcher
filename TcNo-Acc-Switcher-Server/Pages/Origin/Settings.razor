@@ -14,12 +14,12 @@
 
 @page "/Origin/Settings"
 @namespace TcNo_Acc_Switcher_Server.Pages.Origin
-@inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
-@inject Data.Settings.Origin Origin
-@inject Data.AppSettings AppSett
-@inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
+@inject NavigationManager _navManager
+@{ AppData.SetActiveNavMan(_navManager); }
+@inject Data.Settings.Origin _origin
+@inject Data.AppSettings _appSett
+@inject IJSRuntime _jsRuntime
+@{ AppData.SetActiveIJsRuntime(_jsRuntime); }
 
 <div class="container mainblock">
     <div class="row">
@@ -33,10 +33,10 @@
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="Origin.DesktopShortcut" @onclick="() => Origin.DesktopShortcut_Toggle()"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">Origin Switcher Desktop shortcut<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_origin.DesktopShortcut" @onclick="() => _origin.DesktopShortcut_Toggle()"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">Origin Switcher Desktop shortcut<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="Origin.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">Run Origin as Admin<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_origin.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">Run Origin as Admin<br></label>
             </div>
 
 
@@ -44,7 +44,7 @@
                 <hr><span>Tray settings</span>
                 <hr>
             </div>
-            <div class="form-text"><span>Max number of accounts to remember:</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="Origin.TrayAccNumber"></div>
+            <div class="form-text"><span>Max number of accounts to remember:</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="_origin.TrayAccNumber"></div>
 
 
             <div class="SettingsHeader">
@@ -78,9 +78,9 @@
 {
     public void SaveAndClose()
     {
-        AppSett.SaveSettings();
-        Origin.SaveSettings();
+        _appSett.SaveSettings();
+        _origin.SaveSettings();
 
-        NavManager.NavigateTo("/Origin");
+        _navManager.NavigateTo("/Origin");
     }
 }

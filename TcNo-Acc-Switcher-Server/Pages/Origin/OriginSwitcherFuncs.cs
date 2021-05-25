@@ -26,9 +26,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         public static async void LoadProfiles()
         {
             // Normal:
-            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.LoadProfiles] Loading Origin profiles");
+            Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.LoadProfiles] Loading Origin profiles");
             
-            var localCachePath = $"LoginCache\\Origin\\";
+            var localCachePath = "LoginCache\\Origin\\";
             if (!Directory.Exists(localCachePath)) return;
             var accList = new List<string>();
             foreach (var f in Directory.GetDirectories(localCachePath))
@@ -58,7 +58,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                     $"<label for=\"{accName}\" class=\"acc\">\r\n" +
                     $"<img src=\"\\img\\profiles\\origin\\{Uri.EscapeUriString(accName)}.jpg\" draggable=\"false\" />\r\n" +
                     $"<h6>{accName}</h6></div>\r\n"))
-                await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", new object[] { "#acc_list", element });
+                await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
 
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
@@ -110,7 +110,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 
         private static void ClearCurrentLoginOrigin()
         {
-            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.ClearCurrentLoginOrigin]");
+            Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.ClearCurrentLoginOrigin]");
             // Get current information for logged in user, and save into files:
             var currentOlcHashes = (from f in new DirectoryInfo(OriginProgramData).GetFiles() where f.Name.EndsWith(".olc") select GeneralFuncs.GetFileMd5(f.FullName)).ToList();
 
@@ -156,7 +156,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 
         private static void OriginCopyInAccount(string accName, int state = 0)
         {
-            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.OriginCopyInAccount]");
+            Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.OriginCopyInAccount]");
             var localCachePath = $"LoginCache\\Origin\\{accName}\\";
             var localCachePathData = $"LoginCache\\Origin\\{accName}\\Data\\";
 
@@ -194,7 +194,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 
         public static void OriginAddCurrent(string accName)
         {
-            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.OriginAddCurrent]");
+            Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.OriginAddCurrent]");
             var localCachePath = $"LoginCache\\Origin\\{accName}\\";
             var localCachePathData = $"LoginCache\\Origin\\{accName}\\Data\\";
             Directory.CreateDirectory(localCachePath);
@@ -226,7 +226,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                 }
             }
 
-            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\origin\\"));
+            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot, "\\img\\profiles\\origin\\"));
             File.Copy((pfpFilePath != "" ? pfpFilePath :  Path.Join(GeneralFuncs.WwwRoot,"img\\QuestionMark.jpg"))!, Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\origin\\{Uri.EscapeUriString(accName)}.jpg"), true);
 
             var olcHashes = new List<string>();
@@ -276,8 +276,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 
         private static Dictionary<string, List<string>> ReadAllOlc()
         {
-            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.ReadAllOlc]");
-            var localAllOlc = $"LoginCache\\Origin\\olc.json";
+            Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.ReadAllOlc]");
+            var localAllOlc = "LoginCache\\Origin\\olc.json";
             var s = JsonConvert.SerializeObject(new Dictionary<string, List<string>>());
             if (File.Exists(localAllOlc))
             {
@@ -301,28 +301,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// </summary>
         public static bool CloseOrigin()
         {
-            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.CloseSteam]");
+            Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.CloseSteam]");
             if (!GeneralFuncs.CanKillProcess("origin")) return false;
             Globals.KillProcess("origin");
             return true;
-        }
-        /// <summary>
-        /// Clears images folder of contents, to re-download them on next load.
-        /// </summary>
-        /// <returns>Whether files were deleted or not</returns>
-        public static async void ClearImages()
-        {
-            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.ClearImages] Clearing images.");
-            //if (!Directory.Exists(Steam.SteamImagePath))
-            //{
-            //    await GeneralInvocableFuncs.ShowToast("error", "Could not clear images", "Error", "toastarea");
-            //}
-            //foreach (var file in Directory.GetFiles(Origin.OriginImage))
-            //{
-            //    File.Delete(file);
-            //}
-            //// Reload page, then display notification using a new thread.
-            AppData.ActiveNavMan?.NavigateTo("/Origin/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared images"), true);
         }
 
         /// <summary>

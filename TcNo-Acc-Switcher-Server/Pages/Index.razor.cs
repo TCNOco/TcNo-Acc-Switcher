@@ -26,73 +26,73 @@ using TcNo_Acc_Switcher_Server.Pages.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Pages
 {
-    public partial class Index : ComponentBase
+    public partial class Index
     {
         public async void CheckSteam()
         {
-            Globals.DebugWriteLine($@"[Func:Index.CheckSteam]");
+            Globals.DebugWriteLine(@"[Func:Index.CheckSteam]");
 
             if (!GeneralFuncs.CanKillProcess("steam")) return;
 
-            Steam.LoadFromFile();
-            if (!Directory.Exists(Steam.FolderPath) || !File.Exists(Steam.Exe()))
+            _steam.LoadFromFile();
+            if (!Directory.Exists(_steam.FolderPath) || !File.Exists(_steam.Exe()))
             {
                 await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
                 return;
             }
             
             if (SteamSwitcherFuncs.SteamSettingsValid())
-                NavManager.NavigateTo("/Steam/");
+                _navManager.NavigateTo("/Steam/");
             else
                 await GeneralInvocableFuncs.ShowModal("Cannot locate '.../Steam/config/loginusers.vdf'. Try signing into an account first.");
         }
         public async void CheckOrigin()
         {
-            Globals.DebugWriteLine($@"[Func:Index.CheckOrigin]");
+            Globals.DebugWriteLine(@"[Func:Index.CheckOrigin]");
 
             if (!GeneralFuncs.CanKillProcess("Origin")) return;
 
-            Origin.LoadFromFile();
-            if (Directory.Exists(Origin.FolderPath) && File.Exists(Origin.Exe()))
-                NavManager.NavigateTo("/Origin/");
+            _origin.LoadFromFile();
+            if (Directory.Exists(_origin.FolderPath) && File.Exists(_origin.Exe()))
+                _navManager.NavigateTo("/Origin/");
             else
                 await GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
         }
         public async void CheckUbisoft()
         {
-            Globals.DebugWriteLine($@"[Func:Index.CheckUbisoft]");
+            Globals.DebugWriteLine(@"[Func:Index.CheckUbisoft]");
 
             if (!GeneralFuncs.CanKillProcess("upc")) return;
 
-            Ubisoft.LoadFromFile();
-            if (Directory.Exists(Ubisoft.FolderPath) && File.Exists(Ubisoft.Exe()))
-                NavManager.NavigateTo("/Ubisoft/");
+            _ubisoft.LoadFromFile();
+            if (Directory.Exists(_ubisoft.FolderPath) && File.Exists(_ubisoft.Exe()))
+                _navManager.NavigateTo("/Ubisoft/");
             else
                 await GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
         }
 
         public async void CheckBattleNet()
         {
-            Globals.DebugWriteLine($@"[Func:Index.CheckBattleNet]");
+            Globals.DebugWriteLine(@"[Func:Index.CheckBattleNet]");
 
             if (!GeneralFuncs.CanKillProcess("Battle.net")) return;
 
-            BattleNet.LoadFromFile();
-            if (Directory.Exists(BattleNet.FolderPath) && File.Exists(BattleNet.Exe()))
-                NavManager.NavigateTo("/BattleNet/");
+            _battleNet.LoadFromFile();
+            if (Directory.Exists(_battleNet.FolderPath) && File.Exists(_battleNet.Exe()))
+                _navManager.NavigateTo("/BattleNet/");
             else
                 await GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
         }
 
         public async void CheckEpic()
         {
-            Globals.DebugWriteLine($@"[Func:Index.CheckEpic]");
+            Globals.DebugWriteLine(@"[Func:Index.CheckEpic]");
 
             if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) return;
 
-            Epic.LoadFromFile();
-            if (Directory.Exists(Epic.FolderPath) && File.Exists(Epic.Exe()))
-                NavManager.NavigateTo("/Epic/");
+            _epic.LoadFromFile();
+            if (Directory.Exists(_epic.FolderPath) && File.Exists(_epic.Exe()))
+                _navManager.NavigateTo("/Epic/");
             else
                 await GeneralInvocableFuncs.ShowModal("find:Epic:EpicGamesLauncher.exe:EpicSettings");
         }

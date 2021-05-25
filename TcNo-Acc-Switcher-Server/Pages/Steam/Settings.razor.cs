@@ -23,29 +23,28 @@ using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
-    public partial class Settings : ComponentBase
+    public partial class Settings
     {
         [Inject]
-        public Data.AppData AppData { get; set; }
-        private IJSObjectReference _jsModule;
+        public AppData AppData { get; set; }
         protected override async Task OnInitializedAsync()
         {
             AppData.WindowTitle = "TcNo Account Switcher - Steam Settings";
-            Globals.DebugWriteLine($@"[Auto:Steam\Settings.razor.cs.OnInitializedAsync]");
+            Globals.DebugWriteLine(@"[Auto:Steam\Settings.razor.cs.OnInitializedAsync]");
         }
         
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
         public async Task PickFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Steam\Settings.razor.cs.PickFolder]");
-            await JsRuntime.InvokeAsync<string>("ShowModal", "find:Steam:Steam.exe:SteamSettings");
+            Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.PickFolder]");
+            await _jsRuntime.InvokeAsync<string>("ShowModal", "find:Steam:Steam.exe:SteamSettings");
         }
 
         // BUTTON: Check account VAC status
         public static async void ClearVacStatus()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
+            Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
             if (SteamSwitcherFuncs.DeleteVacCacheFile())
                 await GeneralInvocableFuncs.ShowToast("success", "VAC status for accounts was cleared", renderTo: "toastarea");
             else
@@ -55,7 +54,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         // BUTTON: Reset settings
         public static void ClearSettings()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Steam\Settings.razor.cs.ClearSettings]");
+            Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearSettings]");
             new Data.Settings.Steam().ResetSettings();
             AppData.ActiveNavMan.NavigateTo("/Steam?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Steam switcher settings"));
         }
@@ -63,7 +62,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         // BUTTON: Reset images
         public static void ClearImages()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Steam\Settings.razor.cs.ClearImages]");
+            Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearImages]");
             SteamSwitcherFuncs.ClearImages(); // ADD A TOAST TO THIS
         }
         #endregion
@@ -76,7 +75,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         // BUTTON: Open Folder
         public static void OpenFolder()
         {
-            Globals.DebugWriteLine($@"[ButtonClicked:Steam\Settings.razor.cs.OpenSteamFolder]");
+            Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.OpenSteamFolder]");
             Process.Start("explorer.exe", new Data.Settings.Steam().FolderPath);
         }
 

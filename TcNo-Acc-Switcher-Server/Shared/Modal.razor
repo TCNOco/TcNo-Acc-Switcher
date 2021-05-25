@@ -12,11 +12,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
-@inject IJSRuntime JsRuntime
+@inject IJSRuntime _jsRuntime
 
 @using TcNo_Acc_Switcher_Server.Data
 @using System.Runtime.InteropServices
-@inject AppData AppData
+@inject AppData _appData
 
 <div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">
     <div class="modalFG">

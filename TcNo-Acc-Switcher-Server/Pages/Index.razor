@@ -16,17 +16,17 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.Security.Principal
-@inject IJSRuntime JsRuntime
-@{ AppData.SetActiveIJsRuntime(JsRuntime); }
-@inject NavigationManager NavManager
-@{ AppData.SetActiveNavMan(NavManager); }
-@inject AppData AppData
+@inject IJSRuntime _jsRuntime
+@{ _appData.SetActiveIJsRuntime(_jsRuntime); }
+@inject NavigationManager _navManager
+@{ _appData.SetActiveNavMan(_navManager); }
+@inject AppData _appData
 
-@inject Data.Settings.BattleNet BattleNet
-@inject Data.Settings.Epic Epic
-@inject Data.Settings.Origin Origin
-@inject Data.Settings.Steam Steam
-@inject Data.Settings.Ubisoft Ubisoft
+@inject Data.Settings.BattleNet _battleNet
+@inject Data.Settings.Epic _epic
+@inject Data.Settings.Origin _origin
+@inject Data.Settings.Steam _steam
+@inject Data.Settings.Ubisoft _ubisoft
 
 @if (AppSettings.Instance.UpdateAvailable)
 {
@@ -71,7 +71,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        AppData.WindowTitle = "TcNo Account Switcher";
+        _appData.WindowTitle = "TcNo Account Switcher";
         if (firstRender) GeneralInvocableFuncs.HandleQueries();
     }
 }

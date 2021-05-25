@@ -23,9 +23,8 @@ namespace TcNo_Acc_Switcher_Client
     /// <summary>
     /// Interaction logic for More.xaml
     /// </summary>
-    public partial class UserDataWindow : Window
+    public partial class UserDataWindow
     {
-        MainWindow _mw;
         public UserDataWindow()
         {
             InitializeComponent();
@@ -33,7 +32,7 @@ namespace TcNo_Acc_Switcher_Client
 
         public void InitUserDataWindow(string steamId)
         {
-            var steamId32 = new Converters.SteamIdConvert(steamId).Id32;
+            var steamId32 = new TcNo_Acc_Switcher_Server.Converters.SteamIdConvert(steamId).Id32;
             //var userDataFolder = Path.Join(TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SteamFolder(), "userdata", steamId32);  // Contains list of Steam32 IDs
             //var screenshotsFolder = Path.Join(userDataFolder, "760\\remote\\");              // Contains folders of appIDs. */screenshots/ sub-folder contains images and a */thumbnails/ folder.
 

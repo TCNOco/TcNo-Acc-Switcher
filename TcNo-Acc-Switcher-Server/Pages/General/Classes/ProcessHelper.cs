@@ -18,16 +18,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         private static extern bool CloseHandle(IntPtr hObject);
 
         private const int StandardRightsRequired = 0xF0000;
-        private const int TokenAssignPrimary = 0x1;
-        private const int TokenDuplicate = 0x2;
-        private const int TokenImpersonate = 0x4;
-        private const int TokenQuery = 0x8;
-        private const int TokenQuerySource = 0x10;
-        private const int TokenAdjustGroups = 0x40;
-        private const int TokenAdjustPrivileges = 0x20;
-        private const int TokenAdjustSessionId = 0x100;
-        private const int TokenAdjustDefault = 0x80;
-        private const int TokenAllAccess = (StandardRightsRequired | TokenAssignPrimary | TokenDuplicate | TokenImpersonate | TokenQuery | TokenQuerySource | TokenAdjustPrivileges | TokenAdjustGroups | TokenAdjustSessionId | TokenAdjustDefault);
+        private const int AssignPrimary = 0x1;
+        private const int Duplicate = 0x2;
+        private const int Impersonate = 0x4;
+        private const int Query = 0x8;
+        private const int QuerySource = 0x10;
+        private const int AdjustGroups = 0x40;
+        private const int AdjustPrivileges = 0x20;
+        private const int AdjustSessionId = 0x100;
+        private const int AdjustDefault = 0x80;
+        private const int AllAccess = (StandardRightsRequired | AssignPrimary | Duplicate | Impersonate | Query | QuerySource | AdjustPrivileges | AdjustGroups | AdjustSessionId | AdjustDefault);
 
         public static bool IsProcessAdmin(string processName)
         {
@@ -39,14 +39,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             try
             {
                 handle = proc.Handle;
-                return isHandleAdmin(handle);
+                return IsHandleAdmin(handle);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 try
                 {
                     handle = proc.MainWindowHandle;
-                    return isHandleAdmin(handle);
+                    return IsHandleAdmin(handle);
                 }
                 catch (Exception a)
                 {
@@ -58,9 +58,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         }
 
         [SupportedOSPlatform("windows")]
-        private static bool isHandleAdmin(IntPtr handle)
+        private static bool IsHandleAdmin(IntPtr handle)
         {
-            OpenProcessToken(handle, TokenAllAccess, out var ph);
+            OpenProcessToken(handle, AllAccess, out var ph);
 
             if (ph == IntPtr.Zero) return true;
 

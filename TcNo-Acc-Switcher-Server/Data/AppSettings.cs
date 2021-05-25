@@ -31,7 +31,6 @@ namespace TcNo_Acc_Switcher_Server.Data
     public class AppSettings
     {
         private static AppSettings _instance = new();
-        public AppSettings() { }
 
         private static readonly object LockObj = new();
 
@@ -63,7 +62,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private Point _windowSize = new() { X = 800, Y = 450 };
         [JsonProperty("WindowSize", Order = 3)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
 
-        private bool _trayMinimizeNotExit = false;
+        private bool _trayMinimizeNotExit;
 
         [JsonProperty("TrayMinimizeNotExit", Order = 4)]
         public bool TrayMinimizeNotExit
@@ -81,7 +80,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        private bool _trayMinimizeLessMem = false;
+        private bool _trayMinimizeLessMem;
         [JsonProperty("TrayMinimizeLessMem", Order = 4)] public bool TrayMinimizeLessMem { get => _instance._trayMinimizeLessMem; set => _instance._trayMinimizeLessMem = value; }
 
 
@@ -194,7 +193,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         // Constants
         [JsonIgnore] public string SettingsFile = "WindowSettings.json";
         [JsonIgnore] public string StylesheetFile = "StyleSettings.json";
-        [JsonIgnore] public bool StreamerModeTriggered = false;
+        [JsonIgnore] public bool StreamerModeTriggered;
 
         /// <summary>
         /// Check if any streaming software is running. Do let me know if you have a program name that you'd like to expand this list with!
@@ -203,7 +202,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <returns>True when streaming software is running</returns>
         public bool StreamerModeCheck()
         {
-            Globals.DebugWriteLine($@"[Func:Data\AppSettings.StreamerModeCheck]");
+            Globals.DebugWriteLine(@"[Func:Data\AppSettings.StreamerModeCheck]");
             if (!_streamerModeEnabled) return false; // Don't hide anything if disabled.
             _instance.StreamerModeTriggered = false;
             foreach (var p in Process.GetProcesses())
@@ -258,7 +257,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public void SetFromJObject(JObject j)
         {
-            Globals.DebugWriteLine($@"[Func:Data\AppSettings.SetFromJObject]");
+            Globals.DebugWriteLine(@"[Func:Data\AppSettings.SetFromJObject]");
             var curSettings = j.ToObject<AppSettings>();
             if (curSettings == null) return;
             _instance.StreamerModeEnabled = curSettings.StreamerModeEnabled;
@@ -266,7 +265,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public void LoadFromFile()
         {
-            Globals.DebugWriteLine($@"[Func:Data\AppSettings.LoadFromFile]");
+            Globals.DebugWriteLine(@"[Func:Data\AppSettings.LoadFromFile]");
             // Main settings
             if (!File.Exists(SettingsFile)) SaveSettings();
             else SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
@@ -290,7 +289,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         #region SHORTCUTS
         public void CheckShortcuts()
         {
-            Globals.DebugWriteLine($@"[Func:Data\AppSettings.CheckShortcuts]");
+            Globals.DebugWriteLine(@"[Func:Data\AppSettings.CheckShortcuts]");
             _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
             _instance._startMenu = File.Exists(Path.Join(Shortcut.StartMenu, "TcNo Account Switcher.lnk")) && Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
             _instance._trayStartup = Task.StartWithWindows_Enabled();
@@ -298,14 +297,14 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public void DesktopShortcut_Toggle()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
             var s = new Shortcut();
             s.Shortcut_Switcher(Shortcut.Desktop);
             s.ToggleShortcut(!DesktopShortcut);
         }
         public void StartMenu_Toggle()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.StartMenu_Toggle]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.StartMenu_Toggle]");
             var platformsFolder = Path.Join(Shortcut.StartMenu, "Platforms");
             if (Directory.Exists(platformsFolder)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(Shortcut.StartMenu, "Platforms")), false);
             else
@@ -325,7 +324,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
         public void Task_Toggle()
         {
-            Globals.DebugWriteLine($@"[Func:Data\Settings\Steam.Task_Toggle]");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.Task_Toggle]");
             Task.StartWithWindows_Toggle(!TrayStartup);
         }
 
