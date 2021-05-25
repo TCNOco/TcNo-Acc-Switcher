@@ -87,6 +87,6 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: $env:Configuration Build
-        path: TcNo-Acc-Switcher-Client\bin\x64\Release\net5.0-windows
+        path: TcNo-Acc-Switcher-Client\bin\Release\net5.0-windows
       env:
         Configuration: ${{ matrix.configuration }}
