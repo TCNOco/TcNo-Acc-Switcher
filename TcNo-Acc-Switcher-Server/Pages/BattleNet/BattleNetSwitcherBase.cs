@@ -39,6 +39,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Globals.DebugWriteLine($@"[JSInvoke:BattleNet\BattleNetSwitcherBase.SwapToBattleNet] accName:{accName}");
             BattleNetSwitcherFuncs.SwapBattleNetAccounts(accName);
         }
+        /// <summary>
+        /// JS function handler for swapping to a new BattleNet account (No inputs)
+        /// </summary>
+        [JSInvokable]
+        public static void NewLogin_BattleNet()
+        {
+            Globals.DebugWriteLine(@"[JSInvoke:BattleNet\BattleNetSwitcherBase.NewLogin_BattleNet]");
+            BattleNetSwitcherFuncs.SwapBattleNetAccounts("");
+        }
+
 
         public class BattleNetUser
         {

@@ -29,88 +29,16 @@ function CopyToClipboard(str) {
 }
 
 // FORGETTING ACCOUNTS
-function forget(e) {
+async function forget(e) {
     e.preventDefault();
-    switch (currentpage) {
-        case "Epic":
-            promptForgetEpic();
-                break;
-        case "Steam":
-            promptForgetSteam();
-            break;
-        case "Origin":
-            promptForgetOrigin();
-            break;
-        case "Ubisoft":
-            promptForgetUbisoft();
-            break;
-        case "BattleNet":
-            promptForgetBattleNet();
-            break;
-        default:
-            break;
-    }
-}
-
-
-
-async function promptForgetSteam() {
-    const reqSteamId = $(SelectedElem).attr("id");
-
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetSteamForgetAcc").then(r => {
-        if (!r) ShowModal("confirm:AcceptForgetSteamAcc:" + reqSteamId);
-        else Modal_Confirm("AcceptForgetSteamAcc:" + reqSteamId, true);
-    });
-    var result = await promise;
-}
-
-async function promptForgetEpic() {
     const reqId = $(SelectedElem).attr("id");
-
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetEpicForgetAcc").then(r => {
-        if (!r) ShowModal("confirm:AcceptForgetEpicAcc:" + reqId);
-        else Modal_Confirm("AcceptForgetEpicAcc:" + reqId, true);
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "Get" + currentpage + "ForgetAcc").then(r => {
+        if (!r) ShowModal("confirm:AcceptForget" + currentpage + "Acc:" + reqId);
+        else Modal_Confirm("AcceptForget" + currentpage + "Acc:" + reqId, true);
     });
-    var result = await promise;
+    _ = await promise;
+
 }
-
-
-async function promptForgetBattleNet() {
-    const reqId = $(SelectedElem).attr("id");
-
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetBattleNetForgetAcc").then(r => {
-        if (!r) ShowModal("confirm:AcceptForgetBattleNetAcc:" + reqId);
-        else Modal_Confirm("AcceptForgetBattleNetAcc:" + reqId, true);
-    });
-    var result = await promise;
-}
-
-
-
-async function promptForgetOrigin() {
-    const reqAccName = $(SelectedElem).attr("id");
-
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetOriginForgetAcc").then(r => {
-        if (!r) ShowModal("confirm:AcceptForgetOriginAcc:" + reqAccName);
-        else Modal_Confirm("AcceptForgetOriginAcc:" + reqAccName, true);
-    });
-    var result = await promise;
-}
-
-
-
-async function promptForgetUbisoft() {
-    const reqId = $(SelectedElem).attr("id");
-
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetUbisoftForgetAcc").then(r => {
-        if (!r) ShowModal("confirm:AcceptForgetUbisoftAcc:" + reqId);
-        else Modal_Confirm("AcceptForgetUbisoftAcc:" + reqId, true);
-    });
-    var result = await promise;
-}
-
-
-
 
 // RESTORING STEAM ACCOUNTS
 async function restoreSteamAccounts() {
@@ -239,27 +167,6 @@ function SwapTo(request, e) {
     if (e !== undefined) e.preventDefault();
     if (!getSelected()) return;
 
-    // Different function groups based on platform
-    switch (currentpage) {
-        case "Epic":
-            epic();
-                break;
-        case "Steam":
-            steam();
-            break;
-        case "Origin":
-            origin();
-            break;
-        case "Ubisoft":
-            ubisoft();
-            break;
-        case "BattleNet":
-            battleNet();
-            break;
-        default:
-            break;
-    }
-
     // General function: Get selected account
     var selected;
     function getSelected() {
@@ -287,44 +194,21 @@ function RefreshUsername() {
 }
 
 
-
-// New Steam accounts
-function NewSteamLogin() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToSteam", "", "", -1);
+// NEW LOGIN
+function NewLogin() {
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "NewLogin_" + currentpage);
 }
 
 
 
-// New Origin accounts
-function NewOriginLogin() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToOrigin", "", 0);
-}
+
 // Add currently logged in Origin account
 function CurrentOriginLogin() {
     ShowModal("accString:Origin");
 }
-
-
-// New Epic accounts
-function NewEpicLogin() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToEpic", "");
-}
 // Add currently logged in Origin account
 function CurrentEpicLogin() {
     ShowModal("accString:Epic");
-}
-
-
-// New BattleNet accounts
-function NewBattleNetLogin() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToBattleNet", "");
-}
-
-
-
-// New Ubisoft accounts
-function NewUbisoftLogin() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToUbisoft", "", 0);
 }
 // Add currently logged in Ubisoft account
 function CurrentUbisoftLogin() {
@@ -424,13 +308,13 @@ function ShowModal(modaltype) {
         if (action.startsWith("AcceptForgetSteamAcc")) {
             message = forgetAccountSteamPrompt;
         } else if (action.startsWith("AcceptForgetOriginAcc")) {
-            message = forgetAccountOriginPrompt;
+            message = getAccountPrompt();
         } else if (action.startsWith("AcceptForgetUbisoftAcc")) {
-            message = forgetAccountUbisoftPrompt;
+            message = getAccountPrompt();
         } else if (action.startsWith("AcceptForgetBattleNetAcc")) {
-            message = forgetAccountBattleNetPrompt;
+            message = getAccountPrompt();
         } else if (action.startsWith("AcceptForgetEpicAcc")){
-            message = forgetAccountEpicPrompt;
+            message = getAccountPrompt();
         } else {
             header = "<h3>Confirm action:</h3>";
             message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
@@ -620,33 +504,14 @@ You can also remove previous backups from there when you are sure everything is 
 
 
 // Find a better way to display these. A placeholder that gets replaced for the platform name?
-const forgetAccountOriginPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
+function getAccountPrompt() {
+    return `<h3 style='color:red'>You are about to forget an account!</h3>
 <h4>What does this mean?</h4>
 <p>TcNo Account Switcher will also no longer show the account,<br/>
-until it's signed into again through Origin, and added to the list.</p>
+until it's signed into again through ${currentpage}, and added to the list.</p>
 <p>Your account will remain untouched. It is just forgotten on this computer.</p>
 <h4>Do you understand?</h4>`;
-
-const forgetAccountUbisoftPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
-<h4>What does this mean?</h4>
-<p>TcNo Account Switcher will also no longer show the account,<br/>
-until it's signed into again through Ubisoft, and added to the list.</p>
-<p>Your account will remain untouched. It is just forgotten on this computer.</p>
-<h4>Do you understand?</h4>`;
-
-const forgetAccountBattleNetPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
-<h4>What does this mean?</h4>
-<p>TcNo Account Switcher will also no longer show the account,<br/>
-until it's signed into again through BattleNet, and added to the list.</p>
-<p>Your account will remain untouched. It is just forgotten on this computer.</p>
-<h4>Do you understand?</h4>`;
-
-const forgetAccountEpicPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
-<h4>What does this mean?</h4>
-<p>TcNo Account Switcher will also no longer show the account,<br/>
-until it's signed into again through the Epic Games Launcher, and added to the list.</p>
-<p>Your account will remain untouched. It is just forgotten on this computer.</p>
-<h4>Do you understand?</h4>`;
+}
 
 const restartAsAdminPrompt = `<h3><bold>This program will restart as Admin</bold></h3>
 <p>Hit "Yes" in UAC when prompted for admin.</p>`;

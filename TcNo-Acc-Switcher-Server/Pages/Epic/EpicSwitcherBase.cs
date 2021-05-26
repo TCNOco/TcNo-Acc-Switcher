@@ -18,6 +18,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             EpicSwitcherFuncs.SwapEpicAccounts(accName);
         }
 
+        /// <summary>
+        /// JS function handler for swapping to a new Epic account (No inputs)
+        /// </summary>
+        [JSInvokable]
+        [SupportedOSPlatform("windows")]
+        public static void NewLogin_Epic()
+        {
+            Globals.DebugWriteLine(@"[JSInvoke:Epic\EpicSwitcherBase.NewLogin_Epic]");
+            EpicSwitcherFuncs.SwapEpicAccounts("");
+        }
+
         [JSInvokable]
         [SupportedOSPlatform("windows")]
         public static void EpicAddCurrent(string accName)

@@ -58,20 +58,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="ePersonaState">(Optional) Persona State [0: Offline, 1: Online...]</param>
         [JSInvokable]
         [SupportedOSPlatform("windows")]
-        public static void SwapToSteam(string steamId, string accName, int ePersonaState = -1)
+        public static void SwapToSteam(string steamId, string accName = "", int ePersonaState = -1)
         {
             Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.SwapToSteam] {(steamId.Length > 0 ? steamId.Substring(steamId.Length - 4, 4) : "")}, accName:hidden, ePersonaState: {ePersonaState}");
             SteamSwitcherFuncs.SwapSteamAccounts(steamId, accName, ePersonaState: ePersonaState);
         }
-        
+
         /// <summary>
         /// JS function handler for swapping to a new Steam account (No inputs)
         /// </summary>
         [JSInvokable]
-        public static void NewSteamLogin()
+        public static void NewLogin_Steam()
         {
-            Globals.DebugWriteLine(@"[JSInvoke:Steam\SteamSwitcherBase.NewSteamLogin]");
-            SteamSwitcherFuncs.SwapSteamAccounts();
+            Globals.DebugWriteLine(@"[JSInvoke:Steam\SteamSwitcherBase.NewLogin_Steam]");
+            SteamSwitcherFuncs.SwapSteamAccounts("", "", ePersonaState: -1);
         }
     }
 }

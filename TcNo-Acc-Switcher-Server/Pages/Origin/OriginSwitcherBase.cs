@@ -16,6 +16,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             Globals.DebugWriteLine($@"[JSInvoke:Origin\OriginSwitcherBase.SwapToOrigin] accName:{accName}");
             OriginSwitcherFuncs.SwapOriginAccounts(accName, state);
         }
+        /// <summary>
+        /// JS function handler for swapping to a new Origin account (No inputs)
+        /// </summary>
+        [JSInvokable]
+        public static void NewLogin_Origin()
+        {
+            Globals.DebugWriteLine(@"[JSInvoke:Origin\OriginSwitcherBase.NewLogin_Origin]");
+            OriginSwitcherFuncs.SwapOriginAccounts("", 0);
+        }
 
         [JSInvokable]
         public static void OriginAddCurrent(string accName)

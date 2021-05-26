@@ -17,6 +17,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             UbisoftSwitcherFuncs.SwapUbisoftAccounts(userId, state);
         }
 
+        /// <summary>
+        /// JS function handler for swapping to a new Ubisoft account (No inputs)
+        /// </summary>
+        [JSInvokable]
+        public static void NewLogin_Ubisoft()
+        {
+            Globals.DebugWriteLine(@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.NewSteamLogin]");
+            UbisoftSwitcherFuncs.SwapUbisoftAccounts("", 0);
+        }
+
         [JSInvokable]
         public static void UbisoftAddCurrent()
         {
