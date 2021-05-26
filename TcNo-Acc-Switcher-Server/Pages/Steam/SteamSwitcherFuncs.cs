@@ -94,7 +94,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     vacStatusList.Add(va);
                 }
                 
-                var extraClasses = (va.Vac ? " status_vac" : "") + (va.Ltd ? " status_limited" : "");
+                var extraClasses = (Steam.ShowVac && va.Vac ? " status_vac" : "") + (Steam.ShowLimited && va.Ltd ? " status_limited" : "");
 
                 var element =
                     $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{ua.AccName}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.LastLogin}\" ExtraClasses=\"{extraClasses}\" onchange=\"SelectedItemChanged()\" />\r\n" +
@@ -535,6 +535,27 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             // Output
             File.WriteAllText(localConfigFilePath, localConfigText);
+        }
+
+        /// <summary>
+        /// Returns string representation of Steam ePersonaState int
+        /// </summary>
+        /// <param name="ePersonaState">integer state to return string for</param>
+        public static string PersonaStateToString(int ePersonaState)
+        {
+            return ePersonaState switch
+            {
+                -1 => "",
+                0 => "Offline",
+                1 => "Online",
+                2 => "Busy",
+                3 => "Away",
+                4 => "Snooze",
+                5 => "Looking to Trade",
+                6 => "Looking to Play",
+                7 => "Invisible",
+                _ => "Unrecognised ePersonaState"
+            };
         }
         #endregion
 

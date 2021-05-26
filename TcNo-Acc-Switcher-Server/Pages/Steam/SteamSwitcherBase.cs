@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using System.IO;
 using System.Runtime.Versioning;
 using Microsoft.JSInterop;
@@ -68,14 +69,25 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         /// <param name="steamId">SteamID of account to swap to</param>
         /// <param name="accName">Account name of account to swap to</param>
+        /// <param name="args">(Optional) arguments for shortcut</param>
         [JSInvokable]
-        public static void CreateShortcut(string steamId, string accName)
+        public static void CreateShortcut(string steamId, string accName, string args = "")
         {
             Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.CreateShortcut] {steamId.Substring(steamId.Length - 4, 4)}, accName:hidden");
+            var ePersonaState = -1;
+            if (args.Length > 0)
+            {
+                if (args[0] != ':') args = $" {args}";
+                else if (args.Length == 2) int.TryParse(args[1].ToString(), out ePersonaState);
+            }
             var s = new Shortcut();
-            s.Shortcut_Platform(Shortcut.Desktop, $"Switch to {accName}", $"+s:{steamId}", $"Switch to {accName} in TcNo Account Switcher", true);
+            s.Shortcut_Platform(
+                Shortcut.Desktop, 
+                $"Switch to {accName}" + (args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : ""), 
+                $"+s:{steamId}" + args, 
+                $"Switch to {accName} in TcNo Account Switcher", 
+                true);
             s.CreateCombinedIcon(
-                //Path.Join(GeneralFuncs.WwwRoot, "\\prog_icons\\steam.ico"),
                 Path.Join(GeneralFuncs.WwwRoot, "\\img\\platform\\steam.svg"),
                 Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\steam\\{steamId}.jpg"), 
                 $"{steamId}.ico");

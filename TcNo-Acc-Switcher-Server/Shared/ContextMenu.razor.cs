@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Shared
 {
@@ -69,7 +70,9 @@ namespace TcNo_Acc_Switcher_Server.Shared
                     // Each item
                     foreach (var (key, value) in JObject.FromObject(jToken))
                     {
-                        ProcessContextItem(key, value);
+                        if (key == "")
+                            _htmlOut = GeneralFuncs.ReplaceLast(_htmlOut, "event.preventDefault();", value.Value<string>()); // Replace last occurence
+                        else ProcessContextItem(key, value);
                     }
                 }
                 _htmlOut += "\t</ul>\n</li>";

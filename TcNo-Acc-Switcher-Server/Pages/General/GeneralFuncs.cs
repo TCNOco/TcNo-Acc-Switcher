@@ -487,5 +487,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return true;
         }
         #endregion
+
+        #region OTHER
+        /// <summary>
+        /// Replaces last occurrence of string in string
+        /// </summary>
+        /// <param name="input">String to modify</param>
+        /// <param name="sOld">String to find (and replace)</param>
+        /// <param name="sNew">New string to input</param>
+        /// <returns></returns>
+        public static string ReplaceLast(string input, string sOld, string sNew)
+        {
+            var lastIndex = input.LastIndexOf(sOld, StringComparison.Ordinal);
+            var lastIndexEnd = lastIndex + sOld.Length;
+            return input[..lastIndex] + sNew + input.Substring(lastIndexEnd, input.Length - lastIndexEnd);
+        }
+        #endregion
     }
 }

@@ -301,10 +301,10 @@ function SwapTo(request, e) {
 }
 
 // Create shortcut for selected icon
-function CreateShortcut() {
+function CreateShortcut(args = '') {
     var selected = $(".acc:checked");
     if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CreateShortcut", selected.attr("SteamID64"), selected.attr("Username"));
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CreateShortcut", selected.attr("SteamID64"), selected.attr("Username"), args);
 }
 
 function RefreshUsername() {
