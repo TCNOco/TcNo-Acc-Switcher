@@ -22,6 +22,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -227,7 +228,20 @@ namespace TcNo_Acc_Switcher_Client
             }
             catch (WebException e)
             {
-                MessageBox.Show("Could not reach https://tcno.co/ to check for updates.", "Unable to check for updates", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (File.Exists("WindowSettings.json"))
+                {
+                    var o = JObject.Parse(File.ReadAllText("WindowSettings.json"));
+                    if (o.ContainsKey("LastUpdateCheckFail"))
+                    {
+                        if (!(DateTime.TryParseExact((string)o["LastUpdateCheckFail"], "yyyy-MM-dd HH:mm:ss.fff",
+                                  CultureInfo.InvariantCulture, DateTimeStyles.None, out var timediff) &&
+                              DateTime.Now.Subtract(timediff).Days >= 1)) return;
+                    }
+                    // Has not shown error today
+                    MessageBox.Show("Could not reach https://tcno.co/ to check for updates. [This message will show once a day]", "Unable to check for updates", MessageBoxButton.OK, MessageBoxImage.Error);
+                    o["LastUpdateCheckFail"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                    File.WriteAllText("WindowSettings.json", o.ToString());
+                }
                 Console.WriteLine(@"Could not reach https://tcno.co/ to check for updates.\n" + e);
             }
         }
