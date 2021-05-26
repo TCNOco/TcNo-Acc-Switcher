@@ -108,7 +108,7 @@ namespace TcNo_Acc_Switcher_Client
                     switch (platform)
                     {
                         case "b": // Battle.net
-                            // Blizzard format: +b:<email>
+                            // Battlenet format: +b:<email>
                             Console.WriteLine("Battle.net switch requested");
                             TcNo_Acc_Switcher_Server.Data.Settings.BattleNet.Instance.LoadFromFile();
                             TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);

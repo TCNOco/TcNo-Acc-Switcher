@@ -55,7 +55,7 @@ function forget(e) {
 
 
 async function promptForgetSteam() {
-    const reqSteamId = $(SelectedElem).attr("steamid64");
+    const reqSteamId = $(SelectedElem).attr("id");
 
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetSteamForgetAcc").then(r => {
         if (!r) ShowModal("confirm:AcceptForgetSteamAcc:" + reqSteamId);
@@ -199,7 +199,7 @@ function copy(request, e) {
 
     // Steam:
     function steam() {
-        var steamId64 = $(SelectedElem).attr("SteamID64");
+        var steamId64 = $(SelectedElem).attr("id");
         switch (request){
             case "URL":
                 CopyToClipboard("https://steamcommunity.com/profiles/" + steamId64);
@@ -237,6 +237,7 @@ function copy(request, e) {
 // Swapping accounts
 function SwapTo(request, e) {
     if (e !== undefined) e.preventDefault();
+    if (!getSelected()) return;
 
     // Different function groups based on platform
     switch (currentpage) {
@@ -267,44 +268,16 @@ function SwapTo(request, e) {
         if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return false; }
         return true;
     }
-
-    //Steam: 
-    function steam() {
-        if (!getSelected()) return;
-        DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToSteam", selected.attr("SteamID64"), selected.attr("Username"), request);
-        return;
-    }
-    //Origin:
-    function origin() {
-        if (!getSelected()) return;
-        DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToOrigin", selected.attr("id"), request);
-        return;
-    }
-    //Ubisoft:
-    function ubisoft() {
-        if (!getSelected()) return;
-        DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToUbisoft", selected.attr("id"), request);
-        return;
-    }
-    //BattleNet:
-    function battleNet() {
-        if (!getSelected()) return;
-        DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToBattleNet", selected.attr("id"));
-        return;
-    }
-    //Epic:
-    function epic() {
-        if (!getSelected()) return;
-        DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapToEpic", selected.attr("id"));
-        return;
-    }
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo" + currentpage, selected.attr("id"));
 }
 
 // Create shortcut for selected icon
 function CreateShortcut(args = '') {
     var selected = $(".acc:checked");
     if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CreateShortcut", selected.attr("SteamID64"), selected.attr("Username"), args);
+    var accId = selected.attr("id");
+
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CreateShortcut", currentpage, accId, selected.attr("Username"), args);
 }
 
 function RefreshUsername() {

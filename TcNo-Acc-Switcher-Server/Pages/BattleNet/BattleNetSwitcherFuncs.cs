@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
@@ -55,9 +56,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config");
             foreach (var mail in (JsonConvert.DeserializeObject(file) as JObject)?.SelectToken("Client.SavedAccountNames")?.ToString().Split(','))
             {
-                if (BattleNet.Accounts.All(x => x.Email != mail) && BattleNet.IgnoredAccounts.All(x => x.Email != mail) && mail != " ")
+                try
                 {
-                    BattleNet.Accounts.Add(new BattleNetSwitcherBase.BattleNetUser(){Email = mail});
+                    if (BattleNet.Accounts.Count == 0 || (BattleNet.Accounts.All(x => x.Email != mail) && BattleNet.IgnoredAccounts.All(x => x.Email != mail) && mail != " "))
+                        BattleNet.Accounts.Add(new BattleNetSwitcherBase.BattleNetUser() { Email = mail });
+                }
+                catch (NullReferenceException)
+                {
+                    BattleNet.Accounts.Add(new BattleNetSwitcherBase.BattleNetUser() { Email = mail });
                 }
             }
 
@@ -77,12 +83,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
             foreach (var acc in BattleNet.Accounts)
             {
+                if (!File.Exists(Path.Join(BattleNet.ImagePath, $"{acc.Email}.png"))) DownloadImage(acc.Email);
+                var username = (acc.BTag == null ? acc.Email : (acc.BTag.Contains("#") ? acc.BTag.Split("#")[0] : acc.BTag));
                 var element =
-                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{acc.Email}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
+                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{acc.Email}\" Username=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{acc.Email}\" class=\"acc\">\r\n" +
-                    $"<img src=\"{(acc.BTag == null || !BattleNet.OverwatchMode ||acc.ImgUrl == null ? "img/BattleNetDefault.png" : acc.ImgUrl)}\" draggable=\"false\" />\r\n" +
-                    $"<h6>{(acc.BTag == null ? acc.Email : (acc.BTag.Contains("#") ? acc.BTag.Split("#")[0] : acc.BTag))}</h6>\r\n";
-                if ( BattleNet.OverwatchMode && DateTime.Now - acc.LastTimeChecked < TimeSpan.FromDays(1))
+                    $"<img src=\"img\\profiles\\battlenet\\{acc.Email}.png\" draggable=\"false\" />\r\n" +
+                    $"<h6>{username}</h6>\r\n";
+                if (BattleNet.OverwatchMode && DateTime.Now - acc.LastTimeChecked < TimeSpan.FromDays(1))
                 {
                     if (acc.OwTankSr != 0)
                     {
@@ -120,7 +128,39 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
             BattleNet.SaveAccounts();
         }
-        
+
+        public static string DownloadImage(string bTag, string imgUrl = "")
+        {
+            var dlDir = Path.Join(BattleNet.ImagePath, $"{bTag}.png");
+            Directory.CreateDirectory(BattleNet.ImagePath);
+            if (imgUrl == "")
+            {
+                File.Copy("wwwroot\\img\\BattleNetDefault.png", dlDir);
+                return dlDir;
+            }
+
+            if (File.Exists(dlDir))
+            {
+                if (GeneralFuncs.GetFileMd5(dlDir) == GeneralFuncs.GetFileMd5("wwwroot\\img\\BattleNetDefault.png")) File.Delete(dlDir);
+                GeneralFuncs.DeletedOutdatedFile(dlDir, BattleNet.ImageExpiryTime);
+                GeneralFuncs.DeletedInvalidImage(dlDir);
+            }
+            // Download new copy of the file
+            if (File.Exists(dlDir)) return dlDir;
+            try
+            {
+                using var client = new WebClient();
+                client.DownloadFile(new Uri(imgUrl), dlDir);
+            }
+            catch (WebException ex)
+            {
+                File.Copy("wwwroot\\img\\BattleNetDefault.png", dlDir);
+                Console.WriteLine("ERROR: Could not connect and download BattleNet profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " + ex);
+            }
+
+            return dlDir;
+        }
+
         /// <summary>
         /// Restart Battle.net with a new account selected.
         /// </summary>
@@ -255,14 +295,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.DeleteBattleTag] accName:{email}");
             if (BattleNet.Accounts.First(x => x.Email == email).FetchRank()) AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Fetched Rank"), true);
         }
-        
-        
+
+
         #region FORGETTING_ACCOUNTS
-        
+
         /// <summary>
         /// Adds an account to the ignore list, so it won't show on the account switcher list anymore.
         /// </summary>
-        /// <param name="accName">Email address of Blizzard account to ignore.</param>
+        /// <param name="accName">Email address of Battlenet account to ignore.</param>
         public static void ForgetAccount(string accName)
         {
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.ForgetAccount] accName:{accName}");

@@ -66,8 +66,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Steam_ImageExpiryTime", Order = 8)] public int ImageExpiryTime { get => _instance._imageExpiryTime; set => _instance._imageExpiryTime = value; }
         private int _trayAccNumber = 3;
         [JsonProperty("Steam_TrayAccNumber", Order = 9)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
-        private int _skipOfflineWarning = 3;
-        [JsonProperty("Steam_SkipOfflineWarning", Order = 10)] public int SkipOfflineWarning { get => _instance._skipOfflineWarning; set => _instance._skipOfflineWarning = value; }
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
@@ -99,7 +97,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 {""SteamID [STEAM0:~]"": ""copy('SteamId', event)""},
                 {""SteamID3 [U:1:~]"": ""copy('SteamId3', event)""},
                 {""SteamID32"": ""copy('SteamId32', event)""},
-                {""SteamID64 7656~"": ""copy('SteamId64', event)""}
+                {""SteamID64 7656~"": ""copy('id', event)""}
               ]},
               {""Copy other..."": [
                 {""SteamRep"": ""copy('SteamRep', event)""},

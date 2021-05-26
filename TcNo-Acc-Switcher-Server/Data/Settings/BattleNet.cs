@@ -63,8 +63,15 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ForgetAccountEnabled", Order = 5)] public bool ForgetAccountEnabled { get => _instance._forgetAccountEnabled; set => _instance._forgetAccountEnabled = value; }
         
         private bool _overwatchMode = true;
-        [JsonProperty("OverwatchMode", Order = 6)] public bool OverwatchMode { get => _instance._overwatchMode; set => _instance._overwatchMode = value; }
-        
+
+        [JsonProperty("OverwatchMode", Order = 6)]
+        public bool OverwatchMode { get => _instance._overwatchMode; set =>_instance._overwatchMode = value; }
+
+        private int _imageExpiryTime = 7;
+        [JsonProperty("ImageExpiryTime", Order = 7)] public int ImageExpiryTime { get => _instance._imageExpiryTime; set => _instance._imageExpiryTime = value; }
+
+
+
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
         
@@ -83,11 +90,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         */
         [JsonIgnore] public string StoredAccPath = "LoginCache\\BattleNet\\StoredAccounts.json";
         [JsonIgnore] public string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
+        [JsonIgnore] public string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";
         [JsonIgnore] public string ContextMenuJson = @"[
               {""Swap to account"": ""SwapTo(-1, event)""},
               {""Set BattleTag"": ""ShowModal('changeUsername:BattleTag')""},
               {""Delete BattleTag"": ""ForgetBattleTag()""},
               {""Refetch Rank"": ""RefetchRank()""},
+              {""Create Desktop Shortcut..."": ""CreateShortcut()""},
               {""Forget"": ""forget(event)""}
             ]";
 

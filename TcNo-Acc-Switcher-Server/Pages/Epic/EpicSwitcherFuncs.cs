@@ -59,7 +59,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 
             foreach (var element in 
                 accList.Select(accName => 
-                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{accName}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
+                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{accName}\" Username=\"{accName}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{accName}\" class=\"acc\">\r\n" +
                     $"<img src=\"\\img\\profiles\\epic\\{Uri.EscapeUriString(accName)}.jpg\" draggable=\"false\" />\r\n" +
                     $"<h6>{accName}</h6></div>\r\n"))

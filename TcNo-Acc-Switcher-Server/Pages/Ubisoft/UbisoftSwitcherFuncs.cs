@@ -48,7 +48,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 var element =
                     $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{userId}\" Username=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{userId}\" class=\"acc\">\r\n" +
-                    "<img src=\"" + $"\\img\\profiles\\Ubisoft\\{userId}.png" + "\" draggable=\"false\" />\r\n" +
+                    "<img src=\"" + $"\\img\\profiles\\ubisoft\\{userId}.png" + "\" draggable=\"false\" />\r\n" +
                     $"<h6>{username}</h6></div>\r\n";
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                 try
@@ -202,8 +202,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             string i64 = Path.Join(UbisoftAvatarFolder, userId + "_64.png"),
                 i128 = Path.Join(UbisoftAvatarFolder, userId + "_128.png"),
                 i256 = Path.Join(UbisoftAvatarFolder, userId + "_256.png");
-            Directory.CreateDirectory("wwwroot\\img\\profiles\\Ubisoft\\");
-            var outPath = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\Ubisoft\\{userId}.png");
+            Directory.CreateDirectory("wwwroot\\img\\profiles\\ubisoft\\");
+            var outPath = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\ubisoft\\{userId}.png");
             if (File.Exists(i256)) File.Copy(i256, outPath, true);
             else if (File.Exists(i128)) File.Copy(i128, outPath, true);
             else if (File.Exists(i64)) File.Copy(i64, outPath, true);
@@ -265,7 +265,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             allIds.Remove(userId);
             File.WriteAllText("LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
 
-            File.Delete(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\Ubisoft\\{userId}.png"));
+            File.Delete(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\ubisoft\\{userId}.png"));
             return true;
         }
 

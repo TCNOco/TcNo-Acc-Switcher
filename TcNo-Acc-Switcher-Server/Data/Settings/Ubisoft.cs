@@ -71,6 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 {""Change switcher name"": ""ShowModal('changeUsername')""},
                 {""Refresh name"": ""RefreshUsername()""},
               ]},
+              {""Create Desktop Shortcut..."": ""CreateShortcut()""},
               {""Forget"": ""forget(event)""}
             ]";
         // {""Create Desktop Shortcut"": ""CreateShortcut()""},

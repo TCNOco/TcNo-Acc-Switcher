@@ -24,8 +24,10 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.Epic;
+using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Origin;
 using TcNo_Acc_Switcher_Server.Pages.Ubisoft;
+using Task = System.Threading.Tasks.Task;
 
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
@@ -277,6 +279,47 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     UbisoftSwitcherFuncs.SetUsername(id, reqName, true);
                     break;
             }
+        }
+
+
+        /// <summary>
+        /// Creates a shortcut to start the Account Switcher, and swap to the account related to provided SteamID.
+        /// </summary>
+        /// <param name="page">The account switcher the user is on</param>
+        /// <param name="accId">ID of account to swap to</param>
+        /// <param name="accName">Account name of account to swap to</param>
+        /// <param name="args">(Optional) arguments for shortcut</param>
+        [JSInvokable]
+        public static void CreateShortcut(string page, string accId, string accName, string args = "")
+        {
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
+            page = page.ToLower();
+            if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
+            var platformName = $"Switch to {accName}";
+
+            if (page == "steam")
+            {
+                var ePersonaState = -1;
+                if (args.Length == 2) int.TryParse(args[1].ToString(), out ePersonaState);
+                platformName = $"Switch to {accName}" + (args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "");
+            }
+
+            var fgImg = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\{page}\\{accId}.jpg");
+            if (!File.Exists(fgImg)) fgImg = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\{page}\\{accId}.png");
+            if (!File.Exists(fgImg)) return;
+
+            var s = new Shortcut();
+            s.Shortcut_Platform(
+                Shortcut.Desktop, 
+                platformName,
+                $"+{page[0]}:{accId}{args}",
+                $"Switch to {accName} in TcNo Account Switcher", 
+                true);
+            s.CreateCombinedIcon(
+                Path.Join(GeneralFuncs.WwwRoot, $"\\img\\platform\\{page}.svg"),
+                fgImg, 
+                $"{accId}.ico");
+            s.TryWrite();
         }
     }
 }

@@ -64,6 +64,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public string ContextMenuJson = @"[
               {""Swap to account"": ""SwapTo(-1, event)""},
               {""Change switcher name"": ""ShowModal('changeUsername')""},
+              {""Create Desktop Shortcut..."": ""CreateShortcut()""},
               {""Forget"": ""forget(event)""}
             ]";
 

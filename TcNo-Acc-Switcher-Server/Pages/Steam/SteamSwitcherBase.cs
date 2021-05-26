@@ -63,37 +63,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.SwapToSteam] {(steamId.Length > 0 ? steamId.Substring(steamId.Length - 4, 4) : "")}, accName:hidden, ePersonaState: {ePersonaState}");
             SteamSwitcherFuncs.SwapSteamAccounts(steamId, accName, ePersonaState: ePersonaState);
         }
-
-        /// <summary>
-        /// Creates a shortcut to start the Account Switcher, and swap to the account related to provided SteamID.
-        /// </summary>
-        /// <param name="steamId">SteamID of account to swap to</param>
-        /// <param name="accName">Account name of account to swap to</param>
-        /// <param name="args">(Optional) arguments for shortcut</param>
-        [JSInvokable]
-        public static void CreateShortcut(string steamId, string accName, string args = "")
-        {
-            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.CreateShortcut] {steamId.Substring(steamId.Length - 4, 4)}, accName:hidden");
-            var ePersonaState = -1;
-            if (args.Length > 0)
-            {
-                if (args[0] != ':') args = $" {args}";
-                else if (args.Length == 2) int.TryParse(args[1].ToString(), out ePersonaState);
-            }
-            var s = new Shortcut();
-            s.Shortcut_Platform(
-                Shortcut.Desktop, 
-                $"Switch to {accName}" + (args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : ""), 
-                $"+s:{steamId}" + args, 
-                $"Switch to {accName} in TcNo Account Switcher", 
-                true);
-            s.CreateCombinedIcon(
-                Path.Join(GeneralFuncs.WwwRoot, "\\img\\platform\\steam.svg"),
-                Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\steam\\{steamId}.jpg"), 
-                $"{steamId}.ico");
-            s.TryWrite();
-        }
-
+        
         /// <summary>
         /// JS function handler for swapping to a new Steam account (No inputs)
         /// </summary>

@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 {
@@ -50,6 +51,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.ClearSettings]");
             new Data.Settings.BattleNet().ResetSettings();
             AppData.ActiveNavMan.NavigateTo("/BattleNet?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared BattleNet switcher settings"));
+        }
+
+        // CHECKBOX: Show Overwatch images
+        public static void OverwatchToggle()
+        {
+            GeneralFuncs.ClearFolder("wwwroot\\img\\profiles\\battlenet\\");
         }
 
         // BUTTON: Clear Forgotten

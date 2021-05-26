@@ -44,13 +44,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         {
             [JsonProperty("Email", Order = 0)] public string Email { get; set; }
             [JsonProperty("BattleTag", Order = 1)] public string BTag { get; set; }
-            [JsonProperty("ImgUrl", Order = 2)] public string ImgUrl { get; set; }
-            [JsonProperty("OwTankSr", Order = 3)] public int OwTankSr { get; set; }
-            [JsonProperty("OwDpsSr", Order = 4)] public int OwDpsSr { get; set; }
-            [JsonProperty("OwSupportSr", Order = 5)] public int OwSupportSr { get; set; }
-            [JsonProperty("LastTimeChecked", Order = 6)] public DateTime LastTimeChecked { get; set; }
+            [JsonProperty("OwTankSr", Order = 2)] public int OwTankSr { get; set; }
+            [JsonProperty("OwDpsSr", Order = 3)] public int OwDpsSr { get; set; }
+            [JsonProperty("OwSupportSr", Order = 4)] public int OwSupportSr { get; set; }
+            [JsonProperty("LastTimeChecked", Order = 5)] public DateTime LastTimeChecked { get; set; }
+            [JsonIgnore] public string ImgUrl { get; set; }
 
-            
+
             public bool FetchRank()
             {
                 if (!BattleNetSwitcherFuncs.ValidateBTag(BTag)) return false;
@@ -85,6 +85,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                         .SelectSingleNode("/html/body/section[1]/div[1]/section/div/div/div/div/div[2]/img")
                         .Attributes["src"].Value;
                     _ = GeneralInvocableFuncs.ShowToast("warning", $"{BTag}'s profile is private", renderTo: "toastarea");
+                    BattleNetSwitcherFuncs.DownloadImage(Email, ImgUrl);
                     LastTimeChecked = DateTime.Now - TimeSpan.FromMinutes(1435); // 23 Hours 55 Minutes
                     return false;
                 }
@@ -101,8 +102,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 ImgUrl = doc.DocumentNode
                     .SelectSingleNode("/html/body/section[1]/div[1]/section/div/div[2]/div/div/div[2]/img")
                     .Attributes["src"].Value;
-                
-                
+                BattleNetSwitcherFuncs.DownloadImage(Email, ImgUrl);
+
                 var ranks = doc.DocumentNode.SelectNodes("/html/body/section[1]/div[1]/section/div/div[2]/div/div/div[2]/div/div[3]");
                 foreach (var node in ranks.Elements())
                 {
