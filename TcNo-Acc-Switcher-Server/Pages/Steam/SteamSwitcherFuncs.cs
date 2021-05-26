@@ -97,7 +97,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 var extraClasses = (Steam.ShowVac && va.Vac ? " status_vac" : "") + (Steam.ShowLimited && va.Ltd ? " status_limited" : "");
 
                 var element =
-                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{ua.SteamId}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.LastLogin}\" ExtraClasses=\"{extraClasses}\" onchange=\"SelectedItemChanged()\" />\r\n" +
+                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{ua.SteamId}\" DisplayName=\"{ua.Name}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.LastLogin}\" ExtraClasses=\"{extraClasses}\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{ua.AccName}\" class=\"acc {extraClasses}\">\r\n" +
                     $"<img class=\"{extraClasses}\" src=\"{ua.ImgUrl}\" draggable=\"false\" />\r\n" +
                     $"<p class=\"streamerCensor\">{ua.AccName}</p>\r\n" +

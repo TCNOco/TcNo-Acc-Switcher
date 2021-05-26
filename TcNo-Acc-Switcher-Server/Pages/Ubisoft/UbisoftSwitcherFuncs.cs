@@ -46,7 +46,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             foreach (var (userId, username) in allIds)
             {
                 var element =
-                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{userId}\" Username=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
+                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{userId}\" Username=\"{username}\" DisplayName=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{userId}\" class=\"acc\">\r\n" +
                     "<img src=\"" + $"\\img\\profiles\\ubisoft\\{userId}.png" + "\" draggable=\"false\" />\r\n" +
                     $"<h6>{username}</h6></div>\r\n";

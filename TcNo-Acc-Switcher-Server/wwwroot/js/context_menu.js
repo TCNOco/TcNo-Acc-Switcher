@@ -149,17 +149,5 @@ function SelectedItemChanged() {
     //console.log("click!");
     //console.log(this);
     // Different function groups based on platform
-    switch (currentpage) {
-        case "Steam":
-            updateStatus("Selected: " + $("input[name=accounts]:checked").attr("Line2"));
-            break;
-        case "Origin":
-            updateStatus("Selected: " + $("input[name=accounts]:checked").attr("id"));
-            break;
-        case "Ubisoft":
-            updateStatus("Selected: " + $("input[name=accounts]:checked").attr("Username"));
-            break;
-        default:
-            break;
-    }
+    updateStatus("Selected: " + $("input[name=accounts]:checked").attr("DisplayName"));
 }
