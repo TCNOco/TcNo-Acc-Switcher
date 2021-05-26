@@ -227,7 +227,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             }
 
             Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot, "\\img\\profiles\\origin\\"));
-            File.Copy((pfpFilePath != "" ? pfpFilePath :  Path.Join(GeneralFuncs.WwwRoot,"img\\QuestionMark.jpg"))!, Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\origin\\{Uri.EscapeUriString(accName)}.jpg"), true);
+            var destImg = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\origin\\{Uri.EscapeUriString(accName)}.jpg");
+            if (File.Exists(destImg))
+            {
+                GeneralFuncs.DeletedOutdatedFile(destImg, Origin.ImageExpiryTime);
+                GeneralFuncs.DeletedInvalidImage(destImg);
+            }
+            if (!File.Exists(destImg)) File.Copy((pfpFilePath != "" ? pfpFilePath :  Path.Join(GeneralFuncs.WwwRoot,"img\\QuestionMark.jpg"))!, destImg, true);
 
             var olcHashes = new List<string>();
             foreach (var f in new DirectoryInfo(OriginProgramData).GetFiles())

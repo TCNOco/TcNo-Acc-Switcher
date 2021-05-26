@@ -202,8 +202,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             string i64 = Path.Join(UbisoftAvatarFolder, userId + "_64.png"),
                 i128 = Path.Join(UbisoftAvatarFolder, userId + "_128.png"),
                 i256 = Path.Join(UbisoftAvatarFolder, userId + "_256.png");
+
             Directory.CreateDirectory("wwwroot\\img\\profiles\\ubisoft\\");
             var outPath = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\ubisoft\\{userId}.png");
+            if (File.Exists(outPath))
+            {
+                GeneralFuncs.DeletedOutdatedFile(outPath, Ubisoft.ImageExpiryTime);
+                GeneralFuncs.DeletedInvalidImage(outPath);
+            }
+
+            if (File.Exists(outPath)) return;
             if (File.Exists(i256)) File.Copy(i256, outPath, true);
             else if (File.Exists(i128)) File.Copy(i128, outPath, true);
             else if (File.Exists(i64)) File.Copy(i64, outPath, true);

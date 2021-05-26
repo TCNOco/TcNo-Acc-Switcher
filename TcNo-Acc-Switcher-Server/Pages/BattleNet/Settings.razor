@@ -43,6 +43,8 @@
             <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="OverwatchMode" @bind="_battleNet.OverwatchMode" @onclick="OverwatchToggle"><label class="form-check-label" for="OverwatchMode"></label></div><label for="OverwatchMode">Show Overwatch SR and use the Overwatch profile picture.<br></label>
             </div>
+            <div class="form-text"><span>Profile images expire after:</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="_battleNet.ImageExpiryTime"><span>Days</span></div>
+
 
             <div class="SettingsHeader">
                 <hr><span>Tray settings</span>
