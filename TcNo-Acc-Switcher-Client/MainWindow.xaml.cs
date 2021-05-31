@@ -193,9 +193,7 @@ namespace TcNo_Acc_Switcher_Client
                 {
                     MainBackground.Children.Remove(MView2);
                     MView2.Dispose();
-                    GC.Collect();
                     GC.WaitForPendingFinalizers();
-                    GC.Collect();
                 }
                 else // Not hidden
                 {

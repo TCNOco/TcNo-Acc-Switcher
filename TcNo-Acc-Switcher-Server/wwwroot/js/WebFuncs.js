@@ -1,11 +1,11 @@
 ﻿var currentVersion = 0001;
 
 var currentpage = "";
-    //window.addEventListener('popstate', function (e) {
-    //    currentpage = (window.location.pathname.split("/")[0] !== ""
-    //        ? window.location.pathname.split("/")[0]
-    //        : window.location.pathname.split("/")[1]);
-    //});
+//window.addEventListener('popstate', function (e) {
+//    currentpage = (window.location.pathname.split("/")[0] !== ""
+//        ? window.location.pathname.split("/")[0]
+//        : window.location.pathname.split("/")[1]);
+//});
 function docReady(fn) {
     // see if DOM is already available
     if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -14,7 +14,7 @@ function docReady(fn) {
     } else {
         document.addEventListener("DOMContentLoaded", fn);
     }
-}  
+}
 
 // Clear Cache reload: 
 var winUrl = window.location.href.split("?");
@@ -78,7 +78,9 @@ async function restoreSteamAccounts() {
 async function restoreBattleNetAccounts() {
     //const reqBattleNetId = $("#IgnoredBattleNetAccounts").children("option:selected")
     //    .each((_, e) => { console.log($(e).attr("value")) });
-    const reqBattleNetId = $("#IgnoredAccounts").children("option:selected").toArray().map((item) => { return $(item).attr("value"); });
+    const reqBattleNetId = $("#IgnoredAccounts").children("option:selected").toArray().map((item) => {
+        return $(item).attr("value");
+    });
 
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BattleNet_RestoreSelected", reqBattleNetId).then(r => {
         if (r === true) {
@@ -110,14 +112,14 @@ async function restoreBattleNetAccounts() {
 function copy(request, e) {
     e.preventDefault();
     const requestResult = $(SelectedElem).attr(request);
-    
+
     // Different function groups based on platform
     switch (currentpage) {
         case "Steam":
             steam();
             break;
-        //case "Origin":
-        //    origin();
+            //case "Origin":
+            //    origin();
         default:
             CopyToClipboard(requestResult);
             break;
@@ -128,7 +130,7 @@ function copy(request, e) {
     // Steam:
     function steam() {
         var steamId64 = $(SelectedElem).attr("id");
-        switch (request){
+        switch (request) {
             case "URL":
                 CopyToClipboard("https://steamcommunity.com/profiles/" + steamId64);
                 break;
@@ -138,7 +140,7 @@ function copy(request, e) {
                 DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopySteamIdType", request, steamId64);
                 break;
 
-            // Links
+                // Links
             case "SteamRep":
                 CopyToClipboard(`https://steamrep.com/search?q=${steamId64}`);
                 break;
@@ -169,10 +171,13 @@ function SwapTo(request, e) {
 
     // General function: Get selected account
     var selected;
+
     function getSelected() {
         // This may be unnecessary.
         selected = $(".acc:checked");
-        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return false; }
+        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
+            return false;
+        }
         return true;
     }
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo" + currentpage, selected.attr("id"));
@@ -181,7 +186,9 @@ function SwapTo(request, e) {
 // Create shortcut for selected icon
 function CreateShortcut(args = '') {
     var selected = $(".acc:checked");
-    if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
+    if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
+        return;
+    }
     var accId = selected.attr("id");
 
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CreateShortcut", currentpage, accId, selected.attr("Username"), args);
@@ -189,7 +196,9 @@ function CreateShortcut(args = '') {
 
 function RefreshUsername() {
     var selected = $(".acc:checked");
-    if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") { return; }
+    if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
+        return;
+    }
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "UbisoftRefreshUsername", selected.attr("id"));
 }
 
@@ -217,7 +226,7 @@ function CurrentUbisoftLogin() {
 
 
 
-$(".acc").dblclick(function () {
+$(".acc").dblclick(function() {
     alert("Handler for .dblclick() called.");
     SwapTo();
 });
@@ -249,8 +258,7 @@ function ShowModal(modaltype) {
                 </div>
                 </div><div class="versionIdentifier"><span>Version: ` + currentVersion + `</span></div>`);
         });
-    }
-    else if (modaltype.startsWith("changeUsername")) {
+    } else if (modaltype.startsWith("changeUsername")) {
         // USAGE: "changeUsername"
         console.log(modaltype);
         Modal_RequestedLocated(false);
@@ -269,8 +277,7 @@ function ShowModal(modaltype) {
 	        </div>
         </div>`);
         input = document.getElementById('NewAccountName');
-    }
-    else if (modaltype.startsWith("find:")) {
+    } else if (modaltype.startsWith("find:")) {
         // USAGE: "find:<Program_name>:<Program_exe>:<SettingsFile>" -- example: "find:Steam:Steam.exe:SteamSettings"
         console.log(modaltype);
         console.log(modaltype.split(":"));
@@ -295,8 +302,7 @@ function ShowModal(modaltype) {
 	        </div>
         </div>`);
         input = document.getElementById('FolderLocation');
-    }
-    else if (modaltype.startsWith("confirm:")) {
+    } else if (modaltype.startsWith("confirm:")) {
         // USAGE: "confirm:<prompt>
         // GOAL: To return true/false
         console.log(modaltype);
@@ -313,7 +319,7 @@ function ShowModal(modaltype) {
             message = getAccountPrompt();
         } else if (action.startsWith("AcceptForgetBattleNetAcc")) {
             message = getAccountPrompt();
-        } else if (action.startsWith("AcceptForgetEpicAcc")){
+        } else if (action.startsWith("AcceptForgetEpicAcc")) {
             message = getAccountPrompt();
         } else {
             header = "<h3>Confirm action:</h3>";
@@ -335,13 +341,13 @@ function ShowModal(modaltype) {
             </div>
         </div>
         </div>`);
-    }
-    else if (modaltype.startsWith("notice:")) {
+    } else if (modaltype.startsWith("notice:")) {
         // USAGE: "notice:<prompt>
         // GOAL: Runs function when OK clicked.
         console.log(modaltype);
 
-        let action = modaltype.slice(7); let args = "";
+        let action = modaltype.slice(7);
+        let args = "";
         if (modaltype.split(":").length > 2) {
             action = modaltype.slice(7).split(":")[0];
             args = modaltype.slice(7).split(":")[1];
@@ -370,8 +376,7 @@ function ShowModal(modaltype) {
         </div>
         </div>`);
         input = document.getElementById('modal_true');
-    }
-    else if (modaltype.startsWith("accString:")) {
+    } else if (modaltype.startsWith("accString:")) {
         // USAGE: "accString:<platform>" -- example: "accString:Origin"
         console.log(modaltype);
         console.log(modaltype.split(":"));
@@ -412,7 +417,9 @@ function ShowModal(modaltype) {
     input.select();
 }
 
-function Modal_SetFilepath(path) { $("#FolderLocation").val(path); }
+function Modal_SetFilepath(path) {
+    $("#FolderLocation").val(path);
+}
 // For finding files with modal:
 function Modal_RequestedLocated(found) {
     $(".folder_indicator").removeClass("notfound found");
@@ -425,6 +432,7 @@ function Modal_RequestedLocated(found) {
         $(".folder_indicator_bg").addClass("notfound");
     }
 }
+
 function Modal_Finalise(platform, platformSettingsPath) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
     $('.modalBG').fadeOut();
@@ -442,7 +450,7 @@ function Modal_FinaliseAccString(platform) {
     switch (platform) {
         case "Origin":
             DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "OriginAddCurrent", $("#CurrentAccountName").val());
-                break;
+            break;
         case "Epic":
             DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "EpicAddCurrent", $("#CurrentAccountName").val());
             break;
@@ -460,6 +468,7 @@ function Modal_FinaliseAccNameChange() {
 var appendDelay = 100; // Milliseconds
 var recentlyAppend = false;
 var pendingQueue = {};
+
 function queuedJQueryAppend(jQuerySelector, strToInsert) {
     if (recentlyAppend) {
         if (jQuerySelector in pendingQueue) pendingQueue[jQuerySelector] += strToInsert;
@@ -472,6 +481,7 @@ function queuedJQueryAppend(jQuerySelector, strToInsert) {
         $(".clearingRight")[0].scrollTop = $(".clearingRight")[0].scrollHeight;
     }
 }
+
 function flushJQueryAppendQueue() {
     for (const [key, value] of Object.entries(pendingQueue)) {
         $(key).append(value);
@@ -484,11 +494,11 @@ function flushJQueryAppendQueue() {
 
 //DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyCommunityUsername", $(SelectedElem).attr(request)).then(r => console.log(r));
 
-function ForgetBattleTag(){
+function ForgetBattleTag() {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "DeleteUsername", $(".acc:checked").attr("id"));
 }
 
-function RefetchRank(){ 
+function RefetchRank() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RefetchRank", $(".acc:checked").attr("id"));
 }
 

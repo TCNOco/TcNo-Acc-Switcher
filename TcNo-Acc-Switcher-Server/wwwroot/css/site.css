@@ -1,443 +1,578 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
-
 @font-face {
-    font-family: 'Catamaran', sans-serif;
-    src: url("/css/font/Catamaran-VariableFont_wght.ttf") format("ttf");
+	font-family: 'Catamaran', sans-serif;
+	src: url("/css/font/Catamaran-VariableFont_wght.ttf") format("ttf");
 }
 
-html, body {
-    font-family: 'Catamaran', sans-serif;
-    font-weight: 500;
-    font-size: 12px; /* THIS SCALES EVERYTHING UP AND DOWN */
-    max-width: 100%;
-    overflow-x: hidden;
-}
-html {
-    background-color: var(--headerbarBackground);
-}
+html,
 body {
-    background-color: var(--mainBackground);
+	font-family: 'Catamaran', sans-serif;
+	font-weight: 500;
+	font-size: 12px;
+	/* THIS SCALES EVERYTHING UP AND DOWN */
+	max-width: 100%;
+	overflow-x: hidden;
+}
+
+html {
+	background-color: var(--headerbarBackground);
+}
+
+body {
+	background-color: var(--mainBackground);
 }
 
 .mainblock {
-    width: 100%;
-    height: 100%;
-    background-color: var(--mainBackground);
-    overflow-y: auto;
-    overflow-x: auto;
+	width: 100%;
+	height: 100%;
+	background-color: var(--mainBackground);
+	overflow-y: auto;
+	overflow-x: auto;
 }
 
 app {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100vw;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	width: 100vw;
 }
 
 img {
-    user-select: none;
+	user-select: none;
 }
 
 label {
-    vertical-align: middle;
-    cursor: pointer;
-    user-select: none;
+	vertical-align: middle;
+	cursor: pointer;
+	user-select: none;
 }
 
 ::selection {
-    color: var(--selectionColor);
-    background: var(--selectionBackground);
+	color: var(--selectionColor);
+	background: var(--selectionBackground);
 }
+
 :root {
-    --resizeBarSize: 7px;
+	--resizeBarSize: 7px;
 }
 
 .programMain {
-    position: relative;
-    width: calc(100% - (var(--resizeBarSize) * 2));
-    height: calc(100% - var(--resizeBarSize));
-    margin: 0 var(--resizeBarSize) var(--resizeBarSize) var(--resizeBarSize);
-    overflow-y: auto;
-    overflow-x: hidden;
-    z-index: 10
+	position: relative;
+	width: calc(100% - (var(--resizeBarSize) * 2));
+	height: calc(100% - var(--resizeBarSize));
+	margin: 0 var(--resizeBarSize) var(--resizeBarSize) var(--resizeBarSize);
+	overflow-y: auto;
+	overflow-x: hidden;
+	z-index: 10
 }
+
+
 /* Based on https://github.com/binaryfunt/electron-seamless-titlebar-tutorial */
+
 .headerbar {
-    z-index:5;
-    background-color: var(--headerbarBackground);
-    position: relative;
-    height: 32px;
-    width: 100%;
-    -webkit-app-region: drag;
+	z-index: 5;
+	background-color: var(--headerbarBackground);
+	position: relative;
+	height: 32px;
+	width: 100%;
+	-webkit-app-region: drag;
 }
-    .header_icon {
-        height: 10px;
-        margin: 12px;
-        display: block;
-    }
+
+.header_icon {
+	height: 10px;
+	margin: 12px;
+	display: block;
+}
 
 .updateBar {
-    position: absolute;
-    z-index: 50;
-    width: 100%;
-    height: 2rem;
-    line-height: 2rem;
-    background-color: var(--updateBarBackground);
-    color: var(--updateBarColor);
-    font-weight: 700;
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
+	position: absolute;
+	z-index: 50;
+	width: 100%;
+	height: 2rem;
+	line-height: 2rem;
+	background-color: var(--updateBarBackground);
+	color: var(--updateBarColor);
+	font-weight: 700;
+	text-align: center;
+	cursor: pointer;
+	user-select: none;
 }
 
 #window-controls {
-    display: grid;
-    grid-template-columns: repeat(3, 46px);
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
+	display: grid;
+	grid-template-columns: repeat(3, 46px);
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 100%;
 }
+
 #window-controls-modal {
-    display: grid;
-    grid-template-columns: repeat(1, 46px);
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
+	display: grid;
+	grid-template-columns: repeat(1, 46px);
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 100%;
 }
 
 #btnBack {
-    width: 46px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    pointer-events: all;
-    margin-top: -2px;
-}
-    #btnBack .resizeTop {
-        width: 46px !important;
-        background: none !important;
-    }
-#window-controls .button, #window-controls-modal .button {
-    grid-row: 1 / span 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
+	width: 46px;
+	height: 32px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	pointer-events: all;
+	margin-top: -2px;
 }
 
-    .headerbar  #btnMin {
-        position: relative;
-        grid-column: 1;
-    }
+#btnBack .resizeTop {
+	width: 46px !important;
+	background: none !important;
+}
 
-    .headerbar #btnMax, #btnRestore {
-        position: relative;
-        grid-column: 2;
-    }
+#window-controls .button,
+#window-controls-modal .button {
+	grid-row: 1 / span 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
 
-    .headerbar #btnClose {
-        position: relative;
-        grid-column: 3;
-    }
-    @media (-webkit-device-pixel-ratio: 1.5), (device-pixel-ratio: 1.5), (-webkit-device-pixel-ratio: 2), (device-pixel-ratio: 2), (-webkit-device-pixel-ratio: 3), (device-pixel-ratio: 3) {
-        #window-controls .icon {
-            width: 10px;
-            height: 10px;
-        }
-    }
-    #window-controls {
-        -webkit-app-region: no-drag;
-    }
+.headerbar #btnMin {
+	position: relative;
+	grid-column: 1;
+}
 
-    #window-controls .button {
-        user-select: none;
-    }
+.headerbar #btnMax,
+#btnRestore {
+	position: relative;
+	grid-column: 2;
+}
 
-        #window-controls .button:hover, #btnBack:hover {
-            background: var(--windowControlsBackground-hover);
-        }
+.headerbar #btnClose {
+	position: relative;
+	grid-column: 3;
+}
 
-        #window-controls .button:active, #btnBack:active {
-            background: var(--windowControlsBackground-active);
-        }
+@media (-webkit-device-pixel-ratio: 1.5),
+(device-pixel-ratio: 1.5),
+(-webkit-device-pixel-ratio: 2),
+(device-pixel-ratio: 2),
+(-webkit-device-pixel-ratio: 3),
+(device-pixel-ratio: 3) {
+	#window-controls .icon {
+		width: 10px;
+		height: 10px;
+	}
+}
+
+#window-controls {
+	-webkit-app-region: no-drag;
+}
+
+#window-controls .button {
+	user-select: none;
+}
+
+#window-controls .button:hover,
+#btnBack:hover {
+	background: var(--windowControlsBackground-hover);
+}
+
+#window-controls .button:active,
+#btnBack:active {
+	background: var(--windowControlsBackground-active);
+}
+
 
 /* Resize bars and corners */
-.resizeTopLeft, .resizeTop, .resizeTopRight, .resizeRight, .resizeBottomRight, .resizeBottom, .resizeBottomLeft, .resizeLeft {
-    -webkit-app-region: drag;
-    position: absolute;
-    background-color: var(--headerbarBackground);
+
+.resizeTopLeft,
+.resizeTop,
+.resizeTopRight,
+.resizeRight,
+.resizeBottomRight,
+.resizeBottom,
+.resizeBottomLeft,
+.resizeLeft {
+	-webkit-app-region: drag;
+	position: absolute;
+	background-color: var(--headerbarBackground);
 }
+
+
 /* Positions */
-.resizeTop, .resizeTopLeft, .resizeTopRight { top: 0 }
-.resizeBottom, .resizeBottomLeft, .resizeBottomRight { bottom: 0 }
-.resizeLeft, .resizeTopLeft, .resizeBottomLeft { left: 0 }
-.resizeRight, .resizeTopRight, .resizeBottomRight { right: 0 }
+
+.resizeTop,
+.resizeTopLeft,
+.resizeTopRight {
+	top: 0
+}
+
+.resizeBottom,
+.resizeBottomLeft,
+.resizeBottomRight {
+	bottom: 0
+}
+
+.resizeLeft,
+.resizeTopLeft,
+.resizeBottomLeft {
+	left: 0
+}
+
+.resizeRight,
+.resizeTopRight,
+.resizeBottomRight {
+	right: 0
+}
+
+
 /* Corners */
-.resizeTopLeft, .resizeTopRight, .resizeBottomRight, .resizeBottomLeft {
-    width: var(--resizeBarSize);
-    height: var(--resizeBarSize);
-    z-index: 2;
-    /*background-color: pink;*/
+
+.resizeTopLeft,
+.resizeTopRight,
+.resizeBottomRight,
+.resizeBottomLeft {
+	width: var(--resizeBarSize);
+	height: var(--resizeBarSize);
+	z-index: 2;
+	/*background-color: pink;*/
 }
+
+
 /* Sides */
+
 .resizeTop {
-    width: calc(100% - 138px);
-    pointer-events: all;
-    background: none !important;
+	width: calc(100% - 138px);
+	pointer-events: all;
+	background: none !important;
 }
+
 .resizeBottom {
-    width: 100%;
+	width: 100%;
 }
-.resizeTop, .resizeBottom {
-    height: var(--resizeBarSize);
-    z-index: 1;
-    /*background-color: lime;*/
+
+.resizeTop,
+.resizeBottom {
+	height: var(--resizeBarSize);
+	z-index: 1;
+	/*background-color: lime;*/
 }
-.resizeLeft, .resizeRight {
-    width: var(--resizeBarSize);
-    height: 100%;
-    z-index: 1;
-    /*background-color: lime;*/
+
+.resizeLeft,
+.resizeRight {
+	width: var(--resizeBarSize);
+	height: 100%;
+	z-index: 1;
+	/*background-color: lime;*/
 }
+
+
 /* Sides in window buttons */
-#btnClose .resizeTop, #btnMin .resizeTop, #btnMax .resizeTop, #btnRestore .resizeTop, #btnBack .resizeTop {
-    width: 100%;
-    background-color: transparent;
+
+#btnClose .resizeTop,
+#btnMin .resizeTop,
+#btnMax .resizeTop,
+#btnRestore .resizeTop,
+#btnBack .resizeTop {
+	width: 100%;
+	background-color: transparent;
 }
-#btnClose .resizeRight, #btnClose .resizeTopRight, #btnBack .resizeTop, #btnBack .resizeLeft, #btnBack .resizeTopLeft {
-    background-color: transparent;
+
+#btnClose .resizeRight,
+#btnClose .resizeTopRight,
+#btnBack .resizeTop,
+#btnBack .resizeLeft,
+#btnBack .resizeTopLeft {
+	background-color: transparent;
 }
+
+
 /* Cursors */
+
 .resizeTopLeft {
-    cursor: nw-resize;
-}
-.resizeTop { cursor: n-resize }
-.resizeTopRight { cursor: ne-resize }
-.resizeRight { cursor: e-resize }
-.resizeBottomRight { cursor: se-resize }
-.resizeBottom { cursor: s-resize }
-.resizeBottomLeft { cursor: sw-resize }
-.resizeLeft { cursor:w-resize }
-
-
-
-
-
-
-#btnClose:hover, #btnClose-modal:hover {
-    background: var(--windowControlsCloseBackground) !important;
+	cursor: nw-resize;
 }
 
-#btnClose:active, #btnClose-modal:active {
-    background: var(--windowControlsCloseBackground-active) !important;
+.resizeTop {
+	cursor: n-resize
 }
 
-    #btnClose:active .icon, #btnClose-modal:active .icon {
-        filter: invert(1);
-    }
+.resizeTopRight {
+	cursor: ne-resize
+}
 
-    #btnRestore {
-        display: none !important;
-    }
-    #titlebar #drag-region {
-        display: grid;
-        grid-template-columns: auto 138px;
-    }
+.resizeRight {
+	cursor: e-resize
+}
+
+.resizeBottomRight {
+	cursor: se-resize
+}
+
+.resizeBottom {
+	cursor: s-resize
+}
+
+.resizeBottomLeft {
+	cursor: sw-resize
+}
+
+.resizeLeft {
+	cursor: w-resize
+}
+
+#btnClose:hover,
+#btnClose-modal:hover {
+	background: var(--windowControlsCloseBackground) !important;
+}
+
+#btnClose:active,
+#btnClose-modal:active {
+	background: var(--windowControlsCloseBackground-active) !important;
+}
+
+#btnClose:active .icon,
+#btnClose-modal:active .icon {
+	filter: invert(1);
+}
+
+#btnRestore {
+	display: none !important;
+}
+
+#titlebar #drag-region {
+	display: grid;
+	grid-template-columns: auto 138px;
+}
+
 #window-title-modal {
-    position: relative;
-    background-color: var(--headerbarBackground);
+	position: relative;
+	background-color: var(--headerbarBackground);
 }
-#window-title, #window-title-modal {
-    color: var(--windowTitleColor);
-    grid-column: 1;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    font-family: "Segoe UI", sans-serif;
-    font-size: 12px;
-    pointer-events: none
+
+#window-title,
+#window-title-modal {
+	color: var(--windowTitleColor);
+	grid-column: 1;
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+	font-family: "Segoe UI", sans-serif;
+	font-size: 12px;
+	pointer-events: none
 }
-    #window-title #window-controls, #window-title-modal #window-controls-modal {
-        cursor: pointer;
-        pointer-events: all;
-    }
 
-    #window-title span, #window-title-modal span {
-        position: absolute;
-        width: 100%;
-        pointer-events: none;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        line-height: 1.5;
-        text-align: center;
-    }
-    .maximised #titlebar {
-        width: 100%;
-        padding: 0;
-    }
+#window-title #window-controls,
+#window-title-modal #window-controls-modal {
+	cursor: pointer;
+	pointer-events: all;
+}
 
-    .maximised #window-title {
-        margin-left: 12px;
-    }
+#window-title span,
+#window-title-modal span {
+	position: absolute;
+	width: 100%;
+	pointer-events: none;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	line-height: 1.5;
+	text-align: center;
+}
 
-    .maximised #btnRestore {
-        display: flex !important;
-    }
+.maximised #titlebar {
+	width: 100%;
+	padding: 0;
+}
 
-    .maximised #btnMax {
-        display: none;
-    }
+.maximised #window-title {
+	margin-left: 12px;
+}
+
+.maximised #btnRestore {
+	display: flex !important;
+}
+
+.maximised #btnMax {
+	display: none;
+}
 
 .mainWindow {
-    height: calc(100% - 32px);
-    padding: 0;
-    margin: 32px 0 0 0;
-    width: 100vw;
+	height: calc(100% - 32px);
+	padding: 0;
+	margin: 32px 0 0 0;
+	width: 100vw;
 }
 
 .content {
-    padding-top: 1.1rem;
+	padding-top: 1.1rem;
 }
 
 #blazor-error-ui {
-    background: lightyellow;
-    bottom: 0;
-    box-shadow: 0 -1px 2px #000000;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-    display: none;
-    left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
+	background: lightyellow;
+	bottom: 0;
+	box-shadow: 0 -1px 2px #000000;
+	box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+	display: none;
+	left: 0;
+	padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+	position: fixed;
+	width: 100%;
+	z-index: 1000;
 }
 
 #blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
+	cursor: pointer;
+	position: absolute;
+	right: 0.75rem;
+	top: 0.5rem;
 }
+
 
 /* Steam/Settings/Advanced Clearing screen */
+
 div.clearingRow {
-    display: flex;
+	display: flex;
 }
+
 div.clearingLeft {
-    float: left;
-    margin-right: 1%;
-    width: 59%;
+	float: left;
+	margin-right: 1%;
+	width: 59%;
 }
+
 div.clearingRight {
-    word-break: break-word;
-    overflow: auto;
-    background-color: var(--listBackground);
-    width: 40%;
-    border: solid var(--borderedItemBorderColor) 0.1em;
-    padding: 0.5em;
+	word-break: break-word;
+	overflow: auto;
+	background-color: var(--listBackground);
+	width: 40%;
+	border: solid var(--borderedItemBorderColor) 0.1em;
+	padding: 0.5em;
 }
+
 div.advancedClearingButtonCol {
-    font-size: 0.9rem;
+	font-size: 0.9rem;
 }
-    div.advancedClearingButtonCol .buttoncol {
-        margin: 0.5em 0 0 0;
-    }
-#restoreUnderstand{
-    margin-bottom: 1em;
+
+div.advancedClearingButtonCol .buttoncol {
+	margin: 0.5em 0 0 0;
 }
+
+#restoreUnderstand {
+	margin-bottom: 1em;
+}
+
 .clearingPage button {
-    margin: 0 !important;
+	margin: 0 !important;
 }
+
 .clearingRight #lines {
-    max-height: 1px;
+	max-height: 1px;
 }
-    .clearingRight #lines p {
-        margin: 0;
-    }
+
+.clearingRight #lines p {
+	margin: 0;
+}
+
 
 /* Forgotten Steam account */
+
 .forgottenListActions {
-    text-align: end;
+	text-align: end;
 }
+
 .forgottenList {
-    display: flex;
-    margin-bottom: 2em;
+	display: flex;
+	margin-bottom: 2em;
 }
-    .forgottenList select {
-        overflow: auto;
-        background-color: var(--listBackground);
-        border: solid var(--borderedItemBorderColor) 0.1em;
-        color: var(--listColor);
-        width: 100%;
-        padding: 0.5em;
-    }
-        .forgottenList select:focus {
-            border: solid var(--borderedItemBorderColor-focus) 0.1em;
-        }
-        .forgottenList select option:checked {
-            box-shadow: 0 0 10px 100px var(--listBackgroundColor-checked) inset;
-            color: var(--listColor-checked);
-        }
-        /* 
+
+.forgottenList select {
+	overflow: auto;
+	background-color: var(--listBackground);
+	border: solid var(--borderedItemBorderColor) 0.1em;
+	color: var(--listColor);
+	width: 100%;
+	padding: 0.5em;
+}
+
+.forgottenList select:focus {
+	border: solid var(--borderedItemBorderColor-focus) 0.1em;
+}
+
+.forgottenList select option:checked {
+	box-shadow: 0 0 10px 100px var(--listBackgroundColor-checked) inset;
+	color: var(--listColor-checked);
+}
+
+
+/* 
             Workaround to set color BECAUSE YOU CAN'T SET TEXT COLOR?!
             This is for showing the arrow before, and the SteamID afterwards in a different color
         */
-        .forgottenList select option:before {
-            content: ">";
-            color: var(--listTextColor-before);
-            margin-right: 0.5em;
-        }
-        .forgottenList select option:checked:before {
-            color: var(--listTextColor-before-checked);
-            /*margin-left: 0.5em;*/
-        }
-        .forgottenList select option:after {
-            content: attr(visible-content);
-            color: var(--listTextColor-after);
-        }
-        .forgottenList select option:checked:after {
-            content: attr(visible-content);
-            color: var(--listTextColor-after-checked);
-        }
-    .btn_RestoreSelected {
-        margin-right: 1em !important;
-        padding: 0.25em 3em!important;
-    }
+
+.forgottenList select option:before {
+	content: ">";
+	color: var(--listTextColor-before);
+	margin-right: 0.5em;
+}
+
+.forgottenList select option:checked:before {
+	color: var(--listTextColor-before-checked);
+	/*margin-left: 0.5em;*/
+}
+
+.forgottenList select option:after {
+	content: attr(visible-content);
+	color: var(--listTextColor-after);
+}
+
+.forgottenList select option:checked:after {
+	content: attr(visible-content);
+	color: var(--listTextColor-after-checked);
+}
+
+.btn_RestoreSelected {
+	margin-right: 1em !important;
+	padding: 0.25em 3em!important;
+}
+
 .platformContainer {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 25%;
-    transform: translate(-17.5%, -50%);
-    text-align: center;
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 25%;
+	transform: translate(-17.5%, -50%);
+	text-align: center;
 }
+
 .platformIcon {
-    width: 20vw;
-    max-width: calc(100vw / 4.106);
-    display: inline-block;
-    cursor: pointer;
-    /* ReSharper disable once InvalidValue */
-    border: var(--linkColor) 1px solid;
-    margin: 10px;
-    transition: all 100ms ease-in-out;
+	width: 20vw;
+	max-width: calc(100vw / 4.106);
+	display: inline-block;
+	cursor: pointer;
+	/* ReSharper disable once InvalidValue */
+	border: var(--linkColor) 1px solid;
+	margin: 10px;
+	transition: all 100ms ease-in-out;
 }
-    .platformIcon:hover {
-        background-color: #000033;
-        background-color: rgba(0, 0, 51, 0);
-        transform: scale(1.025);
-        filter: brightness(110%) saturate(1.10) drop-shadow(0 0 0.1rem var(--linkColor));
-    }
+
+.platformIcon:hover {
+	background-color: #000033;
+	background-color: rgba(0, 0, 51, 0);
+	transform: scale(1.025);
+	filter: brightness(110%) saturate(1.10) drop-shadow(0 0 0.1rem var(--linkColor));
+}
 
 .platformIcon:active {
-    background-color: #000055;
-    background-color: rgba(0, 0, 85, 0);
-        transform: scale(0.975);
-        filter: brightness(95%) saturate(1.20) contrast(105%) drop-shadow(0 0 0.2rem var(--linkColor));
+	background-color: #000055;
+	background-color: rgba(0, 0, 85, 0);
+	transform: scale(0.975);
+	filter: brightness(95%) saturate(1.20) contrast(105%) drop-shadow(0 0 0.2rem var(--linkColor));
 }

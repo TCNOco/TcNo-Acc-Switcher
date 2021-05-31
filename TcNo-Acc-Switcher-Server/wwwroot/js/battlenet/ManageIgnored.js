@@ -1,7 +1,6 @@
-﻿
-// Allow multiple users to be selected.
+﻿// Allow multiple users to be selected.
 // Much easier than people having to hold Ctrl, then click on items to select multiple.
-$("select[name='IgnoredBattleNetAccounts']").mousedown(function (e) {
+$("select[name='IgnoredBattleNetAccounts']").mousedown(function(e) {
     e.preventDefault();
 
     const s = this;
@@ -9,10 +8,14 @@ $("select[name='IgnoredBattleNetAccounts']").mousedown(function (e) {
 
     e.target.selected = !e.target.selected;
 
-    setTimeout(function () { s.scrollTop = scroll; }, 0);
+    setTimeout(function() {
+        s.scrollTop = scroll;
+    }, 0);
 
     $(s).focus();
-}).mousemove(function (e) { e.preventDefault() });
+}).mousemove(function(e) {
+    e.preventDefault()
+});
 
 
 // Set list of users
@@ -20,7 +23,7 @@ function setIgnored(listIgnored) {
     const listAccounts = document.getElementById("IgnoredAccounts");
 
     var ignoredUsers = JSON.parse(listIgnored);
-    Object.keys(ignoredUsers).forEach(function (key) {
+    Object.keys(ignoredUsers).forEach(function(key) {
         $(listAccounts).append(`<option value="${key}">${ignoredUsers[key]} [${key}]</option>`);
     });
 }

@@ -1,88 +1,86 @@
 ﻿.contextmenu {
-    display: none;
-    position: absolute;
-    width: 15em;
-    margin: 0;
-    padding: 0;
-    background: var(--contextMenuBackground);
-    border-radius: 0.2em;
-    list-style: none;
-    z-index: 999999;
-    box-shadow: var(--contextMenuBoxShadow);
-    user-select: none;
+	display: none;
+	position: absolute;
+	width: 15em;
+	margin: 0;
+	padding: 0;
+	background: var(--contextMenuBackground);
+	border-radius: 0.2em;
+	list-style: none;
+	z-index: 999999;
+	box-shadow: var(--contextMenuBoxShadow);
+	user-select: none;
 }
 
-    .contextmenu li {
-        border-left: 1em solid transparent;
-        transition: ease .2s;
-    }
+.contextmenu li {
+	border-left: 1em solid transparent;
+	transition: ease .2s;
+}
 
-        .contextmenu li a {
-            display: block;
-            padding: 10px;
-            color: var(--contextMenuTextColor)!important;
-            text-decoration: none;
-            transition: ease .2s;
-            cursor: pointer;
-        }
+.contextmenu li a {
+	display: block;
+	padding: 10px;
+	color: var(--contextMenuTextColor)!important;
+	text-decoration: none;
+	transition: ease .2s;
+	cursor: pointer;
+}
 
-        .contextmenu li:hover {
-            background: var(--contextMenuBackground-hover);
-            border-left: 2px solid var(--contextMenuLeftBorder-hover);
-        }
+.contextmenu li:hover {
+	background: var(--contextMenuBackground-hover);
+	border-left: 2px solid var(--contextMenuLeftBorder-hover);
+}
 
-            .contextmenu li:hover a {
-                color: var(--contextMenuTextColor-hover);
-            }
+.contextmenu li:hover a {
+	color: var(--contextMenuTextColor-hover);
+}
 
 .versionIdentifier {
-    text-align: right;
+	text-align: right;
 }
 
 .versionIdentifier span {
-    color: var(--defaultTextColor)
+	color: var(--defaultTextColor)
 }
 
-
 .submenu {
-    display: none;
-    min-height: 100%;
-    box-shadow: var(--contextMenuBoxShadow);
+	display: none;
+	min-height: 100%;
+	box-shadow: var(--contextMenuBoxShadow);
 }
 
 li:hover .submenu {
-    position: absolute;
-    display: block;
-    top: 0;
-    width: 15em;
-    right: -15em;
-    background: var(--contextMenuBackground);
-    padding: 0;
-    display: block;
-    opacity: 1;
-    font-size: 1em;
-    animation: expand 0.3s;
+	position: absolute;
+	display: block;
+	top: 0;
+	width: 15em;
+	right: -15em;
+	background: var(--contextMenuBackground);
+	padding: 0;
+	display: block;
+	opacity: 1;
+	font-size: 1em;
+	animation: expand 0.3s;
 }
 
 @keyframes expand {
-    from {
-        width: 13em;
-        margin-right: 2em;
-        font-size: 1em;
-    }
-
-    to {
-        width: 15em;
-        margin-right: 0;
-        font-size: 1em;
-    }
+	from {
+		width: 13em;
+		margin-right: 2em;
+		font-size: 1em;
+	}
+	to {
+		width: 15em;
+		margin-right: 0;
+		font-size: 1em;
+	}
 }
 
 .submenu li {
-    list-style: none;
-    color: var(--contextMenuTextColor);
+	list-style: none;
+	color: var(--contextMenuTextColor);
 }
 
-    .submenu li a {
-        color: var(--contextMenuTextColor) !important;
-    }
+.submenu li a {
+	color: var(--contextMenuTextColor) !important;
+}

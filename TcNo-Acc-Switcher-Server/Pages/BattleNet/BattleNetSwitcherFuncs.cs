@@ -48,7 +48,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// Main function for Battle.net Account Switcher. Run on load.
         /// Prepares HTML Elements string for insertion into the account switcher GUI.
         /// </summary>
-        public static async void LoadProfiles()
+        public static async Task LoadProfiles()
         {
             Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.LoadProfiles] Loading BattleNet profiles");
             _battleNetRoaming = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battle.net");

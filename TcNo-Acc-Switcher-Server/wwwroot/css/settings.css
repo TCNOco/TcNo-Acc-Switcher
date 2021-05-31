@@ -1,203 +1,222 @@
 ﻿toastarea {
-    position: absolute;
-    bottom: 3px;
-    right: 3px;
+	position: absolute;
+	bottom: 3px;
+	right: 3px;
 }
 
 .container {
-    color: var(--defaultTextColor);
-    overflow: visible;
+	color: var(--defaultTextColor);
+	overflow: visible;
 }
 
 .SettingsHeader {
-    color: var(--settingsHeaderColor);
+	color: var(--settingsHeaderColor);
 }
 
-    .SettingsHeader hr:first-of-type {
-        width: 20px;
-    }
+.SettingsHeader hr:first-of-type {
+	width: 20px;
+}
 
-    .SettingsHeader hr:last-of-type {
-        width: 100px;
-    }
+.SettingsHeader hr:last-of-type {
+	width: 100px;
+}
 
-    .SettingsHeader hr {
-        border: 1px solid var(--settingsHeaderHrBorder);
-        display: inline-block;
-        vertical-align: middle;
-    }
+.SettingsHeader hr {
+	border: 1px solid var(--settingsHeaderHrBorder);
+	display: inline-block;
+	vertical-align: middle;
+}
 
-    .SettingsHeader span {
-        display: inline-block;
-        margin: 0 0.75em;
-        font-weight: bold;
-    }
+.SettingsHeader span {
+	display: inline-block;
+	margin: 0 0.75em;
+	font-weight: bold;
+}
+
 .settingsCol {
-    position: relative;
+	position: relative;
 }
-    .settingsCol toastarea {
-        position: fixed;
-        top: 35px;
-        right: 16px;
-        bottom: auto;
-        align-items: flex-end;
-        display: flex;
-        flex-direction: column;
-    }
-    .acc_list_actionbar div .button, .settingsCol button {
-        user-select: none;
-        background-color: var(--buttonBackground);
-        padding: 0.25em 0.651em;
-        margin: 0 0.25em;
-        width: max-content;
-        color: var(--buttonColor);
-        border-style: solid;
-        border-color: var(--buttonBorder);
-        border-width: 0.1em;
-        cursor: pointer;
-        border-radius: 0 !important;
-        transition: ease-in-out 60ms;
-    }
 
-    .acc_list_actionbar div .button span, .settingsCol button span {
-        line-height: 2.5em;
-    }
+.settingsCol toastarea {
+	position: fixed;
+	top: 35px;
+	right: 16px;
+	bottom: auto;
+	align-items: flex-end;
+	display: flex;
+	flex-direction: column;
+}
 
-    .acc_list_actionbar div .button img, .settingsCol button img {
-        width: 1.5em;
-    }
+.acc_list_actionbar div .button,
+.settingsCol button {
+	user-select: none;
+	background-color: var(--buttonBackground);
+	padding: 0.25em 0.651em;
+	margin: 0 0.25em;
+	width: max-content;
+	color: var(--buttonColor);
+	border-style: solid;
+	border-color: var(--buttonBorder);
+	border-width: 0.1em;
+	cursor: pointer;
+	border-radius: 0 !important;
+	transition: ease-in-out 60ms;
+}
 
-        .acc_list_actionbar div .button:active, .settingsCol button:active {
-            background-color: var(--buttonBackground-active) !important;
-            border-color: var(--buttonBorder-active);
-        }
+.acc_list_actionbar div .button span,
+.settingsCol button span {
+	line-height: 2.5em;
+}
 
-        .acc_list_actionbar div .button:hover, .settingsCol button:hover {
-            background-color: var(--buttonBackground-hover);
-            border-color: var(--buttonBorder-hover);
-        }
+.acc_list_actionbar div .button img,
+.settingsCol button img {
+	width: 1.5em;
+}
 
-.acc_list_actionbar div .btn_login, .btn_close span {
-    padding: 0.25em 5em;
+.acc_list_actionbar div .button:active,
+.settingsCol button:active {
+	background-color: var(--buttonBackground-active) !important;
+	border-color: var(--buttonBorder-active);
+}
+
+.acc_list_actionbar div .button:hover,
+.settingsCol button:hover {
+	background-color: var(--buttonBackground-hover);
+	border-color: var(--buttonBorder-hover);
+}
+
+.acc_list_actionbar div .btn_login,
+.btn_close span {
+	padding: 0.25em 5em;
 }
 
 div.form-text {
-    font-size: 12px !important;
-    color: var(--defaultTextColor);
+	font-size: 12px !important;
+	color: var(--defaultTextColor);
 }
 
-input[type=number], input[type=text] {
-    display: inline-block;
-    background-color: var(--inputBackground);
-    color: var(--inputColor);
-    padding: 0.5em;
-    border: 0;
-    outline: 0;
-    border-bottom: none;
-    margin: 0 0.5em 2px 0.5em;
-    -moz-appearance: textfield;
+input[type=number],
+input[type=text] {
+	display: inline-block;
+	background-color: var(--inputBackground);
+	color: var(--inputColor);
+	padding: 0.5em;
+	border: 0;
+	outline: 0;
+	border-bottom: none;
+	margin: 0 0.5em 2px 0.5em;
+	-moz-appearance: textfield;
 }
+
 input[type=number] {
-    border-bottom: 2px solid var(--borderedItemBorderColor);
+	border-bottom: 2px solid var(--borderedItemBorderColor);
 }
-    input[type=number]:focus, input[type=text]:focus {
-        border-bottom: 2px solid var(--borderedItemBorderColorBottom-focus);
-    }
 
-    input[type=number]::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    
+input[type=number]:focus,
+input[type=text]:focus {
+	border-bottom: 2px solid var(--borderedItemBorderColorBottom-focus);
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
 
 label {
-    margin-left: 0.5em;
+	margin-left: 0.5em;
 }
 
 .form-check label {
-    margin: 0;
+	margin: 0;
 }
 
 .rowSetting {
-    display: inline-block;
-    margin-right: 1em;
-    width: 100%;
+	display: inline-block;
+	margin-right: 1em;
+	width: 100%;
 }
-    .rowSetting > div:not(:first-child) {
-        margin-left: 1rem;
-    }
-    /* Checkbox */
-    .form-check {
-        display: inline-block;
-        padding: 0;
-    }
+
+.rowSetting>div:not(:first-child) {
+	margin-left: 1rem;
+}
+
+
+/* Checkbox */
+
+.form-check {
+	display: inline-block;
+	padding: 0;
+}
 
 input[type='checkbox'] {
-    opacity: 0;
-    z-index: -1;
+	opacity: 0;
+	z-index: -1;
 }
 
-    input[type='checkbox'] + label {
-        width: 20px;
-        height: 20px;
-        position: relative;
-        display: inline-block;
-        overflow: hidden;
-        cursor: pointer;
-    }
+input[type='checkbox']+label {
+	width: 20px;
+	height: 20px;
+	position: relative;
+	display: inline-block;
+	overflow: hidden;
+	cursor: pointer;
+}
 
-    input[type='checkbox'] + label {
-        border: 1px solid var(--checkboxBorder);
-        -moz-transition: 0.5s ease all;
-        -webkit-transition: 0.5s ease all;
-        transition: 0.5s ease all;
-        vertical-align: middle;
-        background: var(--checkboxBackground);
-    }
+input[type='checkbox']+label {
+	border: 1px solid var(--checkboxBorder);
+	-moz-transition: 0.5s ease all;
+	-webkit-transition: 0.5s ease all;
+	transition: 0.5s ease all;
+	vertical-align: middle;
+	background: var(--checkboxBackground);
+}
 
-    input[type='checkbox']:checked + label {
-        border: 1px solid var(--checkboxBorder-checked);
-        background: var(--checkboxBackground-checked);
-    }
+input[type='checkbox']:checked+label {
+	border: 1px solid var(--checkboxBorder-checked);
+	background: var(--checkboxBackground-checked);
+}
+
 
 /* Buttons */
 
 .settingsCol:first-child {
-    margin-top: 1em;
+	margin-top: 1em;
 }
 
 .settingsCol .buttoncol {
-    width: 100%;
-    position: relative;
-    height: 3.6em;
+	width: 100%;
+	position: relative;
+	height: 3.6em;
 }
 
-    .settingsCol .buttoncol button {
-        position: absolute;
-        width: 49%;
-    }
+.settingsCol .buttoncol button {
+	position: absolute;
+	width: 49%;
+}
 
-    .settingsCol .buttoncol :first-child {
-        left: 0;
-    }
+.settingsCol .buttoncol :first-child {
+	left: 0;
+}
 
-    .settingsCol .buttoncol :last-child {
-        right: 0;
-    }
+.settingsCol .buttoncol :last-child {
+	right: 0;
+}
 
-    .settingsCol .buttoncol button:focus {
-        box-shadow: none;
-    }
+.settingsCol .buttoncol button:focus {
+	box-shadow: none;
+}
 
 .btn:hover {
-    color: var(--defaultTextColor) !important;
+	color: var(--defaultTextColor) !important;
 }
+
 .btn_close {
-    right: 0 !important;
-    left: unset !important;
-    width: 35% !important;
+	right: 0 !important;
+	left: unset !important;
+	width: 35% !important;
 }
 
 .col_close {
-    margin-top: 2em;
+	margin-top: 2em;
 }

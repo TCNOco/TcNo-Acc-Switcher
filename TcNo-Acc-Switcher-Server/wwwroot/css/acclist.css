@@ -1,213 +1,236 @@
 ﻿/*DISABLED DRAGGING ON ITEMS:*/
-.acc_list_actionbar, #acc_list, .headerbar, #window-title-modal {
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -o-user-select: none;
-    user-select: none;
+
+.acc_list_actionbar,
+#acc_list,
+.headerbar,
+#window-title-modal {
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
 
 .acc_list {
-    width: 100%;
-    height: calc(100% - 42px);
-    position: relative;
-    background: var(--accountListBackground);
-    overflow-y: auto;
-    overflow-x: auto;
-
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 100px);
-    grid-template-rows: repeat(auto-fill, 135px);
-    gap: 4px;
+	width: 100%;
+	height: calc(100% - 42px);
+	position: relative;
+	background: var(--accountListBackground);
+	overflow-y: auto;
+	overflow-x: auto;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 100px);
+	grid-template-rows: repeat(auto-fill, 135px);
+	gap: 4px;
 }
+
 .acc_list_item {
-    border: 0.1em solid transparent;
-/*    width: var(--accountListItemWidth);
+	border: 0.1em solid transparent;
+	/*    width: var(--accountListItemWidth);
     height: var(--accountListItemHeight);*/
 }
-.acc_list_item > * {
-    pointer-events: none;
+
+.acc_list_item>* {
+	pointer-events: none;
 }
+
 .placeHolderAcc {
-    background: var(--accountBackground-placeholder);
-    border: var(--accountBorder-placeholder);
-    height: 135px;
-    width: 100px;
+	background: var(--accountBackground-placeholder);
+	border: var(--accountBorder-placeholder);
+	height: 135px;
+	width: 100px;
 }
+
 .accountHover {
-    /*Seperate because added by sortable*/
-    background-color: var(--accountBackground-hover);
-    border: 0.1em solid var(--accountBorder-hover);
+	/*Seperate because added by sortable*/
+	background-color: var(--accountBackground-hover);
+	border: 0.1em solid var(--accountBorder-hover);
 }
 
 input.acc {
-    margin: 0;
-    padding: 0;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    display: none;
+	margin: 0;
+	padding: 0;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	display: none;
 }
 
 label.acc {
-    min-width: var(--accountListItemWidth);
-    max-width: var(--accountListItemWidth);
-    min-height: var(--accountListItemHeight);
-    max-height: var(--accountListItemHeight);
-
-    padding: 0.5em;
-    margin: 0;
-    color: var(--accountColor);
-    text-align: center;
-    cursor: pointer;
-    border-style: solid;
-    border-color: #000000;
-    border-color: rgba(0, 0, 0, 0);
-    border-width: 0.1em;
-    -webkit-transition: all 50ms ease-in;
-    -moz-transition: all 50ms ease-in;
-    transition: all 50ms ease-in;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+	min-width: var(--accountListItemWidth);
+	max-width: var(--accountListItemWidth);
+	min-height: var(--accountListItemHeight);
+	max-height: var(--accountListItemHeight);
+	padding: 0.5em;
+	margin: 0;
+	color: var(--accountColor);
+	text-align: center;
+	cursor: pointer;
+	border-style: solid;
+	border-color: #000000;
+	border-color: rgba(0, 0, 0, 0);
+	border-width: 0.1em;
+	-webkit-transition: all 50ms ease-in;
+	-moz-transition: all 50ms ease-in;
+	transition: all 50ms ease-in;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
-input.acc:checked + label.acc {
-    background-color: var(--accountBackground-checked);
-    border-color: var(--accountBorder-checked);
+input.acc:checked+label.acc {
+	background-color: var(--accountBackground-checked);
+	border-color: var(--accountBorder-checked);
 }
 
 label.acc img.status_vac {
-    border: 2px solid var(--vac) !important;
+	border: 2px solid var(--vac) !important;
 }
 
 label.acc img.status_limited {
-    border: 2px solid var(--limited) !important;
+	border: 2px solid var(--limited) !important;
 }
 
 label.acc img {
-    width: 6em;
-    height: 6em;
-    display: inline-block;
-    margin-bottom: 0.5em;
-    -webkit-user-drag: none;
-    -khtml-user-drag: none;
-    -moz-user-drag: none;
-    -o-user-drag: none;
-    user-drag: none;
-    border: 2px solid #000000;
-    border: 2px solid rgba(0, 0, 0, 0);
+	width: 6em;
+	height: 6em;
+	display: inline-block;
+	margin-bottom: 0.5em;
+	-webkit-user-drag: none;
+	-khtml-user-drag: none;
+	-moz-user-drag: none;
+	-o-user-drag: none;
+	user-drag: none;
+	border: 2px solid #000000;
+	border: 2px solid rgba(0, 0, 0, 0);
 }
 
 label.acc.vac img {
-    border: 2px solid var(--vac);
+	border: 2px solid var(--vac);
 }
 
 label.acc h6 {
-    font-size: 1em;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    max-width: 9em;
-    margin: 0;
+	font-size: 1em;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	max-width: 9em;
+	margin: 0;
 }
 
 label.acc p {
-    font-size: 0.75em;
-    margin: 0;
-    color: var(--accountPColor);
+	font-size: 0.75em;
+	margin: 0;
+	color: var(--accountPColor);
 }
 
 .acc_list_actionbar {
-    width: 100%;
-    height: 3.5em;
-    background-color: var(--footerBackground);
-    display: flex;
-    flex-direction: row;
-    color: var(--defaultTextColor);
-    padding: 0.25em 0.25em;
-    overflow: hidden;
+	width: 100%;
+	height: 3.5em;
+	background-color: var(--footerBackground);
+	display: flex;
+	flex-direction: row;
+	color: var(--defaultTextColor);
+	padding: 0.25em 0.25em;
+	overflow: hidden;
 }
 
-    /* Status section */
-    .acc_list_actionbar input {
-        padding-left: 1em;
-        line-height: 3em;
-        width: inherit;
-        outline: none;
-        border: none;
-        background: none;
-        color: var(--footerColor);
-        user-select: none;
-    }
-        .acc_list_actionbar input::selection {
-            background: none;
-            color: var(--footerColor);
-            user-select: none;
-        }
 
-    .acc_list_actionbar div {
-        height: 3em;
-        display: flex;
-        width: 100%;
-        flex-direction: row;
-        justify-content: flex-end;
-    }
+/* Status section */
 
-        .acc_list_actionbar div .button, .settingsCol button {
-            box-shadow: none !important;
-            user-select: none;
-            background-color: var(--buttonBackground);
-            padding: 0.25em 0.651em;
-            margin: 0 0.25em;
-            width: max-content;
-            border-style: solid;
-            border-color: var(--buttonBorder);
-            border-width: 0.1em;
-            cursor: pointer;
-            transition: ease-in-out 60ms;
-        }
-            .acc_list_actionbar div .button:active, .settingsCol button:active, .settingsCol button:focus, .settingsCol button:target {
-                background-color: var(--buttonBackground-active) !important;
-                border-color: var(--buttonBorder-active)!important;
-            }
-            .acc_list_actionbar div .button:hover, .settingsCol button:hover {
-                background-color: var(--buttonBackground-hover);
-                border-color: var(--buttonBorder-hover);
-            }
+.acc_list_actionbar input {
+	padding-left: 1em;
+	line-height: 3em;
+	width: inherit;
+	outline: none;
+	border: none;
+	background: none;
+	color: var(--footerColor);
+	user-select: none;
+}
 
-            .acc_list_actionbar div .btn_login, .btn_close span {
-                padding: 0.25em 5em;
-            }
+.acc_list_actionbar input::selection {
+	background: none;
+	color: var(--footerColor);
+	user-select: none;
+}
 
-        .acc_list_actionbar div .button span, .settingsCol button span {
-            line-height: 2.5em;
-        }
+.acc_list_actionbar div {
+	height: 3em;
+	display: flex;
+	width: 100%;
+	flex-direction: row;
+	justify-content: flex-end;
+}
 
-        .acc_list_actionbar div .button img, .settingsCol button img {
-            width: 1.5em;
-        }
+.acc_list_actionbar div .button,
+.settingsCol button {
+	box-shadow: none !important;
+	user-select: none;
+	background-color: var(--buttonBackground);
+	padding: 0.25em 0.651em;
+	margin: 0 0.25em;
+	width: max-content;
+	border-style: solid;
+	border-color: var(--buttonBorder);
+	border-width: 0.1em;
+	cursor: pointer;
+	transition: ease-in-out 60ms;
+}
+
+.acc_list_actionbar div .button:active,
+.settingsCol button:active,
+.settingsCol button:focus,
+.settingsCol button:target {
+	background-color: var(--buttonBackground-active) !important;
+	border-color: var(--buttonBorder-active)!important;
+}
+
+.acc_list_actionbar div .button:hover,
+.settingsCol button:hover {
+	background-color: var(--buttonBackground-hover);
+	border-color: var(--buttonBorder-hover);
+}
+
+.acc_list_actionbar div .btn_login,
+.btn_close span {
+	padding: 0.25em 5em;
+}
+
+.acc_list_actionbar div .button span,
+.settingsCol button span {
+	line-height: 2.5em;
+}
+
+.acc_list_actionbar div .button img,
+.settingsCol button img {
+	width: 1.5em;
+}
 
 .statusBar {
-    position: relative;
+	position: relative;
 }
-    .statusBar div, .statusBar input {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-    }
-    .statusBar div {
-        z-index: 5
-    }
-    .statusBar input {
-        z-index: 1
-    }
-    
-label h6 svg{
-    fill: white;
-    margin: 2px;
-    vertical-align: center;
+
+.statusBar div,
+.statusBar input {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.statusBar div {
+	z-index: 5
+}
+
+.statusBar input {
+	z-index: 1
+}
+
+label h6 svg {
+	fill: white;
+	margin: 2px;
+	vertical-align: center;
 }

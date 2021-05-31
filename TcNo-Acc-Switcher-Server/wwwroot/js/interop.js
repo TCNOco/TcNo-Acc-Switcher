@@ -20,13 +20,13 @@ initAccListSortable = () => {
         hoverClass: "accountHover"
     });
     // On drag start, un-select all items.
-    sortable(".acc_list")[0].addEventListener("sortstart", function () {
-        $("input:checked").each(function (_, e) {
+    sortable(".acc_list")[0].addEventListener("sortstart", function() {
+        $("input:checked").each(function(_, e) {
             $(e).prop("checked", false);
         });
     });
     // On drag end, save list of items.
-    sortable(".acc_list")[0].addEventListener("sortupdate", function (e) {
+    sortable(".acc_list")[0].addEventListener("sortupdate", function(e) {
         let order = [];
         e.detail.destination.items.forEach((e) => {
             if (!$(e).is("div")) return; // Ignore <toastarea>
@@ -65,7 +65,7 @@ SteamAdvancedClearingAddLine = (text) => {
 }
 
 $.fn.extend({
-    'ifexists': function (callback) {
+    'ifexists': function(callback) {
         if (this.length > 0) {
             return callback($(this));
         }

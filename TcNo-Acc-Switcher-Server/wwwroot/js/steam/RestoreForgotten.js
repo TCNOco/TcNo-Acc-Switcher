@@ -1,7 +1,6 @@
-﻿
-// Allow multiple users to be selected.
+﻿// Allow multiple users to be selected.
 // Much easier than people having to hold Ctrl, then click on items to select multiple.
-$("select[name='ForgottenSteamAccounts']").mousedown(function (e) {
+$("select[name='ForgottenSteamAccounts']").mousedown(function(e) {
     e.preventDefault();
 
     const s = this;
@@ -9,10 +8,14 @@ $("select[name='ForgottenSteamAccounts']").mousedown(function (e) {
 
     e.target.selected = !e.target.selected;
 
-    setTimeout(function () { s.scrollTop = scroll; }, 0);
+    setTimeout(function() {
+        s.scrollTop = scroll;
+    }, 0);
 
     $(s).focus();
-}).mousemove(function (e) { e.preventDefault() });
+}).mousemove(function(e) {
+    e.preventDefault()
+});
 
 
 // Set list of users
@@ -34,7 +37,7 @@ export function jsLoadForgotten() {
     console.log("Getting forgotten users from file");
 
     // Onclick function for the checkbox
-    $('#Steam_ForgottenShowId').change(function () {
+    $('#Steam_ForgottenShowId').change(function() {
         const checked = $(this).is(":checked");
         $("restoreSteamId").each((_, e) => {
             console.log(e);
