@@ -2,7 +2,7 @@ REM Move is currently only for build, as moving the files seems to prevent the p
 
 REM Get current directory:
 echo Current directory: %cd%
-set origDir=%cd
+set origDir=%cd%
 
 
 REM Move updater files in Debug folder (for Visual Studio):
