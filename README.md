@@ -89,10 +89,20 @@ The new Beta version is available for testing. Please report any and all bugs, a
 
 
 #### Disclaimer
-All trademarks and materials are property of their respective owners and their licensors.<br>
-This project is not affiliated with Battle.net or Blizzard Entertainment Inc, Epic Games Inc or the Epic Games Launcher, Origin or Electronic Arts Inc, League of Legends or Legends of Runeterra or Valorant or Riot Games Inc, Steam or Valve Corporation, Ubisoft Connect or Ubisoft Entertainment, or any other companies or groups that this software may have reference to. This project should not be considered "Official" or related to platforms mentioned in any way. All it does it let you move your files around on your computer.<br>
-I am not responsible for the contents of external links.<br>
-USE THIS SOFTWARE AT YOUR OWN RISK. I AM NOT RESPONSIBLE FOR ANY DAMAGES IF YOU CHOOSE TO USE THIS SOFTWARE. COMPONENTS ARE PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITHOUT ANY WARRANTIES OF ANY KIND TO THE FULLEST EXTENT PERMITTED BY LAW, AND I EXPRESSLY DISCLAIM ANY AND ALL WARRANTIES, WHETHER EXPRESS OR IMPLIED.
+```
+All trademarks and materials are property of their respective owners and their licensors. This project is not affiliated
+with Battle.net or Blizzard Entertainment Inc, Epic Games Inc or the Epic Games Launcher, Origin or Electronic Arts Inc,
+League of Legends or Legends of Runeterra or Valorant or Riot Games Inc, Steam or Valve Corporation, Ubisoft Connect or
+Ubisoft Entertainment, or any other companies or groups that this software may have reference to. This project should
+not be considered "Official" or related to platforms mentioned in any way. All it does it let you move your files around
+on your computer.
+
+I am not responsible for the contents of external links.
+For the rest of the disclaimer, refer to the License (GNU General Public License v3.0) file:
+https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/LICENSE - See sections like 15, 16 and 17, as well as GitHub's
+'simplification' at the top of the above website.
+
+```
 
 Additional license information for included NuGet packages and other parts of code can be found in: [HERE](https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/TcNo-Acc-Switcher-Server/Additional%20Licenses.txt) `TcNo-Acc-Switcher-Server/Additional Licenses.txt`, and are copied to the build directory, as well as distributed with release versions of this software.
 
