@@ -98,9 +98,9 @@ not be considered "Official" or related to platforms mentioned in any way. All i
 on your computer.
 
 I am not responsible for the contents of external links.
-USE THIS SOFTWARE AT YOUR OWN RISK. I AM NOT RESPONSIBLE FOR ANY DAMAGES IF YOU CHOOSE TO USE THIS SOFTWARE. COMPONENTS ARE
-PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITHOUT ANY WARRANTIES OF ANY KIND TO THE FULLEST EXTENT PERMITTED BY LAW,
-AND I EXPRESSLY DISCLAIM ANY AND ALL WARRANTIES, WHETHER EXPRESS OR IMPLIED.
+For the rest of the disclaimer, refer to the License (GNU General Public License v3.0) file:
+https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/LICENSE - See sections like 15, 16 and 17, as well as GitHub's
+'simplification' at the top of the above website.
 
 ```
 
