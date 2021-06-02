@@ -81,6 +81,7 @@
 .fancyLink {
 	color: var(--linkColor);
 	cursor: pointer;
+    line-height: 24px;
 }
 
 .infoWindow .rightContent .linksList a:hover,
@@ -96,6 +97,8 @@
 .infoWindow .rightContent .linksList a img {
 	width: 2em;
 	margin-right: 0.5em;
+    display: inline-block;
+    vertical-align: bottom;
 }
 
 #modal_contents {
