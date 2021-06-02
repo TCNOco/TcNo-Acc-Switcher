@@ -74,7 +74,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 accList.Select(accName =>
                     $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{accName}\" Username=\"{accName}\" DisplayName=\"{accName}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
                     $"<label for=\"{accName}\" class=\"acc\">\r\n" +
-                    $"<img src=\"\\img\\profiles\\riot\\{Uri.EscapeUriString(accName).Replace("#", "-")}.jpg\" draggable=\"false\" />\r\n" +
+                    $"<img src=\"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg\" draggable=\"false\" />\r\n" +
                     $"<h6>{accName}</h6></div>\r\n"))
                 await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
 
@@ -160,7 +160,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         {
             Globals.DebugWriteLine($@"[Func:RiotRiotSwitcherFuncs.ForgetAccount] Forgetting account: {accName}");
             // Remove image
-            var img = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\riot\\{Uri.EscapeUriString(accName).Replace("#", "-")}.jpg");
+            var img = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg");
             if (File.Exists(img)) File.Delete(img);
             // Remove cached files
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Riot\\{accName}"), false);
@@ -224,7 +224,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             
             // Copy in profile image from default
             Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot, "\\img\\profiles\\riot"));
-            File.Copy(Path.Join(GeneralFuncs.WwwRoot, "\\img\\RiotDefault.png"), Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\riot\\{Uri.EscapeUriString(accName).Replace("#", "-")}.jpg"), true);
+            File.Copy(Path.Join(GeneralFuncs.WwwRoot, "\\img\\RiotDefault.png"), Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg"), true);
 
             AppData.ActiveNavMan?.NavigateTo("/Riot/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
         }
