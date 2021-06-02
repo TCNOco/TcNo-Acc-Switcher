@@ -83,10 +83,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public static bool ForgetAccount(string accName)
         {
             Globals.DebugWriteLine($@"[Func:EpicEpicSwitcherFuncs.ForgetAccount] Forgetting account: {accName}");
+            // Remove ID from list of ids
             var allIds = ReadAllIds();
             allIds.Remove(allIds.Single(x => x.Value == accName).Key);
             File.WriteAllText("LoginCache\\Epic\\ids.json", JsonConvert.SerializeObject(allIds));
+            // Remove cached files
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Epic\\{accName}"), false);
+            // Remove image
+            var img = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\epic\\{Uri.EscapeUriString(accName)}.jpg");
+            if (File.Exists(img)) File.Delete(img);
+            // Remove from Tray
+            Globals.RemoveTrayUser("Epic", accName); // Add to Tray list
             return true;
         }
 
@@ -105,10 +112,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             if (accName != "")
             {
                 EpicCopyInAccount(accName);
+                Globals.AddTrayUser("Epic", "+e:" + accName, accName, Epic.TrayAccNumber); // Add to Tray list
             }
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Epic");
-
-            Globals.AddTrayUser("Epic", "+o:" + accName, accName, Epic.TrayAccNumber); // Add to Tray list
 
             GeneralFuncs.StartProgram(Epic.Exe(), Epic.Admin);
 
@@ -226,30 +232,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         /// </summary>
         public static bool CloseEpic()
         {
-            Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.CloseSteam]");
+            Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.CloseEpic]");
             if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher")) return false;
             Globals.KillProcess("EpicGamesLauncher");
             return true;
         }
-
-        /// <summary>
-        /// Only runs ForgetAccount, but allows Javascript to wait for it's completion before refreshing, instead of just doing it instantly >> Not showing proper results.
-        /// </summary>
-        /// <param name="accName">Epic account name to be removed from cache</param>
-        /// <returns>true</returns>
-        [JSInvokable]
-        public static Task<bool> ForgetEpicAccountJs(string accName)
-        {
-            Globals.DebugWriteLine($@"[JSInvoke:Epic\EpicSwitcherFuncs.ForgetEpicAccountJs] accName:{accName}");
-
-            var allIds = ReadAllIds();
-            allIds.Remove(allIds.Single(x => x.Value == accName).Key);
-            File.WriteAllText("LoginCache\\Epic\\ids.json", JsonConvert.SerializeObject(allIds));
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Epic\\{accName}"), false);
-
-            return Task.FromResult(ForgetAccount(accName));
-        }
-
         #endregion
     }
 }

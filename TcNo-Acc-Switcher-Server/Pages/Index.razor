@@ -25,6 +25,7 @@
 @inject Data.Settings.BattleNet _battleNet
 @inject Data.Settings.Epic _epic
 @inject Data.Settings.Origin _origin
+@inject Data.Settings.Riot _riot
 @inject Data.Settings.Steam _steam
 @inject Data.Settings.Ubisoft _ubisoft
 
@@ -49,6 +50,9 @@
     </div>
     <div class="button platformIcon" id="SwitcherEpic" @onclick="CheckEpic">
         <img src="img/platform/epic.svg" draggable="false" alt="Epic Games" />
+    </div>
+    <div class="button platformIcon" id="SwitcherRiot" @onclick="CheckRiot">
+        <img src="img/platform/riot.svg" draggable="false" alt="Riot Games" />
     </div>
 </div>
 

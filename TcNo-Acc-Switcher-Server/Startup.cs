@@ -40,13 +40,15 @@ namespace TcNo_Acc_Switcher_Server
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             services.AddRazorPages();
             services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
-            services.AddSingleton<AppSettings>(); // Persistent app settings
-            services.AddSingleton<AppData>(); // Temporary app data
-            services.AddSingleton<Data.Settings.Epic>(); // Persistent Epic settings
-            services.AddSingleton<Data.Settings.Steam>(); // Persistent Steam settings
-            services.AddSingleton<Data.Settings.Origin>(); // Persistent Origin settings
-            services.AddSingleton<Data.Settings.Ubisoft>(); // Persistent Ubisoft settings
-            services.AddSingleton<Data.Settings.BattleNet>();
+            // Persistent settings:
+            services.AddSingleton<AppSettings>(); // App Settings
+            services.AddSingleton<AppData>(); // App Data
+            services.AddSingleton<Data.Settings.BattleNet>(); // BattleNet
+            services.AddSingleton<Data.Settings.Epic>(); // Epic
+            services.AddSingleton<Data.Settings.Origin>(); // Origin
+            services.AddSingleton<Data.Settings.Riot>(); // Riot Games
+            services.AddSingleton<Data.Settings.Steam>(); // Steam
+            services.AddSingleton<Data.Settings.Ubisoft>(); // Ubisoft
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -616,7 +616,7 @@ namespace TcNo_Acc_Switcher_Updater
         }
 
         /// <summary>
-        /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Anything more than "") 
+        /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Doesn't start with "SUCCESS") 
         /// </summary>
         /// <param name="procName">Process name to kill (Will be used as {name}*)</param>
         private void KillProcess(string procName)
@@ -640,7 +640,10 @@ namespace TcNo_Acc_Switcher_Updater
             process.WaitForExit();
 
             WriteLine($"/C TASKKILL /F /T /IM {procName}*");
-            Console.WriteLine($"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
+
+            Console.WriteLine(outputText.StartsWith("SUCCESS")
+                ? $"Successfully closed {procName}."
+                : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
         }
 
         /// <summary>
@@ -880,7 +883,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="oldFile">Path to old file</param>
         /// <param name="patchFile">Path to patch file (Differences encoded)</param>
         /// <param name="outputNewFile">Output of new file (that's been updated)</param>
-        private void DoDecode(string oldFile, string patchFile, string outputNewFile)
+        private static void DoDecode(string oldFile, string patchFile, string outputNewFile)
         {
             using FileStream dict = new(oldFile, FileMode.Open, FileAccess.Read);
             using FileStream target = new(patchFile, FileMode.Open, FileAccess.Read);

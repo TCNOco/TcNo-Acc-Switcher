@@ -10,16 +10,13 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses />.
-    
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
-    Special thanks to iR3turnZ for contributing to this platform's account switcher
-    iR3turnZ: https://github.com/HoeblingerDaniel*@
-
-@page "/BattleNet/"
+@page "/Riot/"
 @using TcNo_Acc_Switcher_Server.Data
 @using System.IO
 @using TcNo_Acc_Switcher_Server.Pages.General
+@using System.ComponentModel
 @inject AppData _appData
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
@@ -29,31 +26,56 @@
 @inject AppSettings _appSettings
 <style>@(new AppSettings().GetCssBlock())</style>
 
-@inject Data.Settings.BattleNet _battleNet
+
+@inject Data.Settings.Riot _riot
 
 
-
-
-<ContextMenu ContextMenuString=@_battleNet.ContextMenuJson />
+<ContextMenu ContextMenuString=@_riot.ContextMenuJson />
 <div id="acc_list" class="acc_list">
     <toastarea />
 </div>
 <div class="acc_list_actionbar">
     <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@_appData.CurrentStatus" spellcheck="false" disabled></div>
     <div>
+        @if (GetLeague())
+        {
+            <div class="button" id="btnLeague" @onclick="() => RiotSwitcherFuncs.RiotStart('l')">
+                <img src="img/icons/ico_League.svg" draggable="false" />
+            </div>
+        }
+
+        @if (GetRuneterra())
+        {
+        <div class="button" id="btnRuneterra" @onclick="() => RiotSwitcherFuncs.RiotStart('r')">
+            <img src="img/icons/ico_Runeterra.svg" draggable="false"/>
+        </div>
+        }
+
+        @if (GetValorant())
+        {
+        <div class="button" id="btnValorant" @onclick="() => RiotSwitcherFuncs.RiotStart('v')">
+            <img src="img/icons/ico_Valorant.svg" draggable="false"/>
+        </div>
+        }
+
+
+
         <div class="button" id="btnAddNew" onclick="NewLogin()">
             <span>Add New</span>
+        </div>
+        <div class="button" id="btnAddCurrent" onclick="CurrentRiotLogin()">
+            <span>Save Current</span>
         </div>
         <div class="button btn_login" id="btnLogin" onclick="SwapTo(0, event)">
             <span>Login</span>
         </div>
 
-        <div class="button" id="btnSettings" onclick="location = 'BattleNet/Settings'">
-            <img src="img/icons/ico_settings.svg" draggable="false"/>
+        <div class="button" id="btnSettings" onclick="location = 'Riot/Settings'">
+            <img src="img/icons/ico_settings.svg" draggable="false" />
         </div>
 
         <div class="button" id="btnHelp" onclick="ShowModal('info');">
-            <img src="img/icons/ico_question.svg" draggable="false"/>
+            <img src="img/icons/ico_question.svg" draggable="false" />
         </div>
     </div>
 
@@ -71,16 +93,44 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _appData.WindowTitle = "TcNo Account Switcher - BattleNet";
+
+        _appData.WindowTitle = "TcNo Account Switcher - Riot Games";
         if (firstRender)
         {
             if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered) await _jsRuntime.InvokeVoidAsync("window.notification.new", new { type = "info", title = "Streamer mode", message = "Private info is hidden! - See settings", renderTo = "toastarea", duration = 5000 });// Show notification that streamer mode was enabled.
 
-            await BattleNetSwitcherFuncs.LoadProfiles();
-            _battleNet.SaveSettings(!File.Exists(_battleNet.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialised (adds missing settings when true)
+            RiotSwitcherFuncs.LoadProfiles();
+            _riot.SaveSettings(!File.Exists(_riot.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialised (adds missing settings when true)
 
             await GeneralInvocableFuncs.HandleQueries();
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");
         }
+    }
+
+    /// <summary>
+    /// Check if League of Legends exists on disk, return true if it does.
+    /// </summary>
+    private static bool GetLeague()
+    {
+        RiotSwitcherFuncs.LoadImportantData();
+        return Data.Settings.Riot.Instance.LeagueDir != null;
+    }
+
+    /// <summary>
+    /// Check if Legends of Runeterra exists on disk, return true if it does.
+    /// </summary>
+    private static bool GetRuneterra()
+    {
+        RiotSwitcherFuncs.LoadImportantData();
+        return Data.Settings.Riot.Instance.RuneterraDir != null;
+    }
+
+    /// <summary>
+    /// Check if Valorant exists on disk, return true if it does.
+    /// </summary>
+    private static bool GetValorant()
+    {
+        RiotSwitcherFuncs.LoadImportantData();
+        return Data.Settings.Riot.Instance.ValorantDir != null;
     }
 }

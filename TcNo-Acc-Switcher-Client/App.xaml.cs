@@ -114,11 +114,23 @@ namespace TcNo_Acc_Switcher_Client
                             TcNo_Acc_Switcher_Server.Data.Settings.BattleNet.Instance.LoadFromFile();
                             TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);
                             break;
+                        case "e": // Epic Games
+                            // Epic Games format: +e:<username>
+                            Console.WriteLine("Epic Games switch requested");
+                            TcNo_Acc_Switcher_Server.Data.Settings.Epic.Instance.LoadFromFile();
+                            TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account);
+                            break;
                         case "o": // Origin
                             // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
                             Console.WriteLine("Origin switch requested");
                             TcNo_Acc_Switcher_Server.Data.Settings.Origin.Instance.LoadFromFile();
                             TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account, (command.Length > 2 ? int.Parse(command[3]) : 0));
+                            break;
+                        case "r": // Riot Games
+                            // Riot Games format: +e:<username>
+                            Console.WriteLine("Riot Games switch requested");
+                            TcNo_Acc_Switcher_Server.Data.Settings.Riot.Instance.LoadFromFile();
+                            TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'));
                             break;
                         case "s": // Steam
                             // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
@@ -142,8 +154,9 @@ namespace TcNo_Acc_Switcher_Client
                         StartPage = "BattleNet"; 
                         break;
                     case "epic":
-                    case "steam":
                     case "origin":
+                    case "riot":
+                    case "steam":
                     case "ubisoft":
                             StartPage = char.ToUpper(e.Args[i][0]) + e.Args[i][1..];
                         break;
@@ -168,6 +181,14 @@ namespace TcNo_Acc_Switcher_Client
             if (quitArg)
                 Environment.Exit(1);
 
+            // Key being held down?
+            if ((Keyboard.Modifiers & ModifierKeys.Control) > 0)
+            {
+                // This can be improved. Somehow ignore self, and make sure all processes are killed before self.
+                if (GeneralFuncs.CanKillProcess("TcNo"))
+                    Globals.KillProcess("TcNo");
+            }
+
             // Single instance:
             if (!Mutex.WaitOne(TimeSpan.Zero, true))
             {
@@ -178,8 +199,8 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         // Try to show from tray, as user may not know it's hidden there.
                         MessageBox.Show(!Globals.BringToFront()
-                            ? "Another TcNo Account Switcher instance has been detected."
-                            : "TcNo Account Switcher was running.\nI've brought it to the top.\nMake sure to check your Windows Task Tray for the icon :)\n- You can exit it from there too", "TcNo Account Switcher Notice", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                            ? "Another TcNo Account Switcher instance has been detected.\n[Something wrong? Hold Ctrl while starting to close all TcNo processes!]"
+                            : "TcNo Account Switcher was running.\nI've brought it to the top.\nMake sure to check your Windows Task Tray for the icon :)\n- You can exit it from there too\n\n[Something wrong? Hold Ctrl while starting to close all TcNo processes!]", "TcNo Account Switcher Notice", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
                         Environment.Exit(1056); // 1056	An instance of the service is already running.
                     }
                 }
@@ -289,7 +310,7 @@ namespace TcNo_Acc_Switcher_Client
         private void Resizing_Form(object sender, MouseEventArgs e)
         {
             if (!_resizeInProcess) return;
-            if (!(sender is Rectangle senderRect)) return;
+            if (sender is not Rectangle senderRect) return;
             var mainWindow = senderRect.Tag as Window;
             var width = e.GetPosition(mainWindow).X;
             var height = e.GetPosition(mainWindow).Y;

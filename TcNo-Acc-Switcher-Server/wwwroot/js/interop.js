@@ -17,7 +17,8 @@ initAccListSortable = () => {
     sortable(".acc_list", {
         forcePlaceholderSize: true,
         placeholderClass: "placeHolderAcc",
-        hoverClass: "accountHover"
+        hoverClass: "accountHover",
+        items: ':not(toastarea)'
     });
     // On drag start, un-select all items.
     sortable(".acc_list")[0].addEventListener("sortstart", function() {

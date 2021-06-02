@@ -273,7 +273,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             allIds.Remove(userId);
             File.WriteAllText("LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
 
-            File.Delete(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\ubisoft\\{userId}.png"));
+
+            var img = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\ubisoft\\{userId}.png");
+            if (File.Exists(img)) File.Delete(img);
             return true;
         }
 

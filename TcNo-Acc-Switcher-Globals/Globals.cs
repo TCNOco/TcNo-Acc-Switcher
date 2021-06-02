@@ -11,19 +11,12 @@ namespace TcNo_Acc_Switcher_Globals
 {
     public class Globals
     {
-        public string WorkingDirectory { get; set; }
         public static bool VerboseMode = false;
 
         public static void DebugWriteLine(string s)
         {
             // Toggle here so it only shows in Verbose mode etc.
             if (VerboseMode) Console.WriteLine(s);
-        }
-
-        public static void Save(Globals g)
-        {
-            var globalsFile = Path.Join(g.WorkingDirectory, "globals.json");
-            File.WriteAllText(globalsFile, JsonConvert.SerializeObject(g, Formatting.Indented));
         }
         
         /// <summary>
@@ -45,7 +38,7 @@ namespace TcNo_Acc_Switcher_Globals
         }
 
         /// <summary>
-        /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Anything more than "") 
+        /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Doesn't start with "SUCCESS") 
         /// </summary>
         /// <param name="procName">Process name to kill (Will be used as {name}*)</param>
         public static void KillProcess(string procName)
@@ -68,7 +61,9 @@ namespace TcNo_Acc_Switcher_Globals
             process.BeginOutputReadLine();
             process.WaitForExit();
 
-            Console.WriteLine($"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
+            Console.WriteLine(outputText.StartsWith("SUCCESS") || outputText.Length <= 1
+                ? $"Successfully closed {procName}."
+                : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
         }
 
         /// <summary>
@@ -81,11 +76,33 @@ namespace TcNo_Acc_Switcher_Globals
         public static void AddTrayUser(string platform, string arg, string name, int maxAccounts = 3)
         {
             var trayUsers = TrayUser.ReadTrayUsers();
-            TrayUser.AddUser(ref trayUsers, platform, new TrayUser() { Arg = arg, Name = name}, maxAccounts);
+            TrayUser.AddUser(ref trayUsers, platform, new TrayUser() { Arg = arg, Name = name }, maxAccounts);
             TrayUser.SaveUsers(trayUsers);
         }
 
+        /// <summary>
+        /// Removes a user to the tray cache
+        /// </summary>
+        /// <param name="platform">Platform to switch account on</param>
+        /// <param name="name">Name to be displayed in the Tray</param>
+        public static void RemoveTrayUser(string platform, string name)
+        {
+            var trayUsers = TrayUser.ReadTrayUsers();
+            TrayUser.RemoveUser(ref trayUsers, platform, name);
+            TrayUser.SaveUsers(trayUsers);
+        }
 
+        /// <summary>
+        /// Removes a user to the tray cache (By argument)
+        /// </summary>
+        /// <param name="platform">Platform to switch account on</param>
+        /// <param name="arg">Argument this account uses to switch</param>
+        public static void RemoveTrayUserByArg(string platform, string arg)
+        {
+            var trayUsers = TrayUser.ReadTrayUsers();
+            TrayUser.RemoveUserByArg(ref trayUsers, platform, arg);
+            TrayUser.SaveUsers(trayUsers);
+        }
 
         #region Hide and Show main window
         // For 'minimising to tray' while not being connected to it
@@ -263,6 +280,42 @@ namespace TcNo_Acc_Switcher_Globals
             trayUsers[key].Insert(0, newUser);
             // Shorten list to be a max of 3 (default)
             while (trayUsers[key].Count > maxAccounts) trayUsers[key].RemoveAt(trayUsers[key].Count - 1);
+        }
+
+        /// <summary>
+        /// Remove user from the list of tray users
+        /// </summary>
+        /// <param name="trayUsers">Reference to list of TrayUsers to modify</param>
+        /// <param name="platform">Platform to switch account on</param>
+        /// <param name="name">Name to be displayed in the Tray</param>
+        public static void RemoveUser(ref Dictionary<string, List<TrayUser>> trayUsers, string platform, string name)
+        {
+            // Return if does not have requested platform
+            if (!trayUsers.ContainsKey(platform)) return;
+            var toRemove = trayUsers[platform].Where(x => x.Name == name).ToList();
+            if (toRemove.Count == 0) return;
+            foreach (var tu in toRemove)
+            {
+                trayUsers[platform].Remove(tu);
+            }
+        }
+
+        /// <summary>
+        /// Remove user from the list of tray users (By argument)
+        /// </summary>
+        /// <param name="trayUsers">Reference to list of TrayUsers to modify</param>
+        /// <param name="platform">Platform to switch account on</param>
+        /// <param name="arg">Argument this account uses to switch</param>
+        public static void RemoveUserByArg(ref Dictionary<string, List<TrayUser>> trayUsers, string platform, string arg)
+        {
+            // Return if does not have requested platform
+            if (!trayUsers.ContainsKey(platform)) return;
+            var toRemove = trayUsers[platform].Where(x => x.Arg == arg).ToList();
+            if (toRemove.Count == 0) return;
+            foreach (var tu in toRemove)
+            {
+                trayUsers[platform].Remove(tu);
+            }
         }
 
         /// <summary>

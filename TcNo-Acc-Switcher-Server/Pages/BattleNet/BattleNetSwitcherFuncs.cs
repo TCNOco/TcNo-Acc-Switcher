@@ -51,7 +51,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static async Task LoadProfiles()
         {
             Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.LoadProfiles] Loading BattleNet profiles");
-            _battleNetRoaming = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battle.net");
+            LoadImportantData();
             BattleNet.LoadAccounts();
             var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config");
             foreach (var mail in (JsonConvert.DeserializeObject(file) as JObject)?.SelectToken("Client.SavedAccountNames")?.ToString().Split(','))
@@ -114,6 +114,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 InitOverwatchMode();
         }
 
+
+        /// <summary>
+        /// Run necessary functions and load data when being launcher without a GUI (From command line for example).
+        /// </summary>
+        private static void LoadImportantData()
+        {
+            _battleNetRoaming = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battle.net");
+        }
+
         public static void InitOverwatchMode()
         {
             if (!BattleNet.OverwatchMode) return;
@@ -168,6 +177,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static void SwapBattleNetAccounts(string email)
         {
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SwapBattleNetAccounts] Swapping to: {email}.");
+            LoadImportantData();
             if (BattleNet.Accounts.Count == 0) BattleNet.LoadAccounts();
 
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting BattleNet");
@@ -306,10 +316,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static void ForgetAccount(string accName)
         {
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.ForgetAccount] accName:{accName}");
+            // Get user account
             var account = BattleNet.Accounts.Find(x => x.Email == accName);
+            if (account == null) return;
+            // Remove image
+            var img = Path.Join(BattleNet.ImagePath, $"{account.BTag}.png");
+            if (File.Exists(img)) File.Delete(img);
+            // Remove from Tray
+            Globals.RemoveTrayUser("BattleNet", account.BTag ?? account.Email); // Add to Tray list
+            // Remove from accounts list
             BattleNet.Accounts.Remove(account);
             BattleNet.IgnoredAccounts.Add(account);
             BattleNet.SaveAccounts();
+
             AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Forgot account"), true);
         }
 

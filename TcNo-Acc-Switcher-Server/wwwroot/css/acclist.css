@@ -27,7 +27,7 @@
 .acc_list_item {
 	border: 0.1em solid transparent;
 	/*    width: var(--accountListItemWidth);
-    height: var(--accountListItemHeight);*/
+height: var(--accountListItemHeight);*/
 }
 
 .acc_list_item>* {

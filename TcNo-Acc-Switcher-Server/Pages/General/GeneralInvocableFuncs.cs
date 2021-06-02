@@ -26,6 +26,7 @@ using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.Epic;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Origin;
+using TcNo_Acc_Switcher_Server.Pages.Riot;
 using TcNo_Acc_Switcher_Server.Pages.Ubisoft;
 using Task = System.Threading.Tasks.Task;
 
@@ -39,6 +40,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
         private static readonly Data.Settings.Ubisoft Ubisoft = Data.Settings.Ubisoft.Instance;
         private static readonly Data.Settings.BattleNet BattleNet = Data.Settings.BattleNet.Instance;
+        private static readonly Data.Settings.Riot Riot = Data.Settings.Riot.Instance;
 
         /// <summary>
         /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file
@@ -110,7 +112,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     Origin.FolderPath = path;
                     break;
                 case "UbisoftSettings":
-                    Origin.FolderPath = path;
+                    Ubisoft.FolderPath = path;
                     break;
             }
         }
@@ -157,6 +159,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 BattleNet.SetForgetAcc(true);
                 BattleNetSwitcherFuncs.ForgetAccount(accName);
+                return Task.FromResult("refresh");
+            }
+
+            if (action.StartsWith("AcceptForgetRiotAcc:"))
+            {
+                Riot.SetForgetAcc(true);
+                RiotSwitcherFuncs.ForgetAccount(accName);
                 return Task.FromResult("refresh");
             }
 
@@ -272,6 +281,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "Epic":
                     EpicSwitcherFuncs.ChangeUsername(id, reqName);
                     break;
+                case "Riot":
+                    RiotSwitcherFuncs.ChangeUsername(id, reqName);
+                    break;
                 case "Origin":
                     OriginSwitcherFuncs.ChangeUsername(id, reqName, true);
                     break;
@@ -302,6 +314,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 var ePersonaState = -1;
                 if (args.Length == 2) int.TryParse(args[1].ToString(), out ePersonaState);
                 platformName = $"Switch to {accName}" + (args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "");
+            }
+
+            if (page == "riot")
+            {
+                accId = accId.Replace("#", "-");
             }
 
             var fgImg = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\{page}\\{accId}.jpg");

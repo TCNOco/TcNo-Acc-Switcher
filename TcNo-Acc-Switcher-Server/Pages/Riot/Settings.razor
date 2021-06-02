@@ -1,0 +1,94 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2021 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@page "/Riot/Settings"
+@namespace TcNo_Acc_Switcher_Server.Pages.Riot
+@inject NavigationManager _navManager
+@{ AppData.SetActiveNavMan(_navManager); }
+@inject Data.Settings.Riot _riot
+@inject Data.AppSettings _appSett
+@inject IJSRuntime _jsRuntime
+@{ AppData.SetActiveIJsRuntime(_jsRuntime); }
+
+<div class="container mainblock">
+    <div class="row">
+        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
+            <toastarea />
+            <SharedSettings />
+
+
+            <div class="SettingsHeader">
+                <hr><span>General settings</span>
+                <hr>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_riot.DesktopShortcut" @onclick="() => _riot.DesktopShortcut_Toggle()"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">Riot Switcher Desktop shortcut<br></label>
+            </div>
+            <div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_riot.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">Run Riot as Admin<br></label>
+            </div>
+
+
+            <div class="SettingsHeader">
+                <hr><span>Tray settings</span>
+                <hr>
+            </div>
+            <div class="form-text"><span>Max number of accounts to remember:</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="_riot.TrayAccNumber"></div>
+
+
+            <div class="SettingsHeader">
+                <hr><span>General</span>
+                <hr>
+            </div>
+            <div class="buttoncol"><button class="btn" id="ResetSettings" type="button" @onclick="ClearSettings"><span>Reset settings</span></button></div>
+
+            <div class="SettingsHeader">
+                <hr><span>Open game folders</span>
+                <hr>
+            </div>
+            <button class="btn" type="button" id="btnLeague" @onclick="() => RiotSwitcherFuncs.RiotOpenFolder('l')">
+                <span><img src="img/icons/ico_League.svg" draggable="false" /></span>
+            </button>
+            <button class="btn" type="button" id="btnRuneterra" @onclick="() => RiotSwitcherFuncs.RiotOpenFolder('r')">
+                <span><img src="img/icons/ico_Runeterra.svg" draggable="false" /></span>
+            </button>
+            <button class="btn" type="button" id="btnValorant" @onclick="() => RiotSwitcherFuncs.RiotOpenFolder('v')">
+                <span><img src="img/icons/ico_Valorant.svg" draggable="false" /></span>
+            </button>
+
+            <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>Close</span></button></div>
+        </div>
+    </div>
+</div>
+<div id="blazor-error-ui">
+    <environment include="Staging,Production">
+        An error has occurred. This application may no longer respond until reloaded.
+    </environment>
+    <environment include="Development">
+        An unhandled exception has occurred. See browser dev tools for details.
+    </environment>
+    <a href="">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code
+{
+    public void SaveAndClose()
+    {
+        _appSett.SaveSettings();
+        _riot.SaveSettings();
+
+        _navManager.NavigateTo("/Riot");
+    }
+}

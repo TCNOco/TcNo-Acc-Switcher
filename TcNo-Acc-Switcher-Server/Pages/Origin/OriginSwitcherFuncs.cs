@@ -78,7 +78,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         public static bool ForgetAccount(string accName)
         {
             Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.ForgetAccount] Forgetting account: {accName}");
+            // Remove cached files
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Origin\\{accName}"), false);
+            // Remove image
+            var img = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\origin\\{Uri.EscapeUriString(accName)}.jpg");
+            if (File.Exists(img)) File.Delete(img);
+            // Remove from Tray
+            Globals.RemoveTrayUser("Origin", accName); // Add to Tray list
             return true;
         }
 
@@ -97,11 +103,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             if (accName != "")
             {
                 OriginCopyInAccount(accName, state);
+                Globals.AddTrayUser("Origin", "+o:" + accName, accName, Origin.TrayAccNumber); // Add to Tray list
             }
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Origin");
-
-            Globals.AddTrayUser("Origin", "+o:" + accName, accName, Origin.TrayAccNumber); // Add to Tray list
-
+            
             GeneralFuncs.StartProgram(Origin.Exe(), Origin.Admin);
 
             Globals.RefreshTrayArea();
@@ -307,28 +312,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// </summary>
         public static bool CloseOrigin()
         {
-            Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.CloseSteam]");
+            Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.CloseOrigin]");
             if (!GeneralFuncs.CanKillProcess("origin")) return false;
             Globals.KillProcess("origin");
             return true;
         }
-
-        /// <summary>
-        /// Only runs ForgetAccount, but allows Javascript to wait for it's completion before refreshing, instead of just doing it instantly >> Not showing proper results.
-        /// </summary>
-        /// <param name="accName">Origin account name to be removed from cache</param>
-        /// <returns>true</returns>
-        [JSInvokable]
-        public static Task<bool> ForgetOriginAccountJs(string accName)
-        {
-            Globals.DebugWriteLine($@"[JSInvoke:Origin\OriginSwitcherFuncs.ForgetOriginAccountJs] accName:{accName}");
-            var allOlc = ReadAllOlc();
-            allOlc.Remove(accName);
-            var olcHashString = JsonConvert.SerializeObject(allOlc);
-            File.WriteAllText("LoginCache\\Origin\\olc.json", olcHashString);
-            return Task.FromResult(ForgetAccount(accName));
-        }
-
         #endregion
     }
 }

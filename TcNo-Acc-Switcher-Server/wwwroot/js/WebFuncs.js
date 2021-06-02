@@ -31,6 +31,7 @@ function CopyToClipboard(str) {
 // FORGETTING ACCOUNTS
 async function forget(e) {
     e.preventDefault();
+    debugger;
     const reqId = $(SelectedElem).attr("id");
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "Get" + currentpage + "ForgetAcc").then(r => {
         if (!r) ShowModal("confirm:AcceptForget" + currentpage + "Acc:" + reqId);
@@ -219,6 +220,10 @@ function CurrentOriginLogin() {
 function CurrentEpicLogin() {
     ShowModal("accString:Epic");
 }
+// Add currently logged in Origin account
+function CurrentRiotLogin() {
+    ShowModal("accString:Riot");
+}
 // Add currently logged in Ubisoft account
 function CurrentUbisoftLogin() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftAddCurrent");
@@ -313,13 +318,9 @@ function ShowModal(modaltype) {
         let header = "";
         if (action.startsWith("AcceptForgetSteamAcc")) {
             message = forgetAccountSteamPrompt;
-        } else if (action.startsWith("AcceptForgetOriginAcc")) {
-            message = getAccountPrompt();
-        } else if (action.startsWith("AcceptForgetUbisoftAcc")) {
-            message = getAccountPrompt();
-        } else if (action.startsWith("AcceptForgetBattleNetAcc")) {
-            message = getAccountPrompt();
-        } else if (action.startsWith("AcceptForgetEpicAcc")) {
+        } else if (action.startsWith("AcceptForgetOriginAcc") || action.startsWith("AcceptForgetUbisoftAcc") ||
+            action.startsWith("AcceptForgetBattleNetAcc") || action.startsWith("AcceptForgetEpicAcc") || 
+            action.startsWith("AcceptForgetRiotAcc")) {
             message = getAccountPrompt();
         } else {
             header = "<h3>Confirm action:</h3>";
@@ -447,16 +448,8 @@ async function Modal_Confirm(action, value) {
 }
 
 function Modal_FinaliseAccString(platform) {
-    switch (platform) {
-        case "Origin":
-            DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "OriginAddCurrent", $("#CurrentAccountName").val());
-            break;
-        case "Epic":
-            DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "EpicAddCurrent", $("#CurrentAccountName").val());
-            break;
-        default:
-            break;
-    }
+    // Supported: Epic, Origin, Riot
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", $("#CurrentAccountName").val());
     $('.modalBG').fadeOut();
     $('#acc_list').click();
 }

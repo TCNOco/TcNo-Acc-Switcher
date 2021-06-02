@@ -600,6 +600,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             // Save updated loginusers.vdf file
             SaveSteamUsersIntoVdf(userAccounts);
+
+            // Remove image
+            var img = $"{Steam.SteamImagePathHtml}{steamId}.jpg";
+            if (File.Exists(img)) File.Delete(img);
+
+            // Remove from Tray
+            Globals.RemoveTrayUserByArg("Steam", "+s:" + steamId);
             return true;
         }
 
@@ -637,20 +644,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             File.WriteAllText(Steam.ForgottenFile, JsonConvert.SerializeObject(forgottenAccounts));
             return true;
         }
-
-        /// <summary>
-        /// Only runs ForgetAccount, but allows Javascript to wait for it's completion before refreshing, instead of just doing it instantly >> Not showing proper results.
-        /// </summary>
-        /// <param name="steamId">SteamId of account to be removed</param>
-        /// <returns>true</returns>
-        [JSInvokable]
-        public static Task<bool> ForgetAccountJs(string steamId)
-        {
-            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherFuncs.ForgetAccountJs] {steamId.Substring(steamId.Length - 4, 4)}");
-            return Task.FromResult(ForgetAccount(steamId));
-        }
-
-
         #endregion
     }
 }
