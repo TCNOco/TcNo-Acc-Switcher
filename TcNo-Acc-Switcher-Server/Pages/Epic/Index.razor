@@ -78,7 +78,15 @@
             _epic.SaveSettings(!File.Exists(_epic.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialised (adds missing settings when true)
 
             await GeneralInvocableFuncs.HandleQueries();
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");
+
+            try
+            {
+                await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");
+            }
+            catch (InvalidOperationException)
+            {
+    //
+            }
         }
     }
 }

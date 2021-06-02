@@ -97,6 +97,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
               {""Delete BattleTag"": ""ForgetBattleTag()""},
               {""Refetch Rank"": ""RefetchRank()""},
               {""Create Desktop Shortcut..."": ""CreateShortcut()""},
+              {""Change image"": ""ChangeImage(event)""},
               {""Forget"": ""forget(event)""}
             ]";
 

@@ -78,7 +78,15 @@
             _origin.SaveSettings(!File.Exists(_origin.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
 
             await GeneralInvocableFuncs.HandleQueries();
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");
+
+            try
+            {
+                await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");
+            }
+            catch (InvalidOperationException)
+            {
+    //
+            }
         }
     }
 }

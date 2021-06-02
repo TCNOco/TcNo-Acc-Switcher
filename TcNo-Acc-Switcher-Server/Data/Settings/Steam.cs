@@ -116,6 +116,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 {""Looking to Trade"": ""CreateShortcut(':5')""},
                 {""Looking to Play"": ""CreateShortcut(':6')""}
               ]},
+              {""Change image"": ""ChangeImage(event)""},
               {""Forget"": ""forget(event)""}
             ]";
 

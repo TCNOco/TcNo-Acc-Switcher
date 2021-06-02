@@ -21,6 +21,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Threading;
+using System.Web;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -242,20 +243,39 @@ namespace TcNo_Acc_Switcher_Client
             // Needs to be here as:
             // Importing Microsoft.Win32 and System.Windows didn't get OpenFileDialog to work.
             var uriArg = args.Uri.Split("?").Last();
-            if (!uriArg.StartsWith("selectFile")) return;
-            args.Cancel = true;
-            var argValue = uriArg.Split("=")[1];
-            var dlg = new OpenFileDialog
+            if (uriArg.StartsWith("selectFile"))
             {
-                FileName = Path.GetFileNameWithoutExtension(argValue),
-                DefaultExt = Path.GetExtension(argValue),
-                Filter = $"{argValue}|{argValue}"
-            };
+                // Select file and run Model_SetFilepath()
+                args.Cancel = true;
+                var argValue = uriArg.Split("=")[1];
+                var dlg = new OpenFileDialog
+                {
+                    FileName = Path.GetFileNameWithoutExtension(argValue),
+                    DefaultExt = Path.GetExtension(argValue),
+                    Filter = $"{argValue}|{argValue}"
+                };
 
-            var result = dlg.ShowDialog();
-            if (result != true) return;
-            MView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
-            MView2.ExecuteScriptAsync("Modal_SetFilepath(" + JsonConvert.SerializeObject(dlg.FileName.Substring(0, dlg.FileName.LastIndexOf('\\'))) + ")");
+                var result = dlg.ShowDialog();
+                if (result != true) return;
+                MView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
+                MView2.ExecuteScriptAsync("Modal_SetFilepath(" + JsonConvert.SerializeObject(dlg.FileName.Substring(0, dlg.FileName.LastIndexOf('\\'))) + ")");
+            }
+            else if (uriArg.StartsWith("selectImage"))
+            {
+                // Select file and replace requested file with it.
+                args.Cancel = true;
+                var imageDest = "wwwroot\\" + HttpUtility.UrlDecode(uriArg.Split("=")[1]);
+                
+                var dlg = new OpenFileDialog
+                {
+                    Filter = $"Any image file (.png, .jpg, .bmp...)|*.*"
+                };
+
+                var result = dlg.ShowDialog();
+                if (result != true) return;
+                File.Copy(dlg.FileName, imageDest, true);
+                MView2.Reload();
+            }
 
         }
 

@@ -74,6 +74,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 {""Refresh name"": ""RefreshUsername()""},
               ]},
               {""Create Desktop Shortcut..."": ""CreateShortcut()""},
+              {""Change image"": ""ChangeImage(event)""},
               {""Forget"": ""forget(event)""}
             ]";
         // {""Create Desktop Shortcut"": ""CreateShortcut()""},

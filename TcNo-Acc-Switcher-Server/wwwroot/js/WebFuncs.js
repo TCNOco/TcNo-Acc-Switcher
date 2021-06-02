@@ -184,6 +184,26 @@ function SwapTo(request, e) {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo" + currentpage, selected.attr("id"));
 }
 
+// Swapping accounts
+function ChangeImage(e) {
+    if (e !== undefined) e.preventDefault();
+    if (!getSelected()) return;
+
+    // General function: Get selected account
+    var selected;
+
+    function getSelected() {
+        // This may be unnecessary.
+        selected = $(".acc:checked");
+        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
+            return false;
+        }
+        return true;
+    }
+    
+    window.location = window.location + `${(window.location.href.includes('?') ? '&' : '?')}selectImage=${encodeURI($(".acc:checked").next("label").children("img")[0].getAttribute("src"))}`;
+}
+
 // Create shortcut for selected icon
 function CreateShortcut(args = '') {
     var selected = $(".acc:checked");

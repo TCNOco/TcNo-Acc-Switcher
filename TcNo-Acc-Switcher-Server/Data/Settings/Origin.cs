@@ -67,6 +67,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
               {""Swap to account"": ""SwapTo(-1, event)""},
               {""Change switcher name"": ""ShowModal('changeUsername')""},
               {""Create Desktop Shortcut..."": ""CreateShortcut()""},
+              {""Change image"": ""ChangeImage(event)""},
               {""Forget"": ""forget(event)""}
             ]";
 
