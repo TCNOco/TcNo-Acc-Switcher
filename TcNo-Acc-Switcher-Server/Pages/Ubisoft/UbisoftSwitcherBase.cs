@@ -6,12 +6,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
     public class UbisoftSwitcherBase
     {
         /// <summary>
+        /// [Wrapper with fewer arguments]
+        /// </summary>
+        [JSInvokable]
+        public static void SwapToUbisoft(string userId) => SwapToUbisoft(userId, 0);
+        [JSInvokable]
+        public static void SwapToUbisoftWithReq(string userId, int request) => SwapToUbisoft(userId, request);
+        /// <summary>
         /// JS function handler for swapping to another Ubisoft account.
         /// </summary>
         /// <param name="userId">Requested account's UserId</param>
         /// <param name="state">Requested account's Login state</param>
-        [JSInvokable]
-        public static void SwapToUbisoft(string userId, int state = 0)
+        public static void SwapToUbisoft(string userId, int state)
         {
             Globals.DebugWriteLine($@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.SwapToUbisoft] userId:{userId}");
             UbisoftSwitcherFuncs.SwapUbisoftAccounts(userId, state);

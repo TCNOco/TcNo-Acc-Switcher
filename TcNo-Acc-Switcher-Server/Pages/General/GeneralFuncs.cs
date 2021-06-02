@@ -53,7 +53,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                         Verb = "runas"
                     }
                 };
-                proc.Start();
+                try
+                {
+                    proc.Start();
+                }
+                catch (System.ComponentModel.Win32Exception e)
+                {
+                    if (e.HResult != -2147467259) // Not because it was cancelled by user
+                        throw;
+                }
             }
 
         }

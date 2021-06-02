@@ -181,7 +181,9 @@ function SwapTo(request, e) {
         }
         return true;
     }
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo" + currentpage, selected.attr("id"));
+    
+    if (request === -1) DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo" + currentpage, selected.attr("id")); // -1 is for undefined.
+    else DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', `SwapTo${currentpage}WithReq`, selected.attr("id"), request);
 }
 
 // Swapping accounts

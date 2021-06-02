@@ -51,14 +51,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         /// <summary>
+        /// [Wrapper with fewer arguments]
+        /// </summary>
+        [JSInvokable]
+        [SupportedOSPlatform("windows")]
+        public static void SwapToSteam(string steamId) => SwapToSteam(steamId, "", -1);
+        [JSInvokable]
+        [SupportedOSPlatform("windows")]
+        public static void SwapToSteamWithReq(string steamId, int request) => SwapToSteam(steamId, "", request);
+        /// <summary>
         /// JS function handler for swapping to another Steam account.
         /// </summary>
         /// <param name="steamId">Requested account's SteamID</param>
         /// <param name="accName">Requested account's Login Username</param>
         /// <param name="ePersonaState">(Optional) Persona State [0: Offline, 1: Online...]</param>
-        [JSInvokable]
         [SupportedOSPlatform("windows")]
-        public static void SwapToSteam(string steamId, string accName = "", int ePersonaState = -1)
+        public static void SwapToSteam(string steamId, string accName, int ePersonaState = -1)
         {
             Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.SwapToSteam] {(steamId.Length > 0 ? steamId.Substring(steamId.Length - 4, 4) : "")}, accName:hidden, ePersonaState: {ePersonaState}");
             SteamSwitcherFuncs.SwapSteamAccounts(steamId, accName, ePersonaState: ePersonaState);
