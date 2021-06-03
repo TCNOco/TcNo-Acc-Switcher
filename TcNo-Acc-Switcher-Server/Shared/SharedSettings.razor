@@ -34,3 +34,16 @@
 <div class="rowSetting">
     <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="_appSett.TrayStartup" @onclick="() => _appSett.Task_Toggle()"><label class="form-check-label" for="AppSett_TrayStartup"></label></div><label for="AppSett_TrayStartup">Start Tray with Windows<br></label>&nbsp;<a class="fancyLink" @onclick="() => _appSett.StartNow()">[Start Tray now]</a>
 </div>
+<div class="rowSetting rowDropdown">
+    <span>Current Style: </span>
+    <div class="dropdown">
+        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">@_appSett.SelectedStylesheet
+            <span class="caret"></span></button>
+        <ul class="custom-dropdown-menu dropdown-menu">
+            @foreach (var item in _appSett.GetStyleList())
+            {
+                <li class="custom-dropdown-item dropdown-item" @onclick="() => _appSett.SwapStylesheet(item)">@item</li>
+            }
+        </ul>
+    </div>
+</div>

@@ -184,9 +184,10 @@ label.acc p {
 .acc_list_actionbar div .button:active,
 .settingsCol button:active,
 .settingsCol button:focus,
-.settingsCol button:target {
+.settingsCol button:target,
+.show > .dropdown-toggle {
 	background-color: var(--buttonBackground-active) !important;
-	border-color: var(--buttonBorder-active)!important;
+	border-color: var(--buttonBorder-active) !important;
 }
 
 .acc_list_actionbar div .button:hover,

@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -94,11 +95,16 @@ namespace TcNo_Acc_Switcher_Server.Data
         private bool _currentlyElevated;
         [JsonIgnore] public bool CurrentlyElevated { get => _instance._currentlyElevated; set => _instance._currentlyElevated = value; }
 
+        private string _selectedStylesheet;
+        [JsonIgnore] public string SelectedStylesheet { get => _instance._selectedStylesheet; set => _instance._selectedStylesheet = value; }
+
+
 
 
         // Variables loaded from other files:
         private Dictionary<string, string> _stylesheet = new()
         {
+            { "name", "Default" },
             { "selectionColor", "#402B00" },
             { "selectionBackground", "#FFAA00" },
             { "contextMenuBackground", "#14151E" },
@@ -118,12 +124,10 @@ namespace TcNo_Acc_Switcher_Server.Data
             { "scrollbarTrackBackground", "#1F202D" },
             { "scrollbarThumbBackground", "#515164" },
             { "scrollbarThumbBackground-hover", "#555" },
-            
             { "accountListItemWidth", "100px" },
             { "accountListItemHeight", "135px" },
             { "accountBackground-placeholder", "#28374E" },
             { "accountBorder-placeholder", "2px dashed #2777A4" },
-
             { "accountPColor", "#DDD" },
             { "accountColor", "white" },
             { "accountBackground-hover", "#28374E" },
@@ -186,7 +190,12 @@ namespace TcNo_Acc_Switcher_Server.Data
             { "notification-color-error-light", "rgba(244, 67, 54, .25)" },
             { "notification-color-error-lighter", "#17132C" },
             { "updateBarBackground", "#FFAA00" },
-            { "updateBarColor", "black" }
+            { "updateBarColor", "black" },
+            { "dropdownBackground", "#333" },
+            { "dropdownBorder", "#888" },
+            { "dropdownColor", "white" },
+            { "dropdownItemBackground-active", "#222" },
+            { "dropdownItemBackground-hover", "#444" }
         };
         [JsonIgnore] public Dictionary<string, string> Stylesheet { get => _instance._stylesheet; set => _instance._stylesheet = value; }
 
@@ -270,11 +279,53 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!File.Exists(SettingsFile)) SaveSettings();
             else SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
             // Stylesheet
+            LoadStylesheetFromFile();
+        }
+
+        #region STYLESHEET
+        /// <summary>
+        /// Swaps in a requested stylesheet, and loads styles from file.
+        /// </summary>
+        /// <param name="swapTo">Stylesheet name (without .json) to copy and load</param>
+        public void SwapStylesheet(string swapTo)
+        {
+            File.Copy($"wwwroot\\themes\\{swapTo.Replace(' ', '_')}.json", StylesheetFile, true);
+            LoadStylesheetFromFile();
+            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+        }
+
+        /// <summary>
+        /// Load stylesheet settings from stylesheet file.
+        /// </summary>
+        public void LoadStylesheetFromFile()
+        {
             if (!File.Exists(StylesheetFile)) SaveStyles();
-            //var s = GeneralFuncs.LoadSettings(StylesheetFile, GetStylesJObject()).ToObject<Dictionary<string, string>>();
             var s = GeneralFuncs.LoadSettings(StylesheetFile, GetStylesJObject()).ToObject<Dictionary<string, string>>();
             _instance._stylesheet = s != null && s.Count != 0 ? s : _instance._stylesheet;
+            GetCurrentStylesheet();
         }
+
+        /// <summary>
+        /// Returns a list of Stylesheets in the Stylesheet folder.
+        /// </summary>
+        /// <returns></returns>
+        public string[] GetStyleList()
+        {
+            var list = Directory.GetFiles("wwwroot\\themes");
+            for (var i = 0; i < list.Length; i++)
+            {
+                var start = list[i].LastIndexOf("\\", StringComparison.Ordinal) + 1;
+                var end = list[i].IndexOf(".json", StringComparison.OrdinalIgnoreCase);
+                list[i] = list[i].Substring(start, end - start).Replace('_', ' ');
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// Gets the active stylesheet name
+        /// </summary>
+        public void GetCurrentStylesheet() => _instance._selectedStylesheet = _instance._stylesheet["name"];
+        #endregion
 
         public JObject GetJObject() => JObject.FromObject(this);
 

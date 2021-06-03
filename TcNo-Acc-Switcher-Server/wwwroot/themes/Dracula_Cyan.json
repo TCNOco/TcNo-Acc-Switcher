@@ -1,4 +1,5 @@
 {
+  "name": "Dracula Cyan",
   "checkboxBorder": "#6272A4",
   "checkboxBorder-checked": "#6272A4",
   "checkboxBackground": "#253340",
@@ -84,5 +85,10 @@
   "notification-color-error-light": "rgba(255 85 85: .25)",
   "notification-color-error-lighter": "#274560",
   "updateBarBackground": "#8BE9FD",
-  "updateBarColor": "black"
+  "updateBarColor": "black",
+  "dropdownBackground": "#274560",
+  "dropdownBorder": "#274560",
+  "dropdownColor": "white",
+  "dropdownItemBackground-hover": "#28374E",
+  "dropdownItemBackground-active": "#28374E"
 }

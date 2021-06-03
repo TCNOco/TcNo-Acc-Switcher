@@ -1,4 +1,5 @@
 {
+  "name": "Default",
   "selectionColor": "#402B00",
   "selectionBackground": "#FFAA00",
   "contextMenuBackground": "#14151E",
@@ -84,5 +85,10 @@
   "notification-color-error-light": "rgba(244, 67, 54, .25)",
   "notification-color-error-lighter": "#17132C",
   "updateBarBackground": "#FFAA00",
-  "updateBarColor": "black"
+  "updateBarColor": "black",
+  "dropdownBackground": "#333",
+  "dropdownBorder": "#888",
+  "dropdownColor": "white",
+  "dropdownItemBackground-active": "#222",
+  "dropdownItemBackground-hover": "#444"
 }
