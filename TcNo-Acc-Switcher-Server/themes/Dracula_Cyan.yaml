@@ -1,0 +1,146 @@
+---
+# (Feel free to remove this in your own stylesheets)
+# This file is used to store CSS variables.
+# Any colors and code that works with CSS variables ["--var()"] will work
+# Hence you see:
+# - Colours: 'Color names', RGB Hex, RGB(), RGBA(), HSL(), HSLA()
+#            [The "A" stands for Alpha/Transparancy]
+# - Gradients: linear-gradient(), radial-gradient()
+# - Background images: url(../img/noise.png)
+#
+# Most items with "Background" are literally used as: "background: var(--variableName);" in CSS
+# -hover, -active, -checked etc are all literally used in something similar to: "button:hover {...background: var(--varName);}"
+# and will only be used when that action is performed on that element.
+#
+# Comments are indicated with a "#" and are ignored by the program. Add/Remove them as you please.
+
+# This theme's name (Shows in-app, can be different to filename)
+name: Dracula Cyan
+
+# Text selection styling
+selectionColor: "#FFFFFF"
+selectionBackground: "#274560"
+
+# Right-Click context menu (Shows on account right-click)
+contextMenuBackground: "#253340"
+contextMenuBackground-hover: "#1B2737"
+contextMenuLeftBorder-hover: "#8BE9FD"
+contextMenuTextColor: "#FFFFFF"
+contextMenuTextColor-hover: "#FFFFFF"
+contextMenuBoxShadow: 10px 10px 5px -3px rgb(0 0 0 / 30%)
+
+# Headerbar at the top, with the account switcher's page title and window controls
+headerbarBackground: "#253340"
+windowControlsBackground-hover: "#3B4853"
+windowControlsBackground-active: "#3B4853"
+windowControlsCloseBackground: "#D51426"
+windowControlsCloseBackground-active: "#D51426"
+windowTitleColor: white
+
+# Footer at the bottom, with "Login" and "Add New" buttons
+footerBackground: "#252A2E"
+footerColor: "#DDD"
+
+# Scrollbars, such as on the side
+scrollbarTrackBackground: "#1E2934"
+scrollbarThumbBackground: "#8BE9FD"
+scrollbarThumbBackground-hover: "#8BE9FD"
+
+# Accounts
+accountListItemWidth: 100px
+accountListItemHeight: 135px
+accountBackground-placeholder: "#13222f"
+accountBorder-placeholder: '2px dashed #039CBF'
+accountPColor: "#DDD"
+accountColor: white
+accountBackground-hover: "#13222f"
+accountBackground-checked: "#274560"
+accountBorder-hover: "#039CBF"
+accountBorder-checked: "#8BE9FD"
+accountListBackground: 'linear-gradient(90deg, #11181d, #0E1419 100%)'
+
+# Application-wide settings
+mainBackground: "#0E1419"
+defaultTextColor: white
+linkColor: "#8BE9FD"
+linkColor-hover: "#8BE9FD"
+linkColor-active: "#8BE9FD"
+
+# Items with borders
+borderedItemBorderColor: "#888"
+borderedItemBorderColor-focus: "#888"
+borderedItemBorderColorBottom-focus: "#8BE9FD"
+
+# Input: Buttons
+buttonBackground: "#274560"
+buttonBackground-hover: "#28374E"
+buttonBackground-active: "#28374E"
+buttonBorder: "#274560"
+buttonBorder-hover: "#274560"
+buttonBorder-active: "#8BE9FD"
+buttonColor: white
+
+# Input: Checkboxes
+checkboxBorder: "#6272A4"
+checkboxBorder-checked: "#6272A4"
+checkboxBackground: "#253340"
+checkboxBackground-checked: "#8BE9FD"
+
+# Input: Text
+inputBackground: "#070A0D"
+inputColor: white
+
+# Input: Dropdown
+dropdownBackground: "#274560"
+dropdownBorder: "#274560"
+dropdownColor: white
+dropdownItemBackground-hover: "#28374E"
+dropdownItemBackground-active: "#28374E"
+
+# List (Such as the Forgotten Account list -> 'Checked' = selected)
+listBackground: "#0E1419"
+listBackgroundColor-checked: "#FFAA00"
+listColor: white
+listColor-checked: white
+listTextColor-before: "#8BE9FD"
+listTextColor-before-checked: "#8BE9FD"
+listTextColor-after: "#8BE9FD"
+listTextColor-after-checked: "#8BE9FD"
+
+# Settings: Section headers (The dividers with text)
+settingsHeaderColor: white
+settingsHeaderHrBorder: "#BBB"
+
+# Popup (Info, selecting platform .exe location...)
+modalBackground: "#00000055"
+modalFgBackground: "#0E1419"
+modalInputBackground: "#070A0D"
+# Specific to finding files (Such as Steam's .exe)
+foundColor: lime
+foundBackground: green
+notFoundColor: red
+notFoundBackground: darkred
+
+# Steam Account Switcher colours
+limited: yellow
+vac: red
+
+# Toast notifications
+notification-color-dark-text: white
+notification-color-dark-border: 'rgb(20: 20: 20)'
+notification-color-info: 'rgb(139: 133: 253)'
+notification-color-info-light: 'rgba(139: 133: 253: .25)'
+notification-color-info-lighter: "#274560"
+notification-color-success: rgb(80 250 123)
+notification-color-success-light: 'rgba(80 250 123: .25)'
+notification-color-success-lighter: "#274560"
+notification-color-warning: rgb(255 184 108)
+notification-color-warning-light: 'rgba(255 184 108: .25)'
+notification-color-warning-lighter: "#274560"
+notification-color-error: rgb(255 85 85)
+notification-color-error-light: 'rgba(255 85 85: .25)'
+notification-color-error-lighter: "#274560"
+
+# Update notification headerbar
+updateBarBackground: "#8BE9FD"
+updateBarColor: black

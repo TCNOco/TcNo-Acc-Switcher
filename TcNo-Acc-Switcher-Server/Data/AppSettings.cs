@@ -25,6 +25,8 @@ using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 using Task = TcNo_Acc_Switcher_Server.Pages.General.Classes.Task;
 
 namespace TcNo_Acc_Switcher_Server.Data
@@ -102,7 +104,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
 
         // Variables loaded from other files:
-        private Dictionary<string, string> _stylesheet = new()
+        private Dictionary<string, string> _defaultStylesheet = new()
         {
             { "name", "Default" },
             { "selectionColor", "#402B00" },
@@ -197,11 +199,13 @@ namespace TcNo_Acc_Switcher_Server.Data
             { "dropdownItemBackground-active", "#222" },
             { "dropdownItemBackground-hover", "#444" }
         };
+
+        private Dictionary<string, string> _stylesheet;
         [JsonIgnore] public Dictionary<string, string> Stylesheet { get => _instance._stylesheet; set => _instance._stylesheet = value; }
 
         // Constants
         [JsonIgnore] public string SettingsFile = "WindowSettings.json";
-        [JsonIgnore] public string StylesheetFile = "StyleSettings.json";
+        [JsonIgnore] public string StylesheetFile = "StyleSettings.yaml";
         [JsonIgnore] public bool StreamerModeTriggered;
 
         /// <summary>
@@ -289,7 +293,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <param name="swapTo">Stylesheet name (without .json) to copy and load</param>
         public void SwapStylesheet(string swapTo)
         {
-            File.Copy($"wwwroot\\themes\\{swapTo.Replace(' ', '_')}.json", StylesheetFile, true);
+            File.Copy($"themes\\{swapTo.Replace(' ', '_')}.yaml", StylesheetFile, true);
             LoadStylesheetFromFile();
             _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
         }
@@ -299,9 +303,19 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         public void LoadStylesheetFromFile()
         {
-            if (!File.Exists(StylesheetFile)) SaveStyles();
-            var s = GeneralFuncs.LoadSettings(StylesheetFile, GetStylesJObject()).ToObject<Dictionary<string, string>>();
-            _instance._stylesheet = s != null && s.Count != 0 ? s : _instance._stylesheet;
+            if (!File.Exists(StylesheetFile)) File.Copy("themes\\Default.yaml", StylesheetFile);
+            // Load new stylesheet
+            var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
+            using var reader = File.OpenText(StylesheetFile);
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize(reader)));
+            // Load default values, and copy in new values (Just in case some are missing)
+            _instance._stylesheet = _instance._defaultStylesheet;
+            if (dict != null)
+                foreach (var (key, val) in dict)
+                {
+                    _instance._stylesheet[key] = val;
+                }
+            // Get name of current stylesheet
             GetCurrentStylesheet();
         }
 
@@ -311,11 +325,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <returns></returns>
         public string[] GetStyleList()
         {
-            var list = Directory.GetFiles("wwwroot\\themes");
+            var list = Directory.GetFiles("themes");
             for (var i = 0; i < list.Length; i++)
             {
                 var start = list[i].LastIndexOf("\\", StringComparison.Ordinal) + 1;
-                var end = list[i].IndexOf(".json", StringComparison.OrdinalIgnoreCase);
+                var end = list[i].IndexOf(".yaml", StringComparison.OrdinalIgnoreCase);
+                if (end == -1) end = 0;
                 list[i] = list[i].Substring(start, end - start).Replace('_', ' ');
             }
             return list;
@@ -333,9 +348,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
 
         public JObject GetStylesJObject() => JObject.FromObject(_instance._stylesheet);
-
-        [JSInvokable]
-        public void SaveStyles(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(StylesheetFile, GetStylesJObject(), mergeNewIntoOld);
 
         #region SHORTCUTS
         public void CheckShortcuts()

@@ -31,11 +31,6 @@
 var SelectedElem = "";
 
 function initContextMenu() {
-    // Handle currentpage variable.
-    currentpage = (window.location.pathname.split("/")[0] !== "" ?
-        window.location.pathname.split("/")[0] :
-        window.location.pathname.split("/")[1]);
-
     $(".acc_list").on("click", function() {
         console.log('e');
         $("input:checked").each(function(_, e) {
@@ -65,7 +60,7 @@ function initContextMenu() {
         // Set currently selected element
         SelectedElem = $(e.currentTarget).children('input')[0];
         // Update status for element
-        switch (currentpage) {
+        switch (getCurrentPage()) {
             case "Steam":
                 updateStatus("Selected: " + $(SelectedElem).attr("Line2"));
                 break;

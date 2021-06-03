@@ -1,11 +1,12 @@
 ﻿var currentVersion = 0001;
 
-var currentpage = "";
-//window.addEventListener('popstate', function (e) {
-//    currentpage = (window.location.pathname.split("/")[0] !== ""
-//        ? window.location.pathname.split("/")[0]
-//        : window.location.pathname.split("/")[1]);
-//});
+// Returns "Steam" or "Riot" for example, based on the current URL
+function getCurrentPage() {
+    return (window.location.pathname.split("/")[0] !== "" ?
+        window.location.pathname.split("/")[0] :
+        window.location.pathname.split("/")[1]);
+}
+
 function docReady(fn) {
     // see if DOM is already available
     if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -33,9 +34,9 @@ async function forget(e) {
     e.preventDefault();
     debugger;
     const reqId = $(SelectedElem).attr("id");
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "Get" + currentpage + "ForgetAcc").then(r => {
-        if (!r) ShowModal("confirm:AcceptForget" + currentpage + "Acc:" + reqId);
-        else Modal_Confirm("AcceptForget" + currentpage + "Acc:" + reqId, true);
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "Get" + getCurrentPage() + "ForgetAcc").then(r => {
+        if (!r) ShowModal("confirm:AcceptForget" + getCurrentPage() + "Acc:" + reqId);
+        else Modal_Confirm("AcceptForget" + getCurrentPage() + "Acc:" + reqId, true);
     });
     _ = await promise;
 
@@ -115,7 +116,7 @@ function copy(request, e) {
     const requestResult = $(SelectedElem).attr(request);
 
     // Different function groups based on platform
-    switch (currentpage) {
+    switch (getCurrentPage()) {
         case "Steam":
             steam();
             break;
@@ -182,8 +183,8 @@ function SwapTo(request, e) {
         return true;
     }
     
-    if (request === -1) DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo" + currentpage, selected.attr("id")); // -1 is for undefined.
-    else DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', `SwapTo${currentpage}WithReq`, selected.attr("id"), request);
+    if (request === -1) DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo" + getCurrentPage(), selected.attr("id")); // -1 is for undefined.
+    else DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', `SwapTo${getCurrentPage()}WithReq`, selected.attr("id"), request);
 }
 
 // Swapping accounts
@@ -214,7 +215,7 @@ function CreateShortcut(args = '') {
     }
     var accId = selected.attr("id");
 
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CreateShortcut", currentpage, accId, selected.attr("Username"), args);
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CreateShortcut", getCurrentPage(), accId, selected.attr("Username"), args);
 }
 
 function RefreshUsername() {
@@ -228,7 +229,7 @@ function RefreshUsername() {
 
 // NEW LOGIN
 function NewLogin() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "NewLogin_" + currentpage);
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "NewLogin_" + getCurrentPage());
 }
 
 
@@ -478,7 +479,7 @@ function Modal_FinaliseAccString(platform) {
 }
 
 function Modal_FinaliseAccNameChange() {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), $("#NewAccountName").val(), currentpage);
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), $("#NewAccountName").val(), getCurrentPage());
 }
 
 var appendDelay = 100; // Milliseconds
@@ -534,7 +535,7 @@ function getAccountPrompt() {
     return `<h3 style='color:red'>You are about to forget an account!</h3>
 <h4>What does this mean?</h4>
 <p>TcNo Account Switcher will also no longer show the account,<br/>
-until it's signed into again through ${currentpage}, and added to the list.</p>
+until it's signed into again through ${getCurrentPage()}, and added to the list.</p>
 <p>Your account will remain untouched. It is just forgotten on this computer.</p>
 <h4>Do you understand?</h4>`;
 }

@@ -33,7 +33,7 @@ initAccListSortable = () => {
             if (!$(e).is("div")) return; // Ignore <toastarea>
             order.push(e.getElementsByTagName("input")[0].getAttribute("id"));
         });
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", `LoginCache\\${currentpage}\\order.json`, JSON.stringify(order));
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", `LoginCache\\${getCurrentPage()}\\order.json`, JSON.stringify(order));
     });
 }
 

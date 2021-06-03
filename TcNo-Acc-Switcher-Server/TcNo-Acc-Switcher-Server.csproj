@@ -19,6 +19,12 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="TcNoAccSw-Icon-100x100.png" />
+    <None Remove="themes\Default.yaml" />
+    <None Remove="themes\Dracula_Cyan.yaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="themes\Default.yaml" />
+    <Content Include="themes\Dracula_Cyan.yaml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Gameloop.Vdf" Version="0.6.1" />
@@ -29,6 +35,7 @@
     <PackageReference Include="Svg.Skia" Version="0.5.5.5" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
     <PackageReference Include="TaskScheduler" Version="2.9.1" />
+    <PackageReference Include="YamlDotNet" Version="11.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TcNo-Acc-Switcher-Globals\TcNo-Acc-Switcher-Globals.csproj" />
@@ -41,6 +48,10 @@
     <Content Update="wwwroot\**\*.*">
 		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <DeploymentContent>true</DeploymentContent>
+    </Content>
+    <Content Update="themes\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DeploymentContent>true</DeploymentContent>
     </Content>
   </ItemGroup>
   <ItemGroup>
