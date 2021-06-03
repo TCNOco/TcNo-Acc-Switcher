@@ -109,8 +109,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
 
             SaveVacInfo(vacStatusList);
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
+            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
+            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
         }
 
         /// <summary>

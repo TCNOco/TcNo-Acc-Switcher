@@ -24,7 +24,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         private static readonly string RiotLocalAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client");
 
         private static string _riotClientPrivateSettings = "";
-        private static bool _initialised = false;
 
         /// <summary>
         /// Main function for Riot Account Switcher. Run on load.
@@ -92,7 +91,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         public static void LoadImportantData()
         {
             // Load once
-            if (_initialised) return;
+            if (Riot.Initialised) return;
 
             _riotClientPrivateSettings = Path.Join(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client\\Data", "RiotClientPrivateSettings.yaml"));
 
@@ -142,7 +141,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 }
             }
 
-            _initialised = true;
+            Riot.Initialised = true;
         }
 
         /// <summary>

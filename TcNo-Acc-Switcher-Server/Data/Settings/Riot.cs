@@ -70,6 +70,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
+        private bool _initialised;
+        [JsonIgnore] public bool Initialised { get => _instance._initialised; set => _instance._initialised = value; }
 
         // Constants
         [JsonIgnore] public string SettingsFile = "RiotSettings.json";
@@ -125,12 +127,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
 
-            _instance._leagueDir = curSettings._leagueDir;
-            _instance._leagueRiotDir = curSettings._leagueRiotDir;
-            _instance._runeterraDir = curSettings._runeterraDir;
-            _instance._runeterraRiotDir = curSettings._runeterraRiotDir;
-            _instance._valorantDir = curSettings._valorantDir;
-            _instance._valorantRiotDir = curSettings._valorantRiotDir;
+            // Notice install directories are intentionally left out here.
+            // They are just saved for user ease-of-access.
 
             CheckShortcuts();
         }
