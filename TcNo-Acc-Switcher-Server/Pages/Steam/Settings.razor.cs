@@ -48,7 +48,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             if (SteamSwitcherFuncs.DeleteVacCacheFile())
                 await GeneralInvocableFuncs.ShowToast("success", "VAC status for accounts was cleared", renderTo: "toastarea");
             else
-                await GeneralInvocableFuncs.ShowToast("error", "Could not delete 'profilecache/SteamVACCache.json'", "Error", "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", "Could not delete 'LoginCache/Steam/VACCache/SteamVACCache.json'", "Error", "toastarea");
         }
 
         // BUTTON: Reset settings

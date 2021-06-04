@@ -260,7 +260,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 su.ImgUrl = $"{Steam.SteamImagePathHtml}{su.SteamId}.jpg";
                 var profileXml = new XmlDocument();
-                var cachedFile = $"profilecache/{su.SteamId}.xml";
+                var cachedFile = $"LoginCache/Steam/VACCache/{su.SteamId}.xml";
+                Directory.CreateDirectory("LoginCache/Steam/VACCache/");
                 profileXml.Load((File.Exists(cachedFile))? cachedFile : $"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
                 if (!File.Exists(cachedFile)) profileXml.Save(cachedFile);
 
@@ -289,8 +290,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 profileXml.Load($"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
                 // Cache for later
-                Directory.CreateDirectory("profilecache");
-                profileXml.Save($"profilecache/{su.SteamId}.xml");
+                Directory.CreateDirectory("LoginCache/Steam/VACCache");
+                profileXml.Save($"LoginCache/Steam/VACCache/{su.SteamId}.xml");
 
                 if (profileXml.DocumentElement != null && profileXml.DocumentElement.SelectNodes("/profile/privacyMessage")?.Count == 0) // Fix for accounts that haven't set up their Community Profile
                 {
