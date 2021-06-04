@@ -60,6 +60,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                     Console.WriteLine(e);  
                 }
             }
+            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
         }

@@ -109,6 +109,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
 
             SaveVacInfo(vacStatusList);
+            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
             _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
             _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
         }

@@ -99,6 +99,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                 await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list", element + "</div>");
             }
+            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
             if(BattleNet.OverwatchMode)

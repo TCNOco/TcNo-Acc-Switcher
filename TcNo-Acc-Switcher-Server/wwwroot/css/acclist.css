@@ -20,14 +20,11 @@
 	overflow-x: auto;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, 100px);
-	grid-template-rows: repeat(auto-fill, 135px);
 	gap: 4px;
 }
 
 .acc_list_item {
 	border: 0.1em solid transparent;
-	/*    width: var(--accountListItemWidth);
-height: var(--accountListItemHeight);*/
 }
 
 .acc_list_item>* {
@@ -60,7 +57,6 @@ label.acc {
 	min-width: var(--accountListItemWidth);
 	max-width: var(--accountListItemWidth);
 	min-height: var(--accountListItemHeight);
-	max-height: var(--accountListItemHeight);
 	padding: 0.5em;
 	margin: 0;
 	color: var(--accountColor);

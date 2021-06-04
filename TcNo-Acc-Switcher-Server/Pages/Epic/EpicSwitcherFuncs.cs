@@ -65,6 +65,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
                     $"<h6>{accName}</h6></div>\r\n"))
                 await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
 
+            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
         }

@@ -7,7 +7,15 @@ jQueryAppend = (jQuerySelector, strToInsert) => {
     console.log(`... into: ${jQuerySelector}\n`);
 
     $(jQuerySelector).append(strToInsert);
+    if (jQuerySelector === "#acc_list") {
+
+    }
 };
+jQueryProcessAccListSize = () => {
+    let maxHeight = 0;
+    $('.acc_list_item label').each((_, e) => { maxHeight = Math.max(maxHeight, e.offsetHeight); });
+    document.getElementById("acc_list").setAttribute("style", `grid-template-rows: repeat(auto-fill, ${maxHeight}px)`);
+}
 
 updateStatus = (status) => {
     $("#CurrentStatus").val(status);
