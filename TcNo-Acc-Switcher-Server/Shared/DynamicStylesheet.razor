@@ -2,10 +2,10 @@
 @inject AppSettings _appSettings
 <style>
     :root {
-        /* Selection */
+        /* Text selection styling */
         --selectionColor: @_appSettings.Stylesheet["selectionColor"]; /*#402B00;*/
         --selectionBackground: @_appSettings.Stylesheet["selectionBackground"]; /*#FFAA00;*/
-        /* Context Menu (Right-click menu) */
+        /* Right-Click context menu (Shows on account right-click) */
         --contextMenuBackground: @_appSettings.Stylesheet["contextMenuBackground"]; /*#14151E;*/
         --contextMenuBackground-hover: @_appSettings.Stylesheet["contextMenuBackground-hover"]; /*#1B2737;*/
         --contextMenuLeftBorder-hover: @_appSettings.Stylesheet["contextMenuLeftBorder-hover"]; /*#364E6E;*/
@@ -14,6 +14,7 @@
         --contextMenuBoxShadow: @_appSettings.Stylesheet["contextMenuBoxShadow"]; /*#FFFFFF;*/
         /* Headerbar */
         --headerbarBackground: @_appSettings.Stylesheet["headerbarBackground"]; /*#14151E;*/
+        --headerbarTCNOFill: @_appSettings.Stylesheet["headerbarTCNOFill"]; /*white*/
         --windowControlsBackground-hover: @_appSettings.Stylesheet["windowControlsBackground-hover"]; /*rgba(255,255,255,0.1);*/
         --windowControlsBackground-active: @_appSettings.Stylesheet["windowControlsBackground-active"]; /*rgba(255,255,255,0.2);*/
         --windowControlsCloseBackground: @_appSettings.Stylesheet["windowControlsCloseBackground"]; /*#E81123;*/
@@ -39,17 +40,17 @@
         --accountBorder-hover: @_appSettings.Stylesheet["accountBorder-hover"]; /*#2777A4;*/
         --accountBackground-checked: @_appSettings.Stylesheet["accountBackground-checked"]; /*#274560;*/
         --accountBorder-checked: @_appSettings.Stylesheet["accountBorder-checked"]; /*#26A0DA;*/
-        /* Main items */
+        /* Application-wide settings */
         --mainBackground: @_appSettings.Stylesheet["mainBackground"]; /*#28293A;*/
-        --borderedItemBorderColor: @_appSettings.Stylesheet["borderedItemBorderColor"]; /*#888;*/
-        --borderedItemBorderColor-focus: @_appSettings.Stylesheet["borderedItemBorderColor-focus"]; /*#888;*/
-        --borderedItemBorderColorBottom-focus: @_appSettings.Stylesheet["borderedItemBorderColorBottom-focus"]; /*#888;*/
         --defaultTextColor: @_appSettings.Stylesheet["defaultTextColor"]; /*white;*/
-        /* Links */
         --linkColor: @_appSettings.Stylesheet["linkColor"]; /*#FFAA00;*/
         --linkColor-hover: @_appSettings.Stylesheet["linkColor-hover"]; /*#FFDD00;*/
         --linkColor-active: @_appSettings.Stylesheet["linkColor-active"]; /*#CC7700;*/
-        /* Buttons */
+        /* Items with borders */
+        --borderedItemBorderColor: @_appSettings.Stylesheet["borderedItemBorderColor"]; /*#888;*/
+        --borderedItemBorderColor-focus: @_appSettings.Stylesheet["borderedItemBorderColor-focus"]; /*#888;*/
+        --borderedItemBorderColorBottom-focus: @_appSettings.Stylesheet["borderedItemBorderColorBottom-focus"]; /*#888;*/
+        /* Input: Buttons */
         --buttonBackground: @_appSettings.Stylesheet["buttonBackground"]; /*#333;*/
         --buttonBackground-active: @_appSettings.Stylesheet["buttonBackground-active"]; /*#222;*/
         --buttonBackground-hover: @_appSettings.Stylesheet["buttonBackground-hover"]; /*#444;*/
@@ -57,13 +58,20 @@
         --buttonBorder-hover: @_appSettings.Stylesheet["buttonBorder-hover"]; /*#888;*/
         --buttonBorder-active: @_appSettings.Stylesheet["buttonBorder-active"]; /*#FFAA00;*/
         --buttonColor: @_appSettings.Stylesheet["buttonColor"]; /*white;*/
+        /* Input: Checkboxes */
         --checkboxBorder: @_appSettings.Stylesheet["checkboxBorder"]; /*white;*/
         --checkboxBorder-checked: @_appSettings.Stylesheet["checkboxBorder-checked"]; /*white;*/
         --checkboxBackground: @_appSettings.Stylesheet["checkboxBackground"]; /*#FFAA00;*/
         --checkboxBackground-checked: @_appSettings.Stylesheet["checkboxBackground-checked"]; /*#FFAA00;*/
-        /* Input (Number, Text) */
+        /* Input: Text */
         --inputBackground: @_appSettings.Stylesheet["inputBackground"]; /*#212529;*/
         --inputColor: @_appSettings.Stylesheet["inputColor"]; /*white;*/
+        /* Input: Dropdown */
+        --dropdownBackground: @_appSettings.Stylesheet["dropdownBackground"]; /*#333;*/
+        --dropdownBorder: @_appSettings.Stylesheet["dropdownBorder"]; /*#888;*/
+        --dropdownColor: @_appSettings.Stylesheet["dropdownColor"]; /*white;*/
+        --dropdownItemBackground-active: @_appSettings.Stylesheet["dropdownItemBackground-active"]; /*#222;*/
+        --dropdownItemBackground-hover: @_appSettings.Stylesheet["dropdownItemBackground-hover"]; /*#444;*/
         /* Select list (eg. .forgotttenList) */
         --listBackground: @_appSettings.Stylesheet["listBackground"]; /*#222;*/
         --listColor: @_appSettings.Stylesheet["listColor"]; /*white;*/
@@ -80,7 +88,8 @@
         --modalBackground: @_appSettings.Stylesheet["modalBackground"]; /*#00000055;*/
         --modalFgBackground: @_appSettings.Stylesheet["modalFgBackground"]; /* #28293A; */
         --modalInputBackground: @_appSettings.Stylesheet["modalInputBackground"]; /*#222;*/
-        /* Modal Folder Indicator */
+        --modalTCNOFill: @_appSettings.Stylesheet["modalTCNOFill"]; /* white */
+        /* Specific to finding files (Such as Steam's .exe) */
         --foundColor: @_appSettings.Stylesheet["foundColor"]; /*lime;*/
         --foundBackground: @_appSettings.Stylesheet["foundBackground"]; /*green;*/
         --notFoundColor: @_appSettings.Stylesheet["notFoundColor"]; /*red;*/
@@ -106,11 +115,5 @@
         /* Links */
         --updateBarBackground: @_appSettings.Stylesheet["updateBarBackground"]; /* #FFAA00 */
         --updateBarColor: @_appSettings.Stylesheet["updateBarColor"]; /* #CC7700 */
-        /* Dropdown */
-        --dropdownBackground: @_appSettings.Stylesheet["dropdownBackground"]; /*#333;*/
-        --dropdownBorder: @_appSettings.Stylesheet["dropdownBorder"]; /*#888;*/
-        --dropdownColor: @_appSettings.Stylesheet["dropdownColor"]; /*white;*/
-        --dropdownItemBackground-active: @_appSettings.Stylesheet["dropdownItemBackground-active"]; /*#222;*/
-        --dropdownItemBackground-hover: @_appSettings.Stylesheet["dropdownItemBackground-hover"]; /*#444;*/
     }
 </style>

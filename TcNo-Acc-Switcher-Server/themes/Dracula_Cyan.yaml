@@ -31,6 +31,7 @@ contextMenuBoxShadow: 10px 10px 5px -3px rgb(0 0 0 / 30%)
 
 # Headerbar at the top, with the account switcher's page title and window controls
 headerbarBackground: "#253340"
+headerbarTCNOFill: white
 windowControlsBackground-hover: "#3B4853"
 windowControlsBackground-active: "#3B4853"
 windowControlsCloseBackground: "#D51426"
@@ -111,11 +112,12 @@ listTextColor-after-checked: "#8BE9FD"
 settingsHeaderColor: white
 settingsHeaderHrBorder: "#BBB"
 
-# Popup (Info, selecting platform .exe location...)
+# Modal: Popup (Info, selecting platform .exe location...)
 modalBackground: "#00000055"
 modalFgBackground: "#0E1419"
 modalInputBackground: "#070A0D"
-# Specific to finding files (Such as Steam's .exe)
+modalTCNOFill: white
+# Modal: Specific to finding files (Such as Steam's .exe)
 foundColor: lime
 foundBackground: green
 notFoundColor: red

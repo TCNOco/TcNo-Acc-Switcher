@@ -31,6 +31,7 @@ contextMenuBoxShadow: none
 
 # Headerbar at the top, with the account switcher's page title and window controls
 headerbarBackground: "#14151E"
+headerbarTCNOFill: white
 windowControlsBackground-hover: rgba(255,255,255,0.1)
 windowControlsBackground-active: rgba(255,255,255,0.2)
 windowControlsCloseBackground: "#E81123"
@@ -40,6 +41,9 @@ windowTitleColor: white
 # Footer at the bottom, with "Login" and "Add New" buttons
 footerBackground: "#222"
 footerColor: "#DDD"
+# Icons
+settingsIconFill: white
+aboutIconFill: white
 
 # Scrollbars, such as on the side
 scrollbarTrackBackground: "#1F202D"
@@ -111,19 +115,16 @@ listTextColor-after-checked: "#945300"
 settingsHeaderColor: white
 settingsHeaderHrBorder: "#BBB"
 
-# Popup (Info, selecting platform .exe location...)
+# Modal: Popup (Info, selecting platform .exe location...)
 modalBackground: "#00000055"
 modalFgBackground: "#28293A"
 modalInputBackground: "#212529"
-# Specific to finding files (Such as Steam's .exe)
+modalTCNOFill: white
+# Modal: Specific to finding files (Such as Steam's .exe)
 foundColor: lime
 foundBackground: green
 notFoundColor: red
 notFoundBackground: darkred
-
-# Steam Account Switcher colours
-limited: yellow
-vac: red
 
 # Toast notifications
 notification-color-dark-text: white
@@ -144,3 +145,14 @@ notification-color-error-lighter: "#17132C"
 # Update notification headerbar
 updateBarBackground: "#FFAA00"
 updateBarColor: black
+
+# ------------
+# Platform specific options:
+# ------------
+# Steam
+limited: yellow
+vac: red
+# Riot Games
+leagueIcon: white
+runeterraIcon: white
+valorantIcon: white
