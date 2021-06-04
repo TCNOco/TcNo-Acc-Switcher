@@ -1,4 +1,5 @@
-﻿.contextmenu {
+﻿/* ReSharper disable CssNotResolved */
+.contextmenu {
 	display: none;
 	position: absolute;
 	width: 15em;

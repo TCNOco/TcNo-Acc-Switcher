@@ -1,3 +1,4 @@
+/* ReSharper disable CssNotResolved */
 .modalBG {
 	position: fixed;
 	height: calc(100% - var(--resizeBarSize) - 32px);
