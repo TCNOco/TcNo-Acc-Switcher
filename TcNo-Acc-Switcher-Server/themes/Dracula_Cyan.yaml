@@ -159,32 +159,30 @@ battlenetIcoOWDamage-Fill: white
 battlenetIcoOWSupport-Fill: white
 # Steam
 limited: yellow
-vac: red
+vac: rgb(255 85 85)
 # Riot Games
-leagueIcon: white
-runeterraIcon: white
-valorantIcon: white
-riotIcoLeague-Fill: white
-riotIcoRuneterra-Fill: white
-riotIcoValorant-Fill: white
+riotIcoLeague-Fill: rgb(255, 215, 85)
+riotIcoRuneterra-Fill: rgb(255, 215, 85)
+riotIcoValorant-Fill: rgb(255, 85, 85)
 
 # ------------
 # Platform icons (Main menu):
 # ------------
-platformBorderColor: "#FFAA00"
+platformBorderColor: "#8BE9FD"
 platformFilter-Hover: "brightness(95%) saturate(1.20) contrast(105%)"
-platformFilter-Active: "brightness(110%) saturate(1.10)"
-platformFilterIcon-Hover: "brightness(95%) saturate(1.20) contrast(105%)"
-platformFilterIcon-Active: "brightness(110%) saturate(1.10)"
+platformFilter-Active: "brightness(110%) saturate(1.05)"
+platformFilterIcon-Hover: "brightness(95%) saturate(1.10) contrast(105%)"
+platformFilterIcon-Active: "brightness(110%) saturate(1.05)"
 platformTransform-Hover: scale(1.025)
 platformTransform-Active: scale(1)
-platformTransform-HoverAnimation-boxShadow-0: 0 0 0 0 rgba(255, 170, 0, 0.7)
-platformTransform-HoverAnimation-boxShadow-70: 0 0 0 10px rgba(255, 170, 0, 0)
-platformTransform-HoverAnimation-boxShadow-100: 0 0 0 10px rgba(255, 170, 0, 0)
+platformTransform-HoverAnimation-boxShadow-0: 0 0 0 0 rgba(139, 233, 253, 0.7)
+platformTransform-HoverAnimation-boxShadow-70: 0 0 0 10px rgba(139, 233, 253, 0)
+platformTransform-HoverAnimation-boxShadow-100: 0 0 0 10px rgba(139, 233, 253, 0)
 platformTransform-HoverAnimation-transform-0: scale(1)
 platformTransform-HoverAnimation-transform-70: scale(1.02)
 platformTransform-HoverAnimation-transform-100: scale(1)
 # BattleNet
+icoBattleNetBG: "linear-gradient(0deg, rgba(37,51,64,1) 0%, rgba(37,51,64,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%)"
 icoBattleNetText-Fill: "none"
 icoBattleNetText-Stroke: "#00a5f8"
 icoBattleNetText-StrokeWidth: 8.33px
@@ -193,6 +191,7 @@ icoBattleNetFG-Stroke: "none"
 icoBattleNetFG-StrokeWidth: 0
 icoBattleNetGlass-Fill: rgba(255, 255, 255, 0.02)
 # Epic Games
+icoEpicBG: "linear-gradient(0deg, rgba(37,51,64,1) 0%, rgba(37,51,64,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%)"
 icoEpicText-Fill: "none"
 icoEpicText-Stroke: "#00a5f8"
 icoEpicText-StrokeWidth: 8.33px
@@ -201,6 +200,7 @@ icoEpicFG-Stroke: "#00a5f8"
 icoEpicFG-StrokeWidth: 50px
 icoEpicGlass-Fill: rgba(255, 255, 255, 0.02)
 # Origin
+icoOriginBG: "linear-gradient(0deg, rgba(37,51,64,1) 0%, rgba(37,51,64,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%)"
 icoOriginText-Fill: "none"
 icoOriginText-Stroke: "#00a5f8"
 icoOriginText-StrokeWidth: 8.33px
@@ -209,6 +209,7 @@ icoOriginFG-Stroke: "#00a5f8"
 icoOriginFG-StrokeWidth: 12.51px
 icoOriginGlass-Fill: rgba(255, 255, 255, 0.02)
 # Riot
+icoRiotBG: "linear-gradient(0deg, rgba(37,51,64,1) 0%, rgba(37,51,64,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%)"
 icoRiotText-Fill: "none"
 icoRiotText-Stroke: "#00a5f8"
 icoRiotText-StrokeWidth: 8.33px
@@ -217,6 +218,7 @@ icoRiotFG-Stroke: "#00a5f8"
 icoRiotFG-StrokeWidth: 12.51px
 icoRiotGlass-Fill: rgba(255, 255, 255, 0.02)
 # Steam
+icoSteamBG: "linear-gradient(0deg, rgba(37,51,64,1) 0%, rgba(37,51,64,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%)"
 icoSteamText-Fill: "none"
 icoSteamText-Stroke: "#00a5f8"
 icoSteamText-StrokeWidth: 8.33px
@@ -225,6 +227,7 @@ icoSteamFG-Stroke: "#00a5f8"
 icoSteamFG-StrokeWidth: 12.51px
 icoSteamGlass-Fill: rgba(255, 255, 255, 0.02)
 # Ubisoft
+icoUbisoftBG: "linear-gradient(0deg, rgba(37,51,64,1) 0%, rgba(37,51,64,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%)"
 icoUbisoftText-Fill: "none"
 icoUbisoftText-Stroke: "#00a5f8"
 icoUbisoftText-StrokeWidth: 8.33px

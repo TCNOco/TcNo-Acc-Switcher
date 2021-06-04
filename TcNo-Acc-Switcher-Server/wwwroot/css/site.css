@@ -575,8 +575,9 @@ div.advancedClearingButtonCol .buttoncol {
 }
 
 .platformIcon:hover {
-    transform: var(--platformTransform-Hover);
-    filter: var(--platformFilter-Hover);
+	transform: var(--platformTransform-Hover);
+	filter: var(--platformFilter-Hover);
+    animation: pulse 2s infinite;
 }
 
 .platformIcon:active {
@@ -586,7 +587,6 @@ div.advancedClearingButtonCol .buttoncol {
 .platformIcon:hover svg {
 	transform: var(--platformTransformIcon-Hover);
 	filter: var(--platformFilterIcon-Hover);
-    animation: pulse 2s infinite;
 }
 .platformIcon svg .icoGlass {
     transition: 500ms all ease-in;
@@ -620,6 +620,9 @@ div.advancedClearingButtonCol .buttoncol {
 }
 
 /* BattleNet */
+.icoBattleNetBG {
+	background: var(--icoBattleNetBG);
+}
 .icoBattleNetText {
 	fill: var(--icoBattleNetText-Fill);
 	stroke: var(--icoBattleNetText-Stroke);
@@ -638,6 +641,9 @@ div.advancedClearingButtonCol .buttoncol {
 	fill: var(--icoBattleNetGlass-Fill);
 }
 /* Epic Games */
+.icoEpicBG {
+	background: var(--icoEpicBG);
+}
 .icoEpicText {
 	fill: var(--icoEpicText-Fill);
 	stroke: var(--icoEpicText-Stroke);
@@ -657,6 +663,9 @@ div.advancedClearingButtonCol .buttoncol {
 }
 
 /* Origin */
+.icoOriginBG {
+	background: var(--icoOriginBG);
+}
 .icoOriginText {
 	fill: var(--icoOriginText-Fill);
 	stroke: var(--icoOriginText-Stroke);
@@ -676,6 +685,9 @@ div.advancedClearingButtonCol .buttoncol {
 }
 
 /* Riot Games */
+.icoRiotBG {
+	background: var(--icoRiotBG);
+}
 .icoRiotText {
 	fill: var(--icoRiotText-Fill);
 	stroke: var(--icoRiotText-Stroke);
@@ -694,6 +706,9 @@ div.advancedClearingButtonCol .buttoncol {
 	fill: var(--icoRiotGlass-Fill);
 }
 /* Steam */
+.icoSteamBG {
+	background: var(--icoSteamBG);
+}
 .icoSteamText {
 	fill: var(--icoSteamText-Fill);
 	stroke: var(--icoSteamText-Stroke);
@@ -712,6 +727,9 @@ div.advancedClearingButtonCol .buttoncol {
 	fill: var(--icoRiotGlass-Fill);
 }
 /* Ubisoft */
+.icoUbisoftBG {
+	background: var(--icoUbisoftBG);
+}
 .icoUbisoftText {
 	fill: var(--icoUbisoftText-Fill);
 	stroke: var(--icoUbisoftText-Stroke);
