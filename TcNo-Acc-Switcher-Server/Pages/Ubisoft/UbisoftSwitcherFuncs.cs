@@ -37,10 +37,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             {
                 Dictionary<string, string> newIds = new();
                 var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Ubisoft\\order.json"));
-                if (savedOrder is {Count: > 0})
-                    foreach (var (key, value) in from i in savedOrder where allIds.Any(x => x.Key == i) select allIds.Single(x => x.Key == i))
-                        newIds.Add(key, value);
-                allIds = newIds;
+                if (savedOrder != null)
+                {
+                    if (savedOrder is { Count: > 0 })
+                    {
+                        var ids = allIds;
+                        foreach (var (key, value) in from i in savedOrder where ids.Any(x => x.Key == i) select ids.Single(x => x.Key == i))
+                            newIds.Add(key, value);
+                    }
+
+                    allIds = newIds;
+                }
             }
 
             foreach (var (userId, username) in allIds)

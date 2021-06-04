@@ -255,7 +255,7 @@ namespace TcNo_Acc_Switcher_Globals
         {
             if (!File.Exists("Tray_Users.json")) return new();
             var json = File.ReadAllText("Tray_Users.json");
-            return JsonConvert.DeserializeObject<Dictionary<string, List<TrayUser>>>(json);
+            return JsonConvert.DeserializeObject<Dictionary<string, List<TrayUser>>>(json) ?? new Dictionary<string, List<TrayUser>>();
         }
 
         /// <summary>

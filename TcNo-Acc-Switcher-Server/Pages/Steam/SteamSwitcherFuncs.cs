@@ -65,14 +65,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             if (File.Exists("LoginCache\\Steam\\order.json"))
             {
                 var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Steam\\order.json"));
-                var index = 0;
-                if (savedOrder is {Count: > 0})
-                    foreach (var acc in from i in savedOrder where userAccounts.Any(x => x.AccName == i) select userAccounts.Single(x => x.AccName == i))
-                    {
-                        userAccounts.Remove(acc);
-                        userAccounts.Insert(index, acc);
-                        index++;
-                    }
+                if (savedOrder != null)
+                {
+                    var index = 0;
+                    if (savedOrder is { Count: > 0 })
+                        foreach (var acc in from i in savedOrder where userAccounts.Any(x => x.AccName == i) select userAccounts.Single(x => x.AccName == i))
+                        {
+                            userAccounts.Remove(acc);
+                            userAccounts.Insert(index, acc);
+                            index++;
+                        }
+                }
             }
 
             foreach (var ua in userAccounts)
@@ -180,6 +183,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             GeneralFuncs.DeletedOutdatedFile(Steam.VacCacheFile);
             if (!File.Exists(Steam.VacCacheFile)) return false;
             vsl = JsonConvert.DeserializeObject<List<VacStatus>>(File.ReadAllText(Steam.VacCacheFile));
+
+            if (vsl != null) return true;
+            File.Delete(Steam.VacCacheFile);
+            vsl = new List<VacStatus>();
             return true;
         }
 

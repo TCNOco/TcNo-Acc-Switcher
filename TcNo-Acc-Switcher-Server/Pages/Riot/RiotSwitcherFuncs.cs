@@ -59,14 +59,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             if (File.Exists("LoginCache\\Riot\\order.json"))
             {
                 var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Riot\\order.json"));
-                var index = 0;
-                if (savedOrder is { Count: > 0 })
-                    foreach (var acc in from i in savedOrder where accList.Any(x => x == i) select accList.Single(x => x == i))
-                    {
-                        accList.Remove(acc);
-                        accList.Insert(index, acc);
-                        index++;
-                    }
+                if (savedOrder != null)
+                {
+                    var index = 0;
+                    if (savedOrder is { Count: > 0 })
+                        foreach (var acc in from i in savedOrder where accList.Any(x => x == i) select accList.Single(x => x == i))
+                        {
+                            accList.Remove(acc);
+                            accList.Insert(index, acc);
+                            index++;
+                        }
+                }
             }
 
             foreach (var element in

@@ -178,12 +178,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             }
             if (File.Exists(StoredAccPath) )
             {
-                Accounts = JsonConvert.DeserializeObject<List<BattleNetSwitcherBase.BattleNetUser>>(File.ReadAllText(StoredAccPath)) ?? new();
+                Accounts = JsonConvert.DeserializeObject<List<BattleNetSwitcherBase.BattleNetUser>>(File.ReadAllText(StoredAccPath)) ?? new List<BattleNetSwitcherBase.BattleNetUser>();
             }
 
             if (File.Exists(IgnoredAccPath))
             {
-                IgnoredAccounts = JsonConvert.DeserializeObject<List<BattleNetSwitcherBase.BattleNetUser>>(File.ReadAllText(IgnoredAccPath)) ?? new();
+                IgnoredAccounts = JsonConvert.DeserializeObject<List<BattleNetSwitcherBase.BattleNetUser>>(File.ReadAllText(IgnoredAccPath)) ?? new List<BattleNetSwitcherBase.BattleNetUser>();
             }
         }
 

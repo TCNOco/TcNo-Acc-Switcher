@@ -44,8 +44,31 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.LoadProfiles] Loading BattleNet profiles");
             LoadImportantData();
             BattleNet.LoadAccounts();
+            // Check if accounts file exists
+            if (!File.Exists(_battleNetRoaming + "\\Battle.net.config"))
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", "Could not find Battle.net.config", "toastarea");
+                return;
+            }
+
+            // Read lines in accounts file
             var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config");
-            foreach (var mail in (JsonConvert.DeserializeObject(file) as JObject)?.SelectToken("Client.SavedAccountNames")?.ToString().Split(','))
+            var accountsFile = JsonConvert.DeserializeObject(file) as JObject;
+            if (accountsFile == null)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", "Could not load accounts file for Blizzard (Battle.net.config file corrupt)", "toastarea");
+                return;
+            }
+
+            // Verify that there are accounts to iterate over
+            var savedAccountsList = accountsFile.SelectToken("Client.SavedAccountNames");
+            if (savedAccountsList == null)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", "Could not load accounts file for Blizzard (No accounts found)", "toastarea");
+                return;
+            }
+
+            foreach (var mail in savedAccountsList.ToString().Split(','))
             {
                 try
                 {
@@ -62,14 +85,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             if (File.Exists("LoginCache\\BattleNet\\order.json"))
             {
                 var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\BattleNet\\order.json"));
-                var index = 0;
-                if (savedOrder is {Count: > 0})
-                    foreach (var acc in from i in savedOrder where BattleNet.Accounts.Any(x => x.Email == i) select BattleNet.Accounts.Single(x => x.Email == i))
-                    {
-                        BattleNet.Accounts.Remove(acc);
-                        BattleNet.Accounts.Insert(index, acc);
-                        index++;
-                    }
+                if (savedOrder != null)
+                {
+                    var index = 0;
+                    if (savedOrder is { Count: > 0 })
+                        foreach (var acc in from i in savedOrder where BattleNet.Accounts.Any(x => x.Email == i) select BattleNet.Accounts.Single(x => x.Email == i))
+                        {
+                            BattleNet.Accounts.Remove(acc);
+                            BattleNet.Accounts.Insert(index, acc);
+                            index++;
+                        }
+                }
             }
 
             foreach (var acc in BattleNet.Accounts)
@@ -178,9 +204,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             // Load settings into JObject
             var file = File.ReadAllText(_battleNetRoaming + "\\Battle.net.config");
             var jObject = JsonConvert.DeserializeObject(file) as JObject;
+            if (jObject == null)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", "Could not swap accounts (Battle.net.config file corrupt)", "toastarea");
+                return;
+            }
+
 
             // Select the JToken with the Account Emails
-            var jToken = jObject?.SelectToken("Client.SavedAccountNames");
+            var jToken = jObject.SelectToken("Client.SavedAccountNames");
             BattleNetSwitcherBase.BattleNetUser account;
             if (email != "") // New account
             {

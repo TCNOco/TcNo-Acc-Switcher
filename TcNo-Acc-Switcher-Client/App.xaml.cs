@@ -15,6 +15,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -69,6 +70,13 @@ namespace TcNo_Acc_Switcher_Client
         }
 
         public bool DebugMode = true;
+        private static Random random = new Random();
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
 
         static readonly Mutex Mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
         [STAThread]
@@ -88,8 +96,21 @@ namespace TcNo_Acc_Switcher_Client
 #else
             // Logging:
             // Redirects all Console.WriteLines to Log.txt, which cleans itself every launch.
-            var fs = new FileStream("log.txt", FileMode.Create);
-            var sw = new StreamWriter(fs) {AutoFlush = true};
+            StreamWriter sw = null;
+            var attempts = 0;
+            while (attempts < 5) // Attempts 4 times
+            {
+                try
+                {
+                    attempts++;
+                    sw = new StreamWriter(new FileStream($"log${(attempts > 0 ? RandomString(5) : "")}.txt", FileMode.Create)) { AutoFlush = true };
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                    throw;
+                }
+            }
             Console.SetOut(sw);
             Console.SetError(sw);
 #endif
