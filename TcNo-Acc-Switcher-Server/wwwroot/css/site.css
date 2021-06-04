@@ -3,6 +3,8 @@
 	font-family: 'Catamaran', sans-serif;
 	src: url("/css/font/Catamaran-VariableFont_wght.ttf") format("ttf");
 }
+/* v (Nessecary for disabling the red highlight saying vars not found [as they're added dynamically later]) v */
+/* ReSharper disable CssNotResolved */
 
 html,
 body {
@@ -545,6 +547,7 @@ div.advancedClearingButtonCol .buttoncol {
 }
 
 .platformContainer {
+    user-select: none;
 	margin: 0;
 	position: absolute;
 	top: 50%;
@@ -559,21 +562,163 @@ div.advancedClearingButtonCol .buttoncol {
 	display: inline-block;
 	cursor: pointer;
 	/* ReSharper disable once InvalidValue */
-	border: var(--linkColor) 1px solid;
+	border: var(--platformBorderColor) 1px solid;
 	margin: 10px;
 	transition: all 100ms ease-in-out;
 }
 
 .platformIcon:hover {
-	background-color: #000033;
-	background-color: rgba(0, 0, 51, 0);
-	transform: scale(1.025);
-	filter: brightness(110%) saturate(1.10) drop-shadow(0 0 0.1rem var(--linkColor));
+    transform: var(--platformTransform-Hover);
+    filter: var(--platformFilter-Hover);
 }
 
 .platformIcon:active {
-	background-color: #000055;
-	background-color: rgba(0, 0, 85, 0);
-	transform: scale(0.975);
-	filter: brightness(95%) saturate(1.20) contrast(105%) drop-shadow(0 0 0.2rem var(--linkColor));
+    transform: var(--platformTransform-Active);
+    filter: var(--platformFilter-Active);
+}
+.platformIcon:hover svg {
+	transform: var(--platformTransformIcon-Hover);
+	filter: var(--platformFilterIcon-Hover);
+    animation: pulse 2s infinite;
+}
+.platformIcon svg .icoGlass {
+    transition: 500ms all ease-in;
+}
+.platformIcon:hover svg .icoGlass {
+    transform: scale(1.05);
+}
+.platformIcon:active svg .icoGlass {
+    transform: scale(0.90);
+}
+
+.platformIcon:active svg {
+	transform: var(--platformTransformIcon-Active);
+	filter: var(--platformFilterIcon-Active);
+}
+@keyframes pulse {
+	0% {
+        transform: var(--platformTransform-HoverAnimation-transform-0);
+        box-shadow: var(--platformTransform-HoverAnimation-boxShadow-0);
+	}
+
+	70% {
+        transform: var(--platformTransform-HoverAnimation-transform-70);
+		box-shadow: var(--platformTransform-HoverAnimation-boxShadow-70);
+	}
+
+	100% {
+        transform: var(--platformTransform-HoverAnimation-transform-100);
+		box-shadow: var(--platformTransform-HoverAnimation-boxShadow-100);
+	}
+}
+
+/* BattleNet */
+.icoBattleNetText {
+	fill: var(--icoBattleNetText-Fill);
+	stroke: var(--icoBattleNetText-Stroke);
+	stroke-width: var(--icoBattleNetText-StrokeWidth);
+	stroke-linejoin: round;
+	stroke-miterlimit: 2
+}
+
+.icoBattleNetFG {
+	fill: var(--icoBattleNetFG-Fill);
+	stroke: var(--icoBattleNetFG-Stroke);
+	stroke-width: var(--icoBattleNetFG-StrokeWidth);
+}
+
+.icoBattleNetGlass {
+	fill: var(--icoBattleNetGlass-Fill);
+}
+/* Epic Games */
+.icoEpicText {
+	fill: var(--icoEpicText-Fill);
+	stroke: var(--icoEpicText-Stroke);
+	stroke-width: var(--icoEpicText-StrokeWidth);
+	stroke-linejoin: round;
+	stroke-miterlimit: 2
+}
+
+.icoEpicFG {
+	fill: var(--icoEpicFG-Fill);
+	stroke: var(--icoEpicFG-Stroke);
+	stroke-width: var(--icoEpicFG-StrokeWidth);
+}
+
+.icoEpicGlass {
+	fill: var(--icoEpicGlass-Fill);
+}
+
+/* Origin */
+.icoOriginText {
+	fill: var(--icoOriginText-Fill);
+	stroke: var(--icoOriginText-Stroke);
+	stroke-width: var(--icoOriginText-StrokeWidth);
+	stroke-linejoin: round;
+	stroke-miterlimit: 2
+}
+
+.icoOriginFG {
+	fill: var(--icoOriginFG-Fill);
+	stroke: var(--icoOriginFG-Stroke);
+	stroke-width: var(--icoOriginFG-StrokeWidth);
+}
+
+.icoOriginGlass {
+	fill: var(--icoOriginGlass-Fill);
+}
+
+/* Riot Games */
+.icoRiotText {
+	fill: var(--icoRiotText-Fill);
+	stroke: var(--icoRiotText-Stroke);
+	stroke-width: var(--icoRiotText-StrokeWidth);
+	stroke-linejoin: round;
+	stroke-miterlimit: 2
+}
+
+.icoRiotFG {
+	fill: var(--icoRiotFG-Fill);
+	stroke: var(--icoRiotFG-Stroke);
+	stroke-width: var(--icoRiotFG-StrokeWidth);
+}
+
+.icoRiotGlass {
+	fill: var(--icoRiotGlass-Fill);
+}
+/* Steam */
+.icoSteamText {
+	fill: var(--icoSteamText-Fill);
+	stroke: var(--icoSteamText-Stroke);
+	stroke-width: var(--icoSteamText-StrokeWidth);
+	stroke-linejoin: round;
+	stroke-miterlimit: 2
+}
+
+.icoSteamFG {
+	fill: var(--icoSteamFG-Fill);
+	stroke: var(--icoSteamFG-Stroke);
+	stroke-width: var(--icoSteamFG-StrokeWidth);
+}
+
+.icoSteamGlass {
+	fill: var(--icoRiotGlass-Fill);
+}
+/* Ubisoft */
+.icoUbisoftText {
+	fill: var(--icoUbisoftText-Fill);
+	stroke: var(--icoUbisoftText-Stroke);
+	stroke-width: var(--icoUbisoftText-StrokeWidth);
+	stroke-linejoin: round;
+	stroke-miterlimit: 2
+}
+
+.icoUbisoftFG {
+	fill: var(--icoUbisoftFG-Fill);
+	stroke: var(--icoUbisoftFG-Stroke);
+	stroke-width: var(--icoUbisoftFG-StrokeWidth);
+}
+
+.icoUbisoftGlass {
+	fill: var(--icoRiotGlass-Fill);
 }

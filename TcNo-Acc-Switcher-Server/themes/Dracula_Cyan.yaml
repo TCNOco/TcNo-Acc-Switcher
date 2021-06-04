@@ -1,7 +1,7 @@
 ---
 # (Feel free to remove this in your own stylesheets)
 # This file is used to store CSS variables.
-# Any colors and code that works with CSS variables ["--var()"] will work
+# Any colors and code that works with CSS variables ["var(--xyz)"] will work
 # Hence you see:
 # - Colours: 'Color names', RGB Hex, RGB(), RGBA(), HSL(), HSLA()
 #            [The "A" stands for Alpha/Transparancy]
@@ -123,10 +123,6 @@ foundBackground: green
 notFoundColor: red
 notFoundBackground: darkred
 
-# Steam Account Switcher colours
-limited: yellow
-vac: red
-
 # Toast notifications
 notification-color-dark-text: white
 notification-color-dark-border: 'rgb(20: 20: 20)'
@@ -146,3 +142,79 @@ notification-color-error-lighter: "#274560"
 # Update notification headerbar
 updateBarBackground: "#8BE9FD"
 updateBarColor: black
+
+# ------------
+# Platform specific options:
+# ------------
+# Steam
+limited: yellow
+vac: red
+# Riot Games
+leagueIcon: white
+runeterraIcon: white
+valorantIcon: white
+
+# ------------
+# Platform icons (Main menu):
+# ------------
+platformBorderColor: "#FFAA00"
+platformFilter-Hover: "brightness(95%) saturate(1.20) contrast(105%)"
+platformFilter-Active: "brightness(110%) saturate(1.10)"
+platformFilterIcon-Hover: "brightness(95%) saturate(1.20) contrast(105%)"
+platformFilterIcon-Active: "brightness(110%) saturate(1.10)"
+platformTransform-Hover: scale(1.025)
+platformTransform-Active: scale(1)
+platformTransform-HoverAnimation-boxShadow-0: 0 0 0 0 rgba(255, 170, 0, 0.7)
+platformTransform-HoverAnimation-boxShadow-70: 0 0 0 10px rgba(255, 170, 0, 0)
+platformTransform-HoverAnimation-boxShadow-100: 0 0 0 10px rgba(255, 170, 0, 0)
+platformTransform-HoverAnimation-transform-0: scale(1)
+platformTransform-HoverAnimation-transform-70: scale(1.02)
+platformTransform-HoverAnimation-transform-100: scale(1)
+# BattleNet
+icoBattleNetText-Fill: "none"
+icoBattleNetText-Stroke: "#00a5f8"
+icoBattleNetText-StrokeWidth: 8.33px
+icoBattleNetFG-Fill: "#00a5f8"
+icoBattleNetFG-Stroke: "none"
+icoBattleNetFG-StrokeWidth: 0
+icoBattleNetGlass-Fill: rgba(255, 255, 255, 0.02)
+# Epic Games
+icoEpicText-Fill: "none"
+icoEpicText-Stroke: "#00a5f8"
+icoEpicText-StrokeWidth: 8.33px
+icoEpicFG-Fill: "#00a5f8"
+icoEpicFG-Stroke: "#00a5f8"
+icoEpicFG-StrokeWidth: 50px
+icoEpicGlass-Fill: rgba(255, 255, 255, 0.02)
+# Origin
+icoOriginText-Fill: "none"
+icoOriginText-Stroke: "#00a5f8"
+icoOriginText-StrokeWidth: 8.33px
+icoOriginFG-Fill: "none"
+icoOriginFG-Stroke: "#00a5f8"
+icoOriginFG-StrokeWidth: 12.51px
+icoOriginGlass-Fill: rgba(255, 255, 255, 0.02)
+# Riot
+icoRiotText-Fill: "none"
+icoRiotText-Stroke: "#00a5f8"
+icoRiotText-StrokeWidth: 8.33px
+icoRiotFG-Fill: "none"
+icoRiotFG-Stroke: "#00a5f8"
+icoRiotFG-StrokeWidth: 12.51px
+icoRiotGlass-Fill: rgba(255, 255, 255, 0.02)
+# Steam
+icoSteamText-Fill: "none"
+icoSteamText-Stroke: "#00a5f8"
+icoSteamText-StrokeWidth: 8.33px
+icoSteamFG-Fill: "none"
+icoSteamFG-Stroke: "#00a5f8"
+icoSteamFG-StrokeWidth: 12.51px
+icoSteamGlass-Fill: rgba(255, 255, 255, 0.02)
+# Ubisoft
+icoUbisoftText-Fill: "none"
+icoUbisoftText-Stroke: "#00a5f8"
+icoUbisoftText-StrokeWidth: 8.33px
+icoUbisoftFG-Fill: "none"
+icoUbisoftFG-Stroke: "#00a5f8"
+icoUbisoftFG-StrokeWidth: 12.51px
+icoUbisoftGlass-Fill: rgba(255, 255, 255, 0.02)

@@ -40,21 +40,21 @@
         @if (GetLeague())
         {
             <div class="button" id="btnLeague" @onclick="() => RiotSwitcherFuncs.RiotStart('l')">
-                <img src="img/icons/ico_League.svg" draggable="false" />
+                <img class="riotIcoLeague" src="img/icons/ico_League.svg" draggable="false" />
             </div>
         }
 
         @if (GetRuneterra())
         {
         <div class="button" id="btnRuneterra" @onclick="() => RiotSwitcherFuncs.RiotStart('r')">
-            <img src="img/icons/ico_Runeterra.svg" draggable="false"/>
+            <img class="riotIcoRuneterra" src="img/icons/ico_Runeterra.svg" draggable="false"/>
         </div>
         }
 
         @if (GetValorant())
         {
         <div class="button" id="btnValorant" @onclick="() => RiotSwitcherFuncs.RiotStart('v')">
-            <img src="img/icons/ico_Valorant.svg" draggable="false"/>
+            <img class="riotIcoValorant" src="img/icons/ico_Valorant.svg" draggable="false"/>
         </div>
         }
 
@@ -71,11 +71,11 @@
         </div>
 
         <div class="button" id="btnSettings" onclick="location = 'Riot/Settings'">
-            <img src="img/icons/ico_settings.svg" draggable="false" />
+            <img class="footerIcoSettings" src="img/icons/ico_settings.svg" draggable="false" />
         </div>
 
         <div class="button" id="btnHelp" onclick="ShowModal('info');">
-            <img src="img/icons/ico_question.svg" draggable="false" />
+            <img class="footerIcoQuestion" src="img/icons/ico_question.svg" draggable="false" />
         </div>
     </div>
 

@@ -94,15 +94,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 {
                     if (acc.OwTankSr != 0)
                     {
-                        element += $"<h6>{TankIcon} {acc.OwTankSr}<sup>SR</sup></h6>\r\n";
+                        element += $"<h6 class=\"battlenetIcoOWTank\">{TankIcon} {acc.OwTankSr}<sup>SR</sup></h6>\r\n";
                     }
                     if (acc.OwDpsSr != 0)
                     {
-                        element += $"<h6>{DamageIcon} {acc.OwDpsSr}<sup>SR</sup></h6>\r\n";
+                        element += $"<h6 class=\"battlenetIcoOWDamage\">{DamageIcon} {acc.OwDpsSr}<sup>SR</sup></h6>\r\n";
                     }
                     if (acc.OwSupportSr != 0)
                     {
-                        element += $"<h6>{SupportIcon} {acc.OwSupportSr}<sup>SR</sup></h6>\r\n";
+                        element += $"<h6 class=\"battlenetIcoOWSupport\">{SupportIcon} {acc.OwSupportSr}<sup>SR</sup></h6>\r\n";
                     }
                 }
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
