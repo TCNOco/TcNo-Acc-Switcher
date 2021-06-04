@@ -201,16 +201,6 @@ label.acc p {
 	padding: 0.25em 5em;
 }
 
-.acc_list_actionbar div .button span,
-.settingsCol button span {
-	line-height: 2.5em;
-}
-
-.acc_list_actionbar div .button img,
-.settingsCol button img {
-	width: 1.5em;
-}
-
 .statusBar {
 	position: relative;
 }
@@ -234,4 +224,9 @@ label h6 svg {
 	fill: white;
 	margin: 2px;
 	vertical-align: center;
+}
+
+.battleNetIcon {
+    width: 15px;
+    display: inline-block;
 }

@@ -279,10 +279,10 @@ function ShowModal(modaltype) {
                     <h2>TcNo Account Switcher</h2>
                     <p>Created by TechNobo [Wesley Pyburn]</p>
                     <div class="linksList">
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');"><img class="modalIcoDiscord" src="img/icons/ico_discord.svg" draggable="false">View on GitHub</a>
-                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');"><img class="modalIcoGitHub" src="img/icons/ico_github.svg" draggable="false">Bug report/Feature request</a>
-                        <a onclick="OpenLinkInBrowser('https://tcno.co');"><img class="modalIcoNetworking" src="img/icons/ico_networking.svg" draggable="false">Visit tcno.co</a>
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');"><img class="modalIcoDoc" src="img/icons/ico_doc.svg" draggable="false">Disclaimer</a>
+                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');"><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>View on GitHub</a>
+                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');"><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>Bug report/Feature request</a>
+                        <a onclick="OpenLinkInBrowser('https://tcno.co');"><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>Visit tcno.co</a>
+                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');"><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>Disclaimer</a>
                     </div>
                 </div>
                 </div><div class="versionIdentifier"><span>Version: ` + currentVersion + `</span></div>`);

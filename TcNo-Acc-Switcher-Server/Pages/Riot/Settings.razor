@@ -58,13 +58,25 @@
                 <hr>
             </div>
             <button class="btn" type="button" id="btnLeague" @onclick="() => RiotSwitcherFuncs.RiotOpenFolder('l')">
-                <span><img src="img/icons/ico_League.svg" draggable="false" /></span>
+                <span>
+                    <svg viewBox="0 0 2084 2084" draggable="false" alt="League" class="riotIcoLeague">
+                        <use href="img/icons/ico_League.svg#icoLeague"></use>
+                    </svg>
+                </span>
             </button>
             <button class="btn" type="button" id="btnRuneterra" @onclick="() => RiotSwitcherFuncs.RiotOpenFolder('r')">
-                <span><img src="img/icons/ico_Runeterra.svg" draggable="false" /></span>
+                <span>
+                    <svg viewBox="0 0 2084 2084" draggable="false" alt="Runeterra" class="riotIcoRuneterra">
+                        <use href="img/icons/ico_Runeterra.svg#icoRuneterra"></use>
+                    </svg>
+                </span>
             </button>
             <button class="btn" type="button" id="btnValorant" @onclick="() => RiotSwitcherFuncs.RiotOpenFolder('v')">
-                <span><img src="img/icons/ico_Valorant.svg" draggable="false" /></span>
+                <span>
+                    <svg viewBox="0 0 2084 2084" draggable="false" alt="Valorant" class="riotIcoValorant">
+                        <use href="img/icons/ico_Valorant.svg#icoValorant"></use>
+                    </svg>
+                </span>
             </button>
 
             <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>Close</span></button></div>

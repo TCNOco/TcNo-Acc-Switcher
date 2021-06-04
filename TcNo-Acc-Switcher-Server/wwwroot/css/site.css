@@ -556,6 +556,13 @@ div.advancedClearingButtonCol .buttoncol {
 	text-align: center;
 }
 
+
+/* -------------------------------------------------
+	------------ PLATFORM ICONS SECTION ------------
+	------------------------------------------------
+*/
+
+
 .platformIcon {
 	width: 20vw;
 	max-width: calc(100vw / 4.106);
@@ -721,4 +728,52 @@ div.advancedClearingButtonCol .buttoncol {
 
 .icoUbisoftGlass {
 	fill: var(--icoRiotGlass-Fill);
+}
+
+.modalIcoDiscord {
+	fill: var(--modalIcoDiscord-Fill)
+}
+
+.modalIcoGitHub {
+	fill: var(--modalIcoGitHub-Fill)
+}
+
+.modalIcoNetworking {
+	fill: var(--modalIcoNetworking-Fill)
+}
+
+.modalIcoDoc {
+	fill: var(--modalIcoDoc-Fill)
+}
+
+.battlenetIcoOWTank {
+	fill: var(--battlenetIcoOWTank-Fill)
+}
+
+.battlenetIcoOWDamage {
+	fill: var(--battlenetIcoOWDamage-Fill)
+}
+
+.battlenetIcoOWSupport {
+	fill: var(--battlenetIcoOWSupport-Fill)
+}
+
+.riotIcoLeague {
+	fill: var(--riotIcoLeague-Fill)
+}
+
+.riotIcoRuneterra {
+	fill: var(--riotIcoRuneterra-Fill)
+}
+
+.riotIcoValorant {
+	fill: var(--riotIcoValorant-Fill)
+}
+
+.footerIcoSettings {
+	fill: var(--footerIcoSettings-Fill)
+}
+
+.footerIcoQuestion {
+	fill: var(--footerIcoQuestion-Fill)
 }

@@ -42,8 +42,8 @@ windowTitleColor: white
 footerBackground: "#222"
 footerColor: "#DDD"
 # Icons
-settingsIconFill: white
-aboutIconFill: white
+footerIcoSettings-Fill: white
+footerIcoQuestion-Fill: white
 
 # Scrollbars, such as on the side
 scrollbarTrackBackground: "#1F202D"
@@ -120,11 +120,15 @@ modalBackground: "#00000055"
 modalFgBackground: "#28293A"
 modalInputBackground: "#212529"
 modalTCNOFill: white
+modalIcoDiscord-Fill: white
+modalIcoGitHub-Fill: white
+modalIcoNetworking-Fill: white
+modalIcoDoc-Fill: white
 # Modal: Specific to finding files (Such as Steam's .exe)
-foundColor: lime
-foundBackground: green
-notFoundColor: red
-notFoundBackground: darkred
+modalfoundColor: lime
+modalfoundBackground: green
+modalnotFoundColor: red
+modalnotFoundBackground: darkred
 
 # Toast notifications
 notification-color-dark-text: white
@@ -149,6 +153,10 @@ updateBarColor: black
 # ------------
 # Platform specific options:
 # ------------
+# BattleNet
+battlenetIcoOWTank-Fill: white
+battlenetIcoOWDamage-Fill: white
+battlenetIcoOWSupport-Fill: white
 # Steam
 limited: yellow
 vac: red
@@ -156,6 +164,9 @@ vac: red
 leagueIcon: white
 runeterraIcon: white
 valorantIcon: white
+riotIcoLeague-Fill: white
+riotIcoRuneterra-Fill: white
+riotIcoValorant-Fill: white
 
 # ------------
 # Platform icons (Main menu):

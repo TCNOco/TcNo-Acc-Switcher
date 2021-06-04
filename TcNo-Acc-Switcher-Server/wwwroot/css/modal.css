@@ -100,7 +100,7 @@
 	color: var(--linkColor-active);
 }
 
-.infoWindow .rightContent .linksList a img {
+.infoWindow .rightContent .linksList a svg {
 	width: 2em;
 	margin-right: 0.5em;
     display: inline-block;
@@ -199,11 +199,11 @@
 }
 
 .folder_indicator.found {
-	background-color: var(--foundColor);
+	background-color: var(--modalfoundColor);
 }
 
 .folder_indicator.notfound {
-	background-color: var(--notFoundColor);
+	background-color: var(--modalnotFoundColor);
 }
 
 .folder_indicator_bg {
@@ -217,7 +217,7 @@
 }
 
 .folder_indicator_bg.found {
-	background-color: var(--foundBackground);
+	background-color: var(--modalfoundBackground);
 }
 
 .folder_indicator_bg.found span::after {
@@ -225,7 +225,7 @@
 }
 
 .folder_indicator_bg.notfound {
-	background-color: var(--notFoundBackground);
+	background-color: var(--modalnotFoundBackground);
 }
 
 .folder_indicator_bg.notfound span::after {

@@ -68,8 +68,8 @@
 	line-height: 2.5em;
 }
 
-.acc_list_actionbar div .button img,
-.settingsCol button img {
+.acc_list_actionbar div .button svg,
+.settingsCol button svg {
 	width: 1.5em;
 }
 

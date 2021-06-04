@@ -40,22 +40,28 @@
         @if (GetLeague())
         {
             <div class="button" id="btnLeague" @onclick="() => RiotSwitcherFuncs.RiotStart('l')">
-                <img class="riotIcoLeague" src="img/icons/ico_League.svg" draggable="false" />
+                <svg viewBox="0 0 2084 2084" draggable="false" alt="League" class="riotIcoLeague">
+                    <use href="img/icons/ico_League.svg#icoLeague"></use>
+                </svg>
             </div>
         }
 
         @if (GetRuneterra())
         {
         <div class="button" id="btnRuneterra" @onclick="() => RiotSwitcherFuncs.RiotStart('r')">
-            <img class="riotIcoRuneterra" src="img/icons/ico_Runeterra.svg" draggable="false"/>
+            <svg viewBox="0 0 2084 2084" draggable="false" alt="Runeterra" class="riotIcoRuneterra">
+                <use href="img/icons/ico_Runeterra.svg#icoRuneterra"></use>
+            </svg>
         </div>
         }
 
         @if (GetValorant())
         {
-        <div class="button" id="btnValorant" @onclick="() => RiotSwitcherFuncs.RiotStart('v')">
-            <img class="riotIcoValorant" src="img/icons/ico_Valorant.svg" draggable="false"/>
-        </div>
+    <div class="button" id="btnValorant" @onclick="() => RiotSwitcherFuncs.RiotStart('v')">
+        <svg viewBox="0 0 2084 2084" draggable="false" alt="Valorant" class="riotIcoValorant">
+            <use href="img/icons/ico_Valorant.svg#icoValorant"></use>
+        </svg>
+    </div>
         }
 
 
@@ -71,11 +77,15 @@
         </div>
 
         <div class="button" id="btnSettings" onclick="location = 'Riot/Settings'">
-            <img class="footerIcoSettings" src="img/icons/ico_settings.svg" draggable="false" />
+            <svg viewBox="0 0 60 60" draggable="false" alt="Settings" class="footerIcoSettings">
+                <use href="img/icons/ico_settings.svg#icoSettings"></use>
+            </svg>
         </div>
 
         <div class="button" id="btnHelp" onclick="ShowModal('info');">
-            <img class="footerIcoQuestion" src="img/icons/ico_question.svg" draggable="false" />
+            <svg viewBox="0 0 60 60" draggable="false" alt="Question" class="footerIcoQuestion">
+                <use href="img/icons/ico_question.svg#icoQuestion"></use>
+            </svg>
         </div>
     </div>
 
