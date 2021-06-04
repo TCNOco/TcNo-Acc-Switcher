@@ -169,12 +169,12 @@ riotIcoValorant-Fill: rgb(255, 85, 85)
 # Platform icons (Main menu):
 # ------------
 platformBorderColor: "#8BE9FD"
-platformFilter-Hover: "brightness(95%) saturate(1.20) contrast(105%)"
-platformFilter-Active: "brightness(110%) saturate(1.05)"
-platformFilterIcon-Hover: "brightness(95%) saturate(1.10) contrast(105%)"
-platformFilterIcon-Active: "brightness(110%) saturate(1.05)"
+platformFilter-Hover: "brightness(97%) saturate(1.10) contrast(102%)"
+platformFilter-Active: "brightness(95%) saturate(1.05)"
+platformFilterIcon-Hover: "brightness(97%) saturate(1.05) contrast(102%)"
+platformFilterIcon-Active: "brightness(95%) saturate(1.05)"
 platformTransform-Hover: scale(1.025)
-platformTransform-Active: scale(1)
+platformTransform-Active: scale(0.98)
 platformTransform-HoverAnimation-boxShadow-0: 0 0 0 0 rgba(139, 233, 253, 0.7)
 platformTransform-HoverAnimation-boxShadow-70: 0 0 0 10px rgba(139, 233, 253, 0)
 platformTransform-HoverAnimation-boxShadow-100: 0 0 0 10px rgba(139, 233, 253, 0)

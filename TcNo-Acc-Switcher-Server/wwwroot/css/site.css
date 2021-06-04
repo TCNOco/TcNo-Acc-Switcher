@@ -572,17 +572,20 @@ div.advancedClearingButtonCol .buttoncol {
 	border: var(--platformBorderColor) 1px solid;
 	margin: 10px;
 	transition: all 100ms ease-in-out;
+	transform: scale(1);
+	box-shadow: none;
 }
 
-.platformIcon:hover {
+.platformIcon:hover:not(:active) {
 	transform: var(--platformTransform-Hover);
 	filter: var(--platformFilter-Hover);
-    animation: pulse 2s infinite;
+	animation: pulse 2s infinite;
 }
 
 .platformIcon:active {
-    transform: var(--platformTransform-Active);
-    filter: var(--platformFilter-Active);
+	transform: var(--platformTransform-Active);
+	filter: var(--platformFilter-Active);
+    box-shadow: none;
 }
 .platformIcon:hover svg {
 	transform: var(--platformTransformIcon-Hover);
