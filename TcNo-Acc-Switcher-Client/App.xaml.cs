@@ -13,12 +13,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -40,7 +44,8 @@ namespace TcNo_Acc_Switcher_Client
     public partial class App
     {
         public static string StartPage = "";
-        
+        private static readonly HttpClient Client = new();
+
         internal static class NativeMethods
         {
             // http://msdn.microsoft.com/en-us/library/ms681944(VS.85).aspx
@@ -85,7 +90,8 @@ namespace TcNo_Acc_Switcher_Client
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
-
+            // Upload crash logs if any, before starting program
+            UploadLogs();
 #if DEBUG
             if (DebugMode)
             {
@@ -249,6 +255,76 @@ namespace TcNo_Acc_Switcher_Client
 
             // Check for update in another thread
             new Thread(CheckForUpdate).Start();
+        }
+
+        /// <summary>
+        /// Uploads CrashLogs and log.txt if crashed.
+        /// </summary>
+        public static async void UploadLogs()
+        {
+            if (!Directory.Exists("CrashLogs")) return;
+            if (!Directory.Exists("CrashLogs\\Submitted")) Directory.CreateDirectory("CrashLogs\\Submitted");
+
+            // Collect all logs into one string to compress
+            var postData = new Dictionary<string, string>();
+            var combinedCrashLogs = "";
+            foreach (var file in Directory.EnumerateFiles("CrashLogs", "*.txt"))
+            {
+                try
+                {
+                    combinedCrashLogs += await File.ReadAllTextAsync(file);
+                    File.Move(file, $"CrashLogs\\Submitted\\{Path.GetFileName(file)}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+
+            // If no logs collected, return.
+            if (combinedCrashLogs == "") return;
+            
+            // Else: send log file as well.
+            if (File.Exists("log.txt"))
+            {
+                try
+                {
+                    postData.Add("logs", Compress(await File.ReadAllTextAsync("log.txt")));
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+            
+            // Send report to server
+            postData.Add("crashLogs", Compress(combinedCrashLogs));
+            if (postData.Count == 0) return;
+
+            HttpContent content = new FormUrlEncodedContent(postData);
+            _ = await Client.PostAsync("https://tcno.co/Projects/AccSwitcher/api/crash/index.php", content);
+            //var response = Client.PostAsync("https://tcno.co/Projects/AccSwitcher/api/crash/index.php", content);
+            //var responseString = await response.Result.Content.ReadAsStringAsync();
+        }
+
+        public static string Compress(string text)
+        {
+            //https://www.neowin.net/forum/topic/994146-c-help-php-compatible-string-gzip/
+            byte[] buffer = Encoding.UTF8.GetBytes(text);
+
+            var memoryStream = new MemoryStream();
+            using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+            {
+                gZipStream.Write(buffer, 0, buffer.Length);
+            }
+
+            memoryStream.Position = 0;
+
+            var compressedData = new byte[memoryStream.Length];
+            memoryStream.Read(compressedData, 0, compressedData.Length);
+
+            return Convert.ToBase64String(compressedData);
         }
 
         /// <summary>
