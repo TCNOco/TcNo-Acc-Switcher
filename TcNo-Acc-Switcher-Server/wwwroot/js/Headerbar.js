@@ -8,7 +8,7 @@ var monthDay = "";
 
 function getDate() {
     if (monthDay === "") monthDay = d.getMonth().toString() + d.getDate().toString();
-    return monthDay
+    return monthDay;
 }
 
 const SysCommandSize = { // Reverses for april fools
@@ -24,10 +24,10 @@ const SysCommandSize = { // Reverses for april fools
     ScMinimise: 0xF020,
     ScMaximise: 0xF030,
     ScRestore: 0xF120
-}
+};
 const WindowNotifications = {
     WmClose: 0x0010
-}
+};
 
 var possibleAnimations = [
     "rotateY",
@@ -38,20 +38,18 @@ var lastDeg = 360;
 
 function RandomAni(e) {
     lastDeg = -lastDeg;
-    ani = possibleAnimations[Math.floor(Math.random() * possibleAnimations.length)];
 
-    $({
-        deg: 0
-    }).animate({
-        deg: lastDeg,
-        easing: "swing"
-    }, {
-        duration: 500,
-        step: function(now) {
-            $(e).css({
-                transform: ani + "(" + now + "deg)"
-            });
-        }
+    $({ deg: 0 }).animate(
+        {
+            deg: lastDeg,
+            easing: "swing"
+        }, {
+            duration: 500,
+            step: function(now) {
+                $(e).css({
+                    transform: possibleAnimations[Math.floor(Math.random() * possibleAnimations.length)] + "(" + now + "deg)"
+                });
+            }
     });
 }
 

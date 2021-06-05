@@ -14,7 +14,7 @@ $("select[name='ForgottenSteamAccounts']").mousedown(function(e) {
 
     $(s).focus();
 }).mousemove(function(e) {
-    e.preventDefault()
+    e.preventDefault();
 });
 
 

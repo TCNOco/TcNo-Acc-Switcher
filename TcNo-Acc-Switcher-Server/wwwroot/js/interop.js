@@ -12,11 +12,11 @@ jQueryProcessAccListSize = () => {
     let maxHeight = 0;
     $('.acc_list_item label').each((_, e) => { maxHeight = Math.max(maxHeight, e.offsetHeight); });
     document.getElementById("acc_list").setAttribute("style", `grid-template-rows: repeat(auto-fill, ${maxHeight}px)`);
-}
+};
 
 updateStatus = (status) => {
     $("#CurrentStatus").val(status);
-}
+};
 initAccListSortable = () => {
     // Create sortable list
     sortable(".acc_list", {
@@ -40,7 +40,7 @@ initAccListSortable = () => {
         });
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", `LoginCache\\${getCurrentPage()}\\order.json`, JSON.stringify(order));
     });
-}
+};
 
 
 UpdateDynamicCss = (rule, value) => {
@@ -64,11 +64,11 @@ UpdateDynamicCss = (rule, value) => {
     //// Rather just make sure that they always include a {}
     //// value = (value[0] !== "{" ? "{" : "") + value + (value.charAt(value.length - 1) !== "}" ? "}" : "");
     style.sheet.insertRule(rule + value, style.sheet.cssRules.length);
-}
+};
 
 SteamAdvancedClearingAddLine = (text) => {
     queuedJQueryAppend("#lines", "<p>" + text + "</p>");
-}
+};
 
 $.fn.extend({
     'ifexists': function(callback) {

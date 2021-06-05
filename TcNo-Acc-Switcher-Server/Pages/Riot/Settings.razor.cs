@@ -37,7 +37,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         public async Task PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Riot\Settings.razor.cs.PickFolder]");
-            await _jsRuntime.InvokeAsync<string>("ShowModal", "find:Riot:upc.exe:RiotSettings");
+            await _jsRuntime.InvokeAsync<string>("showModal", "find:Riot:upc.exe:RiotSettings");
         }
 
         // BUTTON: Reset settings

@@ -203,14 +203,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         /// <summary>
-        /// JS function handler for running ShowModal JS function, with input arguments.
+        /// JS function handler for running showModal JS function, with input arguments.
         /// </summary>
         /// <param name="args">Argument string, containing a command to be handled later by modal</param>
         /// <returns></returns>
         public static async Task ShowModal(string args)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowModal] args={args}");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("ShowModal", args);
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("showModal", args);
         }
 
         /// <summary>

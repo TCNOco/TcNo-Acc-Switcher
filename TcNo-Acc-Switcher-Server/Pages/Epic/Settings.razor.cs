@@ -37,7 +37,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public async Task PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Epic\Settings.razor.cs.PickFolder]");
-            await _jsRuntime.InvokeAsync<string>("ShowModal", "find:Epic:upc.exe:EpicSettings");
+            await _jsRuntime.InvokeAsync<string>("showModal", "find:Epic:upc.exe:EpicSettings");
         }
 
         // BUTTON: Reset settings

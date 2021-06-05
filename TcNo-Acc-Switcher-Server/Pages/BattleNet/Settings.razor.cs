@@ -42,7 +42,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public async Task PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:BattleNet\Settings.razor.cs.PickFolder]");
-            await _jsRuntime.InvokeAsync<string>("ShowModal", "find:BattleNet:Battle.net.exe:BattleNetSettings");
+            await _jsRuntime.InvokeAsync<string>("showModal", "find:BattleNet:Battle.net.exe:BattleNetSettings");
         }
 
         // BUTTON: Reset settings

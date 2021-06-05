@@ -37,7 +37,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         public async Task PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.PickFolder]");
-            await _jsRuntime.InvokeAsync<string>("ShowModal", "find:Origin:Origin.exe:OriginSettings");
+            await _jsRuntime.InvokeAsync<string>("showModal", "find:Origin:Origin.exe:OriginSettings");
         }
 
         // BUTTON: Reset settings

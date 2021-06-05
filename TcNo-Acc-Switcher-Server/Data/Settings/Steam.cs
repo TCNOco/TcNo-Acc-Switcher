@@ -77,16 +77,16 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public string SteamImagePath = "wwwroot/img/profiles/steam/";
         [JsonIgnore] public string SteamImagePathHtml = "img/profiles/steam/";
         [JsonIgnore] public string ContextMenuJson = @"[
-              {""Swap to account"": ""SwapTo(-1, event)""},
+              {""Swap to account"": ""swapTo(-1, event)""},
               {""Login as..."": [
-                {""Invisible"": ""SwapTo(7, event)""},
-                {""Offline"": ""SwapTo(0, event)""},
-                {""Online"": ""SwapTo(1, event)""},
-                {""Busy"": ""SwapTo(2, event)""},
-                {""Away"": ""SwapTo(3, event)""},
-                {""Snooze"": ""SwapTo(4, event)""},
-                {""Looking to Trade"": ""SwapTo(5, event)""},
-                {""Looking to Play"": ""SwapTo(6, event)""}
+                {""Invisible"": ""swapTo(7, event)""},
+                {""Offline"": ""swapTo(0, event)""},
+                {""Online"": ""swapTo(1, event)""},
+                {""Busy"": ""swapTo(2, event)""},
+                {""Away"": ""swapTo(3, event)""},
+                {""Snooze"": ""swapTo(4, event)""},
+                {""Looking to Trade"": ""swapTo(5, event)""},
+                {""Looking to Play"": ""swapTo(6, event)""}
               ]},
               {""Copy Profile..."": [
                 {""Community URL"": ""copy('URL', event)""},
@@ -106,17 +106,17 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 {""SteamRep"": ""copy('SteamIDFinder.com', event)""}
               ]},
               {""Create Desktop Shortcut..."": [
-                {"""": ""CreateShortcut()""},
-                {""Online (Default)"": ""CreateShortcut()""},
-                {""Invisible"": ""CreateShortcut(':7')""},
-                {""Offline"": ""CreateShortcut(':0')""},
-                {""Busy"": ""CreateShortcut(':2')""},
-                {""Away"": ""CreateShortcut(':3')""},
-                {""Snooze"": ""CreateShortcut(':4')""},
-                {""Looking to Trade"": ""CreateShortcut(':5')""},
-                {""Looking to Play"": ""CreateShortcut(':6')""}
+                {"""": ""createShortcut()""},
+                {""Online (Default)"": ""createShortcut()""},
+                {""Invisible"": ""createShortcut(':7')""},
+                {""Offline"": ""createShortcut(':0')""},
+                {""Busy"": ""createShortcut(':2')""},
+                {""Away"": ""createShortcut(':3')""},
+                {""Snooze"": ""createShortcut(':4')""},
+                {""Looking to Trade"": ""createShortcut(':5')""},
+                {""Looking to Play"": ""createShortcut(':6')""}
               ]},
-              {""Change image"": ""ChangeImage(event)""},
+              {""Change image"": ""changeImage(event)""},
               {""Forget"": ""forget(event)""}
             ]";
 

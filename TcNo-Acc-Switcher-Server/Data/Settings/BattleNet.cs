@@ -92,12 +92,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
         [JsonIgnore] public string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";
         [JsonIgnore] public string ContextMenuJson = @"[
-              {""Swap to account"": ""SwapTo(-1, event)""},
-              {""Set BattleTag"": ""ShowModal('changeUsername:BattleTag')""},
-              {""Delete BattleTag"": ""ForgetBattleTag()""},
-              {""Refetch Rank"": ""RefetchRank()""},
-              {""Create Desktop Shortcut..."": ""CreateShortcut()""},
-              {""Change image"": ""ChangeImage(event)""},
+              {""Swap to account"": ""swapTo(-1, event)""},
+              {""Set BattleTag"": ""showModal('changeUsername:BattleTag')""},
+              {""Delete BattleTag"": ""forgetBattleTag()""},
+              {""Refetch Rank"": ""refetchRank()""},
+              {""Create Desktop Shortcut..."": ""createShortcut()""},
+              {""Change image"": ""changeImage(event)""},
               {""Forget"": ""forget(event)""}
             ]";
 

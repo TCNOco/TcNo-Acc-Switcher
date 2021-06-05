@@ -1,5 +1,5 @@
 ﻿// Selected Element on list, for use in other JS functions
-var SelectedElem = "";
+var selectedElem = "";
 
 function initContextMenu() {
     $(".acc_list").on("click", function() {
@@ -10,7 +10,7 @@ function initContextMenu() {
 
     // Ready accounts for double-click
     $(".acc_list_item").dblclick(function(event) {
-        SwapTo(-1, event);
+        swapTo(-1, event);
     });
 
     // Handle Left-clicks:
@@ -25,17 +25,17 @@ function initContextMenu() {
         $(e.currentTarget).children('input').click();
 
         // Set currently selected element
-        SelectedElem = $(e.currentTarget).children('input')[0];
+        selectedElem = $(e.currentTarget).children('input')[0];
         // Update status for element
         switch (getCurrentPage()) {
             case "Steam":
-                updateStatus("Selected: " + $(SelectedElem).attr("Line2"));
+                updateStatus(`Selected: ${$(selectedElem).attr("Line2")}`);
                 break;
             case "Origin":
-                updateStatus("Selected: " + $(SelectedElem).attr("id"));
+                updateStatus(`Selected: ${$(selectedElem).attr("id")}`);
                 break;
             case "Ubisoft":
-                updateStatus("Selected: " + $(SelectedElem).attr("Username"));
+                updateStatus(`Selected: ${$(selectedElem).attr("Username")}`);
                 break;
             default:
                 break;
@@ -43,17 +43,18 @@ function initContextMenu() {
 
 
         //Get window size:
-        var winWidth = $(document).width();
-        var winHeight = $(document).height();
+        const winWidth = $(document).width();
+        const winHeight = $(document).height();
         //Get pointer position:
-        var posX = e.pageX - 14;
-        var posY = e.pageY - 42; // Offset for header bar
+        const posX = e.pageX - 14;
+        const posY = e.pageY - 42; // Offset for header bar
         //Get contextmenu size:
-        var menuWidth = $(".contextmenu").width();
-        var menuHeight = $(".contextmenu").height();
+        const menuWidth = $(".contextmenu").width();
+        const menuHeight = $(".contextmenu").height();
         //Security margin:
-        var secMargin = 10;
+        const secMargin = 10;
         //Prevent page overflow:
+        var posLeft, posTop;
         if (posX + menuWidth + secMargin >= winWidth &&
             posY + menuHeight + secMargin >= winHeight) {
             //Case 1: right-bottom overflow:
@@ -93,7 +94,7 @@ function initContextMenu() {
         }
     }
     // Define resizeObserver and add it to every submenu on the page.
-    var resizeObserver = new ResizeObserver(entries => {
+    const resizeObserver = new ResizeObserver(entries => {
         for (let entry of entries) {
             moveContextMenu(entry.contentRect.width);
         }
@@ -110,5 +111,5 @@ function initContextMenu() {
 
 function SelectedItemChanged() {
     // Different function groups based on platform
-    updateStatus("Selected: " + $("input[name=accounts]:checked").attr("DisplayName"));
+    updateStatus(`Selected: ${$("input[name=accounts]:checked").attr("DisplayName")}`);
 }

@@ -25,7 +25,7 @@ if (winUrl.length > 1 && winUrl[1].indexOf("cacheReload") !== -1) {
 }
 
 
-function CopyToClipboard(str) {
+function copyToClipboard(str) {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyToClipboard", str);
 }
 
@@ -33,9 +33,9 @@ function CopyToClipboard(str) {
 async function forget(e) {
     e.preventDefault();
     debugger;
-    const reqId = $(SelectedElem).attr("id");
+    const reqId = $(selectedElem).attr("id");
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "Get" + getCurrentPage() + "ForgetAcc").then(r => {
-        if (!r) ShowModal("confirm:AcceptForget" + getCurrentPage() + "Acc:" + reqId);
+        if (!r) showModal("confirm:AcceptForget" + getCurrentPage() + "Acc:" + reqId);
         else Modal_Confirm("AcceptForget" + getCurrentPage() + "Acc:" + reqId, true);
     });
     _ = await promise;
@@ -107,7 +107,7 @@ async function restoreBattleNetAccounts() {
 
 function copy(request, e) {
     e.preventDefault();
-    const requestResult = $(SelectedElem).attr(request);
+    const requestResult = $(selectedElem).attr(request);
 
     // Different function groups based on platform
     switch (getCurrentPage()) {
@@ -115,7 +115,7 @@ function copy(request, e) {
             steam();
             break;
         default:
-            CopyToClipboard(requestResult);
+            copyToClipboard(requestResult);
             break;
     }
     return;
@@ -123,10 +123,10 @@ function copy(request, e) {
 
     // Steam:
     function steam() {
-        var steamId64 = $(SelectedElem).attr("id");
+        var steamId64 = $(selectedElem).attr("id");
         switch (request) {
             case "URL":
-                CopyToClipboard("https://steamcommunity.com/profiles/" + steamId64);
+                copyToClipboard("https://steamcommunity.com/profiles/" + steamId64);
                 break;
             case "SteamId32":
             case "SteamId3":
@@ -136,25 +136,25 @@ function copy(request, e) {
 
                 // Links
             case "SteamRep":
-                CopyToClipboard(`https://steamrep.com/search?q=${steamId64}`);
+                copyToClipboard(`https://steamrep.com/search?q=${steamId64}`);
                 break;
             case "SteamID.uk":
-                CopyToClipboard(`https://steamid.uk/profile/${steamId64}`);
+                copyToClipboard(`https://steamid.uk/profile/${steamId64}`);
                 break;
             case "SteamID.io":
-                CopyToClipboard(`https://steamid.io/lookup/${steamId64}`);
+                copyToClipboard(`https://steamid.io/lookup/${steamId64}`);
                 break;
             case "SteamIDFinder.com":
-                CopyToClipboard(`https://steamidfinder.com/lookup/${steamId64}/`);
+                copyToClipboard(`https://steamidfinder.com/lookup/${steamId64}/`);
                 break;
             default:
-                CopyToClipboard(requestResult);
+                copyToClipboard(requestResult);
         }
     }
 }
 
 // Swapping accounts
-function SwapTo(request, e) {
+function swapTo(request, e) {
     if (e !== undefined) e.preventDefault();
     if (!getSelected()) return;
 
@@ -175,7 +175,7 @@ function SwapTo(request, e) {
 }
 
 // Swapping accounts
-function ChangeImage(e) {
+function changeImage(e) {
     if (e !== undefined) e.preventDefault();
     if (!getSelected()) return;
 
@@ -195,7 +195,7 @@ function ChangeImage(e) {
 }
 
 // Create shortcut for selected icon
-function CreateShortcut(args = '') {
+function createShortcut(args = '') {
     var selected = $(".acc:checked");
     if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
         return;
@@ -205,7 +205,7 @@ function CreateShortcut(args = '') {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CreateShortcut", getCurrentPage(), accId, selected.attr("Username"), args);
 }
 
-function RefreshUsername() {
+function refreshUsername() {
     var selected = $(".acc:checked");
     if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
         return;
@@ -215,7 +215,7 @@ function RefreshUsername() {
 
 
 // NEW LOGIN
-function NewLogin() {
+function newLogin() {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "NewLogin_" + getCurrentPage());
 }
 
@@ -223,19 +223,19 @@ function NewLogin() {
 
 
 // Add currently logged in Origin account
-function CurrentOriginLogin() {
-    ShowModal("accString:Origin");
+function currentOriginLogin() {
+    showModal("accString:Origin");
 }
 // Add currently logged in Origin account
-function CurrentEpicLogin() {
-    ShowModal("accString:Epic");
+function currentEpicLogin() {
+    showModal("accString:Epic");
 }
 // Add currently logged in Origin account
-function CurrentRiotLogin() {
-    ShowModal("accString:Riot");
+function currentRiotLogin() {
+    showModal("accString:Riot");
 }
 // Add currently logged in Ubisoft account
-function CurrentUbisoftLogin() {
+function currentUbisoftLogin() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftAddCurrent");
 }
 
@@ -243,7 +243,7 @@ function CurrentUbisoftLogin() {
 
 $(".acc").dblclick(function() {
     alert("Handler for .dblclick() called.");
-    SwapTo();
+    swapTo();
 });
 // Link handling
 function OpenLinkInBrowser(link) {
@@ -252,7 +252,7 @@ function OpenLinkInBrowser(link) {
 
 
 // Info Window
-function ShowModal(modaltype) {
+function showModal(modaltype) {
     let input;
     if (modaltype === "info") {
         $('#modalTitle').text("TcNo Account Switcher Information");
@@ -272,7 +272,7 @@ function ShowModal(modaltype) {
                         <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');"><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>Disclaimer</a>
                     </div>
                 </div>
-                </div><div class="versionIdentifier"><span>Version: ` + currentVersion + `</span></div>`);
+                </div><div class="versionIdentifier"><span>Version: ${currentVersion}</span></div>`);
         });
     } else if (modaltype.startsWith("changeUsername")) {
         // USAGE: "changeUsername"
@@ -282,13 +282,14 @@ function ShowModal(modaltype) {
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div id="modal_contents">
 	        <div>
-		        <span class="modal-text">Please enter a new ` + platformName + ` for your account` + (platformName === "username" ? " (Only changes it in the TcNo Account Switcher)" : ".") + `.</span>
+		        <span class="modal-text">Please enter a new ${platformName} for your account${platformName === "username" ? " (Only changes it in the TcNo Account Switcher)" : "."}.</span>
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="NewAccountName" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('change_username').click();">
 	        </div>
 	        <div class="settingsCol inputAndButton">
-		        <button class="btn modalOK" type="button" id="change_username" onclick="Modal_FinaliseAccNameChange()"><span>Change ` + platformName + `</span></button>
+		        <button class="btn modalOK" type="button" id="change_username" onclick="Modal_FinaliseAccNameChange()"><span>Change ${
+            platformName}</span></button>
 	        </div>
         </div>`);
         input = document.getElementById('NewAccountName');
@@ -298,20 +299,21 @@ function ShowModal(modaltype) {
         var platformExe = modaltype.split(":")[2];
         var platformSettingsPath = modaltype.split(":")[3];
         Modal_RequestedLocated(false);
-        $('#modalTitle').text("Please locate the " + platform + " directory");
+        $('#modalTitle').text(`Please locate the ${platform} directory`);
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div id="modal_contents">
 	        <div style="width: 80vw;">
-		        <span class="modal-text">Please enter ` + platform + `'s directory, as such: C:\\Program Files\\` + platform + `</span>
+		        <span class="modal-text">Please enter ${platform}'s directory, as such: C:\\Program Files\\${platform}</span>
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="FolderLocation" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
-		        <button class="btn" type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFile=` + platformExe + `';"><span>Locate ` + platformExe + `</span></button>
+		        <button class="btn" type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFile=${platformExe}';"><span>Locate ${platformExe}</span></button>
 	        </div>
 	        <div class="settingsCol inputAndButton">
 		        <div class="folder_indicator notfound"><div id="folder_indicator_text"></div></div>
-		        <div class="folder_indicator_bg notfound"><span>` + platformExe + `</span></div>
-		        <button class="btn modalOK" type="button" id="select_location" onclick="Modal_Finalise('` + platform + `', '` + platformSettingsPath + `')"><span>Select ` + platform + ` Folder</span></button>
+		        <div class="folder_indicator_bg notfound"><span>${platformExe}</span></div>
+		        <button class="btn modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${platformSettingsPath
+            }')"><span>Select ${platform} Folder</span></button>
 	        </div>
         </div>`);
         input = document.getElementById('FolderLocation');
@@ -340,11 +342,11 @@ function ShowModal(modaltype) {
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">
-            ` + header + `
-            ` + message + `
+            ${header}
+            ${message}
             <div class="YesNo">
-		        <button class="btn" type="button" id="modal_true" onclick="Modal_Confirm('` + action + `', true)"><span>Yes</span></button>
-		        <button class="btn" type="button" id="modal_false" onclick="Modal_Confirm('` + action + `', false)"><span>No</span></button>
+		        <button class="btn" type="button" id="modal_true" onclick="Modal_Confirm('${action}', true)"><span>Yes</span></button>
+		        <button class="btn" type="button" id="modal_false" onclick="Modal_Confirm('${action}', false)"><span>No</span></button>
             </div>
         </div>
         </div>`);
@@ -362,10 +364,10 @@ function ShowModal(modaltype) {
         let header = "";
         if (action.startsWith("RestartAsAdmin")) {
             message = restartAsAdminPrompt;
-            action = (args !== "" ? "location = 'RESTART_AS_ADMIN?arg=" + args + "'" : "location = 'RESTART_AS_ADMIN'");
+            action = (args !== "" ? `location = 'RESTART_AS_ADMIN?arg=${args}'` : "location = 'RESTART_AS_ADMIN'");
         } else {
             header = "<h3>Confirm action:</h3>";
-            message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
+            message = `<p>${modaltype.split(":")[2].replaceAll("_", " ")}</p>`;
             action = action.split(":")[0];
         }
 
@@ -373,10 +375,10 @@ function ShowModal(modaltype) {
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">
-            ` + header + `
-            ` + message + `
+            ${header}
+            ${message}
             <div class="YesNo">
-		        <button class="btn" type="button" id="modal_true" onclick="` + action + `"><span>OK</span></button>
+		        <button class="btn" type="button" id="modal_true" onclick="${action}"><span>OK</span></button>
             </div>
         </div>
         </div>`);
@@ -389,19 +391,13 @@ function ShowModal(modaltype) {
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div id="modal_contents">
 	        <div>
-		        <span class="modal-text">Please enter a name for the ` +
-            platform +
-            ` account you're logged into.</span>
+		        <span class="modal-text">Please enter a name for the ${platform} account you're logged into.</span>
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;"  onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();">
 	        </div>
 	        <div class="settingsCol inputAndButton">
-		        <button class="btn modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('` +
-            platform +
-            `')"><span>Add current ` +
-            platform +
-            ` account</span></button>
+		        <button class="btn modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('${platform}')"><span>Add current ${platform} account</span></button>
 	        </div>
         </div>`);
         input = document.getElementById('CurrentAccountName');
@@ -410,7 +406,7 @@ function ShowModal(modaltype) {
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">
-            ` + modaltype + `
+            ${modaltype}
         </div>
         </div>`);
     }
@@ -487,11 +483,11 @@ function flushJQueryAppendQueue() {
     $(".clearingRight")[0].scrollTop = $(".clearingRight")[0].scrollHeight;
 }
 
-function ForgetBattleTag() {
+function forgetBattleTag() {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "DeleteUsername", $(".acc:checked").attr("id"));
 }
 
-function RefetchRank() {
+function refetchRank() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RefetchRank", $(".acc:checked").attr("id"));
 }
 

@@ -80,7 +80,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
 
             // Restart self as admin.
-            if (!canKill) AppData.ActiveIJsRuntime.InvokeAsync<string>("ShowModal", "notice:RestartAsAdmin");
+            if (!canKill) AppData.ActiveIJsRuntime.InvokeAsync<string>("showModal", "notice:RestartAsAdmin");
 
             return canKill;
         }

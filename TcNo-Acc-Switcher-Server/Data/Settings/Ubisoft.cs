@@ -64,20 +64,19 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             [JsonIgnore] public string UbisoftImagePathHtml = "img/profiles/ubi/";
         */
         [JsonIgnore] public string ContextMenuJson = @"[
-              {""Swap to account"": ""SwapTo(-1, event)""},
+              {""Swap to account"": ""swapTo(-1, event)""},
               {""Login as..."": [
-                {""Online"": ""SwapTo(0, event)""},
-                {""Offline"": ""SwapTo(10, event)""},
+                {""Online"": ""swapTo(0, event)""},
+                {""Offline"": ""swapTo(10, event)""},
               ]},
               {""Username..."": [
-                {""Change switcher name"": ""ShowModal('changeUsername')""},
-                {""Refresh name"": ""RefreshUsername()""},
+                {""Change switcher name"": ""showModal('changeUsername')""},
+                {""Refresh name"": ""refreshUsername()""},
               ]},
-              {""Create Desktop Shortcut..."": ""CreateShortcut()""},
-              {""Change image"": ""ChangeImage(event)""},
+              {""Create Desktop Shortcut..."": ""createShortcut()""},
+              {""Change image"": ""changeImage(event)""},
               {""Forget"": ""forget(event)""}
             ]";
-        // {""Create Desktop Shortcut"": ""CreateShortcut()""},
 
         /// <summary>
         /// Updates the ForgetAccountEnabled bool in settings file

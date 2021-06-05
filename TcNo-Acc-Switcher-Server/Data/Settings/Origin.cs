@@ -64,10 +64,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public string OriginImagePathHtml = "img/profiles/origin/";
         */
         [JsonIgnore] public string ContextMenuJson = @"[
-              {""Swap to account"": ""SwapTo(-1, event)""},
-              {""Change switcher name"": ""ShowModal('changeUsername')""},
-              {""Create Desktop Shortcut..."": ""CreateShortcut()""},
-              {""Change image"": ""ChangeImage(event)""},
+              {""Swap to account"": ""swapTo(-1, event)""},
+              {""Change switcher name"": ""showModal('changeUsername')""},
+              {""Create Desktop Shortcut..."": ""createShortcut()""},
+              {""Change image"": ""changeImage(event)""},
               {""Forget"": ""forget(event)""}
             ]";
 

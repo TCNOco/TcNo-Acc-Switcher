@@ -45,7 +45,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             }
             catch (System.UnauthorizedAccessException)
             {
-                AppData.ActiveIJsRuntime.InvokeAsync<string>("ShowModal", "notice:RestartAsAdmin");
+                AppData.ActiveIJsRuntime.InvokeAsync<string>("showModal", "notice:RestartAsAdmin");
             }
             
         }
