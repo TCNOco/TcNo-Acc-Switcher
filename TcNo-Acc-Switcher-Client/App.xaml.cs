@@ -302,8 +302,15 @@ namespace TcNo_Acc_Switcher_Client
             postData.Add("crashLogs", Compress(combinedCrashLogs));
             if (postData.Count == 0) return;
 
-            HttpContent content = new FormUrlEncodedContent(postData);
-            _ = await Client.PostAsync("https://tcno.co/Projects/AccSwitcher/api/crash/index.php", content);
+            try
+            {
+                HttpContent content = new FormUrlEncodedContent(postData);
+                _ = await Client.PostAsync("https://tcno.co/Projects/AccSwitcher/api/crash/index.php", content);
+            }
+            catch (Exception e)
+            {
+                await File.WriteAllTextAsync($"CrashLogs\\CrashLogUploadErr-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt", e.ToString());
+            }
             //var response = Client.PostAsync("https://tcno.co/Projects/AccSwitcher/api/crash/index.php", content);
             //var responseString = await response.Result.Content.ReadAsStringAsync();
         }

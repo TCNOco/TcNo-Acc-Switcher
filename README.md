@@ -18,16 +18,16 @@
   <img alt="Download latest" src="/other/img/DownloadLatest.png" height=70"></a><a target="_blank" href="https://tcno.co/Projects/AccSwitcher/api/latest">
   <img alt="Download Beta" src="/other/img/DownloadBeta.png" height=70"></a></p>
   
-**A Super fast account switcher for Steam (and more soon)** [New version now in Beta]
+**A Super fast account switcher for Steam, Battle.net, Epic Games, Origin, Riot Games and Ubisoft (and more soon)**
 **Saves NO passwords** or any user information*. Steam switcher works purely off changing a file and 2 registry keys.
 *Wastes no time closing, switching and restarting Steam and other platforms.*<br />
 **NOTE:** Not created for cheating purposes. All it does is change accounts. Use it as you see fit, accepting responsibility.
 
-# STABLE VERSION:
+# STABLE VERSION
 
 New users should use the Download button above, or click [HERE](https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest). You'll also need the .NET Framework 4.8 Runtime, below.
 
-### Required runtimes (Download and install):
+## Required runtimes (Download and install)
 
 -   Microsoft .NET Framework 4.8 Runtime: [Web Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer), [Offline Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-offline-installer), [Other languages](https://dotnet.microsoft.com/download/dotnet-framework/net48)
 
@@ -37,8 +37,8 @@ After installing using the installer, or downloading your .zip (portable version
 > If [HardenTools](https://github.com/securitywithoutborders/hardentools) was used, ensure that cmd.exe (Command Prompt) access is still allowed; if access is denied, TcNo Account Switcher will encounter a fatal unhandled exception (crash).
 >
 > # New beta version
->
-> The new Beta version is available for testing. Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord). Download the Beta in the Discord (This is to prevent confusion here)
+
+The new Beta version is available for testing. Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord). Download the Beta in the Discord (This is to prevent confusion here)
 
 <p><img alt="Youtube" src="/other/img/youtube.svg" height=18"> <b>Guides:</b> <a href="https://youtu.be/cvbo_VY05bo">BattleNet</a>, <a href="https://youtu.be/qRYra_fQt0I">Origin</a>, <a href="https://youtu.be/rLXGs1Yr3m8">Steam</a>, <a href="https://youtu.be/XKBkIQaJzOA">UPlay</a></p>
 
@@ -62,13 +62,11 @@ After installing using the installer, or downloading your .zip (portable version
 -   **Microsoft .NET 5 Desktop Runtime AND: ASP.NET Core 5.0 Runtime:** Click [HERE](https://dotnet.microsoft.com/download/dotnet/5.0/runtime) and click `x64`, as well as `Download Hosting Bundle`. **See below:**
     ![Buttons to click for .NET Desktop & ASP.NET runtime](https://i.imgur.com/f4e14Mr.png)
 
-# FAQ
+## FAQ
 
-### Visit the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch.
+### Visit the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch
 
-(Steps for Beta are not available yet)
-
-### How does the Steam switcher work?
+### How does the Steam switcher work
 
 1.  It lists your accounts based on the names in "C:\\Program Files (x86)\\Steam\\config\\loginusers.vdf"
 2.  After picking one, it edits that file so that the one you chose is the latest, and makes sure Remember Password is set to true.
@@ -76,9 +74,9 @@ After installing using the installer, or downloading your .zip (portable version
 
 -   It ends any processes that start with "Steam", and then restarts Steam.exe once the switch is made. You don't need to do anything but use the arrow keys and press Enter.
 
-**Options available**: Start Steam as Administrator, Change Steam install folder, Hide VAC Status for each account and Show Steam ID. 
+**Options available**: Start Steam as Administrator, Hide VAC Status for each account and Show Steam ID, Start as Invisible, Offline and more. 
 
-### Screenshots:
+### Screenshots
 
 [imgur library](https://imgur.com/prhdlks)
 
@@ -94,7 +92,7 @@ After installing using the installer, or downloading your .zip (portable version
 
 #### Disclaimer
 
-```
+```md
 All trademarks and materials are property of their respective owners and their licensors. This project is not affiliated
 with Battle.net or Blizzard Entertainment Inc, Epic Games Inc or the Epic Games Launcher, Origin or Electronic Arts Inc,
 League of Legends or Legends of Runeterra or Valorant or Riot Games Inc, Steam or Valve Corporation, Ubisoft Connect or
