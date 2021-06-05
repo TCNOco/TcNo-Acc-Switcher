@@ -36,7 +36,7 @@ var possibleAnimations = [
 ];
 var lastDeg = 360;
 
-function RandomAni(e) {
+function randomAni(e) {
     lastDeg = -lastDeg;
 
     $({ deg: 0 }).animate(
@@ -45,7 +45,7 @@ function RandomAni(e) {
             easing: "swing"
         }, {
             duration: 500,
-            step: function(now) {
+            step: (now) => {
                 $(e).css({
                     transform: possibleAnimations[Math.floor(Math.random() * possibleAnimations.length)] + "(" + now + "deg)"
                 });
@@ -59,7 +59,7 @@ function handleWindowControls() {
     });
 
     document.getElementById("btnBack").addEventListener("click", () => {
-        if (window.location.pathname === "/") RandomAni("#btnBack .icon");
+        if (window.location.pathname === "/") randomAni("#btnBack .icon");
         else {
             let tempUri = document.location.href.split("?")[0];
             document.location.href = tempUri + (tempUri.endsWith("/") ? "../" : "/../");
@@ -75,7 +75,7 @@ function handleWindowControls() {
     });
 
     document.getElementById("btnClose").addEventListener("click", () => {
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetTrayMinimizeNotExit").then(r => {
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetTrayMinimizeNotExit").then((r) => {
             if (r && !event.ctrlKey) { // If enabled, and NOT control held
                 chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
             } else {
@@ -86,7 +86,7 @@ function handleWindowControls() {
 
     // For draggable regions:
     // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
-    document.body.addEventListener("mousedown", evt => {
+    document.body.addEventListener("mousedown", (evt) => {
         // ES is actually 11, set in project file. This error can be ignored (if you see one about ES5)
         const {
             target

@@ -36,7 +36,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
 
-        public const string SteamReturn = "SteamAdvancedClearingAddLine";
+        public const string SteamReturn = "steamAdvancedClearingAddLine";
 
         private async void WriteLine(string text)
         {

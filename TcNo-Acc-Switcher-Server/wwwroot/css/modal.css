@@ -1,253 +1,255 @@
 /* ReSharper disable CssNotResolved */
 .modalBG {
-	position: fixed;
-	height: calc(100% - var(--resizeBarSize) - 32px);
-	width: calc(100% - (var(--resizeBarSize) * 2));
-	z-index: 100;
-	background: var(--modalBackground);
-	cursor: pointer;
+  position: fixed;
+  height: calc(100% - var(--resizeBarSize) - 32px);
+  width: calc(100% - (var(--resizeBarSize) * 2));
+  z-index: 100;
+  background: var(--modalBackground);
+  cursor: pointer;
 }
 
 .modalFG {
-	width: fit-content;
-	padding: 6px;
-	background-color: var(--headerbarBackground);
-	position: absolute;
-	top: calc(50% - 18px);
-	left: 50%;
-	transform: translate(-50%, -50%);
-	min-width: 200px;
-	max-width: 90%;
-	min-height: 100px;
-	max-height: 90%;
-	-webkit-box-shadow: 0 0 15px 3px #000000;
-	-webkit-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
-	-moz-box-shadow: 0 0 15px 3px #000000;
-	-moz-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
-	box-shadow: 0 0 15px 3px #000000;
-	box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
-	cursor: default;
+  width: fit-content;
+  padding: 6px;
+  background-color: var(--headerbarBackground);
+  position: absolute;
+  top: calc(50% - 18px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 200px;
+  max-width: 90%;
+  min-height: 100px;
+  max-height: 90%;
+  -webkit-box-shadow: 0 0 15px 3px #000;
+  -webkit-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
+  -moz-box-shadow: 0 0 15px 3px #000;
+  -moz-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
+  box-shadow: 0 0 15px 3px #000;
+  box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
+  cursor: default;
 }
+
 .modal_header_icon {
-    height: 10px;
-    margin: 12px;
-    display: block;
-    fill: var(--modalTCNOFill)
+  height: 10px;
+  margin: 12px;
+  display: block;
+  fill: var(--modalTCNOFill);
 }
 
 
-/*Info window*/
+/* Info window */
 
 .infoWindow {
-	position: relative;
-	/*
+  position: relative;
+
+  /*
         width: 80%;
         height: 80%;
     */
-	width: fit-content;
-	padding: 5%;
-	align-items: center;
-	white-space: nowrap;
-	overflow: auto;
-	text-align: center;
-	display: flex;
+  width: fit-content;
+  padding: 5%;
+  align-items: center;
+  white-space: nowrap;
+  overflow: auto;
+  text-align: center;
+  display: flex;
 }
 
 .infoWindow .imgDiv {
-	width: 100%;
-	align-items: center;
-	display: flex;
+  width: 100%;
+  align-items: center;
+  display: flex;
 }
 
 .infoWindow .fullWidthContent {
-	width: 100%;
-	color: var(--defaultTextColor);
-	display: block;
+  width: 100%;
+  color: var(--defaultTextColor);
+  display: block;
 }
 
 .infoWindow .fullWidthContent .YesNo button {
-	padding: 0.25em 3em!important;
+  padding: 0.25em 3em !important;
 }
 
 .infoWindow .rightContent {
-	color: var(--defaultTextColor);
-	margin-left: 1em;
-	text-align: left;
+  color: var(--defaultTextColor);
+  margin-left: 1em;
+  text-align: left;
 }
 
 .infoWindow .rightContent h2 {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 .infoWindow .rightContent .linksList {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .infoWindow .rightContent .linksList a,
 .fancyLink {
-	color: var(--linkColor);
-	cursor: pointer;
-    line-height: 24px;
+  color: var(--linkColor);
+  cursor: pointer;
+  line-height: 24px;
 }
 
 .infoWindow .rightContent .linksList a:hover,
 .fancyLink:hover {
-	color: var(--linkColor-hover);
+  color: var(--linkColor-hover);
 }
 
 .infoWindow .rightContent .linksList a:active,
 .fancyLink:active {
-	color: var(--linkColor-active);
+  color: var(--linkColor-active);
 }
 
 .infoWindow .rightContent .linksList a svg {
-	width: 2em;
-	margin-right: 0.5em;
-    display: inline-block;
-    vertical-align: bottom;
+  width: 2em;
+  margin-right: 0.5em;
+  display: inline-block;
+  vertical-align: bottom;
 }
 
 #modal_contents {
-	position: relative;
-	width: 100%;
-	height: 100%;
-	padding: 1em;
-	display: grid;
-	background-color: var(--modalFgBackground);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 1em;
+  display: grid;
+  background-color: var(--modalFgBackground);
 }
 
 #modal_contents button {
-	user-select: none;
-	background-color: var(--buttonBackground);
-	padding: 0.25em 0.6em;
-	margin: 0 0.25em;
-	width: auto;
-	color: var(--buttonColor);
-	border-style: solid;
-	border-color: var(--buttonBorder);
-	border-width: 0.1em;
-	cursor: pointer;
-	border-radius: 0 !important;
-	transition: ease-in-out 60ms;
-	user-select: none;
+  user-select: none;
+  background-color: var(--buttonBackground);
+  padding: 0.25em 0.6em;
+  margin: 0 0.25em;
+  width: auto;
+  color: var(--buttonColor);
+  border-style: solid;
+  border-color: var(--buttonBorder);
+  border-width: 0.1em;
+  cursor: pointer;
+  border-radius: 0 !important;
+  transition: ease-in-out 60ms;
+  user-select: none;
 }
 
 #modal_contents button:hover {
-	background-color: var(--buttonBackground-hover);
-	border-color: var(--buttonBorder-hover);
+  background-color: var(--buttonBackground-hover);
+  border-color: var(--buttonBorder-hover);
 }
 
 #modal_contents button:active {
-	background-color: var(--buttonBackground-active) !important;
-	border-color: var(--buttonBorder-active);
+  background-color: var(--buttonBackground-active) !important;
+  border-color: var(--buttonBorder-active);
 }
 
 #modal_contents button:focus {
-	box-shadow: none;
+  box-shadow: none;
 }
 
 #modal_contents button span {
-	line-height: 2.5em;
+  line-height: 2.5em;
 }
 
 #modal_contents .modal_button_close {
-	right: 0 !important;
-	left: unset !important;
-	width: 35% !important;
+  right: 0 !important;
+  left: unset !important;
+  width: 35% !important;
 }
 
 #modal_contents input[type=text] {
-	padding-bottom: 2px;
-	background-color: var(--modalInputBackground) !important;
-	padding-bottom: 0;
-	margin: 0;
-	border-bottom: 2px solid var(--borderedItemBorderColor);
-	background-color: var(--modalInputBackground);
+  padding-bottom: 2px;
+  background-color: var(--modalInputBackground) !important;
+  padding-bottom: 0;
+  margin: 0;
+  border-bottom: 2px solid var(--borderedItemBorderColor);
+  background-color: var(--modalInputBackground);
 }
 
 #modal_contents input[type=text]:focus {
-	border-bottom: 2px solid var(--borderedItemBorderColorBottom-focus);
+  border-bottom: 2px solid var(--borderedItemBorderColorBottom-focus);
 }
 
 #modal_contents .inputAndButton {
-	display: flex;
-	margin: 1em 0.5em 1em 0.5em;
+  display: flex;
+  margin: 1em 0.5em 1em 0.5em;
 }
 
 #modal_contents .inputAndButton button {
-	margin-left: 0.5em;
+  margin-left: 0.5em;
 }
 
 #modal_contents .modal-text {
-	margin: 0 0.5em 2px 0.5em;
-	font-size: 12px !important;
-	color: var(--defaultTextColor);
+  margin: 0 0.5em 2px 0.5em;
+  font-size: 12px !important;
+  color: var(--defaultTextColor);
 }
 
 #FolderLocation {
-	flex-grow: 1;
+  flex-grow: 1;
 }
 
 .modalOK {
-	margin-left: auto!important;
-	padding: 0 2em;
+  margin-left: auto !important;
+  padding: 0 2em;
 }
 
 .folder_indicator {
-	width: 6px;
-	margin-right: 0.5em;
+  width: 6px;
+  margin-right: 0.5em;
 }
 
 .folder_indicator.found {
-	background-color: var(--modalfoundColor);
+  background-color: var(--modalfoundColor);
 }
 
 .folder_indicator.notfound {
-	background-color: var(--modalnotFoundColor);
+  background-color: var(--modalnotFoundColor);
 }
 
 .folder_indicator_bg {
-	padding: 0.35em 0.6em;
+  padding: 0.35em 0.6em;
 }
 
 .folder_indicator_bg span {
-	line-height: 2.5em;
-	color: var(--defaultTextColor);
-	padding: 1em 0;
+  line-height: 2.5em;
+  color: var(--defaultTextColor);
+  padding: 1em 0;
 }
 
 .folder_indicator_bg.found {
-	background-color: var(--modalfoundBackground);
+  background-color: var(--modalfoundBackground);
 }
 
 .folder_indicator_bg.found span::after {
-	content: " found!";
+  content: " found!";
 }
 
 .folder_indicator_bg.notfound {
-	background-color: var(--modalnotFoundBackground);
+  background-color: var(--modalnotFoundBackground);
 }
 
 .folder_indicator_bg.notfound span::after {
-	content: " not found!";
+  content: " not found!";
 }
 
 #modal_false {
-	color: var(--linkColor) !important;
+  color: var(--linkColor) !important;
 }
 
 .clearLogDiv {
-	text-align: right;
-	margin-top: 0.5em;
+  text-align: right;
+  margin-top: 0.5em;
 }
 
 .clearLogDiv button {
-	width: 40%!important;
+  width: 40% !important;
 }
 
-#invalidBattleTag>p {
-	color: red;
-	font-size: 13px;
-	font-weight: bold;
+#invalidBattleTag > p {
+  color: red;
+  font-size: 13px;
+  font-weight: bold;
 }

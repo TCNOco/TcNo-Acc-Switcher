@@ -1,16 +1,9 @@
-﻿function createAlert(str) {
-    alert(str);
-}
-
-jQueryAppend = (jQuerySelector, strToInsert) => {
+﻿jQueryAppend = (jQuerySelector, strToInsert) => {
     $(jQuerySelector).append(strToInsert);
-    if (jQuerySelector === "#acc_list") {
-
-    }
 };
 jQueryProcessAccListSize = () => {
     let maxHeight = 0;
-    $('.acc_list_item label').each((_, e) => { maxHeight = Math.max(maxHeight, e.offsetHeight); });
+    $(".acc_list_item label").each((_, e) => { maxHeight = Math.max(maxHeight, e.offsetHeight); });
     document.getElementById("acc_list").setAttribute("style", `grid-template-rows: repeat(auto-fill, ${maxHeight}px)`);
 };
 
@@ -23,16 +16,16 @@ initAccListSortable = () => {
         forcePlaceholderSize: true,
         placeholderClass: "placeHolderAcc",
         hoverClass: "accountHover",
-        items: ':not(toastarea)'
+        items: ":not(toastarea)"
     });
     // On drag start, un-select all items.
-    sortable(".acc_list")[0].addEventListener("sortstart", function() {
-        $("input:checked").each(function(_, e) {
+    sortable(".acc_list")[0].addEventListener("sortstart", () => {
+        $("input:checked").each((_, e) => {
             $(e).prop("checked", false);
         });
     });
     // On drag end, save list of items.
-    sortable(".acc_list")[0].addEventListener("sortupdate", function(e) {
+    sortable(".acc_list")[0].addEventListener("sortupdate", (e) => {
         let order = [];
         e.detail.destination.items.forEach((e) => {
             if (!$(e).is("div")) return; // Ignore <toastarea>
@@ -42,42 +35,6 @@ initAccListSortable = () => {
     });
 };
 
-
-UpdateDynamicCss = (rule, value) => {
-    // Check if stylesheet exists, otherwise create the "dynamic stylesheet"
-    let style = document.getElementById("dynamicStyles");
-    if (style === null) {
-        style = document.createElement("style");
-        style.setAttribute("id", "dynamicStyles");
-        document.head.appendChild(style);
-    }
-
-    // Remove if already there
-    for (let i = 0; i < style.sheet.rules.length; i++) {
-        if (style.sheet.rules[i].selectorText === rule) {
-            style.sheet.deleteRule(i);
-            break;
-        }
-    }
-
-    // Insert new or updated rule.
-    //// Rather just make sure that they always include a {}
-    //// value = (value[0] !== "{" ? "{" : "") + value + (value.charAt(value.length - 1) !== "}" ? "}" : "");
-    style.sheet.insertRule(rule + value, style.sheet.cssRules.length);
-};
-
-SteamAdvancedClearingAddLine = (text) => {
+steamAdvancedClearingAddLine = (text) => {
     queuedJQueryAppend("#lines", "<p>" + text + "</p>");
 };
-
-$.fn.extend({
-    'ifexists': function(callback) {
-        if (this.length > 0) {
-            return callback($(this));
-        }
-    }
-});
-
-
-// Reloading the page is better for now.
-//jQueryClearInner = (jQuerySelector) => { $(jQuerySelector).empty() }

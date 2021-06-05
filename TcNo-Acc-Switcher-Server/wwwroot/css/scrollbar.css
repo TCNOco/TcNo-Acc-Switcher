@@ -1,17 +1,17 @@
 ﻿/* ReSharper disable CssNotResolved */
 ::-webkit-scrollbar {
-	width: 10px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-	background: var(--scrollbarTrackBackground);
+  background: var(--scrollbarTrackBackground);
 }
 
 ::-webkit-scrollbar-thumb {
-	background: var(--scrollbarThumbBackground);
-	border-radius: 0.3em;
+  background: var(--scrollbarThumbBackground);
+  border-radius: 0.3em;
 }
 
- ::-webkit-scrollbar-thumb:hover {
-	background: var(--scrollbarThumbBackground-hover);
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbarThumbBackground-hover);
 }

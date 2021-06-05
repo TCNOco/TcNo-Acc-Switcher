@@ -13,9 +13,9 @@ function ip_info($ip = NULL, $purpose = "location", $deep_detect = TRUE) {
     if (filter_var($ip, FILTER_VALIDATE_IP) === FALSE) {
         $ip = $_SERVER["REMOTE_ADDR"];
         if ($deep_detect) {
-            if (filter_var(@$_SERVER['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP))
+            if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && filter_var(@$_SERVER['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP))
                 $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            if (filter_var(@$_SERVER['HTTP_CLIENT_IP'], FILTER_VALIDATE_IP))
+            if (isset($_SERVER['HTTP_CLIENT_IP']) && filter_var(@$_SERVER['HTTP_CLIENT_IP'], FILTER_VALIDATE_IP))
                 $ip = $_SERVER['HTTP_CLIENT_IP'];
         }
     }
@@ -54,8 +54,11 @@ $details = ip_info("Visitor", "Location");
 
 // Today's JSON file
 $filename = __DIR__ ."/NetCore_data/".date("Y-m-d").".json";
-///echo("Opening: ".$filename."<br>");
-$jsToday = json_decode(@file_get_contents($filename), true); // "@" ignores non-exist error
+if (false === ($data = file_get_contents($filename))) {
+    exit(); // Process failed.
+} else {
+    $jsToday = json_decode($data, true); // "@" ignores non-exist error
+}
 
 $currentCount = 0;
 

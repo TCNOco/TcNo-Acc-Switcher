@@ -34,7 +34,7 @@ async function forget(e) {
     e.preventDefault();
     debugger;
     const reqId = $(selectedElem).attr("id");
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "Get" + getCurrentPage() + "ForgetAcc").then(r => {
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "Get" + getCurrentPage() + "ForgetAcc").then((r) => {
         if (!r) showModal("confirm:AcceptForget" + getCurrentPage() + "Acc:" + reqId);
         else Modal_Confirm("AcceptForget" + getCurrentPage() + "Acc:" + reqId, true);
     });
@@ -48,7 +48,7 @@ async function restoreSteamAccounts() {
         return $(item).attr("value");
     });
 
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "Steam_RestoreSelected", reqSteamIds).then(r => {
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "Steam_RestoreSelected", reqSteamIds).then((r) => {
         if (r === true) {
             reqSteamIds.forEach((e) => {
                 $("#ForgottenSteamAccounts").find(`option[value="${e}"]`).remove();
@@ -79,7 +79,7 @@ async function restoreBattleNetAccounts() {
         return $(item).attr("value");
     });
 
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BattleNet_RestoreSelected", reqBattleNetId).then(r => {
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BattleNet_RestoreSelected", reqBattleNetId).then((r) => {
         if (r === true) {
             reqBattleNetId.forEach((e) => {
                 $("#IgnoredAccounts").find(`option[value="${e}"]`).remove();
@@ -241,7 +241,7 @@ function currentUbisoftLogin() {
 
 
 
-$(".acc").dblclick(function() {
+$(".acc").dblclick(() => {
     alert("Handler for .dblclick() called.");
     swapTo();
 });
@@ -258,7 +258,7 @@ function showModal(modaltype) {
         $('#modalTitle').text("TcNo Account Switcher Information");
         $("#modal_contents").empty();
         currentVersion = "";
-        var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetVersion").then(r => {
+        var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetVersion").then((r) => {
             currentVersion = r;
             $("#modal_contents").append(`<div class="infoWindow">
                 <div class= "imgDiv" ><img width="100" margin="5" src="img/TcNo500.png" draggable="false"></div>
@@ -323,7 +323,7 @@ function showModal(modaltype) {
         let action = modaltype.slice(8);
 
         let message = "";
-        let header = "";
+        let header = "<h3>Confirm action:</h3>";
         if (action.startsWith("AcceptForgetSteamAcc")) {
             message = forgetAccountSteamPrompt;
         } else if (action.startsWith("AcceptForgetOriginAcc") || action.startsWith("AcceptForgetUbisoftAcc") ||
@@ -331,7 +331,6 @@ function showModal(modaltype) {
             action.startsWith("AcceptForgetRiotAcc")) {
             message = getAccountPrompt();
         } else {
-            header = "<h3>Confirm action:</h3>";
             message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
             // The only exception to confirm:<prompt> was AcceptForgetSteamAcc, as that was confirm:AcceptForgetSteamAcc:steamId
             // Could be more in the future.
@@ -342,8 +341,7 @@ function showModal(modaltype) {
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">
-            ${header}
-            ${message}
+            ${header + message}
             <div class="YesNo">
 		        <button class="btn" type="button" id="modal_true" onclick="Modal_Confirm('${action}', true)"><span>Yes</span></button>
 		        <button class="btn" type="button" id="modal_false" onclick="Modal_Confirm('${action}', false)"><span>No</span></button>
@@ -361,12 +359,11 @@ function showModal(modaltype) {
         }
 
         let message = "";
-        let header = "";
+        let header = "<h3>Confirm action:</h3>";
         if (action.startsWith("RestartAsAdmin")) {
             message = restartAsAdminPrompt;
             action = (args !== "" ? `location = 'RESTART_AS_ADMIN?arg=${args}'` : "location = 'RESTART_AS_ADMIN'");
         } else {
-            header = "<h3>Confirm action:</h3>";
             message = `<p>${modaltype.split(":")[2].replaceAll("_", " ")}</p>`;
             action = action.split(":")[0];
         }
@@ -375,8 +372,7 @@ function showModal(modaltype) {
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">
-            ${header}
-            ${message}
+            ${header + message}
             <div class="YesNo">
 		        <button class="btn" type="button" id="modal_true" onclick="${action}"><span>OK</span></button>
             </div>
@@ -438,7 +434,7 @@ function Modal_Finalise(platform, platformSettingsPath) {
     location.reload();
 }
 async function Modal_Confirm(action, value) {
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value).then(r => {
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value).then((r) => {
         if (r === "refresh") location.reload();
     });
     var result = await promise;

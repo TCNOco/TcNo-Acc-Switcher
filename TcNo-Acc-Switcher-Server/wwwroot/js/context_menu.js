@@ -2,30 +2,30 @@
 var selectedElem = "";
 
 function initContextMenu() {
-    $(".acc_list").on("click", function() {
-        $("input:checked").each(function(_, e) {
+    $(".acc_list").on("click", () => {
+        $("input:checked").each((_, e) => {
             $(e).prop("checked", false);
         });
     });
 
     // Ready accounts for double-click
-    $(".acc_list_item").dblclick(function(event) {
+    $(".acc_list_item").dblclick((event) => {
         swapTo(-1, event);
     });
 
     // Handle Left-clicks:
-    $(".acc_list_item").click(function(e) {
-        $(e.currentTarget).children('input')[0].click();
+    $(".acc_list_item").click((e) => {
+        $(e.currentTarget).children("input")[0].click();
         e.stopPropagation();
     });
 
     //Show contextmenu on Right-Click:
-    $(".acc_list_item").contextmenu(function(e) {
+    $(".acc_list_item").contextmenu((e) => {
         // Select item that was right-clicked.
-        $(e.currentTarget).children('input').click();
+        $(e.currentTarget).children("input").click();
 
         // Set currently selected element
-        selectedElem = $(e.currentTarget).children('input')[0];
+        selectedElem = $(e.currentTarget).children("input")[0];
         // Update status for element
         switch (getCurrentPage()) {
             case "Steam":
@@ -72,7 +72,7 @@ function initContextMenu() {
             //Case 4: default values:
             posLeft = posX + secMargin + "px";
             posTop = posY + secMargin + "px";
-        };
+        }
         //Display contextmenu:
         $(".contextmenu").css({
             "left": posLeft,
@@ -90,11 +90,11 @@ function initContextMenu() {
     function moveContextMenu(submenuSize) {
         rightSpace = $(contextMenu).position().left + $(contextMenu).width() + submenuSize - window.innerWidth;
         if (rightSpace > 0) {
-            $(contextMenu).css('left', $(contextMenu).position().left - rightSpace);
+            $(contextMenu).css("left", $(contextMenu).position().left - rightSpace);
         }
     }
     // Define resizeObserver and add it to every submenu on the page.
-    const resizeObserver = new ResizeObserver(entries => {
+    const resizeObserver = new ResizeObserver((entries) => {
         for (let entry of entries) {
             moveContextMenu(entry.contentRect.width);
         }
@@ -104,12 +104,12 @@ function initContextMenu() {
     }
 
     //Hide contextmenu:
-    $(document).click(function() {
+    $(document).click(() => {
         $(".contextmenu").hide();
     });
 };
 
-function SelectedItemChanged() {
+function selectedItemChanged() {
     // Different function groups based on platform
     updateStatus(`Selected: ${$("input[name=accounts]:checked").attr("DisplayName")}`);
 }

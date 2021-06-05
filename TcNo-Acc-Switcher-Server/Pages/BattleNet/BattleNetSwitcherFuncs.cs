@@ -103,7 +103,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 if (!File.Exists(Path.Join(BattleNet.ImagePath, $"{acc.Email}.png"))) DownloadImage(acc.Email);
                 var username = (acc.BTag == null ? acc.Email : (acc.BTag.Contains("#") ? acc.BTag.Split("#")[0] : acc.BTag));
                 var element =
-                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{acc.Email}\" Username=\"{username}\" DisplayName=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"SelectedItemChanged()\" />\r\n" +
+                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{acc.Email}\" Username=\"{username}\" DisplayName=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                     $"<label for=\"{acc.Email}\" class=\"acc\">\r\n" +
                     $"<img src=\"img\\profiles\\battlenet\\{acc.Email}.png\" draggable=\"false\" />\r\n" +
                     $"<h6>{username}</h6>\r\n";
