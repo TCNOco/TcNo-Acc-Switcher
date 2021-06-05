@@ -58,7 +58,7 @@ The new Beta version is available for testing. Please report any and all bugs, a
 
 New users should use the Download button above, or click [HERE](https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest). You'll also need the .NET Framework 4.8 Runtime, below.
 
-### Required runtimes (Download and install)
+### Required runtimes
 
 -   Microsoft .NET Framework 4.8 Runtime: [Web Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer), [Offline Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-offline-installer), [Other languages](https://dotnet.microsoft.com/download/dotnet-framework/net48)
 
