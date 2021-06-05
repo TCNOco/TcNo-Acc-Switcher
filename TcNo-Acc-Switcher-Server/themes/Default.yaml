@@ -32,6 +32,7 @@ contextMenuBoxShadow: none
 # Headerbar at the top, with the account switcher's page title and window controls
 headerbarBackground: "#14151E"
 headerbarTCNOFill: white
+windowControlsBackground: "#14151E"
 windowControlsBackground-hover: rgba(255,255,255,0.1)
 windowControlsBackground-active: rgba(255,255,255,0.2)
 windowControlsCloseBackground: "#E81123"

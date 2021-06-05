@@ -34,7 +34,8 @@ using VCDiff.Encoders;
 using VCDiff.Decoders;
 using VCDiff.Includes;
 using VCDiff.Shared;
-
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace TcNo_Acc_Switcher_Updater
 {
@@ -175,26 +176,25 @@ namespace TcNo_Acc_Switcher_Updater
                     try
                     {
                         // Separated so colors aren't only half changed, and a color from the file is missing
-                        var o = JObject.Parse(File.ReadAllText("StyleSettings.json"));
-
-                        // Set to new YAML method.
+                        var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
+                        var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(File.ReadAllText("StyleSettings.yaml"))));
                         // Need to try catch every one of these, as they may be invalid.
-                        var highlightColor = (Brush)new BrushConverter().ConvertFromString((string)o["linkColor"]); // Add a specific Highlight color later?
-                        var headerColor = (Brush)new BrushConverter().ConvertFromString((string)o["headerbarBackground"]);
-                        var mainBackground = (Brush)new BrushConverter().ConvertFromString((string)o["mainBackground"]);
-                        var listBackground = (Brush) new BrushConverter().ConvertFromString((string) o["modalInputBackground"]);
-                        var borderedItemBorderColor = (Brush) new BrushConverter().ConvertFromString((string) o["borderedItemBorderColor"]);
-                        var buttonBackground = (Brush) new BrushConverter().ConvertFromString((string) o["buttonBackground"]);
-                        var buttonBackgroundHover = (Brush) new BrushConverter().ConvertFromString((string) o["buttonBackground-hover"]);
-                        var buttonBackgroundActive = (Brush) new BrushConverter().ConvertFromString((string) o["buttonBackground-active"]);
-                        var buttonColor = (Brush)new BrushConverter().ConvertFromString((string)o["buttonColor"]);
-                        var buttonBorder = (Brush)new BrushConverter().ConvertFromString((string)o["buttonBorder"]);
-                        var buttonBorderHover = (Brush)new BrushConverter().ConvertFromString((string)o["buttonBorder-hover"]);
-                        var buttonBorderActive = (Brush)new BrushConverter().ConvertFromString((string)o["buttonBorder-active"]);
-                        var windowControlsBackground = (Brush)new BrushConverter().ConvertFromString((string)o["windowControlsBackground"]);
-                        var windowControlsBackgroundActive = (Brush)new BrushConverter().ConvertFromString((string)o["windowControlsBackground-active"]);
-                        var windowControlsCloseBackground = (Brush)new BrushConverter().ConvertFromString((string)o["windowControlsCloseBackground"]);
-                        var windowControlsCloseBackgroundActive = (Brush)new BrushConverter().ConvertFromString((string)o["windowControlsCloseBackground-active"]);
+                        var highlightColor = TryApplyTheme(dict, "#8BE9FD", "linkColor"); // Add a specific Highlight color later?
+                        var headerColor = TryApplyTheme(dict, "#14151E", "headerbarBackground");
+                        var mainBackground = TryApplyTheme(dict, "#0E1419", "mainBackground");
+                        var listBackground = TryApplyTheme(dict, "#070A0D", "modalInputBackground");
+                        var borderedItemBorderColor = TryApplyTheme(dict, "#888", "borderedItemBorderColor");
+                        var buttonBackground = TryApplyTheme(dict, "#274560", "buttonBackground");
+                        var buttonBackgroundHover = TryApplyTheme(dict, "#28374E", "buttonBackground-hover");
+                        var buttonBackgroundActive = TryApplyTheme(dict, "#28374E", "buttonBackground-active");
+                        var buttonColor = TryApplyTheme(dict, "#FFFFFF", "buttonColor");
+                        var buttonBorder = TryApplyTheme(dict, "#274560", "buttonBorder");
+                        var buttonBorderHover = TryApplyTheme(dict, "#274560", "buttonBorder-hover");
+                        var buttonBorderActive = TryApplyTheme(dict, "#8BE9FD", "buttonBorder-active");
+                        var windowControlsBackground = TryApplyTheme(dict, "#14151E", "windowControlsBackground");
+                        var windowControlsBackgroundActive = TryApplyTheme(dict, "#3B4853", "windowControlsBackground-active");
+                        var windowControlsCloseBackground = TryApplyTheme(dict, "#D51426", "windowControlsCloseBackground");
+                        var windowControlsCloseBackgroundActive = TryApplyTheme(dict, "#D51426", "windowControlsCloseBackground-active");
 
                         Resources["HighlightColor"] = highlightColor;
                         Resources["HeaderColor"] = headerColor;
@@ -240,6 +240,18 @@ namespace TcNo_Acc_Switcher_Updater
                 WriteLine("To verify files you need to update first.");
 
             _updatesAndChanges = _updatesAndChanges.Reverse().ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        private static Brush TryApplyTheme(IReadOnlyDictionary<string, string> dict, string def, string e)
+        {
+            try
+            {
+                return (Brush) new BrushConverter().ConvertFromString(dict[e]);
+            }
+            catch (Exception)
+            {
+                return (Brush)new BrushConverter().ConvertFromString(def);
+            }
         }
 
         private void GenerateHashes()

@@ -320,7 +320,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 try
                 {
-                    //using var reader = File.OpenText(StylesheetFile);
                     var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(string.Join('\n', text))));
                     // Load default values, and copy in new values (Just in case some are missing)
                     _instance._stylesheet = _instance._defaultStylesheet;

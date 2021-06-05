@@ -32,6 +32,7 @@ contextMenuBoxShadow: 10px 10px 5px -3px rgb(0 0 0 / 30%)
 # Headerbar at the top, with the account switcher's page title and window controls
 headerbarBackground: "#253340"
 headerbarTCNOFill: white
+windowControlsBackground: "#253340"
 windowControlsBackground-hover: "#3B4853"
 windowControlsBackground-active: "#3B4853"
 windowControlsCloseBackground: "#D51426"

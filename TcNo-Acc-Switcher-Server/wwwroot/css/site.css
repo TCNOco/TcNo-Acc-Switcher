@@ -135,6 +135,9 @@ label {
   pointer-events: all;
   margin-top: -2px;
 }
+#window-controls, #btnBack {
+  background: var(--windowControlsBackground);
+}
 
 #btnBack .resizeTop {
   width: 46px !important;
