@@ -30,17 +30,13 @@ function setForgotten(listForgotten) {
 // Load list of users
 export function jsLoadForgotten() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiFileReadAllText", "SteamForgotten.json").then(r => {
-        console.log("GOT FORGOTTEN USERS");
-        console.log(r);
         setForgotten(r);
     });
-    console.log("Getting forgotten users from file");
 
     // Onclick function for the checkbox
     $('#Steam_ForgottenShowId').change(function() {
         const checked = $(this).is(":checked");
         $("restoreSteamId").each((_, e) => {
-            console.log(e);
             $(e).parent().attr("visible-content", checked ? ` | ${$(e).attr("value")}` : "");
         });
     });

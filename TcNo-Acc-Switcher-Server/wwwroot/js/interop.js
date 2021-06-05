@@ -3,9 +3,6 @@
 }
 
 jQueryAppend = (jQuerySelector, strToInsert) => {
-    console.log(`\nInserting: ${strToInsert}`);
-    console.log(`... into: ${jQuerySelector}\n`);
-
     $(jQuerySelector).append(strToInsert);
     if (jQuerySelector === "#acc_list") {
 

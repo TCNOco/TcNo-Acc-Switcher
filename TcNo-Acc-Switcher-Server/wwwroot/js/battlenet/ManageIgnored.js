@@ -30,9 +30,6 @@ function setIgnored(listIgnored) {
 // Load list of users
 export function jsLoadIgnored() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiFileReadAllText", "LoginCache\\BattleNet\\IgnoredAccounts.json").then(r => {
-        console.log("GOT IGNORED USERS");
-        console.log(r);
         setIgnored(r);
     });
-    console.log("Getting forgotten users from file");
 }

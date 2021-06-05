@@ -1,38 +1,8 @@
-﻿//// Loader
-//var Namespace = Namespace || {};
-//Namespace.Deferred = function () {
-//    var functions = [];
-//    var timer = function () {
-//        if (window.jQuery && window.jQuery.ui) {
-//            while (functions.length) {
-//                functions.shift()(window.jQuery);
-//            }
-//        } else {
-//            window.setTimeout(timer, 250);
-//        }
-//    };
-//    timer();
-//    return {
-//        execute: function (onJQueryReady) {
-//            if (window.jQuery && window.jQuery.ui) {
-//                onJQueryReady(window.jQuery);
-//            } else {
-//                functions.push(onJQueryReady);
-//            }
-//        }
-//    };
-//}();
-
-//Namespace.Deferred.execute(addContextMenu);
-
-//function addContextMenu() {
-
-// Selected Element on list, for use in other JS functions
+﻿// Selected Element on list, for use in other JS functions
 var SelectedElem = "";
 
 function initContextMenu() {
     $(".acc_list").on("click", function() {
-        console.log('e');
         $("input:checked").each(function(_, e) {
             $(e).prop("checked", false);
         });
@@ -53,9 +23,6 @@ function initContextMenu() {
     $(".acc_list_item").contextmenu(function(e) {
         // Select item that was right-clicked.
         $(e.currentTarget).children('input').click();
-        //$('[id="' + e.currentTarget.for + '"]').click();
-        //console.log($('[id="' + $(e.currentTarget).attr("for") + '"]'));
-
 
         // Set currently selected element
         SelectedElem = $(e.currentTarget).children('input')[0];
@@ -142,8 +109,6 @@ function initContextMenu() {
 };
 
 function SelectedItemChanged() {
-    //console.log("click!");
-    //console.log(this);
     // Different function groups based on platform
     updateStatus("Selected: " + $("input[name=accounts]:checked").attr("DisplayName"));
 }

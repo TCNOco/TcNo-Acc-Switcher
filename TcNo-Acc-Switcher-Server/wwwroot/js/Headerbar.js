@@ -56,7 +56,6 @@ function RandomAni(e) {
 }
 
 function handleWindowControls() {
-    console.log("HandleWindowControls() was called!");
     document.getElementById("btnMin").addEventListener("click", () => {
         chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMinimise);
     });
@@ -95,9 +94,6 @@ function handleWindowControls() {
             target
         } = evt;
         const appRegion = getComputedStyle(target)["-webkit-app-region"];
-        //const appRegion = getComputedStyle(target);
-        //console.log(evt);
-        //console.log(appRegion);
         if (evt.button === 0 && appRegion === "drag") {
             if (target.classList.length !== 0) {
                 const c = target.classList[0];

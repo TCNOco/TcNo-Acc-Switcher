@@ -44,8 +44,6 @@ async function forget(e) {
 
 // RESTORING STEAM ACCOUNTS
 async function restoreSteamAccounts() {
-    //const reqSteamId = $("#ForgottenSteamAccounts").children("option:selected")
-    //    .each((_, e) => { console.log($(e).attr("value")) });
     const reqSteamIds = $("#ForgottenSteamAccounts").children("option:selected").toArray().map((item) => {
         return $(item).attr("value");
     });
@@ -63,7 +61,6 @@ async function restoreSteamAccounts() {
                 });
             });
         } else {
-            console.log(r);
             window.notification.new({
                 type: "error",
                 title: "",
@@ -78,8 +75,6 @@ async function restoreSteamAccounts() {
 
 // STOP IGNORING BATTLENET ACCOUNTS
 async function restoreBattleNetAccounts() {
-    //const reqBattleNetId = $("#IgnoredBattleNetAccounts").children("option:selected")
-    //    .each((_, e) => { console.log($(e).attr("value")) });
     const reqBattleNetId = $("#IgnoredAccounts").children("option:selected").toArray().map((item) => {
         return $(item).attr("value");
     });
@@ -97,7 +92,6 @@ async function restoreBattleNetAccounts() {
                 });
             });
         } else {
-            console.log(r);
             window.notification.new({
                 type: "error",
                 title: "",
@@ -120,8 +114,6 @@ function copy(request, e) {
         case "Steam":
             steam();
             break;
-            //case "Origin":
-            //    origin();
         default:
             CopyToClipboard(requestResult);
             break;
@@ -159,11 +151,6 @@ function copy(request, e) {
                 CopyToClipboard(requestResult);
         }
     }
-    //// Origin:
-    //function origin() {
-    //    var accName = $(SelectedElem).attr("AccName");
-
-    //}
 }
 
 // Swapping accounts
@@ -289,7 +276,6 @@ function ShowModal(modaltype) {
         });
     } else if (modaltype.startsWith("changeUsername")) {
         // USAGE: "changeUsername"
-        console.log(modaltype);
         Modal_RequestedLocated(false);
         var platformName = modaltype.split(":")[1] ?? "username";
         $('#modalTitle').text("Change username");
@@ -308,8 +294,6 @@ function ShowModal(modaltype) {
         input = document.getElementById('NewAccountName');
     } else if (modaltype.startsWith("find:")) {
         // USAGE: "find:<Program_name>:<Program_exe>:<SettingsFile>" -- example: "find:Steam:Steam.exe:SteamSettings"
-        console.log(modaltype);
-        console.log(modaltype.split(":"));
         platform = modaltype.split(":")[1].replaceAll("_", " ");
         var platformExe = modaltype.split(":")[2];
         var platformSettingsPath = modaltype.split(":")[3];
@@ -334,8 +318,6 @@ function ShowModal(modaltype) {
     } else if (modaltype.startsWith("confirm:")) {
         // USAGE: "confirm:<prompt>
         // GOAL: To return true/false
-        console.log(modaltype);
-
         let action = modaltype.slice(8);
 
         let message = "";
@@ -369,8 +351,6 @@ function ShowModal(modaltype) {
     } else if (modaltype.startsWith("notice:")) {
         // USAGE: "notice:<prompt>
         // GOAL: Runs function when OK clicked.
-        console.log(modaltype);
-
         let action = modaltype.slice(7);
         let args = "";
         if (modaltype.split(":").length > 2) {
@@ -403,8 +383,6 @@ function ShowModal(modaltype) {
         input = document.getElementById('modal_true');
     } else if (modaltype.startsWith("accString:")) {
         // USAGE: "accString:<platform>" -- example: "accString:Origin"
-        console.log(modaltype);
-        console.log(modaltype.split(":"));
         platform = modaltype.split(":")[1].replaceAll("_", " ");
         Modal_RequestedLocated(false);
         $('#modalTitle').text("Add new " + platform + " account");
@@ -508,8 +486,6 @@ function flushJQueryAppendQueue() {
     // have this as detect and run at some point. For now the only use for this function is the Steam Cleaning list thingy
     $(".clearingRight")[0].scrollTop = $(".clearingRight")[0].scrollHeight;
 }
-
-//DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyCommunityUsername", $(SelectedElem).attr(request)).then(r => console.log(r));
 
 function ForgetBattleTag() {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "DeleteUsername", $(".acc:checked").attr("id"));
