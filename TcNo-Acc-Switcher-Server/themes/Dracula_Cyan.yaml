@@ -126,10 +126,10 @@ modalIcoGitHub-Fill: white
 modalIcoNetworking-Fill: white
 modalIcoDoc-Fill: white
 # Modal: Specific to finding files (Such as Steam's .exe)
-modalfoundColor: lime
-modalfoundBackground: green
-modalnotFoundColor: red
-modalnotFoundBackground: darkred
+modalFoundColor: lime
+modalFoundBackground: green
+modalNotFoundColor: red
+modalNotFoundBackground: darkred
 
 # Toast notifications
 notification-color-dark-text: white

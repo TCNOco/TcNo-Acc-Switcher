@@ -202,11 +202,11 @@
 }
 
 .folder_indicator.found {
-  background: var(--modalfoundColor);
+  background: var(--modalFoundColor);
 }
 
 .folder_indicator.notfound {
-  background: var(--modalnotFoundColor);
+  background: var(--modalNotFoundColor);
 }
 
 .folder_indicator_bg {
@@ -220,7 +220,7 @@
 }
 
 .folder_indicator_bg.found {
-  background: var(--modalfoundBackground);
+  background: var(--modalFoundBackground);
 }
 
 .folder_indicator_bg.found span::after {
@@ -228,7 +228,7 @@
 }
 
 .folder_indicator_bg.notfound {
-  background: var(--modalnotFoundBackground);
+  background: var(--modalNotFoundBackground);
 }
 
 .folder_indicator_bg.notfound span::after {
