@@ -314,15 +314,80 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!File.Exists(StylesheetFile)) File.Copy("themes\\Default.yaml", StylesheetFile);
             // Load new stylesheet
             var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-            using var reader = File.OpenText(StylesheetFile);
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize(reader)));
-            // Load default values, and copy in new values (Just in case some are missing)
-            _instance._stylesheet = _instance._defaultStylesheet;
-            if (dict != null)
-                foreach (var (key, val) in dict)
+            var attempts = 0;
+            while (attempts <= 11)
+            {
+                string[] text = {""};
+                try
                 {
-                    _instance._stylesheet[key] = val;
+                    //using var reader = File.OpenText(StylesheetFile);
+                    text = File.ReadAllLines(StylesheetFile);
+                    //var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize(reader)));
+                    var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(string.Join('\n', text))));
+                    // Load default values, and copy in new values (Just in case some are missing)
+                    _instance._stylesheet = _instance._defaultStylesheet;
+                    if (dict != null)
+                        foreach (var (key, val) in dict)
+                        {
+                            _instance._stylesheet[key] = val;
+                        }
+
+                    break;
                 }
+                catch (YamlDotNet.Core.SemanticErrorException e)
+                {
+                    // Check lines for common mistakes:
+                    var line = e.End.Line - 1;
+                    var currentLine = text[line];
+                    var foundIssue = false;
+                    // - Check for leading or trailing spaces:
+                    if (currentLine[0] == ' ' || currentLine[^1] == ' ')
+                    {
+                        currentLine = currentLine.Trim();
+                        foundIssue = true;
+                    }
+
+                    // - Check if there is a colon and a space (required for it to work), add space if no space.
+                    if (currentLine.Contains(':') && currentLine[currentLine.IndexOf(':') + 1] != ' ')
+                    {
+                        currentLine = currentLine.Insert(currentLine.IndexOf(':') + 1, " ");
+                        foundIssue = true;
+                    }
+
+                    if (!foundIssue)
+                    {
+                        // ReSharper disable once RedundantAssignment
+                        attempts++;
+
+                        // Comment out line:
+                        currentLine = $"# -- ERROR -- # {currentLine}";
+                    }
+
+                    // Replace line and save new file
+                    if (text[line] != currentLine)
+                    {
+                        text[line] = currentLine;
+                        File.WriteAllLines(StylesheetFile, text);
+                    }
+
+                    if (attempts == 11)
+                    {
+                        // All 10 fix attempts have failed -> Copy in default file.
+                        if (File.Exists("themes\\Default.yaml"))
+                        {
+                            // Check if haven't already copied default file into the stylesheet file
+                            var curThemeHash = GeneralFuncs.GetFileMd5(StylesheetFile);
+                            var defaultThemeHash = GeneralFuncs.GetFileMd5("themes\\Default.yaml");
+                            if (curThemeHash != defaultThemeHash)
+                            {
+                                File.Copy("themes\\Default.yaml", StylesheetFile, true);
+                                attempts = 10; // One last attempt -> This time loads default settings now in that file.
+                            }
+                        }
+                    }
+                }
+            }
+
             // Get name of current stylesheet
             GetCurrentStylesheet();
         }
