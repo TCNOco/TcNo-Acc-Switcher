@@ -50,7 +50,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         // Variables
-        private string _version = "2021-06-04_01";
+        private string _version = "2021-06-05_00";
         [JsonProperty("Version", Order = 0)] public string Version => _instance._version;
 
         private bool _updateAvailable;
@@ -315,14 +315,12 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Load new stylesheet
             var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
             var attempts = 0;
-            while (attempts <= 11)
+            var text = File.ReadAllLines(StylesheetFile);
+            while (attempts <= text.Length)
             {
-                string[] text = {""};
                 try
                 {
                     //using var reader = File.OpenText(StylesheetFile);
-                    text = File.ReadAllLines(StylesheetFile);
-                    //var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize(reader)));
                     var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(string.Join('\n', text))));
                     // Load default values, and copy in new values (Just in case some are missing)
                     _instance._stylesheet = _instance._defaultStylesheet;
@@ -370,7 +368,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                         File.WriteAllLines(StylesheetFile, text);
                     }
 
-                    if (attempts == 11)
+                    if (attempts == text.Length)
                     {
                         // All 10 fix attempts have failed -> Copy in default file.
                         if (File.Exists("themes\\Default.yaml"))
@@ -381,7 +379,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                             if (curThemeHash != defaultThemeHash)
                             {
                                 File.Copy("themes\\Default.yaml", StylesheetFile, true);
-                                attempts = 10; // One last attempt -> This time loads default settings now in that file.
+                                attempts = text.Length - 1; // One last attempt -> This time loads default settings now in that file.
                             }
                         }
                     }
