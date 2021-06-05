@@ -120,7 +120,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static Task<string> GiConfirmAction(string action, bool value)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiConfirmAction] action={action}, value={value}");
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiConfirmAction] action={action.Split(":")[0]}, value={value}");
             Console.WriteLine(action);
             Console.WriteLine(value);
             if (!value) return Task.FromResult("");
@@ -272,7 +272,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static void ChangeUsername(string id, string reqName, string platform)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ChangeUsername] id:{id}, reqName:{reqName}, platform:{platform}");
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ChangeUsername] id:hidden, reqName:hidden, platform:{platform}");
             switch (platform)
             {
                 case "BattleNet":

@@ -19,7 +19,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// <param name="state">Requested account's Login state</param>
         public static void SwapToOrigin(string accName, int state)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Origin\OriginSwitcherBase.SwapToOrigin] accName:{accName}");
+            Globals.DebugWriteLine($@"[JSInvoke:Origin\OriginSwitcherBase.SwapToOrigin] accName:hidden");
             OriginSwitcherFuncs.SwapOriginAccounts(accName, state);
         }
         /// <summary>
@@ -35,7 +35,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         [JSInvokable]
         public static void OriginAddCurrent(string accName)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Origin\OriginSwitcherBase.OriginAddCurrent] accName:{accName}");
+            Globals.DebugWriteLine($@"[JSInvoke:Origin\OriginSwitcherBase.OriginAddCurrent] accName:hidden");
             OriginSwitcherFuncs.OriginAddCurrent(accName);
         }
     }

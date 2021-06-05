@@ -14,7 +14,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         [SupportedOSPlatform("windows")]
         public static void SwapToEpic(string accName)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Epic\EpicSwitcherBase.SwapToEpic] accName:{accName}");
+            Globals.DebugWriteLine($@"[JSInvoke:Epic\EpicSwitcherBase.SwapToEpic] accName:hidden");
             EpicSwitcherFuncs.SwapEpicAccounts(accName);
         }
 
@@ -33,7 +33,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         [SupportedOSPlatform("windows")]
         public static void EpicAddCurrent(string accName)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Epic\EpicSwitcherBase.EpicAddCurrent] accName:{accName}");
+            Globals.DebugWriteLine($@"[JSInvoke:Epic\EpicSwitcherBase.EpicAddCurrent] accName:hidden");
             EpicSwitcherFuncs.EpicAddCurrent(accName);
         }
     }

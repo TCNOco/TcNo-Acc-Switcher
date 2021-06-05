@@ -86,7 +86,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         /// <param name="accName">Epic account name</param>
         public static bool ForgetAccount(string accName)
         {
-            Globals.DebugWriteLine($@"[Func:EpicEpicSwitcherFuncs.ForgetAccount] Forgetting account: {accName}");
+            Globals.DebugWriteLine($@"[Func:EpicEpicSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
             // Remove ID from list of ids
             var allIds = ReadAllIds();
             allIds.Remove(allIds.Single(x => x.Value == accName).Key);
@@ -108,7 +108,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         [SupportedOSPlatform("windows")]
         public static void SwapEpicAccounts(string accName = "")
         {
-            Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.SwapEpicAccounts] Swapping to: {accName}.");
+            Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.SwapEpicAccounts] Swapping to: hidden.");
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Epic");
             if (!CloseEpic()) return;
             // DO ACTUAL SWITCHING HERE

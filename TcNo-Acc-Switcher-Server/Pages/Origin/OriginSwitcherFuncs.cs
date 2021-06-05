@@ -81,7 +81,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// <param name="accName">Origin account name</param>
         public static bool ForgetAccount(string accName)
         {
-            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.ForgetAccount] Forgetting account: {accName}");
+            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
             // Remove cached files
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Origin\\{accName}"), false);
             // Remove image
@@ -99,7 +99,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// <param name="state">(Optional) 10 = Invisible, 0 = Default</param>
         public static void SwapOriginAccounts(string accName = "", int state = 0)
         {
-            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: {accName}.");
+            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: hidden.");
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Origin");
             if (!CloseOrigin()) return;
             // DO ACTUAL SWITCHING HERE

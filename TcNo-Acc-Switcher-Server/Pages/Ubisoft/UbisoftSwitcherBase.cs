@@ -19,7 +19,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         /// <param name="state">Requested account's Login state</param>
         public static void SwapToUbisoft(string userId, int state)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.SwapToUbisoft] userId:{userId}");
+            Globals.DebugWriteLine($@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.SwapToUbisoft] userId:hidden");
             UbisoftSwitcherFuncs.SwapUbisoftAccounts(userId, state);
         }
 

@@ -166,7 +166,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns>Whether deletion successful</returns>
         public static bool DeleteVacCacheFile()
         {
-            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.DeleteVacCacheFile] Deleting VAC cache file: {Steam.VacCacheFile}");
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.DeleteVacCacheFile] Deleting VAC cache file:hidden");
             if (!File.Exists(Steam.VacCacheFile)) return true;
             File.Delete(Steam.VacCacheFile);
             return true;
@@ -179,7 +179,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns>Whether file was loaded. False if deleted ~ failed to load.</returns>
         public static bool LoadVacInfo(ref List<VacStatus> vsl)
         {
-            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.LoadVacInfo] Loading VAC info: {Steam.VacCacheFile}");
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.LoadVacInfo] Loading VAC info: hidden");
             GeneralFuncs.DeletedOutdatedFile(Steam.VacCacheFile);
             if (!File.Exists(Steam.VacCacheFile)) return false;
             vsl = JsonConvert.DeserializeObject<List<VacStatus>>(File.ReadAllText(Steam.VacCacheFile));
@@ -345,7 +345,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
         public static void SwapSteamAccounts(string steamId = "", string accName = "", bool autoStartSteam = true, int ePersonaState = -1)
         {
-            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SwapSteamAccounts] Swapping to: {steamId} - {accName}. autoStartSteam={autoStartSteam.ToString()}, ePersonaState={ePersonaState}");
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SwapSteamAccounts] Swapping to: hidden. autoStartSteam={autoStartSteam.ToString()}, ePersonaState={ePersonaState}");
             if (steamId != "" && !VerifySteamId(steamId))
             {
                 // await JsRuntime.InvokeVoidAsync("createAlert", "Invalid SteamID" + steamid);

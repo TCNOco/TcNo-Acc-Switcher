@@ -206,7 +206,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         public static void ImportAvatar(string userId)
         {
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ImportAvatar] userId: {userId}");
+            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ImportAvatar] userId:hidden");
             string i64 = Path.Join(UbisoftAvatarFolder, userId + "_64.png"),
                 i128 = Path.Join(UbisoftAvatarFolder, userId + "_128.png"),
                 i256 = Path.Join(UbisoftAvatarFolder, userId + "_256.png");
@@ -274,7 +274,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         /// <param name="userId">ID of the user account to remove</param>
         public static bool ForgetAccount(string userId)
         {
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ForgetAccount] Forgetting account: {userId}");
+            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ForgetAccount] Forgetting account:hidden");
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Ubisoft\\{userId}"), false);
 
             var allIds = ReadAllIds();
@@ -294,7 +294,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         /// <param name="state">(Optional) State of user. 0 is online, anything else if Offline</param>
         public static void SwapUbisoftAccounts(string userId = "", int state = 0)
         {
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.SwapUbisoftAccounts] Swapping to: {userId}.");
+            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.SwapUbisoftAccounts] Swapping to:hidden.");
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Ubisoft");
             if (!CloseUbisoft()) return;
             UbisoftAddCurrent();

@@ -194,7 +194,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// <param name="email">User's account email</param>
         public static void SwapBattleNetAccounts(string email)
         {
-            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SwapBattleNetAccounts] Swapping to: {email}.");
+            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SwapBattleNetAccounts] Swapping to: hidden.");
             LoadImportantData();
             if (BattleNet.Accounts.Count == 0) BattleNet.LoadAccounts();
 
@@ -285,7 +285,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 BattleNet.Accounts.First(x => x.Email == email).BTag = bTag;
                 BattleNet.Accounts.First(x => x.Email == email).LastTimeChecked = new DateTime();
                 BattleNet.SaveAccounts();
-                Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SetBattleTag] accName:{email}, bTag:{bTag}");
+                Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SetBattleTag] accName:hidden, bTag:hidden");
                 AppData.ActiveNavMan?.NavigateTo( "/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed BattleTag"), true);
             }
             else
@@ -314,7 +314,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             account.OwDpsSr = 0;
             account.OwSupportSr = 0;
             account.OwTankSr = 0;
-            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.DeleteBattleTag] accName:{email}");
+            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.DeleteBattleTag] accName:hidden");
             BattleNet.SaveAccounts();
             AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Deleted BattleTag"), true);
         }
@@ -326,7 +326,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         [JSInvokable]
         public static void RefetchRank(string email)
         {
-            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.DeleteBattleTag] accName:{email}");
+            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.DeleteBattleTag] accName:hidden");
             if (BattleNet.Accounts.First(x => x.Email == email).FetchRank()) AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Fetched Rank"), true);
         }
 
@@ -339,7 +339,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// <param name="accName">Email address of Battlenet account to ignore.</param>
         public static void ForgetAccount(string accName)
         {
-            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.ForgetAccount] accName:{accName}");
+            Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.ForgetAccount] accName:hidden");
             // Get user account
             var account = BattleNet.Accounts.Find(x => x.Email == accName);
             if (account == null) return;
@@ -377,7 +377,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             if(BattleNet.IgnoredAccounts.Count == 0) BattleNet.LoadAccounts();
             foreach (var s in requestedAccs)
             {
-                Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.RestoreAccounts] Restoring account: {s}");
+                Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.RestoreAccounts] Restoring account: hidden");
                 BattleNet.IgnoredAccounts?.Remove(BattleNet.Accounts.Find(x=> x.Email == s));
             }
             BattleNet.SaveAccounts();

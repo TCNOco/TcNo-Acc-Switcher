@@ -161,7 +161,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         /// <param name="accName">Riot account name</param>
         public static bool ForgetAccount(string accName)
         {
-            Globals.DebugWriteLine($@"[Func:RiotRiotSwitcherFuncs.ForgetAccount] Forgetting account: {accName}");
+            Globals.DebugWriteLine($@"[Func:RiotRiotSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
             // Remove image
             var img = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg");
             if (File.Exists(img)) File.Delete(img);
@@ -178,7 +178,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         /// <param name="accName">(Optional) User's login username</param>
         public static void SwapRiotAccounts(string accName = "")
         {
-            Globals.DebugWriteLine($@"[Func:Riot\RiotSwitcherFuncs.SwapRiotAccounts] Swapping to: {accName}.");
+            Globals.DebugWriteLine($@"[Func:Riot\RiotSwitcherFuncs.SwapRiotAccounts] Swapping to: hidden.");
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Riot");
             if (!CloseRiot()) return;
             // DO ACTUAL SWITCHING HERE

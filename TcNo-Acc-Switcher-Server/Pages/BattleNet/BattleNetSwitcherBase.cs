@@ -36,7 +36,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         [JSInvokable]
         public static void SwapToBattleNet(string accName = "")
         {
-            Globals.DebugWriteLine($@"[JSInvoke:BattleNet\BattleNetSwitcherBase.SwapToBattleNet] accName:{accName}");
+            Globals.DebugWriteLine($@"[JSInvoke:BattleNet\BattleNetSwitcherBase.SwapToBattleNet] accName:hidden");
             BattleNetSwitcherFuncs.SwapBattleNetAccounts(accName);
         }
         /// <summary>
