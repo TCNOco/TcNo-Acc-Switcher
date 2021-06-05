@@ -27,7 +27,7 @@ contextMenuBackground-hover: "#1B2737"
 contextMenuLeftBorder-hover: "#8BE9FD"
 contextMenuTextColor: "#FFFFFF"
 contextMenuTextColor-hover: "#FFFFFF"
-contextMenuBoxShadow: 10px 10px 5px -3px rgb(0 0 0 / 30%)
+contextMenuBoxShadow: 10px 10px 5px -3px rgba(0, 0, 0, .3)
 
 # Headerbar at the top, with the account switcher's page title and window controls
 headerbarBackground: "#253340"
@@ -133,18 +133,18 @@ modalNotFoundBackground: darkred
 
 # Toast notifications
 notification-color-dark-text: white
-notification-color-dark-border: 'rgb(20: 20: 20)'
-notification-color-info: 'rgb(139: 133: 253)'
-notification-color-info-light: 'rgba(139: 133: 253: .25)'
+notification-color-dark-border: rgb(20, 20, 20)
+notification-color-info: rgb(3, 166, 240)
+notification-color-info-light: rgba(3, 166, 240, .25)
 notification-color-info-lighter: "#274560"
-notification-color-success: rgb(80 250 123)
-notification-color-success-light: 'rgba(80 250 123: .25)'
+notification-color-success: rgb(80, 250, 123)
+notification-color-success-light: rgba(80, 250, 123, .25)
 notification-color-success-lighter: "#274560"
-notification-color-warning: rgb(255 184 108)
-notification-color-warning-light: 'rgba(255 184 108: .25)'
+notification-color-warning: rgb(255, 184, 108)
+notification-color-warning-light: rgba(255, 184, 108, .25)
 notification-color-warning-lighter: "#274560"
-notification-color-error: rgb(255 85 85)
-notification-color-error-light: 'rgba(255 85 85: .25)'
+notification-color-error: rgb(255, 85, 85)
+notification-color-error-light: rgba(255, 85, 85, .25)
 notification-color-error-lighter: "#274560"
 
 # Update notification headerbar
@@ -160,7 +160,7 @@ battlenetIcoOWDamage-Fill: white
 battlenetIcoOWSupport-Fill: white
 # Steam
 limited: yellow
-vac: rgb(255 85 85)
+vac: rgb(255, 85, 85)
 # Riot Games
 riotIcoLeague-Fill: rgb(255, 215, 85)
 riotIcoRuneterra-Fill: rgb(255, 215, 85)

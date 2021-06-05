@@ -28,7 +28,7 @@ initAccListSortable = () => {
     sortable(".acc_list")[0].addEventListener("sortupdate", (e) => {
         let order = [];
         e.detail.destination.items.forEach((e) => {
-            if (!$(e).is("div")) return; // Ignore <toastarea>
+            if (!$(e).is("div")) return; // Ignore <toastarea class="toastarea" />
             order.push(e.getElementsByTagName("input")[0].getAttribute("id"));
         });
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", `LoginCache\\${getCurrentPage()}\\order.json`, JSON.stringify(order));

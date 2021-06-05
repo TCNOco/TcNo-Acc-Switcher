@@ -1,5 +1,5 @@
 ﻿/* ReSharper disable CssNotResolved */
-toastarea {
+.toastarea {
   position: absolute;
   bottom: 3px;
   right: 3px;
@@ -39,7 +39,7 @@ toastarea {
   position: relative;
 }
 
-.settingsCol toastarea {
+.settingsCol .toastarea {
   position: fixed;
   top: 35px;
   right: 16px;

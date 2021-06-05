@@ -1,4 +1,4 @@
-﻿var currentVersion = 0001;
+﻿var currentVersion = "";
 
 // Returns "Steam" or "Riot" for example, based on the current URL
 function getCurrentPage() {
@@ -340,8 +340,7 @@ function showModal(modaltype) {
         $('#modalTitle').text("TcNo Account Switcher Confirm Action");
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
-        <div class="fullWidthContent">
-            ${header + message}
+        <div class="fullWidthContent">${header + message}
             <div class="YesNo">
 		        <button class="btn" type="button" id="modal_true" onclick="Modal_Confirm('${action}', true)"><span>Yes</span></button>
 		        <button class="btn" type="button" id="modal_false" onclick="Modal_Confirm('${action}', false)"><span>No</span></button>
@@ -371,8 +370,7 @@ function showModal(modaltype) {
         $('#modalTitle').text("TcNo Account Switcher Confirm Action");
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
-        <div class="fullWidthContent">
-            ${header + message}
+        <div class="fullWidthContent">${header + message}
             <div class="YesNo">
 		        <button class="btn" type="button" id="modal_true" onclick="${action}"><span>OK</span></button>
             </div>

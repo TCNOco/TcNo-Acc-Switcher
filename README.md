@@ -43,7 +43,7 @@ The new Beta version is available for testing. Please report any and all bugs, a
 
 \[For info on how any of these work, see the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki)]
 
-## Required runtimes (Download and install):
+## Required runtimes (Download and install)
 
 -   **WebView2 Runtime**:  Click [HERE](https://go.microsoft.com/fwlink/p/?LinkId=2124703) and install.
 

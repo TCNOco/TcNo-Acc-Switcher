@@ -133,18 +133,18 @@ modalNotFoundBackground: darkred
 
 # Toast notifications
 notification-color-dark-text: white
-notification-color-dark-border: rgb(20, 20, 20)
-notification-color-info: rgb(3, 169, 244)
-notification-color-info-light: rgba(3, 169, 244, .25)
+notification-color-dark-border: "rgb(20, 20, 20)"
+notification-color-info: "rgb(3, 169, 244)"
+notification-color-info-light: "rgba(3, 169, 244, .25)"
 notification-color-info-lighter: "#17132C"
-notification-color-success: rgb(76, 175, 80)
-notification-color-success-light: rgba(76, 175, 80, .25)
+notification-color-success: "rgb(76, 175, 80)"
+notification-color-success-light: "rgba(76, 175, 80, .25)"
 notification-color-success-lighter: "#17132C"
-notification-color-warning: rgb(255, 152, 0)
-notification-color-warning-light: rgba(255, 152, 0, .25)
+notification-color-warning: "rgb(255, 152, 0)"
+notification-color-warning-light: "rgba(255, 152, 0, .25)"
 notification-color-warning-lighter: "#17132C"
-notification-color-error: rgb(244, 67, 54)
-notification-color-error-light: rgba(244, 67, 54, .25)
+notification-color-error: "rgb(244, 67, 54)"
+notification-color-error-light: "rgba(244, 67, 54, .25)"
 notification-color-error-lighter: "#17132C"
 
 # Update notification headerbar
