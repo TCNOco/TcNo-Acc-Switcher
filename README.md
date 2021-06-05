@@ -35,8 +35,8 @@ New users should use the Download button above, or click [HERE](https://github.c
 After installing using the installer, or downloading your .zip (portable version) from the [GitHub Releases](https://github.com/TcNobo/TcNo-Acc-Switcher/releases) page, extract everything to a folder of your choice and run `TcNo Account Switcher.exe`
 
 > If [HardenTools](https://github.com/securitywithoutborders/hardentools) was used, ensure that cmd.exe (Command Prompt) access is still allowed; if access is denied, TcNo Account Switcher will encounter a fatal unhandled exception (crash).
->
-> # New beta version
+
+# New beta version
 
 The new Beta version is available for testing. Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord). Download the Beta in the Discord (This is to prevent confusion here)
 
