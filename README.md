@@ -23,19 +23,6 @@
 *Wastes no time closing, switching and restarting Steam and other platforms.*<br />
 **NOTE:** Not created for cheating purposes. All it does is change accounts. Use it as you see fit, accepting responsibility.
 
-# STABLE VERSION
-
-New users should use the Download button above, or click [HERE](https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest). You'll also need the .NET Framework 4.8 Runtime, below.
-
-## Required runtimes (Download and install)
-
--   Microsoft .NET Framework 4.8 Runtime: [Web Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer), [Offline Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-offline-installer), [Other languages](https://dotnet.microsoft.com/download/dotnet-framework/net48)
-
-**Running the program:**
-After installing using the installer, or downloading your .zip (portable version) from the [GitHub Releases](https://github.com/TcNobo/TcNo-Acc-Switcher/releases) page, extract everything to a folder of your choice and run `TcNo Account Switcher.exe`
-
-> If [HardenTools](https://github.com/securitywithoutborders/hardentools) was used, ensure that cmd.exe (Command Prompt) access is still allowed; if access is denied, TcNo Account Switcher will encounter a fatal unhandled exception (crash).
-
 # New beta version
 
 The new Beta version is available for testing. Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord). Download the Beta in the Discord (This is to prevent confusion here)
@@ -56,15 +43,29 @@ The new Beta version is available for testing. Please report any and all bugs, a
 
 \[For info on how any of these work, see the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki)]
 
-### Required runtimes (Download and install):
+## Required runtimes (Download and install):
 
 -   **WebView2 Runtime**:  Click [HERE](https://go.microsoft.com/fwlink/p/?LinkId=2124703) and install.
+
 -   **Microsoft .NET 5 Desktop Runtime AND: ASP.NET Core 5.0 Runtime:** Click [HERE](https://dotnet.microsoft.com/download/dotnet/5.0/runtime) and click `x64`, as well as `Download Hosting Bundle`. **See below:**
     ![Buttons to click for .NET Desktop & ASP.NET runtime](https://i.imgur.com/f4e14Mr.png)
 
 ## FAQ
 
 ### Visit the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch
+
+## OLD STEAM ONLY VERSION
+
+New users should use the Download button above, or click [HERE](https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest). You'll also need the .NET Framework 4.8 Runtime, below.
+
+### Required runtimes (Download and install)
+
+-   Microsoft .NET Framework 4.8 Runtime: [Web Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer), [Offline Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-offline-installer), [Other languages](https://dotnet.microsoft.com/download/dotnet-framework/net48)
+
+**Running the program:**
+After installing using the installer, or downloading your .zip (portable version) from the [GitHub Releases](https://github.com/TcNobo/TcNo-Acc-Switcher/releases) page, extract everything to a folder of your choice and run `TcNo Account Switcher.exe`
+
+> If [HardenTools](https://github.com/securitywithoutborders/hardentools) was used, ensure that cmd.exe (Command Prompt) access is still allowed; if access is denied, TcNo Account Switcher will encounter a fatal unhandled exception (crash).
 
 ### How does the Steam switcher work
 
