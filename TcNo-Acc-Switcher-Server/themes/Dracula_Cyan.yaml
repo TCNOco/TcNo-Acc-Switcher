@@ -168,6 +168,7 @@ riotIcoValorant-Fill: rgb(255, 85, 85)
 # ------------
 # Platform icons (Main menu):
 # ------------
+platformScreenBackground: var(--accountListBackground)
 platformBorderColor: "#8BE9FD"
 platformFilter-Hover: "brightness(97%) saturate(1.10) contrast(102%)"
 platformFilter-Active: "brightness(95%) saturate(1.05)"

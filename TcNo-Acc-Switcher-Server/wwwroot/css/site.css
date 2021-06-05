@@ -21,17 +21,17 @@ body {
 }
 
 html {
-  background-color: var(--headerbarBackground);
+  background: var(--headerbarBackground);
 }
 
 body {
-  background-color: var(--mainBackground);
+  background: var(--mainBackground);
 }
 
 .mainblock {
   width: 100%;
-  height: 100%;
-  background-color: var(--mainBackground);
+  min-height: 100%;
+  background: var(--mainBackground);
   overflow-y: auto;
   overflow-x: auto;
 }
@@ -71,6 +71,7 @@ label {
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 10;
+  background: var(--platformScreenBackground);
 }
 
 
@@ -78,7 +79,7 @@ label {
 
 .headerbar {
   z-index: 5;
-  background-color: var(--headerbarBackground);
+  background: var(--headerbarBackground);
   position: relative;
   height: 32px;
   width: 100%;
@@ -98,7 +99,7 @@ label {
   width: 100%;
   height: 2rem;
   line-height: 2rem;
-  background-color: var(--updateBarBackground);
+  background: var(--updateBarBackground);
   color: var(--updateBarColor);
   font-weight: 700;
   text-align: center;
@@ -209,7 +210,7 @@ label {
 .resizeLeft {
   -webkit-app-region: drag;
   position: absolute;
-  background-color: var(--headerbarBackground);
+  background: var(--headerbarBackground);
 }
 
 
@@ -364,7 +365,7 @@ label {
 
 #window-title-modal {
   position: relative;
-  background-color: var(--headerbarBackground);
+  background: var(--headerbarBackground);
 }
 
 #window-title,
@@ -461,7 +462,7 @@ div.clearingLeft {
 div.clearingRight {
   word-break: break-word;
   overflow: auto;
-  background-color: var(--listBackground);
+  background: var(--listBackground);
   width: 40%;
   border: solid var(--borderedItemBorderColor) 0.1em;
   padding: 0.5em;
@@ -505,7 +506,7 @@ div.advancedClearingButtonCol .buttoncol {
 
 .forgottenList select {
   overflow: auto;
-  background-color: var(--listBackground);
+  background: var(--listBackground);
   border: solid var(--borderedItemBorderColor) 0.1em;
   color: var(--listColor);
   width: 100%;

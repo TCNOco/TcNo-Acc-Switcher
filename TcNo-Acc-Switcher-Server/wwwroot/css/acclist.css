@@ -42,7 +42,7 @@
 
 .accountHover {
   /* Seperate because added by sortable */
-  background-color: var(--accountBackground-hover);
+  background: var(--accountBackground-hover);
   border: 0.1em solid var(--accountBorder-hover);
 }
 
@@ -80,7 +80,7 @@ label.acc {
 }
 
 input.acc:checked + label.acc {
-  background-color: var(--accountBackground-checked);
+  background: var(--accountBackground-checked);
   border-color: var(--accountBorder-checked);
 }
 
@@ -128,7 +128,7 @@ label.acc p {
 .acc_list_actionbar {
   width: 100%;
   height: 3.5em;
-  background-color: var(--footerBackground);
+  background: var(--footerBackground);
   display: flex;
   flex-direction: row;
   color: var(--defaultTextColor);
@@ -168,7 +168,7 @@ label.acc p {
 .settingsCol button {
   box-shadow: none !important;
   user-select: none;
-  background-color: var(--buttonBackground);
+  background: var(--buttonBackground);
   padding: 0.25em 0.651em;
   margin: 0 0.25em;
   width: max-content;
@@ -184,13 +184,13 @@ label.acc p {
 .settingsCol button:focus,
 .settingsCol button:target,
 .show > .dropdown-toggle {
-  background-color: var(--buttonBackground-active) !important;
+  background: var(--buttonBackground-active) !important;
   border-color: var(--buttonBorder-active) !important;
 }
 
 .acc_list_actionbar div .button:hover,
 .settingsCol button:hover {
-  background-color: var(--buttonBackground-hover);
+  background: var(--buttonBackground-hover);
   border-color: var(--buttonBorder-hover);
 }
 

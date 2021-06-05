@@ -186,7 +186,7 @@
 }
 
 .notification.info {
-  background-color: var(--notification-color-info-lighter);
+  background: var(--notification-color-info-lighter);
   border: solid var(--notification-border-std) var(--notification-color-info-light);
 }
 
@@ -216,7 +216,7 @@
 }
 
 .notification.success {
-  background-color: var(--notification-color-success-lighter);
+  background: var(--notification-color-success-lighter);
   border: solid var(--notification-border-std) var(--notification-color-success-light);
 }
 
@@ -246,7 +246,7 @@
 }
 
 .notification.warning {
-  background-color: var(--notification-color-warning-lighter);
+  background: var(--notification-color-warning-lighter);
   border: solid var(--notification-border-std) var(--notification-color-warning-light);
 }
 
@@ -276,7 +276,7 @@
 }
 
 .notification.error {
-  background-color: var(--notification-color-error-lighter);
+  background: var(--notification-color-error-lighter);
   border: solid var(--notification-border-std) var(--notification-color-error-light);
 }
 

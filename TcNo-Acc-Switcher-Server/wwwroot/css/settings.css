@@ -8,6 +8,7 @@ toastarea {
 .container {
   color: var(--defaultTextColor);
   overflow: visible;
+  max-width: 100%;
 }
 
 .SettingsHeader {
@@ -51,7 +52,7 @@ toastarea {
 .acc_list_actionbar div .button,
 .settingsCol button {
   user-select: none;
-  background-color: var(--buttonBackground);
+  background: var(--buttonBackground);
   padding: 0.25em 0.651em;
   margin: 0 0.25em;
   width: max-content;
@@ -76,13 +77,13 @@ toastarea {
 
 .acc_list_actionbar div .button:active,
 .settingsCol button:active {
-  background-color: var(--buttonBackground-active) !important;
+  background: var(--buttonBackground-active) !important;
   border-color: var(--buttonBorder-active);
 }
 
 .acc_list_actionbar div .button:hover,
 .settingsCol button:hover {
-  background-color: var(--buttonBackground-hover);
+  background: var(--buttonBackground-hover);
   border-color: var(--buttonBorder-hover);
 }
 
@@ -99,7 +100,7 @@ div.form-text {
 input[type=number],
 input[type=text] {
   display: inline-block;
-  background-color: var(--inputBackground);
+  background: var(--inputBackground);
   color: var(--inputColor);
   padding: 0.5em;
   border: 0;
@@ -163,7 +164,7 @@ label {
 .custom-dropdown-menu {
   padding: 0.5rem 0;
   border-style: solid;
-  background-color: var(--dropdownBackground);
+  background: var(--dropdownBackground);
   border-color: var(--dropdownBorder);
   border-width: 0.1em;
   -webkit-box-shadow: 0 0 15px 3px #000;
@@ -184,13 +185,13 @@ label {
 .custom-dropdown-item:focus,
 .custom-dropdown-item:target {
   color: var(--dropdownColor);
-  background-color: var(--dropdownItemBackground-active) !important;
+  background: var(--dropdownItemBackground-active) !important;
 }
 
 .custom-dropdown-item:hover {
   cursor: pointer;
   color: var(--dropdownColor);
-  background-color: var(--dropdownItemBackground-hover);
+  background: var(--dropdownItemBackground-hover);
 }
 
 .rowSetting > div:not(:first-child) {

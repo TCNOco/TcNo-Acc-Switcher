@@ -11,7 +11,7 @@
 .modalFG {
   width: fit-content;
   padding: 6px;
-  background-color: var(--headerbarBackground);
+  background: var(--headerbarBackground);
   position: absolute;
   top: calc(50% - 18px);
   left: 50%;
@@ -116,12 +116,12 @@
   height: 100%;
   padding: 1em;
   display: grid;
-  background-color: var(--modalFgBackground);
+  background: var(--modalFgBackground);
 }
 
 #modal_contents button {
   user-select: none;
-  background-color: var(--buttonBackground);
+  background: var(--buttonBackground);
   padding: 0.25em 0.6em;
   margin: 0 0.25em;
   width: auto;
@@ -136,12 +136,12 @@
 }
 
 #modal_contents button:hover {
-  background-color: var(--buttonBackground-hover);
+  background: var(--buttonBackground-hover);
   border-color: var(--buttonBorder-hover);
 }
 
 #modal_contents button:active {
-  background-color: var(--buttonBackground-active) !important;
+  background: var(--buttonBackground-active) !important;
   border-color: var(--buttonBorder-active);
 }
 
@@ -161,11 +161,11 @@
 
 #modal_contents input[type=text] {
   padding-bottom: 2px;
-  background-color: var(--modalInputBackground) !important;
+  background: var(--modalInputBackground) !important;
   padding-bottom: 0;
   margin: 0;
   border-bottom: 2px solid var(--borderedItemBorderColor);
-  background-color: var(--modalInputBackground);
+  background: var(--modalInputBackground);
 }
 
 #modal_contents input[type=text]:focus {
@@ -202,11 +202,11 @@
 }
 
 .folder_indicator.found {
-  background-color: var(--modalfoundColor);
+  background: var(--modalfoundColor);
 }
 
 .folder_indicator.notfound {
-  background-color: var(--modalnotFoundColor);
+  background: var(--modalnotFoundColor);
 }
 
 .folder_indicator_bg {
@@ -220,7 +220,7 @@
 }
 
 .folder_indicator_bg.found {
-  background-color: var(--modalfoundBackground);
+  background: var(--modalfoundBackground);
 }
 
 .folder_indicator_bg.found span::after {
@@ -228,7 +228,7 @@
 }
 
 .folder_indicator_bg.notfound {
-  background-color: var(--modalnotFoundBackground);
+  background: var(--modalnotFoundBackground);
 }
 
 .folder_indicator_bg.notfound span::after {

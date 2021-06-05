@@ -176,6 +176,9 @@ namespace TcNo_Acc_Switcher_Updater
                     {
                         // Separated so colors aren't only half changed, and a color from the file is missing
                         var o = JObject.Parse(File.ReadAllText("StyleSettings.json"));
+
+                        // Set to new YAML method.
+                        // Need to try catch every one of these, as they may be invalid.
                         var highlightColor = (Brush)new BrushConverter().ConvertFromString((string)o["linkColor"]); // Add a specific Highlight color later?
                         var headerColor = (Brush)new BrushConverter().ConvertFromString((string)o["headerbarBackground"]);
                         var mainBackground = (Brush)new BrushConverter().ConvertFromString((string)o["mainBackground"]);
