@@ -29,7 +29,9 @@
     <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="_appSett.DesktopShortcut" @onclick="() => _appSett.DesktopShortcut_Toggle()"><label class="form-check-label" for="AppSett_DesktopShortcut"></label></div><label for="AppSett_DesktopShortcut">Desktop shortcut<br></label>
 </div>
 <div class="rowSetting">
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="_appSett.StartMenu" @onclick="() => _appSett.StartMenu_Toggle()"><label class="form-check-label" for="AppSett_StartMenu"></label></div><label for="AppSett_StartMenu">Start menu shortcuts<br></label>
+    <span>Shortcuts for: </span>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="_appSett.StartMenu" @onclick="() => _appSett.StartMenu_Toggle(false)"><label class="form-check-label" for="AppSett_StartMenu"></label></div><label for="AppSett_StartMenu">Program & Tray<br></label>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenuPlatform" @bind="_appSett.StartMenuPlatforms" @onclick="() => _appSett.StartMenu_Toggle(true)"><label class="form-check-label" for="AppSett_StartMenuPlatform"></label></div><label for="AppSett_StartMenuPlatform">Platform<br></label>
 </div>
 <div class="rowSetting">
     <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="_appSett.TrayStartup" @onclick="() => _appSett.Task_Toggle()"><label class="form-check-label" for="AppSett_TrayStartup"></label></div><label for="AppSett_TrayStartup">Start Tray with Windows<br></label>&nbsp;<a class="fancyLink" @onclick="() => _appSett.StartNow()">[Start Tray now]</a>

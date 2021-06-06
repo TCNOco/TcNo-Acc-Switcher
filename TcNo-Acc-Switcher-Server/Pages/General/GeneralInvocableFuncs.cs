@@ -336,5 +336,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 $"{accId}.ico");
             s.TryWrite();
         }
+
+        [JSInvokable]
+        public static void GiCreatePlatformShortcut(string platform)
+        {
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Riot.DesktopShortcut_Toggle]");
+            var s = new Shortcut();
+            s.Shortcut_Platform(Shortcut.Desktop, platform, platform.ToLower());
+            s.ToggleShortcut(true, true);
+        }
     }
 }

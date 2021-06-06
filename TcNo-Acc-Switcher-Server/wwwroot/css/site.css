@@ -549,6 +549,12 @@ div.advancedClearingButtonCol .buttoncol {
 }
 
 .platformContainer {
+  width: 100%;
+  height: calc(100% - 42px);
+  position: relative;
+}
+
+.platform_list {
   user-select: none;
   margin: 0;
   position: absolute;

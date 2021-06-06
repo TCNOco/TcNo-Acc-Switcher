@@ -27,193 +27,99 @@ namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Index
     {
-        /// <summary>
-        /// Check Battle.Net launcher files
-        /// </summary>
-        public async void CheckBattleNet()
+        public async void Check(string platform)
         {
-            Globals.DebugWriteLine(@"[Func:Index.CheckBattleNet]");
+            Globals.DebugWriteLine($@"[Func:Index.Check] platform={platform}");
 
-            if (!GeneralFuncs.CanKillProcess("Battle.net")) return;
-
-            
-            if (Directory.Exists(_battleNet.FolderPath) && File.Exists(_battleNet.Exe()))
-                _navManager.NavigateTo("/BattleNet/");
-            else
-                await GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
-        }
-
-        /// <summary>
-        /// Check Epic Games launcher files
-        /// </summary>
-        public async void CheckEpic()
-        {
-            Globals.DebugWriteLine(@"[Func:Index.CheckEpic]");
-
-            if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) return;
-            
-            if (Directory.Exists(_epic.FolderPath) && File.Exists(_epic.Exe()))
-                _navManager.NavigateTo("/Epic/");
-            else
-                await GeneralInvocableFuncs.ShowModal("find:Epic:EpicGamesLauncher.exe:EpicSettings");
-        }
-
-        /// <summary>
-        /// Check Origin launcher files
-        /// </summary>
-        public async void CheckOrigin()
-        {
-            Globals.DebugWriteLine(@"[Func:Index.CheckOrigin]");
-
-            if (!GeneralFuncs.CanKillProcess("Origin")) return;
-            
-            if (Directory.Exists(_origin.FolderPath) && File.Exists(_origin.Exe()))
-                _navManager.NavigateTo("/Origin/");
-            else
-                await GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
-        }
-
-        /// <summary>
-        /// Check Riot Games launcher files
-        /// </summary>
-        public async void CheckRiot()
-        {
-            Globals.DebugWriteLine(@"[Func:Index.CheckRiot]");
-
-            if (!Riot.RiotSwitcherFuncs.CanCloseRiot()) return;
-            
-            if (Directory.Exists(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client\\Data")))
-                _navManager.NavigateTo("/Riot/");
-            else
-                await GeneralInvocableFuncs.ShowModal("find:Riot:RiotClientPrivateSettings.yaml:RiotSettings");
-        }
-
-        /// <summary>
-        /// Check Steam launcher files
-        /// </summary>
-        public async void CheckSteam()
-        {
-            Globals.DebugWriteLine(@"[Func:Index.CheckSteam]");
-
-            if (!GeneralFuncs.CanKillProcess("steam")) return;
-            
-            if (!Directory.Exists(_steam.FolderPath) || !File.Exists(_steam.Exe()))
+            switch (platform)
             {
-                await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
-                return;
+                case "BattleNet":
+                    if (!GeneralFuncs.CanKillProcess("Battle.net")) return;
+
+                    if (Directory.Exists(_battleNet.FolderPath) && File.Exists(_battleNet.Exe())) _navManager.NavigateTo("/BattleNet/");
+                    else await GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
+                    break;
+                case "Epic":
+                    if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) return;
+
+                    if (Directory.Exists(_epic.FolderPath) && File.Exists(_epic.Exe())) _navManager.NavigateTo("/Epic/");
+                    else await GeneralInvocableFuncs.ShowModal("find:Epic:EpicGamesLauncher.exe:EpicSettings");
+                    break;
+                case "Origin":
+                    if (!GeneralFuncs.CanKillProcess("Origin")) return;
+
+                    if (Directory.Exists(_origin.FolderPath) && File.Exists(_origin.Exe())) _navManager.NavigateTo("/Origin/");
+                    else await GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
+                    break;
+                case "Riot":
+                    if (!Riot.RiotSwitcherFuncs.CanCloseRiot()) return;
+
+                    if (Directory.Exists(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client\\Data"))) _navManager.NavigateTo("/Riot/");
+                    else await GeneralInvocableFuncs.ShowModal("find:Riot:RiotClientPrivateSettings.yaml:RiotSettings");
+                    break;
+                case "Steam":
+                    if (!GeneralFuncs.CanKillProcess("steam")) return;
+
+                    if (!Directory.Exists(_steam.FolderPath) || !File.Exists(_steam.Exe()))
+                    {
+                        await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
+                        return;
+                    }
+
+                    if (SteamSwitcherFuncs.SteamSettingsValid()) _navManager.NavigateTo("/Steam/");
+                    else await GeneralInvocableFuncs.ShowModal("Cannot locate '.../Steam/config/loginusers.vdf'. Try signing into an account first.");
+                    break;
+                case "Ubisoft":
+                    if (!GeneralFuncs.CanKillProcess("upc")) return;
+
+                    if (Directory.Exists(_ubisoft.FolderPath) && File.Exists(_ubisoft.Exe())) _navManager.NavigateTo("/Ubisoft/");
+                    else await GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
+                    break;
             }
-
-            if (SteamSwitcherFuncs.SteamSettingsValid())
-                _navManager.NavigateTo("/Steam/");
-            else
-                await GeneralInvocableFuncs.ShowModal("Cannot locate '.../Steam/config/loginusers.vdf'. Try signing into an account first.");
         }
-
-        /// <summary>
-        /// Check Ubisoft launcher files
-        /// </summary>
-        public async void CheckUbisoft()
-        {
-            Globals.DebugWriteLine(@"[Func:Index.CheckUbisoft]");
-
-            if (!GeneralFuncs.CanKillProcess("upc")) return;
-            
-            if (Directory.Exists(_ubisoft.FolderPath) && File.Exists(_ubisoft.Exe()))
-                _navManager.NavigateTo("/Ubisoft/");
-            else
-                await GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
-        }
-
+        
         /// <summary>
         /// Verify updater files and start update
         /// </summary>
         public void UpdateNow()
         {
-            // Download latest hash list
-            const string hashFilePath = "hashes.json";
-            var client = new WebClient();
-            client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
-
-            // Verify updater files
-            var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
-            if (verifyDictionary == null)
+            try
             {
-                _ = GeneralInvocableFuncs.ShowToast("error",
-                    "Can verify updater files. Download latest version and replace files in your directory.");
-                return;
+                // Download latest hash list
+                const string hashFilePath = "hashes.json";
+                var client = new WebClient();
+                client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
+
+                // Verify updater files
+                var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
+                if (verifyDictionary == null)
+                {
+                    _ = GeneralInvocableFuncs.ShowToast("error",
+                        "Can verify updater files. Download latest version and replace files in your directory.");
+                    return;
+                }
+
+                var updaterDict = verifyDictionary.Where(pair => pair.Key.StartsWith("updater")).ToDictionary(pair => pair.Key, pair => pair.Value);
+
+                // Download and replace broken files
+                if (Directory.Exists("newUpdater")) GeneralFuncs.RecursiveDelete(new DirectoryInfo("newUpdater"), false);
+                foreach (var (key, value) in updaterDict)
+                {
+                    if (File.Exists(key))
+                        if (value == GeneralFuncs.GetFileMd5(key))
+                            continue;
+                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'));
+                    client.DownloadFile(uri, key);
+                }
+
+                // Run updater
+                Process.Start(new ProcessStartInfo(@"updater\\TcNo-Acc-Switcher-Updater.exe") { UseShellExecute = true });
+                Process.GetCurrentProcess().Kill();
             }
-
-            var updaterDict = verifyDictionary.Where(pair => pair.Key.StartsWith("updater")).ToDictionary(pair => pair.Key, pair => pair.Value);
-
-            // Download and replace broken files
-            if (Directory.Exists("newUpdater")) GeneralFuncs.RecursiveDelete(new DirectoryInfo("newUpdater"), false);
-            foreach (var (key, value) in updaterDict)
+            catch (Exception e)
             {
-                if (File.Exists(key))
-                    if (value == GeneralFuncs.GetFileMd5(key))
-                        continue;
-                var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'));
-                client.DownloadFile(uri, key);
-            }
-
-            // Run updater
-            Process.Start(new ProcessStartInfo(@"updater\\TcNo-Acc-Switcher-Updater.exe") { UseShellExecute = true });
-            Process.GetCurrentProcess().Kill();
-        }
-
-        private bool _battleNetIsEnabled;
-        private bool _epicIsEnabled;
-        private bool _originIsEnabled;
-        private bool _riotIsEnabled;
-        private bool _steamIsEnabled;
-        private bool _ubisoftIsEnabled;
-
-        /// <summary>
-        /// Show the settings and temporarily save the current state of each IsEnabled Bool
-        /// to not do unnecessary file writing.
-        /// </summary>
-        public void ShowSettings()
-        {
-            _battleNetIsEnabled = _battleNet.IsEnabled;
-            _epicIsEnabled = _epic.IsEnabled;
-            _originIsEnabled = _origin.IsEnabled;
-            _riotIsEnabled = _origin.IsEnabled;
-            _steamIsEnabled = _steam.IsEnabled;
-            _ubisoftIsEnabled = _ubisoft.IsEnabled;
-
-            _showSettings = true;
-        }
-        
-        /// <summary>
-        /// Hide the settings and save the changes
-        /// </summary>
-        public void HideSettings()
-        {
-            _showSettings = false;
-
-            if (_battleNetIsEnabled != _battleNet.IsEnabled)
-            {
-                _battleNet.SaveSettings();
-            }
-            if (_epicIsEnabled != _epic.IsEnabled)
-            {
-                _epic.SaveSettings();
-            }
-            if (_originIsEnabled != _origin.IsEnabled)
-            {
-                _origin.SaveSettings();
-            }
-            if (_riotIsEnabled != _riot.IsEnabled)
-            {
-                _riot.SaveSettings();
-            }
-            if (_steamIsEnabled != _steam.IsEnabled)
-            {
-                _steam.SaveSettings();
-            }
-            if (_ubisoftIsEnabled != _ubisoft.IsEnabled)
-            {
-                _ubisoft.SaveSettings();
+                _ = GeneralInvocableFuncs.ShowToast("error", "Failed to check for updates.");
+                Globals.DebugWriteLine("Failed to check for updates:" + e);
             }
         }
     }

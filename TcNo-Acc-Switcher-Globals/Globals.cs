@@ -12,6 +12,7 @@ namespace TcNo_Acc_Switcher_Globals
     public class Globals
     {
         public static bool VerboseMode = false;
+        private static readonly string Version = "2021-06-06_00";
 
         public static void DebugWriteLine(string s)
         {
@@ -36,7 +37,8 @@ namespace TcNo_Acc_Switcher_Globals
             var filePath = $"CrashLogs\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
             using (var sw = File.AppendText(filePath))
             {
-                sw.WriteLine(DateTime.Now.ToString(CultureInfo.InvariantCulture) + "\t" + Strings.ErrUnhandledCrash + ": " + exceptionStr + Environment.NewLine + Environment.NewLine);
+                sw.WriteLine(
+                    $"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({Version})\t{Strings.ErrUnhandledCrash}: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
             }
             WriteToLog(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
             WriteToLog(Strings.ErrSubmitCrashlog);

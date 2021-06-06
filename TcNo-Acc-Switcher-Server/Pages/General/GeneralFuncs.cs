@@ -389,7 +389,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 // Merge existing settings with settings from site
                 joSettings.Merge(joNewSettings, new JsonMergeSettings
                 {
-                    MergeArrayHandling = MergeArrayHandling.Merge
+                    MergeArrayHandling = MergeArrayHandling.Replace
                 });
                 // Save all settings back into file
                 File.WriteAllText(sFilename, joSettings.ToString());

@@ -68,8 +68,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public event Action OnChange;
 
         private void NotifyDataChanged() => OnChange?.Invoke();
-
-
+        
         private IJSRuntime _activeIJsRuntime;
         [JsonIgnore] public static IJSRuntime ActiveIJsRuntime { get => _instance._activeIJsRuntime; set => _instance._activeIJsRuntime = value; }
         public void SetActiveIJsRuntime(IJSRuntime jsr) => _instance._activeIJsRuntime = jsr;

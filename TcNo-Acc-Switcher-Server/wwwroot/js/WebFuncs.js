@@ -219,6 +219,13 @@ function newLogin() {
     DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "NewLogin_" + getCurrentPage());
 }
 
+function hidePlatform() {
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "HidePlatform", selectedElem);
+}
+
+function createPlatformShortcut() {
+    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "GiCreatePlatformShortcut", selectedElem);
+}
 
 
 

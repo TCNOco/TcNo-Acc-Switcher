@@ -2,32 +2,40 @@
 var selectedElem = "";
 
 function initContextMenu() {
-    $(".acc_list").on("click", () => {
+    let group = "acc";
+    if (getCurrentPage() === "") {
+        group = "platform";
+    }
+    $(`.${group}_list`).on("click", () => {
         $("input:checked").each((_, e) => {
             $(e).prop("checked", false);
         });
     });
 
-    // Ready accounts for double-click
-    $(".acc_list_item").dblclick((event) => {
-        swapTo(-1, event);
-    });
+    if (group === "acc") {
+        // Ready accounts for double-click
+        $(".acc_list_item").dblclick((event) => {
+            swapTo(-1, event);
+        });
 
-    // Handle Left-clicks:
-    $(".acc_list_item").click((e) => {
-        $(e.currentTarget).children("input")[0].click();
-        e.stopPropagation();
-    });
-
+        // Handle Left-clicks:
+        $(".acc_list_item").click((e) => {
+            $(e.currentTarget).children("input")[0].click();
+            e.stopPropagation();
+        });
+    }
+    
     //Show contextmenu on Right-Click:
-    $(".acc_list_item").contextmenu((e) => {
-        // Select item that was right-clicked.
-        $(e.currentTarget).children("input").click();
+    $(`.${group}_list_item`).contextmenu((e) => {
+        if (group === "acc") {
+            // Select item that was right-clicked.
+            $(e.currentTarget).children("input").click();
 
-        // Set currently selected element
-        selectedElem = $(e.currentTarget).children("input")[0];
-        // Update status for element
-        switch (getCurrentPage()) {
+            // Set currently selected element
+            selectedElem = $(e.currentTarget).children("input")[0];
+
+            // Update status for element
+            switch (getCurrentPage()) {
             case "Steam":
                 updateStatus(`Selected: ${$(selectedElem).attr("Line2")}`);
                 break;
@@ -39,9 +47,12 @@ function initContextMenu() {
                 break;
             default:
                 break;
+            }
+        } else if (group === "platform") {
+            // Set currently selected element
+            selectedElem = $(e.currentTarget).prop("id").substr(8);
         }
-
-
+        
         //Get window size:
         const winWidth = $(document).width();
         const winHeight = $(document).height();

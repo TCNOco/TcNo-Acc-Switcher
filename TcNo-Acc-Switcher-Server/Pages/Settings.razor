@@ -1,0 +1,69 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2021 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@page "/Settings"
+@using TcNo_Acc_Switcher_Server.Data
+@namespace TcNo_Acc_Switcher_Server.Pages
+@inject NavigationManager _navManager
+@{ AppData.SetActiveNavMan(_navManager); }
+@inject Data.AppSettings _appSett
+@inject IJSRuntime _jsRuntime
+@{ AppData.SetActiveIJsRuntime(_jsRuntime); }
+
+<div class="container mainblock">
+    <div class="row">
+        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
+            <div class="toastarea"></div>
+            <SharedSettings />
+            
+            @if (_appSett.DisabledPlatforms.Count > 0)
+            {
+                <div class="SettingsHeader">
+                    <hr><span>Hidden Platforms</span>
+                    <hr>
+                </div>
+                <div class="rowSetting">
+                    @foreach (var item in _appSett.DisabledPlatforms)
+                    {
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="@item" checked @onclick="() => ShowPlatform(item)"><label class="form-check-label" for="@item"></label></div><label for="@item">@item<br></label>
+                    }
+                </div>
+            }
+
+            <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>Close</span></button></div>
+        </div>
+    </div>
+</div>
+<div id="blazor-error-ui">
+    <environment include="Staging,Production">
+        An error has occurred. This application may no longer respond until reloaded.
+    </environment>
+    <environment include="Development">
+        An unhandled exception has occurred. See browser dev tools for details.
+    </environment>
+    <a href="">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code
+{
+    public void SaveAndClose()
+    {
+        _appSett.SaveSettings();
+
+        _navManager.NavigateTo("/");
+    }
+
+    public void ShowPlatform(string item) => AppSettings.ShowPlatform(item);
+}

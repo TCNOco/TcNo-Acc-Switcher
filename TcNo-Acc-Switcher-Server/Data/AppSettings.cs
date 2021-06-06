@@ -14,10 +14,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -51,7 +53,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         // Variables
-        private string _version = "2021-06-05_00";
+        private string _version = "2021-06-06_00";
         [JsonProperty("Version", Order = 0)] public string Version => _instance._version;
 
         private bool _updateAvailable;
@@ -65,6 +67,11 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private Point _windowSize = new() { X = 800, Y = 450 };
         [JsonProperty("WindowSize", Order = 3)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
+
+        private SortedSet<string> _disabledPlatforms = new() {};
+
+        [JsonProperty("DisabledPlatforms", Order = 4)]
+        public SortedSet<string> DisabledPlatforms { get => _instance._disabledPlatforms; set => _instance._disabledPlatforms = value; }
 
         private bool _trayMinimizeNotExit;
 
@@ -92,6 +99,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
         private bool _startMenu;
         [JsonIgnore] public bool StartMenu { get => _instance._startMenu; set => _instance._startMenu = value; }
+        private bool _startMenuPlatforms;
+        [JsonIgnore] public bool StartMenuPlatforms { get => _instance._startMenuPlatforms; set => _instance._startMenuPlatforms = value; }
         private bool _trayStartup;
         [JsonIgnore] public bool TrayStartup { get => _instance._trayStartup; set => _instance._trayStartup = value; }
 
@@ -101,7 +110,28 @@ namespace TcNo_Acc_Switcher_Server.Data
         private string _selectedStylesheet;
         [JsonIgnore] public string SelectedStylesheet { get => _instance._selectedStylesheet; set => _instance._selectedStylesheet = value; }
 
+        [JsonIgnore] public static List<string> PlatformList = new(){ "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot" };
 
+        [JsonIgnore] public string PlatformContextMenu = @"[
+              {""Hide platform"": ""hidePlatform()""},
+              {""Create Desktop Shortcut"": ""createPlatformShortcut()""}
+            ]";
+        [JSInvokable]
+        public static void HidePlatform(string platform)
+        {
+            Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.HidePlatform]");
+            _instance.DisabledPlatforms.Add(platform);
+            _instance.SaveSettings();
+            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+        }
+
+        public static void ShowPlatform(string platform)
+        {
+            Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.ShowPlatform]");
+            _instance.DisabledPlatforms.Remove(platform);
+            _instance.SaveSettings();
+            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+        }
 
 
         // Variables loaded from other files:
@@ -124,11 +154,11 @@ namespace TcNo_Acc_Switcher_Server.Data
             { "contextMenuBoxShadow", "10px 10px 5px -3px rgb(0 0 0 / 30%)" },
             { "headerbarBackground", "#253340" },
             { "headerbarTCNOFill", "white" },
-            { "windowControlsBackground", "#253340" },
-            { "windowControlsBackground-hover", "#3B4853" },
-            { "windowControlsBackground-active", "#3B4853" },
-            { "windowControlsCloseBackground", "#D51426" },
-            { "windowControlsCloseBackground-active", "#D51426" },
+            { "windowControlsBackground", "#14151E" },
+            { "windowControlsBackground-hover", "rgba(255,255,255,0.2)" },
+            { "windowControlsBackground-active", "rgba(255,255,255,0.1)" },
+            { "windowControlsCloseBackground", "#E81123" },
+            { "windowControlsCloseBackground-active", "#F1707A" },
             { "windowTitleColor", "white" },
             { "footerBackground", "#252A2E" },
             { "footerColor", "#DDD" },
@@ -348,7 +378,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void ResetSettings()
         {
             _instance.StreamerModeEnabled = true;
-
             SaveSettings();
         }
 
@@ -358,6 +387,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             var curSettings = j.ToObject<AppSettings>();
             if (curSettings == null) return;
             _instance.StreamerModeEnabled = curSettings.StreamerModeEnabled;
+            CheckShortcuts();
         }
 
         public void LoadFromFile()
@@ -515,7 +545,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             Globals.DebugWriteLine(@"[Func:Data\AppSettings.CheckShortcuts]");
             _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
-            _instance._startMenu = File.Exists(Path.Join(Shortcut.StartMenu, "TcNo Account Switcher.lnk")) && Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
+            _instance._startMenu = File.Exists(Path.Join(Shortcut.StartMenu, "TcNo Account Switcher.lnk"));
+            _instance._startMenuPlatforms = Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
             _instance._trayStartup = Task.StartWithWindows_Enabled();
         }
 
@@ -526,19 +557,29 @@ namespace TcNo_Acc_Switcher_Server.Data
             s.Shortcut_Switcher(Shortcut.Desktop);
             s.ToggleShortcut(!DesktopShortcut);
         }
-        public void StartMenu_Toggle()
+        /// <summary>
+        /// Create shortcuts in Start Menu
+        /// </summary>
+        /// <param name="platforms">true creates Platforms folder & drops shortcuts, otherwise only places main program & tray shortcut</param>
+        public void StartMenu_Toggle(bool platforms)
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.StartMenu_Toggle]");
-            var platformsFolder = Path.Join(Shortcut.StartMenu, "Platforms");
-            if (Directory.Exists(platformsFolder)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(Shortcut.StartMenu, "Platforms")), false);
-            else
+            if (platforms)
             {
-                Directory.CreateDirectory(platformsFolder);
-                CreatePlatformShortcut(platformsFolder, "Steam", "steam");
-                CreatePlatformShortcut(platformsFolder, "Origin", "origin");
-                CreatePlatformShortcut(platformsFolder, "Ubisoft", "ubisoft");
-            }
+                var platformsFolder = Path.Join(Shortcut.StartMenu, "Platforms");
+                if (Directory.Exists(platformsFolder)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(Shortcut.StartMenu, "Platforms")), false);
+                else
+                {
+                    Directory.CreateDirectory(platformsFolder);
+                    foreach (var platform in PlatformList)
+                    {
+                        CreatePlatformShortcut(platformsFolder, platform, platform.ToLower());
+                    }
+                }
 
+                return;
+            }
+            // Only create these shortcuts of requested, by setting platforms to false.
             var s = new Shortcut();
             s.Shortcut_Switcher(Shortcut.StartMenu);
             s.ToggleShortcut(!StartMenu, false);
@@ -567,7 +608,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             var s = new Shortcut();
             s.Shortcut_Platform(folder, platformName, args);
-            s.ToggleShortcut(!StartMenu, false);
+            s.ToggleShortcut(!StartMenuPlatforms, false);
         }
         #endregion
     }
