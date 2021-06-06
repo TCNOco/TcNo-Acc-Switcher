@@ -136,8 +136,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.TrayAccName = false;
             _instance.ImageExpiryTime = 7;
             _instance.TrayAccNumber = 3;
-
-            CheckShortcuts();
+            _instance._desktopShortcut = Shortcut.CheckShortcuts("Steam");
             Task.StartWithWindows_Enabled();
 
             SaveSettings();
@@ -196,8 +195,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.TrayAccName = curSettings.TrayAccName;
             _instance.ImageExpiryTime = curSettings.ImageExpiryTime;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
-
-            CheckShortcuts();
+            _instance._desktopShortcut = Shortcut.CheckShortcuts("Steam");
             Task.StartWithWindows_Enabled();
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
@@ -206,23 +204,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         [JSInvokable]
         public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
-        #endregion
-        
-        #region SHORTCUTS
-        public void CheckShortcuts()
-        {
-            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.CheckShortcuts]");
-            _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "Steam - TcNo Account Switcher.lnk"));
-            AppSettings.Instance.CheckShortcuts();
-        }
-
-        public void DesktopShortcut_Toggle()
-        {
-            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
-            var s = new Shortcut();
-            s.Shortcut_Platform(Shortcut.Desktop);
-            s.ToggleShortcut(!DesktopShortcut);
-        }
         #endregion
     }
 }

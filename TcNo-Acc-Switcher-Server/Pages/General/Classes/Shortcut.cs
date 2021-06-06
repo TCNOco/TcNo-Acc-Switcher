@@ -16,6 +16,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 {
@@ -195,5 +196,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         }
         #endregion
 
+        #region SHORTCUTS_INTERFACE
+        public static bool CheckShortcuts(string platform)
+        {
+            Globals.DebugWriteLine(@$"[Func:Data\Settings\Shared.CheckShortcuts] platform={platform}");
+            AppSettings.Instance.CheckShortcuts();
+            return File.Exists(Path.Join(Shortcut.Desktop, $"{platform} - TcNo Account Switcher.lnk"));
+        }
+
+        public static void DesktopShortcut_Toggle(string platform, bool desktopShortcut)
+        {
+            Globals.DebugWriteLine(@$"[Func:Data\Settings\Shared.DesktopShortcut_Toggle] platform={platform}");
+            var s = new Shortcut();
+            s.Shortcut_Platform(Shortcut.Desktop, platform, platform.ToLower());
+            s.ToggleShortcut(!desktopShortcut);
+        }
+        #endregion
     }
 }

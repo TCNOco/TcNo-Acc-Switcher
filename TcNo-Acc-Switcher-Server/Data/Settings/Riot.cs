@@ -114,7 +114,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             // Notice install directories are intentionally left out here.
             // They are just saved for user ease-of-access.
 
-            CheckShortcuts();
+            _instance._desktopShortcut = Shortcut.CheckShortcuts("Riot");
 
             SaveSettings();
         }
@@ -130,29 +130,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             // Notice install directories are intentionally left out here.
             // They are just saved for user ease-of-access.
 
-            CheckShortcuts();
+            _instance._desktopShortcut = Shortcut.CheckShortcuts("Riot");
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
         public JObject GetJObject() => JObject.FromObject(this);
         [JSInvokable]
         public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
-        #endregion
-
-        #region SHORTCUTS
-        public void CheckShortcuts()
-        {
-            Globals.DebugWriteLine(@"[Func:Data\Settings\Riot.CheckShortcuts]");
-            _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "Riot - TcNo Account Switcher.lnk"));
-            AppSettings.Instance.CheckShortcuts();
-        }
-
-        public void DesktopShortcut_Toggle()
-        {
-            Globals.DebugWriteLine(@"[Func:Data\Settings\Riot.DesktopShortcut_Toggle]");
-            var s = new Shortcut();
-            s.Shortcut_Platform(Shortcut.Desktop, "Riot", "riot");
-            s.ToggleShortcut(!DesktopShortcut);
-        }
         #endregion
     }
 }

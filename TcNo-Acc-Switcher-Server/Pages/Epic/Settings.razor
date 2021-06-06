@@ -13,6 +13,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @page "/Epic/Settings"
+@using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @namespace TcNo_Acc_Switcher_Server.Pages.Epic
 @inject NavigationManager _navManager
 @{ AppData.SetActiveNavMan(_navManager); }
@@ -33,7 +34,7 @@
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_epic.DesktopShortcut" @onclick="() => _epic.DesktopShortcut_Toggle()"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">Epic Switcher Desktop shortcut<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_epic.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Epic", _epic.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">Epic Switcher Desktop shortcut<br></label>
             </div>
             <div>
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_epic.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">Run Epic as Admin<br></label>

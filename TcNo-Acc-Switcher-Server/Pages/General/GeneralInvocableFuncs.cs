@@ -331,7 +331,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 $"Switch to {accName} in TcNo Account Switcher", 
                 true);
             s.CreateCombinedIcon(
-                Path.Join(GeneralFuncs.WwwRoot, $"\\img\\platform\\{page}.svg"),
+                Path.Join(GeneralFuncs.WwwRoot, $"\\img\\platform\\{page}.png"),
                 fgImg, 
                 $"{accId}.ico");
             s.TryWrite();
@@ -340,7 +340,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static void GiCreatePlatformShortcut(string platform)
         {
-            Globals.DebugWriteLine(@"[Func:Data\Settings\Riot.DesktopShortcut_Toggle]");
+            Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiCreatePlatformShortcut] platform={platform}");
             var s = new Shortcut();
             s.Shortcut_Platform(Shortcut.Desktop, platform, platform.ToLower());
             s.ToggleShortcut(true, true);

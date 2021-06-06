@@ -107,8 +107,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = new Point() { X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
-
-            CheckShortcuts();
+            _instance._desktopShortcut = Shortcut.CheckShortcuts("Ubisoft");
 
             SaveSettings();
         }
@@ -121,30 +120,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.WindowSize = curSettings.WindowSize;
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
-
-            CheckShortcuts();
+            _instance._desktopShortcut = Shortcut.CheckShortcuts("Ubisoft");
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
         public JObject GetJObject() => JObject.FromObject(this);
         [JSInvokable]
         public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
-        #endregion
-
-        #region SHORTCUTS
-        public void CheckShortcuts()
-        {
-            Globals.DebugWriteLine(@"[Func:Data\Settings\Ubisoft.CheckShortcuts]");
-            _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "Ubisoft - TcNo Account Switcher.lnk"));
-            AppSettings.Instance.CheckShortcuts();
-        }
-
-        public void DesktopShortcut_Toggle()
-        {
-            Globals.DebugWriteLine(@"[Func:Data\Settings\Ubisoft.DesktopShortcut_Toggle]");
-            var s = new Shortcut();
-            s.Shortcut_Platform(Shortcut.Desktop, "Ubisoft", "ubisoft");
-            s.ToggleShortcut(!DesktopShortcut);
-        }
         #endregion
     }
 }

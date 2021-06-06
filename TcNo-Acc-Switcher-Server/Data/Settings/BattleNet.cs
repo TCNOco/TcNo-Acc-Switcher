@@ -136,8 +136,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.TrayAccNumber = 3;
             _instance._overwatchMode = true;
             // Should this also clear ignored accounts?
-
-            CheckShortcuts();
+            _instance._desktopShortcut = Shortcut.CheckShortcuts("BattleNet");
             SaveSettings();
         }
         public void SetFromJObject(JObject j)
@@ -150,7 +149,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
             _instance._overwatchMode = curSettings._overwatchMode;
-            CheckShortcuts();
+            _instance._desktopShortcut = Shortcut.CheckShortcuts("BattleNet");
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
         public JObject GetJObject() => JObject.FromObject(this);
@@ -193,24 +192,5 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         
         
         #endregion
-
-        #region SHORTCUTS
-        public void CheckShortcuts()
-        {
-            Globals.DebugWriteLine(@"[Func:Data\Settings\BattleNet.CheckShortcuts]");
-            _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "BattleNet - TcNo Account Switcher.lnk"));
-            AppSettings.Instance.CheckShortcuts();
-        }
-
-        public void DesktopShortcut_Toggle()
-        {
-            Globals.DebugWriteLine(@"[Func:Data\Settings\BattleNet.DesktopShortcut_Toggle]");
-            var s = new Shortcut();
-            s.Shortcut_Platform(Shortcut.Desktop, "BattleNet", "battlenet");
-            s.ToggleShortcut(!DesktopShortcut);
-        }
-        #endregion
-        
-        
     }
 }

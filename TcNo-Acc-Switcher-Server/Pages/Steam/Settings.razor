@@ -13,6 +13,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @page "/Steam/Settings"
+@using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager _navManager
 @{ AppData.SetActiveNavMan(_navManager); }
@@ -33,7 +34,7 @@
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="_steam.DesktopShortcut" @onclick="() => _steam.DesktopShortcut_Toggle()"><label class="form-check-label" for="Steam_DesktopShortcut"></label></div><label for="Steam_DesktopShortcut">Steam Switcher desktop shortcut<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="_steam.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Steam", _steam.DesktopShortcut)'><label class="form-check-label" for="Steam_DesktopShortcut"></label></div><label for="Steam_DesktopShortcut">Steam Switcher desktop shortcut<br></label>
             </div>
             <div>
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin" @bind="_steam.Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label for="Steam_Admin">Run Steam as Admin<br></label>
