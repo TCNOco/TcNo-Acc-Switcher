@@ -70,6 +70,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private int _imageExpiryTime = 7;
         [JsonProperty("ImageExpiryTime", Order = 7)] public int ImageExpiryTime { get => _instance._imageExpiryTime; set => _instance._imageExpiryTime = value; }
 
+        private bool _isEnabled = true;
+        [JsonProperty("IsEnabled", Order = 8)] public bool IsEnabled { get => _instance._isEnabled; set => _instance._isEnabled = value; }
+
 
 
         private bool _desktopShortcut;

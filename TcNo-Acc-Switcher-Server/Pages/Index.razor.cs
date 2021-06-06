@@ -36,7 +36,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
 
             if (!GeneralFuncs.CanKillProcess("Battle.net")) return;
 
-            _battleNet.LoadFromFile();
+            
             if (Directory.Exists(_battleNet.FolderPath) && File.Exists(_battleNet.Exe()))
                 _navManager.NavigateTo("/BattleNet/");
             else
@@ -51,8 +51,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
             Globals.DebugWriteLine(@"[Func:Index.CheckEpic]");
 
             if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) return;
-
-            _epic.LoadFromFile();
+            
             if (Directory.Exists(_epic.FolderPath) && File.Exists(_epic.Exe()))
                 _navManager.NavigateTo("/Epic/");
             else
@@ -67,8 +66,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
             Globals.DebugWriteLine(@"[Func:Index.CheckOrigin]");
 
             if (!GeneralFuncs.CanKillProcess("Origin")) return;
-
-            _origin.LoadFromFile();
+            
             if (Directory.Exists(_origin.FolderPath) && File.Exists(_origin.Exe()))
                 _navManager.NavigateTo("/Origin/");
             else
@@ -83,8 +81,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
             Globals.DebugWriteLine(@"[Func:Index.CheckRiot]");
 
             if (!Riot.RiotSwitcherFuncs.CanCloseRiot()) return;
-
-            _riot.LoadFromFile();
+            
             if (Directory.Exists(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client\\Data")))
                 _navManager.NavigateTo("/Riot/");
             else
@@ -99,8 +96,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
             Globals.DebugWriteLine(@"[Func:Index.CheckSteam]");
 
             if (!GeneralFuncs.CanKillProcess("steam")) return;
-
-            _steam.LoadFromFile();
+            
             if (!Directory.Exists(_steam.FolderPath) || !File.Exists(_steam.Exe()))
             {
                 await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
@@ -121,8 +117,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
             Globals.DebugWriteLine(@"[Func:Index.CheckUbisoft]");
 
             if (!GeneralFuncs.CanKillProcess("upc")) return;
-
-            _ubisoft.LoadFromFile();
+            
             if (Directory.Exists(_ubisoft.FolderPath) && File.Exists(_ubisoft.Exe()))
                 _navManager.NavigateTo("/Ubisoft/");
             else
@@ -164,6 +159,62 @@ namespace TcNo_Acc_Switcher_Server.Pages
             // Run updater
             Process.Start(new ProcessStartInfo(@"updater\\TcNo-Acc-Switcher-Updater.exe") { UseShellExecute = true });
             Process.GetCurrentProcess().Kill();
+        }
+
+        private bool _battleNetIsEnabled;
+        private bool _epicIsEnabled;
+        private bool _originIsEnabled;
+        private bool _riotIsEnabled;
+        private bool _steamIsEnabled;
+        private bool _ubisoftIsEnabled;
+
+        /// <summary>
+        /// Show the settings and temporarily save the current state of each IsEnabled Bool
+        /// to not do unnecessary file writing.
+        /// </summary>
+        public void ShowSettings()
+        {
+            _battleNetIsEnabled = _battleNet.IsEnabled;
+            _epicIsEnabled = _epic.IsEnabled;
+            _originIsEnabled = _origin.IsEnabled;
+            _riotIsEnabled = _origin.IsEnabled;
+            _steamIsEnabled = _steam.IsEnabled;
+            _ubisoftIsEnabled = _ubisoft.IsEnabled;
+
+            _showSettings = true;
+        }
+        
+        /// <summary>
+        /// Hide the settings and save the changes
+        /// </summary>
+        public void HideSettings()
+        {
+            _showSettings = false;
+
+            if (_battleNetIsEnabled != _battleNet.IsEnabled)
+            {
+                _battleNet.SaveSettings();
+            }
+            if (_epicIsEnabled != _epic.IsEnabled)
+            {
+                _epic.SaveSettings();
+            }
+            if (_originIsEnabled != _origin.IsEnabled)
+            {
+                _origin.SaveSettings();
+            }
+            if (_riotIsEnabled != _riot.IsEnabled)
+            {
+                _riot.SaveSettings();
+            }
+            if (_steamIsEnabled != _steam.IsEnabled)
+            {
+                _steam.SaveSettings();
+            }
+            if (_ubisoftIsEnabled != _ubisoft.IsEnabled)
+            {
+                _ubisoft.SaveSettings();
+            }
         }
     }
 }

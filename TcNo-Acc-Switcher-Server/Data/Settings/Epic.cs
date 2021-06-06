@@ -51,6 +51,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Epic_TrayAccNumber", Order = 3)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
         private bool _forgetAccountEnabled;
         [JsonProperty("ForgetAccountEnabled", Order = 4)] public bool ForgetAccountEnabled { get => _instance._forgetAccountEnabled; set => _instance._forgetAccountEnabled = value; }
+        private bool _isEnabled = true;
+        [JsonProperty("IsEnabled", Order = 5)] public bool IsEnabled { get => _instance._isEnabled; set => _instance._isEnabled = value; }
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
