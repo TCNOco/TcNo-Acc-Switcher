@@ -15,18 +15,18 @@
   color: var(--settingsHeaderColor);
 }
 
+.SettingsHeader hr {
+    border: 1px solid var(--settingsHeaderHrBorder);
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .SettingsHeader hr:first-of-type {
   width: 20px;
 }
 
 .SettingsHeader hr:last-of-type {
   width: 100px;
-}
-
-.SettingsHeader hr {
-  border: 1px solid var(--settingsHeaderHrBorder);
-  display: inline-block;
-  vertical-align: middle;
 }
 
 .SettingsHeader span {
@@ -198,7 +198,6 @@ label {
   margin-left: 1rem;
 }
 
-
 /* Checkbox */
 
 .form-check {
@@ -233,7 +232,6 @@ input[type='checkbox']:checked + label {
   border: 1px solid var(--checkboxBorder-checked);
   background: var(--checkboxBackground-checked);
 }
-
 
 /* Buttons */
 

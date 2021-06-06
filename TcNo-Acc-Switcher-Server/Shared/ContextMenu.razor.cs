@@ -55,7 +55,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
             }
             catch(Exception e)
             {
-                Console.WriteLine(e);
+                Globals.WriteToLog(e.ToString());
             }
 
             // See if it's an array
@@ -83,7 +83,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Globals.WriteToLog(e.ToString());
             }
         }
     }

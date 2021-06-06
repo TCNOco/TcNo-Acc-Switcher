@@ -83,11 +83,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         
         // Constants
         [JsonIgnore] public string SettingsFile = "BattleNetSettings.json";
-        /*
-                // Unused:
-                [JsonIgnore] public string BattleNetImagePath = "wwwroot/img/profiles/battlenet/";
-                [JsonIgnore] public string BattleNetImagePathHtml = "img/profiles/battlenet/";
-        */
         [JsonIgnore] public string StoredAccPath = "LoginCache\\BattleNet\\StoredAccounts.json";
         [JsonIgnore] public string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
         [JsonIgnore] public string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";

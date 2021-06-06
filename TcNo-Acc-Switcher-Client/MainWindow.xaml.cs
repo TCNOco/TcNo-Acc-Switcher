@@ -54,7 +54,7 @@ namespace TcNo_Acc_Switcher_Client
             const string serverPath = "TcNo-Acc-Switcher-Server.exe";
             if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(serverPath)).Length > 0)
             {
-                Console.WriteLine("Server was already running. Killing process."); 
+                Globals.WriteToLog("Server was already running. Killing process."); 
                 Globals.KillProcess(serverPath); // Kill server if already running
             }
             Program.Main(new[] { _address });
@@ -111,7 +111,7 @@ namespace TcNo_Acc_Switcher_Client
             var message = JObject.Parse(e.ParameterObjectAsJson);
             if (message.ContainsKey("exceptionDetails"))
             {
-                Console.WriteLine(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION: " + message.SelectToken("exceptionDetails.exception.description"));
+                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION: " + message.SelectToken("exceptionDetails.exception.description"));
             }
             else
             {
@@ -121,16 +121,15 @@ namespace TcNo_Acc_Switcher_Client
                     // ReSharper disable once PossibleNullReferenceException
                     foreach (var jo in message?.SelectToken("args"))
                     {
-                        Console.WriteLine(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2: " + jo.SelectToken("value")?.ToString().Replace("\n", "\n\t"));
+                        Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2: " + jo.SelectToken("value")?.ToString().Replace("\n", "\n\t"));
                     }
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine(exception);
+                    Globals.WriteToLog(exception);
                 }
 #endif
             }
-            //Console.WriteLine("WebView2: " + e.ToString());
         }
 
         /// <summary>
@@ -235,7 +234,7 @@ namespace TcNo_Acc_Switcher_Client
         private void UrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
-            Console.WriteLine(args.Uri);
+            Globals.WriteToLog(args.Uri);
 
             if (args.Uri.Contains("RESTART_AS_ADMIN")) RestartAsAdmin((args.Uri.Contains("arg=") ? args.Uri.Split("arg=")[1] : ""));
 
@@ -296,7 +295,7 @@ namespace TcNo_Acc_Switcher_Client
             }
             catch (Exception ex)
             {
-                Console.WriteLine("This program must be run as an administrator! \n\n" + ex);
+                Globals.WriteToLog(@"This program must be run as an administrator! \n\n" + ex);
                 Environment.Exit(0);
             }
         }

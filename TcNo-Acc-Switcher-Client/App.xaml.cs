@@ -43,6 +43,7 @@ namespace TcNo_Acc_Switcher_Client
     /// </summary>
     public partial class App
     {
+        private bool DebugMode = true;
         public static string StartPage = "";
         private static readonly HttpClient Client = new();
 
@@ -74,7 +75,6 @@ namespace TcNo_Acc_Switcher_Client
             Mutex.ReleaseMutex();
         }
 
-        public bool DebugMode = true;
         private static Random random = new Random();
         public static string RandomString(int length)
         {
@@ -97,11 +97,12 @@ namespace TcNo_Acc_Switcher_Client
             {
                 NativeMethods.AllocConsole();
                 NativeMethods.SetWindowText("Debug console");
-                Console.WriteLine("Debug Console started");
+                Globals.WriteToLog("Debug Console started");
             }
 #else
             // Logging:
-            // Redirects all Console.WriteLines to Log.txt, which cleans itself every launch.
+            // Redirects all Globals.WriteToLogs to Log.txt, which cleans itself every launch.
+            // -- Might change this later to actually write in that file, rather than here ~
             StreamWriter sw = null;
             var attempts = 0;
             while (attempts < 5) // Attempts 4 times
@@ -111,9 +112,9 @@ namespace TcNo_Acc_Switcher_Client
                     attempts++;
                     sw = new StreamWriter(new FileStream($"log${(attempts > 0 ? RandomString(5) : "")}.txt", FileMode.Create)) { AutoFlush = true };
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
-                    Console.WriteLine(exception);
+                    Globals.WriteToLog(ex);
                     throw;
                 }
             }
@@ -137,37 +138,37 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         case "b": // Battle.net
                             // Battlenet format: +b:<email>
-                            Console.WriteLine("Battle.net switch requested");
+                            Globals.WriteToLog("Battle.net switch requested");
                             TcNo_Acc_Switcher_Server.Data.Settings.BattleNet.Instance.LoadFromFile();
                             TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);
                             break;
                         case "e": // Epic Games
                             // Epic Games format: +e:<username>
-                            Console.WriteLine("Epic Games switch requested");
+                            Globals.WriteToLog("Epic Games switch requested");
                             TcNo_Acc_Switcher_Server.Data.Settings.Epic.Instance.LoadFromFile();
                             TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account);
                             break;
                         case "o": // Origin
                             // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
-                            Console.WriteLine("Origin switch requested");
+                            Globals.WriteToLog("Origin switch requested");
                             TcNo_Acc_Switcher_Server.Data.Settings.Origin.Instance.LoadFromFile();
                             TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account, (command.Length > 2 ? int.Parse(command[3]) : 0));
                             break;
                         case "r": // Riot Games
                             // Riot Games format: +e:<username>
-                            Console.WriteLine("Riot Games switch requested");
+                            Globals.WriteToLog("Riot Games switch requested");
                             TcNo_Acc_Switcher_Server.Data.Settings.Riot.Instance.LoadFromFile();
                             TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'));
                             break;
                         case "s": // Steam
                             // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
-                            Console.WriteLine("Steam switch requested");
+                            Globals.WriteToLog("Steam switch requested");
                             TcNo_Acc_Switcher_Server.Data.Settings.Steam.Instance.LoadFromFile();
                             TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0], ePersonaState: (command.Length > 2 ? int.Parse(command[3]) : -1)); // Request has a PersonaState in it
                             break;
                         case "u": // Ubisoft Connect
                             // Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]
-                            Console.WriteLine("Ubisoft Connect switch requested");
+                            Globals.WriteToLog("Ubisoft Connect switch requested");
                             TcNo_Acc_Switcher_Server.Data.Settings.Ubisoft.Instance.LoadFromFile();
                             TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account, (command.Length > 2 ? int.Parse(command[3]) : -1));
                             break;
@@ -200,7 +201,7 @@ namespace TcNo_Acc_Switcher_Client
                         Globals.VerboseMode = true;
                         break;
                     default:
-                        Console.WriteLine($"Unknown argument: \"{e.Args[i]}\"");
+                        Globals.WriteToLog($"Unknown argument: \"{e.Args[i]}\"");
                         break;
                 }
             }
@@ -277,7 +278,7 @@ namespace TcNo_Acc_Switcher_Client
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Globals.WriteToLog(e.ToString());
                 }
             }
 
@@ -294,7 +295,7 @@ namespace TcNo_Acc_Switcher_Client
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Globals.WriteToLog(e.ToString());
                 }
             }
             
@@ -367,7 +368,7 @@ namespace TcNo_Acc_Switcher_Client
                     o["LastUpdateCheckFail"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
                     File.WriteAllText("WindowSettings.json", o.ToString());
                 }
-                Console.WriteLine(@"Could not reach https://tcno.co/ to check for updates.\n" + e);
+                Globals.WriteToLog(@"Could not reach https://tcno.co/ to check for updates.\n" + e);
             }
         }
 
@@ -386,10 +387,10 @@ namespace TcNo_Acc_Switcher_Client
                     if (latestDate.Equals(currentDate) || currentDate.Subtract(latestDate) > TimeSpan.Zero) return true;
                 }
                 else
-                    Console.WriteLine(@"Unable to convert '{0}' to a date and time.", latest);
+                    Globals.WriteToLog(@$"Unable to convert '{0}' to a date and time. {latest}");
             }
             else
-                Console.WriteLine(@"Unable to convert '{0}' to a date and time.", latest);
+                Globals.WriteToLog(@$"Unable to convert '{0}' to a date and time. {latest}");
             return false;
         }
 

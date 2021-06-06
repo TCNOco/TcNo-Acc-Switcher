@@ -27,7 +27,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static void CopyToClipboard(string toCopy)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Data\GenericFunctions.CopyToClipboard] toCopy=hidden");
-            Console.WriteLine("Copying: " + toCopy);
             WindowsClipboard.SetText(toCopy);
         }
     }

@@ -22,7 +22,7 @@ namespace TcNo_Acc_Switcher_Server.Converters
     public class SteamIdConvert
     {
         // Usage:
-        // - Console.WriteLine(new SteamIdConvert("STEAM_0:0:52161201").PrintAll());
+        // - Globals.DebugWriteLine(new SteamIdConvert("STEAM_0:0:52161201").PrintAll());
         // - SteamIdConvert sid = new SteamIdConvert("STEAM_0:0:52161201");
         //   string Steam64 = sid.Id64;
 
@@ -45,7 +45,7 @@ namespace TcNo_Acc_Switcher_Server.Converters
             }
             catch (SteamIdConvertException e)
             {
-                Console.WriteLine(e.Message);
+                Globals.WriteToLog(e.Message);
             }
         }
 

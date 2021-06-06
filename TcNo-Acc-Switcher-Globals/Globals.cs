@@ -18,6 +18,11 @@ namespace TcNo_Acc_Switcher_Globals
             // Toggle here so it only shows in Verbose mode etc.
             if (VerboseMode) Console.WriteLine(s);
         }
+
+        public static void WriteToLog(string s)
+        {
+            Console.WriteLine(s);
+        }
         
         /// <summary>
         /// Exception handling for all programs
@@ -33,8 +38,8 @@ namespace TcNo_Acc_Switcher_Globals
             {
                 sw.WriteLine(DateTime.Now.ToString(CultureInfo.InvariantCulture) + "\t" + Strings.ErrUnhandledCrash + ": " + exceptionStr + Environment.NewLine + Environment.NewLine);
             }
-            Console.WriteLine(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
-            Console.WriteLine(Strings.ErrSubmitCrashlog);
+            WriteToLog(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
+            WriteToLog(Strings.ErrSubmitCrashlog);
         }
 
         /// <summary>
@@ -61,7 +66,7 @@ namespace TcNo_Acc_Switcher_Globals
             process.BeginOutputReadLine();
             process.WaitForExit();
 
-            Console.WriteLine(outputText.StartsWith("SUCCESS") || outputText.Length <= 1
+            WriteToLog(outputText.StartsWith("SUCCESS") || outputText.Length <= 1
                 ? $"Successfully closed {procName}."
                 : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
         }

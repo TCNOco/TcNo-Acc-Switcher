@@ -128,7 +128,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("Empty profile image detected (0 bytes). Can't delete to re-download.\nInfo: \n" + ex);
+                    Globals.WriteToLog("Empty profile image detected (0 bytes). Can't delete to re-download.\nInfo: \n" + ex);
                     throw;
                 }
             }
@@ -369,9 +369,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 {
                     joSettings = JObject.Parse(File.ReadAllText(sFilename));
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine(e);
+                    Globals.WriteToLog(ex.ToString());
                 }
 
             if (mergeNewIntoOld)
@@ -447,7 +447,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 {
                     if (handledError) // Only try once
                     {
-                        Console.WriteLine(e);
+                        Globals.WriteToLog(e.ToString());
                         throw;
                     }
 
@@ -460,7 +460,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Globals.WriteToLog(e.ToString());
                     throw;
                 }
 

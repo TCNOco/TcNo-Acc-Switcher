@@ -326,7 +326,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     case "xsplit.gamecaster":
                     case "twitchstudio":
                         _instance.StreamerModeTriggered = true;
-                        Console.WriteLine(p.ProcessName);
+                        Globals.WriteToLog($"Streamer mode found: {p.ProcessName}");
                         return true;
                 }
             }

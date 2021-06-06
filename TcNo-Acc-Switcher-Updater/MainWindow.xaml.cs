@@ -216,7 +216,6 @@ namespace TcNo_Acc_Switcher_Updater
                     catch (Exception e)
                     {
                         Console.WriteLine("Can't find or properly assign colors from StyleSettings.json");
-                        Console.WriteLine(e);
                     }
                 }), DispatcherPriority.Normal);
 
@@ -234,7 +233,6 @@ namespace TcNo_Acc_Switcher_Updater
                 }
                 else
                     CreateVerifyAndExitButton();
-                Console.WriteLine("No updates found!");
             }
             else if (VerifyAndClose)
                 WriteLine("To verify files you need to update first.");
@@ -394,7 +392,6 @@ namespace TcNo_Acc_Switcher_Updater
             // Compare hash list to files, and download any files that don't match
             var client = new WebClient();
             client.DownloadProgressChanged -= OnClientOnDownloadProgressChanged;
-            Console.WriteLine("--- VERIFYING ---");
             SetStatusAndLog("Verifying...");
             WriteLine("Downloading latest hash list... ");
             const string hashFilePath = "hashes.json";
@@ -450,18 +447,11 @@ namespace TcNo_Acc_Switcher_Updater
         /// <returns>True when the program is up-to-date or ahead</returns>
         private bool CheckLatest(string latest)
         {
-            if (DateTime.TryParseExact(latest, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var latestDate))
-            {
-                if (DateTime.TryParseExact(_currentVersion, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var currentDate))
-                {
-                    if (latestDate.Equals(currentDate) || currentDate.Subtract(latestDate) > TimeSpan.Zero) return true;
-                }
-                else
-                    Console.WriteLine("Unable to convert '{0}' to a date and time.", latest);
-            }
-            else
-                Console.WriteLine("Unable to convert '{0}' to a date and time.", latest);
-            return false;
+            if (!DateTime.TryParseExact(latest, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var latestDate))
+                return false;
+            if (!DateTime.TryParseExact(_currentVersion, "yyyy-MM-dd_mm", null, DateTimeStyles.None,
+                out var currentDate)) return false;
+            return latestDate.Equals(currentDate) || currentDate.Subtract(latestDate) > TimeSpan.Zero;
         }
 
         /// <summary>
@@ -569,9 +559,6 @@ namespace TcNo_Acc_Switcher_Updater
             List<string> filesToDelete = new(); // Simply ignore these later
             CreateFolderPatches(oldFolder, newFolder, outputFolder, ref filesToDelete);
             File.WriteAllLines(deleteFileList, filesToDelete);
-            Console.WriteLine("Please 7z the update folder.");
-            Console.WriteLine("Please 7z the update folder.");
-            Console.WriteLine("Please 7z the update folder.");
             Environment.Exit(1);
         }
 
@@ -655,10 +642,6 @@ namespace TcNo_Acc_Switcher_Updater
             process.WaitForExit();
 
             WriteLine($"/C TASKKILL /F /T /IM {procName}*");
-
-            Console.WriteLine(outputText.StartsWith("SUCCESS")
-                ? $"Successfully closed {procName}."
-                : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
         }
 
         /// <summary>
@@ -696,12 +679,9 @@ namespace TcNo_Acc_Switcher_Updater
 
             try
             {
-                if (!f.Exists) Console.WriteLine("err");
-                else
-                {
-                    f.IsReadOnly = false;
-                    f.Delete();
-                }
+                if (!f.Exists) return;
+                f.IsReadOnly = false;
+                f.Delete();
             }
             catch (Exception)
             {
@@ -783,7 +763,6 @@ namespace TcNo_Acc_Switcher_Updater
 
                 Directory.CreateDirectory(Path.GetDirectoryName(newFileOutput)!);
                 File.Copy(newFileInput, newFileOutput, true);
-                Console.WriteLine("Copied new file to output: " + newFileOutput);
             }
 
 
@@ -811,11 +790,7 @@ namespace TcNo_Acc_Switcher_Updater
             try
             {
                 // Foreach file in directory
-                foreach (var f in Directory.GetFiles(sDir))
-                {
-                    //Console.WriteLine(f + "|" + GetFileMd5(f));
-                    list.Add(f.Remove(0, f.Split("\\")[0].Length + 1));
-                }
+                list.AddRange(Directory.GetFiles(sDir).Select(f => f.Remove(0, f.Split("\\")[0].Length + 1)));
 
                 // Foreach directory in file
                 foreach (var d in Directory.GetDirectories(sDir))
@@ -823,9 +798,9 @@ namespace TcNo_Acc_Switcher_Updater
                     DirSearch(d, ref list);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Console.WriteLine(e.Message);
+                //
             }
         }
 
@@ -865,9 +840,9 @@ namespace TcNo_Acc_Switcher_Updater
                     DirSearchWithHash(d, ref dict);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Console.WriteLine(e.Message);
+                //
             }
         }
 

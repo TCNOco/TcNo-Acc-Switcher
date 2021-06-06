@@ -252,7 +252,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 {
                     if (ex.HResult == -2146233079) return vs;
                     su.ImgUrl = "img/QuestionMark.jpg";
-                    Console.WriteLine("ERROR: Could not connect and download Steam profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " + ex);
+                    Globals.WriteToLog("ERROR: Could not connect and download Steam profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " + ex);
                     //MessageBox.Show($"{Strings.ErrImageDownloadFail} {ex}", Strings.ErrProfileImageDlFail, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }

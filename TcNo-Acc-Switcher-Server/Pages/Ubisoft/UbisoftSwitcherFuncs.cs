@@ -64,7 +64,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 }
                 catch (TaskCanceledException e)
                 {
-                    Console.WriteLine(e);  
+                    Globals.WriteToLog(e.ToString());  
                 }
             }
             _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");

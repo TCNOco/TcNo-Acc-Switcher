@@ -1,5 +1,6 @@
 {
     "updates":{
+	"2021-06-05_00": ["Automatic crashlog uploads, (hopefully) No usernames/other info in logs, Adds missing colours into theme & more theming updates", 6003],
 	"2021-06-04_01": ["Hotfix for theming", 6003],
 	"2021-06-04_00": ["Much easier, more robust theming (Now in YAML). Themes folder now easier to access. Fixed some buttons breaking when going forward and back a lot.", 202625],
 	"2021-06-03_00": ["Added theme picker. Fixed some issues with Riot switcher", 97594],

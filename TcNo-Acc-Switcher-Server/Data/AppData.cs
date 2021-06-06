@@ -16,6 +16,7 @@ using System;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -49,7 +50,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 _windowTitle = value;
                 NotifyDataChanged();
-                Console.WriteLine("\n\nWindow Title changed to: " + _windowTitle);
+                Globals.WriteToLog("\n\nWindow Title changed to: " + _windowTitle);
             }
         }
 
@@ -61,7 +62,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 _currentStatus = value;
                 NotifyDataChanged();
-                Console.WriteLine("\nCurrentStatus changed to: " + _windowTitle);
             }
         }
 

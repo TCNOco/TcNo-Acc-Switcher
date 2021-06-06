@@ -121,8 +121,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static Task<string> GiConfirmAction(string action, bool value)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiConfirmAction] action={action.Split(":")[0]}, value={value}");
-            Console.WriteLine(action);
-            Console.WriteLine(value);
             if (!value) return Task.FromResult("");
             
             var accName = action.Split(":")[1];
@@ -255,7 +253,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 }
                 catch (TaskCanceledException e)
                 {
-                    Console.WriteLine(e);
+                    Globals.WriteToLog(e.ToString());
                 }
             }
 

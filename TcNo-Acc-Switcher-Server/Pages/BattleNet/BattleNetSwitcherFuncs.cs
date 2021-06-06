@@ -182,7 +182,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             catch (WebException ex)
             {
                 File.Copy("wwwroot\\img\\BattleNetDefault.png", dlDir);
-                Console.WriteLine("ERROR: Could not connect and download BattleNet profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " + ex);
+                Globals.WriteToLog("ERROR: Could not connect and download BattleNet profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " + ex);
             }
 
             return dlDir;

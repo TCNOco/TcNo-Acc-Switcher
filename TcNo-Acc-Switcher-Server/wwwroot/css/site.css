@@ -74,7 +74,6 @@ label {
   background: var(--platformScreenBackground);
 }
 
-
 /* Based on https://github.com/binaryfunt/electron-seamless-titlebar-tutorial */
 
 .headerbar {
@@ -200,7 +199,6 @@ label {
   background: var(--windowControlsBackground-active);
 }
 
-
 /* Resize bars and corners */
 
 .resizeTopLeft,
@@ -215,7 +213,6 @@ label {
   position: absolute;
   background: var(--headerbarBackground);
 }
-
 
 /* Positions */
 
@@ -243,7 +240,6 @@ label {
   right: 0;
 }
 
-
 /* Corners */
 
 .resizeTopLeft,
@@ -256,7 +252,6 @@ label {
 
   /* background-color: pink; */
 }
-
 
 /* Sides */
 
@@ -287,7 +282,6 @@ label {
   /* background-color: lime; */
 }
 
-
 /* Sides in window buttons */
 
 #btnClose .resizeTop,
@@ -306,7 +300,6 @@ label {
 #btnBack .resizeTopLeft {
   background-color: transparent;
 }
-
 
 /* Cursors */
 
@@ -449,7 +442,6 @@ label {
   top: 0.5rem;
 }
 
-
 /* Steam/Settings/Advanced Clearing screen */
 
 div.clearingRow {
@@ -495,7 +487,6 @@ div.advancedClearingButtonCol .buttoncol {
   margin: 0;
 }
 
-
 /* Forgotten Steam account */
 
 .forgottenListActions {
@@ -524,7 +515,6 @@ div.advancedClearingButtonCol .buttoncol {
   box-shadow: 0 0 10px 100px var(--listBackgroundColor-checked) inset;
   color: var(--listColor-checked);
 }
-
 
 /*
             Workaround to set color BECAUSE YOU CAN'T SET TEXT COLOR?!
@@ -567,7 +557,6 @@ div.advancedClearingButtonCol .buttoncol {
   transform: translate(-17.5%, -50%);
   text-align: center;
 }
-
 
 /* -------------------------------------------------
 	------------ PLATFORM ICONS SECTION ------------

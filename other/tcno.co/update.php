@@ -54,11 +54,7 @@ $details = ip_info("Visitor", "Location");
 
 // Today's JSON file
 $filename = __DIR__ ."/NetCore_updatedata/".date("Y-m-d").".json";
-if (false === ($data = file_get_contents($filename))) {
-    exit(); // Process failed.
-} else {
-    $jsToday = json_decode($data, true); // "@" ignores non-exist error
-}
+$jsToday = json_decode(@file_get_contents($filename), true); // "@" ignores non-exist error
 
 $currentCount = 0;
 

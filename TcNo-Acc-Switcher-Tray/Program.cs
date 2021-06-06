@@ -40,7 +40,6 @@ namespace TcNo_Acc_Switcher_Tray
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             if (SelfAlreadyRunning())
             {
-                Console.WriteLine(@"TcNo Account Switcher SteamTray is already running");
                 Environment.Exit(99);
             }
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location)!); // Set working directory to the same as the actual .exe
