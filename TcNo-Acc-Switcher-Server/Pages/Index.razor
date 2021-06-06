@@ -32,69 +32,180 @@
 @if (AppSettings.Instance.UpdateAvailable)
 {
     @*@if (true) {*@
-    <div class="updateBar" @onclick="UpdateNow"><span>Update available! Click here to start it.</span></div>
+    <div class="updateBar" @onclick="UpdateNow">
+        <span>Update available! Click here to start it.</span>
+    </div>
 }
 
-<div class="platformContainer">
-    <div class="button platformIcon" id="SwitcherSteam" @onclick="CheckSteam">
-        <svg viewBox="0 0 2084 2084" draggable="false" alt="Steam" class="icoSteamBG">
-            <use href="img/platform/steam.svg#TEXT" class="icoSteamText"></use>
-            <use href="img/platform/steam.svg#FG" class="icoSteamFG"></use>
-            <use href="img/platform/glass.svg#GLASS" class="icoGlass icoSteamGlass"></use>
-        </svg>
+@if (!_showSettings)
+{
+    <div class="platformContainer">
+        @if (_steam.IsEnabled)
+        {
+            <div class="button platformIcon" id="SwitcherSteam" @onclick="CheckSteam">
+                <svg viewBox="0 0 2084 2084" draggable="false" alt="Steam" class="icoSteamBG">
+                    <use href="img/platform/steam.svg#TEXT" class="icoSteamText"></use>
+                    <use href="img/platform/steam.svg#FG" class="icoSteamFG"></use>
+                    <use href="img/platform/glass.svg#GLASS" class="icoGlass icoSteamGlass"></use>
+                </svg>
+            </div>
+        }
+
+        @if (_origin.IsEnabled)
+        {
+            <div class="button platformIcon" id="SwitcherOrigin" @onclick="CheckOrigin">
+                <svg viewBox="0 0 2084 2084" draggable="false" alt="Origin" class="icoOriginBG">
+                    <use href="img/platform/origin.svg#TEXT" class="icoOriginText"></use>
+                    <use href="img/platform/origin.svg#FG" class="icoOriginFG"></use>
+                    <use href="img/platform/glass.svg#GLASS" class="icoGlass icoOriginGlass"></use>
+                </svg>
+            </div>
+        }
+
+        @if (_ubisoft.IsEnabled)
+        {
+            <div class="button platformIcon" id="SwitcherUbisoft" @onclick="CheckUbisoft">
+                <svg viewBox="0 0 2084 2084" draggable="false" alt="Ubisoft" class="icoUbisoftBG">
+                    <use href="img/platform/ubisoft.svg#TEXT" class="icoUbisoftText"></use>
+                    <use href="img/platform/ubisoft.svg#FG" class="icoUbisoftFG"></use>
+                    <use href="img/platform/glass.svg#GLASS" class="icoGlass icoUbisoftGlass"></use>
+                </svg>
+            </div>
+        }
+
+        @if (_battleNet.IsEnabled)
+        {
+            <div class="button platformIcon" id="SwitcherBattleNet" @onclick="CheckBattleNet">
+                <svg viewBox="0 0 2084 2084" draggable="false" alt="BattleNet" class="icoBattleNetBG">
+                    <use href="img/platform/battlenet.svg#TEXT" class="icoBattleNetText"></use>
+                    <use href="img/platform/battlenet.svg#FG" class="icoBattleNetFG"></use>
+                    <use href="img/platform/glass.svg#GLASS" class="icoGlass icoBattleNetGlass"></use>
+                </svg>
+            </div>
+        }
+
+        @if (_epic.IsEnabled)
+        {
+            <div class="button platformIcon" id="SwitcherEpic" @onclick="CheckEpic">
+                <svg viewBox="0 0 2084 2084" draggable="false" alt="Epic Games" class="icoEpicBG">
+                    <use href="img/platform/epic.svg#TEXT" class="icoEpicText"></use>
+                    <use href="img/platform/epic.svg#FG" class="icoEpicFG"></use>
+                    <use href="img/platform/glass.svg#GLASS" class="icoGlass icoEpicGlass"></use>
+                </svg>
+            </div>
+        }
+
+        @if (_riot.IsEnabled)
+        {
+            <div class="button platformIcon" id="SwitcherRiot" @onclick="CheckRiot">
+                <svg viewBox="0 0 2084 2084" draggable="false" alt="Riot Games" class="icoRiotBG">
+                    <use href="img/platform/riot.svg#TEXT" class="icoRiotText"></use>
+                    <use href="img/platform/riot.svg#FG" class="icoRiotFG"></use>
+                    <use href="img/platform/glass.svg#GLASS" class="icoGlass icoRiotGlass"></use>
+                </svg>
+            </div>
+        }
+
     </div>
-    <div class="button platformIcon" id="SwitcherOrigin" @onclick="CheckOrigin">
-        <svg viewBox="0 0 2084 2084" draggable="false" alt="Origin" class="icoOriginBG">
-            <use href="img/platform/origin.svg#TEXT" class="icoOriginText"></use>
-            <use href="img/platform/origin.svg#FG" class="icoOriginFG"></use>
-            <use href="img/platform/glass.svg#GLASS" class="icoGlass icoOriginGlass"></use>
-        </svg>
+    
+    <div class="acc_list_actionbar " style="position: absolute; bottom: 0">
+        <div>
+            <div class="button" id="btnSettings" @onclick="ShowSettings">
+                <svg viewBox="0 0 60 60" draggable="false" alt="Settings" class="footerIcoSettings">
+                    <use href="img/icons/ico_settings.svg#icoSettings"></use>
+                </svg>
+            </div>
+
+            <div class="button" id="btnHelp" onclick="showModal('info');">
+                <img class="footerIcoQuestion" src="img/icons/ico_question.svg" draggable="false"/>
+            </div>
+        </div>
     </div>
-    <div class="button platformIcon" id="SwitcherUbisoft" @onclick="CheckUbisoft">
-        <svg viewBox="0 0 2084 2084" draggable="false" alt="Ubisoft" class="icoUbisoftBG">
-            <use href="img/platform/ubisoft.svg#TEXT" class="icoUbisoftText"></use>
-            <use href="img/platform/ubisoft.svg#FG" class="icoUbisoftFG"></use>
-            <use href="img/platform/glass.svg#GLASS" class="icoGlass icoUbisoftGlass"></use>
-        </svg>
-    </div>
-    <div class="button platformIcon" id="SwitcherBattleNet" @onclick="CheckBattleNet">
-        <svg viewBox="0 0 2084 2084" draggable="false" alt="BattleNet" class="icoBattleNetBG">
-            <use href="img/platform/battlenet.svg#TEXT" class="icoBattleNetText"></use>
-            <use href="img/platform/battlenet.svg#FG" class="icoBattleNetFG"></use>
-            <use href="img/platform/glass.svg#GLASS" class="icoGlass icoBattleNetGlass"></use>
-        </svg>
-    </div>
-    <div class="button platformIcon" id="SwitcherEpic" @onclick="CheckEpic">
-        <svg viewBox="0 0 2084 2084" draggable="false" alt="Epic Games" class="icoEpicBG">
-            <use href="img/platform/epic.svg#TEXT" class="icoEpicText"></use>
-            <use href="img/platform/epic.svg#FG" class="icoEpicFG"></use>
-            <use href="img/platform/glass.svg#GLASS" class="icoGlass icoEpicGlass"></use>
-        </svg>
-    </div>
-    <div class="button platformIcon" id="SwitcherRiot" @onclick="CheckRiot">
-        <svg viewBox="0 0 2084 2084" draggable="false" alt="Riot Games" class="icoRiotBG">
-            <use href="img/platform/riot.svg#TEXT" class="icoRiotText"></use>
-            <use href="img/platform/riot.svg#FG" class="icoRiotFG"></use>
-            <use href="img/platform/glass.svg#GLASS" class="icoGlass icoRiotGlass"></use>
-        </svg>
+    
+}
+
+
+@*
+    I managed it to Enable/Disable through this because I dont understand the Context Menu Spaghetti code.
+    It shouldn't be to difficult to manage it in a Context menu you just need to change a bool.
+*@
+@if (_showSettings)
+{
+<div class="container mainblock">
+    <div class="row">
+        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
+            <div class="SettingsHeader">
+                <hr><span>Enable Platforms</span>
+                <hr>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="Steam" @bind="_steam.IsEnabled"><label class="form-check-label" for="Steam"></label>
+                </div><label for="Steam">Enable Steam</label>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="Origin" @bind="_origin.IsEnabled"><label class="form-check-label" for="Origin"></label>
+                </div><label for="Origin">Enable Origin</label>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="Ubisoft" @bind="_ubisoft.IsEnabled"><label class="form-check-label" for="Ubisoft"></label>
+                </div><label for="Ubisoft">Enable Ubisoft</label>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="BattleNet" @bind="_battleNet.IsEnabled"><label class="form-check-label" for="BattleNet"></label>
+                </div><label for="BattleNet">Enable BattleNet</label>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="Epic" @bind="_epic.IsEnabled"><label class="form-check-label" for="Epic"></label>
+                </div><label for="Epic">Enable Epic</label>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="Riot" @bind="_riot.IsEnabled"><label class="form-check-label" for="Riot"></label>
+                </div><label for="Riot">Enable Riot</label>
+            </div>
+
+
+            <div class="buttoncol col_close">
+                <button class="btn btn_close" type="button" @onclick="HideSettings">
+                    <span>Close</span>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
+}
 
 
 @code
 {
+    private bool _showSettings = false;
+
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
     {
         if (!GeneralFuncs.WindowSettingsValid())
         {
-            // Do something here if necessary.
-            // For now this is just being used to load settings.
+    // Do something here if necessary.
+    // For now this is just being used to load settings.
         }
 
-        // Checks whether program is running as Admin or not
+    // Checks whether program is running as Admin or not
         var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
         if (securityIdentifier is not null) AppSettings.Instance.CurrentlyElevated = securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
+        
+        
+        // This needs to be moved here to know the saved state of IsEnabled before the page renders.
+        _battleNet.LoadFromFile();
+        _epic.LoadFromFile();
+        _origin.LoadFromFile();
+        _riot.LoadFromFile();
+        _steam.LoadFromFile();
+        _ubisoft.LoadFromFile();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
