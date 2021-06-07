@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -318,8 +319,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] public Dictionary<string, string> Stylesheet { get => _instance._stylesheet; set => _instance._stylesheet = value; }
 
         // Constants
-        [JsonIgnore] public string SettingsFile = "WindowSettings.json";
-        [JsonIgnore] public string StylesheetFile = "StyleSettings.yaml";
+        [JsonIgnore] public readonly string SettingsFile = "WindowSettings.json";
+        [JsonIgnore] public readonly string StylesheetFile = "StyleSettings.yaml";
         [JsonIgnore] public bool StreamerModeTriggered;
 
         /// <summary>
@@ -345,7 +346,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 //    continue;
                 //}
 
-                switch (p.ProcessName.ToLower())
+                switch (p.ProcessName.ToLowerInvariant())
                 {
                     case "obs":
                     case "obs32":
@@ -573,7 +574,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     Directory.CreateDirectory(platformsFolder);
                     foreach (var platform in PlatformList)
                     {
-                        CreatePlatformShortcut(platformsFolder, platform, platform.ToLower());
+                        CreatePlatformShortcut(platformsFolder, platform, platform.ToLowerInvariant());
                     }
                 }
 

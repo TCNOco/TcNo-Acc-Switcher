@@ -33,8 +33,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 
         #region FACTORY
         // https://stackoverflow.com/a/32530019/5165437
-        public const int MaxIconWidth = 256;
-        public const int MaxIconHeight = 256;
+        public static readonly int MaxIconWidth = 256;
+        public static readonly int MaxIconHeight = 256;
 
         private const ushort HeaderReserved = 0;
         private const ushort HeaderIconType = 1;

@@ -74,12 +74,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public bool Initialised { get => _instance._initialised; set => _instance._initialised = value; }
 
         // Constants
-        [JsonIgnore] public string SettingsFile = "RiotSettings.json";
+        [JsonIgnore] public readonly string SettingsFile = "RiotSettings.json";
         /*
             [JsonIgnore] public string RiotImagePath = "wwwroot/img/profiles/riot/";
             [JsonIgnore] public string RiotImagePathHtml = "img/profiles/riot/";
         */
-        [JsonIgnore] public string ContextMenuJson = @"[
+        [JsonIgnore] public readonly string ContextMenuJson = @"[
               {""Swap to account"": ""swapTo(-1, event)""},
               {""Change switcher name"": ""showModal('changeUsername')""},
               {""Create Desktop Shortcut..."": ""createShortcut()""},
@@ -107,7 +107,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public void ResetSettings()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Riot.ResetSettings]");
-            _instance.WindowSize = new Point() { X = 800, Y = 450 };
+            _instance.WindowSize = new Point { X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
 

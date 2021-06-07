@@ -52,7 +52,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             }
 
             // Read lines in accounts file
-            var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config");
+            var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config").ConfigureAwait(false);
             var accountsFile = JsonConvert.DeserializeObject(file) as JObject;
             if (accountsFile == null)
             {
@@ -73,18 +73,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 try
                 {
                     if (BattleNet.Accounts.Count == 0 || (BattleNet.Accounts.All(x => x.Email != mail) && BattleNet.IgnoredAccounts.All(x => x.Email != mail) && mail != " "))
-                        BattleNet.Accounts.Add(new BattleNetSwitcherBase.BattleNetUser() { Email = mail });
+                        BattleNet.Accounts.Add(new BattleNetSwitcherBase.BattleNetUser { Email = mail });
                 }
                 catch (NullReferenceException)
                 {
-                    BattleNet.Accounts.Add(new BattleNetSwitcherBase.BattleNetUser() { Email = mail });
+                    BattleNet.Accounts.Add(new BattleNetSwitcherBase.BattleNetUser { Email = mail });
                 }
             }
 
             // Order
             if (File.Exists("LoginCache\\BattleNet\\order.json"))
             {
-                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\BattleNet\\order.json"));
+                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\BattleNet\\order.json").ConfigureAwait(false));
                 if (savedOrder != null)
                 {
                     var index = 0;
@@ -225,7 +225,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             }
             else
             {
-                account = new BattleNetSwitcherBase.BattleNetUser() {Email = " "};
+                account = new BattleNetSwitcherBase.BattleNetUser {Email = " "};
                 BattleNet.Accounts.Remove(account);
                 BattleNet.Accounts.Insert(0, account);
             }

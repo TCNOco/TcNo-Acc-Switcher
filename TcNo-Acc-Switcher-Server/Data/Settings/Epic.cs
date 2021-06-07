@@ -56,12 +56,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
 
         // Constants
-        [JsonIgnore] public string SettingsFile = "EpicSettings.json";
+        [JsonIgnore] public readonly string SettingsFile = "EpicSettings.json";
         /*
             [JsonIgnore] public string EpicImagePath = "wwwroot/img/profiles/epic/";
             [JsonIgnore] public string EpicImagePathHtml = "img/profiles/epic/";
         */
-        [JsonIgnore] public string ContextMenuJson = @"[
+        [JsonIgnore] public readonly string ContextMenuJson = @"[
               {""Swap to account"": ""swapTo(-1, event)""},
               {""Change switcher name"": ""showModal('changeUsername')""},
               {""Create Desktop Shortcut..."": ""createShortcut()""},
@@ -97,7 +97,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Epic.ResetSettings]");
             _instance.FolderPath = "C:\\Program Files (x86)\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\";
-            _instance.WindowSize = new Point() { X = 800, Y = 450 };
+            _instance.WindowSize = new Point { X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Epic");

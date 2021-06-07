@@ -80,7 +80,7 @@ namespace TcNo_Acc_Switcher_Tray
             Program.TrayUsers = TrayUser.ReadTrayUsers();
             
             var contextMenu = new ContextMenuStrip { Renderer = new ContentRenderer() };
-            contextMenu.Items.Add(new ToolStripMenuItem()
+            contextMenu.Items.Add(new ToolStripMenuItem
             {
                 Name = "START",
                 Text = @"TcNo Account Switcher",
@@ -95,7 +95,7 @@ namespace TcNo_Acc_Switcher_Tray
                 tsi.BackColor = Color.FromArgb(255, 34, 34, 34);
                 foreach (var trayUsers in value)
                 {
-                    tsi.DropDownItems.Add(new ToolStripMenuItem()
+                    tsi.DropDownItems.Add(new ToolStripMenuItem
                     {
                         Name = trayUsers.Arg,
                         Text = $@"Switch to: {trayUsers.Name}",
@@ -106,7 +106,7 @@ namespace TcNo_Acc_Switcher_Tray
                 tsi.DropDownItemClicked += contextMenu_ItemClicked;
             }
 
-            contextMenu.Items.Add(new ToolStripMenuItem()
+            contextMenu.Items.Add(new ToolStripMenuItem
             {
                 Name = "EXIT",
                 Text = "Exit",
@@ -118,7 +118,7 @@ namespace TcNo_Acc_Switcher_Tray
 
             // Initialise Tray Icon
             if (first)
-                _trayIcon = new NotifyIcon()
+                _trayIcon = new NotifyIcon
                 {
                     Icon = Resources.icon,
                     ContextMenuStrip = contextMenu,

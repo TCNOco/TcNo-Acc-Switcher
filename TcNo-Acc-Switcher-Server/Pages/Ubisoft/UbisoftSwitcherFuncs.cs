@@ -23,7 +23,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         /// Prepares HTML Elements string for insertion into the account switcher GUI.
         /// </summary>
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
-        public static async void LoadProfiles()
+        public static async Task LoadProfiles()
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.LoadProfiles] Loading Steam profiles");
@@ -36,7 +36,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             if (File.Exists("LoginCache\\Ubisoft\\order.json"))
             {
                 Dictionary<string, string> newIds = new();
-                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Ubisoft\\order.json"));
+                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Ubisoft\\order.json").ConfigureAwait(false));
                 if (savedOrder != null)
                 {
                     if (savedOrder is { Count: > 0 })

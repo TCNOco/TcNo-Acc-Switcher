@@ -28,7 +28,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         /// Prepares HTML Elements string for insertion into the account switcher GUI.
         /// </summary>
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
-        public static async void LoadProfiles()
+        public static async Task LoadProfiles()
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.LoadProfiles] Loading Epic profiles");
@@ -46,7 +46,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             // Order
             if (File.Exists("LoginCache\\Epic\\order.json"))
             {
-                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Epic\\order.json"));
+                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Epic\\order.json").ConfigureAwait(false));
                 if (savedOrder != null)
                 {
                     var index = 0;

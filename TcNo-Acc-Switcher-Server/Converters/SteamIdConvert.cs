@@ -163,7 +163,7 @@ namespace TcNo_Acc_Switcher_Server.Converters
             return $"SteamID: {Id}\nSteamID3: {Id3}\nSteamID32: {Id32}\nSteamID64: {Id64}";
         }
 
-        private class SteamIdConvertException : Exception
+        public class SteamIdConvertException : Exception
         {
             public SteamIdConvertException(string message) : base(message)
             {

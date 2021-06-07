@@ -82,11 +82,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public List<BattleNetSwitcherBase.BattleNetUser> IgnoredAccounts { get => _instance._ignoredAccounts; set => _instance._ignoredAccounts = value; }
         
         // Constants
-        [JsonIgnore] public string SettingsFile = "BattleNetSettings.json";
-        [JsonIgnore] public string StoredAccPath = "LoginCache\\BattleNet\\StoredAccounts.json";
-        [JsonIgnore] public string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
-        [JsonIgnore] public string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";
-        [JsonIgnore] public string ContextMenuJson = @"[
+        [JsonIgnore] public readonly string SettingsFile = "BattleNetSettings.json";
+        [JsonIgnore] public readonly string StoredAccPath = "LoginCache\\BattleNet\\StoredAccounts.json";
+        [JsonIgnore] public readonly string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
+        [JsonIgnore] public readonly string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";
+        [JsonIgnore] public readonly string ContextMenuJson = @"[
               {""Swap to account"": ""swapTo(-1, event)""},
               {""Set BattleTag"": ""showModal('changeUsername:BattleTag')""},
               {""Delete BattleTag"": ""forgetBattleTag()""},
@@ -131,7 +131,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\BattleNet.ResetSettings]");
             _instance.FolderPath = "C:\\Program Files (x86)\\Battle.net";
-            _instance.WindowSize = new Point() { X = 800, Y = 450 };
+            _instance.WindowSize = new Point{ X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
             _instance._overwatchMode = true;

@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -27,7 +28,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Index
     {
-        public async void Check(string platform)
+        public async Task Check(string platform)
         {
             Globals.DebugWriteLine($@"[Func:Index.Check] platform={platform}");
 

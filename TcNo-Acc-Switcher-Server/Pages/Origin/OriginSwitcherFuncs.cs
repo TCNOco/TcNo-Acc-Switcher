@@ -23,7 +23,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// Prepares HTML Elements string for insertion into the account switcher GUI.
         /// </summary>
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
-        public static async void LoadProfiles()
+        public static async Task LoadProfiles()
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.LoadProfiles] Loading Origin profiles");
@@ -41,7 +41,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             // Order
             if (File.Exists("LoginCache\\Origin\\order.json"))
             {
-                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Origin\\order.json"));
+                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Origin\\order.json").ConfigureAwait(false));
                 if (savedOrder != null)
                 {
                     var index = 0;

@@ -54,7 +54,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// Prepares HTML Elements string for insertion into the account switcher GUI.
         /// </summary>
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
-        public static async void LoadProfiles()
+        public static async Task LoadProfiles()
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.LoadProfiles] Loading Steam profiles");
             var userAccounts = GetSteamUsers(Steam.LoginUsersVdf()); 
@@ -64,12 +64,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // Order
             if (File.Exists("LoginCache\\Steam\\order.json"))
             {
-                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Steam\\order.json"));
+                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Steam\\order.json").ConfigureAwait(false));
                 if (savedOrder != null)
                 {
                     var index = 0;
                     if (savedOrder is { Count: > 0 })
-                        foreach (var acc in from i in savedOrder where userAccounts.Any(x => x.AccName == i) select userAccounts.Single(x => x.AccName == i))
+                        foreach (var acc in from i in savedOrder where userAccounts.Any(x => x.SteamId == i) select userAccounts.Single(x => x.SteamId == i))
                         {
                             userAccounts.Remove(acc);
                             userAccounts.Insert(index, acc);
@@ -132,14 +132,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             try
             {
                 var loginUsersVToken = VdfConvert.Deserialize(File.ReadAllText(loginUserPath));
-                var loginUsers = new JObject() { loginUsersVToken.ToJson() };
+                var loginUsers = new JObject { loginUsersVToken.ToJson() };
 
                 if (loginUsers["users"] != null)
                 {
                     userAccounts.AddRange(from user in loginUsers["users"]
                     let steamId = user.ToObject<JProperty>()?.Name
                     where !string.IsNullOrEmpty(steamId) && !string.IsNullOrEmpty(user.First?["AccountName"]?.ToString())
-                    select new Steamuser()
+                    select new Steamuser
                     {
                         Name = user.First?["PersonaName"]?.ToString(),
                         AccName = user.First?["AccountName"]?.ToString(),
@@ -475,7 +475,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <summary>
         /// Clears backups of forgotten accounts
         /// </summary>
-        public static async void ClearForgotten()
+        public static async Task ClearForgotten()
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.ClearForgotten] Clearing forgotten backups.");
             await GeneralInvocableFuncs.ShowModal("confirm:ClearSteamBackups:" + "Are you sure you want to clear backups of forgotten accounts?".Replace(' ', '_'));
@@ -499,7 +499,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// Clears images folder of contents, to re-download them on next load.
         /// </summary>
         /// <returns>Whether files were deleted or not</returns>
-        public static async void ClearImages()
+        public static async Task ClearImages()
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.ClearImages] Clearing images.");
             if (!Directory.Exists(Steam.SteamImagePath))
@@ -603,7 +603,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // Rather just save the users in a file, for better restoring later if necessary.
             var fFileContents = File.Exists(Steam.ForgottenFile) ? File.ReadAllText(Steam.ForgottenFile) : "";
             var fUsers = fFileContents == "" ? new List<ForgottenSteamuser>() : JsonConvert.DeserializeObject<List<ForgottenSteamuser>>(fFileContents);
-            if (fUsers!.All(x => x.SteamId != forgottenUser.SteamId)) fUsers.Add(new ForgottenSteamuser() { SteamId = forgottenUser.SteamId, Steamuser = forgottenUser }); // Add to list if user with SteamID doesn't exist in it.
+            if (fUsers!.All(x => x.SteamId != forgottenUser.SteamId)) fUsers.Add(new ForgottenSteamuser { SteamId = forgottenUser.SteamId, Steamuser = forgottenUser }); // Add to list if user with SteamID doesn't exist in it.
             File.WriteAllText(Steam.ForgottenFile, JsonConvert.SerializeObject(fUsers));
 
             // Save updated loginusers.vdf file

@@ -14,6 +14,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
@@ -208,7 +209,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         {
             Globals.DebugWriteLine(@$"[Func:Data\Settings\Shared.DesktopShortcut_Toggle] platform={platform}");
             var s = new Shortcut();
-            s.Shortcut_Platform(Shortcut.Desktop, platform, platform.ToLower());
+            s.Shortcut_Platform(Desktop, platform, platform.ToLowerInvariant());
             s.ToggleShortcut(!desktopShortcut);
         }
         #endregion

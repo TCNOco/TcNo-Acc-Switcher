@@ -31,7 +31,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         /// Prepares HTML Elements string for insertion into the account switcher GUI.
         /// </summary>
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
-        public static async void LoadProfiles()
+        public static async Task LoadProfiles()
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.LoadProfiles] Loading Riot profiles");
@@ -58,7 +58,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             // Order
             if (File.Exists("LoginCache\\Riot\\order.json"))
             {
-                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Riot\\order.json"));
+                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Riot\\order.json").ConfigureAwait(false));
                 if (savedOrder != null)
                 {
                     var index = 0;
@@ -117,7 +117,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 {
                     if (Riot.LeagueDir != null)
                     {
-                        _delayedToasts.Add(new List<string>(){ "error", "More than 1 League install found", "Duplicate Install" });
+                        _delayedToasts.Add(new List<string> { "error", "More than 1 League install found", "Duplicate Install" });
                         continue;
                     }
                     Riot.LeagueDir = key.Replace('/', '\\');
@@ -127,7 +127,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 {
                     if (Riot.RuneterraDir != null)
                     {
-                        _delayedToasts.Add(new List<string>() { "error", "More than 1 Runeterra install found", "Duplicate Install" });
+                        _delayedToasts.Add(new List<string> { "error", "More than 1 Runeterra install found", "Duplicate Install" });
                         continue;
                     }
                     Riot.RuneterraDir = key.Replace('/', '\\');
@@ -137,7 +137,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 {
                     if (Riot.ValorantDir != null)
                     {
-                        _delayedToasts.Add(new List<string>() { "error", "More than 1 VALORANT install found", "Duplicate Install" });
+                        _delayedToasts.Add(new List<string> { "error", "More than 1 VALORANT install found", "Duplicate Install" });
                         continue;
                     }
                     Riot.ValorantDir = key.Replace('/', '\\');

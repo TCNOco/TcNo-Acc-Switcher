@@ -239,7 +239,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             //Modal
             if (queries.TryGetValue("modal", out var modalValue))
-                foreach (var stringValue in modalValue) await ShowModal(Uri.UnescapeDataString(stringValue));
+                foreach (var stringValue in modalValue) await ShowModal(Uri.UnescapeDataString(stringValue)).ConfigureAwait(false);
 
             // Toast
             if (!queries.TryGetValue("toast_type", out var toastType) ||
@@ -249,7 +249,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 try
                 {
-                    await ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
+                    await ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea").ConfigureAwait(false);
                 }
                 catch (TaskCanceledException e)
                 {
@@ -303,20 +303,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static void CreateShortcut(string page, string accId, string accName, string args = "")
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
-            page = page.ToLower();
+            page = page.ToLowerInvariant();
             if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
             var platformName = $"Switch to {accName}";
 
-            if (page == "steam")
+            switch (page)
             {
-                var ePersonaState = -1;
-                if (args.Length == 2) int.TryParse(args[1].ToString(), out ePersonaState);
-                platformName = $"Switch to {accName}" + (args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "");
-            }
-
-            if (page == "riot")
-            {
-                accId = accId.Replace("#", "-");
+                case "steam":
+                {
+                    var ePersonaState = -1;
+                    if (args.Length == 2) int.TryParse(args[1].ToString(), out ePersonaState);
+                    platformName = $"Switch to {accName}" + (args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "");
+                    break;
+                }
+                case "riot":
+                    accId = accId.Replace("#", "-");
+                    break;
             }
 
             var fgImg = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\{page}\\{accId}.jpg");
@@ -342,7 +344,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiCreatePlatformShortcut] platform={platform}");
             var s = new Shortcut();
-            s.Shortcut_Platform(Shortcut.Desktop, platform, platform.ToLower());
+            s.Shortcut_Platform(Shortcut.Desktop, platform, platform.ToLowerInvariant());
             s.ToggleShortcut(true, true);
         }
     }

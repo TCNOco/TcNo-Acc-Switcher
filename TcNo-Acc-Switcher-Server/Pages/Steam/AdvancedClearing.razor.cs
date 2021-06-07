@@ -15,6 +15,7 @@
 using System;
 using System.IO;
 using System.Runtime.Versioning;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
@@ -36,9 +37,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
 
-        public const string SteamReturn = "steamAdvancedClearingAddLine";
+        public static readonly string SteamReturn = "steamAdvancedClearingAddLine";
 
-        private async void WriteLine(string text)
+        private static async Task WriteLine(string text)
         {
             Globals.DebugWriteLine($@"[Auto:Steam\AdvancedClearing.razor.cs.WriteLine] Line: {text}");
             await AppData.ActiveIJsRuntime.InvokeVoidAsync(SteamReturn, text);

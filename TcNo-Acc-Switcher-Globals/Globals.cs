@@ -11,7 +11,7 @@ namespace TcNo_Acc_Switcher_Globals
 {
     public class Globals
     {
-        public static bool VerboseMode = false;
+        public static bool VerboseMode;
         private static readonly string Version = "2021-06-06_00";
 
         public static void DebugWriteLine(string s)
@@ -83,7 +83,7 @@ namespace TcNo_Acc_Switcher_Globals
         public static void AddTrayUser(string platform, string arg, string name, int maxAccounts = 3)
         {
             var trayUsers = TrayUser.ReadTrayUsers();
-            TrayUser.AddUser(ref trayUsers, platform, new TrayUser() { Arg = arg, Name = name }, maxAccounts);
+            TrayUser.AddUser(ref trayUsers, platform, new TrayUser { Arg = arg, Name = name }, maxAccounts);
             TrayUser.SaveUsers(trayUsers);
         }
 
@@ -119,7 +119,7 @@ namespace TcNo_Acc_Switcher_Globals
         [DllImport("user32.dll")]
         static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
         private const int GwlExStyle = -20;
-        public const int WsExAppWindow = 0x00040000, WsExToolWindow = 0x00000080;
+        public static readonly int WsExAppWindow = 0x00040000, WsExToolWindow = 0x00000080;
 
         [DllImport("user32")]
         private static extern bool SetForegroundWindow(IntPtr hwnd);

@@ -42,7 +42,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         // BUTTON: Check account VAC status
-        public static async void ClearVacStatus()
+        public static async Task ClearVacStatus()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
             if (SteamSwitcherFuncs.DeleteVacCacheFile())

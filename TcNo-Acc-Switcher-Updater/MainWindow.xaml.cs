@@ -51,9 +51,9 @@ namespace TcNo_Acc_Switcher_Updater
         private static Dictionary<string, string> _allNewDict = new();
         private static List<string> _patchList = new();
 
-        public static bool VerifyAndClose = false;
-        public static bool QueueHashList = false;
-        public static bool QueueCreateUpdate = false;
+        public static bool VerifyAndClose;
+        public static bool QueueHashList;
+        public static bool QueueCreateUpdate;
 
         private string _currentVersion = "0";
         private string _latestVersion = "";
@@ -86,7 +86,6 @@ namespace TcNo_Acc_Switcher_Updater
         private void WriteLine(string line, string lineBreak = "\n")
         {
             Dispatcher.BeginInvoke(new Action(() => {
-                Console.WriteLine(line);
                 LogBox.Text += lineBreak + line;
                 LogBox.ScrollToEnd();
             }), DispatcherPriority.Normal);
@@ -94,14 +93,12 @@ namespace TcNo_Acc_Switcher_Updater
         private void SetStatus(string s)
         {
             Dispatcher.BeginInvoke(new Action(() => {
-                Console.WriteLine("Status: " + s);
                 StatusLabel.Content = s;
             }), DispatcherPriority.Normal);
         }
         private void SetStatusAndLog(string s, string lineBreak ="\n")
         {
             Dispatcher.BeginInvoke(new Action(() => {
-                Console.WriteLine("Status/Log: " + s);
                 StatusLabel.Content = s;
                 LogBox.Text += lineBreak + s;
                 LogBox.ScrollToEnd();
@@ -215,7 +212,7 @@ namespace TcNo_Acc_Switcher_Updater
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("Can't find or properly assign colors from StyleSettings.json");
+                        //
                     }
                 }), DispatcherPriority.Normal);
 
@@ -396,7 +393,6 @@ namespace TcNo_Acc_Switcher_Updater
             WriteLine("Downloading latest hash list... ");
             const string hashFilePath = "hashes.json";
             client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
-            Console.WriteLine("Done.");
 
             var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
             if (verifyDictionary != null)
@@ -520,7 +516,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// <returns></returns>
         private static string FileSizeString(double len)
         {
-            if (len == 0) return "0 bytes";
+            if (len < 0.001) return "0 bytes";
             string[] sizes = { "B", "KB", "MB", "GB" };
             var n2 = (int)Math.Log10(len) / 3;
             var n3 = len / Math.Pow(1e3, n2);
@@ -533,7 +529,6 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="currentDir"></param>
         private void CloseIfRunning(string currentDir)
         {
-            Console.WriteLine("Checking for running instances of TcNo Account Switcher");
             foreach (var exe in Directory.GetFiles(currentDir, "*.exe", SearchOption.AllDirectories))
             {
                 if (exe.Contains(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly()?.Location)!)) continue;
@@ -776,7 +771,6 @@ namespace TcNo_Acc_Switcher_Updater
                 var patchFileOutput = Path.Join(outputFolder, "patches", differentFile);
                 Directory.CreateDirectory(Path.GetDirectoryName(patchFileOutput)!);
                 DoEncode(oldFileInput, newFileInput, patchFileOutput);
-                Console.WriteLine("Created patch: " + patchFileOutput);
             }
         }
 
@@ -829,7 +823,6 @@ namespace TcNo_Acc_Switcher_Updater
                 // Foreach file in directory
                 foreach (var f in Directory.GetFiles(sDir))
                 {
-                    Console.WriteLine(f + "|");
                     dict.Add(f.Remove(0, f.Split("\\")[0].Length + 1), GetFileMd5(f));
                 }
 
@@ -863,7 +856,6 @@ namespace TcNo_Acc_Switcher_Updater
             if (result != VCDiffResult.SUCCESS)
             {
                 //error was not able to encode properly
-                Console.WriteLine("oops :(");
             }
         }
 
@@ -886,7 +878,6 @@ namespace TcNo_Acc_Switcher_Updater
             if (result != VCDiffResult.SUCCESS)
             {
                 //error decoding
-                Console.WriteLine(result + " - " + bytesWritten);
             }
 
             // if success bytesWritten will contain the number of bytes that were decoded

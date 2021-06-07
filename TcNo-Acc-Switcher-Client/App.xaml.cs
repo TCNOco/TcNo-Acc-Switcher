@@ -24,6 +24,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shapes;
@@ -261,7 +262,7 @@ namespace TcNo_Acc_Switcher_Client
         /// <summary>
         /// Uploads CrashLogs and log.txt if crashed.
         /// </summary>
-        public static async void UploadLogs()
+        public static async Task UploadLogs()
         {
             if (!Directory.Exists("CrashLogs")) return;
             if (!Directory.Exists("CrashLogs\\Submitted")) Directory.CreateDirectory("CrashLogs\\Submitted");
@@ -273,7 +274,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 try
                 {
-                    combinedCrashLogs += await File.ReadAllTextAsync(file);
+                    combinedCrashLogs += await File.ReadAllTextAsync(file).ConfigureAwait(false);
                     File.Move(file, $"CrashLogs\\Submitted\\{Path.GetFileName(file)}");
                 }
                 catch (Exception e)
@@ -290,7 +291,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 try
                 {
-                    postData.Add("logs", Compress(await File.ReadAllTextAsync("log.txt")));
+                    postData.Add("logs", Compress(await File.ReadAllTextAsync("log.txt").ConfigureAwait(false)));
 
                 }
                 catch (Exception e)
@@ -310,7 +311,7 @@ namespace TcNo_Acc_Switcher_Client
             }
             catch (Exception e)
             {
-                await File.WriteAllTextAsync($"CrashLogs\\CrashLogUploadErr-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt", e.ToString());
+                await File.WriteAllTextAsync($"CrashLogs\\CrashLogUploadErr-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt", e.ToString()).ConfigureAwait(false);
             }
             //var response = Client.PostAsync("https://tcno.co/Projects/AccSwitcher/api/crash/index.php", content);
             //var responseString = await response.Result.Content.ReadAsStringAsync();
@@ -319,7 +320,7 @@ namespace TcNo_Acc_Switcher_Client
         public static string Compress(string text)
         {
             //https://www.neowin.net/forum/topic/994146-c-help-php-compatible-string-gzip/
-            byte[] buffer = Encoding.UTF8.GetBytes(text);
+            var buffer = Encoding.UTF8.GetBytes(text);
 
             var memoryStream = new MemoryStream();
             using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
@@ -420,14 +421,14 @@ namespace TcNo_Acc_Switcher_Client
             var width = e.GetPosition(mainWindow).X;
             var height = e.GetPosition(mainWindow).Y;
             senderRect.CaptureMouse();
-            if (senderRect.Name.ToLower().Contains("right"))
+            if (senderRect.Name.ToLowerInvariant().Contains("right"))
             {
                 width += 5;
                 if (width > 0)
                     if (mainWindow != null)
                         mainWindow.Width = width;
             }
-            if (senderRect.Name.ToLower().Contains("left"))
+            if (senderRect.Name.ToLowerInvariant().Contains("left"))
             {
                 width -= 5;
                 if (mainWindow != null)
@@ -440,7 +441,7 @@ namespace TcNo_Acc_Switcher_Client
                     }
                 }
             }
-            if (senderRect.Name.ToLower().Contains("bottom"))
+            if (senderRect.Name.ToLowerInvariant().Contains("bottom"))
             {
                 height += 5;
                 if (height > 0)
@@ -448,7 +449,7 @@ namespace TcNo_Acc_Switcher_Client
                         mainWindow.Height = height;
             }
 
-            if (!senderRect.Name.ToLower().Contains("top")) return;
+            if (!senderRect.Name.ToLowerInvariant().Contains("top")) return;
             height -= 5;
             if (mainWindow == null) return;
             mainWindow.Top += height;

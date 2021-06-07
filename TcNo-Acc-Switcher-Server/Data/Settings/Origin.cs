@@ -58,12 +58,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
 
         // Constants
-        [JsonIgnore] public string SettingsFile = "OriginSettings.json";
+        [JsonIgnore] public readonly string SettingsFile = "OriginSettings.json";
         /*
         [JsonIgnore] public string OriginImagePath = "wwwroot/img/profiles/origin/";
         [JsonIgnore] public string OriginImagePathHtml = "img/profiles/origin/";
         */
-        [JsonIgnore] public string ContextMenuJson = @"[
+        [JsonIgnore] public readonly string ContextMenuJson = @"[
               {""Swap to account"": ""swapTo(-1, event)""},
               {""Change switcher name"": ""showModal('changeUsername')""},
               {""Create Desktop Shortcut..."": ""createShortcut()""},
@@ -99,7 +99,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Origin.ResetSettings]");
             _instance.FolderPath = "C:\\Program Files (x86)\\Origin\\";
-            _instance.WindowSize = new Point() { X = 800, Y = 450 };
+            _instance.WindowSize = new Point { X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Origin");

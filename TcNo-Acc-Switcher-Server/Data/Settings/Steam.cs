@@ -71,12 +71,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
 
         // Constants
-        [JsonIgnore] public string VacCacheFile = "LoginCache/Steam/VACCache/SteamVACCache.json";
-        [JsonIgnore] public string SettingsFile = "SteamSettings.json";
-        [JsonIgnore] public string ForgottenFile = "SteamForgotten.json";
-        [JsonIgnore] public string SteamImagePath = "wwwroot/img/profiles/steam/";
-        [JsonIgnore] public string SteamImagePathHtml = "img/profiles/steam/";
-        [JsonIgnore] public string ContextMenuJson = @"[
+        [JsonIgnore] public readonly string VacCacheFile = "LoginCache/Steam/VACCache/SteamVACCache.json";
+        [JsonIgnore] public readonly string SettingsFile = "SteamSettings.json";
+        [JsonIgnore] public readonly string ForgottenFile = "SteamForgotten.json";
+        [JsonIgnore] public readonly string SteamImagePath = "wwwroot/img/profiles/steam/";
+        [JsonIgnore] public readonly string SteamImagePathHtml = "img/profiles/steam/";
+        [JsonIgnore] public readonly string ContextMenuJson = @"[
               {""Swap to account"": ""swapTo(-1, event)""},
               {""Login as..."": [
                 {""Invisible"": ""swapTo(7, event)""},
@@ -128,7 +128,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.ResetSettings]");
             _instance.ForgetAccountEnabled = false;
             _instance.FolderPath = "C:\\Program Files (x86)\\Steam\\";
-            _instance.WindowSize = new Point() {X = 800, Y = 450};
+            _instance.WindowSize = new Point {X = 800, Y = 450};
             _instance.Admin = false;
             _instance.ShowSteamId = false;
             _instance.ShowVac = true;
