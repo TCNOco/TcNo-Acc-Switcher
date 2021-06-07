@@ -109,7 +109,7 @@
         {
             if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered) await _jsRuntime.InvokeVoidAsync("window.notification.new", new { type = "info", title = "Streamer mode", message = "Private info is hidden! - See settings", renderTo = "toastarea", duration = 5000 });// Show notification that streamer mode was enabled.
 
-            RiotSwitcherFuncs.LoadProfiles();
+            await RiotSwitcherFuncs.LoadProfiles();
             _riot.SaveSettings(!File.Exists(_riot.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialised (adds missing settings when true)
 
             await GeneralInvocableFuncs.HandleQueries();
@@ -120,7 +120,7 @@
             }
             catch (InvalidOperationException)
             {
-    //
+                //
             }
         }
     }

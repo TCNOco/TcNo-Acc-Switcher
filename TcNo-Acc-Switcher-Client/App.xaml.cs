@@ -44,10 +44,12 @@ namespace TcNo_Acc_Switcher_Client
     /// </summary>
     public partial class App
     {
-        private bool DebugMode = true;
+#pragma warning disable CA2211 // Non-constant fields should not be visible - Accessed from App.xaml.cs
         public static string StartPage = "";
+#pragma warning restore CA2211 // Non-constant fields should not be visible
         private static readonly HttpClient Client = new();
 
+#if DEBUG
         internal static class NativeMethods
         {
             // http://msdn.microsoft.com/en-us/library/ms681944(VS.85).aspx
@@ -58,9 +60,9 @@ namespace TcNo_Acc_Switcher_Client
             [DllImport("kernel32.dll", SetLastError = true)]
             internal static extern int FreeConsole();
             [DllImport("kernel32.dll")]
-            static extern IntPtr GetConsoleWindow();
-            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-            static extern bool SetWindowText(IntPtr hwnd, String lpString);
+            private static extern IntPtr GetConsoleWindow();
+            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+            private static extern bool SetWindowText(IntPtr hwnd, string lpString);
 
             public static void SetWindowText(string text)
             {
@@ -72,9 +74,15 @@ namespace TcNo_Acc_Switcher_Client
 
         protected override void OnExit(ExitEventArgs e)
         {
-            NativeMethods.FreeConsole();
+            _ = NativeMethods.FreeConsole();
             Mutex.ReleaseMutex();
         }
+#else
+        protected override void OnExit(ExitEventArgs e)
+        {
+            Mutex.ReleaseMutex();
+        }
+#endif
 
         private static readonly Mutex Mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
         [STAThread]
@@ -86,12 +94,9 @@ namespace TcNo_Acc_Switcher_Client
             // Upload crash logs if any, before starting program
             UploadLogs();
 #if DEBUG
-            if (DebugMode)
-            {
-                NativeMethods.AllocConsole();
-                NativeMethods.SetWindowText("Debug console");
-                Globals.WriteToLog("Debug Console started");
-            }
+            _ = NativeMethods.AllocConsole();
+            NativeMethods.SetWindowText("Debug console");
+            Globals.WriteToLog("Debug Console started");
 #endif
             Globals.ClearLogs();
 
@@ -101,7 +106,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 if (e.Args[i]?[0] == '+')
                 {
-                    var command = e.Args[i].Substring(1).Split(':'); // Drop '+' and split
+                    var command = e.Args[i][1..].Split(':'); // Drop '+' and split
                     var platform = command[0];
                     var account = command[1];
                     
@@ -111,7 +116,7 @@ namespace TcNo_Acc_Switcher_Client
                             // Battlenet format: +b:<email>
                             Globals.WriteToLog("Battle.net switch requested");
                             TcNo_Acc_Switcher_Server.Data.Settings.BattleNet.Instance.LoadFromFile();
-                            TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);
+                            _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);
                             break;
                         case "e": // Epic Games
                             // Epic Games format: +e:<username>
@@ -312,11 +317,11 @@ namespace TcNo_Acc_Switcher_Client
         {
             try
             {
-            #if DEBUG
+#if DEBUG
                 var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + Globals.Version));
-            #else
-                var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?v=" + AppSettings.Instance.Version));
-            #endif
+#else
+                var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?v=" + Globals.Version));
+#endif
                 if (CheckLatest(latestVersion)) return;
                 // Show notification
                 AppSettings.Instance.UpdateAvailable = true;
@@ -364,7 +369,7 @@ namespace TcNo_Acc_Switcher_Client
         }
 
 
-        #region ResizeWindows
+#region ResizeWindows
         // https://stackoverflow.com/a/27157947/5165437
         private bool _resizeInProcess;
         private void Resize_Init(object sender, MouseButtonEventArgs e)
@@ -427,6 +432,6 @@ namespace TcNo_Acc_Switcher_Client
                 mainWindow.Height = height;
             }
         }
-        #endregion
+#endregion
     }
 }

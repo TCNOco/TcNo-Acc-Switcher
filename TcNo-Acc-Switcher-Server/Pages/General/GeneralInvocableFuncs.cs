@@ -312,7 +312,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "steam":
                 {
                     var ePersonaState = -1;
-                    if (args.Length == 2) int.TryParse(args[1].ToString(), out ePersonaState);
+                    if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
                     platformName = $"Switch to {accName}" + (args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "");
                     break;
                 }

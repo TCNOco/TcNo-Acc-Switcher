@@ -51,9 +51,11 @@ namespace TcNo_Acc_Switcher_Updater
         private static Dictionary<string, string> _allNewDict = new();
         private static List<string> _patchList = new();
 
+#pragma warning disable CA2211 // Non-constant fields should not be visible - Set as launch parameter
         public static bool VerifyAndClose;
         public static bool QueueHashList;
         public static bool QueueCreateUpdate;
+#pragma warning restore CA2211 // Non-constant fields should not be visible
 
         private string _currentVersion = "0";
         private string _latestVersion = "";
@@ -71,8 +73,8 @@ namespace TcNo_Acc_Switcher_Updater
         private static void ExitProgram(object sender, RoutedEventArgs e) => Environment.Exit(0);
         
         // Window interaction
-        private void BtnExit(object sender, RoutedEventArgs e) => WindowHandling.BtnExit(sender, e, this);
-        private void BtnMinimize(object sender, RoutedEventArgs e) => WindowHandling.BtnMinimize(sender, e, this);
+        private void BtnExit(object sender, RoutedEventArgs e) => WindowHandling.BtnExit(this);
+        private void BtnMinimize(object sender, RoutedEventArgs e) => WindowHandling.BtnMinimize(this);
         private void DragWindow(object sender, MouseButtonEventArgs e) => WindowHandling.DragWindow(sender, e, this);
         private void Window_Closed(object sender, EventArgs e) => Environment.Exit(1);
         #endregion
@@ -210,7 +212,7 @@ namespace TcNo_Acc_Switcher_Updater
                         Resources["WindowControlsCloseBackground"] = windowControlsCloseBackground;
                         Resources["WindowControlsCloseBackgroundActive"] = windowControlsCloseBackgroundActive;
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         //
                     }
@@ -845,7 +847,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="oldFile">Path to old file</param>
         /// <param name="newFile">Path to new file</param>
         /// <param name="patchFileOutput">Output of patch file (Differences encoded)</param>
-        private void DoEncode(string oldFile, string newFile, string patchFileOutput)
+        private static void DoEncode(string oldFile, string newFile, string patchFileOutput)
         {
             using FileStream output = new(patchFileOutput, FileMode.Create, FileAccess.Write);
             using FileStream dict = new(oldFile, FileMode.Open, FileAccess.Read);
@@ -891,15 +893,15 @@ namespace TcNo_Acc_Switcher_Updater
     /// </summary>
     public class WindowHandling
     {
-        public static void BtnMinimize(object sender, RoutedEventArgs e, Window window)
+        public static void BtnMinimize(Window window)
         {
             window.WindowState = WindowState.Minimized;
         }
-        public static void BtnExit(object sender, RoutedEventArgs e, Window window)
+        public static void BtnExit(Window window)
         {
             window.Close();
         }
-        public static void DragWindow(object sender, MouseButtonEventArgs e, Window window)
+        public static void DragWindow(object _, MouseButtonEventArgs e, Window window)
         {
             if (e.LeftButton != MouseButtonState.Pressed) return;
             if (e.ClickCount == 2)

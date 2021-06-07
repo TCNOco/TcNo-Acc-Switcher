@@ -65,5 +65,5 @@
         _navManager.NavigateTo("/");
     }
 
-    public void ShowPlatform(string item) => AppSettings.ShowPlatform(item);
+    public async Task ShowPlatform(string item) => await AppSettings.ShowPlatform(item);
 }

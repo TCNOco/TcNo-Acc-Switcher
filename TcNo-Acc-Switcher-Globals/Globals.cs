@@ -12,7 +12,9 @@ namespace TcNo_Acc_Switcher_Globals
 {
     public class Globals
     {
+#pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
         public static bool VerboseMode;
+#pragma warning restore CA2211 // Non-constant fields should not be visible
         public static readonly string Version = "2021-06-07_00";
 
         public static void DebugWriteLine(string s)
@@ -232,18 +234,18 @@ namespace TcNo_Acc_Switcher_Globals
             public int bottom;
         }
 
-        [DllImport("user32.dll")]
-        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
-        [DllImport("user32.dll")]
-        public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass,
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass,
             string lpszWindow);
 
         [DllImport("user32.dll")]
-        public static extern bool GetClientRect(IntPtr hWnd, out Rect lpRect);
+        private static extern bool GetClientRect(IntPtr hWnd, out Rect lpRect);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
+        private static extern IntPtr SendMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
 
         public static void RefreshTrayArea()
         {

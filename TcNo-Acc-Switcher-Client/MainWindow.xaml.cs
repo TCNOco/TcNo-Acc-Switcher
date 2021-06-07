@@ -126,7 +126,7 @@ namespace TcNo_Acc_Switcher_Client
                 }
                 catch (Exception exception)
                 {
-                    Globals.WriteToLog(exception);
+                    Globals.WriteToLog(exception.ToString());
                 }
 #endif
             }
@@ -278,7 +278,7 @@ namespace TcNo_Acc_Switcher_Client
 
         }
 
-        private void RestartAsAdmin(string args = "")
+        private static void RestartAsAdmin(string args = "")
         {
             var proc = new ProcessStartInfo
             {

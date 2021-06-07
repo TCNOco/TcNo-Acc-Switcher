@@ -108,27 +108,27 @@ namespace TcNo_Acc_Switcher_Server.Data
         private string _selectedStylesheet;
         [JsonIgnore] public string SelectedStylesheet { get => _instance._selectedStylesheet; set => _instance._selectedStylesheet = value; }
 
-        [JsonIgnore] public static List<string> PlatformList = new(){ "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot" };
+        [JsonIgnore] public static readonly string[] PlatformList = { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot" };
 
         [JsonIgnore] public string PlatformContextMenu = @"[
               {""Hide platform"": ""hidePlatform()""},
               {""Create Desktop Shortcut"": ""createPlatformShortcut()""}
             ]";
         [JSInvokable]
-        public static void HidePlatform(string platform)
+        public static async System.Threading.Tasks.Task HidePlatform(string platform)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.HidePlatform]");
             _instance.DisabledPlatforms.Add(platform);
             _instance.SaveSettings();
-            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
         }
 
-        public static void ShowPlatform(string platform)
+        public static async System.Threading.Tasks.Task ShowPlatform(string platform)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.ShowPlatform]");
             _instance.DisabledPlatforms.Remove(platform);
             _instance.SaveSettings();
-            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
         }
 
 
@@ -403,11 +403,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Swaps in a requested stylesheet, and loads styles from file.
         /// </summary>
         /// <param name="swapTo">Stylesheet name (without .json) to copy and load</param>
-        public void SwapStylesheet(string swapTo)
+        public async System.Threading.Tasks.Task SwapStylesheet(string swapTo)
         {
             File.Copy($"themes\\{swapTo.Replace(' ', '_')}.yaml", StylesheetFile, true);
             LoadStylesheetFromFile();
-            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
         }
 
         /// <summary>
@@ -520,7 +520,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 var start = list[i].LastIndexOf("\\", StringComparison.Ordinal) + 1;
                 var end = list[i].IndexOf(".yaml", StringComparison.OrdinalIgnoreCase);
                 if (end == -1) end = 0;
-                list[i] = list[i].Substring(start, end - start).Replace('_', ' ');
+                list[i] = list[i][start..end].Replace('_', ' ');
             }
             return list;
         }

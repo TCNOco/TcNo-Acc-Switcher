@@ -53,8 +53,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
             // Read lines in accounts file
             var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config").ConfigureAwait(false);
-            var accountsFile = JsonConvert.DeserializeObject(file) as JObject;
-            if (accountsFile == null)
+            if (JsonConvert.DeserializeObject(file) is not JObject accountsFile)
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", "Could not load accounts file for Blizzard (Battle.net.config file corrupt)", "toastarea");
                 return;
@@ -125,11 +124,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                 await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list", element + "</div>");
             }
-            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
             if(BattleNet.OverwatchMode)
-                InitOverwatchMode();
+                await InitOverwatchMode();
         }
 
 
@@ -141,7 +140,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             _battleNetRoaming = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battle.net");
         }
 
-        public static void InitOverwatchMode()
+        public static async Task InitOverwatchMode()
         {
             if (!BattleNet.OverwatchMode) return;
             var accountFetched = false;
@@ -152,7 +151,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             }
 
             if (!accountFetched) return;
-            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
             BattleNet.SaveAccounts();
         }
 
@@ -192,19 +191,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// Restart Battle.net with a new account selected.
         /// </summary>
         /// <param name="email">User's account email</param>
-        public static void SwapBattleNetAccounts(string email)
+        public static async Task SwapBattleNetAccounts(string email)
         {
             Globals.DebugWriteLine($@"[Func:BattleNet\BattleNetSwitcherFuncs.SwapBattleNetAccounts] Swapping to: hidden.");
             LoadImportantData();
             if (BattleNet.Accounts.Count == 0) BattleNet.LoadAccounts();
 
-            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting BattleNet");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting BattleNet");
             if (!CloseBattleNet()) return;
             
             // Load settings into JObject
-            var file = File.ReadAllText(_battleNetRoaming + "\\Battle.net.config");
-            var jObject = JsonConvert.DeserializeObject(file) as JObject;
-            if (jObject == null)
+            var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config").ConfigureAwait(false);
+            if (JsonConvert.DeserializeObject(file) is not JObject jObject)
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", "Could not swap accounts (Battle.net.config file corrupt)", "toastarea");
                 return;

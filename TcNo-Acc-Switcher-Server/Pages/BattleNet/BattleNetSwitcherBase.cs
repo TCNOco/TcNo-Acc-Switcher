@@ -19,6 +19,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
@@ -34,19 +35,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// </summary>
         /// <param name="accName">Requested account's Login Username</param>
         [JSInvokable]
-        public static void SwapToBattleNet(string accName = "")
+        public static async Task SwapToBattleNet(string accName = "")
         {
             Globals.DebugWriteLine($@"[JSInvoke:BattleNet\BattleNetSwitcherBase.SwapToBattleNet] accName:hidden");
-            BattleNetSwitcherFuncs.SwapBattleNetAccounts(accName);
+            await BattleNetSwitcherFuncs.SwapBattleNetAccounts(accName);
         }
         /// <summary>
         /// JS function handler for swapping to a new BattleNet account (No inputs)
         /// </summary>
         [JSInvokable]
-        public static void NewLogin_BattleNet()
+        public static async Task NewLogin_BattleNet()
         {
             Globals.DebugWriteLine(@"[JSInvoke:BattleNet\BattleNetSwitcherBase.NewLogin_BattleNet]");
-            BattleNetSwitcherFuncs.SwapBattleNetAccounts("");
+            await BattleNetSwitcherFuncs.SwapBattleNetAccounts("");
         }
 
 

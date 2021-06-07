@@ -63,7 +63,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void ClearImages()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearImages]");
-            SteamSwitcherFuncs.ClearImages(); // ADD A TOAST TO THIS
+            _ = SteamSwitcherFuncs.ClearImages(); // ADD A TOAST TO THIS
         }
         #endregion
 

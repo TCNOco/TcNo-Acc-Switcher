@@ -73,7 +73,7 @@
         {
             if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered) await _jsRuntime.InvokeVoidAsync("window.notification.new", new { type = "info", title = "Streamer mode", message = "Private info is hidden! - See settings", renderTo = "toastarea", duration = 5000 });// Show notification that streamer mode was enabled.
 
-            SteamSwitcherFuncs.LoadProfiles();
+            await SteamSwitcherFuncs.LoadProfiles();
             _steam.SaveSettings(!File.Exists(_steam.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
 
             await GeneralInvocableFuncs.HandleQueries();
@@ -84,7 +84,7 @@
             }
             catch (InvalidOperationException)
             {
-    //
+                //
             }
         }
     }
