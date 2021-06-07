@@ -15,7 +15,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
         public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-        public static readonly string Version = "2021-06-07_00";
+        public static readonly string Version = "2021-06-07_01";
 
         public static void DebugWriteLine(string s)
         {
@@ -28,7 +28,22 @@ namespace TcNo_Acc_Switcher_Globals
         /// </summary>
         public static void WriteToLog(string s)
         {
-            File.AppendAllText("log.txt", s + Environment.NewLine);
+            var attempts = 0;
+            while (attempts <= 30) // Up to 3 seconds
+            {
+                try
+                {
+                    File.AppendAllText("log.txt", s + Environment.NewLine);
+                    break;
+                }
+                catch (IOException)
+                {
+                    if (attempts == 5)
+                        throw;
+                    attempts++;
+                    System.Threading.Thread.Sleep(100);
+                }
+            }
             Console.WriteLine(s);
         }
 
