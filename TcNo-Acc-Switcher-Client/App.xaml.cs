@@ -76,15 +76,7 @@ namespace TcNo_Acc_Switcher_Client
             Mutex.ReleaseMutex();
         }
 
-        private static Random random = new Random();
-        public static string RandomString(int length)
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-
-        static readonly Mutex Mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
+        private static readonly Mutex Mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
         [STAThread]
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -100,30 +92,8 @@ namespace TcNo_Acc_Switcher_Client
                 NativeMethods.SetWindowText("Debug console");
                 Globals.WriteToLog("Debug Console started");
             }
-#else
-            // Logging:
-            // Redirects all Globals.WriteToLogs to Log.txt, which cleans itself every launch.
-            // -- Might change this later to actually write in that file, rather than here ~
-            StreamWriter sw = null;
-            var attempts = 0;
-            while (attempts < 5) // Attempts 4 times
-            {
-                try
-                {
-                    attempts++;
-                    sw = new StreamWriter(new FileStream($"log${(attempts > 0 ? RandomString(5) : "")}.txt", FileMode.Create)) { AutoFlush = true };
-                }
-                catch (Exception ex)
-                {
-                    Globals.WriteToLog(ex);
-                    throw;
-                }
-            }
-            Console.SetOut(sw);
-            Console.SetError(sw);
 #endif
-
-
+            Globals.ClearLogs();
 
             base.OnStartup(e);
             var quitArg = false;
@@ -262,7 +232,7 @@ namespace TcNo_Acc_Switcher_Client
         /// <summary>
         /// Uploads CrashLogs and log.txt if crashed.
         /// </summary>
-        public static async Task UploadLogs()
+        public static void UploadLogs()
         {
             if (!Directory.Exists("CrashLogs")) return;
             if (!Directory.Exists("CrashLogs\\Submitted")) Directory.CreateDirectory("CrashLogs\\Submitted");
@@ -274,7 +244,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 try
                 {
-                    combinedCrashLogs += await File.ReadAllTextAsync(file).ConfigureAwait(false);
+                    combinedCrashLogs += File.ReadAllText(file);
                     File.Move(file, $"CrashLogs\\Submitted\\{Path.GetFileName(file)}");
                 }
                 catch (Exception e)
@@ -291,7 +261,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 try
                 {
-                    postData.Add("logs", Compress(await File.ReadAllTextAsync("log.txt").ConfigureAwait(false)));
+                    postData.Add("logs", Compress(File.ReadAllText("log.txt")));
 
                 }
                 catch (Exception e)
@@ -307,14 +277,12 @@ namespace TcNo_Acc_Switcher_Client
             try
             {
                 HttpContent content = new FormUrlEncodedContent(postData);
-                _ = await Client.PostAsync("https://tcno.co/Projects/AccSwitcher/api/crash/index.php", content);
+                _ = Client.PostAsync("https://tcno.co/Projects/AccSwitcher/api/crash/index.php", content);
             }
             catch (Exception e)
             {
-                await File.WriteAllTextAsync($"CrashLogs\\CrashLogUploadErr-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt", e.ToString()).ConfigureAwait(false);
+                File.WriteAllText($"CrashLogs\\CrashLogUploadErr-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt", e.ToString());
             }
-            //var response = Client.PostAsync("https://tcno.co/Projects/AccSwitcher/api/crash/index.php", content);
-            //var responseString = await response.Result.Content.ReadAsStringAsync();
         }
 
         public static string Compress(string text)
@@ -345,7 +313,7 @@ namespace TcNo_Acc_Switcher_Client
             try
             {
             #if DEBUG
-                var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + AppSettings.Instance.Version));
+                var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + Globals.Version));
             #else
                 var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?v=" + AppSettings.Instance.Version));
             #endif
@@ -383,7 +351,7 @@ namespace TcNo_Acc_Switcher_Client
             latest = latest.Replace("\r", "").Replace("\n", "");
             if (DateTime.TryParseExact(latest, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var latestDate))
             {
-                if (DateTime.TryParseExact(AppSettings.Instance.Version, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var currentDate))
+                if (DateTime.TryParseExact(Globals.Version, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var currentDate))
                 {
                     if (latestDate.Equals(currentDate) || currentDate.Subtract(latestDate) > TimeSpan.Zero) return true;
                 }

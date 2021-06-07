@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 
@@ -12,7 +13,7 @@ namespace TcNo_Acc_Switcher_Globals
     public class Globals
     {
         public static bool VerboseMode;
-        private static readonly string Version = "2021-06-06_00";
+        public static readonly string Version = "2021-06-07_00";
 
         public static void DebugWriteLine(string s)
         {
@@ -20,11 +21,49 @@ namespace TcNo_Acc_Switcher_Globals
             if (VerboseMode) Console.WriteLine(s);
         }
 
+        /// <summary>
+        /// Append line to log file
+        /// </summary>
         public static void WriteToLog(string s)
         {
+            File.AppendAllText("log.txt", s + Environment.NewLine);
             Console.WriteLine(s);
         }
-        
+
+        /// <summary>
+        /// Clear log files & Combine other log files.
+        /// </summary>
+        public static void ClearLogs()
+        {
+            // Clear original log file
+            if (File.Exists("log.txt")) File.Delete("log.txt");
+            // Check for other log files. Combine them and delete them.
+            var filepath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            if (filepath == null) return;
+            var d = new DirectoryInfo(filepath);
+            var appendText = new List<string>();
+            var oldFilesFound = false;
+            foreach (var file in d.GetFiles("log*.txt"))
+            {
+                if (appendText.Count == 0) appendText.Add(Environment.NewLine + "-------- OLD --------");
+                try
+                {
+                    appendText.AddRange(File.ReadAllLines(file.FullName));
+                    File.Delete(file.FullName);
+                    oldFilesFound = true;
+                }
+                catch (Exception)
+                {
+                    //
+                }
+            }
+
+            if (oldFilesFound) appendText.Add(Environment.NewLine + "-------- END OF OLD --------");
+
+            // Insert their contents into the actual log file
+            File.WriteAllLines("log.txt", appendText);
+        }
+
         /// <summary>
         /// Exception handling for all programs
         /// </summary>

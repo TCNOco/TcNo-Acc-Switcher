@@ -50,7 +50,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 _windowTitle = value;
                 NotifyDataChanged();
-                Globals.WriteToLog("\n\nWindow Title changed to: " + _windowTitle);
+                Globals.WriteToLog($"{Environment.NewLine}Window Title changed to: {_windowTitle}");
             }
         }
 

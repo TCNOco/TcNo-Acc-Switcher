@@ -182,7 +182,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
 
         [JSInvokable]
-        public static Task<string> GiGetVersion() => Task.FromResult(AppSettings.Instance.Version);
+        public static Task<string> GiGetVersion() => Task.FromResult(Globals.Version);
 
         /// <summary>
         /// Opens a link in user's browser through Shell
