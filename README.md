@@ -93,7 +93,7 @@ After installing using the installer, or downloading your .zip (portable version
 
 #### Disclaimer
 
-```md
+```
 All trademarks and materials are property of their respective owners and their licensors. This project is not affiliated
 with Battle.net or Blizzard Entertainment Inc, Epic Games Inc or the Epic Games Launcher, Origin or Electronic Arts Inc,
 League of Legends or Legends of Runeterra or Valorant or Riot Games Inc, Steam or Valve Corporation, Ubisoft Connect or
