@@ -620,8 +620,6 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="procName">Process name to kill (Will be used as {name}*)</param>
         private void KillProcess(string procName)
         {
-
-            var outputText = "";
             var startInfo = new ProcessStartInfo
             {
                 UseShellExecute = false,
@@ -633,7 +631,6 @@ namespace TcNo_Acc_Switcher_Updater
                 RedirectStandardOutput = true
             };
             var process = new Process { StartInfo = startInfo };
-            process.OutputDataReceived += (_, e) => outputText += e.Data + "\n";
             process.Start();
             process.BeginOutputReadLine();
             process.WaitForExit();
@@ -717,7 +714,7 @@ namespace TcNo_Acc_Switcher_Updater
 
             DirSearchWithHash(oldFolder, ref _oldDict);
             DirSearchWithHash(newFolder, ref _newDict);
-            DirSearchWithHash(newFolder, ref _allNewDict);
+            DirSearchWithHash(newFolder, ref _allNewDict, true);
 
             // -----------------------------------
             // SAVE DICT OF NEW FILES & HASHES
@@ -733,7 +730,7 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 if (_newDict.TryGetValue(key, out var sVal)) // If new dictionary has it, get it's value
                 {
-                    if (value != sVal && !key.StartsWith("updater\\")) // Compare the values. If they don't match ==> FILES ARE DIFFERENT
+                    if (value != sVal) // Compare the values. If they don't match ==> FILES ARE DIFFERENT
                     {
                         differentFiles.Add(key);
                     }
@@ -817,7 +814,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         /// <param name="sDir">Directory to recursively search</param>
         /// <param name="dict">Dict of strings for files and MD5 hashes</param>
-        private void DirSearchWithHash(string sDir, ref Dictionary<string, string> dict)
+        private void DirSearchWithHash(string sDir, ref Dictionary<string, string> dict, bool includeUpdater = false)
         {
             try
             {
@@ -830,7 +827,7 @@ namespace TcNo_Acc_Switcher_Updater
                 // Foreach directory in file
                 foreach (var d in Directory.GetDirectories(sDir))
                 {
-                    // Updater folder included, but won't have patch files, only new files. This is verified again in the main program.
+                    if (!includeUpdater && d.EndsWith("updater")) continue; // Ignore updater folder, as this is verified in the main program now.
                     DirSearchWithHash(d, ref dict);
                 }
             }
@@ -874,7 +871,7 @@ namespace TcNo_Acc_Switcher_Updater
             VcDecoder decoder = new(dict, target, output);
 
             // The header of the delta file must be available before the first call to decoder.Decode().
-            var result = decoder.Decode(out var bytesWritten);
+            var result = decoder.Decode(out _);
 
             if (result != VCDiffResult.SUCCESS)
             {
