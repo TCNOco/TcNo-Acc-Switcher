@@ -46,7 +46,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Order
             accList = OrderAccounts(accList, $"LoginCache\\{name}\\order.json");
 
-            await InsertAccounts(accList, name);
+            await InsertAccounts(accList, name).ConfigureAwait(false);
             return true;
         }
 
@@ -114,45 +114,46 @@ namespace TcNo_Acc_Switcher_Server.Data
             foreach (var element in accList)
             {
                 string imgPath;
-                switch (element)
+                if (element is string str)
                 {
-                    case string str:
-                        imgPath = GetImgPath(platform, str);
-                        try
-                        {
-                            await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list",
-                               $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{str}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
-                               $"<label for=\"{str}\" class=\"acc\">\r\n" +
-                               $"<img src=\"{imgPath}\" draggable=\"false\" />\r\n" +
-                               $"<h6>{str}</h6></div>\r\n");
-                            //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
-                        }
-                        catch (TaskCanceledException e)
-                        {
-                            Globals.WriteToLog(e.ToString());
-                        }
-                        break;
+                    imgPath = GetImgPath(platform, str);
+                    try
+                    {
+                        await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list",
+                            $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{str}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
+                            $"<label for=\"{str}\" class=\"acc\">\r\n" +
+                            $"<img src=\"{imgPath}\" draggable=\"false\" />\r\n" +
+                            $"<h6>{str}</h6></div>\r\n");
+                        //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
+                    }
+                    catch (TaskCanceledException e)
+                    {
+                        Globals.WriteToLog(e.ToString());
+                    }
 
-                    case KeyValuePair<string, string> pair:
-                        var (key, value) = pair;
-                        imgPath = GetImgPath(platform, key);
-                        try
-                        {
-                            await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list",
-                                $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{key}\" Username=\"{value}\" DisplayName=\"{value}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
-                                $"<label for=\"{key}\" class=\"acc\">\r\n" +
-                                $"<img src=\"{imgPath}\" draggable=\"false\" />\r\n" +
-                                $"<h6>{value}</h6></div>\r\n");
-                            //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
-                        }
-                        catch (TaskCanceledException e)
-                        {
-                            Globals.WriteToLog(e.ToString());
-                        }
-                        break;
+                    continue;
+                }
+
+                if (element is not KeyValuePair<string, string> pair) continue;
+                {
+                    var (key, value) = pair;
+                    imgPath = GetImgPath(platform, key);
+                    try
+                    {
+                        await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list",
+                            $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{key}\" Username=\"{value}\" DisplayName=\"{value}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
+                            $"<label for=\"{key}\" class=\"acc\">\r\n" +
+                            $"<img src=\"{imgPath}\" draggable=\"false\" />\r\n" +
+                            $"<h6>{value}</h6></div>\r\n");
+                        //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
+                    }
+                    catch (TaskCanceledException e)
+                    {
+                        Globals.WriteToLog(e.ToString());
+                    }
                 }
             }
-            await FinaliseAccountList(); // Init context menu & Sorting
+            await FinaliseAccountList().ConfigureAwait(false); // Init context menu & Sorting
         }
 
         /// <summary>
@@ -163,7 +164,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <returns>Image path</returns>
         private static string GetImgPath(string platform, string user)
         {
-            var imgPath = $"\\img\\profiles\\{platform.ToLower()}\\{Uri.EscapeUriString(user.Replace("#", "-"))}";
+            var imgPath = $"\\img\\profiles\\{platform.ToLowerInvariant()}\\{Uri.EscapeUriString(user.Replace("#", "-"))}";
             if (File.Exists("wwwroot\\" + imgPath + ".png")) return imgPath + ".png";
             return imgPath + ".jpg";
         }
