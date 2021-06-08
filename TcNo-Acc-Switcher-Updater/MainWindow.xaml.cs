@@ -405,6 +405,7 @@ namespace TcNo_Acc_Switcher_Updater
                 foreach (var (key, value) in verifyDictionary)
                 {
                     var path = key;
+                    if (key.StartsWith("updater")) continue; // Ignore own files >> Otherwise IOException
                     cur++;
                     UpdateProgress((cur * 100) / verifyDictTotal);
                     if (!File.Exists(path))
