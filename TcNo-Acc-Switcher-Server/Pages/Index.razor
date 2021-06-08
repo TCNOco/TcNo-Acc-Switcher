@@ -100,7 +100,7 @@
         _appData.WindowTitle = "TcNo Account Switcher";
         if (firstRender)
         {
-            await GeneralInvocableFuncs.HandleQueries();
+            await GeneralFuncs.HandleQueries();
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
             //await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
         }

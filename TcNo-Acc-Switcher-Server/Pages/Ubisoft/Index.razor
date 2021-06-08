@@ -31,7 +31,7 @@
 
 <ContextMenu ContextMenuString=@_ubisoft.ContextMenuJson />
 <div id="acc_list" class="acc_list" style="grid-template-rows: repeat(auto-fill, 135px);">
-    <div class="toastarea"></div>
+    <toastarea class="toastarea"></toastarea>
 </div>
 <div class="acc_list_actionbar">
     <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@_appData.CurrentStatus" spellcheck="false" disabled></div>
@@ -51,6 +51,7 @@
                 <use href="img/icons/ico_settings.svg#icoSettings"></use>
             </svg>
         </div>
+
         <div class="button" id="btnHelp" onclick="showModal('info');">
             <svg viewBox="0 0 60 60" draggable="false" alt="Question" class="footerIcoQuestion">
                 <use href="img/icons/ico_question.svg#icoQuestion"></use>
@@ -70,23 +71,5 @@
         _appSettings.StreamerModeCheck();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        _appData.WindowTitle = "TcNo Account Switcher - Ubisoft";
-        if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered) await _jsRuntime.InvokeVoidAsync("window.notification.new", new { type = "info", title = "Streamer mode", message = "Private info is hidden! - See settings", renderTo = "toastarea", duration = 5000 });// Show notification that streamer mode was enabled.
-
-        await UbisoftSwitcherFuncs.LoadProfiles();
-        _ubisoft.SaveSettings(!File.Exists(_ubisoft.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
-
-        await GeneralInvocableFuncs.HandleQueries();
-
-        try
-        {
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");
-        }
-        catch (InvalidOperationException)
-        {
-    //
-        }
-    }
+    protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Ubisoft");
 }

@@ -58,7 +58,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
 
         // Constants
-        [JsonIgnore] public readonly string SettingsFile = "UbisoftSettings.json";
+        [JsonIgnore] public static readonly string SettingsFile = "UbisoftSettings.json";
         /*
             [JsonIgnore] public string UbisoftImagePath = "wwwroot/img/profiles/ubi/";
             [JsonIgnore] public string UbisoftImagePathHtml = "img/profiles/ubi/";

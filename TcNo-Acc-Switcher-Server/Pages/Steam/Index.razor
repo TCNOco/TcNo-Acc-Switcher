@@ -66,26 +66,5 @@
         _appSettings.StreamerModeCheck();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        _appData.WindowTitle = "TcNo Account Switcher - Steam";
-        if (firstRender)
-        {
-            if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered) await _jsRuntime.InvokeVoidAsync("window.notification.new", new { type = "info", title = "Streamer mode", message = "Private info is hidden! - See settings", renderTo = "toastarea", duration = 5000 });// Show notification that streamer mode was enabled.
-
-            await SteamSwitcherFuncs.LoadProfiles();
-            _steam.SaveSettings(!File.Exists(_steam.SettingsFile)); // Init file if it doesn't exist, or isn't fully initialized (adds missing settings when true)
-
-            await GeneralInvocableFuncs.HandleQueries();
-
-            try
-            {
-                await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");
-            }
-            catch (InvalidOperationException)
-            {
-                //
-            }
-        }
-    }
+    protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
 }

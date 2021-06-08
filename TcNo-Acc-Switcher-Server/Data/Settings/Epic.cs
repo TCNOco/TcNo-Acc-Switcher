@@ -56,7 +56,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
 
         // Constants
-        [JsonIgnore] public readonly string SettingsFile = "EpicSettings.json";
+        [JsonIgnore] public static readonly string SettingsFile = "EpicSettings.json";
         /*
             [JsonIgnore] public string EpicImagePath = "wwwroot/img/profiles/epic/";
             [JsonIgnore] public string EpicImagePathHtml = "img/profiles/epic/";

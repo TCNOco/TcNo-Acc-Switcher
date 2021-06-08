@@ -82,7 +82,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public List<BattleNetSwitcherBase.BattleNetUser> IgnoredAccounts { get => _instance._ignoredAccounts; set => _instance._ignoredAccounts = value; }
         
         // Constants
-        [JsonIgnore] public readonly string SettingsFile = "BattleNetSettings.json";
+        [JsonIgnore] public static readonly string SettingsFile = "BattleNetSettings.json";
         [JsonIgnore] public readonly string StoredAccPath = "LoginCache\\BattleNet\\StoredAccounts.json";
         [JsonIgnore] public readonly string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
         [JsonIgnore] public readonly string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";

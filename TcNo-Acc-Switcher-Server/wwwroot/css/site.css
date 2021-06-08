@@ -552,16 +552,14 @@ div.advancedClearingButtonCol .buttoncol {
   width: 100%;
   height: calc(100% - 42px);
   position: relative;
+  display: table;
+  text-align: center;
 }
 
 .platform_list {
   user-select: none;
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 25%;
-  transform: translate(-17.5%, -50%);
-  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
 }
 
 /* -------------------------------------------------

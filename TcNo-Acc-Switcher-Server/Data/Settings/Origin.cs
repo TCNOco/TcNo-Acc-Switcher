@@ -58,7 +58,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
 
         // Constants
-        [JsonIgnore] public readonly string SettingsFile = "OriginSettings.json";
+        [JsonIgnore] public static readonly string SettingsFile = "OriginSettings.json";
         /*
         [JsonIgnore] public string OriginImagePath = "wwwroot/img/profiles/origin/";
         [JsonIgnore] public string OriginImagePathHtml = "img/profiles/origin/";

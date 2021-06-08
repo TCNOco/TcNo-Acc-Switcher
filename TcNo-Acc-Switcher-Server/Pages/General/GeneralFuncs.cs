@@ -19,6 +19,8 @@ using System.IO;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
@@ -299,24 +301,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             JsDestNewline(jsDest);
         }
 
-/*
-        /// <summary>
-        /// Recursively move files and directories
-        /// </summary>
-        /// <param name="inputFolder">Folder to move files recursively from</param>
-        /// <param name="outputFolder">Destination folder</param>
-        public static void MoveFilesRecursive(string inputFolder, string outputFolder)
-        {
-            //Now Create all of the directories
-            foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
-                Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
-
-            //Move all the files & Replaces any files with the same name
-            foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
-                File.Move(newPath, newPath.Replace(inputFolder, outputFolder), true);
-        }
-*/
-
         /// <summary>
         /// Recursively copy files and directories
         /// </summary>
@@ -510,6 +494,102 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             var lastIndexEnd = lastIndex + sOld.Length;
             return input[..lastIndex] + sNew + input.Substring(lastIndexEnd, input.Length - lastIndexEnd);
         }
+        #endregion
+
+        #region SWITCHER_FUNCTIONS
+        
+        public static async System.Threading.Tasks.Task HandleFirstRender(bool firstRender, string platform)
+        {
+            AppData.Instance.WindowTitle = $"TcNo Account Switcher - {platform}";
+            if (firstRender)
+            {
+                // Handle Streamer Mode notification
+                if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered)
+                    _ = GeneralInvocableFuncs.ShowToast("info", "Private info is hidden! - See settings", "Streamer mode", "toastarea", 5000);
+
+                // Handle loading accounts for specific platforms
+                // - Init file if it doesn't exist, or isn't fully initialised (adds missing settings when true)
+                switch (platform)
+                {
+                    case "BattleNet":
+                        await BattleNet.BattleNetSwitcherFuncs.LoadProfiles();
+                        Data.Settings.BattleNet.Instance.SaveSettings(!File.Exists(Data.Settings.BattleNet.SettingsFile));
+                        break;
+
+                    case "Epic Games":
+                        await Epic.EpicSwitcherFuncs.LoadProfiles();
+                        Data.Settings.Epic.Instance.SaveSettings(!File.Exists(Data.Settings.Epic.SettingsFile));
+                        break;
+
+                    case "Origin":
+                        await Origin.OriginSwitcherFuncs.LoadProfiles();
+                        Data.Settings.Origin.Instance.SaveSettings(!File.Exists(Data.Settings.Origin.SettingsFile));
+                        break;
+
+                    case "Riot Games":
+                        await Riot.RiotSwitcherFuncs.LoadProfiles();
+                        Data.Settings.Riot.Instance.SaveSettings(!File.Exists(Data.Settings.Riot.SettingsFile));
+                        break;
+
+                    case "Steam":
+                        await Steam.SteamSwitcherFuncs.LoadProfiles();
+                        Data.Settings.Steam.Instance.SaveSettings(!File.Exists(Data.Settings.Steam.SettingsFile));
+                        break;
+
+                    case "Ubisoft":
+                        await Ubisoft.UbisoftSwitcherFuncs.LoadProfiles();
+                        Data.Settings.Ubisoft.Instance.SaveSettings(!File.Exists(Data.Settings.Ubisoft.SettingsFile));
+                        break;
+                }
+                
+                // Handle queries and invoke status "Ready"
+                await HandleQueries();
+                try
+                {
+                    await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");
+                }
+                catch (InvalidOperationException)
+                {
+                    //
+                }
+            }
+        }
+
+        /// <summary>
+        /// For handling queries in URI
+        /// </summary>
+        public static async Task<bool> HandleQueries()
+        {
+            Globals.DebugWriteLine(@"[JSInvoke:General\GeneralFuncs.HandleQueries]");
+            var uri = AppData.ActiveNavMan.ToAbsoluteUri(AppData.ActiveNavMan.Uri);
+            // Clear cache reload
+            var queries = QueryHelpers.ParseQuery(uri.Query);
+            // cacheReload handled in JS
+
+            //Modal
+            if (queries.TryGetValue("modal", out var modalValue))
+                foreach (var stringValue in modalValue) await GeneralInvocableFuncs.ShowModal(Uri.UnescapeDataString(stringValue)).ConfigureAwait(false);
+
+            // Toast
+            if (!queries.TryGetValue("toast_type", out var toastType) ||
+                !queries.TryGetValue("toast_title", out var toastTitle) ||
+                !queries.TryGetValue("toast_message", out var toastMessage)) return true;
+            for (var i = 0; i < toastType.Count; i++)
+            {
+                try
+                {
+                    await GeneralInvocableFuncs.ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea").ConfigureAwait(false);
+                }
+                catch (TaskCanceledException e)
+                {
+                    Globals.WriteToLog(e.ToString());
+                }
+            }
+
+            return true;
+        }
+
+
         #endregion
     }
 }

@@ -74,7 +74,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public bool Initialised { get => _instance._initialised; set => _instance._initialised = value; }
 
         // Constants
-        [JsonIgnore] public readonly string SettingsFile = "RiotSettings.json";
+        [JsonIgnore] public static readonly string SettingsFile = "RiotSettings.json";
         /*
             [JsonIgnore] public string RiotImagePath = "wwwroot/img/profiles/riot/";
             [JsonIgnore] public string RiotImagePathHtml = "img/profiles/riot/";

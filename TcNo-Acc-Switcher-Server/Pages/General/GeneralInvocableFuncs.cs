@@ -227,41 +227,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
         
         /// <summary>
-        /// For handling queries in URI
-        /// </summary>
-        public static async Task<bool> HandleQueries()
-        {
-            Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.HandleQueries]");
-            var uri = AppData.ActiveNavMan.ToAbsoluteUri(AppData.ActiveNavMan.Uri);
-            // Clear cache reload
-            var queries = QueryHelpers.ParseQuery(uri.Query);
-            // cacheReload handled in JS
-
-            //Modal
-            if (queries.TryGetValue("modal", out var modalValue))
-                foreach (var stringValue in modalValue) await ShowModal(Uri.UnescapeDataString(stringValue)).ConfigureAwait(false);
-
-            // Toast
-            if (!queries.TryGetValue("toast_type", out var toastType) ||
-                !queries.TryGetValue("toast_title", out var toastTitle) ||
-                !queries.TryGetValue("toast_message", out var toastMessage)) return true;
-            for (var i = 0; i < toastType.Count; i++)
-            {
-                try
-                {
-                    await ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea").ConfigureAwait(false);
-                }
-                catch (TaskCanceledException e)
-                {
-                    Globals.WriteToLog(e.ToString());
-                }
-            }
-
-            return true;
-        }
-
-
-        /// <summary>
         /// JS function handler for changing selected username on a platform
         /// </summary>
         /// <param name="id">Unique identifier for account</param>

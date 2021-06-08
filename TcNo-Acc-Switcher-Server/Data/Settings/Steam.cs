@@ -72,7 +72,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         // Constants
         [JsonIgnore] public readonly string VacCacheFile = "LoginCache/Steam/VACCache/SteamVACCache.json";
-        [JsonIgnore] public readonly string SettingsFile = "SteamSettings.json";
+        [JsonIgnore] public static readonly string SettingsFile = "SteamSettings.json";
         [JsonIgnore] public readonly string ForgottenFile = "SteamForgotten.json";
         [JsonIgnore] public readonly string SteamImagePath = "wwwroot/img/profiles/steam/";
         [JsonIgnore] public readonly string SteamImagePathHtml = "img/profiles/steam/";
