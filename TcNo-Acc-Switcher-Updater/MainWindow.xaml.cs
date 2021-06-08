@@ -717,7 +717,7 @@ namespace TcNo_Acc_Switcher_Updater
 
             DirSearchWithHash(oldFolder, ref _oldDict);
             DirSearchWithHash(newFolder, ref _newDict);
-            DirSearchWithHash(newFolder, ref _allNewDict, true);
+            DirSearchWithHash(newFolder, ref _allNewDict);
 
             // -----------------------------------
             // SAVE DICT OF NEW FILES & HASHES
@@ -729,21 +729,21 @@ namespace TcNo_Acc_Switcher_Updater
             // Files left in newDict are completely new files.
 
             // COMPARE THE 2 FOLDERS
-            foreach (var kvp in _oldDict) // Foreach entry in old dictionary:
+            foreach (var (key, value) in _oldDict) // Foreach entry in old dictionary:
             {
-                if (_newDict.TryGetValue(kvp.Key, out string sVal)) // If new dictionary has it, get it's value
+                if (_newDict.TryGetValue(key, out var sVal)) // If new dictionary has it, get it's value
                 {
-                    if (kvp.Value != sVal) // Compare the values. If they don't match ==> FILES ARE DIFFERENT
+                    if (value != sVal && !key.StartsWith("updater\\")) // Compare the values. If they don't match ==> FILES ARE DIFFERENT
                     {
-                        differentFiles.Add(kvp.Key);
+                        differentFiles.Add(key);
                     }
-                    _oldDict.Remove(kvp.Key); // Remove from both old
-                    _newDict.Remove(kvp.Key); // and new dictionaries
+                    _oldDict.Remove(key); // Remove from both old
+                    _newDict.Remove(key); // and new dictionaries
                 }
                 else // New dictionary does NOT have this file
                 {
-                    filesToDelete.Add(kvp.Key); // Add to list of files to delete
-                    _oldDict.Remove(kvp.Key); // Remove from old dictionary. They have been added to delete list.
+                    filesToDelete.Add(key); // Add to list of files to delete
+                    _oldDict.Remove(key); // Remove from old dictionary. They have been added to delete list.
                 }
             }
 
@@ -751,7 +751,7 @@ namespace TcNo_Acc_Switcher_Updater
             // HANDLE NEW FILES
             // -----------------------------------
             // Copy new files into output\\new
-            string outputNewFolder = Path.Join(outputFolder, "new");
+            var outputNewFolder = Path.Join(outputFolder, "new");
             Directory.CreateDirectory(outputNewFolder);
             foreach (var newFile in _newDict.Keys)
             {
@@ -817,8 +817,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         /// <param name="sDir">Directory to recursively search</param>
         /// <param name="dict">Dict of strings for files and MD5 hashes</param>
-        /// <param name="includeUpdater">Whether to include updater folder -- This is verified and downloaded in the main program.</param>
-        private void DirSearchWithHash(string sDir, ref Dictionary<string, string> dict, bool includeUpdater = false)
+        private void DirSearchWithHash(string sDir, ref Dictionary<string, string> dict)
         {
             try
             {
@@ -831,7 +830,7 @@ namespace TcNo_Acc_Switcher_Updater
                 // Foreach directory in file
                 foreach (var d in Directory.GetDirectories(sDir))
                 {
-                    if (!includeUpdater && d.EndsWith("updater")) continue; // Ignore updater folder, as this is verified in the main program now.
+                    // Updater folder included, but won't have patch files, only new files. This is verified again in the main program.
                     DirSearchWithHash(d, ref dict);
                 }
             }
