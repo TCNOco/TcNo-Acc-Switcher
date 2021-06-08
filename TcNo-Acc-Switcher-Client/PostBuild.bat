@@ -17,6 +17,7 @@ mkdir updater\x64
 mkdir updater\x86
 mkdir updater\ref
 copy /B /Y "VCDiff.dll" "updater\VCDiff.dll"
+copy /B /Y "YamlDotNet.dll" "updater\YamlDotNet.dll"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
 move /Y "TcNo-Acc-Switcher-Updater.pdb" "updater\TcNo-Acc-Switcher-Updater.pdb"
@@ -57,6 +58,7 @@ mkdir updater\x64
 mkdir updater\x86
 mkdir updater\ref
 copy /B /Y "VCDiff.dll" "updater\VCDiff.dll"
+copy /B /Y "YamlDotNet.dll" "updater\YamlDotNet.dll"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
 move /Y "TcNo-Acc-Switcher-Updater.pdb" "updater\TcNo-Acc-Switcher-Updater.pdb"
@@ -99,6 +101,7 @@ mkdir bin\Debug\net5.0-windows\updater\x64
 mkdir bin\Debug\net5.0-windows\updater\x86
 mkdir bin\Debug\net5.0-windows\updater\ref
 copy /B /Y "bin\Debug\net5.0-windows\VCDiff.dll" "bin\Debug\net5.0-windows\updater\VCDiff.dll"
+copy /B /Y "bin\Debug\net5.0-windows\YamlDotNet.dll" "bin\Debug\net5.0-windows\updater\YamlDotNet.dll"
 move /Y "bin\Debug\net5.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.json" "bin\Debug\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
 move /Y "bin\Debug\net5.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "bin\Debug\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
 move /Y "bin\Debug\net5.0-windows\TcNo-Acc-Switcher-Updater.pdb" "bin\Debug\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.pdb"
@@ -139,6 +142,7 @@ mkdir bin\Release\net5.0-windows\updater\x64
 mkdir bin\Release\net5.0-windows\updater\x86
 mkdir bin\Release\net5.0-windows\updater\ref
 copy /B /Y "bin\Release\net5.0-windows\VCDiff.dll" "bin\Release\net5.0-windows\updater\VCDiff.dll"
+copy /B /Y "bin\Debug\net5.0-windows\YamlDotNet.dll" "bin\Debug\net5.0-windows\updater\YamlDotNet.dll"
 move /Y "bin\Release\net5.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.json" "bin\Release\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
 move /Y "bin\Release\net5.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "bin\Release\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
 move /Y "bin\Release\net5.0-windows\TcNo-Acc-Switcher-Updater.pdb" "bin\Release\net5.0-windows\updater\TcNo-Acc-Switcher-Updater.pdb"

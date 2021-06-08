@@ -106,9 +106,8 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 if (Directory.Exists("newUpdater")) GeneralFuncs.RecursiveDelete(new DirectoryInfo("newUpdater"), false);
                 foreach (var (key, value) in updaterDict)
                 {
-                    if (File.Exists(key))
-                        if (value == GeneralFuncs.GetFileMd5(key))
-                            continue;
+                    if (File.Exists(key) && value == GeneralFuncs.GetFileMd5(key))
+                        continue;
                     var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'));
                     client.DownloadFile(uri, key);
                 }
