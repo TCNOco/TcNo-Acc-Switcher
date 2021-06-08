@@ -13,10 +13,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.JSInterop;
+using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Data
@@ -29,6 +35,139 @@ namespace TcNo_Acc_Switcher_Server.Data
             Globals.DebugWriteLine(@"[JSInvoke:Data\GenericFunctions.CopyToClipboard] toCopy=hidden");
             WindowsClipboard.SetText(toCopy);
         }
+
+        #region ACCOUNT SWITCHER SHARED FUNCTIONS
+        public static async Task<bool> GenericLoadAccounts(string name)
+        {
+            var localCachePath = $"LoginCache\\{name}\\";
+            if (!Directory.Exists(localCachePath)) return false;
+            if (!ListAccountsFromFolder(localCachePath, out var accList)) return false;
+
+            // Order
+            accList = OrderAccounts(accList, $"LoginCache\\{name}\\order.json");
+
+            await InsertAccounts(accList, name);
+            return true;
+        }
+
+        /// <summary>
+        /// Gets a list of 'account names' from cache folder provided
+        /// </summary>
+        /// <param name="folder">Cache folder containing accounts</param>
+        /// <param name="accList">List of account strings</param>
+        /// <returns>Whether the directory exists and successfully added listed names</returns>
+        public static bool ListAccountsFromFolder(string folder, out List<string> accList)
+        {
+            accList = new List<string>();
+
+            if (!Directory.Exists(folder)) return false;
+            foreach (var f in Directory.GetDirectories(folder))
+            {
+                var lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1;
+                var accName = f.Substring(lastSlash, f.Length - lastSlash);
+                accList.Add(accName);
+            }
+
+            return true;
+        }
+        
+        /// <summary>
+        /// Orders a list of strings by order specific in jsonOrderFile
+        /// </summary>
+        /// <param name="accList">List of strings to sort</param>
+        /// <param name="jsonOrderFile">JSON file containing list order</param>
+        /// <returns></returns>
+        public static List<string> OrderAccounts(List<string> accList, string jsonOrderFile)
+        {
+            // Order
+            if (!File.Exists(jsonOrderFile)) return accList;
+            var savedOrder = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(jsonOrderFile));
+            if (savedOrder == null) return accList;
+            var index = 0;
+            if (savedOrder is not {Count: > 0}) return accList;
+            foreach (var acc in from i in savedOrder where accList.Any(x => x == i) select accList.Single(x => x == i))
+            {
+                accList.Remove(acc);
+                accList.Insert(index, acc);
+                index++;
+            }
+            return accList;
+        }
+    
+        /// <summary>
+        /// Runs jQueryProcessAccListSize, initContextMenu and initAccListSortable - Final init needed for account switcher to work.
+        /// </summary>
+        public static async Task FinaliseAccountList()
+        {
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
+            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
+        }
+
+        /// <summary>
+        /// Iterate through account list and insert into platforms account screen
+        /// </summary>
+        /// <param name="accList">Account list</param>
+        /// <param name="platform">Platform name</param>
+        public static async Task InsertAccounts(IEnumerable accList, string platform)
+        {
+            foreach (var element in accList)
+            {
+                string imgPath;
+                switch (element)
+                {
+                    case string str:
+                        imgPath = GetImgPath(platform, str);
+                        try
+                        {
+                            await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list",
+                               $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{str}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
+                               $"<label for=\"{str}\" class=\"acc\">\r\n" +
+                               $"<img src=\"{imgPath}\" draggable=\"false\" />\r\n" +
+                               $"<h6>{str}</h6></div>\r\n");
+                            //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
+                        }
+                        catch (TaskCanceledException e)
+                        {
+                            Globals.WriteToLog(e.ToString());
+                        }
+                        break;
+
+                    case KeyValuePair<string, string> pair:
+                        var (key, value) = pair;
+                        imgPath = GetImgPath(platform, key);
+                        try
+                        {
+                            await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list",
+                                $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{key}\" Username=\"{value}\" DisplayName=\"{value}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
+                                $"<label for=\"{key}\" class=\"acc\">\r\n" +
+                                $"<img src=\"{imgPath}\" draggable=\"false\" />\r\n" +
+                                $"<h6>{value}</h6></div>\r\n");
+                            //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
+                        }
+                        catch (TaskCanceledException e)
+                        {
+                            Globals.WriteToLog(e.ToString());
+                        }
+                        break;
+                }
+            }
+            await FinaliseAccountList(); // Init context menu & Sorting
+        }
+
+        /// <summary>
+        /// Finds if file exists as .jpg or .png
+        /// </summary>
+        /// <param name="platform">Platform name</param>
+        /// <param name="user">Username/ID for use in image name</param>
+        /// <returns>Image path</returns>
+        private static string GetImgPath(string platform, string user)
+        {
+            var imgPath = $"\\img\\profiles\\{platform.ToLower()}\\{Uri.EscapeUriString(user.Replace("#", "-"))}";
+            if (File.Exists("wwwroot\\" + imgPath + ".png")) return imgPath + ".png";
+            return imgPath + ".jpg";
+        }
+        #endregion
     }
 }
 
@@ -48,17 +187,9 @@ internal static class WindowsClipboard
             var bytes = (text.Length + 1) * 2;
             hGlobal = Marshal.AllocHGlobal(bytes);
 
-            if (hGlobal == default)
-            {
-                ThrowWin32();
-            }
-
+            if (hGlobal == default) ThrowWin32();
             var target = GlobalLock(hGlobal);
-
-            if (target == default)
-            {
-                ThrowWin32();
-            }
+            if (target == default) ThrowWin32();
 
             try
             {
@@ -69,20 +200,12 @@ internal static class WindowsClipboard
                 GlobalUnlock(target);
             }
 
-            if (SetClipboardData(CfUnicodeText, hGlobal) == default)
-            {
-                ThrowWin32();
-            }
-
+            if (SetClipboardData(CfUnicodeText, hGlobal) == default) ThrowWin32();
             hGlobal = default;
         }
         finally
         {
-            if (hGlobal != default)
-            {
-                Marshal.FreeHGlobal(hGlobal);
-            }
-
+            if (hGlobal != default) Marshal.FreeHGlobal(hGlobal);
             CloseClipboard();
         }
     }
@@ -93,16 +216,8 @@ internal static class WindowsClipboard
         var num = 10;
         while (true)
         {
-            if (OpenClipboard(default))
-            {
-                break;
-            }
-
-            if (--num == 0)
-            {
-                ThrowWin32();
-            }
-
+            if (OpenClipboard(default)) break;
+            if (--num == 0) ThrowWin32();
             Thread.Sleep(100);
         }
     }

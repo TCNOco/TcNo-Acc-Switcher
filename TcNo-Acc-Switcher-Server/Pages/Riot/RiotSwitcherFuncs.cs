@@ -45,44 +45,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 }
             }
 
-            var localCachePath = "LoginCache\\Riot\\";
-            if (!Directory.Exists(localCachePath)) return;
-            var accList = new List<string>();
-            foreach (var f in Directory.GetDirectories(localCachePath))
-            {
-                var lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1;
-                var accName = f.Substring(lastSlash, f.Length - lastSlash);
-                accList.Add(accName);
-            }
-
-            // Order
-            if (File.Exists("LoginCache\\Riot\\order.json"))
-            {
-                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Riot\\order.json").ConfigureAwait(false));
-                if (savedOrder != null)
-                {
-                    var index = 0;
-                    if (savedOrder is { Count: > 0 })
-                        foreach (var acc in from i in savedOrder where accList.Any(x => x == i) select accList.Single(x => x == i))
-                        {
-                            accList.Remove(acc);
-                            accList.Insert(index, acc);
-                            index++;
-                        }
-                }
-            }
-
-            foreach (var element in
-                accList.Select(accName =>
-                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{accName}\" Username=\"{accName}\" DisplayName=\"{accName}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
-                    $"<label for=\"{accName}\" class=\"acc\">\r\n" +
-                    $"<img src=\"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg\" draggable=\"false\" />\r\n" +
-                    $"<h6>{accName}</h6></div>\r\n"))
-                await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
-
-            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
+            if (!await GenericFunctions.GenericLoadAccounts("Riot")) return;
             Riot.SaveSettings();
         }
 

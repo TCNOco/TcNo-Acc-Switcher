@@ -32,7 +32,6 @@ function copyToClipboard(str) {
 // FORGETTING ACCOUNTS
 async function forget(e) {
     e.preventDefault();
-    debugger;
     const reqId = $(selectedElem).attr("id");
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "Get" + getCurrentPage() + "ForgetAcc").then((r) => {
         if (!r) showModal("confirm:AcceptForget" + getCurrentPage() + "Acc:" + reqId);

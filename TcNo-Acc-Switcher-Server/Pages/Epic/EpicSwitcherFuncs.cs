@@ -32,45 +32,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.LoadProfiles] Loading Epic profiles");
-            
-            var localCachePath = "LoginCache\\Epic\\";
-            if (!Directory.Exists(localCachePath)) return;
-            var accList = new List<string>();
-            foreach (var f in Directory.GetDirectories(localCachePath))
-            {
-                var lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1;
-                var accName = f.Substring(lastSlash, f.Length - lastSlash);
-                accList.Add(accName);
-            }
 
-            // Order
-            if (File.Exists("LoginCache\\Epic\\order.json"))
-            {
-                var savedOrder = JsonConvert.DeserializeObject<List<string>>(await File.ReadAllTextAsync("LoginCache\\Epic\\order.json").ConfigureAwait(false));
-                if (savedOrder != null)
-                {
-                    var index = 0;
-                    if (savedOrder is { Count: > 0 })
-                        foreach (var acc in from i in savedOrder where accList.Any(x => x == i) select accList.Single(x => x == i))
-                        {
-                            accList.Remove(acc);
-                            accList.Insert(index, acc);
-                            index++;
-                        }
-                }
-            }
-
-            foreach (var element in 
-                accList.Select(accName => 
-                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{accName}\" Username=\"{accName}\" DisplayName=\"{accName}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
-                    $"<label for=\"{accName}\" class=\"acc\">\r\n" +
-                    $"<img src=\"\\img\\profiles\\epic\\{Uri.EscapeUriString(accName)}.jpg\" draggable=\"false\" />\r\n" +
-                    $"<h6>{accName}</h6></div>\r\n"))
-                await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
-
-            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
+            await GenericFunctions.GenericLoadAccounts("Epic");
         }
 
         /// <summary>
@@ -152,7 +115,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             using var key = Registry.CurrentUser.CreateSubKey(@"Software\Epic Games\Unreal Engine\Identifiers");
 
             var allIds = ReadAllIds();
-            key?.SetValue("AccountId", allIds.Single(x => x.Value == accName).Key);
+            try
+            {
+                key?.SetValue("AccountId", allIds.Single(x => x.Value == accName).Key);
+            }
+            catch (InvalidOperationException)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", "Could not swap. Duplicate accounts with same username?", "Error", "toastarea");
+            }
         }
 
         [SupportedOSPlatform("windows")]
@@ -164,7 +134,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 
             if (!File.Exists(EpicGameUserSettings))
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Could not locate logged in user");
+                _ = GeneralInvocableFuncs.ShowToast("error", "Could not locate logged in user", "Error", "toastarea");
                 return;
             }
             // Save files
@@ -173,7 +143,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             var currentAccountId = (string)Registry.CurrentUser.OpenSubKey(@"Software\Epic Games\Unreal Engine\Identifiers")?.GetValue("AccountId");
             if (currentAccountId == null)
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Failed to get AccountId from Registry!");
+                _ = GeneralInvocableFuncs.ShowToast("error", "Failed to get AccountId from Registry!", "Error", "toastarea");
                 return;
             }
 

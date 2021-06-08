@@ -28,7 +28,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             // Normal:
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.LoadProfiles] Loading Steam profiles");
             
-            var localCachePath = "LoginCache\\Ubisoft\\";
+            const string localCachePath = "LoginCache\\Ubisoft\\";
             if (!Directory.Exists(localCachePath) || !File.Exists(Path.Join(localCachePath, "ids.json"))) return;
             var allIds = ReadAllIds();
 
@@ -49,27 +49,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                     allIds = newIds;
                 }
             }
-
-            foreach (var (userId, username) in allIds)
-            {
-                var element =
-                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{userId}\" Username=\"{username}\" DisplayName=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
-                    $"<label for=\"{userId}\" class=\"acc\">\r\n" +
-                    "<img src=\"" + $"\\img\\profiles\\ubisoft\\{userId}.png" + "\" draggable=\"false\" />\r\n" +
-                    $"<h6>{username}</h6></div>\r\n";
-                //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
-                try
-                {
-                    await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
-                }
-                catch (TaskCanceledException e)
-                {
-                    Globals.WriteToLog(e.ToString());  
-                }
-            }
-            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
+            
+            await GenericFunctions.InsertAccounts(allIds, "ubisoft");
         }
 
         public static void UbisoftAddCurrent()
