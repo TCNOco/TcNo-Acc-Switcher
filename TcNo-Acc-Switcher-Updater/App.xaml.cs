@@ -13,9 +13,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Globalization;
+using System.IO;
 using System.Threading;
 using System.Windows;
-using TcNo_Acc_Switcher_Globals;
+using Newtonsoft.Json.Linq;
 
 namespace TcNo_Acc_Switcher_Updater
 {
@@ -24,12 +26,12 @@ namespace TcNo_Acc_Switcher_Updater
     /// </summary>
     public partial class App
     {
-        static readonly Mutex Mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
+        private static readonly Mutex Mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
         [STAThread]
         protected override void OnStartup(StartupEventArgs e)
         {
             // Crash handler
-            AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             // Single instance:
             if (!Mutex.WaitOne(TimeSpan.Zero, true))
             {
@@ -56,6 +58,35 @@ namespace TcNo_Acc_Switcher_Updater
                         break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Exception handling for all programs
+        /// </summary>
+        public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            // Set working directory to parent
+            Directory.SetCurrentDirectory(Directory.GetParent(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location)!)?.FullName!);
+            var version = "unknown";
+            try
+            {
+                if (File.Exists("WindowSettings.json"))
+                {
+                    var o = JObject.Parse(File.ReadAllText("WindowSettings.json"));
+                    version = o["Version"]?.ToString();
+                }
+            }
+            catch (Exception)
+            {
+                //
+            }
+
+            // Log Unhandled Exception
+            var exceptionStr = e.ExceptionObject.ToString();
+            Directory.CreateDirectory("CrashLogs");
+            var filePath = $"CrashLogs\\AccSwitcher-Updater-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
+            using var sw = File.AppendText(filePath);
+            sw.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({version})\tUNHANDLED CRASH: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
         }
     }
 }
