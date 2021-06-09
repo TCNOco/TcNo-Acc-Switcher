@@ -1,0 +1,39 @@
+﻿@using Microsoft.Extensions.Configuration
+@using TcNo_Acc_Switcher_Server.Data
+@inject NavigationManager _navigationManager
+@inject IConfiguration _configuration
+@inject ILanguageContainerService  _locale
+
+@if (_cultures != null)
+{
+    <div class="dropdown">
+        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">
+            @_selectedCulture
+            <span class="caret"></span>
+        </button>
+        <ul class="custom-dropdown-menu dropdown-menu">
+            @foreach (var culture in _cultures)
+            {
+                <li class="custom-dropdown-item dropdown-item" @onclick="() => RequestCultureChange(culture.Key)">@culture.Value</li>
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    private readonly string _selectedCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+    private Dictionary<string, string> _cultures;
+
+    protected override void OnInitialized()
+    {
+        _cultures = _configuration.GetSection("Cultures")
+            .GetChildren().ToDictionary(x => x.Key, x => x.Value);
+    }
+
+    private async Task RequestCultureChange(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key)) return;
+        _locale.SetLanguage(System.Globalization.CultureInfo.GetCultureInfo(key));
+        await AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+    }
+}

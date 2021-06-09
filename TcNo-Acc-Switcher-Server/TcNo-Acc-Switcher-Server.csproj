@@ -18,6 +18,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\af-ZA.yml" />
+    <None Remove="Resources\en-UK.yml" />
     <None Remove="TcNoAccSw-Icon-100x100.png" />
     <None Remove="themes\Default.yaml" />
     <None Remove="themes\Dracula_Cyan.yaml" />
@@ -27,12 +29,18 @@
     <Content Include="themes\Dracula_Cyan.yaml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\af-ZA.yml" />
+    <EmbeddedResource Include="Resources\en-UK.yml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AKSoftware.Localization.MultiLanguages" Version="5.1.0" />
+    <PackageReference Include="AKSoftware.Localization.MultiLanguages.Blazor" Version="1.0.0" />
     <PackageReference Include="Gameloop.Vdf" Version="0.6.1" />
     <PackageReference Include="Gameloop.Vdf.JsonConverter" Version="0.2.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.34" />
     <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.24.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Svg.Skia" Version="0.5.6" />
+    <PackageReference Include="Svg.Skia" Version="0.5.6.1" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
     <PackageReference Include="TaskScheduler" Version="2.9.1" />
     <PackageReference Include="YamlDotNet" Version="11.1.1" />

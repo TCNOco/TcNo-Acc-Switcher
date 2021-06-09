@@ -21,7 +21,7 @@
 @inject NavigationManager _navManager
 @{ _appData.SetActiveNavMan(_navManager); }
 @inject AppData _appData
-@inject AppSettings _appSettings 
+@inject AppSettings _appSettings
 
 @inject Data.Settings.BattleNet _battleNet
 @inject Data.Settings.Epic _epic
@@ -30,10 +30,19 @@
 @inject Data.Settings.Steam _steam
 @inject Data.Settings.Ubisoft _ubisoft
 
+@inject ILanguageContainerService  _locale
+
 @if (AppSettings.Instance.UpdateAvailable)
 {
     <div class="updateBar" @onclick="UpdateNow">
         <span>Update available! Click here to start it.</span>
+    </div>
+}
+
+@if (true)
+{
+    <div class="updateBar" @onclick="UpdateNow">
+        <span>@_locale["Update"]</span>
     </div>
 }
 
@@ -57,7 +66,7 @@
             }
         </div>
     </div>
-    
+
     <div class="acc_list_actionbar">
         <div>
             <div class="button" id="btnSettings" onclick="location = 'Settings'">
@@ -72,7 +81,7 @@
             </div>
         </div>
     </div>
-    
+
 }
 
 @code
@@ -102,6 +111,11 @@
             await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
             //await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
         }
+    }
+    protected override void OnInitialized()
+    {
+    // This will make the current component gets updated whenever you change the language of the application 
+        _locale.InitLocalizedComponent(this);
     }
 
 }
