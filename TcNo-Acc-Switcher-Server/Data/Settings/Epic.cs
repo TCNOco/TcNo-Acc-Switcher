@@ -43,8 +43,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         // Variables
         private string _folderPath = "C:\\Program Files (x86)\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\";
         [JsonProperty("FolderPath", Order = 1)] public string FolderPath { get => _instance._folderPath; set => _instance._folderPath = value; }
-        private Point _windowSize = new() { X = 800, Y = 450 };
-        [JsonProperty("WindowSize", Order = 1)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
         private bool _admin;
         [JsonProperty("Epic_Admin", Order = 2)] public bool Admin { get => _instance._admin; set => _instance._admin = value; }
         private int _trayAccNumber = 3;
@@ -97,7 +95,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Epic.ResetSettings]");
             _instance.FolderPath = "C:\\Program Files (x86)\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\";
-            _instance.WindowSize = new Point { X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Epic");
@@ -110,7 +107,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             var curSettings = j.ToObject<Epic>();
             if (curSettings == null) return;
             _instance.FolderPath = curSettings.FolderPath;
-            _instance.WindowSize = curSettings.WindowSize;
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Epic");

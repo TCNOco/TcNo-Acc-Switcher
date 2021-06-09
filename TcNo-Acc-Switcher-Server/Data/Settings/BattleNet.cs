@@ -50,9 +50,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private string _folderPath = "C:\\Program Files (x86)\\Battle.net";
         [JsonProperty("FolderPath", Order = 1)] public string FolderPath { get => _instance._folderPath; set => _instance._folderPath = value; }
         
-        private Point _windowSize = new() { X = 800, Y = 450 };
-        [JsonProperty("WindowSize", Order = 2)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
-        
         private bool _admin;
         [JsonProperty("BattleNet_Admin", Order = 3)] public bool Admin { get => _instance._admin; set => _instance._admin = value; }
         
@@ -131,7 +128,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\BattleNet.ResetSettings]");
             _instance.FolderPath = "C:\\Program Files (x86)\\Battle.net";
-            _instance.WindowSize = new Point{ X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
             _instance._overwatchMode = true;
@@ -145,7 +141,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             var curSettings = j.ToObject<BattleNet>();
             if (curSettings == null) return;
             _instance.FolderPath = curSettings.FolderPath;
-            _instance.WindowSize = curSettings.WindowSize;
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
             _instance._overwatchMode = curSettings._overwatchMode;

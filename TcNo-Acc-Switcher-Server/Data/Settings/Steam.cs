@@ -50,8 +50,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ForgetAccountEnabled", Order = 0)] public bool ForgetAccountEnabled { get => _instance._forgetAccountEnabled; set => _instance._forgetAccountEnabled = value; }
         private string _folderPath = "C:\\Program Files (x86)\\Steam\\";
         [JsonProperty("FolderPath", Order = 1)] public string FolderPath { get => _instance._folderPath; set => _instance._folderPath = value; }
-        private Point _windowSize = new() { X = 800, Y = 450 };
-        [JsonProperty("WindowSize", Order = 2)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
         private bool _admin;
         [JsonProperty("Steam_Admin", Order = 3)] public bool Admin { get => _instance._admin; set => _instance._admin = value; }
         private bool _showSteamId;
@@ -128,7 +126,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.ResetSettings]");
             _instance.ForgetAccountEnabled = false;
             _instance.FolderPath = "C:\\Program Files (x86)\\Steam\\";
-            _instance.WindowSize = new Point {X = 800, Y = 450};
             _instance.Admin = false;
             _instance.ShowSteamId = false;
             _instance.ShowVac = true;
@@ -187,7 +184,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             if (curSettings == null) return;
             _instance.ForgetAccountEnabled = curSettings.ForgetAccountEnabled;
             _instance.FolderPath = curSettings.FolderPath;
-            _instance.WindowSize = curSettings.WindowSize;
             _instance.Admin = curSettings.Admin;
             _instance.ShowSteamId = curSettings.ShowSteamId;
             _instance.ShowVac = curSettings.ShowVac;

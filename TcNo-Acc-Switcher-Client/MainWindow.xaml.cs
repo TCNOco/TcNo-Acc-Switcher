@@ -206,24 +206,11 @@ namespace TcNo_Acc_Switcher_Client
         }
 
         /// <summary>
-        /// Runs just before window is closed
+        /// Saves window size when closing.
         /// </summary>
         protected override void OnClosing(CancelEventArgs e)
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.OnClosing]");
-            SaveSettings(MView2.Source.AbsolutePath);
-        }
-
-        /// <summary>
-        /// Saves settings, run on close.
-        /// </summary>
-        /// <param name="windowUrl">Current URI from the WebView2</param>
-        private void SaveSettings(string windowUrl)
-        {
-            Globals.DebugWriteLine($@"[Func:(Client)MainWindow.xaml.cs.SaveSettings] windowUrl={windowUrl}");
-            // TODO: IN THE FUTURE: ONLY DO THIS FOR THE MAIN PAGE WHERE YOU CAN CHOOSE WHAT PLATFORM TO SWAP ACCOUNTS ON
-            // This will only be when that's implemented. Easier to leave it until then.
-            //MessageBox.Show(windowUrl);
             AppSettings.WindowSize = new Point { X = Convert.ToInt32(Width), Y = Convert.ToInt32(Height) };
             AppSettings.SaveSettings();
         }

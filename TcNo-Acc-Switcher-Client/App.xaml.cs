@@ -251,7 +251,7 @@ namespace TcNo_Acc_Switcher_Client
                 }
                 catch (Exception e)
                 {
-                    Globals.WriteToLog(e.ToString());
+                    Globals.WriteToLog(@"[Caught - UploadLogs()]" + e);
                 }
             }
 
@@ -268,7 +268,7 @@ namespace TcNo_Acc_Switcher_Client
                 }
                 catch (Exception e)
                 {
-                    Globals.WriteToLog(e.ToString());
+                    Globals.WriteToLog(@"[Caught - UploadLogs()]" + e);
                 }
             }
             

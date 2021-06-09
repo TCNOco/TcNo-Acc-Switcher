@@ -40,8 +40,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
 
         // Variables
-        private Point _windowSize = new() { X = 800, Y = 450 };
-        [JsonProperty("WindowSize", Order = 1)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
         private bool _admin;
         [JsonProperty("Riot_Admin", Order = 2)] public bool Admin { get => _instance._admin; set => _instance._admin = value; }
         private int _trayAccNumber = 3;
@@ -105,7 +103,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public void ResetSettings()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Riot.ResetSettings]");
-            _instance.WindowSize = new Point { X = 800, Y = 450 };
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
 
@@ -121,7 +118,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Globals.DebugWriteLine(@"[Func:Data\Settings\Riot.SetFromJObject]");
             var curSettings = j.ToObject<Riot>();
             if (curSettings == null) return;
-            _instance.WindowSize = curSettings.WindowSize;
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
 
