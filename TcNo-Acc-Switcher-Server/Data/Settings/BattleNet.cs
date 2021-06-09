@@ -16,7 +16,6 @@
 // iR3turnZ: https://github.com/HoeblingerDaniel
 
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;

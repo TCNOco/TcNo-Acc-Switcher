@@ -23,8 +23,7 @@
 
 @inject AppSettings _appSettings
 <style>@(new AppSettings().GetCssBlock())</style>
-
-
+@inject ILanguageContainerService _locale
 @inject Data.Settings.Origin _origin
 
 
@@ -36,15 +35,15 @@
     <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@_appData.CurrentStatus" spellcheck="false" disabled></div>
     <div>
         <div class="button" id="btnAddNew" onclick="newLogin()">
-            <span>Add New</span>
+            <span>@_locale["Button_AddNew"]</span>
         </div>
         <div class="button" id="btnAddCurrent" onclick="currentOriginLogin()">
-            <span>Save Current</span>
+            <span>@_locale["Button_SaveCurrent"]</span>
         </div>
         <div class="button btn_login" id="btnLogin" onclick="swapTo(-1, event)">
-            <span>Login</span>
+            <span>@_locale["Button_Login"]</span>
         </div>
-        
+
         <div class="button" id="btnSettings" onclick="location = 'Origin/Settings'">
             <svg viewBox="0 0 60 60" draggable="false" alt="Settings" class="footerIcoSettings">
                 <use href="img/icons/ico_settings.svg#icoSettings"></use>

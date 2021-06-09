@@ -25,6 +25,13 @@
 @inject Data.AppSettings _appSett
 @inject IJSRuntime _jsRuntime
 @{ AppData.SetActiveIJsRuntime(_jsRuntime); }
+@inject ILanguageContainerService  _locale
+
+@code
+{
+    string _platform = "BattleNet";
+}
+
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
@@ -32,56 +39,55 @@
             <SharedSettings />
 
             <div class="SettingsHeader">
-                <hr><span>General settings</span>
+                <hr><span>@_locale["Settings_Header_GeneralSettings"]</span>
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_battleNet.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("BattleNet", _battleNet.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">BattleNet Switcher Desktop shortcut</label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_battleNet.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("BattleNet", _battleNet.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">@_locale["Settings_Shortcut", new { platform = _platform }]</label>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_battleNet.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">Run BattleNet as Admin<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_battleNet.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">@_locale["Settings_Admin", new { platform = _platform }]<br></label>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="OverwatchMode" @bind="_battleNet.OverwatchMode" @onclick="OverwatchToggle"><label class="form-check-label" for="OverwatchMode"></label></div><label for="OverwatchMode">Show Overwatch SR and use the Overwatch profile picture.<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="OverwatchMode" @bind="_battleNet.OverwatchMode" @onclick="OverwatchToggle"><label class="form-check-label" for="OverwatchMode"></label></div><label for="OverwatchMode">@_locale["BattleNet_ShowSR"]<br></label>
             </div>
-            <div class="form-text"><span>Profile images expire after:</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="_battleNet.ImageExpiryTime"><span>Days</span></div>
-
+            <div class="form-text"><span>@_locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="_battleNet.ImageExpiryTime"></div>
 
             <div class="SettingsHeader">
-                <hr><span>Tray settings</span>
+                <hr><span>@_locale["Settings_Header_TraySettings"]</span>
                 <hr>
             </div>
             <div class="form-text">
-                <span>Max number of accounts to remember:</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="_battleNet.TrayAccNumber">
+                <span>@_locale["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="_battleNet.TrayAccNumber">
             </div>
             <div class="SettingsHeader">
-                <hr><span>General</span>
+                <hr><span>@_locale["Settings_Header_GeneralTools"]</span>
                 <hr>
             </div>
             <div class="buttoncol">
                 <button class="btn" id="PickFolder" type="button" @onclick="PickFolder">
-                    <span>Pick BattleNet folder</span>
+                    <span>@_locale["Settings_PickFolder", new { platform = _platform }]</span>
                 </button>
                 <button class="btn" id="ResetSettings" type="button" @onclick="ClearSettings">
-                    <span>Reset settings</span>
+                    <span>@_locale["Button_ResetSettings"]</span>
                 </button>
             </div>
             <div class="buttoncol">
                 <button class="btn" id="OpenFolder" type="button" @onclick="OpenFolder">
-                    <span>Open BattleNet Folder</span>
+                    <span>@_locale["Settings_OpenFolder", new { platform = _platform }]</span>
                 </button>
                 <button class="btn" id="ClearForgotten" type="button" @onclick="ClearForgotten">
-                    <span>Clear Forgotten</span>
+                    <span>@_locale["Settings_ClearForgotten"]</span>
                 </button>
             </div>
             <div class="buttoncol">
                 <button class="btn" id="ClearAccounts" type="button" @onclick="ClearAccounts">
-                    <span>Clear Accounts</span>
+                    <span>@_locale["Settings_ClearAccounts"]</span>
                 </button>
             </div>
             <div class="buttoncol col_close">
                 <button class="btn btn_close" type="button" @onclick="SaveAndClose">
-                    <span>Close</span>
+                    <span>@_locale["Button_Close"]</span>
                 </button>
             </div>
         </div>

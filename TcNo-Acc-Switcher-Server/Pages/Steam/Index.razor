@@ -23,8 +23,9 @@
 
 @inject AppSettings _appSettings
 <style>@(new AppSettings().GetCssBlock())</style>
-@inject Data.Settings.Steam _steam
 <style>@(new Data.Settings.Steam().GetSteamIdCssBlock())</style>
+@inject ILanguageContainerService  _locale
+@inject Data.Settings.Steam _steam
 
 
 <ContextMenu ContextMenuString=@_steam.ContextMenuJson />
@@ -35,10 +36,10 @@
     <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@_appData.CurrentStatus" spellcheck="false" disabled></div>
     <div>
         <div class="button" id="btnAddNew" onclick="newLogin()">
-            <span>Add New</span>
+            <span>@_locale["Button_AddNew"]</span>
         </div>
         <div class="button btn_login" id="btnLogin" onclick="swapTo(-1, event)">
-            <span>Login</span>
+            <span>@_locale["Button_Login"]</span>
         </div>
 
         <div class="button" id="btnSettings" onclick="location = 'Steam/Settings'">

@@ -22,6 +22,12 @@
 @inject IJSRuntime _jsRuntime
 @{ AppData.SetActiveIJsRuntime(_jsRuntime); }
 
+@inject ILanguageContainerService  _locale
+@code
+{
+    string _platform = "Steam";
+}
+
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
@@ -30,52 +36,52 @@
 
 
             <div class="SettingsHeader">
-                <hr><span>General settings</span>
+                <hr><span>@_locale["Settings_Header_GeneralSettings"]</span>
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="_steam.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Steam", _steam.DesktopShortcut)'><label class="form-check-label" for="Steam_DesktopShortcut"></label></div><label for="Steam_DesktopShortcut">Steam Switcher desktop shortcut<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="_steam.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Steam", _steam.DesktopShortcut)'><label class="form-check-label" for="Steam_DesktopShortcut"></label></div><label for="Steam_DesktopShortcut">@_locale["Settings_Shortcut", new { platform = _platform }]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin" @bind="_steam.Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label for="Steam_Admin">Run Steam as Admin<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin" @bind="_steam.Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label for="Steam_Admin">@_locale["Settings_Admin", new { platform = _platform }]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowSteamID" @bind="_steam.ShowSteamId"><label class="form-check-label" for="Steam_ShowSteamID"></label></div><label for="Steam_ShowSteamID">Show SteamID<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowSteamID" @bind="_steam.ShowSteamId"><label class="form-check-label" for="Steam_ShowSteamID"></label></div><label for="Steam_ShowSteamID">@_locale["Steam_ShowSteamID"]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowVAC" @bind="_steam.ShowVac"><label class="form-check-label" for="Steam_ShowVAC"></label></div><label for="Steam_ShowVAC">Show VAC Status<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowVAC" @bind="_steam.ShowVac"><label class="form-check-label" for="Steam_ShowVAC"></label></div><label for="Steam_ShowVAC">@_locale["Steam_ShowVac"]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowLimited" @bind="_steam.ShowLimited"><label class="form-check-label" for="Steam_ShowLimited"></label></div><label for="Steam_ShowLimited">Show Limited Status<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowLimited" @bind="_steam.ShowLimited"><label class="form-check-label" for="Steam_ShowLimited"></label></div><label for="Steam_ShowLimited">@_locale["Steam_ShowLimited"]<br></label>
             </div>
-            <div class="form-text"><span>Profile images expire after:</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="_steam.ImageExpiryTime"><span>Days</span></div>
+            <div class="form-text"><span>@_locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="_steam.ImageExpiryTime"></div>
 
 
             <div class="SettingsHeader">
-                <hr><span>Tray settings</span>
+                <hr><span>@_locale["Settings_Header_TraySettings"]</span>
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_TrayAccountName" @bind="_steam.TrayAccName"><label class="form-check-label" for="Steam_TrayAccountName"></label></div><label for="Steam_TrayAccountName">Show account name [not friend name]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_TrayAccountName" @bind="_steam.TrayAccName"><label class="form-check-label" for="Steam_TrayAccountName"></label></div><label for="Steam_TrayAccountName">@_locale["Steam_Tray_AccountName"]<br></label>
             </div>
-            <div class="form-text"><span>Max number of accounts to remember:</span><input type="number" id="Steam_TrayAccNumber" min="0" max="365" @bind="_steam.TrayAccNumber"></div>
+            <div class="form-text"><span>@_locale["Settings_TrayMax"]</span><input type="number" id="Steam_TrayAccNumber" min="0" max="365" @bind="_steam.TrayAccNumber"></div>
 
 
             <div class="SettingsHeader">
-                <hr><span>General</span>
+                <hr><span>@_locale["Settings_Header_GeneralTools"]</span>
                 <hr>
             </div>
-            <div class="buttoncol"><button class="btn" id="Steam_PickFolder" type="button" @onclick="PickFolder"><span>Pick Steam folder</span></button><button class="btn" id="Steam_CheckVAC" type="button" @onclick="ClearVacStatus"><span>Check account VAC status</span></button></div>
-            <div class="buttoncol"><button class="btn" id="Steam_ResetSettings" type="button" @onclick="ClearSettings"><span>Reset settings</span></button><button class="btn" id="Steam_ResetImages" type="button" @onclick="ClearImages"><span>Reset images</span></button></div>
+            <div class="buttoncol"><button class="btn" id="Steam_PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = _platform }]</span></button><button class="btn" id="Steam_CheckVAC" type="button" @onclick="ClearVacStatus"><span>@_locale["Steam_CheckVac"]</span></button></div>
+            <div class="buttoncol"><button class="btn" id="Steam_ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button><button class="btn" id="Steam_ResetImages" type="button" @onclick="ClearImages"><span>@_locale["Button_RefreshImages"]</span></button></div>
 
 
             <div class="SettingsHeader">
-                <hr><span>Other tools</span>
+                <hr><span>@_locale["Settings_Header_OtherTools"]</span>
                 <hr>
             </div>
-            <div class="buttoncol"><button class="btn" type="button" @onclick='() => _navManager.NavigateTo("/Steam/RestoreForgotten")'><span>Restore forgotten account</span></button><button class="btn" type="button" @onclick="SteamSwitcherFuncs.ClearForgotten"><span>Clear forgotten accounts</span></button></div>
-            <div class="buttoncol"><button class="btn" id="OpenFolder" type="button" @onclick="OpenFolder"><span>Open Steam Folder</span></button><button class="btn" id="Steam_AdvancedClearing" type="button" @onclick='() => _navManager.NavigateTo("/Steam/AdvancedClearing")'><span>Advanced cleaning...</span></button></div>
-            <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>Close</span></button></div>
+            <div class="buttoncol"><button class="btn" type="button" @onclick='() => _navManager.NavigateTo("/Steam/RestoreForgotten")'><span>@_locale["Settings_RestoreForgotten"]</span></button><button class="btn" type="button" @onclick="SteamSwitcherFuncs.ClearForgotten"><span>@_locale["Settings_ClearForgotten"]</span></button></div>
+            <div class="buttoncol"><button class="btn" id="OpenFolder" type="button" @onclick="OpenFolder"><span>@_locale["Settings_OpenFolder", new { platform = _platform }]</span></button><button class="btn" id="Steam_AdvancedClearing" type="button" @onclick='() => _navManager.NavigateTo("/Steam/AdvancedClearing")'><span>@_locale["Button_AdvancedCleaning"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
         </div>
     </div>
 </div>

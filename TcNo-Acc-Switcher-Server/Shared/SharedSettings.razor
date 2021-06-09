@@ -13,45 +13,45 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @inject Data.AppSettings _appSett
+@inject ILanguageContainerService  _locale
 
 <div class="SettingsHeader">
-    <hr><span>App-wide settings</span>
+    <hr><span>@_locale["Settings_Header_AppWide"]</span>
     <hr>
 </div>
 <div class="rowSetting rowDropdown">
-    <span>Current Style: </span>
     <ChooseLanguage />
 </div>
 <div>
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="StreamerMode" @bind="_appSett.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label></div><label for="StreamerMode">Enable streamer mode<br></label>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="StreamerMode" @bind="_appSett.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label></div><label for="StreamerMode">@_locale["Settings_StreamerMode"]<br></label>
 </div>
 <div class="rowSetting">
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="_appSett.TrayMinimizeNotExit"><label class="form-check-label" for="TrayMinimizeNotExit"></label></div><label for="TrayMinimizeNotExit">Exit minimises to tray<br></label>
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeLessMem" @bind="_appSett.TrayMinimizeLessMem"><label class="form-check-label" for="TrayMinimizeLessMem"></label></div><label for="TrayMinimizeLessMem">Use less RAM while in tray<br></label>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="_appSett.TrayMinimizeNotExit"><label class="form-check-label" for="TrayMinimizeNotExit"></label></div><label for="TrayMinimizeNotExit">@_locale["Settings_ExitToTray"]<br></label>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeLessMem" @bind="_appSett.TrayMinimizeLessMem"><label class="form-check-label" for="TrayMinimizeLessMem"></label></div><label for="TrayMinimizeLessMem">@_locale["Settings_TrayLowMem"]<br></label>
 </div>
 <div class="rowSetting">
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="_appSett.DesktopShortcut" @onclick="() => _appSett.DesktopShortcut_Toggle()"><label class="form-check-label" for="AppSett_DesktopShortcut"></label></div><label for="AppSett_DesktopShortcut">Desktop shortcut<br></label>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="_appSett.DesktopShortcut" @onclick="() => _appSett.DesktopShortcut_Toggle()"><label class="form-check-label" for="AppSett_DesktopShortcut"></label></div><label for="AppSett_DesktopShortcut">@_locale["Settings_DesktopShortcut"]<br></label>
 </div>
 <div class="rowSetting">
-    <span>Shortcuts for: </span>
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="_appSett.StartMenu" @onclick="() => _appSett.StartMenu_Toggle(false)"><label class="form-check-label" for="AppSett_StartMenu"></label></div><label for="AppSett_StartMenu">Program & Tray<br></label>
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenuPlatform" @bind="_appSett.StartMenuPlatforms" @onclick="() => _appSett.StartMenu_Toggle(true)"><label class="form-check-label" for="AppSett_StartMenuPlatform"></label></div><label for="AppSett_StartMenuPlatform">Platform<br></label>
+    <span>@_locale["Cleaning_Header_StartMenuShortcuts"]</span>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="_appSett.StartMenu" @onclick="() => _appSett.StartMenu_Toggle(false)"><label class="form-check-label" for="AppSett_StartMenu"></label></div><label for="AppSett_StartMenu">@_locale["Settings_StartMenu_ProgramTray"]<br></label>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenuPlatform" @bind="_appSett.StartMenuPlatforms" @onclick="() => _appSett.StartMenu_Toggle(true)"><label class="form-check-label" for="AppSett_StartMenuPlatform"></label></div><label for="AppSett_StartMenuPlatform">@_locale["Settings_StartMenu_Platform"]<br></label>
 </div>
 <div class="rowSetting">
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="_appSett.TrayStartup" @onclick="() => _appSett.Task_Toggle()"><label class="form-check-label" for="AppSett_TrayStartup"></label></div><label for="AppSett_TrayStartup">Start Tray with Windows<br></label>&nbsp;<a class="fancyLink" @onclick="() => _appSett.StartNow()">[Start Tray now]</a>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="_appSett.TrayStartup" @onclick="() => _appSett.Task_Toggle()"><label class="form-check-label" for="AppSett_TrayStartup"></label></div><label for="AppSett_TrayStartup">@_locale["Settings_Tray_StartWindows"]<br></label>&nbsp;<a class="fancyLink" @onclick="() => _appSett.StartNow()">@_locale["Settings_Tray_StartNow"]</a>
 </div>
 <div class="rowSetting rowDropdown">
-    <span>Current Style: </span>
+    <span>@_locale["Settings_CurrentStyle"]</span>
     <div class="dropdown">
         <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">
             @_appSett.SelectedStylesheet
-        <span class="caret"></span>
-    </button>
-    <ul class="custom-dropdown-menu dropdown-menu">
-        @foreach (var item in _appSett.GetStyleList())
-        {
-            <li class="custom-dropdown-item dropdown-item" @onclick="() => _appSett.SwapStylesheet(item)">@item</li>
-        }
-    </ul>
-</div>
+            <span class="caret"></span>
+        </button>
+        <ul class="custom-dropdown-menu dropdown-menu">
+            @foreach (var item in _appSett.GetStyleList())
+            {
+                <li class="custom-dropdown-item dropdown-item" @onclick="() => _appSett.SwapStylesheet(item)">@item</li>
+            }
+        </ul>
+    </div>
 </div>

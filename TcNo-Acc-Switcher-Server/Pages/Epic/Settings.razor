@@ -22,6 +22,12 @@
 @inject IJSRuntime _jsRuntime
 @{ AppData.SetActiveIJsRuntime(_jsRuntime); }
 
+@inject ILanguageContainerService  _locale
+@code
+{
+    string _platform = "Epic";
+}
+
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
@@ -30,37 +36,31 @@
 
 
             <div class="SettingsHeader">
-                <hr><span>General settings</span>
+                <hr><span>@_locale["Settings_Header_GeneralSettings"]</span>
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_epic.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Epic", _epic.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">Epic Switcher Desktop shortcut<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_epic.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Epic", _epic.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">@_locale["Settings_Shortcut", new { platform = _platform }]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_epic.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">Run Epic as Admin<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_epic.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">@_locale["Settings_Admin", new { platform = _platform }]<br></label>
             </div>
 
 
             <div class="SettingsHeader">
-                <hr><span>Tray settings</span>
+                <hr><span>@_locale["Settings_Header_TraySettings"]</span>
                 <hr>
             </div>
-            <div class="form-text"><span>Max number of accounts to remember:</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="_epic.TrayAccNumber"></div>
+            <div class="form-text"><span>@_locale["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="_epic.TrayAccNumber"></div>
 
 
             <div class="SettingsHeader">
-                <hr><span>General</span>
+                <hr><span>@_locale["Settings_Header_GeneralTools"]</span>
                 <hr>
             </div>
-            <div class="buttoncol"><button class="btn" id="PickFolder" type="button" @onclick="PickFolder"><span>Pick Epic folder</span></button><button class="btn" id="ResetSettings" type="button" @onclick="ClearSettings"><span>Reset settings</span></button></div>
-
-
-            <div class="SettingsHeader">
-                <hr><span>Other tools</span>
-                <hr>
-            </div>
-            <div class="buttoncol"><button class="btn" id="OpenFolder" type="button" @onclick="OpenFolder"><span>Open Epic Folder</span></button></div>
-            <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>Close</span></button></div>
+            <div class="buttoncol"><button class="btn" id="PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = _platform }]</span></button><button class="btn" id="OpenFolder" type="button" @onclick="OpenFolder"><span>@_locale["Settings_OpenFolder", new { platform = _platform }]</span></button></div>
+            <div class="buttoncol"><button class="btn" id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
         </div>
     </div>
 </div>

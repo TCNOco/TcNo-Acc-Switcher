@@ -23,8 +23,7 @@
 
 @inject AppSettings _appSettings
 <style>@(new AppSettings().GetCssBlock())</style>
-
-
+@inject ILanguageContainerService _locale
 @inject Data.Settings.Riot _riot
 
 
@@ -46,32 +45,32 @@
 
         @if (GetRuneterra())
         {
-        <div class="button" id="btnRuneterra" @onclick="() => RiotSwitcherFuncs.RiotStart('r')">
-            <svg viewBox="0 0 2084 2084" draggable="false" alt="Runeterra" class="riotIcoRuneterra">
-                <use href="img/icons/ico_Runeterra.svg#icoRuneterra"></use>
-            </svg>
-        </div>
+            <div class="button" id="btnRuneterra" @onclick="() => RiotSwitcherFuncs.RiotStart('r')">
+                <svg viewBox="0 0 2084 2084" draggable="false" alt="Runeterra" class="riotIcoRuneterra">
+                    <use href="img/icons/ico_Runeterra.svg#icoRuneterra"></use>
+                </svg>
+            </div>
         }
 
         @if (GetValorant())
         {
-    <div class="button" id="btnValorant" @onclick="() => RiotSwitcherFuncs.RiotStart('v')">
-        <svg viewBox="0 0 2084 2084" draggable="false" alt="Valorant" class="riotIcoValorant">
-            <use href="img/icons/ico_Valorant.svg#icoValorant"></use>
-        </svg>
-    </div>
+            <div class="button" id="btnValorant" @onclick="() => RiotSwitcherFuncs.RiotStart('v')">
+                <svg viewBox="0 0 2084 2084" draggable="false" alt="Valorant" class="riotIcoValorant">
+                    <use href="img/icons/ico_Valorant.svg#icoValorant"></use>
+                </svg>
+            </div>
         }
 
 
 
         <div class="button" id="btnAddNew" onclick="newLogin()">
-            <span>Add New</span>
+            <span>@_locale["Button_AddNew"]</span>
         </div>
         <div class="button" id="btnAddCurrent" onclick="currentRiotLogin()">
-            <span>Save Current</span>
+            <span>@_locale["Button_SaveCurrent"]</span>
         </div>
         <div class="button btn_login" id="btnLogin" onclick="swapTo(-1, event)">
-            <span>Login</span>
+            <span>@_locale["Button_Login"]</span>
         </div>
 
         <div class="button" id="btnSettings" onclick="location = 'Riot/Settings'">

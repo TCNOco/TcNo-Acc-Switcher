@@ -17,20 +17,22 @@
 @namespace TcNo_Acc_Switcher_Server.Pages
 @inject NavigationManager _navManager
 @{ AppData.SetActiveNavMan(_navManager); }
-@inject Data.AppSettings _appSett
+@inject AppSettings _appSett
 @inject IJSRuntime _jsRuntime
 @{ AppData.SetActiveIJsRuntime(_jsRuntime); }
+@inject ILanguageContainerService  _locale
+@using Shared;
 
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
             <div class="toastarea"></div>
             <SharedSettings />
-            
+
             @if (_appSett.DisabledPlatforms.Count > 0)
             {
                 <div class="SettingsHeader">
-                    <hr><span>Hidden Platforms</span>
+                    <hr><span>@_locale["Settings_Header_HiddenPlatforms"]</span>
                     <hr>
                 </div>
                 <div class="rowSetting">
@@ -41,7 +43,7 @@
                 </div>
             }
 
-            <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>Close</span></button></div>
+            <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
         </div>
     </div>
 </div>

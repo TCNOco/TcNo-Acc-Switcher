@@ -119,7 +119,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
             catch (Exception e)
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", "Failed to check for updates.");
-                Globals.DebugWriteLine("Failed to check for updates:" + e);
+                Globals.WriteToLog("Failed to check for updates:" + e);
             }
         }
     }

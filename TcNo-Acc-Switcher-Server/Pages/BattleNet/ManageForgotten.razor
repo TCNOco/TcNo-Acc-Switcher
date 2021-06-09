@@ -24,27 +24,28 @@
 @{ AppData.SetActiveIJsRuntime(_jsRuntime); }
 
 @inject Data.Settings.BattleNet _battleNet
+@inject ILanguageContainerService _locale;
 
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
             <toastarea class="toastarea" />
             <div class="SettingsHeader">
-                <hr><span>Remove accounts from ignore list</span>
+                <hr><span>@_locale["Ignored_RemoveAccounts"]</span>
                 <hr>
             </div>
             <p>
-                If you previously "ignored" an account, you can show them again here.
+                @_locale["Ignored_Description"]
             </p>
             <div class="forgottenList">
                 <select name="IgnoredAccounts" size="15" multiple id="IgnoredAccounts">
                 </select>
             </div>
             <div class="forgottenListActions">
-                <button class="btn btn_RestoreSelected" type="button" onclick="restoreBattleNetAccounts()"><span>Stop ignoring selected</span></button>
+                <button class="btn btn_RestoreSelected" type="button" onclick="restoreBattleNetAccounts()"><span>@_locale["Ignored_Stop"]</span></button>
             </div>
             <div class="buttoncol col_close">
-                <button class="btn btn_close" type="button" @onclick='() => _navManager.NavigateTo("/BattleNet/Settings")'><span>Close</span></button>
+                <button class="btn btn_close" type="button" @onclick='() => _navManager.NavigateTo("/BattleNet/Settings")'><span>@_locale["Button_Close"]</span></button>
             </div>
         </div>
     </div>

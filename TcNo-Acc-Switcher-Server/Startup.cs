@@ -13,7 +13,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Globalization;
 using System.Reflection;
 using AKSoftware.Localization.MultiLanguages;
 using Microsoft.AspNetCore.Builder;
@@ -23,7 +22,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
-using AKSoftware.Localization.MultiLanguages;
 
 namespace TcNo_Acc_Switcher_Server
 {

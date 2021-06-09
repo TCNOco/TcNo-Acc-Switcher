@@ -18,29 +18,29 @@
 @{ AppData.SetActiveNavMan(_navManager); }
 @inject IJSRuntime _jsRuntime
 @{ AppData.SetActiveIJsRuntime(_jsRuntime); }
+@inject ILanguageContainerService  _locale
 
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
             <toastarea class="toastarea" />
             <div class="SettingsHeader">
-                <hr><span>Restore forgotten accounts</span>
+                <hr><span>@_locale["Restore_Header"]</span>
                 <hr>
             </div>
             <p>
-                If you previously "forgot" an account, you can restore them here.<br />
-                This adds them back into your loginusers.vdf file, allowing you to switch to them.
+                @(new MarkupString(_locale["Restore_Info"]))
             </p>
             <div class="forgottenList">
                 <select name="ForgottenSteamAccounts" size="15" multiple id="ForgottenSteamAccounts">
                 </select>
             </div>
             <div class="forgottenListActions">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ForgottenShowId"><label class="form-check-label" for="Steam_ForgottenShowId"></label></div><label for="Steam_ForgottenShowId">Show SteamID<br></label>
-                <button class="btn btn_RestoreSelected" type="button" onclick="restoreSteamAccounts()"><span>Restore selected</span></button>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ForgottenShowId"><label class="form-check-label" for="Steam_ForgottenShowId"></label></div><label for="Steam_ForgottenShowId">@_locale["Steam_ShowSteamID"]<br></label>
+                <button class="btn btn_RestoreSelected" type="button" onclick="restoreSteamAccounts()"><span>@_locale["Restore_Button_Restore"]</span></button>
             </div>
             <div class="buttoncol col_close">
-                <button class="btn btn_close" type="button" @onclick='() => _navManager.NavigateTo("/Steam/Settings")'><span>Close</span></button>
+                <button class="btn btn_close" type="button" @onclick='() => _navManager.NavigateTo("/Steam/Settings")'><span>@_locale["Button_Close"]</span></button>
             </div>
         </div>
     </div>

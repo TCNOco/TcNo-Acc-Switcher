@@ -19,30 +19,29 @@
 @{ AppData.SetActiveIJsRuntime(_jsRuntime); }
 @inject NavigationManager _navManager
 @{ AppData.SetActiveNavMan(_navManager); }
+@inject ILanguageContainerService  _locale
 
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol clearingPage">
             <toastarea class="toastarea" />
             <div class="SettingsHeader">
-                <hr><span>Important info:</span><hr>
+                <hr><span>@_locale["Cleaning_ImportantInfoHeader"]</span><hr>
             </div>
             <div>
                 <p>
-                    Clicking a button will delete the related file(s) from your Steam installation.<br />
-                    Deleting loginusers.vdf will result in this account switcher showing no accounts.<br />
-                    You will need to login to them using Steam to get them back.
+                    @(new MarkupString(_locale["Cleaning_ImportantInfo"]))
                 </p>
             </div>
             <div id="restoreUnderstand">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Clearing_Understand" @bind="_notAccepted"><label class="form-check-label" for="Steam_Clearing_Understand"></label></div><label for="Steam_Clearing_Understand">I understand what these buttons do.<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Clearing_Understand" @bind="_notAccepted"><label class="form-check-label" for="Steam_Clearing_Understand"></label></div><label for="Steam_Clearing_Understand">@_locale["Cleaning_Understand"]<br></label>
             </div>
-            <button class="btn" id="Steam_Close" type="button" @onclick="Steam_Close" disabled="@Accepted"><span>Kill Steam process</span></button>
+            <button class="btn" id="Steam_Close" type="button" @onclick="Steam_Close" disabled="@Accepted"><span>@_locale["Cleaning_Button_KillProcess"]</span></button>
 
             <div class="clearingRow">
                 <div class="clearingLeft advancedClearingButtonCol">
                     <div class="SettingsHeader">
-                        <hr><span>General</span><hr>
+                        <hr><span>@_locale["Cleaning_Header_General"]</span><hr>
                     </div>
                     <div class="buttoncol">
                         <button class="btn" id="Steam_Clear_Logs" type="button" @onclick="Steam_Clear_Logs" disabled="@Accepted"><span>..\Steam\Logs</span></button>
@@ -61,7 +60,7 @@
                     </div>
 
                     <div class="SettingsHeader">
-                        <hr><span>Clean my login history</span><hr>
+                        <hr><span>@_locale["Cleaning_Header_LoginHistory"]</span><hr>
                     </div>
                     <div class="buttoncol">
                         <button class="btn" id="Steam_Clear_LoginUsers" type="button" @onclick="Steam_Clear_LoginUsers" disabled="@Accepted"><span>..\Steam\config\loginusers.vdf</span></button>
@@ -79,22 +78,22 @@
                         <button class="btn" id="Steam_Clear_RememberPassword" type="button" @onclick="Steam_Clear_RememberPassword" disabled="@Accepted"><span>HKCU\..\RememberPassword</span></button>
                     </div>
                     <div class="SettingsHeader">
-                        <hr><span>Steam Switcher</span><hr>
+                        <hr><span>@_locale["Cleaning_Header_PlatformCleaning"]</span><hr>
                     </div>
                     <div class="buttoncol">
-                        <button class="btn" id="Steam_Clear_Forgotten" type="button" @onclick="Steam_Clear_Forgotten" disabled="@Accepted"><span>Forgotten account backups</span></button>
+                        <button class="btn" id="Steam_Clear_Forgotten" type="button" @onclick="Steam_Clear_Forgotten" disabled="@Accepted"><span>@_locale["Cleaning_Button_ForgottenBackups"]</span></button>
                     </div>
                 </div>
                 <div class="clearingRight">
                     <div id="lines"></div>
                 </div>
             </div>
-            <div class="clearLogDiv"><button onclick="document.getElementById('lines').innerHTML = ''"><span>Clear log</span></button></div>
+            <div class="clearLogDiv"><button onclick="document.getElementById('lines').innerHTML = ''"><span>@_locale["Button_ClearLog"]</span></button></div>
 
 
             <div class="buttoncol col_close">
-                <a @onclick='() => GeneralInvocableFuncs.OpenLinkInBrowser("https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Steam-Cleaning")' class="fancyLink">More Info (Wiki)</a>
-                <button class="btn btn_close" type="button" @onclick='() => _navManager.NavigateTo("/Steam/Settings")'><span>Close</span></button>
+                <a @onclick='() => GeneralInvocableFuncs.OpenLinkInBrowser("https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Steam-Cleaning")' class="fancyLink">@_locale["Button_WikiInfo"]</a>
+                <button class="btn btn_close" type="button" @onclick='() => _navManager.NavigateTo("/Steam/Settings")'><span>@_locale["Button_Close"]</span></button>
             </div>
         </div>
     </div>

@@ -29,17 +29,9 @@
 @inject Data.Settings.Riot _riot
 @inject Data.Settings.Steam _steam
 @inject Data.Settings.Ubisoft _ubisoft
-
 @inject ILanguageContainerService  _locale
 
 @if (AppSettings.Instance.UpdateAvailable)
-{
-    <div class="updateBar" @onclick="UpdateNow">
-        <span>Update available! Click here to start it.</span>
-    </div>
-}
-
-@if (true)
 {
     <div class="updateBar" @onclick="UpdateNow">
         <span>@_locale["Update"]</span>
@@ -114,8 +106,6 @@
     }
     protected override void OnInitialized()
     {
-    // This will make the current component gets updated whenever you change the language of the application 
         _locale.InitLocalizedComponent(this);
     }
-
 }
