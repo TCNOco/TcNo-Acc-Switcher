@@ -20,6 +20,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading;
@@ -57,7 +58,7 @@ namespace TcNo_Acc_Switcher_Updater
         public static bool QueueCreateUpdate;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 
-        private string _currentVersion = "0";
+        private string _currentVersion = "";
         private string _latestVersion = "";
 
 
@@ -88,7 +89,7 @@ namespace TcNo_Acc_Switcher_Updater
         private void WriteLine(string line, string lineBreak = "\n")
         {
             Dispatcher.BeginInvoke(new Action(() => {
-                LogBox.Text += lineBreak + line;
+                LogBox.Text += line + lineBreak;
                 LogBox.ScrollToEnd();
             }), DispatcherPriority.Normal);
         }
@@ -124,7 +125,7 @@ namespace TcNo_Acc_Switcher_Updater
 
         private Dictionary<string, string> _updatesAndChanges = new();
         private readonly string _currentDir = Directory.GetCurrentDirectory();
-        private readonly string _updaterDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location); // Where this program is located
+        private readonly string _updaterDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location); // Where this program is located
 
         private void MainWindow_OnContentRendered(object sender, EventArgs e) => new Thread(Init).Start();
         
@@ -144,33 +145,27 @@ namespace TcNo_Acc_Switcher_Updater
             }
 
             SetStatus("Checking version");
-            try
+            // Try get version from Globals.dll
+            _currentVersion = GetVersionFromGlobals();
+
+            // If couldn't: Try get Version from WindowSettings.json
+            if (string.IsNullOrEmpty(_currentVersion) && File.Exists("WindowSettings.json"))
             {
-                if (File.Exists("WindowSettings.json"))
+                try
                 {
-                    var o = JObject.Parse(File.ReadAllText("WindowSettings.json"));
-                    _currentVersion = o["Version"]?.ToString();
-                    WriteLine("Current version: " + _currentVersion + " \n", "");
+                    _currentVersion = JObject.Parse(File.ReadAllText("WindowSettings.json"))["Version"]?.ToString();
                 }
-                else
+                catch (Exception)
                 {
-                    SetStatusAndLog("Missing settings file.", "");
-                    WriteLine("There is no settings file. Please launch the application if it's installed at all first.");
-                    WriteLine("(Located in parent folder, next to 'TcNo-Acc-Switcher.exe' you should see 'WindowSettings.json'");
-                    CreateExitButton();
-                    return;
+                    //
                 }
             }
-            catch (Exception)
-            {
-                SetStatusAndLog("Corrupt settings file.", "");
-                WriteLine("The settings file is missing the 'Version' variable.");
-                WriteLine("(Located in parent folder, next to 'TcNo-Acc-Switcher.exe' you should see 'WindowSettings.json'");
-                CreateExitButton();
-                return;
-            }
+
+            // If couldn't: Verify instead of updating (Done later).
+            if (string.IsNullOrEmpty(_currentVersion)) WriteLine("Could not get version. Click \"Verify\" to update & verify files" + Environment.NewLine);
+            
             // Styling
-            if (File.Exists("StyleSettings.json"))
+            if (File.Exists("StyleSettings.yaml"))
                 Dispatcher.BeginInvoke(new Action(() => {
                     try
                     {
@@ -178,22 +173,22 @@ namespace TcNo_Acc_Switcher_Updater
                         var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
                         var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(File.ReadAllText("StyleSettings.yaml"))));
                         // Need to try catch every one of these, as they may be invalid.
-                        var highlightColor = TryApplyTheme(dict, "#8BE9FD", "linkColor"); // Add a specific Highlight color later?
+                        var highlightColor = TryApplyTheme(dict, "#FFAA00", "linkColor"); // Add a specific Highlight color later?
                         var headerColor = TryApplyTheme(dict, "#14151E", "headerbarBackground");
-                        var mainBackground = TryApplyTheme(dict, "#0E1419", "mainBackground");
-                        var listBackground = TryApplyTheme(dict, "#070A0D", "modalInputBackground");
-                        var borderedItemBorderColor = TryApplyTheme(dict, "#888", "borderedItemBorderColor");
-                        var buttonBackground = TryApplyTheme(dict, "#274560", "buttonBackground");
-                        var buttonBackgroundHover = TryApplyTheme(dict, "#28374E", "buttonBackground-hover");
-                        var buttonBackgroundActive = TryApplyTheme(dict, "#28374E", "buttonBackground-active");
+                        var mainBackground = TryApplyTheme(dict, "#28293A", "mainBackground");
+                        var listBackground = TryApplyTheme(dict, "#212529", "modalInputBackground");
+                        var borderedItemBorderColor = TryApplyTheme(dict, "#888888", "borderedItemBorderColor");
+                        var buttonBackground = TryApplyTheme(dict, "#333333", "buttonBackground");
+                        var buttonBackgroundHover = TryApplyTheme(dict, "#444444", "buttonBackground-hover");
+                        var buttonBackgroundActive = TryApplyTheme(dict, "#222222", "buttonBackground-active");
                         var buttonColor = TryApplyTheme(dict, "#FFFFFF", "buttonColor");
-                        var buttonBorder = TryApplyTheme(dict, "#274560", "buttonBorder");
-                        var buttonBorderHover = TryApplyTheme(dict, "#274560", "buttonBorder-hover");
-                        var buttonBorderActive = TryApplyTheme(dict, "#8BE9FD", "buttonBorder-active");
+                        var buttonBorder = TryApplyTheme(dict, "#888888", "buttonBorder");
+                        var buttonBorderHover = TryApplyTheme(dict, "#888888", "buttonBorder-hover");
+                        var buttonBorderActive = TryApplyTheme(dict, "#FFAA00", "buttonBorder-active");
                         var windowControlsBackground = TryApplyTheme(dict, "#14151E", "windowControlsBackground");
                         var windowControlsBackgroundActive = TryApplyTheme(dict, "#3B4853", "windowControlsBackground-active");
                         var windowControlsCloseBackground = TryApplyTheme(dict, "#D51426", "windowControlsCloseBackground");
-                        var windowControlsCloseBackgroundActive = TryApplyTheme(dict, "#D51426", "windowControlsCloseBackground-active");
+                        var windowControlsCloseBackgroundActive = TryApplyTheme(dict, "#E81123", "windowControlsCloseBackground-active");
 
                         Resources["HighlightColor"] = highlightColor;
                         Resources["HeaderColor"] = headerColor;
@@ -219,6 +214,12 @@ namespace TcNo_Acc_Switcher_Updater
                 }), DispatcherPriority.Normal);
 
             ButtonHandler(false, "...");
+            if (string.IsNullOrEmpty(_currentVersion))
+            {
+                SetStatus("Press button below!");
+                CreateVerifyAndExitButton();
+                return;
+            }
             SetStatus("Checking for updates");
 
             // Get info on updates, and get updates since last:
@@ -227,16 +228,35 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 if (VerifyAndClose) // Verify and close only works if up to date
                 {
-                    VerifyAndExitButton();
+                    VerifyAndExitButton_Click();
                     return;
                 }
-                else
-                    CreateVerifyAndExitButton();
+                CreateVerifyAndExitButton();
             }
             else if (VerifyAndClose)
                 WriteLine("To verify files you need to update first.");
 
             _updatesAndChanges = _updatesAndChanges.Reverse().ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        private static string GetVersionFromGlobals()
+        {
+            // Try read version directly from Globals file.
+            var dllPath = Path.Join(Directory.GetCurrentDirectory(), "TcNo-Acc-Switcher-Globals.dll");
+            if (!File.Exists(dllPath)) return "";
+            try
+            {
+                // Copy file because you can't unload once loaded:
+                var tempDll = Path.Join(Directory.GetCurrentDirectory(), "temp.dll");
+                File.Copy(dllPath, tempDll, true);
+                var version = Assembly.LoadFrom(tempDll).GetType("TcNo_Acc_Switcher_Globals.Globals")?.GetField("Version")?.GetValue("Version");
+                if (version is string s) return s;
+                return "";
+            }
+            catch (Exception)
+            {
+                return "";
+            }
         }
 
         private static Brush TryApplyTheme(IReadOnlyDictionary<string, string> dict, string def, string e)
@@ -370,14 +390,14 @@ namespace TcNo_Acc_Switcher_Updater
         private void CreateVerifyAndExitButton()
         {
             StartButton.Click -= StartUpdate_Click;
-            StartButton.Click += VerifyAndExitButton;
+            StartButton.Click += VerifyAndExitButton_Click;
             ButtonHandler(true, "Verify files");
         }
 
         /// <summary>
         /// Click handler for verify and exit button. After verification, changes to exit button
         /// </summary>
-        private void VerifyAndExitButton(object sender = null, RoutedEventArgs e = null)
+        private void VerifyAndExitButton_Click(object sender = null, RoutedEventArgs e = null)
         {
             VerifyFiles();
             CreateExitButton();
@@ -428,6 +448,7 @@ namespace TcNo_Acc_Switcher_Updater
 
             File.Delete(hashFilePath);
             WriteLine("Files verified!");
+            UpdateProgress(100);
         }
 
         /// <summary>

@@ -61,14 +61,17 @@ namespace TcNo_Acc_Switcher_Server.Data
         private Point _windowSize = new() { X = 800, Y = 450 };
         [JsonProperty("WindowSize", Order = 3)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
 
+        private readonly string _version = Globals.Version;
+        [JsonProperty("Version", Order = 4)] public string Version => _instance._version;
+
         private SortedSet<string> _disabledPlatforms = new() {};
 
-        [JsonProperty("DisabledPlatforms", Order = 4)]
+        [JsonProperty("DisabledPlatforms", Order = 5)]
         public SortedSet<string> DisabledPlatforms { get => _instance._disabledPlatforms; set => _instance._disabledPlatforms = value; }
 
         private bool _trayMinimizeNotExit;
 
-        [JsonProperty("TrayMinimizeNotExit", Order = 4)]
+        [JsonProperty("TrayMinimizeNotExit", Order = 6)]
         public bool TrayMinimizeNotExit
         {
             get => _instance._trayMinimizeNotExit;
@@ -85,7 +88,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         private bool _trayMinimizeLessMem;
-        [JsonProperty("TrayMinimizeLessMem", Order = 4)] public bool TrayMinimizeLessMem { get => _instance._trayMinimizeLessMem; set => _instance._trayMinimizeLessMem = value; }
+        [JsonProperty("TrayMinimizeLessMem", Order = 7)] public bool TrayMinimizeLessMem { get => _instance._trayMinimizeLessMem; set => _instance._trayMinimizeLessMem = value; }
 
 
         private bool _desktopShortcut;
