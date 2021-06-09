@@ -73,7 +73,16 @@ namespace TcNo_Acc_Switcher_Tray
 
         private void InitMenu(bool first = true)
         {
-            if (!File.Exists("Tray_Users.json")) Environment.Exit(1);
+            MessageBox.Show(
+                $"There were no accounts found.{Environment.NewLine}Try switching accounts first, or locate 'Tray_Users.json'",
+                "Tray Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (!File.Exists("Tray_Users.json"))
+            {
+                MessageBox.Show(
+                    "There were no accounts found. Try switching accounts first, or locate 'Tray_Users.json'",
+                    "Tray Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
             if (string.Equals(Program.LastHash, GetFileMd5("Tray_Users.json"), StringComparison.Ordinal)) return; // Don't init again
             Program.LastHash = GetFileMd5("Tray_Users.json");
 
