@@ -58,6 +58,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         private int _serverPort = 5000 ;
         [JsonProperty("ServerPort", Order = 2)] public int ServerPort { get => _instance._serverPort; set => _instance._serverPort = value; }
 
+        private Point _windowSize = new() { X = 800, Y = 450 };
+        [JsonProperty("WindowSize", Order = 3)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
+
         private SortedSet<string> _disabledPlatforms = new() {};
 
         [JsonProperty("DisabledPlatforms", Order = 4)]
