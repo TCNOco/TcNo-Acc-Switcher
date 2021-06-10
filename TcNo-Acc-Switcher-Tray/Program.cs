@@ -73,9 +73,6 @@ namespace TcNo_Acc_Switcher_Tray
 
         private void InitMenu(bool first = true)
         {
-            MessageBox.Show(
-                $"There were no accounts found.{Environment.NewLine}Try switching accounts first, or locate 'Tray_Users.json'",
-                "Tray Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             if (!File.Exists("Tray_Users.json"))
             {
                 MessageBox.Show(
