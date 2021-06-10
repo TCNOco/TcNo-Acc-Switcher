@@ -114,9 +114,11 @@ namespace TcNo_Acc_Switcher_Client
                 {
                     if (!NativeMethods.AttachToConsole(-1)) // Attach to a parent process console (ATTACH_PARENT_PROCESS)
                         NativeMethods.AllocConsole();
+                    Console.WriteLine(Environment.NewLine);
                     await ConsoleMain(e);
+                    Console.WriteLine(Environment.NewLine + "Press any key to close this window...");
                     NativeMethods.FreeConsole();
-                    Globals.WriteToLog("Press any key to close this window...");
+                    Environment.Exit(1);
                     return;
                 }
 
@@ -202,7 +204,7 @@ namespace TcNo_Acc_Switcher_Client
         private static async Task ConsoleMain(StartupEventArgs e)
         {
             Console.WriteLine("Welcome to the TcNo Account Switcher - Command Line Interface!");
-            Console.WriteLine("Use -h (or --help) for more info.");
+            Console.WriteLine("Use -h (or --help) for more info." + Environment.NewLine);
             
             for (var i = 0; i != e.Args.Length; ++i)
             {
