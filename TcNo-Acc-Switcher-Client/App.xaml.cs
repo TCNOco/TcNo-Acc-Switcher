@@ -174,6 +174,15 @@ namespace TcNo_Acc_Switcher_Client
                     case "verbose":
                         Globals.VerboseMode = true;
                         break;
+                    case "h":
+                    case "-h":
+                    case "help":
+                    case "--help":
+                        Console.WriteLine("Welcome to the TcNo Account Switcher!");
+                        Console.WriteLine("This is the command line interface. You are able to use any of the following arguments with this program:");
+                        Console.WriteLine("-");
+                        Environment.Exit(0);
+                        break;
                     default:
                         Globals.WriteToLog($"Unknown argument: \"{e.Args[i]}\"");
                         break;
@@ -184,7 +193,9 @@ namespace TcNo_Acc_Switcher_Client
                 Environment.Exit(1);
 
             // Key being held down?
-            if ((Keyboard.Modifiers & ModifierKeys.Control) > 0)
+            if ((Keyboard.Modifiers & ModifierKeys.Control) > 0 || (Keyboard.Modifiers & ModifierKeys.Alt) > 0 ||
+                (Keyboard.Modifiers & ModifierKeys.Shift) > 0 |
+                ((Keyboard.GetKeyStates(Key.Scroll) & KeyStates.Down) != 0))
             {
                 // This can be improved. Somehow ignore self, and make sure all processes are killed before self.
                 if (GeneralFuncs.CanKillProcess("TcNo"))
@@ -201,8 +212,8 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         // Try to show from tray, as user may not know it's hidden there.
                         MessageBox.Show(!Globals.BringToFront()
-                            ? "Another TcNo Account Switcher instance has been detected.\n[Something wrong? Hold Ctrl while starting to close all TcNo processes!]"
-                            : "TcNo Account Switcher was running.\nI've brought it to the top.\nMake sure to check your Windows Task Tray for the icon :)\n- You can exit it from there too\n\n[Something wrong? Hold Ctrl while starting to close all TcNo processes!]", "TcNo Account Switcher Notice", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                            ? "Another TcNo Account Switcher instance has been detected.\n[Something wrong? Hold Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]"
+                            : "TcNo Account Switcher was running.\nI've brought it to the top.\nMake sure to check your Windows Task Tray for the icon :)\n- You can exit it from there too\n\n[Something wrong? Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]", "TcNo Account Switcher Notice", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
                         Environment.Exit(1056); // 1056	An instance of the service is already running.
                     }
                 }

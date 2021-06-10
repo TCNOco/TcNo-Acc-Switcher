@@ -18,11 +18,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="MainWindow" Height="397" Width="523"
+        Title="TcNo Account Switcher Updater" Height="397" Width="523"
         Closed="Window_Closed"
         Background="#28293A" WindowStyle="None" AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
-        ContentRendered="MainWindow_OnContentRendered">
+        ContentRendered="MainWindow_OnContentRendered"
+        Topmost="True">
     <Window.Resources>
         <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
         <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
