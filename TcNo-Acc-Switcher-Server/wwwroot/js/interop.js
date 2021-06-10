@@ -1,4 +1,29 @@
-﻿jQueryAppend = (jQuerySelector, strToInsert) => {
+﻿$(function () {
+    /*
+     * Prevents default browser navigation (Often causes breaks in code by somehow keeping state)
+     * Can't seem to do this via the WebView2 component directly as key presses just don't reach the app...
+     * So, instead the mouse back button is handled here.
+     * Don't know where I could handle a keyboard back button... Because I can't find a JS key for it.
+     *
+     * tldr: pressing mouse back, or keyboard back often somewhat reliably causes the error in-app, and should be handled differently.
+     */
+    $(document).bind("mouseup", (e) => {
+        if (e.which === 4) { // Backward mouse button
+            if (window.location.pathname === "/") randomAni("#btnBack .icon");
+            else {
+                const tempUri = document.location.href.split("?")[0];
+                document.location.href = tempUri + (tempUri.endsWith("/") ? "../" : "/../");
+            }
+            e.preventDefault();
+            return;
+        }
+        if (e.which === 5) { // Forward mouse button
+            e.preventDefault();
+        };
+    });
+});
+
+jQueryAppend = (jQuerySelector, strToInsert) => {
     $(jQuerySelector).append(strToInsert);
 };
 jQueryProcessAccListSize = () => {
