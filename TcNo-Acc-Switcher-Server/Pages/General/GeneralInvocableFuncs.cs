@@ -120,51 +120,54 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiConfirmAction] action={action.Split(":")[0]}, value={value}");
             if (!value) return Task.FromResult("");
-            
-            var accName = action.Split(":")[1];
 
-            if (action.StartsWith("AcceptForgetEpicAcc:"))
+            var split = action.Split(":");
+            if (split.Length > 1)
             {
-                Epic.SetForgetAcc(true);
-                EpicSwitcherFuncs.ForgetAccount(accName);
-                return Task.FromResult("refresh");
-            }
+                var accName = split[1];
 
-            if (action.StartsWith("AcceptForgetSteamAcc:"))
-            {
-                Steam.SetForgetAcc(true);
-                SteamSwitcherFuncs.ForgetAccount(accName);
-                return Task.FromResult("refresh");
-            }
+                if (action.StartsWith("AcceptForgetEpicAcc:"))
+                {
+                    Epic.SetForgetAcc(true);
+                    EpicSwitcherFuncs.ForgetAccount(accName);
+                    return Task.FromResult("refresh");
+                }
 
-            if (action.StartsWith("AcceptForgetOriginAcc:"))
-            {
-                Origin.SetForgetAcc(true);
-                OriginSwitcherFuncs.ForgetAccount(accName);
-                return Task.FromResult("refresh");
-            }
+                if (action.StartsWith("AcceptForgetSteamAcc:"))
+                {
+                    Steam.SetForgetAcc(true);
+                    SteamSwitcherFuncs.ForgetAccount(accName);
+                    return Task.FromResult("refresh");
+                }
 
-            if (action.StartsWith("AcceptForgetUbisoftAcc:"))
-            {
-                Ubisoft.SetForgetAcc(true);
-                UbisoftSwitcherFuncs.ForgetAccount(accName);
-                return Task.FromResult("refresh");
-            }
+                if (action.StartsWith("AcceptForgetOriginAcc:"))
+                {
+                    Origin.SetForgetAcc(true);
+                    OriginSwitcherFuncs.ForgetAccount(accName);
+                    return Task.FromResult("refresh");
+                }
 
-            if (action.StartsWith("AcceptForgetBattleNetAcc:"))
-            {
-                BattleNet.SetForgetAcc(true);
-                BattleNetSwitcherFuncs.ForgetAccount(accName);
-                return Task.FromResult("refresh");
-            }
+                if (action.StartsWith("AcceptForgetUbisoftAcc:"))
+                {
+                    Ubisoft.SetForgetAcc(true);
+                    UbisoftSwitcherFuncs.ForgetAccount(accName);
+                    return Task.FromResult("refresh");
+                }
 
-            if (action.StartsWith("AcceptForgetRiotAcc:"))
-            {
-                Riot.SetForgetAcc(true);
-                RiotSwitcherFuncs.ForgetAccount(accName);
-                return Task.FromResult("refresh");
-            }
+                if (action.StartsWith("AcceptForgetBattleNetAcc:"))
+                {
+                    BattleNet.SetForgetAcc(true);
+                    BattleNetSwitcherFuncs.ForgetAccount(accName);
+                    return Task.FromResult("refresh");
+                }
 
+                if (action.StartsWith("AcceptForgetRiotAcc:"))
+                {
+                    Riot.SetForgetAcc(true);
+                    RiotSwitcherFuncs.ForgetAccount(accName);
+                    return Task.FromResult("refresh");
+                }
+            }
             switch (action)
             {
                 case "ClearSteamBackups": SteamSwitcherFuncs.ClearForgotten_Confirmed();

@@ -106,8 +106,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         private string _selectedStylesheet;
         [JsonIgnore] public string SelectedStylesheet { get => _instance._selectedStylesheet; set => _instance._selectedStylesheet = value; }
 
-        [JsonIgnore] public static readonly string[] PlatformList = { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot" };
-
         [JsonIgnore] public string PlatformContextMenu = @"[
               {""Hide platform"": ""hidePlatform()""},
               {""Create Desktop Shortcut"": ""createPlatformShortcut()""}
@@ -567,7 +565,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 else
                 {
                     Directory.CreateDirectory(platformsFolder);
-                    foreach (var platform in PlatformList)
+                    foreach (var platform in Globals.PlatformList)
                     {
                         CreatePlatformShortcut(platformsFolder, platform, platform.ToLowerInvariant());
                     }

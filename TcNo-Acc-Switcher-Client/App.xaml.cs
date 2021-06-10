@@ -17,12 +17,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shapes;
@@ -47,7 +49,6 @@ namespace TcNo_Acc_Switcher_Client
 #pragma warning restore CA2211 // Non-constant fields should not be visible
         private static readonly HttpClient Client = new();
 
-#if DEBUG
         internal static class NativeMethods
         {
             // http://msdn.microsoft.com/en-us/library/ms681944(VS.85).aspx
@@ -57,10 +58,12 @@ namespace TcNo_Acc_Switcher_Client
             internal static extern int AllocConsole();
             [DllImport("kernel32.dll", SetLastError = true)]
             internal static extern int FreeConsole();
-            [DllImport("kernel32.dll")]
+            [DllImport("kernel32.dll", SetLastError = true)]
             private static extern IntPtr GetConsoleWindow();
             [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             private static extern bool SetWindowText(IntPtr hwnd, string lpString);
+            [DllImport("kernel32.dll", SetLastError = true)]
+            private static extern bool AttachConsole(int dwProcessId);
 
             public static void SetWindowText(string text)
             {
@@ -68,6 +71,7 @@ namespace TcNo_Acc_Switcher_Client
 
                 SetWindowText(handle, text);
             }
+            public static bool AttachToConsole(int dwProcessId) => AttachConsole(dwProcessId);
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -75,123 +79,60 @@ namespace TcNo_Acc_Switcher_Client
             _ = NativeMethods.FreeConsole();
             Mutex.ReleaseMutex();
         }
-#else
-        protected override void OnExit(ExitEventArgs e)
-        {
-            Mutex.ReleaseMutex();
-        }
-#endif
-
+        
         private static readonly Mutex Mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
         [STAThread]
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             // Upload crash logs if any, before starting program
             UploadLogs();
+
+            if (e.Args.Length != 0) // An argument was passed
+            {
+                // Iterate through arguments
+                foreach (var eArg in e.Args)
+                {
+                    // Check if arguments are a platform
+                    foreach (var platform in Globals.PlatformList)
+                    {
+                        // Is a platform -- In other words: Show that platform.
+                        if (string.Equals(platform, eArg, StringComparison.InvariantCultureIgnoreCase))
+                            StartPage = platform;
+                    }
+
+                    // Check if it was verbose mode.
+                    Globals.VerboseMode = Globals.VerboseMode || eArg is "v" or "vv" or "verbose";
+                }
+
+
+                // Was not asked to open a platform screen, or was NOT just the verbose mode argument
+                // - Therefore: It was a CLI command
+                if (StartPage == "" && !(Globals.VerboseMode && e.Args.Length == 1))
+                {
+                    if (!NativeMethods.AttachToConsole(-1)) // Attach to a parent process console (ATTACH_PARENT_PROCESS)
+                        NativeMethods.AllocConsole();
+                    await ConsoleMain(e);
+                    NativeMethods.FreeConsole();
+                    Globals.WriteToLog("Press any key to close this window...");
+                    return;
+                }
+
+            }
+            
 #if DEBUG
-            _ = NativeMethods.AllocConsole();
+            NativeMethods.AllocConsole();
             NativeMethods.SetWindowText("Debug console");
             Globals.WriteToLog("Debug Console started");
 #endif
             Globals.ClearLogs();
 
-            base.OnStartup(e);
-            var quitArg = false;
-            for (var i = 0; i != e.Args.Length; ++i)
-            {
-                if (e.Args[i]?[0] == '+')
-                {
-                    var command = e.Args[i][1..].Split(':'); // Drop '+' and split
-                    var platform = command[0];
-                    var account = command[1];
-                    
-                    switch (platform)
-                    {
-                        case "b": // Battle.net
-                            // Battlenet format: +b:<email>
-                            Globals.WriteToLog("Battle.net switch requested");
-                            TcNo_Acc_Switcher_Server.Data.Settings.BattleNet.Instance.LoadFromFile();
-                            _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);
-                            break;
-                        case "e": // Epic Games
-                            // Epic Games format: +e:<username>
-                            Globals.WriteToLog("Epic Games switch requested");
-                            TcNo_Acc_Switcher_Server.Data.Settings.Epic.Instance.LoadFromFile();
-                            TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account);
-                            break;
-                        case "o": // Origin
-                            // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
-                            Globals.WriteToLog("Origin switch requested");
-                            TcNo_Acc_Switcher_Server.Data.Settings.Origin.Instance.LoadFromFile();
-                            TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account, (command.Length > 2 ? int.Parse(command[3]) : 0));
-                            break;
-                        case "r": // Riot Games
-                            // Riot Games format: +e:<username>
-                            Globals.WriteToLog("Riot Games switch requested");
-                            TcNo_Acc_Switcher_Server.Data.Settings.Riot.Instance.LoadFromFile();
-                            TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'));
-                            break;
-                        case "s": // Steam
-                            // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
-                            Globals.WriteToLog("Steam switch requested");
-                            TcNo_Acc_Switcher_Server.Data.Settings.Steam.Instance.LoadFromFile();
-                            TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0], ePersonaState: (command.Length > 2 ? int.Parse(command[3]) : -1)); // Request has a PersonaState in it
-                            break;
-                        case "u": // Ubisoft Connect
-                            // Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]
-                            Globals.WriteToLog("Ubisoft Connect switch requested");
-                            TcNo_Acc_Switcher_Server.Data.Settings.Ubisoft.Instance.LoadFromFile();
-                            TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account, (command.Length > 2 ? int.Parse(command[3]) : -1));
-                            break;
-                    }
-
-                    quitArg = true;
-                }
-                else switch (e.Args[i])
-                {
-                    case "battlenet":
-                        StartPage = "BattleNet"; 
-                        break;
-                    case "epic":
-                    case "origin":
-                    case "riot":
-                    case "steam":
-                    case "ubisoft":
-                            StartPage = char.ToUpper(e.Args[i][0]) + e.Args[i][1..];
-                        break;
-                    case "logout":
-                        TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts();
-                        quitArg = true;
-                        break;
-                    case "quit":
-                        quitArg = true;
-                        break;
-                    case "v":
-                    case "vv":
-                    case "verbose":
-                        Globals.VerboseMode = true;
-                        break;
-                    case "h":
-                    case "-h":
-                    case "help":
-                    case "--help":
-                        Console.WriteLine("Welcome to the TcNo Account Switcher!");
-                        Console.WriteLine("This is the command line interface. You are able to use any of the following arguments with this program:");
-                        Console.WriteLine("-");
-                        Environment.Exit(0);
-                        break;
-                    default:
-                        Globals.WriteToLog($"Unknown argument: \"{e.Args[i]}\"");
-                        break;
-                }
-            }
-
-            if (quitArg)
-                Environment.Exit(1);
-
+            // Show window (Because no command line commands were parsed)
+            var mainWindow = new MainWindow();
+            mainWindow.ShowDialog();
+            
             // Key being held down?
             if ((Keyboard.Modifiers & ModifierKeys.Control) > 0 || (Keyboard.Modifiers & ModifierKeys.Alt) > 0 ||
                 (Keyboard.Modifiers & ModifierKeys.Shift) > 0 |
@@ -211,9 +152,19 @@ namespace TcNo_Acc_Switcher_Client
                     if (!Mutex.WaitOne(TimeSpan.Zero, true))
                     {
                         // Try to show from tray, as user may not know it's hidden there.
-                        MessageBox.Show(!Globals.BringToFront()
-                            ? "Another TcNo Account Switcher instance has been detected.\n[Something wrong? Hold Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]"
-                            : "TcNo Account Switcher was running.\nI've brought it to the top.\nMake sure to check your Windows Task Tray for the icon :)\n- You can exit it from there too\n\n[Something wrong? Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]", "TcNo Account Switcher Notice", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                        var text = "";
+                        if (!Globals.BringToFront())
+                            text = "Another TcNo Account Switcher instance has been detected." + Environment.NewLine +
+                                   "[Something wrong? Hold Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]";
+                        else
+                            text = "TcNo Account Switcher was running." + Environment.NewLine +
+                                   "I've brought it to the top." + Environment.NewLine +
+                                   "Make sure to check your Windows Task Tray for the icon :)" + Environment.NewLine +
+                                   "- You can exit it from there too" + Environment.NewLine + Environment.NewLine +
+                                   "[Something wrong? Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]";
+
+                        MessageBox.Show(text, "TcNo Account Switcher Notice", MessageBoxButton.OK, MessageBoxImage.Information, 
+                            MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
                         Environment.Exit(1056); // 1056	An instance of the service is already running.
                     }
                 }
@@ -241,6 +192,186 @@ namespace TcNo_Acc_Switcher_Client
 
             // Check for update in another thread
             new Thread(CheckForUpdate).Start();
+        }
+
+        /// <summary>
+        /// CLI specific interface for TcNo Account Switcher
+        /// (Only help commands at this moment)
+        /// </summary>
+        /// <param name="e">StartupEventArgs for the program</param>
+        private static async Task ConsoleMain(StartupEventArgs e)
+        {
+            Console.WriteLine("Welcome to the TcNo Account Switcher - Command Line Interface!");
+            Console.WriteLine("Use -h (or --help) for more info.");
+            
+            for (var i = 0; i != e.Args.Length; ++i)
+            {
+                // --- Switching to accounts ---
+                if (e.Args[i]?[0] == '+')
+                {
+                    CliSwitch(e.Args[i]);
+                    continue;
+                }
+
+                // --- Log out of accounts ---
+                if (e.Args[i].StartsWith("logout"))
+                {
+                    await CliLogout(e.Args[i]);
+                    continue;
+                }
+                
+                switch (e.Args[i])
+                {
+                    case "h":
+                    case "-h":
+                    case "help":
+                    case "--help":
+                        string[] help =
+                        {
+                            "This is the command line interface. You are able to use any of the following arguments with this program:",
+                            "--- Switching to accounts ---",
+                            "Usage (don't include spaces): + <PlatformLetter> : <...details>",
+                            " -   Battlenet format: +b:<email>",
+                            " -   Epic Games format: +e:<username>",
+                            " -   Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]",
+                            " -   Riot Games format: +e:<username>",
+                            " -   Steam format: +s:<steamId>[:<PersonaState (0-7)>]",
+                            " -   Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]",
+                            "--- Log out of accounts ---",
+                            "logout:<platform> = Logout of a specific platform (Allowing you to sign into and add a new account)",
+                            "Available platforms:",
+                            " -   BattleNet: b, bnet, battlenet, blizzard",
+                            " -   Epic Games: e, epic, epicgames",
+                            " -   Origin: o, origin, ea",
+                            " -   Riot Games: r, riot, riotgames",
+                            " -   Steam: s, steam",
+                            " -   Ubisoft Connect: u, ubi, ubisoft, ubisoftconnect, uplay",
+                            "--- Other arguments ---",
+                            "v, vv, verbose = Verbose mode (Shows a lot of details, somewhat useful for debugging)"
+                        };
+                        Console.WriteLine(string.Join(Environment.NewLine, help));
+                        return;
+                    case "v":
+                    case "vv":
+                    case "verbose":
+                        Globals.VerboseMode = true;
+                        break;
+                    default:
+                        Globals.WriteToLog($"Unknown argument: \"{e.Args[i]}\"");
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handle account switch requests given as arguments to the CLI
+        /// </summary>
+        /// <param name="arg">Argument to process</param>
+        private static void CliSwitch(string arg)
+        {
+            var command = arg[1..].Split(':'); // Drop '+' and split
+            var platform = command[0];
+            var account = command[1];
+
+            switch (platform)
+            {
+                case "b": // Battle.net
+                          // Battlenet format: +b:<email>
+                    Globals.WriteToLog("Battle.net switch requested");
+                    TcNo_Acc_Switcher_Server.Data.Settings.BattleNet.Instance.LoadFromFile();
+                    _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);
+                    break;
+                case "e": // Epic Games
+                          // Epic Games format: +e:<username>
+                    Globals.WriteToLog("Epic Games switch requested");
+                    TcNo_Acc_Switcher_Server.Data.Settings.Epic.Instance.LoadFromFile();
+                    TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account);
+                    break;
+                case "o": // Origin
+                          // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
+                    Globals.WriteToLog("Origin switch requested");
+                    TcNo_Acc_Switcher_Server.Data.Settings.Origin.Instance.LoadFromFile();
+                    TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account, command.Length > 2 ? int.Parse(command[2]) : 0);
+                    break;
+                case "r": // Riot Games
+                          // Riot Games format: +e:<username>
+                    Globals.WriteToLog("Riot Games switch requested");
+                    TcNo_Acc_Switcher_Server.Data.Settings.Riot.Instance.LoadFromFile();
+                    TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'));
+                    break;
+                case "s": // Steam
+                          // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
+                    Globals.WriteToLog("Steam switch requested");
+                    TcNo_Acc_Switcher_Server.Data.Settings.Steam.Instance.LoadFromFile();
+                    TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0], ePersonaState: command.Length > 2 ? int.Parse(command[2]) : -1); // Request has a PersonaState in it
+                    break;
+                case "u": // Ubisoft Connect
+                          // Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]
+                    Globals.WriteToLog("Ubisoft Connect switch requested");
+                    TcNo_Acc_Switcher_Server.Data.Settings.Ubisoft.Instance.LoadFromFile();
+                    TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account, command.Length > 2 ? int.Parse(command[2]) : -1);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Handle logouts given as arguments to the CLI
+        /// </summary>
+        /// <param name="arg">Argument to process</param>
+        private static async Task CliLogout(string arg)
+        {
+            var platform = arg.Split(':')?[1];
+            switch (platform.ToLowerInvariant())
+            {
+                // Battle.net
+                case "b":
+                case "bnet":
+                case "battlenet":
+                case "blizzard":
+                    Globals.WriteToLog("Battle.net logout requested");
+                    await TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherBase.NewLogin_BattleNet();
+                    break;
+
+                // Epic Games
+                case "e":
+                case "epic":
+                case "epicgames":
+                    Globals.WriteToLog("Epic Games logout requested");
+                    TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherBase.NewLogin_Epic();
+                    break;
+
+                // Origin
+                case "o":
+                case "origin":
+                case "ea":
+                    Globals.WriteToLog("Origin logout requested");
+                    TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherBase.NewLogin_Origin();
+                    break;
+
+                // Riot Games
+                case "r":
+                case "riot":
+                case "riotgames":
+                    Globals.WriteToLog("Riot Games logout requested");
+                    TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherBase.NewLogin_Riot();
+                    break;
+                // Steam
+                case "s":
+                case "steam":
+                    Globals.WriteToLog("Steam logout requested");
+                    TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherBase.NewLogin_Steam();
+                    break;
+
+                // Ubisoft Connect
+                case "u":
+                case "ubi":
+                case "ubisoft":
+                case "ubisoftconnect":
+                case "uplay":
+                    Globals.WriteToLog("Ubisoft Connect logout requested");
+                    TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherBase.NewLogin_Ubisoft();
+                    break;
+            }
         }
 
         /// <summary>

@@ -16,6 +16,7 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.Security.Principal
+@using TcNo_Acc_Switcher_Globals
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 @inject NavigationManager _navManager
@@ -43,7 +44,7 @@
     <ContextMenu ContextMenuString=@AppSettings.Instance.PlatformContextMenu />
     <div class="platformContainer">
         <div class="platform_list">
-            @foreach (var platform in AppSettings.PlatformList)
+            @foreach (var platform in Globals.PlatformList)
             {
                 @if (!AppSettings.Instance.DisabledPlatforms.Contains(platform))
                 {

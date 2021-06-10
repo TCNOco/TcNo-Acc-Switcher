@@ -112,6 +112,7 @@ namespace TcNo_Acc_Switcher_Client
             if (message.ContainsKey("exceptionDetails"))
             {
                 Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION: " + message.SelectToken("exceptionDetails.exception.description"));
+                MView2.Reload();
             }
             else
             {
@@ -158,7 +159,15 @@ namespace TcNo_Acc_Switcher_Client
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.WebView_CoreWebView2Ready]");
             var eventForwarder = new Headerbar.EventForwarder(new WindowInteropHelper(this).Handle);
 
-            MView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
+            try
+            {
+                MView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
+            }
+            catch (NullReferenceException ex)
+            {
+                // To mitigate: Object reference not set to an instance of an object
+                MView2.Reload();
+            }
             MView2.Focus();
         }
 

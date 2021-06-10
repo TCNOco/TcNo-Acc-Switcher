@@ -10,12 +10,18 @@ using Newtonsoft.Json;
 
 namespace TcNo_Acc_Switcher_Globals
 {
+    internal static class NativeMethods
+    {
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr GetConsoleWindow();
+    }
     public class Globals
     {
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
         public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
         public static readonly string Version = "2021-06-10_01";
+        public static readonly string[] PlatformList = { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot" };
 
         public static void DebugWriteLine(string s)
         {
@@ -44,7 +50,9 @@ namespace TcNo_Acc_Switcher_Globals
                     System.Threading.Thread.Sleep(100);
                 }
             }
-            Console.WriteLine(s);
+
+            if (NativeMethods.GetConsoleWindow() != IntPtr.Zero) // Console exists
+                Console.WriteLine(s);
         }
 
         /// <summary>
