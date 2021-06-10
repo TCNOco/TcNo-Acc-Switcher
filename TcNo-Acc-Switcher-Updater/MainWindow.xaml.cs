@@ -339,7 +339,6 @@ namespace TcNo_Acc_Switcher_Updater
             // APPLY UPDATE
             // Cleanup previous updates
             if (Directory.Exists("temp_update")) Directory.Delete("temp_update", true);
-
             
             foreach (var (key, _) in _updatesAndChanges)
             {
@@ -352,7 +351,17 @@ namespace TcNo_Acc_Switcher_Updater
                 SetStatusAndLog("Download complete.");
 
                 // Apply update
-                ApplyUpdate(updateFilePath);
+                try
+                {
+                    ApplyUpdate(updateFilePath);
+                }
+                catch (SevenZipException)
+                {
+                    // Skip straight to verification
+                    SetStatusAndLog("Failed to extract update.");
+                    SetStatusAndLog("Verifying files to skip all small updates, and just jump to latest.");
+                    break;
+                }
                 SetStatusAndLog("Patch applied.");
                 SetStatusAndLog("");
 
