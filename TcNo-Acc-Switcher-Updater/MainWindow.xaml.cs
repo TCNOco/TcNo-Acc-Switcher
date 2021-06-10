@@ -358,12 +358,32 @@ namespace TcNo_Acc_Switcher_Updater
                 catch (SevenZipException)
                 {
                     // Skip straight to verification
-                    SetStatusAndLog("Failed to extract update.");
-                    SetStatusAndLog("Verifying files to skip all small updates, and just jump to latest.");
+                    WriteLine("Failed to extract update.");
+                    WriteLine("Verifying files to skip all small updates, and just jump to latest.");
                     break;
                 }
+                catch (UnauthorizedAccessException)
+                {
+                    // Stop process and add verify button
+                    string[] lines = {
+                        "ERROR: Some of the files are in use and can not be updated.",
+                        "",
+                        "1. Make sure all TcNo processes are completely closed",
+                        "(or restart your PC)",
+                        "",
+                        "2. Then click Verify below, or if you restarted:",
+                        "-   Open this updater and verify files",
+                        "    (located in the 'updater' folder in the install directory)"
+                    };
+                    foreach (var l in lines)
+                        WriteLine(l);
+                    MessageBox.Show(string.Join(Environment.NewLine, lines), "Unable to check for updates", MessageBoxButton.OK, MessageBoxImage.Error);
+                    SetStatus("Press button below!");
+                    CreateVerifyAndExitButton();
+                    return;
+                }
                 SetStatusAndLog("Patch applied.");
-                SetStatusAndLog("");
+                WriteLine("");
 
                 // Cleanup
                 Directory.Delete("temp_update", true);
