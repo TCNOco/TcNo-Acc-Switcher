@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
@@ -19,7 +20,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
             Globals.DebugWriteLine(@"[Func:Shared\ContextMenu.GetContextMenu]");
             _htmlOut = "<ul class=\"contextmenu\">";
 
-            var jO = JArray.Parse(contextMenuText);
+            var jO = JArray.Parse(contextMenuText.Replace("\r\n", ""));
             foreach (var kvp in jO) // Main list
             {
                 // Each item

@@ -111,7 +111,7 @@ namespace TcNo_Acc_Switcher_Client
             var message = JObject.Parse(e.ParameterObjectAsJson);
             if (message.ContainsKey("exceptionDetails"))
             {
-                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION: " + message.SelectToken("exceptionDetails.exception.description"));
+                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION (Handled: refreshed): " + message.SelectToken("exceptionDetails.exception.description"));
                 MView2.Reload();
             }
             else
@@ -163,9 +163,9 @@ namespace TcNo_Acc_Switcher_Client
             {
                 MView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
             }
-            catch (NullReferenceException ex)
+            catch (NullReferenceException)
             {
-                // To mitigate: Object reference not set to an instance of an object
+                // To mitigate: Object reference not set to an instance of an object - Was getting a few of these a day with CrashLog reports
                 MView2.Reload();
             }
             MView2.Focus();
@@ -253,7 +253,9 @@ namespace TcNo_Acc_Switcher_Client
                 var result = dlg.ShowDialog();
                 if (result != true) return;
                 MView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
-                MView2.ExecuteScriptAsync("Modal_SetFilepath(" + JsonConvert.SerializeObject(dlg.FileName.Substring(0, dlg.FileName.LastIndexOf('\\'))) + ")");
+                MView2.ExecuteScriptAsync("Modal_SetFilepath(" +
+                                          JsonConvert.SerializeObject(dlg.FileName.Substring(0,
+                                              dlg.FileName.LastIndexOf('\\'))) + ")");
             }
             else if (uriArg.StartsWith("selectImage"))
             {
@@ -295,23 +297,5 @@ namespace TcNo_Acc_Switcher_Client
                 Environment.Exit(0);
             }
         }
-
-/*
-        public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)
-        {
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.ExecuteScriptFunctionAsync]");
-            var script = functionName + "(";
-            for (var i = 0; i < parameters.Length; i++)
-            {
-                script += JsonConvert.SerializeObject(parameters[i]);
-                if (i < parameters.Length - 1)
-                {
-                    script += ", ";
-                }
-            }
-            script += ");";
-            return await webView2.ExecuteScriptAsync(script);
-        }
-*/
     }
 }
