@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -206,10 +207,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="args">Argument string, containing a command to be handled later by modal</param>
         /// <returns></returns>
-        public static async Task ShowModal(string args)
+        public static async Task<bool> ShowModal(string args)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowModal] args={args}");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("showModal", args);
+            try
+            {
+                await AppData.ActiveIJsRuntime.InvokeVoidAsync("showModal", args);
+            }
+            catch (ArgumentNullException)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>

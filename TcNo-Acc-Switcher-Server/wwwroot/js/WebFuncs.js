@@ -410,10 +410,16 @@ function showModal(modaltype) {
         </div>
         </div>`);
     }
-    $('.modalBG').fadeIn();
-    if (input === undefined) return;
-    input.focus();
-    input.select();
+    $('.modalBG').fadeIn(() => {
+        if (input === undefined) return;
+        try {
+            input.focus();
+            input.select();
+        }
+        catch (err) {
+
+        }
+    });
 }
 
 function Modal_SetFilepath(path) {

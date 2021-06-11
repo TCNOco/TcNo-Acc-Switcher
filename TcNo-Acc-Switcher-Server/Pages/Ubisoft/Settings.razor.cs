@@ -38,7 +38,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public async Task PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Ubisoft\Settings.razor.cs.PickFolder]");
-            await _jsRuntime.InvokeAsync<string>("showModal", "find:Ubisoft:upc.exe:UbisoftSettings");
+            await GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
         }
         
         // BUTTON: Reset settings

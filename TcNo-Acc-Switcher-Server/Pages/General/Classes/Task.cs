@@ -36,7 +36,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// Toggles whether the TcNo Account Switcher Tray application starts with Windows or not
         /// </summary>
         /// <param name="shouldExist">Whether it should start with Windows, or not</param>
-        public static void StartWithWindows_Toggle(bool shouldExist)
+        public static async System.Threading.Tasks.Task StartWithWindows_Toggle(bool shouldExist)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Task.StartWithWindows_Toggle] shouldExist={shouldExist}");
             try
@@ -45,13 +45,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             }
             catch (System.UnauthorizedAccessException)
             {
-                AppData.ActiveIJsRuntime.InvokeAsync<string>("showModal", "notice:RestartAsAdmin");
+                await GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
             }
-            
         }
+
         private static void StartWithWindows(bool shouldExist)
         {
-            if (shouldExist == true && !StartWithWindows_Enabled())
+            if (shouldExist && !StartWithWindows_Enabled())
             {
                 var ts = new TaskService();
                 var td = ts.NewTask();
@@ -62,7 +62,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Tray start with logon", td);
                 //MessageBox.Show(Strings.InfoTrayWindowsStart);
             }
-            else if (shouldExist == false && StartWithWindows_Enabled())
+            else if (!shouldExist && StartWithWindows_Enabled())
             {
                 var ts = new TaskService();
                 ts.RootFolder.DeleteTask("TcNo Account Switcher - Tray start with logon");
