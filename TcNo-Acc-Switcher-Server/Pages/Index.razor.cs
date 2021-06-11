@@ -35,43 +35,47 @@ namespace TcNo_Acc_Switcher_Server.Pages
             {
                 case "BattleNet":
                     if (!GeneralFuncs.CanKillProcess("Battle.net")) return;
-
+                    Data.Settings.BattleNet.Instance.LoadFromFile();
                     if (Directory.Exists(_battleNet.FolderPath) && File.Exists(_battleNet.Exe())) _navManager.NavigateTo("/BattleNet/");
                     else await GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
                     break;
+
                 case "Epic":
                     if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) return;
-
+                    Data.Settings.Epic.Instance.LoadFromFile();
                     if (Directory.Exists(_epic.FolderPath) && File.Exists(_epic.Exe())) _navManager.NavigateTo("/Epic/");
                     else await GeneralInvocableFuncs.ShowModal("find:Epic:EpicGamesLauncher.exe:EpicSettings");
                     break;
+
                 case "Origin":
                     if (!GeneralFuncs.CanKillProcess("Origin")) return;
-
+                    Data.Settings.Origin.Instance.LoadFromFile();
                     if (Directory.Exists(_origin.FolderPath) && File.Exists(_origin.Exe())) _navManager.NavigateTo("/Origin/");
                     else await GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
                     break;
+
                 case "Riot":
                     if (!Riot.RiotSwitcherFuncs.CanCloseRiot()) return;
-
+                    Data.Settings.Riot.Instance.LoadFromFile();
                     if (Directory.Exists(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client\\Data"))) _navManager.NavigateTo("/Riot/");
                     else await GeneralInvocableFuncs.ShowModal("find:Riot:RiotClientPrivateSettings.yaml:RiotSettings");
                     break;
+
                 case "Steam":
                     if (!GeneralFuncs.CanKillProcess("steam")) return;
-
+                    Data.Settings.Steam.Instance.LoadFromFile();
                     if (!Directory.Exists(_steam.FolderPath) || !File.Exists(_steam.Exe()))
                     {
                         await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
                         return;
                     }
-
                     if (SteamSwitcherFuncs.SteamSettingsValid()) _navManager.NavigateTo("/Steam/");
                     else await GeneralInvocableFuncs.ShowModal("Cannot locate '.../Steam/config/loginusers.vdf'. Try signing into an account first.");
                     break;
+
                 case "Ubisoft":
                     if (!GeneralFuncs.CanKillProcess("upc")) return;
-
+                    Data.Settings.Ubisoft.Instance.LoadFromFile();
                     if (Directory.Exists(_ubisoft.FolderPath) && File.Exists(_ubisoft.Exe())) _navManager.NavigateTo("/Ubisoft/");
                     else await GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
                     break;

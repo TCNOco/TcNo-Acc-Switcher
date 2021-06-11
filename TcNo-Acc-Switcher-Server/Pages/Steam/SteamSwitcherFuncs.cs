@@ -387,7 +387,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             return true;
         }
 
-
+        // Overload for below
+        [SupportedOSPlatform("windows")]
+        public static void UpdateLoginUsers(string selectedSteamId) => UpdateLoginUsers(selectedSteamId, "", -1);
+        [SupportedOSPlatform("windows")]
+        public static void UpdateLoginUsers(string selectedSteamId, string accName) => UpdateLoginUsers(selectedSteamId, accName, -1);
         /// <summary>
         /// Updates loginusers and registry to select an account as "most recent"
         /// </summary>
@@ -395,7 +399,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="accName">Account username to be logged into</param>
         /// <param name="pS">[PersonaState]0-7 custom persona state [0: Offline, 1: Online...]</param>
         [SupportedOSPlatform("windows")]
-        public static void UpdateLoginUsers(string selectedSteamId, string accName = "", int pS = -1)
+        public static void UpdateLoginUsers(string selectedSteamId, string accName, int pS)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.UpdateLoginUsers] Updating loginusers: selectedSteamId={(selectedSteamId.Length > 0 ? selectedSteamId.Substring(selectedSteamId.Length - 4, 4) : "")}, accName=hidden, pS={pS}");
             var userAccounts = GetSteamUsers(Steam.LoginUsersVdf());
@@ -512,12 +516,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             AppData.ActiveNavMan?.NavigateTo("/steam/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared images"), true);
         }
 
+        // Overload for below
+        public static void SetPersonaState(string steamId) => SetPersonaState(steamId, 1);
+
         /// <summary>
         /// Sets whether the user is invisible or not
         /// </summary>
         /// <param name="steamId">SteamID of user to update</param>
         /// <param name="ePersonaState">Persona state enum for user (0-7)</param>
-        public static void SetPersonaState(string steamId, int ePersonaState = 1)
+        public static void SetPersonaState(string steamId, int ePersonaState)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SetPersonaState] Setting persona state for: {steamId.Substring(steamId.Length - 4, 4)}, To: {ePersonaState}");
             // Values:

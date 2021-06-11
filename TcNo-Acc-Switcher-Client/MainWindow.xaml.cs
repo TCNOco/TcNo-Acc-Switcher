@@ -301,7 +301,10 @@ namespace TcNo_Acc_Switcher_Client
 
         }
 
-        public static void RestartAsAdmin(string args = "")
+        // Overload for below
+        public static void RestartAsAdmin() => RestartAsAdmin(null);
+
+        public static void RestartAsAdmin(string args)
         {
             var proc = new ProcessStartInfo
             {

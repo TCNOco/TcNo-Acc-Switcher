@@ -33,7 +33,7 @@ export function jsLoadForgotten() {
     });
 
     // Onclick function for the checkbox
-    $('#Steam_ForgottenShowId').change(() => {
+    $("#Steam_ForgottenShowId").change(() => {
         const checked = $(this).is(":checked");
         $("restoreSteamId").each((_, e) => {
             $(e).parent().attr("visible-content", checked ? ` | ${$(e).attr("value")}` : "");

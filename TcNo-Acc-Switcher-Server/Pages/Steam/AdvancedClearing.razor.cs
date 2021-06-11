@@ -162,7 +162,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             var i = 0;
             foreach (var f in d.GetFiles("ssfn*"))
             {
-                GeneralFuncs.DeleteFile(fileInfo: f, jsDest: SteamReturn);
+                GeneralFuncs.DeleteFile(f, SteamReturn);
                 i++;
             }
 

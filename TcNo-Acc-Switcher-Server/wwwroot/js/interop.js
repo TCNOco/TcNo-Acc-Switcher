@@ -20,7 +20,7 @@
             }
             return;
         }
-    })
+    });
 });
 
 function jQueryAppend(jQuerySelector, strToInsert) {

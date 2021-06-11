@@ -131,11 +131,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             return true;
         }
 
+        // Overload for below
+        public static void SwapRiotAccounts() => SwapRiotAccounts("");
         /// <summary>
         /// Restart Riot with a new account selected. Leave args empty to log into a new account.
         /// </summary>
         /// <param name="accName">(Optional) User's login username</param>
-        public static void SwapRiotAccounts(string accName = "")
+        public static void SwapRiotAccounts(string accName)
         {
             Globals.DebugWriteLine($@"[Func:Riot\RiotSwitcherFuncs.SwapRiotAccounts] Swapping to: hidden.");
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Riot");
