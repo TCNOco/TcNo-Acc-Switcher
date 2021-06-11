@@ -24,11 +24,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
 {
     public partial class Settings
     {
-        [Inject]
-        public AppData AppData { get; set; }
         protected override void OnInitialized()
         {
-            AppData.WindowTitle = "TcNo Account Switcher - Riot Settings";
+            AppData.Instance.WindowTitle = "TcNo Account Switcher - Riot Settings";
             Globals.DebugWriteLine(@"[Auto:Riot\Settings.razor.cs.OnInitializedAsync]");
         }
 

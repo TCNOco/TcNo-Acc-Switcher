@@ -17,8 +17,6 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using System.Runtime.InteropServices
 @using TcNo_Acc_Switcher_Globals
-@using System.IO
-@inject AppData _appData
 
 <div id="window-title">
     <div class="resizeTop"></div>
@@ -31,7 +29,7 @@
     <svg class="header_icon" draggable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 264"  fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2">
         <use href="img/TcNo_Logo_Flat.svg#logo"></use>
     </svg>
-    <span>@_appData.WindowTitle</span>
+    <span>@AppData.Instance.WindowTitle</span>
     <div id="window-controls">
 
         <div class="button" id="btnMin">
@@ -62,7 +60,7 @@
 @code {
     protected override void OnInitialized()
     {
-        _appData.OnChange += OnMyChangeHandler;
+        AppData.Instance.OnChange += OnMyChangeHandler;
     }
     private async void OnMyChangeHandler()
     {
@@ -73,9 +71,7 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-        {
             await _jsRuntime.InvokeVoidAsync("handleWindowControls");
-        }
     }
 
     // For draggable regions:

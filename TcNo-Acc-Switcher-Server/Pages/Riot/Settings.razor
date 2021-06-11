@@ -14,13 +14,15 @@
 
 @page "/Riot/Settings"
 @using TcNo_Acc_Switcher_Server.Pages.General.Classes
+@using TcNo_Acc_Switcher_Server.Data
 @namespace TcNo_Acc_Switcher_Server.Pages.Riot
 @inject NavigationManager _navManager
-@{ AppData.SetActiveNavMan(_navManager); }
+@inject AppData _appData
+@{ _appData.SetActiveNavMan(_navManager); }
 @inject Data.Settings.Riot _riot
 @inject Data.AppSettings _appSett
 @inject IJSRuntime _jsRuntime
-@{ AppData.SetActiveIJsRuntime(_jsRuntime); }
+@{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 
 @inject ILanguageContainerService  _locale
 @code

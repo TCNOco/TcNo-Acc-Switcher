@@ -15,8 +15,6 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -25,11 +23,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class Settings
     {
-        [Inject]
-        public AppData AppData { get; set; }
         protected override void OnInitialized()
         {
-            AppData.WindowTitle = "TcNo Account Switcher - Steam Settings";
+            AppData.Instance.WindowTitle = "TcNo Account Switcher - Steam Settings";
             Globals.DebugWriteLine(@"[Auto:Steam\Settings.razor.cs.OnInitializedAsync]");
         }
         

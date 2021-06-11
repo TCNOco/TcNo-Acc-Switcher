@@ -25,11 +25,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 {
     public partial class Settings
     {
-        [Inject]
-        public AppData AppData { get; set; }
         protected override void OnInitialized()
         {
-            AppData.WindowTitle = "TcNo Account Switcher - Origin Settings";
+            AppData.Instance.WindowTitle = "TcNo Account Switcher - Origin Settings";
             Globals.DebugWriteLine(@"[Auto:Origin\Settings.razor.cs.OnInitializedAsync]");
         }
 

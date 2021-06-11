@@ -13,21 +13,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class RestoreForgotten
     {
-        [Inject]
-        public Data.AppData AppData { get; set; }
         private IJSObjectReference _jsModule;
         protected override async void OnInitialized()
         {
             Globals.DebugWriteLine(@"[Auto:Steam\RestoreForgotten.razor.cs.OnInitializedAsync]");
-            AppData.WindowTitle = "TcNo Account Switcher - Restore forgotten Steam account";
+            AppData.Instance.WindowTitle = "TcNo Account Switcher - Restore forgotten Steam account";
             _jsModule = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/steam/RestoreForgotten.js");
             await _jsModule.InvokeAsync<string>("jsLoadForgotten");
         }

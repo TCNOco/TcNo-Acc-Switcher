@@ -33,7 +33,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         protected override void OnInitialized()
         {
             Globals.DebugWriteLine(@"[Auto:Steam\AdvancedClearing.razor.cs.OnInitialisedAsync]");
-            AppData.WindowTitle = "TcNo Account Switcher - Steam Cleaning";
+            AppData.Instance.WindowTitle = "TcNo Account Switcher - Steam Cleaning";
         }
 
 

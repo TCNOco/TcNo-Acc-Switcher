@@ -133,10 +133,6 @@ namespace TcNo_Acc_Switcher_Client
             Globals.WriteToLog("Debug Console started");
 #endif
             Globals.ClearLogs();
-
-            // Show window (Because no command line commands were parsed)
-            var mainWindow = new MainWindow();
-            mainWindow.ShowDialog();
             
             // Key being held down?
             if ((Keyboard.Modifiers & ModifierKeys.Control) > 0 || (Keyboard.Modifiers & ModifierKeys.Alt) > 0 ||
@@ -197,6 +193,10 @@ namespace TcNo_Acc_Switcher_Client
 
             // Check for update in another thread
             new Thread(CheckForUpdate).Start();
+            
+            // Show window (Because no command line commands were parsed)
+            var mainWindow = new MainWindow();
+            mainWindow.ShowDialog();
         }
 
         /// <summary>

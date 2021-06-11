@@ -16,10 +16,11 @@
 @using TcNo_Acc_Switcher_Server.Data
 @namespace TcNo_Acc_Switcher_Server.Pages
 @inject NavigationManager _navManager
-@{ AppData.SetActiveNavMan(_navManager); }
+@inject AppData _appData
+@{ _appData.SetActiveNavMan(_navManager); }
 @inject AppSettings _appSett
 @inject IJSRuntime _jsRuntime
-@{ AppData.SetActiveIJsRuntime(_jsRuntime); }
+@{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 @inject ILanguageContainerService  _locale
 @using Shared;
 
