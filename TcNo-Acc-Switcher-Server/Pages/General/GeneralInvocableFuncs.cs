@@ -231,10 +231,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="renderTo">(Optional) Part of the document to append the toast to (Empty = Default, document.body)</param>
         /// <param name="duration">(Optional) Duration to show the toast before fading</param>
         /// <returns></returns>
-        public static async Task ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
+        public static async Task<bool> ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowToast] type={toastType}, message={toastMessage}, title={toastTitle}, renderTo={renderTo}, duration={duration}");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
+            try
+            {
+                await AppData.ActiveIJsRuntime.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
+            }
+            catch (ArgumentNullException)
+            {
+                return false;
+            }
+
+            return true;
         }
         
         /// <summary>
@@ -313,6 +322,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 fgImg, 
                 $"{accId}.ico");
             s.TryWrite();
+
+            _ = AppSettings.Instance.StreamerModeTriggered
+                ? ShowToast("success", $"Shortcut created!", "Success", "toastarea")
+                : ShowToast("success", $"For: {accName}", "Shortcut created!", "toastarea");
         }
 
         [JSInvokable]

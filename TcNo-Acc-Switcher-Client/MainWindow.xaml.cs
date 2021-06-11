@@ -23,8 +23,6 @@ using System.Reflection;
 using System.Threading;
 using System.Web;
 using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using Microsoft.Web.WebView2.Core;
@@ -35,7 +33,6 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Shared;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using Point = System.Drawing.Point;
 
@@ -161,7 +158,6 @@ namespace TcNo_Acc_Switcher_Client
         private static void FindOpenPort()
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.FindOpenPort]");
-            var originalPort = AppSettings.ServerPort;
             // Check if port available:
             var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
             var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
@@ -175,7 +171,7 @@ namespace TcNo_Acc_Switcher_Client
         private static void NewPort()
         {
             var r = new Random();
-            AppSettings.ServerPort = r.Next(48620, 65535); // Random int between 48620 and 65534 [Why this range? See: https://www.sciencedirect.com/topics/computer-science/registered-port]
+            AppSettings.ServerPort = r.Next(20000, 40000); // Random int [Why this range? See: https://www.sciencedirect.com/topics/computer-science/registered-port & netsh interface ipv4 show excludedportrange protocol=tcp]
             AppSettings.SaveSettings();
         }
 
@@ -193,7 +189,9 @@ namespace TcNo_Acc_Switcher_Client
             catch (NullReferenceException)
             {
                 // To mitigate: Object reference not set to an instance of an object - Was getting a few of these a day with CrashLog reports
-                MView2.Reload();
+                if (MView2.IsInitialized)
+                    MView2.Reload();
+                else throw;
             }
             MView2.Focus();
         }

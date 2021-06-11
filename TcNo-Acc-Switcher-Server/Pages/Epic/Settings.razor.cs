@@ -29,7 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public AppData AppData { get; set; }
         protected override void OnInitialized()
         {
-            AppData.WindowTitle = "TcNo Account Switcher - Epic Settings";
+            AppData.Instance.WindowTitle = "TcNo Account Switcher - Epic Settings";
             Globals.DebugWriteLine(@"[Auto:Epic\Settings.razor.cs.OnInitializedAsync]");
         }
 

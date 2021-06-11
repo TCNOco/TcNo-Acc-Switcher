@@ -41,7 +41,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
 
         // Window stuff
-        private string _windowTitle = "Default window title";
+        private string _windowTitle = "TcNo Account Switcher";
 
         public string WindowTitle
         {

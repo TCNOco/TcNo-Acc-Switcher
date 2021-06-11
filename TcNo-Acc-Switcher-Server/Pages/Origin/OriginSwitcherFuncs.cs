@@ -66,7 +66,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Origin");
             if (!CloseOrigin()) return;
             // DO ACTUAL SWITCHING HERE
-            ClearCurrentLoginOrigin();
+            if (!ClearCurrentLoginOrigin())
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", $"Failed to clear old login files", "Error", "toastarea");
+                return;
+            }
             if (accName != "")
             {
                 OriginCopyInAccount(accName, state);
@@ -80,11 +84,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         }
 
 
-        private static void ClearCurrentLoginOrigin()
+        private static bool ClearCurrentLoginOrigin()
         {
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.ClearCurrentLoginOrigin]");
             // Get current information for logged in user, and save into files:
-            var currentOlcHashes = (from f in new DirectoryInfo(OriginProgramData).GetFiles() where f.Name.EndsWith(".olc") select GeneralFuncs.GetFileMd5(f.FullName)).ToList();
+            List<string> currentOlcHashes = new();
+            if (Directory.Exists(OriginProgramData)) currentOlcHashes = (from f in new DirectoryInfo(OriginProgramData).GetFiles() where f.Name.EndsWith(".olc") select GeneralFuncs.GetFileMd5(f.FullName)).ToList();
+            else
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {OriginProgramData}", "Error", "toastarea");
+                return false;
+            }
 
             var activeAccount = "";
             var allOlc = ReadAllOlc();
@@ -124,6 +134,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                 }
             }
             File.WriteAllText(OriginProgramData + "\\local.xml", "<?xml version=\"1.0\"?><Settings><Setting key=\"OfflineLoginUrl\" value=\"https://signin.ea.com/p/originX/offline\" type=\"10\"/></Settings>");
+            return true;
         }
 
         private static void OriginCopyInAccount(string accName, int state = 0)

@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
 
 namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 {
@@ -30,7 +31,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         protected override async void OnInitialized()
         {
             Globals.DebugWriteLine(@"[Auto:BattleNet\ManageForgotten.razor.cs.OnInitializedAsync]");
-            AppData.WindowTitle = "TcNo Account Switcher - Manage ignored BattleNet accounts";
+            AppData.Instance.WindowTitle = "TcNo Account Switcher - Manage ignored BattleNet accounts";
             _jsModule = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/battlenet/ManageIgnored.js");
             await _jsModule.InvokeAsync<string>("jsLoadIgnored");
         }

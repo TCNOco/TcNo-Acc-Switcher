@@ -15,7 +15,6 @@
 @page "/"
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
-@using System.Security.Principal
 @using TcNo_Acc_Switcher_Globals
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
@@ -93,7 +92,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _appData.WindowTitle = "TcNo Account Switcher";
+        AppData.Instance.WindowTitle = "TcNo Account Switcher";
         if (firstRender)
         {
             await GeneralFuncs.HandleQueries();
