@@ -97,8 +97,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             return (lastUser != "" ? lastUser : "NOTFOUND");
         }
 
-        //private static string FindUsername(string userId)
-        public static string FindUsername(string userId, bool copyFiles = true)
+        // Overload for below
+        public static string FindUsername(string userId) => FindUsername(userId, true);
+
+        public static string FindUsername(string userId, bool copyFiles)
         {
             _ubisoftAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
 
@@ -156,7 +158,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             return username;
         }
 
-        public static void SetUsername(string id, string username, bool reload = false)
+        // Overload for below
+        public static void SetUsername(string id, string username) => SetUsername(id, username, false);
+
+        public static void SetUsername(string id, string username, bool reload)
         {
             var allIds = ReadAllIds();
             allIds[id] = username;
@@ -268,12 +273,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             return true;
         }
 
+        // Overload for below
+        public static void SwapUbisoftAccounts() => SwapUbisoftAccounts("", 0);
+        public static void SwapUbisoftAccounts(string userId) => SwapUbisoftAccounts(userId, 0);
+
         /// <summary>
         /// Restart Ubisoft with a new account selected. Leave args empty to log into a new account.
         /// </summary>
         /// <param name="userId">User's UserId</param>
         /// <param name="state">(Optional) State of user. 0 is online, anything else if Offline</param>
-        public static void SwapUbisoftAccounts(string userId = "", int state = 0)
+        public static void SwapUbisoftAccounts(string userId, int state)
         {
             Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.SwapUbisoftAccounts] Swapping to:hidden.");
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Ubisoft");

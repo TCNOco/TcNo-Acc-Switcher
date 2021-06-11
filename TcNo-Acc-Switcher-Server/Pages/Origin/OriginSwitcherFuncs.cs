@@ -55,12 +55,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             return true;
         }
 
+        // Overloads for below
+        public static void SwapOriginAccounts() => SwapOriginAccounts("", 0);
+        public static void SwapOriginAccounts(string accName) => SwapOriginAccounts(accName, 0);
         /// <summary>
         /// Restart Origin with a new account selected. Leave args empty to log into a new account.
         /// </summary>
         /// <param name="accName">(Optional) User's login username</param>
         /// <param name="state">(Optional) 10 = Invisible, 0 = Default</param>
-        public static void SwapOriginAccounts(string accName = "", int state = 0)
+        public static void SwapOriginAccounts(string accName, int state)
         {
             Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: hidden.");
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Origin");

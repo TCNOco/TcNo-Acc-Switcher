@@ -112,17 +112,4 @@ function handleWindowControls() {
             evt.stopPropagation();
         }
     });
-
-    //toggleMaxRestoreButtons();
-    // remote.getCurrentWindow().on('maximise', toggleMaxRestoreButtons);
-    // remote.getCurrentWindow().on('maximise', toggleMaxRestoreButtons);
-
-    // Not too sure how to do this in the latest version - With WebView2. Will likely have something on the WPF side that execs JS code.
-    //function toggleMaxRestoreButtons() {
-    //    if (remote.getCurrentWindow().isMaximised()) {
-    //        document.body.classList.add('maximised');
-    //    } else {
-    //        document.body.classList.remove('maximised');
-    //    }
-    //}
 }

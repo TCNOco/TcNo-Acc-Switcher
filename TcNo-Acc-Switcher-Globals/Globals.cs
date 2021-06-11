@@ -20,7 +20,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
         public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-        public static readonly string Version = "2021-06-11_00";
+        public static readonly string Version = "2021-06-11_01";
         public static readonly string[] PlatformList = { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot" };
 
         public static void DebugWriteLine(string s)
@@ -137,6 +137,9 @@ namespace TcNo_Acc_Switcher_Globals
                 : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
         }
 
+        // Overload for below
+        public static void AddTrayUser(string platform, string arg, string name) => AddTrayUser(platform, arg, name, 3);
+
         /// <summary>
         /// Adds a user to the tray cache
         /// </summary>
@@ -144,7 +147,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// <param name="arg">Argument to launch and switch</param>
         /// <param name="name">Name to be displayed in the Tray</param>
         /// <param name="maxAccounts">(Optional) Number of accounts to keep and show in tray</param>
-        public static void AddTrayUser(string platform, string arg, string name, int maxAccounts = 3)
+        public static void AddTrayUser(string platform, string arg, string name, int maxAccounts)
         {
             var trayUsers = TrayUser.ReadTrayUsers();
             TrayUser.AddUser(ref trayUsers, platform, new TrayUser { Arg = arg, Name = name }, maxAccounts);
@@ -329,6 +332,9 @@ namespace TcNo_Acc_Switcher_Globals
             return JsonConvert.DeserializeObject<Dictionary<string, List<TrayUser>>>(json) ?? new Dictionary<string, List<TrayUser>>();
         }
 
+        // Overload for below
+        public static void AddUser(ref Dictionary<string, List<TrayUser>> trayUsers, string key, TrayUser newUser) => AddUser(ref trayUsers, key, newUser, 3);
+
         /// <summary>
         /// Adds a user to the beginning of the [Key]s list of TrayUsers. Moves to position 0 if exists.
         /// </summary>
@@ -336,7 +342,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// <param name="key">Key to add user to</param>
         /// <param name="newUser">user to add to aforementioned key in dictionary</param>
         /// <param name="maxAccounts">(Optional) Number of accounts to keep and show in tray</param>
-        public static void AddUser(ref Dictionary<string, List<TrayUser>> trayUsers, string key, TrayUser newUser, int maxAccounts = 3)
+        public static void AddUser(ref Dictionary<string, List<TrayUser>> trayUsers, string key, TrayUser newUser, int maxAccounts)
         {
             // Create key and add item if doesn't exist already
             if (!trayUsers.ContainsKey(key))

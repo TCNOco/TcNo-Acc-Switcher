@@ -26,7 +26,7 @@ if (winUrl.length > 1 && winUrl[1].indexOf("cacheReload") !== -1) {
 
 
 function copyToClipboard(str) {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopyToClipboard", str);
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", str);
 }
 
 // FORGETTING ACCOUNTS
@@ -130,7 +130,7 @@ function copy(request, e) {
             case "SteamId32":
             case "SteamId3":
             case "SteamId":
-                DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CopySteamIdType", request, steamId64);
+                DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopySteamIdType", request, steamId64);
                 break;
 
                 // Links
@@ -169,8 +169,8 @@ function swapTo(request, e) {
         return true;
     }
     
-    if (request === -1) DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "SwapTo" + getCurrentPage(), selected.attr("id")); // -1 is for undefined.
-    else DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', `SwapTo${getCurrentPage()}WithReq`, selected.attr("id"), request);
+    if (request === -1) DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SwapTo" + getCurrentPage(), selected.attr("id")); // -1 is for undefined.
+    else DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}WithReq`, selected.attr("id"), request);
 }
 
 // Swapping accounts
@@ -190,7 +190,7 @@ function changeImage(e) {
         return true;
     }
     
-    window.location = window.location + `${(window.location.href.includes('?') ? '&' : '?')}selectImage=${encodeURI($(".acc:checked").next("label").children("img")[0].getAttribute("src"))}`;
+    window.location = window.location + `${(window.location.href.includes("?") ? "&" : "?")}selectImage=${encodeURI($(".acc:checked").next("label").children("img")[0].getAttribute("src"))}`;
 }
 
 // Create shortcut for selected icon
@@ -201,7 +201,7 @@ function createShortcut(args = '') {
     }
     var accId = selected.attr("id");
 
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "CreateShortcut", getCurrentPage(), accId, selected.attr("Username"), args);
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CreateShortcut", getCurrentPage(), accId, selected.attr("Username"), args);
 }
 
 function refreshUsername() {
@@ -209,21 +209,21 @@ function refreshUsername() {
     if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
         return;
     }
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "UbisoftRefreshUsername", selected.attr("id"));
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftRefreshUsername", selected.attr("id"));
 }
 
 
 // NEW LOGIN
 function newLogin() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "NewLogin_" + getCurrentPage());
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "NewLogin_" + getCurrentPage());
 }
 
 function hidePlatform() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "HidePlatform", selectedElem);
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HidePlatform", selectedElem);
 }
 
 function createPlatformShortcut() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "GiCreatePlatformShortcut", selectedElem);
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCreatePlatformShortcut", selectedElem);
 }
 
 
@@ -253,7 +253,7 @@ $(".acc").dblclick(() => {
 });
 // Link handling
 function OpenLinkInBrowser(link) {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "OpenLinkInBrowser", link);
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "OpenLinkInBrowser", link);
 }
 
 
@@ -261,7 +261,7 @@ function OpenLinkInBrowser(link) {
 function showModal(modaltype) {
     let input;
     if (modaltype === "info") {
-        $('#modalTitle').text("TcNo Account Switcher Information");
+        $("#modalTitle").text("TcNo Account Switcher Information");
         $("#modal_contents").empty();
         currentVersion = "";
         var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetVersion").then((r) => {
@@ -284,7 +284,7 @@ function showModal(modaltype) {
         // USAGE: "changeUsername"
         Modal_RequestedLocated(false);
         var platformName = modaltype.split(":")[1] ?? "username";
-        $('#modalTitle').text("Change username");
+        $("#modalTitle").text("Change username");
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div id="modal_contents">
 	        <div>
@@ -298,14 +298,14 @@ function showModal(modaltype) {
             platformName}</span></button>
 	        </div>
         </div>`);
-        input = document.getElementById('NewAccountName');
+        input = document.getElementById("NewAccountName");
     } else if (modaltype.startsWith("find:")) {
         // USAGE: "find:<Program_name>:<Program_exe>:<SettingsFile>" -- example: "find:Steam:Steam.exe:SteamSettings"
         platform = modaltype.split(":")[1].replaceAll("_", " ");
         var platformExe = modaltype.split(":")[2];
         var platformSettingsPath = modaltype.split(":")[3];
         Modal_RequestedLocated(false);
-        $('#modalTitle').text(`Please locate the ${platform} directory`);
+        $("#modalTitle").text(`Please locate the ${platform} directory`);
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div id="modal_contents">
 	        <div style="width: 80vw;">
@@ -322,7 +322,7 @@ function showModal(modaltype) {
             }')"><span>Select ${platform} Folder</span></button>
 	        </div>
         </div>`);
-        input = document.getElementById('FolderLocation');
+        input = document.getElementById("FolderLocation");
     } else if (modaltype.startsWith("confirm:")) {
         // USAGE: "confirm:<prompt>
         // GOAL: To return true/false
@@ -343,7 +343,7 @@ function showModal(modaltype) {
             action = action.split(":")[0];
         }
 
-        $('#modalTitle').text("TcNo Account Switcher Confirm Action");
+        $("#modalTitle").text("TcNo Account Switcher Confirm Action");
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">${header + message}
@@ -373,7 +373,7 @@ function showModal(modaltype) {
             action = action.split(":")[0];
         }
 
-        $('#modalTitle').text("TcNo Account Switcher Confirm Action");
+        $("#modalTitle").text("TcNo Account Switcher Confirm Action");
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">${header + message}
@@ -382,12 +382,12 @@ function showModal(modaltype) {
             </div>
         </div>
         </div>`);
-        input = document.getElementById('modal_true');
+        input = document.getElementById("modal_true");
     } else if (modaltype.startsWith("accString:")) {
         // USAGE: "accString:<platform>" -- example: "accString:Origin"
         platform = modaltype.split(":")[1].replaceAll("_", " ");
         Modal_RequestedLocated(false);
-        $('#modalTitle').text("Add new " + platform + " account");
+        $("#modalTitle").text("Add new " + platform + " account");
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div id="modal_contents">
 	        <div>
@@ -400,17 +400,13 @@ function showModal(modaltype) {
 		        <button class="btn modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('${platform}')"><span>Add current ${platform} account</span></button>
 	        </div>
         </div>`);
-        input = document.getElementById('CurrentAccountName');
+        input = document.getElementById("CurrentAccountName");
     } else {
-        $('#modalTitle').text("Notice");
+        $("#modalTitle").text("Notice");
         $("#modal_contents").empty();
-        $("#modal_contents").append(`<div class="infoWindow">
-        <div class="fullWidthContent">
-            ${modaltype}
-        </div>
-        </div>`);
+        $("#modal_contents").append(`<div class="infoWindow"><div class="fullWidthContent">${modaltype}</div></div>`);
     }
-    $('.modalBG').fadeIn(() => {
+    $(".modalBG").fadeIn(() => {
         if (input === undefined) return;
         try {
             input.focus();
@@ -440,7 +436,7 @@ function Modal_RequestedLocated(found) {
 
 function Modal_Finalise(platform, platformSettingsPath) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
-    $('.modalBG').fadeOut();
+    $(".modalBG").fadeOut();
     location.reload();
 }
 async function Modal_Confirm(action, value) {
@@ -448,14 +444,14 @@ async function Modal_Confirm(action, value) {
         if (r === "refresh") location.reload();
     });
     var result = await promise;
-    $('.modalBG').fadeOut();
+    $(".modalBG").fadeOut();
 }
 
 function Modal_FinaliseAccString(platform) {
     // Supported: Epic, Origin, Riot
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", $("#CurrentAccountName").val());
-    $('.modalBG').fadeOut();
-    $('#acc_list').click();
+    $(".modalBG").fadeOut();
+    $("#acc_list").click();
 }
 
 function Modal_FinaliseAccNameChange() {
@@ -490,7 +486,7 @@ function flushJQueryAppendQueue() {
 }
 
 function forgetBattleTag() {
-    DotNet.invokeMethodAsync('TcNo-Acc-Switcher-Server', "DeleteUsername", $(".acc:checked").attr("id"));
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "DeleteUsername", $(".acc:checked").attr("id"));
 }
 
 function refetchRank() {

@@ -118,7 +118,7 @@ namespace TcNo_Acc_Switcher_Client
                     if (!NativeMethods.AttachToConsole(-1)) // Attach to a parent process console (ATTACH_PARENT_PROCESS)
                         NativeMethods.AllocConsole();
                     Console.WriteLine(Environment.NewLine);
-                    await ConsoleMain(e);
+                    await ConsoleMain(e).ConfigureAwait(false);
                     Console.WriteLine(Environment.NewLine + "Press any key to close this window...");
                     NativeMethods.FreeConsole();
                     Environment.Exit(0);
@@ -144,8 +144,8 @@ namespace TcNo_Acc_Switcher_Client
             
             // Key being held down?
             if ((Keyboard.Modifiers & ModifierKeys.Control) > 0 || (Keyboard.Modifiers & ModifierKeys.Alt) > 0 ||
-                (Keyboard.Modifiers & ModifierKeys.Shift) > 0 |
-                ((Keyboard.GetKeyStates(Key.Scroll) & KeyStates.Down) != 0))
+                (Keyboard.Modifiers & ModifierKeys.Shift) > 0 ||
+                (Keyboard.GetKeyStates(Key.Scroll) & KeyStates.Down) != 0)
             {
                 // This can be improved. Somehow ignore self, and make sure all processes are killed before self.
                 if (GeneralFuncs.CanKillProcess("TcNo"))
@@ -229,7 +229,7 @@ namespace TcNo_Acc_Switcher_Client
                 // --- Log out of accounts ---
                 if (e.Args[i].StartsWith("logout"))
                 {
-                    await CliLogout(e.Args[i]);
+                    await CliLogout(e.Args[i]).ConfigureAwait(false);
                     continue;
                 }
                 
