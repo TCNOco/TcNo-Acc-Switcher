@@ -100,9 +100,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         private bool _trayStartup;
         [JsonIgnore] public bool TrayStartup { get => _instance._trayStartup; set => _instance._trayStartup = value; }
 
-        private bool _currentlyElevated;
-        [JsonIgnore] public bool CurrentlyElevated { get => _instance._currentlyElevated; set => _instance._currentlyElevated = value; }
-
         private string _selectedStylesheet;
         [JsonIgnore] public string SelectedStylesheet { get => _instance._selectedStylesheet; set => _instance._selectedStylesheet = value; }
 

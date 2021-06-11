@@ -31,7 +31,6 @@ namespace TcNo_Acc_Switcher_Server.Pages
         public async Task Check(string platform)
         {
             Globals.DebugWriteLine($@"[Func:Index.Check] platform={platform}");
-
             switch (platform)
             {
                 case "BattleNet":

@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
@@ -68,10 +69,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         }
         
-        public static bool CanKillProcess(string processName)
+        [SupportedOSPlatform("windows")]
+        public static bool CanKillProcess(string processName, bool showModal = true)
         {
+            // Checks whether program is running as Admin or not
+            var currentlyElevated = false;
+            var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
+            if (securityIdentifier is not null) currentlyElevated = securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
+
             bool canKill;
-            if (AppSettings.Instance.CurrentlyElevated)
+            if (currentlyElevated)
                 canKill = true; // Elevated process can kill most other processes.
             else
             {
@@ -82,7 +89,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
 
             // Restart self as admin.
-            if (!canKill) AppData.ActiveIJsRuntime.InvokeAsync<string>("showModal", "notice:RestartAsAdmin");
+            if (!canKill && showModal) _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
 
             return canKill;
         }

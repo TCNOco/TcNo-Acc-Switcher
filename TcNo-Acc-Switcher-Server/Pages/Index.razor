@@ -89,10 +89,6 @@
             // Do something here if necessary.
             // For now this is just being used to load settings.
         }
-
-        // Checks whether program is running as Admin or not
-        var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
-        if (securityIdentifier is not null) AppSettings.Instance.CurrentlyElevated = securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

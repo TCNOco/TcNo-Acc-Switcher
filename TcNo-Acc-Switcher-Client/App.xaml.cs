@@ -31,7 +31,10 @@ using System.Windows.Shapes;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using static TcNo_Acc_Switcher_Client.MainWindow;
+using AppSettings = TcNo_Acc_Switcher_Server.Data.AppSettings;
 using MessageBox = System.Windows.MessageBox;
 using MessageBoxOptions = System.Windows.MessageBoxOptions;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
@@ -211,7 +214,7 @@ namespace TcNo_Acc_Switcher_Client
                 // --- Switching to accounts ---
                 if (e.Args[i]?[0] == '+')
                 {
-                    CliSwitch(e.Args[i]);
+                    CliSwitch(e.Args, i);
                     continue;
                 }
 
@@ -268,51 +271,78 @@ namespace TcNo_Acc_Switcher_Client
         /// <summary>
         /// Handle account switch requests given as arguments to the CLI
         /// </summary>
-        /// <param name="arg">Argument to process</param>
-        private static void CliSwitch(string arg)
+        /// <param name="args">Arguments</param>
+        /// <param name="i">Index of argument to process</param>
+        private static void CliSwitch(string[] args, int i)
         {
-            var command = arg[1..].Split(':'); // Drop '+' and split
+            var command = args[i][1..].Split(':'); // Drop '+' and split
             var platform = command[0];
             var account = command[1];
+            var combinedArgs = string.Join(' ', args);
 
-            switch (platform)
+            if (platform == "b") // Battle.Net
             {
-                case "b": // Battle.net
-                          // Battlenet format: +b:<email>
-                    Globals.WriteToLog("Battle.net switch requested");
-                    TcNo_Acc_Switcher_Server.Data.Settings.BattleNet.Instance.LoadFromFile();
-                    _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);
-                    break;
-                case "e": // Epic Games
-                          // Epic Games format: +e:<username>
-                    Globals.WriteToLog("Epic Games switch requested");
-                    TcNo_Acc_Switcher_Server.Data.Settings.Epic.Instance.LoadFromFile();
-                    TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account);
-                    break;
-                case "o": // Origin
-                          // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
-                    Globals.WriteToLog("Origin switch requested");
-                    TcNo_Acc_Switcher_Server.Data.Settings.Origin.Instance.LoadFromFile();
-                    TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account, command.Length > 2 ? int.Parse(command[2]) : 0);
-                    break;
-                case "r": // Riot Games
-                          // Riot Games format: +e:<username>
-                    Globals.WriteToLog("Riot Games switch requested");
-                    TcNo_Acc_Switcher_Server.Data.Settings.Riot.Instance.LoadFromFile();
-                    TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'));
-                    break;
-                case "s": // Steam
-                          // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
-                    Globals.WriteToLog("Steam switch requested");
-                    TcNo_Acc_Switcher_Server.Data.Settings.Steam.Instance.LoadFromFile();
-                    TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0], ePersonaState: command.Length > 2 ? int.Parse(command[2]) : -1); // Request has a PersonaState in it
-                    break;
-                case "u": // Ubisoft Connect
-                          // Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]
-                    Globals.WriteToLog("Ubisoft Connect switch requested");
-                    TcNo_Acc_Switcher_Server.Data.Settings.Ubisoft.Instance.LoadFromFile();
-                    TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account, command.Length > 2 ? int.Parse(command[2]) : -1);
-                    break;
+                // Battlenet format: +b:<email>
+                Globals.WriteToLog("Battle.net switch requested");
+                if (!GeneralFuncs.CanKillProcess("Battle.net"))
+                    RestartAsAdmin(combinedArgs);
+                BattleNet.Instance.LoadFromFile();
+                _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);
+                return;
+            }
+
+            if (platform == "e") // Epic Games
+            {
+                // Epic Games format: +e:<username>
+                Globals.WriteToLog("Epic Games switch requested");
+                if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) RestartAsAdmin(combinedArgs);
+                Epic.Instance.LoadFromFile();
+                TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account);
+                return;
+            }
+            
+            if (platform == "o") // Origin
+            {
+                // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
+                Globals.WriteToLog("Origin switch requested");
+                if (!GeneralFuncs.CanKillProcess("Origin")) RestartAsAdmin(combinedArgs);
+                Origin.Instance.LoadFromFile();
+                TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account,
+                    command.Length > 2 ? int.Parse(command[2]) : 0);
+                return;
+            }
+            
+            if (platform == "r") // Riot Games
+            {
+                // Riot Games format: +e:<username>
+                Globals.WriteToLog("Riot Games switch requested");
+                if (!TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.CanCloseRiot()) RestartAsAdmin(combinedArgs);
+                Riot.Instance.LoadFromFile();
+                TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'));
+                return;
+            }
+            
+            if (platform == "s") // Steam
+            {
+                // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
+                Globals.WriteToLog("Steam switch requested");
+                if (!GeneralFuncs.CanKillProcess("steam")) RestartAsAdmin(combinedArgs);
+                Steam.Instance.LoadFromFile();
+                TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
+                    ePersonaState: command.Length > 2
+                        ? int.Parse(command[2])
+                        : -1); // Request has a PersonaState in it
+                return;
+            }
+            
+            if (platform == "u") // Ubisoft
+            {
+                // Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]
+                Globals.WriteToLog("Ubisoft Connect switch requested");
+                if (!GeneralFuncs.CanKillProcess("upc")) RestartAsAdmin(combinedArgs);
+                Ubisoft.Instance.LoadFromFile();
+                TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account,
+                    command.Length > 2 ? int.Parse(command[2]) : -1);
             }
         }
 

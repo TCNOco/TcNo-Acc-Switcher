@@ -38,7 +38,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public async Task PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.PickFolder]");
-            await _jsRuntime.InvokeAsync<string>("showModal", "find:Steam:Steam.exe:SteamSettings");
+            await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
         }
 
         // BUTTON: Check account VAC status

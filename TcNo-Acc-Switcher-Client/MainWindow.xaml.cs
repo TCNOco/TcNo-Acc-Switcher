@@ -60,7 +60,26 @@ namespace TcNo_Acc_Switcher_Client
                 Globals.WriteToLog("Server was already running. Killing process."); 
                 Globals.KillProcess(serverPath); // Kill server if already running
             }
-            Program.Main(new[] { _address });
+
+            var attempts = 0;
+            var last = new IOException();
+            while (attempts < 10)
+            {
+                try
+                {
+                    Program.Main(new[] { _address });
+                    return;
+                }
+                catch (IOException e)
+                {
+                    last = e;
+                    NewPort();
+                    _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
+                    attempts++;
+                }
+            }
+
+            throw last;
         }
         
         public MainWindow()
@@ -149,10 +168,15 @@ namespace TcNo_Acc_Switcher_Client
             while (true)
             {
                 if (tcpConnInfoArray.Count(x => x.LocalEndPoint.Port == AppSettings.ServerPort) == 0) break;
-                AppSettings.ServerPort++;
+                NewPort();
             }
+        }
 
-            if (AppSettings.ServerPort != originalPort) AppSettings.SaveSettings();
+        private static void NewPort()
+        {
+            var r = new Random();
+            AppSettings.ServerPort = r.Next(48620, 65535); // Random int between 48620 and 65534 [Why this range? See: https://www.sciencedirect.com/topics/computer-science/registered-port]
+            AppSettings.SaveSettings();
         }
 
         // For draggable regions:
@@ -279,7 +303,7 @@ namespace TcNo_Acc_Switcher_Client
 
         }
 
-        private static void RestartAsAdmin(string args = "")
+        public static void RestartAsAdmin(string args = "")
         {
             var proc = new ProcessStartInfo
             {
@@ -296,7 +320,7 @@ namespace TcNo_Acc_Switcher_Client
             }
             catch (Exception ex)
             {
-                Globals.WriteToLog(@"This program must be run as an administrator! \n\n" + ex);
+                Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
                 Environment.Exit(0);
             }
         }

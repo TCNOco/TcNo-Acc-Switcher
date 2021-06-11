@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Origin
 {
@@ -37,7 +38,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         public async Task PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.PickFolder]");
-            await _jsRuntime.InvokeAsync<string>("showModal", "find:Origin:Origin.exe:OriginSettings");
+            await GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
         }
 
         // BUTTON: Reset settings
