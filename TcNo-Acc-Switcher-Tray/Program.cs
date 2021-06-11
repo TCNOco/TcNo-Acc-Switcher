@@ -40,7 +40,7 @@ namespace TcNo_Acc_Switcher_Tray
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             if (SelfAlreadyRunning())
             {
-                Environment.Exit(99);
+                Environment.Exit(1056); // An instance of the service is already running.
             }
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location)!); // Set working directory to the same as the actual .exe
             TrayUsers = TrayUser.ReadTrayUsers();
@@ -78,7 +78,7 @@ namespace TcNo_Acc_Switcher_Tray
                 MessageBox.Show(
                     "There were no accounts found. Try switching accounts first, or locate 'Tray_Users.json'",
                     "Tray Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(1);
+                Environment.Exit(0);
             }
             if (string.Equals(Program.LastHash, GetFileMd5("Tray_Users.json"), StringComparison.Ordinal)) return; // Don't init again
             Program.LastHash = GetFileMd5("Tray_Users.json");

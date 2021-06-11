@@ -77,7 +77,7 @@ namespace TcNo_Acc_Switcher_Updater
         private void BtnExit(object sender, RoutedEventArgs e) => WindowHandling.BtnExit(this);
         private void BtnMinimize(object sender, RoutedEventArgs e) => WindowHandling.BtnMinimize(this);
         private void DragWindow(object sender, MouseButtonEventArgs e) => WindowHandling.DragWindow(sender, e, this);
-        private void Window_Closed(object sender, EventArgs e) => Environment.Exit(1);
+        private void Window_Closed(object sender, EventArgs e) => Environment.Exit(0);
         #endregion
         
         private void CreateExitButton()
@@ -607,7 +607,7 @@ namespace TcNo_Acc_Switcher_Updater
             List<string> filesToDelete = new(); // Simply ignore these later
             CreateFolderPatches(oldFolder, newFolder, outputFolder, ref filesToDelete);
             File.WriteAllLines(deleteFileList, filesToDelete);
-            Environment.Exit(1);
+            Environment.Exit(0);
         }
 
         /// <summary>

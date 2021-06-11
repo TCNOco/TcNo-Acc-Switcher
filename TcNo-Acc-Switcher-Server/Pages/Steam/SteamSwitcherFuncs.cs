@@ -152,9 +152,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
             catch (FileNotFoundException)
             {
-                //MessageBox.Show(Strings.ErrLoginusersNonExist, Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
-                //MessageBox.Show($"{Strings.ErrInformation} {ex}", Strings.ErrLoginusersNonExistHeader, MessageBoxButton.OK, MessageBoxImage.Error);
-                Environment.Exit(2);
+                Environment.Exit(2); // The system cannot find the file specified.
             }
 
             return userAccounts;

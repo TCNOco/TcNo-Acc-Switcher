@@ -36,7 +36,7 @@ namespace TcNo_Acc_Switcher_Updater
             if (!Mutex.WaitOne(TimeSpan.Zero, true))
             {
                 MessageBox.Show("Another TcNo Account Switcher Updater instance has been detected.");
-                Environment.Exit(1056); // 1056	An instance of the service is already running.
+                Environment.Exit(1056); // An instance of the service is already running.
             }
 
             base.OnStartup(e);

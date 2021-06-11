@@ -121,7 +121,7 @@ namespace TcNo_Acc_Switcher_Client
                     await ConsoleMain(e);
                     Console.WriteLine(Environment.NewLine + "Press any key to close this window...");
                     NativeMethods.FreeConsole();
-                    Environment.Exit(1);
+                    Environment.Exit(0);
                     return;
                 }
 
@@ -132,7 +132,15 @@ namespace TcNo_Acc_Switcher_Client
             NativeMethods.SetWindowText("Debug console");
             Globals.WriteToLog("Debug Console started");
 #endif
-            Globals.ClearLogs();
+            try
+            {
+                Globals.ClearLogs();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show("Can't access log.txt in the TcNo Account Switcher directory!", "Failed to access files", MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(4); // The system cannot open the file.
+            }
             
             // Key being held down?
             if ((Keyboard.Modifiers & ModifierKeys.Control) > 0 || (Keyboard.Modifiers & ModifierKeys.Alt) > 0 ||
