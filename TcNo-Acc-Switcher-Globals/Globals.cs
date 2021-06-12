@@ -86,7 +86,17 @@ namespace TcNo_Acc_Switcher_Globals
             if (oldFilesFound) appendText.Add(Environment.NewLine + "-------- END OF OLD --------");
 
             // Insert their contents into the actual log file
-            File.WriteAllLines("log.txt", appendText);
+            try
+            {
+                File.WriteAllLines("log.txt", appendText);
+            }
+            catch (IOException)
+            {
+                // Could not write to log file.
+                // Probably in use.
+                // Just ignore. Don't crash.
+                // Crashing happened way too often because of this. Makes no sense to log these elsewhere.
+            }
         }
 
         /// <summary>
