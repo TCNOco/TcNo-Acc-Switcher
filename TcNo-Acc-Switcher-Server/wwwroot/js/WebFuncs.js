@@ -294,7 +294,7 @@ function showModal(modaltype) {
 		        <input type="text" id="NewAccountName" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('change_username').click();">
 	        </div>
 	        <div class="settingsCol inputAndButton">
-		        <button class="btn modalOK" type="button" id="change_username" onclick="Modal_FinaliseAccNameChange()"><span>Change ${
+		        <button class="modalOK" type="button" id="change_username" onclick="Modal_FinaliseAccNameChange()"><span>Change ${
             platformName}</span></button>
 	        </div>
         </div>`);
@@ -313,12 +313,12 @@ function showModal(modaltype) {
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="FolderLocation" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
-		        <button class="btn" type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFile=${platformExe}';"><span>Locate ${platformExe}</span></button>
+		        <button type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFile=${platformExe}';"><span>Locate ${platformExe}</span></button>
 	        </div>
 	        <div class="settingsCol inputAndButton">
 		        <div class="folder_indicator notfound"><div id="folder_indicator_text"></div></div>
 		        <div class="folder_indicator_bg notfound"><span>${platformExe}</span></div>
-		        <button class="btn modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${platformSettingsPath
+		        <button class="modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${platformSettingsPath
             }')"><span>Select ${platform} Folder</span></button>
 	        </div>
         </div>`);
@@ -348,8 +348,8 @@ function showModal(modaltype) {
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">${header + message}
             <div class="YesNo">
-		        <button class="btn" type="button" id="modal_true" onclick="Modal_Confirm('${action}', true)"><span>Yes</span></button>
-		        <button class="btn" type="button" id="modal_false" onclick="Modal_Confirm('${action}', false)"><span>No</span></button>
+		        <button type="button" id="modal_true" onclick="Modal_Confirm('${action}', true)"><span>Yes</span></button>
+		        <button type="button" id="modal_false" onclick="Modal_Confirm('${action}', false)"><span>No</span></button>
             </div>
         </div>
         </div>`);
@@ -378,7 +378,7 @@ function showModal(modaltype) {
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">${header + message}
             <div class="YesNo">
-		        <button class="btn" type="button" id="modal_true" onclick="${action}"><span>OK</span></button>
+		        <button type="button" id="modal_true" onclick="${action}"><span>OK</span></button>
             </div>
         </div>
         </div>`);
@@ -397,7 +397,7 @@ function showModal(modaltype) {
 		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;"  onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();">
 	        </div>
 	        <div class="settingsCol inputAndButton">
-		        <button class="btn modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('${platform}')"><span>Add current ${platform} account</span></button>
+		        <button class="modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('${platform}')"><span>Add current ${platform} account</span></button>
 	        </div>
         </div>`);
         input = document.getElementById("CurrentAccountName");

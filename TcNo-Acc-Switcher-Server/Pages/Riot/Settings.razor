@@ -60,27 +60,27 @@
                 <hr><span>@_locale["Settings_Header_GeneralTools"]</span>
                 <hr>
             </div>
-            <div class="buttoncol"><button class="btn" id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button></div>
+            <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button></div>
 
             <div class="SettingsHeader">
                 <hr><span>@_locale["Settings_Header_OpenGameFolders"]</span>
                 <hr>
             </div>
-            <button class="btn" type="button" id="btnLeague" @onclick="() => RiotSwitcherFuncs.RiotOpenFolder('l')">
+            <button type="button" id="btnLeague" @onclick="() => RiotSwitcherFuncs.RiotOpenFolder('l')">
                 <span>
                     <svg viewBox="0 0 2084 2084" draggable="false" alt="League" class="riotIcoLeague">
                         <use href="img/icons/ico_League.svg#icoLeague"></use>
                     </svg>
                 </span>
             </button>
-            <button class="btn" type="button" id="btnRuneterra" @onclick="() => RiotSwitcherFuncs.RiotOpenFolder('r')">
+            <button type="button" id="btnRuneterra" @onclick="() => RiotSwitcherFuncs.RiotOpenFolder('r')">
                 <span>
                     <svg viewBox="0 0 2084 2084" draggable="false" alt="Runeterra" class="riotIcoRuneterra">
                         <use href="img/icons/ico_Runeterra.svg#icoRuneterra"></use>
                     </svg>
                 </span>
             </button>
-            <button class="btn" type="button" id="btnValorant" @onclick="() => RiotSwitcherFuncs.RiotOpenFolder('v')">
+            <button type="button" id="btnValorant" @onclick="() => RiotSwitcherFuncs.RiotOpenFolder('v')">
                 <span>
                     <svg viewBox="0 0 2084 2084" draggable="false" alt="Valorant" class="riotIcoValorant">
                         <use href="img/icons/ico_Valorant.svg#icoValorant"></use>
@@ -88,7 +88,7 @@
                 </span>
             </button>
 
-            <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
         </div>
     </div>
 </div>

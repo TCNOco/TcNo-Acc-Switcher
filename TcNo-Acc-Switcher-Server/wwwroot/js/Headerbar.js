@@ -53,17 +53,21 @@ function randomAni(e) {
     });
 }
 
+function btnBack_Click() {
+    if (window.location.pathname === "/") randomAni("#btnBack .icon");
+    else {
+        let tempUri = document.location.href.split("?")[0];
+        document.location.href = tempUri + (tempUri.endsWith("/") ? "../" : "/../");
+    }
+}
+
 function handleWindowControls() {
     document.getElementById("btnMin").addEventListener("click", () => {
         chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMinimise);
     });
 
     document.getElementById("btnBack").addEventListener("click", () => {
-        if (window.location.pathname === "/") randomAni("#btnBack .icon");
-        else {
-            let tempUri = document.location.href.split("?")[0];
-            document.location.href = tempUri + (tempUri.endsWith("/") ? "../" : "/../");
-        }
+        btnBack_Click();
     });
 
     document.getElementById("btnMax").addEventListener("click", () => {

@@ -18,6 +18,9 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Resources\af-ZA.yml" />
     <None Remove="Resources\en-UK.yml" />
     <None Remove="TcNoAccSw-Icon-100x100.png" />
@@ -71,6 +74,7 @@
     <Folder Include="wwwroot\css\font\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="compilerconfig.json" />
     <None Include="wwwroot\js\ace\ace.js" />
     <None Include="wwwroot\js\ace\ext-beautify.js" />
     <None Include="wwwroot\js\ace\ext-code_lens.js" />

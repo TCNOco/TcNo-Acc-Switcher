@@ -58,9 +58,9 @@
                 <hr><span>@_locale["Settings_Header_GeneralTools"]</span>
                 <hr>
             </div>
-            <div class="buttoncol"><button class="btn" id="PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = _platform }]</span></button><button class="btn" id="OpenFolder" type="button" @onclick="OpenFolder"><span>@_locale["Settings_OpenFolder", new { platform = _platform }]</span></button></div>
-            <div class="buttoncol"><button class="btn" id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button></div>
-            <div class="buttoncol col_close"><button class="btn btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
+            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = _platform }]</span></button><button id="OpenFolder" type="button" @onclick="OpenFolder"><span>@_locale["Settings_OpenFolder", new { platform = _platform }]</span></button></div>
+            <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
         </div>
     </div>
 </div>
