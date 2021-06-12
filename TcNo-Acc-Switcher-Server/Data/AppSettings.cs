@@ -408,7 +408,16 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         public void LoadStylesheetFromFile()
         {
-            if (!File.Exists(StylesheetFile)) File.Copy("themes\\Default.yaml", StylesheetFile);
+            if (!File.Exists(StylesheetFile))
+            {
+                if (File.Exists("themes\\Default.yaml")) File.Copy("themes\\Default.yaml", StylesheetFile);
+                else
+                {
+                    throw new Exception(
+                        "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run." + Environment.NewLine +
+                        "You can run the Updater in the \"updater\" folder to verify files, and restore these missing files.");
+                }
+            }
             // Load new stylesheet
             var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
             var attempts = 0;

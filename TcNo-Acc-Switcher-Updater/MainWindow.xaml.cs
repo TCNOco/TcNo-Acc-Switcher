@@ -518,48 +518,54 @@ namespace TcNo_Acc_Switcher_Updater
 #else
             var versions = client.DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api/update?v=" + _currentVersion));
 #endif
-            var jUpdates = JObject.Parse(versions)["updates"];
-            Debug.Assert(jUpdates != null, nameof(jUpdates) + " != null");
-            var firstChecked = false;
-            foreach (var jToken in jUpdates)
+            try
             {
-                var jUpdate = (JProperty) jToken;
-                if (CheckLatest(jUpdate.Name)) break; // Get up to the current version
-                if (!firstChecked)
+                var jUpdates = JObject.Parse(versions)["updates"];
+                Debug.Assert(jUpdates != null, nameof(jUpdates) + " != null");
+                var firstChecked = false;
+                foreach (var jToken in jUpdates)
                 {
-                    firstChecked = true;
-                    _latestVersion = jUpdate.Name;
-                    if (CheckLatest(_latestVersion)) // If up to date or newer
-                        break;
+                    var jUpdate = (JProperty)jToken;
+                    if (CheckLatest(jUpdate.Name)) break; // Get up to the current version
+                    if (!firstChecked)
+                    {
+                        firstChecked = true;
+                        _latestVersion = jUpdate.Name;
+                        if (CheckLatest(_latestVersion)) // If up to date or newer
+                            break;
+                    }
+
+                    var updateDetails = jUpdate.Value[0]!.ToString();
+                    var updateSize = FileSizeString((double)jUpdate.Value[1]);
+                    totalFileSize += (double)jUpdate.Value[1];
+
+                    updatesAndChanges.Add(jUpdate.Name, jUpdate.Value.ToString());
+                    WriteLine($"Update found: {jUpdate.Name} [{updateSize}]");
+                    WriteLine("- " + updateDetails);
+                    WriteLine("");
                 }
 
-                var updateDetails = jUpdate.Value[0]!.ToString();
-                var updateSize = FileSizeString((double) jUpdate.Value[1]);
-                totalFileSize += (double) jUpdate.Value[1];
-
-                updatesAndChanges.Add(jUpdate.Name, jUpdate.Value.ToString());
-                WriteLine($"Update found: {jUpdate.Name} [{updateSize}]");
-                WriteLine("- " + updateDetails);
-                WriteLine("");
-            }
-
-            WriteLine("-------------------------------------------");
-            WriteLine($"Total updates found: {updatesAndChanges.Count}");
-            if (updatesAndChanges.Count > 0)
-            {
-                WriteLine($"Total size: {FileSizeString(totalFileSize)}");
                 WriteLine("-------------------------------------------");
-                WriteLine("Click the button below to start the update.");
-                ButtonHandler(true, "Start update");
-                SetStatus("Waiting for user input...");
+                WriteLine($"Total updates found: {updatesAndChanges.Count}");
+                if (updatesAndChanges.Count > 0)
+                {
+                    WriteLine($"Total size: {FileSizeString(totalFileSize)}");
+                    WriteLine("-------------------------------------------");
+                    WriteLine("Click the button below to start the update.");
+                    ButtonHandler(true, "Start update");
+                    SetStatus("Waiting for user input...");
+                }
+                else
+                {
+                    WriteLine("-------------------------------------------");
+                    WriteLine("You're up to date.");
+                    SetStatus(":)");
+                }
             }
-            else
+            catch (JsonReaderException)
             {
-                WriteLine("-------------------------------------------");
-                WriteLine("You're up to date.");
-                SetStatus(":)");
+                MessageBox.Show("This is most likely due to me (TechNobo) pushing an update, and making a typo that broke the .json update file. Do let me know :)", "Failed to decode update list", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
         }
 
         /// <summary>
