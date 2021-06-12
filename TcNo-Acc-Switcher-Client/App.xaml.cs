@@ -59,12 +59,16 @@ namespace TcNo_Acc_Switcher_Client
             // And: https://stackoverflow.com/questions/2669463/console-writeline-does-not-show-up-in-output-window/2669596#2669596
             [DllImport("kernel32.dll", SetLastError = true)]
             internal static extern int AllocConsole();
+
             [DllImport("kernel32.dll", SetLastError = true)]
             internal static extern int FreeConsole();
+
             [DllImport("kernel32.dll", SetLastError = true)]
             private static extern IntPtr GetConsoleWindow();
+
             [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             private static extern bool SetWindowText(IntPtr hwnd, string lpString);
+
             [DllImport("kernel32.dll", SetLastError = true)]
             private static extern bool AttachConsole(int dwProcessId);
 
@@ -74,6 +78,7 @@ namespace TcNo_Acc_Switcher_Client
 
                 SetWindowText(handle, text);
             }
+
             public static bool AttachToConsole(int dwProcessId) => AttachConsole(dwProcessId);
         }
 
@@ -82,12 +87,14 @@ namespace TcNo_Acc_Switcher_Client
             _ = NativeMethods.FreeConsole();
             Mutex.ReleaseMutex();
         }
-        
+
         private static readonly Mutex Mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
+
         [STAThread]
         protected override async void OnStartup(StartupEventArgs e)
         {
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ??
+                                          string.Empty); // Set working directory to same as .exe
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             // Upload crash logs if any, before starting program
@@ -115,7 +122,8 @@ namespace TcNo_Acc_Switcher_Client
                 // - Therefore: It was a CLI command
                 if (StartPage == "" && !(Globals.VerboseMode && e.Args.Length == 1))
                 {
-                    if (!NativeMethods.AttachToConsole(-1)) // Attach to a parent process console (ATTACH_PARENT_PROCESS)
+                    if (!NativeMethods
+                        .AttachToConsole(-1)) // Attach to a parent process console (ATTACH_PARENT_PROCESS)
                         NativeMethods.AllocConsole();
                     Console.WriteLine(Environment.NewLine);
                     await ConsoleMain(e).ConfigureAwait(false);
@@ -126,7 +134,7 @@ namespace TcNo_Acc_Switcher_Client
                 }
 
             }
-            
+
 #if DEBUG
             NativeMethods.AllocConsole();
             NativeMethods.SetWindowText("Debug console");
@@ -138,10 +146,11 @@ namespace TcNo_Acc_Switcher_Client
             }
             catch (UnauthorizedAccessException)
             {
-                MessageBox.Show("Can't access log.txt in the TcNo Account Switcher directory!", "Failed to access files", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Can't access log.txt in the TcNo Account Switcher directory!",
+                    "Failed to access files", MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(4); // The system cannot open the file.
             }
-            
+
             // Key being held down?
             if ((Keyboard.Modifiers & ModifierKeys.Control) > 0 || (Keyboard.Modifiers & ModifierKeys.Alt) > 0 ||
                 (Keyboard.Modifiers & ModifierKeys.Shift) > 0 ||
@@ -153,35 +162,7 @@ namespace TcNo_Acc_Switcher_Client
             }
 
             // Single instance:
-            if (!Mutex.WaitOne(TimeSpan.Zero, true))
-            {
-                Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
-                try
-                {
-                    if (!Mutex.WaitOne(TimeSpan.Zero, true))
-                    {
-                        // Try to show from tray, as user may not know it's hidden there.
-                        var text = "";
-                        if (!Globals.BringToFront())
-                            text = "Another TcNo Account Switcher instance has been detected." + Environment.NewLine +
-                                   "[Something wrong? Hold Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]";
-                        else
-                            text = "TcNo Account Switcher was running." + Environment.NewLine +
-                                   "I've brought it to the top." + Environment.NewLine +
-                                   "Make sure to check your Windows Task Tray for the icon :)" + Environment.NewLine +
-                                   "- You can exit it from there too" + Environment.NewLine + Environment.NewLine +
-                                   "[Something wrong? Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]";
-
-                        MessageBox.Show(text, "TcNo Account Switcher Notice", MessageBoxButton.OK, MessageBoxImage.Information, 
-                            MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
-                        Environment.Exit(1056); // 1056	An instance of the service is already running.
-                    }
-                }
-                catch (AbandonedMutexException)
-                {
-                    // Just restarted 
-                }
-            }
+            IsRunningAlready();
 
             // See if updater was updated, and move files:
             if (Directory.Exists("newUpdater"))
@@ -196,15 +177,52 @@ namespace TcNo_Acc_Switcher_Client
                     Globals.KillProcess("TcNo-Acc-Switcher-Updater");
                     GeneralFuncs.RecursiveDelete(new DirectoryInfo("updater"), false);
                 }
+
                 Directory.Move("newUpdater", "updater");
             }
 
             // Check for update in another thread
             new Thread(CheckForUpdate).Start();
-            
+
             // Show window (Because no command line commands were parsed)
             var mainWindow = new MainWindow();
             mainWindow.ShowDialog();
+        }
+
+        /// <summary>
+        /// Shows error and exits program is program is already running
+        /// </summary>
+        private static void IsRunningAlready()
+        {
+            try
+            {
+                if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
+
+                // Otherwise: It has probably just closed. Wait a few and try again
+                Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
+
+                if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
+                // Try to show from tray, as user may not know it's hidden there.
+                var text = "";
+                if (!Globals.BringToFront())
+                    text = "Another TcNo Account Switcher instance has been detected." + Environment.NewLine +
+                           "[Something wrong? Hold Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]";
+                else
+                    text = "TcNo Account Switcher was running." + Environment.NewLine +
+                           "I've brought it to the top." + Environment.NewLine +
+                           "Make sure to check your Windows Task Tray for the icon :)" + Environment.NewLine +
+                           "- You can exit it from there too" + Environment.NewLine + Environment.NewLine +
+                           "[Something wrong? Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]";
+
+                MessageBox.Show(text, "TcNo Account Switcher Notice", MessageBoxButton.OK,
+                    MessageBoxImage.Information,
+                    MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                Environment.Exit(1056); // 1056	An instance of the service is already running.
+            }
+            catch (AbandonedMutexException)
+            {
+                // Just restarted 
+            }
         }
 
         /// <summary>

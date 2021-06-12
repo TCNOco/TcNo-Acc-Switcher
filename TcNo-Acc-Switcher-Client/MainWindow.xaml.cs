@@ -97,17 +97,32 @@ namespace TcNo_Acc_Switcher_Client
 
         private async void MView2_OnInitialised(object sender, EventArgs e)
         {
-            MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
-            await MView2.EnsureCoreWebView2Async();
-            MViewAddForwarders();
-            MView2.NavigationStarting += UrlChanged;
+            try
+            {
+                MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
+                await MView2.EnsureCoreWebView2Async();
+                MViewAddForwarders();
+                MView2.NavigationStarting += UrlChanged;
 
 
-            MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
-            MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown").DevToolsProtocolEventReceived += ConsoleMessage;
-            await MView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
+                MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
+                MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown").DevToolsProtocolEventReceived += ConsoleMessage;
+                await MView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
+            }
+            catch (WebView2RuntimeNotFoundException)
+            {
+                // WebView2 is not installed!
+                MessageBox.Show("WebView2 Runtime is not installed. I've opened the website you need to download it from.", "Required runtime not found!", MessageBoxButton.OK, MessageBoxImage.Error);
+                Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
+                {
+                    UseShellExecute = true,
+                    Verb = "open"
+                });
+            }
             //MView2.CoreWebView2.OpenDevToolsWindow();
         }
+
+        private int _refreshFixAttempts = 0;
 
         /// <summary>
         /// Handles console messages, and logs them to a file
@@ -121,7 +136,10 @@ namespace TcNo_Acc_Switcher_Client
             if (message.ContainsKey("exceptionDetails"))
             {
                 Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION (Handled: refreshed): " + message.SelectToken("exceptionDetails.exception.description"));
-                MView2.Reload();
+                _refreshFixAttempts++;
+                if (_refreshFixAttempts < 5)
+                    MView2.Reload();
+                else throw new Exception($"Refreshed too many times in attempt to fix issue. Error: {message.SelectToken("exceptionDetails.exception.description")}");
             }
             else
             {
