@@ -21,6 +21,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Interop;
@@ -59,24 +60,15 @@ namespace TcNo_Acc_Switcher_Client
             }
 
             var attempts = 0;
-            var last = new IOException();
-            while (attempts < 10)
+            Exception last;
+            while (!Program.Main(new[] { _address }, out last) && attempts < 10)
             {
-                try
-                {
-                    Program.Main(new[] { _address });
-                    return;
-                }
-                catch (IOException e)
-                {
-                    last = e;
-                    NewPort();
-                    _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
-                    attempts++;
-                }
+                NewPort();
+                _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
+                attempts++;
             }
-
-            throw last;
+            if (attempts == 10 && last != null)
+                throw last;
         }
         
         public MainWindow()
@@ -105,12 +97,10 @@ namespace TcNo_Acc_Switcher_Client
 
         private async void MView2_OnInitialised(object sender, EventArgs e)
         {
-            MView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2Ready;
-            await MView2.EnsureCoreWebView2Async();
             MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
-            //MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
+            await MView2.EnsureCoreWebView2Async();
+            MViewAddForwarders();
             MView2.NavigationStarting += UrlChanged;
-            //MView2.MouseDown += MViewMDown;
 
 
             MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
@@ -177,9 +167,9 @@ namespace TcNo_Acc_Switcher_Client
 
         // For draggable regions:
         // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
-        private void WebView_CoreWebView2Ready(object sender, EventArgs e)
+        private void MViewAddForwarders()
         {
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.WebView_CoreWebView2Ready]");
+            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.MViewAddForwarders]");
             var eventForwarder = new Headerbar.EventForwarder(new WindowInteropHelper(this).Handle);
 
             try
