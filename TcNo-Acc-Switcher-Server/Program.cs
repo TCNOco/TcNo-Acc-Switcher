@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -22,8 +23,24 @@ namespace TcNo_Acc_Switcher_Server
     {
         public static void Main(string[] args)
         {
+            // Empty
+        }
+        public static bool Main(string[] args, out Exception e)
+        {
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
-            CreateHostBuilder(args).Build().Run();
+            try
+            {
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (IOException ioe)
+            {
+                // Failed to bind to port
+                e = ioe;
+                return false;
+            }
+
+            e = null;
+            return true;
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
