@@ -13,6 +13,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @page "/"
+@using TcNo_Acc_Switcher_Server.Pages.General
 @namespace TcNo_Acc_Switcher_Server.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
@@ -33,6 +34,15 @@
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <script src="js/bootstrap.bundle.min.js"></script>
     <link href="css/site.css" rel="stylesheet" />
+    @if (GeneralFuncs.IsDebug())
+    {
+        <link href="css/UI.css" rel="stylesheet" />
+    }
+    else
+    {
+        <link href="css/UI.min.css" rel="stylesheet" />
+    }
+
     <link href="css/acclist.css" rel="stylesheet" />
     <link href="css/context_menu.css" rel="stylesheet" />
     <link href="css/modal.css" rel="stylesheet" />

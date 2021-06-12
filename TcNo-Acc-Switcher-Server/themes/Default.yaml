@@ -237,3 +237,51 @@ icoUbisoftFG-Fill: "none"
 icoUbisoftFG-Stroke: "#00a5f8"
 icoUbisoftFG-StrokeWidth: 12.51px
 icoUbisoftGlass-Fill: rgba(255, 255, 255, 0.02)
+
+# ------------
+# Ace Editor (Text editor):
+# see https://github.com/ajaxorg/ace
+# ------------
+ace_editorBackground: "#141414"
+ace_editorColor: "#F8F8F8"
+ace_editor_gutterBackground: "#232323"
+ace_editor_gutterColor: "#E2E2E2"
+ace_editor_printBackgound: "#232323"
+ace_editor_cursorColor: "#A7A7A7"
+ace_editor_multiselectBoxShadow: "0 0 3px 0px #141414"
+ace_editor_markerlayer_selectionBackground: "rgba(221, 240, 255, 0.20)"
+ace_editor_markerlayer_selectionBorderRadius: 0px
+ace_editor_markerlayer_stepBackground: "rgb(102, 82, 0)"
+ace_editor_markerlayer_bracketBorder: "1px solid rgba(255, 255, 255, 0.25)"
+ace_editor_markerlayer_activeLineBackground: "rgba(255, 255, 255, 0.031)"
+ace_editor_markerlayer_selectedWordBorder: "1px solid rgba(221, 240, 255, 0.20)"
+ace_editor_markerlayer_selectedWordBorderRadius: 0px
+ace_editor_gutterActiveLineBackground: "rgba(255, 255, 255, 0.031)"
+ace_editor_invisibleColor: "rgba(255, 255, 255, 0.25)"
+ace_editor_keywordMetaColor: "#CDA869"
+ace_editor_constantColor: "#CF6A4C"
+ace_editor_constantLanguageColor: "#CF6A4C"
+ace_editor_constantNumericColor: "#CF6A4C"
+ace_editor_constantCharacterColor: "#CF6A4C"
+ace_editor_constantCharacterEscapeColor: "#CF6A4C"
+ace_editor_constantOtherColor: "#CF6A4C"
+ace_editor_languageColor: "#CF6A4C"
+ace_editor_numericColor: "#CF6A4C"
+ace_editor_illegalColor: "#F8F8F8"
+ace_editor_illegalBackground: "rgba(86, 45, 86, 0.75)"
+ace_editor_depreceatedColor: "#D2A8A1"
+ace_editor_depreceatedBackground: none
+ace_editor_support: "#9B859D"
+ace_editor_foldBackground: "#AC885B"
+ace_editor_foldBorderColor: "#F8F8F8"
+ace_editor_supportFunctionColor: "#DAD085"
+ace_editor_supportClassColor: "#DAD085"
+ace_editor_supportTypeColor: "#DAD085"
+ace_editor_listColor: "#F9EE98"
+ace_editor_functionTagColor: "#AC885B"
+ace_editor_stringColor: "#8F9D6A"
+ace_editor_regexpColor: "#E9C062"
+ace_editor_commentColor: "#5F5A60"
+ace_editor_variableColor: "#7587A6"
+ace_editor_xmlpeColor: "#494949"
+ace_editor_indentguideBackground: "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWMQERFpYLC1tf0PAAgOAnPnhxyiAAAAAElFTkSuQmCC) right repeat-y"

@@ -68,7 +68,7 @@ function steamAdvancedClearingAddLine(text) {
 
 
 function initEditor() {
+    debugger;
     const editor = ace.edit("editor");
-    editor.setTheme("ace/theme/twilight");
     editor.session.setMode("ace/mode/batchfile");
 }

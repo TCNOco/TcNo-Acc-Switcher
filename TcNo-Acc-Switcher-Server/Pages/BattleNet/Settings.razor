@@ -67,28 +67,28 @@
                 <hr>
             </div>
             <div class="buttoncol">
-                <button class="btn" id="PickFolder" type="button" @onclick="PickFolder">
+                <button id="PickFolder" type="button" @onclick="PickFolder">
                     <span>@_locale["Settings_PickFolder", new { platform = _platform }]</span>
                 </button>
-                <button class="btn" id="ResetSettings" type="button" @onclick="ClearSettings">
+                <button id="ResetSettings" type="button" @onclick="ClearSettings">
                     <span>@_locale["Button_ResetSettings"]</span>
                 </button>
             </div>
             <div class="buttoncol">
-                <button class="btn" id="OpenFolder" type="button" @onclick="OpenFolder">
+                <button id="OpenFolder" type="button" @onclick="OpenFolder">
                     <span>@_locale["Settings_OpenFolder", new { platform = _platform }]</span>
                 </button>
-                <button class="btn" id="ClearForgotten" type="button" @onclick="ClearForgotten">
+                <button id="ClearForgotten" type="button" @onclick="ClearForgotten">
                     <span>@_locale["Settings_ClearForgotten"]</span>
                 </button>
             </div>
             <div class="buttoncol">
-                <button class="btn" id="ClearAccounts" type="button" @onclick="ClearAccounts">
+                <button id="ClearAccounts" type="button" @onclick="ClearAccounts">
                     <span>@_locale["Settings_ClearAccounts"]</span>
                 </button>
             </div>
             <div class="buttoncol col_close">
-                <button class="btn btn_close" type="button" @onclick="SaveAndClose">
+                <button class="btn_close" type="button" @onclick="SaveAndClose">
                     <span>@_locale["Button_Close"]</span>
                 </button>
             </div>

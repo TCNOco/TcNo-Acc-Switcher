@@ -1,0 +1,71 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2021 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@page "/TextEditor/"
+@using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Server.Pages.General
+@inject AppData _appData
+@inject IJSRuntime _jsRuntime
+@{ _appData.SetActiveIJsRuntime(_jsRuntime); }
+@inject NavigationManager _navManager
+@{ _appData.SetActiveNavMan(_navManager); }
+
+@inject AppSettings _appSettings
+@inject ILanguageContainerService  _locale
+
+<div class="text-editor d-flex flex-column">
+    <div class="flex-grow-1 editor-container">
+        <pre id="editor">
+@@echo off
+REM This is a sample file.
+Actions will show here
+        </pre>
+    </div>
+    <div class="d-flex justify-content-end">
+        <button id="btnCancel" onclick="btnBack_Click()">
+            <span>@_locale["Button_Cancel"]</span>
+        </button>
+        <button id="btnSave" @onclick="SaveFile">
+            <span>@_locale["Button_SaveFile"]</span>
+        </button>
+    </div>
+</div>
+
+@code
+{
+    // This has to be here for NavManager.
+    // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
+    protected override void OnParametersSet()
+    {
+        _appSettings.StreamerModeCheck();
+    }
+
+    protected override void OnInitialized()
+    {
+        AppData.Instance.WindowTitle = "TcNo Account Switcher - Text Editor";
+        _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("initEditor");
+    }
+
+    public void SaveFile()
+    {
+        //
+
+        _navManager.NavigateTo("/Steam");
+    }
+
+    public void Cancel()
+    {
+        //
+    }
+}

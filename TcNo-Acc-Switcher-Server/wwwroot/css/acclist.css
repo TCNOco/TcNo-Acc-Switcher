@@ -163,36 +163,6 @@ label.acc p {
   justify-content: flex-end;
 }
 
-.acc_list_actionbar div .button,
-.settingsCol button {
-  box-shadow: none !important;
-  user-select: none;
-  background: var(--buttonBackground);
-  padding: 0.25em 0.651em;
-  margin: 0 0.25em;
-  width: max-content;
-  border-style: solid;
-  border-color: var(--buttonBorder);
-  border-width: 0.1em;
-  cursor: pointer;
-  transition: ease-in-out 60ms;
-}
-
-.acc_list_actionbar div .button:active,
-.settingsCol button:active,
-.settingsCol button:focus,
-.settingsCol button:target,
-.show > .dropdown-toggle {
-  background: var(--buttonBackground-active) !important;
-  border-color: var(--buttonBorder-active) !important;
-}
-
-.acc_list_actionbar div .button:hover,
-.settingsCol button:hover {
-  background: var(--buttonBackground-hover);
-  border-color: var(--buttonBorder-hover);
-}
-
 .acc_list_actionbar div .btn_login,
 .btn_close span {
   padding: 0.25em 5em;

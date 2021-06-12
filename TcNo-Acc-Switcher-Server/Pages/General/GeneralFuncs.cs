@@ -33,8 +33,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralFuncs
     {
+        #region DEBUGMODE
+        public static bool IsDebug()
+        {
+#if DEBUG
+            return true;
+#else
+            return false;
+#endif
+        }
+        #endregion
         #region PROCESS_OPERATIONS
-        
+
         // Overload for below
         public static void StartProgram(string path) => StartProgram(path, false);
 
@@ -545,6 +555,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                 // Handle loading accounts for specific platforms
                 // - Init file if it doesn't exist, or isn't fully initialised (adds missing settings when true)
+                if (platform == null) return;
                 switch (platform)
                 {
                     case "BattleNet":

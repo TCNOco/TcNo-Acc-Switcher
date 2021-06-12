@@ -8,6 +8,8 @@ Steam_ShowLimited: Show Limited Status
 Steam_Tray_AccountName: Show account name [not friend name]
 Button_AddNew: Add New
 Button_SaveCurrent: Save Current
+Button_SaveFile: Save File
+Button_Cancel: Cancel
 Button_Login: Login
 Button_Close: Close
 Button_RefreshImages: Refresh images
