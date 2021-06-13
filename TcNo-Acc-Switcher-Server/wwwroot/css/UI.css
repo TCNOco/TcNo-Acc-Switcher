@@ -19,6 +19,9 @@ button, .button {
   margin: 0 0.25em;
   padding: 0.25em 0.651em;
   transition: ease-in-out 60ms;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
   width: max-content;
   /* Button children */ }

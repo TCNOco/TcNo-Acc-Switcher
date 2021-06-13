@@ -26,25 +26,25 @@
   z-index: 999;
 }
 
-.notification-container.top-left {
-  left: 0;
-  top: 0;
-}
+  .notification-container.top-left {
+    left: 0;
+    top: 0;
+  }
 
-.notification-container.top-right {
-  right: 0;
-  top: 0;
-}
+  .notification-container.top-right {
+    right: 0;
+    top: 0;
+  }
 
-.notification-container.bottom-left {
-  bottom: 0;
-  left: 0;
-}
+  .notification-container.bottom-left {
+    bottom: 0;
+    left: 0;
+  }
 
-.notification-container.bottom-right {
-  bottom: 0;
-  right: 0;
-}
+  .notification-container.bottom-right {
+    bottom: 0;
+    right: 0;
+  }
 
 .notification {
   align-items: center;
@@ -72,235 +72,235 @@
   user-select: none;
 }
 
-.notification:nth-child(n+2) {
-  margin-top: var(--notification-padding);
-}
+  .notification:nth-child(n+2) {
+    margin-top: var(--notification-padding);
+  }
 
-.notification div,
-.notification span,
-.notification h1,
-.notification h2,
-.notification h3,
-.notification h4,
-.notification h5,
-.notification h6,
-.notification p {
-  border: 0;
-  font: inherit;
-  font-size: 100%;
-  margin: 0;
-  padding: 0;
-  vertical-align: baseline;
-}
+  .notification div,
+  .notification span,
+  .notification h1,
+  .notification h2,
+  .notification h3,
+  .notification h4,
+  .notification h5,
+  .notification h6,
+  .notification p {
+    border: 0;
+    font: inherit;
+    font-size: 100%;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+  }
 
-.notification h1,
-.notification h2,
-.notification h3,
-.notification h4,
-.notification h5,
-.notification h6 {
-  color: var(--notification-color-dark-text);
-  font-weight: bold;
-}
+  .notification h1,
+  .notification h2,
+  .notification h3,
+  .notification h4,
+  .notification h5,
+  .notification h6 {
+    color: var(--notification-color-dark-text);
+    font-weight: bold;
+  }
 
-.notification .vector-container {
-  align-self: baseline;
-  height: var(--notification-icon);
-  margin: 0;
-  width: var(--notification-icon);
-}
+  .notification .vector-container {
+    align-self: baseline;
+    height: var(--notification-icon);
+    margin: 0;
+    width: var(--notification-icon);
+  }
 
-.notification .vector-container svg {
-  height: var(--notification-icon);
-  width: var(--notification-icon);
-}
+    .notification .vector-container svg {
+      height: var(--notification-icon);
+      width: var(--notification-icon);
+    }
 
-.notification .text-container {
-  padding: 0 var(--notification-padding);
-  margin-right: var(--notification-margin);
-  text-align: justify;
-}
+  .notification .text-container {
+    padding: 0 var(--notification-padding);
+    margin-right: var(--notification-margin);
+    text-align: justify;
+  }
 
-.notification .text-container h6,
-.notification .text-container p {
-  margin-bottom: calc(var(--notification-padding) / 2);
-  max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - var(--notification-icon) - (2 * var(--notification-border-thickness)));
-  word-wrap: break-word;
-}
+    .notification .text-container h6,
+    .notification .text-container p {
+      margin-bottom: calc(var(--notification-padding) / 2);
+      max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - var(--notification-icon) - (2 * var(--notification-border-thickness)));
+      word-wrap: break-word;
+    }
 
-.notification .text-container p {
-  font-size: 0.9em;
-  line-height: 1.4em;
-  margin: 0;
-  margin-bottom: calc(var(--notification-padding) / 2);
-}
+    .notification .text-container p {
+      font-size: 0.9em;
+      line-height: 1.4em;
+      margin: 0;
+      margin-bottom: calc(var(--notification-padding) / 2);
+    }
 
-.notification .text-container p.iconless-width {
-  max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - (2 * var(--notification-border-thickness)));
-}
+      .notification .text-container p.iconless-width {
+        max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - (2 * var(--notification-border-thickness)));
+      }
 
-.notification .text-container button {
-  background-color: transparent;
-  border: var(--notification-border-thickness) solid var(--notification-color-dark-border);
-  border-radius: var(--notification-border-radius);
-  cursor: pointer;
-  font-size: 0.9em;
-  margin-bottom: 0;
-  padding: calc(var(--notification-padding) / 2) var(--notification-padding);
-}
+    .notification .text-container button {
+      background-color: transparent;
+      border: var(--notification-border-thickness) solid var(--notification-color-dark-border);
+      border-radius: var(--notification-border-radius);
+      cursor: pointer;
+      font-size: 0.9em;
+      margin-bottom: 0;
+      padding: calc(var(--notification-padding) / 2) var(--notification-padding);
+    }
 
-.notification.left-border h6,
-.notification.left-border p,
-.notification.right-border h6,
-.notification.right-border p {
-  max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - var(--notification-icon) - (var(--notification-border-thickness) + var(--notification-border-thickness)));
-}
+  .notification.left-border h6,
+  .notification.left-border p,
+  .notification.right-border h6,
+  .notification.right-border p {
+    max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - var(--notification-icon) - (var(--notification-border-thickness) + var(--notification-border-thickness)));
+  }
 
-.notification.left-border h6.iconless-width,
-.notification.left-border p.iconless-width,
-.notification.right-border h6.iconless-width,
-.notification.right-border p.iconless-width {
-  max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - (var(--notification-border-thickness) + var(--notification-border-thickness)));
-}
+    .notification.left-border h6.iconless-width,
+    .notification.left-border p.iconless-width,
+    .notification.right-border h6.iconless-width,
+    .notification.right-border p.iconless-width {
+      max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - (var(--notification-border-thickness) + var(--notification-border-thickness)));
+    }
 
-.notification .counter {
-  align-items: center;
-  border-radius: 50%;
-  color: var(--notification-color-dark-text);
-  display: flex;
-  font-size: 0.85em;
-  height: var(--notification-counter-size);
-  justify-content: center;
-  left: -7px;
-  line-height: 100%;
-  position: absolute;
-  top: -5px;
-  width: var(--notification-counter-size);
-}
+  .notification .counter {
+    align-items: center;
+    border-radius: 50%;
+    color: var(--notification-color-dark-text);
+    display: flex;
+    font-size: 0.85em;
+    height: var(--notification-counter-size);
+    justify-content: center;
+    left: -7px;
+    line-height: 100%;
+    position: absolute;
+    top: -5px;
+    width: var(--notification-counter-size);
+  }
 
-.notification .close {
-  cursor: pointer;
-  position: absolute;
-  right: var(--notification-margin);
-  top: calc(var(--notification-margin) / 2);
-}
+  .notification .close {
+    cursor: pointer;
+    position: absolute;
+    right: var(--notification-margin);
+    top: calc(var(--notification-margin) / 2);
+  }
 
-.notification.info {
-  background: var(--notification-color-info-lighter);
-  border: solid var(--notification-border-std) var(--notification-color-info-light);
-}
+  .notification.info {
+    background: var(--notification-color-info-lighter);
+    border: solid var(--notification-border-std) var(--notification-color-info-light);
+  }
 
-.notification.info > .close {
-  color: var(--notification-color-info);
-}
+    .notification.info > .close {
+      color: var(--notification-color-info);
+    }
 
-.notification.info > .counter {
-  background: var(--notification-color-info) -lighter;
-  border: solid var(--notification-border-std) var(--notification-color-info);
-}
+    .notification.info > .counter {
+      background: var(--notification-color-info) -lighter;
+      border: solid var(--notification-border-std) var(--notification-color-info);
+    }
 
-.notification.info.top-border {
-  border-top: solid var(--notification-border-thick) var(--notification-color-info);
-}
+    .notification.info.top-border {
+      border-top: solid var(--notification-border-thick) var(--notification-color-info);
+    }
 
-.notification.info.bottom-border {
-  border-bottom: solid var(--notification-border-thick) var(--notification-color-info);
-}
+    .notification.info.bottom-border {
+      border-bottom: solid var(--notification-border-thick) var(--notification-color-info);
+    }
 
-.notification.info.left-border {
-  border-left: solid var(--notification-border-thick) var(--notification-color-info);
-}
+    .notification.info.left-border {
+      border-left: solid var(--notification-border-thick) var(--notification-color-info);
+    }
 
-.notification.info.right-border {
-  border-right: solid var(--notification-border-thick) var(--notification-color-info);
-}
+    .notification.info.right-border {
+      border-right: solid var(--notification-border-thick) var(--notification-color-info);
+    }
 
-.notification.success {
-  background: var(--notification-color-success-lighter);
-  border: solid var(--notification-border-std) var(--notification-color-success-light);
-}
+  .notification.success {
+    background: var(--notification-color-success-lighter);
+    border: solid var(--notification-border-std) var(--notification-color-success-light);
+  }
 
-.notification.success > .close {
-  color: var(--notification-color-success);
-}
+    .notification.success > .close {
+      color: var(--notification-color-success);
+    }
 
-.notification.success > .counter {
-  background: var(--notification-color-success-lighter);
-  border: solid var(--notification-border-std) var(--notification-color-success);
-}
+    .notification.success > .counter {
+      background: var(--notification-color-success-lighter);
+      border: solid var(--notification-border-std) var(--notification-color-success);
+    }
 
-.notification.success.top-border {
-  border-top: solid var(--notification-border-thick) var(--notification-color-success);
-}
+    .notification.success.top-border {
+      border-top: solid var(--notification-border-thick) var(--notification-color-success);
+    }
 
-.notification.success.bottom-border {
-  border-bottom: solid var(--notification-border-thick) var(--notification-color-success);
-}
+    .notification.success.bottom-border {
+      border-bottom: solid var(--notification-border-thick) var(--notification-color-success);
+    }
 
-.notification.success.left-border {
-  border-left: solid var(--notification-border-thick) var(--notification-color-success);
-}
+    .notification.success.left-border {
+      border-left: solid var(--notification-border-thick) var(--notification-color-success);
+    }
 
-.notification.success.right-border {
-  border-right: solid var(--notification-border-thick) var(--notification-color-success);
-}
+    .notification.success.right-border {
+      border-right: solid var(--notification-border-thick) var(--notification-color-success);
+    }
 
-.notification.warning {
-  background: var(--notification-color-warning-lighter);
-  border: solid var(--notification-border-std) var(--notification-color-warning-light);
-}
+  .notification.warning {
+    background: var(--notification-color-warning-lighter);
+    border: solid var(--notification-border-std) var(--notification-color-warning-light);
+  }
 
-.notification.warning > .close {
-  color: var(--notification-color-warning);
-}
+    .notification.warning > .close {
+      color: var(--notification-color-warning);
+    }
 
-.notification.warning > .counter {
-  background: var(--notification-color-warning-lighter);
-  border: solid var(--notification-border-std) var(--notification-color-warning);
-}
+    .notification.warning > .counter {
+      background: var(--notification-color-warning-lighter);
+      border: solid var(--notification-border-std) var(--notification-color-warning);
+    }
 
-.notification.warning.top-border {
-  border-top: solid var(--notification-border-thick) var(--notification-color-warning);
-}
+    .notification.warning.top-border {
+      border-top: solid var(--notification-border-thick) var(--notification-color-warning);
+    }
 
-.notification.warning.bottom-border {
-  border-bottom: solid var(--notification-border-thick) var(--notification-color-warning);
-}
+    .notification.warning.bottom-border {
+      border-bottom: solid var(--notification-border-thick) var(--notification-color-warning);
+    }
 
-.notification.warning.left-border {
-  border-left: solid var(--notification-border-thick) var(--notification-color-warning);
-}
+    .notification.warning.left-border {
+      border-left: solid var(--notification-border-thick) var(--notification-color-warning);
+    }
 
-.notification.warning.right-border {
-  border-right: solid var(--notification-border-thick) var(--notification-color-warning);
-}
+    .notification.warning.right-border {
+      border-right: solid var(--notification-border-thick) var(--notification-color-warning);
+    }
 
-.notification.error {
-  background: var(--notification-color-error-lighter);
-  border: solid var(--notification-border-std) var(--notification-color-error-light);
-}
+  .notification.error {
+    background: var(--notification-color-error-lighter);
+    border: solid var(--notification-border-std) var(--notification-color-error-light);
+  }
 
-.notification.error > .close {
-  color: var(--notification-color-error);
-}
+    .notification.error > .close {
+      color: var(--notification-color-error);
+    }
 
-.notification.error > .counter {
-  background: var(--notification-color-error-lighter);
-  border: solid var(--notification-border-std) var(--notification-color-error);
-}
+    .notification.error > .counter {
+      background: var(--notification-color-error-lighter);
+      border: solid var(--notification-border-std) var(--notification-color-error);
+    }
 
-.notification.error.top-border {
-  border-top: solid var(--notification-border-thick) var(--notification-color-error);
-}
+    .notification.error.top-border {
+      border-top: solid var(--notification-border-thick) var(--notification-color-error);
+    }
 
-.notification.error.bottom-border {
-  border-bottom: solid var(--notification-border-thick) var(--notification-color-error);
-}
+    .notification.error.bottom-border {
+      border-bottom: solid var(--notification-border-thick) var(--notification-color-error);
+    }
 
-.notification.error.left-border {
-  border-left: solid var(--notification-border-thick) var(--notification-color-error);
-}
+    .notification.error.left-border {
+      border-left: solid var(--notification-border-thick) var(--notification-color-error);
+    }
 
-.notification.error.right-border {
-  border-right: solid var(--notification-border-thick) var(--notification-color-error);
-}
+    .notification.error.right-border {
+      border-right: solid var(--notification-border-thick) var(--notification-color-error);
+    }

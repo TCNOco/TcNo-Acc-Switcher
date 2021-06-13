@@ -1,0 +1,854 @@
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+@font-face {
+  font-family: 'Catamaran', sans-serif;
+  src: url("/css/font/Catamaran-VariableFont_wght.ttf") format("ttf");
+}
+
+/* v (Nessecary for disabling the red highlight saying vars not found [as they're added dynamically later]) v */
+
+/* ReSharper disable CssNotResolved */
+
+html,
+body {
+  font-family: 'Catamaran', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  /* THIS SCALES EVERYTHING UP AND DOWN */
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+html {
+  background: var(--headerbarBackground);
+}
+
+body {
+  background: var(--mainBackground);
+}
+
+.mainblock {
+  width: 100%;
+  min-height: 100%;
+  background: var(--mainBackground);
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+app {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+img {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+label {
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+::selection {
+  color: var(--selectionColor);
+  background: var(--selectionBackground);
+}
+
+:root {
+  --resizeBarSize: 7px;
+}
+
+.programMain {
+  position: relative;
+  width: calc(100% - (var(--resizeBarSize) * 2));
+  height: calc(100% - var(--resizeBarSize));
+  margin: 0 var(--resizeBarSize) var(--resizeBarSize) var(--resizeBarSize);
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 10;
+  background: var(--platformScreenBackground);
+}
+
+/* Based on https://github.com/binaryfunt/electron-seamless-titlebar-tutorial */
+
+.headerbar {
+  z-index: 5;
+  background: var(--headerbarBackground);
+  position: relative;
+  height: 32px;
+  width: 100%;
+  -webkit-app-region: drag;
+}
+
+.header_icon {
+  height: 10px;
+  margin: 12px;
+  display: block;
+  fill: var(--headerbarTCNOFill);
+}
+
+.updateBar {
+  position: absolute;
+  z-index: 50;
+  width: 100%;
+  height: 2rem;
+  line-height: 2rem;
+  background: var(--updateBarBackground);
+  color: var(--updateBarColor);
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+#window-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 46px);
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+}
+
+#window-controls-modal {
+  display: grid;
+  grid-template-columns: repeat(1, 46px);
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+}
+
+#btnBack {
+  width: 46px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  pointer-events: all;
+  margin-top: -2px;
+}
+
+#window-controls, #btnBack {
+  background: var(--windowControlsBackground);
+}
+
+#btnBack .resizeTop {
+  width: 46px !important;
+  background: none !important;
+}
+
+#window-controls button,
+#window-controls-modal button {
+  grid-row: 1 / span 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+#btnBack, #window-controls button, #window-controls-modal button {
+  background: none;
+  border: none;
+  margin: 0;
+}
+
+.headerbar {
+  & #btnMin {
+    position: relative;
+    grid-column: 1;
+  }
+
+  & #btnMax,
+  #btnRestore {
+    position: relative;
+    grid-column: 2;
+  }
+
+  & #btnClose {
+    position: relative;
+    grid-column: 3;
+  }
+}
+
+
+@media (-webkit-device-pixel-ratio: 1.5), (device-pixel-ratio: 1.5), (-webkit-device-pixel-ratio: 2), (device-pixel-ratio: 2), (-webkit-device-pixel-ratio: 3), (device-pixel-ratio: 3) {
+  #window-controls .icon {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+#window-controls {
+  -webkit-app-region: no-drag;
+
+  & button {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+    user-select: none;
+  }
+}
+
+#window-controls button:hover,
+#btnBack:hover {
+  background: var(--windowControlsBackground-hover);
+}
+
+#window-controls button:active,
+#btnBack:active {
+  background: var(--windowControlsBackground-active);
+}
+
+/* Resize bars and corners */
+.resize {
+  &TopLeft,
+  &Top,
+  &TopRight,
+  &Right,
+  &BottomRight,
+  &Bottom,
+  &BottomLeft,
+  &Left {
+    -webkit-app-region: drag;
+    position: absolute;
+    background: var(--headerbarBackground);
+  }
+  /* Positions */
+
+  &Top,
+  &TopLeft,
+  &TopRight {
+    top: 0;
+  }
+
+  &Bottom,
+  &BottomLeft,
+  &BottomRight {
+    bottom: 0;
+  }
+
+  &Left,
+  &TopLeft,
+  &BottomLeft {
+    left: 0;
+  }
+
+  &Right,
+  &TopRight,
+  &BottomRight {
+    right: 0;
+  }
+  /* Corners */
+
+  &TopLeft,
+  &TopRight,
+  &BottomRight,
+  &BottomLeft {
+    width: var(--resizeBarSize);
+    height: var(--resizeBarSize);
+    z-index: 2;
+    /* background-color: pink; */
+  }
+  /* Sides */
+
+  &Top {
+    width: calc(100% - 138px);
+    pointer-events: all;
+    background: none !important;
+  }
+
+  &Bottom {
+    width: 100%;
+  }
+
+  &Top,
+  &Bottom {
+    height: var(--resizeBarSize);
+    z-index: 1;
+    /* background-color: lime; */
+  }
+
+  &Left,
+  &Right {
+    width: var(--resizeBarSize);
+    height: 100%;
+    z-index: 1;
+    /* background-color: lime; */
+  }
+  /* Cursors */
+
+  &TopLeft {
+    cursor: nw-resize;
+  }
+
+  &Top {
+    cursor: n-resize;
+  }
+
+  &TopRight {
+    cursor: ne-resize;
+  }
+
+  &Right {
+    cursor: e-resize;
+  }
+
+  &BottomRight {
+    cursor: se-resize;
+  }
+
+  &Bottom {
+    cursor: s-resize;
+  }
+
+  &BottomLeft {
+    cursor: sw-resize;
+  }
+
+  &Left {
+    cursor: w-resize;
+  }
+}
+
+
+/* Sides in window buttons */
+
+#btnClose .resizeTop,
+#btnMin .resizeTop,
+#btnMax .resizeTop,
+#btnRestore .resizeTop,
+#btnBack .resizeTop {
+  width: 100%;
+  background-color: transparent;
+}
+
+#btnClose .resizeRight,
+#btnClose .resizeTopRight,
+#btnBack .resizeTop,
+#btnBack .resizeLeft,
+#btnBack .resizeTopLeft {
+  background-color: transparent;
+}
+
+
+#btnClose:hover,
+#btnClose-modal:hover {
+  background: var(--windowControlsCloseBackground) !important;
+}
+
+#btnClose:active,
+#btnClose-modal:active {
+  background: var(--windowControlsCloseBackground-active) !important;
+}
+
+#btnClose:active .icon,
+#btnClose-modal:active .icon {
+  filter: invert(1);
+}
+
+#btnRestore {
+  display: none !important;
+}
+
+#titlebar #drag-region {
+  display: grid;
+  grid-template-columns: auto 138px;
+}
+
+#window-title-modal {
+  position: relative;
+  background: var(--headerbarBackground);
+}
+
+#window-title,
+#window-title-modal {
+  color: var(--windowTitleColor);
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+#window-title #window-controls,
+#window-title-modal #window-controls-modal {
+  cursor: pointer;
+  pointer-events: all;
+}
+
+#window-title span,
+#window-title-modal span {
+  position: absolute;
+  width: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.maximised #titlebar {
+  width: 100%;
+  padding: 0;
+}
+
+.maximised #window-title {
+  margin-left: 12px;
+}
+
+.maximised #btnRestore {
+  display: flex !important;
+}
+
+.maximised #btnMax {
+  display: none;
+}
+
+.mainWindow {
+  height: calc(100% - 32px);
+  padding: 0;
+  margin: 32px 0 0 0;
+  width: 100vw;
+}
+
+.content {
+  padding-top: 1.1rem;
+}
+
+#blazor-error-ui {
+  background: lightyellow;
+  bottom: 0;
+  box-shadow: 0 -1px 2px #000;
+  box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+  display: none;
+  left: 0;
+  padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+  cursor: pointer;
+  position: absolute;
+  right: 0.75rem;
+  top: 0.5rem;
+}
+
+/* Steam/Settings/Advanced Clearing screen */
+
+div.clearingRow {
+  display: flex;
+}
+
+div.clearingLeft {
+  float: left;
+  margin-right: 1%;
+  width: 59%;
+}
+
+div.clearingRight {
+  word-break: break-word;
+  overflow: auto;
+  background: var(--listBackground);
+  width: 40%;
+  border: solid var(--borderedItemBorderColor) 0.1em;
+  padding: 0.5em;
+}
+
+div.advancedClearingButtonCol {
+  font-size: 0.9rem;
+}
+
+div.advancedClearingButtonCol .buttoncol {
+  margin: 0.5em 0 0 0;
+}
+
+#restoreUnderstand {
+  margin-bottom: 1em;
+}
+
+.clearingPage button {
+  margin: 0 !important;
+}
+
+.clearingRight #lines {
+  max-height: 1px;
+}
+
+.clearingRight #lines p {
+  margin: 0;
+}
+
+/* Forgotten Steam account */
+
+.forgottenListActions {
+  text-align: end;
+}
+
+.forgottenList {
+  display: flex;
+  margin-bottom: 2em;
+
+  & select {
+    overflow: auto;
+    background: var(--listBackground);
+    border: solid var(--borderedItemBorderColor) 0.1em;
+    color: var(--listColor);
+    width: 100%;
+    padding: 0.5em;
+
+    &:focus {
+      border: solid var(--borderedItemBorderColor-focus) 0.1em;
+    }
+
+    & option {
+      &:checked {
+        box-shadow: 0 0 10px 100px var(--listBackgroundColor-checked) inset;
+        color: var(--listColor-checked);
+
+        &::before {
+          color: var(--listTextColor-before-checked);
+          /* margin-left: 0.5em; */
+        }
+
+        &::after {
+          content: attr(visible-content);
+          color: var(--listTextColor-after-checked);
+        }
+      }
+      /*
+          Workaround to set color BECAUSE YOU CAN'T SET TEXT COLOR?!
+          This is for showing the arrow before, and the SteamID afterwards in a different color
+      */
+
+      &::before {
+        content: ">";
+        color: var(--listTextColor-before);
+        margin-right: 0.5em;
+      }
+
+      &::after {
+        content: attr(visible-content);
+        color: var(--listTextColor-after);
+      }
+    }
+  }
+}
+
+
+.btn_RestoreSelected {
+  margin-right: 1em !important;
+  padding: 0.25em 3em !important;
+}
+
+.platformContainer {
+  width: 100%;
+  height: calc(100% - 42px);
+  position: relative;
+  display: table;
+  text-align: center;
+}
+
+.platform_list {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+/* -------------------------------------------------
+	------------ PLATFORM ICONS SECTION ------------
+	------------------------------------------------
+*/
+
+.platformIcon {
+  width: 20vw;
+  max-width: calc(100vw / 4.106);
+  display: inline-block;
+  cursor: pointer;
+  /* ReSharper disable once InvalidValue */
+  border: var(--platformBorderColor) 1px solid;
+  margin: 10px;
+  transition: all 100ms ease-in-out;
+  transform: scale(1);
+  box-shadow: none;
+
+  & svg .icoGlass {
+    transition: 500ms all ease-in;
+  }
+
+  &:hover {
+    &:not(:active) {
+      transform: var(--platformTransform-Hover);
+      filter: var(--platformFilter-Hover);
+      animation: pulse 2s infinite;
+    }
+
+    & svg {
+      transform: var(--platformTransformIcon-Hover);
+      filter: var(--platformFilterIcon-Hover);
+
+      & .icoGlass {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  &:active {
+    transform: var(--platformTransform-Active);
+    filter: var(--platformFilter-Active);
+    box-shadow: none;
+
+    & svg {
+      transform: var(--platformTransformIcon-Active);
+      filter: var(--platformFilterIcon-Active);
+
+      & .icoGlass {
+        transform: scale(0.9);
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: var(--platformTransform-HoverAnimation-transform-0);
+    box-shadow: var(--platformTransform-HoverAnimation-boxShadow-0);
+  }
+
+  70% {
+    transform: var(--platformTransform-HoverAnimation-transform-70);
+    box-shadow: var(--platformTransform-HoverAnimation-boxShadow-70);
+  }
+
+  100% {
+    transform: var(--platformTransform-HoverAnimation-transform-100);
+    box-shadow: var(--platformTransform-HoverAnimation-boxShadow-100);
+  }
+}
+
+.ico {
+  /* BattleNet */
+  &BattleNet {
+    &BG {
+      background: var(--icoBattleNetBG);
+    }
+
+    &Text {
+      fill: var(--icoBattleNetText-Fill);
+      stroke: var(--icoBattleNetText-Stroke);
+      stroke-width: var(--icoBattleNetText-StrokeWidth);
+      stroke-linejoin: round;
+      stroke-miterlimit: 2;
+    }
+
+    &FG {
+      fill: var(--icoBattleNetFG-Fill);
+      stroke: var(--icoBattleNetFG-Stroke);
+      stroke-width: var(--icoBattleNetFG-StrokeWidth);
+    }
+
+    &Glass {
+      fill: var(--icoBattleNetGlass-Fill);
+    }
+  }
+  /* Epic Games */
+  &Epic {
+    &BG {
+      background: var(--icoEpicBG);
+    }
+
+    &Text {
+      fill: var(--icoEpicText-Fill);
+      stroke: var(--icoEpicText-Stroke);
+      stroke-width: var(--icoEpicText-StrokeWidth);
+      stroke-linejoin: round;
+      stroke-miterlimit: 2;
+    }
+
+    &FG {
+      fill: var(--icoEpicFG-Fill);
+      stroke: var(--icoEpicFG-Stroke);
+      stroke-width: var(--icoEpicFG-StrokeWidth);
+    }
+
+    &Glass {
+      fill: var(--icoEpicGlass-Fill);
+    }
+  }
+  /* Origin */
+  &Origin {
+    &BG {
+      background: var(--icoOriginBG);
+    }
+
+    &Text {
+      fill: var(--icoOriginText-Fill);
+      stroke: var(--icoOriginText-Stroke);
+      stroke-width: var(--icoOriginText-StrokeWidth);
+      stroke-linejoin: round;
+      stroke-miterlimit: 2;
+    }
+
+    &FG {
+      fill: var(--icoOriginFG-Fill);
+      stroke: var(--icoOriginFG-Stroke);
+      stroke-width: var(--icoOriginFG-StrokeWidth);
+    }
+
+    &Glass {
+      fill: var(--icoOriginGlass-Fill);
+    }
+  }
+  /* Riot Games */
+  &Riot {
+    &BG {
+      background: var(--icoRiotBG);
+    }
+
+    &Text {
+      fill: var(--icoRiotText-Fill);
+      stroke: var(--icoRiotText-Stroke);
+      stroke-width: var(--icoRiotText-StrokeWidth);
+      stroke-linejoin: round;
+      stroke-miterlimit: 2;
+    }
+
+    &FG {
+      fill: var(--icoRiotFG-Fill);
+      stroke: var(--icoRiotFG-Stroke);
+      stroke-width: var(--icoRiotFG-StrokeWidth);
+    }
+
+    &Glass {
+      fill: var(--icoRiotGlass-Fill);
+    }
+  }
+  /* Steam */
+  &Steam {
+    &BG {
+      background: var(--icoSteamBG);
+    }
+
+    &Text {
+      fill: var(--icoSteamText-Fill);
+      stroke: var(--icoSteamText-Stroke);
+      stroke-width: var(--icoSteamText-StrokeWidth);
+      stroke-linejoin: round;
+      stroke-miterlimit: 2;
+    }
+
+    &FG {
+      fill: var(--icoSteamFG-Fill);
+      stroke: var(--icoSteamFG-Stroke);
+      stroke-width: var(--icoSteamFG-StrokeWidth);
+    }
+
+    &Glass {
+      fill: var(--icoRiotGlass-Fill);
+    }
+  }
+  /* Ubisoft */
+  &Ubisoft {
+    &BG {
+      background: var(--icoUbisoftBG);
+    }
+
+    &Text {
+      fill: var(--icoUbisoftText-Fill);
+      stroke: var(--icoUbisoftText-Stroke);
+      stroke-width: var(--icoUbisoftText-StrokeWidth);
+      stroke-linejoin: round;
+      stroke-miterlimit: 2;
+    }
+
+    &FG {
+      fill: var(--icoUbisoftFG-Fill);
+      stroke: var(--icoUbisoftFG-Stroke);
+      stroke-width: var(--icoUbisoftFG-StrokeWidth);
+    }
+
+    &Glass {
+      fill: var(--icoRiotGlass-Fill);
+    }
+  }
+}
+
+/* Modal icons */
+.modalIco {
+  &Discord {
+    fill: var(--modalIcoDiscord-Fill);
+  }
+
+  &GitHub {
+    fill: var(--modalIcoGitHub-Fill);
+  }
+
+  &Networking {
+    fill: var(--modalIcoNetworking-Fill);
+  }
+
+  &Doc {
+    fill: var(--modalIcoDoc-Fill);
+  }
+}
+/* BattleNet icons */
+.battlenet {
+  &IcoOWTank {
+    fill: var(--battlenetIcoOWTank-Fill);
+  }
+
+  &IcoOWDamage {
+    fill: var(--battlenetIcoOWDamage-Fill);
+  }
+
+  &IcoOWSupport {
+    fill: var(--battlenetIcoOWSupport-Fill);
+  }
+}
+/* Riot icons */
+.riotIco {
+  &League {
+    fill: var(--riotIcoLeague-Fill);
+  }
+
+  &Runeterra {
+    fill: var(--riotIcoRuneterra-Fill);
+  }
+
+  &Valorant {
+    fill: var(--riotIcoValorant-Fill);
+  }
+}
+/* Footer icons */
+.footerIco {
+  &Settings {
+    fill: var(--footerIcoSettings-Fill);
+  }
+
+  &Question {
+    fill: var(--footerIcoQuestion-Fill);
+  }
+}

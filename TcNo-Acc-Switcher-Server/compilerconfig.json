@@ -1,13 +1,10 @@
 ﻿[
   {
+    "outputFile": "wwwroot/css/site.css",
+    "inputFile": "wwwroot/css/site.scss"
+  },
+  {
     "outputFile": "wwwroot/css/UI.css",
-    "inputFile": "wwwroot/css/UI.scss",
-    "minify": {
-      "enabled": true
-    },
-    "includeInProject": true,
-    "options": {
-      "sourceMap": false
-    }
+    "inputFile": "wwwroot/css/UI.scss"
   }
 ]

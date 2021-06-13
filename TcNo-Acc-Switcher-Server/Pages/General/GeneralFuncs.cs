@@ -33,16 +33,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralFuncs
     {
-        #region DEBUGMODE
-        public static bool IsDebug()
-        {
-#if DEBUG
-            return true;
-#else
-            return false;
-#endif
-        }
-        #endregion
         #region PROCESS_OPERATIONS
 
         // Overload for below

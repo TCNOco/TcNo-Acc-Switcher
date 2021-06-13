@@ -40,7 +40,6 @@
 
 .infoWindow {
   position: relative;
-
   /*
         width: 80%;
         height: 80%;
@@ -54,60 +53,60 @@
   display: flex;
 }
 
-.infoWindow .imgDiv {
-  width: 100%;
-  align-items: center;
-  display: flex;
-}
+  .infoWindow .imgDiv {
+    width: 100%;
+    align-items: center;
+    display: flex;
+  }
 
-.infoWindow .fullWidthContent {
-  width: 100%;
-  color: var(--defaultTextColor);
-  display: block;
-}
+  .infoWindow .fullWidthContent {
+    width: 100%;
+    color: var(--defaultTextColor);
+    display: block;
+  }
 
-.infoWindow .fullWidthContent .YesNo button {
-  padding: 0.25em 3em !important;
-}
+    .infoWindow .fullWidthContent .YesNo button {
+      padding: 0.25em 3em !important;
+    }
 
-.infoWindow .rightContent {
-  color: var(--defaultTextColor);
-  margin-left: 1em;
-  text-align: left;
-}
+  .infoWindow .rightContent {
+    color: var(--defaultTextColor);
+    margin-left: 1em;
+    text-align: left;
+  }
 
-.infoWindow .rightContent h2 {
-  font-weight: bold;
-}
+    .infoWindow .rightContent h2 {
+      font-weight: bold;
+    }
 
-.infoWindow .rightContent .linksList {
-  display: flex;
-  flex-direction: column;
-}
+    .infoWindow .rightContent .linksList {
+      display: flex;
+      flex-direction: column;
+    }
 
-.infoWindow .rightContent .linksList a,
-.fancyLink {
-  color: var(--linkColor);
-  cursor: pointer;
-  line-height: 24px;
-}
+      .infoWindow .rightContent .linksList a,
+      .fancyLink {
+        color: var(--linkColor);
+        cursor: pointer;
+        line-height: 24px;
+      }
 
-.infoWindow .rightContent .linksList a:hover,
-.fancyLink:hover {
-  color: var(--linkColor-hover);
-}
+        .infoWindow .rightContent .linksList a:hover,
+        .fancyLink:hover {
+          color: var(--linkColor-hover);
+        }
 
-.infoWindow .rightContent .linksList a:active,
-.fancyLink:active {
-  color: var(--linkColor-active);
-}
+        .infoWindow .rightContent .linksList a:active,
+        .fancyLink:active {
+          color: var(--linkColor-active);
+        }
 
-.infoWindow .rightContent .linksList a svg {
-  width: 2em;
-  margin-right: 0.5em;
-  display: inline-block;
-  vertical-align: bottom;
-}
+        .infoWindow .rightContent .linksList a svg {
+          width: 2em;
+          margin-right: 0.5em;
+          display: inline-block;
+          vertical-align: bottom;
+        }
 
 #modal_contents {
   position: relative;
@@ -118,73 +117,73 @@
   background: var(--modalFgBackground);
 }
 
-#modal_contents button {
-  user-select: none;
-  background: var(--buttonBackground);
-  padding: 0.25em 0.6em;
-  margin: 0 0.25em;
-  width: auto;
-  color: var(--buttonColor);
-  border-style: solid;
-  border-color: var(--buttonBorder);
-  border-width: 0.1em;
-  cursor: pointer;
-  border-radius: 0 !important;
-  transition: ease-in-out 60ms;
-  user-select: none;
-}
+  #modal_contents button {
+    user-select: none;
+    background: var(--buttonBackground);
+    padding: 0.25em 0.6em;
+    margin: 0 0.25em;
+    width: auto;
+    color: var(--buttonColor);
+    border-style: solid;
+    border-color: var(--buttonBorder);
+    border-width: 0.1em;
+    cursor: pointer;
+    border-radius: 0 !important;
+    transition: ease-in-out 60ms;
+    user-select: none;
+  }
 
-#modal_contents button:hover {
-  background: var(--buttonBackground-hover);
-  border-color: var(--buttonBorder-hover);
-}
+    #modal_contents button:hover {
+      background: var(--buttonBackground-hover);
+      border-color: var(--buttonBorder-hover);
+    }
 
-#modal_contents button:active {
-  background: var(--buttonBackground-active) !important;
-  border-color: var(--buttonBorder-active);
-}
+    #modal_contents button:active {
+      background: var(--buttonBackground-active) !important;
+      border-color: var(--buttonBorder-active);
+    }
 
-#modal_contents button:focus {
-  box-shadow: none;
-}
+    #modal_contents button:focus {
+      box-shadow: none;
+    }
 
-#modal_contents button span {
-  line-height: 2.5em;
-}
+    #modal_contents button span {
+      line-height: 2.5em;
+    }
 
-#modal_contents .modal_button_close {
-  right: 0 !important;
-  left: unset !important;
-  width: 35% !important;
-}
+  #modal_contents .modal_button_close {
+    right: 0 !important;
+    left: unset !important;
+    width: 35% !important;
+  }
 
-#modal_contents input[type=text] {
-  padding-bottom: 2px;
-  background: var(--modalInputBackground) !important;
-  padding-bottom: 0;
-  margin: 0;
-  border-bottom: 2px solid var(--borderedItemBorderColor);
-  background: var(--modalInputBackground);
-}
+  #modal_contents input[type=text] {
+    padding-bottom: 2px;
+    background: var(--modalInputBackground) !important;
+    padding-bottom: 0;
+    margin: 0;
+    border-bottom: 2px solid var(--borderedItemBorderColor);
+    background: var(--modalInputBackground);
+  }
 
-#modal_contents input[type=text]:focus {
-  border-bottom: 2px solid var(--borderedItemBorderColorBottom-focus);
-}
+    #modal_contents input[type=text]:focus {
+      border-bottom: 2px solid var(--borderedItemBorderColorBottom-focus);
+    }
 
-#modal_contents .inputAndButton {
-  display: flex;
-  margin: 1em 0.5em 1em 0.5em;
-}
+  #modal_contents .inputAndButton {
+    display: flex;
+    margin: 1em 0.5em 1em 0.5em;
+  }
 
-#modal_contents .inputAndButton button {
-  margin-left: 0.5em;
-}
+    #modal_contents .inputAndButton button {
+      margin-left: 0.5em;
+    }
 
-#modal_contents .modal-text {
-  margin: 0 0.5em 2px 0.5em;
-  font-size: 12px !important;
-  color: var(--defaultTextColor);
-}
+  #modal_contents .modal-text {
+    margin: 0 0.5em 2px 0.5em;
+    font-size: 12px !important;
+    color: var(--defaultTextColor);
+  }
 
 #FolderLocation {
   flex-grow: 1;
@@ -200,39 +199,39 @@
   margin-right: 0.5em;
 }
 
-.folder_indicator.found {
-  background: var(--modalFoundColor);
-}
+  .folder_indicator.found {
+    background: var(--modalFoundColor);
+  }
 
-.folder_indicator.notfound {
-  background: var(--modalNotFoundColor);
-}
+  .folder_indicator.notfound {
+    background: var(--modalNotFoundColor);
+  }
 
 .folder_indicator_bg {
   padding: 0.35em 0.6em;
 }
 
-.folder_indicator_bg span {
-  line-height: 2.5em;
-  color: var(--defaultTextColor);
-  padding: 1em 0;
-}
+  .folder_indicator_bg span {
+    line-height: 2.5em;
+    color: var(--defaultTextColor);
+    padding: 1em 0;
+  }
 
-.folder_indicator_bg.found {
-  background: var(--modalFoundBackground);
-}
+  .folder_indicator_bg.found {
+    background: var(--modalFoundBackground);
+  }
 
-.folder_indicator_bg.found span::after {
-  content: " found!";
-}
+    .folder_indicator_bg.found span::after {
+      content: " found!";
+    }
 
-.folder_indicator_bg.notfound {
-  background: var(--modalNotFoundBackground);
-}
+  .folder_indicator_bg.notfound {
+    background: var(--modalNotFoundBackground);
+  }
 
-.folder_indicator_bg.notfound span::after {
-  content: " not found!";
-}
+    .folder_indicator_bg.notfound span::after {
+      content: " not found!";
+    }
 
 #modal_false {
   color: var(--linkColor) !important;
@@ -243,9 +242,9 @@
   margin-top: 0.5em;
 }
 
-.clearLogDiv button {
-  width: 40% !important;
-}
+  .clearLogDiv button {
+    width: 40% !important;
+  }
 
 #invalidBattleTag > p {
   color: red;

@@ -10,39 +10,42 @@
   list-style: none;
   z-index: 999999;
   box-shadow: var(--contextMenuBoxShadow);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 }
 
-.contextmenu li {
-  border-left: 1em solid transparent;
-  transition: ease 0.2s;
-}
+  .contextmenu li {
+    border-left: 1em solid transparent;
+    transition: ease 0.2s;
+  }
 
-.contextmenu li a {
-  display: block;
-  padding: 10px;
-  color: var(--contextMenuTextColor) !important;
-  text-decoration: none;
-  transition: ease 0.2s;
-  cursor: pointer;
-}
+    .contextmenu li a {
+      display: block;
+      padding: 10px;
+      color: var(--contextMenuTextColor) !important;
+      text-decoration: none;
+      transition: ease 0.2s;
+      cursor: pointer;
+    }
 
-.contextmenu li:hover {
-  background: var(--contextMenuBackground-hover);
-  border-left: 2px solid var(--contextMenuLeftBorder-hover);
-}
+    .contextmenu li:hover {
+      background: var(--contextMenuBackground-hover);
+      border-left: 2px solid var(--contextMenuLeftBorder-hover);
+    }
 
-.contextmenu li:hover a {
-  color: var(--contextMenuTextColor-hover);
-}
+      .contextmenu li:hover a {
+        color: var(--contextMenuTextColor-hover);
+      }
 
 .versionIdentifier {
   text-align: right;
 }
 
-.versionIdentifier span {
-  color: var(--defaultTextColor);
-}
+  .versionIdentifier span {
+    color: var(--defaultTextColor);
+  }
 
 .submenu {
   display: none;
@@ -82,6 +85,6 @@ li:hover .submenu {
   color: var(--contextMenuTextColor);
 }
 
-.submenu li a {
-  color: var(--contextMenuTextColor) !important;
-}
+  .submenu li a {
+    color: var(--contextMenuTextColor) !important;
+  }
