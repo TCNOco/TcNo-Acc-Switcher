@@ -1,68 +1,68 @@
 /* ReSharper disable CssNotResolved */
 .modalBG {
   position: fixed;
-  height: calc(100% - var(--resizeBarSize) - 32px);
   width: calc(100% - (var(--resizeBarSize) * 2));
-  z-index: 100;
+  height: calc(100% - var(--resizeBarSize) - 32px);
   background: var(--modalBackground);
   cursor: pointer;
+  z-index: 100;
 }
 
 .modalFG {
-  width: fit-content;
-  padding: 6px;
-  background: var(--headerbarBackground);
-  position: absolute;
-  top: calc(50% - 18px);
-  left: 50%;
-  transform: translate(-50%, -50%);
-  min-width: 200px;
-  max-width: 90%;
-  min-height: 100px;
-  max-height: 90%;
   -webkit-box-shadow: 0 0 15px 3px #000;
   -webkit-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
   -moz-box-shadow: 0 0 15px 3px #000;
   -moz-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
+  position: absolute;
+  top: calc(50% - 18px);
+  left: 50%;
+  width: fit-content;
+  min-width: 200px;
+  max-width: 90%;
+  min-height: 100px;
+  max-height: 90%;
+  padding: 6px;
+  transform: translate(-50%, -50%);
+  background: var(--headerbarBackground);
   box-shadow: 0 0 15px 3px #000;
   box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
   cursor: default;
 }
 
 .modal_header_icon {
+  fill: var(--modalTCNOFill);
+  display: block;
   height: 10px;
   margin: 12px;
-  display: block;
-  fill: var(--modalTCNOFill);
 }
 
 /* Info window */
 
 .infoWindow {
+  display: flex;
   position: relative;
+  align-items: center;
   /*
         width: 80%;
         height: 80%;
     */
   width: fit-content;
   padding: 5%;
-  align-items: center;
-  white-space: nowrap;
   overflow: auto;
   text-align: center;
-  display: flex;
+  white-space: nowrap;
 }
 
   .infoWindow .imgDiv {
-    width: 100%;
-    align-items: center;
     display: flex;
+    align-items: center;
+    width: 100%;
   }
 
   .infoWindow .fullWidthContent {
+    display: block;
     width: 100%;
     color: var(--defaultTextColor);
-    display: block;
   }
 
     .infoWindow .fullWidthContent .YesNo button {
@@ -70,8 +70,8 @@
     }
 
   .infoWindow .rightContent {
-    color: var(--defaultTextColor);
     margin-left: 1em;
+    color: var(--defaultTextColor);
     text-align: left;
   }
 
@@ -87,8 +87,8 @@
       .infoWindow .rightContent .linksList a,
       .fancyLink {
         color: var(--linkColor);
-        cursor: pointer;
         line-height: 24px;
+        cursor: pointer;
       }
 
         .infoWindow .rightContent .linksList a:hover,
@@ -102,45 +102,45 @@
         }
 
         .infoWindow .rightContent .linksList a svg {
+          display: inline-block;
           width: 2em;
           margin-right: 0.5em;
-          display: inline-block;
           vertical-align: bottom;
         }
 
 #modal_contents {
+  display: grid;
   position: relative;
   width: 100%;
   height: 100%;
   padding: 1em;
-  display: grid;
   background: var(--modalFgBackground);
 }
 
   #modal_contents button {
     user-select: none;
-    background: var(--buttonBackground);
-    padding: 0.25em 0.6em;
-    margin: 0 0.25em;
-    width: auto;
-    color: var(--buttonColor);
-    border-style: solid;
-    border-color: var(--buttonBorder);
-    border-width: 0.1em;
-    cursor: pointer;
-    border-radius: 0 !important;
-    transition: ease-in-out 60ms;
     user-select: none;
+    width: auto;
+    margin: 0 0.25em;
+    padding: 0.25em 0.6em;
+    border-width: 0.1em;
+    border-style: solid;
+    border-radius: 0 !important;
+    border-color: var(--buttonBorder);
+    background: var(--buttonBackground);
+    color: var(--buttonColor);
+    cursor: pointer;
+    transition: ease-in-out 60ms;
   }
 
     #modal_contents button:hover {
-      background: var(--buttonBackground-hover);
       border-color: var(--buttonBorder-hover);
+      background: var(--buttonBackground-hover);
     }
 
     #modal_contents button:active {
-      background: var(--buttonBackground-active) !important;
       border-color: var(--buttonBorder-active);
+      background: var(--buttonBackground-active) !important;
     }
 
     #modal_contents button:focus {
@@ -158,11 +158,11 @@
   }
 
   #modal_contents input[type=text] {
-    padding-bottom: 2px;
-    background: var(--modalInputBackground) !important;
-    padding-bottom: 0;
     margin: 0;
+    padding-bottom: 2px;
+    padding-bottom: 0;
     border-bottom: 2px solid var(--borderedItemBorderColor);
+    background: var(--modalInputBackground) !important;
     background: var(--modalInputBackground);
   }
 
@@ -181,8 +181,8 @@
 
   #modal_contents .modal-text {
     margin: 0 0.5em 2px 0.5em;
-    font-size: 12px !important;
     color: var(--defaultTextColor);
+    font-size: 12px !important;
   }
 
 #FolderLocation {
@@ -212,9 +212,9 @@
 }
 
   .folder_indicator_bg span {
-    line-height: 2.5em;
-    color: var(--defaultTextColor);
     padding: 1em 0;
+    color: var(--defaultTextColor);
+    line-height: 2.5em;
   }
 
   .folder_indicator_bg.found {
@@ -238,8 +238,8 @@
 }
 
 .clearLogDiv {
-  text-align: right;
   margin-top: 0.5em;
+  text-align: right;
 }
 
   .clearLogDiv button {

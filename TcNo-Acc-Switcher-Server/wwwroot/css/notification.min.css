@@ -14,26 +14,26 @@
 }
 
 .notification-container {
-  align-items: flex-end;
   display: flex;
+  position: fixed;
   flex-direction: column;
+  align-items: flex-end;
+  width: auto;
+  height: auto;
   font-family: Helvetica, sans-serif;
   font-size: var(--notification-font-size);
-  height: auto;
   line-height: var(--notification-line-spacing);
-  position: fixed;
-  width: auto;
   z-index: 999;
 }
 
   .notification-container.top-left {
-    left: 0;
     top: 0;
+    left: 0;
   }
 
   .notification-container.top-right {
-    right: 0;
     top: 0;
+    right: 0;
   }
 
   .notification-container.bottom-left {
@@ -42,34 +42,34 @@
   }
 
   .notification-container.bottom-right {
-    bottom: 0;
     right: 0;
+    bottom: 0;
   }
 
 .notification {
-  align-items: center;
-  border-radius: var(--notification-border-radius);
-  color: white;
-  cursor: pointer;
-  display: flex;
-  font-size: 1em;
-  height: auto;
-  margin: var(--notification-margin);
-  min-width: var(--notification-min-width);
-  opacity: 0;
-  padding: var(--notification-padding);
-  position: relative;
-  width: fit-content;
-  z-index: 999;
   -webkit-box-shadow: 0 0 var(--notification-margin) rgba(0, 0, 0, 0.2);
   -moz-box-shadow: 0 0 var(--notification-margin) rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0 var(--notification-margin) rgba(0, 0, 0, 0.2);
   -webkit-transition: opacity 1s ease 0.5s;
   -moz-transition: opacity 1s ease 0.5s;
-  transition: opacity 1s ease 0.5s;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
+  display: flex;
+  position: relative;
+  align-items: center;
+  width: fit-content;
+  min-width: var(--notification-min-width);
+  height: auto;
+  margin: var(--notification-margin);
+  padding: var(--notification-padding);
+  border-radius: var(--notification-border-radius);
+  color: white;
+  font-size: 1em;
+  box-shadow: 0 0 var(--notification-margin) rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 1s ease 0.5s;
+  z-index: 999;
 }
 
   .notification:nth-child(n+2) {
@@ -85,11 +85,11 @@
   .notification h5,
   .notification h6,
   .notification p {
+    margin: 0;
+    padding: 0;
     border: 0;
     font: inherit;
     font-size: 100%;
-    margin: 0;
-    padding: 0;
     vertical-align: baseline;
   }
 
@@ -105,34 +105,34 @@
 
   .notification .vector-container {
     align-self: baseline;
+    width: var(--notification-icon);
     height: var(--notification-icon);
     margin: 0;
-    width: var(--notification-icon);
   }
 
     .notification .vector-container svg {
-      height: var(--notification-icon);
       width: var(--notification-icon);
+      height: var(--notification-icon);
     }
 
   .notification .text-container {
-    padding: 0 var(--notification-padding);
     margin-right: var(--notification-margin);
+    padding: 0 var(--notification-padding);
     text-align: justify;
   }
 
     .notification .text-container h6,
     .notification .text-container p {
-      margin-bottom: calc(var(--notification-padding) / 2);
-      max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - var(--notification-icon) - (2 * var(--notification-border-thickness)));
       word-wrap: break-word;
+      max-width: calc(var(--notification-max-width) - (2 * var(--notification-margin)) - (4 * var(--notification-padding)) - var(--notification-icon) - (2 * var(--notification-border-thickness)));
+      margin-bottom: calc(var(--notification-padding) / 2);
     }
 
     .notification .text-container p {
-      font-size: 0.9em;
-      line-height: 1.4em;
       margin: 0;
       margin-bottom: calc(var(--notification-padding) / 2);
+      font-size: 0.9em;
+      line-height: 1.4em;
     }
 
       .notification .text-container p.iconless-width {
@@ -140,13 +140,13 @@
       }
 
     .notification .text-container button {
-      background-color: transparent;
-      border: var(--notification-border-thickness) solid var(--notification-color-dark-border);
-      border-radius: var(--notification-border-radius);
-      cursor: pointer;
-      font-size: 0.9em;
       margin-bottom: 0;
       padding: calc(var(--notification-padding) / 2) var(--notification-padding);
+      border: var(--notification-border-thickness) solid var(--notification-color-dark-border);
+      border-radius: var(--notification-border-radius);
+      background-color: transparent;
+      font-size: 0.9em;
+      cursor: pointer;
     }
 
   .notification.left-border h6,
@@ -164,30 +164,30 @@
     }
 
   .notification .counter {
-    align-items: center;
-    border-radius: 50%;
-    color: var(--notification-color-dark-text);
     display: flex;
-    font-size: 0.85em;
-    height: var(--notification-counter-size);
-    justify-content: center;
-    left: -7px;
-    line-height: 100%;
     position: absolute;
     top: -5px;
+    left: -7px;
+    align-items: center;
+    justify-content: center;
     width: var(--notification-counter-size);
+    height: var(--notification-counter-size);
+    border-radius: 50%;
+    color: var(--notification-color-dark-text);
+    font-size: 0.85em;
+    line-height: 100%;
   }
 
   .notification .close {
-    cursor: pointer;
     position: absolute;
-    right: var(--notification-margin);
     top: calc(var(--notification-margin) / 2);
+    right: var(--notification-margin);
+    cursor: pointer;
   }
 
   .notification.info {
-    background: var(--notification-color-info-lighter);
     border: solid var(--notification-border-std) var(--notification-color-info-light);
+    background: var(--notification-color-info-lighter);
   }
 
     .notification.info > .close {
@@ -195,8 +195,8 @@
     }
 
     .notification.info > .counter {
-      background: var(--notification-color-info) -lighter;
       border: solid var(--notification-border-std) var(--notification-color-info);
+      background: var(--notification-color-info) -lighter;
     }
 
     .notification.info.top-border {
@@ -216,8 +216,8 @@
     }
 
   .notification.success {
-    background: var(--notification-color-success-lighter);
     border: solid var(--notification-border-std) var(--notification-color-success-light);
+    background: var(--notification-color-success-lighter);
   }
 
     .notification.success > .close {
@@ -225,8 +225,8 @@
     }
 
     .notification.success > .counter {
-      background: var(--notification-color-success-lighter);
       border: solid var(--notification-border-std) var(--notification-color-success);
+      background: var(--notification-color-success-lighter);
     }
 
     .notification.success.top-border {
@@ -246,8 +246,8 @@
     }
 
   .notification.warning {
-    background: var(--notification-color-warning-lighter);
     border: solid var(--notification-border-std) var(--notification-color-warning-light);
+    background: var(--notification-color-warning-lighter);
   }
 
     .notification.warning > .close {
@@ -255,8 +255,8 @@
     }
 
     .notification.warning > .counter {
-      background: var(--notification-color-warning-lighter);
       border: solid var(--notification-border-std) var(--notification-color-warning);
+      background: var(--notification-color-warning-lighter);
     }
 
     .notification.warning.top-border {
@@ -276,8 +276,8 @@
     }
 
   .notification.error {
-    background: var(--notification-color-error-lighter);
     border: solid var(--notification-border-std) var(--notification-color-error-light);
+    background: var(--notification-color-error-lighter);
   }
 
     .notification.error > .close {
@@ -285,8 +285,8 @@
     }
 
     .notification.error > .counter {
-      background: var(--notification-color-error-lighter);
       border: solid var(--notification-border-std) var(--notification-color-error);
+      background: var(--notification-color-error-lighter);
     }
 
     .notification.error.top-border {
