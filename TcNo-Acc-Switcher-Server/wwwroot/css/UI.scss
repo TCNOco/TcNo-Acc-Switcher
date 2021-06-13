@@ -1,6 +1,6 @@
 ﻿/* ReSharper disable CssNotResolved */
 
-/* 
+/*
     * This file requiers compilation before it can be used in the final program.
     * If you're editing the source code, you might need one of the following to compile on build/save:
     * 
@@ -9,7 +9,8 @@
 */
 
 /* Buttons */
-button, .button {
+button,
+.button {
   background: var(--buttonBackground);
   border-color: var(--buttonBorder);
   border-radius: 0;
@@ -27,7 +28,8 @@ button, .button {
   user-select: none;
   width: max-content;
 
-  &:active, &:target {
+  &:active,
+  &:target {
     background: var(--buttonBackground-active) !important;
     border-color: var(--buttonBorder-active) !important;
   }
@@ -36,6 +38,7 @@ button, .button {
     background: var(--buttonBackground-hover);
     border-color: var(--buttonBorder-hover);
   }
+
   /* Button children */
   & span {
     line-height: 2.5em;
@@ -54,7 +57,7 @@ button, .button {
 
 /* Dropdown */
 button .caret {
-  margin-left: 0
+  margin-left: 0;
 }
 
 .rowDropdown {
@@ -92,7 +95,10 @@ button .caret {
     padding: 0.5rem 1rem;
     color: var(--dropdownColor);
 
-    &.active, &:active, &:focus, &:target {
+    &.active,
+    &:active,
+    &:focus,
+    &:target {
       color: var(--dropdownColor);
       background: var(--dropdownItemBackground-active) !important;
     }
@@ -154,59 +160,58 @@ button .caret {
 
   & .ace_gutter {
     background: var(--ace_editor_gutterBackground);
-    color: var(--ace_editor_gutterColor)
+    color: var(--ace_editor_gutterColor);
   }
 
   & .ace_print-margin {
     width: 1px;
-    background: var(--ace_editor_printBackgound)
+    background: var(--ace_editor_printBackgound);
   }
 
   & .ace_cursor {
-    color: var(--ace_editor_cursorColor)
+    color: var(--ace_editor_cursorColor);
   }
 
   &.ace_multiselect .ace_selection.ace_start {
     box-shadow: var(--ace_editor_multiselectBoxShadow);
-    border-radius: var(--ace_editor_markerlayer_selectionBorderRadius)
+    border-radius: var(--ace_editor_markerlayer_selectionBorderRadius);
   }
-
 
   & .ace_marker-layer {
     & .ace_selection {
-      background: var(--ace_editor_markerlayer_selectionBackground)
+      background: var(--ace_editor_markerlayer_selectionBackground);
     }
 
     & .ace_step {
-      background: var(--ace_editor_markerlayer_stepBackground)
+      background: var(--ace_editor_markerlayer_stepBackground);
     }
 
     & .ace_bracket {
       margin: -1px 0 0 -1px;
-      border: var(--ace_editor_markerlayer_bracketBorder)
+      border: var(--ace_editor_markerlayer_bracketBorder);
     }
 
     & .ace_active-line {
-      background: var(--ace_editor_markerlayer_activeLineBackground)
+      background: var(--ace_editor_markerlayer_activeLineBackground);
     }
 
     & .ace_selected-word {
       border: var(--ace_editor_markerlayer_selectedWordBorder);
-      border-radius: var(--ace_editor_markerlayer_selectedWordBorderRadius)
+      border-radius: var(--ace_editor_markerlayer_selectedWordBorderRadius);
     }
   }
 
   & .ace_gutter-active-line {
-    background: var(--ace_editor_gutterActiveLineBackground)
+    background: var(--ace_editor_gutterActiveLineBackground);
   }
 
   & .ace_invisible {
-    color: var(--ace_editor_invisibleColor)
+    color: var(--ace_editor_invisibleColor);
   }
 
   & .ace_keyword,
   & .ace_meta {
-    color: var(--ace_editor_keywordMetaColor)
+    color: var(--ace_editor_keywordMetaColor);
   }
 
   & .ace_constant,
@@ -216,33 +221,33 @@ button .caret {
   & .ace_heading,
   & .ace_markup.ace_heading,
   & .ace_support.ace_constant {
-    color: var(--ace_editor_constantColor)
+    color: var(--ace_editor_constantColor);
   }
 
   & .ace_constant {
     &.ace_numeric {
-      color: var(--ace_editor_constantNumericColor)
+      color: var(--ace_editor_constantNumericColor);
     }
 
     &.ace_character {
-      color: var(--ace_editor_constantCharacterColor)
+      color: var(--ace_editor_constantCharacterColor);
     }
 
     &.ace_character.ace_escape {
-      color: var(--ace_editor_constantCharacterEscapeColor)
+      color: var(--ace_editor_constantCharacterEscapeColor);
     }
 
     &.ace_other {
-      color: var(--ace_editor_constantOtherColor)
+      color: var(--ace_editor_constantOtherColor);
     }
   }
 
   & .ace_language {
-    color: var(--ace_editor_languageColor)
+    color: var(--ace_editor_languageColor);
   }
 
   & .ace_numeric {
-    color: var(--ace_editor_numericColor)
+    color: var(--ace_editor_numericColor);
   }
 
   & .ace_invalid {
@@ -255,7 +260,7 @@ button .caret {
       text-decoration: underline;
       font-style: italic;
       color: var(--ace_editor_depreceatedColor);
-      background: var(--ace_editor_depreceatedBackground)
+      background: var(--ace_editor_depreceatedBackground);
     }
   }
 
@@ -263,47 +268,47 @@ button .caret {
     color: var(--ace_editor_support);
 
     & .ace_function {
-      color: var(--ace_editor_functionColor)
+      color: var(--ace_editor_functionColor);
     }
 
     & .ace_class {
       font-style: italic;
-      color: var(--ace_editor_supportClassColor)
+      color: var(--ace_editor_supportClassColor);
     }
 
     & .ace_type {
       font-style: italic;
-      color: var(--ace_editor_supportTypeColor)
+      color: var(--ace_editor_supportTypeColor);
     }
   }
 
   & .ace_fold {
     background: var(--ace_editor_foldBackground);
-    border-color: var(--ace_editor_foldBorderColor)
+    border-color: var(--ace_editor_foldBorderColor);
   }
 
   & .ace_list,
   & .ace_markup.ace_list,
   & .ace_storage {
-    color: var(--ace_editor_listColor)
+    color: var(--ace_editor_listColor);
   }
 
   & .ace_entity.ace_name.ace_function,
   & .ace_meta.ace_tag {
-    color: var(--ace_editor_functionTagColor)
+    color: var(--ace_editor_functionTagColor);
   }
 
   & .ace_string {
-    color: var(--ace_editor_stringColor)
+    color: var(--ace_editor_stringColor);
   }
 
   & .ace_string.ace_regexp {
-    color: var(--ace_editor_regexpColor)
+    color: var(--ace_editor_regexpColor);
   }
 
   & .ace_comment {
     font-style: italic;
-    color: var(--ace_editor_commentColor)
+    color: var(--ace_editor_commentColor);
   }
 
   & .ace_variable {
@@ -311,15 +316,15 @@ button .caret {
 
     &.ace_parameter {
       font-style: italic;
-      color: var(--ace_editor_variableParameterColor)
+      color: var(--ace_editor_variableParameterColor);
     }
   }
 
   & .ace_xml-pe {
-    color: var(--ace_editor_xmlpeColor)
+    color: var(--ace_editor_xmlpeColor);
   }
 
   & .ace_indent-guide {
-    background: var(--ace_editor_indentguideBackground)
+    background: var(--ace_editor_indentguideBackground);
   }
 }

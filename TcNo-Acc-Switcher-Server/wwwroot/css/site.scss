@@ -14,6 +14,7 @@ body {
   font-family: 'Catamaran', sans-serif;
   font-weight: 500;
   font-size: 12px;
+
   /* THIS SCALES EVERYTHING UP AND DOWN */
   max-width: 100%;
   overflow-x: hidden;
@@ -143,7 +144,8 @@ label {
   margin-top: -2px;
 }
 
-#window-controls, #btnBack {
+#window-controls,
+#btnBack {
   background: var(--windowControlsBackground);
 }
 
@@ -162,7 +164,9 @@ label {
   height: 100%;
 }
 
-#btnBack, #window-controls button, #window-controls-modal button {
+#btnBack,
+#window-controls button,
+#window-controls-modal button {
   background: none;
   border: none;
   margin: 0;
@@ -186,7 +190,6 @@ label {
   }
 }
 
-
 @media (-webkit-device-pixel-ratio: 1.5), (device-pixel-ratio: 1.5), (-webkit-device-pixel-ratio: 2), (device-pixel-ratio: 2), (-webkit-device-pixel-ratio: 3), (device-pixel-ratio: 3) {
   #window-controls .icon {
     width: 10px;
@@ -198,9 +201,9 @@ label {
   -webkit-app-region: no-drag;
 
   & button {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
   }
 }
@@ -229,6 +232,7 @@ label {
     position: absolute;
     background: var(--headerbarBackground);
   }
+
   /* Positions */
 
   &Top,
@@ -254,6 +258,7 @@ label {
   &BottomRight {
     right: 0;
   }
+
   /* Corners */
 
   &TopLeft,
@@ -263,8 +268,10 @@ label {
     width: var(--resizeBarSize);
     height: var(--resizeBarSize);
     z-index: 2;
+
     /* background-color: pink; */
   }
+
   /* Sides */
 
   &Top {
@@ -281,6 +288,7 @@ label {
   &Bottom {
     height: var(--resizeBarSize);
     z-index: 1;
+
     /* background-color: lime; */
   }
 
@@ -289,8 +297,10 @@ label {
     width: var(--resizeBarSize);
     height: 100%;
     z-index: 1;
+
     /* background-color: lime; */
   }
+
   /* Cursors */
 
   &TopLeft {
@@ -345,7 +355,6 @@ label {
 #btnBack .resizeTopLeft {
   background-color: transparent;
 }
-
 
 #btnClose:hover,
 #btnClose-modal:hover {
@@ -528,6 +537,7 @@ div.advancedClearingButtonCol .buttoncol {
 
         &::before {
           color: var(--listTextColor-before-checked);
+
           /* margin-left: 0.5em; */
         }
 
@@ -536,6 +546,7 @@ div.advancedClearingButtonCol .buttoncol {
           color: var(--listTextColor-after-checked);
         }
       }
+
       /*
           Workaround to set color BECAUSE YOU CAN'T SET TEXT COLOR?!
           This is for showing the arrow before, and the SteamID afterwards in a different color
@@ -554,7 +565,6 @@ div.advancedClearingButtonCol .buttoncol {
     }
   }
 }
-
 
 .btn_RestoreSelected {
   margin-right: 1em !important;
@@ -588,6 +598,7 @@ div.advancedClearingButtonCol .buttoncol {
   max-width: calc(100vw / 4.106);
   display: inline-block;
   cursor: pointer;
+
   /* ReSharper disable once InvalidValue */
   border: var(--platformBorderColor) 1px solid;
   margin: 10px;
@@ -674,6 +685,7 @@ div.advancedClearingButtonCol .buttoncol {
       fill: var(--icoBattleNetGlass-Fill);
     }
   }
+
   /* Epic Games */
   &Epic {
     &BG {
@@ -698,6 +710,7 @@ div.advancedClearingButtonCol .buttoncol {
       fill: var(--icoEpicGlass-Fill);
     }
   }
+
   /* Origin */
   &Origin {
     &BG {
@@ -722,6 +735,7 @@ div.advancedClearingButtonCol .buttoncol {
       fill: var(--icoOriginGlass-Fill);
     }
   }
+
   /* Riot Games */
   &Riot {
     &BG {
@@ -746,6 +760,7 @@ div.advancedClearingButtonCol .buttoncol {
       fill: var(--icoRiotGlass-Fill);
     }
   }
+
   /* Steam */
   &Steam {
     &BG {
@@ -770,6 +785,7 @@ div.advancedClearingButtonCol .buttoncol {
       fill: var(--icoRiotGlass-Fill);
     }
   }
+
   /* Ubisoft */
   &Ubisoft {
     &BG {
@@ -814,6 +830,7 @@ div.advancedClearingButtonCol .buttoncol {
     fill: var(--modalIcoDoc-Fill);
   }
 }
+
 /* BattleNet icons */
 .battlenet {
   &IcoOWTank {
@@ -828,6 +845,7 @@ div.advancedClearingButtonCol .buttoncol {
     fill: var(--battlenetIcoOWSupport-Fill);
   }
 }
+
 /* Riot icons */
 .riotIco {
   &League {
@@ -842,6 +860,7 @@ div.advancedClearingButtonCol .buttoncol {
     fill: var(--riotIcoValorant-Fill);
   }
 }
+
 /* Footer icons */
 .footerIco {
   &Settings {
