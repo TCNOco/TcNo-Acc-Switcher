@@ -291,7 +291,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             if (userId != "")
             {
-                UbisoftCopyInAccount(userId, state);
+                if (!UbisoftCopyInAccount(userId, state)) return;
                 Globals.AddTrayUser("Ubisoft", "+u:" + userId, ReadAllIds()[userId], Ubisoft.TrayAccNumber); // Add to Tray list
             }
             else
@@ -336,25 +336,32 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="state"></param>
-        private static void UbisoftCopyInAccount(string userId, int state = 0)
+        private static bool UbisoftCopyInAccount(string userId, int state = 0)
         {
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.UbisoftCopyInAccount]");
+            const string localCachePath = "LoginCache\\Ubisoft\\{userId}\\";
+            if (!Directory.Exists(localCachePath))
+            {
+	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {localCachePath}", "Directory not found", "toastarea");
+	            return false;
+            }
+
             if (state == -1)
             {
-                File.Copy($"LoginCache\\Ubisoft\\{userId}\\settings.yml", Path.Join(_ubisoftAppData, "settings.yml"), true);
-                File.Copy($"LoginCache\\Ubisoft\\{userId}\\users.dat", Path.Join(_ubisoftAppData, "users.dat"), true);
-                return;
+                File.Copy($"{localCachePath}settings.yml", Path.Join(_ubisoftAppData, "settings.yml"), true);
+                File.Copy($"{localCachePath}users.dat", Path.Join(_ubisoftAppData, "users.dat"), true);
+                return true;
             }
             using var fs = new StreamWriter(Path.Join(_ubisoftAppData, "settings.yml"));
-            foreach (var l in File.ReadAllLines($"LoginCache\\Ubisoft\\{userId}\\settings.yml"))
+            foreach (var l in File.ReadAllLines($"{localCachePath}settings.yml"))
             {
                 if (l.Contains("forceoffline")) fs.WriteLine("  forceoffline: " + (state != 0 ? "true" : "false")); 
                 else fs.WriteLine(l);
             }
             fs.Close();
 
-            File.Copy($"LoginCache\\Ubisoft\\{userId}\\users.dat", Path.Join(_ubisoftAppData, "users.dat"), true);
-            File.Copy(Path.Join(_ubisoftAppData, "settings.yml"), $"LoginCache\\Ubisoft\\{userId}\\settings.yml", true);
+            File.Copy($"{localCachePath}users.dat", Path.Join(_ubisoftAppData, "users.dat"), true);
+            File.Copy(Path.Join(_ubisoftAppData, "settings.yml"), $"{localCachePath}settings.yml", true);
         }
         
 

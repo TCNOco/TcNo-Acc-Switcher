@@ -78,7 +78,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             ClearCurrentLoginEpic();
             if (accName != "")
             {
-                EpicCopyInAccount(accName);
+                if (!EpicCopyInAccount(accName)) return;
                 Globals.AddTrayUser("Epic", "+e:" + accName, accName, Epic.TrayAccNumber); // Add to Tray list
             }
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Epic");
@@ -105,10 +105,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         }
 
         [SupportedOSPlatform("windows")]
-        private static void EpicCopyInAccount(string accName)
+        private static bool EpicCopyInAccount(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.EpicCopyInAccount]");
             var localCachePath = $"LoginCache\\Epic\\{accName}\\";
+            if (!Directory.Exists(localCachePath))
+            {
+	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {localCachePath}", "Directory not found", "toastarea");
+	            return false;
+            }
 
             File.Copy(Path.Join(localCachePath, "GameUserSettings.ini"), EpicGameUserSettings);
 
@@ -123,6 +128,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", "Could not swap. Duplicate accounts with same username?", "Error", "toastarea");
             }
+
+            return true;
         }
 
         [SupportedOSPlatform("windows")]

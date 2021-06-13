@@ -76,7 +76,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             }
             if (accName != "")
             {
-                OriginCopyInAccount(accName, state);
+	            if (!OriginCopyInAccount(accName, state)) return;
                 Globals.AddTrayUser("Origin", "+o:" + accName, accName, Origin.TrayAccNumber); // Add to Tray list
             }
             AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Origin");
@@ -140,11 +140,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             return true;
         }
 
-        private static void OriginCopyInAccount(string accName, int state = 0)
+        private static bool OriginCopyInAccount(string accName, int state = 0)
         {
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.OriginCopyInAccount]");
             var localCachePath = $"LoginCache\\Origin\\{accName}\\";
             var localCachePathData = $"LoginCache\\Origin\\{accName}\\Data\\";
+            if (!Directory.Exists(localCachePath))
+            {
+	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {localCachePath}", "Directory not found", "toastarea");
+	            return false;
+            }
+            if (!Directory.Exists(localCachePathData))
+            {
+	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {localCachePathData}", "Directory not found", "toastarea");
+	            return false;
+            }
 
             GeneralFuncs.CopyFilesRecursive($"{localCachePath}ConsolidatedCache", Path.Join(OriginRoaming, "ConsolidatedCache"));
             GeneralFuncs.CopyFilesRecursive($"{localCachePath}NucleusCache", Path.Join(OriginRoaming, "NucleusCache"));
@@ -176,6 +186,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                     File.Copy(f.FullName, Path.Join(OriginProgramData, f.Name), true);
                 }
             }
+
+            return true;
         }
 
         public static void OriginAddCurrent(string accName)
