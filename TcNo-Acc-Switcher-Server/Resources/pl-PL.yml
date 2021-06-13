@@ -1,0 +1,65 @@
+Update: Aktualizacja dostępna! Kliknij tutaj, aby go uruchomić.
+Header_ChooseLanguage: 'Wybierz język:'
+BattleNew_ShowSR: Pokaż Overwatch SR i użyj zdjęcia profilowego Overwatch.
+Steam_ShowSteamID: Pokaż SteamID
+Steam_ShowVac: Pokaż stan VAC
+Steam_CheckVac: Sprawdź stan VAC konta
+Steam_ShowLimited: Pokaż ograniczony status
+Steam_Tray_AccountName: Pokaż nazwę konta [nie imię i nazwisko znajomego]
+Button_AddNew: Dodaj nowy
+Button_SaveCurrent: Zapisz prąd
+Button_SaveFile: Zapisz plik
+Button_Cancel: Anuluj
+Button_Login: login
+Button_Close: zamykać
+Button_RefreshImages: Odświeżanie obrazów
+Button_ResetSettings: Resetowanie ustawień
+Button_AdvancedCleaning: Zaawansowane czyszczenie...
+Button_ClearLog: Wyczyść dziennik
+Button_WikiInfo: Więcej informacji (Wiki)
+Settings_Shortcut: ' {platforma} Skrót pulpitu switchera'
+Settings_Admin: Uruchom {platform} jako administrator
+Settings_ImageExpiry: 'Dni przed wygaśnięciem zdjęć profilowych:'
+Settings_Header_AppWide: Ustawienia dla całej aplikacji
+Settings_Header_GeneralSettings: Ustawienia ogólne
+Settings_Header_GeneralTools: Narzędzia ogólne
+Settings_Header_OtherTools: Inne narzędzia
+Settings_Header_HiddenPlatforms: Ukryte platformy
+Settings_Header_TraySettings: Ustawienia zasobnika
+Settings_Header_OpenGameFolders: Otwieranie folderów gier
+Settings_TrayMax: 'Maksymalna liczba kont do zapamiętania:'
+Settings_PickFolder: Wybierz folder {platform}
+Settings_OpenFolder: Otwórz folder {platform}
+Settings_ClearForgotten: Wyczyść zapomniane
+Settings_ClearAccounts: Wyczyść konta
+Settings_RestoreForgotten: Przywracanie zapomnianego konta
+Settings_StreamerMode: Włącz tryb streamera
+Settings_ExitToTray: Wyjście minimalizuje tacę
+Settings_TrayLowMem: Zużyj mniej pamięci RAM w zasobniku
+Settings_DesktopShortcut: Skrót pulpitu
+Settings_StartMenu_ProgramTray: Program & Taca
+Settings_StartMenu_Platform: podest
+Settings_Tray_StartWindows: Uruchamianie zasobnika z systemem Windows
+Settings_Tray_StartNow: '[Uruchom tacę teraz]'
+Settings_CurrentStyle: Bieżący styl
+Cleaning_Header_StartMenuShortcuts: 'Skróty do menu Start:'
+Cleaning_Header_General: Czyszczenie ogólne
+Cleaning_Header_LoginHistory: Czyszczenie historii logowania
+Cleaning_Header_PlatformCleaning: '{platforma} Przełącznik'
+Cleaning_ImportantInfoHeader: 'Ważne informacje:'
+Cleaning_ImportantInfo: >
+  Kliknięcie przycisku spowoduje usunięcie powiązanych plików z twojej instalacji Steam.<br />
+  Usunięcie loginusers.vdf spowoduje, że ten przełącznik konta nie będzie wyświetlał żadnych kont.<br />
+  Będziesz musiał się do nich zalogować za pomocą Steam, aby je odzyskać.
+Cleaning_Button_KillProcess: Zabij proces {platforma}
+Cleaning_Button_ForgottenBackups: Pominięte kopie zapasowe konta
+Cleaning_Understand: Rozumiem, co robią te przyciski.
+Restore_Header: Przywracanie zapomnianych kont
+Restore_Info: >
+  Jeśli wcześniej "zapomniałeś" konta, możesz je przywrócić here.<br />
+  To dodaje je z powrotem do pliku loginusers.vdf, umożliwiając przełączenie się do nich.
+Restore_Button_Restore: Przywracanie zaznaczone
+Ignored_RemoveAccounts: Usuwanie kont z listy ignorowania
+Ignored_Description: Jeśli wcześniej "zignorowałeś" konto, możesz je ponownie wyświetlić tutaj
+Ignored_Stop: Zatrzymywanie ignorowania zaznaczonych
+Modal_Header: Informacje o przełączniku konta TcNo
