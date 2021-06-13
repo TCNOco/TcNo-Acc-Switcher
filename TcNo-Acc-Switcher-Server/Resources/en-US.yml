@@ -48,13 +48,16 @@ Cleaning_Header_LoginHistory: Clean my login history
 Cleaning_Header_PlatformCleaning: '{platform} Switcher'
 Cleaning_ImportantInfoHeader: 'Important info:'
 Cleaning_ImportantInfo: >
-  Clicking a button will delete the related file(s) from your Steam installation.<br /> Deleting loginusers.vdf will result in this account switcher showing no accounts.<br /> You will need to login to them using Steam to get them back.
+  Clicking a button will delete the related file(s) from your Steam installation.<br />
+  Deleting loginusers.vdf will result in this account switcher showing no accounts.<br />
+  You will need to login to them using Steam to get them back.
 Cleaning_Button_KillProcess: Kill {platform} process
 Cleaning_Button_ForgottenBackups: Forgotten account backups
 Cleaning_Understand: I understand what these buttons do.
 Restore_Header: Restore forgotten accounts
 Restore_Info: >
-  If you previously "forgot" an account, you can restore them here.<br /> This adds them back into your loginusers.vdf file, allowing you to switch to them.
+  If you previously "forgot" an account, you can restore them here.<br />
+  This adds them back into your loginusers.vdf file, allowing you to switch to them.
 Restore_Button_Restore: Restore selected
 Ignored_RemoveAccounts: Remove accounts from ignore list
 Ignored_Description: If you previously "ignored" an account, you can show them again here
