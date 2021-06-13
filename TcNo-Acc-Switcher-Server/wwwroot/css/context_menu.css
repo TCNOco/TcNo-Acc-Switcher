@@ -1,19 +1,19 @@
 ﻿/* ReSharper disable CssNotResolved */
 .contextmenu {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   display: none;
   position: absolute;
   width: 15em;
   margin: 0;
   padding: 0;
-  background: var(--contextMenuBackground);
   border-radius: 0.2em;
+  background: var(--contextMenuBackground);
   list-style: none;
-  z-index: 999999;
   box-shadow: var(--contextMenuBoxShadow);
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  z-index: 999999;
 }
 
   .contextmenu li {
@@ -26,13 +26,13 @@
       padding: 10px;
       color: var(--contextMenuTextColor) !important;
       text-decoration: none;
-      transition: ease 0.2s;
       cursor: pointer;
+      transition: ease 0.2s;
     }
 
     .contextmenu li:hover {
-      background: var(--contextMenuBackground-hover);
       border-left: 2px solid var(--contextMenuLeftBorder-hover);
+      background: var(--contextMenuBackground-hover);
     }
 
       .contextmenu li:hover a {
@@ -54,16 +54,16 @@
 }
 
 li:hover .submenu {
-  position: absolute;
   display: block;
+  position: absolute;
   top: 0;
-  width: 15em;
   right: -15em;
-  background: var(--contextMenuBackground);
+  width: 15em;
   padding: 0;
-  opacity: 1;
+  background: var(--contextMenuBackground);
   font-size: 1em;
   animation: expand 0.3s;
+  opacity: 1;
 }
 
 @keyframes expand {
@@ -81,8 +81,8 @@ li:hover .submenu {
 }
 
 .submenu li {
-  list-style: none;
   color: var(--contextMenuTextColor);
+  list-style: none;
 }
 
   .submenu li a {
