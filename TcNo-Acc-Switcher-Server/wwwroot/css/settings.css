@@ -15,39 +15,39 @@
   color: var(--settingsHeaderColor);
 }
 
-.SettingsHeader hr {
+  .SettingsHeader hr {
     border: 1px solid var(--settingsHeaderHrBorder);
     display: inline-block;
     vertical-align: middle;
-}
+  }
 
-.SettingsHeader hr:first-of-type {
-  width: 20px;
-}
+    .SettingsHeader hr:first-of-type {
+      width: 20px;
+    }
 
-.SettingsHeader hr:last-of-type {
-  width: 100px;
-}
+    .SettingsHeader hr:last-of-type {
+      width: 100px;
+    }
 
-.SettingsHeader span {
-  display: inline-block;
-  margin: 0 0.75em;
-  font-weight: bold;
-}
+  .SettingsHeader span {
+    display: inline-block;
+    margin: 0 0.75em;
+    font-weight: bold;
+  }
 
 .settingsCol {
   position: relative;
 }
 
-.settingsCol .toastarea {
-  position: fixed;
-  top: 35px;
-  right: 16px;
-  bottom: auto;
-  align-items: flex-end;
-  display: flex;
-  flex-direction: column;
-}
+  .settingsCol .toastarea {
+    position: fixed;
+    top: 35px;
+    right: 16px;
+    bottom: auto;
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+  }
 
 .acc_list_actionbar div .btn_login,
 .btn_close span {
@@ -76,16 +76,16 @@ input[type=number] {
   border-bottom: 2px solid var(--borderedItemBorderColor);
 }
 
-input[type=number]:focus,
-input[type=text]:focus {
-  border-bottom: 2px solid var(--borderedItemBorderColorBottom-focus);
-}
+  input[type=number]:focus,
+  input[type=text]:focus {
+    border-bottom: 2px solid var(--borderedItemBorderColorBottom-focus);
+  }
 
-input[type=number]::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+  input[type=number]::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 
 label {
   margin-left: 0.5em;
@@ -111,28 +111,28 @@ input[type='checkbox'] {
   z-index: -1;
 }
 
-input[type='checkbox'] + label {
-  width: 20px;
-  height: 20px;
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-  cursor: pointer;
-}
+  input[type='checkbox'] + label {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    cursor: pointer;
+  }
 
-input[type='checkbox'] + label {
-  border: 1px solid var(--checkboxBorder);
-  -moz-transition: 0.5s ease all;
-  -webkit-transition: 0.5s ease all;
-  transition: 0.5s ease all;
-  vertical-align: middle;
-  background: var(--checkboxBackground);
-}
+  input[type='checkbox'] + label {
+    border: 1px solid var(--checkboxBorder);
+    -moz-transition: 0.5s ease all;
+    -webkit-transition: 0.5s ease all;
+    transition: 0.5s ease all;
+    vertical-align: middle;
+    background: var(--checkboxBackground);
+  }
 
-input[type='checkbox']:checked + label {
-  border: 1px solid var(--checkboxBorder-checked);
-  background: var(--checkboxBackground-checked);
-}
+  input[type='checkbox']:checked + label {
+    border: 1px solid var(--checkboxBorder-checked);
+    background: var(--checkboxBackground-checked);
+  }
 
 .settingsCol:first-child {
   margin-top: 1em;
@@ -144,22 +144,22 @@ input[type='checkbox']:checked + label {
   height: 3.6em;
 }
 
-.settingsCol .buttoncol button {
-  position: absolute;
-  width: 49%;
-}
+  .settingsCol .buttoncol button {
+    position: absolute;
+    width: 49%;
+  }
 
-.settingsCol .buttoncol :first-child {
-  left: 0;
-}
+  .settingsCol .buttoncol :first-child {
+    left: 0;
+  }
 
-.settingsCol .buttoncol :last-child {
-  right: 0;
-}
+  .settingsCol .buttoncol :last-child {
+    right: 0;
+  }
 
-.settingsCol .buttoncol button:focus {
-  box-shadow: none;
-}
+  .settingsCol .buttoncol button:focus {
+    box-shadow: none;
+  }
 
 .btn_close {
   right: 0 !important;

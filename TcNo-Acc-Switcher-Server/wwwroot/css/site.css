@@ -1,67 +1,59 @@
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
-
+﻿@import url("open-iconic/font/css/open-iconic-bootstrap.min.css");
 @font-face {
   font-family: 'Catamaran', sans-serif;
-  src: url("/css/font/Catamaran-VariableFont_wght.ttf") format("ttf");
-}
+  src: url("/css/font/Catamaran-VariableFont_wght.ttf") format("ttf"); }
 
 /* v (Nessecary for disabling the red highlight saying vars not found [as they're added dynamically later]) v */
-
 /* ReSharper disable CssNotResolved */
-
 html,
 body {
   font-family: 'Catamaran', sans-serif;
   font-weight: 500;
   font-size: 12px;
-
   /* THIS SCALES EVERYTHING UP AND DOWN */
   max-width: 100%;
-  overflow-x: hidden;
-}
+  overflow-x: hidden; }
 
 html {
-  background: var(--headerbarBackground);
-}
+  background: var(--headerbarBackground); }
 
 body {
-  background: var(--mainBackground);
-}
+  background: var(--mainBackground); }
 
 .mainblock {
   width: 100%;
   min-height: 100%;
   background: var(--mainBackground);
   overflow-y: auto;
-  overflow-x: auto;
-}
+  overflow-x: auto; }
 
 app {
   position: relative;
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width: 100vw;
-}
+  width: 100vw; }
 
 img {
-  user-select: none;
-}
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
 
 label {
   vertical-align: middle;
   cursor: pointer;
-  user-select: none;
-}
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
 
 ::selection {
   color: var(--selectionColor);
-  background: var(--selectionBackground);
-}
+  background: var(--selectionBackground); }
 
 :root {
-  --resizeBarSize: 7px;
-}
+  --resizeBarSize: 7px; }
 
 .programMain {
   position: relative;
@@ -71,26 +63,22 @@ label {
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 10;
-  background: var(--platformScreenBackground);
-}
+  background: var(--platformScreenBackground); }
 
 /* Based on https://github.com/binaryfunt/electron-seamless-titlebar-tutorial */
-
 .headerbar {
   z-index: 5;
   background: var(--headerbarBackground);
   position: relative;
   height: 32px;
   width: 100%;
-  -webkit-app-region: drag;
-}
+  -webkit-app-region: drag; }
 
 .header_icon {
   height: 10px;
   margin: 12px;
   display: block;
-  fill: var(--headerbarTCNOFill);
-}
+  fill: var(--headerbarTCNOFill); }
 
 .updateBar {
   position: absolute;
@@ -103,8 +91,10 @@ label {
   font-weight: 700;
   text-align: center;
   cursor: pointer;
-  user-select: none;
-}
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
 
 #window-controls {
   display: grid;
@@ -112,8 +102,7 @@ label {
   position: absolute;
   top: 0;
   right: 0;
-  height: 100%;
-}
+  height: 100%; }
 
 #window-controls-modal {
   display: grid;
@@ -121,8 +110,7 @@ label {
   position: absolute;
   top: 0;
   right: 0;
-  height: 100%;
-}
+  height: 100%; }
 
 #btnBack {
   width: 46px;
@@ -132,16 +120,14 @@ label {
   align-items: center;
   cursor: pointer;
   pointer-events: all;
-  margin-top: -2px;
-}
+  margin-top: -2px; }
+
 #window-controls, #btnBack {
-  background: var(--windowControlsBackground);
-}
+  background: var(--windowControlsBackground); }
 
 #btnBack .resizeTop {
   width: 46px !important;
-  background: none !important;
-}
+  background: none !important; }
 
 #window-controls button,
 #window-controls-modal button {
@@ -150,225 +136,140 @@ label {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
-}
+  height: 100%; }
 
 #btnBack, #window-controls button, #window-controls-modal button {
   background: none;
   border: none;
-  margin: 0;
-}
+  margin: 0; }
 
 .headerbar #btnMin {
   position: relative;
-  grid-column: 1;
-}
+  grid-column: 1; }
 
 .headerbar #btnMax,
-#btnRestore {
+.headerbar #btnRestore {
   position: relative;
-  grid-column: 2;
-}
+  grid-column: 2; }
 
 .headerbar #btnClose {
   position: relative;
-  grid-column: 3;
-}
+  grid-column: 3; }
 
-@media (-webkit-device-pixel-ratio: 1.5),
-  (device-pixel-ratio: 1.5),
-(-webkit-device-pixel-ratio: 2),
-(device-pixel-ratio: 2),
-(-webkit-device-pixel-ratio: 3),
-(device-pixel-ratio: 3) {
+@media (-webkit-device-pixel-ratio: 1.5), (device-pixel-ratio: 1.5), (-webkit-device-pixel-ratio: 2), (device-pixel-ratio: 2), (-webkit-device-pixel-ratio: 3), (device-pixel-ratio: 3) {
   #window-controls .icon {
     width: 10px;
-    height: 10px;
-  }
-}
+    height: 10px; } }
 
 #window-controls {
-  -webkit-app-region: no-drag;
-}
-
-#window-controls button {
-  user-select: none;
-}
+  -webkit-app-region: no-drag; }
+  #window-controls button {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; }
 
 #window-controls button:hover,
 #btnBack:hover {
-  background: var(--windowControlsBackground-hover);
-}
+  background: var(--windowControlsBackground-hover); }
 
 #window-controls button:active,
 #btnBack:active {
-  background: var(--windowControlsBackground-active);
-}
+  background: var(--windowControlsBackground-active); }
 
 /* Resize bars and corners */
-
-.resizeTopLeft,
-.resizeTop,
-.resizeTopRight,
-.resizeRight,
-.resizeBottomRight,
-.resizeBottom,
-.resizeBottomLeft,
-.resizeLeft {
-  -webkit-app-region: drag;
-  position: absolute;
-  background: var(--headerbarBackground);
-}
-
-/* Positions */
-
-.resizeTop,
-.resizeTopLeft,
-.resizeTopRight {
-  top: 0;
-}
-
-.resizeBottom,
-.resizeBottomLeft,
-.resizeBottomRight {
-  bottom: 0;
-}
-
-.resizeLeft,
-.resizeTopLeft,
-.resizeBottomLeft {
-  left: 0;
-}
-
-.resizeRight,
-.resizeTopRight,
-.resizeBottomRight {
-  right: 0;
-}
-
-/* Corners */
-
-.resizeTopLeft,
-.resizeTopRight,
-.resizeBottomRight,
-.resizeBottomLeft {
-  width: var(--resizeBarSize);
-  height: var(--resizeBarSize);
-  z-index: 2;
-
-  /* background-color: pink; */
-}
-
-/* Sides */
-
-.resizeTop {
-  width: calc(100% - 138px);
-  pointer-events: all;
-  background: none !important;
-}
-
-.resizeBottom {
-  width: 100%;
-}
-
-.resizeTop,
-.resizeBottom {
-  height: var(--resizeBarSize);
-  z-index: 1;
-
-  /* background-color: lime; */
-}
-
-.resizeLeft,
-.resizeRight {
-  width: var(--resizeBarSize);
-  height: 100%;
-  z-index: 1;
-
-  /* background-color: lime; */
-}
+.resize {
+  /* Positions */
+  /* Corners */
+  /* Sides */
+  /* Cursors */ }
+  .resizeTopLeft, .resizeTop, .resizeTopRight, .resizeRight, .resizeBottomRight, .resizeBottom, .resizeBottomLeft, .resizeLeft {
+    -webkit-app-region: drag;
+    position: absolute;
+    background: var(--headerbarBackground); }
+  .resizeTop, .resizeTopLeft, .resizeTopRight {
+    top: 0; }
+  .resizeBottom, .resizeBottomLeft, .resizeBottomRight {
+    bottom: 0; }
+  .resizeLeft, .resizeTopLeft, .resizeBottomLeft {
+    left: 0; }
+  .resizeRight, .resizeTopRight, .resizeBottomRight {
+    right: 0; }
+  .resizeTopLeft, .resizeTopRight, .resizeBottomRight, .resizeBottomLeft {
+    width: var(--resizeBarSize);
+    height: var(--resizeBarSize);
+    z-index: 2;
+    /* background-color: pink; */ }
+  .resizeTop {
+    width: calc(100% - 138px);
+    pointer-events: all;
+    background: none !important; }
+  .resizeBottom {
+    width: 100%; }
+  .resizeTop, .resizeBottom {
+    height: var(--resizeBarSize);
+    z-index: 1;
+    /* background-color: lime; */ }
+  .resizeLeft, .resizeRight {
+    width: var(--resizeBarSize);
+    height: 100%;
+    z-index: 1;
+    /* background-color: lime; */ }
+  .resizeTopLeft {
+    cursor: nw-resize; }
+  .resizeTop {
+    cursor: n-resize; }
+  .resizeTopRight {
+    cursor: ne-resize; }
+  .resizeRight {
+    cursor: e-resize; }
+  .resizeBottomRight {
+    cursor: se-resize; }
+  .resizeBottom {
+    cursor: s-resize; }
+  .resizeBottomLeft {
+    cursor: sw-resize; }
+  .resizeLeft {
+    cursor: w-resize; }
 
 /* Sides in window buttons */
-
 #btnClose .resizeTop,
 #btnMin .resizeTop,
 #btnMax .resizeTop,
 #btnRestore .resizeTop,
 #btnBack .resizeTop {
   width: 100%;
-  background-color: transparent;
-}
+  background-color: transparent; }
 
 #btnClose .resizeRight,
 #btnClose .resizeTopRight,
 #btnBack .resizeTop,
 #btnBack .resizeLeft,
 #btnBack .resizeTopLeft {
-  background-color: transparent;
-}
-
-/* Cursors */
-
-.resizeTopLeft {
-  cursor: nw-resize;
-}
-
-.resizeTop {
-  cursor: n-resize;
-}
-
-.resizeTopRight {
-  cursor: ne-resize;
-}
-
-.resizeRight {
-  cursor: e-resize;
-}
-
-.resizeBottomRight {
-  cursor: se-resize;
-}
-
-.resizeBottom {
-  cursor: s-resize;
-}
-
-.resizeBottomLeft {
-  cursor: sw-resize;
-}
-
-.resizeLeft {
-  cursor: w-resize;
-}
+  background-color: transparent; }
 
 #btnClose:hover,
 #btnClose-modal:hover {
-  background: var(--windowControlsCloseBackground) !important;
-}
+  background: var(--windowControlsCloseBackground) !important; }
 
 #btnClose:active,
 #btnClose-modal:active {
-  background: var(--windowControlsCloseBackground-active) !important;
-}
+  background: var(--windowControlsCloseBackground-active) !important; }
 
 #btnClose:active .icon,
 #btnClose-modal:active .icon {
-  filter: invert(1);
-}
+  filter: invert(1); }
 
 #btnRestore {
-  display: none !important;
-}
+  display: none !important; }
 
 #titlebar #drag-region {
   display: grid;
-  grid-template-columns: auto 138px;
-}
+  grid-template-columns: auto 138px; }
 
 #window-title-modal {
   position: relative;
-  background: var(--headerbarBackground);
-}
+  background: var(--headerbarBackground); }
 
 #window-title,
 #window-title-modal {
@@ -379,14 +280,12 @@ label {
   overflow: hidden;
   font-family: "Segoe UI", sans-serif;
   font-size: 12px;
-  pointer-events: none;
-}
+  pointer-events: none; }
 
 #window-title #window-controls,
 #window-title-modal #window-controls-modal {
   cursor: pointer;
-  pointer-events: all;
-}
+  pointer-events: all; }
 
 #window-title span,
 #window-title-modal span {
@@ -397,36 +296,29 @@ label {
   text-overflow: ellipsis;
   white-space: nowrap;
   line-height: 1.5;
-  text-align: center;
-}
+  text-align: center; }
 
 .maximised #titlebar {
   width: 100%;
-  padding: 0;
-}
+  padding: 0; }
 
 .maximised #window-title {
-  margin-left: 12px;
-}
+  margin-left: 12px; }
 
 .maximised #btnRestore {
-  display: flex !important;
-}
+  display: flex !important; }
 
 .maximised #btnMax {
-  display: none;
-}
+  display: none; }
 
 .mainWindow {
   height: calc(100% - 32px);
   padding: 0;
   margin: 32px 0 0 0;
-  width: 100vw;
-}
+  width: 100vw; }
 
 .content {
-  padding-top: 1.1rem;
-}
+  padding-top: 1.1rem; }
 
 #blazor-error-ui {
   background: lightyellow;
@@ -438,27 +330,22 @@ label {
   padding: 0.6rem 1.25rem 0.7rem 1.25rem;
   position: fixed;
   width: 100%;
-  z-index: 1000;
-}
+  z-index: 1000; }
 
 #blazor-error-ui .dismiss {
   cursor: pointer;
   position: absolute;
   right: 0.75rem;
-  top: 0.5rem;
-}
+  top: 0.5rem; }
 
 /* Steam/Settings/Advanced Clearing screen */
-
 div.clearingRow {
-  display: flex;
-}
+  display: flex; }
 
 div.clearingLeft {
   float: left;
   margin-right: 1%;
-  width: 59%;
-}
+  width: 59%; }
 
 div.clearingRight {
   word-break: break-word;
@@ -466,360 +353,258 @@ div.clearingRight {
   background: var(--listBackground);
   width: 40%;
   border: solid var(--borderedItemBorderColor) 0.1em;
-  padding: 0.5em;
-}
+  padding: 0.5em; }
 
 div.advancedClearingButtonCol {
-  font-size: 0.9rem;
-}
+  font-size: 0.9rem; }
 
 div.advancedClearingButtonCol .buttoncol {
-  margin: 0.5em 0 0 0;
-}
+  margin: 0.5em 0 0 0; }
 
 #restoreUnderstand {
-  margin-bottom: 1em;
-}
+  margin-bottom: 1em; }
 
 .clearingPage button {
-  margin: 0 !important;
-}
+  margin: 0 !important; }
 
 .clearingRight #lines {
-  max-height: 1px;
-}
+  max-height: 1px; }
 
 .clearingRight #lines p {
-  margin: 0;
-}
+  margin: 0; }
 
 /* Forgotten Steam account */
-
 .forgottenListActions {
-  text-align: end;
-}
+  text-align: end; }
 
 .forgottenList {
   display: flex;
-  margin-bottom: 2em;
-}
-
-.forgottenList select {
-  overflow: auto;
-  background: var(--listBackground);
-  border: solid var(--borderedItemBorderColor) 0.1em;
-  color: var(--listColor);
-  width: 100%;
-  padding: 0.5em;
-}
-
-.forgottenList select:focus {
-  border: solid var(--borderedItemBorderColor-focus) 0.1em;
-}
-
-.forgottenList select option:checked {
-  box-shadow: 0 0 10px 100px var(--listBackgroundColor-checked) inset;
-  color: var(--listColor-checked);
-}
-
-/*
-            Workaround to set color BECAUSE YOU CAN'T SET TEXT COLOR?!
-            This is for showing the arrow before, and the SteamID afterwards in a different color
-        */
-
-.forgottenList select option::before {
-  content: ">";
-  color: var(--listTextColor-before);
-  margin-right: 0.5em;
-}
-
-.forgottenList select option:checked::before {
-  color: var(--listTextColor-before-checked);
-
-  /* margin-left: 0.5em; */
-}
-
-.forgottenList select option::after {
-  content: attr(visible-content);
-  color: var(--listTextColor-after);
-}
-
-.forgottenList select option:checked::after {
-  content: attr(visible-content);
-  color: var(--listTextColor-after-checked);
-}
+  margin-bottom: 2em; }
+  .forgottenList select {
+    overflow: auto;
+    background: var(--listBackground);
+    border: solid var(--borderedItemBorderColor) 0.1em;
+    color: var(--listColor);
+    width: 100%;
+    padding: 0.5em; }
+    .forgottenList select:focus {
+      border: solid var(--borderedItemBorderColor-focus) 0.1em; }
+    .forgottenList select option {
+      /*
+          Workaround to set color BECAUSE YOU CAN'T SET TEXT COLOR?!
+          This is for showing the arrow before, and the SteamID afterwards in a different color
+      */ }
+      .forgottenList select option:checked {
+        box-shadow: 0 0 10px 100px var(--listBackgroundColor-checked) inset;
+        color: var(--listColor-checked); }
+        .forgottenList select option:checked::before {
+          color: var(--listTextColor-before-checked);
+          /* margin-left: 0.5em; */ }
+        .forgottenList select option:checked::after {
+          content: attr(visible-content);
+          color: var(--listTextColor-after-checked); }
+      .forgottenList select option::before {
+        content: ">";
+        color: var(--listTextColor-before);
+        margin-right: 0.5em; }
+      .forgottenList select option::after {
+        content: attr(visible-content);
+        color: var(--listTextColor-after); }
 
 .btn_RestoreSelected {
   margin-right: 1em !important;
-  padding: 0.25em 3em !important;
-}
+  padding: 0.25em 3em !important; }
 
 .platformContainer {
   width: 100%;
   height: calc(100% - 42px);
   position: relative;
   display: table;
-  text-align: center;
-}
+  text-align: center; }
 
 .platform_list {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
   display: table-cell;
-  vertical-align: middle;
-}
+  vertical-align: middle; }
 
 /* -------------------------------------------------
 	------------ PLATFORM ICONS SECTION ------------
 	------------------------------------------------
 */
-
 .platformIcon {
   width: 20vw;
   max-width: calc(100vw / 4.106);
   display: inline-block;
   cursor: pointer;
-
   /* ReSharper disable once InvalidValue */
   border: var(--platformBorderColor) 1px solid;
   margin: 10px;
   transition: all 100ms ease-in-out;
   transform: scale(1);
-  box-shadow: none;
-}
-
-.platformIcon:hover:not(:active) {
-  transform: var(--platformTransform-Hover);
-  filter: var(--platformFilter-Hover);
-  animation: pulse 2s infinite;
-}
-
-.platformIcon:active {
-  transform: var(--platformTransform-Active);
-  filter: var(--platformFilter-Active);
-  box-shadow: none;
-}
-
-.platformIcon:hover svg {
-  transform: var(--platformTransformIcon-Hover);
-  filter: var(--platformFilterIcon-Hover);
-}
-
-.platformIcon svg .icoGlass {
-  transition: 500ms all ease-in;
-}
-
-.platformIcon:hover svg .icoGlass {
-  transform: scale(1.05);
-}
-
-.platformIcon:active svg .icoGlass {
-  transform: scale(0.9);
-}
-
-.platformIcon:active svg {
-  transform: var(--platformTransformIcon-Active);
-  filter: var(--platformFilterIcon-Active);
-}
+  box-shadow: none; }
+  .platformIcon svg .icoGlass {
+    transition: 500ms all ease-in; }
+  .platformIcon:hover:not(:active) {
+    transform: var(--platformTransform-Hover);
+    filter: var(--platformFilter-Hover);
+    animation: pulse 2s infinite; }
+  .platformIcon:hover svg {
+    transform: var(--platformTransformIcon-Hover);
+    filter: var(--platformFilterIcon-Hover); }
+    .platformIcon:hover svg .icoGlass {
+      transform: scale(1.05); }
+  .platformIcon:active {
+    transform: var(--platformTransform-Active);
+    filter: var(--platformFilter-Active);
+    box-shadow: none; }
+    .platformIcon:active svg {
+      transform: var(--platformTransformIcon-Active);
+      filter: var(--platformFilterIcon-Active); }
+      .platformIcon:active svg .icoGlass {
+        transform: scale(0.9); }
 
 @keyframes pulse {
   0% {
     transform: var(--platformTransform-HoverAnimation-transform-0);
-    box-shadow: var(--platformTransform-HoverAnimation-boxShadow-0);
-  }
-
+    box-shadow: var(--platformTransform-HoverAnimation-boxShadow-0); }
   70% {
     transform: var(--platformTransform-HoverAnimation-transform-70);
-    box-shadow: var(--platformTransform-HoverAnimation-boxShadow-70);
-  }
-
+    box-shadow: var(--platformTransform-HoverAnimation-boxShadow-70); }
   100% {
     transform: var(--platformTransform-HoverAnimation-transform-100);
-    box-shadow: var(--platformTransform-HoverAnimation-boxShadow-100);
-  }
-}
+    box-shadow: var(--platformTransform-HoverAnimation-boxShadow-100); } }
 
-/* BattleNet */
-.icoBattleNetBG {
-  background: var(--icoBattleNetBG);
-}
+.ico {
+  /* BattleNet */
+  /* Epic Games */
+  /* Origin */
+  /* Riot Games */
+  /* Steam */
+  /* Ubisoft */ }
+  .icoBattleNetBG {
+    background: var(--icoBattleNetBG); }
+  .icoBattleNetText {
+    fill: var(--icoBattleNetText-Fill);
+    stroke: var(--icoBattleNetText-Stroke);
+    stroke-width: var(--icoBattleNetText-StrokeWidth);
+    stroke-linejoin: round;
+    stroke-miterlimit: 2; }
+  .icoBattleNetFG {
+    fill: var(--icoBattleNetFG-Fill);
+    stroke: var(--icoBattleNetFG-Stroke);
+    stroke-width: var(--icoBattleNetFG-StrokeWidth); }
+  .icoBattleNetGlass {
+    fill: var(--icoBattleNetGlass-Fill); }
+  .icoEpicBG {
+    background: var(--icoEpicBG); }
+  .icoEpicText {
+    fill: var(--icoEpicText-Fill);
+    stroke: var(--icoEpicText-Stroke);
+    stroke-width: var(--icoEpicText-StrokeWidth);
+    stroke-linejoin: round;
+    stroke-miterlimit: 2; }
+  .icoEpicFG {
+    fill: var(--icoEpicFG-Fill);
+    stroke: var(--icoEpicFG-Stroke);
+    stroke-width: var(--icoEpicFG-StrokeWidth); }
+  .icoEpicGlass {
+    fill: var(--icoEpicGlass-Fill); }
+  .icoOriginBG {
+    background: var(--icoOriginBG); }
+  .icoOriginText {
+    fill: var(--icoOriginText-Fill);
+    stroke: var(--icoOriginText-Stroke);
+    stroke-width: var(--icoOriginText-StrokeWidth);
+    stroke-linejoin: round;
+    stroke-miterlimit: 2; }
+  .icoOriginFG {
+    fill: var(--icoOriginFG-Fill);
+    stroke: var(--icoOriginFG-Stroke);
+    stroke-width: var(--icoOriginFG-StrokeWidth); }
+  .icoOriginGlass {
+    fill: var(--icoOriginGlass-Fill); }
+  .icoRiotBG {
+    background: var(--icoRiotBG); }
+  .icoRiotText {
+    fill: var(--icoRiotText-Fill);
+    stroke: var(--icoRiotText-Stroke);
+    stroke-width: var(--icoRiotText-StrokeWidth);
+    stroke-linejoin: round;
+    stroke-miterlimit: 2; }
+  .icoRiotFG {
+    fill: var(--icoRiotFG-Fill);
+    stroke: var(--icoRiotFG-Stroke);
+    stroke-width: var(--icoRiotFG-StrokeWidth); }
+  .icoRiotGlass {
+    fill: var(--icoRiotGlass-Fill); }
+  .icoSteamBG {
+    background: var(--icoSteamBG); }
+  .icoSteamText {
+    fill: var(--icoSteamText-Fill);
+    stroke: var(--icoSteamText-Stroke);
+    stroke-width: var(--icoSteamText-StrokeWidth);
+    stroke-linejoin: round;
+    stroke-miterlimit: 2; }
+  .icoSteamFG {
+    fill: var(--icoSteamFG-Fill);
+    stroke: var(--icoSteamFG-Stroke);
+    stroke-width: var(--icoSteamFG-StrokeWidth); }
+  .icoSteamGlass {
+    fill: var(--icoRiotGlass-Fill); }
+  .icoUbisoftBG {
+    background: var(--icoUbisoftBG); }
+  .icoUbisoftText {
+    fill: var(--icoUbisoftText-Fill);
+    stroke: var(--icoUbisoftText-Stroke);
+    stroke-width: var(--icoUbisoftText-StrokeWidth);
+    stroke-linejoin: round;
+    stroke-miterlimit: 2; }
+  .icoUbisoftFG {
+    fill: var(--icoUbisoftFG-Fill);
+    stroke: var(--icoUbisoftFG-Stroke);
+    stroke-width: var(--icoUbisoftFG-StrokeWidth); }
+  .icoUbisoftGlass {
+    fill: var(--icoRiotGlass-Fill); }
 
-.icoBattleNetText {
-  fill: var(--icoBattleNetText-Fill);
-  stroke: var(--icoBattleNetText-Stroke);
-  stroke-width: var(--icoBattleNetText-StrokeWidth);
-  stroke-linejoin: round;
-  stroke-miterlimit: 2;
-}
-
-.icoBattleNetFG {
-  fill: var(--icoBattleNetFG-Fill);
-  stroke: var(--icoBattleNetFG-Stroke);
-  stroke-width: var(--icoBattleNetFG-StrokeWidth);
-}
-
-.icoBattleNetGlass {
-  fill: var(--icoBattleNetGlass-Fill);
-}
-
-/* Epic Games */
-.icoEpicBG {
-  background: var(--icoEpicBG);
-}
-
-.icoEpicText {
-  fill: var(--icoEpicText-Fill);
-  stroke: var(--icoEpicText-Stroke);
-  stroke-width: var(--icoEpicText-StrokeWidth);
-  stroke-linejoin: round;
-  stroke-miterlimit: 2;
-}
-
-.icoEpicFG {
-  fill: var(--icoEpicFG-Fill);
-  stroke: var(--icoEpicFG-Stroke);
-  stroke-width: var(--icoEpicFG-StrokeWidth);
-}
-
-.icoEpicGlass {
-  fill: var(--icoEpicGlass-Fill);
-}
-
-/* Origin */
-.icoOriginBG {
-  background: var(--icoOriginBG);
-}
-
-.icoOriginText {
-  fill: var(--icoOriginText-Fill);
-  stroke: var(--icoOriginText-Stroke);
-  stroke-width: var(--icoOriginText-StrokeWidth);
-  stroke-linejoin: round;
-  stroke-miterlimit: 2;
-}
-
-.icoOriginFG {
-  fill: var(--icoOriginFG-Fill);
-  stroke: var(--icoOriginFG-Stroke);
-  stroke-width: var(--icoOriginFG-StrokeWidth);
-}
-
-.icoOriginGlass {
-  fill: var(--icoOriginGlass-Fill);
-}
-
-/* Riot Games */
-.icoRiotBG {
-  background: var(--icoRiotBG);
-}
-
-.icoRiotText {
-  fill: var(--icoRiotText-Fill);
-  stroke: var(--icoRiotText-Stroke);
-  stroke-width: var(--icoRiotText-StrokeWidth);
-  stroke-linejoin: round;
-  stroke-miterlimit: 2;
-}
-
-.icoRiotFG {
-  fill: var(--icoRiotFG-Fill);
-  stroke: var(--icoRiotFG-Stroke);
-  stroke-width: var(--icoRiotFG-StrokeWidth);
-}
-
-.icoRiotGlass {
-  fill: var(--icoRiotGlass-Fill);
-}
-
-/* Steam */
-.icoSteamBG {
-  background: var(--icoSteamBG);
-}
-
-.icoSteamText {
-  fill: var(--icoSteamText-Fill);
-  stroke: var(--icoSteamText-Stroke);
-  stroke-width: var(--icoSteamText-StrokeWidth);
-  stroke-linejoin: round;
-  stroke-miterlimit: 2;
-}
-
-.icoSteamFG {
-  fill: var(--icoSteamFG-Fill);
-  stroke: var(--icoSteamFG-Stroke);
-  stroke-width: var(--icoSteamFG-StrokeWidth);
-}
-
-.icoSteamGlass {
-  fill: var(--icoRiotGlass-Fill);
-}
-
-/* Ubisoft */
-.icoUbisoftBG {
-  background: var(--icoUbisoftBG);
-}
-
-.icoUbisoftText {
-  fill: var(--icoUbisoftText-Fill);
-  stroke: var(--icoUbisoftText-Stroke);
-  stroke-width: var(--icoUbisoftText-StrokeWidth);
-  stroke-linejoin: round;
-  stroke-miterlimit: 2;
-}
-
-.icoUbisoftFG {
-  fill: var(--icoUbisoftFG-Fill);
-  stroke: var(--icoUbisoftFG-Stroke);
-  stroke-width: var(--icoUbisoftFG-StrokeWidth);
-}
-
-.icoUbisoftGlass {
-  fill: var(--icoRiotGlass-Fill);
-}
-
+/* Modal icons */
 .modalIcoDiscord {
-  fill: var(--modalIcoDiscord-Fill);
-}
+  fill: var(--modalIcoDiscord-Fill); }
 
 .modalIcoGitHub {
-  fill: var(--modalIcoGitHub-Fill);
-}
+  fill: var(--modalIcoGitHub-Fill); }
 
 .modalIcoNetworking {
-  fill: var(--modalIcoNetworking-Fill);
-}
+  fill: var(--modalIcoNetworking-Fill); }
 
 .modalIcoDoc {
-  fill: var(--modalIcoDoc-Fill);
-}
+  fill: var(--modalIcoDoc-Fill); }
 
+/* BattleNet icons */
 .battlenetIcoOWTank {
-  fill: var(--battlenetIcoOWTank-Fill);
-}
+  fill: var(--battlenetIcoOWTank-Fill); }
 
 .battlenetIcoOWDamage {
-  fill: var(--battlenetIcoOWDamage-Fill);
-}
+  fill: var(--battlenetIcoOWDamage-Fill); }
 
 .battlenetIcoOWSupport {
-  fill: var(--battlenetIcoOWSupport-Fill);
-}
+  fill: var(--battlenetIcoOWSupport-Fill); }
 
+/* Riot icons */
 .riotIcoLeague {
-  fill: var(--riotIcoLeague-Fill);
-}
+  fill: var(--riotIcoLeague-Fill); }
 
 .riotIcoRuneterra {
-  fill: var(--riotIcoRuneterra-Fill);
-}
+  fill: var(--riotIcoRuneterra-Fill); }
 
 .riotIcoValorant {
-  fill: var(--riotIcoValorant-Fill);
-}
+  fill: var(--riotIcoValorant-Fill); }
 
+/* Footer icons */
 .footerIcoSettings {
-  fill: var(--footerIcoSettings-Fill);
-}
+  fill: var(--footerIcoSettings-Fill); }
 
 .footerIcoQuestion {
-  fill: var(--footerIcoQuestion-Fill);
-}
+  fill: var(--footerIcoQuestion-Fill); }
