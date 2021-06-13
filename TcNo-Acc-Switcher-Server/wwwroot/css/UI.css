@@ -7,7 +7,8 @@
     * [Source and more info: https://github.com/madskristensen/WebCompiler]
 */
 /* Buttons */
-button, .button {
+button,
+.button {
   background: var(--buttonBackground);
   border-color: var(--buttonBorder);
   border-radius: 0;
@@ -25,15 +26,20 @@ button, .button {
   user-select: none;
   width: max-content;
   /* Button children */ }
-  button:active, button:target, .button:active, .button:target {
+  button:active, button:target,
+  .button:active,
+  .button:target {
     background: var(--buttonBackground-active) !important;
     border-color: var(--buttonBorder-active) !important; }
-  button:hover, .button:hover {
+  button:hover,
+  .button:hover {
     background: var(--buttonBackground-hover);
     border-color: var(--buttonBorder-hover); }
-  button span, .button span {
+  button span,
+  .button span {
     line-height: 2.5em; }
-  button svg, .button svg {
+  button svg,
+  .button svg {
     width: 1.5em; }
 
 .show > .dropdown-toggle {
