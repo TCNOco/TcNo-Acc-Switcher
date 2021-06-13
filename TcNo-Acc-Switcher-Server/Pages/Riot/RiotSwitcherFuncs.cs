@@ -146,7 +146,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             ClearCurrentLoginRiot();
             if (accName != "")
             {
-                RiotCopyInAccount(accName);
+                if (!RiotCopyInAccount(accName)) return;
                 Globals.AddTrayUser("Riot", "+r:" + accName, accName, Riot.TrayAccNumber); // Add to Tray list
                 _ = GeneralInvocableFuncs.ShowToast("success", "Changed user. Start a game below.", "Success", "toastarea");
             }
@@ -163,13 +163,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             if (File.Exists(_riotClientPrivateSettings)) File.Delete(_riotClientPrivateSettings);
         }
 
-        private static void RiotCopyInAccount(string accName)
+        private static bool RiotCopyInAccount(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.RiotCopyInAccount]");
             LoadImportantData();
-            var localCachePath = Path.Join($"LoginCache\\Riot\\{accName}\\", "RiotClientPrivateSettings.yaml");
+            var localCachePath = $"LoginCache\\Riot\\{accName}\\";
+            if (!Directory.Exists(localCachePath))
+            {
+	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {localCachePath}", "Directory not found", "toastarea");
+	            return false;
+            }
 
-            File.Copy(localCachePath, _riotClientPrivateSettings, true);
+            File.Copy($"{localCachePath}RiotClientPrivateSettings.yaml", _riotClientPrivateSettings, true);
+            return true;
         }
         
         public static void RiotAddCurrent(string accName)
