@@ -362,6 +362,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             File.Copy($"{localCachePath}users.dat", Path.Join(_ubisoftAppData, "users.dat"), true);
             File.Copy(Path.Join(_ubisoftAppData, "settings.yml"), $"{localCachePath}settings.yml", true);
+            return true;
         }
         
 
