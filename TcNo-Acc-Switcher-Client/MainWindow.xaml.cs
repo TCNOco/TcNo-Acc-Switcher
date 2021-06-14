@@ -61,7 +61,7 @@ namespace TcNo_Acc_Switcher_Client
 
             var attempts = 0;
             Exception last;
-            while (!Program.Main(new[] { _address }, out last) && attempts < 10)
+            while (!Program.MainProgram(new[] { _address }, out last) && attempts < 10)
             {
                 NewPort();
                 _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";

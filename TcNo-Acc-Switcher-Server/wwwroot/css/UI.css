@@ -1,5 +1,5 @@
 ﻿/* ReSharper disable CssNotResolved */
-/* 
+/*
     * This file requiers compilation before it can be used in the final program.
     * If you're editing the source code, you might need one of the following to compile on build/save:
     * 
@@ -41,6 +41,13 @@ button,
   button svg,
   .button svg {
     width: 1.5em; }
+    button svg.footerIcoInline,
+    .button svg.footerIcoInline {
+      fill: var(--footerButtonIcon-Fill);
+      height: 1em;
+      width: auto;
+      margin: 0 2px 2px 2px;
+      -webkit-user-drag: none; }
 
 .show > .dropdown-toggle {
   background: var(--buttonBackground-active) !important;
@@ -178,8 +185,8 @@ button .caret {
   .ace_editor .ace_invalid.ace_deprecated {
     text-decoration: underline;
     font-style: italic;
-    color: var(--ace_editor_depreceatedColor);
-    background: var(--ace_editor_depreceatedBackground); }
+    color: var(--ace_editor_deprecatedColor);
+    background: var(--ace_editor_deprecatedBackground); }
   .ace_editor .ace_support {
     color: var(--ace_editor_support); }
     .ace_editor .ace_support .ace_function {
