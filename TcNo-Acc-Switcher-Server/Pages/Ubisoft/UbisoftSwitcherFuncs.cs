@@ -339,7 +339,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         private static bool UbisoftCopyInAccount(string userId, int state = 0)
         {
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.UbisoftCopyInAccount]");
-            const string localCachePath = "LoginCache\\Ubisoft\\{userId}\\";
+            var localCachePath = $"LoginCache\\Ubisoft\\{userId}\\";
             if (!Directory.Exists(localCachePath))
             {
 	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {localCachePath}", "Directory not found", "toastarea");

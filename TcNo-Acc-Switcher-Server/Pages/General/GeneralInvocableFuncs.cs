@@ -218,6 +218,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 return false;
             }
+            catch (InvalidOperationException)
+            {
+	            return false;
+            }
 
             return true;
         }
@@ -240,7 +244,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
             catch (ArgumentNullException)
             {
-                return false;
+	            return false;
+            }
+            catch (InvalidOperationException)
+            {
+	            return false;
             }
 
             return true;
