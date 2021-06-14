@@ -21,8 +21,6 @@
     <Content Remove="compilerconfig.json" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Resources\af-ZA.yml" />
-    <None Remove="Resources\en-UK.yml" />
     <None Remove="Resources\en-US.yml" />
     <None Remove="TcNoAccSw-Icon-100x100.png" />
     <None Remove="themes\Default.yaml" />
@@ -36,8 +34,6 @@
     <Content Include="themes\Dracula_Cyan.yaml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\af-ZA.yml" />
-    <EmbeddedResource Include="Resources\en-UK.yml" />
     <EmbeddedResource Include="Resources\en-US.yml" />
   </ItemGroup>
   <ItemGroup>

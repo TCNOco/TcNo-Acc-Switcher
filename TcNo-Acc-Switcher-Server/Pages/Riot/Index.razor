@@ -61,17 +61,27 @@
             </button>
         }
 
-
-
         <button id="btnAddNew" onclick="newLogin()">
-            <span>@_locale["Button_AddNew"]</span>
+	        <svg viewBox="0 0 448 512" draggable="false" alt="+" class="footerIcoInline">
+		        <use href="img/fontawesome/plus.svg#img"></use>
+	        </svg>
+	        <span>@_locale["Button_AddNew"]</span>
         </button>
-        <button id="btnAddCurrent" onclick="currentRiotLogin()">
-            <span>@_locale["Button_SaveCurrent"]</span>
-        </button>
-        <button class="btn_login" id="btnLogin" onclick="swapTo(-1, event)">
-            <span>@_locale["Button_Login"]</span>
-        </button>
+		<button id="btnAddCurrent" onclick="currentRiotLogin()">
+			<svg viewBox="0 0 448 512" draggable="false" alt="v" class="footerIcoInline">
+				<use href="img/fontawesome/save.svg#img"></use>
+			</svg>
+			<span>@_locale["Button_SaveCurrent"]</span>
+		</button>
+		<button class="btn_login" id="btnLogin" onclick="swapTo(-1, event)">
+			<svg viewBox="0 0 192 512" draggable="false" alt="v" class="footerIcoInline">
+				<use href="img/fontawesome/caret-right.svg#img"></use>
+			</svg>
+			<span>@_locale["Button_Login"]</span>
+			<svg viewBox="0 0 192 512" draggable="false" alt="v" class="footerIcoInline">
+		        <use href="img/fontawesome/caret-right.svg#img"></use>
+	        </svg>
+		</button>
 
         <button id="btnSettings" onclick="location = 'Riot/Settings'">
             <svg viewBox="0 0 60 60" draggable="false" alt="Settings" class="footerIcoSettings">

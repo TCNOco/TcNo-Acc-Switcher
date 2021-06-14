@@ -131,7 +131,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeletedInvalidImage] filename={filename.Substring(filename.Length - 8, 8)}");
             try
             {
-                if (!IsValidGdiPlusImage(filename)) // Delete image if is not as valid, working image.
+	            if (File.Exists(filename) && !IsValidGdiPlusImage(filename)) // Delete image if is not as valid, working image.
                 {
                     File.Delete(filename);
                     return true;

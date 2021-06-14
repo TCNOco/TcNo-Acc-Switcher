@@ -38,7 +38,6 @@ button,
     background: var(--buttonBackground-hover);
     border-color: var(--buttonBorder-hover);
   }
-
   /* Button children */
   & span {
     line-height: 2.5em;
@@ -46,6 +45,14 @@ button,
 
   & svg {
     width: 1.5em;
+
+    &.footerIcoInline {
+      fill: var(--footerButtonIcon-Fill);
+      height: 1em;
+      width: auto;
+      margin: 0 2px 2px 2px;
+      -webkit-user-drag: none;
+    }
   }
 }
 
@@ -259,8 +266,8 @@ button .caret {
     &.ace_deprecated {
       text-decoration: underline;
       font-style: italic;
-      color: var(--ace_editor_depreceatedColor);
-      background: var(--ace_editor_depreceatedBackground);
+      color: var(--ace_editor_deprecatedColor);
+      background: var(--ace_editor_deprecatedBackground);
     }
   }
 

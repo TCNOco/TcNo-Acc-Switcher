@@ -42,6 +42,7 @@ windowTitleColor: white
 # Footer at the bottom, with "Login" and "Add New" buttons
 footerBackground: "#252A2E"
 footerColor: "#DDD"
+footerButtonIcon-Fill: white
 # Icons
 footerIcoSettings-Fill: white
 footerIcoQuestion-Fill: white
@@ -269,8 +270,8 @@ ace_editor_languageColor: "#bd93f9"
 ace_editor_numericColor: "#bd93f9"
 ace_editor_illegalColor: "#F8F8F0"
 ace_editor_illegalBackground: "#ff79c6"
-ace_editor_depreceatedColor: "#F8F8F0"
-ace_editor_depreceatedBackground: "#F8F8F0"
+ace_editor_deprecatedColor: "#F8F8F0"
+ace_editor_deprecatedBackground: "#F8F8F0"
 ace_editor_support: "#9B859D"
 ace_editor_foldBackground: "#50fa7b"
 ace_editor_foldBorderColor: "#f8f8f2"

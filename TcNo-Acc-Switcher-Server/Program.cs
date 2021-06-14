@@ -25,7 +25,7 @@ namespace TcNo_Acc_Switcher_Server
         {
             // Empty
         }
-        public static bool Main(string[] args, out Exception e)
+        public static bool MainProgram(string[] args, out Exception e)
         {
             Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
             try
