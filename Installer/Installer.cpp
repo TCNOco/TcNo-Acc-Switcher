@@ -98,11 +98,11 @@ int progress_bar(
 {	
 	if (const double n = dl_total; n > 0) {
 		const string dls = "Downloading " + current_download + " (" + convert_size(static_cast<size_t>(dl_total)) + ")";
-        auto bar1 = new ProgressBar(n, dls.c_str());
+        auto bar1 = new ProgressBar(static_cast<unsigned long>(n), dls.c_str());
         if (const std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - last_time; elapsed_seconds.count() >= 0.2)
         {
             last_time = std::chrono::system_clock::now();
-            bar1->Progressed(dl_now);
+            bar1->Progressed(static_cast<unsigned long>(dl_now));
         }
     }
     return 0;
@@ -167,8 +167,13 @@ void install_runtime(const string& path, const string& name, const bool& passive
     WaitForSingleObject(pi.hProcess, INFINITE);
 }
 
-const bool test_mode = false;
-const bool test_downloads = false;
+void wait_for_input()
+{
+    _getch();
+}
+
+const bool test_mode = true;
+const bool test_downloads = true;
 const bool test_installs = false;
 int main()
 {
@@ -207,7 +212,7 @@ int main()
         cout << " = Total download size : " << total << " MB" << endl << endl <<
             "Press any key to start download..." << endl;
         
-        _getch();
+        wait_for_input();
         
         /* Download runtimes */
         bool w_runtime_install = false,
@@ -273,7 +278,7 @@ int main()
             cout << "------------------------------------------------------------------------" << endl << endl <<
                 "One or more are ready for install. If and when prompted if you would like to install, click 'Yes'." << endl << endl <<
                 "Press any key to start download..." << endl;
-            _getch();
+            wait_for_input();
 
             if (w_runtime_install || test_installs)
                 install_runtime(w_runtime_local, w_runtime_name, false); // Does not support "/passive"
