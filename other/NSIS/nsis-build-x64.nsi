@@ -14,17 +14,18 @@
 !define LNK_NAME "TcNo Account Switcher.lnk"
 !define COMP_NAME "TechNobo (Wesley Pyburn)"
 !define WEB_SITE "https://tcno.co"
-!define VERSION "3.0.0.2"
-!define COPYRIGHT "TechNobo (Wesley Pyburn) © 2020"
+!define VERSION "4.0.0.0"
+!define COPYRIGHT "TechNobo (Wesley Pyburn) © 2021"
 !define DESCRIPTION "TcNo Account Switcher"
 !define LICENSE_TXT "..\..\LICENSE"
-!define MAIN_APP_EXE "TcNo Account Switcher.exe"
+!define MAIN_APP_EXE "TcNo-Account-Switcher.exe"
 !define INSTALL_TYPE "SetShellVarContext current"
 !define REG_ROOT "HKCU"
 !define REG_APP_PATH "Software\Microsoft\Windows\CurrentVersion\App Paths\${MAIN_APP_EXE}"
 !define UNINSTALL_EXE "Uninstall TcNo Account Switcher.exe"
 !define UNINSTALL_LNK_NAME "Uninstall TcNo Account Switcher.lnk"
 !define UNINSTALL_PATH "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}"
+!define FIRST_RUN_EXE "_First_Run_Installer.exe"
 
 !define REG_START_MENU "Start Menu Folder"
 !define SM_Folder "TcNo Account Switcher"
@@ -39,11 +40,9 @@ VIAddVersionKey "FileVersion"  "${VERSION}"
 ;--------------------------------
 ;Version specific variables
 
-!define INSTALLER_NAME "TcNo Account Switcher - Installer x64.exe"
-;;;;!define INSTALLER_NAME "TcNo Account Switcher - Installer x32.exe"
+!define INSTALLER_NAME "TcNo Account Switcher - Installer.exe"
 
-!define INSTALLER_FILES "..\..\TcNo-Account-Switcher\Build\Release\TcNo.Account.Switcher.x64\*"
-;;;;!define INSTALLER_FILES "..\..\TcNo-Account-Switcher\Build\Release\TcNo.Account.Switcher.x32\*"
+!define INSTALLER_FILES "..\..\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher-BETA\*"
 
 !define INSTALL_DIR "$PROGRAMFILES64\TcNo Account Switcher"
 ;;;;!define INSTALL_DIR "$PROGRAMFILES\TcNo Account Switcher"
@@ -80,7 +79,7 @@ InstallDir "${INSTALL_DIR}"
   !define MUI_BGCOLOR 1F212D
   !define MUI_TEXTCOLOR FFFFFF
   !define MUI_INSTFILESPAGE_COLORS "FFFFFF 1F212D"
-  !define MUI_FINISHPAGE_LINK_COLOR FFFFFF
+  !define MUI_FINISHPAGE_LINK_COLOR FFAA00
 
 ;--------------------------------
 ;Pages
@@ -110,6 +109,8 @@ InstallDir "${INSTALL_DIR}"
 
   !insertmacro MUI_PAGE_FINISH
 
+
+
 ;--------------------------------
 ;Languages
  
@@ -119,6 +120,7 @@ InstallDir "${INSTALL_DIR}"
 ;Installer Sections
 
 Section "Main files" InstSec
+  SectionIn RO
 
   SetOutPath "$INSTDIR"
   
@@ -130,6 +132,7 @@ Section "Main files" InstSec
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\${UNINSTALL_EXE}"
   
+  ExecShell "" "$INSTDIR\${FIRST_RUN_EXE}"
 SectionEnd
 
 Section "Start Menu shortcuts" Shortcuts_StartMenu
@@ -146,8 +149,8 @@ SectionEnd
 
   ;Language strings
   LangString DESC_InstSec ${LANG_ENGLISH} "All the program files"
-  LangString DESC_Shortcuts_StartMenu ${LANG_ENGLISH} "Shortcuts to launch the program & Uninstall, placed into your Start Menu."
-  LangString DESC_Shortcuts_Desktop ${LANG_ENGLISH} "Shortcut to launch the proram, places onto your Desktop."
+  LangString DESC_Shortcuts_StartMenu ${LANG_ENGLISH} "Launch & Uninstall shortcuts, placed into your Start Menu."
+  LangString DESC_Shortcuts_Desktop ${LANG_ENGLISH} "Shortcut to launch the program, placed onto your Desktop."
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN

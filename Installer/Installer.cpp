@@ -35,12 +35,6 @@
 #include <openssl/ssl.h>
 using namespace std;
 
-struct software
-{
-    string s_display_name;
-    string s_version;
-};
-
 std::string getOperatingPath() {
 	const HMODULE h_module = GetModuleHandleW(nullptr);
     WCHAR pth[MAX_PATH];
@@ -140,7 +134,7 @@ inline bool file_exists(const std::string& name) {
 
 
 
-vector<software> v_webview, v_aspcore, v_desktop_runtime;
+int webview_count, aspcore_count, desktop_runtime_count = 0;
 void find_installed_runtimes(bool x32);
 wstring s2_ws(const string& s)
 {
@@ -172,8 +166,8 @@ void wait_for_input()
     _getch();
 }
 
-const bool test_mode = true;
-const bool test_downloads = true;
+const bool test_mode = false;
+const bool test_downloads = false;
 const bool test_installs = false;
 int main()
 {
@@ -181,8 +175,8 @@ int main()
 	// - Check for the existence of required runtimes, and install them if missing. [First run ever on a computer]
 	// --- [Unlikely] Maybe in the future: Verify application folders, and handle zipping and sending error logs? Possibly just the first or none of these.
 	const string operating_path = getOperatingPath();
-	
-    cout << "Welcome to the TcNo Account Switcher installer - Runtime installer" << endl <<
+    SetConsoleTitle(_T("TcNo Account Switcher - Runtime installer"));
+    cout << "Welcome to the TcNo Account Switcher - Runtime installer" << endl <<
         "------------------------------------------------------------------------" << endl << endl <<
         "Currently installed runtimes:" << endl;
 
@@ -192,24 +186,24 @@ int main()
     cout << "------------------------------------------------------------------------" << endl << endl;
 
     /* Warn about runtime downloads */
-    if (v_webview.empty() || v_aspcore.empty() || v_desktop_runtime.empty() || test_mode)
+    if (webview_count == 0 || aspcore_count == 0 || desktop_runtime_count == 0 || test_mode)
     {
         cout << "One or more runtimes are not installed:" << endl;
         int total = 0;
-        if (v_webview.empty()) {
-            cout << " + Microsoft WebView2 Runtime [1,70 MB + ~120 MB while installing]" << endl;
+        if (webview_count == 0) {
+            cout << " + Microsoft WebView2 Runtime [~1,70 MB + ~120 MB while installing]" << endl;
             total += 122;
         }
-        if (v_desktop_runtime.empty()){
-			cout << " + Microsoft .NET 5 Desktop Runtime [52,3 MB]" << endl;
+        if (aspcore_count == 0){
+			cout << " + Microsoft .NET 5 Desktop Runtime [~52,3 MB]" << endl;
         	total += 52;
 		}
-        if (v_aspcore.empty()){
-			cout << " + Microsoft Microsoft ASP.NET Core 5.0 Runtime [7,90 MB]" << endl;
+        if (desktop_runtime_count == 0){
+			cout << " + Microsoft Microsoft ASP.NET Core 5.0 Runtime [~7,90 MB]" << endl;
         	total += 8;
 		}
 
-        cout << " = Total download size : " << total << " MB" << endl << endl <<
+        cout << " = Total download size: ~" << total << " MB" << endl << endl <<
             "Press any key to start download..." << endl;
         
         wait_for_input();
@@ -236,7 +230,7 @@ int main()
             return 1;
         }
     	
-        if (v_webview.empty() || test_downloads)
+        if (webview_count == 0 || test_downloads)
         {
             current_download = w_runtime_name;
             if (!download_file(w_runtime.c_str(), w_runtime_local.c_str()))
@@ -248,7 +242,7 @@ int main()
             else w_runtime_install = true;
         }
 
-        if (v_desktop_runtime.empty() || test_downloads)
+        if (desktop_runtime_count == 0 || test_downloads)
         {
             current_download = d_runtime_name;
             if (!download_file(d_runtime.c_str(), d_runtime_local.c_str()))
@@ -259,7 +253,7 @@ int main()
             else d_runtime_install = true;
         }
 
-        if (v_aspcore.empty() || test_downloads)
+        if (aspcore_count == 0 || test_downloads)
         {
             current_download = a_runtime_name;
             if (!download_file(a_runtime.c_str(), a_runtime_local.c_str()))
@@ -277,7 +271,7 @@ int main()
     	{
             cout << "------------------------------------------------------------------------" << endl << endl <<
                 "One or more are ready for install. If and when prompted if you would like to install, click 'Yes'." << endl << endl <<
-                "Press any key to start download..." << endl;
+                "Press any key to start install..." << endl;
             wait_for_input();
 
             if (w_runtime_install || test_installs)
@@ -289,10 +283,23 @@ int main()
             if (a_runtime_install || test_installs)
                 install_runtime(a_runtime_local, a_runtime_name, true);
     	}
-        cout << "------------------------------------------------------------------------" << endl << endl;
+
+        system("cls");
+        cout << "Currently installed runtimes:" << endl;
+        find_installed_runtimes(false);
+        cout << "------------------------------------------------------------------------" << endl << endl <<
+            "Verify you meet the minimum recommended requirements:" << endl;
+    }
+	else
+    {
+    cout << "It looks like everything is installed. Verify you meet the minimum recommended requirements:" << endl;
     }
 
-    cout << "That should be everything. You can use TcNo-Acc-Switcher.exe to run the program." << endl << endl << 
+    cout << " - Windows Desktop Runtime 5.0.7+" << endl <<
+        " - ASP.NET Core 5.0.7+." << endl <<
+        " - Edge WebView2 Runtime 91.0+" << endl <<
+        "------------------------------------------------------------------------" << endl << endl <<
+        "That should be everything. The main program, TcNo-Acc-Switcher.exe, will auto-run when you press a key to continue." << endl << endl <<
         "If it doesn't work, please refer to install instructions, here:" << endl <<
         "https://github.com/TcNobo/TcNo-Acc-Switcher#required-runtimes-download-and-install" << endl << endl;
 
@@ -352,35 +359,28 @@ void find_installed_runtimes(const bool x32)
             dw_v_buffer_size = sizeof(s_version);
             if (RegQueryValueEx(h_app_key, L"DisplayName", nullptr, &dw_type, reinterpret_cast<unsigned char*>(s_display_name), &dw_buffer_size) == ERROR_SUCCESS &&
                 RegQueryValueEx(h_app_key, L"DisplayVersion", nullptr, &dw_type, reinterpret_cast<unsigned char*>(s_version), &dw_v_buffer_size) == ERROR_SUCCESS)
-            {
-                string name(s_display_name, s_display_name + dw_buffer_size);
-                string version(s_version, s_version + dw_v_buffer_size);
-            	            	
-                if (name.find("WebView2") != std::string::npos)
+            {            	
+                if (wcsstr(s_display_name, L"WebView2") != nullptr)
                 {
-                    v_webview.emplace_back(software { name, version });
+                    webview_count += 1;
+                    wprintf(L" - %s ", s_display_name);
+                    wprintf(L"[%s]\n", s_version);
+                }
+            	
+                if (wcsstr(s_display_name, L"Desktop Runtime") != nullptr && wcsstr(s_display_name, L"x64") != nullptr)
+                {
+                    desktop_runtime_count += 1;
                     wprintf(L" - %s\n", s_display_name);
                 }
             	
-                if (name.find("Desktop Runtime") != std::string::npos && name.find("x64") != std::string::npos)
+                if (wcsstr(s_display_name, L"ASP.NET Core 5") != nullptr)
                 {
-                    v_desktop_runtime.emplace_back(software{ name, version });
-                    wprintf(L" - %s\n", s_display_name);
-                }
-            	
-                if (name.find("ASP.NET Core 5") != std::string::npos)
-                {
-                    v_aspcore.emplace_back(software{ name, version });
+                    aspcore_count += 1;
                     wprintf(L" - %s\n", s_display_name);
                 }
             }
-            else {
-                //Display name value doe not exist, this application was probably uninstalled.
-            }
-
             RegCloseKey(h_app_key);
         }
     }
-
     RegCloseKey(h_uninst_key);
 }
