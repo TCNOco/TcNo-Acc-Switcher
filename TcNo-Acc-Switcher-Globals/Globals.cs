@@ -23,6 +23,7 @@ namespace TcNo_Acc_Switcher_Globals
         public static readonly string Version = "2021-06-14_00";
         public static readonly string[] PlatformList = { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot" };
 
+        #region LOGGER
         public static void DebugWriteLine(string s)
         {
             // Toggle here so it only shows in Verbose mode etc.
@@ -104,9 +105,10 @@ namespace TcNo_Acc_Switcher_Globals
         /// </summary>
         public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
-            // Log Unhandled Exception
-            var exceptionStr = e.ExceptionObject.ToString();
+			// Set working directory to documents folder
+			Directory.SetCurrentDirectory(UserDataFolder);
+			// Log Unhandled Exception
+			var exceptionStr = e.ExceptionObject.ToString();
             Directory.CreateDirectory("CrashLogs");
             var filePath = $"CrashLogs\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
             using (var sw = File.AppendText(filePath))
@@ -116,6 +118,59 @@ namespace TcNo_Acc_Switcher_Globals
             }
             WriteToLog(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
             WriteToLog(Strings.ErrSubmitCrashlog);
+        }
+        #endregion
+
+        #region INITIALISATION
+        public static string UserDataFolder => Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
+        public static string AppDataFolder => Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty;
+        public static string OriginalWwwroot => Path.Join(AppDataFolder, "originalwwwroot");
+
+        /// <summary>
+        /// Creates data folder in Documents
+        /// </summary>
+        /// <param name="overwrite">Whether files should be overwritten or not (Update)</param>
+        public static void CreateDataFolder(bool overwrite)
+        {
+	        Directory.CreateDirectory(UserDataFolder);
+            // Initialise folder:
+            InitWwwroot(overwrite);
+            InitFolder("themes", overwrite);
+        }
+
+        /// <summary>
+        /// Recursively copies directories from install dir to documents dir.
+        /// </summary>
+        /// <param name="f">Folder to recursively copy</param>
+        /// <param name="overwrite">Whether files should be overwritten anyways</param>
+        private static void InitFolder(string f, bool overwrite)
+        {
+	        if (overwrite || !Directory.Exists(Path.Join(UserDataFolder, f))) CopyFilesRecursive(Path.Join(AppDataFolder, f), Path.Join(UserDataFolder, f));
+        }
+        private static void InitWwwroot(bool overwrite)
+        {
+	        if (!overwrite && Directory.Exists(Path.Join(UserDataFolder, "wwwroot"))) return;
+	        if (Directory.Exists(OriginalWwwroot))
+		        CopyFilesRecursive(OriginalWwwroot, Path.Join(UserDataFolder, "wwwroot"));
+        }
+
+        #endregion 
+
+        /// <summary>
+        /// Recursively copy files and directories
+        /// </summary>
+        /// <param name="inputFolder">Folder to copy files recursively from</param>
+        /// <param name="outputFolder">Destination folder</param>
+        public static void CopyFilesRecursive(string inputFolder, string outputFolder)
+        {
+	        Directory.CreateDirectory(outputFolder);
+	        //Now Create all of the directories
+	        foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
+		        Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
+
+	        //Copy all the files & Replaces any files with the same name
+	        foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
+		        File.Copy(newPath, newPath.Replace(inputFolder, outputFolder), true);
         }
 
         /// <summary>

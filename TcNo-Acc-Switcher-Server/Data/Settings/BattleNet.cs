@@ -74,8 +74,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private List<BattleNetSwitcherBase.BattleNetUser> _accounts = new();
         [JsonIgnore] public List<BattleNetSwitcherBase.BattleNetUser> Accounts { get => _instance._accounts; set => _instance._accounts = value; }
         
-        private List<BattleNetSwitcherBase.BattleNetUser> _ignoredAccounts = new();
-        [JsonIgnore] public List<BattleNetSwitcherBase.BattleNetUser> IgnoredAccounts { get => _instance._ignoredAccounts; set => _instance._ignoredAccounts = value; }
+        private List<string> _ignoredAccounts = new();
+        [JsonIgnore] public List<string> IgnoredAccounts { get => _instance._ignoredAccounts; set => _instance._ignoredAccounts = value; }
         
         // Constants
         [JsonIgnore] public static readonly string SettingsFile = "BattleNetSettings.json";
@@ -156,14 +156,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// </summary>
         public void LoadAccounts()
         {
-            if (!Directory.Exists("LoginCache"))
-            {
-                Directory.CreateDirectory("LoginCache");
-            }
-            if (!Directory.Exists("LoginCache\\BattleNet"))
-            {
-                Directory.CreateDirectory("LoginCache\\BattleNet");
-            }
+	        Directory.CreateDirectory("LoginCache\\BattleNet");
             if (File.Exists(StoredAccPath) )
             {
                 Accounts = JsonConvert.DeserializeObject<List<BattleNetSwitcherBase.BattleNetUser>>(File.ReadAllText(StoredAccPath)) ?? new List<BattleNetSwitcherBase.BattleNetUser>();
@@ -171,7 +164,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
             if (File.Exists(IgnoredAccPath))
             {
-                IgnoredAccounts = JsonConvert.DeserializeObject<List<BattleNetSwitcherBase.BattleNetUser>>(File.ReadAllText(IgnoredAccPath)) ?? new List<BattleNetSwitcherBase.BattleNetUser>();
+                IgnoredAccounts = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(IgnoredAccPath)) ?? new List<string>();
             }
         }
 

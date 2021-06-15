@@ -71,7 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             {
                 try
                 {
-                    if (BattleNet.Accounts.Count == 0 || (BattleNet.Accounts.All(x => x.Email != mail) && BattleNet.IgnoredAccounts.All(x => x.Email != mail) && mail != " "))
+                    if (BattleNet.Accounts.Count != 0 || (BattleNet.Accounts.All(x => x.Email != mail) && !BattleNet.IgnoredAccounts.Contains(mail) && mail != " "))
                         BattleNet.Accounts.Add(new BattleNetSwitcherBase.BattleNetUser { Email = mail });
                 }
                 catch (NullReferenceException)
@@ -136,7 +136,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// </summary>
         private static void LoadImportantData()
         {
-            _battleNetRoaming = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battle.net");
+            _battleNetRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battle.net");
         }
 
         public static async Task InitOverwatchMode()
@@ -341,13 +341,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             var account = BattleNet.Accounts.Find(x => x.Email == accName);
             if (account == null) return;
             // Remove image
-            var img = Path.Join(BattleNet.ImagePath, $"{account.BTag}.png");
+            var img = Path.Join(BattleNet.ImagePath, $"{account.BTag ?? account.Email}.png");
             if (File.Exists(img)) File.Delete(img);
             // Remove from Tray
             Globals.RemoveTrayUser("BattleNet", account.BTag ?? account.Email); // Add to Tray list
             // Remove from accounts list
             BattleNet.Accounts.Remove(account);
-            BattleNet.IgnoredAccounts.Add(account);
+            BattleNet.IgnoredAccounts.Add(account.Email);
             BattleNet.SaveAccounts();
 
             AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Forgot account"), true);
@@ -359,7 +359,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static void ClearIgnored_Confirmed()
         {
             Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.ClearForgotten_Confirmed] Confirmation received to clear ignored list.");
-            BattleNet.IgnoredAccounts = new List<BattleNetSwitcherBase.BattleNetUser>();
+            BattleNet.IgnoredAccounts = new List<string>();
             BattleNet.SaveAccounts();
         }
 
@@ -375,7 +375,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             foreach (var s in requestedAccs)
             {
                 Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.RestoreAccounts] Restoring account: hidden");
-                BattleNet.IgnoredAccounts?.Remove(BattleNet.Accounts.Find(x=> x.Email == s));
+                if (BattleNet.IgnoredAccounts.Contains(s))
+	                BattleNet.IgnoredAccounts.Remove(s);
             }
             BattleNet.SaveAccounts();
             return true;

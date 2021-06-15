@@ -39,12 +39,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         #region ACCOUNT SWITCHER SHARED FUNCTIONS
         public static async Task<bool> GenericLoadAccounts(string name)
         {
-            var localCachePath = $"LoginCache\\{name}\\";
+            var localCachePath = Path.Join(Globals.UserDataFolder, $"LoginCache\\{name}\\");
             if (!Directory.Exists(localCachePath)) return false;
             if (!ListAccountsFromFolder(localCachePath, out var accList)) return false;
 
             // Order
-            accList = OrderAccounts(accList, $"LoginCache\\{name}\\order.json");
+            accList = OrderAccounts(accList, $"{localCachePath}\\order.json");
 
             await InsertAccounts(accList, name).ConfigureAwait(false);
             return true;

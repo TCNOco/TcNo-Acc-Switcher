@@ -31,7 +31,8 @@
 @inject Data.Settings.Ubisoft _ubisoft
 @inject ILanguageContainerService  _locale
 
-@if (AppSettings.Instance.UpdateAvailable)
+@*@if (AppSettings.Instance.UpdateAvailable)*@
+@if (true)
 {
     <div class="updateBar" @onclick="UpdateNow">
         <span>@_locale["Update"]</span>

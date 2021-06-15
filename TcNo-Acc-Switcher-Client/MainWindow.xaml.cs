@@ -72,10 +72,11 @@ namespace TcNo_Acc_Switcher_Client
         }
         
         public MainWindow()
-        {
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
-            
-            AppSettings.LoadFromFile();
+		{
+			// Set working directory to documents folder
+			Directory.SetCurrentDirectory(Globals.UserDataFolder);
+
+			AppSettings.LoadFromFile();
             FindOpenPort();
             _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
 
@@ -99,8 +100,9 @@ namespace TcNo_Acc_Switcher_Client
         {
             try
             {
+	            var env = await CoreWebView2Environment.CreateAsync(null, Globals.UserDataFolder);
+	            await MView2.EnsureCoreWebView2Async(env);
                 MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
-                await MView2.EnsureCoreWebView2Async();
                 MViewAddForwarders();
                 MView2.NavigationStarting += UrlChanged;
 

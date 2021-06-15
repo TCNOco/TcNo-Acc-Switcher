@@ -93,8 +93,9 @@ namespace TcNo_Acc_Switcher_Client
         [STAThread]
         protected override async void OnStartup(StartupEventArgs e)
         {
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ??
-                                          string.Empty); // Set working directory to same as .exe
+	        // Set working directory to documents folder
+            Directory.SetCurrentDirectory(Globals.UserDataFolder);
+
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             // Upload crash logs if any, before starting program

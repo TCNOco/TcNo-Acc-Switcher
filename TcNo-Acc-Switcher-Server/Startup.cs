@@ -13,15 +13,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.IO;
 using System.Reflection;
 using AKSoftware.Localization.MultiLanguages;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server
 {
@@ -66,7 +70,43 @@ namespace TcNo_Acc_Switcher_Server
                 app.UseExceptionHandler("/Error");
             }
 
-            app.UseStaticFiles();
+            // Ensure files in documents are available.
+            Globals.CreateDataFolder(false);
+            if (Directory.Exists(Path.Join(Globals.AppDataFolder, "wwwroot")))
+            {
+	            if (Directory.Exists(Globals.OriginalWwwroot)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Globals.OriginalWwwroot), false); 
+				Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
+
+                // This is likely the first time this program was run since the update.
+                // => Copy in existing settings and files
+                foreach (var p in Globals.PlatformList) // Copy across all platform files
+                {
+	                MoveIfFileExists(p + "Settings.json");
+                }
+                MoveIfFileExists("WindowSettings.json");
+
+                // Copy LoginCache
+                if (Directory.Exists(Path.Join(Globals.AppDataFolder, "LoginCache\\")))
+                {
+                    if (Directory.Exists(Path.Join(Globals.UserDataFolder, "LoginCache"))) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(Globals.UserDataFolder, "LoginCache")), true);
+                    Globals.CopyFilesRecursive(Path.Join(Globals.AppDataFolder, "LoginCache"), Path.Join(Globals.UserDataFolder, "LoginCache"));
+                }
+            }
+
+            try
+            {
+	            app.UseStaticFiles(new StaticFileOptions
+	            {
+		            FileProvider = new PhysicalFileProvider(Path.Join(Globals.UserDataFolder, @"wwwroot")),
+		            RequestPath = new PathString("")
+	            });
+            }
+            catch (DirectoryNotFoundException)
+            {
+	            Globals.CopyFilesRecursive(Globals.OriginalWwwroot, "wwwroot");
+			}
+
+			app.UseStaticFiles(); // Second call due to: https://github.com/dotnet/aspnetcore/issues/19578
 
             app.UseRouting();
 
@@ -77,6 +117,13 @@ namespace TcNo_Acc_Switcher_Server
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+        }
+
+        private static void MoveIfFileExists(string f)
+        {
+            if (File.Exists(Path.Join(Globals.AppDataFolder, f)))
+                File.Copy(Path.Join(Globals.AppDataFolder, f), Path.Join(Globals.UserDataFolder, f), true);
+            File.Delete(Path.Join(Globals.AppDataFolder, f));
         }
     }
 }

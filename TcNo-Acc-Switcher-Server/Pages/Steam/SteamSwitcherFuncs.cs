@@ -191,7 +191,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <summary>
         /// Saves List of VacStatus into cache file as JSON.
         /// </summary>
-        public static void SaveVacInfo(List<VacStatus> vsList) => File.WriteAllText(Steam.VacCacheFile, JsonConvert.SerializeObject(vsList));
+        public static void SaveVacInfo(List<VacStatus> vsList)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(Steam.VacCacheFile) ?? string.Empty);
+            File.WriteAllText(Steam.VacCacheFile, JsonConvert.SerializeObject(vsList));
+        }
 
         /// <summary>
         /// Converts Unix Timestamp string to DateTime

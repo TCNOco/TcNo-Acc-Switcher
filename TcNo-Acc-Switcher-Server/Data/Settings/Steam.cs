@@ -68,7 +68,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
 
         // Constants
-        [JsonIgnore] public readonly string VacCacheFile = "LoginCache/Steam/VACCache/SteamVACCache.json";
+        [JsonIgnore] public readonly string VacCacheFile = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
         [JsonIgnore] public static readonly string SettingsFile = "SteamSettings.json";
         [JsonIgnore] public readonly string ForgottenFile = "SteamForgotten.json";
         [JsonIgnore] public readonly string SteamImagePath = "wwwroot/img/profiles/steam/";

@@ -66,7 +66,7 @@ namespace TcNo_Acc_Switcher_Updater
         public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             // Set working directory to parent
-            Directory.SetCurrentDirectory(Directory.GetParent(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location)!)?.FullName!);
+            Directory.SetCurrentDirectory(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\"));
             var version = "unknown";
             try
             {

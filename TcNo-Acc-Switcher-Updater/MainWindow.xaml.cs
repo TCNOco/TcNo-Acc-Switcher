@@ -40,13 +40,12 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace TcNo_Acc_Switcher_Updater
 {
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
-    {
-        // Dictionaries of file paths, as well as MD5 Hashes
+	{
+		// Dictionaries of file paths, as well as MD5 Hashes
         private static Dictionary<string, string> _oldDict = new();
         private static Dictionary<string, string> _newDict = new();
         private static Dictionary<string, string> _allNewDict = new();
@@ -128,10 +127,13 @@ namespace TcNo_Acc_Switcher_Updater
         private readonly string _updaterDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location); // Where this program is located
 
         private void MainWindow_OnContentRendered(object sender, EventArgs e) => new Thread(Init).Start();
-        
+        private readonly string _windowSettings = Path.Join(UserDataFolder, "WindowSettings.json");
+        private readonly string _styleSettings = Path.Join(UserDataFolder, "StyleSettings.yaml");
+
+
         private void Init()
         {
-            Directory.SetCurrentDirectory(Directory.GetParent(_updaterDirectory!)!.ToString()); // Set working directory to same as .exe
+	        Directory.SetCurrentDirectory(MainAppDataFolder);
             if (QueueHashList)
             {
                 GenerateHashes();
@@ -149,11 +151,11 @@ namespace TcNo_Acc_Switcher_Updater
             _currentVersion = GetVersionFromGlobals();
 
             // If couldn't: Try get Version from WindowSettings.json
-            if (string.IsNullOrEmpty(_currentVersion) && File.Exists("WindowSettings.json"))
+            if (string.IsNullOrEmpty(_currentVersion) && File.Exists(_windowSettings))
             {
                 try
                 {
-                    _currentVersion = JObject.Parse(File.ReadAllText("WindowSettings.json"))["Version"]?.ToString();
+                    _currentVersion = JObject.Parse(File.ReadAllText(_windowSettings))["Version"]?.ToString();
                 }
                 catch (Exception)
                 {
@@ -163,15 +165,16 @@ namespace TcNo_Acc_Switcher_Updater
 
             // If couldn't: Verify instead of updating (Done later).
             if (string.IsNullOrEmpty(_currentVersion)) WriteLine("Could not get version. Click \"Verify\" to update & verify files" + Environment.NewLine);
-            
+
             // Styling
-            if (File.Exists("StyleSettings.yaml"))
+            Directory.SetCurrentDirectory(UserDataFolder);
+            if (File.Exists(_styleSettings))
                 Dispatcher.BeginInvoke(new Action(() => {
                     try
                     {
                         // Separated so colors aren't only half changed, and a color from the file is missing
                         var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-                        var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(File.ReadAllText("StyleSettings.yaml"))));
+                        var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(File.ReadAllText(_styleSettings))));
                         // Need to try catch every one of these, as they may be invalid.
                         var highlightColor = TryApplyTheme(dict, "#FFAA00", "linkColor"); // Add a specific Highlight color later?
                         var headerColor = TryApplyTheme(dict, "#14151E", "headerbarBackground");
@@ -212,6 +215,8 @@ namespace TcNo_Acc_Switcher_Updater
                         //
                     }
                 }), DispatcherPriority.Normal);
+
+            Directory.SetCurrentDirectory(MainAppDataFolder);
 
             ButtonHandler(false, "...");
             if (string.IsNullOrEmpty(_currentVersion))
@@ -289,13 +294,51 @@ namespace TcNo_Acc_Switcher_Updater
             wc.DownloadProgressChanged += OnClientOnDownloadProgressChanged;
             wc.DownloadFileCompleted += HandleDownloadComplete;
 
-            var syncObject = new Object();
+            var syncObject = new object();
             lock (syncObject)
             {
                 wc.DownloadFileAsync(uri, destination, syncObject);
                 //This would block the thread until download completes
                 Monitor.Wait(syncObject);
             }
+		}
+
+		public static string UserDataFolder => Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
+		public static string MainAppDataFolder => Directory.GetParent(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location)!)?.FullName!;
+		public static string OriginalWwwroot => Path.Join(MainAppDataFolder, "originalwwwroot");
+
+		/// <summary>
+		/// Recursively copy files and directories
+		/// </summary>
+		/// <param name="inputFolder">Folder to copy files recursively from</param>
+		/// <param name="outputFolder">Destination folder</param>
+		public static void CopyFilesRecursive(string inputFolder, string outputFolder)
+        {
+	        Directory.CreateDirectory(outputFolder);
+	        //Now Create all of the directories
+	        foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
+		        Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
+
+	        //Copy all the files & Replaces any files with the same name
+	        foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
+		        File.Copy(newPath, newPath.Replace(inputFolder, outputFolder), true);
+        }
+
+        /// <summary>
+        /// Recursively copies directories from install dir to documents dir.
+        /// </summary>
+        /// <param name="f">Folder to recursively copy</param>
+        /// <param name="overwrite">Whether files should be overwritten anyways</param>
+        private static void InitFolder(string f, bool overwrite)
+        {
+	        if (overwrite || !Directory.Exists(Path.Join(UserDataFolder, f))) CopyFilesRecursive(Path.Join(MainAppDataFolder, f), Path.Join(UserDataFolder, f));
+        }
+
+        private static void InitWwwroot(bool overwrite)
+        {
+	        if (!overwrite && Directory.Exists(Path.Join(UserDataFolder, "wwwroot"))) return;
+	        if (Directory.Exists(OriginalWwwroot))
+				CopyFilesRecursive(OriginalWwwroot, Path.Join(UserDataFolder, "wwwroot"));
         }
 
         /// <summary>
@@ -317,8 +360,7 @@ namespace TcNo_Acc_Switcher_Updater
         { //var updaterDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location); // Where this program is located
           //Directory.SetCurrentDirectory(Directory.GetParent(updaterDirectory!)!.ToString()); // Set working directory to same as .exe
           //CreateUpdate();
-
-
+          
             // 1. Download update.7z
             // 2. Extract --> Done, mostly
             // 3. Delete files that need to be removed. --> Done, mostly
@@ -327,6 +369,7 @@ namespace TcNo_Acc_Switcher_Updater
             // 5. Copy in new files --> Done
             // 6. Delete working temp folder, and update --> Done
             // 7. Download latest hash list and verify
+            // 8. Copy and replace files in Documents folder (New 2021-06-15)
             // --> Update the updater through the main program with a simple hash check there.
             // ----> Just re-download the whole thing, or make a copy of it to update itself with,
             // ----> then get the main program to replace the updater (Most likely).
@@ -335,6 +378,9 @@ namespace TcNo_Acc_Switcher_Updater
             SetStatusAndLog("Closing TcNo Account Switcher instances (if any).");
             // Check if files are in use
             CloseIfRunning(_currentDir);
+
+            if (Directory.Exists("originalwwwroot"))
+	            Directory.Move("originalwwwroot", "wwwroot");
 
             // APPLY UPDATE
             // Cleanup previous updates
@@ -395,14 +441,18 @@ namespace TcNo_Acc_Switcher_Updater
 
             VerifyFiles();
 
-            if (File.Exists("WindowSettings.json"))
+            if (File.Exists(_windowSettings))
             {
-                var o = JObject.Parse(File.ReadAllText("WindowSettings.json"));
+                var o = JObject.Parse(File.ReadAllText(_windowSettings));
                 o["Version"] = _latestVersion;
                 // Save all settings back into file
-                File.WriteAllText("WindowSettings.json", o.ToString());
+                File.WriteAllText(_windowSettings, o.ToString());
             }
 
+            SetStatusAndLog("Updating files in Documents!");
+            Directory.Move("wwwroot", "originalwwwroot");
+			InitWwwroot(true);
+            InitFolder("themes", true);
 
             WriteLine("");
             SetStatusAndLog("All updates complete!");
@@ -590,7 +640,7 @@ namespace TcNo_Acc_Switcher_Updater
         {
             foreach (var exe in Directory.GetFiles(currentDir, "*.exe", SearchOption.AllDirectories))
             {
-                if (exe.Contains(Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly()?.Location)!)) continue;
+                if (exe.Contains(Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly()?.Location)!)) continue;
                 var eName = Path.GetFileNameWithoutExtension(exe);
                 if (Process.GetProcessesByName(eName).Length <= 0) continue;
                 KillProcess(eName);
@@ -922,20 +972,24 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="outputNewFile">Output of new file (that's been updated)</param>
         private static void DoDecode(string oldFile, string patchFile, string outputNewFile)
         {
-            using FileStream dict = new(oldFile, FileMode.Open, FileAccess.Read);
-            using FileStream target = new(patchFile, FileMode.Open, FileAccess.Read);
-            using FileStream output = new(outputNewFile, FileMode.Create, FileAccess.Write);
-            VcDecoder decoder = new(dict, target, output);
-
-            // The header of the delta file must be available before the first call to decoder.Decode().
-            var result = decoder.Decode(out _);
-
-            if (result != VCDiffResult.SUCCESS)
-            {
-                //error decoding
-            }
-
-            // if success bytesWritten will contain the number of bytes that were decoded
+	        try
+			{
+				using FileStream dict = new(oldFile, FileMode.Open, FileAccess.Read);
+				using FileStream target = new(patchFile, FileMode.Open, FileAccess.Read);
+				using FileStream output = new(outputNewFile, FileMode.Create, FileAccess.Write);
+				VcDecoder decoder = new(dict, target, output);
+				// The header of the delta file must be available before the first call to decoder.Decode().
+				var result = decoder.Decode(out _);
+				if (result != VCDiffResult.SUCCESS)
+				{
+					//error decoding
+				}
+				// if success bytesWritten will contain the number of bytes that were decoded
+			}
+			catch (FileNotFoundException)
+			{
+				return;
+			}
         }
     }
 
