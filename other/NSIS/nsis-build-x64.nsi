@@ -18,7 +18,7 @@
 !define COPYRIGHT "TechNobo (Wesley Pyburn) © 2021"
 !define DESCRIPTION "TcNo Account Switcher"
 !define LICENSE_TXT "..\..\LICENSE"
-!define MAIN_APP_EXE "TcNo-Account-Switcher.exe"
+!define MAIN_APP_EXE "TcNo-Acc-Switcher.exe"
 !define INSTALL_TYPE "SetShellVarContext current"
 !define REG_ROOT "HKCU"
 !define REG_APP_PATH "Software\Microsoft\Windows\CurrentVersion\App Paths\${MAIN_APP_EXE}"

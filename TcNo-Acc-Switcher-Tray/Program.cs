@@ -116,7 +116,7 @@ namespace TcNo_Acc_Switcher_Tray
             contextMenu.Items.Add(new ToolStripMenuItem
             {
                 Name = "EXIT",
-                Text = "Exit",
+                Text = @"Exit",
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(255, 34, 34, 34)
             });
