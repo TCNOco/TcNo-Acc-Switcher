@@ -89,6 +89,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
         {
             try
             {
+	            Directory.SetCurrentDirectory(Globals.AppDataFolder);
                 // Download latest hash list
                 const string hashFilePath = "hashes.json";
                 var client = new WebClient();
@@ -124,6 +125,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 _ = GeneralInvocableFuncs.ShowToast("error", "Failed to check for updates.");
                 Globals.WriteToLog("Failed to check for updates:" + e);
             }
+            Directory.SetCurrentDirectory(Globals.UserDataFolder);
         }
     }
 }

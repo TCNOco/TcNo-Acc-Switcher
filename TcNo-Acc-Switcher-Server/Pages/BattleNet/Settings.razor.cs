@@ -68,7 +68,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static void ClearAccounts()
         {
             Data.Settings.BattleNet.Instance.Accounts = new List<BattleNetSwitcherBase.BattleNetUser>();
-            Data.Settings.BattleNet.Instance.IgnoredAccounts = new List<BattleNetSwitcherBase.BattleNetUser>();
+            Data.Settings.BattleNet.Instance.IgnoredAccounts = new List<string>();
             Data.Settings.BattleNet.Instance.SaveAccounts();
         }
         #endregion

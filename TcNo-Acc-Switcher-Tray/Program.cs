@@ -42,8 +42,9 @@ namespace TcNo_Acc_Switcher_Tray
             {
                 Environment.Exit(1056); // An instance of the service is already running.
             }
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location)!); // Set working directory to the same as the actual .exe
-            TrayUsers = TrayUser.ReadTrayUsers();
+			// Set working directory to documents folder
+			Directory.SetCurrentDirectory(Globals.UserDataFolder);
+			TrayUsers = TrayUser.ReadTrayUsers();
 
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();

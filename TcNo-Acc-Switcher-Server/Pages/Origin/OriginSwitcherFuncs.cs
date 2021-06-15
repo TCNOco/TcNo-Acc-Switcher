@@ -156,10 +156,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 	            return false;
             }
 
-            GeneralFuncs.CopyFilesRecursive($"{localCachePath}ConsolidatedCache", Path.Join(OriginRoaming, "ConsolidatedCache"));
-            GeneralFuncs.CopyFilesRecursive($"{localCachePath}NucleusCache", Path.Join(OriginRoaming, "NucleusCache"));
-            GeneralFuncs.CopyFilesRecursive($"{localCachePath}Logs", Path.Join(OriginRoaming, "Logs"));
-            GeneralFuncs.CopyFilesRecursive($"{localCachePathData}Subscription", Path.Join(OriginProgramData, "Subscription"));
+            Globals.CopyFilesRecursive($"{localCachePath}ConsolidatedCache", Path.Join(OriginRoaming, "ConsolidatedCache"));
+            Globals.CopyFilesRecursive($"{localCachePath}NucleusCache", Path.Join(OriginRoaming, "NucleusCache"));
+            Globals.CopyFilesRecursive($"{localCachePath}Logs", Path.Join(OriginRoaming, "Logs"));
+            Globals.CopyFilesRecursive($"{localCachePathData}Subscription", Path.Join(OriginProgramData, "Subscription"));
 
             foreach (var f in new DirectoryInfo(localCachePath).GetFiles())
             {
@@ -196,11 +196,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             var localCachePath = $"LoginCache\\Origin\\{accName}\\";
             var localCachePathData = $"LoginCache\\Origin\\{accName}\\Data\\";
             Directory.CreateDirectory(localCachePath);
-            
-            GeneralFuncs.CopyFilesRecursive(Path.Join(OriginRoaming, "ConsolidatedCache"), $"{localCachePath}ConsolidatedCache");
-            GeneralFuncs.CopyFilesRecursive(Path.Join(OriginRoaming, "NucleusCache"), $"{localCachePath}NucleusCache");
-            GeneralFuncs.CopyFilesRecursive(Path.Join(OriginRoaming, "Logs"), $"{localCachePath}Logs");
-            GeneralFuncs.CopyFilesRecursive(Path.Join(OriginProgramData, "Subscription"), $"{localCachePathData}Subscription");
+
+            Globals.CopyFilesRecursive(Path.Join(OriginRoaming, "ConsolidatedCache"), $"{localCachePath}ConsolidatedCache");
+            Globals.CopyFilesRecursive(Path.Join(OriginRoaming, "NucleusCache"), $"{localCachePath}NucleusCache");
+            Globals.CopyFilesRecursive(Path.Join(OriginRoaming, "Logs"), $"{localCachePath}Logs");
+            Globals.CopyFilesRecursive(Path.Join(OriginProgramData, "Subscription"), $"{localCachePathData}Subscription");
 
             var pfpFilePath = "";
             foreach (var f in new DirectoryInfo(OriginRoaming).GetFiles())

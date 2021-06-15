@@ -16,6 +16,7 @@ using System;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server
 {
@@ -27,8 +28,9 @@ namespace TcNo_Acc_Switcher_Server
         }
         public static bool MainProgram(string[] args, out Exception e)
         {
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location) ?? string.Empty); // Set working directory to same as .exe
-            try
+			// Set working directory to documents folder
+			Directory.SetCurrentDirectory(Globals.UserDataFolder);
+			try
             {
                 CreateHostBuilder(args).Build().Run();
             }
