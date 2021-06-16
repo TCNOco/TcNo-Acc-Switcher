@@ -62,6 +62,7 @@ InstallDir "${INSTALL_DIR}"
 ;--------------------------------
 ;Interface Configuration
 
+  !include MUI.nsh
   !define MUI_ICON "img\icon.ico"
   !define MUI_UNICON "img\icon.ico"
   !define MUI_HEADERIMAGE
@@ -80,6 +81,7 @@ InstallDir "${INSTALL_DIR}"
   !define MUI_TEXTCOLOR FFFFFF
   !define MUI_INSTFILESPAGE_COLORS "FFFFFF 1F212D"
   !define MUI_FINISHPAGE_LINK_COLOR FFAA00
+  !define UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\TcNo-Acc-Switcher"
 
 ;--------------------------------
 ;Pages
@@ -119,6 +121,8 @@ InstallDir "${INSTALL_DIR}"
 ;--------------------------------
 ;Installer Sections
 
+!include "FileFunc.nsh"
+
 Section "Main files" InstSec
   SectionIn RO
 
@@ -131,6 +135,20 @@ Section "Main files" InstSec
   
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\${UNINSTALL_EXE}"
+  WriteRegStr HKLM "${UNINST_KEY}" "DisplayName" "TcNo Account Switcher"
+  WriteRegStr HKLM "${UNINST_KEY}" "DisplayVersion" "4"
+  WriteRegStr HKLM "${UNINST_KEY}" "UninstallString" "$INSTDIR\${UNINSTALL_EXE}"
+  WriteRegStr HKLM "${UNINST_KEY}" "InstallLocation" "$INSTDIR"
+  WriteRegStr HKLM "${UNINST_KEY}" "Publisher" "${COMP_NAME}"
+  WriteRegStr HKLM "${UNINST_KEY}" "HelpLink" "${WEB_SITE}"
+  WriteRegStr HKLM "${UNINST_KEY}" "URLInfoAbout" "${WEB_SITE}"
+  WriteRegStr HKLM "${UNINST_KEY}" "DisplayIcon" "$INSTDIR\${UNINSTALL_EXE}"
+  WriteRegDWORD HKLM "${UNINST_KEY}" "NoModify" "1"
+  WriteRegDWORD HKLM "${UNINST_KEY}" "NoRepair" "1"
+
+  ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
+  IntFmt $0 "0x%08X" $0
+  WriteRegDWORD HKLM "${UNINST_KEY}" "EstimatedSize" "$0"
   
   ExecShell "" "$INSTDIR\${FIRST_RUN_EXE}"
 SectionEnd
@@ -172,5 +190,6 @@ Section "Uninstall"
   Delete "$DESKTOP\${LNK_NAME}"
 
   DeleteRegKey /ifempty "${REG_ROOT}" "${REG_APP_PATH}"
+  DeleteRegKey HKLM "${UNINST_KEY}"
 
 SectionEnd
