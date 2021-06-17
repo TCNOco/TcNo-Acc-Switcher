@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 
@@ -37,28 +38,28 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 case "BattleNet":
                     if (!GeneralFuncs.CanKillProcess("Battle.net")) return;
                     Data.Settings.BattleNet.Instance.LoadFromFile();
-                    if (Directory.Exists(Data.Settings.BattleNet.Instance.FolderPath) && File.Exists(Data.Settings.BattleNet.Instance.Exe())) _navManager.NavigateTo("/BattleNet/");
+                    if (Directory.Exists(Data.Settings.BattleNet.Instance.FolderPath) && File.Exists(Data.Settings.BattleNet.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/BattleNet/");
                     else await GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
                     break;
 
                 case "Epic":
                     if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) return;
                     Data.Settings.Epic.Instance.LoadFromFile();
-                    if (Directory.Exists(Data.Settings.Epic.Instance.FolderPath) && File.Exists(Data.Settings.Epic.Instance.Exe())) _navManager.NavigateTo("/Epic/");
+                    if (Directory.Exists(Data.Settings.Epic.Instance.FolderPath) && File.Exists(Data.Settings.Epic.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Epic/");
                     else await GeneralInvocableFuncs.ShowModal("find:Epic:EpicGamesLauncher.exe:EpicSettings");
                     break;
 
                 case "Origin":
                     if (!GeneralFuncs.CanKillProcess("Origin")) return;
                     Data.Settings.Origin.Instance.LoadFromFile();
-                    if (Directory.Exists(Data.Settings.Origin.Instance.FolderPath) && File.Exists(Data.Settings.Origin.Instance.Exe())) _navManager.NavigateTo("/Origin/");
+                    if (Directory.Exists(Data.Settings.Origin.Instance.FolderPath) && File.Exists(Data.Settings.Origin.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Origin/");
                     else await GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
                     break;
 
                 case "Riot":
                     if (!Riot.RiotSwitcherFuncs.CanCloseRiot()) return;
                     Data.Settings.Riot.Instance.LoadFromFile();
-                    if (Directory.Exists(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client\\Data"))) _navManager.NavigateTo("/Riot/");
+                    if (Directory.Exists(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client\\Data"))) AppData.ActiveNavMan.NavigateTo("/Riot/");
                     else await GeneralInvocableFuncs.ShowModal("find:Riot:RiotClientPrivateSettings.yaml:RiotSettings");
                     break;
 
@@ -70,14 +71,14 @@ namespace TcNo_Acc_Switcher_Server.Pages
                         await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
                         return;
                     }
-                    if (SteamSwitcherFuncs.SteamSettingsValid()) _navManager.NavigateTo("/Steam/");
+                    if (SteamSwitcherFuncs.SteamSettingsValid()) AppData.ActiveNavMan.NavigateTo("/Steam/");
                     else await GeneralInvocableFuncs.ShowModal("Cannot locate '.../Steam/config/loginusers.vdf'. Try signing into an account first.");
                     break;
 
                 case "Ubisoft":
                     if (!GeneralFuncs.CanKillProcess("upc")) return;
                     Data.Settings.Ubisoft.Instance.LoadFromFile();
-                    if (Directory.Exists(Data.Settings.Ubisoft.Instance.FolderPath) && File.Exists(Data.Settings.Ubisoft.Instance.Exe())) _navManager.NavigateTo("/Ubisoft/");
+                    if (Directory.Exists(Data.Settings.Ubisoft.Instance.FolderPath) && File.Exists(Data.Settings.Ubisoft.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Ubisoft/");
                     else await GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
                     break;
             }
