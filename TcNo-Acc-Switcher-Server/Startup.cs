@@ -74,24 +74,23 @@ namespace TcNo_Acc_Switcher_Server
             {
 	            if (Directory.Exists(Globals.OriginalWwwroot)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Globals.OriginalWwwroot), false); 
 				Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
+            }
 
-                // This is likely the first time this program was run since the update.
-                // => Copy in existing settings and files
-                foreach (var p in Globals.PlatformList) // Copy across all platform files
-                {
-	                MoveIfFileExists(p + "Settings.json");
-                }
-                MoveIfFileExists("SteamForgotten.json");
-                MoveIfFileExists("StyleSettings.yaml");
-                MoveIfFileExists("Tray_Users.json");
-                MoveIfFileExists("WindowSettings.json");
+            // Moves any old files from previous installs.
+            foreach (var p in Globals.PlatformList) // Copy across all platform files
+            {
+	            MoveIfFileExists(p + "Settings.json");
+            }
+            MoveIfFileExists("SteamForgotten.json");
+            MoveIfFileExists("StyleSettings.yaml");
+            MoveIfFileExists("Tray_Users.json");
+            MoveIfFileExists("WindowSettings.json");
 
-                // Copy LoginCache
-                if (Directory.Exists(Path.Join(Globals.AppDataFolder, "LoginCache\\")))
-                {
-                    if (Directory.Exists(Path.Join(Globals.UserDataFolder, "LoginCache"))) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(Globals.UserDataFolder, "LoginCache")), true);
-                    Globals.CopyFilesRecursive(Path.Join(Globals.AppDataFolder, "LoginCache"), Path.Join(Globals.UserDataFolder, "LoginCache"));
-                }
+            // Copy LoginCache
+            if (Directory.Exists(Path.Join(Globals.AppDataFolder, "LoginCache\\")))
+            {
+	            if (Directory.Exists(Path.Join(Globals.UserDataFolder, "LoginCache"))) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(Globals.UserDataFolder, "LoginCache")), true);
+	            Globals.CopyFilesRecursive(Path.Join(Globals.AppDataFolder, "LoginCache"), Path.Join(Globals.UserDataFolder, "LoginCache"));
             }
 
             try
