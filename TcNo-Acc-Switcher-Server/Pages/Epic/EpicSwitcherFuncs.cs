@@ -160,7 +160,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 
             // Copy in profile image from default
             Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\epic"));
-            File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\EpicDefault.png"), Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Uri.EscapeUriString(accName)}.jpg"), true);
+            var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Uri.EscapeUriString(accName)}.jpg");
+            if (!File.Exists(profileImg)) File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\EpicDefault.png"), profileImg, true);
             
             AppData.ActiveNavMan?.NavigateTo("/Epic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
         }
