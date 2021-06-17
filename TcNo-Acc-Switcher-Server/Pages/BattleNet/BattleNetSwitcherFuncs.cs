@@ -67,8 +67,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 return;
             }
 
+            BattleNet.Accounts.Clear();
+
             foreach (var mail in savedAccountsList.ToString().Split(','))
             {
+	            if (string.IsNullOrEmpty(mail) || string.IsNullOrWhiteSpace(mail)) continue; // Ignores blank emails sometimes added: ".com, , asdf@..." 
                 try
                 {
                     if (BattleNet.Accounts.Count != 0 || (BattleNet.Accounts.All(x => x.Email != mail) && !BattleNet.IgnoredAccounts.Contains(mail) && mail != " "))
@@ -100,11 +103,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             foreach (var acc in BattleNet.Accounts)
             {
                 if (!File.Exists(Path.Join(BattleNet.ImagePath, $"{acc.Email}.png"))) DownloadImage(acc.Email);
-                var username = (acc.BTag == null ? acc.Email : (acc.BTag.Contains("#") ? acc.BTag.Split("#")[0] : acc.BTag));
+                var username = acc.BTag == null ? acc.Email : (acc.BTag.Contains("#") ? acc.BTag.Split("#")[0] : acc.BTag);
                 var element =
                     $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{acc.Email}\" Username=\"{username}\" DisplayName=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                     $"<label for=\"{acc.Email}\" class=\"acc\">\r\n" +
-                    $"<img src=\"img\\profiles\\battlenet\\{acc.Email}.png\" draggable=\"false\" />\r\n" +
+                    $"<img src=\"img\\profiles\\battlenet\\{acc.Email}.png?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
                     $"<h6>{username}</h6>\r\n";
                 if (BattleNet.OverwatchMode && DateTime.Now - acc.LastTimeChecked < TimeSpan.FromDays(1))
                 {

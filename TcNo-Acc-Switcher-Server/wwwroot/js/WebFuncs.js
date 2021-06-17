@@ -190,7 +190,8 @@ function changeImage(e) {
         return true;
     }
     
-    window.location = window.location + `${(window.location.href.includes("?") ? "&" : "?")}selectImage=${encodeURI($(".acc:checked").next("label").children("img")[0].getAttribute("src"))}`;
+    let path = $(".acc:checked").next("label").children("img")[0].getAttribute("src").split('?')[0];
+    window.location = window.location + `${(window.location.href.includes("?") ? "&" : "?")}selectImage=${encodeURI(path)}`;
 }
 
 // Create shortcut for selected icon

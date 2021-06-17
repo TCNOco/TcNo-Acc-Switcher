@@ -457,12 +457,9 @@ namespace TcNo_Acc_Switcher_Server.Data
                 if (File.Exists("themes\\Default.yaml")) File.Copy("themes\\Default.yaml", StylesheetFile);
                 else
                 {
-	                Globals.CreateDataFolder(false);
-                    if (!File.Exists("themes\\Default.yaml"))
-						throw new Exception(
-	                        "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run." + Environment.NewLine +
-	                        "You can run the Updater in the \"updater\" folder to verify files, and restore these missing files.");
-                    File.Copy("themes\\Default.yaml", StylesheetFile);
+	                throw new Exception(
+	                    "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run." + Environment.NewLine +
+	                    "You can run the Updater in the \"updater\" folder to verify files, and restore these missing files.");
                 }
             }
             // Load new stylesheet

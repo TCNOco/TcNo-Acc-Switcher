@@ -92,8 +92,13 @@ namespace TcNo_Acc_Switcher_Client
 
         [STAThread]
         protected override async void OnStartup(StartupEventArgs e)
-        {
-	        // Set working directory to documents folder
+		{
+			// Ensure files in documents are available.
+			Globals.CreateDataFolder(false);
+
+            // Clear WebView2 cache
+            Globals.ClearWebCache();
+
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
 
             // Crash handler
