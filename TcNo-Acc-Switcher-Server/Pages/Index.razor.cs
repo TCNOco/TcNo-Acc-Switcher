@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -36,21 +37,21 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 case "BattleNet":
                     if (!GeneralFuncs.CanKillProcess("Battle.net")) return;
                     Data.Settings.BattleNet.Instance.LoadFromFile();
-                    if (Directory.Exists(_battleNet.FolderPath) && File.Exists(_battleNet.Exe())) _navManager.NavigateTo("/BattleNet/");
+                    if (Directory.Exists(Data.Settings.BattleNet.Instance.FolderPath) && File.Exists(Data.Settings.BattleNet.Instance.Exe())) _navManager.NavigateTo("/BattleNet/");
                     else await GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
                     break;
 
                 case "Epic":
                     if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) return;
                     Data.Settings.Epic.Instance.LoadFromFile();
-                    if (Directory.Exists(_epic.FolderPath) && File.Exists(_epic.Exe())) _navManager.NavigateTo("/Epic/");
+                    if (Directory.Exists(Data.Settings.Epic.Instance.FolderPath) && File.Exists(Data.Settings.Epic.Instance.Exe())) _navManager.NavigateTo("/Epic/");
                     else await GeneralInvocableFuncs.ShowModal("find:Epic:EpicGamesLauncher.exe:EpicSettings");
                     break;
 
                 case "Origin":
                     if (!GeneralFuncs.CanKillProcess("Origin")) return;
                     Data.Settings.Origin.Instance.LoadFromFile();
-                    if (Directory.Exists(_origin.FolderPath) && File.Exists(_origin.Exe())) _navManager.NavigateTo("/Origin/");
+                    if (Directory.Exists(Data.Settings.Origin.Instance.FolderPath) && File.Exists(Data.Settings.Origin.Instance.Exe())) _navManager.NavigateTo("/Origin/");
                     else await GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
                     break;
 
@@ -64,7 +65,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 case "Steam":
                     if (!GeneralFuncs.CanKillProcess("steam")) return;
                     Data.Settings.Steam.Instance.LoadFromFile();
-                    if (!Directory.Exists(_steam.FolderPath) || !File.Exists(_steam.Exe()))
+                    if (!Directory.Exists(Data.Settings.Steam.Instance.FolderPath) || !File.Exists(Data.Settings.Steam.Instance.Exe()))
                     {
                         await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
                         return;
@@ -76,7 +77,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 case "Ubisoft":
                     if (!GeneralFuncs.CanKillProcess("upc")) return;
                     Data.Settings.Ubisoft.Instance.LoadFromFile();
-                    if (Directory.Exists(_ubisoft.FolderPath) && File.Exists(_ubisoft.Exe())) _navManager.NavigateTo("/Ubisoft/");
+                    if (Directory.Exists(Data.Settings.Ubisoft.Instance.FolderPath) && File.Exists(Data.Settings.Ubisoft.Instance.Exe())) _navManager.NavigateTo("/Ubisoft/");
                     else await GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
                     break;
             }

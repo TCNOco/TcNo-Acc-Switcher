@@ -314,8 +314,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     break;
             }
 
-            var fgImg = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\{page}\\{accId}.jpg");
-            if (!File.Exists(fgImg)) fgImg = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\{page}\\{accId}.png");
+            var fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{page}\\{accId}.jpg");
+            if (!File.Exists(fgImg)) fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{page}\\{accId}.png");
             if (!File.Exists(fgImg)) return;
 
             var s = new Shortcut();
@@ -326,7 +326,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 $"Switch to {accName} in TcNo Account Switcher", 
                 true);
             s.CreateCombinedIcon(
-                Path.Join(GeneralFuncs.WwwRoot, $"\\img\\platform\\{page}.png"),
+                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{page}.png"),
                 fgImg, 
                 $"{accId}.ico");
             s.TryWrite();

@@ -130,11 +130,11 @@ namespace TcNo_Acc_Switcher_Client
                 {
                     if (!NativeMethods
                         .AttachToConsole(-1)) // Attach to a parent process console (ATTACH_PARENT_PROCESS)
-                        NativeMethods.AllocConsole();
+                        _ = NativeMethods.AllocConsole();
                     Console.WriteLine(Environment.NewLine);
                     await ConsoleMain(e).ConfigureAwait(false);
                     Console.WriteLine(Environment.NewLine + "Press any key to close this window...");
-                    NativeMethods.FreeConsole();
+                    _ = NativeMethods.FreeConsole();
                     Environment.Exit(0);
                     return;
                 }
@@ -142,7 +142,7 @@ namespace TcNo_Acc_Switcher_Client
             }
 
 #if DEBUG
-            NativeMethods.AllocConsole();
+            _ = NativeMethods.AllocConsole();
             NativeMethods.SetWindowText("Debug console");
             Globals.WriteToLog("Debug Console started");
 #endif

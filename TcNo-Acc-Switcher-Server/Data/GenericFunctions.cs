@@ -64,7 +64,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             foreach (var f in Directory.GetDirectories(folder))
             {
                 var lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1;
-                var accName = f.Substring(lastSlash, f.Length - lastSlash);
+                var accName = f[lastSlash..];
                 accList.Add(accName);
             }
 

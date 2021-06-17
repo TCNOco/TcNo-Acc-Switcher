@@ -76,5 +76,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         private NavigationManager _activeNavMan;
         [JsonIgnore] public static NavigationManager ActiveNavMan { get => _instance._activeNavMan; set => _instance._activeNavMan = value; }
         public void SetActiveNavMan(NavigationManager nm) => _instance._activeNavMan = nm;
+
+#pragma warning disable CA2012 // Use ValueTasks correctly
+		public static void InvokeVoid(string func) => _ = ActiveIJsRuntime.InvokeVoidAsync(func);
+		public static void InvokeVoid(string func, string arg) => _ = ActiveIJsRuntime.InvokeVoidAsync(func, arg);
+#pragma warning restore CA2012 // Use ValueTasks correctly
     }
 }

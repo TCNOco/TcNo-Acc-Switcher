@@ -112,9 +112,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
 
             SaveVacInfo(vacStatusList);
-            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
-            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
-            _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
+            AppData.InvokeVoid("jQueryProcessAccListSize");
+            AppData.InvokeVoid("initContextMenu");
+            AppData.InvokeVoid("initAccListSortable");
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         public static string UnixTimeStampToDateTime(string stringUnixTimeStamp)
         {
-            double.TryParse(stringUnixTimeStamp, out var unixTimeStamp);
+            if (!double.TryParse(stringUnixTimeStamp, out var unixTimeStamp)) return "";
             // Unix timestamp is seconds past epoch
             var dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
@@ -342,20 +342,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// Restart Steam with a new account selected. Leave args empty to log into a new account.
         /// </summary>
         /// <param name="steamId">(Optional) User's SteamID</param>
-        /// <param name="accName">(Optional) User's login username</param>
         /// <param name="autoStartSteam">(Optional) Whether Steam should start after switching [Default: true]</param>
         /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
-        public static void SwapSteamAccounts(string steamId = "", string accName = "", bool autoStartSteam = true, int ePersonaState = -1)
+        public static void SwapSteamAccounts(string steamId = "", bool autoStartSteam = true, int ePersonaState = -1)
         {
-            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SwapSteamAccounts] Swapping to: hidden. autoStartSteam={autoStartSteam.ToString()}, ePersonaState={ePersonaState}");
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SwapSteamAccounts] Swapping to: hidden. autoStartSteam={autoStartSteam}, ePersonaState={ePersonaState}");
             if (steamId != "" && !VerifySteamId(steamId))
             {
                 return;
             }
-            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Steam");
+            AppData.InvokeVoid("updateStatus", "Closing Steam");
             if (!CloseSteam()) return;
-            if (OperatingSystem.IsWindows()) UpdateLoginUsers(steamId, accName, ePersonaState);
-            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Steam");
+            if (OperatingSystem.IsWindows()) UpdateLoginUsers(steamId, ePersonaState);
+            AppData.InvokeVoid("updateStatus", "Starting Steam");
             if (!autoStartSteam) return;
 
             GeneralFuncs.StartProgram(Steam.Exe(), Steam.Admin);
@@ -393,24 +392,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         // Overload for below
         [SupportedOSPlatform("windows")]
-        public static void UpdateLoginUsers(string selectedSteamId) => UpdateLoginUsers(selectedSteamId, "", -1);
-        [SupportedOSPlatform("windows")]
-        public static void UpdateLoginUsers(string selectedSteamId, string accName) => UpdateLoginUsers(selectedSteamId, accName, -1);
+        public static void UpdateLoginUsers(string selectedSteamId) => UpdateLoginUsers(selectedSteamId, -1);
         /// <summary>
         /// Updates loginusers and registry to select an account as "most recent"
         /// </summary>
         /// <param name="selectedSteamId">Steam ID64 to switch to</param>
-        /// <param name="accName">Account username to be logged into</param>
         /// <param name="pS">[PersonaState]0-7 custom persona state [0: Offline, 1: Online...]</param>
         [SupportedOSPlatform("windows")]
-        public static void UpdateLoginUsers(string selectedSteamId, string accName, int pS)
+        public static void UpdateLoginUsers(string selectedSteamId, int pS)
         {
-            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.UpdateLoginUsers] Updating loginusers: selectedSteamId={(selectedSteamId.Length > 0 ? selectedSteamId.Substring(selectedSteamId.Length - 4, 4) : "")}, accName=hidden, pS={pS}");
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.UpdateLoginUsers] Updating loginusers: selectedSteamId={(selectedSteamId.Length > 0 ? selectedSteamId.Substring(selectedSteamId.Length - 4, 4) : "")}, pS={pS}");
             var userAccounts = GetSteamUsers(Steam.LoginUsersVdf());
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
             // -----------------------------------
-            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Updating loginusers.vdf");
+            AppData.InvokeVoid("updateStatus", "Updating loginusers.vdf");
             var tempFile = Steam.LoginUsersVdf() + "_temp";
             File.Delete(tempFile);
 
@@ -446,7 +442,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 --> AutoLoginUser = username
                 --> RememberPassword = 1
             */
-            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Updating registry");
+            AppData.InvokeVoid("updateStatus", "Updating registry");
             using var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam");
             key.SetValue("AutoLoginUser", user.AccName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
             key.SetValue("RememberPassword", 1);

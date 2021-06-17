@@ -173,7 +173,7 @@ namespace TcNo_Acc_Switcher_Client
             var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
             while (true)
             {
-                if (tcpConnInfoArray.Count(x => x.LocalEndPoint.Port == AppSettings.ServerPort) == 0) break;
+                if (tcpConnInfoArray.All(x => x.LocalEndPoint.Port != AppSettings.ServerPort)) break;
                 NewPort();
             }
         }
