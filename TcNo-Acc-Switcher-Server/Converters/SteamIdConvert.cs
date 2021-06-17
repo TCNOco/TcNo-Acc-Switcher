@@ -95,7 +95,7 @@ namespace TcNo_Acc_Switcher_Server.Converters
             {
                 var s = _inputType switch
                 {
-                    SteamId3 => _input.Substring(4),
+                    SteamId3 => _input[4..],
                     SteamId32 => _input,
                     SteamId64 => CalcSteamId32(),
                     _ => ""
@@ -124,8 +124,8 @@ namespace TcNo_Acc_Switcher_Server.Converters
             {
                 Id32 = _inputType switch
                 {
-                    SteamId => (int.Parse(_input.Substring(10)) * 2 + int.Parse($"{_input[8]}")).ToString(),
-                    SteamId3 => _input.Substring(4),
+                    SteamId => (int.Parse(_input[10..]) * 2 + int.Parse($"{_input[8]}")).ToString(),
+                    SteamId3 => _input[4..],
                     SteamId64 => (long.Parse(_input) - ChangeVal).ToString(),
                     _ => Id32
                 };
@@ -141,8 +141,8 @@ namespace TcNo_Acc_Switcher_Server.Converters
             else
                 Id64 = _inputType switch
                 {
-                    SteamId => (int.Parse(_input.Substring(10)) * 2 + int.Parse($"{_input[8]}") + ChangeVal).ToString(),
-                    SteamId3 => (int.Parse(_input.Substring(4)) + ChangeVal).ToString(),
+                    SteamId => (int.Parse(_input[10..]) * 2 + int.Parse($"{_input[8]}") + ChangeVal).ToString(),
+                    SteamId3 => (int.Parse(_input[4..]) + ChangeVal).ToString(),
                     SteamId32 => (int.Parse(_input) + ChangeVal).ToString(),
                     _ => Id64
                 };

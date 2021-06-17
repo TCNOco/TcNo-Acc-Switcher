@@ -88,7 +88,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 {
                     if (!line.Contains("User: ")) continue;
                     line = line.Split("User: ")[1];
-                    while (line.EndsWith(" ")) line = line.Substring(0, line.Length - 1);
+                    while (line.EndsWith(" ")) line = line[..^1];
                     lastUser = line;
                 }
             }
@@ -129,7 +129,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                             continue;
                         }
                         // Otherwise: it was found on this line, grab it.
-                        line = line.Substring(indexAfterUserId, line.Length - indexAfterUserId);
+                        line = line[indexAfterUserId..];
                     }
                     // This grabs the username if on the line after userId
                     line = line.Split(":")[0];
@@ -198,7 +198,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 i256 = Path.Join(UbisoftAvatarFolder, userId + "_256.png");
 
             Directory.CreateDirectory("wwwroot\\img\\profiles\\ubisoft\\");
-            var outPath = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\ubisoft\\{userId}.png");
+            var outPath = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\ubisoft\\{userId}.png");
             if (File.Exists(outPath))
             {
                 GeneralFuncs.DeletedOutdatedFile(outPath, Ubisoft.ImageExpiryTime);
@@ -209,7 +209,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             if (File.Exists(i256)) File.Copy(i256, outPath, true);
             else if (File.Exists(i128)) File.Copy(i128, outPath, true);
             else if (File.Exists(i64)) File.Copy(i64, outPath, true);
-            else File.Copy(Path.Join(GeneralFuncs.WwwRoot, "img\\QuestionMark.jpg"), outPath, true);
+            else File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "img\\QuestionMark.jpg"), outPath, true);
         }
 
         //// This seemed very possible: But... As far as I know the settings.yml file needs to be adjusted, as well as the users.dat...
@@ -268,7 +268,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             File.WriteAllText("LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
 
 
-            var img = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\ubisoft\\{userId}.png");
+            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\ubisoft\\{userId}.png");
             if (File.Exists(img)) File.Delete(img);
             return true;
         }
@@ -285,7 +285,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public static void SwapUbisoftAccounts(string userId, int state)
         {
             Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.SwapUbisoftAccounts] Swapping to:hidden.");
-            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Ubisoft");
+            AppData.InvokeVoid("updateStatus", "Closing Ubisoft");
             if (!CloseUbisoft()) return;
             UbisoftAddCurrent();
 
@@ -297,7 +297,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             else
                 ClearCurrentUser();
 
-            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Ubisoft");
+            AppData.InvokeVoid("updateStatus", "Starting Ubisoft");
             
             GeneralFuncs.StartProgram(Ubisoft.Exe(), Ubisoft.Admin);
 

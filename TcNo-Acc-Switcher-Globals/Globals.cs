@@ -142,13 +142,13 @@ namespace TcNo_Acc_Switcher_Globals
 	    /// </summary>
 	    /// <param name="overwrite">Whether files should be overwritten or not (Update)</param>
 	    public static void CreateDataFolder(bool overwrite)
-	    {
-		    if (!Directory.Exists(UserDataFolder)) Directory.CreateDirectory(UserDataFolder);
+		{
+			var wwwroot = Directory.Exists(Path.Join(AppDataFolder, "wwwroot"))
+				? Path.Join(AppDataFolder, "wwwroot")
+				: Path.Join(AppDataFolder, "originalwwwroot");
+			if (!Directory.Exists(UserDataFolder)) Directory.CreateDirectory(UserDataFolder);
 		    else
 		    {
-			    var wwwroot = Directory.Exists(Path.Join(AppDataFolder, "wwwroot"))
-				    ? Path.Join(AppDataFolder, "wwwroot")
-				    : Path.Join(AppDataFolder, "originalwwwroot");
 			    var appFilesHash = GetDataFolderMd5(wwwroot) + GetDataFolderMd5(Path.Join(AppDataFolder, "themes"));
 			    var userFilesHash = GetDataFolderMd5(Path.Join(UserDataFolder, "wwwroot")) +
 			                        GetDataFolderMd5(Path.Join(AppDataFolder, "themes"));
@@ -158,7 +158,7 @@ namespace TcNo_Acc_Switcher_Globals
 		    }
 
 		    // Initialise folder:
-		    InitWwwroot(overwrite);
+		    InitWwwroot(wwwroot, overwrite);
 		    InitFolder("themes", overwrite);
 	    }
 
@@ -179,10 +179,10 @@ namespace TcNo_Acc_Switcher_Globals
         {
 	        if (overwrite || !Directory.Exists(Path.Join(UserDataFolder, f))) CopyFilesRecursive(Path.Join(AppDataFolder, f), Path.Join(UserDataFolder, f));
         }
-        private static void InitWwwroot(bool overwrite)
+        private static void InitWwwroot(string root, bool overwrite)
         {
-	        if (Directory.Exists(OriginalWwwroot))
-		        CopyFilesRecursive(OriginalWwwroot, Path.Join(UserDataFolder, "wwwroot"), overwrite);
+	        if (Directory.Exists(root))
+		        CopyFilesRecursive(root, Path.Join(UserDataFolder, "wwwroot"), overwrite);
         }
 
         #endregion
@@ -210,7 +210,7 @@ namespace TcNo_Acc_Switcher_Globals
                 if (file.Contains("profiles")) // Ignore user-customisable folders.
 			        continue;
                 
-		        var pathBytes = Encoding.UTF8.GetBytes(file.Substring(path.Length + 1).ToLower());
+		        var pathBytes = Encoding.UTF8.GetBytes(file[(path.Length + 1)..].ToLower());
 		        md5.TransformBlock(pathBytes, 0, pathBytes.Length, pathBytes, 0);
 
 		        lastBytes = File.ReadAllBytes(file);
@@ -380,12 +380,12 @@ namespace TcNo_Acc_Switcher_Globals
 
         public static void HideWindow(IntPtr handle)
         {
-            SetWindowLong(handle, GwlExStyle, (GetWindowLong(handle, GwlExStyle) | WsExToolWindow) & ~WsExAppWindow);
+	        _ = SetWindowLong(handle, GwlExStyle, (GetWindowLong(handle, GwlExStyle) | WsExToolWindow) & ~WsExAppWindow);
         }
 
         public static void ShowWindow(IntPtr handle)
         {
-            SetWindowLong(handle, GwlExStyle, (GetWindowLong(handle, GwlExStyle) ^ WsExToolWindow) | WsExAppWindow);
+	        _ = SetWindowLong(handle, GwlExStyle, (GetWindowLong(handle, GwlExStyle) ^ WsExToolWindow) | WsExAppWindow);
         }
 
         public static int GetWindow(IntPtr handle) => GetWindowLong(handle, GwlExStyle);

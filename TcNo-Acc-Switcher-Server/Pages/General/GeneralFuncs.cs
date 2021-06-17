@@ -103,7 +103,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         #endregion
 
         #region FILE_OPERATIONS
-        public static string WwwRoot = Path.Join(Globals.UserDataFolder, "\\wwwroot");
+
+        public static string WwwRoot()
+        {
+            return Path.Join(Globals.UserDataFolder, "\\wwwroot");
+        }
 
         // Overload for below
         public static bool DeletedOutdatedFile(string filename) => DeletedOutdatedFile(filename, 0);
@@ -180,7 +184,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             if (string.IsNullOrEmpty(jsDest)) return;
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.JsDestNewline] jsDest={jsDest}");
-            AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, "<br />"); //Newline
+            AppData.InvokeVoid(jsDest, "<br />"); //Newline
         }
 
         // Overload for below
@@ -196,19 +200,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteFile] file={f?.FullName ?? ""}{(jsDest != "" ? ", jsDest=" + jsDest : "")}");
             try
             {
-                if (!f.Exists && !string.IsNullOrEmpty(jsDest)) AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
+                if (!f.Exists && !string.IsNullOrEmpty(jsDest)) AppData.InvokeVoid(jsDest, "File not found: " + f.FullName);
                 else
                 {
                     f.IsReadOnly = false;
                     f.Delete();
-                    AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, "Deleted: " + f.FullName);
+                    AppData.InvokeVoid(jsDest, "Deleted: " + f.FullName);
                 }
             }
             catch (Exception e)
             {
                 if (string.IsNullOrEmpty(jsDest)) return;
-                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, "ERROR: COULDN'T DELETE: " + f.FullName);
-                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, e.ToString());
+                AppData.InvokeVoid(jsDest, "ERROR: COULDN'T DELETE: " + f.FullName);
+                AppData.InvokeVoid(jsDest, e.ToString());
                 JsDestNewline(jsDest);
             }
         }
@@ -252,7 +256,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             if (keepFolders) return;
             baseDir.Delete();
-            if (!string.IsNullOrEmpty(jsDest)) AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, "Deleting Folder: " + baseDir.FullName);
+            if (!string.IsNullOrEmpty(jsDest)) AppData.InvokeVoid(jsDest, "Deleting Folder: " + baseDir.FullName);
             JsDestNewline(jsDest);
         }
 
@@ -272,12 +276,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteRegKey] subKey={subKey}, val={val}, jsDest={jsDest}");
             using var key = Registry.CurrentUser.OpenSubKey(subKey, true);
             if (key == null)
-                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"{subKey} does not exist.");
+	            AppData.InvokeVoid(jsDest, $"{subKey} does not exist.");
             else if (key.GetValue(val) == null)
-                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"{subKey} does not contain {val}");
+	            AppData.InvokeVoid(jsDest, $"{subKey} does not contain {val}");
             else
             {
-                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"Removing {subKey}\\{val}");
+	            AppData.InvokeVoid(jsDest, $"Removing {subKey}\\{val}");
                 key.DeleteValue(val);
             }
             JsDestNewline(jsDest);
@@ -315,20 +319,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFilesOfType] folder={folder}, extensions={extensions}, jsDest={jsDest}");
             if (!Directory.Exists(folder))
             {
-                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"Directory not found: {folder}");
+	            AppData.InvokeVoid(jsDest, $"Directory not found: {folder}");
                 JsDestNewline(jsDest);
                 return;
             }
             foreach (var file in GetFiles(folder, extensions, so))
             {
-                AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"Deleting: {file}");
+	            AppData.InvokeVoid(jsDest, $"Deleting: {file}");
                 try
                 {
                     File.Delete(file);
                 }
                 catch (Exception ex)
                 {
-                    AppData.ActiveIJsRuntime?.InvokeVoidAsync(jsDest, $"ERROR: {ex}");
+                    AppData.InvokeVoid(jsDest, $"ERROR: {ex}");
                 }
             }
             JsDestNewline(jsDest);
@@ -514,7 +518,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             var lastIndex = input.LastIndexOf(sOld, StringComparison.Ordinal);
             var lastIndexEnd = lastIndex + sOld.Length;
-            return input[..lastIndex] + sNew + input.Substring(lastIndexEnd, input.Length - lastIndexEnd);
+            return input[..lastIndex] + sNew + input[lastIndexEnd..];
         }
         #endregion
 

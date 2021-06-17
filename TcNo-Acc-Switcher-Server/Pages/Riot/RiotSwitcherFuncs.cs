@@ -15,11 +15,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
     public class RiotSwitcherFuncs
     {
         private static readonly Data.Settings.Riot Riot = Data.Settings.Riot.Instance;
-        /*
-                private static string _riotRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Riot");
-        */
-        private static readonly string RiotLocalAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client");
-
         private static string _riotClientPrivateSettings = "";
 
         /// <summary>
@@ -46,7 +41,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         }
 
         // Delayed toasts, as notifications are created in the LoadImportantData() section, and can be before the main process has rendered items.
-        private static List<List<string>> _delayedToasts = new();
+        private static readonly List<List<string>> _delayedToasts = new();
 
         /// <summary>
         /// Run necessary functions and load data when being launcher without a GUI (From command line for example).
@@ -122,7 +117,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         {
             Globals.DebugWriteLine($@"[Func:RiotRiotSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
             // Remove image
-            var img = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg");
+            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg");
             if (File.Exists(img)) File.Delete(img);
             // Remove cached files
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Riot\\{accName}"), false);
@@ -140,7 +135,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         public static void SwapRiotAccounts(string accName)
         {
             Globals.DebugWriteLine($@"[Func:Riot\RiotSwitcherFuncs.SwapRiotAccounts] Swapping to: hidden.");
-            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Riot");
+            AppData.InvokeVoid("updateStatus", "Closing Riot");
             if (!CloseRiot()) return;
             // DO ACTUAL SWITCHING HERE
             ClearCurrentLoginRiot();
@@ -153,7 +148,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
 
             //GeneralFuncs.StartProgram(Riot.Exe(), Riot.Admin);
 
-            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");
+            AppData.InvokeVoid("updateStatus", "Ready");
             Globals.RefreshTrayArea();
         }
         
@@ -193,16 +188,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             File.Copy(_riotClientPrivateSettings, Path.Join(localCachePath, "RiotClientPrivateSettings.yaml"), true);
             
             // Copy in profile image from default
-            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot, "\\img\\profiles\\riot"));
-            File.Copy(Path.Join(GeneralFuncs.WwwRoot, "\\img\\RiotDefault.png"), Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg"), true);
+            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\riot"));
+            File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\RiotDefault.png"), Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg"), true);
 
             AppData.ActiveNavMan?.NavigateTo("/Riot/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
         }
 
         public static void ChangeUsername(string oldName, string newName, bool reload = true)
         {
-            File.Move(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\riot\\{Uri.EscapeUriString(oldName).Replace("#", "-")}.jpg"),
-                Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\riot\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg")); // Rename image
+            File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{Uri.EscapeUriString(oldName).Replace("#", "-")}.jpg"),
+                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg")); // Rename image
             Directory.Move($"LoginCache\\Riot\\{oldName}\\", $"LoginCache\\Riot\\{newName}\\"); // Rename login cache folder
 
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Riot/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed username"), true);

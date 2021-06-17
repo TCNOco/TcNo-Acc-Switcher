@@ -110,7 +110,7 @@ namespace TcNo_Acc_Switcher_Tray
                         BackColor = Color.FromArgb(255, 34, 34, 34)
                     });
                 }
-                tsi.DropDownItemClicked += contextMenu_ItemClicked;
+                tsi.DropDownItemClicked += ContextMenu_ItemClicked;
             }
 
             contextMenu.Items.Add(new ToolStripMenuItem
@@ -120,7 +120,7 @@ namespace TcNo_Acc_Switcher_Tray
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(255, 34, 34, 34)
             });
-            contextMenu.ItemClicked += contextMenu_ItemClicked;
+            contextMenu.ItemClicked += ContextMenu_ItemClicked;
 
 
             // Initialise Tray Icon
@@ -155,7 +155,7 @@ namespace TcNo_Acc_Switcher_Tray
             return stream.Length != 0 ? BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLowerInvariant() : "0";
         }
 
-        private void contextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private void ContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             var item = e.ClickedItem;
             if (item.Name != "START")

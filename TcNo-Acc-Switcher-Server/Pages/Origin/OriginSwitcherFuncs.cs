@@ -48,7 +48,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             // Remove cached files
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Origin\\{accName}"), false);
             // Remove image
-            var img = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\origin\\{Uri.EscapeUriString(accName)}.jpg");
+            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Uri.EscapeUriString(accName)}.jpg");
             if (File.Exists(img)) File.Delete(img);
             // Remove from Tray
             Globals.RemoveTrayUser("Origin", accName); // Add to Tray list
@@ -66,7 +66,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         public static void SwapOriginAccounts(string accName, int state)
         {
             Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: hidden.");
-            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Closing Origin");
+            AppData.InvokeVoid("updateStatus", "Closing Origin");
             if (!CloseOrigin()) return;
             // DO ACTUAL SWITCHING HERE
             if (!ClearCurrentLoginOrigin())
@@ -79,7 +79,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 	            if (!OriginCopyInAccount(accName, state)) return;
                 Globals.AddTrayUser("Origin", "+o:" + accName, accName, Origin.TrayAccNumber); // Add to Tray list
             }
-            AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting Origin");
+            AppData.InvokeVoid("updateStatus", "Starting Origin");
             
             GeneralFuncs.StartProgram(Origin.Exe(), Origin.Admin);
 
@@ -224,14 +224,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                 }
             }
 
-            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot, "\\img\\profiles\\origin\\"));
-            var destImg = Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\origin\\{Uri.EscapeUriString(accName)}.jpg");
+            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\origin\\"));
+            var destImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Uri.EscapeUriString(accName)}.jpg");
             if (File.Exists(destImg))
             {
                 GeneralFuncs.DeletedOutdatedFile(destImg, Origin.ImageExpiryTime);
                 GeneralFuncs.DeletedInvalidImage(destImg);
             }
-            if (!File.Exists(destImg)) File.Copy((pfpFilePath != "" ? pfpFilePath :  Path.Join(GeneralFuncs.WwwRoot,"img\\QuestionMark.jpg"))!, destImg, true);
+            if (!File.Exists(destImg)) File.Copy((pfpFilePath != "" ? pfpFilePath :  Path.Join(GeneralFuncs.WwwRoot(), "img\\QuestionMark.jpg"))!, destImg, true);
 
             var olcHashes = new List<string>();
             foreach (var f in new DirectoryInfo(OriginProgramData).GetFiles())
@@ -262,8 +262,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             }
             File.WriteAllText("LoginCache\\Origin\\olc.json", JsonConvert.SerializeObject(allOlc));
 
-            File.Move(Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\origin\\{Uri.EscapeUriString(oldName)}.jpg"),
-                Path.Join(GeneralFuncs.WwwRoot, $"\\img\\profiles\\origin\\{Uri.EscapeUriString(newName)}.jpg")); // Rename image
+            File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Uri.EscapeUriString(oldName)}.jpg"),
+                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Uri.EscapeUriString(newName)}.jpg")); // Rename image
             Directory.Move($"LoginCache\\Origin\\{oldName}\\", $"LoginCache\\Origin\\{newName}\\"); // Rename login cache folder
 
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Origin/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed username"), true);

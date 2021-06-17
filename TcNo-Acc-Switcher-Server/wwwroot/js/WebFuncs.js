@@ -395,7 +395,7 @@ function showModal(modaltype) {
 		        <span class="modal-text">Please enter a name for the ${platform} account you're logged into.</span>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;"  onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();">
+		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();" onkeypress='return /[^<>:\\.\\"\\/\\\\|?*]/i.test(event.key)'>
 	        </div>
 	        <div class="settingsCol inputAndButton">
 		        <button class="modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('${platform}')"><span>Add current ${platform} account</span></button>
@@ -450,7 +450,8 @@ async function Modal_Confirm(action, value) {
 
 function Modal_FinaliseAccString(platform) {
     // Supported: Epic, Origin, Riot
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", $("#CurrentAccountName").val());
+    let name = $("#CurrentAccountName").val().replace(/[<>:\.\"\/\\|?*]/g, "-");
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", name);
     $(".modalBG").fadeOut();
     $("#acc_list").click();
 }
