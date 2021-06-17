@@ -150,8 +150,13 @@ namespace TcNo_Acc_Switcher_Globals
 		    else
 		    {
 			    var appFilesHash = GetDataFolderMd5(wwwroot) + GetDataFolderMd5(Path.Join(AppDataFolder, "themes"));
-			    var userFilesHash = GetDataFolderMd5(Path.Join(UserDataFolder, "wwwroot")) +
-			                        GetDataFolderMd5(Path.Join(AppDataFolder, "themes"));
+			    var userFilesHash = "";
+
+                if (Directory.Exists(Path.Join(UserDataFolder, "wwwroot")) && Directory.Exists(Path.Join(UserDataFolder, "themes")))
+				{
+					userFilesHash = GetDataFolderMd5(Path.Join(UserDataFolder, "wwwroot")) +
+					                GetDataFolderMd5(Path.Join(UserDataFolder, "themes"));
+				}
 
 			    if (appFilesHash != userFilesHash)
 				    overwrite = true;
