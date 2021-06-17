@@ -42,7 +42,7 @@ VIAddVersionKey "FileVersion"  "${VERSION}"
 
 !define INSTALLER_NAME "TcNo Account Switcher - Installer.exe"
 
-!define INSTALLER_FILES "..\..\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher-BETA\*"
+!define INSTALLER_FILES "..\..\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher\*"
 
 !define INSTALL_DIR "$PROGRAMFILES64\TcNo Account Switcher"
 ;;;;!define INSTALL_DIR "$PROGRAMFILES\TcNo Account Switcher"
