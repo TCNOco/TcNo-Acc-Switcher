@@ -33,6 +33,33 @@ function jQueryProcessAccListSize() {
     document.getElementById("acc_list").setAttribute("style", `grid-template-rows: repeat(auto-fill, ${maxHeight}px)`);
 };
 
+// Removes arguments like "?toast_type, &toast_title, &toast_message" from the URL.
+function removeUrlArgs(argString) {
+    const toRemove = argString.split(",");
+	let url = window.location.href;
+	if (url.indexOf("?") !== -1) {
+		const parts = url.split("?");
+		url = parts[0];
+		const args = parts[1];
+		let outArgs = "?";
+		if (args.indexOf("&") !== -1) {
+			args.split("&").forEach((i) => {
+				if (i.indexOf("=") !== -1) {
+					const key = i.split("=")[0];
+					const val = i.split("=")[1];
+					if (!toRemove.includes(key))
+						outArgs += key + "=" + val + "&";
+				} else {
+					if (!toRemove.includes(i))
+						outArgs += i + "&";
+				}
+			});
+		}
+		url += outArgs.slice(0, -1); // Remove last '&' or first '?'
+	}
+    history.pushState({}, null, url);
+}
+
 function updateStatus(status) {
     $("#CurrentStatus").val(status);
 };
@@ -68,7 +95,6 @@ function steamAdvancedClearingAddLine(text) {
 
 
 function initEditor() {
-    debugger;
     const editor = ace.edit("editor");
     editor.session.setMode("ace/mode/batchfile");
 }
