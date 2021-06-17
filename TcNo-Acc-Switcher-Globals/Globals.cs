@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace TcNo_Acc_Switcher_Globals
@@ -15,130 +17,160 @@ namespace TcNo_Acc_Switcher_Globals
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr GetConsoleWindow();
     }
+
     public class Globals
     {
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
-        public static bool VerboseMode;
+	    public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-        public static readonly string Version = "2021-06-14_00";
-        public static readonly string[] PlatformList = { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot" };
+	    public static readonly string Version = "2021-06-17_00";
+	    public static readonly string[] PlatformList = {"Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot"};
 
-        #region LOGGER
-        public static void DebugWriteLine(string s)
-        {
-            // Toggle here so it only shows in Verbose mode etc.
-            if (VerboseMode) Console.WriteLine(s);
-        }
+	    #region LOGGER
 
-        /// <summary>
-        /// Append line to log file
-        /// </summary>
-        public static void WriteToLog(string s)
-        {
-            var attempts = 0;
-            while (attempts <= 30) // Up to 3 seconds
-            {
-                try
-                {
-                    File.AppendAllText("log.txt", s + Environment.NewLine);
-                    break;
-                }
-                catch (IOException)
-                {
-                    if (attempts == 5)
-                        throw;
-                    attempts++;
-                    System.Threading.Thread.Sleep(100);
-                }
-            }
+	    public static void DebugWriteLine(string s)
+	    {
+		    // Toggle here so it only shows in Verbose mode etc.
+		    if (VerboseMode) Console.WriteLine(s);
+	    }
 
-            if (NativeMethods.GetConsoleWindow() != IntPtr.Zero) // Console exists
-                Console.WriteLine(s);
-        }
+	    /// <summary>
+	    /// Append line to log file
+	    /// </summary>
+	    public static void WriteToLog(string s)
+	    {
+		    var attempts = 0;
+		    while (attempts <= 30) // Up to 3 seconds
+		    {
+			    try
+			    {
+				    File.AppendAllText("log.txt", s + Environment.NewLine);
+				    break;
+			    }
+			    catch (IOException)
+			    {
+				    if (attempts == 5)
+					    throw;
+				    attempts++;
+				    System.Threading.Thread.Sleep(100);
+			    }
+		    }
 
-        /// <summary>
-        /// Clear log files & Combine other log files.
-        /// </summary>
-        public static void ClearLogs()
-        {
-            // Clear original log file
-            if (File.Exists("log.txt")) File.Delete("log.txt");
-            // Check for other log files. Combine them and delete them.
-            var filepath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-            if (filepath == null) return;
-            var d = new DirectoryInfo(filepath);
-            var appendText = new List<string>();
-            var oldFilesFound = false;
-            foreach (var file in d.GetFiles("log*.txt"))
-            {
-                if (appendText.Count == 0) appendText.Add(Environment.NewLine + "-------- OLD --------");
-                try
-                {
-                    appendText.AddRange(File.ReadAllLines(file.FullName));
-                    File.Delete(file.FullName);
-                    oldFilesFound = true;
-                }
-                catch (Exception)
-                {
-                    //
-                }
-            }
+		    if (NativeMethods.GetConsoleWindow() != IntPtr.Zero) // Console exists
+			    Console.WriteLine(s);
+	    }
 
-            if (oldFilesFound) appendText.Add(Environment.NewLine + "-------- END OF OLD --------");
+	    /// <summary>
+	    /// Clear log files & Combine other log files.
+	    /// </summary>
+	    public static void ClearLogs()
+	    {
+		    // Clear original log file
+		    if (File.Exists("log.txt")) File.Delete("log.txt");
+		    // Check for other log files. Combine them and delete them.
+		    var filepath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+		    if (filepath == null) return;
+		    var d = new DirectoryInfo(filepath);
+		    var appendText = new List<string>();
+		    var oldFilesFound = false;
+		    foreach (var file in d.GetFiles("log*.txt"))
+		    {
+			    if (appendText.Count == 0) appendText.Add(Environment.NewLine + "-------- OLD --------");
+			    try
+			    {
+				    appendText.AddRange(File.ReadAllLines(file.FullName));
+				    File.Delete(file.FullName);
+				    oldFilesFound = true;
+			    }
+			    catch (Exception)
+			    {
+				    //
+			    }
+		    }
 
-            // Insert their contents into the actual log file
-            try
-            {
-                File.WriteAllLines("log.txt", appendText);
-            }
-            catch (IOException)
-            {
-                // Could not write to log file.
-                // Probably in use.
-                // Just ignore. Don't crash.
-                // Crashing happened way too often because of this. Makes no sense to log these elsewhere.
-            }
-        }
+		    if (oldFilesFound) appendText.Add(Environment.NewLine + "-------- END OF OLD --------");
 
-        /// <summary>
-        /// Exception handling for all programs
-        /// </summary>
-        public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-			// Set working directory to documents folder
-			Directory.SetCurrentDirectory(UserDataFolder);
-			// Log Unhandled Exception
-			var exceptionStr = e.ExceptionObject.ToString();
-            Directory.CreateDirectory("CrashLogs");
-            var filePath = $"CrashLogs\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
-            using (var sw = File.AppendText(filePath))
-            {
-                sw.WriteLine(
-                    $"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({Version})\t{Strings.ErrUnhandledCrash}: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
-            }
-            WriteToLog(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
-            WriteToLog(Strings.ErrSubmitCrashlog);
-        }
-        #endregion
+		    // Insert their contents into the actual log file
+		    try
+		    {
+			    File.WriteAllLines("log.txt", appendText);
+		    }
+		    catch (IOException)
+		    {
+			    // Could not write to log file.
+			    // Probably in use.
+			    // Just ignore. Don't crash.
+			    // Crashing happened way too often because of this. Makes no sense to log these elsewhere.
+		    }
+	    }
 
-        #region INITIALISATION
-        public static string UserDataFolder => Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
-        public static string AppDataFolder => Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty;
-        public static string OriginalWwwroot => Path.Join(AppDataFolder, "originalwwwroot");
+	    /// <summary>
+	    /// Exception handling for all programs
+	    /// </summary>
+	    public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+	    {
+		    // Set working directory to documents folder
+		    Directory.SetCurrentDirectory(UserDataFolder);
+		    // Log Unhandled Exception
+		    var exceptionStr = e.ExceptionObject.ToString();
+		    Directory.CreateDirectory("CrashLogs");
+		    var filePath = $"CrashLogs\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
+		    using (var sw = File.AppendText(filePath))
+		    {
+			    sw.WriteLine(
+				    $"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({Version})\t{Strings.ErrUnhandledCrash}: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
+		    }
 
-        /// <summary>
-        /// Creates data folder in Documents
-        /// </summary>
-        /// <param name="overwrite">Whether files should be overwritten or not (Update)</param>
-        public static void CreateDataFolder(bool overwrite)
-        {
-	        Directory.CreateDirectory(UserDataFolder);
-            // Initialise folder:
-            InitWwwroot(overwrite);
-            InitFolder("themes", overwrite);
-        }
+		    WriteToLog(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
+		    WriteToLog(Strings.ErrSubmitCrashlog);
+	    }
 
-        /// <summary>
+	    #endregion
+
+	    #region INITIALISATION
+
+	    public static string UserDataFolder =>
+		    Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
+
+	    public static string AppDataFolder =>
+		    Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty;
+
+	    public static string OriginalWwwroot => Path.Join(AppDataFolder, "originalwwwroot");
+
+	    /// <summary>
+	    /// Creates data folder in Documents
+	    /// </summary>
+	    /// <param name="overwrite">Whether files should be overwritten or not (Update)</param>
+	    public static void CreateDataFolder(bool overwrite)
+	    {
+		    if (!Directory.Exists(UserDataFolder)) Directory.CreateDirectory(UserDataFolder);
+		    else
+		    {
+			    var wwwroot = Directory.Exists(Path.Join(AppDataFolder, "wwwroot"))
+				    ? Path.Join(AppDataFolder, "wwwroot")
+				    : Path.Join(AppDataFolder, "originalwwwroot");
+			    var appFilesHash = GetDataFolderMd5(wwwroot) + GetDataFolderMd5(Path.Join(AppDataFolder, "themes"));
+			    var userFilesHash = GetDataFolderMd5(Path.Join(UserDataFolder, "wwwroot")) +
+			                        GetDataFolderMd5(Path.Join(AppDataFolder, "themes"));
+
+			    if (appFilesHash != userFilesHash)
+				    overwrite = true;
+		    }
+
+		    // Initialise folder:
+		    InitWwwroot(overwrite);
+		    InitFolder("themes", overwrite);
+	    }
+
+	    public static void ClearWebCache()
+	    {
+		    var cache = Path.Join(UserDataFolder, "EBWebView\\Default\\Cache");
+		    var codeCache = Path.Join(UserDataFolder, "EBWebView\\Default\\Code Cache");
+		    if (Directory.Exists(cache)) RecursiveDelete(new DirectoryInfo(cache), true);
+		    if (Directory.Exists(codeCache)) RecursiveDelete(new DirectoryInfo(codeCache), true);
+	    }
+
+	    /// <summary>
         /// Recursively copies directories from install dir to documents dir.
         /// </summary>
         /// <param name="f">Folder to recursively copy</param>
@@ -149,19 +181,87 @@ namespace TcNo_Acc_Switcher_Globals
         }
         private static void InitWwwroot(bool overwrite)
         {
-	        if (!overwrite && Directory.Exists(Path.Join(UserDataFolder, "wwwroot"))) return;
 	        if (Directory.Exists(OriginalWwwroot))
-		        CopyFilesRecursive(OriginalWwwroot, Path.Join(UserDataFolder, "wwwroot"));
+		        CopyFilesRecursive(OriginalWwwroot, Path.Join(UserDataFolder, "wwwroot"), overwrite);
         }
 
-        #endregion 
+        #endregion
 
+        #region FOLDERS
+        /// <summary>
+        ///  Gets a hash for the provided Data folder (Ignores specific folders in it).
+        /// </summary>
+        /// <param name="path">Directory to hash</param>
+        /// <returns>Hash string</returns>
+        public static string GetDataFolderMd5(string path)
+        {
+	        // assuming you want to include nested folders
+	        var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).OrderBy(p => p).ToList();
+
+	        var md5 = MD5.Create();
+	        byte[] lastBytes = null;
+	        foreach (var file in files)
+	        {
+		        if (lastBytes != null)
+		        {
+			        md5.TransformBlock(lastBytes, 0, lastBytes.Length, lastBytes, 0);
+                }
+                
+                if (file.Contains("profiles")) // Ignore user-customisable folders.
+			        continue;
+                
+		        var pathBytes = Encoding.UTF8.GetBytes(file.Substring(path.Length + 1).ToLower());
+		        md5.TransformBlock(pathBytes, 0, pathBytes.Length, pathBytes, 0);
+
+		        lastBytes = File.ReadAllBytes(file);
+	        }
+
+	        if (lastBytes != null)
+		        md5.TransformFinalBlock(lastBytes, 0, lastBytes.Length);
+
+            return BitConverter.ToString(md5.Hash ?? Array.Empty<byte>()).Replace("-", "").ToLower();
+        }
+
+        public static void RecursiveDelete(DirectoryInfo baseDir, bool keepFolders)
+        {
+	        if (!baseDir.Exists)
+		        return;
+
+	        foreach (var dir in baseDir.EnumerateDirectories())
+	        {
+		        RecursiveDelete(dir, keepFolders);
+	        }
+	        var files = baseDir.GetFiles();
+	        foreach (var file in files)
+	        {
+		        if (!file.Exists) continue;
+		        file.IsReadOnly = false;
+		        file.Delete();
+	        }
+
+	        if (keepFolders) return;
+	        baseDir.Delete();
+        }
+        #endregion
+
+        /// <summary>
+        /// Gets the unix timestamp string.
+        /// </summary>
+        public static string GetUnixTime()
+		{
+			return ((int)DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds).ToString();
+		}
+
+        // Overload for below
+        public static void CopyFilesRecursive(string inputFolder, string outputFolder) =>
+	        CopyFilesRecursive(inputFolder, outputFolder, false);
         /// <summary>
         /// Recursively copy files and directories
         /// </summary>
         /// <param name="inputFolder">Folder to copy files recursively from</param>
         /// <param name="outputFolder">Destination folder</param>
-        public static void CopyFilesRecursive(string inputFolder, string outputFolder)
+        /// <param name="overwrite">Whether to overwrite files or not</param>
+        public static void CopyFilesRecursive(string inputFolder, string outputFolder, bool overwrite)
         {
 	        Directory.CreateDirectory(outputFolder);
 	        //Now Create all of the directories
@@ -170,7 +270,12 @@ namespace TcNo_Acc_Switcher_Globals
 
 	        //Copy all the files & Replaces any files with the same name
 	        foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
-		        File.Copy(newPath, newPath.Replace(inputFolder, outputFolder), true);
+	        {
+		        var dest = newPath.Replace(inputFolder, outputFolder);
+		        if (!overwrite && File.Exists(dest)) continue;
+
+		        File.Copy(newPath, dest, true);
+            }
         }
 
         /// <summary>
@@ -202,6 +307,7 @@ namespace TcNo_Acc_Switcher_Globals
                 : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
         }
 
+        #region TRAY
         // Overload for below
         public static void AddTrayUser(string platform, string arg, string name) => AddTrayUser(platform, arg, name, 3);
 
@@ -242,6 +348,7 @@ namespace TcNo_Acc_Switcher_Globals
             TrayUser.RemoveUserByArg(ref trayUsers, platform, arg);
             TrayUser.SaveUsers(trayUsers);
         }
+        #endregion
 
         #region Hide and Show main window
         // For 'minimising to tray' while not being connected to it

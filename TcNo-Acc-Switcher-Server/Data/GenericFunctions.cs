@@ -122,7 +122,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                         await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list",
                             $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{str}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                             $"<label for=\"{str}\" class=\"acc\">\r\n" +
-                            $"<img src=\"{imgPath}\" draggable=\"false\" />\r\n" +
+                            $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
                             $"<h6>{str}</h6></div>\r\n");
                         //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                     }
@@ -143,7 +143,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                         await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list",
                             $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{key}\" Username=\"{value}\" DisplayName=\"{value}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                             $"<label for=\"{key}\" class=\"acc\">\r\n" +
-                            $"<img src=\"{imgPath}\" draggable=\"false\" />\r\n" +
+                            $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
                             $"<h6>{value}</h6></div>\r\n");
                         //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                     }

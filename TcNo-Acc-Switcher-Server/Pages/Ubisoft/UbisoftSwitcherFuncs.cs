@@ -140,7 +140,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             if (username == "")
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Could not find username", "Error", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", "Could not find username. Try logging out, and back in.", "Error", "toastarea");
                 return "ERR";
             }
 

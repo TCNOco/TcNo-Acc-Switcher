@@ -69,9 +69,7 @@ namespace TcNo_Acc_Switcher_Server
             {
                 app.UseExceptionHandler("/Error");
             }
-
-            // Ensure files in documents are available.
-            Globals.CreateDataFolder(false);
+            
             if (Directory.Exists(Path.Join(Globals.AppDataFolder, "wwwroot")))
             {
 	            if (Directory.Exists(Globals.OriginalWwwroot)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Globals.OriginalWwwroot), false); 

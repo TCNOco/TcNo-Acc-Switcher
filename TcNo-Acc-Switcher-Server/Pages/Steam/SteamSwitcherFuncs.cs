@@ -102,7 +102,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 var element =
                     $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{ua.SteamId}\" DisplayName=\"{ua.Name}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.LastLogin}\" ExtraClasses=\"{extraClasses}\" onchange=\"selectedItemChanged()\" />\r\n" +
                     $"<label for=\"{ua.AccName}\" class=\"acc {extraClasses}\">\r\n" +
-                    $"<img class=\"{extraClasses}\" src=\"{ua.ImgUrl}\" draggable=\"false\" />\r\n" +
+                    $"<img class=\"{extraClasses}\" src=\"{ua.ImgUrl}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
                     $"<p class=\"streamerCensor\">{ua.AccName}</p>\r\n" +
                     $"<h6>{ua.Name}</h6>\r\n" +
                     $"<p class=\"streamerCensor steamId\">{ua.SteamId}</p>\r\n" +

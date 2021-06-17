@@ -296,7 +296,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 // Select file and replace requested file with it.
                 args.Cancel = true;
-                var imageDest = "wwwroot\\" + HttpUtility.UrlDecode(uriArg.Split("=")[1]);
+                var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot\\" + HttpUtility.UrlDecode(uriArg.Split("=")[1]));
                 
                 var dlg = new OpenFileDialog
                 {
