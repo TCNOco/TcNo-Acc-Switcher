@@ -131,7 +131,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             Directory.CreateDirectory("wwwroot/img/profiles");
             try
             {
-                var loginUsersVToken = VdfConvert.Deserialize(File.ReadAllText(loginUserPath));
+	            var vdfText = VerifyVdfText(File.ReadAllText(loginUserPath), loginUserPath);
+
+                var loginUsersVToken = VdfConvert.Deserialize(vdfText);
                 var loginUsers = new JObject { loginUsersVToken.ToJson() };
 
                 if (loginUsers["users"] != null)
@@ -156,6 +158,25 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
 
             return userAccounts;
+        }
+
+        private static string VerifyVdfText(string vdf, string loginUserPath)
+        {
+	        var original = vdf;
+	        // Replaces double quotes, sometimes added by mistake (?) with single, as they should be.
+            vdf = vdf.Replace("\"\"", "\"");
+            if (original == vdf) return vdf;
+
+            // Save original file if different.
+            try
+            {
+	            File.WriteAllText(loginUserPath, vdf);
+            }
+            catch (Exception)
+            {
+	            //
+            }
+            return vdf;
         }
 
         /// <summary>
