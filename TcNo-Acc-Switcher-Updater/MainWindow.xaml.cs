@@ -23,6 +23,7 @@ using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -130,10 +131,51 @@ namespace TcNo_Acc_Switcher_Updater
         private readonly string _windowSettings = Path.Join(UserDataFolder, "WindowSettings.json");
         private readonly string _styleSettings = Path.Join(UserDataFolder, "StyleSettings.yaml");
 
+        private static bool InstalledToProgramFiles()
+        {
+	        var progFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+	        var progFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+	        var appPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            
+            return appPath != null && (appPath.Contains(progFiles) || appPath.Contains(progFilesX86));
+        }
+
+        private static bool IsAdmin()
+        {
+	        // Checks whether program is running as Admin or not
+	        var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
+	        return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
+        }
+
+        public static void RestartAsAdmin(string args)
+        {
+	        var proc = new ProcessStartInfo
+	        {
+		        WorkingDirectory = Environment.CurrentDirectory,
+		        FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher.exe",
+		        UseShellExecute = true,
+		        Arguments = args,
+		        Verb = "runas"
+	        };
+	        try
+	        {
+		        Process.Start(proc);
+		        Environment.Exit(0);
+	        }
+	        catch (Exception ex)
+	        {
+		        MessageBox.Show(@"This program must be run as an administrator!" + Environment.NewLine + ex);
+		        Environment.Exit(0);
+	        }
+        }
 
         private void Init()
         {
-	        Directory.SetCurrentDirectory(MainAppDataFolder);
+            // Check if installed to program files, and requires admin to run:
+            if (InstalledToProgramFiles() && !IsAdmin())
+	            RestartAsAdmin("");
+
+            Directory.SetCurrentDirectory(MainAppDataFolder);
             if (QueueHashList)
             {
                 GenerateHashes();

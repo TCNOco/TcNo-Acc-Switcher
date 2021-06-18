@@ -18,6 +18,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
+using System.Runtime.Versioning;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
@@ -82,7 +85,43 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     break;
             }
         }
-        
+
+        private static bool InstalledToProgramFiles()
+        {
+	        var progFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+	        var progFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+	        return Globals.AppDataFolder.Contains(progFiles) || Globals.AppDataFolder.Contains(progFilesX86);
+        }
+
+        [SupportedOSPlatform("windows")]
+        private static bool IsAdmin()
+        {
+	        // Checks whether program is running as Admin or not
+	        var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
+	        return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
+        }
+
+        public static void StartUpdaterAsAdmin()
+        {
+	        var proc = new ProcessStartInfo
+	        {
+		        WorkingDirectory = Environment.CurrentDirectory,
+		        FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "updater\\TcNo-Acc-Switcher-Updater",
+		        UseShellExecute = true,
+		        Verb = "runas"
+	        };
+	        try
+	        {
+		        Process.Start(proc);
+		        Environment.Exit(0);
+	        }
+	        catch (Exception ex)
+	        {
+		        Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
+		        Environment.Exit(0);
+	        }
+        }
+
         /// <summary>
         /// Verify updater files and start update
         /// </summary>
@@ -92,7 +131,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
             {
 	            Directory.SetCurrentDirectory(Globals.AppDataFolder);
                 // Download latest hash list
-                const string hashFilePath = "hashes.json";
+                var hashFilePath = Path.Join(Globals.UserDataFolder, "hashes.json");
                 var client = new WebClient();
                 client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
 
@@ -117,8 +156,13 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     client.DownloadFile(uri, key);
                 }
 
-                // Run updater
-                Process.Start(new ProcessStartInfo(@"updater\\TcNo-Acc-Switcher-Updater.exe") { UseShellExecute = true });
+				// Run updater
+				if (InstalledToProgramFiles() && !IsAdmin())
+				{
+					StartUpdaterAsAdmin();
+					Process.GetCurrentProcess().Kill();
+                }
+				Process.Start(new ProcessStartInfo(@"updater\\TcNo-Acc-Switcher-Updater.exe") { UseShellExecute = true });
                 Process.GetCurrentProcess().Kill();
             }
             catch (Exception e)

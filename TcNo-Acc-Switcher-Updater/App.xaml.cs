@@ -27,17 +27,37 @@ namespace TcNo_Acc_Switcher_Updater
     public partial class App
     {
         private static readonly Mutex Mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
+
+        /// <summary>
+        /// Shows error and exits program is program is already running
+        /// </summary>
+        private static void IsRunningAlready()
+        {
+	        try
+	        {
+		        if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
+
+		        // Otherwise: It has probably just closed. Wait a few and try again
+		        Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
+
+		        if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
+				// Try to show from tray, as user may not know it's hidden there.
+				MessageBox.Show("Another TcNo Account Switcher Updater instance has been detected.");
+				Environment.Exit(1056); // An instance of the service is already running.
+	        }
+	        catch (AbandonedMutexException)
+	        {
+		        // Just restarted 
+	        }
+        }
+
         [STAThread]
         protected override void OnStartup(StartupEventArgs e)
         {
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             // Single instance:
-            if (!Mutex.WaitOne(TimeSpan.Zero, true))
-            {
-                MessageBox.Show("Another TcNo Account Switcher Updater instance has been detected.");
-                Environment.Exit(1056); // An instance of the service is already running.
-            }
+            IsRunningAlready();
 
             base.OnStartup(e);
             for (var i = 0; i != e.Args.Length; ++i)

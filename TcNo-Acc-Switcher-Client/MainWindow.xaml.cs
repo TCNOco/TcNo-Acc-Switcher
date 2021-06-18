@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Security.Principal;
 using System.Threading;
 using System.Web;
 using System.Windows;
@@ -32,6 +33,7 @@ using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Shared;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using Point = System.Drawing.Point;
@@ -69,13 +71,36 @@ namespace TcNo_Acc_Switcher_Client
             if (attempts == 10 && last != null)
                 throw last;
         }
-        
+
+        private static bool InstalledToProgramFiles()
+        {
+	        var progFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+	        var progFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+	        return Globals.AppDataFolder.Contains(progFiles) || Globals.AppDataFolder.Contains(progFilesX86);
+        }
+
+        private static bool IsAdmin()
+        {
+	        // Checks whether program is running as Admin or not
+	        var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
+	        return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
+        }
+
         public MainWindow()
 		{
 			// Set working directory to documents folder
 			Directory.SetCurrentDirectory(Globals.UserDataFolder);
+            
+            if (Directory.Exists(Path.Join(Globals.AppDataFolder, "wwwroot")))
+			{
+				if (InstalledToProgramFiles() && !IsAdmin())
+					RestartAsAdmin("");
+				if (Directory.Exists(Globals.OriginalWwwroot)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Globals.OriginalWwwroot), false);
+				Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
+			}
 
-			AppSettings.LoadFromFile();
+
+            AppSettings.LoadFromFile();
             FindOpenPort();
             _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
 
@@ -308,8 +333,7 @@ namespace TcNo_Acc_Switcher_Client
             }
 
         }
-
-        // Overload for below
+        
         public static void RestartAsAdmin(string args)
         {
             var proc = new ProcessStartInfo

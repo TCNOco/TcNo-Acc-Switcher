@@ -22,7 +22,7 @@ namespace TcNo_Acc_Switcher_Server
 {
     public class Program
     {
-        private static void Main()
+	    public static void Main(string[] args)
         {
             // Empty
         }

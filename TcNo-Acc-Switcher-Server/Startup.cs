@@ -69,12 +69,6 @@ namespace TcNo_Acc_Switcher_Server
             {
                 app.UseExceptionHandler("/Error");
             }
-            
-            if (Directory.Exists(Path.Join(Globals.AppDataFolder, "wwwroot")))
-            {
-	            if (Directory.Exists(Globals.OriginalWwwroot)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Globals.OriginalWwwroot), false); 
-				Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
-            }
 
             // Moves any old files from previous installs.
             foreach (var p in Globals.PlatformList) // Copy across all platform files
