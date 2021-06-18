@@ -122,6 +122,28 @@ namespace TcNo_Acc_Switcher_Server.Pages
 	        }
         }
 
+        public static void RestartAsAdmin(string args)
+        {
+	        var proc = new ProcessStartInfo
+	        {
+		        WorkingDirectory = Environment.CurrentDirectory,
+		        FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher.exe",
+		        UseShellExecute = true,
+		        Arguments = args,
+		        Verb = "runas"
+	        };
+	        try
+	        {
+		        Process.Start(proc);
+		        Environment.Exit(0);
+	        }
+	        catch (Exception ex)
+	        {
+		        Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
+		        Environment.Exit(0);
+	        }
+        }
+
         /// <summary>
         /// Verify updater files and start update
         /// </summary>
@@ -129,7 +151,10 @@ namespace TcNo_Acc_Switcher_Server.Pages
         {
             try
             {
-	            Directory.SetCurrentDirectory(Globals.AppDataFolder);
+	            if (InstalledToProgramFiles() && !IsAdmin())
+		            RestartAsAdmin("");
+
+				Directory.SetCurrentDirectory(Globals.AppDataFolder);
                 // Download latest hash list
                 var hashFilePath = Path.Join(Globals.UserDataFolder, "hashes.json");
                 var client = new WebClient();
@@ -157,7 +182,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 }
 
 				// Run updater
-				if (InstalledToProgramFiles() && !IsAdmin())
+				if (InstalledToProgramFiles())
 				{
 					StartUpdaterAsAdmin();
 					Process.GetCurrentProcess().Kill();
