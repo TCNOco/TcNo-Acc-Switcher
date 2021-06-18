@@ -58,15 +58,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <returns>Whether the directory exists and successfully added listed names</returns>
         public static bool ListAccountsFromFolder(string folder, out List<string> accList)
         {
-            accList = new List<string>();
+	        accList = new List<string>();
 
             if (!Directory.Exists(folder)) return false;
-            foreach (var f in Directory.GetDirectories(folder))
-            {
-                var lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1;
-                var accName = f[lastSlash..];
-                accList.Add(accName);
-            }
+            accList = (from f in Directory.GetDirectories(folder) let lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1 select f[lastSlash..]).ToList();
 
             return true;
         }

@@ -26,7 +26,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
     public partial class ManageForgotten
     {
         [Inject]
-        public Data.AppData AppData { get; set; }
+        public AppData AppData { get; set; }
         private IJSObjectReference _jsModule;
         protected override async void OnInitialized()
         {

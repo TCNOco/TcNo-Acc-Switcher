@@ -94,7 +94,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             }
             File.Delete("templog");
 
-            return (lastUser != "" ? lastUser : "NOTFOUND");
+            return lastUser != "" ? lastUser : "NOTFOUND";
         }
 
         // Overload for below
@@ -107,7 +107,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.FindUsername]");
             Directory.CreateDirectory("LoginCache\\Ubisoft\\temp\\");
-            var tempUsersDat = "LoginCache\\Ubisoft\\temp\\users.dat";
+            const string tempUsersDat = "LoginCache\\Ubisoft\\temp\\users.dat";
             File.Copy(Path.Join(_ubisoftAppData, "users.dat"), "LoginCache\\Ubisoft\\temp\\users.dat", true);
 
             var username = "";
@@ -173,18 +173,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public static Dictionary<string, string> ReadAllIds()
         {
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.ReadAllIds]");
-            var localAllIds = "LoginCache\\Ubisoft\\ids.json";
+            const string localAllIds = "LoginCache\\Ubisoft\\ids.json";
             var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
-            if (File.Exists(localAllIds))
+            if (!File.Exists(localAllIds)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+            try
             {
-                try
-                {
-                    s = File.ReadAllText(localAllIds);
-                }
-                catch (Exception)
-                {
-                    //
-                }
+	            s = File.ReadAllText(localAllIds);
+            }
+            catch (Exception)
+            {
+	            //
             }
 
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
@@ -192,7 +190,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         public static void ImportAvatar(string userId)
         {
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ImportAvatar] userId:hidden");
+            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.ImportAvatar] userId:hidden");
             string i64 = Path.Join(UbisoftAvatarFolder, userId + "_64.png"),
                 i128 = Path.Join(UbisoftAvatarFolder, userId + "_128.png"),
                 i256 = Path.Join(UbisoftAvatarFolder, userId + "_256.png");
@@ -260,7 +258,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         /// <param name="userId">ID of the user account to remove</param>
         public static bool ForgetAccount(string userId)
         {
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.ForgetAccount] Forgetting account:hidden");
+            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.ForgetAccount] Forgetting account:hidden");
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Ubisoft\\{userId}"), false);
 
             var allIds = ReadAllIds();
@@ -275,7 +273,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         // Overload for below
         public static void SwapUbisoftAccounts() => SwapUbisoftAccounts("", 0);
-        public static void SwapUbisoftAccounts(string userId) => SwapUbisoftAccounts(userId, 0);
 
         /// <summary>
         /// Restart Ubisoft with a new account selected. Leave args empty to log into a new account.
@@ -284,7 +281,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         /// <param name="state">(Optional) State of user. 0 is online, anything else if Offline</param>
         public static void SwapUbisoftAccounts(string userId, int state)
         {
-            Globals.DebugWriteLine($@"[Func:Ubisoft\UbisoftSwitcherFuncs.SwapUbisoftAccounts] Swapping to:hidden.");
+            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.SwapUbisoftAccounts] Swapping to:hidden.");
             AppData.InvokeVoid("updateStatus", "Closing Ubisoft");
             if (!CloseUbisoft()) return;
             UbisoftAddCurrent();

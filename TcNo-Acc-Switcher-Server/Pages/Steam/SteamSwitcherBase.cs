@@ -74,7 +74,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void NewLogin_Steam()
         {
             Globals.DebugWriteLine(@"[JSInvoke:Steam\SteamSwitcherBase.NewLogin_Steam]");
-            SteamSwitcherFuncs.SwapSteamAccounts("", ePersonaState: -1);
+            SteamSwitcherFuncs.SwapSteamAccounts();
         }
     }
 }

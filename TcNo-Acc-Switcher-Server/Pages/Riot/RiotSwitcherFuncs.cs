@@ -29,9 +29,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.LoadProfiles] Loading Riot profiles");
 
             LoadImportantData(); // If not already loaded -- Likely it will be already
-            if (_delayedToasts.Count > 0)
+            if (DelayedToasts.Count > 0)
             {
-                foreach (var delayedToast in _delayedToasts)
+                foreach (var delayedToast in DelayedToasts)
                 {
                     _ = GeneralInvocableFuncs.ShowToast(delayedToast[0], delayedToast[1], delayedToast[2], "toastarea");
                 }
@@ -41,7 +41,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         }
 
         // Delayed toasts, as notifications are created in the LoadImportantData() section, and can be before the main process has rendered items.
-        private static readonly List<List<string>> _delayedToasts = new();
+        private static readonly List<List<string>> DelayedToasts = new();
 
         /// <summary>
         /// Run necessary functions and load data when being launcher without a GUI (From command line for example).
@@ -71,7 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 {
                     if (Riot.LeagueDir != null)
                     {
-                        _delayedToasts.Add(new List<string> { "error", "More than 1 League install found", "Duplicate Install" });
+                        DelayedToasts.Add(new List<string> { "error", "More than 1 League install found", "Duplicate Install" });
                         continue;
                     }
                     Riot.LeagueDir = key.Replace('/', '\\');
@@ -81,7 +81,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 {
                     if (Riot.RuneterraDir != null)
                     {
-                        _delayedToasts.Add(new List<string> { "error", "More than 1 Runeterra install found", "Duplicate Install" });
+                        DelayedToasts.Add(new List<string> { "error", "More than 1 Runeterra install found", "Duplicate Install" });
                         continue;
                     }
                     Riot.RuneterraDir = key.Replace('/', '\\');
@@ -91,7 +91,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 {
                     if (Riot.ValorantDir != null)
                     {
-                        _delayedToasts.Add(new List<string> { "error", "More than 1 VALORANT install found", "Duplicate Install" });
+                        DelayedToasts.Add(new List<string> { "error", "More than 1 VALORANT install found", "Duplicate Install" });
                         continue;
                     }
                     Riot.ValorantDir = key.Replace('/', '\\');
@@ -115,7 +115,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         /// <param name="accName">Riot account name</param>
         public static bool ForgetAccount(string accName)
         {
-            Globals.DebugWriteLine($@"[Func:RiotRiotSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
+            Globals.DebugWriteLine(@"[Func:RiotRiotSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
             // Remove image
             var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg");
             if (File.Exists(img)) File.Delete(img);
@@ -125,16 +125,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             Globals.RemoveTrayUser("Riot", accName); // Add to Tray list
             return true;
         }
-
-        // Overload for below
-        public static void SwapRiotAccounts() => SwapRiotAccounts("");
+        
         /// <summary>
         /// Restart Riot with a new account selected. Leave args empty to log into a new account.
         /// </summary>
         /// <param name="accName">(Optional) User's login username</param>
         public static void SwapRiotAccounts(string accName)
         {
-            Globals.DebugWriteLine($@"[Func:Riot\RiotSwitcherFuncs.SwapRiotAccounts] Swapping to: hidden.");
+            Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.SwapRiotAccounts] Swapping to: hidden.");
             AppData.InvokeVoid("updateStatus", "Closing Riot");
             if (!CloseRiot()) return;
             // DO ACTUAL SWITCHING HERE
@@ -263,7 +261,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                     FileName = dir,
                     Arguments = args,
                     UseShellExecute = true,
-                    Verb = (Riot.Admin ? "runas" : "")
+                    Verb = Riot.Admin ? "runas" : ""
                 }
             };
             proc.Start();

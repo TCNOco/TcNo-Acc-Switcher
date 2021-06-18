@@ -44,7 +44,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// <param name="accName">Origin account name</param>
         public static bool ForgetAccount(string accName)
         {
-            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
+            Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
             // Remove cached files
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Origin\\{accName}"), false);
             // Remove image
@@ -57,7 +57,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 
         // Overloads for below
         public static void SwapOriginAccounts() => SwapOriginAccounts("", 0);
-        public static void SwapOriginAccounts(string accName) => SwapOriginAccounts(accName, 0);
         /// <summary>
         /// Restart Origin with a new account selected. Leave args empty to log into a new account.
         /// </summary>
@@ -65,13 +64,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// <param name="state">(Optional) 10 = Invisible, 0 = Default</param>
         public static void SwapOriginAccounts(string accName, int state)
         {
-            Globals.DebugWriteLine($@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: hidden.");
+            Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: hidden.");
             AppData.InvokeVoid("updateStatus", "Closing Origin");
             if (!CloseOrigin()) return;
             // DO ACTUAL SWITCHING HERE
             if (!ClearCurrentLoginOrigin())
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", $"Failed to clear old login files", "Error", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error",  "Failed to clear old login files", "Error", "toastarea");
                 return;
             }
             if (accName != "")
@@ -91,7 +90,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         {
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.ClearCurrentLoginOrigin]");
             // Get current information for logged in user, and save into files:
-            List<string> currentOlcHashes = new();
+            List<string> currentOlcHashes;
             if (Directory.Exists(OriginProgramData)) currentOlcHashes = (from f in new DirectoryInfo(OriginProgramData).GetFiles() where f.Name.EndsWith(".olc") select GeneralFuncs.GetFileMd5(f.FullName)).ToList();
             else
             {
@@ -173,7 +172,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                 foreach (XmlNode n in profileXml.DocumentElement.SelectNodes("/Settings/Setting"))
                 {
                     if (n.Attributes?["key"]?.Value != "LoginAsInvisible") continue;
-                    n.Attributes["value"].Value = (state == 10 ? "true" : "false");
+                    n.Attributes["value"].Value = state == 10 ? "true" : "false";
                     profileXml.Save(Path.Join(OriginRoaming, f.Name));
                     break;
                 }
@@ -281,18 +280,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         private static Dictionary<string, List<string>> ReadAllOlc()
         {
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.ReadAllOlc]");
-            var localAllOlc = "LoginCache\\Origin\\olc.json";
+            const string localAllOlc = "LoginCache\\Origin\\olc.json";
             var s = JsonConvert.SerializeObject(new Dictionary<string, List<string>>());
-            if (File.Exists(localAllOlc))
+            if (!File.Exists(localAllOlc)) return JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(s);
+            try
             {
-                try
-                {
-                     s = File.ReadAllText(localAllOlc);
-                }
-                catch (Exception)
-                {
-                    //
-                }
+	            s = File.ReadAllText(localAllOlc);
+            }
+            catch (Exception)
+            {
+	            //
             }
 
             return JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(s);

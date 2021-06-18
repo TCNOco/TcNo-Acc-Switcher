@@ -19,7 +19,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         /// <param name="state">Requested account's Login state</param>
         public static void SwapToUbisoft(string userId, int state)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.SwapToUbisoft] userId:hidden");
+            Globals.DebugWriteLine(@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.SwapToUbisoft] userId:hidden");
             UbisoftSwitcherFuncs.SwapUbisoftAccounts(userId, state);
         }
 
@@ -30,7 +30,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public static void NewLogin_Ubisoft()
         {
             Globals.DebugWriteLine(@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.NewSteamLogin]");
-            UbisoftSwitcherFuncs.SwapUbisoftAccounts("", 0);
+            UbisoftSwitcherFuncs.SwapUbisoftAccounts();
         }
 
         [JSInvokable]

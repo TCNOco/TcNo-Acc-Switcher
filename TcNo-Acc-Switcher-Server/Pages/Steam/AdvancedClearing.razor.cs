@@ -54,7 +54,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public void Steam_Close()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Close]");
-            _ = WriteLine((SteamSwitcherFuncs.CloseSteam() ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!"));
+            _ = WriteLine(SteamSwitcherFuncs.CloseSteam() ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
             NewLine();
         }
 
@@ -139,7 +139,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public void Steam_Clear_Config()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Config]");
-            GeneralFuncs.DeleteFile(Path.Join(Steam.FolderPath, "config\\config.vdf"), jsDest: SteamReturn);
+            GeneralFuncs.DeleteFile(Path.Join(Steam.FolderPath, "config\\config.vdf"), SteamReturn);
             _ = WriteLine("[ Don't forget to clear forgotten account backups as well ]");
             _ = WriteLine("Cleared config\\config.vdf");
             NewLine();
@@ -149,7 +149,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public void Steam_Clear_LoginUsers()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_LoginUsers]");
-            GeneralFuncs.DeleteFile(Path.Join(Steam.FolderPath, "config\\loginusers.vdf"), jsDest: SteamReturn);
+            GeneralFuncs.DeleteFile(Path.Join(Steam.FolderPath, "config\\loginusers.vdf"), SteamReturn);
             _ = WriteLine("Cleared config\\loginusers.vdf");
             NewLine();
         }

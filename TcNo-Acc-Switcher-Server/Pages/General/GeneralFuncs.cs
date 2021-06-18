@@ -14,13 +14,12 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Security.Principal;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
@@ -36,10 +35,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
     public class GeneralFuncs
     {
         #region PROCESS_OPERATIONS
-
-        // Overload for below
-        public static void StartProgram(string path) => StartProgram(path, false);
-
         /// <summary>
         /// Starts a process with or without Admin
         /// </summary>
@@ -200,18 +195,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteFile] file={f?.FullName ?? ""}{(jsDest != "" ? ", jsDest=" + jsDest : "")}");
             try
             {
-                if (!f.Exists && !string.IsNullOrEmpty(jsDest)) AppData.InvokeVoid(jsDest, "File not found: " + f.FullName);
+                if (f is {Exists: false} && !string.IsNullOrEmpty(jsDest)) AppData.InvokeVoid(jsDest, "File not found: " + f.FullName);
                 else
                 {
-                    f.IsReadOnly = false;
-                    f.Delete();
-                    AppData.InvokeVoid(jsDest, "Deleted: " + f.FullName);
+	                if (f == null) return;
+	                f.IsReadOnly = false;
+	                f.Delete();
+	                AppData.InvokeVoid(jsDest, "Deleted: " + f.FullName);
                 }
             }
             catch (Exception e)
             {
                 if (string.IsNullOrEmpty(jsDest)) return;
-                AppData.InvokeVoid(jsDest, "ERROR: COULDN'T DELETE: " + f.FullName);
+                if (f != null) AppData.InvokeVoid(jsDest, "ERROR: COULDN'T DELETE: " + f.FullName);
+                else AppData.InvokeVoid(jsDest, "ERROR: COULDN'T DELETE UNDEFINED FILE");
                 AppData.InvokeVoid(jsDest, e.ToString());
                 JsDestNewline(jsDest);
             }
@@ -259,11 +256,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (!string.IsNullOrEmpty(jsDest)) AppData.InvokeVoid(jsDest, "Deleting Folder: " + baseDir.FullName);
             JsDestNewline(jsDest);
         }
-
-        // Overload for below
-        [SupportedOSPlatform("windows")]
-        public static void DeleteRegKey(string subKey, string val) => DeleteRegKey(subKey, val, "");
-
+        
         /// <summary>
         /// Deletes registry keys
         /// </summary>
@@ -293,7 +286,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="sourceFolder">Folder to search for files in</param>
         /// <param name="filter">Filter for files in folder</param>
         /// <param name="searchOption">Option: ie: Sub-folders, TopLevel only etc.</param>
-        private static string[] GetFiles(string sourceFolder, string filter, SearchOption searchOption)
+        private static IEnumerable<string> GetFiles(string sourceFolder, string filter, SearchOption searchOption)
         {
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.GetFiles] sourceFolder={sourceFolder}, filter={filter}");
             var alFiles = new ArrayList();
@@ -303,10 +296,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             return (string[])alFiles.ToArray(typeof(string));
         }
-
-        // Overload for below
-        public static void ClearFilesOfType(string folder, string extensions, SearchOption so) => ClearFilesOfType(folder, extensions, so, "");
-
+        
         /// <summary>
         /// Deletes all files of a specific type in a directory.
         /// </summary>
@@ -478,10 +468,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             var addedKey = false;
             // Add missing keys from default
-            foreach (var kvp in defaultSettings)
+            foreach (var (key, value) in defaultSettings)
             {
-                if (fileSettings.ContainsKey(kvp.Key)) continue;
-                fileSettings[kvp.Key] = kvp.Value;
+                if (fileSettings.ContainsKey(key)) continue;
+                fileSettings[key] = value;
                 addedKey = true;
             }
             // Save all settings back into file
@@ -531,7 +521,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 // Handle Streamer Mode notification
                 if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered)
-                    _ = GeneralInvocableFuncs.ShowToast("info", "Private info is hidden! - See settings", "Streamer mode", "toastarea", 5000);
+                    _ = GeneralInvocableFuncs.ShowToast("info", "Private info is hidden! - See settings", "Streamer mode", "toastarea");
 
                 // Handle loading accounts for specific platforms
                 // - Init file if it doesn't exist, or isn't fully initialised (adds missing settings when true)

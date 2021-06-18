@@ -17,10 +17,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -30,7 +28,6 @@ using System.Windows.Input;
 using System.Windows.Shapes;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using static TcNo_Acc_Switcher_Client.MainWindow;
@@ -133,7 +130,7 @@ namespace TcNo_Acc_Switcher_Client
                         _ = NativeMethods.AllocConsole();
                     Console.WriteLine(Environment.NewLine);
                     await ConsoleMain(e).ConfigureAwait(false);
-                    Console.WriteLine(Environment.NewLine + "Press any key to close this window...");
+                    Console.WriteLine(Environment.NewLine + @"Press any key to close this window...");
                     _ = NativeMethods.FreeConsole();
                     Environment.Exit(0);
                     return;
@@ -209,7 +206,7 @@ namespace TcNo_Acc_Switcher_Client
 
                 if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
                 // Try to show from tray, as user may not know it's hidden there.
-                var text = "";
+                string text;
                 if (!Globals.BringToFront())
                     text = "Another TcNo Account Switcher instance has been detected." + Environment.NewLine +
                            "[Something wrong? Hold Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]";
@@ -238,8 +235,8 @@ namespace TcNo_Acc_Switcher_Client
         /// <param name="e">StartupEventArgs for the program</param>
         private static async Task ConsoleMain(StartupEventArgs e)
         {
-            Console.WriteLine("Welcome to the TcNo Account Switcher - Command Line Interface!");
-            Console.WriteLine("Use -h (or --help) for more info." + Environment.NewLine);
+            Console.WriteLine(@"Welcome to the TcNo Account Switcher - Command Line Interface!");
+            Console.WriteLine(@"Use -h (or --help) for more info." + Environment.NewLine);
             
             for (var i = 0; i != e.Args.Length; ++i)
             {
@@ -312,69 +309,74 @@ namespace TcNo_Acc_Switcher_Client
             var account = command[1];
             var combinedArgs = string.Join(' ', args);
 
-            if (platform == "b") // Battle.Net
+            switch (platform)
             {
-                // Battlenet format: +b:<email>
-                Globals.WriteToLog("Battle.net switch requested");
-                if (!GeneralFuncs.CanKillProcess("Battle.net"))
-                    RestartAsAdmin(combinedArgs);
-                BattleNet.Instance.LoadFromFile();
-                _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);
-                return;
-            }
-
-            if (platform == "e") // Epic Games
-            {
-                // Epic Games format: +e:<username>
-                Globals.WriteToLog("Epic Games switch requested");
-                if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) RestartAsAdmin(combinedArgs);
-                Epic.Instance.LoadFromFile();
-                TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account);
-                return;
-            }
-            
-            if (platform == "o") // Origin
-            {
-                // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
-                Globals.WriteToLog("Origin switch requested");
-                if (!GeneralFuncs.CanKillProcess("Origin")) RestartAsAdmin(combinedArgs);
-                Origin.Instance.LoadFromFile();
-                TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account,
-                    command.Length > 2 ? int.Parse(command[2]) : 0);
-                return;
-            }
-            
-            if (platform == "r") // Riot Games
-            {
-                // Riot Games format: +e:<username>
-                Globals.WriteToLog("Riot Games switch requested");
-                if (!TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.CanCloseRiot()) RestartAsAdmin(combinedArgs);
-                Riot.Instance.LoadFromFile();
-                TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'));
-                return;
-            }
-            
-            if (platform == "s") // Steam
-            {
-                // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
-                Globals.WriteToLog("Steam switch requested");
-                if (!GeneralFuncs.CanKillProcess("steam")) RestartAsAdmin(combinedArgs);
-                Steam.Instance.LoadFromFile();
-                TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
-                    ePersonaState: command.Length > 2
-                        ? int.Parse(command[2])
-                        : -1); // Request has a PersonaState in it
-                return;
-            }
-            
-            if (platform == "u") // Ubisoft
-            {
-                // Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]
-                Globals.WriteToLog("Ubisoft Connect switch requested");
-                if (!GeneralFuncs.CanKillProcess("upc")) RestartAsAdmin(combinedArgs);
-                Ubisoft.Instance.LoadFromFile();
-                TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account,
-                    command.Length > 2 ? int.Parse(command[2]) : -1);
+	            // Battle.Net
+	            case "b":
+	            {
+		            // Battlenet format: +b:<email>
+		            Globals.WriteToLog("Battle.net switch requested");
+		            if (!GeneralFuncs.CanKillProcess("Battle.net"))
+			            RestartAsAdmin(combinedArgs);
+		            BattleNet.Instance.LoadFromFile();
+		            _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);
+		            return;
+	            }
+	            // Epic Games
+	            case "e":
+	            {
+		            // Epic Games format: +e:<username>
+		            Globals.WriteToLog("Epic Games switch requested");
+		            if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) RestartAsAdmin(combinedArgs);
+		            Epic.Instance.LoadFromFile();
+		            TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account);
+		            return;
+	            }
+	            // Origin
+	            case "o":
+	            {
+		            // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
+		            Globals.WriteToLog("Origin switch requested");
+		            if (!GeneralFuncs.CanKillProcess("Origin")) RestartAsAdmin(combinedArgs);
+		            Origin.Instance.LoadFromFile();
+		            TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account,
+			            command.Length > 2 ? int.Parse(command[2]) : 0);
+		            return;
+	            }
+	            // Riot Games
+	            case "r":
+	            {
+		            // Riot Games format: +e:<username>
+		            Globals.WriteToLog("Riot Games switch requested");
+		            if (!TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.CanCloseRiot()) RestartAsAdmin(combinedArgs);
+		            Riot.Instance.LoadFromFile();
+		            TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'));
+		            return;
+	            }
+	            // Steam
+	            case "s":
+	            {
+		            // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
+		            Globals.WriteToLog("Steam switch requested");
+		            if (!GeneralFuncs.CanKillProcess("steam")) RestartAsAdmin(combinedArgs);
+		            Steam.Instance.LoadFromFile();
+		            TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
+			            ePersonaState: command.Length > 2
+				            ? int.Parse(command[2])
+				            : -1); // Request has a PersonaState in it
+		            return;
+	            }
+	            // Ubisoft
+	            case "u":
+	            {
+		            // Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]
+		            Globals.WriteToLog("Ubisoft Connect switch requested");
+		            if (!GeneralFuncs.CanKillProcess("upc")) RestartAsAdmin(combinedArgs);
+		            Ubisoft.Instance.LoadFromFile();
+		            TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account,
+			            command.Length > 2 ? int.Parse(command[2]) : -1);
+		            break;
+	            }
             }
         }
 
@@ -384,7 +386,7 @@ namespace TcNo_Acc_Switcher_Client
         /// <param name="arg">Argument to process</param>
         private static async Task CliLogout(string arg)
         {
-            var platform = arg.Split(':')?[1];
+            var platform = arg.Split(':')[1];
             switch (platform.ToLowerInvariant())
             {
                 // Battle.net

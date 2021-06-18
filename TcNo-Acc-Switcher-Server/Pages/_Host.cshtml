@@ -13,7 +13,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @page "/"
-@using TcNo_Acc_Switcher_Server.Pages.General
 @namespace TcNo_Acc_Switcher_Server.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
@@ -61,7 +60,8 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    <script src="_framework/blazor.server.js"></script>
+@* ReSharper disable once Html.PathError *@
+<script src="_framework/blazor.server.js"></script>
     <script src="js/context_menu.js"></script>
     <script src="js/WebFuncs.js"></script>
     <script src="js/Headerbar.js"></script>

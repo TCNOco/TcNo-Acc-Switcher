@@ -42,10 +42,6 @@
   display: flex;
   position: relative;
   align-items: center;
-  /*
-        width: 80%;
-        height: 80%;
-    */
   width: fit-content;
   padding: 5%;
   overflow: auto;
@@ -118,7 +114,6 @@
 }
 
   #modal_contents button {
-    user-select: none;
     user-select: none;
     width: auto;
     margin: 0 0.25em;

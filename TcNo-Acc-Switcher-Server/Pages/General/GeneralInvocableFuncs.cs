@@ -295,7 +295,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static void CreateShortcut(string page, string accId, string accName, string args = "")
         {
-            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
+            Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
             page = page.ToLowerInvariant();
             if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
             var platformName = $"Switch to {accName}";
@@ -332,7 +332,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             s.TryWrite();
 
             _ = AppSettings.Instance.StreamerModeTriggered
-                ? ShowToast("success", $"Shortcut created!", "Success", "toastarea")
+                ? ShowToast("success", "Shortcut created!", "Success", "toastarea")
                 : ShowToast("success", $"For: {accName}", "Shortcut created!", "toastarea");
         }
 
@@ -342,7 +342,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiCreatePlatformShortcut] platform={platform}");
             var s = new Shortcut();
             s.Shortcut_Platform(Shortcut.Desktop, platform, platform.ToLowerInvariant());
-            s.ToggleShortcut(true, true);
+            s.ToggleShortcut(true);
         }
     }
 }

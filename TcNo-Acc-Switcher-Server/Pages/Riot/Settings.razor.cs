@@ -13,12 +13,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Riot
 {
@@ -31,13 +27,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         }
 
         #region SETTINGS_GENERAL
-        // BUTTON: Pick folder
-        public async Task PickFolder()
-        {
-            Globals.DebugWriteLine(@"[ButtonClicked:Riot\Settings.razor.cs.PickFolder]");
-            await GeneralInvocableFuncs.ShowModal("find:Riot:upc.exe:RiotSettings");
-        }
-
         // BUTTON: Reset settings
         public static void ClearSettings()
         {

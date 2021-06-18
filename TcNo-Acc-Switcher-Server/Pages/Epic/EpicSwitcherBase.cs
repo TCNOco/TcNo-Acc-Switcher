@@ -14,7 +14,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         [SupportedOSPlatform("windows")]
         public static void SwapToEpic(string accName)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Epic\EpicSwitcherBase.SwapToEpic] accName:hidden");
+            Globals.DebugWriteLine(@"[JSInvoke:Epic\EpicSwitcherBase.SwapToEpic] accName:hidden");
             EpicSwitcherFuncs.SwapEpicAccounts(accName);
         }
 
@@ -26,14 +26,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public static void NewLogin_Epic()
         {
             Globals.DebugWriteLine(@"[JSInvoke:Epic\EpicSwitcherBase.NewLogin_Epic]");
-            EpicSwitcherFuncs.SwapEpicAccounts("");
+            EpicSwitcherFuncs.SwapEpicAccounts();
         }
 
         [JSInvokable]
         [SupportedOSPlatform("windows")]
         public static void EpicAddCurrent(string accName)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Epic\EpicSwitcherBase.EpicAddCurrent] accName:hidden");
+            Globals.DebugWriteLine(@"[JSInvoke:Epic\EpicSwitcherBase.EpicAddCurrent] accName:hidden");
             EpicSwitcherFuncs.EpicAddCurrent(accName);
         }
     }

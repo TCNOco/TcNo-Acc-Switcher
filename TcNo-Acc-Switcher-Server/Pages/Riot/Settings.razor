@@ -20,14 +20,14 @@
 @inject AppData _appData
 @{ _appData.SetActiveNavMan(_navManager); }
 @inject Data.Settings.Riot _riot
-@inject Data.AppSettings _appSett
+@inject AppSettings _appSett
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 
 @inject ILanguageContainerService  _locale
 @code
 {
-    string _platform = "Riot";
+	    private const string Platform = "Riot";
 }
 
 <div class="container mainblock">
@@ -42,10 +42,12 @@
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_riot.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Riot", _riot.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">@_locale["Settings_Shortcut", new { platform = _platform }]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_riot.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Riot", _riot.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
+		            @_locale["Settings_Shortcut", new { platform = Platform }]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_riot.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">@_locale["Settings_Admin", new { platform = _platform }]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_riot.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
+		            @_locale["Settings_Admin", new { platform = Platform }]<br></label>
             </div>
 
 

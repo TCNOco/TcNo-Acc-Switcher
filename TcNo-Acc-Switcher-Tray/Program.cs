@@ -192,13 +192,12 @@ namespace TcNo_Acc_Switcher_Tray
                 Globals.BringToFront();
             else
             {
-                var processName = _mainProgram;
-                if (File.Exists(_mainProgram))
+	            if (File.Exists(_mainProgram))
                 {
                     var startInfo = new ProcessStartInfo();
                     try
                     {
-                        startInfo.FileName = processName;
+                        startInfo.FileName = _mainProgram;
                         startInfo.CreateNoWindow = false;
                         startInfo.UseShellExecute = false;
                         startInfo.Arguments = args;

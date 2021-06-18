@@ -23,7 +23,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
 	    public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-	    public static readonly string Version = "2021-06-17_02";
+	    public static readonly string Version = "2021-06-18_00";
 	    public static readonly string[] PlatformList = {"Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot"};
 
 	    #region LOGGER
@@ -313,9 +313,6 @@ namespace TcNo_Acc_Switcher_Globals
         }
 
         #region TRAY
-        // Overload for below
-        public static void AddTrayUser(string platform, string arg, string name) => AddTrayUser(platform, arg, name, 3);
-
         /// <summary>
         /// Adds a user to the tray cache
         /// </summary>
@@ -359,9 +356,9 @@ namespace TcNo_Acc_Switcher_Globals
         // For 'minimising to tray' while not being connected to it
 
         [DllImport("user32.dll", SetLastError = true)]
-        static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
         [DllImport("user32.dll")]
-        static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
         private const int GwlExStyle = -20;
         public static readonly int WsExAppWindow = 0x00040000, WsExToolWindow = 0x00000080;
 
@@ -504,14 +501,11 @@ namespace TcNo_Acc_Switcher_Globals
         /// <returns>Dictionary of keys, and associated lists of tray users</returns>
         public static Dictionary<string, List<TrayUser>> ReadTrayUsers()
         {
-            if (!File.Exists("Tray_Users.json")) return new();
+            if (!File.Exists("Tray_Users.json")) return new Dictionary<string, List<TrayUser>>();
             var json = File.ReadAllText("Tray_Users.json");
             return JsonConvert.DeserializeObject<Dictionary<string, List<TrayUser>>>(json) ?? new Dictionary<string, List<TrayUser>>();
         }
-
-        // Overload for below
-        public static void AddUser(ref Dictionary<string, List<TrayUser>> trayUsers, string key, TrayUser newUser) => AddUser(ref trayUsers, key, newUser, 3);
-
+        
         /// <summary>
         /// Adds a user to the beginning of the [Key]s list of TrayUsers. Moves to position 0 if exists.
         /// </summary>

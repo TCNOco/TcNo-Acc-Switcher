@@ -75,7 +75,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             foreach (var image in orderedImages)
             {
                 var buffer = CreateImageBuffer(image);
-                var offset = (baseOffset + lengthSum);
+                var offset = baseOffset + lengthSum;
                 writer.Write(GetIconWidth(image));
                 writer.Write(GetIconHeight(image));
                 writer.Write(PngColoursInPalette);

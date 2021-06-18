@@ -1,4 +1,16 @@
-﻿$(function () {
+﻿// ReSharper disable Html.EventNotResolved
+if (sortable == undefined) {
+	window.notification.new({
+		type: "error",
+		title: "",
+		message: "A critical component could not be loaded (sorter). Please restart the application!",
+		renderTo: "toastarea",
+		duration: 10000
+	});
+	sortable = null;
+}
+
+$(function () {
     /*
      * Prevents default browser navigation (Often causes breaks in code by somehow keeping state)
      * Can't seem to do this via the WebView2 component directly as key presses just don't reach the app...
@@ -80,17 +92,17 @@ function initAccListSortable() {
     });
     // On drag end, save list of items.
     sortable(".acc_list")[0].addEventListener("sortupdate", (e) => {
-        let order = [];
-        e.detail.destination.items.forEach((e) => {
-            if (!$(e).is("div")) return; // Ignore <toastarea class="toastarea" />
-            order.push(e.getElementsByTagName("input")[0].getAttribute("id"));
+        const order = [];
+        e.detail.destination.items.forEach((i) => {
+            if (!$(i).is("div")) return; // Ignore <toastarea class="toastarea" />
+            order.push(i.getElementsByTagName("input")[0].getAttribute("id"));
         });
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", `LoginCache\\${getCurrentPage()}\\order.json`, JSON.stringify(order));
     });
 };
 
 function steamAdvancedClearingAddLine(text) {
-    queuedJQueryAppend("#lines", "<p>" + text + "</p>");
+    queuedJQueryAppend("#lines", `<p>${text}</p>`);
 };
 
 

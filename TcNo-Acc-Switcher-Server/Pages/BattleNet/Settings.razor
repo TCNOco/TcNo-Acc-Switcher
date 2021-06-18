@@ -24,14 +24,14 @@
 @inject AppData _appData
 @{ _appData.SetActiveNavMan(_navManager); }
 @inject Data.Settings.BattleNet _battleNet
-@inject Data.AppSettings _appSett
+@inject AppSettings _appSett
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 @inject ILanguageContainerService  _locale
 
 @code
 {
-    string _platform = "BattleNet";
+	    private const string Platform = "BattleNet";
 }
 
 <div class="container mainblock">
@@ -45,10 +45,11 @@
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_battleNet.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("BattleNet", _battleNet.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">@_locale["Settings_Shortcut", new { platform = _platform }]</label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_battleNet.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("BattleNet", _battleNet.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">@_locale["Settings_Shortcut", new { platform = Platform }]</label>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_battleNet.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">@_locale["Settings_Admin", new { platform = _platform }]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_battleNet.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
+		            @_locale["Settings_Admin", new { platform = Platform }]<br></label>
             </div>
             <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="OverwatchMode" @bind="_battleNet.OverwatchMode" @onclick="OverwatchToggle"><label class="form-check-label" for="OverwatchMode"></label></div><label for="OverwatchMode">@_locale["BattleNet_ShowSR"]<br></label>
@@ -68,7 +69,7 @@
             </div>
             <div class="buttoncol">
                 <button id="PickFolder" type="button" @onclick="PickFolder">
-                    <span>@_locale["Settings_PickFolder", new { platform = _platform }]</span>
+                    <span>@_locale["Settings_PickFolder", new { platform = Platform }]</span>
                 </button>
                 <button id="ResetSettings" type="button" @onclick="ClearSettings">
                     <span>@_locale["Button_ResetSettings"]</span>
@@ -76,7 +77,7 @@
             </div>
             <div class="buttoncol">
                 <button id="OpenFolder" type="button" @onclick="OpenFolder">
-                    <span>@_locale["Settings_OpenFolder", new { platform = _platform }]</span>
+                    <span>@_locale["Settings_OpenFolder", new { platform = Platform }]</span>
                 </button>
                 <button id="ClearForgotten" type="button" @onclick="ClearForgotten">
                     <span>@_locale["Settings_ClearForgotten"]</span>

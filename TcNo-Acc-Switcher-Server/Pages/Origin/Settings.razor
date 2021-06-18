@@ -20,14 +20,14 @@
 @inject AppData _appData
 @{ _appData.SetActiveNavMan(_navManager); }
 @inject Data.Settings.Origin _origin
-@inject Data.AppSettings _appSett
+@inject AppSettings _appSett
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 
 @inject ILanguageContainerService  _locale
 @code
 {
-    string _platform = "Origin";
+	    private const string Platform = "Origin";
 }
 
 <div class="container mainblock">
@@ -42,10 +42,12 @@
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_origin.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Origin", _origin.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">@_locale["Settings_Shortcut", new { platform = _platform }]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_origin.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Origin", _origin.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
+		            @_locale["Settings_Shortcut", new { platform = Platform }]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_origin.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">@_locale["Settings_Admin", new { platform = _platform }]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_origin.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
+		            @_locale["Settings_Admin", new { platform = Platform }]<br></label>
             </div>
             <div class="form-text"><span>@_locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="_origin.ImageExpiryTime"></div>
 
@@ -61,7 +63,7 @@
                 <hr><span>@_locale["Settings_Header_GeneralTools"]</span>
                 <hr>
             </div>
-            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = _platform }]</span></button><button id="OpenFolder" type="button" @onclick="OpenFolder"><span>@_locale["Settings_OpenFolder", new { platform = _platform }]</span></button></div>
+            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = Platform }]</span></button><button id="OpenFolder" type="button" @onclick="OpenFolder"><span>@_locale["Settings_OpenFolder", new { platform = Platform }]</span></button></div>
             <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button></div>
             <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
         </div>

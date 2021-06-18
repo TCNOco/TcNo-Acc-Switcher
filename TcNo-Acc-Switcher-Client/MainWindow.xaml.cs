@@ -21,7 +21,6 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Interop;
@@ -124,7 +123,7 @@ namespace TcNo_Acc_Switcher_Client
             //MView2.CoreWebView2.OpenDevToolsWindow();
         }
 
-        private int _refreshFixAttempts = 0;
+        private int _refreshFixAttempts;
 
         /// <summary>
         /// Handles console messages, and logs them to a file
@@ -149,7 +148,7 @@ namespace TcNo_Acc_Switcher_Client
                 try
                 {
                     // ReSharper disable once PossibleNullReferenceException
-                    foreach (var jo in message?.SelectToken("args"))
+                    foreach (var jo in message.SelectToken("args"))
                     {
                         Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2: " + jo.SelectToken("value")?.ToString().Replace("\n", "\n\t"));
                     }
@@ -267,7 +266,7 @@ namespace TcNo_Acc_Switcher_Client
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
             Globals.WriteToLog(args.Uri);
 
-            if (args.Uri.Contains("RESTART_AS_ADMIN")) RestartAsAdmin((args.Uri.Contains("arg=") ? args.Uri.Split("arg=")[1] : ""));
+            if (args.Uri.Contains("RESTART_AS_ADMIN")) RestartAsAdmin(args.Uri.Contains("arg=") ? args.Uri.Split("arg=")[1] : "");
 
             if (!args.Uri.Contains("?")) return;
             // Needs to be here as:
@@ -289,8 +288,7 @@ namespace TcNo_Acc_Switcher_Client
                 if (result != true) return;
                 MView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
                 MView2.ExecuteScriptAsync("Modal_SetFilepath(" +
-                                          JsonConvert.SerializeObject(dlg.FileName.Substring(0,
-                                              dlg.FileName.LastIndexOf('\\'))) + ")");
+                                          JsonConvert.SerializeObject(dlg.FileName[..dlg.FileName.LastIndexOf('\\')]) + ")");
             }
             else if (uriArg.StartsWith("selectImage"))
             {
@@ -300,7 +298,7 @@ namespace TcNo_Acc_Switcher_Client
                 
                 var dlg = new OpenFileDialog
                 {
-                    Filter = $"Any image file (.png, .jpg, .bmp...)|*.*"
+                    Filter = "Any image file (.png, .jpg, .bmp...)|*.*"
                 };
 
                 var result = dlg.ShowDialog();
@@ -312,8 +310,6 @@ namespace TcNo_Acc_Switcher_Client
         }
 
         // Overload for below
-        public static void RestartAsAdmin() => RestartAsAdmin(null);
-
         public static void RestartAsAdmin(string args)
         {
             var proc = new ProcessStartInfo

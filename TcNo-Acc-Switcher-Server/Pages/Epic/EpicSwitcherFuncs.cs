@@ -49,7 +49,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         /// <param name="accName">Epic account name</param>
         public static bool ForgetAccount(string accName)
         {
-            Globals.DebugWriteLine($@"[Func:EpicEpicSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
+            Globals.DebugWriteLine(@"[Func:EpicEpicSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
             // Remove ID from list of ids
             var allIds = ReadAllIds();
             allIds.Remove(allIds.Single(x => x.Value == accName).Key);
@@ -71,7 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         [SupportedOSPlatform("windows")]
         public static void SwapEpicAccounts(string accName = "")
         {
-            Globals.DebugWriteLine($@"[Func:Epic\EpicSwitcherFuncs.SwapEpicAccounts] Swapping to: hidden.");
+            Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.SwapEpicAccounts] Swapping to: hidden.");
             AppData.InvokeVoid("updateStatus", "Closing Epic");
             if (!CloseEpic()) return;
             // DO ACTUAL SWITCHING HERE
@@ -190,18 +190,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         private static Dictionary<string, string> ReadAllIds()
         {
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.ReadAllIds]");
-            var localAllIds = "LoginCache\\Epic\\ids.json";
+            const string localAllIds = "LoginCache\\Epic\\ids.json";
             var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
-            if (File.Exists(localAllIds))
+            if (!File.Exists(localAllIds)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+            try
             {
-                try
-                {
-                     s = File.ReadAllText(localAllIds);
-                }
-                catch (Exception)
-                {
-                    //
-                }
+	            s = File.ReadAllText(localAllIds);
+            }
+            catch (Exception)
+            {
+	            //
             }
 
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);

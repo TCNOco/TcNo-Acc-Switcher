@@ -1,8 +1,15 @@
-﻿//const remote = require('electron').remote;
+﻿if (chrome === undefined) {
+	window.notification.new({
+		type: "error",
+		title: "",
+		message: "A critical component could not be loaded (chrome). Please restart the application!",
+		renderTo: "toastarea",
+		duration: 10000
+	});
+	chrome = null;
+}
 
-//window.onbeforeunload = (event) => {
-//    win.removeAllListeners();
-//}
+
 const d = new Date();
 var monthDay = "";
 
@@ -56,8 +63,8 @@ function randomAni(e) {
 function btnBack_Click() {
     if (window.location.pathname === "/") randomAni("#btnBack .icon");
     else {
-        let tempUri = document.location.href.split("?")[0];
-        document.location.href = tempUri + (tempUri.endsWith("/") ? "../" : "/../");
+	    const tempUri = document.location.href.split("?")[0];
+	    document.location.href = tempUri + (tempUri.endsWith("/") ? "../" : "/../");
     }
 }
 

@@ -14,7 +14,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         [SupportedOSPlatform("windows")]
         public static void SwapToRiot(string accName)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Riot\RiotSwitcherBase.SwapToRiot] accName:hidden");
+            Globals.DebugWriteLine(@"[JSInvoke:Riot\RiotSwitcherBase.SwapToRiot] accName:hidden");
             RiotSwitcherFuncs.SwapRiotAccounts(accName);
         }
 
@@ -33,7 +33,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         [SupportedOSPlatform("windows")]
         public static void RiotAddCurrent(string accName)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Riot\RiotSwitcherBase.RiotAddCurrent] accName:hidden");
+            Globals.DebugWriteLine(@"[JSInvoke:Riot\RiotSwitcherBase.RiotAddCurrent] accName:hidden");
             RiotSwitcherFuncs.RiotAddCurrent(accName);
         }
     }

@@ -33,9 +33,9 @@ function copyToClipboard(str) {
 async function forget(e) {
     e.preventDefault();
     const reqId = $(selectedElem).attr("id");
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "Get" + getCurrentPage() + "ForgetAcc").then((r) => {
-        if (!r) showModal("confirm:AcceptForget" + getCurrentPage() + "Acc:" + reqId);
-        else Modal_Confirm("AcceptForget" + getCurrentPage() + "Acc:" + reqId, true);
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}ForgetAcc`).then((r) => {
+        if (!r) showModal(`confirm:AcceptForget${getCurrentPage()}Acc:${reqId}`);
+        else Modal_Confirm(`AcceptForget${getCurrentPage()}Acc:${reqId}`, true);
     });
     _ = await promise;
 
@@ -125,7 +125,7 @@ function copy(request, e) {
         var steamId64 = $(selectedElem).attr("id");
         switch (request) {
             case "URL":
-                copyToClipboard("https://steamcommunity.com/profiles/" + steamId64);
+                copyToClipboard(`https://steamcommunity.com/profiles/${steamId64}`);
                 break;
             case "SteamId32":
             case "SteamId3":
@@ -169,7 +169,7 @@ function swapTo(request, e) {
         return true;
     }
     
-    if (request === -1) DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SwapTo" + getCurrentPage(), selected.attr("id")); // -1 is for undefined.
+    if (request === -1) DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}`, selected.attr("id")); // -1 is for undefined.
     else DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}WithReq`, selected.attr("id"), request);
 }
 
@@ -216,7 +216,7 @@ function refreshUsername() {
 
 // NEW LOGIN
 function newLogin() {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "NewLogin_" + getCurrentPage());
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `NewLogin_${getCurrentPage()}`);
 }
 
 function hidePlatform() {
@@ -338,7 +338,7 @@ function showModal(modaltype) {
             action.startsWith("AcceptForgetRiotAcc")) {
             message = getAccountPrompt();
         } else {
-            message = "<p>" + modaltype.split(":")[2].replaceAll("_", " ") + "</p>";
+            message = `<p>${modaltype.split(":")[2].replaceAll("_", " ")}</p>`;
             // The only exception to confirm:<prompt> was AcceptForgetSteamAcc, as that was confirm:AcceptForgetSteamAcc:steamId
             // Could be more in the future.
             action = action.split(":")[0];
@@ -388,7 +388,7 @@ function showModal(modaltype) {
         // USAGE: "accString:<platform>" -- example: "accString:Origin"
         platform = modaltype.split(":")[1].replaceAll("_", " ");
         Modal_RequestedLocated(false);
-        $("#modalTitle").text("Add new " + platform + " account");
+        $("#modalTitle").text(`Add new ${platform} account`);
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div id="modal_contents">
 	        <div>

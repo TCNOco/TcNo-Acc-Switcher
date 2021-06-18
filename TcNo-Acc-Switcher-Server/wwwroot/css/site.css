@@ -392,11 +392,10 @@ div.advancedClearingButtonCol .buttoncol {
     padding: 0.5em; }
     .forgottenList select:focus {
       border: solid var(--borderedItemBorderColor-focus) 0.1em; }
-    .forgottenList select option {
       /*
           Workaround to set color BECAUSE YOU CAN'T SET TEXT COLOR?!
           This is for showing the arrow before, and the SteamID afterwards in a different color
-      */ }
+      */ 
       .forgottenList select option:checked {
         box-shadow: 0 0 10px 100px var(--listBackgroundColor-checked) inset;
         color: var(--listColor-checked); }
@@ -437,7 +436,7 @@ div.advancedClearingButtonCol .buttoncol {
 	------------ PLATFORM ICONS SECTION ------------
 	------------------------------------------------
 */
-.platformIcon {
+.platform_list_item {
   width: 20vw;
   max-width: calc(100vw / 4.106);
   display: inline-block;
@@ -448,25 +447,25 @@ div.advancedClearingButtonCol .buttoncol {
   transition: all 100ms ease-in-out;
   transform: scale(1);
   box-shadow: none; }
-  .platformIcon svg .icoGlass {
+  .platform_list_item svg .icoGlass {
     transition: 500ms all ease-in; }
-  .platformIcon:hover:not(:active) {
+  .platform_list_item:hover:not(:active) {
     transform: var(--platformTransform-Hover);
     filter: var(--platformFilter-Hover);
     animation: pulse 2s infinite; }
-  .platformIcon:hover svg {
+  .platform_list_item:hover svg {
     transform: var(--platformTransformIcon-Hover);
     filter: var(--platformFilterIcon-Hover); }
-    .platformIcon:hover svg .icoGlass {
+    .platform_list_item:hover svg .icoGlass {
       transform: scale(1.05); }
-  .platformIcon:active {
+  .platform_list_item:active {
     transform: var(--platformTransform-Active);
     filter: var(--platformFilter-Active);
     box-shadow: none; }
-    .platformIcon:active svg {
+    .platform_list_item:active svg {
       transform: var(--platformTransformIcon-Active);
       filter: var(--platformFilterIcon-Active); }
-      .platformIcon:active svg .icoGlass {
+      .platform_list_item:active svg .icoGlass {
         transform: scale(0.9); }
 
 @keyframes pulse {

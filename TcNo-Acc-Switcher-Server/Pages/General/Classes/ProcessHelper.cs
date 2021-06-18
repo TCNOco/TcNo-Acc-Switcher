@@ -28,7 +28,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         private const int AdjustPrivileges = 0x20;
         private const int AdjustSessionId = 0x100;
         private const int AdjustDefault = 0x80;
-        private const int AllAccess = (StandardRightsRequired | AssignPrimary | Duplicate | Impersonate | Query | QuerySource | AdjustPrivileges | AdjustGroups | AdjustSessionId | AdjustDefault);
+        private const int AllAccess = StandardRightsRequired | AssignPrimary | Duplicate | Impersonate | Query | QuerySource | AdjustPrivileges | AdjustGroups | AdjustSessionId | AdjustDefault;
 
         [SupportedOSPlatform("windows")]
         public static bool IsProcessAdmin(string processName)

@@ -34,7 +34,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         public static string StartMenu = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\");
 
         // Library class used to see if a shortcut exists.
-        public static string ParentDirectory(string dir) => dir.Substring(0, dir.LastIndexOf(Path.DirectorySeparatorChar));
+        public static string ParentDirectory(string dir) => dir[..dir.LastIndexOf(Path.DirectorySeparatorChar)];
         public bool ShortcutExist() => File.Exists(ShortcutPath);
         public string ShortcutDir() => Path.GetDirectoryName(ShortcutPath) ?? throw new InvalidOperationException();
         public string GetSelfPath() => System.Reflection.Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe");
@@ -103,9 +103,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="shouldFolderExist">Whether the shortcut ALREADY Exists</param>
         public void ToggleShortcut(bool shouldExist, bool shouldFolderExist = true)
         {
-            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.ToggleShortcut] shouldExist={shouldExist}, shouldFolderExist={shouldFolderExist}");
-            if (shouldExist && !ShortcutExist()) WriteShortcut();
-            else if (!shouldExist  && ShortcutExist()) DeleteShortcut(!shouldFolderExist);
+	        Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.ToggleShortcut] shouldExist={shouldExist}, shouldFolderExist={shouldFolderExist}");
+	        switch (shouldExist)
+	        {
+		        case true when !ShortcutExist():
+			        WriteShortcut();
+			        break;
+		        case false when ShortcutExist():
+			        DeleteShortcut(!shouldFolderExist);
+			        break;
+	        }
         }
 
         /// <summary>
@@ -201,7 +208,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         {
             Globals.DebugWriteLine(@$"[Func:Data\Settings\Shared.CheckShortcuts] platform={platform}");
             AppSettings.Instance.CheckShortcuts();
-            return File.Exists(Path.Join(Shortcut.Desktop, $"{platform} - TcNo Account Switcher.lnk"));
+            return File.Exists(Path.Join(Desktop, $"{platform} - TcNo Account Switcher.lnk"));
         }
 
         public static void DesktopShortcut_Toggle(string platform, bool desktopShortcut)

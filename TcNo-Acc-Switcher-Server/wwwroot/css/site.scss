@@ -593,12 +593,11 @@ div.advancedClearingButtonCol .buttoncol {
 	------------------------------------------------
 */
 
-.platformIcon {
+.platform_list_item {
   width: 20vw;
   max-width: calc(100vw / 4.106);
   display: inline-block;
   cursor: pointer;
-
   /* ReSharper disable once InvalidValue */
   border: var(--platformBorderColor) 1px solid;
   margin: 10px;

@@ -134,7 +134,7 @@ button .caret {
     color: var(--ace_editor_gutterColor); }
   .ace_editor .ace_print-margin {
     width: 1px;
-    background: var(--ace_editor_printBackgound); }
+    background: var(--ace_editor_printBackground); }
   .ace_editor .ace_cursor {
     color: var(--ace_editor_cursorColor); }
   .ace_editor.ace_multiselect .ace_selection.ace_start {

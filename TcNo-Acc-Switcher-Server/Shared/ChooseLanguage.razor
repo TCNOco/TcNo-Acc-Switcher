@@ -9,9 +9,9 @@
     <span>@_locale["Header_ChooseLanguage"]</span>
     <div class="dropdown">
         <ul class="custom-dropdown-menu dropdown-menu">
-            @foreach (var culture in _cultures)
+            @foreach (var (key, value) in _cultures)
             {
-                <li class="custom-dropdown-item dropdown-item" @onclick="() => RequestCultureChange(culture.Key)">@culture.Value</li>
+                <li class="custom-dropdown-item dropdown-item" @onclick="() => RequestCultureChange(key)">@value</li>
             }
         </ul>
         <button class="dropdown-toggle" type="button" data-toggle="dropdown">

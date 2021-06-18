@@ -64,7 +64,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private readonly string _version = Globals.Version;
         [JsonProperty("Version", Order = 4)] public string Version => _instance._version;
 
-        private SortedSet<string> _disabledPlatforms = new() {};
+        private SortedSet<string> _disabledPlatforms = new();
 
         [JsonProperty("DisabledPlatforms", Order = 5)]
         public SortedSet<string> DisabledPlatforms { get => _instance._disabledPlatforms; set => _instance._disabledPlatforms = value; }
@@ -308,7 +308,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             { "ace_editorColor", "#F8F8F8" },
             { "ace_editor_gutterBackground", "#232323" },
             { "ace_editor_gutterColor", "#E2E2E2" },
-            { "ace_editor_printBackgound", "#232323" },
+            { "ace_editor_printBackground", "#232323" },
             { "ace_editor_cursorColor", "#A7A7A7" },
             { "ace_editor_multiselectBoxShadow", "0 0 3px 0px #141414" },
             { "ace_editor_markerlayer_selectionBackground", "rgba(221, 240, 255, 0.20)" },
@@ -581,8 +581,6 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         [JSInvokable]
         public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
-
-        public JObject GetStylesJObject() => JObject.FromObject(_instance._stylesheet);
 
         #region SHORTCUTS
         public void CheckShortcuts()

@@ -276,7 +276,7 @@ namespace TcNo_Acc_Switcher_Updater
             }
         }
 
-        private void GenerateHashes()
+        private static void GenerateHashes()
         {
             const string newFolder = "NewVersion";
             DirSearchWithHash(newFolder, ref _newDict);
@@ -304,7 +304,7 @@ namespace TcNo_Acc_Switcher_Updater
 		}
 
 		public static string UserDataFolder => Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
-		public static string MainAppDataFolder => Directory.GetParent(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location)!)?.FullName!;
+		public static string MainAppDataFolder => Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!)?.FullName!;
 		public static string OriginalWwwroot => Path.Join(MainAppDataFolder, "originalwwwroot");
 
 		/// <summary>
@@ -380,7 +380,10 @@ namespace TcNo_Acc_Switcher_Updater
             CloseIfRunning(_currentDir);
 
             if (Directory.Exists("originalwwwroot"))
+            {
+                if (Directory.Exists("wwwroot")) RecursiveDelete(new DirectoryInfo("wwwroot"), false);
 	            Directory.Move("originalwwwroot", "wwwroot");
+            }
 
             // APPLY UPDATE
             // Cleanup previous updates
@@ -503,24 +506,23 @@ namespace TcNo_Acc_Switcher_Updater
                 UpdateProgress(0);
                 foreach (var (key, value) in verifyDictionary)
                 {
-                    var path = key;
-                    if (key.StartsWith("updater")) continue; // Ignore own files >> Otherwise IOException
+	                if (key.StartsWith("updater")) continue; // Ignore own files >> Otherwise IOException
                     cur++;
-                    UpdateProgress((cur * 100) / verifyDictTotal);
-                    if (!File.Exists(path))
-                        WriteLine("FILE MISSING: " + path);
+                    UpdateProgress(cur * 100 / verifyDictTotal);
+                    if (!File.Exists(key))
+                        WriteLine("FILE MISSING: " + key);
                     else
                     {
-                        var md5 = GetFileMd5(path);
+                        var md5 = GetFileMd5(key);
                         if (value == md5) continue;
 
-                        WriteLine("File: " + path + " has MD5: " + md5 + " EXPECTED: " + value);
-                        WriteLine("Deleting: " + path);
-                        DeleteFile(path);
+                        WriteLine("File: " + key + " has MD5: " + md5 + " EXPECTED: " + value);
+                        WriteLine("Deleting: " + key);
+                        DeleteFile(key);
                     }
                     WriteLine("Downloading file from website... ");
-                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + path.Replace('\\', '/'));
-                    client.DownloadFile(uri, path);
+                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'));
+                    client.DownloadFile(uri, key);
                     WriteLine("Done.");
                 }
             }
@@ -650,7 +652,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// <summary>
         /// Used by TechNobo to create updates for the program.
         /// </summary>
-        private void CreateUpdate()
+        private static void CreateUpdate()
         {
             // CREATE UPDATE
             const string oldFolder = "OldVersion";
@@ -700,8 +702,7 @@ namespace TcNo_Acc_Switcher_Updater
 
             foreach (var f in filesToDelete)
             {
-                var path = f;
-                File.Delete(path);
+	            File.Delete(f);
             }
         }
 
@@ -795,7 +796,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         /// <param name="oldFolder">Old program files path</param>
         /// <param name="outputFolder">Path to folder with patches folder in it</param>
-        private void ApplyPatches(string oldFolder, string outputFolder)
+        private static void ApplyPatches(string oldFolder, string outputFolder)
         {
             DirSearch(Path.Join(outputFolder, "patches"), ref _patchList);
             foreach (var p in _patchList)
@@ -815,7 +816,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="newFolder">Path of reference new version files</param>
         /// <param name="outputFolder">Path to output patch files, new files and list of files to delete</param>
         /// <param name="filesToDelete"></param>
-        private void CreateFolderPatches(string oldFolder, string newFolder, string outputFolder, ref List<string> filesToDelete)
+        private static void CreateFolderPatches(string oldFolder, string newFolder, string outputFolder, ref List<string> filesToDelete)
         {
             Directory.CreateDirectory(outputFolder);
 
@@ -885,7 +886,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         /// <param name="sDir">Directory to recursively search</param>
         /// <param name="list">Dict of strings for files</param>
-        private void DirSearch(string sDir, ref List<string> list)
+        private static void DirSearch(string sDir, ref List<string> list)
         {
             try
             {
@@ -921,7 +922,8 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         /// <param name="sDir">Directory to recursively search</param>
         /// <param name="dict">Dict of strings for files and MD5 hashes</param>
-        private void DirSearchWithHash(string sDir, ref Dictionary<string, string> dict, bool includeUpdater = false)
+        /// <param name="includeUpdater">Whether to include updater folder or not</param>
+        private static void DirSearchWithHash(string sDir, ref Dictionary<string, string> dict, bool includeUpdater = false)
         {
             try
             {
@@ -988,7 +990,7 @@ namespace TcNo_Acc_Switcher_Updater
 			}
 			catch (FileNotFoundException)
 			{
-				return;
+                //
 			}
         }
     }

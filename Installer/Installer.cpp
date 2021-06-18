@@ -12,7 +12,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-// Just note that this requires curl to be installed. I used ".\vcpkg install curl[openssl]:x64-windows-static" in Microsoft's vcpkg to accomplish that.
+// Just note that this requires curl to be installed. I used "vcpkg install curl[openssl]:x64-windows-static" in Microsoft's vcpkg to accomplish that.
 
 #pragma comment(lib, "urlmon.lib")
 #pragma comment (lib, "User32.lib")

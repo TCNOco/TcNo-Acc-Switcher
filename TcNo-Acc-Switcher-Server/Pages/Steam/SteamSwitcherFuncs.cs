@@ -28,10 +28,10 @@ using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Converters;
 using TcNo_Acc_Switcher_Server.Data;
-using Steamuser = TcNo_Acc_Switcher_Server.Pages.Steam.Index.Steamuser;
+using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
@@ -122,10 +122,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         /// <param name="loginUserPath">loginusers.vdf path</param>
         /// <returns>List of Steamuser classes, from loginusers.vdf</returns>
-        public static List<Steamuser> GetSteamUsers(string loginUserPath)
+        public static List<Index.Steamuser> GetSteamUsers(string loginUserPath)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.GetSteamUsers] Getting list of Steam users from {loginUserPath}");
-            var userAccounts = new List<Steamuser>();
+            var userAccounts = new List<Index.Steamuser>();
 
             userAccounts.Clear();
             Directory.CreateDirectory("wwwroot/img/profiles");
@@ -139,14 +139,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     userAccounts.AddRange(from user in loginUsers["users"]
                     let steamId = user.ToObject<JProperty>()?.Name
                     where !string.IsNullOrEmpty(steamId) && !string.IsNullOrEmpty(user.First?["AccountName"]?.ToString())
-                    select new Steamuser
+                    select new Index.Steamuser
                     {
                         Name = user.First?["PersonaName"]?.ToString(),
                         AccName = user.First?["AccountName"]?.ToString(),
                         SteamId = steamId,
                         ImgUrl = "img/QuestionMark.jpg",
                         LastLogin = user.First?["Timestamp"]?.ToString(),
-                        OfflineMode = (!string.IsNullOrEmpty(user.First?["WantsOfflineMode"]?.ToString()) ? user.First?["WantsOfflineMode"]?.ToString() : "0")
+                        OfflineMode = !string.IsNullOrEmpty(user.First?["WantsOfflineMode"]?.ToString()) ? user.First?["WantsOfflineMode"]?.ToString() : "0"
                     });
                 }
             }
@@ -164,7 +164,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns>Whether deletion successful</returns>
         public static bool DeleteVacCacheFile()
         {
-            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.DeleteVacCacheFile] Deleting VAC cache file:hidden");
+            Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.DeleteVacCacheFile] Deleting VAC cache file:hidden");
             if (!File.Exists(Steam.VacCacheFile)) return true;
             File.Delete(Steam.VacCacheFile);
             return true;
@@ -177,7 +177,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns>Whether file was loaded. False if deleted ~ failed to load.</returns>
         public static bool LoadVacInfo(ref List<VacStatus> vsl)
         {
-            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.LoadVacInfo] Loading VAC info: hidden");
+            Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.LoadVacInfo] Loading VAC info: hidden");
             GeneralFuncs.DeletedOutdatedFile(Steam.VacCacheFile);
             if (!File.Exists(Steam.VacCacheFile)) return false;
             vsl = JsonConvert.DeserializeObject<List<VacStatus>>(File.ReadAllText(Steam.VacCacheFile));
@@ -225,7 +225,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         /// <param name="su"></param>
         /// <returns></returns>
-        private static VacStatus PrepareProfileImage(Steamuser su)
+        private static VacStatus PrepareProfileImage(Index.Steamuser su)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.PrepareProfileImage] Preparing profile image for: {su.SteamId.Substring(su.SteamId.Length-4, 4)}");
             Directory.CreateDirectory(Steam.SteamImagePath);
@@ -264,7 +264,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 var profileXml = new XmlDocument();
                 var cachedFile = $"LoginCache/Steam/VACCache/{su.SteamId}.xml";
                 Directory.CreateDirectory("LoginCache/Steam/VACCache/");
-                profileXml.Load((File.Exists(cachedFile))? cachedFile : $"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
+                profileXml.Load(File.Exists(cachedFile)? cachedFile : $"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
                 if (!File.Exists(cachedFile)) profileXml.Save(cachedFile);
 
                 if (profileXml.DocumentElement == null ||
@@ -283,7 +283,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="vs">Reference to VacStatus variable</param>
         /// <param name="su">Steamuser to be checked</param>
         /// <returns>User's image URL for downloading</returns>
-        private static string GetUserImageUrl(ref VacStatus vs, Steamuser su)
+        private static string GetUserImageUrl(ref VacStatus vs, Index.Steamuser su)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.GetUserImageUrl] Reading XML for: {su.SteamId.Substring(su.SteamId.Length - 4, 4)}");
             var imageUrl = "";
@@ -390,9 +390,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             return true;
         }
 
-        // Overload for below
-        [SupportedOSPlatform("windows")]
-        public static void UpdateLoginUsers(string selectedSteamId) => UpdateLoginUsers(selectedSteamId, -1);
         /// <summary>
         /// Updates loginusers and registry to select an account as "most recent"
         /// </summary>
@@ -415,7 +412,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 u.MostRec = "1";
                 u.RememberPass = "1";
-                u.OfflineMode = (pS == -1 ? u.OfflineMode : (pS > 1 ? "0" : (pS == 1 ? "0" : "1")));
+                u.OfflineMode = pS == -1 ? u.OfflineMode : pS > 1 ? "0" : pS == 1 ? "0" : "1";
                 // u.OfflineMode: Set ONLY if defined above
                 // If defined & > 1, it's custom, therefor: Online
                 // Otherwise, invert [0 == Offline => Online, 1 == Online => Offline]
@@ -430,7 +427,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // -----------------------------------
             if (pS != -1) SetPersonaState(selectedSteamId, pS); // Update persona state, if defined above.
 
-            Steamuser user = new() { AccName = "" };
+            Index.Steamuser user = new() { AccName = "" };
             if (selectedSteamId != "")
                 user = userAccounts.Single(x => x.SteamId == selectedSteamId);
             // -----------------------------------
@@ -444,8 +441,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             */
             AppData.InvokeVoid("updateStatus", "Updating registry");
             using var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam");
-            key.SetValue("AutoLoginUser", user.AccName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
-            key.SetValue("RememberPassword", 1);
+            key?.SetValue("AutoLoginUser", user.AccName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
+            key?.SetValue("RememberPassword", 1);
 
             // -----------------------------------
             // ------Update Tray users list ------
@@ -458,7 +455,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// Save updated list of Steamuser into loginusers.vdf, in vdf format.
         /// </summary>
         /// <param name="userAccounts">List of Steamuser to save into loginusers.vdf</param>
-        public static void SaveSteamUsersIntoVdf(List<Steamuser> userAccounts)
+        public static void SaveSteamUsersIntoVdf(List<Index.Steamuser> userAccounts)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SaveSteamUsersIntoVdf] Saving updated loginusers.vdf. Count: {userAccounts.Count}");
             // Convert list to JObject list, ready to save into vdf.
@@ -515,10 +512,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // Reload page, then display notification using a new thread.
             AppData.ActiveNavMan?.NavigateTo("/steam/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared images"), true);
         }
-
-        // Overload for below
-        public static void SetPersonaState(string steamId) => SetPersonaState(steamId, 1);
-
+        
         /// <summary>
         /// Sets whether the user is invisible or not
         /// </summary>
@@ -529,7 +523,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SetPersonaState] Setting persona state for: {steamId.Substring(steamId.Length - 4, 4)}, To: {ePersonaState}");
             // Values:
             // 0: Offline, 1: Online, 2: Busy, 3: Away, 4: Snooze, 5: Looking to Trade, 6: Looking to Play, 7: Invisible
-            var id32 = new Converters.SteamIdConvert(steamId).Id32; // Get SteamID
+            var id32 = new SteamIdConvert(steamId).Id32; // Get SteamID
             var localConfigFilePath = Path.Join(Steam.FolderPath, "userdata", id32, "config", "localconfig.vdf");
             if (!File.Exists(localConfigFilePath)) return;
             var localConfigText = File.ReadAllText(localConfigFilePath); // Read relevant localconfig.vdf
@@ -589,7 +583,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public class ForgottenSteamuser
         {
             [JsonProperty("SteamId", Order = 0)] public string SteamId { get; set; }
-            [JsonProperty("SteamUser", Order = 1)] public Steamuser Steamuser { get; set; }
+            [JsonProperty("SteamUser", Order = 1)] public Index.Steamuser Steamuser { get; set; }
         }
 
         /// <summary>

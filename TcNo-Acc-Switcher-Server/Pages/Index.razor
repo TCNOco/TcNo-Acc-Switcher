@@ -33,54 +33,48 @@
     </div>
 }
 
-@if (!_showSettings)
-{
-    <ContextMenu ContextMenuString=@AppSettings.Instance.PlatformContextMenu />
-    <div class="platformContainer">
-        <div class="platform_list">
-            @foreach (var platform in Globals.PlatformList)
+<ContextMenu ContextMenuString=@AppSettings.Instance.PlatformContextMenu />
+<div class="platformContainer">
+    <div class="platform_list">
+        @foreach (var platform in Globals.PlatformList)
+        {
+            @if (!AppSettings.Instance.DisabledPlatforms.Contains(platform))
             {
-                @if (!AppSettings.Instance.DisabledPlatforms.Contains(platform))
-                {
-                    <div class="platformIcon platform_list_item" id="@("Switcher" + platform)" @onclick="() => Check(platform)">
-                        <svg viewBox="0 0 2084 2084" draggable="false" alt="@(platform)" class="@($"ico{platform}BG")">
-                            <use href="@($"img/platform/{platform.ToLowerInvariant()}.svg#TEXT")" class="@($"ico{platform}Text")"></use>
-                            <use href="@($"img/platform/{platform.ToLowerInvariant()}.svg#FG")" class="@($"ico{platform}FG")"></use>
-                            <use href="img/platform/glass.svg#GLASS" class="icoGlass @($"ico{platform}Glass")"></use>
-                        </svg>
-                    </div>
-                }
+                <div class="platform_list_item" id="@("Switcher" + platform)" @onclick="() => Check(platform)">
+                    <svg viewBox="0 0 2084 2084" draggable="false" alt="@(platform)" class="@($"ico{platform}BG")">
+                        <use href="@($"img/platform/{platform.ToLowerInvariant()}.svg#TEXT")" class="@($"ico{platform}Text")"></use>
+                        <use href="@($"img/platform/{platform.ToLowerInvariant()}.svg#FG")" class="@($"ico{platform}FG")"></use>
+                        <use href="img/platform/glass.svg#GLASS" class="icoGlass @($"ico{platform}Glass")"></use>
+                    </svg>
+                </div>
             }
-        </div>
+        }
     </div>
+</div>
 
-    <div class="acc_list_actionbar">
-        <div>
-            @*<button id="btnTextEditor" onclick="location = 'TextEditor'">
-                <svg viewBox="0 0 60 60" draggable="false" alt="Settings" class="footerIcoSettings">
-                    <use href="img/icons/ico_settings.svg#icoSettings"></use>
-                </svg>
-            </button>*@
-            <button id="btnSettings" onclick="location = 'Settings'">
-                <svg viewBox="0 0 60 60" draggable="false" alt="Settings" class="footerIcoSettings">
-                    <use href="img/icons/ico_settings.svg#icoSettings"></use>
-                </svg>
-            </button>
-            <button id="btnHelp" onclick="showModal('info');">
-                <svg viewBox="0 0 60 60" draggable="false" alt="Question" class="footerIcoQuestion">
-                    <use href="img/icons/ico_question.svg#icoQuestion"></use>
-                </svg>
-            </button>
-        </div>
+<div class="acc_list_actionbar">
+    <div>
+        @*<button id="btnTextEditor" onclick="location = 'TextEditor'">
+            <svg viewBox="0 0 60 60" draggable="false" alt="Settings" class="footerIcoSettings">
+                <use href="img/icons/ico_settings.svg#icoSettings"></use>
+            </svg>
+        </button>*@
+        <button id="btnSettings" onclick="location = 'Settings'">
+            <svg viewBox="0 0 60 60" draggable="false" alt="Settings" class="footerIcoSettings">
+                <use href="img/icons/ico_settings.svg#icoSettings"></use>
+            </svg>
+        </button>
+        <button id="btnHelp" onclick="showModal('info');">
+            <svg viewBox="0 0 60 60" draggable="false" alt="Question" class="footerIcoQuestion">
+                <use href="img/icons/ico_question.svg#icoQuestion"></use>
+            </svg>
+        </button>
     </div>
-
-}
+</div>
 
 @code
 {
-    private bool _showSettings = false;
-
-    // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
+	// This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
     {
         if (!GeneralFuncs.WindowSettingsValid())
