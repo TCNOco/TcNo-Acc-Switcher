@@ -87,7 +87,7 @@ namespace TcNo_Acc_Switcher_Client
             if (Directory.Exists(Path.Join(Globals.AppDataFolder, "wwwroot")))
 			{
 				if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
-					RestartAsAdmin("");
+                    RestartAsAdmin("");
 				if (Directory.Exists(Globals.OriginalWwwroot)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Globals.OriginalWwwroot), false);
 				Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
 			}

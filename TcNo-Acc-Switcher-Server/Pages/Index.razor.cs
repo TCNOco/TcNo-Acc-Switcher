@@ -99,7 +99,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
 	        var proc = new ProcessStartInfo
 	        {
 		        WorkingDirectory = Environment.CurrentDirectory,
-		        FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "updater\\TcNo-Acc-Switcher-Updater",
+		        FileName = "updater\\TcNo-Acc-Switcher-Updater.exe",
 		        UseShellExecute = true,
 		        Verb = "runas"
 	        };
@@ -144,7 +144,8 @@ namespace TcNo_Acc_Switcher_Server.Pages
         {
             try
             {
-	            if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
+	            //if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
+                if (true && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
 		            RestartAsAdmin("");
 
 				Directory.SetCurrentDirectory(Globals.AppDataFolder);
