@@ -140,6 +140,19 @@ namespace TcNo_Acc_Switcher_Updater
             return appPath != null && (appPath.Contains(progFiles) || appPath.Contains(progFilesX86));
         }
 
+        private static bool HasFolderAccess(string folderPath)
+        {
+	        try
+	        {
+		        using var fs = File.Create(Path.Combine(folderPath, Path.GetRandomFileName()), 1, FileOptions.DeleteOnClose);
+		        return true;
+	        }
+	        catch
+	        {
+		        return false;
+	        }
+        }
+
         private static bool IsAdmin()
         {
 	        // Checks whether program is running as Admin or not
@@ -172,7 +185,7 @@ namespace TcNo_Acc_Switcher_Updater
         private void Init()
         {
             // Check if installed to program files, and requires admin to run:
-            if (InstalledToProgramFiles() && !IsAdmin())
+            if (InstalledToProgramFiles() && !IsAdmin() || !HasFolderAccess(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)))
 	            RestartAsAdmin("");
 
             Directory.SetCurrentDirectory(MainAppDataFolder);
@@ -275,7 +288,7 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 if (VerifyAndClose) // Verify and close only works if up to date
                 {
-                    VerifyAndExitButton_Click();
+	                new Thread(DoVerifyAndExit).Start();
                     return;
                 }
                 CreateVerifyAndExitButton();
@@ -347,6 +360,7 @@ namespace TcNo_Acc_Switcher_Updater
 
 		public static string UserDataFolder => Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
 		public static string MainAppDataFolder => Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!)?.FullName!;
+		// For testing: public static string MainAppDataFolder => "C:\\Program Files\\TcNo Account Switcher";
 		public static string OriginalWwwroot => Path.Join(MainAppDataFolder, "originalwwwroot");
 
 		/// <summary>
@@ -521,11 +535,12 @@ namespace TcNo_Acc_Switcher_Updater
         /// <summary>
         /// Click handler for verify and exit button. After verification, changes to exit button
         /// </summary>
-        private void VerifyAndExitButton_Click(object sender = null, RoutedEventArgs e = null)
-        {
-            VerifyFiles();
-            CreateExitButton();
-        }
+        private void VerifyAndExitButton_Click(object sender = null, RoutedEventArgs e = null) => new Thread(DoVerifyAndExit).Start();
+        private void DoVerifyAndExit()
+		{
+			VerifyFiles();
+			CreateExitButton();
+		}
 
         /// <summary>
         /// Verifies existing files. Download different or missing files
@@ -546,9 +561,11 @@ namespace TcNo_Acc_Switcher_Updater
                 var verifyDictTotal = verifyDictionary.Count;
                 var cur = 0;
                 UpdateProgress(0);
-                foreach (var (key, value) in verifyDictionary)
+                foreach (var (oKey, value) in verifyDictionary)
                 {
+	                var key = oKey;
 	                if (key.StartsWith("updater")) continue; // Ignore own files >> Otherwise IOException
+	                if (key.StartsWith("wwwroot")) key = key.Replace("wwwroot", "originalwwwroot");
                     cur++;
                     UpdateProgress(cur * 100 / verifyDictTotal);
                     if (!File.Exists(key))
@@ -563,10 +580,18 @@ namespace TcNo_Acc_Switcher_Updater
                         DeleteFile(key);
                     }
                     WriteLine("Downloading file from website... ");
-                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'));
+                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + oKey.Replace('\\', '/'));
+
+                    var path = Path.GetDirectoryName(key);
+                    if (!string.IsNullOrEmpty(path))
+						Directory.CreateDirectory(path);
+
                     client.DownloadFile(uri, key);
-                    WriteLine("Done.");
                 }
+
+                WriteLine(Environment.NewLine + "Copying files to Documents/TcNo Account Switcher...");
+                InitWwwroot(true); // Overwrite files in Documents
+                WriteLine("Done.");
             }
 
             File.Delete(hashFilePath);

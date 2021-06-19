@@ -72,13 +72,6 @@ namespace TcNo_Acc_Switcher_Client
                 throw last;
         }
 
-        private static bool InstalledToProgramFiles()
-        {
-	        var progFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-	        var progFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-	        return Globals.AppDataFolder.Contains(progFiles) || Globals.AppDataFolder.Contains(progFilesX86);
-        }
-
         private static bool IsAdmin()
         {
 	        // Checks whether program is running as Admin or not
@@ -86,14 +79,14 @@ namespace TcNo_Acc_Switcher_Client
 	        return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
         }
 
-        public MainWindow()
+		public MainWindow()
 		{
 			// Set working directory to documents folder
 			Directory.SetCurrentDirectory(Globals.UserDataFolder);
             
             if (Directory.Exists(Path.Join(Globals.AppDataFolder, "wwwroot")))
 			{
-				if (InstalledToProgramFiles() && !IsAdmin())
+				if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
 					RestartAsAdmin("");
 				if (Directory.Exists(Globals.OriginalWwwroot)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Globals.OriginalWwwroot), false);
 				Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);

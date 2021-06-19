@@ -86,13 +86,6 @@ namespace TcNo_Acc_Switcher_Server.Pages
             }
         }
 
-        private static bool InstalledToProgramFiles()
-        {
-	        var progFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-	        var progFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-	        return Globals.AppDataFolder.Contains(progFiles) || Globals.AppDataFolder.Contains(progFilesX86);
-        }
-
         [SupportedOSPlatform("windows")]
         private static bool IsAdmin()
         {
@@ -151,7 +144,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
         {
             try
             {
-	            if (InstalledToProgramFiles() && !IsAdmin())
+	            if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
 		            RestartAsAdmin("");
 
 				Directory.SetCurrentDirectory(Globals.AppDataFolder);
@@ -182,7 +175,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 }
 
 				// Run updater
-				if (InstalledToProgramFiles())
+				if (Globals.InstalledToProgramFiles() || !Globals.HasFolderAccess(Globals.AppDataFolder))
 				{
 					StartUpdaterAsAdmin();
 					Process.GetCurrentProcess().Kill();

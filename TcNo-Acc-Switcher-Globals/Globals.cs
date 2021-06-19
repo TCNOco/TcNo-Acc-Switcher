@@ -23,7 +23,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
 	    public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-	    public static readonly string Version = "2021-06-18_01";
+	    public static readonly string Version = "2021-06-19_00";
 	    public static readonly string[] PlatformList = {"Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot"};
 
 	    #region LOGGER
@@ -128,7 +128,6 @@ namespace TcNo_Acc_Switcher_Globals
 	    #endregion
 
 	    #region INITIALISATION
-
 	    public static string UserDataFolder =>
 		    Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
 
@@ -136,12 +135,32 @@ namespace TcNo_Acc_Switcher_Globals
 		    Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty;
 
 	    public static string OriginalWwwroot => Path.Join(AppDataFolder, "originalwwwroot");
+        
+	    public static bool InstalledToProgramFiles()
+	    {
+		    var progFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+		    var progFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+		    return AppDataFolder.Contains(progFiles) || AppDataFolder.Contains(progFilesX86);
+	    }
 
-	    /// <summary>
-	    /// Creates data folder in Documents
-	    /// </summary>
-	    /// <param name="overwrite">Whether files should be overwritten or not (Update)</param>
-	    public static void CreateDataFolder(bool overwrite)
+	    public static bool HasFolderAccess(string folderPath)
+	    {
+		    try
+		    {
+			    using var fs = File.Create(Path.Combine(folderPath, Path.GetRandomFileName()), 1, FileOptions.DeleteOnClose);
+			    return true;
+		    }
+		    catch
+		    {
+			    return false;
+		    }
+	    }
+
+        /// <summary>
+        /// Creates data folder in Documents
+        /// </summary>
+        /// <param name="overwrite">Whether files should be overwritten or not (Update)</param>
+        public static void CreateDataFolder(bool overwrite)
 		{
 			var wwwroot = Directory.Exists(Path.Join(AppDataFolder, "wwwroot"))
 				? Path.Join(AppDataFolder, "wwwroot")
