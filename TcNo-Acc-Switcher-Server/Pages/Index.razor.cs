@@ -144,8 +144,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
         {
             try
             {
-	            //if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
-                if (true && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
+	            if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
 		            RestartAsAdmin("");
 
 				Directory.SetCurrentDirectory(Globals.AppDataFolder);

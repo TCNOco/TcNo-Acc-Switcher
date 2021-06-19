@@ -360,7 +360,7 @@ namespace TcNo_Acc_Switcher_Updater
 
 		public static string UserDataFolder => Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
 		public static string MainAppDataFolder => Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!)?.FullName!;
-		// For testing: public static string MainAppDataFolder => "C:\\Program Files\\TcNo Account Switcher";
+		// FOR TESTING: public static string MainAppDataFolder => "C:\\Program Files\\TcNo Account Switcher";
 		public static string OriginalWwwroot => Path.Join(MainAppDataFolder, "originalwwwroot");
 
 		/// <summary>
@@ -509,7 +509,11 @@ namespace TcNo_Acc_Switcher_Updater
             }
 
             SetStatusAndLog("Updating files in Documents!");
-            Directory.Move("wwwroot", "originalwwwroot");
+            if (Directory.Exists("originalwwwroot"))
+            {
+	            RecursiveDelete(new DirectoryInfo("originalwwwroot"), false);
+	            Directory.Move("wwwroot", "originalwwwroot");
+            }
 			InitWwwroot(true);
             InitFolder("themes", true);
 
