@@ -106,35 +106,13 @@ namespace TcNo_Acc_Switcher_Server.Pages
 	        try
 	        {
 		        Process.Start(proc);
-		        Environment.Exit(0);
-	        }
+		        AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
+            }
 	        catch (Exception ex)
 	        {
 		        Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
-		        Environment.Exit(0);
-	        }
-        }
-
-        public static void RestartAsAdmin(string args)
-        {
-	        var proc = new ProcessStartInfo
-	        {
-		        WorkingDirectory = Environment.CurrentDirectory,
-		        FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher.exe",
-		        UseShellExecute = true,
-		        Arguments = args,
-		        Verb = "runas"
-	        };
-	        try
-	        {
-		        Process.Start(proc);
-		        Environment.Exit(0);
-	        }
-	        catch (Exception ex)
-	        {
-		        Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
-		        Environment.Exit(0);
-	        }
+		        AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
+            }
         }
 
         /// <summary>
@@ -145,7 +123,10 @@ namespace TcNo_Acc_Switcher_Server.Pages
             try
             {
 	            if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
-		            RestartAsAdmin("");
+	            {
+		            GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+                    return;
+	            }
 
 				Directory.SetCurrentDirectory(Globals.AppDataFolder);
                 // Download latest hash list
@@ -178,10 +159,12 @@ namespace TcNo_Acc_Switcher_Server.Pages
 				if (Globals.InstalledToProgramFiles() || !Globals.HasFolderAccess(Globals.AppDataFolder))
 				{
 					StartUpdaterAsAdmin();
-					Process.GetCurrentProcess().Kill();
                 }
-				Process.Start(new ProcessStartInfo(@"updater\\TcNo-Acc-Switcher-Updater.exe") { UseShellExecute = true });
-                Process.GetCurrentProcess().Kill();
+				else
+				{
+					Process.Start(new ProcessStartInfo(@"updater\\TcNo-Acc-Switcher-Updater.exe") { UseShellExecute = true });
+					AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
+				}
             }
             catch (Exception e)
             {

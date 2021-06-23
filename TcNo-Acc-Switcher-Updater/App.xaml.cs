@@ -26,7 +26,7 @@ namespace TcNo_Acc_Switcher_Updater
     /// </summary>
     public partial class App
     {
-        private static readonly Mutex Mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
+        private static readonly Mutex Mutex = new(true, "{1523A82D-9AD3-4B01-B970-4F06633AD41C}");
 
         /// <summary>
         /// Shows error and exits program is program is already running

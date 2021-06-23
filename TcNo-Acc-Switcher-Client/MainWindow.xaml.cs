@@ -285,6 +285,7 @@ namespace TcNo_Acc_Switcher_Client
             Globals.WriteToLog(args.Uri);
 
             if (args.Uri.Contains("RESTART_AS_ADMIN")) RestartAsAdmin(args.Uri.Contains("arg=") ? args.Uri.Split("arg=")[1] : "");
+            if (args.Uri.Contains("EXIT_APP")) Environment.Exit(0);
 
             if (!args.Uri.Contains("?")) return;
             // Needs to be here as:

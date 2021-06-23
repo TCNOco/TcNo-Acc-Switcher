@@ -210,7 +210,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static bool ShowModal(string args)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowModal] args={args}");
-            return AppData.InvokeVoidAsync("showModal", args); ;
+            return AppData.InvokeVoidAsync("showModal", args);
         }
 
         /// <summary>
