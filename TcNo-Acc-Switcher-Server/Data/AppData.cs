@@ -79,12 +79,31 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void SetActiveNavMan(NavigationManager nm) => _instance._activeNavMan = nm;
 
         #region JS_INTEROP
-		// There MUST be some way to clean up this code. Messy having so many catches, but they are necessary to prevent easily ignored errors still showing crash errors.
-        public static bool InvokeVoid(string func)
+		public static bool InvokeVoidAsync(string func)
+        {
+	        return InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func));
+        }
+
+        public static bool InvokeVoidAsync(string func, string arg)
+		{
+			return InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
+		}
+
+        public static bool InvokeVoidAsync(string func, object arg)
+        {
+	        return InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
+		}
+
+		public static bool InvokeVoidAsync(string func, string arg, string arg2)
+		{
+			return InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg, arg2));
+		}
+
+		private static bool InvokeVoidAsync(Action func)
 		{
 			try
 			{
-				_ = ActiveIJsRuntime.InvokeVoidAsync(func);
+				func();
 			}
 			catch (ArgumentNullException)
 			{
@@ -96,99 +115,9 @@ namespace TcNo_Acc_Switcher_Server.Data
 			}
 
 			return true;
-        }
+		}
 
-        public static bool InvokeVoid(string func, string arg)
-        {
-	        try
-	        {
-		        _ = ActiveIJsRuntime.InvokeVoidAsync(func, arg);
-            }
-	        catch (ArgumentNullException)
-	        {
-		        return false;
-	        }
-	        catch (InvalidOperationException)
-	        {
-		        return false;
-	        }
-
-	        return true;
-        }
-
-        public static async Task<bool> InvokeVoidAsync(string func)
-        {
-	        try
-	        {
-		        await ActiveIJsRuntime.InvokeVoidAsync(func);
-	        }
-	        catch (ArgumentNullException)
-	        {
-		        return false;
-	        }
-	        catch (InvalidOperationException)
-	        {
-		        return false;
-	        }
-
-	        return true;
-        }
-
-        public static async Task<bool> InvokeVoidAsync(string func, string arg)
-        {
-	        try
-	        {
-		        await ActiveIJsRuntime.InvokeVoidAsync(func, arg);
-	        }
-	        catch (ArgumentNullException)
-	        {
-		        return false;
-	        }
-	        catch (InvalidOperationException)
-	        {
-		        return false;
-	        }
-
-	        return true;
-        }
-
-        public static async Task<bool> InvokeVoidAsync(string func, object arg)
-        {
-	        try
-	        {
-		        await ActiveIJsRuntime.InvokeVoidAsync(func, arg);
-	        }
-	        catch (ArgumentNullException)
-	        {
-		        return false;
-	        }
-	        catch (InvalidOperationException)
-	        {
-		        return false;
-	        }
-
-	        return true;
-        }
-
-        public static async Task<bool> InvokeVoidAsync(string func, string arg, string arg2)
-        {
-	        try
-	        {
-		        await ActiveIJsRuntime.InvokeVoidAsync(func, arg, arg2);
-            }
-	        catch (ArgumentNullException)
-	        {
-		        return false;
-	        }
-	        catch (InvalidOperationException)
-	        {
-		        return false;
-	        }
-
-	        return true;
-        }
-
-        public static async Task ReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+		public static async Task ReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload");
         #endregion
     }
 }

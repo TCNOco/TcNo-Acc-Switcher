@@ -103,18 +103,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{ua.SteamId}\" DisplayName=\"{ua.Name}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{ua.AccName}\" Line2=\"{ua.Name}\" Line3=\"{ua.LastLogin}\" ExtraClasses=\"{extraClasses}\" onchange=\"selectedItemChanged()\" />\r\n" +
                     $"<label for=\"{ua.AccName}\" class=\"acc {extraClasses}\">\r\n" +
                     $"<img class=\"{extraClasses}\" src=\"{ua.ImgUrl}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
-                    $"<p class=\"streamerCensor\">{ua.AccName}</p>\r\n" +
+                    (Steam.ShowAccUsername ? $"<p class=\"streamerCensor\">{ua.AccName}</p>\r\n" : "") +
                     $"<h6>{ua.Name}</h6>\r\n" +
                     $"<p class=\"streamerCensor steamId\">{ua.SteamId}</p>\r\n" +
                     $"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p></label></div>\r\n";
 
-                await AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
+                AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
             }
 
             SaveVacInfo(vacStatusList);
-            AppData.InvokeVoid("jQueryProcessAccListSize");
-            AppData.InvokeVoid("initContextMenu");
-            AppData.InvokeVoid("initAccListSortable");
+            AppData.InvokeVoidAsync("jQueryProcessAccListSize");
+            AppData.InvokeVoidAsync("initContextMenu");
+            AppData.InvokeVoidAsync("initAccListSortable");
         }
 
         /// <summary>
@@ -372,10 +372,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 return;
             }
-            AppData.InvokeVoid("updateStatus", "Closing Steam");
+            AppData.InvokeVoidAsync("updateStatus", "Closing Steam");
             if (!CloseSteam()) return;
             if (OperatingSystem.IsWindows()) UpdateLoginUsers(steamId, ePersonaState);
-            AppData.InvokeVoid("updateStatus", "Starting Steam");
+            AppData.InvokeVoidAsync("updateStatus", "Starting Steam");
             if (!autoStartSteam) return;
 
             GeneralFuncs.StartProgram(Steam.Exe(), Steam.Admin);
@@ -424,7 +424,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
             // -----------------------------------
-            AppData.InvokeVoid("updateStatus", "Updating loginusers.vdf");
+            AppData.InvokeVoidAsync("updateStatus", "Updating loginusers.vdf");
             var tempFile = Steam.LoginUsersVdf() + "_temp";
             File.Delete(tempFile);
 
@@ -460,7 +460,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 --> AutoLoginUser = username
                 --> RememberPassword = 1
             */
-            AppData.InvokeVoid("updateStatus", "Updating registry");
+            AppData.InvokeVoidAsync("updateStatus", "Updating registry");
             using var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam");
             key?.SetValue("AutoLoginUser", user.AccName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
             key?.SetValue("RememberPassword", 1);
@@ -495,10 +495,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <summary>
         /// Clears backups of forgotten accounts
         /// </summary>
-        public static async Task ClearForgotten()
+        public static void ClearForgotten()
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.ClearForgotten] Clearing forgotten backups.");
-            await GeneralInvocableFuncs.ShowModal("confirm:ClearSteamBackups:" + "Are you sure you want to clear backups of forgotten accounts?".Replace(' ', '_'));
+            GeneralInvocableFuncs.ShowModal("confirm:ClearSteamBackups:" + "Are you sure you want to clear backups of forgotten accounts?".Replace(' ', '_'));
             // Confirmed in GeneralInvocableFuncs.GiConfirmAction for rest of function
         }
         /// <summary>
@@ -519,12 +519,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// Clears images folder of contents, to re-download them on next load.
         /// </summary>
         /// <returns>Whether files were deleted or not</returns>
-        public static async Task ClearImages()
+        public static void ClearImages()
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.ClearImages] Clearing images.");
             if (!Directory.Exists(Steam.SteamImagePath))
             {
-                await GeneralInvocableFuncs.ShowToast("error", "Could not clear images", "Error", "toastarea"); 
+                GeneralInvocableFuncs.ShowToast("error", "Could not clear images", "Error", "toastarea"); 
             }
             foreach (var file in Directory.GetFiles(Steam.SteamImagePath))
             {

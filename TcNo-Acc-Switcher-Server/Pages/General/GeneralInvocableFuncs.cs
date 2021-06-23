@@ -207,10 +207,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="args">Argument string, containing a command to be handled later by modal</param>
         /// <returns></returns>
-        public static async Task<bool> ShowModal(string args)
+        public static bool ShowModal(string args)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowModal] args={args}");
-            return await AppData.InvokeVoidAsync("showModal", args); ;
+            return AppData.InvokeVoidAsync("showModal", args); ;
         }
 
         /// <summary>
@@ -222,10 +222,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="renderTo">(Optional) Part of the document to append the toast to (Empty = Default, document.body)</param>
         /// <param name="duration">(Optional) Duration to show the toast before fading</param>
         /// <returns></returns>
-        public static async Task<bool> ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
+        public static bool ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowToast] type={toastType}, message={toastMessage}, title={toastTitle}, renderTo={renderTo}, duration={duration}");
-            return await AppData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration }); ;
+            return AppData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration }); ;
         }
         
         /// <summary>

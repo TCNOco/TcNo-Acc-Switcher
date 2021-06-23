@@ -31,20 +31,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
-        public async Task PickFolder()
+        public void PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.PickFolder]");
-            await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
+            GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
         }
 
         // BUTTON: Check account VAC status
-        public static async Task ClearVacStatus()
+        public static void ClearVacStatus()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
             if (SteamSwitcherFuncs.DeleteVacCacheFile())
-                await GeneralInvocableFuncs.ShowToast("success", "VAC status for accounts was cleared", renderTo: "toastarea");
+                GeneralInvocableFuncs.ShowToast("success", "VAC status for accounts was cleared", renderTo: "toastarea");
             else
-                await GeneralInvocableFuncs.ShowToast("error", "Could not delete 'LoginCache/Steam/VACCache/SteamVACCache.json'", "Error", "toastarea");
+                GeneralInvocableFuncs.ShowToast("error", "Could not delete 'LoginCache/Steam/VACCache/SteamVACCache.json'", "Error", "toastarea");
         }
 
         // BUTTON: Reset settings
@@ -59,7 +59,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void ClearImages()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearImages]");
-            _ = SteamSwitcherFuncs.ClearImages(); // ADD A TOAST TO THIS
+            SteamSwitcherFuncs.ClearImages(); // ADD A TOAST TO THIS
         }
         #endregion
 

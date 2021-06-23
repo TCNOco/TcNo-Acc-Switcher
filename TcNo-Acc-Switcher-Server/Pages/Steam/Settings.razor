@@ -56,7 +56,10 @@
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowVAC" @bind="_steam.ShowVac"><label class="form-check-label" for="Steam_ShowVAC"></label></div><label for="Steam_ShowVAC">@_locale["Steam_ShowVac"]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowLimited" @bind="_steam.ShowLimited"><label class="form-check-label" for="Steam_ShowLimited"></label></div><label for="Steam_ShowLimited">@_locale["Steam_ShowLimited"]<br></label>
+	            <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowLimited" @bind="_steam.ShowLimited"><label class="form-check-label" for="Steam_ShowLimited"></label></div><label for="Steam_ShowLimited">@_locale["Steam_ShowLimited"]<br></label>
+            </div>
+            <div>
+	            <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowAccUsername" @bind="_steam.ShowAccUsername"><label class="form-check-label" for="Steam_ShowAccUsername"></label></div><label for="Steam_ShowAccUsername">@_locale["Steam_ShowAccUsername"]<br></label>
             </div>
             <div class="form-text"><span>@_locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="_steam.ImageExpiryTime"></div>
 

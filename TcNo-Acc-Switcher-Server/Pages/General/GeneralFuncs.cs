@@ -179,7 +179,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             if (string.IsNullOrEmpty(jsDest)) return;
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.JsDestNewline] jsDest={jsDest}");
-            AppData.InvokeVoid(jsDest, "<br />"); //Newline
+            AppData.InvokeVoidAsync(jsDest, "<br />"); //Newline
         }
 
         // Overload for below
@@ -195,21 +195,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteFile] file={f?.FullName ?? ""}{(jsDest != "" ? ", jsDest=" + jsDest : "")}");
             try
             {
-                if (f is {Exists: false} && !string.IsNullOrEmpty(jsDest)) AppData.InvokeVoid(jsDest, "File not found: " + f.FullName);
+                if (f is {Exists: false} && !string.IsNullOrEmpty(jsDest)) AppData.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
                 else
                 {
 	                if (f == null) return;
 	                f.IsReadOnly = false;
 	                f.Delete();
-	                AppData.InvokeVoid(jsDest, "Deleted: " + f.FullName);
+                    if (!string.IsNullOrEmpty(jsDest))
+						AppData.InvokeVoidAsync(jsDest, "Deleted: " + f.FullName);
                 }
             }
             catch (Exception e)
             {
                 if (string.IsNullOrEmpty(jsDest)) return;
-                if (f != null) AppData.InvokeVoid(jsDest, "ERROR: COULDN'T DELETE: " + f.FullName);
-                else AppData.InvokeVoid(jsDest, "ERROR: COULDN'T DELETE UNDEFINED FILE");
-                AppData.InvokeVoid(jsDest, e.ToString());
+                if (f != null) AppData.InvokeVoidAsync(jsDest, "ERROR: COULDN'T DELETE: " + f.FullName);
+                else AppData.InvokeVoidAsync(jsDest, "ERROR: COULDN'T DELETE UNDEFINED FILE");
+                AppData.InvokeVoidAsync(jsDest, e.ToString());
                 JsDestNewline(jsDest);
             }
         }
@@ -253,7 +254,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             if (keepFolders) return;
             baseDir.Delete();
-            if (!string.IsNullOrEmpty(jsDest)) AppData.InvokeVoid(jsDest, "Deleting Folder: " + baseDir.FullName);
+            if (!string.IsNullOrEmpty(jsDest)) AppData.InvokeVoidAsync(jsDest, "Deleting Folder: " + baseDir.FullName);
             JsDestNewline(jsDest);
         }
         
@@ -269,12 +270,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteRegKey] subKey={subKey}, val={val}, jsDest={jsDest}");
             using var key = Registry.CurrentUser.OpenSubKey(subKey, true);
             if (key == null)
-	            AppData.InvokeVoid(jsDest, $"{subKey} does not exist.");
+	            AppData.InvokeVoidAsync(jsDest, $"{subKey} does not exist.");
             else if (key.GetValue(val) == null)
-	            AppData.InvokeVoid(jsDest, $"{subKey} does not contain {val}");
+	            AppData.InvokeVoidAsync(jsDest, $"{subKey} does not contain {val}");
             else
             {
-	            AppData.InvokeVoid(jsDest, $"Removing {subKey}\\{val}");
+	            AppData.InvokeVoidAsync(jsDest, $"Removing {subKey}\\{val}");
                 key.DeleteValue(val);
             }
             JsDestNewline(jsDest);
@@ -309,20 +310,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFilesOfType] folder={folder}, extensions={extensions}, jsDest={jsDest}");
             if (!Directory.Exists(folder))
             {
-	            AppData.InvokeVoid(jsDest, $"Directory not found: {folder}");
+	            AppData.InvokeVoidAsync(jsDest, $"Directory not found: {folder}");
                 JsDestNewline(jsDest);
                 return;
             }
             foreach (var file in GetFiles(folder, extensions, so))
             {
-	            AppData.InvokeVoid(jsDest, $"Deleting: {file}");
+	            AppData.InvokeVoidAsync(jsDest, $"Deleting: {file}");
                 try
                 {
                     File.Delete(file);
                 }
                 catch (Exception ex)
                 {
-                    AppData.InvokeVoid(jsDest, $"ERROR: {ex}");
+                    AppData.InvokeVoidAsync(jsDest, $"ERROR: {ex}");
                 }
             }
             JsDestNewline(jsDest);
@@ -534,17 +535,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                         break;
 
                     case "Epic Games":
-                        await Epic.EpicSwitcherFuncs.LoadProfiles();
+                        Epic.EpicSwitcherFuncs.LoadProfiles();
                         Data.Settings.Epic.Instance.SaveSettings(!File.Exists(Data.Settings.Epic.SettingsFile));
                         break;
 
                     case "Origin":
-                        await Origin.OriginSwitcherFuncs.LoadProfiles();
+                        Origin.OriginSwitcherFuncs.LoadProfiles();
                         Data.Settings.Origin.Instance.SaveSettings(!File.Exists(Data.Settings.Origin.SettingsFile));
                         break;
 
                     case "Riot Games":
-                        await Riot.RiotSwitcherFuncs.LoadProfiles();
+                        Riot.RiotSwitcherFuncs.LoadProfiles();
                         Data.Settings.Riot.Instance.SaveSettings(!File.Exists(Data.Settings.Riot.SettingsFile));
                         break;
 
@@ -560,22 +561,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 }
                 
                 // Handle queries and invoke status "Ready"
-                await HandleQueries();
-                try
-                {
-                    await AppData.InvokeVoidAsync("updateStatus", "Ready");
-                }
-                catch (InvalidOperationException)
-                {
-                    //
-                }
+                HandleQueries();
+                AppData.InvokeVoidAsync("updateStatus", "Ready");
             }
         }
 
         /// <summary>
         /// For handling queries in URI
         /// </summary>
-        public static async Task<bool> HandleQueries()
+        public static bool HandleQueries()
         {
             Globals.DebugWriteLine(@"[JSInvoke:General\GeneralFuncs.HandleQueries]");
             var uri = AppData.ActiveNavMan.ToAbsoluteUri(AppData.ActiveNavMan.Uri);
@@ -585,7 +579,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             //Modal
             if (queries.TryGetValue("modal", out var modalValue))
-                foreach (var stringValue in modalValue) await GeneralInvocableFuncs.ShowModal(Uri.UnescapeDataString(stringValue)).ConfigureAwait(false);
+                foreach (var stringValue in modalValue) GeneralInvocableFuncs.ShowModal(Uri.UnescapeDataString(stringValue));
 
             // Toast
             if (!queries.TryGetValue("toast_type", out var toastType) ||
@@ -595,8 +589,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 try
                 {
-                    await GeneralInvocableFuncs.ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea").ConfigureAwait(false);
-                    await AppData.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
+                    GeneralInvocableFuncs.ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
+                    AppData.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
                 }
                 catch (TaskCanceledException e)
                 {

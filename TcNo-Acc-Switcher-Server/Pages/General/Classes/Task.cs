@@ -34,7 +34,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// Toggles whether the TcNo Account Switcher Tray application starts with Windows or not
         /// </summary>
         /// <param name="shouldExist">Whether it should start with Windows, or not</param>
-        public static async System.Threading.Tasks.Task StartWithWindows_Toggle(bool shouldExist)
+        public static void StartWithWindows_Toggle(bool shouldExist)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Task.StartWithWindows_Toggle] shouldExist={shouldExist}");
             try
@@ -43,7 +43,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             }
             catch (System.UnauthorizedAccessException)
             {
-                await GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+                GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
             }
         }
 

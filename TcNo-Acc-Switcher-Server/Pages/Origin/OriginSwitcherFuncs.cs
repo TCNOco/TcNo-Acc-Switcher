@@ -23,12 +23,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// Prepares HTML Elements string for insertion into the account switcher GUI.
         /// </summary>
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
-        public static async Task LoadProfiles()
+        public static void LoadProfiles()
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.LoadProfiles] Loading Origin profiles");
-
-            await GenericFunctions.GenericLoadAccounts("Origin");
+            GenericFunctions.GenericLoadAccounts("Origin");
         }
 
         /// <summary>
@@ -65,7 +64,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         public static void SwapOriginAccounts(string accName, int state)
         {
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: hidden.");
-            AppData.InvokeVoid("updateStatus", "Closing Origin");
+            AppData.InvokeVoidAsync("updateStatus", "Closing Origin");
             if (!CloseOrigin()) return;
             // DO ACTUAL SWITCHING HERE
             if (!ClearCurrentLoginOrigin())
@@ -78,7 +77,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 	            if (!OriginCopyInAccount(accName, state)) return;
                 Globals.AddTrayUser("Origin", "+o:" + accName, accName, Origin.TrayAccNumber); // Add to Tray list
             }
-            AppData.InvokeVoid("updateStatus", "Starting Origin");
+            AppData.InvokeVoidAsync("updateStatus", "Starting Origin");
             
             GeneralFuncs.StartProgram(Origin.Exe(), Origin.Admin);
 

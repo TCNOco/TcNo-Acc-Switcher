@@ -39,22 +39,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         public static readonly string SteamReturn = "steamAdvancedClearingAddLine";
 
-        private static async Task WriteLine(string text)
+        private static void WriteLine(string text)
         {
             Globals.DebugWriteLine($@"[Auto:Steam\AdvancedClearing.razor.cs.WriteLine] Line: {text}");
-            await AppData.InvokeVoidAsync(SteamReturn, text);
+            AppData.InvokeVoidAsync(SteamReturn, text);
         }
 
-        private static async void NewLine()
+        private static void NewLine()
         {
-            await AppData.InvokeVoidAsync(SteamReturn, "<br />");
+            AppData.InvokeVoidAsync(SteamReturn, "<br />");
         }
 
         // BUTTON: Kill Steam process
         public void Steam_Close()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Close]");
-            _ = WriteLine(SteamSwitcherFuncs.CloseSteam() ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
+            WriteLine(SteamSwitcherFuncs.CloseSteam() ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
             NewLine();
         }
 
@@ -63,7 +63,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Logs]");
             GeneralFuncs.ClearFolder(Path.Join(Steam.FolderPath, "logs\\"), SteamReturn);
-            _ = WriteLine("Cleared logs folder.");
+            WriteLine("Cleared logs folder.");
             NewLine();
         }
 
@@ -72,7 +72,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Dumps]");
             GeneralFuncs.ClearFolder(Path.Join(Steam.FolderPath, "dumps\\"), SteamReturn);
-            _ = WriteLine("Cleared dumps folder.");
+            WriteLine("Cleared dumps folder.");
             NewLine();
         }
 
@@ -82,7 +82,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_HtmlCache]");
             // HTML Cache - %USERPROFILE%\AppData\Local\Steam\htmlcache
             GeneralFuncs.ClearFolder(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Steam\\htmlcache"), SteamReturn);
-            _ = WriteLine("Cleared HTMLCache.");
+            WriteLine("Cleared HTMLCache.");
             NewLine();
         }
 
@@ -94,7 +94,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             //   Steam\GameOverlayUI.exe.log
             //   Steam\GameOverlayRenderer.log
             GeneralFuncs.ClearFilesOfType(Steam.FolderPath, "*.log|*.last", SearchOption.TopDirectoryOnly, SteamReturn);
-            _ = WriteLine("Cleared UI Logs.");
+            WriteLine("Cleared UI Logs.");
             NewLine();
         }
 
@@ -104,7 +104,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_AppCache]");
             // App Cache - Steam\appcache
             GeneralFuncs.ClearFilesOfType(Path.Join(Steam.FolderPath, "appcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
-            _ = WriteLine("Cleared AppCache.");
+            WriteLine("Cleared AppCache.");
             NewLine();
         }
 
@@ -113,7 +113,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_HttpCache]");
             GeneralFuncs.ClearFilesOfType(Path.Join(Steam.FolderPath, "appcache\\httpcache"), "*.*", SearchOption.AllDirectories, SteamReturn);
-            _ = WriteLine("Cleared HTTPCache.");
+            WriteLine("Cleared HTTPCache.");
             NewLine();
         }
 
@@ -122,7 +122,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_DepotCache]");
             GeneralFuncs.ClearFilesOfType(Path.Join(Steam.FolderPath, "depotcache"), "*.*", SearchOption.TopDirectoryOnly, SteamReturn);
-            _ = WriteLine("Cleared DepotCache.");
+            WriteLine("Cleared DepotCache.");
             NewLine();
         }
 
@@ -130,8 +130,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public void Steam_Clear_Forgotten()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Forgotten]");
-            _ = SteamSwitcherFuncs.ClearForgotten();
-            _ = WriteLine("Cleared forgotten account backups");
+            SteamSwitcherFuncs.ClearForgotten();
+            WriteLine("Cleared forgotten account backups");
             NewLine();
         }
 
@@ -140,8 +140,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Config]");
             GeneralFuncs.DeleteFile(Path.Join(Steam.FolderPath, "config\\config.vdf"), SteamReturn);
-            _ = WriteLine("[ Don't forget to clear forgotten account backups as well ]");
-            _ = WriteLine("Cleared config\\config.vdf");
+            WriteLine("[ Don't forget to clear forgotten account backups as well ]");
+            WriteLine("Cleared config\\config.vdf");
             NewLine();
         }
 
@@ -150,7 +150,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_LoginUsers]");
             GeneralFuncs.DeleteFile(Path.Join(Steam.FolderPath, "config\\loginusers.vdf"), SteamReturn);
-            _ = WriteLine("Cleared config\\loginusers.vdf");
+            WriteLine("Cleared config\\loginusers.vdf");
             NewLine();
         }
 
@@ -166,7 +166,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 i++;
             }
 
-            _ = WriteLine(i == 0 ? "No SSFN files found." : "Cleared SSFN files.");
+            WriteLine(i == 0 ? "No SSFN files found." : "Cleared SSFN files.");
             NewLine();
         }
 

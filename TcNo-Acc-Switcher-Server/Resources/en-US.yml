@@ -5,6 +5,7 @@ Steam_ShowSteamID: Show SteamID
 Steam_ShowVac: Show VAC Status
 Steam_CheckVac: Check account VAC status
 Steam_ShowLimited: Show Limited Status
+Steam_ShowAccUsername: Show account username
 Steam_Tray_AccountName: Show account name [not friend name]
 Button_AddNew: Add New
 Button_SaveCurrent: Save Current

@@ -37,7 +37,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         #region ACCOUNT SWITCHER SHARED FUNCTIONS
-        public static async Task<bool> GenericLoadAccounts(string name)
+        public static bool GenericLoadAccounts(string name)
         {
             var localCachePath = Path.Join(Globals.UserDataFolder, $"LoginCache\\{name}\\");
             if (!Directory.Exists(localCachePath)) return false;
@@ -46,7 +46,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Order
             accList = OrderAccounts(accList, $"{localCachePath}\\order.json");
 
-            await InsertAccounts(accList, name).ConfigureAwait(false);
+            InsertAccounts(accList, name);
             return true;
         }
 
@@ -92,11 +92,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Runs jQueryProcessAccListSize, initContextMenu and initAccListSortable - Final init needed for account switcher to work.
         /// </summary>
-        public static async Task FinaliseAccountList()
+        public static void FinaliseAccountList()
         {
-            await AppData.InvokeVoidAsync("jQueryProcessAccListSize");
-            await AppData.InvokeVoidAsync("initContextMenu");
-            await AppData.InvokeVoidAsync("initAccListSortable");
+            AppData.InvokeVoidAsync("jQueryProcessAccListSize");
+            AppData.InvokeVoidAsync("initContextMenu");
+            AppData.InvokeVoidAsync("initAccListSortable");
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         /// <param name="accList">Account list</param>
         /// <param name="platform">Platform name</param>
-        public static async Task InsertAccounts(IEnumerable accList, string platform)
+        public static void InsertAccounts(IEnumerable accList, string platform)
         {
             foreach (var element in accList)
             {
@@ -114,7 +114,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     imgPath = GetImgPath(platform, str);
                     try
                     {
-                        await AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
+                        AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
                             $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{str}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                             $"<label for=\"{str}\" class=\"acc\">\r\n" +
                             $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
@@ -135,7 +135,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     imgPath = GetImgPath(platform, key);
                     try
                     {
-                        await AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
+                        AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
                             $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{key}\" Username=\"{value}\" DisplayName=\"{value}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                             $"<label for=\"{key}\" class=\"acc\">\r\n" +
                             $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
@@ -148,7 +148,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     }
                 }
             }
-            await FinaliseAccountList().ConfigureAwait(false); // Init context menu & Sorting
+            FinaliseAccountList(); // Init context menu & Sorting
         }
 
         /// <summary>

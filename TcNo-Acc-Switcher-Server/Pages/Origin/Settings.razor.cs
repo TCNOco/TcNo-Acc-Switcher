@@ -31,10 +31,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
-        public async Task PickFolder()
+        public void PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.PickFolder]");
-            await GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
+            GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
         }
 
         // BUTTON: Reset settings

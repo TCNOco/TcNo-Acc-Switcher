@@ -50,7 +50,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 }
             }
             
-            await GenericFunctions.InsertAccounts(allIds, "ubisoft");
+            GenericFunctions.InsertAccounts(allIds, "ubisoft");
         }
 
         public static void UbisoftAddCurrent()
@@ -282,7 +282,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public static void SwapUbisoftAccounts(string userId, int state)
         {
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.SwapUbisoftAccounts] Swapping to:hidden.");
-            AppData.InvokeVoid("updateStatus", "Closing Ubisoft");
+            AppData.InvokeVoidAsync("updateStatus", "Closing Ubisoft");
             if (!CloseUbisoft()) return;
             UbisoftAddCurrent();
 
@@ -294,7 +294,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             else
                 ClearCurrentUser();
 
-            AppData.InvokeVoid("updateStatus", "Starting Ubisoft");
+            AppData.InvokeVoidAsync("updateStatus", "Starting Ubisoft");
             
             GeneralFuncs.StartProgram(Ubisoft.Exe(), Ubisoft.Admin);
 

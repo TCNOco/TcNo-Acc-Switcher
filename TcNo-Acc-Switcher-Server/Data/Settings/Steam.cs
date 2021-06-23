@@ -57,12 +57,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Steam_ShowVAC", Order = 5)] public bool ShowVac { get => _instance._showVac; set => _instance._showVac = value; }
         private bool _showLimited = true;
         [JsonProperty("Steam_ShowLimited", Order = 6)] public bool ShowLimited { get => _instance._showLimited; set => _instance._showLimited = value; }
+        private bool _showAccUsername = true;
+        [JsonProperty("Steam_ShowAccUsername", Order = 7)] public bool ShowAccUsername { get => _instance._showAccUsername; set => _instance._showAccUsername = value; }
         private bool _trayAccName;
-        [JsonProperty("Steam_TrayAccountName", Order = 7)] public bool TrayAccName { get => _instance._trayAccName; set => _instance._trayAccName = value; }
+        [JsonProperty("Steam_TrayAccountName", Order = 8)] public bool TrayAccName { get => _instance._trayAccName; set => _instance._trayAccName = value; }
         private int _imageExpiryTime = 7;
-        [JsonProperty("Steam_ImageExpiryTime", Order = 8)] public int ImageExpiryTime { get => _instance._imageExpiryTime; set => _instance._imageExpiryTime = value; }
+        [JsonProperty("Steam_ImageExpiryTime", Order = 9)] public int ImageExpiryTime { get => _instance._imageExpiryTime; set => _instance._imageExpiryTime = value; }
         private int _trayAccNumber = 3;
-        [JsonProperty("Steam_TrayAccNumber", Order = 9)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
+        [JsonProperty("Steam_TrayAccNumber", Order = 10)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }

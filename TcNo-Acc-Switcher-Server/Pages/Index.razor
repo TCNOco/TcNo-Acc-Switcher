@@ -84,13 +84,13 @@
 		}
 	}
 
-	protected override async Task OnAfterRenderAsync(bool firstRender)
+	protected override void OnAfterRender(bool firstRender)
 	{
 		AppData.Instance.WindowTitle = "TcNo Account Switcher";
 		if (firstRender)
 		{
-			await GeneralFuncs.HandleQueries();
-			await AppData.InvokeVoidAsync("initContextMenu");
+			GeneralFuncs.HandleQueries();
+			AppData.InvokeVoidAsync("initContextMenu");
 			//await AppData.InvokeVoidAsync("initAccListSortable");
 		}
 	}

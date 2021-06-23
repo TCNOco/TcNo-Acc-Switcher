@@ -625,7 +625,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Toggle protocol functionality in Windows
         /// </summary>
         [SupportedOSPlatform("windows")]
-        public async System.Threading.Tasks.Task Protocol_Toggle()
+        public void Protocol_Toggle()
         {
 	        try
 	        {
@@ -636,20 +636,20 @@ namespace TcNo_Acc_Switcher_Server.Data
 			        key?.SetValue("URL Protocol", "", RegistryValueKind.String);
 			        using var defaultKey = Registry.ClassesRoot.CreateSubKey(@"tcno\Shell\Open\Command");
 			        defaultKey?.SetValue("", $"\"{Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe")}\" \"%1\"", RegistryValueKind.String);
-			        await GeneralInvocableFuncs.ShowToast("success", @"This program will now respond to tcno:\\ in Windows", "Protocol added", "toastarea");
+			        GeneralInvocableFuncs.ShowToast("success", @"This program will now respond to tcno:\\ in Windows", "Protocol added", "toastarea");
 		        }
 		        else
 		        {
 			        // Remove
 			        Registry.ClassesRoot.DeleteSubKeyTree("tcno");
-			        await GeneralInvocableFuncs.ShowToast("success", @"This program will no longer respond to tcno:\\", "Protocol removed", "toastarea");
+			        GeneralInvocableFuncs.ShowToast("success", @"This program will no longer respond to tcno:\\", "Protocol removed", "toastarea");
                 }
 		        _instance._protocolEnabled = Protocol_IsEnabled();
             }
 	        catch (UnauthorizedAccessException)
 	        {
-		        await GeneralInvocableFuncs.ShowToast("error", @"Please start as Admin and try again.", "Failed", "toastarea");
-                await GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+		        GeneralInvocableFuncs.ShowToast("error", @"Please start as Admin and try again.", "Failed", "toastarea");
+                GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
 	        }
         }
 
@@ -686,7 +686,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void Task_Toggle()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.Task_Toggle]");
-            _ = Task.StartWithWindows_Toggle(!TrayStartup);
+            Task.StartWithWindows_Toggle(!TrayStartup);
         }
 
         public void StartNow()

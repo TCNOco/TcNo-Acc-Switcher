@@ -17,6 +17,7 @@
   display: grid;
   position: relative;
   grid-template-columns: repeat(auto-fill, 100px);
+  grid-auto-rows: minmax(min-content, max-content);
   width: 100%;
   height: calc(100% - 42px);
   overflow-x: auto;
@@ -64,6 +65,7 @@ label.acc {
   min-width: var(--accountListItemWidth);
   max-width: var(--accountListItemWidth);
   min-height: var(--accountListItemHeight);
+  height: 100%;
   margin: 0;
   padding: 0.5em;
   border-width: 0.1em;

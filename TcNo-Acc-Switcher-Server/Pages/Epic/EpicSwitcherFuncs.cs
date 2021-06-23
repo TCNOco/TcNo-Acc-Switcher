@@ -28,12 +28,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         /// Prepares HTML Elements string for insertion into the account switcher GUI.
         /// </summary>
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
-        public static async Task LoadProfiles()
+        public static void LoadProfiles()
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.LoadProfiles] Loading Epic profiles");
-
-            await GenericFunctions.GenericLoadAccounts("Epic");
+            GenericFunctions.GenericLoadAccounts("Epic");
         }
 
         /// <summary>
@@ -72,7 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public static void SwapEpicAccounts(string accName = "")
         {
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.SwapEpicAccounts] Swapping to: hidden.");
-            AppData.InvokeVoid("updateStatus", "Closing Epic");
+            AppData.InvokeVoidAsync("updateStatus", "Closing Epic");
             if (!CloseEpic()) return;
             // DO ACTUAL SWITCHING HERE
             ClearCurrentLoginEpic();
@@ -81,7 +80,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
                 if (!EpicCopyInAccount(accName)) return;
                 Globals.AddTrayUser("Epic", "+e:" + accName, accName, Epic.TrayAccNumber); // Add to Tray list
             }
-            AppData.InvokeVoid("updateStatus", "Starting Epic");
+            AppData.InvokeVoidAsync("updateStatus", "Starting Epic");
 
             GeneralFuncs.StartProgram(Epic.Exe(), Epic.Admin);
 

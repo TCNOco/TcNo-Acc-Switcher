@@ -34,10 +34,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
-        public async Task PickFolder()
+        public void PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Epic\Settings.razor.cs.PickFolder]");
-            await GeneralInvocableFuncs.ShowModal("find:Epic:upc.exe:EpicSettings");
+            GeneralInvocableFuncs.ShowModal("find:Epic:upc.exe:EpicSettings");
         }
 
         // BUTTON: Reset settings

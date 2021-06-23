@@ -35,10 +35,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
-        public async Task PickFolder()
+        public void PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:BattleNet\Settings.razor.cs.PickFolder]");
-            await GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
+            GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
         }
 
         // BUTTON: Reset settings

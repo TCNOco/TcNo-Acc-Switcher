@@ -31,10 +31,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
-        public async Task PickFolder()
+        public void PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Ubisoft\Settings.razor.cs.PickFolder]");
-            await GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
+            GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
         }
         
         // BUTTON: Reset settings

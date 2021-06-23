@@ -23,7 +23,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         /// Prepares HTML Elements string for insertion into the account switcher GUI.
         /// </summary>
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
-        public static async Task LoadProfiles()
+        public static void LoadProfiles()
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.LoadProfiles] Loading Riot profiles");
@@ -37,7 +37,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 }
             }
 
-            await GenericFunctions.GenericLoadAccounts("Riot");
+            GenericFunctions.GenericLoadAccounts("Riot");
         }
 
         // Delayed toasts, as notifications are created in the LoadImportantData() section, and can be before the main process has rendered items.
@@ -133,7 +133,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         public static void SwapRiotAccounts(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.SwapRiotAccounts] Swapping to: hidden.");
-            AppData.InvokeVoid("updateStatus", "Closing Riot");
+            AppData.InvokeVoidAsync("updateStatus", "Closing Riot");
             if (!CloseRiot()) return;
             // DO ACTUAL SWITCHING HERE
             ClearCurrentLoginRiot();
@@ -146,7 +146,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
 
             //GeneralFuncs.StartProgram(Riot.Exe(), Riot.Admin);
 
-            AppData.InvokeVoid("updateStatus", "Ready");
+            AppData.InvokeVoidAsync("updateStatus", "Ready");
             Globals.RefreshTrayArea();
         }
         
