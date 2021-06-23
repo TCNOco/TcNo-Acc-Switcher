@@ -149,6 +149,10 @@ Section "Main files" InstSec
   ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
   IntFmt $0 "0x%08X" $0
   WriteRegDWORD HKLM "${UNINST_KEY}" "EstimatedSize" "$0"
+
+  ;Create protocol
+  WriteRegStr HKCR "tcno" "URL Protocol" ""
+  WriteRegStr HKCR "tcno\Shell\Open\Command\" "" `"$INSTDIR\${MAIN_APP_EXE}" "%1"`
   
   ExecShell "" "$INSTDIR\${FIRST_RUN_EXE}"
 SectionEnd
@@ -186,10 +190,10 @@ Section "Uninstall"
   ;Remove start shortcuts
   RMDIR /r "$SMPROGRAMS\${SM_Folder}"
   ;Remove desktop shortcuts
-  ;Remove desktop shortcuts
   Delete "$DESKTOP\${LNK_NAME}"
-
+  ;Remove uninstaller entry
   DeleteRegKey /ifempty "${REG_ROOT}" "${REG_APP_PATH}"
   DeleteRegKey HKLM "${UNINST_KEY}"
-
+  ;Remove Protocol entry
+  DeleteRegKey HKCR "tcno"
 SectionEnd

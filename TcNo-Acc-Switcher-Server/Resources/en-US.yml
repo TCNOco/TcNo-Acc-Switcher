@@ -42,6 +42,7 @@ Settings_StartMenu_Platform: Platform
 Settings_Tray_StartWindows: Start Tray with Windows
 Settings_Tray_StartNow: '[Start Tray now]'
 Settings_CurrentStyle: Current Style
+Settings_Protocol: 'Enable tcno:\\ protocol (Recommended)'
 Cleaning_Header_StartMenuShortcuts: 'Shortcuts for Start Menu:'
 Cleaning_Header_General: General Cleaning
 Cleaning_Header_LoginHistory: Clean my login history

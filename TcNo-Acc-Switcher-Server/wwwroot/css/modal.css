@@ -53,7 +53,15 @@
     display: flex;
     align-items: center;
     width: 100%;
+    transform: none;
+    transition: all 50ms ease;
   }
+    .infoWindow .imgDiv:hover {
+      transform: scale(1.025);
+    }
+    .infoWindow .imgDiv:active {
+      transform: scale(0.975);
+    }
 
   .infoWindow .fullWidthContent {
     display: block;

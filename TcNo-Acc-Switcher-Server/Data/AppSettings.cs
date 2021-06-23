@@ -17,8 +17,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
@@ -97,10 +100,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] public bool StartMenu { get => _instance._startMenu; set => _instance._startMenu = value; }
         private bool _startMenuPlatforms;
         [JsonIgnore] public bool StartMenuPlatforms { get => _instance._startMenuPlatforms; set => _instance._startMenuPlatforms = value; }
-        private bool _trayStartup;
+        private bool _protocolEnabled;
+        [JsonIgnore] public bool ProtocolEnabled { get => _instance._protocolEnabled; set => _instance._protocolEnabled = value; }
+		private bool _trayStartup;
         [JsonIgnore] public bool TrayStartup { get => _instance._trayStartup; set => _instance._trayStartup = value; }
 
-        private string _selectedStylesheet;
+		private string _selectedStylesheet;
         [JsonIgnore] public string SelectedStylesheet { get => _instance._selectedStylesheet; set => _instance._selectedStylesheet = value; }
 
         [JsonIgnore] public string PlatformContextMenu = @"[
@@ -593,6 +598,9 @@ namespace TcNo_Acc_Switcher_Server.Data
             _instance._startMenu = File.Exists(Path.Join(Shortcut.StartMenu, "TcNo Account Switcher.lnk"));
             _instance._startMenuPlatforms = Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
             _instance._trayStartup = Task.StartWithWindows_Enabled();
+
+            if (OperatingSystem.IsWindows())
+				_instance._protocolEnabled = Protocol_IsEnabled();
         }
 
         public void DesktopShortcut_Toggle()
@@ -602,6 +610,49 @@ namespace TcNo_Acc_Switcher_Server.Data
             s.Shortcut_Switcher(Shortcut.Desktop);
             s.ToggleShortcut(!DesktopShortcut);
         }
+
+        /// <summary>
+        /// Check for existence of protocol key in registry (tcno:\\)
+        /// </summary>
+        [SupportedOSPlatform("windows")]
+        private static bool Protocol_IsEnabled()
+        {
+	        var key = Registry.ClassesRoot.OpenSubKey(@"tcno");
+	        return key != null && (key.GetValueNames().Contains("URL Protocol"));
+        }
+
+        /// <summary>
+        /// Toggle protocol functionality in Windows
+        /// </summary>
+        [SupportedOSPlatform("windows")]
+        public async System.Threading.Tasks.Task Protocol_Toggle()
+        {
+	        try
+	        {
+		        if (!Protocol_IsEnabled())
+		        {
+			        // Add
+			        using var key = Registry.ClassesRoot.CreateSubKey("tcno");
+			        key?.SetValue("URL Protocol", "", RegistryValueKind.String);
+			        using var defaultKey = Registry.ClassesRoot.CreateSubKey(@"tcno\Shell\Open\Command");
+			        defaultKey?.SetValue("", $"\"{Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe")}\" \"%1\"", RegistryValueKind.String);
+			        await GeneralInvocableFuncs.ShowToast("success", @"This program will now respond to tcno:\\ in Windows", "Protocol added", "toastarea");
+		        }
+		        else
+		        {
+			        // Remove
+			        Registry.ClassesRoot.DeleteSubKeyTree("tcno");
+			        await GeneralInvocableFuncs.ShowToast("success", @"This program will no longer respond to tcno:\\", "Protocol removed", "toastarea");
+                }
+		        _instance._protocolEnabled = Protocol_IsEnabled();
+            }
+	        catch (UnauthorizedAccessException)
+	        {
+		        await GeneralInvocableFuncs.ShowToast("error", @"Please start as Admin and try again.", "Failed", "toastarea");
+                await GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+	        }
+        }
+
         /// <summary>
         /// Create shortcuts in Start Menu
         /// </summary>

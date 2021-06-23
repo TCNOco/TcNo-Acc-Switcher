@@ -67,14 +67,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 return;
             }
 
-            BattleNet.Accounts.Clear();
-
             foreach (var mail in savedAccountsList.ToString().Split(','))
             {
 	            if (string.IsNullOrEmpty(mail) || string.IsNullOrWhiteSpace(mail)) continue; // Ignores blank emails sometimes added: ".com, , asdf@..." 
                 try
                 {
-                    if (BattleNet.Accounts.Count != 0 || BattleNet.Accounts.All(x => x.Email != mail) && !BattleNet.IgnoredAccounts.Contains(mail) && mail != " ")
+                    if (BattleNet.Accounts.Count == 0 || BattleNet.Accounts.All(x => x.Email != mail) && !BattleNet.IgnoredAccounts.Contains(mail) && mail != " ")
                         BattleNet.Accounts.Add(new BattleNetSwitcherBase.BattleNetUser { Email = mail });
                 }
                 catch (NullReferenceException)

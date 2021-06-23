@@ -268,7 +268,7 @@ function showModal(modaltype) {
         var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetVersion").then((r) => {
             currentVersion = r;
             $("#modal_contents").append(`<div class="infoWindow">
-                <div class= "imgDiv" ><img width="100" margin="5" src="img/TcNo500.png" draggable="false"></div>
+                <div class="imgDiv"><img width="100" margin="5" src="img/TcNo500.png" draggable="false" onclick="OpenLinkInBrowser('https://tcno.co');"></div>
                 <div class="rightContent">
                     <h2>TcNo Account Switcher</h2>
                     <p>Created by TechNobo [Wesley Pyburn]</p>
@@ -450,14 +450,15 @@ async function Modal_Confirm(action, value) {
 
 function Modal_FinaliseAccString(platform) {
     // Supported: Epic, Origin, Riot
-    let name = $("#CurrentAccountName").val().replace(/[<>:\.\"\/\\|?*]/g, "-");
+    let name = $("#CurrentAccountName").val().replace(/[<>: \.\"\/\\|?*]/g, "-");
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", name);
     $(".modalBG").fadeOut();
     $("#acc_list").click();
 }
 
 function Modal_FinaliseAccNameChange() {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), $("#NewAccountName").val(), getCurrentPage());
+    let name = $("#NewAccountName").val().replace(/[<>: \.\"\/\\|?*]/g, "-");
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name, getCurrentPage());
 }
 
 var appendDelay = 100; // Milliseconds

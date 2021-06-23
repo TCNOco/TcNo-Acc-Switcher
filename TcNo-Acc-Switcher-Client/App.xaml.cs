@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
@@ -92,9 +93,6 @@ namespace TcNo_Acc_Switcher_Client
 		{
 			// Ensure files in documents are available.
 			Globals.CreateDataFolder(false);
-
-            // Clear WebView2 cache
-            Globals.ClearWebCache();
 
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
 
@@ -182,13 +180,16 @@ namespace TcNo_Acc_Switcher_Client
                 }
 
                 Directory.Move("newUpdater", "updater");
-            }
+			}
 
-            // Check for update in another thread
-            new Thread(CheckForUpdate).Start();
+			// Clear WebView2 cache
+			Globals.ClearWebCache();
 
-            // Show window (Because no command line commands were parsed)
-            var mainWindow = new MainWindow();
+			// Check for update in another thread
+			new Thread(CheckForUpdate).Start();
+
+			// Show window (Because no command line commands were parsed)
+			var mainWindow = new MainWindow();
             mainWindow.ShowDialog();
         }
 
@@ -247,6 +248,13 @@ namespace TcNo_Acc_Switcher_Client
                     continue;
                 }
 
+                // --- Switching to accounts via protocol ---
+                if (e.Args[i].ToLowerInvariant().StartsWith(@"tcno:\\"))
+                {
+	                CliSwitch(e.Args, i);
+	                continue;
+				}
+
                 // --- Log out of accounts ---
                 if (e.Args[i].StartsWith("logout"))
                 {
@@ -304,12 +312,15 @@ namespace TcNo_Acc_Switcher_Client
         /// <param name="i">Index of argument to process</param>
         private static void CliSwitch(string[] args, int i)
         {
+	        if (args[i].StartsWith(@"tcno:\\")) // Launched through Protocol
+		        args[i] = '+' + args[i][7..];
+
             var command = args[i][1..].Split(':'); // Drop '+' and split
             var platform = command[0];
             var account = command[1];
             var combinedArgs = string.Join(' ', args);
 
-            switch (platform)
+            switch (platform[^1..])
             {
 	            // Battle.Net
 	            case "b":
