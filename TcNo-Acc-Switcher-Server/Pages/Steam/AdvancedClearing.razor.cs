@@ -42,12 +42,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         private static async Task WriteLine(string text)
         {
             Globals.DebugWriteLine($@"[Auto:Steam\AdvancedClearing.razor.cs.WriteLine] Line: {text}");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync(SteamReturn, text);
+            await AppData.InvokeVoidAsync(SteamReturn, text);
         }
 
         private static async void NewLine()
         {
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync(SteamReturn, "<br />");
+            await AppData.InvokeVoidAsync(SteamReturn, "<br />");
         }
 
         // BUTTON: Kill Steam process

@@ -123,7 +123,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     }
                 }
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
-                await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list", element + "</div>");
+                await AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element + "</div>");
             }
 
             await GenericFunctions.FinaliseAccountList(); // Init context menu & Sorting
@@ -151,7 +151,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             }
 
             if (!accountFetched) return;
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+            await AppData.ReloadPage();
             BattleNet.SaveAccounts();
         }
 
@@ -197,7 +197,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             LoadImportantData();
             if (BattleNet.Accounts.Count == 0) BattleNet.LoadAccounts();
 
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Starting BattleNet");
+            await AppData.InvokeVoidAsync("updateStatus", "Starting BattleNet");
             if (!CloseBattleNet()) return;
             
             // Load settings into JObject

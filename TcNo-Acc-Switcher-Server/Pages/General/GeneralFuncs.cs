@@ -563,7 +563,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 await HandleQueries();
                 try
                 {
-                    await AppData.ActiveIJsRuntime.InvokeVoidAsync("updateStatus", "Ready");
+                    await AppData.InvokeVoidAsync("updateStatus", "Ready");
                 }
                 catch (InvalidOperationException)
                 {
@@ -596,7 +596,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 try
                 {
                     await GeneralInvocableFuncs.ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea").ConfigureAwait(false);
-                    await AppData.ActiveIJsRuntime.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
+                    await AppData.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
                 }
                 catch (TaskCanceledException e)
                 {

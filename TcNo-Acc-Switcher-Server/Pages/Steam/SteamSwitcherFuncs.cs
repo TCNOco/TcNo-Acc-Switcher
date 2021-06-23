@@ -108,7 +108,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     $"<p class=\"streamerCensor steamId\">{ua.SteamId}</p>\r\n" +
                     $"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p></label></div>\r\n";
 
-                await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
+                await AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
             }
 
             SaveVacInfo(vacStatusList);

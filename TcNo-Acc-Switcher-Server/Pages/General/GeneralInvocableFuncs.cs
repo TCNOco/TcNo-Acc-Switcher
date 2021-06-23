@@ -210,20 +210,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static async Task<bool> ShowModal(string args)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowModal] args={args}");
-            try
-            {
-                await AppData.ActiveIJsRuntime.InvokeVoidAsync("showModal", args);
-            }
-            catch (ArgumentNullException)
-            {
-                return false;
-            }
-            catch (InvalidOperationException)
-            {
-	            return false;
-            }
-
-            return true;
+            return await AppData.InvokeVoidAsync("showModal", args); ;
         }
 
         /// <summary>
@@ -238,20 +225,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static async Task<bool> ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowToast] type={toastType}, message={toastMessage}, title={toastTitle}, renderTo={renderTo}, duration={duration}");
-            try
-            {
-                await AppData.ActiveIJsRuntime.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
-            }
-            catch (ArgumentNullException)
-            {
-	            return false;
-            }
-            catch (InvalidOperationException)
-            {
-	            return false;
-            }
-
-            return true;
+            return await AppData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration }); ;
         }
         
         /// <summary>

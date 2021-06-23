@@ -13,6 +13,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
@@ -77,9 +78,117 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] public static NavigationManager ActiveNavMan { get => _instance._activeNavMan; set => _instance._activeNavMan = value; }
         public void SetActiveNavMan(NavigationManager nm) => _instance._activeNavMan = nm;
 
-#pragma warning disable CA2012 // Use ValueTasks correctly
-		public static void InvokeVoid(string func) => _ = ActiveIJsRuntime.InvokeVoidAsync(func);
-		public static void InvokeVoid(string func, string arg) => _ = ActiveIJsRuntime.InvokeVoidAsync(func, arg);
-#pragma warning restore CA2012 // Use ValueTasks correctly
+        #region JS_INTEROP
+		// There MUST be some way to clean up this code. Messy having so many catches, but they are necessary to prevent easily ignored errors still showing crash errors.
+        public static bool InvokeVoid(string func)
+		{
+			try
+			{
+				_ = ActiveIJsRuntime.InvokeVoidAsync(func);
+			}
+			catch (ArgumentNullException)
+			{
+				return false;
+			}
+			catch (InvalidOperationException)
+			{
+				return false;
+			}
+
+			return true;
+        }
+
+        public static bool InvokeVoid(string func, string arg)
+        {
+	        try
+	        {
+		        _ = ActiveIJsRuntime.InvokeVoidAsync(func, arg);
+            }
+	        catch (ArgumentNullException)
+	        {
+		        return false;
+	        }
+	        catch (InvalidOperationException)
+	        {
+		        return false;
+	        }
+
+	        return true;
+        }
+
+        public static async Task<bool> InvokeVoidAsync(string func)
+        {
+	        try
+	        {
+		        await ActiveIJsRuntime.InvokeVoidAsync(func);
+	        }
+	        catch (ArgumentNullException)
+	        {
+		        return false;
+	        }
+	        catch (InvalidOperationException)
+	        {
+		        return false;
+	        }
+
+	        return true;
+        }
+
+        public static async Task<bool> InvokeVoidAsync(string func, string arg)
+        {
+	        try
+	        {
+		        await ActiveIJsRuntime.InvokeVoidAsync(func, arg);
+	        }
+	        catch (ArgumentNullException)
+	        {
+		        return false;
+	        }
+	        catch (InvalidOperationException)
+	        {
+		        return false;
+	        }
+
+	        return true;
+        }
+
+        public static async Task<bool> InvokeVoidAsync(string func, object arg)
+        {
+	        try
+	        {
+		        await ActiveIJsRuntime.InvokeVoidAsync(func, arg);
+	        }
+	        catch (ArgumentNullException)
+	        {
+		        return false;
+	        }
+	        catch (InvalidOperationException)
+	        {
+		        return false;
+	        }
+
+	        return true;
+        }
+
+        public static async Task<bool> InvokeVoidAsync(string func, string arg, string arg2)
+        {
+	        try
+	        {
+		        await ActiveIJsRuntime.InvokeVoidAsync(func, arg, arg2);
+            }
+	        catch (ArgumentNullException)
+	        {
+		        return false;
+	        }
+	        catch (InvalidOperationException)
+	        {
+		        return false;
+	        }
+
+	        return true;
+        }
+
+        public static async Task ReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+        #endregion
     }
 }

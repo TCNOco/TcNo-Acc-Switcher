@@ -118,7 +118,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.HidePlatform]");
             _instance.DisabledPlatforms.Add(platform);
             _instance.SaveSettings();
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+            await AppData.ReloadPage();
         }
 
         public static async System.Threading.Tasks.Task ShowPlatform(string platform)
@@ -126,7 +126,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.ShowPlatform]");
             _instance.DisabledPlatforms.Remove(platform);
             _instance.SaveSettings();
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+            await AppData.ReloadPage();
         }
 
 
@@ -449,7 +449,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             File.Copy($"themes\\{swapTo.Replace(' ', '_')}.yaml", StylesheetFile, true);
             LoadStylesheetFromFile();
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+            await AppData.ReloadPage();
         }
 
         /// <summary>

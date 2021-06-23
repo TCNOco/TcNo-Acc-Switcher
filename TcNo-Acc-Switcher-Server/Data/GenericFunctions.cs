@@ -94,9 +94,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         public static async Task FinaliseAccountList()
         {
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryProcessAccListSize");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initContextMenu");
-            await AppData.ActiveIJsRuntime.InvokeVoidAsync("initAccListSortable");
+            await AppData.InvokeVoidAsync("jQueryProcessAccListSize");
+            await AppData.InvokeVoidAsync("initContextMenu");
+            await AppData.InvokeVoidAsync("initAccListSortable");
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     imgPath = GetImgPath(platform, str);
                     try
                     {
-                        await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list",
+                        await AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
                             $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{str}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                             $"<label for=\"{str}\" class=\"acc\">\r\n" +
                             $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
@@ -135,7 +135,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     imgPath = GetImgPath(platform, key);
                     try
                     {
-                        await AppData.ActiveIJsRuntime.InvokeVoidAsync("jQueryAppend", "#acc_list",
+                        await AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
                             $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{key}\" Username=\"{value}\" DisplayName=\"{value}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                             $"<label for=\"{key}\" class=\"acc\">\r\n" +
                             $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +

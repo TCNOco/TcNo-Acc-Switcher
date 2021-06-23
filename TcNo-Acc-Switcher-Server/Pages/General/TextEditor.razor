@@ -53,7 +53,7 @@ Actions will show here
     protected override void OnInitialized()
     {
         AppData.Instance.WindowTitle = "TcNo Account Switcher - Text Editor";
-        _ = AppData.ActiveIJsRuntime.InvokeVoidAsync("initEditor");
+        _ = AppData.InvokeVoidAsync("initEditor");
     }
 
     public void SaveFile()
