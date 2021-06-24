@@ -16,8 +16,8 @@
 </p>
                                                                                                                                   
 <p align="center"><a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest">
-  <img alt="Download latest" src="/other/img/DownloadLatest.png" height=70"></a><a target="_blank" href="https://tcno.co/Projects/AccSwitcher/api/latest">
-  <img alt="Download Beta" src="/other/img/DownloadBeta.png" height=70"></a></p>
+  <img alt="Download latest" src="/other/img/DownloadLatestNEW.png" height=70"></a>
+</p>
   
 **A Super fast account switcher for Steam, Battle.net, Epic Games, Origin, Riot Games and Ubisoft (and more soon)**
 **Saves NO passwords** or any user information*. Most switchers, including Steam work purely off changing a file and a few registry keys.
