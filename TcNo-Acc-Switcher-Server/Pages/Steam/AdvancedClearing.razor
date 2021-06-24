@@ -36,7 +36,7 @@
             <div id="restoreUnderstand">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Clearing_Understand" @bind="_notAccepted"><label class="form-check-label" for="Steam_Clearing_Understand"></label></div><label for="Steam_Clearing_Understand">@_locale["Cleaning_Understand"]<br></label>
             </div>
-            <button id="Steam_Close" type="button" @onclick="Steam_Close" disabled="@Accepted"><span>@_locale["Cleaning_Button_KillProcess"]</span></button>
+            <button id="Steam_Close" type="button" @onclick="Steam_Close" disabled="@Accepted"><span>@_locale["Cleaning_Button_KillProcess", new { platform = "Steam" }]</span></button>
 
             <div class="clearingRow">
                 <div class="clearingLeft advancedClearingButtonCol">
