@@ -1,3 +1,4 @@
+
 <p align="center">
   <a href="https://tcno.co/">
     <img src="/other/img/Banner.png"></a>
@@ -15,55 +16,71 @@
 </p>
                                                                                                                                   
 <p align="center"><a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest">
-  <img alt="Download latest" src="/other/img/DownloadLatest.png" height=70"></a><a target="_blank" href="https://tcno.co/Projects/AccSwitcher/api/latest">
-  <img alt="Download Beta" src="/other/img/DownloadBeta.png" height=70"></a></p>
+  <img alt="Download latest" src="/other/img/DownloadLatestNEW.png" height=70"></a>
+</p>
   
 **A Super fast account switcher for Steam, Battle.net, Epic Games, Origin, Riot Games and Ubisoft (and more soon)**
-**Saves NO passwords** or any user information*. Steam switcher works purely off changing a file and 2 registry keys.
+**Saves NO passwords** or any user information*. Most switchers, including Steam work purely off changing a file and a few registry keys.
 *Wastes no time closing, switching and restarting Steam and other platforms.*<br />
 **NOTE:** Not created for cheating purposes. All it does is change accounts. Use it as you see fit, accepting responsibility.
 
-# New beta version
+# What's new
 
-The new Beta version is available for testing. Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord). Download the Beta in the Discord (This is to prevent confusion here)
+The new version is now out of beta! Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord). Download the Beta in the Discord (This is to prevent confusion here)
 
 <p><img alt="Youtube" src="/other/img/youtube.svg" height=18"> <b>Guides:</b> <a href="https://youtu.be/cvbo_VY05bo">BattleNet</a>, <a href="https://youtu.be/qRYra_fQt0I">Origin</a>, <a href="https://youtu.be/rLXGs1Yr3m8">Steam</a>, <a href="https://youtu.be/XKBkIQaJzOA">UPlay</a></p>
 
-**New in this version:**
+**List of all platforms:**
+**Epic Games**, **Origin**, **Riot Games** (Valorant, League...), **Steam**, **Ubisoft Connect** and **Battle.net** Thank's to [iR3turnZ](https://github.com/HoeblingerDaniel) :),
 
--   **NEW: Battle.net account switcher** Thank's to [iR3turnZ](https://github.com/HoeblingerDaniel) :)
--   **NEW: Epic Games account switcher** (Very early in development, but functional).
--   **NEW: Origin account switcher** (Very early in development, but functional).
--   **NEW: Ubisoft Connect account switcher** (Very early in development, but functional).
--   **NEW:** Better UI, with animations. Fully user/community customisable theme system. 2 Themes built in (so far).
--   **NEW:** Streamer mode to hide SteamIDs and more while Stream software is running (ie OBS, XSplit...)
--   **NEW:** Easier ability to expand into other platforms (Yes, this is coming soon)
--   **NEW:** WAY smaller updates, due to using a new Patch system. No more redownloading the entire app. Only a few MB at a time.
--   **STEAM:** Log in as Invisible, Offline and more! Copy profile links, SteamID and create quick-switch desktop shortcuts!
+**Featuring**
+-  **Better UI**, with animations. Fully user/community customisable **theme system**. 2 Themes built in (so far).
+-   **Streamer mode** to hide SteamIDs and more while Stream software is running (ie OBS, XSplit...)
+-   **Automatic updates** WAY smaller updates, due to using a new Patch system. No more redownloading the entire app. Only a few KB/MB at a time.
+-  **Steam: Log in as Invisible, Offline and more!** Copy profile links, SteamID and create quick-switch desktop shortcuts!
 
 \[For info on how any of these work, see the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki)]
 
-## Required runtimes (Download and install)
 
--   **WebView2 Runtime**:  Click [HERE](https://go.microsoft.com/fwlink/p/?LinkId=2124703) and install.
+## Required runtimes:
+**If you use the installer:** The required runtimes will automatically be downloaded and installed.
+**If you are NOT using the installer:** Run `_FIRST_RUN.exe` on a computer to bring up the same window as in the installer, where runtimes are downloaded and installed.
+**For manual runtime download and install**, see the [Wiki on this GitHub](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki#1-installing-required-runtimes)
 
--   **Microsoft .NET 5 Desktop Runtime AND: ASP.NET Core 5.0 Runtime:** Click [HERE](https://dotnet.microsoft.com/download/dotnet/5.0/runtime) and click `x64`, as well as `Download Hosting Bundle`. **See below:**
-    ![Buttons to click for .NET Desktop & ASP.NET runtime](https://i.imgur.com/f4e14Mr.png)
+### Visit the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch.
 
-## FAQ
+## Installation:
+1. Download `TcNo.Account.Switcher.Installer...exe`
+2. Run the installer, and the application should launch when done. If not:
+Head into the folder where you installed the program and run `_FIRST_RUN.exe` to make sure required runtimes are installed, and then run `TcNo-Acc-Switcher.exe` to run the main program. The second is what shortcuts to the program should point to.
 
-### Visit the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch
+**For a portable installation (eg. on a USB) see [THIS](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki#portable-eg-for-usb)** for steps on using the `.zip` or `.7z` below.
 
-## OLD STEAM ONLY VERSION
+[See more info HERE](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki#2-running-the-tcno-account-switcher)
 
-New users should use the Download button above, or click [HERE](https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest). You'll also need the .NET Framework 4.8 Runtime, below.
+## Screenshots
 
-### Required runtimes
+[imgur library](https://imgur.com/prhdlks)
 
--   Microsoft .NET Framework 4.8 Runtime: [Web Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer), [Offline Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-offline-installer), [Other languages](https://dotnet.microsoft.com/download/dotnet-framework/net48)
+<p>
+<a href="https://imgur.com/a/5E8qkmS">
+<h4>Platforms</h4>
+  <img alt="Main window screenshot" src="https://i.imgur.com/W45WLq7.png" width=773">
+<h4>Steam account switcher</h4>
+  <img alt="Steam account switcher" src="https://i.imgur.com/OtJzRAz.png" width=773">
+<h4>Advanced cleaning and settings</h4>
+  <img alt="Combined image of multiple pages" src="https://i.imgur.com/Ob4C80c.png" width=773">
+</a>
+</p>
+
+## LEGACY STEAM ONLY VERSION
+
+[This](https://github.com/TcNobo/TcNo-Acc-Switcher/releases/tag/3.0.02) is then final release of the Steam only legacy version. You'll also need the .NET Framework 4.8 Runtime, below. Microsoft .NET Framework 4.8 Runtime: [Web Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer), [Offline Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-offline-installer), [Other languages](https://dotnet.microsoft.com/download/dotnet-framework/net48)
+
+**Screenshots:** [imgur library](https://imgur.com/prhdlks)
 
 **Running the program:**
-After installing using the installer, or downloading your .zip (portable version) from the [GitHub Releases](https://github.com/TcNobo/TcNo-Acc-Switcher/releases) page, extract everything to a folder of your choice and run `TcNo Account Switcher.exe`
+After installing using the installer, or downloading your .zip (portable version) from the [GitHub Releases](https://github.com/TcNobo/TcNo-Acc-Switcher/releases/tag/3.0.02) page, extract everything to a folder of your choice and run `TcNo Account Switcher.exe`
 
 > If [HardenTools](https://github.com/securitywithoutborders/hardentools) was used, ensure that cmd.exe (Command Prompt) access is still allowed; if access is denied, TcNo Account Switcher will encounter a fatal unhandled exception (crash).
 
@@ -76,15 +93,6 @@ After installing using the installer, or downloading your .zip (portable version
 -   It ends any processes that start with "Steam", and then restarts Steam.exe once the switch is made. You don't need to do anything but use the arrow keys and press Enter.
 
 **Options available**: Start Steam as Administrator, Hide VAC Status for each account and Show Steam ID, Start as Invisible, Offline and more. 
-
-### Screenshots
-
-[imgur library](https://imgur.com/prhdlks)
-
-<p><a href="https://imgur.com/a/iIlPtrW">
-  <img alt="Main window screenshot" src="https://i.imgur.com/prhdlks.png" height=420">
-  <img alt="Other windows (Combined screenshot)" src="https://i.imgur.com/7wti1KR.png" width=773">
-</a></p>
 
 ### Known issues
 
