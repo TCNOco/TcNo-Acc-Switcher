@@ -125,44 +125,72 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static List<Index.Steamuser> GetSteamUsers(string loginUserPath)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.GetSteamUsers] Getting list of Steam users from {loginUserPath}");
-            var userAccounts = new List<Index.Steamuser>();
-
-            userAccounts.Clear();
             Directory.CreateDirectory("wwwroot/img/profiles");
-            try
-            {
-	            var vdfText = VerifyVdfText(File.ReadAllText(loginUserPath), loginUserPath);
 
-                var loginUsersVToken = VdfConvert.Deserialize(vdfText);
-                var loginUsers = new JObject { loginUsersVToken.ToJson() };
+            if (LoadFromVdf(loginUserPath, out var userAccounts)) return userAccounts;
 
-                if (loginUsers["users"] != null)
-                {
-                    userAccounts.AddRange(from user in loginUsers["users"]
-                    let steamId = user.ToObject<JProperty>()?.Name
-                    where !string.IsNullOrEmpty(steamId) && !string.IsNullOrEmpty(user.First?["AccountName"]?.ToString())
-                    select new Index.Steamuser
-                    {
-                        Name = user.First?["PersonaName"]?.ToString(),
-                        AccName = user.First?["AccountName"]?.ToString(),
-                        SteamId = steamId,
-                        ImgUrl = "img/QuestionMark.jpg",
-                        LastLogin = user.First?["Timestamp"]?.ToString(),
-                        OfflineMode = !string.IsNullOrEmpty(user.First?["WantsOfflineMode"]?.ToString()) ? user.First?["WantsOfflineMode"]?.ToString() : "0"
-                    });
-                }
-            }
-            catch (FileNotFoundException)
-            {
-                Environment.Exit(2); // The system cannot find the file specified.
-            }
+            // Didn't work, try last file, if exists.
+            var lastVdf = loginUserPath.Replace(".vdf", ".vdf_last");
+            if (!File.Exists(lastVdf) || !LoadFromVdf(lastVdf, out userAccounts)) return new List<Index.Steamuser>();
 
+            GeneralInvocableFuncs.ShowToast("info", "Was able to load from vdf_last. Some accounts may be missing.", "PARTIALLY FIXED", "toastarea", 10000);
             return userAccounts;
         }
 
-        private static string VerifyVdfText(string vdf, string loginUserPath)
+        private static bool LoadFromVdf(string vdf, out List<Index.Steamuser> userAccounts)
         {
-	        var original = vdf;
+	        userAccounts = new List<Index.Steamuser>();
+
+			try
+			{
+				var vdfText = VerifyVdfText(vdf);
+
+				var loginUsersVToken = VdfConvert.Deserialize(vdfText);
+				var loginUsers = new JObject { loginUsersVToken.ToJson() };
+
+				if (loginUsers["users"] != null)
+				{
+					userAccounts.AddRange(from user in loginUsers["users"]
+										  let steamId = user.ToObject<JProperty>()?.Name
+										  where !string.IsNullOrEmpty(steamId) &&
+												!string.IsNullOrEmpty(user.First?["AccountName"]?.ToString())
+										  select new Index.Steamuser
+										  {
+											  Name = user.First?["PersonaName"]?.ToString(),
+											  AccName = user.First?["AccountName"]?.ToString(),
+											  SteamId = steamId,
+											  ImgUrl = "img/QuestionMark.jpg",
+											  LastLogin = user.First?["Timestamp"]?.ToString(),
+											  OfflineMode = !string.IsNullOrEmpty(user.First?["WantsOfflineMode"]?.ToString())
+												  ? user.First?["WantsOfflineMode"]?.ToString()
+												  : "0"
+										  });
+				}
+			}
+            catch (FileNotFoundException)
+			{
+				GeneralInvocableFuncs.ShowToast("error", "Could not find steam/config/loginusers.vdf", "NOT FOUND", "toastarea");
+				return false;
+			}
+			catch (AggregateException)
+			{
+				GeneralInvocableFuncs.ShowToast("error", "Failed to load steam/config/loginusers.vdf", "ERROR", "toastarea");
+				return false;
+			}
+			catch (Exception)
+			{
+				GeneralInvocableFuncs.ShowToast("error", "Failed to load steam/config/loginusers.vdf", "ERROR", "toastarea");
+				return false;
+			}
+
+
+            return true;
+        }
+
+        private static string VerifyVdfText(string loginUserPath)
+        {
+	        var original = File.ReadAllText(loginUserPath);
+	        var vdf = original;
 	        // Replaces double quotes, sometimes added by mistake (?) with single, as they should be.
             vdf = vdf.Replace("\"\"", "\"");
             if (original == vdf) return vdf;
