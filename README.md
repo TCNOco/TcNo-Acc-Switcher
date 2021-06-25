@@ -54,7 +54,7 @@ The new version is now out of beta! Please report any and all bugs, as well as s
 #### Install Guide
 <p align="center">
 	<a href="https://youtu.be/sjJ8OZ_urJY">
-	    <img alt="Website" src="https://i.imgur.com/izr2mKn.png" height=300">
+	    <img alt="Website" src="https://i.imgur.com/izr2mKn.png" target="_blank" height=300">
 	</a>
 </p>
     
