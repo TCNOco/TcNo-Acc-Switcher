@@ -1,4 +1,5 @@
 
+
 <p align="center">
   <a href="https://tcno.co/">
     <img src="/other/img/Banner.png"></a>
@@ -50,6 +51,13 @@ The new version is now out of beta! Please report any and all bugs, as well as s
 ### Visit the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki) for more info and steps for your first launch.
 
 ## Installation:
+#### Install Guide
+<p align="center">
+	<a href="https://youtu.be/sjJ8OZ_urJY">
+	    <img alt="Website" src="https://i.imgur.com/izr2mKn.png" height=300">
+	</a>
+</p>
+    
 1. Download `TcNo.Account.Switcher.Installer...exe`
 2. Run the installer, and the application should launch when done. If not:
 Head into the folder where you installed the program and run `_FIRST_RUN.exe` to make sure required runtimes are installed, and then run `TcNo-Acc-Switcher.exe` to run the main program. The second is what shortcuts to the program should point to.
