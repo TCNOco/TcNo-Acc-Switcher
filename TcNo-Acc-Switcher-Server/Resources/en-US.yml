@@ -36,7 +36,6 @@ Settings_ClearAccounts: Clear Accounts
 Settings_RestoreForgotten: Restore forgotten account
 Settings_StreamerMode: Enable streamer mode
 Settings_ExitToTray: Exit minimises to tray
-Settings_TrayLowMem: Use less RAM while in tray
 Settings_DesktopShortcut: Desktop shortcut
 Settings_StartMenu_ProgramTray: Program & Tray
 Settings_StartMenu_Platform: Platform

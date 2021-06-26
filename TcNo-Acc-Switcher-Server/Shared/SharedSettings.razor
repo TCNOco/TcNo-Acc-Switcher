@@ -26,8 +26,7 @@
     <div class="form-check"><input class="form-check-input" type="checkbox" id="StreamerMode" @bind="_appSett.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label></div><label for="StreamerMode">@_locale["Settings_StreamerMode"]<br></label>
 </div>
 <div class="rowSetting">
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="_appSett.TrayMinimizeNotExit"><label class="form-check-label" for="TrayMinimizeNotExit"></label></div><label for="TrayMinimizeNotExit">@_locale["Settings_ExitToTray"]<br></label>
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeLessMem" @bind="_appSett.TrayMinimizeLessMem"><label class="form-check-label" for="TrayMinimizeLessMem"></label></div><label for="TrayMinimizeLessMem">@_locale["Settings_TrayLowMem"]<br></label>
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="_appSett.TrayMinimizeNotExit" @onclick="() => _appSett.TrayMinimizeNotExit_Toggle()"><label class="form-check-label" for="TrayMinimizeNotExit"></label></div><label for="TrayMinimizeNotExit">@_locale["Settings_ExitToTray"]<br></label>
 </div>
 <div class="rowSetting">
     <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="_appSett.DesktopShortcut" @onclick="() => _appSett.DesktopShortcut_Toggle()"><label class="form-check-label" for="AppSett_DesktopShortcut"></label></div><label for="AppSett_DesktopShortcut">@_locale["Settings_DesktopShortcut"]<br></label>

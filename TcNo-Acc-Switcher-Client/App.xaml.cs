@@ -198,12 +198,23 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         private static void IsRunningAlready()
         {
+
+	        AppSettings.Instance.LoadFromFile();
             try
             {
+                // Check if program is running, if not: return.
                 if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
 
-                // Otherwise: It has probably just closed. Wait a few and try again
-                Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
+				// The program is running at this point.
+                // If set to minimize to tray, try open it.
+				if (AppSettings.Instance.TrayMinimizeNotExit)
+				{
+					if (Globals.BringToFront())
+						Environment.Exit(1056); // 1056	An instance of the service is already running.
+                }
+
+				// Otherwise: It has probably just closed. Wait a few and try again
+				Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
 
                 if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
                 // Try to show from tray, as user may not know it's hidden there.

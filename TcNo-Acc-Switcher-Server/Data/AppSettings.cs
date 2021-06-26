@@ -75,23 +75,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private bool _trayMinimizeNotExit;
 
         [JsonProperty("TrayMinimizeNotExit", Order = 6)]
-        public bool TrayMinimizeNotExit
-        {
-            get => _instance._trayMinimizeNotExit;
-            set
-            {
-                if (value)
-                {
-                    _ = GeneralInvocableFuncs.ShowToast("info", "On clicking the Exit button: I'll be on the Windows Tray! (Right of Start Bar)", duration: 15000, renderTo: "toastarea");
-                    _ = GeneralInvocableFuncs.ShowToast("info", "Hint: Ctrl+Click the 'X' to close me completely, or via the Tray > 'Exit'", duration: 15000, renderTo: "toastarea");
-                }
-                _instance._trayMinimizeNotExit = value; 
-
-            }
-        }
-
-        private bool _trayMinimizeLessMem;
-        [JsonProperty("TrayMinimizeLessMem", Order = 7)] public bool TrayMinimizeLessMem { get => _instance._trayMinimizeLessMem; set => _instance._trayMinimizeLessMem = value; }
+        public bool TrayMinimizeNotExit { get => _instance._trayMinimizeNotExit; set => _instance._trayMinimizeNotExit = value; }
 
 
         private bool _desktopShortcut;
@@ -609,6 +593,14 @@ namespace TcNo_Acc_Switcher_Server.Data
             var s = new Shortcut();
             s.Shortcut_Switcher(Shortcut.Desktop);
             s.ToggleShortcut(!DesktopShortcut);
+        }
+
+        public void TrayMinimizeNotExit_Toggle()
+        {
+	        Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
+	        if (!TrayMinimizeNotExit) return;
+	        _ = GeneralInvocableFuncs.ShowToast("info", "On clicking the Exit button: I'll be on the Windows Tray! (Right of Start Bar)", duration: 15000, renderTo: "toastarea");
+            _ = GeneralInvocableFuncs.ShowToast("info", "Hint: Ctrl+Click the 'X' to close me completely, or via the Tray > 'Exit'", duration: 15000, renderTo: "toastarea");
         }
 
         /// <summary>

@@ -81,22 +81,22 @@ namespace TcNo_Acc_Switcher_Server.Data
         #region JS_INTEROP
 		public static bool InvokeVoidAsync(string func)
         {
-	        return InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func));
+	        return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func));
         }
 
         public static bool InvokeVoidAsync(string func, string arg)
 		{
-			return InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
+			return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
 		}
 
         public static bool InvokeVoidAsync(string func, object arg)
         {
-	        return InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
-		}
+	        return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
+        }
 
 		public static bool InvokeVoidAsync(string func, string arg, string arg2)
 		{
-			return InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg, arg2));
+			return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg, arg2));
 		}
 
 		private static bool InvokeVoidAsync(Action func)

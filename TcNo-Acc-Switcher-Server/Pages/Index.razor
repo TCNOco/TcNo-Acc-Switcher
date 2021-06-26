@@ -77,16 +77,16 @@
 	// This is run before everything is painted on, so that it can get the correct values for the CSS Block.
 	protected override void OnParametersSet()
 	{
-		if (!GeneralFuncs.WindowSettingsValid())
-		{
-			// Do something here if necessary.
-			// For now this is just being used to load settings.
-		}
 	}
 
 	protected override void OnAfterRender(bool firstRender)
 	{
 		AppData.Instance.WindowTitle = "TcNo Account Switcher";
+		if (!GeneralFuncs.WindowSettingsValid())
+		{
+			// Do something here if necessary.
+			// For now this is just being used to load settings.
+		}
 		if (firstRender)
 		{
 			GeneralFuncs.HandleQueries();

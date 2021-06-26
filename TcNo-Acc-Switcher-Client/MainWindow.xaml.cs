@@ -91,9 +91,7 @@ namespace TcNo_Acc_Switcher_Client
 				if (Directory.Exists(Globals.OriginalWwwroot)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Globals.OriginalWwwroot), false);
 				Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
 			}
-
-
-            AppSettings.LoadFromFile();
+            
             FindOpenPort();
             _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
 
@@ -230,8 +228,6 @@ namespace TcNo_Acc_Switcher_Client
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.WindowStateChange]");
 
-            if (AppSettings.TrayMinimizeLessMem) new Thread(CheckVisibility).Start();
-
             var state = WindowState switch
             {
                 WindowState.Maximized => "add",
@@ -239,31 +235,6 @@ namespace TcNo_Acc_Switcher_Client
                 _ => ""
             };
             MView2.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
-        }
-
-        private void CheckVisibility()
-        {
-            Thread.Sleep(100);
-            // While this could handle WindowState == WindowState.Minimised/Normal etc, it's only going to work off the hidden part.
-            // As currently this is only going to create/dispose the WebView for better performance when minimising to tray.
-            Dispatcher.Invoke(() =>
-            {
-                // Check if hidden or not:
-                var windowLong = Globals.GetWindow(new WindowInteropHelper(this).Handle);
-                if (windowLong == (windowLong & ~Globals.WsExAppWindow)) // Hidden
-                {
-                    MainBackground.Children.Remove(MView2);
-                    MView2.Dispose();
-                    GC.WaitForPendingFinalizers();
-                }
-                else // Not hidden
-                {
-                    MView2 = new WebView2();
-                    MView2.Initialized += MView2_OnInitialised;
-                    MainBackground.Children.Add(MView2);
-                    MView2.BeginInit();
-                }
-            });
         }
 
         /// <summary>
