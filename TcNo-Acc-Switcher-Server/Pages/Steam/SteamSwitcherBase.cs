@@ -12,9 +12,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.Versioning;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
@@ -65,6 +68,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.SwapToSteam] {(steamId.Length > 0 ? steamId.Substring(steamId.Length - 4, 4) : "")}, ePersonaState: {ePersonaState}");
             SteamSwitcherFuncs.SwapSteamAccounts(steamId, ePersonaState: ePersonaState);
+        }
+
+        [JSInvokable]
+        public static void SteamOpenUserdata(string steamId)
+        {
+	        var steamId32 = new Converters.SteamIdConvert(steamId);
+            var folder = Path.Join(Data.Settings.Steam.Instance.FolderPath, $"userdata\\{steamId32.Id32}");
+            if (Directory.Exists(folder)) Process.Start("explorer.exe", folder);
+            else GeneralInvocableFuncs.ShowToast("error", "Could not find Steam\\userdata folder", "Failed", "toastarea");
         }
 
         /// <summary>

@@ -152,22 +152,22 @@ function copy(request, e) {
     }
 }
 
+// General function: Get selected account
+var selected;
+function getSelected() {
+	// This may be unnecessary.
+	selected = $(".acc:checked");
+	if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
+		return false;
+	}
+	return true;
+}
+
 // Swapping accounts
 function swapTo(request, e) {
     if (e !== undefined) e.preventDefault();
     if (!getSelected()) return;
 
-    // General function: Get selected account
-    var selected;
-
-    function getSelected() {
-        // This may be unnecessary.
-        selected = $(".acc:checked");
-        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
-            return false;
-        }
-        return true;
-    }
     
     if (request === -1) DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}`, selected.attr("id")); // -1 is for undefined.
     else DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}WithReq`, selected.attr("id"), request);
@@ -177,21 +177,17 @@ function swapTo(request, e) {
 function changeImage(e) {
     if (e !== undefined) e.preventDefault();
     if (!getSelected()) return;
-
-    // General function: Get selected account
-    var selected;
-
-    function getSelected() {
-        // This may be unnecessary.
-        selected = $(".acc:checked");
-        if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
-            return false;
-        }
-        return true;
-    }
     
     let path = $(".acc:checked").next("label").children("img")[0].getAttribute("src").split('?')[0];
     window.location = window.location + `${(window.location.href.includes("?") ? "&" : "?")}selectImage=${encodeURI(path)}`;
+}
+
+// Open Steam\userdata\<steamID> folder
+function openUserdata(e) {
+	if (e !== undefined) e.preventDefault();
+    if (!getSelected()) return;
+
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SteamOpenUserdata`, selected.attr("id"));
 }
 
 // Create shortcut for selected icon

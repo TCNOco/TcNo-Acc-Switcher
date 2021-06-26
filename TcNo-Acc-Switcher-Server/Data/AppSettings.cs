@@ -598,7 +598,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void TrayMinimizeNotExit_Toggle()
         {
 	        Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
-	        if (!TrayMinimizeNotExit) return;
+	        if (TrayMinimizeNotExit) return;
 	        _ = GeneralInvocableFuncs.ShowToast("info", "On clicking the Exit button: I'll be on the Windows Tray! (Right of Start Bar)", duration: 15000, renderTo: "toastarea");
             _ = GeneralInvocableFuncs.ShowToast("info", "Hint: Ctrl+Click the 'X' to close me completely, or via the Tray > 'Exit'", duration: 15000, renderTo: "toastarea");
         }

@@ -47,24 +47,27 @@
     color: var(--defaultTextColor);
   }
 
-.submenu {
+.submenu1,
+.submenu2 {
   display: none;
   min-height: 100%;
   box-shadow: var(--contextMenuBoxShadow);
+  list-style: none;
 }
 
-li:hover .submenu {
-  display: block;
-  position: absolute;
-  top: 0;
-  right: -15em;
-  width: 15em;
-  padding: 0;
-  background: var(--contextMenuBackground);
-  font-size: 1em;
-  animation: expand 0.3s;
-  opacity: 1;
-}
+  li:hover .submenu1,
+  .submenu1 li:hover .submenu2 {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: -15em;
+    width: 15em;
+    padding: 0;
+    background: var(--contextMenuBackground);
+    font-size: 1em;
+    animation: expand 0.3s;
+    opacity: 1;
+  }
 
 @keyframes expand {
   from {

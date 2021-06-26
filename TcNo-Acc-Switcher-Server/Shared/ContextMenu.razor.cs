@@ -19,6 +19,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
         {
             Globals.DebugWriteLine(@"[Func:Shared\ContextMenu.GetContextMenu]");
             _htmlOut = "<ul class=\"contextmenu\">";
+            var submenuDepth = 1;
 
             var jO = JArray.Parse(contextMenuText.Replace("\r\n", ""));
             foreach (var kvp in jO) // Main list
@@ -26,7 +27,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
                 // Each item
                 foreach (var (key, value) in JObject.FromObject(kvp))
                 {
-                    ProcessContextItem(key, value);
+                    ProcessContextItem(key, value, ref submenuDepth);
                 }
             }
 
@@ -39,7 +40,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
         /// </summary>
         /// <param name="s">Text to display on current element</param>
         /// <param name="o">Either string with action, or JToken containing more (string, string) or (string, JArray) pairs</param>
-        private static void ProcessContextItem(string s, object o)
+        private static void ProcessContextItem(string s, object o, ref int submenuDepth)
         {
 	        var j = JToken.FromObject(o);
 	        switch (j.Type)
@@ -65,9 +66,10 @@ namespace TcNo_Acc_Switcher_Server.Shared
 				        // Add key and string item
 				        var jArray = j.Value<JArray>();
 				        if (jArray == null) return;
-				        _htmlOut += $"<li><a onclick=\"event.preventDefault();\">{s}</a>\n\t<ul class=\"submenu\">";
-				        // Foreach
-				        foreach (var jToken in jArray)
+				        _htmlOut += $"<li><a onclick=\"event.preventDefault();\">{s}</a>\n\t<ul class=\"submenu{submenuDepth}\">";
+				        submenuDepth++;
+						// Foreach
+						foreach (var jToken in jArray)
 				        {
 					        // Each item
 					        foreach (var (key, value) in JObject.FromObject(jToken))
@@ -75,12 +77,13 @@ namespace TcNo_Acc_Switcher_Server.Shared
 						        if (key == "")
 							        _htmlOut = GeneralFuncs.ReplaceLast(_htmlOut, "event.preventDefault();",
 								        value.Value<string>()); // Replace last occurrence
-						        else ProcessContextItem(key, value);
+						        else ProcessContextItem(key, value, ref submenuDepth);
 					        }
 				        }
 
 				        _htmlOut += "\t</ul>\n</li>";
-			        }
+				        submenuDepth--;
+					}
 			        catch (Exception e)
 			        {
 				        Globals.WriteToLog(e.ToString());

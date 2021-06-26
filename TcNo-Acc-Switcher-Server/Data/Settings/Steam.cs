@@ -87,23 +87,25 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 {""Looking to Trade"": ""swapTo(5, event)""},
                 {""Looking to Play"": ""swapTo(6, event)""}
               ]},
-              {""Copy Profile..."": [
-                {""Community URL"": ""copy('URL', event)""},
-                {""Community Username"": ""copy('Line2', event)""},
-                {""Login username"": ""copy('Username', event)""}
-              ]},
-              {""Copy SteamID..."": [
-                {""SteamID [STEAM0:~]"": ""copy('SteamId', event)""},
-                {""SteamID3 [U:1:~]"": ""copy('SteamId3', event)""},
-                {""SteamID32"": ""copy('SteamId32', event)""},
-                {""SteamID64 7656~"": ""copy('id', event)""}
-              ]},
-              {""Copy other..."": [
-                {""SteamRep"": ""copy('SteamRep', event)""},
-                {""SteamID.uk"": ""copy('SteamID.uk', event)""},
-                {""SteamID.io"": ""copy('SteamID.io', event)""},
-                {""SteamRep"": ""copy('SteamIDFinder.com', event)""}
-              ]},
+			  {""Copy..."": [
+	              {""Copy Profile..."": [
+	                {""Community URL"": ""copy('URL', event)""},
+	                {""Community Username"": ""copy('Line2', event)""},
+	                {""Login username"": ""copy('Username', event)""}
+	              ]},
+	              {""Copy SteamID..."": [
+	                {""SteamID [STEAM0:~]"": ""copy('SteamId', event)""},
+	                {""SteamID3 [U:1:~]"": ""copy('SteamId3', event)""},
+	                {""SteamID32"": ""copy('SteamId32', event)""},
+	                {""SteamID64 7656~"": ""copy('id', event)""}
+	              ]},
+	              {""Copy other..."": [
+	                {""SteamRep"": ""copy('SteamRep', event)""},
+	                {""SteamID.uk"": ""copy('SteamID.uk', event)""},
+	                {""SteamID.io"": ""copy('SteamID.io', event)""},
+	                {""SteamRep"": ""copy('SteamIDFinder.com', event)""}
+	              ]},
+			  ]},
               {""Create Desktop Shortcut..."": [
                 {"""": ""createShortcut()""},
                 {""Online (Default)"": ""createShortcut()""},
@@ -116,6 +118,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 {""Looking to Play"": ""createShortcut(':6')""}
               ]},
               {""Change image"": ""changeImage(event)""},
+              {""Open userdata"": ""openUserdata(event)""},
               {""Forget"": ""forget(event)""}
             ]";
 
