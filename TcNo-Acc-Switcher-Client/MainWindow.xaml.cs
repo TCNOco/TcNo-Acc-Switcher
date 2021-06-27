@@ -120,6 +120,7 @@ namespace TcNo_Acc_Switcher_Client
                 MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
                 MViewAddForwarders();
                 MView2.NavigationStarting += UrlChanged;
+                MView2.CoreWebView2.ProcessFailed += CoreWebView2OnProcessFailed;
 
 
                 MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
@@ -137,6 +138,13 @@ namespace TcNo_Acc_Switcher_Client
                 });
             }
             //MView2.CoreWebView2.OpenDevToolsWindow();
+        }
+
+        private void CoreWebView2OnProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
+        {
+	        MessageBox.Show("The browser process has crashed! The program will now exit.", "Fatal error", MessageBoxButton.OK,
+		        MessageBoxImage.Error,
+		        MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
         }
 
         private int _refreshFixAttempts;

@@ -113,8 +113,12 @@ namespace TcNo_Acc_Switcher_Server.Data
 			{
 				return false;
 			}
+			catch (TaskCanceledException)
+			{
+				return false;
+			}
 
-			return true;
+            return true;
 		}
 
 		public static async Task ReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload");
