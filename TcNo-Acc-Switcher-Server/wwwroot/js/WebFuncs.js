@@ -106,7 +106,6 @@ async function restoreBattleNetAccounts() {
 
 function copy(request, e) {
     e.preventDefault();
-    debugger;
 
     // Different function groups based on platform
     switch (getCurrentPage()) {
