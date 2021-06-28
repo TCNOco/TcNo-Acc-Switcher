@@ -435,10 +435,10 @@ namespace TcNo_Acc_Switcher_Updater
             // Check if files are in use
             CloseIfRunning(_currentDir);
 
-            if (Directory.Exists("originalwwwroot"))
+            if (Directory.Exists("wwwroot"))
             {
-                if (Directory.Exists("wwwroot")) RecursiveDelete(new DirectoryInfo("wwwroot"), false);
-	            Directory.Move("originalwwwroot", "wwwroot");
+	            if (Directory.Exists("originalwwwroot")) RecursiveDelete(new DirectoryInfo("originalwwwroot"), false);
+	            Directory.Move("wwwroot", "originalwwwroot");
             }
 
             // APPLY UPDATE
@@ -509,11 +509,6 @@ namespace TcNo_Acc_Switcher_Updater
             }
 
             SetStatusAndLog("Updating files in Documents!");
-            if (Directory.Exists("originalwwwroot"))
-            {
-	            RecursiveDelete(new DirectoryInfo("originalwwwroot"), false);
-	            Directory.Move("wwwroot", "originalwwwroot");
-            }
 			InitWwwroot(true);
             InitFolder("themes", true);
 
@@ -569,7 +564,6 @@ namespace TcNo_Acc_Switcher_Updater
                 {
 	                var key = oKey;
 	                if (key.StartsWith("updater")) continue; // Ignore own files >> Otherwise IOException
-	                if (key.StartsWith("wwwroot")) key = key.Replace("wwwroot", "originalwwwroot");
                     cur++;
                     UpdateProgress(cur * 100 / verifyDictTotal);
                     if (!File.Exists(key))

@@ -38,6 +38,7 @@ RMDIR /Q/S "runtimes\win-arm64"
 RMDIR /Q x64
 RMDIR /Q x86
 copy /B /Y "..\..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
+REN "wwwroot" "originalwwwroot"
 cd %origDir%
 GOTO end
 
@@ -75,6 +76,7 @@ RMDIR /Q/S "runtimes\win-arm64"
 RMDIR /Q x64
 RMDIR /Q x86
 copy /B /Y "..\..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
+REN "wwwroot" "originalwwwroot"
 cd %origDir%
 GOTO end
 
@@ -114,6 +116,7 @@ RMDIR /Q/S "bin\Debug\net5.0-windows\runtimes\win-arm64"
 RMDIR /Q "bin\Release\net5.0-windows\x64"
 RMDIR /Q "bin\Release\net5.0-windows\x86"
 copy /B /Y "..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
+REN "wwwroot" "originalwwwroot"
 cd %origDir%
 GOTO end
 
@@ -151,6 +154,7 @@ RMDIR /Q/S "bin\Release\net5.0-windows\runtimes\win-arm64"
 RMDIR /Q "bin\Release\net5.0-windows\x64"
 RMDIR /Q "bin\Release\net5.0-windows\x86"
 copy /B /Y "..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
+REN "wwwroot" "originalwwwroot"
 cd %origDir%
 GOTO end
 
