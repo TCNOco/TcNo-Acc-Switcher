@@ -15,7 +15,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
     public class RiotSwitcherFuncs
     {
         private static readonly Data.Settings.Riot Riot = Data.Settings.Riot.Instance;
-        private static string _riotClientPrivateSettings = "";
+        private static string _riotClientPrivateSettings = "",
+	        _riotClientConfig = "";
 
         /// <summary>
         /// Main function for Riot Account Switcher. Run on load.
@@ -52,6 +53,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             if (Riot.Initialised) return;
 
             _riotClientPrivateSettings = Path.Join(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client\\Data", "RiotClientPrivateSettings.yaml"));
+            _riotClientConfig = Path.Join(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client\\Config", "RiotClientSettings.yaml"));
 
             // Check what games are installed:
             var riotClientInstallsFile = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Riot Games\\RiotClientInstalls.json");
@@ -154,6 +156,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         {
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.ClearCurrentLoginRiot]");
             if (File.Exists(_riotClientPrivateSettings)) File.Delete(_riotClientPrivateSettings);
+            if (File.Exists(_riotClientConfig)) File.Delete(_riotClientConfig);
         }
 
         private static bool RiotCopyInAccount(string accName)
@@ -168,6 +171,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             }
 
             File.Copy($"{localCachePath}RiotClientPrivateSettings.yaml", _riotClientPrivateSettings, true);
+            File.Copy($"{localCachePath}RiotClientSettings.yaml", _riotClientConfig, true);
             return true;
         }
         
@@ -177,13 +181,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             var localCachePath = $"LoginCache\\Riot\\{accName}\\";
             Directory.CreateDirectory(localCachePath);
 
-            if (!File.Exists(_riotClientPrivateSettings))
+            if (!File.Exists(_riotClientPrivateSettings) || !File.Exists(_riotClientConfig))
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", "Could not locate logged in user", "Failed", "toastarea");
                 return;
             }
             // Save files
             File.Copy(_riotClientPrivateSettings, Path.Join(localCachePath, "RiotClientPrivateSettings.yaml"), true);
+            File.Copy(_riotClientConfig, Path.Join(localCachePath, "RiotClientSettings.yaml"), true);
             
             // Copy in profile image from default
             Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\riot"));
