@@ -106,7 +106,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{acc.Email}\" Username=\"{username}\" DisplayName=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                     $"<label for=\"{acc.Email}\" class=\"acc\">\r\n" +
                     $"<img src=\"img\\profiles\\battlenet\\{acc.Email}.png?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
-                    $"<h6>{username}</h6>\r\n";
+                    $"<h6>{GeneralFuncs.EscapeText(username)}</h6>\r\n";
                 if (BattleNet.OverwatchMode && DateTime.Now - acc.LastTimeChecked < TimeSpan.FromDays(1))
                 {
                     if (acc.OwTankSr != 0)

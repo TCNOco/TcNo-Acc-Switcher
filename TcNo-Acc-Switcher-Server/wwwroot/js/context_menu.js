@@ -68,8 +68,6 @@ function initContextMenu() {
         // Prevent page overflow:
         const xOverflow = posX + menuWidth + hOffset - winWidth;
         const yOverflow = posY + menuHeight + hOffset - winHeight;
-        console.log("X: " + xOverflow + "Y: " + yOverflow);
-
         var posLeft = posX + (xOverflow > 0 ? - menuWidth : 10) + "px";
         var posTop = posY + (yOverflow > 0 ? - yOverflow : 10) + "px";
 
@@ -90,11 +88,8 @@ function initContextMenu() {
     function moveContextMenu(submenu) {
         //rightSpace = $(contextMenu).position().left + $(contextMenu).width() + submenuSize - window.innerWidth;
         rightSpace = $(submenu).offset().left + $(submenu).width() - window.innerWidth;
-        console.log($(submenu).offset().left + " + " + $(submenu).width() + " - " + window.innerWidth + " = " + rightSpace);
-
         bottomSpace = $(submenu).offset().top + $(submenu).height() - window.innerHeight;
-        console.log($(submenu).offset().top + " + " + $(submenu).height() + " - " + window.innerHeight + " = " + bottomSpace);
-		
+
         if (rightSpace > 0) {
             $(contextMenu).css("left", $(contextMenu).position().left - rightSpace - 40);
         }

@@ -511,10 +511,25 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             var lastIndexEnd = lastIndex + sOld.Length;
             return input[..lastIndex] + sNew + input[lastIndexEnd..];
         }
+
+        /// <summary>
+        /// Escape text to be used as text inside HTML elements, using innerHTML
+        /// </summary>
+        /// <param name="text">String to escape</param>
+        /// <returns>HTML escaped string</returns>
+        public static string EscapeText(string text)
+        {
+	        return text.Replace("&", "&amp;")
+		        .Replace("<", "&lt;")
+		        .Replace(">", "&gt;")
+		        .Replace("\"", "&#34;")
+		        .Replace("'", "&#39;")
+		        .Replace("/", "&#47;");
+        }
         #endregion
 
         #region SWITCHER_FUNCTIONS
-        
+
         public static async System.Threading.Tasks.Task HandleFirstRender(bool firstRender, string platform)
         {
             AppData.Instance.WindowTitle = $"TcNo Account Switcher - {platform}";

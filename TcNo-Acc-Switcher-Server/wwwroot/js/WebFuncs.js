@@ -106,7 +106,7 @@ async function restoreBattleNetAccounts() {
 
 function copy(request, e) {
     e.preventDefault();
-    const requestResult = $(selectedElem).attr(request);
+    debugger;
 
     // Different function groups based on platform
     switch (getCurrentPage()) {
@@ -114,7 +114,7 @@ function copy(request, e) {
             steam();
             break;
         default:
-            copyToClipboard(requestResult);
+            copyToClipboard(unEscapeString($(selectedElem).attr(request)));
             break;
     }
     return;
@@ -147,10 +147,16 @@ function copy(request, e) {
                 copyToClipboard(`https://steamidfinder.com/lookup/${steamId64}/`);
                 break;
             default:
-                copyToClipboard(requestResult);
+                copyToClipboard(unEscapeString($(selectedElem).attr(request)));
         }
     }
 }
+
+// Take a string that is HTML escaped, and return a normal string back.
+function unEscapeString(s) {
+	return s.replace("&lt;", "<").replace("&gt;", ">").replace("&#34;", "\"").replace("&#39;", "'").replace("&#47;", "/");
+}
+
 
 // General function: Get selected account
 var selected;
