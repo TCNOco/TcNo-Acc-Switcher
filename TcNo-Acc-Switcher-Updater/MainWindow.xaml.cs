@@ -867,8 +867,10 @@ namespace TcNo_Acc_Switcher_Updater
             foreach (var p in _patchList)
             {
                 var relativePath = p.Remove(0, p.Split("\\")[0].Length + 1);
-                var patchFile = Path.Join(outputFolder, "patches", relativePath);
-                var patchedFile = Path.Join(outputFolder, "patched", relativePath);
+                var patchFile = Path.Join(outputFolder, "patches", relativePath);                // Necessary fix for pre 2021-06-28_01 versions to update using this new updater.
+                if (relativePath.StartsWith("wwwroot"))
+	                relativePath = relativePath.Replace("wwwroot", "originalwwwroot");
+				var patchedFile = Path.Join(outputFolder, "patched", relativePath);
                 Directory.CreateDirectory(Path.GetDirectoryName(patchedFile)!);
                 DoDecode(Path.Join(oldFolder, relativePath), patchFile, patchedFile);
             }
