@@ -341,6 +341,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         private Dictionary<string, string> _stylesheet;
         [JsonIgnore] public Dictionary<string, string> Stylesheet { get => _instance._stylesheet; set => _instance._stylesheet = value; }
 
+        private bool _windowsAccent;
+        public bool WindowsAccent { get => _instance._windowsAccent; set => _instance._windowsAccent = value; }
+
         // Constants
         [JsonIgnore] public readonly string SettingsFile = "WindowSettings.json";
         [JsonIgnore] public readonly string StylesheetFile = "StyleSettings.yaml";
@@ -544,6 +547,8 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             // Get name of current stylesheet
             GetCurrentStylesheet();
+	        if (WindowsAccent)
+		        SetAccentColor();
         }
 
         /// <summary>
@@ -645,11 +650,97 @@ namespace TcNo_Acc_Switcher_Server.Data
 	        }
         }
 
-        /// <summary>
-        /// Create shortcuts in Start Menu
-        /// </summary>
-        /// <param name="platforms">true creates Platforms folder & drops shortcuts, otherwise only places main program & tray shortcut</param>
-        public void StartMenu_Toggle(bool platforms)
+        #region WindowsAccent
+        [SupportedOSPlatform("windows")]
+        public void WindowsAccent_Toggle()
+        {
+	        if (!WindowsAccent)
+		        SetAccentColor(true);
+	        else
+		        GeneralInvocableFuncs.ShowToast("info", "Please restart the program after clicking Close.", "Accent color disabled", "toastarea");
+        }
+
+        [SupportedOSPlatform("windows")]
+        private void SetAccentColor() => SetAccentColor(false);
+        [SupportedOSPlatform("windows")]
+        private void SetAccentColor(bool userInvoked)
+        {
+	        var accent = GetAccentColorHexString();
+	        _instance._stylesheet["selectionBackground"] = accent;
+	        _instance._stylesheet["linkColor"] = accent;
+	        _instance._stylesheet["linkColor-hover"] = accent; // TODO: Make this lighter somehow
+            _instance._stylesheet["linkColor-active"] = accent; // TODO: Make this darker somehow
+            _instance._stylesheet["borderedItemBorderColorBottom-focus"] = accent;
+            _instance._stylesheet["buttonBorder-active"] = accent;
+            _instance._stylesheet["checkboxBackground-checked"] = accent;
+            _instance._stylesheet["listBackgroundColor-checked"] = accent;
+	        _instance._stylesheet["listTextColor-before"] = accent;
+	        _instance._stylesheet["updateBarBackground"] = accent;
+	        _instance._stylesheet["platformBorderColor"] = accent;
+
+	        var accentColorIntString = GetAccentColorIntString();
+            _instance._stylesheet["platformTransform-HoverAnimation-boxShadow-0"] = $"0 0 0 0 rgba({accentColorIntString}, 0.7)";
+	        _instance._stylesheet["platformTransform-HoverAnimation-boxShadow-70"] = $"0 0 0 10px rgba({accentColorIntString}, 0)";
+            _instance._stylesheet["platformTransform-HoverAnimation-boxShadow-100"] = $"0 0 0 10px rgba({accentColorIntString}, 0)";
+
+            if (userInvoked)
+                _ = AppData.ReloadPage();
+        }
+
+        [SupportedOSPlatform("windows")]
+        public static string GetAccentColorHexString()
+        {
+	        byte r, g, b, a;
+	        (r, g, b, a) = GetAccentColor();
+	        byte[] rgb = {r, g, b};
+	        return '#' + BitConverter.ToString(rgb).Replace("-", string.Empty);
+        }
+
+        [SupportedOSPlatform("windows")]
+        public static string GetAccentColorIntString()
+        {
+	        byte r, g, b, a;
+	        (r, g, b, a) = GetAccentColor();
+	        byte[] rgb = { r, g, b };
+	        return Convert.ToInt32(r) + ", " + Convert.ToInt32(g) + ", " + Convert.ToInt32(b);
+        }
+
+        [SupportedOSPlatform("windows")]
+        public static (byte r, byte g, byte b, byte a) GetAccentColor()
+        {
+	        using var dwmKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\DWM", RegistryKeyPermissionCheck.ReadSubTree);
+	        const string keyExMsg = "The \"HKCU\\Software\\Microsoft\\Windows\\DWM\" registry key does not exist.";
+	        if (dwmKey is null) throw new InvalidOperationException(keyExMsg);
+
+	        var accentColorObj = dwmKey.GetValue("AccentColor");
+	        if (accentColorObj is int accentColorDWord)
+	        {
+		        return ParseDWordColor(accentColorDWord);
+	        }
+	        else
+	        {
+		        const string valueExMsg = "The \"HKCU\\Software\\Microsoft\\Windows\\DWM\\AccentColor\" registry key value could not be parsed as an ABGR color.";
+		        throw new InvalidOperationException(valueExMsg);
+	        }
+        }
+
+        private static (byte r, byte g, byte b, byte a) ParseDWordColor(int color)
+        {
+	        byte
+                a = (byte)((color >> 24) & 0xFF),
+		        b = (byte)((color >> 16) & 0xFF),
+		        g = (byte)((color >> 8) & 0xFF),
+		        r = (byte)((color >> 0) & 0xFF);
+
+	        return (r, g, b, a);
+        }
+    #endregion
+
+    /// <summary>
+    /// Create shortcuts in Start Menu
+    /// </summary>
+    /// <param name="platforms">true creates Platforms folder & drops shortcuts, otherwise only places main program & tray shortcut</param>
+    public void StartMenu_Toggle(bool platforms)
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.StartMenu_Toggle]");
             if (platforms)
