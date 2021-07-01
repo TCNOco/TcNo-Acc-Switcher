@@ -36,13 +36,14 @@ $(function () {
 });
 
 function jQueryAppend(jQuerySelector, strToInsert) {
-    $(jQuerySelector).append(strToInsert);
+	$(jQuerySelector).append(strToInsert);
 };
 
 function jQueryProcessAccListSize() {
     let maxHeight = 0;
     $(".acc_list_item label").each((_, e) => { maxHeight = Math.max(maxHeight, e.offsetHeight); });
-    document.getElementById("acc_list").setAttribute("style", `grid-template-rows: repeat(auto-fill, ${maxHeight}px)`);
+    if (document.getElementById("acc_list"))
+	    document.getElementById("acc_list").setAttribute("style", `grid-template-rows: repeat(auto-fill, ${maxHeight}px)`);
 };
 
 // Removes arguments like "?toast_type, &toast_title, &toast_message" from the URL.
@@ -77,6 +78,7 @@ function updateStatus(status) {
 };
 
 function initAccListSortable() {
+	if (document.getElementsByClassName(".acc_list").length === 0) return;
     // Create sortable list
     sortable(".acc_list", {
         forcePlaceholderSize: true,

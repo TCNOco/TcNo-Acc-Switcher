@@ -94,7 +94,8 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         [JsonIgnore] public string PlatformContextMenu = @"[
               {""Hide platform"": ""hidePlatform()""},
-              {""Create Desktop Shortcut"": ""createPlatformShortcut()""}
+              {""Create Desktop Shortcut"": ""createPlatformShortcut()""},
+              {""Export account list"": ""exportAllAccounts()""}
             ]";
         [JSInvokable]
         public static async System.Threading.Tasks.Task HidePlatform(string platform)
@@ -438,8 +439,9 @@ namespace TcNo_Acc_Switcher_Server.Data
             try
             {
 	            if (LoadStylesheetFromFile()) await AppData.ReloadPage();
-	            else throw new Exception(); // Jump to the error display
-            }
+				else GeneralInvocableFuncs.ShowToast("error", "Failed to load stylesheet! See documents folder for details.",
+		            "Stylesheet error", "toastarea");
+			}
             catch (Exception)
 			{
 				GeneralInvocableFuncs.ShowToast("error", "Failed to load stylesheet! See documents folder for details.",
@@ -701,7 +703,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [SupportedOSPlatform("windows")]
         private void SetAccentColor() => SetAccentColor(false);
         [SupportedOSPlatform("windows")]
-        private void SetAccentColor(bool userInvoked)
+        private static void SetAccentColor(bool userInvoked)
         {
 	        var accent = GetAccentColorHexString();
 	        _instance._stylesheet["selectionBackground"] = accent;
@@ -728,8 +730,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         [SupportedOSPlatform("windows")]
         public static string GetAccentColorHexString()
         {
-	        byte r, g, b, a;
-	        (r, g, b, a) = GetAccentColor();
+	        byte r, g, b;
+	        (r, g, b) = GetAccentColor();
 	        byte[] rgb = {r, g, b};
 	        return '#' + BitConverter.ToString(rgb).Replace("-", string.Empty);
         }
@@ -737,14 +739,13 @@ namespace TcNo_Acc_Switcher_Server.Data
         [SupportedOSPlatform("windows")]
         public static string GetAccentColorIntString()
         {
-	        byte r, g, b, a;
-	        (r, g, b, a) = GetAccentColor();
-	        byte[] rgb = { r, g, b };
+	        byte r, g, b;
+	        (r, g, b) = GetAccentColor();
 	        return Convert.ToInt32(r) + ", " + Convert.ToInt32(g) + ", " + Convert.ToInt32(b);
         }
 
         [SupportedOSPlatform("windows")]
-        public static (byte r, byte g, byte b, byte a) GetAccentColor()
+        public static (byte r, byte g, byte b) GetAccentColor()
         {
 	        using var dwmKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\DWM", RegistryKeyPermissionCheck.ReadSubTree);
 	        const string keyExMsg = "The \"HKCU\\Software\\Microsoft\\Windows\\DWM\" registry key does not exist.";
@@ -762,15 +763,15 @@ namespace TcNo_Acc_Switcher_Server.Data
 	        }
         }
 
-        private static (byte r, byte g, byte b, byte a) ParseDWordColor(int color)
+        private static (byte r, byte g, byte b) ParseDWordColor(int color)
         {
-	        byte
-                a = (byte)((color >> 24) & 0xFF),
+            byte
+                //a = (byte)((color >> 24) & 0xFF),
 		        b = (byte)((color >> 16) & 0xFF),
 		        g = (byte)((color >> 8) & 0xFF),
 		        r = (byte)((color >> 0) & 0xFF);
 
-	        return (r, g, b, a);
+	        return (r, g, b);
         }
     #endregion
 

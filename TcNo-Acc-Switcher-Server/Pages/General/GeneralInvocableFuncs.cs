@@ -13,8 +13,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
@@ -317,6 +319,92 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             var s = new Shortcut();
             s.Shortcut_Platform(Shortcut.Desktop, platform, platform.ToLowerInvariant());
             s.ToggleShortcut(true);
+        }
+
+        [JSInvokable]
+        public static async Task<string> GiExportAccountList(string platform)
+        {
+	        Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiExportAccountList] platform={platform}");
+	        if (!Directory.Exists(Path.Join("LoginCache", platform)))
+	        {
+		        ShowToast("error", "Open the platform from the list and add a few accounts first",
+			        "No saved accounts", "toastarea");
+		        return "";
+	        }
+
+	        var s = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
+
+	        List<string> allAccountsTable = new();
+	        if (platform == "Steam")
+	        {
+		        // Add headings and separator for programs like Excel
+                allAccountsTable.Add("SEP=,");
+                allAccountsTable.Add("Account name:,Community name:,SteamID:,VAC status:,Last login:,Saved profile image:");
+
+		        var userAccounts = SteamSwitcherFuncs.GetSteamUsers(Steam.LoginUsersVdf());
+		        var vacStatusList = new List<SteamSwitcherFuncs.VacStatus>();
+		        var loadedVacCache = SteamSwitcherFuncs.LoadVacInfo(ref vacStatusList);
+
+				foreach (var ua in userAccounts)
+				{
+					var VacInfo = "";
+					// Get VAC/Limited info
+					if (loadedVacCache)
+						foreach (var vsi in vacStatusList.Where(vsi => vsi.SteamId == ua.SteamId))
+						{
+							if (vsi.Vac && vsi.Ltd) VacInfo += "VAC + Limited";
+							else VacInfo += (vsi.Vac ? "VAC" : "") + (vsi.Ltd ? "Limited" : "");
+							break;
+						}
+					else
+					{
+						VacInfo += "N/A";
+					}
+
+					var imagePath = Path.GetFullPath($"{Steam.SteamImagePath + ua.SteamId}.jpg");
+					allAccountsTable.Add(ua.AccName + s + 
+					                     ua.Name + s + 
+					                     ua.SteamId + s + 
+					                     VacInfo + s + 
+					                     SteamSwitcherFuncs.UnixTimeStampToDateTime(ua.LastLogin) + s + 
+                                         (File.Exists(imagePath) ? imagePath : "Missing from disk"));
+                }
+	        }
+            else if (platform == "BattleNet")
+			{
+				// Add headings and separator for programs like Excel
+				allAccountsTable.Add("SEP=,");
+				allAccountsTable.Add("Email:,BattleTag:,Overwatch Support SR:,Overwatch DPS SR:,Overwatch Tank SR:,Saved profile image:");
+
+                await BattleNetSwitcherFuncs.LoadProfiles();
+
+                foreach (var ba in BattleNet.Accounts)
+                {
+	                var imagePath = Path.GetFullPath($"wwwroot\\img\\profiles\\battlenet\\{ba.Email}.png");
+	                allAccountsTable.Add(ba.Email + s +
+	                                     ba.BTag + s +
+	                                     (ba.OwSupportSr != 0 ? ba.OwSupportSr : "") + s +
+	                                     (ba.OwDpsSr != 0 ? ba.OwDpsSr : "") + s +
+	                                     (ba.OwTankSr != 0 ? ba.OwTankSr : "") + s +
+	                                     (File.Exists(imagePath) ? imagePath : "Missing from disk"));
+                }
+			}
+            else
+			{
+				// Platform does not have specific details other than usernames saved.
+				allAccountsTable.Add("Account name:");
+				foreach (var accDirectory in Directory.GetDirectories(Path.Join("LoginCache", platform)))
+				{
+					allAccountsTable.Add(Path.GetFileName(accDirectory));
+				}
+			}
+
+	        var outputFolder = Path.Join("wwwroot", "Exported");
+	        Directory.CreateDirectory(outputFolder);
+
+	        var outputFile = Path.Join(outputFolder, platform + ".csv");
+	        await File.WriteAllLinesAsync(outputFile, allAccountsTable).ConfigureAwait(false);
+	        return Path.Join("Exported", platform + ".csv");
         }
     }
 }

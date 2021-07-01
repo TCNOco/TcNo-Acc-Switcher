@@ -23,7 +23,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
 	    public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-	    public static readonly string Version = "2021-06-28_02";
+	    public static readonly string Version = "2021-07-01_00";
 	    public static readonly string[] PlatformList = {"Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot"};
 
 	    #region LOGGER
@@ -111,18 +111,32 @@ namespace TcNo_Acc_Switcher_Globals
 	    {
 		    // Set working directory to documents folder
 		    Directory.SetCurrentDirectory(UserDataFolder);
-		    // Log Unhandled Exception
-		    var exceptionStr = e.ExceptionObject.ToString();
-		    Directory.CreateDirectory("CrashLogs");
-		    var filePath = $"CrashLogs\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
-		    using (var sw = File.AppendText(filePath))
-		    {
-			    sw.WriteLine(
-				    $"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({Version})\t{Strings.ErrUnhandledCrash}: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
-		    }
 
-		    WriteToLog(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
-		    WriteToLog(Strings.ErrSubmitCrashlog);
+		    // Log Unhandled Exception
+		    try
+		    {
+			    var exceptionStr = e.ExceptionObject.ToString();
+			    Directory.CreateDirectory("CrashLogs");
+			    var filePath = $"CrashLogs\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
+			    if (File.Exists(filePath))
+			    {
+				    Random r = new();
+                    filePath = $"CrashLogs\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}{r.Next(0, 100)}.txt";
+			    }
+
+                using (var sw = File.AppendText(filePath))
+			    {
+				    sw.WriteLine(
+					    $"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({Version})\t{Strings.ErrUnhandledCrash}: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
+			    }
+
+			    WriteToLog(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
+			    WriteToLog(Strings.ErrSubmitCrashlog);
+            }
+		    catch (Exception)
+		    {
+			    // This is just to prevent a complete crash. Sometimes there are multiple errors super close together, that cause it to break and we end up here.
+		    }
 	    }
 
 	    #endregion
@@ -237,7 +251,14 @@ namespace TcNo_Acc_Switcher_Globals
 		        var pathBytes = Encoding.UTF8.GetBytes(file[(path.Length + 1)..].ToLower());
 		        md5.TransformBlock(pathBytes, 0, pathBytes.Length, pathBytes, 0);
 
-		        lastBytes = File.ReadAllBytes(file);
+		        try
+		        {
+			        lastBytes = File.ReadAllBytes(file);
+                }
+		        catch (IOException)
+		        {
+			        // File is in use
+		        }
 	        }
 
 	        if (lastBytes != null)

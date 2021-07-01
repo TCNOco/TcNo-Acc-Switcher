@@ -228,6 +228,37 @@ function createPlatformShortcut() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCreatePlatformShortcut", selectedElem);
 }
 
+var exportingAccounts = false;
+
+async function exportAllAccounts() {
+    if (exportingAccounts) {
+	    window.notification.new({
+		    type: "error",
+            title: "Error",
+            message: "Already processing accounts...",
+		    renderTo: "toastarea",
+            duration: 5000
+	    });
+        return;
+    }
+    exportingAccounts = true;
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiExportAccountList", selectedElem).then((r) => {
+        let filename = r.split('/')
+        saveFile(filename[filename.length - 1], r);
+        exportingAccounts = false;
+    });
+    _ = await promise;
+}
+
+function saveFile(fileName, urlFile) {
+	let a = document.createElement("a");
+	a.style = "display: none";
+	document.body.appendChild(a);
+	a.href = urlFile;
+	a.download = fileName;
+	a.click();
+	a.remove();
+}
 
 
 // Add currently logged in Origin account
