@@ -417,14 +417,14 @@ namespace TcNo_Acc_Switcher_Server.Data
             CheckShortcuts();
         }
 
-        public void LoadFromFile()
+        public bool LoadFromFile()
         {
             Globals.DebugWriteLine(@"[Func:Data\AppSettings.LoadFromFile]");
             // Main settings
             if (!File.Exists(SettingsFile)) SaveSettings();
             else SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
             // Stylesheet
-            LoadStylesheetFromFile();
+            return LoadStylesheetFromFile();
         }
 
         #region STYLESHEET
@@ -435,14 +435,22 @@ namespace TcNo_Acc_Switcher_Server.Data
         public async System.Threading.Tasks.Task SwapStylesheet(string swapTo)
         {
             File.Copy($"themes\\{swapTo.Replace(' ', '_')}.yaml", StylesheetFile, true);
-            LoadStylesheetFromFile();
-            await AppData.ReloadPage();
-        }
+            try
+            {
+	            if (LoadStylesheetFromFile()) await AppData.ReloadPage();
+	            else throw new Exception(); // Jump to the error display
+            }
+            catch (Exception)
+			{
+				GeneralInvocableFuncs.ShowToast("error", "Failed to load stylesheet! See documents folder for details.",
+					"Stylesheet error", "toastarea");
+			}
+		}
 
         /// <summary>
         /// Load stylesheet settings from stylesheet file.
         /// </summary>
-        public void LoadStylesheetFromFile()
+        public bool LoadStylesheetFromFile()
         {
             if (!File.Exists(StylesheetFile))
             {
@@ -457,6 +465,41 @@ namespace TcNo_Acc_Switcher_Server.Data
 	                    "You can run the Updater in the \"updater\" folder to verify files, and restore these missing files.");
                 }
             }
+
+            try
+            {
+	            LoadStylesheet();
+            }
+            catch (YamlDotNet.Core.SyntaxErrorException e)
+            {
+                File.Copy(StylesheetFile, "StyleSettings_broken.yaml", true);
+                if (File.Exists("StyleSettings_ErrorInfo.txt")) File.Delete("StyleSettings_ErrorInfo.txt");
+                File.WriteAllText("StyleSettings_ErrorInfo.txt", e.ToString());
+
+	            if (File.Exists("themes\\Default.yaml"))
+		            File.Copy("themes\\Default.yaml", StylesheetFile, true);
+	            else if (File.Exists(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml")))
+		            File.Copy(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml"), StylesheetFile, true);
+	            else
+	            {
+		            throw new Exception(
+			            "A syntax error was encountered (more details below)! AND:" + Environment.NewLine + 
+			            "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run." + Environment.NewLine +
+			            "You can run the Updater in the \"updater\" folder to verify files, and restore these missing files." + Environment.NewLine + Environment.NewLine + e);
+	            }
+	            return false;
+            }
+
+            // Get name of current stylesheet
+            GetCurrentStylesheet();
+	        if (WindowsAccent)
+		        SetAccentColor();
+
+	        return true;
+        }
+
+        private void LoadStylesheet()
+        {
             // Load new stylesheet
             var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
             var attempts = 0;
@@ -544,11 +587,6 @@ namespace TcNo_Acc_Switcher_Server.Data
                     }
                 }
             }
-
-            // Get name of current stylesheet
-            GetCurrentStylesheet();
-	        if (WindowsAccent)
-		        SetAccentColor();
         }
 
         /// <summary>

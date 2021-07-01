@@ -199,7 +199,31 @@ namespace TcNo_Acc_Switcher_Client
         private static void IsRunningAlready()
         {
 
-	        AppSettings.Instance.LoadFromFile();
+	        if (!AppSettings.Instance.LoadFromFile())
+	        {
+		        if (File.Exists("StyleSettings_ErrorInfo.txt"))
+		        {
+			        var errorText = File.ReadAllText("StyleSettings_ErrorInfo.txt").Split("\n");
+			        MessageBox.Show(
+				        "Could not load StyleSettings.json! Error details: " + Environment.NewLine +
+				        errorText[0] + Environment.NewLine + Environment.NewLine +
+				        "The default file will be loaded." + Environment.NewLine +
+				        "See \"StyleSettings_broken.yaml\" for the broken style settings." + Environment.NewLine +
+				        "See \"StyleSettings_ErrorInfo.txt\" for the full error message. Above is only the first line.", "Failed to load Styles", MessageBoxButton.OK,
+				        MessageBoxImage.Error);
+			        try
+			        {
+				        AppSettings.Instance.LoadFromFile();
+                    }
+			        catch (Exception e)
+			        {
+				        MessageBox.Show(
+					        "Another unexpected error occurred! Error details: " + Environment.NewLine +
+					        e, "Failed to load Styles (2)", MessageBoxButton.OK, MessageBoxImage.Error);
+                        throw;
+			        }
+		        }
+	        }
             try
             {
                 // Check if program is running, if not: return.
