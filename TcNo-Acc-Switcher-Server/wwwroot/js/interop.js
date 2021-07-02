@@ -78,7 +78,7 @@ function updateStatus(status) {
 };
 
 function initAccListSortable() {
-	if (document.getElementsByClassName(".acc_list").length === 0) return;
+	if (document.getElementsByClassName("acc_list").length === 0) return;
     // Create sortable list
     sortable(".acc_list", {
         forcePlaceholderSize: true,
