@@ -73,8 +73,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 	        if (string.IsNullOrEmpty(text))
 		        return string.Empty;
 
-	        using var sha = new System.Security.Cryptography.SHA256Managed();
-	        var textData = System.Text.Encoding.UTF8.GetBytes(text);
+	        using var sha = new SHA256Managed();
+	        var textData = Encoding.UTF8.GetBytes(text);
 	        var hash = sha.ComputeHash(textData);
 	        return BitConverter.ToString(hash).Replace("-", string.Empty);
         }
@@ -85,7 +85,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 	        foreach (var file in new DirectoryInfo(DiscordStorageFolder).GetFiles("*"))
 	        {
 		        if (!file.Name.EndsWith(".ldb") && !file.Name.EndsWith(".log")) continue;
-		        var text = File.ReadAllText(file.FullName);
+		        var text = GeneralFuncs.ReadOnlyReadAllText(file.FullName);
 		        var test1 = new Regex(@"[\w-]{24}\.[\w-]{6}\.[\w-]{27}").Match(text).Value;
 		        var test2 = new Regex(@"mfa\.[\w-]{84}").Match(text).Value;
 		        token = test1 != "" ? test1 : test2 != "" ? test2 : token;

@@ -365,6 +365,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             using var stream = File.OpenRead(filePath);
             return stream.Length != 0 ? BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLowerInvariant() : "0";
         }
+
+        public static string ReadOnlyReadAllText(string f)
+        {
+	        var text = "";
+	        using var stream = File.Open(f, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+	        using var reader = new StreamReader(stream);
+	        while (!reader.EndOfStream)
+	        {
+		        text += reader.ReadLine() + Environment.NewLine;
+	        }
+
+	        return text;
+        }
         #endregion
 
         #region SETTINGS
