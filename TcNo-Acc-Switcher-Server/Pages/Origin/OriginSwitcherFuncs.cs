@@ -66,7 +66,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: hidden.");
             AppData.InvokeVoidAsync("updateStatus", "Closing Origin");
             if (!CloseOrigin()) return;
-            // DO ACTUAL SWITCHING HERE
             if (!ClearCurrentLoginOrigin())
             {
                 _ = GeneralInvocableFuncs.ShowToast("error",  "Failed to clear old login files", "Error", "toastarea");
@@ -304,7 +303,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.CloseOrigin]");
             if (!GeneralFuncs.CanKillProcess("origin")) return false;
             Globals.KillProcess("origin");
-            return true;
+            return GeneralFuncs.WaitForClose("origin");
         }
         #endregion
     }

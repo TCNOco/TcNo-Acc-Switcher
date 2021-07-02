@@ -33,30 +33,38 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         [SupportedOSPlatform("windows")]
         public static bool IsProcessAdmin(string processName)
         {
-            var processes = Process.GetProcessesByName(processName);
-            if (processes.Length == 0) return false; // Program is not running
-            var proc = processes[0];
+	        var processes = Process.GetProcessesByName(processName);
+	        if (processes.Length == 0) return false; // Program is not running
+	        var proc = processes[0];
 
-            IntPtr handle;
-            try
-            {
-                handle = proc.Handle;
-                return IsHandleAdmin(handle);
-            }
-            catch (Exception)
-            {
-                try
-                {
-                    handle = proc.MainWindowHandle;
-                    return IsHandleAdmin(handle);
-                }
-                catch (Exception a)
-                {
-                    Globals.WriteToLog(a.ToString());
-                }
-            }
+	        IntPtr handle;
+	        try
+	        {
+		        handle = proc.Handle;
+		        return IsHandleAdmin(handle);
+	        }
+	        catch (Exception)
+	        {
+		        try
+		        {
+			        handle = proc.MainWindowHandle;
+			        return IsHandleAdmin(handle);
+		        }
+		        catch (Exception a)
+		        {
+			        Globals.WriteToLog(a.ToString());
+		        }
+	        }
 
-            return true;
+	        return true;
+        }
+
+        [SupportedOSPlatform("windows")]
+        public static bool IsProcessRunning(string processName)
+        {
+	        var proc = Process.GetProcessesByName(processName);
+
+            return proc.Length != 0;
         }
 
         [SupportedOSPlatform("windows")]

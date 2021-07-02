@@ -436,7 +436,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.CloseSteam]");
             if (!GeneralFuncs.CanKillProcess("steam")) return false;
             Globals.KillProcess("steam");
-            return true;
+            return GeneralFuncs.WaitForClose("steam");
         }
 
         /// <summary>

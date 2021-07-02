@@ -268,7 +268,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.CloseBattleNet]");
             if (!GeneralFuncs.CanKillProcess("Battle.net")) return false;
             Globals.KillProcess("Battle.net");
-            return true;
+            return GeneralFuncs.WaitForClose("Battle.net");
         }
 
         /// <summary>

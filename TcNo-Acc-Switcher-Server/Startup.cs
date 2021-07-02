@@ -48,14 +48,15 @@ namespace TcNo_Acc_Switcher_Server
             services.AddLanguageContainer<EmbeddedResourceKeysProvider>(Assembly.GetExecutingAssembly(), "Resources");
             services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
             // Persistent settings:
-            services.AddSingleton<AppSettings>(); // App Settings
-            services.AddSingleton<AppData>(); // App Data
-            services.AddSingleton<Data.Settings.BattleNet>(); // BattleNet
-            services.AddSingleton<Data.Settings.Epic>(); // Epic
-            services.AddSingleton<Data.Settings.Origin>(); // Origin
-            services.AddSingleton<Data.Settings.Riot>(); // Riot Games
-            services.AddSingleton<Data.Settings.Steam>(); // Steam
-            services.AddSingleton<Data.Settings.Ubisoft>(); // Ubisoft
+            services.AddSingleton<AppSettings>();
+            services.AddSingleton<AppData>();
+            services.AddSingleton<Data.Settings.BattleNet>();
+            services.AddSingleton<Data.Settings.Discord>();
+            services.AddSingleton<Data.Settings.Epic>();
+            services.AddSingleton<Data.Settings.Origin>();
+            services.AddSingleton<Data.Settings.Riot>();
+            services.AddSingleton<Data.Settings.Steam>();
+            services.AddSingleton<Data.Settings.Ubisoft>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -24,6 +24,7 @@ using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.BattleNet;
+using TcNo_Acc_Switcher_Server.Pages.Discord;
 using TcNo_Acc_Switcher_Server.Pages.Epic;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Origin;
@@ -36,6 +37,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralInvocableFuncs
     {
+        private static readonly Data.Settings.Discord Discord = Data.Settings.Discord.Instance;
         private static readonly Data.Settings.Epic Epic = Data.Settings.Epic.Instance;
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
         private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
@@ -129,11 +131,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 var accName = split[1];
 
+                if (action.StartsWith("AcceptForgetDiscordAcc:"))
+                {
+	                Discord.SetForgetAcc(true);
+	                DiscordSwitcherFuncs.ForgetAccount(accName);
+	                return Task.FromResult("refresh");
+                }
+
                 if (action.StartsWith("AcceptForgetEpicAcc:"))
                 {
-                    Epic.SetForgetAcc(true);
-                    EpicSwitcherFuncs.ForgetAccount(accName);
-                    return Task.FromResult("refresh");
+	                Epic.SetForgetAcc(true);
+	                EpicSwitcherFuncs.ForgetAccount(accName);
+	                return Task.FromResult("refresh");
                 }
 
                 if (action.StartsWith("AcceptForgetSteamAcc:"))

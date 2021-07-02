@@ -44,6 +44,13 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     else GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
                     break;
 
+                case "Discord":
+	                if (!GeneralFuncs.CanKillProcess("Discord.exe")) return;
+	                Data.Settings.Discord.Instance.LoadFromFile();
+	                if (Directory.Exists(Data.Settings.Discord.Instance.FolderPath) && File.Exists(Data.Settings.Discord.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Discord/");
+	                else GeneralInvocableFuncs.ShowModal("find:Discord:Discord.exe:DiscordSettings");
+	                break;
+
                 case "Epic":
                     if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) return;
                     Data.Settings.Epic.Instance.LoadFromFile();

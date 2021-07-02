@@ -35,12 +35,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
     public class GeneralFuncs
     {
         #region PROCESS_OPERATIONS
+        public static void StartProgram(string path, bool elevated) => StartProgram(path, elevated, "");
         /// <summary>
         /// Starts a process with or without Admin
         /// </summary>
         /// <param name="path">Path of process to start</param>
         /// <param name="elevated">Whether the process should start elevated or not</param>
-        public static void StartProgram(string path, bool elevated)
+        /// <param name="args">Arguments to pass into the program</param>
+        public static void StartProgram(string path, bool elevated, string args)
         {
 
             if (!elevated)
@@ -53,6 +55,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     {
                         FileName = path, 
                         UseShellExecute = true, 
+                        Arguments = args,
                         Verb = "runas"
                     }
                 };
@@ -95,11 +98,33 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             return canKill;
         }
-        #endregion
 
-        #region FILE_OPERATIONS
+        /// <summary>
+        /// Waits for a program to close, and returns true if not running anymore.
+        /// </summary>
+        /// <param name="procName">Name of process to lookup</param>
+        /// <returns>Whether it was closed before this function returns or not.</returns>
+		public static bool WaitForClose(string procName)
+		{
+			if (!OperatingSystem.IsWindows()) return false;
+			var timeout = 0;
+			while (ProcessHelper.IsProcessRunning(procName) && timeout < 10)
+			{
+				timeout++;
+				AppData.InvokeVoidAsync("updateStatus", $"Waiting for {procName} to close ({timeout}/10 seconds)");
+                System.Threading.Thread.Sleep(1000);
+			}
 
-        public static string WwwRoot()
+            if (timeout == 10)
+	            GeneralInvocableFuncs.ShowToast("error", $"Could not close {procName}!", "Error", "toastarea");
+
+            return timeout != 10; // Returns true if timeout wasn't reached.
+		}
+		#endregion
+
+		#region FILE_OPERATIONS
+
+		public static string WwwRoot()
         {
             return Path.Join(Globals.UserDataFolder, "\\wwwroot");
         }
@@ -548,6 +573,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                         await BattleNet.BattleNetSwitcherFuncs.LoadProfiles();
                         Data.Settings.BattleNet.Instance.SaveSettings(!File.Exists(Data.Settings.BattleNet.SettingsFile));
                         break;
+
+                    case "Discord":
+	                    Discord.DiscordSwitcherFuncs.LoadProfiles();
+	                    Data.Settings.Discord.Instance.SaveSettings(!File.Exists(Data.Settings.Discord.SettingsFile));
+	                    break;
 
                     case "Epic Games":
                         Epic.EpicSwitcherFuncs.LoadProfiles();

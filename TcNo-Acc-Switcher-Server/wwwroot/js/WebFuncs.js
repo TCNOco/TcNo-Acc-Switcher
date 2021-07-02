@@ -262,12 +262,16 @@ function saveFile(fileName, urlFile) {
 
 
 // Add currently logged in Origin account
-function currentOriginLogin() {
-    showModal("accString:Origin");
+function currentDiscordLogin() {
+	showModal("accString:Discord");
 }
 // Add currently logged in Origin account
 function currentEpicLogin() {
-    showModal("accString:Epic");
+	showModal("accString:Epic");
+}
+// Add currently logged in Origin account
+function currentOriginLogin() {
+    showModal("accString:Origin");
 }
 // Add currently logged in Origin account
 function currentRiotLogin() {
@@ -365,9 +369,9 @@ function showModal(modaltype) {
         let header = "<h3>Confirm action:</h3>";
         if (action.startsWith("AcceptForgetSteamAcc")) {
             message = forgetAccountSteamPrompt;
-        } else if (action.startsWith("AcceptForgetOriginAcc") || action.startsWith("AcceptForgetUbisoftAcc") ||
-            action.startsWith("AcceptForgetBattleNetAcc") || action.startsWith("AcceptForgetEpicAcc") || 
-            action.startsWith("AcceptForgetRiotAcc")) {
+        } else if (action.startsWith("AcceptForgetDiscordAcc") || action.startsWith("AcceptForgetEpicAcc")
+	        || action.startsWith("AcceptForgetOriginAcc") || action.startsWith("AcceptForgetUbisoftAcc") ||
+            action.startsWith("AcceptForgetBattleNetAcc") || action.startsWith("AcceptForgetRiotAcc")) {
             message = getAccountPrompt();
         } else {
             message = `<p>${modaltype.split(":")[2].replaceAll("_", " ")}</p>`;
@@ -481,7 +485,7 @@ async function Modal_Confirm(action, value) {
 }
 
 function Modal_FinaliseAccString(platform) {
-    // Supported: Epic, Origin, Riot
+    // Supported: Discord, Epic, Origin, Riot
     let name = $("#CurrentAccountName").val().replace(/[<>: \.\"\/\\|?*]/g, "-");
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", name);
     $(".modalBG").fadeOut();

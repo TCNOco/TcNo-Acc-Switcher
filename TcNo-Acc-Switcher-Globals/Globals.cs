@@ -24,7 +24,7 @@ namespace TcNo_Acc_Switcher_Globals
 	    public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 	    public static readonly string Version = "2021-07-01_00";
-	    public static readonly string[] PlatformList = {"Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot"};
+	    public static readonly string[] PlatformList = {"Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot", "Discord"};
 
 	    #region LOGGER
 
@@ -329,7 +329,6 @@ namespace TcNo_Acc_Switcher_Globals
         /// <param name="procName">Process name to kill (Will be used as {name}*)</param>
         public static void KillProcess(string procName)
         {
-
             var outputText = "";
             var startInfo = new ProcessStartInfo
             {

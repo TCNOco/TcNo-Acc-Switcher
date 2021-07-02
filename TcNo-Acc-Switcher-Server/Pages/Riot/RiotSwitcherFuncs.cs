@@ -137,7 +137,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.SwapRiotAccounts] Swapping to: hidden.");
             AppData.InvokeVoidAsync("updateStatus", "Closing Riot");
             if (!CloseRiot()) return;
-            // DO ACTUAL SWITCHING HERE
             ClearCurrentLoginRiot();
             if (accName != "")
             {
@@ -229,6 +228,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             foreach (var s in RiotProcessList)
             {
                 Globals.KillProcess(s);
+                GeneralFuncs.WaitForClose(s);
             }
             return true;
         }

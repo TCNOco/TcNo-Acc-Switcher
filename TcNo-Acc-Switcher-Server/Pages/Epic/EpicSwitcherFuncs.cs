@@ -73,7 +73,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.SwapEpicAccounts] Swapping to: hidden.");
             AppData.InvokeVoidAsync("updateStatus", "Closing Epic");
             if (!CloseEpic()) return;
-            // DO ACTUAL SWITCHING HERE
             ClearCurrentLoginEpic();
             if (accName != "")
             {
@@ -214,7 +213,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.CloseEpic]");
             if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher")) return false;
             Globals.KillProcess("EpicGamesLauncher");
-            return true;
+            return GeneralFuncs.WaitForClose("EpicGamesLauncher");
         }
         #endregion
     }

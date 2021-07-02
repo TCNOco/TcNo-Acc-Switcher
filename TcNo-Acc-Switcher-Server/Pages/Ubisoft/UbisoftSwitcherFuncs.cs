@@ -372,7 +372,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.CloseUbisoft]");
             if (!GeneralFuncs.CanKillProcess("upc")) return false;
             Globals.KillProcess("upc");
-            return true;
+            return GeneralFuncs.WaitForClose("upc");
         }
 
         #endregion
