@@ -25,7 +25,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         private static readonly string DiscordRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "discord");
         private static readonly string DiscordCookies = Path.Join(DiscordRoaming, "Cookies");
         private static readonly string DiscordCacheFolder = Path.Join(DiscordRoaming, "Cache");
-        private static readonly string DiscordStorageFolder = Path.Join(DiscordRoaming, "Local Storage\\leveldb");
+        private static readonly string DiscordLocalStorage = Path.Join(DiscordRoaming, "Local Storage");
+        private static readonly string DiscordSessionStorage = Path.Join(DiscordRoaming, "Session Storage");
+        private static readonly string DiscordBlobStorage = Path.Join(DiscordRoaming, "blob_storage");
 
         /// <summary>
         /// Main function for Discord Account Switcher. Run on load.
@@ -83,7 +85,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         {
 	        // Loop through log/ldb files:
             var token = "";
-	        foreach (var file in new DirectoryInfo(DiscordStorageFolder).GetFiles("*"))
+            if (!Directory.Exists(Path.Join(DiscordLocalStorage, "leveldb"))) return "";
+	        foreach (var file in new DirectoryInfo(Path.Join(DiscordLocalStorage, "leveldb")).GetFiles("*"))
 	        {
 		        if (!file.Name.EndsWith(".ldb") && !file.Name.EndsWith(".log")) continue;
 		        var text = GeneralFuncs.ReadOnlyReadAllText(file.FullName);
@@ -93,11 +96,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 	        }
 
 	        if (token == "")
-		        GeneralInvocableFuncs.ShowToast("error", "Failed to find user's token!", "Error", "toastarea");
+		        GeneralInvocableFuncs.ShowToast("error", "Failed to find user's token! Quit Discord normally, then save again.", "Error", "toastarea");
 	        else
 	        {
 		        token = GetHashString(token);
-
 	        }
 
 	        return token;
@@ -117,7 +119,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             ClearCurrentLoginDiscord();
             if (accName != "")
             {
-                if (!DiscordCopyInAccount(accName)) return;
+	            if (!DiscordCopyInAccount(accName)) return;
                 Globals.AddTrayUser("Discord", "+e:" + accName, accName, Discord.TrayAccNumber); // Add to Tray list
             }
             AppData.InvokeVoidAsync("updateStatus", "Starting Discord");
@@ -137,18 +139,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             if (allIds.ContainsKey(hash))
 	            DiscordAddCurrent(allIds[hash]);
 
-			// Remove Cookies file
-			if (File.Exists(DiscordCookies)) File.Delete(DiscordCookies);
+            // Remove existing folders:
+            if (Directory.Exists(DiscordLocalStorage)) Globals.RecursiveDelete(new DirectoryInfo(DiscordLocalStorage), false);
+            if (Directory.Exists(DiscordSessionStorage)) Globals.RecursiveDelete(new DirectoryInfo(DiscordSessionStorage), false);
+            if (Directory.Exists(DiscordBlobStorage)) Globals.RecursiveDelete(new DirectoryInfo(DiscordBlobStorage), false);
 
+            // Remove existing files:
+            var fileList = new List<string>() { "Cookies", "Network Persistent State", "Preferences", "TransportSecurity" };
+            foreach (var f in fileList.Where(f => File.Exists(Path.Join(DiscordRoaming, f))))
+	            File.Delete(Path.Join(DiscordRoaming, f));
+            
             // Loop through Cache files:
             foreach (var file in new DirectoryInfo(DiscordCacheFolder).GetFiles("*"))
 	            if (file.Name.StartsWith("data_") || file.Name == "index")
                     File.Delete(file.FullName);
-
-			// Loop through log/ldb files:
-			foreach (var file in new DirectoryInfo(DiscordStorageFolder).GetFiles("*"))
-				if (file.Name.EndsWith(".ldb") || file.Name.EndsWith(".log"))
-					File.Delete(file.FullName);
         }
 
         [SupportedOSPlatform("windows")]
@@ -158,22 +162,30 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             GeneralInvocableFuncs.ShowToast("info", "Hint: Changed Discord settings? Save again, with the same name!",
 	            "Discord note", "toastarea");
 
-			var localCachePath = $"LoginCache\\Discord\\{accName}\\";
-            if (!Directory.Exists(localCachePath))
+			var accFolder = $"LoginCache\\Discord\\{accName}\\";
+            if (!Directory.Exists(accFolder))
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {localCachePath}", "Directory not found", "toastarea");
+	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {accFolder}", "Directory not found", "toastarea");
 	            return false;
             }
 
             // Clear files first, as some extra files from different accounts can have different names.
             ClearCurrentLoginDiscord();
 
-			foreach (var file in new DirectoryInfo(localCachePath).GetFiles("*"))
-            {
-	            if (file.Name == "Cookies") File.Copy(file.FullName, DiscordCookies, true);
-                else if (file.Name.StartsWith("data_") || file.Name == "index") File.Copy(file.FullName, Path.Join(DiscordCacheFolder, file.Name), true);
-                else if (file.Name.EndsWith(".ldb") || file.Name.EndsWith(".log")) File.Copy(file.FullName, Path.Join(DiscordStorageFolder, file.Name), true);
-            }
+            // Copy files in base folder:
+            var fileList = new List<string>() { "Cookies", "Network Persistent State", "Preferences", "TransportSecurity" };
+            foreach (var f in fileList.Where(f => File.Exists(Path.Join(accFolder, f))))
+	            File.Copy(Path.Join(accFolder, f), Path.Join(DiscordRoaming, f), true);
+
+            // Copy folders:
+            if (Directory.Exists(Path.Join(accFolder, "Local Storage"))) Globals.CopyFilesRecursive(Path.Join(accFolder, "Local Storage"), DiscordLocalStorage, true);
+            if (Directory.Exists(Path.Join(accFolder, "Session Storage"))) Globals.CopyFilesRecursive(Path.Join(accFolder, "Session Storage"), DiscordSessionStorage, true);
+            if (Directory.Exists(Path.Join(accFolder, "blob_storage"))) Globals.CopyFilesRecursive(Path.Join(accFolder, "blob_storage"), DiscordBlobStorage, true);
+
+            // Loop through Cache files:
+            foreach (var file in new DirectoryInfo(Path.Join(accFolder, "Cache")).GetFiles("*"))
+	            if (file.Name.StartsWith("data_") || file.Name == "index")
+		            File.Copy(file.FullName, Path.Join(DiscordCacheFolder, file.Name), true);
 
             return true;
         }
@@ -195,8 +207,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             }
 
             var closedBySwitcher = false;
-            var localCachePath = $"LoginCache\\Discord\\{accName}\\";
-            Directory.CreateDirectory(localCachePath);
+            var accFolder = $"LoginCache\\Discord\\{accName}\\";
+            Directory.CreateDirectory(accFolder);
             var hash = "";
             var attempts = 0;
             while (attempts < 5)
@@ -231,21 +243,29 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             allIds[hash] = accName;
             File.WriteAllText("LoginCache\\Discord\\ids.json", JsonConvert.SerializeObject(allIds));
 
-            // Copy Cookies file
-            if (File.Exists(DiscordCookies)) File.Copy(DiscordCookies, Path.Join(localCachePath, "Cookies"), true);
+            // Copy files in base folder:
+            var fileList = new List<string>() { "Cookies", "Network Persistent State", "Preferences", "TransportSecurity" };
+            foreach (var f in fileList.Where(f => File.Exists(Path.Join(DiscordRoaming, f))))
+	            File.Copy(Path.Join(DiscordRoaming, f), Path.Join(accFolder, f), true);
+            
+            // Remove existing folders (as to not create thousands of extra files over lots of copies):
+            if (Directory.Exists(Path.Join(accFolder, "Local Storage"))) Globals.RecursiveDelete(new DirectoryInfo(Path.Join(accFolder, "Local Storage")), false);
+            if (Directory.Exists(Path.Join(accFolder, "Session Storage"))) Globals.RecursiveDelete(new DirectoryInfo(Path.Join(accFolder, "Session Storage")), false);
+            if (Directory.Exists(Path.Join(accFolder, "blob_storage"))) Globals.RecursiveDelete(new DirectoryInfo(Path.Join(accFolder, "blob_storage")), false);
+            // Copy folders:
+            if (Directory.Exists(DiscordLocalStorage)) Globals.CopyFilesRecursive(DiscordLocalStorage, Path.Join(accFolder, "Local Storage"), true);
+            if (Directory.Exists(DiscordSessionStorage)) Globals.CopyFilesRecursive(DiscordSessionStorage, Path.Join(accFolder, "Session Storage"), true);
+            if (Directory.Exists(DiscordSessionStorage)) Globals.CopyFilesRecursive(DiscordBlobStorage, Path.Join(accFolder, "blob_storage"), true);
 
             // Loop through Cache files:
+            if (Directory.Exists(Path.Join(accFolder, "Cache"))) Globals.RecursiveDelete(new DirectoryInfo(Path.Join(accFolder, "Cache")), false);
+            Directory.CreateDirectory(Path.Join(accFolder, "Cache"));
             foreach (var file in new DirectoryInfo(DiscordCacheFolder).GetFiles("*"))
 	            if (file.Name.StartsWith("data_") || file.Name == "index")
-		            File.Copy(file.FullName, Path.Join(localCachePath, file.Name), true);
+		            File.Copy(file.FullName, Path.Join(accFolder, "Cache", file.Name), true);
 
-            // Loop through log/ldb files:
-            foreach (var file in new DirectoryInfo(DiscordStorageFolder).GetFiles("*"))
-	            if (file.Name.EndsWith(".ldb") || file.Name.EndsWith(".log"))
-		            File.Copy(file.FullName, Path.Join(localCachePath, file.Name), true);
-
-            // Handle profile image:
-            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\discord"));
+			// Handle profile image:
+			Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\discord"));
             var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(accName).Replace("#", "-")}.jpg");
 
             // Check to see if profile image download required:

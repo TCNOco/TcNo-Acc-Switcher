@@ -582,25 +582,29 @@ function discordCopyJS() {
 let btns = document.getElementsByClassName("button-14-BFJ");
 btns[btns.length-1].click();
 
-// Get Avatar and username from page
-let avatar = $("[class^='userInfo']").getElementsByTagName("img")[0].src;
-let name = $("[class^='userInfo']").getElementsByTagName("span")[0].innerText + $("[class^='userInfo']").getElementsByTagName("span")[1].innerText;
+// Check that streamer mode is not enabled, otherwise: Give error.
+if ($("[class^='streamerModeEnabledBtn']") !== null){
+console.log.apply(console, ["%cTcNo Account Switcher%c: ERROR!\\nMake sure that Streamer Mode is disabled/not active when running this command!\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#saving-accounts ", 'background: #290000; color: #F00','background: #290000; color: white','background: #222; color: lightblue']);
+}else{
+  // Get Avatar and username from page
+  let avatar = $("[class^='userInfo']").getElementsByTagName("img")[0].src;
+  let name = $("[class^='userInfo']").getElementsByTagName("span")[0].innerText + $("[class^='userInfo']").getElementsByTagName("span")[1].innerText;
 
-// Copy avatar and username
-copy(\`TCNO: \${avatar}|\${name}\`);
+  // Copy avatar and username
+  copy(\`TCNO: \${avatar}|\${name}\`);
 
-// Close options
-$("[class^='closeButton']").click();
+  // Close options
+  $("[class^='closeButton']").click();
 
-// Let the user know in console.
-console.log.apply(console, ["%cTcNo Account Switcher%c: Successfully copied information!\\nPaste it into the input box in the account switcher to update/set image and username.\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#saving-accounts ", 'background: #222; color: #bada55','background: #222; color: white','background: #222; color: lightblue']);
-`;
+  // Let the user know in console.
+  console.log.apply(console, ["%cTcNo Account Switcher%c: Successfully copied information!\\nPaste it into the input box in the account switcher to update/set image and username.\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#saving-accounts ", 'background: #222; color: #bada55','background: #222; color: white','background: #222; color: lightblue']);
+}`;
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", code);
     window.notification.new({
 	    type: "success",
 	    title: "Copied",
 	    message: "Paste into Discord console, and then paste result in input!",
-	    renderTo: "body",
+	    renderTo: "toastarea",
 	    duration: 5000
     });
 }
