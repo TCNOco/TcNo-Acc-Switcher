@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Text;
@@ -184,6 +185,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             GeneralInvocableFuncs.ShowToast("info", "Hint: You must sign out of Discord in your browser",
 	            "Discord note", "toastarea");
 
+            // See if user used automated collection tool:
+            var imgUrl = "";
+            if (accName.StartsWith("TCNO:"))
+            {
+	            var parts = accName.Split("|");
+	            imgUrl = parts[0][5..].Split("?")[0];
+	            accName = parts[1];
+            }
+
             var closedBySwitcher = false;
             var localCachePath = $"LoginCache\\Discord\\{accName}\\";
             Directory.CreateDirectory(localCachePath);
@@ -233,11 +243,29 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             foreach (var file in new DirectoryInfo(DiscordStorageFolder).GetFiles("*"))
 	            if (file.Name.EndsWith(".ldb") || file.Name.EndsWith(".log"))
 		            File.Copy(file.FullName, Path.Join(localCachePath, file.Name), true);
-            
-            // Copy in profile image from default
+
+            // Handle profile image:
             Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\discord"));
-            var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(accName)}.jpg");
-            if (!File.Exists(profileImg)) File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\DiscordDefault.png"), profileImg, true);
+            var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(accName).Replace("#", "-")}.jpg");
+
+            // Check to see if profile image download required:
+            if (!string.IsNullOrEmpty(imgUrl))
+            {
+	            try
+	            {
+		            using var client = new WebClient();
+		            client.DownloadFile(new Uri(imgUrl), profileImg);
+	            }
+	            catch (WebException)
+	            {
+		            if (!File.Exists(profileImg)) File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\DiscordDefault.png"), profileImg, true);
+                }
+            }
+            else
+            {
+	            // Copy in profile image from default
+	            if (!File.Exists(profileImg)) File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\DiscordDefault.png"), profileImg, true);
+            }
             
             if (closedBySwitcher) GeneralFuncs.StartProgram(Discord.Exe(), Discord.Admin);
 
@@ -253,9 +281,54 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 
         public static void ChangeUsername(string oldName, string newName, bool reload = true)
         {
-            File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(oldName)}.jpg"),
-                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(newName)}.jpg")); // Rename image
-            Directory.Move($"LoginCache\\Discord\\{oldName}\\", $"LoginCache\\Discord\\{newName}\\"); // Rename login cache folder
+	        // See if user used automated collection tool:
+	        var imgUrl = "";
+	        if (newName.StartsWith("TCNO:"))
+	        {
+		        var parts = newName.Split("|");
+		        imgUrl = parts[0][5..].Split("?")[0];
+		        newName = parts[1];
+	        }
+
+
+            var allIds = ReadAllIds();
+	        try
+	        {
+		        allIds[allIds.Single(x => x.Value == oldName).Key] = newName;
+		        File.WriteAllText("LoginCache\\Discord\\ids.json", JsonConvert.SerializeObject(allIds));
+	        }
+	        catch (Exception)
+	        {
+		        _ = GeneralInvocableFuncs.ShowToast("error", "Could not change username", "Error", "toastarea");
+		        return;
+	        }
+            
+            // Check to see if profile image download required:
+            if (!string.IsNullOrEmpty(imgUrl))
+            {
+                var path = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg");
+                // Download new image
+                try
+	            {
+		            using var client = new WebClient();
+		            client.DownloadFile(new Uri(imgUrl), path);
+	            }
+	            catch (WebException)
+				{
+					// Move existing image
+					File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(oldName).Replace("#", "-")}.jpg"),
+						Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg")); // Rename image
+				}
+            }
+            else
+			{
+                // Move existing image
+				File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(oldName).Replace("#", "-")}.jpg"),
+					Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg")); // Rename image
+			}
+
+            if ($"LoginCache\\Discord\\{oldName}\\" != $"LoginCache\\Discord\\{newName}\\")
+				Directory.Move($"LoginCache\\Discord\\{oldName}\\", $"LoginCache\\Discord\\{newName}\\"); // Rename login cache folder
 
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed username"), true);
         }

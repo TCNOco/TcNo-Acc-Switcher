@@ -250,11 +250,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ChangeUsername] id:hidden, reqName:hidden, platform:{platform}");
             switch (platform)
-            {
-                case "BattleNet":
-                    BattleNetSwitcherFuncs.ChangeBTag(id, reqName);
-                    break;
-                case "Epic":
+			{
+				case "BattleNet":
+					BattleNetSwitcherFuncs.ChangeBTag(id, reqName);
+					break;
+				case "Discord":
+					DiscordSwitcherFuncs.ChangeUsername(id, reqName);
+					break;
+				case "Epic":
                     EpicSwitcherFuncs.ChangeUsername(id, reqName);
                     break;
                 case "Riot":

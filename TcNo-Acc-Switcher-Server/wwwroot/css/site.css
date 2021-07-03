@@ -392,10 +392,11 @@ div.advancedClearingButtonCol .buttoncol {
     padding: 0.5em; }
     .forgottenList select:focus {
       border: solid var(--borderedItemBorderColor-focus) 0.1em; }
+    .forgottenList select option {
       /*
           Workaround to set color BECAUSE YOU CAN'T SET TEXT COLOR?!
           This is for showing the arrow before, and the SteamID afterwards in a different color
-      */ 
+      */ }
       .forgottenList select option:checked {
         box-shadow: 0 0 10px 100px var(--listBackgroundColor-checked) inset;
         color: var(--listColor-checked); }
@@ -481,6 +482,7 @@ div.advancedClearingButtonCol .buttoncol {
 
 .ico {
   /* BattleNet */
+  /* Discord */
   /* Epic Games */
   /* Origin */
   /* Riot Games */
@@ -500,6 +502,20 @@ div.advancedClearingButtonCol .buttoncol {
     stroke-width: var(--icoBattleNetFG-StrokeWidth); }
   .icoBattleNetGlass {
     fill: var(--icoBattleNetGlass-Fill); }
+  .icoDiscordBG {
+    background: var(--icoDiscordBG); }
+  .icoDiscordText {
+    fill: var(--icoDiscordText-Fill);
+    stroke: var(--icoDiscordText-Stroke);
+    stroke-width: var(--icoDiscordText-StrokeWidth);
+    stroke-linejoin: round;
+    stroke-miterlimit: 2; }
+  .icoDiscordFG {
+    fill: var(--icoDiscordFG-Fill);
+    stroke: var(--icoDiscordFG-Stroke);
+    stroke-width: var(--icoDiscordFG-StrokeWidth); }
+  .icoDiscordGlass {
+    fill: var(--icoDiscordGlass-Fill); }
   .icoEpicBG {
     background: var(--icoEpicBG); }
   .icoEpicText {

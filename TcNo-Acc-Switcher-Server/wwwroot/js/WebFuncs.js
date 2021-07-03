@@ -309,8 +309,8 @@ function showModal(modaltype) {
                     <h2>TcNo Account Switcher</h2>
                     <p>Created by TechNobo [Wesley Pyburn]</p>
                     <div class="linksList">
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');"><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>View on GitHub</a>
-                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');"><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>Bug report/Feature request</a>
+                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');"><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>View on GitHub</a>
+                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');"><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>Bug report/Feature request</a>
                         <a onclick="OpenLinkInBrowser('https://tcno.co');"><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>Visit tcno.co</a>
                         <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');"><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>Disclaimer</a>
                     </div>
@@ -321,6 +321,12 @@ function showModal(modaltype) {
         // USAGE: "changeUsername"
         Modal_RequestedLocated(false);
         var platformName = modaltype.split(":")[1] ?? "username";
+        let extraButtons = "";
+        if (getCurrentPage() === "Discord") {
+	        extraButtons = `
+                <button class="modalOK extra" type="button" id="set_account_name" onclick="discordCopyJS()"><span><svg viewBox="0 0 448 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/copy.svg#img"></use></svg></span></button>
+				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#saving-accounts');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>`;
+        }
         $("#modalTitle").text("Change username");
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div id="modal_contents">
@@ -331,6 +337,7 @@ function showModal(modaltype) {
 		        <input type="text" id="NewAccountName" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('change_username').click();">
 	        </div>
 	        <div class="settingsCol inputAndButton">
+				${extraButtons}
 		        <button class="modalOK" type="button" id="change_username" onclick="Modal_FinaliseAccNameChange()"><span>Change ${
             platformName}</span></button>
 	        </div>
@@ -423,6 +430,12 @@ function showModal(modaltype) {
     } else if (modaltype.startsWith("accString:")) {
         // USAGE: "accString:<platform>" -- example: "accString:Origin"
         platform = modaltype.split(":")[1].replaceAll("_", " ");
+        let extraButtons = "";
+        if (platform === "Discord") {
+            extraButtons = `
+                <button class="modalOK extra" type="button" id="set_account_name" onclick="discordCopyJS()"><span><svg viewBox="0 0 448 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/copy.svg#img"></use></svg></span></button>
+				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#saving-accounts');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>`;
+        }
         Modal_RequestedLocated(false);
         $("#modalTitle").text(`Add new ${platform} account`);
         $("#modal_contents").empty();
@@ -434,6 +447,7 @@ function showModal(modaltype) {
 		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();" onkeypress='return /[^<>:\\.\\"\\/\\\\|?*]/i.test(event.key)'>
 	        </div>
 	        <div class="settingsCol inputAndButton">
+				${extraButtons}
 		        <button class="modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('${platform}')"><span>Add current ${platform} account</span></button>
 	        </div>
         </div>`);
@@ -486,14 +500,16 @@ async function Modal_Confirm(action, value) {
 
 function Modal_FinaliseAccString(platform) {
     // Supported: Discord, Epic, Origin, Riot
-    let name = $("#CurrentAccountName").val().replace(/[<>: \.\"\/\\|?*]/g, "-");
+    let raw = $("#CurrentAccountName").val();
+    let name = (raw.indexOf("TCNO:") === -1 ? raw.replace(/[<>: \.\"\/\\|?*]/g, "-") : raw); // Clean string if not a command string.
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", name);
     $(".modalBG").fadeOut();
     $("#acc_list").click();
 }
 
 function Modal_FinaliseAccNameChange() {
-    let name = $("#NewAccountName").val().replace(/[<>: \.\"\/\\|?*]/g, "-");
+    let raw = $("#NewAccountName").val();
+	let name = (raw.indexOf("TCNO:") === -1 ? raw.replace(/[<>: \.\"\/\\|?*]/g, "-") : raw); // Clean string if not a command string.
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name, getCurrentPage());
 }
 
@@ -555,3 +571,36 @@ until it's signed into again through ${getCurrentPage()}, and added to the list.
 
 const restartAsAdminPrompt = `<h3><bold>This program will restart as Admin</bold></h3>
 <p>Hit "Yes" in UAC when prompted for admin.</p>`;
+
+
+function discordCopyJS() {
+    // Clicks the User Settings button
+    // Then immediately copies the 'src' of the profile image, and the username, as well as the #.
+    // Then copy to clipboard.
+    let code = `
+// Find options button, and click
+let btns = document.getElementsByClassName("button-14-BFJ");
+btns[btns.length-1].click();
+
+// Get Avatar and username from page
+let avatar = $("[class^='userInfo']").getElementsByTagName("img")[0].src;
+let name = $("[class^='userInfo']").getElementsByTagName("span")[0].innerText + $("[class^='userInfo']").getElementsByTagName("span")[1].innerText;
+
+// Copy avatar and username
+copy(\`TCNO: \${avatar}|\${name}\`);
+
+// Close options
+$("[class^='closeButton']").click();
+
+// Let the user know in console.
+console.log.apply(console, ["%cTcNo Account Switcher%c: Successfully copied information!\\nPaste it into the input box in the account switcher to update/set image and username.\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#saving-accounts ", 'background: #222; color: #bada55','background: #222; color: white','background: #222; color: lightblue']);
+`;
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", code);
+    window.notification.new({
+	    type: "success",
+	    title: "Copied",
+	    message: "Paste into Discord console, and then paste result in input!",
+	    renderTo: "body",
+	    duration: 5000
+    });
+}

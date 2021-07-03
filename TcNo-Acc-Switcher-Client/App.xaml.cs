@@ -309,6 +309,7 @@ namespace TcNo_Acc_Switcher_Client
                             "--- Switching to accounts ---",
                             "Usage (don't include spaces): + <PlatformLetter> : <...details>",
                             " -   Battlenet format: +b:<email>",
+                            " -   Discord format: +d:<username>",
                             " -   Epic Games format: +e:<username>",
                             " -   Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]",
                             " -   Riot Games format: +e:<username>",
@@ -368,8 +369,19 @@ namespace TcNo_Acc_Switcher_Client
 		            _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);
 		            return;
 	            }
-	            // Epic Games
-	            case "e":
+	            // Discord
+	            case "d":
+	            {
+		            // Battlenet format: +d:<username>
+		            Globals.WriteToLog("Discord switch requested");
+		            if (!GeneralFuncs.CanKillProcess("Discord"))
+			            RestartAsAdmin(combinedArgs);
+		            Discord.Instance.LoadFromFile();
+		            TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherFuncs.SwapDiscordAccounts(account);
+		            return;
+	            }
+                // Epic Games
+                case "e":
 	            {
 		            // Epic Games format: +e:<username>
 		            Globals.WriteToLog("Epic Games switch requested");
@@ -444,13 +456,20 @@ namespace TcNo_Acc_Switcher_Client
                     await TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherBase.NewLogin_BattleNet();
                     break;
 
+                // Discord
+                case "d":
+                case "discord":
+	                Globals.WriteToLog("Discord logout requested");
+	                TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherBase.NewLogin_Discord();
+	                break;
+
                 // Epic Games
                 case "e":
                 case "epic":
                 case "epicgames":
-                    Globals.WriteToLog("Epic Games logout requested");
-                    TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherBase.NewLogin_Epic();
-                    break;
+	                Globals.WriteToLog("Epic Games logout requested");
+	                TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherBase.NewLogin_Epic();
+	                break;
 
                 // Origin
                 case "o":

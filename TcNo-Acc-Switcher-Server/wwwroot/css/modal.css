@@ -135,6 +135,10 @@
     cursor: pointer;
     transition: ease-in-out 60ms;
   }
+    #modal_contents button.extra {
+      margin: 0 7px 0 0 !important;
+      padding: 3px 10px;
+    }
 
     #modal_contents button:hover {
       border-color: var(--buttonBorder-hover);

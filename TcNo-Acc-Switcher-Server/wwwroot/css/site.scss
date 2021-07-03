@@ -685,6 +685,31 @@ div.advancedClearingButtonCol .buttoncol {
     }
   }
 
+  /* Discord */
+  &Discord {
+    &BG {
+      background: var(--icoDiscordBG);
+    }
+
+    &Text {
+      fill: var(--icoDiscordText-Fill);
+      stroke: var(--icoDiscordText-Stroke);
+      stroke-width: var(--icoDiscordText-StrokeWidth);
+      stroke-linejoin: round;
+      stroke-miterlimit: 2;
+    }
+
+    &FG {
+      fill: var(--icoDiscordFG-Fill);
+      stroke: var(--icoDiscordFG-Stroke);
+      stroke-width: var(--icoDiscordFG-StrokeWidth);
+    }
+
+    &Glass {
+      fill: var(--icoDiscordGlass-Fill);
+    }
+  }
+
   /* Epic Games */
   &Epic {
     &BG {
@@ -709,7 +734,6 @@ div.advancedClearingButtonCol .buttoncol {
       fill: var(--icoEpicGlass-Fill);
     }
   }
-
   /* Origin */
   &Origin {
     &BG {
@@ -734,7 +758,6 @@ div.advancedClearingButtonCol .buttoncol {
       fill: var(--icoOriginGlass-Fill);
     }
   }
-
   /* Riot Games */
   &Riot {
     &BG {
@@ -759,7 +782,6 @@ div.advancedClearingButtonCol .buttoncol {
       fill: var(--icoRiotGlass-Fill);
     }
   }
-
   /* Steam */
   &Steam {
     &BG {
@@ -784,7 +806,6 @@ div.advancedClearingButtonCol .buttoncol {
       fill: var(--icoRiotGlass-Fill);
     }
   }
-
   /* Ubisoft */
   &Ubisoft {
     &BG {
