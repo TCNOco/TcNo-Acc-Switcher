@@ -583,18 +583,25 @@ let btns = document.getElementsByClassName("button-14-BFJ");
 btns[btns.length-1].click();
 
 // Check that streamer mode is not enabled, otherwise: Give error.
-if ($("[class^='streamerModeEnabledBtn']") !== null){
+let streamerMode = false;
+try { streamerMode = $("[class^='streamerModeEnabledBtn']") !== null;} catch (e) {streamerMode = false;}
+if (streamerMode){
 console.log.apply(console, ["%cTcNo Account Switcher%c: ERROR!\\nMake sure that Streamer Mode is disabled/not active when running this command!\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#saving-accounts ", 'background: #290000; color: #F00','background: #290000; color: white','background: #222; color: lightblue']);
 }else{
+  // Get name from bottom-left of screen
+  let name = $("[class^='size14']").innerText + $("[class^='hovered']").innerText;
   // Get Avatar and username from page
-  let avatar = $("[class^='userInfo']").getElementsByTagName("img")[0].src;
-  let name = $("[class^='userInfo']").getElementsByTagName("span")[0].innerText + $("[class^='userInfo']").getElementsByTagName("span")[1].innerText;
+  let avatar = $("[class^='accountProfileCard']").getElementsByTagName("img")[0].src;
 
   // Copy avatar and username
   copy(\`TCNO: \${avatar}|\${name}\`);
 
+  let closeButton = $("[class^='keybind']");
+
+  await new Promise(resolve => setTimeout(resolve, 500)); // Wait 500ms
+
   // Close options
-  $("[class^='closeButton']").click();
+  closeButton.click();
 
   // Let the user know in console.
   console.log.apply(console, ["%cTcNo Account Switcher%c: Successfully copied information!\\nPaste it into the input box in the account switcher to update/set image and username.\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#saving-accounts ", 'background: #222; color: #bada55','background: #222; color: white','background: #222; color: lightblue']);
