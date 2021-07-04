@@ -78,7 +78,7 @@
                         <button id="Steam_Clear_RememberPassword" type="button" @onclick="Steam_Clear_RememberPassword" disabled="@Accepted"><span>HKCU\..\RememberPassword</span></button>
                     </div>
                     <div class="SettingsHeader">
-                        <hr><span>@_locale["Cleaning_Header_PlatformCleaning"]</span><hr>
+                        <hr><span>@_locale["Cleaning_Header_PlatformCleaning", new { platform = "Steam" }]</span><hr>
                     </div>
                     <div class="buttoncol">
                         <button id="Steam_Clear_Forgotten" type="button" @onclick="Steam_Clear_Forgotten" disabled="@Accepted"><span>@_locale["Cleaning_Button_ForgottenBackups"]</span></button>

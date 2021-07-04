@@ -1,0 +1,3 @@
+files:
+  - source: TcNo-Acc-Switcher-Server/Resources/en-US.ini
+    translation: TcNo-Acc-Switcher-Server/Resources/%locale%.%file_extension%
