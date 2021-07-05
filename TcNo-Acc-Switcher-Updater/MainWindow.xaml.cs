@@ -358,8 +358,27 @@ namespace TcNo_Acc_Switcher_Updater
             }
 		}
 
-		public static string UserDataFolder => Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
-		public static string MainAppDataFolder => Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!)?.FullName!;
+        public static string AppDataFolder =>
+	        Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName;
+
+        private static string _userDataFolder = "";
+        public static string UserDataFolder
+        {
+	        get
+	        {
+		        if (!string.IsNullOrEmpty(_userDataFolder)) return _userDataFolder;
+		        // Has not yet been initialised
+		        // Check if set to something different
+		        if (File.Exists(Path.Join(AppDataFolder, "userdata_path.txt")))
+			        _userDataFolder = File.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim();
+		        else
+			        _userDataFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
+
+		        return _userDataFolder;
+	        }
+        }
+
+        public static string MainAppDataFolder => Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!)?.FullName!;
 		// FOR TESTING: public static string MainAppDataFolder => "C:\\Program Files\\TcNo Account Switcher";
 		public static string OriginalWwwroot => Path.Join(MainAppDataFolder, "originalwwwroot");
 
@@ -587,7 +606,7 @@ namespace TcNo_Acc_Switcher_Updater
                     client.DownloadFile(uri, key);
                 }
 
-                WriteLine(Environment.NewLine + "Copying files to Documents/TcNo Account Switcher...");
+                WriteLine(Environment.NewLine + "Copying files to (My Documents, unless set otherwise)/TcNo Account Switcher...");
                 InitWwwroot(true); // Overwrite files in Documents
                 WriteLine("Done.");
             }

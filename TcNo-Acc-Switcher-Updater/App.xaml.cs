@@ -15,6 +15,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using Newtonsoft.Json.Linq;
@@ -80,13 +81,19 @@ namespace TcNo_Acc_Switcher_Updater
             }
         }
 
+        public static string AppDataFolder =>
+	        Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName;
+        
         /// <summary>
         /// Exception handling for all programs
         /// </summary>
         public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             // Set working directory to parent
-            Directory.SetCurrentDirectory(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\"));
+            if (File.Exists(Path.Join(AppDataFolder, "userdata_path.txt")))
+	            Directory.SetCurrentDirectory(File.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim());
+            else
+	            Directory.SetCurrentDirectory(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\"));
             var version = "unknown";
             try
             {

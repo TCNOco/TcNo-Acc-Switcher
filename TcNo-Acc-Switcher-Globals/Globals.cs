@@ -142,9 +142,37 @@ namespace TcNo_Acc_Switcher_Globals
 	    #endregion
 
 	    #region INITIALISATION
-	    public static string UserDataFolder =>
-		    Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
 
+	    private static string _userDataFolder = "";
+	    public static string UserDataFolder
+        {
+		    get {
+			    
+			    if (!string.IsNullOrEmpty(_userDataFolder)) return _userDataFolder;
+			    // Has not yet been initialised
+			    // Check if set to something different
+			    if (File.Exists(Path.Join(AppDataFolder, "userdata_path.txt")))
+				    _userDataFolder = File.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim();
+			    else
+				    _userDataFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
+
+			    return _userDataFolder;
+		    }
+		    set
+		    {
+			    _userDataFolder = value;
+			    try
+			    {
+				    File.WriteAllText(Path.Join(AppDataFolder, "userdata_path.txt"), value);
+                }
+			    catch (Exception)
+			    {
+                    // Failed to write to file.
+                    // This setter will be unused for now at least, so this isn't really necessary.
+			    }
+		    }
+	    }
+        
 	    public static string AppDataFolder =>
 		    Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty;
 
