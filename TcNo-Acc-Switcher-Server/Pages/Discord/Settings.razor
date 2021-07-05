@@ -61,7 +61,7 @@
                 <hr>
             </div>
             <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = Platform }]</span></button><button id="OpenFolder" type="button" @onclick="OpenFolder"><span>@_locale["Settings_OpenFolder", new { platform = Platform }]</span></button></div>
-            <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button></div>
+            <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button><button id="ClearCache" type="button" @onclick="ClearDiscordCache"><span>@_locale["Button_ClearDiscordCache"]</span></button></div>
             <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
         </div>
     </div>

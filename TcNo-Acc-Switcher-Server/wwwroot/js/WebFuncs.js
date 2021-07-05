@@ -589,7 +589,7 @@ if (streamerMode){
 console.log.apply(console, ["%cTcNo Account Switcher%c: ERROR!\\nMake sure that Streamer Mode is disabled/not active when running this command!\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#saving-accounts ", 'background: #290000; color: #F00','background: #290000; color: white','background: #222; color: lightblue']);
 }else{
   // Get name from bottom-left of screen
-  let name = $("[class^='size14']").innerText + $("[class^='hovered']").innerText;
+  let name = $("[class^='size14']").innerText + $("[class^='size12']").innerText;
   // Get Avatar and username from page
   let avatar = $("[class^='accountProfileCard']").getElementsByTagName("img")[0].src;
 

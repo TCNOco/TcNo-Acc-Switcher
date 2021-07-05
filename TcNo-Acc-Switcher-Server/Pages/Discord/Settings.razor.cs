@@ -47,6 +47,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             new Data.Settings.Discord().ResetSettings();
             AppData.ActiveNavMan.NavigateTo("/Discord?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Discord switcher settings"));
         }
+
+        // BUTTON: Clear Discord cache
+        public static void ClearDiscordCache() => DiscordSwitcherFuncs.ClearDiscordCache();
         #endregion
 
         #region SETTINGS_TOOLS

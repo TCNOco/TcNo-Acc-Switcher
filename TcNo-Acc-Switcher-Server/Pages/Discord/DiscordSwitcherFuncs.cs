@@ -23,7 +23,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
     {
         private static readonly Data.Settings.Discord Discord = Data.Settings.Discord.Instance;
         private static readonly string DiscordRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "discord");
-        private static readonly string DiscordCookies = Path.Join(DiscordRoaming, "Cookies");
         private static readonly string DiscordCacheFolder = Path.Join(DiscordRoaming, "Cache");
         private static readonly string DiscordLocalStorage = Path.Join(DiscordRoaming, "Local Storage");
         private static readonly string DiscordSessionStorage = Path.Join(DiscordRoaming, "Session Storage");
@@ -382,6 +381,32 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             Globals.KillProcess("Discord");
             return GeneralFuncs.WaitForClose("Discord");
         }
+
+        public static void ClearDiscordCache()
+        {
+	        int totalFiles = 0, failedFiles = 0;
+	        var totalFileSize = 0.0;
+
+	        // Loop through Cache files:
+            var fileInfoArr = new DirectoryInfo(DiscordCacheFolder).GetFiles();
+	        foreach (var file in fileInfoArr)
+	        {
+		        if (!file.Name.StartsWith("f_")) continue; // Ignore files that aren't cache files
+		        try
+		        {
+			        totalFiles++;
+			        File.Delete(file.FullName);
+			        totalFileSize += file.Length;
+                }
+		        catch (Exception)
+		        {
+                    failedFiles++;
+		        }
+            }
+
+	        GeneralInvocableFuncs.ShowToast("success", $"{totalFiles - failedFiles} of {totalFiles} deleted. Total: {GeneralFuncs.FileSizeString(totalFileSize)}",
+		        "Cleared Discord cache!", "toastarea", 10000);
+		}
         #endregion
     }
 }

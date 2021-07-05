@@ -18,6 +18,7 @@ Button_ResetSettings: Reset settings
 Button_AdvancedCleaning: Advanced cleaning...
 Button_ClearLog: Clear log
 Button_WikiInfo: More Info (Wiki)
+Button_ClearDiscordCache: Clear Discord Cache
 Settings_Shortcut: ' {platform} Switcher Desktop shortcut'
 Settings_Admin: Run {platform} as Admin
 Settings_ImageExpiry: 'Days before profile images expire:'

@@ -378,6 +378,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
 	        return text;
         }
+
+
+        /// <summary>
+        /// Converts file length to easily read string.
+        /// </summary>
+        /// <param name="len"></param>
+        /// <returns></returns>
+        public static string FileSizeString(double len)
+        {
+	        if (len < 0.001) return "0 bytes";
+	        string[] sizes = { "B", "KB", "MB", "GB" };
+	        var n2 = (int)Math.Log10(len) / 3;
+	        var n3 = len / Math.Pow(1e3, n2);
+	        return $"{n3:0.##} {sizes[n2]}";
+        }
         #endregion
 
         #region SETTINGS
