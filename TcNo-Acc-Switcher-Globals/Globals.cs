@@ -154,7 +154,7 @@ namespace TcNo_Acc_Switcher_Globals
 			    if (File.Exists(Path.Join(AppDataFolder, "userdata_path.txt")))
 				    _userDataFolder = File.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim();
 			    else
-				    _userDataFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
+				    _userDataFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\");
 
 			    return _userDataFolder;
 		    }
@@ -199,12 +199,25 @@ namespace TcNo_Acc_Switcher_Globals
 	    }
 
         /// <summary>
-        /// Creates data folder in Documents
+        /// Move pre 2021-07-05 Documents userdata folder into AppData.
+        /// </summary>
+	    private static void OldDocumentsToAppData()
+	    {
+		    // Check to see if folder still located in My Documents (from Pre 2021-07-05)
+		    var oldDocuments = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
+		    if (Directory.Exists(oldDocuments)) CopyFilesRecursive(oldDocuments, UserDataFolder, true);
+            RecursiveDelete(new DirectoryInfo(oldDocuments), false);
+        }
+
+        /// <summary>
+        /// Creates data folder in AppData
         /// </summary>
         /// <param name="overwrite">Whether files should be overwritten or not (Update)</param>
         public static void CreateDataFolder(bool overwrite)
-		{
-			var wwwroot = Directory.Exists(Path.Join(AppDataFolder, "wwwroot"))
+        {
+	        OldDocumentsToAppData();
+
+	        var wwwroot = Directory.Exists(Path.Join(AppDataFolder, "wwwroot"))
 				? Path.Join(AppDataFolder, "wwwroot")
 				: Path.Join(AppDataFolder, "originalwwwroot");
 			if (!Directory.Exists(UserDataFolder)) Directory.CreateDirectory(UserDataFolder);

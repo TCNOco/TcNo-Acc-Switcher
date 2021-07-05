@@ -182,6 +182,17 @@ namespace TcNo_Acc_Switcher_Updater
 	        }
         }
 
+        /// <summary>
+        /// Move pre 2021-07-05 Documents userdata folder into AppData.
+        /// </summary>
+        private static void OldDocumentsToAppData()
+        {
+	        // Check to see if folder still located in My Documents (from Pre 2021-07-05)
+	        var oldDocuments = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
+	        if (Directory.Exists(oldDocuments)) CopyFilesRecursive(oldDocuments, UserDataFolder); // Overwrites by default
+	        RecursiveDelete(new DirectoryInfo(oldDocuments), false);
+        }
+
         private void Init()
         {
             // Check if installed to program files, and requires admin to run:
@@ -189,6 +200,7 @@ namespace TcNo_Acc_Switcher_Updater
 	            RestartAsAdmin("");
 
             Directory.SetCurrentDirectory(MainAppDataFolder);
+            OldDocumentsToAppData();
             if (QueueHashList)
             {
                 GenerateHashes();
@@ -372,7 +384,7 @@ namespace TcNo_Acc_Switcher_Updater
 		        if (File.Exists(Path.Join(AppDataFolder, "userdata_path.txt")))
 			        _userDataFolder = File.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim();
 		        else
-			        _userDataFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
+			        _userDataFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\");
 
 		        return _userDataFolder;
 	        }
@@ -390,6 +402,7 @@ namespace TcNo_Acc_Switcher_Updater
 		public static void CopyFilesRecursive(string inputFolder, string outputFolder)
         {
 	        Directory.CreateDirectory(outputFolder);
+	        if (!outputFolder.EndsWith("\\")) outputFolder += "\\";
 	        //Now Create all of the directories
 	        foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
 		        Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
@@ -606,7 +619,7 @@ namespace TcNo_Acc_Switcher_Updater
                     client.DownloadFile(uri, key);
                 }
 
-                WriteLine(Environment.NewLine + "Copying files to (My Documents, unless set otherwise)/TcNo Account Switcher...");
+                WriteLine(Environment.NewLine + "Copying files to %AppData%/TcNo Account Switcher... (unless set otherwise)");
                 InitWwwroot(true); // Overwrite files in Documents
                 WriteLine("Done.");
             }
