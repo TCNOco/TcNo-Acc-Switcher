@@ -55,6 +55,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
 
+        private string _password;
+        [JsonIgnore] public string Password { get => _instance._password; set => _instance._password = value; }
+
         // Constants
         [JsonIgnore] public static readonly string SettingsFile = "DiscordSettings.json";
         /*
@@ -115,7 +118,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             var sLatestVersion = "app-" + string.Join('.', latest.Select(x => x.ToString()).ToList());
             return Path.Join(FolderPath, sLatestVersion, "Discord.exe");
         }
-
 
         #region SETTINGS
         /// <summary>

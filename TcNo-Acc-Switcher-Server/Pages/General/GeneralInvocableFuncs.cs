@@ -418,5 +418,56 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 	        await File.WriteAllLinesAsync(outputFile, allAccountsTable).ConfigureAwait(false);
 	        return Path.Join("Exported", platform + ".csv");
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="platform"></param>
+        /// <returns>
+        /// 0 = Does not have a password set
+        /// 1 = Has a password set
+        /// 2 = Password already inputted
+        /// </returns>
+        [JSInvokable]
+        public static int GiCheckPlatformPassword(string platform)
+        {
+	        if (!File.Exists(Path.Join(Globals.UserDataFolder, "LoginCache", platform, "pass"))) return 0;
+
+            // Check if password entered (Will not be empty if correct)
+            switch (platform)
+            {
+	            case "Discord":
+		            return (string.IsNullOrEmpty(Data.Settings.Discord.Instance.Password) ? 1 : 2);
+            }
+
+            return 1;
+        }
+
+        [JSInvokable]
+        public static bool GiVerifyPlatformPassword(string platform, string password)
+        {
+	        var passFile = Path.Join(Globals.UserDataFolder, "LoginCache", platform, "pass");
+	        var hashedPass = Globals.GetSha256HashString(password);
+
+            if (File.Exists(passFile))
+            {
+	            if (hashedPass != File.ReadAllText(passFile)) return false; // Check if password matches the one in the file
+            }
+            else
+            {
+	            // Save password, as this is the first time.
+	            File.WriteAllText(passFile, hashedPass);
+			}
+            
+			// Passwords match. Handle password for each switcher
+			switch (platform)
+            {
+	            case "Discord":
+		            Data.Settings.Discord.Instance.Password = password;
+		            break;
+			}
+            
+			return true;
+        }
     }
 }

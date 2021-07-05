@@ -392,6 +392,17 @@ namespace TcNo_Acc_Switcher_Globals
                 : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
         }
 
+        public static string GetSha256HashString(string text)
+        {
+	        if (string.IsNullOrEmpty(text))
+		        return string.Empty;
+
+	        using var sha = new SHA256Managed();
+	        var textData = Encoding.UTF8.GetBytes(text);
+	        var hash = sha.ComputeHash(textData);
+	        return BitConverter.ToString(hash).Replace("-", string.Empty);
+        }
+
         #region TRAY
         /// <summary>
         /// Adds a user to the tray cache

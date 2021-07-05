@@ -78,5 +78,9 @@
         _appSettings.StreamerModeCheck();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Discord");
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await GeneralFuncs.HandleFirstRender(firstRender, "Discord");
+		GeneralInvocableFuncs.ShowModal("password");
+	}
 }

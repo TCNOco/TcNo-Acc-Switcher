@@ -70,16 +70,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             return true;
         }
         
-        public static string GetHashString(string text)
-        {
-	        if (string.IsNullOrEmpty(text))
-		        return string.Empty;
-
-	        using var sha = new SHA256Managed();
-	        var textData = Encoding.UTF8.GetBytes(text);
-	        var hash = sha.ComputeHash(textData);
-	        return BitConverter.ToString(hash).Replace("-", string.Empty);
-        }
         private static string GetHashedDiscordToken()
         {
 	        // Loop through log/ldb files:
@@ -98,7 +88,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 		        GeneralInvocableFuncs.ShowToast("error", "Failed to find user's token! Quit Discord normally, then save again.", "Error", "toastarea");
 	        else
 	        {
-		        token = GetHashString(token);
+		        token = Globals.GetSha256HashString(token);
 	        }
 
 	        return token;
@@ -181,15 +171,51 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             if (Directory.Exists(Path.Join(accFolder, "Session Storage"))) Globals.CopyFilesRecursive(Path.Join(accFolder, "Session Storage"), DiscordSessionStorage, true);
             if (Directory.Exists(Path.Join(accFolder, "blob_storage"))) Globals.CopyFilesRecursive(Path.Join(accFolder, "blob_storage"), DiscordBlobStorage, true);
 
-            // Loop through Cache files:
-            foreach (var file in new DirectoryInfo(Path.Join(accFolder, "Cache")).GetFiles("*"))
+            // Decrypt important files in folders:
+            foreach (var f in Directory.GetFiles(DiscordSessionStorage))
+	            if (f.EndsWith(".log") || f.EndsWith(".ldb"))
+		            DecryptFile(f);
+            foreach (var f in Directory.GetFiles(Path.Join(DiscordLocalStorage, "leveldb")))
+	            if (f.EndsWith(".log") || f.EndsWith(".ldb"))
+		            DecryptFile(f);
+
+			// Loop through Cache files:
+			foreach (var file in new DirectoryInfo(Path.Join(accFolder, "Cache")).GetFiles("*"))
 	            if (file.Name.StartsWith("data_") || file.Name == "index")
 		            File.Copy(file.FullName, Path.Join(DiscordCacheFolder, file.Name), true);
-
+            
             return true;
         }
+        private static bool DecryptFile(string path)
+        {
+	        if (!File.Exists(path)) return false;
+	        try
+	        {
+		        var encText = File.ReadAllText(path);
+		        File.WriteAllText(path, Cryptography.StringCipher.Decrypt(encText, Discord.Password));
+		        return true;
+	        }
+	        catch (Exception e)
+	        {
+		        return false;
+	        }
+        }
+        private static bool EncryptFile(string path)
+        {
+	        if (!File.Exists(path)) return false;
+	        try
+	        {
+		        var text = File.ReadAllText(path);
+                File.WriteAllText(path, Cryptography.StringCipher.Encrypt(text, Discord.Password));
+		        return true;
+	        }
+	        catch (Exception e)
+	        {
+		        return false;
+            }
+        }
 
-        [SupportedOSPlatform("windows")]
+	[SupportedOSPlatform("windows")]
         public static void DiscordAddCurrent(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.DiscordAddCurrent]");
@@ -255,6 +281,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             if (Directory.Exists(DiscordLocalStorage)) Globals.CopyFilesRecursive(DiscordLocalStorage, Path.Join(accFolder, "Local Storage"), true);
             if (Directory.Exists(DiscordSessionStorage)) Globals.CopyFilesRecursive(DiscordSessionStorage, Path.Join(accFolder, "Session Storage"), true);
             if (Directory.Exists(DiscordSessionStorage)) Globals.CopyFilesRecursive(DiscordBlobStorage, Path.Join(accFolder, "blob_storage"), true);
+
+            // Encrypt important files in folders:
+            foreach (var f in Directory.GetFiles(Path.Join(accFolder, "Session Storage")))
+	            if (f.EndsWith(".log") || f.EndsWith(".ldb"))
+		            EncryptFile(f);
+            foreach (var f in Directory.GetFiles(Path.Join(accFolder, "Local Storage\\leveldb")))
+	            if (f.EndsWith(".log") || f.EndsWith(".ldb"))
+		            EncryptFile(f);
 
             // Loop through Cache files:
             if (Directory.Exists(Path.Join(accFolder, "Cache"))) Globals.RecursiveDelete(new DirectoryInfo(Path.Join(accFolder, "Cache")), false);

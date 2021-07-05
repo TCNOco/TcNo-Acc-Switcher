@@ -295,7 +295,7 @@ function OpenLinkInBrowser(link) {
 
 
 // Info Window
-function showModal(modaltype) {
+async function showModal(modaltype) {
     let input;
     if (modaltype === "info") {
         $("#modalTitle").text("TcNo Account Switcher Information");
@@ -452,6 +452,9 @@ function showModal(modaltype) {
 	        </div>
         </div>`);
         input = document.getElementById("CurrentAccountName");
+    } else if (modaltype === "password") {
+        let x = await showPasswordModal();
+        if (!x) return;
     } else {
         $("#modalTitle").text("Notice");
         $("#modal_contents").empty();
@@ -467,6 +470,51 @@ function showModal(modaltype) {
 
         }
     });
+}
+
+async function showPasswordModal() {
+    platform = getCurrentPage();
+    // Remove click-off action:
+    $(".modalBG")[0].onclick = () => false;
+    $("#btnClose-modal")[0].removeAttribute("onclick");
+    $("#btnClose-modal")[0].onclick = () => btnBack_Click();
+    
+    // Check if a password is set
+    let skipEntry = false;
+    let infoText = `Please enter a new password to secure your ${platform} accounts in the switcher.<br>  Keep it safe. It can not be recovered later.`;
+    let creatingPass = true;
+    let dPromise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GiCheckPlatformPassword`, platform).then((r) => {
+        if (r === 1) {
+            infoText = `Please enter your password for TcNo Account Switcher's ${platform} platform.`;
+            creatingPass = false;
+        } else if (r === 2) {
+	        skipEntry = true; // Skip as it's already entered.
+        }
+    });
+    _ = await dPromise;
+
+    if (skipEntry) return false;
+
+    $("#modalTitle").text(`Add new ${platform} account`);
+    $("#modal_contents").empty();
+    $("#modal_contents").append(`<div id="modal_contents">
+	        <div>
+		        <span class="modal-text">${infoText}</span>
+	        </div>
+	        <div class="inputWithTitle">
+				<span class="modal-text">Enter password:</span>
+		        <input type="password" id="Password" style="width: 100%;padding: 8px;"'>
+	        </div>		        ` +
+        (creatingPass ? `<div class="inputWithTitle"><span class="modal-text">Enter password again:</span><input type="password" id="PasswordConfirm" style="width: 100%;padding: 8px;" onkeyup="javascript: if($('#Password').val() !== $('#PasswordConfirm').val()) $('#formNotice').html('Passwords do not match').css('color','red'); else $('#formNotice').html('Passwords match').css('color','lime')"></div>	` : "")
+	    + `
+			<p id="formNotice"></p>
+	        <div class="settingsCol inputAndButton">
+				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#why-a-password');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>
+		        <button class="modalOK" style="padding: 0 40px;" type="button" id="set_account_name" onclick="Modal_HandlePassword()"><span>OK</span></button>
+	        </div>
+        </div>`);
+
+    return true;
 }
 
 function Modal_SetFilepath(path) {
@@ -511,6 +559,28 @@ function Modal_FinaliseAccNameChange() {
     let raw = $("#NewAccountName").val();
 	let name = (raw.indexOf("TCNO:") === -1 ? raw.replace(/[<>: \.\"\/\\|?*]/g, "-") : raw); // Clean string if not a command string.
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name, getCurrentPage());
+}
+
+
+async function Modal_HandlePassword() {
+	if ($("#PasswordConfirm").length && $("#PasswordConfirm").val() !== $("#Password").val())
+		return false;
+    let pass = $('#Password').val();
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiVerifyPlatformPassword", getCurrentPage(), pass).then((r) => {
+        if (!r)
+	        window.notification.new({
+		        type: "error",
+		        title: "Passwords don't match",
+		        message: "Retry, or delete the Discord Cache to reset password (See the Wiki).",
+		        renderTo: "toastarea",
+		        duration: 5000
+	        });
+        else {
+            $(".modalBG").fadeOut();
+            $("#acc_list").click();
+        }
+    });
+    var result = await promise;
 }
 
 var appendDelay = 100; // Milliseconds
