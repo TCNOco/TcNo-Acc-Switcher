@@ -20,13 +20,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             // This constant determines the number of iterations for the password bytes generation function.
             private const int DerivationIterations = 1000;
 
-            public static string Encrypt(string plainText, string passPhrase)
+            public static string EncryptString(string plainText, string passPhrase) =>
+	            Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes(plainText), passPhrase));
+
+            public static byte[] Encrypt(byte[] data, string passPhrase)
             {
                 // Salt and IV is randomly generated each time, but is prepended to encrypted cipher text
                 // so that the same Salt and IV values can be used when decrypting.  
                 var saltStringBytes = Generate128BitsOfRandomEntropy();
                 var ivStringBytes = Generate128BitsOfRandomEntropy();
-                var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
                 using var password = new Rfc2898DeriveBytes(passPhrase, saltStringBytes, DerivationIterations);
                 var keyBytes = password.GetBytes(KeySize / 8);
 
@@ -38,7 +40,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 using var encryptor = symmetricKey.CreateEncryptor(keyBytes, ivStringBytes);
                 using var memoryStream = new MemoryStream();
                 using var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);
-                cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
+                cryptoStream.Write(data, 0, data.Length);
                 cryptoStream.FlushFinalBlock();
                 // Create the final bytes as a concatenation of the random salt bytes, the random iv bytes and the cipher bytes.
                 var cipherTextBytes = saltStringBytes;
@@ -46,14 +48,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 cipherTextBytes = cipherTextBytes.Concat(memoryStream.ToArray()).ToArray();
                 memoryStream.Close();
                 cryptoStream.Close();
-                return Convert.ToBase64String(cipherTextBytes);
+                return cipherTextBytes;
             }
 
-            public static string Decrypt(string cipherText, string passPhrase)
+            public static string DecryptString(string cipherText, string passPhrase) => Encoding.UTF8.GetString(Decrypt(Convert.FromBase64String(cipherText), passPhrase));
+
+            public static byte[] Decrypt(byte[] cipherTextBytesWithSaltAndIv, string passPhrase)
             {
-                // Get the complete stream of bytes that represent:
-                // [32 bytes of Salt] + [16 bytes of IV] + [n bytes of CipherText]
-                var cipherTextBytesWithSaltAndIv = Convert.FromBase64String(cipherText);
+                // cipherTextBytesWithSaltAndIv = [32 bytes of Salt] + [16 bytes of IV] + [n bytes of CipherText]
                 // Get the salt bytes by extracting the first 16 bytes from the supplied cipherText bytes.
                 var saltStringBytes = cipherTextBytesWithSaltAndIv.Take(KeySize / 8).ToArray();
                 // Get the IV bytes by extracting the next 16 bytes from the supplied cipherText bytes.
@@ -73,11 +75,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 using var memoryStream = new MemoryStream(cipherTextBytes);
                 using var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
 
-                var plainTextBytes = new byte[cipherTextBytes.Length];
-                var decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
+                var outputBytes = new byte[cipherTextBytes.Length];
+                var decryptedByteCount = cryptoStream.Read(outputBytes, 0, outputBytes.Length);
                 memoryStream.Close();
                 cryptoStream.Close();
-                return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount);
+                return outputBytes;
             }
 
             private static byte[] Generate128BitsOfRandomEntropy()
@@ -87,6 +89,34 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 // Fill the array with cryptographically secure random bytes.
                 rngCsp.GetBytes(randomBytes);
                 return randomBytes;
+            }
+
+
+            public static bool DecryptFile(string path, string pass)
+            {
+	            if (!File.Exists(path)) return false;
+	            try
+	            {
+		            File.WriteAllBytes(path, Cryptography.StringCipher.Decrypt(File.ReadAllBytes(path), pass));
+		            return true;
+	            }
+	            catch (Exception e)
+	            {
+		            return false;
+	            }
+            }
+            public static bool EncryptFile(string path, string pass)
+            {
+	            if (!File.Exists(path)) return false;
+	            try
+	            {
+		            File.WriteAllBytes(path, Cryptography.StringCipher.Encrypt(File.ReadAllBytes(path), pass));
+		            return true;
+	            }
+	            catch (Exception e)
+	            {
+		            return false;
+	            }
             }
         }
     }

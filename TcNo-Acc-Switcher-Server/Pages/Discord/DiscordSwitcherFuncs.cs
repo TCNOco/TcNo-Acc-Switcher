@@ -174,10 +174,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             // Decrypt important files in folders:
             foreach (var f in Directory.GetFiles(DiscordSessionStorage))
 	            if (f.EndsWith(".log") || f.EndsWith(".ldb"))
-		            DecryptFile(f);
+		            Cryptography.StringCipher.DecryptFile(f, Discord.Password);
             foreach (var f in Directory.GetFiles(Path.Join(DiscordLocalStorage, "leveldb")))
 	            if (f.EndsWith(".log") || f.EndsWith(".ldb"))
-		            DecryptFile(f);
+		            Cryptography.StringCipher.DecryptFile(f, Discord.Password);
 
 			// Loop through Cache files:
 			foreach (var file in new DirectoryInfo(Path.Join(accFolder, "Cache")).GetFiles("*"))
@@ -185,34 +185,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 		            File.Copy(file.FullName, Path.Join(DiscordCacheFolder, file.Name), true);
             
             return true;
-        }
-        private static bool DecryptFile(string path)
-        {
-	        if (!File.Exists(path)) return false;
-	        try
-	        {
-		        var encText = File.ReadAllText(path);
-		        File.WriteAllText(path, Cryptography.StringCipher.Decrypt(encText, Discord.Password));
-		        return true;
-	        }
-	        catch (Exception e)
-	        {
-		        return false;
-	        }
-        }
-        private static bool EncryptFile(string path)
-        {
-	        if (!File.Exists(path)) return false;
-	        try
-	        {
-		        var text = File.ReadAllText(path);
-                File.WriteAllText(path, Cryptography.StringCipher.Encrypt(text, Discord.Password));
-		        return true;
-	        }
-	        catch (Exception e)
-	        {
-		        return false;
-            }
         }
 
 	[SupportedOSPlatform("windows")]
@@ -285,10 +257,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             // Encrypt important files in folders:
             foreach (var f in Directory.GetFiles(Path.Join(accFolder, "Session Storage")))
 	            if (f.EndsWith(".log") || f.EndsWith(".ldb"))
-		            EncryptFile(f);
+		            Cryptography.StringCipher.EncryptFile(f, Discord.Password);
             foreach (var f in Directory.GetFiles(Path.Join(accFolder, "Local Storage\\leveldb")))
 	            if (f.EndsWith(".log") || f.EndsWith(".ldb"))
-		            EncryptFile(f);
+		            Cryptography.StringCipher.EncryptFile(f, Discord.Password);
 
             // Loop through Cache files:
             if (Directory.Exists(Path.Join(accFolder, "Cache"))) Globals.RecursiveDelete(new DirectoryInfo(Path.Join(accFolder, "Cache")), false);
