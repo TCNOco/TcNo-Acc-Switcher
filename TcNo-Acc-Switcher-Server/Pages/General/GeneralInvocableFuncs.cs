@@ -284,9 +284,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static void CreateShortcut(string page, string accId, string accName, string args = "")
         {
             Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
+            var platform = page;
             page = page.ToLowerInvariant();
             if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
-            var platformName = $"Switch to {accName}";
+            var platformName = $"Switch to {accName} [{platform}]";
             var originalAccId = accId;
             switch (page)
             {
@@ -294,7 +295,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 {
                     var ePersonaState = -1;
                     if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
-                    platformName = $"Switch to {accName}" + (args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "");
+                    platformName = $"Switch to {accName} {(args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "")} [{platform}]";
                     break;
                     }
                 case "riot":
@@ -319,7 +320,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 Shortcut.Desktop, 
                 platformName,
                 $"+{page[0]}:{originalAccId}{args}",
-                $"Switch to {accName} in TcNo Account Switcher", 
+                $"Switch to {accName} [{platform}] in TcNo Account Switcher", 
                 true);
             s.CreateCombinedIcon(
                 Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{page}.png"),
