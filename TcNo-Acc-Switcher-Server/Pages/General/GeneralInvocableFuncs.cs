@@ -453,7 +453,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static bool GiVerifyPlatformPassword(string platform, string password)
         {
-	        var passFile = Path.Join(Globals.UserDataFolder, "LoginCache", platform, "pass");
+	        var passFolder = Path.Join(Globals.UserDataFolder, "LoginCache", platform);
+	        Directory.CreateDirectory(passFolder);
+            var passFile = Path.Join(passFolder, "pass");
 	        var hashedPass = Globals.GetSha256HashString(password);
 
             if (File.Exists(passFile))
