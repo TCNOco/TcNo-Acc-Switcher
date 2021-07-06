@@ -94,13 +94,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 	        return token;
         }
 
-
+        [SupportedOSPlatform("windows")]
+        public static void SwapDiscordAccounts() => SwapDiscordAccounts("");
         /// <summary>
         /// Restart Discord with a new account selected. Leave args empty to log into a new account.
         /// </summary>
         /// <param name="accName">(Optional) User's login username</param>
         [SupportedOSPlatform("windows")]
-        public static void SwapDiscordAccounts(string accName = "")
+        public static void SwapDiscordAccounts(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.SwapDiscordAccounts] Swapping to: hidden.");
             AppData.InvokeVoidAsync("updateStatus", "Closing Discord");
@@ -109,7 +110,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             if (accName != "")
             {
 	            if (!DiscordCopyInAccount(accName)) return;
-                Globals.AddTrayUser("Discord", "+e:" + accName, accName, Discord.TrayAccNumber); // Add to Tray list
+                Globals.AddTrayUser("Discord", "+d:" + accName, accName, Discord.TrayAccNumber); // Add to Tray list
             }
             AppData.InvokeVoidAsync("updateStatus", "Starting Discord");
 
@@ -297,7 +298,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             {
 	            AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
             }
-            catch (Microsoft.AspNetCore.Components.NavigationException e) // Page was reloaded.
+            catch (Microsoft.AspNetCore.Components.NavigationException) // Page was reloaded.
             {
 	            //
             }

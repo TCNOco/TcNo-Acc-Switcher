@@ -25,7 +25,7 @@ namespace TcNo_Acc_Switcher_Server
 	    public static void Main(string[] args)
         {
             // Empty
-            MainProgram(args, out var e);
+            MainProgram(args, out _);
         }
         public static bool MainProgram(string[] args, out Exception e)
         {

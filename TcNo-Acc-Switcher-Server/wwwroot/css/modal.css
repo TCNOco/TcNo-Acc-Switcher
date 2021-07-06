@@ -93,6 +93,7 @@
         color: var(--linkColor);
         line-height: 24px;
         cursor: pointer;
+        margin: 1px 0;
       }
 
         .infoWindow .rightContent .linksList a:hover,
@@ -110,6 +111,7 @@
           width: 2em;
           margin-right: 0.5em;
           vertical-align: bottom;
+          padding: 1px;
         }
 
 #modal_contents {

@@ -292,12 +292,12 @@ function OpenLinkInBrowser(link) {
 
 // Info Window
 async function showModal(modaltype) {
-    let input;
+    let input, platform;
     if (modaltype === "info") {
         $("#modalTitle").text("TcNo Account Switcher Information");
         $("#modal_contents").empty();
         currentVersion = "";
-        var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetVersion").then((r) => {
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetVersion").then((r) => {
             currentVersion = r;
             $("#modal_contents").append(`<div class="infoWindow">
                 <div class="imgDiv"><img width="100" margin="5" src="img/TcNo500.png" draggable="false" onclick="OpenLinkInBrowser('https://tcno.co');"></div>

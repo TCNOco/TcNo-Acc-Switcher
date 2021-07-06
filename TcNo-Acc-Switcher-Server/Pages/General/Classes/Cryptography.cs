@@ -100,7 +100,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 		            File.WriteAllBytes(path, Cryptography.StringCipher.Decrypt(File.ReadAllBytes(path), pass));
 		            return true;
 	            }
-	            catch (Exception e)
+	            catch (Exception)
 	            {
 		            return false;
 	            }
@@ -113,7 +113,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 		            File.WriteAllBytes(path, Cryptography.StringCipher.Encrypt(File.ReadAllBytes(path), pass));
 		            return true;
 	            }
-	            catch (Exception e)
+	            catch (Exception)
 	            {
 		            return false;
 	            }

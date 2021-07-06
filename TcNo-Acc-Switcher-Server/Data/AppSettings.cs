@@ -686,7 +686,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 		        else
 		        {
 			        // Remove
-			        Registry.ClassesRoot.DeleteSubKeyTree("tcno");
+                    Registry.ClassesRoot.DeleteSubKeyTree("tcno");
 			        GeneralInvocableFuncs.ShowToast("success", @"This program will no longer respond to tcno:\\", "Protocol removed", "toastarea");
                 }
 		        _instance._protocolEnabled = Protocol_IsEnabled();

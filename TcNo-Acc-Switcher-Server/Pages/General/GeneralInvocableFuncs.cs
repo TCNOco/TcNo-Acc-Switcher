@@ -287,7 +287,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             page = page.ToLowerInvariant();
             if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
             var platformName = $"Switch to {accName}";
-
+            var originalAccId = accId;
             switch (page)
             {
                 case "steam":
@@ -296,21 +296,29 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
                     platformName = $"Switch to {accName}" + (args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "");
                     break;
-                }
+                    }
                 case "riot":
                     accId = accId.Replace("#", "-");
+                    originalAccId = accId;
                     break;
-            }
+                case "discord":
+                    accId = accId.Replace("#", "-");
+	                break;
+			}
 
             var fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{page}\\{accId}.jpg");
             if (!File.Exists(fgImg)) fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{page}\\{accId}.png");
-            if (!File.Exists(fgImg)) return;
+            if (!File.Exists(fgImg))
+            {
+	            ShowToast("error", "Failed to find users' image.", "Can not create shortcut", "toastarea");
+	            return;
+            }
 
             var s = new Shortcut();
             s.Shortcut_Platform(
                 Shortcut.Desktop, 
                 platformName,
-                $"+{page[0]}:{accId}{args}",
+                $"+{page[0]}:{originalAccId}{args}",
                 $"Switch to {accName} in TcNo Account Switcher", 
                 true);
             s.CreateCombinedIcon(
@@ -434,13 +442,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 	        if (!File.Exists(Path.Join(Globals.UserDataFolder, "LoginCache", platform, "pass"))) return 0;
 
             // Check if password entered (Will not be empty if correct)
-            switch (platform)
+            return platform switch
             {
-	            case "Discord":
-		            return (string.IsNullOrEmpty(Data.Settings.Discord.Instance.Password) ? 1 : 2);
-            }
-
-            return 1;
+	            "Discord" => (string.IsNullOrEmpty(Data.Settings.Discord.Instance.Password) ? 1 : 2),
+	            _ => 1
+            };
         }
 
         [JSInvokable]

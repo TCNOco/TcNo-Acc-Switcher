@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data.Settings;
@@ -121,17 +122,23 @@ namespace TcNo_Acc_Switcher_Client
 
                 // Was not asked to open a platform screen, or was NOT just the verbose mode argument
                 // - Therefore: It was a CLI command
-                if (StartPage == "" && !(Globals.VerboseMode && e.Args.Length == 1))
+                // - But, do check if the tcno:\\ cli command was issued, and only that - If it was: start the program.
+                if (StartPage == "" && !(Globals.VerboseMode && e.Args.Length == 1) && !(e.Args.Length == 1 && (e.Args[0] == @"tcno:\\" || e.Args[0] == "tcno:\\")))
                 {
-                    if (!NativeMethods
-                        .AttachToConsole(-1)) // Attach to a parent process console (ATTACH_PARENT_PROCESS)
+                    if (!NativeMethods.AttachToConsole(-1)) // Attach to a parent process console (ATTACH_PARENT_PROCESS)
                         _ = NativeMethods.AllocConsole();
                     Console.WriteLine(Environment.NewLine);
-                    await ConsoleMain(e).ConfigureAwait(false);
-                    Console.WriteLine(Environment.NewLine + @"Press any key to close this window...");
-                    _ = NativeMethods.FreeConsole();
-                    Environment.Exit(0);
-                    return;
+                    var shouldClose = await ConsoleMain(e).ConfigureAwait(false);
+                    if (shouldClose)
+                    {
+	                    Console.WriteLine(Environment.NewLine + @"Press any key to close this window...");
+	                    _ = NativeMethods.FreeConsole();
+	                    Environment.Exit(0);
+	                    return;
+					}else
+                    {
+	                    _ = NativeMethods.FreeConsole();
+                    }
                 }
 
             }
@@ -269,7 +276,8 @@ namespace TcNo_Acc_Switcher_Client
         /// (Only help commands at this moment)
         /// </summary>
         /// <param name="e">StartupEventArgs for the program</param>
-        private static async Task ConsoleMain(StartupEventArgs e)
+        /// <returns>True if handled and should close. False if launch GUI.</returns>
+        private static async Task<bool> ConsoleMain(StartupEventArgs e)
         {
             Console.WriteLine(@"Welcome to the TcNo Account Switcher - Command Line Interface!");
             Console.WriteLine(@"Use -h (or --help) for more info." + Environment.NewLine);
@@ -328,7 +336,7 @@ namespace TcNo_Acc_Switcher_Client
                             "v, vv, verbose = Verbose mode (Shows a lot of details, somewhat useful for debugging)"
                         };
                         Console.WriteLine(string.Join(Environment.NewLine, help));
-                        return;
+                        return true;
                     case "v":
                     case "vv":
                     case "verbose":
@@ -339,6 +347,8 @@ namespace TcNo_Acc_Switcher_Client
                         break;
                 }
             }
+
+            return true;
         }
 
         /// <summary>
@@ -372,12 +382,48 @@ namespace TcNo_Acc_Switcher_Client
 	            // Discord
 	            case "d":
 	            {
-		            // Battlenet format: +d:<username>
+		            // Discord format: +d:<username>
 		            Globals.WriteToLog("Discord switch requested");
+		            string pass;
+
+                    if (command.Length < 3) // Get password as third argument, or as input from user.
+		            {
+			            while (true)
+			            {
+                            // Get password from user
+                            Globals.WriteToLog("Please insert your Discord account switcher password:");
+                            pass = CliGetPass();
+                            Globals.WriteToLog(Environment.NewLine);
+
+				            if (string.IsNullOrEmpty(pass))
+				            {
+					            Globals.WriteToLog("Error: Password is required to decrypt data, to switch accounts.");
+					            Console.WriteLine(Environment.NewLine + @"Press any key to close this window..."); 
+					            return;
+				            }
+
+				            if (!GeneralInvocableFuncs.GiVerifyPlatformPassword("Discord", pass))
+					            Globals.WriteToLog("Error: Password is incorrect." + Environment.NewLine);
+				            else
+					            break;
+			            }
+		            }
+                    else
+                    {
+	                    pass = command[2];
+	                    if (!GeneralInvocableFuncs.GiVerifyPlatformPassword("Discord", pass))
+						{
+							Globals.WriteToLog("Error: Password is incorrect.");
+							Console.WriteLine(Environment.NewLine + @"Press any key to close this window...");
+							return;
+						}
+                    }
+
 		            if (!GeneralFuncs.CanKillProcess("Discord"))
 			            RestartAsAdmin(combinedArgs);
 		            Discord.Instance.LoadFromFile();
-		            TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherFuncs.SwapDiscordAccounts(account);
+			        TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherFuncs.SwapDiscordAccounts(account);
+						
 		            return;
 	            }
                 // Epic Games
@@ -436,6 +482,34 @@ namespace TcNo_Acc_Switcher_Client
 		            break;
 	            }
             }
+        }
+
+        /// <summary>
+        /// Gets a user to enter a string, that is shown as asterisks on the screen.
+        /// </summary>
+        /// <returns>String entered by user</returns>
+        private static string CliGetPass()
+        {
+	        var pass = string.Empty;
+	        ConsoleKey key;
+	        do
+	        {
+		        var keyInfo = Console.ReadKey(intercept: true);
+		        key = keyInfo.Key;
+
+		        if (key == ConsoleKey.Backspace && pass.Length > 0)
+		        {
+			        Console.Write("\b \b");
+			        pass = pass[0..^1];
+		        }
+		        else if (!char.IsControl(keyInfo.KeyChar))
+		        {
+			        Console.Write("*");
+			        pass += keyInfo.KeyChar;
+		        }
+	        } while (key != ConsoleKey.Enter);
+
+	        return pass;
         }
 
         /// <summary>
