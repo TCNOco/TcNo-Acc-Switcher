@@ -186,8 +186,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             
             return true;
         }
-
-	[SupportedOSPlatform("windows")]
+        
         public static void DiscordAddCurrent(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.DiscordAddCurrent]");
@@ -302,6 +301,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             {
 	            //
             }
+        }
+
+        [JSInvokable]
+        public static bool SkipGetUsername()
+        {
+	        // Save current
+	        var hash = GetHashedDiscordToken();
+	        var allIds = ReadAllIds();
+	        if (!allIds.ContainsKey(hash)) return false;
+            // Else list already contains the token, so just save with the same username.
+	        DiscordAddCurrent(allIds[hash]);
+	        return true;
         }
 
         public static void ChangeUsername(string oldName, string newName, bool reload = true)

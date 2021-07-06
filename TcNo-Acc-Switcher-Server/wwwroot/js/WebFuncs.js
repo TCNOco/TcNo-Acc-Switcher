@@ -262,20 +262,16 @@ function saveFile(fileName, urlFile) {
 
 
 // Add currently logged in Origin account
-function currentDiscordLogin() {
-	showModal("accString:Discord");
-}
-// Add currently logged in Origin account
-function currentEpicLogin() {
-	showModal("accString:Epic");
-}
-// Add currently logged in Origin account
-function currentOriginLogin() {
-    showModal("accString:Origin");
-}
-// Add currently logged in Origin account
-function currentRiotLogin() {
-    showModal("accString:Riot");
+async function currentDiscordLogin() {
+    // Check to see if it is necessary first
+    var skipQuestion = false;
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SkipGetUsername").then((r) => {
+	    skipQuestion = r;
+    });
+    _ = await promise;
+
+    if (!skipQuestion)
+		showModal("accString");
 }
 // Add currently logged in Ubisoft account
 function currentUbisoftLogin() {
@@ -325,7 +321,7 @@ async function showModal(modaltype) {
         if (getCurrentPage() === "Discord") {
 	        extraButtons = `
                 <button class="modalOK extra" type="button" id="set_account_name" onclick="discordCopyJS()"><span><svg viewBox="0 0 448 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/copy.svg#img"></use></svg></span></button>
-				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#saving-accounts');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>`;
+				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>`;
         }
         $("#modalTitle").text("Change username");
         $("#modal_contents").empty();
@@ -427,14 +423,13 @@ async function showModal(modaltype) {
         </div>
         </div>`);
         input = document.getElementById("modal_true");
-    } else if (modaltype.startsWith("accString:")) {
-        // USAGE: "accString:<platform>" -- example: "accString:Origin"
-        platform = modaltype.split(":")[1].replaceAll("_", " ");
+    } else if (modaltype === "accString") {
+        platform = getCurrentPage();
         let extraButtons = "";
         if (platform === "Discord") {
             extraButtons = `
                 <button class="modalOK extra" type="button" id="set_account_name" onclick="discordCopyJS()"><span><svg viewBox="0 0 448 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/copy.svg#img"></use></svg></span></button>
-				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#saving-accounts');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>`;
+				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>`;
         }
         Modal_RequestedLocated(false);
         $("#modalTitle").text(`Add new ${platform} account`);
@@ -656,17 +651,18 @@ btns[btns.length-1].click();
 let streamerMode = false;
 try { streamerMode = $("[class^='streamerModeEnabledBtn']") !== null;} catch (e) {streamerMode = false;}
 if (streamerMode){
-console.log.apply(console, ["%cTcNo Account Switcher%c: ERROR!\\nMake sure that Streamer Mode is disabled/not active when running this command!\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#saving-accounts ", 'background: #290000; color: #F00','background: #290000; color: white','background: #222; color: lightblue']);
+console.log.apply(console, ["%cTcNo Account Switcher%c: ERROR!\\nMake sure that Streamer Mode is disabled/not active when running this command!\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list ", 'background: #290000; color: #F00','background: #290000; color: white','background: #222; color: lightblue']);
 }else{
   // Get name from bottom-left of screen
-  let name = $("[class^='size14']").innerText + $("[class^='size12']").innerText;
+  let name = $("[class^='usernameInnerRow']").firstElementChild.innerText + $("[class^='usernameInnerRow']").lastElementChild.innerText;
   // Get Avatar and username from page
   let avatar = $("[class^='accountProfileCard']").getElementsByTagName("img")[0].src;
 
   // Copy avatar and username
   copy(\`TCNO: \${avatar}|\${name}\`);
 
-  let closeButton = $("[class^='keybind']");
+  let possibleExit = $("[class^='contentRegionScroller']").getElementsByTagName('svg');
+  let closeButton = possibleExit[possibleExit.length-1].parentElement;
 
   await new Promise(resolve => setTimeout(resolve, 500)); // Wait 500ms
 
@@ -674,7 +670,7 @@ console.log.apply(console, ["%cTcNo Account Switcher%c: ERROR!\\nMake sure that 
   closeButton.click();
 
   // Let the user know in console.
-  console.log.apply(console, ["%cTcNo Account Switcher%c: Successfully copied information!\\nPaste it into the input box in the account switcher to update/set image and username.\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#saving-accounts ", 'background: #222; color: #bada55','background: #222; color: white','background: #222; color: lightblue']);
+  console.log.apply(console, ["%cTcNo Account Switcher%c: Successfully copied information!\\nPaste it into the input box in the account switcher to update/set image and username.\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list ", 'background: #222; color: #bada55','background: #222; color: white','background: #222; color: lightblue']);
 }`;
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", code);
     window.notification.new({

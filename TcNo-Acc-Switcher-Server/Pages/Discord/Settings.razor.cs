@@ -33,21 +33,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         }
 
         #region SETTINGS_GENERAL
-        // BUTTON: Pick folder
-        public void PickFolder()
-        {
-            Globals.DebugWriteLine(@"[ButtonClicked:Discord\Settings.razor.cs.PickFolder]");
-            GeneralInvocableFuncs.ShowModal("find:Discord:upc.exe:DiscordSettings");
-        }
-
-        // BUTTON: Reset settings
-        public static void ClearSettings()
-        {
-            Globals.DebugWriteLine(@"[ButtonClicked:Discord\Settings.razor.cs.ClearSettings]");
-            new Data.Settings.Discord().ResetSettings();
-            AppData.ActiveNavMan.NavigateTo("/Discord?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Discord switcher settings"));
-        }
-
         // BUTTON: Clear Discord cache
         public static void ClearDiscordCache() => DiscordSwitcherFuncs.ClearDiscordCache();
         #endregion
@@ -59,11 +44,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             Globals.DebugWriteLine(@"[ButtonClicked:Discord\Settings.razor.cs.OpenDiscordFolder]");
             Process.Start("explorer.exe", new Data.Settings.Discord().FolderPath);
         }
-        
 
-        // BUTTON: Advanced Cleaning...
-        // Might add later
-
+        // BUTTON: Reset settings
+        public static void ClearSettings()
+        {
+	        Globals.DebugWriteLine(@"[ButtonClicked:Discord\Settings.razor.cs.ClearSettings]");
+	        new Data.Settings.Discord().ResetSettings();
+	        AppData.ActiveNavMan.NavigateTo("/Discord?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Discord switcher settings"));
+        }
         #endregion
 
     }
