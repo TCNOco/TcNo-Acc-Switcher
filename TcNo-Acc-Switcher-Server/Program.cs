@@ -25,11 +25,13 @@ namespace TcNo_Acc_Switcher_Server
 	    public static void Main(string[] args)
         {
             // Empty
+            MainProgram(args, out var e);
         }
         public static bool MainProgram(string[] args, out Exception e)
         {
-			// Set working directory to documents folder
-			Directory.SetCurrentDirectory(Globals.UserDataFolder);
+            // Set working directory to documents folder
+            Globals.CreateDataFolder(false);
+            Directory.SetCurrentDirectory(Globals.UserDataFolder);
 			try
             {
                 CreateHostBuilder(args).Build().Run();

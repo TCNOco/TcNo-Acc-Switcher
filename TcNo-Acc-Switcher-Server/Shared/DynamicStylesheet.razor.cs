@@ -27,6 +27,11 @@ namespace TcNo_Acc_Switcher_Server.Shared
     {
         public string GetStylesheetMarkupString()
         {
+	        if (_appSettings.Stylesheet == null)
+	        {
+		        AppSettings.Instance.LoadFromFile();
+            }
+
             var markupString = "";
             foreach (var (key, val) in _appSettings.Stylesheet)
             {
