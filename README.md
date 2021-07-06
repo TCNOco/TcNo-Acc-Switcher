@@ -1,5 +1,3 @@
-
-
 <p align="center">
   <a href="https://tcno.co/">
     <img src="/other/img/Banner.png"></a>
@@ -18,6 +16,8 @@
                                                                                                                                   
 <p align="center"><a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest">
   <img alt="Download latest" src="/other/img/DownloadLatestNEW.png" height=70"></a>
+  <a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/wiki">
+  <img alt="More info" src="/other/img/WikiButton.png" height=70"></a>
 </p>
   
 **A Super fast account switcher for Steam, Battle.net, Epic Games, Origin, Riot Games and Ubisoft (and more soon)**
