@@ -15,7 +15,7 @@
 !define COMP_NAME "TechNobo (Wesley Pyburn)"
 !define WEB_SITE "https://tcno.co"
 !define VERSION "4.0.0.0"
-!define COPYRIGHT "TechNobo (Wesley Pyburn) © 2021"
+!define COPYRIGHT "TechNobo (Wesley Pyburn) (C) 2021"
 !define DESCRIPTION "TcNo Account Switcher"
 !define LICENSE_TXT "..\..\LICENSE"
 !define MAIN_APP_EXE "TcNo-Acc-Switcher.exe"
@@ -42,7 +42,7 @@ VIAddVersionKey "FileVersion"  "${VERSION}"
 
 !define INSTALLER_NAME "TcNo Account Switcher - Installer.exe"
 
-!define INSTALLER_FILES "..\..\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher\*"
+!define INSTALLER_7Z "..\..\TcNo-Acc-Switcher-Client\bin\x64\Release\TcNo-Acc-Switcher.7z"
 
 !define INSTALL_DIR "$PROGRAMFILES64\TcNo Account Switcher"
 ;;;;!define INSTALL_DIR "$PROGRAMFILES\TcNo Account Switcher"
@@ -50,7 +50,7 @@ VIAddVersionKey "FileVersion"  "${VERSION}"
 ;--------------------------------
 ;Build options
 Unicode True
-SetCompressor /SOLID LZMA
+SetCompress off
 Name "${APP_NAME}"
 Caption "${APP_NAME}"
 OutFile "${INSTALLER_NAME}"
@@ -127,8 +127,12 @@ Section "Main files" InstSec
   SectionIn RO
 
   SetOutPath "$INSTDIR"
-  
-  File /r "${INSTALLER_FILES}"
+  DetailPrint "Extracting package..."
+  SetDetailsPrint listonly
+  File "${INSTALLER_7Z}"
+  SetCompress auto
+  Nsis7z::ExtractWithDetails "$INSTDIR\TcNo-Acc-Switcher.7z" "Decompressing %s..."
+  Delete "$OUTDIR\TcNo-Acc-Switcher.7z"  
   
   ;Store installation folder
   WriteRegStr "${REG_ROOT}" "${REG_APP_PATH}" "" $INSTDIR
