@@ -345,7 +345,7 @@ namespace TcNo_Acc_Switcher_Updater
 
         private static void GenerateHashes()
         {
-            const string newFolder = "NewVersion";
+            const string newFolder = "TcNo-Acc-Switcher";
             DirSearchWithHash(newFolder, ref _newDict);
             File.WriteAllText(Path.Join(newFolder, "hashes.json"), JsonConvert.SerializeObject(_newDict, Formatting.Indented));
         }
@@ -753,7 +753,7 @@ namespace TcNo_Acc_Switcher_Updater
         {
             // CREATE UPDATE
             const string oldFolder = "OldVersion";
-            const string newFolder = "NewVersion";
+            const string newFolder = "TcNo-Acc-Switcher";
             const string outputFolder = "UpdateOutput";
             var deleteFileList = Path.Join(outputFolder, "filesToDelete.txt");
             RecursiveDelete(new DirectoryInfo(outputFolder), false);
