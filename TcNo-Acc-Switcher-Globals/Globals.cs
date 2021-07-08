@@ -245,8 +245,15 @@ namespace TcNo_Acc_Switcher_Globals
 	    {
 		    var cache = Path.Join(UserDataFolder, "EBWebView\\Default\\Cache");
 		    var codeCache = Path.Join(UserDataFolder, "EBWebView\\Default\\Code Cache");
-		    if (Directory.Exists(cache)) RecursiveDelete(new DirectoryInfo(cache), true);
-		    if (Directory.Exists(codeCache)) RecursiveDelete(new DirectoryInfo(codeCache), true);
+		    try
+			{
+				if (Directory.Exists(cache)) RecursiveDelete(new DirectoryInfo(cache), true);
+				if (Directory.Exists(codeCache)) RecursiveDelete(new DirectoryInfo(codeCache), true);
+			}
+		    catch (Exception e)
+		    {
+				   // Clearing cache isn't REQUIRED but it's a nice-to-have.
+		    }
 	    }
 
 	    /// <summary>
