@@ -114,6 +114,23 @@ namespace TcNo_Acc_Switcher_Updater
             var filePath = $"CrashLogs\\AccSwitcher-Updater-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
             using var sw = File.AppendText(filePath);
             sw.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({version})\tUNHANDLED CRASH: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
+
+            //if (e.ExceptionObject.)
+            //{
+	           // if (e.HResult == -2147024671)
+		          //  MessageBox.Show(
+			         //   "Error: Windows has 'detected a virus or potentially unwanted software'. This is a false positive, and can be safely ignored. User action is required." +
+			         //   Environment.NewLine +
+			         //   "1. Please whitelist the program's directory." + Environment.NewLine +
+			         //   "2. Run the Updater in the programs folder, in the 'updater' folder." + Environment.NewLine +
+			         //   "OR download a fresh installer/copy from GitHub." + Environment.NewLine +
+			         //   Environment.NewLine +
+			         //   "I am aware of these and work as fast as possible to report false positives, and stop them being detected.",
+			         //   "Windows error", MessageBoxButton.OK, MessageBoxImage.Error);
+	           // else
+		          //  throw;
+            //})
+            MessageBox.Show("This crashlog will be automatically submitted next launch." + Environment.NewLine + Environment.NewLine + "Error: " + e.ExceptionObject, "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
         }
     }
 }

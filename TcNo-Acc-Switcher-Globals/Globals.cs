@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows;
 using Newtonsoft.Json;
 
 namespace TcNo_Acc_Switcher_Globals
@@ -132,6 +133,8 @@ namespace TcNo_Acc_Switcher_Globals
 
 			    WriteToLog(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
 			    WriteToLog(Strings.ErrSubmitCrashlog);
+
+				MessageBox.Show("This crashlog will be automatically submitted next launch." + Environment.NewLine + Environment.NewLine + "Error: " + e.ExceptionObject, "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
             }
 		    catch (Exception)
 		    {

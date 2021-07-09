@@ -2,8 +2,8 @@
   "profiles": {
     "TcNo-Acc-Switcher-Updater": {
       "commandName": "Project",
-      "remoteDebugEnabled": false,
-      "remoteDebugMachine": "",
+      "remoteDebugEnabled": true,
+      "remoteDebugMachine": "DESKTOP-C6ID9T9",
       "authenticationMode": "Windows"
     }
   }
