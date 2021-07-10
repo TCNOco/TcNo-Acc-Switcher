@@ -16,7 +16,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using AKSoftware.Localization.MultiLanguages;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -46,13 +45,10 @@ namespace TcNo_Acc_Switcher_Server
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             services.AddControllers();
-            services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             services.AddRazorPages();
-            services.AddLanguageContainer<EmbeddedResourceKeysProvider>(Assembly.GetExecutingAssembly(), "Resources");
             services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
-
-
+            
 
             // Persistent settings:
             services.AddSingleton<AppSettings>();
@@ -64,16 +60,7 @@ namespace TcNo_Acc_Switcher_Server
             services.AddSingleton<Data.Settings.Riot>();
             services.AddSingleton<Data.Settings.Steam>();
             services.AddSingleton<Data.Settings.Ubisoft>();
-        }
-
-        private RequestLocalizationOptions GetLocalisationOptions()
-        {
-	        var cultures = Configuration.GetSection("Cultures").GetChildren().ToDictionary(x => x.Key, x =>  x.Value);
-            var supportedCultures = cultures.Keys.ToArray();
-	        var localisationOptions = new RequestLocalizationOptions()
-		        .AddSupportedCultures(supportedCultures)
-		        .AddSupportedUICultures(supportedCultures);
-            return localisationOptions;
+            services.AddSingleton<Lang>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -120,7 +107,7 @@ namespace TcNo_Acc_Switcher_Server
 
 			app.UseStaticFiles(); // Second call due to: https://github.com/dotnet/aspnetcore/issues/19578
 
-			app.UseRequestLocalization(GetLocalisationOptions());
+			Lang.Instance.LoadLocalised();
 
             app.UseRouting();
 

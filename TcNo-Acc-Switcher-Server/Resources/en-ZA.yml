@@ -1,5 +1,5 @@
 Update: Update available! Click here to start it.
-Header_ChooseLanguage: 'Choose Language: {platform}'
+Header_ChooseLanguage: 'Choose Language:'
 BattleNet_ShowSR: Show Overwatch SR and use the Overwatch profile picture.
 Steam_ShowSteamID: Show SteamID
 Steam_ShowVac: Show VAC Status
@@ -35,7 +35,7 @@ Settings_OpenFolder: Open {platform} Folder
 Settings_ClearForgotten: Clear Forgotten
 Settings_ClearAccounts: Clear Accounts
 Settings_RestoreForgotten: Restore forgotten account
-Settings_StreamerMode: Enable streamer mode
+Settings_StreamerMode: THIS IS A TEST
 Settings_ExitToTray: Exit minimises to tray
 Settings_DesktopShortcut: Desktop shortcut
 Settings_StartMenu_ProgramTray: Program & Tray
@@ -71,12 +71,3 @@ Toast_TrayStarted: Tray started!
 Toast_TrayRunning: Tray already open
 Toast_TrayUsersMissing: No tray users saved
 Toast_TrayFail: Could not start tray application!
-
-Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
-Modal_Info_Version: Version
-Modal_Info_ViewGitHub: View on GitHub
-Modal_Info_BugReport: Bug report/Feature request
-Modal_Info_VisitSite: Visit tcno.co
-Modal_Info_Disclaimer: Disclaimer
-Modal_ChangeUsername: Please enter a new {platformText} for your account
-Modal_ChangeUsernameType: Change {UsernameOrOther}

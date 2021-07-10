@@ -1,17 +1,16 @@
 ﻿@using Microsoft.Extensions.Configuration
 @using TcNo_Acc_Switcher_Server.Data
 @inject NavigationManager _navigationManager
-@inject IConfiguration _configuration
-@inject ILanguageContainerService  _locale
+@inject Lang  _locale
 
 @if (_cultures != null)
 {
-    <span>@_locale["Header_ChooseLanguage"]</span>
+    <span>@_locale["Header_ChooseLanguage", new {platform = "TestPlatfdorm"}]</span>
     <div class="dropdown">
         <ul class="custom-dropdown-menu dropdown-menu">
             @foreach (var (key, value) in _cultures)
             {
-                <li class="custom-dropdown-item dropdown-item" @onclick="() => RequestCultureChange(key)">@value</li>
+			<li class="custom-dropdown-item dropdown-item" @onclick="() => RequestCultureChange(value)">@value - @key</li>
             }
         </ul>
         <button class="dropdown-toggle" type="button" data-toggle="dropdown">
@@ -22,23 +21,18 @@
 }
 
 @code {
-    private readonly string _selectedCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
-    private Dictionary<string, string> _cultures;
+	private readonly string _selectedCulture = Lang.Instance.GetCurrentLanguage().Key;
+	private Dictionary<string, string> _cultures = Lang.Instance.GetAvailableLanguagesDict();
 
-    protected override void OnInitialized()
-    {
-        _cultures = _configuration.GetSection("Cultures")
-            .GetChildren().ToDictionary(x => x.Key, x => x.Value);
-    }
+	protected override void OnInitialized()
+	{
 
-    private async Task RequestCultureChange(string key)
-    {
-        if (string.IsNullOrWhiteSpace(key)) return;
-	    var uri = new Uri(_navigationManager.Uri).GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
-	    var query = $"?culture={Uri.EscapeDataString(key)}&redirectUri={Uri.EscapeDataString(uri)}";
-        _navigationManager.NavigateTo("/Culture/SetCulture" + query, true);
+	}
 
-        //_locale.SetLanguage(System.Globalization.CultureInfo.GetCultureInfo(key));
-	    //await AppData.ReloadPage();
-    }
+	private async Task RequestCultureChange(string key)
+	{
+		if (string.IsNullOrWhiteSpace(key)) return;
+		Lang.Instance.LoadLang(key);
+		await AppData.ReloadPage();
+	}
 }

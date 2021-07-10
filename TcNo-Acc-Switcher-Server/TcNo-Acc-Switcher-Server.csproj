@@ -22,6 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\en-US.yml" />
+    <None Remove="Resources\en-ZA.yml" />
     <None Remove="TcNoAccSw-Icon-100x100.png" />
     <None Remove="themes\Default.yaml" />
     <None Remove="themes\Dracula_Cyan.yaml" />
@@ -34,11 +35,14 @@
     <Content Include="themes\Dracula_Cyan.yaml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\en-US.yml" />
+    <EmbeddedResource Include="Resources\en-ZA.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\en-US.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AKSoftware.Localization.MultiLanguages" Version="5.1.0" />
-    <PackageReference Include="AKSoftware.Localization.MultiLanguages.Blazor" Version="1.0.0" />
     <PackageReference Include="Gameloop.Vdf" Version="0.6.1" />
     <PackageReference Include="Gameloop.Vdf.JsonConverter" Version="0.2.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.34" />

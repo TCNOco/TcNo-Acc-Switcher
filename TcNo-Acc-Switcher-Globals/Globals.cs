@@ -133,10 +133,12 @@ namespace TcNo_Acc_Switcher_Globals
 
 			    WriteToLog(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
 			    WriteToLog(Strings.ErrSubmitCrashlog);
-
-				MessageBox.Show("This crashlog will be automatically submitted next launch." + Environment.NewLine + Environment.NewLine + "Error: " + e.ExceptionObject, "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                
+			    //To display an error notification, the main program needs to be started as that's the Windows client. This is a cross-platform compatible binary. Adding the Presentation DLL causes issues.
+				File.WriteAllText("LastError.txt", "Fatal error occurred!" + Environment.NewLine + "This crashlog will be automatically submitted next launch." + Environment.NewLine + Environment.NewLine + "Error: " + e.ExceptionObject);
+                Process.Start(new ProcessStartInfo(@"TcNo-Acc-Switcher.exe") { UseShellExecute = true });
             }
-		    catch (Exception)
+			catch (Exception)
 		    {
 			    // This is just to prevent a complete crash. Sometimes there are multiple errors super close together, that cause it to break and we end up here.
 		    }

@@ -478,5 +478,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             
 			return true;
         }
+
+        [JSInvokable]
+        public static Task<string> GiLocale(string k) => Task.FromResult(Lang.Instance[k]);
+
+        [JSInvokable]
+        public static Task<string> GiLocaleObj(string k, object obj) => Task.FromResult(Lang.Instance[k, obj]);
     }
 }

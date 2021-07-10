@@ -1,40 +1,40 @@
 ﻿@*TcNo Account Switcher - A Super fast account switcher
-    Copyright (C) 2019-2021 TechNobo (Wesley Pyburn)
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	Copyright (C) 2019-2021 TechNobo (Wesley Pyburn)
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @inject Data.AppSettings _appSett
-@inject ILanguageContainerService  _locale
+@inject Data.Lang  _locale
 
 <div class="SettingsHeader">
-    <hr><span>@_locale["Settings_Header_AppWide"]</span>
-    <hr>
+	<hr><span>@_locale["Settings_Header_AppWide"]</span>
+	<hr>
 </div>
 <div class="rowSetting rowDropdown">
-    <ChooseLanguage />
+	<ChooseLanguage />
 </div>
 <div>
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="StreamerMode" @bind="_appSett.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label></div><label for="StreamerMode">@_locale["Settings_StreamerMode"]<br></label>
+	<div class="form-check"><input class="form-check-input" type="checkbox" id="StreamerMode" @bind="_appSett.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label></div><label for="StreamerMode">@_locale["Settings_StreamerMode"]<br></label>
 </div>
 <div class="rowSetting">
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="_appSett.TrayMinimizeNotExit" @onclick="() => _appSett.TrayMinimizeNotExit_Toggle()"><label class="form-check-label" for="TrayMinimizeNotExit"></label></div><label for="TrayMinimizeNotExit">@_locale["Settings_ExitToTray"]<br></label>
+	<div class="form-check"><input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="_appSett.TrayMinimizeNotExit" @onclick="() => _appSett.TrayMinimizeNotExit_Toggle()"><label class="form-check-label" for="TrayMinimizeNotExit"></label></div><label for="TrayMinimizeNotExit">@_locale["Settings_ExitToTray"]<br></label>
 </div>
 <div class="rowSetting">
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="_appSett.DesktopShortcut" @onclick="() => _appSett.DesktopShortcut_Toggle()"><label class="form-check-label" for="AppSett_DesktopShortcut"></label></div><label for="AppSett_DesktopShortcut">@_locale["Settings_DesktopShortcut"]<br></label>
+	<div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="_appSett.DesktopShortcut" @onclick="() => _appSett.DesktopShortcut_Toggle()"><label class="form-check-label" for="AppSett_DesktopShortcut"></label></div><label for="AppSett_DesktopShortcut">@_locale["Settings_DesktopShortcut"]<br></label>
 </div>
 <div class="rowSetting">
-    <span>@_locale["Cleaning_Header_StartMenuShortcuts"]</span>
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="_appSett.StartMenu" @onclick="() => _appSett.StartMenu_Toggle(false)"><label class="form-check-label" for="AppSett_StartMenu"></label></div><label for="AppSett_StartMenu">@_locale["Settings_StartMenu_ProgramTray"]<br></label>
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenuPlatform" @bind="_appSett.StartMenuPlatforms" @onclick="() => _appSett.StartMenu_Toggle(true)"><label class="form-check-label" for="AppSett_StartMenuPlatform"></label></div><label for="AppSett_StartMenuPlatform">@_locale["Settings_StartMenu_Platform"]<br></label>
+	<span>@_locale["Cleaning_Header_StartMenuShortcuts"]</span>
+	<div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="_appSett.StartMenu" @onclick="() => _appSett.StartMenu_Toggle(false)"><label class="form-check-label" for="AppSett_StartMenu"></label></div><label for="AppSett_StartMenu">@_locale["Settings_StartMenu_ProgramTray"]<br></label>
+	<div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_StartMenuPlatform" @bind="_appSett.StartMenuPlatforms" @onclick="() => _appSett.StartMenu_Toggle(true)"><label class="form-check-label" for="AppSett_StartMenuPlatform"></label></div><label for="AppSett_StartMenuPlatform">@_locale["Settings_StartMenu_Platform"]<br></label>
 </div>
 <div class="rowSetting">
 	<div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="_appSett.TrayStartup" @onclick="() => _appSett.Task_Toggle()"><label class="form-check-label" for="AppSett_TrayStartup"></label></div><label for="AppSett_TrayStartup">@_locale["Settings_Tray_StartWindows"]<br></label>&nbsp;<a class="fancyLink" @onclick="() => _appSett.StartNow()">@_locale["Settings_Tray_StartNow"]</a>
@@ -43,19 +43,19 @@
 	<div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_Protocol" @bind="_appSett.ProtocolEnabled" @onclick="() => _appSett.Protocol_Toggle()"><label class="form-check-label" for="AppSett_Protocol"></label></div><label for="AppSett_Protocol">@_locale["Settings_Protocol"]<br></label>
 </div>
 <div class="rowSetting rowDropdown">
-    <span>@_locale["Settings_CurrentStyle"]</span>
-    <div class="dropdown">
-        <button class="dropdown-toggle" type="button" data-toggle="dropdown">
-            @_appSett.SelectedStylesheet
-            <span class="caret"></span>
-        </button>
-        <ul class="custom-dropdown-menu dropdown-menu">
-            @foreach (var item in _appSett.GetStyleList())
-            {
-                <li class="custom-dropdown-item dropdown-item" @onclick="() => _appSett.SwapStylesheet(item)">@item</li>
-            }
-        </ul>
-    </div>
+	<span>@_locale["Settings_CurrentStyle"]</span>
+	<div class="dropdown">
+		<button class="dropdown-toggle" type="button" data-toggle="dropdown">
+			@_appSett.SelectedStylesheet
+			<span class="caret"></span>
+		</button>
+		<ul class="custom-dropdown-menu dropdown-menu">
+			@foreach (var item in _appSett.GetStyleList())
+			{
+				<li class="custom-dropdown-item dropdown-item" @onclick="() => _appSett.SwapStylesheet(item)">@item</li>
+			}
+		</ul>
+	</div>
 </div><div class="rowSetting">
 	<div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_WinAccent" @bind="_appSett.WindowsAccent" @onclick="() => _appSett.WindowsAccent_Toggle()"><label class="form-check-label" for="AppSett_WinAccent"></label></div><label for="AppSett_WinAccent">@_locale["Settings_WindowsAccent"]<br></label>
 </div>

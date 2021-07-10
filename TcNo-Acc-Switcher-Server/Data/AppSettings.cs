@@ -55,6 +55,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         private bool _updateAvailable;
         [JsonIgnore] public bool UpdateAvailable { get => _instance._updateAvailable; set => _instance._updateAvailable = value; }
 
+        private string _lang = "";
+        [JsonProperty("Language", Order = 0)] public string Lang { get => _instance._lang; set => _instance._lang = value; }
+
         private bool _streamerModeEnabled = true;
         [JsonProperty("StreamerModeEnabled", Order = 1)] public bool StreamerModeEnabled { get => _instance._streamerModeEnabled; set => _instance._streamerModeEnabled = value; }
 

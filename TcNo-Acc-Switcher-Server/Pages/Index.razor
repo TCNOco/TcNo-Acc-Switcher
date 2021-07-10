@@ -23,7 +23,7 @@
 @inject AppData _appData
 @inject AppSettings _appSettings
 
-@inject ILanguageContainerService  _locale
+@inject Lang  _locale
 
 @*@if (true)*@
 @if (AppSettings.Instance.UpdateAvailable)
@@ -96,6 +96,6 @@
 	}
 	protected override void OnInitialized()
 	{
-		_locale.InitLocalizedComponent(this);
+
 	}
 }

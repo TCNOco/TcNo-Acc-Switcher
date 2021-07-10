@@ -24,7 +24,7 @@
 @inject AppSettings _appSettings
 <style>@(new AppSettings().GetCssBlock())</style>
 <style>@(new Data.Settings.Steam().GetSteamIdCssBlock())</style>
-@inject ILanguageContainerService  _locale
+@inject Lang  _locale
 @inject Data.Settings.Steam _steam
 
 <ContextMenu ContextMenuString="@_steam.ContextMenuJson" />

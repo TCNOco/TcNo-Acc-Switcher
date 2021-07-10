@@ -24,6 +24,23 @@ if (winUrl.length > 1 && winUrl[1].indexOf("cacheReload") !== -1) {
     location.reload(true);
 }
 
+async function GetLang(k) {
+	var response = "";
+	var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocale", k).then((r) => {
+		response = r;
+	});
+	var result = await promise;
+	return response;
+}
+async function GetLangSub(key, obj) {
+	var response = "";
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocaleObj", key, obj).then((r) => {
+		response = r;
+	});
+	var result = await promise;
+	return response;
+}
+
 
 function copyToClipboard(str) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", str);
@@ -297,21 +314,29 @@ async function showModal(modaltype) {
         $("#modalTitle").text("TcNo Account Switcher Information");
         $("#modal_contents").empty();
         currentVersion = "";
+
+        const modalInfoCreator = await GetLang("Modal_Info_Creator"),
+	        modalInfoVersion = await GetLang("Modal_Info_Version"),
+            modalInfoDisclaimer = await GetLang("Modal_Info_Disclaimer"),
+            modalInfoVisitSite = await GetLang("Modal_Info_VisitSite"),
+            modalInfoBugReport = await GetLang("Modal_Info_BugReport"),
+            modalInfoViewGitHub = await GetLang("Modal_Info_ViewGitHub");
+
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetVersion").then((r) => {
             currentVersion = r;
             $("#modal_contents").append(`<div class="infoWindow">
                 <div class="imgDiv"><img width="100" margin="5" src="img/TcNo500.png" draggable="false" onclick="OpenLinkInBrowser('https://tcno.co');"></div>
                 <div class="rightContent">
                     <h2>TcNo Account Switcher</h2>
-                    <p>Created by TechNobo [Wesley Pyburn]</p>
+                    <p>${modalInfoCreator}</p>
                     <div class="linksList">
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');"><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>View on GitHub</a>
-                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');"><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>Bug report/Feature request</a>
-                        <a onclick="OpenLinkInBrowser('https://tcno.co');"><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>Visit tcno.co</a>
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');"><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>Disclaimer</a>
+                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');"><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>${modalInfoViewGitHub}</a>
+                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');"><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>${modalInfoBugReport}</a>
+                        <a onclick="OpenLinkInBrowser('https://tcno.co');"><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>${modalInfoVisitSite}</a>
+                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');"><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>${modalInfoDisclaimer}</a>
                     </div>
                 </div>
-                </div><div class="versionIdentifier"><span>Version: ${currentVersion}</span></div>`);
+                </div><div class="versionIdentifier"><span>${modalInfoVersion}: ${currentVersion}</span></div>`);
         });
     } else if (modaltype.startsWith("changeUsername")) {
         // USAGE: "changeUsername"
@@ -325,17 +350,21 @@ async function showModal(modaltype) {
         }
         $("#modalTitle").text("Change username");
         $("#modal_contents").empty();
+
+        let platformText = (platformName === "username" ? " (Only changes it in the TcNo Account Switcher)" : "");
+        const modalChangeUsername = await GetLangSub("Modal_ChangeUsername", { platformText: platformName, optional: platformText }),
+            modalChangeUsernameType = await GetLangSub("Modal_ChangeUsernameType", { UsernameOrOther: platformName });
+
         $("#modal_contents").append(`<div id="modal_contents">
 	        <div>
-		        <span class="modal-text">Please enter a new ${platformName} for your account${platformName === "username" ? " (Only changes it in the TcNo Account Switcher)" : "."}.</span>
+		        <span class="modal-text">${modalChangeUsername}.</span>
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="NewAccountName" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('change_username').click();">
 	        </div>
 	        <div class="settingsCol inputAndButton">
 				${extraButtons}
-		        <button class="modalOK" type="button" id="change_username" onclick="Modal_FinaliseAccNameChange()"><span>Change ${
-            platformName}</span></button>
+		        <button class="modalOK" type="button" id="change_username" onclick="Modal_FinaliseAccNameChange()"><span>${modalChangeUsernameType}</span></button>
 	        </div>
         </div>`);
         input = document.getElementById("NewAccountName");

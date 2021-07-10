@@ -97,6 +97,16 @@ namespace TcNo_Acc_Switcher_Client
 
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
 
+            if (File.Exists("LastError.txt"))
+            {
+	            var lastError = await File.ReadAllLinesAsync("LastError.txt");
+	            var title = lastError[0];
+	            lastError = lastError.Skip(1).ToArray();
+	            MessageBox.Show("Last error:" + Environment.NewLine + string.Join(Environment.NewLine, lastError), title, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                File.Delete("LastError.txt");
+                Environment.Exit(1);
+            }
+
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             // Upload crash logs if any, before starting program

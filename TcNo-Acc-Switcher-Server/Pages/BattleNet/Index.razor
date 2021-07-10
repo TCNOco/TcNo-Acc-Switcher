@@ -29,7 +29,7 @@
 <style>@(new AppSettings().GetCssBlock())</style>
 
 @inject Data.Settings.BattleNet _battleNet
-@inject ILanguageContainerService  _locale
+@inject Lang  _locale
 
 <ContextMenu ContextMenuString="@_battleNet.ContextMenuJson" />
 <div id="acc_list" class="acc_list">
