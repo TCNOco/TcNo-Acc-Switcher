@@ -1,7 +1,7 @@
 ﻿// Selected Element on list, for use in other JS functions
 var selectedElem = "";
 
-function initContextMenu() {
+async function initContextMenu() {
     let group = "acc";
     if (getCurrentPage() === "") {
         group = "platform";
@@ -35,19 +35,23 @@ function initContextMenu() {
             selectedElem = $(e.currentTarget).children("input")[0];
 
             // Update status for element
+            let statusText = "";
             switch (getCurrentPage()) {
-            case "Steam":
-                updateStatus(`Selected: ${$(selectedElem).attr("Line2")}`);
+                case "Steam":
+	                statusText = $(selectedElem).attr("Line2");
                 break;
-            case "Origin":
-                updateStatus(`Selected: ${$(selectedElem).attr("id")}`);
+                case "Origin":
+	                statusText = $(selectedElem).attr("id");
                 break;
-            case "Ubisoft":
-                updateStatus(`Selected: ${$(selectedElem).attr("Username")}`);
+                case "Ubisoft":
+	                statusText = $(selectedElem).attr("Username");
                 break;
             default:
                 break;
             }
+            const selectedText = await GetLang("Status_SelectedAccount", { name: statusText });
+            updateStatus(selectedText);
+
         } else if (group === "platform") {
             // Set currently selected element
             selectedElem = $(e.currentTarget).prop("id").substr(8);
@@ -116,7 +120,8 @@ function initContextMenu() {
     });
 };
 
-function selectedItemChanged() {
+async function selectedItemChanged() {
     // Different function groups based on platform
-    updateStatus(`Selected: ${$("input[name=accounts]:checked").attr("DisplayName")}`);
+    const selectedText = await GetLang("Status_SelectedAccount", { name: $("input[name=accounts]:checked").attr("DisplayName") });
+    updateStatus(selectedText);
 }

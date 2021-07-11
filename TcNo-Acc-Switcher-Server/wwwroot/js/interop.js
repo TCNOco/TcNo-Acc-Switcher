@@ -1,9 +1,11 @@
 ﻿// ReSharper disable Html.EventNotResolved
 if (sortable == undefined) {
+    const sorterNotLoaded = await GetLang("Toast_SorterNotLoaded");
+
 	window.notification.new({
 		type: "error",
 		title: "",
-		message: "A critical component could not be loaded (sorter). Please restart the application!",
+        message: sorterNotLoaded,
 		renderTo: "toastarea",
 		duration: 10000
 	});

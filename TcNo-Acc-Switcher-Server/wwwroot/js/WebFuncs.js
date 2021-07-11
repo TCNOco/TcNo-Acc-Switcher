@@ -60,27 +60,29 @@ async function forget(e) {
 
 // RESTORING STEAM ACCOUNTS
 async function restoreSteamAccounts() {
+	const toastFailedRestore = await GetLang("Toast_FailedRestore"),
+		toastRestored = await GetLang("Toast_Restored");
     const reqSteamIds = $("#ForgottenSteamAccounts").children("option:selected").toArray().map((item) => {
         return $(item).attr("value");
     });
 
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "Steam_RestoreSelected", reqSteamIds).then((r) => {
         if (r === true) {
-            reqSteamIds.forEach((e) => {
+	        reqSteamIds.forEach((e) => {
                 $("#ForgottenSteamAccounts").find(`option[value="${e}"]`).remove();
                 window.notification.new({
                     type: "success",
                     title: "",
-                    message: "Restored accounts!",
+                    message: toastRestored,
                     renderTo: "toastarea",
                     duration: 5000
                 });
             });
         } else {
-            window.notification.new({
+	        window.notification.new({
                 type: "error",
                 title: "",
-                message: "Failed to restore accounts (See console)",
+                message: toastFailedRestore,
                 renderTo: "toastarea",
                 duration: 5000
             });
@@ -91,6 +93,8 @@ async function restoreSteamAccounts() {
 
 // STOP IGNORING BATTLENET ACCOUNTS
 async function restoreBattleNetAccounts() {
+	const toastFailedRestore = await GetLang("Toast_FailedRestore"),
+		toastRestored = await GetLang("Toast_Restored");
     const reqBattleNetId = $("#IgnoredAccounts").children("option:selected").toArray().map((item) => {
         return $(item).attr("value");
     });
@@ -102,16 +106,16 @@ async function restoreBattleNetAccounts() {
                 window.notification.new({
                     type: "success",
                     title: "",
-                    message: "Restored accounts!",
+                    message: toastRestored,
                     renderTo: "toastarea",
                     duration: 5000
                 });
             });
         } else {
-            window.notification.new({
+	        window.notification.new({
                 type: "error",
                 title: "",
-                message: "Failed to restore accounts (See console)",
+                message: toastFailedRestore,
                 renderTo: "toastarea",
                 duration: 5000
             });
@@ -249,10 +253,13 @@ var exportingAccounts = false;
 
 async function exportAllAccounts() {
     if (exportingAccounts) {
+	    const toastAlreadyProcessing = await GetLang("Toast_AlreadyProcessing"),
+		    error = await GetLang("Error");
+        
 	    window.notification.new({
 		    type: "error",
-            title: "Error",
-            message: "Already processing accounts...",
+            title: error,
+            message: toastAlreadyProcessing,
 		    renderTo: "toastarea",
             duration: 5000
 	    });
@@ -311,16 +318,18 @@ function OpenLinkInBrowser(link) {
 async function showModal(modaltype) {
     let input, platform;
     if (modaltype === "info") {
-        $("#modalTitle").text("TcNo Account Switcher Information");
+
+	    const modalInfoCreator = await GetLang("Modal_Info_Creator"),
+		    modalInfoVersion = await GetLang("Modal_Info_Version"),
+		    modalInfoDisclaimer = await GetLang("Modal_Info_Disclaimer"),
+		    modalInfoVisitSite = await GetLang("Modal_Info_VisitSite"),
+		    modalInfoBugReport = await GetLang("Modal_Info_BugReport"),
+            modalInfoViewGitHub = await GetLang("Modal_Info_ViewGitHub"),
+            modalTitleInfo = await GetLang("Modal_Title_Info");
+
+        $("#modalTitle").text(modalTitleInfo);
         $("#modal_contents").empty();
         currentVersion = "";
-
-        const modalInfoCreator = await GetLang("Modal_Info_Creator"),
-	        modalInfoVersion = await GetLang("Modal_Info_Version"),
-            modalInfoDisclaimer = await GetLang("Modal_Info_Disclaimer"),
-            modalInfoVisitSite = await GetLang("Modal_Info_VisitSite"),
-            modalInfoBugReport = await GetLang("Modal_Info_BugReport"),
-            modalInfoViewGitHub = await GetLang("Modal_Info_ViewGitHub");
 
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetVersion").then((r) => {
             currentVersion = r;
@@ -348,12 +357,14 @@ async function showModal(modaltype) {
                 <button class="modalOK extra" type="button" id="set_account_name" onclick="discordCopyJS()"><span><svg viewBox="0 0 448 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/copy.svg#img"></use></svg></span></button>
 				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>`;
         }
-        $("#modalTitle").text("Change username");
-        $("#modal_contents").empty();
 
         let platformText = (platformName === "username" ? " (Only changes it in the TcNo Account Switcher)" : "");
         const modalChangeUsername = await GetLangSub("Modal_ChangeUsername", { platformText: platformName, optional: platformText }),
-            modalChangeUsernameType = await GetLangSub("Modal_ChangeUsernameType", { UsernameOrOther: platformName });
+            modalChangeUsernameType = await GetLangSub("Modal_ChangeUsernameType", { UsernameOrOther: platformName }),
+            modalTitleChangeUsername = await GetLangSub("Modal_Title_ChangeUsername");
+
+        $("#modalTitle").text(modalTitleChangeUsername);
+        $("#modal_contents").empty();
 
         $("#modal_contents").append(`<div id="modal_contents">
 	        <div>
@@ -374,21 +385,26 @@ async function showModal(modaltype) {
         var platformExe = modaltype.split(":")[2];
         var platformSettingsPath = modaltype.split(":")[3];
         Modal_RequestedLocated(false);
-        $("#modalTitle").text(`Please locate the ${platform} directory`);
+
+        const modalEnterDirectory = await GetLangSub("Modal_EnterDirectory", { platform: platform }),
+            modalLocatePlatform = await GetLangSub("Modal_LocatePlatform", { platformExe: platformExe }),
+            modalLocatePlatformFolder = await GetLangSub("Modal_LocatePlatformFolder", { platform: platform }),
+            modalLocatePlatformTitle = await GetLangSub("Modal_Title_LocatePlatform", { platform: platform });
+
+        $("#modalTitle").text(modalLocatePlatformTitle);
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div id="modal_contents">
 	        <div style="width: 80vw;">
-		        <span class="modal-text">Please enter ${platform}'s directory, as such: C:\\Program Files\\${platform}</span>
+		        <span class="modal-text">${modalEnterDirectory}</span>
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="FolderLocation" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
-		        <button type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFile=${platformExe}';"><span>Locate ${platformExe}</span></button>
+		        <button type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFile=${platformExe}';"><span>${modalLocatePlatform}</span></button>
 	        </div>
 	        <div class="settingsCol inputAndButton">
 		        <div class="folder_indicator notfound"><div id="folder_indicator_text"></div></div>
 		        <div class="folder_indicator_bg notfound"><span>${platformExe}</span></div>
-		        <button class="modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${platformSettingsPath
-            }')"><span>Select ${platform} Folder</span></button>
+		        <button class="modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${platformSettingsPath}')"><span>${modalLocatePlatformFolder}</span></button>
 	        </div>
         </div>`);
         input = document.getElementById("FolderLocation");
@@ -397,8 +413,10 @@ async function showModal(modaltype) {
         // GOAL: To return true/false
         let action = modaltype.slice(8);
 
+        const modalConfirmAction = await GetLangSub("Modal_ConfirmAction");
+
         let message = "";
-        let header = "<h3>Confirm action:</h3>";
+        let header = `<h3>${modalConfirmAction}:</h3>`;
         if (action.startsWith("AcceptForgetSteamAcc")) {
             message = forgetAccountSteamPrompt;
         } else if (action.startsWith("AcceptForgetDiscordAcc") || action.startsWith("AcceptForgetEpicAcc")
@@ -412,13 +430,17 @@ async function showModal(modaltype) {
             action = action.split(":")[0];
         }
 
-        $("#modalTitle").text("TcNo Account Switcher Confirm Action");
+        const modalConfirmActionTitle = await GetLangSub("Modal_Title_ConfirmAction"),
+	        yes = await GetLangSub("Yes"),
+	        no = await GetLangSub("No");
+
+        $("#modalTitle").text(modalConfirmActionTitle);
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">${header + message}
             <div class="YesNo">
-		        <button type="button" id="modal_true" onclick="Modal_Confirm('${action}', true)"><span>Yes</span></button>
-		        <button type="button" id="modal_false" onclick="Modal_Confirm('${action}', false)"><span>No</span></button>
+		        <button type="button" id="modal_true" onclick="Modal_Confirm('${action}', true)"><span>${yes}</span></button>
+		        <button type="button" id="modal_false" onclick="Modal_Confirm('${action}', false)"><span>${no}</span></button>
             </div>
         </div>
         </div>`);
@@ -432,8 +454,12 @@ async function showModal(modaltype) {
             args = modaltype.slice(7).split(":")[1];
         }
 
+        const modalConfirmAction = await GetLangSub("Modal_ConfirmAction"),
+            modalConfirmActionTitle = await GetLangSub("Modal_Title_ConfirmAction"),
+            ok = await GetLangSub("Ok");
+
         let message = "";
-        let header = "<h3>Confirm action:</h3>";
+        let header = `<h3>${modalConfirmAction}:</h3>`;
         if (action.startsWith("RestartAsAdmin")) {
             message = restartAsAdminPrompt;
             action = (args !== "" ? `location = 'RESTART_AS_ADMIN?arg=${args}'` : "location = 'RESTART_AS_ADMIN'");
@@ -442,12 +468,12 @@ async function showModal(modaltype) {
             action = action.split(":")[0];
         }
 
-        $("#modalTitle").text("TcNo Account Switcher Confirm Action");
+        $("#modalTitle").text(modalConfirmActionTitle);
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">${header + message}
             <div class="YesNo">
-		        <button type="button" id="modal_true" onclick="${action}"><span>OK</span></button>
+		        <button type="button" id="modal_true" onclick="${action}"><span>${ok}</span></button>
             </div>
         </div>
         </div>`);
@@ -461,18 +487,23 @@ async function showModal(modaltype) {
 				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>`;
         }
         Modal_RequestedLocated(false);
-        $("#modalTitle").text(`Add new ${platform} account`);
+
+        const modalTitleAddNew = await GetLangSub("Modal_Title_AddNew", { platform: platform }),
+            modalAddNew = await GetLangSub("Modal_AddNew", { platform: platform }),
+            modalAddCurrentAccount = await GetLangSub("Modal_AddCurrentAccount", { platform: platform });
+
+        $("#modalTitle").text(modalTitleAddNew);
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div id="modal_contents">
 	        <div>
-		        <span class="modal-text">Please enter a name for the ${platform} account you're logged into.</span>
+		        <span class="modal-text">${modalAddNew}</span>
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();" onkeypress='return /[^<>:\\.\\"\\/\\\\|?*]/i.test(event.key)'>
 	        </div>
 	        <div class="settingsCol inputAndButton">
 				${extraButtons}
-		        <button class="modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('${platform}')"><span>Add current ${platform} account</span></button>
+		        <button class="modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('${platform}')"><span>${modalAddCurrentAccount}</span></button>
 	        </div>
         </div>`);
         input = document.getElementById("CurrentAccountName");
@@ -480,7 +511,10 @@ async function showModal(modaltype) {
         let x = await showPasswordModal();
         if (!x) return;
     } else {
-        $("#modalTitle").text("Notice");
+
+	    const notice = await GetLangSub("Notice");
+
+        $("#modalTitle").text(notice);
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow"><div class="fullWidthContent">${modaltype}</div></div>`);
     }
@@ -504,12 +538,15 @@ async function showPasswordModal() {
     $("#btnClose-modal")[0].onclick = () => btnBack_Click();
     
     // Check if a password is set
+    const modalNewPassword = await GetLangSub("Modal_EnterNewPassword", { platform: platform }),
+        modalAddPassword = await GetLangSub("Modal_EnterPassword", { platform: platform });
+
     let skipEntry = false;
-    let infoText = `Please enter a new password to secure your ${platform} accounts in the switcher.<br>  Keep it safe. It can not be recovered later.`;
+    let infoText = modalNewPassword;
     let creatingPass = true;
     let dPromise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GiCheckPlatformPassword`, platform).then((r) => {
         if (r === 1) {
-            infoText = `Please enter your password for TcNo Account Switcher's ${platform} platform.`;
+            infoText = modalAddPassword;
             creatingPass = false;
         } else if (r === 2) {
 	        skipEntry = true; // Skip as it's already entered.
@@ -519,22 +556,29 @@ async function showPasswordModal() {
 
     if (skipEntry) return false;
 
-    $("#modalTitle").text(`Add new ${platform} account`);
+    const modalAddNewTitle = await GetLangSub("Modal_Title_AddNew", { platform: platform }),
+        modalEnterPassword = await GetLangSub("Modal_EnterPasswordShort"),
+        modalEnterPasswordRepeat = await GetLangSub("Modal_EnterPasswordRepeat"),
+        modalPasswordsMatch = await GetLangSub("Modal_PasswordsMatch"),
+        modalPasswordsNoMatch = await GetLangSub("Modal_PasswordsNoMatch"),
+        ok = await GetLangSub("Ok");
+
+	$("#modalTitle").text(modalAddNewTitle);
     $("#modal_contents").empty();
     $("#modal_contents").append(`<div id="modal_contents">
 	        <div>
 		        <span class="modal-text">${infoText}</span>
 	        </div>
 	        <div class="inputWithTitle">
-				<span class="modal-text">Enter password:</span>
+				<span class="modal-text">${modalEnterPassword}:</span>
 		        <input type="password" id="Password" style="width: 100%;padding: 8px;"'>
 	        </div>		        ` +
-        (creatingPass ? `<div class="inputWithTitle"><span class="modal-text">Enter password again:</span><input type="password" id="PasswordConfirm" style="width: 100%;padding: 8px;" onkeyup="javascript: if($('#Password').val() !== $('#PasswordConfirm').val()) $('#formNotice').html('Passwords do not match').css('color','red'); else $('#formNotice').html('Passwords match').css('color','lime')"></div>	` : "")
+        (creatingPass ? `<div class="inputWithTitle"><span class="modal-text">${modalEnterPasswordRepeat}:</span><input type="password" id="PasswordConfirm" style="width: 100%;padding: 8px;" onkeyup="javascript: if($('#Password').val() !== $('#PasswordConfirm').val()) $('#formNotice').html('${modalPasswordsNoMatch}').css('color','red'); else $('#formNotice').html('${modalPasswordsMatch}').css('color','lime')"></div>	` : "")
 	    + `
 			<p id="formNotice"></p>
 	        <div class="settingsCol inputAndButton">
 				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#why-a-password');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>
-		        <button class="modalOK" style="padding: 0 40px;" type="button" id="set_account_name" onclick="Modal_HandlePassword()"><span>OK</span></button>
+		        <button class="modalOK" style="padding: 0 40px;" type="button" id="set_account_name" onclick="Modal_HandlePassword()"><span>${ok}</span></button>
 	        </div>
         </div>`);
 
@@ -590,12 +634,16 @@ async function Modal_HandlePassword() {
 	if ($("#PasswordConfirm").length && $("#PasswordConfirm").val() !== $("#Password").val())
 		return false;
     let pass = $('#Password').val();
+
+    const modalPasswordsNoMatch = await GetLangSub("Modal_PasswordsNoMatch"),
+        toastRetryOrDeleteDiscordCache = await GetLangSub("Toast_RetryOrDeleteDiscordCache");
+
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiVerifyPlatformPassword", getCurrentPage(), pass).then((r) => {
         if (!r)
 	        window.notification.new({
 		        type: "error",
-		        title: "Passwords don't match",
-		        message: "Retry, or delete the Discord Cache to reset password (See the Wiki).",
+                title: modalPasswordsNoMatch,
+                message: toastRetryOrDeleteDiscordCache,
 		        renderTo: "toastarea",
 		        duration: 5000
 	        });
@@ -642,52 +690,49 @@ function refetchRank() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RefetchRank", $(".acc:checked").attr("id"));
 }
 
-const forgetAccountSteamPrompt = `<h3 style='color:red'>You are about to forget an account!</h3>
-<h4>What does this mean?</h4>
-<p>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.<br/>
-- TcNo Account Switcher will also no longer show the account, until it's signed into again through Steam.</p>
-<p>Your account will remain untouched. It is just forgotten on this computer.</p>
-<h4>What if something goes wrong?</h4>
-<p>Don't panic, you can bring back forgotten accounts via backups in the Settings screen.<br/>
-You can also remove previous backups from there when you are sure everything is working as expected.</p>
-<h4>Do you understand?</h4>`;
+const forgetAccountSteamPrompt = await GetLangSub("Prompt_ForgetSteam");
 
 
 // Find a better way to display these. A placeholder that gets replaced for the platform name?
-function getAccountPrompt() {
-    return `<h3 style='color:red'>You are about to forget an account!</h3>
-<h4>What does this mean?</h4>
-<p>TcNo Account Switcher will also no longer show the account,<br/>
-until it's signed into again through ${getCurrentPage()}, and added to the list.</p>
-<p>Your account will remain untouched. It is just forgotten on this computer.</p>
-<h4>Do you understand?</h4>`;
-}
+async function getAccountPrompt(){ return await GetLangSub("Prompt_ForgetAccount", { platform: getCurrentPage() }); }
 
-const restartAsAdminPrompt = `<h3><bold>This program will restart as Admin</bold></h3>
-<p>Hit "Yes" in UAC when prompted for admin.</p>`;
+async const restartAsAdminPrompt = await GetLangSub("Prompt_RestartAsAdmin");
 
 
-function discordCopyJS() {
+async function discordCopyJS() {
     // Clicks the User Settings button
     // Then immediately copies the 'src' of the profile image, and the username, as well as the #.
     // Then copy to clipboard.
+    const findOptionsButtonText = await GetLangSub("Prompt_DiscordCopy1"),
+        checkStreamerModeText = await GetLangSub("Prompt_DiscordCopy2"),
+        userCheckStreamerMode = await GetLangSub("Prompt_DiscordCopy3")
+        getNameText = await GetLangSub("Prompt_DiscordCopy4"),
+        getAvatarText = await GetLangSub("Prompt_DiscordCopy5"),
+        copyAvatarText = await GetLangSub("Prompt_DiscordCopy6"),
+        closeOptionsText = await GetLangSub("Prompt_DiscordCopy7"),
+        notifyUserText = await GetLangSub("Prompt_DiscordCopy8"),
+        successfullyCopiedText = await GetLangSub("Prompt_DiscordCopy9"),
+        instrutionsText = await GetLangSub("Prompt_DiscordCopy10"),
+        toastCopied = await GetLangSub("Toast_Copied"),
+        toastPasteDiscordConsole = await GetLangSub("Toast_PasteDiscordConsole");
+
     let code = `
-// Find options button, and click
+// ${findOptionsButtonText}
 let btns = document.getElementsByClassName("button-14-BFJ");
 btns[btns.length-1].click();
 
-// Check that streamer mode is not enabled, otherwise: Give error.
+// ${checkStreamerModeText}
 let streamerMode = false;
 try { streamerMode = $("[class^='streamerModeEnabledBtn']") !== null;} catch (e) {streamerMode = false;}
 if (streamerMode){
-console.log.apply(console, ["%cTcNo Account Switcher%c: ERROR!\\nMake sure that Streamer Mode is disabled/not active when running this command!\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list ", 'background: #290000; color: #F00','background: #290000; color: white','background: #222; color: lightblue']);
+console.log.apply(console, ["%cTcNo Account Switcher%c: ERROR!\\n${userCheckStreamerMode}\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list ", 'background: #290000; color: #F00','background: #290000; color: white','background: #222; color: lightblue']);
 }else{
-  // Get name from bottom-left of screen
+  // ${getNameText}
   let name = $("[class^='usernameInnerRow']").firstElementChild.innerText + $("[class^='usernameInnerRow']").lastElementChild.innerText;
-  // Get Avatar and username from page
+  // ${getAvatarText}
   let avatar = $("[class^='accountProfileCard']").getElementsByTagName("img")[0].src;
 
-  // Copy avatar and username
+  // ${copyAvatarText}
   copy(\`TCNO: \${avatar}|\${name}\`);
 
   let possibleExit = $("[class^='contentRegionScroller']").getElementsByTagName('svg');
@@ -695,17 +740,18 @@ console.log.apply(console, ["%cTcNo Account Switcher%c: ERROR!\\nMake sure that 
 
   await new Promise(resolve => setTimeout(resolve, 500)); // Wait 500ms
 
-  // Close options
+  // ${closeOptionsText}
   closeButton.click();
 
-  // Let the user know in console.
-  console.log.apply(console, ["%cTcNo Account Switcher%c: Successfully copied information!\\nPaste it into the input box in the account switcher to update/set image and username.\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list ", 'background: #222; color: #bada55','background: #222; color: white','background: #222; color: lightblue']);
+  // ${notifyUserText}
+  console.log.apply(console, ["%cTcNo Account Switcher%c: ${successfullyCopiedText}\\n${instrutionsText}\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list ", 'background: #222; color: #bada55','background: #222; color: white','background: #222; color: lightblue']);
 }`;
+
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", code);
     window.notification.new({
 	    type: "success",
-	    title: "Copied",
-	    message: "Paste into Discord console, and then paste result in input!",
+	    title: toastCopied,
+        message: toastPasteDiscordConsole,
 	    renderTo: "toastarea",
 	    duration: 5000
     });

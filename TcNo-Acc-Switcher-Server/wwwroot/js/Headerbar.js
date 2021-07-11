@@ -1,8 +1,10 @@
 ﻿if (chrome === undefined) {
+    const chromeNotLoaded = await GetLang("Toast_ChromeNotLoaded");
+
 	window.notification.new({
 		type: "error",
 		title: "",
-		message: "A critical component could not be loaded (chrome). Please restart the application!",
+        message: chromeNotLoaded,
 		renderTo: "toastarea",
 		duration: 10000
 	});

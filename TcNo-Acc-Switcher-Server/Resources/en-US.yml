@@ -65,12 +65,19 @@ Restore_Button_Restore: Restore selected
 Ignored_RemoveAccounts: Remove accounts from ignore list
 Ignored_Description: If you previously "ignored" an account, you can show them again here
 Ignored_Stop: Stop ignoring selected
-Modal_Header: TcNo Account Switcher Information
 
+Toast_RetryOrDeleteDiscordCache: Retry, or delete the Discord Cache to reset password (See the Wiki).
 Toast_TrayStarted: Tray started!
 Toast_TrayRunning: Tray already open
 Toast_TrayUsersMissing: No tray users saved
 Toast_TrayFail: Could not start tray application!
+Toast_Copied: Copied
+Toast_PasteDiscordConsole: Paste into Discord console, and then paste result in input!
+Toast_AlreadyProcessing: Already processing accounts...
+Toast_FailedRestore: Failed to restore accounts (See console)
+Toast_Restored: Restored accounts!
+Toast_SorterNotLoaded: A critical component could not be loaded (sorter). Please restart the application!
+Toast_ChromeNotLoaded: A critical component could not be loaded (chrome). Please restart the application!
 
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
 Modal_Info_Version: Version
@@ -78,5 +85,63 @@ Modal_Info_ViewGitHub: View on GitHub
 Modal_Info_BugReport: Bug report/Feature request
 Modal_Info_VisitSite: Visit tcno.co
 Modal_Info_Disclaimer: Disclaimer
+Modal_Title_Info: TcNo Account Switcher Information
+Modal_Title_ChangeUsername: Change username
+Modal_Title_ConfirmAction: TcNo Account Switcher Confirm Action
+Modal_Title_LocatePlatform: Please locate the {platform} directory
+Modal_Title_AddNew: Add new {platform} account
+
 Modal_ChangeUsername: Please enter a new {platformText} for your account
 Modal_ChangeUsernameType: Change {UsernameOrOther}
+Modal_EnterDirectory: "Please enter {platform}'s directory, as such: C:\\Program Files\\{platform}"
+Modal_LocatePlatform: Locate {platformExe}
+Modal_LocatePlatformFolder: Select {platform} folder
+Modal_ConfirmAction: Confirm action
+Modal_AddNew:  Please enter a name for the {platform} account you're logged into.
+Modal_AddCurrentAccount: Add current {platform} account
+Modal_EnterNewPassword: Please enter a new password to secure your {platform} accounts in the switcher.<br>  Keep it safe. It can not be recovered later.
+Modal_EnterPassword: Please enter your password for TcNo Account Switcher's {platform} platform.
+Modal_EnterPasswordShort: Enter password
+Modal_EnterPasswordRepeat: Enter password again
+Modal_PasswordsMatch: Passwords match
+Modal_PasswordsNoMatch: Passwords do not match
+
+Status_SelectedAccount: "Selected: {name}"
+
+Yes: "Yes"
+No: "No"
+Ok: "OK"
+Notice: Notice
+Error: Error
+
+Prompt_RestartAsAdmin: <h3><bold>This program will restart as Admin</bold></h3><p>Hit "Yes" in UAC when prompted for admin.</p>
+
+Prompt_ForgetSteam: |
+ <h3 style='color:red'>You are about to forget an account!</h3>
+ <h4>What does this mean?</h4>
+ <p>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.<br/>
+ - TcNo Account Switcher will also no longer show the account, until it's signed into again through Steam.</p>
+ <p>Your account will remain untouched. It is just forgotten on this computer.</p>
+ <h4>What if something goes wrong?</h4>
+ <p>Don't panic, you can bring back forgotten accounts via backups in the Settings screen.<br/>
+ You can also remove previous backups from there when you are sure everything is working as expected.</p>
+ <h4>Do you understand?</h4>
+
+Prompt_ForgetAccount: |
+ <h3 style='color:red'>You are about to forget an account!</h3>
+ <h4>What does this mean?</h4>
+ <p>TcNo Account Switcher will also no longer show the account,<br/>
+ until it's signed into again through {platform}, and added to the list.</p>
+ <p>Your account will remain untouched. It is just forgotten on this computer.</p>
+ <h4>Do you understand?</h4>
+ 
+ Prompt_DiscordCopy1: Find options button, and click
+ Prompt_DiscordCopy2: "Check that streamer mode is not enabled, otherwise: Give error."
+ Prompt_DiscordCopy3: Make sure that Streamer Mode is disabled/not active when running this command!
+ Prompt_DiscordCopy4: Get name from bottom-left of screen
+ Prompt_DiscordCopy5: Get Avatar and username from page
+ Prompt_DiscordCopy6: Copy avatar and username
+ Prompt_DiscordCopy7: Close options
+ Prompt_DiscordCopy8: Let the user know in console.
+ Prompt_DiscordCopy9: Successfully copied information!
+ Prompt_DiscordCopy10: Paste it into the input box in the account switcher to update/set image and username.
