@@ -4,20 +4,22 @@ if (window.notification === undefined) {
     // Won't be able to show an error, unfortunately.
 }
 if (DotNet === undefined) {
+    const dotNetNotLoaded = await GetLang("Toast_DotNetNotLoaded");
 	window.notification.new({
 		type: "error",
 		title: "",
-		message: "A critical component could not be loaded (DotNet). Please restart the application!",
+        message: dotNetNotLoaded,
 		renderTo: "toastarea",
 		duration: 10000
     });
 	DotNet = null;
 }
 if ($ === undefined) {
+	const jQueryNotLoaded = await GetLang("Toast_jQueryNotLoaded");
 	window.notification.new({
 		type: "error",
 		title: "",
-		message: "A critical component could not be loaded (jQuery). Please restart the application!",
+        message: jQueryNotLoaded,
 		renderTo: "toastarea",
 		duration: 10000
 	});

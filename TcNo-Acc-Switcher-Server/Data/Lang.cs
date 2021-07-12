@@ -98,9 +98,9 @@ namespace TcNo_Acc_Switcher_Server.Data
 		{
 			LoadDefault();
 			// If setting does not exist in settings file then load the system default
-			Instance.Load(AppSettings.Instance.Lang == ""
+			Instance.Load(AppSettings.Instance.Language == ""
 				? CultureInfo.CurrentCulture.Name
-				: AppSettings.Instance.Lang);
+				: AppSettings.Instance.Language);
 		}
 
 		/// <summary>
@@ -126,7 +126,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 			Current = filename;
 			if (save && Current == filename)
 			{
-				AppSettings.Instance.Lang = filename;
+				AppSettings.Instance.Language = filename;
 				AppSettings.Instance.SaveSettings();
 			}
 			if (!File.Exists(path))
@@ -144,7 +144,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 					Current = l;
 					if (save && Current == l)
 					{
-						AppSettings.Instance.Lang = l;
+						AppSettings.Instance.Language = l;
 						AppSettings.Instance.SaveSettings();
 					}
 					break;

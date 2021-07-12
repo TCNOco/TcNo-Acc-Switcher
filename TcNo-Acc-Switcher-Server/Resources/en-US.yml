@@ -71,6 +71,8 @@ Toast_TrayStarted: Tray started!
 Toast_TrayRunning: Tray already open
 Toast_TrayUsersMissing: No tray users saved
 Toast_TrayFail: Could not start tray application!
+Toast_TrayPosition: "On clicking the Exit button: I'll be on the Windows Tray! (Right of Start Bar)"
+Toast_TrayHint: "Hint: Ctrl+Click the 'X' to close me completely, or via the Tray > 'Exit'"
 Toast_Copied: Copied
 Toast_PasteDiscordConsole: Paste into Discord console, and then paste result in input!
 Toast_AlreadyProcessing: Already processing accounts...
@@ -78,6 +80,16 @@ Toast_FailedRestore: Failed to restore accounts (See console)
 Toast_Restored: Restored accounts!
 Toast_SorterNotLoaded: A critical component could not be loaded (sorter). Please restart the application!
 Toast_ChromeNotLoaded: A critical component could not be loaded (chrome). Please restart the application!
+Toast_DotNetNotLoaded: A critical component could not be loaded (DotNet). Please restart the application!
+Toast_jQueryNotLoaded: A critical component could not be loaded (chrome). Please restart the application!
+Toast_ProtocolEnabled: This program will now respond to tcno:\\ in Windows
+Toast_ProtocolDisabled: This program will no longer respond to tcno:\\
+Toast_RestartAsAdmin: Please start as Admin and try again.
+Toast_RestartAfterClose: Please restart the program after clicking Close.
+Toast_LoadStylesheetFailed: Failed to load stylesheet! See documents folder for details.
+Toast_BNet_Private: "{BTag}'s profile is private"
+Toast_BNet_StatsFail: "Error trying to get stats for {BTag}"
+Toast_ItemNotFound: "{item} was not found"
 
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
 Modal_Info_Version: Version

@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -31,11 +32,15 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using Task = TcNo_Acc_Switcher_Server.Pages.General.Classes.Task;
 
+
 namespace TcNo_Acc_Switcher_Server.Data
 {
     public class AppSettings
-    {
-        private static AppSettings _instance = new();
+	{
+		[Inject]
+		private Lang Lang { get; set; }
+
+		private static AppSettings _instance = new();
 
         private static readonly object LockObj = new();
 
@@ -56,7 +61,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] public bool UpdateAvailable { get => _instance._updateAvailable; set => _instance._updateAvailable = value; }
 
         private string _lang = "";
-        [JsonProperty("Language", Order = 0)] public string Lang { get => _instance._lang; set => _instance._lang = value; }
+        [JsonProperty("Language", Order = 0)] public string Language { get => _instance._lang; set => _instance._lang = value; }
 
         private bool _streamerModeEnabled = true;
         [JsonProperty("StreamerModeEnabled", Order = 1)] public bool StreamerModeEnabled { get => _instance._streamerModeEnabled; set => _instance._streamerModeEnabled = value; }
@@ -450,12 +455,12 @@ namespace TcNo_Acc_Switcher_Server.Data
             try
             {
 	            if (LoadStylesheetFromFile()) await AppData.ReloadPage();
-				else GeneralInvocableFuncs.ShowToast("error", "Failed to load stylesheet! See documents folder for details.",
+				else GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
 		            "Stylesheet error", "toastarea");
 			}
             catch (Exception)
 			{
-				GeneralInvocableFuncs.ShowToast("error", "Failed to load stylesheet! See documents folder for details.",
+				GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
 					"Stylesheet error", "toastarea");
 			}
 		}
@@ -655,8 +660,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
 	        Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
 	        if (TrayMinimizeNotExit) return;
-	        _ = GeneralInvocableFuncs.ShowToast("info", "On clicking the Exit button: I'll be on the Windows Tray! (Right of Start Bar)", duration: 15000, renderTo: "toastarea");
-            _ = GeneralInvocableFuncs.ShowToast("info", "Hint: Ctrl+Click the 'X' to close me completely, or via the Tray > 'Exit'", duration: 15000, renderTo: "toastarea");
+	        _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_TrayPosition"], duration: 15000, renderTo: "toastarea");
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_TrayHint"], duration: 15000, renderTo: "toastarea");
         }
 
         /// <summary>
@@ -684,19 +689,19 @@ namespace TcNo_Acc_Switcher_Server.Data
 			        key?.SetValue("URL Protocol", "", RegistryValueKind.String);
 			        using var defaultKey = Registry.ClassesRoot.CreateSubKey(@"tcno\Shell\Open\Command");
 			        defaultKey?.SetValue("", $"\"{Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe")}\" \"%1\"", RegistryValueKind.String);
-			        GeneralInvocableFuncs.ShowToast("success", @"This program will now respond to tcno:\\ in Windows", "Protocol added", "toastarea");
+			        GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ProtocolEnabled"], "Protocol added", "toastarea");
 		        }
 		        else
 		        {
 			        // Remove
                     Registry.ClassesRoot.DeleteSubKeyTree("tcno");
-			        GeneralInvocableFuncs.ShowToast("success", @"This program will no longer respond to tcno:\\", "Protocol removed", "toastarea");
+			        GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ProtocolDisabled"], "Protocol removed", "toastarea");
                 }
 		        _instance._protocolEnabled = Protocol_IsEnabled();
             }
 	        catch (UnauthorizedAccessException)
 	        {
-		        GeneralInvocableFuncs.ShowToast("error", @"Please start as Admin and try again.", "Failed", "toastarea");
+		        GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], "Failed", "toastarea");
                 GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
 	        }
         }
@@ -708,7 +713,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 	        if (!WindowsAccent)
 		        SetAccentColor(true);
 	        else
-		        GeneralInvocableFuncs.ShowToast("info", "Please restart the program after clicking Close.", "Accent color disabled", "toastarea");
+		        GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestartAfterClose"], "Accent color disabled", "toastarea");
         }
 
         [SupportedOSPlatform("windows")]
@@ -826,10 +831,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             _ = Globals.StartTrayIfNotRunning() switch
             {
-                "Started Tray" => GeneralInvocableFuncs.ShowToast("success", "Tray started!", renderTo: "toastarea"),
-                "Already running" => GeneralInvocableFuncs.ShowToast("info", "Tray already open", renderTo: "toastarea"),
-                "Tray users not found" => GeneralInvocableFuncs.ShowToast("error", "No tray users saved", renderTo: "toastarea"),
-                _ => GeneralInvocableFuncs.ShowToast("error", "Could not start tray application!", renderTo: "toastarea")
+                "Started Tray" => GeneralInvocableFuncs.ShowToast("success", Lang["Toast_TrayStarted"], renderTo: "toastarea"),
+                "Already running" => GeneralInvocableFuncs.ShowToast("info", Lang["Toast_TrayRunning"], renderTo: "toastarea"),
+                "Tray users not found" => GeneralInvocableFuncs.ShowToast("error", Lang["Toast_TrayUsersMissing"], renderTo: "toastarea"),
+                _ => GeneralInvocableFuncs.ShowToast("error", Lang["Toast_TrayFail"], renderTo: "toastarea")
             };
         }
 
