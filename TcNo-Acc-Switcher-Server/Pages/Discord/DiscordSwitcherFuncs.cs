@@ -21,6 +21,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 {
     public class DiscordSwitcherFuncs
     {
+	    private static readonly Lang Lang = Lang.Instance;
+
         private static readonly Data.Settings.Discord Discord = Data.Settings.Discord.Instance;
         private static readonly string DiscordRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "discord");
         private static readonly string DiscordCacheFolder = Path.Join(DiscordRoaming, "Cache");
@@ -85,7 +87,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 	        }
 
 	        if (token == "")
-		        GeneralInvocableFuncs.ShowToast("error", "Failed to find user's token! Quit Discord normally, then save again.", "Error", "toastarea");
+		        GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Discord_NoToken"], "Error", "toastarea");
 	        else
 	        {
 		        token = Globals.GetSha256HashString(token);
@@ -149,13 +151,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         private static bool DiscordCopyInAccount(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.DiscordCopyInAccount]");
-            GeneralInvocableFuncs.ShowToast("info", "Hint: Changed Discord settings? Save again, with the same name!",
+            GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Discord_SaveHint"],
 	            "Discord note", "toastarea");
 
 			var accFolder = $"LoginCache\\Discord\\{accName}\\";
             if (!Directory.Exists(accFolder))
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {accFolder}", "Directory not found", "toastarea");
+	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new {x = accFolder}], Lang["DirectoryNotFound"], "toastarea");
 	            return false;
             }
 
@@ -191,7 +193,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         public static void DiscordAddCurrent(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.DiscordAddCurrent]");
-            GeneralInvocableFuncs.ShowToast("info", "Hint: You must sign out of Discord in your browser",
+            GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Discord_SignOutHint"],
 	            "Discord note", "toastarea");
 
             // See if user used automated collection tool:
@@ -336,7 +338,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 	        }
 	        catch (Exception)
 	        {
-		        _ = GeneralInvocableFuncs.ShowToast("error", "Could not change username", "Error", "toastarea");
+		        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantChangeUsername"], Lang["Error"], "toastarea");
 		        return;
 	        }
             
@@ -422,8 +424,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 		        }
             }
 
-	        GeneralInvocableFuncs.ShowToast("success", $"{totalFiles - failedFiles} of {totalFiles} deleted. Total: {GeneralFuncs.FileSizeString(totalFileSize)}",
-		        "Cleared Discord cache!", "toastarea", 10000);
+	        GeneralInvocableFuncs.ShowToast("success", Lang["Toast_DeletedTotal", new {files = totalFiles - failedFiles, totalFiles = totalFiles, totalSize = GeneralFuncs.FileSizeString(totalFileSize) }],
+		        Lang["Toast_DeletedTotalTitle"], "toastarea", 10000);
 		}
         #endregion
     }

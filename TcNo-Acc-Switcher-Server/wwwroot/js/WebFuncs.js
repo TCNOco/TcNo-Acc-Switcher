@@ -25,20 +25,14 @@ if (winUrl.length > 1 && winUrl[1].indexOf("cacheReload") !== -1) {
 }
 
 async function GetLang(k) {
-	var response = "";
-	var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocale", k).then((r) => {
-		response = r;
-	});
-	var result = await promise;
-	return response;
+    return DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocale", k).then((r) => {
+        return r;
+    });
 }
 async function GetLangSub(key, obj) {
-	var response = "";
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocaleObj", key, obj).then((r) => {
-		response = r;
-	});
-	var result = await promise;
-	return response;
+    return DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocaleObj", key, obj).then((r) => {
+        return r;
+    });
 }
 
 
@@ -361,7 +355,7 @@ async function showModal(modaltype) {
         let platformText = (platformName === "username" ? " (Only changes it in the TcNo Account Switcher)" : "");
         const modalChangeUsername = await GetLangSub("Modal_ChangeUsername", { platformText: platformName, optional: platformText }),
             modalChangeUsernameType = await GetLangSub("Modal_ChangeUsernameType", { UsernameOrOther: platformName }),
-            modalTitleChangeUsername = await GetLangSub("Modal_Title_ChangeUsername");
+            modalTitleChangeUsername = await GetLang("Modal_Title_ChangeUsername");
 
         $("#modalTitle").text(modalTitleChangeUsername);
         $("#modal_contents").empty();
@@ -413,16 +407,16 @@ async function showModal(modaltype) {
         // GOAL: To return true/false
         let action = modaltype.slice(8);
 
-        const modalConfirmAction = await GetLangSub("Modal_ConfirmAction");
+        const modalConfirmAction = await GetLang("Modal_ConfirmAction");
 
         let message = "";
         let header = `<h3>${modalConfirmAction}:</h3>`;
         if (action.startsWith("AcceptForgetSteamAcc")) {
-            message = forgetAccountSteamPrompt;
+            message = await GetLang("Prompt_ForgetSteam");
         } else if (action.startsWith("AcceptForgetDiscordAcc") || action.startsWith("AcceptForgetEpicAcc")
 	        || action.startsWith("AcceptForgetOriginAcc") || action.startsWith("AcceptForgetUbisoftAcc") ||
             action.startsWith("AcceptForgetBattleNetAcc") || action.startsWith("AcceptForgetRiotAcc")) {
-            message = getAccountPrompt();
+            message = await GetLangSub("Prompt_ForgetAccount", { platform: getCurrentPage() });
         } else {
             message = `<p>${modaltype.split(":")[2].replaceAll("_", " ")}</p>`;
             // The only exception to confirm:<prompt> was AcceptForgetSteamAcc, as that was confirm:AcceptForgetSteamAcc:steamId
@@ -430,9 +424,9 @@ async function showModal(modaltype) {
             action = action.split(":")[0];
         }
 
-        const modalConfirmActionTitle = await GetLangSub("Modal_Title_ConfirmAction"),
-	        yes = await GetLangSub("Yes"),
-	        no = await GetLangSub("No");
+        const modalConfirmActionTitle = await GetLang("Modal_Title_ConfirmAction"),
+	        yes = await GetLang("Yes"),
+	        no = await GetLang("No");
 
         $("#modalTitle").text(modalConfirmActionTitle);
         $("#modal_contents").empty();
@@ -454,14 +448,14 @@ async function showModal(modaltype) {
             args = modaltype.slice(7).split(":")[1];
         }
 
-        const modalConfirmAction = await GetLangSub("Modal_ConfirmAction"),
-            modalConfirmActionTitle = await GetLangSub("Modal_Title_ConfirmAction"),
-            ok = await GetLangSub("Ok");
+        const modalConfirmAction = await GetLang("Modal_ConfirmAction"),
+            modalConfirmActionTitle = await GetLang("Modal_Title_ConfirmAction"),
+            ok = await GetLang("Ok");
 
         let message = "";
         let header = `<h3>${modalConfirmAction}:</h3>`;
         if (action.startsWith("RestartAsAdmin")) {
-            message = restartAsAdminPrompt;
+            message = await GetLang("Prompt_RestartAsAdmin");
             action = (args !== "" ? `location = 'RESTART_AS_ADMIN?arg=${args}'` : "location = 'RESTART_AS_ADMIN'");
         } else {
             message = `<p>${modaltype.split(":")[2].replaceAll("_", " ")}</p>`;
@@ -512,7 +506,7 @@ async function showModal(modaltype) {
         if (!x) return;
     } else {
 
-	    const notice = await GetLangSub("Notice");
+	    const notice = await GetLang("Notice");
 
         $("#modalTitle").text(notice);
         $("#modal_contents").empty();
@@ -557,11 +551,11 @@ async function showPasswordModal() {
     if (skipEntry) return false;
 
     const modalAddNewTitle = await GetLangSub("Modal_Title_AddNew", { platform: platform }),
-        modalEnterPassword = await GetLangSub("Modal_EnterPasswordShort"),
-        modalEnterPasswordRepeat = await GetLangSub("Modal_EnterPasswordRepeat"),
-        modalPasswordsMatch = await GetLangSub("Modal_PasswordsMatch"),
-        modalPasswordsNoMatch = await GetLangSub("Modal_PasswordsNoMatch"),
-        ok = await GetLangSub("Ok");
+        modalEnterPassword = await GetLang("Modal_EnterPasswordShort"),
+        modalEnterPasswordRepeat = await GetLang("Modal_EnterPasswordRepeat"),
+        modalPasswordsMatch = await GetLang("Modal_PasswordsMatch"),
+        modalPasswordsNoMatch = await GetLang("Modal_PasswordsNoMatch"),
+        ok = await GetLang("Ok");
 
 	$("#modalTitle").text(modalAddNewTitle);
     $("#modal_contents").empty();
@@ -635,8 +629,8 @@ async function Modal_HandlePassword() {
 		return false;
     let pass = $('#Password').val();
 
-    const modalPasswordsNoMatch = await GetLangSub("Modal_PasswordsNoMatch"),
-        toastRetryOrDeleteDiscordCache = await GetLangSub("Toast_RetryOrDeleteDiscordCache");
+    const modalPasswordsNoMatch = await GetLang("Modal_PasswordsNoMatch"),
+        toastRetryOrDeleteDiscordCache = await GetLang("Toast_RetryOrDeleteDiscordCache");
 
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiVerifyPlatformPassword", getCurrentPage(), pass).then((r) => {
         if (!r)
@@ -690,31 +684,22 @@ function refetchRank() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RefetchRank", $(".acc:checked").attr("id"));
 }
 
-const forgetAccountSteamPrompt = await GetLangSub("Prompt_ForgetSteam");
-
-
-// Find a better way to display these. A placeholder that gets replaced for the platform name?
-async function getAccountPrompt(){ return await GetLangSub("Prompt_ForgetAccount", { platform: getCurrentPage() }); }
-
-async const restartAsAdminPrompt = await GetLangSub("Prompt_RestartAsAdmin");
-
-
 async function discordCopyJS() {
     // Clicks the User Settings button
     // Then immediately copies the 'src' of the profile image, and the username, as well as the #.
     // Then copy to clipboard.
-    const findOptionsButtonText = await GetLangSub("Prompt_DiscordCopy1"),
-        checkStreamerModeText = await GetLangSub("Prompt_DiscordCopy2"),
-        userCheckStreamerMode = await GetLangSub("Prompt_DiscordCopy3")
-        getNameText = await GetLangSub("Prompt_DiscordCopy4"),
-        getAvatarText = await GetLangSub("Prompt_DiscordCopy5"),
-        copyAvatarText = await GetLangSub("Prompt_DiscordCopy6"),
-        closeOptionsText = await GetLangSub("Prompt_DiscordCopy7"),
-        notifyUserText = await GetLangSub("Prompt_DiscordCopy8"),
-        successfullyCopiedText = await GetLangSub("Prompt_DiscordCopy9"),
-        instrutionsText = await GetLangSub("Prompt_DiscordCopy10"),
-        toastCopied = await GetLangSub("Toast_Copied"),
-        toastPasteDiscordConsole = await GetLangSub("Toast_PasteDiscordConsole");
+    const findOptionsButtonText = await GetLang("Prompt_DiscordCopy1"),
+        checkStreamerModeText = await GetLang("Prompt_DiscordCopy2"),
+        userCheckStreamerMode = await GetLang("Prompt_DiscordCopy3")
+		getNameText = await GetLang("Prompt_DiscordCopy4"),
+        getAvatarText = await GetLang("Prompt_DiscordCopy5"),
+        copyAvatarText = await GetLang("Prompt_DiscordCopy6"),
+        closeOptionsText = await GetLang("Prompt_DiscordCopy7"),
+        notifyUserText = await GetLang("Prompt_DiscordCopy8"),
+        successfullyCopiedText = await GetLang("Prompt_DiscordCopy9"),
+        instrutionsText = await GetLang("Prompt_DiscordCopy10"),
+        toastCopied = await GetLang("Toast_Copied"),
+        toastPasteDiscordConsole = await GetLang("Toast_PasteDiscordConsole");
 
     let code = `
 // ${findOptionsButtonText}

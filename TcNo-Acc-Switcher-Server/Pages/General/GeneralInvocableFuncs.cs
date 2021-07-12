@@ -37,6 +37,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralInvocableFuncs
     {
+	    private static readonly Lang Lang = Lang.Instance;
+
         private static readonly Data.Settings.Discord Discord = Data.Settings.Discord.Instance;
         private static readonly Data.Settings.Epic Epic = Data.Settings.Epic.Instance;
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
@@ -311,7 +313,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (!File.Exists(fgImg)) fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{page}\\{accId}.png");
             if (!File.Exists(fgImg))
             {
-	            ShowToast("error", "Failed to find users' image.", "Can not create shortcut", "toastarea");
+	            ShowToast("error", Lang["Toast_CantFindImage"], Lang["Toast_CantCreateShortcut"], "toastarea");
 	            return;
             }
 
@@ -329,8 +331,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             s.TryWrite();
 
             _ = AppSettings.Instance.StreamerModeTriggered
-                ? ShowToast("success", "Shortcut created!", "Success", "toastarea")
-                : ShowToast("success", $"For: {accName}", "Shortcut created!", "toastarea");
+                ? ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea")
+                : ShowToast("success", Lang["ForName", new {ForName = accName}], Lang["Toast_ShortcutCreated"], "toastarea");
         }
 
         [JSInvokable]
@@ -348,8 +350,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 	        Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiExportAccountList] platform={platform}");
 	        if (!Directory.Exists(Path.Join("LoginCache", platform)))
 	        {
-		        ShowToast("error", "Open the platform from the list and add a few accounts first",
-			        "No saved accounts", "toastarea");
+		        ShowToast("error", Lang["Toast_AddAccountsFirst"],Lang["Toast_AddAccountsFirstTitle"], "toastarea");
 		        return "";
 	        }
 
@@ -480,9 +481,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         [JSInvokable]
-        public static Task<string> GiLocale(string k) => Task.FromResult(Lang.Instance[k]);
+        public static string GiLocale(string k) => Lang.Instance[k];
 
         [JSInvokable]
-        public static Task<string> GiLocaleObj(string k, object obj) => Task.FromResult(Lang.Instance[k, obj]);
+        public static string GiLocaleObj(string k, object obj) => Lang.Instance[k, obj];
     }
 }

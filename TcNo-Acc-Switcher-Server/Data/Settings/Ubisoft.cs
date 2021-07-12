@@ -23,8 +23,9 @@ using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class Ubisoft
-    {
-        private static Ubisoft _instance = new();
+	{
+		private static readonly Lang Lang = Lang.Instance;
+		private static Ubisoft _instance = new();
 
         private static readonly object LockObj = new();
         public static Ubisoft Instance
@@ -60,19 +61,19 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             [JsonIgnore] public string UbisoftImagePath = "wwwroot/img/profiles/ubi/";
             [JsonIgnore] public string UbisoftImagePathHtml = "img/profiles/ubi/";
         */
-        [JsonIgnore] public readonly string ContextMenuJson = @"[
-              {""Swap to account"": ""swapTo(-1, event)""},
-              {""Login as..."": [
-                {""Online"": ""swapTo(0, event)""},
-                {""Offline"": ""swapTo(10, event)""},
-              ]},
-              {""Username..."": [
-                {""Change switcher name"": ""showModal('changeUsername')""},
-                {""Refresh name"": ""refreshUsername()""},
-              ]},
-              {""Create Desktop Shortcut..."": ""createShortcut()""},
-              {""Change image"": ""changeImage(event)""},
-              {""Forget"": ""forget(event)""}
+        [JsonIgnore] public readonly string ContextMenuJson = $@"[
+				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
+				{{""{Lang["Context_LoginAsSubmenu"]}"": [
+					{{""{Lang["Online"]}"": ""swapTo(0, event)""}},
+					{{""{Lang["Offline"]}"": ""swapTo(10, event)""}},
+				]}},
+				{{""{Lang["Context_UsernameSubmenu"]}"": [
+					{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
+					{{""{Lang["Context_RefreshName"]}"": ""refreshUsername()""}},
+				]}},
+				{{""{Lang["Context_CreateShortcut"]}"": ""createShortcut()""}},
+				{{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
+				{{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";
 
         /// <summary>

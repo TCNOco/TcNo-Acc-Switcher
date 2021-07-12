@@ -31,7 +31,9 @@ using TcNo_Acc_Switcher_Server.Pages.General;
 namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 {
     public class BattleNetSwitcherFuncs
-    {
+	{
+		private static readonly Lang Lang = Lang.Instance;
+
         private static readonly Data.Settings.BattleNet BattleNet = Data.Settings.BattleNet.Instance;
         private static string _battleNetRoaming;
 
@@ -47,7 +49,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             // Check if accounts file exists
             if (!File.Exists(_battleNetRoaming + "\\Battle.net.config"))
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Could not find Battle.net.config", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_CantLoadNotFound"], "toastarea");
                 return;
             }
 
@@ -55,7 +57,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config").ConfigureAwait(false);
             if (JsonConvert.DeserializeObject(file) is not JObject accountsFile)
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Could not load accounts file for Blizzard (Battle.net.config file corrupt)", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_CantLoadConfigCorrupt"], "toastarea");
                 return;
             }
 
@@ -63,7 +65,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             var savedAccountsList = accountsFile.SelectToken("Client.SavedAccountNames");
             if (savedAccountsList == null)
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Could not load accounts file for Blizzard (No accounts found)", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_CantLoadEmpty"], "toastarea");
                 return;
             }
 
@@ -204,7 +206,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config").ConfigureAwait(false);
             if (JsonConvert.DeserializeObject(file) is not JObject jObject)
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Could not swap accounts (Battle.net.config file corrupt)", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_CantSwapAccounts"], "toastarea");
                 return;
             }
 
@@ -287,7 +289,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 AppData.ActiveNavMan?.NavigateTo( "/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed BattleTag"), true);
             }
             else
-                _ = GeneralInvocableFuncs.ShowToast("error", "BattleTag did not match naming policy.");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_NamePolicy"]);
         }
 
         public static bool ValidateBTag(string bTag)

@@ -14,6 +14,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 {
     public class OriginSwitcherFuncs
     {
+	    private static readonly Lang Lang = Lang.Instance;
+
         private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
         private static readonly string OriginRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Origin");
         private static readonly string OriginProgramData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Origin");
@@ -68,7 +70,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             if (!CloseOrigin()) return;
             if (!ClearCurrentLoginOrigin())
             {
-                _ = GeneralInvocableFuncs.ShowToast("error",  "Failed to clear old login files", "Error", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantClearLoginFiles"], Lang["Error"], "toastarea");
                 return;
             }
             if (accName != "")
@@ -92,7 +94,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             if (Directory.Exists(OriginProgramData)) currentOlcHashes = (from f in new DirectoryInfo(OriginProgramData).GetFiles() where f.Name.EndsWith(".olc") select GeneralFuncs.GetFileMd5(f.FullName)).ToList();
             else
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {OriginProgramData}", "Error", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new {x = OriginProgramData }], Lang["Error"], "toastarea");
                 return false;
             }
 
@@ -144,12 +146,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             var localCachePathData = $"LoginCache\\Origin\\{accName}\\Data\\";
             if (!Directory.Exists(localCachePath))
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {localCachePath}", "Directory not found", "toastarea");
+	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = localCachePath }], Lang["DirectoryNotFound"], "toastarea");
 	            return false;
             }
             if (!Directory.Exists(localCachePathData))
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {localCachePathData}", "Directory not found", "toastarea");
+	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = localCachePathData }], Lang["DirectoryNotFound"], "toastarea");
 	            return false;
             }
 
@@ -254,7 +256,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             var allOlc = ReadAllOlc();
             if (!ChangeKey(ref allOlc, oldName, newName)) // Rename account in olc.json
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Could not change username", "Error", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantChangeUsername"], Lang["Error"], "toastarea");
                 return;
             }
             File.WriteAllText("LoginCache\\Origin\\olc.json", JsonConvert.SerializeObject(allOlc));

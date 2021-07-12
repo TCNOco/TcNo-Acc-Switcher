@@ -121,8 +121,7 @@ namespace TcNo_Acc_Switcher_Client
                 MViewAddForwarders();
                 MView2.NavigationStarting += UrlChanged;
                 MView2.CoreWebView2.ProcessFailed += CoreWebView2OnProcessFailed;
-
-
+                
                 MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
                 MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown").DevToolsProtocolEventReceived += ConsoleMessage;
                 await MView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");

@@ -15,6 +15,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 {
     public class EpicSwitcherFuncs
     {
+	    private static readonly Lang Lang = Lang.Instance;
+
         private static readonly Data.Settings.Epic Epic = Data.Settings.Epic.Instance;
 /*
         private static string _epicRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Epic");
@@ -109,7 +111,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             var localCachePath = $"LoginCache\\Epic\\{accName}\\";
             if (!Directory.Exists(localCachePath))
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {localCachePath}", "Directory not found", "toastarea");
+	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new {x = localCachePath }], Lang["DirectoryNotFound"], "toastarea");
 	            return false;
             }
 
@@ -124,7 +126,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             }
             catch (InvalidOperationException)
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Could not swap. Duplicate accounts with same username?", "Error", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_DuplicateNames"], Lang["Error"], "toastarea");
             }
 
             return true;
@@ -139,7 +141,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 
             if (!File.Exists(EpicGameUserSettings))
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Could not locate logged in user", "Error", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CouldNotLocate"], Lang["Error"], "toastarea");
                 return;
             }
             // Save files
@@ -148,7 +150,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             var currentAccountId = (string)Registry.CurrentUser.OpenSubKey(@"Software\Epic Games\Unreal Engine\Identifiers")?.GetValue("AccountId");
             if (currentAccountId == null)
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Failed to get AccountId from Registry!", "Error", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Epic_AccountIdReg"], Lang["Error"], "toastarea");
                 return;
             }
 
@@ -174,7 +176,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             }
             catch (Exception)
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Could not change username", "Error", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantChangeUsername"], Lang["Error"], "toastarea");
                 return;
             }
             

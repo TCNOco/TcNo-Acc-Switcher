@@ -14,6 +14,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 {
     public class UbisoftSwitcherFuncs
     {
+	    private static readonly Lang Lang = Lang.Instance;
+
         private static readonly Data.Settings.Ubisoft Ubisoft = Data.Settings.Ubisoft.Instance;
         private static string _ubisoftAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
         private static readonly string UbisoftAvatarFolder = Path.Join(Ubisoft.FolderPath, "cache", "avatars");
@@ -61,7 +63,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             var userId = GetLastLoginUserId();
             if (userId == "NOTFOUND")
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Could not find last logged in user. Try logging into Ubisoft again first.", "Error", "toastarea");
+	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Ubisoft_NoUsername"], Lang["Error"], "toastarea");
                 return;
             }
 
@@ -140,7 +142,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             if (username == "")
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Could not find username. Try logging out, and back in.", "Error", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Ubisoft_NoUsername"], Lang["Error"], "toastarea");
                 return "ERR";
             }
 
@@ -339,7 +341,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             var localCachePath = $"LoginCache\\Ubisoft\\{userId}\\";
             if (!Directory.Exists(localCachePath))
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {localCachePath}", "Directory not found", "toastarea");
+	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new {x = localCachePath }], Lang["DirectoryNotFound"], "toastarea");
 	            return false;
             }
 

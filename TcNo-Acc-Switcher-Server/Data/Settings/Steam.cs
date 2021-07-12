@@ -22,14 +22,10 @@ using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
-    public interface ISteam
-    {
-
-    }
-
     public class Steam
-    {
-        private static Steam _instance = new();
+	{
+		private static readonly Lang Lang = Lang.Instance;
+		private static Steam _instance = new();
 
         private static readonly object LockObj = new();
         public static Steam Instance
@@ -75,51 +71,51 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public readonly string ForgottenFile = "SteamForgotten.json";
         [JsonIgnore] public readonly string SteamImagePath = "wwwroot/img/profiles/steam/";
         [JsonIgnore] public readonly string SteamImagePathHtml = "img/profiles/steam/";
-        [JsonIgnore] public readonly string ContextMenuJson = @"[
-              {""Swap to account"": ""swapTo(-1, event)""},
-              {""Login as..."": [
-                {""Invisible"": ""swapTo(7, event)""},
-                {""Offline"": ""swapTo(0, event)""},
-                {""Online"": ""swapTo(1, event)""},
-                {""Busy"": ""swapTo(2, event)""},
-                {""Away"": ""swapTo(3, event)""},
-                {""Snooze"": ""swapTo(4, event)""},
-                {""Looking to Trade"": ""swapTo(5, event)""},
-                {""Looking to Play"": ""swapTo(6, event)""}
-              ]},
-			  {""Copy..."": [
-	              {""Copy Profile..."": [
-	                {""Community URL"": ""copy('URL', event)""},
-	                {""Community Username"": ""copy('Line2', event)""},
-	                {""Login username"": ""copy('Username', event)""}
-	              ]},
-	              {""Copy SteamID..."": [
-	                {""SteamID [STEAM0:~]"": ""copy('SteamId', event)""},
-	                {""SteamID3 [U:1:~]"": ""copy('SteamId3', event)""},
-	                {""SteamID32"": ""copy('SteamId32', event)""},
-	                {""SteamID64 7656~"": ""copy('id', event)""}
-	              ]},
-	              {""Copy other..."": [
-	                {""SteamRep"": ""copy('SteamRep', event)""},
-	                {""SteamID.uk"": ""copy('SteamID.uk', event)""},
-	                {""SteamID.io"": ""copy('SteamID.io', event)""},
-	                {""SteamRep"": ""copy('SteamIDFinder.com', event)""}
-	              ]},
-			  ]},
-              {""Create Desktop Shortcut..."": [
-                {"""": ""createShortcut()""},
-                {""Online (Default)"": ""createShortcut()""},
-                {""Invisible"": ""createShortcut(':7')""},
-                {""Offline"": ""createShortcut(':0')""},
-                {""Busy"": ""createShortcut(':2')""},
-                {""Away"": ""createShortcut(':3')""},
-                {""Snooze"": ""createShortcut(':4')""},
-                {""Looking to Trade"": ""createShortcut(':5')""},
-                {""Looking to Play"": ""createShortcut(':6')""}
-              ]},
-              {""Change image"": ""changeImage(event)""},
-              {""Open userdata"": ""openUserdata(event)""},
-              {""Forget"": ""forget(event)""}
+        [JsonIgnore] public readonly string ContextMenuJson = $@"[
+				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
+				{{""{Lang["Context_LoginAsSubmenu"]}"": [
+					{{""{Lang["Invisible"]}"": ""swapTo(7, event)""}},
+					{{""{Lang["Offline"]}"": ""swapTo(0, event)""}},
+					{{""{Lang["Online"]}"": ""swapTo(1, event)""}},
+					{{""{Lang["Busy"]}"": ""swapTo(2, event)""}},
+					{{""{Lang["Away"]}"": ""swapTo(3, event)""}},
+					{{""{Lang["Snooze"]}"": ""swapTo(4, event)""}},
+					{{""{Lang["LookingToTrade"]}"": ""swapTo(5, event)""}},
+					{{""{Lang["LookingToPlay"]}"": ""swapTo(6, event)""}}
+				]}},
+				{{""{Lang["Context_CopySubmenu"]}"": [
+				  {{""{Lang["Context_CopyProfileSubmenu"]}"": [
+				    {{""{Lang["Context_CommunityUrl"]}"": ""copy('URL', event)""}},
+				    {{""{Lang["Context_CommunityUsername"]}"": ""copy('Line2', event)""}},
+				    {{""{Lang["Context_LoginUsername"]}"": ""copy('Username', event)""}}
+				  ]}},
+				  {{""{Lang["Context_CopySteamIdSubmenu"]}"": [
+				    {{""{Lang["Context_Steam_Id"]}"": ""copy('SteamId', event)""}},
+				    {{""{Lang["Context_Steam_Id3"]}"": ""copy('SteamId3', event)""}},
+				    {{""{Lang["Context_Steam_Id32"]}"": ""copy('SteamId32', event)""}},
+				    {{""{Lang["Context_Steam_Id64"]}"": ""copy('id', event)""}}
+				  ]}},
+				  {{""{Lang["Context_CopyOtherSubmenu"]}"": [
+					{{""SteamRep"": ""copy('SteamRep', event)""}},
+					{{""SteamID.uk"": ""copy('SteamID.uk', event)""}},
+					{{""SteamID.io"": ""copy('SteamID.io', event)""}},
+					{{""SteamIDFinder.com"": ""copy('SteamIDFinder.com', event)""}}
+				  ]}},
+				]}},
+				{{""{Lang["Context_CreateShortcutSubmenu"]}"": [
+					{{"""": ""createShortcut()""}},
+					{{""{Lang["OnlineDefault"]}"": ""createShortcut()""}},
+					{{""{Lang["Invisible"]}"": ""createShortcut(':7')""}},
+					{{""{Lang["Offline"]}"": ""createShortcut(':0')""}},
+					{{""{Lang["Busy"]}"": ""createShortcut(':2')""}},
+					{{""{Lang["Away"]}"": ""createShortcut(':3')""}},
+					{{""{Lang["Snooze"]}"": ""createShortcut(':4')""}},
+					{{""{Lang["LookingToTrade"]}"": ""createShortcut(':5')""}},
+					{{""{Lang["LookingToPlay"]}"": ""createShortcut(':6')""}}
+				]}},
+				{{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
+				{{""{Lang["Context_Steam_OpenUserdata"]}"": ""openUserdata(event)""}},
+				{{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";
 
         /// <summary>

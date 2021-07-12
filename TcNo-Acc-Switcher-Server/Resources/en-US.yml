@@ -78,18 +78,55 @@ Toast_PasteDiscordConsole: Paste into Discord console, and then paste result in 
 Toast_AlreadyProcessing: Already processing accounts...
 Toast_FailedRestore: Failed to restore accounts (See console)
 Toast_Restored: Restored accounts!
-Toast_SorterNotLoaded: A critical component could not be loaded (sorter). Please restart the application!
-Toast_ChromeNotLoaded: A critical component could not be loaded (chrome). Please restart the application!
-Toast_DotNetNotLoaded: A critical component could not be loaded (DotNet). Please restart the application!
-Toast_jQueryNotLoaded: A critical component could not be loaded (chrome). Please restart the application!
 Toast_ProtocolEnabled: This program will now respond to tcno:\\ in Windows
+Toast_ProtocolEnabledTitle: Protocol added
 Toast_ProtocolDisabled: This program will no longer respond to tcno:\\
+Toast_ProtocolDisabledTitle: Protocol removed
 Toast_RestartAsAdmin: Please start as Admin and try again.
 Toast_RestartAfterClose: Please restart the program after clicking Close.
+Toast_RestartAfterCloseTitle: Accent color disabled
 Toast_LoadStylesheetFailed: Failed to load stylesheet! See documents folder for details.
 Toast_BNet_Private: "{BTag}'s profile is private"
 Toast_BNet_StatsFail: "Error trying to get stats for {BTag}"
+Toast_BNet_CantSwapAccounts: Could not swap accounts (Battle.net.config file corrupt)
+Toast_BNet_CantLoadNotFound: Could not find Battle.net.config
+Toast_BNet_CantLoadEmpty: Could not load accounts file for Blizzard (No accounts found)
+Toast_BNet_CantLoadConfigCorrupt: Could not load accounts file for Blizzard (Battle.net.config file corrupt)
+Toast_BNet_NamePolicy: BattleTag did not match naming policy.
 Toast_ItemNotFound: "{item} was not found"
+Toast_DeletedTotal: "{files} of {totalFiles} deleted. Total: {totalSize}"
+Toast_DeletedTotalTitle: Cleared Discord cache!
+Toast_Discord_SignOutHint: "Hint: You must sign out of Discord in your browser"
+Toast_Discord_SaveHint: "Hint: Changed Discord settings? Save again, with the same name!"
+Toast_Discord_NoToken: Failed to find user's token! Quit Discord normally, then save again.
+Toast_CantChangeUsername: Could not change username
+Toast_CantClearLoginFiles: Failed to clear old login files
+Toast_Epic_AccountIdReg: Failed to get AccountId from Registry!
+Toast_DuplicateNames: Could not swap. Duplicate accounts with same username?
+Toast_CouldNotLocate: Could not locate logged in user
+Toast_StreamerModeHint: Private info is hidden! - See settings
+Toast_StreamerModeTitle: Streamer mode
+Toast_AddAccountsFirst: Open the platform from the list and add a few accounts first
+Toast_AddAccountsFirstTitle: No saved accounts
+Toast_CantFindImage: Failed to find users' image.
+Toast_CantCreateShortcut: Can not create shortcut
+Toast_ShortcutCreated: Shortcut created!
+Toast_FailedUpdateCheck: Failed to check for updates
+Toast_UpdateVerifyFail: Can't verify updater files. Download latest version and replace files in your directory.
+Toast_Riot_StartGame: Changed user. Start a game below.
+Toast_StartedGame: Started {program}
+Toast_Steam_VacCleared: VAC status for accounts was cleared
+Toast_Steam_CantDeleteVacCache: Could not delete 'LoginCache/Steam/VACCache/SteamVACCache.json'
+Toast_NoFindSteamUserdata: Could not find Steam\\userdata folder
+Toast_Steam_VdfLast: Was able to load from vdf_last. Some accounts may be missing.
+Toast_PartiallyFixed: Partially fixed
+Toast_Steam_FailedLoginusers: Failed to load steam/config/loginusers.vdf
+Toast_Steam_CantLocateLoginusers: Cannot locate '.../Steam/config/loginusers.vdf'. Try signing into an account first.
+Toast_CantClearImages: Could not clear images
+Toast_RefreshedImages: Refreshed images
+Toast_Ubisoft_NoUsername: Could not find last logged in user. Try logging into Ubisoft again first.
+Toast_Ubisoft_NoUser: Could not find last logged in user. Try logging into Ubisoft again first.
+Toast_ClearForgottenCheck: Are you sure you want to clear backups of forgotten accounts?
 
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
 Modal_Info_Version: Version
@@ -120,15 +157,67 @@ Modal_PasswordsNoMatch: Passwords do not match
 
 Status_SelectedAccount: "Selected: {name}"
 
+Context_SwapTo: Swap to account
+Context_CreateShortcut: Create Desktop Shortcut
+Context_CreateShortcutSubmenu: Create Desktop Shortcut...
+Context_ChangeImage: Change image
+Context_BNet_SetBTag: Set BattleTag
+Context_BNet_DelBTag: Delete BattleTag
+Context_BNet_GetRAnk: Refetch Rank
+Context_ChangeName: Change switcher name
+Context_LoginAsSubmenu: Login as...
+Context_UsernameSubmenu: Username...
+Context_RefreshName: Refresh name
+Context_CopySubmenu: Copy...
+Context_CopyProfileSubmenu: Copy Profile...
+Context_CommunityUrl: Community URL
+Context_CommunityUsername: Community Username
+Context_LoginUsername: Login username
+Context_CopySteamIdSubmenu: Copy SteamID...
+Context_Steam_Id: SteamID [STEAM0:~]
+Context_Steam_Id3: SteamID3 [U:1:~]
+Context_Steam_Id32: SteamID32
+Context_Steam_Id64: SteamID64 7656~
+Context_Steam_OpenUserdata: Open userdata
+Context_CopyOtherSubmenu: Copy other...
+Online: Online
+OnlineDefault: Online (Default)
+Offline: Offline
+Invisible: Invisible
+Busy: Busy
+Away: Away
+Snooze: Snooze
+LookingToTrade: Looking to Trade
+LookingToPlay: Looking to Play
+
 Yes: "Yes"
 No: "No"
 Ok: "OK"
+Forget: Forget
 Notice: Notice
 Error: Error
+Failed: Failed
+Success: Success
+NotFound: Not found
+Done: Done
+ForName: "For: {name}"
+CouldNotFindX: Could not find {x}
+CouldNotCloseX: Could not close {x}!
+DirectoryNotFound: Directory not found
 
+Prompt_DiscordCopy1: Find options button, and click
+Prompt_DiscordCopy2: "Check that streamer mode is not enabled, otherwise: Give error."
+Prompt_DiscordCopy3: Make sure that Streamer Mode is disabled/not active when running this command!
+Prompt_DiscordCopy4: Get name from bottom-left of screen
+Prompt_DiscordCopy5: Get Avatar and username from page
+Prompt_DiscordCopy6: Copy avatar and username
+Prompt_DiscordCopy7: Close options
+Prompt_DiscordCopy8: Let the user know in console.
+Prompt_DiscordCopy9: Successfully copied information!
+Prompt_DiscordCopy10: Paste it into the input box in the account switcher to update/set image and username.
 Prompt_RestartAsAdmin: <h3><bold>This program will restart as Admin</bold></h3><p>Hit "Yes" in UAC when prompted for admin.</p>
 
-Prompt_ForgetSteam: |
+Prompt_ForgetSteam: >
  <h3 style='color:red'>You are about to forget an account!</h3>
  <h4>What does this mean?</h4>
  <p>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.<br/>
@@ -139,21 +228,10 @@ Prompt_ForgetSteam: |
  You can also remove previous backups from there when you are sure everything is working as expected.</p>
  <h4>Do you understand?</h4>
 
-Prompt_ForgetAccount: |
+Prompt_ForgetAccount: >
  <h3 style='color:red'>You are about to forget an account!</h3>
  <h4>What does this mean?</h4>
  <p>TcNo Account Switcher will also no longer show the account,<br/>
  until it's signed into again through {platform}, and added to the list.</p>
  <p>Your account will remain untouched. It is just forgotten on this computer.</p>
  <h4>Do you understand?</h4>
- 
- Prompt_DiscordCopy1: Find options button, and click
- Prompt_DiscordCopy2: "Check that streamer mode is not enabled, otherwise: Give error."
- Prompt_DiscordCopy3: Make sure that Streamer Mode is disabled/not active when running this command!
- Prompt_DiscordCopy4: Get name from bottom-left of screen
- Prompt_DiscordCopy5: Get Avatar and username from page
- Prompt_DiscordCopy6: Copy avatar and username
- Prompt_DiscordCopy7: Close options
- Prompt_DiscordCopy8: Let the user know in console.
- Prompt_DiscordCopy9: Successfully copied information!
- Prompt_DiscordCopy10: Paste it into the input box in the account switcher to update/set image and username.

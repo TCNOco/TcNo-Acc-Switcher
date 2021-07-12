@@ -23,6 +23,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class Settings
     {
+	    private static readonly Lang Lang = Lang.Instance;
+
         protected override void OnInitialized()
         {
             AppData.Instance.WindowTitle = "TcNo Account Switcher - Steam Settings";
@@ -42,9 +44,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
             if (SteamSwitcherFuncs.DeleteVacCacheFile())
-                GeneralInvocableFuncs.ShowToast("success", "VAC status for accounts was cleared", renderTo: "toastarea");
+                GeneralInvocableFuncs.ShowToast("success", Lang["Toast_Steam_VacCleared"], renderTo: "toastarea");
             else
-                GeneralInvocableFuncs.ShowToast("error", "Could not delete 'LoginCache/Steam/VACCache/SteamVACCache.json'", "Error", "toastarea");
+                GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_CantDeleteVacCache"], Lang["Error"], "toastarea");
         }
 
         // BUTTON: Reset settings

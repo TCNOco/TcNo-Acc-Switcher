@@ -32,6 +32,8 @@ namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Index
     {
+	    private static readonly Lang Lang = Lang.Instance;
+
         public void Check(string platform)
         {
             Globals.DebugWriteLine($@"[Func:Index.Check] platform={platform}");
@@ -81,7 +83,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                         return;
                     }
                     if (SteamSwitcherFuncs.SteamSettingsValid()) AppData.ActiveNavMan.NavigateTo("/Steam/");
-                    else GeneralInvocableFuncs.ShowModal("Cannot locate '.../Steam/config/loginusers.vdf'. Try signing into an account first.");
+                    else GeneralInvocableFuncs.ShowModal(Lang["Toast_Steam_CantLocateLoginusers"]);
                     break;
 
                 case "Ubisoft":
@@ -145,8 +147,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
                 if (verifyDictionary == null)
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error",
-                        "Can verify updater files. Download latest version and replace files in your directory.");
+                    _ = GeneralInvocableFuncs.ShowToast("error",Lang["Toast_UpdateVerifyFail"]);
                     return;
                 }
 
@@ -175,7 +176,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
             }
             catch (Exception e)
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Failed to check for updates.");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedUpdateCheck"]);
                 Globals.WriteToLog("Failed to check for updates:" + e);
             }
             Directory.SetCurrentDirectory(Globals.UserDataFolder);

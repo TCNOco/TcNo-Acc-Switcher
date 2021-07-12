@@ -37,6 +37,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public class SteamSwitcherFuncs
     {
+	    private static readonly Lang Lang = Lang.Instance;
+
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
 
         #region STEAM_SWITCHER_MAIN
@@ -133,7 +135,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             var lastVdf = loginUserPath.Replace(".vdf", ".vdf_last");
             if (!File.Exists(lastVdf) || !LoadFromVdf(lastVdf, out userAccounts)) return new List<Index.Steamuser>();
 
-            GeneralInvocableFuncs.ShowToast("info", "Was able to load from vdf_last. Some accounts may be missing.", "PARTIALLY FIXED", "toastarea", 10000);
+            GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_VdfLast"], Lang["Toast_PartiallyFixed"], "toastarea", 10000);
             return userAccounts;
         }
 
@@ -169,17 +171,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 			}
             catch (FileNotFoundException)
 			{
-				GeneralInvocableFuncs.ShowToast("error", "Could not find steam/config/loginusers.vdf", "NOT FOUND", "toastarea");
+				GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_FailedLoginusers"], Lang["NotFound"], "toastarea");
 				return false;
 			}
 			catch (AggregateException)
 			{
-				GeneralInvocableFuncs.ShowToast("error", "Failed to load steam/config/loginusers.vdf", "ERROR", "toastarea");
+				GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_FailedLoginusers"], Lang["Error"], "toastarea");
 				return false;
 			}
 			catch (Exception)
 			{
-				GeneralInvocableFuncs.ShowToast("error", "Failed to load steam/config/loginusers.vdf", "ERROR", "toastarea");
+				GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_FailedLoginusers"], Lang["Error"], "toastarea");
 				return false;
 			}
 
@@ -526,7 +528,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void ClearForgotten()
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.ClearForgotten] Clearing forgotten backups.");
-            GeneralInvocableFuncs.ShowModal("confirm:ClearSteamBackups:" + "Are you sure you want to clear backups of forgotten accounts?".Replace(' ', '_'));
+            GeneralInvocableFuncs.ShowModal("confirm:ClearSteamBackups:" + Lang["Toast_ClearForgottenCheck"].Replace(' ', '_'));
             // Confirmed in GeneralInvocableFuncs.GiConfirmAction for rest of function
         }
         /// <summary>
@@ -552,7 +554,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.ClearImages] Clearing images.");
             if (!Directory.Exists(Steam.SteamImagePath))
             {
-                GeneralInvocableFuncs.ShowToast("error", "Could not clear images", "Error", "toastarea"); 
+                GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantClearImages"], Lang["Error"], "toastarea"); 
             }
             foreach (var file in Directory.GetFiles(Steam.SteamImagePath))
             {

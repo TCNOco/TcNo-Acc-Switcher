@@ -29,6 +29,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class BattleNet
     {
+	    private static readonly Lang Lang = Lang.Instance;
+
         private static BattleNet _instance = new();
 
         private static readonly object LockObj = new();
@@ -82,14 +84,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public readonly string StoredAccPath = "LoginCache\\BattleNet\\StoredAccounts.json";
         [JsonIgnore] public readonly string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
         [JsonIgnore] public readonly string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";
-        [JsonIgnore] public readonly string ContextMenuJson = @"[
-              {""Swap to account"": ""swapTo(-1, event)""},
-              {""Set BattleTag"": ""showModal('changeUsername:BattleTag')""},
-              {""Delete BattleTag"": ""forgetBattleTag()""},
-              {""Refetch Rank"": ""refetchRank()""},
-              {""Create Desktop Shortcut..."": ""createShortcut()""},
-              {""Change image"": ""changeImage(event)""},
-              {""Forget"": ""forget(event)""}
+        [JsonIgnore] public readonly string ContextMenuJson = $@"[
+              {{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
+              {{""{Lang["Context_BNet_SetBTag"]}"": ""showModal('changeUsername:BattleTag')""}},
+              {{""{Lang["Context_BNet_DelBTag"]}"": ""forgetBattleTag()""}},
+              {{""{Lang["Context_BNet_GetRAnk"]}"": ""refetchRank()""}},
+              {{""{Lang["Context_CreateShortcutExt"]}"": ""createShortcut()""}},
+              {{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
+              {{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";
 
 

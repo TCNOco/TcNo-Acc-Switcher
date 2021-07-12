@@ -689,19 +689,19 @@ namespace TcNo_Acc_Switcher_Server.Data
 			        key?.SetValue("URL Protocol", "", RegistryValueKind.String);
 			        using var defaultKey = Registry.ClassesRoot.CreateSubKey(@"tcno\Shell\Open\Command");
 			        defaultKey?.SetValue("", $"\"{Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe")}\" \"%1\"", RegistryValueKind.String);
-			        GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ProtocolEnabled"], "Protocol added", "toastarea");
+			        GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ProtocolEnabled"], Lang["Toast_ProtocolEnabledTitle"], "toastarea");
 		        }
 		        else
 		        {
 			        // Remove
                     Registry.ClassesRoot.DeleteSubKeyTree("tcno");
-			        GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ProtocolDisabled"], "Protocol removed", "toastarea");
+			        GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ProtocolDisabled"], Lang["Toast_ProtocolDisabledTitle"], "toastarea");
                 }
 		        _instance._protocolEnabled = Protocol_IsEnabled();
             }
 	        catch (UnauthorizedAccessException)
 	        {
-		        GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], "Failed", "toastarea");
+		        GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
                 GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
 	        }
         }
@@ -713,7 +713,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 	        if (!WindowsAccent)
 		        SetAccentColor(true);
 	        else
-		        GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestartAfterClose"], "Accent color disabled", "toastarea");
+		        GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestartAfterClose"], Lang["Toast_RestartAfterCloseTitle"], "toastarea");
         }
 
         [SupportedOSPlatform("windows")]

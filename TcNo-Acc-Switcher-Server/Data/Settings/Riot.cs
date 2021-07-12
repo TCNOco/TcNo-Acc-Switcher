@@ -22,8 +22,9 @@ using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class Riot
-    {
-        private static Riot _instance = new();
+	{
+		private static readonly Lang Lang = Lang.Instance;
+		private static Riot _instance = new();
 
         private static readonly object LockObj = new();
         public static Riot Instance
@@ -74,12 +75,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             [JsonIgnore] public string RiotImagePath = "wwwroot/img/profiles/riot/";
             [JsonIgnore] public string RiotImagePathHtml = "img/profiles/riot/";
         */
-        [JsonIgnore] public readonly string ContextMenuJson = @"[
-              {""Swap to account"": ""swapTo(-1, event)""},
-              {""Change switcher name"": ""showModal('changeUsername')""},
-              {""Create Desktop Shortcut..."": ""createShortcut()""},
-              {""Change image"": ""changeImage(event)""},
-              {""Forget"": ""forget(event)""}
+        [JsonIgnore] public readonly string ContextMenuJson = $@"[
+				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
+				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
+				{{""{Lang["Context_CreateShortcut"]}"": ""createShortcut()""}},
+				{{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
+				{{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";
 
 

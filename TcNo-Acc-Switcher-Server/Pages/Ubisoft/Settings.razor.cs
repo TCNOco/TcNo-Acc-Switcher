@@ -23,6 +23,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 {
     public partial class Settings
     {
+	    private static readonly Lang Lang = Lang.Instance;
+
         protected override void OnInitialized()
         {
             AppData.Instance.WindowTitle = "TcNo Account Switcher - Ubisoft Settings";
@@ -62,7 +64,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             {
                 UbisoftSwitcherFuncs.ImportAvatar(userId);
             }
-            _ = GeneralInvocableFuncs.ShowToast("success", "Refreshed images", "Done", "toastarea");
+            _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_RefreshedImages"], Lang["Done"], "toastarea");
         }
 
 

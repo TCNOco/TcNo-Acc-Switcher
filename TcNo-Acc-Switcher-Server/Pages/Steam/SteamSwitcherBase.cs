@@ -17,12 +17,15 @@ using System.IO;
 using System.Runtime.Versioning;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public class SteamSwitcherBase
     {
+	    private static readonly Lang Lang = Lang.Instance;
+
         /// <summary>
         /// Converts input SteamID64 into the requested format, then copies it to clipboard.
         /// </summary>
@@ -76,7 +79,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 	        var steamId32 = new Converters.SteamIdConvert(steamId);
             var folder = Path.Join(Data.Settings.Steam.Instance.FolderPath, $"userdata\\{steamId32.Id32}");
             if (Directory.Exists(folder)) Process.Start("explorer.exe", folder);
-            else GeneralInvocableFuncs.ShowToast("error", "Could not find Steam\\userdata folder", "Failed", "toastarea");
+            else GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"],  Lang["Failed"], "toastarea");
         }
 
         /// <summary>

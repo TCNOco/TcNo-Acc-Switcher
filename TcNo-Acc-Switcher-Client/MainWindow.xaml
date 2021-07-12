@@ -23,7 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
         MinHeight="450" MinWidth="800"
         WindowStyle="None"
         AllowsTransparency="True"
-        ResizeMode="CanResizeWithGrip">
+        ResizeMode="CanResizeWithGrip"
+		>
     <!--<Grid x:Name="MainBackground" Background="#28293A">-->
     <Grid x:Name="MainBackground">
         <wpf:WebView2 x:Name="MView2" Initialized="MView2_OnInitialised" />

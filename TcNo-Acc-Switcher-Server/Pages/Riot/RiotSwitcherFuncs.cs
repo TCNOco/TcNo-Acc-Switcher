@@ -14,6 +14,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
 {
     public class RiotSwitcherFuncs
     {
+	    private static readonly Lang Lang = Lang.Instance;
+
         private static readonly Data.Settings.Riot Riot = Data.Settings.Riot.Instance;
         private static string _riotClientPrivateSettings = "",
 	        _riotClientConfig = "";
@@ -142,7 +144,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             {
                 if (!RiotCopyInAccount(accName)) return;
                 Globals.AddTrayUser("Riot", "+r:" + accName, accName, Riot.TrayAccNumber); // Add to Tray list
-                _ = GeneralInvocableFuncs.ShowToast("success", "Changed user. Start a game below.", "Success", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_Riot_StartGame"], Lang["Success"], "toastarea");
             }
 
             //GeneralFuncs.StartProgram(Riot.Exe(), Riot.Admin);
@@ -165,7 +167,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             var localCachePath = $"LoginCache\\Riot\\{accName}\\";
             if (!Directory.Exists(localCachePath))
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", $"Could not find {localCachePath}", "Directory not found", "toastarea");
+	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new {x = localCachePath}], Lang["DirectoryNotFound"], "toastarea");
 	            return false;
             }
 
@@ -182,7 +184,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
 
             if (!File.Exists(_riotClientPrivateSettings) || !File.Exists(_riotClientConfig))
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Could not locate logged in user", "Failed", "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CouldNotLocate"], Lang["Failed"], "toastarea");
                 return;
             }
             // Save files
@@ -271,7 +273,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             };
             proc.Start();
 
-            _ = GeneralInvocableFuncs.ShowToast("info", "Started " + name, "Success", "toastarea");
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_StartedGame", new { program = name }], Lang["Success"], "toastarea");
         }
 
         /// <summary>

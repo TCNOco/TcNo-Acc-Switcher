@@ -24,7 +24,8 @@ async function initContextMenu() {
             e.stopPropagation();
         });
     }
-    
+
+    const selectedText = await GetLangSub("Status_SelectedAccount", { name: "XXX" });
     //Show contextmenu on Right-Click:
     $(`.${group}_list_item`).contextmenu((e) => {
         if (group === "acc") {
@@ -49,8 +50,7 @@ async function initContextMenu() {
             default:
                 break;
             }
-            const selectedText = await GetLang("Status_SelectedAccount", { name: statusText });
-            updateStatus(selectedText);
+            updateStatus(selectedText.replace("XXX", statusText));
 
         } else if (group === "platform") {
             // Set currently selected element
@@ -122,6 +122,6 @@ async function initContextMenu() {
 
 async function selectedItemChanged() {
     // Different function groups based on platform
-    const selectedText = await GetLang("Status_SelectedAccount", { name: $("input[name=accounts]:checked").attr("DisplayName") });
+    const selectedText = await GetLangSub("Status_SelectedAccount", { name: $("input[name=accounts]:checked").attr("DisplayName") });
     updateStatus(selectedText);
 }
