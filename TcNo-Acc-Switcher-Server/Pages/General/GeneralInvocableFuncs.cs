@@ -103,11 +103,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             settings["FolderPath"] = path;
             GeneralFuncs.SaveSettings(file, settings);
             switch (file)
-            {
-                case "BattleNetSettings":
-                    BattleNet.FolderPath = path;
-                    break;
-                case "EpicSettings":
+			{
+				case "BattleNetSettings":
+					BattleNet.FolderPath = path;
+					break;
+				case "DiscordSettings":
+					Discord.FolderPath = path;
+					break;
+				case "EpicSettings":
                     Epic.FolderPath = path;
                     break;
                 case "SteamSettings":

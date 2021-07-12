@@ -96,6 +96,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             // This one's a little annoying, as it's stored inside a .sql file...
             // I was going to use SQLite... but it's probably quicker to iterate over the folders, and compare them.
             List<int> latest = new() { 0, 0, 0 };
+            if (File.Exists(Path.Join(Instance.FolderPath, "Discord.exe"))) return Path.Join(Instance.FolderPath, "Discord.exe"); // If manually set. Otherwise, it's the default dir with only an "Update.exe" in it.
+
             foreach (var dir in Directory.GetDirectories(Instance.FolderPath))
             {
 	            var folder = Path.GetFileName(dir);
