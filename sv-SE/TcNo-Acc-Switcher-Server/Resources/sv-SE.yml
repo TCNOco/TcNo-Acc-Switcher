@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Starta fack nu]'
 Settings_CurrentStyle: Nuvarande stil
 Settings_Protocol: 'Aktivera tcno:\\ protokoll (rekommenderas)'
 Settings_WindowsAccent: Använd Windows Accent Färg
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Genvägar till Start-menyn:'
 Cleaning_Header_General: Allmänt Städning
 Cleaning_Header_LoginHistory: Rensa min inloggningshistorik
