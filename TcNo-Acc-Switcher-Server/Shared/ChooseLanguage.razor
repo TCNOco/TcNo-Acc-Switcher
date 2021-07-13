@@ -1,23 +1,25 @@
 ﻿@using Microsoft.Extensions.Configuration
 @using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Server.Pages.General
 @inject NavigationManager _navigationManager
 @inject Lang  _locale
 
 @if (_cultures != null)
 {
-    <span>@_locale["Header_ChooseLanguage", new {platform = "TestPlatfdorm"}]</span>
-    <div class="dropdown">
-        <ul class="custom-dropdown-menu dropdown-menu">
-            @foreach (var (key, value) in _cultures)
-            {
-			<li class="custom-dropdown-item dropdown-item" @onclick="() => RequestCultureChange(value)">@value - @key</li>
-            }
-        </ul>
-        <button class="dropdown-toggle" type="button" data-toggle="dropdown">
-            @_selectedCulture
-            <span class="caret"></span>
-        </button>
-    </div>
+	<span>@_locale["Header_ChooseLanguage", new { platform = "TestPlatfdorm" }]</span>
+	<div class="dropdown">
+		<ul class="custom-dropdown-menu dropdown-menu">
+			@foreach (var (key, value) in _cultures)
+			{
+				<li class="custom-dropdown-item dropdown-item" @onclick="() => RequestCultureChange(value)">@value - @key</li>
+			}
+		</ul>
+		<button class="dropdown-toggle" type="button" data-toggle="dropdown">
+			@_selectedCulture
+			<span class="caret"></span>
+		</button>
+		&nbsp;<a class="fancyLink" @onclick='() => { GeneralInvocableFuncs.OpenLinkInBrowser("https://crowdin.com/project/tcno-account-switcher"); }'>@_locale["Settings_HelpTranslate"]</a>
+	</div>
 }
 
 @code {
