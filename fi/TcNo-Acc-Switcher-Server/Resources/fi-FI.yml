@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Avaa käyttäjätiedot
 Context_CopyOtherSubmenu: Kopioi muu...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Context_HidePlatform: Piilota alusta
+Context_ExportAccList: Vie tililuettelo
+Title_BNet_Settings: TcNo Tilin Vaihtaja - BattleNet Asetukset
+Title_BNet_ManageIgnored: TcNo Account Switcher - Hallitse ohitettuja BattleNet-tilejä
+Title_Discord_Settings: TcNo Tilin Vaihtaja - Discord-Asetukset
+Title_Epic_Settings: TcNo Tilin Vaihtaja - Epic Asetukset
+Title_AccountsList: TcEi Tilin vaihtajaa - {platform}
+Title_TextEditor: TcNo Tilin Vaihtaja - Tekstieditori
+Title_Origin_Settings: TcNo Tilin Vaihtaja - Alkuperäasetukset
+Title_Riot_Settings: TcNo Tilin Vaihtaja - Riot Asetukset
+Title_Settings: TcNo Tilin Vaihtaja - Asetukset
+Title_Steam_Cleaning: TcNo Tilin Vaihtaja - Steam Cleaning
+Title_Steam_Restore: TcNo Account Switcher - Unohdetun Steam-tilin palauttaminen
+Title_Steam_Settings: TcNo Account Switcher - Steam-asetukset
+Title_Ubisoft_Settings: TcNo Tilin Vaihtaja - Ubisoft Asetukset
 Online: Paikalla
 OnlineDefault: Online (Default)
 Offline: Offline-tilassa
@@ -198,21 +198,21 @@ Away: Poissa
 Snooze: Torkku
 LookingToTrade: Kauppaan katsominen
 LookingToPlay: Haetaan pelaamista
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} ei ole olemassa."
+Reg_DoesntContain: "{subKey} ei sisällä {val}"
+Reg_Removing: Poistetaan {subKey}\\{val}
+PngInvalid_Format: Vaadittu pikselin muoto on PixelFormat.{x}.
+PngRequired: Vaadittu kuvamuoto on kannettava verkkograafinen (png).
+PngDimensions: Mitat on oltava pienempi tai yhtä suuri kuin {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Syntaksivirhe kohdattiin (lisätietoja alla)! AND:"
+ThemesNotFound: "Ei löytynyt \"teemoja\" kansiota TcNo Tilin vaihtajan hakemistosta. Tämä (erityisesti Default.yaml) vaaditaan suorittamaan tämä ohjelma.\nVoit suorittaa päivityksen \"updater\" kansioon tiedostojen tarkistamiseksi ja näiden puuttuvien tiedostojen palauttamiseksi."
 Yes: "Kyllä"
 No: "Ei"
 Ok: "Ok"
 Forget: Unohda
 Notice: Huomautus
 Error: Virhe
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "VIRHE: {ex}"
 Failed: Epäonnistui
 Success: Onnistui
 NotFound: Ei löydy
@@ -221,11 +221,11 @@ ForName: "Vastaanottaja: {name}"
 CouldNotFindX: Kohdetta {x} ei löytynyt
 CouldNotCloseX: Ei voitu sulkea {x}!
 DirectoryNotFound: Hakemistoa ei löytynyt
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "Hakemistoa ei löydy: {folder}"
+DeletingFile: "Poistetaan: {file}"
+DeletingFolder: "Poistetaan Kansiota: "
+CouldntDeleteX: "VIRHE: VÄHINTÄÄN POISTA {x}"
+CouldntDeleteUndefined: "VIRHE: VÄHINTÄÄN POISTA TIEDOSTOLLE"
 Prompt_DiscordCopy1: Etsi asetuspainike ja napsauta
 Prompt_DiscordCopy2: "Tarkista, että streamer tila ei ole käytössä, muuten: Anna virhe."
 Prompt_DiscordCopy3: Varmista, että Streamer-tila on poissa käytöstä/ei aktiivinen kun käytät tätä komentoa!
