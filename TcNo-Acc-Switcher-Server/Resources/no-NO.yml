@@ -151,7 +151,7 @@ Modal_EnterPasswordRepeat: Skriv inn passord igjen
 Modal_PasswordsMatch: Passordene samsvarer
 Modal_PasswordsNoMatch: Passordene samsvarer ikke
 Status_SelectedAccount: "Valgt: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Status: initialisering"
 Context_SwapTo: Bytt til konto
 Context_CreateShortcut: Lag snarvei på skrivebordet
 Context_CreateShortcutSubmenu: Lag skrivebordssnarvei...

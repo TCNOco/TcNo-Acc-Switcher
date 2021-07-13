@@ -44,7 +44,7 @@ Settings_StartMenu_Platform: Platform
 Settings_Tray_StartWindows: Begin Tray met Windows
 Settings_Tray_StartNow: '[Begin laai nou]'
 Settings_CurrentStyle: Huidige styl
-Settings_Protocol: 'Aktiveer tcno: \\ protokol (aanbeveel)'
+Settings_Protocol: 'Aktiveer TcNo: \\ protokol (aanbeveel)'
 Settings_WindowsAccent: Gebruik die Windows-aksentkleur
 Settings_HelpTranslate: "[Help vertaal]"
 Cleaning_Header_StartMenuShortcuts: 'Kortpaaie vir die Start Menu:'
@@ -76,9 +76,9 @@ Toast_PasteDiscordConsole: Plak in die Discord-konsole en plak dan die resultaat
 Toast_AlreadyProcessing: Verwerk tans rekeninge ...
 Toast_FailedRestore: Kon nie rekeninge herstel nie (sien konsole)
 Toast_Restored: Herstel rekeninge!
-Toast_ProtocolEnabled: 'Hierdie program sal nou reageer op tcno: \\ in Windows'
+Toast_ProtocolEnabled: 'Hierdie program sal nou reageer op TcNo: \\ in Windows'
 Toast_ProtocolEnabledTitle: Protokol bygevoeg
-Toast_ProtocolDisabled: 'Hierdie program sal nie meer reageer op tcno nie: \\'
+Toast_ProtocolDisabled: 'Hierdie program sal nie meer reageer op TcNo nie: \\'
 Toast_ProtocolDisabledTitle: Protokol verwyder
 Toast_RestartAsAdmin: Begin as admin en probeer weer.
 Toast_RestartAfterClose: Begin die program weer nadat u op Sluit geklik het.

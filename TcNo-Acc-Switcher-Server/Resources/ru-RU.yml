@@ -151,7 +151,7 @@ Modal_EnterPasswordRepeat: Введите пароль еще раз
 Modal_PasswordsMatch: Пароли совпадают
 Modal_PasswordsNoMatch: Пароли не совпадают
 Status_SelectedAccount: "Выбрано: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Статус: инициализация"
 Context_SwapTo: Поменять на аккаунт
 Context_CreateShortcut: Создать ярлык на рабочем столе
 Context_CreateShortcutSubmenu: Создать ярлык на рабочем столе...

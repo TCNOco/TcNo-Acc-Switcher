@@ -78,7 +78,7 @@ Toast_FailedRestore: アカウントの復元に失敗しました（コンソ�
 Toast_Restored: アカウントを復元しました！
 Toast_ProtocolEnabled: このプログラムはWindowsでtcno:\\に応答します
 Toast_ProtocolEnabledTitle: プロトコル追加済み
-Toast_ProtocolDisabled: このプログラムは tcno\\\には応答しません。
+Toast_ProtocolDisabled: このプログラムは TcNo\\\には応答しません。
 Toast_ProtocolDisabledTitle: プロトコルを削除しました
 Toast_RestartAsAdmin: 管理者として開始して、もう一度やり直してください。
 Toast_RestartAfterClose: 閉じるをクリックした後、プログラムを再起動してください。
@@ -151,7 +151,7 @@ Modal_EnterPasswordRepeat: もう一度パスワードを入力してくださ�
 Modal_PasswordsMatch: パスワードが一致しました
 Modal_PasswordsNoMatch: パスワードが一致しません
 Status_SelectedAccount: "選択済: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "ステータス：初期化中"
 Context_SwapTo: アカウントに入れ替え
 Context_CreateShortcut: デスクトップのショートカットを作成
 Context_CreateShortcutSubmenu: デスクトップのショートカットを作成...
@@ -177,13 +177,13 @@ Context_Steam_OpenUserdata: ユーザーデータを開く
 Context_CopyOtherSubmenu: 他をコピー...
 Context_HidePlatform: プラットフォームを非表示
 Context_ExportAccList: アカウントリストをエクスポート
-Title_BNet_Settings: Tcnoアカウント切り替え - バトルネット設定
+Title_BNet_Settings: TcNoアカウント切り替え - バトルネット設定
 Title_BNet_ManageIgnored: TcNo Account Switcher - 無視されたBattleNetアカウントを管理
-Title_Discord_Settings: Tcnoアカウント切り替え - Discord設定
+Title_Discord_Settings: TcNoアカウント切り替え - Discord設定
 Title_Epic_Settings: TcNo Account Switcher - Epic Settings
 Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - テキストエディター
-Title_Origin_Settings: Tcno Account Switcher - Origin 設定
+Title_Origin_Settings: TcNo Account Switcher - Origin 設定
 Title_Riot_Settings: TcNo Account Switcher - Riot Settings
 Title_Settings: TcNo Account Switcher - 設定
 Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning

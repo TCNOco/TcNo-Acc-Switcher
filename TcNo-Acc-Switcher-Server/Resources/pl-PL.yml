@@ -151,7 +151,7 @@ Modal_EnterPasswordRepeat: Wprowadź hasło ponownie
 Modal_PasswordsMatch: Hasła są zgodne
 Modal_PasswordsNoMatch: Hasła nie pasują
 Status_SelectedAccount: "Wybrano: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Status: inicjalizacja"
 Context_SwapTo: Zamień na konto
 Context_CreateShortcut: Utwórz skrót na pulpicie
 Context_CreateShortcutSubmenu: Utwórz skrót do pulpitu...

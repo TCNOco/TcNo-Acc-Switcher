@@ -151,7 +151,7 @@ Modal_EnterPasswordRepeat: Insira a senha novamente
 Modal_PasswordsMatch: Senhas iguais
 Modal_PasswordsNoMatch: As senhas não coincidem
 Status_SelectedAccount: "Selecionado: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Status: inicializando"
 Context_SwapTo: Trocar para conta
 Context_CreateShortcut: Criar atalho na área de trabalho
 Context_CreateShortcutSubmenu: Criar atalho da Área de Trabalho...

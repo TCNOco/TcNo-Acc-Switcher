@@ -44,7 +44,7 @@ Settings_StartMenu_Platform: Felület
 Settings_Tray_StartWindows: Indítsa el a tálcát a Windows rendszerrel
 Settings_Tray_StartNow: '[Indítsa el a tálcát most]'
 Settings_CurrentStyle: Aktuális stílus
-Settings_Protocol: 'A tcno: \\ protokoll engedélyezése (ajánlott)'
+Settings_Protocol: 'A TcNo: \\ protokoll engedélyezése (ajánlott)'
 Settings_WindowsAccent: Használja a Windows Kiemelő színét
 Settings_HelpTranslate: "[Segítség a fordításban]"
 Cleaning_Header_StartMenuShortcuts: 'A Start menü parancsikonjai:'
@@ -76,9 +76,9 @@ Toast_PasteDiscordConsole: Illessze be a Discord konzolba, majd illessze be az e
 Toast_AlreadyProcessing: Fiókok már feldolgozás alatt állnak ...
 Toast_FailedRestore: Nem sikerült visszaállítani a fiókokat (lásd konzol)
 Toast_Restored: Visszaállított számlák!
-Toast_ProtocolEnabled: 'Ez a program most reagál a tcno: \\ fájlra a Windows rendszerben'
+Toast_ProtocolEnabled: 'Ez a program most reagál a TcNo: \\ fájlra a Windows rendszerben'
 Toast_ProtocolEnabledTitle: Protokoll hozzáadva
-Toast_ProtocolDisabled: 'Ez a program már nem válaszol a tcno: \\'
+Toast_ProtocolDisabled: 'Ez a program már nem válaszol a TcNo: \\'
 Toast_ProtocolDisabledTitle: A protokoll eltávolítva
 Toast_RestartAsAdmin: Kérjük, kezdje rendszergazdaként, és próbálja újra.
 Toast_RestartAfterClose: A Bezárás gombra kattintás után indítsa újra a programot.

@@ -44,7 +44,7 @@ Settings_StartMenu_Platform: Platform
 Settings_Tray_StartWindows: Tray met Windows starten
 Settings_Tray_StartNow: '[Begin Taakje nu]'
 Settings_CurrentStyle: Huidige stijl
-Settings_Protocol: 'Tcno:\\ protocol (Aanbevolen) inschakelen'
+Settings_Protocol: 'tcno:\\ protocol (Aanbevolen) inschakelen'
 Settings_WindowsAccent: Gebruik de Windows Accent Kleur
 Settings_HelpTranslate: "[Help vertalen]"
 Cleaning_Header_StartMenuShortcuts: 'Snelkoppelingen voor Start Menu:'
@@ -151,7 +151,7 @@ Modal_EnterPasswordRepeat: Wachtwoord opnieuw invoeren
 Modal_PasswordsMatch: Wachtwoorden komen overeen
 Modal_PasswordsNoMatch: Wachtwoorden komen niet overeen
 Status_SelectedAccount: "Geselecteerd: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Status: initialiseren"
 Context_SwapTo: Wissel naar account
 Context_CreateShortcut: Maak een bureaubladsneltoets
 Context_CreateShortcutSubmenu: Maak een bureaubladsnelheid...

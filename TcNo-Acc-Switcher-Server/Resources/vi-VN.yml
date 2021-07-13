@@ -44,7 +44,7 @@ Settings_StartMenu_Platform: Nền tảng
 Settings_Tray_StartWindows: Khởi động Khay với Windows
 Settings_Tray_StartNow: '[Bắt đầu Khay ngay bây giờ]'
 Settings_CurrentStyle: Phong cách hiện tại
-Settings_Protocol: 'Bật giao thức tcno: \\ (Được khuyến nghị)'
+Settings_Protocol: 'Bật giao thức TcNo: \\ (Được khuyến nghị)'
 Settings_WindowsAccent: Sử dụng Màu nhấn Windows
 Settings_HelpTranslate: "[Giúp dịch]"
 Cleaning_Header_StartMenuShortcuts: 'Các phím tắt cho Start Menu:'
@@ -76,9 +76,9 @@ Toast_PasteDiscordConsole: Dán vào bảng điều khiển Discord, rồi dán 
 Toast_AlreadyProcessing: Đã xử lý tài khoản ...
 Toast_FailedRestore: Không khôi phục được tài khoản (Xem bảng điều khiển)
 Toast_Restored: Đã khôi phục tài khoản!
-Toast_ProtocolEnabled: 'Chương trình này bây giờ sẽ phản hồi với tcno: \\ trong Windows'
+Toast_ProtocolEnabled: 'Chương trình này bây giờ sẽ phản hồi với TcNo: \\ trong Windows'
 Toast_ProtocolEnabledTitle: Đã thêm giao thức
-Toast_ProtocolDisabled: 'Chương trình này sẽ không còn phản hồi với tcno: \\'
+Toast_ProtocolDisabled: 'Chương trình này sẽ không còn phản hồi với TcNo: \\'
 Toast_ProtocolDisabledTitle: Giao thức bị xóa
 Toast_RestartAsAdmin: Vui lòng bắt đầu với tư cách Quản trị viên và thử lại.
 Toast_RestartAfterClose: Vui lòng khởi động lại chương trình sau khi nhấp vào Đóng.

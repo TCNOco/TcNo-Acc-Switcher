@@ -133,7 +133,7 @@ Modal_Info_VisitSite: Vizitează tcno.co
 Modal_Info_Disclaimer: Notificare
 Modal_Title_Info: Informații despre comutatorul contului TcNo
 Modal_Title_ChangeUsername: Schimbă nume utilizator
-Modal_Title_ConfirmAction: Comutator de cont TcNo Confirmare acțiune
+Modal_Title_ConfirmAction: Comutator de cont tcno.confirmare acțiune
 Modal_Title_LocatePlatform: Vă rugăm să localizați directorul {platform}
 Modal_Title_AddNew: Adaugă un cont nou {platform}
 Modal_ChangeUsername: Vă rugăm să introduceți un nou {platformText} pentru contul dvs.
@@ -151,7 +151,7 @@ Modal_EnterPasswordRepeat: Introduceți parola din nou
 Modal_PasswordsMatch: Parolele corespund
 Modal_PasswordsNoMatch: Parolele nu corespund
 Status_SelectedAccount: "Selectat: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Stare: inițializare"
 Context_SwapTo: Schimbă la cont
 Context_CreateShortcut: Creați scurtătură pe desktop
 Context_CreateShortcutSubmenu: Creează scurtătură pe desktop...
