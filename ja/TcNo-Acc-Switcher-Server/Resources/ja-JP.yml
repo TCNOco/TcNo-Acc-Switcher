@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: ユーザーデータを開く
 Context_CopyOtherSubmenu: 他をコピー...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
+Context_HidePlatform: プラットフォームを非表示
+Context_ExportAccList: アカウントリストをエクスポート
+Title_BNet_Settings: Tcnoアカウント切り替え - バトルネット設定
+Title_BNet_ManageIgnored: TcNo Account Switcher - 無視されたBattleNetアカウントを管理
+Title_Discord_Settings: Tcnoアカウント切り替え - Discord設定
 Title_Epic_Settings: TcNo Account Switcher - Epic Settings
 Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
+Title_TextEditor: TcNo Account Switcher - テキストエディター
+Title_Origin_Settings: Tcno Account Switcher - Origin 設定
 Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
+Title_Settings: TcNo Account Switcher - 設定
 Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Title_Steam_Restore: TcNo Account Switcher - 忘れられたSteamアカウントを復元
+Title_Steam_Settings: TcNo Account Switcher - Steam設定
+Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoftの設定
 Online: オンライン
 OnlineDefault: Online (Default)
 Offline: オフライン
@@ -198,21 +198,21 @@ Away: 離席中
 Snooze: スヌーズ
 LookingToTrade: 取引を探し中
 LookingToPlay: プレイを探しています
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} は存在しません。"
+Reg_DoesntContain: "{subKey} は {val} を含んでいません"
+Reg_Removing: '{subKey}\\{val} を削除中'
+PngInvalid_Format: 必要なピクセルフォーマットはPixelFormatです。{x}.
+PngRequired: 必須画像フォーマットは、ポータブルネットワークグラフィックス(png)です。
+PngDimensions: 寸法は {MaxIconWidth}x{MaxIconHeight} 以下でなければなりません
+ThemeSyntaxAnd: "構文エラーが発生しました(詳細は以下をご覧ください):"
+ThemesNotFound: "TcNo Account Switcherのディレクトリに「themes」フォルダが見つかりませんでした。このソフトウェアを実行するには（特にDefault.yaml）必要です。\nUpdaterを「updater」フォルダで実行してファイルを確認し、これらのファイルを復元することができます。"
 Yes: "はい"
 No: "いいえ"
 Ok: "OK"
 Forget: 忘れた
 Notice: お知らせ
 Error: エラー
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "エラー: {ex}"
 Failed: 失敗しました
 Success: 成功
 NotFound: 見つかりません
@@ -221,11 +221,11 @@ ForName: "{name}"
 CouldNotFindX: '{x} が見つかりませんでした'
 CouldNotCloseX: '{x} を閉じることができませんでした!'
 DirectoryNotFound: ディレクトリが見つかりません
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "ディレクトリが見つかりません: {folder}"
+DeletingFile: "削除中: {file}"
+DeletingFolder: "フォルダを削除中: "
+CouldntDeleteX: "エラー: COULDN'T DELETE: {x}"
+CouldntDeleteUndefined: "エラー: COULDN'T 定義されていないファイルを削除"
 Prompt_DiscordCopy1: オプションボタンを見つけて、
 Prompt_DiscordCopy2: "ストリーマーモードが有効になっていないことを確認してください。それ以外の場合: エラーが発生します。"
 Prompt_DiscordCopy3: このコマンドを実行するときは、ストリーマーモードが無効/無効になっていることを確認してください！
