@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: Bezárja a lehetőségeket
 Prompt_DiscordCopy8: Értesítse a felhasználót a konzolról.
 Prompt_DiscordCopy9: Sikeresen másolt információk!
 Prompt_DiscordCopy10: Illessze be a fiókváltó beviteli mezőjébe a kép és a felhasználónév frissítéséhez / beállításához.
-Prompt_RestartAsAdmin: <h3><bold>Ez a program újraindul, Admin</bold></h3><p>Hit "Igen" UAC ha kéri admin.</p>
+Prompt_RestartAsAdmin: "<h3><bold>Ez a program újraindul, Admin</bold></h3><p>Hit \"Igen\" UAC ha kéri admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Ön egy fiók elfelejtésére készül!</h3> <h4>Mit jelent ez?</h4> <p>- A Steam többé nem rendelkezik Big Picture módban felsorolt fiókkal, és nem emlékszik a jelszóra.<br/> - A TcNo Account Switcher szintén nem mutatja a fiókot, amíg a Steam-en keresztül nem jelentkezik be újra.</p> <p>Fiókod érintetlen marad. Csak elfelejtette ezt a számítógépet.</p> <h4>Mi van, ha valami elromlik?</h4> <p>Ne essen pánikba, az elfelejtett fiókokat a Beállítások képernyőn lévő biztonsági másolatok segítségével hozhatja vissza.<br/> A korábbi biztonsági mentéseket onnan is eltávolíthatja, ha biztos benne, hogy minden a várt módon működik.</p> <h4>Érted?</h4>
 Prompt_ForgetAccount: >
