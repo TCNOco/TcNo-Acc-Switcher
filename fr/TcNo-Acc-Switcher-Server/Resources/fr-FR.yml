@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: Fermer les options
 Prompt_DiscordCopy8: Faites savoir à l'utilisateur dans la console.
 Prompt_DiscordCopy9: Informations copiées avec succès !
 Prompt_DiscordCopy10: Collez-le dans la zone de saisie du sélecteur de compte pour mettre à jour/définir l'image et le nom d'utilisateur.
-Prompt_RestartAsAdmin: <h3><bold>Ce programme redémarrera en tant qu'administrateur</bold></h3><p>Appuyez sur "Oui" dans l'UAC lorsque vous serez invité à l'administrateur.</p>
+Prompt_RestartAsAdmin: "<h3><bold>Ce programme redémarrera en tant qu'administrateur</bold></h3><p>Appuyez sur \"Oui\" dans l'UAC lorsque vous serez invité à l'administrateur.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Vous êtes sur le point d'oublier un compte !</h3> <h4>Qu'est-ce que cela signifie ?</h4> <p>- Steam n'aura plus le compte dans le mode Big Picture et ne se souviendra plus du mot de passe.<br/> - Le commutateur de compte TcNo n'affichera pas non plus le compte, jusqu'à ce qu'il soit à nouveau connecté via Steam.</p> <p>Votre compte restera intact. Il est juste oublié sur cet ordinateur.</p> <h4>Que se passe-t-il si quelque chose ne va pas ?</h4> <p>Ne paniquez pas, vous pouvez ramener les comptes oubliés par des sauvegardes dans l'écran Paramètres.<br/> Vous pouvez également supprimer les sauvegardes précédentes lorsque vous êtes sûr que tout fonctionne comme prévu.</p> <h4>Comprenez-vous ?</h4>
 Prompt_ForgetAccount: >
