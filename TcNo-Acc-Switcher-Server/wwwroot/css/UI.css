@@ -65,11 +65,11 @@ button .caret {
 
 .dropdown {
   display: inline-block;
-  padding: 0; }
+  padding: 0;
+  overflow: visible; }
   .dropdown-toggle {
     margin-bottom: 4px;
-    position: relative;
-    z-index: 10; }
+    position: relative; }
   .dropdown-menu {
     padding: 0.5rem 0;
     border-style: solid;
@@ -96,11 +96,15 @@ button .caret {
 .dropdown,
 .custom-dropdown-menu,
 .custom-dropdown-item {
-  z-index: 1;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
+
+.custom-dropdown-menu {
+  z-index: 10;
+  max-height: 60vh;
+  overflow-y: scroll; }
 
 /* Text Editor */
 .text-editor {

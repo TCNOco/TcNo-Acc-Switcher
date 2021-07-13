@@ -1,3 +1,4 @@
+---
 Update: Update available! Click here to start it.
 Header_ChooseLanguage: 'Choose Language: {platform}'
 BattleNet_ShowSR: Show Overwatch SR and use the Overwatch profile picture.
@@ -52,21 +53,17 @@ Cleaning_Header_LoginHistory: Clean my login history
 Cleaning_Header_PlatformCleaning: '{platform} Switcher'
 Cleaning_ImportantInfoHeader: 'Important info:'
 Cleaning_ImportantInfo: >
-  Clicking a button will delete the related file(s) from your Steam installation.<br />
-  Deleting loginusers.vdf will result in this account switcher showing no accounts.<br />
-  You will need to login to them using Steam to get them back.
+  Clicking a button will delete the related file(s) from your Steam installation.<br /> Deleting loginusers.vdf will result in this account switcher showing no accounts.<br /> You will need to login to them using Steam to get them back.
 Cleaning_Button_KillProcess: Kill {platform} process
 Cleaning_Button_ForgottenBackups: Forgotten account backups
 Cleaning_Understand: I understand what these buttons do.
 Restore_Header: Restore forgotten accounts
 Restore_Info: >
-  If you previously "forgot" an account, you can restore them here.<br />
-  This adds them back into your loginusers.vdf file, allowing you to switch to them.
+  If you previously "forgot" an account, you can restore them here.<br /> This adds them back into your loginusers.vdf file, allowing you to switch to them.
 Restore_Button_Restore: Restore selected
 Ignored_RemoveAccounts: Remove accounts from ignore list
 Ignored_Description: If you previously "ignored" an account, you can show them again here
 Ignored_Stop: Stop ignoring selected
-
 Toast_RetryOrDeleteDiscordCache: Retry, or delete the Discord Cache to reset password (See the Wiki).
 Toast_TrayStarted: Tray started!
 Toast_TrayRunning: Tray already open
@@ -128,7 +125,6 @@ Toast_RefreshedImages: Refreshed images
 Toast_Ubisoft_NoUsername: Could not find last logged in user. Try logging into Ubisoft again first.
 Toast_Ubisoft_NoUser: Could not find last logged in user. Try logging into Ubisoft again first.
 Toast_ClearForgottenCheck: Are you sure you want to clear backups of forgotten accounts?
-
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: View on GitHub
@@ -140,14 +136,13 @@ Modal_Title_ChangeUsername: Change username
 Modal_Title_ConfirmAction: TcNo Account Switcher Confirm Action
 Modal_Title_LocatePlatform: Please locate the {platform} directory
 Modal_Title_AddNew: Add new {platform} account
-
 Modal_ChangeUsername: Please enter a new {platformText} for your account
 Modal_ChangeUsernameType: Change {UsernameOrOther}
 Modal_EnterDirectory: "Please enter {platform}'s directory, as such: C:\\Program Files\\{platform}"
 Modal_LocatePlatform: Locate {platformExe}
 Modal_LocatePlatformFolder: Select {platform} folder
 Modal_ConfirmAction: Confirm action
-Modal_AddNew:  Please enter a name for the {platform} account you're logged into.
+Modal_AddNew: Please enter a name for the {platform} account you're logged into.
 Modal_AddCurrentAccount: Add current {platform} account
 Modal_EnterNewPassword: Please enter a new password to secure your {platform} accounts in the switcher.<br>  Keep it safe. It can not be recovered later.
 Modal_EnterPassword: Please enter your password for TcNo Account Switcher's {platform} platform.
@@ -155,10 +150,8 @@ Modal_EnterPasswordShort: Enter password
 Modal_EnterPasswordRepeat: Enter password again
 Modal_PasswordsMatch: Passwords match
 Modal_PasswordsNoMatch: Passwords do not match
-
 Status_SelectedAccount: "Selected: {name}"
 Status_Init: "Status: Initialising"
-
 Context_SwapTo: Swap to account
 Context_CreateShortcut: Create Desktop Shortcut
 Context_CreateShortcutSubmenu: Create Desktop Shortcut...
@@ -184,7 +177,6 @@ Context_Steam_OpenUserdata: Open userdata
 Context_CopyOtherSubmenu: Copy other...
 Context_HidePlatform: Hide platform
 Context_ExportAccList: Export account list
-
 Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
 Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
 Title_Discord_Settings: TcNo Account Switcher - Discord Settings
@@ -198,7 +190,6 @@ Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
 Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
 Title_Steam_Settings: TcNo Account Switcher - Steam Settings
 Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
-
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline
@@ -216,7 +207,6 @@ PngRequired: Required image format is a portable network graphic (png).
 PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
 ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
-
 Yes: "Yes"
 No: "No"
 Ok: "OK"
@@ -237,7 +227,6 @@ DeletingFile: "Deleting: {file}"
 DeletingFolder: "Deleting Folder: "
 CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
 CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
-
 Prompt_DiscordCopy1: Find options button, and click
 Prompt_DiscordCopy2: "Check that streamer mode is not enabled, otherwise: Give error."
 Prompt_DiscordCopy3: Make sure that Streamer Mode is disabled/not active when running this command!
@@ -249,22 +238,7 @@ Prompt_DiscordCopy8: Let the user know in console.
 Prompt_DiscordCopy9: Successfully copied information!
 Prompt_DiscordCopy10: Paste it into the input box in the account switcher to update/set image and username.
 Prompt_RestartAsAdmin: <h3><bold>This program will restart as Admin</bold></h3><p>Hit "Yes" in UAC when prompted for admin.</p>
-
 Prompt_ForgetSteam: >
- <h3 style='color:red'>You are about to forget an account!</h3>
- <h4>What does this mean?</h4>
- <p>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.<br/>
- - TcNo Account Switcher will also no longer show the account, until it's signed into again through Steam.</p>
- <p>Your account will remain untouched. It is just forgotten on this computer.</p>
- <h4>What if something goes wrong?</h4>
- <p>Don't panic, you can bring back forgotten accounts via backups in the Settings screen.<br/>
- You can also remove previous backups from there when you are sure everything is working as expected.</p>
- <h4>Do you understand?</h4>
-
+  <h3 style='color:red'>You are about to forget an account!</h3> <h4>What does this mean?</h4> <p>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.<br/> - TcNo Account Switcher will also no longer show the account, until it's signed into again through Steam.</p> <p>Your account will remain untouched. It is just forgotten on this computer.</p> <h4>What if something goes wrong?</h4> <p>Don't panic, you can bring back forgotten accounts via backups in the Settings screen.<br/> You can also remove previous backups from there when you are sure everything is working as expected.</p> <h4>Do you understand?</h4>
 Prompt_ForgetAccount: >
- <h3 style='color:red'>You are about to forget an account!</h3>
- <h4>What does this mean?</h4>
- <p>TcNo Account Switcher will also no longer show the account,<br/>
- until it's signed into again through {platform}, and added to the list.</p>
- <p>Your account will remain untouched. It is just forgotten on this computer.</p>
- <h4>Do you understand?</h4>
+  <h3 style='color:red'>You are about to forget an account!</h3> <h4>What does this mean?</h4> <p>TcNo Account Switcher will also no longer show the account,<br/> until it's signed into again through {platform}, and added to the list.</p> <p>Your account will remain untouched. It is just forgotten on this computer.</p> <h4>Do you understand?</h4>
