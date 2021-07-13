@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: 打开用户数据
 Context_CopyOtherSubmenu: 复制其他...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Context_HidePlatform: 隐藏平台
+Context_ExportAccList: 导出账户列表
+Title_BNet_Settings: Tcno 账户切换器 - 战斗网设置
+Title_BNet_ManageIgnored: Tcno 账户切换器 - 管理忽略的 BattleNet 账户
+Title_Discord_Settings: Tcno 账户切换器 - Discord 设置
+Title_Epic_Settings: Tcno 账户切换器-史诗设置
+Title_AccountsList: Tcno 账户切换器 - {platform}
+Title_TextEditor: Tcno 账户切换器 - 文本编辑器
+Title_Origin_Settings: Tcno 账户切换器 - 来源设置
+Title_Riot_Settings: Tcno 账户切换器-防暴设置
+Title_Settings: Tcno 账户切换器-设置
+Title_Steam_Cleaning: Tcno 账户切换器 - Steam 清理
+Title_Steam_Restore: Tcno 账户切换器 - 还原遗忘的 Steam 账户
+Title_Steam_Settings: Tcno 账户切换器 - Steam 设置
+Title_Ubisoft_Settings: Tcno 账户切换器 - Ubisoft 设置
 Online: 在线
 OnlineDefault: Online (Default)
 Offline: 离线的
@@ -198,21 +198,21 @@ Away: 离开
 Snooze: 稍后提醒
 LookingToTrade: 贸易展望
 LookingToPlay: 正在观看播放
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} 不存在。"
+Reg_DoesntContain: "{subKey} 不包含 {val}"
+Reg_Removing: 正在删除 {subKey}\\{val}
+PngInvalid_Format: 所需像素格式是 PixelFormat。{x}。
+PngRequired: 所需的图像格式是便携式网络图形(png)。
+PngDimensions: 尺寸必须小于或等于 {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "遇到语法错误 (更多细节) ！AND："
+ThemesNotFound: "在 TcNo 账户切换器目录中找不到\"主题\"文件夹。此软件运行需要此(尤其是 Default.yml)。\n您可以在\"更新\"文件夹中运行更新程序来验证文件并还原这些缺失的文件。"
 Yes: "否"
 No: "否"
 Ok: "好的"
 Forget: 忘记了
 Notice: 通知
 Error: 错误
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "错误: {ex}"
 Failed: 失败
 Success: 成功
 NotFound: 找不到
@@ -221,11 +221,11 @@ ForName: "用于: {name}"
 CouldNotFindX: 找不到 {x}
 CouldNotCloseX: 无法关闭 {x}！
 DirectoryNotFound: 找不到目录
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "找不到目录: {folder}"
+DeletingFile: "删除： {file}"
+DeletingFolder: "删除文件夹： "
+CouldntDeleteX: "错误：无法删除： {x}"
+CouldntDeleteUndefined: "错误：未删除的文件"
 Prompt_DiscordCopy1: 查找选项按钮并点击
 Prompt_DiscordCopy2: "检查流模式未启用，否则：给出错误。"
 Prompt_DiscordCopy3: 确保在运行此命令时，主播模式已禁用/未激活！
