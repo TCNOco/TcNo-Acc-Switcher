@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Démarrer la barre de notification maintenant]'
 Settings_CurrentStyle: Style actuel
 Settings_Protocol: 'Activer le protocole tcno:\\ (Recommandé)'
 Settings_WindowsAccent: Utiliser la couleur d'accentuation Windows
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Raccourcis pour le Menu Démarrer:'
 Cleaning_Header_General: Nettoyage général
 Cleaning_Header_LoginHistory: Nettoyer mon historique de connexion
