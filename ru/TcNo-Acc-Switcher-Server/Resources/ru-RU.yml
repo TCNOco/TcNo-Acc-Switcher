@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Начать трей сейчас]'
 Settings_CurrentStyle: Текущий стиль
 Settings_Protocol: 'Включить протокол tcno:\\ (Рекомендуется)'
 Settings_WindowsAccent: Использовать цвет Accent для Windows
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Ярлыки для меню Пуск:'
 Cleaning_Header_General: Общая очистка
 Cleaning_Header_LoginHistory: Очистить историю входа
