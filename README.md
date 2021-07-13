@@ -12,7 +12,7 @@
     <img alt="Twitter" src="https://img.shields.io/twitter/follow/TcNobo?label=Follow%20%40TcNobo&logo=Twitter&style=flat-square"></a>
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/TcNobo/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/TcNobo/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
-																     <a title="Crowdin" target="_blank" href="https://crowdin.com/project/tcno-account-switcher"><img src="https://badges.crowdin.net/tcno-account-switcher/localized.svg"></a>
+																     <a title="Crowdin" target="_blank" href="https://crowdin.com/project/tcno-account-switcher"><img src="https://img.shields.io/badge/Seeking-localisers-blue.svg?style=flat-square"></a>
 </p>
                                                                                                                                   
 <p align="center"><a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest">
