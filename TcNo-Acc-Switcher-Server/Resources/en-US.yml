@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: Close options
 Prompt_DiscordCopy8: Let the user know in console.
 Prompt_DiscordCopy9: Successfully copied information!
 Prompt_DiscordCopy10: Paste it into the input box in the account switcher to update/set image and username.
-Prompt_RestartAsAdmin: <h3><bold>This program will restart as Admin</bold></h3><p>Hit "Yes" in UAC when prompted for admin.</p>
+Prompt_RestartAsAdmin: "<h3><bold>This program will restart as Admin</bold></h3><p>Hit \"Yes\" in UAC when prompted for admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>You are about to forget an account!</h3> <h4>What does this mean?</h4> <p>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.<br/> - TcNo Account Switcher will also no longer show the account, until it's signed into again through Steam.</p> <p>Your account will remain untouched. It is just forgotten on this computer.</p> <h4>What if something goes wrong?</h4> <p>Don't panic, you can bring back forgotten accounts via backups in the Settings screen.<br/> You can also remove previous backups from there when you are sure everything is working as expected.</p> <h4>Do you understand?</h4>
 Prompt_ForgetAccount: >
