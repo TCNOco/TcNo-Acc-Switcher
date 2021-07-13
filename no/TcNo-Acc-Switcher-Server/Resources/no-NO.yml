@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Åpne brukerdata
 Context_CopyOtherSubmenu: Kopier andre...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Context_HidePlatform: Skjul plattform
+Context_ExportAccList: Eksporter kontoliste
+Title_BNet_Settings: TcIngen konto-brytere - BattleNet innstillinger
+Title_BNet_ManageIgnored: TcIngen kontomasjon - Administrer ignorerte BattleNet kontoer
+Title_Discord_Settings: TcIngen kontovelger - Discord-innstillinger
+Title_Epic_Settings: TcIngen kontovelger - Episke innstillinger
+Title_AccountsList: TcIngen Konto-bytter - {platform}
+Title_TextEditor: TcIngen kontovelger - tekstbehandler
+Title_Origin_Settings: TcIngen kontovelger - Opprinnelsesinnstillinger
+Title_Riot_Settings: TcIngen kontovelger - Riot innstillinger
+Title_Settings: TcIngen kontomerter - Innstillinger
+Title_Steam_Cleaning: TcIngen kontovelger - Steam rengjøring
+Title_Steam_Restore: TcIngen kontobryter - Gjenopprett glemt Steam konto
+Title_Steam_Settings: TcIngen Konto-bytter - Steam-innstillinger
+Title_Ubisoft_Settings: TcIngen kontomasjonsholder - Ubisoft Innstillinger
 Online: Pålogget
 OnlineDefault: Online (Default)
 Offline: Frakoblet
@@ -198,21 +198,21 @@ Away: Borte
 Snooze: Utsett
 LookingToTrade: Ønsker å handle
 LookingToPlay: Ser du på å spille
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} finnes ikke."
+Reg_DoesntContain: "{subKey} inneholder ikke {val}"
+Reg_Removing: Fjerner {subKey}\\{val}
+PngInvalid_Format: Format for pikselformat er PixelFormat.{x}.
+PngRequired: Nødvendig bildeformat er en bærbar nettverksgrafikk (png).
+PngDimensions: Dimensjoner må være mindre enn eller lik {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Det oppstod en syntaksfeil (flere detaljer nedenfor)! Ok:"
+ThemesNotFound: "Finner ikke \"temaer\" mappen i TcNo Account Switchers katalog. Dette (spesielt Standard.yaml) kreves for at denne programvaren skal kjøre.\nDu kan kjøre Oppdateringen i \"oppdateringer\" for å verifisere filer, og gjenopprette disse manglende filene."
 Yes: "Ja"
 No: "Nei"
 Ok: "Ok"
 Forget: Glem
 Notice: Merk
 Error: Feil
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "FEIL: {ex}"
 Failed: Mislyktes
 Success: Vellykket
 NotFound: Ikke funnet
@@ -221,11 +221,11 @@ ForName: "For: {name}"
 CouldNotFindX: Fant ikke {x}
 CouldNotCloseX: Kunne ikke lukke {x}!
 DirectoryNotFound: Fant ikke mappe
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "Mappe ikke funnet: {folder}"
+DeletingFile: "Sletter: {file}"
+DeletingFolder: "Sletter mappe: "
+CouldntDeleteX: "FEIL: COULDN'T DELETE: {x}"
+CouldntDeleteUndefined: "FEIL: COULDN'T SLETT UNDEFINERT FIL"
 Prompt_DiscordCopy1: Finn alternativer-knappen, og klikk
 Prompt_DiscordCopy2: "Kontroller at strømmen-modus ikke er aktivert, annet: Gi feil."
 Prompt_DiscordCopy3: Kontroller at strømningsmodus er deaktivert/ikke aktiv ved kjøring av denne kommandoen!
