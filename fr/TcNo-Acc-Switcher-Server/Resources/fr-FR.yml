@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Ouvrir les données utilisateur
 Context_CopyOtherSubmenu: Copier un autre...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Context_HidePlatform: Cacher la plateforme
+Context_ExportAccList: Exporter la liste des comptes
+Title_BNet_Settings: Commutateur de compte TcNo - Paramètres BattleNet
+Title_BNet_ManageIgnored: Changeur de compte TcNo - Gérer les comptes BattleNet ignorés
+Title_Discord_Settings: Changeur de compte TcNo - Paramètres Discord
+Title_Epic_Settings: Changeur de compte TcNo - Paramètres Epic
+Title_AccountsList: Changeur de compte TcNo - {platform}
+Title_TextEditor: Changeur de compte TcNo - Éditeur de texte
+Title_Origin_Settings: Changeur de compte TcNo - Paramètres d'origine
+Title_Riot_Settings: Changeur de compte TcNo - Paramètres de l'émeute
+Title_Settings: Changeur de compte TcNo - Paramètres
+Title_Steam_Cleaning: Changeur de compte TcNo - Nettoyage Steam
+Title_Steam_Restore: Changeur de compte TcNo - Restaurer le compte Steam oublié
+Title_Steam_Settings: Changeur de compte TcNo - Paramètres Steam
+Title_Ubisoft_Settings: Commutateur de compte TcNo - Paramètres Ubisoft
 Online: En ligne
 OnlineDefault: Online (Default)
 Offline: Hors ligne
@@ -198,21 +198,21 @@ Away: Absent
 Snooze: Répéter
 LookingToTrade: Vous cherchez à échanger
 LookingToPlay: Recherche de jouer
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} n'existe pas."
+Reg_DoesntContain: "{subKey} ne contient pas {val}"
+Reg_Removing: Suppression de {subKey}\\{val}
+PngInvalid_Format: Le format de pixel requis est PixelFormat.{x}.
+PngRequired: Le format d'image requis est un graphique de réseau portable (png).
+PngDimensions: Les dimensions doivent être inférieures ou égales à {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Une erreur de syntaxe a été rencontrée (plus de détails ci-dessous) ! ET:"
+ThemesNotFound: "Impossible de trouver le dossier \"themes\" dans le répertoire de TcNo Account Switcher. Ceci (en particulier Default.yaml) est nécessaire à l'exécution de ce logiciel.\nVous pouvez exécuter la mise à jour dans le dossier \"updater\" pour vérifier les fichiers et restaurer ces fichiers manquants."
 Yes: "Oui"
 No: "Non"
 Ok: "Ok"
 Forget: Oublier
 Notice: Annonce
 Error: Erreur
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "ERREUR : {ex}"
 Failed: Echoué
 Success: Succès
 NotFound: Non trouvé
@@ -221,11 +221,11 @@ ForName: "Pour : {name}"
 CouldNotFindX: Impossible de trouver {x}
 CouldNotCloseX: Impossible de fermer {x}!
 DirectoryNotFound: Répertoire introuvable
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "Répertoire introuvable : {folder}"
+DeletingFile: "Suppression : {file}"
+DeletingFolder: "Suppression du dossier : "
+CouldntDeleteX: "ERREUR : SUPPRIMER LA SUPPRESSION : {x}"
+CouldntDeleteUndefined: "ERREUR : SUPPRIMER LE FICHIER INDÉFINI"
 Prompt_DiscordCopy1: Bouton de recherche d'options et cliquez sur
 Prompt_DiscordCopy2: "Vérifiez que le mode streamer n'est pas activé, sinon: Erreur de diffusion."
 Prompt_DiscordCopy3: Assurez-vous que le mode Streamer est désactivé/non actif lors de l'exécution de cette commande !
