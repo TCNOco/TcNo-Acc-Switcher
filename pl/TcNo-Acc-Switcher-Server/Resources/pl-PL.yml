@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Rozpocznij zasobnik teraz]'
 Settings_CurrentStyle: Bieżący styl
 Settings_Protocol: 'Włącz protokół tcno:\\ (zalecane)'
 Settings_WindowsAccent: Użyj koloru akcentu Windows
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Skróty dla menu startowego:'
 Cleaning_Header_General: Ogólne czyszczenie
 Cleaning_Header_LoginHistory: Wyczyść historię logowania
