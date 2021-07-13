@@ -150,7 +150,7 @@ Modal_EnterPasswordRepeat: Introducir contraseña de nuevo
 Modal_PasswordsMatch: Contraseñas coinciden
 Modal_PasswordsNoMatch: Las contraseñas no coinciden
 Status_SelectedAccount: "Seleccionado: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Estado: inicializando"
 Context_SwapTo: Cambiar a cuenta
 Context_CreateShortcut: Crear acceso directo de escritorio
 Context_CreateShortcutSubmenu: Crear acceso directo de escritorio...
@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Abrir datos de usuario
 Context_CopyOtherSubmenu: Copiar otro...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Context_HidePlatform: Ocultar plataforma
+Context_ExportAccList: Exportar lista de cuentas
+Title_BNet_Settings: Cambiador de cuenta TcNo - Configuración de BattleNet
+Title_BNet_ManageIgnored: Cambiador de cuenta TcNo - Administrar cuentas BattleNet ignoradas
+Title_Discord_Settings: Cambiador de cuenta TcNo - Configuración de Discord
+Title_Epic_Settings: Cambiador de cuenta de TcNo - Configuración Épica
+Title_AccountsList: Interruptor de cuenta TcNo - {platform}
+Title_TextEditor: Cambiador de cuenta TcNo - Editor de texto
+Title_Origin_Settings: Cambiador de cuenta TcNo - Configuración de origen
+Title_Riot_Settings: Cambiador de cuenta TcNo - Configuración de disturbios
+Title_Settings: Cambiador de cuenta TcNo - Configuración
+Title_Steam_Cleaning: Cambiador de cuenta TcNo - Limpieza de Steam
+Title_Steam_Restore: Cambiador de cuenta de TcNo - Restaurar cuenta de Steam olvidada
+Title_Steam_Settings: Cambiador de cuenta TcNo - Configuración de Steam
+Title_Ubisoft_Settings: Cambiador de cuenta de TcNo - Configuración de Ubisoft
 Online: En línea
 OnlineDefault: Online (Default)
 Offline: Desconectado
@@ -198,14 +198,14 @@ Away: Ausente
 Snooze: Retrasar
 LookingToTrade: Buscando operar
 LookingToPlay: Buscando jugar
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} no existe."
+Reg_DoesntContain: "{subKey} no contiene {val}"
+Reg_Removing: Eliminando {subKey}\\{val}
+PngInvalid_Format: El formato de píxel requerido es PixelFormat.{x}.
+PngRequired: Formato de imagen requerido es un gráfico de red portátil (png).
+PngDimensions: Las dimensiones deben ser menores o iguales a {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Se ha encontrado un error de sintaxis (más detalles a continuación)! Y:"
+ThemesNotFound: "No se ha podido encontrar la carpeta \"temas\" en el directorio de TcNo Account Switcher. Esto (especialmente Default.yaml) es necesario para que este software se ejecute.\nPuede ejecutar el Actualizador en la carpeta \"actualizador\" para verificar los archivos y restaurar estos archivos que faltan."
 Yes: "Sí"
 No: "Nu"
 Ok: "Ok"
@@ -221,11 +221,11 @@ ForName: "Para: {name}"
 CouldNotFindX: No se pudo encontrar {x}
 CouldNotCloseX: '¡No se pudo cerrar {x}!'
 DirectoryNotFound: Directorio no encontrado
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "Directorio no encontrado: {folder}"
+DeletingFile: "Eliminando: {file}"
+DeletingFolder: "Eliminando carpeta: "
+CouldntDeleteX: "ERROR: DELETO DE COULDN': {x}"
+CouldntDeleteUndefined: "ERROR: ARCHIVO DE COULDN'T DELETE UNDEFINED"
 Prompt_DiscordCopy1: Botón de buscar opciones, y haga clic
 Prompt_DiscordCopy2: "Compruebe que el modo de streamer no está activado, de lo contrario, dar error."
 Prompt_DiscordCopy3: '¡Asegúrate de que el modo Streamer está desactivado/no activo cuando ejecutes este comando!'
