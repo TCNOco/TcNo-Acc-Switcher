@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Άνοιγμα δεδομένων χρήστη
 Context_CopyOtherSubmenu: Αντιγραφή άλλου...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Context_HidePlatform: Απόκρυψη πλατφόρμας
+Context_ExportAccList: Εξαγωγή λίστας λογαριασμών
+Title_BNet_Settings: TcNo Switcher Λογαριασμού - Ρυθμίσεις BattleNet
+Title_BNet_ManageIgnored: TcNo Account Switcher - Διαχείριση αγνοημένων λογαριασμών BattleNet
+Title_Discord_Settings: TcNo Switcher Λογαριασμού - Ρυθμίσεις Discord
+Title_Epic_Settings: TcNo Switcher Λογαριασμού - Epic Settings
+Title_AccountsList: TcNo Switcher Λογαριασμού - {platform}
+Title_TextEditor: Tcno Account Switcher - Επεξεργαστής Κειμένου
+Title_Origin_Settings: TcNo Switcher Λογαριασμού - Ρυθμίσεις Προέλευσης
+Title_Riot_Settings: TcNo Switcher Λογαριασμού - Ρυθμίσεις Riot
+Title_Settings: Εναλλαγή Λογαριασμού Tcno - Ρυθμίσεις
+Title_Steam_Cleaning: TcNo Switcher Λογαριασμού - Καθαρισμός Ατμού
+Title_Steam_Restore: Tcno Account Switcher - Επαναφορά ξεχασμένου λογαριασμού Steam
+Title_Steam_Settings: TcNo Switcher Λογαριασμού - Ρυθμίσεις Steam
+Title_Ubisoft_Settings: TcNo Switcher Λογαριασμού - Ρυθμίσεις Ubisoft
 Online: Συνδεδεμένος
 OnlineDefault: Online (Default)
 Offline: Αποσυνδεδεμένος
@@ -198,21 +198,21 @@ Away: Μακριά
 Snooze: Αναβολή
 LookingToTrade: Ψάχνετε για Εμπόριο
 LookingToPlay: Κοιτάζοντας για αναπαραγωγή
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} δεν υπάρχει."
+Reg_DoesntContain: "{subKey} δεν περιέχει {val}"
+Reg_Removing: Αφαίρεση {subKey}\\{val}
+PngInvalid_Format: Η απαιτούμενη μορφή εικονοστοιχείων είναι PixelFormat.{x}.
+PngRequired: Η απαιτούμενη μορφή εικόνας είναι ένα γραφικό φορητό δίκτυο (png).
+PngDimensions: Οι διαστάσεις πρέπει να είναι μικρότερες ή ίσες με {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Αντιμετωπίστηκε ένα συντακτικό σφάλμα (περισσότερες λεπτομέρειες παρακάτω)!"
+ThemesNotFound: "Δεν βρέθηκε ο φάκελος \"themes\" στο φάκελο TcNo Account Switcher. Αυτό (ειδικά το Default.yaml) είναι απαραίτητο για την εκτέλεση αυτού του λογισμικού.\nΜπορείτε να εκτελέσετε το Updater στο φάκελο \"updater\" για να επαληθεύσετε τα αρχεία, και να επαναφέρετε αυτά τα αρχεία που λείπουν."
 Yes: "Ναι"
 No: "Όχι"
 Ok: "Εντάξει"
 Forget: Ξεχάστε
 Notice: Σημείωση
 Error: Σφάλμα
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "Σφάλμα: {ex}"
 Failed: Απέτυχε
 Success: Επιτυχία
 NotFound: Δε βρέθηκε
@@ -221,11 +221,11 @@ ForName: "Για: {name}"
 CouldNotFindX: Αδυναμία εύρεσης {x}
 CouldNotCloseX: Αδύνατο το κλείσιμο του {x}!
 DirectoryNotFound: Ο κατάλογος δεν βρέθηκε
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "Ο φάκελος δεν βρέθηκε: {folder}"
+DeletingFile: "Διαγραφή: {file}"
+DeletingFolder: "Διαγραφή Φακέλου: "
+CouldntDeleteX: "ΣΦΑΛΜΑ: ΔΙΑΓΡΑΦΗ COULDN'T: {x}"
+CouldntDeleteUndefined: "ΣΦΑΛΜΑ: ΧΡΟΝΟΣ ΚΑΥΣΙΜΟΥ ΧΡΗΜΑΤΟΔΟΤΗΣΗΣ"
 Prompt_DiscordCopy1: Αναζήτηση επιλογών κουμπί και κάντε κλικ
 Prompt_DiscordCopy2: "Ελέγξτε ότι η λειτουργία streamer δεν είναι ενεργοποιημένη, διαφορετικά: Αποδοχή σφάλματος."
 Prompt_DiscordCopy3: Βεβαιωθείτε ότι η λειτουργία ροής είναι απενεργοποιημένη/μη ενεργή όταν εκτελείτε αυτήν την εντολή!
