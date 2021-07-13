@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Открыть данные пользователя
 Context_CopyOtherSubmenu: Копировать другие...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Context_HidePlatform: Скрыть платформу
+Context_ExportAccList: Экспорт списка счетов
+Title_BNet_Settings: TcNo Switcher - Настройки BattleNet
+Title_BNet_ManageIgnored: TcNo переключение аккаунтов - Управление игнорируемыми аккаунтами BattleNet
+Title_Discord_Settings: TcNo переключение учетной записи - Настройки Discord
+Title_Epic_Settings: TcNo переключение аккаунтов - Эпические настройки
+Title_AccountsList: TcNo переключение аккаунта - {platform}
+Title_TextEditor: TcNo переключение учетных записей - текстовый редактор
+Title_Origin_Settings: TcNo переключение аккаунта - Настройки источника
+Title_Riot_Settings: TcNo Переключатель Учетных записей - Настройки Оглушения
+Title_Settings: TcNo переключение аккаунтов - Настройки
+Title_Steam_Cleaning: TcNo Переключение аккаунтов - Steam очистка
+Title_Steam_Restore: TcNo Переключение учетных записей - Восстановление забытого Steam аккаунта
+Title_Steam_Settings: TcNo Switcher - Настройки Steam
+Title_Ubisoft_Settings: TcNo Переключение аккаунтов - Настройки Ubisoft
 Online: Онлайн
 OnlineDefault: Online (Default)
 Offline: Оффлайн
@@ -198,21 +198,21 @@ Away: Вне дома
 Snooze: Повтор
 LookingToTrade: Ищу сделку
 LookingToPlay: Ищет игру
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} не существует."
+Reg_DoesntContain: "{subKey} не содержит {val}"
+Reg_Removing: Удаление {subKey}\\{val}
+PngInvalid_Format: Требуемый формат пикселя - пиксельный формат.{x}.
+PngRequired: Необходимый формат изображения является портативной сетевой графикой (png).
+PngDimensions: Размер должен быть меньше или равен {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Произошла ошибка синтаксиса (подробнее ниже)! И:"
+ThemesNotFound: "Не удалось найти папку \"themes\" в каталоге TcNo Account Switcher.\nВы можете запустить Updater в папке \"updater\" для проверки файлов и восстановления этих отсутствующих файлов."
 Yes: "Да"
 No: "Нет"
 Ok: "ОК"
 Forget: Забыть
 Notice: Уведомление
 Error: Ошибка
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "ОШИБКА: {ex}"
 Failed: Неудачный
 Success: Успешно
 NotFound: Не найдено
@@ -221,11 +221,11 @@ ForName: "для: {name}"
 CouldNotFindX: Не удалось найти {x}
 CouldNotCloseX: Не удалось закрыть {x}!
 DirectoryNotFound: Каталог не найден
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "Каталог не найден: {folder}"
+DeletingFile: "Удаление: {file}"
+DeletingFolder: "Удаление папки: "
+CouldntDeleteX: "ОШИБКА: ЗАДАЧА УДАЛЕН: {x}"
+CouldntDeleteUndefined: "ОШИБКА: УДАЛИТЬ НЕВОЗМОЖНЫЙ ФАЙЛ"
 Prompt_DiscordCopy1: Кнопка "Параметры" и нажмите
 Prompt_DiscordCopy2: "Проверьте, что режим стримера не включен, в противном случае: Дайте ошибку."
 Prompt_DiscordCopy3: Убедитесь, что режим "Стример" отключен/не активен при выполнении этой команды!
