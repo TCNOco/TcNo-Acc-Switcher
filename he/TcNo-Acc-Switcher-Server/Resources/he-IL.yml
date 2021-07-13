@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[התחל מגש עכשיו]'
 Settings_CurrentStyle: סגנון נוכחי
 Settings_Protocol: 'אפשר tcno: \\ פרוטוקול (מומלץ)'
 Settings_WindowsAccent: השתמש בצבע המבטא של Windows
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'קיצורי דרך לתפריט התחלה:'
 Cleaning_Header_General: ניקוי כללי
 Cleaning_Header_LoginHistory: נקה את היסטוריית הכניסה שלי
