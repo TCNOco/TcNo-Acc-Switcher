@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Start Tray now]'
 Settings_CurrentStyle: Nåværende Stil
 Settings_Protocol: 'Aktiver tcno:\\ protokoll (Anbefalt)'
 Settings_WindowsAccent: Bruk Windows Accent Colour
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Snarveier for Start-menyen:'
 Cleaning_Header_General: Generell rengjøring
 Cleaning_Header_LoginHistory: Rens logg
