@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Inicieu la safata ara]'
 Settings_CurrentStyle: Estil actual
 Settings_Protocol: 'Activa el protocol tcno: \\ (recomanat)'
 Settings_WindowsAccent: Utilitzeu el Windows Accent Color
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Dreceres per al menú Inici:'
 Cleaning_Header_General: Neteja general
 Cleaning_Header_LoginHistory: Neteja el meu historial d'inici de sessió
