@@ -3,7 +3,7 @@ Update: Update beschikbaar! Klik hier om te starten.
 Header_ChooseLanguage: 'Kies een taal: {platform}'
 BattleNet_ShowSR: Toon Overwatch SR en gebruik de profielfoto van Overwatch
 Steam_ShowSteamID: Toon SteamID
-Steam_ShowVac: Show VAC Status
+Steam_ShowVac: Toon VAC-status
 Steam_CheckVac: Controleer account VAC-status
 Steam_ShowLimited: Gelimiteerde status weergeven
 Steam_ShowAccUsername: Toon account gebruikersnaam
@@ -46,7 +46,7 @@ Settings_Tray_StartNow: '[Begin Taakje nu]'
 Settings_CurrentStyle: Huidige stijl
 Settings_Protocol: 'Tcno:\\ protocol (Aanbevolen) inschakelen'
 Settings_WindowsAccent: Gebruik de Windows Accent Kleur
-Settings_HelpTranslate: "[Help translate]"
+Settings_HelpTranslate: "[Help vertalen]"
 Cleaning_Header_StartMenuShortcuts: 'Snelkoppelingen voor Start Menu:'
 Cleaning_Header_General: Algemeen schoonmaken
 Cleaning_Header_LoginHistory: Schoon mijn inloggeschiedenis op
