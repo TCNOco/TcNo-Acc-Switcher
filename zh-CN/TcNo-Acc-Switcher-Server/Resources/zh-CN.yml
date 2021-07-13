@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[现在开始托盘]'
 Settings_CurrentStyle: 当前样式
 Settings_Protocol: '启用 tcno:\\ 协议 (推荐)'
 Settings_WindowsAccent: 使用 Windows Accent 颜色
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: '开始菜单的快捷方式：'
 Cleaning_Header_General: 常规清理
 Cleaning_Header_LoginHistory: 清理我的登录历史
