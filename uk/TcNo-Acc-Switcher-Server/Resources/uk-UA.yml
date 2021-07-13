@@ -150,7 +150,7 @@ Modal_EnterPasswordRepeat: Уведіть гасло знову
 Modal_PasswordsMatch: Паролі збігаються
 Modal_PasswordsNoMatch: Паролі не збігаються
 Status_SelectedAccount: "Вибрано: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Статус: Ініціалізація"
 Context_SwapTo: Поміняти на рахунок
 Context_CreateShortcut: Створити ярлик на стілниці
 Context_CreateShortcutSubmenu: Створити ярлик на робочому столі...
@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Відкрити дані користувача
 Context_CopyOtherSubmenu: Копіювати інше...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Context_HidePlatform: Сховати платформу
+Context_ExportAccList: Експортувати список рахунків
+Title_BNet_Settings: Перемикач TcNo рахунку - Налаштування BattleNet
+Title_BNet_ManageIgnored: Перемикання TcNo Account - Керування ігнорованими обліковими записами BattleNet
+Title_Discord_Settings: Перемикач облікового запису TcNo - Discord налаштування
+Title_Epic_Settings: Перемикач облікового запису TcNo - Епічні Налаштування
+Title_AccountsList: Перемикання облікового запису TcNo - {platform}
+Title_TextEditor: Перемикач облікового запису TcNo - Текстовий редактор
+Title_Origin_Settings: Перемикання облікового запису TcNo - Налаштування Origin
+Title_Riot_Settings: Перемикання облікового запису TcNo - Параметри змін
+Title_Settings: Перемикач TcNo рахунку - Налаштування
+Title_Steam_Cleaning: Перемикач облікового запису TcNo - очищення Steam
+Title_Steam_Restore: Перемикання облікового запису TcNo - Відновити забутий обліковий запис Steam
+Title_Steam_Settings: Перемикання облікового запису TcNo - налаштування Steam
+Title_Ubisoft_Settings: Перемикач облікового запису TcNo - Налаштування Ubisoft
 Online: Онлайн
 OnlineDefault: Online (Default)
 Offline: В автономному режимі
@@ -198,21 +198,21 @@ Away: Відійшов
 Snooze: Повторити
 LookingToTrade: Шукаю обмін
 LookingToPlay: Дивлячись на гру
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} не існує."
+Reg_DoesntContain: "{subKey} не містить {val}"
+Reg_Removing: Видалення {subKey}\\{val}
+PngInvalid_Format: Необхідний формат пікселів рівний формату PixelFormat.{x}.
+PngRequired: Необхідний формат зображення - портативний графічний графік мережі (png).
+PngDimensions: Розміри повинні бути менші або дорівнювати {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Синтаксична помилка виникла (детальніше нижче)! AND:"
+ThemesNotFound: "Не вдалося знайти теку \"themes\" у папці TcNo Account Switcher. Це (особливо Default.yaml), потрібна для роботи цього програмного забезпечення.\nВи можете запустити майстер в теці \"updater\", щоб верифікувати файли, та відновити ці відсутні файли."
 Yes: "Так"
 No: "Ні"
 Ok: "Гаразд"
 Forget: Забути
 Notice: Примітки
 Error: Помилка
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "ПОМИЛКА: {ex}"
 Failed: Не вдалося
 Success: Успіх
 NotFound: Не знайдено
@@ -221,11 +221,11 @@ ForName: "За: {name}"
 CouldNotFindX: Не вдалося знайти {x}
 CouldNotCloseX: Не вдалося закрити {x}!
 DirectoryNotFound: Каталог не знайдено
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "Каталог не знайдено: {folder}"
+DeletingFile: "Видалення: {file}"
+DeletingFolder: "Вилучення теки: "
+CouldntDeleteX: "ПОМИЛКА: COULDN'T DELETE: {x}"
+CouldntDeleteUndefined: "ПОМИЛКА: COULDN'T ВИДАЛЕНО ФАЙЛ"
 Prompt_DiscordCopy1: Кнопка Пошук опцій і клік
 Prompt_DiscordCopy2: "Перевірте, чи не включений режим стримування, інакше: Віддайте помилку."
 Prompt_DiscordCopy3: Переконайтеся, що режим стрімера вимкнений/не активний при запуску цієї команди!
