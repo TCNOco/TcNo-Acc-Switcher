@@ -3,7 +3,7 @@ Update: Päivitys saatavilla! Klikkaa tästä aloittaaksesi sen.
 Header_ChooseLanguage: 'Valitse kieli: {platform}'
 BattleNet_ShowSR: Näytä Overwatchin SR ja käytä Overwatch-profiilikuvaa.
 Steam_ShowSteamID: Näytä SteamID
-Steam_ShowVac: Show VAC Status
+Steam_ShowVac: Näytä VAC-tila
 Steam_CheckVac: Tarkista tilin VAC tila
 Steam_ShowLimited: Näytä Rajoitettu Tila
 Steam_ShowAccUsername: Näytä tilin käyttäjätunnus
@@ -46,7 +46,7 @@ Settings_Tray_StartNow: '[Aloita ilmoitusalue nyt]'
 Settings_CurrentStyle: Nykyinen Tyyli
 Settings_Protocol: 'Ota tcno:\\ protokolla käyttöön (Suositeltu)'
 Settings_WindowsAccent: Käytä Windows-hehkutuksen väriä
-Settings_HelpTranslate: "[Help translate]"
+Settings_HelpTranslate: "[Auta kääntämään]"
 Cleaning_Header_StartMenuShortcuts: 'Käynnistysvalikon pikakuvakkeet:'
 Cleaning_Header_General: Yleinen Puhdistus
 Cleaning_Header_LoginHistory: Puhdista kirjautumishistoriani
