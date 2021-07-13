@@ -3,7 +3,7 @@ Update: Actualizare disponibilă! Apasă aici pentru a începe.
 Header_ChooseLanguage: 'Alege limba: {platform}'
 BattleNet_ShowSR: Arată Overwatch SR și folosește imaginea de profil Overwatch
 Steam_ShowSteamID: Arată SteamID
-Steam_ShowVac: Show VAC Status
+Steam_ShowVac: Afișați starea VAC
 Steam_CheckVac: Verifică starea contului VAC
 Steam_ShowLimited: Arată stare limitată
 Steam_ShowAccUsername: Arată numele de utilizator
@@ -46,7 +46,7 @@ Settings_Tray_StartNow: '[Începe Tăierea acum]'
 Settings_CurrentStyle: Stil actual
 Settings_Protocol: 'Activează tcno:\\ protocol (recomandat)'
 Settings_WindowsAccent: Folosește culoarea de cent Windows
-Settings_HelpTranslate: "[Help translate]"
+Settings_HelpTranslate: "[Ajutor traduce]"
 Cleaning_Header_StartMenuShortcuts: 'Comenzi rapide pentru Meniul Pornire:'
 Cleaning_Header_General: Curățare generală
 Cleaning_Header_LoginHistory: Curăță istoricul autentificărilor
