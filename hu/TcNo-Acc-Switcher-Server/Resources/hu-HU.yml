@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Indítsa el a tálcát most]'
 Settings_CurrentStyle: Aktuális stílus
 Settings_Protocol: 'A tcno: \\ protokoll engedélyezése (ajánlott)'
 Settings_WindowsAccent: Használja a Windows Kiemelő színét
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'A Start menü parancsikonjai:'
 Cleaning_Header_General: Általános takarítás
 Cleaning_Header_LoginHistory: Tisztítsa meg a bejelentkezési előzményeket
