@@ -3,7 +3,7 @@ Update: Opdatering tilgængelig! Klik her for at starte den.
 Header_ChooseLanguage: 'Vælg sprog: {platform}'
 BattleNet_ShowSR: Vis Overwatch SR og brug Overwatch profilbilledet.
 Steam_ShowSteamID: Vis SteamID
-Steam_ShowVac: Show VAC Status
+Steam_ShowVac: Vis VAC-status
 Steam_CheckVac: Tjek konto VAC status
 Steam_ShowLimited: Vis Begrænset Status
 Steam_ShowAccUsername: Vis kontobrugernavn
@@ -46,7 +46,7 @@ Settings_Tray_StartNow: '[Start bakke nu]'
 Settings_CurrentStyle: Nuværende Stil
 Settings_Protocol: 'Aktivér tcno:\\ protocol (anbefales)'
 Settings_WindowsAccent: Brug Windows Accent Colour
-Settings_HelpTranslate: "[Help translate]"
+Settings_HelpTranslate: "[Hjælp oversætte]"
 Cleaning_Header_StartMenuShortcuts: 'Genveje til startmenuen:'
 Cleaning_Header_General: Generel Rengøring
 Cleaning_Header_LoginHistory: Rens min login-historik
