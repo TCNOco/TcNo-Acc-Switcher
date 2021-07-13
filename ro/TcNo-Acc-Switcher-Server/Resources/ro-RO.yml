@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Deschide datele utilizatorului
 Context_CopyOtherSubmenu: Copiază altul...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
+Context_HidePlatform: Ascunde platforma
+Context_ExportAccList: Exportă lista de conturi
+Title_BNet_Settings: TcNo Account Switcher - Setări BattleNet
+Title_BNet_ManageIgnored: Comutator de cont TcNo - Gestionați conturile BattleNet ignorate
+Title_Discord_Settings: Comutator de cont TcNo - Setări Discord
+Title_Epic_Settings: Comutator de cont TcNo - Setări Epic
+Title_AccountsList: Comutator de cont TcNo - {platform}
+Title_TextEditor: Comutator de cont TcNo - Editor de text
+Title_Origin_Settings: TcNo Account Switcher - Setări de origine
 Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Title_Settings: Comutator de cont TcNo - Setări
+Title_Steam_Cleaning: Comutator de cont TcNo - Curățarea Steam
+Title_Steam_Restore: Comutator de cont TcNo - Restaurare cont Steam uitat
+Title_Steam_Settings: Comutator de cont TcNo - Setări Steam
+Title_Ubisoft_Settings: Comutator de cont TcNo - Setări Ubisoft
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline
@@ -198,21 +198,21 @@ Away: Plecat
 Snooze: Amânare
 LookingToTrade: Interesat să tranzacționezi
 LookingToPlay: Interesat de joc
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} nu există."
+Reg_DoesntContain: "{subKey} nu conține {val}"
+Reg_Removing: Se elimină {subKey}\\{val}
+PngInvalid_Format: Formatul pixelului necesar este PixelFormat.{x}.
+PngRequired: Formatul de imagine necesar este un grafic al rețelei portabile (png).
+PngDimensions: Dimensiunile trebuie să fie mai mici sau egale cu {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "A apărut o eroare de sintaxă (mai multe detalii mai jos)! ȘI:"
+ThemesNotFound: "Nu s-a putut găsi dosarul \"teme\" în directorul TcNo Account Switcher. Acest lucru (în special implicit.yaml) este necesar pentru ca acest software să ruleze.\nPuteți rula actualizatorul în dosarul \"updater\" pentru a verifica fișierele, și pentru a restaura fișierele lipsă."
 Yes: "Da"
 No: "Nr"
 Ok: "Ok"
 Forget: Uită
 Notice: Notificare
 Error: Eroare
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "EROARE: {ex}"
 Failed: Eșuat
 Success: Succes
 NotFound: Nu a fost găsit
@@ -221,11 +221,11 @@ ForName: "Voturi pentru: {name}"
 CouldNotFindX: Nu am putut găsi {x}
 CouldNotCloseX: Nu s-a putut închide {x}!
 DirectoryNotFound: Directorul nu a fost găsit
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "Directorul nu a fost găsit: {folder}"
+DeletingFile: "Ștergere: {file}"
+DeletingFolder: "Ştergere dosar: "
+CouldntDeleteX: "EROARE: ȘTERGE COULDN': {x}"
+CouldntDeleteUndefined: "EROARE: ȘTERGE COULDN'T DEFINATE"
 Prompt_DiscordCopy1: Căutați butonul Opțiuni și faceți clic
 Prompt_DiscordCopy2: "Verifică dacă modul streamer nu este activat, în caz contrar: Dă eroare."
 Prompt_DiscordCopy3: Asigurați-vă că Modul Streaming este dezactivat/nu este activ atunci când rulați această comandă!
@@ -236,7 +236,7 @@ Prompt_DiscordCopy7: Închide opțiunile
 Prompt_DiscordCopy8: Lăsați utilizatorul să știe în consolă.
 Prompt_DiscordCopy9: Informații copiate cu succes!
 Prompt_DiscordCopy10: Lipiți-l în caseta de intrare în comutatorul de cont pentru a actualiza/seta imaginea și numele de utilizator.
-Prompt_RestartAsAdmin: <h3><bold>This program will restart as Admin</bold></h3><p>Hit "Yes" in UAC when prompted for admin.</p>
+Prompt_RestartAsAdmin: <h3><bold>Acest program va reporni ca administrator</bold></h3><p>Apăsați „Da” în UAC când vi se solicită administrator.</p>
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Sunteți pe cale să uitați un cont!</h3> <h4>Ce înseamnă acest lucru?</h4> <p>- Steam nu va mai avea contul listat în Marele Mod Picture și nu își va aminti parola.<br/> - TcNo Account Switcher nu va mai afișa contul, până când va fi conectat din nou prin Steam.</p> <p>Contul dvs. va rămâne neatins. Este doar uitat de acest computer.</p> <h4>Ce se întâmplă dacă ceva nu merge bine?</h4> <p>Nu te panica, poți aduce înapoi conturile uitate prin intermediul backup-urilor din ecranul Setări.<br/> De asemenea, puteți elimina copiile de rezervă anterioare de acolo când sunteți sigur că totul funcționează conform așteptărilor.</p> <h4>Înțelegeți?</h4>
 Prompt_ForgetAccount: >
