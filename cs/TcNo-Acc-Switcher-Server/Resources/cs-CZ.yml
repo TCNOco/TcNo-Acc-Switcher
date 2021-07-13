@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Začít v systémové liště]'
 Settings_CurrentStyle: Aktuální styl
 Settings_Protocol: 'Povolit tcno:\\ protokol (doporučeno)'
 Settings_WindowsAccent: Použít zvýrazňující barvu Windows
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Zkratky pro nabídku startu:'
 Cleaning_Header_General: Obecné čištění
 Cleaning_Header_LoginHistory: Vyčistit historii přihlášení
