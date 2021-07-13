@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: Închide opțiunile
 Prompt_DiscordCopy8: Lăsați utilizatorul să știe în consolă.
 Prompt_DiscordCopy9: Informații copiate cu succes!
 Prompt_DiscordCopy10: Lipiți-l în caseta de intrare în comutatorul de cont pentru a actualiza/seta imaginea și numele de utilizator.
-Prompt_RestartAsAdmin: <h3><bold>Acest program va reporni ca administrator</bold></h3><p>Apăsați „Da” în UAC când vi se solicită administrator.</p>
+Prompt_RestartAsAdmin: "<h3><bold>Acest program va reporni ca administrator</bold></h3><p>Apăsați „Da” în UAC când vi se solicită administrator.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Sunteți pe cale să uitați un cont!</h3> <h4>Ce înseamnă acest lucru?</h4> <p>- Steam nu va mai avea contul listat în Marele Mod Picture și nu își va aminti parola.<br/> - TcNo Account Switcher nu va mai afișa contul, până când va fi conectat din nou prin Steam.</p> <p>Contul dvs. va rămâne neatins. Este doar uitat de acest computer.</p> <h4>Ce se întâmplă dacă ceva nu merge bine?</h4> <p>Nu te panica, poți aduce înapoi conturile uitate prin intermediul backup-urilor din ecranul Setări.<br/> De asemenea, puteți elimina copiile de rezervă anterioare de acolo când sunteți sigur că totul funcționează conform așteptărilor.</p> <h4>Înțelegeți?</h4>
 Prompt_ForgetAccount: >
