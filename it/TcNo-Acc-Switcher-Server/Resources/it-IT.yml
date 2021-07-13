@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Inizia il vassoio adesso]'
 Settings_CurrentStyle: Stile Attuale
 Settings_Protocol: 'Abilita protocollo tcno:\\ (Consigliato)'
 Settings_WindowsAccent: Usa il Colore Accento di Windows
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Scorciatoie per il menu di avvio:'
 Cleaning_Header_General: Pulizia Generale
 Cleaning_Header_LoginHistory: Pulisci la cronologia degli accessi
