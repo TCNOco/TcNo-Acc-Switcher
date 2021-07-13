@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[ابدأ العمل الآن]'
 Settings_CurrentStyle: النمط الحالي
 Settings_Protocol: 'تمكين tcno:\\ بروتوكول (مستحسن)'
 Settings_WindowsAccent: استخدام لون أكسنت ويندوز
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'اختصارات لقائمة البدء:'
 Cleaning_Header_General: تنظيف عام
 Cleaning_Header_LoginHistory: تنظيف سجل تسجيل الدخول الخاص بي
