@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: 关闭选项
 Prompt_DiscordCopy8: 在控制台中让用户知道。
 Prompt_DiscordCopy9: 成功复制信息！
 Prompt_DiscordCopy10: 将其粘贴到账户切换器中的输入框中以更新/设置图像和用户名。
-Prompt_RestartAsAdmin: <h3><bold>此程序将以管理员身份重新启动</bold></h3><p>当提示管理员时，在UAC中点击“是”</p>
+Prompt_RestartAsAdmin: "<h3><bold>此程序将以管理员身份重新启动</bold></h3><p>当提示管理员时，在UAC中点击“是”</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>您即将忘记一个帐户！</h3> <h4>这意味着什么？</h4> <p>- Steam将不再有大图片模式中列出的帐户，不会记住密码。<br/> - Tcno 帐户切换器也将不再显示帐户，直到通过Steam再次登录。</p> <p>您的帐户将保持不变。 在这台计算机上只是忘记了它。</p> <h4>如果有什么错误？</h4> <p>不要恐慌，您可以在设置屏幕上通过备份将被遗忘的账户带回来。<br/> 当您确定一切都在正常工作时，您也可以从那里删除以前的备份。</p> <h4>您理解吗？</h4>
 Prompt_ForgetAccount: >
