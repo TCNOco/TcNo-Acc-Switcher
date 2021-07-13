@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Έναρξη Τροφοδοσίας τώρα]'
 Settings_CurrentStyle: Τρέχον Στυλ
 Settings_Protocol: 'Ενεργοποίηση πρωτοκόλλου tcno:\\ (συνιστάται)'
 Settings_WindowsAccent: Χρησιμοποιήστε το χρώμα έμφασης των Windows
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Συντομεύσεις για το μενού έναρξης:'
 Cleaning_Header_General: Γενικός Καθαρισμός
 Cleaning_Header_LoginHistory: Καθαρίστε το ιστορικό συνδέσεών μου
