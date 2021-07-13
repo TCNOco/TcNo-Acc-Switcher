@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Iniciar bandeja ahora]'
 Settings_CurrentStyle: Estilo actual
 Settings_Protocol: 'Habilitar el protocolo tcno:\\ (Recomendado)'
 Settings_WindowsAccent: Usar el color de acento de Windows
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Atajos para Menú Inicio:'
 Cleaning_Header_General: Limpieza general
 Cleaning_Header_LoginHistory: Limpiar mi historial de acceso
