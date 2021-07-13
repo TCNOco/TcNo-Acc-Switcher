@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Tepsiyi şimdi başlatın]'
 Settings_CurrentStyle: Geçerli Stil
 Settings_Protocol: 'tcno:\\ protokolünü etkinleştir (Önerilen)'
 Settings_WindowsAccent: Windows Vurgu Rengini kullanın
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Başlat Menüsü Kısayolları:'
 Cleaning_Header_General: Genel temizlik
 Cleaning_Header_LoginHistory: Giriş geçmişimi temizle
