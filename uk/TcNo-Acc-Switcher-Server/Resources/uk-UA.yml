@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Почати лотати]'
 Settings_CurrentStyle: Поточний стиль
 Settings_Protocol: 'Увімкнути tcno:\\ протокол (Рекомендовано)'
 Settings_WindowsAccent: Використовувати колір акценту Windows
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Комбінації клавіш для меню запуску:'
 Cleaning_Header_General: Загальне очищення
 Cleaning_Header_LoginHistory: Очистити мою історію входу в систему
