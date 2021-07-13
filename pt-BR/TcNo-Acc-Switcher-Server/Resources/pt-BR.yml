@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: Fechar opções
 Prompt_DiscordCopy8: Avise o usuário no console.
 Prompt_DiscordCopy9: Informações copiadas com sucesso!
 Prompt_DiscordCopy10: Cole no campo de entrada no alternador de conta para atualizar/definir imagem e nome de usuário.
-Prompt_RestartAsAdmin: <h3><bold>Este programa será reiniciado como Administrador</bold></h3><p>Clique em "Yes" no UAC quando solicitado para administrador.</p>
+Prompt_RestartAsAdmin: "<h3><bold>Este programa será reiniciado como Administrador</bold></h3><p>Clique em \"Yes\" no UAC quando solicitado para administrador.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Você está prestes a esquecer uma conta!</h3> <h4>O que isso significa?</h4> <p>- O Steam não vai mais ter uma conta listada no Modo Grande Picture e não vai se lembrar da senha.<br/> - O TcNenhum Alternador de Conta também não mostrará a conta até que ele seja conectado novamente pelo Steam.</p> <p>Sua conta permanecerá intocada. Acabou de ser esquecido nesse computador.</p> <h4>E se algo der errado?</h4> <p>Não entre em pânico, você pode trazer de volta contas esquecidas através de backups na tela Configurações.<br/> Você também pode remover backups anteriores de lá quando tiver certeza que tudo está funcionando como esperado.</p> <h4>Você entende?</h4>
 Prompt_ForgetAccount: >
