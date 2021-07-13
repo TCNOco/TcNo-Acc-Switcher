@@ -3,7 +3,7 @@ Update: Güncelleme uygun! Başlamak için buraya tıklayın.
 Header_ChooseLanguage: 'Dil Seçin: {platform}'
 BattleNet_ShowSR: Overwatch SR'yi gösterin ve Overwatch profil resmini kullanın.
 Steam_ShowSteamID: SteamID'yi göster
-Steam_ShowVac: VAC Durumunu Göster
+Steam_ShowVac: VAC durumunu göster
 Steam_CheckVac: Hesap VAC durumunu kontrol edin
 Steam_ShowLimited: Sınırlı Durumu Göster
 Steam_ShowAccUsername: Hesap kullanıcı adını göster
@@ -46,7 +46,7 @@ Settings_Tray_StartNow: '[Tepsiyi şimdi başlatın]'
 Settings_CurrentStyle: Geçerli Stil
 Settings_Protocol: 'tcno:\\ protokolünü etkinleştir (Önerilen)'
 Settings_WindowsAccent: Windows Vurgu Rengini kullanın
-Settings_HelpTranslate: "[Help translate]"
+Settings_HelpTranslate: "[Çevirmeye yardım edin]"
 Cleaning_Header_StartMenuShortcuts: 'Başlat Menüsü Kısayolları:'
 Cleaning_Header_General: Genel temizlik
 Cleaning_Header_LoginHistory: Giriş geçmişimi temizle
