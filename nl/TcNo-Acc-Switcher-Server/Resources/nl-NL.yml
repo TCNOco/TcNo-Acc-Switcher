@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Gebruikersgegevens openen
 Context_CopyOtherSubmenu: Kopieer anderen...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Context_HidePlatform: Verberg platform
+Context_ExportAccList: Accountlijst exporteren
+Title_BNet_Settings: TcGeen account switcher - BattleNet Instellingen
+Title_BNet_ManageIgnored: TcNo Account Switcher - Beheer genegeerde BattleNet accounts
+Title_Discord_Settings: TcGeen accountkiezer - Discord instellingen
+Title_Epic_Settings: TcNo Account Switcher - Epische Instellingen
+Title_AccountsList: TcGeen accountkiezer - {platform}
+Title_TextEditor: TcNo Account Switcher - Tekstverwerker
+Title_Origin_Settings: TcNo Account Switcher - Origin Instellingen
+Title_Riot_Settings: TcNo Account Switcher - Riot Instellingen
+Title_Settings: TcGeen accountkiezer - Instellingen
+Title_Steam_Cleaning: TcNo account switcher - Steam schoonmaken
+Title_Steam_Restore: TcNo Account Switcher - Herstel Steam account vergeten
+Title_Steam_Settings: TcNo account switcher - Steam instellingen
+Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Instellingen
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline
@@ -198,21 +198,21 @@ Away: Afwezig
 Snooze: Uitstellen
 LookingToTrade: Transactie aan het zoeken
 LookingToPlay: Op zoek naar spelen
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} bestaat niet."
+Reg_DoesntContain: "{subKey} bevat geen {val}"
+Reg_Removing: Verwijderen van {subKey}\\{val}
+PngInvalid_Format: Vereiste pixelformaat is PixelFormat.{x}.
+PngRequired: Vereiste afbeeldingsformaat is een draagbaar netwerk grafische (png).
+PngDimensions: Afmetingen moeten kleiner of gelijk zijn aan {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Er is een syntaxisfout opgetreden (meer details hieronder)! AND:"
+ThemesNotFound: "Kan de map \"thema\" niet vinden in de map van TcNo Account Switcher. Dit (vooral Default.yaml) is vereist om deze software te laten werken.\nU kunt de Updater uitvoeren in de map \"updater\" om bestanden te controleren en deze ontbrekende bestanden te herstellen."
 Yes: "ja"
 No: "Neen"
 Ok: "Ok"
 Forget: Vergeet
 Notice: Kennisgeving
 Error: Foutmelding
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "FOUT: {ex}"
 Failed: Mislukt
 Success: Geslaagd
 NotFound: Niet gevonden
@@ -221,11 +221,11 @@ ForName: "Voor: {name}"
 CouldNotFindX: Kan {x} niet vinden
 CouldNotCloseX: '{x} kon niet worden gesloten!'
 DirectoryNotFound: Map niet gevonden
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "Map niet gevonden: {folder}"
+DeletingFile: "Verwijderen: {file}"
+DeletingFolder: "Map verwijderen: "
+CouldntDeleteX: "FOUT: VERKLARINGEN VERWIJDEREN: {x}"
+CouldntDeleteUndefined: "FOUT: VERWIJDEREN VERWIJDEREN FILE"
 Prompt_DiscordCopy1: Zoek optiesknop en klik op
 Prompt_DiscordCopy2: "Controleer of streamer modus niet is ingeschakeld, andere: fout geven."
 Prompt_DiscordCopy3: Zorg ervoor dat Streamer Mode is uitgeschakeld/niet actief bij het uitvoeren van deze opdracht!
