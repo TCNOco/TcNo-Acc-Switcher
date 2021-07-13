@@ -3,7 +3,7 @@ Update: Oppdatering tilgjengelig! Klikk her for å starte den.
 Header_ChooseLanguage: 'Velg språk: {platform}'
 BattleNet_ShowSR: Vis overklokke SR og bruk bildet over overvåkningsprofilen.
 Steam_ShowSteamID: Vis SteamID
-Steam_ShowVac: Show VAC Status
+Steam_ShowVac: Vis VAC-status
 Steam_CheckVac: Kontrollere status for VAC konto
 Steam_ShowLimited: Vis begrenset status
 Steam_ShowAccUsername: Vis brukernavn for kontoen
@@ -46,7 +46,7 @@ Settings_Tray_StartNow: '[Start Tray now]'
 Settings_CurrentStyle: Nåværende Stil
 Settings_Protocol: 'Aktiver tcno:\\ protokoll (Anbefalt)'
 Settings_WindowsAccent: Bruk Windows Accent Colour
-Settings_HelpTranslate: "[Help translate]"
+Settings_HelpTranslate: "[Hjelp oversette]"
 Cleaning_Header_StartMenuShortcuts: 'Snarveier for Start-menyen:'
 Cleaning_Header_General: Generell rengjøring
 Cleaning_Header_LoginHistory: Rens logg
