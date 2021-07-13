@@ -3,7 +3,7 @@ Update: Dostupná aktualizace! Klikněte zde pro její spuštění.
 Header_ChooseLanguage: 'Vyberte jazyk: {platform}'
 BattleNet_ShowSR: Zobrazit přehlídky SR a použít profilový obrázek Přehlížet.
 Steam_ShowSteamID: Zobrazit SteamID
-Steam_ShowVac: Show VAC Status
+Steam_ShowVac: Zobrazit stav VAC
 Steam_CheckVac: Zkontrolovat stav VAC účtu
 Steam_ShowLimited: Zobrazit omezený stav
 Steam_ShowAccUsername: Zobrazit uživatelské jméno účtu
@@ -46,7 +46,7 @@ Settings_Tray_StartNow: '[Začít v systémové liště]'
 Settings_CurrentStyle: Aktuální styl
 Settings_Protocol: 'Povolit tcno:\\ protokol (doporučeno)'
 Settings_WindowsAccent: Použít zvýrazňující barvu Windows
-Settings_HelpTranslate: "[Help translate]"
+Settings_HelpTranslate: "[Pomozte s překladem]"
 Cleaning_Header_StartMenuShortcuts: 'Zkratky pro nabídku startu:'
 Cleaning_Header_General: Obecné čištění
 Cleaning_Header_LoginHistory: Vyčistit historii přihlášení
