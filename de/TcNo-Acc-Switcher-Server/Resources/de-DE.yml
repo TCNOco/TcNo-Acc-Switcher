@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Tray jetzt starten]'
 Settings_CurrentStyle: Aktueller Stil
 Settings_Protocol: 'Aktiviere tcno:\\ Protokoll (empfohlen)'
 Settings_WindowsAccent: Verwende die Akzentfarbe für Windows
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Verknüpfungen für das Startmenü:'
 Cleaning_Header_General: Allgemeine Reinigung
 Cleaning_Header_LoginHistory: Login-Verlauf bereinigen
