@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Aloita ilmoitusalue nyt]'
 Settings_CurrentStyle: Nykyinen Tyyli
 Settings_Protocol: 'Ota tcno:\\ protokolla käyttöön (Suositeltu)'
 Settings_WindowsAccent: Käytä Windows-hehkutuksen väriä
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Käynnistysvalikon pikakuvakkeet:'
 Cleaning_Header_General: Yleinen Puhdistus
 Cleaning_Header_LoginHistory: Puhdista kirjautumishistoriani
