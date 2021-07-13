@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Åbn brugerdata
 Context_CopyOtherSubmenu: Kopier andre...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Context_HidePlatform: Skjul platform
+Context_ExportAccList: Eksporter kontoliste
+Title_BNet_Settings: TcNo Kontoskifter - BattleNet-Indstillinger
+Title_BNet_ManageIgnored: TcNo Account Switcher - Administrer ignorerede BattleNet konti
+Title_Discord_Settings: TcNo Kontoskifter - Discord Indstillinger
+Title_Epic_Settings: TcNo Kontoskifter - Episke Indstillinger
+Title_AccountsList: TcNo Kontoskifter - {platform}
+Title_TextEditor: TcNo Kontoskifter - Teksteditor
+Title_Origin_Settings: TcNo Kontoskifter - Indstillinger For Oprindelse
+Title_Riot_Settings: TcNo Kontoskifter - Riot Indstillinger
+Title_Settings: TcNo Kontoskifter - Indstillinger
+Title_Steam_Cleaning: TcNo Kontoskifter - Steam Rengøring
+Title_Steam_Restore: TcNo Account Switcher - Gendan glemt Steam-konto
+Title_Steam_Settings: TcNo Kontoskifter - Steam-indstillinger
+Title_Ubisoft_Settings: TcNo Konto Switcher - Ubisoft Indstillinger
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline
@@ -198,21 +198,21 @@ Away: Væk
 Snooze: Udsæt
 LookingToTrade: Søger efter handel
 LookingToPlay: Søger efter at spille
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} findes ikke."
+Reg_DoesntContain: "{subKey} indeholder ikke {val}"
+Reg_Removing: Fjerner {subKey}\\{val}
+PngInvalid_Format: Påkrævet pixel format er PixelFormat.{x}.
+PngRequired: Påkrævet billedformat er et bærbart netværk grafisk (png).
+PngDimensions: Dimensionerne skal være mindre end eller lig med {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "En syntaksfejl blev fundet (flere detaljer nedenfor)! OG:"
+ThemesNotFound: "Kunne ikke finde mappen \"themes\" i TcNo Account Switchers mappe. Dette (især Default.yaml) er påkrævet for at denne software skal køre.\nDu kan køre Updater i \"updater\" mappen for at verificere filer, og gendanne disse manglende filer."
 Yes: "Ja"
 No: "Nej"
 Ok: "Ok"
 Forget: Glem
 Notice: Bemærk
 Error: Fejl
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "FEJL: {ex}"
 Failed: Mislykkedes
 Success: Succes
 NotFound: Ikke fundet
@@ -221,11 +221,11 @@ ForName: "Til: {name}"
 CouldNotFindX: Kunne ikke finde {x}
 CouldNotCloseX: Kunne ikke lukke {x}!
 DirectoryNotFound: Mappe ikke fundet
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "Mappe ikke fundet: {folder}"
+DeletingFile: "Sletter: {file}"
+DeletingFolder: "Sletter Mappe: "
+CouldntDeleteX: "FEJL: COULDN'T DELETE: {x}"
+CouldntDeleteUndefined: "FEJL: COULDN'T DELETE UDEFINEREDE FIL"
 Prompt_DiscordCopy1: Find indstillingsknappen og klik
 Prompt_DiscordCopy2: "Kontroller at streamertilstand ikke er aktiveret, ellers: Giv fejl."
 Prompt_DiscordCopy3: Sørg for, at streamertilstand er deaktiveret/ikke aktiv, når du kører denne kommando!
