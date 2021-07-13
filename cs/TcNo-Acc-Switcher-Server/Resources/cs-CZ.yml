@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Otevřít uživatelská data
 Context_CopyOtherSubmenu: Kopírovat ostatní...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Context_HidePlatform: Skrýt platformu
+Context_ExportAccList: Exportovat seznam účtů
+Title_BNet_Settings: Přepínač účtu TcNo - Nastavení BattleNet
+Title_BNet_ManageIgnored: Přepínač účtu TcNo - Správa ignorovaných účtů BattleNet
+Title_Discord_Settings: Přepínač účtu TcNo - Nastavení Discordu
+Title_Epic_Settings: Přepínač TcNo účtu - Nastavení Epiky
+Title_AccountsList: Přepínač TcNo účtu - {platform}
+Title_TextEditor: Přepínač účtu TcNo - Editor textu
+Title_Origin_Settings: Přepínač TcNo účtu - Nastavení původu
+Title_Riot_Settings: Přepínač TcNo účtu - Nastavení Riot
+Title_Settings: Přepínač TcNo účtu - Nastavení
+Title_Steam_Cleaning: Přepínač účtu TcNo - čištění Steam
+Title_Steam_Restore: Přepínač účtu TcNo - Obnovení zapomenutého Steam účtu
+Title_Steam_Settings: Přepínač TcNo účtu - nastavení Steam
+Title_Ubisoft_Settings: Přepínač účtu TcNo - Nastavení Ubisoft
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline
@@ -198,21 +198,21 @@ Away: Mimo
 Snooze: Odložit
 LookingToTrade: Hledám obchod
 LookingToPlay: Hledám hru
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} neexistuje."
+Reg_DoesntContain: "{subKey} neobsahuje {val}"
+Reg_Removing: Odstranění {subKey}\\{val}
+PngInvalid_Format: Požadovaný formát pixelů je PixelFormát.{x}.
+PngRequired: Požadovaný formát obrázku je přenosná síťová grafika (png).
+PngDimensions: Rozměry musí být menší nebo rovny {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Došlo k chybě syntaxe (další podrobnosti níže)! AND:"
+ThemesNotFound: "Nelze najít složku \"themes\" v adresáři Přepínače TcNo účtu. Toto (zejména Default.yaml) je vyžadováno pro spuštění tohoto softwaru.\nAktualizaci můžete spustit ve složce \"updater\" pro ověření souborů a obnovení těchto chybějících souborů."
 Yes: "Ano"
 No: "Ne"
 Ok: "OK"
 Forget: Zapomenout
 Notice: Upozornění
 Error: Chyba
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "CHYBA: {ex}"
 Failed: Selhalo
 Success: Úspěšně
 NotFound: Nenalezeno
@@ -221,11 +221,11 @@ ForName: "Pro: {name}"
 CouldNotFindX: Nelze najít {x}
 CouldNotCloseX: Nelze zavřít {x}!
 DirectoryNotFound: Adresář nebyl nalezen
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "Adresář nenalezen: {folder}"
+DeletingFile: "Odstranění: {file}"
+DeletingFolder: "Odstraňování složky: "
+CouldntDeleteX: "CHYBA: SOUULDNOVÁNÍ: {x}"
+CouldntDeleteUndefined: "CHYBA: SOUULDNOVAT NEDEFINOVANÝ FILE"
 Prompt_DiscordCopy1: Najít tlačítko možností a kliknout
 Prompt_DiscordCopy2: "Zkontrolujte, že streamovací režim není povolen, v opačném případě: Dejte chybu."
 Prompt_DiscordCopy3: Ujistěte se, že streamovací režim je zakázán/není aktivní při spuštění tohoto příkazu!
