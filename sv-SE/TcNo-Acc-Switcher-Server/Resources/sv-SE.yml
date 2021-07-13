@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: Stäng alternativ
 Prompt_DiscordCopy8: Låt användaren veta i konsolen.
 Prompt_DiscordCopy9: Kopierad information!
 Prompt_DiscordCopy10: Klistra in den i inmatningsrutan i kontoväxlaren för att uppdatera/ställa in bild och användarnamn.
-Prompt_RestartAsAdmin: <h3><bold>Detta program kommer att starta om som Admin</bold></h3><p>Hit "Ja" i UAC när du blir tillfrågad om administratör.</p>
+Prompt_RestartAsAdmin: "<h3><bold>Detta program kommer att starta om som Admin</bold></h3><p>Hit \"Ja\" i UAC när du blir tillfrågad om administratör.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Du är på väg att glömma ett konto!</h3> <h4>Vad betyder detta?</h4> <p>- Steam kommer inte längre att ha kontot listat i Storbildsläge och kommer inte att komma ihåg lösenordet.<br/> - TcNo Account Switcher kommer inte längre att visa kontot, tills det har loggats in igen via Steam.</p> <p>Ditt konto förblir orört. Det är bara glömt på denna dator.</p> <h4>Vad händer om något går fel?</h4> <p>Få inte panik, du kan få tillbaka glömda konton via säkerhetskopior i inställningsskärmen.<br/> Du kan också ta bort tidigare säkerhetskopior därifrån när du är säker på att allt fungerar som förväntat.</p> <h4>Förstår du?</h4>
 Prompt_ForgetAccount: >
