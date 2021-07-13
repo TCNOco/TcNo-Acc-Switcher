@@ -174,21 +174,21 @@ Context_Steam_Id32: البستان ID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: فتح بيانات المستخدم
 Context_CopyOtherSubmenu: نسخ آخر...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Context_HidePlatform: إخفاء المنصة
+Context_ExportAccList: تصدير قائمة الحساب
+Title_BNet_Settings: مفتاح حساب TcNo - إعدادات شبكة المعركة
+Title_BNet_ManageIgnored: مبدل حساب TcNo - إدارة حسابات BattleNet التي تم تجاهلها
+Title_Discord_Settings: تبديل حساب TcNo - إعدادات ديسكورد
+Title_Epic_Settings: تبديل حساب TcNo - إعدادات الملحمية
+Title_AccountsList: محول حساب TcNo - {platform}
+Title_TextEditor: محول حساب TcNo - محرر النص
+Title_Origin_Settings: مبدل حساب TcNo - إعدادات الأصل
+Title_Riot_Settings: مبدل حساب TcNo - إعدادات الشغب
+Title_Settings: تبديل حساب TcNo - الإعدادات
+Title_Steam_Cleaning: TcNo حساب مبدل - تنظيف البخار
+Title_Steam_Restore: مبدل حساب TcNo - استعادة نسيت حساب Steam
+Title_Steam_Settings: تبديل حساب TcNo - إعدادات Steam
+Title_Ubisoft_Settings: تبديل حساب TcNo - إعدادات Ubisoft
 Online: متصل
 OnlineDefault: Online (Default)
 Offline: غير متصل
@@ -198,21 +198,21 @@ Away: بعيدا
 Snooze: غفوة
 LookingToTrade: التطلع إلى التجارة
 LookingToPlay: التطلع إلى اللعب
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} غير موجود."
+Reg_DoesntContain: "{subKey} لا يحتوي على {val}"
+Reg_Removing: إزالة {subKey}\\{val}
+PngInvalid_Format: تنسيق البكسل المطلوب هو PixelFormat.{x}.
+PngRequired: تنسيق الصورة المطلوب هو رسم بياني للشبكة المحمولة (png).
+PngDimensions: يجب أن تكون الأبعاد أقل من أو تساوي {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "حدث خطأ في بناء الجملة (المزيد من التفاصيل أدناه)! AND:"
+ThemesNotFound: "تعذر العثور على مجلد \"ثيمات\" في دليل TcNo حساب Switcher. هذا (خاصة Default.yaml) مطلوب لتشغيل هذا البرنامج.\nيمكنك تشغيل التحديث في مجلد \"تحديث\" للتحقق من الملفات، واستعادة هذه الملفات المفقودة."
 Yes: "نعم"
 No: "لا"
 Ok: "حسناً"
 Forget: نسيت
 Notice: إشعار
 Error: خطأ
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "خطأ: {ex}"
 Failed: فشل
 Success: نجاح
 NotFound: غير موجود
@@ -221,11 +221,11 @@ ForName: "إلى: {name}"
 CouldNotFindX: تعذر العثور على {x}
 CouldNotCloseX: تعذر إغلاق {x}!
 DirectoryNotFound: لم يتم العثور على الدليل
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "لم يتم العثور على الدليل: {folder}"
+DeletingFile: "حذف: {file}"
+DeletingFolder: "حذف المجلد: "
+CouldntDeleteX: "خطأ: {x}"
+CouldntDeleteUndefined: "خطأ: فشل الكولدن"
 Prompt_DiscordCopy1: العثور على زر الخيارات، والنقر
 Prompt_DiscordCopy2: "تحقق من أن وضع التبسيط غير مفعل، خلاف ذلك: تقديم خطأ."
 Prompt_DiscordCopy3: تأكد من أن وضع البث معطل/غير نشط عند تشغيل هذا الأمر!
