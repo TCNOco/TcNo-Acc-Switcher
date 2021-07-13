@@ -3,7 +3,7 @@ Update: アップデートがあります！ここをクリックして開始し
 Header_ChooseLanguage: '言語を選択: {platform}'
 BattleNet_ShowSR: Overwatch SRを表示し、Overwatchプロフィール画像を使用します。
 Steam_ShowSteamID: SteamIDを表示
-Steam_ShowVac: Show VAC Status
+Steam_ShowVac: VACステータスを表示する
 Steam_CheckVac: アカウントVACの状態を確認
 Steam_ShowLimited: 限定ステータスを表示
 Steam_ShowAccUsername: アカウントのユーザー名を表示
@@ -46,7 +46,7 @@ Settings_Tray_StartNow: '[今すぐトレイを開始]'
 Settings_CurrentStyle: 現在のスタイル
 Settings_Protocol: 'tcno:\\プロトコルを有効にする (推奨)'
 Settings_WindowsAccent: Windowsアクセントカラーを使用する
-Settings_HelpTranslate: "[Help translate]"
+Settings_HelpTranslate: "format@@0"
 Cleaning_Header_StartMenuShortcuts: 'format@@0メニューのショートカット:'
 Cleaning_Header_General: 一般的なクリーニング
 Cleaning_Header_LoginHistory: ログイン履歴を消去
