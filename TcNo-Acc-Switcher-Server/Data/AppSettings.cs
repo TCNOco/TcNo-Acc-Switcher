@@ -36,11 +36,10 @@ using Task = TcNo_Acc_Switcher_Server.Pages.General.Classes.Task;
 namespace TcNo_Acc_Switcher_Server.Data
 {
     public class AppSettings
-	{
-		[Inject]
-		private Lang Lang { get; set; }
+    {
+	    private static readonly Lang Lang = Lang.Instance;
 
-		private static AppSettings _instance = new();
+        private static AppSettings _instance = new();
 
         private static readonly object LockObj = new();
 
@@ -100,10 +99,10 @@ namespace TcNo_Acc_Switcher_Server.Data
 		private string _selectedStylesheet;
         [JsonIgnore] public string SelectedStylesheet { get => _instance._selectedStylesheet; set => _instance._selectedStylesheet = value; }
 
-        [JsonIgnore] public string PlatformContextMenu = @"[
-              {""Hide platform"": ""hidePlatform()""},
-              {""Create Desktop Shortcut"": ""createPlatformShortcut()""},
-              {""Export account list"": ""exportAllAccounts()""}
+        [JsonIgnore] public string PlatformContextMenu = $@"[
+              {{""{Lang["Context_HidePlatform"]}"": ""hidePlatform()""}},
+              {{""{Lang["Context_CreateShortcut"]}"": ""createPlatformShortcut()""}},
+              {{""{Lang["Context_ExportAccList"]}"": ""exportAllAccounts()""}}
             ]";
         [JSInvokable]
         public static async System.Threading.Tasks.Task HidePlatform(string platform)
@@ -478,9 +477,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 	                File.Copy(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml"), StylesheetFile);
                 else
                 {
-	                throw new Exception(
-	                    "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run." + Environment.NewLine +
-	                    "You can run the Updater in the \"updater\" folder to verify files, and restore these missing files.");
+	                throw new Exception(Lang["ThemesNotFound"]);
                 }
             }
 
@@ -500,10 +497,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 		            File.Copy(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml"), StylesheetFile, true);
 	            else
 	            {
-		            throw new Exception(
-			            "A syntax error was encountered (more details below)! AND:" + Environment.NewLine + 
-			            "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run." + Environment.NewLine +
-			            "You can run the Updater in the \"updater\" folder to verify files, and restore these missing files." + Environment.NewLine + Environment.NewLine + e);
+		            throw new Exception(Lang["ThemeSyntaxAnd"] + Environment.NewLine + Lang["ThemesNotFound"] + e);
 	            }
 	            return false;
             }

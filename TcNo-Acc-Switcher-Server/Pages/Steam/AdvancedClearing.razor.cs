@@ -26,6 +26,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class AdvancedClearing
     {
+	    private static readonly Lang Lang = Lang.Instance;
         [Inject]
         protected AppData AppData { get; set; }
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
@@ -33,7 +34,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         protected override void OnInitialized()
         {
             Globals.DebugWriteLine(@"[Auto:Steam\AdvancedClearing.razor.cs.OnInitialisedAsync]");
-            AppData.Instance.WindowTitle = "TcNo Account Switcher - Steam Cleaning";
+            AppData.Instance.WindowTitle = Lang["Title_Steam_Cleaning"];
         }
 
 

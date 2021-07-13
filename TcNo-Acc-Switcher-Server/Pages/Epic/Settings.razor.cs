@@ -24,11 +24,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 {
     public partial class Settings
     {
+	    private static readonly Lang Lang = Lang.Instance;
         [Inject]
         public AppData AppData { get; set; }
         protected override void OnInitialized()
         {
-            AppData.Instance.WindowTitle = "TcNo Account Switcher - Epic Settings";
+            AppData.Instance.WindowTitle = Lang["Title_Epic_Settings"];
             Globals.DebugWriteLine(@"[Auto:Epic\Settings.razor.cs.OnInitializedAsync]");
         }
 

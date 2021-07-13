@@ -21,8 +21,6 @@
     <Content Remove="compilerconfig.json" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Resources\en-US.yml" />
-    <None Remove="Resources\en-ZA.yml" />
     <None Remove="TcNoAccSw-Icon-100x100.png" />
     <None Remove="themes\Default.yaml" />
     <None Remove="themes\Dracula_Cyan.yaml" />
@@ -33,14 +31,6 @@
   <ItemGroup>
     <Content Include="themes\Default.yaml" />
     <Content Include="themes\Dracula_Cyan.yaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\en-ZA.yml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\en-US.yml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Gameloop.Vdf" Version="0.6.1" />
@@ -73,6 +63,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="Additional Licenses.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\en-US.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

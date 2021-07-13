@@ -19,9 +19,10 @@ namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Settings
     {
+	    private static readonly Lang Lang = Lang.Instance;
         protected override void OnInitialized()
         {
-            AppData.Instance.WindowTitle = "TcNo Account Switcher - Settings";
+            AppData.Instance.WindowTitle = Lang["Title_Settings"];
             Globals.DebugWriteLine(@"[Auto:Settings.razor.cs.OnInitializedAsync]");
         }
     }

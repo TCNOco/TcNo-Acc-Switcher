@@ -21,9 +21,9 @@ using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
-
     public class AppData
     {
+	    private static readonly Lang Lang = Lang.Instance;
         private static AppData _instance = new();
 
         private static readonly object LockObj = new();
@@ -55,7 +55,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        private string _currentStatus = "Status: Initialising";
+        private string _currentStatus = Lang["Status_Init"];
         public string CurrentStatus
         {
             get => _currentStatus;

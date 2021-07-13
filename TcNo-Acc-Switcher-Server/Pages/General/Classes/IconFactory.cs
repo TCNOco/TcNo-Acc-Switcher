@@ -22,6 +22,7 @@ using ImageMagick;
 using SkiaSharp;
 using Svg.Skia;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 {
@@ -30,6 +31,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
     /// </summary>
     public class IconFactory
     {
+	    private static readonly Lang Lang = Lang.Instance;
 
         #region FACTORY
         // https://stackoverflow.com/a/32530019/5165437
@@ -102,18 +104,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 if (image.PixelFormat != PixelFormat.Format32bppArgb)
                 {
                     throw new InvalidOperationException
-                        ($"Required pixel format is PixelFormat.{PixelFormat.Format32bppArgb.ToString()}.");
+                        (Lang["PngInvalid_Format", new { x = PixelFormat.Format32bppArgb }]);
                 }
                 if (image.RawFormat.Guid != ImageFormat.Png.Guid)
                 {
                     throw new InvalidOperationException
-                        ("Required image format is a portable network graphic (png).");
+                        (Lang["PngRequired"]);
                 }
                 if (image.Width > MaxIconWidth ||
                     image.Height > MaxIconHeight)
                 {
                     throw new InvalidOperationException
-                        ($"Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}");
+                        (Lang["PngDimensions", new { MaxIconWidth = MaxIconWidth, MaxIconHeight = MaxIconHeight }]);
                 }
             }
         }

@@ -43,6 +43,7 @@ Actions will show here
 
 @code
 {
+	private static readonly Lang Lang = Lang.Instance;
     // This has to be here for NavManager.
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
@@ -52,7 +53,7 @@ Actions will show here
 
     protected override void OnInitialized()
     {
-        AppData.Instance.WindowTitle = "TcNo Account Switcher - Text Editor";
+        AppData.Instance.WindowTitle = Lang["Title_TextEditor"];
         _ = AppData.InvokeVoidAsync("initEditor");
     }
 

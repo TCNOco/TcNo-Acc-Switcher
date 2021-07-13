@@ -12,7 +12,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -241,7 +240,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static bool ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowToast] type={toastType}, message={toastMessage}, title={toastTitle}, renderTo={renderTo}, duration={duration}");
-            return AppData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration }); ;
+            return AppData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
         }
         
         /// <summary>
@@ -372,25 +371,25 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
 				foreach (var ua in userAccounts)
 				{
-					var VacInfo = "";
+					var vacInfo = "";
 					// Get VAC/Limited info
 					if (loadedVacCache)
 						foreach (var vsi in vacStatusList.Where(vsi => vsi.SteamId == ua.SteamId))
 						{
-							if (vsi.Vac && vsi.Ltd) VacInfo += "VAC + Limited";
-							else VacInfo += (vsi.Vac ? "VAC" : "") + (vsi.Ltd ? "Limited" : "");
+							if (vsi.Vac && vsi.Ltd) vacInfo += "VAC + Limited";
+							else vacInfo += (vsi.Vac ? "VAC" : "") + (vsi.Ltd ? "Limited" : "");
 							break;
 						}
 					else
 					{
-						VacInfo += "N/A";
+						vacInfo += "N/A";
 					}
 
 					var imagePath = Path.GetFullPath($"{Steam.SteamImagePath + ua.SteamId}.jpg");
 					allAccountsTable.Add(ua.AccName + s + 
 					                     ua.Name + s + 
 					                     ua.SteamId + s + 
-					                     VacInfo + s + 
+					                     vacInfo + s + 
 					                     SteamSwitcherFuncs.UnixTimeStampToDateTime(ua.LastLogin) + s + 
                                          (File.Exists(imagePath) ? imagePath : "Missing from disk"));
                 }

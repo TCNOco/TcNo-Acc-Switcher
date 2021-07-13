@@ -235,8 +235,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             catch (Exception e)
             {
                 if (string.IsNullOrEmpty(jsDest)) return;
-                if (f != null) AppData.InvokeVoidAsync(jsDest, "ERROR: COULDN'T DELETE: " + f.FullName);
-                else AppData.InvokeVoidAsync(jsDest, "ERROR: COULDN'T DELETE UNDEFINED FILE");
+                if (f != null) AppData.InvokeVoidAsync(jsDest, Lang["CouldntDeleteX", new {x = f.FullName }]);
+                else AppData.InvokeVoidAsync(jsDest, Lang["CouldntDeleteUndefined"]);
                 AppData.InvokeVoidAsync(jsDest, e.ToString());
                 JsDestNewline(jsDest);
             }
@@ -281,7 +281,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             if (keepFolders) return;
             baseDir.Delete();
-            if (!string.IsNullOrEmpty(jsDest)) AppData.InvokeVoidAsync(jsDest, "Deleting Folder: " + baseDir.FullName);
+            if (!string.IsNullOrEmpty(jsDest)) AppData.InvokeVoidAsync(jsDest, Lang["DeletingFolder"] + baseDir.FullName);
             JsDestNewline(jsDest);
         }
         
@@ -297,12 +297,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteRegKey] subKey={subKey}, val={val}, jsDest={jsDest}");
             using var key = Registry.CurrentUser.OpenSubKey(subKey, true);
             if (key == null)
-	            AppData.InvokeVoidAsync(jsDest, $"{subKey} does not exist.");
+	            AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntExist", new { subKey  = subKey }]);
             else if (key.GetValue(val) == null)
-	            AppData.InvokeVoidAsync(jsDest, $"{subKey} does not contain {val}");
+	            AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntContain", new { subKey  = subKey, val = val}]);
             else
             {
-	            AppData.InvokeVoidAsync(jsDest, $"Removing {subKey}\\{val}");
+	            AppData.InvokeVoidAsync(jsDest, Lang["Reg_Removing", new { subKey= subKey, val = val}]);
                 key.DeleteValue(val);
             }
             JsDestNewline(jsDest);
@@ -337,20 +337,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFilesOfType] folder={folder}, extensions={extensions}, jsDest={jsDest}");
             if (!Directory.Exists(folder))
             {
-	            AppData.InvokeVoidAsync(jsDest, $"Directory not found: {folder}");
+	            AppData.InvokeVoidAsync(jsDest, Lang["DirectoryNotFound", new {folder = folder}]);
                 JsDestNewline(jsDest);
                 return;
             }
             foreach (var file in GetFiles(folder, extensions, so))
             {
-	            AppData.InvokeVoidAsync(jsDest, $"Deleting: {file}");
+	            AppData.InvokeVoidAsync(jsDest, Lang["DeletingFile", new {file = file}]);
                 try
                 {
                     File.Delete(file);
                 }
                 catch (Exception ex)
                 {
-                    AppData.InvokeVoidAsync(jsDest, $"ERROR: {ex}");
+                    AppData.InvokeVoidAsync(jsDest, Lang["ErrorDetails", new {ex = ex}]);
                 }
             }
             JsDestNewline(jsDest);
@@ -587,7 +587,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         public static async System.Threading.Tasks.Task HandleFirstRender(bool firstRender, string platform)
         {
-            AppData.Instance.WindowTitle = $"TcNo Account Switcher - {platform}";
+            AppData.Instance.WindowTitle = Lang["Title_AccountsList", new { platform = platform }];
             if (firstRender)
             {
                 // Handle Streamer Mode notification

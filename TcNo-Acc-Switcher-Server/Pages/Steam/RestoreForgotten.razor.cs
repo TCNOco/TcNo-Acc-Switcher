@@ -21,11 +21,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class RestoreForgotten
     {
+	    private static readonly Lang Lang = Lang.Instance;
         private IJSObjectReference _jsModule;
         protected override async void OnInitialized()
         {
             Globals.DebugWriteLine(@"[Auto:Steam\RestoreForgotten.razor.cs.OnInitializedAsync]");
-            AppData.Instance.WindowTitle = "TcNo Account Switcher - Restore forgotten Steam account";
+            AppData.Instance.WindowTitle = Lang["Title_Steam_Restore"];
             _jsModule = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/steam/RestoreForgotten.js");
             await _jsModule.InvokeAsync<string>("jsLoadForgotten");
         }

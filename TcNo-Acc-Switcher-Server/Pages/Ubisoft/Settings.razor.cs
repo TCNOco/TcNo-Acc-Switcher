@@ -27,7 +27,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         protected override void OnInitialized()
         {
-            AppData.Instance.WindowTitle = "TcNo Account Switcher - Ubisoft Settings";
+            AppData.Instance.WindowTitle = Lang["Title_Ubisoft_Settings"];
             Globals.DebugWriteLine(@"[Auto:Ubisoft\Settings.razor.cs.OnInitializedAsync]");
         }
 

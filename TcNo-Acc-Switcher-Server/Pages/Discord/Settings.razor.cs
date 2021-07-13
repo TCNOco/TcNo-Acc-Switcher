@@ -24,11 +24,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 {
     public partial class Settings
     {
+	    private static readonly Lang Lang = Lang.Instance;
         [Inject]
         public AppData AppData { get; set; }
         protected override void OnInitialized()
         {
-            AppData.Instance.WindowTitle = "TcNo Account Switcher - Discord Settings";
+            AppData.Instance.WindowTitle = Lang["Title_Discord_Settings"];
             Globals.DebugWriteLine(@"[Auto:Discord\Settings.razor.cs.OnInitializedAsync]");
         }
 
