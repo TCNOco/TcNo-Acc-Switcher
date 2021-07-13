@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[今すぐトレイを開始]'
 Settings_CurrentStyle: 現在のスタイル
 Settings_Protocol: 'tcno:\\プロトコルを有効にする (推奨)'
 Settings_WindowsAccent: Windowsアクセントカラーを使用する
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'format@@0メニューのショートカット:'
 Cleaning_Header_General: 一般的なクリーニング
 Cleaning_Header_LoginHistory: ログイン履歴を消去
