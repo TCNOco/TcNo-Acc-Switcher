@@ -150,7 +150,7 @@ Modal_EnterPasswordRepeat: Ange lösenord igen
 Modal_PasswordsMatch: Lösenorden matchar
 Modal_PasswordsNoMatch: Lösenorden matchar inte
 Status_SelectedAccount: "Valda: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Status: Initierar"
 Context_SwapTo: Byt till konto
 Context_CreateShortcut: Skapa genväg för skrivbordet
 Context_CreateShortcutSubmenu: Skapa genväg till skrivbordet...
@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Öppna användardata
 Context_CopyOtherSubmenu: Kopiera andra...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
+Context_HidePlatform: Dölj plattform
+Context_ExportAccList: Exportera kontolista
+Title_BNet_Settings: TcNo kontoväxlare - BattleNet-inställningar
+Title_BNet_ManageIgnored: TcNo Account Switcher - Hantera ignorerade BattleNet-konton
+Title_Discord_Settings: TcNo kontoväxlare - Discord-inställningar
 Title_Epic_Settings: TcNo Account Switcher - Epic Settings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Title_AccountsList: TcNo kontoväxlare - {platform}
+Title_TextEditor: TcNo Account Switcher - Textredigerare
+Title_Origin_Settings: TcNo kontoväxlare - Ursprung inställningar
+Title_Riot_Settings: TcNo kontoväxlare - Upploppsinställningar
+Title_Settings: TcNo Account Switcher - Inställningar
+Title_Steam_Cleaning: TcNo Account Switcher - Steam-rensning
+Title_Steam_Restore: TcNo Account Switcher - Återställ glömt Steam-konto
+Title_Steam_Settings: TcNo kontoväxlare - Steam-inställningar
+Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft inställningar
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline
@@ -198,21 +198,21 @@ Away: Borta
 Snooze: Snooza
 LookingToTrade: Funderar på att handla
 LookingToPlay: Funderar på att spela
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} finns inte."
+Reg_DoesntContain: "{subKey} innehåller inte {val}"
+Reg_Removing: Tar bort {subKey}\\{val}
+PngInvalid_Format: Krävs pixelformat är PixelFormat.{x}.
+PngRequired: Det obligatoriska bildformatet är ett portabelt nätverk grafiskt (png).
+PngDimensions: Dimensioner måste vara mindre än eller lika med {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Ett syntaxfel påträffades (mer detaljer nedan)! AND:"
+ThemesNotFound: "Kunde inte hitta mappen \"themes\" i TcNo Account Switcher's katalog. Detta (speciellt Default.yaml) krävs för att denna programvara ska köras.\nDu kan köra Updater i mappen \"updater\" för att verifiera filer, och återställa dessa saknade filer."
 Yes: "Ja"
 No: "Nej"
 Ok: "Ok"
 Forget: Glöm
 Notice: Notis
 Error: Fel
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "FEL: {ex}"
 Failed: Misslyckades
 Success: Klart
 NotFound: Hittades inte
@@ -221,11 +221,11 @@ ForName: "För: {name}"
 CouldNotFindX: Kunde inte hitta {x}
 CouldNotCloseX: Kunde inte stänga {x}!
 DirectoryNotFound: Katalogen hittades inte
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "Katalogen hittades inte: {folder}"
+DeletingFile: "Raderar: {file}"
+DeletingFolder: "Tar bort mapp: "
+CouldntDeleteX: "FEL: KULDNS INTE RADERA: {x}"
+CouldntDeleteUndefined: "FEL: KOSTNAD INTE DELETE ODEFINED FIL"
 Prompt_DiscordCopy1: Hitta alternativ knappen och klicka
 Prompt_DiscordCopy2: "Kontrollera att streamer-läget inte är aktiverat, annars: Ge fel."
 Prompt_DiscordCopy3: Se till att Streamer-läget är inaktiverat/inte aktivt när du kör detta kommando!
