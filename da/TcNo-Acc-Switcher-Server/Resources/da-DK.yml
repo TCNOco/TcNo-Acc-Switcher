@@ -46,6 +46,7 @@ Settings_Tray_StartNow: '[Start bakke nu]'
 Settings_CurrentStyle: Nuværende Stil
 Settings_Protocol: 'Aktivér tcno:\\ protocol (anbefales)'
 Settings_WindowsAccent: Brug Windows Accent Colour
+Settings_HelpTranslate: "[Help translate]"
 Cleaning_Header_StartMenuShortcuts: 'Genveje til startmenuen:'
 Cleaning_Header_General: Generel Rengøring
 Cleaning_Header_LoginHistory: Rens min login-historik
