@@ -174,21 +174,21 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Apri dati utente
 Context_CopyOtherSubmenu: Copia altro...
-Context_HidePlatform: Hide platform
-Context_ExportAccList: Export account list
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
+Context_HidePlatform: Nascondi piattaforma
+Context_ExportAccList: Esporta elenco account
+Title_BNet_Settings: TcNo Account Switcher - Impostazioni BattleNet
+Title_BNet_ManageIgnored: TcNo Account Switcher - Gestisci account BattleNet ignorati
+Title_Discord_Settings: TcNo Account Switcher - Impostazioni Discord
+Title_Epic_Settings: TcNo Account Switcher - Impostazioni Epiche
 Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
-Title_Settings: TcNo Account Switcher - Settings
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
-Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Title_TextEditor: TcNo Commutatore Account - Editor Di Testo
+Title_Origin_Settings: TcNo Account Switcher - Impostazioni Origine
+Title_Riot_Settings: TcNo Account Switcher - Impostazioni Riot
+Title_Settings: TcNo Commutatore Account - Impostazioni
+Title_Steam_Cleaning: Commutatore Account TcNo - Pulizia Vapore
+Title_Steam_Restore: TcNo Account Switcher - Ripristina account Steam dimenticato
+Title_Steam_Settings: TcNo Account Switcher - Impostazioni Steam
+Title_Ubisoft_Settings: TcNo Commutatore Account - Impostazioni Ubisoft
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline
@@ -198,21 +198,21 @@ Away: Assente
 Snooze: Posticipa
 LookingToTrade: Guardando al commercio
 LookingToPlay: Cercando di giocare
-Reg_DoesntExist: "{subKey} does not exist."
-Reg_DoesntContain: "{subKey} does not contain {val}"
-Reg_Removing: Removing {subKey}\\{val}
-PngInvalid_Format: Required pixel format is PixelFormat.{x}.
-PngRequired: Required image format is a portable network graphic (png).
-PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+Reg_DoesntExist: "{subKey} non esiste."
+Reg_DoesntContain: "{subKey} non contiene {val}"
+Reg_Removing: Rimozione di {subKey}\\{val}
+PngInvalid_Format: Il formato pixel richiesto è PixelFormat.{x}.
+PngRequired: Il formato immagine richiesto è un grafico di rete portatile (png).
+PngDimensions: Le dimensioni devono essere inferiori o uguali a {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Si è verificato un errore di sintassi (maggiori dettagli qui sotto)! E:"
+ThemesNotFound: "Impossibile trovare la cartella \"themes\" nella directory di TcNo Account Switcher. Questa (specialmente Default.yaml) è necessaria per l'esecuzione di questo software.\nÈ possibile eseguire l'Updater nella cartella \"updater\" per verificare i file e ripristinare questi file mancanti."
 Yes: "Sì"
 No: "No"
 Ok: "OK"
 Forget: Dimentica
 Notice: Avviso
 Error: Errore
-ErrorDetails: "ERROR: {ex}"
+ErrorDetails: "ERRORE: {ex}"
 Failed: Fallito
 Success: Successo
 NotFound: Non trovato
@@ -221,11 +221,11 @@ ForName: "Per: {name}"
 CouldNotFindX: Impossibile trovare {x}
 CouldNotCloseX: Impossibile chiudere {x}!
 DirectoryNotFound: Directory non trovata
-DirectoryNotFoundFolder: "Directory not found: {folder}"
-DeletingFile: "Deleting: {file}"
-DeletingFolder: "Deleting Folder: "
-CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
+DirectoryNotFoundFolder: "Directory non trovata: {folder}"
+DeletingFile: "Eliminazione: {file}"
+DeletingFolder: "Eliminazione Cartella: "
+CouldntDeleteX: "ERRORE: COULDN'T DELETE: {x}"
+CouldntDeleteUndefined: "ERRORE: COULDN'T DELETE FILE NON DEFINITO"
 Prompt_DiscordCopy1: Trova opzioni pulsante e fare clic
 Prompt_DiscordCopy2: "Verificare che la modalità streamer non sia abilitata, altrimenti: Dare errore."
 Prompt_DiscordCopy3: Assicurati che la modalità Streamer sia disabilitata/non attiva quando esegui questo comando!
