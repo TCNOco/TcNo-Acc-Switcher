@@ -131,9 +131,9 @@ Modal_Info_ViewGitHub: 在 GitHub 上查看
 Modal_Info_BugReport: 错误报告/功能请求
 Modal_Info_VisitSite: 访问 tcno.co
 Modal_Info_Disclaimer: 免责声明
-Modal_Title_Info: Tcno 账户切换器信息
+Modal_Title_Info: TcNo 账户切换器信息
 Modal_Title_ChangeUsername: 更改用户名
-Modal_Title_ConfirmAction: Tcno 账户切换器确认操作
+Modal_Title_ConfirmAction: TcNo 账户切换器确认操作
 Modal_Title_LocatePlatform: 请找到 {platform} 目录
 Modal_Title_AddNew: 添加新的 {platform} 帐户
 Modal_ChangeUsername: 请为您的帐户输入一个新的 {platformText}
@@ -145,13 +145,13 @@ Modal_ConfirmAction: 确认操作
 Modal_AddNew: 请输入您登录的 {platform} 帐户的名称。
 Modal_AddCurrentAccount: 添加当前 {platform} 帐户
 Modal_EnterNewPassword: 请输入一个新密码来保护您的 {platform} 账户在切换器中。<br>  请确保它安全。此后无法恢复。
-Modal_EnterPassword: 请输入您的 Tcno 账户切换器的 {platform} 平台密码。
+Modal_EnterPassword: 请输入您的 TcNo 账户切换器的 {platform} 平台密码。
 Modal_EnterPasswordShort: 输入密码
 Modal_EnterPasswordRepeat: 再次输入密码
 Modal_PasswordsMatch: 密码匹配
 Modal_PasswordsNoMatch: 密码不匹配
 Status_SelectedAccount: "已选择: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "状态：正在初始化"
 Context_SwapTo: 交换账户
 Context_CreateShortcut: 创建桌面快捷方式
 Context_CreateShortcutSubmenu: 创建桌面快捷键...
@@ -177,19 +177,19 @@ Context_Steam_OpenUserdata: 打开用户数据
 Context_CopyOtherSubmenu: 复制其他...
 Context_HidePlatform: 隐藏平台
 Context_ExportAccList: 导出账户列表
-Title_BNet_Settings: Tcno 账户切换器 - 战斗网设置
-Title_BNet_ManageIgnored: Tcno 账户切换器 - 管理忽略的 BattleNet 账户
-Title_Discord_Settings: Tcno 账户切换器 - Discord 设置
-Title_Epic_Settings: Tcno 账户切换器-史诗设置
-Title_AccountsList: Tcno 账户切换器 - {platform}
-Title_TextEditor: Tcno 账户切换器 - 文本编辑器
-Title_Origin_Settings: Tcno 账户切换器 - 来源设置
-Title_Riot_Settings: Tcno 账户切换器-防暴设置
-Title_Settings: Tcno 账户切换器-设置
-Title_Steam_Cleaning: Tcno 账户切换器 - Steam 清理
-Title_Steam_Restore: Tcno 账户切换器 - 还原遗忘的 Steam 账户
-Title_Steam_Settings: Tcno 账户切换器 - Steam 设置
-Title_Ubisoft_Settings: Tcno 账户切换器 - Ubisoft 设置
+Title_BNet_Settings: TcNo 账户切换器 - 战斗网设置
+Title_BNet_ManageIgnored: TcNo 账户切换器 - 管理忽略的 BattleNet 账户
+Title_Discord_Settings: TcNo 账户切换器 - Discord 设置
+Title_Epic_Settings: TcNo 账户切换器-史诗设置
+Title_AccountsList: TcNo 账户切换器 - {platform}
+Title_TextEditor: TcNo 账户切换器 - 文本编辑器
+Title_Origin_Settings: TcNo 账户切换器 - 来源设置
+Title_Riot_Settings: TcNo 账户切换器-防暴设置
+Title_Settings: TcNo 账户切换器-设置
+Title_Steam_Cleaning: TcNo 账户切换器 - Steam 清理
+Title_Steam_Restore: TcNo 账户切换器 - 还原遗忘的 Steam 账户
+Title_Steam_Settings: TcNo 账户切换器 - Steam 设置
+Title_Ubisoft_Settings: TcNo 账户切换器 - Ubisoft 设置
 Online: 在线
 OnlineDefault: Online (Default)
 Offline: 离线的
@@ -239,6 +239,6 @@ Prompt_DiscordCopy9: 成功复制信息！
 Prompt_DiscordCopy10: 将其粘贴到账户切换器中的输入框中以更新/设置图像和用户名。
 Prompt_RestartAsAdmin: "<h3><bold>此程序将以管理员身份重新启动</bold></h3><p>当提示管理员时，在UAC中点击“是”</p>"
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>您即将忘记一个帐户！</h3> <h4>这意味着什么？</h4> <p>- Steam将不再有大图片模式中列出的帐户，不会记住密码。<br/> - Tcno 帐户切换器也将不再显示帐户，直到通过Steam再次登录。</p> <p>您的帐户将保持不变。 在这台计算机上只是忘记了它。</p> <h4>如果有什么错误？</h4> <p>不要恐慌，您可以在设置屏幕上通过备份将被遗忘的账户带回来。<br/> 当您确定一切都在正常工作时，您也可以从那里删除以前的备份。</p> <h4>您理解吗？</h4>
+  <h3 style='color:red'>您即将忘记一个帐户！</h3> <h4>这意味着什么？</h4> <p>- Steam将不再有大图片模式中列出的帐户，不会记住密码。<br/> - TcNo 帐户切换器也将不再显示帐户，直到通过Steam再次登录。</p> <p>您的帐户将保持不变。 在这台计算机上只是忘记了它。</p> <h4>如果有什么错误？</h4> <p>不要恐慌，您可以在设置屏幕上通过备份将被遗忘的账户带回来。<br/> 当您确定一切都在正常工作时，您也可以从那里删除以前的备份。</p> <h4>您理解吗？</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>您即将忘记一个帐户！</h3> <h4>这意味着什么？</h4> <p>Tcno 账户切换器也将不再显示账户。<br/> 直到它再次通过 {platform}登录并添加到列表中。</p> <p>您的账户将保持未触摸状态。在这台计算机上只是忘记了。</p> <h4>您了解吗？</h4>
+  <h3 style='color:red'>您即将忘记一个帐户！</h3> <h4>这意味着什么？</h4> <p>TcNo 账户切换器也将不再显示账户。<br/> 直到它再次通过 {platform}登录并添加到列表中。</p> <p>您的账户将保持未触摸状态。在这台计算机上只是忘记了。</p> <h4>您了解吗？</h4>
