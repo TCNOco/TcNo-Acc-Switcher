@@ -76,9 +76,9 @@ Toast_PasteDiscordConsole: Indsæt i Discord konsol, og indsæt derefter resulte
 Toast_AlreadyProcessing: Behandler allerede konti...
 Toast_FailedRestore: Kunne ikke gendanne konti (Se konsol)
 Toast_Restored: Gendannede konti!
-Toast_ProtocolEnabled: 'Dette program vil nu reagere på tcno: \ i Windows'
+Toast_ProtocolEnabled: 'Dette program vil nu reagere på TcNo: \ i Windows'
 Toast_ProtocolEnabledTitle: Protokol tilføjet
-Toast_ProtocolDisabled: 'Dette program vil ikke længere reagere på tcno: \\'
+Toast_ProtocolDisabled: 'Dette program vil ikke længere reagere på TcNo: \\'
 Toast_ProtocolDisabledTitle: Protokol fjernet
 Toast_RestartAsAdmin: Start venligst som administrator, og prøv igen.
 Toast_RestartAfterClose: Genstart venligst programmet, når du klikker Luk.
@@ -151,7 +151,7 @@ Modal_EnterPasswordRepeat: Indtast adgangskode igen
 Modal_PasswordsMatch: Adgangskoder matcher
 Modal_PasswordsNoMatch: Adgangskoder stemmer ikke overens
 Status_SelectedAccount: "Valgt: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Status: initialisering"
 Context_SwapTo: Ombyt til konto
 Context_CreateShortcut: Opret Skrivebordsgenvej
 Context_CreateShortcutSubmenu: Opret Skrivebordsgenvej...
