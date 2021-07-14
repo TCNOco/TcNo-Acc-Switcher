@@ -1,17 +1,17 @@
 ---
-Update: Güncelleme uygun! Başlamak için buraya tıklayın.
-Header_ChooseLanguage: 'Dil Seçin: {platform}'
+Update: Güncelleme mevcut! Başlatmak için buraya tıklayın.
+Header_ChooseLanguage: 'Choose Language:'
 BattleNet_ShowSR: Overwatch SR'yi gösterin ve Overwatch profil resmini kullanın.
 Steam_ShowSteamID: SteamID'yi göster
 Steam_ShowVac: VAC durumunu göster
-Steam_CheckVac: Hesap VAC durumunu kontrol edin
+Steam_CheckVac: Hesap VAC durumunu kontrol et
 Steam_ShowLimited: Sınırlı Durumu Göster
 Steam_ShowAccUsername: Hesap kullanıcı adını göster
 Steam_Tray_AccountName: Hesap adını göster [arkadaş adı değil]
 Button_AddNew: Yeni ekle
 Button_SaveCurrent: Mevcut Kaydet
 Button_SaveFile: Dosyayı kaydet
-Button_Cancel: İptal etmek
+Button_Cancel: İptal et
 Button_Login: Oturum aç
 Button_Close: Kapat
 Button_RefreshImages: Resimleri yenile
