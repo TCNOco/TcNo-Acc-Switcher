@@ -78,7 +78,7 @@ Toast_FailedRestore: Hesaplar geri yüklenemedi (Konsol'a bakın)
 Toast_Restored: Geri yüklenen hesaplar!
 Toast_ProtocolEnabled: Bu program şimdi Windows'ta tcno:\\'ya yanıt verecek
 Toast_ProtocolEnabledTitle: Protokol eklendi
-Toast_ProtocolDisabled: Bu program artık tcno'ya yanıt vermeyecek:\\
+Toast_ProtocolDisabled: Bu program artık TcNo'ya yanıt vermeyecek:\\
 Toast_ProtocolDisabledTitle: Protokol kaldırıldı
 Toast_RestartAsAdmin: Lütfen Yönetici olarak başlayın ve tekrar deneyin.
 Toast_RestartAfterClose: Lütfen Kapat'ı tıkladıktan sonra programı yeniden başlatın.
