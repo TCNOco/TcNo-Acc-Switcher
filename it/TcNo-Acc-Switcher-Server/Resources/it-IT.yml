@@ -131,7 +131,7 @@ Modal_Info_ViewGitHub: Visualizza su GitHub
 Modal_Info_BugReport: Segnalazione errore/richiesta funzionalità
 Modal_Info_VisitSite: Visita tcno.co
 Modal_Info_Disclaimer: Disclaimer
-Modal_Title_Info: Informazioni Sul Commutatore Account Tcno
+Modal_Title_Info: Informazioni Sul Commutatore Account TcNo
 Modal_Title_ChangeUsername: Cambia nome utente
 Modal_Title_ConfirmAction: TcNo Account Commutatore Conferma Azione
 Modal_Title_LocatePlatform: Per favore trova la directory {platform}
@@ -151,7 +151,7 @@ Modal_EnterPasswordRepeat: Inserire nuovamente la password
 Modal_PasswordsMatch: Le password corrispondono
 Modal_PasswordsNoMatch: Le password non corrispondono
 Status_SelectedAccount: "Selezionato: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Stato: inizializzazione"
 Context_SwapTo: Scambia sul conto
 Context_CreateShortcut: Crea Scorciatoia Desktop
 Context_CreateShortcutSubmenu: Crea Scorciatoia Desktop...
@@ -182,14 +182,14 @@ Title_BNet_ManageIgnored: TcNo Account Switcher - Gestisci account BattleNet ign
 Title_Discord_Settings: TcNo Account Switcher - Impostazioni Discord
 Title_Epic_Settings: TcNo Account Switcher - Impostazioni Epiche
 Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Commutatore Account - Editor Di Testo
+Title_TextEditor: tcno.commutatore Account - Editor Di Testo
 Title_Origin_Settings: TcNo Account Switcher - Impostazioni Origine
 Title_Riot_Settings: TcNo Account Switcher - Impostazioni Riot
-Title_Settings: TcNo Commutatore Account - Impostazioni
+Title_Settings: tcno.commutatore Account - Impostazioni
 Title_Steam_Cleaning: Commutatore Account TcNo - Pulizia Vapore
 Title_Steam_Restore: TcNo Account Switcher - Ripristina account Steam dimenticato
 Title_Steam_Settings: TcNo Account Switcher - Impostazioni Steam
-Title_Ubisoft_Settings: TcNo Commutatore Account - Impostazioni Ubisoft
+Title_Ubisoft_Settings: tcno.commutatore Account - Impostazioni Ubisoft
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline
