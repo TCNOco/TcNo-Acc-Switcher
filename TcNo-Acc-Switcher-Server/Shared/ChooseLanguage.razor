@@ -6,7 +6,7 @@
 
 @if (_cultures != null)
 {
-	<span>@_locale["Header_ChooseLanguage", new { platform = "TestPlatfdorm" }]</span>
+	<span>@_locale["Header_ChooseLanguage"]</span>
 	<div class="dropdown">
 		<ul class="custom-dropdown-menu dropdown-menu">
 			@foreach (var (key, value) in _cultures)
