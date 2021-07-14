@@ -145,13 +145,13 @@ Modal_ConfirmAction: Potvrdit akci
 Modal_AddNew: Zadejte název účtu {platform} , ke kterému jste přihlášeni.
 Modal_AddCurrentAccount: Přidat aktuální účet {platform}
 Modal_EnterNewPassword: Zadejte prosím nové heslo pro zabezpečení Vašich {platform} účtů v přepínači.<br>  Uchovávejte ho v bezpečí. Nelze ho později obnovit.
-Modal_EnterPassword: Zadejte prosím své heslo pro platformu {platform} Přepínače Tcno.
+Modal_EnterPassword: Zadejte prosím své heslo pro platformu {platform} Přepínače TcNo.
 Modal_EnterPasswordShort: Zadejte heslo
 Modal_EnterPasswordRepeat: Zadejte heslo znovu
 Modal_PasswordsMatch: Hesla se shodují
 Modal_PasswordsNoMatch: Hesla se neshodují
 Status_SelectedAccount: "Vybráno: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Stav: inicializace"
 Context_SwapTo: Prohodit účet
 Context_CreateShortcut: Vytvořit zástupce na ploše
 Context_CreateShortcutSubmenu: Vytvořit zástupce na plochě...
@@ -241,4 +241,4 @@ Prompt_RestartAsAdmin: "<h3><bold>Tento program bude restartován jako Admin</bo
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Chystáte se zapomenout na účet!</h3> <h4>Co to znamená?</h4> <p>- Steam již nebude mít účet v režimu velkého obrazu a nebude si pamatovat heslo.<br/> - Přepínač účtů TcNo již nebude zobrazovat účet, dokud nebude znovu přihlášen přes Steam.</p> <p>Váš účet zůstane nedotčen. Na tomto počítači je to zapomenuto.</p> <h4>Co když se něco pokazí?</h4> <p>Nenechte panikařit, můžete obnovit zapomenuté účty prostřednictvím záloh v obrazovce Nastavení.<br/> Můžete také odstranit předchozí zálohy, pokud jste si jisti, že vše funguje podle očekávání.</p> <h4>Rozumíš?</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>Chystáte se zapomenout na účet!</h3> <h4>Co to znamená?</h4> <p>Přepínač Tcno účtu již nebude zobrazovat účet,<br/> dokud není znovu přihlášen přes {platform}a není přidán do seznamu.</p> <p>Váš účet zůstane nedotčen. Na tomto počítači je zapomenut.</p> <h4>Rozrozumíte?</h4>
+  <h3 style='color:red'>Chystáte se zapomenout na účet!</h3> <h4>Co to znamená?</h4> <p>Přepínač TcNo účtu již nebude zobrazovat účet,<br/> dokud není znovu přihlášen přes {platform}a není přidán do seznamu.</p> <p>Váš účet zůstane nedotčen. Na tomto počítači je zapomenut.</p> <h4>Rozrozumíte?</h4>
