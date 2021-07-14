@@ -44,7 +44,7 @@ Settings_StartMenu_Platform: Plataforma
 Settings_Tray_StartWindows: Inicieu la safata amb Windows
 Settings_Tray_StartNow: '[Inicieu la safata ara]'
 Settings_CurrentStyle: Estil actual
-Settings_Protocol: 'Activa el protocol tcno: \\ (recomanat)'
+Settings_Protocol: 'Activa el protocol TcNo: \\ (recomanat)'
 Settings_WindowsAccent: Utilitzeu el Windows Accent Color
 Settings_HelpTranslate: "[Ajuda a traduir]"
 Cleaning_Header_StartMenuShortcuts: 'Dreceres per al menú Inici:'
@@ -76,9 +76,9 @@ Toast_PasteDiscordConsole: Enganxeu a la consola Discord i, a continuació, enga
 Toast_AlreadyProcessing: Ja s'està processant comptes ...
 Toast_FailedRestore: No s'han pogut restaurar els comptes (vegeu la consola)
 Toast_Restored: Comptes restaurats.
-Toast_ProtocolEnabled: 'Aquest programa ara respondrà a tcno: \\ al Windows'
+Toast_ProtocolEnabled: 'Aquest programa ara respondrà a TcNo: \\ al Windows'
 Toast_ProtocolEnabledTitle: S'ha afegit el protocol
-Toast_ProtocolDisabled: 'Aquest programa ja no respondrà a tcno: \\'
+Toast_ProtocolDisabled: 'Aquest programa ja no respondrà a TcNo: \\'
 Toast_ProtocolDisabledTitle: S'ha suprimit el protocol
 Toast_RestartAsAdmin: Comenceu com a administrador i torneu-ho a provar.
 Toast_RestartAfterClose: Reinicieu el programa després de fer clic a Tanca.
