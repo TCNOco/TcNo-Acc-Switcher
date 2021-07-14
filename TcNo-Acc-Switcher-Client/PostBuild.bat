@@ -126,7 +126,7 @@ xcopy TcNo-Acc-Switcher\updater updater /E /H /C /I /Y
 
 REM Compress files
 echo Creating .7z archive
-"%zip%" a -t7z -mmt24 -mx9  "TcNo-Acc-Switcher.7z" "TcNo-Acc-Switcher"
+"%zip%" a -t7z -mmt24 -mx9  "TcNo-Acc-Switcher.7z" ".\TcNo-Acc-Switcher\*"
 echo Done!
 
 REM Create installer
