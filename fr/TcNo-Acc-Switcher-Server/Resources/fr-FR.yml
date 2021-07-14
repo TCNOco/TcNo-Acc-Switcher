@@ -151,7 +151,7 @@ Modal_EnterPasswordRepeat: Entrez à nouveau le mot de passe
 Modal_PasswordsMatch: Les mots de passe correspondent
 Modal_PasswordsNoMatch: Les mots de passe ne correspondent pas
 Status_SelectedAccount: "Sélectionné: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Statut: initialisation"
 Context_SwapTo: Echanger vers un compte
 Context_CreateShortcut: Créer un raccourci sur le bureau
 Context_CreateShortcutSubmenu: Créer un raccourci sur le Bureau...
