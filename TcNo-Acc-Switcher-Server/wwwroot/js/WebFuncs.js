@@ -565,13 +565,13 @@ async function showPasswordModal() {
 	        </div>
 	        <div class="inputWithTitle">
 				<span class="modal-text">${modalEnterPassword}:</span>
-		        <input type="password" id="Password" style="width: 100%;padding: 8px;"'>
+		        <input type="password" id="Password" style="width: 100%;padding: 8px;"` + (creatingPass ? "" : `onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();">`) + `
 	        </div>		        ` +
         (creatingPass ? `<div class="inputWithTitle"><span class="modal-text">${modalEnterPasswordRepeat}:</span><input type="password" id="PasswordConfirm" style="width: 100%;padding: 8px;" onkeyup="javascript: if($('#Password').val() !== $('#PasswordConfirm').val()) $('#formNotice').html('${modalPasswordsNoMatch}').css('color','red'); else $('#formNotice').html('${modalPasswordsMatch}').css('color','lime')"></div>	` : "")
 	    + `
 			<p id="formNotice"></p>
 	        <div class="settingsCol inputAndButton">
-				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#why-a-password');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>
+				<button class="modalOK extra" type="button" id="help" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#why-a-password');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>
 		        <button class="modalOK" style="padding: 0 40px;" type="button" id="set_account_name" onclick="Modal_HandlePassword()"><span>${ok}</span></button>
 	        </div>
         </div>`);

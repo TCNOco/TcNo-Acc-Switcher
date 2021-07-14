@@ -104,7 +104,7 @@ button .caret {
 .custom-dropdown-menu {
   z-index: 10;
   max-height: 60vh;
-  overflow-y: scroll; }
+  overflow-y: auto; }
 
 /* Text Editor */
 .text-editor {

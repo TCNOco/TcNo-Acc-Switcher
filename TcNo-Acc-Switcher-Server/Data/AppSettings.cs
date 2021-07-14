@@ -37,9 +37,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class AppSettings
     {
-	    private static readonly Lang Lang = Lang.Instance;
-
-        private static AppSettings _instance = new();
+	    private static AppSettings _instance = new();
 
         private static readonly object LockObj = new();
 
@@ -54,6 +52,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
             set => _instance = value;
         }
+
+        private static readonly Lang Lang = Lang.Instance;
 
         // Variables
         private bool _updateAvailable;
@@ -99,11 +99,14 @@ namespace TcNo_Acc_Switcher_Server.Data
 		private string _selectedStylesheet;
         [JsonIgnore] public string SelectedStylesheet { get => _instance._selectedStylesheet; set => _instance._selectedStylesheet = value; }
 
-        [JsonIgnore] public string PlatformContextMenu = $@"[
+        [JsonIgnore]
+        public string PlatformContextMenu =>
+	        Lang == null ? "" : $@"[
               {{""{Lang["Context_HidePlatform"]}"": ""hidePlatform()""}},
               {{""{Lang["Context_CreateShortcut"]}"": ""createPlatformShortcut()""}},
               {{""{Lang["Context_ExportAccList"]}"": ""exportAllAccounts()""}}
             ]";
+
         [JSInvokable]
         public static async System.Threading.Tasks.Task HidePlatform(string platform)
         {

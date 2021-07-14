@@ -65,8 +65,10 @@ namespace TcNo_Acc_Switcher_Server
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
+		{
+			Lang.Instance.LoadLocalised();
+
+			if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -106,8 +108,6 @@ namespace TcNo_Acc_Switcher_Server
 			}
 
 			app.UseStaticFiles(); // Second call due to: https://github.com/dotnet/aspnetcore/issues/19578
-
-			Lang.Instance.LoadLocalised();
 
             app.UseRouting();
 
