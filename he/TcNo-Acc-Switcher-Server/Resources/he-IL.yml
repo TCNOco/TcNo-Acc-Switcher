@@ -44,7 +44,7 @@ Settings_StartMenu_Platform: פּלַטפוֹרמָה
 Settings_Tray_StartWindows: הפעל את מגש עם Windows
 Settings_Tray_StartNow: '[התחל מגש עכשיו]'
 Settings_CurrentStyle: סגנון נוכחי
-Settings_Protocol: 'אפשר tcno: \\ פרוטוקול (מומלץ)'
+Settings_Protocol: 'אפשר TcNo: \\ פרוטוקול (מומלץ)'
 Settings_WindowsAccent: השתמש בצבע המבטא של Windows
 Settings_HelpTranslate: "[עזרה בתרגום]"
 Cleaning_Header_StartMenuShortcuts: 'קיצורי דרך לתפריט התחלה:'
@@ -76,9 +76,9 @@ Toast_PasteDiscordConsole: הדבק למסוף הדיסקורד ולאחר מכ�
 Toast_AlreadyProcessing: כבר מעבד חשבונות ...
 Toast_FailedRestore: שחזור החשבונות נכשל (ראה מסוף)
 Toast_Restored: חשבונות משוחזרים!
-Toast_ProtocolEnabled: 'תוכנית זו תגיב כעת ל- tcno: \\ ב- Windows'
+Toast_ProtocolEnabled: 'תוכנית זו תגיב כעת ל- TcNo: \\ ב- Windows'
 Toast_ProtocolEnabledTitle: פרוטוקול נוסף
-Toast_ProtocolDisabled: 'תוכנית זו כבר לא תגיב ל- tcno: \\'
+Toast_ProtocolDisabled: 'תוכנית זו כבר לא תגיב ל- TcNo: \\'
 Toast_ProtocolDisabledTitle: הפרוטוקול הוסר
 Toast_RestartAsAdmin: התחל כמנהל ונסה שוב.
 Toast_RestartAfterClose: אנא הפעל מחדש את התוכנית לאחר לחיצה על סגור.
