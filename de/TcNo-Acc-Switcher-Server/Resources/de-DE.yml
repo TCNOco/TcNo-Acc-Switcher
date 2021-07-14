@@ -151,7 +151,7 @@ Modal_EnterPasswordRepeat: Passwort erneut eingeben
 Modal_PasswordsMatch: Passwörter stimmen überein
 Modal_PasswordsNoMatch: Passwörter stimmen nicht überein
 Status_SelectedAccount: "Ausgewählt: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Status: Initialisierung"
 Context_SwapTo: In Konto tauschen
 Context_CreateShortcut: Desktop-Verknüpfung erstellen
 Context_CreateShortcutSubmenu: Desktop-Verknüpfung erstellen...
