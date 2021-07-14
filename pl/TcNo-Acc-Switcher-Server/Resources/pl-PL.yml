@@ -1,29 +1,29 @@
 ---
-Update: Aktualizacja dostępna! Kliknij tutaj, aby ją rozpocząć.
-Header_ChooseLanguage: 'Wybierz język: {platform}'
-BattleNet_ShowSR: Pokaż Overwatch SR i użyj zdjęcia profilowego Overwater.
+Update: Aktualizacja dostępna! Kliknij tutaj, aby ją uruchomić.
+Header_ChooseLanguage: 'Wybierz język:'
+BattleNet_ShowSR: Wyświetl Overwatch SR i użyj zdjęcia profilowego Overwatch.
 Steam_ShowSteamID: Pokaż SteamID
-Steam_ShowVac: Pokaż stan VAC
-Steam_CheckVac: Sprawdź status konta VAC
+Steam_ShowVac: Pokaż status VAC
+Steam_CheckVac: Sprawdź status VAC konta
 Steam_ShowLimited: Pokaż ograniczony status
 Steam_ShowAccUsername: Pokaż nazwę użytkownika konta
-Steam_Tray_AccountName: Pokaż nazwę konta [nie imię znajomego]
-Button_AddNew: Dodaj nowy
+Steam_Tray_AccountName: Pokaż nazwę konta [nie nazwę znajomego]
+Button_AddNew: Dodaj nowe
 Button_SaveCurrent: Zapisz bieżący
 Button_SaveFile: Zapisz plik
 Button_Cancel: Anuluj
-Button_Login: Logowanie
+Button_Login: Zaloguj się
 Button_Close: Zamknij
 Button_RefreshImages: Odśwież zdjęcia
-Button_ResetSettings: Resetuj ustawienia
+Button_ResetSettings: Zresetuj ustawienia
 Button_AdvancedCleaning: Zaawansowane czyszczenie...
-Button_ClearLog: Wyczyść log
+Button_ClearLog: Wyczyść logi
 Button_WikiInfo: Więcej informacji (Wiki)
 Button_ClearDiscordCache: Wyczyść pamięć podręczną Discord
-Settings_Shortcut: ' Skrót do przełącznika pulpitu {platform}'
+Settings_Shortcut: ' Skrót do pulpitu przełącznika kont {platform}'
 Settings_Admin: Uruchom {platform} jako Administrator
 Settings_ImageExpiry: 'Dni przed wygaśnięciem zdjęć profilowych:'
-Settings_Header_AppWide: Ustawienia dla całej aplikacji
+Settings_Header_AppWide: Ustawienia całej aplikacji
 Settings_Header_GeneralSettings: Ustawienia ogólne
 Settings_Header_GeneralTools: Narzędzia ogólne
 Settings_Header_OtherTools: Inne narzędzia
@@ -37,43 +37,43 @@ Settings_ClearForgotten: Wyczyść zapomniane
 Settings_ClearAccounts: Wyczyść konta
 Settings_RestoreForgotten: Przywróć zapomniane konto
 Settings_StreamerMode: Włącz tryb streamera
-Settings_ExitToTray: Wyjdź z minimum do zasobnika
+Settings_ExitToTray: Wyjście minimalizuje do zasobnika
 Settings_DesktopShortcut: Skrót na pulpicie
-Settings_StartMenu_ProgramTray: Program i Pasek
+Settings_StartMenu_ProgramTray: Program i Zasobnik
 Settings_StartMenu_Platform: Platforma
 Settings_Tray_StartWindows: Uruchom zasobnik z systemem Windows
-Settings_Tray_StartNow: '[Rozpocznij zasobnik teraz]'
+Settings_Tray_StartNow: '[Uruchom teraz zasobnik]'
 Settings_CurrentStyle: Bieżący styl
 Settings_Protocol: 'Włącz protokół tcno:\\ (zalecane)'
-Settings_WindowsAccent: Użyj koloru akcentu Windows
-Settings_HelpTranslate: "[Pomóż tłumaczy]"
+Settings_WindowsAccent: Używaj kolorów Windowsa
+Settings_HelpTranslate: "[Pomóż tłumaczyć]"
 Cleaning_Header_StartMenuShortcuts: 'Skróty dla menu startowego:'
 Cleaning_Header_General: Ogólne czyszczenie
-Cleaning_Header_LoginHistory: Wyczyść historię logowania
+Cleaning_Header_LoginHistory: Wyczyść moją historię logowania
 Cleaning_Header_PlatformCleaning: 'Przełącznik {platform}'
 Cleaning_ImportantInfoHeader: 'Ważne informacje:'
 Cleaning_ImportantInfo: >
-  Kliknięcie przycisku usunie powiązane pliki z Twojej instalacji Steam.<br /> Usuwanie użytkowników logowania. df spowoduje, że przełącznik konta nie będzie pokazywał żadnych kont.<br /> Będziesz musiał zalogować się do niego za pomocą Steam, aby je przywrócić.
-Cleaning_Button_KillProcess: Zabij {platform} proces
-Cleaning_Button_ForgottenBackups: Zapomniane kopie zapasowe konta
+  Kliknięcie przycisku spowoduje usunięcie powiązanego z nim pliku lub plików z twojej instalacji Steam. <br /> Usunięcie pliku loginusers.vdf spowoduje, że przełącznik kont nie będzie pokazywał żadnych kont.<br /> Aby je odzyskać, będziesz musiał się do nich zalogować za pomocą Steam.
+Cleaning_Button_KillProcess: Zabij proces {platform}
+Cleaning_Button_ForgottenBackups: Zapomniane kopie zapasowe kont
 Cleaning_Understand: Rozumiem, co te przyciski robią.
 Restore_Header: Przywróć zapomniane konta
 Restore_Info: >
-  Jeśli wcześniej "zapomniałeś" konta, możesz je przywrócić tutaj.<br /> To dodaje je z powrotem do pliku loginusers.vdf, pozwalając na ich przełączenie.
+  Jeśli wcześniej "zapomniałeś" konta, możesz je tutaj przywrócić.<br /> To dodaje je z powrotem do pliku loginusers.vdf, pozwalając Ci się na nie przełączyć.
 Restore_Button_Restore: Przywróć wybrane
 Ignored_RemoveAccounts: Usuń konta z listy ignorowanych
 Ignored_Description: Jeśli wcześniej "zignorowałeś" konto, możesz pokazać je ponownie tutaj
 Ignored_Stop: Przestań ignorować wybrane
 Toast_RetryOrDeleteDiscordCache: Ponów próbę lub usuń pamięć podręczną Discorda, aby zresetować hasło (Zobacz Wiki).
-Toast_TrayStarted: Ilość rozpoczęta!
-Toast_TrayRunning: Pasek jest już otwarty
-Toast_TrayUsersMissing: Nie zapisano żadnych użytkowników zasobnika
+Toast_TrayStarted: Zasobnik wystartował!
+Toast_TrayRunning: Zasobnik już jest otwarty
+Toast_TrayUsersMissing: Nie zapisano żadnych użytkowników w zasobniku
 Toast_TrayFail: Nie można uruchomić aplikacji w zasobniku!
-Toast_TrayPosition: "Po kliknięciu przycisku Wyjdź: Będę w paczce Windows (Prawy pasek startowy)"
-Toast_TrayHint: "Wskazówka: Ctrl+Kliknij na 'X', aby zamknąć mnie całkowicie, lub przez Szlak > 'Wyjdź'"
+Toast_TrayPosition: "Po kliknięciu przycisku Wyjdź: Będę w zasobniku systemu Windows! (na prawo od paska startowego)"
+Toast_TrayHint: "Wskazówka: Ctrl+kliknięcie 'X', aby całkowicie mnie zamknąć, lub przez Zasobnik > 'Wyjdź'"
 Toast_Copied: Skopiowano
-Toast_PasteDiscordConsole: Wklej do konsoli Discorda, a następnie wklej wynik w postaci wejść!
-Toast_AlreadyProcessing: Przetwarza już konta...
+Toast_PasteDiscordConsole: Wklej do konsoli Discorda, a następnie wklej wynik do pola wprowadzania!
+Toast_AlreadyProcessing: Przetwarzanie kont...
 Toast_FailedRestore: Nie udało się przywrócić kont (zobacz konsolę)
 Toast_Restored: Przywrócono konta!
 Toast_ProtocolEnabled: Ten program będzie teraz odpowiadał na tcno:\\ w systemie Windows
@@ -138,7 +138,7 @@ Modal_Title_LocatePlatform: Proszę zlokalizować katalog {platform}
 Modal_Title_AddNew: Dodaj nowe konto {platform}
 Modal_ChangeUsername: Wprowadź nowy {platformText} dla swojego konta
 Modal_ChangeUsernameType: Zmień {UsernameOrOther}
-Modal_EnterDirectory: "Wprowadź katalog {platform}jako taki: C:\\Program Files\\{platform}"
+Modal_EnterDirectory: "Proszę wskaż katalog {platform}, na przykład: C:\\Program Files\\{platform}"
 Modal_LocatePlatform: Znajdź {platformExe}
 Modal_LocatePlatformFolder: Wybierz folder {platform}
 Modal_ConfirmAction: Potwierdź akcję
