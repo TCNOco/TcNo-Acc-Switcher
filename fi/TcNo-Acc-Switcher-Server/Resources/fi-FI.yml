@@ -151,7 +151,7 @@ Modal_EnterPasswordRepeat: Syötä salasana uudelleen
 Modal_PasswordsMatch: Salasanat täsmää
 Modal_PasswordsNoMatch: Salasanat eivät täsmää
 Status_SelectedAccount: "Valittu: {name}"
-Status_Init: "Status: Initialising"
+Status_Init: "Tila: alustetaan"
 Context_SwapTo: Vaihda tiliin
 Context_CreateShortcut: Luo Pikakuvake Työpöydälle
 Context_CreateShortcutSubmenu: Luo Pikakuvake...
