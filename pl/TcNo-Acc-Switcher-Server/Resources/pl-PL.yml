@@ -45,7 +45,7 @@ Settings_Tray_StartWindows: Uruchom zasobnik z systemem Windows
 Settings_Tray_StartNow: '[Uruchom teraz zasobnik]'
 Settings_CurrentStyle: Bieżący styl
 Settings_Protocol: 'Włącz protokół tcno:\\ (zalecane)'
-Settings_WindowsAccent: Używaj kolorów Windowsa
+Settings_WindowsAccent: Używaj kolorów wiodących Windowsa
 Settings_HelpTranslate: "[Pomóż tłumaczyć]"
 Cleaning_Header_StartMenuShortcuts: 'Skróty dla menu startowego:'
 Cleaning_Header_General: Ogólne czyszczenie
@@ -80,36 +80,36 @@ Toast_ProtocolEnabled: Ten program będzie teraz reagował na tcno:\\ w systemie
 Toast_ProtocolEnabledTitle: Protokół dodany
 Toast_ProtocolDisabled: Ten program nie będzie już odpowiadał na tcno:\\
 Toast_ProtocolDisabledTitle: Protokół usunięty
-Toast_RestartAsAdmin: Zacznij jako administrator i spróbuj ponownie.
+Toast_RestartAsAdmin: Uruchom jako Administrator i spróbuj ponownie.
 Toast_RestartAfterClose: Uruchom ponownie program po kliknięciu Zamknij.
-Toast_RestartAfterCloseTitle: Kolor akcentu wyłączony
-Toast_LoadStylesheetFailed: Nie udało się załadować arkusza stylów! Zobacz folder dokumentów po szczegóły.
-Toast_BNet_Private: "{BTag}profil jest prywatny"
+Toast_RestartAfterCloseTitle: Kolor wiodący jest wyłączony
+Toast_LoadStylesheetFailed: Nie udało się załadować arkusza stylów! Zobacz folder dokumentów, aby uzyskać szczegółowe informacje.
+Toast_BNet_Private: "Profil {BTag} jest prywatny"
 Toast_BNet_StatsFail: "Błąd podczas próby uzyskania statystyk dla {BTag}"
-Toast_BNet_CantSwapAccounts: Nie można zamienić kont (Battle.net.config file corrupt)
-Toast_BNet_CantLoadNotFound: Nie można znaleźć konfiguracji Battle.net.config
-Toast_BNet_CantLoadEmpty: Nie można załadować pliku kont dla Blizzarda (Nie znaleziono kont)
-Toast_BNet_CantLoadConfigCorrupt: Nie można załadować pliku kont dla Blizzarda (Battle.net.config file corrupt)
+Toast_BNet_CantSwapAccounts: Nie można zamienić konta (Battle.net.config jest uszkodzony)
+Toast_BNet_CantLoadNotFound: Nie można znaleźć Battle.net.config
+Toast_BNet_CantLoadEmpty: Nie można załadować pliku z kontami dla Blizzarda (Nie znaleziono kont)
+Toast_BNet_CantLoadConfigCorrupt: Nie można załadować pliku z kontami dla Blizzarda (Battle.net.config jest uszkodzony)
 Toast_BNet_NamePolicy: BattleTag nie pasuje do polityki nazewnictwa.
 Toast_ItemNotFound: "{item} nie został znaleziony"
 Toast_DeletedTotal: "{files} z {totalFiles} usunięto. Łącznie: {totalSize}"
 Toast_DeletedTotalTitle: Wyczyszczono pamięć podręczną Discorda!
 Toast_Discord_SignOutHint: "Wskazówka: Musisz wylogować się z Discorda w przeglądarce"
-Toast_Discord_SaveHint: "Wskazówka: Zmieniono ustawienia Discorda? Zapisz ponownie, o tej samej nazwie!"
+Toast_Discord_SaveHint: "Wskazówka: Zmieniłeś ustawienia Discorda? Zapisz ponownie, z tą samą nazwą!"
 Toast_Discord_NoToken: Nie udało się znaleźć tokenu użytkownika! Zamknij Discorda normalnie, a następnie zapisz ponownie.
 Toast_CantChangeUsername: Nie można zmienić nazwy użytkownika
 Toast_CantClearLoginFiles: Nie udało się wyczyścić starych plików logowania
-Toast_Epic_AccountIdReg: Nie udało się uzyskać ID konta z rejestru!
-Toast_DuplicateNames: Nie można zamienić. Zduplikuj konta o tej samej nazwie użytkownika?
+Toast_Epic_AccountIdReg: Nie udało się uzyskać identyfikatora konta z rejestru!
+Toast_DuplicateNames: Nie można zamienić. Zduplikowane konta z tą samą nazwą użytkownika?
 Toast_CouldNotLocate: Nie można zlokalizować zalogowanego użytkownika
 Toast_StreamerModeHint: Prywatne informacje są ukryte! - Zobacz ustawienia
 Toast_StreamerModeTitle: Tryb streamera
-Toast_AddAccountsFirst: Otwórz platformę z listy i najpierw dodaj kilka kont
+Toast_AddAccountsFirst: Otwórz platformę z listy i dodaj najpierw kilka kont
 Toast_AddAccountsFirstTitle: Brak zapisanych kont
 Toast_CantFindImage: Nie udało się odnaleźć obrazu użytkownika.
 Toast_CantCreateShortcut: Nie można utworzyć skrótu
 Toast_ShortcutCreated: Skrót utworzony!
-Toast_FailedUpdateCheck: Nie udało się sprawdzić aktualizacji
+Toast_FailedUpdateCheck: Nie udało się sprawdzić dostępności aktualizacji
 Toast_UpdateVerifyFail: Nie można zweryfikować plików aktualizatora. Pobierz najnowszą wersję i zastąp pliki w katalogu.
 Toast_Riot_StartGame: Zmieniono użytkownika. Rozpocznij grę poniżej.
 Toast_StartedGame: Rozpoczęto {program}
