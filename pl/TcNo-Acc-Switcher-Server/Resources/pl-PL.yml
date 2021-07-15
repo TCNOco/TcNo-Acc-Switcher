@@ -76,7 +76,7 @@ Toast_PasteDiscordConsole: Wklej do konsoli Discorda, a następnie wklej wynik d
 Toast_AlreadyProcessing: Przetwarzanie kont...
 Toast_FailedRestore: Nie udało się przywrócić kont (zobacz konsolę)
 Toast_Restored: Przywrócono konta!
-Toast_ProtocolEnabled: Ten program będzie teraz odpowiadał na tcno:\\ w systemie Windows
+Toast_ProtocolEnabled: Ten program będzie teraz reagował na tcno:\\ w systemie Windows
 Toast_ProtocolEnabledTitle: Protokół dodany
 Toast_ProtocolDisabled: Ten program nie będzie już odpowiadał na tcno:\\
 Toast_ProtocolDisabledTitle: Protokół usunięty
