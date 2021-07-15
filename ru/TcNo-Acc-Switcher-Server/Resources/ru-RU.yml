@@ -49,26 +49,26 @@ Settings_WindowsAccent: Использовать цвет Accent для Windows
 Settings_HelpTranslate: "[Помочь с переводом]"
 Cleaning_Header_StartMenuShortcuts: 'Ярлыки для меню "Пуск":'
 Cleaning_Header_General: Общая очистка
-Cleaning_Header_LoginHistory: Очистить историю входа
+Cleaning_Header_LoginHistory: Очистить историю входов
 Cleaning_Header_PlatformCleaning: 'Переключатель {platform}'
 Cleaning_ImportantInfoHeader: 'Важная информация:'
 Cleaning_ImportantInfo: >
-  Нажатие на кнопку удалит связанный файл (файлы) из вашего Steam.<br /> Удаление логинов. df приведет к переключению этого аккаунта без учетных записей.<br /> Вам нужно будет войти в него с помощью Steam, чтобы вернуть их.
+  Нажатие на кнопку удалит связанный файл (файлы) из вашего Steam.<br /> Удаление "loginusers.vdf" приведет к потере всех текущих аккаунтов.<br /> Вам нужно будет войти в них с помощью Steam заново, чтобы вернуть их.
 Cleaning_Button_KillProcess: Убить {platform} процесс
 Cleaning_Button_ForgottenBackups: Резервные копии забытых учетных записей
 Cleaning_Understand: Я понимаю, что делают эти кнопки.
 Restore_Header: Восстановить забытые учетные записи
 Restore_Info: >
-  Если вы ранее «забыли» аккаунт, вы можете восстановить их здесь.<br /> Это добавляет их обратно в файл loginusers.vdf, позволяя вам переключиться на него.
+  Если вы ранее «забыли» аккаунт, вы можете восстановить их здесь.<br /> Это добавляет их обратно в файл "loginusers.vdf", позволяя вам переключиться на него.
 Restore_Button_Restore: Восстановить выбранные
 Ignored_RemoveAccounts: Удалить учетные записи из списка игнорирования
 Ignored_Description: Если вы ранее «проигнорировали» аккаунт, вы можете показать его снова здесь
 Ignored_Stop: Остановить игнорирование выбранных
 Toast_RetryOrDeleteDiscordCache: Повторите попытку или удалите кэш Discord для сброса пароля (см. Wiki).
-Toast_TrayStarted: Трейд начался!
-Toast_TrayRunning: Трейд уже открыт
-Toast_TrayUsersMissing: Нет сохраненных пользователей
-Toast_TrayFail: Не удалось запустить приложение tray!
+Toast_TrayStarted: Трей начался!
+Toast_TrayRunning: Трей уже открыт
+Toast_TrayUsersMissing: Нет сохраненных пользователей в Трее
+Toast_TrayFail: Не удалось запустить приложение Трея!
 Toast_TrayPosition: "При нажатии на кнопку Выход: я буду на Windows Tray! (Справа от начальной панели)"
 Toast_TrayHint: "Подсказка: Ctrl+Нажмите 'X', чтобы закрыть меня полностью, или через Tray > 'Выйти'"
 Toast_Copied: Скопировано
@@ -76,40 +76,40 @@ Toast_PasteDiscordConsole: Вставьте в консоль Discord, а зат
 Toast_AlreadyProcessing: Уже обрабатывают аккаунты...
 Toast_FailedRestore: Не удалось восстановить учетные записи (смотрите консоль)
 Toast_Restored: Восстановленные аккаунты!
-Toast_ProtocolEnabled: Эта программа теперь будет отвечать tcno:\\ в Windows
+Toast_ProtocolEnabled: Эта программа теперь будет отвечать на tcno:\\ в Windows
 Toast_ProtocolEnabledTitle: Протокол добавлен
 Toast_ProtocolDisabled: Эта программа больше не будет отвечать на tcno:\\
 Toast_ProtocolDisabledTitle: Протокол удален
-Toast_RestartAsAdmin: Пожалуйста, начните как Администратор и повторите попытку.
+Toast_RestartAsAdmin: Пожалуйста, запустите от имени Администратора и повторите попытку.
 Toast_RestartAfterClose: Пожалуйста, перезапустите программу после нажатия на кнопку Закрыть.
 Toast_RestartAfterCloseTitle: Цвет акцента отключен
 Toast_LoadStylesheetFailed: Не удалось загрузить таблицу стилей! Смотрите папку документов для подробностей.
-Toast_BNet_Private: "Профиль {BTag}приватный"
-Toast_BNet_StatsFail: "Ошибка получения статистики для {BTag}"
+Toast_BNet_Private: "Профиль {BTag} приватный"
+Toast_BNet_StatsFail: "Ошибка попытки получения статистики для {BTag}"
 Toast_BNet_CantSwapAccounts: Не удалось заменить учетные записи (Battle.net.config файл повреждён)
-Toast_BNet_CantLoadNotFound: Не удалось найти Battle.net.config
+Toast_BNet_CantLoadNotFound: Не удалось найти "Battle.net.config"
 Toast_BNet_CantLoadEmpty: Не удалось загрузить файл учетной записи для Blizzard (учетные записи не найдены)
-Toast_BNet_CantLoadConfigCorrupt: Не удалось загрузить файл учетной записи для Blizzard (Battle.net.config файл поврежден)
+Toast_BNet_CantLoadConfigCorrupt: Не удалось загрузить файл с учётными записями для Blizzard (Battle.net.config файл поврежден)
 Toast_BNet_NamePolicy: BattleTag не совпадает с политикой именования.
 Toast_ItemNotFound: "{item} не найден"
-Toast_DeletedTotal: "{files} из {totalFiles} удален. Всего: {totalSize}"
+Toast_DeletedTotal: "{files} из {totalFiles} удалён. Всего: {totalSize}"
 Toast_DeletedTotalTitle: Кэш Discord очищен!
 Toast_Discord_SignOutHint: "Подсказка: Вы должны выйти из Discord в вашем браузере"
-Toast_Discord_SaveHint: "Подсказка: Изменены настройки Discord? Сэкономьте снова с тем же именем!"
-Toast_Discord_NoToken: Не удалось найти токен пользователя! Выйти из Discord нормально, а затем сохранить снова.
+Toast_Discord_SaveHint: "Подсказка: Изменили настройки Discord? Сохраните заново с тем же именем!"
+Toast_Discord_NoToken: Не удалось найти токен пользователя! Выйдите из Discord нормально, а затем сохранитесь снова.
 Toast_CantChangeUsername: Не удалось изменить имя пользователя
 Toast_CantClearLoginFiles: Не удалось удалить старые файлы входа
 Toast_Epic_AccountIdReg: Не удалось получить ID аккаунта от Registry!
 Toast_DuplicateNames: Не удалось обменять. Дублировать учетные записи с одним и тем же именем пользователя?
 Toast_CouldNotLocate: Не удалось найти зарегистрированного пользователя
 Toast_StreamerModeHint: Личная информация скрыта! - Смотрите настройки
-Toast_StreamerModeTitle: Режим "Стример"
+Toast_StreamerModeTitle: Режим "Стримера"
 Toast_AddAccountsFirst: Откройте платформу из списка и сначала добавьте несколько аккаунтов
 Toast_AddAccountsFirstTitle: Нет сохраненных аккаунтов
 Toast_CantFindImage: Не удалось найти изображение пользователя.
 Toast_CantCreateShortcut: Невозможно создать ярлык
 Toast_ShortcutCreated: Ярлык создан!
-Toast_FailedUpdateCheck: Не удалось проверить обновления
+Toast_FailedUpdateCheck: Не удалось проверить на обновления
 Toast_UpdateVerifyFail: Не удается проверить файлы обновления. Загрузите последнюю версию и замените файлы в вашем каталоге.
 Toast_Riot_StartGame: Пользователь изменён. Запустите игру ниже.
 Toast_StartedGame: Начато {program}
