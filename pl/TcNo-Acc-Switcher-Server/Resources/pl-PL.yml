@@ -113,7 +113,7 @@ Toast_FailedUpdateCheck: Nie udało się sprawdzić dostępności aktualizacji
 Toast_UpdateVerifyFail: Nie można zweryfikować plików aktualizatora. Pobierz najnowszą wersję i zastąp pliki w katalogu.
 Toast_Riot_StartGame: Zmieniono użytkownika. Rozpocznij grę poniżej.
 Toast_StartedGame: Rozpoczęto {program}
-Toast_Steam_VacCleared: Status VAC dla kont został rozliczony
+Toast_Steam_VacCleared: Status VAC dla kont został wyczyszczony
 Toast_Steam_CantDeleteVacCache: Nie można usunąć 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Nie można znaleźć folderu Steam\\userdata
 Toast_Steam_VdfLast: Wczytywanie z vdf_last. Może brakować niektórych kont.
@@ -156,7 +156,7 @@ Context_SwapTo: Zamień na konto
 Context_CreateShortcut: Utwórz skrót na pulpicie
 Context_CreateShortcutSubmenu: Utwórz skrót do pulpitu...
 Context_ChangeImage: Zmień obraz
-Context_BNet_SetBTag: Ustaw Tag Bitewny
+Context_BNet_SetBTag: Ustaw BattleTag
 Context_BNet_DelBTag: Usuń Tag Bitewny
 Context_BNet_GetRAnk: Pobierz rangę
 Context_ChangeName: Zmień nazwę przełącznika
@@ -195,7 +195,7 @@ OnlineDefault: Online (Default)
 Offline: Offline
 Invisible: Niewidoczny
 Busy: Zajęty
-Away: Poza domem
+Away: Nieobecny
 Snooze: Drzemka
 LookingToTrade: Szukam wymiany
 LookingToPlay: Szukam gry
@@ -218,7 +218,7 @@ Failed: Niepowodzenie
 Success: Sukces
 NotFound: Nie znaleziono
 Done: Gotowe
-ForName: "Za: {name}"
+ForName: "Dla: {name}"
 CouldNotFindX: Nie można odnaleźć {x}
 CouldNotCloseX: Nie można zamknąć {x}!
 DirectoryNotFound: Katalog nie znaleziony
