@@ -1,14 +1,14 @@
 ---
-Update: 可用更新！点击这里开始更新。
-Header_ChooseLanguage: 'Choose Language:'
-BattleNet_ShowSR: 显示超表存储库并使用超表配置文件图片。
-Steam_ShowSteamID: 显示SteamID
+Update: 更新可用！点击这里开始更新。
+Header_ChooseLanguage: '选择语言：'
+BattleNet_ShowSR: 显示守望先锋竞技等级并使用守望先锋个人资料头像。
+Steam_ShowSteamID: 显示 SteamID
 Steam_ShowVac: 显示 VAC 状态
-Steam_CheckVac: 检查帐户VAC状态
-Steam_ShowLimited: 显示有限状态
+Steam_CheckVac: 检查帐户 VAC 状态
+Steam_ShowLimited: 显示受限状态
 Steam_ShowAccUsername: 显示帐户用户名
 Steam_Tray_AccountName: 显示帐户名称 [非好友名称]
-Button_AddNew: 添加新的
+Button_AddNew: 新增
 Button_SaveCurrent: 保存当前
 Button_SaveFile: 保存文件
 Button_Cancel: 取消
@@ -18,34 +18,34 @@ Button_RefreshImages: 刷新图像
 Button_ResetSettings: 重置设置
 Button_AdvancedCleaning: 高级清理...
 Button_ClearLog: 清除日志
-Button_WikiInfo: 更多信息 (Wiki)
-Button_ClearDiscordCache: 清空Discord 缓存
-Settings_Shortcut: ' {platform} 切换桌面快捷方式'
+Button_WikiInfo: 更多信息（Wiki）
+Button_ClearDiscordCache: 清空 Discord 缓存
+Settings_Shortcut: ' {platform} 切换器桌面快捷方式'
 Settings_Admin: 以管理员身份运行 {platform}
-Settings_ImageExpiry: '个人资料图像过期之前的天数：'
-Settings_Header_AppWide: 全应用程设置
+Settings_ImageExpiry: '个人资料头像过期之前的天数：'
+Settings_Header_AppWide: 应用全局设置
 Settings_Header_GeneralSettings: 常规设置
 Settings_Header_GeneralTools: 常规工具
 Settings_Header_OtherTools: 其他工具
 Settings_Header_HiddenPlatforms: 隐藏平台
 Settings_Header_TraySettings: 托盘设置
 Settings_Header_OpenGameFolders: 打开游戏文件夹
-Settings_TrayMax: '要记住的账户数量上限：'
+Settings_TrayMax: '要记住的帐户数量上限：'
 Settings_PickFolder: 选择 {platform} 文件夹
 Settings_OpenFolder: 打开 {platform} 文件夹
-Settings_ClearForgotten: 清空忘记的
-Settings_ClearAccounts: 清空账户
-Settings_RestoreForgotten: 还原遗忘的账户
+Settings_ClearForgotten: 清空已忘记
+Settings_ClearAccounts: 清空帐户
+Settings_RestoreForgotten: 恢复已忘记帐户
 Settings_StreamerMode: 启用串流模式
-Settings_ExitToTray: 最小化到托盘
+Settings_ExitToTray: 退出时最小化到托盘
 Settings_DesktopShortcut: 桌面快捷方式
-Settings_StartMenu_ProgramTray: 程序&托盘
+Settings_StartMenu_ProgramTray: 程序与托盘
 Settings_StartMenu_Platform: 平台
-Settings_Tray_StartWindows: 使用Windows启动托盘
-Settings_Tray_StartNow: '[现在开始托盘]'
+Settings_Tray_StartWindows: 随 Windows 启动托盘
+Settings_Tray_StartNow: '[立即启动托盘]'
 Settings_CurrentStyle: 当前样式
-Settings_Protocol: '启用 tcno:\\ 协议 (推荐)'
-Settings_WindowsAccent: 使用 Windows Accent 颜色
+Settings_Protocol: '启用 tcno:\\ 协议（推荐）'
+Settings_WindowsAccent: 使用 Windows 主题色
 Settings_HelpTranslate: "[帮助翻译]"
 Cleaning_Header_StartMenuShortcuts: '开始菜单的快捷方式：'
 Cleaning_Header_General: 常规清理
@@ -53,21 +53,21 @@ Cleaning_Header_LoginHistory: 清理我的登录历史
 Cleaning_Header_PlatformCleaning: '{platform} 切换器'
 Cleaning_ImportantInfoHeader: '重要信息：'
 Cleaning_ImportantInfo: >
-  点击按钮会从您的Steam安装中删除相关的文件(s)。<br /> 正在删除登录用户。 df 将导致此账户切换器没有任何账户。<br /> 您需要使用Steam登录它们才能得到恢复。
-Cleaning_Button_KillProcess: 杀死 {platform} 进程
-Cleaning_Button_ForgottenBackups: 忘记帐户备份
-Cleaning_Understand: 我理解这些按钮会起什么作用。
-Restore_Header: 恢复被遗忘的帐户
+  点击按钮会从您的 Steam 安装文件夹中删除相关的文件。<br />删除 loginusers.vdf 将导致此帐户切换器不显示任何帐户。<br />您需要使用 Steam 重新登录才能恢复。
+Cleaning_Button_KillProcess: 结束 {platform} 进程
+Cleaning_Button_ForgottenBackups: 已忘记帐户备份
+Cleaning_Understand: 我理解这些按钮的作用。
+Restore_Header: 恢复已忘记的帐户
 Restore_Info: >
-  如果你以前“忘记”一个帐户，你可以在这里还原它们。<br /> 将它们添加到您的 loginusers.vdf 文件中，允许您切换到它们。
-Restore_Button_Restore: 还原选中的
+  如果您曾经“忘记”一个帐户，可以在这里恢复。<br />这会将它们添加到您的 loginusers.vdf 文件中，允许您切换到它们。
+Restore_Button_Restore: 恢复所选
 Ignored_RemoveAccounts: 从忽略列表中删除账户
-Ignored_Description: 如果你先前“忽略”一个帐户，你可以在这里再次显示它们。
-Ignored_Stop: 停止忽略选定的
-Toast_RetryOrDeleteDiscordCache: 重试或删除Discord 缓存以重置密码(见Wiki)。
-Toast_TrayStarted: 托盘开始！
-Toast_TrayRunning: 托盘已打开
-Toast_TrayUsersMissing: 没有保存托盘用户
+Ignored_Description: 如果您曾经“忽略”一个帐户，可以在这里再次显示它们
+Ignored_Stop: 停止忽略所选
+Toast_RetryOrDeleteDiscordCache: 重试或删除 Discord 缓存以重置密码（见 Wiki）。
+Toast_TrayStarted: 托盘已启动！
+Toast_TrayRunning: 托盘已经启动
+Toast_TrayUsersMissing: 未保存托盘用户
 Toast_TrayFail: 无法启动托盘应用程序！
 Toast_TrayPosition: "点击退出按钮：我会在 Windows 托盘上! (右侧开始栏)"
 Toast_TrayHint: "提示：Ctrl+点击 'X' 来完全关闭我，或通过托盘 > '退出'"
