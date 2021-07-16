@@ -152,7 +152,7 @@ Modal_PasswordsMatch: 密码匹配
 Modal_PasswordsNoMatch: 密码不匹配
 Status_SelectedAccount: "已选择：{name}"
 Status_Init: "状态：正在初始化"
-Context_SwapTo: 切换到帐户
+Context_SwapTo: 交换到帐户
 Context_CreateShortcut: 创建桌面快捷方式
 Context_CreateShortcutSubmenu: 创建桌面快捷方式...
 Context_ChangeImage: 更改图像
