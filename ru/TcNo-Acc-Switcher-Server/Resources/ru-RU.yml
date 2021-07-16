@@ -37,29 +37,29 @@ Settings_ClearForgotten: Очистить забытые
 Settings_ClearAccounts: Очистить аккаунты
 Settings_RestoreForgotten: Восстановить забытую учетную запись
 Settings_StreamerMode: Включить режим стримера
-Settings_ExitToTray: Выход минимизирует в трей
+Settings_ExitToTray: Свернуть в трей при закрытии
 Settings_DesktopShortcut: Ярлык на рабочем столе
 Settings_StartMenu_ProgramTray: Программа и трей
 Settings_StartMenu_Platform: Платформа
 Settings_Tray_StartWindows: Запускать трей вместе с Windows
-Settings_Tray_StartNow: '[Запустить процесс трея сейчас]'
+Settings_Tray_StartNow: '[Запустить свернутым сейчас]'
 Settings_CurrentStyle: Текущий стиль
 Settings_Protocol: 'Включить протокол tcno:\\ (Рекомендуется)'
-Settings_WindowsAccent: Использовать цвет Accent для Windows
+Settings_WindowsAccent: Использовать цвет Windows
 Settings_HelpTranslate: "[Помочь с переводом]"
-Cleaning_Header_StartMenuShortcuts: 'Ярлыки для меню "Пуск":'
+Cleaning_Header_StartMenuShortcuts: 'Ярлыки для меню Пуск:'
 Cleaning_Header_General: Общая очистка
 Cleaning_Header_LoginHistory: Очистить историю входов
 Cleaning_Header_PlatformCleaning: 'Переключатель {platform}'
 Cleaning_ImportantInfoHeader: 'Важная информация:'
 Cleaning_ImportantInfo: >
   Нажатие на кнопку удалит связанный файл (файлы) из вашего Steam.<br /> Удаление "loginusers.vdf" приведет к потере всех текущих аккаунтов.<br /> Вам нужно будет войти в них с помощью Steam заново, чтобы вернуть их.
-Cleaning_Button_KillProcess: Убить {platform} процесс
+Cleaning_Button_KillProcess: Убить процесс {platform}
 Cleaning_Button_ForgottenBackups: Резервные копии забытых учетных записей
 Cleaning_Understand: Я понимаю, что делают эти кнопки.
 Restore_Header: Восстановить забытые учетные записи
 Restore_Info: >
-  Если вы ранее «забыли» аккаунт, вы можете восстановить их здесь.<br /> Это добавляет их обратно в файл "loginusers.vdf", позволяя вам переключиться на него.
+  Если вы ранее «забыли» аккаунт, вы можете восстановить их здесь.<br /> Это добавляет их обратно в файл "loginusers.vdf", позволяя вам переключиться между ними.
 Restore_Button_Restore: Восстановить выбранные
 Ignored_RemoveAccounts: Удалить учетные записи из списка игнорирования
 Ignored_Description: Если вы ранее «проигнорировали» аккаунт, вы можете показать его снова здесь
@@ -178,7 +178,7 @@ Context_CopyOtherSubmenu: Копировать другие...
 Context_HidePlatform: Скрыть платформу
 Context_ExportAccList: Экспорт списка счетов
 Title_BNet_Settings: TcNo Switcher - Настройки BattleNet
-Title_BNet_ManageIgnored: TcNo переключение аккаунтов - Управление игнорируемыми аккаунтами BattleNet
+Title_BNet_ManageIgnored: TcNo Account Switcher - Управление игнорируемыми аккаунтами BattleNet
 Title_Discord_Settings: TcNo переключение учетной записи - Настройки Discord
 Title_Epic_Settings: TcNo переключение аккаунтов - Эпические настройки
 Title_AccountsList: TcNo переключение аккаунта - {platform}
