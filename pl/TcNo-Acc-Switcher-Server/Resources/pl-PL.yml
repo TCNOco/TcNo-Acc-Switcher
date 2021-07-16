@@ -128,7 +128,7 @@ Toast_ClearForgottenCheck: Czy na pewno chcesz wyczyścić kopie zapasowe zapomn
 Modal_Info_Creator: Stworzone przez TechNobo [Wesley Pyburn]
 Modal_Info_Version: Wersja
 Modal_Info_ViewGitHub: Zobacz na GitHub
-Modal_Info_BugReport: Zgłoszenie błędu/żądanie funkcji
+Modal_Info_BugReport: Zgłoszenie błędu/Prośba o nową funkcję
 Modal_Info_VisitSite: Odwiedź tcno.co
 Modal_Info_Disclaimer: Zastrzeżenie
 Modal_Title_Info: Informacje o zmianie konta TcNo
@@ -151,15 +151,15 @@ Modal_EnterPasswordRepeat: Wprowadź hasło ponownie
 Modal_PasswordsMatch: Hasła są zgodne
 Modal_PasswordsNoMatch: Hasła nie pasują
 Status_SelectedAccount: "Wybrano: {name}"
-Status_Init: "Status: inicjalizacja"
-Context_SwapTo: Zamień na konto
+Status_Init: "Status: Inicjalizacja"
+Context_SwapTo: Zmień konto
 Context_CreateShortcut: Utwórz skrót na pulpicie
 Context_CreateShortcutSubmenu: Utwórz skrót do pulpitu...
 Context_ChangeImage: Zmień obraz
 Context_BNet_SetBTag: Ustaw BattleTag
-Context_BNet_DelBTag: Usuń Tag Bitewny
+Context_BNet_DelBTag: Usuń BattleTag
 Context_BNet_GetRAnk: Pobierz rangę
-Context_ChangeName: Zmień nazwę przełącznika
+Context_ChangeName: Zmień nazwę przełącznika kont
 Context_LoginAsSubmenu: Zaloguj jako...
 Context_UsernameSubmenu: Nazwa użytkownika...
 Context_RefreshName: Odśwież nazwę
@@ -167,7 +167,7 @@ Context_CopySubmenu: Kopiuj...
 Context_CopyProfileSubmenu: Kopiuj profil...
 Context_CommunityUrl: Adres URL społeczności
 Context_CommunityUsername: Nazwa użytkownika społeczności
-Context_LoginUsername: Login użytkownika
+Context_LoginUsername: Nazwa użytkownika
 Context_CopySteamIdSubmenu: Kopiuj SteamID...
 Context_Steam_Id: SteamID [STEAM0:~]
 Context_Steam_Id3: SteamID3 [U:1:~]
@@ -191,7 +191,7 @@ Title_Steam_Restore: TcNo Account Switcher - Przywróć zapomniane konto Steam
 Title_Steam_Settings: TcNo Account Switcher - Ustawienia Steam
 Title_Ubisoft_Settings: TcNo Account Switcher - Ustawienia Ubisoft
 Online: Dostępny
-OnlineDefault: Online (Default)
+OnlineDefault: Online (Domyślnie)
 Offline: Offline
 Invisible: Niewidoczny
 Busy: Zajęty
@@ -225,7 +225,7 @@ DirectoryNotFound: Katalog nie znaleziony
 DirectoryNotFoundFolder: "Nie znaleziono katalogu: {folder}"
 DeletingFile: "Usuwanie: {file}"
 DeletingFolder: "Usuwanie folderu: "
-CouldntDeleteX: "BŁĄD: COULDN'T DELETE: {x}"
+CouldntDeleteX: "BŁĄD: NIE MOŻNA USUNĄĆ: {x}"
 CouldntDeleteUndefined: "BŁĄD: COULDN'T USUNIĘCIE NIEZDEFINOWANEGO PLIKU"
 Prompt_DiscordCopy1: Znajdź opcje i kliknij
 Prompt_DiscordCopy2: "Sprawdź, czy tryb streamera nie jest włączony, w przeciwnym razie: Podaj błąd."
@@ -234,7 +234,7 @@ Prompt_DiscordCopy4: Pobierz nazwę z dolnego lewego rogu ekranu
 Prompt_DiscordCopy5: Pobierz awatar i nazwę użytkownika ze strony
 Prompt_DiscordCopy6: Kopiuj awatar i nazwę użytkownika
 Prompt_DiscordCopy7: Zamknij opcje
-Prompt_DiscordCopy8: Daj użytkownikowi znać w konsoli.
+Prompt_DiscordCopy8: Poinformuj użytkownika w konsoli.
 Prompt_DiscordCopy9: Pomyślnie skopiowano informacje!
 Prompt_DiscordCopy10: Wklej go do pola wejściowego w przełączniku konta, aby zaktualizować/ustawić obraz i nazwę użytkownika.
 Prompt_RestartAsAdmin: "<h3><bold>Ten program uruchomi się ponownie jako Administrator</bold></h3><p>Naciśnij \"Tak\" w UAC, gdy pojawi się monit o administratora.</p>"
