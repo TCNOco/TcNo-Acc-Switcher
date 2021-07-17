@@ -98,11 +98,15 @@ namespace TcNo_Acc_Switcher_Client
             // Start web server
             Server.IsBackground = true;
             Server.Start();
-
-            // Initialise and connect to web server above
-            // Somehow check ports and find a different one if it doesn't work? We'll see...
-            InitializeComponent();
             
+			// Initialise and connect to web server above
+			InitializeComponent();
+
+			// Attempt to fix window showing as blank.
+			// See https://github.com/MicrosoftEdge/WebView2Feedback/issues/1077#issuecomment-856222593593
+			MView2.Visibility = Visibility.Hidden;
+            MView2.Visibility = Visibility.Visible;
+
             MainBackground.Background = (Brush)new BrushConverter().ConvertFromString(AppSettings.Stylesheet["headerbarBackground"]);
             
             Width = AppSettings.WindowSize.X;
@@ -326,6 +330,15 @@ namespace TcNo_Acc_Switcher_Client
                 Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
                 Environment.Exit(0);
             }
+        }
+
+        private static bool firstLoad = true;
+        private void MView2_OnNavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+	        if (!firstLoad) return;
+	        MView2.Visibility = Visibility.Hidden;
+	        MView2.Visibility = Visibility.Visible;
+	        firstLoad = false;
         }
     }
 }

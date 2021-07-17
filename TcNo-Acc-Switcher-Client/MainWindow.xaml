@@ -27,7 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.-->
 		>
     <!--<Grid x:Name="MainBackground" Background="#28293A">-->
     <Grid x:Name="MainBackground">
-        <wpf:WebView2 x:Name="MView2" Initialized="MView2_OnInitialised" />
+        <wpf:WebView2 x:Name="MView2" Initialized="MView2_OnInitialised" NavigationCompleted="MView2_OnNavigationCompleted" />
     </Grid>
 
 </Window>
