@@ -176,7 +176,7 @@ Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Открыть данные пользователя
 Context_CopyOtherSubmenu: Копировать другие...
 Context_HidePlatform: Скрыть платформу
-Context_ExportAccList: Экспорт списка счетов
+Context_ExportAccList: Экспорт списка аккаунтов
 Title_BNet_Settings: TcNo Switcher - Настройки BattleNet
 Title_BNet_ManageIgnored: TcNo Account Switcher - Управление игнорируемыми аккаунтами BattleNet
 Title_Discord_Settings: TcNo переключение учетной записи - Настройки Discord
