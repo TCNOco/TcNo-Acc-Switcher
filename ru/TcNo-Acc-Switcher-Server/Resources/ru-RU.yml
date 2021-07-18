@@ -152,13 +152,13 @@ Modal_PasswordsMatch: Пароли совпадают
 Modal_PasswordsNoMatch: Пароли не совпадают
 Status_SelectedAccount: "Выбрано: {name}"
 Status_Init: "Статус: инициализация"
-Context_SwapTo: Поменять на аккаунт
+Context_SwapTo: Перейти на аккаунт
 Context_CreateShortcut: Создать ярлык на рабочем столе
 Context_CreateShortcutSubmenu: Создать ярлык на рабочем столе...
 Context_ChangeImage: Изменить изображение
 Context_BNet_SetBTag: Установить BattleTag
 Context_BNet_DelBTag: Удалить BattleTag
-Context_BNet_GetRAnk: Рейтинг получения
+Context_BNet_GetRAnk: Обновить рейтинг
 Context_ChangeName: Изменить имя переключателя
 Context_LoginAsSubmenu: Войти как...
 Context_UsernameSubmenu: Имя пользователя...
