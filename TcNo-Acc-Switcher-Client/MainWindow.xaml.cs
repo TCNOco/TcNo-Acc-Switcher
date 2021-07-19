@@ -145,9 +145,10 @@ namespace TcNo_Acc_Switcher_Client
 
         private void CoreWebView2OnProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
         {
-	        MessageBox.Show("The browser process has crashed! The program will now exit.", "Fatal error", MessageBoxButton.OK,
+	        MessageBox.Show("The WebView browser process has crashed! The program will now exit.", "Fatal error", MessageBoxButton.OK,
 		        MessageBoxImage.Error,
 		        MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+            Environment.Exit(1);
         }
 
         private int _refreshFixAttempts;

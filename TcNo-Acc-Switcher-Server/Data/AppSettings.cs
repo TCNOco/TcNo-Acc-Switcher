@@ -475,7 +475,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!File.Exists(StylesheetFile))
             {
                 if (File.Exists("themes\\Default.yaml"))
-	                File.Copy("themes\\Default.yaml", StylesheetFile);
+	                File.Copy("themes\\Default.yaml", StylesheetFile, true);
                 else if (File.Exists(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml")))
 	                File.Copy(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml"), StylesheetFile);
                 else

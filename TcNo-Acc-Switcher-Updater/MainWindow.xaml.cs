@@ -584,7 +584,15 @@ namespace TcNo_Acc_Switcher_Updater
             SetStatusAndLog("Verifying...");
             WriteLine("Downloading latest hash list... ");
             const string hashFilePath = "hashes.json";
-            client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
+            try
+            {
+	            client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
+            }
+            catch (WebException e)
+            {
+	            MessageBox.Show("Could not connect to tcno.co to verify files. You can try manually downloading the installer from the GitHub page, and reinstalling to update." + Environment.NewLine + Environment.NewLine + "Error: " + e, "Could not reach update server", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                Environment.Exit(1);
+            }
 
             var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
             if (verifyDictionary != null)

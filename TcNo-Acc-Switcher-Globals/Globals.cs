@@ -255,7 +255,7 @@ namespace TcNo_Acc_Switcher_Globals
 				if (Directory.Exists(cache)) RecursiveDelete(new DirectoryInfo(cache), true);
 				if (Directory.Exists(codeCache)) RecursiveDelete(new DirectoryInfo(codeCache), true);
 			}
-		    catch (Exception e)
+		    catch (Exception _)
 		    {
 				   // Clearing cache isn't REQUIRED but it's a nice-to-have.
 		    }

@@ -25,7 +25,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Shapes;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json.Linq;
@@ -102,9 +104,8 @@ namespace TcNo_Acc_Switcher_Client
 	            var lastError = await File.ReadAllLinesAsync("LastError.txt");
 	            var title = lastError[0];
 	            lastError = lastError.Skip(1).ToArray();
-	            MessageBox.Show("Last error:" + Environment.NewLine + string.Join(Environment.NewLine, lastError), title, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+	            ShowErrorMessage("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
                 File.Delete("LastError.txt");
-                Environment.Exit(1);
             }
 
             // Crash handler
@@ -209,6 +210,24 @@ namespace TcNo_Acc_Switcher_Client
 			var mainWindow = new MainWindow();
             mainWindow.ShowDialog();
         }
+
+        private static void ShowErrorMessage(string title, string text)
+        {
+	        var msg = new CustomMaterialMessageBox
+	        {
+		        TxtMessage = { Text = text, Foreground = Brushes.White },
+		        TxtTitle = { Text = title, Foreground = Brushes.White },
+		        BtnOk = { Content = "Ok" },
+		        MainContentControl = { Background = (Brush)new BrushConverter().ConvertFromString("#0E1419") },
+		        TitleBackgroundPanel = { Background = (Brush)new BrushConverter().ConvertFromString("#253340") },
+
+		        BorderBrush = (Brush)new BrushConverter().ConvertFromString("#253340"),
+                
+            };
+
+	        msg.Show();
+        }
+
 
         /// <summary>
         /// Shows error and exits program is program is already running
@@ -368,6 +387,7 @@ namespace TcNo_Acc_Switcher_Client
         /// <param name="i">Index of argument to process</param>
         private static void CliSwitch(string[] args, int i)
         {
+	        if (args.Length < i) return;
 	        if (args[i].StartsWith(@"tcno:\\")) // Launched through Protocol
 		        args[i] = '+' + args[i][7..];
 

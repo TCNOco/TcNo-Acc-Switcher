@@ -23,5 +23,81 @@ along with this program.  If not, see<https://www.gnu.org/licenses/> .-->
             <EventSetter Event="MouseLeftButtonUp" Handler="Resize_End"/>
             <EventSetter Event="MouseMove" Handler="Resizing_Form"/>
         </Style>
-    </Application.Resources>
+
+		<!-- Header bar buttons -->
+		<Style x:Key="ExitButton" TargetType="Button">
+			<Setter Property="OverridesDefaultStyle" Value="True" />
+			<Setter Property="Cursor" Value="Hand" />
+			<Setter Property="Foreground" Value="White" />
+			<Setter Property="Background" Value="#363952" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border Name="border" BorderThickness="0" BorderBrush="White" Background="{TemplateBinding Background}">
+							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Foreground" Value="Black"></Setter>
+								<Setter Property="Background" Value="Red"></Setter>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter Property="Background" Value="DarkRed"></Setter>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<Style x:Key="MinimizeButton" TargetType="Button">
+			<Setter Property="OverridesDefaultStyle" Value="True" />
+			<Setter Property="Cursor" Value="Hand" />
+			<Setter Property="Foreground" Value="White" />
+			<Setter Property="Background" Value="#253340" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border Name="border" BorderThickness="0" BorderBrush="White" Background="{TemplateBinding Background}">
+							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Background" Value="#4B4D60"></Setter>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter Property="Background" Value="#1B1D30"></Setter>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<Style x:Key="WindowResizeGrab" TargetType="Canvas">
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter Property="Cursor" Value="Hand"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+
+        <!-- Login button -->
+        <Style x:Key="OkButton" TargetType="Button">
+	        <Setter Property="OverridesDefaultStyle" Value="True" />
+	        <Setter Property="Cursor" Value="Hand" />
+	        <Setter Property="Padding" Value="70px 8px"/>
+	        <Setter Property="Background" Value="#333333"/>
+	        <Setter Property="HorizontalAlignment" Value="Right"/>
+	        <Setter Property="Template">
+		        <Setter.Value>
+			        <ControlTemplate TargetType="Button">
+				        <Border Name="border" Padding="70px 8px" BorderThickness="1" BorderBrush="Gray" Background="{TemplateBinding Background}">
+					        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+				        </Border>
+			        </ControlTemplate>
+		        </Setter.Value>
+	        </Setter>
+        </Style>
+	</Application.Resources>
 </Application>
