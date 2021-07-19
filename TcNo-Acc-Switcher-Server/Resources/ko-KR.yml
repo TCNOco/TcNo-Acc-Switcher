@@ -1,6 +1,6 @@
 ---
 Update: 업데이트 가능! 시작하려면 여기를 클릭하세요.
-Header_ChooseLanguage: '언어 선택:'
+Header_ChooseLanguage: '언어 선택'
 BattleNet_ShowSR: Overwatch SR을 보여주고 Overwatch 프로필 사진을 사용하십시오.
 Steam_ShowSteamID: SteamID 표시
 Steam_ShowVac: VAC 상태 표시
@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: 닫기 옵션
 Prompt_DiscordCopy8: 콘솔에서 사용자에게 알립니다.
 Prompt_DiscordCopy9: 정보를 복사했습니다!
 Prompt_DiscordCopy10: 계정 전환기의 입력 상자에 붙여넣어 이미지와 사용자 이름을 업데이트/설정합니다.
-Prompt_RestartAsAdmin: <h3><bold>이 프로그램은 관리자로 다시 시작됩니다.</bold></h3><p>관리자를 묻는 메시지가 표시되면 UAC에서 "예"를 누릅니다.</p>
+Prompt_RestartAsAdmin: "<h3><bold>이 프로그램은 관리자로 다시 시작됩니다.</bold></h3><p>관리자를 묻는 메시지가 표시되면 UAC에서 \"예\"를 누릅니다.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>계정을 잊어버리려고 합니다!</h3> <h4>이것은 무엇을 의미합니까?</h4> <p>- Steam은 더 이상 Big Picture 모드에 계정을 등록하지 않으며 비밀번호를 기억하지 않습니다.<br/> - TcNo Account Switcher는 Steam을 통해 다시 로그인할 때까지 더 이상 계정을 표시하지 않습니다.</p> <p>귀하의 계정은 그대로 유지됩니다. 이 컴퓨터에서는 그냥 잊어버렸습니다.</p> <h4>문제가 발생하면 어떻게 합니까?</h4> <p>당황하지 마세요. 설정 화면에서 백업을 통해 잊어버린 계정을 다시 가져올 수 있습니다.<br/> 모든 것이 예상대로 작동한다고 확신할 때 이전 백업을 제거할 수도 있습니다.</p> <h4>알겠어요?</h4>
 Prompt_ForgetAccount: >

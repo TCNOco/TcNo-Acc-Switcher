@@ -1,6 +1,6 @@
 ---
 Update: アップデートがあります！ここをクリックして開始します。
-Header_ChooseLanguage: '言語を選択:'
+Header_ChooseLanguage: '言語の選択'
 BattleNet_ShowSR: Overwatch SRを表示し、Overwatchプロフィール画像を使用します。
 Steam_ShowSteamID: SteamIDを表示
 Steam_ShowVac: VACステータスを表示する
@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: オプションを閉じる
 Prompt_DiscordCopy8: コンソールでユーザーに知らせます。
 Prompt_DiscordCopy9: 情報をコピーしました！
 Prompt_DiscordCopy10: アカウントスイッチャーの入力ボックスに貼り付けて、画像とユーザー名を更新/設定します。
-Prompt_RestartAsAdmin: <h3><bold>このプログラムは管理者として再起動します。</bold></h3><p>管理者にプロンプトが表示されたら、UACで「はい」を押してください。</p>
+Prompt_RestartAsAdmin: "<h3><bold>このプログラムは管理者として再起動します。</bold></h3><p>管理者にプロンプトが表示されたら、UACで「はい」を押してください。</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>アカウントを忘れようとしています！</h3> <h4>これは何を意味するのでしょうか？</h4> <p>--Steamのアカウントは全体像モードで表示されなくなり、パスワードを記憶しなくなります。<br/> -TcNo Account Switcherは、Steamを介して再度サインインするまで、アカウントを表示しなくなります。</p> <p>アカウントは変更されません。 このコンピューターでは忘れられています。</p> <h4>何かがうまくいかない場合はどうなりますか？</h4> <p>慌てる必要はありません。設定画面のバックアップを使用して、忘れたアカウントを元に戻すことができます。<br/> すべてが期待どおりに機能していることが確実な場合は、そこから以前のバックアップを削除することもできます。</p> <h4>わかりますか？</h4>
 Prompt_ForgetAccount: >

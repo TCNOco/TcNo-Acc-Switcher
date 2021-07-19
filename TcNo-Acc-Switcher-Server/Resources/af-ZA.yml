@@ -1,6 +1,6 @@
 ---
 Update: Opdatering beskikbaar! Klik hier om dit te begin.
-Header_ChooseLanguage: 'Kies taal:'
+Header_ChooseLanguage: 'Kies jou taal:'
 BattleNet_ShowSR: Wys Overwatch SR en gebruik die Overwatch-profielfoto.
 Steam_ShowSteamID: Wys SteamID
 Steam_ShowVac: Toon VAC-status
@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: Maak opsies toe
 Prompt_DiscordCopy8: Laat weet die gebruiker in die konsole.
 Prompt_DiscordCopy9: Inligting suksesvol gekopieer!
 Prompt_DiscordCopy10: Plak dit in die invoerboks in die rekeningskakelaar om beeld en gebruikersnaam op te dateer.
-Prompt_RestartAsAdmin: <h3><bold>Hierdie program sal weer begin as Admin</bold></h3><p>Druk "Ja" in UAC wanneer u gevra word vir admin.</p>
+Prompt_RestartAsAdmin: "<h3><bold>Hierdie program sal weer begin as Admin</bold></h3><p>Druk \"Ja\" in UAC wanneer u gevra word vir admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>U is op die punt om 'n rekening te vergeet!</h3> <h4>Wat beteken dit?</h4> <p>- Steam sal nie meer die rekening in die Big Picture Mode hê nie en sal nie wagwoord onthou nie.<br/> - TcNo Account Switcher sal ook nie meer die rekening wys nie totdat dit weer deur Steam aangemeld is.</p> <p>U rekening sal onaangeraak bly. Dit word net op hierdie rekenaar vergeet.</p> <h4>Wat as iets verkeerd loop?</h4> <p>Moenie paniekerig raak nie; u kan vergete rekeninge via rugsteun in die Instellings-skerm terugbring.<br/> U kan ook vorige rugsteune van daar verwyder as u seker is dat alles werk soos verwag.</p> <h4>Verstaan jy?</h4>
 Prompt_ForgetAccount: >

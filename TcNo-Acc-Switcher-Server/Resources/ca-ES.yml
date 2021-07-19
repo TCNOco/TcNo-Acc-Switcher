@@ -1,6 +1,6 @@
 ---
 Update: Actualització disponible! Feu clic aquí per iniciar-lo.
-Header_ChooseLanguage: 'Trieu Idioma:'
+Header_ChooseLanguage: 'Trieu la llengua:'
 BattleNet_ShowSR: Mostra Overwatch SR i utilitza la imatge de perfil de Overwatch.
 Steam_ShowSteamID: Mostra SteamID
 Steam_ShowVac: Mostra l'estat VAC
@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: Tanca les opcions
 Prompt_DiscordCopy8: Informeu l'usuari a la consola.
 Prompt_DiscordCopy9: La informació s'ha copiat correctament.
 Prompt_DiscordCopy10: Enganxeu-lo al quadre d'entrada del commutador de comptes per actualitzar / configurar la imatge i el nom d'usuari.
-Prompt_RestartAsAdmin: <h3><bold>Aquest programa es reiniciarà com a administrador</bold></h3><p>Premeu "Sí" a UAC quan se us demani l'administrador.</p>
+Prompt_RestartAsAdmin: "<h3><bold>Aquest programa es reiniciarà com a administrador</bold></h3><p>Premeu \"Sí\" a UAC quan se us demani l'administrador.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Esteu a punt d'oblidar-vos d'un compte.</h3> <h4>Què significa això?</h4> <p>- Steam deixarà de tenir el compte que apareix al mode d'imatge gran i no recordarà la contrasenya.<br/> - TcNo Account Switcher tampoc deixarà de mostrar el compte fins que no torni a iniciar la sessió a través de Steam.</p> <p>vostre compte es mantindrà intacte. Simplement s’oblida en aquest ordinador.</p> <h4>Què passa si alguna cosa surt malament?</h4> <p>No us espanteu, podeu recuperar comptes oblidats mitjançant còpies de seguretat a la pantalla Configuració.<br/> També podeu eliminar les còpies de seguretat anteriors quan estigueu segur que tot funciona com s'esperava.</p> <h4>Ho entens?</h4>
 Prompt_ForgetAccount: >

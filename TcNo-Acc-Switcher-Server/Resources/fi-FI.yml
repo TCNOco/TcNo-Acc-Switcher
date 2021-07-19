@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: Sulje asetukset
 Prompt_DiscordCopy8: Anna käyttäjän tietää konsolissa.
 Prompt_DiscordCopy9: Tiedot kopioitu onnistuneesti!
 Prompt_DiscordCopy10: Liitä se syötekenttään tilin vaihtaja päivittää / asettaa kuva ja käyttäjätunnus.
-Prompt_RestartAsAdmin: <h3><bold>Tämä ohjelma käynnistyy uudelleen ylläpitäjänä</bold></h3><p>Hit "Kyllä" UAC:ssa, kun sitä pyydetään ylläpitäjälle.</p>
+Prompt_RestartAsAdmin: "<h3><bold>Tämä ohjelma käynnistyy uudelleen ylläpitäjänä</bold></h3><p>Hit \"Kyllä\" UAC:ssa, kun sitä pyydetään ylläpitäjälle.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Olet aikeissa unohtaa tilin!</h3> <h4>Mitä tämä tarkoittaa?</h4> <p>- Steam ei enää ole Big Picture -tilassa listattua tiliä eikä muista salasanaa.<br/> - TcNo Tilin vaihtaja ei enää näytä tiliä, ennen kuin se on jälleen allekirjoitettu Steamin kautta.</p> <p>Tilisi pysyy koskemattomana. Se on vain unohdettu tällä tietokoneella.</p> <h4>Mitä jos jokin menee pieleen?</h4> <p>Älä paniikki, voit tuoda takaisin unohdettuja tilejä varmuuskopioiden kautta Asetukset-näytössä.<br/> Voit myös poistaa aiemmat varmuuskopiot sieltä, kun olet varma, että kaikki toimii odotetulla tavalla.</p> <h4>Ymmärrätkö sen?</h4>
 Prompt_ForgetAccount: >

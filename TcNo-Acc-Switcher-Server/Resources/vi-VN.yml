@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: Đóng các tùy chọn
 Prompt_DiscordCopy8: Cho người dùng biết trong bảng điều khiển.
 Prompt_DiscordCopy9: Đã sao chép thông tin thành công!
 Prompt_DiscordCopy10: Dán nó vào hộp nhập trong trình chuyển đổi tài khoản để cập nhật / đặt hình ảnh và tên người dùng.
-Prompt_RestartAsAdmin: <h3><bold>Chương trình này sẽ khởi động lại với tư cách Quản trị viên</bold></h3><p>Nhấn "Có" trong UAC khi được nhắc quản trị viên.</p>
+Prompt_RestartAsAdmin: "<h3><bold>Chương trình này sẽ khởi động lại với tư cách Quản trị viên</bold></h3><p>Nhấn \"Có\" trong UAC khi được nhắc quản trị viên.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Bạn sắp quên tài khoản!</h3> <h4>Điều này có nghĩa là gì?</h4> <p>- Steam sẽ không còn tài khoản được liệt kê ở Chế độ ảnh lớn và sẽ không ghi nhớ mật khẩu.<br/> - TcNo Account Switcher cũng sẽ không hiển thị tài khoản nữa, cho đến khi tài khoản được đăng nhập lại thông qua Steam.</p> <p>Tài khoản của bạn sẽ không bị ảnh hưởng. Nó chỉ bị quên trên máy tính này.</p> <h4>Điều gì sẽ xảy ra nếu có sự cố?</h4> <p>Đừng lo lắng, bạn có thể khôi phục các tài khoản đã quên thông qua bản sao lưu trong màn hình Cài đặt.<br/> Bạn cũng có thể xóa các bản sao lưu trước đó từ đó khi bạn chắc chắn rằng mọi thứ đang hoạt động như mong đợi.</p> <h4>Bạn có hiểu không?</h4>
 Prompt_ForgetAccount: >

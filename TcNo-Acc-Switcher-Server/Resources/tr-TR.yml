@@ -1,17 +1,17 @@
 ---
-Update: Güncelleme uygun! Başlamak için buraya tıklayın.
+Update: Güncelleme mevcut! Başlatmak için buraya tıklayın.
 Header_ChooseLanguage: 'Dil Seçin:'
 BattleNet_ShowSR: Overwatch SR'yi gösterin ve Overwatch profil resmini kullanın.
 Steam_ShowSteamID: SteamID'yi göster
 Steam_ShowVac: VAC durumunu göster
-Steam_CheckVac: Hesap VAC durumunu kontrol edin
+Steam_CheckVac: Hesap VAC durumunu kontrol et
 Steam_ShowLimited: Sınırlı Durumu Göster
 Steam_ShowAccUsername: Hesap kullanıcı adını göster
 Steam_Tray_AccountName: Hesap adını göster [arkadaş adı değil]
 Button_AddNew: Yeni ekle
 Button_SaveCurrent: Mevcut Kaydet
 Button_SaveFile: Dosyayı kaydet
-Button_Cancel: İptal etmek
+Button_Cancel: İptal et
 Button_Login: Oturum aç
 Button_Close: Kapat
 Button_RefreshImages: Resimleri yenile
@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: Seçenekleri kapat
 Prompt_DiscordCopy8: Kullanıcıya konsolda bildirin.
 Prompt_DiscordCopy9: Bilgi başarıyla kopyalandı!
 Prompt_DiscordCopy10: Resmi ve kullanıcı adını güncellemek/ayarlamak için hesap değiştiricideki giriş kutusuna yapıştırın.
-Prompt_RestartAsAdmin: <h3><bold>Bu program Yönetici olarak yeniden başlayacak.</bold></h3><p>Yönetici istendiğinde UAC'de "Evet"e basın.</p>
+Prompt_RestartAsAdmin: "<h3><bold>Bu program Yönetici olarak yeniden başlayacak.</bold></h3><p>Yönetici istendiğinde UAC'de \"Evet\"e basın.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Bir hesabı unutmak üzeresiniz!</h3> <h4>Bu ne anlama geliyor?</h4> <p>- Steam, artık Büyük Resim Modunda listelenen hesaba sahip olmayacak ve Parolayı Hatırlamayacaktır.<br/> - TcNo Account Switcher, Steam üzerinden tekrar oturum açılana kadar hesabı artık göstermeyecek.</p> <p>Hesabınıza dokunulmayacak. Sadece bu bilgisayarda unutuldu.</p> <h4>Ya bir şeyler ters giderse?</h4> <p>Panik yapmayın, unutulan hesapları Ayarlar ekranından yedekler ile geri getirebilirsiniz.<br/> Ayrıca her şeyin beklendiği gibi çalıştığından emin olduğunuzda önceki yedekleri de oradan kaldırabilirsiniz.</p> <h4>Anlıyor musun?</h4>
 Prompt_ForgetAccount: >

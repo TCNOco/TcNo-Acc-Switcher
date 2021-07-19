@@ -1,6 +1,6 @@
 ---
 Update: Update beschikbaar! Klik hier om te starten.
-Header_ChooseLanguage: 'Kies een taal:'
+Header_ChooseLanguage: 'Kies taal:'
 BattleNet_ShowSR: Toon Overwatch SR en gebruik de profielfoto van Overwatch
 Steam_ShowSteamID: Toon SteamID
 Steam_ShowVac: Toon VAC-status
@@ -237,7 +237,7 @@ Prompt_DiscordCopy7: Sluit opties
 Prompt_DiscordCopy8: Laat de gebruiker weten in de console.
 Prompt_DiscordCopy9: Informatie succesvol gekopieerd.
 Prompt_DiscordCopy10: Plak het in het invoervak in de account-wisselaar om de afbeelding en gebruikersnaam bij te werken/in te stellen.
-Prompt_RestartAsAdmin: <h3><bold>Dit programma zal opnieuw opstarten als Admin</bold></h3><p>Druk op "Ja" in UAC, wanneer gevraagd wordt om admin.</p>
+Prompt_RestartAsAdmin: "<h3><bold>Dit programma zal opnieuw opstarten als Admin</bold></h3><p>Druk op \"Ja\" in UAC, wanneer gevraagd wordt om admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Je staat op het punt een account te vergeten!</h3> <h4>Wat betekent dit?</h4> <p>- Steam heeft het account niet langer in de Big Picture modus staan en onthoudt wachtwoord niet.<br/> - TcNo Account Switcher zal ook de account niet meer tonen, totdat het opnieuw is aangemeld via Steam.</p> <p>Je account blijft onaangeroerd. Het is gewoon vergeten op deze computer.</p> <h4>Wat als er iets misgaat?</h4> <p>Niet paniek, u kunt vergeten accounts meenemen via back-ups in het instellingenscherm.<br/> U kunt de vorige back-ups daar ook verwijderen als u zeker weet dat alles werkt zoals verwacht.</p> <h4>Begrijp je?</h4>
 Prompt_ForgetAccount: >
