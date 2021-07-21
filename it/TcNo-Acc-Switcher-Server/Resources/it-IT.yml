@@ -1,27 +1,27 @@
 ---
-Update: Aggiornamento disponibile! Clicca qui per iniziare.
+Update: Aggiornamento disponibile! Clicca qui per avviarlo.
 Header_ChooseLanguage: 'Scegli Lingua:'
-BattleNet_ShowSR: Mostra Overwatch SR e utilizza l'immagine del profilo di Overwatch.
+BattleNet_ShowSR: Mostra Overwatch SR e usa l'immagine del profilo di Overwatch.
 Steam_ShowSteamID: Mostra SteamID
 Steam_ShowVac: Mostra stato VAC
-Steam_CheckVac: Controlla lo stato VAC dell'account
+Steam_CheckVac: Controlla lo stato VAC del profilo
 Steam_ShowLimited: Mostra Stato Limitato
-Steam_ShowAccUsername: Mostra nome utente account
-Steam_Tray_AccountName: Mostra il nome dell'account [non il nome dell'amico]
+Steam_ShowAccUsername: Mostra nome utente del profilo
+Steam_Tray_AccountName: Mostra il nome del profilo [non il nome amico]
 Button_AddNew: Aggiungi Nuovo
 Button_SaveCurrent: Salva Corrente
 Button_SaveFile: Salva File
 Button_Cancel: Annulla
 Button_Login: Accedi
 Button_Close: Chiudi
-Button_RefreshImages: Aggiorna immagini
+Button_RefreshImages: Ricarica immagini
 Button_ResetSettings: Ripristina impostazioni
 Button_AdvancedCleaning: Pulizia avanzata...
-Button_ClearLog: Cancella log
+Button_ClearLog: Cancella registro
 Button_WikiInfo: Ulteriori Informazioni (Wiki)
-Button_ClearDiscordCache: Cancella Cache Discord
+Button_ClearDiscordCache: Cancella la Cache di Discord
 Settings_Shortcut: ' {platform} Collegamento Desktop Switcher'
-Settings_Admin: Esegui {platform} come amministratore
+Settings_Admin: Esegui {platform} come Amministratore
 Settings_ImageExpiry: 'Giorni prima della scadenza delle immagini del profilo:'
 Settings_Header_AppWide: Impostazioni dell'app
 Settings_Header_GeneralSettings: Impostazioni generali
