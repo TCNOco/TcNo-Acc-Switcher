@@ -3,12 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TcNo_Acc_Switcher_Client"
+        xmlns:tcNoAccSwitcherClient="clr-namespace:TcNo_Acc_Switcher_Client"
         mc:Ignorable="d"
-        Title="CustomMessageBox" Width="Auto" Height="Auto"
+        Title="CustomMessageBox"
         MinHeight="180" MinWidth="510"
-        Background="#253340">
-	<Grid Width="Auto" Height="Auto">
+		Height="250" Width="650"
+        Background="#253340" d:DesignWidth="510.5" d:DesignHeight="190.5">
+	<Grid Name="MainContent" Width="Auto" Height="Auto">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
@@ -19,8 +20,8 @@
 		</Grid.RowDefinitions>
 
 		<!-- Row 0: Header -->
-		<Border MouseDown="DragWindow" Grid.Row="0" Background="#253340" Height="30" Panel.ZIndex="3"/>
-		<Label Panel.ZIndex="3" IsHitTestVisible="False" Name="HeaderInstruction" Grid.Row="0" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="Error message"/>
+        <Border Name="HeaderBg" MouseDown="DragWindow" Grid.Row="0" Style="{StaticResource Headerbar}" Background="#14151E" Height="30" Panel.ZIndex="3"/>
+        <Label Panel.ZIndex="3" IsHitTestVisible="False" Style="{StaticResource HeaderbarLabel}" Name="HeaderInstruction" Grid.Row="0" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Content="Error message"/>
 		<Canvas Grid.Row="0" Panel.ZIndex="3" IsHitTestVisible="False"  Name="Svg3861" Width="29" Height="10" HorizontalAlignment="Left" Margin="5 0 0 0">
 			<Canvas.RenderTransform>
 				<TranslateTransform X="0" Y="0"/>
@@ -31,10 +32,10 @@
 			<Path  Name="N1" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M15.053 0l0 9.135l2.117 0l0 -3.844l4.471 4.709l0 -9.135l-2.117 0l0 3.846l-4.471 -4.711Z"/>
 			<Path  Name="N2" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M17.016 0.865l1.932 2.02l0 -2.02l-1.932 0Z"/>
 			<Path  Name="C" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M7.697 0.841l0 8.318l6.25 0l0 -2.067l-4.134 0l0 -4.088l4.134 0l0 -2.163l-6.25 0"/>
-			<Path  Name="T" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M0.341 0.841l0 2.117l1.78 0l0 6.201l2.115 0l0 -6.201l2.702 0l0 -2.117l-6.597 0Z"/>
-		</Canvas>
-		<Button Panel.ZIndex="3" Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Style="{StaticResource MinimizeButton}" Click="BtnMinimize"></Button>
-		<Button Panel.ZIndex="3" Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Style="{StaticResource ExitButton}" Click="BtnExit"></Button>
+            <Path  Name="T" Fill="#FFFFFFFF" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="M0.341 0.841l0 2.117l1.78 0l0 6.201l2.115 0l0 -6.201l2.702 0l0 -2.117l-6.597 0Z"/>
+        </Canvas>
+        <Button x:Name="BtnMin" Style="{StaticResource BtnMin}" Panel.ZIndex="3" Grid.Row="0" Content="-" HorizontalAlignment="Right" Margin="0 0 30px 0" Width="30px" Height="30px" Foreground="white" BorderThickness="0" Click="BtnMinimize"></Button>
+        <Button x:Name="BtnClose" Style="{StaticResource BtnClose}" Panel.ZIndex="3" Grid.Row="0" Content="X" HorizontalAlignment="Right" Width="30px" Height="30px" Background="#363952" Foreground="white" Click="BtnExit" BorderThickness="0"></Button>
 		<Grid Grid.Row="1" Width="Auto" Height="Auto">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="100px"/>
@@ -44,11 +45,11 @@
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
 			<Canvas Grid.Row="0" Panel.ZIndex="3" IsHitTestVisible="False"  Name="SvgX" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5 0 0 0" Width="60" Height="80">
-				<Path Name="CrossIcon" Fill="#FFFF0000" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="F1 M352,512z M0,0z M242.72,256L342.79,155.93C355.07,143.65,355.07,123.74,342.79,111.45L320.55,89.21C308.27,76.93,288.36,76.93,276.07,89.21L176,189.28 75.93,89.21C63.65,76.93,43.74,76.93,31.45,89.21L9.21,111.45C-3.07,123.73,-3.07,143.64,9.21,155.93L109.28,256 9.21,356.07C-3.07,368.35,-3.07,388.26,9.21,400.55L31.45,422.79C43.73,435.07,63.65,435.07,75.93,422.79L176,322.72 276.07,422.79C288.35,435.07,308.27,435.07,320.55,422.79L342.79,400.55C355.07,388.27,355.07,368.36,342.79,356.07L242.72,256z" Width="60" Height="80" Stretch="Fill"/>
+                <Path Name="CrossIcon" Style="{StaticResource CrossIcon}" StrokeMiterLimit="2" StrokeLineJoin="Round" Data="F1 M352,512z M0,0z M242.72,256L342.79,155.93C355.07,143.65,355.07,123.74,342.79,111.45L320.55,89.21C308.27,76.93,288.36,76.93,276.07,89.21L176,189.28 75.93,89.21C63.65,76.93,43.74,76.93,31.45,89.21L9.21,111.45C-3.07,123.73,-3.07,143.64,9.21,155.93L109.28,256 9.21,356.07C-3.07,368.35,-3.07,388.26,9.21,400.55L31.45,422.79C43.73,435.07,63.65,435.07,75.93,422.79L176,322.72 276.07,422.79C288.35,435.07,308.27,435.07,320.55,422.79L342.79,400.55C355.07,388.27,355.07,368.36,342.79,356.07L242.72,256z" Width="60" Height="80" Stretch="Fill"/>
 			</Canvas>
-			<TextBox Grid.Column="1"  Background="#00000000" Margin="5px 0 5px 5px" Foreground="White" Width="Auto">
+            <TextBox Name="Message" Grid.Column="1" Foreground="White" Background="#00000000" Style="{StaticResource ErrorMessageBox}" Margin="5px 0 5px 5px" Width="Auto">
 			</TextBox>
 		</Grid>
-		<Button Grid.Row="2" Name="ButtonOk" Margin="0 0 5px 5px" Foreground="White" Style="{StaticResource OkButton}" MouseEnter="btnOk_MouseEnter" MouseLeave="btnOk_MouseLeave">OK</Button>
+        <Button Grid.Row="2" Name="ButtonOk" Margin="0 0 5px 5px" Style="{StaticResource OkButton}" Click="ButtonOk_OnClick">OK</Button>
 	</Grid>
 </Window>

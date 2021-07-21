@@ -152,6 +152,9 @@ notification-color-error-lighter: "#17132C"
 updateBarBackground: "#FFAA00"
 updateBarColor: black
 
+# Popup (messagebox) options:
+popupIconErrorFill: red
+
 # ------------
 # Platform specific options:
 # ------------

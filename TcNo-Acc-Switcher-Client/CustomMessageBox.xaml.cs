@@ -15,26 +15,28 @@ using System.Windows.Shapes;
 
 namespace TcNo_Acc_Switcher_Client
 {
-	/// <summary>
-	/// Interaction logic for CustomMessageBox.xaml
-	/// </summary>
-	public partial class CustomMessageBox : Window
+    /// <summary>
+    /// Interaction logic for CustomMessageBox.xaml
+    /// </summary>
+    public partial class CustomMessageBox : Window
 	{
-		private void btnOk_MouseEnter(object sender, MouseEventArgs e) =>
-			ButtonOk.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? Colors.Green : _defaultGray);
-
-		private void btnOk_MouseLeave(object sender, MouseEventArgs e) =>
-			ButtonOk.Background = new SolidColorBrush(MainViewmodel.SelectedSteamUser != null ? _darkGreen : _defaultGray);
-        private void BtnExit(object sender, RoutedEventArgs e) =>
-			WindowHandling.BtnExit(sender, e, this);
-		private void BtnMinimize(object sender, RoutedEventArgs e) =>
+		private void BtnExit(object sender, RoutedEventArgs e) =>
+	        Close();
+        private void BtnMinimize(object sender, RoutedEventArgs e) =>
 			WindowHandling.BtnMinimize(sender, e, this);
 		private void DragWindow(object sender, MouseButtonEventArgs e) =>
 			WindowHandling.DragWindow(sender, e, this);
-
-		public CustomMessageBox()
+        
+        public CustomMessageBox(string title, string text)
 		{
 			InitializeComponent();
+			HeaderInstruction.Content = title;
+			Message.Text = text;
+        }
+
+		private void ButtonOk_OnClick(object sender, RoutedEventArgs e)
+		{
+			Close();
 		}
 	}
 

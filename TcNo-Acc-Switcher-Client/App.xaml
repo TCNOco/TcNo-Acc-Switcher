@@ -12,69 +12,105 @@ along with this program.  If not, see<https://www.gnu.org/licenses/> .-->
 
 <Application x:Class="TcNo_Acc_Switcher_Client.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:tcNoAccSwitcherClient="clr-namespace:TcNo_Acc_Switcher_Client">
     <Application.Resources>
-        <!-- https://stackoverflow.com/a/27157947/5165437 -->
-        <Style x:Key="RectBorderStyle" TargetType="Rectangle">
-            <Setter Property="Focusable" Value="False" />
-            <Setter Property="Fill" Value="Transparent" />
-            <Setter Property="Tag" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
-            <EventSetter Event="MouseLeftButtonDown" Handler="Resize_Init"/>
-            <EventSetter Event="MouseLeftButtonUp" Handler="Resize_End"/>
-            <EventSetter Event="MouseMove" Handler="Resizing_Form"/>
+        <SolidColorBrush x:Key="HeaderbarBackground" />
+        <SolidColorBrush x:Key="HeaderbarForeground" />
+
+        <SolidColorBrush x:Key="MainBackground" />
+        <SolidColorBrush x:Key="MessageForeground" />
+
+        <SolidColorBrush x:Key="IconFill" />
+
+        <SolidColorBrush x:Key="BtnBackground" />
+        <SolidColorBrush x:Key="BtnBackgroundHover" />
+        <SolidColorBrush x:Key="BtnBackgroundActive" />
+        <SolidColorBrush x:Key="BtnForeground" />
+        <SolidColorBrush x:Key="BtnBorder" />
+        <SolidColorBrush x:Key="BtnBorderHover" />
+        <SolidColorBrush x:Key="BtnBorderActive" />
+
+        <SolidColorBrush x:Key="MinBackground" />
+        <SolidColorBrush x:Key="MinBackgroundHover" />
+        <SolidColorBrush x:Key="MinBackgroundActive" />
+
+        <SolidColorBrush x:Key="CloseBackgroundHover" />
+        <SolidColorBrush x:Key="CloseBackgroundActive" />
+
+
+        <!-- Header bar buttons -->
+        <Style x:Key="BtnClose" TargetType="Button">
+			<Setter Property="OverridesDefaultStyle" Value="True" />
+			<Setter Property="Cursor" Value="Hand" />
+			<Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="{DynamicResource MinBackground}" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border Name="border" BorderThickness="0" BorderBrush="White" Background="{TemplateBinding Background}">
+							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Foreground" Value="White"></Setter>
+                                <Setter Property="Background" Value="{DynamicResource CloseBackgroundHover}"></Setter>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource CloseBackgroundActive}"></Setter>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+        <Style x:Key="BtnMin" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="{DynamicResource MinBackground}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" BorderThickness="0" BorderBrush="White" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource MinBackgroundHover}"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource MinBackgroundActive}"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
-		<!-- Header bar buttons -->
-		<Style x:Key="ExitButton" TargetType="Button">
-			<Setter Property="OverridesDefaultStyle" Value="True" />
-			<Setter Property="Cursor" Value="Hand" />
-			<Setter Property="Foreground" Value="White" />
-			<Setter Property="Background" Value="#363952" />
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="Button">
-						<Border Name="border" BorderThickness="0" BorderBrush="White" Background="{TemplateBinding Background}">
-							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-						</Border>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsMouseOver" Value="True">
-								<Setter Property="Foreground" Value="Black"></Setter>
-								<Setter Property="Background" Value="Red"></Setter>
-							</Trigger>
-							<Trigger Property="IsPressed" Value="True">
-								<Setter Property="Background" Value="DarkRed"></Setter>
-							</Trigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+        <Style x:Key="CrossIcon" TargetType="Path">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Fill" Value="{DynamicResource IconFill}" />
+        </Style>
 
-		<Style x:Key="MinimizeButton" TargetType="Button">
-			<Setter Property="OverridesDefaultStyle" Value="True" />
-			<Setter Property="Cursor" Value="Hand" />
-			<Setter Property="Foreground" Value="White" />
-			<Setter Property="Background" Value="#253340" />
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="Button">
-						<Border Name="border" BorderThickness="0" BorderBrush="White" Background="{TemplateBinding Background}">
-							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-						</Border>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsMouseOver" Value="True">
-								<Setter Property="Background" Value="#4B4D60"></Setter>
-							</Trigger>
-							<Trigger Property="IsPressed" Value="True">
-								<Setter Property="Background" Value="#1B1D30"></Setter>
-							</Trigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+        <Style x:Key="Headerbar" TargetType="Border">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Background" Value="{DynamicResource HeaderbarBackground}" />
+        </Style>
 
-		<Style x:Key="WindowResizeGrab" TargetType="Canvas">
+        <Style x:Key="HeaderbarLabel" TargetType="Label">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Background" Value="{DynamicResource HeaderbarForeground}" />
+        </Style>
+
+        <Style x:Key="ErrorMessageBox" TargetType="TextBox">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Background" Value="{DynamicResource MainBackground}" />
+            <Setter Property="Foreground" Value="{DynamicResource MessageForeground}" />
+        </Style>
+
+        <Style x:Key="WindowResizeGrab" TargetType="Canvas">
 			<Style.Triggers>
 				<Trigger Property="IsMouseOver" Value="True">
 					<Setter Property="Cursor" Value="Hand"/>
@@ -87,16 +123,27 @@ along with this program.  If not, see<https://www.gnu.org/licenses/> .-->
 	        <Setter Property="OverridesDefaultStyle" Value="True" />
 	        <Setter Property="Cursor" Value="Hand" />
 	        <Setter Property="Padding" Value="70px 8px"/>
-	        <Setter Property="Background" Value="#333333"/>
+            <Setter Property="Background" Value="{DynamicResource BtnBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource BtnForeground}"></Setter>
 	        <Setter Property="HorizontalAlignment" Value="Right"/>
 	        <Setter Property="Template">
 		        <Setter.Value>
 			        <ControlTemplate TargetType="Button">
-				        <Border Name="border" Padding="70px 8px" BorderThickness="1" BorderBrush="Gray" Background="{TemplateBinding Background}">
+                        <Border Name="border" Padding="70px 8px" BorderThickness="1" BorderBrush="{DynamicResource BtnBorder}" Background="{TemplateBinding Background}">
 					        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-				        </Border>
-			        </ControlTemplate>
-		        </Setter.Value>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource BtnBackgroundHover}"></Setter>
+                                <Setter Property="BorderBrush" Value="{DynamicResource BtnBorderHover}"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource BtnBackgroundActive}"></Setter>
+                                <Setter Property="BorderBrush" Value="{DynamicResource BtnBorderActive}"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
 	        </Setter>
         </Style>
 	</Application.Resources>

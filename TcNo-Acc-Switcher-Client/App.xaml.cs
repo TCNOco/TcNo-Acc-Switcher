@@ -99,15 +99,6 @@ namespace TcNo_Acc_Switcher_Client
 
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
 
-            if (File.Exists("LastError.txt"))
-            {
-	            var lastError = await File.ReadAllLinesAsync("LastError.txt");
-	            var title = lastError[0];
-	            lastError = lastError.Skip(1).ToArray();
-	            ShowErrorMessage("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
-                File.Delete("LastError.txt");
-            }
-
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             // Upload crash logs if any, before starting program
@@ -208,26 +199,78 @@ namespace TcNo_Acc_Switcher_Client
 
 			// Show window (Because no command line commands were parsed)
 			var mainWindow = new MainWindow();
-            mainWindow.ShowDialog();
+            mainWindow.Show();
+
+            if (File.Exists("LastError.txt"))
+            {
+	            var lastError = await File.ReadAllLinesAsync("LastError.txt");
+	            lastError = lastError.Skip(1).ToArray();
+	            ShowErrorMessage("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
+	            File.Delete("LastError.txt");
+            }
         }
 
         private static void ShowErrorMessage(string title, string text)
         {
-	        var msg = new CustomMaterialMessageBox
-	        {
-		        TxtMessage = { Text = text, Foreground = Brushes.White },
-		        TxtTitle = { Text = title, Foreground = Brushes.White },
-		        BtnOk = { Content = "Ok" },
-		        MainContentControl = { Background = (Brush)new BrushConverter().ConvertFromString("#0E1419") },
-		        TitleBackgroundPanel = { Background = (Brush)new BrushConverter().ConvertFromString("#253340") },
+            var f = GetStylesheetColor("buttonBorderMessageForeground", "#888888");
 
-		        BorderBrush = (Brush)new BrushConverter().ConvertFromString("#253340"),
-                
+            var cmb = new CustomMessageBox(title, text)
+            {
+                Topmost = true,
+                Resources =
+                {
+                    ["HeaderbarBackground"] = GetStylesheetColor("headerbarBackground", "#14151E"),
+                    ["HeaderbarBackground"] = GetStylesheetColor("windowTitleColor", "#FFFFFF"),
+                    ["MainBackground"] = GetStylesheetColor("mainBackground", "#28293A"),
+                    ["MessageForeground"] = GetStylesheetColor("defaultTextColor", "#FFFFFF"),
+                    ["IconFill"] = GetStylesheetColor("popupIconErrorFill", "red"),
+                    ["BtnBackground"] = GetStylesheetColor("buttonBackground", "#333333"),
+                    ["BtnBackgroundHover"] = GetStylesheetColor("buttonBackground-hover", "#888888"),
+                    ["BtnBackgroundActive"] = GetStylesheetColor("buttonBackground-active", "#888888"),
+                    ["BtnForeground"] = GetStylesheetColor("buttonColor", "#FFFFFF"),
+                    ["BtnBorder"] = GetStylesheetColor("buttonBorderMessageForeground", "#888888"),
+                    ["BtnBorderHover"] = GetStylesheetColor("buttonBorder-hover", "#888888"),
+                    ["BtnBorderActive"] = GetStylesheetColor("buttonBorder-active", "#FFAA00"),
+                    ["MinBackground"] = GetStylesheetColor("windowControlsBackground", "#14151E"),
+                    ["MinBackgroundHover"] = GetStylesheetColor("windowControlsBackground-hover", "#181924"),
+                    ["MinBackgroundActive"] = GetStylesheetColor("windowControlsBackground-active", "#1f202e"),
+                    ["CloseBackgroundHover"] = GetStylesheetColor("windowControlsCloseBackground", "#E81123"),
+                    ["CloseBackgroundActive"] = GetStylesheetColor("windowControlsCloseBackground-active", "#F1707A")
+                }
             };
 
-	        msg.Show();
+
+
+
+
+            cmb.ShowDialog();
         }
 
+        private static SolidColorBrush GetStylesheetColor(string key, string fallback)
+        {
+            string color;
+            try
+            {
+                color = AppSettings.Instance.Stylesheet[key];
+            }
+            catch (Exception)
+            {
+                color = "";
+            }
+
+
+            var returnColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString(fallback)!);
+            if (!color.StartsWith("#")) return returnColor;
+            try
+            {
+                returnColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color)!);
+            }
+            catch (Exception)
+            {
+                // Failed to set color
+            }
+            return returnColor;
+        }
 
         /// <summary>
         /// Shows error and exits program is program is already running
