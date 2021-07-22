@@ -4,7 +4,7 @@ Header_ChooseLanguage: 'Выберите язык:'
 BattleNet_ShowSR: Показать Overwatch SR и использовать изображение профиля Overwatch.
 Steam_ShowSteamID: Показывать SteamID
 Steam_ShowVac: Показывать статус VAC
-Steam_CheckVac: Проверить состояние VAC
+Steam_CheckVac: Проверить VAC статус
 Steam_ShowLimited: Показать ограниченный статус
 Steam_ShowAccUsername: Показывать имя пользователя
 Steam_Tray_AccountName: Показывать имя учетной записи [не имя друга]
@@ -130,7 +130,7 @@ Modal_Info_Version: Версия
 Modal_Info_ViewGitHub: Посмотреть на GitHub
 Modal_Info_BugReport: Отчет об ошибке/запрос функции
 Modal_Info_VisitSite: Посетить tcno.co
-Modal_Info_Disclaimer: Оговорка
+Modal_Info_Disclaimer: Отказ от ответственности
 Modal_Title_Info: Информация о переключении аккаунта TcNo
 Modal_Title_ChangeUsername: Изменить имя пользователя
 Modal_Title_ConfirmAction: TcNo переключение аккаунта подтвердите действие
