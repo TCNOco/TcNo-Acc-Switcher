@@ -69,8 +69,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         /// Restart Epic with a new account selected. Leave args empty to log into a new account.
         /// </summary>
         /// <param name="accName">(Optional) User's login username</param>
+        /// <param name="args">Starting arguments</param>
         [SupportedOSPlatform("windows")]
-        public static void SwapEpicAccounts(string accName = "")
+        public static void SwapEpicAccounts(string accName = "", string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.SwapEpicAccounts] Swapping to: hidden.");
             AppData.InvokeVoidAsync("updateStatus", "Closing Epic");
@@ -83,7 +84,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             }
             AppData.InvokeVoidAsync("updateStatus", "Starting Epic");
 
-            GeneralFuncs.StartProgram(Epic.Exe(), Epic.Admin);
+            GeneralFuncs.StartProgram(Epic.Exe(), Epic.Admin, args);
 
             Globals.RefreshTrayArea();
         }

@@ -129,14 +129,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             Globals.RemoveTrayUser("Riot", accName); // Add to Tray list
             return true;
         }
-        
+
+        /// <summary>
+        /// Arguments set by CLI, for use when starting Riot games.
+        /// </summary>
+        private static string _startArguments = "";
+
         /// <summary>
         /// Restart Riot with a new account selected. Leave args empty to log into a new account.
         /// </summary>
         /// <param name="accName">(Optional) User's login username</param>
-        public static void SwapRiotAccounts(string accName)
+        /// <param name="args">Starting arguments</param>
+        public static void SwapRiotAccounts(string accName, string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.SwapRiotAccounts] Swapping to: hidden.");
+            _startArguments = " " + args;
+
             AppData.InvokeVoidAsync("updateStatus", "Closing Riot");
             if (!CloseRiot()) return;
             ClearCurrentLoginRiot();
@@ -246,17 +254,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             {
                 case 'l':
                     dir = Riot.LeagueRiotDir;
-                    args = "--launch-product=league_of_legends --launch-patchline=live";
+                    args = "--launch-product=league_of_legends --launch-patchline=live" + _startArguments;
                     name = "League of Legends";
                     break;
                 case 'r':
                     dir = Riot.RuneterraRiotDir;
-                    args = "--launch-product=bacon --launch-patchline=live";
+                    args = "--launch-product=bacon --launch-patchline=live" + _startArguments;
                     name = "Legends of Runeterra";
                     break;
                 case 'v':
                     dir = Riot.ValorantRiotDir;
-                    args = "--launch-product=valorant --launch-patchline=live";
+                    args = "--launch-product=valorant --launch-patchline=live" + _startArguments;
                     name = "Valorant";
                     break;
             }

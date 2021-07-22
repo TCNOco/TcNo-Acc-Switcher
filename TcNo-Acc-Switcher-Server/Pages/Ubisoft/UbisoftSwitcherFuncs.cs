@@ -281,7 +281,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         /// </summary>
         /// <param name="userId">User's UserId</param>
         /// <param name="state">(Optional) State of user. 0 is online, anything else if Offline</param>
-        public static void SwapUbisoftAccounts(string userId, int state)
+        /// <param name="args">Starting arguments</param>
+        public static void SwapUbisoftAccounts(string userId, int state, string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.SwapUbisoftAccounts] Swapping to:hidden.");
             AppData.InvokeVoidAsync("updateStatus", "Closing Ubisoft");
@@ -298,7 +299,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             AppData.InvokeVoidAsync("updateStatus", "Starting Ubisoft");
             
-            GeneralFuncs.StartProgram(Ubisoft.Exe(), Ubisoft.Admin);
+            GeneralFuncs.StartProgram(Ubisoft.Exe(), Ubisoft.Admin, args);
 
             Globals.RefreshTrayArea();
         }

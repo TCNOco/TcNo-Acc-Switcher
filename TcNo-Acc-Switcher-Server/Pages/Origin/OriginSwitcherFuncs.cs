@@ -63,7 +63,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// </summary>
         /// <param name="accName">(Optional) User's login username</param>
         /// <param name="state">(Optional) 10 = Invisible, 0 = Default</param>
-        public static void SwapOriginAccounts(string accName, int state)
+        /// <param name="args">Starting arguments</param>
+        public static void SwapOriginAccounts(string accName, int state, string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: hidden.");
             AppData.InvokeVoidAsync("updateStatus", "Closing Origin");
@@ -80,7 +81,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             }
             AppData.InvokeVoidAsync("updateStatus", "Starting Origin");
             
-            GeneralFuncs.StartProgram(Origin.Exe(), Origin.Admin);
+            GeneralFuncs.StartProgram(Origin.Exe(), Origin.Admin, args);
 
             Globals.RefreshTrayArea();
         }

@@ -437,6 +437,7 @@ namespace TcNo_Acc_Switcher_Client
             var command = args[i][1..].Split(':'); // Drop '+' and split
             var platform = command[0];
             var account = command[1];
+            var remainingArguments = args[1..];
             var combinedArgs = string.Join(' ', args);
 
             switch (platform[^1..])
@@ -449,7 +450,7 @@ namespace TcNo_Acc_Switcher_Client
 		            if (!GeneralFuncs.CanKillProcess("Battle.net"))
 			            RestartAsAdmin(combinedArgs);
 		            BattleNet.Instance.LoadFromFile();
-		            _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account);
+		            _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account, string.Join(' ', remainingArguments));
 		            return;
 	            }
 	            // Discord
@@ -495,7 +496,7 @@ namespace TcNo_Acc_Switcher_Client
 		            if (!GeneralFuncs.CanKillProcess("Discord"))
 			            RestartAsAdmin(combinedArgs);
 		            Discord.Instance.LoadFromFile();
-			        TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherFuncs.SwapDiscordAccounts(account);
+			        TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherFuncs.SwapDiscordAccounts(account, string.Join(' ', remainingArguments));
 						
 		            return;
 	            }
@@ -506,7 +507,7 @@ namespace TcNo_Acc_Switcher_Client
 		            Globals.WriteToLog("Epic Games switch requested");
 		            if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) RestartAsAdmin(combinedArgs);
 		            Epic.Instance.LoadFromFile();
-		            TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account);
+		            TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account, string.Join(' ', remainingArguments));
 		            return;
 	            }
 	            // Origin
@@ -517,7 +518,7 @@ namespace TcNo_Acc_Switcher_Client
 		            if (!GeneralFuncs.CanKillProcess("Origin")) RestartAsAdmin(combinedArgs);
 		            Origin.Instance.LoadFromFile();
 		            TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account,
-			            command.Length > 2 ? int.Parse(command[2]) : 0);
+			            command.Length > 2 ? int.Parse(command[2]) : 0, string.Join(' ', remainingArguments));
 		            return;
 	            }
 	            // Riot Games
@@ -527,7 +528,7 @@ namespace TcNo_Acc_Switcher_Client
 		            Globals.WriteToLog("Riot Games switch requested");
 		            if (!TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.CanCloseRiot()) RestartAsAdmin(combinedArgs);
 		            Riot.Instance.LoadFromFile();
-		            TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'));
+		            TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'), string.Join(' ', remainingArguments));
 		            return;
 	            }
 	            // Steam
@@ -540,7 +541,7 @@ namespace TcNo_Acc_Switcher_Client
 		            TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
 			            ePersonaState: command.Length > 2
 				            ? int.Parse(command[2])
-				            : -1); // Request has a PersonaState in it
+				            : -1, args: string.Join(' ', remainingArguments)); // Request has a PersonaState in it
 		            return;
 	            }
 	            // Ubisoft
@@ -551,7 +552,7 @@ namespace TcNo_Acc_Switcher_Client
 		            if (!GeneralFuncs.CanKillProcess("upc")) RestartAsAdmin(combinedArgs);
 		            Ubisoft.Instance.LoadFromFile();
 		            TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account,
-			            command.Length > 2 ? int.Parse(command[2]) : -1);
+			            command.Length > 2 ? int.Parse(command[2]) : -1, string.Join(' ', remainingArguments));
 		            break;
 	            }
             }

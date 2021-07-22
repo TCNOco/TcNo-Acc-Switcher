@@ -395,7 +395,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="steamId">(Optional) User's SteamID</param>
         /// <param name="autoStartSteam">(Optional) Whether Steam should start after switching [Default: true]</param>
         /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
-        public static void SwapSteamAccounts(string steamId = "", bool autoStartSteam = true, int ePersonaState = -1)
+        /// <param name="args">Starting arguments</param>
+        public static void SwapSteamAccounts(string steamId = "", bool autoStartSteam = true, int ePersonaState = -1, string args = "")
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SwapSteamAccounts] Swapping to: hidden. autoStartSteam={autoStartSteam}, ePersonaState={ePersonaState}");
             if (steamId != "" && !VerifySteamId(steamId))
@@ -408,7 +409,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             AppData.InvokeVoidAsync("updateStatus", "Starting Steam");
             if (!autoStartSteam) return;
 
-            GeneralFuncs.StartProgram(Steam.Exe(), Steam.Admin);
+            GeneralFuncs.StartProgram(Steam.Exe(), Steam.Admin, args);
 
             Globals.RefreshTrayArea();
         }

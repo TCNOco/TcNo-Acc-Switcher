@@ -97,13 +97,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         }
 
         [SupportedOSPlatform("windows")]
-        public static void SwapDiscordAccounts() => SwapDiscordAccounts("");
+        public static void SwapDiscordAccounts() => SwapDiscordAccounts("", "");
         /// <summary>
-        /// Restart Discord with a new account selected. Leave args empty to log into a new account.
+        /// Restart Discord with a new account selected. Leave accName empty to log into a new account.
         /// </summary>
         /// <param name="accName">(Optional) User's login username</param>
+        /// <param name="args">Starting arguments</param>
         [SupportedOSPlatform("windows")]
-        public static void SwapDiscordAccounts(string accName)
+        public static void SwapDiscordAccounts(string accName, string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.SwapDiscordAccounts] Swapping to: hidden.");
             AppData.InvokeVoidAsync("updateStatus", "Closing Discord");
@@ -116,7 +117,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             }
             AppData.InvokeVoidAsync("updateStatus", "Starting Discord");
 
-            GeneralFuncs.StartProgram(Discord.Exe(), Discord.Admin);
+            GeneralFuncs.StartProgram(Discord.Exe(), Discord.Admin, args);
 
             Globals.RefreshTrayArea();
         }

@@ -193,7 +193,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// Restart Battle.net with a new account selected.
         /// </summary>
         /// <param name="email">User's account email</param>
-        public static async Task SwapBattleNetAccounts(string email)
+        /// <param name="args">Starting arguments</param>
+        public static async Task SwapBattleNetAccounts(string email, string args = "")
         {
             Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.SwapBattleNetAccounts] Swapping to: hidden.");
             LoadImportantData();
@@ -250,7 +251,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             jToken?.Replace(replaceString);
             await File.WriteAllTextAsync(_battleNetRoaming + "\\Battle.net.config", jObject.ToString());
 
-            GeneralFuncs.StartProgram(BattleNet.Exe(), BattleNet.Admin);
+            GeneralFuncs.StartProgram(BattleNet.Exe(), BattleNet.Admin, args);
 
             Globals.RefreshTrayArea();
         }
