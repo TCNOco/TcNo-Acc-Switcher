@@ -2,7 +2,6 @@
   "profiles": {
     "TcNo-Acc-Switcher-Client": {
       "commandName": "Project",
-      "commandLineArgs": "+s:76561198064588130 -silent",
       "remoteDebugEnabled": false,
       "remoteDebugMachine": "",
       "authenticationMode": "Windows"

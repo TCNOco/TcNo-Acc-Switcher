@@ -540,7 +540,7 @@ namespace TcNo_Acc_Switcher_Updater
                 File.WriteAllText(_windowSettings, o.ToString());
             }
 
-            SetStatusAndLog("Updating files in Documents!");
+            SetStatusAndLog("Updating files in AppData!");
 			InitWwwroot(true);
             InitFolder("themes", true);
 
@@ -617,7 +617,7 @@ namespace TcNo_Acc_Switcher_Updater
                         WriteLine("Deleting: " + key);
                         DeleteFile(key);
                     }
-                    WriteLine("Downloading file from website... ");
+                    WriteLine("Downloading file from website...");
                     var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + oKey.Replace('\\', '/'));
 
                     var path = Path.GetDirectoryName(key);

@@ -188,7 +188,7 @@ int main()
     /* Warn about runtime downloads */
     if (webview_count == 0 || aspcore_count == 0 || desktop_runtime_count == 0 || test_mode)
     {
-        cout << "One or more runtimes are not installed:" << endl;
+        cout << "One or more runtimes were not installed:" << endl;
         int total = 0;
         if (webview_count == 0) {
             cout << " + Microsoft WebView2 Runtime [~1,70 MB + ~120 MB while installing]" << endl;

@@ -33,6 +33,7 @@
 	
 	
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Nobo/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=NOTFOUND/@EntryIndexedValue">True</s:Boolean>
 	
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=openssl/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=prepended/@EntryIndexedValue">True</s:Boolean>
@@ -44,7 +45,8 @@
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=searchbox/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Serializer/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Stylesheet/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/UserDictionary/Words/=tcno/@EntryIndexedValue">True</s:Boolean>	
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=tcno/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=templog/@EntryIndexedValue">True</s:Boolean>	
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=themelist/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=toastarea/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Ubisoft/@EntryIndexedValue">True</s:Boolean>

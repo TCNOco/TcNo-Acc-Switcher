@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
@@ -63,13 +64,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             var userId = GetLastLoginUserId();
             if (userId == "NOTFOUND")
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Ubisoft_NoUsername"], Lang["Error"], "toastarea");
+	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Ubisoft_NoUsername"], Lang["Error"], "toastarea", 10000);
                 return;
             }
 
             // Find username from users.dat file
             var username = FindUsername(userId);
-            if (username == "ERR") return;
+            if (username == "ERR")
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Ubisoft_NoDat"], Lang["Error"], "toastarea", 10000);
+                return;
+            }
             // Import profile picture to $"LoginCache\\Ubisoft\\{userId}\\pfp.png"
             ImportAvatar(userId);
 
@@ -110,6 +115,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.FindUsername]");
             Directory.CreateDirectory("LoginCache\\Ubisoft\\temp\\");
             const string tempUsersDat = "LoginCache\\Ubisoft\\temp\\users.dat";
+
+            if (!File.Exists(Path.Join(_ubisoftAppData, "users.dat"))) return "ERR";
             File.Copy(Path.Join(_ubisoftAppData, "users.dat"), "LoginCache\\Ubisoft\\temp\\users.dat", true);
 
             var username = "";
