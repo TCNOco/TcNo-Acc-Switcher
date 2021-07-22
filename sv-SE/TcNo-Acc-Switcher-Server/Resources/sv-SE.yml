@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Kan inte hitta '.../Steam/config/loginusers.vd
 Toast_CantClearImages: Kunde inte rensa bilder
 Toast_RefreshedImages: Uppdaterade bilder
 Toast_Ubisoft_NoUsername: Kunde inte hitta senast inloggade användare. Försök logga in på Ubisoft igen först.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat could not be found. The last active account was not saved."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat kunde inte hittas. Det sista aktiva kontot sparades inte."
 Toast_Ubisoft_NoUser: Kunde inte hitta senast inloggade användare. Försök logga in på Ubisoft igen först.
 Toast_ClearForgottenCheck: Är du säker på att du vill rensa säkerhetskopior av glömda konton?
 Modal_Info_Creator: Skapad av TechNobo [Wesley Pyburn]
@@ -191,80 +191,80 @@ Title_Steam_Cleaning: TcNo Account Switcher - Steam-rensning
 Title_Steam_Restore: TcNo Account Switcher - Återställ glömt Steam-konto
 Title_Steam_Settings: TcNo kontoväxlare - Steam-inställningar
 Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft inställningar
-Installer_Downloading: Downloading {file}
-Installer_DownloadFinished: Finished downloading {file}
-Installer_Installing: "Installing: {runtime}"
+Installer_Downloading: Laddar ner {file}
+Installer_DownloadFinished: Hämtning av {file} slutförd
+Installer_Installing: "Installerar: {runtime}"
 Installer_RuntimeTitle: TcNo Account Switcher - Runtime installer
-Installer_Welcome: Welcome to the TcNo Account Switcher - Runtime installer
-Installer_InstalledRuntimes: "Currently installed runtimes:"
-Installer_ErrorRuntime: "One or more runtimes were not installed:"
-Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB while installing]"
-Installer_TotalSize: "Total download size: ~{size} MB"
-Installer_AnyKeyStart: Press any key to start download...
-Runtime_WebView2: Microsoft WebView2 Runtime
-Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
-Installer_FailedFolder: "Failed to create folder:"
-Installer_FailedWV: "Failed to download and install Microsoft WebView2 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download Hosting Bundle' under Run server apps."
-Installer_FailedDR: "Failed to download and install .NET 5 Desktop Runtime. Please download it here:"
-Installed_FailedASP: "Failed to download and install ASP.NET Core 5.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
-Installer_Ready: "One or more are ready for install. If and when prompted if you would like to install, click 'Yes'."
-Installer_PressStart: Press any key to start install...
-Installer_VerifyMin: "Verify you meet the minimum recommended requirements:"
-Installer_VerifyAlready: "It looks like everything is installed. Verify you meet the minimum recommended requirements:"
-Installer_Complete: That should be everything. The main program, TcNo-Acc-Switcher.exe, will auto-run when you press a key to continue.
-Installer_Complete2: "If it doesn't work, please refer to install instructions, here: {link}"
-Global_FatalNext: "Fatal error occurred! This crashlog will be automatically submitted next launch."
-Tray_Error: Tray Error
-Tray_NoAccs: "There were no accounts found.\nTry switching accounts first, or locate 'Tray_Users.json'"
-Tray_Switch: "Switch to: {account}"
-Tray_CantOpenExe: "Could not open the main .exe. Make sure it exists.\n\nI attempted to open:"
-Tray_LaunchFail: "TcNo Account Switcher - Tray launch fail"
-Updater_Duplicate: Another TcNo Account Switcher Updater instance has been detected.
-Updater_Unknown: "Unknown argument: {arg}"
-Updater_NeedsAdmin: This program must be run as an administrator!
-Updater_StatusChecking: Checking version
-Updater_FailedVersionCheck: "Could not get version. Click \"Verify\" to update & verify files"
-Updater_PressBelow: Press button below!
-Updater_PressBelowStart: Click the button below to start the update.
-Updater_PatchApplied: Patch applied!
-Updater_UpdatingAppData: Updating files in AppData!
-Updater_Complete: All updates complete!
-Updater_Checking: Checking for updates
-Updater_UpdateToVerify: To verify files you need to update first.
-Updater_ClosingTcNo: Closing TcNo Account Switcher instances (if any).
-Updater_Downloading: "Downloading update: {version}"
-Updater_Downloaded: Download complete.
-Updater_CantExtract: Failed to extract update.
-Updater_Verify: Verify files
-Updater_Verifying: Verifying...
-Updater_VerifySkip: Verifying files to skip all small updates, and just jump to latest.
-Updater_NoConnection: "Could not connect to tcno.co to verify files. You can try manually downloading the installer from the GitHub page, and reinstalling to update.\n\nError:"
-Updater_NoServer: Could not reach update server
-Updater_Hashlist: Downloading latest hash list...
-Updater_CantCheck: Unable to check for updates
-Updater_Failed: "ERROR: Some of the files are in use and can not be updated.\n\n1. Make sure all TcNo processes are completely closed\n(or restart your PC)\n\n2. Then click Verify below, or if you restarted:\n-   Open this updater and verify files\n    (located in the 'updater' folder in the install directory)"
-Updater_Missing: "FILE MISSING: {file}"
-Updater_FileMismatch: "File: {file} has MD5: {md5} EXPECTED: {value}"
-Updater_DownloadingWeb: Downloading file from website...
-Updater_UnpackingAppData: Copying files to %AppData%/TcNo Account Switcher... (unless set otherwise)
-Updater_VerifyComplete: Files verified!
-Updater_UpdateFound: "Update found: {name} [{updateSize}]"
-Updater_TotalFound: "Total updates found: {x}"
-Updater_TotalSize: "Total size: {size}"
-Updater_AwaitingUser: Waiting for user input...
-Updater_UpToDate: "You're up to date.\n:)"
-Updater_FailedDecode: This is most likely due to me (TechNobo) pushing an update, and making a typo that broke the .json update file. Do let me know :)
-Updater_FailedDecodeTitle: Failed to decode update list
-Updater_Extracting: Extracting patch files
-Updater_Applying: Applying patch...
-Updater_Moving: Moving files...
-Updater_Title: TcNo Account Switcher Updater
-Updater_Started: Started
-Updater_Start: Start TcNo Account Switcher
-Updater_Begin: Start update
-Updater_Exit: Exit
-FatalError: Fatal error occurred!
+Installer_Welcome: Välkommen till TcNo Account Switcher - Runtime installer
+Installer_InstalledRuntimes: "För närvarande installerade körtider:"
+Installer_ErrorRuntime: "En eller flera körtider installerades inte:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB vid installation]"
+Installer_TotalSize: "Total nedladdningsstorlek: ~{size} MB"
+Installer_AnyKeyStart: Tryck på valfri tangent för att starta nedladdning...
+Runtime_WebView2: Microsoft WebView2 Körtid
+Runtime_Desktop: Microsoft .NET 5 Skrivbords körtid
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Körtid
+Installer_FailedFolder: "Kunde inte skapa mapp:"
+Installer_FailedWV: "Det gick inte att ladda ner och installera Microsoft WebView2 Runtime. För att ladda ner: 1. Klicka på länken nedan: {link} 2. Klicka på \"Download Hosting Bundle\" under Kör serverappar."
+Installer_FailedDR: "Det gick inte att ladda ner och installera .NET 5 Desktop Runtime. Ladda ner den här:"
+Installed_FailedASP: "Det gick inte att ladda ner och installera ASP.NET Core 5.0 Körtid. Ladda ner: 1. Klicka på länken nedan: {link} 2. Klicka på \"Ladda ner x64\" under Kör skrivbords-appar."
+Installer_Ready: "En eller flera är redo för installation. Om och när du uppmanas att installera klickar du på \"Ja\"."
+Installer_PressStart: Tryck på valfri tangent för att börja installera...
+Installer_VerifyMin: "Verifiera att du uppfyller de minimikrav som rekommenderas:"
+Installer_VerifyAlready: "Det ser ut som allt är installerat. Kontrollera att du uppfyller de minimikrav som rekommenderas:"
+Installer_Complete: Det bör vara allt. Huvudprogrammet, TcNo-Acc-Switcher.exe, kommer automatiskt köra när du trycker på en tangent för att fortsätta.
+Installer_Complete2: "Om det inte fungerar, hänvisas till installationsanvisningar, här: {link}"
+Global_FatalNext: "Ett allvarligt fel uppstod! Denna kraschlogg kommer automatiskt att skickas in nästa start."
+Tray_Error: Fack fel
+Tray_NoAccs: "Det fanns inga konton hittade.\nFörsök att byta konton först eller hitta 'Tray_Users.json'"
+Tray_Switch: "Byt till: {account}"
+Tray_CantOpenExe: "Kunde inte öppna huvud .exe. Se till att det finns.\n\nJag försökte öppna:"
+Tray_LaunchFail: "TcNo Account Switcher - Fackstart misslyckades"
+Updater_Duplicate: En annan TcNo Account Switcher Updater instans har upptäckts.
+Updater_Unknown: "Okänt argument: {arg}"
+Updater_NeedsAdmin: Detta program måste köras som administratör!
+Updater_StatusChecking: Kontrollerar version
+Updater_FailedVersionCheck: "Kunde inte hämta version. Klicka på \"Verifiera\" för att uppdatera och verifiera filer"
+Updater_PressBelow: Tryck på knappen nedan!
+Updater_PressBelowStart: Klicka på knappen nedan för att starta uppdateringen.
+Updater_PatchApplied: Patch applicerad!
+Updater_UpdatingAppData: Uppdaterar filer i AppData!
+Updater_Complete: Alla uppdateringar klara!
+Updater_Checking: Söker efter uppdateringar
+Updater_UpdateToVerify: För att verifiera filer måste du uppdatera först.
+Updater_ClosingTcNo: Stänger TcNo kontoväxlare (om någon).
+Updater_Downloading: "Hämtar uppdatering: {version}"
+Updater_Downloaded: Nedladdning slutförd.
+Updater_CantExtract: Det gick inte att packa upp uppdateringen.
+Updater_Verify: Verifiera filer
+Updater_Verifying: Verifierar...
+Updater_VerifySkip: Verifierar filer för att hoppa över alla små uppdateringar, och bara hoppa till senast.
+Updater_NoConnection: "Kunde inte ansluta till tcno.co för att verifiera filer. Du kan försöka ladda ner installationsprogrammet manuellt från GitHub-sidan och installera om för att uppdatera.\n\nFel:"
+Updater_NoServer: Kunde inte nå uppdateringsservern
+Updater_Hashlist: Laddar ner senaste hashlista...
+Updater_CantCheck: Kunde inte söka efter uppdateringar
+Updater_Failed: "FEL: Vissa av filerna används och kan inte uppdateras.\n\n1. Se till att alla TcNo processer är helt stängda\n(eller starta om din dator)\n\n2. Klicka sedan på Verifiera nedan, eller om du startat om:\n- Öppna denna uppdaterare och verifiera filer\n    (finns i mappen 'updater' i installationskatalogen)"
+Updater_Missing: "FIL MISSING: {file}"
+Updater_FileMismatch: "Fil: {file} har MD5: {md5} EXPECTED: {value}"
+Updater_DownloadingWeb: Laddar ner fil från webbplatsen...
+Updater_UnpackingAppData: Kopierar filer till %AppData%/TcNo Account Switcher... (om inte annat anges)
+Updater_VerifyComplete: Filer verifierade!
+Updater_UpdateFound: "Uppdateringen hittade: {name} [{updateSize}]"
+Updater_TotalFound: "Totalt antal uppdateringar hittade: {x}"
+Updater_TotalSize: "Total storlek: {size}"
+Updater_AwaitingUser: Väntar på användarinmatning...
+Updater_UpToDate: "Du är uppdaterad.\n:)"
+Updater_FailedDecode: Detta är mest sannolikt på grund av mig (TechNobo) driva en uppdatering, och göra en typo som bröt . son uppdateringsfil. Låt mig veta :)
+Updater_FailedDecodeTitle: Det gick inte att avkoda uppdateringslistan
+Updater_Extracting: Extraherar patchfiler
+Updater_Applying: Tillämpar patch...
+Updater_Moving: Flyttar filer...
+Updater_Title: Uppdaterare för TcNo konto
+Updater_Started: Startad
+Updater_Start: Starta TcNo kontoväxlare
+Updater_Begin: Starta uppdatering
+Updater_Exit: Avsluta
+FatalError: Ett allvarligt fel uppstod!
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline
