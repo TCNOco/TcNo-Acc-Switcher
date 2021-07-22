@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Не могу да пронађем „... / �
 Toast_CantClearImages: Није могуће очистити слике
 Toast_RefreshedImages: Освежене слике
 Toast_Ubisoft_NoUsername: Није могуће пронаћи последњег пријављеног корисника. Покушајте да се поново пријавите на Убисофт.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat could not be found. The last active account was not saved."
+Toast_Ubisoft_NoDat: "%LocalAppData%/УбисофтГамеЛаунцхер/усерс.дат није пронађен. Последњи активни налог није сачуван."
 Toast_Ubisoft_NoUser: Није могуће пронаћи последњег пријављеног корисника. Покушајте да се поново пријавите на Убисофт.
 Toast_ClearForgottenCheck: Да ли сте сигурни да желите да обришете резервне копије заборављених рачуна?
 Modal_Info_Creator: Направио ТецхНобо [Веслеи Пибурн]
@@ -191,80 +191,80 @@ Title_Steam_Cleaning: ТцНо Аццоунт Свитцхер - Чишћење 
 Title_Steam_Restore: ТцНо Аццоунт Свитцхер - Вратите заборављени Стеам налог
 Title_Steam_Settings: ТцНо Аццоунт Свитцхер - Стеам подешавања
 Title_Ubisoft_Settings: ТцНо Аццоунт Свитцхер - Убисофт подешавања
-Installer_Downloading: Downloading {file}
-Installer_DownloadFinished: Finished downloading {file}
-Installer_Installing: "Installing: {runtime}"
-Installer_RuntimeTitle: TcNo Account Switcher - Runtime installer
-Installer_Welcome: Welcome to the TcNo Account Switcher - Runtime installer
-Installer_InstalledRuntimes: "Currently installed runtimes:"
-Installer_ErrorRuntime: "One or more runtimes were not installed:"
-Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB while installing]"
-Installer_TotalSize: "Total download size: ~{size} MB"
-Installer_AnyKeyStart: Press any key to start download...
-Runtime_WebView2: Microsoft WebView2 Runtime
-Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
-Installer_FailedFolder: "Failed to create folder:"
-Installer_FailedWV: "Failed to download and install Microsoft WebView2 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download Hosting Bundle' under Run server apps."
-Installer_FailedDR: "Failed to download and install .NET 5 Desktop Runtime. Please download it here:"
-Installed_FailedASP: "Failed to download and install ASP.NET Core 5.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
-Installer_Ready: "One or more are ready for install. If and when prompted if you would like to install, click 'Yes'."
-Installer_PressStart: Press any key to start install...
-Installer_VerifyMin: "Verify you meet the minimum recommended requirements:"
-Installer_VerifyAlready: "It looks like everything is installed. Verify you meet the minimum recommended requirements:"
-Installer_Complete: That should be everything. The main program, TcNo-Acc-Switcher.exe, will auto-run when you press a key to continue.
-Installer_Complete2: "If it doesn't work, please refer to install instructions, here: {link}"
-Global_FatalNext: "Fatal error occurred! This crashlog will be automatically submitted next launch."
-Tray_Error: Tray Error
-Tray_NoAccs: "There were no accounts found.\nTry switching accounts first, or locate 'Tray_Users.json'"
-Tray_Switch: "Switch to: {account}"
-Tray_CantOpenExe: "Could not open the main .exe. Make sure it exists.\n\nI attempted to open:"
-Tray_LaunchFail: "TcNo Account Switcher - Tray launch fail"
-Updater_Duplicate: Another TcNo Account Switcher Updater instance has been detected.
-Updater_Unknown: "Unknown argument: {arg}"
-Updater_NeedsAdmin: This program must be run as an administrator!
-Updater_StatusChecking: Checking version
-Updater_FailedVersionCheck: "Could not get version. Click \"Verify\" to update & verify files"
-Updater_PressBelow: Press button below!
-Updater_PressBelowStart: Click the button below to start the update.
-Updater_PatchApplied: Patch applied!
-Updater_UpdatingAppData: Updating files in AppData!
-Updater_Complete: All updates complete!
-Updater_Checking: Checking for updates
-Updater_UpdateToVerify: To verify files you need to update first.
-Updater_ClosingTcNo: Closing TcNo Account Switcher instances (if any).
-Updater_Downloading: "Downloading update: {version}"
-Updater_Downloaded: Download complete.
-Updater_CantExtract: Failed to extract update.
-Updater_Verify: Verify files
-Updater_Verifying: Verifying...
-Updater_VerifySkip: Verifying files to skip all small updates, and just jump to latest.
-Updater_NoConnection: "Could not connect to tcno.co to verify files. You can try manually downloading the installer from the GitHub page, and reinstalling to update.\n\nError:"
-Updater_NoServer: Could not reach update server
-Updater_Hashlist: Downloading latest hash list...
-Updater_CantCheck: Unable to check for updates
-Updater_Failed: "ERROR: Some of the files are in use and can not be updated.\n\n1. Make sure all TcNo processes are completely closed\n(or restart your PC)\n\n2. Then click Verify below, or if you restarted:\n-   Open this updater and verify files\n    (located in the 'updater' folder in the install directory)"
-Updater_Missing: "FILE MISSING: {file}"
-Updater_FileMismatch: "File: {file} has MD5: {md5} EXPECTED: {value}"
-Updater_DownloadingWeb: Downloading file from website...
-Updater_UnpackingAppData: Copying files to %AppData%/TcNo Account Switcher... (unless set otherwise)
-Updater_VerifyComplete: Files verified!
-Updater_UpdateFound: "Update found: {name} [{updateSize}]"
-Updater_TotalFound: "Total updates found: {x}"
-Updater_TotalSize: "Total size: {size}"
-Updater_AwaitingUser: Waiting for user input...
-Updater_UpToDate: "You're up to date.\n:)"
-Updater_FailedDecode: This is most likely due to me (TechNobo) pushing an update, and making a typo that broke the .json update file. Do let me know :)
-Updater_FailedDecodeTitle: Failed to decode update list
-Updater_Extracting: Extracting patch files
-Updater_Applying: Applying patch...
-Updater_Moving: Moving files...
-Updater_Title: TcNo Account Switcher Updater
-Updater_Started: Started
-Updater_Start: Start TcNo Account Switcher
-Updater_Begin: Start update
-Updater_Exit: Exit
-FatalError: Fatal error occurred!
+Installer_Downloading: Преузимање {file}
+Installer_DownloadFinished: Преузимање је завршено {file}
+Installer_Installing: "Инсталирање: {runtime}"
+Installer_RuntimeTitle: ТцНо Аццоунт Свитцхер - Рунтиме инсталатер
+Installer_Welcome: Добродошли у ТцНо Свитцхер Аццоунт - Рунтиме инсталатер
+Installer_InstalledRuntimes: "Тренутно инсталирано време извођења:"
+Installer_ErrorRuntime: "Није инсталирано једно или више времена извођења:"
+Installer_RuntimeNote: "[~{size1} МБ + ~{size2} МБ при инсталирању]"
+Installer_TotalSize: "Укупна величина преузимања: ~{size} МБ"
+Installer_AnyKeyStart: Притисните било који тастер да бисте започели преузимање ...
+Runtime_WebView2: Мицрософт ВебВиев2 Рунтиме
+Runtime_Desktop: Мицрософт .НЕТ 5 Десктоп Рунтиме
+Runtime_ASP: Мицрософт Мицрософт АСП.НЕТ Цоре 5.0 Рунтиме
+Installer_FailedFolder: "Прављење директоријума није успело:"
+Installer_FailedWV: "Преузимање и инсталирање програма Мицрософт ВебВиев2 Рунтиме није успело. Да бисте преузели: 1. Кликните на доњу везу: {link} 2. Кликните на „Преузми пакет хостовања“ у оквиру Покрени серверске апликације."
+Installer_FailedDR: "Преузимање и инсталирање .НЕТ 5 Десктоп Рунтимеа није успело. Преузмите га овде:"
+Installed_FailedASP: "Преузимање и инсталирање АСП.НЕТ Цоре 5.0 Рунтиме није успело. Да бисте преузели: 1. Кликните на доњу везу: {link} 2. Кликните на „Преузми к64“ у оквиру Покрени радне површине."
+Installer_Ready: "Један или више њих је спремно за инсталацију. Ако и када се од вас затражи да ли желите да инсталирате, кликните на „Да“."
+Installer_PressStart: Притисните било који тастер да бисте започели инсталацију ...
+Installer_VerifyMin: "Проверите да ли испуњавате минималне препоручене захтеве:"
+Installer_VerifyAlready: "Изгледа да је све инсталирано. Проверите да ли испуњавате минималне препоручене захтеве:"
+Installer_Complete: То би требало бити све. Главни програм, ТцНо-Ацц-Свитцхер.еке, аутоматски ће се покренути када притиснете тастер да бисте наставили.
+Installer_Complete2: "Ако не успе, погледајте упутства за инсталирање овде: {link}"
+Global_FatalNext: "Догодила се фатална грешка! Овај списак отказивања аутоматски ће се послати при следећем покретању."
+Tray_Error: Грешка у лежишту
+Tray_NoAccs: "Није пронађен ниједан рачун.\nПокушајте прво да промените налог или пронађите „Траи_Усерс.јсон“"
+Tray_Switch: "Пребаците се на: {account}"
+Tray_CantOpenExe: "Није могуће отворити главни .еке. Уверите се да постоји.\n\nПокушао сам да отворим:"
+Tray_LaunchFail: "ТцНо Аццоунт Свитцхер - Покретање ладице није успело"
+Updater_Duplicate: Откривена је још једна инстанца програма ТцНо Свитцхер Упдатер.
+Updater_Unknown: "Непознати аргумент: {arg}"
+Updater_NeedsAdmin: Овај програм мора бити покренут као администратор!
+Updater_StatusChecking: Провера верзије
+Updater_FailedVersionCheck: "Није могуће преузети верзију. Кликните на „Верификуј“ да бисте ажурирали и верификовали датотеке"
+Updater_PressBelow: Притисните дугме испод!
+Updater_PressBelowStart: Кликните на доње дугме да бисте започели ажурирање.
+Updater_PatchApplied: Закрпа је примењена!
+Updater_UpdatingAppData: Ажурирање датотека у АппДата!
+Updater_Complete: Сва ажурирања завршена!
+Updater_Checking: Проверу ажурирања
+Updater_UpdateToVerify: Да бисте верификовали датотеке, прво их морате ажурирати.
+Updater_ClosingTcNo: Затварање инстанци ТцНо Аццоунт Свитцхер (ако их има).
+Updater_Downloading: "Преузимање ажурирања: {version}"
+Updater_Downloaded: Скидање завршено.
+Updater_CantExtract: Издвајање ажурирања није успело.
+Updater_Verify: Верификујте датотеке
+Updater_Verifying: Провера ...
+Updater_VerifySkip: Потврђивање датотека да бисте прескочили сва мала ажурирања и само прешли на најновије.
+Updater_NoConnection: "Не могу да се повежем са тцно.цо да бих верификовао датотеке. Можете покушати ручно да преузмете инсталациони програм са странице ГитХуб и поново инсталирате да бисте га ажурирали.\n\nГрешка:"
+Updater_NoServer: Није било могуће доћи до сервера за ажурирање
+Updater_Hashlist: Преузимање најновије хеш листе ...
+Updater_CantCheck: Није могуће проверити да ли постоје исправке
+Updater_Failed: "ГРЕШКА: Неке датотеке се користе и не могу се ажурирати.\n\n1. Уверите се да су сви процеси ТцНо потпуно затворени\n(или поново покрените рачунар)\n\n2. Затим кликните на Верифи (Провери) у наставку или ако сте поново покренули:\n- Отворите овај програм за ажурирање и верификујте датотеке\n    (налазе се у фасцикли „Упдатер“ у инсталирај директоријум)"
+Updater_Missing: "НЕДОСТАТАК ДАТОТЕКЕ: {file}"
+Updater_FileMismatch: "Датотека: {file} има МД5: {md5} ОЧЕКИВАНО: {value}"
+Updater_DownloadingWeb: Преузимање датотеке са веб локације ...
+Updater_UnpackingAppData: Копирање датотека у %AppData%/ ТцНо Аццоунт Свитцхер ... (осим ако није другачије постављено)
+Updater_VerifyComplete: Датотеке проверене!
+Updater_UpdateFound: "Пронађено ажурирање: {name} [{updateSize}]"
+Updater_TotalFound: "Укупно пронађено ажурирања: {x}"
+Updater_TotalSize: "Укупна величина: {size}"
+Updater_AwaitingUser: Чека се унос корисника ...
+Updater_UpToDate: "У току сте.\n:)"
+Updater_FailedDecode: То је највероватније због тога што сам (ТецхНобо) притиснуо исправку и направио грешку у куцању која је разбила датотеку за ажурирање .јсон. Обавестите ме :)
+Updater_FailedDecodeTitle: Декодирање листе ажурирања није успело
+Updater_Extracting: Издвајање датотека закрпа
+Updater_Applying: Примјеном закрпа...
+Updater_Moving: Премештање датотека ...
+Updater_Title: ТцНо Аццоунт Свитцхер Упдатер
+Updater_Started: Започео
+Updater_Start: Покрените ТцНо Свитцхер налога
+Updater_Begin: Започни ажурирање
+Updater_Exit: Излаз
+FatalError: Догодила се фатална грешка!
 Online: Онлине
 OnlineDefault: На мрежи (подразумевано)
 Offline: Одсутан
