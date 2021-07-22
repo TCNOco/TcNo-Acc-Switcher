@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: Kan nie '... / Steam / config / loginusers.vdf
 Toast_CantClearImages: Kon nie prente uitvee nie
 Toast_RefreshedImages: Opgedateerde beelde
 Toast_Ubisoft_NoUsername: Kon nie die laaste aangemelde gebruiker vind nie. Probeer eers weer by Ubisoft aanmeld.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat kon nie gevind word nie. Die laaste aktiewe rekening is nie gestoor nie."
 Toast_Ubisoft_NoUser: Kon nie die laaste aangemelde gebruiker vind nie. Probeer eers weer by Ubisoft aanmeld.
 Toast_ClearForgottenCheck: Is u seker dat u rugsteune van vergete rekeninge wil uitvee?
 Modal_Info_Creator: Geskep deur TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: TcNo Account Switcher - Stoomskoonmaak
 Title_Steam_Restore: TcNo Account Switcher - Herstel die vergete Steam-rekening
 Title_Steam_Settings: TcNo Account Switcher - Steam-instellings
 Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft-instellings
+Installer_Downloading: Laai tans {file}
+Installer_DownloadFinished: Aflaai is klaar {file}
+Installer_Installing: "Installeer: {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - Runtime-installeerder
+Installer_Welcome: Welkom by die TcNo Account Switcher - Runtime-installeerder
+Installer_InstalledRuntimes: "Tans geïnstalleerde looptye:"
+Installer_ErrorRuntime: "Een of meer looptye is nie geïnstalleer nie:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB tydens die installering]"
+Installer_TotalSize: "Totale aflaaigrootte: ~{size} MB"
+Installer_AnyKeyStart: Druk enige sleutel om af te laai ...
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Installer_FailedFolder: "Kon nie vouer skep nie:"
+Installer_FailedWV: "Kon nie Microsoft WebView2 Runtime aflaai en installeer nie. Om af te laai: 1. Klik op die onderstaande skakel: {link} 2. Klik op 'Laai gasheerbundel af' onder Bedienerprogramme hardloop."
+Installer_FailedDR: "Kon nie .NET 5 Desktop Runtime aflaai en installeer nie. Laai dit asseblief hier af:"
+Installed_FailedASP: "Kon nie ASP.NET Core 5.0 Runtime aflaai en installeer nie. Om af te laai: 1. Klik op die onderstaande skakel: {link} 2. Klik op 'Download x64' onder Desktop-programme hardloop."
+Installer_Ready: "Een of meer is gereed vir installasie. Klik op 'Ja' as en wanneer u gevra word of u dit wil installeer."
+Installer_PressStart: Druk enige sleutel om te installeer ...
+Installer_VerifyMin: "Maak seker dat u aan die minimum aanbevole vereistes voldoen:"
+Installer_VerifyAlready: "Dit lyk asof alles geïnstalleer is. Maak seker dat u aan die minimum aanbevole vereistes voldoen:"
+Installer_Complete: Dit behoort alles te wees. Die hoofprogram, TcNo-Acc-Switcher.exe, word outomaties uitgevoer wanneer u op 'n sleutel druk om voort te gaan.
+Installer_Complete2: "As dit nie werk nie, raadpleeg die installasie-instruksies hier: {link}"
+Global_FatalNext: "Noodlottige fout het voorgekom! Hierdie crashlog sal outomaties die volgende bekendstelling ingedien word."
+Tray_Error: Laaifout
+Tray_NoAccs: "Daar is geen rekeninge gevind nie.\nProbeer eers oor rekeninge wissel, of soek 'Tray_Users.json'"
+Tray_Switch: "Skakel oor na: {account}"
+Tray_CantOpenExe: "Kon die hoofexe nie oopmaak nie. Maak seker dat dit bestaan.\n\nEk het probeer om oop te maak:"
+Tray_LaunchFail: "TcNo-rekening-omskakelaar - die begin van die laai het misluk"
+Updater_Duplicate: Nog 'n TcNo Account Switcher Updater-instansie is opgespoor.
+Updater_Unknown: "Onbekende argument: {arg}"
+Updater_NeedsAdmin: Hierdie program moet as administrateur uitgevoer word!
+Updater_StatusChecking: Kontroleer weergawe
+Updater_FailedVersionCheck: "Kon nie weergawe kry nie. Klik op \"Verifieer\" om lêers op te dateer en te verifieer"
+Updater_PressBelow: Druk die knoppie hieronder!
+Updater_PressBelowStart: Klik op die onderstaande knoppie om die opdatering te begin.
+Updater_PatchApplied: Pleister aangebring!
+Updater_UpdatingAppData: Lêers opdateer in AppData!
+Updater_Complete: Alle opdaterings voltooi!
+Updater_Checking: Kyk vir opdaterings
+Updater_UpdateToVerify: Om die lêers te verifieer, moet u eers opdateer.
+Updater_ClosingTcNo: Sluit gevalle van TcNo Account Switcher (indien enige).
+Updater_Downloading: "Laai tans opdatering af: {version}"
+Updater_Downloaded: Aflaai voltooi.
+Updater_CantExtract: Kon nie opdatering onttrek nie.
+Updater_Verify: Verifieer lêers
+Updater_Verifying: Verifieer tans ...
+Updater_VerifySkip: Verifieer lêers om alle klein opdaterings oor te slaan en spring na die nuutste.
+Updater_NoConnection: "Kon nie aan tcno.co koppel om lêers te verifieer nie. U kan die installeerder handmatig van die GitHub-bladsy aflaai en weer installeer om dit op te dateer.\n\nFout:"
+Updater_NoServer: Kon nie die opdateringsbediener bereik nie
+Updater_Hashlist: Laai tans die nuutste lysie af af ...
+Updater_CantCheck: Kan nie na opdaterings kyk nie
+Updater_Failed: "FOUT: Sommige van die lêers word gebruik en kan nie opgedateer word nie.\n\n1. Maak seker dat alle TcNo-prosesse heeltemal gesluit is\n(of u rekenaar herbegin)\n\n2. Klik dan op Verifieer hieronder of as u weer begin:\n- Maak hierdie opdatering oop en verifieer lêers\n    (geleë in die 'updater'-gids in die installeer gids)"
+Updater_Missing: "Lêer ontbreek: {file}"
+Updater_FileMismatch: "Lêer: {file} het MD5: {md5} VERWAG: {value}"
+Updater_DownloadingWeb: Laai tans lêer van die webwerf af ...
+Updater_UnpackingAppData: Kopieer lêers na %AppData%/ TcNo Account Switcher ... (tensy anders gestel)
+Updater_VerifyComplete: Lêers is geverifieer!
+Updater_UpdateFound: "Opdatering gevind: {name} [{updateSize}]"
+Updater_TotalFound: "Totale opdaterings gevind: {x}"
+Updater_TotalSize: "Totale grootte: {size}"
+Updater_AwaitingUser: Wag tans op gebruikersinvoer ...
+Updater_UpToDate: "U is op datum.\n:)"
+Updater_FailedDecode: Dit is heel waarskynlik te wyte aan die feit dat ek (TechNobo) 'n opdatering aangepak het en 'n tikfout gemaak het wat die .json-opdateringslêer gebreek het. Laat weet my asseblief :)
+Updater_FailedDecodeTitle: Kon nie opdateringslys dekodeer nie
+Updater_Extracting: Onttrek pleisterlêers
+Updater_Applying: Pas tans pleister toe ...
+Updater_Moving: Skuif lêers tans ...
+Updater_Title: TcNo Account Switcher Updater
+Updater_Started: Begin
+Updater_Start: Begin TcNo Account Switcher
+Updater_Begin: Begin opdatering
+Updater_Exit: Uitgang
+FatalError: Noodlottige fout het voorgekom!
 Online: Aanlyn
 OnlineDefault: Aanlyn (verstek)
 Offline: Vanlyn

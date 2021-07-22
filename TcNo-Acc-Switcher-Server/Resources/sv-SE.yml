@@ -1,6 +1,6 @@
 ---
 Update: Uppdatering tillgänglig! Klicka här för att starta den.
-Header_ChooseLanguage: 'Välj språk:'
+Header_ChooseLanguage: 'Välj Språk:'
 BattleNet_ShowSR: Visa Overwatch SR och använd Overwatch profilbilden.
 Steam_ShowSteamID: Visa SteamID
 Steam_ShowVac: Visa VAC-status
@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: Kan inte hitta '.../Steam/config/loginusers.vd
 Toast_CantClearImages: Kunde inte rensa bilder
 Toast_RefreshedImages: Uppdaterade bilder
 Toast_Ubisoft_NoUsername: Kunde inte hitta senast inloggade användare. Försök logga in på Ubisoft igen först.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat kunde inte hittas. Det sista aktiva kontot sparades inte."
 Toast_Ubisoft_NoUser: Kunde inte hitta senast inloggade användare. Försök logga in på Ubisoft igen först.
 Toast_ClearForgottenCheck: Är du säker på att du vill rensa säkerhetskopior av glömda konton?
 Modal_Info_Creator: Skapad av TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: TcNo Account Switcher - Steam-rensning
 Title_Steam_Restore: TcNo Account Switcher - Återställ glömt Steam-konto
 Title_Steam_Settings: TcNo kontoväxlare - Steam-inställningar
 Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft inställningar
+Installer_Downloading: Laddar ner {file}
+Installer_DownloadFinished: Hämtning av {file} slutförd
+Installer_Installing: "Installerar: {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - Runtime installer
+Installer_Welcome: Välkommen till TcNo Account Switcher - Runtime installer
+Installer_InstalledRuntimes: "För närvarande installerade körtider:"
+Installer_ErrorRuntime: "En eller flera körtider installerades inte:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB vid installation]"
+Installer_TotalSize: "Total nedladdningsstorlek: ~{size} MB"
+Installer_AnyKeyStart: Tryck på valfri tangent för att starta nedladdning...
+Runtime_WebView2: Microsoft WebView2 Körtid
+Runtime_Desktop: Microsoft .NET 5 Skrivbords körtid
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Körtid
+Installer_FailedFolder: "Kunde inte skapa mapp:"
+Installer_FailedWV: "Det gick inte att ladda ner och installera Microsoft WebView2 Runtime. För att ladda ner: 1. Klicka på länken nedan: {link} 2. Klicka på \"Download Hosting Bundle\" under Kör serverappar."
+Installer_FailedDR: "Det gick inte att ladda ner och installera .NET 5 Desktop Runtime. Ladda ner den här:"
+Installed_FailedASP: "Det gick inte att ladda ner och installera ASP.NET Core 5.0 Körtid. Ladda ner: 1. Klicka på länken nedan: {link} 2. Klicka på \"Ladda ner x64\" under Kör skrivbords-appar."
+Installer_Ready: "En eller flera är redo för installation. Om och när du uppmanas att installera klickar du på \"Ja\"."
+Installer_PressStart: Tryck på valfri tangent för att börja installera...
+Installer_VerifyMin: "Verifiera att du uppfyller de minimikrav som rekommenderas:"
+Installer_VerifyAlready: "Det ser ut som allt är installerat. Kontrollera att du uppfyller de minimikrav som rekommenderas:"
+Installer_Complete: Det bör vara allt. Huvudprogrammet, TcNo-Acc-Switcher.exe, kommer automatiskt köra när du trycker på en tangent för att fortsätta.
+Installer_Complete2: "Om det inte fungerar, hänvisas till installationsanvisningar, här: {link}"
+Global_FatalNext: "Ett allvarligt fel uppstod! Denna kraschlogg kommer automatiskt att skickas in nästa start."
+Tray_Error: Fack fel
+Tray_NoAccs: "Det fanns inga konton hittade.\nFörsök att byta konton först eller hitta 'Tray_Users.json'"
+Tray_Switch: "Byt till: {account}"
+Tray_CantOpenExe: "Kunde inte öppna huvud .exe. Se till att det finns.\n\nJag försökte öppna:"
+Tray_LaunchFail: "TcNo Account Switcher - Fackstart misslyckades"
+Updater_Duplicate: En annan TcNo Account Switcher Updater instans har upptäckts.
+Updater_Unknown: "Okänt argument: {arg}"
+Updater_NeedsAdmin: Detta program måste köras som administratör!
+Updater_StatusChecking: Kontrollerar version
+Updater_FailedVersionCheck: "Kunde inte hämta version. Klicka på \"Verifiera\" för att uppdatera och verifiera filer"
+Updater_PressBelow: Tryck på knappen nedan!
+Updater_PressBelowStart: Klicka på knappen nedan för att starta uppdateringen.
+Updater_PatchApplied: Patch applicerad!
+Updater_UpdatingAppData: Uppdaterar filer i AppData!
+Updater_Complete: Alla uppdateringar klara!
+Updater_Checking: Söker efter uppdateringar
+Updater_UpdateToVerify: För att verifiera filer måste du uppdatera först.
+Updater_ClosingTcNo: Stänger TcNo kontoväxlare (om någon).
+Updater_Downloading: "Hämtar uppdatering: {version}"
+Updater_Downloaded: Nedladdning slutförd.
+Updater_CantExtract: Det gick inte att packa upp uppdateringen.
+Updater_Verify: Verifiera filer
+Updater_Verifying: Verifierar...
+Updater_VerifySkip: Verifierar filer för att hoppa över alla små uppdateringar, och bara hoppa till senast.
+Updater_NoConnection: "Kunde inte ansluta till tcno.co för att verifiera filer. Du kan försöka ladda ner installationsprogrammet manuellt från GitHub-sidan och installera om för att uppdatera.\n\nFel:"
+Updater_NoServer: Kunde inte nå uppdateringsservern
+Updater_Hashlist: Laddar ner senaste hashlista...
+Updater_CantCheck: Kunde inte söka efter uppdateringar
+Updater_Failed: "FEL: Vissa av filerna används och kan inte uppdateras.\n\n1. Se till att alla TcNo processer är helt stängda\n(eller starta om din dator)\n\n2. Klicka sedan på Verifiera nedan, eller om du startat om:\n- Öppna denna uppdaterare och verifiera filer\n    (finns i mappen 'updater' i installationskatalogen)"
+Updater_Missing: "FIL MISSING: {file}"
+Updater_FileMismatch: "Fil: {file} har MD5: {md5} EXPECTED: {value}"
+Updater_DownloadingWeb: Laddar ner fil från webbplatsen...
+Updater_UnpackingAppData: Kopierar filer till %AppData%/TcNo Account Switcher... (om inte annat anges)
+Updater_VerifyComplete: Filer verifierade!
+Updater_UpdateFound: "Uppdateringen hittade: {name} [{updateSize}]"
+Updater_TotalFound: "Totalt antal uppdateringar hittade: {x}"
+Updater_TotalSize: "Total storlek: {size}"
+Updater_AwaitingUser: Väntar på användarinmatning...
+Updater_UpToDate: "Du är uppdaterad.\n:)"
+Updater_FailedDecode: Detta är mest sannolikt på grund av mig (TechNobo) driva en uppdatering, och göra en typo som bröt . son uppdateringsfil. Låt mig veta :)
+Updater_FailedDecodeTitle: Det gick inte att avkoda uppdateringslistan
+Updater_Extracting: Extraherar patchfiler
+Updater_Applying: Tillämpar patch...
+Updater_Moving: Flyttar filer...
+Updater_Title: Uppdaterare för TcNo konto
+Updater_Started: Startad
+Updater_Start: Starta TcNo kontoväxlare
+Updater_Begin: Starta uppdatering
+Updater_Exit: Avsluta
+FatalError: Ett allvarligt fel uppstod!
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline
@@ -237,7 +312,7 @@ Prompt_DiscordCopy7: Stäng alternativ
 Prompt_DiscordCopy8: Låt användaren veta i konsolen.
 Prompt_DiscordCopy9: Kopierad information!
 Prompt_DiscordCopy10: Klistra in den i inmatningsrutan i kontoväxlaren för att uppdatera/ställa in bild och användarnamn.
-Prompt_RestartAsAdmin: <h3><bold>Detta program kommer att starta om som Admin</bold></h3><p>Hit "Ja" i UAC när du blir tillfrågad om administratör.</p>
+Prompt_RestartAsAdmin: "<h3><bold>Detta program kommer att starta om som Admin</bold></h3><p>Hit \"Ja\" i UAC när du blir tillfrågad om administratör.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Du är på väg att glömma ett konto!</h3> <h4>Vad betyder detta?</h4> <p>- Steam kommer inte längre att ha kontot listat i Storbildsläge och kommer inte att komma ihåg lösenordet.<br/> - TcNo Account Switcher kommer inte längre att visa kontot, tills det har loggats in igen via Steam.</p> <p>Ditt konto förblir orört. Det är bara glömt på denna dator.</p> <h4>Vad händer om något går fel?</h4> <p>Få inte panik, du kan få tillbaka glömda konton via säkerhetskopior i inställningsskärmen.<br/> Du kan också ta bort tidigare säkerhetskopior därifrån när du är säker på att allt fungerar som förväntat.</p> <h4>Förstår du?</h4>
 Prompt_ForgetAccount: >

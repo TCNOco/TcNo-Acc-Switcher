@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: Finner ikke '.../Steam/config/loginusers.vdf'.
 Toast_CantClearImages: Kunne ikke fjerne bildene
 Toast_RefreshedImages: Oppdaterte bilder
 Toast_Ubisoft_NoUsername: Kunne ikke finne siste påloggede brukere. Prøv å logge inn på Ubisoft igjen først.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat kunne ikke bli funnet. Den siste aktive kontoen ble ikke lagret."
 Toast_Ubisoft_NoUser: Kunne ikke finne siste påloggede brukere. Prøv å logge inn på Ubisoft igjen først.
 Toast_ClearForgottenCheck: Er du sikker på at du vil slette sikkerhetskopieringen av glemte kontoer?
 Modal_Info_Creator: Opprettet av TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: TcIngen kontovelger - Steam rengjøring
 Title_Steam_Restore: TcIngen kontobryter - Gjenopprett glemt Steam konto
 Title_Steam_Settings: TcIngen Konto-bytter - Steam-innstillinger
 Title_Ubisoft_Settings: TcIngen kontomasjonsholder - Ubisoft Innstillinger
+Installer_Downloading: Laster ned {file}
+Installer_DownloadFinished: Ferdig med nedlasting av {file}
+Installer_Installing: "Installerer: {runtime}"
+Installer_RuntimeTitle: TcIngen kontobryter - Runtime installer
+Installer_Welcome: Velkommen til TcNo Account Switcher - Runtime installer
+Installer_InstalledRuntimes: "Installerte gjeldende kjøretider:"
+Installer_ErrorRuntime: "En eller flere rulletider ble ikke installert:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB mens du installerer]"
+Installer_TotalSize: "Total nedlastingsstørrelse: ~{size} MB"
+Installer_AnyKeyStart: Trykk på en tast for å starte nedlasting...
+Runtime_WebView2: Microsoft WebView2 Kjørtid
+Runtime_Desktop: Microsoft .NET 5 Desktop kjøretid
+Runtime_ASP: Microsoft Microsoft ASP.NET Kjerne 5.0 Runtid
+Installer_FailedFolder: "Kunne ikke opprette mappen:"
+Installer_FailedWV: "Kan ikke laste ned og installere Microsoft WebView2 kjøring. For å laste ned: 1. Klikk på lenken under: {link} 2. Klikk \"Last ned Hosting Bundle\" under Kjør server-apper."
+Installer_FailedDR: "Kunne ikke laste ned og installere .NET 5 Skrivetid. Vennligst last den ned her:"
+Installed_FailedASP: "Kan ikke laste ned og installere ASP.NET Kjerne 5.0 Kjøring. For å laste ned: 1. Klikk på lenken nedenfor: {link} 2. Klikk på 'Last ned x64' under Kjør Desktop-apper."
+Installer_Ready: "Én eller flere er klar for installasjon. Hvis og når du blir bedt om å installere, klikk 'Ja'."
+Installer_PressStart: Trykk på en tast for å starte installasjonen...
+Installer_VerifyMin: "Bekreft at du oppfyller minimumskravene:"
+Installer_VerifyAlready: "Det ser ut som alt er installert. Kontroller at du oppfyller minimumskravene som anbefales:"
+Installer_Complete: Det skal være alt. Hovedprogrammet, TcNo-Acc-Switcher.exe, vil automatisk kjøre når du trykker på en nøkkel for å fortsette.
+Installer_Complete2: "Hvis det ikke fungerer, vennligst se installasjonsinstruksjoner, her: {link}"
+Global_FatalNext: "En alvorlig feil oppstod! Dette krasjloggen vil bli automatisk sendt neste oppstart."
+Tray_Error: Feil i verktøykassen
+Tray_NoAccs: "Det ble ikke funnet noen kontoer.\nPrøv å bytte konto først, eller finn 'Tray_Users.json'"
+Tray_Switch: "Bytt til: {account}"
+Tray_CantOpenExe: "Kunne ikke åpne hoved.exe. Kontroller at det finnes.\n\njeg forsøkte å åpne:"
+Tray_LaunchFail: "TcIngen konto Switcher - Feil ved kjøring"
+Updater_Duplicate: En annen TcIngen konto Switcher Updater forekomst er oppdaget.
+Updater_Unknown: "Ukjent argument: {arg}"
+Updater_NeedsAdmin: Dette programmet må kjøres som en administrator!
+Updater_StatusChecking: Kontrollerer versjon
+Updater_FailedVersionCheck: "Kunne ikke hente versjon. Klikk \"Verifiser\" for å oppdatere og verifisere filer"
+Updater_PressBelow: Trykk på knappen nedenfor!
+Updater_PressBelowStart: Klikk på knappen nedenfor for å starte oppdateringen.
+Updater_PatchApplied: Fiks brukt!
+Updater_UpdatingAppData: Oppdaterer filer i AppData!
+Updater_Complete: Alle oppdateringer er ferdig!
+Updater_Checking: Ser etter oppdateringer
+Updater_UpdateToVerify: For å bekrefte filene må du oppdatere først.
+Updater_ClosingTcNo: Lukker TcNo Account Switcher instanser (hvis noen).
+Updater_Downloading: "Laster ned oppdatering: {version}"
+Updater_Downloaded: Nedlasting fullført.
+Updater_CantExtract: Kunne ikke pakke ut oppdateringen.
+Updater_Verify: Verifiser filer
+Updater_Verifying: Verifiserer...
+Updater_VerifySkip: Verifiserer filer å hoppe over alle små oppdateringer, og bare gå til sist.
+Updater_NoConnection: "Kunne ikke koble til tcno.co for å verifisere filer. Du kan prøve å laste ned installasjonsprogrammet manuelt fra GitHub siden, og installere det til oppdatering.\n\nError:"
+Updater_NoServer: Tjeneren kunne ikke nås
+Updater_Hashlist: Laster ned siste hashliste...
+Updater_CantCheck: Kan ikke se etter oppdateringer
+Updater_Failed: "FEIL: Noen av filene er i bruk og kan ikke oppdateres.\n\n1. Sørg for at alle TcNo prosesser er helt lukket\n(eller restart PC)\n\n2. Klikk deretter Bekreft nedenfor, eller hvis du startet på nytt:\n- Åpne denne oppdateringen og kontroller filene\n    (ligger i 'oppdateringer' mappen i installasjonsmappen)"
+Updater_Missing: "FIL MISLYKTE: {file}"
+Updater_FileMismatch: "Filen: {file} har MD5: {md5} EKSPONER: {value}"
+Updater_DownloadingWeb: Laster ned fil fra nettsiden...
+Updater_UnpackingAppData: Kopierer filer til %AppData%/TcNo Account Switch... (med mindre noe annet)
+Updater_VerifyComplete: Filer verifisert!
+Updater_UpdateFound: "Oppdatering funnet: {name} [{updateSize}]"
+Updater_TotalFound: "Totalt antall oppdateringer funnet: {x}"
+Updater_TotalSize: "Total størrelse: {size}"
+Updater_AwaitingUser: Venter på brukerinndata ...
+Updater_UpToDate: "Du er oppdatert.\n:)"
+Updater_FailedDecode: Dette skyldes sannsynligvis at jeg er i ferd med å skyve en oppdatering, og at jeg gjør en skrivefeil som gjør at den blir ødelagt. Oppdateringsfil med sønn. Gi meg beskjed :)
+Updater_FailedDecodeTitle: Kunne ikke laste ned oppdateringslisten
+Updater_Extracting: Trekker ut patch filer
+Updater_Applying: Bruker patch...
+Updater_Moving: Flytter filer...
+Updater_Title: TcIngen konto velger oppdatering
+Updater_Started: Startet
+Updater_Start: Start TcIngen Konto-bytter
+Updater_Begin: Start oppdatering
+Updater_Exit: Avslutt
+FatalError: En uopprettelig feil oppstod!
 Online: Pålogget
 OnlineDefault: Online (Default)
 Offline: Frakoblet

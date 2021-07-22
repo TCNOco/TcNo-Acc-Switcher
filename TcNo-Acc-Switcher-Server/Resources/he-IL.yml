@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: לא ניתן לאתר את '... / Steam / con
 Toast_CantClearImages: לא ניתן היה לנקות תמונות
 Toast_RefreshedImages: תמונות רעננות
 Toast_Ubisoft_NoUsername: לא ניתן למצוא משתמש מחובר אחרון. נסה להתחבר שוב ל- Ubisoft.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat לא נמצא. החשבון הפעיל האחרון לא נשמר."
 Toast_Ubisoft_NoUser: לא ניתן למצוא משתמש מחובר אחרון. נסה להתחבר שוב ל- Ubisoft.
 Toast_ClearForgottenCheck: האם אתה בטוח שברצונך לנקות גיבויים של חשבונות שנשכחו?
 Modal_Info_Creator: נוצר על ידי TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: TcNo Account Switcher - ניקוי קיטור
 Title_Steam_Restore: TcNo Account Switcher - שחזר חשבון Steam שנשכח
 Title_Steam_Settings: מחליף חשבון TcNo - הגדרות Steam
 Title_Ubisoft_Settings: TcNo Account Switcher - הגדרות Ubisoft
+Installer_Downloading: מוריד {file}
+Installer_DownloadFinished: ההורדה הסתיימה {file}
+Installer_Installing: "התקנה: {runtime}"
+Installer_RuntimeTitle: מחליף חשבון TcNo - מתקין זמן ריצה
+Installer_Welcome: ברוך הבא למתג החשבון TcNo - מתקין זמן ריצה
+Installer_InstalledRuntimes: "זמני ריצה מותקנים כעת:"
+Installer_ErrorRuntime: "לא הותקנה זמן ריצה אחד או יותר:"
+Installer_RuntimeNote: "[~{size1} מגה בייט + ~{size2} מגה בייט במהלך ההתקנה]"
+Installer_TotalSize: "גודל הורדה כולל: ~{size} מגהבייט"
+Installer_AnyKeyStart: לחץ על מקש כלשהו כדי להתחיל בהורדה ...
+Runtime_WebView2: זמן ריצה של מיקרוסופט WebView2
+Runtime_Desktop: זמן ריצה לשולחן העבודה של Microsoft .NET 5
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 זמן ריצה
+Installer_FailedFolder: "יצירת תיקיה נכשלה:"
+Installer_FailedWV: "ההורדה וההתקנה של Microsoft WebView2 Runtime נכשלה. להורדה: 1. לחץ על הקישור למטה: {link} 2. לחץ על 'הורד חבילה של אירוח' תחת הפעל אפליקציות שרת."
+Installer_FailedDR: "ההורדה והתקנה של .NET 5 Desktop Runtime נכשלה. אנא הורידו אותו כאן:"
+Installed_FailedASP: "ההורדה והתקנה של זמן הריצה של ASP.NET Core 5.0 נכשלו. להורדה: 1. לחץ על הקישור למטה: {link} 2. לחץ על 'הורד x64' תחת הפעל יישומי שולחן עבודה."
+Installer_Ready: "אחד או יותר מוכנים להתקנה. אם וכאשר תתבקש אם ברצונך להתקין, לחץ על 'כן'."
+Installer_PressStart: לחץ על מקש כלשהו כדי להתחיל בהתקנה ...
+Installer_VerifyMin: "ודא שאתה עומד בדרישות המינימליות המומלצות:"
+Installer_VerifyAlready: "נראה שהכל מותקן. ודא שאתה עומד בדרישות המינימליות המומלצות:"
+Installer_Complete: זה צריך להיות הכל. התוכנית הראשית, TcNo-Acc-Switcher.exe, תפעל אוטומטית כאשר תלחץ על מקש כדי להמשיך.
+Installer_Complete2: "אם זה לא עובד, עיין בהוראות ההתקנה, כאן: {link}"
+Global_FatalNext: "אירעה שגיאה אנושה! הבלוג הזה יוגש באופן אוטומטי בהשקה הבאה."
+Tray_Error: שגיאת מגש
+Tray_NoAccs: "לא נמצאו חשבונות.\nנסה תחילה להחליף חשבונות, או אתר את 'Tray_Users.json'"
+Tray_Switch: "עבור ל: {account}"
+Tray_CantOpenExe: "לא ניתן היה לפתוח את ה- .exe הראשי. וודא שהוא קיים.\n\nניסיתי לפתוח:"
+Tray_LaunchFail: "מחליף חשבון TcNo - הפעלת המגש נכשלה"
+Updater_Duplicate: זוהה מופע אחר של TcNo Account Switcher Updater.
+Updater_Unknown: "טיעון לא ידוע: {arg}"
+Updater_NeedsAdmin: יש להפעיל תוכנית זו כמנהל מערכת!
+Updater_StatusChecking: בודק גרסה
+Updater_FailedVersionCheck: "לא ניתן היה להשיג גרסה. לחץ על \"אמת\" כדי לעדכן ולאמת קבצים"
+Updater_PressBelow: לחץ על הכפתור למטה!
+Updater_PressBelowStart: לחץ על הלחצן למטה כדי להתחיל בעדכון.
+Updater_PatchApplied: התיקון הוחל!
+Updater_UpdatingAppData: עדכון קבצים ב- AppData!
+Updater_Complete: כל העדכונים הושלמו!
+Updater_Checking: בודק עדכונים
+Updater_UpdateToVerify: כדי לאמת קבצים עליך לעדכן תחילה.
+Updater_ClosingTcNo: סגירת מקרים של TcNo Switcher לחשבון (אם קיימת).
+Updater_Downloading: "הורדת עדכון: {version}"
+Updater_Downloaded: ההורדה הושלמה.
+Updater_CantExtract: חילוץ העדכון נכשל.
+Updater_Verify: אמת קבצים
+Updater_Verifying: מאמת ...
+Updater_VerifySkip: אימות קבצים כדי לדלג על כל העדכונים הקטנים ופשוט לקפוץ לעדכונים האחרונים.
+Updater_NoConnection: "לא ניתן להתחבר אל tcno.co כדי לאמת קבצים. אתה יכול לנסות להוריד ידנית את תוכנית ההתקנה מדף GitHub ולהתקין מחדש כדי לעדכן.\n\nשגיאה:"
+Updater_NoServer: לא ניתן היה להגיע לשרת העדכונים
+Updater_Hashlist: מוריד את רשימת החשיש האחרונה ...
+Updater_CantCheck: לא ניתן לבדוק אם קיימים עדכונים
+Updater_Failed: "שגיאה: חלק מהקבצים נמצאים בשימוש ולא ניתן לעדכן אותם.\n\n1. ודא שכל תהליכי ה- TcNo סגורים לחלוטין\n(או הפעל מחדש את המחשב האישי שלך)\n\n2. לאחר מכן לחץ על אמת למטה, או אם הפעלת מחדש:\n- פתח את העדכון הזה ואמת את הקבצים\n    (שנמצאים בתיקיית 'העדכון' בתיקיה ספריית התקנות)"
+Updater_Missing: "קובץ חסר: {file}"
+Updater_FileMismatch: "לקובץ: {file} יש MD5: {md5} צפוי: {value}"
+Updater_DownloadingWeb: מוריד את הקובץ מהאתר ...
+Updater_UnpackingAppData: מעתיק קבצים ל- %AppData%/ TcNo Switcher Account ... (אלא אם כן הוגדר אחרת)
+Updater_VerifyComplete: קבצים אומתו!
+Updater_UpdateFound: "עדכון נמצא: {name} [{updateSize}]"
+Updater_TotalFound: "סה\"כ עדכונים שנמצאו: {x}"
+Updater_TotalSize: "גודל כולל: {size}"
+Updater_AwaitingUser: מחכים לקלט המשתמש...
+Updater_UpToDate: "אתה מעודכן.\n:)"
+Updater_FailedDecode: זה ככל הנראה בגלל שאני (TechNobo) דוחף עדכון, וביצוע שגיאת שגיאה ששברה את קובץ העדכון .json. תודיע לי :)
+Updater_FailedDecodeTitle: פענוח רשימת העדכונים נכשל
+Updater_Extracting: חילוץ קבצי תיקון
+Updater_Applying: מחיל תיקון ...
+Updater_Moving: מעביר קבצים ...
+Updater_Title: עדכון TcNo Account Switcher Updater
+Updater_Started: התחיל
+Updater_Start: הפעל את TcNo Account Switcher
+Updater_Begin: התחל עדכון
+Updater_Exit: יְצִיאָה
+FatalError: אירעה שגיאה אנושה!
 Online: באינטרנט
 OnlineDefault: מקוון (ברירת מחדל)
 Offline: לא מקוון

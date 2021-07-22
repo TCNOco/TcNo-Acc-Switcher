@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: A "... / Steam / config / loginusers.vdf" nem 
 Toast_CantClearImages: Nem sikerült törölni a képeket
 Toast_RefreshedImages: Frissített képek
 Toast_Ubisoft_NoUsername: Nem található az utoljára bejelentkezett felhasználó. Először próbáljon meg újra bejelentkezni a Ubisoftba.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat nem található. Az utolsó aktív fiókot nem mentették."
 Toast_Ubisoft_NoUser: Nem található az utoljára bejelentkezett felhasználó. Először próbáljon meg újra bejelentkezni a Ubisoftba.
 Toast_ClearForgottenCheck: Biztosan törli az elfelejtett fiókok biztonsági másolatait?
 Modal_Info_Creator: 'Készítette: TechNobo [Wesley Pyburn]'
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: TcNo Account Switcher - Gőztisztítás
 Title_Steam_Restore: TcNo Account Switcher - Az elfelejtett Steam-fiók visszaállítása
 Title_Steam_Settings: TcNo Account Switcher - Steam beállítások
 Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft beállítások
+Installer_Downloading: '{file}letöltése'
+Installer_DownloadFinished: '{file}letöltése befejeződött'
+Installer_Installing: "Telepítés: {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - Futásidejű telepítő
+Installer_Welcome: Üdvözöljük a TcNo Account Switcher - Runtime telepítőben
+Installer_InstalledRuntimes: "Jelenleg telepített futási idők:"
+Installer_ErrorRuntime: "Egy vagy több futásidőt nem telepítettek:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB telepítés közben]"
+Installer_TotalSize: "Teljes letöltési méret: ~{size} MB"
+Installer_AnyKeyStart: Nyomja meg bármelyik gombot a letöltés megkezdéséhez ...
+Runtime_WebView2: Microsoft WebView2 futásidejű
+Runtime_Desktop: Microsoft .NET 5 asztali futásidejű
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 futásidejű
+Installer_FailedFolder: "Nem sikerült létrehozni a mappát:"
+Installer_FailedWV: "Nem sikerült letölteni és telepíteni a Microsoft WebView2 Runtime programot. Letöltés: 1. Kattintson az alábbi linkre: {link} 2. Kattintson a \"Szerveralkalmazások futtatása\" alatt a \"Tárhelycsomag letöltése\" elemre."
+Installer_FailedDR: "Nem sikerült letölteni és telepíteni a .NET 5 Desktop Runtime programot. Kérjük, töltse le itt:"
+Installed_FailedASP: "Nem sikerült letölteni és telepíteni az ASP.NET Core 5.0 Runtime szoftvert. A letöltéshez: 1. Kattintson az alábbi linkre: {link} 2. Kattintson az „A letöltés x64” elemre a Futtatás az asztali alkalmazások alatt."
+Installer_Ready: "Egy vagy több telepítésre kész. Ha és amikor a rendszer kéri, hogy telepíteni szeretné-e, kattintson az „Igen” gombra."
+Installer_PressStart: Nyomja meg bármelyik gombot a telepítés megkezdéséhez ...
+Installer_VerifyMin: "Ellenőrizze, hogy megfelel-e az ajánlott minimumkövetelményeknek:"
+Installer_VerifyAlready: "Úgy tűnik, hogy minden telepítve van. Ellenőrizze, hogy megfelel-e az ajánlott minimumkövetelményeknek:"
+Installer_Complete: Ez legyen minden. A fő program, a TcNo-Acc-Switcher.exe automatikusan elindul, ha a folytatáshoz megnyom egy gombot.
+Installer_Complete2: "Ha nem működik, olvassa el a telepítési utasításokat, itt: {link}"
+Global_FatalNext: "Végzetes hiba történt! Ez az összeomló napló automatikusan beküldik a következő indításkor."
+Tray_Error: Tálca hiba
+Tray_NoAccs: "Nem található fiók.\nElőször próbáljon meg fiókot váltani, vagy keresse meg a „Tray_Users.json” címet"
+Tray_Switch: "Váltson a következőre: {account}"
+Tray_CantOpenExe: "Nem sikerült megnyitni a fő .exe fájlt. Győződjön meg róla, hogy létezik.\n\nMegpróbáltam megnyitni:"
+Tray_LaunchFail: "TcNo Account Switcher - A tálca indítása sikertelen"
+Updater_Duplicate: Újabb TcNo fiókváltó frissítő példányt észleltünk.
+Updater_Unknown: "Ismeretlen argumentum: {arg}"
+Updater_NeedsAdmin: Ezt a programot rendszergazdaként kell futtatni!
+Updater_StatusChecking: Verzió ellenőrzése
+Updater_FailedVersionCheck: "Nem sikerült letölteni a verziót. Kattintson a \"Verify\" gombra a fájlok frissítéséhez és ellenőrzéséhez"
+Updater_PressBelow: Nyomja meg az alábbi gombot!
+Updater_PressBelowStart: A frissítés elindításához kattintson az alábbi gombra.
+Updater_PatchApplied: Javítás alkalmazva!
+Updater_UpdatingAppData: Fájlok frissítése az AppData alkalmazásban!
+Updater_Complete: Minden frissítés elkészült!
+Updater_Checking: Frissítések keresése
+Updater_UpdateToVerify: A fájlok ellenőrzéséhez először frissítenie kell.
+Updater_ClosingTcNo: A TcNo Account Switcher példányok bezárása (ha vannak).
+Updater_Downloading: "Frissítés letöltése: {version}"
+Updater_Downloaded: Letöltés kész.
+Updater_CantExtract: Nem sikerült kibontani a frissítést.
+Updater_Verify: Ellenőrizze a fájlokat
+Updater_Verifying: Ellenőrzés ...
+Updater_VerifySkip: Fájlok ellenőrzése az összes apró frissítés kihagyásához, és csak a legfrissebbre ugrik.
+Updater_NoConnection: "Nem sikerült csatlakozni a tcno.co webhelyhez a fájlok ellenőrzéséhez. Megpróbálhatja manuálisan letölteni a telepítőt a GitHub oldalról, és újratelepíteni a frissítéshez.\n\nHiba:"
+Updater_NoServer: Nem sikerült elérni a frissítési kiszolgálót
+Updater_Hashlist: A legújabb hash-lista letöltése ...
+Updater_CantCheck: Nem lehet ellenőrizni a frissítéseket
+Updater_Failed: "HIBA: Néhány fájl használatban van, és nem frissíthető.\n\n1. Győződjön meg arról, hogy az összes TcNo folyamat nincs teljesen lezárva\n(vagy indítsa újra a számítógépet)\n\n2. Ezután kattintson az Ellenőrzés gombra, vagy ha újraindította:\n- Nyissa meg ezt a frissítőt, és ellenőrizze a fájlokat\n    (amelyek a telepítési könyvtár)"
+Updater_Missing: "A Fájl hiányzik: {file}"
+Updater_FileMismatch: "A fájl: {file} MD5: {md5} elvárható: {value}"
+Updater_DownloadingWeb: Fájl letöltése a webhelyről ...
+Updater_UnpackingAppData: Fájlok másolása a %AppData%/ TcNo fiókváltóra ... (hacsak nincs másként beállítva)
+Updater_VerifyComplete: A fájlok ellenőrzése megtörtént!
+Updater_UpdateFound: "Frissítés található: {name} [{updateSize}]"
+Updater_TotalFound: "Összesen talált frissítések: {x}"
+Updater_TotalSize: "Teljes méret: {size}"
+Updater_AwaitingUser: Várakozás felhasználói bevitelre ...
+Updater_UpToDate: "Naprakész vagy.\n:)"
+Updater_FailedDecode: Ez nagy valószínűséggel annak köszönhető, hogy (TechNobo) egy frissítést nyomtam, és elírtam egy elírási hibát, amely megtörte a .json frissítési fájlt. Ne szólj :)
+Updater_FailedDecodeTitle: Nem sikerült dekódolni a frissítési listát
+Updater_Extracting: Javító fájlok kibontása
+Updater_Applying: Alkalmazott javítás...
+Updater_Moving: Fájlok áthelyezése ...
+Updater_Title: TcNo Account Switcher Updater
+Updater_Started: Elkezdődött
+Updater_Start: Indítsa el a TcNo fiókváltót
+Updater_Begin: Frissítés indítása
+Updater_Exit: Kijárat
+FatalError: Végzetes hiba történt!
 Online: Online
 OnlineDefault: Online (alapértelmezett)
 Offline: Offline

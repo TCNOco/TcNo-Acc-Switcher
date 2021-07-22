@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: Kan ikke finde '.../Steam/config/loginusers.vd
 Toast_CantClearImages: Kunne ikke rydde billeder
 Toast_RefreshedImages: Opdaterede billeder
 Toast_Ubisoft_NoUsername: Kunne ikke finde sidst logget på bruger. Prøv at logge ind på Ubisoft igen først.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat kunne ikke findes. Den sidste aktive konto blev ikke gemt."
 Toast_Ubisoft_NoUser: Kunne ikke finde sidst logget på bruger. Prøv at logge ind på Ubisoft igen først.
 Toast_ClearForgottenCheck: Er du sikker på, at du vil rydde sikkerhedskopier af glemte konti?
 Modal_Info_Creator: Oprettet af TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: TcNo Kontoskifter - Steam Rengøring
 Title_Steam_Restore: TcNo Account Switcher - Gendan glemt Steam-konto
 Title_Steam_Settings: TcNo Kontoskifter - Steam-indstillinger
 Title_Ubisoft_Settings: TcNo Konto Switcher - Ubisoft Indstillinger
+Installer_Downloading: Downloader {file}
+Installer_DownloadFinished: Download {file} fuldført
+Installer_Installing: "Installerer: {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - Runtime installer
+Installer_Welcome: Velkommen til TcNo Account Switcher - Runtime installer
+Installer_InstalledRuntimes: "Aktuelt installerede runtimes:"
+Installer_ErrorRuntime: "En eller flere runtimes blev ikke installeret:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB under installation]"
+Installer_TotalSize: "Total downloadstørrelse: ~{size} MB"
+Installer_AnyKeyStart: Tryk på enhver nøgle for at begynde at downloade...
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Installer_FailedFolder: "Kunne ikke oprette mappe:"
+Installer_FailedWV: "Kunne ikke downloade og installere Microsoft WebView2 Runtime. For at hente: 1. Klik på linket nedenfor: {link} 2. Klik på 'Download Hosting Bundle' under Kør server apps."
+Installer_FailedDR: "Kunne ikke downloade og installere. NET 5 Desktop Runtime. Download det her:"
+Installed_FailedASP: "Kunne ikke downloade og installere ASP.NET Core 5.0 Runtime. Hvis du vil downloade: 1. Klik på linket nedenfor: {link} 2. Klik på 'Download x64' under Kør Desktop apps."
+Installer_Ready: "En eller flere er klar til installation. Hvis og når du bliver bedt om at installere, så klik på 'Ja'."
+Installer_PressStart: Tryk på en tast for at starte installation...
+Installer_VerifyMin: "Kontroller at du opfylder de anbefalede minimumskrav:"
+Installer_VerifyAlready: "Det ser ud til at alt er installeret. Kontroller at du opfylder de anbefalede minimumskrav:"
+Installer_Complete: Det burde være alt. Hovedprogrammet, TcNo-Acc-Switcher.exe, vil auto-køre, når du trykker på en tast for at fortsætte.
+Installer_Complete2: "Hvis det ikke virker, se venligst for at installere instruktioner, her: {link}"
+Global_FatalNext: "Fatal fejl opstod! Dette crashlog vil automatisk blive indsendt næste start."
+Tray_Error: Bakke Fejl
+Tray_NoAccs: "Der blev ikke fundet nogen konti.\nPrøv at skifte konti først, eller find 'Tray_Users.json'"
+Tray_Switch: "Skift til: {account}"
+Tray_CantOpenExe: "Kunne ikke åbne hoved.exe. Sørg for at den eksisterer.\n\nJeg forsøgte at åbne:"
+Tray_LaunchFail: "TcNo Kontoskifter - Bakke lancering mislykkedes"
+Updater_Duplicate: En anden TcNo Account Switcher Updater instans er blevet opdaget.
+Updater_Unknown: "Ukendt argument: {arg}"
+Updater_NeedsAdmin: Dette program skal køres som administrator!
+Updater_StatusChecking: Kontrollerer version
+Updater_FailedVersionCheck: "Kunne ikke hente version. Klik på \"Verificér\" for at opdatere og verificere filer"
+Updater_PressBelow: Tryk på knappen nedenfor!
+Updater_PressBelowStart: Klik på knappen nedenfor for at starte opdateringen.
+Updater_PatchApplied: Patch anvendt!
+Updater_UpdatingAppData: Opdaterer filer i AppData!
+Updater_Complete: Alle opdateringer fuldført!
+Updater_Checking: Søger efter opdateringer
+Updater_UpdateToVerify: For at bekræfte filer skal du opdatere først.
+Updater_ClosingTcNo: Lukker TcNo Account Switcher instanser (hvis nogen).
+Updater_Downloading: "Downloader opdatering: {version}"
+Updater_Downloaded: Download fuldført.
+Updater_CantExtract: Kunne ikke udpakke opdatering.
+Updater_Verify: Verificér filer
+Updater_Verifying: Verificerer...
+Updater_VerifySkip: Bekræfter filer for at springe over alle små opdateringer, og bare hoppe til nylig.
+Updater_NoConnection: "Kunne ikke forbinde til tcno.co for at verificere filer. Du kan prøve manuelt at downloade installationsprogrammet fra GitHub siden og geninstallere for at opdatere.\n\nFejl:"
+Updater_NoServer: Kunne ikke nå opdateringsserver
+Updater_Hashlist: Downloader seneste hash-liste...
+Updater_CantCheck: Kan ikke søge efter opdateringer
+Updater_Failed: "FEJL: Nogle af filerne er i brug og kan ikke opdateres.\n\n1. Sørg for, at alle TcNo processer er fuldstændig lukket\n(eller genstart din PC)\n\n2. Klik derefter på Bekræft nedenfor, eller hvis du genstartede:\n- Åbn denne updater og bekræft filer\n    (placeret i 'updater' mappen i installationsmappen)"
+Updater_Missing: "FIL MISSING: {file}"
+Updater_FileMismatch: "Fil: {file} har MD5: {md5} EXPECTED: {value}"
+Updater_DownloadingWeb: Downloader fil fra hjemmeside...
+Updater_UnpackingAppData: Kopierer filer til %AppData%/TcNo Account Switcher... (medmindre andet er angivet)
+Updater_VerifyComplete: Filer bekræftet!
+Updater_UpdateFound: "Opdatering fundet: {name} [{updateSize}]"
+Updater_TotalFound: "Totale opdateringer fundet: {x}"
+Updater_TotalSize: "Samlet størrelse: {size}"
+Updater_AwaitingUser: Venter på brugerinput...
+Updater_UpToDate: "Du er opdateret.\n:)"
+Updater_FailedDecode: Dette er mest sandsynligt på grund af mig (TechNobo) skubbe en opdatering, og gøre en typo, der brød . Sson opdateringsfil. Lad mig vide :)
+Updater_FailedDecodeTitle: Mislykkedes at afkode opdateringslisten
+Updater_Extracting: Udpakker programrettelsesfiler
+Updater_Applying: Anvender plaster...
+Updater_Moving: Flytter filer...
+Updater_Title: TcNo Kontoskifter Updater
+Updater_Started: Startet
+Updater_Start: Start TcNo Konto Skifter
+Updater_Begin: Start opdatering
+Updater_Exit: Afslut
+FatalError: Fatal fejl opstod!
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline

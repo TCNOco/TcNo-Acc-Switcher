@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: No es pot localitzar '... / Steam / config / l
 Toast_CantClearImages: No s'han pogut esborrar les imatges
 Toast_RefreshedImages: Imatges actualitzades
 Toast_Ubisoft_NoUsername: No s'ha pogut trobar l'últim usuari connectat. Intenteu tornar a iniciar sessió a Ubisoft primer.
+Toast_Ubisoft_NoDat: "No s'ha pogut trobar %LocalAppData%No s'ha desat l'últim compte actiu."
 Toast_Ubisoft_NoUser: No s'ha pogut trobar l'últim usuari connectat. Intenteu tornar a iniciar sessió a Ubisoft primer.
 Toast_ClearForgottenCheck: Esteu segur que voleu esborrar les còpies de seguretat dels comptes oblidats?
 Modal_Info_Creator: Creat per TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: 'TcNo Account Switcher: neteja de vapor'
 Title_Steam_Restore: 'TcNo Account Switcher: restaura el compte de Steam oblidat'
 Title_Steam_Settings: 'TcNo Account Switcher: configuració de Steam'
 Title_Ubisoft_Settings: 'TcNo Account Switcher: configuració d''Ubisoft'
+Installer_Downloading: S'està baixant {file}
+Installer_DownloadFinished: S'ha acabat de descarregar {file}
+Installer_Installing: "Instal·lació: {runtime}"
+Installer_RuntimeTitle: 'TcNo Account Switcher: instal·lador d''execució'
+Installer_Welcome: 'Benvingut al TcNo Account Switcher: instal·lador d''execució'
+Installer_InstalledRuntimes: "Temps d'execució instal·lats actualment:"
+Installer_ErrorRuntime: "No s'han instal·lat un o més temps d'execució:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB durant la instal·lació]"
+Installer_TotalSize: "Mida total de la baixada: ~{size} MB"
+Installer_AnyKeyStart: Premeu qualsevol tecla per començar a baixar ...
+Runtime_WebView2: Temps d'execució de Microsoft WebView2
+Runtime_Desktop: Temps d’execució de l’escriptori Microsoft .NET 5
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Installer_FailedFolder: "No s'ha pogut crear la carpeta:"
+Installer_FailedWV: "No s'ha pogut descarregar i instal·lar Microsoft WebView2 Runtime. Per descarregar: 1. Feu clic a l'enllaç següent: {link} 2. Feu clic a \"Descarregar paquet d'allotjament\" a Executa aplicacions de servidor."
+Installer_FailedDR: "No s'ha pogut descarregar i instal·lar .NET 5 Desktop Runtime. Si us plau, descarregueu-lo aquí:"
+Installed_FailedASP: "No s'ha pogut descarregar i instal·lar ASP.NET Core 5.0 Runtime. Per descarregar: 1. Feu clic a l'enllaç següent: {link} 2. Feu clic a \"Baixa x64\" a Executa aplicacions d'escriptori."
+Installer_Ready: "Un o més estan a punt per instal·lar-se. Si us demana si voleu instal·lar-lo, feu clic a \"Sí\"."
+Installer_PressStart: Premeu qualsevol tecla per començar a instal·lar ...
+Installer_VerifyMin: "Verifiqueu que compleixis els requisits mínims recomanats:"
+Installer_VerifyAlready: "Sembla que tot està instal·lat. Verifiqueu que compleixis els requisits mínims recomanats:"
+Installer_Complete: Això hauria de ser tot. El programa principal, TcNo-Acc-Switcher.exe, s'executarà automàticament quan premeu una tecla per continuar.
+Installer_Complete2: "Si no funciona, consulteu les instruccions d'instal·lació aquí: {link}"
+Global_FatalNext: "S'ha produït un error greu. Aquest bloc d’errors s’enviarà automàticament el proper llançament."
+Tray_Error: Error de safata
+Tray_NoAccs: "No s'han trobat comptes.\nProveu primer de canviar de compte o localitzeu \"Tray_Users.json\""
+Tray_Switch: "Canvieu a: {account}"
+Tray_CantOpenExe: "No s'ha pogut obrir el fitxer .exe principal. Assegureu-vos que existeixi.\n\nHe intentat obrir:"
+Tray_LaunchFail: "TcNo Account Switcher: falla el llançament de la safata"
+Updater_Duplicate: S'ha detectat una altra instància TcNo Account Switcher Updater.
+Updater_Unknown: "Argument desconegut: {arg}"
+Updater_NeedsAdmin: Aquest programa s'ha d'executar com a administrador.
+Updater_StatusChecking: S'està comprovant la versió
+Updater_FailedVersionCheck: "No s'ha pogut obtenir la versió. Feu clic a \"Verifica\" per actualitzar i verificar fitxers"
+Updater_PressBelow: Premeu el botó següent.
+Updater_PressBelowStart: Feu clic al botó següent per iniciar l'actualització.
+Updater_PatchApplied: Pedaç aplicat
+Updater_UpdatingAppData: S'estan actualitzant fitxers a AppData.
+Updater_Complete: S'han completat totes les actualitzacions.
+Updater_Checking: S'estan cercant actualitzacions
+Updater_UpdateToVerify: Per verificar els fitxers, cal que actualitzeu primer.
+Updater_ClosingTcNo: Tancament d’instàncies TcNo Account Switcher (si n’hi ha).
+Updater_Downloading: "S'està baixant l'actualització: {version}"
+Updater_Downloaded: Descàrrega completa.
+Updater_CantExtract: No s'ha pogut extreure l'actualització.
+Updater_Verify: Verifiqueu els fitxers
+Updater_Verifying: S'està verificant ...
+Updater_VerifySkip: S'estan verificant els fitxers per ometre totes les petites actualitzacions i passar a l'últim.
+Updater_NoConnection: "No s'ha pogut connectar a tcno.co per verificar els fitxers. Podeu provar de descarregar manualment l’instal·lador des de la pàgina de GitHub i tornar-lo a instal·lar per actualitzar-lo.\n\nError:"
+Updater_NoServer: No s'ha pogut accedir al servidor d'actualitzacions
+Updater_Hashlist: S'està baixant la llista de hash més recent ...
+Updater_CantCheck: No es pot comprovar si hi ha actualitzacions
+Updater_Failed: "ERROR: alguns dels fitxers estan en ús i no es poden actualitzar.\n\n1. Assegureu-vos que tots els processos TcNo estan tancats per complet\n(o reiniciar el seu PC)\n\n2. A continuació, feu clic a Verifica baix, o si ha reiniciat:\n- Obrir actualitzador i verificar arxius\n    (que es troba a la carpeta 'actualitzador' al directori d'instal·lació)"
+Updater_Missing: "FALTA DEL FITXER: {file}"
+Updater_FileMismatch: "El fitxer: {file} té MD5: {md5} ESPERAT: {value}"
+Updater_DownloadingWeb: S'està baixant el fitxer del lloc web ...
+Updater_UnpackingAppData: S'estan copiant fitxers a %AppData%/ TcNo Account Switcher ... (tret que s'estableixi el contrari)
+Updater_VerifyComplete: Arxius verificats.
+Updater_UpdateFound: "Actualització trobada: {name} [{updateSize}]"
+Updater_TotalFound: "S'han trobat actualitzacions totals: {x}"
+Updater_TotalSize: "Mida total: {size}"
+Updater_AwaitingUser: S'està esperant l'entrada de l'usuari ...
+Updater_UpToDate: "Esteu al dia.\n:)"
+Updater_FailedDecode: Probablement, això és degut a que (TechNobo) he empès una actualització i he fet un error tipogràfic que ha trencat el fitxer d'actualització .json. Avisa'm :)
+Updater_FailedDecodeTitle: No s'ha pogut descodificar la llista d'actualitzacions
+Updater_Extracting: Extracció de fitxers de pegats
+Updater_Applying: S'està aplicant el pedaç ...
+Updater_Moving: S'estan movent els fitxers ...
+Updater_Title: Actualitzador de TcNo Account Switcher
+Updater_Started: Començat
+Updater_Start: Inicieu TcNo Account Switcher
+Updater_Begin: Comenceu a actualitzar
+Updater_Exit: Surt
+FatalError: S'ha produït un error greu.
 Online: En línia
 OnlineDefault: En línia (predeterminat)
 Offline: Desconnectat

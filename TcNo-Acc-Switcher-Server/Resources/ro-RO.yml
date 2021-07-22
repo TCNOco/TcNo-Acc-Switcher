@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: Nu se poate localiza '.../Steam/config/loginus
 Toast_CantClearImages: Imaginile nu au putut fi șterse
 Toast_RefreshedImages: Reîmprospătați imaginile
 Toast_Ubisoft_NoUsername: Nu s-a putut găsi ultimul utilizator conectat. Încercați să vă logați din nou în Ubisoft.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat nu a putut fi găsit. Ultimul cont activ nu a fost salvat."
 Toast_Ubisoft_NoUser: Nu s-a putut găsi ultimul utilizator conectat. Încercați să vă logați din nou în Ubisoft.
 Toast_ClearForgottenCheck: Sunteţi sigur că doriţi să ştergeţi copiile de rezervă ale conturilor uitate?
 Modal_Info_Creator: Creat de TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: Comutator de cont TcNo - Curățarea Steam
 Title_Steam_Restore: Comutator de cont TcNo - Restaurare cont Steam uitat
 Title_Steam_Settings: Comutator de cont TcNo - Setări Steam
 Title_Ubisoft_Settings: Comutator de cont TcNo - Setări Ubisoft
+Installer_Downloading: Se descarcă {file}
+Installer_DownloadFinished: Descărcare finalizată {file}
+Installer_Installing: "Instalare: {runtime}"
+Installer_RuntimeTitle: Comutator de cont TcNo - Instalator Runtime
+Installer_Welcome: Bine ați venit la Comutatorul de Cont TcNo - Instalator Runtime
+Installer_InstalledRuntimes: "Executări instalate în prezent:"
+Installer_ErrorRuntime: "Una sau mai multe runtime nu au fost instalate:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB în timpul instalării]"
+Installer_TotalSize: "Dimensiunea totală a descărcării: ~{size} MB"
+Installer_AnyKeyStart: Apasă orice buton pentru a începe descărcarea...
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_ASP: Microsoft ASP.NET Core 5.0 Runtime
+Installer_FailedFolder: "Nu s-a reușit crearea directorului:"
+Installer_FailedWV: "Descărcarea şi instalarea Microsoft WebView2 Runtime. Pentru a descărca: 1. Faceţi clic pe linkul de mai jos: {link} 2. Faceţi clic pe \"Descărcare găzduire\" sub aplicaţiile serverului."
+Installer_FailedDR: "Descărcarea și instalarea .NET 5 Desktop Runtime. Descărcați-l aici:"
+Installed_FailedASP: "Descărcarea și instalarea ASP.NET Core 5.0 Runtime a eșuat. Pentru a descărca: 1. Faceți clic pe linkul de mai jos: {link} 2. Faceți clic pe 'Download x64' sub rularea aplicațiilor Desktop."
+Installer_Ready: "Una sau mai multe sunt gata pentru instalare. Dacă şi când vi se cere dacă doriţi să instalaţi, faceţi clic pe \"Da\"."
+Installer_PressStart: Apăsați orice tastă pentru a începe instalarea...
+Installer_VerifyMin: "Verifică dacă îndeplinești cerințele minime recomandate:"
+Installer_VerifyAlready: "Se pare că totul este instalat. Verifică dacă îndeplinești cerințele minime recomandate:"
+Installer_Complete: Acesta ar trebui să fie totul. Programul principal, TcNo-Acc-Switcher.exe, va rula automat când apăsați o tastă pentru a continua.
+Installer_Complete2: "Dacă nu funcționează, vă rugăm să consultați instrucțiunile de instalare, aici: {link}"
+Global_FatalNext: "Eroare fatală! Acest crashlog va fi trimis automat la următoarea lansare."
+Tray_Error: Eroare de tracțiune
+Tray_NoAccs: "Nu s-a găsit nici un cont.\nÎncercați mai întâi să schimbați contul, sau să localizați 'Tray_Users.json'"
+Tray_Switch: "Schimbă la: {account}"
+Tray_CantOpenExe: "Nu s-a putut deschide .exe. Asigurați-vă că există.\n\nAm încercat să deschid:"
+Tray_LaunchFail: "Comutator de cont TcNo - lansarea comenzii eșuează"
+Updater_Duplicate: O altă instanță de Updater pentru Comutatorul de Cont TcNo a fost detectată.
+Updater_Unknown: "Argument necunoscut: {arg}"
+Updater_NeedsAdmin: Acest program trebuie să fie rulat ca administrator!
+Updater_StatusChecking: Verificare versiune
+Updater_FailedVersionCheck: "Nu s-a putut obține versiunea. Faceți clic pe \"Verificați\" pentru a actualiza și verifica fișierele"
+Updater_PressBelow: Apăsați butonul de mai jos!
+Updater_PressBelowStart: Apasă pe butonul de mai jos pentru a începe actualizarea.
+Updater_PatchApplied: Patch aplicat!
+Updater_UpdatingAppData: Se actualizează fișierele în AppData!
+Updater_Complete: Toate actualizările sunt finalizate!
+Updater_Checking: Se caută actualizări
+Updater_UpdateToVerify: Pentru a verifica fișierele, trebuie mai întâi să actualizați.
+Updater_ClosingTcNo: Închide instanțele comutatorului de cont TcNo (dacă există).
+Updater_Downloading: "Descărcare actualizare: {version}"
+Updater_Downloaded: Descărcare completă.
+Updater_CantExtract: Nu s-a reușit extragerea actualizării.
+Updater_Verify: Verificare fișiere
+Updater_Verifying: Verificare...
+Updater_VerifySkip: Se verifică fișierele pentru a sări peste toate actualizările mici și doar săriți la cele mai recente.
+Updater_NoConnection: "Nu s-a putut conecta la tcno.co pentru a verifica fișierele. Puteți încerca să descărcați manual instalatorul din pagina GitHub și să reinstalați pentru a actualiza.\n\nEroare:"
+Updater_NoServer: Nu s-a putut găsi serverul de actualizare
+Updater_Hashlist: Se descarcă ultima listă de hash...
+Updater_CantCheck: Imposibil de verificat actualizările
+Updater_Failed: "EROARE: Unele dintre fișierele sunt în uz și nu pot fi actualizate.\n\n1. Asiguraţi-vă că toate procesele TcNo sunt complet închise\n(sau reporniţi PC)\n\n2. Apoi apasă Verifică mai jos, sau dacă reporniți:\n- Deschideți acest actualizare și verificați fișierele\n    (localizate în folderul 'updater' din directorul de instalare)"
+Updater_Missing: "MISIUNE FIȘIE: {file}"
+Updater_FileMismatch: "Fișier: {file} are MD5: {md5} EXPECTED: {value}"
+Updater_DownloadingWeb: Se descarcă fişierul de pe site...
+Updater_UnpackingAppData: Copierea fişierelor în %AppData%/TcNo Account Switcher... (dacă nu este setat altfel)
+Updater_VerifyComplete: Fișiere verificate!
+Updater_UpdateFound: "S-a găsit actualizarea: {name} [{updateSize}]"
+Updater_TotalFound: "Total actualizări găsite: {x}"
+Updater_TotalSize: "Dimensiune totală: {size}"
+Updater_AwaitingUser: Se așteaptă intrarea utilizatorului...
+Updater_UpToDate: "Ești la zi.\n:)"
+Updater_FailedDecode: Acest lucru se datorează cel mai probabil faptului că eu (TechNobo) împing o actualizare și fac o tipografie care a stricat . Fisier de actualizare. Dati-mi voie sa stiu :)
+Updater_FailedDecodeTitle: Decodarea listei de actualizări a eșuat
+Updater_Extracting: Extragere fișiere patch
+Updater_Applying: Se aplică plasturele...
+Updater_Moving: Mutarea fișierelor...
+Updater_Title: Actualizator comutator TcNo Account
+Updater_Started: Început
+Updater_Start: Pornire comutator de cont TcNo
+Updater_Begin: Începe actualizarea
+Updater_Exit: Ieșire
+FatalError: A apărut o eroare fatală!
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline

@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: Ei löydy '.../Steam/config/loginusers.vdf'. Y
 Toast_CantClearImages: Kuvia ei voitu tyhjentää
 Toast_RefreshedImages: Päivitetyt kuvat
 Toast_Ubisoft_NoUsername: Viimeksi kirjautunut käyttäjä ei löytynyt. Yritä kirjautua Ubisoftiin ensin.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat ei löytynyt. Viimeistä aktiivista tiliä ei tallennettu."
 Toast_Ubisoft_NoUser: Viimeksi kirjautunut käyttäjä ei löytynyt. Yritä kirjautua Ubisoftiin ensin.
 Toast_ClearForgottenCheck: Oletko varma, että haluat tyhjentää unohdettujen tilien varmuuskopiot?
 Modal_Info_Creator: TechNobon luoma [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: TcNo Tilin Vaihtaja - Steam Cleaning
 Title_Steam_Restore: TcNo Account Switcher - Unohdetun Steam-tilin palauttaminen
 Title_Steam_Settings: TcNo Account Switcher - Steam-asetukset
 Title_Ubisoft_Settings: TcNo Tilin Vaihtaja - Ubisoft Asetukset
+Installer_Downloading: Ladataan {file}
+Installer_DownloadFinished: Lataaminen valmis {file}
+Installer_Installing: "Asennus: {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - Runtime installer
+Installer_Welcome: Tervetuloa TcNo Account Switcher - Runtime installer
+Installer_InstalledRuntimes: "Tällä hetkellä asennetut ajat:"
+Installer_ErrorRuntime: "Yhtä tai useampaa ajokertaa ei ole asennettu:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB asennuksen aikana]"
+Installer_TotalSize: "Latauksen koko yhteensä: ~{size} MB"
+Installer_AnyKeyStart: Paina mitä tahansa näppäintä aloittaaksesi lataamisen...
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Microsoft .NET 5 Työpöytä Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Installer_FailedFolder: "Kansion luonti epäonnistui:"
+Installer_FailedWV: "Microsoft WebView2 suorituksen lataaminen ja asentaminen epäonnistui. Lataa: 1. Klikkaa alla olevaa linkkiä: {link} 2. Napsauta 'Download Hosting Bundle' Suorita palvelinsovelluksissa."
+Installer_FailedDR: ".NET 5 -työpöydän lataus ja asennus epäonnistui. Lataa se täältä:"
+Installed_FailedASP: "ASP.NET Core 5.0 -sovelluksen lataaminen ja asentaminen epäonnistui. Lataa: 1. Klikkaa alla olevaa linkkiä: {link} 2. Napsauta 'Lataa x64' Suorita työpöytäsovelluksissa."
+Installer_Ready: "Yksi tai useampi on valmis asennettavaksi. Jos ja kun kehotetaan, jos haluat asentaa, paina 'Kyllä'."
+Installer_PressStart: Paina mitä tahansa näppäintä aloittaaksesi asennuksen...
+Installer_VerifyMin: "Varmista, että täytät suositellut vähimmäisvaatimukset:"
+Installer_VerifyAlready: "Näyttää siltä, että kaikki on asennettu. Varmista, että täytät suositellut vähimmäisvaatimukset:"
+Installer_Complete: Tämän pitäisi olla kaikki. Pääohjelma, TcNo-Acc-Switcher.exe, automaattisesti käynnistetään, kun painat näppäintä jatkaaksesi.
+Installer_Complete2: "Jos se ei toimi, katso asennusohjeita, tässä: {link}"
+Global_FatalNext: "Vakava virhe tapahtui! Tämä kaatumisloki lähetetään automaattisesti seuraavan käynnistyksen."
+Tray_Error: Virhe Kaukalossa
+Tray_NoAccs: "Tilejä ei löytynyt.\nYritä vaihtaa tilejä ensin tai paikanna 'Tray_Users.json'"
+Tray_Switch: "Siirrytään: {account}"
+Tray_CantOpenExe: "Päätiedostoa .exe ei voitu avata. Varmista, että se on olemassa.\n\nyritin avata:"
+Tray_LaunchFail: "TcNo Account Switcher - Tarinan käynnistys epäonnistuu"
+Updater_Duplicate: Toinen TcNo Tilin vaihtaja Updater instanssi on havaittu.
+Updater_Unknown: "Tuntematon argumentti: {arg}"
+Updater_NeedsAdmin: Tämä ohjelma täytyy suorittaa järjestelmänvalvojana!
+Updater_StatusChecking: Tarkistetaan versiota
+Updater_FailedVersionCheck: "Versiota ei voitu hakea. Paina \"Vahvistus\" päivittääksesi ja varmistaaksesi tiedostot"
+Updater_PressBelow: Paina alla olevaa painiketta!
+Updater_PressBelowStart: Napsauta alla olevaa painiketta aloittaaksesi päivityksen.
+Updater_PatchApplied: Paikkaus asetettu!
+Updater_UpdatingAppData: Päivitetään tiedostoja AppDatassa!
+Updater_Complete: Kaikki päivitykset valmis!
+Updater_Checking: Tarkistetaan päivityksiä
+Updater_UpdateToVerify: Vahvistaaksesi tiedostot sinun täytyy päivittää ensin.
+Updater_ClosingTcNo: Suljetaan TcNo Account Switcher instansseja (jos sellaisia on).
+Updater_Downloading: "Ladataan päivitystä: {version}"
+Updater_Downloaded: Lataus valmis.
+Updater_CantExtract: Päivityksen purku epäonnistui.
+Updater_Verify: Vahvista tiedostot
+Updater_Verifying: Tarkistetaan...
+Updater_VerifySkip: Tarkistetaan tiedostot ohittamaan kaikki pienet päivitykset, ja vain hyppää viimeisimpää.
+Updater_NoConnection: "Tiedostoja tcno.co ei saatu yhteen. Voit yrittää ladata asentajan manuaalisesti GitHub-sivulta ja asentaa uudelleen päivitykseen.\n\nVirhe:"
+Updater_NoServer: Päivityspalvelimeen ei saatu yhteyttä
+Updater_Hashlist: Ladataan viimeisintä tiivistelmäluetteloa...
+Updater_CantCheck: Päivityksiä ei voi tarkistaa
+Updater_Failed: "VIRHE: Jotkin tiedostot ovat käytössä eikä niitä voi päivittää.\n\n1. Varmista, että kaikki TcNo prosessit ovat täysin suljettuja\n(tai käynnistä PC)\n\n2. Klikkaa sitten Vahvista alla. tai jos käynnistät uudelleen:\n- Avaa tämä päivitys ja vahvista tiedostot\n    (sijaitsee 'updater' kansiossa asennushakemistossa)"
+Updater_Missing: "TIEDONANNOS: {file}"
+Updater_FileMismatch: "Tiedosto: {file} on MD5: {md5} EXPECTED: {value}"
+Updater_DownloadingWeb: Ladataan tiedostoa sivustolta...
+Updater_UnpackingAppData: Kopioidaan tiedostoja %AppData%/TcNo Account Switcher... (ellei toisin aseteta)
+Updater_VerifyComplete: Vahvistetut tiedostot!
+Updater_UpdateFound: "Päivitys löytyi: {name} [{updateSize}]"
+Updater_TotalFound: "Päivityksiä löytyi yhteensä: {x}"
+Updater_TotalSize: "Koko yhteensä: {size}"
+Updater_AwaitingUser: Odotetaan käyttäjän tuloa...
+Updater_UpToDate: "Olet ajan tasalla.\n:)"
+Updater_FailedDecode: Tämä johtuu todennäköisesti minulle (TechNobo) työntää päivitystä, ja tehdä typo, joka rikkoi . pojan päivitystiedosto. Anna minun tietää :)
+Updater_FailedDecodeTitle: Päivityslistan purkaminen epäonnistui
+Updater_Extracting: Puretaan korjaustiedostoja
+Updater_Applying: Asetetaan laastaria...
+Updater_Moving: Siirretään tiedostoa...
+Updater_Title: TcNo Tilin Vaihtajan Päivitys
+Updater_Started: Aloitettu
+Updater_Start: Käynnistä TcNo Tilin Vaihtaja
+Updater_Begin: Aloita päivitys
+Updater_Exit: Poistu
+FatalError: Vakava virhe tapahtui!
 Online: Paikalla
 OnlineDefault: Online (Default)
 Offline: Offline-tilassa

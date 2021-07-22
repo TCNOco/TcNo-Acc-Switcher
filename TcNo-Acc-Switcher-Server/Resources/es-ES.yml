@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: No se puede encontrar '.../Steam/config/loginu
 Toast_CantClearImages: No se pudo borrar las imágenes
 Toast_RefreshedImages: Imágenes actualizadas
 Toast_Ubisoft_NoUsername: No se pudo encontrar el último usuario conectado. Intenta iniciar sesión en Ubisoft de nuevo primero.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat no pudo ser encontrado. La última cuenta activa no fue guardada."
 Toast_Ubisoft_NoUser: No se pudo encontrar el último usuario conectado. Intenta iniciar sesión en Ubisoft de nuevo primero.
 Toast_ClearForgottenCheck: '¿Estás seguro de que quieres borrar las copias de seguridad de cuentas olvidadas?'
 Modal_Info_Creator: Creado por TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: Cambiador de cuenta TcNo - Limpieza de Steam
 Title_Steam_Restore: Cambiador de cuenta de TcNo - Restaurar cuenta de Steam olvidada
 Title_Steam_Settings: Cambiador de cuenta TcNo - Configuración de Steam
 Title_Ubisoft_Settings: Cambiador de cuenta de TcNo - Configuración de Ubisoft
+Installer_Downloading: Descargando {file}
+Installer_DownloadFinished: Descarga finalizada {file}
+Installer_Installing: "Instalando: {runtime}"
+Installer_RuntimeTitle: Cambiador de cuenta de TcNo - Instalador de Ejecutar
+Installer_Welcome: Bienvenido al cambiador de cuenta de TcNo - Instalador de Runtime
+Installer_InstalledRuntimes: "Ejecuciones instaladas actualmente:"
+Installer_ErrorRuntime: "Uno o más runtimes no fueron instalados:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB mientras se instala]"
+Installer_TotalSize: "Tamaño total de la descarga: ~{size} MB"
+Installer_AnyKeyStart: Pulse cualquier tecla para iniciar la descarga...
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Tiempo de ejecución de escritorio Microsoft .NET 5
+Runtime_ASP: Tiempo de ejecución de Microsoft ASP.NET Core 5.0
+Installer_FailedFolder: "No se pudo crear la carpeta:"
+Installer_FailedWV: "No se pudo descargar e instalar el tiempo de ejecución de Microsoft WebView2. Para descargar: 1. Haga clic en el siguiente enlace: {link} 2. Haga clic en 'Descargar paquete de alojamiento' en Ejecutar aplicaciones de servidor."
+Installer_FailedDR: "Error al descargar e instalar el tiempo de ejecución de .NET 5. Por favor, descárguelo aquí:"
+Installed_FailedASP: "Error al descargar e instalar ASP.NET Core 5.0 Tiempo de ejecución. Para descargar: 1. Haga clic en el siguiente enlace: {link} 2. Haga clic en 'Descargar x64' bajo Ejecutar aplicaciones de escritorio."
+Installer_Ready: "Uno o más están listos para instalar. Si se le pregunta si desea instalar, haga clic en \"Sí\"."
+Installer_PressStart: Pulse cualquier tecla para iniciar la instalación...
+Installer_VerifyMin: "Verifique que cumple con los requisitos mínimos recomendados:"
+Installer_VerifyAlready: "Parece que todo está instalado. Verifique que cumple con los requisitos mínimos recomendados:"
+Installer_Complete: Esto debería ser todo. El programa principal, TcNo-Acc-Switcher.exe, se ejecutará automáticamente cuando presione una tecla para continuar.
+Installer_Complete2: "Si no funciona, por favor consulte las instrucciones de instalación, aquí: {link}"
+Global_FatalNext: "¡Se ha producido un error fatal! Este registro de fallos se enviará automáticamente el próximo lanzamiento."
+Tray_Error: Error de bandeja
+Tray_NoAccs: "No se encontraron cuentas.\nIntente cambiar de cuenta primero, o localice 'Tray_Users.json'"
+Tray_Switch: "Cambiar a: {account}"
+Tray_CantOpenExe: "No se pudo abrir el .exe. Asegúrese de que existe.\n\nHe intentado abrir:"
+Tray_LaunchFail: "Cambiador de cuenta TcNo - Fallo en el lanzamiento de la bandeja"
+Updater_Duplicate: Se ha detectado otra instancia del cambiador de cuenta de TcN.
+Updater_Unknown: "Argumento desconocido: {arg}"
+Updater_NeedsAdmin: '¡Este programa debe ejecutarse como administrador!'
+Updater_StatusChecking: Comprobando versión
+Updater_FailedVersionCheck: "No se pudo obtener la versión. Haga clic en \"Verificar\" para actualizar y verificar archivos"
+Updater_PressBelow: '¡Pulsa el botón de abajo!'
+Updater_PressBelowStart: Haga clic en el botón de abajo para iniciar la actualización.
+Updater_PatchApplied: '¡Parche aplicado!'
+Updater_UpdatingAppData: '¡Actualizando archivos en AppData!'
+Updater_Complete: '¡Todas las actualizaciones completadas!'
+Updater_Checking: Comprobando actualizaciones
+Updater_UpdateToVerify: Para verificar los archivos que necesita actualizar primero.
+Updater_ClosingTcNo: Cerrando instancias del cambiador de cuenta de TcNo (si existe).
+Updater_Downloading: "Descargando actualización: {version}"
+Updater_Downloaded: Descarga completa.
+Updater_CantExtract: Error al extraer la actualización.
+Updater_Verify: Verificar archivos
+Updater_Verifying: Verificando...
+Updater_VerifySkip: Verificando archivos para omitir todas las actualizaciones pequeñas, y saltar a la última.
+Updater_NoConnection: "No se pudo conectar a tcno.co para verificar los archivos. Puede intentar descargar manualmente el instalador desde la página de GitHub y volver a instalar para actualizar.\n\nError:"
+Updater_NoServer: No se pudo acceder al servidor de actualizaciones
+Updater_Hashlist: Descargando la última lista de hash...
+Updater_CantCheck: No se pueden comprobar actualizaciones
+Updater_Failed: "ERROR: Algunos de los archivos están en uso y no pueden ser actualizados.\n\n1. Asegúrese de que todos los procesos de TcNo estén completamente cerrados\n(o reinicien su PC)\n\n2. Luego haga clic en Verificar debajo, o si reinició:\n- Abra este actualizador y verifique los archivos\n    (ubicado en la carpeta 'actualizador' en el directorio de instalación)"
+Updater_Missing: "MISIÓN DE ARCHIVO: {file}"
+Updater_FileMismatch: "Archivo: {file} tiene MD5: {md5} EXPECTADO: {value}"
+Updater_DownloadingWeb: Descargando archivo desde el sitio web...
+Updater_UnpackingAppData: Copiando archivos a %AppData%/TcNo Account Switcher... (a menos que establezca lo contrario)
+Updater_VerifyComplete: '¡Archivos verificados!'
+Updater_UpdateFound: "Actualización encontrada: {name} [{updateSize}]"
+Updater_TotalFound: "Total de actualizaciones encontradas: {x}"
+Updater_TotalSize: "Tamaño total: {size}"
+Updater_AwaitingUser: Esperando la entrada del usuario...
+Updater_UpToDate: "Estás actualizado.\n:)"
+Updater_FailedDecode: Esto se debe muy probablemente a que yo (TechNobo) presionando una actualización, y haciendo un error tipográfico que rompió el . archivo de actualización hijo. Hazme saber :)
+Updater_FailedDecodeTitle: Error al decodificar la lista de actualización
+Updater_Extracting: Extrayendo parches
+Updater_Applying: Aplicando parche...
+Updater_Moving: Moviendo archivos...
+Updater_Title: Actualizador de TcNo para Cambiadores de Cuenta
+Updater_Started: Iniciado
+Updater_Start: Iniciar conmutador de cuenta TcNo
+Updater_Begin: Iniciar actualización
+Updater_Exit: Salir
+FatalError: '¡Ha ocurrido un error fatal!'
 Online: En línea
 OnlineDefault: Online (Default)
 Offline: Desconectado
@@ -237,7 +312,7 @@ Prompt_DiscordCopy7: Cerrar opciones
 Prompt_DiscordCopy8: Avisar al usuario en la consola.
 Prompt_DiscordCopy9: '¡Información copiada con éxito!'
 Prompt_DiscordCopy10: Pégalo en la casilla de entrada del cambiador de cuenta para actualizar/establecer imagen y nombre de usuario.
-Prompt_RestartAsAdmin: <h3><bold>Este programa se reiniciará como Administrador</bold></h3><p>Presiona "Sí" en UAC cuando se solicite un administrador.</p>
+Prompt_RestartAsAdmin: "<h3><bold>Este programa se reiniciará como Administrador</bold></h3><p>Presiona \"Sí\" en UAC cuando se solicite un administrador.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>¡Estás a punto de olvidar una cuenta!</h3> <h4>¿Qué significa esto?</h4> <p>- Steam ya no tendrá la cuenta listada en el modo Big Picture y no recordará la contraseña.<br/> - TcNo Account Switcher también dejará de mostrar la cuenta, hasta que haya iniciado sesión de nuevo a través de Steam.</p> <p>Tu cuenta permanecerá intacta. Sólo se olvida en este ordenador.</p> <h4>¿Y si algo sale mal?</h4> <p>No te asustes, puedes traer cuentas olvidadas a través de copias de seguridad en la pantalla de Configuración.<br/> También puedes eliminar copias de seguridad anteriores de allí cuando estés seguro de que todo está funcionando como se esperaba.</p> <h4>¿Entendiste?</h4>
 Prompt_ForgetAccount: >

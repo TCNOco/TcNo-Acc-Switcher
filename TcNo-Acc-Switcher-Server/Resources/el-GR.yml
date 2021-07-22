@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: Αδυναμία εντοπισμού '.../Ste
 Toast_CantClearImages: Αδυναμία καθαρισμού εικόνων
 Toast_RefreshedImages: Ανανεωμένες εικόνες
 Toast_Ubisoft_NoUsername: Δεν βρέθηκε ο τελευταίος συνδεδεμένος χρήστης. Πρώτα προσπαθήστε να συνδεθείτε ξανά στο Ubisoft.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat δεν βρέθηκε. Ο τελευταίος ενεργός λογαριασμός δεν αποθηκεύτηκε."
 Toast_Ubisoft_NoUser: Δεν βρέθηκε ο τελευταίος συνδεδεμένος χρήστης. Πρώτα προσπαθήστε να συνδεθείτε ξανά στο Ubisoft.
 Toast_ClearForgottenCheck: Είστε βέβαιοι ότι θέλετε να καθαρίσετε τα αντίγραφα ασφαλείας των ξεχασμένων λογαριασμών?
 Modal_Info_Creator: Δημιουργήθηκε από TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: TcNo Switcher Λογαριασμού - Καθαρισμό�
 Title_Steam_Restore: TcNo Account Switcher - Επαναφορά ξεχασμένου λογαριασμού Steam
 Title_Steam_Settings: TcNo Switcher Λογαριασμού - Ρυθμίσεις Steam
 Title_Ubisoft_Settings: TcNo Switcher Λογαριασμού - Ρυθμίσεις Ubisoft
+Installer_Downloading: Λήψη {file}
+Installer_DownloadFinished: Ολοκληρώθηκε η λήψη {file}
+Installer_Installing: "Εγκατάσταση: {runtime}"
+Installer_RuntimeTitle: Tcno Account Switcher - Εγκατάσταση χρόνου εκτέλεσης
+Installer_Welcome: Καλώς ήρθατε στο TcNo Account Switcher - Εγκατάσταση χρόνου εκτέλεσης
+Installer_InstalledRuntimes: "Τρέχουσες εγκατεστημένες εκτελέσεις:"
+Installer_ErrorRuntime: "Δεν εγκαταστάθηκαν ένας ή περισσότεροι χρόνοι εκτέλεσης:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB κατά την εγκατάσταση]"
+Installer_TotalSize: "Συνολικό μέγεθος λήψης: ~{size} MB"
+Installer_AnyKeyStart: Πατήστε οποιοδήποτε πλήκτρο για να ξεκινήσετε τη λήψη...
+Runtime_WebView2: Microsoft WebView2 Εκτέλεση
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Installer_FailedFolder: "Αποτυχία δημιουργίας φακέλου:"
+Installer_FailedWV: "Αποτυχία λήψης και εγκατάστασης του Microsoft WebView2 Runtime. Για λήψη: 1. Κάντε κλικ στον παρακάτω σύνδεσμο: {link} 2. Κάντε κλικ στο 'Λήψη Πακέτου Φιλοξενίας' κάτω από τις εφαρμογές Εκτέλεση διακομιστή."
+Installer_FailedDR: "Αποτυχία λήψης και εγκατάστασης .NET 5 Desktop Runtime. Παρακαλώ κατεβάστε το εδώ:"
+Installed_FailedASP: "Αποτυχία λήψης και εγκατάστασης ASP.NET Core 5.0 Runtime. Για λήψη: 1. Κάντε κλικ στον παρακάτω σύνδεσμο: {link} 2. Κάντε κλικ στο κουμπί 'Λήψη x64' στις εφαρμογές Run Desktop."
+Installer_Ready: "Ένα ή περισσότερα είναι έτοιμα για εγκατάσταση. Αν και όταν σας ζητηθεί, αν θέλετε να εγκαταστήσετε, κάντε κλικ στο κουμπί 'Ναι'."
+Installer_PressStart: Πατήστε οποιοδήποτε πλήκτρο για να ξεκινήσετε την εγκατάσταση...
+Installer_VerifyMin: "Επαληθεύστε ότι πληρείτε τις ελάχιστες συνιστώμενες απαιτήσεις:"
+Installer_VerifyAlready: "Φαίνεται ότι όλα έχουν εγκατασταθεί. Βεβαιωθείτε ότι πληροίτε τις ελάχιστες συνιστώμενες απαιτήσεις:"
+Installer_Complete: Αυτό πρέπει να είναι τα πάντα. Το κύριο πρόγραμμα, TcNo-Acc-Switcher.exe, θα εκτελείται αυτόματα όταν πατήσετε ένα πλήκτρο για να συνεχίσετε.
+Installer_Complete2: "Αν δεν λειτουργεί, παρακαλούμε ανατρέξτε στις οδηγίες εγκατάστασης, εδώ: {link}"
+Global_FatalNext: "Παρουσιάστηκε μοιραίο σφάλμα! Αυτό το crashlog θα υποβληθεί αυτόματα στην επόμενη εκκίνηση."
+Tray_Error: Σφάλμα Τροφοδότη Χαρτιού
+Tray_NoAccs: "Δεν βρέθηκαν λογαριασμοί.\nΔοκιμάστε πρώτα να αλλάξετε λογαριασμούς, ή εντοπίστε το 'Tray_Users.json'"
+Tray_Switch: "Μετάβαση σε: {account}"
+Tray_CantOpenExe: "Αδυναμία ανοίγματος του κύριου .exe. Βεβαιωθείτε ότι υπάρχει.\n\nΠροσπάθησα να ανοίξω:"
+Tray_LaunchFail: "TcNo Switcher λογαριασμού - αποτυχία εκκίνησης στο δίσκο"
+Updater_Duplicate: Έχει εντοπιστεί μια άλλη διεργασία ενημέρωσης του TcNo λογαριασμού Switcher.
+Updater_Unknown: "Άγνωστη παράμετρος: {arg}"
+Updater_NeedsAdmin: Αυτό το πρόγραμμα πρέπει να εκτελεστεί ως διαχειριστής!
+Updater_StatusChecking: Έλεγχος έκδοσης
+Updater_FailedVersionCheck: "Δεν ήταν δυνατή η λήψη της έκδοσης. Κάντε κλικ στο \"Επαλήθευση\" για ενημέρωση & επαλήθευση αρχείων"
+Updater_PressBelow: Πατήστε το κουμπί παρακάτω!
+Updater_PressBelowStart: Κάντε κλικ στο παρακάτω κουμπί για να ξεκινήσετε την ενημέρωση.
+Updater_PatchApplied: Εφαρμογή επιδιόρθωσης!
+Updater_UpdatingAppData: Ενημέρωση αρχείων στα AppData!
+Updater_Complete: Όλες οι ενημερώσεις ολοκληρώθηκαν!
+Updater_Checking: Έλεγχος για ενημερώσεις
+Updater_UpdateToVerify: Για να επαληθεύσετε τα αρχεία πρέπει να ενημερώσετε πρώτα.
+Updater_ClosingTcNo: Κλείσιμο των περιπτώσεων Εναλλαγής Λογαριασμού TcNo (εάν υπάρχουν).
+Updater_Downloading: "Λήψη ενημέρωσης: {version}"
+Updater_Downloaded: Η λήψη ολοκληρώθηκε.
+Updater_CantExtract: Αποτυχία εξαγωγής ενημέρωσης.
+Updater_Verify: Επαλήθευση αρχείων
+Updater_Verifying: Επαλήθευση...
+Updater_VerifySkip: Επαληθεύοντας τα αρχεία για να παραλείψετε όλες τις μικρές ενημερώσεις, και απλά μεταβείτε στο αργότερο.
+Updater_NoConnection: "Δεν ήταν δυνατή η σύνδεση στο tcno.co για να επαληθευτούν τα αρχεία. Μπορείτε να προσπαθήσετε να κατεβάσετε χειροκίνητα τον εγκαταστάτη από τη σελίδα GitHub και να επανεγκαταστήσετε για ενημέρωση.\n\nΣφάλμα:"
+Updater_NoServer: Αδύνατη η πρόσβαση στο διακομιστή ενημέρωσης
+Updater_Hashlist: Λήψη τελευταίας λίστας κατακερμάτων...
+Updater_CantCheck: Δεν είναι δυνατός ο έλεγχος για ενημερώσεις
+Updater_Failed: "ΣΦΑΛΜΑ: Μερικά από τα αρχεία είναι σε χρήση και δεν μπορούν να ενημερωθούν.\n\n1. Βεβαιωθείτε ότι όλες οι διεργασίες TcNo είναι εντελώς κλειστές\n(ή επανεκκινήστε τον υπολογιστή σας)\n\n2. Στη συνέχεια, κάντε κλικ στην επιλογή Επαλήθευση παρακάτω, ή αν κάνετε επανεκκίνηση:\n- Ανοίξτε αυτήν την ενημέρωση και επαληθεύστε τα αρχεία\n    (βρίσκεται στο φάκελο 'updater' στον κατάλογο εγκαταστάσεων)"
+Updater_Missing: "ΑΠΟΣΤΟΛΗ ΑΡΧΕΙΗΣ: {file}"
+Updater_FileMismatch: "Αρχείο: {file} έχει MD5: {md5} EXPECTED: {value}"
+Updater_DownloadingWeb: Λήψη αρχείου από ιστοσελίδα...
+Updater_UnpackingAppData: Αντιγραφή αρχείων στο %AppData%/TcNo Switcher λογαριασμού... (εκτός αν ορίζεται διαφορετικά)
+Updater_VerifyComplete: Τα αρχεία επαληθεύτηκαν!
+Updater_UpdateFound: "Βρέθηκε ενημέρωση: {name} [{updateSize}]"
+Updater_TotalFound: "Βρέθηκαν συνολικές ενημερώσεις: {x}"
+Updater_TotalSize: "Συνολικό μέγεθος: {size}"
+Updater_AwaitingUser: Αναμονή για είσοδο χρήστη...
+Updater_UpToDate: "Είστε ενημερωμένοι.\n:)"
+Updater_FailedDecode: Αυτό πιθανότατα οφείλεται σε μένα (TechNobo) πιέζοντας μια ενημέρωση, και κάνοντας έναν τύπο που έσπασε το . αρχείο ενημέρωσης γιου. Ενημερώστε με :)
+Updater_FailedDecodeTitle: Αποτυχία αποκωδικοποίησης λίστας ενημέρωσης
+Updater_Extracting: Εξαγωγή αρχείων patch
+Updater_Applying: Εφαρμογή διορθώσεων...
+Updater_Moving: Μετακίνηση αρχείων...
+Updater_Title: TcNo Ενημέρωση Switcher Λογαριασμού
+Updater_Started: Ξεκίνησε
+Updater_Start: Εκκίνηση TcNo Switcher Λογαριασμού
+Updater_Begin: Έναρξη ενημέρωσης
+Updater_Exit: Έξοδος
+FatalError: Παρουσιάστηκε μοιραίο σφάλμα!
 Online: Συνδεδεμένος
 OnlineDefault: Online (Default)
 Offline: Αποσυνδεδεμένος

@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: Не вдалося знайти '.../Steam/co
 Toast_CantClearImages: Не вдалося очистити зображення
 Toast_RefreshedImages: Оновлені зображення
 Toast_Ubisoft_NoUsername: Не вдалося знайти останнього входу в обліковий запис. Спочатку спробуйте увійти в Ubisoft.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat не знайдено. Останній активний обліковий запис не збережено."
 Toast_Ubisoft_NoUser: Не вдалося знайти останнього входу в обліковий запис. Спочатку спробуйте увійти в Ubisoft.
 Toast_ClearForgottenCheck: Ви впевнені, що хочете очистити резервні копії забутих облікових записів?
 Modal_Info_Creator: Створено TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: Перемикач облікового запису TcNo 
 Title_Steam_Restore: Перемикання облікового запису TcNo - Відновити забутий обліковий запис Steam
 Title_Steam_Settings: Перемикання облікового запису TcNo - налаштування Steam
 Title_Ubisoft_Settings: Перемикач облікового запису TcNo - Налаштування Ubisoft
+Installer_Downloading: Завантаження {file}
+Installer_DownloadFinished: Завершено завантаження {file}
+Installer_Installing: "Встановлення: {runtime}"
+Installer_RuntimeTitle: Перемикання облікового запису TcNo - встановлення Runtime
+Installer_Welcome: Ласкаво просимо в перемикач облікового запису TcNo - встановлення Runtime
+Installer_InstalledRuntimes: "Поточні встановлені runtims:"
+Installer_ErrorRuntime: "Один або кілька runtime не були встановлені:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} МБ при встановленні]"
+Installer_TotalSize: "Загальний розмір завантаження: ~{size} МБ"
+Installer_AnyKeyStart: Натисніть будь-яку клавішу, щоб почати завантаження...
+Runtime_WebView2: Виконання Microsoft WebView2
+Runtime_Desktop: Середовище розробки Microsoft .NET 5
+Runtime_ASP: Microsoft ASP.NET Core 5.0 Runtime
+Installer_FailedFolder: "Не вдалося створити папку:"
+Installer_FailedWV: "Не вдалося завантажити і встановити Runtime Microsoft WebView2. Для завантаження: 1. Натисніть на посилання нижче: {link} 2. Натисніть кнопку \"Завантажити хостинг-Bundle\" під додатками запуску серверів."
+Installer_FailedDR: "Не вдалося завантажити та встановити .NET 5 Runtime для робочого столу. Будь ласка, завантажте його тут:"
+Installed_FailedASP: "Не вдалося завантажити та встановити ASP.NET Core 5.0 Runtime. Щоб завантажити: 1. Натисніть на посилання нижче: {link} 2. Натисніть кнопку 'Завантажити x64' під час запуску програм на робочому столі."
+Installer_Ready: "Один або більше готові до установки. Якщо і коли ви хочете встановити їх, натисніть кнопку \"Так\"."
+Installer_PressStart: Натисніть будь-яку клавішу, щоб почати встановити...
+Installer_VerifyMin: "Підтвердіть ваш запит щодо мінімальної рекомендованої вимоги:"
+Installer_VerifyAlready: "Схоже, все інстальовано. Перевірте, чи відповідає вам мінімальні рекомендовані вимоги:"
+Installer_Complete: Це все має бути все. Основна програма, TcNo-Acc-Switcher.exe, буде автоматично бігти, коли ви натиснете клавішу, щоб продовжити.
+Installer_Complete2: "Якщо це не працює, будь ласка, зверніться до інструкцій по встановленню, тут: {link}"
+Global_FatalNext: "Критична помилка! Цей журнал буде автоматично представлений після наступного запуску."
+Tray_Error: Помилка лотка
+Tray_NoAccs: "Не знайдено жодного облікового запису.\nСпробуйте спочатку переключитися або знайти 'Tray_Users.json'"
+Tray_Switch: "Перейти до: {account}"
+Tray_CantOpenExe: "Не вдалося відкрити головний .ex. Переконайтеся, що він існує.\n\nСпробуйте відкрити:"
+Tray_LaunchFail: "Перемикання облікового запису TcNo - помилка запуску лотка"
+Updater_Duplicate: Виявлено інший екземпляр Перемикання Облікового Запису TcNo Account Updater.
+Updater_Unknown: "Невідомий аргумент: {arg}"
+Updater_NeedsAdmin: Цю програму потрібно запускати в якості адміністратора!
+Updater_StatusChecking: Перевірка версії
+Updater_FailedVersionCheck: "Не вдалося отримати версію. Натисніть \"Перевірити\", щоб оновити та перевірити файли"
+Updater_PressBelow: Натисніть кнопку нижче!
+Updater_PressBelowStart: Натисніть на кнопку нижче, щоб розпочати оновлення.
+Updater_PatchApplied: Патч застосовано!
+Updater_UpdatingAppData: Оновлення файлів у AppData!
+Updater_Complete: Всі оновлення закінчено!
+Updater_Checking: Перевірка наявності оновлень
+Updater_UpdateToVerify: Щоб перевірити файли потрібно спочатку оновити.
+Updater_ClosingTcNo: Закриття екземплярів перемикача облікових записів TcNo (якщо є).
+Updater_Downloading: "Завантаження оновлення: {version}"
+Updater_Downloaded: Завантаження завершено.
+Updater_CantExtract: Не вдалося витягти оновлення.
+Updater_Verify: Перевірка файлів
+Updater_Verifying: Перевірка...
+Updater_VerifySkip: Перевірка файлів, щоб пропустити всі дрібні оновлення, і тільки переключитися на останнє.
+Updater_NoConnection: "Не вдалося з'єднатися з tcno.co для перевірки файлів. Ви можете спробувати вручну завантажити інсталятор з GitHub сторінки і перевстановити для оновлення.\n\nПомилка:"
+Updater_NoServer: Не вдалося зв'язатися з сервером оновлення
+Updater_Hashlist: Завантаження останнього геш-списку...
+Updater_CantCheck: Не вдається перевірити наявність оновлень
+Updater_Failed: "ПОМИЛКА: деякі файли використовуються і не можуть бути оновлені\n\n1. Переконайтеся, що всі TcNo процеси повністю закриті\n(або перезавантажте PC)\n\n2. Потім натисніть кнопку Підтвердити нижче, або якщо ви перезапустили:\n- Відкрити це оновлення та перевірити файли\n    (розташовані в теці 'updater' у каталозі встановлення)"
+Updater_Missing: "МИЛКА ФАЙСУ: {file}"
+Updater_FileMismatch: "Файл: {file} має MD5: {md5} ОЧІКУВАННЯ: {value}"
+Updater_DownloadingWeb: Завантаження файлу з веб-сайту...
+Updater_UnpackingAppData: Копіювання файлів в %AppData%/TcNo Account Switcher... (якщо не вказано інакше)
+Updater_VerifyComplete: Файли перевірені!
+Updater_UpdateFound: "Знайдено оновлення: {name} [{updateSize}]"
+Updater_TotalFound: "Знайдено всього оновлень: {x}"
+Updater_TotalSize: "Загальний розмір: {size}"
+Updater_AwaitingUser: Очікування на вхід користувача...
+Updater_UpToDate: "Ви в актуальному стані.\n:)"
+Updater_FailedDecode: Швидше за все, це пов'язано зі мною (TechNobo) з кроком на основі оновлення і створення помилки, яка зламала їх. файл оновлення сина. Повідомте мені :)
+Updater_FailedDecodeTitle: Не вдалося декодувати список оновлень
+Updater_Extracting: Розпакування файлів патчу
+Updater_Applying: Застосування патча...
+Updater_Moving: Переміщення файлів...
+Updater_Title: Оновлення облікового запису TcNo
+Updater_Started: Розпочато
+Updater_Start: Запуск перемикання облікового запису TcNo
+Updater_Begin: Почати оновлення
+Updater_Exit: Вийти
+FatalError: Критична помилка!
 Online: Онлайн
 OnlineDefault: Online (Default)
 Offline: В автономному режимі

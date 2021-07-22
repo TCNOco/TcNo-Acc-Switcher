@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: '''.../Steam/config/loginusers.vdf'' bulunamı
 Toast_CantClearImages: Görüntüler temizlenemedi
 Toast_RefreshedImages: Yenilenen resimler
 Toast_Ubisoft_NoUsername: Son oturum açan kullanıcı bulunamadı. Önce Ubisoft'a tekrar giriş yapmayı deneyin.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat bulunamadı. Son etkin hesap kaydedilmedi."
 Toast_Ubisoft_NoUser: Son oturum açan kullanıcı bulunamadı. Önce Ubisoft'a tekrar giriş yapmayı deneyin.
 Toast_ClearForgottenCheck: Unutulan hesapların yedeklerini temizlemek istediğinizden emin misiniz?
 Modal_Info_Creator: TechNobo [Wesley Pyburn] tarafından düzenlendi
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: TcNo Hesap Değiştirici - Buharlı Temizleme
 Title_Steam_Restore: TcNo Account Switcher - Unutulan Steam hesabını geri yükleyin
 Title_Steam_Settings: TcNo Hesap Değiştirici - Steam Ayarları
 Title_Ubisoft_Settings: TcNo Hesap Değiştirici - Ubisoft Ayarları
+Installer_Downloading: '{file}'
+Installer_DownloadFinished: İndirme tamamlandı {file}
+Installer_Installing: "Yükleme: {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - Çalışma zamanı yükleyicisi
+Installer_Welcome: TcNo Account Switcher - Runtime yükleyicisine hoş geldiniz
+Installer_InstalledRuntimes: "Şu anda yüklü çalışma zamanları:"
+Installer_ErrorRuntime: "Bir veya daha fazla çalışma zamanı yüklenmedi:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB kurulum sırasında]"
+Installer_TotalSize: "Toplam indirme boyutu: ~{size} MB"
+Installer_AnyKeyStart: İndirmeyi başlatmak için herhangi bir tuşa basın...
+Runtime_WebView2: Microsoft WebView2 Çalışma Zamanı
+Runtime_Desktop: Microsoft .NET 5 Masaüstü Çalışma Zamanı
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Çalışma Zamanı
+Installer_FailedFolder: "Klasör oluşturulamadı:"
+Installer_FailedWV: "Microsoft WebView2 Runtime indirilemedi ve yüklenemedi. İndirmek için: 1. Aşağıdaki bağlantıya tıklayın: {link} 2. Sunucu uygulamalarını çalıştır altında 'Barındırma Paketini İndir'e tıklayın."
+Installer_FailedDR: ".NET 5 Desktop Runtime indirilemedi ve yüklenemedi. Lütfen buradan indirin:"
+Installed_FailedASP: "ASP.NET Core 5.0 Runtime indirilemedi ve yüklenemedi. İndirmek için: 1. Aşağıdaki bağlantıyı tıklayın: {link} 2. Masaüstü uygulamalarını Çalıştır altında 'x64 indir' seçeneğini tıklayın."
+Installer_Ready: "Bir veya daha fazlası kurulum için hazır. Yüklemek isteyip istemediğiniz sorulduğunda, 'Evet'i tıklayın."
+Installer_PressStart: Kurulumu başlatmak için herhangi bir tuşa basın...
+Installer_VerifyMin: "Önerilen minimum gereksinimleri karşıladığınızı doğrulayın:"
+Installer_VerifyAlready: "Her şey kurulu gibi görünüyor. Önerilen minimum gereksinimleri karşıladığınızı doğrulayın:"
+Installer_Complete: Her şey bu olmalı. Ana program, TcNo-Acc-Switcher.exe, devam etmek için bir tuşa bastığınızda otomatik olarak çalışacaktır.
+Installer_Complete2: "Çalışmazsa, lütfen buradaki kurulum talimatlarına bakın: {link}"
+Global_FatalNext: "Tehlikeli hata oluştu! Bu kilitlenme günlüğü bir sonraki başlatmada otomatik olarak gönderilecek."
+Tray_Error: Tepsi Hatası
+Tray_NoAccs: "Hesap bulunamadı.\nÖnce hesaplar arasında geçiş yapmayı deneyin veya 'Tray_Users.json' öğesini bulun"
+Tray_Switch: "Şuna geç: {account}"
+Tray_CantOpenExe: "Ana .exe açılamadı. Var olduğundan emin olun.\n\nAçmaya çalıştım:"
+Tray_LaunchFail: "TcNo Account Switcher - Tepsi başlatma başarısız"
+Updater_Duplicate: Başka bir TcNo Account Switcher Updater örneği algılandı.
+Updater_Unknown: "Bilinmeyen argüman: {arg}"
+Updater_NeedsAdmin: Bu program yönetici olarak çalıştırılmalıdır!
+Updater_StatusChecking: Sürüm kontrol ediliyor
+Updater_FailedVersionCheck: "Sürüm alınamadı. Dosyaları güncellemek ve doğrulamak için \"Doğrula\"yı tıklayın"
+Updater_PressBelow: Aşağıdaki düğmeye basın!
+Updater_PressBelowStart: Güncellemeyi başlatmak için aşağıdaki düğmeyi tıklayın.
+Updater_PatchApplied: Yama uygulandı!
+Updater_UpdatingAppData: AppData'daki dosyalar güncelleniyor!
+Updater_Complete: Tüm güncellemeler tamamlandı!
+Updater_Checking: Güncellemeleri kontrol etme
+Updater_UpdateToVerify: Dosyaları doğrulamak için önce güncellemeniz gerekir.
+Updater_ClosingTcNo: TcNo Account Switcher örneklerinin kapatılması (varsa).
+Updater_Downloading: "Güncelleme indiriliyor: {version}"
+Updater_Downloaded: İndirme tamamlandı.
+Updater_CantExtract: Güncelleme çıkarılamadı.
+Updater_Verify: Dosyaları doğrula
+Updater_Verifying: Doğrulanıyor...
+Updater_VerifySkip: Tüm küçük güncellemeleri atlamak ve en son güncellemeye geçmek için dosyaları doğrulama.
+Updater_NoConnection: "Dosyaları doğrulamak için tcno.co'ya bağlanılamadı. Yükleyiciyi GitHub sayfasından manuel olarak indirmeyi ve güncellemek için yeniden yüklemeyi deneyebilirsiniz.\n\nHata:"
+Updater_NoServer: Güncelleme sunucusuna ulaşılamadı
+Updater_Hashlist: En son karma listesi indiriliyor...
+Updater_CantCheck: Güncellemeler kontrol edilemiyor
+Updater_Failed: "HATA: Bazı dosyalar kullanımda ve güncellenemiyor.\n\n1. Tüm TcNo işlemlerinin tamamen kapatıldığından emin olun\n(veya bilgisayarınızı yeniden başlatın)\n\n2. Ardından aşağıdaki Doğrula'yı tıklayın veya yeniden başlattıysanız:\n- Bu güncelleyiciyi açın ve dosyaları doğrulayın\n    ('güncelleyici' klasöründe bulunur) dizini kurun)"
+Updater_Missing: "DOSYA EKSİK: {file}"
+Updater_FileMismatch: "Dosya: {file} MD5: {md5} BEKLENEN: {value}"
+Updater_DownloadingWeb: Siteden dosya indiriliyor...
+Updater_UnpackingAppData: Dosyalar %AppData%/TcNo Account Switcher'a kopyalanıyor... (aksi ayarlanmadıkça)
+Updater_VerifyComplete: Dosyalar doğrulandı!
+Updater_UpdateFound: "Güncelleme bulundu: {name} [{updateSize}]"
+Updater_TotalFound: "Bulunan toplam güncelleme: {x}"
+Updater_TotalSize: "Toplam boyut: {size}"
+Updater_AwaitingUser: Kullanıcı girişi bekleniyor...
+Updater_UpToDate: "Güncelsin.\n:)"
+Updater_FailedDecode: Bu büyük olasılıkla benim (TechNobo) bir güncellemeyi zorlamamdan ve .json güncelleme dosyasını bozan bir yazım hatası yapmamdan kaynaklanıyor. Bana bildirin :)
+Updater_FailedDecodeTitle: Güncelleme listesinin kodu çözülemedi
+Updater_Extracting: Yama dosyalarının ayıklanması
+Updater_Applying: Yama uygulanıyor...
+Updater_Moving: Dosyalar taşınıyor...
+Updater_Title: TcNo Hesap Değiştirici Güncelleyici
+Updater_Started: başladı
+Updater_Start: TcNo Account Switcher'ı başlatın
+Updater_Begin: Güncellemeyi Başlat
+Updater_Exit: çıkış
+FatalError: Tehlikeli hata oluştu!
 Online: İnternet üzerinden
 OnlineDefault: Çevrimiçi (Varsayılan)
 Offline: Çevrimdışı

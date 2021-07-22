@@ -191,7 +191,6 @@ Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
 Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
 Title_Steam_Settings: TcNo Account Switcher - Steam Settings
 Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
-
 Installer_Downloading: Downloading {file}
 Installer_DownloadFinished: Finished downloading {file}
 Installer_Installing: "Installing: {runtime}"
@@ -262,7 +261,7 @@ Updater_Applying: Applying patch...
 Updater_Moving: Moving files...
 Updater_Title: TcNo Account Switcher Updater
 Updater_Started: Started
-Updater_Start: Start Acc Switcher
+Updater_Start: Start TcNo Account Switcher
 Updater_Begin: Start update
 Updater_Exit: Exit
 FatalError: Fatal error occurred!

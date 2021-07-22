@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: Nie można zlokalizować '.../Steam/config/log
 Toast_CantClearImages: Nie można wyczyścić obrazów
 Toast_RefreshedImages: Odświeżone obrazy
 Toast_Ubisoft_NoUsername: Nie można znaleźć ostatniego zalogowanego użytkownika. Spróbuj zalogować się do Ubisoft ponownie.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat nie został znaleziony. Ostatnie aktywne konto nie zostało zapisane."
 Toast_Ubisoft_NoUser: Nie można znaleźć ostatniego zalogowanego użytkownika. Spróbuj zalogować się do Ubisoft ponownie.
 Toast_ClearForgottenCheck: Czy na pewno chcesz wyczyścić kopie zapasowe zapomnianych kont?
 Modal_Info_Creator: Stworzone przez TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: Przełącznik kont TcNo - Czyszczenie Steam
 Title_Steam_Restore: Przełącznik kont TcNo - Przywróć zapomniane konto Steam
 Title_Steam_Settings: Przełącznik kont TcNo - Ustawienia Steam
 Title_Ubisoft_Settings: Przełącznik kont TcNo - Ustawienia Ubisoft
+Installer_Downloading: Pobieranie {file}
+Installer_DownloadFinished: Zakończono pobieranie {file}
+Installer_Installing: "Instalacja: {runtime}"
+Installer_RuntimeTitle: Przełącznik konta TcNo - Instalator czasu pracy
+Installer_Welcome: Witamy w TcNo Account Switcher - Instalator czasu pracy
+Installer_InstalledRuntimes: "Aktualnie zainstalowane czasy:"
+Installer_ErrorRuntime: "Nie zainstalowano co najmniej jednego czasu startu:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB podczas instalacji]"
+Installer_TotalSize: "Całkowity rozmiar pobierania: ~{size} MB"
+Installer_AnyKeyStart: Naciśnij dowolny klawisz, aby rozpocząć pobieranie...
+Runtime_WebView2: Czas pracy Microsoft WebView2
+Runtime_Desktop: Czas pracy komputera Microsoft .NET 5
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Czas pracy
+Installer_FailedFolder: "Nie udało się utworzyć folderu:"
+Installer_FailedWV: "Nie udało się pobrać i zainstalować Microsoft WebView2 Runtime. Aby pobrać: 1. Kliknij poniższy link: {link} 2. Kliknij 'Pobierz pakiet hosting' pod aplikacjami serwera."
+Installer_FailedDR: "Nie udało się pobrać i zainstalować .NET 5 pulpitu Runtime. Pobierz go tutaj:"
+Installed_FailedASP: "Nie udało się pobrać i zainstalować ASP.NET Core 5.0 Runtime. Aby pobrać: 1. Kliknij link poniżej: {link} 2. Kliknij 'Pobierz x64' w aplikacji na pulpicie."
+Installer_Ready: "Jeden lub więcej jest gotowych do instalacji. Jeśli i kiedy zostaniesz poproszony o instalację, kliknij 'Tak'."
+Installer_PressStart: Naciśnij dowolny klawisz, aby rozpocząć instalację...
+Installer_VerifyMin: "Sprawdź, czy spełniasz minimalne zalecane wymagania:"
+Installer_VerifyAlready: "Wygląda na to, że wszystko jest zainstalowane. Sprawdź, czy spełniasz minimalne zalecane wymagania:"
+Installer_Complete: To powinno być wszystko. Główny program, TcNo-Acc-Switcher.exe, uruchomi się automatycznie, gdy naciśniesz klawisz, aby kontynuować.
+Installer_Complete2: "Jeśli to nie działa, zapoznaj się z instrukcjami instalacji, tutaj: {link}"
+Global_FatalNext: "Wystąpił błąd krytyczny! Ten dziennik awarii zostanie automatycznie przesłany do następnego uruchomienia."
+Tray_Error: Błąd zasobnika
+Tray_NoAccs: "Nie znaleziono kont.\nSpróbuj najpierw zmienić konta lub zlokalizuj 'Tray_Users.json'"
+Tray_Switch: "Przełącz na: {account}"
+Tray_CantOpenExe: "Nie można otworzyć głównego .exe. Upewnij się, że istnieje.\n\nPróbowałem otworzyć:"
+Tray_LaunchFail: "Przełącznik konta TcNo - uruchomienie zasobu nie powiodło się"
+Updater_Duplicate: Wykryto inną instancję TcNo Account Switcher Updater.
+Updater_Unknown: "Nieznany argument: {arg}"
+Updater_NeedsAdmin: Ten program musi być uruchomiony jako administrator!
+Updater_StatusChecking: Sprawdzanie wersji
+Updater_FailedVersionCheck: "Nie można pobrać wersji. Kliknij \"Verify\" aby zaktualizować i zweryfikować pliki"
+Updater_PressBelow: Naciśnij przycisk poniżej!
+Updater_PressBelowStart: Kliknij poniższy przycisk, aby rozpocząć aktualizację.
+Updater_PatchApplied: Zaaplikowano płatkę!
+Updater_UpdatingAppData: Aktualizowanie plików w AppData!
+Updater_Complete: Wszystkie aktualizacje zakończone!
+Updater_Checking: Sprawdzanie aktualizacji
+Updater_UpdateToVerify: Aby zweryfikować pliki, musisz najpierw zaktualizować.
+Updater_ClosingTcNo: Zamykanie instancji TcNo Account Switcher (jeśli istnieje).
+Updater_Downloading: "Pobieranie aktualizacji: {version}"
+Updater_Downloaded: Pobieranie zakończone.
+Updater_CantExtract: Nie udało się wyodrębnić aktualizacji.
+Updater_Verify: Sprawdź pliki
+Updater_Verifying: Weryfikowanie...
+Updater_VerifySkip: Weryfikacja plików, aby pominąć wszystkie małe aktualizacje i po prostu przejdź do najnowszej wersji.
+Updater_NoConnection: "Nie można połączyć się z tcno.co aby zweryfikować pliki. Możesz spróbować ręcznie pobrać instalatora ze strony GitHub i ponownie zainstalować aby zaktualizować.\n\nBłąd:"
+Updater_NoServer: Nie udało się połączyć z serwerem aktualizacji
+Updater_Hashlist: Pobieranie najnowszej listy haszującej...
+Updater_CantCheck: Nie można sprawdzić aktualizacji
+Updater_Failed: "BŁĄD: Niektóre pliki są w użyciu i nie mogą zostać zaktualizowane.\n\n1. Upewnij się, że wszystkie procesy TcNo są całkowicie zamknięte\n(lub zrestartuj swój PC)\n\n2. Następnie kliknij Zweryfikuj poniżej, lub jeśli zrestartowałeś:\n- Otwórz tę aktualizację i zweryfikuj pliki\n    (zlokalizowane w folderze 'updater' w katalogu instalacji)"
+Updater_Missing: "WYŁĄCZENIE PLIKU: {file}"
+Updater_FileMismatch: "Plik: {file} ma MD5: {md5} DOSTĘPNY: {value}"
+Updater_DownloadingWeb: Pobieranie pliku ze strony internetowej...
+Updater_UnpackingAppData: Kopiowanie plików do %AppData%/TcNo Account Switcher... (chyba że ustawiono inaczej)
+Updater_VerifyComplete: Pliki zweryfikowane!
+Updater_UpdateFound: "Znaleziono aktualizacje: {name} [{updateSize}]"
+Updater_TotalFound: "Znaleziono wszystkie aktualizacje: {x}"
+Updater_TotalSize: "Całkowity rozmiar: {size}"
+Updater_AwaitingUser: Oczekiwanie na wejście użytkownika...
+Updater_UpToDate: "Jesteś aktualny.\n:)"
+Updater_FailedDecode: Jest to najprawdopodobniej spowodowane moją (TechNobo) pchaniem aktualizacji i tworzeniem litery, która złamała . plik aktualizacji syna. Daj mi znać :)
+Updater_FailedDecodeTitle: Nie udało się dekodować listy aktualizacji
+Updater_Extracting: Rozpakowywanie plików łatowych
+Updater_Applying: Stosowanie poprawki...
+Updater_Moving: Przenoszenie plików...
+Updater_Title: Aktualizator TcNo Konta
+Updater_Started: Rozpoczęto
+Updater_Start: Uruchom przełącznik konta TcNo
+Updater_Begin: Rozpocznij aktualizację
+Updater_Exit: Wyjście
+FatalError: Wystąpił błąd krytyczny!
 Online: Dostępny
 OnlineDefault: Online (Domyślnie)
 Offline: Offline

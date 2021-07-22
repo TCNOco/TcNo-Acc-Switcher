@@ -1,6 +1,6 @@
 ---
 Update: 更新可用！單擊此處開始。
-Header_ChooseLanguage: '選擇語言： {platform}'
+Header_ChooseLanguage: '選擇語言：'
 BattleNet_ShowSR: 顯示 Overwatch SR 並使用 Overwatch 個人資料圖片。
 Steam_ShowSteamID: 顯示 SteamID
 Steam_ShowVac: 顯示 VAC 狀態
@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: 找不到“.../Steam/config/loginusers.vdf”
 Toast_CantClearImages: 無法清除圖像
 Toast_RefreshedImages: 刷新的圖像
 Toast_Ubisoft_NoUsername: 找不到上次登錄的用戶。先嘗試再次登錄育碧。
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat 無法找到。未保存最後一個活動帳戶。"
 Toast_Ubisoft_NoUser: 找不到上次登錄的用戶。先嘗試再次登錄育碧。
 Toast_ClearForgottenCheck: 您確定要清除忘記帳戶的備份嗎？
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 創建
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: TcNo 帳戶切換器 - Steam 清潔
 Title_Steam_Restore: TcNo Account Switcher - 恢復忘記的 Steam 帳戶
 Title_Steam_Settings: TcNo 帳戶切換器 - Steam 設置
 Title_Ubisoft_Settings: TcNo 賬戶切換器 - 育碧設置
+Installer_Downloading: 下載 {file}
+Installer_DownloadFinished: 下載完成 {file}
+Installer_Installing: "安裝： {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - 運行時安裝程序
+Installer_Welcome: 歡迎使用 TcNo 帳戶切換器 - 運行時安裝程序
+Installer_InstalledRuntimes: "當前安裝的運行時："
+Installer_ErrorRuntime: "未安裝一個或多個運行時："
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB 安裝時]"
+Installer_TotalSize: "總下載大小：~{size} MB"
+Installer_AnyKeyStart: 按任意鍵開始下載...
+Runtime_WebView2: Microsoft WebView2 運行時
+Runtime_Desktop: Microsoft .NET 5 桌面運行時
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 運行時
+Installer_FailedFolder: "無法創建文件夾："
+Installer_FailedWV: "無法下載和安裝 Microsoft WebView2 運行時。下載： 1. 單擊下面的鏈接： {link} 2. 單擊運行服務器應用程序下的“下載託管捆綁包”。"
+Installer_FailedDR: "無法下載和安裝 .NET 5 桌面運行時。請在此處下載："
+Installed_FailedASP: "無法下載和安裝 ASP.NET Core 5.0 運行時。下載： 1. 單擊下面的鏈接： {link} 2. 單擊運行桌面應用程序下的“下載 x64”。"
+Installer_Ready: "一個或多個已準備好安裝。如果系統提示您是否要安裝，請單擊“是”。"
+Installer_PressStart: 按任意鍵開始安裝...
+Installer_VerifyMin: "驗證您是否滿足最低推薦要求："
+Installer_VerifyAlready: "看起來一切都安裝好了。驗證您是否滿足最低推薦要求："
+Installer_Complete: 那應該就是一切。當您按一個鍵繼續時，主程序 TcNo-Acc-Switcher.exe 將自動運行。
+Installer_Complete2: "如果它不起作用，請參閱安裝說明，這裡： {link}"
+Global_FatalNext: "發生致命錯誤！此崩潰日誌將在下次啟動時自動提交。"
+Tray_Error: 托盤錯誤
+Tray_NoAccs: "沒有找到帳戶。\n首先嘗試切換帳戶，或找到“Tray_Users.json”"
+Tray_Switch: "切換到： {account}"
+Tray_CantOpenExe: "無法打開主 .exe。確保它存在。\n\n我試圖打開："
+Tray_LaunchFail: "TcNo 帳戶切換器 - 托盤啟動失敗"
+Updater_Duplicate: 已檢測到另一個 TcNo Account Switcher Updater 實例。
+Updater_Unknown: "未知參數： {arg}"
+Updater_NeedsAdmin: 此程序必須以管理員身份運行！
+Updater_StatusChecking: 檢查版本
+Updater_FailedVersionCheck: "無法獲取版本。單擊“驗證”以更新和驗證文件"
+Updater_PressBelow: 按下下面的按鈕！
+Updater_PressBelowStart: 單擊下面的按鈕開始更新。
+Updater_PatchApplied: 補丁已應用！
+Updater_UpdatingAppData: 更新 AppData 中的文件！
+Updater_Complete: 所有更新完成！
+Updater_Checking: 查詢更新
+Updater_UpdateToVerify: 要驗證文件，您需要先更新。
+Updater_ClosingTcNo: 關閉 TcNo Account Switcher 實例（如果有）。
+Updater_Downloading: "下載更新： {version}"
+Updater_Downloaded: 下載完成。
+Updater_CantExtract: 無法提取更新。
+Updater_Verify: 驗證文件
+Updater_Verifying: 正在驗證...
+Updater_VerifySkip: 驗證文件以跳過所有小更新，直接跳轉到最新。
+Updater_NoConnection: "無法連接到 tcno.co 以驗證文件。您可以嘗試從 GitHub 頁面手動下載安裝程序，然後重新安裝以進行更新。\n\n錯誤："
+Updater_NoServer: 無法訪問更新服務器
+Updater_Hashlist: 正在下載最新的哈希列表...
+Updater_CantCheck: 無法檢查更新
+Updater_Failed: "錯誤：某些文件正在使用中，無法更新。\n\n1. 確保所有 TcNo 進程完全關閉\n（或重新啟動您的 PC）\n\n2. 然後單擊下面的驗證，或者如果您重新啟動：\n- 打開此更新程序並驗證文件\n    （位於安裝目錄）"
+Updater_Missing: "文件丟失： {file}"
+Updater_FileMismatch: "文件： {file} 有 MD5： {md5} 預期： {value}"
+Updater_DownloadingWeb: 正在從網站下載文件...
+Updater_UnpackingAppData: 正在將文件複製到 %AppData%/TcNo Account Switcher...（除非另有設置）
+Updater_VerifyComplete: 文件已驗證！
+Updater_UpdateFound: "發現更新： {name} [{updateSize}]"
+Updater_TotalFound: "找到的更新總數： {x}"
+Updater_TotalSize: "總大小： {size}"
+Updater_AwaitingUser: 等待用戶輸入...
+Updater_UpToDate: "你是最新的。\n:)"
+Updater_FailedDecode: 這很可能是由於我 (TechNobo) 推送更新，並且打錯了 .json 更新文件。請讓我知道:)
+Updater_FailedDecodeTitle: 無法解碼更新列表
+Updater_Extracting: 提取補丁文件
+Updater_Applying: 應用補丁...
+Updater_Moving: 移動文件...
+Updater_Title: TcNo 帳戶切換器更新程序
+Updater_Started: 開始
+Updater_Start: 啟動 TcNo 帳戶切換器
+Updater_Begin: 開始升級
+Updater_Exit: 出口
+FatalError: 發生致命錯誤！
 Online: 在線的
 OnlineDefault: 在線（默認）
 Offline: 離線
@@ -237,7 +312,7 @@ Prompt_DiscordCopy7: 關閉選項
 Prompt_DiscordCopy8: 在控制台中讓用戶知道。
 Prompt_DiscordCopy9: 信息複製成功！
 Prompt_DiscordCopy10: 將其粘貼到帳戶切換器的輸入框中以更新/設置圖像和用戶名。
-Prompt_RestartAsAdmin: <h3><bold>該程序將以管理員身份重新啟動</bold></h3><p>當提示輸入管理員時，在 UAC 中點擊“是”。</p>
+Prompt_RestartAsAdmin: "<h3><bold>該程序將以管理員身份重新啟動</bold></h3><p>當提示輸入管理員時，在 UAC 中點擊“是”。</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>您即將忘記一個帳戶！</h3> <h4>這是什麼意思？</h4> <p>- Steam 將不再擁有大圖片模式中列出的帳戶，並且不會記住密碼。<br/> - TcNo 帳戶切換器也將不再顯示該帳戶，直到它通過 Steam 再次登錄。</p> <p>您的帳戶將保持不變。只是在這台電腦上忘記了。</p> <h4>如果出現問題怎麼辦？</h4> <p>不要驚慌，您可以通過“設置”屏幕中的備份找回忘記的帳戶。<br/> 當您確定一切正常時，您還可以從那裡刪除以前的備份。</p> <h4>你明白嗎？</h4>
 Prompt_ForgetAccount: >

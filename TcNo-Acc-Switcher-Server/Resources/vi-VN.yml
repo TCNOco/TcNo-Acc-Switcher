@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: Không thể định vị '... / Steam / confi
 Toast_CantClearImages: Không thể xóa hình ảnh
 Toast_RefreshedImages: Hình ảnh được làm mới
 Toast_Ubisoft_NoUsername: Không thể tìm thấy người dùng đăng nhập lần cuối. Trước tiên, hãy thử đăng nhập lại vào Ubisoft.
+Toast_Ubisoft_NoDat: "Không thể tìm thấy %LocalAppData%Tài khoản hoạt động cuối cùng không được lưu."
 Toast_Ubisoft_NoUser: Không thể tìm thấy người dùng đăng nhập lần cuối. Trước tiên, hãy thử đăng nhập lại vào Ubisoft.
 Toast_ClearForgottenCheck: Bạn có chắc chắn muốn xóa các bản sao lưu của các tài khoản bị quên không?
 Modal_Info_Creator: Tạo bởi TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
 Title_Steam_Restore: TcNo Account Switcher - Khôi phục tài khoản Steam bị quên
 Title_Steam_Settings: TcNo Account Switcher - Cài đặt Steam
 Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Installer_Downloading: Đang tải xuống {file}
+Installer_DownloadFinished: Tải xong {file}
+Installer_Installing: "Đang cài đặt: {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - Trình cài đặt thời gian chạy
+Installer_Welcome: Chào mừng bạn đến với TcNo Account Switcher - Runtime installer
+Installer_InstalledRuntimes: "Thời gian chạy được cài đặt hiện tại:"
+Installer_ErrorRuntime: "Một hoặc nhiều thời gian chạy không được cài đặt:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB trong khi cài đặt]"
+Installer_TotalSize: "Tổng kích thước tải xuống: ~{size} MB"
+Installer_AnyKeyStart: Nhấn phím bất kỳ để bắt đầu tải xuống ...
+Runtime_WebView2: Thời gian chạy Microsoft WebView2
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_ASP: Microsoft Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Installer_FailedFolder: "Không tạo được thư mục:"
+Installer_FailedWV: "Không thể tải xuống và cài đặt Microsoft WebView2 Runtime. Để tải xuống: 1. Nhấp vào liên kết bên dưới: {link} 2. Nhấp vào 'Tải xuống Gói Lưu trữ' trong Chạy ứng dụng máy chủ."
+Installer_FailedDR: "Không thể tải xuống và cài đặt .NET 5 Desktop Runtime. Vui lòng tải về tại đây:"
+Installed_FailedASP: "Không thể tải xuống và cài đặt ASP.NET Core 5.0 Runtime. Để tải xuống: 1. Nhấp vào liên kết bên dưới: {link} 2. Nhấp vào 'Tải xuống x64' trong Chạy ứng dụng dành cho máy tính để bàn."
+Installer_Ready: "Một hoặc nhiều đã sẵn sàng để cài đặt. Nếu và khi được nhắc nếu bạn muốn cài đặt, hãy nhấp vào 'Có'."
+Installer_PressStart: Nhấn phím bất kỳ để bắt đầu cài đặt ...
+Installer_VerifyMin: "Xác minh rằng bạn đáp ứng các yêu cầu tối thiểu được đề xuất:"
+Installer_VerifyAlready: "Có vẻ như mọi thứ đã được cài đặt. Xác minh rằng bạn đáp ứng các yêu cầu tối thiểu được đề xuất:"
+Installer_Complete: Đó phải là tất cả mọi thứ. Chương trình chính, TcNo-Acc-Switcher.exe, sẽ tự động chạy khi bạn nhấn một phím để tiếp tục.
+Installer_Complete2: "Nếu nó không hoạt động, vui lòng tham khảo hướng dẫn cài đặt, tại đây: {link}"
+Global_FatalNext: "Đã xảy ra lỗi nghiêm trọng! Nhật ký sự cố này sẽ được tự động gửi lần khởi chạy tiếp theo."
+Tray_Error: Lỗi khay
+Tray_NoAccs: "Không có tài khoản nào được tìm thấy.\nTrước tiên, hãy thử chuyển đổi tài khoản hoặc tìm 'Tray_Users.json'"
+Tray_Switch: "Chuyển sang: {account}"
+Tray_CantOpenExe: "Không thể mở .exe chính. Đảm bảo rằng nó tồn tại.\n\nTôi đã cố gắng mở:"
+Tray_LaunchFail: "TcNo Account Switcher - Khởi chạy khay không thành công"
+Updater_Duplicate: Một phiên bản Trình cập nhật Trình chuyển đổi Tài khoản TcNo khác đã được phát hiện.
+Updater_Unknown: "Đối số không xác định: {arg}"
+Updater_NeedsAdmin: Chương trình này phải được chạy với tư cách quản trị viên!
+Updater_StatusChecking: Đang kiểm tra phiên bản
+Updater_FailedVersionCheck: "Không thể tải phiên bản. Nhấp vào \"Xác minh\" để cập nhật và xác minh tệp"
+Updater_PressBelow: Nhấn nút bên dưới!
+Updater_PressBelowStart: Nhấp vào nút bên dưới để bắt đầu cập nhật.
+Updater_PatchApplied: Đã áp dụng bản vá!
+Updater_UpdatingAppData: Cập nhật tệp trong AppData!
+Updater_Complete: Tất cả các bản cập nhật đã hoàn tất!
+Updater_Checking: Kiểm tra các bản cập nhật
+Updater_UpdateToVerify: Để xác minh tệp, trước tiên bạn cần cập nhật.
+Updater_ClosingTcNo: Đóng phiên bản Trình chuyển đổi tài khoản TcNo (nếu có).
+Updater_Downloading: "Đang tải xuống bản cập nhật: {version}"
+Updater_Downloaded: Hoan thanh tải.
+Updater_CantExtract: Không giải nén được bản cập nhật.
+Updater_Verify: Xác minh tệp
+Updater_Verifying: Đang xác minh ...
+Updater_VerifySkip: Xác minh tệp để bỏ qua tất cả các bản cập nhật nhỏ và chỉ chuyển sang bản mới nhất.
+Updater_NoConnection: "Không thể kết nối với tcno.co để xác minh tệp. Bạn có thể thử tải xuống trình cài đặt theo cách thủ công từ trang GitHub và cài đặt lại để cập nhật.\n\nLỗi:"
+Updater_NoServer: Không thể kết nối với máy chủ cập nhật
+Updater_Hashlist: Đang tải xuống danh sách băm mới nhất ...
+Updater_CantCheck: Không thể kiểm tra các bản cập nhật
+Updater_Failed: "LỖI: Một số tệp đang được sử dụng và không thể cập nhật.\n\n1. Đảm bảo rằng tất cả các quy trình TcNo được đóng hoàn toàn\n(hoặc khởi động lại PC của bạn)\n\n2. Sau đó nhấp vào Xác minh bên dưới hoặc nếu bạn khởi động lại:\n- Mở trình cập nhật này và xác minh tệp\n    (nằm trong thư mục 'trình cập nhật' trong Cài đặt thư mục)"
+Updater_Missing: "TẬP TIN MISSING: {file}"
+Updater_FileMismatch: "Tệp: {file} có MĐ5: {md5} DỰ KIẾN: {value}"
+Updater_DownloadingWeb: Đang tải xuống tệp từ trang web ...
+Updater_UnpackingAppData: Đang sao chép tệp sang %AppData%/ TcNo Account Switcher ... (trừ khi được đặt khác)
+Updater_VerifyComplete: Các tệp đã được xác minh!
+Updater_UpdateFound: "Cập nhật được tìm thấy: {name} [{updateSize}]"
+Updater_TotalFound: "Tổng số cập nhật được tìm thấy: {x}"
+Updater_TotalSize: "Tổng kích thước: {size}"
+Updater_AwaitingUser: Đang chờ người dùng nhập ...
+Updater_UpToDate: "Bạn đã cập nhật.\n:)"
+Updater_FailedDecode: Điều này rất có thể là do tôi (TechNobo) đang đẩy một bản cập nhật và mắc lỗi đánh máy làm hỏng tệp cập nhật .json. Hãy cho tôi biết :)
+Updater_FailedDecodeTitle: Không giải mã được danh sách cập nhật
+Updater_Extracting: Giải nén các tập tin vá lỗi
+Updater_Applying: Áp dụng các bản vá...
+Updater_Moving: Đang di chuyển tệp ...
+Updater_Title: TcNo Account Switcher Updater
+Updater_Started: Đã bắt đầu
+Updater_Start: Khởi động TcNo Account Switcher
+Updater_Begin: Bắt đầu cập nhật
+Updater_Exit: Lối ra
+FatalError: Đã xảy ra lỗi nghiêm trọng!
 Online: Trực tuyến
 OnlineDefault: Trực tuyến (Mặc định)
 Offline: Ngoại tuyến

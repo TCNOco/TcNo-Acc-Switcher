@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: Kan '.../Steam/config/loginusers.vdf' niet vin
 Toast_CantClearImages: Kan afbeeldingen niet wissen
 Toast_RefreshedImages: Vernieuwde afbeeldingen
 Toast_Ubisoft_NoUsername: Kon de laatst ingelogde gebruiker niet vinden. Probeer eerst opnieuw in te loggen op Ubisoft.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat kon niet worden gevonden. Het laatste actieve account werd niet opgeslagen."
 Toast_Ubisoft_NoUser: Kon de laatst ingelogde gebruiker niet vinden. Probeer eerst opnieuw in te loggen op Ubisoft.
 Toast_ClearForgottenCheck: Weet u zeker dat u back-ups van vergeten accounts wilt wissen?
 Modal_Info_Creator: Gemaakt door TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: TcNo account switcher - Steam schoonmaken
 Title_Steam_Restore: TcNo Account Switcher - Herstel Steam account vergeten
 Title_Steam_Settings: TcNo account switcher - Steam instellingen
 Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Instellingen
+Installer_Downloading: Downloaden {file}
+Installer_DownloadFinished: Downloaden van {file} voltooid
+Installer_Installing: "Installeren: {runtime}"
+Installer_RuntimeTitle: TcNo Account switcher - Runtime installer
+Installer_Welcome: Welkom bij de TcNo Account Switcher - Runtime installer
+Installer_InstalledRuntimes: "Huidige geïnstalleerde runtimes:"
+Installer_ErrorRuntime: "Een of meer runtimes zijn niet geïnstalleerd:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB tijdens het installeren]"
+Installer_TotalSize: "Totale downloadgrootte: ~{size} MB"
+Installer_AnyKeyStart: Druk op een toets om de download te starten...
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Installer_FailedFolder: "Aanmaken map mislukt:"
+Installer_FailedWV: "Downloaden en installeren van Microsoft WebView2 Runtime mislukt. Om te downloaden: 1. Klik de link hieronder: {link} 2. Klik op 'Download Hosting Bundle' onder Run server apps."
+Installer_FailedDR: "Downloaden en installeren van .NET 5 Desktop Runtime mislukt. Download het hier:"
+Installed_FailedASP: "Downloaden en installeren van ASP.NET Core 5.0 Runtime mislukt. Om te downloaden: 1. Klik op de onderstaande link: {link} 2. Klik op 'Download x64' onder Run Desktop apps."
+Installer_Ready: "Eén of meer zijn klaar voor installatie. Indien gevraagd wordt of u wilt installeren, klik dan op 'Ja'."
+Installer_PressStart: Druk op een toets om de installatie te starten...
+Installer_VerifyMin: "Controleer of u voldoet aan de minimaal aanbevolen vereisten:"
+Installer_VerifyAlready: "Het lijkt erop dat alles is geïnstalleerd. Controleer of je voldoet aan de minimale aanbevolen vereisten:"
+Installer_Complete: Dat moet alles zijn. Het hoofdprogramma, TcNo-Acc-Switcher.exe, wordt automatisch uitgevoerd wanneer u op een toets drukt om verder te gaan.
+Installer_Complete2: "Als het niet werkt, raadpleeg dan de installatie-instructies, hier: {link}"
+Global_FatalNext: "Fatale fout opgetreden! Dit crashlogboek zal automatisch worden ingediend bij de volgende start."
+Tray_Error: Tray fout
+Tray_NoAccs: "Er zijn geen accounts gevonden.\nProbeer eerst van account te wisselen, of zoek 'Tray_Users.json'"
+Tray_Switch: "Overschakelen naar: {account}"
+Tray_CantOpenExe: "Kon het hoofd .exe niet openen. Zorg ervoor dat het bestaat.\n\nIk heb geprobeerd te openen:"
+Tray_LaunchFail: "TcNo Account switcher - lancering van tray mislukt"
+Updater_Duplicate: Er is een andere TcNo Account Switcher Updater instantie gedetecteerd.
+Updater_Unknown: "Onbekend argument: {arg}"
+Updater_NeedsAdmin: Dit programma moet worden uitgevoerd als een beheerder!
+Updater_StatusChecking: Versie controleren
+Updater_FailedVersionCheck: "Kon versie niet verkrijgen. Klik op \"Verify\" om bestanden bij te werken en te verifiëren"
+Updater_PressBelow: Druk op de knop hieronder!
+Updater_PressBelowStart: Klik op de knop hieronder om de update te starten.
+Updater_PatchApplied: Patch toegepast!
+Updater_UpdatingAppData: Bestanden bijwerken in AppData!
+Updater_Complete: Alle updates voltooid!
+Updater_Checking: Controleren op updates
+Updater_UpdateToVerify: Om bestanden te verifiëren moet je eerst bijwerken.
+Updater_ClosingTcNo: Sluit TcNo Account switcher instanties (indien aanwezig).
+Updater_Downloading: "Update downloaden: {version}"
+Updater_Downloaded: Download voltooid.
+Updater_CantExtract: Update uitpakken mislukt.
+Updater_Verify: Controleer bestanden
+Updater_Verifying: Verifiëren...
+Updater_VerifySkip: Verifieer bestanden om alle kleine updates over te slaan en naar de laatste springen.
+Updater_NoConnection: "Kan geen verbinding maken met tcno.co om bestanden te verifiëren. U kunt proberen handmatig het installatieprogramma van de GitHub pagina te downloaden en opnieuw te installeren om bij te werken.\n\nFout:"
+Updater_NoServer: Kan updateserver niet bereiken
+Updater_Hashlist: Laatste hash lijst downloaden...
+Updater_CantCheck: Kan niet controleren op updates
+Updater_Failed: "FOUT: Sommige bestanden zijn in gebruik en kunnen niet worden bijgewerkt.\n\n1. Zorg ervoor dat alle TcNo processen volledig zijn gesloten\n(of uw PC) herstarten\n\n2. Klik vervolgens op onderstaande verifiëren: of if u opnieuw gestart:\n- Open deze updater en verifieer bestanden\n    (gesitueerd in de 'updater' map in de installatiemap)"
+Updater_Missing: "MIJN BESTAND: {file}"
+Updater_FileMismatch: "Bestand: {file} heeft MD5: {md5} EXPECTED: {value}"
+Updater_DownloadingWeb: Bestand downloaden van website...
+Updater_UnpackingAppData: Bestanden kopiëren naar %AppData%/TcNo Account Switcher... (tenzij anders ingesteld)
+Updater_VerifyComplete: Bestanden geverifieerd!
+Updater_UpdateFound: "Update gevonden: {name} [{updateSize}]"
+Updater_TotalFound: "Totaal gevonden updates: {x}"
+Updater_TotalSize: "Totale grootte: {size}"
+Updater_AwaitingUser: Wachten op gebruikersinvoer...
+Updater_UpToDate: "U bent up to datum.\n:)"
+Updater_FailedDecode: Dit is waarschijnlijk te wijten aan mij (TechNobo), die een update doorvoert en een typefout maakt dat de . son updatebestand. Laat het me weten :)
+Updater_FailedDecodeTitle: Het decoderen van updatelijst is mislukt
+Updater_Extracting: patch bestanden uitpakken
+Updater_Applying: patch toepassen...
+Updater_Moving: Bestanden verplaatsen...
+Updater_Title: TcNo Account switcher Updater
+Updater_Started: Gestart
+Updater_Start: Start TcNo Account Switcher
+Updater_Begin: Update starten
+Updater_Exit: Afsluiten
+FatalError: Fatale fout opgetreden!
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline
