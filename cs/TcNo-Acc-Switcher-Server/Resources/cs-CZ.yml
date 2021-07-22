@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Nelze nalézt '.../Steam/config/loginusers.vdf
 Toast_CantClearImages: Nelze vymazat obrázky
 Toast_RefreshedImages: Obnovené obrázky
 Toast_Ubisoft_NoUsername: Nelze najít poslední přihlášené uživatele. Zkuste se nejdříve přihlásit do Ubisoft.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat could not be found. The last active account was not saved."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat nebyl nalezen. Poslední aktivní účet nebyl uložen."
 Toast_Ubisoft_NoUser: Nelze najít poslední přihlášené uživatele. Zkuste se nejdříve přihlásit do Ubisoft.
 Toast_ClearForgottenCheck: Opravdu chcete vymazat zálohy zapomenutých účtů?
 Modal_Info_Creator: Vytvořeno společností Technoo [Wesley Pyburn]
@@ -191,80 +191,80 @@ Title_Steam_Cleaning: Přepínač účtu TcNo - čištění Steam
 Title_Steam_Restore: Přepínač účtu TcNo - Obnovení zapomenutého Steam účtu
 Title_Steam_Settings: Přepínač TcNo účtu - nastavení Steam
 Title_Ubisoft_Settings: Přepínač účtu TcNo - Nastavení Ubisoft
-Installer_Downloading: Downloading {file}
-Installer_DownloadFinished: Finished downloading {file}
-Installer_Installing: "Installing: {runtime}"
-Installer_RuntimeTitle: TcNo Account Switcher - Runtime installer
-Installer_Welcome: Welcome to the TcNo Account Switcher - Runtime installer
-Installer_InstalledRuntimes: "Currently installed runtimes:"
-Installer_ErrorRuntime: "One or more runtimes were not installed:"
-Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB while installing]"
-Installer_TotalSize: "Total download size: ~{size} MB"
-Installer_AnyKeyStart: Press any key to start download...
-Runtime_WebView2: Microsoft WebView2 Runtime
-Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
-Installer_FailedFolder: "Failed to create folder:"
-Installer_FailedWV: "Failed to download and install Microsoft WebView2 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download Hosting Bundle' under Run server apps."
-Installer_FailedDR: "Failed to download and install .NET 5 Desktop Runtime. Please download it here:"
-Installed_FailedASP: "Failed to download and install ASP.NET Core 5.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
-Installer_Ready: "One or more are ready for install. If and when prompted if you would like to install, click 'Yes'."
-Installer_PressStart: Press any key to start install...
-Installer_VerifyMin: "Verify you meet the minimum recommended requirements:"
-Installer_VerifyAlready: "It looks like everything is installed. Verify you meet the minimum recommended requirements:"
-Installer_Complete: That should be everything. The main program, TcNo-Acc-Switcher.exe, will auto-run when you press a key to continue.
-Installer_Complete2: "If it doesn't work, please refer to install instructions, here: {link}"
-Global_FatalNext: "Fatal error occurred! This crashlog will be automatically submitted next launch."
-Tray_Error: Tray Error
-Tray_NoAccs: "There were no accounts found.\nTry switching accounts first, or locate 'Tray_Users.json'"
-Tray_Switch: "Switch to: {account}"
-Tray_CantOpenExe: "Could not open the main .exe. Make sure it exists.\n\nI attempted to open:"
-Tray_LaunchFail: "TcNo Account Switcher - Tray launch fail"
-Updater_Duplicate: Another TcNo Account Switcher Updater instance has been detected.
-Updater_Unknown: "Unknown argument: {arg}"
-Updater_NeedsAdmin: This program must be run as an administrator!
-Updater_StatusChecking: Checking version
-Updater_FailedVersionCheck: "Could not get version. Click \"Verify\" to update & verify files"
-Updater_PressBelow: Press button below!
-Updater_PressBelowStart: Click the button below to start the update.
-Updater_PatchApplied: Patch applied!
-Updater_UpdatingAppData: Updating files in AppData!
-Updater_Complete: All updates complete!
-Updater_Checking: Checking for updates
-Updater_UpdateToVerify: To verify files you need to update first.
-Updater_ClosingTcNo: Closing TcNo Account Switcher instances (if any).
-Updater_Downloading: "Downloading update: {version}"
-Updater_Downloaded: Download complete.
-Updater_CantExtract: Failed to extract update.
-Updater_Verify: Verify files
-Updater_Verifying: Verifying...
-Updater_VerifySkip: Verifying files to skip all small updates, and just jump to latest.
-Updater_NoConnection: "Could not connect to tcno.co to verify files. You can try manually downloading the installer from the GitHub page, and reinstalling to update.\n\nError:"
-Updater_NoServer: Could not reach update server
-Updater_Hashlist: Downloading latest hash list...
-Updater_CantCheck: Unable to check for updates
-Updater_Failed: "ERROR: Some of the files are in use and can not be updated.\n\n1. Make sure all TcNo processes are completely closed\n(or restart your PC)\n\n2. Then click Verify below, or if you restarted:\n-   Open this updater and verify files\n    (located in the 'updater' folder in the install directory)"
-Updater_Missing: "FILE MISSING: {file}"
-Updater_FileMismatch: "File: {file} has MD5: {md5} EXPECTED: {value}"
-Updater_DownloadingWeb: Downloading file from website...
-Updater_UnpackingAppData: Copying files to %AppData%/TcNo Account Switcher... (unless set otherwise)
-Updater_VerifyComplete: Files verified!
-Updater_UpdateFound: "Update found: {name} [{updateSize}]"
-Updater_TotalFound: "Total updates found: {x}"
-Updater_TotalSize: "Total size: {size}"
-Updater_AwaitingUser: Waiting for user input...
-Updater_UpToDate: "You're up to date.\n:)"
-Updater_FailedDecode: This is most likely due to me (TechNobo) pushing an update, and making a typo that broke the .json update file. Do let me know :)
-Updater_FailedDecodeTitle: Failed to decode update list
-Updater_Extracting: Extracting patch files
-Updater_Applying: Applying patch...
-Updater_Moving: Moving files...
-Updater_Title: TcNo Account Switcher Updater
-Updater_Started: Started
-Updater_Start: Start TcNo Account Switcher
-Updater_Begin: Start update
-Updater_Exit: Exit
-FatalError: Fatal error occurred!
+Installer_Downloading: Stahování {file}
+Installer_DownloadFinished: Stahování {file} dokončeno
+Installer_Installing: "Instalace: {runtime}"
+Installer_RuntimeTitle: Přepínač TcNo účtu - instalátor spuštěný
+Installer_Welcome: Vítejte v Přepínači účtu TcNo - Instalátor pro spuštění
+Installer_InstalledRuntimes: "Aktuálně nainstalované provozní režimy:"
+Installer_ErrorRuntime: "Nebyl nainstalován jeden nebo více běhů:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB při instalaci]"
+Installer_TotalSize: "Celková velikost stahování: ~{size} MB"
+Installer_AnyKeyStart: Stiskněte libovolné tlačítko pro zahájení stahování...
+Runtime_WebView2: Microsoft WebView2 běh
+Runtime_Desktop: Microsoft .NET 5 běh stolního počítače
+Runtime_ASP: Microsoft ASP.NET Core 5.0 Runtime
+Installer_FailedFolder: "Nepodařilo se vytvořit složku:"
+Installer_FailedWV: "Nepodařilo se stáhnout a nainstalovat Microsoft WebView2 Runtime. Chcete-li stáhnout: 1. Klikněte na odkaz níže: {link} 2. Klikněte na \"Stáhnout hosting Bundle\" v aplikaci Run server."
+Installer_FailedDR: "Nepodařilo se stáhnout a nainstalovat .NET 5 Desktop Runtime. Stáhněte si jej zde:"
+Installed_FailedASP: "Nepodařilo se stáhnout a nainstalovat ASP.NET Core 5.0 Runtime. Chcete-li stáhnout: 1. Klikněte na odkaz níže: {link} 2. Klikněte na 'Stáhnout x64' pod spuštěnými desktopovými aplikacemi."
+Installer_Ready: "Jeden nebo více je připraveno k instalaci. Pokud a kdy budete vyzváni, pokud chcete instalovat, klikněte na 'Ano'."
+Installer_PressStart: Stiskněte libovolné tlačítko pro spuštění instalace...
+Installer_VerifyMin: "Ověřte, zda splňujete minimální doporučené požadavky:"
+Installer_VerifyAlready: "Vypadá to, že je vše nainstalováno. Ověřte, zda splňujete minimální doporučené požadavky:"
+Installer_Complete: To by mělo být vše. Hlavní program, TcNo-Acc-Switcher.exe, se automaticky spustí, když stisknete klávesu pro pokračování.
+Installer_Complete2: "Pokud to nefunguje, podívejte se na pokyny k instalaci, zde: {link}"
+Global_FatalNext: "Došlo k závažné chybě! Tento protokol selhání bude automaticky odeslán příští spuštění."
+Tray_Error: Chyba v systémové liště
+Tray_NoAccs: "Nebyly nalezeny žádné účty.\nZkuste nejprve změnit účty, nebo najít 'Tray_Users.json'"
+Tray_Switch: "Přepnout na: {account}"
+Tray_CantOpenExe: "Nelze otevřít hlavní .exe. Ujistěte se, že existuje.\n\nPokusil jsem se otevřít:"
+Tray_LaunchFail: "Přepínač účtu TcNo - Spuštění v systémové liště selhalo"
+Updater_Duplicate: Byla zjištěna jiná instance aktualizace účtu Tcno.
+Updater_Unknown: "Neznámý argument: {arg}"
+Updater_NeedsAdmin: Tento program musí být spuštěn jako administrátor!
+Updater_StatusChecking: Kontrola verze
+Updater_FailedVersionCheck: "Nelze získat verzi. Klikněte na \"Ověřit\" pro aktualizaci a ověření souborů"
+Updater_PressBelow: Stiskněte tlačítko níže!
+Updater_PressBelowStart: Klikněte na tlačítko níže pro spuštění aktualizace.
+Updater_PatchApplied: Patch aplikován!
+Updater_UpdatingAppData: Aktualizace souborů v AppData!
+Updater_Complete: Všechny aktualizace dokončeny!
+Updater_Checking: Kontrola aktualizací
+Updater_UpdateToVerify: Pro ověření souborů musíte nejdříve aktualizovat.
+Updater_ClosingTcNo: Uzavření instancí Přepínače účtu TcNo (pokud existuje).
+Updater_Downloading: "Stahování aktualizace: {version}"
+Updater_Downloaded: Stahování dokončeno.
+Updater_CantExtract: Nepodařilo se rozbalit aktualizaci.
+Updater_Verify: Ověřit soubory
+Updater_Verifying: Ověřování...
+Updater_VerifySkip: Ověřování souborů pro přeskočení všech malých aktualizací a pouze skočení na pozdější dobu.
+Updater_NoConnection: "Nelze se připojit k tcno.co pro ověření souborů. Můžete zkusit ručně stáhnout instalační program ze stránky GitHub a znovu nainstalovat pro aktualizaci.\n\nChyba:"
+Updater_NoServer: Nelze se spojit s aktualizačním serverem
+Updater_Hashlist: Stahování posledního hash seznamu...
+Updater_CantCheck: Nelze zkontrolovat aktualizace
+Updater_Failed: "CHYBA: Některé soubory jsou používány a nelze je aktualizovat.\n\n1. Ujistěte se, že všechny procesy TcNo jsou zcela uzavřeny\n(nebo restartujte Váš PC)\n\n2. Poté klikněte na Ověřit níže, nebo pokud jste restartovali:\n- Otevřete tento updater a ověřte soubory\n    (umístěné ve složce 'updater')"
+Updater_Missing: "SOUBOR MISE: {file}"
+Updater_FileMismatch: "Soubor: {file} má MD5: {md5} EXPECTED: {value}"
+Updater_DownloadingWeb: Stahování souboru z webových stránek...
+Updater_UnpackingAppData: Kopírování souborů do %AppData%/TcNo Přepínače účtu... (pokud není nastaveno jinak)
+Updater_VerifyComplete: Soubory ověřeny!
+Updater_UpdateFound: "Aktualizace nalezena: {name} [{updateSize}]"
+Updater_TotalFound: "Celkem nalezených aktualizací: {x}"
+Updater_TotalSize: "Celková velikost: {size}"
+Updater_AwaitingUser: Čekání na vstup uživatele...
+Updater_UpToDate: "Jste aktuální.\n:)"
+Updater_FailedDecode: To je nejpravděpodobnější kvůli mně (TechNobo) tlačící aktualizaci, a tvořící typo, který porušil . soubor aktualizace syna. Dejte mi vědět :)
+Updater_FailedDecodeTitle: Nepodařilo se dekódovat seznam aktualizací
+Updater_Extracting: Rozbaluji soubory patch
+Updater_Applying: Aplikování záplaty...
+Updater_Moving: Přesouvání souborů...
+Updater_Title: Aktualizace TcNo Přepínače účtů
+Updater_Started: Začínáno
+Updater_Start: Spustit přepínač TcNo účtu
+Updater_Begin: Spustit aktualizaci
+Updater_Exit: Ukončit
+FatalError: Došlo k fatální chybě!
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline
