@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: 找不到“.../Steam/config/loginusers.vdf”
 Toast_CantClearImages: 無法清除圖像
 Toast_RefreshedImages: 刷新的圖像
 Toast_Ubisoft_NoUsername: 找不到上次登錄的用戶。先嘗試再次登錄育碧。
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat could not be found. The last active account was not saved."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat 無法找到。未保存最後一個活動帳戶。"
 Toast_Ubisoft_NoUser: 找不到上次登錄的用戶。先嘗試再次登錄育碧。
 Toast_ClearForgottenCheck: 您確定要清除忘記帳戶的備份嗎？
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 創建
@@ -191,80 +191,80 @@ Title_Steam_Cleaning: TcNo 帳戶切換器 - Steam 清潔
 Title_Steam_Restore: TcNo Account Switcher - 恢復忘記的 Steam 帳戶
 Title_Steam_Settings: TcNo 帳戶切換器 - Steam 設置
 Title_Ubisoft_Settings: TcNo 賬戶切換器 - 育碧設置
-Installer_Downloading: Downloading {file}
-Installer_DownloadFinished: Finished downloading {file}
-Installer_Installing: "Installing: {runtime}"
-Installer_RuntimeTitle: TcNo Account Switcher - Runtime installer
-Installer_Welcome: Welcome to the TcNo Account Switcher - Runtime installer
-Installer_InstalledRuntimes: "Currently installed runtimes:"
-Installer_ErrorRuntime: "One or more runtimes were not installed:"
-Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB while installing]"
-Installer_TotalSize: "Total download size: ~{size} MB"
-Installer_AnyKeyStart: Press any key to start download...
-Runtime_WebView2: Microsoft WebView2 Runtime
-Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
-Installer_FailedFolder: "Failed to create folder:"
-Installer_FailedWV: "Failed to download and install Microsoft WebView2 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download Hosting Bundle' under Run server apps."
-Installer_FailedDR: "Failed to download and install .NET 5 Desktop Runtime. Please download it here:"
-Installed_FailedASP: "Failed to download and install ASP.NET Core 5.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
-Installer_Ready: "One or more are ready for install. If and when prompted if you would like to install, click 'Yes'."
-Installer_PressStart: Press any key to start install...
-Installer_VerifyMin: "Verify you meet the minimum recommended requirements:"
-Installer_VerifyAlready: "It looks like everything is installed. Verify you meet the minimum recommended requirements:"
-Installer_Complete: That should be everything. The main program, TcNo-Acc-Switcher.exe, will auto-run when you press a key to continue.
-Installer_Complete2: "If it doesn't work, please refer to install instructions, here: {link}"
-Global_FatalNext: "Fatal error occurred! This crashlog will be automatically submitted next launch."
-Tray_Error: Tray Error
-Tray_NoAccs: "There were no accounts found.\nTry switching accounts first, or locate 'Tray_Users.json'"
-Tray_Switch: "Switch to: {account}"
-Tray_CantOpenExe: "Could not open the main .exe. Make sure it exists.\n\nI attempted to open:"
-Tray_LaunchFail: "TcNo Account Switcher - Tray launch fail"
-Updater_Duplicate: Another TcNo Account Switcher Updater instance has been detected.
-Updater_Unknown: "Unknown argument: {arg}"
-Updater_NeedsAdmin: This program must be run as an administrator!
-Updater_StatusChecking: Checking version
-Updater_FailedVersionCheck: "Could not get version. Click \"Verify\" to update & verify files"
-Updater_PressBelow: Press button below!
-Updater_PressBelowStart: Click the button below to start the update.
-Updater_PatchApplied: Patch applied!
-Updater_UpdatingAppData: Updating files in AppData!
-Updater_Complete: All updates complete!
-Updater_Checking: Checking for updates
-Updater_UpdateToVerify: To verify files you need to update first.
-Updater_ClosingTcNo: Closing TcNo Account Switcher instances (if any).
-Updater_Downloading: "Downloading update: {version}"
-Updater_Downloaded: Download complete.
-Updater_CantExtract: Failed to extract update.
-Updater_Verify: Verify files
-Updater_Verifying: Verifying...
-Updater_VerifySkip: Verifying files to skip all small updates, and just jump to latest.
-Updater_NoConnection: "Could not connect to tcno.co to verify files. You can try manually downloading the installer from the GitHub page, and reinstalling to update.\n\nError:"
-Updater_NoServer: Could not reach update server
-Updater_Hashlist: Downloading latest hash list...
-Updater_CantCheck: Unable to check for updates
-Updater_Failed: "ERROR: Some of the files are in use and can not be updated.\n\n1. Make sure all TcNo processes are completely closed\n(or restart your PC)\n\n2. Then click Verify below, or if you restarted:\n-   Open this updater and verify files\n    (located in the 'updater' folder in the install directory)"
-Updater_Missing: "FILE MISSING: {file}"
-Updater_FileMismatch: "File: {file} has MD5: {md5} EXPECTED: {value}"
-Updater_DownloadingWeb: Downloading file from website...
-Updater_UnpackingAppData: Copying files to %AppData%/TcNo Account Switcher... (unless set otherwise)
-Updater_VerifyComplete: Files verified!
-Updater_UpdateFound: "Update found: {name} [{updateSize}]"
-Updater_TotalFound: "Total updates found: {x}"
-Updater_TotalSize: "Total size: {size}"
-Updater_AwaitingUser: Waiting for user input...
-Updater_UpToDate: "You're up to date.\n:)"
-Updater_FailedDecode: This is most likely due to me (TechNobo) pushing an update, and making a typo that broke the .json update file. Do let me know :)
-Updater_FailedDecodeTitle: Failed to decode update list
-Updater_Extracting: Extracting patch files
-Updater_Applying: Applying patch...
-Updater_Moving: Moving files...
-Updater_Title: TcNo Account Switcher Updater
-Updater_Started: Started
-Updater_Start: Start TcNo Account Switcher
-Updater_Begin: Start update
-Updater_Exit: Exit
-FatalError: Fatal error occurred!
+Installer_Downloading: 下載 {file}
+Installer_DownloadFinished: 下載完成 {file}
+Installer_Installing: "安裝： {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - 運行時安裝程序
+Installer_Welcome: 歡迎使用 TcNo 帳戶切換器 - 運行時安裝程序
+Installer_InstalledRuntimes: "當前安裝的運行時："
+Installer_ErrorRuntime: "未安裝一個或多個運行時："
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB 安裝時]"
+Installer_TotalSize: "總下載大小：~{size} MB"
+Installer_AnyKeyStart: 按任意鍵開始下載...
+Runtime_WebView2: Microsoft WebView2 運行時
+Runtime_Desktop: Microsoft .NET 5 桌面運行時
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 運行時
+Installer_FailedFolder: "無法創建文件夾："
+Installer_FailedWV: "無法下載和安裝 Microsoft WebView2 運行時。下載： 1. 單擊下面的鏈接： {link} 2. 單擊運行服務器應用程序下的“下載託管捆綁包”。"
+Installer_FailedDR: "無法下載和安裝 .NET 5 桌面運行時。請在此處下載："
+Installed_FailedASP: "無法下載和安裝 ASP.NET Core 5.0 運行時。下載： 1. 單擊下面的鏈接： {link} 2. 單擊運行桌面應用程序下的“下載 x64”。"
+Installer_Ready: "一個或多個已準備好安裝。如果系統提示您是否要安裝，請單擊“是”。"
+Installer_PressStart: 按任意鍵開始安裝...
+Installer_VerifyMin: "驗證您是否滿足最低推薦要求："
+Installer_VerifyAlready: "看起來一切都安裝好了。驗證您是否滿足最低推薦要求："
+Installer_Complete: 那應該就是一切。當您按一個鍵繼續時，主程序 TcNo-Acc-Switcher.exe 將自動運行。
+Installer_Complete2: "如果它不起作用，請參閱安裝說明，這裡： {link}"
+Global_FatalNext: "發生致命錯誤！此崩潰日誌將在下次啟動時自動提交。"
+Tray_Error: 托盤錯誤
+Tray_NoAccs: "沒有找到帳戶。\n首先嘗試切換帳戶，或找到“Tray_Users.json”"
+Tray_Switch: "切換到： {account}"
+Tray_CantOpenExe: "無法打開主 .exe。確保它存在。\n\n我試圖打開："
+Tray_LaunchFail: "TcNo 帳戶切換器 - 托盤啟動失敗"
+Updater_Duplicate: 已檢測到另一個 TcNo Account Switcher Updater 實例。
+Updater_Unknown: "未知參數： {arg}"
+Updater_NeedsAdmin: 此程序必須以管理員身份運行！
+Updater_StatusChecking: 檢查版本
+Updater_FailedVersionCheck: "無法獲取版本。單擊“驗證”以更新和驗證文件"
+Updater_PressBelow: 按下下面的按鈕！
+Updater_PressBelowStart: 單擊下面的按鈕開始更新。
+Updater_PatchApplied: 補丁已應用！
+Updater_UpdatingAppData: 更新 AppData 中的文件！
+Updater_Complete: 所有更新完成！
+Updater_Checking: 查詢更新
+Updater_UpdateToVerify: 要驗證文件，您需要先更新。
+Updater_ClosingTcNo: 關閉 TcNo Account Switcher 實例（如果有）。
+Updater_Downloading: "下載更新： {version}"
+Updater_Downloaded: 下載完成。
+Updater_CantExtract: 無法提取更新。
+Updater_Verify: 驗證文件
+Updater_Verifying: 正在驗證...
+Updater_VerifySkip: 驗證文件以跳過所有小更新，直接跳轉到最新。
+Updater_NoConnection: "無法連接到 tcno.co 以驗證文件。您可以嘗試從 GitHub 頁面手動下載安裝程序，然後重新安裝以進行更新。\n\n錯誤："
+Updater_NoServer: 無法訪問更新服務器
+Updater_Hashlist: 正在下載最新的哈希列表...
+Updater_CantCheck: 無法檢查更新
+Updater_Failed: "錯誤：某些文件正在使用中，無法更新。\n\n1. 確保所有 TcNo 進程完全關閉\n（或重新啟動您的 PC）\n\n2. 然後單擊下面的驗證，或者如果您重新啟動：\n- 打開此更新程序並驗證文件\n    （位於安裝目錄）"
+Updater_Missing: "文件丟失： {file}"
+Updater_FileMismatch: "文件： {file} 有 MD5： {md5} 預期： {value}"
+Updater_DownloadingWeb: 正在從網站下載文件...
+Updater_UnpackingAppData: 正在將文件複製到 %AppData%/TcNo Account Switcher...（除非另有設置）
+Updater_VerifyComplete: 文件已驗證！
+Updater_UpdateFound: "發現更新： {name} [{updateSize}]"
+Updater_TotalFound: "找到的更新總數： {x}"
+Updater_TotalSize: "總大小： {size}"
+Updater_AwaitingUser: 等待用戶輸入...
+Updater_UpToDate: "你是最新的。\n:)"
+Updater_FailedDecode: 這很可能是由於我 (TechNobo) 推送更新，並且打錯了 .json 更新文件。請讓我知道:)
+Updater_FailedDecodeTitle: 無法解碼更新列表
+Updater_Extracting: 提取補丁文件
+Updater_Applying: 應用補丁...
+Updater_Moving: 移動文件...
+Updater_Title: TcNo 帳戶切換器更新程序
+Updater_Started: 開始
+Updater_Start: 啟動 TcNo 帳戶切換器
+Updater_Begin: 開始升級
+Updater_Exit: 出口
+FatalError: 發生致命錯誤！
 Online: 在線的
 OnlineDefault: 在線（默認）
 Offline: 離線
