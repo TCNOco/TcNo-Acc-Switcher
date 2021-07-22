@@ -123,6 +123,7 @@ Toast_Steam_CantLocateLoginusers: Nu se poate localiza '.../Steam/config/loginus
 Toast_CantClearImages: Imaginile nu au putut fi șterse
 Toast_RefreshedImages: Reîmprospătați imaginile
 Toast_Ubisoft_NoUsername: Nu s-a putut găsi ultimul utilizator conectat. Încercați să vă logați din nou în Ubisoft.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat could not be found. The last active account was not saved."
 Toast_Ubisoft_NoUser: Nu s-a putut găsi ultimul utilizator conectat. Încercați să vă logați din nou în Ubisoft.
 Toast_ClearForgottenCheck: Sunteţi sigur că doriţi să ştergeţi copiile de rezervă ale conturilor uitate?
 Modal_Info_Creator: Creat de TechNobo [Wesley Pyburn]
@@ -190,6 +191,80 @@ Title_Steam_Cleaning: Comutator de cont TcNo - Curățarea Steam
 Title_Steam_Restore: Comutator de cont TcNo - Restaurare cont Steam uitat
 Title_Steam_Settings: Comutator de cont TcNo - Setări Steam
 Title_Ubisoft_Settings: Comutator de cont TcNo - Setări Ubisoft
+Installer_Downloading: Downloading {file}
+Installer_DownloadFinished: Finished downloading {file}
+Installer_Installing: "Installing: {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - Runtime installer
+Installer_Welcome: Welcome to the TcNo Account Switcher - Runtime installer
+Installer_InstalledRuntimes: "Currently installed runtimes:"
+Installer_ErrorRuntime: "One or more runtimes were not installed:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB while installing]"
+Installer_TotalSize: "Total download size: ~{size} MB"
+Installer_AnyKeyStart: Press any key to start download...
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Installer_FailedFolder: "Failed to create folder:"
+Installer_FailedWV: "Failed to download and install Microsoft WebView2 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download Hosting Bundle' under Run server apps."
+Installer_FailedDR: "Failed to download and install .NET 5 Desktop Runtime. Please download it here:"
+Installed_FailedASP: "Failed to download and install ASP.NET Core 5.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
+Installer_Ready: "One or more are ready for install. If and when prompted if you would like to install, click 'Yes'."
+Installer_PressStart: Press any key to start install...
+Installer_VerifyMin: "Verify you meet the minimum recommended requirements:"
+Installer_VerifyAlready: "It looks like everything is installed. Verify you meet the minimum recommended requirements:"
+Installer_Complete: That should be everything. The main program, TcNo-Acc-Switcher.exe, will auto-run when you press a key to continue.
+Installer_Complete2: "If it doesn't work, please refer to install instructions, here: {link}"
+Global_FatalNext: "Fatal error occurred! This crashlog will be automatically submitted next launch."
+Tray_Error: Tray Error
+Tray_NoAccs: "There were no accounts found.\nTry switching accounts first, or locate 'Tray_Users.json'"
+Tray_Switch: "Switch to: {account}"
+Tray_CantOpenExe: "Could not open the main .exe. Make sure it exists.\n\nI attempted to open:"
+Tray_LaunchFail: "TcNo Account Switcher - Tray launch fail"
+Updater_Duplicate: Another TcNo Account Switcher Updater instance has been detected.
+Updater_Unknown: "Unknown argument: {arg}"
+Updater_NeedsAdmin: This program must be run as an administrator!
+Updater_StatusChecking: Checking version
+Updater_FailedVersionCheck: "Could not get version. Click \"Verify\" to update & verify files"
+Updater_PressBelow: Press button below!
+Updater_PressBelowStart: Click the button below to start the update.
+Updater_PatchApplied: Patch applied!
+Updater_UpdatingAppData: Updating files in AppData!
+Updater_Complete: All updates complete!
+Updater_Checking: Checking for updates
+Updater_UpdateToVerify: To verify files you need to update first.
+Updater_ClosingTcNo: Closing TcNo Account Switcher instances (if any).
+Updater_Downloading: "Downloading update: {version}"
+Updater_Downloaded: Download complete.
+Updater_CantExtract: Failed to extract update.
+Updater_Verify: Verify files
+Updater_Verifying: Verifying...
+Updater_VerifySkip: Verifying files to skip all small updates, and just jump to latest.
+Updater_NoConnection: "Could not connect to tcno.co to verify files. You can try manually downloading the installer from the GitHub page, and reinstalling to update.\n\nError:"
+Updater_NoServer: Could not reach update server
+Updater_Hashlist: Downloading latest hash list...
+Updater_CantCheck: Unable to check for updates
+Updater_Failed: "ERROR: Some of the files are in use and can not be updated.\n\n1. Make sure all TcNo processes are completely closed\n(or restart your PC)\n\n2. Then click Verify below, or if you restarted:\n-   Open this updater and verify files\n    (located in the 'updater' folder in the install directory)"
+Updater_Missing: "FILE MISSING: {file}"
+Updater_FileMismatch: "File: {file} has MD5: {md5} EXPECTED: {value}"
+Updater_DownloadingWeb: Downloading file from website...
+Updater_UnpackingAppData: Copying files to %AppData%/TcNo Account Switcher... (unless set otherwise)
+Updater_VerifyComplete: Files verified!
+Updater_UpdateFound: "Update found: {name} [{updateSize}]"
+Updater_TotalFound: "Total updates found: {x}"
+Updater_TotalSize: "Total size: {size}"
+Updater_AwaitingUser: Waiting for user input...
+Updater_UpToDate: "You're up to date.\n:)"
+Updater_FailedDecode: This is most likely due to me (TechNobo) pushing an update, and making a typo that broke the .json update file. Do let me know :)
+Updater_FailedDecodeTitle: Failed to decode update list
+Updater_Extracting: Extracting patch files
+Updater_Applying: Applying patch...
+Updater_Moving: Moving files...
+Updater_Title: TcNo Account Switcher Updater
+Updater_Started: Started
+Updater_Start: Start Acc Switcher
+Updater_Begin: Start update
+Updater_Exit: Exit
+FatalError: Fatal error occurred!
 Online: Online
 OnlineDefault: Online (Default)
 Offline: Offline
