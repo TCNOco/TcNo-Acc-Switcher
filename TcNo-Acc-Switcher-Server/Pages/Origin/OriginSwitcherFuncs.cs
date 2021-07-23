@@ -14,7 +14,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 {
     public class OriginSwitcherFuncs
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
         private static readonly string OriginRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Origin");
@@ -29,7 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.LoadProfiles] Loading Origin profiles");
-            GenericFunctions.GenericLoadAccounts("Origin");
+            _ = GenericFunctions.GenericLoadAccounts("Origin");
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         public static void SwapOriginAccounts(string accName, int state, string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: hidden.");
-            AppData.InvokeVoidAsync("updateStatus", "Closing Origin");
+            _ = AppData.InvokeVoidAsync("updateStatus", "Closing Origin");
             if (!CloseOrigin()) return;
             if (!ClearCurrentLoginOrigin())
             {
@@ -76,11 +76,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             }
             if (accName != "")
             {
-	            if (!OriginCopyInAccount(accName, state)) return;
+                if (!OriginCopyInAccount(accName, state)) return;
                 Globals.AddTrayUser("Origin", "+o:" + accName, accName, Origin.TrayAccNumber); // Add to Tray list
             }
-            AppData.InvokeVoidAsync("updateStatus", "Starting Origin");
-            
+            _ = AppData.InvokeVoidAsync("updateStatus", "Starting Origin");
+
             GeneralFuncs.StartProgram(Origin.Exe(), Origin.Admin, args);
 
             Globals.RefreshTrayArea();
@@ -95,7 +95,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             if (Directory.Exists(OriginProgramData)) currentOlcHashes = (from f in new DirectoryInfo(OriginProgramData).GetFiles() where f.Name.EndsWith(".olc") select GeneralFuncs.GetFileMd5(f.FullName)).ToList();
             else
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new {x = OriginProgramData }], Lang["Error"], "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = OriginProgramData }], Lang["Error"], "toastarea");
                 return false;
             }
 
@@ -120,7 +120,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(OriginRoaming, "NucleusCache")), true);
             GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(OriginRoaming, "Logs")), true);
             GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(OriginProgramData, "Subscription")), false);
-            Directory.CreateDirectory(Path.Join(OriginProgramData, "Subscription"));
+            _ = Directory.CreateDirectory(Path.Join(OriginProgramData, "Subscription"));
 
             foreach (var f in new DirectoryInfo(OriginRoaming).GetFiles())
             {
@@ -147,13 +147,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             var localCachePathData = $"LoginCache\\Origin\\{accName}\\Data\\";
             if (!Directory.Exists(localCachePath))
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = localCachePath }], Lang["DirectoryNotFound"], "toastarea");
-	            return false;
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = localCachePath }], Lang["DirectoryNotFound"], "toastarea");
+                return false;
             }
             if (!Directory.Exists(localCachePathData))
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = localCachePathData }], Lang["DirectoryNotFound"], "toastarea");
-	            return false;
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = localCachePathData }], Lang["DirectoryNotFound"], "toastarea");
+                return false;
             }
 
             Globals.CopyFilesRecursive($"{localCachePath}ConsolidatedCache", Path.Join(OriginRoaming, "ConsolidatedCache"));
@@ -195,7 +195,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.OriginAddCurrent]");
             var localCachePath = $"LoginCache\\Origin\\{accName}\\";
             var localCachePathData = $"LoginCache\\Origin\\{accName}\\Data\\";
-            Directory.CreateDirectory(localCachePath);
+            _ = Directory.CreateDirectory(localCachePath);
 
             Globals.CopyFilesRecursive(Path.Join(OriginRoaming, "ConsolidatedCache"), $"{localCachePath}ConsolidatedCache");
             Globals.CopyFilesRecursive(Path.Join(OriginRoaming, "NucleusCache"), $"{localCachePath}NucleusCache");
@@ -224,14 +224,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                 }
             }
 
-            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\origin\\"));
+            _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\origin\\"));
             var destImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Uri.EscapeUriString(accName)}.jpg");
             if (File.Exists(destImg))
             {
-                GeneralFuncs.DeletedOutdatedFile(destImg, Origin.ImageExpiryTime);
-                GeneralFuncs.DeletedInvalidImage(destImg);
+                _ = GeneralFuncs.DeletedOutdatedFile(destImg, Origin.ImageExpiryTime);
+                _ = GeneralFuncs.DeletedInvalidImage(destImg);
             }
-            if (!File.Exists(destImg)) File.Copy((pfpFilePath != "" ? pfpFilePath :  Path.Join(GeneralFuncs.WwwRoot(), "img\\QuestionMark.jpg"))!, destImg, true);
+            if (!File.Exists(destImg)) File.Copy((pfpFilePath != "" ? pfpFilePath : Path.Join(GeneralFuncs.WwwRoot(), "img\\QuestionMark.jpg"))!, destImg, true);
 
             var olcHashes = new List<string>();
             foreach (var f in new DirectoryInfo(OriginProgramData).GetFiles())
@@ -239,7 +239,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                 if (f.Name.EndsWith(".xml"))
                 {
                     File.Copy(f.FullName, $"{localCachePathData}{f.Name}", true);
-                }else if (f.Name.EndsWith(".olc"))
+                }
+                else if (f.Name.EndsWith(".olc"))
                 {
                     File.Copy(f.FullName, $"{localCachePathData}{f.Name}", true);
                     olcHashes.Add(GeneralFuncs.GetFileMd5(f.FullName)); // Add hashes to list
@@ -286,11 +287,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             if (!File.Exists(localAllOlc)) return JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(s);
             try
             {
-	            s = Globals.ReadAllText(localAllOlc);
+                s = Globals.ReadAllText(localAllOlc);
             }
             catch (Exception)
             {
-	            //
+                //
             }
 
             return JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(s);

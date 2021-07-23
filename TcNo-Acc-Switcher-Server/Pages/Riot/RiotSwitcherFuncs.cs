@@ -14,11 +14,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
 {
     public class RiotSwitcherFuncs
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         private static readonly Data.Settings.Riot Riot = Data.Settings.Riot.Instance;
         private static string _riotClientPrivateSettings = "",
-	        _riotClientConfig = "";
+            _riotClientConfig = "";
 
         /// <summary>
         /// Main function for Riot Account Switcher. Run on load.
@@ -40,7 +40,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 }
             }
 
-            GenericFunctions.GenericLoadAccounts("Riot");
+            _ = GenericFunctions.GenericLoadAccounts("Riot");
         }
 
         // Delayed toasts, as notifications are created in the LoadImportantData() section, and can be before the main process has rendered items.
@@ -145,7 +145,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.SwapRiotAccounts] Swapping to: hidden.");
             _startArguments = " " + args;
 
-            AppData.InvokeVoidAsync("updateStatus", "Closing Riot");
+            _ = AppData.InvokeVoidAsync("updateStatus", "Closing Riot");
             if (!CloseRiot()) return;
             ClearCurrentLoginRiot();
             if (accName != "")
@@ -157,10 +157,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
 
             //GeneralFuncs.StartProgram(Riot.Exe(), Riot.Admin);
 
-            AppData.InvokeVoidAsync("updateStatus", "Ready");
+            _ = AppData.InvokeVoidAsync("updateStatus", "Ready");
             Globals.RefreshTrayArea();
         }
-        
+
         private static void ClearCurrentLoginRiot()
         {
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.ClearCurrentLoginRiot]");
@@ -175,20 +175,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             var localCachePath = $"LoginCache\\Riot\\{accName}\\";
             if (!Directory.Exists(localCachePath))
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new {x = localCachePath}], Lang["DirectoryNotFound"], "toastarea");
-	            return false;
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = localCachePath }], Lang["DirectoryNotFound"], "toastarea");
+                return false;
             }
 
             File.Copy($"{localCachePath}RiotClientPrivateSettings.yaml", _riotClientPrivateSettings, true);
             File.Copy($"{localCachePath}RiotClientSettings.yaml", _riotClientConfig, true);
             return true;
         }
-        
+
         public static void RiotAddCurrent(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.RiotAddCurrent]");
             var localCachePath = $"LoginCache\\Riot\\{accName}\\";
-            Directory.CreateDirectory(localCachePath);
+            _ = Directory.CreateDirectory(localCachePath);
 
             if (!File.Exists(_riotClientPrivateSettings) || !File.Exists(_riotClientConfig))
             {
@@ -198,9 +198,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             // Save files
             File.Copy(_riotClientPrivateSettings, Path.Join(localCachePath, "RiotClientPrivateSettings.yaml"), true);
             File.Copy(_riotClientConfig, Path.Join(localCachePath, "RiotClientSettings.yaml"), true);
-            
+
             // Copy in profile image from default
-            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\riot"));
+            _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\riot"));
             File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\RiotDefault.png"), Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg"), true);
 
             AppData.ActiveNavMan?.NavigateTo("/Riot/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
@@ -220,7 +220,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         /// List of Riot processes to close
         /// </summary>
         private static readonly string[] RiotProcessList = { "LeagueClient.exe", "LoR.exe", "VALORANT.exe", "RiotClientServices.exe", "RiotClientUx.exe", "RiotClientUxRender.exe" };
-        
+
         /// <summary>
         /// Returns true if program can kill all Riot processes
         /// </summary>
@@ -238,7 +238,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             foreach (var s in RiotProcessList)
             {
                 Globals.KillProcess(s);
-                GeneralFuncs.WaitForClose(s);
+                _ = GeneralFuncs.WaitForClose(s);
             }
             return true;
         }
@@ -279,7 +279,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                     Verb = Riot.Admin ? "runas" : ""
                 }
             };
-            proc.Start();
+            _ = proc.Start();
 
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_StartedGame", new { program = name }], Lang["Success"], "toastarea");
         }
@@ -298,7 +298,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 _ => ""
             };
 
-            Process.Start("explorer.exe", dir.Replace("/", "\\"));
+            _ = Process.Start("explorer.exe", dir.Replace("/", "\\"));
         }
         #endregion
     }

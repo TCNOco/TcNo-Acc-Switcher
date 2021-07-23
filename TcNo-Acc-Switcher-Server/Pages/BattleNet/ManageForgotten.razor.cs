@@ -25,7 +25,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 {
     public partial class ManageForgotten
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
         [Inject]
         public AppData AppData { get; set; }
         private IJSObjectReference _jsModule;
@@ -34,7 +34,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Globals.DebugWriteLine(@"[Auto:BattleNet\ManageForgotten.razor.cs.OnInitializedAsync]");
             AppData.Instance.WindowTitle = Lang["Title_BNet_ManageIgnored"];
             _jsModule = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/battlenet/ManageIgnored.js");
-            await _jsModule.InvokeAsync<string>("jsLoadIgnored");
+            _ = await _jsModule.InvokeAsync<string>("jsLoadIgnored");
         }
 
         /// <summary>

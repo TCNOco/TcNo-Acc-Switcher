@@ -43,34 +43,34 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             }
             catch (System.UnauthorizedAccessException)
             {
-                GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+                _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
             }
         }
 
         private static void StartWithWindows(bool shouldExist)
         {
-	        switch (shouldExist)
-	        {
-		        case true when !StartWithWindows_Enabled():
-		        {
-			        var ts = new TaskService();
-			        var td = ts.NewTask();
-			        td.Principal.RunLevel = TaskRunLevel.Highest;
-			        td.Triggers.AddNew(TaskTriggerType.Logon);
-			        var programPath = System.IO.Path.GetFullPath("TcNo-Acc-Switcher-Tray.exe");
-			        td.Actions.Add(new ExecAction(programPath));
-			        ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Tray start with logon", td);
-			        //MessageBox.Show(Strings.InfoTrayWindowsStart);
-			        break;
-		        }
-		        case false when StartWithWindows_Enabled():
-		        {
-			        var ts = new TaskService();
-			        ts.RootFolder.DeleteTask("TcNo Account Switcher - Tray start with logon");
-			        //MessageBox.Show(Strings.InfoTrayWindowsStartOff);
-			        break;
-		        }
-	        }
+            switch (shouldExist)
+            {
+                case true when !StartWithWindows_Enabled():
+                    {
+                        var ts = new TaskService();
+                        var td = ts.NewTask();
+                        td.Principal.RunLevel = TaskRunLevel.Highest;
+                        _ = td.Triggers.AddNew(TaskTriggerType.Logon);
+                        var programPath = System.IO.Path.GetFullPath("TcNo-Acc-Switcher-Tray.exe");
+                        _ = td.Actions.Add(new ExecAction(programPath));
+                        _ = ts.RootFolder.RegisterTaskDefinition("TcNo Account Switcher - Tray start with logon", td);
+                        //MessageBox.Show(Strings.InfoTrayWindowsStart);
+                        break;
+                    }
+                case false when StartWithWindows_Enabled():
+                    {
+                        var ts = new TaskService();
+                        ts.RootFolder.DeleteTask("TcNo Account Switcher - Tray start with logon");
+                        //MessageBox.Show(Strings.InfoTrayWindowsStartOff);
+                        break;
+                    }
+            }
         }
     }
 }

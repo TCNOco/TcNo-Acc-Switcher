@@ -24,7 +24,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public class SteamSwitcherBase
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         /// <summary>
         /// Converts input SteamID64 into the requested format, then copies it to clipboard.
@@ -52,15 +52,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
         }
 
-		/// <summary>
-		/// [Wrapper with fewer arguments]
-		/// </summary>        
-		[JSInvokable]
+        /// <summary>
+        /// [Wrapper with fewer arguments]
+        /// </summary>        
+        [JSInvokable]
         [SupportedOSPlatform("windows")]
         public static void SwapToSteamWithReq(string steamId, int request) => SwapToSteam(steamId, request);
-		[JSInvokable]
-		[SupportedOSPlatform("windows")]
-		public static void SwapToSteam(string steamId) => SwapToSteam(steamId, -1);
+        [JSInvokable]
+        [SupportedOSPlatform("windows")]
+        public static void SwapToSteam(string steamId) => SwapToSteam(steamId, -1);
         /// <summary>
         /// JS function handler for swapping to another Steam account.
         /// </summary>
@@ -76,10 +76,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         [JSInvokable]
         public static void SteamOpenUserdata(string steamId)
         {
-	        var steamId32 = new Converters.SteamIdConvert(steamId);
+            var steamId32 = new Converters.SteamIdConvert(steamId);
             var folder = Path.Join(Data.Settings.Steam.Instance.FolderPath, $"userdata\\{steamId32.Id32}");
-            if (Directory.Exists(folder)) Process.Start("explorer.exe", folder);
-            else GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"],  Lang["Failed"], "toastarea");
+            if (Directory.Exists(folder)) _ = Process.Start("explorer.exe", folder);
+            else _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"], "toastarea");
         }
 
         /// <summary>

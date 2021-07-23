@@ -44,43 +44,43 @@ namespace TcNo_Acc_Switcher_Server
         {
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
-            services.AddControllers();
+            _ = services.AddControllers();
 
-            services.AddRazorPages();
-            services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
-            
+            _ = services.AddRazorPages();
+            _ = services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
+
 
             // Persistent settings:
-            services.AddSingleton<AppSettings>();
-            services.AddSingleton<AppData>();
-            services.AddSingleton<Data.Settings.BattleNet>();
-            services.AddSingleton<Data.Settings.Discord>();
-            services.AddSingleton<Data.Settings.Epic>();
-            services.AddSingleton<Data.Settings.Origin>();
-            services.AddSingleton<Data.Settings.Riot>();
-            services.AddSingleton<Data.Settings.Steam>();
-            services.AddSingleton<Data.Settings.Ubisoft>();
-            services.AddSingleton<Lang>();
+            _ = services.AddSingleton<AppSettings>();
+            _ = services.AddSingleton<AppData>();
+            _ = services.AddSingleton<Data.Settings.BattleNet>();
+            _ = services.AddSingleton<Data.Settings.Discord>();
+            _ = services.AddSingleton<Data.Settings.Epic>();
+            _ = services.AddSingleton<Data.Settings.Origin>();
+            _ = services.AddSingleton<Data.Settings.Riot>();
+            _ = services.AddSingleton<Data.Settings.Steam>();
+            _ = services.AddSingleton<Data.Settings.Ubisoft>();
+            _ = services.AddSingleton<Lang>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
-			Lang.Instance.LoadLocalised();
+        {
+            Lang.Instance.LoadLocalised();
 
-			if (env.IsDevelopment())
+            if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                _ = app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                _ = app.UseExceptionHandler("/Error");
             }
 
             // Moves any old files from previous installs.
             foreach (var p in Globals.PlatformList) // Copy across all platform files
             {
-	            MoveIfFileExists(p + "Settings.json");
+                MoveIfFileExists(p + "Settings.json");
             }
             MoveIfFileExists("SteamForgotten.json");
             MoveIfFileExists("StyleSettings.yaml");
@@ -90,35 +90,35 @@ namespace TcNo_Acc_Switcher_Server
             // Copy LoginCache
             if (Directory.Exists(Path.Join(Globals.AppDataFolder, "LoginCache\\")))
             {
-	            if (Directory.Exists(Path.Join(Globals.UserDataFolder, "LoginCache"))) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(Globals.UserDataFolder, "LoginCache")), true);
-	            Globals.CopyFilesRecursive(Path.Join(Globals.AppDataFolder, "LoginCache"), Path.Join(Globals.UserDataFolder, "LoginCache"));
+                if (Directory.Exists(Path.Join(Globals.UserDataFolder, "LoginCache"))) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(Globals.UserDataFolder, "LoginCache")), true);
+                Globals.CopyFilesRecursive(Path.Join(Globals.AppDataFolder, "LoginCache"), Path.Join(Globals.UserDataFolder, "LoginCache"));
             }
 
             try
             {
-	            app.UseStaticFiles(new StaticFileOptions
-	            {
-		            FileProvider = new PhysicalFileProvider(Path.Join(Globals.UserDataFolder, @"wwwroot")),
-		            RequestPath = new PathString("")
-	            });
+                _ = app.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(Path.Join(Globals.UserDataFolder, @"wwwroot")),
+                    RequestPath = new PathString("")
+                });
             }
             catch (DirectoryNotFoundException)
             {
-	            Globals.CopyFilesRecursive(Globals.OriginalWwwroot, "wwwroot");
-			}
+                Globals.CopyFilesRecursive(Globals.OriginalWwwroot, "wwwroot");
+            }
 
-			app.UseStaticFiles(); // Second call due to: https://github.com/dotnet/aspnetcore/issues/19578
+            _ = app.UseStaticFiles(); // Second call due to: https://github.com/dotnet/aspnetcore/issues/19578
 
-            app.UseRouting();
+            _ = app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapDefaultControllerRoute();
-                endpoints.MapControllers();
+            _ = app.UseEndpoints(endpoints =>
+              {
+                  _ = endpoints.MapDefaultControllerRoute();
+                  _ = endpoints.MapControllers();
 
-                endpoints.MapBlazorHub();
-                endpoints.MapFallbackToPage("/_Host");
-            });
+                  _ = endpoints.MapBlazorHub();
+                  _ = endpoints.MapFallbackToPage("/_Host");
+              });
         }
 
         private static void MoveIfFileExists(string f)

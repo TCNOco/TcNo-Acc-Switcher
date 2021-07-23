@@ -36,7 +36,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralInvocableFuncs
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         private static readonly Data.Settings.Discord Discord = Data.Settings.Discord.Instance;
         private static readonly Data.Settings.Epic Epic = Data.Settings.Epic.Instance;
@@ -102,14 +102,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             settings["FolderPath"] = path;
             GeneralFuncs.SaveSettings(file, settings);
             switch (file)
-			{
-				case "BattleNetSettings":
-					BattleNet.FolderPath = path;
-					break;
-				case "DiscordSettings":
-					Discord.FolderPath = path;
-					break;
-				case "EpicSettings":
+            {
+                case "BattleNetSettings":
+                    BattleNet.FolderPath = path;
+                    break;
+                case "DiscordSettings":
+                    Discord.FolderPath = path;
+                    break;
+                case "EpicSettings":
                     Epic.FolderPath = path;
                     break;
                 case "SteamSettings":
@@ -137,36 +137,36 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                 if (action.StartsWith("AcceptForgetDiscordAcc:"))
                 {
-	                Discord.SetForgetAcc(true);
-	                DiscordSwitcherFuncs.ForgetAccount(accName);
-	                return Task.FromResult("refresh");
+                    Discord.SetForgetAcc(true);
+                    _ = DiscordSwitcherFuncs.ForgetAccount(accName);
+                    return Task.FromResult("refresh");
                 }
 
                 if (action.StartsWith("AcceptForgetEpicAcc:"))
                 {
-	                Epic.SetForgetAcc(true);
-	                EpicSwitcherFuncs.ForgetAccount(accName);
-	                return Task.FromResult("refresh");
+                    Epic.SetForgetAcc(true);
+                    _ = EpicSwitcherFuncs.ForgetAccount(accName);
+                    return Task.FromResult("refresh");
                 }
 
                 if (action.StartsWith("AcceptForgetSteamAcc:"))
                 {
                     Steam.SetForgetAcc(true);
-                    SteamSwitcherFuncs.ForgetAccount(accName);
+                    _ = SteamSwitcherFuncs.ForgetAccount(accName);
                     return Task.FromResult("refresh");
                 }
 
                 if (action.StartsWith("AcceptForgetOriginAcc:"))
                 {
                     Origin.SetForgetAcc(true);
-                    OriginSwitcherFuncs.ForgetAccount(accName);
+                    _ = OriginSwitcherFuncs.ForgetAccount(accName);
                     return Task.FromResult("refresh");
                 }
 
                 if (action.StartsWith("AcceptForgetUbisoftAcc:"))
                 {
                     Ubisoft.SetForgetAcc(true);
-                    UbisoftSwitcherFuncs.ForgetAccount(accName);
+                    _ = UbisoftSwitcherFuncs.ForgetAccount(accName);
                     return Task.FromResult("refresh");
                 }
 
@@ -180,17 +180,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 if (action.StartsWith("AcceptForgetRiotAcc:"))
                 {
                     Riot.SetForgetAcc(true);
-                    RiotSwitcherFuncs.ForgetAccount(accName);
+                    _ = RiotSwitcherFuncs.ForgetAccount(accName);
                     return Task.FromResult("refresh");
                 }
             }
             switch (action)
             {
-                case "ClearSteamBackups": SteamSwitcherFuncs.ClearForgotten_Confirmed();
+                case "ClearSteamBackups":
+                    SteamSwitcherFuncs.ClearForgotten_Confirmed();
                     break;
-                case "ClearBattleNetIgnored": BattleNetSwitcherFuncs.ClearIgnored_Confirmed();
+                case "ClearBattleNetIgnored":
+                    BattleNetSwitcherFuncs.ClearIgnored_Confirmed();
                     break;
-                case "RestartAsAdmin": 
+                case "RestartAsAdmin":
                     break;
             }
 
@@ -214,7 +216,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 UseShellExecute = true,
                 Verb = "open"
             };
-            Process.Start(ps);
+            _ = Process.Start(ps);
         }
 
         /// <summary>
@@ -242,7 +244,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowToast] type={toastType}, message={toastMessage}, title={toastTitle}, renderTo={renderTo}, duration={duration}");
             return AppData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
         }
-        
+
         /// <summary>
         /// JS function handler for changing selected username on a platform
         /// </summary>
@@ -254,14 +256,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ChangeUsername] id:hidden, reqName:hidden, platform:{platform}");
             switch (platform)
-			{
-				case "BattleNet":
-					BattleNetSwitcherFuncs.ChangeBTag(id, reqName);
-					break;
-				case "Discord":
-					DiscordSwitcherFuncs.ChangeUsername(id, reqName);
-					break;
-				case "Epic":
+            {
+                case "BattleNet":
+                    BattleNetSwitcherFuncs.ChangeBTag(id, reqName);
+                    break;
+                case "Discord":
+                    DiscordSwitcherFuncs.ChangeUsername(id, reqName);
+                    break;
+                case "Epic":
                     EpicSwitcherFuncs.ChangeUsername(id, reqName);
                     break;
                 case "Riot":
@@ -296,11 +298,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             switch (page)
             {
                 case "steam":
-                {
-                    var ePersonaState = -1;
-                    if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
-                    platformName = $"Switch to {accName} {(args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "")} [{platform}]";
-                    break;
+                    {
+                        var ePersonaState = -1;
+                        if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
+                        platformName = $"Switch to {accName} {(args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "")} [{platform}]";
+                        break;
                     }
                 case "riot":
                     accId = accId.Replace("#", "-");
@@ -308,33 +310,33 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     break;
                 case "discord":
                     accId = accId.Replace("#", "-");
-	                break;
-			}
+                    break;
+            }
 
             var fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{page}\\{accId}.jpg");
             if (!File.Exists(fgImg)) fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{page}\\{accId}.png");
             if (!File.Exists(fgImg))
             {
-	            ShowToast("error", Lang["Toast_CantFindImage"], Lang["Toast_CantCreateShortcut"], "toastarea");
-	            return;
+                _ = ShowToast("error", Lang["Toast_CantFindImage"], Lang["Toast_CantCreateShortcut"], "toastarea");
+                return;
             }
 
             var s = new Shortcut();
-            s.Shortcut_Platform(
-                Shortcut.Desktop, 
+            _ = s.Shortcut_Platform(
+                Shortcut.Desktop,
                 platformName,
                 $"+{page[0]}:{originalAccId}{args}",
-                $"Switch to {accName} [{platform}] in TcNo Account Switcher", 
+                $"Switch to {accName} [{platform}] in TcNo Account Switcher",
                 true);
             s.CreateCombinedIcon(
                 Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{page}.png"),
-                fgImg, 
+                fgImg,
                 $"{accId}.ico");
             s.TryWrite();
 
             _ = AppSettings.Instance.StreamerModeTriggered
                 ? ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea")
-                : ShowToast("success", Lang["ForName", new {ForName = accName}], Lang["Toast_ShortcutCreated"], "toastarea");
+                : ShowToast("success", Lang["ForName", new { ForName = accName }], Lang["Toast_ShortcutCreated"], "toastarea");
         }
 
         [JSInvokable]
@@ -342,93 +344,93 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiCreatePlatformShortcut] platform={platform}");
             var s = new Shortcut();
-            s.Shortcut_Platform(Shortcut.Desktop, platform, platform.ToLowerInvariant());
+            _ = s.Shortcut_Platform(Shortcut.Desktop, platform, platform.ToLowerInvariant());
             s.ToggleShortcut(true);
         }
 
         [JSInvokable]
         public static async Task<string> GiExportAccountList(string platform)
         {
-	        Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiExportAccountList] platform={platform}");
-	        if (!Directory.Exists(Path.Join("LoginCache", platform)))
-	        {
-		        ShowToast("error", Lang["Toast_AddAccountsFirst"],Lang["Toast_AddAccountsFirstTitle"], "toastarea");
-		        return "";
-	        }
+            Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiExportAccountList] platform={platform}");
+            if (!Directory.Exists(Path.Join("LoginCache", platform)))
+            {
+                _ = ShowToast("error", Lang["Toast_AddAccountsFirst"], Lang["Toast_AddAccountsFirstTitle"], "toastarea");
+                return "";
+            }
 
-	        var s = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
+            var s = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
 
-	        List<string> allAccountsTable = new();
-	        if (platform == "Steam")
-	        {
-		        // Add headings and separator for programs like Excel
+            List<string> allAccountsTable = new();
+            if (platform == "Steam")
+            {
+                // Add headings and separator for programs like Excel
                 allAccountsTable.Add("SEP=,");
                 allAccountsTable.Add("Account name:,Community name:,SteamID:,VAC status:,Last login:,Saved profile image:");
 
-		        var userAccounts = SteamSwitcherFuncs.GetSteamUsers(Steam.LoginUsersVdf());
-		        var vacStatusList = new List<SteamSwitcherFuncs.VacStatus>();
-		        var loadedVacCache = SteamSwitcherFuncs.LoadVacInfo(ref vacStatusList);
+                var userAccounts = SteamSwitcherFuncs.GetSteamUsers(Steam.LoginUsersVdf());
+                var vacStatusList = new List<SteamSwitcherFuncs.VacStatus>();
+                var loadedVacCache = SteamSwitcherFuncs.LoadVacInfo(ref vacStatusList);
 
-				foreach (var ua in userAccounts)
-				{
-					var vacInfo = "";
-					// Get VAC/Limited info
-					if (loadedVacCache)
-						foreach (var vsi in vacStatusList.Where(vsi => vsi.SteamId == ua.SteamId))
-						{
-							if (vsi.Vac && vsi.Ltd) vacInfo += "VAC + Limited";
-							else vacInfo += (vsi.Vac ? "VAC" : "") + (vsi.Ltd ? "Limited" : "");
-							break;
-						}
-					else
-					{
-						vacInfo += "N/A";
-					}
+                foreach (var ua in userAccounts)
+                {
+                    var vacInfo = "";
+                    // Get VAC/Limited info
+                    if (loadedVacCache)
+                        foreach (var vsi in vacStatusList.Where(vsi => vsi.SteamId == ua.SteamId))
+                        {
+                            if (vsi.Vac && vsi.Ltd) vacInfo += "VAC + Limited";
+                            else vacInfo += (vsi.Vac ? "VAC" : "") + (vsi.Ltd ? "Limited" : "");
+                            break;
+                        }
+                    else
+                    {
+                        vacInfo += "N/A";
+                    }
 
-					var imagePath = Path.GetFullPath($"{Steam.SteamImagePath + ua.SteamId}.jpg");
-					allAccountsTable.Add(ua.AccName + s + 
-					                     ua.Name + s + 
-					                     ua.SteamId + s + 
-					                     vacInfo + s + 
-					                     SteamSwitcherFuncs.UnixTimeStampToDateTime(ua.LastLogin) + s + 
+                    var imagePath = Path.GetFullPath($"{Steam.SteamImagePath + ua.SteamId}.jpg");
+                    allAccountsTable.Add(ua.AccName + s +
+                                         ua.Name + s +
+                                         ua.SteamId + s +
+                                         vacInfo + s +
+                                         SteamSwitcherFuncs.UnixTimeStampToDateTime(ua.LastLogin) + s +
                                          (File.Exists(imagePath) ? imagePath : "Missing from disk"));
                 }
-	        }
+            }
             else if (platform == "BattleNet")
-			{
-				// Add headings and separator for programs like Excel
-				allAccountsTable.Add("SEP=,");
-				allAccountsTable.Add("Email:,BattleTag:,Overwatch Support SR:,Overwatch DPS SR:,Overwatch Tank SR:,Saved profile image:");
+            {
+                // Add headings and separator for programs like Excel
+                allAccountsTable.Add("SEP=,");
+                allAccountsTable.Add("Email:,BattleTag:,Overwatch Support SR:,Overwatch DPS SR:,Overwatch Tank SR:,Saved profile image:");
 
                 await BattleNetSwitcherFuncs.LoadProfiles();
 
                 foreach (var ba in BattleNet.Accounts)
                 {
-	                var imagePath = Path.GetFullPath($"wwwroot\\img\\profiles\\battlenet\\{ba.Email}.png");
-	                allAccountsTable.Add(ba.Email + s +
-	                                     ba.BTag + s +
-	                                     (ba.OwSupportSr != 0 ? ba.OwSupportSr : "") + s +
-	                                     (ba.OwDpsSr != 0 ? ba.OwDpsSr : "") + s +
-	                                     (ba.OwTankSr != 0 ? ba.OwTankSr : "") + s +
-	                                     (File.Exists(imagePath) ? imagePath : "Missing from disk"));
+                    var imagePath = Path.GetFullPath($"wwwroot\\img\\profiles\\battlenet\\{ba.Email}.png");
+                    allAccountsTable.Add(ba.Email + s +
+                                         ba.BTag + s +
+                                         (ba.OwSupportSr != 0 ? ba.OwSupportSr : "") + s +
+                                         (ba.OwDpsSr != 0 ? ba.OwDpsSr : "") + s +
+                                         (ba.OwTankSr != 0 ? ba.OwTankSr : "") + s +
+                                         (File.Exists(imagePath) ? imagePath : "Missing from disk"));
                 }
-			}
+            }
             else
-			{
-				// Platform does not have specific details other than usernames saved.
-				allAccountsTable.Add("Account name:");
-				foreach (var accDirectory in Directory.GetDirectories(Path.Join("LoginCache", platform)))
-				{
-					allAccountsTable.Add(Path.GetFileName(accDirectory));
-				}
-			}
+            {
+                // Platform does not have specific details other than usernames saved.
+                allAccountsTable.Add("Account name:");
+                foreach (var accDirectory in Directory.GetDirectories(Path.Join("LoginCache", platform)))
+                {
+                    allAccountsTable.Add(Path.GetFileName(accDirectory));
+                }
+            }
 
-	        var outputFolder = Path.Join("wwwroot", "Exported");
-	        Directory.CreateDirectory(outputFolder);
+            var outputFolder = Path.Join("wwwroot", "Exported");
+            _ = Directory.CreateDirectory(outputFolder);
 
-	        var outputFile = Path.Join(outputFolder, platform + ".csv");
-	        await File.WriteAllLinesAsync(outputFile, allAccountsTable).ConfigureAwait(false);
-	        return Path.Join("Exported", platform + ".csv");
+            var outputFile = Path.Join(outputFolder, platform + ".csv");
+            await File.WriteAllLinesAsync(outputFile, allAccountsTable).ConfigureAwait(false);
+            return Path.Join("Exported", platform + ".csv");
         }
 
         /// <summary>
@@ -443,43 +445,43 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static int GiCheckPlatformPassword(string platform)
         {
-	        if (!File.Exists(Path.Join(Globals.UserDataFolder, "LoginCache", platform, "pass"))) return 0;
+            if (!File.Exists(Path.Join(Globals.UserDataFolder, "LoginCache", platform, "pass"))) return 0;
 
             // Check if password entered (Will not be empty if correct)
             return platform switch
             {
-	            "Discord" => (string.IsNullOrEmpty(Data.Settings.Discord.Instance.Password) ? 1 : 2),
-	            _ => 1
+                "Discord" => (string.IsNullOrEmpty(Data.Settings.Discord.Instance.Password) ? 1 : 2),
+                _ => 1
             };
         }
 
         [JSInvokable]
         public static bool GiVerifyPlatformPassword(string platform, string password)
         {
-	        var passFolder = Path.Join(Globals.UserDataFolder, "LoginCache", platform);
-	        Directory.CreateDirectory(passFolder);
+            var passFolder = Path.Join(Globals.UserDataFolder, "LoginCache", platform);
+            _ = Directory.CreateDirectory(passFolder);
             var passFile = Path.Join(passFolder, "pass");
-	        var hashedPass = Globals.GetSha256HashString(password);
+            var hashedPass = Globals.GetSha256HashString(password);
 
             if (File.Exists(passFile))
             {
-	            if (hashedPass != Globals.ReadAllText(passFile)) return false; // Check if password matches the one in the file
+                if (hashedPass != Globals.ReadAllText(passFile)) return false; // Check if password matches the one in the file
             }
             else
             {
-	            // Save password, as this is the first time.
-	            File.WriteAllText(passFile, hashedPass);
-			}
-            
-			// Passwords match. Handle password for each switcher
-			switch (platform)
+                // Save password, as this is the first time.
+                File.WriteAllText(passFile, hashedPass);
+            }
+
+            // Passwords match. Handle password for each switcher
+            switch (platform)
             {
-	            case "Discord":
-		            Data.Settings.Discord.Instance.Password = password;
-		            break;
-			}
-            
-			return true;
+                case "Discord":
+                    Data.Settings.Discord.Instance.Password = password;
+                    break;
+            }
+
+            return true;
         }
 
         [JSInvokable]

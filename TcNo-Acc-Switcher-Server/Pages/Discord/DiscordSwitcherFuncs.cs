@@ -21,7 +21,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 {
     public class DiscordSwitcherFuncs
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         private static readonly Data.Settings.Discord Discord = Data.Settings.Discord.Instance;
         private static readonly string DiscordRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "discord");
@@ -40,7 +40,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.LoadProfiles] Loading Discord profiles");
-            GenericFunctions.GenericLoadAccounts("Discord");
+            _ = GenericFunctions.GenericLoadAccounts("Discord");
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             Globals.DebugWriteLine(@"[Func:DiscordDiscordSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
             // Remove ID from list of ids
             var allIds = ReadAllIds();
-            allIds.Remove(allIds.Single(x => x.Value == accName).Key);
+            _ = allIds.Remove(allIds.Single(x => x.Value == accName).Key);
             File.WriteAllText("LoginCache\\Discord\\ids.json", JsonConvert.SerializeObject(allIds));
-            
+
             // Remove cached files
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Discord\\{accName}"), false);
             // Remove image
@@ -71,29 +71,29 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             Globals.RemoveTrayUser("Discord", accName); // Add to Tray list
             return true;
         }
-        
+
         private static string GetHashedDiscordToken()
         {
-	        // Loop through log/ldb files:
+            // Loop through log/ldb files:
             var token = "";
             if (!Directory.Exists(Path.Join(DiscordLocalStorage, "leveldb"))) return "";
-	        foreach (var file in new DirectoryInfo(Path.Join(DiscordLocalStorage, "leveldb")).GetFiles("*"))
-	        {
-		        if (!file.Name.EndsWith(".ldb") && !file.Name.EndsWith(".log")) continue;
-		        var text = GeneralFuncs.ReadOnlyReadAllText(file.FullName);
-		        var test1 = new Regex(@"[\w-]{24}\.[\w-]{6}\.[\w-]{27}").Match(text).Value;
-		        var test2 = new Regex(@"mfa\.[\w-]{84}").Match(text).Value;
-		        token = test1 != "" ? test1 : test2 != "" ? test2 : token;
-	        }
+            foreach (var file in new DirectoryInfo(Path.Join(DiscordLocalStorage, "leveldb")).GetFiles("*"))
+            {
+                if (!file.Name.EndsWith(".ldb") && !file.Name.EndsWith(".log")) continue;
+                var text = GeneralFuncs.ReadOnlyReadAllText(file.FullName);
+                var test1 = new Regex(@"[\w-]{24}\.[\w-]{6}\.[\w-]{27}").Match(text).Value;
+                var test2 = new Regex(@"mfa\.[\w-]{84}").Match(text).Value;
+                token = test1 != "" ? test1 : test2 != "" ? test2 : token;
+            }
 
-	        if (token == "")
-		        GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Discord_NoToken"], "Error", "toastarea");
-	        else
-	        {
-		        token = Globals.GetSha256HashString(token);
-	        }
+            if (token == "")
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Discord_NoToken"], "Error", "toastarea");
+            else
+            {
+                token = Globals.GetSha256HashString(token);
+            }
 
-	        return token;
+            return token;
         }
 
         [SupportedOSPlatform("windows")]
@@ -107,15 +107,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         public static void SwapDiscordAccounts(string accName, string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.SwapDiscordAccounts] Swapping to: hidden.");
-            AppData.InvokeVoidAsync("updateStatus", "Closing Discord");
+            _ = AppData.InvokeVoidAsync("updateStatus", "Closing Discord");
             if (!CloseDiscord()) return;
             ClearCurrentLoginDiscord();
             if (accName != "")
             {
-	            if (!DiscordCopyInAccount(accName)) return;
+                if (!DiscordCopyInAccount(accName)) return;
                 Globals.AddTrayUser("Discord", "+d:" + accName, accName, Discord.TrayAccNumber); // Add to Tray list
             }
-            AppData.InvokeVoidAsync("updateStatus", "Starting Discord");
+            _ = AppData.InvokeVoidAsync("updateStatus", "Starting Discord");
 
             GeneralFuncs.StartProgram(Discord.Exe(), Discord.Admin, args);
 
@@ -130,7 +130,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             var hash = GetHashedDiscordToken();
             var allIds = ReadAllIds();
             if (allIds.ContainsKey(hash))
-	            DiscordAddCurrent(allIds[hash]);
+                DiscordAddCurrent(allIds[hash]);
 
             // Remove existing folders:
             if (Directory.Exists(DiscordLocalStorage)) Globals.RecursiveDelete(new DirectoryInfo(DiscordLocalStorage), false);
@@ -140,11 +140,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             // Remove existing files:
             var fileList = new List<string>() { "Cookies", "Network Persistent State", "Preferences", "TransportSecurity" };
             foreach (var f in fileList.Where(f => File.Exists(Path.Join(DiscordRoaming, f))))
-	            File.Delete(Path.Join(DiscordRoaming, f));
-            
+                File.Delete(Path.Join(DiscordRoaming, f));
+
             // Loop through Cache files:
             foreach (var file in new DirectoryInfo(DiscordCacheFolder).GetFiles("*"))
-	            if (file.Name.StartsWith("data_") || file.Name == "index")
+                if (file.Name.StartsWith("data_") || file.Name == "index")
                     File.Delete(file.FullName);
         }
 
@@ -152,14 +152,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         private static bool DiscordCopyInAccount(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.DiscordCopyInAccount]");
-            GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Discord_SaveHint"],
-	            "Discord note", "toastarea");
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Discord_SaveHint"],
+                "Discord note", "toastarea");
 
-			var accFolder = $"LoginCache\\Discord\\{accName}\\";
+            var accFolder = $"LoginCache\\Discord\\{accName}\\";
             if (!Directory.Exists(accFolder))
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new {x = accFolder}], Lang["DirectoryNotFound"], "toastarea");
-	            return false;
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = accFolder }], Lang["DirectoryNotFound"], "toastarea");
+                return false;
             }
 
             // Clear files first, as some extra files from different accounts can have different names.
@@ -168,7 +168,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             // Copy files in base folder:
             var fileList = new List<string>() { "Cookies", "Network Persistent State", "Preferences", "TransportSecurity" };
             foreach (var f in fileList.Where(f => File.Exists(Path.Join(accFolder, f))))
-	            File.Copy(Path.Join(accFolder, f), Path.Join(DiscordRoaming, f), true);
+                File.Copy(Path.Join(accFolder, f), Path.Join(DiscordRoaming, f), true);
 
             // Copy folders:
             if (Directory.Exists(Path.Join(accFolder, "Local Storage"))) Globals.CopyFilesRecursive(Path.Join(accFolder, "Local Storage"), DiscordLocalStorage, true);
@@ -177,64 +177,64 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 
             // Decrypt important files in folders:
             foreach (var f in Directory.GetFiles(DiscordSessionStorage))
-	            if (f.EndsWith(".log") || f.EndsWith(".ldb"))
-		            Cryptography.StringCipher.DecryptFile(f, Discord.Password);
+                if (f.EndsWith(".log") || f.EndsWith(".ldb"))
+                    _ = Cryptography.StringCipher.DecryptFile(f, Discord.Password);
             foreach (var f in Directory.GetFiles(Path.Join(DiscordLocalStorage, "leveldb")))
-	            if (f.EndsWith(".log") || f.EndsWith(".ldb"))
-		            Cryptography.StringCipher.DecryptFile(f, Discord.Password);
+                if (f.EndsWith(".log") || f.EndsWith(".ldb"))
+                    _ = Cryptography.StringCipher.DecryptFile(f, Discord.Password);
 
-			// Loop through Cache files:
-			foreach (var file in new DirectoryInfo(Path.Join(accFolder, "Cache")).GetFiles("*"))
-	            if (file.Name.StartsWith("data_") || file.Name == "index")
-		            File.Copy(file.FullName, Path.Join(DiscordCacheFolder, file.Name), true);
-            
+            // Loop through Cache files:
+            foreach (var file in new DirectoryInfo(Path.Join(accFolder, "Cache")).GetFiles("*"))
+                if (file.Name.StartsWith("data_") || file.Name == "index")
+                    File.Copy(file.FullName, Path.Join(DiscordCacheFolder, file.Name), true);
+
             return true;
         }
-        
+
         public static void DiscordAddCurrent(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.DiscordAddCurrent]");
-            GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Discord_SignOutHint"],
-	            "Discord note", "toastarea");
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Discord_SignOutHint"],
+                "Discord note", "toastarea");
 
             // See if user used automated collection tool:
             var imgUrl = "";
             if (accName.StartsWith("TCNO:"))
             {
-	            var parts = accName.Split("|");
-	            imgUrl = parts[0][5..].Split("?")[0];
-	            accName = parts[1];
+                var parts = accName.Split("|");
+                imgUrl = parts[0][5..].Split("?")[0];
+                accName = parts[1];
             }
 
             var closedBySwitcher = false;
             var accFolder = $"LoginCache\\Discord\\{accName}\\";
-            Directory.CreateDirectory(accFolder);
+            _ = Directory.CreateDirectory(accFolder);
             var hash = "";
             var attempts = 0;
             while (attempts < 5)
             {
-	            try
-	            {
-		            hash = GetHashedDiscordToken();
-		            break;
-	            }
-	            catch (IOException e)
-	            {
-		            if (attempts > 2 && e.HResult == -2147024864) // File is in use - but wait 2 seconds to see...
+                try
+                {
+                    hash = GetHashedDiscordToken();
+                    break;
+                }
+                catch (IOException e)
+                {
+                    if (attempts > 2 && e.HResult == -2147024864) // File is in use - but wait 2 seconds to see...
                     {
-			            CloseDiscord();
-			            closedBySwitcher = true;
+                        _ = CloseDiscord();
+                        closedBySwitcher = true;
 
-		            }
-		            else if (attempts < 4)
-		            {
-			            AppData.InvokeVoidAsync("updateStatus", $"Files in use... Timeout: ({attempts}/4 seconds)");
-			            System.Threading.Thread.Sleep(1000);
                     }
-		            else throw;
-	            }
+                    else if (attempts < 4)
+                    {
+                        _ = AppData.InvokeVoidAsync("updateStatus", $"Files in use... Timeout: ({attempts}/4 seconds)");
+                        System.Threading.Thread.Sleep(1000);
+                    }
+                    else throw;
+                }
 
-	            attempts++;
+                attempts++;
             }
 
             if (string.IsNullOrEmpty(hash)) return;
@@ -246,8 +246,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             // Copy files in base folder:
             var fileList = new List<string>() { "Cookies", "Network Persistent State", "Preferences", "TransportSecurity" };
             foreach (var f in fileList.Where(f => File.Exists(Path.Join(DiscordRoaming, f))))
-	            File.Copy(Path.Join(DiscordRoaming, f), Path.Join(accFolder, f), true);
-            
+                File.Copy(Path.Join(DiscordRoaming, f), Path.Join(accFolder, f), true);
+
             // Remove existing folders (as to not create thousands of extra files over lots of copies):
             if (Directory.Exists(Path.Join(accFolder, "Local Storage"))) Globals.RecursiveDelete(new DirectoryInfo(Path.Join(accFolder, "Local Storage")), false);
             if (Directory.Exists(Path.Join(accFolder, "Session Storage"))) Globals.RecursiveDelete(new DirectoryInfo(Path.Join(accFolder, "Session Storage")), false);
@@ -259,136 +259,136 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 
             // Encrypt important files in folders:
             foreach (var f in Directory.GetFiles(Path.Join(accFolder, "Session Storage")))
-	            if (f.EndsWith(".log") || f.EndsWith(".ldb"))
-		            Cryptography.StringCipher.EncryptFile(f, Discord.Password);
+                if (f.EndsWith(".log") || f.EndsWith(".ldb"))
+                    _ = Cryptography.StringCipher.EncryptFile(f, Discord.Password);
             foreach (var f in Directory.GetFiles(Path.Join(accFolder, "Local Storage\\leveldb")))
-	            if (f.EndsWith(".log") || f.EndsWith(".ldb"))
-		            Cryptography.StringCipher.EncryptFile(f, Discord.Password);
+                if (f.EndsWith(".log") || f.EndsWith(".ldb"))
+                    _ = Cryptography.StringCipher.EncryptFile(f, Discord.Password);
 
             // Loop through Cache files:
             if (Directory.Exists(Path.Join(accFolder, "Cache"))) Globals.RecursiveDelete(new DirectoryInfo(Path.Join(accFolder, "Cache")), false);
-            Directory.CreateDirectory(Path.Join(accFolder, "Cache"));
+            _ = Directory.CreateDirectory(Path.Join(accFolder, "Cache"));
             foreach (var file in new DirectoryInfo(DiscordCacheFolder).GetFiles("*"))
-	            if (file.Name.StartsWith("data_") || file.Name == "index")
-		            File.Copy(file.FullName, Path.Join(accFolder, "Cache", file.Name), true);
+                if (file.Name.StartsWith("data_") || file.Name == "index")
+                    File.Copy(file.FullName, Path.Join(accFolder, "Cache", file.Name), true);
 
-			// Handle profile image:
-			Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\discord"));
+            // Handle profile image:
+            _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\discord"));
             var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(accName).Replace("#", "-")}.jpg");
 
             // Check to see if profile image download required:
             if (!string.IsNullOrEmpty(imgUrl))
             {
-	            try
-	            {
-		            using var client = new WebClient();
-		            client.DownloadFile(new Uri(imgUrl), profileImg);
-	            }
-	            catch (WebException)
-	            {
-		            if (!File.Exists(profileImg)) File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\DiscordDefault.png"), profileImg, true);
+                try
+                {
+                    using var client = new WebClient();
+                    client.DownloadFile(new Uri(imgUrl), profileImg);
+                }
+                catch (WebException)
+                {
+                    if (!File.Exists(profileImg)) File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\DiscordDefault.png"), profileImg, true);
                 }
             }
             else
             {
-	            // Copy in profile image from default
-	            if (!File.Exists(profileImg)) File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\DiscordDefault.png"), profileImg, true);
+                // Copy in profile image from default
+                if (!File.Exists(profileImg)) File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\DiscordDefault.png"), profileImg, true);
             }
-            
+
             if (closedBySwitcher) GeneralFuncs.StartProgram(Discord.Exe(), Discord.Admin);
 
             try
             {
-	            AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
+                AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
             }
             catch (Microsoft.AspNetCore.Components.NavigationException) // Page was reloaded.
             {
-	            //
+                //
             }
         }
 
         [JSInvokable]
         public static bool SkipGetUsername()
         {
-	        // Save current
-	        var hash = GetHashedDiscordToken();
-	        var allIds = ReadAllIds();
-	        if (!allIds.ContainsKey(hash)) return false;
+            // Save current
+            var hash = GetHashedDiscordToken();
+            var allIds = ReadAllIds();
+            if (!allIds.ContainsKey(hash)) return false;
             // Else list already contains the token, so just save with the same username.
-	        DiscordAddCurrent(allIds[hash]);
-	        return true;
+            DiscordAddCurrent(allIds[hash]);
+            return true;
         }
 
         public static void ChangeUsername(string oldName, string newName, bool reload = true)
         {
-	        // See if user used automated collection tool:
-	        var imgUrl = "";
-	        if (newName.StartsWith("TCNO:"))
-	        {
-		        var parts = newName.Split("|");
-		        imgUrl = parts[0][5..].Split("?")[0];
-		        newName = parts[1];
-	        }
+            // See if user used automated collection tool:
+            var imgUrl = "";
+            if (newName.StartsWith("TCNO:"))
+            {
+                var parts = newName.Split("|");
+                imgUrl = parts[0][5..].Split("?")[0];
+                newName = parts[1];
+            }
 
 
             var allIds = ReadAllIds();
-	        try
-	        {
-		        allIds[allIds.Single(x => x.Value == oldName).Key] = newName;
-		        File.WriteAllText("LoginCache\\Discord\\ids.json", JsonConvert.SerializeObject(allIds));
-	        }
-	        catch (Exception)
-	        {
-		        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantChangeUsername"], Lang["Error"], "toastarea");
-		        return;
-	        }
-            
+            try
+            {
+                allIds[allIds.Single(x => x.Value == oldName).Key] = newName;
+                File.WriteAllText("LoginCache\\Discord\\ids.json", JsonConvert.SerializeObject(allIds));
+            }
+            catch (Exception)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantChangeUsername"], Lang["Error"], "toastarea");
+                return;
+            }
+
             // Check to see if profile image download required:
             if (!string.IsNullOrEmpty(imgUrl))
             {
                 var path = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg");
                 // Download new image
                 try
-	            {
-		            using var client = new WebClient();
-		            client.DownloadFile(new Uri(imgUrl), path);
-	            }
-	            catch (WebException)
-				{
-					// Move existing image
-					File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(oldName).Replace("#", "-")}.jpg"),
-						Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg")); // Rename image
-				}
+                {
+                    using var client = new WebClient();
+                    client.DownloadFile(new Uri(imgUrl), path);
+                }
+                catch (WebException)
+                {
+                    // Move existing image
+                    File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(oldName).Replace("#", "-")}.jpg"),
+                        Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg")); // Rename image
+                }
             }
             else
-			{
+            {
                 // Move existing image
-				File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(oldName).Replace("#", "-")}.jpg"),
-					Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg")); // Rename image
-			}
+                File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(oldName).Replace("#", "-")}.jpg"),
+                    Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg")); // Rename image
+            }
 
             if ($"LoginCache\\Discord\\{oldName}\\" != $"LoginCache\\Discord\\{newName}\\")
-				Directory.Move($"LoginCache\\Discord\\{oldName}\\", $"LoginCache\\Discord\\{newName}\\"); // Rename login cache folder
+                Directory.Move($"LoginCache\\Discord\\{oldName}\\", $"LoginCache\\Discord\\{newName}\\"); // Rename login cache folder
 
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed username"), true);
         }
 
         private static Dictionary<string, string> ReadAllIds()
         {
-	        Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.ReadAllIds]");
-	        const string localAllIds = "LoginCache\\Discord\\ids.json";
-	        var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
-	        if (!File.Exists(localAllIds)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
-	        try
-	        {
-		        s = Globals.ReadAllText(localAllIds);
-	        }
-	        catch (Exception)
-	        {
-		        //
-	        }
+            Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.ReadAllIds]");
+            const string localAllIds = "LoginCache\\Discord\\ids.json";
+            var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
+            if (!File.Exists(localAllIds)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+            try
+            {
+                s = Globals.ReadAllText(localAllIds);
+            }
+            catch (Exception)
+            {
+                //
+            }
 
-	        return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+            return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
         }
 
         #region DISCORD_MANAGEMENT
@@ -405,29 +405,29 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 
         public static void ClearDiscordCache()
         {
-	        int totalFiles = 0, failedFiles = 0;
-	        var totalFileSize = 0.0;
+            int totalFiles = 0, failedFiles = 0;
+            var totalFileSize = 0.0;
 
-	        // Loop through Cache files:
+            // Loop through Cache files:
             var fileInfoArr = new DirectoryInfo(DiscordCacheFolder).GetFiles();
-	        foreach (var file in fileInfoArr)
-	        {
-		        if (!file.Name.StartsWith("f_")) continue; // Ignore files that aren't cache files
-		        try
-		        {
-			        totalFiles++;
-			        File.Delete(file.FullName);
-			        totalFileSize += file.Length;
+            foreach (var file in fileInfoArr)
+            {
+                if (!file.Name.StartsWith("f_")) continue; // Ignore files that aren't cache files
+                try
+                {
+                    totalFiles++;
+                    File.Delete(file.FullName);
+                    totalFileSize += file.Length;
                 }
-		        catch (Exception)
-		        {
+                catch (Exception)
+                {
                     failedFiles++;
-		        }
+                }
             }
 
-	        GeneralInvocableFuncs.ShowToast("success", Lang["Toast_DeletedTotal", new {files = totalFiles - failedFiles, totalFiles, totalSize = GeneralFuncs.FileSizeString(totalFileSize) }],
-		        Lang["Toast_DeletedTotalTitle"], "toastarea", 10000);
-		}
+            _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_DeletedTotal", new { files = totalFiles - failedFiles, totalFiles, totalSize = GeneralFuncs.FileSizeString(totalFileSize) }],
+                Lang["Toast_DeletedTotalTitle"], "toastarea", 10000);
+        }
         #endregion
     }
 }

@@ -31,7 +31,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
     /// </summary>
     public class IconFactory
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         #region FACTORY
         // https://stackoverflow.com/a/32530019/5165437
@@ -91,7 +91,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             }
             foreach (var (key, value) in buffers)
             {
-                writer.BaseStream.Seek(key, SeekOrigin.Begin);
+                _ = writer.BaseStream.Seek(key, SeekOrigin.Begin);
                 writer.Write(value);
             }
         }
@@ -164,7 +164,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 {
                     //var tempBg =  Path.Join("temp", Path.GetFileNameWithoutExtension(sBgImg) + ".png");
                     //using var svgToPngStream = File.OpenWrite(tempBg);
-                    svg.Save(ms,new SKColor(0, 0, 0, 255));
+                    _ = svg.Save(ms, new SKColor(0, 0, 0, 255));
                     //sBgImg = tempBg;
                 }
             }
@@ -185,7 +185,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             CreateImage(ms, sFgImg, ms48, new Size(48, 48));
             CreateImage(ms, sFgImg, ms256, new Size(256, 256));
 
-            Directory.CreateDirectory("IconCache");
+            _ = Directory.CreateDirectory("IconCache");
             icoOutput = Path.Join("IconCache", icoOutput);
             using var stream = new FileStream(icoOutput, FileMode.Create);
             SavePngsAsIcon(new[] { new Bitmap(ms16), new Bitmap(ms32), new Bitmap(ms48), new Bitmap(ms256) }, stream);
@@ -201,7 +201,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         public static void CreateImage(MemoryStream sBgImg, string sFgImg, MemoryStream output, Size imgSize)
         {
             Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.CreateImage]");
-            sBgImg.Seek(0, SeekOrigin.Begin);
+            _ = sBgImg.Seek(0, SeekOrigin.Begin);
             using MagickImage bgImg = new(sBgImg);
             using MagickImage fgImg = new(sFgImg);
             bgImg.Resize(imgSize.Width, imgSize.Height);
@@ -209,7 +209,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 
             bgImg.Composite(fgImg, Gravity.Southeast, CompositeOperator.Copy);
             bgImg.Write(output, MagickFormat.Png32);
-            output.Seek(0, SeekOrigin.Begin);
+            _ = output.Seek(0, SeekOrigin.Begin);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class AppData
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
         private static AppData _instance = new();
 
         private static readonly object LockObj = new();
@@ -69,7 +69,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public event Action OnChange;
 
         private void NotifyDataChanged() => OnChange?.Invoke();
-        
+
         private IJSRuntime _activeIJsRuntime;
         [JsonIgnore] public static IJSRuntime ActiveIJsRuntime { get => _instance._activeIJsRuntime; set => _instance._activeIJsRuntime = value; }
         public void SetActiveIJsRuntime(IJSRuntime jsr) => _instance._activeIJsRuntime = jsr;
@@ -79,49 +79,49 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void SetActiveNavMan(NavigationManager nm) => _instance._activeNavMan = nm;
 
         #region JS_INTEROP
-		public static bool InvokeVoidAsync(string func)
+        public static bool InvokeVoidAsync(string func)
         {
-	        return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func));
+            return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func));
         }
 
         public static bool InvokeVoidAsync(string func, string arg)
-		{
-			return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
-		}
+        {
+            return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
+        }
 
         public static bool InvokeVoidAsync(string func, object arg)
         {
-	        return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
+            return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
         }
 
-		public static bool InvokeVoidAsync(string func, string arg, string arg2)
-		{
-			return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg, arg2));
-		}
+        public static bool InvokeVoidAsync(string func, string arg, string arg2)
+        {
+            return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg, arg2));
+        }
 
-		private static bool InvokeVoidAsync(Action func)
-		{
-			try
-			{
-				func();
-			}
-			catch (ArgumentNullException)
-			{
-				return false;
-			}
-			catch (InvalidOperationException)
-			{
-				return false;
-			}
-			catch (TaskCanceledException)
-			{
-				return false;
-			}
+        private static bool InvokeVoidAsync(Action func)
+        {
+            try
+            {
+                func();
+            }
+            catch (ArgumentNullException)
+            {
+                return false;
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
+            catch (TaskCanceledException)
+            {
+                return false;
+            }
 
             return true;
-		}
+        }
 
-		public static async Task ReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+        public static async Task ReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload");
         #endregion
     }
 }

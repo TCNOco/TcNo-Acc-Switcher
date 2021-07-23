@@ -22,17 +22,17 @@ namespace TcNo_Acc_Switcher_Server
 {
     public class Program
     {
-	    public static void Main(string[] args)
+        public static void Main(string[] args)
         {
             // Empty
-            MainProgram(args, out _);
+            _ = MainProgram(args, out _);
         }
         public static bool MainProgram(string[] args, out Exception e)
         {
             // Set working directory to documents folder
             Globals.CreateDataFolder(false);
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
-			try
+            try
             {
                 CreateHostBuilder(args).Build().Run();
             }
@@ -51,7 +51,7 @@ namespace TcNo_Acc_Switcher_Server
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    _ = webBuilder.UseStartup<Startup>();
                 });
     }
 }

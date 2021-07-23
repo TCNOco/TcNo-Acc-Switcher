@@ -27,7 +27,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 {
     public partial class Settings
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
         protected override void OnInitialized()
         {
             AppData.Instance.WindowTitle = Lang["Title_BNet_Settings"];
@@ -39,7 +39,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public void PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:BattleNet\Settings.razor.cs.PickFolder]");
-            GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
+            _ = GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
         }
 
         // BUTTON: Reset settings
@@ -62,7 +62,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Data.Settings.BattleNet.Instance.IgnoredAccounts.Clear();
             Data.Settings.BattleNet.Instance.SaveAccounts();
         }
-        
+
         // BUTTON: Clear accounts
         public static void ClearAccounts()
         {
@@ -77,10 +77,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static void OpenFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:BattleNet\Settings.razor.cs.OpenBattleNetFolder]");
-            Process.Start("explorer.exe", new Data.Settings.BattleNet().FolderPath);
+            _ = Process.Start("explorer.exe", new Data.Settings.BattleNet().FolderPath);
         }
-        
-        
+
+
         #endregion
     }
 }

@@ -19,7 +19,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Settings
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
         protected override void OnInitialized()
         {
             AppData.Instance.WindowTitle = Lang["Title_Settings"];

@@ -15,7 +15,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 {
     public class UbisoftSwitcherFuncs
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         private static readonly Data.Settings.Ubisoft Ubisoft = Data.Settings.Ubisoft.Instance;
         private static string _ubisoftAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
@@ -30,7 +30,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.LoadProfiles] Loading Steam profiles");
-            
+
             const string localCachePath = "LoginCache\\Ubisoft\\";
             if (!Directory.Exists(localCachePath) || !File.Exists(Path.Join(localCachePath, "ids.json"))) return;
             var allIds = ReadAllIds();
@@ -52,7 +52,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                     allIds = newIds;
                 }
             }
-            
+
             GenericFunctions.InsertAccounts(allIds, "ubisoft");
         }
 
@@ -64,7 +64,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             var userId = GetLastLoginUserId();
             if (userId == "NOTFOUND")
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Ubisoft_NoUsername"], Lang["Error"], "toastarea", 10000);
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Ubisoft_NoUsername"], Lang["Error"], "toastarea", 10000);
                 return;
             }
 
@@ -113,7 +113,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
 
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.FindUsername]");
-            Directory.CreateDirectory("LoginCache\\Ubisoft\\temp\\");
+            _ = Directory.CreateDirectory("LoginCache\\Ubisoft\\temp\\");
             const string tempUsersDat = "LoginCache\\Ubisoft\\temp\\users.dat";
 
             if (!File.Exists(Path.Join(_ubisoftAppData, "users.dat"))) return "ERR";
@@ -161,7 +161,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Refreshed username from file"), true);
                 return username; // Used for refreshing username.
             }
-            Directory.CreateDirectory($"LoginCache\\Ubisoft\\{userId}\\");
+            _ = Directory.CreateDirectory($"LoginCache\\Ubisoft\\{userId}\\");
             File.Copy(Path.Join(_ubisoftAppData, "settings.yml"), $"LoginCache\\Ubisoft\\{userId}\\settings.yml", true);
             File.Copy(Path.Join(_ubisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\{userId}\\users.dat", true);
             return username;
@@ -187,11 +187,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             if (!File.Exists(localAllIds)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
             try
             {
-	            s = Globals.ReadAllText(localAllIds);
+                s = Globals.ReadAllText(localAllIds);
             }
             catch (Exception)
             {
-	            //
+                //
             }
 
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
@@ -204,12 +204,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 i128 = Path.Join(UbisoftAvatarFolder, userId + "_128.png"),
                 i256 = Path.Join(UbisoftAvatarFolder, userId + "_256.png");
 
-            Directory.CreateDirectory("wwwroot\\img\\profiles\\ubisoft\\");
+            _ = Directory.CreateDirectory("wwwroot\\img\\profiles\\ubisoft\\");
             var outPath = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\ubisoft\\{userId}.png");
             if (File.Exists(outPath))
             {
-                GeneralFuncs.DeletedOutdatedFile(outPath, Ubisoft.ImageExpiryTime);
-                GeneralFuncs.DeletedInvalidImage(outPath);
+                _ = GeneralFuncs.DeletedOutdatedFile(outPath, Ubisoft.ImageExpiryTime);
+                _ = GeneralFuncs.DeletedInvalidImage(outPath);
             }
 
             if (File.Exists(outPath)) return;
@@ -226,7 +226,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         //    Directory.CreateDirectory("LoginCache\\Ubisoft\\temp\\");
         //    var tempUsersDat = $"LoginCache\\Ubisoft\\temp\\users.dat";
         //    File.Copy(Path.Join(UbisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\temp\\users.dat", true);
-            
+
 
         //    var username = "";
         //    var userId = "";
@@ -253,7 +253,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         //}
 
-        
+
         /// <summary>
         /// Used in JS. Gets whether forget account is enabled (Whether to NOT show prompt, or show it).
         /// </summary>
@@ -271,7 +271,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Ubisoft\\{userId}"), false);
 
             var allIds = ReadAllIds();
-            allIds.Remove(userId);
+            _ = allIds.Remove(userId);
             File.WriteAllText("LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
 
 
@@ -292,7 +292,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public static void SwapUbisoftAccounts(string userId, int state, string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.SwapUbisoftAccounts] Swapping to:hidden.");
-            AppData.InvokeVoidAsync("updateStatus", "Closing Ubisoft");
+            _ = AppData.InvokeVoidAsync("updateStatus", "Closing Ubisoft");
             if (!CloseUbisoft()) return;
             UbisoftAddCurrent();
 
@@ -304,8 +304,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             else
                 ClearCurrentUser();
 
-            AppData.InvokeVoidAsync("updateStatus", "Starting Ubisoft");
-            
+            _ = AppData.InvokeVoidAsync("updateStatus", "Starting Ubisoft");
+
             GeneralFuncs.StartProgram(Ubisoft.Exe(), Ubisoft.Admin, args);
 
             Globals.RefreshTrayArea();
@@ -325,7 +325,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                     settingsYml[i] = "  top: 0";
                 if (settingsYml[i].Contains("width:"))
                     settingsYml[i] = "  width: 0";
-                
+
                 if (settingsYml[i].Contains("password:"))
                     settingsYml[i] = "  password: \"\"";
                 if (settingsYml[i].Contains("remember:"))
@@ -349,8 +349,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             var localCachePath = $"LoginCache\\Ubisoft\\{userId}\\";
             if (!Directory.Exists(localCachePath))
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new {x = localCachePath }], Lang["DirectoryNotFound"], "toastarea");
-	            return false;
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = localCachePath }], Lang["DirectoryNotFound"], "toastarea");
+                return false;
             }
 
             if (state == -1)
@@ -362,7 +362,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             using var fs = new StreamWriter(Path.Join(_ubisoftAppData, "settings.yml"));
             foreach (var l in Globals.ReadAllLines($"{localCachePath}settings.yml"))
             {
-                if (l.Contains("forceoffline")) fs.WriteLine("  forceoffline: " + (state != 0 ? "true" : "false")); 
+                if (l.Contains("forceoffline")) fs.WriteLine("  forceoffline: " + (state != 0 ? "true" : "false"));
                 else fs.WriteLine(l);
             }
             fs.Close();
@@ -371,7 +371,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             File.Copy(Path.Join(_ubisoftAppData, "settings.yml"), $"{localCachePath}settings.yml", true);
             return true;
         }
-        
+
 
         #region UBISOFT_MANAGEMENT
         /// <summary>

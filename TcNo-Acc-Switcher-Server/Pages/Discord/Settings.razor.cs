@@ -24,7 +24,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 {
     public partial class Settings
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
         [Inject]
         public AppData AppData { get; set; }
         protected override void OnInitialized()
@@ -43,15 +43,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         public static void OpenFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Discord\Settings.razor.cs.OpenDiscordFolder]");
-            Process.Start("explorer.exe", new Data.Settings.Discord().FolderPath);
+            _ = Process.Start("explorer.exe", new Data.Settings.Discord().FolderPath);
         }
 
         // BUTTON: Reset settings
         public static void ClearSettings()
         {
-	        Globals.DebugWriteLine(@"[ButtonClicked:Discord\Settings.razor.cs.ClearSettings]");
-	        new Data.Settings.Discord().ResetSettings();
-	        AppData.ActiveNavMan.NavigateTo("/Discord?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Discord switcher settings"));
+            Globals.DebugWriteLine(@"[ButtonClicked:Discord\Settings.razor.cs.ClearSettings]");
+            new Data.Settings.Discord().ResetSettings();
+            AppData.ActiveNavMan.NavigateTo("/Discord?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Discord switcher settings"));
         }
         #endregion
 

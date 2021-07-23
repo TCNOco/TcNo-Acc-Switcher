@@ -52,7 +52,7 @@ namespace TcNo_Acc_Switcher_Client
         // var LocalAppList variable -- So bit AppList not always loaded.
         private void LoadLocalAppList()
         {
-            Directory.CreateDirectory("cache");
+            _ = Directory.CreateDirectory("cache");
             //if (!File.Exists("cache\\SteamLocalAppList.json"))
             // Save empty JSON list to file, just to create it.
             // else
@@ -60,7 +60,7 @@ namespace TcNo_Acc_Switcher_Client
         }
         private void LoadAppList(bool overwrite = false)
         {
-            Directory.CreateDirectory("cache");
+            _ = Directory.CreateDirectory("cache");
 
             if (!File.Exists("cache\\SteamMasterAppList.json") || overwrite)
             {

@@ -24,7 +24,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 {
     public partial class Settings
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
         [Inject]
         public AppData AppData { get; set; }
         protected override void OnInitialized()
@@ -38,7 +38,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public void PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Epic\Settings.razor.cs.PickFolder]");
-            GeneralInvocableFuncs.ShowModal("find:Epic:upc.exe:EpicSettings");
+            _ = GeneralInvocableFuncs.ShowModal("find:Epic:upc.exe:EpicSettings");
         }
 
         // BUTTON: Reset settings
@@ -55,9 +55,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public static void OpenFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Epic\Settings.razor.cs.OpenEpicFolder]");
-            Process.Start("explorer.exe", new Data.Settings.Epic().FolderPath);
+            _ = Process.Start("explorer.exe", new Data.Settings.Epic().FolderPath);
         }
-        
+
 
         // BUTTON: Advanced Cleaning...
         // Might add later

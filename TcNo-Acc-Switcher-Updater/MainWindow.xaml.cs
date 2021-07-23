@@ -81,8 +81,8 @@ namespace TcNo_Acc_Switcher_Updater
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
-	{
-		// Dictionaries of file paths, as well as MD5 Hashes
+    {
+        // Dictionaries of file paths, as well as MD5 Hashes
         private static Dictionary<string, string> _oldDict = new();
         private static Dictionary<string, string> _newDict = new();
         private static Dictionary<string, string> _allNewDict = new();
@@ -104,18 +104,18 @@ namespace TcNo_Acc_Switcher_Updater
 
         private static void LaunchAccSwitcher(object sender, RoutedEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(@"TcNo-Acc-Switcher.exe") { UseShellExecute = true });
+            _ = Process.Start(new ProcessStartInfo(@"TcNo-Acc-Switcher.exe") { UseShellExecute = true });
             Process.GetCurrentProcess().Kill();
         }
         private static void ExitProgram(object sender, RoutedEventArgs e) => Environment.Exit(0);
-        
+
         // Window interaction
         private void BtnExit(object sender, RoutedEventArgs e) => WindowHandling.BtnExit(this);
         private void BtnMinimize(object sender, RoutedEventArgs e) => WindowHandling.BtnMinimize(this);
         private void DragWindow(object sender, MouseButtonEventArgs e) => WindowHandling.DragWindow(sender, e, this);
         private void Window_Closed(object sender, EventArgs e) => Environment.Exit(0);
         #endregion
-        
+
         private void CreateExitButton()
         {
             StartButton.Click -= StartUpdate_Click;
@@ -124,39 +124,44 @@ namespace TcNo_Acc_Switcher_Updater
         }
         private void WriteLine(string line, string lineBreak = "\n")
         {
-            Dispatcher.BeginInvoke(new Action(() => {
-                LogBox.Text += line + lineBreak;
-                LogBox.ScrollToEnd();
-            }), DispatcherPriority.Normal);
+            _ = Dispatcher.BeginInvoke(new Action(() =>
+              {
+                  LogBox.Text += line + lineBreak;
+                  LogBox.ScrollToEnd();
+              }), DispatcherPriority.Normal);
         }
         private void SetStatus(string s)
         {
-            Dispatcher.BeginInvoke(new Action(() => {
-                StatusLabel.Content = s;
-            }), DispatcherPriority.Normal);
+            _ = Dispatcher.BeginInvoke(new Action(() =>
+              {
+                  StatusLabel.Content = s;
+              }), DispatcherPriority.Normal);
         }
-        private void SetStatusAndLog(string s, string lineBreak ="\n")
+        private void SetStatusAndLog(string s, string lineBreak = "\n")
         {
-            Dispatcher.BeginInvoke(new Action(() => {
-                StatusLabel.Content = s;
-                LogBox.Text += lineBreak + s;
-                LogBox.ScrollToEnd();
-            }), DispatcherPriority.Normal);
+            _ = Dispatcher.BeginInvoke(new Action(() =>
+              {
+                  StatusLabel.Content = s;
+                  LogBox.Text += lineBreak + s;
+                  LogBox.ScrollToEnd();
+              }), DispatcherPriority.Normal);
         }
 
         private void ButtonHandler(bool enabled, string content)
         {
-            Dispatcher.BeginInvoke(new Action(() => {
-                StartButton.IsEnabled = enabled;
-                StartButton.Content = content;
-            }), DispatcherPriority.Normal);
+            _ = Dispatcher.BeginInvoke(new Action(() =>
+              {
+                  StartButton.IsEnabled = enabled;
+                  StartButton.Content = content;
+              }), DispatcherPriority.Normal);
         }
 
         private void UpdateProgress(int percent)
         {
-            Dispatcher.BeginInvoke(new Action(() => {
-                ProgressBar.Value = percent;
-            }), DispatcherPriority.Normal);
+            _ = Dispatcher.BeginInvoke(new Action(() =>
+              {
+                  ProgressBar.Value = percent;
+              }), DispatcherPriority.Normal);
         }
 
         private Dictionary<string, string> _updatesAndChanges = new();
@@ -169,53 +174,53 @@ namespace TcNo_Acc_Switcher_Updater
 
         private static bool InstalledToProgramFiles()
         {
-	        var progFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-	        var progFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-	        var appPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-            
+            var progFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            var progFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            var appPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+
             return appPath != null && (appPath.Contains(progFiles) || appPath.Contains(progFilesX86));
         }
 
         private static bool HasFolderAccess(string folderPath)
         {
-	        try
-	        {
-		        using var fs = File.Create(Path.Combine(folderPath, Path.GetRandomFileName()), 1, FileOptions.DeleteOnClose);
-		        return true;
-	        }
-	        catch
-	        {
-		        return false;
-	        }
+            try
+            {
+                using var fs = File.Create(Path.Combine(folderPath, Path.GetRandomFileName()), 1, FileOptions.DeleteOnClose);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private static bool IsAdmin()
         {
-	        // Checks whether program is running as Admin or not
-	        var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
-	        return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
+            // Checks whether program is running as Admin or not
+            var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
+            return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
         }
 
         public static void RestartAsAdmin(string args)
         {
-	        var proc = new ProcessStartInfo
-	        {
-		        WorkingDirectory = Environment.CurrentDirectory,
-		        FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher.exe",
-		        UseShellExecute = true,
-		        Arguments = args,
-		        Verb = "runas"
-	        };
-	        try
-	        {
-		        Process.Start(proc);
-		        Environment.Exit(0);
-	        }
-	        catch (Exception ex)
-	        {
-		        MessageBox.Show(@"This program must be run as an administrator!" + Environment.NewLine + ex);
-		        Environment.Exit(0);
-	        }
+            var proc = new ProcessStartInfo
+            {
+                WorkingDirectory = Environment.CurrentDirectory,
+                FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher.exe",
+                UseShellExecute = true,
+                Arguments = args,
+                Verb = "runas"
+            };
+            try
+            {
+                _ = Process.Start(proc);
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show(@"This program must be run as an administrator!" + Environment.NewLine + ex);
+                Environment.Exit(0);
+            }
         }
 
         /// <summary>
@@ -223,17 +228,17 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         private static void OldDocumentsToAppData()
         {
-	        // Check to see if folder still located in My Documents (from Pre 2021-07-05)
-	        var oldDocuments = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
-	        if (Directory.Exists(oldDocuments)) CopyFilesRecursive(oldDocuments, UserDataFolder); // Overwrites by default
-	        RecursiveDelete(new DirectoryInfo(oldDocuments), false);
+            // Check to see if folder still located in My Documents (from Pre 2021-07-05)
+            var oldDocuments = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
+            if (Directory.Exists(oldDocuments)) CopyFilesRecursive(oldDocuments, UserDataFolder); // Overwrites by default
+            RecursiveDelete(new DirectoryInfo(oldDocuments), false);
         }
 
         private void Init()
         {
             // Check if installed to program files, and requires admin to run:
             if (InstalledToProgramFiles() && !IsAdmin() || !HasFolderAccess(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)))
-	            RestartAsAdmin("");
+                RestartAsAdmin("");
 
             Directory.SetCurrentDirectory(MainAppDataFolder);
             OldDocumentsToAppData();
@@ -272,52 +277,53 @@ namespace TcNo_Acc_Switcher_Updater
             // Styling
             Directory.SetCurrentDirectory(UserDataFolder);
             if (File.Exists(_styleSettings))
-                Dispatcher.BeginInvoke(new Action(() => {
-                    try
-                    {
+                _ = Dispatcher.BeginInvoke(new Action(() =>
+                  {
+                      try
+                      {
                         // Separated so colors aren't only half changed, and a color from the file is missing
                         var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-                        var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(UGlobals.ReadAllText(_styleSettings))));
+                          var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(UGlobals.ReadAllText(_styleSettings))));
                         // Need to try catch every one of these, as they may be invalid.
                         var highlightColor = TryApplyTheme(dict, "#FFAA00", "linkColor"); // Add a specific Highlight color later?
                         var headerColor = TryApplyTheme(dict, "#14151E", "headerbarBackground");
-                        var mainBackground = TryApplyTheme(dict, "#28293A", "mainBackground");
-                        var listBackground = TryApplyTheme(dict, "#212529", "modalInputBackground");
-                        var borderedItemBorderColor = TryApplyTheme(dict, "#888888", "borderedItemBorderColor");
-                        var buttonBackground = TryApplyTheme(dict, "#333333", "buttonBackground");
-                        var buttonBackgroundHover = TryApplyTheme(dict, "#444444", "buttonBackground-hover");
-                        var buttonBackgroundActive = TryApplyTheme(dict, "#222222", "buttonBackground-active");
-                        var buttonColor = TryApplyTheme(dict, "#FFFFFF", "buttonColor");
-                        var buttonBorder = TryApplyTheme(dict, "#888888", "buttonBorder");
-                        var buttonBorderHover = TryApplyTheme(dict, "#888888", "buttonBorder-hover");
-                        var buttonBorderActive = TryApplyTheme(dict, "#FFAA00", "buttonBorder-active");
-                        var windowControlsBackground = TryApplyTheme(dict, "#14151E", "windowControlsBackground");
-                        var windowControlsBackgroundActive = TryApplyTheme(dict, "#3B4853", "windowControlsBackground-active");
-                        var windowControlsCloseBackground = TryApplyTheme(dict, "#D51426", "windowControlsCloseBackground");
-                        var windowControlsCloseBackgroundActive = TryApplyTheme(dict, "#E81123", "windowControlsCloseBackground-active");
+                          var mainBackground = TryApplyTheme(dict, "#28293A", "mainBackground");
+                          var listBackground = TryApplyTheme(dict, "#212529", "modalInputBackground");
+                          var borderedItemBorderColor = TryApplyTheme(dict, "#888888", "borderedItemBorderColor");
+                          var buttonBackground = TryApplyTheme(dict, "#333333", "buttonBackground");
+                          var buttonBackgroundHover = TryApplyTheme(dict, "#444444", "buttonBackground-hover");
+                          var buttonBackgroundActive = TryApplyTheme(dict, "#222222", "buttonBackground-active");
+                          var buttonColor = TryApplyTheme(dict, "#FFFFFF", "buttonColor");
+                          var buttonBorder = TryApplyTheme(dict, "#888888", "buttonBorder");
+                          var buttonBorderHover = TryApplyTheme(dict, "#888888", "buttonBorder-hover");
+                          var buttonBorderActive = TryApplyTheme(dict, "#FFAA00", "buttonBorder-active");
+                          var windowControlsBackground = TryApplyTheme(dict, "#14151E", "windowControlsBackground");
+                          var windowControlsBackgroundActive = TryApplyTheme(dict, "#3B4853", "windowControlsBackground-active");
+                          var windowControlsCloseBackground = TryApplyTheme(dict, "#D51426", "windowControlsCloseBackground");
+                          var windowControlsCloseBackgroundActive = TryApplyTheme(dict, "#E81123", "windowControlsCloseBackground-active");
 
-                        Resources["HighlightColor"] = highlightColor;
-                        Resources["HeaderColor"] = headerColor;
-                        Resources["MainBackground"] = mainBackground;
-                        Resources["ListBackground"] = listBackground;
-                        Resources["BorderedItemBorderColor"] = borderedItemBorderColor;
-                        Resources["ButtonBackground"] = buttonBackground;
-                        Resources["ButtonBackgroundHover"] = buttonBackgroundHover;
-                        Resources["ButtonBackgroundActive"] = buttonBackgroundActive;
-                        Resources["ButtonColor"] = buttonColor;
-                        Resources["ButtonBorder"] = buttonBorder;
-                        Resources["ButtonBorderHover"] = buttonBorderHover;
-                        Resources["ButtonBorderActive"] = buttonBorderActive;
-                        Resources["WindowControlsBackground"] = windowControlsBackground;
-                        Resources["WindowControlsBackgroundActive"] = windowControlsBackgroundActive;
-                        Resources["WindowControlsCloseBackground"] = windowControlsCloseBackground;
-                        Resources["WindowControlsCloseBackgroundActive"] = windowControlsCloseBackgroundActive;
-                    }
-                    catch (Exception)
-                    {
+                          Resources["HighlightColor"] = highlightColor;
+                          Resources["HeaderColor"] = headerColor;
+                          Resources["MainBackground"] = mainBackground;
+                          Resources["ListBackground"] = listBackground;
+                          Resources["BorderedItemBorderColor"] = borderedItemBorderColor;
+                          Resources["ButtonBackground"] = buttonBackground;
+                          Resources["ButtonBackgroundHover"] = buttonBackgroundHover;
+                          Resources["ButtonBackgroundActive"] = buttonBackgroundActive;
+                          Resources["ButtonColor"] = buttonColor;
+                          Resources["ButtonBorder"] = buttonBorder;
+                          Resources["ButtonBorderHover"] = buttonBorderHover;
+                          Resources["ButtonBorderActive"] = buttonBorderActive;
+                          Resources["WindowControlsBackground"] = windowControlsBackground;
+                          Resources["WindowControlsBackgroundActive"] = windowControlsBackgroundActive;
+                          Resources["WindowControlsCloseBackground"] = windowControlsCloseBackground;
+                          Resources["WindowControlsCloseBackgroundActive"] = windowControlsCloseBackgroundActive;
+                      }
+                      catch (Exception)
+                      {
                         //
                     }
-                }), DispatcherPriority.Normal);
+                  }), DispatcherPriority.Normal);
 
             Directory.SetCurrentDirectory(MainAppDataFolder);
 
@@ -336,7 +342,7 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 if (VerifyAndClose) // Verify and close only works if up to date
                 {
-	                new Thread(DoVerifyAndExit).Start();
+                    new Thread(DoVerifyAndExit).Start();
                     return;
                 }
                 CreateVerifyAndExitButton();
@@ -371,7 +377,7 @@ namespace TcNo_Acc_Switcher_Updater
         {
             try
             {
-                return (Brush) new BrushConverter().ConvertFromString(dict[e]);
+                return (Brush)new BrushConverter().ConvertFromString(dict[e]);
             }
             catch (Exception)
             {
@@ -402,50 +408,50 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 wc.DownloadFileAsync(uri, destination, syncObject);
                 //This would block the thread until download completes
-                Monitor.Wait(syncObject);
+                _ = Monitor.Wait(syncObject);
             }
-		}
+        }
 
         public static string AppDataFolder =>
-	        Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName;
+            Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName;
 
         private static string _userDataFolder = "";
         public static string UserDataFolder
         {
-	        get
-	        {
-		        if (!string.IsNullOrEmpty(_userDataFolder)) return _userDataFolder;
-		        // Has not yet been initialised
-		        // Check if set to something different
-		        if (File.Exists(Path.Join(AppDataFolder, "userdata_path.txt")))
-			        _userDataFolder = UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim();
-		        else
-			        _userDataFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\");
+            get
+            {
+                if (!string.IsNullOrEmpty(_userDataFolder)) return _userDataFolder;
+                // Has not yet been initialised
+                // Check if set to something different
+                if (File.Exists(Path.Join(AppDataFolder, "userdata_path.txt")))
+                    _userDataFolder = UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim();
+                else
+                    _userDataFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\");
 
-		        return _userDataFolder;
-	        }
+                return _userDataFolder;
+            }
         }
 
         public static string MainAppDataFolder => Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!)?.FullName!;
-		// FOR TESTING: public static string MainAppDataFolder => "C:\\Program Files\\TcNo Account Switcher";
-		public static string OriginalWwwroot => Path.Join(MainAppDataFolder, "originalwwwroot");
+        // FOR TESTING: public static string MainAppDataFolder => "C:\\Program Files\\TcNo Account Switcher";
+        public static string OriginalWwwroot => Path.Join(MainAppDataFolder, "originalwwwroot");
 
-		/// <summary>
-		/// Recursively copy files and directories
-		/// </summary>
-		/// <param name="inputFolder">Folder to copy files recursively from</param>
-		/// <param name="outputFolder">Destination folder</param>
-		public static void CopyFilesRecursive(string inputFolder, string outputFolder)
+        /// <summary>
+        /// Recursively copy files and directories
+        /// </summary>
+        /// <param name="inputFolder">Folder to copy files recursively from</param>
+        /// <param name="outputFolder">Destination folder</param>
+        public static void CopyFilesRecursive(string inputFolder, string outputFolder)
         {
-	        Directory.CreateDirectory(outputFolder);
-	        if (!outputFolder.EndsWith("\\")) outputFolder += "\\";
-	        //Now Create all of the directories
-	        foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
-		        Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
+            _ = Directory.CreateDirectory(outputFolder);
+            if (!outputFolder.EndsWith("\\")) outputFolder += "\\";
+            //Now Create all of the directories
+            foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
+                _ = Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
 
-	        //Copy all the files & Replaces any files with the same name
-	        foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
-		        File.Copy(newPath, newPath.Replace(inputFolder, outputFolder), true);
+            //Copy all the files & Replaces any files with the same name
+            foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
+                File.Copy(newPath, newPath.Replace(inputFolder, outputFolder), true);
         }
 
         /// <summary>
@@ -455,14 +461,14 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="overwrite">Whether files should be overwritten anyways</param>
         private static void InitFolder(string f, bool overwrite)
         {
-	        if (overwrite || !Directory.Exists(Path.Join(UserDataFolder, f))) CopyFilesRecursive(Path.Join(MainAppDataFolder, f), Path.Join(UserDataFolder, f));
+            if (overwrite || !Directory.Exists(Path.Join(UserDataFolder, f))) CopyFilesRecursive(Path.Join(MainAppDataFolder, f), Path.Join(UserDataFolder, f));
         }
 
         private static void InitWwwroot(bool overwrite)
         {
-	        if (!overwrite && Directory.Exists(Path.Join(UserDataFolder, "wwwroot"))) return;
-	        if (Directory.Exists(OriginalWwwroot))
-				CopyFilesRecursive(OriginalWwwroot, Path.Join(UserDataFolder, "wwwroot"));
+            if (!overwrite && Directory.Exists(Path.Join(UserDataFolder, "wwwroot"))) return;
+            if (Directory.Exists(OriginalWwwroot))
+                CopyFilesRecursive(OriginalWwwroot, Path.Join(UserDataFolder, "wwwroot"));
         }
 
         /// <summary>
@@ -484,7 +490,7 @@ namespace TcNo_Acc_Switcher_Updater
         { //var updaterDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location); // Where this program is located
           //Directory.SetCurrentDirectory(Directory.GetParent(updaterDirectory!)!.ToString()); // Set working directory to same as .exe
           //CreateUpdate();
-          
+
             // 1. Download update.7z
             // 2. Extract --> Done, mostly
             // 3. Delete files that need to be removed. --> Done, mostly
@@ -505,14 +511,14 @@ namespace TcNo_Acc_Switcher_Updater
 
             if (Directory.Exists("wwwroot"))
             {
-	            if (Directory.Exists("originalwwwroot")) RecursiveDelete(new DirectoryInfo("originalwwwroot"), false);
-	            Directory.Move("wwwroot", "originalwwwroot");
+                if (Directory.Exists("originalwwwroot")) RecursiveDelete(new DirectoryInfo("originalwwwroot"), false);
+                Directory.Move("wwwroot", "originalwwwroot");
             }
 
             // APPLY UPDATE
             // Cleanup previous updates
             if (Directory.Exists("temp_update")) Directory.Delete("temp_update", true);
-            
+
             foreach (var (key, _) in _updatesAndChanges)
             {
                 // This update .exe exists inside an "update" folder, in the TcNo Account Switcher directory.
@@ -550,7 +556,7 @@ namespace TcNo_Acc_Switcher_Updater
                     };
                     foreach (var l in lines)
                         WriteLine(l);
-                    MessageBox.Show(string.Join(Environment.NewLine, lines), "Unable to check for updates", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _ = MessageBox.Show(string.Join(Environment.NewLine, lines), "Unable to check for updates", MessageBoxButton.OK, MessageBoxImage.Error);
                     SetStatus("Press button below!");
                     CreateVerifyAndExitButton();
                     return;
@@ -577,16 +583,17 @@ namespace TcNo_Acc_Switcher_Updater
             }
 
             SetStatusAndLog("Updating files in AppData!");
-			InitWwwroot(true);
+            InitWwwroot(true);
             InitFolder("themes", true);
 
             WriteLine("");
             SetStatusAndLog("All updates complete!");
             ButtonHandler(true, "Start Acc Switcher");
-            Dispatcher.BeginInvoke(new Action(() => {
-                StartButton.Click -= StartUpdate_Click;
-                StartButton.Click += LaunchAccSwitcher;
-            }), DispatcherPriority.Normal);
+            _ = Dispatcher.BeginInvoke(new Action(() =>
+              {
+                  StartButton.Click -= StartUpdate_Click;
+                  StartButton.Click += LaunchAccSwitcher;
+              }), DispatcherPriority.Normal);
         }
 
         /// <summary>
@@ -604,10 +611,10 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         private void VerifyAndExitButton_Click(object sender = null, RoutedEventArgs e = null) => new Thread(DoVerifyAndExit).Start();
         private void DoVerifyAndExit()
-		{
-			VerifyFiles();
-			CreateExitButton();
-		}
+        {
+            VerifyFiles();
+            CreateExitButton();
+        }
 
         /// <summary>
         /// Verifies existing files. Download different or missing files
@@ -622,11 +629,11 @@ namespace TcNo_Acc_Switcher_Updater
             const string hashFilePath = "hashes.json";
             try
             {
-	            client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
+                client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
             }
             catch (WebException e)
             {
-	            MessageBox.Show("Could not connect to tcno.co to verify files. You can try manually downloading the installer from the GitHub page, and reinstalling to update." + Environment.NewLine + Environment.NewLine + "Error: " + e, "Could not reach update server", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                _ = MessageBox.Show("Could not connect to tcno.co to verify files. You can try manually downloading the installer from the GitHub page, and reinstalling to update." + Environment.NewLine + Environment.NewLine + "Error: " + e, "Could not reach update server", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
                 Environment.Exit(1);
             }
 
@@ -638,8 +645,8 @@ namespace TcNo_Acc_Switcher_Updater
                 UpdateProgress(0);
                 foreach (var (oKey, value) in verifyDictionary)
                 {
-	                var key = oKey;
-	                if (key.StartsWith("updater")) continue; // Ignore own files >> Otherwise IOException
+                    var key = oKey;
+                    if (key.StartsWith("updater")) continue; // Ignore own files >> Otherwise IOException
                     cur++;
                     UpdateProgress(cur * 100 / verifyDictTotal);
                     if (!File.Exists(key))
@@ -658,7 +665,7 @@ namespace TcNo_Acc_Switcher_Updater
 
                     var path = Path.GetDirectoryName(key);
                     if (!string.IsNullOrEmpty(path))
-						Directory.CreateDirectory(path);
+                        _ = Directory.CreateDirectory(path);
 
                     client.DownloadFile(uri, key);
                 }
@@ -819,7 +826,7 @@ namespace TcNo_Acc_Switcher_Updater
             // Patches, Compression and the rest to be done manually by me.
             // update.7z or version.7z, something along those lines is downloaded
             // Decompressed to a test area
-            Directory.CreateDirectory("temp_update");
+            _ = Directory.CreateDirectory("temp_update");
             SetStatusAndLog("Extracting patch files");
             using (var archiveFile = new ArchiveFile(updateFilePath))
             {
@@ -830,20 +837,20 @@ namespace TcNo_Acc_Switcher_Updater
 
             // Remove files that need to be removed:
             var filesToDelete = UGlobals.ReadAllLines(Path.Join("temp_update", "filesToDelete.txt")).ToList();
-            
+
             SetStatusAndLog("Moving files...");
-            
+
             // Move updater files, if any. Will be moved to replace currently running process when main process launched.
             var newFolder = Path.Join("temp_update", "new");
             var patchedFolder = Path.Join("temp_update", "patched");
-            
+
             // Move main files
             MoveFilesRecursive(newFolder, currentDir);
             MoveFilesRecursive(patchedFolder, currentDir);
 
             foreach (var f in filesToDelete)
             {
-	            File.Delete(f);
+                File.Delete(f);
             }
         }
 
@@ -856,7 +863,7 @@ namespace TcNo_Acc_Switcher_Updater
         {
             //Now Create all of the directories
             foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
-                Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
+                _ = Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
 
             //Move all the files & Replaces any files with the same name
             foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
@@ -880,7 +887,7 @@ namespace TcNo_Acc_Switcher_Updater
                 RedirectStandardOutput = true
             };
             var process = new Process { StartInfo = startInfo };
-            process.Start();
+            _ = process.Start();
             process.BeginOutputReadLine();
             process.WaitForExit();
 
@@ -910,7 +917,7 @@ namespace TcNo_Acc_Switcher_Updater
             if (keepFolders) return;
             baseDir.Delete();
         }
-        
+
         /// <summary>
         /// Deletes a single file
         /// </summary>
@@ -945,9 +952,9 @@ namespace TcNo_Acc_Switcher_Updater
                 var relativePath = p.Remove(0, p.Split("\\")[0].Length + 1);
                 var patchFile = Path.Join(outputFolder, "patches", relativePath);                // Necessary fix for pre 2021-06-28_01 versions to update using this new updater.
                 if (relativePath.StartsWith("wwwroot"))
-	                relativePath = relativePath.Replace("wwwroot", "originalwwwroot");
-				var patchedFile = Path.Join(outputFolder, "patched", relativePath);
-                Directory.CreateDirectory(Path.GetDirectoryName(patchedFile)!);
+                    relativePath = relativePath.Replace("wwwroot", "originalwwwroot");
+                var patchedFile = Path.Join(outputFolder, "patched", relativePath);
+                _ = Directory.CreateDirectory(Path.GetDirectoryName(patchedFile)!);
                 DoDecode(Path.Join(oldFolder, relativePath), patchFile, patchedFile);
             }
         }
@@ -961,7 +968,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="filesToDelete"></param>
         private static void CreateFolderPatches(string oldFolder, string newFolder, string outputFolder, ref List<string> filesToDelete)
         {
-            Directory.CreateDirectory(outputFolder);
+            _ = Directory.CreateDirectory(outputFolder);
 
             DirSearchWithHash(oldFolder, ref _oldDict);
             DirSearchWithHash(newFolder, ref _newDict);
@@ -985,13 +992,13 @@ namespace TcNo_Acc_Switcher_Updater
                     {
                         differentFiles.Add(key);
                     }
-                    _oldDict.Remove(key); // Remove from both old
-                    _newDict.Remove(key); // and new dictionaries
+                    _ = _oldDict.Remove(key); // Remove from both old
+                    _ = _newDict.Remove(key); // and new dictionaries
                 }
                 else // New dictionary does NOT have this file
                 {
                     filesToDelete.Add(key); // Add to list of files to delete
-                    _oldDict.Remove(key); // Remove from old dictionary. They have been added to delete list.
+                    _ = _oldDict.Remove(key); // Remove from old dictionary. They have been added to delete list.
                 }
             }
 
@@ -1000,13 +1007,13 @@ namespace TcNo_Acc_Switcher_Updater
             // -----------------------------------
             // Copy new files into output\\new
             var outputNewFolder = Path.Join(outputFolder, "new");
-            Directory.CreateDirectory(outputNewFolder);
+            _ = Directory.CreateDirectory(outputNewFolder);
             foreach (var newFile in _newDict.Keys)
             {
                 var newFileInput = Path.Join(newFolder, newFile);
                 var newFileOutput = Path.Join(outputNewFolder, newFile);
 
-                Directory.CreateDirectory(Path.GetDirectoryName(newFileOutput)!);
+                _ = Directory.CreateDirectory(Path.GetDirectoryName(newFileOutput)!);
                 File.Copy(newFileInput, newFileOutput, true);
             }
 
@@ -1019,7 +1026,7 @@ namespace TcNo_Acc_Switcher_Updater
                 var oldFileInput = Path.Join(oldFolder, differentFile);
                 var newFileInput = Path.Join(newFolder, differentFile);
                 var patchFileOutput = Path.Join(outputFolder, "patches", differentFile);
-                Directory.CreateDirectory(Path.GetDirectoryName(patchFileOutput)!);
+                _ = Directory.CreateDirectory(Path.GetDirectoryName(patchFileOutput)!);
                 DoEncode(oldFileInput, newFileInput, patchFileOutput);
             }
         }
@@ -1117,24 +1124,24 @@ namespace TcNo_Acc_Switcher_Updater
         /// <param name="outputNewFile">Output of new file (that's been updated)</param>
         private static void DoDecode(string oldFile, string patchFile, string outputNewFile)
         {
-	        try
-			{
-				using FileStream dict = new(oldFile, FileMode.Open, FileAccess.Read);
-				using FileStream target = new(patchFile, FileMode.Open, FileAccess.Read);
-				using FileStream output = new(outputNewFile, FileMode.Create, FileAccess.Write);
-				VcDecoder decoder = new(dict, target, output);
-				// The header of the delta file must be available before the first call to decoder.Decode().
-				var result = decoder.Decode(out _);
-				if (result != VCDiffResult.SUCCESS)
-				{
-					//error decoding
-				}
-				// if success bytesWritten will contain the number of bytes that were decoded
-			}
-			catch (FileNotFoundException)
-			{
+            try
+            {
+                using FileStream dict = new(oldFile, FileMode.Open, FileAccess.Read);
+                using FileStream target = new(patchFile, FileMode.Open, FileAccess.Read);
+                using FileStream output = new(outputNewFile, FileMode.Create, FileAccess.Write);
+                VcDecoder decoder = new(dict, target, output);
+                // The header of the delta file must be available before the first call to decoder.Decode().
+                var result = decoder.Decode(out _);
+                if (result != VCDiffResult.SUCCESS)
+                {
+                    //error decoding
+                }
+                // if success bytesWritten will contain the number of bytes that were decoded
+            }
+            catch (FileNotFoundException)
+            {
                 //
-			}
+            }
         }
     }
 
@@ -1172,7 +1179,7 @@ namespace TcNo_Acc_Switcher_Updater
 
                     window.WindowState = WindowState.Normal;
 
-                    GetCursorPos(out var lMousePosition);
+                    _ = GetCursorPos(out var lMousePosition);
 
                     window.Left = lMousePosition.X - targetHorizontal;
                     window.Top = lMousePosition.Y - targetVertical;

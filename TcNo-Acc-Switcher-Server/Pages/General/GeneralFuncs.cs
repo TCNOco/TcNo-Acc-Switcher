@@ -34,7 +34,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralFuncs
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         #region PROCESS_OPERATIONS
         public static void StartProgram(string path, bool elevated) => StartProgram(path, elevated, "");
@@ -48,22 +48,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
 
             if (!elevated)
-                Process.Start(new ProcessStartInfo("explorer.exe", path)); // Starts without admin, through Windows explorer.
+                _ = Process.Start(new ProcessStartInfo("explorer.exe", path)); // Starts without admin, through Windows explorer.
             else
             {
                 var proc = new Process
                 {
                     StartInfo =
                     {
-                        FileName = path, 
-                        UseShellExecute = true, 
+                        FileName = path,
+                        UseShellExecute = true,
                         Arguments = args,
                         Verb = "runas"
                     }
                 };
                 try
                 {
-                    proc.Start();
+                    _ = proc.Start();
                 }
                 catch (System.ComponentModel.Win32Exception e)
                 {
@@ -73,7 +73,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
 
         }
-        
+
         public static bool CanKillProcess(string processName, bool showModal = true)
         {
             // Checks whether program is running as Admin or not
@@ -91,7 +91,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 if (OperatingSystem.IsWindows())
                     canKill = !ProcessHelper.IsProcessAdmin(processName); // If other process is admin, this process can't kill it (because it's not admin)
-                else 
+                else
                     canKill = false;
             }
 
@@ -107,26 +107,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="procName">Name of process to lookup</param>
         /// <returns>Whether it was closed before this function returns or not.</returns>
 		public static bool WaitForClose(string procName)
-		{
-			if (!OperatingSystem.IsWindows()) return false;
-			var timeout = 0;
-			while (ProcessHelper.IsProcessRunning(procName) && timeout < 10)
-			{
-				timeout++;
-				AppData.InvokeVoidAsync("updateStatus", $"Waiting for {procName} to close ({timeout}/10 seconds)");
+        {
+            if (!OperatingSystem.IsWindows()) return false;
+            var timeout = 0;
+            while (ProcessHelper.IsProcessRunning(procName) && timeout < 10)
+            {
+                timeout++;
+                _ = AppData.InvokeVoidAsync("updateStatus", $"Waiting for {procName} to close ({timeout}/10 seconds)");
                 System.Threading.Thread.Sleep(1000);
-			}
+            }
 
             if (timeout == 10)
-	            GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotCloseX", new {x = procName }], Lang["Error"], "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotCloseX", new { x = procName }], Lang["Error"], "toastarea");
 
             return timeout != 10; // Returns true if timeout wasn't reached.
-		}
-		#endregion
+        }
+        #endregion
 
-		#region FILE_OPERATIONS
+        #region FILE_OPERATIONS
 
-		public static string WwwRoot()
+        public static string WwwRoot()
         {
             return Path.Join(Globals.UserDataFolder, "\\wwwroot");
         }
@@ -159,7 +159,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeletedInvalidImage] filename={filename.Substring(filename.Length - 8, 8)}");
             try
             {
-	            if (File.Exists(filename) && !IsValidGdiPlusImage(filename)) // Delete image if is not as valid, working image.
+                if (File.Exists(filename) && !IsValidGdiPlusImage(filename)) // Delete image if is not as valid, working image.
                 {
                     File.Delete(filename);
                     return true;
@@ -206,7 +206,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             if (string.IsNullOrEmpty(jsDest)) return;
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.JsDestNewline] jsDest={jsDest}");
-            AppData.InvokeVoidAsync(jsDest, "<br />"); //Newline
+            _ = AppData.InvokeVoidAsync(jsDest, "<br />"); //Newline
         }
 
         // Overload for below
@@ -222,22 +222,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteFile] file={f?.FullName ?? ""}{(jsDest != "" ? ", jsDest=" + jsDest : "")}");
             try
             {
-                if (f is {Exists: false} && !string.IsNullOrEmpty(jsDest)) AppData.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
+                if (f is { Exists: false } && !string.IsNullOrEmpty(jsDest)) _ = AppData.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
                 else
                 {
-	                if (f == null) return;
-	                f.IsReadOnly = false;
-	                f.Delete();
+                    if (f == null) return;
+                    f.IsReadOnly = false;
+                    f.Delete();
                     if (!string.IsNullOrEmpty(jsDest))
-						AppData.InvokeVoidAsync(jsDest, "Deleted: " + f.FullName);
+                        _ = AppData.InvokeVoidAsync(jsDest, "Deleted: " + f.FullName);
                 }
             }
             catch (Exception e)
             {
                 if (string.IsNullOrEmpty(jsDest)) return;
-                if (f != null) AppData.InvokeVoidAsync(jsDest, Lang["CouldntDeleteX", new {x = f.FullName }]);
-                else AppData.InvokeVoidAsync(jsDest, Lang["CouldntDeleteUndefined"]);
-                AppData.InvokeVoidAsync(jsDest, e.ToString());
+                if (f != null) _ = AppData.InvokeVoidAsync(jsDest, Lang["CouldntDeleteX", new { x = f.FullName }]);
+                else _ = AppData.InvokeVoidAsync(jsDest, Lang["CouldntDeleteUndefined"]);
+                _ = AppData.InvokeVoidAsync(jsDest, e.ToString());
                 JsDestNewline(jsDest);
             }
         }
@@ -281,10 +281,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             if (keepFolders) return;
             baseDir.Delete();
-            if (!string.IsNullOrEmpty(jsDest)) AppData.InvokeVoidAsync(jsDest, Lang["DeletingFolder"] + baseDir.FullName);
+            if (!string.IsNullOrEmpty(jsDest)) _ = AppData.InvokeVoidAsync(jsDest, Lang["DeletingFolder"] + baseDir.FullName);
             JsDestNewline(jsDest);
         }
-        
+
         /// <summary>
         /// Deletes registry keys
         /// </summary>
@@ -297,12 +297,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteRegKey] subKey={subKey}, val={val}, jsDest={jsDest}");
             using var key = Registry.CurrentUser.OpenSubKey(subKey, true);
             if (key == null)
-	            AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntExist", new { subKey  = subKey }]);
+                _ = AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntExist", new { subKey = subKey }]);
             else if (key.GetValue(val) == null)
-	            AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntContain", new { subKey  = subKey, val = val}]);
+                _ = AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntContain", new { subKey = subKey, val = val }]);
             else
             {
-	            AppData.InvokeVoidAsync(jsDest, Lang["Reg_Removing", new { subKey= subKey, val = val}]);
+                _ = AppData.InvokeVoidAsync(jsDest, Lang["Reg_Removing", new { subKey = subKey, val = val }]);
                 key.DeleteValue(val);
             }
             JsDestNewline(jsDest);
@@ -324,7 +324,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             return (string[])alFiles.ToArray(typeof(string));
         }
-        
+
         /// <summary>
         /// Deletes all files of a specific type in a directory.
         /// </summary>
@@ -337,20 +337,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFilesOfType] folder={folder}, extensions={extensions}, jsDest={jsDest}");
             if (!Directory.Exists(folder))
             {
-	            AppData.InvokeVoidAsync(jsDest, Lang["DirectoryNotFound", new {folder = folder}]);
+                _ = AppData.InvokeVoidAsync(jsDest, Lang["DirectoryNotFound", new { folder = folder }]);
                 JsDestNewline(jsDest);
                 return;
             }
             foreach (var file in GetFiles(folder, extensions, so))
             {
-	            AppData.InvokeVoidAsync(jsDest, Lang["DeletingFile", new {file = file}]);
+                _ = AppData.InvokeVoidAsync(jsDest, Lang["DeletingFile", new { file = file }]);
                 try
                 {
                     File.Delete(file);
                 }
                 catch (Exception ex)
                 {
-                    AppData.InvokeVoidAsync(jsDest, Lang["ErrorDetails", new {ex = ex}]);
+                    _ = AppData.InvokeVoidAsync(jsDest, Lang["ErrorDetails", new { ex = ex }]);
                 }
             }
             JsDestNewline(jsDest);
@@ -370,15 +370,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         public static string ReadOnlyReadAllText(string f)
         {
-	        var text = "";
-	        using var stream = File.Open(f, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-	        using var reader = new StreamReader(stream);
-	        while (!reader.EndOfStream)
-	        {
-		        text += reader.ReadLine() + Environment.NewLine;
-	        }
+            var text = "";
+            using var stream = File.Open(f, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var reader = new StreamReader(stream);
+            while (!reader.EndOfStream)
+            {
+                text += reader.ReadLine() + Environment.NewLine;
+            }
 
-	        return text;
+            return text;
         }
 
 
@@ -389,11 +389,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <returns></returns>
         public static string FileSizeString(double len)
         {
-	        if (len < 0.001) return "0 bytes";
-	        string[] sizes = { "B", "KB", "MB", "GB" };
-	        var n2 = (int)Math.Log10(len) / 3;
-	        var n3 = len / Math.Pow(1e3, n2);
-	        return $"{n3:0.##} {sizes[n2]}";
+            if (len < 0.001) return "0 bytes";
+            string[] sizes = { "B", "KB", "MB", "GB" };
+            var n2 = (int)Math.Log10(len) / 3;
+            var n3 = len / Math.Pow(1e3, n2);
+            return $"{n3:0.##} {sizes[n2]}";
         }
         #endregion
 
@@ -413,7 +413,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             // Create folder if it doesn't exist:
             var folder = Path.GetDirectoryName(file);
-            if (folder != "") Directory.CreateDirectory(folder ?? string.Empty);
+            if (folder != "") _ = Directory.CreateDirectory(folder ?? string.Empty);
 
             // Get existing settings
             var joSettings = new JObject();
@@ -461,7 +461,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             // Create folder if it doesn't exist:
             var folder = Path.GetDirectoryName(file);
-            if (folder != "") Directory.CreateDirectory(folder ?? string.Empty);
+            if (folder != "") _ = Directory.CreateDirectory(folder ?? string.Empty);
 
             File.WriteAllText(sFilename, joOrder.ToString());
         }
@@ -547,7 +547,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static bool WindowSettingsValid()
         {
             Globals.DebugWriteLine(@"[Func:General\GeneralFuncs.WindowSettingsValid]");
-            AppSettings.LoadFromFile();
+            _ = AppSettings.LoadFromFile();
             return true;
         }
         #endregion
@@ -574,12 +574,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <returns>HTML escaped string</returns>
         public static string EscapeText(string text)
         {
-	        return text.Replace("&", "&amp;")
-		        .Replace("<", "&lt;")
-		        .Replace(">", "&gt;")
-		        .Replace("\"", "&#34;")
-		        .Replace("'", "&#39;")
-		        .Replace("/", "&#47;");
+            return text.Replace("&", "&amp;")
+                .Replace("<", "&lt;")
+                .Replace(">", "&gt;")
+                .Replace("\"", "&#34;")
+                .Replace("'", "&#39;")
+                .Replace("/", "&#47;");
         }
         #endregion
 
@@ -605,9 +605,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                         break;
 
                     case "Discord":
-	                    Discord.DiscordSwitcherFuncs.LoadProfiles();
-	                    Data.Settings.Discord.Instance.SaveSettings(!File.Exists(Data.Settings.Discord.SettingsFile));
-	                    break;
+                        Discord.DiscordSwitcherFuncs.LoadProfiles();
+                        Data.Settings.Discord.Instance.SaveSettings(!File.Exists(Data.Settings.Discord.SettingsFile));
+                        break;
 
                     case "Epic Games":
                         Epic.EpicSwitcherFuncs.LoadProfiles();
@@ -634,10 +634,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                         Data.Settings.Ubisoft.Instance.SaveSettings(!File.Exists(Data.Settings.Ubisoft.SettingsFile));
                         break;
                 }
-                
+
                 // Handle queries and invoke status "Ready"
-                HandleQueries();
-                AppData.InvokeVoidAsync("updateStatus", "Ready");
+                _ = HandleQueries();
+                _ = AppData.InvokeVoidAsync("updateStatus", "Ready");
             }
         }
 
@@ -654,7 +654,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             //Modal
             if (queries.TryGetValue("modal", out var modalValue))
-                foreach (var stringValue in modalValue) GeneralInvocableFuncs.ShowModal(Uri.UnescapeDataString(stringValue));
+                foreach (var stringValue in modalValue) _ = GeneralInvocableFuncs.ShowModal(Uri.UnescapeDataString(stringValue));
 
             // Toast
             if (!queries.TryGetValue("toast_type", out var toastType) ||
@@ -664,8 +664,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 try
                 {
-                    GeneralInvocableFuncs.ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
-                    AppData.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
+                    _ = GeneralInvocableFuncs.ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
+                    _ = AppData.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
                 }
                 catch (TaskCanceledException e)
                 {

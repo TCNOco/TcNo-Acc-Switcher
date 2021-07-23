@@ -19,26 +19,26 @@ namespace TcNo_Acc_Switcher_Client
     /// Interaction logic for CustomMessageBox.xaml
     /// </summary>
     public partial class CustomMessageBox : Window
-	{
-		private void BtnExit(object sender, RoutedEventArgs e) =>
-	        Close();
+    {
+        private void BtnExit(object sender, RoutedEventArgs e) =>
+            Close();
         private void BtnMinimize(object sender, RoutedEventArgs e) =>
-			WindowHandling.BtnMinimize(sender, e, this);
-		private void DragWindow(object sender, MouseButtonEventArgs e) =>
-			WindowHandling.DragWindow(sender, e, this);
-        
+            WindowHandling.BtnMinimize(sender, e, this);
+        private void DragWindow(object sender, MouseButtonEventArgs e) =>
+            WindowHandling.DragWindow(sender, e, this);
+
         public CustomMessageBox(string title, string text)
-		{
-			InitializeComponent();
-			HeaderInstruction.Content = title;
-			Message.Text = text;
+        {
+            InitializeComponent();
+            HeaderInstruction.Content = title;
+            Message.Text = text;
         }
 
-		private void ButtonOk_OnClick(object sender, RoutedEventArgs e)
-		{
-			Close();
-		}
-	}
+        private void ButtonOk_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+    }
 
     /// <summary>
     /// Handles window buttons, resizing and dragging
@@ -73,7 +73,7 @@ namespace TcNo_Acc_Switcher_Client
 
                         window.WindowState = WindowState.Normal;
 
-                        GetCursorPos(out var lMousePosition);
+                        _ = GetCursorPos(out var lMousePosition);
 
                         window.Left = lMousePosition.X - targetHorizontal;
                         window.Top = lMousePosition.Y - targetVertical;

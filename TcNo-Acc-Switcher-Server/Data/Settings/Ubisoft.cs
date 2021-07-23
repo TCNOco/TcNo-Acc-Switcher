@@ -23,9 +23,9 @@ using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class Ubisoft
-	{
-		private static readonly Lang Lang = Lang.Instance;
-		private static Ubisoft _instance = new();
+    {
+        private static readonly Lang Lang = Lang.Instance;
+        private static Ubisoft _instance = new();
 
         private static readonly object LockObj = new();
         public static Ubisoft Instance

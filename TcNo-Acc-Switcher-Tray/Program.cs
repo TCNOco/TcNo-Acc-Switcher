@@ -42,11 +42,11 @@ namespace TcNo_Acc_Switcher_Tray
             {
                 Environment.Exit(1056); // An instance of the service is already running.
             }
-			// Set working directory to documents folder
-			Directory.SetCurrentDirectory(Globals.UserDataFolder);
-			TrayUsers = TrayUser.ReadTrayUsers();
+            // Set working directory to documents folder
+            Directory.SetCurrentDirectory(Globals.UserDataFolder);
+            TrayUsers = TrayUser.ReadTrayUsers();
 
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            _ = Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new AppCont());
@@ -76,7 +76,7 @@ namespace TcNo_Acc_Switcher_Tray
         {
             if (!File.Exists("Tray_Users.json"))
             {
-                MessageBox.Show(
+                _ = MessageBox.Show(
                     "There were no accounts found. Try switching accounts first, or locate 'Tray_Users.json'",
                     "Tray Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(0);
@@ -85,9 +85,9 @@ namespace TcNo_Acc_Switcher_Tray
             Program.LastHash = GetFileMd5("Tray_Users.json");
 
             Program.TrayUsers = TrayUser.ReadTrayUsers();
-            
+
             var contextMenu = new ContextMenuStrip { Renderer = new ContentRenderer() };
-            contextMenu.Items.Add(new ToolStripMenuItem
+            _ = contextMenu.Items.Add(new ToolStripMenuItem
             {
                 Name = "START",
                 Text = @"TcNo Account Switcher",
@@ -102,7 +102,7 @@ namespace TcNo_Acc_Switcher_Tray
                 tsi.BackColor = Color.FromArgb(255, 34, 34, 34);
                 foreach (var trayUsers in value)
                 {
-                    tsi.DropDownItems.Add(new ToolStripMenuItem
+                    _ = tsi.DropDownItems.Add(new ToolStripMenuItem
                     {
                         Name = trayUsers.Arg,
                         Text = $@"Switch to: {trayUsers.Name}",
@@ -113,7 +113,7 @@ namespace TcNo_Acc_Switcher_Tray
                 tsi.DropDownItemClicked += ContextMenu_ItemClicked;
             }
 
-            contextMenu.Items.Add(new ToolStripMenuItem
+            _ = contextMenu.Items.Add(new ToolStripMenuItem
             {
                 Name = "EXIT",
                 Text = @"Exit",
@@ -137,7 +137,7 @@ namespace TcNo_Acc_Switcher_Tray
             _trayIcon.MouseDown += TrayIconOnMouseDown;
             _trayIcon.DoubleClick += NotifyIcon_DoubleClick;
         }
-        
+
         private void TrayIconOnMouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -183,16 +183,16 @@ namespace TcNo_Acc_Switcher_Tray
         {
             var proc = Process.GetProcessesByName("TcNo-Acc-Switcher").FirstOrDefault();
             if (proc == null || proc.MainWindowHandle == IntPtr.Zero) return;
-            proc.CloseMainWindow();
+            _ = proc.CloseMainWindow();
             proc.WaitForExit();
         }
         private void StartSwitcher(string args = "")
         {
             if (AlreadyRunning() && args == "")
-                Globals.BringToFront();
+                _ = Globals.BringToFront();
             else
             {
-	            if (File.Exists(_mainProgram))
+                if (File.Exists(_mainProgram))
                 {
                     var startInfo = new ProcessStartInfo();
                     try
@@ -201,7 +201,7 @@ namespace TcNo_Acc_Switcher_Tray
                         startInfo.CreateNoWindow = false;
                         startInfo.UseShellExecute = false;
                         startInfo.Arguments = args;
-                        Process.Start(startInfo);
+                        _ = Process.Start(startInfo);
                     }
                     catch (System.ComponentModel.Win32Exception win32Exception)
                     {
@@ -210,7 +210,7 @@ namespace TcNo_Acc_Switcher_Tray
                         {
                             startInfo.UseShellExecute = true;
                             startInfo.Verb = "runas";
-                            Process.Start(startInfo);
+                            _ = Process.Start(startInfo);
                         }
 
                         catch (System.ComponentModel.Win32Exception win32Exception2)
@@ -220,7 +220,7 @@ namespace TcNo_Acc_Switcher_Tray
                     }
                 }
                 else
-                    MessageBox.Show("Could not open the main .exe. Make sure it exists.\n\nI attempted to open: " + _mainProgram, "TcNo Account Switcher - Tray launch fail");
+                    _ = MessageBox.Show("Could not open the main .exe. Make sure it exists.\n\nI attempted to open: " + _mainProgram, "TcNo Account Switcher - Tray launch fail");
             }
         }
 

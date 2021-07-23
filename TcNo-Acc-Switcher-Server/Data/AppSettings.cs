@@ -37,7 +37,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class AppSettings
     {
-	    private static AppSettings _instance = new();
+        private static AppSettings _instance = new();
 
         private static readonly object LockObj = new();
 
@@ -65,7 +65,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private bool _streamerModeEnabled = true;
         [JsonProperty("StreamerModeEnabled", Order = 1)] public bool StreamerModeEnabled { get => _instance._streamerModeEnabled; set => _instance._streamerModeEnabled = value; }
 
-        private int _serverPort = 5000 ;
+        private int _serverPort = 5000;
         [JsonProperty("ServerPort", Order = 2)] public int ServerPort { get => _instance._serverPort; set => _instance._serverPort = value; }
 
         private Point _windowSize = new() { X = 800, Y = 450 };
@@ -93,15 +93,15 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] public bool StartMenuPlatforms { get => _instance._startMenuPlatforms; set => _instance._startMenuPlatforms = value; }
         private bool _protocolEnabled;
         [JsonIgnore] public bool ProtocolEnabled { get => _instance._protocolEnabled; set => _instance._protocolEnabled = value; }
-		private bool _trayStartup;
+        private bool _trayStartup;
         [JsonIgnore] public bool TrayStartup { get => _instance._trayStartup; set => _instance._trayStartup = value; }
 
-		private string _selectedStylesheet;
+        private string _selectedStylesheet;
         [JsonIgnore] public string SelectedStylesheet { get => _instance._selectedStylesheet; set => _instance._selectedStylesheet = value; }
 
         [JsonIgnore]
         public string PlatformContextMenu =>
-	        Lang == null ? "" : $@"[
+            Lang == null ? "" : $@"[
               {{""{Lang["Context_HidePlatform"]}"": ""hidePlatform()""}},
               {{""{Lang["Context_CreateShortcut"]}"": ""createPlatformShortcut()""}},
               {{""{Lang["Context_ExportAccList"]}"": ""exportAllAccounts()""}}
@@ -111,7 +111,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static async System.Threading.Tasks.Task HidePlatform(string platform)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.HidePlatform]");
-            _instance.DisabledPlatforms.Add(platform);
+            _ = _instance.DisabledPlatforms.Add(platform);
             _instance.SaveSettings();
             await AppData.ReloadPage();
         }
@@ -119,7 +119,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static async System.Threading.Tasks.Task ShowPlatform(string platform)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.ShowPlatform]");
-            _instance.DisabledPlatforms.Remove(platform);
+            _ = _instance.DisabledPlatforms.Remove(platform);
             _instance.SaveSettings();
             await AppData.ReloadPage();
         }
@@ -456,16 +456,16 @@ namespace TcNo_Acc_Switcher_Server.Data
             File.Copy($"themes\\{swapTo.Replace(' ', '_')}.yaml", StylesheetFile, true);
             try
             {
-	            if (LoadStylesheetFromFile()) await AppData.ReloadPage();
-				else GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
-		            "Stylesheet error", "toastarea");
-			}
+                if (LoadStylesheetFromFile()) await AppData.ReloadPage();
+                else _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
+                    "Stylesheet error", "toastarea");
+            }
             catch (Exception)
-			{
-				GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
-					"Stylesheet error", "toastarea");
-			}
-		}
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
+                    "Stylesheet error", "toastarea");
+            }
+        }
 
         /// <summary>
         /// Load stylesheet settings from stylesheet file.
@@ -475,18 +475,18 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!File.Exists(StylesheetFile))
             {
                 if (File.Exists("themes\\Default.yaml"))
-	                File.Copy("themes\\Default.yaml", StylesheetFile, true);
+                    File.Copy("themes\\Default.yaml", StylesheetFile, true);
                 else if (File.Exists(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml")))
-	                File.Copy(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml"), StylesheetFile);
+                    File.Copy(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml"), StylesheetFile);
                 else
                 {
-	                throw new Exception(Lang["ThemesNotFound"]);
+                    throw new Exception(Lang["ThemesNotFound"]);
                 }
             }
 
             try
             {
-	            LoadStylesheet();
+                LoadStylesheet();
             }
             catch (YamlDotNet.Core.SyntaxErrorException e)
             {
@@ -494,23 +494,23 @@ namespace TcNo_Acc_Switcher_Server.Data
                 if (File.Exists("StyleSettings_ErrorInfo.txt")) File.Delete("StyleSettings_ErrorInfo.txt");
                 File.WriteAllText("StyleSettings_ErrorInfo.txt", e.ToString());
 
-	            if (File.Exists("themes\\Default.yaml"))
-		            File.Copy("themes\\Default.yaml", StylesheetFile, true);
-	            else if (File.Exists(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml")))
-		            File.Copy(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml"), StylesheetFile, true);
-	            else
-	            {
-		            throw new Exception(Lang["ThemeSyntaxAnd"] + Environment.NewLine + Lang["ThemesNotFound"] + e);
-	            }
-	            return false;
+                if (File.Exists("themes\\Default.yaml"))
+                    File.Copy("themes\\Default.yaml", StylesheetFile, true);
+                else if (File.Exists(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml")))
+                    File.Copy(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml"), StylesheetFile, true);
+                else
+                {
+                    throw new Exception(Lang["ThemeSyntaxAnd"] + Environment.NewLine + Lang["ThemesNotFound"] + e);
+                }
+                return false;
             }
 
             // Get name of current stylesheet
             GetCurrentStylesheet();
-	        if (OperatingSystem.IsWindows() && WindowsAccent)
-		        SetAccentColor();
+            if (OperatingSystem.IsWindows() && WindowsAccent)
+                SetAccentColor();
 
-	        return true;
+            return true;
         }
 
         private void LoadStylesheet()
@@ -531,7 +531,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                         foreach (var (key, val) in dict)
                         {
                             _instance._stylesheet[key] = val;
-                            unchangedKeys.Remove(key);
+                            _ = unchangedKeys.Remove(key);
                         }
                     // Add new keys to file:
                     List<string> newKeys = new();
@@ -642,22 +642,22 @@ namespace TcNo_Acc_Switcher_Server.Data
             _instance._trayStartup = Task.StartWithWindows_Enabled();
 
             if (OperatingSystem.IsWindows())
-				_instance._protocolEnabled = Protocol_IsEnabled();
+                _instance._protocolEnabled = Protocol_IsEnabled();
         }
 
         public void DesktopShortcut_Toggle()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
             var s = new Shortcut();
-            s.Shortcut_Switcher(Shortcut.Desktop);
+            _ = s.Shortcut_Switcher(Shortcut.Desktop);
             s.ToggleShortcut(!DesktopShortcut);
         }
 
         public void TrayMinimizeNotExit_Toggle()
         {
-	        Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
-	        if (TrayMinimizeNotExit) return;
-	        _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_TrayPosition"], duration: 15000, renderTo: "toastarea");
+            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
+            if (TrayMinimizeNotExit) return;
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_TrayPosition"], duration: 15000, renderTo: "toastarea");
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_TrayHint"], duration: 15000, renderTo: "toastarea");
         }
 
@@ -667,8 +667,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         [SupportedOSPlatform("windows")]
         private static bool Protocol_IsEnabled()
         {
-	        var key = Registry.ClassesRoot.OpenSubKey(@"tcno");
-	        return key != null && (key.GetValueNames().Contains("URL Protocol"));
+            var key = Registry.ClassesRoot.OpenSubKey(@"tcno");
+            return key != null && (key.GetValueNames().Contains("URL Protocol"));
         }
 
         /// <summary>
@@ -677,40 +677,40 @@ namespace TcNo_Acc_Switcher_Server.Data
         [SupportedOSPlatform("windows")]
         public void Protocol_Toggle()
         {
-	        try
-	        {
-		        if (!Protocol_IsEnabled())
-		        {
-			        // Add
-			        using var key = Registry.ClassesRoot.CreateSubKey("tcno");
-			        key?.SetValue("URL Protocol", "", RegistryValueKind.String);
-			        using var defaultKey = Registry.ClassesRoot.CreateSubKey(@"tcno\Shell\Open\Command");
-			        defaultKey?.SetValue("", $"\"{Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe")}\" \"%1\"", RegistryValueKind.String);
-			        GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ProtocolEnabled"], Lang["Toast_ProtocolEnabledTitle"], "toastarea");
-		        }
-		        else
-		        {
-			        // Remove
-                    Registry.ClassesRoot.DeleteSubKeyTree("tcno");
-			        GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ProtocolDisabled"], Lang["Toast_ProtocolDisabledTitle"], "toastarea");
+            try
+            {
+                if (!Protocol_IsEnabled())
+                {
+                    // Add
+                    using var key = Registry.ClassesRoot.CreateSubKey("tcno");
+                    key?.SetValue("URL Protocol", "", RegistryValueKind.String);
+                    using var defaultKey = Registry.ClassesRoot.CreateSubKey(@"tcno\Shell\Open\Command");
+                    defaultKey?.SetValue("", $"\"{Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe")}\" \"%1\"", RegistryValueKind.String);
+                    _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ProtocolEnabled"], Lang["Toast_ProtocolEnabledTitle"], "toastarea");
                 }
-		        _instance._protocolEnabled = Protocol_IsEnabled();
+                else
+                {
+                    // Remove
+                    Registry.ClassesRoot.DeleteSubKeyTree("tcno");
+                    _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ProtocolDisabled"], Lang["Toast_ProtocolDisabledTitle"], "toastarea");
+                }
+                _instance._protocolEnabled = Protocol_IsEnabled();
             }
-	        catch (UnauthorizedAccessException)
-	        {
-		        GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
-                GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
-	        }
+            catch (UnauthorizedAccessException)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
+                _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+            }
         }
 
         #region WindowsAccent
         [SupportedOSPlatform("windows")]
         public void WindowsAccent_Toggle()
         {
-	        if (!WindowsAccent)
-		        SetAccentColor(true);
-	        else
-		        GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestartAfterClose"], Lang["Toast_RestartAfterCloseTitle"], "toastarea");
+            if (!WindowsAccent)
+                SetAccentColor(true);
+            else
+                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestartAfterClose"], Lang["Toast_RestartAfterCloseTitle"], "toastarea");
         }
 
         [SupportedOSPlatform("windows")]
@@ -718,22 +718,22 @@ namespace TcNo_Acc_Switcher_Server.Data
         [SupportedOSPlatform("windows")]
         private static void SetAccentColor(bool userInvoked)
         {
-	        var accent = GetAccentColorHexString();
-	        _instance._stylesheet["selectionBackground"] = accent;
-	        _instance._stylesheet["linkColor"] = accent;
-	        _instance._stylesheet["linkColor-hover"] = accent; // TODO: Make this lighter somehow
+            var accent = GetAccentColorHexString();
+            _instance._stylesheet["selectionBackground"] = accent;
+            _instance._stylesheet["linkColor"] = accent;
+            _instance._stylesheet["linkColor-hover"] = accent; // TODO: Make this lighter somehow
             _instance._stylesheet["linkColor-active"] = accent; // TODO: Make this darker somehow
             _instance._stylesheet["borderedItemBorderColorBottom-focus"] = accent;
             _instance._stylesheet["buttonBorder-active"] = accent;
             _instance._stylesheet["checkboxBackground-checked"] = accent;
             _instance._stylesheet["listBackgroundColor-checked"] = accent;
-	        _instance._stylesheet["listTextColor-before"] = accent;
-	        _instance._stylesheet["updateBarBackground"] = accent;
-	        _instance._stylesheet["platformBorderColor"] = accent;
+            _instance._stylesheet["listTextColor-before"] = accent;
+            _instance._stylesheet["updateBarBackground"] = accent;
+            _instance._stylesheet["platformBorderColor"] = accent;
 
-	        var accentColorIntString = GetAccentColorIntString();
+            var accentColorIntString = GetAccentColorIntString();
             _instance._stylesheet["platformTransform-HoverAnimation-boxShadow-0"] = $"0 0 0 0 rgba({accentColorIntString}, 0.7)";
-	        _instance._stylesheet["platformTransform-HoverAnimation-boxShadow-70"] = $"0 0 0 10px rgba({accentColorIntString}, 0)";
+            _instance._stylesheet["platformTransform-HoverAnimation-boxShadow-70"] = $"0 0 0 10px rgba({accentColorIntString}, 0)";
             _instance._stylesheet["platformTransform-HoverAnimation-boxShadow-100"] = $"0 0 0 10px rgba({accentColorIntString}, 0)";
 
             if (userInvoked)
@@ -743,56 +743,56 @@ namespace TcNo_Acc_Switcher_Server.Data
         [SupportedOSPlatform("windows")]
         public static string GetAccentColorHexString()
         {
-	        byte r, g, b;
-	        (r, g, b) = GetAccentColor();
-	        byte[] rgb = {r, g, b};
-	        return '#' + BitConverter.ToString(rgb).Replace("-", string.Empty);
+            byte r, g, b;
+            (r, g, b) = GetAccentColor();
+            byte[] rgb = { r, g, b };
+            return '#' + BitConverter.ToString(rgb).Replace("-", string.Empty);
         }
 
         [SupportedOSPlatform("windows")]
         public static string GetAccentColorIntString()
         {
-	        byte r, g, b;
-	        (r, g, b) = GetAccentColor();
-	        return Convert.ToInt32(r) + ", " + Convert.ToInt32(g) + ", " + Convert.ToInt32(b);
+            byte r, g, b;
+            (r, g, b) = GetAccentColor();
+            return Convert.ToInt32(r) + ", " + Convert.ToInt32(g) + ", " + Convert.ToInt32(b);
         }
 
         [SupportedOSPlatform("windows")]
         public static (byte r, byte g, byte b) GetAccentColor()
         {
-	        using var dwmKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\DWM", RegistryKeyPermissionCheck.ReadSubTree);
-	        const string keyExMsg = "The \"HKCU\\Software\\Microsoft\\Windows\\DWM\" registry key does not exist.";
-	        if (dwmKey is null) throw new InvalidOperationException(keyExMsg);
+            using var dwmKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\DWM", RegistryKeyPermissionCheck.ReadSubTree);
+            const string keyExMsg = "The \"HKCU\\Software\\Microsoft\\Windows\\DWM\" registry key does not exist.";
+            if (dwmKey is null) throw new InvalidOperationException(keyExMsg);
 
-	        var accentColorObj = dwmKey.GetValue("AccentColor");
-	        if (accentColorObj is int accentColorDWord)
-	        {
-		        return ParseDWordColor(accentColorDWord);
-	        }
-	        else
-	        {
-		        const string valueExMsg = "The \"HKCU\\Software\\Microsoft\\Windows\\DWM\\AccentColor\" registry key value could not be parsed as an ABGR color.";
-		        throw new InvalidOperationException(valueExMsg);
-	        }
+            var accentColorObj = dwmKey.GetValue("AccentColor");
+            if (accentColorObj is int accentColorDWord)
+            {
+                return ParseDWordColor(accentColorDWord);
+            }
+            else
+            {
+                const string valueExMsg = "The \"HKCU\\Software\\Microsoft\\Windows\\DWM\\AccentColor\" registry key value could not be parsed as an ABGR color.";
+                throw new InvalidOperationException(valueExMsg);
+            }
         }
 
         private static (byte r, byte g, byte b) ParseDWordColor(int color)
         {
             byte
                 //a = (byte)((color >> 24) & 0xFF),
-		        b = (byte)((color >> 16) & 0xFF),
-		        g = (byte)((color >> 8) & 0xFF),
-		        r = (byte)((color >> 0) & 0xFF);
+                b = (byte)((color >> 16) & 0xFF),
+                g = (byte)((color >> 8) & 0xFF),
+                r = (byte)((color >> 0) & 0xFF);
 
-	        return (r, g, b);
+            return (r, g, b);
         }
-    #endregion
+        #endregion
 
-    /// <summary>
-    /// Create shortcuts in Start Menu
-    /// </summary>
-    /// <param name="platforms">true creates Platforms folder & drops shortcuts, otherwise only places main program & tray shortcut</param>
-    public void StartMenu_Toggle(bool platforms)
+        /// <summary>
+        /// Create shortcuts in Start Menu
+        /// </summary>
+        /// <param name="platforms">true creates Platforms folder & drops shortcuts, otherwise only places main program & tray shortcut</param>
+        public void StartMenu_Toggle(bool platforms)
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.StartMenu_Toggle]");
             if (platforms)
@@ -801,7 +801,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 if (Directory.Exists(platformsFolder)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(Shortcut.StartMenu, "Platforms")), false);
                 else
                 {
-                    Directory.CreateDirectory(platformsFolder);
+                    _ = Directory.CreateDirectory(platformsFolder);
                     foreach (var platform in Globals.PlatformList)
                     {
                         CreatePlatformShortcut(platformsFolder, platform, platform.ToLowerInvariant());
@@ -812,10 +812,10 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
             // Only create these shortcuts of requested, by setting platforms to false.
             var s = new Shortcut();
-            s.Shortcut_Switcher(Shortcut.StartMenu);
+            _ = s.Shortcut_Switcher(Shortcut.StartMenu);
             s.ToggleShortcut(!StartMenu, false);
 
-            s.Shortcut_Tray(Shortcut.StartMenu);
+            _ = s.Shortcut_Tray(Shortcut.StartMenu);
             s.ToggleShortcut(!StartMenu, false);
         }
         public void Task_Toggle()
@@ -838,7 +838,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private void CreatePlatformShortcut(string folder, string platformName, string args)
         {
             var s = new Shortcut();
-            s.Shortcut_Platform(folder, platformName, args);
+            _ = s.Shortcut_Platform(folder, platformName, args);
             s.ToggleShortcut(!StartMenuPlatforms, false);
         }
         #endregion

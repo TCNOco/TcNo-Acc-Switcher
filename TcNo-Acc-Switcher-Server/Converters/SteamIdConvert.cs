@@ -153,7 +153,7 @@ namespace TcNo_Acc_Switcher_Server.Converters
         {
             CalcSteamId();
             CalcSteamId3();
-            CalcSteamId32();
+            _ = CalcSteamId32();
             CalcSteamId64();
         }
 

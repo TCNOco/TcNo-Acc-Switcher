@@ -27,7 +27,6 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
@@ -56,7 +55,7 @@ namespace TcNo_Acc_Switcher_Client
             const string serverPath = "TcNo-Acc-Switcher-Server.exe";
             if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(serverPath)).Length > 0)
             {
-                Globals.WriteToLog("Server was already running. Killing process."); 
+                Globals.WriteToLog("Server was already running. Killing process.");
                 Globals.KillProcess(serverPath); // Kill server if already running
             }
 
@@ -74,41 +73,41 @@ namespace TcNo_Acc_Switcher_Client
 
         private static bool IsAdmin()
         {
-	        // Checks whether program is running as Admin or not
-	        var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
-	        return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
+            // Checks whether program is running as Admin or not
+            var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
+            return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
         }
 
-		public MainWindow()
-		{
-			// Set working directory to documents folder
-			Directory.SetCurrentDirectory(Globals.UserDataFolder);
-            
+        public MainWindow()
+        {
+            // Set working directory to documents folder
+            Directory.SetCurrentDirectory(Globals.UserDataFolder);
+
             if (Directory.Exists(Path.Join(Globals.AppDataFolder, "wwwroot")))
-			{
-				if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
+            {
+                if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
                     RestartAsAdmin("");
-				if (Directory.Exists(Globals.OriginalWwwroot)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Globals.OriginalWwwroot), false);
-				Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
-			}
-            
+                if (Directory.Exists(Globals.OriginalWwwroot)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Globals.OriginalWwwroot), false);
+                Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
+            }
+
             FindOpenPort();
             _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
 
             // Start web server
             Server.IsBackground = true;
             Server.Start();
-            
-			// Initialise and connect to web server above
-			InitializeComponent();
 
-			// Attempt to fix window showing as blank.
-			// See https://github.com/MicrosoftEdge/WebView2Feedback/issues/1077#issuecomment-856222593593
-			MView2.Visibility = Visibility.Hidden;
+            // Initialise and connect to web server above
+            InitializeComponent();
+
+            // Attempt to fix window showing as blank.
+            // See https://github.com/MicrosoftEdge/WebView2Feedback/issues/1077#issuecomment-856222593593
+            MView2.Visibility = Visibility.Hidden;
             MView2.Visibility = Visibility.Visible;
 
             MainBackground.Background = (Brush)new BrushConverter().ConvertFromString(AppSettings.Stylesheet["headerbarBackground"]);
-            
+
             Width = AppSettings.WindowSize.X;
             Height = AppSettings.WindowSize.Y;
             StateChanged += WindowStateChange;
@@ -119,22 +118,22 @@ namespace TcNo_Acc_Switcher_Client
         {
             try
             {
-	            var env = await CoreWebView2Environment.CreateAsync(null, Globals.UserDataFolder);
-	            await MView2.EnsureCoreWebView2Async(env);
+                var env = await CoreWebView2Environment.CreateAsync(null, Globals.UserDataFolder);
+                await MView2.EnsureCoreWebView2Async(env);
                 MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
                 MViewAddForwarders();
                 MView2.NavigationStarting += UrlChanged;
                 MView2.CoreWebView2.ProcessFailed += CoreWebView2OnProcessFailed;
-                
+
                 MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
                 MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown").DevToolsProtocolEventReceived += ConsoleMessage;
-                await MView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
+                _ = await MView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
             }
             catch (WebView2RuntimeNotFoundException)
             {
                 // WebView2 is not installed!
-                MessageBox.Show("WebView2 Runtime is not installed. I've opened the website you need to download it from.", "Required runtime not found!", MessageBoxButton.OK, MessageBoxImage.Error);
-                Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
+                _ = MessageBox.Show("WebView2 Runtime is not installed. I've opened the website you need to download it from.", "Required runtime not found!", MessageBoxButton.OK, MessageBoxImage.Error);
+                _ = Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
                 {
                     UseShellExecute = true,
                     Verb = "open"
@@ -145,9 +144,9 @@ namespace TcNo_Acc_Switcher_Client
 
         private void CoreWebView2OnProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
         {
-	        MessageBox.Show("The WebView browser process has crashed! The program will now exit.", "Fatal error", MessageBoxButton.OK,
-		        MessageBoxImage.Error,
-		        MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+            _ = MessageBox.Show("The WebView browser process has crashed! The program will now exit.", "Fatal error", MessageBoxButton.OK,
+                MessageBoxImage.Error,
+                MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
             Environment.Exit(1);
         }
 
@@ -230,7 +229,7 @@ namespace TcNo_Acc_Switcher_Client
                     MView2.Reload();
                 else throw;
             }
-            MView2.Focus();
+            _ = MView2.Focus();
         }
 
         /// <summary>
@@ -246,7 +245,7 @@ namespace TcNo_Acc_Switcher_Client
                 WindowState.Normal => "remove",
                 _ => ""
             };
-            MView2.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
+            _ = MView2.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
         }
 
         /// <summary>
@@ -288,8 +287,8 @@ namespace TcNo_Acc_Switcher_Client
 
                 var result = dlg.ShowDialog();
                 if (result != true) return;
-                MView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
-                MView2.ExecuteScriptAsync("Modal_SetFilepath(" +
+                _ = MView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
+                _ = MView2.ExecuteScriptAsync("Modal_SetFilepath(" +
                                           JsonConvert.SerializeObject(dlg.FileName[..dlg.FileName.LastIndexOf('\\')]) + ")");
             }
             else if (uriArg.StartsWith("selectImage"))
@@ -297,7 +296,7 @@ namespace TcNo_Acc_Switcher_Client
                 // Select file and replace requested file with it.
                 args.Cancel = true;
                 var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot\\" + HttpUtility.UrlDecode(uriArg.Split("=")[1]));
-                
+
                 var dlg = new OpenFileDialog
                 {
                     Filter = "Any image file (.png, .jpg, .bmp...)|*.*"
@@ -310,7 +309,7 @@ namespace TcNo_Acc_Switcher_Client
             }
 
         }
-        
+
         public static void RestartAsAdmin(string args)
         {
             var proc = new ProcessStartInfo
@@ -323,7 +322,7 @@ namespace TcNo_Acc_Switcher_Client
             };
             try
             {
-                Process.Start(proc);
+                _ = Process.Start(proc);
                 Environment.Exit(0);
             }
             catch (Exception ex)
@@ -333,13 +332,13 @@ namespace TcNo_Acc_Switcher_Client
             }
         }
 
-        private static bool firstLoad = true;
+        private static bool _firstLoad = true;
         private void MView2_OnNavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
         {
-	        if (!firstLoad) return;
-	        MView2.Visibility = Visibility.Hidden;
-	        MView2.Visibility = Visibility.Visible;
-	        firstLoad = false;
+            if (!_firstLoad) return;
+            MView2.Visibility = Visibility.Hidden;
+            MView2.Visibility = Visibility.Visible;
+            _firstLoad = false;
         }
     }
 }

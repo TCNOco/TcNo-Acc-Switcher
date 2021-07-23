@@ -31,7 +31,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 {
     public class BattleNetSwitcherBase
     {
-	    private static readonly Data.Lang Lang = Data.Lang.Instance;
+        private static readonly Data.Lang Lang = Data.Lang.Instance;
 
         /// <summary>
         /// JS function handler for swapping to another Battle.net account.
@@ -71,7 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 var split = BTag.Split("#");
                 var req = WebRequest.Create($"https://playoverwatch.com/en-us/career/pc/{split[0]}-{split[1]}/");
                 req.Method = "GET";
-            
+
                 var doc = new HtmlDocument();
                 var responseStream = req.GetResponse().GetResponseStream();
                 if (responseStream == null)
@@ -83,7 +83,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 {
                     doc.LoadHtml(reader.ReadToEnd());
                 }
-                
+
                 // If the PlayOverwatch site is overloaded
                 if (doc.DocumentNode.SelectSingleNode("/html/body/section[1]/section/div/h1") != null)
                 {
@@ -99,11 +99,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                         .SelectSingleNode("/html/body/section[1]/div[1]/section/div/div/div/div/div[2]/img")
                         .Attributes["src"].Value;
                     _ = GeneralInvocableFuncs.ShowToast("warning", Lang["Toast_BNet_Private", new { BTag = BTag }], renderTo: "toastarea");
-                    BattleNetSwitcherFuncs.DownloadImage(Email, ImgUrl);
+                    _ = BattleNetSwitcherFuncs.DownloadImage(Email, ImgUrl);
                     LastTimeChecked = DateTime.Now - TimeSpan.FromMinutes(1435); // 23 Hours 55 Minutes
                     return false;
                 }
-                
+
                 // If BattleTag is invalid
                 if (doc.DocumentNode.SelectSingleNode(
                     "/html/body/section[1]/section/div/h1")?.InnerHtml == "PROFILE NOT FOUND")
@@ -111,12 +111,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_ItemNotFound", new { item = BTag }], renderTo: "toastarea");
                     return false;
                 }
-                
+
                 LastTimeChecked = DateTime.Now;
                 ImgUrl = doc.DocumentNode
                     .SelectSingleNode("/html/body/section[1]/div[1]/section/div/div[2]/div/div/div[2]/img")
                     .Attributes["src"].Value;
-                BattleNetSwitcherFuncs.DownloadImage(Email, ImgUrl);
+                _ = BattleNetSwitcherFuncs.DownloadImage(Email, ImgUrl);
 
                 var ranks = doc.DocumentNode.SelectNodes("/html/body/section[1]/div[1]/section/div/div[2]/div/div/div[2]/div/div[3]");
                 foreach (var node in ranks.Elements())

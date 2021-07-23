@@ -27,7 +27,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class Discord
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         private static Discord _instance = new();
 
@@ -100,22 +100,22 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
             foreach (var dir in Directory.GetDirectories(Instance.FolderPath))
             {
-	            var folder = Path.GetFileName(dir);
+                var folder = Path.GetFileName(dir);
                 if (folder.StartsWith("app-"))
-	            {
-		            var sVersionSplit = dir.Split('-')[1].Split('.'); // Removes "app-", then splits the remaining numbers into say: {1, 0, 8050}
-		            var current = sVersionSplit.Select(int.Parse).ToList();
-		            for (var i = 0; i < current.Count; i++)
-		            {
-			            if (current[i] > latest[i]) // Newer, so replace with highest new version number
-			            {
-				            latest = current;
-				            break;
-			            }
+                {
+                    var sVersionSplit = dir.Split('-')[1].Split('.'); // Removes "app-", then splits the remaining numbers into say: {1, 0, 8050}
+                    var current = sVersionSplit.Select(int.Parse).ToList();
+                    for (var i = 0; i < current.Count; i++)
+                    {
+                        if (current[i] > latest[i]) // Newer, so replace with highest new version number
+                        {
+                            latest = current;
+                            break;
+                        }
 
-			            if (current[i] != latest[i]) break; // Lower, so break this loop and go to the next version.
-		            }
-	            }
+                        if (current[i] != latest[i]) break; // Lower, so break this loop and go to the next version.
+                    }
+                }
             }
 
 

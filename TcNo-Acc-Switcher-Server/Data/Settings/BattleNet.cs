@@ -29,7 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class BattleNet
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         private static BattleNet _instance = new();
 
@@ -50,20 +50,20 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         private string _folderPath = "C:\\Program Files (x86)\\Battle.net";
         [JsonProperty("FolderPath", Order = 1)] public string FolderPath { get => _instance._folderPath; set => _instance._folderPath = value; }
-        
+
         private bool _admin;
         [JsonProperty("BattleNet_Admin", Order = 3)] public bool Admin { get => _instance._admin; set => _instance._admin = value; }
-        
+
         private int _trayAccNumber = 3;
         [JsonProperty("BattleNet_TrayAccNumber", Order = 4)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
-        
+
         private bool _forgetAccountEnabled;
         [JsonProperty("ForgetAccountEnabled", Order = 5)] public bool ForgetAccountEnabled { get => _instance._forgetAccountEnabled; set => _instance._forgetAccountEnabled = value; }
-        
+
         private bool _overwatchMode = true;
 
         [JsonProperty("OverwatchMode", Order = 6)]
-        public bool OverwatchMode { get => _instance._overwatchMode; set =>_instance._overwatchMode = value; }
+        public bool OverwatchMode { get => _instance._overwatchMode; set => _instance._overwatchMode = value; }
 
         private int _imageExpiryTime = 7;
         [JsonProperty("ImageExpiryTime", Order = 7)] public int ImageExpiryTime { get => _instance._imageExpiryTime; set => _instance._imageExpiryTime = value; }
@@ -72,13 +72,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
-        
+
         private List<BattleNetSwitcherBase.BattleNetUser> _accounts = new();
         [JsonIgnore] public List<BattleNetSwitcherBase.BattleNetUser> Accounts { get => _instance._accounts; set => _instance._accounts = value; }
-        
+
         private List<string> _ignoredAccounts = new();
         [JsonIgnore] public List<string> IgnoredAccounts { get => _instance._ignoredAccounts; set => _instance._ignoredAccounts = value; }
-        
+
         // Constants
         [JsonIgnore] public static readonly string SettingsFile = "BattleNetSettings.json";
         [JsonIgnore] public readonly string StoredAccPath = "LoginCache\\BattleNet\\StoredAccounts.json";
@@ -98,7 +98,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         #endregion
 
         #region FORGETTING_ACCOUNTS
-    
+
         /// <summary>
         /// Updates the ForgetAccountEnabled bool in settings file
         /// </summary>
@@ -112,14 +112,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
 
         #endregion
-        
+
 
         /// <summary>
         /// Get Battle.net.exe path from OriginSettings.json 
         /// </summary>
         /// <returns>Battle.net.exe's path string</returns>
         public string Exe() => FolderPath + "\\Battle.net.exe";
-        
+
 
         #region SETTINGS
         /// <summary>
@@ -158,8 +158,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// </summary>
         public void LoadAccounts()
         {
-	        Directory.CreateDirectory("LoginCache\\BattleNet");
-            if (File.Exists(StoredAccPath) )
+            _ = Directory.CreateDirectory("LoginCache\\BattleNet");
+            if (File.Exists(StoredAccPath))
             {
                 Accounts = JsonConvert.DeserializeObject<List<BattleNetSwitcherBase.BattleNetUser>>(Globals.ReadAllText(StoredAccPath)) ?? new List<BattleNetSwitcherBase.BattleNetUser>();
             }
@@ -178,8 +178,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             File.WriteAllText(StoredAccPath, JsonConvert.SerializeObject(Accounts));
             File.WriteAllText(IgnoredAccPath, JsonConvert.SerializeObject(IgnoredAccounts));
         }
-        
-        
+
+
         #endregion
     }
 }

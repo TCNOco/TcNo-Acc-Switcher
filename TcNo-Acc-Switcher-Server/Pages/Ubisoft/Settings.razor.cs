@@ -23,7 +23,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 {
     public partial class Settings
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         protected override void OnInitialized()
         {
@@ -36,9 +36,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public void PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Ubisoft\Settings.razor.cs.PickFolder]");
-            GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
+            _ = GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
         }
-        
+
         // BUTTON: Reset settings
         public static void ClearSettings()
         {
@@ -53,7 +53,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public static void OpenFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Ubisoft\Settings.razor.cs.OpenUbisoftFolder]");
-            Process.Start("explorer.exe", new Data.Settings.Ubisoft().FolderPath);
+            _ = Process.Start("explorer.exe", new Data.Settings.Ubisoft().FolderPath);
         }
 
         // BUTTON: RefreshImages

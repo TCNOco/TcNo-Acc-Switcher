@@ -30,188 +30,188 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
-	public class Lang
-	{
-		private static Lang _instance = new();
+    public class Lang
+    {
+        private static Lang _instance = new();
 
-		private static readonly object LockObj = new();
+        private static readonly object LockObj = new();
 
-		public static Lang Instance
-		{
-			get
-			{
-				lock (LockObj)
-				{
-					return _instance ??= new Lang();
-				}
-			}
-			set => _instance = value;
-		}
+        public static Lang Instance
+        {
+            get
+            {
+                lock (LockObj)
+                {
+                    return _instance ??= new Lang();
+                }
+            }
+            set => _instance = value;
+        }
 
-		private Dictionary<string, string> _strings = new();
-		public Dictionary<string, string> Strings { get => _instance._strings; set => _instance._strings = value; }
+        private Dictionary<string, string> _strings = new();
+        public Dictionary<string, string> Strings { get => _instance._strings; set => _instance._strings = value; }
 
-		private string _current = "";
+        private string _current = "";
 
-		public string Current { get => _instance._current; set => _instance._current = value; }
+        public string Current { get => _instance._current; set => _instance._current = value; }
 
-		/// <summary>
-		/// Get a string
-		/// </summary>
-		public string this[string key] => Strings.ContainsKey(key) ? Strings[key] : key;
+        /// <summary>
+        /// Get a string
+        /// </summary>
+        public string this[string key] => Strings.ContainsKey(key) ? Strings[key] : key;
 
-		/// <summary>
-		/// Get a string, and replace variables
-		/// </summary>
-		/// <param name="key">String to look up</param>
-		/// <param name="obj">Object of variables to replace</param>
-		public string this[string key, object obj]
-		{
-			get
-			{
-				if (!Strings.ContainsKey(key)) return key;
-				var s = Strings[key];
-				if (obj is JsonElement)
-					foreach (var (k, v) in JObject.FromObject(JsonConvert.DeserializeObject(obj.ToString()!)!))
-						s = s.Replace($"{{{k}}}", v.Value<string>());
-				else
-					foreach (var pi in obj.GetType().GetProperties())
-						s = s.Replace($"{{{pi.Name}}}", (string) pi.GetValue(obj, null));
-				return s;
-			}
-		}
+        /// <summary>
+        /// Get a string, and replace variables
+        /// </summary>
+        /// <param name="key">String to look up</param>
+        /// <param name="obj">Object of variables to replace</param>
+        public string this[string key, object obj]
+        {
+            get
+            {
+                if (!Strings.ContainsKey(key)) return key;
+                var s = Strings[key];
+                if (obj is JsonElement)
+                    foreach (var (k, v) in JObject.FromObject(JsonConvert.DeserializeObject(obj.ToString()!)!))
+                        s = s.Replace($"{{{k}}}", v.Value<string>());
+                else
+                    foreach (var pi in obj.GetType().GetProperties())
+                        s = s.Replace($"{{{pi.Name}}}", (string)pi.GetValue(obj, null));
+                return s;
+            }
+        }
 
 
-		#region FILE_HANDLING
-		/// <summary>
-		/// Loads the programs default language: English.
-		/// </summary>
-		public void LoadDefault()
-		{
-			Load("en-US");
-		}
+        #region FILE_HANDLING
+        /// <summary>
+        /// Loads the programs default language: English.
+        /// </summary>
+        public void LoadDefault()
+        {
+            _ = Load("en-US");
+        }
 
-		/// <summary>
-		/// Loads the system's language, or the user's saved language
-		/// </summary>
-		public void LoadLocalised()
-		{
-			LoadDefault();
-			// If setting does not exist in settings file then load the system default
-			Instance.Load(AppSettings.Instance.Language == ""
-				? CultureInfo.CurrentCulture.Name
-				: AppSettings.Instance.Language);
-		}
+        /// <summary>
+        /// Loads the system's language, or the user's saved language
+        /// </summary>
+        public void LoadLocalised()
+        {
+            LoadDefault();
+            // If setting does not exist in settings file then load the system default
+            _ = Instance.Load(AppSettings.Instance.Language == ""
+                ? CultureInfo.CurrentCulture.Name
+                : AppSettings.Instance.Language);
+        }
 
-		/// <summary>
-		/// Tries to load a requested language
-		/// </summary>
-		/// <param name="lang">Formatted language, example: "en-US"</param>
-		public bool LoadLang(string lang)
-		{
-			LoadDefault();
-			return Load(lang, true);
-		}
+        /// <summary>
+        /// Tries to load a requested language
+        /// </summary>
+        /// <param name="lang">Formatted language, example: "en-US"</param>
+        public bool LoadLang(string lang)
+        {
+            LoadDefault();
+            return Load(lang, true);
+        }
 
-		/// <summary>
-		/// Get list of files in Resources folder
-		/// </summary>
-		public List<string> GetAvailableLanguages() => Directory.GetFiles(Path.Join(Globals.AppDataFolder, "Resources")).Select(f => Path.GetFileName(f).Split(".yml")[0]).ToList();
-		public Dictionary<string, string> GetAvailableLanguagesDict() => GetAvailableLanguages().ToDictionary(l => new CultureInfo(l).DisplayName);
-		public KeyValuePair<string, string> GetCurrentLanguage() => new(new CultureInfo(Current).DisplayName, Current);
+        /// <summary>
+        /// Get list of files in Resources folder
+        /// </summary>
+        public List<string> GetAvailableLanguages() => Directory.GetFiles(Path.Join(Globals.AppDataFolder, "Resources")).Select(f => Path.GetFileName(f).Split(".yml")[0]).ToList();
+        public Dictionary<string, string> GetAvailableLanguagesDict() => GetAvailableLanguages().ToDictionary(l => new CultureInfo(l).DisplayName);
+        public KeyValuePair<string, string> GetCurrentLanguage() => new(new CultureInfo(Current).DisplayName, Current);
 
-		public bool Load(string filename, bool save = false)
-		{
-			var path = Path.Join(Globals.AppDataFolder, "Resources", filename + ".yml");
-			Current = filename;
-			if (save && Current == filename)
-			{
-				AppSettings.Instance.Language = filename;
-				AppSettings.Instance.SaveSettings();
-			}
-			if (!File.Exists(path))
-			{
-				// Get list of files in Resources folder
-				var availableLang = GetAvailableLanguages();
+        public bool Load(string filename, bool save = false)
+        {
+            var path = Path.Join(Globals.AppDataFolder, "Resources", filename + ".yml");
+            Current = filename;
+            if (save && Current == filename)
+            {
+                AppSettings.Instance.Language = filename;
+                AppSettings.Instance.SaveSettings();
+            }
+            if (!File.Exists(path))
+            {
+                // Get list of files in Resources folder
+                var availableLang = GetAvailableLanguages();
 
-				// Get closest available language
-				var langGroup = filename.Split('-')[0];
-				var foundClose = false;
-				foreach (var l in availableLang.Where(l => l.StartsWith(langGroup)))
-				{
-					path = Path.Join(Globals.AppDataFolder, "Resources", l + ".yml");
-					foundClose = true;
-					Current = l;
-					if (save && Current == l)
-					{
-						AppSettings.Instance.Language = l;
-						AppSettings.Instance.SaveSettings();
-					}
-					break;
-				}
+                // Get closest available language
+                var langGroup = filename.Split('-')[0];
+                var foundClose = false;
+                foreach (var l in availableLang.Where(l => l.StartsWith(langGroup)))
+                {
+                    path = Path.Join(Globals.AppDataFolder, "Resources", l + ".yml");
+                    foundClose = true;
+                    Current = l;
+                    if (save && Current == l)
+                    {
+                        AppSettings.Instance.Language = l;
+                        AppSettings.Instance.SaveSettings();
+                    }
+                    break;
+                }
 
-				// If could not find a language close to requested
-				if (!foundClose)
-					return false;
-			}
+                // If could not find a language close to requested
+                if (!foundClose)
+                    return false;
+            }
 
-			// Load from en-EN file into Strings
-			var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-			var text = Globals.ReadAllText(path);
-			var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(text)));
-			Debug.Assert(dict != null, nameof(dict) + " != null"); // These files have to exist, or the program will break in many ways
-			foreach (var (k, v) in dict)
-			{
-				Strings[k] = v;
-			}
+            // Load from en-EN file into Strings
+            var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
+            var text = Globals.ReadAllText(path);
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(text)));
+            Debug.Assert(dict != null, nameof(dict) + " != null"); // These files have to exist, or the program will break in many ways
+            foreach (var (k, v) in dict)
+            {
+                Strings[k] = v;
+            }
 
-			return true;
-		}
-		#endregion
-	}
+            return true;
+        }
+        #endregion
+    }
 
-	public static partial class JsonExtensions
-	{
-		public static T ToObject<T>(this JsonElement element, JsonSerializerOptions options = null)
-		{
-			var bufferWriter = new ArrayBufferWriter<byte>();
-			using (var writer = new Utf8JsonWriter(bufferWriter))
-			{
-				element.WriteTo(writer);
-			}
+    public static partial class JsonExtensions
+    {
+        public static T ToObject<T>(this JsonElement element, JsonSerializerOptions options = null)
+        {
+            var bufferWriter = new ArrayBufferWriter<byte>();
+            using (var writer = new Utf8JsonWriter(bufferWriter))
+            {
+                element.WriteTo(writer);
+            }
 
-			return JsonSerializer.Deserialize<T>(bufferWriter.WrittenSpan, options);
-		}
+            return JsonSerializer.Deserialize<T>(bufferWriter.WrittenSpan, options);
+        }
 
-		public static T ToObject<T>(this JsonDocument document, JsonSerializerOptions options = null)
-		{
-			if (document == null)
-			{
-				throw new ArgumentNullException(nameof(document));
-			}
+        public static T ToObject<T>(this JsonDocument document, JsonSerializerOptions options = null)
+        {
+            if (document == null)
+            {
+                throw new ArgumentNullException(nameof(document));
+            }
 
-			return document.RootElement.ToObject<T>(options);
-		}
+            return document.RootElement.ToObject<T>(options);
+        }
 
-		public static object ToObject(this JsonElement element, Type returnType, JsonSerializerOptions options = null)
-		{
-			var bufferWriter = new ArrayBufferWriter<byte>();
-			using (var writer = new Utf8JsonWriter(bufferWriter))
-			{
-				element.WriteTo(writer);
-			}
+        public static object ToObject(this JsonElement element, Type returnType, JsonSerializerOptions options = null)
+        {
+            var bufferWriter = new ArrayBufferWriter<byte>();
+            using (var writer = new Utf8JsonWriter(bufferWriter))
+            {
+                element.WriteTo(writer);
+            }
 
-			return JsonSerializer.Deserialize(bufferWriter.WrittenSpan, returnType, options);
-		}
+            return JsonSerializer.Deserialize(bufferWriter.WrittenSpan, returnType, options);
+        }
 
-		public static object ToObject(this JsonDocument document, Type returnType, JsonSerializerOptions options = null)
-		{
-			if (document == null)
-			{
-				throw new ArgumentNullException(nameof(document));
-			}
+        public static object ToObject(this JsonDocument document, Type returnType, JsonSerializerOptions options = null)
+        {
+            if (document == null)
+            {
+                throw new ArgumentNullException(nameof(document));
+            }
 
-			return document.RootElement.ToObject(returnType, options);
-		}
-	}
+            return document.RootElement.ToObject(returnType, options);
+        }
+    }
 }

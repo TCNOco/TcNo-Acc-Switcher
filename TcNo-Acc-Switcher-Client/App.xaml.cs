@@ -77,7 +77,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 var handle = GetConsoleWindow();
 
-                SetWindowText(handle, text);
+                _ = SetWindowText(handle, text);
             }
 
             public static bool AttachToConsole(int dwProcessId) => AttachConsole(dwProcessId);
@@ -93,9 +93,9 @@ namespace TcNo_Acc_Switcher_Client
 
         [STAThread]
         protected override async void OnStartup(StartupEventArgs e)
-		{
-			// Ensure files in documents are available.
-			Globals.CreateDataFolder(false);
+        {
+            // Ensure files in documents are available.
+            Globals.CreateDataFolder(false);
 
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
 
@@ -133,13 +133,14 @@ namespace TcNo_Acc_Switcher_Client
                     var shouldClose = await ConsoleMain(e).ConfigureAwait(false);
                     if (shouldClose)
                     {
-	                    Console.WriteLine(Environment.NewLine + @"Press any key to close this window...");
-	                    _ = NativeMethods.FreeConsole();
-	                    Environment.Exit(0);
-	                    return;
-					}else
+                        Console.WriteLine(Environment.NewLine + @"Press any key to close this window...");
+                        _ = NativeMethods.FreeConsole();
+                        Environment.Exit(0);
+                        return;
+                    }
+                    else
                     {
-	                    _ = NativeMethods.FreeConsole();
+                        _ = NativeMethods.FreeConsole();
                     }
                 }
 
@@ -189,26 +190,26 @@ namespace TcNo_Acc_Switcher_Client
                 }
 
                 Directory.Move("newUpdater", "updater");
-			}
+            }
 
-			// Clear WebView2 cache
-			Globals.ClearWebCache();
+            // Clear WebView2 cache
+            Globals.ClearWebCache();
 
-			// Check for update in another thread
-			new Thread(CheckForUpdate).Start();
+            // Check for update in another thread
+            new Thread(CheckForUpdate).Start();
 
-			// Show window (Because no command line commands were parsed)
-			var mainWindow = new MainWindow();
+            // Show window (Because no command line commands were parsed)
+            var mainWindow = new MainWindow();
             mainWindow.Show();
 
             if (File.Exists("LastError.txt"))
             {
-	            var lastError = await File.ReadAllLinesAsync("LastError.txt");
-	            lastError = lastError.Skip(1).ToArray();
+                var lastError = await File.ReadAllLinesAsync("LastError.txt");
+                lastError = lastError.Skip(1).ToArray();
                 // TODO: Work in progress:
-	            //ShowErrorMessage("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
+                //ShowErrorMessage("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
                 MessageBox.Show("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
-	            File.Delete("LastError.txt");
+                File.Delete("LastError.txt");
             }
         }
 
@@ -243,7 +244,7 @@ namespace TcNo_Acc_Switcher_Client
 
 
 
-            cmb.ShowDialog();
+            _ = cmb.ShowDialog();
         }
 
         private static SolidColorBrush GetStylesheetColor(string key, string fallback)
@@ -278,46 +279,46 @@ namespace TcNo_Acc_Switcher_Client
         private static void IsRunningAlready()
         {
 
-	        if (!AppSettings.Instance.LoadFromFile())
-	        {
-		        if (File.Exists("StyleSettings_ErrorInfo.txt"))
-		        {
-			        var errorText = Globals.ReadAllText("StyleSettings_ErrorInfo.txt").Split("\n");
-			        MessageBox.Show(
-				        "Could not load StyleSettings.json! Error details: " + Environment.NewLine +
-				        errorText[0] + Environment.NewLine + Environment.NewLine +
-				        "The default file will be loaded." + Environment.NewLine +
-				        "See \"StyleSettings_broken.yaml\" for the broken style settings." + Environment.NewLine +
-				        "See \"StyleSettings_ErrorInfo.txt\" for the full error message. Above is only the first line.", "Failed to load Styles", MessageBoxButton.OK,
-				        MessageBoxImage.Error);
-			        try
-			        {
-				        AppSettings.Instance.LoadFromFile();
+            if (!AppSettings.Instance.LoadFromFile())
+            {
+                if (File.Exists("StyleSettings_ErrorInfo.txt"))
+                {
+                    var errorText = Globals.ReadAllText("StyleSettings_ErrorInfo.txt").Split("\n");
+                    _ = MessageBox.Show(
+                        "Could not load StyleSettings.json! Error details: " + Environment.NewLine +
+                        errorText[0] + Environment.NewLine + Environment.NewLine +
+                        "The default file will be loaded." + Environment.NewLine +
+                        "See \"StyleSettings_broken.yaml\" for the broken style settings." + Environment.NewLine +
+                        "See \"StyleSettings_ErrorInfo.txt\" for the full error message. Above is only the first line.", "Failed to load Styles", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    try
+                    {
+                        _ = AppSettings.Instance.LoadFromFile();
                     }
-			        catch (Exception e)
-			        {
-				        MessageBox.Show(
-					        "Another unexpected error occurred! Error details: " + Environment.NewLine +
-					        e, "Failed to load Styles (2)", MessageBoxButton.OK, MessageBoxImage.Error);
+                    catch (Exception e)
+                    {
+                        _ = MessageBox.Show(
+                            "Another unexpected error occurred! Error details: " + Environment.NewLine +
+                            e, "Failed to load Styles (2)", MessageBoxButton.OK, MessageBoxImage.Error);
                         throw;
-			        }
-		        }
-	        }
+                    }
+                }
+            }
             try
             {
                 // Check if program is running, if not: return.
                 if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
 
-				// The program is running at this point.
+                // The program is running at this point.
                 // If set to minimize to tray, try open it.
-				if (AppSettings.Instance.TrayMinimizeNotExit)
-				{
-					if (Globals.BringToFront())
-						Environment.Exit(1056); // 1056	An instance of the service is already running.
+                if (AppSettings.Instance.TrayMinimizeNotExit)
+                {
+                    if (Globals.BringToFront())
+                        Environment.Exit(1056); // 1056	An instance of the service is already running.
                 }
 
-				// Otherwise: It has probably just closed. Wait a few and try again
-				Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
+                // Otherwise: It has probably just closed. Wait a few and try again
+                Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
 
                 if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
                 // Try to show from tray, as user may not know it's hidden there.
@@ -332,7 +333,7 @@ namespace TcNo_Acc_Switcher_Client
                            "- You can exit it from there too" + Environment.NewLine + Environment.NewLine +
                            "[Something wrong? Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]";
 
-                MessageBox.Show(text, "TcNo Account Switcher Notice", MessageBoxButton.OK,
+                _ = MessageBox.Show(text, "TcNo Account Switcher Notice", MessageBoxButton.OK,
                     MessageBoxImage.Information,
                     MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
                 Environment.Exit(1056); // 1056	An instance of the service is already running.
@@ -353,7 +354,7 @@ namespace TcNo_Acc_Switcher_Client
         {
             Console.WriteLine(@"Welcome to the TcNo Account Switcher - Command Line Interface!");
             Console.WriteLine(@"Use -h (or --help) for more info." + Environment.NewLine);
-            
+
             for (var i = 0; i != e.Args.Length; ++i)
             {
                 // --- Switching to accounts ---
@@ -366,9 +367,9 @@ namespace TcNo_Acc_Switcher_Client
                 // --- Switching to accounts via protocol ---
                 if (e.Args[i].ToLowerInvariant().StartsWith(@"tcno:\\"))
                 {
-	                CliSwitch(e.Args, i);
-	                continue;
-				}
+                    CliSwitch(e.Args, i);
+                    continue;
+                }
 
                 // --- Log out of accounts ---
                 if (e.Args[i].StartsWith("logout"))
@@ -376,7 +377,7 @@ namespace TcNo_Acc_Switcher_Client
                     await CliLogout(e.Args[i]).ConfigureAwait(false);
                     continue;
                 }
-                
+
                 switch (e.Args[i])
                 {
                     case "h":
@@ -430,9 +431,9 @@ namespace TcNo_Acc_Switcher_Client
         /// <param name="i">Index of argument to process</param>
         private static void CliSwitch(string[] args, int i)
         {
-	        if (args.Length < i) return;
-	        if (args[i].StartsWith(@"tcno:\\")) // Launched through Protocol
-		        args[i] = '+' + args[i][7..];
+            if (args.Length < i) return;
+            if (args[i].StartsWith(@"tcno:\\")) // Launched through Protocol
+                args[i] = '+' + args[i][7..];
 
             var command = args[i][1..].Split(':'); // Drop '+' and split
             var platform = command[0];
@@ -442,119 +443,119 @@ namespace TcNo_Acc_Switcher_Client
 
             switch (platform[^1..])
             {
-	            // Battle.Net
-	            case "b":
-	            {
-		            // Battlenet format: +b:<email>
-		            Globals.WriteToLog("Battle.net switch requested");
-		            if (!GeneralFuncs.CanKillProcess("Battle.net"))
-			            RestartAsAdmin(combinedArgs);
-		            BattleNet.Instance.LoadFromFile();
-		            _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account, string.Join(' ', remainingArguments));
-		            return;
-	            }
-	            // Discord
-	            case "d":
-	            {
-		            // Discord format: +d:<username>
-		            Globals.WriteToLog("Discord switch requested");
-		            string pass;
-
-                    if (command.Length < 3) // Get password as third argument, or as input from user.
-		            {
-			            while (true)
-			            {
-                            // Get password from user
-                            Globals.WriteToLog("Please insert your Discord account switcher password:");
-                            pass = CliGetPass();
-                            Globals.WriteToLog(Environment.NewLine);
-
-				            if (string.IsNullOrEmpty(pass))
-				            {
-					            Globals.WriteToLog("Error: Password is required to decrypt data, to switch accounts.");
-					            Console.WriteLine(Environment.NewLine + @"Press any key to close this window..."); 
-					            return;
-				            }
-
-				            if (!GeneralInvocableFuncs.GiVerifyPlatformPassword("Discord", pass))
-					            Globals.WriteToLog("Error: Password is incorrect." + Environment.NewLine);
-				            else
-					            break;
-			            }
-		            }
-                    else
+                // Battle.Net
+                case "b":
                     {
-	                    pass = command[2];
-	                    if (!GeneralInvocableFuncs.GiVerifyPlatformPassword("Discord", pass))
-						{
-							Globals.WriteToLog("Error: Password is incorrect.");
-							Console.WriteLine(Environment.NewLine + @"Press any key to close this window...");
-							return;
-						}
+                        // Battlenet format: +b:<email>
+                        Globals.WriteToLog("Battle.net switch requested");
+                        if (!GeneralFuncs.CanKillProcess("Battle.net"))
+                            RestartAsAdmin(combinedArgs);
+                        BattleNet.Instance.LoadFromFile();
+                        _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account, string.Join(' ', remainingArguments));
+                        return;
                     }
+                // Discord
+                case "d":
+                    {
+                        // Discord format: +d:<username>
+                        Globals.WriteToLog("Discord switch requested");
+                        string pass;
 
-		            if (!GeneralFuncs.CanKillProcess("Discord"))
-			            RestartAsAdmin(combinedArgs);
-		            Discord.Instance.LoadFromFile();
-			        TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherFuncs.SwapDiscordAccounts(account, string.Join(' ', remainingArguments));
-						
-		            return;
-	            }
+                        if (command.Length < 3) // Get password as third argument, or as input from user.
+                        {
+                            while (true)
+                            {
+                                // Get password from user
+                                Globals.WriteToLog("Please insert your Discord account switcher password:");
+                                pass = CliGetPass();
+                                Globals.WriteToLog(Environment.NewLine);
+
+                                if (string.IsNullOrEmpty(pass))
+                                {
+                                    Globals.WriteToLog("Error: Password is required to decrypt data, to switch accounts.");
+                                    Console.WriteLine(Environment.NewLine + @"Press any key to close this window...");
+                                    return;
+                                }
+
+                                if (!GeneralInvocableFuncs.GiVerifyPlatformPassword("Discord", pass))
+                                    Globals.WriteToLog("Error: Password is incorrect." + Environment.NewLine);
+                                else
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            pass = command[2];
+                            if (!GeneralInvocableFuncs.GiVerifyPlatformPassword("Discord", pass))
+                            {
+                                Globals.WriteToLog("Error: Password is incorrect.");
+                                Console.WriteLine(Environment.NewLine + @"Press any key to close this window...");
+                                return;
+                            }
+                        }
+
+                        if (!GeneralFuncs.CanKillProcess("Discord"))
+                            RestartAsAdmin(combinedArgs);
+                        Discord.Instance.LoadFromFile();
+                        TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherFuncs.SwapDiscordAccounts(account, string.Join(' ', remainingArguments));
+
+                        return;
+                    }
                 // Epic Games
                 case "e":
-	            {
-		            // Epic Games format: +e:<username>
-		            Globals.WriteToLog("Epic Games switch requested");
-		            if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) RestartAsAdmin(combinedArgs);
-		            Epic.Instance.LoadFromFile();
-		            TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account, string.Join(' ', remainingArguments));
-		            return;
-	            }
-	            // Origin
-	            case "o":
-	            {
-		            // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
-		            Globals.WriteToLog("Origin switch requested");
-		            if (!GeneralFuncs.CanKillProcess("Origin")) RestartAsAdmin(combinedArgs);
-		            Origin.Instance.LoadFromFile();
-		            TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account,
-			            command.Length > 2 ? int.Parse(command[2]) : 0, string.Join(' ', remainingArguments));
-		            return;
-	            }
-	            // Riot Games
-	            case "r":
-	            {
-		            // Riot Games format: +e:<username>
-		            Globals.WriteToLog("Riot Games switch requested");
-		            if (!TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.CanCloseRiot()) RestartAsAdmin(combinedArgs);
-		            Riot.Instance.LoadFromFile();
-		            TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'), string.Join(' ', remainingArguments));
-		            return;
-	            }
-	            // Steam
-	            case "s":
-	            {
-		            // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
-		            Globals.WriteToLog("Steam switch requested");
-		            if (!GeneralFuncs.CanKillProcess("steam")) RestartAsAdmin(combinedArgs);
-		            Steam.Instance.LoadFromFile();
-		            TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
-			            ePersonaState: command.Length > 2
-				            ? int.Parse(command[2])
-				            : -1, args: string.Join(' ', remainingArguments)); // Request has a PersonaState in it
-		            return;
-	            }
-	            // Ubisoft
-	            case "u":
-	            {
-		            // Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]
-		            Globals.WriteToLog("Ubisoft Connect switch requested");
-		            if (!GeneralFuncs.CanKillProcess("upc")) RestartAsAdmin(combinedArgs);
-		            Ubisoft.Instance.LoadFromFile();
-		            TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account,
-			            command.Length > 2 ? int.Parse(command[2]) : -1, string.Join(' ', remainingArguments));
-		            break;
-	            }
+                    {
+                        // Epic Games format: +e:<username>
+                        Globals.WriteToLog("Epic Games switch requested");
+                        if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) RestartAsAdmin(combinedArgs);
+                        Epic.Instance.LoadFromFile();
+                        TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account, string.Join(' ', remainingArguments));
+                        return;
+                    }
+                // Origin
+                case "o":
+                    {
+                        // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
+                        Globals.WriteToLog("Origin switch requested");
+                        if (!GeneralFuncs.CanKillProcess("Origin")) RestartAsAdmin(combinedArgs);
+                        Origin.Instance.LoadFromFile();
+                        TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account,
+                            command.Length > 2 ? int.Parse(command[2]) : 0, string.Join(' ', remainingArguments));
+                        return;
+                    }
+                // Riot Games
+                case "r":
+                    {
+                        // Riot Games format: +e:<username>
+                        Globals.WriteToLog("Riot Games switch requested");
+                        if (!TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.CanCloseRiot()) RestartAsAdmin(combinedArgs);
+                        Riot.Instance.LoadFromFile();
+                        TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'), string.Join(' ', remainingArguments));
+                        return;
+                    }
+                // Steam
+                case "s":
+                    {
+                        // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
+                        Globals.WriteToLog("Steam switch requested");
+                        if (!GeneralFuncs.CanKillProcess("steam")) RestartAsAdmin(combinedArgs);
+                        Steam.Instance.LoadFromFile();
+                        TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
+                            ePersonaState: command.Length > 2
+                                ? int.Parse(command[2])
+                                : -1, args: string.Join(' ', remainingArguments)); // Request has a PersonaState in it
+                        return;
+                    }
+                // Ubisoft
+                case "u":
+                    {
+                        // Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]
+                        Globals.WriteToLog("Ubisoft Connect switch requested");
+                        if (!GeneralFuncs.CanKillProcess("upc")) RestartAsAdmin(combinedArgs);
+                        Ubisoft.Instance.LoadFromFile();
+                        TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account,
+                            command.Length > 2 ? int.Parse(command[2]) : -1, string.Join(' ', remainingArguments));
+                        break;
+                    }
             }
         }
 
@@ -564,26 +565,26 @@ namespace TcNo_Acc_Switcher_Client
         /// <returns>String entered by user</returns>
         private static string CliGetPass()
         {
-	        var pass = string.Empty;
-	        ConsoleKey key;
-	        do
-	        {
-		        var keyInfo = Console.ReadKey(intercept: true);
-		        key = keyInfo.Key;
+            var pass = string.Empty;
+            ConsoleKey key;
+            do
+            {
+                var keyInfo = Console.ReadKey(intercept: true);
+                key = keyInfo.Key;
 
-		        if (key == ConsoleKey.Backspace && pass.Length > 0)
-		        {
-			        Console.Write("\b \b");
-			        pass = pass[0..^1];
-		        }
-		        else if (!char.IsControl(keyInfo.KeyChar))
-		        {
-			        Console.Write("*");
-			        pass += keyInfo.KeyChar;
-		        }
-	        } while (key != ConsoleKey.Enter);
+                if (key == ConsoleKey.Backspace && pass.Length > 0)
+                {
+                    Console.Write("\b \b");
+                    pass = pass[0..^1];
+                }
+                else if (!char.IsControl(keyInfo.KeyChar))
+                {
+                    Console.Write("*");
+                    pass += keyInfo.KeyChar;
+                }
+            } while (key != ConsoleKey.Enter);
 
-	        return pass;
+            return pass;
         }
 
         /// <summary>
@@ -607,17 +608,17 @@ namespace TcNo_Acc_Switcher_Client
                 // Discord
                 case "d":
                 case "discord":
-	                Globals.WriteToLog("Discord logout requested");
-	                TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherBase.NewLogin_Discord();
-	                break;
+                    Globals.WriteToLog("Discord logout requested");
+                    TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherBase.NewLogin_Discord();
+                    break;
 
                 // Epic Games
                 case "e":
                 case "epic":
                 case "epicgames":
-	                Globals.WriteToLog("Epic Games logout requested");
-	                TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherBase.NewLogin_Epic();
-	                break;
+                    Globals.WriteToLog("Epic Games logout requested");
+                    TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherBase.NewLogin_Epic();
+                    break;
 
                 // Origin
                 case "o":
@@ -659,7 +660,7 @@ namespace TcNo_Acc_Switcher_Client
         public static void UploadLogs()
         {
             if (!Directory.Exists("CrashLogs")) return;
-            if (!Directory.Exists("CrashLogs\\Submitted")) Directory.CreateDirectory("CrashLogs\\Submitted");
+            if (!Directory.Exists("CrashLogs\\Submitted")) _ = Directory.CreateDirectory("CrashLogs\\Submitted");
 
             // Collect all logs into one string to compress
             var postData = new Dictionary<string, string>();
@@ -679,7 +680,7 @@ namespace TcNo_Acc_Switcher_Client
 
             // If no logs collected, return.
             if (combinedCrashLogs == "") return;
-            
+
             // Else: send log file as well.
             if (File.Exists("log.txt"))
             {
@@ -693,7 +694,7 @@ namespace TcNo_Acc_Switcher_Client
                     Globals.WriteToLog(@"[Caught - UploadLogs()]" + e);
                 }
             }
-            
+
             // Send report to server
             postData.Add("crashLogs", Compress(combinedCrashLogs));
             if (postData.Count == 0) return;
@@ -723,7 +724,7 @@ namespace TcNo_Acc_Switcher_Client
             memoryStream.Position = 0;
 
             var compressedData = new byte[memoryStream.Length];
-            memoryStream.Read(compressedData, 0, compressedData.Length);
+            _ = memoryStream.Read(compressedData, 0, compressedData.Length);
 
             return Convert.ToBase64String(compressedData);
         }
@@ -788,14 +789,14 @@ namespace TcNo_Acc_Switcher_Client
         }
 
 
-#region ResizeWindows
+        #region ResizeWindows
         // https://stackoverflow.com/a/27157947/5165437
         private bool _resizeInProcess;
         private void Resize_Init(object sender, MouseButtonEventArgs e)
         {
             if (sender is not Rectangle senderRect) return;
             _resizeInProcess = true;
-            senderRect.CaptureMouse();
+            _ = senderRect.CaptureMouse();
         }
 
         private void Resize_End(object sender, MouseButtonEventArgs e)
@@ -812,7 +813,7 @@ namespace TcNo_Acc_Switcher_Client
             var mainWindow = senderRect.Tag as Window;
             var width = e.GetPosition(mainWindow).X;
             var height = e.GetPosition(mainWindow).Y;
-            senderRect.CaptureMouse();
+            _ = senderRect.CaptureMouse();
             if (senderRect.Name.ToLowerInvariant().Contains("right"))
             {
                 width += 5;
@@ -851,6 +852,6 @@ namespace TcNo_Acc_Switcher_Client
                 mainWindow.Height = height;
             }
         }
-#endregion
+        #endregion
     }
 }

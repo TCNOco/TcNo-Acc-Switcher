@@ -27,9 +27,9 @@ namespace TcNo_Acc_Switcher_Server.Shared
     {
         public string GetStylesheetMarkupString()
         {
-	        if (_appSettings.Stylesheet == null)
-	        {
-		        AppSettings.Instance.LoadFromFile();
+            if (_appSettings.Stylesheet == null)
+            {
+                _ = AppSettings.Instance.LoadFromFile();
             }
 
             var markupString = "";

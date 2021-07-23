@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 {
-	public class Cryptography
-	{
+    public class Cryptography
+    {
         // https://stackoverflow.com/a/10177020/2061103
         public static class StringCipher
         {
@@ -21,7 +21,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             private const int DerivationIterations = 1000;
 
             public static string EncryptString(string plainText, string passPhrase) =>
-	            Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes(plainText), passPhrase));
+                Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes(plainText), passPhrase));
 
             public static byte[] Encrypt(byte[] data, string passPhrase)
             {
@@ -34,7 +34,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 
                 using var symmetricKey = new RijndaelManaged
                 {
-	                BlockSize = 128, Mode = CipherMode.CBC, Padding = PaddingMode.PKCS7
+                    BlockSize = 128,
+                    Mode = CipherMode.CBC,
+                    Padding = PaddingMode.PKCS7
                 };
 
                 using var encryptor = symmetricKey.CreateEncryptor(keyBytes, ivStringBytes);
@@ -68,7 +70,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 
                 using var symmetricKey = new RijndaelManaged
                 {
-	                BlockSize = 128, Mode = CipherMode.CBC, Padding = PaddingMode.PKCS7
+                    BlockSize = 128,
+                    Mode = CipherMode.CBC,
+                    Padding = PaddingMode.PKCS7
                 };
 
                 using var decryptor = symmetricKey.CreateDecryptor(keyBytes, ivStringBytes);
@@ -94,29 +98,29 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 
             public static bool DecryptFile(string path, string pass)
             {
-	            if (!File.Exists(path)) return false;
-	            try
-	            {
-		            File.WriteAllBytes(path, Cryptography.StringCipher.Decrypt(File.ReadAllBytes(path), pass));
-		            return true;
-	            }
-	            catch (Exception)
-	            {
-		            return false;
-	            }
+                if (!File.Exists(path)) return false;
+                try
+                {
+                    File.WriteAllBytes(path, Cryptography.StringCipher.Decrypt(File.ReadAllBytes(path), pass));
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
             public static bool EncryptFile(string path, string pass)
             {
-	            if (!File.Exists(path)) return false;
-	            try
-	            {
-		            File.WriteAllBytes(path, Cryptography.StringCipher.Encrypt(File.ReadAllBytes(path), pass));
-		            return true;
-	            }
-	            catch (Exception)
-	            {
-		            return false;
-	            }
+                if (!File.Exists(path)) return false;
+                try
+                {
+                    File.WriteAllBytes(path, Cryptography.StringCipher.Encrypt(File.ReadAllBytes(path), pass));
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
         }
     }

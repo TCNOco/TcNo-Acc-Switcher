@@ -34,22 +34,22 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         private static void IsRunningAlready()
         {
-	        try
-	        {
-		        if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
+            try
+            {
+                if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
 
-		        // Otherwise: It has probably just closed. Wait a few and try again
-		        Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
+                // Otherwise: It has probably just closed. Wait a few and try again
+                Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
 
-		        if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
-				// Try to show from tray, as user may not know it's hidden there.
-				MessageBox.Show("Another TcNo Account Switcher Updater instance has been detected.");
-				Environment.Exit(1056); // An instance of the service is already running.
-	        }
-	        catch (AbandonedMutexException)
-	        {
-		        // Just restarted 
-	        }
+                if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
+                // Try to show from tray, as user may not know it's hidden there.
+                _ = MessageBox.Show("Another TcNo Account Switcher Updater instance has been detected.");
+                Environment.Exit(1056); // An instance of the service is already running.
+            }
+            catch (AbandonedMutexException)
+            {
+                // Just restarted 
+            }
         }
 
         [STAThread]
@@ -82,8 +82,8 @@ namespace TcNo_Acc_Switcher_Updater
         }
 
         public static string AppDataFolder =>
-	        Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName;
-        
+            Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName;
+
         /// <summary>
         /// Exception handling for all programs
         /// </summary>
@@ -91,9 +91,9 @@ namespace TcNo_Acc_Switcher_Updater
         {
             // Set working directory to parent
             if (File.Exists(Path.Join(AppDataFolder, "userdata_path.txt")))
-	            Directory.SetCurrentDirectory(UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim());
+                Directory.SetCurrentDirectory(UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim());
             else
-	            Directory.SetCurrentDirectory(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\"));
+                Directory.SetCurrentDirectory(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\"));
             var version = "unknown";
             try
             {
@@ -110,27 +110,27 @@ namespace TcNo_Acc_Switcher_Updater
 
             // Log Unhandled Exception
             var exceptionStr = e.ExceptionObject.ToString();
-            Directory.CreateDirectory("CrashLogs");
+            _ = Directory.CreateDirectory("CrashLogs");
             var filePath = $"CrashLogs\\AccSwitcher-Updater-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
             using var sw = File.AppendText(filePath);
             sw.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({version})\tUNHANDLED CRASH: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
 
             //if (e.ExceptionObject.)
             //{
-	           // if (e.HResult == -2147024671)
-		          //  MessageBox.Show(
-			         //   "Error: Windows has 'detected a virus or potentially unwanted software'. This is a false positive, and can be safely ignored. User action is required." +
-			         //   Environment.NewLine +
-			         //   "1. Please whitelist the program's directory." + Environment.NewLine +
-			         //   "2. Run the Updater in the programs folder, in the 'updater' folder." + Environment.NewLine +
-			         //   "OR download a fresh installer/copy from GitHub." + Environment.NewLine +
-			         //   Environment.NewLine +
-			         //   "I am aware of these and work as fast as possible to report false positives, and stop them being detected.",
-			         //   "Windows error", MessageBoxButton.OK, MessageBoxImage.Error);
-	           // else
-		          //  throw;
+            // if (e.HResult == -2147024671)
+            //  MessageBox.Show(
+            //   "Error: Windows has 'detected a virus or potentially unwanted software'. This is a false positive, and can be safely ignored. User action is required." +
+            //   Environment.NewLine +
+            //   "1. Please whitelist the program's directory." + Environment.NewLine +
+            //   "2. Run the Updater in the programs folder, in the 'updater' folder." + Environment.NewLine +
+            //   "OR download a fresh installer/copy from GitHub." + Environment.NewLine +
+            //   Environment.NewLine +
+            //   "I am aware of these and work as fast as possible to report false positives, and stop them being detected.",
+            //   "Windows error", MessageBoxButton.OK, MessageBoxImage.Error);
+            // else
+            //  throw;
             //})
-            MessageBox.Show("This crashlog will be automatically submitted next launch." + Environment.NewLine + Environment.NewLine + "Error: " + e.ExceptionObject, "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+            _ = MessageBox.Show("This crashlog will be automatically submitted next launch." + Environment.NewLine + Environment.NewLine + "Error: " + e.ExceptionObject, "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
         }
     }
 }

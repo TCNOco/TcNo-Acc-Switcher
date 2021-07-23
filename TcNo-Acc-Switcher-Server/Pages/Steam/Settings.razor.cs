@@ -23,20 +23,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class Settings
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         protected override void OnInitialized()
         {
             AppData.Instance.WindowTitle = Lang["Title_Steam_Settings"];
             Globals.DebugWriteLine(@"[Auto:Steam\Settings.razor.cs.OnInitializedAsync]");
         }
-        
+
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
         public void PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.PickFolder]");
-            GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
+            _ = GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
         }
 
         // BUTTON: Check account VAC status
@@ -44,9 +44,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
             if (SteamSwitcherFuncs.DeleteVacCacheFile())
-                GeneralInvocableFuncs.ShowToast("success", Lang["Toast_Steam_VacCleared"], renderTo: "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_Steam_VacCleared"], renderTo: "toastarea");
             else
-                GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_CantDeleteVacCache"], Lang["Error"], "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_CantDeleteVacCache"], Lang["Error"], "toastarea");
         }
 
         // BUTTON: Reset settings
@@ -74,7 +74,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void OpenFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.OpenSteamFolder]");
-            Process.Start("explorer.exe", new Data.Settings.Steam().FolderPath);
+            _ = Process.Start("explorer.exe", new Data.Settings.Steam().FolderPath);
         }
 
         // BUTTON: Advanced Cleaning...

@@ -58,14 +58,14 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <returns>Whether the directory exists and successfully added listed names</returns>
         public static bool ListAccountsFromFolder(string folder, out List<string> accList)
         {
-	        accList = new List<string>();
+            accList = new List<string>();
 
             if (!Directory.Exists(folder)) return false;
             accList = (from f in Directory.GetDirectories(folder) let lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1 select f[lastSlash..]).ToList();
 
             return true;
         }
-        
+
         /// <summary>
         /// Orders a list of strings by order specific in jsonOrderFile
         /// </summary>
@@ -79,24 +79,24 @@ namespace TcNo_Acc_Switcher_Server.Data
             var savedOrder = JsonConvert.DeserializeObject<List<string>>(Globals.ReadAllText(jsonOrderFile));
             if (savedOrder == null) return accList;
             var index = 0;
-            if (savedOrder is not {Count: > 0}) return accList;
+            if (savedOrder is not { Count: > 0 }) return accList;
             foreach (var acc in from i in savedOrder where accList.Any(x => x == i) select accList.Single(x => x == i))
             {
-                accList.Remove(acc);
+                _ = accList.Remove(acc);
                 accList.Insert(index, acc);
                 index++;
             }
             return accList;
         }
-    
+
         /// <summary>
         /// Runs jQueryProcessAccListSize, initContextMenu and initAccListSortable - Final init needed for account switcher to work.
         /// </summary>
         public static void FinaliseAccountList()
         {
-            AppData.InvokeVoidAsync("jQueryProcessAccListSize");
-            AppData.InvokeVoidAsync("initContextMenu");
-            AppData.InvokeVoidAsync("initAccListSortable");
+            _ = AppData.InvokeVoidAsync("jQueryProcessAccListSize");
+            _ = AppData.InvokeVoidAsync("initContextMenu");
+            _ = AppData.InvokeVoidAsync("initAccListSortable");
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     imgPath = GetImgPath(platform, str);
                     try
                     {
-                        AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
+                        _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
                             $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{str}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                             $"<label for=\"{str}\" class=\"acc\">\r\n" +
                             $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
@@ -135,7 +135,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     imgPath = GetImgPath(platform, key);
                     try
                     {
-                        AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
+                        _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
                             $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{key}\" Username=\"{value}\" DisplayName=\"{value}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                             $"<label for=\"{key}\" class=\"acc\">\r\n" +
                             $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
@@ -176,7 +176,7 @@ internal static class WindowsClipboard
         if (text == null) return;
         OpenClipboard();
 
-        EmptyClipboard();
+        _ = EmptyClipboard();
         IntPtr hGlobal = default;
         try
         {
@@ -193,7 +193,7 @@ internal static class WindowsClipboard
             }
             finally
             {
-                GlobalUnlock(target);
+                _ = GlobalUnlock(target);
             }
 
             if (SetClipboardData(CfUnicodeText, hGlobal) == default) ThrowWin32();
@@ -202,7 +202,7 @@ internal static class WindowsClipboard
         finally
         {
             if (hGlobal != default) Marshal.FreeHGlobal(hGlobal);
-            CloseClipboard();
+            _ = CloseClipboard();
         }
     }
 

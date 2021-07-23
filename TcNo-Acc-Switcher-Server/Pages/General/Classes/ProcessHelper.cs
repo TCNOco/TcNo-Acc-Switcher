@@ -33,36 +33,36 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         [SupportedOSPlatform("windows")]
         public static bool IsProcessAdmin(string processName)
         {
-	        var processes = Process.GetProcessesByName(processName);
-	        if (processes.Length == 0) return false; // Program is not running
-	        var proc = processes[0];
+            var processes = Process.GetProcessesByName(processName);
+            if (processes.Length == 0) return false; // Program is not running
+            var proc = processes[0];
 
-	        IntPtr handle;
-	        try
-	        {
-		        handle = proc.Handle;
-		        return IsHandleAdmin(handle);
-	        }
-	        catch (Exception)
-	        {
-		        try
-		        {
-			        handle = proc.MainWindowHandle;
-			        return IsHandleAdmin(handle);
-		        }
-		        catch (Exception a)
-		        {
-			        Globals.WriteToLog(a.ToString());
-		        }
-	        }
+            IntPtr handle;
+            try
+            {
+                handle = proc.Handle;
+                return IsHandleAdmin(handle);
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    handle = proc.MainWindowHandle;
+                    return IsHandleAdmin(handle);
+                }
+                catch (Exception a)
+                {
+                    Globals.WriteToLog(a.ToString());
+                }
+            }
 
-	        return true;
+            return true;
         }
 
         [SupportedOSPlatform("windows")]
         public static bool IsProcessRunning(string processName)
         {
-	        var proc = Process.GetProcessesByName(processName);
+            var proc = Process.GetProcessesByName(processName);
 
             return proc.Length != 0;
         }
@@ -70,7 +70,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         [SupportedOSPlatform("windows")]
         private static bool IsHandleAdmin(IntPtr handle)
         {
-            OpenProcessToken(handle, AllAccess, out var ph);
+            _ = OpenProcessToken(handle, AllAccess, out var ph);
 
             if (ph == IntPtr.Zero) return true;
 
@@ -78,12 +78,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
 
             var result =
                 (from role in identity.Groups
-                    where role.IsValidTargetType(typeof(SecurityIdentifier))
-                    select role as SecurityIdentifier).Any(sid =>
-                    sid.IsWellKnown(WellKnownSidType.AccountAdministratorSid) ||
-                    sid.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid));
+                 where role.IsValidTargetType(typeof(SecurityIdentifier))
+                 select role as SecurityIdentifier).Any(sid =>
+                 sid.IsWellKnown(WellKnownSidType.AccountAdministratorSid) ||
+                 sid.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid));
 
-            CloseHandle(ph);
+            _ = CloseHandle(ph);
 
             return result;
         }

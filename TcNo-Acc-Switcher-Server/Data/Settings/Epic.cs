@@ -23,9 +23,9 @@ using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class Epic
-	{
-		private static readonly Lang Lang = Lang.Instance;
-		private static Epic _instance = new();
+    {
+        private static readonly Lang Lang = Lang.Instance;
+        private static Epic _instance = new();
 
         private static readonly object LockObj = new();
         public static Epic Instance

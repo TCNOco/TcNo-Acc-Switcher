@@ -26,7 +26,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class AdvancedClearing
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
         [Inject]
         protected AppData AppData { get; set; }
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
@@ -43,12 +43,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         private static void WriteLine(string text)
         {
             Globals.DebugWriteLine($@"[Auto:Steam\AdvancedClearing.razor.cs.WriteLine] Line: {text}");
-            AppData.InvokeVoidAsync(SteamReturn, text);
+            _ = AppData.InvokeVoidAsync(SteamReturn, text);
         }
 
         private static void NewLine()
         {
-            AppData.InvokeVoidAsync(SteamReturn, "<br />");
+            _ = AppData.InvokeVoidAsync(SteamReturn, "<br />");
         }
 
         // BUTTON: Kill Steam process

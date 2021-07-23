@@ -31,8 +31,8 @@ using TcNo_Acc_Switcher_Server.Pages.General;
 namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 {
     public class BattleNetSwitcherFuncs
-	{
-		private static readonly Lang Lang = Lang.Instance;
+    {
+        private static readonly Lang Lang = Lang.Instance;
 
         private static readonly Data.Settings.BattleNet BattleNet = Data.Settings.BattleNet.Instance;
         private static string _battleNetRoaming;
@@ -71,7 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
             foreach (var mail in savedAccountsList.ToString().Split(','))
             {
-	            if (string.IsNullOrEmpty(mail) || string.IsNullOrWhiteSpace(mail)) continue; // Ignores blank emails sometimes added: ".com, , asdf@..." 
+                if (string.IsNullOrEmpty(mail) || string.IsNullOrWhiteSpace(mail)) continue; // Ignores blank emails sometimes added: ".com, , asdf@..." 
                 try
                 {
                     if (BattleNet.Accounts.Count == 0 || BattleNet.Accounts.All(x => x.Email != mail) && !BattleNet.IgnoredAccounts.Contains(mail) && mail != " ")
@@ -93,7 +93,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     if (savedOrder is { Count: > 0 })
                         foreach (var acc in from i in savedOrder where BattleNet.Accounts.Any(x => x.Email == i) select BattleNet.Accounts.Single(x => x.Email == i))
                         {
-                            BattleNet.Accounts.Remove(acc);
+                            _ = BattleNet.Accounts.Remove(acc);
                             BattleNet.Accounts.Insert(index, acc);
                             index++;
                         }
@@ -102,7 +102,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
             foreach (var acc in BattleNet.Accounts)
             {
-                if (!File.Exists(Path.Join(BattleNet.ImagePath, $"{acc.Email}.png"))) DownloadImage(acc.Email);
+                if (!File.Exists(Path.Join(BattleNet.ImagePath, $"{acc.Email}.png"))) _ = DownloadImage(acc.Email);
                 var username = acc.BTag == null ? acc.Email : acc.BTag.Contains("#") ? acc.BTag.Split("#")[0] : acc.BTag;
                 var element =
                     $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{acc.Email}\" Username=\"{username}\" DisplayName=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
@@ -125,11 +125,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     }
                 }
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
-                AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element + "</div>");
+                _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element + "</div>");
             }
 
             GenericFunctions.FinaliseAccountList(); // Init context menu & Sorting
-            if(BattleNet.OverwatchMode)
+            if (BattleNet.OverwatchMode)
                 await InitOverwatchMode();
         }
 
@@ -160,7 +160,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static string DownloadImage(string bTag, string imgUrl = "")
         {
             var dlDir = Path.Join(BattleNet.ImagePath, $"{bTag}.png");
-            Directory.CreateDirectory(BattleNet.ImagePath);
+            _ = Directory.CreateDirectory(BattleNet.ImagePath);
             if (imgUrl == "")
             {
                 File.Copy("wwwroot\\img\\BattleNetDefault.png", dlDir);
@@ -170,8 +170,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             if (File.Exists(dlDir))
             {
                 if (GeneralFuncs.GetFileMd5(dlDir) == GeneralFuncs.GetFileMd5("wwwroot\\img\\BattleNetDefault.png")) File.Delete(dlDir);
-                GeneralFuncs.DeletedOutdatedFile(dlDir, BattleNet.ImageExpiryTime);
-                GeneralFuncs.DeletedInvalidImage(dlDir);
+                _ = GeneralFuncs.DeletedOutdatedFile(dlDir, BattleNet.ImageExpiryTime);
+                _ = GeneralFuncs.DeletedInvalidImage(dlDir);
             }
             // Download new copy of the file
             if (File.Exists(dlDir)) return dlDir;
@@ -200,9 +200,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             LoadImportantData();
             if (BattleNet.Accounts.Count == 0) BattleNet.LoadAccounts();
 
-            AppData.InvokeVoidAsync("updateStatus", "Starting BattleNet");
+            _ = AppData.InvokeVoidAsync("updateStatus", "Starting BattleNet");
             if (!CloseBattleNet()) return;
-            
+
             // Load settings into JObject
             var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config").ConfigureAwait(false);
             if (JsonConvert.DeserializeObject(file) is not JObject jObject)
@@ -219,15 +219,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             {
                 account = BattleNet.Accounts.First(x => x.Email == email);
                 // Set the to be logged in Account to idx 0
-                BattleNet.Accounts.Remove(account);
+                _ = BattleNet.Accounts.Remove(account);
                 BattleNet.Accounts.Insert(0, account);
 
                 Globals.AddTrayUser("BattleNet", "+b:" + email, account.BTag ?? email, BattleNet.TrayAccNumber); // Add to Tray list
             }
             else
             {
-                account = new BattleNetSwitcherBase.BattleNetUser {Email = " "};
-                BattleNet.Accounts.Remove(account);
+                account = new BattleNetSwitcherBase.BattleNetUser { Email = " " };
+                _ = BattleNet.Accounts.Remove(account);
                 BattleNet.Accounts.Insert(0, account);
             }
 
@@ -244,9 +244,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
             if (account.Email == " ")
             {
-                BattleNet.Accounts.Remove(account);
+                _ = BattleNet.Accounts.Remove(account);
             }
-            
+
             // Replace and write the new Json
             jToken?.Replace(replaceString);
             await File.WriteAllTextAsync(_battleNetRoaming + "\\Battle.net.config", jObject.ToString());
@@ -287,7 +287,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 BattleNet.Accounts.First(x => x.Email == email).LastTimeChecked = new DateTime();
                 BattleNet.SaveAccounts();
                 Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.SetBattleTag] accName:hidden, bTag:hidden");
-                AppData.ActiveNavMan?.NavigateTo( "/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed BattleTag"), true);
+                AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed BattleTag"), true);
             }
             else
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_NamePolicy"]);
@@ -319,7 +319,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             BattleNet.SaveAccounts();
             AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Deleted BattleTag"), true);
         }
-        
+
         /// <summary>
         /// Refetch the rank of the account
         /// </summary>
@@ -350,7 +350,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             // Remove from Tray
             Globals.RemoveTrayUser("BattleNet", account.BTag ?? account.Email); // Add to Tray list
             // Remove from accounts list
-            BattleNet.Accounts.Remove(account);
+            _ = BattleNet.Accounts.Remove(account);
             BattleNet.IgnoredAccounts.Add(account.Email);
             BattleNet.SaveAccounts();
 
@@ -375,12 +375,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static bool RestoreSelected(string[] requestedAccs)
         {
             if (!File.Exists(BattleNet.IgnoredAccPath)) return false;
-            if(BattleNet.IgnoredAccounts.Count == 0) BattleNet.LoadAccounts();
+            if (BattleNet.IgnoredAccounts.Count == 0) BattleNet.LoadAccounts();
             foreach (var s in requestedAccs)
             {
                 Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.RestoreAccounts] Restoring account: hidden");
                 if (BattleNet.IgnoredAccounts.Contains(s))
-	                BattleNet.IgnoredAccounts.Remove(s);
+                    _ = BattleNet.IgnoredAccounts.Remove(s);
             }
             BattleNet.SaveAccounts();
             return true;

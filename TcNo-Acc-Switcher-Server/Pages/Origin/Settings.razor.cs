@@ -23,7 +23,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 {
     public partial class Settings
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
         protected override void OnInitialized()
         {
             AppData.Instance.WindowTitle = Lang["Title_Origin_Settings"];
@@ -35,7 +35,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         public void PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.PickFolder]");
-            GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
+            _ = GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
         }
 
         // BUTTON: Reset settings
@@ -52,9 +52,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         public static void OpenFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.OpenOriginFolder]");
-            Process.Start("explorer.exe", new Data.Settings.Origin().FolderPath);
+            _ = Process.Start("explorer.exe", new Data.Settings.Origin().FolderPath);
         }
-        
+
 
         // BUTTON: Advanced Cleaning...
         // Might add later

@@ -32,7 +32,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Index
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         public void Check(string platform)
         {
@@ -43,35 +43,35 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     if (!GeneralFuncs.CanKillProcess("Battle.net")) return;
                     Data.Settings.BattleNet.Instance.LoadFromFile();
                     if (Directory.Exists(Data.Settings.BattleNet.Instance.FolderPath) && File.Exists(Data.Settings.BattleNet.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/BattleNet/");
-                    else GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
+                    else _ = GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
                     break;
 
                 case "Discord":
-	                if (!GeneralFuncs.CanKillProcess("Discord.exe")) return;
-	                Data.Settings.Discord.Instance.LoadFromFile();
-	                if (Directory.Exists(Data.Settings.Discord.Instance.FolderPath) && File.Exists(Data.Settings.Discord.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Discord/");
-	                else GeneralInvocableFuncs.ShowModal("find:Discord:Discord.exe:DiscordSettings");
-	                break;
+                    if (!GeneralFuncs.CanKillProcess("Discord.exe")) return;
+                    Data.Settings.Discord.Instance.LoadFromFile();
+                    if (Directory.Exists(Data.Settings.Discord.Instance.FolderPath) && File.Exists(Data.Settings.Discord.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Discord/");
+                    else _ = GeneralInvocableFuncs.ShowModal("find:Discord:Discord.exe:DiscordSettings");
+                    break;
 
                 case "Epic":
                     if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) return;
                     Data.Settings.Epic.Instance.LoadFromFile();
                     if (Directory.Exists(Data.Settings.Epic.Instance.FolderPath) && File.Exists(Data.Settings.Epic.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Epic/");
-                    else GeneralInvocableFuncs.ShowModal("find:Epic:EpicGamesLauncher.exe:EpicSettings");
+                    else _ = GeneralInvocableFuncs.ShowModal("find:Epic:EpicGamesLauncher.exe:EpicSettings");
                     break;
 
                 case "Origin":
                     if (!GeneralFuncs.CanKillProcess("Origin")) return;
                     Data.Settings.Origin.Instance.LoadFromFile();
                     if (Directory.Exists(Data.Settings.Origin.Instance.FolderPath) && File.Exists(Data.Settings.Origin.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Origin/");
-                    else GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
+                    else _ = GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
                     break;
 
                 case "Riot":
                     if (!Riot.RiotSwitcherFuncs.CanCloseRiot()) return;
                     Data.Settings.Riot.Instance.LoadFromFile();
                     if (Directory.Exists(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client\\Data"))) AppData.ActiveNavMan.NavigateTo("/Riot/");
-                    else GeneralInvocableFuncs.ShowModal("find:Riot:RiotClientPrivateSettings.yaml:RiotSettings");
+                    else _ = GeneralInvocableFuncs.ShowModal("find:Riot:RiotClientPrivateSettings.yaml:RiotSettings");
                     break;
 
                 case "Steam":
@@ -79,48 +79,48 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     Data.Settings.Steam.Instance.LoadFromFile();
                     if (!Directory.Exists(Data.Settings.Steam.Instance.FolderPath) || !File.Exists(Data.Settings.Steam.Instance.Exe()))
                     {
-                        GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
+                        _ = GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
                         return;
                     }
                     if (SteamSwitcherFuncs.SteamSettingsValid()) AppData.ActiveNavMan.NavigateTo("/Steam/");
-                    else GeneralInvocableFuncs.ShowModal(Lang["Toast_Steam_CantLocateLoginusers"]);
+                    else _ = GeneralInvocableFuncs.ShowModal(Lang["Toast_Steam_CantLocateLoginusers"]);
                     break;
 
                 case "Ubisoft":
                     if (!GeneralFuncs.CanKillProcess("upc")) return;
                     Data.Settings.Ubisoft.Instance.LoadFromFile();
                     if (Directory.Exists(Data.Settings.Ubisoft.Instance.FolderPath) && File.Exists(Data.Settings.Ubisoft.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Ubisoft/");
-                    else GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
+                    else _ = GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
                     break;
             }
         }
-        
+
         private static bool IsAdmin()
         {
             if (!OperatingSystem.IsWindows()) return true;
-	        // Checks whether program is running as Admin or not
-	        var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
-	        return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
+            // Checks whether program is running as Admin or not
+            var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
+            return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
         }
 
         public static void StartUpdaterAsAdmin()
         {
-	        var proc = new ProcessStartInfo
-	        {
-		        WorkingDirectory = Environment.CurrentDirectory,
-		        FileName = "updater\\TcNo-Acc-Switcher-Updater.exe",
-		        UseShellExecute = true,
-		        Verb = "runas"
-	        };
-	        try
-	        {
-		        Process.Start(proc);
-		        AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
+            var proc = new ProcessStartInfo
+            {
+                WorkingDirectory = Environment.CurrentDirectory,
+                FileName = "updater\\TcNo-Acc-Switcher-Updater.exe",
+                UseShellExecute = true,
+                Verb = "runas"
+            };
+            try
+            {
+                _ = Process.Start(proc);
+                AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
             }
-	        catch (Exception ex)
-	        {
-		        Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
-		        AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
+            catch (Exception ex)
+            {
+                Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
+                AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
             }
         }
 
@@ -131,13 +131,13 @@ namespace TcNo_Acc_Switcher_Server.Pages
         {
             try
             {
-	            if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
-	            {
-		            GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+                if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
+                {
+                    _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
                     return;
-	            }
+                }
 
-				Directory.SetCurrentDirectory(Globals.AppDataFolder);
+                Directory.SetCurrentDirectory(Globals.AppDataFolder);
                 // Download latest hash list
                 var hashFilePath = Path.Join(Globals.UserDataFolder, "hashes.json");
                 var client = new WebClient();
@@ -147,7 +147,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(Globals.ReadAllText(hashFilePath));
                 if (verifyDictionary == null)
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error",Lang["Toast_UpdateVerifyFail"]);
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_UpdateVerifyFail"]);
                     return;
                 }
 
@@ -163,16 +163,16 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     client.DownloadFile(uri, key);
                 }
 
-				// Run updater
-				if (Globals.InstalledToProgramFiles() || !Globals.HasFolderAccess(Globals.AppDataFolder))
-				{
-					StartUpdaterAsAdmin();
+                // Run updater
+                if (Globals.InstalledToProgramFiles() || !Globals.HasFolderAccess(Globals.AppDataFolder))
+                {
+                    StartUpdaterAsAdmin();
                 }
-				else
-				{
-					Process.Start(new ProcessStartInfo(@"updater\\TcNo-Acc-Switcher-Updater.exe") { UseShellExecute = true });
-					AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
-				}
+                else
+                {
+                    _ = Process.Start(new ProcessStartInfo(@"updater\\TcNo-Acc-Switcher-Updater.exe") { UseShellExecute = true });
+                    AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
+                }
             }
             catch (Exception e)
             {

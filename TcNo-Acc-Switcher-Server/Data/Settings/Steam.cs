@@ -23,9 +23,9 @@ using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class Steam
-	{
-		private static readonly Lang Lang = Lang.Instance;
-		private static Steam _instance = new();
+    {
+        private static readonly Lang Lang = Lang.Instance;
+        private static Steam _instance = new();
 
         private static readonly object LockObj = new();
         public static Steam Instance
@@ -134,7 +134,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.ImageExpiryTime = 7;
             _instance.TrayAccNumber = 3;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Steam");
-            Task.StartWithWindows_Enabled();
+            _ = Task.StartWithWindows_Enabled();
 
             SaveSettings();
         }
@@ -192,7 +192,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.ImageExpiryTime = curSettings.ImageExpiryTime;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Steam");
-            Task.StartWithWindows_Enabled();
+            _ = Task.StartWithWindows_Enabled();
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
 

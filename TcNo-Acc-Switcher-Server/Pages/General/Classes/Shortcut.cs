@@ -47,7 +47,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         private void WriteShortcut()
         {
             Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.WriteShortcut]");
-            Directory.CreateDirectory(ShortcutDir());
+            _ = Directory.CreateDirectory(ShortcutDir());
             if (File.Exists(ShortcutPath)) return;
             if (File.Exists("CreateShortcut.vbs")) File.Delete("CreateShortcut.vbs");
 
@@ -75,8 +75,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 }
             };
 
-            vbsProcess.Start();
-            vbsProcess.StandardOutput.ReadToEnd();
+            _ = vbsProcess.Start();
+            _ = vbsProcess.StandardOutput.ReadToEnd();
             vbsProcess.Close();
 
             File.Delete("CreateShortcut.vbs");
@@ -103,16 +103,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="shouldFolderExist">Whether the shortcut ALREADY Exists</param>
         public void ToggleShortcut(bool shouldExist, bool shouldFolderExist = true)
         {
-	        Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.ToggleShortcut] shouldExist={shouldExist}, shouldFolderExist={shouldFolderExist}");
-	        switch (shouldExist)
-	        {
-		        case true when !ShortcutExist():
-			        WriteShortcut();
-			        break;
-		        case false when ShortcutExist():
-			        DeleteShortcut(!shouldFolderExist);
-			        break;
-	        }
+            Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.ToggleShortcut] shouldExist={shouldExist}, shouldFolderExist={shouldFolderExist}");
+            switch (shouldExist)
+            {
+                case true when !ShortcutExist():
+                    WriteShortcut();
+                    break;
+                case false when ShortcutExist():
+                    DeleteShortcut(!shouldFolderExist);
+                    break;
+            }
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         {
             Globals.DebugWriteLine(@$"[Func:Data\Settings\Shared.DesktopShortcut_Toggle] platform={platform}");
             var s = new Shortcut();
-            s.Shortcut_Platform(Desktop, platform, platform.ToLowerInvariant());
+            _ = s.Shortcut_Platform(Desktop, platform, platform.ToLowerInvariant());
             s.ToggleShortcut(!desktopShortcut);
         }
         #endregion

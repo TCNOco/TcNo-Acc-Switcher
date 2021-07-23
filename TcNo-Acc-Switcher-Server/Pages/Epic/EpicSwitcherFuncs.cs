@@ -15,12 +15,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 {
     public class EpicSwitcherFuncs
     {
-	    private static readonly Lang Lang = Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         private static readonly Data.Settings.Epic Epic = Data.Settings.Epic.Instance;
-/*
-        private static string _epicRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Epic");
-*/
+        /*
+                private static string _epicRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Epic");
+        */
         private static readonly string EpicLocalAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EpicGamesLauncher");
         private static readonly string EpicSavedConfigWin = Path.Join(EpicLocalAppData, "Saved\\Config\\Windows");
         private static readonly string EpicGameUserSettings = Path.Join(EpicSavedConfigWin, "GameUserSettings.ini");
@@ -34,7 +34,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.LoadProfiles] Loading Epic profiles");
-            GenericFunctions.GenericLoadAccounts("Epic");
+            _ = GenericFunctions.GenericLoadAccounts("Epic");
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             Globals.DebugWriteLine(@"[Func:EpicEpicSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
             // Remove ID from list of ids
             var allIds = ReadAllIds();
-            allIds.Remove(allIds.Single(x => x.Value == accName).Key);
+            _ = allIds.Remove(allIds.Single(x => x.Value == accName).Key);
             File.WriteAllText("LoginCache\\Epic\\ids.json", JsonConvert.SerializeObject(allIds));
             // Remove cached files
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Epic\\{accName}"), false);
@@ -74,7 +74,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public static void SwapEpicAccounts(string accName = "", string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.SwapEpicAccounts] Swapping to: hidden.");
-            AppData.InvokeVoidAsync("updateStatus", "Closing Epic");
+            _ = AppData.InvokeVoidAsync("updateStatus", "Closing Epic");
             if (!CloseEpic()) return;
             ClearCurrentLoginEpic();
             if (accName != "")
@@ -82,7 +82,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
                 if (!EpicCopyInAccount(accName)) return;
                 Globals.AddTrayUser("Epic", "+e:" + accName, accName, Epic.TrayAccNumber); // Add to Tray list
             }
-            AppData.InvokeVoidAsync("updateStatus", "Starting Epic");
+            _ = AppData.InvokeVoidAsync("updateStatus", "Starting Epic");
 
             GeneralFuncs.StartProgram(Epic.Exe(), Epic.Admin, args);
 
@@ -99,7 +99,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             var allIds = ReadAllIds();
             if (currentAccountId != null && allIds.ContainsKey(currentAccountId))
                 EpicAddCurrent(allIds[currentAccountId]);
-            
+
             if (File.Exists(EpicGameUserSettings)) File.Delete(EpicGameUserSettings); // Delete GameUserSettings.ini file
             using var key = Registry.CurrentUser.CreateSubKey(@"Software\Epic Games\Unreal Engine\Identifiers");
             key?.SetValue("AccountId", ""); // Clear logged in account in registry, but leave MachineId
@@ -112,8 +112,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             var localCachePath = $"LoginCache\\Epic\\{accName}\\";
             if (!Directory.Exists(localCachePath))
             {
-	            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new {x = localCachePath }], Lang["DirectoryNotFound"], "toastarea");
-	            return false;
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = localCachePath }], Lang["DirectoryNotFound"], "toastarea");
+                return false;
             }
 
             File.Copy(Path.Join(localCachePath, "GameUserSettings.ini"), EpicGameUserSettings);
@@ -138,7 +138,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         {
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.EpicAddCurrent]");
             var localCachePath = $"LoginCache\\Epic\\{accName}\\";
-            Directory.CreateDirectory(localCachePath);
+            _ = Directory.CreateDirectory(localCachePath);
 
             if (!File.Exists(EpicGameUserSettings))
             {
@@ -160,10 +160,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             File.WriteAllText("LoginCache\\Epic\\ids.json", JsonConvert.SerializeObject(allIds));
 
             // Copy in profile image from default
-            Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\epic"));
+            _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\epic"));
             var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Uri.EscapeUriString(accName)}.jpg");
             if (!File.Exists(profileImg)) File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\EpicDefault.png"), profileImg, true);
-            
+
             AppData.ActiveNavMan?.NavigateTo("/Epic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
         }
 
@@ -180,7 +180,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantChangeUsername"], Lang["Error"], "toastarea");
                 return;
             }
-            
+
             File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Uri.EscapeUriString(oldName)}.jpg"),
                 Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Uri.EscapeUriString(newName)}.jpg")); // Rename image
             Directory.Move($"LoginCache\\Epic\\{oldName}\\", $"LoginCache\\Epic\\{newName}\\"); // Rename login cache folder
@@ -196,11 +196,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             if (!File.Exists(localAllIds)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
             try
             {
-	            s = Globals.ReadAllText(localAllIds);
+                s = Globals.ReadAllText(localAllIds);
             }
             catch (Exception)
             {
-	            //
+                //
             }
 
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
