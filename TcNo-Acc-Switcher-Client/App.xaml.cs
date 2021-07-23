@@ -208,7 +208,7 @@ namespace TcNo_Acc_Switcher_Client
                 lastError = lastError.Skip(1).ToArray();
                 // TODO: Work in progress:
                 //ShowErrorMessage("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
-                MessageBox.Show("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
+                MessageBox.Show("Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError), "Error from last crash", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
                 File.Delete("LastError.txt");
             }
         }
