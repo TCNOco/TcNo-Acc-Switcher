@@ -381,7 +381,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 	        if (!File.Exists(localAllIds)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
 	        try
 	        {
-		        s = File.ReadAllText(localAllIds);
+		        s = Globals.ReadAllText(localAllIds);
 	        }
 	        catch (Exception)
 	        {
@@ -425,7 +425,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 		        }
             }
 
-	        GeneralInvocableFuncs.ShowToast("success", Lang["Toast_DeletedTotal", new {files = totalFiles - failedFiles, totalFiles = totalFiles, totalSize = GeneralFuncs.FileSizeString(totalFileSize) }],
+	        GeneralInvocableFuncs.ShowToast("success", Lang["Toast_DeletedTotal", new {files = totalFiles - failedFiles, totalFiles, totalSize = GeneralFuncs.FileSizeString(totalFileSize) }],
 		        Lang["Toast_DeletedTotalTitle"], "toastarea", 10000);
 		}
         #endregion

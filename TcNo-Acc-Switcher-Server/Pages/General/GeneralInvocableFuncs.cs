@@ -86,7 +86,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static Task GiFileReadAllText(string file)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiFileReadAllText] file={file}");
-            return Task.FromResult(File.Exists(file) ? File.ReadAllText(file) : "");
+            return Task.FromResult(File.Exists(file) ? Globals.ReadAllText(file) : "");
         }
 
         /// <summary>
@@ -463,7 +463,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             if (File.Exists(passFile))
             {
-	            if (hashedPass != File.ReadAllText(passFile)) return false; // Check if password matches the one in the file
+	            if (hashedPass != Globals.ReadAllText(passFile)) return false; // Check if password matches the one in the file
             }
             else
             {

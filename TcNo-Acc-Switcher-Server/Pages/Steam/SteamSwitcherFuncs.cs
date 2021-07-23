@@ -191,7 +191,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         private static string VerifyVdfText(string loginUserPath)
         {
-	        var original = File.ReadAllText(loginUserPath);
+	        var original = Globals.ReadAllText(loginUserPath);
 	        var vdf = original;
 	        // Replaces double quotes, sometimes added by mistake (?) with single, as they should be.
             vdf = vdf.Replace("\"\"", "\"");
@@ -231,7 +231,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.LoadVacInfo] Loading VAC info: hidden");
             GeneralFuncs.DeletedOutdatedFile(Steam.VacCacheFile);
             if (!File.Exists(Steam.VacCacheFile)) return false;
-            vsl = JsonConvert.DeserializeObject<List<VacStatus>>(File.ReadAllText(Steam.VacCacheFile));
+            vsl = JsonConvert.DeserializeObject<List<VacStatus>>(Globals.ReadAllText(Steam.VacCacheFile));
 
             if (vsl != null) return true;
             File.Delete(Steam.VacCacheFile);
@@ -578,7 +578,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             var id32 = new SteamIdConvert(steamId).Id32; // Get SteamID
             var localConfigFilePath = Path.Join(Steam.FolderPath, "userdata", id32, "config", "localconfig.vdf");
             if (!File.Exists(localConfigFilePath)) return;
-            var localConfigText = File.ReadAllText(localConfigFilePath); // Read relevant localconfig.vdf
+            var localConfigText = Globals.ReadAllText(localConfigFilePath); // Read relevant localconfig.vdf
 
             // Find index of range needing to be changed.
             var positionOfVar = localConfigText.IndexOf("ePersonaState", StringComparison.Ordinal); // Find where the variable is being set
@@ -652,7 +652,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             // Instead of backing up EVERY TIME like the previous version (Was: BackupLoginUsers(settings: settings);)
             // Rather just save the users in a file, for better restoring later if necessary.
-            var fFileContents = File.Exists(Steam.ForgottenFile) ? File.ReadAllText(Steam.ForgottenFile) : "";
+            var fFileContents = File.Exists(Steam.ForgottenFile) ? Globals.ReadAllText(Steam.ForgottenFile) : "";
             var fUsers = fFileContents == "" ? new List<ForgottenSteamuser>() : JsonConvert.DeserializeObject<List<ForgottenSteamuser>>(fFileContents);
             if (fUsers!.All(x => x.SteamId != forgottenUser.SteamId)) fUsers.Add(new ForgottenSteamuser { SteamId = forgottenUser.SteamId, Steamuser = forgottenUser }); // Add to list if user with SteamID doesn't exist in it.
             File.WriteAllText(Steam.ForgottenFile, JsonConvert.SerializeObject(fUsers));
@@ -679,7 +679,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             foreach (var s in requestedSteamIds) Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.RestoreAccounts] Restoring account: {s.Substring(s.Length - 4, 4)}");
             
             if (!File.Exists(Steam.ForgottenFile)) return false;
-            var forgottenAccounts = JsonConvert.DeserializeObject<List<ForgottenSteamuser>>(File.ReadAllText(Steam.ForgottenFile));
+            var forgottenAccounts = JsonConvert.DeserializeObject<List<ForgottenSteamuser>>(Globals.ReadAllText(Steam.ForgottenFile));
             if (forgottenAccounts == null) return false;
             // Load existing accounts
             var userAccounts = GetSteamUsers(Steam.LoginUsersVdf());

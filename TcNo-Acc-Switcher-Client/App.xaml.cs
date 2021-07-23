@@ -205,15 +205,15 @@ namespace TcNo_Acc_Switcher_Client
             {
 	            var lastError = await File.ReadAllLinesAsync("LastError.txt");
 	            lastError = lastError.Skip(1).ToArray();
-	            ShowErrorMessage("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
+                // TODO: Work in progress:
+	            //ShowErrorMessage("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
+                MessageBox.Show("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
 	            File.Delete("LastError.txt");
             }
         }
 
         private static void ShowErrorMessage(string title, string text)
         {
-            var f = GetStylesheetColor("buttonBorderMessageForeground", "#888888");
-
             var cmb = new CustomMessageBox(title, text)
             {
                 Topmost = true,
@@ -282,7 +282,7 @@ namespace TcNo_Acc_Switcher_Client
 	        {
 		        if (File.Exists("StyleSettings_ErrorInfo.txt"))
 		        {
-			        var errorText = File.ReadAllText("StyleSettings_ErrorInfo.txt").Split("\n");
+			        var errorText = Globals.ReadAllText("StyleSettings_ErrorInfo.txt").Split("\n");
 			        MessageBox.Show(
 				        "Could not load StyleSettings.json! Error details: " + Environment.NewLine +
 				        errorText[0] + Environment.NewLine + Environment.NewLine +
@@ -668,7 +668,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 try
                 {
-                    combinedCrashLogs += File.ReadAllText(file);
+                    combinedCrashLogs += Globals.ReadAllText(file);
                     File.Move(file, $"CrashLogs\\Submitted\\{Path.GetFileName(file)}");
                 }
                 catch (Exception e)
@@ -685,7 +685,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 try
                 {
-                    postData.Add("logs", Compress(File.ReadAllText("log.txt")));
+                    postData.Add("logs", Compress(Globals.ReadAllText("log.txt")));
 
                 }
                 catch (Exception e)
@@ -749,7 +749,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 if (File.Exists("WindowSettings.json"))
                 {
-                    var o = JObject.Parse(File.ReadAllText("WindowSettings.json"));
+                    var o = JObject.Parse(Globals.ReadAllText("WindowSettings.json"));
                     if (o.ContainsKey("LastUpdateCheckFail"))
                     {
                         if (!(DateTime.TryParseExact((string)o["LastUpdateCheckFail"], "yyyy-MM-dd HH:mm:ss.fff",

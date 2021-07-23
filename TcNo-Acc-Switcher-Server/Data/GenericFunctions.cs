@@ -76,7 +76,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             // Order
             if (!File.Exists(jsonOrderFile)) return accList;
-            var savedOrder = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(jsonOrderFile));
+            var savedOrder = JsonConvert.DeserializeObject<List<string>>(Globals.ReadAllText(jsonOrderFile));
             if (savedOrder == null) return accList;
             var index = 0;
             if (savedOrder is not {Count: > 0}) return accList;

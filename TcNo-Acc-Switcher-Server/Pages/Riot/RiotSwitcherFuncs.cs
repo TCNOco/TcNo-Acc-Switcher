@@ -61,7 +61,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             var riotClientInstallsFile = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Riot Games\\RiotClientInstalls.json");
             if (!File.Exists(riotClientInstallsFile)) return;
 
-            var o = JObject.Parse(File.ReadAllText(riotClientInstallsFile));
+            var o = JObject.Parse(Globals.ReadAllText(riotClientInstallsFile));
             if (!o.ContainsKey("associated_client")) return;
 
             var assocClient = (JObject)o["associated_client"];

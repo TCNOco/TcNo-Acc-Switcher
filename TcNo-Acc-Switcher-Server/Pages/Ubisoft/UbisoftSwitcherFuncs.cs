@@ -187,7 +187,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             if (!File.Exists(localAllIds)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
             try
             {
-	            s = File.ReadAllText(localAllIds);
+	            s = Globals.ReadAllText(localAllIds);
             }
             catch (Exception)
             {
@@ -314,7 +314,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         private static void ClearCurrentUser()
         {
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.ClearCurrentUser]");
-            var settingsYml = File.ReadAllLines(Path.Join(_ubisoftAppData, "settings.yml"));
+            var settingsYml = Globals.ReadAllLines(Path.Join(_ubisoftAppData, "settings.yml"));
             for (var i = 0; i < settingsYml.Length; i++)
             {
                 if (settingsYml[i].Contains("height:"))
@@ -360,7 +360,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 return true;
             }
             using var fs = new StreamWriter(Path.Join(_ubisoftAppData, "settings.yml"));
-            foreach (var l in File.ReadAllLines($"{localCachePath}settings.yml"))
+            foreach (var l in Globals.ReadAllLines($"{localCachePath}settings.yml"))
             {
                 if (l.Contains("forceoffline")) fs.WriteLine("  forceoffline: " + (state != 0 ? "true" : "false")); 
                 else fs.WriteLine(l);

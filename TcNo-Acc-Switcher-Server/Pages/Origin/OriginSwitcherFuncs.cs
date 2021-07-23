@@ -286,7 +286,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             if (!File.Exists(localAllOlc)) return JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(s);
             try
             {
-	            s = File.ReadAllText(localAllOlc);
+	            s = Globals.ReadAllText(localAllOlc);
             }
             catch (Exception)
             {

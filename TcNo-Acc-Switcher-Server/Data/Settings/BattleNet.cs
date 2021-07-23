@@ -161,12 +161,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 	        Directory.CreateDirectory("LoginCache\\BattleNet");
             if (File.Exists(StoredAccPath) )
             {
-                Accounts = JsonConvert.DeserializeObject<List<BattleNetSwitcherBase.BattleNetUser>>(File.ReadAllText(StoredAccPath)) ?? new List<BattleNetSwitcherBase.BattleNetUser>();
+                Accounts = JsonConvert.DeserializeObject<List<BattleNetSwitcherBase.BattleNetUser>>(Globals.ReadAllText(StoredAccPath)) ?? new List<BattleNetSwitcherBase.BattleNetUser>();
             }
 
             if (File.Exists(IgnoredAccPath))
             {
-                IgnoredAccounts = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(IgnoredAccPath)) ?? new List<string>();
+                IgnoredAccounts = JsonConvert.DeserializeObject<List<string>>(Globals.ReadAllText(IgnoredAccPath)) ?? new List<string>();
             }
         }
 

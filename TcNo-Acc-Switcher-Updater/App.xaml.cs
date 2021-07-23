@@ -91,7 +91,7 @@ namespace TcNo_Acc_Switcher_Updater
         {
             // Set working directory to parent
             if (File.Exists(Path.Join(AppDataFolder, "userdata_path.txt")))
-	            Directory.SetCurrentDirectory(File.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim());
+	            Directory.SetCurrentDirectory(UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim());
             else
 	            Directory.SetCurrentDirectory(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\"));
             var version = "unknown";
@@ -99,7 +99,7 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 if (File.Exists("WindowSettings.json"))
                 {
-                    var o = JObject.Parse(File.ReadAllText("WindowSettings.json"));
+                    var o = JObject.Parse(UGlobals.ReadAllText("WindowSettings.json"));
                     version = o["Version"]?.ToString();
                 }
             }

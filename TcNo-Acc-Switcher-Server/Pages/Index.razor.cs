@@ -94,10 +94,10 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     break;
             }
         }
-
-        [SupportedOSPlatform("windows")]
+        
         private static bool IsAdmin()
         {
+            if (!OperatingSystem.IsWindows()) return true;
 	        // Checks whether program is running as Admin or not
 	        var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
 	        return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
@@ -144,7 +144,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
 
                 // Verify updater files
-                var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
+                var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(Globals.ReadAllText(hashFilePath));
                 if (verifyDictionary == null)
                 {
                     _ = GeneralInvocableFuncs.ShowToast("error",Lang["Toast_UpdateVerifyFail"]);

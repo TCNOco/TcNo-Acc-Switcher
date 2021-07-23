@@ -41,6 +41,42 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace TcNo_Acc_Switcher_Updater
 {
+
+    /// <summary>
+    /// A lot of these functions are copies from the Globals binary, but could not be referenced as this program updates that file.
+    /// </summary>
+    public class UGlobals
+    {
+        /// <summary>
+        /// A replacement for File.ReadAllText() that doesn't crash if a file is in use.
+        /// </summary>
+        /// <param name="f">File to be read</param>
+        /// <returns>string of content</returns>
+        public static string ReadAllText(string f)
+        {
+            using var fileStream = new FileStream(f, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var textReader = new StreamReader(fileStream);
+            return textReader.ReadToEnd();
+        }
+
+        /// <summary>
+        /// A replacement for File.ReadAllLines() that doesn't crash if a file is in use.
+        /// </summary>
+        /// <param name="f">File to be read</param>
+        /// <returns>string[] of content</returns>
+        public static string[] ReadAllLines(string f)
+        {
+            using var fs = new FileStream(f, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var sr = new StreamReader(fs);
+            var l = new List<string>();
+            while (!sr.EndOfStream)
+            {
+                l.Add(sr.ReadLine());
+            }
+
+            return l.ToArray();
+        }
+    }
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -222,7 +258,7 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 try
                 {
-                    _currentVersion = JObject.Parse(File.ReadAllText(_windowSettings))["Version"]?.ToString();
+                    _currentVersion = JObject.Parse(UGlobals.ReadAllText(_windowSettings))["Version"]?.ToString();
                 }
                 catch (Exception)
                 {
@@ -241,7 +277,7 @@ namespace TcNo_Acc_Switcher_Updater
                     {
                         // Separated so colors aren't only half changed, and a color from the file is missing
                         var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-                        var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(File.ReadAllText(_styleSettings))));
+                        var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(UGlobals.ReadAllText(_styleSettings))));
                         // Need to try catch every one of these, as they may be invalid.
                         var highlightColor = TryApplyTheme(dict, "#FFAA00", "linkColor"); // Add a specific Highlight color later?
                         var headerColor = TryApplyTheme(dict, "#14151E", "headerbarBackground");
@@ -382,7 +418,7 @@ namespace TcNo_Acc_Switcher_Updater
 		        // Has not yet been initialised
 		        // Check if set to something different
 		        if (File.Exists(Path.Join(AppDataFolder, "userdata_path.txt")))
-			        _userDataFolder = File.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim();
+			        _userDataFolder = UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim();
 		        else
 			        _userDataFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\");
 
@@ -534,7 +570,7 @@ namespace TcNo_Acc_Switcher_Updater
 
             if (File.Exists(_windowSettings))
             {
-                var o = JObject.Parse(File.ReadAllText(_windowSettings));
+                var o = JObject.Parse(UGlobals.ReadAllText(_windowSettings));
                 o["Version"] = _latestVersion;
                 // Save all settings back into file
                 File.WriteAllText(_windowSettings, o.ToString());
@@ -594,7 +630,7 @@ namespace TcNo_Acc_Switcher_Updater
                 Environment.Exit(1);
             }
 
-            var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashFilePath));
+            var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(UGlobals.ReadAllText(hashFilePath));
             if (verifyDictionary != null)
             {
                 var verifyDictTotal = verifyDictionary.Count;
@@ -793,7 +829,7 @@ namespace TcNo_Acc_Switcher_Updater
             ApplyPatches(currentDir, "temp_update");
 
             // Remove files that need to be removed:
-            var filesToDelete = File.ReadAllLines(Path.Join("temp_update", "filesToDelete.txt")).ToList();
+            var filesToDelete = UGlobals.ReadAllLines(Path.Join("temp_update", "filesToDelete.txt")).ToList();
             
             SetStatusAndLog("Moving files...");
             
@@ -874,7 +910,7 @@ namespace TcNo_Acc_Switcher_Updater
             if (keepFolders) return;
             baseDir.Delete();
         }
-
+        
         /// <summary>
         /// Deletes a single file
         /// </summary>

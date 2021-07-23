@@ -196,7 +196,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             if (!File.Exists(localAllIds)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
             try
             {
-	            s = File.ReadAllText(localAllIds);
+	            s = Globals.ReadAllText(localAllIds);
             }
             catch (Exception)
             {

@@ -507,7 +507,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             // Get name of current stylesheet
             GetCurrentStylesheet();
-	        if (WindowsAccent)
+	        if (OperatingSystem.IsWindows() && WindowsAccent)
 		        SetAccentColor();
 
 	        return true;
@@ -518,7 +518,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Load new stylesheet
             var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
             var attempts = 0;
-            var text = File.ReadAllLines(StylesheetFile);
+            var text = Globals.ReadAllLines(StylesheetFile);
             while (attempts <= text.Length)
             {
                 try
@@ -714,7 +714,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         [SupportedOSPlatform("windows")]
-        private void SetAccentColor() => SetAccentColor(false);
+        private static void SetAccentColor() => SetAccentColor(false);
         [SupportedOSPlatform("windows")]
         private static void SetAccentColor(bool userInvoked)
         {

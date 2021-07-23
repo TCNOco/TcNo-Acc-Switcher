@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Windows;
 using Newtonsoft.Json;
 
 namespace TcNo_Acc_Switcher_Globals
@@ -79,7 +78,7 @@ namespace TcNo_Acc_Switcher_Globals
 			    if (appendText.Count == 0) appendText.Add(Environment.NewLine + "-------- OLD --------");
 			    try
 			    {
-				    appendText.AddRange(File.ReadAllLines(file.FullName));
+				    appendText.AddRange(ReadAllLines(file.FullName));
 				    File.Delete(file.FullName);
 				    oldFilesFound = true;
 			    }
@@ -159,7 +158,7 @@ namespace TcNo_Acc_Switcher_Globals
 			    // Has not yet been initialised
 			    // Check if set to something different
 			    if (File.Exists(Path.Join(AppDataFolder, "userdata_path.txt")))
-				    _userDataFolder = File.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim();
+				    _userDataFolder = ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim();
 			    else
 				    _userDataFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\");
 
@@ -257,7 +256,7 @@ namespace TcNo_Acc_Switcher_Globals
 				if (Directory.Exists(cache)) RecursiveDelete(new DirectoryInfo(cache), true);
 				if (Directory.Exists(codeCache)) RecursiveDelete(new DirectoryInfo(codeCache), true);
 			}
-		    catch (Exception _)
+		    catch (Exception)
 		    {
 				   // Clearing cache isn't REQUIRED but it's a nice-to-have.
 		    }
@@ -276,6 +275,40 @@ namespace TcNo_Acc_Switcher_Globals
         {
 	        if (Directory.Exists(root))
 		        CopyFilesRecursive(root, Path.Join(UserDataFolder, "wwwroot"), overwrite);
+        }
+
+        #endregion
+
+        #region FILES
+
+        /// <summary>
+        /// A replacement for File.ReadAllText() that doesn't crash if a file is in use.
+        /// </summary>
+        /// <param name="f">File to be read</param>
+        /// <returns>string of content</returns>
+        public static string ReadAllText(string f)
+        {
+            using var fs = new FileStream(f, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var tr = new StreamReader(fs);
+            return tr.ReadToEnd();
+        }
+
+        /// <summary>
+        /// A replacement for File.ReadAllLines() that doesn't crash if a file is in use.
+        /// </summary>
+        /// <param name="f">File to be read</param>
+        /// <returns>string[] of content</returns>
+        public static string[] ReadAllLines(string f)
+        {
+            using var fs = new FileStream(f, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var sr = new StreamReader(fs);
+            var l = new List<string>();
+            while (!sr.EndOfStream)
+            {
+                l.Add(sr.ReadLine());
+            }
+
+            return l.ToArray();
         }
 
         #endregion
@@ -607,7 +640,7 @@ namespace TcNo_Acc_Switcher_Globals
         public static Dictionary<string, List<TrayUser>> ReadTrayUsers()
         {
             if (!File.Exists("Tray_Users.json")) return new Dictionary<string, List<TrayUser>>();
-            var json = File.ReadAllText("Tray_Users.json");
+            var json = Globals.ReadAllText("Tray_Users.json");
             return JsonConvert.DeserializeObject<Dictionary<string, List<TrayUser>>>(json) ?? new Dictionary<string, List<TrayUser>>();
         }
         

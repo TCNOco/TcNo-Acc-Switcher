@@ -157,7 +157,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
 			// Load from en-EN file into Strings
 			var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-			var text = File.ReadAllText(path);
+			var text = Globals.ReadAllText(path);
 			var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(text)));
 			Debug.Assert(dict != null, nameof(dict) + " != null"); // These files have to exist, or the program will break in many ways
 			foreach (var (k, v) in dict)

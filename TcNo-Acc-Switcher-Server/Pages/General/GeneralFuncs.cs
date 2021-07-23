@@ -420,7 +420,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (File.Exists(sFilename))
                 try
                 {
-                    joSettings = JObject.Parse(File.ReadAllText(sFilename));
+                    joSettings = JObject.Parse(Globals.ReadAllText(sFilename));
                 }
                 catch (Exception ex)
                 {
@@ -481,7 +481,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             var sFilename = file.EndsWith(".json") ? file : file + ".json";
             if (!File.Exists(sFilename)) return defaultSettings ?? new JObject();
 
-            var fileSettingsText = File.ReadAllLines(sFilename);
+            var fileSettingsText = Globals.ReadAllLines(sFilename);
             if (fileSettingsText.Length == 0 && defaultSettings != null)
             {
                 File.WriteAllText(sFilename, defaultSettings.ToString());
