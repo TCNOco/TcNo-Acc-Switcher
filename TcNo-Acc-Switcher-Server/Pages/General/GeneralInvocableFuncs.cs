@@ -474,12 +474,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
 
             // Passwords match. Handle password for each switcher
-            switch (platform)
+            Data.Settings.Discord.Instance.Password = platform switch
             {
-                case "Discord":
-                    Data.Settings.Discord.Instance.Password = password;
-                    break;
-            }
+                "Discord" => password,
+                _ => Data.Settings.Discord.Instance.Password
+            };
 
             return true;
         }

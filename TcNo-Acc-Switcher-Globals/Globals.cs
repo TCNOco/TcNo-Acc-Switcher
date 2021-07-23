@@ -23,7 +23,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
         public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-        public static readonly string Version = "2021-07-19_00";
+        public static readonly string Version = "2021-07-23_00";
         public static readonly string[] PlatformList = { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot", "Discord" };
 
         #region LOGGER
@@ -311,6 +311,32 @@ namespace TcNo_Acc_Switcher_Globals
 
             return l.ToArray();
         }
+        
+        // Overload for below
+        public static void CopyFilesRecursive(string inputFolder, string outputFolder) =>
+            CopyFilesRecursive(inputFolder, outputFolder, false);
+        /// <summary>
+        /// Recursively copy files and directories
+        /// </summary>
+        /// <param name="inputFolder">Folder to copy files recursively from</param>
+        /// <param name="outputFolder">Destination folder</param>
+        /// <param name="overwrite">Whether to overwrite files or not</param>
+        public static void CopyFilesRecursive(string inputFolder, string outputFolder, bool overwrite)
+        {
+            _ = Directory.CreateDirectory(outputFolder);
+            //Now Create all of the directories
+            foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
+                _ = Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
+
+            //Copy all the files & Replaces any files with the same name
+            foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
+            {
+                var dest = newPath.Replace(inputFolder, outputFolder);
+                if (!overwrite && File.Exists(dest)) continue;
+
+                File.Copy(newPath, dest, true);
+            }
+        }
 
         #endregion
 
@@ -379,6 +405,20 @@ namespace TcNo_Acc_Switcher_Globals
         #endregion
 
         /// <summary>
+        /// Get hash of string
+        /// </summary>
+        public static string GetSha256HashString(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return string.Empty;
+
+            using var sha = new SHA256Managed();
+            var textData = Encoding.UTF8.GetBytes(text);
+            var hash = sha.ComputeHash(textData);
+            return BitConverter.ToString(hash).Replace("-", string.Empty);
+        }
+
+        /// <summary>
         /// Gets the unix timestamp string.
         /// </summary>
         public static string GetUnixTime()
@@ -386,32 +426,7 @@ namespace TcNo_Acc_Switcher_Globals
             return ((int)DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds).ToString();
         }
 
-        // Overload for below
-        public static void CopyFilesRecursive(string inputFolder, string outputFolder) =>
-            CopyFilesRecursive(inputFolder, outputFolder, false);
-        /// <summary>
-        /// Recursively copy files and directories
-        /// </summary>
-        /// <param name="inputFolder">Folder to copy files recursively from</param>
-        /// <param name="outputFolder">Destination folder</param>
-        /// <param name="overwrite">Whether to overwrite files or not</param>
-        public static void CopyFilesRecursive(string inputFolder, string outputFolder, bool overwrite)
-        {
-            _ = Directory.CreateDirectory(outputFolder);
-            //Now Create all of the directories
-            foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
-                _ = Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
-
-            //Copy all the files & Replaces any files with the same name
-            foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
-            {
-                var dest = newPath.Replace(inputFolder, outputFolder);
-                if (!overwrite && File.Exists(dest)) continue;
-
-                File.Copy(newPath, dest, true);
-            }
-        }
-
+        #region PROCESSES
         /// <summary>
         /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Doesn't start with "SUCCESS") 
         /// </summary>
@@ -440,16 +455,8 @@ namespace TcNo_Acc_Switcher_Globals
                 : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
         }
 
-        public static string GetSha256HashString(string text)
-        {
-            if (string.IsNullOrEmpty(text))
-                return string.Empty;
 
-            using var sha = new SHA256Managed();
-            var textData = Encoding.UTF8.GetBytes(text);
-            var hash = sha.ComputeHash(textData);
-            return BitConverter.ToString(hash).Replace("-", string.Empty);
-        }
+        #endregion
 
         #region TRAY
         /// <summary>

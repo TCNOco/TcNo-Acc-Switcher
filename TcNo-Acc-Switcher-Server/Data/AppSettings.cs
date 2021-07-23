@@ -234,6 +234,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             { "notification-color-error-lighter", "#17132C" },
             { "updateBarBackground", "#FFAA00" },
             { "updateBarColor", "black" },
+            { "popupIconErrorFill", "red" },
             { "battlenetIcoOWTank-Fill", "white" },
             { "battlenetIcoOWDamage-Fill", "white" },
             { "battlenetIcoOWSupport-Fill", "white" },
