@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Nu se poate localiza '.../Steam/config/loginus
 Toast_CantClearImages: Imaginile nu au putut fi șterse
 Toast_RefreshedImages: Reîmprospătați imaginile
 Toast_Ubisoft_NoUsername: Nu s-a putut găsi ultimul utilizator conectat. Încercați să vă logați din nou în Ubisoft.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat nu a putut fi găsit. Ultimul cont activ nu a fost salvat."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat could not be found. The last active account was not saved."
 Toast_Ubisoft_NoUser: Nu s-a putut găsi ultimul utilizator conectat. Încercați să vă logați din nou în Ubisoft.
 Toast_ClearForgottenCheck: Sunteţi sigur că doriţi să ştergeţi copiile de rezervă ale conturilor uitate?
 Modal_Info_Creator: Creat de TechNobo [Wesley Pyburn]
