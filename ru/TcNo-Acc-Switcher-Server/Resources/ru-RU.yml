@@ -231,21 +231,21 @@ Updater_PatchApplied: Патч применен!
 Updater_UpdatingAppData: Обновление файлов в AppData!
 Updater_Complete: Все обновления завершены!
 Updater_Checking: Проверка обновлений
-Updater_UpdateToVerify: Для проверки файлов необходимо сначала обновить.
+Updater_UpdateToVerify: Для проверки файлов необходимо сначала выполнить обновление.
 Updater_ClosingTcNo: Закрытие экземпляров TcNo Account Switcher (если таковые имеются).
 Updater_Downloading: "Загрузка обновления: {version}"
 Updater_Downloaded: Загрузка завершена.
 Updater_CantExtract: Не удалось извлечь обновление.
 Updater_Verify: Проверить файлы
 Updater_Verifying: Проверка...
-Updater_VerifySkip: Проверка файлов, чтобы пропустить все небольшие обновления и просто перейти к последней версии.
-Updater_NoConnection: "Не удалось подключиться к tcno.co для проверки файлов. Вы можете попробовать вручную загрузить программу установки с GitHub и переустановить для обновления.\n\nОшибка:"
-Updater_NoServer: Не удалось получить сервер обновления
+Updater_VerifySkip: Проверка файлов для пропуска всех мелких обновлений и перехода к последней версии.
+Updater_NoConnection: "Не удалось подключиться к tcno.co для проверки файлов. Вы можете попробовать вручную загрузить установщик с GitHub и переустановить его для обновления.\n\nОшибка:"
+Updater_NoServer: Не удалось связаться с сервером обновлений
 Updater_Hashlist: Загрузка последнего списка хэша...
-Updater_CantCheck: Не удается проверить обновления
-Updater_Failed: "ОШИБКА: Некоторые файлы используются и не могут быть обновлены.\n\n1. Убедитесь, что все процессы TcNo полностью закрыты\n(или перезапустите ПК)\n\n2. Затем нажмите Проверить ниже, или, если вы перезапустили:\n- откройте это обновление и проверьте файлы\n    (расположенные в папке 'updater' в каталоге установки)"
-Updater_Missing: "ЗАПИСЬ ФАЙЛ: {file}"
-Updater_FileMismatch: "Файл: {file} имеет MD5: {md5} EXPECTED: {value}"
+Updater_CantCheck: Не удалось проверить наличие обновлений
+Updater_Failed: "ОШИБКА: Некоторые файлы используются и не могут быть обновлены.\n\n1. Убедитесь, что все процессы TcNo полностью закрыты\n(или перезагрузите ПК)\n\n2. Затем нажмите Проверить ниже, или если вы перезагрузились:\n- Откройте программу обновления и проверьте файлы\n    (находятся в папке 'updater' в каталоге установки)"
+Updater_Missing: "ОТСУТСТВУЕТ ФАЙЛ: {file}"
+Updater_FileMismatch: "Файл: {file} имеет MD5: {md5} ОЖИДАЕТСЯ: {value}"
 Updater_DownloadingWeb: Загрузка файла с сайта...
 Updater_UnpackingAppData: Копирование файлов в %AppData%/TcNo Account Switcher... (если не установлено иное)
 Updater_VerifyComplete: Файлы проверены!
@@ -254,17 +254,17 @@ Updater_TotalFound: "Найдено всего обновлений: {x}"
 Updater_TotalSize: "Общий размер: {size}"
 Updater_AwaitingUser: Ожидание ввода пользователя...
 Updater_UpToDate: "Вы в актуальном состоянии.\n:)"
-Updater_FailedDecode: Чаще всего это происходит из-за того, что я (TechNobo) толкал обновление, и опечатал сломал . файл обновления. Дайте мне знать :)
+Updater_FailedDecode: Скорее всего, это связано с тем, что я (TechNobo) выпустил обновление и допустил опечатку, которая нарушила файл обновления .json. Дайте мне знать :)
 Updater_FailedDecodeTitle: Не удалось декодировать список обновлений
 Updater_Extracting: Извлечение патча
 Updater_Applying: Применение патча...
 Updater_Moving: Перемещение файлов...
-Updater_Title: TcNo обновление переключения учетной записи
+Updater_Title: TcNo Account Switcher Updater
 Updater_Started: Начато
 Updater_Start: Запустить TcNo Account Switcher
 Updater_Begin: Начать обновление
 Updater_Exit: Выход
-FatalError: Произошла неподвижная ошибка!
+FatalError: Произошла фатальная ошибка!
 Online: В сети
 OnlineDefault: В сети (По умолчанию)
 Offline: Не в сети
@@ -301,9 +301,9 @@ DirectoryNotFoundFolder: "Каталог не найден: {folder}"
 DeletingFile: "Удаление: {file}"
 DeletingFolder: "Удаление папки: "
 CouldntDeleteX: "ОШИБКА: ЗАДАЧА УДАЛЕН: {x}"
-CouldntDeleteUndefined: "ОШИБКА: УДАЛИТЬ НЕВОЗМОЖНЫЙ ФАЙЛ"
+CouldntDeleteUndefined: "ОШИБКА: НЕ УДАЛОСЬ УДАЛИТЬ НЕОПРЕДЕЛЕННЫЙ ФАЙЛ"
 Prompt_DiscordCopy1: Кнопка "Параметры" и нажмите
-Prompt_DiscordCopy2: "Проверьте, что режим стримера не включен, в противном случае: Дайте ошибку."
+Prompt_DiscordCopy2: "Убедитесь, что режим стримера не включен, в противном случае: Выдаст ошибку."
 Prompt_DiscordCopy3: Убедитесь, что режим "Стримера" отключен/не активен при выполнении этой команды!
 Prompt_DiscordCopy4: Получить имя снизу слева от экрана
 Prompt_DiscordCopy5: Получить аватар и имя пользователя со страницы
