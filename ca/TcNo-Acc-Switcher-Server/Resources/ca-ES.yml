@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: No es pot localitzar '... / Steam / config / l
 Toast_CantClearImages: No s'han pogut esborrar les imatges
 Toast_RefreshedImages: Imatges actualitzades
 Toast_Ubisoft_NoUsername: No s'ha pogut trobar l'últim usuari connectat. Intenteu tornar a iniciar sessió a Ubisoft primer.
-Toast_Ubisoft_NoDat: "No s'ha pogut trobar %LocalAppData%No s'ha desat l'últim compte actiu."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat could not be found. The last active account was not saved."
 Toast_Ubisoft_NoUser: No s'ha pogut trobar l'últim usuari connectat. Intenteu tornar a iniciar sessió a Ubisoft primer.
 Toast_ClearForgottenCheck: Esteu segur que voleu esborrar les còpies de seguretat dels comptes oblidats?
 Modal_Info_Creator: Creat per TechNobo [Wesley Pyburn]
