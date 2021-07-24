@@ -81,7 +81,7 @@ Toast_ProtocolEnabledTitle: Протокол добавлен
 Toast_ProtocolDisabled: Эта программа больше не будет отвечать на tcno:\\
 Toast_ProtocolDisabledTitle: Протокол удален
 Toast_RestartAsAdmin: Пожалуйста, запустите от имени Администратора и повторите попытку.
-Toast_RestartAfterClose: Пожалуйста, перезапустите программу после нажатия на кнопку Закрыть.
+Toast_RestartAfterClose: Пожалуйста, перезапустите программу.
 Toast_RestartAfterCloseTitle: Цвет акцента отключен
 Toast_LoadStylesheetFailed: Не удалось загрузить таблицу стилей! Смотрите папку документов для подробностей.
 Toast_BNet_Private: "Профиль {BTag} приватный"
@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Невозможно найти '.../Steam/con
 Toast_CantClearImages: Не удалось очистить изображения
 Toast_RefreshedImages: Обновленные изображения
 Toast_Ubisoft_NoUsername: Не удалось найти последнего вошедшего пользователя. Попробуйте сначала войти в Ubisoft.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat could not be found. The last active account was not saved."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat не найден. Последняя активная учетная запись не сохранена."
 Toast_Ubisoft_NoUser: Не удалось найти последнего вошедшего пользователя. Попробуйте сначала войти в Ubisoft.
 Toast_ClearForgottenCheck: Вы уверены, что хотите очистить резервные копии забытых учетных записей?
 Modal_Info_Creator: Создано TechNobo [Wesley Pyburn]
