@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: 无法定位 '.../Steam/config/loginusers.vdf'
 Toast_CantClearImages: 无法清除图像
 Toast_RefreshedImages: 已刷新图像
 Toast_Ubisoft_NoUsername: 无法找到最后登录的用户。请先再次登录 Ubisoft。
-Toast_Ubisoft_NoDat: "找不到 %LocalAppData%/UbisoftGameLauncher/users.dat 。最后一个活动帐户未保存。"
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat could not be found. The last active account was not saved."
 Toast_Ubisoft_NoUser: 无法找到最后登录的用户。请先再次登录 Ubisoft。
 Toast_ClearForgottenCheck: 您确定要清除已忘记帐户的备份吗？
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 创作
