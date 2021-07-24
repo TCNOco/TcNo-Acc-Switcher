@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: לא ניתן לאתר את '... / Steam / con
 Toast_CantClearImages: לא ניתן היה לנקות תמונות
 Toast_RefreshedImages: תמונות רעננות
 Toast_Ubisoft_NoUsername: לא ניתן למצוא משתמש מחובר אחרון. נסה להתחבר שוב ל- Ubisoft.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat לא נמצא. החשבון הפעיל האחרון לא נשמר."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat could not be found. The last active account was not saved."
 Toast_Ubisoft_NoUser: לא ניתן למצוא משתמש מחובר אחרון. נסה להתחבר שוב ל- Ubisoft.
 Toast_ClearForgottenCheck: האם אתה בטוח שברצונך לנקות גיבויים של חשבונות שנשכחו?
 Modal_Info_Creator: נוצר על ידי TechNobo [Wesley Pyburn]
