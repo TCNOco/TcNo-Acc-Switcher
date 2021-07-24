@@ -1,13 +1,13 @@
 ---
 Update: Доступно обновление! Нажмите тут чтобы установить его.
 Header_ChooseLanguage: 'Выберите язык:'
-BattleNet_ShowSR: Показать Overwatch SR и использовать изображение профиля Overwatch.
+BattleNet_ShowSR: Показывать Overwatch SR и использовать изображение профиля Overwatch.
 Steam_ShowSteamID: Показывать SteamID
 Steam_ShowVac: Показывать VAC статус
 Steam_CheckVac: Проверить VAC статус
-Steam_ShowLimited: Показать ограниченный статус
-Steam_ShowAccUsername: Показывать логин
-Steam_Tray_AccountName: Показать имя аккаунта [не имя друга]
+Steam_ShowLimited: Показывать ограниченный статус
+Steam_ShowAccUsername: Показывать логин аккаунта
+Steam_Tray_AccountName: Показывать имя аккаунта [не имя друга]
 Button_AddNew: Добавить аккаунт
 Button_SaveCurrent: Сохранить текущий
 Button_SaveFile: Сохранить файл
@@ -65,7 +65,7 @@ Ignored_RemoveAccounts: Удалить учетные записи из спис
 Ignored_Description: Если вы ранее «проигнорировали» аккаунт, вы можете показать его снова здесь
 Ignored_Stop: Остановить игнорирование выбранных
 Toast_RetryOrDeleteDiscordCache: Повторите попытку или удалите кэш Discord для сброса пароля (см. Wiki).
-Toast_TrayStarted: Трей начался!
+Toast_TrayStarted: Трей запущен!
 Toast_TrayRunning: Трей уже открыт
 Toast_TrayUsersMissing: Нет сохраненных пользователей в Трее
 Toast_TrayFail: Не удалось запустить приложение Трея!
@@ -101,7 +101,7 @@ Toast_CantChangeUsername: Не удалось изменить имя польз
 Toast_CantClearLoginFiles: Не удалось удалить старые файлы входа
 Toast_Epic_AccountIdReg: Не удалось получить ID аккаунта из реестра!
 Toast_DuplicateNames: Не удалось переключить. Дублировать учетные записи с одинаковым именем пользователя?
-Toast_CouldNotLocate: Не удалось найти авторизованного пользователя
+Toast_CouldNotLocate: Не удалось найти активного пользователя
 Toast_StreamerModeHint: Личная информация скрыта! - Смотрите настройки
 Toast_StreamerModeTitle: Режим "Стримера"
 Toast_AddAccountsFirst: Откройте платформу из списка и сначала добавьте несколько аккаунтов
@@ -135,7 +135,7 @@ Modal_Info_Disclaimer: Отказ от ответственности
 Modal_Title_Info: Информация о TcNo Account Switcher
 Modal_Title_ChangeUsername: Изменить имя пользователя
 Modal_Title_ConfirmAction: TcNo Account Switcher подтвердите действие
-Modal_Title_LocatePlatform: Пожалуйста, найдите каталог {platform}
+Modal_Title_LocatePlatform: Пожалуйста, выберите каталог {platform}
 Modal_Title_AddNew: Добавить новый аккаунт {platform}
 Modal_ChangeUsername: Пожалуйста, введите новый {platformText} для вашей учетной записи
 Modal_ChangeUsernameType: Изменить {UsernameOrOther}
@@ -200,19 +200,19 @@ Installer_InstalledRuntimes: "Установленные среды выполн
 Installer_ErrorRuntime: "Один или несколько раз выполнения не были установлены:"
 Installer_RuntimeNote: "[~{size1} МБ + ~{size2} МБ во время установки]"
 Installer_TotalSize: "Общий размер загрузки: ~{size} МБ"
-Installer_AnyKeyStart: Нажмите любую клавишу для начала загрузки...
-Runtime_WebView2: Запуск Microsoft WebView2
+Installer_AnyKeyStart: Нажмите любую клавишу, чтобы начать загрузку...
+Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
 Runtime_ASP: Microsoft ASP.NET Core 5.0 Runtime
 Installer_FailedFolder: "Не удалось создать папку:"
 Installer_FailedWV: "Не удалось загрузить и установить Microsoft WebView2 Runtime. Чтобы загрузить: 1. Щелкните по ссылке ниже: {link} 2. Нажмите 'Download Hosting Bundle' в разделе Run server apps."
-Installer_FailedDR: "Не удалось загрузить и установить .NET 5 рабочего стола. Скачайте его здесь:"
+Installer_FailedDR: "Не удалось загрузить и установить .NET 5 Desktop Runtime. Скачайте его здесь:"
 Installed_FailedASP: "Не удалось загрузить и установить ASP.NET Core 5.0 Runtime. Чтобы загрузить: 1. Нажмите на ссылку ниже: {link} 2. Нажмите 'Download x64' в разделе Run Desktop apps."
-Installer_Ready: "Одно или несколько готово к установке. Если вы хотите установить и при появлении запроса, нажмите 'Да'."
+Installer_Ready: "Один или несколько готовы к установке. Если появится запрос о необходимости установки, нажмите \"Да\"."
 Installer_PressStart: Нажмите любую клавишу, чтобы начать установку...
-Installer_VerifyMin: "Убедитесь, что вы соответствуете минимальным рекомендованным требованиям:"
-Installer_VerifyAlready: "Похоже, что все установлено. Убедитесь, что вы соответствуете минимальным рекомендованным требованиям:"
-Installer_Complete: Программа TcNo-Acc-Switcher.exe будет автоматически запущена при нажатии клавиши для продолжения.
+Installer_VerifyMin: "Проверьте соответствие минимальным рекомендованным требованиям:"
+Installer_VerifyAlready: "Похоже, что все установлено. Проверьте соответствие минимальным рекомендуемым требованиям:"
+Installer_Complete: Это должно быть все. TcNo-Acc-Switcher.exe, запустится автоматически, когда вы нажмете клавишу для продолжения.
 Installer_Complete2: "Если это не работает, обратитесь к инструкциям по установке здесь: {link}"
 Global_FatalNext: "Произошла фатальная ошибка! Этот журнал ошибок будет автоматически передан при следующем запуске."
 Tray_Error: Ошибка трея
@@ -224,14 +224,14 @@ Updater_Duplicate: Обнаружен еще один экземпляр TcNo Ac
 Updater_Unknown: "Неизвестный аргумент: {arg}"
 Updater_NeedsAdmin: Эта программа должна быть запущена от администратора!
 Updater_StatusChecking: Проверка версии
-Updater_FailedVersionCheck: "Не удалось получить версию. Нажмите \"Проверь\", чтобы обновить и проверить файлы"
+Updater_FailedVersionCheck: "Не удалось получить версию. Нажмите \"Проверить\" для обновления и проверки файлов"
 Updater_PressBelow: Нажмите кнопку ниже!
 Updater_PressBelowStart: Нажмите на кнопку ниже, чтобы начать обновление.
 Updater_PatchApplied: Патч применен!
 Updater_UpdatingAppData: Обновление файлов в AppData!
 Updater_Complete: Все обновления завершены!
 Updater_Checking: Проверка обновлений
-Updater_UpdateToVerify: Для проверки файлов необходимо сначала выполнить обновление.
+Updater_UpdateToVerify: Для проверки файлов необходимо обновиться.
 Updater_ClosingTcNo: Закрытие экземпляров TcNo Account Switcher (если таковые имеются).
 Updater_Downloading: "Загрузка обновления: {version}"
 Updater_Downloaded: Загрузка завершена.
@@ -242,7 +242,7 @@ Updater_VerifySkip: Проверка файлов для пропуска все
 Updater_NoConnection: "Не удалось подключиться к tcno.co для проверки файлов. Вы можете попробовать вручную загрузить установщик с GitHub и переустановить его для обновления.\n\nОшибка:"
 Updater_NoServer: Не удалось связаться с сервером обновлений
 Updater_Hashlist: Загрузка последнего списка хэша...
-Updater_CantCheck: Не удалось проверить наличие обновлений
+Updater_CantCheck: Не удается проверить обновления
 Updater_Failed: "ОШИБКА: Некоторые файлы используются и не могут быть обновлены.\n\n1. Убедитесь, что все процессы TcNo полностью закрыты\n(или перезагрузите ПК)\n\n2. Затем нажмите Проверить ниже, или если вы перезагрузились:\n- Откройте программу обновления и проверьте файлы\n    (находятся в папке 'updater' в каталоге установки)"
 Updater_Missing: "ОТСУТСТВУЕТ ФАЙЛ: {file}"
 Updater_FileMismatch: "Файл: {file} имеет MD5: {md5} ОЖИДАЕТСЯ: {value}"
@@ -280,8 +280,8 @@ Reg_Removing: Удаление {subKey}\\{val}
 PngInvalid_Format: Требуемый формат пикселя - пиксельный формат.{x}.
 PngRequired: Необходимый формат изображения является портативной сетевой графикой (png).
 PngDimensions: Размер должен быть меньше или равен {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "Произошла ошибка синтаксиса (подробнее ниже)! И:"
-ThemesNotFound: "Не удалось найти папку \"themes\" в каталоге TcNo Account Switcher. Это (особенно Default.yaml) требуется для работы программы.\nВы можете запустить программу Updater в папке \"updater\" для проверки файлов и восстановления отсутствующих файлов."
+ThemeSyntaxAnd: "Возникла синтаксическая ошибка (подробнее ниже)! И:"
+ThemesNotFound: "Не удалось найти папку \"themes\" в каталоге TcNo Account Switcher. Это (особенно Default.yaml) требуется для работы программы.\nВы можете запустить Updater в папке \"updater\" для проверки файлов и восстановления отсутствующих файлов."
 Yes: "Да"
 No: "Нет"
 Ok: "ОК"
@@ -293,7 +293,7 @@ Failed: Неудачный
 Success: Успешно
 NotFound: Не найдено
 Done: Готово
-ForName: "для: {name}"
+ForName: "Для: {name}"
 CouldNotFindX: Не удалось найти {x}
 CouldNotCloseX: Не удалось закрыть {x}!
 DirectoryNotFound: Каталог не найден
