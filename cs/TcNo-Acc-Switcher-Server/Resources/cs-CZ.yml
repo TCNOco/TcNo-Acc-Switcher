@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Nelze nalézt '.../Steam/config/loginusers.vdf
 Toast_CantClearImages: Nelze vymazat obrázky
 Toast_RefreshedImages: Obnovené obrázky
 Toast_Ubisoft_NoUsername: Nelze najít poslední přihlášené uživatele. Zkuste se nejdříve přihlásit do Ubisoft.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat nebyl nalezen. Poslední aktivní účet nebyl uložen."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat could not be found. The last active account was not saved."
 Toast_Ubisoft_NoUser: Nelze najít poslední přihlášené uživatele. Zkuste se nejdříve přihlásit do Ubisoft.
 Toast_ClearForgottenCheck: Opravdu chcete vymazat zálohy zapomenutých účtů?
 Modal_Info_Creator: Vytvořeno společností Technoo [Wesley Pyburn]
