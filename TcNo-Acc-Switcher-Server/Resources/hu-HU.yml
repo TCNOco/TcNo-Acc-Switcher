@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: A "... / Steam / config / loginusers.vdf" nem 
 Toast_CantClearImages: Nem sikerült törölni a képeket
 Toast_RefreshedImages: Frissített képek
 Toast_Ubisoft_NoUsername: Nem található az utoljára bejelentkezett felhasználó. Először próbáljon meg újra bejelentkezni a Ubisoftba.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat nem található. Az utolsó aktív fiókot nem mentették."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nem található. Az utolsó aktív fiókot nem mentették."
 Toast_Ubisoft_NoUser: Nem található az utoljára bejelentkezett felhasználó. Először próbáljon meg újra bejelentkezni a Ubisoftba.
 Toast_ClearForgottenCheck: Biztosan törli az elfelejtett fiókok biztonsági másolatait?
 Modal_Info_Creator: 'Készítette: TechNobo [Wesley Pyburn]'

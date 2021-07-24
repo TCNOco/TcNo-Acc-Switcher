@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Αδυναμία εντοπισμού '.../Ste
 Toast_CantClearImages: Αδυναμία καθαρισμού εικόνων
 Toast_RefreshedImages: Ανανεωμένες εικόνες
 Toast_Ubisoft_NoUsername: Δεν βρέθηκε ο τελευταίος συνδεδεμένος χρήστης. Πρώτα προσπαθήστε να συνδεθείτε ξανά στο Ubisoft.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat δεν βρέθηκε. Ο τελευταίος ενεργός λογαριασμός δεν αποθηκεύτηκε."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat δεν βρέθηκε. Ο τελευταίος ενεργός λογαριασμός δεν αποθηκεύτηκε."
 Toast_Ubisoft_NoUser: Δεν βρέθηκε ο τελευταίος συνδεδεμένος χρήστης. Πρώτα προσπαθήστε να συνδεθείτε ξανά στο Ubisoft.
 Toast_ClearForgottenCheck: Είστε βέβαιοι ότι θέλετε να καθαρίσετε τα αντίγραφα ασφαλείας των ξεχασμένων λογαριασμών?
 Modal_Info_Creator: Δημιουργήθηκε από TechNobo [Wesley Pyburn]

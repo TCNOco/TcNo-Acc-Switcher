@@ -292,8 +292,16 @@ async function currentDiscordLogin() {
 		showModal("accString");
 }
 // Add currently logged in Ubisoft account
-function currentUbisoftLogin() {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftAddCurrent");
+async function currentUbisoftLogin() {
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftHasUserSaved").then((r) => {
+        if (r === "")
+            // If userId not saved: 
+            showModal('accString');
+        else {
+            DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftAddCurrent", r);
+        }
+    });
+    var result = await promise;
 }
 
 

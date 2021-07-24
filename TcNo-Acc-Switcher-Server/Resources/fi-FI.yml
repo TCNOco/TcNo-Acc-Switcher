@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Ei löydy '.../Steam/config/loginusers.vdf'. Y
 Toast_CantClearImages: Kuvia ei voitu tyhjentää
 Toast_RefreshedImages: Päivitetyt kuvat
 Toast_Ubisoft_NoUsername: Viimeksi kirjautunut käyttäjä ei löytynyt. Yritä kirjautua Ubisoftiin ensin.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat ei löytynyt. Viimeistä aktiivista tiliä ei tallennettu."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat ei löytynyt. Viimeistä aktiivista tiliä ei tallennettu."
 Toast_Ubisoft_NoUser: Viimeksi kirjautunut käyttäjä ei löytynyt. Yritä kirjautua Ubisoftiin ensin.
 Toast_ClearForgottenCheck: Oletko varma, että haluat tyhjentää unohdettujen tilien varmuuskopiot?
 Modal_Info_Creator: TechNobon luoma [Wesley Pyburn]

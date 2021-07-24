@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: '''.../Steam/config/loginusers.vdf'' が見つ
 Toast_CantClearImages: 画像をクリアできませんでした
 Toast_RefreshedImages: 更新された画像
 Toast_Ubisoft_NoUsername: 最後にログインしたユーザーが見つかりませんでした。最初に再度Ubisoftにログインしてください。
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.datが見つかりませんでした。最後のアクティブなアカウントは保存されませんでした。"
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.datが見つかりませんでした。最後のアクティブなアカウントは保存されませんでした。"
 Toast_Ubisoft_NoUser: 最後にログインしたユーザーが見つかりませんでした。最初に再度Ubisoftにログインしてください。
 Toast_ClearForgottenCheck: 忘れたアカウントのバックアップを削除してもよろしいですか？
 Modal_Info_Creator: TechNoboによって作成されました [Wesley Pyburn]

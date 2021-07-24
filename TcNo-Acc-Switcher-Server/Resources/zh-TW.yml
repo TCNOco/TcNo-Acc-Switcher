@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: 找不到“.../Steam/config/loginusers.vdf”
 Toast_CantClearImages: 無法清除圖像
 Toast_RefreshedImages: 刷新的圖像
 Toast_Ubisoft_NoUsername: 找不到上次登錄的用戶。先嘗試再次登錄育碧。
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat 無法找到。未保存最後一個活動帳戶。"
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat 無法找到。未保存最後一個活動帳戶。"
 Toast_Ubisoft_NoUser: 找不到上次登錄的用戶。先嘗試再次登錄育碧。
 Toast_ClearForgottenCheck: 您確定要清除忘記帳戶的備份嗎？
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 創建

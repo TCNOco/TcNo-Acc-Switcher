@@ -56,11 +56,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             GenericFunctions.InsertAccounts(allIds, "ubisoft");
         }
 
-        public static void UbisoftAddCurrent()
+        public static void UbisoftAddCurrent(string accName = "", bool saveOnlyIfExists = false)
         {
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.UbisoftAddCurrent]");
-
-            // To add account section:
+            // 1. Get account userID from log file (May also change soon, because the user.dat file changed)?
             var userId = GetLastLoginUserId();
             if (userId == "NOTFOUND")
             {
@@ -68,18 +67,45 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 return;
             }
 
-            // Find username from users.dat file
-            var username = FindUsername(userId);
-            if (username == "ERR")
+            // For adding new accounts: Skip saving, to avoid creating blank username accounts
+            var savedUsername = HasUserSaved();
+            if (saveOnlyIfExists && savedUsername == "") return;
+
+            // 2. Copy the profile picture
+            ImportAvatar(userId);
+            
+            var localCachePath = $"LoginCache\\Ubisoft\\{userId}\\";
+            _ = Directory.CreateDirectory(localCachePath);
+
+            if (!File.Exists(Path.Join(_ubisoftAppData, "settings.yaml")) || !File.Exists(Path.Join(_ubisoftAppData, "user.dat")))
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Ubisoft_NoDat"], Lang["Error"], "toastarea", 10000);
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CouldNotLocate"], Lang["Failed"], "toastarea");
                 return;
             }
-            // Import profile picture to $"LoginCache\\Ubisoft\\{userId}\\pfp.png"
-            ImportAvatar(userId);
+            // Save files
+            File.Copy(Path.Join(_ubisoftAppData, "settings.yaml"), Path.Join(localCachePath, "settings.yaml"), true);
+            File.Copy(Path.Join(_ubisoftAppData, "user.dat"), Path.Join(localCachePath, "user.dat"), true);
 
-            // Notification
-            AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + username), true);
+            // Add username
+            if (accName != "") SetUsername(userId, accName);
+            else accName = savedUsername;
+
+            AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
+            
+        }
+
+        public static string HasUserSaved()
+        {
+            // 1. Get account userID from log file (May also change soon, because the user.dat file changed)?
+            var userId = GetLastLoginUserId();
+            if (userId == "NOTFOUND")
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Ubisoft_NoUsername"], Lang["Error"], "toastarea", 10000);
+                return "";
+            }
+
+            var allIds = ReadAllIds();
+            return (allIds.ContainsKey(userId) ? allIds[userId] : "");
         }
 
         private static string GetLastLoginUserId()
@@ -102,69 +128,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             File.Delete("templog");
 
             return lastUser != "" ? lastUser : "NOTFOUND";
-        }
-
-        // Overload for below
-        public static string FindUsername(string userId) => FindUsername(userId, true);
-
-        public static string FindUsername(string userId, bool copyFiles)
-        {
-            _ubisoftAppData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ubisoft Game Launcher");
-
-
-            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.FindUsername]");
-            _ = Directory.CreateDirectory("LoginCache\\Ubisoft\\temp\\");
-            const string tempUsersDat = "LoginCache\\Ubisoft\\temp\\users.dat";
-
-            if (!File.Exists(Path.Join(_ubisoftAppData, "users.dat"))) return "ERR";
-            File.Copy(Path.Join(_ubisoftAppData, "users.dat"), "LoginCache\\Ubisoft\\temp\\users.dat", true);
-
-            var username = "";
-            var nextLineIsUsername = false;
-            using (var reader = new StreamReader(File.Open(tempUsersDat, FileMode.Open)))
-            {
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    if (!nextLineIsUsername) // Will only be true if character separating userId and username is counted as a newline.
-                    {
-                        var userIdIndex = line.IndexOf(userId, StringComparison.Ordinal);
-                        if (userIdIndex == -1) continue; // userId is not on this line >> Next
-
-                        var indexAfterUserId = userIdIndex + userId.Length; // Find end of userId in string
-                        if (indexAfterUserId == line.Length) // If username is on 'next line', grab it on next iteration.
-                        {
-                            nextLineIsUsername = true;
-                            continue;
-                        }
-                        // Otherwise: it was found on this line, grab it.
-                        line = line[indexAfterUserId..];
-                    }
-                    // This grabs the username if on the line after userId
-                    line = line.Split(":")[0];
-                    username = new Regex(@"[^a-zA-Z0-9_\-.-]").Split(line).Last();
-                    break;
-                }
-            }
-
-            if (username == "")
-            {
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Ubisoft_NoUsername"], Lang["Error"], "toastarea");
-                return "ERR";
-            }
-
-            SetUsername(userId, username);
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo("LoginCache\\Ubisoft\\temp\\"), false);
-
-            if (!copyFiles)
-            {
-                AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Refreshed username from file"), true);
-                return username; // Used for refreshing username.
-            }
-            _ = Directory.CreateDirectory($"LoginCache\\Ubisoft\\{userId}\\");
-            File.Copy(Path.Join(_ubisoftAppData, "settings.yml"), $"LoginCache\\Ubisoft\\{userId}\\settings.yml", true);
-            File.Copy(Path.Join(_ubisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\{userId}\\users.dat", true);
-            return username;
         }
 
         // Overload for below
@@ -219,13 +182,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             else File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "img\\QuestionMark.jpg"), outPath, true);
         }
 
-        //// This seemed very possible: But... As far as I know the settings.yml file needs to be adjusted, as well as the users.dat...
+        //// This seemed very possible: But... As far as I know the settings.yaml file needs to be adjusted, as well as the user.dat...
         //// Might change the way that this works later.
         //private static void FindAllUsers()
         //{
         //    Directory.CreateDirectory("LoginCache\\Ubisoft\\temp\\");
-        //    var tempUsersDat = $"LoginCache\\Ubisoft\\temp\\users.dat";
-        //    File.Copy(Path.Join(UbisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\temp\\users.dat", true);
+        //    var tempUsersDat = $"LoginCache\\Ubisoft\\temp\\user.dat";
+        //    File.Copy(Path.Join(UbisoftAppData, "user.dat"), $"LoginCache\\Ubisoft\\temp\\user.dat", true);
 
 
         //    var username = "";
@@ -244,8 +207,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         //            GeneralFuncs.RecursiveDelete(new DirectoryInfo("LoginCache\\Ubisoft\\temp\\"), false);
         //            Directory.CreateDirectory($"LoginCache\\Ubisoft\\{username}\\");
-        //            File.Copy(Path.Join(UbisoftAppData, "settings.yml"), $"LoginCache\\Ubisoft\\{username}\\settings.yml", true);
-        //            File.Copy(Path.Join(UbisoftAppData, "users.dat"), $"LoginCache\\Ubisoft\\{username}\\users.dat", true);
+        //            File.Copy(Path.Join(UbisoftAppData, "settings.yaml"), $"LoginCache\\Ubisoft\\{username}\\settings.yaml", true);
+        //            File.Copy(Path.Join(UbisoftAppData, "user.dat"), $"LoginCache\\Ubisoft\\{username}\\user.dat", true);
 
         //            break;
         //        }
@@ -294,7 +257,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.SwapUbisoftAccounts] Swapping to:hidden.");
             _ = AppData.InvokeVoidAsync("updateStatus", "Closing Ubisoft");
             if (!CloseUbisoft()) return;
-            UbisoftAddCurrent();
+            UbisoftAddCurrent(saveOnlyIfExists: true);
 
             if (userId != "")
             {
@@ -314,28 +277,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         private static void ClearCurrentUser()
         {
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.ClearCurrentUser]");
-            var settingsYml = Globals.ReadAllLines(Path.Join(_ubisoftAppData, "settings.yml"));
-            for (var i = 0; i < settingsYml.Length; i++)
-            {
-                if (settingsYml[i].Contains("height:"))
-                    settingsYml[i] = "  height: 0";
-                if (settingsYml[i].Contains("left:"))
-                    settingsYml[i] = "  left: 0";
-                if (settingsYml[i].Contains("top:"))
-                    settingsYml[i] = "  top: 0";
-                if (settingsYml[i].Contains("width:"))
-                    settingsYml[i] = "  width: 0";
-
-                if (settingsYml[i].Contains("password:"))
-                    settingsYml[i] = "  password: \"\"";
-                if (settingsYml[i].Contains("remember:"))
-                    settingsYml[i] = "  remember: false";
-                if (settingsYml[i].Contains("remember_ticket:"))
-                    settingsYml[i] = "  remember_ticket: \"\"";
-                if (settingsYml[i].Contains("username: "))
-                    settingsYml[i] = "  username: \"\"";
-            }
-            File.WriteAllLines(Path.Join(_ubisoftAppData, "settings.yml"), settingsYml);
+            File.Delete(Path.Join(_ubisoftAppData, "settings.yml"));
+            File.Delete(Path.Join(_ubisoftAppData, "user.dat"));
         }
 
         /// <summary>
@@ -355,20 +298,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             if (state == -1)
             {
-                File.Copy($"{localCachePath}settings.yml", Path.Join(_ubisoftAppData, "settings.yml"), true);
-                File.Copy($"{localCachePath}users.dat", Path.Join(_ubisoftAppData, "users.dat"), true);
+                if (File.Exists($"{localCachePath}users.dat")) File.Move($"{localCachePath}users.dat", $"{localCachePath}user.dat"); // 2021-07-24 - Ubisoft file name change.
+                File.Copy($"{localCachePath}settings.yaml", Path.Join(_ubisoftAppData, "settings.yaml"), true);
+                File.Copy($"{localCachePath}user.dat", Path.Join(_ubisoftAppData, "user.dat"), true);
                 return true;
             }
-            using var fs = new StreamWriter(Path.Join(_ubisoftAppData, "settings.yml"));
-            foreach (var l in Globals.ReadAllLines($"{localCachePath}settings.yml"))
+            using var fs = new StreamWriter(Path.Join(_ubisoftAppData, "settings.yaml"));
+            foreach (var l in Globals.ReadAllLines($"{localCachePath}settings.yaml"))
             {
                 if (l.Contains("forceoffline")) fs.WriteLine("  forceoffline: " + (state != 0 ? "true" : "false"));
                 else fs.WriteLine(l);
             }
             fs.Close();
 
-            File.Copy($"{localCachePath}users.dat", Path.Join(_ubisoftAppData, "users.dat"), true);
-            File.Copy(Path.Join(_ubisoftAppData, "settings.yml"), $"{localCachePath}settings.yml", true);
+            File.Copy($"{localCachePath}user.dat", Path.Join(_ubisoftAppData, "user.dat"), true);
+            File.Copy(Path.Join(_ubisoftAppData, "settings.yaml"), $"{localCachePath}settings.yaml", true);
             return true;
         }
 

@@ -67,10 +67,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 					{{""{Lang["Online"]}"": ""swapTo(0, event)""}},
 					{{""{Lang["Offline"]}"": ""swapTo(10, event)""}},
 				]}},
-				{{""{Lang["Context_UsernameSubmenu"]}"": [
-					{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
-					{{""{Lang["Context_RefreshName"]}"": ""refreshUsername()""}},
-				]}},
+				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
 				{{""{Lang["Context_CreateShortcut"]}"": ""createShortcut()""}},
 				{{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
 				{{""{Lang["Forget"]}"": ""forget(event)""}}

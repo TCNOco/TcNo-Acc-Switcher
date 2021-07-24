@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Kan ikke finde '.../Steam/config/loginusers.vd
 Toast_CantClearImages: Kunne ikke rydde billeder
 Toast_RefreshedImages: Opdaterede billeder
 Toast_Ubisoft_NoUsername: Kunne ikke finde sidst logget på bruger. Prøv at logge ind på Ubisoft igen først.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat kunne ikke findes. Den sidste aktive konto blev ikke gemt."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kunne ikke findes. Den sidste aktive konto blev ikke gemt."
 Toast_Ubisoft_NoUser: Kunne ikke finde sidst logget på bruger. Prøv at logge ind på Ubisoft igen først.
 Toast_ClearForgottenCheck: Er du sikker på, at du vil rydde sikkerhedskopier af glemte konti?
 Modal_Info_Creator: Oprettet af TechNobo [Wesley Pyburn]

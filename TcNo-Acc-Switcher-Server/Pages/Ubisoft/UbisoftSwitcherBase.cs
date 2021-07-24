@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using System.Threading.Tasks;
+using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
@@ -34,17 +35,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         }
 
         [JSInvokable]
-        public static void UbisoftAddCurrent()
+        public static void UbisoftAddCurrent(string accName)
         {
-            Globals.DebugWriteLine(@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.UbisoftAddCurrent]");
-            UbisoftSwitcherFuncs.UbisoftAddCurrent();
+            Globals.DebugWriteLine(@"[JSInvoke:Riot\RiotSwitcherBase.RiotAddCurrent] accName:hidden");
+            UbisoftSwitcherFuncs.UbisoftAddCurrent(accName);
         }
 
         [JSInvokable]
-        public static void UbisoftRefreshUsername(string userId)
+        public static Task<string> UbisoftHasUserSaved()
         {
             Globals.DebugWriteLine(@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.UbisoftRefreshUsername]");
-            _ = UbisoftSwitcherFuncs.FindUsername(userId, false);
+            return Task.FromResult(UbisoftSwitcherFuncs.HasUserSaved());
         }
     }
 }

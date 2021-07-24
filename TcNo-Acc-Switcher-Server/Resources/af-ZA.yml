@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Kan nie '... / Steam / config / loginusers.vdf
 Toast_CantClearImages: Kon nie prente uitvee nie
 Toast_RefreshedImages: Opgedateerde beelde
 Toast_Ubisoft_NoUsername: Kon nie die laaste aangemelde gebruiker vind nie. Probeer eers weer by Ubisoft aanmeld.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat kon nie gevind word nie. Die laaste aktiewe rekening is nie gestoor nie."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kon nie gevind word nie. Die laaste aktiewe rekening is nie gestoor nie."
 Toast_Ubisoft_NoUser: Kon nie die laaste aangemelde gebruiker vind nie. Probeer eers weer by Ubisoft aanmeld.
 Toast_ClearForgottenCheck: Is u seker dat u rugsteune van vergete rekeninge wil uitvee?
 Modal_Info_Creator: Geskep deur TechNobo [Wesley Pyburn]

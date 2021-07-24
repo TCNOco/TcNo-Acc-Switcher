@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: '''.../Steam/config/loginusers.vdf'' bulunamı
 Toast_CantClearImages: Görüntüler temizlenemedi
 Toast_RefreshedImages: Yenilenen resimler
 Toast_Ubisoft_NoUsername: Son oturum açan kullanıcı bulunamadı. Önce Ubisoft'a tekrar giriş yapmayı deneyin.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat bulunamadı. Son etkin hesap kaydedilmedi."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat bulunamadı. Son etkin hesap kaydedilmedi."
 Toast_Ubisoft_NoUser: Son oturum açan kullanıcı bulunamadı. Önce Ubisoft'a tekrar giriş yapmayı deneyin.
 Toast_ClearForgottenCheck: Unutulan hesapların yedeklerini temizlemek istediğinizden emin misiniz?
 Modal_Info_Creator: TechNobo [Wesley Pyburn] tarafından düzenlendi
