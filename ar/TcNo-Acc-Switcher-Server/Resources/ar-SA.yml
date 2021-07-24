@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: لا يمكن تحديد '.../Steam/config/log
 Toast_CantClearImages: تعذر مسح الصور
 Toast_RefreshedImages: تحديث الصور
 Toast_Ubisoft_NoUsername: تعذر العثور على آخر مستخدم تم تسجيل الدخول. حاول تسجيل الدخول إلى UBisoft مرة أخرى أولاً.
-Toast_Ubisoft_NoDat: "لم يتم العثور على %LocalAppData%/UBisoftGameLauncher/users.dat . لم يتم حفظ آخر حساب نشط."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat could not be found. The last active account was not saved."
 Toast_Ubisoft_NoUser: تعذر العثور على آخر مستخدم تم تسجيل الدخول. حاول تسجيل الدخول إلى UBisoft مرة أخرى أولاً.
 Toast_ClearForgottenCheck: هل أنت متأكد من أنك تريد مسح النسخ الاحتياطي للحسابات المنسية؟
 Modal_Info_Creator: تم إنشاؤها من قبل تيتشنوبو [ويسلي بيبرن]
