@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Невозможно найти '.../Steam/con
 Toast_CantClearImages: Не удалось очистить изображения
 Toast_RefreshedImages: Обновленные изображения
 Toast_Ubisoft_NoUsername: Не удалось найти последнего вошедшего пользователя. Попробуйте сначала войти в Ubisoft.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat не найден. Последняя активная учетная запись не сохранена."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat could not be found. The last active account was not saved."
 Toast_Ubisoft_NoUser: Не удалось найти последнего вошедшего пользователя. Попробуйте сначала войти в Ubisoft.
 Toast_ClearForgottenCheck: Вы уверены, что хотите очистить резервные копии забытых учетных записей?
 Modal_Info_Creator: Создано TechNobo [Wesley Pyburn]
