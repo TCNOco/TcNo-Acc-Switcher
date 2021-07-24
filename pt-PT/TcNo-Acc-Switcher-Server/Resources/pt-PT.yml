@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Não foi possível localizar '.../Steam/config
 Toast_CantClearImages: Não foi possível limpar as imagens
 Toast_RefreshedImages: Imagens atualizadas
 Toast_Ubisoft_NoUsername: Não foi possível encontrar o último usuário logado. Tente entrar no Ubisoft novamente primeiro.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/users.dat não foi encontrado. A última conta ativa não foi salva."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat could not be found. The last active account was not saved."
 Toast_Ubisoft_NoUser: Não foi possível encontrar o último usuário logado. Tente entrar no Ubisoft novamente primeiro.
 Toast_ClearForgottenCheck: Tem certeza que deseja limpar os backups das contas esquecidas?
 Modal_Info_Creator: Criado por TechNobo [Wesley Pyburn]
