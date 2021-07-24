@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Không thể định vị '... / Steam / confi
 Toast_CantClearImages: Không thể xóa hình ảnh
 Toast_RefreshedImages: Hình ảnh được làm mới
 Toast_Ubisoft_NoUsername: Không thể tìm thấy người dùng đăng nhập lần cuối. Trước tiên, hãy thử đăng nhập lại vào Ubisoft.
-Toast_Ubisoft_NoDat: "Không thể tìm thấy %LocalAppData%Tài khoản hoạt động cuối cùng không được lưu."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat could not be found. The last active account was not saved."
 Toast_Ubisoft_NoUser: Không thể tìm thấy người dùng đăng nhập lần cuối. Trước tiên, hãy thử đăng nhập lại vào Ubisoft.
 Toast_ClearForgottenCheck: Bạn có chắc chắn muốn xóa các bản sao lưu của các tài khoản bị quên không?
 Modal_Info_Creator: Tạo bởi TechNobo [Wesley Pyburn]
