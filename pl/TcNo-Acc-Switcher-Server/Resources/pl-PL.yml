@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: Nie można zlokalizować '.../Steam/config/log
 Toast_CantClearImages: Nie można wyczyścić obrazów
 Toast_RefreshedImages: Odświeżone obrazy
 Toast_Ubisoft_NoUsername: Nie można znaleźć ostatniego zalogowanego użytkownika. Spróbuj zalogować się do Ubisoft ponownie.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat could not be found. The last active account was not saved."
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nie został znaleziony. Ostatnie aktywne konto nie zostało zapisane."
 Toast_Ubisoft_NoUser: Nie można znaleźć ostatniego zalogowanego użytkownika. Spróbuj zalogować się do Ubisoft ponownie.
 Toast_ClearForgottenCheck: Czy na pewno chcesz wyczyścić kopie zapasowe zapomnianych kont?
 Modal_Info_Creator: Stworzone przez TechNobo [Wesley Pyburn]
@@ -194,18 +194,18 @@ Title_Ubisoft_Settings: Przełącznik kont TcNo - Ustawienia Ubisoft
 Installer_Downloading: Pobieranie {file}
 Installer_DownloadFinished: Zakończono pobieranie {file}
 Installer_Installing: "Instalacja: {runtime}"
-Installer_RuntimeTitle: Przełącznik konta TcNo - Instalator czasu pracy
-Installer_Welcome: Witamy w TcNo Account Switcher - Instalator czasu pracy
-Installer_InstalledRuntimes: "Aktualnie zainstalowane czasy:"
-Installer_ErrorRuntime: "Nie zainstalowano co najmniej jednego czasu startu:"
+Installer_RuntimeTitle: Przełącznik kont TcNo - Instalator środowiska uruchomieniowego
+Installer_Welcome: Witamy w Przełączniku kont TcNo - Instalator środowiska uruchomieniowego
+Installer_InstalledRuntimes: "Aktualnie zainstalowane środowiska wykonawcze:"
+Installer_ErrorRuntime: "Nie zainstalowano co najmniej jednego środowiska wykonawczego:"
 Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB podczas instalacji]"
 Installer_TotalSize: "Całkowity rozmiar pobierania: ~{size} MB"
 Installer_AnyKeyStart: Naciśnij dowolny klawisz, aby rozpocząć pobieranie...
-Runtime_WebView2: Czas pracy Microsoft WebView2
-Runtime_Desktop: Czas pracy komputera Microsoft .NET 5
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Czas pracy
+Runtime_WebView2: Środowisko wykonawcze Microsoft WebView2
+Runtime_Desktop: Środowisko wykonawcze Microsoft .NET 5
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Środowisko wykonawcze
 Installer_FailedFolder: "Nie udało się utworzyć folderu:"
-Installer_FailedWV: "Nie udało się pobrać i zainstalować Microsoft WebView2 Runtime. Aby pobrać: 1. Kliknij poniższy link: {link} 2. Kliknij 'Pobierz pakiet hosting' pod aplikacjami serwera."
+Installer_FailedWV: "Nie udało się pobrać i zainstalować Środowiska wykonawczego Microsoft WebView2. Aby pobrać: 1. Kliknij poniższy link: {link} 2. Kliknij 'Pobierz pakiet hosting' pod Uruchom aplikacje serwera."
 Installer_FailedDR: "Nie udało się pobrać i zainstalować .NET 5 pulpitu Runtime. Pobierz go tutaj:"
 Installed_FailedASP: "Nie udało się pobrać i zainstalować ASP.NET Core 5.0 Runtime. Aby pobrać: 1. Kliknij link poniżej: {link} 2. Kliknij 'Pobierz x64' w aplikacji na pulpicie."
 Installer_Ready: "Jeden lub więcej jest gotowych do instalacji. Jeśli i kiedy zostaniesz poproszony o instalację, kliknij 'Tak'."
