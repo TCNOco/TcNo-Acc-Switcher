@@ -123,7 +123,7 @@ Toast_Steam_CantLocateLoginusers: 无法定位 '.../Steam/config/loginusers.vdf'
 Toast_CantClearImages: 无法清除图像
 Toast_RefreshedImages: 已刷新图像
 Toast_Ubisoft_NoUsername: 无法找到最后登录的用户。请先再次登录 Ubisoft。
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat could not be found. The last active account was not saved."
+Toast_Ubisoft_NoDat: "无法找到 %LocalAppData%/UbisoftGameLauncher/user.dat 。最后活跃的帐户未保存。"
 Toast_Ubisoft_NoUser: 无法找到最后登录的用户。请先再次登录 Ubisoft。
 Toast_ClearForgottenCheck: 您确定要清除已忘记帐户的备份吗？
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 创作
@@ -192,10 +192,10 @@ Title_Steam_Restore: TcNo 帐户切换器 - 恢复已忘记的 Steam 帐户
 Title_Steam_Settings: TcNo 帐户切换器 - Steam 设置
 Title_Ubisoft_Settings: TcNo 帐户切换器 - Ubisoft 设置
 Installer_Downloading: 正在下载 {file}
-Installer_DownloadFinished: 下载完成 {file}
-Installer_Installing: "安装: {runtime}"
-Installer_RuntimeTitle: Tcno 账户切换器 - 运行时安装程序
-Installer_Welcome: 欢迎使用 Tcno账户切换器 - 运行时安装程序
+Installer_DownloadFinished: 下载 {file} 完成
+Installer_Installing: "正在安装：{runtime}"
+Installer_RuntimeTitle: TcNo 帐户切换器 - 运行时安装程序
+Installer_Welcome: 欢迎使用 TcNo 帐户切换器 - 运行时安装程序
 Installer_InstalledRuntimes: "当前安装的运行时间："
 Installer_ErrorRuntime: "一个或多个运行时间未安装："
 Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB 安装时]"
@@ -264,7 +264,7 @@ Updater_Started: 已启动
 Updater_Start: 启动Tcno 账户切换器
 Updater_Begin: 开始更新
 Updater_Exit: 退出
-FatalError: 发生严重错误！
+FatalError: 发生致命错误！
 Online: 在线
 OnlineDefault: 在线（默认）
 Offline: 离线
