@@ -16,7 +16,7 @@ Button_Login: 登录
 Button_Close: 关闭
 Button_RefreshImages: 刷新图像
 Button_ResetSettings: 重置设置
-Button_AdvancedCleaning: 高级清理...
+Button_AdvancedCleaning: 高级清理…
 Button_ClearLog: 清除日志
 Button_WikiInfo: 更多信息（Wiki）
 Button_ClearDiscordCache: 清空 Discord 缓存
@@ -73,7 +73,7 @@ Toast_TrayPosition: "点击退出按钮时：我会出现在 Windows 托盘上�
 Toast_TrayHint: "提示：按住 Ctrl 键时点击 'X' 来完全关闭我，或者点击托盘 > '退出'"
 Toast_Copied: 已复制
 Toast_PasteDiscordConsole: 粘贴到 Discord 控制台，然后把结果粘贴到输入框！
-Toast_AlreadyProcessing: 已经在处理帐户...
+Toast_AlreadyProcessing: 已经在处理帐户…
 Toast_FailedRestore: 恢复帐户失败（见控制台）
 Toast_Restored: 已恢复帐户！
 Toast_ProtocolEnabled: 此程序将响应 Windows 中的 tcno:\\。
@@ -155,27 +155,27 @@ Status_SelectedAccount: "已选择：{name}"
 Status_Init: "状态：正在初始化"
 Context_SwapTo: 交换到帐户
 Context_CreateShortcut: 创建桌面快捷方式
-Context_CreateShortcutSubmenu: 创建桌面快捷方式...
+Context_CreateShortcutSubmenu: 创建桌面快捷方式…
 Context_ChangeImage: 更改图像
 Context_BNet_SetBTag: 设置 BattleTag
 Context_BNet_DelBTag: 删除 BattleTag
 Context_BNet_GetRAnk: 刷新等级
 Context_ChangeName: 更改切换器名称
-Context_LoginAsSubmenu: 登录为...
-Context_UsernameSubmenu: 用户名...
+Context_LoginAsSubmenu: 登录为…
+Context_UsernameSubmenu: 用户名…
 Context_RefreshName: 刷新名称
-Context_CopySubmenu: 复制...
-Context_CopyProfileSubmenu: 复制个人资料...
+Context_CopySubmenu: 复制…
+Context_CopyProfileSubmenu: 复制个人资料…
 Context_CommunityUrl: 社区 URL
 Context_CommunityUsername: 社区用户名
 Context_LoginUsername: 登录用户名
-Context_CopySteamIdSubmenu: 复制 SteamID...
+Context_CopySteamIdSubmenu: 复制 SteamID…
 Context_Steam_Id: SteamID [STEAM0:~]
 Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: 打开 userdata 文件夹
-Context_CopyOtherSubmenu: 复制其他...
+Context_CopyOtherSubmenu: 复制其他…
 Context_HidePlatform: 隐藏平台
 Context_ExportAccList: 导出帐户列表
 Title_BNet_Settings: TcNo 帐户切换器 - 战网设置
@@ -194,74 +194,74 @@ Title_Ubisoft_Settings: TcNo 帐户切换器 - Ubisoft 设置
 Installer_Downloading: 正在下载 {file}
 Installer_DownloadFinished: 下载 {file} 完成
 Installer_Installing: "正在安装：{runtime}"
-Installer_RuntimeTitle: TcNo 帐户切换器 - 运行时安装程序
-Installer_Welcome: 欢迎使用 TcNo 帐户切换器 - 运行时安装程序
-Installer_InstalledRuntimes: "当前安装的运行时间："
-Installer_ErrorRuntime: "一个或多个运行时间未安装："
-Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB 安装时]"
-Installer_TotalSize: "总下载量：~{size} MB"
-Installer_AnyKeyStart: 按任意键开始下载...
-Runtime_WebView2: Microsoft WebView2 运行时间
-Runtime_Desktop: Microsoft .NET 5 桌面运行时间
-Runtime_ASP: Microsoft ASP.NET Core 5.0 运行时间
+Installer_RuntimeTitle: TcNo 帐户切换器 - 运行时环境安装程序
+Installer_Welcome: 欢迎使用 TcNo 帐户切换器 - 运行时环境安装程序
+Installer_InstalledRuntimes: "当前已安装的运行时环境："
+Installer_ErrorRuntime: "一个或多个运行时环境未安装："
+Installer_RuntimeNote: "[约 {size1} MB + 安装过程约 {size2} MB]"
+Installer_TotalSize: "总下载量：约 {size} MB"
+Installer_AnyKeyStart: 按任意键开始下载…
+Runtime_WebView2: Microsoft WebView2 运行时环境
+Runtime_Desktop: Microsoft .NET 5 桌面运行时环境
+Runtime_ASP: Microsoft ASP.NET Core 5.0 运行时环境
 Installer_FailedFolder: "创建文件夹失败："
-Installer_FailedWV: "无法下载并安装Microsoft WebView2 运行时间。要下载： 1. 点击下面的链接： {link} 2. 点击运行服务器应用下的“下载主机套件”。"
-Installer_FailedDR: "下载并安装 .NET 5 桌面运行时间失败。请在这里下载："
-Installed_FailedASP: "下载和安装 ASP.NET Core 5.0 运行时间失败。要下载: 1. 点击下面的链接: {link} 2. 点击运行桌面应用程序下的“下载x64”。"
-Installer_Ready: "一个或多个已准备好安装。如果您想要安装，请点击“是”。"
-Installer_PressStart: 按任意键开始安装...
-Installer_VerifyMin: "验证您是否符合建议的最低要求："
-Installer_VerifyAlready: "看起来一切都已安装。请验证您是否符合建议的最低要求："
-Installer_Complete: 这应该是一切。当您按一个密钥继续时，主要程序TcNo-Acc-Switcher.exe将自动运行。
-Installer_Complete2: "如果它不起作用，请参阅安装说明，这里： {link}"
-Global_FatalNext: "出现严重错误 ！此崩溃日志将自动提交下次启动."
+Installer_FailedWV: "下载安装 Microsoft WebView2 运行时环境失败。如要下载请：1. 点击下面的链接：{link} 2. 点击“Run server apps”下的“Download Hosting Bundle”。"
+Installer_FailedDR: "下载安装 .NET 5 Desktop 运行时环境失败。请在这里下载："
+Installed_FailedASP: "下载安装 ASP.NET Core 5.0 运行时环境失败。如要下载请：1. 点击下面的链接：{link} 2. 点击“Run Desktop apps”下的“Download x64”。"
+Installer_Ready: "一个或多个环境已准备好安装。如果您想要安装，请点击“是”。"
+Installer_PressStart: 按任意键开始安装…
+Installer_VerifyMin: "确认您已满足建议的最低要求："
+Installer_VerifyAlready: "看起来一切都已安装。请确认您已满足建议的最低要求："
+Installer_Complete: 一切应该都已完成。当您按任意键继续时，主程序 TcNo-Acc-Switcher.exe 将自动运行。
+Installer_Complete2: "如果不起作用，请参考这里的安装说明：{link}"
+Global_FatalNext: "出现致命错误！此崩溃日志将在下次启动时自动提交。"
 Tray_Error: 托盘错误
-Tray_NoAccs: "未找到帐户。\n先尝试切换帐户，或定位'Tray_Users.json'"
-Tray_Switch: "切换到: {account}"
-Tray_CantOpenExe: "无法打开主.ex。请确保它存在。\n\n我试图打开："
-Tray_LaunchFail: "Tcno 账户切换器 - 托盘启动失败"
-Updater_Duplicate: 检测到另一个 TCNo 账户切换器更新实例。
-Updater_Unknown: "未知参数： {arg}"
+Tray_NoAccs: "未找到帐户。\n先尝试切换帐户，或定位到“Tray_Users.json”"
+Tray_Switch: "切换到：{account}"
+Tray_CantOpenExe: "无法打开主程序 .exe。请确保它存在。\n\n已尝试打开："
+Tray_LaunchFail: "TcNo 帐户切换器 - 托盘启动失败"
+Updater_Duplicate: 检测到另一个 TcNo 帐户切换器更新程序正在运行。
+Updater_Unknown: "未知参数：{arg}"
 Updater_NeedsAdmin: 此程序必须以管理员身份运行！
 Updater_StatusChecking: 正在检查版本
-Updater_FailedVersionCheck: "无法获取版本，点击\"验证\"更新并验证文件"
-Updater_PressBelow: 按下面的按钮！
+Updater_FailedVersionCheck: "无法获取版本，点击“验证”更新并验证文件"
+Updater_PressBelow: 点击下面的按钮！
 Updater_PressBelowStart: 点击下面的按钮开始更新。
 Updater_PatchApplied: 已应用补丁！
-Updater_UpdatingAppData: 正在更新AppData中的文件！
-Updater_Complete: 所有更新完成！
+Updater_UpdatingAppData: 正在更新 AppData 中的文件！
+Updater_Complete: 所有更新已完成！
 Updater_Checking: 正在检查更新
 Updater_UpdateToVerify: 要验证文件，您需要先更新。
-Updater_ClosingTcNo: 关闭Tcno 账户切换器实例(如果有)。
-Updater_Downloading: "正在下载更新： {version}"
+Updater_ClosingTcNo: 关闭 TcNo 帐户切换器实例（如果存在）。
+Updater_Downloading: "正在下载更新：{version}"
 Updater_Downloaded: 下载完成。
-Updater_CantExtract: 提取更新失败。
+Updater_CantExtract: 解压更新失败。
 Updater_Verify: 验证文件
-Updater_Verifying: 正在验证...
-Updater_VerifySkip: 正在验证文件以跳过所有小更新，然后跳转到最晚。
-Updater_NoConnection: "无法连接到 tcno.co 来验证文件。您可以尝试从GitHub 页面手动下载安装程序并重新安装以更新。\n\n错误："
+Updater_Verifying: 正在验证…
+Updater_VerifySkip: 正在验证文件以跳过所有小更新，直接转到最新版本。
+Updater_NoConnection: "无法连接到 tcno.co 来验证文件。您可以尝试从 GitHub 页面手动下载安装程序，并重新安装以更新。\n\n错误："
 Updater_NoServer: 无法连接到更新服务器
-Updater_Hashlist: 正在下载最新的哈希列表...
+Updater_Hashlist: 正在下载最新的哈希列表…
 Updater_CantCheck: 无法检查更新
-Updater_Failed: "错误：有些文件正在使用中，无法更新。\n\n1。 请确保所有的 TcNo 进程已完全关闭\n(或重启您的 PC)\n\n2。 然后点击下面的验证 或者如果您重启：\n- 打开此更新程序并验证文件\n    (位于安装目录中的“更新”文件夹中)"
-Updater_Missing: "文件丢失: {file}"
-Updater_FileMismatch: "文件： {file} 有 MD5: {md5} EXPECTED: {value}"
-Updater_DownloadingWeb: 正在从网站下载文件...
-Updater_UnpackingAppData: 正在复制文件到 %AppData%/ Tcno 账户切换器... (除非另设)
+Updater_Failed: "错误：有些文件正在使用中，无法更新。\n\n1. 请确保所有的 TcNo 进程已完全关闭\n（或重启您的计算机）\n\n2. 然后点击下面的验证，或者如果您已重启计算机：\n- 打开此更新程序并验证文件\n    （位于安装目录中的“updater”文件夹中）"
+Updater_Missing: "文件丢失：{file}"
+Updater_FileMismatch: "文件：{file} 的 MD5 为：{md5} 预期为：{value}"
+Updater_DownloadingWeb: 正在从网站下载文件…
+Updater_UnpackingAppData: 正在复制文件到 %AppData%/TcNo Account Switcher…（除非设置为其他路径）
 Updater_VerifyComplete: 文件已验证！
-Updater_UpdateFound: "发现更新: {name} [{updateSize}]"
-Updater_TotalFound: "发现的更新总数: {x}"
-Updater_TotalSize: "总大小: {size}"
-Updater_AwaitingUser: 正在等待用户输入...
-Updater_UpToDate: "您是最新的。\n:)"
-Updater_FailedDecode: 这很可能是因为我(TechNobo) 推出了一个更新，并且打了一个打破错误的类型。 儿子更新文件。让我知道:)
+Updater_UpdateFound: "发现更新：{name} [{updateSize}]"
+Updater_TotalFound: "发现更新总数：{x}"
+Updater_TotalSize: "总大小：{size}"
+Updater_AwaitingUser: 正在等待用户输入…
+Updater_UpToDate: "您使用的已经是最新版。\n:)"
+Updater_FailedDecode: 这很可能是因为我（TechNobo）推送了一个更新，并且打错字损坏了 .json 更新文件。请向我反馈此问题 :)
 Updater_FailedDecodeTitle: 解码更新列表失败
-Updater_Extracting: 提取补丁文件
-Updater_Applying: 正在应用补丁...
-Updater_Moving: 正在移动文件...
-Updater_Title: Tcno 账户切换器更新
+Updater_Extracting: 正在解压补丁文件
+Updater_Applying: 正在应用补丁…
+Updater_Moving: 正在移动文件…
+Updater_Title: TcNo 帐户切换器更新程序
 Updater_Started: 已启动
-Updater_Start: 启动Tcno 账户切换器
+Updater_Start: 启动 TcNo 帐户切换器
 Updater_Begin: 开始更新
 Updater_Exit: 退出
 FatalError: 发生致命错误！
