@@ -485,6 +485,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     if (handledError) // Only try once
                     {
                         Globals.WriteToLog(e.ToString());
+
+                        // Reset file:
+                        var errFile = sFilename.Replace(".json", "_err.json");
+                        if (File.Exists(errFile)) File.Delete(errFile);
+                        File.Move(sFilename, errFile);
+
+                        File.WriteAllText("LastError.txt", "LAST CRASH DETAILS:\nThe following file appears to be corrupt:" + sFilename + "\nThe file was reset. Check the CrashLogs folder for more details.");
                         throw;
                     }
 
