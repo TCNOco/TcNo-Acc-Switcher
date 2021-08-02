@@ -9,7 +9,7 @@ Steam_ShowLimited: Begrenzten Status anzeigen
 Steam_ShowAccUsername: Account-Benutzername anzeigen
 Steam_Tray_AccountName: Kontonamen anzeigen [kein Freundname]
 Button_AddNew: Neu
-Button_SaveCurrent: Aktuell speichern
+Button_SaveCurrent: Aktuellen speichern
 Button_SaveFile: Datei speichern
 Button_Cancel: Abbrechen
 Button_Login: Anmelden
@@ -53,26 +53,26 @@ Cleaning_Header_LoginHistory: Login-Verlauf bereinigen
 Cleaning_Header_PlatformCleaning: '{platform} Switcher'
 Cleaning_ImportantInfoHeader: 'Wichtige Info:'
 Cleaning_ImportantInfo: >
-  Wenn du auf einen Button klickst, werden die zugehörigen Datei(en) von deiner Steam-Installation gelöscht.<br /> Login-Benutzer werden gelöscht. df wird dazu führen, dass dieser Account-Umschalter keine Konten anzeigt.<br /> Sie müssen sich mit Steam anmelden, um sie wieder zurückzuholen.
+  Wenn du auf einen Button klickst, werden die zugehörigen Datei(en) von deiner Steam-Installation gelöscht.<br /> Das löschen von loginusers.vdf sorgt dafür, dass der Account-Switcher keine Konten anzeigt.<br /> Sie müssen sich mit Steam anmelden, um sie wieder zurückzuholen.
 Cleaning_Button_KillProcess: '{platform} Prozess beenden'
 Cleaning_Button_ForgottenBackups: Konto-Backups vergessen
-Cleaning_Understand: Ich verstehe, was diese Tasten machen.
-Restore_Header: vergessene Konten wiederherstellen
+Cleaning_Understand: Ich verstehe, was diese Buttons machen.
+Restore_Header: Vergessene Konten wiederherstellen
 Restore_Info: >
   Wenn Sie zuvor ein Konto "vergessen" haben, können Sie sie hier wiederherstellen.<br /> Dies fügt sie zurück in deine loginusers.vdf Datei ein, so dass du zu ihnen wechseln kannst.
 Restore_Button_Restore: Ausgewählte wiederherstellen
 Ignored_RemoveAccounts: Konten von Ignorierliste entfernen
 Ignored_Description: Wenn du ein Konto zuvor "ignoriert" hast, kannst du es hier erneut anzeigen
-Ignored_Stop: Ausgewählte ignorieren beenden
-Toast_RetryOrDeleteDiscordCache: Erneut oder lösche den Discord Cache um das Passwort zurückzusetzen (Siehe Wiki).
+Ignored_Stop: Ausgewählte nicht mehr ignorieren
+Toast_RetryOrDeleteDiscordCache: Discord Cache neu laden oder löschen, um das Passwort zurückzusetzen (Siehe Wiki).
 Toast_TrayStarted: Tray gestartet!
 Toast_TrayRunning: Tray bereits geöffnet
 Toast_TrayUsersMissing: Keine Tray-Benutzer gespeichert
 Toast_TrayFail: Konnte Tray-Anwendung nicht starten!
 Toast_TrayPosition: "Wenn Sie auf den Verlassen-Knopf klicken: Ich bin im Windows Tray! (Rechte der Start-Leiste)"
-Toast_TrayHint: "Tipp: Strg+Klicke auf 'X' um mich komplett zu schließen, oder über das Tray > 'Beenden'"
+Toast_TrayHint: "Tipp: Strg+Klick auf das 'X' um mich komplett zu schließen, oder über das Tray > 'Beenden'"
 Toast_Copied: Kopiert
-Toast_PasteDiscordConsole: Fügen Sie in Discord Konsole ein, und fügen Sie dann die Eingabe ein!
+Toast_PasteDiscordConsole: In Discord-Konsole einfügen und dann das Ergebnis in die Eingabe einfügen!
 Toast_AlreadyProcessing: Konten werden bereits verarbeitet...
 Toast_FailedRestore: Fehler beim Wiederherstellen der Konten (siehe Konsole)
 Toast_Restored: Restaurierte Konten!
@@ -80,7 +80,7 @@ Toast_ProtocolEnabled: Dieses Programm reagiert nun auf tcno:\\ in Windows
 Toast_ProtocolEnabledTitle: Protokoll hinzugefügt
 Toast_ProtocolDisabled: Dieses Programm reagiert nicht mehr auf tcno:\\
 Toast_ProtocolDisabledTitle: Protokoll entfernt
-Toast_RestartAsAdmin: Bitte starten Sie als Admin und versuchen Sie es erneut.
+Toast_RestartAsAdmin: Bitte als Administrator starten und erneut versuchen.
 Toast_RestartAfterClose: Bitte starten Sie das Programm nach einem Klick auf Schließen neu.
 Toast_RestartAfterCloseTitle: Akzentfarbe deaktiviert
 Toast_LoadStylesheetFailed: Stylesheet konnte nicht geladen werden! Siehe Dokumentenordner für Details.
@@ -135,17 +135,17 @@ Modal_Info_Disclaimer: Haftungsausschluss
 Modal_Title_Info: TcNo Account Switcher Information
 Modal_Title_ChangeUsername: Benutzername ändern
 Modal_Title_ConfirmAction: TcNo Account Switcher Bestätigungsaktion
-Modal_Title_LocatePlatform: Bitte suchen Sie das {platform} -Verzeichnis
-Modal_Title_AddNew: Neues {platform} -Konto hinzufügen
+Modal_Title_LocatePlatform: Bitte suchen Sie das {platform}-Verzeichnis
+Modal_Title_AddNew: Neues {platform}-Konto hinzufügen
 Modal_ChangeUsername: Bitte geben Sie ein neues {platformText} für Ihr Konto ein
 Modal_ChangeUsernameType: '{UsernameOrOther} ändern'
-Modal_EnterDirectory: "Bitte geben Sie das Verzeichnis von {platform}ein, als solche: C:\\Programme\\{platform}"
+Modal_EnterDirectory: "Bitte geben Sie das Verzeichnis von {platform} im folgenden Format ein: C:\\Programme\\{platform}"
 Modal_LocatePlatform: '{platformExe} finden'
-Modal_LocatePlatformFolder: Ordner {platform} auswählen
+Modal_LocatePlatformFolder: '{platform}-Ordner auswählen'
 Modal_ConfirmAction: Aktion bestätigen
-Modal_AddNew: Bitte geben Sie einen Namen für das {platform} -Konto ein, in dem Sie angemeldet sind.
-Modal_AddCurrentAccount: Aktuelles {platform} -Konto hinzufügen
-Modal_EnterNewPassword: Bitte geben Sie ein neues Passwort ein, um Ihre {platform} -Konten im Umschalter zu sichern.<br>  Behalten Sie es sicher. Es kann später nicht wiederhergestellt werden.
+Modal_AddNew: Bitte geben Sie einen Namen für das {platform}-Konto ein, in dem Sie angemeldet sind.
+Modal_AddCurrentAccount: Aktuelles {platform}-Konto hinzufügen
+Modal_EnterNewPassword: Bitte geben Sie ein neues Passwort ein, um Ihre {platform}-Konten im Switcher zu sichern.<br>  Passen Sie auf. Es kann später nicht wiederhergestellt werden.
 Modal_EnterPassword: Bitte geben Sie Ihr Passwort für die {platform} Plattform von TcNo Account Switcher ein.
 Modal_EnterPasswordShort: Passwort eingeben
 Modal_EnterPasswordRepeat: Passwort erneut eingeben
@@ -153,14 +153,14 @@ Modal_PasswordsMatch: Passwörter stimmen überein
 Modal_PasswordsNoMatch: Passwörter stimmen nicht überein
 Status_SelectedAccount: "Ausgewählt: {name}"
 Status_Init: "Status: Initialisierung"
-Context_SwapTo: In Konto tauschen
+Context_SwapTo: Zum Account wechseln
 Context_CreateShortcut: Desktop-Verknüpfung erstellen
 Context_CreateShortcutSubmenu: Desktop-Verknüpfung erstellen...
 Context_ChangeImage: Bild ändern
-Context_BNet_SetBTag: Schlachttag setzen
+Context_BNet_SetBTag: BattleTag festlegen
 Context_BNet_DelBTag: BattleTag löschen
 Context_BNet_GetRAnk: Rang abrufen
-Context_ChangeName: Umschaltname ändern
+Context_ChangeName: Anzeigenamen ändern
 Context_LoginAsSubmenu: Anmelden als...
 Context_UsernameSubmenu: Benutzername...
 Context_RefreshName: Aktualisiere Name
@@ -290,7 +290,7 @@ Notice: Hinweis
 Error: Fehler
 ErrorDetails: "Fehler: {ex}"
 Failed: Fehler
-Success: Erfolg
+Success: Erfolgreich
 NotFound: Nicht gefunden
 Done: Fertig
 ForName: "für: {name}"
