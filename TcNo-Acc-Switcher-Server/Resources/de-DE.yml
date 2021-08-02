@@ -33,9 +33,9 @@ Settings_Header_OpenGameFolders: Spielordner öffnen
 Settings_TrayMax: 'Maximale Anzahl an zu merkenden Konten:'
 Settings_PickFolder: Wähle {platform} Ordner
 Settings_OpenFolder: Öffne {platform} Ordner
-Settings_ClearForgotten: Vergessen löschen
+Settings_ClearForgotten: Vergessene löschen
 Settings_ClearAccounts: Konten löschen
-Settings_RestoreForgotten: vergessenes Konto wiederherstellen
+Settings_RestoreForgotten: Vergessenes Konto wiederherstellen
 Settings_StreamerMode: Streamer-Modus aktivieren
 Settings_ExitToTray: Beenden minimiert zum Tray
 Settings_DesktopShortcut: Desktop-Verknüpfung
@@ -45,12 +45,12 @@ Settings_Tray_StartWindows: Tray mit Windows starten
 Settings_Tray_StartNow: '[Tray jetzt starten]'
 Settings_CurrentStyle: Aktueller Stil
 Settings_Protocol: 'Aktiviere tcno:\\ Protokoll (empfohlen)'
-Settings_WindowsAccent: Verwende die Akzentfarbe für Windows
-Settings_HelpTranslate: "[Hilfe übersetzen]"
+Settings_WindowsAccent: Verwende die Windows-Akzentfarbe
+Settings_HelpTranslate: "[Beim Übersetzen helfen]"
 Cleaning_Header_StartMenuShortcuts: 'Verknüpfungen für das Startmenü:'
 Cleaning_Header_General: Allgemeine Reinigung
 Cleaning_Header_LoginHistory: Login-Verlauf bereinigen
-Cleaning_Header_PlatformCleaning: '{platform} Schalter'
+Cleaning_Header_PlatformCleaning: '{platform} Switcher'
 Cleaning_ImportantInfoHeader: 'Wichtige Info:'
 Cleaning_ImportantInfo: >
   Wenn du auf einen Button klickst, werden die zugehörigen Datei(en) von deiner Steam-Installation gelöscht.<br /> Login-Benutzer werden gelöscht. df wird dazu führen, dass dieser Account-Umschalter keine Konten anzeigt.<br /> Sie müssen sich mit Steam anmelden, um sie wieder zurückzuholen.
