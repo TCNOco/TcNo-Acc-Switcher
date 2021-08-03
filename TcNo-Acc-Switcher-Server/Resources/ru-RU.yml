@@ -14,7 +14,7 @@ Button_SaveFile: Сохранить файл
 Button_Cancel: Отмена
 Button_Login: Войти
 Button_Close: Закрыть
-Button_RefreshImages: Обновить изображение
+Button_RefreshImages: Обновить изображения
 Button_ResetSettings: Сбросить настройки
 Button_AdvancedCleaning: Расширенная очистка
 Button_ClearLog: Очистить журнал
@@ -35,7 +35,7 @@ Settings_PickFolder: Выберите папку {platform}
 Settings_OpenFolder: Открыть папку {platform}
 Settings_ClearForgotten: Очистить забытые
 Settings_ClearAccounts: Очистить аккаунты
-Settings_RestoreForgotten: Восстановить забытую учетную запись
+Settings_RestoreForgotten: Восстановить забытый аккаунт
 Settings_StreamerMode: Включить режим стримера
 Settings_ExitToTray: Свернуть в трей при закрытии
 Settings_DesktopShortcut: Ярлык на рабочем столе
@@ -72,7 +72,7 @@ Toast_TrayFail: Не удалось запустить приложение Тр
 Toast_TrayPosition: "При нажатии на кнопку выхода: я буду сворачиваться в трей! (Справа от начальной панели)"
 Toast_TrayHint: "Подсказка: Ctrl+X, чтобы полностью закрыть меня, или через трей > 'Выйти'"
 Toast_Copied: Скопировано
-Toast_PasteDiscordConsole: Вставьте в консоль Discord, а затем вставьте результат в вход!
+Toast_PasteDiscordConsole: Вставьте в консоль Discord, а затем вставьте результат в поле ввода!
 Toast_AlreadyProcessing: Уже обрабатывают аккаунты...
 Toast_FailedRestore: Не удалось восстановить аккаунты (смотрите консоль)
 Toast_Restored: Восстановленные аккаунты!
@@ -194,10 +194,10 @@ Title_Ubisoft_Settings: TcNo Account Switcher - Настройки Ubisoft
 Installer_Downloading: Загрузка {file}
 Installer_DownloadFinished: Загрузка {file} завершена
 Installer_Installing: "Установка: {runtime}"
-Installer_RuntimeTitle: TcNo Переключение учетных записей - установщик Runtime
-Installer_Welcome: Добро пожаловать в TcNo Switcher - установщик Runtime
-Installer_InstalledRuntimes: "Установленные среды выполнения:"
-Installer_ErrorRuntime: "Один или несколько раз выполнения не были установлены:"
+Installer_RuntimeTitle: TcNo Account Switcher - установщик библиотек
+Installer_Welcome: Добро пожаловать в TcNo Account Switcher - установщик библиотек
+Installer_InstalledRuntimes: "Установленные библиотеки:"
+Installer_ErrorRuntime: "Одна или несколько библиотек не установлены:"
 Installer_RuntimeNote: "[~{size1} МБ + ~{size2} МБ во время установки]"
 Installer_TotalSize: "Общий размер загрузки: ~{size} МБ"
 Installer_AnyKeyStart: Нажмите любую клавишу, чтобы начать загрузку...
@@ -208,12 +208,12 @@ Installer_FailedFolder: "Не удалось создать папку:"
 Installer_FailedWV: "Не удалось загрузить и установить Microsoft WebView2 Runtime. Чтобы загрузить: 1. Щелкните по ссылке ниже: {link} 2. Нажмите 'Download Hosting Bundle' в разделе Run server apps."
 Installer_FailedDR: "Не удалось загрузить и установить .NET 5 Desktop Runtime. Скачайте его здесь:"
 Installed_FailedASP: "Не удалось загрузить и установить ASP.NET Core 5.0 Runtime. Чтобы загрузить: 1. Нажмите на ссылку ниже: {link} 2. Нажмите 'Download x64' в разделе Run Desktop apps."
-Installer_Ready: "Один или несколько готовы к установке. Если появится запрос о необходимости установки, нажмите \"Да\"."
+Installer_Ready: "Одна или несколько готовы к установке. Если появится запрос о необходимости установки, нажмите \"Да\"."
 Installer_PressStart: Нажмите любую клавишу, чтобы начать установку...
 Installer_VerifyMin: "Проверьте соответствие минимальным рекомендованным требованиям:"
 Installer_VerifyAlready: "Похоже, что все установлено. Проверьте соответствие минимальным рекомендуемым требованиям:"
-Installer_Complete: Это должно быть все. TcNo-Acc-Switcher.exe, запустится автоматически, когда вы нажмете клавишу для продолжения.
-Installer_Complete2: "Если это не работает, обратитесь к инструкциям по установке здесь: {link}"
+Installer_Complete: Это должно быть все. TcNo Acc Switcher запустится автоматически, когда вы нажмете любую клавишу для продолжения.
+Installer_Complete2: "Если не сработало, пожалуйста, обратитесь к инструкции по установке, здесь: {link}"
 Global_FatalNext: "Произошла фатальная ошибка! Этот журнал ошибок будет автоматически передан при следующем запуске."
 Tray_Error: Ошибка трея
 Tray_NoAccs: "Не найдено ни одного аккаунта.\nПопробуйте сначала переключить аккаунты или найдите файл 'Tray_Users.json'"
@@ -250,7 +250,7 @@ Updater_DownloadingWeb: Загрузка файла с сайта...
 Updater_UnpackingAppData: Копирование файлов в %AppData%/TcNo Account Switcher... (если не установлено иное)
 Updater_VerifyComplete: Файлы проверены!
 Updater_UpdateFound: "Найдено обновление: {name} [{updateSize}]"
-Updater_TotalFound: "Найдено всего обновлений: {x}"
+Updater_TotalFound: "Всего обновлений найдено: {x}"
 Updater_TotalSize: "Общий размер: {size}"
 Updater_AwaitingUser: Ожидание ввода пользователя...
 Updater_UpToDate: "Вы в актуальном состоянии.\n:)"
