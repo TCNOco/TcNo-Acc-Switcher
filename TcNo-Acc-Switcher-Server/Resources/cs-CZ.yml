@@ -69,26 +69,26 @@ Toast_TrayStarted: Spuštěno na liště!
 Toast_TrayRunning: Aplikace je již spuštěna
 Toast_TrayUsersMissing: Žádní uživatelé nebyli uloženi
 Toast_TrayFail: Nelze spustit aplikaci v systémové liště!
-Toast_TrayPosition: "Kliknutím na tlačítko Ukončí: Budu v systémové liště Windows! (Napravo od startovací lišty)"
-Toast_TrayHint: "Tip: Ctrl+Klikni na 'X' pro úplné zavření, nebo přes Tray > 'Ukončí'"
+Toast_TrayPosition: "Kliknutím na tlačítko Ukončit: Budu v systémové liště Windows! (Napravo od startovací lišty)"
+Toast_TrayHint: "Tip: Ctrl+Klikni na 'X' pro úplné zavření, nebo přes Tray > 'Ukončit'"
 Toast_Copied: Zkopírováno
-Toast_PasteDiscordConsole: Vložte do Discord konzoly a pak vložte vstup!
+Toast_PasteDiscordConsole: Vložte do Discord konzole a pak výsledek vložte do vstupu!
 Toast_AlreadyProcessing: Již zpracovávám účty...
 Toast_FailedRestore: Nepodařilo se obnovit účty (viz konzole)
-Toast_Restored: Obnovené účty!
+Toast_Restored: Účty obnoveny!
 Toast_ProtocolEnabled: Tento program nyní zareaguje na tcno:\\ ve Windows
 Toast_ProtocolEnabledTitle: Protokol přidán
 Toast_ProtocolDisabled: Tento program již nebude reagovat na tcno:\\
 Toast_ProtocolDisabledTitle: Protokol byl odstraněn
-Toast_RestartAsAdmin: Začněte jako Admin a zkuste to znovu.
+Toast_RestartAsAdmin: Spusťte jako Správce a zkuste to znovu.
 Toast_RestartAfterClose: Po kliknutí na tlačítko Zavřít restartujte program.
 Toast_RestartAfterCloseTitle: Barva zvýraznění zakázána
-Toast_LoadStylesheetFailed: Nepodařilo se načíst stylesheet! Podrobnosti naleznete ve složce dokumentů.
+Toast_LoadStylesheetFailed: Nepodařilo se načíst vzhled! Podrobnosti naleznete ve složce dokumentů.
 Toast_BNet_Private: "Profil uživatele {BTag}je soukromý"
 Toast_BNet_StatsFail: "Chyba při pokusu získat statistiky pro {BTag}"
-Toast_BNet_CantSwapAccounts: Nelze vyměnit účty (Battle.net.config soubor je poškozen)
+Toast_BNet_CantSwapAccounts: Nelze přepnout účty (Battle.net.config soubor je poškozen)
 Toast_BNet_CantLoadNotFound: Battle.net.config nebyl nalezen
-Toast_BNet_CantLoadEmpty: Nelze načíst soubor účtů pro Blizzard (nebyly nalezeny žádné účty)
+Toast_BNet_CantLoadEmpty: Nelze načíst soubor účtů pro Blizzard (Nebyly nalezeny žádné účty)
 Toast_BNet_CantLoadConfigCorrupt: Nelze načíst soubor účtů pro Blizzard (Battle.net.config soubor je poškozen)
 Toast_BNet_NamePolicy: BattleTag se neshodoval s pravidly jmenování.
 Toast_ItemNotFound: "{item} nebyl nalezen"
@@ -99,47 +99,47 @@ Toast_Discord_SaveHint: "Tip: Změněno nastavení Discordu? Ušetřete znovu, s
 Toast_Discord_NoToken: Nepodařilo se najít token uživatele! Běžně ukončete Discord a znovu uložte.
 Toast_CantChangeUsername: Uživatelské jméno nelze změnit
 Toast_CantClearLoginFiles: Nepodařilo se vymazat staré přihlašovací soubory
-Toast_Epic_AccountIdReg: Nepodařilo se získat ID účtu z registrace!
+Toast_Epic_AccountIdReg: Nepodařilo se získat ID účtu z registrů!
 Toast_DuplicateNames: Nelze vyměnit. Duplikovat účty se stejným uživatelským jménem?
 Toast_CouldNotLocate: Nelze najít přihlášený uživatel
 Toast_StreamerModeHint: Soukromé informace jsou skryty! - Viz nastavení
 Toast_StreamerModeTitle: Streamovací režim
 Toast_AddAccountsFirst: Otevřete platformu ze seznamu a nejprve přidejte pár účtů
 Toast_AddAccountsFirstTitle: Žádné uložené účty
-Toast_CantFindImage: Nepodařilo se najít obrázek uživatelů.
+Toast_CantFindImage: Nepodařilo se najít obrázek uživatele.
 Toast_CantCreateShortcut: Nelze vytvořit zástupce
 Toast_ShortcutCreated: Zástupce vytvořen!
 Toast_FailedUpdateCheck: Nepodařilo se zkontrolovat aktualizace
 Toast_UpdateVerifyFail: Nelze ověřit soubory aktualizací. Stáhněte si nejnovější verzi a nahraďte soubory ve vašem adresáři.
 Toast_Riot_StartGame: Změněný uživatel. Spusťte hru níže.
-Toast_StartedGame: Začal {program}
-Toast_Steam_VacCleared: Status VAC pro účty byl schválen
+Toast_StartedGame: Spuštěn {program}
+Toast_Steam_VacCleared: Status VAC pro účty byl vymazán
 Toast_Steam_CantDeleteVacCache: Nelze odstranit 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Nelze najít složku Steam\\userdata
-Toast_Steam_VdfLast: Byl schopen načíst z vdf_last. Některé účty mohou chybět.
-Toast_PartiallyFixed: Částečně fixní
+Toast_Steam_VdfLast: Informace načteny z vdf_last. Některé účty mohou chybět.
+Toast_PartiallyFixed: Částečně opravené
 Toast_Steam_FailedLoginusers: Nepodařilo se načíst steam/config/loginusers.vdf
-Toast_Steam_CantLocateLoginusers: Nelze nalézt '.../Steam/config/loginusers.vdf'. Zkuste nejdříve přihlásit k účtu.
+Toast_Steam_CantLocateLoginusers: Nelze nalézt '.../Steam/config/loginusers.vdf'. Zkuste se nejdříve přihlásit k účtu.
 Toast_CantClearImages: Nelze vymazat obrázky
-Toast_RefreshedImages: Obnovené obrázky
+Toast_RefreshedImages: Obrázky Obnoveny
 Toast_Ubisoft_NoUsername: Nelze najít poslední přihlášené uživatele. Zkuste se nejdříve přihlásit do Ubisoft.
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nebyl nalezen. Poslední aktivní účet nebyl uložen."
 Toast_Ubisoft_NoUser: Nelze najít poslední přihlášené uživatele. Zkuste se nejdříve přihlásit do Ubisoft.
 Toast_ClearForgottenCheck: Opravdu chcete vymazat zálohy zapomenutých účtů?
-Modal_Info_Creator: Vytvořeno společností Technoo [Wesley Pyburn]
+Modal_Info_Creator: Vytvořeno společností TechNobo [Wesley Pyburn]
 Modal_Info_Version: Verze
 Modal_Info_ViewGitHub: Zobrazit na GitHub
-Modal_Info_BugReport: Hlášení chyb/požadavek na funkce
+Modal_Info_BugReport: Hlášení chyb/Žádost o funkce
 Modal_Info_VisitSite: Navštívit tcno.co
-Modal_Info_Disclaimer: Odmítnutí odpovědnosti
-Modal_Title_Info: Informace o přepínači účtu TcNo
+Modal_Info_Disclaimer: Prohlášení
+Modal_Title_Info: Informace o přepínači účtů TcNo
 Modal_Title_ChangeUsername: Změnit uživatelské jméno
 Modal_Title_ConfirmAction: Akce Přepínače účtu TcNo
 Modal_Title_LocatePlatform: Vyhledejte prosím složku {platform}
-Modal_Title_AddNew: Přidat nový účet {platform}
+Modal_Title_AddNew: Přidat nový {platform} účet
 Modal_ChangeUsername: Zadejte prosím nový {platformText} pro váš účet
 Modal_ChangeUsernameType: Změnit {UsernameOrOther}
-Modal_EnterDirectory: "Zadejte prosím adresář {platform}jako takový: C:\\Programové soubory\\{platform}"
+Modal_EnterDirectory: "Zadejte prosím adresář {platform} jako takový: C:\\Program Files\\{platform}"
 Modal_LocatePlatform: Najít {platformExe}
 Modal_LocatePlatformFolder: Vybrat složku {platform}
 Modal_ConfirmAction: Potvrdit akci
@@ -148,26 +148,26 @@ Modal_AddCurrentAccount: Přidat aktuální účet {platform}
 Modal_EnterNewPassword: Zadejte prosím nové heslo pro zabezpečení Vašich {platform} účtů v přepínači.<br>  Uchovávejte ho v bezpečí. Nelze ho později obnovit.
 Modal_EnterPassword: Zadejte prosím své heslo pro platformu {platform} Přepínače TcNo.
 Modal_EnterPasswordShort: Zadejte heslo
-Modal_EnterPasswordRepeat: Zadejte heslo znovu
+Modal_EnterPasswordRepeat: Zopakujte heslo
 Modal_PasswordsMatch: Hesla se shodují
 Modal_PasswordsNoMatch: Hesla se neshodují
 Status_SelectedAccount: "Vybráno: {name}"
 Status_Init: "Stav: inicializace"
 Context_SwapTo: Prohodit účet
 Context_CreateShortcut: Vytvořit zástupce na ploše
-Context_CreateShortcutSubmenu: Vytvořit zástupce na plochě...
+Context_CreateShortcutSubmenu: Vytvořit zástupce na ploše...
 Context_ChangeImage: Změnit obrázek
 Context_BNet_SetBTag: Nastavit BattleTag
 Context_BNet_DelBTag: Odstranit BattleTag
 Context_BNet_GetRAnk: Obnovit hodnost
 Context_ChangeName: Změnit název přepínače
-Context_LoginAsSubmenu: Přihlásit jako...
+Context_LoginAsSubmenu: Přihlásit se jako...
 Context_UsernameSubmenu: Uživatelské jméno...
-Context_RefreshName: Aktualizovat název
+Context_RefreshName: Obnovit název
 Context_CopySubmenu: Kopírovat...
 Context_CopyProfileSubmenu: Kopírovat profil...
 Context_CommunityUrl: URL adresa komunity
-Context_CommunityUsername: Uživatelské jméno komunity
+Context_CommunityUsername: Komunitní uživatelské jméno
 Context_LoginUsername: Přihlašovací jméno
 Context_CopySteamIdSubmenu: Kopírovat SteamID...
 Context_Steam_Id: SteamID [STEAM0:~]
@@ -191,48 +191,48 @@ Title_Steam_Cleaning: Přepínač účtu TcNo - čištění Steam
 Title_Steam_Restore: Přepínač účtu TcNo - Obnovení zapomenutého Steam účtu
 Title_Steam_Settings: Přepínač TcNo účtu - nastavení Steam
 Title_Ubisoft_Settings: Přepínač účtu TcNo - Nastavení Ubisoft
-Installer_Downloading: Stahování {file}
+Installer_Downloading: Stahování souboru {file}
 Installer_DownloadFinished: Stahování {file} dokončeno
 Installer_Installing: "Instalace: {runtime}"
-Installer_RuntimeTitle: Přepínač TcNo účtu - instalátor spuštěný
-Installer_Welcome: Vítejte v Přepínači účtu TcNo - Instalátor pro spuštění
+Installer_RuntimeTitle: Přepínač účtů TcNo - instalce runtime
+Installer_Welcome: Vítejte v Přepínači účtů TcNo - Instalace runtime
 Installer_InstalledRuntimes: "Aktuálně nainstalované provozní režimy:"
 Installer_ErrorRuntime: "Nebyl nainstalován jeden nebo více běhů:"
 Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB při instalaci]"
 Installer_TotalSize: "Celková velikost stahování: ~{size} MB"
 Installer_AnyKeyStart: Stiskněte libovolné tlačítko pro zahájení stahování...
-Runtime_WebView2: Microsoft WebView2 běh
-Runtime_Desktop: Microsoft .NET 5 běh stolního počítače
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
 Runtime_ASP: Microsoft ASP.NET Core 5.0 Runtime
 Installer_FailedFolder: "Nepodařilo se vytvořit složku:"
 Installer_FailedWV: "Nepodařilo se stáhnout a nainstalovat Microsoft WebView2 Runtime. Chcete-li stáhnout: 1. Klikněte na odkaz níže: {link} 2. Klikněte na \"Stáhnout hosting Bundle\" v aplikaci Run server."
 Installer_FailedDR: "Nepodařilo se stáhnout a nainstalovat .NET 5 Desktop Runtime. Stáhněte si jej zde:"
-Installed_FailedASP: "Nepodařilo se stáhnout a nainstalovat ASP.NET Core 5.0 Runtime. Chcete-li stáhnout: 1. Klikněte na odkaz níže: {link} 2. Klikněte na 'Stáhnout x64' pod spuštěnými desktopovými aplikacemi."
+Installed_FailedASP: "Nepodařilo se stáhnout a nainstalovat ASP.NET Core 5.0 Runtime. Pro stažení: 1. Klikněte na odkaz níže: {link} 2. Klikněte na 'Stáhnout x64' pod spuštěnými desktopovými aplikacemi."
 Installer_Ready: "Jeden nebo více je připraveno k instalaci. Pokud a kdy budete vyzváni, pokud chcete instalovat, klikněte na 'Ano'."
 Installer_PressStart: Stiskněte libovolné tlačítko pro spuštění instalace...
 Installer_VerifyMin: "Ověřte, zda splňujete minimální doporučené požadavky:"
 Installer_VerifyAlready: "Vypadá to, že je vše nainstalováno. Ověřte, zda splňujete minimální doporučené požadavky:"
 Installer_Complete: To by mělo být vše. Hlavní program, TcNo-Acc-Switcher.exe, se automaticky spustí, když stisknete klávesu pro pokračování.
 Installer_Complete2: "Pokud to nefunguje, podívejte se na pokyny k instalaci, zde: {link}"
-Global_FatalNext: "Došlo k závažné chybě! Tento protokol selhání bude automaticky odeslán příští spuštění."
+Global_FatalNext: "Došlo k závažné chybě! Tento protokol selhání bude automaticky odeslán při příštím spuštění."
 Tray_Error: Chyba v systémové liště
-Tray_NoAccs: "Nebyly nalezeny žádné účty.\nZkuste nejprve změnit účty, nebo najít 'Tray_Users.json'"
+Tray_NoAccs: "Nebyly nalezeny žádné účty.\nZkuste nejprve změnit účty, nebo vyhledejte 'Tray_Users.json'"
 Tray_Switch: "Přepnout na: {account}"
 Tray_CantOpenExe: "Nelze otevřít hlavní .exe. Ujistěte se, že existuje.\n\nPokusil jsem se otevřít:"
 Tray_LaunchFail: "Přepínač účtu TcNo - Spuštění v systémové liště selhalo"
-Updater_Duplicate: Byla zjištěna jiná instance aktualizace účtu Tcno.
+Updater_Duplicate: Byla zjištěna jiná instance Tcno přepínač účtů.
 Updater_Unknown: "Neznámý argument: {arg}"
-Updater_NeedsAdmin: Tento program musí být spuštěn jako administrátor!
-Updater_StatusChecking: Kontrola verze
+Updater_NeedsAdmin: Tento program musí být spuštěn jako správce!
+Updater_StatusChecking: Kontroluji verzi
 Updater_FailedVersionCheck: "Nelze získat verzi. Klikněte na \"Ověřit\" pro aktualizaci a ověření souborů"
 Updater_PressBelow: Stiskněte tlačítko níže!
 Updater_PressBelowStart: Klikněte na tlačítko níže pro spuštění aktualizace.
-Updater_PatchApplied: Patch aplikován!
-Updater_UpdatingAppData: Aktualizace souborů v AppData!
+Updater_PatchApplied: Oprava aplikována!
+Updater_UpdatingAppData: Aktualizuji soubory v AppData!
 Updater_Complete: Všechny aktualizace dokončeny!
 Updater_Checking: Kontrola aktualizací
 Updater_UpdateToVerify: Pro ověření souborů musíte nejdříve aktualizovat.
-Updater_ClosingTcNo: Uzavření instancí Přepínače účtu TcNo (pokud existuje).
+Updater_ClosingTcNo: Uzavření instancí Přepínače účtů TcNo (pokud existuje).
 Updater_Downloading: "Stahování aktualizace: {version}"
 Updater_Downloaded: Stahování dokončeno.
 Updater_CantExtract: Nepodařilo se rozbalit aktualizaci.
@@ -244,42 +244,42 @@ Updater_NoServer: Nelze se spojit s aktualizačním serverem
 Updater_Hashlist: Stahování posledního hash seznamu...
 Updater_CantCheck: Nelze zkontrolovat aktualizace
 Updater_Failed: "CHYBA: Některé soubory jsou používány a nelze je aktualizovat.\n\n1. Ujistěte se, že všechny procesy TcNo jsou zcela uzavřeny\n(nebo restartujte Váš PC)\n\n2. Poté klikněte na Ověřit níže, nebo pokud jste restartovali:\n- Otevřete tento updater a ověřte soubory\n    (umístěné ve složce 'updater')"
-Updater_Missing: "SOUBOR MISE: {file}"
-Updater_FileMismatch: "Soubor: {file} má MD5: {md5} EXPECTED: {value}"
+Updater_Missing: "SOUBOR NENALEZEN: {file}"
+Updater_FileMismatch: "Soubor: {file} má MD5: {md5} OČEKÁVANÉ: {value}"
 Updater_DownloadingWeb: Stahování souboru z webových stránek...
-Updater_UnpackingAppData: Kopírování souborů do %AppData%/TcNo Přepínače účtu... (pokud není nastaveno jinak)
+Updater_UnpackingAppData: Kopírování souborů do %AppData%/TcNo Přepínače účtů... (pokud není nastaveno jinak)
 Updater_VerifyComplete: Soubory ověřeny!
 Updater_UpdateFound: "Aktualizace nalezena: {name} [{updateSize}]"
 Updater_TotalFound: "Celkem nalezených aktualizací: {x}"
 Updater_TotalSize: "Celková velikost: {size}"
 Updater_AwaitingUser: Čekání na vstup uživatele...
-Updater_UpToDate: "Jste aktuální.\n:)"
-Updater_FailedDecode: To je nejpravděpodobnější kvůli mně (TechNobo) tlačící aktualizaci, a tvořící typo, který porušil . soubor aktualizace syna. Dejte mi vědět :)
+Updater_UpToDate: "Aplikace aktuální.\n:)"
+Updater_FailedDecode: To je nejpravděpodobněji způsobeno mnou (TechNobo) vydáváním aktualizace s chybou, která porušila soubor .json aktualizace. Dejte mi vědět :)
 Updater_FailedDecodeTitle: Nepodařilo se dekódovat seznam aktualizací
 Updater_Extracting: Rozbaluji soubory patch
 Updater_Applying: Aplikování záplaty...
 Updater_Moving: Přesouvání souborů...
 Updater_Title: Aktualizace TcNo Přepínače účtů
-Updater_Started: Začínáno
-Updater_Start: Spustit přepínač TcNo účtu
+Updater_Started: Spuštěno
+Updater_Start: Spustit přepínač účtů TcNo
 Updater_Begin: Spustit aktualizaci
 Updater_Exit: Ukončit
 FatalError: Došlo k fatální chybě!
 Online: Online
-OnlineDefault: Online (Default)
+OnlineDefault: Online (Výchozí)
 Offline: Offline
-Invisible: Neviditelné
-Busy: Busy
-Away: Mimo
+Invisible: Neviditelný
+Busy: Zaneprázdněn
+Away: Nepřítomen
 Snooze: Odložit
-LookingToTrade: Hledám obchod
-LookingToPlay: Hledám hru
+LookingToTrade: Chci obchodovat
+LookingToPlay: Chci hrát
 Reg_DoesntExist: "{subKey} neexistuje."
 Reg_DoesntContain: "{subKey} neobsahuje {val}"
 Reg_Removing: Odstranění {subKey}\\{val}
 PngInvalid_Format: Požadovaný formát pixelů je PixelFormát.{x}.
 PngRequired: Požadovaný formát obrázku je přenosná síťová grafika (png).
-PngDimensions: Rozměry musí být menší nebo rovny {MaxIconWidth}x{MaxIconHeight}
+PngDimensions: Rozměry musí být menší nebo se rovnat {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Došlo k chybě syntaxe (další podrobnosti níže)! AND:"
 ThemesNotFound: "Nelze najít složku \"themes\" v adresáři Přepínače TcNo účtu. Toto (zejména Default.yaml) je vyžadováno pro spuštění tohoto softwaru.\nAktualizaci můžete spustit ve složce \"updater\" pro ověření souborů a obnovení těchto chybějících souborů."
 Yes: "Ano"
