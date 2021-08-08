@@ -20,10 +20,10 @@ Button_AdvancedCleaning: Pokročilé čištění...
 Button_ClearLog: Vymazat záznam
 Button_WikiInfo: Další informace (Wiki)
 Button_ClearDiscordCache: Vymazat mezipaměť Discord
-Settings_Shortcut: ' {platform} Přepínač na plochu'
+Settings_Shortcut: ' Přidat zástupce {platform} přepínače na plochu'
 Settings_Admin: Spustit {platform} jako správce
 Settings_ImageExpiry: 'Dny před vypršením platnosti profilových obrázků:'
-Settings_Header_AppWide: Nastavení široké aplikace
+Settings_Header_AppWide: Nastavení celé aplikace
 Settings_Header_GeneralSettings: Obecná nastavení
 Settings_Header_GeneralTools: Obecné nástroje
 Settings_Header_OtherTools: Ostatní nástroje
@@ -37,15 +37,15 @@ Settings_ClearForgotten: Vymazat zapomenuté
 Settings_ClearAccounts: Vymazat účty
 Settings_RestoreForgotten: Obnovit zapomenutý účet
 Settings_StreamerMode: Povolit streamovací režim
-Settings_ExitToTray: Ukončit minimalizaci do lišty
+Settings_ExitToTray: Tlačítko ukončit minimalizuje do lišty
 Settings_DesktopShortcut: Zástupce na ploše
 Settings_StartMenu_ProgramTray: Program & Tray
-Settings_StartMenu_Platform: Platforma
-Settings_Tray_StartWindows: Začít v systémové liště s Windows
-Settings_Tray_StartNow: '[Začít v systémové liště]'
-Settings_CurrentStyle: Aktuální styl
+Settings_StartMenu_Platform: Služba
+Settings_Tray_StartWindows: Spustit v systémové liště s Windows
+Settings_Tray_StartNow: '[Spustit v systémové liště]'
+Settings_CurrentStyle: Aktuální vzhled
 Settings_Protocol: 'Povolit tcno:\\ protokol (doporučeno)'
-Settings_WindowsAccent: Použít zvýrazňující barvu Windows
+Settings_WindowsAccent: Použí barvu motivu Windows
 Settings_HelpTranslate: "[Pomozte s překladem]"
 Cleaning_Header_StartMenuShortcuts: 'Zkratky pro nabídku startu:'
 Cleaning_Header_General: Obecné čištění
@@ -56,7 +56,7 @@ Cleaning_ImportantInfo: >
   Kliknutím na tlačítko smažete související soubor(y) z instalace Steamu.<br /> Smazání přihlašovacích uživatelů. df bude mít za následek tento přepínač účtů bez účtů.<br /> Budete se k nim muset přihlásit pomocí Steamu, abyste je dostali zpět.
 Cleaning_Button_KillProcess: Ukončit {platform} proces
 Cleaning_Button_ForgottenBackups: Zapomenuté zálohy účtu
-Cleaning_Understand: Chápu, co tato tlačítka dělají.
+Cleaning_Understand: Rozumím, co tato tlačítka dělají.
 Restore_Header: Obnovit zapomenuté účty
 Restore_Info: >
   Pokud jste dříve účet "zapomněli", můžete ho zde obnovit.<br /> Toto je přidá zpět do souboru loginusers.vdf, což vám umožní přepnout na ně.
@@ -64,9 +64,9 @@ Restore_Button_Restore: Obnovit vybrané
 Ignored_RemoveAccounts: Odstranit účty ze seznamu ignorovaných
 Ignored_Description: Pokud jste dříve "ignorovali" účet, můžete je znovu zobrazit zde
 Ignored_Stop: Přestat ignorovat vybrané
-Toast_RetryOrDeleteDiscordCache: Opakujte nebo odstraňte cache Discord pro obnovení hesla (viz Wiki).
-Toast_TrayStarted: Začíná!
-Toast_TrayRunning: Vlna je již otevřena
+Toast_RetryOrDeleteDiscordCache: Opakujte nebo odstraňte mezipaměť Discordu pro obnovení hesla (viz Wiki).
+Toast_TrayStarted: Spuštěno na liště!
+Toast_TrayRunning: Aplikace je již spuštěna
 Toast_TrayUsersMissing: Žádní uživatelé nebyli uloženi
 Toast_TrayFail: Nelze spustit aplikaci v systémové liště!
 Toast_TrayPosition: "Kliknutím na tlačítko Ukončí: Budu v systémové liště Windows! (Napravo od startovací lišty)"
