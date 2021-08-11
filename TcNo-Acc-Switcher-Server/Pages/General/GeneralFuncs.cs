@@ -38,7 +38,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         private static readonly Lang Lang = Lang.Instance;
 
         #region PROCESS_OPERATIONS
-        public static bool IsAdministrator => new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+        public static bool IsAdministrator => OperatingSystem.IsWindows() && new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
         public static void StartProgram(string path, bool elevated) => StartProgram(path, elevated, "");
         /// <summary>
         /// Starts a process with or without Admin
@@ -278,12 +278,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteRegKey] subKey={subKey}, val={val}, jsDest={jsDest}");
             using var key = Registry.CurrentUser.OpenSubKey(subKey, true);
             if (key == null)
-                _ = AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntExist", new { subKey = subKey }]);
+                _ = AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntExist", new { subKey }]);
             else if (key.GetValue(val) == null)
-                _ = AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntContain", new { subKey = subKey, val = val }]);
+                _ = AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntContain", new { subKey, val }]);
             else
             {
-                _ = AppData.InvokeVoidAsync(jsDest, Lang["Reg_Removing", new { subKey = subKey, val = val }]);
+                _ = AppData.InvokeVoidAsync(jsDest, Lang["Reg_Removing", new { subKey, val }]);
                 key.DeleteValue(val);
             }
             JsDestNewline(jsDest);
@@ -318,20 +318,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFilesOfType] folder={folder}, extensions={extensions}, jsDest={jsDest}");
             if (!Directory.Exists(folder))
             {
-                _ = AppData.InvokeVoidAsync(jsDest, Lang["DirectoryNotFound", new { folder = folder }]);
+                _ = AppData.InvokeVoidAsync(jsDest, Lang["DirectoryNotFound", new { folder }]);
                 JsDestNewline(jsDest);
                 return;
             }
             foreach (var file in GetFiles(folder, extensions, so))
             {
-                _ = AppData.InvokeVoidAsync(jsDest, Lang["DeletingFile", new { file = file }]);
+                _ = AppData.InvokeVoidAsync(jsDest, Lang["DeletingFile", new { file }]);
                 try
                 {
                     File.Delete(file);
                 }
                 catch (Exception ex)
                 {
-                    _ = AppData.InvokeVoidAsync(jsDest, Lang["ErrorDetails", new { ex = ex }]);
+                    _ = AppData.InvokeVoidAsync(jsDest, Lang["ErrorDetails", new { ex }]);
                 }
             }
             JsDestNewline(jsDest);
@@ -575,7 +575,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         public static async System.Threading.Tasks.Task HandleFirstRender(bool firstRender, string platform)
         {
-            AppData.Instance.WindowTitle = Lang["Title_AccountsList", new { platform = platform }];
+            AppData.Instance.WindowTitle = Lang["Title_AccountsList", new { platform }];
             if (firstRender)
             {
                 // Handle Streamer Mode notification
@@ -858,26 +858,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        private struct StartupInfo
+        private readonly struct StartupInfo
         {
-            private int cb;
-            private string lpReserved;
-            private string lpDesktop;
-            private string lpTitle;
-            private int dwX;
-            private int dwY;
-            private int dwXSize;
-            private int dwYSize;
-            private int dwXCountChars;
-            private int dwYCountChars;
-            private int dwFillAttribute;
-            private int dwFlags;
-            private int wShowWindow;
-            private int cbReserved2;
-            private int lpReserved2;
-            private int hStdInput;
-            private int hStdOutput;
-            private int hStdError;
+            private readonly int cb;
+            private readonly string lpReserved;
+            private readonly string lpDesktop;
+            private readonly string lpTitle;
+            private readonly int dwX;
+            private readonly int dwY;
+            private readonly int dwXSize;
+            private readonly int dwYSize;
+            private readonly int dwXCountChars;
+            private readonly int dwYCountChars;
+            private readonly int dwFillAttribute;
+            private readonly int dwFlags;
+            private readonly int wShowWindow;
+            private readonly int cbReserved2;
+            private readonly int lpReserved2;
+            private readonly int hStdInput;
+            private readonly int hStdOutput;
+            private readonly int hStdError;
         }
 
         [DllImport("kernel32.dll", ExactSpelling = true)]
