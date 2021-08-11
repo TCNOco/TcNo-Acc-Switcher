@@ -8,7 +8,7 @@ Steam_CheckVac: 계정 VAC 상태 확인
 Steam_ShowLimited: 제한된 상태 표시
 Steam_ShowAccUsername: 계정 사용자 이름 표시
 Steam_Tray_AccountName: 계정 이름 표시 [친구 이름 아님]
-Button_AddNew: 새로운 걸 더하다
+Button_AddNew: 새 계정 추가
 Button_SaveCurrent: 현재 저장
 Button_SaveFile: 파일을 저장
 Button_Cancel: 취소
