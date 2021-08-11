@@ -69,7 +69,12 @@
     protected override void OnParametersSet()
     {
         _appSettings.StreamerModeCheck();
+        //var f = AppSettings.Instance.UsingTcNoBrowser;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
+    //protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
+    }
 }

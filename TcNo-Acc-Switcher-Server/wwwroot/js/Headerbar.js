@@ -69,12 +69,14 @@ function btnBack_Click() {
 }
 
 function handleWindowControls() {
-    document.getElementById("btnMin").addEventListener("click", () => {
-        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMinimise);
-    });
-
     document.getElementById("btnBack").addEventListener("click", () => {
         btnBack_Click();
+    });
+
+    if (navigator.appVersion.indexOf("TcNo") === -1) return;
+
+    document.getElementById("btnMin").addEventListener("click", () => {
+        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMinimise);
     });
 
     document.getElementById("btnMax").addEventListener("click", () => {

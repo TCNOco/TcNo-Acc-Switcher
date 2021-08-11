@@ -128,6 +128,8 @@ namespace TcNo_Acc_Switcher_Client
                 MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
                 MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown").DevToolsProtocolEventReceived += ConsoleMessage;
                 _ = await MView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
+
+                MView2.CoreWebView2.Settings.UserAgent = "TcNo 1.0";
             }
             catch (WebView2RuntimeNotFoundException)
             {
@@ -338,6 +340,7 @@ namespace TcNo_Acc_Switcher_Client
             if (!_firstLoad) return;
             MView2.Visibility = Visibility.Hidden;
             MView2.Visibility = Visibility.Visible;
+            MView2.ExecuteScriptAsync("UsingTcNoBrowser");
             _firstLoad = false;
         }
     }

@@ -99,6 +99,18 @@ namespace TcNo_Acc_Switcher_Server.Data
         private string _selectedStylesheet;
         [JsonIgnore] public string SelectedStylesheet { get => _instance._selectedStylesheet; set => _instance._selectedStylesheet = value; }
 
+        /// <summary>
+        /// Some features only work in the 'official browser' such as picking files, this will need to be adjusted for pure-web users, using just the server and another browser.
+        /// </summary>
+        private bool _usingTcNoBrowser;
+        [JsonIgnore] public bool UsingTcNoBrowser { get => _instance._usingTcNoBrowser; set => _instance._usingTcNoBrowser = value; }
+        [JSInvokable] public static void TcNoBrowser()
+        {
+            Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.TcNoBrowser]");
+            _instance._usingTcNoBrowser = true;
+        }
+
+
         [JsonIgnore]
         public string PlatformContextMenu =>
             Lang == null ? "" : $@"[
