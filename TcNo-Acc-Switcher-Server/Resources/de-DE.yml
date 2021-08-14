@@ -20,7 +20,7 @@ Button_AdvancedCleaning: Erweiterte Reinigung...
 Button_ClearLog: Log löschen
 Button_WikiInfo: Mehr Info (Wiki)
 Button_ClearDiscordCache: Discord Cache leeren
-Settings_Shortcut: ' {platform} Schalter-Desktop-Verknüpfung'
+Settings_Shortcut: ' {platform} Switcher Desktop-Verknüpfung'
 Settings_Admin: '{platform} als Admin ausführen'
 Settings_ImageExpiry: 'Tage vor Ablauf der Profilbilder:'
 Settings_Header_AppWide: App-weite Einstellungen
