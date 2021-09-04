@@ -104,43 +104,43 @@ Toast_DuplicateNames: Wechseln nicht möglich. Accounts mit selbem Namen duplizi
 Toast_CouldNotLocate: Konnte angemeldeten Benutzer nicht finden
 Toast_StreamerModeHint: Private Informationen sind versteckt! - Siehe Einstellungen
 Toast_StreamerModeTitle: Streamer-Modus
-Toast_AddAccountsFirst: Öffnen Sie die Plattform aus der Liste und fügen Sie zuerst ein paar Konten hinzu
-Toast_AddAccountsFirstTitle: Keine gespeicherten Konten
-Toast_CantFindImage: Bild der Benutzer konnte nicht gefunden werden.
-Toast_CantCreateShortcut: Kann keine Verknüpfung erstellen
+Toast_AddAccountsFirst: Öffne die Plattform aus der Liste und füge zuerst ein paar Konten hinzu
+Toast_AddAccountsFirstTitle: Keine gespeicherten Accounts
+Toast_CantFindImage: Bild des Benutzers konnte nicht gefunden werden.
+Toast_CantCreateShortcut: Erstellung einer Verknüpfung ist nicht möglich
 Toast_ShortcutCreated: Verknüpfung erstellt!
 Toast_FailedUpdateCheck: Fehler bei der Suche nach Updates
-Toast_UpdateVerifyFail: Updater-Dateien können nicht verifiziert werden. Laden Sie die neueste Version herunter und ersetzen Sie die Dateien in Ihrem Verzeichnis.
-Toast_Riot_StartGame: Benutzer geändert. Starten Sie ein Spiel unten.
-Toast_StartedGame: Startete {program}
-Toast_Steam_VacCleared: VAC-Status für Konten wurde gelöscht
+Toast_UpdateVerifyFail: Updater-Dateien können nicht verifiziert werden. Lade die neueste Version herunter und ersetze die Dateien in Ihrem Verzeichnis.
+Toast_Riot_StartGame: Benutzer geändert. Starte unten ein Spiel.
+Toast_StartedGame: '{program} gestartet'
+Toast_Steam_VacCleared: VAC-Status für Accounts wurde gelöscht
 Toast_Steam_CantDeleteVacCache: Konnte 'LoginCache/Steam/VACCache/SteamVACCache.json' nicht löschen
 Toast_NoFindSteamUserdata: Steam\\userdata Ordner konnte nicht gefunden werden
-Toast_Steam_VdfLast: Kann von vdf_last geladen werden. Einige Konten könnten fehlen.
+Toast_Steam_VdfLast: Konnte von vdf_last laden. Einige Accounts könnten fehlen.
 Toast_PartiallyFixed: Teilweise repariert
 Toast_Steam_FailedLoginusers: Fehler beim Laden von steam/config/loginusers.vdf
-Toast_Steam_CantLocateLoginusers: '''.../Steam/config/loginusers.vdf'' kann nicht gefunden werden. Versuche zuerst bei einem Konto anzumelden.'
+Toast_Steam_CantLocateLoginusers: '''.../Steam/config/loginusers.vdf'' kann nicht gefunden werden. Versuche zuerst dich in einen Account anzumelden.'
 Toast_CantClearImages: Konnte Bilder nicht löschen
-Toast_RefreshedImages: Aktualisierte Bilder
-Toast_Ubisoft_NoUsername: Konnte den zuletzt angemeldeten Benutzer nicht finden. Versuchen Sie, sich zuerst erneut bei Ubisoft anzumelden.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat konnte nicht gefunden werden. Der letzte aktive Account wurde nicht gespeichert."
+Toast_RefreshedImages: Bilder aktualisiert
+Toast_Ubisoft_NoUsername: Konnte den zuletzt angemeldeten Benutzer nicht finden. Versuche dich zuerst erneut bei Ubisoft anzumelden.
+Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat konnte nicht gefunden werden. Der zuletzt aktive Account wurde nicht gespeichert."
 Toast_Ubisoft_NoUser: Konnte den zuletzt angemeldeten Benutzer nicht finden. Versuchen Sie, sich zuerst erneut bei Ubisoft anzumelden.
 Toast_ClearForgottenCheck: Sind Sie sicher, dass Sie Backups von vergessenen Konten löschen möchten?
 Modal_Info_Creator: Erstellt von TechNobo [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: Auf GitHub anzeigen
 Modal_Info_BugReport: Fehlerbericht/Feature-Anfrage
-Modal_Info_VisitSite: Besuchen Sie tcno.co
+Modal_Info_VisitSite: Öffne tcno.co
 Modal_Info_Disclaimer: Haftungsausschluss
 Modal_Title_Info: TcNo Account Switcher Information
 Modal_Title_ChangeUsername: Benutzername ändern
 Modal_Title_ConfirmAction: TcNo Account Switcher Bestätigungsaktion
 Modal_Title_LocatePlatform: Bitte suchen Sie das {platform}-Verzeichnis
 Modal_Title_AddNew: Neues {platform}-Konto hinzufügen
-Modal_ChangeUsername: Bitte geben Sie ein neues {platformText} für Ihr Konto ein
+Modal_ChangeUsername: Bitte gebe ein neues {platformText} für deinen Account ein
 Modal_ChangeUsernameType: '{UsernameOrOther} ändern'
 Modal_EnterDirectory: "Bitte geben Sie das Verzeichnis von {platform} im folgenden Format ein: C:\\Programme\\{platform}"
-Modal_LocatePlatform: '{platformExe} finden'
+Modal_LocatePlatform: Finde {platformExe}
 Modal_LocatePlatformFolder: '{platform}-Ordner auswählen'
 Modal_ConfirmAction: Aktion bestätigen
 Modal_AddNew: Bitte geben Sie einen Namen für das {platform}-Konto ein, in dem Sie angemeldet sind.
