@@ -7,8 +7,8 @@ Steam_ShowVac: VAC-Status anzeigen
 Steam_CheckVac: VAC-Status prüfen
 Steam_ShowLimited: Begrenzten Status anzeigen
 Steam_ShowAccUsername: Account-Benutzername anzeigen
-Steam_Tray_AccountName: Kontonamen anzeigen [kein Freundname]
-Button_AddNew: Neu
+Steam_Tray_AccountName: Accountnamen anzeigen [kein Freundesname]
+Button_AddNew: Hinzufügen
 Button_SaveCurrent: Aktuellen speichern
 Button_SaveFile: Datei speichern
 Button_Cancel: Abbrechen
@@ -22,8 +22,8 @@ Button_WikiInfo: Mehr Info (Wiki)
 Button_ClearDiscordCache: Discord Cache leeren
 Settings_Shortcut: ' {platform} Switcher Desktop-Verknüpfung'
 Settings_Admin: '{platform} als Admin ausführen'
-Settings_ImageExpiry: 'Tage vor Ablauf der Profilbilder:'
-Settings_Header_AppWide: App-weite Einstellungen
+Settings_ImageExpiry: 'Tage vor Löschung der Profilbilder:'
+Settings_Header_AppWide: Programm-weite Einstellungen
 Settings_Header_GeneralSettings: Allgemeine Einstellungen
 Settings_Header_GeneralTools: Allgemeine Werkzeuge
 Settings_Header_OtherTools: Andere Tools
@@ -43,15 +43,15 @@ Settings_StartMenu_ProgramTray: Programm & Tray
 Settings_StartMenu_Platform: Plattform
 Settings_Tray_StartWindows: Tray mit Windows starten
 Settings_Tray_StartNow: '[Tray jetzt starten]'
-Settings_CurrentStyle: Aktueller Stil
-Settings_Protocol: 'Aktiviere tcno:\\ Protokoll (empfohlen)'
+Settings_CurrentStyle: Aktuelles Design
+Settings_Protocol: 'tcno:\\ Protokoll Aktivieren (empfohlen)'
 Settings_WindowsAccent: Verwende die Windows-Akzentfarbe
 Settings_HelpTranslate: "[Beim Übersetzen helfen]"
 Cleaning_Header_StartMenuShortcuts: 'Verknüpfungen für das Startmenü:'
 Cleaning_Header_General: Allgemeine Reinigung
-Cleaning_Header_LoginHistory: Login-Verlauf bereinigen
+Cleaning_Header_LoginHistory: Login-Verlauf löschen
 Cleaning_Header_PlatformCleaning: '{platform} Switcher'
-Cleaning_ImportantInfoHeader: 'Wichtige Info:'
+Cleaning_ImportantInfoHeader: 'Wichtige Informationen:'
 Cleaning_ImportantInfo: >
   Wenn du auf einen Button klickst, werden die zugehörigen Datei(en) von deiner Steam-Installation gelöscht.<br /> Das löschen von loginusers.vdf sorgt dafür, dass der Account-Switcher keine Konten anzeigt.<br /> Sie müssen sich mit Steam anmelden, um sie wieder zurückzuholen.
 Cleaning_Button_KillProcess: '{platform} Prozess beenden'
@@ -59,48 +59,48 @@ Cleaning_Button_ForgottenBackups: Konto-Backups vergessen
 Cleaning_Understand: Ich verstehe, was diese Buttons machen.
 Restore_Header: Vergessene Konten wiederherstellen
 Restore_Info: >
-  Wenn Sie zuvor ein Konto "vergessen" haben, können Sie sie hier wiederherstellen.<br /> Dies fügt sie zurück in deine loginusers.vdf Datei ein, so dass du zu ihnen wechseln kannst.
+  Wenn du zuvor ein Konto "vergessen" hast, kannst du es hier wiederherstellen.<br /> Dies fügt es wieder in deine loginusers.vdf Datei ein, damit du wieder dazu wechseln kannst.
 Restore_Button_Restore: Ausgewählte wiederherstellen
 Ignored_RemoveAccounts: Konten von Ignorierliste entfernen
-Ignored_Description: Wenn du ein Konto zuvor "ignoriert" hast, kannst du es hier erneut anzeigen
+Ignored_Description: Wenn du einen Account zuvor "ignoriert" hast, kannst du es hier erneut anzeigen
 Ignored_Stop: Ausgewählte nicht mehr ignorieren
 Toast_RetryOrDeleteDiscordCache: Discord Cache neu laden oder löschen, um das Passwort zurückzusetzen (Siehe Wiki).
 Toast_TrayStarted: Tray gestartet!
 Toast_TrayRunning: Tray bereits geöffnet
 Toast_TrayUsersMissing: Keine Tray-Benutzer gespeichert
 Toast_TrayFail: Konnte Tray-Anwendung nicht starten!
-Toast_TrayPosition: "Wenn Sie auf den Verlassen-Knopf klicken: Ich bin im Windows Tray! (Rechte der Start-Leiste)"
+Toast_TrayPosition: "Wenn du den Exit button klickst bin ich im Windows Tray! (Rechte Seite der Taskleiste)"
 Toast_TrayHint: "Tipp: Strg+Klick auf das 'X' um mich komplett zu schließen, oder über das Tray > 'Beenden'"
 Toast_Copied: Kopiert
 Toast_PasteDiscordConsole: In Discord-Konsole einfügen und dann das Ergebnis in die Eingabe einfügen!
-Toast_AlreadyProcessing: Konten werden bereits verarbeitet...
-Toast_FailedRestore: Fehler beim Wiederherstellen der Konten (siehe Konsole)
-Toast_Restored: Restaurierte Konten!
+Toast_AlreadyProcessing: Accounts werden bereits verarbeitet...
+Toast_FailedRestore: Fehler beim Wiederherstellen der Accounts (siehe Konsole)
+Toast_Restored: Accounts wiederhergestellt!
 Toast_ProtocolEnabled: Dieses Programm reagiert nun auf tcno:\\ in Windows
 Toast_ProtocolEnabledTitle: Protokoll hinzugefügt
 Toast_ProtocolDisabled: Dieses Programm reagiert nicht mehr auf tcno:\\
 Toast_ProtocolDisabledTitle: Protokoll entfernt
 Toast_RestartAsAdmin: Bitte als Administrator starten und erneut versuchen.
-Toast_RestartAfterClose: Bitte starten Sie das Programm nach einem Klick auf Schließen neu.
+Toast_RestartAfterClose: Bitte starte das Programm nach einem Klick auf Schließen erneut.
 Toast_RestartAfterCloseTitle: Akzentfarbe deaktiviert
 Toast_LoadStylesheetFailed: Stylesheet konnte nicht geladen werden! Siehe Dokumentenordner für Details.
-Toast_BNet_Private: "Profil von {BTag}ist privat"
-Toast_BNet_StatsFail: "Fehler beim Versuch, Statistiken für {BTag} zu erhalten"
-Toast_BNet_CantSwapAccounts: Konnte Konten nicht tauschen (Battle.net.config Datei beschädigt)
-Toast_BNet_CantLoadNotFound: Konnte Battle.net.config nicht finden
-Toast_BNet_CantLoadEmpty: Konnte die Account-Datei für Blizzard nicht laden (keine Konten gefunden)
+Toast_BNet_Private: "Das profil von {BTag} ist privat"
+Toast_BNet_StatsFail: "Fehler beim Versuch Statistiken für {BTag} zu erhalten"
+Toast_BNet_CantSwapAccounts: Konnte Accounts nicht wechseln (Battle.net.config Datei beschädigt)
+Toast_BNet_CantLoadNotFound: Battle.net.config wurde nicht gefunden
+Toast_BNet_CantLoadEmpty: Konnte die Account-Datei für Blizzard nicht laden (keine Accounts gefunden)
 Toast_BNet_CantLoadConfigCorrupt: Konnte die Account-Datei für Blizzard nicht laden (Battle.net.config Datei beschädigt)
 Toast_BNet_NamePolicy: BattleTag stimmt nicht mit Namensregeln überein.
 Toast_ItemNotFound: "{item} wurde nicht gefunden"
 Toast_DeletedTotal: "{files} von {totalFiles} gelöscht. Gesamt: {totalSize}"
 Toast_DeletedTotalTitle: Discord Cache geleert!
 Toast_Discord_SignOutHint: "Hinweis: Du musst dich in deinem Browser von Discord abmelden"
-Toast_Discord_SaveHint: "Hinweis: Discord-Einstellungen geändert? Speichern Sie es erneut. Mit dem gleichen Namen!"
+Toast_Discord_SaveHint: "Hinweis: Discord-Einstellungen geändert? Speicher erneut mit dem gleichen Namen!"
 Toast_Discord_NoToken: Konnte Benutzer-Token nicht finden! Beende Discord normal, dann speichere es erneut.
 Toast_CantChangeUsername: Benutzername konnte nicht geändert werden
 Toast_CantClearLoginFiles: Fehler beim Löschen der alten Login-Dateien
-Toast_Epic_AccountIdReg: AccountId konnte nicht von der Registrierung abgerufen werden!
-Toast_DuplicateNames: Konnte nicht austauschen. Konten mit demselben Benutzernamen duplizieren?
+Toast_Epic_AccountIdReg: AccountId konnte nicht aus der Registry abgerufen werden!
+Toast_DuplicateNames: Wechseln nicht möglich. Accounts mit selbem Namen duplizieren?
 Toast_CouldNotLocate: Konnte angemeldeten Benutzer nicht finden
 Toast_StreamerModeHint: Private Informationen sind versteckt! - Siehe Einstellungen
 Toast_StreamerModeTitle: Streamer-Modus
