@@ -8,6 +8,7 @@ Steam_CheckVac: בדוק את מצב ה- VAC בחשבון
 Steam_ShowLimited: הצג סטטוס מוגבל
 Steam_ShowAccUsername: הצג את שם המשתמש בחשבון
 Steam_Tray_AccountName: הצג שם חשבון [לא שם חבר]
+Steam_OverrideDefaultState: "Override default login state:"
 Button_AddNew: הוסף חדש
 Button_SaveCurrent: שמור זרם
 Button_SaveFile: שמור את הקובץ
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: הפעל את מגש עם Windows
 Settings_Tray_StartNow: '[התחל מגש עכשיו]'
 Settings_CurrentStyle: סגנון נוכחי
 Settings_Protocol: 'אפשר TcNo: \\ פרוטוקול (מומלץ)'
+Settings_StartCentered: Start program centered
 Settings_WindowsAccent: השתמש בצבע המבטא של Windows
 Settings_HelpTranslate: "[עזרה בתרגום]"
 Cleaning_Header_StartMenuShortcuts: 'קיצורי דרך לתפריט התחלה:'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "אירעה שגיאת תחביר (פרטים נוספים בה�
 ThemesNotFound: "לא ניתן למצוא את התיקייה \"ערכות נושא\" בספריה של TcNo Account Switcher. זה (במיוחד Default.yaml) נדרש להפעלת תוכנה זו.\nבאפשרותך להפעיל את Updater בתיקיית \"updater\" כדי לאמת קבצים ולשחזר קבצים חסרים אלה."
 Yes: "כן"
 No: "לא"
+NoDefault: No (Default)
 Ok: "בסדר"
 Forget: לשכוח
 Notice: הודעה
