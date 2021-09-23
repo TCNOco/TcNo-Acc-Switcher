@@ -62,7 +62,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public readonly string ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
-				{{""{Lang["Context_CreateShortcutSubmenu"]}"": ""createShortcut()""}},
+				{{""{Lang["Context_CreateShortcut"]}"": ""createShortcut()""}},
 				{{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
 				{{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";

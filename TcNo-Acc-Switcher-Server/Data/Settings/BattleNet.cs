@@ -89,7 +89,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
               {{""{Lang["Context_BNet_SetBTag"]}"": ""showModal('changeUsername:BattleTag')""}},
               {{""{Lang["Context_BNet_DelBTag"]}"": ""forgetBattleTag()""}},
               {{""{Lang["Context_BNet_GetRAnk"]}"": ""refetchRank()""}},
-              {{""{Lang["Context_CreateShortcutExt"]}"": ""createShortcut()""}},
+              {{""{Lang["Context_CreateShortcut"]}"": ""createShortcut()""}},
               {{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
               {{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";

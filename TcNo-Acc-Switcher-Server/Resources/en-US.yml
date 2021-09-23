@@ -8,6 +8,7 @@ Steam_CheckVac: Check account VAC status
 Steam_ShowLimited: Show Limited Status
 Steam_ShowAccUsername: Show account username
 Steam_Tray_AccountName: Show account name [not friend name]
+Steam_OverrideDefaultState: Override default login state
 Button_AddNew: Add New
 Button_SaveCurrent: Save Current
 Button_SaveFile: Save File
@@ -285,6 +286,7 @@ ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
 ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
 Yes: "Yes"
 No: "No"
+NoDefault: No (Default)
 Ok: "OK"
 Forget: Forget
 Notice: Notice

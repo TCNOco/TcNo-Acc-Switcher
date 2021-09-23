@@ -61,6 +61,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Steam_ImageExpiryTime", Order = 9)] public int ImageExpiryTime { get => _instance._imageExpiryTime; set => _instance._imageExpiryTime = value; }
         private int _trayAccNumber = 3;
         [JsonProperty("Steam_TrayAccNumber", Order = 10)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
+        private int _overrideState = -1;
+        [JsonProperty("Steam_OverrideState", Order = 10)] public int OverrideState { get => _instance._overrideState; set => _instance._overrideState = value; }
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
@@ -117,6 +119,23 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 				{{""{Lang["Context_Steam_OpenUserdata"]}"": ""openUserdata(event)""}},
 				{{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";
+
+        public static string StateToString(int state)
+        {
+            return state switch
+            {
+                -1 => Lang["NoDefault"],
+                0 => Lang["Offline"],
+                1 => Lang["Online"],
+                2 => Lang["Busy"],
+                3 => Lang["Away"],
+                4 => Lang["Snooze"],
+                5 => Lang["LookingToTrade"],
+                6 => Lang["LookingToPlay"],
+                7 => Lang["Invisible"],
+                _ => ""
+            };
+        }
 
         /// <summary>
         /// Default settings for SteamSettings.json

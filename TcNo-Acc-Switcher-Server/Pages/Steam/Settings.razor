@@ -15,6 +15,7 @@
 @page "/Steam/Settings"
 @using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @using TcNo_Acc_Switcher_Server.Data
+@using Task = System.Threading.Tasks.Task
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager _navManager
 @inject AppData _appData
@@ -59,7 +60,32 @@
 	            <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowLimited" @bind="_steam.ShowLimited"><label class="form-check-label" for="Steam_ShowLimited"></label></div><label for="Steam_ShowLimited">@_locale["Steam_ShowLimited"]<br></label>
             </div>
             <div>
-	            <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowAccUsername" @bind="_steam.ShowAccUsername"><label class="form-check-label" for="Steam_ShowAccUsername"></label></div><label for="Steam_ShowAccUsername">@_locale["Steam_ShowAccUsername"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowAccUsername" @bind="_steam.ShowAccUsername"><label class="form-check-label" for="Steam_ShowAccUsername"></label></div><label for="Steam_ShowAccUsername">@_locale["Steam_ShowAccUsername"]<br></label>
+            </div>
+            <div>
+                <div class="rowSetting rowDropdown">
+                    <span>@_locale["Steam_OverrideDefaultState"]</span>
+                    <div class="dropdown">
+                        <ul class="custom-dropdown-menu dropdown-menu">
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(-1)">@_locale["NoDefault"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(1)">@_locale["Online"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(7)">@_locale["Invisible"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(0)">@_locale["Offline"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(2)">@_locale["Busy"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(3)">@_locale["Away"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(4)">@_locale["Snooze"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(5)">@_locale["LookingToTrade"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(6)">@_locale["LookingToPlay"]</li>
+                        </ul>
+                        <button class="dropdown-toggle" type="button" data-toggle="dropdown">
+                            @_selectedState
+                            <span class="caret"></span>
+                        </button>
+                    </div>
+                </div>
+                
+
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowAccUsername" @bind="_steam.ShowAccUsername"><label class="form-check-label" for="Steam_ShowAccUsername"></label></div><label for="Steam_ShowAccUsername">@_locale["Steam_ShowAccUsername"]<br></label>
             </div>
             <div class="form-text"><span>@_locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="_steam.ImageExpiryTime"></div>
 
@@ -111,5 +137,12 @@
         _steam.SaveSettings();
 
         _navManager.NavigateTo("/Steam");
+    }
+
+    private string _selectedState = Data.Settings.Steam.StateToString(Data.Settings.Steam.Instance.OverrideState);
+    private async Task DefaultState(int state)
+    {
+        Data.Settings.Steam.Instance.OverrideState = state;
+        _selectedState = Data.Settings.Steam.StateToString(state);
     }
 }

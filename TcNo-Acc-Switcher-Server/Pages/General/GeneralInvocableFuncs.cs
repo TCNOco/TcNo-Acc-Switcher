@@ -336,7 +336,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             _ = AppSettings.Instance.StreamerModeTriggered
                 ? ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea")
-                : ShowToast("success", Lang["ForName", new { ForName = accName }], Lang["Toast_ShortcutCreated"], "toastarea");
+                : ShowToast("success", Lang["ForName", new { name = accName }], Lang["Toast_ShortcutCreated"], "toastarea");
         }
 
         [JSInvokable]
