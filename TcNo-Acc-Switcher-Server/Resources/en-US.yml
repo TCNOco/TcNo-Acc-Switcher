@@ -8,7 +8,7 @@ Steam_CheckVac: Check account VAC status
 Steam_ShowLimited: Show Limited Status
 Steam_ShowAccUsername: Show account username
 Steam_Tray_AccountName: Show account name [not friend name]
-Steam_OverrideDefaultState: Override default login state
+Steam_OverrideDefaultState: "Override default login state:"
 Button_AddNew: Add New
 Button_SaveCurrent: Save Current
 Button_SaveFile: Save File
