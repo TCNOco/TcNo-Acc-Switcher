@@ -8,6 +8,7 @@ Steam_CheckVac: Hesap VAC durumunu kontrol et
 Steam_ShowLimited: Sınırlı Durumu Göster
 Steam_ShowAccUsername: Hesap kullanıcı adını göster
 Steam_Tray_AccountName: Hesap adını göster [arkadaş adı değil]
+Steam_OverrideDefaultState: "Override default login state:"
 Button_AddNew: Yeni ekle
 Button_SaveCurrent: Mevcut Kaydet
 Button_SaveFile: Dosyayı kaydet
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: Windows ile Tepsiyi Başlatın
 Settings_Tray_StartNow: '[Tepsiyi şimdi başlatın]'
 Settings_CurrentStyle: Geçerli Stil
 Settings_Protocol: 'tcno:\\ protokolünü etkinleştir (Önerilen)'
+Settings_StartCentered: Start program centered
 Settings_WindowsAccent: Windows Vurgu Rengini kullanın
 Settings_HelpTranslate: "[Çevirmeye yardım edin]"
 Cleaning_Header_StartMenuShortcuts: 'Başlat Menüsü Kısayolları:'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "Bir sözdizimi hatasıyla karşılaşıldı (daha fazla ayrınt
 ThemesNotFound: "TcNo Account Switcher'ın dizininde \"temalar\" klasörü bulunamadı. Bu (özellikle Default.yaml) bu yazılımın çalışması için gereklidir.\nDosyaları doğrulamak ve bu eksik dosyaları geri yüklemek için Güncelleyiciyi \"güncelleyici\" klasöründe çalıştırabilirsiniz."
 Yes: "Evet"
 No: "Hayır"
+NoDefault: No (Default)
 Ok: "TAMAM MI"
 Forget: Unutmak
 Notice: Farkına varmak
