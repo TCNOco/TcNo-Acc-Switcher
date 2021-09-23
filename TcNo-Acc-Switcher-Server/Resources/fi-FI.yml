@@ -8,6 +8,7 @@ Steam_CheckVac: Tarkista tilin VAC tila
 Steam_ShowLimited: Näytä Rajoitettu Tila
 Steam_ShowAccUsername: Näytä tilin käyttäjätunnus
 Steam_Tray_AccountName: Näytä tilin nimi [ei kaverin nimi]
+Steam_OverrideDefaultState: "Override default login state:"
 Button_AddNew: Lisää Uusi
 Button_SaveCurrent: Tallenna Nykyinen
 Button_SaveFile: Tallenna Tiedosto
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: Aloita kaukalo Windowsilla
 Settings_Tray_StartNow: '[Aloita ilmoitusalue nyt]'
 Settings_CurrentStyle: Nykyinen Tyyli
 Settings_Protocol: 'Ota tcno:\\ protokolla käyttöön (Suositeltu)'
+Settings_StartCentered: Start program centered
 Settings_WindowsAccent: Käytä Windows-hehkutuksen väriä
 Settings_HelpTranslate: "[Auta kääntämään]"
 Cleaning_Header_StartMenuShortcuts: 'Käynnistysvalikon pikakuvakkeet:'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "Syntaksivirhe kohdattiin (lisätietoja alla)! AND:"
 ThemesNotFound: "Ei löytynyt \"teemoja\" kansiota TcNo Tilin vaihtajan hakemistosta. Tämä (erityisesti Default.yaml) vaaditaan suorittamaan tämä ohjelma.\nVoit suorittaa päivityksen \"updater\" kansioon tiedostojen tarkistamiseksi ja näiden puuttuvien tiedostojen palauttamiseksi."
 Yes: "Kyllä"
 No: "Ei"
+NoDefault: No (Default)
 Ok: "Ok"
 Forget: Unohda
 Notice: Huomautus
