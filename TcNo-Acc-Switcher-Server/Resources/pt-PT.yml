@@ -8,6 +8,7 @@ Steam_CheckVac: Verificar status do VAC da conta
 Steam_ShowLimited: Exibir Status Limitado
 Steam_ShowAccUsername: Exibir nome de usuário
 Steam_Tray_AccountName: Mostrar nome da conta [sem nome de amigo]
+Steam_OverrideDefaultState: "Override default login state:"
 Button_AddNew: Adicionar novo
 Button_SaveCurrent: Salvar atual
 Button_SaveFile: Salvar Arquivo
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: Iniciar Bandeja com Windows
 Settings_Tray_StartNow: '[Iniciar bandeja agora]'
 Settings_CurrentStyle: Estilo atual
 Settings_Protocol: 'Habilitar tcno:\\ protocolo (Recomendado)'
+Settings_StartCentered: Start program centered
 Settings_WindowsAccent: Use a cor de destaque do Windows
 Settings_HelpTranslate: "[Ajudar a traduzir]"
 Cleaning_Header_StartMenuShortcuts: 'Atalhos para o Menu Inicial:'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "Ocorreu um erro de sintaxe (mais detalhes abaixo! E:"
 ThemesNotFound: "Não foi possível encontrar a pasta \"temas\" no diretório da conta do Switcher. Isto (especialmente Default.yaml) é necessário para que o software seja executado.\nVocê pode executar o Updater na pasta \"atualizador\" para verificar os arquivos e restaurar esses arquivos ausentes."
 Yes: "sim"
 No: "Não"
+NoDefault: No (Default)
 Ok: "Certo"
 Forget: Esquecer
 Notice: Observação
