@@ -112,6 +112,13 @@ namespace TcNo_Acc_Switcher_Client
             Height = AppSettings.WindowSize.Y;
             StateChanged += WindowStateChange;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
+
+            // Center:
+            if (AppSettings.Instance.StartCentered)
+            {
+                Left = (SystemParameters.PrimaryScreenWidth / 2) - (Width / 2);
+                Top = (SystemParameters.PrimaryScreenHeight / 2) - (Height / 2);
+            }
         }
 
         private async void MView2_OnInitialised(object sender, EventArgs e)

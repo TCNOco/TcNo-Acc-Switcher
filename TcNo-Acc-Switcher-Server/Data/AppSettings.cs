@@ -89,6 +89,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("ShownMinimizedNotification", Order = 7)]
         public bool ShownMinimizedNotification { get => _instance._shownMinimizedNotification; set => _instance._shownMinimizedNotification = value; }
 
+        private bool _startCentered;
+
+        [JsonProperty("StartCentered", Order = 8)]
+        public bool StartCentered { get => _instance._startCentered; set => _instance._startCentered = value; }
+
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
         private bool _startMenu;
@@ -102,6 +107,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private string _selectedStylesheet;
         [JsonIgnore] public string SelectedStylesheet { get => _instance._selectedStylesheet; set => _instance._selectedStylesheet = value; }
+
 
         /// <summary>
         /// Some features only work in the 'official browser' such as picking files, this will need to be adjusted for pure-web users, using just the server and another browser.
