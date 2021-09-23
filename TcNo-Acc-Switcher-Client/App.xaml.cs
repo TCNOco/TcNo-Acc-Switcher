@@ -324,19 +324,36 @@ namespace TcNo_Acc_Switcher_Client
                 // Try to show from tray, as user may not know it's hidden there.
                 string text;
                 if (!Globals.BringToFront())
-                    text = "Another TcNo Account Switcher instance has been detected." + Environment.NewLine +
-                           "[Something wrong? Hold Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]";
-                else
-                    text = "TcNo Account Switcher was running." + Environment.NewLine +
-                           "I've brought it to the top." + Environment.NewLine +
-                           "Make sure to check your Windows Task Tray for the icon :)" + Environment.NewLine +
-                           "- You can exit it from there too" + Environment.NewLine + Environment.NewLine +
-                           "[Something wrong? Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]";
+                {
+	                text = "Another TcNo Account Switcher instance has been detected." + Environment.NewLine +
+	                       "[Something wrong? Hold Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]";
 
-                _ = MessageBox.Show(text, "TcNo Account Switcher Notice", MessageBoxButton.OK,
-                    MessageBoxImage.Information,
-                    MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
-                Environment.Exit(1056); // 1056	An instance of the service is already running.
+                    _ = MessageBox.Show(text, "TcNo Account Switcher Notice", MessageBoxButton.OK,
+		                MessageBoxImage.Information,
+		                MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+	                Environment.Exit(1056); // 1056	An instance of the service is already running.
+                }
+                else
+                {
+	                if (!AppSettings.Instance.ShownMinimizedNotification)
+	                {
+		                text = "TcNo Account Switcher was running." + Environment.NewLine +
+		                       "I've brought it to the top." + Environment.NewLine +
+		                       "Make sure to check your Windows Task Tray for the icon :)" + Environment.NewLine +
+		                       "- You can exit it from there too" + Environment.NewLine + Environment.NewLine +
+		                       "[Something wrong? Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]" + Environment.NewLine + Environment.NewLine +
+		                       "This message only shows once.";
+
+                        _ = MessageBox.Show(text, "TcNo Account Switcher Notice", MessageBoxButton.OK,
+			                MessageBoxImage.Information,
+			                MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+
+		                AppSettings.Instance.ShownMinimizedNotification = true;
+		                AppSettings.Instance.SaveSettings();
+	                }
+
+	                Environment.Exit(1056); // 1056	An instance of the service is already running.
+                }
             }
             catch (AbandonedMutexException)
             {

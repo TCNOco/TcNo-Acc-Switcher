@@ -18,6 +18,9 @@
 @using System.Runtime.InteropServices
 @using TcNo_Acc_Switcher_Globals
 
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+
 <div id="window-title">
     <div class="resizeTop"></div>
     <button id="btnBack">
@@ -35,24 +38,24 @@
         <div id="window-controls">
             <button id="btnMin">
                 <div class="resizeTop"></div>
-                <img class="icon" srcset="img/icons/min-w-10.png 1x, img/icons/min-w-12.png 1.25x, img/icons/min-w-15.png 1.5x, img/icons/min-w-15.png 1.75x, img/icons/min-w-20.png 2x, img/icons/min-w-20.png 2.25x, img/icons/min-w-24.png 2.5x, img/icons/min-w-30.png 3x, img/icons/min-w-30.png 3.5x" draggable="false" alt="-"/>
+                <img class="icon" srcset="img/icons/min-w-10.png 1x, img/icons/min-w-12.png 1.25x, img/icons/min-w-15.png 1.5x, img/icons/min-w-15.png 1.75x, img/icons/min-w-20.png 2x, img/icons/min-w-20.png 2.25x, img/icons/min-w-24.png 2.5x, img/icons/min-w-30.png 3x, img/icons/min-w-30.png 3.5x" draggable="false" alt="-" />
             </button>
 
             <button id="btnMax">
                 <div class="resizeTop"></div>
-                <img class="icon" srcset="img/icons/max-w-10.png 1x, img/icons/max-w-12.png 1.25x, img/icons/max-w-15.png 1.5x, img/icons/max-w-15.png 1.75x, img/icons/max-w-20.png 2x, img/icons/max-w-20.png 2.25x, img/icons/max-w-24.png 2.5x, img/icons/max-w-30.png 3x, img/icons/max-w-30.png 3.5x" draggable="false" alt="M"/>
+                <img class="icon" srcset="img/icons/max-w-10.png 1x, img/icons/max-w-12.png 1.25x, img/icons/max-w-15.png 1.5x, img/icons/max-w-15.png 1.75x, img/icons/max-w-20.png 2x, img/icons/max-w-20.png 2.25x, img/icons/max-w-24.png 2.5x, img/icons/max-w-30.png 3x, img/icons/max-w-30.png 3.5x" draggable="false" alt="M" />
             </button>
 
             <button id="btnRestore">
                 <div class="resizeTop"></div>
-                <img class="icon" srcset="img/icons/restore-w-10.png 1x, img/icons/restore-w-12.png 1.25x, img/icons/restore-w-15.png 1.5x, img/icons/restore-w-15.png 1.75x, img/icons/restore-w-20.png 2x, img/icons/restore-w-20.png 2.25x, img/icons/restore-w-24.png 2.5x, img/icons/restore-w-30.png 3x, img/icons/restore-w-30.png 3.5x" draggable="false" alt="R"/>
+                <img class="icon" srcset="img/icons/restore-w-10.png 1x, img/icons/restore-w-12.png 1.25x, img/icons/restore-w-15.png 1.5x, img/icons/restore-w-15.png 1.75x, img/icons/restore-w-20.png 2x, img/icons/restore-w-20.png 2.25x, img/icons/restore-w-24.png 2.5x, img/icons/restore-w-30.png 3x, img/icons/restore-w-30.png 3.5x" draggable="false" alt="R" />
             </button>
 
             <button id="btnClose">
                 <div class="resizeTop"></div>
                 <div class="resizeTopRight"></div>
                 <div class="resizeRight"></div>
-                <img class="icon" srcset="img/icons/close-w-10.png 1x, img/icons/close-w-12.png 1.25x, img/icons/close-w-15.png 1.5x, img/icons/close-w-15.png 1.75x, img/icons/close-w-20.png 2x, img/icons/close-w-20.png 2.25x, img/icons/close-w-24.png 2.5x, img/icons/close-w-30.png 3x, img/icons/close-w-30.png 3.5x" draggable="false" alt="X"/>
+                <img class="icon" srcset="img/icons/close-w-10.png 1x, img/icons/close-w-12.png 1.25x, img/icons/close-w-15.png 1.5x, img/icons/close-w-15.png 1.75x, img/icons/close-w-20.png 2x, img/icons/close-w-20.png 2.25x, img/icons/close-w-24.png 2.5x, img/icons/close-w-30.png 3x, img/icons/close-w-30.png 3.5x" draggable="false" alt="X" />
             </button>
         </div>
     }
@@ -62,6 +65,7 @@
     protected override void OnInitialized()
     {
         AppData.Instance.OnChange += OnMyChangeHandler;
+        AppSettings.Instance.UsingTcNoBrowser = httpContextAccessor.HttpContext?.Request.Headers["User-Agent"][0].Contains("TcNo") == true;
     }
     private async void OnMyChangeHandler()
     {

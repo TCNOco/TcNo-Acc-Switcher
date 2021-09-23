@@ -65,7 +65,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private bool _streamerModeEnabled = true;
         [JsonProperty("StreamerModeEnabled", Order = 1)] public bool StreamerModeEnabled { get => _instance._streamerModeEnabled; set => _instance._streamerModeEnabled = value; }
 
-        private int _serverPort = 5000;
+        private int _serverPort = 1337;
         [JsonProperty("ServerPort", Order = 2)] public int ServerPort { get => _instance._serverPort; set => _instance._serverPort = value; }
 
         private Point _windowSize = new() { X = 800, Y = 450 };
@@ -84,6 +84,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("TrayMinimizeNotExit", Order = 6)]
         public bool TrayMinimizeNotExit { get => _instance._trayMinimizeNotExit; set => _instance._trayMinimizeNotExit = value; }
 
+        private bool _shownMinimizedNotification;
+
+        [JsonProperty("ShownMinimizedNotification", Order = 7)]
+        public bool ShownMinimizedNotification { get => _instance._shownMinimizedNotification; set => _instance._shownMinimizedNotification = value; }
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
@@ -104,12 +108,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         private bool _usingTcNoBrowser;
         [JsonIgnore] public bool UsingTcNoBrowser { get => _instance._usingTcNoBrowser; set => _instance._usingTcNoBrowser = value; }
-        [JSInvokable] public static void TcNoBrowser()
-        {
-            Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.TcNoBrowser]");
-            _instance._usingTcNoBrowser = true;
-        }
-
 
         [JsonIgnore]
         public string PlatformContextMenu =>

@@ -120,6 +120,8 @@ namespace TcNo_Acc_Switcher_Client
             {
                 var env = await CoreWebView2Environment.CreateAsync(null, Globals.UserDataFolder);
                 await MView2.EnsureCoreWebView2Async(env);
+                MView2.CoreWebView2.Settings.UserAgent = "TcNo 1.0";
+
                 MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
                 MViewAddForwarders();
                 MView2.NavigationStarting += UrlChanged;
@@ -128,8 +130,6 @@ namespace TcNo_Acc_Switcher_Client
                 MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
                 MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown").DevToolsProtocolEventReceived += ConsoleMessage;
                 _ = await MView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
-
-                MView2.CoreWebView2.Settings.UserAgent = "TcNo 1.0";
             }
             catch (WebView2RuntimeNotFoundException)
             {
