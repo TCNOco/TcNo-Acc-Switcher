@@ -8,7 +8,7 @@ Steam_CheckVac: Ellenőrizze a fiók VAC állapotát
 Steam_ShowLimited: Korlátozott állapot megjelenítése
 Steam_ShowAccUsername: Fiók felhasználónevének megjelenítése
 Steam_Tray_AccountName: Fiók neve [nem barát neve] megjelenítése
-Steam_OverrideDefaultState: "Override default login state:"
+Steam_OverrideDefaultState: "Az alapértelmezett bejelentkezési állapot felülbírálása:"
 Button_AddNew: Új hozzáadása
 Button_SaveCurrent: Save Current
 Button_SaveFile: Fájl mentése
@@ -46,7 +46,7 @@ Settings_Tray_StartWindows: Indítsa el a tálcát a Windows rendszerrel
 Settings_Tray_StartNow: '[Indítsa el a tálcát most]'
 Settings_CurrentStyle: Aktuális stílus
 Settings_Protocol: 'A TcNo: \\ protokoll engedélyezése (ajánlott)'
-Settings_StartCentered: Start program centered
+Settings_StartCentered: Indítsa el a programot középre
 Settings_WindowsAccent: Használja a Windows Kiemelő színét
 Settings_HelpTranslate: "[Segítség a fordításban]"
 Cleaning_Header_StartMenuShortcuts: 'A Start menü parancsikonjai:'
@@ -286,7 +286,7 @@ ThemeSyntaxAnd: "Szintaxishiba történt (további részletek alább)! ÉS:"
 ThemesNotFound: "Nem található a \"themes\" mappa a TcNo Account Switcher könyvtárában. Erre (különösen a Default.yaml) van szükség a szoftver futtatásához.\nA fájlok ellenőrzéséhez és a hiányzó fájlok helyreállításához futtathatja az Updater programot az \"updater\" mappában."
 Yes: "Igen"
 No: "Nem"
-NoDefault: No (Default)
+NoDefault: Nem (alapértelmezett)
 Ok: "rendben"
 Forget: Elfelejt
 Notice: Értesítés
