@@ -8,7 +8,7 @@ Steam_CheckVac: التحقق من حالة حساب VAC
 Steam_ShowLimited: إظهار حالة محدودة
 Steam_ShowAccUsername: إظهار اسم المستخدم
 Steam_Tray_AccountName: إظهار اسم الحساب [ليس اسم صديق]
-Steam_OverrideDefaultState: "Override default login state:"
+Steam_OverrideDefaultState: "تجاوز حالة تسجيل الدخول الافتراضية:"
 Button_AddNew: إضافة جديد
 Button_SaveCurrent: حفظ الحالي
 Button_SaveFile: حفظ الملف
@@ -46,7 +46,7 @@ Settings_Tray_StartWindows: ابدأ التيار مع ويندوز
 Settings_Tray_StartNow: '[ابدأ العمل الآن]'
 Settings_CurrentStyle: النمط الحالي
 Settings_Protocol: 'تمكين tcno:\\ بروتوكول (مستحسن)'
-Settings_StartCentered: Start program centered
+Settings_StartCentered: بدء البرنامج المتمحور
 Settings_WindowsAccent: استخدام لون أكسنت ويندوز
 Settings_HelpTranslate: "[المساعدة في الترجمة]"
 Cleaning_Header_StartMenuShortcuts: 'اختصارات لقائمة البدء:'
@@ -286,7 +286,7 @@ ThemeSyntaxAnd: "حدث خطأ في بناء الجملة (المزيد من ا�
 ThemesNotFound: "تعذر العثور على مجلد \"ثيمات\" في دليل TcNo حساب Switcher. هذا (خاصة Default.yaml) مطلوب لتشغيل هذا البرنامج.\nيمكنك تشغيل التحديث في مجلد \"تحديث\" للتحقق من الملفات، واستعادة هذه الملفات المفقودة."
 Yes: "نعم"
 No: "لا"
-NoDefault: No (Default)
+NoDefault: لا (افتراضي)
 Ok: "حسناً"
 Forget: نسيت
 Notice: إشعار
