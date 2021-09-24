@@ -8,7 +8,7 @@ Steam_CheckVac: Kontrollera VAC-status för kontot
 Steam_ShowLimited: Visa begränsad status
 Steam_ShowAccUsername: Visa kontoanvändarnamn
 Steam_Tray_AccountName: Visa kontonamn [inte vännamn]
-Steam_OverrideDefaultState: "Override default login state:"
+Steam_OverrideDefaultState: "Åsidosätt standardstatus för inloggning:"
 Button_AddNew: Lägg till ny
 Button_SaveCurrent: Spara nuvarande
 Button_SaveFile: Spara fil
@@ -46,7 +46,7 @@ Settings_Tray_StartWindows: Starta facket med Windows
 Settings_Tray_StartNow: '[Starta fack nu]'
 Settings_CurrentStyle: Nuvarande stil
 Settings_Protocol: 'Aktivera tcno:\\ protokoll (rekommenderas)'
-Settings_StartCentered: Start program centered
+Settings_StartCentered: Starta program centrerat
 Settings_WindowsAccent: Använd Windows Accent Färg
 Settings_HelpTranslate: "[Hjälp översätta]"
 Cleaning_Header_StartMenuShortcuts: 'Genvägar till Start-menyn:'
@@ -286,7 +286,7 @@ ThemeSyntaxAnd: "Ett syntaxfel påträffades (mer detaljer nedan)! AND:"
 ThemesNotFound: "Kunde inte hitta mappen \"themes\" i TcNo Account Switcher's katalog. Detta (speciellt Default.yaml) krävs för att denna programvara ska köras.\nDu kan köra Updater i mappen \"updater\" för att verifiera filer, och återställa dessa saknade filer."
 Yes: "Ja"
 No: "Nej"
-NoDefault: No (Default)
+NoDefault: Nej (standard)
 Ok: "Ok"
 Forget: Glöm
 Notice: Notis
