@@ -8,7 +8,7 @@ Steam_CheckVac: Έλεγχος λογαριασμού VAC κατάστασης
 Steam_ShowLimited: Εμφάνιση Περιορισμένης Κατάστασης
 Steam_ShowAccUsername: Εμφάνιση ονόματος χρήστη λογαριασμού
 Steam_Tray_AccountName: Εμφάνιση ονόματος λογαριασμού [δεν όνομα φίλου]
-Steam_OverrideDefaultState: "Override default login state:"
+Steam_OverrideDefaultState: "Παράκαμψη προεπιλεγμένης κατάστασης σύνδεσης:"
 Button_AddNew: Προσθήκη Νέου
 Button_SaveCurrent: Αποθήκευση Τρέχοντος
 Button_SaveFile: Αποθήκευση Αρχείου
@@ -46,7 +46,7 @@ Settings_Tray_StartWindows: Έναρξη πλαισίου με τα Windows
 Settings_Tray_StartNow: '[Έναρξη Τροφοδοσίας τώρα]'
 Settings_CurrentStyle: Τρέχον Στυλ
 Settings_Protocol: 'Ενεργοποίηση πρωτοκόλλου tcno:\\ (συνιστάται)'
-Settings_StartCentered: Start program centered
+Settings_StartCentered: Εκκίνηση προγράμματος στο κέντρο
 Settings_WindowsAccent: Χρησιμοποιήστε το χρώμα έμφασης των Windows
 Settings_HelpTranslate: "[Βοηθήστε στη μετάφραση]"
 Cleaning_Header_StartMenuShortcuts: 'Συντομεύσεις για το μενού έναρξης:'
@@ -286,7 +286,7 @@ ThemeSyntaxAnd: "Αντιμετωπίστηκε ένα συντακτικό σφ
 ThemesNotFound: "Δεν βρέθηκε ο φάκελος \"themes\" στο φάκελο TcNo Account Switcher. Αυτό (ειδικά το Default.yaml) είναι απαραίτητο για την εκτέλεση αυτού του λογισμικού.\nΜπορείτε να εκτελέσετε το Updater στο φάκελο \"updater\" για να επαληθεύσετε τα αρχεία, και να επαναφέρετε αυτά τα αρχεία που λείπουν."
 Yes: "Ναι"
 No: "Όχι"
-NoDefault: No (Default)
+NoDefault: Όχι (Προεπιλογή)
 Ok: "Εντάξει"
 Forget: Ξεχάστε
 Notice: Σημείωση
