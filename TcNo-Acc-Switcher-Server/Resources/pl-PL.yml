@@ -8,7 +8,7 @@ Steam_CheckVac: Sprawdź status VAC konta
 Steam_ShowLimited: Pokaż ograniczony status
 Steam_ShowAccUsername: Pokaż nazwę użytkownika konta
 Steam_Tray_AccountName: Pokaż nazwę konta [nie nazwę znajomego]
-Steam_OverrideDefaultState: "Override default login state:"
+Steam_OverrideDefaultState: "Zastąp domyślny stan logowania:"
 Button_AddNew: Dodaj nowe
 Button_SaveCurrent: Zapisz bieżący
 Button_SaveFile: Zapisz plik
@@ -46,7 +46,7 @@ Settings_Tray_StartWindows: Uruchom zasobnik z systemem Windows
 Settings_Tray_StartNow: '[Uruchom teraz zasobnik]'
 Settings_CurrentStyle: Bieżący styl
 Settings_Protocol: 'Włącz protokół tcno:\\ (zalecane)'
-Settings_StartCentered: Start program centered
+Settings_StartCentered: Program startowy wyśrodkowany
 Settings_WindowsAccent: Używaj kolorów wiodących Windowsa
 Settings_HelpTranslate: "[Pomóż tłumaczyć]"
 Cleaning_Header_StartMenuShortcuts: 'Skróty dla menu startowego:'
@@ -286,7 +286,7 @@ ThemeSyntaxAnd: "Napotkano błąd składni (więcej szczegółów poniżej)! AND
 ThemesNotFound: "Nie można znaleźć folderu \"themes\" w katalogu Przełącznika kont TcNo. Wymagane jest to (zwłaszcza Default.yaml) do ponownego uruchomienia oprogramowania\nMożesz uruchomić aktualizator w folderze \"updater\", aby sprawdzić pliki i przywrócić brakujące pliki."
 Yes: "Tak"
 No: "Nie"
-NoDefault: No (Default)
+NoDefault: Nie (domyślnie)
 Ok: "OK"
 Forget: Zapomnij
 Notice: Zawiadomienie
