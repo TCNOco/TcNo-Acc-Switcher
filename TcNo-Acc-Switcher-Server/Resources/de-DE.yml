@@ -8,7 +8,7 @@ Steam_CheckVac: VAC-Status prüfen
 Steam_ShowLimited: Begrenzten Status anzeigen
 Steam_ShowAccUsername: Account-Benutzername anzeigen
 Steam_Tray_AccountName: Accountnamen anzeigen [kein Freundesname]
-Steam_OverrideDefaultState: "Override default login state:"
+Steam_OverrideDefaultState: "Standard-Login-Status überschreiben:"
 Button_AddNew: Hinzufügen
 Button_SaveCurrent: Aktuellen speichern
 Button_SaveFile: Datei speichern
@@ -46,7 +46,7 @@ Settings_Tray_StartWindows: Tray mit Windows starten
 Settings_Tray_StartNow: '[Tray jetzt starten]'
 Settings_CurrentStyle: Aktuelles Design
 Settings_Protocol: 'tcno:\\ Protokoll Aktivieren (empfohlen)'
-Settings_StartCentered: Start program centered
+Settings_StartCentered: Programm zentriert starten
 Settings_WindowsAccent: Verwende die Windows-Akzentfarbe
 Settings_HelpTranslate: "[Beim Übersetzen helfen]"
 Cleaning_Header_StartMenuShortcuts: 'Verknüpfungen für das Startmenü:'
@@ -286,7 +286,7 @@ ThemeSyntaxAnd: "Ein Syntaxfehler ist aufgetreten (weitere Details unten) UND:"
 ThemesNotFound: "Konnte den Ordner \"Themes\" im Verzeichnis von TcNo Account Switcher nicht finden. Dies (insbesondere Default.yaml) wird benötigt, damit diese Software ausgeführt werden kann.\nDu kannst den Updater im \"Updater\" Ordner ausführen, um die Dateien zu überprüfen und die fehlenden Dateien wiederherzustellen."
 Yes: "Ja"
 No: "Nein"
-NoDefault: No (Default)
+NoDefault: Nein (Standard)
 Ok: "Ok"
 Forget: Vergessen
 Notice: Hinweis
