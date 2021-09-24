@@ -8,6 +8,7 @@ Steam_CheckVac: 檢查帳戶 VAC 狀態
 Steam_ShowLimited: 顯示受限狀態
 Steam_ShowAccUsername: 顯示帳戶用戶名
 Steam_Tray_AccountName: 顯示帳戶名稱 [不是朋友名稱]
+Steam_OverrideDefaultState: "覆蓋默認登錄狀態："
 Button_AddNew: 添新
 Button_SaveCurrent: 保存當前
 Button_SaveFile: 保存存檔
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: 使用 Windows 啟動托盤
 Settings_Tray_StartNow: '[現在開始托盤]'
 Settings_CurrentStyle: 當前風格
 Settings_Protocol: '啟用 tcno:\\ 協議（推薦）'
+Settings_StartCentered: 啟動程序居中
 Settings_WindowsAccent: 使用 Windows 強調色
 Settings_HelpTranslate: "[幫助翻譯]"
 Cleaning_Header_StartMenuShortcuts: '開始菜單快捷鍵：'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "遇到語法錯誤（更多詳情見下文）！和："
 ThemesNotFound: "在 TcNo Account Switcher 的目錄中找不到“themes”文件夾。這個（尤其是 Default.yaml）是這個軟件運行所必需的。\n您可以運行“更新程序”文件夾中的更新程序來驗證文件，並恢復這些丟失的文件。"
 Yes: "是的"
 No: "不"
+NoDefault: 否（默認）
 Ok: "好的"
 Forget: 忘記
 Notice: 注意

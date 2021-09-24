@@ -8,6 +8,7 @@ Steam_CheckVac: 检查帐户 VAC 状态
 Steam_ShowLimited: 显示受限状态
 Steam_ShowAccUsername: 显示帐户用户名
 Steam_Tray_AccountName: 显示帐户名称 [非好友名称]
+Steam_OverrideDefaultState: "覆盖默认登录状态："
 Button_AddNew: 新增
 Button_SaveCurrent: 保存当前
 Button_SaveFile: 保存文件
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: 随 Windows 启动托盘
 Settings_Tray_StartNow: '[立即启动托盘]'
 Settings_CurrentStyle: 当前样式
 Settings_Protocol: '启用 tcno:\\ 协议（推荐）'
+Settings_StartCentered: 启动程序时居中
 Settings_WindowsAccent: 使用 Windows 主题色
 Settings_HelpTranslate: "[帮助翻译]"
 Cleaning_Header_StartMenuShortcuts: '开始菜单的快捷方式：'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "遇到语法错误（更多细节如下） ！以及："
 ThemesNotFound: "无法在 TcNo 帐户切换器文件夹中找到“themes”主题文件夹。此软件必须有此文件夹（特别是 Default.yml）才能运行。\n您可以运行“updater”文件夹中的更新程序来验证文件，并恢复这些缺失的文件。"
 Yes: "是"
 No: "否"
+NoDefault: 无（默认）
 Ok: "好的"
 Forget: 忘记
 Notice: 通知

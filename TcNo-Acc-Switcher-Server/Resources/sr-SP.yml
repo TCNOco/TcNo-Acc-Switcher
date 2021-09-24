@@ -8,6 +8,7 @@ Steam_CheckVac: Проверите статус ВАЦ рачуна
 Steam_ShowLimited: Прикажи ограничени статус
 Steam_ShowAccUsername: Прикажи корисничко име за налог
 Steam_Tray_AccountName: Прикажи име рачуна [није име пријатеља]
+Steam_OverrideDefaultState: "Замени подразумевано стање пријављивања:"
 Button_AddNew: Додај нови
 Button_SaveCurrent: Саве Цуррент
 Button_SaveFile: Сними документ
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: Покрените фиоку са системом 
 Settings_Tray_StartNow: '[Покрените лежиште одмах]'
 Settings_CurrentStyle: Тренутни стил
 Settings_Protocol: 'Омогући тцно: \\ протокол (препоручено)'
+Settings_StartCentered: Покретање програма центрирано
 Settings_WindowsAccent: Користите Виндовс Аццент Цолор
 Settings_HelpTranslate: "[Помоћ при превођењу]"
 Cleaning_Header_StartMenuShortcuts: 'Пречице за мени Старт:'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "Дошло је до синтаксне грешке (више 
 ThemesNotFound: "Не могу да пронађем директоријум „теме“ у директоријуму ТцНо Аццоунт Свитцхер. Ово (посебно Дефаулт.иамл) је потребно за рад овог софтвера.\nМожете да покренете Упдатер у фасцикли „Упдатер“ да бисте верификовали датотеке и вратили ове датотеке које недостају."
 Yes: "да"
 No: "Не"
+NoDefault: Не (подразумевано)
 Ok: "У реду"
 Forget: Заборави
 Notice: Објава

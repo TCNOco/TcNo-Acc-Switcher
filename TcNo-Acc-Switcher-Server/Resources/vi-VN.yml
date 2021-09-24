@@ -8,6 +8,7 @@ Steam_CheckVac: Kiểm tra trạng thái VAC của tài khoản
 Steam_ShowLimited: Hiển thị Trạng thái Hạn chế
 Steam_ShowAccUsername: Hiển thị tên người dùng tài khoản
 Steam_Tray_AccountName: Hiển thị tên tài khoản [không phải tên bạn bè]
+Steam_OverrideDefaultState: "Ghi đè trạng thái đăng nhập mặc định:"
 Button_AddNew: Thêm mới
 Button_SaveCurrent: Lưu hiện tại
 Button_SaveFile: Lưu tập tin
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: Khởi động Khay với Windows
 Settings_Tray_StartNow: '[Bắt đầu Khay ngay bây giờ]'
 Settings_CurrentStyle: Phong cách hiện tại
 Settings_Protocol: 'Bật giao thức TcNo: \\ (Được khuyến nghị)'
+Settings_StartCentered: Bắt đầu chương trình làm trung tâm
 Settings_WindowsAccent: Sử dụng Màu nhấn Windows
 Settings_HelpTranslate: "[Giúp dịch]"
 Cleaning_Header_StartMenuShortcuts: 'Các phím tắt cho Start Menu:'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "Đã gặp lỗi cú pháp (thêm chi tiết bên dưới)! VÀ
 ThemesNotFound: "Không thể tìm thấy thư mục \"chủ đề\" trong thư mục của TcNo Account Switcher. Điều này (đặc biệt là Default.yaml) là bắt buộc để phần mềm này chạy.\nBạn có thể chạy Trình cập nhật trong thư mục \"Trình cập nhật\" để xác minh tệp và khôi phục các tệp bị thiếu này."
 Yes: "Đúng"
 No: "Không"
+NoDefault: Không (Mặc định)
 Ok: "đồng ý"
 Forget: Quên
 Notice: Để ý

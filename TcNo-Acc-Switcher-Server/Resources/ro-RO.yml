@@ -8,6 +8,7 @@ Steam_CheckVac: Verifică starea contului VAC
 Steam_ShowLimited: Arată stare limitată
 Steam_ShowAccUsername: Arată numele de utilizator
 Steam_Tray_AccountName: Arată numele contului [nu și numele prietenului]
+Steam_OverrideDefaultState: "Suprascrie starea implicită de autentificare:"
 Button_AddNew: Adaugă nou
 Button_SaveCurrent: Salvează Curentul
 Button_SaveFile: Salveaza fisier
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: Începe Tăierea cu Windows
 Settings_Tray_StartNow: '[Începe Tăierea acum]'
 Settings_CurrentStyle: Stil actual
 Settings_Protocol: 'Activează tcno:\\ protocol (recomandat)'
+Settings_StartCentered: Pornire program centrat
 Settings_WindowsAccent: Folosește culoarea de cent Windows
 Settings_HelpTranslate: "[Ajutor traduce]"
 Cleaning_Header_StartMenuShortcuts: 'Comenzi rapide pentru Meniul Pornire:'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "A apărut o eroare de sintaxă (mai multe detalii mai jos)! ȘI
 ThemesNotFound: "Nu s-a putut găsi dosarul \"teme\" în directorul TcNo Account Switcher. Acest lucru (în special implicit.yaml) este necesar pentru ca acest software să ruleze.\nPuteți rula actualizatorul în dosarul \"updater\" pentru a verifica fișierele, și pentru a restaura fișierele lipsă."
 Yes: "Da"
 No: "Nr"
+NoDefault: Nu (implicit)
 Ok: "Ok"
 Forget: Uită
 Notice: Notificare

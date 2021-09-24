@@ -8,6 +8,7 @@ Steam_CheckVac: Tjek konto VAC status
 Steam_ShowLimited: Vis Begrænset Status
 Steam_ShowAccUsername: Vis kontobrugernavn
 Steam_Tray_AccountName: Vis kontonavn [ikke vennenavn]
+Steam_OverrideDefaultState: "Tilsidesæt standard login tilstand:"
 Button_AddNew: Tilføj Ny
 Button_SaveCurrent: Gem Nuværende
 Button_SaveFile: Gem Fil
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: Start bakke med Windows
 Settings_Tray_StartNow: '[Start bakke nu]'
 Settings_CurrentStyle: Nuværende Stil
 Settings_Protocol: 'Aktivér tcno:\\ protocol (anbefales)'
+Settings_StartCentered: Start program centreret
 Settings_WindowsAccent: Brug Windows Accent Colour
 Settings_HelpTranslate: "[Hjælp oversætte]"
 Cleaning_Header_StartMenuShortcuts: 'Genveje til startmenuen:'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "En syntaksfejl blev fundet (flere detaljer nedenfor)! OG:"
 ThemesNotFound: "Kunne ikke finde mappen \"themes\" i TcNo Account Switchers mappe. Dette (især Default.yaml) er påkrævet for at denne software skal køre.\nDu kan køre Updater i \"updater\" mappen for at verificere filer, og gendanne disse manglende filer."
 Yes: "Ja"
 No: "Nej"
+NoDefault: Nej (Standard)
 Ok: "Ok"
 Forget: Glem
 Notice: Bemærk

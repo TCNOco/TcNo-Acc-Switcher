@@ -8,6 +8,7 @@ Steam_CheckVac: Gaan die rekening se VAC-status na
 Steam_ShowLimited: Toon beperkte status
 Steam_ShowAccUsername: Toon rekeninggebruikernaam
 Steam_Tray_AccountName: Wys rekeningnaam [nie vriendnaam nie]
+Steam_OverrideDefaultState: "Oorheers die standaard aanmeldtoestand:"
 Button_AddNew: Voeg nuwe
 Button_SaveCurrent: Stoor stroom
 Button_SaveFile: Stoor die lêer
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: Begin Tray met Windows
 Settings_Tray_StartNow: '[Begin laai nou]'
 Settings_CurrentStyle: Huidige styl
 Settings_Protocol: 'Aktiveer TcNo: \\ protokol (aanbeveel)'
+Settings_StartCentered: Begin program gesentreer
 Settings_WindowsAccent: Gebruik die Windows-aksentkleur
 Settings_HelpTranslate: "[Help vertaal]"
 Cleaning_Header_StartMenuShortcuts: 'Kortpaaie vir die Start Menu:'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "'N Sintaksisfout is opgedoen (meer besonderhede hieronder)! EN:
 ThemesNotFound: "Kon nie die \"temas\" -map in die TcNo Account Switcher-gids vind nie. Dit (veral Default.yaml) is nodig om hierdie sagteware te laat werk.\nU kan die Updater in die \"updater\" -map uitvoer om lêers te verifieer en hierdie ontbrekende lêers te herstel."
 Yes: "Ja"
 No: "Geen"
+NoDefault: Nee (verstek)
 Ok: "OK"
 Forget: Vergeet
 Notice: Let op

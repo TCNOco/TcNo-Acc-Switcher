@@ -8,6 +8,7 @@ Steam_CheckVac: Controlla lo stato VAC del profilo
 Steam_ShowLimited: Mostra Stato Limitato
 Steam_ShowAccUsername: Mostra nome utente del profilo
 Steam_Tray_AccountName: Mostra il nome del profilo [non il nome amico]
+Steam_OverrideDefaultState: "Sovrascrivi stato di accesso predefinito:"
 Button_AddNew: Aggiungi Nuovo
 Button_SaveCurrent: Salva Corrente
 Button_SaveFile: Salva File
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: Avvia Area di Notifica con Windows
 Settings_Tray_StartNow: '[Avvia ora Area di Notifica]'
 Settings_CurrentStyle: Stile Corrente
 Settings_Protocol: 'Abilita il protocollo tcno:\\ (Consigliato)'
+Settings_StartCentered: Avvia programma centrato
 Settings_WindowsAccent: Usa il Colore Secondario di Windows
 Settings_HelpTranslate: "[Aiuta a tradurre]"
 Cleaning_Header_StartMenuShortcuts: 'Scorciatoie per il Menu Iniziale:'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "Si è verificato un errore di sintassi (ulteriori dettagli sott
 ThemesNotFound: "Impossibile trovare la cartella \"themes\" nella cartella del Selettore di Profili di TcNo. Questa (specialmente Default.yaml) è necessaria per l'esecuzione di questo software.\nPuoi eseguire l'Updater nella cartella \"updater\" per verificare i file e ripristinare quelli mancanti."
 Yes: "Sì"
 No: "No"
+NoDefault: No (predefinito)
 Ok: "OK"
 Forget: Dimentica
 Notice: Avviso

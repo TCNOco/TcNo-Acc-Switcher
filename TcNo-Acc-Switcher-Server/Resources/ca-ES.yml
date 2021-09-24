@@ -8,6 +8,7 @@ Steam_CheckVac: Comproveu l'estat de VAC del compte
 Steam_ShowLimited: Mostra l'estat limitat
 Steam_ShowAccUsername: Mostra el nom d'usuari del compte
 Steam_Tray_AccountName: Mostra el nom del compte [nom d'amic no]
+Steam_OverrideDefaultState: "Substitueix l'estat d'inici de sessió predeterminat:"
 Button_AddNew: Afegir nou
 Button_SaveCurrent: Desa actual
 Button_SaveFile: Guardar arxiu
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: Inicieu la safata amb Windows
 Settings_Tray_StartNow: '[Inicieu la safata ara]'
 Settings_CurrentStyle: Estil actual
 Settings_Protocol: 'Activa el protocol TcNo: \\ (recomanat)'
+Settings_StartCentered: Inicia el programa centrat
 Settings_WindowsAccent: Utilitzeu el Windows Accent Color
 Settings_HelpTranslate: "[Ajuda a traduir]"
 Cleaning_Header_StartMenuShortcuts: 'Dreceres per al menú Inici:'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "S'ha produït un error de sintaxi (més detalls a continuació)
 ThemesNotFound: "No s'ha pogut trobar la carpeta \"temes\" al directori de TcNo Account Switcher. Això (especialment Default.yaml) és necessari perquè aquest programari s'executi.\nPodeu executar l'actualitzador a la carpeta \"actualitzador\" per verificar els fitxers i restaurar aquests fitxers que falten."
 Yes: "Sí"
 No: "No"
+NoDefault: No (per defecte)
 Ok: "D'acord"
 Forget: Oblida't
 Notice: Avís

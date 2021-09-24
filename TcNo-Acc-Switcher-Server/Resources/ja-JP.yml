@@ -8,6 +8,7 @@ Steam_CheckVac: アカウントVACの状態を確認
 Steam_ShowLimited: 限定ステータスを表示
 Steam_ShowAccUsername: アカウントのユーザー名を表示
 Steam_Tray_AccountName: アカウント名を表示 [友達名ではありません]
+Steam_OverrideDefaultState: "デフォルトのログイン状態を上書き:"
 Button_AddNew: 新規追加
 Button_SaveCurrent: 現在の保存
 Button_SaveFile: ファイルを保存
@@ -45,6 +46,7 @@ Settings_Tray_StartWindows: Windowsでトレイを開始
 Settings_Tray_StartNow: '[今すぐトレイを開始]'
 Settings_CurrentStyle: 現在のスタイル
 Settings_Protocol: 'tcno:\\プロトコルを有効にする (推奨)'
+Settings_StartCentered: プログラムを中心に開始
 Settings_WindowsAccent: Windowsアクセントカラーを使用する
 Settings_HelpTranslate: "format@@0"
 Cleaning_Header_StartMenuShortcuts: 'format@@0メニューのショートカット:'
@@ -284,6 +286,7 @@ ThemeSyntaxAnd: "構文エラーが発生しました(詳細は以下をご覧�
 ThemesNotFound: "TcNo Account Switcherのディレクトリに「themes」フォルダが見つかりませんでした。このソフトウェアを実行するには（特にDefault.yaml）必要です。\nUpdaterを「updater」フォルダで実行してファイルを確認し、これらのファイルを復元することができます。"
 Yes: "はい"
 No: "いいえ"
+NoDefault: (デフォルト)
 Ok: "OK"
 Forget: 忘れた
 Notice: お知らせ
