@@ -216,11 +216,11 @@ int main()
         const string w_runtime = "https://go.microsoft.com/fwlink/p/?LinkId=2124703",
             w_runtime_local = runtime_folder + "MicrosoftEdgeWebview2Setup.exe",
             w_runtime_name = "Microsoft WebView2 Runtime",
-            d_runtime = "https://dotnetcli.azureedge.net/dotnet/WindowsDesktop/5.0.7/windowsdesktop-runtime-5.0.7-win-x64.exe",
-            d_runtime_local = runtime_folder + "windowsdesktop-runtime-5.0.7-win-x64.exe",
+            d_runtime = "https://dotnetcli.azureedge.net/dotnet/WindowsDesktop/5.0.10/windowsdesktop-runtime-5.0.10-win-x64.exe",
+            d_runtime_local = runtime_folder + "windowsdesktop-runtime-5.0.10-win-x64.exe",
             d_runtime_name = "Microsoft .NET 5 Desktop Runtime",
-            a_runtime = "https://dotnetcli.azureedge.net/dotnet/aspnetcore/Runtime/5.0.7/aspnetcore-runtime-5.0.7-win-x64.exe",
-            a_runtime_local = runtime_folder + "aspnetcore-runtime-5.0.7-win-x64.exe",
+            a_runtime = "https://dotnetcli.azureedge.net/dotnet/aspnetcore/Runtime/5.0.10/aspnetcore-runtime-5.0.10-win-x64.exe",
+            a_runtime_local = runtime_folder + "aspnetcore-runtime-5.0.10-win-x64.exe",
             a_runtime_name = "Downloading Microsoft ASP.NET Core 5.0 Runtime";
 
         if (!(CreateDirectoryA(runtime_folder.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError()))
