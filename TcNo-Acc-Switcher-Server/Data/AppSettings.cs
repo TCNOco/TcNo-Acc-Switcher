@@ -25,6 +25,7 @@ using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SharpScss;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
@@ -75,24 +76,25 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("Version", Order = 4)] public string Version => _instance._version;
 
         private SortedSet<string> _disabledPlatforms = new();
-
         [JsonProperty("DisabledPlatforms", Order = 5)]
         public SortedSet<string> DisabledPlatforms { get => _instance._disabledPlatforms; set => _instance._disabledPlatforms = value; }
 
         private bool _trayMinimizeNotExit;
-
         [JsonProperty("TrayMinimizeNotExit", Order = 6)]
         public bool TrayMinimizeNotExit { get => _instance._trayMinimizeNotExit; set => _instance._trayMinimizeNotExit = value; }
 
         private bool _shownMinimizedNotification;
-
         [JsonProperty("ShownMinimizedNotification", Order = 7)]
         public bool ShownMinimizedNotification { get => _instance._shownMinimizedNotification; set => _instance._shownMinimizedNotification = value; }
 
         private bool _startCentered;
-
         [JsonProperty("StartCentered", Order = 8)]
         public bool StartCentered { get => _instance._startCentered; set => _instance._startCentered = value; }
+
+        private string _activeTheme = "Default";
+        [JsonProperty("ActiveTheme")]
+        public string ActiveTheme { get => _instance._activeTheme; set => _instance._activeTheme = value; }
+
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
@@ -104,9 +106,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] public bool ProtocolEnabled { get => _instance._protocolEnabled; set => _instance._protocolEnabled = value; }
         private bool _trayStartup;
         [JsonIgnore] public bool TrayStartup { get => _instance._trayStartup; set => _instance._trayStartup = value; }
-
-        private string _selectedStylesheet;
-        [JsonIgnore] public string SelectedStylesheet { get => _instance._selectedStylesheet; set => _instance._selectedStylesheet = value; }
 
 
         /// <summary>
@@ -140,249 +139,26 @@ namespace TcNo_Acc_Switcher_Server.Data
             await AppData.ReloadPage();
         }
 
-
-        // Variables loaded from other files:
-        // To create this: Take a standard YAML stylesheet and convert it to JSON,
-        // Then replace:
-        // "  " with "  { "
-        // ",\r\n" with " },\r\n"
-        // ": " with ", "
-        // THEN DON'T FORGET TO ADD NEW ENTRIES INTO Shared\DynamicStylesheet.razor!
-        private readonly Dictionary<string, string> _defaultStylesheet = new()
-        {
-            { "name", "Default" },
-            { "selectionColor", "#402B00" },
-            { "selectionBackground", "#FFAA00" },
-            { "contextMenuBackground", "#14151E" },
-            { "contextMenuBackground-hover", "#1B2737" },
-            { "contextMenuLeftBorder-hover", "#364E6E" },
-            { "contextMenuTextColor", "#B0BEC5" },
-            { "contextMenuTextColor-hover", "#FFFFFF" },
-            { "contextMenuBoxShadow", "none" },
-            { "headerbarBackground", "#14151E" },
-            { "headerbarTCNOFill", "white" },
-            { "windowControlsBackground", "#14151E" },
-            { "windowControlsBackground-hover", "rgba(255,255,255,0.1)" },
-            { "windowControlsBackground-active", "rgba(255,255,255,0.2)" },
-            { "windowControlsCloseBackground", "#E81123" },
-            { "windowControlsCloseBackground-active", "#F1707A" },
-            { "windowTitleColor", "white" },
-            { "footerBackground", "#222" },
-            { "footerColor", "#DDD" },
-            { "footerButtonIcon-Fill", "white" },
-            { "footerIcoSettings-Fill", "white" },
-            { "footerIcoQuestion-Fill", "white" },
-            { "scrollbarTrackBackground", "#1F202D" },
-            { "scrollbarThumbBackground", "#515164" },
-            { "scrollbarThumbBackground-hover", "#555" },
-            { "accountListItemWidth", "100px" },
-            { "accountListItemHeight", "135px" },
-            { "accountBackground-placeholder", "#28374E" },
-            { "accountBorder-placeholder", "2px dashed #2777A4" },
-            { "accountPColor", "#DDD" },
-            { "accountColor", "white" },
-            { "accountBackground-hover", "#28374E" },
-            { "accountBackground-checked", "#274560" },
-            { "accountBorder-hover", "#2777A4" },
-            { "accountBorder-checked", "#26A0DA" },
-            { "accountListBackground", "url(../img/noise.png), linear-gradient(90deg, #2e2f42, #28293A 100%)" },
-            { "mainBackground", "#28293A" },
-            { "defaultTextColor", "white" },
-            { "linkColor", "#FFAA00" },
-            { "linkColor-hover", "#FFDD00" },
-            { "linkColor-active", "#CC7700" },
-            { "borderedItemBorderColor", "#888" },
-            { "borderedItemBorderColor-focus", "#888" },
-            { "borderedItemBorderColorBottom-focus", "#FFAA00" },
-            { "buttonBackground", "#333" },
-            { "buttonBackground-active", "#222" },
-            { "buttonBackground-hover", "#444" },
-            { "buttonBorder", "#888" },
-            { "buttonBorder-hover", "#888" },
-            { "buttonBorder-active", "#FFAA00" },
-            { "buttonColor", "white" },
-            { "checkboxBorder", "white" },
-            { "checkboxBorder-checked", "white" },
-            { "checkboxBackground", "#28293A" },
-            { "checkboxBackground-checked", "#FFAA00" },
-            { "inputBackground", "#212529" },
-            { "inputColor", "white" },
-            { "dropdownBackground", "#333" },
-            { "dropdownBorder", "#888" },
-            { "dropdownColor", "white" },
-            { "dropdownItemBackground-active", "#222" },
-            { "dropdownItemBackground-hover", "#444" },
-            { "listBackground", "#222" },
-            { "listBackgroundColor-checked", "#FFAA00" },
-            { "listColor", "white" },
-            { "listColor-checked", "white" },
-            { "listTextColor-before", "#FFAA00" },
-            { "listTextColor-before-checked", "#945300" },
-            { "listTextColor-after", "#3DFF89" },
-            { "listTextColor-after-checked", "#945300" },
-            { "settingsHeaderColor", "white" },
-            { "settingsHeaderHrBorder", "#BBB" },
-            { "modalBackground", "#00000055" },
-            { "modalFgBackground", "#28293A" },
-            { "modalInputBackground", "#212529" },
-            { "modalTCNOFill", "white" },
-            { "modalIcoDiscord-Fill", "white" },
-            { "modalIcoGitHub-Fill", "white" },
-            { "modalIcoNetworking-Fill", "white" },
-            { "modalIcoDoc-Fill", "white" },
-            { "modalFoundColor", "lime" },
-            { "modalFoundBackground", "green" },
-            { "modalNotFoundColor", "red" },
-            { "modalNotFoundBackground", "darkred" },
-            { "notification-color-dark-text", "white" },
-            { "notification-color-dark-border", "rgb(20, 20, 20)" },
-            { "notification-color-info", "rgb(3, 169, 244)" },
-            { "notification-color-info-light", "rgba(3, 169, 244, .25)" },
-            { "notification-color-info-lighter", "#17132C" },
-            { "notification-color-success", "rgb(76, 175, 80)" },
-            { "notification-color-success-light", "rgba(76, 175, 80, .25)" },
-            { "notification-color-success-lighter", "#17132C" },
-            { "notification-color-warning", "rgb(255, 152, 0)" },
-            { "notification-color-warning-light", "rgba(255, 152, 0, .25)" },
-            { "notification-color-warning-lighter", "#17132C" },
-            { "notification-color-error", "rgb(244, 67, 54)" },
-            { "notification-color-error-light", "rgba(244, 67, 54, .25)" },
-            { "notification-color-error-lighter", "#17132C" },
-            { "updateBarBackground", "#FFAA00" },
-            { "updateBarColor", "black" },
-            { "popupIconErrorFill", "red" },
-            { "battlenetIcoOWTank-Fill", "white" },
-            { "battlenetIcoOWDamage-Fill", "white" },
-            { "battlenetIcoOWSupport-Fill", "white" },
-            { "limited", "yellow" },
-            { "vac", "red" },
-            { "riotIcoLeague-Fill", "white" },
-            { "riotIcoRuneterra-Fill", "white" },
-            { "riotIcoValorant-Fill", "white" },
-            { "platformScreenBackground", "var(--accountListBackground)" },
-            { "platformBorderColor", "#FFAA00" },
-            { "platformFilter-Hover", "brightness(97%) saturate(1.10) contrast(102%)" },
-            { "platformFilter-Active", "brightness(95%) saturate(1.10)" },
-            { "platformFilterIcon-Hover", "brightness(97%) saturate(1.05) contrast(102%)" },
-            { "platformFilterIcon-Active", "brightness(95%) saturate(1.10)" },
-            { "platformTransform-Hover", "scale(1.025)" },
-            { "platformTransform-Active", "scale(0.98)" },
-            { "platformTransform-HoverAnimation-boxShadow-0", "0 0 0 0 rgba(255, 170, 0, 0.7)" },
-            { "platformTransform-HoverAnimation-boxShadow-70", "0 0 0 10px rgba(255, 170, 0, 0)" },
-            { "platformTransform-HoverAnimation-boxShadow-100", "0 0 0 10px rgba(255, 170, 0, 0)" },
-            { "platformTransform-HoverAnimation-transform-0", "scale(1)" },
-            { "platformTransform-HoverAnimation-transform-70", "scale(1.02)" },
-            { "platformTransform-HoverAnimation-transform-100", "scale(1)" },
-            { "icoBattleNetBG", "linear-gradient(0deg, rgba(31,37,48,1) 0%, rgba(31,37,48,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%)" },
-            { "icoBattleNetText-Fill", "none" },
-            { "icoBattleNetText-Stroke", "#00a5f8" },
-            { "icoBattleNetText-StrokeWidth", "8.33px" },
-            { "icoBattleNetFG-Fill", "#00a5f8" },
-            { "icoBattleNetFG-Stroke", "none" },
-            { "icoBattleNetFG-StrokeWidth", "0" },
-            { "icoBattleNetGlass-Fill", "rgba(255, 255, 255, 0.02)" },
-            { "icoDiscordBG", "linear-gradient(0deg, rgba(31,37,48,1) 0%, rgba(31,37,48,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%)" },
-            { "icoDiscordText-Fill", "none" },
-            { "icoDiscordText-Stroke", "#00a5f8" },
-            { "icoDiscordText-StrokeWidth", "8.33px" },
-            { "icoDiscordFG-Fill", "#00a5f8" },
-            { "icoDiscordFG-Stroke", "#000" },
-            { "icoDiscordFG-StrokeWidth", "0" },
-            { "icoDiscordGlass-Fill", "rgba(255, 255, 255, 0.02)" },
-            { "icoEpicBG", "linear-gradient(0deg, rgba(31,37,48,1) 0%, rgba(31,37,48,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%)" },
-            { "icoEpicText-Fill", "none" },
-            { "icoEpicText-Stroke", "#00a5f8" },
-            { "icoEpicText-StrokeWidth", "8.33px" },
-            { "icoEpicFG-Fill", "#00a5f8" },
-            { "icoEpicFG-Stroke", "#00a5f8" },
-            { "icoEpicFG-StrokeWidth", "50px" },
-            { "icoEpicGlass-Fill", "rgba(255, 255, 255, 0.02)" },
-            { "icoOriginBG", "linear-gradient(0deg, rgba(31,37,48,1) 0%, rgba(31,37,48,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%)" },
-            { "icoOriginText-Fill", "none" },
-            { "icoOriginText-Stroke", "#00a5f8" },
-            { "icoOriginText-StrokeWidth", "8.33px" },
-            { "icoOriginFG-Fill", "none" },
-            { "icoOriginFG-Stroke", "#00a5f8" },
-            { "icoOriginFG-StrokeWidth", "12.51px" },
-            { "icoOriginGlass-Fill", "rgba(255, 255, 255, 0.02)" },
-            { "icoRiotBG", "linear-gradient(0deg, rgba(31,37,48,1) 0%, rgba(31,37,48,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%)" },
-            { "icoRiotText-Fill", "none" },
-            { "icoRiotText-Stroke", "#00a5f8" },
-            { "icoRiotText-StrokeWidth", "8.33px" },
-            { "icoRiotFG-Fill", "none" },
-            { "icoRiotFG-Stroke", "#00a5f8" },
-            { "icoRiotFG-StrokeWidth", "12.51px" },
-            { "icoRiotGlass-Fill", "rgba(255, 255, 255, 0.02)" },
-            { "icoSteamBG", "linear-gradient(0deg, rgba(31,37,48,1) 0%, rgba(31,37,48,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%)" },
-            { "icoSteamText-Fill", "none" },
-            { "icoSteamText-Stroke", "#00a5f8" },
-            { "icoSteamText-StrokeWidth", "8.33px" },
-            { "icoSteamFG-Fill", "none" },
-            { "icoSteamFG-Stroke", "#00a5f8" },
-            { "icoSteamFG-StrokeWidth", "12.51px" },
-            { "icoSteamGlass-Fill", "rgba(255, 255, 255, 0.02)" },
-            { "icoUbisoftBG", "linear-gradient(0deg, rgba(31,37,48,1) 0%, rgba(31,37,48,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%)" },
-            { "icoUbisoftText-Fill", "none" },
-            { "icoUbisoftText-Stroke", "#00a5f8" },
-            { "icoUbisoftText-StrokeWidth", "8.33px" },
-            { "icoUbisoftFG-Fill", "none" },
-            { "icoUbisoftFG-Stroke", "#00a5f8" },
-            { "icoUbisoftFG-StrokeWidth", "12.51px" },
-            { "icoUbisoftGlass-Fill", "rgba(255, 255, 255, 0.02)" },
-            { "ace_editorBackground", "#141414" },
-            { "ace_editorColor", "#F8F8F8" },
-            { "ace_editor_gutterBackground", "#232323" },
-            { "ace_editor_gutterColor", "#E2E2E2" },
-            { "ace_editor_printBackground", "#232323" },
-            { "ace_editor_cursorColor", "#A7A7A7" },
-            { "ace_editor_multiselectBoxShadow", "0 0 3px 0px #141414" },
-            { "ace_editor_markerlayer_selectionBackground", "rgba(221, 240, 255, 0.20)" },
-            { "ace_editor_markerlayer_selectionBorderRadius", "0px" },
-            { "ace_editor_markerlayer_stepBackground", "rgb(102, 82, 0)" },
-            { "ace_editor_markerlayer_bracketBorder", "1px solid rgba(255, 255, 255, 0.25)" },
-            { "ace_editor_markerlayer_activeLineBackground", "rgba(255, 255, 255, 0.031)" },
-            { "ace_editor_markerlayer_selectedWordBorder", "1px solid rgba(221, 240, 255, 0.20)" },
-            { "ace_editor_markerlayer_selectedWordBorderRadius", "0px" },
-            { "ace_editor_gutterActiveLineBackground", "rgba(255, 255, 255, 0.031)" },
-            { "ace_editor_invisibleColor", "rgba(255, 255, 255, 0.25)" },
-            { "ace_editor_keywordMetaColor", "#CDA869" },
-            { "ace_editor_constantColor", "#CF6A4C" },
-            { "ace_editor_constantLanguageColor", "#CF6A4C" },
-            { "ace_editor_constantNumericColor", "#CF6A4C" },
-            { "ace_editor_constantCharacterColor", "#CF6A4C" },
-            { "ace_editor_constantCharacterEscapeColor", "#CF6A4C" },
-            { "ace_editor_constantOtherColor", "#CF6A4C" },
-            { "ace_editor_languageColor", "#CF6A4C" },
-            { "ace_editor_numericColor", "#CF6A4C" },
-            { "ace_editor_illegalColor", "#F8F8F8" },
-            { "ace_editor_illegalBackground", "rgba(86, 45, 86, 0.75)" },
-            { "ace_editor_deprecatedColor", "#D2A8A1" },
-            { "ace_editor_deprecatedBackground", "none" },
-            { "ace_editor_support", "#9B859D" },
-            { "ace_editor_foldBackground", "#AC885B" },
-            { "ace_editor_foldBorderColor", "#F8F8F8" },
-            { "ace_editor_supportFunctionColor", "#DAD085" },
-            { "ace_editor_supportClassColor", "#DAD085" },
-            { "ace_editor_supportTypeColor", "#DAD085" },
-            { "ace_editor_listColor", "#F9EE98" },
-            { "ace_editor_functionTagColor", "#AC885B" },
-            { "ace_editor_stringColor", "#8F9D6A" },
-            { "ace_editor_regexpColor", "#E9C062" },
-            { "ace_editor_commentColor", "#5F5A60" },
-            { "ace_editor_variableColor", "#7587A6" },
-            { "ace_editor_xmlpeColor", "#494949" },
-            { "ace_editor_indentguideBackground", "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWMQERFpYLC1tf0PAAgOAnPnhxyiAAAAAElFTkSuQmCC) right repeat-y" }
-        };
-
-        private Dictionary<string, string> _stylesheet;
-        [JsonIgnore] public Dictionary<string, string> Stylesheet { get => _instance._stylesheet; set => _instance._stylesheet = value; }
+        private string _stylesheet;
+        [JsonIgnore] public string Stylesheet { get => _instance._stylesheet; set => _instance._stylesheet = value; }
 
         private bool _windowsAccent;
         public bool WindowsAccent { get => _instance._windowsAccent; set => _instance._windowsAccent = value; }
 
+        private string _windowsAccentColor = "";
+        [JsonIgnore] public string WindowsAccentColor { get => _instance._windowsAccentColor; set => _instance._windowsAccentColor = value; }
+
+        private (float, float, float) _windowsAccentColorHsl = (0, 0, 0);
+        [JsonIgnore] public (float, float, float) WindowsAccentColorHsl { get => _instance._windowsAccentColorHsl; set => _instance._windowsAccentColorHsl = value; }
+        [JsonIgnore] public (int, int, int) WindowsAccentColorInt => GetAccentColor();
+
         // Constants
         [JsonIgnore] public readonly string SettingsFile = "WindowSettings.json";
-        [JsonIgnore] public readonly string StylesheetFile = "StyleSettings.yaml";
+        [JsonIgnore] private string StylesheetFile => Path.Join("themes", ActiveTheme, "style.css");
+        [JsonIgnore] private string StylesheetInfoFile => Path.Join("themes", ActiveTheme, "info.yaml");
+        private Dictionary<string, string> _stylesheetInfo;
+        [JsonIgnore] public Dictionary<string, string> StylesheetInfo { get => _instance._stylesheetInfo; set => _instance._stylesheetInfo = value; }
+
         [JsonIgnore] public bool StreamerModeTriggered;
 
         /// <summary>
@@ -470,7 +246,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <param name="swapTo">Stylesheet name (without .json) to copy and load</param>
         public async System.Threading.Tasks.Task SwapStylesheet(string swapTo)
         {
-            File.Copy($"themes\\{swapTo.Replace(' ', '_')}.yaml", StylesheetFile, true);
+            ActiveTheme = swapTo.Replace(" ", "_");
             try
             {
                 if (LoadStylesheetFromFile()) await AppData.ReloadPage();
@@ -489,43 +265,34 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         public bool LoadStylesheetFromFile()
         {
+#if DEBUG
+            if (true) // Always generate file in debug mode.
+#else
             if (!File.Exists(StylesheetFile))
+#endif
             {
-                if (File.Exists("themes\\Default.yaml"))
-                    File.Copy("themes\\Default.yaml", StylesheetFile, true);
-                else if (File.Exists(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml")))
-                    File.Copy(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml"), StylesheetFile);
+                // Check if SCSS file exists.
+                var scss = StylesheetFile.Replace("css", "scss");
+                if (File.Exists(scss))
+                {
+                    var convertedScss = Scss.ConvertFileToCss(scss, new ScssOptions() { InputFile = scss, OutputFile = StylesheetFile });
+                    // Convert from SCSS to CSS. The arguments are for "exception reporting", according to the SharpScss Git Repo.
+                    if (File.Exists(StylesheetFile)) File.Delete(StylesheetFile);
+                    File.WriteAllText(StylesheetFile, convertedScss.Css);
+
+                    if (File.Exists(StylesheetFile + ".map")) File.Delete(StylesheetFile + ".map");
+                    File.WriteAllText(StylesheetFile + ".map", convertedScss.SourceMap);
+                }
                 else
                 {
-                    throw new Exception(Lang["ThemesNotFound"]);
+                    ActiveTheme = "Default";
+
+                    if (!File.Exists(StylesheetFile))
+                        throw new Exception(Lang["ThemesNotFound"]);
                 }
             }
 
-            try
-            {
-                LoadStylesheet();
-            }
-            catch (YamlDotNet.Core.SyntaxErrorException e)
-            {
-                File.Copy(StylesheetFile, "StyleSettings_broken.yaml", true);
-                if (File.Exists("StyleSettings_ErrorInfo.txt")) File.Delete("StyleSettings_ErrorInfo.txt");
-                File.WriteAllText("StyleSettings_ErrorInfo.txt", e.ToString());
-
-                if (File.Exists("themes\\Default.yaml"))
-                    File.Copy("themes\\Default.yaml", StylesheetFile, true);
-                else if (File.Exists(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml")))
-                    File.Copy(Path.Join(Globals.AppDataFolder, "themes\\Default.yaml"), StylesheetFile, true);
-                else
-                {
-                    throw new Exception(Lang["ThemeSyntaxAnd"] + Environment.NewLine + Lang["ThemesNotFound"] + e);
-                }
-                return false;
-            }
-
-            // Get name of current stylesheet
-            GetCurrentStylesheet();
-            if (OperatingSystem.IsWindows() && WindowsAccent)
-                SetAccentColor();
+            LoadStylesheet();
 
             return true;
         }
@@ -534,114 +301,81 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             // Load new stylesheet
             var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-            var attempts = 0;
-            var text = Globals.ReadAllLines(StylesheetFile);
-            while (attempts <= text.Length)
-            {
-                try
-                {
-                    var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(string.Join(Environment.NewLine, text))));
-                    // Load default values, and copy in new values (Just in case some are missing)
-                    _instance._stylesheet = _instance._defaultStylesheet;
-                    var unchangedKeys = new List<string>(_instance._defaultStylesheet.Keys);
-                    if (dict != null)
-                        foreach (var (key, val) in dict)
-                        {
-                            _instance._stylesheet[key] = val;
-                            _ = unchangedKeys.Remove(key);
-                        }
-                    // Add new keys to file:
-                    List<string> newKeys = new();
-                    foreach (var key in unchangedKeys)
-                    {
-                        var value = _instance._stylesheet[key];
-                        if (value.Contains("#")) value = $"\"{value}\"";
-                        newKeys.Add(key + ": " + value);
-                    }
-                    // Write new lines to file
-                    if (newKeys.Count > 0)
-                    {
-                        newKeys.Insert(0, Environment.NewLine + "# -- NEW ITEMS [See default themes to see where they go] -- #");
-                        File.AppendAllLines(StylesheetFile, newKeys);
-                    }
-                    break;
-                }
-                catch (YamlDotNet.Core.SemanticErrorException e)
-                {
-                    // Check lines for common mistakes:
-                    var line = e.End.Line - 1;
-                    var currentLine = text[line];
-                    var foundIssue = false;
-                    // - Check for leading or trailing spaces:
-                    if (currentLine[0] == ' ' || currentLine[^1] == ' ')
-                    {
-                        currentLine = currentLine.Trim();
-                        foundIssue = true;
-                    }
+            Stylesheet = Globals.ReadAllText(StylesheetFile);
 
-                    // - Check if there is a colon and a space (required for it to work), add space if no space.
-                    if (currentLine.Contains(':') && currentLine[currentLine.IndexOf(':') + 1] != ' ')
-                    {
-                        currentLine = currentLine.Insert(currentLine.IndexOf(':') + 1, " ");
-                        foundIssue = true;
-                    }
+            // Load stylesheet info
+            string[] infoText = null;
+            if (File.Exists(StylesheetInfoFile)) infoText = Globals.ReadAllLines(StylesheetInfoFile);
 
-                    if (!foundIssue)
-                    {
-                        // ReSharper disable once RedundantAssignment
-                        attempts++;
+            if (infoText == null) return;
+            var newSheet = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(string.Join(Environment.NewLine, infoText))));
 
-                        // Comment out line:
-                        currentLine = $"# -- ERROR -- # {currentLine}";
-                    }
+            StylesheetInfo = newSheet;
 
-                    // Replace line and save new file
-                    if (text[line] != currentLine)
-                    {
-                        text[line] = currentLine;
-                        File.WriteAllLines(StylesheetFile, text);
-                    }
-
-                    if (attempts == text.Length)
-                    {
-                        // All 10 fix attempts have failed -> Copy in default file.
-                        if (File.Exists("themes\\Default.yaml"))
-                        {
-                            // Check if haven't already copied default file into the stylesheet file
-                            var curThemeHash = GeneralFuncs.GetFileMd5(StylesheetFile);
-                            var defaultThemeHash = GeneralFuncs.GetFileMd5("themes\\Default.yaml");
-                            if (curThemeHash != defaultThemeHash)
-                            {
-                                File.Copy("themes\\Default.yaml", StylesheetFile, true);
-                                attempts = text.Length - 1; // One last attempt -> This time loads default settings now in that file.
-                            }
-                        }
-                    }
-                }
-            }
+            if (OperatingSystem.IsWindows() && WindowsAccent) SetAccentColor();
         }
 
         /// <summary>
         /// Returns a list of Stylesheets in the Stylesheet folder.
         /// </summary>
-        /// <returns></returns>
         public string[] GetStyleList()
         {
-            var list = Directory.GetFiles("themes");
-            for (var i = 0; i < list.Length; i++)
+            var themeList = Directory.GetDirectories("themes");
+            for (var i = 0; i < themeList.Length; i++)
             {
-                var start = list[i].LastIndexOf("\\", StringComparison.Ordinal) + 1;
-                var end = list[i].IndexOf(".yaml", StringComparison.OrdinalIgnoreCase);
-                if (end == -1) end = 0;
-                list[i] = list[i][start..end].Replace('_', ' ');
+                var start = themeList[i].LastIndexOf("\\", StringComparison.Ordinal) + 1;
+                themeList[i] = themeList[i][start..].Replace('_', ' ');
             }
-            return list;
+            return themeList;
         }
+        private static (int, int, int) FromRgb(byte R, byte G, byte B)
+        {
+            // Adapted from: https://stackoverflow.com/a/4794649/5165437
+            var _R = (R / 255f);
+            var _G = (G / 255f);
+            var _B = (B / 255f);
 
-        /// <summary>
-        /// Gets the active stylesheet name
-        /// </summary>
-        public void GetCurrentStylesheet() => _instance._selectedStylesheet = _instance._stylesheet["name"];
+            var _Min = Math.Min(Math.Min(_R, _G), _B);
+            var _Max = Math.Max(Math.Max(_R, _G), _B);
+            var _Delta = _Max - _Min;
+
+            var H = (float)0;
+            var S = (float)0;
+            var L = (_Max + _Min) / 2.0f;
+
+            if (_Delta != 0)
+            {
+                if (L < 0.5f)
+                {
+                    S = _Delta / (_Max + _Min);
+                }
+                else
+                {
+                    S = _Delta / (2.0f - _Max - _Min);
+                }
+
+
+                if (Math.Abs(_R - _Max) < 0.01)
+                {
+                    H = (_G - _B) / _Delta;
+                }
+                else if (Math.Abs(_G - _Max) < 0.01)
+                {
+                    H = 2f + (_B - _R) / _Delta;
+                }
+                else if (Math.Abs(_B - _Max) < 0.01)
+                {
+                    H = 4f + (_R - _G) / _Delta;
+                }
+            }
+
+            // Rounding and formatting for CSS
+            H *= 60;
+            S *= 100;
+            L *= 100;
+
+            return ((int)Math.Round(H), (int)Math.Round(S), (int)Math.Round(L));
+        }
         #endregion
 
         public JObject GetJObject() => JObject.FromObject(this);
@@ -727,7 +461,10 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!WindowsAccent)
                 SetAccentColor(true);
             else
-                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestartAfterClose"], Lang["Toast_RestartAfterCloseTitle"], "toastarea");
+            {
+                WindowsAccentColor = "";
+                _ = AppData.ReloadPage();
+            }
         }
 
         [SupportedOSPlatform("windows")]
@@ -735,23 +472,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         [SupportedOSPlatform("windows")]
         private static void SetAccentColor(bool userInvoked)
         {
-            var accent = GetAccentColorHexString();
-            _instance._stylesheet["selectionBackground"] = accent;
-            _instance._stylesheet["linkColor"] = accent;
-            _instance._stylesheet["linkColor-hover"] = accent; // TODO: Make this lighter somehow
-            _instance._stylesheet["linkColor-active"] = accent; // TODO: Make this darker somehow
-            _instance._stylesheet["borderedItemBorderColorBottom-focus"] = accent;
-            _instance._stylesheet["buttonBorder-active"] = accent;
-            _instance._stylesheet["checkboxBackground-checked"] = accent;
-            _instance._stylesheet["listBackgroundColor-checked"] = accent;
-            _instance._stylesheet["listTextColor-before"] = accent;
-            _instance._stylesheet["updateBarBackground"] = accent;
-            _instance._stylesheet["platformBorderColor"] = accent;
-
-            var accentColorIntString = GetAccentColorIntString();
-            _instance._stylesheet["platformTransform-HoverAnimation-boxShadow-0"] = $"0 0 0 0 rgba({accentColorIntString}, 0.7)";
-            _instance._stylesheet["platformTransform-HoverAnimation-boxShadow-70"] = $"0 0 0 10px rgba({accentColorIntString}, 0)";
-            _instance._stylesheet["platformTransform-HoverAnimation-boxShadow-100"] = $"0 0 0 10px rgba({accentColorIntString}, 0)";
+            Instance.WindowsAccentColor = GetAccentColorHexString();
+            var (r, g, b) = GetAccentColor();
+            Instance.WindowsAccentColorHsl = FromRgb(r, g, b);
 
             if (userInvoked)
                 _ = AppData.ReloadPage();
@@ -764,14 +487,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             (r, g, b) = GetAccentColor();
             byte[] rgb = { r, g, b };
             return '#' + BitConverter.ToString(rgb).Replace("-", string.Empty);
-        }
-
-        [SupportedOSPlatform("windows")]
-        public static string GetAccentColorIntString()
-        {
-            byte r, g, b;
-            (r, g, b) = GetAccentColor();
-            return Convert.ToInt32(r) + ", " + Convert.ToInt32(g) + ", " + Convert.ToInt32(b);
         }
 
         [SupportedOSPlatform("windows")]

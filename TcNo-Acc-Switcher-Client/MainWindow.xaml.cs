@@ -106,7 +106,7 @@ namespace TcNo_Acc_Switcher_Client
             MView2.Visibility = Visibility.Hidden;
             MView2.Visibility = Visibility.Visible;
 
-            MainBackground.Background = (Brush)new BrushConverter().ConvertFromString(AppSettings.Stylesheet["headerbarBackground"]);
+            MainBackground.Background = App.GetStylesheetColor("headerbarBackground", "#253340");
 
             Width = AppSettings.WindowSize.X;
             Height = AppSettings.WindowSize.Y;

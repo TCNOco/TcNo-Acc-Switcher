@@ -3,7 +3,7 @@
 /*
     * This file requiers compilation before it can be used in the final program.
     * If you're editing the source code, you might need one of the following to compile on build/save:
-    * 
+    *
     * Install Web Compiler into your Visual Studio (https://marketplace.visualstudio.com/items?itemName=MadsKristensen.WebCompiler)
     * [Source and more info: https://github.com/madskristensen/WebCompiler]
 */
@@ -11,13 +11,13 @@
 /* Buttons */
 button,
 .button {
-  background: var(--buttonBackground);
-  border-color: var(--buttonBorder);
+  background: #274560;
+  border-color: #274560;
   border-radius: 0;
   border-style: solid;
   border-width: 0.1em;
   box-shadow: none;
-  color: var(--buttonColor);
+  color: white;
   cursor: pointer;
   margin: 0 0.25em;
   padding: 0.25em 0.651em;
@@ -30,13 +30,13 @@ button,
 
   &:active,
   &:target {
-    background: var(--buttonBackground-active) !important;
-    border-color: var(--buttonBorder-active) !important;
+    background: #28374E !important;
+    border-color: var(--accent) !important;
   }
 
   &:hover {
-    background: var(--buttonBackground-hover);
-    border-color: var(--buttonBorder-hover);
+    background: #28374E;
+    border-color: #274560;
   }
   /* Button children */
   & span {
@@ -47,7 +47,7 @@ button,
     width: 1.5em;
 
     &.footerIcoInline {
-      fill: var(--footerButtonIcon-Fill);
+      fill: white;
       height: 1em;
       width: auto;
       margin: 0 2px 2px 2px;
@@ -57,8 +57,8 @@ button,
 }
 
 .show > .dropdown-toggle {
-  background: var(--buttonBackground-active) !important;
-  border-color: var(--buttonBorder-active) !important;
+  background: #28374E !important;
+  border-color: var(--accent) !important;
 }
 
 
@@ -88,8 +88,8 @@ button .caret {
   &-menu {
     padding: 0.5rem 0;
     border-style: solid;
-    background: var(--dropdownBackground);
-    border-color: var(--dropdownBorder);
+    background: #274560;
+    border-color: #274560;
     border-width: 0.1em;
     -webkit-box-shadow: 0 0 15px 3px #000;
     -webkit-box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
@@ -101,20 +101,20 @@ button .caret {
 
   &-item {
     padding: 0.5rem 1rem;
-    color: var(--dropdownColor);
+    color: white;
 
     &.active,
     &:active,
     &:focus,
     &:target {
-      color: var(--dropdownColor);
-      background: var(--dropdownItemBackground-active) !important;
+      color: white;
+      background: #28374E !important;
     }
 
     &:hover {
       cursor: pointer;
-      color: var(--dropdownColor);
-      background: var(--dropdownItemBackground-hover);
+      color: white;
+      background: #28374E;
     }
   }
 }
@@ -167,63 +167,63 @@ button .caret {
 
 /* Ace Editor */
 .ace_editor {
-  background: var(--ace_editorBackground);
-  color: var(--ace_editorColor);
+  background: #282a36;
+  color: #f8f8f2;
 
   & .ace_gutter {
-    background: var(--ace_editor_gutterBackground);
-    color: var(--ace_editor_gutterColor);
+    background: #282a36;
+    color: rgb(144,145,148);
   }
 
   & .ace_print-margin {
     width: 1px;
-    background: var(--ace_editor_printBackground);
+    background: #44475a;
   }
 
   & .ace_cursor {
-    color: var(--ace_editor_cursorColor);
+    color: #F8F8F0;
   }
 
   &.ace_multiselect .ace_selection.ace_start {
-    box-shadow: var(--ace_editor_multiselectBoxShadow);
-    border-radius: var(--ace_editor_markerlayer_selectionBorderRadius);
+    box-shadow: 0 0 3px 0px #282a36;
+    border-radius: 2px;
   }
 
   & .ace_marker-layer {
     & .ace_selection {
-      background: var(--ace_editor_markerlayer_selectionBackground);
+      background: #44475a;
     }
 
     & .ace_step {
-      background: var(--ace_editor_markerlayer_stepBackground);
+      background: rgb(198, 219, 174);
     }
 
     & .ace_bracket {
       margin: -1px 0 0 -1px;
-      border: var(--ace_editor_markerlayer_bracketBorder);
+      border: 1px solid #a29709;
     }
 
     & .ace_active-line {
-      background: var(--ace_editor_markerlayer_activeLineBackground);
+      background: #44475a;
     }
 
     & .ace_selected-word {
-      border: var(--ace_editor_markerlayer_selectedWordBorder);
-      border-radius: var(--ace_editor_markerlayer_selectedWordBorderRadius);
+      border: 0px 0px 0px 1px #a29709;
+      border-radius: 3px;
     }
   }
 
   & .ace_gutter-active-line {
-    background: var(--ace_editor_gutterActiveLineBackground);
+    background: #44475a;
   }
 
   & .ace_invisible {
-    color: var(--ace_editor_invisibleColor);
+    color: #626680;
   }
 
   & .ace_keyword,
   & .ace_meta {
-    color: var(--ace_editor_keywordMetaColor);
+    color: #ff79c6;
   }
 
   & .ace_constant,
@@ -233,51 +233,51 @@ button .caret {
   & .ace_heading,
   & .ace_markup.ace_heading,
   & .ace_support.ace_constant {
-    color: var(--ace_editor_constantColor);
+    color: #CF6A4C;
   }
 
   & .ace_constant {
     &.ace_numeric {
-      color: var(--ace_editor_constantNumericColor);
+      color: #bd93f9;
     }
 
     &.ace_character {
-      color: var(--ace_editor_constantCharacterColor);
+      color: #bd93f9;
     }
 
     &.ace_character.ace_escape {
-      color: var(--ace_editor_constantCharacterEscapeColor);
+      color: #ff79c6;
     }
 
     &.ace_other {
-      color: var(--ace_editor_constantOtherColor);
+      color: #bd93f9;
     }
   }
 
   & .ace_language {
-    color: var(--ace_editor_languageColor);
+    color: #bd93f9;
   }
 
   & .ace_numeric {
-    color: var(--ace_editor_numericColor);
+    color: #bd93f9;
   }
 
   & .ace_invalid {
     &.ace_illegal {
-      color: var(--ace_editor_illegalColor);
-      background: var(--ace_editor_illegalBackground);
+      color: #F8F8F0;
+      background: #ff79c6;
     }
 
     &.ace_deprecated {
       text-decoration: underline;
       font-style: italic;
-      color: var(--ace_editor_deprecatedColor);
-      background: var(--ace_editor_deprecatedBackground);
+      color: #F8F8F0;
+      background: #F8F8F0;
     }
   }
 
   & .ace_support {
-    color: var(--ace_editor_support);
+    color: #9B859D;
 
     & .ace_function {
       color: var(--ace_editor_functionColor);
@@ -285,58 +285,58 @@ button .caret {
 
     & .ace_class {
       font-style: italic;
-      color: var(--ace_editor_supportClassColor);
+      color: #66d9ef;
     }
 
     & .ace_type {
       font-style: italic;
-      color: var(--ace_editor_supportTypeColor);
+      color: #66d9ef;
     }
   }
 
   & .ace_fold {
-    background: var(--ace_editor_foldBackground);
-    border-color: var(--ace_editor_foldBorderColor);
+    background: #50fa7b;
+    border-color: #f8f8f2;
   }
 
   & .ace_list,
   & .ace_markup.ace_list,
   & .ace_storage {
-    color: var(--ace_editor_listColor);
+    color: #F9EE98;
   }
 
   & .ace_entity.ace_name.ace_function,
   & .ace_meta.ace_tag {
-    color: var(--ace_editor_functionTagColor);
+    color: #AC885B;
   }
 
   & .ace_string {
-    color: var(--ace_editor_stringColor);
+    color: #f1fa8c;
   }
 
   & .ace_string.ace_regexp {
-    color: var(--ace_editor_regexpColor);
+    color: #E9C062;
   }
 
   & .ace_comment {
     font-style: italic;
-    color: var(--ace_editor_commentColor);
+    color: #6272a4;
   }
 
   & .ace_variable {
-    color: var(--ace_editor_variableColor);
+    color: #50fa7b;
 
     &.ace_parameter {
       font-style: italic;
-      color: var(--ace_editor_variableParameterColor);
+      color: #ffb86c;
     }
   }
 
   & .ace_xml-pe {
-    color: var(--ace_editor_xmlpeColor);
+    color: #494949;
   }
 
   & .ace_indent-guide {
-    background: var(--ace_editor_indentguideBackground);
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNgYGBgYHB3d/8PAAOIAdULw8qMAAAAAElFTkSuQmCC) right repeat-y;
   }
 }

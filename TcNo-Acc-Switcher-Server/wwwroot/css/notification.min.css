@@ -99,7 +99,7 @@
   .notification h4,
   .notification h5,
   .notification h6 {
-    color: var(--notification-color-dark-text);
+    color: white;
     font-weight: bold;
   }
 
@@ -142,7 +142,7 @@
     .notification .text-container button {
       margin-bottom: 0;
       padding: calc(var(--notification-padding) / 2) var(--notification-padding);
-      border: var(--notification-border-thickness) solid var(--notification-color-dark-border);
+      border: var(--notification-border-thickness) solid rgb(20, 20, 20);
       border-radius: var(--notification-border-radius);
       background-color: transparent;
       font-size: 0.9em;
@@ -173,7 +173,7 @@
     width: var(--notification-counter-size);
     height: var(--notification-counter-size);
     border-radius: 50%;
-    color: var(--notification-color-dark-text);
+    color: white;
     font-size: 0.85em;
     line-height: 100%;
   }
@@ -186,121 +186,121 @@
   }
 
   .notification.info {
-    border: solid var(--notification-border-std) var(--notification-color-info-light);
-    background: var(--notification-color-info-lighter);
+    border: solid var(--notification-border-std) rgba(3, 166, 240, .25);
+    background: #274560;
   }
 
     .notification.info > .close {
-      color: var(--notification-color-info);
+      color: rgb(3, 166, 240);
     }
 
     .notification.info > .counter {
-      border: solid var(--notification-border-std) var(--notification-color-info);
-      background: var(--notification-color-info) -lighter;
+      border: solid var(--notification-border-std) rgb(3, 166, 240);
+      background: rgb(3, 166, 240) -lighter;
     }
 
     .notification.info.top-border {
-      border-top: solid var(--notification-border-thick) var(--notification-color-info);
+      border-top: solid var(--notification-border-thick) rgb(3, 166, 240);
     }
 
     .notification.info.bottom-border {
-      border-bottom: solid var(--notification-border-thick) var(--notification-color-info);
+      border-bottom: solid var(--notification-border-thick) rgb(3, 166, 240);
     }
 
     .notification.info.left-border {
-      border-left: solid var(--notification-border-thick) var(--notification-color-info);
+      border-left: solid var(--notification-border-thick) rgb(3, 166, 240);
     }
 
     .notification.info.right-border {
-      border-right: solid var(--notification-border-thick) var(--notification-color-info);
+      border-right: solid var(--notification-border-thick) rgb(3, 166, 240);
     }
 
   .notification.success {
-    border: solid var(--notification-border-std) var(--notification-color-success-light);
-    background: var(--notification-color-success-lighter);
+    border: solid var(--notification-border-std) rgba(80, 250, 123, .25);
+    background: #274560;
   }
 
     .notification.success > .close {
-      color: var(--notification-color-success);
+      color: rgb(80, 250, 123);
     }
 
     .notification.success > .counter {
-      border: solid var(--notification-border-std) var(--notification-color-success);
-      background: var(--notification-color-success-lighter);
+      border: solid var(--notification-border-std) rgb(80, 250, 123);
+      background: #274560;
     }
 
     .notification.success.top-border {
-      border-top: solid var(--notification-border-thick) var(--notification-color-success);
+      border-top: solid var(--notification-border-thick) rgb(80, 250, 123);
     }
 
     .notification.success.bottom-border {
-      border-bottom: solid var(--notification-border-thick) var(--notification-color-success);
+      border-bottom: solid var(--notification-border-thick) rgb(80, 250, 123);
     }
 
     .notification.success.left-border {
-      border-left: solid var(--notification-border-thick) var(--notification-color-success);
+      border-left: solid var(--notification-border-thick) rgb(80, 250, 123);
     }
 
     .notification.success.right-border {
-      border-right: solid var(--notification-border-thick) var(--notification-color-success);
+      border-right: solid var(--notification-border-thick) rgb(80, 250, 123);
     }
 
   .notification.warning {
-    border: solid var(--notification-border-std) var(--notification-color-warning-light);
-    background: var(--notification-color-warning-lighter);
+    border: solid var(--notification-border-std) rgba(255, 184, 108, .25);
+    background: #274560;
   }
 
     .notification.warning > .close {
-      color: var(--notification-color-warning);
+      color: rgb(255, 184, 108);
     }
 
     .notification.warning > .counter {
-      border: solid var(--notification-border-std) var(--notification-color-warning);
-      background: var(--notification-color-warning-lighter);
+      border: solid var(--notification-border-std) rgb(255, 184, 108);
+      background: #274560;
     }
 
     .notification.warning.top-border {
-      border-top: solid var(--notification-border-thick) var(--notification-color-warning);
+      border-top: solid var(--notification-border-thick) rgb(255, 184, 108);
     }
 
     .notification.warning.bottom-border {
-      border-bottom: solid var(--notification-border-thick) var(--notification-color-warning);
+      border-bottom: solid var(--notification-border-thick) rgb(255, 184, 108);
     }
 
     .notification.warning.left-border {
-      border-left: solid var(--notification-border-thick) var(--notification-color-warning);
+      border-left: solid var(--notification-border-thick) rgb(255, 184, 108);
     }
 
     .notification.warning.right-border {
-      border-right: solid var(--notification-border-thick) var(--notification-color-warning);
+      border-right: solid var(--notification-border-thick) rgb(255, 184, 108);
     }
 
   .notification.error {
-    border: solid var(--notification-border-std) var(--notification-color-error-light);
-    background: var(--notification-color-error-lighter);
+    border: solid var(--notification-border-std) rgba(255, 85, 85, .25);
+    background: #274560;
   }
 
     .notification.error > .close {
-      color: var(--notification-color-error);
+      color: rgb(255, 85, 85);
     }
 
     .notification.error > .counter {
-      border: solid var(--notification-border-std) var(--notification-color-error);
-      background: var(--notification-color-error-lighter);
+      border: solid var(--notification-border-std) rgb(255, 85, 85);
+      background: #274560;
     }
 
     .notification.error.top-border {
-      border-top: solid var(--notification-border-thick) var(--notification-color-error);
+      border-top: solid var(--notification-border-thick) rgb(255, 85, 85);
     }
 
     .notification.error.bottom-border {
-      border-bottom: solid var(--notification-border-thick) var(--notification-color-error);
+      border-bottom: solid var(--notification-border-thick) rgb(255, 85, 85);
     }
 
     .notification.error.left-border {
-      border-left: solid var(--notification-border-thick) var(--notification-color-error);
+      border-left: solid var(--notification-border-thick) rgb(255, 85, 85);
     }
 
     .notification.error.right-border {
-      border-right: solid var(--notification-border-thick) var(--notification-color-error);
+      border-right: solid var(--notification-border-thick) rgb(255, 85, 85);
     }

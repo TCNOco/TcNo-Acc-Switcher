@@ -1,0 +1,50 @@
+﻿/*
+    Webcompiler doesn't like these values, so this needs to be in a seperate .css file.
+*/
+/* ReSharper disable CssNotResolved */
+
+:root {
+    --accent: HSL(40, 100%, 50%);
+    --accentHS: 40, 100%; /* "H, S%" from accent as HSL */
+    --accentL: 50%; /* "L" from accent HSL */
+    --accentInt: 255, 153, 0; /* accent as "r, g, b" */
+}
+
+.infoWindow .rightContent .linksList a,
+.fancyLink {
+    color: hsl(var(--accentHS), var(--accentL));
+    line-height: 24px;
+    cursor: pointer;
+    margin: 1px 0;
+}
+
+.infoWindow .rightContent .linksList a:hover,
+.fancyLink:hover {
+    color: hsl(var(--accentHS), calc(var(--accentL) - 5%));
+}
+
+.infoWindow .rightContent .linksList a:active,
+.fancyLink:active {
+    color: hsl(var(--accentHS), calc(var(--accentL) - 10%));
+}
+
+/* ---------------------------------------- */
+/*                ANIMATIONS                */
+/* ---------------------------------------- */
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(var(--accentInt), 0.7);
+    }
+
+    70% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 10px rgba(var(--accentInt), 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(var(--accentInt), 0);
+    }
+}

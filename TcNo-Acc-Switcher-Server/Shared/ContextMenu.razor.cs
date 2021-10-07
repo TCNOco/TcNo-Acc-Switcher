@@ -66,7 +66,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
                         // Add key and string item
                         var jArray = j.Value<JArray>();
                         if (jArray == null) return;
-                        _htmlOut += $"<li><a onclick=\"event.preventDefault();\">{s}</a>\n\t<ul class=\"submenu{submenuDepth}\">";
+                        _htmlOut += $"<li><a onclick=\"event.preventDefault();\">{s}</a>\n\t<ul class=\"submenu submenu{submenuDepth}\">";
                         submenuDepth++;
                         // Foreach
                         foreach (var jToken in jArray)

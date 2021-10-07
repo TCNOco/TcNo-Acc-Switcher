@@ -5,6 +5,13 @@
 
 /* v (Nessecary for disabling the red highlight saying vars not found [as they're added dynamically later]) v */
 /* ReSharper disable CssNotResolved */
+:root {
+  --resizeBarSize: 7px;
+  --accent: HSL(40, 100%, 50%);
+  --accentHS: 40, 100%;
+  --accentL: 50%;
+  --accentInt: 255, 153, 0; }
+
 html,
 body {
   font-family: 'Catamaran', sans-serif;
@@ -15,15 +22,15 @@ body {
   overflow-x: hidden; }
 
 html {
-  background: var(--headerbarBackground); }
+  background: #253340; }
 
 body {
-  background: var(--mainBackground); }
+  background: #0E1419; }
 
 .mainblock {
   width: 100%;
   min-height: 100%;
-  background: var(--mainBackground);
+  background: #0E1419;
   overflow-y: auto;
   overflow-x: auto; }
 
@@ -48,13 +55,6 @@ label {
   -ms-user-select: none;
   user-select: none; }
 
-::selection {
-  color: var(--selectionColor);
-  background: var(--selectionBackground); }
-
-:root {
-  --resizeBarSize: 7px; }
-
 .programMain {
   position: relative;
   width: calc(100% - (var(--resizeBarSize) * 2));
@@ -63,12 +63,12 @@ label {
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 10;
-  background: var(--platformScreenBackground); }
+  background: linear-gradient(90deg, #11181d, #0E1419 100%); }
 
 /* Based on https://github.com/binaryfunt/electron-seamless-titlebar-tutorial */
 .headerbar {
   z-index: 5;
-  background: var(--headerbarBackground);
+  background: #253340;
   position: relative;
   height: 32px;
   width: 100%;
@@ -78,7 +78,7 @@ label {
   height: 10px;
   margin: 12px;
   display: block;
-  fill: var(--headerbarTCNOFill); }
+  fill: white; }
 
 .updateBar {
   position: absolute;
@@ -86,8 +86,8 @@ label {
   width: 100%;
   height: 2rem;
   line-height: 2rem;
-  background: var(--updateBarBackground);
-  color: var(--updateBarColor);
+  background: var(--accent);
+  color: black;
   font-weight: 700;
   text-align: center;
   cursor: pointer;
@@ -124,7 +124,7 @@ label {
 
 #window-controls,
 #btnBack {
-  background: var(--windowControlsBackground); }
+  background: #253340; }
 
 #btnBack .resizeTop {
   width: 46px !important;
@@ -174,11 +174,11 @@ label {
 
 #window-controls button:hover,
 #btnBack:hover {
-  background: var(--windowControlsBackground-hover); }
+  background: #3B4853; }
 
 #window-controls button:active,
 #btnBack:active {
-  background: var(--windowControlsBackground-active); }
+  background: #3B4853; }
 
 /* Resize bars and corners */
 .resize {
@@ -189,7 +189,7 @@ label {
   .resizeTopLeft, .resizeTop, .resizeTopRight, .resizeRight, .resizeBottomRight, .resizeBottom, .resizeBottomLeft, .resizeLeft {
     -webkit-app-region: drag;
     position: absolute;
-    background: var(--headerbarBackground); }
+    background: #253340; }
   .resizeTop, .resizeTopLeft, .resizeTopRight {
     top: 0; }
   .resizeBottom, .resizeBottomLeft, .resizeBottomRight {
@@ -253,11 +253,11 @@ label {
 
 #btnClose:hover,
 #btnClose-modal:hover {
-  background: var(--windowControlsCloseBackground) !important; }
+  background: #D51426 !important; }
 
 #btnClose:active,
 #btnClose-modal:active {
-  background: var(--windowControlsCloseBackground-active) !important; }
+  background: #D51426 !important; }
 
 #btnClose:active .icon,
 #btnClose-modal:active .icon {
@@ -272,11 +272,11 @@ label {
 
 #window-title-modal {
   position: relative;
-  background: var(--headerbarBackground); }
+  background: #253340; }
 
 #window-title,
 #window-title-modal {
-  color: var(--windowTitleColor);
+  color: white;
   grid-column: 1;
   display: flex;
   align-items: center;
@@ -353,9 +353,9 @@ div.clearingLeft {
 div.clearingRight {
   word-break: break-word;
   overflow: auto;
-  background: var(--listBackground);
+  background: #0E1419;
   width: 40%;
-  border: solid var(--borderedItemBorderColor) 0.1em;
+  border: solid #888 0.1em;
   padding: 0.5em; }
 
 div.advancedClearingButtonCol {
@@ -385,34 +385,34 @@ div.advancedClearingButtonCol .buttoncol {
   margin-bottom: 2em; }
   .forgottenList select {
     overflow: auto;
-    background: var(--listBackground);
-    border: solid var(--borderedItemBorderColor) 0.1em;
-    color: var(--listColor);
+    background: #0E1419;
+    border: solid #888 0.1em;
+    color: white;
     width: 100%;
     padding: 0.5em; }
     .forgottenList select:focus {
-      border: solid var(--borderedItemBorderColor-focus) 0.1em; }
+      border: solid #888 0.1em; }
     .forgottenList select option {
       /*
           Workaround to set color BECAUSE YOU CAN'T SET TEXT COLOR?!
           This is for showing the arrow before, and the SteamID afterwards in a different color
       */ }
       .forgottenList select option:checked {
-        box-shadow: 0 0 10px 100px var(--listBackgroundColor-checked) inset;
-        color: var(--listColor-checked); }
+        box-shadow: 0 0 10px 100px var(--accent) inset;
+        color: white; }
         .forgottenList select option:checked::before {
-          color: var(--listTextColor-before-checked);
+          color: var(--accent);
           /* margin-left: 0.5em; */ }
         .forgottenList select option:checked::after {
           content: attr(visible-content);
-          color: var(--listTextColor-after-checked); }
+          color: #8BE9FD; }
       .forgottenList select option::before {
         content: ">";
-        color: var(--listTextColor-before);
+        color: var(--accent);
         margin-right: 0.5em; }
       .forgottenList select option::after {
         content: attr(visible-content);
-        color: var(--listTextColor-after); }
+        color: #8BE9FD; }
 
 .btn_RestoreSelected {
   margin-right: 1em !important;
@@ -433,17 +433,16 @@ div.advancedClearingButtonCol .buttoncol {
   display: table-cell;
   vertical-align: middle; }
 
-/* -------------------------------------------------
-	------------ PLATFORM ICONS SECTION ------------
-	------------------------------------------------
-*/
+/* ---------------------------------------- */
+/*          PLATFORM ICONS SECTION          */
+/* ---------------------------------------- */
 .platform_list_item {
   width: 20vw;
   max-width: calc(100vw / 4.106);
   display: inline-block;
   cursor: pointer;
   /* ReSharper disable once InvalidValue */
-  border: var(--platformBorderColor) 1px solid;
+  border: #8BE9FD 1px solid;
   margin: 10px;
   transition: all 100ms ease-in-out;
   transform: scale(1);
@@ -451,36 +450,24 @@ div.advancedClearingButtonCol .buttoncol {
   .platform_list_item svg .icoGlass {
     transition: 500ms all ease-in; }
   .platform_list_item:hover:not(:active) {
-    transform: var(--platformTransform-Hover);
-    filter: var(--platformFilter-Hover);
+    transform: scale(1.025);
+    filter: brightness(97%) saturate(1.1) contrast(102%);
     animation: pulse 2s infinite; }
   .platform_list_item:hover svg {
-    transform: var(--platformTransformIcon-Hover);
-    filter: var(--platformFilterIcon-Hover); }
+    filter: brightness(97%) saturate(1.05) contrast(102%); }
     .platform_list_item:hover svg .icoGlass {
       transform: scale(1.05); }
   .platform_list_item:active {
-    transform: var(--platformTransform-Active);
-    filter: var(--platformFilter-Active);
+    transform: scale(0.98);
+    filter: brightness(95%) saturate(1.05);
     box-shadow: none; }
     .platform_list_item:active svg {
-      transform: var(--platformTransformIcon-Active);
-      filter: var(--platformFilterIcon-Active); }
+      filter: brightness(95%) saturate(1.05); }
       .platform_list_item:active svg .icoGlass {
         transform: scale(0.9); }
 
-@keyframes pulse {
-  0% {
-    transform: var(--platformTransform-HoverAnimation-transform-0);
-    box-shadow: var(--platformTransform-HoverAnimation-boxShadow-0); }
-  70% {
-    transform: var(--platformTransform-HoverAnimation-transform-70);
-    box-shadow: var(--platformTransform-HoverAnimation-boxShadow-70); }
-  100% {
-    transform: var(--platformTransform-HoverAnimation-transform-100);
-    box-shadow: var(--platformTransform-HoverAnimation-boxShadow-100); } }
-
 .ico {
+  /* ALL */
   /* BattleNet */
   /* Discord */
   /* Epic Games */
@@ -488,141 +475,55 @@ div.advancedClearingButtonCol .buttoncol {
   /* Riot Games */
   /* Steam */
   /* Ubisoft */ }
-  .icoBattleNetBG {
-    background: var(--icoBattleNetBG); }
-  .icoBattleNetText {
-    fill: var(--icoBattleNetText-Fill);
-    stroke: var(--icoBattleNetText-Stroke);
-    stroke-width: var(--icoBattleNetText-StrokeWidth);
+  .icoBattleNetBG, .icoDiscordBG, .icoEpicBG, .icoOriginBG, .icoRiotBG, .icoSteamBG, .icoUbisoftBG {
+    background: linear-gradient(0deg, #253340 0%, #253340 0%, #202123 100%, #00d4ff 202123%); }
+  .icoBattleNetText, .icoDiscordText, .icoEpicText, .icoOriginText, .icoRiotText, .icoSteamText, .icoUbisoftText {
+    fill: none;
     stroke-linejoin: round;
-    stroke-miterlimit: 2; }
+    stroke-miterlimit: 2;
+    stroke-width: 8.33px;
+    stroke: #00a5f8; }
+  .icoBattleNetFG, .icoDiscordFG, .icoEpicFG, .icoOriginFG, .icoRiotFG, .icoSteamFG, .icoUbisoftFG {
+    stroke: #00a5f8; }
+  .icoBattleNetGlass, .icoDiscordGlass, .icoEpicGlass, .icoOriginGlass, .icoRiotGlass, .icoSteamGlass, .icoUbisoftGlass {
+    fill: rgba(255, 255, 255, 0.02); }
   .icoBattleNetFG {
-    fill: var(--icoBattleNetFG-Fill);
-    stroke: var(--icoBattleNetFG-Stroke);
-    stroke-width: var(--icoBattleNetFG-StrokeWidth); }
-  .icoBattleNetGlass {
-    fill: var(--icoBattleNetGlass-Fill); }
-  .icoDiscordBG {
-    background: var(--icoDiscordBG); }
-  .icoDiscordText {
-    fill: var(--icoDiscordText-Fill);
-    stroke: var(--icoDiscordText-Stroke);
-    stroke-width: var(--icoDiscordText-StrokeWidth);
-    stroke-linejoin: round;
-    stroke-miterlimit: 2; }
+    fill: #00a5f8;
+    stroke-width: 0; }
   .icoDiscordFG {
-    fill: var(--icoDiscordFG-Fill);
-    stroke: var(--icoDiscordFG-Stroke);
-    stroke-width: var(--icoDiscordFG-StrokeWidth); }
-  .icoDiscordGlass {
-    fill: var(--icoDiscordGlass-Fill); }
-  .icoEpicBG {
-    background: var(--icoEpicBG); }
-  .icoEpicText {
-    fill: var(--icoEpicText-Fill);
-    stroke: var(--icoEpicText-Stroke);
-    stroke-width: var(--icoEpicText-StrokeWidth);
-    stroke-linejoin: round;
-    stroke-miterlimit: 2; }
+    fill: #00a5f8;
+    stroke-width: 0; }
   .icoEpicFG {
-    fill: var(--icoEpicFG-Fill);
-    stroke: var(--icoEpicFG-Stroke);
-    stroke-width: var(--icoEpicFG-StrokeWidth); }
-  .icoEpicGlass {
-    fill: var(--icoEpicGlass-Fill); }
-  .icoOriginBG {
-    background: var(--icoOriginBG); }
-  .icoOriginText {
-    fill: var(--icoOriginText-Fill);
-    stroke: var(--icoOriginText-Stroke);
-    stroke-width: var(--icoOriginText-StrokeWidth);
-    stroke-linejoin: round;
-    stroke-miterlimit: 2; }
+    fill: #00a5f8;
+    stroke-width: 50px; }
   .icoOriginFG {
-    fill: var(--icoOriginFG-Fill);
-    stroke: var(--icoOriginFG-Stroke);
-    stroke-width: var(--icoOriginFG-StrokeWidth); }
-  .icoOriginGlass {
-    fill: var(--icoOriginGlass-Fill); }
-  .icoRiotBG {
-    background: var(--icoRiotBG); }
-  .icoRiotText {
-    fill: var(--icoRiotText-Fill);
-    stroke: var(--icoRiotText-Stroke);
-    stroke-width: var(--icoRiotText-StrokeWidth);
-    stroke-linejoin: round;
-    stroke-miterlimit: 2; }
+    fill: none;
+    stroke-width: 12.51px; }
   .icoRiotFG {
-    fill: var(--icoRiotFG-Fill);
-    stroke: var(--icoRiotFG-Stroke);
-    stroke-width: var(--icoRiotFG-StrokeWidth); }
-  .icoRiotGlass {
-    fill: var(--icoRiotGlass-Fill); }
-  .icoSteamBG {
-    background: var(--icoSteamBG); }
-  .icoSteamText {
-    fill: var(--icoSteamText-Fill);
-    stroke: var(--icoSteamText-Stroke);
-    stroke-width: var(--icoSteamText-StrokeWidth);
-    stroke-linejoin: round;
-    stroke-miterlimit: 2; }
+    fill: none;
+    stroke-width: 12.51px; }
   .icoSteamFG {
-    fill: var(--icoSteamFG-Fill);
-    stroke: var(--icoSteamFG-Stroke);
-    stroke-width: var(--icoSteamFG-StrokeWidth); }
-  .icoSteamGlass {
-    fill: var(--icoRiotGlass-Fill); }
-  .icoUbisoftBG {
-    background: var(--icoUbisoftBG); }
-  .icoUbisoftText {
-    fill: var(--icoUbisoftText-Fill);
-    stroke: var(--icoUbisoftText-Stroke);
-    stroke-width: var(--icoUbisoftText-StrokeWidth);
-    stroke-linejoin: round;
-    stroke-miterlimit: 2; }
+    fill: none;
+    stroke-width: 12.51px; }
   .icoUbisoftFG {
-    fill: var(--icoUbisoftFG-Fill);
-    stroke: var(--icoUbisoftFG-Stroke);
-    stroke-width: var(--icoUbisoftFG-StrokeWidth); }
-  .icoUbisoftGlass {
-    fill: var(--icoRiotGlass-Fill); }
+    fill: none;
+    stroke-width: 12.51px; }
 
 /* Modal icons */
-.modalIcoDiscord {
-  fill: var(--modalIcoDiscord-Fill); }
-
-.modalIcoGitHub {
-  fill: var(--modalIcoGitHub-Fill); }
-
-.modalIcoNetworking {
-  fill: var(--modalIcoNetworking-Fill); }
-
-.modalIcoDoc {
-  fill: var(--modalIcoDoc-Fill); }
+.modalIcoDiscord, .modalIcoGitHub, .modalIcoNetworking, .modalIcoDoc {
+  fill: white; }
 
 /* BattleNet icons */
-.battlenetIcoOWTank {
-  fill: var(--battlenetIcoOWTank-Fill); }
-
-.battlenetIcoOWDamage {
-  fill: var(--battlenetIcoOWDamage-Fill); }
-
-.battlenetIcoOWSupport {
-  fill: var(--battlenetIcoOWSupport-Fill); }
+.battlenetIcoOWTank, .battlenetIcoOWDamage, .battlenetIcoOWSupport {
+  fill: white; }
 
 /* Riot icons */
-.riotIcoLeague {
-  fill: var(--riotIcoLeague-Fill); }
-
-.riotIcoRuneterra {
-  fill: var(--riotIcoRuneterra-Fill); }
+.riotIcoLeague, .riotIcoRuneterra {
+  fill: #ffd755; }
 
 .riotIcoValorant {
-  fill: var(--riotIcoValorant-Fill); }
+  fill: #ff5555; }
 
 /* Footer icons */
-.footerIcoSettings {
-  fill: var(--footerIcoSettings-Fill); }
-
-.footerIcoQuestion {
-  fill: var(--footerIcoQuestion-Fill); }
+.footerIcoSettings, .footerIcoQuestion {
+  fill: white; }

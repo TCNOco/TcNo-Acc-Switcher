@@ -247,12 +247,15 @@ namespace TcNo_Acc_Switcher_Client
             _ = cmb.ShowDialog();
         }
 
-        private static SolidColorBrush GetStylesheetColor(string key, string fallback)
+        public static SolidColorBrush GetStylesheetColor(string key, string fallback)
         {
             string color;
             try
             {
-                color = AppSettings.Instance.Stylesheet[key];
+                var start = AppSettings.Instance.Stylesheet.IndexOf(key + ":", StringComparison.Ordinal) + key.Length + 1;
+                var end = AppSettings.Instance.Stylesheet.IndexOf(";", start, StringComparison.Ordinal);
+                color = AppSettings.Instance.Stylesheet.Substring(start, end - start);
+                color = color.Trim(); // Remove whitespace around variable
             }
             catch (Exception)
             {
@@ -357,7 +360,7 @@ namespace TcNo_Acc_Switcher_Client
             }
             catch (AbandonedMutexException)
             {
-                // Just restarted 
+                // Just restarted
             }
         }
 
