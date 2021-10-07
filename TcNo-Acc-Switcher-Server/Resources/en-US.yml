@@ -283,7 +283,7 @@ PngInvalid_Format: Required pixel format is PixelFormat.{x}.
 PngRequired: Required image format is a portable network graphic (png).
 PngDimensions: Dimensions must be less than or equal to {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
-ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially Default.yaml) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
+ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially the 'Dracula_Cyan' folder) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
 Yes: "Yes"
 No: "No"
 NoDefault: No (Default)

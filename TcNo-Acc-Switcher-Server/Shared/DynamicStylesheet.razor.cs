@@ -38,7 +38,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
             if (AppSettings.Instance.WindowsAccent)
             {
                 var start = style.IndexOf("--accent:", StringComparison.Ordinal);
-                var end = style.IndexOf(";", start, StringComparison.Ordinal);
+                var end = style.IndexOf(";", start, StringComparison.Ordinal) - start;
                 style = style.Replace(style.Substring(start, end), "");
 
                 var (h, s, l) = AppSettings.Instance.WindowsAccentColorHsl;

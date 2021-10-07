@@ -4,47 +4,47 @@
 /* ReSharper disable CssNotResolved */
 
 :root {
-    --accent: HSL(40, 100%, 50%);
-    --accentHS: 40, 100%; /* "H, S%" from accent as HSL */
+    /* All these extra accent steps and redefinitions are required for Windows accent options */
+    /* Elements that use these will be set by either Windows Accent or Theme */
+    --accent: "#00d4ff"; /* Must be HEX */
+    --accentHS: 190, 100%; /* "H, S%" from accent as HSL */
     --accentL: 50%; /* "L" from accent HSL */
-    --accentInt: 255, 153, 0; /* accent as "r, g, b" */
+    --accentInt: 0, 212, 255; /* accent as "r, g, b" */
+}
 }
 
-.infoWindow .rightContent .linksList a,
-.fancyLink {
-    color: hsl(var(--accentHS), var(--accentL));
+.linksList a, .fancyLink {
+    color: var(--accent);
     line-height: 24px;
     cursor: pointer;
     margin: 1px 0;
 }
 
-.infoWindow .rightContent .linksList a:hover,
-.fancyLink:hover {
+.infoWindow .rightContent .linksList a:hover, .fancyLink:hover {
     color: hsl(var(--accentHS), calc(var(--accentL) - 5%));
 }
 
-.infoWindow .rightContent .linksList a:active,
-.fancyLink:active {
+.infoWindow .rightContent .linksList a:active, .fancyLink:active {
     color: hsl(var(--accentHS), calc(var(--accentL) - 10%));
 }
 
 /* ---------------------------------------- */
-/*                ANIMATIONS                */
-/* ---------------------------------------- */
+    /*                ANIMATIONS                */
+    /* ---------------------------------------- */
 
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(var(--accentInt), 0.7);
-    }
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(var(--accentInt), 0.7);
+        }
 
-    70% {
-        transform: scale(1.02);
-        box-shadow: 0 0 0 10px rgba(var(--accentInt), 0);
-    }
+        70% {
+            transform: scale(1.02);
+            box-shadow: 0 0 0 10px rgba(var(--accentInt), 0);
+        }
 
-    100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 10px rgba(var(--accentInt), 0);
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 10px rgba(var(--accentInt), 0);
+        }
     }
-}

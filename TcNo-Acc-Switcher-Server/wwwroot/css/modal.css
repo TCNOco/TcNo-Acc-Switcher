@@ -31,11 +31,12 @@
   text-align: right; }
   .versionIdentifier span {
     color: white; }
-  .versionIdentifier .modal_header_icon {
-    fill: white;
-    display: block;
-    height: 10px;
-    margin: 12px; }
+
+.modal_header_icon {
+  fill: white;
+  display: block;
+  height: 10px;
+  margin: 12px; }
 
 /* Info window */
 .infoWindow {

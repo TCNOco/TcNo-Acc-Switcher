@@ -91,7 +91,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("StartCentered", Order = 8)]
         public bool StartCentered { get => _instance._startCentered; set => _instance._startCentered = value; }
 
-        private string _activeTheme = "Default";
+        private string _activeTheme = "Dracula_Cyan";
         [JsonProperty("ActiveTheme")]
         public string ActiveTheme { get => _instance._activeTheme; set => _instance._activeTheme = value; }
 
@@ -273,28 +273,34 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 // Check if SCSS file exists.
                 var scss = StylesheetFile.Replace("css", "scss");
-                if (File.Exists(scss))
-                {
-                    var convertedScss = Scss.ConvertFileToCss(scss, new ScssOptions() { InputFile = scss, OutputFile = StylesheetFile });
-                    // Convert from SCSS to CSS. The arguments are for "exception reporting", according to the SharpScss Git Repo.
-                    if (File.Exists(StylesheetFile)) File.Delete(StylesheetFile);
-                    File.WriteAllText(StylesheetFile, convertedScss.Css);
-
-                    if (File.Exists(StylesheetFile + ".map")) File.Delete(StylesheetFile + ".map");
-                    File.WriteAllText(StylesheetFile + ".map", convertedScss.SourceMap);
-                }
+                if (File.Exists(scss)) GenCssFromScss(scss);
                 else
                 {
-                    ActiveTheme = "Default";
+                    ActiveTheme = "Dracula_Cyan";
 
                     if (!File.Exists(StylesheetFile))
-                        throw new Exception(Lang["ThemesNotFound"]);
+                    {
+                        scss = StylesheetFile.Replace("css", "scss");
+                        if (File.Exists(scss)) GenCssFromScss(scss);
+                        else throw new Exception(Lang["ThemesNotFound"]);
+                    }
                 }
             }
 
             LoadStylesheet();
 
             return true;
+        }
+
+        private void GenCssFromScss(string scss)
+        {
+            var convertedScss = Scss.ConvertFileToCss(scss, new ScssOptions() { InputFile = scss, OutputFile = StylesheetFile });
+            // Convert from SCSS to CSS. The arguments are for "exception reporting", according to the SharpScss Git Repo.
+            if (File.Exists(StylesheetFile)) File.Delete(StylesheetFile);
+            File.WriteAllText(StylesheetFile, convertedScss.Css);
+
+            if (File.Exists(StylesheetFile + ".map")) File.Delete(StylesheetFile + ".map");
+            File.WriteAllText(StylesheetFile + ".map", convertedScss.SourceMap);
         }
 
         private void LoadStylesheet()
@@ -307,7 +313,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             string[] infoText = null;
             if (File.Exists(StylesheetInfoFile)) infoText = Globals.ReadAllLines(StylesheetInfoFile);
 
-            if (infoText == null) return;
+            infoText ??= new[] {"name: \"[ERR! info.yml]\"", "accent: \"#00D4FF\""};
             var newSheet = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(string.Join(Environment.NewLine, infoText))));
 
             StylesheetInfo = newSheet;

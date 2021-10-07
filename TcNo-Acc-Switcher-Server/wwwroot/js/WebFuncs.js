@@ -17,7 +17,7 @@ function docReady(fn) {
     }
 }
 
-// Clear Cache reload: 
+// Clear Cache reload:
 var winUrl = window.location.href.split("?");
 if (winUrl.length > 1 && winUrl[1].indexOf("cacheReload") !== -1) {
     history.pushState({}, null, window.location.href.replace("cacheReload&", "").replace("cacheReload", ""));
@@ -195,7 +195,7 @@ function swapTo(request, e) {
     if (e !== undefined) e.preventDefault();
     if (!getSelected()) return;
 
-    
+
     if (request === -1) DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}`, selected.attr("id")); // -1 is for undefined.
     else DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}WithReq`, selected.attr("id"), request);
 }
@@ -204,7 +204,7 @@ function swapTo(request, e) {
 function changeImage(e) {
     if (e !== undefined) e.preventDefault();
     if (!getSelected()) return;
-    
+
     let path = $(".acc:checked").next("label").children("img")[0].getAttribute("src").split('?')[0];
     window.location = window.location + `${(window.location.href.includes("?") ? "&" : "?")}selectImage=${encodeURI(path)}`;
 }
@@ -256,7 +256,7 @@ async function exportAllAccounts() {
     if (exportingAccounts) {
 	    const toastAlreadyProcessing = await GetLang("Toast_AlreadyProcessing"),
 		    error = await GetLang("Error");
-        
+
 	    window.notification.new({
 		    type: "error",
             title: error,
@@ -302,7 +302,7 @@ async function currentDiscordLogin() {
 async function currentUbisoftLogin() {
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftHasUserSaved").then((r) => {
         if (r === "")
-            // If userId not saved: 
+            // If userId not saved:
             showModal('accString');
         else {
             DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftAddCurrent", r);
@@ -545,7 +545,7 @@ async function showPasswordModal() {
     $(".modalBG")[0].onclick = () => false;
     $("#btnClose-modal")[0].removeAttribute("onclick");
     $("#btnClose-modal")[0].onclick = () => btnBack_Click();
-    
+
     // Check if a password is set
     const modalNewPassword = await GetLangSub("Modal_EnterNewPassword", { platform: platform }),
         modalAddPassword = await GetLangSub("Modal_EnterPassword", { platform: platform });
