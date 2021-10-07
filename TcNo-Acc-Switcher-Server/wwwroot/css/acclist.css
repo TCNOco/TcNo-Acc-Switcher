@@ -36,14 +36,14 @@
 .placeHolderAcc {
   width: 100px;
   height: 135px;
-  border: var(--accountBorder-placeholder);
-  background: var(--accountBackground-placeholder);
+  border: 2px dashed #039CBF;
+  background: #13222f;
 }
 
 .accountHover {
-  border: 0.1em solid var(--accountBorder-hover);
+  border: 0.1em solid #039CBF;
   /* Seperate because added by sortable */
-  background: var(--accountBackground-hover);
+  background: #13222f;
 }
 
 input.acc {
@@ -62,9 +62,9 @@ label.acc {
   -webkit-transition: all 50ms ease-in;
   -webkit-user-select: none;
   user-select: none;
-  min-width: var(--accountListItemWidth);
-  max-width: var(--accountListItemWidth);
-  min-height: var(--accountListItemHeight);
+  min-width: 100px;
+  max-width: 100px;
+  min-height: 135px;
   height: 100%;
   margin: 0;
   padding: 0.5em;
@@ -72,23 +72,23 @@ label.acc {
   border-style: solid;
   border-color: #000;
   border-color: rgba(0, 0, 0, 0);
-  color: var(--accountColor);
+  color: white;
   text-align: center;
   cursor: pointer;
   transition: all 50ms ease-in;
 }
 
 input.acc:checked + label.acc {
-  border-color: var(--accountBorder-checked);
-  background: var(--accountBackground-checked);
+  border-color: #8BE9FD;
+  background: #274560;
 }
 
 label.acc img.status_vac {
-  border: 2px solid var(--vac) !important;
+  border: 2px solid rgb(255, 85, 85) !important;
 }
 
 label.acc img.status_limited {
-  border: 2px solid var(--limited) !important;
+  border: 2px solid yellow !important;
 }
 
 label.acc img {
@@ -102,7 +102,7 @@ label.acc img {
 }
 
 label.acc.vac img {
-  border: 2px solid var(--vac);
+  border: 2px solid rgb(255, 85, 85);
 }
 
 label.acc h6 {
@@ -116,7 +116,7 @@ label.acc h6 {
 
 label.acc p {
   margin: 0;
-  color: var(--accountPColor);
+  color: #DDD;
   font-size: 0.75em;
 }
 
@@ -127,8 +127,8 @@ label.acc p {
   height: 3.5em;
   padding: 0.25em 0.25em;
   overflow: hidden;
-  background: var(--footerBackground);
-  color: var(--defaultTextColor);
+  background: #252A2E;
+  color: white;
 }
 
   /* Status section */
@@ -140,14 +140,14 @@ label.acc p {
     border: none;
     outline: none;
     background: none;
-    color: var(--footerColor);
+    color: #DDD;
     line-height: 3em;
   }
 
     .acc_list_actionbar input::selection {
       user-select: none;
       background: none;
-      color: var(--footerColor);
+      color: #DDD;
     }
 
   .acc_list_actionbar div {

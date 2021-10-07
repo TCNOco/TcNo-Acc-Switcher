@@ -1,10 +1,30 @@
 ﻿[
   {
     "outputFile": "wwwroot/css/site.css",
-    "inputFile": "wwwroot/css/site.scss"
+    "inputFile": "wwwroot/css/site.scss",
+    "minify": {
+      "enabled": true
+    }
   },
   {
     "outputFile": "wwwroot/css/UI.css",
-    "inputFile": "wwwroot/css/UI.scss"
+    "inputFile": "wwwroot/css/UI.scss",
+    "minify": {
+      "enabled": true
+    }
+  },
+  {
+    "outputFile": "wwwroot/css/modal.css",
+    "inputFile": "wwwroot/css/modal.scss",
+    "minify": {
+      "enabled": true
+    }
+  },
+  {
+    "outputFile": "wwwroot/css/context_menu.css",
+    "inputFile": "wwwroot/css/context_menu.scss",
+    "minify": {
+      "enabled": true
+    }
   }
 ]

@@ -15,6 +15,7 @@
 // Special thanks to iR3turnZ for contributing to this platform's account switcher
 // iR3turnZ: https://github.com/HoeblingerDaniel
 
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -32,12 +33,20 @@ namespace TcNo_Acc_Switcher_Server.Shared
                 _ = AppSettings.Instance.LoadFromFile();
             }
 
-            var markupString = "";
-            foreach (var (key, val) in _appSettings.Stylesheet)
+            var style = AppSettings.Instance.Stylesheet;
+
+            if (AppSettings.Instance.WindowsAccent)
             {
-                markupString += $"--{key}: {val};\n";
+                var start = style.IndexOf("--accent:", StringComparison.Ordinal);
+                var end = style.IndexOf(";", start, StringComparison.Ordinal);
+                style = style.Replace(style.Substring(start, end), "");
+
+                var (h, s, l) = AppSettings.Instance.WindowsAccentColorHsl;
+                var (r, g, b) = AppSettings.Instance.WindowsAccentColorInt;
+                style = $":root {{ --accentHS: {h}, {s}%; --accentL: {l}%; --accent: {AppSettings.Instance.WindowsAccentColor}}}\n\n; --accentInt: {r}, {g}, {b}" + style;
             }
-            return markupString;
+
+            return style;
         }
     }
 }

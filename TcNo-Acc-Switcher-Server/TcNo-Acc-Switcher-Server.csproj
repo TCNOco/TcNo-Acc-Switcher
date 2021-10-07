@@ -39,6 +39,7 @@
     <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="8.3.2" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="5.0.10" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="SharpScss" Version="2.0.0" />
     <PackageReference Include="SteamKit2" Version="2.3.0" />
     <PackageReference Include="Svg.Skia" Version="0.5.7.1" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />

@@ -8,16 +8,16 @@
 .container {
   max-width: 100%;
   overflow: visible;
-  color: var(--defaultTextColor);
+  color: white;
 }
 
 .SettingsHeader {
-  color: var(--settingsHeaderColor);
+  color: white;
 }
 
   .SettingsHeader hr {
     display: inline-block;
-    border: 1px solid var(--settingsHeaderHrBorder);
+    border: 1px solid #BBB;
     vertical-align: middle;
   }
 
@@ -55,7 +55,7 @@
 }
 
 div.form-text {
-  color: var(--defaultTextColor);
+  color: white;
   font-size: 12px !important;
 }
 
@@ -69,18 +69,18 @@ input[type=password] {
   border: 0;
   border-bottom: none;
   outline: 0;
-  background: var(--inputBackground);
-  color: var(--inputColor);
+  background: #070A0D;
+  color: white;
 }
 
 input[type=number] {
-  border-bottom: 2px solid var(--borderedItemBorderColor);
+  border-bottom: 2px solid #888;
 }
 
   input[type=number]:focus,
   input[type=text]:focus,
   input[type=password]:focus {
-    border-bottom: 2px solid var(--borderedItemBorderColorBottom-focus);
+    border-bottom: 2px solid var(--accent);
   }
 
   input[type=number]::-webkit-outer-spin-button,
@@ -125,15 +125,15 @@ input[type='checkbox'] {
   input[type='checkbox'] + label {
     -moz-transition: 0.5s ease all;
     -webkit-transition: 0.5s ease all;
-    border: 1px solid var(--checkboxBorder);
-    background: var(--checkboxBackground);
+    border: 1px solid #6272A4;
+    background: #253340;
     transition: 0.5s ease all;
     vertical-align: middle;
   }
 
   input[type='checkbox']:checked + label {
-    border: 1px solid var(--checkboxBorder-checked);
-    background: var(--checkboxBackground-checked);
+    border: 1px solid #6272A4;
+    background: var(--accent);
   }
 
 .settingsCol:first-child {
