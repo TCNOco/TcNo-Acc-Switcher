@@ -30,7 +30,6 @@ body {
 .mainblock {
   width: 100%;
   min-height: 100%;
-  background: #0E1419;
   overflow-y: auto;
   overflow-x: auto; }
 

@@ -82,7 +82,7 @@ button .caret {
   &-toggle {
     margin-bottom: 4px;
     position: relative;
-    z-index: 10;
+    z-index: 9;
   }
 
   &-menu {
@@ -130,7 +130,7 @@ button .caret {
 .custom-dropdown-menu {
   z-index: 10;
   max-height: 60vh;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 /* Text Editor */

@@ -5,8 +5,36 @@
 :root {
     // All these extra accent steps and redefinitions are required for Windows accent options
     // Elements that use these will be set by either Windows Accent or Theme
-    --accent: "#FFAA00"; /* Must be HEX */
+    --accent: #FFAA00; /* Must be HEX */
     --accentHS: 190, 100%; // "H, S%" from accent as HSL
     --accentL: 50%; // "L" from accent HSL
     --accentInt: 0, 212, 255; // accent as "r, g, b"
+}
+
+// Main UI
+.headerbar, .resizeTopLeft, .resizeTop, .resizeTopRight, .resizeRight, .resizeBottomRight, .resizeBottom, .resizeBottomLeft, .resizeLeft {
+    background: #14151E;
+}
+body, .programMain, .mainblock {
+    background: linear-gradient( 90deg, #28293A, #28293A 100%);
+}
+
+// Interactive UI
+input[type='checkbox'] + label {
+    border: 1px solid #FFF;
+}
+
+button, .button {
+    background: #333;
+    border-color: #888;
+
+    &:active {
+        background: #222;
+        border-color: var(--accent);
+    }
+
+    &:hover {
+        background: #444;
+        border-color: #888;
+    }
 }

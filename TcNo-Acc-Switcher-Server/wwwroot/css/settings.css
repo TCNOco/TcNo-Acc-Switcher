@@ -126,7 +126,7 @@ input[type='checkbox'] {
     -moz-transition: 0.5s ease all;
     -webkit-transition: 0.5s ease all;
     border: 1px solid #6272A4;
-    background: #253340;
+    background: none;
     transition: 0.5s ease all;
     vertical-align: middle;
   }

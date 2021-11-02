@@ -375,8 +375,7 @@ async function showModal(modaltype) {
         $("#modalTitle").text(modalTitleChangeUsername);
         $("#modal_contents").empty();
 
-        $("#modal_contents").append(`<div id="modal_contents">
-	        <div>
+        $("#modal_contents").append(`<div>
 		        <span class="modal-text">${modalChangeUsername}.</span>
 	        </div>
 	        <div class="inputAndButton">
@@ -385,8 +384,7 @@ async function showModal(modaltype) {
 	        <div class="settingsCol inputAndButton">
 				${extraButtons}
 		        <button class="modalOK" type="button" id="change_username" onclick="Modal_FinaliseAccNameChange()"><span>${modalChangeUsernameType}</span></button>
-	        </div>
-        </div>`);
+	        </div>`);
         input = document.getElementById("NewAccountName");
     } else if (modaltype.startsWith("find:")) {
         // USAGE: "find:<Program_name>:<Program_exe>:<SettingsFile>" -- example: "find:Steam:Steam.exe:SteamSettings"
@@ -402,8 +400,7 @@ async function showModal(modaltype) {
 
         $("#modalTitle").text(modalLocatePlatformTitle);
         $("#modal_contents").empty();
-        $("#modal_contents").append(`<div id="modal_contents">
-	        <div style="width: 80vw;">
+        $("#modal_contents").append(`<div style="width: 80vw;">
 		        <span class="modal-text">${modalEnterDirectory}</span>
 	        </div>
 	        <div class="inputAndButton">
@@ -414,8 +411,7 @@ async function showModal(modaltype) {
 		        <div class="folder_indicator notfound"><div id="folder_indicator_text"></div></div>
 		        <div class="folder_indicator_bg notfound"><span>${platformExe}</span></div>
 		        <button class="modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${platformSettingsPath}')"><span>${modalLocatePlatformFolder}</span></button>
-	        </div>
-        </div>`);
+	        </div>`);
         input = document.getElementById("FolderLocation");
     } else if (modaltype.startsWith("confirm:")) {
         // USAGE: "confirm:<prompt>
@@ -503,8 +499,7 @@ async function showModal(modaltype) {
 
         $("#modalTitle").text(modalTitleAddNew);
         $("#modal_contents").empty();
-        $("#modal_contents").append(`<div id="modal_contents">
-	        <div>
+        $("#modal_contents").append(`<div>
 		        <span class="modal-text">${modalAddNew}</span>
 	        </div>
 	        <div class="inputAndButton">
@@ -513,8 +508,7 @@ async function showModal(modaltype) {
 	        <div class="settingsCol inputAndButton">
 				${extraButtons}
 		        <button class="modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('${platform}')"><span>${modalAddCurrentAccount}</span></button>
-	        </div>
-        </div>`);
+	        </div>`);
         input = document.getElementById("CurrentAccountName");
     } else if (modaltype === "password") {
         let x = await showPasswordModal();
@@ -574,8 +568,7 @@ async function showPasswordModal() {
 
 	$("#modalTitle").text(modalAddNewTitle);
     $("#modal_contents").empty();
-    $("#modal_contents").append(`<div id="modal_contents">
-	        <div>
+    $("#modal_contents").append(`<div>
 		        <span class="modal-text">${infoText}</span>
 	        </div>
 	        <div class="inputWithTitle">
@@ -588,8 +581,7 @@ async function showPasswordModal() {
 	        <div class="settingsCol inputAndButton">
 				<button class="modalOK extra" type="button" id="help" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#why-a-password');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>
 		        <button class="modalOK" style="padding: 0 40px;" type="button" id="set_account_name" onclick="Modal_HandlePassword()"><span>${ok}</span></button>
-	        </div>
-        </div>`);
+	        </div>`);
 
     return true;
 }

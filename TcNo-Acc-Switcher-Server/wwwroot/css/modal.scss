@@ -51,7 +51,6 @@
     position: relative;
     align-items: center;
     width: fit-content;
-    padding: 5%;
     overflow: auto;
     text-align: center;
     white-space: nowrap;
@@ -111,7 +110,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    padding: 1em;
+    padding: 2em;
     background: #0E1419;
 
     .modal_button_close {

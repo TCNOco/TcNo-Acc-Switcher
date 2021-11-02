@@ -170,7 +170,6 @@ namespace TcNo_Acc_Switcher_Updater
 
         private void MainWindow_OnContentRendered(object sender, EventArgs e) => new Thread(Init).Start();
         private readonly string _windowSettings = Path.Join(UserDataFolder, "WindowSettings.json");
-        private readonly string _styleSettings = Path.Join(UserDataFolder, "StyleSettings.yaml");
 
         private static bool InstalledToProgramFiles()
         {
@@ -276,54 +275,61 @@ namespace TcNo_Acc_Switcher_Updater
 
             // Styling
             Directory.SetCurrentDirectory(UserDataFolder);
-            if (File.Exists(_styleSettings))
-                _ = Dispatcher.BeginInvoke(new Action(() =>
-                  {
-                      try
-                      {
-                        // Separated so colors aren't only half changed, and a color from the file is missing
-                        var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-                          var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(UGlobals.ReadAllText(_styleSettings))));
-                        // Need to try catch every one of these, as they may be invalid.
-                        var highlightColor = TryApplyTheme(dict, "#FFAA00", "linkColor"); // Add a specific Highlight color later?
-                        var headerColor = TryApplyTheme(dict, "#14151E", "headerbarBackground");
-                          var mainBackground = TryApplyTheme(dict, "#28293A", "mainBackground");
-                          var listBackground = TryApplyTheme(dict, "#212529", "modalInputBackground");
-                          var borderedItemBorderColor = TryApplyTheme(dict, "#888888", "borderedItemBorderColor");
-                          var buttonBackground = TryApplyTheme(dict, "#333333", "buttonBackground");
-                          var buttonBackgroundHover = TryApplyTheme(dict, "#444444", "buttonBackground-hover");
-                          var buttonBackgroundActive = TryApplyTheme(dict, "#222222", "buttonBackground-active");
-                          var buttonColor = TryApplyTheme(dict, "#FFFFFF", "buttonColor");
-                          var buttonBorder = TryApplyTheme(dict, "#888888", "buttonBorder");
-                          var buttonBorderHover = TryApplyTheme(dict, "#888888", "buttonBorder-hover");
-                          var buttonBorderActive = TryApplyTheme(dict, "#FFAA00", "buttonBorder-active");
-                          var windowControlsBackground = TryApplyTheme(dict, "#14151E", "windowControlsBackground");
-                          var windowControlsBackgroundActive = TryApplyTheme(dict, "#3B4853", "windowControlsBackground-active");
-                          var windowControlsCloseBackground = TryApplyTheme(dict, "#D51426", "windowControlsCloseBackground");
-                          var windowControlsCloseBackgroundActive = TryApplyTheme(dict, "#E81123", "windowControlsCloseBackground-active");
+            try
+            {
+                var o = JObject.Parse(UGlobals.ReadAllText(_windowSettings));
+                var themeName = o["ActiveTheme"]?.ToString();
+                var themeFile = Path.Join("themes", themeName, "info.yaml");
 
-                          Resources["HighlightColor"] = highlightColor;
-                          Resources["HeaderColor"] = headerColor;
-                          Resources["MainBackground"] = mainBackground;
-                          Resources["ListBackground"] = listBackground;
-                          Resources["BorderedItemBorderColor"] = borderedItemBorderColor;
-                          Resources["ButtonBackground"] = buttonBackground;
-                          Resources["ButtonBackgroundHover"] = buttonBackgroundHover;
-                          Resources["ButtonBackgroundActive"] = buttonBackgroundActive;
-                          Resources["ButtonColor"] = buttonColor;
-                          Resources["ButtonBorder"] = buttonBorder;
-                          Resources["ButtonBorderHover"] = buttonBorderHover;
-                          Resources["ButtonBorderActive"] = buttonBorderActive;
-                          Resources["WindowControlsBackground"] = windowControlsBackground;
-                          Resources["WindowControlsBackgroundActive"] = windowControlsBackgroundActive;
-                          Resources["WindowControlsCloseBackground"] = windowControlsCloseBackground;
-                          Resources["WindowControlsCloseBackgroundActive"] = windowControlsCloseBackgroundActive;
-                      }
-                      catch (Exception)
-                      {
-                        //
-                    }
-                  }), DispatcherPriority.Normal);
+                // Separated so colors aren't only half changed, and a color from the file is missing
+                var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
+                var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(UGlobals.ReadAllText(themeFile))));
+                if (File.Exists(themeFile))
+                {
+                    _ = Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        // Need to try catch every one of these, as they may be invalid.
+                        var highlightColor = TryApplyTheme(dict, "#8BE9FD", "linkColor"); // Add a specific Highlight color later?
+                        var headerColor = TryApplyTheme(dict, "#253340", "headerbarBackground");
+                        var mainBackground = TryApplyTheme(dict, "#0E1419", "mainBackground");
+                        var listBackground = TryApplyTheme(dict, "#070A0D", "modalInputBackground");
+                        var borderedItemBorderColor = TryApplyTheme(dict, "#888888", "borderedItemBorderColor");
+                        var buttonBackground = TryApplyTheme(dict, "#274560", "buttonBackground");
+                        var buttonBackgroundHover = TryApplyTheme(dict, "#28374E", "buttonBackground-hover");
+                        var buttonBackgroundActive = TryApplyTheme(dict, "#28374E", "buttonBackground-active");
+                        var buttonColor = TryApplyTheme(dict, "#FFFFFF", "buttonColor");
+                        var buttonBorder = TryApplyTheme(dict, "#274560", "buttonBorder");
+                        var buttonBorderHover = TryApplyTheme(dict, "#274560", "buttonBorder-hover");
+                        var buttonBorderActive = TryApplyTheme(dict, "#8BE9FD", "buttonBorder-active");
+                        var windowControlsBackground = TryApplyTheme(dict, "#253340", "windowControlsBackground");
+                        var windowControlsBackgroundActive = TryApplyTheme(dict, "#3B4853", "windowControlsBackground-active");
+                        var windowControlsCloseBackground = TryApplyTheme(dict, "#D51426", "windowControlsCloseBackground");
+                        var windowControlsCloseBackgroundActive = TryApplyTheme(dict, "#D51426", "windowControlsCloseBackground-active");
+
+                        Resources["HighlightColor"] = highlightColor;
+                        Resources["HeaderColor"] = headerColor;
+                        Resources["MainBackground"] = mainBackground;
+                        Resources["ListBackground"] = listBackground;
+                        Resources["BorderedItemBorderColor"] = borderedItemBorderColor;
+                        Resources["ButtonBackground"] = buttonBackground;
+                        Resources["ButtonBackgroundHover"] = buttonBackgroundHover;
+                        Resources["ButtonBackgroundActive"] = buttonBackgroundActive;
+                        Resources["ButtonColor"] = buttonColor;
+                        Resources["ButtonBorder"] = buttonBorder;
+                        Resources["ButtonBorderHover"] = buttonBorderHover;
+                        Resources["ButtonBorderActive"] = buttonBorderActive;
+                        Resources["WindowControlsBackground"] = windowControlsBackground;
+                        Resources["WindowControlsBackgroundActive"] = windowControlsBackgroundActive;
+                        Resources["WindowControlsCloseBackground"] = windowControlsCloseBackground;
+                        Resources["WindowControlsCloseBackgroundActive"] = windowControlsCloseBackgroundActive;
+                    }), DispatcherPriority.Normal);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
             Directory.SetCurrentDirectory(MainAppDataFolder);
 
@@ -472,7 +478,7 @@ namespace TcNo_Acc_Switcher_Updater
         }
 
         /// <summary>
-        /// For progress bar 
+        /// For progress bar
         /// </summary>
         public void HandleDownloadComplete(object sender, AsyncCompletedEventArgs args)
         {
@@ -871,7 +877,7 @@ namespace TcNo_Acc_Switcher_Updater
         }
 
         /// <summary>
-        /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Doesn't start with "SUCCESS") 
+        /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Doesn't start with "SUCCESS")
         /// </summary>
         /// <param name="procName">Process name to kill (Will be used as {name}*)</param>
         private void KillProcess(string procName)

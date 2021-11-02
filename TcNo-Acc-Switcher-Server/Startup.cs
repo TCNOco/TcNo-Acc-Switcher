@@ -50,7 +50,7 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
 
             _ = services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            
+
             // Persistent settings:
             _ = services.AddSingleton<AppSettings>();
             _ = services.AddSingleton<AppData>();
@@ -84,7 +84,6 @@ namespace TcNo_Acc_Switcher_Server
                 MoveIfFileExists(p + "Settings.json");
             }
             MoveIfFileExists("SteamForgotten.json");
-            MoveIfFileExists("StyleSettings.yaml");
             MoveIfFileExists("Tray_Users.json");
             MoveIfFileExists("WindowSettings.json");
 
