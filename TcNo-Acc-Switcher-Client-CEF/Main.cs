@@ -205,7 +205,7 @@ namespace TcNo_Acc_Switcher_Client_CEF
             ScSizeHtLeft = 0xA, // 1 + 9
             ScSizeHtRight = 0xB,
             ScSizeHtTop = 0xC,
-            ScSizeHtTopLeft = 0xD,
+            ScSizeHtTopLeft = 0xD,i
             ScSizeHtTopRight = 0xE,
             ScSizeHtBottom = 0xF,
             ScSizeHtBottomLeft = 0x10,
