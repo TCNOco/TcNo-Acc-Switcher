@@ -26,6 +26,7 @@ using System.Threading;
 using System.Web;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using CefSharp;
@@ -56,6 +57,7 @@ namespace TcNo_Acc_Switcher_Client
         private static readonly Thread Server = new(RunServer);
         public static readonly AppSettings AppSettings = AppSettings.Instance;
         private static string _address = "";
+        private string _mainBrowser = "CEF"; // <CEF/WebView>
 
         private static void RunServer()
         {
@@ -84,8 +86,6 @@ namespace TcNo_Acc_Switcher_Client
             var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
             return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
         }
-
-        private string _mainBrowser = "CEF"; // <CEF/WebView>
 
         public MainWindow()
         {
@@ -158,8 +158,24 @@ namespace TcNo_Acc_Switcher_Client
                 InitializeChromium();
                 CefView = new ChromiumWebBrowser();
                 CefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
+                CefView.AddressChanged += CefViewOnAddressChanged;
+                CefView.PreviewMouseUp += MainBackgroundOnPreviewMouseUp;
                 CefView.KeyboardHandler = new CefKeyboardHandler();
             }
+        }
+
+        private void MainBackgroundOnPreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.XButton1 && e.ChangedButton != MouseButton.XButton2) return;
+            // Back
+            e.Handled = true;
+            CefView.ExecuteScriptAsync("btnBack_Click()");
+        }
+
+        private void CefViewOnAddressChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
+            UrlChanged(e.NewValue.ToString());
         }
 
         private void AddBrowser()
@@ -218,7 +234,6 @@ namespace TcNo_Acc_Switcher_Client
         #region WebView
         private async void MView2_OnInitialised(object sender, EventArgs e)
         {
-            if (_mainBrowser != "WebView") return;
             try
             {
                 var env = await CoreWebView2Environment.CreateAsync(null, Globals.UserDataFolder);
@@ -227,7 +242,7 @@ namespace TcNo_Acc_Switcher_Client
 
                 MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
                 MViewAddForwarders();
-                MView2.NavigationStarting += UrlChanged;
+                MView2.NavigationStarting += MViewUrlChanged;
                 MView2.CoreWebView2.ProcessFailed += CoreWebView2OnProcessFailed;
 
                 MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
@@ -246,6 +261,13 @@ namespace TcNo_Acc_Switcher_Client
             }
             //MView2.CoreWebView2.OpenDevToolsWindow();
         }
+
+        private void MViewUrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
+        {
+            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
+            UrlChanged(args.Uri, args);
+        }
+
         // For draggable regions:
         // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
         private void MViewAddForwarders()
@@ -267,8 +289,6 @@ namespace TcNo_Acc_Switcher_Client
             }
             _ = MView2.Focus();
         }
-        #endregion
-
         private void CoreWebView2OnProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
         {
             _ = MessageBox.Show("The WebView browser process has crashed! The program will now exit.", "Fatal error", MessageBoxButton.OK,
@@ -276,6 +296,79 @@ namespace TcNo_Acc_Switcher_Client
                 MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
             Environment.Exit(1);
         }
+
+        private static bool _firstLoad = true;
+        private void MView2_OnNavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            if (!_firstLoad) return;
+            MView2.Visibility = Visibility.Hidden;
+            MView2.Visibility = Visibility.Visible;
+            _firstLoad = false;
+        }
+        #endregion
+
+        #region BROWSER_SHARED
+
+        /// <summary>
+        /// Rungs on URI change in the WebView.
+        /// </summary>
+        private void UrlChanged(string uri, CoreWebView2NavigationStartingEventArgs mViewArgs = null)
+        {
+            Globals.WriteToLog(uri);
+
+            if (uri.Contains("RESTART_AS_ADMIN")) RestartAsAdmin(uri.Contains("arg=") ? uri.Split("arg=")[1] : "");
+            if (uri.Contains("EXIT_APP")) Environment.Exit(0);
+
+            if (!uri.Contains("?")) return;
+            // Needs to be here as:
+            // Importing Microsoft.Win32 and System.Windows didn't get OpenFileDialog to work.
+            var uriArg = uri.Split("?").Last();
+            if (uriArg.StartsWith("selectFile"))
+            {
+                // Select file and run Model_SetFilepath()
+                if (mViewArgs != null) mViewArgs.Cancel = true;
+                var argValue = uriArg.Split("=")[1];
+                var dlg = new OpenFileDialog
+                {
+                    FileName = Path.GetFileNameWithoutExtension(argValue),
+                    DefaultExt = Path.GetExtension(argValue),
+                    Filter = $"{argValue}|{argValue}"
+                };
+
+                var result = dlg.ShowDialog();
+                if (result != true) return;
+                if (_mainBrowser == "WebView")
+                {
+                    _ = MView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
+                    _ = MView2.ExecuteScriptAsync("Modal_SetFilepath(" +
+                                                  JsonConvert.SerializeObject(dlg.FileName[..dlg.FileName.LastIndexOf('\\')]) + ")");
+                } else if (_mainBrowser == "CEF")
+                {
+                    CefView.ExecuteScriptAsync("Modal_RequestedLocated(true)");
+                    CefView.ExecuteScriptAsync("Modal_SetFilepath(" +
+                                               JsonConvert.SerializeObject(dlg.FileName[..dlg.FileName.LastIndexOf('\\')]) + ")");
+                }
+            }
+            else if (uriArg.StartsWith("selectImage"))
+            {
+                // Select file and replace requested file with it.
+                if (mViewArgs != null) mViewArgs.Cancel = true;
+                var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot\\" + HttpUtility.UrlDecode(uriArg.Split("=")[1]));
+
+                var dlg = new OpenFileDialog
+                {
+                    Filter = "Any image file (.png, .jpg, .bmp...)|*.*"
+                };
+
+                var result = dlg.ShowDialog();
+                if (result != true) return;
+                File.Copy(dlg.FileName, imageDest, true);
+
+                if (_mainBrowser == "WebView") MView2.Reload();
+                else if (_mainBrowser == "CEF") CefView.Reload();
+            }
+        }
+        #endregion
 
         private int _refreshFixAttempts;
 
@@ -366,59 +459,6 @@ namespace TcNo_Acc_Switcher_Client
             AppSettings.SaveSettings();
         }
 
-        /// <summary>
-        /// Rungs on URI change in the WebView.
-        /// </summary>
-        private void UrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
-        {
-            if (_mainBrowser != "WebView") return;
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
-            Globals.WriteToLog(args.Uri);
-
-            if (args.Uri.Contains("RESTART_AS_ADMIN")) RestartAsAdmin(args.Uri.Contains("arg=") ? args.Uri.Split("arg=")[1] : "");
-            if (args.Uri.Contains("EXIT_APP")) Environment.Exit(0);
-
-            if (!args.Uri.Contains("?")) return;
-            // Needs to be here as:
-            // Importing Microsoft.Win32 and System.Windows didn't get OpenFileDialog to work.
-            var uriArg = args.Uri.Split("?").Last();
-            if (uriArg.StartsWith("selectFile"))
-            {
-                // Select file and run Model_SetFilepath()
-                args.Cancel = true;
-                var argValue = uriArg.Split("=")[1];
-                var dlg = new OpenFileDialog
-                {
-                    FileName = Path.GetFileNameWithoutExtension(argValue),
-                    DefaultExt = Path.GetExtension(argValue),
-                    Filter = $"{argValue}|{argValue}"
-                };
-
-                var result = dlg.ShowDialog();
-                if (result != true) return;
-                _ = MView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
-                _ = MView2.ExecuteScriptAsync("Modal_SetFilepath(" +
-                                          JsonConvert.SerializeObject(dlg.FileName[..dlg.FileName.LastIndexOf('\\')]) + ")");
-            }
-            else if (uriArg.StartsWith("selectImage"))
-            {
-                // Select file and replace requested file with it.
-                args.Cancel = true;
-                var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot\\" + HttpUtility.UrlDecode(uriArg.Split("=")[1]));
-
-                var dlg = new OpenFileDialog
-                {
-                    Filter = "Any image file (.png, .jpg, .bmp...)|*.*"
-                };
-
-                var result = dlg.ShowDialog();
-                if (result != true) return;
-                File.Copy(dlg.FileName, imageDest, true);
-                MView2.Reload();
-            }
-
-        }
-
         public static void RestartAsAdmin(string args)
         {
             var proc = new ProcessStartInfo
@@ -439,16 +479,6 @@ namespace TcNo_Acc_Switcher_Client
                 Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
                 Environment.Exit(0);
             }
-        }
-
-        private static bool _firstLoad = true;
-        private void MView2_OnNavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
-        {
-            if (_mainBrowser != "WebView") return;
-            if (!_firstLoad) return;
-            MView2.Visibility = Visibility.Hidden;
-            MView2.Visibility = Visibility.Visible;
-            _firstLoad = false;
         }
     }
 }
