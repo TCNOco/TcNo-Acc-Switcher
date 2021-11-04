@@ -73,7 +73,7 @@ function handleWindowControls() {
         btnBack_Click();
     });
 
-    if (navigator.appVersion.indexOf("TcNo") === -1) return;
+    if (navigator.appVersion.indexOf("TcNo") === -1 || navigator.appVersion.indexOf("TcNo-CEF") === -1) return;
 
     document.getElementById("btnMin").addEventListener("click", () => {
         chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMinimise);
