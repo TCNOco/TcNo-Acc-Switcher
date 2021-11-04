@@ -73,29 +73,56 @@ function handleWindowControls() {
         btnBack_Click();
     });
 
-    if (navigator.appVersion.indexOf("TcNo") === -1 || navigator.appVersion.indexOf("TcNo-CEF") === -1) return;
+    if (navigator.appVersion.indexOf("TcNo") === -1) return;
 
-    document.getElementById("btnMin").addEventListener("click", () => {
-        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMinimise);
-    });
-
-    document.getElementById("btnMax").addEventListener("click", () => {
-        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMaximise);
-    });
-
-    document.getElementById("btnRestore").addEventListener("click", () => {
-        chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScRestore);
-    });
-
-    document.getElementById("btnClose").addEventListener("click", () => {
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetTrayMinimizeNotExit").then((r) => {
-            if (r && !event.ctrlKey) { // If enabled, and NOT control held
-                chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
-            } else {
-                chrome.webview.hostObjects.sync.eventForwarder.WindowAction(WindowNotifications.WmClose);
-            }
+    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1) {
+        document.getElementById("btnMin").addEventListener("click", () => {
+            CefSharp.PostMessage({ "action": "WindowAction", "value": SysCommandSize.ScMinimise });
         });
-    });
+
+        document.getElementById("btnMax").addEventListener("click", () => {
+            CefSharp.PostMessage({ "action": "WindowAction", "value": SysCommandSize.ScMaximise });
+        });
+
+        document.getElementById("btnRestore").addEventListener("click", () => {
+            CefSharp.PostMessage({ "action": "WindowAction", "value": SysCommandSize.ScRestore });
+        });
+
+        document.getElementById("btnClose").addEventListener("click", () => {
+            DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetTrayMinimizeNotExit").then((r) => {
+                if (r && !event.ctrlKey) { // If enabled, and NOT control held
+                    CefSharp.PostMessage({ "action": "HideWindow" });
+                } else {
+                    CefSharp.PostMessage({ "action": "WindowAction", "value": WindowNotifications.WmClose });
+                }
+            });
+        });
+
+    }
+    else // The normal WebView browser
+    {
+        document.getElementById("btnMin").addEventListener("click", () => {
+            chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMinimise);
+        });
+
+        document.getElementById("btnMax").addEventListener("click", () => {
+            chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScMaximise);
+        });
+
+        document.getElementById("btnRestore").addEventListener("click", () => {
+            chrome.webview.hostObjects.sync.eventForwarder.WindowAction(SysCommandSize.ScRestore);
+        });
+
+        document.getElementById("btnClose").addEventListener("click", () => {
+            DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetTrayMinimizeNotExit").then((r) => {
+                if (r && !event.ctrlKey) { // If enabled, and NOT control held
+                    chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
+                } else {
+                    chrome.webview.hostObjects.sync.eventForwarder.WindowAction(WindowNotifications.WmClose);
+                }
+            });
+        });
+    }
 
     // For draggable regions:
     // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
@@ -108,18 +135,23 @@ function handleWindowControls() {
         if (evt.button === 0 && appRegion === "drag") {
             if (target.classList.length !== 0) {
                 const c = target.classList[0];
-                chrome.webview.hostObjects.sync.eventForwarder.MouseResizeDrag(
-                    (c === "resizeTopLeft" ? SysCommandSize.ScSizeHtTopLeft : (
-                        c === "resizeTop" ? SysCommandSize.ScSizeHtTop : (
-                            c === "resizeTopRight" ? SysCommandSize.ScSizeHtTopRight : (
-                                c === "resizeRight" ? SysCommandSize.ScSizeHtRight : (
-                                    c === "resizeBottomRight" ? SysCommandSize.ScSizeHtBottomRight : (
-                                        c === "resizeBottom" ? SysCommandSize.ScSizeHtBottom : (
-                                            c === "resizeBottomLeft" ? SysCommandSize.ScSizeHtBottomLeft : (
-                                                c === "resizeLeft" ? SysCommandSize.ScSizeHtLeft : 0)))))))));
+                const value = (c === "resizeTopLeft" ? SysCommandSize.ScSizeHtTopLeft : (
+                    c === "resizeTop" ? SysCommandSize.ScSizeHtTop : (
+                        c === "resizeTopRight" ? SysCommandSize.ScSizeHtTopRight : (
+                            c === "resizeRight" ? SysCommandSize.ScSizeHtRight : (
+                                c === "resizeBottomRight" ? SysCommandSize.ScSizeHtBottomRight : (
+                                    c === "resizeBottom" ? SysCommandSize.ScSizeHtBottom : (
+                                        c === "resizeBottomLeft" ? SysCommandSize.ScSizeHtBottomLeft : (
+                                            c === "resizeLeft" ? SysCommandSize.ScSizeHtLeft : 0))))))));
+
+
+                if (navigator.appVersion.indexOf("TcNo-CEF") !== -1) {
+                     CefSharp.PostMessage({ "action": "MouseResizeDrag", "value": value });
+                }
+                else chrome.webview.hostObjects.sync.eventForwarder.MouseResizeDrag(value);
             }
 
-            chrome.webview.hostObjects.sync.eventForwarder.MouseDownDrag();
+            if (navigator.appVersion.indexOf("TcNo-CEF") === -1) chrome.webview.hostObjects.sync.eventForwarder.MouseDownDrag(); // This breaks resize on CEFSharp for some reason (Drags window instead of resizing - VERY ANNOYING)
 
             evt.preventDefault();
             evt.stopPropagation();

@@ -1,7 +1,7 @@
 ﻿
 namespace TcNo_Acc_Switcher_Client_CEF
 {
-    partial class Main
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -31,12 +31,12 @@ namespace TcNo_Acc_Switcher_Client_CEF
         {
             this.SuspendLayout();
             // 
-            // Main
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Name = "Main";
+            this.Name = "MainForm";
             this.Text = "Main";
             this.Load += new System.EventHandler(this.Main_Load);
             this.ResumeLayout(false);
