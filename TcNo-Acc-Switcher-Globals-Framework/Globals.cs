@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -48,6 +49,63 @@ namespace TcNo_Acc_Switcher_Globals_Framework
 
         public static string AppDataFolder =>
             Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty;
+
+        #region WindowManagement
+        // For 'minimising to tray' while not being connected to it
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+        [DllImport("user32.dll")]
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        private const int GwlExStyle = -20;
+        public static readonly int WsExAppWindow = 0x00040000, WsExToolWindow = 0x00000080;
+
+        [DllImport("user32")]
+        private static extern bool SetForegroundWindow(IntPtr hwnd);
+        [DllImport("user32")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        public static void HideWindow(IntPtr handle)
+        {
+            _ = SetWindowLong(handle, GwlExStyle, (GetWindowLong(handle, GwlExStyle) | WsExToolWindow) & ~WsExAppWindow);
+        }
+
+        public static void ShowWindow(IntPtr handle)
+        {
+            _ = SetWindowLong(handle, GwlExStyle, (GetWindowLong(handle, GwlExStyle) ^ WsExToolWindow) | WsExAppWindow);
+        }
+
+        public static int GetWindow(IntPtr handle) => GetWindowLong(handle, GwlExStyle);
+
+        public static string StartTrayIfNotRunning()
+        {
+            if (Process.GetProcessesByName("TcNo-Acc-Switcher-Tray").Length > 0) return "Already running";
+            if (!File.Exists("Tray_Users.json")) return "Tray users not found";
+            var startInfo = new ProcessStartInfo { FileName = "TcNo-Acc-Switcher-Tray.exe", CreateNoWindow = false, UseShellExecute = false };
+            try
+            {
+                _ = Process.Start(startInfo);
+                return "Started Tray";
+            }
+            catch (System.ComponentModel.Win32Exception win32Exception)
+            {
+                if (win32Exception.HResult != -2147467259) throw; // Throw is error is not: Requires elevation
+                try
+                {
+                    startInfo.UseShellExecute = true;
+                    startInfo.Verb = "runas";
+                    _ = Process.Start(startInfo);
+                    return "Started Tray";
+                }
+
+                catch (System.ComponentModel.Win32Exception win32Exception2)
+                {
+                    if (win32Exception2.HResult != -2147467259) throw; // Throw is error is not: cancelled by user
+                }
+            }
+
+            return "Could not start tray";
+        }
+        #endregion
 
         #region LOGGER
 

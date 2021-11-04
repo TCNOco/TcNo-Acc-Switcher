@@ -16,7 +16,7 @@ namespace TcNo_Acc_Switcher_Client_CEF
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+            Application.Run(new MainForm());
         }
     }
 }

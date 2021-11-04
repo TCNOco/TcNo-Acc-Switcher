@@ -218,120 +218,113 @@ label {
 
 /* Resize bars and corners */
 .resize {
-  &TopLeft,
-  &Top,
-  &TopRight,
-  &Right,
-  &BottomRight,
-  &Bottom,
-  &BottomLeft,
-  &Left {
-    -webkit-app-region: drag;
-    position: absolute;
-    background: #253340;
-  }
+    &TopLeft,
+    &Top,
+    &TopRight,
+    &Right,
+    &BottomRight,
+    &Bottom,
+    &BottomLeft,
+    &Left {
+        -webkit-app-region: drag;
+        position: absolute;
+        background: #253340;
+    }
+    /* Positions */
 
-  /* Positions */
+    &Top,
+    &TopLeft,
+    &TopRight {
+        top: 0;
+    }
 
-  &Top,
-  &TopLeft,
-  &TopRight {
-    top: 0;
-  }
+    &Bottom,
+    &BottomLeft,
+    &BottomRight {
+        bottom: 0;
+    }
 
-  &Bottom,
-  &BottomLeft,
-  &BottomRight {
-    bottom: 0;
-  }
+    &Left,
+    &TopLeft,
+    &BottomLeft {
+        left: 0;
+    }
 
-  &Left,
-  &TopLeft,
-  &BottomLeft {
-    left: 0;
-  }
+    &Right,
+    &TopRight,
+    &BottomRight {
+        right: 0;
+    }
+    /* Corners */
 
-  &Right,
-  &TopRight,
-  &BottomRight {
-    right: 0;
-  }
+    &TopLeft,
+    &TopRight,
+    &BottomRight,
+    &BottomLeft {
+        width: var(--resizeBarSize);
+        height: var(--resizeBarSize);
+        z-index: 2;
+        /* background-color: pink; */
+    }
+    /* Sides */
 
-  /* Corners */
+    &Top {
+        width: calc(100% - 138px);
+        pointer-events: all;
+        background: none !important;
+    }
 
-  &TopLeft,
-  &TopRight,
-  &BottomRight,
-  &BottomLeft {
-    width: var(--resizeBarSize);
-    height: var(--resizeBarSize);
-    z-index: 2;
+    &Bottom {
+        width: 100%;
+    }
 
-    /* background-color: pink; */
-  }
+    &Top,
+    &Bottom {
+        height: var(--resizeBarSize);
+        z-index: 1;
+        /* background-color: lime; */
+    }
 
-  /* Sides */
+    &Left,
+    &Right {
+        width: var(--resizeBarSize);
+        height: 100%;
+        z-index: 1;
+        /* background-color: lime; */
+    }
+    /* Cursors */
 
-  &Top {
-    width: calc(100% - 138px);
-    pointer-events: all;
-    background: none !important;
-  }
+    &TopLeft {
+        cursor: nw-resize;
+    }
 
-  &Bottom {
-    width: 100%;
-  }
+    &Top {
+        cursor: n-resize;
+    }
 
-  &Top,
-  &Bottom {
-    height: var(--resizeBarSize);
-    z-index: 1;
+    &TopRight {
+        cursor: ne-resize;
+    }
 
-    /* background-color: lime; */
-  }
+    &Right {
+        cursor: e-resize;
+    }
 
-  &Left,
-  &Right {
-    width: var(--resizeBarSize);
-    height: 100%;
-    z-index: 1;
+    &BottomRight {
+        cursor: se-resize;
+    }
 
-    /* background-color: lime; */
-  }
+    &Bottom {
+        cursor: s-resize;
+    }
 
-  /* Cursors */
+    &BottomLeft {
+        cursor: sw-resize;
+    }
 
-  &TopLeft {
-    cursor: nw-resize;
-  }
-
-  &Top {
-    cursor: n-resize;
-  }
-
-  &TopRight {
-    cursor: ne-resize;
-  }
-
-  &Right {
-    cursor: e-resize;
-  }
-
-  &BottomRight {
-    cursor: se-resize;
-  }
-
-  &Bottom {
-    cursor: s-resize;
-  }
-
-  &BottomLeft {
-    cursor: sw-resize;
-  }
-
-  &Left {
-    cursor: w-resize;
-  }
+    &Left {
+        cursor: w-resize;
+    }
 }
 
 
