@@ -57,7 +57,7 @@ namespace TcNo_Acc_Switcher_Client
         private static readonly Thread Server = new(RunServer);
         public static readonly AppSettings AppSettings = AppSettings.Instance;
         private static string _address = "";
-        private string _mainBrowser = "CEF"; // <CEF/WebView>
+        private string _mainBrowser = "WebView"; // <CEF/WebView>
 
         private static void RunServer()
         {
