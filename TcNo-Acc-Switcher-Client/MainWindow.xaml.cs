@@ -157,8 +157,8 @@ namespace TcNo_Acc_Switcher_Client
             {
                 InitializeChromium();
                 CefView = new ChromiumWebBrowser();
-                CefView.IsBrowserInitializedChanged += CefView_OnIsBrowserInitializedChanged;
                 CefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
+                CefView.KeyboardHandler = new CefKeyboardHandler();
             }
         }
 
@@ -189,34 +189,24 @@ namespace TcNo_Acc_Switcher_Client
             //CefView.FrameLoadEnd += OnFrameLoadEnd;
         }
 
-        private void CefView_OnIsBrowserInitializedChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (CefView.IsBrowserInitialized) CefView.ShowDevTools();
-        }
-
         private void CefView_OnJavascriptMessageReceived(object? sender, JavascriptMessageReceivedEventArgs e)
         {
             _ = Dispatcher.BeginInvoke(new Action(() =>
             {
                 var actionValue = (IDictionary<string, object>)e.Message;
-                var action = actionValue["action"].ToString();
                 var eventForwarder = new Headerbar.EventForwarder(new WindowInteropHelper(this).Handle);
-                switch (action)
+                switch (actionValue["action"].ToString())
                 {
                     case "WindowAction":
-                        Console.WriteLine("WindowAction: " + actionValue["value"]);
                         eventForwarder.WindowAction((int)actionValue["value"]);
                         break;
                     case "HideWindow":
-                        Console.WriteLine("HideWindow");
                         eventForwarder.HideWindow();
                         break;
                     case "MouseResizeDrag":
-                        Console.WriteLine("MouseResizeDrag: " + actionValue["value"]);
                         eventForwarder.MouseResizeDrag((int)actionValue["value"]);
                         break;
                     case "MouseDownDrag":
-                        Console.WriteLine("MouseDownDrag");
                         eventForwarder.MouseDownDrag();
                         break;
                 }
