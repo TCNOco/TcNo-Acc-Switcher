@@ -35,17 +35,9 @@ async function GetLangSub(key, obj) {
     });
 }
 
-
 function copyToClipboard(str) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", str);
 }
-
-window.UsingTcNoBrowser = false;
-function usingTcNoBrowser() {
-    window.UsingTcNoBrowser = true;
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UsingTcNoBrowser");
-}
-
 
 // FORGETTING ACCOUNTS
 async function forget(e) {

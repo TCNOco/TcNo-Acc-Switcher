@@ -14,6 +14,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -24,9 +25,13 @@ using System.Security.Principal;
 using System.Threading;
 using System.Web;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
+using CefSharp;
+using CefSharp.Wpf;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
@@ -34,6 +39,8 @@ using TcNo_Acc_Switcher_Server;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Shared;
+using MessageBox = System.Windows.MessageBox;
+using MessageBoxOptions = System.Windows.MessageBoxOptions;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using Point = System.Drawing.Point;
 
@@ -78,6 +85,8 @@ namespace TcNo_Acc_Switcher_Client
             return securityIdentifier is not null && securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
         }
 
+        private string _mainBrowser = "CEF"; // <CEF/WebView>
+
         public MainWindow()
         {
             // Set working directory to documents folder
@@ -98,13 +107,26 @@ namespace TcNo_Acc_Switcher_Client
             Server.IsBackground = true;
             Server.Start();
 
+            // Initialize correct browser
+            BrowserInit();
+
             // Initialise and connect to web server above
             InitializeComponent();
+            AddBrowser();
 
-            // Attempt to fix window showing as blank.
-            // See https://github.com/MicrosoftEdge/WebView2Feedback/issues/1077#issuecomment-856222593593
-            MView2.Visibility = Visibility.Hidden;
-            MView2.Visibility = Visibility.Visible;
+            if (_mainBrowser == "WebView")
+            {
+                // Attempt to fix window showing as blank.
+                // See https://github.com/MicrosoftEdge/WebView2Feedback/issues/1077#issuecomment-856222593593
+                MView2.Visibility = Visibility.Hidden;
+                MView2.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                CefView.BrowserSettings.WindowlessFrameRate = 60;
+                CefView.Visibility = Visibility.Visible;
+                CefView.Load("http://localhost:" + AppSettings.ServerPort + "/");
+            }
 
             MainBackground.Background = App.GetStylesheetColor("headerbarBackground", "#253340");
 
@@ -121,8 +143,92 @@ namespace TcNo_Acc_Switcher_Client
             }
         }
 
+        private ChromiumWebBrowser CefView;
+        private WebView2 MView2;
+        private void BrowserInit()
+        {
+            if (_mainBrowser == "WebView")
+            {
+                MView2 = new WebView2();
+                MView2.Initialized += MView2_OnInitialised;
+                MView2.NavigationCompleted += MView2_OnNavigationCompleted;
+            }
+            else if (_mainBrowser == "CEF")
+            {
+                InitializeChromium();
+                CefView = new ChromiumWebBrowser();
+                CefView.IsBrowserInitializedChanged += CefView_OnIsBrowserInitializedChanged;
+                CefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
+            }
+        }
+
+        private void AddBrowser()
+        {
+            if (_mainBrowser == "WebView") MainBackground.Children.Add(MView2);
+            else if (_mainBrowser == "CEF") MainBackground.Children.Add(CefView);
+        }
+
+        #region CEF
+        private void InitializeChromium()
+        {
+            Globals.DebugWriteLine(@"[Func:(Client-CEF)MainWindow.xaml.cs.InitializeChromium]");
+            CefSettings settings = new CefSettings()
+            {
+                CachePath = Path.Join(Globals.UserDataFolder, "CEF\\Cache"),
+                UserAgent = "TcNo-CEF 1.0",
+                UserDataPath = Path.Join(Globals.UserDataFolder, "CEF\\Data"),
+                WindowlessRenderingEnabled = false
+            };
+            settings.CefCommandLineArgs.Add("-off-screen-rendering-enabled", "0");
+            settings.CefCommandLineArgs.Add("--off-screen-frame-rate", "60");
+            settings.SetOffScreenRenderingBestPerformanceArgs();
+
+            Cef.Initialize(settings);
+            //CefView.DragHandler = new DragDropHandler();
+            //CefView.IsBrowserInitializedChanged += CefView_IsBrowserInitializedChanged;
+            //CefView.FrameLoadEnd += OnFrameLoadEnd;
+        }
+
+        private void CefView_OnIsBrowserInitializedChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (CefView.IsBrowserInitialized) CefView.ShowDevTools();
+        }
+
+        private void CefView_OnJavascriptMessageReceived(object? sender, JavascriptMessageReceivedEventArgs e)
+        {
+            _ = Dispatcher.BeginInvoke(new Action(() =>
+            {
+                var actionValue = (IDictionary<string, object>)e.Message;
+                var action = actionValue["action"].ToString();
+                var eventForwarder = new Headerbar.EventForwarder(new WindowInteropHelper(this).Handle);
+                switch (action)
+                {
+                    case "WindowAction":
+                        Console.WriteLine("WindowAction: " + actionValue["value"]);
+                        eventForwarder.WindowAction((int)actionValue["value"]);
+                        break;
+                    case "HideWindow":
+                        Console.WriteLine("HideWindow");
+                        eventForwarder.HideWindow();
+                        break;
+                    case "MouseResizeDrag":
+                        Console.WriteLine("MouseResizeDrag: " + actionValue["value"]);
+                        eventForwarder.MouseResizeDrag((int)actionValue["value"]);
+                        break;
+                    case "MouseDownDrag":
+                        Console.WriteLine("MouseDownDrag");
+                        eventForwarder.MouseDownDrag();
+                        break;
+                }
+            }));
+        }
+        #endregion
+
+
+        #region WebView
         private async void MView2_OnInitialised(object sender, EventArgs e)
         {
+            if (_mainBrowser != "WebView") return;
             try
             {
                 var env = await CoreWebView2Environment.CreateAsync(null, Globals.UserDataFolder);
@@ -150,6 +256,28 @@ namespace TcNo_Acc_Switcher_Client
             }
             //MView2.CoreWebView2.OpenDevToolsWindow();
         }
+        // For draggable regions:
+        // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
+        private void MViewAddForwarders()
+        {
+            if (_mainBrowser != "WebView") return;
+            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.MViewAddForwarders]");
+            var eventForwarder = new Headerbar.EventForwarder(new WindowInteropHelper(this).Handle);
+
+            try
+            {
+                MView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
+            }
+            catch (NullReferenceException)
+            {
+                // To mitigate: Object reference not set to an instance of an object - Was getting a few of these a day with CrashLog reports
+                if (MView2.IsInitialized)
+                    MView2.Reload();
+                else throw;
+            }
+            _ = MView2.Focus();
+        }
+        #endregion
 
         private void CoreWebView2OnProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
         {
@@ -168,6 +296,7 @@ namespace TcNo_Acc_Switcher_Client
         /// <param name="e"></param>
         private void ConsoleMessage(object sender, CoreWebView2DevToolsProtocolEventReceivedEventArgs e)
         {
+            if (_mainBrowser != "WebView") return;
             if (e?.ParameterObjectAsJson == null) return;
             var message = JObject.Parse(e.ParameterObjectAsJson);
             if (message.ContainsKey("exceptionDetails"))
@@ -220,27 +349,6 @@ namespace TcNo_Acc_Switcher_Client
             AppSettings.SaveSettings();
         }
 
-        // For draggable regions:
-        // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
-        private void MViewAddForwarders()
-        {
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.MViewAddForwarders]");
-            var eventForwarder = new Headerbar.EventForwarder(new WindowInteropHelper(this).Handle);
-
-            try
-            {
-                MView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
-            }
-            catch (NullReferenceException)
-            {
-                // To mitigate: Object reference not set to an instance of an object - Was getting a few of these a day with CrashLog reports
-                if (MView2.IsInitialized)
-                    MView2.Reload();
-                else throw;
-            }
-            _ = MView2.Focus();
-        }
-
         /// <summary>
         /// Rungs on WindowStateChange, to update window controls in the WebView2.
         /// </summary>
@@ -254,7 +362,8 @@ namespace TcNo_Acc_Switcher_Client
                 WindowState.Normal => "remove",
                 _ => ""
             };
-            _ = MView2.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
+            if (_mainBrowser == "WebView") _ = MView2.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
+            else if (_mainBrowser == "CEF") CefView.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
         }
 
         /// <summary>
@@ -272,6 +381,7 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         private void UrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
+            if (_mainBrowser != "WebView") return;
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
             Globals.WriteToLog(args.Uri);
 
@@ -344,10 +454,10 @@ namespace TcNo_Acc_Switcher_Client
         private static bool _firstLoad = true;
         private void MView2_OnNavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
         {
+            if (_mainBrowser != "WebView") return;
             if (!_firstLoad) return;
             MView2.Visibility = Visibility.Hidden;
             MView2.Visibility = Visibility.Visible;
-            MView2.ExecuteScriptAsync("UsingTcNoBrowser");
             _firstLoad = false;
         }
     }

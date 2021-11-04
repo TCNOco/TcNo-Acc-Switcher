@@ -135,6 +135,13 @@ function handleWindowControls() {
         if (evt.button === 0 && appRegion === "drag") {
             if (target.classList.length !== 0) {
                 const c = target.classList[0];
+                if (c === "headerbar" && navigator.appVersion.indexOf("TcNo-CEF") !== -1) {
+                    // User is dragging the title bar, and is on the CEF browser.
+                    CefSharp.PostMessage({ "action": "MouseDownDrag" });
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    return;
+                }
                 const value = (c === "resizeTopLeft" ? SysCommandSize.ScSizeHtTopLeft : (
                     c === "resizeTop" ? SysCommandSize.ScSizeHtTop : (
                         c === "resizeTopRight" ? SysCommandSize.ScSizeHtTopRight : (
