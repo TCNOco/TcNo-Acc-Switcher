@@ -49,6 +49,7 @@ Settings_Protocol: 'Enable tcno:\\ protocol (Recommended)'
 Settings_StartCentered: Start program centered
 Settings_WindowsAccent: Use the Windows Accent Colour
 Settings_HelpTranslate: "[Help translate]"
+Settings_Header_ActiveBrowser: "[Advanced] Set rendering engine:"
 Cleaning_Header_StartMenuShortcuts: 'Shortcuts for Start Menu:'
 Cleaning_Header_General: General Cleaning
 Cleaning_Header_LoginHistory: Clean my login history
@@ -85,6 +86,7 @@ Toast_ProtocolDisabledTitle: Protocol removed
 Toast_RestartAsAdmin: Please start as Admin and try again.
 Toast_RestartAfterClose: Please restart the program after clicking Close.
 Toast_RestartAfterCloseTitle: Accent color disabled
+Toast_RestartRequired: Restart to apply changes
 Toast_LoadStylesheetFailed: Failed to load stylesheet! See documents folder for details.
 Toast_BNet_Private: "{BTag}'s profile is private"
 Toast_BNet_StatsFail: "Error trying to get stats for {BTag}"

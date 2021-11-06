@@ -92,6 +92,7 @@ namespace TcNo_Acc_Switcher_Updater
         public static bool VerifyAndClose;
         public static bool QueueHashList;
         public static bool QueueCreateUpdate;
+        public static bool DownloadCef;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 
         private string _currentVersion = "";
@@ -253,6 +254,12 @@ namespace TcNo_Acc_Switcher_Updater
                 Environment.Exit(0);
             }
 
+            if (DownloadCef)
+            {
+                DownloadCefNow();
+                Environment.Exit(0);
+            }
+
             SetStatus("Checking version");
             // Try get version from Globals.dll
             _currentVersion = GetVersionFromGlobals();
@@ -396,6 +403,33 @@ namespace TcNo_Acc_Switcher_Updater
             const string newFolder = "TcNo-Acc-Switcher";
             DirSearchWithHash(newFolder, ref _newDict);
             File.WriteAllText(Path.Join(newFolder, "hashes.json"), JsonConvert.SerializeObject(_newDict, Formatting.Indented));
+        }
+
+        private void DownloadCefNow()
+        {
+            SetStatusAndLog("Preparing to install Chrome Embedded Framework");
+            SetStatusAndLog("Downloading CEF (~60MB)");
+            var downloadUrl = "https://tcno.co/Projects/AccSwitcher/updates/CEF.7z";
+            var updateFilePath = Path.Join(_updaterDirectory, "CEF.7z");
+            DownloadFile(new Uri(downloadUrl), updateFilePath);
+            SetStatusAndLog("Download complete.");
+
+            SetStatusAndLog("Extracting...");
+            var tempCef = Path.Join(_updaterDirectory, "../CEF");
+            using (var archiveFile = new ArchiveFile(updateFilePath))
+            {
+                archiveFile.Extract(tempCef, true); // extract all to parent folder (not updater)
+            }
+
+            SetStatusAndLog("Moving files...");
+            Directory.CreateDirectory("runtimes//win-x64//native");
+            MoveFilesRecursive(tempCef, "runtimes//win-x64//native");
+            RecursiveDelete(new DirectoryInfo(tempCef), false);
+            SetStatusAndLog("Done.");
+
+            SetStatusAndLog("Starting account switcher in 3 seconds.");
+            Thread.Sleep(3000);
+            LaunchAccSwitcher(null, null);
         }
 
         /// <summary>

@@ -48,7 +48,7 @@ namespace TcNo_Acc_Switcher_Updater
             }
             catch (AbandonedMutexException)
             {
-                // Just restarted 
+                // Just restarted
             }
         }
 
@@ -65,6 +65,9 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 switch (e.Args[i])
                 {
+                    case "downloadCEF":
+                        TcNo_Acc_Switcher_Updater.MainWindow.DownloadCef = true;
+                        break;
                     case "verify":
                         TcNo_Acc_Switcher_Updater.MainWindow.VerifyAndClose = true;
                         break;

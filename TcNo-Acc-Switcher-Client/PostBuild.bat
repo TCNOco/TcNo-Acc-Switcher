@@ -126,7 +126,21 @@ REN "net5.0-windows" "TcNo-Acc-Switcher"
 REM Copy out updater for update creation
 xcopy TcNo-Acc-Switcher\updater updater /E /H /C /I /Y
 
+REM Move win-x64 runtimes for CEF download & smaller main download
+mkdir CEF
+move TcNo-Acc-Switcher\runtimes\win-x64\native\libcef.dll CEF\libcef.dll
+move TcNo-Acc-Switcher\runtimes\win-x64\native\icudtl.dat CEF\icudtl.dat
+move TcNo-Acc-Switcher\runtimes\win-x64\native\resources.pak CEF\resources.pak
+move TcNo-Acc-Switcher\runtimes\win-x64\native\libGLESv2.dll CEF\libGLESv2.dll
+move TcNo-Acc-Switcher\runtimes\win-x64\native\d3dcompiler_47.dll CEF\d3dcompiler_47.dll
+move TcNo-Acc-Switcher\runtimes\win-x64\native\vk_swiftshader.dll CEF\vk_swiftshader.dll
+move TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.dll CEF\CefSharp.dll
+move TcNo-Acc-Switcher\runtimes\win-x64\native\chrome_elf.dll CEF\chrome_elf.dll
+move TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.BrowserSubprocess.Core.dll CEF\CefSharp.BrowserSubprocess.Core.dll
+
 REM Compress files
+echo Creating .7z CEF archive
+"%zip%" a -t7z -mmt24 -mx9  "CEF.7z" ".\CEF\*"
 echo Creating .7z archive
 "%zip%" a -t7z -mmt24 -mx9  "TcNo-Acc-Switcher.7z" ".\TcNo-Acc-Switcher\*"
 echo Done!

@@ -2,6 +2,7 @@
   "profiles": {
     "TcNo-Acc-Switcher-Updater": {
       "commandName": "Project",
+      "commandLineArgs": "downloadCEF",
       "remoteDebugEnabled": false,
       "remoteDebugMachine": "DESKTOP-C6ID9T9",
       "authenticationMode": "Windows"
