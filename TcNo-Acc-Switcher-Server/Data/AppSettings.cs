@@ -31,7 +31,8 @@ using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
-using Task = TcNo_Acc_Switcher_Server.Pages.General.Classes.Task;
+using Task = System.Threading.Tasks.Task;
+using TcNoTask = TcNo_Acc_Switcher_Server.Pages.General.Classes.Task;
 
 
 namespace TcNo_Acc_Switcher_Server.Data
@@ -95,6 +96,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("ActiveTheme")]
         public string ActiveTheme { get => _instance._activeTheme; set => _instance._activeTheme = value; }
 
+        private string _activeBrowser = "WebView";
+        [JsonProperty("ActiveBrowser")]
+        public string ActiveBrowser { get => _instance._activeBrowser; set => _instance._activeBrowser = value; }
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
@@ -123,7 +127,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             ]";
 
         [JSInvokable]
-        public static async System.Threading.Tasks.Task HidePlatform(string platform)
+        public static async Task HidePlatform(string platform)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.HidePlatform]");
             _ = _instance.DisabledPlatforms.Add(platform);
@@ -131,7 +135,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             await AppData.ReloadPage();
         }
 
-        public static async System.Threading.Tasks.Task ShowPlatform(string platform)
+        public static async Task ShowPlatform(string platform)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.ShowPlatform]");
             _ = _instance.DisabledPlatforms.Remove(platform);
@@ -207,12 +211,18 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         /// <returns></returns>
         [JSInvokable]
-        public static Task<bool> GetTrayMinimizeNotExit() => System.Threading.Tasks.Task.FromResult(_instance.TrayMinimizeNotExit);
+        public static Task<bool> GetTrayMinimizeNotExit() => Task.FromResult(_instance.TrayMinimizeNotExit);
 
         /// <summary>
-        /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
+        /// Sets the active browser
         /// </summary>
-        public string GetCssBlock() => ".streamerCensor { display: " + (_instance.StreamerModeEnabled && _instance.StreamerModeTriggered ? "none!important" : "block") + "}";
+        public Task SetActiveBrowser(string browser)
+        {
+            ActiveBrowser = browser;
+            _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_RestartRequired"], Lang["Notice"], "toastarea");
+            return Task.CompletedTask;
+        }
+
 
         public void ResetSettings()
         {
@@ -241,10 +251,15 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         #region STYLESHEET
         /// <summary>
+        /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
+        /// </summary>
+        public string GetCssBlock() => ".streamerCensor { display: " + (_instance.StreamerModeEnabled && _instance.StreamerModeTriggered ? "none!important" : "block") + "}";
+
+        /// <summary>
         /// Swaps in a requested stylesheet, and loads styles from file.
         /// </summary>
         /// <param name="swapTo">Stylesheet name (without .json) to copy and load</param>
-        public async System.Threading.Tasks.Task SwapStylesheet(string swapTo)
+        public async Task SwapStylesheet(string swapTo)
         {
             ActiveTheme = swapTo.Replace(" ", "_");
             try
@@ -396,7 +411,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
             _instance._startMenu = File.Exists(Path.Join(Shortcut.StartMenu, "TcNo Account Switcher.lnk"));
             _instance._startMenuPlatforms = Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
-            _instance._trayStartup = Task.StartWithWindows_Enabled();
+            _instance._trayStartup = TcNoTask.StartWithWindows_Enabled();
 
             if (OperatingSystem.IsWindows())
                 _instance._protocolEnabled = Protocol_IsEnabled();
@@ -559,7 +574,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void Task_Toggle()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.Task_Toggle]");
-            Task.StartWithWindows_Toggle(!TrayStartup);
+            TcNoTask.StartWithWindows_Toggle(!TrayStartup);
         }
 
         public void StartNow()

@@ -57,7 +57,7 @@ namespace TcNo_Acc_Switcher_Client
         private static readonly Thread Server = new(RunServer);
         public static readonly AppSettings AppSettings = AppSettings.Instance;
         private static string _address = "";
-        private string _mainBrowser = "WebView"; // <CEF/WebView>
+        private string _mainBrowser = AppSettings.ActiveBrowser; // <CEF/WebView>
 
         private static void RunServer()
         {
@@ -252,12 +252,33 @@ namespace TcNo_Acc_Switcher_Client
             catch (WebView2RuntimeNotFoundException)
             {
                 // WebView2 is not installed!
-                _ = MessageBox.Show("WebView2 Runtime is not installed. I've opened the website you need to download it from.", "Required runtime not found!", MessageBoxButton.OK, MessageBoxImage.Error);
-                _ = Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
+                // Create counter for WebView failed checks
+                var failFile = Path.Join(Globals.UserDataFolder, "WebViewNotInstalled");
+                if (!File.Exists(failFile))
+                    await File.WriteAllTextAsync(failFile, "1");
+                else
                 {
-                    UseShellExecute = true,
-                    Verb = "open"
-                });
+                    if (await File.ReadAllTextAsync(failFile) == "1") await File.WriteAllTextAsync(failFile, "2");
+                    else
+                    {
+                        AppSettings.ActiveBrowser = "CEF";
+                        AppSettings.SaveSettings();
+                        _ = MessageBox.Show("WebView2 Runtime is not installed. The program will now download and use the fallback CEF browser. (Less performance, more compatibility)", "Required runtime not found! Using fallback.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        TcNo_Acc_Switcher_Server.Pages.Index.AutoStartUpdaterAsAdmin("downloadCEF");
+                        File.Delete(failFile);
+                        Environment.Exit(1);
+                    }
+                }
+
+                var result = MessageBox.Show("WebView2 Runtime is not installed. I've opened the website you need to download it from.", "Required runtime not found!", MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                if (result == MessageBoxResult.OK)
+                {
+                    _ = Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
+                    {
+                        UseShellExecute = true,
+                        Verb = "open"
+                    });
+                } else Environment.Exit(1);
             }
             //MView2.CoreWebView2.OpenDevToolsWindow();
         }
