@@ -24,6 +24,10 @@
     <None Remove="TcNoAccSw-Icon-100x100.png" />
     <None Remove="themes\Default.yaml" />
     <None Remove="themes\Dracula_Cyan.yaml" />
+    <None Remove="themes\Dracula_Cyan\info.yaml" />
+    <None Remove="themes\Dracula_Cyan\style.scss" />
+    <None Remove="themes\Old_Default\info.yaml" />
+    <None Remove="themes\Old_Default\style.scss" />
   </ItemGroup>
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\site.css" />
@@ -31,19 +35,32 @@
   <ItemGroup>
     <Content Include="themes\Default.yaml" />
     <Content Include="themes\Dracula_Cyan.yaml" />
+    <Content Include="themes\Dracula_Cyan\info.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="themes\Dracula_Cyan\style.scss">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="themes\Old_Default\info.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="themes\Old_Default\style.scss">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Gameloop.Vdf" Version="0.6.1" />
     <PackageReference Include="Gameloop.Vdf.JsonConverter" Version="0.2.1" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.36" />
-    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="8.3.2" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="5.0.10" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.37" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="5.0.11" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1020.30" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SharpScss" Version="2.0.0" />
     <PackageReference Include="SteamKit2" Version="2.3.0" />
-    <PackageReference Include="Svg.Skia" Version="0.5.7.1" />
+    <PackageReference Include="Svg.Skia" Version="0.5.8.3" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
-    <PackageReference Include="TaskScheduler" Version="2.9.1" />
+    <PackageReference Include="TaskScheduler" Version="2.9.2" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
   <ItemGroup>
