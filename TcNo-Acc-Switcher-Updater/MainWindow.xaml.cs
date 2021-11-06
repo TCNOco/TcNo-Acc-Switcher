@@ -297,7 +297,7 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 _mainBrowser = JObject.Parse(UGlobals.ReadAllText(_windowSettings))["ActiveBrowser"]?.ToString();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //
             }

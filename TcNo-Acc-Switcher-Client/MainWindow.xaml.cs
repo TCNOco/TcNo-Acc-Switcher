@@ -95,7 +95,7 @@ namespace TcNo_Acc_Switcher_Client
             if (Directory.Exists(Path.Join(Globals.AppDataFolder, "wwwroot")))
             {
                 if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
-                    RestartAsAdmin("");
+                    Restart("", true);
                 if (Directory.Exists(Globals.OriginalWwwroot)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Globals.OriginalWwwroot), false);
                 Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
             }
@@ -155,6 +155,8 @@ namespace TcNo_Acc_Switcher_Client
             }
             else if (_mainBrowser == "CEF")
             {
+                CheckCefFiles();
+
                 InitializeChromium();
                 CefView = new ChromiumWebBrowser();
                 CefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
@@ -170,12 +172,6 @@ namespace TcNo_Acc_Switcher_Client
             // Back
             e.Handled = true;
             CefView.ExecuteScriptAsync("btnBack_Click()");
-        }
-
-        private void CefViewOnAddressChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
-            UrlChanged(e.NewValue.ToString());
         }
 
         private void AddBrowser()
@@ -203,6 +199,37 @@ namespace TcNo_Acc_Switcher_Client
             //CefView.DragHandler = new DragDropHandler();
             //CefView.IsBrowserInitializedChanged += CefView_IsBrowserInitializedChanged;
             //CefView.FrameLoadEnd += OnFrameLoadEnd;
+        }
+
+        /// <summary>
+        /// Check if all CEF Files are available. If not > Close and download, or revert to WebView.
+        /// </summary>
+        private void CheckCefFiles()
+        {
+            string[] CefFiles = { "libcef.dll", "icudtl.dat", "resources.pak", "libGLESv2.dll", "d3dcompiler_47.dll", "vk_swiftshader.dll", "CefSharp.dll", "chrome_elf.dll", "CefSharp.BrowserSubprocess.Core.dll" };
+            foreach (var cefFile in CefFiles)
+            {
+                if (File.Exists(Path.Join(Globals.AppDataFolder, "runtimes\\win-x64\\native\\", cefFile))) continue;
+
+                var result = MessageBox.Show("CEF files not found. Download? (No reverts to WebView2, which requires WebView2 Runtime to be installed)", "Required runtime not found!", MessageBoxButton.YesNo, MessageBoxImage.Error);
+                if (result == MessageBoxResult.Yes)
+                {
+                    TcNo_Acc_Switcher_Server.Pages.Index.AutoStartUpdaterAsAdmin("downloadCEF");
+                    Environment.Exit(1);
+                }
+                else
+                {
+                    AppSettings.ActiveBrowser = "WebView";
+                    AppSettings.SaveSettings();
+                    Restart();
+                }
+            }
+        }
+
+        private void CefViewOnAddressChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
+            UrlChanged(e.NewValue.ToString());
         }
 
         private void CefView_OnJavascriptMessageReceived(object? sender, JavascriptMessageReceivedEventArgs e)
@@ -337,7 +364,7 @@ namespace TcNo_Acc_Switcher_Client
         {
             Globals.WriteToLog(uri);
 
-            if (uri.Contains("RESTART_AS_ADMIN")) RestartAsAdmin(uri.Contains("arg=") ? uri.Split("arg=")[1] : "");
+            if (uri.Contains("RESTART_AS_ADMIN")) Restart(uri.Contains("arg=") ? uri.Split("arg=")[1] : "", true);
             if (uri.Contains("EXIT_APP")) Environment.Exit(0);
 
             if (!uri.Contains("?")) return;
@@ -480,7 +507,7 @@ namespace TcNo_Acc_Switcher_Client
             AppSettings.SaveSettings();
         }
 
-        public static void RestartAsAdmin(string args)
+        public static void Restart(string args = "", bool admin = false)
         {
             var proc = new ProcessStartInfo
             {
@@ -488,7 +515,7 @@ namespace TcNo_Acc_Switcher_Client
                 FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher.exe",
                 UseShellExecute = true,
                 Arguments = args,
-                Verb = "runas"
+                Verb = admin ? "runas" : ""
             };
             try
             {
