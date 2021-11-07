@@ -70,9 +70,9 @@ namespace TcNo_Acc_Switcher_Client
 
             var attempts = 0;
             Exception last;
-            while (!Program.MainProgram(new[] { _address }, out last) && attempts < 10)
+            while (!Program.MainProgram(new[] { _address, "nobrowser" }, out last) && attempts < 10)
             {
-                NewPort();
+                Program.NewPort();
                 _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
                 attempts++;
             }
@@ -100,7 +100,7 @@ namespace TcNo_Acc_Switcher_Client
                 Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
             }
 
-            FindOpenPort();
+            Program.FindOpenPort();
             _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
 
             // Start web server
@@ -162,8 +162,9 @@ namespace TcNo_Acc_Switcher_Client
                 CefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
                 CefView.AddressChanged += CefViewOnAddressChanged;
                 CefView.PreviewMouseUp += MainBackgroundOnPreviewMouseUp;
-                CefView.KeyboardHandler = new CefKeyboardHandler();
                 CefView.ConsoleMessage += CefViewOnConsoleMessage;
+                CefView.KeyboardHandler = new CefKeyboardHandler();
+                CefView.MenuHandler = new CefMenuHandler();
             }
         }
 
@@ -218,7 +219,7 @@ namespace TcNo_Acc_Switcher_Client
                 CachePath = Path.Join(Globals.UserDataFolder, "CEF\\Cache"),
                 UserAgent = "TcNo-CEF 1.0",
                 UserDataPath = Path.Join(Globals.UserDataFolder, "CEF\\Data"),
-                WindowlessRenderingEnabled = false
+                WindowlessRenderingEnabled = true
             };
             settings.CefCommandLineArgs.Add("-off-screen-rendering-enabled", "0");
             settings.CefCommandLineArgs.Add("--off-screen-frame-rate", "60");
@@ -484,29 +485,6 @@ namespace TcNo_Acc_Switcher_Client
                 }
 #endif
             }
-        }
-
-        /// <summary>
-        /// Find first available port up from requested
-        /// </summary>
-        private static void FindOpenPort()
-        {
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.FindOpenPort]");
-            // Check if port available:
-            var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
-            var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
-            while (true)
-            {
-                if (tcpConnInfoArray.All(x => x.LocalEndPoint.Port != AppSettings.ServerPort)) break;
-                NewPort();
-            }
-        }
-
-        private static void NewPort()
-        {
-            var r = new Random();
-            AppSettings.ServerPort = r.Next(20000, 40000); // Random int [Why this range? See: https://www.sciencedirect.com/topics/computer-science/registered-port & netsh interface ipv4 show excludedportrange protocol=tcp]
-            AppSettings.SaveSettings();
         }
 
         /// <summary>
