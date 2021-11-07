@@ -163,6 +163,35 @@ namespace TcNo_Acc_Switcher_Client
                 CefView.AddressChanged += CefViewOnAddressChanged;
                 CefView.PreviewMouseUp += MainBackgroundOnPreviewMouseUp;
                 CefView.KeyboardHandler = new CefKeyboardHandler();
+                CefView.ConsoleMessage += CefViewOnConsoleMessage;
+            }
+        }
+
+        private void CefViewOnConsoleMessage(object? sender, ConsoleMessageEventArgs e)
+        {
+            if (e.Level == LogSeverity.Error)
+            {
+                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - CEF EXCEPTION (Handled: refreshed): " + e.Message);
+                _refreshFixAttempts++;
+                if (_refreshFixAttempts < 5)
+                    CefView.Reload();
+                else
+                    throw new Exception(
+                        $"Refreshed too many times in attempt to fix issue. Error: {e.Message}");
+            }
+            else
+            {
+#if RELEASE
+                try
+                {
+                    // ReSharper disable once PossibleNullReferenceException
+                    Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - CEF: " + e.Message.Replace("\n", "\n\t"));
+                }
+                catch (Exception exception)
+                {
+                    Globals.WriteToLog(exception.ToString());
+                }
+#endif
             }
         }
 
