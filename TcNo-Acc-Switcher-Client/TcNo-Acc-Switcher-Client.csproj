@@ -40,6 +40,7 @@
     <None Update="inc\TcNo-Acc-Switcher.runtimeconfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
     <None Include="..\TcNo-Acc-Switcher-Server\wwwroot\img\TcNoAccSw-Icon-100x100.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>

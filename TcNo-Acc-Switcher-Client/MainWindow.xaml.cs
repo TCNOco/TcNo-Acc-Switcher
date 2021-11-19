@@ -57,7 +57,7 @@ namespace TcNo_Acc_Switcher_Client
         private static readonly Thread Server = new(RunServer);
         public static readonly AppSettings AppSettings = AppSettings.Instance;
         private static string _address = "";
-        private string _mainBrowser = AppSettings.ActiveBrowser; // <CEF/WebView>
+        private readonly string _mainBrowser = AppSettings.ActiveBrowser; // <CEF/WebView>
 
         private static void RunServer()
         {
@@ -118,14 +118,14 @@ namespace TcNo_Acc_Switcher_Client
             {
                 // Attempt to fix window showing as blank.
                 // See https://github.com/MicrosoftEdge/WebView2Feedback/issues/1077#issuecomment-856222593593
-                MView2.Visibility = Visibility.Hidden;
-                MView2.Visibility = Visibility.Visible;
+                _mView2.Visibility = Visibility.Hidden;
+                _mView2.Visibility = Visibility.Visible;
             }
             else
             {
-                CefView.BrowserSettings.WindowlessFrameRate = 60;
-                CefView.Visibility = Visibility.Visible;
-                CefView.Load("http://localhost:" + AppSettings.ServerPort + "/");
+                _cefView.BrowserSettings.WindowlessFrameRate = 60;
+                _cefView.Visibility = Visibility.Visible;
+                _cefView.Load("http://localhost:" + AppSettings.ServerPort + "/");
             }
 
             MainBackground.Background = App.GetStylesheetColor("headerbarBackground", "#253340");
@@ -136,35 +136,34 @@ namespace TcNo_Acc_Switcher_Client
             // Each window in the program would have its own size. IE Resize for Steam, and more.
 
             // Center:
-            if (AppSettings.Instance.StartCentered)
-            {
-                Left = (SystemParameters.PrimaryScreenWidth / 2) - (Width / 2);
-                Top = (SystemParameters.PrimaryScreenHeight / 2) - (Height / 2);
-            }
+            if (!AppSettings.Instance.StartCentered) return;
+            Left = (SystemParameters.PrimaryScreenWidth / 2) - (Width / 2);
+            Top = (SystemParameters.PrimaryScreenHeight / 2) - (Height / 2);
         }
 
-        private ChromiumWebBrowser CefView;
-        private WebView2 MView2;
+        private ChromiumWebBrowser _cefView;
+        private WebView2 _mView2;
         private void BrowserInit()
         {
-            if (_mainBrowser == "WebView")
+            switch (_mainBrowser)
             {
-                MView2 = new WebView2();
-                MView2.Initialized += MView2_OnInitialised;
-                MView2.NavigationCompleted += MView2_OnNavigationCompleted;
-            }
-            else if (_mainBrowser == "CEF")
-            {
-                CheckCefFiles();
+                case "WebView":
+                    _mView2 = new WebView2();
+                    _mView2.Initialized += MView2_OnInitialised;
+                    _mView2.NavigationCompleted += MView2_OnNavigationCompleted;
+                    break;
+                case "CEF":
+                    CheckCefFiles();
 
-                InitializeChromium();
-                CefView = new ChromiumWebBrowser();
-                CefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
-                CefView.AddressChanged += CefViewOnAddressChanged;
-                CefView.PreviewMouseUp += MainBackgroundOnPreviewMouseUp;
-                CefView.ConsoleMessage += CefViewOnConsoleMessage;
-                CefView.KeyboardHandler = new CefKeyboardHandler();
-                CefView.MenuHandler = new CefMenuHandler();
+                    InitializeChromium();
+                    _cefView = new ChromiumWebBrowser();
+                    _cefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
+                    _cefView.AddressChanged += CefViewOnAddressChanged;
+                    _cefView.PreviewMouseUp += MainBackgroundOnPreviewMouseUp;
+                    _cefView.ConsoleMessage += CefViewOnConsoleMessage;
+                    _cefView.KeyboardHandler = new CefKeyboardHandler();
+                    _cefView.MenuHandler = new CefMenuHandler();
+                    break;
             }
         }
 
@@ -175,7 +174,7 @@ namespace TcNo_Acc_Switcher_Client
                 Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - CEF EXCEPTION (Handled: refreshed): " + e.Message);
                 _refreshFixAttempts++;
                 if (_refreshFixAttempts < 5)
-                    CefView.Reload();
+                    _cefView.Reload();
                 else
                     throw new Exception(
                         $"Refreshed too many times in attempt to fix issue. Error: {e.Message}");
@@ -201,20 +200,20 @@ namespace TcNo_Acc_Switcher_Client
             if (e.ChangedButton != MouseButton.XButton1 && e.ChangedButton != MouseButton.XButton2) return;
             // Back
             e.Handled = true;
-            CefView.ExecuteScriptAsync("btnBack_Click()");
+            _cefView.ExecuteScriptAsync("btnBack_Click()");
         }
 
         private void AddBrowser()
         {
-            if (_mainBrowser == "WebView") MainBackground.Children.Add(MView2);
-            else if (_mainBrowser == "CEF") MainBackground.Children.Add(CefView);
+            if (_mainBrowser == "WebView") MainBackground.Children.Add(_mView2);
+            else if (_mainBrowser == "CEF") MainBackground.Children.Add(_cefView);
         }
 
         #region CEF
-        private void InitializeChromium()
+        private static void InitializeChromium()
         {
             Globals.DebugWriteLine(@"[Func:(Client-CEF)MainWindow.xaml.cs.InitializeChromium]");
-            CefSettings settings = new CefSettings()
+            var settings = new CefSettings()
             {
                 CachePath = Path.Join(Globals.UserDataFolder, "CEF\\Cache"),
                 UserAgent = "TcNo-CEF 1.0",
@@ -234,10 +233,10 @@ namespace TcNo_Acc_Switcher_Client
         /// <summary>
         /// Check if all CEF Files are available. If not > Close and download, or revert to WebView.
         /// </summary>
-        private void CheckCefFiles()
+        private static void CheckCefFiles()
         {
-            string[] CefFiles = { "libcef.dll", "icudtl.dat", "resources.pak", "libGLESv2.dll", "d3dcompiler_47.dll", "vk_swiftshader.dll", "CefSharp.dll", "chrome_elf.dll", "CefSharp.BrowserSubprocess.Core.dll" };
-            foreach (var cefFile in CefFiles)
+            string[] cefFiles = { "libcef.dll", "icudtl.dat", "resources.pak", "libGLESv2.dll", "d3dcompiler_47.dll", "vk_swiftshader.dll", "CefSharp.dll", "chrome_elf.dll", "CefSharp.BrowserSubprocess.Core.dll" };
+            foreach (var cefFile in cefFiles)
             {
                 if (File.Exists(Path.Join(Globals.AppDataFolder, "runtimes\\win-x64\\native\\", cefFile))) continue;
 
@@ -259,7 +258,7 @@ namespace TcNo_Acc_Switcher_Client
         private void CefViewOnAddressChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
-            UrlChanged(e.NewValue.ToString());
+            UrlChanged(e.NewValue.ToString() ?? string.Empty);
         }
 
         private void CefView_OnJavascriptMessageReceived(object? sender, JavascriptMessageReceivedEventArgs e)
@@ -294,17 +293,17 @@ namespace TcNo_Acc_Switcher_Client
             try
             {
                 var env = await CoreWebView2Environment.CreateAsync(null, Globals.UserDataFolder);
-                await MView2.EnsureCoreWebView2Async(env);
-                MView2.CoreWebView2.Settings.UserAgent = "TcNo 1.0";
+                await _mView2.EnsureCoreWebView2Async(env);
+                _mView2.CoreWebView2.Settings.UserAgent = "TcNo 1.0";
 
-                MView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
+                _mView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
                 MViewAddForwarders();
-                MView2.NavigationStarting += MViewUrlChanged;
-                MView2.CoreWebView2.ProcessFailed += CoreWebView2OnProcessFailed;
+                _mView2.NavigationStarting += MViewUrlChanged;
+                _mView2.CoreWebView2.ProcessFailed += CoreWebView2OnProcessFailed;
 
-                MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
-                MView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown").DevToolsProtocolEventReceived += ConsoleMessage;
-                _ = await MView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
+                _mView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
+                _mView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown").DevToolsProtocolEventReceived += ConsoleMessage;
+                _ = await _mView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
             }
             catch (WebView2RuntimeNotFoundException)
             {
@@ -356,16 +355,16 @@ namespace TcNo_Acc_Switcher_Client
 
             try
             {
-                MView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
+                _mView2.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
             }
             catch (NullReferenceException)
             {
                 // To mitigate: Object reference not set to an instance of an object - Was getting a few of these a day with CrashLog reports
-                if (MView2.IsInitialized)
-                    MView2.Reload();
+                if (_mView2.IsInitialized)
+                    _mView2.Reload();
                 else throw;
             }
-            _ = MView2.Focus();
+            _ = _mView2.Focus();
         }
         private void CoreWebView2OnProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
         {
@@ -379,8 +378,8 @@ namespace TcNo_Acc_Switcher_Client
         private void MView2_OnNavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
         {
             if (!_firstLoad) return;
-            MView2.Visibility = Visibility.Hidden;
-            MView2.Visibility = Visibility.Visible;
+            _mView2.Visibility = Visibility.Hidden;
+            _mView2.Visibility = Visibility.Visible;
             _firstLoad = false;
         }
         #endregion
@@ -417,13 +416,13 @@ namespace TcNo_Acc_Switcher_Client
                 if (result != true) return;
                 if (_mainBrowser == "WebView")
                 {
-                    _ = MView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
-                    _ = MView2.ExecuteScriptAsync("Modal_SetFilepath(" +
+                    _ = _mView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
+                    _ = _mView2.ExecuteScriptAsync("Modal_SetFilepath(" +
                                                   JsonConvert.SerializeObject(dlg.FileName[..dlg.FileName.LastIndexOf('\\')]) + ")");
                 } else if (_mainBrowser == "CEF")
                 {
-                    CefView.ExecuteScriptAsync("Modal_RequestedLocated(true)");
-                    CefView.ExecuteScriptAsync("Modal_SetFilepath(" +
+                    _cefView.ExecuteScriptAsync("Modal_RequestedLocated(true)");
+                    _cefView.ExecuteScriptAsync("Modal_SetFilepath(" +
                                                JsonConvert.SerializeObject(dlg.FileName[..dlg.FileName.LastIndexOf('\\')]) + ")");
                 }
             }
@@ -442,8 +441,8 @@ namespace TcNo_Acc_Switcher_Client
                 if (result != true) return;
                 File.Copy(dlg.FileName, imageDest, true);
 
-                if (_mainBrowser == "WebView") MView2.Reload();
-                else if (_mainBrowser == "CEF") CefView.Reload();
+                if (_mainBrowser == "WebView") _mView2.Reload();
+                else if (_mainBrowser == "CEF") _cefView.Reload();
             }
         }
         #endregion
@@ -465,7 +464,7 @@ namespace TcNo_Acc_Switcher_Client
                 Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION (Handled: refreshed): " + message.SelectToken("exceptionDetails.exception.description"));
                 _refreshFixAttempts++;
                 if (_refreshFixAttempts < 5)
-                    MView2.Reload();
+                    _mView2.Reload();
                 else throw new Exception($"Refreshed too many times in attempt to fix issue. Error: {message.SelectToken("exceptionDetails.exception.description")}");
             }
             else
@@ -500,8 +499,8 @@ namespace TcNo_Acc_Switcher_Client
                 WindowState.Normal => "remove",
                 _ => ""
             };
-            if (_mainBrowser == "WebView") _ = MView2.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
-            else if (_mainBrowser == "CEF") CefView.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
+            if (_mainBrowser == "WebView") _ = _mView2.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
+            else if (_mainBrowser == "CEF") _cefView.ExecuteScriptAsync("document.body.classList." + state + "('maximised')");
         }
 
         /// <summary>

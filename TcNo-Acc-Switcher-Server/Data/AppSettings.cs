@@ -154,6 +154,8 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private (float, float, float) _windowsAccentColorHsl = (0, 0, 0);
         [JsonIgnore] public (float, float, float) WindowsAccentColorHsl { get => _instance._windowsAccentColorHsl; set => _instance._windowsAccentColorHsl = value; }
+
+        [SupportedOSPlatform("windows")]
         [JsonIgnore] public (int, int, int) WindowsAccentColorInt => GetAccentColor();
 
         // Constants

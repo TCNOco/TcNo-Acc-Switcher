@@ -15,6 +15,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.Versioning;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 
@@ -30,8 +31,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         public string Desc { get; set; }
         public string Args { get; set; }
 
+#pragma warning disable CA2211 // Non-constant fields should not be visible
         public static string Desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         public static string StartMenu = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Programs), @"TcNo Account Switcher\");
+#pragma warning restore CA2211 // Non-constant fields should not be visible
 
         // Library class used to see if a shortcut exists.
         public static string ParentDirectory(string dir) => dir[..dir.LastIndexOf(Path.DirectorySeparatorChar)];
@@ -166,6 +169,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="bgImg">Background image, platform</param>
         /// <param name="fgImg">Foreground image, user image</param>
         /// <param name="iconName">Filename, unique so stored without being overwritten</param>
+        [SupportedOSPlatform("windows")]
         public void CreateCombinedIcon(string bgImg, string fgImg, string iconName)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateCombinedIcon] bgImg={bgImg}, fgImg={fgImg.Substring(fgImg.Length - 6, 6)}, iconName=hidden");

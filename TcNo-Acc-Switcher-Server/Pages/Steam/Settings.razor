@@ -83,7 +83,7 @@
                         </button>
                     </div>
                 </div>
-                
+
 
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowAccUsername" @bind="_steam.ShowAccUsername"><label class="form-check-label" for="Steam_ShowAccUsername"></label></div><label for="Steam_ShowAccUsername">@_locale["Steam_ShowAccUsername"]<br></label>
             </div>
@@ -140,9 +140,10 @@
     }
 
     private string _selectedState = Data.Settings.Steam.StateToString(Data.Settings.Steam.Instance.OverrideState);
-    private async Task DefaultState(int state)
+    private Task DefaultState(int state)
     {
         Data.Settings.Steam.Instance.OverrideState = state;
         _selectedState = Data.Settings.Steam.StateToString(state);
+        return Task.CompletedTask;
     }
 }

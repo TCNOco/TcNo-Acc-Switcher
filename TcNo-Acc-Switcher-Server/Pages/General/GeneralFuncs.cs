@@ -140,7 +140,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeletedInvalidImage] filename={filename.Substring(filename.Length - 8, 8)}");
             try
             {
-                if (File.Exists(filename) && !IsValidGdiPlusImage(filename)) // Delete image if is not as valid, working image.
+                if (File.Exists(filename) && OperatingSystem.IsWindows() && !IsValidGdiPlusImage(filename)) // Delete image if is not as valid, working image.
                 {
                     File.Delete(filename);
                     return true;
@@ -168,6 +168,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="filename">File path of image to be checked</param>
         /// <returns>Whether image is a valid file or not</returns>
+        [SupportedOSPlatform("windows")]
         private static bool IsValidGdiPlusImage(string filename)
         {
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.IsValidGdiPlusImage] filename={filename.Substring(filename.Length - 8, 8)}");
@@ -777,7 +778,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                 // Arguments need a space just before, for some reason.
                 if (args.Length > 1 && args[0] != ' ') args = ' ' + args;
-                
+
                 // Start the target process with the new token.
                 var si = new StartupInfo();
                 var pi = new ProcessInformation();
@@ -886,7 +887,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]
         private static extern bool OpenProcessToken(IntPtr h, int acc, ref IntPtr phtok);
 
-        [DllImport("advapi32.dll", SetLastError = true)]
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern bool LookupPrivilegeValue(string host, string name, ref Luid pluid);
 
         [DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]

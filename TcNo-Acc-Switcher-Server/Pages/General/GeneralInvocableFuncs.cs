@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
@@ -287,6 +288,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="accName">Account name of account to swap to</param>
         /// <param name="args">(Optional) arguments for shortcut</param>
         [JSInvokable]
+        [SupportedOSPlatform("windows")]
         public static void CreateShortcut(string page, string accId, string accName, string args = "")
         {
             Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
@@ -434,7 +436,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="platform"></param>
         /// <returns>

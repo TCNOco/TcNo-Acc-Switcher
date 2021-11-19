@@ -35,7 +35,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
 
             var style = AppSettings.Instance.Stylesheet;
 
-            if (AppSettings.Instance.WindowsAccent)
+            if (OperatingSystem.IsWindows() && AppSettings.Instance.WindowsAccent)
             {
                 var start = style.IndexOf("--accent:", StringComparison.Ordinal);
                 var end = style.IndexOf(";", start, StringComparison.Ordinal) - start;

@@ -18,6 +18,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using ImageMagick;
 using SkiaSharp;
 using Svg.Skia;
@@ -49,14 +50,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         private const ushort PngColorPlanes = 1;
 
         /// <summary>
-        /// Saves the specified <see cref="Bitmap"/> objects as a single 
+        /// Saves the specified <see cref="Bitmap"/> objects as a single
         /// icon into the output stream.
         /// </summary>
         /// <param name="images">The bitmaps to save as an icon.</param>
         /// <param name="stream">The output stream.</param>
+        [SupportedOSPlatform("windows")]
         public static void SavePngsAsIcon(IEnumerable<Bitmap> images, Stream stream)
         {
             Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.SavePngsAsIcon]");
+            if (!OperatingSystem.IsWindows()) return;
             if (images == null)
                 throw new ArgumentNullException(nameof(images));
             if (stream == null)
@@ -99,6 +102,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         private static void ThrowForInvalidPng(IEnumerable<Bitmap> images)
         {
             Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.ThrowForInvalidPng]");
+            if (!OperatingSystem.IsWindows()) return;
+
             foreach (var image in images)
             {
                 if (image.PixelFormat != PixelFormat.Format32bppArgb)
@@ -115,11 +120,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                     image.Height > MaxIconHeight)
                 {
                     throw new InvalidOperationException
-                        (Lang["PngDimensions", new { MaxIconWidth = MaxIconWidth, MaxIconHeight = MaxIconHeight }]);
+                        (Lang["PngDimensions", new { MaxIconWidth, MaxIconHeight }]); // VS/JetBrains suggested to remove X=X, Y=Y and 'simplify'. Idk if this broke something before.
                 }
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private static byte GetIconHeight(Image image)
         {
             Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.GetIconHeight]");
@@ -128,6 +134,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             return (byte)image.Height;
         }
 
+        [SupportedOSPlatform("windows")]
         private static byte GetIconWidth(Image image)
         {
             Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.GetIconWidth]");
@@ -136,6 +143,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             return (byte)image.Width;
         }
 
+        [SupportedOSPlatform("windows")]
         private static byte[] CreateImageBuffer(Image image)
         {
             Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.CreateImageBuffer]");
@@ -153,6 +161,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="sBgImg">Background image (platform's image)</param>
         /// <param name="sFgImg">User's profile image, for the foreground</param>
         /// <param name="icoOutput">Output filename</param>
+        [SupportedOSPlatform("windows")]
         public static void CreateIcon(string sBgImg, string sFgImg, ref string icoOutput)
         {
             var ms = new MemoryStream();

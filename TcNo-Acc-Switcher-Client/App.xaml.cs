@@ -265,7 +265,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 var start = AppSettings.Instance.Stylesheet.IndexOf(key + ":", StringComparison.Ordinal) + key.Length + 1;
                 var end = AppSettings.Instance.Stylesheet.IndexOf(";", start, StringComparison.Ordinal);
-                color = AppSettings.Instance.Stylesheet.Substring(start, end - start);
+                color = AppSettings.Instance.Stylesheet[start..end];
                 color = color.Trim(); // Remove whitespace around variable
             }
             catch (Exception)
@@ -315,8 +315,7 @@ namespace TcNo_Acc_Switcher_Client
                 // Ignore other processes running while in DEBUG mode.
 #if DEBUG
                 return;
-#endif
-
+#else
                 // Try to show from tray, as user may not know it's hidden there.
                 string text;
                 if (!Globals.BringToFront())
@@ -350,6 +349,7 @@ namespace TcNo_Acc_Switcher_Client
 
 	                Environment.Exit(1056); // 1056	An instance of the service is already running.
                 }
+#endif
             }
             catch (AbandonedMutexException)
             {
@@ -363,7 +363,7 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         /// <param name="e">StartupEventArgs for the program</param>
         /// <returns>True if handled and should close. False if launch GUI.</returns>
-        private static async Task<bool> ConsoleMain(StartupEventArgs e)
+            private static async Task<bool> ConsoleMain(StartupEventArgs e)
         {
             Console.WriteLine(@"Welcome to the TcNo Account Switcher - Command Line Interface!");
             Console.WriteLine(@"Use -h (or --help) for more info." + Environment.NewLine);
