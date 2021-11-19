@@ -86,7 +86,18 @@ namespace TcNo_Acc_Switcher_Client
         protected override void OnExit(ExitEventArgs e)
         {
             _ = NativeMethods.FreeConsole();
-            Mutex.ReleaseMutex();
+#if DEBUG
+            try
+            {
+#endif
+                Mutex.ReleaseMutex();
+#if DEBUG
+            }
+            catch
+            {
+                // Ignore errors if run in debug mode
+            }
+#endif
         }
 
         private static readonly Mutex Mutex = new(true, "{A240C23D-6F45-4E92-9979-11E6CE10A22C}");
@@ -300,6 +311,12 @@ namespace TcNo_Acc_Switcher_Client
                 Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
 
                 if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
+
+                // Ignore other processes running while in DEBUG mode.
+#if DEBUG
+                return;
+#endif
+
                 // Try to show from tray, as user may not know it's hidden there.
                 string text;
                 if (!Globals.BringToFront())

@@ -309,7 +309,16 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private void GenCssFromScss(string scss)
         {
-            var convertedScss = Scss.ConvertFileToCss(scss, new ScssOptions() { InputFile = scss, OutputFile = StylesheetFile });
+            ScssResult convertedScss;
+            try
+            {
+                convertedScss = Scss.ConvertFileToCss(scss, new ScssOptions() { InputFile = scss, OutputFile = StylesheetFile });
+            }
+            catch (ScssException e)
+            {
+                Globals.DebugWriteLine("ERROR in CSS: " + e.Message);
+                throw;
+            }
             // Convert from SCSS to CSS. The arguments are for "exception reporting", according to the SharpScss Git Repo.
             if (File.Exists(StylesheetFile)) File.Delete(StylesheetFile);
             File.WriteAllText(StylesheetFile, convertedScss.Css);

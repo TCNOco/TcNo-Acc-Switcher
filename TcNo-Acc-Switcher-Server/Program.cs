@@ -72,7 +72,6 @@ namespace TcNo_Acc_Switcher_Server
             }
 
             // Start browser - if not started with nobrowser
-            //if (!args.Contains("nobrowser")) System.Diagnostics.Process.Start($"http://localhost:{port}");
             if (!args.Contains("nobrowser")) GeneralInvocableFuncs.OpenLinkInBrowser($"http://localhost:{port}");
 
             return Host.CreateDefaultBuilder(args)

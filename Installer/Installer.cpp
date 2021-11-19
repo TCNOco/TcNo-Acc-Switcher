@@ -89,7 +89,7 @@ int progress_bar(
 	const double dl_now,
     double ul_total,
     double ul_now)
-{	
+{
 	if (const double n = dl_total; n > 0) {
 		const string dls = "Downloading " + current_download + " (" + convert_size(static_cast<size_t>(dl_total)) + ")";
         auto bar1 = new ProgressBar(static_cast<unsigned long>(n), dls.c_str());
@@ -119,7 +119,7 @@ bool download_file(const char* url, const char* dest) {
         fclose(fp);
 
         insert_empty_line();
-		
+
         last_time = std::chrono::system_clock::from_time_t(0);
         cout << " Finished downloading " << current_download << endl;
         return res == CURLE_OK;
@@ -152,11 +152,11 @@ void install_runtime(const string& path, const string& name, const bool& passive
     cout << "Installing: " << name << endl;
     STARTUPINFO si = { sizeof(STARTUPINFO) };
     PROCESS_INFORMATION pi;
-	
+
     wstring args;
 	if (passive) args = L"/install /passive";
-	
-    CreateProcessW(s2_ws(path).c_str(), &args[0], nullptr, 
+
+    CreateProcessW(s2_ws(path).c_str(), &args[0], nullptr,
         nullptr, 0, 0, nullptr, nullptr, &si, &pi);
     WaitForSingleObject(pi.hProcess, INFINITE);
 }
@@ -205,9 +205,9 @@ int main()
 
         cout << " = Total download size: ~" << total << " MB" << endl << endl <<
             "Press any key to start download..." << endl;
-        
+
         wait_for_input();
-        
+
         /* Download runtimes */
         bool w_runtime_install = false,
             d_runtime_install = false,
@@ -229,7 +229,7 @@ int main()
             system("pause");
             return 1;
         }
-    	
+
         if (webview_count == 0 || test_downloads)
         {
             current_download = w_runtime_name;
@@ -304,7 +304,7 @@ int main()
         "https://github.com/TcNobo/TcNo-Acc-Switcher#required-runtimes-download-and-install" << endl << endl;
 
     system("pause");
-	
+
 	// Launch main program:
 	string main_path = operating_path + "TcNo-Acc-Switcher.exe";
 	STARTUPINFO si = { sizeof(STARTUPINFO) };
@@ -320,7 +320,7 @@ void find_installed_runtimes(const bool x32)
     // Find installed runtimes, and add them to the list
     const auto s_root1 = L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall";
     const auto s_root2 = L"SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall";
-	
+
     HKEY h_uninst_key = nullptr;
     HKEY h_app_key = nullptr;
     long l_result = ERROR_SUCCESS;
@@ -359,20 +359,20 @@ void find_installed_runtimes(const bool x32)
             dw_v_buffer_size = sizeof(s_version);
             if (RegQueryValueEx(h_app_key, L"DisplayName", nullptr, &dw_type, reinterpret_cast<unsigned char*>(s_display_name), &dw_buffer_size) == ERROR_SUCCESS &&
                 RegQueryValueEx(h_app_key, L"DisplayVersion", nullptr, &dw_type, reinterpret_cast<unsigned char*>(s_version), &dw_v_buffer_size) == ERROR_SUCCESS)
-            {            	
+            {
                 if (wcsstr(s_display_name, L"WebView2") != nullptr)
                 {
                     webview_count += 1;
                     wprintf(L" - %s ", s_display_name);
                     wprintf(L"[%s]\n", s_version);
                 }
-            	
+
                 if (wcsstr(s_display_name, L"Desktop Runtime") != nullptr && wcsstr(s_display_name, L"x64") != nullptr)
                 {
                     desktop_runtime_count += 1;
                     wprintf(L" - %s\n", s_display_name);
                 }
-            	
+
                 if (wcsstr(s_display_name, L"ASP.NET Core 5") != nullptr)
                 {
                     aspcore_count += 1;
