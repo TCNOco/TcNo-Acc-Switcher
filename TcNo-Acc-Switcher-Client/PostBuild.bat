@@ -86,16 +86,27 @@ mkdir updater\x86
 mkdir updater\ref
 copy /B /Y "..\..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
 REM Signing
-"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a _First_Run_Installer.exe
-"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a TcNo-Acc-Switcher.exe
-"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a TcNo-Acc-Switcher.dll
-"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a TcNo-Acc-Switcher-Server.exe
-"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a TcNo-Acc-Switcher-Server.dll
-"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a TcNo-Acc-Switcher-Tray.exe
-"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a TcNo-Acc-Switcher-Tray.dll
-"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a TcNo-Acc-Switcher-Globals.dll
-"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a TcNo-Acc-Switcher-Updater.exe
-"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a TcNo-Acc-Switcher-Updater.dll
+ECHO Signing binaries
+echo %time%
+
+REM GOTO :skipsign
+
+(
+    start call ../../../../sign.bat "_First_Run_Installer.exe"
+    start call ../../../../sign.bat "TcNo-Acc-Switcher.exe"
+    start call ../../../../sign.bat "TcNo-Acc-Switcher.dll"
+    start call ../../../../sign.bat "TcNo-Acc-Switcher-Server.exe"
+    start call ../../../../sign.bat "TcNo-Acc-Switcher-Server.dll"
+    start call ../../../../sign.bat "TcNo-Acc-Switcher-Tray.exe"
+    start call ../../../../sign.bat "TcNo-Acc-Switcher-Tray.dll"
+    start call ../../../../sign.bat "TcNo-Acc-Switcher-Globals.dll"
+    start call ../../../../sign.bat "TcNo-Acc-Switcher-Updater.exe"
+    start call ../../../../sign.bat "TcNo-Acc-Switcher-Updater.dll"
+) | set /P "="
+
+echo %time%
+
+:skipsign
 copy /B /Y "VCDiff.dll" "updater\VCDiff.dll"
 copy /B /Y "YamlDotNet.dll" "updater\YamlDotNet.dll"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
@@ -127,6 +138,7 @@ REM Copy out updater for update creation
 xcopy TcNo-Acc-Switcher\updater updater /E /H /C /I /Y
 
 REM Move win-x64 runtimes for CEF download & smaller main download
+ECHO Moving CEF files
 mkdir CEF
 move TcNo-Acc-Switcher\runtimes\win-x64\native\libcef.dll CEF\libcef.dll
 move TcNo-Acc-Switcher\runtimes\win-x64\native\icudtl.dat CEF\icudtl.dat
@@ -137,6 +149,18 @@ move TcNo-Acc-Switcher\runtimes\win-x64\native\vk_swiftshader.dll CEF\vk_swiftsh
 move TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.dll CEF\CefSharp.dll
 move TcNo-Acc-Switcher\runtimes\win-x64\native\chrome_elf.dll CEF\chrome_elf.dll
 move TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.BrowserSubprocess.Core.dll CEF\CefSharp.BrowserSubprocess.Core.dll
+
+REM Create placeholders
+ECHO Creating CEF placeholders
+break > TcNo-Acc-Switcher\runtimes\win-x64\native\libcef.dll
+break > TcNo-Acc-Switcher\runtimes\win-x64\native\icudtl.dat
+break > TcNo-Acc-Switcher\runtimes\win-x64\native\resources.pak
+break > TcNo-Acc-Switcher\runtimes\win-x64\native\libGLESv2.dll
+break > TcNo-Acc-Switcher\runtimes\win-x64\native\d3dcompiler_47.dll
+break > TcNo-Acc-Switcher\runtimes\win-x64\native\vk_swiftshader.dll
+break > TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.dll
+break > TcNo-Acc-Switcher\runtimes\win-x64\native\chrome_elf.dll
+break > TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.BrowserSubprocess.Core.dll
 
 REM Compress files
 echo Creating .7z CEF archive

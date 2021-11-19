@@ -238,7 +238,8 @@ namespace TcNo_Acc_Switcher_Client
             string[] cefFiles = { "libcef.dll", "icudtl.dat", "resources.pak", "libGLESv2.dll", "d3dcompiler_47.dll", "vk_swiftshader.dll", "CefSharp.dll", "chrome_elf.dll", "CefSharp.BrowserSubprocess.Core.dll" };
             foreach (var cefFile in cefFiles)
             {
-                if (File.Exists(Path.Join(Globals.AppDataFolder, "runtimes\\win-x64\\native\\", cefFile))) continue;
+                var path = Path.Join(Globals.AppDataFolder, "runtimes\\win-x64\\native\\", cefFile);
+                if (File.Exists(path) && new FileInfo(path).Length > 10) continue;
 
                 var result = MessageBox.Show("CEF files not found. Download? (No reverts to WebView2, which requires WebView2 Runtime to be installed)", "Required runtime not found!", MessageBoxButton.YesNo, MessageBoxImage.Error);
                 if (result == MessageBoxResult.Yes)

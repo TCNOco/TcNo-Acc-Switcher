@@ -105,14 +105,18 @@ namespace TcNo_Acc_Switcher_Server.Pages
 
         public static void StartUpdaterAsAdmin(string args = "")
         {
+            var exeLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? Environment.CurrentDirectory;
+            Directory.SetCurrentDirectory(exeLocation);
+
             var proc = new ProcessStartInfo
             {
-                WorkingDirectory = Environment.CurrentDirectory,
+                WorkingDirectory = exeLocation,
                 FileName = "updater\\TcNo-Acc-Switcher-Updater.exe",
                 Arguments = args,
                 UseShellExecute = true,
                 Verb = "runas"
             };
+
             try
             {
                 _ = Process.Start(proc);
