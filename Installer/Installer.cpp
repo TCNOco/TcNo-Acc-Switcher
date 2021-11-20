@@ -35,7 +35,10 @@
 #include <openssl/ssl.h>
 using namespace std;
 
-string required_min_vc = "14.30.30704";
+string required_min_webview = "91.0",
+	required_min_desktop_runtime = "5.0.7",
+    required_min_aspcore = "5.0.7",
+	required_min_vc = "14.30.30704";
 
 
 std::string getOperatingPath() {
@@ -137,8 +140,10 @@ inline bool file_exists(const std::string& name) {
 
 
 
-int webview_count, aspcore_count, desktop_runtime_count = 0;
-bool min_vc_met = false;
+bool min_vc_met = false,
+	min_webview_met = false,
+	min_desktop_runtime_met = false,
+	min_aspcore_met = false;
 bool compare_versions(string v1, string v2, const string& delimiter);
 void find_installed_net_runtimes(bool x32);
 void find_installed_c_runtimes();
@@ -193,19 +198,19 @@ int main()
     cout << "------------------------------------------------------------------------" << endl << endl;
 
     /* Warn about runtime downloads */
-    if (webview_count == 0 || aspcore_count == 0 || desktop_runtime_count == 0 || test_mode)
+    if (!min_webview_met || !min_aspcore_met || !min_desktop_runtime_met || !min_vc_met || test_mode)
     {
         cout << "One or more runtimes were not installed:" << endl;
         int total = 0;
-        if (webview_count == 0) {
+        if (!min_webview_met) {
             cout << " + Microsoft WebView2 Runtime [~1,70 MB + ~120 MB while installing]" << endl;
             total += 122;
         }
-        if (aspcore_count == 0){
+        if (!min_aspcore_met){
 			cout << " + Microsoft .NET 5 Desktop Runtime [~52,3 MB]" << endl;
         	total += 52;
 		}
-        if (desktop_runtime_count == 0){
+        if (!min_desktop_runtime_met){
 			cout << " + Microsoft Microsoft ASP.NET Core 5.0 Runtime [~7,90 MB]" << endl;
         	total += 8;
 		}
@@ -246,7 +251,7 @@ int main()
             return 1;
         }
 
-        if (webview_count == 0 || test_downloads)
+        if (!min_webview_met || test_downloads)
         {
             current_download = w_runtime_name;
             if (!download_file(w_runtime.c_str(), w_runtime_local.c_str()))
@@ -258,7 +263,7 @@ int main()
             else w_runtime_install = true;
         }
 
-        if (desktop_runtime_count == 0 || test_downloads)
+        if (!min_desktop_runtime_met || test_downloads)
         {
             current_download = d_runtime_name;
             if (!download_file(d_runtime.c_str(), d_runtime_local.c_str()))
@@ -269,7 +274,7 @@ int main()
             else d_runtime_install = true;
         }
 
-        if (aspcore_count == 0 || test_downloads)
+        if (!min_aspcore_met || test_downloads)
         {
             current_download = a_runtime_name;
             if (!download_file(a_runtime.c_str(), a_runtime_local.c_str()))
@@ -431,7 +436,7 @@ void find_installed_net_runtimes(const bool x32)
         if ((l_result = RegEnumKeyEx(h_uninst_key, dw_index, s_app_key_name, &dw_buffer_size, nullptr, nullptr, nullptr,
                                      nullptr)) == ERROR_SUCCESS)
         {
-	        WCHAR s_version[1024];
+	        WCHAR version[1024];
 	        WCHAR s_display_name[1024];
 	        WCHAR s_sub_key[1024];
 	        //Open the sub key.
@@ -446,26 +451,28 @@ void find_installed_net_runtimes(const bool x32)
 
             //Get the display name value from the application's sub key.
             dw_buffer_size = sizeof(s_display_name);
-            dw_v_buffer_size = sizeof(s_version);
+            dw_v_buffer_size = sizeof(version);
             if (RegQueryValueEx(h_app_key, L"DisplayName", nullptr, &dw_type, reinterpret_cast<unsigned char*>(s_display_name), &dw_buffer_size) == ERROR_SUCCESS &&
-                RegQueryValueEx(h_app_key, L"DisplayVersion", nullptr, &dw_type, reinterpret_cast<unsigned char*>(s_version), &dw_v_buffer_size) == ERROR_SUCCESS)
+                RegQueryValueEx(h_app_key, L"DisplayVersion", nullptr, &dw_type, reinterpret_cast<unsigned char*>(version), &dw_v_buffer_size) == ERROR_SUCCESS)
             {
+                const string s_version(std::begin(version), std::end(version));
+
                 if (wcsstr(s_display_name, L"WebView2") != nullptr)
                 {
-                    webview_count += 1;
+                    min_webview_met = min_webview_met || compare_versions(required_min_webview, string(s_version), ".");
                     wprintf(L" - %s ", s_display_name);
-                    wprintf(L"[%s]\n", s_version);
+                    printf("[%s]\n", s_version.c_str());
                 }
 
                 if (wcsstr(s_display_name, L"Desktop Runtime") != nullptr && wcsstr(s_display_name, L"x64") != nullptr)
                 {
-                    desktop_runtime_count += 1;
+                    min_desktop_runtime_met = min_desktop_runtime_met || compare_versions(required_min_desktop_runtime, string(s_version), ".");
                     wprintf(L" - %s\n", s_display_name);
                 }
 
                 if (wcsstr(s_display_name, L"ASP.NET Core 5") != nullptr)
                 {
-                    aspcore_count += 1;
+                    min_aspcore_met = min_aspcore_met || compare_versions(required_min_aspcore, string(s_version), ".");
                     wprintf(L" - %s\n", s_display_name);
                 }
             }
