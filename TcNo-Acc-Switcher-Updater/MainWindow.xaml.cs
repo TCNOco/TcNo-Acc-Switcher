@@ -319,10 +319,10 @@ namespace TcNo_Acc_Switcher_Updater
 
                 // Separated so colors aren't only half changed, and a color from the file is missing
                 var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-                var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(
-                    JsonConvert.SerializeObject(desc.Deserialize<object>(UGlobals.ReadAllText(themeFile))));
                 if (File.Exists(themeFile))
                 {
+                    var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(
+                        JsonConvert.SerializeObject(desc.Deserialize<object>(UGlobals.ReadAllText(themeFile))));
                     _ = Dispatcher.BeginInvoke(new Action(() =>
                     {
                         // Need to try catch every one of these, as they may be invalid.
