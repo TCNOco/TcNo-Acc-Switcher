@@ -1179,6 +1179,8 @@ namespace TcNo_Acc_Switcher_Updater
             _ = Directory.CreateDirectory(outputNewFolder);
             foreach (var newFile in _newDict.Keys)
             {
+                if (newFile.StartsWith("runtimes") && IsCefFile(newFile)) continue; // TODO: This should be removed with the next update -> Just so that the first patch isn't HUGE, with optional elements
+
                 var newFileInput = Path.Join(newFolder, newFile);
                 var newFileOutput = Path.Join(outputNewFolder, newFile);
 
@@ -1192,6 +1194,8 @@ namespace TcNo_Acc_Switcher_Updater
             // -----------------------------------
             foreach (var differentFile in differentFiles)
             {
+                if (differentFile.StartsWith("runtimes") && IsCefFile(differentFile)) continue; // TODO: This should be removed with the next update -> Just so that the first patch isn't HUGE, with optional elements
+
                 var oldFileInput = Path.Join(oldFolder, differentFile);
                 var newFileInput = Path.Join(newFolder, differentFile);
                 var patchFileOutput = Path.Join(outputFolder, "patches", differentFile);

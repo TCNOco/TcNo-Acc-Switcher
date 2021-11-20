@@ -23,7 +23,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
         public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-        public static readonly string Version = "2021-09-28_00";
+        public static readonly string Version = "2021-11-20_00";
         public static readonly string[] PlatformList = { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot", "Discord" };
 
         #region LOGGER
@@ -311,7 +311,7 @@ namespace TcNo_Acc_Switcher_Globals
 
             return l.ToArray();
         }
-        
+
         // Overload for below
         public static void CopyFilesRecursive(string inputFolder, string outputFolder) =>
             CopyFilesRecursive(inputFolder, outputFolder, false);
@@ -428,7 +428,7 @@ namespace TcNo_Acc_Switcher_Globals
 
         #region PROCESSES
         /// <summary>
-        /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Doesn't start with "SUCCESS") 
+        /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Doesn't start with "SUCCESS")
         /// </summary>
         /// <param name="procName">Process name to kill (Will be used as {name}*)</param>
         public static void KillProcess(string procName)

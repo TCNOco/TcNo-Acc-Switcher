@@ -176,6 +176,19 @@ echo Done. Moving...
 move /Y "..\..\..\..\other\NSIS\TcNo Account Switcher - Installer.exe" "TcNo Account Switcher - Installer.exe"
 "%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a "TcNo Account Switcher - Installer.exe"
 
+ECHO Moving CEF files BACK (for update)
+
+copy /b/v/y CEF\libcef.dll TcNo-Acc-Switcher\runtimes\win-x64\native\libcef.dll
+copy /b/v/y CEF\icudtl.dat TcNo-Acc-Switcher\runtimes\win-x64\native\icudtl.dat
+copy /b/v/y CEF\resources.pak TcNo-Acc-Switcher\runtimes\win-x64\native\resources.pak
+copy /b/v/y CEF\libGLESv2.dll TcNo-Acc-Switcher\runtimes\win-x64\native\libGLESv2.dll
+copy /b/v/y CEF\d3dcompiler_47.dll TcNo-Acc-Switcher\runtimes\win-x64\native\d3dcompiler_47.dll
+copy /b/v/y CEF\vk_swiftshader.dll TcNo-Acc-Switcher\runtimes\win-x64\native\vk_swiftshader.dll
+copy /b/v/y CEF\CefSharp.dll TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.dll
+copy /b/v/y CEF\chrome_elf.dll TcNo-Acc-Switcher\runtimes\win-x64\native\chrome_elf.dll
+copy /b/v/y CEF\CefSharp.BrowserSubprocess.Core.dll TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.BrowserSubprocess.Core.dll
+
+
 cd %origDir%
 GOTO end
 
