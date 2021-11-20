@@ -235,7 +235,7 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         private static void CheckCefFiles()
         {
-            string[] cefFiles = { "libcef.dll", "icudtl.dat", "resources.pak", "libGLESv2.dll", "d3dcompiler_47.dll", "vk_swiftshader.dll", "CefSharp.dll", "chrome_elf.dll", "CefSharp.BrowserSubprocess.Core.dll" };
+            string[] cefFiles = { "libcef.dll", "icudtl.dat", "resources.pak", "libGLESv2.dll", "d3dcompiler_47.dll", "vk_swiftshader.dll", "chrome_elf.dll", "CefSharp.BrowserSubprocess.Core.dll" };
             foreach (var cefFile in cefFiles)
             {
                 var path = Path.Join(Globals.AppDataFolder, "runtimes\\win-x64\\native\\", cefFile);

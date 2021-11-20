@@ -146,7 +146,6 @@ move TcNo-Acc-Switcher\runtimes\win-x64\native\resources.pak CEF\resources.pak
 move TcNo-Acc-Switcher\runtimes\win-x64\native\libGLESv2.dll CEF\libGLESv2.dll
 move TcNo-Acc-Switcher\runtimes\win-x64\native\d3dcompiler_47.dll CEF\d3dcompiler_47.dll
 move TcNo-Acc-Switcher\runtimes\win-x64\native\vk_swiftshader.dll CEF\vk_swiftshader.dll
-move TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.dll CEF\CefSharp.dll
 move TcNo-Acc-Switcher\runtimes\win-x64\native\chrome_elf.dll CEF\chrome_elf.dll
 move TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.BrowserSubprocess.Core.dll CEF\CefSharp.BrowserSubprocess.Core.dll
 
@@ -158,7 +157,6 @@ break > TcNo-Acc-Switcher\runtimes\win-x64\native\resources.pak
 break > TcNo-Acc-Switcher\runtimes\win-x64\native\libGLESv2.dll
 break > TcNo-Acc-Switcher\runtimes\win-x64\native\d3dcompiler_47.dll
 break > TcNo-Acc-Switcher\runtimes\win-x64\native\vk_swiftshader.dll
-break > TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.dll
 break > TcNo-Acc-Switcher\runtimes\win-x64\native\chrome_elf.dll
 break > TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.BrowserSubprocess.Core.dll
 
@@ -184,7 +182,6 @@ copy /b/v/y CEF\resources.pak TcNo-Acc-Switcher\runtimes\win-x64\native\resource
 copy /b/v/y CEF\libGLESv2.dll TcNo-Acc-Switcher\runtimes\win-x64\native\libGLESv2.dll
 copy /b/v/y CEF\d3dcompiler_47.dll TcNo-Acc-Switcher\runtimes\win-x64\native\d3dcompiler_47.dll
 copy /b/v/y CEF\vk_swiftshader.dll TcNo-Acc-Switcher\runtimes\win-x64\native\vk_swiftshader.dll
-copy /b/v/y CEF\CefSharp.dll TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.dll
 copy /b/v/y CEF\chrome_elf.dll TcNo-Acc-Switcher\runtimes\win-x64\native\chrome_elf.dll
 copy /b/v/y CEF\CefSharp.BrowserSubprocess.Core.dll TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.BrowserSubprocess.Core.dll
 

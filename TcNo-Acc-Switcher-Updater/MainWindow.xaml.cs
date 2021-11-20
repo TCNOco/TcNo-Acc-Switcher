@@ -793,7 +793,11 @@ namespace TcNo_Acc_Switcher_Updater
                 {
                     var key = oKey;
                     if (key.StartsWith("updater")) continue; // Ignore own files >> Otherwise IOException
-                    if (key.StartsWith("runtimes") && IsCefFile(key) && _mainBrowser != "CEF") continue;// Ignore CEF files if not using CEF
+                    if (key.StartsWith("runtimes") && IsCefFile(key))
+                    {
+                        if (!File.Exists(key)) File.Create(key).Dispose(); // Create empty file
+                        if (_mainBrowser != "CEF") continue; // Ignore CEF files if not using CEF
+                    }
                     cur++;
                     UpdateProgress(cur * 100 / verifyDictTotal);
                     if (!File.Exists(key))
@@ -1114,8 +1118,14 @@ namespace TcNo_Acc_Switcher_Updater
 
                 // Check if part of CEF, and skip if CEF not selected:
                 if (relativePath.StartsWith("runtimes") && IsCefFile(p))
+                {
+                    if (!File.Exists(p)) {
+                        File.Create(p).Dispose(); // Create empty file
+                        continue;
+                    }
                     if (_mainBrowser != "CEF")
                         continue;
+                }
 
                 var patchedFile = Path.Join(outputFolder, "patched", relativePath);
                 _ = Directory.CreateDirectory(Path.GetDirectoryName(patchedFile)!);
@@ -1124,7 +1134,7 @@ namespace TcNo_Acc_Switcher_Updater
         }
 
         private static readonly string[] CefFiles = {
-            "libcef.dll", "icudtl.dat", "resources.pak", "libGLESv2.dll", "d3dcompiler_47.dll", "vk_swiftshader.dll", "CefSharp.dll", "chrome_elf.dll", "CefSharp.BrowserSubprocess.Core.dll"
+            "libcef.dll", "icudtl.dat", "resources.pak", "libGLESv2.dll", "d3dcompiler_47.dll", "vk_swiftshader.dll", "chrome_elf.dll", "CefSharp.BrowserSubprocess.Core.dll"
         };
         private static bool IsCefFile(string file) => CefFiles.Any(file.Contains);
 
