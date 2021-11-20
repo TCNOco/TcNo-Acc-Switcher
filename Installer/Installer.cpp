@@ -76,7 +76,7 @@ string convert_size(size_t size) {
     int div = 0;
     size_t rem = 0;
 
-    while (size >= 1024 && div < (sizeof sizes / sizeof * sizes)) {
+    while (size >= 1024 && div < std::size(sizes)) {
         rem = (size % 1024);
         div++;
         size /= 1024;
@@ -98,7 +98,7 @@ int progress_bar(
 {
 	if (const double n = dl_total; n > 0) {
 		const string dls = "Downloading " + current_download + " (" + convert_size(static_cast<size_t>(dl_total)) + ")";
-        auto bar1 = new ProgressBar(static_cast<unsigned long>(n), dls.c_str());
+		const auto bar1 = new ProgressBar(static_cast<unsigned long>(n), dls.c_str());
         if (const std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - last_time; elapsed_seconds.count() >= 0.2)
         {
             last_time = std::chrono::system_clock::now();
@@ -138,8 +138,6 @@ inline bool file_exists(const std::string& name) {
     return stat(name.c_str(), &buffer) == 0;
 }
 
-
-
 bool min_vc_met = false,
 	min_webview_met = false,
 	min_desktop_runtime_met = false,
@@ -147,6 +145,7 @@ bool min_vc_met = false,
 bool compare_versions(string v1, string v2, const string& delimiter);
 void find_installed_net_runtimes(bool x32);
 void find_installed_c_runtimes();
+void download_vc();
 wstring s2_ws(const string& s)
 {
 	const int s_length = static_cast<int>(s.length()) + 1;
@@ -180,7 +179,7 @@ void wait_for_input()
 const bool test_mode = false;
 const bool test_downloads = false;
 const bool test_installs = false;
-int main()
+int main(int argc, char* argv[])
 {
 	// Goal of this application:
 	// - Check for the existence of required runtimes, and install them if missing. [First run ever on a computer]
@@ -188,8 +187,16 @@ int main()
 	const string operating_path = getOperatingPath();
     SetConsoleTitle(_T("TcNo Account Switcher - Runtime installer"));
     cout << "Welcome to the TcNo Account Switcher - Runtime installer" << endl <<
-        "------------------------------------------------------------------------" << endl << endl <<
-        "Currently installed runtimes:" << endl;
+        "------------------------------------------------------------------------" << endl << endl;
+
+    // Check for vc download argument, and download if nessecary
+    if (argc > 1 && strcmp(argv[1], "vc") == 0)
+    {
+        download_vc();
+        exit(1);
+    }
+
+    cout << "Currently installed runtimes:" << endl;
 
 	/* Find installed runtimes */
     find_installed_net_runtimes(false);
@@ -350,6 +357,38 @@ int main()
     CreateProcess(s2_ws(main_path).c_str(), nullptr, nullptr,
         nullptr, 0, 0, nullptr, nullptr, &si, &pi);
 }
+
+void download_vc()
+{
+    cout << "Downloading C++ Redistributable 2015-2022" << endl;
+    current_download = "Downloading C++ Redistributable 2015-2022";
+
+    bool c_runtime_install = false;
+    const string runtime_folder = getOperatingPath() + "runtime_installers\\";
+    const string c_runtime = "https://aka.ms/vs/17/release/vc_redist.x64.exe",
+        c_runtime_local = runtime_folder + "VC_redist.x64.exe",
+        c_runtime_name = "Downloading C++ Redistributable 2015-2022";
+
+    if (!(CreateDirectoryA(runtime_folder.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError()))
+    {
+        cout << "Failed to create folder: " << runtime_folder << endl;
+        system("pause");
+        return;
+    }
+
+    if (!download_file(c_runtime.c_str(), c_runtime_local.c_str()))
+    {
+        cout << "Failed to download and install C++ Redistributable 2015-2022. To download: 1. Click the link below:" << endl <<
+            "https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170" << endl <<
+            "2. Click the link next to 'X64', under the \"Visual Studio 2015, 2017, 2019, and 2022\" heading." << endl << endl;
+    }
+    else c_runtime_install = true;
+
+    if (c_runtime_install || test_installs)
+        install_runtime(c_runtime_local, c_runtime_name, true);
+}
+
+
 
 /// <summary>
 /// Returns whether v2 is newer than, or equal to v1.

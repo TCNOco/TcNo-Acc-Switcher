@@ -24,11 +24,13 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Principal;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SevenZipExtractor;
@@ -83,6 +85,7 @@ namespace TcNo_Acc_Switcher_Updater
     /// </summary>
     public partial class MainWindow
     {
+        private const string MinimumVc = "14.30.30704";
         // Dictionaries of file paths, as well as MD5 Hashes
         private static Dictionary<string, string> _oldDict = new();
         private static Dictionary<string, string> _newDict = new();
@@ -440,8 +443,60 @@ namespace TcNo_Acc_Switcher_Updater
                 JsonConvert.SerializeObject(_newDict, Formatting.Indented));
         }
 
+        /// <summary>
+        /// Returns whether v2 is newer than, or equal to v1.
+        /// Works with unequal string sizes.
+        /// </summary>
+        static bool compare_versions(string v1, string v2, string delimiter)
+        {
+            if (v1 == v2) return true;
+
+            var v1Arr = Array.ConvertAll<string, int>(v1.Split(delimiter), int.Parse);
+            var v2Arr = Array.ConvertAll<string, int>(v2.Split(delimiter), int.Parse);
+
+            for (var i = 0; i < Math.Min(v1Arr.Length, v2Arr.Length); ++i)
+            {
+                if (v2Arr[i] < v1Arr[i]) return false;
+                if (v2Arr[i] > v1Arr[i]) return true;
+            }
+
+            return true;
+        }
+
+        public static bool IsVcRuntimeInstalled()
+        {
+            try
+            {
+                using var vcKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\DevDiv\\VC\\Servicing\\14.0\\RuntimeMinimum");
+                if (vcKey == null) return false;
+                var version = vcKey.GetValue("Version")?.ToString() ?? null;
+                return !string.IsNullOrEmpty(version) && compare_versions(MinimumVc, version, ".");
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
         private void DownloadCefNow()
         {
+            // Check if VCRuntime 2015-2022 installed or not. If not, download and install.
+            if (!IsVcRuntimeInstalled())
+            {
+                SetStatusAndLog("Downloading and installing Visual C++ Runtime 2015-2022");
+                var proc = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = @"_First_Run_Installer.exe",
+                        UseShellExecute = true,
+                        Arguments = "vc"
+                    }
+                };
+                proc.Start();
+                proc.WaitForExit();
+            }
+
+            // Download CEF files from tcno.co
             SetStatusAndLog("Preparing to install Chrome Embedded Framework");
             SetStatusAndLog("Downloading CEF (~60MB)");
             var downloadUrl = "https://tcno.co/Projects/AccSwitcher/updates/CEF.7z";
