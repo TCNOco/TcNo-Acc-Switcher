@@ -1,3 +1,4 @@
+
 <p align="center">
   <a href="https://tcno.co/">
     <img src="/other/img/Banner.png"></a>
@@ -14,11 +15,14 @@
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/TcNobo/TcNo-Acc-Switcher?logo=GitHub&style=flat-square">
 																     <a title="Crowdin" target="_blank" href="https://crowdin.com/project/tcno-account-switcher"><img src="https://img.shields.io/badge/Seeking-localisers-blue.svg?style=flat-square"></a>
 </p>
-                                                                                                                                  
+
 <p align="center"><a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/releases/latest">
   <img alt="Download latest" src="/other/img/DownloadLatestNEW.png" height=70"></a>
   <a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/wiki">
   <img alt="More info" src="/other/img/WikiButton.png" height=70"></a>
+</p>
+<p align="center"><a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher-Themes">
+  <img alt="Themes" src="/other/img/Themes.png" height=70"></a>
 </p>
   
 **A Super fast account switcher for Steam, Battle.net, Epic Games, Origin, Riot Games and Ubisoft (and more soon)**
