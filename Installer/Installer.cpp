@@ -35,6 +35,9 @@
 #include <openssl/ssl.h>
 using namespace std;
 
+string required_min_vc = "14.30.30704";
+
+
 std::string getOperatingPath() {
 	const HMODULE h_module = GetModuleHandleW(nullptr);
     WCHAR pth[MAX_PATH];
@@ -135,7 +138,10 @@ inline bool file_exists(const std::string& name) {
 
 
 int webview_count, aspcore_count, desktop_runtime_count = 0;
-void find_installed_runtimes(bool x32);
+bool min_vc_met = false;
+bool compare_versions(string v1, string v2, const string& delimiter);
+void find_installed_net_runtimes(bool x32);
+void find_installed_c_runtimes();
 wstring s2_ws(const string& s)
 {
 	const int s_length = static_cast<int>(s.length()) + 1;
@@ -181,7 +187,8 @@ int main()
         "Currently installed runtimes:" << endl;
 
 	/* Find installed runtimes */
-    find_installed_runtimes(false);
+    find_installed_net_runtimes(false);
+    find_installed_c_runtimes();
 
     cout << "------------------------------------------------------------------------" << endl << endl;
 
@@ -203,6 +210,11 @@ int main()
         	total += 8;
 		}
 
+        if (!min_vc_met) {
+            cout << " + C++ Redistributable 2015-2022 [~24 MB]" << endl;
+            total += 24;
+        }
+
         cout << " = Total download size: ~" << total << " MB" << endl << endl <<
             "Press any key to start download..." << endl;
 
@@ -211,7 +223,8 @@ int main()
         /* Download runtimes */
         bool w_runtime_install = false,
             d_runtime_install = false,
-            a_runtime_install = false;
+            a_runtime_install = false,
+    		c_runtime_install = false;
     	const string runtime_folder = operating_path + "runtime_installers\\";
         const string w_runtime = "https://go.microsoft.com/fwlink/p/?LinkId=2124703",
             w_runtime_local = runtime_folder + "MicrosoftEdgeWebview2Setup.exe",
@@ -221,7 +234,10 @@ int main()
             d_runtime_name = "Microsoft .NET 5 Desktop Runtime",
             a_runtime = "https://dotnetcli.azureedge.net/dotnet/aspnetcore/Runtime/5.0.10/aspnetcore-runtime-5.0.10-win-x64.exe",
             a_runtime_local = runtime_folder + "aspnetcore-runtime-5.0.10-win-x64.exe",
-            a_runtime_name = "Downloading Microsoft ASP.NET Core 5.0 Runtime";
+            a_runtime_name = "Downloading Microsoft ASP.NET Core 5.0 Runtime",
+    		c_runtime = "https://aka.ms/vs/17/release/vc_redist.x64.exe",
+            c_runtime_local = runtime_folder + "VC_redist.x64.exe",
+            c_runtime_name = "Downloading C++ Redistributable 2015-2022";
 
         if (!(CreateDirectoryA(runtime_folder.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError()))
         {
@@ -265,9 +281,21 @@ int main()
             else a_runtime_install = true;
         }
 
+        if (!min_vc_met || test_downloads)
+        {
+            current_download = c_runtime_name;
+            if (!download_file(c_runtime.c_str(), c_runtime_local.c_str()))
+            {
+                cout << "Failed to download and install C++ Redistributable 2015-2022. To download: 1. Click the link below:" << endl <<
+                    "https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170" << endl <<
+                    "2. Click the link next to 'X64', under the \"Visual Studio 2015, 2017, 2019, and 2022\" heading." << endl << endl;
+            }
+            else c_runtime_install = true;
+        }
+
         cout << endl;
 
-    	if (w_runtime_install || d_runtime_install || a_runtime_install || test_installs)
+    	if (w_runtime_install || d_runtime_install || a_runtime_install || c_runtime_install || test_installs)
     	{
             cout << "------------------------------------------------------------------------" << endl << endl <<
                 "One or more are ready for install. If and when prompted if you would like to install, click 'Yes'." << endl << endl <<
@@ -282,11 +310,15 @@ int main()
 
             if (a_runtime_install || test_installs)
                 install_runtime(a_runtime_local, a_runtime_name, true);
+
+            if (c_runtime_install || test_installs)
+                install_runtime(c_runtime_local, c_runtime_name, true);
     	}
 
         system("cls");
         cout << "Currently installed runtimes:" << endl;
-        find_installed_runtimes(false);
+        find_installed_net_runtimes(false);
+        find_installed_c_runtimes();
         cout << "------------------------------------------------------------------------" << endl << endl <<
             "Verify you meet the minimum recommended requirements:" << endl;
     }
@@ -298,6 +330,7 @@ int main()
     cout << " - Windows Desktop Runtime 5.0.7+" << endl <<
         " - ASP.NET Core 5.0.7+." << endl <<
         " - Edge WebView2 Runtime 91.0+" << endl <<
+        " - C++ Redistributable 2015-2022 14.30.30704+" << endl <<
         "------------------------------------------------------------------------" << endl << endl <<
         "That should be everything. The main program, TcNo-Acc-Switcher.exe, will auto-run when you press a key to continue." << endl << endl <<
         "If it doesn't work, please refer to install instructions, here:" << endl <<
@@ -313,10 +346,67 @@ int main()
         nullptr, 0, 0, nullptr, nullptr, &si, &pi);
 }
 
-
-
-void find_installed_runtimes(const bool x32)
+/// <summary>
+/// Returns whether v2 is newer than, or equal to v1.
+/// Works with unequal string sizes.
+/// </summary>
+bool compare_versions(string v1, string v2, const string& delimiter)
 {
+    if (v1 == v2) return true;
+    vector<int> v1_arr;
+    vector<int> v2_arr;
+
+    size_t pos = 0;
+    std::string token;
+    while ((pos = v1.find(delimiter)) != std::string::npos) {
+        token = v1.substr(0, pos);
+        v1_arr.push_back(stoi(token));
+        if (v1.find(delimiter) != std::string::npos) v1.erase(0, pos + delimiter.length());
+    }
+    v1_arr.push_back(stoi(v1));
+
+    while ((pos = v2.find(delimiter)) != std::string::npos) {
+        token = v2.substr(0, pos);
+        v2_arr.push_back(stoi(token));
+        if (v2.find(delimiter) != std::string::npos) v2.erase(0, pos + delimiter.length());
+    }
+    v2_arr.push_back(stoi(v2));
+
+    for (int i = 0; i < min(v1_arr.size(), v2_arr.size()); ++i)
+    {
+        if (v2_arr[i] < v1_arr[i]) return false;
+        if (v2_arr[i] > v1_arr[i]) return true;
+    }
+
+    return true;
+}
+
+void find_installed_c_runtimes()
+{
+    // Get C+++ Runtime info
+    HKEY key = nullptr;
+    WCHAR s_key[1024];
+    DWORD dw_type = KEY_ALL_ACCESS;
+    WCHAR version[1024];
+    DWORD dw_v_buffer_size = sizeof(version);
+    const auto subkey = L"SOFTWARE\\Microsoft\\DevDiv\\VC\\Servicing\\14.0\\RuntimeMinimum";
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, subkey, 0, KEY_READ, &key) != ERROR_SUCCESS)
+    {
+        RegCloseKey(key);
+        return;
+    };
+
+    if (RegQueryValueEx(key, L"Version", nullptr, &dw_type, reinterpret_cast<unsigned char*>(version), &dw_v_buffer_size) == ERROR_SUCCESS)
+	{
+        wprintf(L" - C++ Redistributable 2015-2022 [%s]\n", version);
+        const string s_version(std::begin(version), std::end(version));
+        min_vc_met = compare_versions(required_min_vc, string(s_version), ".");
+    }
+    RegCloseKey(key);
+}
+void find_installed_net_runtimes(const bool x32)
+{
+    // Get .NET info
     // Find installed runtimes, and add them to the list
     const auto s_root1 = L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall";
     const auto s_root2 = L"SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall";
@@ -329,7 +419,7 @@ void find_installed_runtimes(const bool x32)
     DWORD dw_v_buffer_size = 0;
 
     //Open the "Uninstall" key.
-	if (x32 && RegOpenKeyEx(HKEY_LOCAL_MACHINE, s_root1, 0, KEY_READ, &h_uninst_key) != ERROR_SUCCESS ||
+	if ((x32 && RegOpenKeyEx(HKEY_LOCAL_MACHINE, s_root1, 0, KEY_READ, &h_uninst_key) != ERROR_SUCCESS) ||
 		RegOpenKeyEx(HKEY_LOCAL_MACHINE, s_root2, 0, KEY_READ, &h_uninst_key) != ERROR_SUCCESS)
 		return;
 
