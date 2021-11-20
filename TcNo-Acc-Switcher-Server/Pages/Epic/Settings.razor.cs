@@ -38,7 +38,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public void PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Epic\Settings.razor.cs.PickFolder]");
-            _ = GeneralInvocableFuncs.ShowModal("find:Epic:upc.exe:EpicSettings");
+            _ = GeneralInvocableFuncs.ShowModal("find:Epic:EpicGamesLauncher.exe:EpicSettings");
         }
 
         // BUTTON: Reset settings
