@@ -73,7 +73,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             // 2. Copy the profile picture
             ImportAvatar(userId);
-            
+
             var localCachePath = $"LoginCache\\Ubisoft\\{userId}\\";
             _ = Directory.CreateDirectory(localCachePath);
 
@@ -91,7 +91,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             else accName = savedUsername;
 
             AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
-            
         }
 
         public static string HasUserSaved()

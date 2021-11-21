@@ -17,6 +17,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
@@ -87,7 +88,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="procName">Name of process to lookup</param>
         /// <returns>Whether it was closed before this function returns or not.</returns>
-		public static bool WaitForClose(string procName)
+        public static bool WaitForClose(string procName)
         {
             if (!OperatingSystem.IsWindows()) return false;
             var timeout = 0;
@@ -100,6 +101,25 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             if (timeout == 10)
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotCloseX", new { x = procName }], Lang["Error"], "toastarea");
+
+            return timeout != 10; // Returns true if timeout wasn't reached.
+        }
+        public static bool WaitForClose(List<string> procNames)
+        {
+            if (!OperatingSystem.IsWindows()) return false;
+            var timeout = 0;
+            while (procNames.All(ProcessHelper.IsProcessRunning) && timeout < 10)
+            {
+                timeout++;
+                _ = AppData.InvokeVoidAsync("updateStatus", $"Waiting for {procNames[0]} & {procNames.Count - 1} others to close ({timeout}/10 seconds)");
+                System.Threading.Thread.Sleep(1000);
+            }
+
+            if (timeout == 10)
+            {
+                var leftOvers = procNames.Where(x => !ProcessHelper.IsProcessRunning(x));
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotCloseX", new { x = string.Join(", ", leftOvers.ToArray()) }], Lang["Error"], "toastarea");
+            }
 
             return timeout != 10; // Returns true if timeout wasn't reached.
         }

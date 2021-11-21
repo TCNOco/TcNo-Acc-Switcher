@@ -438,8 +438,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.CloseSteam]");
             if (!GeneralFuncs.CanKillProcess("steam")) return false;
-            Globals.KillProcess("steam");
-            return GeneralFuncs.WaitForClose("steam");
+            var steamProc = new List<string>() { "steam.exe", "steamservice.exe", "steamwebhelper.exe" };
+            foreach (var s in steamProc)
+            {
+                Globals.KillProcess(s);
+            }
+            return GeneralFuncs.WaitForClose(steamProc);
         }
 
         /// <summary>

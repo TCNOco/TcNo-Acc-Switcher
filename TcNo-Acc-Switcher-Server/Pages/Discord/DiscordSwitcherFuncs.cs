@@ -194,6 +194,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         public static void DiscordAddCurrent(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.DiscordAddCurrent]");
+
+            // Reject if name is invalid length. Discord names limited to between 2-32 characters.
+            if (accName.Length > 33) return;
+            // Check if this is the copy/paste code to get account info, and reject if it is.
+            if (accName.Contains("// Find ", StringComparison.InvariantCultureIgnoreCase) ||
+                accName.Contains("copied information", StringComparison.InvariantCultureIgnoreCase)) return;
+
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Discord_SignOutHint"],
                 "Discord note", "toastarea");
 
