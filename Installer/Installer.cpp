@@ -23,6 +23,23 @@ bool args_contain(const char* needle, int argc, char* argv[])
 	return false;
 }
 
+void launch_dll(char* arg)
+{
+	std::string p = '"' + getOperatingPath();
+	if (p.back() != '\\') p += '\\';
+	const std::string program = arg;
+
+	// Add updater\\ if updater.exe
+	if (program.find_last_of("updater") != std::string::npos || program.find_last_of("Updater") != std::string::npos)
+		p += "updater\\";
+
+	p = p + arg + ".dll\"";
+
+
+	std::string dotnet = dotnet_path();
+	exec_program(std::wstring(dotnet.begin(), dotnet.end()), L"dotnet.exe", std::wstring(p.begin(), p.end()), false);
+}
+
 int main(int argc, char* argv[])
 {
 	// Goal of this application:
@@ -33,7 +50,9 @@ int main(int argc, char* argv[])
     cout << "Welcome to the TcNo Account Switcher - Runtime installer" << endl <<
         "------------------------------------------------------------------------" << endl << endl;
 
-    // Check for vc download argument, and download if nessecary
+    // Argument was supplied...
+	// Check if need to install anything.
+	// Otherwise, launch that, assuming it is a program.
     if (argc > 1)
     {
 		if (args_contain("vc", argc, argv))
@@ -42,16 +61,16 @@ int main(int argc, char* argv[])
 			exit(1);
 		}
 
-		if (args_contain("net", argc, argv))
+    	if (args_contain("net", argc, argv))
 		{
 			min_vc_met = true; // Skip over this. Not needed unless CEF enabled --> Checked elsewhere.
 			verify_net();
-			if (args_contain("updater", argc, argv))
-			{
-				system("dotnet updater\\TcNo-Acc-Switcher-Updater.dll");
-			}
+			if (argc > 2)
+				launch_dll(argv[argc - 1]);
 			exit(1);
 		}
+
+    	launch_dll(argv[argc - 1]);
     }
 
     cout << "Currently installed runtimes:" << endl;

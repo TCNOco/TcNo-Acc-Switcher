@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="_Updater_Wrapper.cpp">
+    <ClCompile Include="_Wrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

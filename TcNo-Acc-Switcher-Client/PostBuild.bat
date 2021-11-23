@@ -20,7 +20,6 @@ copy /B /Y "YamlDotNet.dll" "updater\YamlDotNet.dll"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
 move /Y "TcNo-Acc-Switcher-Updater.pdb" "updater\TcNo-Acc-Switcher-Updater.pdb"
-move /Y "TcNo-Acc-Switcher-Updater.exe" "updater\TcNo-Acc-Switcher-Updater.exe"
 copy /B /Y "TcNo-Acc-Switcher-Updater.dll" "updater\TcNo-Acc-Switcher-Updater.dll"
 move /Y "TcNo-Acc-Switcher-Updater.deps.json" "updater\TcNo-Acc-Switcher-Updater.deps.json"
 copy /B /Y "SevenZipExtractor.dll" "updater\SevenZipExtractor.dll"
@@ -38,7 +37,10 @@ RMDIR /Q/S "runtimes\win-x86"
 RMDIR /Q x64
 RMDIR /Q x86
 copy /B /Y "..\..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
-copy /B /Y "..\..\..\UpdaterWrapper\_Updater_Wrapper.exe" "updater\TcNo-Acc-Switcher-Updater.exe"
+copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher.exe"
+copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Server.exe"
+copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Tray.exe"
+copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "updater\TcNo-Acc-Switcher-Updater.exe"
 REN "wwwroot" "originalwwwroot"
 cd %origDir%
 GOTO end
@@ -86,7 +88,12 @@ mkdir updater\x64
 mkdir updater\x86
 mkdir updater\ref
 copy /B /Y "..\..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
-copy /B /Y "..\..\..\UpdaterWrapper\_Updater_Wrapper.exe" "TcNo-Acc-Switcher-Updater.exe"
+copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher.exe"
+copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Server.exe"
+copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Tray.exe"
+copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Updater.exe"
+REM Copy in Server runtimes that are missing for some reason...
+xcopy ..\..\..\..\..\TcNo-Acc-Switcher-Server\bin\Release\net6.0\runtimes\win\lib\net6.0 runtimes\win\lib\net6.0 /E /H /C /I /Y
 REM Signing
 ECHO Signing binaries
 echo %time%
@@ -210,7 +217,6 @@ copy /B /Y "bin\Debug\net6.0-windows\YamlDotNet.dll" "bin\Debug\net6.0-windows\u
 move /Y "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.json" "bin\Debug\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
 move /Y "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "bin\Debug\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
 move /Y "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Updater.pdb" "bin\Debug\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.pdb"
-move /Y "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Updater.exe" "bin\Debug\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.exe"
 copy /B /Y "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Updater.dll" "bin\Debug\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.dll"
 move /Y "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Updater.deps.json" "bin\Debug\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.deps.json"
 copy /B /Y "bin\Debug\net6.0-windows\SevenZipExtractor.dll" "bin\Debug\net6.0-windows\updater\SevenZipExtractor.dll"
@@ -228,6 +234,11 @@ RMDIR /Q/S "bin\Debug\net6.0-windows\runtimes\win-x86"
 RMDIR /Q "bin\Release\net6.0-windows\x64"
 RMDIR /Q "bin\Release\net6.0-windows\x86"
 copy /B /Y "..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
+copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Debug\net6.0-windows\TcNo-Acc-Switcher.exe"
+copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Server.exe"
+copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Tray.exe"
+copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Debug\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.exe"
+xcopy ..\..\..\..\TcNo-Acc-Switcher-Server\bin\Release\net6.0\runtimes\win\lib\net6.0 net6.0-windows\runtimes\win\lib\net6.0 /E /H /C /I /Y
 REN "wwwroot" "originalwwwroot"
 cd %origDir%
 GOTO end
@@ -249,7 +260,6 @@ copy /B /Y "bin\Debug\net6.0-windows\YamlDotNet.dll" "bin\Debug\net6.0-windows\u
 move /Y "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.json" "bin\Release\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
 move /Y "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "bin\Release\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
 move /Y "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Updater.pdb" "bin\Release\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.pdb"
-move /Y "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Updater.exe" "bin\Release\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.exe"
 copy /B /Y "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Updater.dll" "bin\Release\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.dll"
 move /Y "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Updater.deps.json" "bin\Release\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.deps.json"
 copy /B /Y "bin\Release\net6.0-windows\SevenZipExtractor.dll" "bin\Release\net6.0-windows\updater\SevenZipExtractor.dll"
@@ -267,6 +277,11 @@ RMDIR /Q/S "bin\Release\net6.0-windows\runtimes\win-x86"
 RMDIR /Q "bin\Release\net6.0-windows\x64"
 RMDIR /Q "bin\Release\net6.0-windows\x86"
 copy /B /Y "..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
+copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Release\net6.0-windows\TcNo-Acc-Switcher.exe"
+copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Server.exe"
+copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Tray.exe"
+copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Release\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.exe"
+xcopy ..\..\..\..\TcNo-Acc-Switcher-Server\bin\Release\net6.0\runtimes\win\lib\net6.0 net6.0-windows\runtimes\win\lib\net6.0 /E /H /C /I /Y
 REN "wwwroot" "originalwwwroot"
 cd %origDir%
 GOTO end

@@ -33,6 +33,9 @@ namespace TcNo_Acc_Switcher_Server
     {
         public Startup(IConfiguration configuration)
         {
+            Console.Title = @"TcNo Account Switcher - Server";
+            IconChanger.SetConsoleIcon();
+
             Configuration = configuration;
         }
 
@@ -69,14 +72,7 @@ namespace TcNo_Acc_Switcher_Server
         {
             Lang.Instance.LoadLocalised();
 
-            if (env.IsDevelopment())
-            {
-                _ = app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                _ = app.UseExceptionHandler("/Error");
-            }
+            _ = env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseExceptionHandler("/Error");
 
             // Moves any old files from previous installs.
             foreach (var p in Globals.PlatformList) // Copy across all platform files
@@ -126,6 +122,38 @@ namespace TcNo_Acc_Switcher_Server
             if (File.Exists(Path.Join(Globals.AppDataFolder, f)))
                 File.Copy(Path.Join(Globals.AppDataFolder, f), Path.Join(Globals.UserDataFolder, f), true);
             File.Delete(Path.Join(Globals.AppDataFolder, f));
+        }
+    }
+
+    internal class IconChanger
+    {
+        // Based on https://stackoverflow.com/a/59897483/5165437
+        public static void SetConsoleIcon()
+        {
+            try
+            {
+                if (!OperatingSystem.IsWindows()) return;
+                var path = Path.Join(Globals.AppDataFolder, "originalwwwroot\\prog_icons\\program.ico");
+                if (!File.Exists(path)) path = Path.Join(Globals.AppDataFolder, "wwwroot\\prog_icons\\program.ico");
+                if (!File.Exists(path)) return;
+                var icon = new System.Drawing.Icon(path);
+                SetWindowIcon(icon);
+            }
+            catch (Exception e)
+            {
+                //
+            }
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
+
+        private static void SetWindowIcon(System.Drawing.Icon icon)
+        {
+            // 0x0080 is SETICON
+            var mwHandle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
+            var result01 = SendMessage(mwHandle, (int)0x0080, 0, icon.Handle);
+            var result02 = SendMessage(mwHandle, (int)0x0080, 1, icon.Handle);
         }
     }
 }

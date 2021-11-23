@@ -191,14 +191,38 @@ void exec_program(std::wstring path, std::wstring exe, std::wstring param, bool 
 }
 
 
+#pragma region Utilities
 // This doesn't REALLY belong here, but it's used by both programs that use this file so...
-std::string getOperatingPath() {
+std::wstring s2ws(const std::string& s)
+{
+	int len;
+	int slength = (int)s.length() + 1;
+	len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
+	wchar_t* buf = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+	std::wstring r(buf);
+	delete[] buf;
+	return r;
+}
+
+std::string getSelfLocation()
+{
 	const HMODULE h_module = GetModuleHandleW(nullptr);
 	WCHAR pth[MAX_PATH];
 	GetModuleFileNameW(h_module, pth, MAX_PATH);
 	std::wstring ws(pth);
 	const std::string path(ws.begin(), ws.end());
+	return path;
+}
+std::string getOperatingPath() {
+	const std::string path(getSelfLocation());
 	return path.substr(0, path.find_last_of('\\') + 1);
+}
+
+std::string getSelfName() {
+	const std::string path(getSelfLocation());
+	const size_t last_slash = path.find_last_of('\\');
+	return path.substr(last_slash + 1, path.find_last_of('.') - last_slash - 1);
 }
 
 std::string dotnet_path()
@@ -232,3 +256,5 @@ std::string dotnet_path()
 
 	return ret;
 }
+
+#pragma endregion
