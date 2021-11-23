@@ -38,6 +38,7 @@ RMDIR /Q/S "runtimes\win-x86"
 RMDIR /Q x64
 RMDIR /Q x86
 copy /B /Y "..\..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
+copy /B /Y "..\..\..\UpdaterWrapper\_Updater_Wrapper.exe" "updater\TcNo-Acc-Switcher-Updater.exe"
 REN "wwwroot" "originalwwwroot"
 cd %origDir%
 GOTO end
@@ -85,6 +86,7 @@ mkdir updater\x64
 mkdir updater\x86
 mkdir updater\ref
 copy /B /Y "..\..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
+copy /B /Y "..\..\..\UpdaterWrapper\_Updater_Wrapper.exe" "TcNo-Acc-Switcher-Updater.exe"
 REM Signing
 ECHO Signing binaries
 echo %time%

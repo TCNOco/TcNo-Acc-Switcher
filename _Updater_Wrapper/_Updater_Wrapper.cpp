@@ -30,20 +30,21 @@
 
 #include <limits.h>
 #include <stdlib.h>
-int main()
+int main(int argc, char* argv[])
 {
 	SetConsoleTitle(_T("TcNo Account Switcher - Updater Wrapper"));
 	std::cout << "Verifying .NET versions before attempting to launch Updater." << std::endl;
 	bool min_webview_met = false,
 		min_desktop_runtime_met = false,
 		min_aspcore_met = false;
-	find_installed_net_runtimes(false, min_webview_met, min_desktop_runtime_met, min_aspcore_met, false);
+	find_installed_net_runtimes(false, min_webview_met, min_desktop_runtime_met, min_aspcore_met, true);
 
 	if (!min_webview_met || !min_desktop_runtime_met || !min_aspcore_met)
 	{
 		// Launch installer to get these!
 		const auto args = TEXT("net updater");
-		start_program(L"../_First_Run_Installer.exe", args);
+		std::string back_path = getOperatingPath() + "..\\";
+		exec_program(std::wstring(back_path.begin(), back_path.end()), L"_First_Run_Installer.exe", L"net updater");
 	}
 	else
 	{
@@ -51,18 +52,16 @@ int main()
 		if (p.back() != '\\') p += '\\';
 		p += "TcNo-Acc-Switcher-Updater.dll\"";
 
-		p = "--info";
-
 		std::string dotnet = dotnet_path(); // This is 1024 characters long for some reason...
-		// WHY
-		// ON
-		// EARTH
-		// DOES THIS NOT USE THE ARGUMENT?!?!?!?!?
-		// TODO: when not 3:30AM: Fix
-		start_program(std::wstring(dotnet.begin(), dotnet.end()).c_str(), std::wstring(p.begin(), p.end()).c_str());
-		std::cout << "RAN: " << dotnet << " " << p << std::endl;
+		std::cout << "Running: dotnet TcNo-Acc-Switcher-Updater.dll " << std::endl;
 
-		system("pause");
+
+		std::vector<char> buffer_temp;
+
+		for (int i = 0; i < argc; ++i)
+			p = p + " " + argv[i];
+
+		exec_program(std::wstring(dotnet.begin(), dotnet.end()), L"dotnet.exe", std::wstring(p.begin(), p.end()), false);
 	}
 
 	exit(1);

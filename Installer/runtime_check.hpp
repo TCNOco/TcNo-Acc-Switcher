@@ -18,6 +18,24 @@
 
 #include "versions.h"
 
+bool split_version(std::string& str, std::vector<int>& arr, const std::string& delimiter)
+{
+	size_t pos = 0;
+	while ((pos = str.find(delimiter)) != std::string::npos) {
+		arr.push_back(std::stoi(str.substr(0, pos)));
+		if (str.find(delimiter) != std::string::npos) str.erase(0, pos + delimiter.length());
+	}
+
+	const size_t v1_first_not = str.find_first_not_of("0123456789.");
+	if (v1_first_not == std::string::npos)
+		arr.push_back(std::stoi(str));
+	else
+	{
+		str = str.substr(0, v1_first_not);
+		if (str.length() > 0) arr.push_back(std::stoi(str));
+	}
+}
+
 /// <summary>
 /// Returns whether v2 is newer than, or equal to v1.
 /// Works with unequal string sizes.
@@ -25,29 +43,24 @@
 bool compare_versions(std::string v1, std::string v2, const std::string& delimiter)
 {
 	if (v1 == v2) return true;
-	std::vector<int> v1_arr;
-	std::vector<int> v2_arr;
-
-	size_t pos = 0;
-	std::string token;
-	while ((pos = v1.find(delimiter)) != std::string::npos) {
-		token = v1.substr(0, pos);
-		v1_arr.push_back(stoi(token));
-		if (v1.find(delimiter) != std::string::npos) v1.erase(0, pos + delimiter.length());
-	}
-	v1_arr.push_back(std::stoi(v1));
-
-	while ((pos = v2.find(delimiter)) != std::string::npos) {
-		token = v2.substr(0, pos);
-		v2_arr.push_back(stoi(token));
-		if (v2.find(delimiter) != std::string::npos) v2.erase(0, pos + delimiter.length());
-	}
-	v2_arr.push_back(std::stoi(v2));
-
-	for (int i = 0; i < min(v1_arr.size(), v2_arr.size()); ++i)
+	try
 	{
-		if (v2_arr[i] < v1_arr[i]) return false;
-		if (v2_arr[i] > v1_arr[i]) return true;
+		std::vector<int> v1_arr;
+		std::vector<int> v2_arr;
+
+
+		split_version(v1, v1_arr, delimiter);
+		split_version(v2, v2_arr, delimiter);
+
+		for (int i = 0; i < min(v1_arr.size(), v2_arr.size()); ++i)
+		{
+			if (v2_arr[i] < v1_arr[i]) return false;
+			if (v2_arr[i] > v1_arr[i]) return true;
+		}
+		return true;
+	} catch (std::exception &err)
+	{
+		std::cout << "Version conversion failed!" << std::endl;
 	}
 
 	return true;
@@ -159,33 +172,24 @@ void find_installed_net_runtimes(const bool x32, bool &min_webview_met, bool &mi
 	RegCloseKey(h_uninst_key);
 }
 
-// This doesn't REALLY belong here, but it's used by both programs that use this file so...
-VOID start_program(LPCTSTR lpApplicationName, const wchar_t* args = TEXT(""))
+void exec_program(std::wstring path, std::wstring exe, std::wstring param, bool show_window = true)
 {
-	// additional information
-	STARTUPINFO si;
-	PROCESS_INFORMATION pi;
+	DWORD exitCode = 0;
+	SHELLEXECUTEINFO ShExecInfo = { 0 };
+	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+	ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	ShExecInfo.hwnd = NULL;
+	ShExecInfo.lpVerb = _T("open");
+	ShExecInfo.lpFile = exe.c_str();
+	ShExecInfo.lpParameters = param.c_str();
+	ShExecInfo.lpDirectory = path.c_str();
+	ShExecInfo.nShow = show_window ? SW_SHOW : SW_HIDE;
+	ShExecInfo.hInstApp = NULL;
+	ShellExecuteEx(&ShExecInfo);
 
-	// set the size of the structures
-	ZeroMemory(&si, sizeof(si));
-	si.cb = sizeof(si);
-	ZeroMemory(&pi, sizeof(pi));
-
-	// start the program up
-	CreateProcess(lpApplicationName, const_cast<LPWSTR>(args),
-		NULL,           // Process handle not inheritable
-		NULL,           // Thread handle not inheritable
-		FALSE,          // Set handle inheritance to FALSE
-		0,              // No creation flags
-		NULL,           // Use parent's environment block
-		NULL,           // Use parent's starting directory
-		&si,            // Pointer to STARTUPINFO structure
-		&pi             // Pointer to PROCESS_INFORMATION structure (removed extra parentheses)
-	);
-	// Close process and thread handles.
-	CloseHandle(pi.hProcess);
-	CloseHandle(pi.hThread);
+	// No wait as program exits once run.
 }
+
 
 // This doesn't REALLY belong here, but it's used by both programs that use this file so...
 std::string getOperatingPath() {
@@ -219,7 +223,7 @@ std::string dotnet_path()
 		//ret = std::string(std::begin(path), std::end(path));
 		// For some unknown reason, using +, +=, append, push_back etc just DON'T WORK HERE WTF
 		// I have been bashing my head into a wall for over an hour it's 3 AM
-		errno_t e = wcscat_s(path, L"dotnet.exe");
+		//errno_t e = wcscat_s(path, L"dotnet.exe");
 		ret = std::string(std::begin(path), std::end(path));
 	}
 	RegCloseKey(key);
