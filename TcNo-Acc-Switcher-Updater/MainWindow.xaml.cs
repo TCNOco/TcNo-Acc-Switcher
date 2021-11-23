@@ -254,6 +254,12 @@ namespace TcNo_Acc_Switcher_Updater
 
         private void Init()
         {
+            if (!Directory.Exists(UserDataFolder))
+            {
+                MessageBox.Show("Please run the main program at least once, with 'TcNo_Acc_Switcher.exe'", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Environment.Exit(1);
+            }
+
             // Check if installed to program files, and requires admin to run:
             if (InstalledToProgramFiles() && !IsAdmin() ||
                 !HasFolderAccess(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)))

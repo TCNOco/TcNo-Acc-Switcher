@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <RootNamespace>TcNo_Acc_Switcher_Client</RootNamespace>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
-    <Version>4.0.0</Version>
+    <Version>4.1.0</Version>
     <Authors>TechNobo (Wesley Pyburn)</Authors>
     <Product>TcNo Account Switcher</Product>
     <Copyright>Copyright © TechNobo (Wesley Pyburn) 2019-2021</Copyright>
@@ -17,6 +17,8 @@
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <Platforms>AnyCPU;x64</Platforms>
     <SignAssembly>false</SignAssembly>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <AnalysisLevel>6.0</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
@@ -41,6 +43,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="..\TcNo-Acc-Switcher-Server\wwwroot\img\TcNoAccSw-Icon-100x100.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
