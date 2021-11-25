@@ -2,7 +2,8 @@
 /* Text selection styling */
 ::selection {
   color: #402B00;
-  background: var(--accent); }
+  background: var(--accent);
+}
 
 .contextmenu {
   background: #253340;
@@ -18,50 +19,62 @@
   padding: 0;
   border-radius: 0.2em;
   list-style: none;
-  z-index: 999999; }
-  .contextmenu li {
-    border-left: 1em solid transparent;
-    transition: ease 0.2s; }
-    .contextmenu li a {
-      color: #FFFFFF !important;
-      display: block;
-      padding: 10px;
-      text-decoration: none;
-      cursor: pointer;
-      transition: ease 0.2s; }
-  .contextmenu .submenu {
-    display: none;
-    min-height: 100%;
-    list-style: none;
-    box-shadow: 10px 10px 5px -3px rgba(0, 0, 0, 0.3); }
-    .contextmenu .submenu li {
-      color: #FFFFFF;
-      list-style: none; }
-      .contextmenu .submenu li a {
-        color: #FFFFFF !important; }
-  .contextmenu li:hover {
-    border-left: 2px solid #8BE9FD;
-    background: #1B2737; }
-    .contextmenu li:hover a {
-      color: #FFFFFF; }
-    .contextmenu li:hover .submenu {
-      display: block;
-      position: absolute;
-      top: 0;
-      right: -15em;
-      width: 15em;
-      padding: 0;
-      font-size: 1em;
-      animation: expand 0.3s;
-      opacity: 1;
-      background: #253340; }
+  z-index: 999999;
+}
+.contextmenu li {
+  border-left: 1em solid transparent;
+  transition: ease 0.2s;
+}
+.contextmenu li a {
+  color: #FFFFFF !important;
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: ease 0.2s;
+}
+.contextmenu .submenu {
+  display: none;
+  min-height: 100%;
+  list-style: none;
+  box-shadow: 10px 10px 5px -3px rgba(0, 0, 0, 0.3);
+}
+.contextmenu .submenu li {
+  color: #FFFFFF;
+  list-style: none;
+}
+.contextmenu .submenu li a {
+  color: #FFFFFF !important;
+}
+.contextmenu li:hover {
+  border-left: 2px solid #8BE9FD;
+  background: #1B2737;
+}
+.contextmenu li:hover a {
+  color: #FFFFFF;
+}
+.contextmenu li:hover > .submenu {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: -15em;
+  width: 15em;
+  padding: 0;
+  font-size: 1em;
+  animation: expand 0.3s;
+  opacity: 1;
+  background: #253340;
+}
 
 @keyframes expand {
   from {
     width: 13em;
     margin-right: 2em;
-    font-size: 1em; }
+    font-size: 1em;
+  }
   to {
     width: 15em;
     margin-right: 0;
-    font-size: 1em; } }
+    font-size: 1em;
+  }
+}
