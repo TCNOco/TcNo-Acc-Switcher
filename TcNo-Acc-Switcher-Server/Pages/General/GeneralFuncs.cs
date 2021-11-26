@@ -56,6 +56,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         }
 
+        public static bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
+
         public static bool CanKillProcess(string processName, bool showModal = true)
         {
             // Checks whether program is running as Admin or not
@@ -81,6 +83,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (!canKill && showModal) _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
 
             return canKill;
+        }
+
+        public static bool CloseProcesses(string procName)
+        {
+            if (!OperatingSystem.IsWindows()) return false;
+            Globals.DebugWriteLine(@"Closing: " + procName);
+            if (!GeneralFuncs.CanKillProcess(procName)) return false;
+            Globals.KillProcess(procName);
+            return GeneralFuncs.WaitForClose(procName);
+        }
+        public static bool CloseProcesses(List<string> procNames)
+        {
+            if (!OperatingSystem.IsWindows()) return false;
+            Globals.DebugWriteLine(@"Closing: " + string.Join(", ", procNames));
+            foreach (var s in procNames)
+            {
+                if (!GeneralFuncs.CanKillProcess(s)) return false;
+                Globals.KillProcess(s);
+            }
+            return GeneralFuncs.WaitForClose(procNames);
         }
 
         /// <summary>

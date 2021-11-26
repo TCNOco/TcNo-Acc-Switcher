@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
@@ -68,6 +69,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
 
         // Constants
+        [JsonIgnore] public static readonly List<string> Processes = new() { "steam.exe", "steamservice.exe", "steamwebhelper.exe" };
         [JsonIgnore] public readonly string VacCacheFile = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
         [JsonIgnore] public static readonly string SettingsFile = "SteamSettings.json";
         [JsonIgnore] public readonly string ForgottenFile = "SteamForgotten.json";
@@ -173,7 +175,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
 
         /// <summary>
-        /// Get Steam.exe path from SteamSettings.json 
+        /// Get Steam.exe path from SteamSettings.json
         /// </summary>
         /// <returns>Steam.exe's path string</returns>
         public string Exe() => Path.Join(FolderPath, "Steam.exe");

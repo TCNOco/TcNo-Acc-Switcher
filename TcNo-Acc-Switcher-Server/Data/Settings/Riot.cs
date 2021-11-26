@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -75,6 +76,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             [JsonIgnore] public string RiotImagePath = "wwwroot/img/profiles/riot/";
             [JsonIgnore] public string RiotImagePathHtml = "img/profiles/riot/";
         */
+        [JsonIgnore] public static readonly List<string> Processes = new() { "LeagueClient.exe", "LoR.exe", "VALORANT.exe", "RiotClientServices.exe", "RiotClientUx.exe", "RiotClientUxRender.exe" };
         [JsonIgnore] public readonly string ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},

@@ -61,6 +61,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             [JsonIgnore] public string UbisoftImagePath = "wwwroot/img/profiles/ubi/";
             [JsonIgnore] public string UbisoftImagePathHtml = "img/profiles/ubi/";
         */
+        [JsonIgnore] public static readonly string Processes = "upc";
         [JsonIgnore] public readonly string ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_LoginAsSubmenu"]}"": [
@@ -86,7 +87,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
 
         /// <summary>
-        /// Get Ubisoft.exe path from UbisoftSettings.json 
+        /// Get Ubisoft.exe path from UbisoftSettings.json
         /// </summary>
         /// <returns>Ubisoft.exe's path string</returns>
         public string Exe() => Path.Join(FolderPath, "upc.exe");

@@ -108,7 +108,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         {
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.SwapDiscordAccounts] Swapping to: hidden.");
             _ = AppData.InvokeVoidAsync("updateStatus", "Closing Discord");
-            if (!CloseDiscord()) return;
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Discord.Processes)) return;
             ClearCurrentLoginDiscord();
             if (accName != "")
             {
@@ -229,7 +229,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
                 {
                     if (attempts > 2 && e.HResult == -2147024864) // File is in use - but wait 2 seconds to see...
                     {
-                        _ = CloseDiscord();
+                        _ = GeneralFuncs.CloseProcesses(Data.Settings.Discord.Processes);
                         closedBySwitcher = true;
 
                     }
@@ -402,14 +402,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         /// <summary>
         /// Kills Discord processes when run via cmd.exe
         /// </summary>
-        public static bool CloseDiscord()
-        {
-            Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.CloseDiscord]");
-            if (!GeneralFuncs.CanKillProcess("Discord")) return false;
-            Globals.KillProcess("Discord");
-            return GeneralFuncs.WaitForClose("Discord");
-        }
-
         public static void ClearDiscordCache()
         {
             int totalFiles = 0, failedFiles = 0;

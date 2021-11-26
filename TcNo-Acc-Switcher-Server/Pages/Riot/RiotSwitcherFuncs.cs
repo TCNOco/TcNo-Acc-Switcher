@@ -146,7 +146,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             _startArguments = " " + args;
 
             _ = AppData.InvokeVoidAsync("updateStatus", "Closing Riot");
-            if (!CloseRiot()) return;
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Riot.Processes)) return;
             ClearCurrentLoginRiot();
             if (accName != "")
             {
@@ -216,33 +216,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         }
 
         #region RIOT_MANAGEMENT
-        /// <summary>
-        /// List of Riot processes to close
-        /// </summary>
-        private static readonly string[] RiotProcessList = { "LeagueClient.exe", "LoR.exe", "VALORANT.exe", "RiotClientServices.exe", "RiotClientUx.exe", "RiotClientUxRender.exe" };
-
-        /// <summary>
-        /// Returns true if program can kill all Riot processes
-        /// </summary>
-        public static bool CanCloseRiot() => RiotProcessList.Aggregate(true, (current, s) => current & GeneralFuncs.CanKillProcess(s));
-
-        /// <summary>
-        /// Kills Riot processes when run via cmd.exe
-        /// </summary>
-        public static bool CloseRiot()
-        {
-            Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.CloseRiot]");
-            if (!CanCloseRiot()) return false;
-
-            // Kill game clients & Platform clients
-            foreach (var s in RiotProcessList)
-            {
-                Globals.KillProcess(s);
-                _ = GeneralFuncs.WaitForClose(s);
-            }
-            return true;
-        }
-
         /// <summary>
         /// Start Riot games
         /// </summary>

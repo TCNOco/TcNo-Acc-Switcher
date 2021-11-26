@@ -76,7 +76,11 @@ namespace TcNo_Acc_Switcher_Server.Data
                         s = s.Replace($"{{{k}}}", v.Value<string>());
                 else
                     foreach (var pi in obj.GetType().GetProperties())
-                        s = s.Replace($"{{{pi.Name}}}", (string)pi.GetValue(obj, null));
+                    {
+                        dynamic val = pi.GetValue(obj, null);
+                        if (val is int) val = val.ToString();
+                        s = s.Replace($"{{{pi.Name}}}", (string)val);
+                    }
                 return s;
             }
         }

@@ -71,7 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
             foreach (var mail in savedAccountsList.ToString().Split(','))
             {
-                if (string.IsNullOrEmpty(mail) || string.IsNullOrWhiteSpace(mail)) continue; // Ignores blank emails sometimes added: ".com, , asdf@..." 
+                if (string.IsNullOrEmpty(mail) || string.IsNullOrWhiteSpace(mail)) continue; // Ignores blank emails sometimes added: ".com, , asdf@..."
                 try
                 {
                     if (BattleNet.Accounts.Count == 0 || BattleNet.Accounts.All(x => x.Email != mail) && !BattleNet.IgnoredAccounts.Contains(mail) && mail != " ")
@@ -201,7 +201,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             if (BattleNet.Accounts.Count == 0) BattleNet.LoadAccounts();
 
             _ = AppData.InvokeVoidAsync("updateStatus", "Starting BattleNet");
-            if (!CloseBattleNet()) return;
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.BattleNet.Processes)) return;
 
             // Load settings into JObject
             var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config").ConfigureAwait(false);
@@ -262,17 +262,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// <returns></returns>
         [JSInvokable]
         public static Task<bool> GetBattleNetForgetAcc() => Task.FromResult(BattleNet.ForgetAccountEnabled);
-
-        /// <summary>
-        /// Kills Battle.net processes when run via cmd.exe
-        /// </summary>
-        public static bool CloseBattleNet()
-        {
-            Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.CloseBattleNet]");
-            if (!GeneralFuncs.CanKillProcess("Battle.net")) return false;
-            Globals.KillProcess("Battle.net");
-            return GeneralFuncs.WaitForClose("Battle.net");
-        }
 
         /// <summary>
         /// Changes an accounts name on the TcNo Account Switcher

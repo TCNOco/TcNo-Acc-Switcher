@@ -461,7 +461,7 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         // Battlenet format: +b:<email>
                         Globals.WriteToLog("Battle.net switch requested");
-                        if (!GeneralFuncs.CanKillProcess("Battle.net"))
+                        if (!GeneralFuncs.CanKillProcess(BattleNet.Processes))
                             Restart(combinedArgs, true);
                         BattleNet.Instance.LoadFromFile();
                         _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account, string.Join(' ', remainingArguments));
@@ -472,8 +472,9 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         // Discord format: +d:<username>
                         Globals.WriteToLog("Discord switch requested");
-                        string pass;
+                        if (!GeneralFuncs.CanKillProcess(Discord.Processes)) Restart(combinedArgs, true);
 
+                        string pass;
                         if (command.Length < 3) // Get password as third argument, or as input from user.
                         {
                             while (true)
@@ -507,8 +508,6 @@ namespace TcNo_Acc_Switcher_Client
                             }
                         }
 
-                        if (!GeneralFuncs.CanKillProcess("Discord"))
-                            Restart(combinedArgs, true);
                         Discord.Instance.LoadFromFile();
                         TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherFuncs.SwapDiscordAccounts(account, string.Join(' ', remainingArguments));
 
@@ -519,7 +518,7 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         // Epic Games format: +e:<username>
                         Globals.WriteToLog("Epic Games switch requested");
-                        if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) Restart(combinedArgs, true);
+                        if (!GeneralFuncs.CanKillProcess(Epic.Processes)) Restart(combinedArgs, true);
                         Epic.Instance.LoadFromFile();
                         TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account, string.Join(' ', remainingArguments));
                         return;
@@ -529,7 +528,7 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
                         Globals.WriteToLog("Origin switch requested");
-                        if (!GeneralFuncs.CanKillProcess("Origin")) Restart(combinedArgs, true);
+                        if (!GeneralFuncs.CanKillProcess(Origin.Processes)) Restart(combinedArgs, true);
                         Origin.Instance.LoadFromFile();
                         TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account,
                             command.Length > 2 ? int.Parse(command[2]) : 0, string.Join(' ', remainingArguments));
@@ -540,7 +539,7 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         // Riot Games format: +e:<username>
                         Globals.WriteToLog("Riot Games switch requested");
-                        if (!TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.CanCloseRiot()) Restart(combinedArgs, true);
+                        if (!GeneralFuncs.CanKillProcess(Riot.Processes)) Restart(combinedArgs, true);
                         Riot.Instance.LoadFromFile();
                         TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'), string.Join(' ', remainingArguments));
                         return;
@@ -550,7 +549,7 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
                         Globals.WriteToLog("Steam switch requested");
-                        if (!GeneralFuncs.CanKillProcess("steam")) Restart(combinedArgs, true);
+                        if (!GeneralFuncs.CanKillProcess(Steam.Processes)) Restart(combinedArgs, true);
                         Steam.Instance.LoadFromFile();
                         TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
                             ePersonaState: command.Length > 2
@@ -563,7 +562,7 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         // Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]
                         Globals.WriteToLog("Ubisoft Connect switch requested");
-                        if (!GeneralFuncs.CanKillProcess("upc")) Restart(combinedArgs, true);
+                        if (!GeneralFuncs.CanKillProcess(Ubisoft.Processes)) Restart(combinedArgs, true);
                         Ubisoft.Instance.LoadFromFile();
                         TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account,
                             command.Length > 2 ? int.Parse(command[2]) : -1, string.Join(' ', remainingArguments));

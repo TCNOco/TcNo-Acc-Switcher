@@ -81,6 +81,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         // Constants
         [JsonIgnore] public static readonly string SettingsFile = "BattleNetSettings.json";
+        [JsonIgnore] public static readonly string Processes = "Battle.net";
         [JsonIgnore] public readonly string StoredAccPath = "LoginCache\\BattleNet\\StoredAccounts.json";
         [JsonIgnore] public readonly string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
         [JsonIgnore] public readonly string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";
@@ -115,7 +116,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
 
         /// <summary>
-        /// Get Battle.net.exe path from OriginSettings.json 
+        /// Get Battle.net.exe path from OriginSettings.json
         /// </summary>
         /// <returns>Battle.net.exe's path string</returns>
         public string Exe() => FolderPath + "\\Battle.net.exe";

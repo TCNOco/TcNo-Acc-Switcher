@@ -59,6 +59,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             [JsonIgnore] public string EpicImagePath = "wwwroot/img/profiles/epic/";
             [JsonIgnore] public string EpicImagePathHtml = "img/profiles/epic/";
         */
+        [JsonIgnore] public static readonly string Processes = "EpicGamesLauncher";
         [JsonIgnore] public readonly string ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
@@ -81,7 +82,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
 
         /// <summary>
-        /// Get Epic.exe path from EpicSettings.json 
+        /// Get Epic.exe path from EpicSettings.json
         /// </summary>
         /// <returns>Epic.exe's path string</returns>
         public string Exe() => Path.Join(FolderPath, "EpicGamesLauncher.exe");

@@ -68,7 +68,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         {
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: hidden.");
             _ = AppData.InvokeVoidAsync("updateStatus", "Closing Origin");
-            if (!CloseOrigin()) return;
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Origin.Processes)) return;
             if (!ClearCurrentLoginOrigin())
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantClearLoginFiles"], Lang["Error"], "toastarea");
@@ -296,19 +296,5 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
 
             return JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(s);
         }
-
-
-        #region ORIGIN_MANAGEMENT
-        /// <summary>
-        /// Kills Origin processes when run via cmd.exe
-        /// </summary>
-        public static bool CloseOrigin()
-        {
-            Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.CloseOrigin]");
-            if (!GeneralFuncs.CanKillProcess("origin")) return false;
-            Globals.KillProcess("origin");
-            return GeneralFuncs.WaitForClose("origin");
-        }
-        #endregion
     }
 }

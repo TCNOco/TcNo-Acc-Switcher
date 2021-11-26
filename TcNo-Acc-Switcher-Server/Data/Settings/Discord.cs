@@ -66,6 +66,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             [JsonIgnore] public string DiscordImagePath = "wwwroot/img/profiles/discord/";
             [JsonIgnore] public string DiscordImagePathHtml = "img/profiles/discord/";
         */
+        [JsonIgnore] public static readonly string Processes = "Discord.exe";
         [JsonIgnore] public readonly string ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
@@ -88,7 +89,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
 
         /// <summary>
-        /// Get Discord.exe path from DiscordSettings.json 
+        /// Get Discord.exe path from DiscordSettings.json
         /// </summary>
         /// <returns>Discord.exe's path string</returns>
         public string Exe()

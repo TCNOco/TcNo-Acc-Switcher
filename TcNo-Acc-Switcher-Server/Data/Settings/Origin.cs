@@ -61,6 +61,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public string OriginImagePath = "wwwroot/img/profiles/origin/";
         [JsonIgnore] public string OriginImagePathHtml = "img/profiles/origin/";
         */
+        [JsonIgnore] public static readonly string Processes = "Origin";
         [JsonIgnore] public readonly string ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
@@ -83,7 +84,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
 
         /// <summary>
-        /// Get Origin.exe path from OriginSettings.json 
+        /// Get Origin.exe path from OriginSettings.json
         /// </summary>
         /// <returns>Origin.exe's path string</returns>
         public string Exe() => Path.Join(FolderPath, "Origin.exe");

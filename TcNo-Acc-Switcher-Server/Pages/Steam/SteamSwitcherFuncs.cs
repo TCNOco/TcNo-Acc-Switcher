@@ -12,6 +12,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Gameloop.Vdf;
+using Gameloop.Vdf.JsonConverter;
+using Microsoft.JSInterop;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -22,12 +28,6 @@ using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Gameloop.Vdf;
-using Gameloop.Vdf.JsonConverter;
-using Microsoft.JSInterop;
-using Microsoft.Win32;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
 using TcNo_Acc_Switcher_Server.Data;
@@ -404,7 +404,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 return;
             }
             _ = AppData.InvokeVoidAsync("updateStatus", "Closing Steam");
-            if (!CloseSteam()) return;
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Steam.Processes)) return;
             if (OperatingSystem.IsWindows()) UpdateLoginUsers(steamId, ePersonaState);
             _ = AppData.InvokeVoidAsync("updateStatus", "Starting Steam");
             if (!autoStartSteam) return;
@@ -431,21 +431,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         #endregion
 
         #region STEAM_MANAGEMENT
-        /// <summary>
-        /// Kills Steam processes when run via cmd.exe
-        /// </summary>
-        public static bool CloseSteam()
-        {
-            Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.CloseSteam]");
-            if (!GeneralFuncs.CanKillProcess("steam")) return false;
-            var steamProc = new List<string>() { "steam.exe", "steamservice.exe", "steamwebhelper.exe" };
-            foreach (var s in steamProc)
-            {
-                Globals.KillProcess(s);
-            }
-            return GeneralFuncs.WaitForClose(steamProc);
-        }
-
         /// <summary>
         /// Updates loginusers and registry to select an account as "most recent"
         /// </summary>

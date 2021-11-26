@@ -75,7 +75,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         {
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.SwapEpicAccounts] Swapping to: hidden.");
             _ = AppData.InvokeVoidAsync("updateStatus", "Closing Epic");
-            if (!CloseEpic()) return;
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Epic.Processes)) return;
             ClearCurrentLoginEpic();
             if (accName != "")
             {
@@ -205,19 +205,5 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
         }
-
-
-        #region EPIC_MANAGEMENT
-        /// <summary>
-        /// Kills Epic processes when run via cmd.exe
-        /// </summary>
-        public static bool CloseEpic()
-        {
-            Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.CloseEpic]");
-            if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher")) return false;
-            Globals.KillProcess("EpicGamesLauncher");
-            return GeneralFuncs.WaitForClose("EpicGamesLauncher");
-        }
-        #endregion
     }
 }

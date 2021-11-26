@@ -40,42 +40,42 @@ namespace TcNo_Acc_Switcher_Server.Pages
             switch (platform)
             {
                 case "BattleNet":
-                    if (!GeneralFuncs.CanKillProcess("Battle.net")) return;
+                    if (!GeneralFuncs.CanKillProcess(Data.Settings.BattleNet.Processes)) return;
                     Data.Settings.BattleNet.Instance.LoadFromFile();
                     if (Directory.Exists(Data.Settings.BattleNet.Instance.FolderPath) && File.Exists(Data.Settings.BattleNet.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/BattleNet/");
                     else _ = GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
                     break;
 
                 case "Discord":
-                    if (!GeneralFuncs.CanKillProcess("Discord.exe")) return;
+                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Discord.Processes)) return;
                     Data.Settings.Discord.Instance.LoadFromFile();
                     if (Directory.Exists(Data.Settings.Discord.Instance.FolderPath) && File.Exists(Data.Settings.Discord.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Discord/");
                     else _ = GeneralInvocableFuncs.ShowModal("find:Discord:Discord.exe:DiscordSettings");
                     break;
 
                 case "Epic":
-                    if (!GeneralFuncs.CanKillProcess("EpicGamesLauncher.exe")) return;
+                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Epic.Processes)) return;
                     Data.Settings.Epic.Instance.LoadFromFile();
                     if (Directory.Exists(Data.Settings.Epic.Instance.FolderPath) && File.Exists(Data.Settings.Epic.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Epic/");
                     else _ = GeneralInvocableFuncs.ShowModal("find:Epic:EpicGamesLauncher.exe:EpicSettings");
                     break;
 
                 case "Origin":
-                    if (!GeneralFuncs.CanKillProcess("Origin")) return;
+                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Origin.Processes)) return;
                     Data.Settings.Origin.Instance.LoadFromFile();
                     if (Directory.Exists(Data.Settings.Origin.Instance.FolderPath) && File.Exists(Data.Settings.Origin.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Origin/");
                     else _ = GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
                     break;
 
                 case "Riot":
-                    if (!Riot.RiotSwitcherFuncs.CanCloseRiot()) return;
+                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Riot.Processes)) return;
                     Data.Settings.Riot.Instance.LoadFromFile();
                     if (Directory.Exists(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client\\Data"))) AppData.ActiveNavMan.NavigateTo("/Riot/");
                     else _ = GeneralInvocableFuncs.ShowModal("find:Riot:RiotClientPrivateSettings.yaml:RiotSettings");
                     break;
 
                 case "Steam":
-                    if (!GeneralFuncs.CanKillProcess("steam")) return;
+                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Steam.Processes)) return;
                     Data.Settings.Steam.Instance.LoadFromFile();
                     if (!Directory.Exists(Data.Settings.Steam.Instance.FolderPath) || !File.Exists(Data.Settings.Steam.Instance.Exe()))
                     {
@@ -87,7 +87,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     break;
 
                 case "Ubisoft":
-                    if (!GeneralFuncs.CanKillProcess("upc")) return;
+                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Ubisoft.Processes)) return;
                     Data.Settings.Ubisoft.Instance.LoadFromFile();
                     if (Directory.Exists(Data.Settings.Ubisoft.Instance.FolderPath) && File.Exists(Data.Settings.Ubisoft.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Ubisoft/");
                     else _ = GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");

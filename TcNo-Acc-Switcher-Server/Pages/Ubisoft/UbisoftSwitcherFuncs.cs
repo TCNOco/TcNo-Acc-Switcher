@@ -255,7 +255,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         {
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.SwapUbisoftAccounts] Swapping to:hidden.");
             _ = AppData.InvokeVoidAsync("updateStatus", "Closing Ubisoft");
-            if (!CloseUbisoft()) return;
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Ubisoft.Processes)) return;
             UbisoftAddCurrent(saveOnlyIfExists: true);
 
             if (userId != "")
@@ -281,7 +281,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         }
 
         /// <summary>
-        /// Copies user's account files from LoginCache\\Ubisoft\\{userId} to 
+        /// Copies user's account files from LoginCache\\Ubisoft\\{userId} to
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="state"></param>
@@ -314,20 +314,5 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             File.Copy(Path.Join(_ubisoftAppData, "settings.yaml"), $"{localCachePath}settings.yaml", true);
             return true;
         }
-
-
-        #region UBISOFT_MANAGEMENT
-        /// <summary>
-        /// Kills Origin processes when run via cmd.exe
-        /// </summary>
-        public static bool CloseUbisoft()
-        {
-            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.CloseUbisoft]");
-            if (!GeneralFuncs.CanKillProcess("upc")) return false;
-            Globals.KillProcess("upc");
-            return GeneralFuncs.WaitForClose("upc");
-        }
-
-        #endregion
     }
 }
