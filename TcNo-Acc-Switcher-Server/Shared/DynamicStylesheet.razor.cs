@@ -46,6 +46,11 @@ namespace TcNo_Acc_Switcher_Server.Shared
                 style = $":root {{ --accentHS: {h}, {s}%; --accentL: {l}%; --accent: {AppSettings.Instance.WindowsAccentColor}}}\n\n; --accentInt: {r}, {g}, {b}" + style;
             }
 
+            if (AppSettings.Instance.Rtl)
+            {
+                style = "@import url(css/rtl.min.css);\n" + style;
+            }
+
             return style;
         }
     }

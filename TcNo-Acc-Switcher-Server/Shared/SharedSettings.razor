@@ -23,6 +23,9 @@
 <div class="rowSetting rowDropdown">
     <ChooseLanguage />
 </div>
+<div class="rowSetting">
+    <div class="form-check"><input class="form-check-input" type="checkbox" id="RTL" @bind="_appSett.Rtl" @onclick="AppData.ReloadPage"><label class="form-check-label" for="RTL"></label></div><label for="RTL">@_locale["Settings_RTL"]<br></label>
+</div>
 <div class="rowSetting rowDropdown">
     <span>@_locale["Settings_Header_ActiveBrowser"]</span>
     <div class="dropdown">

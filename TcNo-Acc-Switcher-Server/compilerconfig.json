@@ -26,5 +26,12 @@
     "minify": {
       "enabled": true
     }
+  },
+  {
+    "outputFile": "wwwroot/css/rtl.css",
+    "inputFile": "wwwroot/css/rtl.scss",
+    "minify": {
+      "enabled": true
+    }
   }
 ]

@@ -1,11 +1,12 @@
 ﻿/* ReSharper disable CssNotResolved */
 .modalBG {
-  width: calc(100% - (var(--resizeBarSize) * 2));
+  width: calc(100% - var(--resizeBarSize) * 2);
   height: calc(100% - var(--resizeBarSize) - 32px);
   background: var(--modalBackground);
   position: fixed;
   cursor: pointer;
-  z-index: 100; }
+  z-index: 100;
+}
 
 .modalFG {
   background: #253340;
@@ -25,18 +26,22 @@
   transform: translate(-50%, -50%);
   box-shadow: 0 0 15px 3px #000;
   box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
-  cursor: default; }
+  cursor: default;
+}
 
 .versionIdentifier {
-  text-align: right; }
-  .versionIdentifier span {
-    color: white; }
+  text-align: right;
+}
+.versionIdentifier span {
+  color: white;
+}
 
 .modal_header_icon {
   fill: white;
   display: block;
   height: 10px;
-  margin: 12px; }
+  margin: 12px;
+}
 
 /* Info window */
 .infoWindow {
@@ -46,42 +51,53 @@
   width: fit-content;
   overflow: auto;
   text-align: center;
-  white-space: nowrap; }
-  .infoWindow .imgDiv {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    transform: none;
-    transition: all 50ms ease; }
-    .infoWindow .imgDiv:hover {
-      transform: scale(1.025); }
-    .infoWindow .imgDiv:active {
-      transform: scale(0.975); }
-  .infoWindow .fullWidthContent {
-    display: block;
-    width: 100%;
-    color: white; }
-    .infoWindow .fullWidthContent .YesNo button {
-      padding: 0.25em 3em !important; }
+  white-space: nowrap;
+}
+.infoWindow .imgDiv {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  transform: none;
+  transition: all 50ms ease;
+}
+.infoWindow .imgDiv:hover {
+  transform: scale(1.025);
+}
+.infoWindow .imgDiv:active {
+  transform: scale(0.975);
+}
+.infoWindow .fullWidthContent {
+  display: block;
+  width: 100%;
+  color: white;
+}
+.infoWindow .fullWidthContent .YesNo button {
+  padding: 0.25em 3em !important;
+}
 
 .infoWindow .rightContent {
   margin-left: 1em;
   color: white;
-  text-align: left; }
-  .infoWindow .rightContent h2 {
-    font-weight: bold; }
-  .infoWindow .rightContent .linksList {
-    display: flex;
-    flex-direction: column; }
-    .infoWindow .rightContent .linksList a svg {
-      display: inline-block;
-      width: 2em;
-      margin-right: 0.5em;
-      vertical-align: bottom;
-      padding: 1px; }
+  text-align: left;
+}
+.infoWindow .rightContent h2 {
+  font-weight: bold;
+}
+.infoWindow .rightContent .linksList {
+  display: flex;
+  flex-direction: column;
+}
+.infoWindow .rightContent .linksList a svg {
+  display: inline-block;
+  width: 2em;
+  margin-right: 0.5em;
+  vertical-align: bottom;
+  padding: 1px;
+}
 
 #modal_false {
-  color: #8BE9FD !important; }
+  color: #8BE9FD !important;
+}
 
 #modal_contents {
   display: grid;
@@ -89,97 +105,125 @@
   width: 100%;
   height: 100%;
   padding: 2em;
-  background: #0E1419; }
-  #modal_contents .modal_button_close {
-    right: 0 !important;
-    left: unset !important;
-    width: 35% !important; }
-  #modal_contents input[type=text], #modal_contents input[type=password] {
-    margin: 0;
-    padding-bottom: 2px;
-    padding-bottom: 0;
-    border-bottom: 2px solid #888;
-    background: #070A0D !important;
-    background: #070A0D; }
-  #modal_contents input[type=text], #modal_contents input[type=password]:focus {
-    border-bottom: 2px solid var(--accent); }
-  #modal_contents .inputAndButton {
-    display: flex;
-    margin: 1em 0.5em 1em 0.5em; }
-    #modal_contents .inputAndButton button {
-      margin-left: 0.5em; }
-  #modal_contents .inputWithTitle {
-    display: flex;
-    flex-direction: column;
-    margin: 1em 0.5em 1em 0.5em; }
-  #modal_contents .modal-text {
-    margin: 0 0.5em 2px 0.5em;
-    color: white;
-    font-size: 12px !important; }
-  #modal_contents button {
-    user-select: none;
-    width: auto;
-    margin: 0 0.25em;
-    padding: 0.25em 0.6em;
-    border-width: 0.1em;
-    border-style: solid;
-    border-radius: 0 !important;
-    border-color: #274560;
-    background: #274560;
-    color: white;
-    cursor: pointer;
-    transition: ease-in-out 60ms; }
-    #modal_contents button span {
-      line-height: 2.5em; }
-    #modal_contents button.extra {
-      margin: 0 7px 0 0 !important;
-      padding: 3px 10px; }
-    #modal_contents button:hover {
-      border-color: #274560;
-      background: #28374E; }
-    #modal_contents button:active {
-      border-color: var(--accent);
-      background: #28374E !important; }
-    #modal_contents button:focus {
-      box-shadow: none; }
+  background: #0E1419;
+}
+#modal_contents .modal_button_close {
+  right: 0 !important;
+  left: unset !important;
+  width: 35% !important;
+}
+#modal_contents input[type=text], #modal_contents input[type=password] {
+  margin: 0;
+  padding-bottom: 2px;
+  padding-bottom: 0;
+  border-bottom: 2px solid #888;
+  background: #070A0D !important;
+  background: #070A0D;
+}
+#modal_contents input[type=text], #modal_contents input[type=password]:focus {
+  border-bottom: 2px solid var(--accent);
+}
+#modal_contents .inputAndButton {
+  display: flex;
+  margin: 1em 0.5em 1em 0.5em;
+}
+#modal_contents .inputAndButton button {
+  margin-left: 0.5em;
+}
+#modal_contents .inputWithTitle {
+  display: flex;
+  flex-direction: column;
+  margin: 1em 0.5em 1em 0.5em;
+}
+#modal_contents .modal-text {
+  margin: 0 0.5em 2px 0.5em;
+  color: white;
+  font-size: 12px !important;
+}
+#modal_contents button {
+  user-select: none;
+  width: auto;
+  margin: 0 0.25em;
+  padding: 0.25em 0.6em;
+  border-width: 0.1em;
+  border-style: solid;
+  border-radius: 0 !important;
+  border-color: #274560;
+  background: #274560;
+  color: white;
+  cursor: pointer;
+  transition: ease-in-out 60ms;
+}
+#modal_contents button span {
+  line-height: 2.5em;
+}
+#modal_contents button.extra {
+  margin: 0 7px 0 0 !important;
+  padding: 3px 10px;
+}
+#modal_contents button:hover {
+  border-color: #274560;
+  background: #28374E;
+}
+#modal_contents button:active {
+  border-color: var(--accent);
+  background: #28374E !important;
+}
+#modal_contents button:focus {
+  box-shadow: none;
+}
 
 #FolderLocation {
-  flex-grow: 1; }
+  flex-grow: 1;
+}
 
 .modalOK {
   margin-left: auto !important;
-  padding: 0 2em; }
+  padding: 0 2em;
+}
 
 .folder_indicator {
   width: 6px;
-  margin-right: 0.5em; }
-  .folder_indicator.found {
-    background: lime; }
-  .folder_indicator.notfound {
-    background: red; }
+  margin-right: 0.5em;
+}
+.folder_indicator.found {
+  background: lime;
+}
+.folder_indicator.notfound {
+  background: red;
+}
 
 .folder_indicator_bg {
-  padding: 0.35em 0.6em; }
-  .folder_indicator_bg span {
-    padding: 1em 0;
-    color: white;
-    line-height: 2.5em; }
-  .folder_indicator_bg.found {
-    background: green; }
-    .folder_indicator_bg.found span::after {
-      content: " found!"; }
-  .folder_indicator_bg.notfound {
-    background: darkred; }
-    .folder_indicator_bg.notfound span::after {
-      content: " not found!"; }
+  padding: 0.35em 0.6em;
+}
+.folder_indicator_bg span {
+  padding: 1em 0;
+  color: white;
+  line-height: 2.5em;
+}
+.folder_indicator_bg.found {
+  background: green;
+}
+.folder_indicator_bg.found span::after {
+  content: " found!";
+}
+.folder_indicator_bg.notfound {
+  background: darkred;
+}
+.folder_indicator_bg.notfound span::after {
+  content: " not found!";
+}
 
 .clearLogDiv {
   margin-top: 0.5em;
-  text-align: right; }
-  .clearLogDiv button {
-    width: 40% !important; }
+  text-align: right;
+}
+.clearLogDiv button {
+  width: 40% !important;
+}
 
 #invalidBattleTag > p {
   color: red;
   font-size: 13px;
-  font-weight: bold; }
+  font-weight: bold;
+}

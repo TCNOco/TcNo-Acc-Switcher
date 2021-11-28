@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Hidden Platforms
 Settings_Header_TraySettings: Tray settings
 Settings_Header_OpenGameFolders: Open game folders
 Settings_TrayMax: 'Max number of accounts to remember:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Pick {platform} folder
 Settings_OpenFolder: Open {platform} Folder
 Settings_ClearForgotten: Clear Forgotten

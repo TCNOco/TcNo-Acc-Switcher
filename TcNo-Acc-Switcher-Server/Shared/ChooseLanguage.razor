@@ -1,6 +1,7 @@
 ﻿@using Microsoft.Extensions.Configuration
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
+@using System.Globalization
 @inject NavigationManager _navigationManager
 @inject Lang  _locale
 
@@ -35,6 +36,7 @@
 	{
 		if (string.IsNullOrWhiteSpace(key)) return;
 		Lang.Instance.LoadLang(key);
+	    AppSettings.Instance.Rtl = new CultureInfo(Lang.Instance.Current).TextInfo.IsRightToLeft;
 		await AppData.ReloadPage();
 	}
 }
