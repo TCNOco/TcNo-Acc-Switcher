@@ -50,6 +50,7 @@ Settings_Protocol: 'אפשר TcNo: \\ פרוטוקול (מומלץ)'
 Settings_StartCentered: התוכנית התחילה ממוקדת
 Settings_WindowsAccent: השתמש בצבע המבטא של Windows
 Settings_HelpTranslate: "[עזרה בתרגום]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] הגדר את מנוע העיבוד:"
 Cleaning_Header_StartMenuShortcuts: 'קיצורי דרך לתפריט התחלה:'
 Cleaning_Header_General: ניקוי כללי
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: לא ניתן למצוא משתמש מחובר אחר�
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat לא נמצא. החשבון הפעיל האחרון לא נשמר."
 Toast_Ubisoft_NoUser: לא ניתן למצוא משתמש מחובר אחרון. נסה להתחבר שוב ל- Ubisoft.
 Toast_ClearForgottenCheck: האם אתה בטוח שברצונך לנקות גיבויים של חשבונות שנשכחו?
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: נוצר על ידי TechNobo [Wesley Pyburn]
 Modal_Info_Version: גִרְסָה
 Modal_Info_ViewGitHub: צפה ב- GitHub
