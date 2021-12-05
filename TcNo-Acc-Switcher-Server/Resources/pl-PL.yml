@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: Ukryte platformy
 Settings_Header_TraySettings: Ustawienia zasobnika
 Settings_Header_OpenGameFolders: Otwórz foldery gier
 Settings_TrayMax: 'Maksymalna liczba kont do zapamiętania:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: Pokaż tekst od prawej do lewej
 Settings_PickFolder: Wybierz folder {platform}
 Settings_OpenFolder: Otwórz folder {platform}
 Settings_ClearForgotten: Wyczyść zapomniane
@@ -50,6 +50,7 @@ Settings_Protocol: 'Włącz protokół tcno:\\ (zalecane)'
 Settings_StartCentered: Uruchom program wyśrodkowany
 Settings_WindowsAccent: Używaj kolorów wiodących Windowsa
 Settings_HelpTranslate: "[Pomóż tłumaczyć]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Ustaw silnik renderujący:"
 Cleaning_Header_StartMenuShortcuts: 'Skróty dla menu startowego:'
 Cleaning_Header_General: Ogólne czyszczenie
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Nie można znaleźć ostatniego zalogowanego użytkown
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nie został znaleziony. Ostatnie aktywne konto nie zostało zapisane."
 Toast_Ubisoft_NoUser: Nie można znaleźć ostatniego zalogowanego użytkownika. Spróbuj zalogować się do Ubisoft ponownie.
 Toast_ClearForgottenCheck: Czy na pewno chcesz wyczyścić kopie zapasowe zapomnianych kont?
+Modal_Crowdin_Header: Tłumacze tłumu
+Modal_Crowdin_Info: "Oto wszyscy, którzy pomogli przetłumaczyć to oprogramowanie.<br>Użytkownicy mający obok siebie języki bardzo pomogli w tłumaczeniu (rola korektora)."
 Modal_Info_Creator: Stworzone przez TechNobo [Wesley Pyburn]
 Modal_Info_Version: Wersja
 Modal_Info_ViewGitHub: Zobacz na GitHub

@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: Plataformas ocultas
 Settings_Header_TraySettings: Configurações da bandeja
 Settings_Header_OpenGameFolders: Abrir pastas dos jogos
 Settings_TrayMax: 'Número máximo de contas para lembrar:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: Mostrar texto da direita para a esquerda
 Settings_PickFolder: Escolher {platform} pasta
 Settings_OpenFolder: Abrir pasta de {platform}
 Settings_ClearForgotten: Limpar esquecidos
@@ -50,6 +50,7 @@ Settings_Protocol: 'Habilitar tcno:\\ protocolo (Recomendado)'
 Settings_StartCentered: Iniciar programa centralizado
 Settings_WindowsAccent: Use a cor de destaque do Windows
 Settings_HelpTranslate: "[Ajudar a traduzir]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Definir mecanismo de renderização:"
 Cleaning_Header_StartMenuShortcuts: 'Atalhos para o Menu Inicial:'
 Cleaning_Header_General: Limpeza geral
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Não foi possível encontrar o último usuário logado
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat não foi encontrado. A última conta ativa não foi salva."
 Toast_Ubisoft_NoUser: Não foi possível encontrar o último usuário logado. Tente entrar no Ubisoft novamente primeiro.
 Toast_ClearForgottenCheck: Tem certeza que deseja limpar os backups das contas esquecidas?
+Modal_Crowdin_Header: Tradutores Crowdin
+Modal_Crowdin_Info: "Aqui estão todos que ajudaram a traduzir este software.<br>Usuários com idiomas próximos a eles ajudaram muito na tradução (função de revisor)."
 Modal_Info_Creator: Criado por TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versão
 Modal_Info_ViewGitHub: Ver no GitHub

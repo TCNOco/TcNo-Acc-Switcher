@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: 隠しプラットフォーム
 Settings_Header_TraySettings: トレイの設定
 Settings_Header_OpenGameFolders: ゲームフォルダを開く
 Settings_TrayMax: '覚えておくアカウントの最大数:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: テキストを右から左に表示
 Settings_PickFolder: '{platform} フォルダを選択'
 Settings_OpenFolder: '{platform} フォルダを開く'
 Settings_ClearForgotten: 忘れた項目をクリア
@@ -50,6 +50,7 @@ Settings_Protocol: 'tcno:\\プロトコルを有効にする (推奨)'
 Settings_StartCentered: プログラムを中心に開始
 Settings_WindowsAccent: Windowsアクセントカラーを使用する
 Settings_HelpTranslate: "format@@0"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] レンダリングエンジンを設定します。"
 Cleaning_Header_StartMenuShortcuts: 'format@@0メニューのショートカット:'
 Cleaning_Header_General: 一般的なクリーニング
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: 最後にログインしたユーザーが見つかり
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.datが見つかりませんでした。最後のアクティブなアカウントは保存されませんでした。"
 Toast_Ubisoft_NoUser: 最後にログインしたユーザーが見つかりませんでした。最初に再度Ubisoftにログインしてください。
 Toast_ClearForgottenCheck: 忘れたアカウントのバックアップを削除してもよろしいですか？
+Modal_Crowdin_Header: Crowdinの翻訳者
+Modal_Crowdin_Info: "このソフトウェアの翻訳を手伝ってくれた皆さんです。<br>隣に言語があるユーザーは、翻訳に大いに役立ちました（校正者の役割）。"
 Modal_Info_Creator: TechNoboによって作成されました [Wesley Pyburn]
 Modal_Info_Version: バージョン
 Modal_Info_ViewGitHub: GitHubで見る

@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: Piattaforme Nascoste
 Settings_Header_TraySettings: Impostazioni area di notifica
 Settings_Header_OpenGameFolders: Apri cartelle del gioco
 Settings_TrayMax: 'Numero massimo di profili da ricordare:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: Mostra il testo come da destra a sinistra
 Settings_PickFolder: Seleziona la cartella di {platform}
 Settings_OpenFolder: Apri la cartella di {platform}
 Settings_ClearForgotten: Cancella Dimenticato
@@ -50,6 +50,7 @@ Settings_Protocol: 'Abilita il protocollo tcno:\\ (Consigliato)'
 Settings_StartCentered: Avvia programma centrato
 Settings_WindowsAccent: Usa il Colore Secondario di Windows
 Settings_HelpTranslate: "[Aiuta a tradurre]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Imposta il motore di rendering:"
 Cleaning_Header_StartMenuShortcuts: 'Scorciatoie per il Menu Iniziale:'
 Cleaning_Header_General: Pulizia Generale
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Impossibile trovare l'ultimo utente acceduto. Prova pr
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat non è stato trovato. L'ultimo account attivo non è stato salvato."
 Toast_Ubisoft_NoUser: Impossibile trovare l'ultimo utente acceduto. Prova prima ad accedere nuovamente a Ubisoft.
 Toast_ClearForgottenCheck: Sei sicuro di voler cancellare i backup dei profili dimenticati?
+Modal_Crowdin_Header: Crowdin traduttori
+Modal_Crowdin_Info: "Ecco tutti coloro che hanno contribuito a tradurre questo software.<br>Gli utenti con lingue accanto hanno aiutato molto nella traduzione (ruolo di correttore di bozze)."
 Modal_Info_Creator: Creato da TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versione
 Modal_Info_ViewGitHub: Visualizza su GitHub

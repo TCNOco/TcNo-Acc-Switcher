@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: 隱藏平台
 Settings_Header_TraySettings: 托盤設置
 Settings_Header_OpenGameFolders: 打開遊戲文件夾
 Settings_TrayMax: '要記住的最大帳戶數：'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: 從右到左顯示文本
 Settings_PickFolder: 選擇 {platform} 文件夾
 Settings_OpenFolder: 打開 {platform} 文件夾
 Settings_ClearForgotten: 清除遺忘
@@ -50,6 +50,7 @@ Settings_Protocol: '啟用 tcno:\\ 協議（推薦）'
 Settings_StartCentered: 啟動程序居中
 Settings_WindowsAccent: 使用 Windows 強調色
 Settings_HelpTranslate: "[幫助翻譯]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] 設置渲染引擎："
 Cleaning_Header_StartMenuShortcuts: '開始菜單快捷鍵：'
 Cleaning_Header_General: 一般清洗
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: 找不到上次登錄的用戶。先嘗試再次登錄
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat 無法找到。未保存最後一個活動帳戶。"
 Toast_Ubisoft_NoUser: 找不到上次登錄的用戶。先嘗試再次登錄育碧。
 Toast_ClearForgottenCheck: 您確定要清除忘記帳戶的備份嗎？
+Modal_Crowdin_Header: Crowdin 譯者
+Modal_Crowdin_Info: "這是幫助翻譯此軟件的每個人。<br>語言相鄰的用戶在翻譯方面提供了很多幫助（校對角色）。"
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 創建
 Modal_Info_Version: 版本
 Modal_Info_ViewGitHub: 在 GitHub 上查看

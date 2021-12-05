@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: 숨겨진 플랫폼
 Settings_Header_TraySettings: 트레이 설정
 Settings_Header_OpenGameFolders: 게임 폴더 열기
 Settings_TrayMax: '기억할 최대 계정 수:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: 텍스트를 오른쪽에서 왼쪽으로 표시
 Settings_PickFolder: '{platform} 폴더 선택'
 Settings_OpenFolder: 폴더 {platform} 열기
 Settings_ClearForgotten: 잊혀진 지우기
@@ -50,6 +50,7 @@ Settings_Protocol: 'tcno:\\ 프로토콜 활성화(권장)'
 Settings_StartCentered: 프로그램 중심으로 시작
 Settings_WindowsAccent: Windows 강조 색상 사용
 Settings_HelpTranslate: "[번역을 도와주세요]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] 렌더링 엔진 설정:"
 Cleaning_Header_StartMenuShortcuts: '시작 메뉴 바로 가기:'
 Cleaning_Header_General: 일반 청소
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: 마지막으로 로그인한 사용자를 찾을 수 �
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat를 찾을 수 없습니다. 마지막 활성 계정이 저장되지 않았습니다."
 Toast_Ubisoft_NoUser: 마지막으로 로그인한 사용자를 찾을 수 없습니다. 먼저 Ubisoft에 다시 로그인해 보세요.
 Toast_ClearForgottenCheck: 잊어버린 계정의 백업을 지우시겠습니까?
+Modal_Crowdin_Header: Crowdin 번역가
+Modal_Crowdin_Info: "이 소프트웨어를 번역하는 데 도움을 준 모든 사람이 있습니다.<br>옆에 언어가 있는 사용자가 번역에 많은 도움이 되었습니다(교정자 역할)."
 Modal_Info_Creator: TechNobo [Wesley Pyburn] 제작
 Modal_Info_Version: 버전
 Modal_Info_ViewGitHub: GitHub에서 보기

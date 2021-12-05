@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: Versteekte platforms
 Settings_Header_TraySettings: Laai-instellings
 Settings_Header_OpenGameFolders: Maak speletjie-vouers oop
 Settings_TrayMax: 'Maksimum aantal rekeninge om te onthou:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: Wys teks as Regs-na-Links
 Settings_PickFolder: Kies {platform} lêergids
 Settings_OpenFolder: Maak {platform} vouer oop
 Settings_ClearForgotten: Duidelik vergete
@@ -50,6 +50,7 @@ Settings_Protocol: 'Aktiveer TcNo: \\ protokol (aanbeveel)'
 Settings_StartCentered: Begin program gesentreer
 Settings_WindowsAccent: Gebruik die Windows-aksentkleur
 Settings_HelpTranslate: "[Help vertaal]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Stel weergawe-enjin:"
 Cleaning_Header_StartMenuShortcuts: 'Kortpaaie vir die Start Menu:'
 Cleaning_Header_General: Algemene skoonmaak
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Kon nie die laaste aangemelde gebruiker vind nie. Prob
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kon nie gevind word nie. Die laaste aktiewe rekening is nie gestoor nie."
 Toast_Ubisoft_NoUser: Kon nie die laaste aangemelde gebruiker vind nie. Probeer eers weer by Ubisoft aanmeld.
 Toast_ClearForgottenCheck: Is u seker dat u rugsteune van vergete rekeninge wil uitvee?
+Modal_Crowdin_Header: Crowdin-vertalers
+Modal_Crowdin_Info: "Hier is almal wat gehelp het om hierdie sagteware te vertaal.<br>Gebruikers met tale langs hulle het baie gehelp met vertaling (proefleserrol)."
 Modal_Info_Creator: Geskep deur TechNobo [Wesley Pyburn]
 Modal_Info_Version: Weergawe
 Modal_Info_ViewGitHub: Bekyk op GitHub

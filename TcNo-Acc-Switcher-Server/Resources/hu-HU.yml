@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: Rejtett platformok
 Settings_Header_TraySettings: Tálca beállításai
 Settings_Header_OpenGameFolders: Nyissa meg a játékmappákat
 Settings_TrayMax: 'A felejtendő fiókok maximális száma:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: Szöveg megjelenítése jobbról balra haladva
 Settings_PickFolder: Válasszon {platform} mappát
 Settings_OpenFolder: Nyissa meg a {platform} mappát
 Settings_ClearForgotten: Clear Forgotten
@@ -50,6 +50,7 @@ Settings_Protocol: 'A TcNo: \\ protokoll engedélyezése (ajánlott)'
 Settings_StartCentered: Indítsa el a programot középre
 Settings_WindowsAccent: Használja a Windows Kiemelő színét
 Settings_HelpTranslate: "[Segítség a fordításban]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Renderelőmotor beállítása:"
 Cleaning_Header_StartMenuShortcuts: 'A Start menü parancsikonjai:'
 Cleaning_Header_General: Általános takarítás
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Nem található az utoljára bejelentkezett felhaszná
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nem található. Az utolsó aktív fiókot nem mentették."
 Toast_Ubisoft_NoUser: Nem található az utoljára bejelentkezett felhasználó. Először próbáljon meg újra bejelentkezni a Ubisoftba.
 Toast_ClearForgottenCheck: Biztosan törli az elfelejtett fiókok biztonsági másolatait?
+Modal_Crowdin_Header: Crowdin fordítók
+Modal_Crowdin_Info: "Itt van mindenki, aki segített lefordítani ezt a szoftvert.<br>A mellettük lévő nyelvű felhasználók sokat segítettek a fordításban (lektori szerep)."
 Modal_Info_Creator: 'Készítette: TechNobo [Wesley Pyburn]'
 Modal_Info_Version: Változat
 Modal_Info_ViewGitHub: Megtekintés a GitHubon

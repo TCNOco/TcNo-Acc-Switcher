@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: Skjulte Platforme
 Settings_Header_TraySettings: Indstillinger for bakke
 Settings_Header_OpenGameFolders: Åbn spilmapper
 Settings_TrayMax: 'Maks. antal konti der skal huskes:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: Vis tekst som højre mod venstre
 Settings_PickFolder: Vælg {platform} mappe
 Settings_OpenFolder: Åbn {platform} mappe
 Settings_ClearForgotten: Ryd Glemt
@@ -50,6 +50,7 @@ Settings_Protocol: 'Aktivér tcno:\\ protocol (anbefales)'
 Settings_StartCentered: Start program centreret
 Settings_WindowsAccent: Brug Windows Accent Colour
 Settings_HelpTranslate: "[Hjælp oversætte]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Indstil gengivelsesmotor:"
 Cleaning_Header_StartMenuShortcuts: 'Genveje til startmenuen:'
 Cleaning_Header_General: Generel Rengøring
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Kunne ikke finde sidst logget på bruger. Prøv at log
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kunne ikke findes. Den sidste aktive konto blev ikke gemt."
 Toast_Ubisoft_NoUser: Kunne ikke finde sidst logget på bruger. Prøv at logge ind på Ubisoft igen først.
 Toast_ClearForgottenCheck: Er du sikker på, at du vil rydde sikkerhedskopier af glemte konti?
+Modal_Crowdin_Header: Crowdin-oversættere
+Modal_Crowdin_Info: "Her er alle, der hjalp med at oversætte denne software.<br>Brugere med sprog ved siden af hjalp meget med oversættelsen (korrekturlæserrolle)."
 Modal_Info_Creator: Oprettet af TechNobo [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: Se på GitHub
