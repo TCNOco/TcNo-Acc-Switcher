@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Plataformes ocultes
 Settings_Header_TraySettings: Configuració de la safata
 Settings_Header_OpenGameFolders: Obrir carpetes de jocs
 Settings_TrayMax: 'Nombre màxim de comptes que cal recordar:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Trieu {platform} carpeta
 Settings_OpenFolder: Obriu la carpeta {platform}
 Settings_ClearForgotten: Esborra oblidat
@@ -49,6 +50,7 @@ Settings_Protocol: 'Activa el protocol TcNo: \\ (recomanat)'
 Settings_StartCentered: Inicia el programa centrat
 Settings_WindowsAccent: Utilitzeu el Windows Accent Color
 Settings_HelpTranslate: "[Ajuda a traduir]"
+Settings_Header_ActiveBrowser: "[Advanced] Configura el motor de renderització:"
 Cleaning_Header_StartMenuShortcuts: 'Dreceres per al menú Inici:'
 Cleaning_Header_General: Neteja general
 Cleaning_Header_LoginHistory: Neteja el meu historial d'inici de sessió
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: S'ha suprimit el protocol
 Toast_RestartAsAdmin: Comenceu com a administrador i torneu-ho a provar.
 Toast_RestartAfterClose: Reinicieu el programa després de fer clic a Tanca.
 Toast_RestartAfterCloseTitle: S'ha desactivat el color de l'accent
+Toast_RestartRequired: Reinicieu per aplicar els canvis
 Toast_LoadStylesheetFailed: No s'ha pogut carregar el full d'estil. Consulteu la carpeta de documents per obtenir més informació.
 Toast_BNet_Private: "El perfil de {BTag}"
 Toast_BNet_StatsFail: "Error en intentar obtenir estadístiques de {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: El format de píxel obligatori és PixelFormat.{x}.
 PngRequired: El format d’imatge obligatori és un gràfic de xarxa portàtil (png).
 PngDimensions: Les dimensions han de ser inferiors o iguals a {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "S'ha produït un error de sintaxi (més detalls a continuació). I:"
-ThemesNotFound: "No s'ha pogut trobar la carpeta \"temes\" al directori de TcNo Account Switcher. Això (especialment Default.yaml) és necessari perquè aquest programari s'executi.\nPodeu executar l'actualitzador a la carpeta \"actualitzador\" per verificar els fitxers i restaurar aquests fitxers que falten."
+ThemesNotFound: "No s'ha pogut trobar la carpeta \"temes\" al directori de TcNo Account Switcher. Això (especialment la carpeta 'Dracula_Cyan') és necessari perquè aquest programari s'executi.\nPodeu executar l'Actualitzador a la carpeta \"actualitzador\" per verificar els fitxers i restaurar aquests fitxers que falten."
 Yes: "Sí"
 No: "No"
 NoDefault: No (per defecte)
