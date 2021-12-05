@@ -50,6 +50,7 @@ Settings_Protocol: 'تمكين بروتوكول tcno:\\(مفضل)'
 Settings_StartCentered: بدء البرنامج في منتصف الشاشة
 Settings_WindowsAccent: استخدام لون ثيم ويندوز
 Settings_HelpTranslate: "[ساهم في الترجمة]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[متقدم] محرك العرض:"
 Cleaning_Header_StartMenuShortcuts: 'اختصارات لقائمة البدء:'
 Cleaning_Header_General: تنظيف عام
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: تعذر العثور على آخر مستخدم تم 
 Toast_Ubisoft_NoDat: "لم يتم العثور على %LocalAppData%/UBisoftGameLauncher/user.dat . لم يتم حفظ آخر حساب نشط."
 Toast_Ubisoft_NoUser: تعذر العثور على آخر مستخدم تم تسجيل الدخول. حاول تسجيل الدخول إلى UBisoft مرة أخرى أولاً.
 Toast_ClearForgottenCheck: هل أنت متأكد من أنك تريد مسح النسخ الاحتياطي للحسابات المنسية؟
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: تم إنشاؤها من قبل تيتشنوبو [ويسلي بيبرن]
 Modal_Info_Version: الإصدار
 Modal_Info_ViewGitHub: عرض على GitHub
