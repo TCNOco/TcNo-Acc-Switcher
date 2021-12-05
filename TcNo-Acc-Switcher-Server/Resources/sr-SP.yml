@@ -50,6 +50,7 @@ Settings_Protocol: 'Омогући тцно: \\ протокол (препору
 Settings_StartCentered: Покретање програма центрирано
 Settings_WindowsAccent: Користите Виндовс Аццент Цолор
 Settings_HelpTranslate: "[Помоћ при превођењу]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Постави механизам за рендеровање:"
 Cleaning_Header_StartMenuShortcuts: 'Пречице за мени Старт:'
 Cleaning_Header_General: Генерално чишћење
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Није могуће пронаћи последње�
 Toast_Ubisoft_NoDat: "%LocalAppData%/УбисофтГамеЛаунцхер/усерс.дат није пронађен. Последњи активни налог није сачуван."
 Toast_Ubisoft_NoUser: Није могуће пронаћи последњег пријављеног корисника. Покушајте да се поново пријавите на Убисофт.
 Toast_ClearForgottenCheck: Да ли сте сигурни да желите да обришете резервне копије заборављених рачуна?
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Направио ТецхНобо [Веслеи Пибурн]
 Modal_Info_Version: Верзија
 Modal_Info_ViewGitHub: Поглед на ГитХуб-у

@@ -50,6 +50,7 @@ Settings_Protocol: '啟用 tcno:\\ 協議（推薦）'
 Settings_StartCentered: 啟動程序居中
 Settings_WindowsAccent: 使用 Windows 強調色
 Settings_HelpTranslate: "[幫助翻譯]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] 設置渲染引擎："
 Cleaning_Header_StartMenuShortcuts: '開始菜單快捷鍵：'
 Cleaning_Header_General: 一般清洗
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: 找不到上次登錄的用戶。先嘗試再次登錄
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat 無法找到。未保存最後一個活動帳戶。"
 Toast_Ubisoft_NoUser: 找不到上次登錄的用戶。先嘗試再次登錄育碧。
 Toast_ClearForgottenCheck: 您確定要清除忘記帳戶的備份嗎？
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 創建
 Modal_Info_Version: 版本
 Modal_Info_ViewGitHub: 在 GitHub 上查看

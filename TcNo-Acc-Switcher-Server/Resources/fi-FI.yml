@@ -50,6 +50,7 @@ Settings_Protocol: 'Ota tcno:\\ protokolla käyttöön (Suositeltu)'
 Settings_StartCentered: Käynnistä keskitetty ohjelma
 Settings_WindowsAccent: Käytä Windows-hehkutuksen väriä
 Settings_HelpTranslate: "[Auta kääntämään]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Aseta renderöintimoottori:"
 Cleaning_Header_StartMenuShortcuts: 'Käynnistysvalikon pikakuvakkeet:'
 Cleaning_Header_General: Yleinen Puhdistus
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Viimeksi kirjautunut käyttäjä ei löytynyt. Yritä 
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat ei löytynyt. Viimeistä aktiivista tiliä ei tallennettu."
 Toast_Ubisoft_NoUser: Viimeksi kirjautunut käyttäjä ei löytynyt. Yritä kirjautua Ubisoftiin ensin.
 Toast_ClearForgottenCheck: Oletko varma, että haluat tyhjentää unohdettujen tilien varmuuskopiot?
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: TechNobon luoma [Wesley Pyburn]
 Modal_Info_Version: Versio
 Modal_Info_ViewGitHub: Näytä GitHubissa

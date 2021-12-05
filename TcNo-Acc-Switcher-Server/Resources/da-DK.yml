@@ -50,6 +50,7 @@ Settings_Protocol: 'Aktivér tcno:\\ protocol (anbefales)'
 Settings_StartCentered: Start program centreret
 Settings_WindowsAccent: Brug Windows Accent Colour
 Settings_HelpTranslate: "[Hjælp oversætte]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Indstil gengivelsesmotor:"
 Cleaning_Header_StartMenuShortcuts: 'Genveje til startmenuen:'
 Cleaning_Header_General: Generel Rengøring
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Kunne ikke finde sidst logget på bruger. Prøv at log
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kunne ikke findes. Den sidste aktive konto blev ikke gemt."
 Toast_Ubisoft_NoUser: Kunne ikke finde sidst logget på bruger. Prøv at logge ind på Ubisoft igen først.
 Toast_ClearForgottenCheck: Er du sikker på, at du vil rydde sikkerhedskopier af glemte konti?
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Oprettet af TechNobo [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: Se på GitHub

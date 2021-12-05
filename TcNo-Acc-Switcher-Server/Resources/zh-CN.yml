@@ -50,6 +50,7 @@ Settings_Protocol: '启用 tcno:\\ 协议（推荐）'
 Settings_StartCentered: 启动程序时居中
 Settings_WindowsAccent: 使用 Windows 主题色
 Settings_HelpTranslate: "[帮助翻译]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[高级] 设置渲染引擎："
 Cleaning_Header_StartMenuShortcuts: '开始菜单的快捷方式：'
 Cleaning_Header_General: 常规清理
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: 无法找到最后登录的用户。请先再次登录
 Toast_Ubisoft_NoDat: "无法找到 %LocalAppData%/UbisoftGameLauncher/user.dat 。最后活跃的帐户未保存。"
 Toast_Ubisoft_NoUser: 无法找到最后登录的用户。请先再次登录 Ubisoft。
 Toast_ClearForgottenCheck: 您确定要清除已忘记帐户的备份吗？
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 创作
 Modal_Info_Version: 版本
 Modal_Info_ViewGitHub: 在 GitHub 上查看

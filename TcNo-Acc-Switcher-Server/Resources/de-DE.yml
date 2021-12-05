@@ -50,6 +50,7 @@ Settings_Protocol: 'tcno:\\ Protokoll Aktivieren (empfohlen)'
 Settings_StartCentered: Programm zentriert starten
 Settings_WindowsAccent: Verwende die Windows-Akzentfarbe
 Settings_HelpTranslate: "[Beim Übersetzen helfen]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Erweitert] Rendering-Engine auswählen:"
 Cleaning_Header_StartMenuShortcuts: 'Verknüpfungen für das Startmenü:'
 Cleaning_Header_General: Allgemeine Reinigung
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Konnte den zuletzt angemeldeten Benutzer nicht finden.
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat konnte nicht gefunden werden. Der zuletzt aktive Account wurde nicht gespeichert."
 Toast_Ubisoft_NoUser: Konnte den zuletzt angemeldeten Benutzer nicht finden. Versuchen Sie, sich zuerst erneut bei Ubisoft anzumelden.
 Toast_ClearForgottenCheck: Sind Sie sicher, dass Sie Backups von vergessenen Konten löschen möchten?
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Erstellt von TechNobo [Wesley Pyburn]
 Modal_Info_Version: Version
 Modal_Info_ViewGitHub: Auf GitHub anzeigen
