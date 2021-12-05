@@ -18,7 +18,7 @@
 
 #include "versions.h"
 
-bool split_version(std::string& str, std::vector<int>& arr, const std::string& delimiter)
+void split_version(std::string& str, std::vector<int>& arr, const std::string& delimiter)
 {
 	size_t pos = 0;
 	while ((pos = str.find(delimiter)) != std::string::npos) {

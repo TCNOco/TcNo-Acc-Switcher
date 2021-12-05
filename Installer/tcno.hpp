@@ -317,8 +317,7 @@ void verify_vc()
 
 	bool c_runtime_install = false;
 	const string runtime_folder = getOperatingPath() + "runtime_installers\\";
-	const string c_runtime = "https://aka.ms/vs/17/release/vc_redist.x64.exe",
-		c_runtime_local = runtime_folder + "VC_redist.x64.exe",
+	const string c_runtime_local = runtime_folder + "VC_redist.x64.exe",
 		c_runtime_name = "Downloading C++ Redistributable 2015-2022";
 
 	if (!(CreateDirectoryA(runtime_folder.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError()))
