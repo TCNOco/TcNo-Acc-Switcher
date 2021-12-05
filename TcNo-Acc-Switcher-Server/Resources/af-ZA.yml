@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Versteekte platforms
 Settings_Header_TraySettings: Laai-instellings
 Settings_Header_OpenGameFolders: Maak speletjie-vouers oop
 Settings_TrayMax: 'Maksimum aantal rekeninge om te onthou:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Kies {platform} lêergids
 Settings_OpenFolder: Maak {platform} vouer oop
 Settings_ClearForgotten: Duidelik vergete
@@ -49,6 +50,7 @@ Settings_Protocol: 'Aktiveer TcNo: \\ protokol (aanbeveel)'
 Settings_StartCentered: Begin program gesentreer
 Settings_WindowsAccent: Gebruik die Windows-aksentkleur
 Settings_HelpTranslate: "[Help vertaal]"
+Settings_Header_ActiveBrowser: "[Advanced] Stel weergawe-enjin:"
 Cleaning_Header_StartMenuShortcuts: 'Kortpaaie vir die Start Menu:'
 Cleaning_Header_General: Algemene skoonmaak
 Cleaning_Header_LoginHistory: Maak my aanmeldingsgeskiedenis skoon
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: Protokol verwyder
 Toast_RestartAsAdmin: Begin as admin en probeer weer.
 Toast_RestartAfterClose: Begin die program weer nadat u op Sluit geklik het.
 Toast_RestartAfterCloseTitle: Aksentkleur is gedeaktiveer
+Toast_RestartRequired: Herbegin om veranderinge toe te pas
 Toast_LoadStylesheetFailed: Kon nie stylblad laai nie! Sien die dokumentmap vir meer inligting.
 Toast_BNet_Private: "{BTag}se profiel is privaat"
 Toast_BNet_StatsFail: "Kon nie statistieke vir {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: Vereiste pixelformaat is PixelFormat.{x}.
 PngRequired: Vereiste beeldformaat is 'n draagbare netwerkgrafika (png).
 PngDimensions: Afmetings moet kleiner wees as of gelyk aan {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "'N Sintaksisfout is opgedoen (meer besonderhede hieronder)! EN:"
-ThemesNotFound: "Kon nie die \"temas\" -map in die TcNo Account Switcher-gids vind nie. Dit (veral Default.yaml) is nodig om hierdie sagteware te laat werk.\nU kan die Updater in die \"updater\" -map uitvoer om lêers te verifieer en hierdie ontbrekende lêers te herstel."
+ThemesNotFound: "Kon nie \"temas\"-lêergids in TcNo Account Switcher se gids vind nie. Dit (veral die 'Dracula_Cyan'-lêergids) is nodig om hierdie sagteware te laat loop.\nJy kan die Updater in die \"updater\"-lêergids laat loop om lêers te verifieer en hierdie ontbrekende lêers te herstel."
 Yes: "Ja"
 No: "Geen"
 NoDefault: Nee (verstek)

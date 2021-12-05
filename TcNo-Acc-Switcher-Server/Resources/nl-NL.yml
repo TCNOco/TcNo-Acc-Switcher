@@ -12,7 +12,7 @@ Steam_OverrideDefaultState: "Overschrijf standaard inlogstatus:"
 Button_AddNew: Nieuwe toevoegen
 Button_SaveCurrent: Huidige opslaan
 Button_SaveFile: Bestand opslaan
-Button_Cancel: annuleren
+Button_Cancel: Annuleren
 Button_Login: Aanmelden
 Button_Close: Afsluiten
 Button_RefreshImages: Vernieuw afbeeldingen
@@ -22,22 +22,23 @@ Button_ClearLog: Logboek wissen
 Button_WikiInfo: Meer informatie (Wiki)
 Button_ClearDiscordCache: Wis Discord Cache
 Settings_Shortcut: ' {platform} Switcher Desktop snelkoppeling'
-Settings_Admin: '{platform} uitvoeren als Admin'
+Settings_Admin: '{platform} uitvoeren als Beheerder'
 Settings_ImageExpiry: 'Dagen voordat profielafbeeldingen vervallen:'
 Settings_Header_AppWide: App-brede instellingen
 Settings_Header_GeneralSettings: Algemene instellingen
-Settings_Header_GeneralTools: Algemene tools
-Settings_Header_OtherTools: Andere gereedschappen
+Settings_Header_GeneralTools: Algemene hulpmiddelen
+Settings_Header_OtherTools: Andere hulpmiddelen
 Settings_Header_HiddenPlatforms: Verborgen platformen
 Settings_Header_TraySettings: Systeemvak instellingen
 Settings_Header_OpenGameFolders: Open spelmappen
-Settings_TrayMax: 'Max aantal te onthouden rekeningen'
+Settings_TrayMax: 'Maximaal aantal te onthouden accounts:'
+Settings_RTL: Toon tekst van rechts naar links
 Settings_PickFolder: Kies {platform} map
 Settings_OpenFolder: Open {platform} map
 Settings_ClearForgotten: Leeg vergeten
 Settings_ClearAccounts: Accounts wissen
 Settings_RestoreForgotten: Account herstellen
-Settings_StreamerMode: streamer modus inschakelen
+Settings_StreamerMode: Schakel streamer modus in
 Settings_ExitToTray: Minimalisaties naar systeemvak afsluiten
 Settings_DesktopShortcut: Bureaublad snelkoppeling
 Settings_StartMenu_ProgramTray: Programma & Tray
@@ -49,6 +50,7 @@ Settings_Protocol: 'tcno:\\ protocol (Aanbevolen) inschakelen'
 Settings_StartCentered: Start programma gecentreerd
 Settings_WindowsAccent: Gebruik de Windows Accent Kleur
 Settings_HelpTranslate: "[Help vertalen]"
+Settings_Header_ActiveBrowser: "[Advanced] Stel de weergave-engine in:"
 Cleaning_Header_StartMenuShortcuts: 'Snelkoppelingen voor Start Menu:'
 Cleaning_Header_General: Algemeen schoonmaken
 Cleaning_Header_LoginHistory: Schoon mijn inloggeschiedenis op
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: Protocol verwijderd
 Toast_RestartAsAdmin: Start als Admin en probeer het opnieuw.
 Toast_RestartAfterClose: Herstart het programma na het klikken op 'sluiten'.
 Toast_RestartAfterCloseTitle: Accent kleur uitgeschakeld
+Toast_RestartRequired: Herstart om wijzigingen toe te passen
 Toast_LoadStylesheetFailed: Laden van stylesheet is mislukt! Zie de documentenmap voor details.
 Toast_BNet_Private: "Profiel van {BTag}is privé"
 Toast_BNet_StatsFail: "Fout bij het ophalen van statistieken voor {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: Vereiste pixelformaat is PixelFormat.{x}.
 PngRequired: Vereiste afbeeldingsformaat is een draagbaar netwerk grafische (png).
 PngDimensions: Afmetingen moeten kleiner of gelijk zijn aan {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Er is een syntaxisfout opgetreden (meer details hieronder)! AND:"
-ThemesNotFound: "Kan de map \"thema\" niet vinden in de map van TcNo Account Switcher. Dit (vooral Default.yaml) is vereist om deze software te laten werken.\nU kunt de Updater uitvoeren in de map \"updater\" om bestanden te controleren en deze ontbrekende bestanden te herstellen."
+ThemesNotFound: "Kan \"thema's\" map niet vinden in TcNo Account Switcher's map. Deze (vooral de \"Dracula_Cyan\" map) is nodig om deze software te laten draaien.\nU kunt de Updater in de map \"updater\" uitvoeren om de bestanden te controleren, en deze ontbrekende bestanden terug te zetten."
 Yes: "ja"
 No: "Neen"
 NoDefault: Nee (standaard)

@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Rejtett platformok
 Settings_Header_TraySettings: Tálca beállításai
 Settings_Header_OpenGameFolders: Nyissa meg a játékmappákat
 Settings_TrayMax: 'A felejtendő fiókok maximális száma:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Válasszon {platform} mappát
 Settings_OpenFolder: Nyissa meg a {platform} mappát
 Settings_ClearForgotten: Clear Forgotten
@@ -49,6 +50,7 @@ Settings_Protocol: 'A TcNo: \\ protokoll engedélyezése (ajánlott)'
 Settings_StartCentered: Indítsa el a programot középre
 Settings_WindowsAccent: Használja a Windows Kiemelő színét
 Settings_HelpTranslate: "[Segítség a fordításban]"
+Settings_Header_ActiveBrowser: "[Advanced] Renderelőmotor beállítása:"
 Cleaning_Header_StartMenuShortcuts: 'A Start menü parancsikonjai:'
 Cleaning_Header_General: Általános takarítás
 Cleaning_Header_LoginHistory: Tisztítsa meg a bejelentkezési előzményeket
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: A protokoll eltávolítva
 Toast_RestartAsAdmin: Kérjük, kezdje rendszergazdaként, és próbálja újra.
 Toast_RestartAfterClose: A Bezárás gombra kattintás után indítsa újra a programot.
 Toast_RestartAfterCloseTitle: Kiemelő szín letiltva
+Toast_RestartRequired: Indítsa újra a módosítások alkalmazásához
 Toast_LoadStylesheetFailed: Nem sikerült betölteni a stíluslapot! A részletekért lásd a Dokumentumok mappát.
 Toast_BNet_Private: "{BTag}profilja privát"
 Toast_BNet_StatsFail: "Hiba történt a {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: A szükséges pixel formátum a PixelFormat.{x}.
 PngRequired: A szükséges képformátum egy hordozható hálózati grafika (png).
 PngDimensions: A méreteknek kisebbnek vagy egyenlőnek kell lenniük, mint {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Szintaxishiba történt (további részletek alább)! ÉS:"
-ThemesNotFound: "Nem található a \"themes\" mappa a TcNo Account Switcher könyvtárában. Erre (különösen a Default.yaml) van szükség a szoftver futtatásához.\nA fájlok ellenőrzéséhez és a hiányzó fájlok helyreállításához futtathatja az Updater programot az \"updater\" mappában."
+ThemesNotFound: "Nem található a \"themes\" mappa a TcNo Account Switcher könyvtárában. Ez (különösen a 'Dracula_Cyan' mappa) szükséges a szoftver futtatásához.\nFuttathatja a Frissítőt az \"updater\" mappában a fájlok ellenőrzéséhez és a hiányzó fájlok visszaállításához."
 Yes: "Igen"
 No: "Nem"
 NoDefault: Nem (alapértelmezett)
