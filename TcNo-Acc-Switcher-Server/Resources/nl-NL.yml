@@ -50,6 +50,7 @@ Settings_Protocol: 'tcno:\\ protocol (Aanbevolen) inschakelen'
 Settings_StartCentered: Start programma gecentreerd
 Settings_WindowsAccent: Gebruik de Windows Accent Kleur
 Settings_HelpTranslate: "[Help vertalen]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Stel de weergave-engine in:"
 Cleaning_Header_StartMenuShortcuts: 'Snelkoppelingen voor Start Menu:'
 Cleaning_Header_General: Algemeen schoonmaken
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Kon de laatst ingelogde gebruiker niet vinden. Probeer
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kon niet worden gevonden. Het laatste actieve account werd niet opgeslagen."
 Toast_Ubisoft_NoUser: Kon de laatst ingelogde gebruiker niet vinden. Probeer eerst opnieuw in te loggen op Ubisoft.
 Toast_ClearForgottenCheck: Weet u zeker dat u back-ups van vergeten accounts wilt wissen?
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Gemaakt door TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versie
 Modal_Info_ViewGitHub: Bekijk op GitHub
