@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: 隠しプラットフォーム
 Settings_Header_TraySettings: トレイの設定
 Settings_Header_OpenGameFolders: ゲームフォルダを開く
 Settings_TrayMax: '覚えておくアカウントの最大数:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: '{platform} フォルダを選択'
 Settings_OpenFolder: '{platform} フォルダを開く'
 Settings_ClearForgotten: 忘れた項目をクリア
@@ -49,6 +50,7 @@ Settings_Protocol: 'tcno:\\プロトコルを有効にする (推奨)'
 Settings_StartCentered: プログラムを中心に開始
 Settings_WindowsAccent: Windowsアクセントカラーを使用する
 Settings_HelpTranslate: "format@@0"
+Settings_Header_ActiveBrowser: "[Advanced] レンダリングエンジンを設定します。"
 Cleaning_Header_StartMenuShortcuts: 'format@@0メニューのショートカット:'
 Cleaning_Header_General: 一般的なクリーニング
 Cleaning_Header_LoginHistory: ログイン履歴を消去
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: プロトコルを削除しました
 Toast_RestartAsAdmin: 管理者として開始して、もう一度やり直してください。
 Toast_RestartAfterClose: 閉じるをクリックした後、プログラムを再起動してください。
 Toast_RestartAfterCloseTitle: アクセントカラーは無効です
+Toast_RestartRequired: 再起動して変更を適用します
 Toast_LoadStylesheetFailed: スタイルシートの読み込みに失敗しました！詳細はドキュメントフォルダを参照してください。
 Toast_BNet_Private: "{BTag}のプロフィールは非公開です"
 Toast_BNet_StatsFail: "{BTag} の統計情報を取得しようとしてエラーが発生しました"
@@ -283,7 +286,7 @@ PngInvalid_Format: 必要なピクセルフォーマットはPixelFormatです�
 PngRequired: 必須画像フォーマットは、ポータブルネットワークグラフィックス(png)です。
 PngDimensions: 寸法は {MaxIconWidth}x{MaxIconHeight} 以下でなければなりません
 ThemeSyntaxAnd: "構文エラーが発生しました(詳細は以下をご覧ください):"
-ThemesNotFound: "TcNo Account Switcherのディレクトリに「themes」フォルダが見つかりませんでした。このソフトウェアを実行するには（特にDefault.yaml）必要です。\nUpdaterを「updater」フォルダで実行してファイルを確認し、これらのファイルを復元することができます。"
+ThemesNotFound: "TcNo AccountSwitcherのディレクトリに「themes」フォルダが見つかりませんでした。これ（特に「Dracula_Cyan」フォルダー）は、このソフトウェアを実行するために必要です。\n「アップデータ」フォルダでアップデータを実行してファイルを確認し、これらの不足しているファイルを復元できます。"
 Yes: "はい"
 No: "いいえ"
 NoDefault: (デフォルト)
