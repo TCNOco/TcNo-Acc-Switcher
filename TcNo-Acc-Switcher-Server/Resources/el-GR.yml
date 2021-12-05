@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Κρυφές Πλατφόρμες
 Settings_Header_TraySettings: Ρυθμίσεις συστήματος ειδοποιήσεων
 Settings_Header_OpenGameFolders: Άνοιγμα φακέλων παιχνιδιών
 Settings_TrayMax: 'Μέγιστος αριθμός λογαριασμών που πρέπει να θυμάστε:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Επιλέξτε {platform} φάκελο
 Settings_OpenFolder: Άνοιγμα φακέλου {platform}
 Settings_ClearForgotten: Εκκαθάριση Ξεχασμένων
@@ -49,6 +50,7 @@ Settings_Protocol: 'Ενεργοποίηση πρωτοκόλλου tcno:\\ (σ�
 Settings_StartCentered: Εκκίνηση προγράμματος στο κέντρο
 Settings_WindowsAccent: Χρησιμοποιήστε το χρώμα έμφασης των Windows
 Settings_HelpTranslate: "[Βοηθήστε στη μετάφραση]"
+Settings_Header_ActiveBrowser: "[Advanced] Σετ κινητήρα απόδοσης:"
 Cleaning_Header_StartMenuShortcuts: 'Συντομεύσεις για το μενού έναρξης:'
 Cleaning_Header_General: Γενικός Καθαρισμός
 Cleaning_Header_LoginHistory: Καθαρίστε το ιστορικό συνδέσεών μου
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: Το πρωτόκολλο αφαιρέθηκε
 Toast_RestartAsAdmin: Παρακαλώ ξεκινήστε ως Διαχειριστής και προσπαθήστε ξανά.
 Toast_RestartAfterClose: Παρακαλούμε επανεκκινήστε το πρόγραμμα αφού κάνετε κλικ στο Κλείσιμο.
 Toast_RestartAfterCloseTitle: Χρώμα έμφασης απενεργοποιημένο
+Toast_RestartRequired: Κάντε επανεκκίνηση για να εφαρμόσετε αλλαγές
 Toast_LoadStylesheetFailed: Αποτυχία φόρτωσης stylesheet! Δείτε το φάκελο εγγράφων για λεπτομέρειες.
 Toast_BNet_Private: "{BTag}προφίλ είναι ιδιωτικό"
 Toast_BNet_StatsFail: "Σφάλμα κατά την λήψη στατιστικών για το {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: Η απαιτούμενη μορφή εικονοστοιχε
 PngRequired: Η απαιτούμενη μορφή εικόνας είναι ένα γραφικό φορητό δίκτυο (png).
 PngDimensions: Οι διαστάσεις πρέπει να είναι μικρότερες ή ίσες με {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Αντιμετωπίστηκε ένα συντακτικό σφάλμα (περισσότερες λεπτομέρειες παρακάτω)!"
-ThemesNotFound: "Δεν βρέθηκε ο φάκελος \"themes\" στο φάκελο TcNo Account Switcher. Αυτό (ειδικά το Default.yaml) είναι απαραίτητο για την εκτέλεση αυτού του λογισμικού.\nΜπορείτε να εκτελέσετε το Updater στο φάκελο \"updater\" για να επαληθεύσετε τα αρχεία, και να επαναφέρετε αυτά τα αρχεία που λείπουν."
+ThemesNotFound: "Δεν ήταν δυνατή η εύρεση του φακέλου \"θέματα\" στον κατάλογο του TcNo Account Switcher. Αυτό (ειδικά ο φάκελος \"Dracula_Cyan\") απαιτείται για την εκτέλεση αυτού του λογισμικού.\nΜπορείτε να εκτελέσετε το Updater στο φάκελο \"updater\" για να επαληθεύσετε τα αρχεία και να επαναφέρετε αυτά τα αρχεία που λείπουν."
 Yes: "Ναι"
 No: "Όχι"
 NoDefault: Όχι (Προεπιλογή)

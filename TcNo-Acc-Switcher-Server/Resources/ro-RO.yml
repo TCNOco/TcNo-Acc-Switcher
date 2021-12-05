@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Platforme ascunse
 Settings_Header_TraySettings: Setări jurnal
 Settings_Header_OpenGameFolders: Deschide folderele jocului
 Settings_TrayMax: 'Numărul maxim de conturi de reţinut:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Alege dosarul {platform}
 Settings_OpenFolder: Deschide dosarul {platform}
 Settings_ClearForgotten: Curăță uitat
@@ -49,6 +50,7 @@ Settings_Protocol: 'Activează tcno:\\ protocol (recomandat)'
 Settings_StartCentered: Pornire program centrat
 Settings_WindowsAccent: Folosește culoarea de cent Windows
 Settings_HelpTranslate: "[Ajutor traduce]"
+Settings_Header_ActiveBrowser: "[Advanced] Setați motorul de randare:"
 Cleaning_Header_StartMenuShortcuts: 'Comenzi rapide pentru Meniul Pornire:'
 Cleaning_Header_General: Curățare generală
 Cleaning_Header_LoginHistory: Curăță istoricul autentificărilor
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: Protocol eliminat
 Toast_RestartAsAdmin: Vă rugăm să începeți ca Administrator și încercați din nou.
 Toast_RestartAfterClose: Vă rugăm să reporniți programul după ce faceți clic pe Închidere.
 Toast_RestartAfterCloseTitle: Culoare de accent dezactivată
+Toast_RestartRequired: Reporniți pentru a aplica modificările
 Toast_LoadStylesheetFailed: Încărcarea foii de stylesheet! A se vedea dosarul cu documente pentru detalii.
 Toast_BNet_Private: "Profilul {BTag}este privat"
 Toast_BNet_StatsFail: "Eroare la încercarea de a obține statistici pentru {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: Formatul pixelului necesar este PixelFormat.{x}.
 PngRequired: Formatul de imagine necesar este un grafic al rețelei portabile (png).
 PngDimensions: Dimensiunile trebuie să fie mai mici sau egale cu {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "A apărut o eroare de sintaxă (mai multe detalii mai jos)! ȘI:"
-ThemesNotFound: "Nu s-a putut găsi dosarul \"teme\" în directorul TcNo Account Switcher. Acest lucru (în special implicit.yaml) este necesar pentru ca acest software să ruleze.\nPuteți rula actualizatorul în dosarul \"updater\" pentru a verifica fișierele, și pentru a restaura fișierele lipsă."
+ThemesNotFound: "Nu s-a putut găsi folderul „teme” în directorul TcNo Account Switcher. Acest lucru (în special folderul „Dracula_Cyan”) este necesar pentru a rula acest software.\nPuteți rula Updater-ul în folderul „updater” pentru a verifica fișierele și a restaura aceste fișiere lipsă."
 Yes: "Da"
 No: "Nr"
 NoDefault: Nu (implicit)

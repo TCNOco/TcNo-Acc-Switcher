@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Plataformas ocultas
 Settings_Header_TraySettings: Configurações da bandeja
 Settings_Header_OpenGameFolders: Abrir pastas dos jogos
 Settings_TrayMax: 'Número máximo de contas para lembrar:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Escolher {platform} pasta
 Settings_OpenFolder: Abrir pasta de {platform}
 Settings_ClearForgotten: Limpar esquecidos
@@ -49,6 +50,7 @@ Settings_Protocol: 'Habilitar tcno:\\ protocolo (Recomendado)'
 Settings_StartCentered: Iniciar programa centralizado
 Settings_WindowsAccent: Use a cor de destaque do Windows
 Settings_HelpTranslate: "[Ajudar a traduzir]"
+Settings_Header_ActiveBrowser: "[Advanced] Definir mecanismo de renderização:"
 Cleaning_Header_StartMenuShortcuts: 'Atalhos para o Menu Inicial:'
 Cleaning_Header_General: Limpeza geral
 Cleaning_Header_LoginHistory: Limpar meu histórico de login
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: Protocolo removido
 Toast_RestartAsAdmin: Por favor, inicie como Administrador e tente novamente.
 Toast_RestartAfterClose: Por favor, reinicie o programa após clicar em Fechar.
 Toast_RestartAfterCloseTitle: Cor de realce desabilitada
+Toast_RestartRequired: Reinicie para aplicar as alterações
 Toast_LoadStylesheetFailed: Falha ao carregar folha de estilos! Veja a pasta de documentos para mais detalhes.
 Toast_BNet_Private: "O perfil de {BTag}é privado"
 Toast_BNet_StatsFail: "Erro ao tentar obter estatísticas para {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: Formato de pixel necessário é PixelFormat.{x}.
 PngRequired: O formato de imagem necessário é um gráfico de rede portátil (png).
 PngDimensions: As dimensões devem ser menores ou iguais a {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Ocorreu um erro de sintaxe (mais detalhes abaixo! E:"
-ThemesNotFound: "Não foi possível encontrar a pasta \"temas\" no diretório da conta do Switcher. Isto (especialmente Default.yaml) é necessário para que o software seja executado.\nVocê pode executar o Updater na pasta \"atualizador\" para verificar os arquivos e restaurar esses arquivos ausentes."
+ThemesNotFound: "Não foi possível encontrar a pasta \"themes\" no diretório do TcNo Account Switcher. Isso (especialmente a pasta 'Dracula_Cyan') é necessária para que este software seja executado.\nVocê pode executar o Atualizador na pasta \"atualizador\" para verificar os arquivos e restaurar os arquivos ausentes."
 Yes: "sim"
 No: "Não"
 NoDefault: Não (Padrão)

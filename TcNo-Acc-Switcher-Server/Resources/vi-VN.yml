@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Nền tảng ẩn
 Settings_Header_TraySettings: Cài đặt khay
 Settings_Header_OpenGameFolders: Mở thư mục trò chơi
 Settings_TrayMax: 'Số tài khoản tối đa cần nhớ:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Chọn {platform} thư mục
 Settings_OpenFolder: Mở thư mục {platform}
 Settings_ClearForgotten: Xóa bỏ quên
@@ -49,6 +50,7 @@ Settings_Protocol: 'Bật giao thức TcNo: \\ (Được khuyến nghị)'
 Settings_StartCentered: Bắt đầu chương trình làm trung tâm
 Settings_WindowsAccent: Sử dụng Màu nhấn Windows
 Settings_HelpTranslate: "[Giúp dịch]"
+Settings_Header_ActiveBrowser: "[Advanced] Đặt công cụ kết xuất:"
 Cleaning_Header_StartMenuShortcuts: 'Các phím tắt cho Start Menu:'
 Cleaning_Header_General: Vệ sinh chung
 Cleaning_Header_LoginHistory: Xóa lịch sử đăng nhập của tôi
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: Giao thức bị xóa
 Toast_RestartAsAdmin: Vui lòng bắt đầu với tư cách Quản trị viên và thử lại.
 Toast_RestartAfterClose: Vui lòng khởi động lại chương trình sau khi nhấp vào Đóng.
 Toast_RestartAfterCloseTitle: Đã tắt màu dấu trọng âm
+Toast_RestartRequired: Khởi động lại để áp dụng các thay đổi
 Toast_LoadStylesheetFailed: Không tải được biểu định kiểu! Xem thư mục tài liệu để biết chi tiết.
 Toast_BNet_Private: "Hồ sơ của {BTag}"
 Toast_BNet_StatsFail: "Lỗi khi cố gắng lấy số liệu thống kê cho {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: Định dạng pixel bắt buộc là PixelFormat.{x}.
 PngRequired: Định dạng hình ảnh bắt buộc là đồ họa mạng di động (png).
 PngDimensions: Kích thước phải nhỏ hơn hoặc bằng {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Đã gặp lỗi cú pháp (thêm chi tiết bên dưới)! VÀ:"
-ThemesNotFound: "Không thể tìm thấy thư mục \"chủ đề\" trong thư mục của TcNo Account Switcher. Điều này (đặc biệt là Default.yaml) là bắt buộc để phần mềm này chạy.\nBạn có thể chạy Trình cập nhật trong thư mục \"Trình cập nhật\" để xác minh tệp và khôi phục các tệp bị thiếu này."
+ThemesNotFound: "Không thể tìm thấy thư mục \"chủ đề\" trong thư mục của TcNo Account Switcher. Điều này (đặc biệt là thư mục 'Dracula_Cyan') là bắt buộc để phần mềm này chạy.\nBạn có thể chạy Trình cập nhật trong thư mục \"Trình cập nhật\" để xác minh tệp và khôi phục các tệp bị thiếu này."
 Yes: "Đúng"
 No: "Không"
 NoDefault: Không (Mặc định)

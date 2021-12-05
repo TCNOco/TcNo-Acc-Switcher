@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Ukryte platformy
 Settings_Header_TraySettings: Ustawienia zasobnika
 Settings_Header_OpenGameFolders: Otwórz foldery gier
 Settings_TrayMax: 'Maksymalna liczba kont do zapamiętania:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Wybierz folder {platform}
 Settings_OpenFolder: Otwórz folder {platform}
 Settings_ClearForgotten: Wyczyść zapomniane
@@ -46,9 +47,10 @@ Settings_Tray_StartWindows: Uruchom zasobnik z systemem Windows
 Settings_Tray_StartNow: '[Uruchom teraz zasobnik]'
 Settings_CurrentStyle: Bieżący styl
 Settings_Protocol: 'Włącz protokół tcno:\\ (zalecane)'
-Settings_StartCentered: Program startowy wyśrodkowany
+Settings_StartCentered: Uruchom program wyśrodkowany
 Settings_WindowsAccent: Używaj kolorów wiodących Windowsa
 Settings_HelpTranslate: "[Pomóż tłumaczyć]"
+Settings_Header_ActiveBrowser: "[Advanced] Ustaw silnik renderujący:"
 Cleaning_Header_StartMenuShortcuts: 'Skróty dla menu startowego:'
 Cleaning_Header_General: Ogólne czyszczenie
 Cleaning_Header_LoginHistory: Wyczyść moją historię logowania
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: Protokół usunięty
 Toast_RestartAsAdmin: Uruchom jako Administrator i spróbuj ponownie.
 Toast_RestartAfterClose: Uruchom ponownie program po kliknięciu Zamknij.
 Toast_RestartAfterCloseTitle: Kolor wiodący jest wyłączony
+Toast_RestartRequired: Uruchom ponownie, aby zastosować zmiany
 Toast_LoadStylesheetFailed: Nie udało się załadować arkusza stylów! Zobacz folder dokumentów, aby uzyskać szczegółowe informacje.
 Toast_BNet_Private: "Profil {BTag} jest prywatny"
 Toast_BNet_StatsFail: "Błąd podczas próby uzyskania statystyk dla {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: Wymagany format to PixelFormat.{x}.
 PngRequired: Wymagany format obrazu to png (Portable Network Graphics).
 PngDimensions: Wymiary muszą być mniejsze lub równe {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Napotkano błąd składni (więcej szczegółów poniżej)! AND:"
-ThemesNotFound: "Nie można znaleźć folderu \"themes\" w katalogu Przełącznika kont TcNo. Wymagane jest to (zwłaszcza Default.yaml) do ponownego uruchomienia oprogramowania\nMożesz uruchomić aktualizator w folderze \"updater\", aby sprawdzić pliki i przywrócić brakujące pliki."
+ThemesNotFound: "Nie można znaleźć folderu „themes” w katalogu TcNo Account Switcher. Ten (zwłaszcza folder „Dracula_Cyan”) jest wymagany do uruchomienia tego oprogramowania.\nMożesz uruchomić Updater w folderze „updater”, aby zweryfikować pliki i przywrócić brakujące pliki."
 Yes: "Tak"
 No: "Nie"
 NoDefault: Nie (domyślnie)

@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Dolda plattformar
 Settings_Header_TraySettings: Inställningar för fack
 Settings_Header_OpenGameFolders: Öppna spelmappar
 Settings_TrayMax: 'Max antal konton att komma ihåg:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Välj {platform} mapp
 Settings_OpenFolder: Öppna {platform} -mappen
 Settings_ClearForgotten: Rensa bortglömda
@@ -49,6 +50,7 @@ Settings_Protocol: 'Aktivera tcno:\\ protokoll (rekommenderas)'
 Settings_StartCentered: Starta program centrerat
 Settings_WindowsAccent: Använd Windows Accent Färg
 Settings_HelpTranslate: "[Hjälp översätta]"
+Settings_Header_ActiveBrowser: "[Advanced] Ställ in renderingsmotor:"
 Cleaning_Header_StartMenuShortcuts: 'Genvägar till Start-menyn:'
 Cleaning_Header_General: Allmänt Städning
 Cleaning_Header_LoginHistory: Rensa min inloggningshistorik
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: Protokollet har tagits bort
 Toast_RestartAsAdmin: Vänligen börja som Admin och försök igen.
 Toast_RestartAfterClose: Starta om programmet efter att ha klickat på Stäng.
 Toast_RestartAfterCloseTitle: Accentfärg inaktiverad
+Toast_RestartRequired: Starta om för att tillämpa ändringar
 Toast_LoadStylesheetFailed: Det gick inte att läsa in stilmallar! Se dokumentmappen för detaljer.
 Toast_BNet_Private: "{BTag}s profil är privat"
 Toast_BNet_StatsFail: "Fel vid försök att hämta statistik för {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: Krävs pixelformat är PixelFormat.{x}.
 PngRequired: Det obligatoriska bildformatet är ett portabelt nätverk grafiskt (png).
 PngDimensions: Dimensioner måste vara mindre än eller lika med {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Ett syntaxfel påträffades (mer detaljer nedan)! AND:"
-ThemesNotFound: "Kunde inte hitta mappen \"themes\" i TcNo Account Switcher's katalog. Detta (speciellt Default.yaml) krävs för att denna programvara ska köras.\nDu kan köra Updater i mappen \"updater\" för att verifiera filer, och återställa dessa saknade filer."
+ThemesNotFound: "Det gick inte att hitta mappen \"teman\" i TcNo Account Switchers katalog. Denna (särskilt mappen 'Dracula_Cyan') krävs för att denna programvara ska köras.\nDu kan köra Updater i mappen \"updater\" för att verifiera filer och återställa dessa saknade filer."
 Yes: "Ja"
 No: "Nej"
 NoDefault: Nej (standard)
