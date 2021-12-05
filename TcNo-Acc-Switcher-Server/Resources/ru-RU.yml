@@ -132,8 +132,8 @@ Toast_Ubisoft_NoUsername: Не удалось найти последнего в
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat не найден. Последняя активная учетная запись не сохранена."
 Toast_Ubisoft_NoUser: Не удалось найти последнего вошедшего пользователя. Попробуйте сначала войти в Ubisoft.
 Toast_ClearForgottenCheck: Вы уверены, что хотите очистить резервные копии забытых учетных записей?
-Modal_Crowdin_Header: Crowdin translators
-Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
+Modal_Crowdin_Header: Переводчики Crowdin
+Modal_Crowdin_Info: "Вот все, кто помогал переводить эту программу.<br>Пользователи с соседними языками очень помогли в переводе (роль корректора)."
 Modal_Info_Creator: Создано TechNobo [Wesley Pyburn]
 Modal_Info_Version: Версия
 Modal_Info_ViewGitHub: Посмотреть на GitHub
