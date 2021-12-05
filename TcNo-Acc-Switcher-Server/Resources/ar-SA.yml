@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: منصات مخفية
 Settings_Header_TraySettings: إعدادات القائمة المخفية في شريط المهام
 Settings_Header_OpenGameFolders: مجلدات الألعاب
 Settings_TrayMax: 'عدد الحسابات الظاهرة في قائمة:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: إظهار النص من اليمين إلى اليسار
 Settings_PickFolder: تحديد ملف {platform}
 Settings_OpenFolder: فتح ملف {platform}
 Settings_ClearForgotten: تنظيف الحسابات المزالة
@@ -132,8 +132,8 @@ Toast_Ubisoft_NoUsername: تعذر العثور على آخر مستخدم تم 
 Toast_Ubisoft_NoDat: "لم يتم العثور على %LocalAppData%/UBisoftGameLauncher/user.dat . لم يتم حفظ آخر حساب نشط."
 Toast_Ubisoft_NoUser: تعذر العثور على آخر مستخدم تم تسجيل الدخول. حاول تسجيل الدخول إلى UBisoft مرة أخرى أولاً.
 Toast_ClearForgottenCheck: هل أنت متأكد من أنك تريد مسح النسخ الاحتياطي للحسابات المنسية؟
-Modal_Crowdin_Header: Crowdin translators
-Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
+Modal_Crowdin_Header: مترجمين كرودين
+Modal_Crowdin_Info: "هنا كل من ساعد في ترجمة هذا البرنامج.<br>المستخدمين الذين لديهم لغات بجانبهم ساعدوا كثيرًا في الترجمة (دور المدقق اللغوي)."
 Modal_Info_Creator: تم إنشاؤها من قبل تيتشنوبو [ويسلي بيبرن]
 Modal_Info_Version: الإصدار
 Modal_Info_ViewGitHub: عرض على GitHub
