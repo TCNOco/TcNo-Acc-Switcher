@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Plateformes cachées
 Settings_Header_TraySettings: Paramètres de la zone de notification
 Settings_Header_OpenGameFolders: Ouvrir les dossiers du jeu
 Settings_TrayMax: 'Nombre maximum de comptes à retenir :'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Choisir le dossier {platform}
 Settings_OpenFolder: Ouvrir le dossier {platform}
 Settings_ClearForgotten: Effacer Oublié
@@ -49,6 +50,7 @@ Settings_Protocol: 'Activer le protocole tcno:\\ (Recommandé)'
 Settings_StartCentered: Démarrer le programme centré sur
 Settings_WindowsAccent: Utiliser la couleur d'accentuation Windows
 Settings_HelpTranslate: "[Aider à traduire]"
+Settings_Header_ActiveBrowser: "[Advanced] Définir le moteur de rendu :"
 Cleaning_Header_StartMenuShortcuts: 'Raccourcis pour le Menu Démarrer:'
 Cleaning_Header_General: Nettoyage général
 Cleaning_Header_LoginHistory: Nettoyer mon historique de connexion
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: Protocole supprimé
 Toast_RestartAsAdmin: Veuillez commencer en tant qu'administrateur et réessayer.
 Toast_RestartAfterClose: Veuillez redémarrer le programme après avoir cliqué sur Fermer.
 Toast_RestartAfterCloseTitle: Couleur d'accentuation désactivée
+Toast_RestartRequired: Redémarrer pour appliquer les modifications
 Toast_LoadStylesheetFailed: Impossible de charger la feuille de style ! Voir le dossier documents pour plus de détails.
 Toast_BNet_Private: "Le profil de {BTag}est privé"
 Toast_BNet_StatsFail: "Erreur lors de la tentative d'obtenir les statistiques pour {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: Le format de pixel requis est PixelFormat.{x}.
 PngRequired: Le format d'image requis est un graphique de réseau portable (png).
 PngDimensions: Les dimensions doivent être inférieures ou égales à {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Une erreur de syntaxe a été rencontrée (plus de détails ci-dessous) ! ET:"
-ThemesNotFound: "Impossible de trouver le dossier \"themes\" dans le répertoire de TcNo Account Switcher. Ceci (en particulier Default.yaml) est nécessaire à l'exécution de ce logiciel.\nVous pouvez exécuter la mise à jour dans le dossier \"updater\" pour vérifier les fichiers et restaurer ces fichiers manquants."
+ThemesNotFound: "Impossible de trouver le dossier \"themes\" dans le répertoire de TcNo Account Switcher. Ceci (en particulier le dossier 'Dracula_Cyan') est requis pour que ce logiciel s'exécute.\nVous pouvez exécuter le programme de mise à jour dans le dossier « updater » pour vérifier les fichiers et restaurer ces fichiers manquants."
 Yes: "Oui"
 No: "Non"
 NoDefault: Non (par défaut)
