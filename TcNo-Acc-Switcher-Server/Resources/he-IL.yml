@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: פלטפורמות נסתרות
 Settings_Header_TraySettings: הגדרות מגש
 Settings_Header_OpenGameFolders: פתח תיקיות משחק
 Settings_TrayMax: 'מספר חשבונות מקסימלי שיש לזכור:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: הצג טקסט בתור מימין לשמאל
 Settings_PickFolder: בחר תיקייה {platform}
 Settings_OpenFolder: פתח את תיקיית {platform}
 Settings_ClearForgotten: נקה נשכח
@@ -132,8 +132,8 @@ Toast_Ubisoft_NoUsername: לא ניתן למצוא משתמש מחובר אחר�
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat לא נמצא. החשבון הפעיל האחרון לא נשמר."
 Toast_Ubisoft_NoUser: לא ניתן למצוא משתמש מחובר אחרון. נסה להתחבר שוב ל- Ubisoft.
 Toast_ClearForgottenCheck: האם אתה בטוח שברצונך לנקות גיבויים של חשבונות שנשכחו?
-Modal_Crowdin_Header: Crowdin translators
-Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
+Modal_Crowdin_Header: מתרגמי Crowdin
+Modal_Crowdin_Info: "הנה כל מי שעזר לתרגם את התוכנה הזו.<br>משתמשים עם שפות לידם עזרו רבות בתרגום (תפקיד הגהה)."
 Modal_Info_Creator: נוצר על ידי TechNobo [Wesley Pyburn]
 Modal_Info_Version: גִרְסָה
 Modal_Info_ViewGitHub: צפה ב- GitHub
