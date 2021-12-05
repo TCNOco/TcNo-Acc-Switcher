@@ -29,6 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.LoadProfiles] Loading Origin profiles");
+            Data.Settings.Origin.Instance.LoadFromFile();
             _ = GenericFunctions.GenericLoadAccounts("Origin");
         }
 

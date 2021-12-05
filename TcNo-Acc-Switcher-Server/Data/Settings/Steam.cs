@@ -169,6 +169,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.LoginUsersVdf]");
             var path = Path.Join(FolderPath, "config\\loginusers.vdf");
             if (File.Exists(path)) return path;
+
             FolderPath = "";
             SaveSettings();
             return "RESET_PATH";

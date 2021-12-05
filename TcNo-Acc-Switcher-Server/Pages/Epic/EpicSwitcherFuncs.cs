@@ -34,6 +34,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.LoadProfiles] Loading Epic profiles");
+            Data.Settings.Epic.Instance.LoadFromFile();
             _ = GenericFunctions.GenericLoadAccounts("Epic");
         }
 

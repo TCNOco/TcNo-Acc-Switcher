@@ -59,6 +59,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static async Task LoadProfiles()
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.LoadProfiles] Loading Steam profiles");
+            Data.Settings.Steam.Instance.LoadFromFile();
+
             var userAccounts = GetSteamUsers(Steam.LoginUsersVdf());
             var vacStatusList = new List<VacStatus>();
             var loadedVacCache = LoadVacInfo(ref vacStatusList);

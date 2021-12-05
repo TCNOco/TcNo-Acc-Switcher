@@ -618,7 +618,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         #region SWITCHER_FUNCTIONS
 
-        public static async System.Threading.Tasks.Task HandleFirstRender(bool firstRender, string platform)
+        public static async Task HandleFirstRender(bool firstRender, string platform)
         {
             AppData.Instance.WindowTitle = Lang["Title_AccountsList", new { platform }];
             if (firstRender)

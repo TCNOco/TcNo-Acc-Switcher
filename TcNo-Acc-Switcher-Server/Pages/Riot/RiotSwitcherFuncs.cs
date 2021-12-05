@@ -30,6 +30,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.LoadProfiles] Loading Riot profiles");
+            Data.Settings.Riot.Instance.LoadFromFile();
 
             LoadImportantData(); // If not already loaded -- Likely it will be already
             if (DelayedToasts.Count > 0)
