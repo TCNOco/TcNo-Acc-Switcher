@@ -50,6 +50,7 @@ Settings_Protocol: 'Увімкнути tcno:\\ протокол (Рекомен�
 Settings_StartCentered: Запустити програму з центром
 Settings_WindowsAccent: Використовувати колір акценту Windows
 Settings_HelpTranslate: "[Допоможіть перекласти]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Встановити механізм візуалізації:"
 Cleaning_Header_StartMenuShortcuts: 'Комбінації клавіш для меню запуску:'
 Cleaning_Header_General: Загальне очищення
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Не вдалося знайти останнього 
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat не знайдено. Останній активний обліковий запис не збережено."
 Toast_Ubisoft_NoUser: Не вдалося знайти останнього входу в обліковий запис. Спочатку спробуйте увійти в Ubisoft.
 Toast_ClearForgottenCheck: Ви впевнені, що хочете очистити резервні копії забутих облікових записів?
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Створено TechNobo [Wesley Pyburn]
 Modal_Info_Version: Версія
 Modal_Info_ViewGitHub: Вид на GitHub
