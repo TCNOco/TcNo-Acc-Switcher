@@ -16,6 +16,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -139,7 +140,7 @@ namespace TcNo_Acc_Switcher_Server
                 var icon = new System.Drawing.Icon(path);
                 SetWindowIcon(icon);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //
             }
@@ -150,6 +151,7 @@ namespace TcNo_Acc_Switcher_Server
 
         private static void SetWindowIcon(System.Drawing.Icon icon)
         {
+            if (!OperatingSystem.IsWindows()) return;
             // 0x0080 is SETICON
             var mwHandle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
             var result01 = SendMessage(mwHandle, (int)0x0080, 0, icon.Handle);

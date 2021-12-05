@@ -90,7 +90,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             if (accName != "") SetUsername(userId, accName);
             else accName = savedUsername;
 
-            AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
+            AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Saved: " + accName), true);
         }
 
         public static string HasUserSaved()
@@ -137,7 +137,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             var allIds = ReadAllIds();
             allIds[id] = username;
             File.WriteAllText("LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
-            if (reload) AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Set username"), true);
+            if (reload) AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Set username"), true);
         }
 
 

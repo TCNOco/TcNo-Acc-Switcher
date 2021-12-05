@@ -223,5 +223,24 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             s.ToggleShortcut(!desktopShortcut);
         }
         #endregion
+
+        #region START_WITH_WINDOWS
+        /// <summary>
+        /// Checks if the TcNo Account Switcher Tray application has a Task to start with Windows
+        /// </summary>
+        public static bool StartWithWindows_Enabled() => File.Exists(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "TcNo Account Switcher - Tray.lnk"));
+
+        /// <summary>
+        /// Toggles whether the TcNo Account Switcher Tray application starts with Windows or not
+        /// </summary>
+        /// <param name="shouldExist">Whether it should start with Windows, or not</param>
+        public static void StartWithWindows_Toggle(bool shouldExist)
+        {
+            Globals.DebugWriteLine($@"[Func:General\Classes\Task.StartWithWindows_Toggle] shouldExist={shouldExist}");
+            var s = new Shortcut();
+            _ = s.Shortcut_Tray(Environment.GetFolderPath(Environment.SpecialFolder.Startup));
+            s.ToggleShortcut(shouldExist);
+        }
+        #endregion
     }
 }

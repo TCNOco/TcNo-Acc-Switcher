@@ -203,16 +203,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\riot"));
             File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\RiotDefault.png"), Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg"), true);
 
-            AppData.ActiveNavMan?.NavigateTo("/Riot/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
+            AppData.ActiveNavMan?.NavigateTo("/Riot/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Saved: " + accName), true);
         }
 
         public static void ChangeUsername(string oldName, string newName, bool reload = true)
         {
-            File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{Uri.EscapeUriString(oldName).Replace("#", "-")}.jpg"),
-                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg")); // Rename image
+            File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{Uri.EscapeDataString(oldName).Replace("#", "-")}.jpg"),
+                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{Uri.EscapeDataString(newName).Replace("#", "-")}.jpg")); // Rename image
             Directory.Move($"LoginCache\\Riot\\{oldName}\\", $"LoginCache\\Riot\\{newName}\\"); // Rename login cache folder
 
-            if (reload) AppData.ActiveNavMan?.NavigateTo("/Riot/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed username"), true);
+            if (reload) AppData.ActiveNavMan?.NavigateTo("/Riot/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Changed username"), true);
         }
 
         #region RIOT_MANAGEMENT

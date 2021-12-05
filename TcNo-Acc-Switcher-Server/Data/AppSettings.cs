@@ -33,7 +33,6 @@ using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using Task = System.Threading.Tasks.Task;
-using TcNoTask = TcNo_Acc_Switcher_Server.Pages.General.Classes.Task;
 
 
 namespace TcNo_Acc_Switcher_Server.Data
@@ -426,7 +425,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
             _instance._startMenu = File.Exists(Path.Join(Shortcut.StartMenu, "TcNo Account Switcher.lnk"));
             _instance._startMenuPlatforms = Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
-            _instance._trayStartup = TcNoTask.StartWithWindows_Enabled();
+            _instance._trayStartup = Shortcut.StartWithWindows_Enabled();
 
             if (OperatingSystem.IsWindows())
                 _instance._protocolEnabled = Protocol_IsEnabled();
@@ -586,10 +585,10 @@ namespace TcNo_Acc_Switcher_Server.Data
             _ = s.Shortcut_Tray(Shortcut.StartMenu);
             s.ToggleShortcut(!StartMenu, false);
         }
-        public void Task_Toggle()
+        public void AutoStart_Toggle()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.Task_Toggle]");
-            TcNoTask.StartWithWindows_Toggle(!TrayStartup);
+            Shortcut.StartWithWindows_Toggle(!TrayStartup);
         }
 
         public void StartNow()

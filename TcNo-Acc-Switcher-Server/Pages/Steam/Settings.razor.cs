@@ -54,7 +54,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearSettings]");
             new Data.Settings.Steam().ResetSettings();
-            AppData.ActiveNavMan.NavigateTo("/Steam?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Steam switcher settings"));
+            AppData.ActiveNavMan.NavigateTo("/Steam?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Cleared Steam switcher settings"));
         }
 
         // BUTTON: Reset images

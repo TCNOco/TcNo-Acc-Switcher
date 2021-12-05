@@ -60,7 +60,6 @@
     <PackageReference Include="SteamKit2" Version="2.3.0" />
     <PackageReference Include="Svg.Skia" Version="0.5.10" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-    <PackageReference Include="TaskScheduler" Version="2.9.2" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
   <ItemGroup>

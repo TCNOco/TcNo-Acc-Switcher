@@ -51,7 +51,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Discord\Settings.razor.cs.ClearSettings]");
             new Data.Settings.Discord().ResetSettings();
-            AppData.ActiveNavMan.NavigateTo("/Discord?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Discord switcher settings"));
+            AppData.ActiveNavMan.NavigateTo("/Discord?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Cleared Discord switcher settings"));
         }
         #endregion
 

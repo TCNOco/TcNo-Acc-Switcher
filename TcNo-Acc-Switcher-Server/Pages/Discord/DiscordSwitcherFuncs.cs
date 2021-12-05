@@ -65,7 +65,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             // Remove cached files
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Discord\\{accName}"), false);
             // Remove image
-            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(accName)}.jpg");
+            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(accName)}.jpg");
             if (File.Exists(img)) File.Delete(img);
             // Remove from Tray
             Globals.RemoveTrayUser("Discord", accName); // Add to Tray list
@@ -281,7 +281,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 
             // Handle profile image:
             _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\discord"));
-            var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(accName).Replace("#", "-")}.jpg");
+            var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(accName).Replace("#", "-")}.jpg");
 
             // Check to see if profile image download required:
             if (!string.IsNullOrEmpty(imgUrl))
@@ -306,7 +306,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 
             try
             {
-                AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Saved: " + accName), true);
+                AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Saved: " + accName), true);
             }
             catch (Microsoft.AspNetCore.Components.NavigationException) // Page was reloaded.
             {
@@ -353,7 +353,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             // Check to see if profile image download required:
             if (!string.IsNullOrEmpty(imgUrl))
             {
-                var path = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg");
+                var path = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(newName).Replace("#", "-")}.jpg");
                 // Download new image
                 try
                 {
@@ -363,21 +363,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
                 catch (WebException)
                 {
                     // Move existing image
-                    File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(oldName).Replace("#", "-")}.jpg"),
-                        Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg")); // Rename image
+                    File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(oldName).Replace("#", "-")}.jpg"),
+                        Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(newName).Replace("#", "-")}.jpg")); // Rename image
                 }
             }
             else
             {
                 // Move existing image
-                File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(oldName).Replace("#", "-")}.jpg"),
-                    Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeUriString(newName).Replace("#", "-")}.jpg")); // Rename image
+                File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(oldName).Replace("#", "-")}.jpg"),
+                    Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(newName).Replace("#", "-")}.jpg")); // Rename image
             }
 
             if ($"LoginCache\\Discord\\{oldName}\\" != $"LoginCache\\Discord\\{newName}\\")
                 Directory.Move($"LoginCache\\Discord\\{oldName}\\", $"LoginCache\\Discord\\{newName}\\"); // Rename login cache folder
 
-            if (reload) AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Changed username"), true);
+            if (reload) AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Changed username"), true);
         }
 
         private static Dictionary<string, string> ReadAllIds()

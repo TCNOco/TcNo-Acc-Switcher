@@ -159,7 +159,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <returns>Image path</returns>
         private static string GetImgPath(string platform, string user)
         {
-            var imgPath = $"\\img\\profiles\\{platform.ToLowerInvariant()}\\{Uri.EscapeUriString(user.Replace("#", "-"))}";
+            var imgPath = $"\\img\\profiles\\{platform.ToLowerInvariant()}\\{Uri.EscapeDataString(user.Replace("#", "-"))}";
             if (File.Exists("wwwroot\\" + imgPath + ".png")) return imgPath + ".png";
             return imgPath + ".jpg";
         }

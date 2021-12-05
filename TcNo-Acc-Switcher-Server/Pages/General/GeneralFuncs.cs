@@ -139,7 +139,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             if (timeout == 10)
             {
+#pragma warning disable CA1416 // Validate platform compatibility
                 var leftOvers = procNames.Where(x => !ProcessHelper.IsProcessRunning(x));
+#pragma warning restore CA1416 // Validate platform compatibility
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotCloseX", new { x = string.Join(", ", leftOvers.ToArray()) }], Lang["Error"], "toastarea");
             }
 

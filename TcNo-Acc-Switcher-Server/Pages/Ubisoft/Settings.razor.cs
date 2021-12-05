@@ -44,7 +44,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Ubisoft\Settings.razor.cs.ClearSettings]");
             new Data.Settings.Ubisoft().ResetSettings();
-            AppData.ActiveNavMan.NavigateTo("/Ubisoft?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Ubisoft switcher settings"));
+            AppData.ActiveNavMan.NavigateTo("/Ubisoft?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Cleared Ubisoft switcher settings"));
         }
         #endregion
 

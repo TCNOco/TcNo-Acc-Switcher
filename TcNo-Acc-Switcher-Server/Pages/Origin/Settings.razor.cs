@@ -43,7 +43,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.ClearSettings]");
             new Data.Settings.Origin().ResetSettings();
-            AppData.ActiveNavMan.NavigateTo("/Origin?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Origin switcher settings"));
+            AppData.ActiveNavMan.NavigateTo("/Origin?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Cleared Origin switcher settings"));
         }
         #endregion
 

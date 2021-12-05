@@ -33,7 +33,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Riot\Settings.razor.cs.ClearSettings]");
             new Data.Settings.Riot().ResetSettings();
-            AppData.ActiveNavMan.NavigateTo("/Riot?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared Riot switcher settings"));
+            AppData.ActiveNavMan.NavigateTo("/Riot?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Cleared Riot switcher settings"));
         }
         #endregion
 

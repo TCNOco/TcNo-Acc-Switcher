@@ -551,7 +551,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 File.Delete(file);
             }
             // Reload page, then display notification using a new thread.
-            AppData.ActiveNavMan?.NavigateTo("/steam/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeUriString("Cleared images"), true);
+            AppData.ActiveNavMan?.NavigateTo("/steam/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Cleared images"), true);
         }
 
         /// <summary>

@@ -155,7 +155,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.ImageExpiryTime = 7;
             _instance.TrayAccNumber = 3;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Steam");
-            _ = Task.StartWithWindows_Enabled();
+            _ = Shortcut.StartWithWindows_Enabled();
 
             SaveSettings();
         }
@@ -213,7 +213,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.ImageExpiryTime = curSettings.ImageExpiryTime;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Steam");
-            _ = Task.StartWithWindows_Enabled();
+            _ = Shortcut.StartWithWindows_Enabled();
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
 
