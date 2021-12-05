@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Plataformas ocultas
 Settings_Header_TraySettings: Ajustes de la bandeja
 Settings_Header_OpenGameFolders: Abrir carpetas del juego
 Settings_TrayMax: 'Número máximo de cuentas a recordar:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Elegir carpeta {platform}
 Settings_OpenFolder: Abrir la carpeta {platform}
 Settings_ClearForgotten: Limpiar forzado
@@ -49,6 +50,7 @@ Settings_Protocol: 'Habilitar el protocolo tcno:\\ (Recomendado)'
 Settings_StartCentered: Iniciar programa centrado
 Settings_WindowsAccent: Usar el color de acento de Windows
 Settings_HelpTranslate: "[Ayuda a traducir]"
+Settings_Header_ActiveBrowser: "[Advanced] Establecer motor de renderizado:"
 Cleaning_Header_StartMenuShortcuts: 'Atajos para Menú Inicio:'
 Cleaning_Header_General: Limpieza general
 Cleaning_Header_LoginHistory: Limpiar mi historial de acceso
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: Protocolo eliminado
 Toast_RestartAsAdmin: Por favor comience como Administrador y vuelva a intentarlo.
 Toast_RestartAfterClose: Por favor, reinicie el programa después de hacer clic en Cerrar.
 Toast_RestartAfterCloseTitle: Color de acento desactivado
+Toast_RestartRequired: Reiniciar para aplicar cambios
 Toast_LoadStylesheetFailed: Error al cargar la hoja de estilo! Vea la carpeta de documentos para más detalles.
 Toast_BNet_Private: "El perfil de {BTag}es privado"
 Toast_BNet_StatsFail: "Error al intentar obtener estadísticas para {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: El formato de píxel requerido es PixelFormat.{x}.
 PngRequired: Formato de imagen requerido es un gráfico de red portátil (png).
 PngDimensions: Las dimensiones deben ser menores o iguales a {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Se ha encontrado un error de sintaxis (más detalles a continuación)! Y:"
-ThemesNotFound: "No se ha podido encontrar la carpeta \"temas\" en el directorio de TcNo Account Switcher. Esto (especialmente Default.yaml) es necesario para que este software se ejecute.\nPuede ejecutar el Actualizador en la carpeta \"actualizador\" para verificar los archivos y restaurar estos archivos que faltan."
+ThemesNotFound: "No se pudo encontrar la carpeta \"temas\" en el directorio de TcNo Account Switcher. Esta (especialmente la carpeta 'Dracula_Cyan') es necesaria para que este software se ejecute.\nPuede ejecutar el actualizador en la carpeta \"updater\" para verificar archivos y restaurar estos archivos que faltan."
 Yes: "Sí"
 No: "Nu"
 NoDefault: No (por defecto)
