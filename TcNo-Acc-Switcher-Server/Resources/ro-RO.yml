@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: Platforme ascunse
 Settings_Header_TraySettings: Setări jurnal
 Settings_Header_OpenGameFolders: Deschide folderele jocului
 Settings_TrayMax: 'Numărul maxim de conturi de reţinut:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: Afișați textul ca de la dreapta la stânga
 Settings_PickFolder: Alege dosarul {platform}
 Settings_OpenFolder: Deschide dosarul {platform}
 Settings_ClearForgotten: Curăță uitat
@@ -132,8 +132,8 @@ Toast_Ubisoft_NoUsername: Nu s-a putut găsi ultimul utilizator conectat. Încer
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nu a putut fi găsit. Ultimul cont activ nu a fost salvat."
 Toast_Ubisoft_NoUser: Nu s-a putut găsi ultimul utilizator conectat. Încercați să vă logați din nou în Ubisoft.
 Toast_ClearForgottenCheck: Sunteţi sigur că doriţi să ştergeţi copiile de rezervă ale conturilor uitate?
-Modal_Crowdin_Header: Crowdin translators
-Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
+Modal_Crowdin_Header: Crowdin traducători
+Modal_Crowdin_Info: "Iată toți cei care au ajutat la traducerea acestui software.<br>Utilizatorii cu limbi lângă ei au ajutat foarte mult la traducere (rol de corector)."
 Modal_Info_Creator: Creat de TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versiune
 Modal_Info_ViewGitHub: Vezi pe GitHub
