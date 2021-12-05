@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: פלטפורמות נסתרות
 Settings_Header_TraySettings: הגדרות מגש
 Settings_Header_OpenGameFolders: פתח תיקיות משחק
 Settings_TrayMax: 'מספר חשבונות מקסימלי שיש לזכור:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: בחר תיקייה {platform}
 Settings_OpenFolder: פתח את תיקיית {platform}
 Settings_ClearForgotten: נקה נשכח
@@ -49,6 +50,7 @@ Settings_Protocol: 'אפשר TcNo: \\ פרוטוקול (מומלץ)'
 Settings_StartCentered: התוכנית התחילה ממוקדת
 Settings_WindowsAccent: השתמש בצבע המבטא של Windows
 Settings_HelpTranslate: "[עזרה בתרגום]"
+Settings_Header_ActiveBrowser: "[Advanced] הגדר את מנוע העיבוד:"
 Cleaning_Header_StartMenuShortcuts: 'קיצורי דרך לתפריט התחלה:'
 Cleaning_Header_General: ניקוי כללי
 Cleaning_Header_LoginHistory: נקה את היסטוריית הכניסה שלי
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: הפרוטוקול הוסר
 Toast_RestartAsAdmin: התחל כמנהל ונסה שוב.
 Toast_RestartAfterClose: אנא הפעל מחדש את התוכנית לאחר לחיצה על סגור.
 Toast_RestartAfterCloseTitle: צבע המבטא מושבת
+Toast_RestartRequired: הפעל מחדש כדי להחיל שינויים
 Toast_LoadStylesheetFailed: טעינת גיליון הסגנונות נכשלה! לפרטים, עיין בתיקיית המסמכים.
 Toast_BNet_Private: "הפרופיל של {BTag}"
 Toast_BNet_StatsFail: "שגיאה בניסיון להשיג נתונים סטטיסטיים עבור {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: פורמט הפיקסלים הנדרש הוא PixelFormat.{x}
 PngRequired: פורמט תמונה נדרש הוא גרפיקה ניידת ברשת (png).
 PngDimensions: המידות צריכות להיות פחות או פחות מ- {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "אירעה שגיאת תחביר (פרטים נוספים בהמשך)! וגם:"
-ThemesNotFound: "לא ניתן למצוא את התיקייה \"ערכות נושא\" בספריה של TcNo Account Switcher. זה (במיוחד Default.yaml) נדרש להפעלת תוכנה זו.\nבאפשרותך להפעיל את Updater בתיקיית \"updater\" כדי לאמת קבצים ולשחזר קבצים חסרים אלה."
+ThemesNotFound: "לא ניתן היה למצוא תיקיית \"ערכות נושא\" בספרייה של TcNo Account Switcher. זו (במיוחד התיקיה 'Dracula_Cyan') נדרשת כדי שתוכנה זו תפעל.\nאתה יכול להפעיל את העדכון בתיקיית \"עדכון\" כדי לאמת קבצים ולשחזר את הקבצים החסרים הללו."
 Yes: "כן"
 No: "לא"
 NoDefault: לא (ברירת מחדל)
