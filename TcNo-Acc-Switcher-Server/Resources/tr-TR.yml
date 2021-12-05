@@ -50,6 +50,7 @@ Settings_Protocol: 'tcno:\\ protokolünü etkinleştir (Önerilen)'
 Settings_StartCentered: Programı merkezli başlat
 Settings_WindowsAccent: Windows Vurgu Rengini kullanın
 Settings_HelpTranslate: "[Çevirmeye yardım edin]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Oluşturma motorunu ayarla:"
 Cleaning_Header_StartMenuShortcuts: 'Başlat Menüsü Kısayolları:'
 Cleaning_Header_General: Genel temizlik
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Son oturum açan kullanıcı bulunamadı. Önce Ubisof
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat bulunamadı. Son etkin hesap kaydedilmedi."
 Toast_Ubisoft_NoUser: Son oturum açan kullanıcı bulunamadı. Önce Ubisoft'a tekrar giriş yapmayı deneyin.
 Toast_ClearForgottenCheck: Unutulan hesapların yedeklerini temizlemek istediğinizden emin misiniz?
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: TechNobo [Wesley Pyburn] tarafından düzenlendi
 Modal_Info_Version: Sürüm
 Modal_Info_ViewGitHub: GitHub'da görüntüle
