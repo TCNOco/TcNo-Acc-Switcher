@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Piilotetut Alustat
 Settings_Header_TraySettings: Kaukalon asetukset
 Settings_Header_OpenGameFolders: Avaa pelikansiot
 Settings_TrayMax: 'Suurin muistettavien tilien määrä:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Valitse {platform} kansio
 Settings_OpenFolder: Avaa {platform} kansio
 Settings_ClearForgotten: Tyhjennä Unohtunut
@@ -49,6 +50,7 @@ Settings_Protocol: 'Ota tcno:\\ protokolla käyttöön (Suositeltu)'
 Settings_StartCentered: Käynnistä keskitetty ohjelma
 Settings_WindowsAccent: Käytä Windows-hehkutuksen väriä
 Settings_HelpTranslate: "[Auta kääntämään]"
+Settings_Header_ActiveBrowser: "[Advanced] Aseta renderöintimoottori:"
 Cleaning_Header_StartMenuShortcuts: 'Käynnistysvalikon pikakuvakkeet:'
 Cleaning_Header_General: Yleinen Puhdistus
 Cleaning_Header_LoginHistory: Puhdista kirjautumishistoriani
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: Protokolla poistettu
 Toast_RestartAsAdmin: Käynnistä järjestelmänvalvojana ja yritä uudelleen.
 Toast_RestartAfterClose: Käynnistä ohjelma uudelleen suljettujen klikkausten jälkeen.
 Toast_RestartAfterCloseTitle: Korostusväri pois käytöstä
+Toast_RestartRequired: Ota muutokset käyttöön käynnistämällä se uudelleen
 Toast_LoadStylesheetFailed: Tyylitiedoston lataaminen epäonnistui! Katso dokumenttikansio lisätietoja.
 Toast_BNet_Private: "{BTag}profiili on yksityinen"
 Toast_BNet_StatsFail: "Virhe yritettäessä saada tilastoja {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: Vaadittu pikselin muoto on PixelFormat.{x}.
 PngRequired: Vaadittu kuvamuoto on kannettava verkkograafinen (png).
 PngDimensions: Mitat on oltava pienempi tai yhtä suuri kuin {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Syntaksivirhe kohdattiin (lisätietoja alla)! AND:"
-ThemesNotFound: "Ei löytynyt \"teemoja\" kansiota TcNo Tilin vaihtajan hakemistosta. Tämä (erityisesti Default.yaml) vaaditaan suorittamaan tämä ohjelma.\nVoit suorittaa päivityksen \"updater\" kansioon tiedostojen tarkistamiseksi ja näiden puuttuvien tiedostojen palauttamiseksi."
+ThemesNotFound: "\"Themes\"-kansiota ei löytynyt TcNo Account Switcherin hakemistosta. Tämä (etenkin 'Dracula_Cyan'-kansio) tarvitaan tämän ohjelmiston suorittamiseen.\nVoit suorittaa Updaterin \"päivitys\"-kansiossa tarkistaaksesi tiedostot ja palauttaaksesi nämä puuttuvat tiedostot."
 Yes: "Kyllä"
 No: "Ei"
 NoDefault: Ei (Oletus)
