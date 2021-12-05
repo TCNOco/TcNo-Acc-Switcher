@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: Plataformes ocultes
 Settings_Header_TraySettings: Configuració de la safata
 Settings_Header_OpenGameFolders: Obrir carpetes de jocs
 Settings_TrayMax: 'Nombre màxim de comptes que cal recordar:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: Mostra el text com a de dreta a esquerra
 Settings_PickFolder: Trieu {platform} carpeta
 Settings_OpenFolder: Obriu la carpeta {platform}
 Settings_ClearForgotten: Esborra oblidat
@@ -132,8 +132,8 @@ Toast_Ubisoft_NoUsername: No s'ha pogut trobar l'últim usuari connectat. Intent
 Toast_Ubisoft_NoDat: "No s'ha pogut trobar %LocalAppData%No s'ha desat l'últim compte actiu."
 Toast_Ubisoft_NoUser: No s'ha pogut trobar l'últim usuari connectat. Intenteu tornar a iniciar sessió a Ubisoft primer.
 Toast_ClearForgottenCheck: Esteu segur que voleu esborrar les còpies de seguretat dels comptes oblidats?
-Modal_Crowdin_Header: Crowdin translators
-Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
+Modal_Crowdin_Header: Traductors crowdin
+Modal_Crowdin_Info: "Aquí teniu tots els que han ajudat a traduir aquest programari.<br>Els usuaris amb idiomes al costat van ajudar molt en la traducció (rol de corrector)."
 Modal_Info_Creator: Creat per TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versió
 Modal_Info_ViewGitHub: Veure a GitHub
