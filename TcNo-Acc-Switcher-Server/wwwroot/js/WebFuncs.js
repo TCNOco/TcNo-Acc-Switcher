@@ -29,6 +29,11 @@ async function GetLang(k) {
         return r;
     });
 }
+async function GetCrowdin() {
+    return DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCrowdinList").then((r) => {
+        return r;
+    });
+}
 async function GetLangSub(key, obj) {
     return DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocaleObj", key, obj).then((r) => {
         return r;
@@ -348,19 +353,33 @@ async function showModal(modaltype) {
                 </div>
                 </div><div class="versionIdentifier"><span>${modalInfoVersion}: ${currentVersion}</span></div>`);
         });
+    } else if (modaltype === "crowdin") {
+        const modalCrowdinHeader = await GetLang("Modal_Crowdin_Header"),
+            modalCrowdinInfo = await GetLang("Modal_Crowdin_Info"),
+            listUsers = await GetCrowdin();
+        $("#modalTitle").text(modalCrowdinHeader);
+        $("#modal_contents").empty();
+
+        $("#modal_contents").append(`<div class="infoWindow">
+            <div class="fullWidthContent crowdin">
+                <h2>${modalCrowdinHeader}<svg viewBox="0 0 512 512" draggable="false" alt="<3" class="heart"><use href="img/fontawesome/heart.svg#img"></use></svg></h2>
+                    <p>${modalCrowdinInfo}</p>
+                    <ul>${listUsers}</ul>
+            </div></div>`);
     } else if (modaltype.startsWith("changeUsername")) {
         // USAGE: "changeUsername"
         Modal_RequestedLocated(false);
         var platformName = modaltype.split(":")[1] ?? "username";
         let extraButtons = "";
         if (getCurrentPage() === "Discord") {
-	        extraButtons = `
+            extraButtons = `
                 <button class="modalOK extra" type="button" id="set_account_name" onclick="discordCopyJS()"><span><svg viewBox="0 0 448 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/copy.svg#img"></use></svg></span></button>
 				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>`;
         }
 
         let platformText = (platformName === "username" ? " (Only changes it in the TcNo Account Switcher)" : "");
-        const modalChangeUsername = await GetLangSub("Modal_ChangeUsername", { platformText: platformName, optional: platformText }),
+        const modalChangeUsername =
+                  await GetLangSub("Modal_ChangeUsername", { platformText: platformName, optional: platformText }),
             modalChangeUsernameType = await GetLangSub("Modal_ChangeUsernameType", { UsernameOrOther: platformName }),
             modalTitleChangeUsername = await GetLang("Modal_Title_ChangeUsername");
 
@@ -375,7 +394,8 @@ async function showModal(modaltype) {
 	        </div>
 	        <div class="settingsCol inputAndButton">
 				${extraButtons}
-		        <button class="modalOK" type="button" id="change_username" onclick="Modal_FinaliseAccNameChange()"><span>${modalChangeUsernameType}</span></button>
+		        <button class="modalOK" type="button" id="change_username" onclick="Modal_FinaliseAccNameChange()"><span>${
+            modalChangeUsernameType}</span></button>
 	        </div>`);
         input = document.getElementById("NewAccountName");
     } else if (modaltype.startsWith("find:")) {
@@ -397,12 +417,14 @@ async function showModal(modaltype) {
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="FolderLocation" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
-		        <button type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFile=${platformExe}';"><span>${modalLocatePlatform}</span></button>
+		        <button type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFile=${
+            platformExe}';"><span>${modalLocatePlatform}</span></button>
 	        </div>
 	        <div class="settingsCol inputAndButton">
 		        <div class="folder_indicator notfound"><div id="folder_indicator_text"></div></div>
 		        <div class="folder_indicator_bg notfound"><span>${platformExe}</span></div>
-		        <button class="modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${platformSettingsPath}')"><span>${modalLocatePlatformFolder}</span></button>
+		        <button class="modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${
+            platformSettingsPath}')"><span>${modalLocatePlatformFolder}</span></button>
 	        </div>`);
         input = document.getElementById("FolderLocation");
     } else if (modaltype.startsWith("confirm:")) {
@@ -416,9 +438,12 @@ async function showModal(modaltype) {
         let header = `<h3>${modalConfirmAction}:</h3>`;
         if (action.startsWith("AcceptForgetSteamAcc")) {
             message = await GetLang("Prompt_ForgetSteam");
-        } else if (action.startsWith("AcceptForgetDiscordAcc") || action.startsWith("AcceptForgetEpicAcc")
-	        || action.startsWith("AcceptForgetOriginAcc") || action.startsWith("AcceptForgetUbisoftAcc") ||
-            action.startsWith("AcceptForgetBattleNetAcc") || action.startsWith("AcceptForgetRiotAcc")) {
+        } else if (action.startsWith("AcceptForgetDiscordAcc") ||
+            action.startsWith("AcceptForgetEpicAcc") ||
+            action.startsWith("AcceptForgetOriginAcc") ||
+            action.startsWith("AcceptForgetUbisoftAcc") ||
+            action.startsWith("AcceptForgetBattleNetAcc") ||
+            action.startsWith("AcceptForgetRiotAcc")) {
             message = await GetLangSub("Prompt_ForgetAccount", { platform: getCurrentPage() });
         } else {
             message = `<p>${modaltype.split(":")[2].replaceAll("_", " ")}</p>`;
@@ -428,16 +453,18 @@ async function showModal(modaltype) {
         }
 
         const modalConfirmActionTitle = await GetLang("Modal_Title_ConfirmAction"),
-	        yes = await GetLang("Yes"),
-	        no = await GetLang("No");
+            yes = await GetLang("Yes"),
+            no = await GetLang("No");
 
         $("#modalTitle").text(modalConfirmActionTitle);
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">${header + message}
             <div class="YesNo">
-		        <button type="button" id="modal_true" onclick="Modal_Confirm('${action}', true)"><span>${yes}</span></button>
-		        <button type="button" id="modal_false" onclick="Modal_Confirm('${action}', false)"><span>${no}</span></button>
+		        <button type="button" id="modal_true" onclick="Modal_Confirm('${action}', true)"><span>${yes
+            }</span></button>
+		        <button type="button" id="modal_false" onclick="Modal_Confirm('${action}', false)"><span>${no
+            }</span></button>
             </div>
         </div>
         </div>`);
@@ -499,7 +526,8 @@ async function showModal(modaltype) {
 	        </div>
 	        <div class="settingsCol inputAndButton">
 				${extraButtons}
-		        <button class="modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('${platform}')"><span>${modalAddCurrentAccount}</span></button>
+		        <button class="modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('${
+            platform}')"><span>${modalAddCurrentAccount}</span></button>
 	        </div>`);
         input = document.getElementById("CurrentAccountName");
     } else if (modaltype === "password") {
@@ -507,7 +535,7 @@ async function showModal(modaltype) {
         if (!x) return;
     } else {
 
-	    const notice = await GetLang("Notice");
+        const notice = await GetLang("Notice");
 
         $("#modalTitle").text(notice);
         $("#modal_contents").empty();

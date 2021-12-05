@@ -490,5 +490,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         [JSInvokable]
         public static string GiLocaleObj(string k, object obj) => Lang.Instance[k, obj];
+
+        [JSInvokable]
+        public static string GiCrowdinList() => new System.Net.Http.HttpClient().GetStringAsync(
+                "https://tcno.co/Projects/AccSwitcher/api/crowdin/").Result;
     }
 }

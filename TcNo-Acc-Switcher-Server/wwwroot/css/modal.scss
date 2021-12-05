@@ -27,6 +27,8 @@
   box-shadow: 0 0 15px 3px #000;
   box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.84);
   cursor: default;
+  display: flex;
+  flex-direction: column;
 }
 .versionIdentifier {
     text-align: right;
@@ -51,9 +53,9 @@
     position: relative;
     align-items: center;
     width: fit-content;
-    overflow: auto;
     text-align: center;
     white-space: nowrap;
+
     .imgDiv {
         display: flex;
         align-items: center;
@@ -66,15 +68,36 @@
         }
 
         &:active {
-             transform: scale(0.975);
-         }
+            transform: scale(0.975);
+        }
     }
+
     .fullWidthContent {
+        overflow: auto;
         display: block;
         width: 100%;
         color: white;
+
         .YesNo button {
             padding: 0.25em 3em !important;
+        }
+    }
+
+    .crowdin {
+        text-align: initial;
+
+        ul {
+            list-style-type: none;
+            padding-left: 1rem;
+            overflow: auto;
+            max-height: 40vh;
+        }
+
+        .heart {
+            color: red;
+            height: 1em;
+            width: 1.1em;
+            margin: 0 2px 2px 2px;
         }
     }
 }
@@ -112,6 +135,7 @@
     height: 100%;
     padding: 2em;
     background: #0E1419;
+    overflow: auto;
 
     .modal_button_close {
         right: 0 !important;

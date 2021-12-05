@@ -33,3 +33,8 @@ label {
 .modalIcoDoc {
   margin-left: 0.5rem;
 }
+
+#window-controls-modal {
+  right: unset;
+  left: 0;
+}
