@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: Nền tảng ẩn
 Settings_Header_TraySettings: Cài đặt khay
 Settings_Header_OpenGameFolders: Mở thư mục trò chơi
 Settings_TrayMax: 'Số tài khoản tối đa cần nhớ:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: Hiển thị văn bản dưới dạng từ phải sang trái
 Settings_PickFolder: Chọn {platform} thư mục
 Settings_OpenFolder: Mở thư mục {platform}
 Settings_ClearForgotten: Xóa bỏ quên
@@ -132,8 +132,8 @@ Toast_Ubisoft_NoUsername: Không thể tìm thấy người dùng đăng nhập 
 Toast_Ubisoft_NoDat: "Không thể tìm thấy %LocalAppData%Tài khoản hoạt động cuối cùng không được lưu."
 Toast_Ubisoft_NoUser: Không thể tìm thấy người dùng đăng nhập lần cuối. Trước tiên, hãy thử đăng nhập lại vào Ubisoft.
 Toast_ClearForgottenCheck: Bạn có chắc chắn muốn xóa các bản sao lưu của các tài khoản bị quên không?
-Modal_Crowdin_Header: Crowdin translators
-Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
+Modal_Crowdin_Header: Người dịch Crowdin
+Modal_Crowdin_Info: "Đây là tất cả những người đã giúp dịch phần mềm này.<br>Người dùng có ngôn ngữ bên cạnh họ đã giúp rất nhiều trong việc dịch thuật (vai trò người hiệu đính)."
 Modal_Info_Creator: Tạo bởi TechNobo [Wesley Pyburn]
 Modal_Info_Version: Phiên bản
 Modal_Info_ViewGitHub: Xem trên GitHub
