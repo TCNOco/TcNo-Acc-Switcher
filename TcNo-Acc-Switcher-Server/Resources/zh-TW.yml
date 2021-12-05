@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: 隱藏平台
 Settings_Header_TraySettings: 托盤設置
 Settings_Header_OpenGameFolders: 打開遊戲文件夾
 Settings_TrayMax: '要記住的最大帳戶數：'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: 選擇 {platform} 文件夾
 Settings_OpenFolder: 打開 {platform} 文件夾
 Settings_ClearForgotten: 清除遺忘
@@ -49,6 +50,7 @@ Settings_Protocol: '啟用 tcno:\\ 協議（推薦）'
 Settings_StartCentered: 啟動程序居中
 Settings_WindowsAccent: 使用 Windows 強調色
 Settings_HelpTranslate: "[幫助翻譯]"
+Settings_Header_ActiveBrowser: "[Advanced] 設置渲染引擎："
 Cleaning_Header_StartMenuShortcuts: '開始菜單快捷鍵：'
 Cleaning_Header_General: 一般清洗
 Cleaning_Header_LoginHistory: 清理我的登錄歷史
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: 刪除了協議
 Toast_RestartAsAdmin: 請以管理員身份啟動，然後重試。
 Toast_RestartAfterClose: 請在單擊關閉後重新啟動程序。
 Toast_RestartAfterCloseTitle: 禁用強調色
+Toast_RestartRequired: 重新啟動以應用更改
 Toast_LoadStylesheetFailed: 加載樣式表失敗！有關詳細信息，請參閱文檔文件夾。
 Toast_BNet_Private: "{BTag}的個人資料是私人的"
 Toast_BNet_StatsFail: "{BTag}統計信息時出錯"
@@ -283,7 +286,7 @@ PngInvalid_Format: 所需的像素格式為 PixelFormat。{x}.
 PngRequired: 所需的圖像格式是便攜式網絡圖形 (png)。
 PngDimensions: 尺寸必須小於或等於 {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "遇到語法錯誤（更多詳情見下文）！和："
-ThemesNotFound: "在 TcNo Account Switcher 的目錄中找不到“themes”文件夾。這個（尤其是 Default.yaml）是這個軟件運行所必需的。\n您可以運行“更新程序”文件夾中的更新程序來驗證文件，並恢復這些丟失的文件。"
+ThemesNotFound: "在 TcNo Account Switcher 的目錄中找不到“themes”文件夾。這個（尤其是“Dracula_Cyan”文件夾）是這個軟件運行所必需的。\n您可以運行“更新程序”文件夾中的更新程序來驗證文件，並恢復這些丟失的文件。"
 Yes: "是的"
 No: "不"
 NoDefault: 否（默認）
