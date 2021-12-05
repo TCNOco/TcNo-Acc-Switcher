@@ -50,6 +50,7 @@ Settings_Protocol: 'Ενεργοποίηση πρωτοκόλλου tcno:\\ (σ�
 Settings_StartCentered: Εκκίνηση προγράμματος στο κέντρο
 Settings_WindowsAccent: Χρησιμοποιήστε το χρώμα έμφασης των Windows
 Settings_HelpTranslate: "[Βοηθήστε στη μετάφραση]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Σετ κινητήρα απόδοσης:"
 Cleaning_Header_StartMenuShortcuts: 'Συντομεύσεις για το μενού έναρξης:'
 Cleaning_Header_General: Γενικός Καθαρισμός
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Δεν βρέθηκε ο τελευταίος συνδ
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat δεν βρέθηκε. Ο τελευταίος ενεργός λογαριασμός δεν αποθηκεύτηκε."
 Toast_Ubisoft_NoUser: Δεν βρέθηκε ο τελευταίος συνδεδεμένος χρήστης. Πρώτα προσπαθήστε να συνδεθείτε ξανά στο Ubisoft.
 Toast_ClearForgottenCheck: Είστε βέβαιοι ότι θέλετε να καθαρίσετε τα αντίγραφα ασφαλείας των ξεχασμένων λογαριασμών?
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Δημιουργήθηκε από TechNobo [Wesley Pyburn]
 Modal_Info_Version: Έκδοση
 Modal_Info_ViewGitHub: Προβολή στο GitHub
