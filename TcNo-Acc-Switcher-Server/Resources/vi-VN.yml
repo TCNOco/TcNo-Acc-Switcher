@@ -50,6 +50,7 @@ Settings_Protocol: 'Bật giao thức TcNo: \\ (Được khuyến nghị)'
 Settings_StartCentered: Bắt đầu chương trình làm trung tâm
 Settings_WindowsAccent: Sử dụng Màu nhấn Windows
 Settings_HelpTranslate: "[Giúp dịch]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Đặt công cụ kết xuất:"
 Cleaning_Header_StartMenuShortcuts: 'Các phím tắt cho Start Menu:'
 Cleaning_Header_General: Vệ sinh chung
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Không thể tìm thấy người dùng đăng nhập 
 Toast_Ubisoft_NoDat: "Không thể tìm thấy %LocalAppData%Tài khoản hoạt động cuối cùng không được lưu."
 Toast_Ubisoft_NoUser: Không thể tìm thấy người dùng đăng nhập lần cuối. Trước tiên, hãy thử đăng nhập lại vào Ubisoft.
 Toast_ClearForgottenCheck: Bạn có chắc chắn muốn xóa các bản sao lưu của các tài khoản bị quên không?
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Tạo bởi TechNobo [Wesley Pyburn]
 Modal_Info_Version: Phiên bản
 Modal_Info_ViewGitHub: Xem trên GitHub
