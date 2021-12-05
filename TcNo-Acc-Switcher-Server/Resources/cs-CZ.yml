@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: Skryté platformy
 Settings_Header_TraySettings: Nastavení v systémové liště
 Settings_Header_OpenGameFolders: Otevřít herní složky
 Settings_TrayMax: 'Maximální počet účtů, které chcete pamatovat:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: Vybrat složku {platform}
 Settings_OpenFolder: Otevřít složku {platform}
 Settings_ClearForgotten: Vymazat zapomenuté
@@ -49,6 +50,7 @@ Settings_Protocol: 'Povolit tcno:\\ protokol (doporučeno)'
 Settings_StartCentered: Spustit program se středem
 Settings_WindowsAccent: Použí barvu motivu Windows
 Settings_HelpTranslate: "[Pomozte s překladem]"
+Settings_Header_ActiveBrowser: "[Advanced] Nastavit vykreslovací modul:"
 Cleaning_Header_StartMenuShortcuts: 'Zkratky pro nabídku startu:'
 Cleaning_Header_General: Obecné čištění
 Cleaning_Header_LoginHistory: Vyčistit historii přihlášení
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: Protokol byl odstraněn
 Toast_RestartAsAdmin: Spusťte jako Správce a zkuste to znovu.
 Toast_RestartAfterClose: Po kliknutí na tlačítko Zavřít restartujte program.
 Toast_RestartAfterCloseTitle: Barva zvýraznění zakázána
+Toast_RestartRequired: Restartujte pro použití změn
 Toast_LoadStylesheetFailed: Nepodařilo se načíst vzhled! Podrobnosti naleznete ve složce dokumentů.
 Toast_BNet_Private: "Profil uživatele {BTag}je soukromý"
 Toast_BNet_StatsFail: "Chyba při pokusu získat statistiky pro {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: Požadovaný formát pixelů je PixelFormát.{x}.
 PngRequired: Požadovaný formát obrázku je přenosná síťová grafika (png).
 PngDimensions: Rozměry musí být menší nebo se rovnat {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Došlo k chybě syntaxe (další podrobnosti níže)! A:"
-ThemesNotFound: "Nelze najít složku \"themes\" v adresáři Přepínače účtů TcNo. Toto (zejména Default.yaml) je vyžadováno pro spuštění tohoto softwaru.\nAktualizaci můžete spustit ve složce \"updater\" pro ověření souborů a obnovení těchto chybějících souborů."
+ThemesNotFound: "V adresáři TcNo Account Switcher nelze najít složku \"themes\". Toto (zejména složka 'Dracula_Cyan') je vyžadováno pro spuštění tohoto softwaru.\nPro ověření souborů a obnovení těchto chybějících souborů můžete spustit Updater ve složce \"updater\"."
 Yes: "Ano"
 No: "Ne"
 NoDefault: Ne (výchozí)
