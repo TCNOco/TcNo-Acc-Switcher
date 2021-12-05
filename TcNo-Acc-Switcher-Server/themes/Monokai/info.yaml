@@ -1,0 +1,21 @@
+# This theme's name (Shows in-app, can be different to folder name)
+name: Monokai
+accent: "#fce566"
+# Required colors for updater & main UI (not HTML/CSS):
+#   - Not including these will cause the updater to use default color scheme (Dracula Cyan)
+linkColor: "#fce566" # Accent color
+headerbarBackground: "#131313"
+mainBackground: "#222222"
+modalInputBackground: "#484848"
+borderedItemBorderColor: "#131313"
+buttonBackground: "#3f3f3f"
+buttonBackground-hover: "#595959"
+buttonBackground-active: "#202020"
+buttonColor: "#FFFFFF"
+buttonBorder: "#191919"
+buttonBorder-hover: "#FFFFFF"
+buttonBorder-active: "#fce566"
+windowControlsBackground: "#131313"
+windowControlsBackground-active: "#1b1b1b"
+windowControlsCloseBackground: "#1b1b1b"
+windowControlsCloseBackground-active: "#1b1b1b"

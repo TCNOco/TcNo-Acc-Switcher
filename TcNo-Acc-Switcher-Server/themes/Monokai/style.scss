@@ -1,0 +1,350 @@
+﻿/*
+    Monokai Default
+    - Created by MajorAmari
+*/
+
+:root {
+  --accent: #fce566;
+  --accentHS: 190, 100%;
+  --accentL: 50%;
+  --accentInt: 0, 212, 255;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Tajawal&display=swap");
+
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  font-family: "Tajawal", sans-serif;
+}
+
+body {
+  font-size: medium;
+}
+
+button,
+button#modal_true,
+button#btnLogin {
+  background: #3f3f3f;
+  font-size: smaller;
+  border-color: #191919;
+  border-radius: 0.9rem;
+
+  &:hover {
+    background-color: lighten($color: #3f3f3f, $amount: 10%);
+    border-radius: 0.5rem;
+    border-color: lighten($color: #191919, $amount: 10%);
+  }
+}
+
+button:active,
+.button:active,
+.button:target,
+.show > .dropdown-toggle {
+  background: #202020 !important;
+  border-color: var(--accent) !important;
+}
+
+.custom-dropdown-menu {
+  background: #202020 !important;
+  border-radius: 0.8rem;
+  border: 6px solid #131313;
+  top: 0.5rem !important;
+  font-size: medium;
+  max-height: 60vh;
+  overflow-y: auto;
+  box-shadow: none;
+}
+
+a.fancyLink {
+  &:hover {
+    color: #fd9353;
+  }
+
+  &:active {
+    color: #ca7542;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #3f3f3f;
+  border-radius: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #191919;
+  border-radius: 20px;
+  border: 3px solid #3f3f3f;
+
+  &:hover {
+    background-color: #232323;
+  }
+}
+
+.programMain {
+  background: #222222;
+  border-radius: 0.5rem;
+}
+
+label.form-check-label {
+  border-radius: 0.5rem;
+}
+
+input[type="checkbox"]:checked + label {
+  background: #7bd88f;
+  border: 1px solid #8b8b8b;
+}
+
+input[type="checkbox"] + label {
+  border: 1px solid #8b8b8b;
+}
+
+.acc_list_actionbar {
+  position: fixed;
+  padding-left: 10px;
+  padding-right: 10px;
+  opacity: 50%;
+  background: #131313;
+  bottom: 7px;
+  left: 0;
+}
+
+.acc_list_item,
+.platform_list_item {
+  font-size: small;
+}
+
+.platform_list {
+  top: 28px;
+}
+
+.platform_list_item {
+  border-radius: 40px;
+  border: #fce566 1px solid;
+
+  &#SwitcherSteam svg,
+  &#SwitcherOrigin svg,
+  &#SwitcherUbisoft svg,
+  &#SwitcherBattleNet svg,
+  &#SwitcherRiot svg,
+  &#SwitcherEpic svg,
+  &#SwitcherDiscord svg {
+    border-radius: 40px;
+    filter: grayscale(100%);
+  }
+
+  &:hover {
+    border-radius: 1rem;
+  }
+
+  &#SwitcherSteam:hover svg,
+  &#SwitcherOrigin:hover svg,
+  &#SwitcherUbisoft:hover svg,
+  &#SwitcherBattleNet:hover svg,
+  &#SwitcherRiot:hover svg,
+  &#SwitcherEpic:hover svg,
+  &#SwitcherDiscord:hover svg {
+    border-radius: 1rem;
+  }
+
+  &:hover:not(:active) {
+    animation: effect 1s ease-in-out 0s infinite normal none running;
+    // animation: pulse 0s;
+    // transform: none;
+  }
+}
+
+.platformContainer {
+  width: 100%;
+  height: calc(100% - 56px);
+  position: relative;
+  display: table;
+  text-align: center;
+}
+
+use.icoGlass {
+  display: none;
+}
+
+.modalFG {
+  background: #131313;
+  border-radius: 1rem;
+  box-shadow: none;
+  z-index: 900;
+
+  animation: fade-in 0.3s ease-in-out 0s;
+}
+
+.folder_indicator {
+  display: none;
+}
+
+#modal_contents input[type="text"],
+#modal_contents input[type="password"] {
+  background: #131313 !important;
+  border-radius: 0.5rem;
+}
+
+#modal_contents {
+  font-size: small;
+  background: #222222;
+  border-radius: 1rem;
+
+  a {
+    &:hover {
+      color: #fd9353;
+    }
+
+    &:active {
+      color: #ca7542;
+    }
+  }
+
+  padding: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+#modal_contents button {
+  width: auto;
+  margin: 0 0.25em;
+  padding: 0.25em 0.6em;
+  border-width: 0.1em;
+  border-style: solid;
+  cursor: pointer;
+  transition: ease-in-out 60ms;
+  background: #3f3f3f;
+  font-size: smaller;
+  border-color: #191919;
+  border-radius: 0.9rem !important;
+
+  &:hover {
+    background-color: lighten($color: #3f3f3f, $amount: 10%);
+    border-radius: 0.5rem;
+    border-color: lighten($color: #191919, $amount: 10%);
+  }
+
+  &:active {
+    background: #131313 !important;
+  }
+}
+
+.form-text {
+  span {
+    font-size: medium !important;
+  }
+  input {
+    background-color: #484848 !important;
+  }
+}
+button#select_location,
+button#LocateProgramExe,
+.folder_indicator_bg.notfound {
+  border-radius: 0.5rem;
+}
+
+.settingsCol.inputAndButton {
+  padding-top: 1rem;
+}
+
+#modal_contents .inputAndButton {
+  margin: 0;
+}
+
+#window-title-modal {
+  background: #131313;
+}
+
+.headerbar,
+.resizeBottom,
+.resizeBottomRight,
+.resizeBottomLeft,
+#window-controls {
+  background: #131313;
+  z-index: 500 !important;
+}
+
+#window-controls button:hover,
+#btnBack:hover,
+#btnRestore:hover,
+#btnMax:hover {
+  background: #fce5668f;
+}
+
+.clearingRight {
+  background-color: #1b1b1b !important;
+}
+
+.resizeRight,
+.resizeLeft {
+  background: #131313;
+}
+
+.contextmenu,
+.submenu {
+  font-size: smaller;
+  background: #202020 !important;
+  box-shadow: none;
+  border: 6px solid #131313;
+  width: 15em;
+  margin: 0;
+  padding: 0;
+  border-radius: 0.9em;
+  list-style: none;
+  z-index: 999999;
+}
+.contextmenu .submenu {
+  box-shadow: none;
+}
+
+.accountHover,
+.accountHover {
+  background-color: #1b1b1b;
+  border: #fce566 1px solid;
+  border-radius: 0.9rem;
+}
+
+.placeHolderAcc {
+  background-color: #3e3e3e;
+  border-style: dashed !important;
+  border: #fce566 2px solid;
+  border-radius: 0.9rem;
+}
+
+.contextmenu li:hover {
+  border-left: 2px solid #fce566;
+  background: #131313;
+}
+
+input.acc:checked + label.acc {
+  border-color: #fce566;
+  background: #3e3e3e;
+  border-radius: 0.8rem;
+}
+
+@keyframes effect {
+  0% {
+    border: #fce566 -1px solid;
+  }
+
+  100% {
+    border: #fce56600 -20px solid;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    transform: translate(-50%, -40%);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+}
