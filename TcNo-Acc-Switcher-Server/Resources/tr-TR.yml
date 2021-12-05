@@ -27,11 +27,12 @@ Settings_ImageExpiry: 'Profil resimlerinin süresinin dolmasına günler kala:'
 Settings_Header_AppWide: Uygulama genelindeki ayarlar
 Settings_Header_GeneralSettings: Genel Ayarlar
 Settings_Header_GeneralTools: Genel Araçlar
-Settings_Header_OtherTools: Diğer Aletler
+Settings_Header_OtherTools: Diğer Araçlar
 Settings_Header_HiddenPlatforms: Gizli Platformlar
 Settings_Header_TraySettings: Tepsi ayarları
 Settings_Header_OpenGameFolders: Oyun klasörlerini aç
 Settings_TrayMax: 'Hatırlanması gereken maksimum hesap sayısı:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: '{platform} klasörü seç'
 Settings_OpenFolder: '{platform} Klasörünü Aç'
 Settings_ClearForgotten: Unutulanları Temizle
@@ -49,6 +50,7 @@ Settings_Protocol: 'tcno:\\ protokolünü etkinleştir (Önerilen)'
 Settings_StartCentered: Programı merkezli başlat
 Settings_WindowsAccent: Windows Vurgu Rengini kullanın
 Settings_HelpTranslate: "[Çevirmeye yardım edin]"
+Settings_Header_ActiveBrowser: "[Advanced] Oluşturma motorunu ayarla:"
 Cleaning_Header_StartMenuShortcuts: 'Başlat Menüsü Kısayolları:'
 Cleaning_Header_General: Genel temizlik
 Cleaning_Header_LoginHistory: Giriş geçmişimi temizle
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: Protokol kaldırıldı
 Toast_RestartAsAdmin: Lütfen Yönetici olarak başlayın ve tekrar deneyin.
 Toast_RestartAfterClose: Lütfen Kapat'ı tıkladıktan sonra programı yeniden başlatın.
 Toast_RestartAfterCloseTitle: Vurgu rengi devre dışı
+Toast_RestartRequired: Değişiklikleri uygulamak için yeniden başlatın
 Toast_LoadStylesheetFailed: Stil sayfası yüklenemedi! Ayrıntılar için belgeler klasörüne bakın.
 Toast_BNet_Private: "{BTag}profili gizli"
 Toast_BNet_StatsFail: "{BTag}için istatistik almaya çalışırken hata oluştu"
@@ -283,7 +286,7 @@ PngInvalid_Format: Gerekli piksel formatı PixelFormat'tır.{x}.
 PngRequired: Gerekli görüntü formatı taşınabilir bir ağ grafiğidir (png).
 PngDimensions: Boyutlar daha az ya da eşit olmalıdır {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Bir sözdizimi hatasıyla karşılaşıldı (daha fazla ayrıntı aşağıda)! VE:"
-ThemesNotFound: "TcNo Account Switcher'ın dizininde \"temalar\" klasörü bulunamadı. Bu (özellikle Default.yaml) bu yazılımın çalışması için gereklidir.\nDosyaları doğrulamak ve bu eksik dosyaları geri yüklemek için Güncelleyiciyi \"güncelleyici\" klasöründe çalıştırabilirsiniz."
+ThemesNotFound: "TcNo Account Switcher'ın dizininde \"temalar\" klasörü bulunamadı. Bu (özellikle 'Dracula_Cyan' klasörü) bu yazılımın çalışması için gereklidir.\nDosyaları doğrulamak ve bu eksik dosyaları geri yüklemek için Güncelleyiciyi \"güncelleyici\" klasöründe çalıştırabilirsiniz."
 Yes: "Evet"
 No: "Hayır"
 NoDefault: Standart değil)
