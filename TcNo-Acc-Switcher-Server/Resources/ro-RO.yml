@@ -50,6 +50,7 @@ Settings_Protocol: 'Activează tcno:\\ protocol (recomandat)'
 Settings_StartCentered: Pornire program centrat
 Settings_WindowsAccent: Folosește culoarea de cent Windows
 Settings_HelpTranslate: "[Ajutor traduce]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Setați motorul de randare:"
 Cleaning_Header_StartMenuShortcuts: 'Comenzi rapide pentru Meniul Pornire:'
 Cleaning_Header_General: Curățare generală
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Nu s-a putut găsi ultimul utilizator conectat. Încer
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nu a putut fi găsit. Ultimul cont activ nu a fost salvat."
 Toast_Ubisoft_NoUser: Nu s-a putut găsi ultimul utilizator conectat. Încercați să vă logați din nou în Ubisoft.
 Toast_ClearForgottenCheck: Sunteţi sigur că doriţi să ştergeţi copiile de rezervă ale conturilor uitate?
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Creat de TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versiune
 Modal_Info_ViewGitHub: Vezi pe GitHub
