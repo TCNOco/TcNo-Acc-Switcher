@@ -50,6 +50,7 @@ Settings_Protocol: 'Povolit tcno:\\ protokol (doporučeno)'
 Settings_StartCentered: Spustit program se středem
 Settings_WindowsAccent: Použí barvu motivu Windows
 Settings_HelpTranslate: "[Pomozte s překladem]"
+Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Nastavit vykreslovací modul:"
 Cleaning_Header_StartMenuShortcuts: 'Zkratky pro nabídku startu:'
 Cleaning_Header_General: Obecné čištění
@@ -131,6 +132,8 @@ Toast_Ubisoft_NoUsername: Nelze najít poslední přihlášené uživatele. Zkus
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nebyl nalezen. Poslední aktivní účet nebyl uložen."
 Toast_Ubisoft_NoUser: Nelze najít poslední přihlášené uživatele. Zkuste se nejdříve přihlásit do Ubisoft.
 Toast_ClearForgottenCheck: Opravdu chcete vymazat zálohy zapomenutých účtů?
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Vytvořeno společností TechNobo [Wesley Pyburn]
 Modal_Info_Version: Verze
 Modal_Info_ViewGitHub: Zobrazit na GitHub
