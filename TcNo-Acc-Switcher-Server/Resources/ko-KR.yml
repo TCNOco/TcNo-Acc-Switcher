@@ -32,6 +32,7 @@ Settings_Header_HiddenPlatforms: 숨겨진 플랫폼
 Settings_Header_TraySettings: 트레이 설정
 Settings_Header_OpenGameFolders: 게임 폴더 열기
 Settings_TrayMax: '기억할 최대 계정 수:'
+Settings_RTL: Show text as Right-to-Left
 Settings_PickFolder: '{platform} 폴더 선택'
 Settings_OpenFolder: 폴더 {platform} 열기
 Settings_ClearForgotten: 잊혀진 지우기
@@ -49,6 +50,7 @@ Settings_Protocol: 'tcno:\\ 프로토콜 활성화(권장)'
 Settings_StartCentered: 프로그램 중심으로 시작
 Settings_WindowsAccent: Windows 강조 색상 사용
 Settings_HelpTranslate: "[번역을 도와주세요]"
+Settings_Header_ActiveBrowser: "[Advanced] 렌더링 엔진 설정:"
 Cleaning_Header_StartMenuShortcuts: '시작 메뉴 바로 가기:'
 Cleaning_Header_General: 일반 청소
 Cleaning_Header_LoginHistory: 내 로그인 기록 정리
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: 프로토콜 제거됨
 Toast_RestartAsAdmin: 관리자로 시작하고 다시 시도하십시오.
 Toast_RestartAfterClose: 닫기를 클릭한 후 프로그램을 다시 시작하십시오.
 Toast_RestartAfterCloseTitle: 강조 색상 비활성화됨
+Toast_RestartRequired: 변경 사항을 적용하려면 다시 시작
 Toast_LoadStylesheetFailed: 스타일시트를 로드하지 못했습니다! 자세한 내용은 문서 폴더를 참조하십시오.
 Toast_BNet_Private: "{BTag}의 프로필은 비공개입니다"
 Toast_BNet_StatsFail: "{BTag}대한 통계를 가져오는 동안 오류가 발생했습니다."
@@ -283,7 +286,7 @@ PngInvalid_Format: 필수 픽셀 형식은 PixelFormat입니다.{x}.
 PngRequired: 필수 이미지 형식은 휴대용 네트워크 그래픽(png)입니다.
 PngDimensions: '{MaxIconWidth}x{MaxIconHeight}보다 작거나 같아야 합니다.'
 ThemeSyntaxAnd: "구문 오류가 발생했습니다(자세한 내용은 아래 참조)! 과:"
-ThemesNotFound: "TcNo Account Switcher의 디렉토리에서 \"themes\" 폴더를 찾을 수 없습니다. 이 소프트웨어를 실행하려면 이 항목(특히 Default.yaml)이 필요합니다.\n\"updater\" 폴더에서 Updater를 실행하여 파일을 확인하고 누락된 파일을 복원할 수 있습니다."
+ThemesNotFound: "TcNo Account Switcher 디렉토리에서 \"themes\" 폴더를 찾을 수 없습니다. 이 소프트웨어를 실행하려면 이 폴더(특히 'Dracula_Cyan' 폴더)가 필요합니다.\n\"updater\" 폴더에서 Updater를 실행하여 파일을 확인하고 누락된 파일을 복원할 수 있습니다."
 Yes: "예"
 No: "아니"
 NoDefault: 아니요(기본값)
