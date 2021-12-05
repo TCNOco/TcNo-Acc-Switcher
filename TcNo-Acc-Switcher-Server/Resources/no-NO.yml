@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: Skjult Plattformer
 Settings_Header_TraySettings: Innstillinger for verktøykassen
 Settings_Header_OpenGameFolders: Åpne spillmapper
 Settings_TrayMax: 'Maks antall kontoer å huske:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: Vis tekst som høyre-til-venstre
 Settings_PickFolder: Velg mappe for {platform}
 Settings_OpenFolder: Åpne {platform} -mappen
 Settings_ClearForgotten: Fjern glemte
@@ -132,8 +132,8 @@ Toast_Ubisoft_NoUsername: Kunne ikke finne siste påloggede brukere. Prøv å lo
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kunne ikke bli funnet. Den siste aktive kontoen ble ikke lagret."
 Toast_Ubisoft_NoUser: Kunne ikke finne siste påloggede brukere. Prøv å logge inn på Ubisoft igjen først.
 Toast_ClearForgottenCheck: Er du sikker på at du vil slette sikkerhetskopieringen av glemte kontoer?
-Modal_Crowdin_Header: Crowdin translators
-Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
+Modal_Crowdin_Header: Crowdin-oversettere
+Modal_Crowdin_Info: "Her er alle som hjalp til med å oversette denne programvaren.<br>Brukere med språk ved siden av hjalp mye med oversettelse (korrekturleserrolle)."
 Modal_Info_Creator: Opprettet av TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versjon
 Modal_Info_ViewGitHub: Vis på GitHub
