@@ -1,54 +1,56 @@
 ---
-Update: تحديث متوفر! انقر هنا لبدء تشغيله.
-Header_ChooseLanguage: 'اختر اللغة:'
-BattleNet_ShowSR: إظهار Overwatch SR واستخدام صورة الملف الشخصي Overwatch.
-Steam_ShowSteamID: إظهار SteamID
-Steam_ShowVac: إظهار حالة VAC
-Steam_CheckVac: التحقق من حالة حساب VAC
-Steam_ShowLimited: إظهار حالة محدودة
+Update: تحديث متوفر! انقر هنا لبدء التحديث.
+Header_ChooseLanguage: 'اختر لغة:'
+BattleNet_ShowSR: استخدام صورة عرض أوفرواتش بالاضافة لاظهار الـSR.
+Steam_ShowSteamID: عرض معرف ستيم
+Steam_ShowVac: عرض حظر ستيم [VAC]
+Steam_CheckVac: تحقق من حالة VAC لحساب ستيم
+Steam_ShowLimited: إظهار حالة التقييد
 Steam_ShowAccUsername: إظهار اسم المستخدم
-Steam_Tray_AccountName: إظهار اسم الحساب [ليس اسم صديق]
-Steam_OverrideDefaultState: "تجاوز حالة تسجيل الدخول الافتراضية:"
+Steam_Tray_AccountName: عرض اسم الحساب [الاسم المستخدم اثناء تسجيل الدخول]
+Steam_OverrideDefaultState: "حالة الحساب الافتراضية:"
 Button_AddNew: إضافة جديد
 Button_SaveCurrent: حفظ الحالي
 Button_SaveFile: حفظ الملف
 Button_Cancel: إلغاء
 Button_Login: تسجيل الدخول
-Button_Close: أغلق
-Button_RefreshImages: تحديث الصور
-Button_ResetSettings: إعادة تعيين الإعدادات
+Button_Close: غلق
+Button_RefreshImages: تحديث الأفاتار
+Button_ResetSettings: إعادة تعيين الإعدادات الافتراضية
 Button_AdvancedCleaning: تنظيف متقدم...
 Button_ClearLog: مسح السجل
-Button_WikiInfo: المزيد من المعلومات (ويكي)
-Button_ClearDiscordCache: مسح ذاكرة التخزين المؤقت للديسكورد
-Settings_Shortcut: ' {platform} مفتاح اختصار سطح المكتب'
-Settings_Admin: تشغيل {platform} كمشرف
-Settings_ImageExpiry: 'الأيام قبل انتهاء صلاحية الصور الشخصية:'
-Settings_Header_AppWide: الإعدادات على نطاق التطبيق
-Settings_Header_GeneralSettings: الإعدادات العامة
-Settings_Header_GeneralTools: الأدوات العامة
-Settings_Header_OtherTools: أدوات أخرى
-Settings_Header_HiddenPlatforms: المنصات المخفية
-Settings_Header_TraySettings: إعدادات اللوحة
-Settings_Header_OpenGameFolders: فتح مجلدات اللعبة
-Settings_TrayMax: 'الحد الأقصى لعدد الحسابات التي يجب تذكرها:'
-Settings_PickFolder: اختر مجلد {platform}
-Settings_OpenFolder: فتح مجلد {platform}
-Settings_ClearForgotten: مسح المنسيون
-Settings_ClearAccounts: مسح الحسابات
-Settings_RestoreForgotten: استعادة الحساب المنسي
-Settings_StreamerMode: تمكين وضع التبسيط
-Settings_ExitToTray: الخروج من التصنيفات إلى الصباغة
-Settings_DesktopShortcut: اختصار سطح المكتب
+Button_WikiInfo: مزيد من المعلومات
+Button_ClearDiscordCache: تنظيف كاش الديسكورد
+Settings_Shortcut: 'إنشاء اختصار لـ{platform} على سطح المكتب'
+Settings_Admin: تشغيل {platform} كمسؤول
+Settings_ImageExpiry: 'عدد الايام قبل تحديث صور البروفايل:'
+Settings_Header_AppWide: إعدادات التطبيق
+Settings_Header_GeneralSettings: إعدادات عامة
+Settings_Header_GeneralTools: أدوات عامة
+Settings_Header_OtherTools: أخرى
+Settings_Header_HiddenPlatforms: منصات مخفية
+Settings_Header_TraySettings: إعدادات القائمة المخفية في شريط المهام
+Settings_Header_OpenGameFolders: مجلدات الألعاب
+Settings_TrayMax: 'عدد الحسابات الظاهرة في قائمة:'
+Settings_RTL: Show text as Right-to-Left
+Settings_PickFolder: تحديد ملف {platform}
+Settings_OpenFolder: فتح ملف {platform}
+Settings_ClearForgotten: تنظيف الحسابات المزالة
+Settings_ClearAccounts: إزالة الحسابات
+Settings_RestoreForgotten: استرجاع الحسابات المزالة
+Settings_StreamerMode: تفعيل وضح الستريمر
+Settings_ExitToTray: تصغير البرنامج إلى القائمة المخفية في شريط المهام
+Settings_DesktopShortcut: اختصار على سطح المكتب
 Settings_StartMenu_ProgramTray: البرنامج و القناة
 Settings_StartMenu_Platform: المنصة
-Settings_Tray_StartWindows: ابدأ التيار مع ويندوز
-Settings_Tray_StartNow: '[ابدأ العمل الآن]'
-Settings_CurrentStyle: النمط الحالي
-Settings_Protocol: 'تمكين tcno:\\ بروتوكول (مستحسن)'
-Settings_StartCentered: بدء البرنامج المتمحور
-Settings_WindowsAccent: استخدام لون أكسنت ويندوز
-Settings_HelpTranslate: "[المساعدة في الترجمة]"
+Settings_Tray_StartWindows: تشغيل في الوضع المصغر
+Settings_Tray_StartNow: '[ادخل الوضع الان]'
+Settings_CurrentStyle: الثيم الحالي
+Settings_Protocol: 'تمكين بروتوكول tcno:\\(مفضل)'
+Settings_StartCentered: بدء البرنامج في منتصف الشاشة
+Settings_WindowsAccent: استخدام لون ثيم ويندوز
+Settings_HelpTranslate: "[ساهم في الترجمة]"
+Settings_Header_ActiveBrowser: "[متقدم] محرك العرض:"
 Cleaning_Header_StartMenuShortcuts: 'اختصارات لقائمة البدء:'
 Cleaning_Header_General: تنظيف عام
 Cleaning_Header_LoginHistory: تنظيف سجل تسجيل الدخول الخاص بي
@@ -85,6 +87,7 @@ Toast_ProtocolDisabledTitle: تم إزالة البروتوكول
 Toast_RestartAsAdmin: الرجاء البدء كمشرف وحاول مرة أخرى.
 Toast_RestartAfterClose: الرجاء إعادة تشغيل البرنامج بعد النقر فوق إغلاق
 Toast_RestartAfterCloseTitle: لون اللكنة معطل
+Toast_RestartRequired: أعد التشغيل لتطبيق التغييرات
 Toast_LoadStylesheetFailed: فشل تحميل ورقة النماذج! راجع مجلد المستندات للحصول على التفاصيل.
 Toast_BNet_Private: "الملف الشخصي {BTag}خاص"
 Toast_BNet_StatsFail: "خطأ في محاولة الحصول على إحصائيات لـ {BTag}"
@@ -283,7 +286,7 @@ PngInvalid_Format: تنسيق البكسل المطلوب هو PixelFormat.{x}.
 PngRequired: تنسيق الصورة المطلوب هو رسم بياني للشبكة المحمولة (png).
 PngDimensions: يجب أن تكون الأبعاد أقل من أو تساوي {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "حدث خطأ في بناء الجملة (المزيد من التفاصيل أدناه)! AND:"
-ThemesNotFound: "تعذر العثور على مجلد \"ثيمات\" في دليل TcNo حساب Switcher. هذا (خاصة Default.yaml) مطلوب لتشغيل هذا البرنامج.\nيمكنك تشغيل التحديث في مجلد \"تحديث\" للتحقق من الملفات، واستعادة هذه الملفات المفقودة."
+ThemesNotFound: "تعذر العثور على مجلد \"themes\" في مجلد \"TcNo Account Switcher\". هذا المجلد مطلوب ليعمل البرنامج (خاصتًا مجلد \"Dracula_Cyan\").\nيمكنك تشغيل المحدث في مجلد \"updater\" للتحقق من الملفات واستعادة الملفات المفقودة."
 Yes: "نعم"
 No: "لا"
 NoDefault: لا (افتراضي)
