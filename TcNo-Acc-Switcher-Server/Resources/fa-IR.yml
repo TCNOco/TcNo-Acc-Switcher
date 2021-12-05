@@ -32,7 +32,7 @@ Settings_Header_HiddenPlatforms: پلتفرم های پنهان
 Settings_Header_TraySettings: تنظیمات سینی
 Settings_Header_OpenGameFolders: پوشه های بازی را باز کنید
 Settings_TrayMax: 'حداکثر تعداد حساب هایی که باید به خاطر بسپارید:'
-Settings_RTL: Show text as Right-to-Left
+Settings_RTL: نمایش متن به صورت راست به چپ
 Settings_PickFolder: '{platform} پوشه را انتخاب کنید'
 Settings_OpenFolder: پوشه {platform} باز کنید
 Settings_ClearForgotten: پاک کردن فراموش شده
@@ -132,8 +132,8 @@ Toast_Ubisoft_NoUsername: آخرین کاربر وارد شده را پیدا ن
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat یافت نشد. آخرین حساب فعال ذخیره نشد."
 Toast_Ubisoft_NoUser: آخرین کاربر وارد شده را پیدا نکردم. ابتدا دوباره وارد یوبی سافت شوید.
 Toast_ClearForgottenCheck: آیا مطمئن هستید که می خواهید نسخه پشتیبان حساب های فراموش شده را پاک کنید؟
-Modal_Crowdin_Header: Crowdin translators
-Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
+Modal_Crowdin_Header: مترجمان کرودین
+Modal_Crowdin_Info: "در اینجا همه کسانی هستند که در ترجمه این نرم افزار کمک کردند.<br>کاربرانی که زبان های کناری داشتند در ترجمه کمک زیادی کردند (نقش تصحیح کننده)."
 Modal_Info_Creator: ایجاد شده توسط TechNobo [Wesley Pyburn]
 Modal_Info_Version: نسخه
 Modal_Info_ViewGitHub: در GitHub مشاهده کنید
