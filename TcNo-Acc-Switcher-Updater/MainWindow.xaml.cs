@@ -1126,7 +1126,7 @@ namespace TcNo_Acc_Switcher_Updater
                 if (relativePath.StartsWith("runtimes") && IsCefFile(p))
                 {
                     if (!File.Exists(p)) {
-                        File.Create(p).Dispose(); // Create empty file
+                        File.Create(p.Split("patches\\")[1]).Dispose(); // Create empty file
                         continue;
                     }
                     if (_mainBrowser != "CEF")
