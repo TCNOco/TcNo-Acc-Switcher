@@ -155,6 +155,10 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 StatusLabel.Content = s;
                 LogBox.Text += lineBreak + s;
+            }), DispatcherPriority.Normal);
+
+            _ = Dispatcher.BeginInvoke(new Action(() =>
+            {
                 LogBox.ScrollToEnd();
             }), DispatcherPriority.Normal);
         }
@@ -177,7 +181,6 @@ namespace TcNo_Acc_Switcher_Updater
         }
 
         private Dictionary<string, string> _updatesAndChanges = new();
-        private readonly string _currentDir = Directory.GetCurrentDirectory();
 
         private readonly string
             _updaterDirectory =
@@ -649,7 +652,7 @@ namespace TcNo_Acc_Switcher_Updater
             ButtonHandler(false, "Started");
             SetStatusAndLog("Closing TcNo Account Switcher instances (if any).");
             // Check if files are in use
-            CloseIfRunning(_currentDir);
+            CloseIfRunning(Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName);
 
             if (Directory.Exists("wwwroot"))
             {
