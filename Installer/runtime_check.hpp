@@ -60,7 +60,7 @@ bool compare_versions(std::string v1, std::string v2, const std::string& delimit
 		return true;
 	} catch (std::exception &err)
 	{
-		std::cout << "Version conversion failed!" << std::endl;
+		std::cout << "Version conversion failed!" << std::endl << "Details:" << std::endl << err.what() << std::endl;
 	}
 
 	return true;

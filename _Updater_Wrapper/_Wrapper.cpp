@@ -39,33 +39,33 @@ int main(int argc, char* argv[])
 	if (!min_webview_met || !min_desktop_runtime_met || !min_aspcore_met)
 	{
 		// Launch installer to get these!
-		std::string back_path = getOperatingPath();
-		std::cout << "LAST: " << back_path.find("updater\\") << std::endl;
-		if (back_path.find("updater\\") <= back_path.length()) back_path += +"..\\"; // Go back a folder if in updater folder.
+		std::string self_path = getOperatingPath();
 		std::string s_args("net " + self);
-		exec_program(std::wstring(back_path.begin(), back_path.end()), L"_First_Run_Installer.exe", std::wstring(s_args.begin(), s_args.end()));
+		exec_program(std::wstring(self_path.begin(), self_path.end()), L"_First_Run_Installer.exe", std::wstring(s_args.begin(), s_args.end()));
 	}
 	else
 	{
-		std::string p = '"' + getOperatingPath();
-		if (p.back() != '\\') p += '\\';
-		p += self + ".dll\"";
+		std::string operating_path = getOperatingPath();
+		const std::string exe_name = self + "_main.exe";
 
-		std::string dotnet = dotnet_path();
-		std::cout << "Running: dotnet " << self << ".dll " << std::endl;
+
+		std::string full_path = operating_path,
+			args;
+		if (full_path.back() != '\\') full_path += '\\';
+		full_path += exe_name;
+
+		std::cout << "Running: " << exe_name << std::endl;
 
 		std::vector<char> buffer_temp;
 
 		for (int i = 1; i < argc; ++i)
-			p = p + " " + argv[i];
+			args += " " + static_cast<std::string>(argv[i]);
 
-		std::cout << dotnet << "dotnet.exe" << std::endl << p;
+		std::cout << "FULL PATH: " << full_path << std::endl;
 
-		// Show window if running Server.
-		bool show_window = false;
-		if (self.find("Server") != std::string::npos || self.find("server") != std::string::npos) show_window = true;
-
-		exec_program(std::wstring(dotnet.begin(), dotnet.end()), L"dotnet.exe", std::wstring(p.begin(), p.end()), show_window);
+		exec_program(std::wstring(operating_path.begin(), operating_path.end()),
+			std::wstring(exe_name.begin(), exe_name.end()),
+			std::wstring(args.begin(), args.end()));
 	}
 
 	exit(1);

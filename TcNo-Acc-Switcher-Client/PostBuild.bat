@@ -4,49 +4,6 @@ REM Get current directory:
 echo Current directory: %cd%
 set origDir=%cd%
 
-REM Move updater files in Debug folder (for Visual Studio):
-IF not exist bin\x64\Debug\net6.0-windows\ GOTO vsRel
-IF EXIST bin\x64\Debug\net6.0-windows\updater GOTO vsRel
-cd %origDir%\bin\x64\Debug\net6.0-windows\
-ECHO -----------------------------------
-ECHO Moving files for x64 Debug in Visual Studio
-ECHO -----------------------------------
-mkdir updater
-mkdir updater\x64
-mkdir updater\x86
-mkdir updater\ref
-copy /B /Y "VCDiff.dll" "updater\VCDiff.dll"
-copy /B /Y "YamlDotNet.dll" "updater\YamlDotNet.dll"
-move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
-move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
-move /Y "TcNo-Acc-Switcher-Updater.pdb" "updater\TcNo-Acc-Switcher-Updater.pdb"
-copy /B /Y "TcNo-Acc-Switcher-Updater.dll" "updater\TcNo-Acc-Switcher-Updater.dll"
-move /Y "TcNo-Acc-Switcher-Updater.deps.json" "updater\TcNo-Acc-Switcher-Updater.deps.json"
-copy /B /Y "SevenZipExtractor.dll" "updater\SevenZipExtractor.dll"
-move /Y "x86\7z.dll" "updater\x86\7z.dll"
-move /Y "x64\7z.dll" "updater\x64\7z.dll"
-copy /B /Y "ref\TcNo-Acc-Switcher-Updater.dll" "updater\ref\TcNo-Acc-Switcher-Updater.dll"
-copy /B /Y "Newtonsoft.Json.dll" "updater\Newtonsoft.Json.dll"
-RMDIR /Q/S "runtimes\linux-musl-x64"
-RMDIR /Q/S "runtimes\linux-x64"
-RMDIR /Q/S "runtimes\osx"
-RMDIR /Q/S "runtimes\osx-x64"
-RMDIR /Q/S "runtimes\unix"
-RMDIR /Q/S "runtimes\win-arm64"
-RMDIR /Q/S "runtimes\win-x86"
-RMDIR /Q x64
-RMDIR /Q x86
-copy /B /Y "..\..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Server.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Tray.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "updater\TcNo-Acc-Switcher-Updater.exe"
-REN "wwwroot" "originalwwwroot"
-cd %origDir%
-GOTO end
-
-REM Move updater files in Release folder (for Visual Studio):
-:vsRel
 REM SET VARIABLES
 REM If SIGNTOOL environment variable is not set then try setting it to a known location
 if "%SIGNTOOL%"=="" set SIGNTOOL=%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe
@@ -88,19 +45,13 @@ mkdir updater\x64
 mkdir updater\x86
 mkdir updater\ref
 copy /B /Y "..\..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Server.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Tray.exe"
-copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Updater.exe"
-REM Copy in Server runtimes that are missing for some reason...
-xcopy ..\..\..\..\..\TcNo-Acc-Switcher-Server\bin\Release\net6.0\runtimes\win\lib\net6.0 runtimes\win\lib\net6.0 /E /H /C /I /Y
+
 REM Signing
 ECHO Signing binaries
 echo %time%
 
-REM GOTO :skipsign
-
 (
+    start call ../../../../sign.bat "..\..\..\Wrapper\_Wrapper.exe"
     start call ../../../../sign.bat "_First_Run_Installer.exe"
     start call ../../../../sign.bat "TcNo-Acc-Switcher.exe"
     start call ../../../../sign.bat "TcNo-Acc-Switcher.dll"
@@ -113,6 +64,20 @@ REM GOTO :skipsign
     start call ../../../../sign.bat "TcNo-Acc-Switcher-Updater.dll"
 ) | set /P "="
 
+REN "TcNo-Acc-Switcher.exe" "TcNo-Acc-Switcher_main.exe"
+REN "TcNo-Acc-Switcher-Server.exe" "TcNo-Acc-Switcher-Server_main.exe"
+REN "TcNo-Acc-Switcher-Tray.exe" "TcNo-Acc-Switcher-Tray_main.exe"
+move /Y "TcNo-Acc-Switcher-Updater.exe" "updater\TcNo-Acc-Switcher-Updater_main.exe"
+
+copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher.exe"
+copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Server.exe"
+copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "TcNo-Acc-Switcher-Tray.exe"
+copy /B /Y "..\..\..\Wrapper\_Wrapper.exe" "updater\TcNo-Acc-Switcher-Updater.exe"
+copy /B /Y "_First_Run_Installer.exe" "updater\_First_Run_Installer.exe"
+
+REM Copy in Server runtimes that are missing for some reason...
+xcopy ..\..\..\..\..\TcNo-Acc-Switcher-Server\bin\Release\net6.0\runtimes\win\lib\net6.0 runtimes\win\lib\net6.0 /E /H /C /I /Y
+
 echo %time%
 
 :skipsign
@@ -121,7 +86,6 @@ copy /B /Y "YamlDotNet.dll" "updater\YamlDotNet.dll"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
 move /Y "TcNo-Acc-Switcher-Updater.pdb" "updater\TcNo-Acc-Switcher-Updater.pdb"
-move /Y "TcNo-Acc-Switcher-Updater.exe" "updater\TcNo-Acc-Switcher-Updater.exe"
 copy /B /Y "TcNo-Acc-Switcher-Updater.dll" "updater\TcNo-Acc-Switcher-Updater.dll"
 move /Y "TcNo-Acc-Switcher-Updater.deps.json" "updater\TcNo-Acc-Switcher-Updater.deps.json"
 copy /B /Y "SevenZipExtractor.dll" "updater\SevenZipExtractor.dll"
@@ -196,94 +160,5 @@ copy /b/v/y CEF\CefSharp.BrowserSubprocess.Core.dll TcNo-Acc-Switcher\runtimes\w
 
 
 cd %origDir%
-GOTO end
-
-
-
-REM Move updater files in Debug folder (for GitHub Actions):
-:ghDebug
-IF NOT EXIST bin\Debug\net6.0-windows\ GOTO ghRel
-IF EXIST bin\Debug\net6.0-windows\updater GOTO ghRel
-cd %origDir%
-ECHO -----------------------------------
-ECHO Moving files for x64 Debug in GitHub
-ECHO -----------------------------------
-mkdir bin\Debug\net6.0-windows\updater
-mkdir bin\Debug\net6.0-windows\updater\x64
-mkdir bin\Debug\net6.0-windows\updater\x86
-mkdir bin\Debug\net6.0-windows\updater\ref
-copy /B /Y "bin\Debug\net6.0-windows\VCDiff.dll" "bin\Debug\net6.0-windows\updater\VCDiff.dll"
-copy /B /Y "bin\Debug\net6.0-windows\YamlDotNet.dll" "bin\Debug\net6.0-windows\updater\YamlDotNet.dll"
-move /Y "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.json" "bin\Debug\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
-move /Y "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "bin\Debug\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
-move /Y "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Updater.pdb" "bin\Debug\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.pdb"
-copy /B /Y "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Updater.dll" "bin\Debug\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.dll"
-move /Y "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Updater.deps.json" "bin\Debug\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.deps.json"
-copy /B /Y "bin\Debug\net6.0-windows\SevenZipExtractor.dll" "bin\Debug\net6.0-windows\updater\SevenZipExtractor.dll"
-move /Y "bin\Debug\net6.0-windows\x86\7z.dll" "bin\Debug\net6.0-windows\updater\x86\7z.dll"
-move /Y "bin\Debug\net6.0-windows\x64\7z.dll" "bin\Debug\net6.0-windows\updater\x64\7z.dll"
-copy /B /Y "bin\Debug\net6.0-windows\ref\TcNo-Acc-Switcher-Updater.dll" "bin\Debug\net6.0-windows\updater\ref\TcNo-Acc-Switcher-Updater.dll"
-copy /B /Y "bin\Debug\net6.0-windows\Newtonsoft.Json.dll" "bin\Debug\net6.0-windows\updater\Newtonsoft.Json.dll"
-RMDIR /Q/S "bin\Debug\net6.0-windows\runtimes\linux-musl-x64"
-RMDIR /Q/S "bin\Debug\net6.0-windows\runtimes\linux-x64"
-RMDIR /Q/S "bin\Debug\net6.0-windows\runtimes\osx"
-RMDIR /Q/S "bin\Debug\net6.0-windows\runtimes\osx-x64"
-RMDIR /Q/S "bin\Debug\net6.0-windows\runtimes\unix"
-RMDIR /Q/S "bin\Debug\net6.0-windows\runtimes\win-arm64"
-RMDIR /Q/S "bin\Debug\net6.0-windows\runtimes\win-x86"
-RMDIR /Q "bin\Release\net6.0-windows\x64"
-RMDIR /Q "bin\Release\net6.0-windows\x86"
-copy /B /Y "..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
-copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Debug\net6.0-windows\TcNo-Acc-Switcher.exe"
-copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Server.exe"
-copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Debug\net6.0-windows\TcNo-Acc-Switcher-Tray.exe"
-copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Debug\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.exe"
-xcopy ..\..\..\..\TcNo-Acc-Switcher-Server\bin\Release\net6.0\runtimes\win\lib\net6.0 net6.0-windows\runtimes\win\lib\net6.0 /E /H /C /I /Y
-REN "wwwroot" "originalwwwroot"
-cd %origDir%
-GOTO end
-
-REM Move updater files in Release folder (for GitHub Actions):
-:ghRel
-IF NOT EXIST bin\Release\net6.0-windows\ GOTO end
-IF EXIST bin\Release\net6.0-windows\updater GOTO end
-cd %origDir%
-ECHO -----------------------------------
-ECHO Moving files for x64 Release in GitHub
-ECHO -----------------------------------
-mkdir bin\Release\net6.0-windows\updater
-mkdir bin\Release\net6.0-windows\updater\x64
-mkdir bin\Release\net6.0-windows\updater\x86
-mkdir bin\Release\net6.0-windows\updater\ref
-copy /B /Y "bin\Release\net6.0-windows\VCDiff.dll" "bin\Release\net6.0-windows\updater\VCDiff.dll"
-copy /B /Y "bin\Debug\net6.0-windows\YamlDotNet.dll" "bin\Debug\net6.0-windows\updater\YamlDotNet.dll"
-move /Y "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.json" "bin\Release\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
-move /Y "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json" "bin\Release\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.runtimeconfig.dev.json"
-move /Y "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Updater.pdb" "bin\Release\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.pdb"
-copy /B /Y "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Updater.dll" "bin\Release\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.dll"
-move /Y "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Updater.deps.json" "bin\Release\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.deps.json"
-copy /B /Y "bin\Release\net6.0-windows\SevenZipExtractor.dll" "bin\Release\net6.0-windows\updater\SevenZipExtractor.dll"
-move /Y "bin\Release\net6.0-windows\x86\7z.dll" "bin\Release\net6.0-windows\updater\x86\7z.dll"
-move /Y "bin\Release\net6.0-windows\x64\7z.dll" "bin\Release\net6.0-windows\updater\x64\7z.dll"
-copy /B /Y "bin\Release\net6.0-windows\ref\TcNo-Acc-Switcher-Updater.dll" "bin\Release\net6.0-windows\updater\ref\TcNo-Acc-Switcher-Updater.dll"
-copy /B /Y "bin\Release\net6.0-windows\Newtonsoft.Json.dll" "bin\Release\net6.0-windows\updater\Newtonsoft.Json.dll"
-RMDIR /Q/S "bin\Release\net6.0-windows\runtimes\linux-musl-x64"
-RMDIR /Q/S "bin\Release\net6.0-windows\runtimes\linux-x64"
-RMDIR /Q/S "bin\Release\net6.0-windows\runtimes\osx"
-RMDIR /Q/S "bin\Release\net6.0-windows\runtimes\osx-x64"
-RMDIR /Q/S "bin\Release\net6.0-windows\runtimes\unix"
-RMDIR /Q/S "bin\Release\net6.0-windows\runtimes\win-arm64"
-RMDIR /Q/S "bin\Release\net6.0-windows\runtimes\win-x86"
-RMDIR /Q "bin\Release\net6.0-windows\x64"
-RMDIR /Q "bin\Release\net6.0-windows\x86"
-copy /B /Y "..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
-copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Release\net6.0-windows\TcNo-Acc-Switcher.exe"
-copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Server.exe"
-copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Release\net6.0-windows\TcNo-Acc-Switcher-Tray.exe"
-copy /B /Y "..\..\Wrapper\_Wrapper.exe" "bin\Release\net6.0-windows\updater\TcNo-Acc-Switcher-Updater.exe"
-xcopy ..\..\..\..\TcNo-Acc-Switcher-Server\bin\Release\net6.0\runtimes\win\lib\net6.0 net6.0-windows\runtimes\win\lib\net6.0 /E /H /C /I /Y
-REN "wwwroot" "originalwwwroot"
-cd %origDir%
-GOTO end
 
 :end

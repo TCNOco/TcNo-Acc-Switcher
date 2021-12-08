@@ -46,8 +46,8 @@ void insert_empty_line()
 
 double round_off(const double n) {
 	double d = n * 100.0;
-	const int i = d + 0.5;
-	d = static_cast<float>(i) / 100.0;
+	const int i = static_cast<int>((double)0.5 + d);
+	d = static_cast<double>(i) / 100.0;
 	return d;
 }
 
@@ -116,7 +116,8 @@ int progress_bar(
 
 bool download_file(const char* url, const char* dest) {
 	if (CURL* curl = curl_easy_init(); curl) {
-		FILE* fp = fopen(dest, "wb");
+		FILE* fp;
+		fopen_s(&fp, dest, "wb");
 		curl_easy_setopt(curl, CURLOPT_URL, url);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);

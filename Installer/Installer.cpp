@@ -23,21 +23,24 @@ bool args_contain(const char* needle, int argc, char* argv[])
 	return false;
 }
 
-void launch_dll(char* arg)
+void launch_tcno_program(const char* arg)
 {
-	std::string p = '"' + getOperatingPath();
-	if (p.back() != '\\') p += '\\';
-	const std::string program = arg;
+	const std::string program(arg);
+	std::string operating_path = getOperatingPath();
+	const std::string exe_name = program + "_main.exe";
 
-	// Add updater\\ if updater.exe
-	if (program.find_last_of("updater") != std::string::npos || program.find_last_of("Updater") != std::string::npos)
-		p += "updater\\";
+	std::string full_path = operating_path;
+	if (full_path.back() != '\\') full_path += '\\';
+	full_path += exe_name;
 
-	p = p + arg + ".dll\"";
+	std::cout << "Running: " << exe_name << std::endl;
 
+	std::vector<char> buffer_temp;
 
-	std::string dotnet = dotnet_path();
-	exec_program(std::wstring(dotnet.begin(), dotnet.end()), L"dotnet.exe", std::wstring(p.begin(), p.end()), false);
+	std::cout << "FULL PATH: " << full_path << std::endl;
+
+	exec_program(std::wstring(operating_path.begin(), operating_path.end()),
+		std::wstring(exe_name.begin(), exe_name.end()), L"");
 }
 
 int main(int argc, char* argv[])
@@ -66,11 +69,11 @@ int main(int argc, char* argv[])
 			min_vc_met = true; // Skip over this. Not needed unless CEF enabled --> Checked elsewhere.
 			verify_net();
 			if (argc > 2)
-				launch_dll(argv[argc - 1]);
+				launch_tcno_program(argv[argc - 1]);
 			exit(1);
 		}
 
-    	launch_dll(argv[argc - 1]);
+		launch_tcno_program(argv[argc - 1]);
     }
 
     cout << "Currently installed runtimes:" << endl;
