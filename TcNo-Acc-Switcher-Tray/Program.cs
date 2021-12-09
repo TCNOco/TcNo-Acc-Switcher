@@ -42,6 +42,9 @@ namespace TcNo_Acc_Switcher_Tray
             {
                 Environment.Exit(1056); // An instance of the service is already running.
             }
+
+            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+
             // Set working directory to documents folder
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
             TrayUsers = TrayUser.ReadTrayUsers();
@@ -57,13 +60,18 @@ namespace TcNo_Acc_Switcher_Tray
             var currentProc = Process.GetCurrentProcess();
             return processes.Any(process => currentProc.ProcessName == process.ProcessName && currentProc.Id != process.Id);
         }
+
+        private static void OnProcessExit(object sender, EventArgs e)
+        {
+            Globals.KillProcess("TcNo-Acc-Switcher");
+        }
     }
 
 
 
     public class AppCont : ApplicationContext
     {
-        private readonly string _mainProgram = Path.Join(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!, "TcNo-Acc-Switcher.exe");
+        private readonly string _mainProgram = Path.Join(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName)!, "TcNo-Acc-Switcher_main.exe");
 
         private NotifyIcon _trayIcon;
 
@@ -176,7 +184,7 @@ namespace TcNo_Acc_Switcher_Tray
         private static bool AlreadyRunning() => Process.GetProcessesByName("TcNo-Acc-Switcher").Length > 0;
 
         // Start with Windows login, using https://stackoverflow.com/questions/15191129/selectively-disabling-uac-for-specific-programs-on-windows-programatically for automatic administrator.
-        // Adding to Start Menu shortcut also creates "Start in Tray", which is a shortcut to this program. 
+        // Adding to Start Menu shortcut also creates "Start in Tray", which is a shortcut to this program.
 
 
         private static void CloseMainProcess()

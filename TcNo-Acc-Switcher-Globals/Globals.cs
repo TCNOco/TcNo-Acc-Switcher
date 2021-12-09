@@ -540,9 +540,9 @@ namespace TcNo_Acc_Switcher_Globals
 
         public static string StartTrayIfNotRunning()
         {
-            if (Process.GetProcessesByName("TcNo-Acc-Switcher-Tray").Length > 0) return "Already running";
+            if (Process.GetProcessesByName("TcNo-Acc-Switcher-Tray_main").Length > 0) return "Already running";
             if (!File.Exists("Tray_Users.json")) return "Tray users not found";
-            var startInfo = new ProcessStartInfo { FileName = "TcNo-Acc-Switcher-Tray.exe", CreateNoWindow = false, UseShellExecute = false };
+            var startInfo = new ProcessStartInfo { FileName = Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher-Tray.exe"), CreateNoWindow = false, UseShellExecute = false, WorkingDirectory = Globals.AppDataFolder };
             try
             {
                 _ = Process.Start(startInfo);

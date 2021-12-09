@@ -61,7 +61,7 @@ namespace TcNo_Acc_Switcher_Client
 
         private static void RunServer()
         {
-            const string serverPath = "TcNo-Acc-Switcher-Server.exe";
+            const string serverPath = "TcNo-Acc-Switcher-Server_main.exe";
             if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(serverPath)).Length > 0)
             {
                 Globals.WriteToLog("Server was already running. Killing process.");
@@ -519,7 +519,7 @@ namespace TcNo_Acc_Switcher_Client
             var proc = new ProcessStartInfo
             {
                 WorkingDirectory = Environment.CurrentDirectory,
-                FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher.exe",
+                FileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher_main.exe",
                 UseShellExecute = true,
                 Arguments = args,
                 Verb = admin ? "runas" : ""
