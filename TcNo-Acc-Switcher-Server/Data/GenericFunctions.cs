@@ -111,7 +111,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 string imgPath;
                 if (element is string str)
                 {
-                    imgPath = GetImgPath(platform, str);
+                    imgPath = GetImgPath(platform, str).Replace("%", "%25");
                     try
                     {
                         _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
