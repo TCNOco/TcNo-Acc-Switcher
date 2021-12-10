@@ -33,6 +33,7 @@ Settings_Header_TraySettings: Indstillinger for bakke
 Settings_Header_OpenGameFolders: Åbn spilmapper
 Settings_TrayMax: 'Maks. antal konti der skal huskes:'
 Settings_RTL: Vis tekst som højre mod venstre
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: Vælg {platform} mappe
 Settings_OpenFolder: Åbn {platform} mappe
 Settings_ClearForgotten: Ryd Glemt
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: Platform
 Settings_Tray_StartWindows: Start bakke med Windows
 Settings_Tray_StartNow: '[Start bakke nu]'
 Settings_CurrentStyle: Nuværende Stil
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'Aktivér tcno:\\ protocol (anbefales)'
 Settings_StartCentered: Start program centreret
 Settings_WindowsAccent: Brug Windows Accent Colour
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: Skift brugernavn
 Modal_Title_ConfirmAction: TcNo Kontoskifter Bekræft Handling
 Modal_Title_LocatePlatform: Find venligst mappen {platform}
 Modal_Title_AddNew: Tilføj ny {platform} konto
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: Indtast venligst en ny {platformText} til din konto
 Modal_ChangeUsernameType: Skift {UsernameOrOther}
 Modal_EnterDirectory: "Indtast venligst {platform}'s mappe, som sådan: C:\\Program Filer\\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "Total downloadstørrelse: ~{size} MB"
 Installer_AnyKeyStart: Tryk på enhver nøgle for at begynde at downloade...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "Kunne ikke oprette mappe:"
 Installer_FailedWV: "Kunne ikke downloade og installere Microsoft WebView2 Runtime. For at hente: 1. Klik på linket nedenfor: {link} 2. Klik på 'Download Hosting Bundle' under Kør server apps."
 Installer_FailedDR: "Kunne ikke downloade og installere. NET 5 Desktop Runtime. Download det her:"
-Installed_FailedASP: "Kunne ikke downloade og installere ASP.NET Core 5.0 Runtime. Hvis du vil downloade: 1. Klik på linket nedenfor: {link} 2. Klik på 'Download x64' under Kør Desktop apps."
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "En eller flere er klar til installation. Hvis og når du bliver bedt om at installere, så klik på 'Ja'."
 Installer_PressStart: Tryk på en tast for at starte installation...
 Installer_VerifyMin: "Kontroller at du opfylder de anbefalede minimumskrav:"
