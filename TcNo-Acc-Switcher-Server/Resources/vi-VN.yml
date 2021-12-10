@@ -33,6 +33,7 @@ Settings_Header_TraySettings: Cài đặt khay
 Settings_Header_OpenGameFolders: Mở thư mục trò chơi
 Settings_TrayMax: 'Số tài khoản tối đa cần nhớ:'
 Settings_RTL: Hiển thị văn bản dưới dạng từ phải sang trái
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: Chọn {platform} thư mục
 Settings_OpenFolder: Mở thư mục {platform}
 Settings_ClearForgotten: Xóa bỏ quên
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: Nền tảng
 Settings_Tray_StartWindows: Khởi động Khay với Windows
 Settings_Tray_StartNow: '[Bắt đầu Khay ngay bây giờ]'
 Settings_CurrentStyle: Phong cách hiện tại
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'Bật giao thức TcNo: \\ (Được khuyến nghị)'
 Settings_StartCentered: Bắt đầu chương trình làm trung tâm
 Settings_WindowsAccent: Sử dụng Màu nhấn Windows
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: Thay đổi tên người dùng
 Modal_Title_ConfirmAction: Hành động Xác nhận Trình chuyển đổi Tài khoản TcNo
 Modal_Title_LocatePlatform: Vui lòng định vị thư mục {platform}
 Modal_Title_AddNew: Thêm tài khoản {platform}
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: Vui lòng nhập số {platformText} mới cho tài khoản của bạn
 Modal_ChangeUsernameType: Thay đổi {UsernameOrOther}
 Modal_EnterDirectory: "Vui lòng nhập thư mục của {platform}, chẳng hạn như: C: \\ Program Files \\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "Tổng kích thước tải xuống: ~{size} MB"
 Installer_AnyKeyStart: Nhấn phím bất kỳ để bắt đầu tải xuống ...
 Runtime_WebView2: Thời gian chạy Microsoft WebView2
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "Không tạo được thư mục:"
 Installer_FailedWV: "Không thể tải xuống và cài đặt Microsoft WebView2 Runtime. Để tải xuống: 1. Nhấp vào liên kết bên dưới: {link} 2. Nhấp vào 'Tải xuống Gói Lưu trữ' trong Chạy ứng dụng máy chủ."
 Installer_FailedDR: "Không thể tải xuống và cài đặt .NET 5 Desktop Runtime. Vui lòng tải về tại đây:"
-Installed_FailedASP: "Không thể tải xuống và cài đặt ASP.NET Core 5.0 Runtime. Để tải xuống: 1. Nhấp vào liên kết bên dưới: {link} 2. Nhấp vào 'Tải xuống x64' trong Chạy ứng dụng dành cho máy tính để bàn."
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "Một hoặc nhiều đã sẵn sàng để cài đặt. Nếu và khi được nhắc nếu bạn muốn cài đặt, hãy nhấp vào 'Có'."
 Installer_PressStart: Nhấn phím bất kỳ để bắt đầu cài đặt ...
 Installer_VerifyMin: "Xác minh rằng bạn đáp ứng các yêu cầu tối thiểu được đề xuất:"
