@@ -33,7 +33,7 @@ Settings_Header_TraySettings: Tálca beállításai
 Settings_Header_OpenGameFolders: Nyissa meg a játékmappákat
 Settings_TrayMax: 'A felejtendő fiókok maximális száma:'
 Settings_RTL: Szöveg megjelenítése jobbról balra haladva
-Settings_CurrentLocation: 'Current install location: {path}'
+Settings_CurrentLocation: 'Jelenlegi telepítési hely: {path}'
 Settings_PickFolder: Válasszon {platform} mappát
 Settings_OpenFolder: Nyissa meg a {platform} mappát
 Settings_ClearForgotten: Clear Forgotten
@@ -47,8 +47,8 @@ Settings_StartMenu_Platform: Felület
 Settings_Tray_StartWindows: Indítsa el a tálcát a Windows rendszerrel
 Settings_Tray_StartNow: '[Indítsa el a tálcát most]'
 Settings_CurrentStyle: Aktuális stílus
-Settings_ThemeBackground: '[Set background]'
-Settings_ThemeOpenFolder: '[Open theme folder]'
+Settings_ThemeBackground: '[Háttér beállítása]'
+Settings_ThemeOpenFolder: '[Téma mappa megnyitása]'
 Settings_Protocol: 'A TcNo: \\ protokoll engedélyezése (ajánlott)'
 Settings_StartCentered: Indítsa el a programot középre
 Settings_WindowsAccent: Használja a Windows Kiemelő színét
@@ -148,10 +148,10 @@ Modal_Title_ChangeUsername: Felhasználónév módosítása
 Modal_Title_ConfirmAction: TcNo Account Switcher Confirm Action
 Modal_Title_LocatePlatform: Kérjük, keresse meg a {platform} könyvtárat
 Modal_Title_AddNew: Új {platform} fiók hozzáadása
-Modal_Title_Background: Set a background image
-Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
-Modal_SetBackground_Button: Set background
-Modal_SetBackground_ChooseImage: Choose local image
+Modal_Title_Background: Állítson be háttérképet
+Modal_SetBackground: 'Válasszon ki egy képet, vagy írjon be egy URL-t alább.<br>Hagyja üresen, és állítsa vissza alaphelyzetbe.<br>(További vezérlésért lásd a témaválasztást a Wikin):'
+Modal_SetBackground_Button: Háttér beállítása
+Modal_SetBackground_ChooseImage: Válasszon helyi képet
 Modal_ChangeUsername: Kérjük, adjon meg egy új {platformText} t a fiókjához
 Modal_ChangeUsernameType: Változás {UsernameOrOther}
 Modal_EnterDirectory: "Kérjük, adja meg a {platform}könyvtárát, mint ilyen: C: \\ Program Files \\{platform}"
@@ -222,7 +222,7 @@ Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "Nem sikerült létrehozni a mappát:"
 Installer_FailedWV: "Nem sikerült letölteni és telepíteni a Microsoft WebView2 Runtime programot. Letöltés: 1. Kattintson az alábbi linkre: {link} 2. Kattintson a \"Szerveralkalmazások futtatása\" alatt a \"Tárhelycsomag letöltése\" elemre."
 Installer_FailedDR: "Nem sikerült letölteni és telepíteni a .NET 5 Desktop Runtime programot. Kérjük, töltse le itt:"
-Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
+Installed_FailedASP: "Az ASP.NET Core 6.0 Runtime letöltése és telepítése sikertelen. Letöltés: 1. Kattintson az alábbi hivatkozásra: {link} 2. Kattintson a 'Download x64' lehetőségre az Asztali alkalmazások futtatása alatt."
 Installer_Ready: "Egy vagy több telepítésre kész. Ha és amikor a rendszer kéri, hogy telepíteni szeretné-e, kattintson az „Igen” gombra."
 Installer_PressStart: Nyomja meg bármelyik gombot a telepítés megkezdéséhez ...
 Installer_VerifyMin: "Ellenőrizze, hogy megfelel-e az ajánlott minimumkövetelményeknek:"

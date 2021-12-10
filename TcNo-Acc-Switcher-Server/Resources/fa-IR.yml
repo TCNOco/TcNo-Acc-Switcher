@@ -33,7 +33,7 @@ Settings_Header_TraySettings: تنظیمات سینی
 Settings_Header_OpenGameFolders: پوشه های بازی را باز کنید
 Settings_TrayMax: 'حداکثر تعداد حساب هایی که باید به خاطر بسپارید:'
 Settings_RTL: نمایش متن به صورت راست به چپ
-Settings_CurrentLocation: 'Current install location: {path}'
+Settings_CurrentLocation: 'محل نصب فعلی: {path}'
 Settings_PickFolder: '{platform} پوشه را انتخاب کنید'
 Settings_OpenFolder: پوشه {platform} باز کنید
 Settings_ClearForgotten: پاک کردن فراموش شده
@@ -47,8 +47,8 @@ Settings_StartMenu_Platform: سکو
 Settings_Tray_StartWindows: Tray را با ویندوز راه اندازی کنید
 Settings_Tray_StartNow: '[اکنون سینی را شروع کنید]'
 Settings_CurrentStyle: سبک فعلی
-Settings_ThemeBackground: '[Set background]'
-Settings_ThemeOpenFolder: '[Open theme folder]'
+Settings_ThemeBackground: '[تنظیم پس زمینه]'
+Settings_ThemeOpenFolder: '[باز کردن پوشه تم]'
 Settings_Protocol: 'پروتکل tcno:\\ را فعال کنید (توصیه می شود)'
 Settings_StartCentered: برنامه را متمرکز شروع کنید
 Settings_WindowsAccent: از Windows Accent Color استفاده کنید
@@ -148,10 +148,10 @@ Modal_Title_ChangeUsername: تغییر نام کاربری
 Modal_Title_ConfirmAction: TcNo Account Switcher تایید اقدام
 Modal_Title_LocatePlatform: لطفا دایرکتوری {platform} را پیدا کنید
 Modal_Title_AddNew: اضافه کردن {platform} حساب جدید
-Modal_Title_Background: Set a background image
-Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
-Modal_SetBackground_Button: Set background
-Modal_SetBackground_ChooseImage: Choose local image
+Modal_Title_Background: یک تصویر پس زمینه تنظیم کنید
+Modal_SetBackground: 'یک تصویر را انتخاب کنید یا یک URL در زیر وارد کنید.<br>خالی بگذارید و تنظیم مجدد کنید.<br>(برای کنترل پیشرفته تر به Theming در ویکی مراجعه کنید):'
+Modal_SetBackground_Button: تنظیم پس زمینه
+Modal_SetBackground_ChooseImage: تصویر محلی را انتخاب کنید
 Modal_ChangeUsername: لطفاً یک {platformText} جدید برای حساب خود وارد کنید
 Modal_ChangeUsernameType: '{UsernameOrOther}تغییر دهید'
 Modal_EnterDirectory: "لطفاً {platform}را به این ترتیب وارد کنید: C:\\Program Files\\{platform}"
@@ -222,7 +222,7 @@ Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "پوشه ایجاد نشد:"
 Installer_FailedWV: "دانلود و نصب Microsoft WebView2 Runtime انجام نشد. برای دانلود: 1. روی لینک زیر کلیک کنید: {link} 2. روی «دانلود بسته نرم افزاری میزبانی» در بخش اجرای برنامه های سرور کلیک کنید."
 Installer_FailedDR: "دانلود و نصب .NET 5 Desktop Runtime انجام نشد. لطفا آن را از اینجا دانلود کنید:"
-Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
+Installed_FailedASP: "دانلود و نصب ASP.NET Core 6.0 Runtime انجام نشد. برای دانلود: 1. روی لینک زیر کلیک کنید: {link} 2. روی «دانلود x64» در زیر اجرای برنامه‌های دسکتاپ کلیک کنید."
 Installer_Ready: "یک یا چند مورد برای نصب آماده است. اگر و زمانی که از شما خواسته شد اگر می‌خواهید نصب کنید، روی «بله» کلیک کنید."
 Installer_PressStart: برای شروع نصب، هر کلیدی را فشار دهید...
 Installer_VerifyMin: "بررسی کنید که حداقل شرایط توصیه شده را برآورده می کنید:"

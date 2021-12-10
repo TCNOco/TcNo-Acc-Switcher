@@ -33,7 +33,7 @@ Settings_Header_TraySettings: 托盤設置
 Settings_Header_OpenGameFolders: 打開遊戲文件夾
 Settings_TrayMax: '要記住的最大帳戶數：'
 Settings_RTL: 從右到左顯示文本
-Settings_CurrentLocation: 'Current install location: {path}'
+Settings_CurrentLocation: '當前安裝位置： {path}'
 Settings_PickFolder: 選擇 {platform} 文件夾
 Settings_OpenFolder: 打開 {platform} 文件夾
 Settings_ClearForgotten: 清除遺忘
@@ -47,8 +47,8 @@ Settings_StartMenu_Platform: 平台
 Settings_Tray_StartWindows: 使用 Windows 啟動托盤
 Settings_Tray_StartNow: '[現在開始托盤]'
 Settings_CurrentStyle: 當前風格
-Settings_ThemeBackground: '[Set background]'
-Settings_ThemeOpenFolder: '[Open theme folder]'
+Settings_ThemeBackground: '[設置背景]'
+Settings_ThemeOpenFolder: '[打開主題文件夾]'
 Settings_Protocol: '啟用 tcno:\\ 協議（推薦）'
 Settings_StartCentered: 啟動程序居中
 Settings_WindowsAccent: 使用 Windows 強調色
@@ -148,10 +148,10 @@ Modal_Title_ChangeUsername: 更改用戶名
 Modal_Title_ConfirmAction: TcNo 帳戶切換器確認操作
 Modal_Title_LocatePlatform: 請定位 {platform} 目錄
 Modal_Title_AddNew: 添加新的 {platform} 帳戶
-Modal_Title_Background: Set a background image
-Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
-Modal_SetBackground_Button: Set background
-Modal_SetBackground_ChooseImage: Choose local image
+Modal_Title_Background: 設置背景圖片
+Modal_SetBackground: '選擇圖像，或在下方輸入 URL。<br>留空並設置為重置。<br>（有關更高級的控制，請參閱 Wiki 上的主題）：'
+Modal_SetBackground_Button: 設置背景
+Modal_SetBackground_ChooseImage: 選擇本地圖片
 Modal_ChangeUsername: 請為您的帳戶輸入一個新的 {platformText}
 Modal_ChangeUsernameType: 更改 {UsernameOrOther}
 Modal_EnterDirectory: "請輸入 {platform}的目錄，例如：C:\\Program Files\\{platform}"
@@ -218,11 +218,11 @@ Installer_TotalSize: "總下載大小：~{size} MB"
 Installer_AnyKeyStart: 按任意鍵開始下載...
 Runtime_WebView2: Microsoft WebView2 運行時
 Runtime_Desktop: Microsoft .NET 5 桌面運行時
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 運行時
 Installer_FailedFolder: "無法創建文件夾："
 Installer_FailedWV: "無法下載和安裝 Microsoft WebView2 運行時。下載： 1. 單擊下面的鏈接： {link} 2. 單擊運行服務器應用程序下的“下載託管捆綁包”。"
 Installer_FailedDR: "無法下載和安裝 .NET 5 桌面運行時。請在此處下載："
-Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
+Installed_FailedASP: "無法下載和安裝 ASP.NET Core 6.0 運行時。下載： 1. 單擊下面的鏈接： {link} 2. 單擊運行桌面應用程序下的“下載 x64”。"
 Installer_Ready: "一個或多個已準備好安裝。如果系統提示您是否要安裝，請單擊“是”。"
 Installer_PressStart: 按任意鍵開始安裝...
 Installer_VerifyMin: "驗證您是否滿足最低推薦要求："

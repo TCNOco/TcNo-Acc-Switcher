@@ -33,7 +33,7 @@ Settings_Header_TraySettings: '"Tray" подешавања'
 Settings_Header_OpenGameFolders: Отворите фасцикле игара
 Settings_TrayMax: 'Максималан број налога које треба запамтити:'
 Settings_RTL: Прикажи текст здесна налево
-Settings_CurrentLocation: 'Current install location: {path}'
+Settings_CurrentLocation: 'Тренутна локација за инсталацију: {path}'
 Settings_PickFolder: Изаберите {platform} фасциклу
 Settings_OpenFolder: Отворите мапу {platform}
 Settings_ClearForgotten: Цлеар Форготтен
@@ -47,8 +47,8 @@ Settings_StartMenu_Platform: Платформа
 Settings_Tray_StartWindows: Покрените фиоку са системом Виндовс
 Settings_Tray_StartNow: '[Покрените лежиште одмах]'
 Settings_CurrentStyle: Тренутни стил
-Settings_ThemeBackground: '[Set background]'
-Settings_ThemeOpenFolder: '[Open theme folder]'
+Settings_ThemeBackground: '[Подеси позадину]'
+Settings_ThemeOpenFolder: '[Отвори фолдер теме]'
 Settings_Protocol: 'Омогући тцно: \\ протокол (препоручено)'
 Settings_StartCentered: Покретање програма центрирано
 Settings_WindowsAccent: Користите Виндовс Аццент Цолор
@@ -148,10 +148,10 @@ Modal_Title_ChangeUsername: Промените корисничко име
 Modal_Title_ConfirmAction: ТцНо Аццоунт Свитцхер Потврдите акцију
 Modal_Title_LocatePlatform: Пронађите директоријум {platform}
 Modal_Title_AddNew: Додајте нови {platform} налог
-Modal_Title_Background: Set a background image
-Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
-Modal_SetBackground_Button: Set background
-Modal_SetBackground_ChooseImage: Choose local image
+Modal_Title_Background: Поставите слику за позадину
+Modal_SetBackground: 'Изаберите слику или унесите УРЛ испод.<br>Оставите празно и подесите на ресетовање.<br>(За напреднију контролу погледајте Тхеминг на Вики):'
+Modal_SetBackground_Button: Подесите позадину
+Modal_SetBackground_ChooseImage: Изаберите локалну слику
 Modal_ChangeUsername: Унесите нови {platformText} за свој рачун
 Modal_ChangeUsernameType: Промена {UsernameOrOther}
 Modal_EnterDirectory: "Унесите {platform}'с директоријум, као што су: Ц: \\ ВИНДОВС \\{platform}"
@@ -218,11 +218,11 @@ Installer_TotalSize: "Укупна величина преузимања: ~{size
 Installer_AnyKeyStart: Притисните било који тастер да бисте започели преузимање ...
 Runtime_WebView2: Мицрософт ВебВиев2 Рунтиме
 Runtime_Desktop: Мицрософт .НЕТ 5 Десктоп Рунтиме
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
+Runtime_ASP: Мицрософт Мицрософт АСП.НЕТ Цоре 6.0 Рунтиме
 Installer_FailedFolder: "Прављење директоријума није успело:"
 Installer_FailedWV: "Преузимање и инсталирање програма Мицрософт ВебВиев2 Рунтиме није успело. Да бисте преузели: 1. Кликните на доњу везу: {link} 2. Кликните на „Преузми пакет хостовања“ у оквиру Покрени серверске апликације."
 Installer_FailedDR: "Преузимање и инсталирање .НЕТ 5 Десктоп Рунтимеа није успело. Преузмите га овде:"
-Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
+Installed_FailedASP: "Преузимање и инсталирање АСП.НЕТ Цоре 6.0 Рунтиме није успело. Да бисте преузели: 1. Кликните на везу испод: {link} 2. Кликните на 'Преузми к64' под Покрени апликације за десктоп."
 Installer_Ready: "Један или више њих је спремно за инсталацију. Ако и када се од вас затражи да ли желите да инсталирате, кликните на „Да“."
 Installer_PressStart: Притисните било који тастер да бисте започели инсталацију ...
 Installer_VerifyMin: "Проверите да ли испуњавате минималне препоручене захтеве:"

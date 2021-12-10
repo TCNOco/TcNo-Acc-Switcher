@@ -33,7 +33,7 @@ Settings_Header_TraySettings: Nastavení v systémové liště
 Settings_Header_OpenGameFolders: Otevřít herní složky
 Settings_TrayMax: 'Maximální počet účtů, které chcete pamatovat:'
 Settings_RTL: Zobrazit text jako zprava doleva
-Settings_CurrentLocation: 'Current install location: {path}'
+Settings_CurrentLocation: 'Aktuální umístění instalace: {path}'
 Settings_PickFolder: Vybrat složku {platform}
 Settings_OpenFolder: Otevřít složku {platform}
 Settings_ClearForgotten: Vymazat zapomenuté
@@ -47,8 +47,8 @@ Settings_StartMenu_Platform: Služba
 Settings_Tray_StartWindows: Spustit v systémové liště s Windows
 Settings_Tray_StartNow: '[Spustit v systémové liště]'
 Settings_CurrentStyle: Aktuální vzhled
-Settings_ThemeBackground: '[Set background]'
-Settings_ThemeOpenFolder: '[Open theme folder]'
+Settings_ThemeBackground: '[Nastavit pozadí]'
+Settings_ThemeOpenFolder: '[Otevřít složku motivu]'
 Settings_Protocol: 'Povolit tcno:\\ protokol (doporučeno)'
 Settings_StartCentered: Spustit program se středem
 Settings_WindowsAccent: Použí barvu motivu Windows
@@ -148,10 +148,10 @@ Modal_Title_ChangeUsername: Změnit uživatelské jméno
 Modal_Title_ConfirmAction: Akce Přepínače účtu TcNo
 Modal_Title_LocatePlatform: Vyhledejte prosím složku {platform}
 Modal_Title_AddNew: Přidat nový {platform} účet
-Modal_Title_Background: Set a background image
-Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
-Modal_SetBackground_Button: Set background
-Modal_SetBackground_ChooseImage: Choose local image
+Modal_Title_Background: Nastavte obrázek na pozadí
+Modal_SetBackground: 'Vyberte obrázek nebo níže zadejte adresu URL.<br>Ponechte prázdné a nastavte reset.<br>(Pro pokročilejší ovládání viz Theming na Wiki):'
+Modal_SetBackground_Button: Nastavit pozadí
+Modal_SetBackground_ChooseImage: Vyberte místní obrázek
 Modal_ChangeUsername: Zadejte prosím nový {platformText} pro váš účet
 Modal_ChangeUsernameType: Změnit {UsernameOrOther}
 Modal_EnterDirectory: "Zadejte prosím adresář {platform} jako takový: C:\\Program Files\\{platform}"
@@ -218,11 +218,11 @@ Installer_TotalSize: "Celková velikost stahování: ~{size} MB"
 Installer_AnyKeyStart: Stiskněte libovolné tlačítko pro zahájení stahování...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
+Runtime_ASP: Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "Nepodařilo se vytvořit složku:"
 Installer_FailedWV: "Nepodařilo se stáhnout a nainstalovat Microsoft WebView2 Runtime. Chcete-li stáhnout: 1. Klikněte na odkaz níže: {link} 2. Klikněte na \"Stáhnout hosting Bundle\" v aplikaci Run server."
 Installer_FailedDR: "Nepodařilo se stáhnout a nainstalovat .NET 5 Desktop Runtime. Stáhněte si jej zde:"
-Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
+Installed_FailedASP: "Nepodařilo se stáhnout a nainstalovat ASP.NET Core 6.0 Runtime. Pro stažení: 1. Klikněte na odkaz níže: {link} 2. Klikněte na 'Stáhnout x64' pod spuštěnými desktopovými aplikacemi."
 Installer_Ready: "Jeden nebo více je připraveno k instalaci. Pokud a kdy budete vyzváni, pokud chcete instalovat, klikněte na 'Ano'."
 Installer_PressStart: Stiskněte libovolné tlačítko pro spuštění instalace...
 Installer_VerifyMin: "Ověřte, zda splňujete minimální doporučené požadavky:"
