@@ -47,9 +47,10 @@ namespace TcNo_Acc_Switcher_Server.Shared
             }
 
             if (AppSettings.Instance.Rtl)
-            {
                 style = "@import url(css/rtl.min.css);\n" + style;
-            }
+
+            if (AppSettings.Instance.Background != "")
+                style += ".programMain {background: url(" + AppSettings.Instance.Background + ")!important;background-size:cover!important;}";
 
             return style;
         }

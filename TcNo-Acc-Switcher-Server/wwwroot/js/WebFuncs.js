@@ -324,7 +324,6 @@ function OpenLinkInBrowser(link) {
 async function showModal(modaltype) {
     let input, platform;
     if (modaltype === "info") {
-
 	    const modalInfoCreator = await GetLang("Modal_Info_Creator"),
 		    modalInfoVersion = await GetLang("Modal_Info_Version"),
 		    modalInfoDisclaimer = await GetLang("Modal_Info_Disclaimer"),
@@ -417,7 +416,7 @@ async function showModal(modaltype) {
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="FolderLocation" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
-		        <button type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFile=${
+		        <button type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFolder=${
             platformExe}';"><span>${modalLocatePlatform}</span></button>
 	        </div>
 	        <div class="settingsCol inputAndButton">
@@ -530,6 +529,24 @@ async function showModal(modaltype) {
             platform}')"><span>${modalAddCurrentAccount}</span></button>
 	        </div>`);
         input = document.getElementById("CurrentAccountName");
+    } else if (modaltype === "SetBackground") {
+        const modalTitleBackground = await GetLang("Modal_Title_Background"),
+            modalSetBackground = await GetLang("Modal_SetBackground"),
+            modalChooseLocal = await GetLang("Modal_SetBackground_ChooseImage"),
+            modalSetBackgroundButton = await GetLang("Modal_SetBackground_Button");
+
+        $("#modalTitle").text(modalTitleBackground);
+        $("#modal_contents").empty();
+        $("#modal_contents").append(`<div>
+		        <p class="modal-text">${modalSetBackground}</p>
+	        </div>
+	        <div class="inputAndButton">
+		        <input type="text" id="FolderLocation" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
+	        </div>
+	        <div class="settingsCol inputAndButton">
+		        <button class="modalOK" type="button" id="set_background" onclick="window.location = window.location + '?selectFile=*.*';"><span>${modalChooseLocal}</span></button>
+		        <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseBackground()"><span>${modalSetBackgroundButton}</span></button>
+	        </div>`);
     } else if (modaltype === "password") {
         let x = await showPasswordModal();
         if (!x) return;
@@ -611,14 +628,18 @@ function Modal_SetFilepath(path) {
 }
 // For finding files with modal:
 function Modal_RequestedLocated(found) {
-    $(".folder_indicator").removeClass("notfound found");
-    $(".folder_indicator_bg").removeClass("notfound found");
-    if (found === true) {
-        $(".folder_indicator").addClass("found");
-        $(".folder_indicator_bg").addClass("found");
-    } else {
-        $(".folder_indicator").addClass("notfound");
-        $(".folder_indicator_bg").addClass("notfound");
+    try {
+        $(".folder_indicator").removeClass("notfound found");
+        $(".folder_indicator_bg").removeClass("notfound found");
+        if (found === true) {
+            $(".folder_indicator").addClass("found");
+            $(".folder_indicator_bg").addClass("found");
+        } else {
+            $(".folder_indicator").addClass("notfound");
+            $(".folder_indicator_bg").addClass("notfound");
+        }
+    } catch (_) {
+
     }
 }
 
@@ -642,6 +663,12 @@ function Modal_FinaliseAccString(platform) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", name);
     $(".modalBG").fadeOut();
     $("#acc_list").click();
+}
+
+function Modal_FinaliseBackground() {
+    let pathOrUrl = $("#FolderLocation").val();
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetBackground", pathOrUrl);
+    $(".modalBG").fadeOut();
 }
 
 function Modal_FinaliseAccNameChange() {

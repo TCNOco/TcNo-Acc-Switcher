@@ -67,6 +67,7 @@
                 <hr><span>@_locale["Settings_Header_GeneralTools"]</span>
                 <hr>
             </div>
+            <p>@_locale["Settings_CurrentLocation", new { path = _battleNet.FolderPath }]</p>
             <div class="buttoncol">
                 <button id="PickFolder" type="button" @onclick="PickFolder">
                     <span>@_locale["Settings_PickFolder", new { platform = Platform }]</span>

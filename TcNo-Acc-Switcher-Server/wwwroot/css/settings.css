@@ -102,10 +102,9 @@ label {
 }
 
 /* Checkbox */
-
 .form-check {
-  display: inline-block;
-  padding: 0;
+    display: inline-block;
+    padding: 0;
 }
 
 input[type='checkbox'] {

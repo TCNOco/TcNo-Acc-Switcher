@@ -152,6 +152,20 @@ button .caret {
   margin: 0 0 0 0.5em;
 }
 
+/* Other */
+.listWithBars ul {
+  padding-left: 0;
+}
+.listWithBars ul li {
+  display: inline-block;
+}
+.listWithBars ul li:first-of-type:before {
+  content: none;
+}
+.listWithBars ul li:before {
+  content: "  |  ";
+}
+
 /* Ace Editor */
 .ace_editor {
   background: #282a36;

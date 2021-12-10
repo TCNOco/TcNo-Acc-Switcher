@@ -103,6 +103,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("ActiveBrowser", Order = 11)]
         public string ActiveBrowser { get => _instance._activeBrowser; set => _instance._activeBrowser = value; }
 
+        private string _background = "";
+        [JsonProperty("Background", Order = 12)]
+        public string Background { get => _instance._background; set => _instance._background = value; }
+
+
         private bool _desktopShortcut;
         [Newtonsoft.Json.JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
         private bool _startMenu;
@@ -411,6 +416,22 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             return ((int)Math.Round(H), (int)Math.Round(S), (int)Math.Round(L));
         }
+
+        [JSInvokable]
+        public static async Task SetBackground(string path)
+        {
+            Instance.Background = $"{path}";
+
+            if (File.Exists(path) && path != "")
+            {
+                Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\"));
+                File.Copy(path, Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\background" + Path.GetExtension(path)), true);
+                Instance.Background = $"img/custom/background{Path.GetExtension(path)}";
+                _instance.SaveSettings();
+            }
+            await AppData.CacheReloadPage();
+        }
+
         #endregion
 
         public JObject GetJObject() => JObject.FromObject(this);

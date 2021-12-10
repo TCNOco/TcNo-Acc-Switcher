@@ -1,4 +1,8 @@
 ﻿@using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Server.Pages.General
+@using System.Diagnostics
+@using System.IO
+@using TcNo_Acc_Switcher_Globals
 @*TcNo Account Switcher - A Super fast account switcher
     Copyright (C) 2019-2021 TechNobo (Wesley Pyburn)
     This program is free software: you can redistribute it and/or modify
@@ -80,6 +84,13 @@
             }
         </ul>
     </div>
+</div>
+<div class="rowSetting listWithBars">
+    <ul>
+        <li><a class="fancyLink" @onclick='() => GeneralInvocableFuncs.ShowModal("SetBackground")'>@_locale["Settings_ThemeBackground"]</a></li>
+        <li><a class="fancyLink" @onclick='() => Process.Start("explorer.exe", Path.Join(Globals.UserDataFolder, "themes"))'>@_locale["Settings_ThemeOpenFolder"]</a></li>
+    </ul>
+
 </div>
 <div class="rowSetting">
     <div class="form-check"><input class="form-check-input" type="checkbox" id="AppSett_WinAccent" @bind="_appSett.WindowsAccent" @onclick="() => _appSett.WindowsAccent_Toggle()"><label class="form-check-label" for="AppSett_WinAccent"></label></div><label for="AppSett_WinAccent">@_locale["Settings_WindowsAccent"]<br></label>

@@ -122,6 +122,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         public static async Task ReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload");
+        public static async Task CacheReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload(true);");
         #endregion
     }
 }

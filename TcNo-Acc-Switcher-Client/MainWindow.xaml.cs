@@ -401,30 +401,43 @@ namespace TcNo_Acc_Switcher_Client
             // Needs to be here as:
             // Importing Microsoft.Win32 and System.Windows didn't get OpenFileDialog to work.
             var uriArg = uri.Split("?").Last();
-            if (uriArg.StartsWith("selectFile"))
+            if (uriArg.StartsWith("selectFile") || uriArg.StartsWith("selectFolder"))
             {
                 // Select file and run Model_SetFilepath()
                 if (mViewArgs != null) mViewArgs.Cancel = true;
                 var argValue = uriArg.Split("=")[1];
-                var dlg = new OpenFileDialog
+
+                OpenFileDialog dlg;
+                if (argValue.Contains("*.*"))
                 {
-                    FileName = Path.GetFileNameWithoutExtension(argValue),
-                    DefaultExt = Path.GetExtension(argValue),
-                    Filter = $"{argValue}|{argValue}"
-                };
+                    dlg = new OpenFileDialog
+                    {
+                        Filter = $"Any File|*.*"
+                    };
+                }
+                else
+                {
+                    dlg = new OpenFileDialog
+                    {
+                        FileName = Path.GetFileNameWithoutExtension(argValue),
+                        DefaultExt = Path.GetExtension(argValue),
+                        Filter = $"{argValue}|{argValue}"
+                    };
+                }
 
                 var result = dlg.ShowDialog();
                 if (result != true) return;
+                var returnStr = uriArg.StartsWith("selectFolder")
+                    ? JsonConvert.SerializeObject(dlg.FileName[..dlg.FileName.LastIndexOf('\\')])
+                    : JsonConvert.SerializeObject(dlg.FileName);
                 if (_mainBrowser == "WebView")
                 {
                     _ = _mView2.ExecuteScriptAsync("Modal_RequestedLocated(true)");
-                    _ = _mView2.ExecuteScriptAsync("Modal_SetFilepath(" +
-                                                  JsonConvert.SerializeObject(dlg.FileName[..dlg.FileName.LastIndexOf('\\')]) + ")");
+                    _ = _mView2.ExecuteScriptAsync($"Modal_SetFilepath({returnStr})");
                 } else if (_mainBrowser == "CEF")
                 {
                     _cefView.ExecuteScriptAsync("Modal_RequestedLocated(true)");
-                    _cefView.ExecuteScriptAsync("Modal_SetFilepath(" +
-                                               JsonConvert.SerializeObject(dlg.FileName[..dlg.FileName.LastIndexOf('\\')]) + ")");
+                    _cefView.ExecuteScriptAsync($"Modal_SetFilepath({returnStr})");
                 }
             }
             else if (uriArg.StartsWith("selectImage"))

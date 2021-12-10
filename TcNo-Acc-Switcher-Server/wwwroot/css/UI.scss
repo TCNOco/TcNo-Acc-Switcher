@@ -165,6 +165,25 @@ button .caret {
   }
 }
 
+/* Other */
+.listWithBars {
+    ul {
+        padding-left: 0;
+
+        li {
+            display: inline-block;
+
+            &:first-of-type:before {
+                content: none;
+            }
+
+            &:before {
+                content: "  |  "
+            }
+        }
+    }
+}
+
 /* Ace Editor */
 .ace_editor {
   background: #282a36;

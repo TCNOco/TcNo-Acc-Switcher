@@ -33,6 +33,7 @@ Settings_Header_TraySettings: Tray settings
 Settings_Header_OpenGameFolders: Open game folders
 Settings_TrayMax: 'Max number of accounts to remember:'
 Settings_RTL: Show text as Right-to-Left
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: Pick {platform} folder
 Settings_OpenFolder: Open {platform} Folder
 Settings_ClearForgotten: Clear Forgotten
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: Platform
 Settings_Tray_StartWindows: Start Tray with Windows
 Settings_Tray_StartNow: '[Start Tray now]'
 Settings_CurrentStyle: Current Style
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'Enable tcno:\\ protocol (Recommended)'
 Settings_StartCentered: Start program centered
 Settings_WindowsAccent: Use the Windows Accent Colour
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: Change username
 Modal_Title_ConfirmAction: TcNo Account Switcher Confirm Action
 Modal_Title_LocatePlatform: Please locate the {platform} directory
 Modal_Title_AddNew: Add new {platform} account
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: Please enter a new {platformText} for your account
 Modal_ChangeUsernameType: Change {UsernameOrOther}
 Modal_EnterDirectory: "Please enter {platform}'s directory, as such: C:\\Program Files\\{platform}"
