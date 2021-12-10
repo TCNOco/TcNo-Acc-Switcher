@@ -33,6 +33,7 @@ Settings_Header_TraySettings: 트레이 설정
 Settings_Header_OpenGameFolders: 게임 폴더 열기
 Settings_TrayMax: '기억할 최대 계정 수:'
 Settings_RTL: 텍스트를 오른쪽에서 왼쪽으로 표시
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: '{platform} 폴더 선택'
 Settings_OpenFolder: 폴더 {platform} 열기
 Settings_ClearForgotten: 잊혀진 지우기
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: 플랫폼
 Settings_Tray_StartWindows: Windows에서 트레이 시작
 Settings_Tray_StartNow: '[지금 트레이 시작]'
 Settings_CurrentStyle: 현재 스타일
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'tcno:\\ 프로토콜 활성화(권장)'
 Settings_StartCentered: 프로그램 중심으로 시작
 Settings_WindowsAccent: Windows 강조 색상 사용
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: 사용자 이름 변경
 Modal_Title_ConfirmAction: TcNo 계정 전환기 확인 작업
 Modal_Title_LocatePlatform: '{platform} 디렉토리를 찾으십시오'
 Modal_Title_AddNew: 새 {platform} 계정 추가
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: 귀하의 계정에 대해 {platformText} 을 입력하십시오
 Modal_ChangeUsernameType: 변경 {UsernameOrOther}
 Modal_EnterDirectory: "{platform}의 디렉토리를 입력하십시오: C:\\Program Files\\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "총 다운로드 크기 : ~{size} MB"
 Installer_AnyKeyStart: 아무 키나 눌러 다운로드를 시작하세요...
 Runtime_WebView2: 마이크로소프트 웹뷰2 런타임
 Runtime_Desktop: Microsoft .NET 5 데스크톱 런타임
-Runtime_ASP: 마이크로소프트 마이크로소프트 ASP.NET 코어 5.0 런타임
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "폴더 생성 실패:"
 Installer_FailedWV: "Microsoft WebView2 런타임을 다운로드 및 설치하지 못했습니다. 다운로드하려면: 1. 아래 링크를 클릭하십시오. {link} 2. 서버 앱 실행에서 '호스팅 번들 다운로드'를 클릭하십시오."
 Installer_FailedDR: ".NET 5 Desktop Runtime을 다운로드 및 설치하지 못했습니다. 여기에서 다운로드하십시오:"
-Installed_FailedASP: "ASP.NET Core 5.0 런타임을 다운로드하고 설치하지 못했습니다. 다운로드하려면: 1. 아래 링크를 클릭합니다. {link} 2. 데스크톱 앱 실행 아래에서 'x64 다운로드'를 클릭합니다."
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "하나 이상이 설치 준비가 되었습니다. 설치 여부를 묻는 메시지가 표시되면 '예'를 클릭합니다."
 Installer_PressStart: 아무 키나 눌러 설치를 시작하십시오...
 Installer_VerifyMin: "최소 권장 요구 사항을 충족하는지 확인합니다."
