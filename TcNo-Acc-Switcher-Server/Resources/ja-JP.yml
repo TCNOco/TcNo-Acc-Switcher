@@ -33,6 +33,7 @@ Settings_Header_TraySettings: トレイの設定
 Settings_Header_OpenGameFolders: ゲームフォルダを開く
 Settings_TrayMax: '覚えておくアカウントの最大数:'
 Settings_RTL: テキストを右から左に表示
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: '{platform} フォルダを選択'
 Settings_OpenFolder: '{platform} フォルダを開く'
 Settings_ClearForgotten: 忘れた項目をクリア
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: プラットフォーム
 Settings_Tray_StartWindows: Windowsでトレイを開始
 Settings_Tray_StartNow: '[今すぐトレイを開始]'
 Settings_CurrentStyle: 現在のスタイル
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'tcno:\\プロトコルを有効にする (推奨)'
 Settings_StartCentered: プログラムを中心に開始
 Settings_WindowsAccent: Windowsアクセントカラーを使用する
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: ユーザー名の変更
 Modal_Title_ConfirmAction: アカウント切り替え操作の確認
 Modal_Title_LocatePlatform: '{platform} ディレクトリを見つけてください'
 Modal_Title_AddNew: 新しい {platform} アカウントを追加
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: あなたのアカウントに新しい {platformText} を入力してください
 Modal_ChangeUsernameType: '{UsernameOrOther} を変更'
 Modal_EnterDirectory: "{platform}のディレクトリを以下のように入力してください: C:\\Program Files\\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "合計ダウンロードサイズ: ~{size} MB"
 Installer_AnyKeyStart: 任意のキーを押してダウンロードを開始...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "フォルダの作成に失敗しました:"
 Installer_FailedWV: "Microsoft WebView2 ランタイムのダウンロードとインストールに失敗しました。ダウンロードするには: 1. 以下のリンクをクリックしてください: {link} 2. サーバーアプリの実行の下の「ホスティングバンドルのダウンロード」をクリックします。"
 Installer_FailedDR: ".NET 5デスクトップランタイムのダウンロードとインストールに失敗しました。こちらからダウンロードしてください。"
-Installed_FailedASP: "ASP.NET Core 5.0ランタイムのダウンロードとインストールに失敗しました。ダウンロードするには: 1. 以下のリンクをクリックしてください: {link} 2. [Run Desktop apps] の [Download x64] をクリックします。"
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "インストールの準備ができています. インストールしたい場合とプロンプトが表示されたら, クリックしてください 'はい' ."
 Installer_PressStart: 任意のキーを押してインストールを開始...
 Installer_VerifyMin: "最低限の推奨要件を満たしていることを確認してください:"
