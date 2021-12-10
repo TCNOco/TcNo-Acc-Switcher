@@ -33,7 +33,7 @@ Settings_Header_TraySettings: Setări jurnal
 Settings_Header_OpenGameFolders: Deschide folderele jocului
 Settings_TrayMax: 'Numărul maxim de conturi de reţinut:'
 Settings_RTL: Afișați textul ca de la dreapta la stânga
-Settings_CurrentLocation: 'Current install location: {path}'
+Settings_CurrentLocation: 'Locația curentă de instalare: {path}'
 Settings_PickFolder: Alege dosarul {platform}
 Settings_OpenFolder: Deschide dosarul {platform}
 Settings_ClearForgotten: Curăță uitat
@@ -47,8 +47,8 @@ Settings_StartMenu_Platform: Platformă
 Settings_Tray_StartWindows: Începe Tăierea cu Windows
 Settings_Tray_StartNow: '[Începe Tăierea acum]'
 Settings_CurrentStyle: Stil actual
-Settings_ThemeBackground: '[Set background]'
-Settings_ThemeOpenFolder: '[Open theme folder]'
+Settings_ThemeBackground: '[Setați fundalul]'
+Settings_ThemeOpenFolder: '[Deschide folderul cu teme]'
 Settings_Protocol: 'Activează tcno:\\ protocol (recomandat)'
 Settings_StartCentered: Pornire program centrat
 Settings_WindowsAccent: Folosește culoarea de cent Windows
@@ -148,10 +148,10 @@ Modal_Title_ChangeUsername: Schimbă nume utilizator
 Modal_Title_ConfirmAction: Comutator de cont tcno.confirmare acțiune
 Modal_Title_LocatePlatform: Vă rugăm să localizați directorul {platform}
 Modal_Title_AddNew: Adaugă un cont nou {platform}
-Modal_Title_Background: Set a background image
-Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
-Modal_SetBackground_Button: Set background
-Modal_SetBackground_ChooseImage: Choose local image
+Modal_Title_Background: Setați o imagine de fundal
+Modal_SetBackground: 'Selectați o imagine sau introduceți o adresă URL mai jos.<br>Lăsați necompletat și setați resetarea.<br>(Pentru un control mai avansat, consultați Tematica de pe Wiki):'
+Modal_SetBackground_Button: Setați fundalul
+Modal_SetBackground_ChooseImage: Alegeți imaginea locală
 Modal_ChangeUsername: Vă rugăm să introduceți un nou {platformText} pentru contul dvs.
 Modal_ChangeUsernameType: Schimbă {UsernameOrOther}
 Modal_EnterDirectory: "Te rugăm să introduci directorul {platform}, ca atare: C:\\Program Files\\{platform}"
@@ -222,7 +222,7 @@ Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "Nu s-a reușit crearea directorului:"
 Installer_FailedWV: "Descărcarea şi instalarea Microsoft WebView2 Runtime. Pentru a descărca: 1. Faceţi clic pe linkul de mai jos: {link} 2. Faceţi clic pe \"Descărcare găzduire\" sub aplicaţiile serverului."
 Installer_FailedDR: "Descărcarea și instalarea .NET 5 Desktop Runtime. Descărcați-l aici:"
-Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
+Installed_FailedASP: "Nu s-a putut descărca și instala ASP.NET Core 6.0 Runtime. Pentru a descărca: 1. Faceți clic pe linkul de mai jos: {link} 2. Faceți clic pe „Download x64” sub Run Desktop apps."
 Installer_Ready: "Una sau mai multe sunt gata pentru instalare. Dacă şi când vi se cere dacă doriţi să instalaţi, faceţi clic pe \"Da\"."
 Installer_PressStart: Apăsați orice tastă pentru a începe instalarea...
 Installer_VerifyMin: "Verifică dacă îndeplinești cerințele minime recomandate:"
