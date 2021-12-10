@@ -18,29 +18,31 @@
 
 #include "versions.h"
 
-void split_version(std::string& str, std::vector<int>& arr, const std::string& delimiter)
+void split_version(std::string& str, std::vector<int>& arr, const char& delimiter)
 {
-	size_t pos = 0;
-	while ((pos = str.find(delimiter)) != std::string::npos) {
-		arr.push_back(std::stoi(str.substr(0, pos)));
-		if (str.find(delimiter) != std::string::npos) str.erase(0, pos + delimiter.length());
-	}
-
-	const size_t v1_first_not = str.find_first_not_of("0123456789.");
-	if (v1_first_not == std::string::npos)
-		arr.push_back(std::stoi(str));
-	else
+	std::string s_num = "";
+	for (const char i : str)
 	{
-		str = str.substr(0, v1_first_not);
-		if (str.length() > 0) arr.push_back(std::stoi(str));
+		if (i != delimiter)
+		{
+			if (std::isdigit(i)) s_num += i;
+			else if (i == '\0') break; // End of string
+		}
+		else
+		{
+			arr.push_back(std::stoi(s_num));
+			s_num = "";
+		}
 	}
+	// Add last
+	arr.push_back(std::stoi(s_num));
 }
 
 /// <summary>
 /// Returns whether v2 is newer than, or equal to v1.
 /// Works with unequal string sizes.
 /// </summary>
-bool compare_versions(std::string v1, std::string v2, const std::string& delimiter)
+bool compare_versions(std::string v1, std::string v2, const char& delimiter)
 {
 	if (v1 == v2) return true;
 	try
@@ -60,7 +62,7 @@ bool compare_versions(std::string v1, std::string v2, const std::string& delimit
 		return true;
 	} catch (std::exception &err)
 	{
-		std::cout << "Version conversion failed!" << std::endl << "Details:" << std::endl << err.what() << std::endl;
+		std::cout << "Version conversion failed!" << std::endl << "Args: (" << v1 << ") and (" << v2 << ")" << std::endl << "Details:" << std::endl << err.what() << std::endl;
 	}
 
 	return true;
@@ -88,7 +90,7 @@ void find_installed_c_runtimes(bool &min_vc_met)
 	{
 		wprintf(L" - C++ Redistributable 2015-2022 [%s]\n", version);
 		const std::string s_version(std::begin(version), std::end(version));
-		min_vc_met = compare_versions(required_min_vc, std::string(s_version), ".");
+		min_vc_met = compare_versions(required_min_vc, std::string(s_version), '.');
 	}
 	RegCloseKey(key);
 }
@@ -146,7 +148,7 @@ void find_installed_net_runtimes(const bool x32, bool &min_webview_met, bool &mi
 
 				if (wcsstr(s_display_name, L"WebView2") != nullptr)
 				{
-					min_webview_met = min_webview_met || compare_versions(required_min_webview, std::string(s_version), ".");
+					min_webview_met = min_webview_met || compare_versions(required_min_webview, std::string(s_version), '.');
 					if (output)
 					{
 						wprintf(L" - %s ", s_display_name);
@@ -156,13 +158,13 @@ void find_installed_net_runtimes(const bool x32, bool &min_webview_met, bool &mi
 
 				if (wcsstr(s_display_name, L"Desktop Runtime") != nullptr && wcsstr(s_display_name, L"x64") != nullptr)
 				{
-					min_desktop_runtime_met = min_desktop_runtime_met || compare_versions(required_min_desktop_runtime, std::string(s_version), ".");
+					min_desktop_runtime_met = min_desktop_runtime_met || compare_versions(required_min_desktop_runtime, std::string(s_version), '.');
 					if (output) wprintf(L" - %s\n", s_display_name);
 				}
 
 				if (wcsstr(s_display_name, L"ASP.NET Core 6") != nullptr)
 				{
-					min_aspcore_met = min_aspcore_met || compare_versions(required_min_aspcore, std::string(s_version), ".");
+					min_aspcore_met = min_aspcore_met || compare_versions(required_min_aspcore, std::string(s_version), '.');
 					if (output) wprintf(L" - %s\n", s_display_name);
 				}
 			}
