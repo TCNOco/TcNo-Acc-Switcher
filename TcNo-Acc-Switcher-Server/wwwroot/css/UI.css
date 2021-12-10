@@ -159,10 +159,10 @@ button .caret {
 .listWithBars ul li {
   display: inline-block;
 }
-.listWithBars ul li:first-of-type:before {
+.listWithBars ul li:first-of-type::before {
   content: none;
 }
-.listWithBars ul li:before {
+.listWithBars ul li::before {
   content: "  |  ";
 }
 

@@ -180,12 +180,12 @@ void download_install_missing_runtimes()
 			total += 122;
 		}
 		if (!min_aspcore_met) {
-			cout << " + Microsoft .NET 6 Desktop Runtime [~52,3 MB]" << endl;
-			total += 52;
-		}
-		if (!min_desktop_runtime_met) {
 			cout << " + Microsoft Microsoft ASP.NET Core 6.0 Runtime [~7,90 MB]" << endl;
 			total += 8;
+		}
+		if (!min_desktop_runtime_met) {
+			cout << " + Microsoft .NET 6 Desktop Runtime [~52,3 MB]" << endl;
+			total += 52;
 		}
 
 		if (!min_vc_met) {

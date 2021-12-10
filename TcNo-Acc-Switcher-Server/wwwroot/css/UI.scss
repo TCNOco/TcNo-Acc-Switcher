@@ -173,11 +173,11 @@ button .caret {
         li {
             display: inline-block;
 
-            &:first-of-type:before {
+            &:first-of-type::before {
                 content: none;
             }
 
-            &:before {
+            &::before {
                 content: "  |  "
             }
         }
