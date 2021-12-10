@@ -33,7 +33,7 @@ Settings_Header_TraySettings: Ajustes de la bandeja
 Settings_Header_OpenGameFolders: Abrir carpetas del juego
 Settings_TrayMax: 'Número máximo de cuentas a recordar:'
 Settings_RTL: Mostrar texto de derecha a izquierda
-Settings_CurrentLocation: 'Current install location: {path}'
+Settings_CurrentLocation: 'Ubicación de instalación actual: {path}'
 Settings_PickFolder: Elegir carpeta {platform}
 Settings_OpenFolder: Abrir la carpeta {platform}
 Settings_ClearForgotten: Limpiar forzado
@@ -47,8 +47,8 @@ Settings_StartMenu_Platform: Plataforma
 Settings_Tray_StartWindows: Iniciar bandeja con Windows
 Settings_Tray_StartNow: '[Iniciar bandeja ahora]'
 Settings_CurrentStyle: Estilo actual
-Settings_ThemeBackground: '[Set background]'
-Settings_ThemeOpenFolder: '[Open theme folder]'
+Settings_ThemeBackground: '[Definir fondo]'
+Settings_ThemeOpenFolder: '[Abrir carpeta de temas]'
 Settings_Protocol: 'Habilitar el protocolo tcno:\\ (Recomendado)'
 Settings_StartCentered: Iniciar programa centrado
 Settings_WindowsAccent: Usar el color de acento de Windows
@@ -148,10 +148,10 @@ Modal_Title_ChangeUsername: Cambiar nombre de usuario
 Modal_Title_ConfirmAction: Acción de confirmación del cambiador de cuenta TcNo
 Modal_Title_LocatePlatform: Por favor, localice el directorio {platform}
 Modal_Title_AddNew: Añadir nueva cuenta de {platform}
-Modal_Title_Background: Set a background image
-Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
-Modal_SetBackground_Button: Set background
-Modal_SetBackground_ChooseImage: Choose local image
+Modal_Title_Background: Establecer una imagen de fondo
+Modal_SetBackground: 'Seleccione una imagen o ingrese una URL a continuación.<br>Déjelo en blanco y configúrelo para reiniciar.<br>(Para un control más avanzado, consulte Theming on the Wiki):'
+Modal_SetBackground_Button: Definir fondo
+Modal_SetBackground_ChooseImage: Elija imagen local
 Modal_ChangeUsername: Por favor, introduzca un nuevo {platformText} para su cuenta
 Modal_ChangeUsernameType: Cambiar {UsernameOrOther}
 Modal_EnterDirectory: "Por favor ingrese el directorio de {platform}, como tal: C:\\Program Files\\{platform}"
@@ -218,11 +218,11 @@ Installer_TotalSize: "Tamaño total de la descarga: ~{size} MB"
 Installer_AnyKeyStart: Pulse cualquier tecla para iniciar la descarga...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Tiempo de ejecución de escritorio Microsoft .NET 5
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
+Runtime_ASP: Tiempo de ejecución de Microsoft Microsoft ASP.NET Core 6.0
 Installer_FailedFolder: "No se pudo crear la carpeta:"
 Installer_FailedWV: "No se pudo descargar e instalar el tiempo de ejecución de Microsoft WebView2. Para descargar: 1. Haga clic en el siguiente enlace: {link} 2. Haga clic en 'Descargar paquete de alojamiento' en Ejecutar aplicaciones de servidor."
 Installer_FailedDR: "Error al descargar e instalar el tiempo de ejecución de .NET 5. Por favor, descárguelo aquí:"
-Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
+Installed_FailedASP: "Error al descargar e instalar ASP.NET Core 6.0 Runtime. Para descargar: 1. Haga clic en el enlace siguiente: {link} 2. Haga clic en 'Descargar x64' en Ejecutar aplicaciones de escritorio."
 Installer_Ready: "Uno o más están listos para instalar. Si se le pregunta si desea instalar, haga clic en \"Sí\"."
 Installer_PressStart: Pulse cualquier tecla para iniciar la instalación...
 Installer_VerifyMin: "Verifique que cumple con los requisitos mínimos recomendados:"
