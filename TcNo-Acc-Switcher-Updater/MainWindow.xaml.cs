@@ -1138,6 +1138,7 @@ namespace TcNo_Acc_Switcher_Updater
 
                 var patchedFile = Path.Join(outputFolder, "patched", relativePath);
                 _ = Directory.CreateDirectory(Path.GetDirectoryName(patchedFile)!);
+                if (!File.Exists(Path.Join(oldFolder, relativePath))) continue;
                 DoDecode(Path.Join(oldFolder, relativePath), patchFile, patchedFile);
             }
         }
