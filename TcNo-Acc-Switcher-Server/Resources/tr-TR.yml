@@ -33,7 +33,7 @@ Settings_Header_TraySettings: Tepsi ayarları
 Settings_Header_OpenGameFolders: Oyun klasörlerini aç
 Settings_TrayMax: 'Hatırlanması gereken maksimum hesap sayısı:'
 Settings_RTL: Metni Sağdan Sola olarak göster
-Settings_CurrentLocation: 'Current install location: {path}'
+Settings_CurrentLocation: 'Geçerli yükleme konumu: {path}'
 Settings_PickFolder: '{platform} klasörü seç'
 Settings_OpenFolder: '{platform} Klasörünü Aç'
 Settings_ClearForgotten: Unutulanları Temizle
@@ -47,8 +47,8 @@ Settings_StartMenu_Platform: Platformu
 Settings_Tray_StartWindows: Windows ile Tepsiyi Başlatın
 Settings_Tray_StartNow: '[Tepsiyi şimdi başlatın]'
 Settings_CurrentStyle: Geçerli Stil
-Settings_ThemeBackground: '[Set background]'
-Settings_ThemeOpenFolder: '[Open theme folder]'
+Settings_ThemeBackground: '[Arka planı ayarla]'
+Settings_ThemeOpenFolder: '[Tema klasörünü aç]'
 Settings_Protocol: 'tcno:\\ protokolünü etkinleştir (Önerilen)'
 Settings_StartCentered: Programı merkezli başlat
 Settings_WindowsAccent: Windows Vurgu Rengini kullanın
@@ -148,10 +148,10 @@ Modal_Title_ChangeUsername: Kullanıcı adını değiştir
 Modal_Title_ConfirmAction: TcNo Hesap Değiştirici İşlemi Onayla
 Modal_Title_LocatePlatform: Lütfen {platform} dizini bulun
 Modal_Title_AddNew: Yeni {platform} hesap ekle
-Modal_Title_Background: Set a background image
-Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
-Modal_SetBackground_Button: Set background
-Modal_SetBackground_ChooseImage: Choose local image
+Modal_Title_Background: Bir arka plan resmi ayarla
+Modal_SetBackground: 'Bir resim seçin veya aşağıya bir URL girin.<br>Boş bırakın ve sıfırlamaya ayarlayın.<br>(Daha gelişmiş kontrol için Wiki''deki Temaya bakın):'
+Modal_SetBackground_Button: Arka planı ayarla
+Modal_SetBackground_ChooseImage: Yerel resmi seçin
 Modal_ChangeUsername: Lütfen hesabınız için yeni bir {platformText}
 Modal_ChangeUsernameType: '{UsernameOrOther}değiştir'
 Modal_EnterDirectory: "Lütfen {platform}dizinini şu şekilde girin: C:\\Program Files\\{platform}"
@@ -218,11 +218,11 @@ Installer_TotalSize: "Toplam indirme boyutu: ~{size} MB"
 Installer_AnyKeyStart: İndirmeyi başlatmak için herhangi bir tuşa basın...
 Runtime_WebView2: Microsoft WebView2 Çalışma Zamanı
 Runtime_Desktop: Microsoft .NET 5 Masaüstü Çalışma Zamanı
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Çalışma Zamanı
 Installer_FailedFolder: "Klasör oluşturulamadı:"
 Installer_FailedWV: "Microsoft WebView2 Runtime indirilemedi ve yüklenemedi. İndirmek için: 1. Aşağıdaki bağlantıya tıklayın: {link} 2. Sunucu uygulamalarını çalıştır altında 'Barındırma Paketini İndir'e tıklayın."
 Installer_FailedDR: ".NET 5 Desktop Runtime indirilemedi ve yüklenemedi. Lütfen buradan indirin:"
-Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
+Installed_FailedASP: "ASP.NET Core 6.0 Runtime indirilemedi ve yüklenemedi. İndirmek için: 1. Aşağıdaki bağlantıya tıklayın: {link} 2. Masaüstü uygulamalarını Çalıştır altında 'x64 indir' seçeneğine tıklayın."
 Installer_Ready: "Bir veya daha fazlası kurulum için hazır. Yüklemek isteyip istemediğiniz sorulduğunda, 'Evet'i tıklayın."
 Installer_PressStart: Kurulumu başlatmak için herhangi bir tuşa basın...
 Installer_VerifyMin: "Önerilen minimum gereksinimleri karşıladığınızı doğrulayın:"
