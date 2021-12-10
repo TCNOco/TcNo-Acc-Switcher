@@ -33,6 +33,7 @@ Settings_Header_TraySettings: Innstillinger for verktøykassen
 Settings_Header_OpenGameFolders: Åpne spillmapper
 Settings_TrayMax: 'Maks antall kontoer å huske:'
 Settings_RTL: Vis tekst som høyre-til-venstre
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: Velg mappe for {platform}
 Settings_OpenFolder: Åpne {platform} -mappen
 Settings_ClearForgotten: Fjern glemte
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: Plattform
 Settings_Tray_StartWindows: Start felt med Windows
 Settings_Tray_StartNow: '[Start Tray now]'
 Settings_CurrentStyle: Nåværende Stil
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'Aktiver tcno:\\ protokoll (Anbefalt)'
 Settings_StartCentered: Start program sentrert
 Settings_WindowsAccent: Bruk Windows Accent Colour
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: Endre brukernavn
 Modal_Title_ConfirmAction: TcIngen konto velger Bekreft handling
 Modal_Title_LocatePlatform: Finn mappen {platform}
 Modal_Title_AddNew: Legg til ny {platform} konto
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: Skriv inn en ny {platformText} for kontoen din
 Modal_ChangeUsernameType: Endre {UsernameOrOther}
 Modal_EnterDirectory: "Skriv inn {platform}sin mappe som such: C:\\Program Filer\\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "Total nedlastingsstørrelse: ~{size} MB"
 Installer_AnyKeyStart: Trykk på en tast for å starte nedlasting...
 Runtime_WebView2: Microsoft WebView2 Kjørtid
 Runtime_Desktop: Microsoft .NET 5 Desktop kjøretid
-Runtime_ASP: Microsoft Microsoft ASP.NET Kjerne 5.0 Runtid
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "Kunne ikke opprette mappen:"
 Installer_FailedWV: "Kan ikke laste ned og installere Microsoft WebView2 kjøring. For å laste ned: 1. Klikk på lenken under: {link} 2. Klikk \"Last ned Hosting Bundle\" under Kjør server-apper."
 Installer_FailedDR: "Kunne ikke laste ned og installere .NET 5 Skrivetid. Vennligst last den ned her:"
-Installed_FailedASP: "Kan ikke laste ned og installere ASP.NET Kjerne 5.0 Kjøring. For å laste ned: 1. Klikk på lenken nedenfor: {link} 2. Klikk på 'Last ned x64' under Kjør Desktop-apper."
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "Én eller flere er klar for installasjon. Hvis og når du blir bedt om å installere, klikk 'Ja'."
 Installer_PressStart: Trykk på en tast for å starte installasjonen...
 Installer_VerifyMin: "Bekreft at du oppfyller minimumskravene:"

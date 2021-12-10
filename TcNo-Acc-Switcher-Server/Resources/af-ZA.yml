@@ -33,6 +33,7 @@ Settings_Header_TraySettings: Laai-instellings
 Settings_Header_OpenGameFolders: Maak speletjie-vouers oop
 Settings_TrayMax: 'Maksimum aantal rekeninge om te onthou:'
 Settings_RTL: Wys teks as Regs-na-Links
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: Kies {platform} lêergids
 Settings_OpenFolder: Maak {platform} vouer oop
 Settings_ClearForgotten: Duidelik vergete
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: Platform
 Settings_Tray_StartWindows: Begin Tray met Windows
 Settings_Tray_StartNow: '[Begin laai nou]'
 Settings_CurrentStyle: Huidige styl
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'Aktiveer TcNo: \\ protokol (aanbeveel)'
 Settings_StartCentered: Begin program gesentreer
 Settings_WindowsAccent: Gebruik die Windows-aksentkleur
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: Verander gebruikersnaam
 Modal_Title_ConfirmAction: TcNo Account Switcher Bevestig aksie
 Modal_Title_LocatePlatform: Soek die {platform} gids
 Modal_Title_AddNew: Voeg 'n nuwe {platform} rekening by
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: Voer asseblief 'n nuwe {platformText} vir u rekening in
 Modal_ChangeUsernameType: Verander {UsernameOrOther}
 Modal_EnterDirectory: "Voer asb die {platform}-gids in: C: \\ Program Files \\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "Totale aflaaigrootte: ~{size} MB"
 Installer_AnyKeyStart: Druk enige sleutel om af te laai ...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "Kon nie vouer skep nie:"
 Installer_FailedWV: "Kon nie Microsoft WebView2 Runtime aflaai en installeer nie. Om af te laai: 1. Klik op die onderstaande skakel: {link} 2. Klik op 'Laai gasheerbundel af' onder Bedienerprogramme hardloop."
 Installer_FailedDR: "Kon nie .NET 5 Desktop Runtime aflaai en installeer nie. Laai dit asseblief hier af:"
-Installed_FailedASP: "Kon nie ASP.NET Core 5.0 Runtime aflaai en installeer nie. Om af te laai: 1. Klik op die onderstaande skakel: {link} 2. Klik op 'Download x64' onder Desktop-programme hardloop."
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "Een of meer is gereed vir installasie. Klik op 'Ja' as en wanneer u gevra word of u dit wil installeer."
 Installer_PressStart: Druk enige sleutel om te installeer ...
 Installer_VerifyMin: "Maak seker dat u aan die minimum aanbevole vereistes voldoen:"

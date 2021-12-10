@@ -33,6 +33,7 @@ Settings_Header_TraySettings: Inställningar för fack
 Settings_Header_OpenGameFolders: Öppna spelmappar
 Settings_TrayMax: 'Max antal konton att komma ihåg:'
 Settings_RTL: Visa text som höger till vänster
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: Välj {platform} mapp
 Settings_OpenFolder: Öppna {platform} -mappen
 Settings_ClearForgotten: Rensa bortglömda
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: Plattform
 Settings_Tray_StartWindows: Starta facket med Windows
 Settings_Tray_StartNow: '[Starta fack nu]'
 Settings_CurrentStyle: Nuvarande stil
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'Aktivera tcno:\\ protokoll (rekommenderas)'
 Settings_StartCentered: Starta program centrerat
 Settings_WindowsAccent: Använd Windows Accent Färg
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: Ändra användarnamn
 Modal_Title_ConfirmAction: TcNo kontoväxlare Bekräfta åtgärd
 Modal_Title_LocatePlatform: Vänligen hitta katalogen {platform}
 Modal_Title_AddNew: Lägg till nytt {platform} -konto
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: Ange en ny {platformText} för ditt konto
 Modal_ChangeUsernameType: Ändra {UsernameOrOther}
 Modal_EnterDirectory: "Ange {platform}s katalog, som sådan: C:\\Program Files\\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "Total nedladdningsstorlek: ~{size} MB"
 Installer_AnyKeyStart: Tryck på valfri tangent för att starta nedladdning...
 Runtime_WebView2: Microsoft WebView2 Körtid
 Runtime_Desktop: Microsoft .NET 5 Skrivbords körtid
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Körtid
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "Kunde inte skapa mapp:"
 Installer_FailedWV: "Det gick inte att ladda ner och installera Microsoft WebView2 Runtime. För att ladda ner: 1. Klicka på länken nedan: {link} 2. Klicka på \"Download Hosting Bundle\" under Kör serverappar."
 Installer_FailedDR: "Det gick inte att ladda ner och installera .NET 5 Desktop Runtime. Ladda ner den här:"
-Installed_FailedASP: "Det gick inte att ladda ner och installera ASP.NET Core 5.0 Körtid. Ladda ner: 1. Klicka på länken nedan: {link} 2. Klicka på \"Ladda ner x64\" under Kör skrivbords-appar."
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "En eller flera är redo för installation. Om och när du uppmanas att installera klickar du på \"Ja\"."
 Installer_PressStart: Tryck på valfri tangent för att börja installera...
 Installer_VerifyMin: "Verifiera att du uppfyller de minimikrav som rekommenderas:"

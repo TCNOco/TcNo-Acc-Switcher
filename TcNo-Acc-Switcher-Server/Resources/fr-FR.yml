@@ -33,6 +33,7 @@ Settings_Header_TraySettings: Paramètres de la zone de notification
 Settings_Header_OpenGameFolders: Ouvrir les dossiers du jeu
 Settings_TrayMax: 'Nombre maximum de comptes à retenir :'
 Settings_RTL: Afficher le texte de droite à gauche
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: Choisir le dossier {platform}
 Settings_OpenFolder: Ouvrir le dossier {platform}
 Settings_ClearForgotten: Effacer Oublié
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: Plateforme
 Settings_Tray_StartWindows: Démarrer la zone de notification avec Windows
 Settings_Tray_StartNow: '[Démarrer la barre de notification maintenant]'
 Settings_CurrentStyle: Style actuel
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'Activer le protocole tcno:\\ (Recommandé)'
 Settings_StartCentered: Démarrer le programme centré sur
 Settings_WindowsAccent: Utiliser la couleur d'accentuation Windows
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: Changer le nom d'utilisateur
 Modal_Title_ConfirmAction: Confirmer l'action de changement de compte TcNo
 Modal_Title_LocatePlatform: Veuillez localiser le répertoire {platform}
 Modal_Title_AddNew: Ajouter un nouveau compte {platform}
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: Veuillez entrer un nouveau {platformText} pour votre compte
 Modal_ChangeUsernameType: Changer {UsernameOrOther}
 Modal_EnterDirectory: "Veuillez entrer le répertoire de {platform}, en tant que tel : C:\\Program Files\\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "Taille totale du téléchargement : ~{size} Mo"
 Installer_AnyKeyStart: Appuyez sur n'importe quelle touche pour commencer le téléchargement...
 Runtime_WebView2: Exécution de Microsoft WebView2
 Runtime_Desktop: Exécution de Microsoft .NET 5 Desktop
-Runtime_ASP: Microsoft ASP.NET Core 5.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "Impossible de créer le dossier :"
 Installer_FailedWV: "Impossible de télécharger et d'installer Microsoft WebView2 Runtime. Pour télécharger : 1. Cliquez sur le lien ci-dessous : {link} 2. Cliquez sur 'Télécharger le Pack d'Hébergement' sous Exécuter les applications de serveur."
 Installer_FailedDR: "Impossible de télécharger et d'installer .NET 5 Desktop Runtime. Veuillez le télécharger ici :"
-Installed_FailedASP: "Impossible de télécharger et d'installer ASP.NET Core 5.0 Runtime. Pour télécharger : 1. Cliquez sur le lien ci-dessous : {link} 2. Cliquez sur 'Télécharger x64' sous Exécuter les applications de bureau."
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "Une ou plusieurs personnes sont prêtes à être installées. Si vous souhaitez l'installer, cliquez sur \"Oui\"."
 Installer_PressStart: Appuyez sur n'importe quelle touche pour démarrer l'installation...
 Installer_VerifyMin: "Vérifiez que vous remplissez les conditions minimales recommandées :"

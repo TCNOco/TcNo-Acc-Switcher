@@ -33,6 +33,7 @@ Settings_Header_TraySettings: Ρυθμίσεις συστήματος ειδοπ
 Settings_Header_OpenGameFolders: Άνοιγμα φακέλων παιχνιδιών
 Settings_TrayMax: 'Μέγιστος αριθμός λογαριασμών που πρέπει να θυμάστε:'
 Settings_RTL: Εμφάνιση κειμένου ως από τα δεξιά προς τα αριστερά
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: Επιλέξτε {platform} φάκελο
 Settings_OpenFolder: Άνοιγμα φακέλου {platform}
 Settings_ClearForgotten: Εκκαθάριση Ξεχασμένων
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: Πλατφόρμα
 Settings_Tray_StartWindows: Έναρξη πλαισίου με τα Windows
 Settings_Tray_StartNow: '[Έναρξη Τροφοδοσίας τώρα]'
 Settings_CurrentStyle: Τρέχον Στυλ
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'Ενεργοποίηση πρωτοκόλλου tcno:\\ (συνιστάται)'
 Settings_StartCentered: Εκκίνηση προγράμματος στο κέντρο
 Settings_WindowsAccent: Χρησιμοποιήστε το χρώμα έμφασης των Windows
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: Αλλαγή ονόματος χρήστη
 Modal_Title_ConfirmAction: TcNo Account Switcher Επιβεβαίωση Ενέργειας
 Modal_Title_LocatePlatform: Παρακαλώ εντοπίστε τον κατάλογο {platform}
 Modal_Title_AddNew: Προσθήκη νέου λογαριασμού {platform}
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: Παρακαλώ εισάγετε ένα νέο {platformText} για το λογαριασμό σας
 Modal_ChangeUsernameType: Αλλαγή {UsernameOrOther}
 Modal_EnterDirectory: "Παρακαλώ εισάγετε τον κατάλογο {platform}ως τέτοιο: C:\\Αρχεία προγράμματος\\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "Συνολικό μέγεθος λήψης: ~{size} MB"
 Installer_AnyKeyStart: Πατήστε οποιοδήποτε πλήκτρο για να ξεκινήσετε τη λήψη...
 Runtime_WebView2: Microsoft WebView2 Εκτέλεση
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "Αποτυχία δημιουργίας φακέλου:"
 Installer_FailedWV: "Αποτυχία λήψης και εγκατάστασης του Microsoft WebView2 Runtime. Για λήψη: 1. Κάντε κλικ στον παρακάτω σύνδεσμο: {link} 2. Κάντε κλικ στο 'Λήψη Πακέτου Φιλοξενίας' κάτω από τις εφαρμογές Εκτέλεση διακομιστή."
 Installer_FailedDR: "Αποτυχία λήψης και εγκατάστασης .NET 5 Desktop Runtime. Παρακαλώ κατεβάστε το εδώ:"
-Installed_FailedASP: "Αποτυχία λήψης και εγκατάστασης ASP.NET Core 5.0 Runtime. Για λήψη: 1. Κάντε κλικ στον παρακάτω σύνδεσμο: {link} 2. Κάντε κλικ στο κουμπί 'Λήψη x64' στις εφαρμογές Run Desktop."
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "Ένα ή περισσότερα είναι έτοιμα για εγκατάσταση. Αν και όταν σας ζητηθεί, αν θέλετε να εγκαταστήσετε, κάντε κλικ στο κουμπί 'Ναι'."
 Installer_PressStart: Πατήστε οποιοδήποτε πλήκτρο για να ξεκινήσετε την εγκατάσταση...
 Installer_VerifyMin: "Επαληθεύστε ότι πληρείτε τις ελάχιστες συνιστώμενες απαιτήσεις:"

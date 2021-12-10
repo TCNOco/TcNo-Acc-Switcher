@@ -33,6 +33,7 @@ Settings_Header_TraySettings: Настройки трея
 Settings_Header_OpenGameFolders: Открыть папку с игрой
 Settings_TrayMax: 'Максимальное количество учетных записей, которое нужно запомнить:'
 Settings_RTL: Показывать текст справа налево
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: Выберите папку {platform}
 Settings_OpenFolder: Открыть папку {platform}
 Settings_ClearForgotten: Очистить забытые
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: Платформа
 Settings_Tray_StartWindows: Запускать трей вместе с Windows
 Settings_Tray_StartNow: '[Запустить свернутым сейчас]'
 Settings_CurrentStyle: Текущий стиль
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'Включить протокол tcno:\\ (Рекомендуется)'
 Settings_StartCentered: Центрировать окно при запуске
 Settings_WindowsAccent: Использовать цвет Windows
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: Изменить имя пользователя
 Modal_Title_ConfirmAction: TcNo Account Switcher подтвердите действие
 Modal_Title_LocatePlatform: Пожалуйста, выберите каталог {platform}
 Modal_Title_AddNew: Добавить новый аккаунт {platform}
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: Пожалуйста, введите новый {platformText} для вашего аккаунта
 Modal_ChangeUsernameType: Изменить {UsernameOrOther}
 Modal_EnterDirectory: "Пожалуйста, введите путь {platform} в таком виде: C:\\Program Files\\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "Общий размер загрузки: ~{size} МБ"
 Installer_AnyKeyStart: Нажмите любую клавишу, чтобы начать загрузку...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft ASP.NET Core 5.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "Не удалось создать папку:"
 Installer_FailedWV: "Не удалось загрузить и установить Microsoft WebView2 Runtime. Чтобы загрузить: 1. Щелкните по ссылке ниже: {link} 2. Нажмите 'Download Hosting Bundle' в разделе Run server apps."
 Installer_FailedDR: "Не удалось загрузить и установить .NET 5 Desktop Runtime. Скачайте его здесь:"
-Installed_FailedASP: "Не удалось загрузить и установить ASP.NET Core 5.0 Runtime. Чтобы загрузить: 1. Нажмите на ссылку ниже: {link} 2. Нажмите 'Download x64' в разделе Run Desktop apps."
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "Одна или несколько готовы к установке. Если появится запрос о необходимости установки, нажмите \"Да\"."
 Installer_PressStart: Нажмите любую клавишу, чтобы начать установку...
 Installer_VerifyMin: "Проверьте соответствие минимальным рекомендованным требованиям:"

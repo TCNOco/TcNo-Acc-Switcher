@@ -33,6 +33,7 @@ Settings_Header_TraySettings: إعدادات القائمة المخفية في 
 Settings_Header_OpenGameFolders: مجلدات الألعاب
 Settings_TrayMax: 'عدد الحسابات الظاهرة في قائمة:'
 Settings_RTL: إظهار النص من اليمين إلى اليسار
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: تحديد ملف {platform}
 Settings_OpenFolder: فتح ملف {platform}
 Settings_ClearForgotten: تنظيف الحسابات المزالة
@@ -46,11 +47,13 @@ Settings_StartMenu_Platform: المنصة
 Settings_Tray_StartWindows: تشغيل في الوضع المصغر
 Settings_Tray_StartNow: '[ادخل الوضع الان]'
 Settings_CurrentStyle: الثيم الحالي
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'تمكين بروتوكول tcno:\\(مفضل)'
 Settings_StartCentered: بدء البرنامج في منتصف الشاشة
 Settings_WindowsAccent: استخدام لون ثيم ويندوز
 Settings_HelpTranslate: "[ساهم في الترجمة]"
-Settings_ViewTranslators: "[Credits]"
+Settings_ViewTranslators: "[المساهمون]"
 Settings_Header_ActiveBrowser: "[متقدم] محرك العرض:"
 Cleaning_Header_StartMenuShortcuts: 'اختصارات لقائمة البدء:'
 Cleaning_Header_General: تنظيف عام
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: تغيير اسم المستخدم
 Modal_Title_ConfirmAction: إجراء تأكيد مبدل حساب TcNo
 Modal_Title_LocatePlatform: الرجاء تحديد موقع الدليل {platform}
 Modal_Title_AddNew: إضافة حساب {platform} جديد
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: الرجاء إدخال {platformText} جديد للحساب الخاص بك
 Modal_ChangeUsernameType: تغيير {UsernameOrOther}
 Modal_EnterDirectory: "الرجاء إدخال دليل {platform}، على هذا النحو: C:\\Program files\\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "إجمالي حجم التنزيل: ~{size} ميغاباي
 Installer_AnyKeyStart: اضغط على أي مفتاح لبدء التنزيل...
 Runtime_WebView2: تشغيل Microsoft WebView2
 Runtime_Desktop: مايكروسوفت. NET 5 تشغيل سطح المكتب
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 وقت التشغيل
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "فشل في إنشاء المجلد:"
 Installer_FailedWV: "فشل تنزيل وتثبيت مايكروسوفت WebView2. للتنزيل: 1. انقر على الرابط أدناه: {link} 2. انقر فوق 'تنزيل حزمة الاستضافة' تحت تطبيقات خادم التشغيل."
 Installer_FailedDR: "فشل في تنزيل وتثبيت .NET 5 تشغيل سطح المكتب. الرجاء تنزيله هنا:"
-Installed_FailedASP: "فشل تنزيل وتثبيت ASP.NET Core 5.0. للتنزيل: 1. انقر على الرابط أدناه: {link} 2. انقر فوق 'تنزيل x64' تحت تشغيل تطبيقات سطح المكتب."
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "واحد أو أكثر جاهز للتثبيت. إذا تم مطالبتك إذا كنت ترغب في التثبيت، انقر فوق 'نعم'."
 Installer_PressStart: اضغط على أي مفتاح لبدء التثبيت...
 Installer_VerifyMin: "تحقق من استيفاء الحد الأدنى من المتطلبات الموصى بها:"

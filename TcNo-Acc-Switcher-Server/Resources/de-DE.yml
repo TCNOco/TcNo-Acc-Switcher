@@ -33,6 +33,7 @@ Settings_Header_TraySettings: Tray-Einstellungen
 Settings_Header_OpenGameFolders: Spielordner öffnen
 Settings_TrayMax: 'Maximale Anzahl an zu merkenden Konten:'
 Settings_RTL: Text von rechts nach links anzeigen
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: Wähle {platform} Ordner
 Settings_OpenFolder: Öffne {platform} Ordner
 Settings_ClearForgotten: Vergessene löschen
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: Plattform
 Settings_Tray_StartWindows: Tray mit Windows starten
 Settings_Tray_StartNow: '[Tray jetzt starten]'
 Settings_CurrentStyle: Aktuelles Design
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'tcno:\\ Protokoll Aktivieren (empfohlen)'
 Settings_StartCentered: Programm zentriert starten
 Settings_WindowsAccent: Verwende die Windows-Akzentfarbe
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: Benutzername ändern
 Modal_Title_ConfirmAction: TcNo Account Switcher Bestätigungsaktion
 Modal_Title_LocatePlatform: Bitte suchen Sie das {platform}-Verzeichnis
 Modal_Title_AddNew: Neues {platform}-Konto hinzufügen
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: Bitte gebe ein neues {platformText} für deinen Account ein
 Modal_ChangeUsernameType: '{UsernameOrOther} ändern'
 Modal_EnterDirectory: "Bitte geben Sie das Verzeichnis von {platform} im folgenden Format ein: C:\\Programme\\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "Gesamte Downloadgröße: ~{size} MB"
 Installer_AnyKeyStart: Drücken Sie jede Taste, um den Download zu starten...
 Runtime_WebView2: Microsoft WebView2 Laufzeit
 Runtime_Desktop: Microsoft .NET 5 Desktop Laufzeit
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Laufzeit
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "Fehler beim Erstellen des Ordners:"
 Installer_FailedWV: "Download und Installation von Microsoft WebView2 Laufzeit fehlgeschlagen. Zum Herunterladen: 1. Klicken Sie auf den folgenden Link: {link} 2. Klicken Sie auf 'Hosting Bundle herunterladen' unter Server-Apps."
 Installer_FailedDR: "Fehler beim Herunterladen und Installieren von .NET 5 Desktop Runtime. Bitte hier herunterladen:"
-Installed_FailedASP: "Download und Installation von ASP.NET Core 5.0 Laufzeit fehlgeschlagen. Zum Download: 1. Klicken Sie auf den folgenden Link: {link} 2. Klicken Sie auf 'Download x64' unter Desktop-Apps."
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "Eine oder mehrere sind bereit für die Installation. Wenn und wenn Sie gefragt werden, ob Sie installieren möchten, klicken Sie auf 'Ja'."
 Installer_PressStart: Drücken Sie eine beliebige Taste, um die Installation zu starten...
 Installer_VerifyMin: "Überprüfen Sie, ob Sie die empfohlenen Mindestanforderungen erfüllen:"

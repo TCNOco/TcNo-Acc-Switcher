@@ -33,6 +33,7 @@ Settings_Header_TraySettings: הגדרות מגש
 Settings_Header_OpenGameFolders: פתח תיקיות משחק
 Settings_TrayMax: 'מספר חשבונות מקסימלי שיש לזכור:'
 Settings_RTL: הצג טקסט בתור מימין לשמאל
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: בחר תיקייה {platform}
 Settings_OpenFolder: פתח את תיקיית {platform}
 Settings_ClearForgotten: נקה נשכח
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: פּלַטפוֹרמָה
 Settings_Tray_StartWindows: הפעל את מגש עם Windows
 Settings_Tray_StartNow: '[התחל מגש עכשיו]'
 Settings_CurrentStyle: סגנון נוכחי
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'אפשר TcNo: \\ פרוטוקול (מומלץ)'
 Settings_StartCentered: התוכנית התחילה ממוקדת
 Settings_WindowsAccent: השתמש בצבע המבטא של Windows
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: שנה שם משתמש
 Modal_Title_ConfirmAction: אישור פעולה TcNo מחליף חשבון
 Modal_Title_LocatePlatform: אנא אתר את ספריית {platform}
 Modal_Title_AddNew: הוסף חשבון {platform}
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: אנא הזן {platformText} חדש לחשבונך
 Modal_ChangeUsernameType: שנה {UsernameOrOther}
 Modal_EnterDirectory: "אנא הכנס {platform}, ככזה: C: \\ קבצי תוכנה \\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "גודל הורדה כולל: ~{size} מגהבייט"
 Installer_AnyKeyStart: לחץ על מקש כלשהו כדי להתחיל בהורדה ...
 Runtime_WebView2: זמן ריצה של מיקרוסופט WebView2
 Runtime_Desktop: זמן ריצה לשולחן העבודה של Microsoft .NET 5
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 זמן ריצה
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "יצירת תיקיה נכשלה:"
 Installer_FailedWV: "ההורדה וההתקנה של Microsoft WebView2 Runtime נכשלה. להורדה: 1. לחץ על הקישור למטה: {link} 2. לחץ על 'הורד חבילה של אירוח' תחת הפעל אפליקציות שרת."
 Installer_FailedDR: "ההורדה והתקנה של .NET 5 Desktop Runtime נכשלה. אנא הורידו אותו כאן:"
-Installed_FailedASP: "ההורדה והתקנה של זמן הריצה של ASP.NET Core 5.0 נכשלו. להורדה: 1. לחץ על הקישור למטה: {link} 2. לחץ על 'הורד x64' תחת הפעל יישומי שולחן עבודה."
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "אחד או יותר מוכנים להתקנה. אם וכאשר תתבקש אם ברצונך להתקין, לחץ על 'כן'."
 Installer_PressStart: לחץ על מקש כלשהו כדי להתחיל בהתקנה ...
 Installer_VerifyMin: "ודא שאתה עומד בדרישות המינימליות המומלצות:"

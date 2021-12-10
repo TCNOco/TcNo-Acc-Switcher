@@ -33,6 +33,7 @@ Settings_Header_TraySettings: Kaukalon asetukset
 Settings_Header_OpenGameFolders: Avaa pelikansiot
 Settings_TrayMax: 'Suurin muistettavien tilien määrä:'
 Settings_RTL: Näytä teksti oikealta vasemmalle
+Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: Valitse {platform} kansio
 Settings_OpenFolder: Avaa {platform} kansio
 Settings_ClearForgotten: Tyhjennä Unohtunut
@@ -46,6 +47,8 @@ Settings_StartMenu_Platform: Alusta
 Settings_Tray_StartWindows: Aloita kaukalo Windowsilla
 Settings_Tray_StartNow: '[Aloita ilmoitusalue nyt]'
 Settings_CurrentStyle: Nykyinen Tyyli
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open theme folder]'
 Settings_Protocol: 'Ota tcno:\\ protokolla käyttöön (Suositeltu)'
 Settings_StartCentered: Käynnistä keskitetty ohjelma
 Settings_WindowsAccent: Käytä Windows-hehkutuksen väriä
@@ -145,6 +148,10 @@ Modal_Title_ChangeUsername: Vaihda käyttäjänimi
 Modal_Title_ConfirmAction: TcNo Tilin Vaihtaja Vahvista Toiminta
 Modal_Title_LocatePlatform: Ole hyvä ja etsi {platform} kansio
 Modal_Title_AddNew: Lisää uusi {platform} tili
+Modal_Title_Background: Set a background image
+Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local image
 Modal_ChangeUsername: Ole hyvä ja syötä uusi {platformText} tilillesi
 Modal_ChangeUsernameType: Vaihda {UsernameOrOther}
 Modal_EnterDirectory: "Syötä {platform}hakemisto sellaisenaan: C:\\ Program Files\\{platform}"
@@ -211,11 +218,11 @@ Installer_TotalSize: "Latauksen koko yhteensä: ~{size} MB"
 Installer_AnyKeyStart: Paina mitä tahansa näppäintä aloittaaksesi lataamisen...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Työpöytä Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 5.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
 Installer_FailedFolder: "Kansion luonti epäonnistui:"
 Installer_FailedWV: "Microsoft WebView2 suorituksen lataaminen ja asentaminen epäonnistui. Lataa: 1. Klikkaa alla olevaa linkkiä: {link} 2. Napsauta 'Download Hosting Bundle' Suorita palvelinsovelluksissa."
 Installer_FailedDR: ".NET 5 -työpöydän lataus ja asennus epäonnistui. Lataa se täältä:"
-Installed_FailedASP: "ASP.NET Core 5.0 -sovelluksen lataaminen ja asentaminen epäonnistui. Lataa: 1. Klikkaa alla olevaa linkkiä: {link} 2. Napsauta 'Lataa x64' Suorita työpöytäsovelluksissa."
+Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "Yksi tai useampi on valmis asennettavaksi. Jos ja kun kehotetaan, jos haluat asentaa, paina 'Kyllä'."
 Installer_PressStart: Paina mitä tahansa näppäintä aloittaaksesi asennuksen...
 Installer_VerifyMin: "Varmista, että täytät suositellut vähimmäisvaatimukset:"
