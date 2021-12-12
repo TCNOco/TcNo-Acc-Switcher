@@ -89,9 +89,13 @@ int main(int argc, char* argv[])
     system("pause");
 
 	// Launch main program:
-	string main_path = operating_path + "TcNo-Acc-Switcher.exe";
+	string exe_name = "TcNo-Acc-Switcher.exe";
 	STARTUPINFO si = { sizeof(STARTUPINFO) };
 	PROCESS_INFORMATION pi;
-    CreateProcess(s2_ws(main_path).c_str(), nullptr, nullptr,
-        nullptr, 0, 0, nullptr, nullptr, &si, &pi);
+    //CreateProcess(s2_ws(main_path).c_str(), nullptr, nullptr,
+    //    nullptr, 0, 0, nullptr, nullptr, &si, &pi);
+
+
+	exec_program(std::wstring(operating_path.begin(), operating_path.end()),
+		std::wstring(exe_name.begin(), exe_name.end()), L"");
 }

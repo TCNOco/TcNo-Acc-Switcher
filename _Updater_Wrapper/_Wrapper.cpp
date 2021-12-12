@@ -16,6 +16,7 @@
 // To allow users to start the program regardless of .NET version.
 // If .NET is missing > Open installer, then after install relaunch.
 
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
 #include "../Installer/runtime_check.hpp"
 #include <windows.h>n
@@ -47,6 +48,7 @@ int main(int argc, char* argv[])
 	{
 		std::string operating_path = getOperatingPath();
 		const std::string exe_name = self + "_main.exe";
+		//const std::string exe_name = "TcNo-Acc-Switcher_main.exe";
 
 
 		std::string full_path = operating_path,
@@ -63,7 +65,8 @@ int main(int argc, char* argv[])
 
 		std::cout << "FULL PATH: " << full_path << std::endl;
 
-		exec_program(std::wstring(operating_path.begin(), operating_path.end()),
+
+		exec_child(std::wstring(operating_path.begin(), operating_path.end()),
 			std::wstring(exe_name.begin(), exe_name.end()),
 			std::wstring(args.begin(), args.end()));
 	}

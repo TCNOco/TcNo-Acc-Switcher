@@ -174,7 +174,7 @@ void find_installed_net_runtimes(const bool x32, bool &min_webview_met, bool &mi
 	RegCloseKey(h_uninst_key);
 }
 
-void exec_program(std::wstring path, std::wstring exe, std::wstring param, bool show_window = true)
+void exec_program(const std::wstring &path, const std::wstring &exe, const std::wstring &param, const bool show_window = true)
 {
 	DWORD exitCode = 0;
 	SHELLEXECUTEINFO ShExecInfo = { 0 };
@@ -187,9 +187,50 @@ void exec_program(std::wstring path, std::wstring exe, std::wstring param, bool 
 	ShExecInfo.lpDirectory = path.c_str();
 	ShExecInfo.nShow = show_window ? SW_SHOW : SW_HIDE;
 	ShExecInfo.hInstApp = NULL;
-	ShellExecuteEx(&ShExecInfo);
 
-	// No wait as program exits once run.
+	DWORD dwExitCode;
+	const bool bResult = ShellExecuteEx(&ShExecInfo);
+	if (bResult) {
+		WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+
+		if (!GetExitCodeProcess(ShExecInfo.hProcess, &dwExitCode)) {
+			//failed to terminate normally
+			std::cout << dwExitCode << std::endl;
+		}
+
+		CloseHandle(ShExecInfo.hProcess);
+	}
+	else {
+
+		//failed to execute the exe file
+	}
+}
+
+void exec_child(const std::wstring& path, const std::wstring& exe, const std::wstring& param, const bool show_window = true)
+{
+	JOBOBJECT_EXTENDED_LIMIT_INFORMATION job = { 0 };
+	PROCESS_INFORMATION                  pi = { nullptr };
+	STARTUPINFO                          si = { 0 };
+
+
+	HANDLE h_job = CreateJobObject(nullptr, nullptr);
+
+	job.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+	SetInformationJobObject(h_job, JobObjectExtendedLimitInformation, &job, sizeof(job));
+
+	si.cb = sizeof(si);
+	const auto show = show_window ? 0 : CREATE_NO_WINDOW;
+	CreateProcess(nullptr, &(path + exe + L" " + param)[0], nullptr, nullptr, FALSE,
+		CREATE_SUSPENDED | show, nullptr, nullptr, &si, &pi);
+
+	AssignProcessToJobObject(h_job, pi.hProcess);
+
+	ResumeThread(pi.hThread);
+	WaitForSingleObject(pi.hProcess, INFINITE);
+
+	CloseHandle(pi.hThread);
+	CloseHandle(pi.hProcess);
+	CloseHandle(h_job);
 }
 
 
