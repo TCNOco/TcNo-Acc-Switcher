@@ -55,6 +55,7 @@ Settings_WindowsAccent: השתמש בצבע המבטא של Windows
 Settings_HelpTranslate: "[עזרה בתרגום]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] הגדר את מנוע העיבוד:"
+Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'קיצורי דרך לתפריט התחלה:'
 Cleaning_Header_General: ניקוי כללי
 Cleaning_Header_LoginHistory: נקה את היסטוריית הכניסה שלי
@@ -135,6 +136,15 @@ Toast_Ubisoft_NoUsername: לא ניתן למצוא משתמש מחובר אחר�
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat לא נמצא. החשבון הפעיל האחרון לא נשמר."
 Toast_Ubisoft_NoUser: לא ניתן למצוא משתמש מחובר אחרון. נסה להתחבר שוב ל- Ubisoft.
 Toast_ClearForgottenCheck: האם אתה בטוח שברצונך לנקות גיבויים של חשבונות שנשכחו?
+Toast_BattleNet_ChangedBTag: Changed BattleTag
+Toast_BattleNet_DeletedBTag: Deleted BattleTag
+Toast_FetchedRank: Fetched Rank
+Toast_ForgotAccount: Forgot account
+Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
+Toast_ClearedImages: "Cleared images"
+Toast_SavedItem: "Saved: {item}"
+Toast_ChangedUsername: Changed Username
+Toast_SetUsername: Set Username
 Modal_Crowdin_Header: מתרגמי Crowdin
 Modal_Crowdin_Info: "הנה כל מי שעזר לתרגם את התוכנה הזו.<br>משתמשים עם שפות לידם עזרו רבות בתרגום (תפקיד הגהה)."
 Modal_Info_Creator: נוצר על ידי TechNobo [Wesley Pyburn]
@@ -168,6 +178,11 @@ Modal_PasswordsMatch: סיסמאות תואמות
 Modal_PasswordsNoMatch: סיסמאות לא תואמות
 Status_SelectedAccount: "נבחר: {name}"
 Status_Init: "סטטוס: אתחול"
+Status_ClosingPlatform: "Closing {platform}"
+Status_ClosingPlatformFailed: "Failed to close {platform}"
+Status_StartingPlatform: "Starting {platform}"
+Status_UpdatingFile: "Updating {file}"
+Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: החלף לחשבון
 Context_CreateShortcut: צור קיצור דרך לשולחן העבודה
 Context_CreateShortcutSubmenu: צור קיצור דרך לשולחן העבודה...
@@ -289,6 +304,7 @@ Away: רָחוֹק
 Snooze: נִמנוּם
 LookingToTrade: מחפש לסחור
 LookingToPlay: מחפש לשחק
+Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} לא קיים."
 Reg_DoesntContain: "{subKey} אינו מכיל {val}"
 Reg_Removing: מסיר {subKey}\\{val}
