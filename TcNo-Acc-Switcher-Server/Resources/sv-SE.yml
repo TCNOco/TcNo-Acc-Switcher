@@ -55,6 +55,7 @@ Settings_WindowsAccent: Använd Windows Accent Färg
 Settings_HelpTranslate: "[Hjälp översätta]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Ställ in renderingsmotor:"
+Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'Genvägar till Start-menyn:'
 Cleaning_Header_General: Allmänt Städning
 Cleaning_Header_LoginHistory: Rensa min inloggningshistorik
@@ -135,6 +136,15 @@ Toast_Ubisoft_NoUsername: Kunde inte hitta senast inloggade användare. Försök
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kunde inte hittas. Det sista aktiva kontot sparades inte."
 Toast_Ubisoft_NoUser: Kunde inte hitta senast inloggade användare. Försök logga in på Ubisoft igen först.
 Toast_ClearForgottenCheck: Är du säker på att du vill rensa säkerhetskopior av glömda konton?
+Toast_BattleNet_ChangedBTag: Changed BattleTag
+Toast_BattleNet_DeletedBTag: Deleted BattleTag
+Toast_FetchedRank: Fetched Rank
+Toast_ForgotAccount: Forgot account
+Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
+Toast_ClearedImages: "Cleared images"
+Toast_SavedItem: "Saved: {item}"
+Toast_ChangedUsername: Changed Username
+Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Crowdin-översättare
 Modal_Crowdin_Info: "Här är alla som hjälpte till att översätta denna programvara.<br>Användare med språk bredvid sig hjälpte mycket vid översättningen (korrekturläsarroll)."
 Modal_Info_Creator: Skapad av TechNobo [Wesley Pyburn]
@@ -168,6 +178,11 @@ Modal_PasswordsMatch: Lösenorden matchar
 Modal_PasswordsNoMatch: Lösenorden matchar inte
 Status_SelectedAccount: "Valda: {name}"
 Status_Init: "Status: Initierar"
+Status_ClosingPlatform: "Closing {platform}"
+Status_ClosingPlatformFailed: "Failed to close {platform}"
+Status_StartingPlatform: "Starting {platform}"
+Status_UpdatingFile: "Updating {file}"
+Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: Byt till konto
 Context_CreateShortcut: Skapa genväg för skrivbordet
 Context_CreateShortcutSubmenu: Skapa genväg till skrivbordet...
@@ -289,6 +304,7 @@ Away: Borta
 Snooze: Snooza
 LookingToTrade: Funderar på att handla
 LookingToPlay: Funderar på att spela
+Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} finns inte."
 Reg_DoesntContain: "{subKey} innehåller inte {val}"
 Reg_Removing: Tar bort {subKey}\\{val}

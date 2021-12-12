@@ -55,6 +55,7 @@ Settings_WindowsAccent: Bruk Windows Accent Colour
 Settings_HelpTranslate: "[Hjelp oversette]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Sett gjengivelsesmotor:"
+Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'Snarveier for Start-menyen:'
 Cleaning_Header_General: Generell rengjøring
 Cleaning_Header_LoginHistory: Rens logg
@@ -135,6 +136,15 @@ Toast_Ubisoft_NoUsername: Kunne ikke finne siste påloggede brukere. Prøv å lo
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kunne ikke bli funnet. Den siste aktive kontoen ble ikke lagret."
 Toast_Ubisoft_NoUser: Kunne ikke finne siste påloggede brukere. Prøv å logge inn på Ubisoft igjen først.
 Toast_ClearForgottenCheck: Er du sikker på at du vil slette sikkerhetskopieringen av glemte kontoer?
+Toast_BattleNet_ChangedBTag: Changed BattleTag
+Toast_BattleNet_DeletedBTag: Deleted BattleTag
+Toast_FetchedRank: Fetched Rank
+Toast_ForgotAccount: Forgot account
+Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
+Toast_ClearedImages: "Cleared images"
+Toast_SavedItem: "Saved: {item}"
+Toast_ChangedUsername: Changed Username
+Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Crowdin-oversettere
 Modal_Crowdin_Info: "Her er alle som hjalp til med å oversette denne programvaren.<br>Brukere med språk ved siden av hjalp mye med oversettelse (korrekturleserrolle)."
 Modal_Info_Creator: Opprettet av TechNobo [Wesley Pyburn]
@@ -168,6 +178,11 @@ Modal_PasswordsMatch: Passordene samsvarer
 Modal_PasswordsNoMatch: Passordene samsvarer ikke
 Status_SelectedAccount: "Valgt: {name}"
 Status_Init: "Status: initialisering"
+Status_ClosingPlatform: "Closing {platform}"
+Status_ClosingPlatformFailed: "Failed to close {platform}"
+Status_StartingPlatform: "Starting {platform}"
+Status_UpdatingFile: "Updating {file}"
+Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: Bytt til konto
 Context_CreateShortcut: Lag snarvei på skrivebordet
 Context_CreateShortcutSubmenu: Lag skrivebordssnarvei...
@@ -289,6 +304,7 @@ Away: Borte
 Snooze: Utsett
 LookingToTrade: Ønsker å handle
 LookingToPlay: Ser du på å spille
+Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} finnes ikke."
 Reg_DoesntContain: "{subKey} inneholder ikke {val}"
 Reg_Removing: Fjerner {subKey}\\{val}
