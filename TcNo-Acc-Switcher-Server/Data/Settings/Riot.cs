@@ -63,6 +63,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ValorantDir", Order = 9)] public string ValorantDir { get => _instance._valorantDir; set => _instance._valorantDir = value; }
         private string _valorantRiotDir;
         [JsonProperty("ValorantRiotDir", Order = 10)] public string ValorantRiotDir { get => _instance._valorantRiotDir; set => _instance._valorantRiotDir = value; }
+        private bool _altClose;
+        [JsonProperty("AltClose", Order = 11)] public bool AltClose { get => _instance._altClose; set => _instance._altClose = value; }
 
 
         private bool _desktopShortcut;

@@ -431,31 +431,69 @@ namespace TcNo_Acc_Switcher_Globals
         /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Doesn't start with "SUCCESS")
         /// </summary>
         /// <param name="procName">Process name to kill (Will be used as {name}*)</param>
-        public static void KillProcess(string procName)
+        /// <param name="altMethod">Uses another method to kill processes via name (Will be used as {name}*)</param>
+        public static void KillProcess(string procName, bool altMethod = false)
         {
-            var outputText = "";
-            var startInfo = new ProcessStartInfo
+            if (!altMethod)
             {
-                UseShellExecute = false,
-                WindowStyle = ProcessWindowStyle.Hidden,
-                FileName = "cmd.exe",
-                Arguments = $"/C TASKKILL /F /T /IM {procName}*",
-                CreateNoWindow = true,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true
-            };
-            var process = new Process { StartInfo = startInfo };
-            process.OutputDataReceived += (_, e) => outputText += e.Data + "\n";
-            _ = process.Start();
-            process.BeginOutputReadLine();
-            process.WaitForExit();
+                var outputText = "";
+                var startInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = false,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    FileName = "cmd.exe",
+                    Arguments = $"/C TASKKILL /F /T /IM {procName}*",
+                    CreateNoWindow = true,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true
+                };
+                var process = new Process { StartInfo = startInfo };
+                process.OutputDataReceived += (_, e) => outputText += e.Data + "\n";
+                _ = process.Start();
+                process.BeginOutputReadLine();
+                process.WaitForExit();
 
-            WriteToLog(outputText.StartsWith("SUCCESS") || outputText.Length <= 1
-                ? $"Successfully closed {procName}."
-                : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
+                WriteToLog(outputText.StartsWith("SUCCESS") || outputText.Length <= 1
+                    ? $"Successfully closed {procName}."
+                    : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
+                return;
+            }
+
+            var processList = Process.GetProcesses().Where(pr => pr.ProcessName == procName.Split(".exe")[0]);
+
+            foreach (var process in processList)
+            {
+                process.Kill();
+            }
         }
 
+        /// <summary>
+        /// Kills requested processes (List of string). Will Write to Log and Console if unexpected output occurs (Doesn't start with "SUCCESS")
+        /// </summary>
+        public static void KillProcess(List<string> procNames, bool altMethod = false)
+        {
+            if (!altMethod)
+            {
+                procNames.ForEach(e => KillProcess(e));
+                return;
+            }
 
+            var processedNames = procNames.Select(procName => procName.Split(".exe")[0]).ToList();
+
+            var processList = Process.GetProcesses().Where(pr => processedNames.Contains(pr.ProcessName));
+
+            foreach (var process in processList)
+            {
+                try
+                {
+                    process.Kill();
+                }
+                catch (System.ComponentModel.Win32Exception e)
+                {
+                    // Already closed
+                }
+            }
+        }
         #endregion
 
         #region TRAY

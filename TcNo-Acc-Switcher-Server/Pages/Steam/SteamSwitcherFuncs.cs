@@ -405,10 +405,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 return;
             }
-            _ = AppData.InvokeVoidAsync("updateStatus", "Closing Steam");
-            if (!GeneralFuncs.CloseProcesses(Data.Settings.Steam.Processes)) return;
+
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform  = "Steam" }]);
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Steam.Processes, Data.Settings.Steam.Instance.AltClose))
+            {
+                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
+                return;
+            };
+
             if (OperatingSystem.IsWindows()) UpdateLoginUsers(steamId, ePersonaState);
-            _ = AppData.InvokeVoidAsync("updateStatus", "Starting Steam");
+
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Steam" }]);
             if (!autoStartSteam) return;
 
             GeneralFuncs.StartProgram(Steam.Exe(), Steam.Admin, args);
@@ -446,7 +453,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
             // -----------------------------------
-            _ = AppData.InvokeVoidAsync("updateStatus", "Updating loginusers.vdf");
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_UpdatingFile", new { file = "loginusers.vdf" }]);
             var tempFile = Steam.LoginUsersVdf() + "_temp";
             File.Delete(tempFile);
 
@@ -482,7 +489,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 --> AutoLoginUser = username
                 --> RememberPassword = 1
             */
-            _ = AppData.InvokeVoidAsync("updateStatus", "Updating registry");
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_UpdatingRegistry"]);
             using var key = Registry.CurrentUser.CreateSubKey(@"Software\Valve\Steam");
             key?.SetValue("AutoLoginUser", user.AccName); // Account name is not set when changing user accounts from launch arguments (part of the viewmodel). -- Can be "" if no account
             key?.SetValue("RememberPassword", 1);
@@ -553,7 +560,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 File.Delete(file);
             }
             // Reload page, then display notification using a new thread.
-            AppData.ActiveNavMan?.NavigateTo("/steam/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Cleared images"), true);
+            AppData.ActiveNavMan?.NavigateTo("/steam/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ClearedImages"]), true);
         }
 
         /// <summary>
@@ -596,15 +603,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             return ePersonaState switch
             {
                 -1 => "",
-                0 => "Offline",
-                1 => "Online",
-                2 => "Busy",
-                3 => "Away",
-                4 => "Snooze",
-                5 => "Looking to Trade",
-                6 => "Looking to Play",
-                7 => "Invisible",
-                _ => "Unrecognised ePersonaState"
+                0 => Lang["Offline"],
+                1 => Lang["Online"],
+                2 => Lang["Busy"],
+                3 => Lang["Away"],
+                4 => Lang["Snooze"],
+                5 => Lang["LookingToTrade"],
+                6 => Lang["LookingToPlay"],
+                7 => Lang["Invisible"],
+                _ => Lang["Unrecognized_EPersonaState"]
             };
         }
         #endregion

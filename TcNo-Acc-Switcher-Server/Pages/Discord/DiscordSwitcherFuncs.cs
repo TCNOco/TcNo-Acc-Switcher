@@ -108,15 +108,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         public static void SwapDiscordAccounts(string accName, string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.SwapDiscordAccounts] Swapping to: hidden.");
-            _ = AppData.InvokeVoidAsync("updateStatus", "Closing Discord");
-            if (!GeneralFuncs.CloseProcesses(Data.Settings.Discord.Processes)) return;
+
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Discord" }]);
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Discord.Processes, Data.Settings.Discord.Instance.AltClose))
+            {
+                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Discord" }]);
+                return;
+            };
+
             ClearCurrentLoginDiscord();
             if (accName != "")
             {
                 if (!DiscordCopyInAccount(accName)) return;
                 Globals.AddTrayUser("Discord", "+d:" + accName, accName, Discord.TrayAccNumber); // Add to Tray list
             }
-            _ = AppData.InvokeVoidAsync("updateStatus", "Starting Discord");
+
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Discord" }]);
 
             GeneralFuncs.StartProgram(Discord.Exe(), Discord.Admin, args);
 
@@ -230,7 +237,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
                 {
                     if (attempts > 2 && e.HResult == -2147024864) // File is in use - but wait 2 seconds to see...
                     {
-                        _ = GeneralFuncs.CloseProcesses(Data.Settings.Discord.Processes);
+                        _ = GeneralFuncs.CloseProcesses(Data.Settings.Discord.Processes, Data.Settings.Discord.Instance.AltClose);
                         closedBySwitcher = true;
 
                     }
@@ -307,7 +314,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 
             try
             {
-                AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Saved: " + accName), true);
+                AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_SavedItem", new {item = accName}]), true);
             }
             catch (Microsoft.AspNetCore.Components.NavigationException) // Page was reloaded.
             {
@@ -378,7 +385,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             if ($"LoginCache\\Discord\\{oldName}\\" != $"LoginCache\\Discord\\{newName}\\")
                 Directory.Move($"LoginCache\\Discord\\{oldName}\\", $"LoginCache\\Discord\\{newName}\\"); // Rename login cache folder
 
-            if (reload) AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Changed username"), true);
+            if (reload) AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ChangedUsername"]), true);
         }
 
         private static Dictionary<string, string> ReadAllIds()

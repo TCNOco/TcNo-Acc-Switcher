@@ -47,7 +47,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.ClearSettings]");
             new Data.Settings.BattleNet().ResetSettings();
-            AppData.ActiveNavMan.NavigateTo("/BattleNet?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Cleared BattleNet switcher settings"));
+            AppData.ActiveNavMan.NavigateTo("/BattleNet?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ClearedPlatformSettings", new {platform = "BattleNet"}]));
         }
 
         // CHECKBOX: Show Overwatch images

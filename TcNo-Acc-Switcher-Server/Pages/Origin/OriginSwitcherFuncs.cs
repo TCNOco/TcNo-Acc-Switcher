@@ -68,8 +68,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         public static void SwapOriginAccounts(string accName, int state, string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: hidden.");
-            _ = AppData.InvokeVoidAsync("updateStatus", "Closing Origin");
-            if (!GeneralFuncs.CloseProcesses(Data.Settings.Origin.Processes)) return;
+
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Origin" }]);
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Origin.Processes, Data.Settings.Origin.Instance.AltClose))
+            {
+                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Origin" }]);
+                return;
+            };
+
             if (!ClearCurrentLoginOrigin())
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantClearLoginFiles"], Lang["Error"], "toastarea");
@@ -80,8 +86,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                 if (!OriginCopyInAccount(accName, state)) return;
                 Globals.AddTrayUser("Origin", "+o:" + accName, accName, Origin.TrayAccNumber); // Add to Tray list
             }
-            _ = AppData.InvokeVoidAsync("updateStatus", "Starting Origin");
 
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Origin" }]);
             GeneralFuncs.StartProgram(Origin.Exe(), Origin.Admin, args);
 
             Globals.RefreshTrayArea();
@@ -251,7 +257,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             var allOlc = ReadAllOlc();
             allOlc[accName] = olcHashes;
             File.WriteAllText("LoginCache\\Origin\\olc.json", JsonConvert.SerializeObject(allOlc));
-            AppData.ActiveNavMan?.NavigateTo("/Origin/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Saved: " + accName), true);
+            AppData.ActiveNavMan?.NavigateTo("/Origin/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_SavedItem", new { item = accName }]), true);
         }
 
         public static void ChangeUsername(string oldName, string newName, bool reload = false)
@@ -268,7 +274,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
                 Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Uri.EscapeDataString(newName)}.jpg")); // Rename image
             Directory.Move($"LoginCache\\Origin\\{oldName}\\", $"LoginCache\\Origin\\{newName}\\"); // Rename login cache folder
 
-            if (reload) AppData.ActiveNavMan?.NavigateTo("/Origin/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Changed username"), true);
+            if (reload) AppData.ActiveNavMan?.NavigateTo("/Origin/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ChangedUsername"]), true);
         }
 
         public static bool ChangeKey<TKey, TValue>(ref Dictionary<TKey, TValue> dict, TKey oldKey, TKey newKey)

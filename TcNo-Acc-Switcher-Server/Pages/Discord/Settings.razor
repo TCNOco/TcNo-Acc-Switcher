@@ -24,7 +24,7 @@
 
 @inject Data.Lang  _locale
 @code
-{ 
+{
 	    private const string Platform = "Discord";
 }
 
@@ -38,6 +38,9 @@
             <div class="SettingsHeader">
                 <hr><span>@_locale["Settings_Header_GeneralSettings"]</span>
                 <hr>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="AltClose" @bind="_discord.AltClose"><label class="form-check-label" for="AltClose"></label></div><label for="AltClose">@_locale["Settings_AltClose"]</label>
             </div>
             <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_discord.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Discord", _discord.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">

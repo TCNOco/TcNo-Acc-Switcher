@@ -42,6 +42,9 @@
                 <hr>
             </div>
             <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="AltClose" @bind="_riot.AltClose"><label class="form-check-label" for="AltClose"></label></div><label for="AltClose">@_locale["Settings_AltClose"]</label>
+            </div>
+            <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_riot.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Riot", _riot.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
 		            @_locale["Settings_Shortcut", new { platform = Platform }]<br></label>
             </div>

@@ -51,6 +51,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ForgetAccountEnabled", Order = 4)] public bool ForgetAccountEnabled { get => _instance._forgetAccountEnabled; set => _instance._forgetAccountEnabled = value; }
         private int _imageExpiryTime = 7;
         [JsonProperty("ImageExpiryTime", Order = 5)] public int ImageExpiryTime { get => _instance._imageExpiryTime; set => _instance._imageExpiryTime = value; }
+        private bool _altClose;
+        [JsonProperty("AltClose", Order = 6)] public bool AltClose { get => _instance._altClose; set => _instance._altClose = value; }
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }

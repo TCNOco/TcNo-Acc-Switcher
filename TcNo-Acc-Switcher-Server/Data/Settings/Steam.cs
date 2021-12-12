@@ -63,13 +63,15 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private int _trayAccNumber = 3;
         [JsonProperty("Steam_TrayAccNumber", Order = 10)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
         private int _overrideState = -1;
-        [JsonProperty("Steam_OverrideState", Order = 10)] public int OverrideState { get => _instance._overrideState; set => _instance._overrideState = value; }
+        [JsonProperty("Steam_OverrideState", Order = 11)] public int OverrideState { get => _instance._overrideState; set => _instance._overrideState = value; }
+        private bool _altClose;
+        [JsonProperty("AltClose", Order = 13)] public bool AltClose { get => _instance._altClose; set => _instance._altClose = value; }
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
 
         // Constants
-        [JsonIgnore] public static readonly List<string> Processes = new() { "steam.exe", "steamservice.exe", "steamwebhelper.exe" };
+        [JsonIgnore] public static readonly List<string> Processes = new() { "steam.exe", "steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
         [JsonIgnore] public readonly string VacCacheFile = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
         [JsonIgnore] public static readonly string SettingsFile = "SteamSettings.json";
         [JsonIgnore] public readonly string ForgottenFile = "SteamForgotten.json";

@@ -85,23 +85,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return canKill;
         }
 
-        public static bool CloseProcesses(string procName)
+        public static bool CloseProcesses(string procName, bool altMethod = false)
         {
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + procName);
             if (!GeneralFuncs.CanKillProcess(procName)) return false;
-            Globals.KillProcess(procName);
+            Globals.KillProcess(procName, altMethod);
+
             return GeneralFuncs.WaitForClose(procName);
         }
-        public static bool CloseProcesses(List<string> procNames)
+        public static bool CloseProcesses(List<string> procNames, bool altMethod = false)
         {
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + string.Join(", ", procNames));
-            foreach (var s in procNames)
-            {
-                if (!GeneralFuncs.CanKillProcess(s)) return false;
-                Globals.KillProcess(s);
-            }
+            if (!GeneralFuncs.CanKillProcess(procNames)) return false;
+            Globals.KillProcess(procNames, altMethod);
+
             return GeneralFuncs.WaitForClose(procNames);
         }
 
@@ -670,7 +669,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                 // Handle queries and invoke status "Ready"
                 _ = HandleQueries();
-                _ = AppData.InvokeVoidAsync("updateStatus", "Ready");
+                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             }
         }
 

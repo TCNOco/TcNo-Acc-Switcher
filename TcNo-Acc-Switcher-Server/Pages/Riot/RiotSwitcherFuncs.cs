@@ -146,8 +146,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.SwapRiotAccounts] Swapping to: hidden.");
             _startArguments = " " + args;
 
-            _ = AppData.InvokeVoidAsync("updateStatus", "Closing Riot");
-            if (!GeneralFuncs.CloseProcesses(Data.Settings.Riot.Processes)) return;
+
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Riot" }]);
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Riot.Processes, Data.Settings.Riot.Instance.AltClose))
+            {
+                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Riot" }]);
+                return;
+            };
+
             ClearCurrentLoginRiot();
             if (accName != "")
             {
@@ -158,7 +164,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
 
             //GeneralFuncs.StartProgram(Riot.Exe(), Riot.Admin);
 
-            _ = AppData.InvokeVoidAsync("updateStatus", "Ready");
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             Globals.RefreshTrayArea();
         }
 
@@ -204,7 +210,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
             _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\riot"));
             File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\RiotDefault.png"), Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg"), true);
 
-            AppData.ActiveNavMan?.NavigateTo("/Riot/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Saved: " + accName), true);
+            AppData.ActiveNavMan?.NavigateTo("/Riot/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_SavedItem", new { item = accName }]), true);
         }
 
         public static void ChangeUsername(string oldName, string newName, bool reload = true)
@@ -213,7 +219,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{Uri.EscapeDataString(newName).Replace("#", "-")}.jpg")); // Rename image
             Directory.Move($"LoginCache\\Riot\\{oldName}\\", $"LoginCache\\Riot\\{newName}\\"); // Rename login cache folder
 
-            if (reload) AppData.ActiveNavMan?.NavigateTo("/Riot/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Changed username"), true);
+            if (reload) AppData.ActiveNavMan?.NavigateTo("/Riot/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ChangedUsername"]), true);
         }
 
         #region RIOT_MANAGEMENT

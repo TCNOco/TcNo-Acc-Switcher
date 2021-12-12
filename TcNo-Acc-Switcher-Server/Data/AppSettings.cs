@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -106,7 +107,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         private string _background = "";
         [JsonProperty("Background", Order = 12)]
         public string Background { get => _instance._background; set => _instance._background = value; }
-
 
         private bool _desktopShortcut;
         [Newtonsoft.Json.JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }

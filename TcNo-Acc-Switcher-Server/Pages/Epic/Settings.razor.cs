@@ -46,7 +46,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Epic\Settings.razor.cs.ClearSettings]");
             new Data.Settings.Epic().ResetSettings();
-            AppData.ActiveNavMan.NavigateTo("/Epic?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Cleared Epic switcher settings"));
+            AppData.ActiveNavMan.NavigateTo("/Epic?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ClearedPlatformSettings", new { platform = "Epic" }]));
         }
         #endregion
 

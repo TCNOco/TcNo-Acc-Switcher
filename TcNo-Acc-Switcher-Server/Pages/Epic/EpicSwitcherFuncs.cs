@@ -75,16 +75,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public static void SwapEpicAccounts(string accName = "", string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.SwapEpicAccounts] Swapping to: hidden.");
-            _ = AppData.InvokeVoidAsync("updateStatus", "Closing Epic");
-            if (!GeneralFuncs.CloseProcesses(Data.Settings.Epic.Processes)) return;
+
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Epic" }]);
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Epic.Processes, Data.Settings.Epic.Instance.AltClose))
+            {
+                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Epic" }]);
+                return;
+            };
+
             ClearCurrentLoginEpic();
             if (accName != "")
             {
                 if (!EpicCopyInAccount(accName)) return;
                 Globals.AddTrayUser("Epic", "+e:" + accName, accName, Epic.TrayAccNumber); // Add to Tray list
             }
-            _ = AppData.InvokeVoidAsync("updateStatus", "Starting Epic");
 
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Epic" }]);
             GeneralFuncs.StartProgram(Epic.Exe(), Epic.Admin, args);
 
             Globals.RefreshTrayArea();
@@ -165,7 +171,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Uri.EscapeDataString(accName)}.jpg");
             if (!File.Exists(profileImg)) File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\EpicDefault.png"), profileImg, true);
 
-            AppData.ActiveNavMan?.NavigateTo("/Epic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Saved: " + accName), true);
+            AppData.ActiveNavMan?.NavigateTo("/Epic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_SavedItem", new { item = accName }]), true);
         }
 
         public static void ChangeUsername(string oldName, string newName, bool reload = true)
@@ -186,7 +192,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
                 Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Uri.EscapeDataString(newName)}.jpg")); // Rename image
             Directory.Move($"LoginCache\\Epic\\{oldName}\\", $"LoginCache\\Epic\\{newName}\\"); // Rename login cache folder
 
-            if (reload) AppData.ActiveNavMan?.NavigateTo("/Epic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Changed username"), true);
+            if (reload) AppData.ActiveNavMan?.NavigateTo("/Epic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ChangedUsername"]), true);
         }
 
         private static Dictionary<string, string> ReadAllIds()

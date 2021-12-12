@@ -91,7 +91,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             if (accName != "") SetUsername(userId, accName);
             else accName = savedUsername;
 
-            AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Saved: " + accName), true);
+            AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_SavedItem", new { item = accName }]), true);
         }
 
         public static string HasUserSaved()
@@ -138,7 +138,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             var allIds = ReadAllIds();
             allIds[id] = username;
             File.WriteAllText("LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
-            if (reload) AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString("Set username"), true);
+            if (reload) AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_SetUsername"]), true);
         }
 
 
@@ -255,8 +255,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public static void SwapUbisoftAccounts(string userId, int state, string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.SwapUbisoftAccounts] Swapping to:hidden.");
-            _ = AppData.InvokeVoidAsync("updateStatus", "Closing Ubisoft");
-            if (!GeneralFuncs.CloseProcesses(Data.Settings.Ubisoft.Processes)) return;
+
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Ubisoft" }]);
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Ubisoft.Processes, Data.Settings.Ubisoft.Instance.AltClose))
+            {
+                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Ubisoft" }]);
+                return;
+            };
+
             UbisoftAddCurrent(saveOnlyIfExists: true);
 
             if (userId != "")
@@ -267,7 +273,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             else
                 ClearCurrentUser();
 
-            _ = AppData.InvokeVoidAsync("updateStatus", "Starting Ubisoft");
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Ubisoft" }]);
 
             GeneralFuncs.StartProgram(Ubisoft.Exe(), Ubisoft.Admin, args);
 
