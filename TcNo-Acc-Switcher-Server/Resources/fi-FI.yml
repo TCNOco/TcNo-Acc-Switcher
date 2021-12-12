@@ -55,6 +55,7 @@ Settings_WindowsAccent: Käytä Windows-hehkutuksen väriä
 Settings_HelpTranslate: "[Auta kääntämään]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Aseta renderöintimoottori:"
+Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'Käynnistysvalikon pikakuvakkeet:'
 Cleaning_Header_General: Yleinen Puhdistus
 Cleaning_Header_LoginHistory: Puhdista kirjautumishistoriani
@@ -135,6 +136,15 @@ Toast_Ubisoft_NoUsername: Viimeksi kirjautunut käyttäjä ei löytynyt. Yritä 
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat ei löytynyt. Viimeistä aktiivista tiliä ei tallennettu."
 Toast_Ubisoft_NoUser: Viimeksi kirjautunut käyttäjä ei löytynyt. Yritä kirjautua Ubisoftiin ensin.
 Toast_ClearForgottenCheck: Oletko varma, että haluat tyhjentää unohdettujen tilien varmuuskopiot?
+Toast_BattleNet_ChangedBTag: Changed BattleTag
+Toast_BattleNet_DeletedBTag: Deleted BattleTag
+Toast_FetchedRank: Fetched Rank
+Toast_ForgotAccount: Forgot account
+Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
+Toast_ClearedImages: "Cleared images"
+Toast_SavedItem: "Saved: {item}"
+Toast_ChangedUsername: Changed Username
+Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Crowdinin kääntäjät
 Modal_Crowdin_Info: "Tässä ovat kaikki, jotka auttoivat kääntämään tämän ohjelmiston.<br>Käyttäjät, joiden kieli on vieressä, auttoivat paljon kääntämisessä (oikolukijan rooli)."
 Modal_Info_Creator: TechNobon luoma [Wesley Pyburn]
@@ -168,6 +178,11 @@ Modal_PasswordsMatch: Salasanat täsmää
 Modal_PasswordsNoMatch: Salasanat eivät täsmää
 Status_SelectedAccount: "Valittu: {name}"
 Status_Init: "Tila: alustetaan"
+Status_ClosingPlatform: "Closing {platform}"
+Status_ClosingPlatformFailed: "Failed to close {platform}"
+Status_StartingPlatform: "Starting {platform}"
+Status_UpdatingFile: "Updating {file}"
+Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: Vaihda tiliin
 Context_CreateShortcut: Luo Pikakuvake Työpöydälle
 Context_CreateShortcutSubmenu: Luo Pikakuvake...
@@ -289,6 +304,7 @@ Away: Poissa
 Snooze: Torkku
 LookingToTrade: Kauppaan katsominen
 LookingToPlay: Haetaan pelaamista
+Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} ei ole olemassa."
 Reg_DoesntContain: "{subKey} ei sisällä {val}"
 Reg_Removing: Poistetaan {subKey}\\{val}
