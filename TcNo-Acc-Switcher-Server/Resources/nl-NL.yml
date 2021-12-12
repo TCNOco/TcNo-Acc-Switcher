@@ -55,6 +55,7 @@ Settings_WindowsAccent: Gebruik de Windows Accent Kleur
 Settings_HelpTranslate: "[Help vertalen]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Stel de weergave-engine in:"
+Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'Snelkoppelingen voor Start Menu:'
 Cleaning_Header_General: Algemeen schoonmaken
 Cleaning_Header_LoginHistory: Schoon mijn inloggeschiedenis op
@@ -135,6 +136,15 @@ Toast_Ubisoft_NoUsername: Kon de laatst ingelogde gebruiker niet vinden. Probeer
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kon niet worden gevonden. Het laatste actieve account werd niet opgeslagen."
 Toast_Ubisoft_NoUser: Kon de laatst ingelogde gebruiker niet vinden. Probeer eerst opnieuw in te loggen op Ubisoft.
 Toast_ClearForgottenCheck: Weet u zeker dat u back-ups van vergeten accounts wilt wissen?
+Toast_BattleNet_ChangedBTag: Changed BattleTag
+Toast_BattleNet_DeletedBTag: Deleted BattleTag
+Toast_FetchedRank: Fetched Rank
+Toast_ForgotAccount: Forgot account
+Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
+Toast_ClearedImages: "Cleared images"
+Toast_SavedItem: "Saved: {item}"
+Toast_ChangedUsername: Changed Username
+Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is iedereen die heeft geholpen met het vertalen van deze software.<br>Gebruikers met talen naast zich hebben veel geholpen bij het vertalen (rol van proeflezer)."
 Modal_Info_Creator: Gemaakt door TechNobo [Wesley Pyburn]
@@ -168,6 +178,11 @@ Modal_PasswordsMatch: Wachtwoorden komen overeen
 Modal_PasswordsNoMatch: Wachtwoorden komen niet overeen
 Status_SelectedAccount: "Geselecteerd: {name}"
 Status_Init: "Status: initialiseren"
+Status_ClosingPlatform: "Closing {platform}"
+Status_ClosingPlatformFailed: "Failed to close {platform}"
+Status_StartingPlatform: "Starting {platform}"
+Status_UpdatingFile: "Updating {file}"
+Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: Wissel naar account
 Context_CreateShortcut: Maak een bureaubladsneltoets
 Context_CreateShortcutSubmenu: Maak een bureaubladsnelheid...
@@ -289,6 +304,7 @@ Away: Afwezig
 Snooze: Uitstellen
 LookingToTrade: Transactie aan het zoeken
 LookingToPlay: Op zoek naar spelen
+Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} bestaat niet."
 Reg_DoesntContain: "{subKey} bevat geen {val}"
 Reg_Removing: Verwijderen van {subKey}\\{val}
