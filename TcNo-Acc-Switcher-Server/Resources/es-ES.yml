@@ -55,6 +55,7 @@ Settings_WindowsAccent: Usar el color de acento de Windows
 Settings_HelpTranslate: "[Ayuda a traducir]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Establecer motor de renderizado:"
+Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'Atajos para Menú Inicio:'
 Cleaning_Header_General: Limpieza general
 Cleaning_Header_LoginHistory: Limpiar mi historial de acceso
@@ -135,6 +136,15 @@ Toast_Ubisoft_NoUsername: No se pudo encontrar el último usuario conectado. Int
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat no pudo ser encontrado. La última cuenta activa no fue guardada."
 Toast_Ubisoft_NoUser: No se pudo encontrar el último usuario conectado. Intenta iniciar sesión en Ubisoft de nuevo primero.
 Toast_ClearForgottenCheck: '¿Estás seguro de que quieres borrar las copias de seguridad de cuentas olvidadas?'
+Toast_BattleNet_ChangedBTag: Changed BattleTag
+Toast_BattleNet_DeletedBTag: Deleted BattleTag
+Toast_FetchedRank: Fetched Rank
+Toast_ForgotAccount: Forgot account
+Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
+Toast_ClearedImages: "Cleared images"
+Toast_SavedItem: "Saved: {item}"
+Toast_ChangedUsername: Changed Username
+Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Traductores de Crowdin
 Modal_Crowdin_Info: "Aquí están todos los que ayudaron a traducir este software.<br>Los usuarios con idiomas a su lado ayudaron mucho en la traducción (función de corrector de pruebas)."
 Modal_Info_Creator: Creado por TechNobo [Wesley Pyburn]
@@ -168,6 +178,11 @@ Modal_PasswordsMatch: Contraseñas coinciden
 Modal_PasswordsNoMatch: Las contraseñas no coinciden
 Status_SelectedAccount: "Seleccionado: {name}"
 Status_Init: "Estado: inicializando"
+Status_ClosingPlatform: "Closing {platform}"
+Status_ClosingPlatformFailed: "Failed to close {platform}"
+Status_StartingPlatform: "Starting {platform}"
+Status_UpdatingFile: "Updating {file}"
+Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: Cambiar a cuenta
 Context_CreateShortcut: Crear acceso directo de escritorio
 Context_CreateShortcutSubmenu: Crear acceso directo de escritorio...
@@ -289,6 +304,7 @@ Away: Ausente
 Snooze: Retrasar
 LookingToTrade: Buscando operar
 LookingToPlay: Buscando jugar
+Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} no existe."
 Reg_DoesntContain: "{subKey} no contiene {val}"
 Reg_Removing: Eliminando {subKey}\\{val}
