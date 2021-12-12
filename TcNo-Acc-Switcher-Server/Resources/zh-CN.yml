@@ -55,6 +55,7 @@ Settings_WindowsAccent: 使用 Windows 主题色
 Settings_HelpTranslate: "[帮助翻译]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[高级] 设置渲染引擎："
+Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: '开始菜单的快捷方式：'
 Cleaning_Header_General: 常规清理
 Cleaning_Header_LoginHistory: 清理我的登录历史
@@ -135,6 +136,15 @@ Toast_Ubisoft_NoUsername: 无法找到最后登录的用户。请先再次登录
 Toast_Ubisoft_NoDat: "无法找到 %LocalAppData%/UbisoftGameLauncher/user.dat 。最后活跃的帐户未保存。"
 Toast_Ubisoft_NoUser: 无法找到最后登录的用户。请先再次登录 Ubisoft。
 Toast_ClearForgottenCheck: 您确定要清除已忘记帐户的备份吗？
+Toast_BattleNet_ChangedBTag: Changed BattleTag
+Toast_BattleNet_DeletedBTag: Deleted BattleTag
+Toast_FetchedRank: Fetched Rank
+Toast_ForgotAccount: Forgot account
+Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
+Toast_ClearedImages: "Cleared images"
+Toast_SavedItem: "Saved: {item}"
+Toast_ChangedUsername: Changed Username
+Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Crowdin 译者
 Modal_Crowdin_Info: "这是帮助翻译此软件的每个人。<br>语言相邻的用户在翻译方面提供了很多帮助（校对角色）。"
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 创作
@@ -168,6 +178,11 @@ Modal_PasswordsMatch: 密码匹配
 Modal_PasswordsNoMatch: 密码不匹配
 Status_SelectedAccount: "已选择：{name}"
 Status_Init: "状态：正在初始化"
+Status_ClosingPlatform: "Closing {platform}"
+Status_ClosingPlatformFailed: "Failed to close {platform}"
+Status_StartingPlatform: "Starting {platform}"
+Status_UpdatingFile: "Updating {file}"
+Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: 交换到帐户
 Context_CreateShortcut: 创建桌面快捷方式
 Context_CreateShortcutSubmenu: 创建桌面快捷方式…
@@ -289,6 +304,7 @@ Away: 离开
 Snooze: 打盹
 LookingToTrade: 想交易
 LookingToPlay: 想玩游戏
+Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} 不存在。"
 Reg_DoesntContain: "{subKey} 不包含 {val}"
 Reg_Removing: 正在删除 {subKey}\\{val}
