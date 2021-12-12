@@ -55,7 +55,7 @@ Settings_WindowsAccent: Windowsアクセントカラーを使用する
 Settings_HelpTranslate: "format@@0"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] レンダリングエンジンを設定します。"
-Settings_AltClose: "Alternate exit method (when platform doesn't close)"
+Settings_AltClose: "別の終了方法（プラットフォームが閉じない場合）"
 Cleaning_Header_StartMenuShortcuts: 'format@@0メニューのショートカット:'
 Cleaning_Header_General: 一般的なクリーニング
 Cleaning_Header_LoginHistory: ログイン履歴を消去
@@ -136,15 +136,15 @@ Toast_Ubisoft_NoUsername: 最後にログインしたユーザーが見つかり
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.datが見つかりませんでした。最後のアクティブなアカウントは保存されませんでした。"
 Toast_Ubisoft_NoUser: 最後にログインしたユーザーが見つかりませんでした。最初に再度Ubisoftにログインしてください。
 Toast_ClearForgottenCheck: 忘れたアカウントのバックアップを削除してもよろしいですか？
-Toast_BattleNet_ChangedBTag: Changed BattleTag
-Toast_BattleNet_DeletedBTag: Deleted BattleTag
-Toast_FetchedRank: Fetched Rank
-Toast_ForgotAccount: Forgot account
-Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
-Toast_ClearedImages: "Cleared images"
-Toast_SavedItem: "Saved: {item}"
-Toast_ChangedUsername: Changed Username
-Toast_SetUsername: Set Username
+Toast_BattleNet_ChangedBTag: BattleTagを変更しました
+Toast_BattleNet_DeletedBTag: BattleTagを削除しました
+Toast_FetchedRank: フェッチされたランク
+Toast_ForgotAccount: アカウントを忘れた
+Toast_ClearedPlatformSettings: "{platform} スイッチャー設定をクリア"
+Toast_ClearedImages: "クリアされた画像"
+Toast_SavedItem: "保存済み： {item}"
+Toast_ChangedUsername: 変更されたユーザー名
+Toast_SetUsername: ユーザー名を設定する
 Modal_Crowdin_Header: Crowdinの翻訳者
 Modal_Crowdin_Info: "このソフトウェアの翻訳を手伝ってくれた皆さんです。<br>隣に言語があるユーザーは、翻訳に大いに役立ちました（校正者の役割）。"
 Modal_Info_Creator: TechNoboによって作成されました [Wesley Pyburn]
@@ -178,11 +178,11 @@ Modal_PasswordsMatch: パスワードが一致しました
 Modal_PasswordsNoMatch: パスワードが一致しません
 Status_SelectedAccount: "選択済: {name}"
 Status_Init: "ステータス：初期化中"
-Status_ClosingPlatform: "Closing {platform}"
-Status_ClosingPlatformFailed: "Failed to close {platform}"
-Status_StartingPlatform: "Starting {platform}"
-Status_UpdatingFile: "Updating {file}"
-Status_UpdatingRegistry: Updating Windows registry
+Status_ClosingPlatform: "クロージング {platform}"
+Status_ClosingPlatformFailed: "0を閉じることができ {platform}"
+Status_StartingPlatform: "{platform}から開始"
+Status_UpdatingFile: "{file}更新しています"
+Status_UpdatingRegistry: Windowsレジストリの更新
 Context_SwapTo: アカウントに入れ替え
 Context_CreateShortcut: デスクトップのショートカットを作成
 Context_CreateShortcutSubmenu: デスクトップのショートカットを作成...
@@ -304,7 +304,7 @@ Away: 離席中
 Snooze: スヌーズ
 LookingToTrade: 取引を探し中
 LookingToPlay: プレイを探しています
-Unrecognized_EPersonaState: Unrecognized ePersonaState
+Unrecognized_EPersonaState: 認識されないePersonaState
 Reg_DoesntExist: "{subKey} は存在しません。"
 Reg_DoesntContain: "{subKey} は {val} を含んでいません"
 Reg_Removing: '{subKey}\\{val} を削除中'

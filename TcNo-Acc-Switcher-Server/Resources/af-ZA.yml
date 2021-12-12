@@ -55,7 +55,7 @@ Settings_WindowsAccent: Gebruik die Windows-aksentkleur
 Settings_HelpTranslate: "[Help vertaal]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Stel weergawe-enjin:"
-Settings_AltClose: "Alternate exit method (when platform doesn't close)"
+Settings_AltClose: "Alternatiewe uitgangmetode (wanneer platform nie toemaak nie)"
 Cleaning_Header_StartMenuShortcuts: 'Kortpaaie vir die Start Menu:'
 Cleaning_Header_General: Algemene skoonmaak
 Cleaning_Header_LoginHistory: Maak my aanmeldingsgeskiedenis skoon
@@ -136,15 +136,15 @@ Toast_Ubisoft_NoUsername: Kon nie die laaste aangemelde gebruiker vind nie. Prob
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kon nie gevind word nie. Die laaste aktiewe rekening is nie gestoor nie."
 Toast_Ubisoft_NoUser: Kon nie die laaste aangemelde gebruiker vind nie. Probeer eers weer by Ubisoft aanmeld.
 Toast_ClearForgottenCheck: Is u seker dat u rugsteune van vergete rekeninge wil uitvee?
-Toast_BattleNet_ChangedBTag: Changed BattleTag
-Toast_BattleNet_DeletedBTag: Deleted BattleTag
-Toast_FetchedRank: Fetched Rank
-Toast_ForgotAccount: Forgot account
-Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
-Toast_ClearedImages: "Cleared images"
-Toast_SavedItem: "Saved: {item}"
-Toast_ChangedUsername: Changed Username
-Toast_SetUsername: Set Username
+Toast_BattleNet_ChangedBTag: BattleTag verander
+Toast_BattleNet_DeletedBTag: Gevee BattleTag
+Toast_FetchedRank: Rang gehaal
+Toast_ForgotAccount: Rekening vergeet
+Toast_ClearedPlatformSettings: "Het {platform} Switcher-instellings skoongemaak"
+Toast_ClearedImages: "Beelde is skoongemaak"
+Toast_SavedItem: "Gestoor: {item}"
+Toast_ChangedUsername: Gebruikersnaam verander
+Toast_SetUsername: Stel Gebruikersnaam
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is almal wat gehelp het om hierdie sagteware te vertaal.<br>Gebruikers met tale langs hulle het baie gehelp met vertaling (proefleserrol)."
 Modal_Info_Creator: Geskep deur TechNobo [Wesley Pyburn]
@@ -178,11 +178,11 @@ Modal_PasswordsMatch: Wagwoorde stem ooreen
 Modal_PasswordsNoMatch: Wagwoorde stem nie ooreen nie
 Status_SelectedAccount: "Gekies: {name}"
 Status_Init: "Status: inisialiseer"
-Status_ClosingPlatform: "Closing {platform}"
-Status_ClosingPlatformFailed: "Failed to close {platform}"
-Status_StartingPlatform: "Starting {platform}"
-Status_UpdatingFile: "Updating {file}"
-Status_UpdatingRegistry: Updating Windows registry
+Status_ClosingPlatform: "Sluiting {platform}"
+Status_ClosingPlatformFailed: "Kon nie {platform}"
+Status_StartingPlatform: "Begin {platform}"
+Status_UpdatingFile: "Opdatering {file}"
+Status_UpdatingRegistry: Dateer Windows-register op
 Context_SwapTo: Ruil na rekening
 Context_CreateShortcut: Skep lessenaarkortpad
 Context_CreateShortcutSubmenu: Skep lessenaarkortpad ...
@@ -304,7 +304,7 @@ Away: Weg
 Snooze: Sluimer
 LookingToTrade: Op soek na handel
 LookingToPlay: Op soek na Play
-Unrecognized_EPersonaState: Unrecognized ePersonaState
+Unrecognized_EPersonaState: Onherkenbare ePersonaState
 Reg_DoesntExist: "{subKey} bestaan nie."
 Reg_DoesntContain: "{subKey} bevat nie {val}"
 Reg_Removing: Verwyder {subKey}\\{val}

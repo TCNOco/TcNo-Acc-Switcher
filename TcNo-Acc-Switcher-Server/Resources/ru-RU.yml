@@ -55,7 +55,7 @@ Settings_WindowsAccent: Использовать цвет Windows
 Settings_HelpTranslate: "[Помочь с переводом]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Для продвинутых] Установить движок рендеринга:"
-Settings_AltClose: "Alternate exit method (when platform doesn't close)"
+Settings_AltClose: "Альтернативный метод выхода (когда платформа не закрывается)"
 Cleaning_Header_StartMenuShortcuts: 'Ярлыки для меню Пуск:'
 Cleaning_Header_General: Общая очистка
 Cleaning_Header_LoginHistory: Очистить историю входов
@@ -136,15 +136,15 @@ Toast_Ubisoft_NoUsername: Не удалось найти последнего в
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat не найден. Последняя активная учетная запись не сохранена."
 Toast_Ubisoft_NoUser: Не удалось найти последнего вошедшего пользователя. Попробуйте сначала войти в Ubisoft.
 Toast_ClearForgottenCheck: Вы уверены, что хотите очистить резервные копии забытых учетных записей?
-Toast_BattleNet_ChangedBTag: Changed BattleTag
-Toast_BattleNet_DeletedBTag: Deleted BattleTag
-Toast_FetchedRank: Fetched Rank
-Toast_ForgotAccount: Forgot account
-Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
-Toast_ClearedImages: "Cleared images"
-Toast_SavedItem: "Saved: {item}"
-Toast_ChangedUsername: Changed Username
-Toast_SetUsername: Set Username
+Toast_BattleNet_ChangedBTag: Изменен BattleTag
+Toast_BattleNet_DeletedBTag: Удален BattleTag
+Toast_FetchedRank: Получено ранг
+Toast_ForgotAccount: Забыли аккаунт
+Toast_ClearedPlatformSettings: "Очищено {platform} настроек коммутатора"
+Toast_ClearedImages: "Очищенные изображения"
+Toast_SavedItem: "Сохранено: {item}"
+Toast_ChangedUsername: Измененное имя пользователя
+Toast_SetUsername: Установить имя пользователя
 Modal_Crowdin_Header: Переводчики Crowdin
 Modal_Crowdin_Info: "Вот все, кто помогал переводить эту программу.<br>Пользователи с соседними языками очень помогли в переводе (роль корректора)."
 Modal_Info_Creator: Создано TechNobo [Wesley Pyburn]
@@ -178,11 +178,11 @@ Modal_PasswordsMatch: Пароли совпадают
 Modal_PasswordsNoMatch: Пароли не совпадают
 Status_SelectedAccount: "Выбрано: {name}"
 Status_Init: "Статус: инициализация"
-Status_ClosingPlatform: "Closing {platform}"
-Status_ClosingPlatformFailed: "Failed to close {platform}"
-Status_StartingPlatform: "Starting {platform}"
-Status_UpdatingFile: "Updating {file}"
-Status_UpdatingRegistry: Updating Windows registry
+Status_ClosingPlatform: "Закрытие {platform}"
+Status_ClosingPlatformFailed: "Не удалось закрыть {platform}"
+Status_StartingPlatform: "Начиная с {platform}"
+Status_UpdatingFile: "Обновление {file}"
+Status_UpdatingRegistry: Обновление реестра Windows
 Context_SwapTo: Перейти на аккаунт
 Context_CreateShortcut: Создать ярлык на рабочем столе
 Context_CreateShortcutSubmenu: Создать ярлык на рабочем столе...
@@ -304,7 +304,7 @@ Away: Нет на месте
 Snooze: Не беспокоить
 LookingToTrade: Хочет обменяться
 LookingToPlay: Хочет играть
-Unrecognized_EPersonaState: Unrecognized ePersonaState
+Unrecognized_EPersonaState: Нераспознанный ePersonaState
 Reg_DoesntExist: "{subKey} не существует."
 Reg_DoesntContain: "{subKey} не содержит {val}"
 Reg_Removing: Удаление {subKey}\\{val}

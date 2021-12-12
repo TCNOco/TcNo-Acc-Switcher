@@ -55,7 +55,7 @@ Settings_WindowsAccent: Windows 강조 색상 사용
 Settings_HelpTranslate: "[번역을 도와주세요]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] 렌더링 엔진 설정:"
-Settings_AltClose: "Alternate exit method (when platform doesn't close)"
+Settings_AltClose: "대체 출구 방법(플랫폼이 닫히지 않을 때)"
 Cleaning_Header_StartMenuShortcuts: '시작 메뉴 바로 가기:'
 Cleaning_Header_General: 일반 청소
 Cleaning_Header_LoginHistory: 내 로그인 기록 정리
@@ -136,15 +136,15 @@ Toast_Ubisoft_NoUsername: 마지막으로 로그인한 사용자를 찾을 수 �
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat를 찾을 수 없습니다. 마지막 활성 계정이 저장되지 않았습니다."
 Toast_Ubisoft_NoUser: 마지막으로 로그인한 사용자를 찾을 수 없습니다. 먼저 Ubisoft에 다시 로그인해 보세요.
 Toast_ClearForgottenCheck: 잊어버린 계정의 백업을 지우시겠습니까?
-Toast_BattleNet_ChangedBTag: Changed BattleTag
-Toast_BattleNet_DeletedBTag: Deleted BattleTag
-Toast_FetchedRank: Fetched Rank
-Toast_ForgotAccount: Forgot account
-Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
-Toast_ClearedImages: "Cleared images"
-Toast_SavedItem: "Saved: {item}"
-Toast_ChangedUsername: Changed Username
-Toast_SetUsername: Set Username
+Toast_BattleNet_ChangedBTag: 변경된 BattleTag
+Toast_BattleNet_DeletedBTag: 삭제된 BattleTag
+Toast_FetchedRank: 가져온 순위
+Toast_ForgotAccount: 계정을 잊으셨나요?
+Toast_ClearedPlatformSettings: "{platform} 스위처 설정 지우기"
+Toast_ClearedImages: "지워진 이미지"
+Toast_SavedItem: "저장됨: {item}"
+Toast_ChangedUsername: 변경된 사용자 이름
+Toast_SetUsername: 사용자 이름 설정
 Modal_Crowdin_Header: Crowdin 번역가
 Modal_Crowdin_Info: "이 소프트웨어를 번역하는 데 도움을 준 모든 사람이 있습니다.<br>옆에 언어가 있는 사용자가 번역에 많은 도움이 되었습니다(교정자 역할)."
 Modal_Info_Creator: TechNobo [Wesley Pyburn] 제작
@@ -178,11 +178,11 @@ Modal_PasswordsMatch: 비밀번호 일치
 Modal_PasswordsNoMatch: 비밀번호가 일치하지 않습니다
 Status_SelectedAccount: "선택됨: {name}"
 Status_Init: "상태: 초기화 중"
-Status_ClosingPlatform: "Closing {platform}"
-Status_ClosingPlatformFailed: "Failed to close {platform}"
-Status_StartingPlatform: "Starting {platform}"
-Status_UpdatingFile: "Updating {file}"
-Status_UpdatingRegistry: Updating Windows registry
+Status_ClosingPlatform: "마감 {platform}"
+Status_ClosingPlatformFailed: "닫기 실패 {platform}"
+Status_StartingPlatform: "시작 {platform}"
+Status_UpdatingFile: "{file}업데이트 중"
+Status_UpdatingRegistry: Windows 레지스트리 업데이트
 Context_SwapTo: 계정으로 스왑
 Context_CreateShortcut: 바탕 화면 바로 가기 만들기
 Context_CreateShortcutSubmenu: 바탕 화면 바로 가기 만들기...
@@ -304,7 +304,7 @@ Away: 떨어져
 Snooze: 선잠
 LookingToTrade: 거래를 찾고 있습니다
 LookingToPlay: 놀고 싶어
-Unrecognized_EPersonaState: Unrecognized ePersonaState
+Unrecognized_EPersonaState: 인식할 수 없는 ePersonaState
 Reg_DoesntExist: "{subKey} 이 존재하지 않습니다."
 Reg_DoesntContain: "{subKey} {val}포함하지 않습니다"
 Reg_Removing: '{subKey}\\{val}제거'

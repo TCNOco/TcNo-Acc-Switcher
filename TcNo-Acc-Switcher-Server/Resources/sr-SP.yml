@@ -55,7 +55,7 @@ Settings_WindowsAccent: Користите Виндовс Аццент Цоло�
 Settings_HelpTranslate: "[Помоћ при превођењу]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Постави механизам за рендеровање:"
-Settings_AltClose: "Alternate exit method (when platform doesn't close)"
+Settings_AltClose: "Алтернативни начин изласка (када се платформа не затвори)"
 Cleaning_Header_StartMenuShortcuts: 'Пречице за мени Старт:'
 Cleaning_Header_General: Генерално чишћење
 Cleaning_Header_LoginHistory: Очистите моју историју пријављивања
@@ -136,15 +136,15 @@ Toast_Ubisoft_NoUsername: Није могуће пронаћи последње�
 Toast_Ubisoft_NoDat: "%LocalAppData%/УбисофтГамеЛаунцхер/усерс.дат није пронађен. Последњи активни налог није сачуван."
 Toast_Ubisoft_NoUser: Није могуће пронаћи последњег пријављеног корисника. Покушајте да се поново пријавите на Убисофт.
 Toast_ClearForgottenCheck: Да ли сте сигурни да желите да обришете резервне копије заборављених рачуна?
-Toast_BattleNet_ChangedBTag: Changed BattleTag
-Toast_BattleNet_DeletedBTag: Deleted BattleTag
-Toast_FetchedRank: Fetched Rank
-Toast_ForgotAccount: Forgot account
-Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
-Toast_ClearedImages: "Cleared images"
-Toast_SavedItem: "Saved: {item}"
-Toast_ChangedUsername: Changed Username
-Toast_SetUsername: Set Username
+Toast_BattleNet_ChangedBTag: Промењена БаттлеТаг
+Toast_BattleNet_DeletedBTag: Избрисан БаттлеТаг
+Toast_FetchedRank: Преузет ранг
+Toast_ForgotAccount: Заборавили сте налог
+Toast_ClearedPlatformSettings: "Обрисано {platform} подешавања прекидача"
+Toast_ClearedImages: "Обрисане слике"
+Toast_SavedItem: "Сачувано: {item}"
+Toast_ChangedUsername: Промењено корисничко име
+Toast_SetUsername: Подесите корисничко име
 Modal_Crowdin_Header: Цровдин преводиоци
 Modal_Crowdin_Info: "Ево свих који су помогли у превођењу овог софтвера.<br>Корисници са језицима поред њих су много помогли у преводу (улога лектора)."
 Modal_Info_Creator: Направио ТецхНобо [Веслеи Пибурн]
@@ -178,11 +178,11 @@ Modal_PasswordsMatch: Лозинке се подударају
 Modal_PasswordsNoMatch: Лозинке се не поклапају
 Status_SelectedAccount: "Изабрано: {name}"
 Status_Init: "Статус: Иницирање"
-Status_ClosingPlatform: "Closing {platform}"
-Status_ClosingPlatformFailed: "Failed to close {platform}"
-Status_StartingPlatform: "Starting {platform}"
-Status_UpdatingFile: "Updating {file}"
-Status_UpdatingRegistry: Updating Windows registry
+Status_ClosingPlatform: "Затварање {platform}"
+Status_ClosingPlatformFailed: "{platform}није успело"
+Status_StartingPlatform: "Почевши од {platform}"
+Status_UpdatingFile: "Ажурирање {file}"
+Status_UpdatingRegistry: Ажурирање Виндовс регистра
 Context_SwapTo: Замените на рачун
 Context_CreateShortcut: Направи пречицу на десктопу
 Context_CreateShortcutSubmenu: Направи пречицу на десктопу...
@@ -304,7 +304,7 @@ Away: Далеко
 Snooze: Сноозе
 LookingToTrade: У потрази за трговином
 LookingToPlay: Тражим да се играм
-Unrecognized_EPersonaState: Unrecognized ePersonaState
+Unrecognized_EPersonaState: Непрепознат еПерсонаСтате
 Reg_DoesntExist: "{subKey} не постоји."
 Reg_DoesntContain: "{subKey} не садржи {val}"
 Reg_Removing: Уклањање {subKey}\\{val}

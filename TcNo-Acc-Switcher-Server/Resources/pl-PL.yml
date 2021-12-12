@@ -55,7 +55,7 @@ Settings_WindowsAccent: Używaj kolorów wiodących Windowsa
 Settings_HelpTranslate: "[Pomóż tłumaczyć]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Ustaw silnik renderujący:"
-Settings_AltClose: "Alternate exit method (when platform doesn't close)"
+Settings_AltClose: "Alternatywna metoda wyjścia (gdy platforma się nie zamyka)"
 Cleaning_Header_StartMenuShortcuts: 'Skróty dla menu startowego:'
 Cleaning_Header_General: Ogólne czyszczenie
 Cleaning_Header_LoginHistory: Wyczyść moją historię logowania
@@ -136,15 +136,15 @@ Toast_Ubisoft_NoUsername: Nie można znaleźć ostatniego zalogowanego użytkown
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nie został znaleziony. Ostatnie aktywne konto nie zostało zapisane."
 Toast_Ubisoft_NoUser: Nie można znaleźć ostatniego zalogowanego użytkownika. Spróbuj zalogować się do Ubisoft ponownie.
 Toast_ClearForgottenCheck: Czy na pewno chcesz wyczyścić kopie zapasowe zapomnianych kont?
-Toast_BattleNet_ChangedBTag: Changed BattleTag
-Toast_BattleNet_DeletedBTag: Deleted BattleTag
-Toast_FetchedRank: Fetched Rank
-Toast_ForgotAccount: Forgot account
-Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
-Toast_ClearedImages: "Cleared images"
-Toast_SavedItem: "Saved: {item}"
-Toast_ChangedUsername: Changed Username
-Toast_SetUsername: Set Username
+Toast_BattleNet_ChangedBTag: Zmieniony BattleTag
+Toast_BattleNet_DeletedBTag: Usunięto BattleTag
+Toast_FetchedRank: Pobrano rangę
+Toast_ForgotAccount: Nie pamiętam konta
+Toast_ClearedPlatformSettings: "Wyczyszczono {platform} Ustawienia przełącznika"
+Toast_ClearedImages: "Wyczyszczone obrazy"
+Toast_SavedItem: "Zapisano: {item}"
+Toast_ChangedUsername: Zmieniona nazwa użytkownika
+Toast_SetUsername: Ustaw nazwę użytkownika
 Modal_Crowdin_Header: Tłumacze tłumu
 Modal_Crowdin_Info: "Oto wszyscy, którzy pomogli przetłumaczyć to oprogramowanie.<br>Użytkownicy mający obok siebie języki bardzo pomogli w tłumaczeniu (rola korektora)."
 Modal_Info_Creator: Stworzone przez TechNobo [Wesley Pyburn]
@@ -178,11 +178,11 @@ Modal_PasswordsMatch: Hasła są zgodne
 Modal_PasswordsNoMatch: Hasła nie pasują
 Status_SelectedAccount: "Wybrano: {name}"
 Status_Init: "Status: Inicjalizacja"
-Status_ClosingPlatform: "Closing {platform}"
-Status_ClosingPlatformFailed: "Failed to close {platform}"
-Status_StartingPlatform: "Starting {platform}"
-Status_UpdatingFile: "Updating {file}"
-Status_UpdatingRegistry: Updating Windows registry
+Status_ClosingPlatform: "Zamykanie {platform}"
+Status_ClosingPlatformFailed: "Nie udało się zamknąć {platform}"
+Status_StartingPlatform: "Od {platform}"
+Status_UpdatingFile: "Aktualizacja {file}"
+Status_UpdatingRegistry: Aktualizacja rejestru systemu Windows
 Context_SwapTo: Zmień konto
 Context_CreateShortcut: Utwórz skrót na pulpicie
 Context_CreateShortcutSubmenu: Utwórz skrót do pulpitu...
@@ -304,7 +304,7 @@ Away: Nieobecny
 Snooze: Drzemka
 LookingToTrade: Szukam wymiany
 LookingToPlay: Szukam gry
-Unrecognized_EPersonaState: Unrecognized ePersonaState
+Unrecognized_EPersonaState: Nierozpoznany stan ePersona
 Reg_DoesntExist: "{subKey} nie istnieje."
 Reg_DoesntContain: "{subKey} nie zawiera {val}"
 Reg_Removing: Usuwanie {subKey}\\{val}

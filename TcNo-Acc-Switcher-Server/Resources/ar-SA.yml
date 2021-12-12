@@ -55,7 +55,7 @@ Settings_WindowsAccent: استخدام لون ثيم ويندوز
 Settings_HelpTranslate: "[ساهم في الترجمة]"
 Settings_ViewTranslators: "[المساهمون]"
 Settings_Header_ActiveBrowser: "[متقدم] محرك العرض:"
-Settings_AltClose: "Alternate exit method (when platform doesn't close)"
+Settings_AltClose: "طريقة الخروج البديلة (عندما لا تغلق المنصة)"
 Cleaning_Header_StartMenuShortcuts: 'اختصارات لقائمة البدء:'
 Cleaning_Header_General: تنظيف عام
 Cleaning_Header_LoginHistory: تنظيف سجل تسجيل الدخول الخاص بي
@@ -136,15 +136,15 @@ Toast_Ubisoft_NoUsername: تعذر العثور على آخر مستخدم تم 
 Toast_Ubisoft_NoDat: "لم يتم العثور على %LocalAppData%/UBisoftGameLauncher/user.dat . لم يتم حفظ آخر حساب نشط."
 Toast_Ubisoft_NoUser: تعذر العثور على آخر مستخدم تم تسجيل الدخول. حاول تسجيل الدخول إلى UBisoft مرة أخرى أولاً.
 Toast_ClearForgottenCheck: هل أنت متأكد من أنك تريد مسح النسخ الاحتياطي للحسابات المنسية؟
-Toast_BattleNet_ChangedBTag: Changed BattleTag
-Toast_BattleNet_DeletedBTag: Deleted BattleTag
-Toast_FetchedRank: Fetched Rank
-Toast_ForgotAccount: Forgot account
-Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
-Toast_ClearedImages: "Cleared images"
-Toast_SavedItem: "Saved: {item}"
-Toast_ChangedUsername: Changed Username
-Toast_SetUsername: Set Username
+Toast_BattleNet_ChangedBTag: تم تغيير علامة المعركة
+Toast_BattleNet_DeletedBTag: BattleTag المحذوفة
+Toast_FetchedRank: الرتبة التي تم جلبها
+Toast_ForgotAccount: نسيت الحساب
+Toast_ClearedPlatformSettings: "محو {platform} إعدادات الجلاد"
+Toast_ClearedImages: "مسح الصور"
+Toast_SavedItem: "تم الحفظ: {item}"
+Toast_ChangedUsername: اسم المستخدم الذي تم تغييره
+Toast_SetUsername: تعيين اسم المستخدم
 Modal_Crowdin_Header: مترجمين كرودين
 Modal_Crowdin_Info: "هنا كل من ساعد في ترجمة هذا البرنامج.<br>المستخدمين الذين لديهم لغات بجانبهم ساعدوا كثيرًا في الترجمة (دور المدقق اللغوي)."
 Modal_Info_Creator: تم إنشاؤها من قبل تيتشنوبو [ويسلي بيبرن]
@@ -178,11 +178,11 @@ Modal_PasswordsMatch: تطابق كلمات المرور
 Modal_PasswordsNoMatch: كلمتا المرور غير متطابقتين
 Status_SelectedAccount: "مختار: {name}"
 Status_Init: "الحالة: جارٍ التهيئة"
-Status_ClosingPlatform: "Closing {platform}"
-Status_ClosingPlatformFailed: "Failed to close {platform}"
-Status_StartingPlatform: "Starting {platform}"
-Status_UpdatingFile: "Updating {file}"
-Status_UpdatingRegistry: Updating Windows registry
+Status_ClosingPlatform: "إغلاق {platform}"
+Status_ClosingPlatformFailed: "فشل إغلاق {platform}"
+Status_StartingPlatform: "ابتداء من {platform}"
+Status_UpdatingFile: "تحديث {file}"
+Status_UpdatingRegistry: تحديث سجل الويندوز
 Context_SwapTo: التبديل إلى الحساب
 Context_CreateShortcut: إنشاء اختصار سطح المكتب
 Context_CreateShortcutSubmenu: إنشاء اختصار سطح المكتب...
@@ -304,7 +304,7 @@ Away: بعيدا
 Snooze: غفوة
 LookingToTrade: التطلع إلى التجارة
 LookingToPlay: التطلع إلى اللعب
-Unrecognized_EPersonaState: Unrecognized ePersonaState
+Unrecognized_EPersonaState: ePersonaState غير معروف
 Reg_DoesntExist: "{subKey} غير موجود."
 Reg_DoesntContain: "{subKey} لا يحتوي على {val}"
 Reg_Removing: إزالة {subKey}\\{val}

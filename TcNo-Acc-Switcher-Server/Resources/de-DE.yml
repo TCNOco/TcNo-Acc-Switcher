@@ -55,7 +55,7 @@ Settings_WindowsAccent: Verwende die Windows-Akzentfarbe
 Settings_HelpTranslate: "[Beim Übersetzen helfen]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Erweitert] Rendering-Engine auswählen:"
-Settings_AltClose: "Alternate exit method (when platform doesn't close)"
+Settings_AltClose: "Alternative Exit-Methode (wenn die Plattform nicht schließt)"
 Cleaning_Header_StartMenuShortcuts: 'Verknüpfungen für das Startmenü:'
 Cleaning_Header_General: Allgemeine Reinigung
 Cleaning_Header_LoginHistory: Login-Verlauf löschen
@@ -136,15 +136,15 @@ Toast_Ubisoft_NoUsername: Konnte den zuletzt angemeldeten Benutzer nicht finden.
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat konnte nicht gefunden werden. Der zuletzt aktive Account wurde nicht gespeichert."
 Toast_Ubisoft_NoUser: Konnte den zuletzt angemeldeten Benutzer nicht finden. Versuchen Sie, sich zuerst erneut bei Ubisoft anzumelden.
 Toast_ClearForgottenCheck: Sind Sie sicher, dass Sie Backups von vergessenen Konten löschen möchten?
-Toast_BattleNet_ChangedBTag: Changed BattleTag
-Toast_BattleNet_DeletedBTag: Deleted BattleTag
-Toast_FetchedRank: Fetched Rank
-Toast_ForgotAccount: Forgot account
-Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
-Toast_ClearedImages: "Cleared images"
-Toast_SavedItem: "Saved: {item}"
-Toast_ChangedUsername: Changed Username
-Toast_SetUsername: Set Username
+Toast_BattleNet_ChangedBTag: BattleTag geändert
+Toast_BattleNet_DeletedBTag: BattleTag gelöscht
+Toast_FetchedRank: Abgerufener Rang
+Toast_ForgotAccount: Konto vergessen
+Toast_ClearedPlatformSettings: "{platform} Switcher-Einstellungen gelöscht"
+Toast_ClearedImages: "Gelöschte Bilder"
+Toast_SavedItem: "Gespeichert: {item}"
+Toast_ChangedUsername: Geänderter Benutzername
+Toast_SetUsername: Benutzername festlegen
 Modal_Crowdin_Header: Crowdin-Übersetzer
 Modal_Crowdin_Info: "Hier sind alle, die geholfen haben, diese Software zu übersetzen.<br>Benutzer mit Sprachen neben ihnen haben bei der Übersetzung sehr geholfen (Rolle des Korrekturlesers)."
 Modal_Info_Creator: Erstellt von TechNobo [Wesley Pyburn]
@@ -178,11 +178,11 @@ Modal_PasswordsMatch: Passwörter stimmen überein
 Modal_PasswordsNoMatch: Passwörter stimmen nicht überein
 Status_SelectedAccount: "Ausgewählt: {name}"
 Status_Init: "Status: Initialisierung"
-Status_ClosingPlatform: "Closing {platform}"
-Status_ClosingPlatformFailed: "Failed to close {platform}"
-Status_StartingPlatform: "Starting {platform}"
-Status_UpdatingFile: "Updating {file}"
-Status_UpdatingRegistry: Updating Windows registry
+Status_ClosingPlatform: "Schließen {platform}"
+Status_ClosingPlatformFailed: "Fehler beim Schließen {platform}"
+Status_StartingPlatform: "Ab {platform}"
+Status_UpdatingFile: "Aktualisieren {file}"
+Status_UpdatingRegistry: Aktualisieren der Windows-Registrierung
 Context_SwapTo: Zum Account wechseln
 Context_CreateShortcut: Desktop-Verknüpfung erstellen
 Context_CreateShortcutSubmenu: Desktop-Verknüpfung erstellen...
@@ -304,7 +304,7 @@ Away: Abwesend
 Snooze: Schlummern
 LookingToTrade: Suche nach Handel
 LookingToPlay: Suche nach Spielen
-Unrecognized_EPersonaState: Unrecognized ePersonaState
+Unrecognized_EPersonaState: Nicht erkannter ePersonaState
 Reg_DoesntExist: "{subKey} existiert nicht."
 Reg_DoesntContain: "{subKey} enthält nicht {val}"
 Reg_Removing: Entferne {subKey}\\{val}
