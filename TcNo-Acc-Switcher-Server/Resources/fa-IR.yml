@@ -55,7 +55,7 @@ Settings_WindowsAccent: از Windows Accent Color استفاده کنید
 Settings_HelpTranslate: "[کمک به ترجمه]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] تنظیم موتور رندر:"
-Settings_AltClose: "روش خروج جایگزین (زمانی که پلت فرم بسته نمی شود)"
+Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'میانبرهای منوی استارت:'
 Cleaning_Header_General: نظافت عمومی
 Cleaning_Header_LoginHistory: تاریخچه ورود من را پاک کنید
@@ -136,15 +136,15 @@ Toast_Ubisoft_NoUsername: آخرین کاربر وارد شده را پیدا ن
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat یافت نشد. آخرین حساب فعال ذخیره نشد."
 Toast_Ubisoft_NoUser: آخرین کاربر وارد شده را پیدا نکردم. ابتدا دوباره وارد یوبی سافت شوید.
 Toast_ClearForgottenCheck: آیا مطمئن هستید که می خواهید نسخه پشتیبان حساب های فراموش شده را پاک کنید؟
-Toast_BattleNet_ChangedBTag: BattleTag را تغییر داد
-Toast_BattleNet_DeletedBTag: BattleTag حذف شد
-Toast_FetchedRank: رتبه واکشی شد
-Toast_ForgotAccount: حساب را فراموش کرده اید
-Toast_ClearedPlatformSettings: "تنظیمات {platform} Switcher پاک شد"
-Toast_ClearedImages: "تصاویر پاک شده"
-Toast_SavedItem: "ذخیره شده: {item}"
-Toast_ChangedUsername: نام کاربری تغییر کرد
-Toast_SetUsername: نام کاربری را تنظیم کنید
+Toast_BattleNet_ChangedBTag: Changed BattleTag
+Toast_BattleNet_DeletedBTag: Deleted BattleTag
+Toast_FetchedRank: Fetched Rank
+Toast_ForgotAccount: Forgot account
+Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
+Toast_ClearedImages: "Cleared images"
+Toast_SavedItem: "Saved: {item}"
+Toast_ChangedUsername: Changed Username
+Toast_SetUsername: Set Username
 Modal_Crowdin_Header: مترجمان کرودین
 Modal_Crowdin_Info: "در اینجا همه کسانی هستند که در ترجمه این نرم افزار کمک کردند.<br>کاربرانی که زبان های کناری داشتند در ترجمه کمک زیادی کردند (نقش تصحیح کننده)."
 Modal_Info_Creator: ایجاد شده توسط TechNobo [Wesley Pyburn]
@@ -178,11 +178,11 @@ Modal_PasswordsMatch: گذر واژه ها همخوانی دارند
 Modal_PasswordsNoMatch: رمزهای ورود مطابقت ندارند
 Status_SelectedAccount: "انتخاب شده: {name}"
 Status_Init: "وضعیت: اولیه"
-Status_ClosingPlatform: "بستن {platform}"
-Status_ClosingPlatformFailed: "{platform}بسته نشد"
-Status_StartingPlatform: "شروع {platform}"
-Status_UpdatingFile: "به روز رسانی {file}"
-Status_UpdatingRegistry: به روز رسانی رجیستری ویندوز
+Status_ClosingPlatform: "Closing {platform}"
+Status_ClosingPlatformFailed: "Failed to close {platform}"
+Status_StartingPlatform: "Starting {platform}"
+Status_UpdatingFile: "Updating {file}"
+Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: تعویض به حساب کاربری
 Context_CreateShortcut: ایجاد میانبر در دسکتاپ
 Context_CreateShortcutSubmenu: ایجاد میانبر در دسکتاپ...
@@ -304,7 +304,7 @@ Away: دور
 Snooze: به تعویق انداختن
 LookingToTrade: به دنبال تجارت
 LookingToPlay: به دنبال بازی
-Unrecognized_EPersonaState: ePersonaState ناشناخته
+Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} وجود ندارد."
 Reg_DoesntContain: "{subKey} شامل {val}"
 Reg_Removing: حذف {subKey}\\{val}

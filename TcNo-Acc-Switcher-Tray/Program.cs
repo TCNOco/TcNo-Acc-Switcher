@@ -43,6 +43,8 @@ namespace TcNo_Acc_Switcher_Tray
                 Environment.Exit(1056); // An instance of the service is already running.
             }
 
+            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+
             // Set working directory to documents folder
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
             TrayUsers = TrayUser.ReadTrayUsers();
@@ -57,6 +59,11 @@ namespace TcNo_Acc_Switcher_Tray
             var processes = Process.GetProcesses();
             var currentProc = Process.GetCurrentProcess();
             return processes.Any(process => currentProc.ProcessName == process.ProcessName && currentProc.Id != process.Id);
+        }
+
+        private static void OnProcessExit(object sender, EventArgs e)
+        {
+            Globals.KillProcess("TcNo-Acc-Switcher");
         }
     }
 

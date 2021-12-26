@@ -55,7 +55,7 @@ Settings_WindowsAccent: Použí barvu motivu Windows
 Settings_HelpTranslate: "[Pomozte s překladem]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Nastavit vykreslovací modul:"
-Settings_AltClose: "Alternativní způsob ukončení (když se platforma nezavře)"
+Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'Zkratky pro nabídku startu:'
 Cleaning_Header_General: Obecné čištění
 Cleaning_Header_LoginHistory: Vyčistit historii přihlášení
@@ -136,15 +136,15 @@ Toast_Ubisoft_NoUsername: Nelze najít poslední přihlášené uživatele. Zkus
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nebyl nalezen. Poslední aktivní účet nebyl uložen."
 Toast_Ubisoft_NoUser: Nelze najít poslední přihlášené uživatele. Zkuste se nejdříve přihlásit do Ubisoft.
 Toast_ClearForgottenCheck: Opravdu chcete vymazat zálohy zapomenutých účtů?
-Toast_BattleNet_ChangedBTag: Změněn BattleTag
-Toast_BattleNet_DeletedBTag: Smazán BattleTag
-Toast_FetchedRank: Získaná hodnost
-Toast_ForgotAccount: Zapomenutý účet
-Toast_ClearedPlatformSettings: "Vymazáno {platform} nastavení přepínače"
-Toast_ClearedImages: "Vyčištěné obrázky"
-Toast_SavedItem: "Uloženo: {item}"
-Toast_ChangedUsername: Uživatelské jméno bylo změněno
-Toast_SetUsername: Nastavit uživatelské jméno
+Toast_BattleNet_ChangedBTag: Changed BattleTag
+Toast_BattleNet_DeletedBTag: Deleted BattleTag
+Toast_FetchedRank: Fetched Rank
+Toast_ForgotAccount: Forgot account
+Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
+Toast_ClearedImages: "Cleared images"
+Toast_SavedItem: "Saved: {item}"
+Toast_ChangedUsername: Changed Username
+Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Crowdinští překladatelé
 Modal_Crowdin_Info: "Zde jsou všichni, kteří pomohli přeložit tento software.<br>překladu hodně pomohli uživatelé s jazyky vedle sebe (role korektora)."
 Modal_Info_Creator: Vytvořeno společností TechNobo [Wesley Pyburn]
@@ -178,11 +178,11 @@ Modal_PasswordsMatch: Hesla se shodují
 Modal_PasswordsNoMatch: Hesla se neshodují
 Status_SelectedAccount: "Vybráno: {name}"
 Status_Init: "Stav: inicializace"
-Status_ClosingPlatform: "Zavírání {platform}"
-Status_ClosingPlatformFailed: "Nepodařilo se zavřít {platform}"
-Status_StartingPlatform: "Počínaje {platform}"
-Status_UpdatingFile: "Aktualizace {file}"
-Status_UpdatingRegistry: Aktualizace registru Windows
+Status_ClosingPlatform: "Closing {platform}"
+Status_ClosingPlatformFailed: "Failed to close {platform}"
+Status_StartingPlatform: "Starting {platform}"
+Status_UpdatingFile: "Updating {file}"
+Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: Prohodit účet
 Context_CreateShortcut: Vytvořit zástupce na ploše
 Context_CreateShortcutSubmenu: Vytvořit zástupce na ploše...
@@ -304,7 +304,7 @@ Away: Nepřítomen
 Snooze: Odložit
 LookingToTrade: Chci obchodovat
 LookingToPlay: Chci hrát
-Unrecognized_EPersonaState: Nerozpoznaný ePersonaState
+Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} neexistuje."
 Reg_DoesntContain: "{subKey} neobsahuje {val}"
 Reg_Removing: Odstranění {subKey}\\{val}

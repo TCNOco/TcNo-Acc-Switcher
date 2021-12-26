@@ -55,7 +55,7 @@ Settings_WindowsAccent: Brug Windows Accent Colour
 Settings_HelpTranslate: "[Hjælp oversætte]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Indstil gengivelsesmotor:"
-Settings_AltClose: "Alternativ udgangsmetode (når platformen ikke lukker)"
+Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'Genveje til startmenuen:'
 Cleaning_Header_General: Generel Rengøring
 Cleaning_Header_LoginHistory: Rens min login-historik
@@ -136,15 +136,15 @@ Toast_Ubisoft_NoUsername: Kunne ikke finde sidst logget på bruger. Prøv at log
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kunne ikke findes. Den sidste aktive konto blev ikke gemt."
 Toast_Ubisoft_NoUser: Kunne ikke finde sidst logget på bruger. Prøv at logge ind på Ubisoft igen først.
 Toast_ClearForgottenCheck: Er du sikker på, at du vil rydde sikkerhedskopier af glemte konti?
-Toast_BattleNet_ChangedBTag: Ændret BattleTag
-Toast_BattleNet_DeletedBTag: Slettet BattleTag
-Toast_FetchedRank: Hentet Rang
-Toast_ForgotAccount: Glemt konto
-Toast_ClearedPlatformSettings: "Ryddede {platform} Switcher-indstillinger"
-Toast_ClearedImages: "Ryddede billeder"
-Toast_SavedItem: "Gemt: {item}"
-Toast_ChangedUsername: Ændret brugernavn
-Toast_SetUsername: Indstil brugernavn
+Toast_BattleNet_ChangedBTag: Changed BattleTag
+Toast_BattleNet_DeletedBTag: Deleted BattleTag
+Toast_FetchedRank: Fetched Rank
+Toast_ForgotAccount: Forgot account
+Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
+Toast_ClearedImages: "Cleared images"
+Toast_SavedItem: "Saved: {item}"
+Toast_ChangedUsername: Changed Username
+Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Crowdin-oversættere
 Modal_Crowdin_Info: "Her er alle, der hjalp med at oversætte denne software.<br>Brugere med sprog ved siden af hjalp meget med oversættelsen (korrekturlæserrolle)."
 Modal_Info_Creator: Oprettet af TechNobo [Wesley Pyburn]
@@ -178,11 +178,11 @@ Modal_PasswordsMatch: Adgangskoder matcher
 Modal_PasswordsNoMatch: Adgangskoder stemmer ikke overens
 Status_SelectedAccount: "Valgt: {name}"
 Status_Init: "Status: initialisering"
-Status_ClosingPlatform: "Lukker {platform}"
-Status_ClosingPlatformFailed: "Kunne ikke lukke {platform}"
-Status_StartingPlatform: "Starter {platform}"
-Status_UpdatingFile: "Opdatering {file}"
-Status_UpdatingRegistry: Opdatering af Windows-registreringsdatabasen
+Status_ClosingPlatform: "Closing {platform}"
+Status_ClosingPlatformFailed: "Failed to close {platform}"
+Status_StartingPlatform: "Starting {platform}"
+Status_UpdatingFile: "Updating {file}"
+Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: Ombyt til konto
 Context_CreateShortcut: Opret Skrivebordsgenvej
 Context_CreateShortcutSubmenu: Opret Skrivebordsgenvej...
@@ -304,7 +304,7 @@ Away: Væk
 Snooze: Udsæt
 LookingToTrade: Søger efter handel
 LookingToPlay: Søger efter at spille
-Unrecognized_EPersonaState: Ukendt ePersonaState
+Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} findes ikke."
 Reg_DoesntContain: "{subKey} indeholder ikke {val}"
 Reg_Removing: Fjerner {subKey}\\{val}

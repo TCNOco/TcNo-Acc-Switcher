@@ -55,7 +55,7 @@ Settings_WindowsAccent: Folosește culoarea de cent Windows
 Settings_HelpTranslate: "[Ajutor traduce]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Setați motorul de randare:"
-Settings_AltClose: "Metodă alternativă de ieșire (când platforma nu se închide)"
+Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'Comenzi rapide pentru Meniul Pornire:'
 Cleaning_Header_General: Curățare generală
 Cleaning_Header_LoginHistory: Curăță istoricul autentificărilor
@@ -136,15 +136,15 @@ Toast_Ubisoft_NoUsername: Nu s-a putut găsi ultimul utilizator conectat. Încer
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nu a putut fi găsit. Ultimul cont activ nu a fost salvat."
 Toast_Ubisoft_NoUser: Nu s-a putut găsi ultimul utilizator conectat. Încercați să vă logați din nou în Ubisoft.
 Toast_ClearForgottenCheck: Sunteţi sigur că doriţi să ştergeţi copiile de rezervă ale conturilor uitate?
-Toast_BattleNet_ChangedBTag: S-a schimbat BattleTag
-Toast_BattleNet_DeletedBTag: BattleTag a fost șters
-Toast_FetchedRank: Rang luat
-Toast_ForgotAccount: Am uitat contul
-Toast_ClearedPlatformSettings: "S-au șters {platform} setări ale comutatorului"
-Toast_ClearedImages: "Imagini șterse"
-Toast_SavedItem: "Salvat: {item}"
-Toast_ChangedUsername: Nume de utilizator schimbat
-Toast_SetUsername: Setează numele de utilizator
+Toast_BattleNet_ChangedBTag: Changed BattleTag
+Toast_BattleNet_DeletedBTag: Deleted BattleTag
+Toast_FetchedRank: Fetched Rank
+Toast_ForgotAccount: Forgot account
+Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
+Toast_ClearedImages: "Cleared images"
+Toast_SavedItem: "Saved: {item}"
+Toast_ChangedUsername: Changed Username
+Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Crowdin traducători
 Modal_Crowdin_Info: "Iată toți cei care au ajutat la traducerea acestui software.<br>Utilizatorii cu limbi lângă ei au ajutat foarte mult la traducere (rol de corector)."
 Modal_Info_Creator: Creat de TechNobo [Wesley Pyburn]
@@ -178,11 +178,11 @@ Modal_PasswordsMatch: Parolele corespund
 Modal_PasswordsNoMatch: Parolele nu corespund
 Status_SelectedAccount: "Selectat: {name}"
 Status_Init: "Stare: inițializare"
-Status_ClosingPlatform: "Închidere {platform}"
-Status_ClosingPlatformFailed: "Nu s-a putut închide {platform}"
-Status_StartingPlatform: "Incepand cu {platform}"
-Status_UpdatingFile: "Actualizare {file}"
-Status_UpdatingRegistry: Actualizarea registrului Windows
+Status_ClosingPlatform: "Closing {platform}"
+Status_ClosingPlatformFailed: "Failed to close {platform}"
+Status_StartingPlatform: "Starting {platform}"
+Status_UpdatingFile: "Updating {file}"
+Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: Schimbă la cont
 Context_CreateShortcut: Creați scurtătură pe desktop
 Context_CreateShortcutSubmenu: Creează scurtătură pe desktop...
@@ -304,7 +304,7 @@ Away: Plecat
 Snooze: Amânare
 LookingToTrade: Interesat să tranzacționezi
 LookingToPlay: Interesat de joc
-Unrecognized_EPersonaState: ePersonaState nerecunoscut
+Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} nu există."
 Reg_DoesntContain: "{subKey} nu conține {val}"
 Reg_Removing: Se elimină {subKey}\\{val}

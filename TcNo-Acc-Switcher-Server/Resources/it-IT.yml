@@ -55,7 +55,7 @@ Settings_WindowsAccent: Usa il Colore Secondario di Windows
 Settings_HelpTranslate: "[Aiuta a tradurre]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Imposta il motore di rendering:"
-Settings_AltClose: "Metodo di uscita alternativo (quando la piattaforma non si chiude)"
+Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'Scorciatoie per il Menu Iniziale:'
 Cleaning_Header_General: Pulizia Generale
 Cleaning_Header_LoginHistory: Cancella la mia cronologia degli accessi
@@ -136,15 +136,15 @@ Toast_Ubisoft_NoUsername: Impossibile trovare l'ultimo utente acceduto. Prova pr
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat non è stato trovato. L'ultimo account attivo non è stato salvato."
 Toast_Ubisoft_NoUser: Impossibile trovare l'ultimo utente acceduto. Prova prima ad accedere nuovamente a Ubisoft.
 Toast_ClearForgottenCheck: Sei sicuro di voler cancellare i backup dei profili dimenticati?
-Toast_BattleNet_ChangedBTag: BattleTag modificato
-Toast_BattleNet_DeletedBTag: Eliminato BattleTag
-Toast_FetchedRank: Grado recuperato
-Toast_ForgotAccount: Account dimenticato
-Toast_ClearedPlatformSettings: "Cancellato {platform} impostazioni del commutatore"
-Toast_ClearedImages: "Immagini cancellate"
-Toast_SavedItem: "Salvato: {item}"
-Toast_ChangedUsername: Nome utente modificato
-Toast_SetUsername: Imposta nome utente
+Toast_BattleNet_ChangedBTag: Changed BattleTag
+Toast_BattleNet_DeletedBTag: Deleted BattleTag
+Toast_FetchedRank: Fetched Rank
+Toast_ForgotAccount: Forgot account
+Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
+Toast_ClearedImages: "Cleared images"
+Toast_SavedItem: "Saved: {item}"
+Toast_ChangedUsername: Changed Username
+Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Crowdin traduttori
 Modal_Crowdin_Info: "Ecco tutti coloro che hanno contribuito a tradurre questo software.<br>Gli utenti con lingue accanto hanno aiutato molto nella traduzione (ruolo di correttore di bozze)."
 Modal_Info_Creator: Creato da TechNobo [Wesley Pyburn]
@@ -178,11 +178,11 @@ Modal_PasswordsMatch: Le password corrispondono
 Modal_PasswordsNoMatch: Le password non corrispondono
 Status_SelectedAccount: "Selezionato: {name}"
 Status_Init: "Stato: Inizializzazione"
-Status_ClosingPlatform: "Chiusura {platform}"
-Status_ClosingPlatformFailed: "Impossibile chiudere {platform}"
-Status_StartingPlatform: "A partire da {platform}"
-Status_UpdatingFile: "Aggiornamento {file}"
-Status_UpdatingRegistry: Aggiornamento del registro di Windows
+Status_ClosingPlatform: "Closing {platform}"
+Status_ClosingPlatformFailed: "Failed to close {platform}"
+Status_StartingPlatform: "Starting {platform}"
+Status_UpdatingFile: "Updating {file}"
+Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: Passa al profilo
 Context_CreateShortcut: Crea Scorciatoia Desktop
 Context_CreateShortcutSubmenu: Crea Scorciatoia Desktop...
@@ -304,7 +304,7 @@ Away: Assente
 Snooze: Posticipa
 LookingToTrade: Cercando di Scambiare
 LookingToPlay: Cercando di Giocare
-Unrecognized_EPersonaState: ePersonaState non riconosciuto
+Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} non esiste."
 Reg_DoesntContain: "{subKey} non contiene {val}"
 Reg_Removing: Rimozione di {subKey}\\{val}
