@@ -55,7 +55,6 @@ Settings_WindowsAccent: Windows Vurgu Rengini kullanın
 Settings_HelpTranslate: "[Çevirmeye yardım edin]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Oluşturma motorunu ayarla:"
-Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'Başlat Menüsü Kısayolları:'
 Cleaning_Header_General: Genel temizlik
 Cleaning_Header_LoginHistory: Giriş geçmişimi temizle
@@ -136,15 +135,6 @@ Toast_Ubisoft_NoUsername: Son oturum açan kullanıcı bulunamadı. Önce Ubisof
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat bulunamadı. Son etkin hesap kaydedilmedi."
 Toast_Ubisoft_NoUser: Son oturum açan kullanıcı bulunamadı. Önce Ubisoft'a tekrar giriş yapmayı deneyin.
 Toast_ClearForgottenCheck: Unutulan hesapların yedeklerini temizlemek istediğinizden emin misiniz?
-Toast_BattleNet_ChangedBTag: Changed BattleTag
-Toast_BattleNet_DeletedBTag: Deleted BattleTag
-Toast_FetchedRank: Fetched Rank
-Toast_ForgotAccount: Forgot account
-Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
-Toast_ClearedImages: "Cleared images"
-Toast_SavedItem: "Saved: {item}"
-Toast_ChangedUsername: Changed Username
-Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Crowdin çevirmenleri
 Modal_Crowdin_Info: "İşte bu yazılımı çevirmeye yardım eden herkes.<br>Dilleri yanlarında olan kullanıcılar çeviride çok yardımcı oldular (düzeltici rolü)."
 Modal_Info_Creator: TechNobo [Wesley Pyburn] tarafından düzenlendi
@@ -178,11 +168,6 @@ Modal_PasswordsMatch: Şifre uyuşması
 Modal_PasswordsNoMatch: Parolalar uyuşmuyor
 Status_SelectedAccount: "Seçildi: {name}"
 Status_Init: "Durum: Başlatılıyor"
-Status_ClosingPlatform: "Closing {platform}"
-Status_ClosingPlatformFailed: "Failed to close {platform}"
-Status_StartingPlatform: "Starting {platform}"
-Status_UpdatingFile: "Updating {file}"
-Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: hesaba geçiş yap
 Context_CreateShortcut: Masaüstü kısayolu oluşturun
 Context_CreateShortcutSubmenu: Masaüstü kısayolu oluşturun...
@@ -304,7 +289,6 @@ Away: Uzakta
 Snooze: Uyuklama
 LookingToTrade: Değiş tokuş için arıyorum
 LookingToPlay: oynamak için arıyorum
-Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} yok."
 Reg_DoesntContain: "{subKey} , {val}"
 Reg_Removing: '{subKey}\\{val}kaldırılıyor'

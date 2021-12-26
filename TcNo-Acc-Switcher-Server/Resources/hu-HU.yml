@@ -55,7 +55,6 @@ Settings_WindowsAccent: Használja a Windows Kiemelő színét
 Settings_HelpTranslate: "[Segítség a fordításban]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Renderelőmotor beállítása:"
-Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'A Start menü parancsikonjai:'
 Cleaning_Header_General: Általános takarítás
 Cleaning_Header_LoginHistory: Tisztítsa meg a bejelentkezési előzményeket
@@ -136,15 +135,6 @@ Toast_Ubisoft_NoUsername: Nem található az utoljára bejelentkezett felhaszná
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nem található. Az utolsó aktív fiókot nem mentették."
 Toast_Ubisoft_NoUser: Nem található az utoljára bejelentkezett felhasználó. Először próbáljon meg újra bejelentkezni a Ubisoftba.
 Toast_ClearForgottenCheck: Biztosan törli az elfelejtett fiókok biztonsági másolatait?
-Toast_BattleNet_ChangedBTag: Changed BattleTag
-Toast_BattleNet_DeletedBTag: Deleted BattleTag
-Toast_FetchedRank: Fetched Rank
-Toast_ForgotAccount: Forgot account
-Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
-Toast_ClearedImages: "Cleared images"
-Toast_SavedItem: "Saved: {item}"
-Toast_ChangedUsername: Changed Username
-Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Crowdin fordítók
 Modal_Crowdin_Info: "Itt van mindenki, aki segített lefordítani ezt a szoftvert.<br>A mellettük lévő nyelvű felhasználók sokat segítettek a fordításban (lektori szerep)."
 Modal_Info_Creator: 'Készítette: TechNobo [Wesley Pyburn]'
@@ -178,11 +168,6 @@ Modal_PasswordsMatch: a jelszavak egyeznek
 Modal_PasswordsNoMatch: A jelszavak nem egyeznek
 Status_SelectedAccount: "Kiválasztva: {name}"
 Status_Init: "Állapot: Inicializálás"
-Status_ClosingPlatform: "Closing {platform}"
-Status_ClosingPlatformFailed: "Failed to close {platform}"
-Status_StartingPlatform: "Starting {platform}"
-Status_UpdatingFile: "Updating {file}"
-Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: Csere számlára
 Context_CreateShortcut: Asztali parancsikon létrehozása
 Context_CreateShortcutSubmenu: Asztali parancsikon létrehozása...
@@ -304,7 +289,6 @@ Away: El
 Snooze: Szundikálás
 LookingToTrade: Keresi a kereskedelmet
 LookingToPlay: Játszani szeretne
-Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} nem létezik."
 Reg_DoesntContain: "{subKey} nem tartalmaz {val}"
 Reg_Removing: '{subKey}\\{val}eltávolítása'

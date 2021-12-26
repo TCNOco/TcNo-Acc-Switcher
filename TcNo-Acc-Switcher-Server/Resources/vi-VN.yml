@@ -55,7 +55,6 @@ Settings_WindowsAccent: Sử dụng Màu nhấn Windows
 Settings_HelpTranslate: "[Giúp dịch]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Đặt công cụ kết xuất:"
-Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'Các phím tắt cho Start Menu:'
 Cleaning_Header_General: Vệ sinh chung
 Cleaning_Header_LoginHistory: Xóa lịch sử đăng nhập của tôi
@@ -136,15 +135,6 @@ Toast_Ubisoft_NoUsername: Không thể tìm thấy người dùng đăng nhập 
 Toast_Ubisoft_NoDat: "Không thể tìm thấy %LocalAppData%Tài khoản hoạt động cuối cùng không được lưu."
 Toast_Ubisoft_NoUser: Không thể tìm thấy người dùng đăng nhập lần cuối. Trước tiên, hãy thử đăng nhập lại vào Ubisoft.
 Toast_ClearForgottenCheck: Bạn có chắc chắn muốn xóa các bản sao lưu của các tài khoản bị quên không?
-Toast_BattleNet_ChangedBTag: Changed BattleTag
-Toast_BattleNet_DeletedBTag: Deleted BattleTag
-Toast_FetchedRank: Fetched Rank
-Toast_ForgotAccount: Forgot account
-Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
-Toast_ClearedImages: "Cleared images"
-Toast_SavedItem: "Saved: {item}"
-Toast_ChangedUsername: Changed Username
-Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Người dịch Crowdin
 Modal_Crowdin_Info: "Đây là tất cả những người đã giúp dịch phần mềm này.<br>Người dùng có ngôn ngữ bên cạnh họ đã giúp rất nhiều trong việc dịch thuật (vai trò người hiệu đính)."
 Modal_Info_Creator: Tạo bởi TechNobo [Wesley Pyburn]
@@ -178,11 +168,6 @@ Modal_PasswordsMatch: Mật khẩu phù hợp
 Modal_PasswordsNoMatch: mất khẩu không hợp lệ
 Status_SelectedAccount: "Đã chọn: {name}"
 Status_Init: "Tình trạng: Đang khởi tạo"
-Status_ClosingPlatform: "Closing {platform}"
-Status_ClosingPlatformFailed: "Failed to close {platform}"
-Status_StartingPlatform: "Starting {platform}"
-Status_UpdatingFile: "Updating {file}"
-Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: Chuyển sang tài khoản
 Context_CreateShortcut: Tạo lối tắt trên màn hình
 Context_CreateShortcutSubmenu: Tạo lối tắt trên màn hình ...
@@ -304,7 +289,6 @@ Away: Xa
 Snooze: Giấc ngũ ngắn
 LookingToTrade: Tìm kiếm giao dịch
 LookingToPlay: Tìm cách chơi
-Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} không tồn tại."
 Reg_DoesntContain: "{subKey} không chứa {val}"
 Reg_Removing: Đang xóa {subKey}\\{val}

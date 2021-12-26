@@ -55,7 +55,6 @@ Settings_WindowsAccent: Use a cor de destaque do Windows
 Settings_HelpTranslate: "[Ajudar a traduzir]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Definir mecanismo de renderização:"
-Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Cleaning_Header_StartMenuShortcuts: 'Atalhos para o Menu Inicial:'
 Cleaning_Header_General: Limpeza geral
 Cleaning_Header_LoginHistory: Limpar meu histórico de login
@@ -136,15 +135,6 @@ Toast_Ubisoft_NoUsername: Não foi possível encontrar o último usuário logado
 Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat não foi encontrado. A última conta ativa não foi salva."
 Toast_Ubisoft_NoUser: Não foi possível encontrar o último usuário logado. Tente entrar no Ubisoft novamente primeiro.
 Toast_ClearForgottenCheck: Tem certeza que deseja limpar os backups das contas esquecidas?
-Toast_BattleNet_ChangedBTag: Changed BattleTag
-Toast_BattleNet_DeletedBTag: Deleted BattleTag
-Toast_FetchedRank: Fetched Rank
-Toast_ForgotAccount: Forgot account
-Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
-Toast_ClearedImages: "Cleared images"
-Toast_SavedItem: "Saved: {item}"
-Toast_ChangedUsername: Changed Username
-Toast_SetUsername: Set Username
 Modal_Crowdin_Header: Tradutores Crowdin
 Modal_Crowdin_Info: "Aqui estão todos que ajudaram a traduzir este software.<br>Usuários com idiomas próximos a eles ajudaram muito na tradução (função de revisor)."
 Modal_Info_Creator: Criado por TechNobo [Wesley Pyburn]
@@ -178,11 +168,6 @@ Modal_PasswordsMatch: Senhas iguais
 Modal_PasswordsNoMatch: As senhas não coincidem
 Status_SelectedAccount: "Selecionado: {name}"
 Status_Init: "Status: inicializando"
-Status_ClosingPlatform: "Closing {platform}"
-Status_ClosingPlatformFailed: "Failed to close {platform}"
-Status_StartingPlatform: "Starting {platform}"
-Status_UpdatingFile: "Updating {file}"
-Status_UpdatingRegistry: Updating Windows registry
 Context_SwapTo: Trocar para conta
 Context_CreateShortcut: Criar atalho na área de trabalho
 Context_CreateShortcutSubmenu: Criar atalho da Área de Trabalho...
@@ -304,7 +289,6 @@ Away: Ausente
 Snooze: Silenciar
 LookingToTrade: Procurando Troca
 LookingToPlay: Procurando Jogar
-Unrecognized_EPersonaState: Unrecognized ePersonaState
 Reg_DoesntExist: "{subKey} não existe."
 Reg_DoesntContain: "{subKey} não contém {val}"
 Reg_Removing: Removendo {subKey}\\{val}
