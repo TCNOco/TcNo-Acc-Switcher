@@ -30,6 +30,9 @@
 *Wastes no time closing, switching and restarting Steam and other platforms.*<br />
 **NOTE:** Not created for cheating purposes. All it does is change accounts. Use it as you see fit, accepting responsibility.
 
+## Help wanted!
+I created this project because I use it. Platforms change, and some switcher functionality breaks. I get literally nothing from this project, and I'm no longer able to prioritize it. I will put in effort when I can. If you know how to code, your help fixing or extending the program is always welcome! Please do commit, or contact me for more details.
+
 # How does it work?
 Simple. It swaps out files and registry values, pointing to your last logged in account while the program is closed. Think of it as freezing a platform like Steam in time, and replacing the "account block" with a previously frozen "account block", then unfreezing it. To Steam and your Steam account, it "looks" like you pulled your plug out and put it back in a week or so later, meanwhile you were playing on other accounts. Swapping the account block lets the program: Not interact with passwords, and not interact with 2-factor, so you can "Skip" both of those in the login process.
 
