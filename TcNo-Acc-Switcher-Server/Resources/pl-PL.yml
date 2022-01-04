@@ -48,14 +48,14 @@ Settings_Tray_StartWindows: Uruchom zasobnik z systemem Windows
 Settings_Tray_StartNow: '[Uruchom teraz zasobnik]'
 Settings_CurrentStyle: Bieżący styl
 Settings_ThemeBackground: '[Ustaw tło]'
-Settings_ThemeOpenFolder: '[Otwórz folder motywu]'
+Settings_ThemeOpenFolder: '[Otwórz folder motywów]'
 Settings_Protocol: 'Włącz protokół tcno:\\ (zalecane)'
 Settings_StartCentered: Uruchom program wyśrodkowany
 Settings_WindowsAccent: Używaj kolorów wiodących Windowsa
 Settings_HelpTranslate: "[Pomóż tłumaczyć]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Ustaw silnik renderujący:"
-Settings_AltClose: "Alternatywna metoda wyjścia (gdy platforma się nie zamyka)"
+Settings_AltClose: "Alternatywna metoda zamknięcia (gdy platforma nie zamyka się)"
 Cleaning_Header_StartMenuShortcuts: 'Skróty dla menu startowego:'
 Cleaning_Header_General: Ogólne czyszczenie
 Cleaning_Header_LoginHistory: Wyczyść moją historię logowania
@@ -137,16 +137,16 @@ Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nie został zn
 Toast_Ubisoft_NoUser: Nie można znaleźć ostatniego zalogowanego użytkownika. Spróbuj zalogować się do Ubisoft ponownie.
 Toast_ClearForgottenCheck: Czy na pewno chcesz wyczyścić kopie zapasowe zapomnianych kont?
 Toast_BattleNet_ChangedBTag: Zmieniony BattleTag
-Toast_BattleNet_DeletedBTag: Usunięto BattleTag
+Toast_BattleNet_DeletedBTag: Usunięty BattleTag
 Toast_FetchedRank: Pobrano rangę
-Toast_ForgotAccount: Nie pamiętam konta
-Toast_ClearedPlatformSettings: "Wyczyszczono {platform} Ustawienia przełącznika"
-Toast_ClearedImages: "Wyczyszczone obrazy"
+Toast_ForgotAccount: Zapomniane konto
+Toast_ClearedPlatformSettings: "Wyczyszczono ustawienia przełącznika {platform}"
+Toast_ClearedImages: "Wyczyszczono obrazy"
 Toast_SavedItem: "Zapisano: {item}"
 Toast_ChangedUsername: Zmieniona nazwa użytkownika
 Toast_SetUsername: Ustaw nazwę użytkownika
-Modal_Crowdin_Header: Tłumacze tłumu
-Modal_Crowdin_Info: "Oto wszyscy, którzy pomogli przetłumaczyć to oprogramowanie.<br>Użytkownicy mający obok siebie języki bardzo pomogli w tłumaczeniu (rola korektora)."
+Modal_Crowdin_Header: Tłumacze Crowdin
+Modal_Crowdin_Info: "Oto wszyscy, którzy pomogli przetłumaczyć to oprogramowanie.<br>Użytkownicy którzy znają te języki bardzo pomogli w tłumaczeniu (rola korektora)."
 Modal_Info_Creator: Stworzone przez TechNobo [Wesley Pyburn]
 Modal_Info_Version: Wersja
 Modal_Info_ViewGitHub: Zobacz na GitHub
@@ -159,7 +159,7 @@ Modal_Title_ConfirmAction: Potwierdź działanie Przełącznika kont TcNo
 Modal_Title_LocatePlatform: Proszę zlokalizować katalog {platform}
 Modal_Title_AddNew: Dodaj nowe konto {platform}
 Modal_Title_Background: Ustaw obraz tła
-Modal_SetBackground: 'Wybierz obraz lub wpisz poniżej adres URL.<br>Pozostaw puste i ustaw na reset.<br>(Aby uzyskać bardziej zaawansowaną kontrolę, zobacz Motywy na Wiki):'
+Modal_SetBackground: 'Wybierz obraz lub wprowadź adres URL poniżej.<br>Zostaw puste i ustaw na resetowanie.<br>(Dla bardziej zaawansowanej kontroli zobacz Theming na Wiki):'
 Modal_SetBackground_Button: Ustaw tło
 Modal_SetBackground_ChooseImage: Wybierz obraz lokalny
 Modal_ChangeUsername: Wprowadź nowy {platformText} dla swojego konta
@@ -180,7 +180,7 @@ Status_SelectedAccount: "Wybrano: {name}"
 Status_Init: "Status: Inicjalizacja"
 Status_ClosingPlatform: "Zamykanie {platform}"
 Status_ClosingPlatformFailed: "Nie udało się zamknąć {platform}"
-Status_StartingPlatform: "Od {platform}"
+Status_StartingPlatform: "Uruchamianie {platform}"
 Status_UpdatingFile: "Aktualizacja {file}"
 Status_UpdatingRegistry: Aktualizacja rejestru systemu Windows
 Context_SwapTo: Zmień konto
@@ -312,7 +312,7 @@ PngInvalid_Format: Wymagany format to PixelFormat.{x}.
 PngRequired: Wymagany format obrazu to png (Portable Network Graphics).
 PngDimensions: Wymiary muszą być mniejsze lub równe {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "Napotkano błąd składni (więcej szczegółów poniżej)! AND:"
-ThemesNotFound: "Nie można znaleźć folderu „themes” w katalogu TcNo Account Switcher. Ten (zwłaszcza folder „Dracula_Cyan”) jest wymagany do uruchomienia tego oprogramowania.\nMożesz uruchomić Updater w folderze „updater”, aby zweryfikować pliki i przywrócić brakujące pliki."
+ThemesNotFound: "Nie można znaleźć folderu \"themes\" w katalogu TcNo Account Switcher. Ten folder (zwłaszcza folder \"Dracula_Cyan\") jest wymagany do działania oprogramowania.\nMożesz uruchomić program Updater w folderze \"updater\", aby sprawdzić pliki i przywrócić brakujące pliki."
 Yes: "Tak"
 No: "Nie"
 NoDefault: Nie (domyślnie)

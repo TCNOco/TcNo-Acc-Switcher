@@ -3,8 +3,8 @@ Update: Uppdatering tillgänglig! Klicka här för att starta den.
 Header_ChooseLanguage: 'Välj Språk:'
 BattleNet_ShowSR: Visa Overwatch SR och använd Overwatch profilbilden.
 Steam_ShowSteamID: Visa SteamID
-Steam_ShowVac: Visa VAC-status
-Steam_CheckVac: Kontrollera VAC-status för kontot
+Steam_ShowVac: Visa VAC status
+Steam_CheckVac: Kontrollera VAC status för kontot
 Steam_ShowLimited: Visa begränsad status
 Steam_ShowAccUsername: Visa kontoanvändarnamn
 Steam_Tray_AccountName: Visa kontonamn [inte vännamn]
@@ -53,7 +53,7 @@ Settings_Protocol: 'Aktivera tcno:\\ protokoll (rekommenderas)'
 Settings_StartCentered: Starta program centrerat
 Settings_WindowsAccent: Använd Windows Accent Färg
 Settings_HelpTranslate: "[Hjälp översätta]"
-Settings_ViewTranslators: "[Credits]"
+Settings_ViewTranslators: "[Tack till]"
 Settings_Header_ActiveBrowser: "[Advanced] Ställ in renderingsmotor:"
 Settings_AltClose: "Alternativ utgångsmetod (när plattformen inte stängs)"
 Cleaning_Header_StartMenuShortcuts: 'Genvägar till Start-menyn:'
@@ -62,13 +62,13 @@ Cleaning_Header_LoginHistory: Rensa min inloggningshistorik
 Cleaning_Header_PlatformCleaning: '{platform} växlare'
 Cleaning_ImportantInfoHeader: 'Viktig information:'
 Cleaning_ImportantInfo: >
-  Om du klickar på en knapp kommer de relaterade filerna att tas bort från din Steam-installation.<br /> Ta bort inloggningsanvändare. df kommer att resultera i att denna kontoväxlare inte visar några konton.<br /> Du måste logga in på dem med hjälp av Steam för att få dem tillbaka.
-Cleaning_Button_KillProcess: Döda {platform} process
+  Om du klickar på en knapp kommer de relaterade filerna att tas bort från din Steam-installation.<br />Radering av loginusers.vdf kommer att resultera i att den här kontoväxlaren inte visar några konton.<br /> Du måste logga in på dem med hjälp av Steam för att få dem tillbaka.
+Cleaning_Button_KillProcess: Döda/tvinga stopp {platform} process
 Cleaning_Button_ForgottenBackups: Glömda säkerhetskopior av konto
 Cleaning_Understand: Jag förstår vad dessa knappar gör.
 Restore_Header: Återställ bortglömda konton
 Restore_Info: >
-  Om du tidigare "glömmer" ett konto, kan du återställa dem här.<br /> Detta lägger till dem tillbaka till din loginusers.vdf fil, så att du kan byta till dem.
+  Om du tidigare "har glömt" ett konto, kan du återställa dem här.<br /> Detta lägger till dem tillbaka till din loginusers.vdf fil, så att du kan byta till dem.
 Restore_Button_Restore: Återställ vald
 Ignored_RemoveAccounts: Ta bort konton från ignoreringslistan
 Ignored_Description: Om du tidigare "ignorerade" ett konto, kan du visa dem igen här
@@ -76,8 +76,8 @@ Ignored_Stop: Sluta ignorera valda
 Toast_RetryOrDeleteDiscordCache: Försök igen eller ta bort Discord-cachen för att återställa lösenordet (Se Wiki).
 Toast_TrayStarted: Bricka startad!
 Toast_TrayRunning: Brickan är redan öppen
-Toast_TrayUsersMissing: Inga brickanvändare sparade
-Toast_TrayFail: Kunde inte starta program för bricka!
+Toast_TrayUsersMissing: Inga brickanvändare är sparade
+Toast_TrayFail: Kunde inte starta fackapplikationen!
 Toast_TrayPosition: "När du klickar på Avsluta knappen: Jag kommer att vara på Windows Tray! (höger om Start Bar)"
 Toast_TrayHint: "Tips: Ctrl+Klicka på \"X\" för att stänga mig helt, eller via facket > \"Avsluta\""
 Toast_Copied: Kopierad
@@ -237,7 +237,7 @@ Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Kunde inte skapa mapp:"
 Installer_FailedWV: "Det gick inte att ladda ner och installera Microsoft WebView2 Runtime. För att ladda ner: 1. Klicka på länken nedan: {link} 2. Klicka på \"Download Hosting Bundle\" under Kör serverappar."
 Installer_FailedDR: "Det gick inte att ladda ner och installera .NET 5 Desktop Runtime. Ladda ner den här:"
-Installed_FailedASP: "Det gick inte att ladda ner och installera ASP.NET Core {version} Runtime. För att ladda ner: 1. Klicka på länken nedan: {link} 2. Klicka på 'Ladda ner x64' under Kör skrivbordsappar."
+Installed_FailedASP: "Det gick inte att ladda ner och installera ASP.NET Core {version} Runtime. För att ladda ner: 1. Klicka på länken nedan: {link} 2. Klicka på \"Ladda ner x64\" under Kör skrivbordsappar."
 Installer_Ready: "En eller flera är redo för installation. Om och när du uppmanas att installera klickar du på \"Ja\"."
 Installer_PressStart: Tryck på valfri tangent för att börja installera...
 Installer_VerifyMin: "Verifiera att du uppfyller de minimikrav som rekommenderas:"

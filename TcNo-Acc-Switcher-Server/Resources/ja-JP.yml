@@ -233,11 +233,11 @@ Installer_TotalSize: "合計ダウンロードサイズ: ~{size} MB"
 Installer_AnyKeyStart: 任意のキーを押してダウンロードを開始...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core{version}ランタイム
+Runtime_ASP: マイクロソフトのMicrosoft ASP.NETコア {version} ランタイム
 Installer_FailedFolder: "フォルダの作成に失敗しました:"
 Installer_FailedWV: "Microsoft WebView2 ランタイムのダウンロードとインストールに失敗しました。ダウンロードするには: 1. 以下のリンクをクリックしてください: {link} 2. サーバーアプリの実行の下の「ホスティングバンドルのダウンロード」をクリックします。"
 Installer_FailedDR: ".NET 5デスクトップランタイムのダウンロードとインストールに失敗しました。こちらからダウンロードしてください。"
-Installed_FailedASP: "ASP.NET Core{version}ランタイムのダウンロードとインストールに失敗しました。ダウンロードするには：1。以下のリンクをクリックします： {link} 2. [デスクトップアプリの実行]の下の[x64のダウンロード]をクリックします。"
+Installed_FailedASP: "ASP.NETコアダウンロードしてインストールに失敗しました {version} ランタイムを。 {link} 。以下のリンクをクリックします：1 2. [デスクトップアプリの実行]の下の[x64のダウンロード]をクリックします。"
 Installer_Ready: "インストールの準備ができています. インストールしたい場合とプロンプトが表示されたら, クリックしてください 'はい' ."
 Installer_PressStart: 任意のキーを押してインストールを開始...
 Installer_VerifyMin: "最低限の推奨要件を満たしていることを確認してください:"
