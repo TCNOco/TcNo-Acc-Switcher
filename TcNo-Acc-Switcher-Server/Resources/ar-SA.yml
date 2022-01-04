@@ -233,11 +233,11 @@ Installer_TotalSize: "إجمالي حجم التنزيل: ~{size} ميغاباي
 Installer_AnyKeyStart: اضغط على أي مفتاح لبدء التنزيل...
 Runtime_WebView2: تشغيل Microsoft WebView2
 Runtime_Desktop: مايكروسوفت. NET 5 تشغيل سطح المكتب
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0.1 Runtime
 Installer_FailedFolder: "فشل في إنشاء المجلد:"
 Installer_FailedWV: "فشل تنزيل وتثبيت مايكروسوفت WebView2. للتنزيل: 1. انقر على الرابط أدناه: {link} 2. انقر فوق 'تنزيل حزمة الاستضافة' تحت تطبيقات خادم التشغيل."
 Installer_FailedDR: "فشل في تنزيل وتثبيت .NET 5 تشغيل سطح المكتب. الرجاء تنزيله هنا:"
-Installed_FailedASP: "فشل تنزيل وتثبيت ASP.NET Core 6.0 Runtime. للتنزيل: 1. انقر فوق الارتباط أدناه: {link} 2. انقر فوق \"تنزيل x64\" ضمن تشغيل تطبيقات سطح المكتب."
+Installed_FailedASP: "فشل تنزيل وتثبيت ASP.NET Core 6.0.1 Runtime. للتنزيل: 1. انقر فوق الارتباط أدناه: {link} 2. انقر فوق \"تنزيل x64\" ضمن تشغيل تطبيقات سطح المكتب."
 Installer_Ready: "واحد أو أكثر جاهز للتثبيت. إذا تم مطالبتك إذا كنت ترغب في التثبيت، انقر فوق 'نعم'."
 Installer_PressStart: اضغط على أي مفتاح لبدء التثبيت...
 Installer_VerifyMin: "تحقق من استيفاء الحد الأدنى من المتطلبات الموصى بها:"

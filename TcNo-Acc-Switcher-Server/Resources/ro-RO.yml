@@ -233,11 +233,11 @@ Installer_TotalSize: "Dimensiunea totală a descărcării: ~{size} MB"
 Installer_AnyKeyStart: Apasă orice buton pentru a începe descărcarea...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0.1 Runtime
 Installer_FailedFolder: "Nu s-a reușit crearea directorului:"
 Installer_FailedWV: "Descărcarea şi instalarea Microsoft WebView2 Runtime. Pentru a descărca: 1. Faceţi clic pe linkul de mai jos: {link} 2. Faceţi clic pe \"Descărcare găzduire\" sub aplicaţiile serverului."
 Installer_FailedDR: "Descărcarea și instalarea .NET 5 Desktop Runtime. Descărcați-l aici:"
-Installed_FailedASP: "Nu s-a putut descărca și instala ASP.NET Core 6.0 Runtime. Pentru a descărca: 1. Faceți clic pe linkul de mai jos: {link} 2. Faceți clic pe „Download x64” sub Run Desktop apps."
+Installed_FailedASP: "Nu s-a putut descărca și instala ASP.NET Core 6.0.1 Runtime. Pentru a descărca: 1. Faceți clic pe linkul de mai jos: {link} 2. Faceți clic pe „Download x64” sub Run Desktop apps."
 Installer_Ready: "Una sau mai multe sunt gata pentru instalare. Dacă şi când vi se cere dacă doriţi să instalaţi, faceţi clic pe \"Da\"."
 Installer_PressStart: Apăsați orice tastă pentru a începe instalarea...
 Installer_VerifyMin: "Verifică dacă îndeplinești cerințele minime recomandate:"

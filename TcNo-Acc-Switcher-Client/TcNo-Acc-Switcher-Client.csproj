@@ -19,11 +19,12 @@
     <SignAssembly>false</SignAssembly>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <AnalysisLevel>6.0</AnalysisLevel>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CefSharp.Common" Version="96.0.142" />
-    <PackageReference Include="CefSharp.Wpf.NETCore" Version="96.0.142" />
+    <PackageReference Include="CefSharp.Common" Version="96.0.180" />
+    <PackageReference Include="CefSharp.Wpf.NETCore" Version="96.0.180" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1054.31" />
   </ItemGroup>
 
@@ -58,15 +59,15 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-arm64" Version="96.0.14" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-arm64" Version="96.0.18" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="96.0.14" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="96.0.18" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-x86" Version="96.0.14" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-x86" Version="96.0.18" />
   </ItemGroup>
 
 </Project>

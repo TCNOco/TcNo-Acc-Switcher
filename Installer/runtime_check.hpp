@@ -75,7 +75,7 @@ void find_installed_c_runtimes(bool &min_vc_met)
 {
 	// Get C+++ Runtime info
 	HKEY key = nullptr;
-	WCHAR s_key[1024];
+	//WCHAR s_key[1024];
 	DWORD dw_type = KEY_ALL_ACCESS;
 	WCHAR version[1024];
 	DWORD dw_v_buffer_size = sizeof(version);
@@ -272,7 +272,7 @@ std::string dotnet_path()
 {
 	// Get C+++ Runtime info
 	HKEY key = nullptr;
-	WCHAR s_key[1024];
+	//WCHAR s_key[1024];
 	DWORD dw_type = KEY_ALL_ACCESS;
 	WCHAR path[1024];
 	DWORD dw_v_buffer_size = sizeof(path);

@@ -233,11 +233,11 @@ Installer_TotalSize: "Latauksen koko yhteensä: ~{size} MB"
 Installer_AnyKeyStart: Paina mitä tahansa näppäintä aloittaaksesi lataamisen...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Työpöytä Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0.1 Runtime
 Installer_FailedFolder: "Kansion luonti epäonnistui:"
 Installer_FailedWV: "Microsoft WebView2 suorituksen lataaminen ja asentaminen epäonnistui. Lataa: 1. Klikkaa alla olevaa linkkiä: {link} 2. Napsauta 'Download Hosting Bundle' Suorita palvelinsovelluksissa."
 Installer_FailedDR: ".NET 5 -työpöydän lataus ja asennus epäonnistui. Lataa se täältä:"
-Installed_FailedASP: "ASP.NET Core 6.0 Runtimen lataaminen ja asentaminen epäonnistui. Lataaminen: 1. Napsauta alla olevaa linkkiä: {link} 2. Napsauta \"Lataa x64\" -kohdasta Suorita työpöytäsovellukset."
+Installed_FailedASP: "ASP.NET Core 6.0.1 Runtimen lataaminen ja asentaminen epäonnistui. Lataaminen: 1. Napsauta alla olevaa linkkiä: {link} 2. Napsauta \"Lataa x64\" -kohdasta Suorita työpöytäsovellukset."
 Installer_Ready: "Yksi tai useampi on valmis asennettavaksi. Jos ja kun kehotetaan, jos haluat asentaa, paina 'Kyllä'."
 Installer_PressStart: Paina mitä tahansa näppäintä aloittaaksesi asennuksen...
 Installer_VerifyMin: "Varmista, että täytät suositellut vähimmäisvaatimukset:"

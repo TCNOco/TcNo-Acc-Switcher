@@ -90,8 +90,8 @@ int main(int argc, char* argv[])
 
 	// Launch main program:
 	string exe_name = "TcNo-Acc-Switcher.exe";
-	STARTUPINFO si = { sizeof(STARTUPINFO) };
-	PROCESS_INFORMATION pi;
+	//STARTUPINFO si = { sizeof(STARTUPINFO) };
+	//PROCESS_INFORMATION pi;
     //CreateProcess(s2_ws(main_path).c_str(), nullptr, nullptr,
     //    nullptr, 0, 0, nullptr, nullptr, &si, &pi);
 

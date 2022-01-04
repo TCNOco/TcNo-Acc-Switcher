@@ -488,7 +488,7 @@ namespace TcNo_Acc_Switcher_Globals
                 {
                     process.Kill();
                 }
-                catch (System.ComponentModel.Win32Exception e)
+                catch (System.ComponentModel.Win32Exception)
                 {
                     // Already closed
                 }

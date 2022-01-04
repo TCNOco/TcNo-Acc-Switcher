@@ -233,11 +233,11 @@ Installer_TotalSize: "Całkowity rozmiar pobierania: ~{size} MB"
 Installer_AnyKeyStart: Naciśnij dowolny klawisz, aby rozpocząć pobieranie...
 Runtime_WebView2: Środowisko wykonawcze Microsoft WebView2
 Runtime_Desktop: Środowisko wykonawcze Microsoft .NET 5
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Środowisko wykonawcze
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0.1 Środowisko wykonawcze
 Installer_FailedFolder: "Nie udało się utworzyć folderu:"
 Installer_FailedWV: "Nie udało się pobrać i zainstalować Środowiska wykonawczego Microsoft WebView2. Aby pobrać: 1. Kliknij poniższy link: {link} 2. Kliknij 'Pobierz pakiet hosting' pod Uruchom aplikacje serwera."
 Installer_FailedDR: "Nie udało się pobrać i zainstalować Środowisko wykonawcze Microsoft WebView2. Proszę pobrać go tutaj:"
-Installed_FailedASP: "Nie udało się pobrać i zainstalować Środowiska wykonawczego ASP.NET Core 6.0. Aby pobrać: 1. Kliknij link poniżej: {link} 2. Kliknij 'Pobierz x64' w sekcji Uruchom aplikacje desktopowe."
+Installed_FailedASP: "Nie udało się pobrać i zainstalować Środowiska wykonawczego ASP.NET Core 6.0.1. Aby pobrać: 1. Kliknij link poniżej: {link} 2. Kliknij 'Pobierz x64' w sekcji Uruchom aplikacje desktopowe."
 Installer_Ready: "Jeden lub więcej jest gotowych do instalacji. Jeśli zostaniesz poproszony o instalację, kliknij 'Tak'."
 Installer_PressStart: Naciśnij dowolny klawisz, aby rozpocząć instalację...
 Installer_VerifyMin: "Sprawdź, czy spełniasz minimalne zalecane wymagania:"

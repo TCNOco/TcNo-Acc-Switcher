@@ -233,11 +233,11 @@ Installer_TotalSize: "总下载量：约 {size} MB"
 Installer_AnyKeyStart: 按任意键开始下载…
 Runtime_WebView2: Microsoft WebView2 运行时环境
 Runtime_Desktop: Microsoft .NET 5 桌面运行时环境
-Runtime_ASP: Microsoft ASP.NET Core 6.0 运行时环境
+Runtime_ASP: Microsoft ASP.NET Core 6.0.1 运行时环境
 Installer_FailedFolder: "创建文件夹失败："
 Installer_FailedWV: "下载安装 Microsoft WebView2 运行时环境失败。如要下载请：1. 点击下面的链接：{link} 2. 点击“Run server apps”下的“Download Hosting Bundle”。"
 Installer_FailedDR: "下载安装 .NET 5 Desktop 运行时环境失败。请在这里下载："
-Installed_FailedASP: "下载安装 ASP.NET Core 6.0 运行时环境失败。如要下载请：1. 点击下面的链接：{link} 2. 点击“Run Desktop apps”下的“Download x64”。"
+Installed_FailedASP: "下载安装 ASP.NET Core 6.0.1 运行时环境失败。如要下载请：1. 点击下面的链接：{link} 2. 点击“Run Desktop apps”下的“Download x64”。"
 Installer_Ready: "一个或多个环境已准备好安装。如果您想要安装，请点击“是”。"
 Installer_PressStart: 按任意键开始安装…
 Installer_VerifyMin: "确认您已满足建议的最低要求："

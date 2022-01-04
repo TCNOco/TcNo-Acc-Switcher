@@ -233,11 +233,11 @@ Installer_TotalSize: "Teljes letöltési méret: ~{size} MB"
 Installer_AnyKeyStart: Nyomja meg bármelyik gombot a letöltés megkezdéséhez ...
 Runtime_WebView2: Microsoft WebView2 futásidejű
 Runtime_Desktop: Microsoft .NET 5 asztali futásidejű
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0.1 Runtime
 Installer_FailedFolder: "Nem sikerült létrehozni a mappát:"
 Installer_FailedWV: "Nem sikerült letölteni és telepíteni a Microsoft WebView2 Runtime programot. Letöltés: 1. Kattintson az alábbi linkre: {link} 2. Kattintson a \"Szerveralkalmazások futtatása\" alatt a \"Tárhelycsomag letöltése\" elemre."
 Installer_FailedDR: "Nem sikerült letölteni és telepíteni a .NET 5 Desktop Runtime programot. Kérjük, töltse le itt:"
-Installed_FailedASP: "Az ASP.NET Core 6.0 Runtime letöltése és telepítése sikertelen. Letöltés: 1. Kattintson az alábbi hivatkozásra: {link} 2. Kattintson a 'Download x64' lehetőségre az Asztali alkalmazások futtatása alatt."
+Installed_FailedASP: "Az ASP.NET Core 6.0.1 Runtime letöltése és telepítése sikertelen. Letöltés: 1. Kattintson az alábbi hivatkozásra: {link} 2. Kattintson a 'Download x64' lehetőségre az Asztali alkalmazások futtatása alatt."
 Installer_Ready: "Egy vagy több telepítésre kész. Ha és amikor a rendszer kéri, hogy telepíteni szeretné-e, kattintson az „Igen” gombra."
 Installer_PressStart: Nyomja meg bármelyik gombot a telepítés megkezdéséhez ...
 Installer_VerifyMin: "Ellenőrizze, hogy megfelel-e az ajánlott minimumkövetelményeknek:"

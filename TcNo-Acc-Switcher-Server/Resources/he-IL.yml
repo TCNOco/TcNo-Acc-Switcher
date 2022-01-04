@@ -233,11 +233,11 @@ Installer_TotalSize: "גודל הורדה כולל: ~{size} מגהבייט"
 Installer_AnyKeyStart: לחץ על מקש כלשהו כדי להתחיל בהורדה ...
 Runtime_WebView2: זמן ריצה של מיקרוסופט WebView2
 Runtime_Desktop: זמן ריצה לשולחן העבודה של Microsoft .NET 5
-Runtime_ASP: זמן ריצה של Microsoft Microsoft ASP.NET Core 6.0
+Runtime_ASP: זמן ריצה של Microsoft Microsoft ASP.NET Core 6.0.1
 Installer_FailedFolder: "יצירת תיקיה נכשלה:"
 Installer_FailedWV: "ההורדה וההתקנה של Microsoft WebView2 Runtime נכשלה. להורדה: 1. לחץ על הקישור למטה: {link} 2. לחץ על 'הורד חבילה של אירוח' תחת הפעל אפליקציות שרת."
 Installer_FailedDR: "ההורדה והתקנה של .NET 5 Desktop Runtime נכשלה. אנא הורידו אותו כאן:"
-Installed_FailedASP: "ההורדה וההתקנה של ASP.NET Core 6.0 Runtime נכשלו. להורדה: 1. לחץ על הקישור למטה: {link} 2. לחץ על 'הורד x64' תחת הפעל יישומי שולחן עבודה."
+Installed_FailedASP: "ההורדה וההתקנה של ASP.NET Core 6.0.1 Runtime נכשלו. להורדה: 1. לחץ על הקישור למטה: {link} 2. לחץ על 'הורד x64' תחת הפעל יישומי שולחן עבודה."
 Installer_Ready: "אחד או יותר מוכנים להתקנה. אם וכאשר תתבקש אם ברצונך להתקין, לחץ על 'כן'."
 Installer_PressStart: לחץ על מקש כלשהו כדי להתחיל בהתקנה ...
 Installer_VerifyMin: "ודא שאתה עומד בדרישות המינימליות המומלצות:"
