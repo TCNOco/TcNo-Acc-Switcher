@@ -233,11 +233,11 @@ Installer_TotalSize: "總下載大小：~{size} MB"
 Installer_AnyKeyStart: 按任意鍵開始下載...
 Runtime_WebView2: Microsoft WebView2 運行時
 Runtime_Desktop: Microsoft .NET 5 桌面運行時
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0.1 運行時
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} 運行時
 Installer_FailedFolder: "無法創建文件夾："
 Installer_FailedWV: "無法下載和安裝 Microsoft WebView2 運行時。下載： 1. 單擊下面的鏈接： {link} 2. 單擊運行服務器應用程序下的“下載託管捆綁包”。"
 Installer_FailedDR: "無法下載和安裝 .NET 5 桌面運行時。請在此處下載："
-Installed_FailedASP: "無法下載和安裝 ASP.NET Core 6.0.1 運行時。下載： 1. 單擊下面的鏈接： {link} 2. 單擊運行桌面應用程序下的“下載 x64”。"
+Installed_FailedASP: "無法下載和安裝 ASP.NET Core {version} 運行時。下載： 1. 單擊下面的鏈接： {link} 2. 單擊運行桌面應用程序下的“下載 x64”。"
 Installer_Ready: "一個或多個已準備好安裝。如果系統提示您是否要安裝，請單擊“是”。"
 Installer_PressStart: 按任意鍵開始安裝...
 Installer_VerifyMin: "驗證您是否滿足最低推薦要求："

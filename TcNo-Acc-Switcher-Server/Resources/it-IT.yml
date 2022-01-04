@@ -233,11 +233,11 @@ Installer_TotalSize: "Dimensione totale del download: ~{size} MB"
 Installer_AnyKeyStart: Premi qualsiasi tasto per avviare il download...
 Runtime_WebView2: Esecuzione Microsoft WebView2
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Runtime Microsoft Microsoft ASP.NET Core 6.0.1
+Runtime_ASP: Runtime Microsoft Microsoft ASP.NET Core {version}
 Installer_FailedFolder: "Creazione della cartella non riuscita:"
 Installer_FailedWV: "Impossibile scaricare e installare Microsoft WebView2 Runtime. Per scaricare: 1. Fare clic sul link qui sotto: {link} 2. Fare clic su 'Scarica Hosting Bundle' sotto Esegui app server."
 Installer_FailedDR: "Impossibile scaricare e installare .NET 5 Desktop Runtime. Si prega di scaricarlo qui:"
-Installed_FailedASP: "Impossibile scaricare e installare ASP.NET Core 6.0.1 Runtime. Per scaricare: 1. Fare clic sul collegamento in basso: {link} 2. Fare clic su \"Scarica x64\" in Esegui app desktop."
+Installed_FailedASP: "Impossibile scaricare e installare ASP.NET Core {version} Runtime. Per scaricare: 1. Fare clic sul collegamento in basso: {link} 2. Fare clic su \"Scarica x64\" in Esegui app desktop."
 Installer_Ready: "Uno o più sono pronti per l'installazione. Se e quando richiesto se si desidera installare, fare clic su 'Sì'."
 Installer_PressStart: Premi qualsiasi tasto per avviare l'installazione...
 Installer_VerifyMin: "Verificare di soddisfare i requisiti minimi raccomandati:"

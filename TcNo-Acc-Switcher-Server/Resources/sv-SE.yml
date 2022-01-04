@@ -233,11 +233,11 @@ Installer_TotalSize: "Total nedladdningsstorlek: ~{size} MB"
 Installer_AnyKeyStart: Tryck på valfri tangent för att starta nedladdning...
 Runtime_WebView2: Microsoft WebView2 Körtid
 Runtime_Desktop: Microsoft .NET 5 Skrivbords körtid
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0.1 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Kunde inte skapa mapp:"
 Installer_FailedWV: "Det gick inte att ladda ner och installera Microsoft WebView2 Runtime. För att ladda ner: 1. Klicka på länken nedan: {link} 2. Klicka på \"Download Hosting Bundle\" under Kör serverappar."
 Installer_FailedDR: "Det gick inte att ladda ner och installera .NET 5 Desktop Runtime. Ladda ner den här:"
-Installed_FailedASP: "Det gick inte att ladda ner och installera ASP.NET Core 6.0.1 Runtime. För att ladda ner: 1. Klicka på länken nedan: {link} 2. Klicka på 'Ladda ner x64' under Kör skrivbordsappar."
+Installed_FailedASP: "Det gick inte att ladda ner och installera ASP.NET Core {version} Runtime. För att ladda ner: 1. Klicka på länken nedan: {link} 2. Klicka på 'Ladda ner x64' under Kör skrivbordsappar."
 Installer_Ready: "En eller flera är redo för installation. Om och när du uppmanas att installera klickar du på \"Ja\"."
 Installer_PressStart: Tryck på valfri tangent för att börja installera...
 Installer_VerifyMin: "Verifiera att du uppfyller de minimikrav som rekommenderas:"

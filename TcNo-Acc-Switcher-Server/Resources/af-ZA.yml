@@ -233,11 +233,11 @@ Installer_TotalSize: "Totale aflaaigrootte: ~{size} MB"
 Installer_AnyKeyStart: Druk enige sleutel om af te laai ...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0.1 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Kon nie vouer skep nie:"
 Installer_FailedWV: "Kon nie Microsoft WebView2 Runtime aflaai en installeer nie. Om af te laai: 1. Klik op die onderstaande skakel: {link} 2. Klik op 'Laai gasheerbundel af' onder Bedienerprogramme hardloop."
 Installer_FailedDR: "Kon nie .NET 5 Desktop Runtime aflaai en installeer nie. Laai dit asseblief hier af:"
-Installed_FailedASP: "Kon nie ASP.NET Core 6.0.1 Runtime aflaai en installeer nie. Om af te laai: 1. Klik op die skakel hieronder: {link} 2. Klik 'Download x64' onder Run Desktop apps."
+Installed_FailedASP: "Kon nie ASP.NET Core {version} Runtime aflaai en installeer nie. Om af te laai: 1. Klik op die skakel hieronder: {link} 2. Klik 'Download x64' onder Run Desktop apps."
 Installer_Ready: "Een of meer is gereed vir installasie. Klik op 'Ja' as en wanneer u gevra word of u dit wil installeer."
 Installer_PressStart: Druk enige sleutel om te installeer ...
 Installer_VerifyMin: "Maak seker dat u aan die minimum aanbevole vereistes voldoen:"

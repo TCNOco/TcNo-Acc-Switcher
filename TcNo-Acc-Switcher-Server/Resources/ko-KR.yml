@@ -233,11 +233,11 @@ Installer_TotalSize: "총 다운로드 크기 : ~{size} MB"
 Installer_AnyKeyStart: 아무 키나 눌러 다운로드를 시작하세요...
 Runtime_WebView2: 마이크로소프트 웹뷰2 런타임
 Runtime_Desktop: Microsoft .NET 5 데스크톱 런타임
-Runtime_ASP: 마이크로소프트 마이크로소프트 ASP.NET 코어 6.0.1 런타임
+Runtime_ASP: 마이크로소프트 마이크로소프트 ASP.NET 코어 {version} 런타임
 Installer_FailedFolder: "폴더 생성 실패:"
 Installer_FailedWV: "Microsoft WebView2 런타임을 다운로드 및 설치하지 못했습니다. 다운로드하려면: 1. 아래 링크를 클릭하십시오. {link} 2. 서버 앱 실행에서 '호스팅 번들 다운로드'를 클릭하십시오."
 Installer_FailedDR: ".NET 5 Desktop Runtime을 다운로드 및 설치하지 못했습니다. 여기에서 다운로드하십시오:"
-Installed_FailedASP: "ASP.NET Core 6.0.1 런타임을 다운로드하고 설치하지 못했습니다. 다운로드하려면: 1. 아래 링크를 클릭합니다. {link} 2. 데스크톱 앱 실행 아래에서 'x64 다운로드'를 클릭합니다."
+Installed_FailedASP: "ASP.NET Core {version} 런타임을 다운로드하고 설치하지 못했습니다. 다운로드하려면: 1. 아래 링크를 클릭합니다. {link} 2. 데스크톱 앱 실행 아래에서 'x64 다운로드'를 클릭합니다."
 Installer_Ready: "하나 이상이 설치 준비가 되었습니다. 설치 여부를 묻는 메시지가 표시되면 '예'를 클릭합니다."
 Installer_PressStart: 아무 키나 눌러 설치를 시작하십시오...
 Installer_VerifyMin: "최소 권장 요구 사항을 충족하는지 확인합니다."

@@ -233,11 +233,11 @@ Installer_TotalSize: "حجم کل دانلود: ~{size} مگابایت"
 Installer_AnyKeyStart: برای شروع دانلود هر کلیدی را فشار دهید...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: زمان اجرای دسکتاپ دات نت 5 مایکروسافت
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0.1 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "پوشه ایجاد نشد:"
 Installer_FailedWV: "دانلود و نصب Microsoft WebView2 Runtime انجام نشد. برای دانلود: 1. روی لینک زیر کلیک کنید: {link} 2. روی «دانلود بسته نرم افزاری میزبانی» در بخش اجرای برنامه های سرور کلیک کنید."
 Installer_FailedDR: "دانلود و نصب .NET 5 Desktop Runtime انجام نشد. لطفا آن را از اینجا دانلود کنید:"
-Installed_FailedASP: "دانلود و نصب ASP.NET Core 6.0.1 Runtime انجام نشد. برای دانلود: 1. روی لینک زیر کلیک کنید: {link} 2. روی «دانلود x64» در زیر اجرای برنامه‌های دسکتاپ کلیک کنید."
+Installed_FailedASP: "دانلود و نصب ASP.NET Core {version} Runtime انجام نشد. برای دانلود: 1. روی لینک زیر کلیک کنید: {link} 2. روی «دانلود x64» در زیر اجرای برنامه‌های دسکتاپ کلیک کنید."
 Installer_Ready: "یک یا چند مورد برای نصب آماده است. اگر و زمانی که از شما خواسته شد اگر می‌خواهید نصب کنید، روی «بله» کلیک کنید."
 Installer_PressStart: برای شروع نصب، هر کلیدی را فشار دهید...
 Installer_VerifyMin: "بررسی کنید که حداقل شرایط توصیه شده را برآورده می کنید:"

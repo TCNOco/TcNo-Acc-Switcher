@@ -233,11 +233,11 @@ Installer_TotalSize: "Mida total de la baixada: ~{size} MB"
 Installer_AnyKeyStart: Premeu qualsevol tecla per començar a baixar ...
 Runtime_WebView2: Temps d'execució de Microsoft WebView2
 Runtime_Desktop: Temps d’execució de l’escriptori Microsoft .NET 5
-Runtime_ASP: Temps d'execució de Microsoft Microsoft ASP.NET Core 6.0.1
+Runtime_ASP: Temps d'execució de Microsoft Microsoft ASP.NET Core {version}
 Installer_FailedFolder: "No s'ha pogut crear la carpeta:"
 Installer_FailedWV: "No s'ha pogut descarregar i instal·lar Microsoft WebView2 Runtime. Per descarregar: 1. Feu clic a l'enllaç següent: {link} 2. Feu clic a \"Descarregar paquet d'allotjament\" a Executa aplicacions de servidor."
 Installer_FailedDR: "No s'ha pogut descarregar i instal·lar .NET 5 Desktop Runtime. Si us plau, descarregueu-lo aquí:"
-Installed_FailedASP: "No s'ha pogut descarregar i instal·lar ASP.NET Core 6.0.1 Runtime. Per descarregar: 1. Feu clic a l'enllaç següent: {link} 2. Feu clic a \"Descarrega x64\" a Executar aplicacions d'escriptori."
+Installed_FailedASP: "No s'ha pogut descarregar i instal·lar ASP.NET Core {version} Runtime. Per descarregar: 1. Feu clic a l'enllaç següent: {link} 2. Feu clic a \"Descarrega x64\" a Executar aplicacions d'escriptori."
 Installer_Ready: "Un o més estan a punt per instal·lar-se. Si us demana si voleu instal·lar-lo, feu clic a \"Sí\"."
 Installer_PressStart: Premeu qualsevol tecla per començar a instal·lar ...
 Installer_VerifyMin: "Verifiqueu que compleixis els requisits mínims recomanats:"

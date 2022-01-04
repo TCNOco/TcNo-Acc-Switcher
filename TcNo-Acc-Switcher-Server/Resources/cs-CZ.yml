@@ -233,11 +233,11 @@ Installer_TotalSize: "Celková velikost stahování: ~{size} MB"
 Installer_AnyKeyStart: Stiskněte libovolné tlačítko pro zahájení stahování...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft ASP.NET Core 6.0.1 Runtime
+Runtime_ASP: Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Nepodařilo se vytvořit složku:"
 Installer_FailedWV: "Nepodařilo se stáhnout a nainstalovat Microsoft WebView2 Runtime. Chcete-li stáhnout: 1. Klikněte na odkaz níže: {link} 2. Klikněte na \"Stáhnout hosting Bundle\" v aplikaci Run server."
 Installer_FailedDR: "Nepodařilo se stáhnout a nainstalovat .NET 5 Desktop Runtime. Stáhněte si jej zde:"
-Installed_FailedASP: "Nepodařilo se stáhnout a nainstalovat ASP.NET Core 6.0.1 Runtime. Pro stažení: 1. Klikněte na odkaz níže: {link} 2. Klikněte na 'Stáhnout x64' pod spuštěnými desktopovými aplikacemi."
+Installed_FailedASP: "Nepodařilo se stáhnout a nainstalovat ASP.NET Core {version} Runtime. Pro stažení: 1. Klikněte na odkaz níže: {link} 2. Klikněte na 'Stáhnout x64' pod spuštěnými desktopovými aplikacemi."
 Installer_Ready: "Jeden nebo více je připraveno k instalaci. Pokud a kdy budete vyzváni, pokud chcete instalovat, klikněte na 'Ano'."
 Installer_PressStart: Stiskněte libovolné tlačítko pro spuštění instalace...
 Installer_VerifyMin: "Ověřte, zda splňujete minimální doporučené požadavky:"

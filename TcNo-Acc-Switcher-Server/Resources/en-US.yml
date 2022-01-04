@@ -233,11 +233,11 @@ Installer_TotalSize: "Total download size: ~{size} MB"
 Installer_AnyKeyStart: Press any key to start download...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0.1 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Failed to create folder:"
 Installer_FailedWV: "Failed to download and install Microsoft WebView2 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download Hosting Bundle' under Run server apps."
 Installer_FailedDR: "Failed to download and install .NET 5 Desktop Runtime. Please download it here:"
-Installed_FailedASP: "Failed to download and install ASP.NET Core 6.0.1 Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
+Installed_FailedASP: "Failed to download and install ASP.NET Core {version} Runtime. To download: 1. Click the link below: {link} 2. Click 'Download x64' under Run Desktop apps."
 Installer_Ready: "One or more are ready for install. If and when prompted if you would like to install, click 'Yes'."
 Installer_PressStart: Press any key to start install...
 Installer_VerifyMin: "Verify you meet the minimum recommended requirements:"

@@ -233,11 +233,11 @@ Installer_TotalSize: "Totale downloadgrootte: ~{size} MB"
 Installer_AnyKeyStart: Druk op een toets om de download te starten...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
-Runtime_ASP: Microsoft Microsoft ASP.NET Core 6.0.1 Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Aanmaken map mislukt:"
 Installer_FailedWV: "Downloaden en installeren van Microsoft WebView2 Runtime mislukt. Om te downloaden: 1. Klik de link hieronder: {link} 2. Klik op 'Download Hosting Bundle' onder Run server apps."
 Installer_FailedDR: "Downloaden en installeren van .NET 5 Desktop Runtime mislukt. Download het hier:"
-Installed_FailedASP: "Kan ASP.NET Core 6.0.1 Runtime niet downloaden en installeren. Om te downloaden: 1. Klik op de onderstaande link: {link} 2. Klik op 'Download x64' onder Run Desktop-apps."
+Installed_FailedASP: "Kan ASP.NET Core {version} Runtime niet downloaden en installeren. Om te downloaden: 1. Klik op de onderstaande link: {link} 2. Klik op 'Download x64' onder Run Desktop-apps."
 Installer_Ready: "Eén of meer zijn klaar voor installatie. Indien gevraagd wordt of u wilt installeren, klik dan op 'Ja'."
 Installer_PressStart: Druk op een toets om de installatie te starten...
 Installer_VerifyMin: "Controleer of u voldoet aan de minimaal aanbevolen vereisten:"
