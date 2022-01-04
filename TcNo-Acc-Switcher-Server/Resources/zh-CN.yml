@@ -33,7 +33,7 @@ Settings_Header_TraySettings: 托盘设置
 Settings_Header_OpenGameFolders: 打开游戏文件夹
 Settings_TrayMax: '要记住的帐户数量上限：'
 Settings_RTL: 从右到左显示文本
-Settings_CurrentLocation: '当前安装位置： {path}'
+Settings_CurrentLocation: '当前安装位置：{path}'
 Settings_PickFolder: 选择 {platform} 文件夹
 Settings_OpenFolder: 打开 {platform} 文件夹
 Settings_ClearForgotten: 清空已忘记
@@ -53,7 +53,7 @@ Settings_Protocol: '启用 tcno:\\ 协议（推荐）'
 Settings_StartCentered: 启动程序时居中
 Settings_WindowsAccent: 使用 Windows 主题色
 Settings_HelpTranslate: "[帮助翻译]"
-Settings_ViewTranslators: "[Credits]"
+Settings_ViewTranslators: "[致谢]"
 Settings_Header_ActiveBrowser: "[高级] 设置渲染引擎："
 Settings_AltClose: "替代退出方法（当平台未关闭时）"
 Cleaning_Header_StartMenuShortcuts: '开始菜单的快捷方式：'
@@ -136,17 +136,17 @@ Toast_Ubisoft_NoUsername: 无法找到最后登录的用户。请先再次登录
 Toast_Ubisoft_NoDat: "无法找到 %LocalAppData%/UbisoftGameLauncher/user.dat 。最后活跃的帐户未保存。"
 Toast_Ubisoft_NoUser: 无法找到最后登录的用户。请先再次登录 Ubisoft。
 Toast_ClearForgottenCheck: 您确定要清除已忘记帐户的备份吗？
-Toast_BattleNet_ChangedBTag: 更改了战斗标签
-Toast_BattleNet_DeletedBTag: 已删除的战斗标签
-Toast_FetchedRank: 获取排名
-Toast_ForgotAccount: 忘记帐号
-Toast_ClearedPlatformSettings: "清除 {platform} 切换台设置"
-Toast_ClearedImages: "清除图像"
-Toast_SavedItem: "已保存： {item}"
+Toast_BattleNet_ChangedBTag: 已更改 BattleTag
+Toast_BattleNet_DeletedBTag: 已删除 BattleTag
+Toast_FetchedRank: 已获取等级
+Toast_ForgotAccount: 忘记帐户
+Toast_ClearedPlatformSettings: "已清除 {platform} 切换器设置"
+Toast_ClearedImages: "已清除图片"
+Toast_SavedItem: "已保存：{item}"
 Toast_ChangedUsername: 更改用户名
 Toast_SetUsername: 设置用户名
 Modal_Crowdin_Header: Crowdin 译者
-Modal_Crowdin_Info: "这是帮助翻译此软件的每个人。<br>语言相邻的用户在翻译方面提供了很多帮助（校对角色）。"
+Modal_Crowdin_Info: "这是帮助翻译此软件的所有人。<br>名字旁边有语言的用户在翻译方面提供了很多帮助（审核员身份）。"
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 创作
 Modal_Info_Version: 版本
 Modal_Info_ViewGitHub: 在 GitHub 上查看
@@ -159,7 +159,7 @@ Modal_Title_ConfirmAction: TcNo 帐户切换器确认操作
 Modal_Title_LocatePlatform: 请定位到 {platform} 目录
 Modal_Title_AddNew: 添加新的 {platform} 帐户
 Modal_Title_Background: 设置背景图片
-Modal_SetBackground: '选择一个图像，或在下面输入一个 URL。<br>留空并设置为重置。<br>（有关更高级的控制，请参阅 Wiki 上的主题）：'
+Modal_SetBackground: '选择图片，或在下面输入 URL。<br>留空表示重置。<br>（有关更高级的控制，请参考 Wiki 上的“Theming”）：'
 Modal_SetBackground_Button: 设置背景
 Modal_SetBackground_ChooseImage: 选择本地图片
 Modal_ChangeUsername: 请为您的帐户输入一个新的 {platformText}
@@ -179,10 +179,10 @@ Modal_PasswordsNoMatch: 密码不匹配
 Status_SelectedAccount: "已选择：{name}"
 Status_Init: "状态：正在初始化"
 Status_ClosingPlatform: "关闭 {platform}"
-Status_ClosingPlatformFailed: "关闭失败 {platform}"
-Status_StartingPlatform: "从 {platform}"
-Status_UpdatingFile: "更新 {file}"
-Status_UpdatingRegistry: 更新 Windows 注册表
+Status_ClosingPlatformFailed: "关闭 {platform} 失败"
+Status_StartingPlatform: "启动 {platform}"
+Status_UpdatingFile: "正在更新 {file}"
+Status_UpdatingRegistry: 正在更新 Windows 注册表
 Context_SwapTo: 交换到帐户
 Context_CreateShortcut: 创建桌面快捷方式
 Context_CreateShortcutSubmenu: 创建桌面快捷方式…
@@ -237,7 +237,7 @@ Runtime_ASP: Microsoft ASP.NET Core {version} 运行时环境
 Installer_FailedFolder: "创建文件夹失败："
 Installer_FailedWV: "下载安装 Microsoft WebView2 运行时环境失败。如要下载请：1. 点击下面的链接：{link} 2. 点击“Run server apps”下的“Download Hosting Bundle”。"
 Installer_FailedDR: "下载安装 .NET 5 Desktop 运行时环境失败。请在这里下载："
-Installed_FailedASP: "下载安装 ASP.NET Core {version} 运行时环境失败。如要下载请：1. 点击下面的链接：{link} 2. 点击“Run Desktop apps”下的“Download x64”。"
+Installed_FailedASP: "下载安装 ASP.NET Core {version} 运行时环境失败。如要下载请：1. 点击下面的链接：{link} 2. 点击“Run Desktop apps”下的“Download x64"
 Installer_Ready: "一个或多个环境已准备好安装。如果您想要安装，请点击“是”。"
 Installer_PressStart: 按任意键开始安装…
 Installer_VerifyMin: "确认您已满足建议的最低要求："
