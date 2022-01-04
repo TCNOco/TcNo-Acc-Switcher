@@ -10,7 +10,7 @@ Steam_ShowAccUsername: Afficher le nom d'utilisateur du compte
 Steam_Tray_AccountName: Afficher le nom du compte [pas de nom d'amis]
 Steam_OverrideDefaultState: "Remplacer l'état de connexion par défaut :"
 Button_AddNew: Ajouter un nouveau
-Button_SaveCurrent: Enregistrer le courant
+Button_SaveCurrent: Enregistrer le compte actuel
 Button_SaveFile: Enregistrer le fichier
 Button_Cancel: Abandonner
 Button_Login: Se connecter

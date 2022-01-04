@@ -237,7 +237,7 @@ Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Kansion luonti epäonnistui:"
 Installer_FailedWV: "Microsoft WebView2 suorituksen lataaminen ja asentaminen epäonnistui. Lataa: 1. Klikkaa alla olevaa linkkiä: {link} 2. Napsauta 'Download Hosting Bundle' Suorita palvelinsovelluksissa."
 Installer_FailedDR: ".NET 5 -työpöydän lataus ja asennus epäonnistui. Lataa se täältä:"
-Installed_FailedASP: "ASP.NET Core {version} Runtimen lataaminen ja asentaminen epäonnistui. Lataaminen: 1. Napsauta alla olevaa linkkiä: {link} 2. Napsauta \"Lataa x64\" -kohdasta Suorita työpöytäsovellukset."
+Installed_FailedASP: "{version} Runtimen lataaminen ja asentaminen epäonnistui. Lataaminen: 1. Napsauta alla olevaa linkkiä: {link} 2. Napsauta \"Download x64\" kohdassa Run Desktop Apps."
 Installer_Ready: "Yksi tai useampi on valmis asennettavaksi. Jos ja kun kehotetaan, jos haluat asentaa, paina 'Kyllä'."
 Installer_PressStart: Paina mitä tahansa näppäintä aloittaaksesi asennuksen...
 Installer_VerifyMin: "Varmista, että täytät suositellut vähimmäisvaatimukset:"

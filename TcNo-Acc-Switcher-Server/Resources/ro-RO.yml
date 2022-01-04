@@ -1,11 +1,11 @@
 ---
-Update: Actualizare disponibilă! Apasă aici pentru a începe.
+Update: Actualizare disponibilă! Click aici pentru a o începe.
 Header_ChooseLanguage: 'Alegeți limba:'
-BattleNet_ShowSR: Arată Overwatch SR și folosește imaginea de profil Overwatch
-Steam_ShowSteamID: Arată SteamID
-Steam_ShowVac: Afișați starea VAC
-Steam_CheckVac: Verifică starea contului VAC
-Steam_ShowLimited: Arată stare limitată
+BattleNet_ShowSR: Arată SR-ul din Overwatch și folosește imaginea de profil din Overwatch
+Steam_ShowSteamID: Afișează SteamID-ul
+Steam_ShowVac: Afișați statusul VAC
+Steam_CheckVac: Verifică statusul VAC
+Steam_ShowLimited: Afișează starea limitată
 Steam_ShowAccUsername: Arată numele de utilizator
 Steam_Tray_AccountName: Arată numele contului [nu și numele prietenului]
 Steam_OverrideDefaultState: "Suprascrie starea implicită de autentificare:"

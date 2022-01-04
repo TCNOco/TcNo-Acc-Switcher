@@ -237,7 +237,7 @@ Runtime_ASP: Microsoft Microsoft Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Không tạo được thư mục:"
 Installer_FailedWV: "Không thể tải xuống và cài đặt Microsoft WebView2 Runtime. Để tải xuống: 1. Nhấp vào liên kết bên dưới: {link} 2. Nhấp vào 'Tải xuống Gói Lưu trữ' trong Chạy ứng dụng máy chủ."
 Installer_FailedDR: "Không thể tải xuống và cài đặt .NET 5 Desktop Runtime. Vui lòng tải về tại đây:"
-Installed_FailedASP: "Không thể tải xuống và cài đặt ASP.NET Core {version} Runtime. Để tải xuống: 1. Nhấp vào liên kết bên dưới: {link} 2. Nhấp vào 'Tải xuống x64' trong Chạy ứng dụng dành cho máy tính để bàn."
+Installed_FailedASP: "Không thể tải xuống và cài đặt ASP.NET Core {version} Runtime. Để tải xuống: 1. Nhấp vào liên kết bên dưới: {link} 2. Nhấp vào 'Tải xuống x64' trong Chạy ứng dụng trên máy tính để bàn."
 Installer_Ready: "Một hoặc nhiều đã sẵn sàng để cài đặt. Nếu và khi được nhắc nếu bạn muốn cài đặt, hãy nhấp vào 'Có'."
 Installer_PressStart: Nhấn phím bất kỳ để bắt đầu cài đặt ...
 Installer_VerifyMin: "Xác minh rằng bạn đáp ứng các yêu cầu tối thiểu được đề xuất:"

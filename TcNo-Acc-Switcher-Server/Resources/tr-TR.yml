@@ -237,7 +237,7 @@ Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Çalışma Zamanı
 Installer_FailedFolder: "Klasör oluşturulamadı:"
 Installer_FailedWV: "Microsoft WebView2 Runtime indirilemedi ve yüklenemedi. İndirmek için: 1. Aşağıdaki bağlantıya tıklayın: {link} 2. Sunucu uygulamalarını çalıştır altında 'Barındırma Paketini İndir'e tıklayın."
 Installer_FailedDR: ".NET 5 Desktop Runtime indirilemedi ve yüklenemedi. Lütfen buradan indirin:"
-Installed_FailedASP: "ASP.NET Core {version} Runtime indirilemedi ve yüklenemedi. İndirmek için: 1. Aşağıdaki bağlantıya tıklayın: {link} 2. Masaüstü uygulamalarını Çalıştır altında 'x64 indir' seçeneğine tıklayın."
+Installed_FailedASP: "{version} Runtime indirilemedi ve yüklenemedi. İndirmek için: 1. Aşağıdaki bağlantıya tıklayın: {link} 2. Masaüstü uygulamalarını Çalıştır altında 'x64 indir' seçeneğine tıklayın."
 Installer_Ready: "Bir veya daha fazlası kurulum için hazır. Yüklemek isteyip istemediğiniz sorulduğunda, 'Evet'i tıklayın."
 Installer_PressStart: Kurulumu başlatmak için herhangi bir tuşa basın...
 Installer_VerifyMin: "Önerilen minimum gereksinimleri karşıladığınızı doğrulayın:"
