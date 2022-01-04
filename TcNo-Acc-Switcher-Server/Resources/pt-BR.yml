@@ -237,7 +237,7 @@ Runtime_ASP: Tempo de execução do Microsoft Microsoft ASP.NET Core {version}
 Installer_FailedFolder: "Falha ao criar pasta:"
 Installer_FailedWV: "Falha ao baixar e instalar o Runtime Microsoft WebView2. Para baixar: 1. Clique no link abaixo: {link} 2. Clique em 'Baixar pacote de hospedagem' em Executar aplicativos de servidor."
 Installer_FailedDR: "Falha ao baixar e instalar o tempo de execução do .NET 5. Por favor baixe-o aqui:"
-Installed_FailedASP: "Falha ao baixar e instalar o ASP.NET Core {version} Runtime. Para fazer o download: 1. Clique no link abaixo: {link} 2. Clique em 'Baixar x64' em Executar aplicativos da área de trabalho."
+Installed_FailedASP: "Falha ao baixar e instalar o ASP.NET Core {version} Runtime. Para baixar: 1. Clique no link abaixo: {link} 2. Clique em 'Baixar x64' em Executar aplicativos da área de trabalho."
 Installer_Ready: "Um ou mais estão prontos para instalação. Se e quando solicitado você quiser instalar, clique em 'Sim'."
 Installer_PressStart: Pressione qualquer tecla para iniciar a instalação...
 Installer_VerifyMin: "Verifique se você cumpre os requisitos mínimos recomendados:"
