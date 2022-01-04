@@ -33,7 +33,7 @@ Settings_Header_TraySettings: إعدادات القائمة المخفية في 
 Settings_Header_OpenGameFolders: مجلدات الألعاب
 Settings_TrayMax: 'عدد الحسابات الظاهرة في قائمة:'
 Settings_RTL: إظهار النص من اليمين إلى اليسار
-Settings_CurrentLocation: 'موقع التثبيت الحالي: {path}'
+Settings_CurrentLocation: 'مكان التثبيت الحالي: {path}'
 Settings_PickFolder: تحديد ملف {platform}
 Settings_OpenFolder: فتح ملف {platform}
 Settings_ClearForgotten: تنظيف الحسابات المزالة
@@ -48,58 +48,58 @@ Settings_Tray_StartWindows: تشغيل في الوضع المصغر
 Settings_Tray_StartNow: '[ادخل الوضع الان]'
 Settings_CurrentStyle: الثيم الحالي
 Settings_ThemeBackground: '[تعيين الخلفية]'
-Settings_ThemeOpenFolder: '[فتح مجلد الموضوع]'
+Settings_ThemeOpenFolder: '[فتح مجلد النَسق]'
 Settings_Protocol: 'تمكين بروتوكول tcno:\\(مفضل)'
 Settings_StartCentered: بدء البرنامج في منتصف الشاشة
 Settings_WindowsAccent: استخدام لون ثيم ويندوز
-Settings_HelpTranslate: "[ساهم في الترجمة]"
-Settings_ViewTranslators: "[المساهمون]"
-Settings_Header_ActiveBrowser: "[متقدم] محرك العرض:"
+Settings_HelpTranslate: "[ساعد في الترجمة]"
+Settings_ViewTranslators: "[الشكر]"
+Settings_Header_ActiveBrowser: "[مُتقدم] تعيين محرك العرض:"
 Settings_AltClose: "طريقة الخروج البديلة (عندما لا تغلق المنصة)"
 Cleaning_Header_StartMenuShortcuts: 'اختصارات لقائمة البدء:'
 Cleaning_Header_General: تنظيف عام
 Cleaning_Header_LoginHistory: تنظيف سجل تسجيل الدخول الخاص بي
-Cleaning_Header_PlatformCleaning: '{platform} مبدل'
+Cleaning_Header_PlatformCleaning: '{المِنصّة} مُبدّل'
 Cleaning_ImportantInfoHeader: 'معلومات هامة:'
 Cleaning_ImportantInfo: >
-  النقر على زر سيؤدي إلى حذف الملف (الملفات) ذات الصلة من تثبيت سبتر.<br /> حذف مستخدمي الدخول. سوف يؤدي df هذا إلى عدم إظهار أي حساب.<br /> سوف تحتاج إلى تسجيل الدخول إليهم باستخدام Steam للعودة إليهم.
-Cleaning_Button_KillProcess: اقتل العملية {platform}
-Cleaning_Button_ForgottenBackups: نسيان النسخ الاحتياطية للحسابات
-Cleaning_Understand: أنا أفهم ما تفعله هذه الأزرار.
+  النقر على زر سيؤدي إلى حذف الملف (الملفات) من مسار تثبيت ستيم في جهازك.<br /> حذف ملف (loginusers.vdf/مستخدمي تسجيل الدخول) سيؤدّي إلى عدم إظهار أي حساب في هذا البرنامج.<br /> ستحتاج إلى تسجيل الدخول إليهم باستخدام ستيم لاستعادتهم مجدّداً.
+Cleaning_Button_KillProcess: أنهِ العملية {platform}
+Cleaning_Button_ForgottenBackups: النُسَخ الاحتياطية للحسابات المَنسية
+Cleaning_Understand: أنا أفهم وظيفة هذه الأزرار.
 Restore_Header: استعادة الحسابات المنسية
 Restore_Info: >
-  إذا كنت سابقاً "نسيت" الحساب، يمكنك استعادته هنا.<br /> هذا يضيفها مرة أخرى إلى ملف loginusers.vdf الخاص بك، مما يسمح لك بالتبديل إليهم.
+  إذا كنت قد "نسيت" حساب ما سابقاً، يمكنك استعادته هنا.<br /> هذا يضيفه مرة أخرى إلى ملف loginusers.vdf الخاص بك، مما يسمح لك بالتبديل إليه.
 Restore_Button_Restore: استعادة المحدد
 Ignored_RemoveAccounts: إزالة الحسابات من قائمة التجاهل
-Ignored_Description: إذا كنت سابقا "تجاهل" الحساب، يمكنك إظهاره مرة أخرى هنا
-Ignored_Stop: إيقاف تجاهل المحدد
-Toast_RetryOrDeleteDiscordCache: أعد المحاولة، أو حذف ذاكرة التخزين المؤقت للديسكورد لإعادة تعيين كلمة المرور (انظر الويكي).
-Toast_TrayStarted: بدأت اللعبة!
-Toast_TrayRunning: تم فتح القناة بالفعل
+Ignored_Description: إذا كنت قد "تجاهلت" حساب ما سابقاً، يمكنك إظهاره هنا مُجدّداً
+Ignored_Stop: إيقاف تجاهل المُحدّد
+Toast_RetryOrDeleteDiscordCache: أعد المحاولة، أو احذف ذاكرة التخزين المؤقت للديسكورد لإعادة تعيين كلمة المرور (انظر الويكي).
+Toast_TrayStarted: تم بدء مكان التعبئة!
+Toast_TrayRunning: مكان التعبئة مفتوح مسبقاُ
 Toast_TrayUsersMissing: لم يتم حفظ أي من المستخدمين
-Toast_TrayFail: لا يمكن بدء تشغيل تطبيق الصورة!
-Toast_TrayPosition: "عند النقر على زر الخروج: سأكون على شاحنة ويندوز! (يمين شريط البدء)"
-Toast_TrayHint: "تلميح: Ctrl+Click 'X' لإغلاقي تماما، أو عبر القناة > 'الخروج'"
+Toast_TrayFail: لا يمكن بدء تشغيل التطبيق المُصَغّر!
+Toast_TrayPosition: "عند النقر على زر الخروج: سأكون مصغّراً بشريط مهام ويندوز! (يمين/يسار شريط المهام, يختلف الاتجاه حسب لغة النظام)"
+Toast_TrayHint: "تلميح: اضغط Ctrl+Click 'X' لإغلاقي تماما، أو عبر الأيقونة المُصغّرة بشريط المهام > 'خروج'"
 Toast_Copied: منسوخ
-Toast_PasteDiscordConsole: لصق في وحدة تحكم ديسكورد، ثم لصق نتيجة للمدخلات!
+Toast_PasteDiscordConsole: الصق في موجّه أوامر ديسكورد، ثم الصق نتيجة للمدخلات!
 Toast_AlreadyProcessing: جارٍ بالفعل معالجة الحسابات...
-Toast_FailedRestore: فشل في استعادة الحسابات (انظر وحدة التحكم)
-Toast_Restored: استعادة الحسابات!
+Toast_FailedRestore: فشل في استعادة الحسابات (انظر موجّه الأوامر)
+Toast_Restored: الحسابات التي تمّت استعادتها!
 Toast_ProtocolEnabled: هذا البرنامج سوف يستجيب الآن لـ tcno:\\ في Windows
 Toast_ProtocolEnabledTitle: تم إضافة البروتوكول
 Toast_ProtocolDisabled: هذا البرنامج لن يستجيب بعد الآن لـ tcno:\\
 Toast_ProtocolDisabledTitle: تم إزالة البروتوكول
-Toast_RestartAsAdmin: الرجاء البدء كمشرف وحاول مرة أخرى.
-Toast_RestartAfterClose: الرجاء إعادة تشغيل البرنامج بعد النقر فوق إغلاق
-Toast_RestartAfterCloseTitle: لون اللكنة معطل
+Toast_RestartAsAdmin: الرجاء التشغيل كمسؤول والمحاولة مجدداً.
+Toast_RestartAfterClose: الرجاء إعادة تشغيل البرنامج بعد النقر على زر الإغلاق.
+Toast_RestartAfterCloseTitle: لون التمييز مُعطّل
 Toast_RestartRequired: أعد التشغيل لتطبيق التغييرات
 Toast_LoadStylesheetFailed: فشل تحميل ورقة النماذج! راجع مجلد المستندات للحصول على التفاصيل.
 Toast_BNet_Private: "الملف الشخصي {BTag}خاص"
 Toast_BNet_StatsFail: "خطأ في محاولة الحصول على إحصائيات لـ {BTag}"
-Toast_BNet_CantSwapAccounts: لا يمكن مبادلة الحسابات (Battle.net.config filt)
-Toast_BNet_CantLoadNotFound: تعذر العثور على Battle.net.config
+Toast_BNet_CantSwapAccounts: لا يمكن تبديل الحسابات (Battle.net.config ملف فاسد)
+Toast_BNet_CantLoadNotFound: تعذر العثور على ملف Battle.net.config
 Toast_BNet_CantLoadEmpty: تعذر تحميل ملف الحسابات لـ Blizzard (لم يتم العثور على حسابات)
-Toast_BNet_CantLoadConfigCorrupt: تعذر تحميل ملف الحسابات لـ Blizzard (Battle.net.config file corrupt)
+Toast_BNet_CantLoadConfigCorrupt: تعذر تحميل ملف الحسابات لـ Blizzard (Battle.net.config ملف فاسد)
 Toast_BNet_NamePolicy: علامة المعركة لا تتطابق مع سياسة التسمية.
 Toast_ItemNotFound: "لم يتم العثور على {item}"
 Toast_DeletedTotal: "{files} من {totalFiles} تم حذفه. المجموع: {totalSize}"
