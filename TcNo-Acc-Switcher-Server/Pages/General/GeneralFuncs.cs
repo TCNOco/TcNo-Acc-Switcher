@@ -722,19 +722,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="args">Arguments for program</param>
         public static void StartProgram(string fileName, bool elevated, string args = "")
         {
-            var proc = new Process
-            {
-                StartInfo =
-                {
-                    FileName = fileName,
-                    UseShellExecute = true,
-                    Arguments = args,
-                    Verb = elevated ? "runas" : ""
-                }
-            };
+            // This runas.exe program is a temporary workaround for processes closing when this closes.
             try
             {
-                _ = proc.Start();
+                Process.Start(new ProcessStartInfo()
+                {
+                    FileName = Path.Join(Globals.AppDataFolder, "runas.exe"),
+                    Arguments = $"\"{fileName}\" {(elevated ? "1" : "0")} {args}",
+                    Verb = elevated ? "runas" : ""
+                });
             }
             catch (System.ComponentModel.Win32Exception e)
             {

@@ -45,6 +45,9 @@ mkdir updater\x64
 mkdir updater\x86
 mkdir updater\ref
 copy /B /Y "..\..\..\Installer\_First_Run_Installer.exe" "_First_Run_Installer.exe"
+copy /B /Y "..\..\..\runas\Release\net6.0\runas.exe" "runas.exe"
+copy /B /Y "..\..\..\runas\Release\net6.0\runas.dll" "runas.dll"
+copy /B /Y "..\..\..\runas\Release\net6.0\runas.runtimeconfig.json" "runas.runtimeconfig.json"
 
 REM Signing
 ECHO Signing binaries
@@ -53,6 +56,8 @@ echo %time%
 (
     start call ../../../../sign.bat "..\..\..\Wrapper\_Wrapper.exe"
     start call ../../../../sign.bat "_First_Run_Installer.exe"
+    start call ../../../../sign.bat "runas.exe"
+    start call ../../../../sign.bat "runas.dll"
     start call ../../../../sign.bat "TcNo-Acc-Switcher.exe"
     start call ../../../../sign.bat "TcNo-Acc-Switcher.dll"
     start call ../../../../sign.bat "TcNo-Acc-Switcher-Server.exe"
