@@ -6,12 +6,12 @@ set origDir=%cd%
 
 REM SET VARIABLES
 REM If SIGNTOOL environment variable is not set then try setting it to a known location
-if "%SIGNTOOL%"=="" set SIGNTOOL=%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe
+if "%SIGNTOOL%"=="" set SIGNTOOL=%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe
 REM Check to see if the signtool utility is missing
 if exist "%SIGNTOOL%" goto ST
     REM Give error that SIGNTOOL environment variable needs to be set
     echo "Must set environment variable SIGNTOOL to full path for signtool.exe code signing utility"
-    echo Location is of the form "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\bin\signtool.exe"
+    echo Location is of the form "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\bin\signtool.exe"
     exit -1
 :ST
 
@@ -21,9 +21,8 @@ if exist "%NSIS%" goto NS
     REM Give error that NSIS environment variable needs to be set
     echo "Must set environment variable NSIS to full path for makensis.exe"
     echo Location is of the form "C:\Program Files (x86)\NSIS\makensis.exe"
-    exit -1
+    IF NOT EXIST A:\AccountSwitcherConfig\sign.txt exit -1
 :NS
-
 
 REM Set 7-Zip path for compressing built files
 if "%zip%"=="" set zip=C:\Program Files\7-Zip\7z.exe
@@ -33,8 +32,8 @@ if exist "%zip%" goto ZJ
     echo Location is of the form "C:\Program Files\7-Zip\7z.exe"
     exit -1
 :ZJ
+echo %origDir%
 
-IF NOT EXIST bin\x64\Release\net6.0-windows\ GOTO ghDebug
 IF EXIST bin\x64\Release\net6.0-windows\updater GOTO end
 cd %origDir%\bin\x64\Release\net6.0-windows\
 ECHO -----------------------------------
@@ -50,24 +49,26 @@ copy /B /Y "..\..\..\runas\Release\net6.0\runas.dll" "runas.dll"
 copy /B /Y "..\..\..\runas\Release\net6.0\runas.runtimeconfig.json" "runas.runtimeconfig.json"
 
 REM Signing
-ECHO Signing binaries
-echo %time%
+IF EXIST A:\AccountSwitcherConfig\sign.txt (
+	ECHO Signing binaries
+	echo %time%
+	(
+		start call ../../../../sign.bat "..\..\..\Wrapper\_Wrapper.exe"
+		start call ../../../../sign.bat "_First_Run_Installer.exe"
+		start call ../../../../sign.bat "runas.exe"
+		start call ../../../../sign.bat "runas.dll"
+		start call ../../../../sign.bat "TcNo-Acc-Switcher.exe"
+		start call ../../../../sign.bat "TcNo-Acc-Switcher.dll"
+		start call ../../../../sign.bat "TcNo-Acc-Switcher-Server.exe"
+		start call ../../../../sign.bat "TcNo-Acc-Switcher-Server.dll"
+		start call ../../../../sign.bat "TcNo-Acc-Switcher-Tray.exe"
+		start call ../../../../sign.bat "TcNo-Acc-Switcher-Tray.dll"
+		start call ../../../../sign.bat "TcNo-Acc-Switcher-Globals.dll"
+		start call ../../../../sign.bat "TcNo-Acc-Switcher-Updater.exe"
+		start call ../../../../sign.bat "TcNo-Acc-Switcher-Updater.dll"
+	) | set /P "="
+) ELSE ECHO ----- SKIPPING SIGN -----
 
-(
-    start call ../../../../sign.bat "..\..\..\Wrapper\_Wrapper.exe"
-    start call ../../../../sign.bat "_First_Run_Installer.exe"
-    start call ../../../../sign.bat "runas.exe"
-    start call ../../../../sign.bat "runas.dll"
-    start call ../../../../sign.bat "TcNo-Acc-Switcher.exe"
-    start call ../../../../sign.bat "TcNo-Acc-Switcher.dll"
-    start call ../../../../sign.bat "TcNo-Acc-Switcher-Server.exe"
-    start call ../../../../sign.bat "TcNo-Acc-Switcher-Server.dll"
-    start call ../../../../sign.bat "TcNo-Acc-Switcher-Tray.exe"
-    start call ../../../../sign.bat "TcNo-Acc-Switcher-Tray.dll"
-    start call ../../../../sign.bat "TcNo-Acc-Switcher-Globals.dll"
-    start call ../../../../sign.bat "TcNo-Acc-Switcher-Updater.exe"
-    start call ../../../../sign.bat "TcNo-Acc-Switcher-Updater.dll"
-) | set /P "="
 
 REN "TcNo-Acc-Switcher.exe" "TcNo-Acc-Switcher_main.exe"
 REN "TcNo-Acc-Switcher-Server.exe" "TcNo-Acc-Switcher-Server_main.exe"
@@ -85,7 +86,6 @@ xcopy ..\..\..\..\..\TcNo-Acc-Switcher-Server\bin\Release\net6.0\runtimes\win\li
 
 echo %time%
 
-:skipsign
 copy /B /Y "VCDiff.dll" "updater\VCDiff.dll"
 copy /B /Y "YamlDotNet.dll" "updater\YamlDotNet.dll"
 move /Y "TcNo-Acc-Switcher-Updater.runtimeconfig.json" "updater\TcNo-Acc-Switcher-Updater.runtimeconfig.json"
