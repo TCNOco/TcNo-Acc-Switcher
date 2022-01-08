@@ -438,6 +438,7 @@ async function showModal(modaltype) {
         if (action.startsWith("AcceptForgetSteamAcc")) {
             message = await GetLang("Prompt_ForgetSteam");
         } else if (action.startsWith("AcceptForgetDiscordAcc") ||
+            action.startsWith("AcceptForgetBasicAcc") ||
             action.startsWith("AcceptForgetEpicAcc") ||
             action.startsWith("AcceptForgetOriginAcc") ||
             action.startsWith("AcceptForgetUbisoftAcc") ||
@@ -657,7 +658,7 @@ async function Modal_Confirm(action, value) {
 }
 
 function Modal_FinaliseAccString(platform) {
-    // Supported: Discord, Epic, Origin, Riot
+    // Supported: Discord, Epic, Origin, Riot, BASIC
     let raw = $("#CurrentAccountName").val();
     let name = (raw.indexOf("TCNO:") === -1 ? raw.replace(/[<>: \.\"\/\\|?*]/g, "-") : raw); // Clean string if not a command string.
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", name);

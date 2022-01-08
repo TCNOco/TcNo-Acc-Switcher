@@ -46,6 +46,14 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     else _ = GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
                     break;
 
+                case "Basic":
+                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Basic.Processes)) return;
+                    Data.Settings.Basic.Instance.LoadFromFile();
+                    if (Directory.Exists(Data.Settings.Basic.Instance.FolderPath) && File.Exists(Data.Settings.Basic.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Basic/");
+                    else _ = GeneralInvocableFuncs.ShowModal("find:Basic:PROGRAM.exe:EpicSettings");
+                    // TODO: Replace PROGRAM.exe from text in basic JSON.
+                    break;
+
                 case "Discord":
                     if (!GeneralFuncs.CanKillProcess(Data.Settings.Discord.Processes)) return;
                     Data.Settings.Discord.Instance.LoadFromFile();

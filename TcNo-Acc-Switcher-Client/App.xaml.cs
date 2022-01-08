@@ -409,6 +409,7 @@ namespace TcNo_Acc_Switcher_Client
                             " -   Riot Games format: +e:<username>",
                             " -   Steam format: +s:<steamId>[:<PersonaState (0-7)>]",
                             " -   Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]",
+                            " --- Other platforms: +<2-3 letter code>:<unique identifiers>",
                             "--- Log out of accounts ---",
                             "logout:<platform> = Logout of a specific platform (Allowing you to sign into and add a new account)",
                             "Available platforms:",
@@ -418,6 +419,7 @@ namespace TcNo_Acc_Switcher_Client
                             " -   Riot Games: r, riot, riotgames",
                             " -   Steam: s, steam",
                             " -   Ubisoft Connect: u, ubi, ubisoft, ubisoftconnect, uplay",
+                            " --- Other platforms via custom commands: <unique identifiers>",
                             "--- Other arguments ---",
                             "v, vv, verbose = Verbose mode (Shows a lot of details, somewhat useful for debugging)"
                         };
@@ -664,6 +666,8 @@ namespace TcNo_Acc_Switcher_Client
                     TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherBase.NewLogin_Ubisoft();
                     break;
             }
+
+            // TODO: Add IF, if not above: Check JSON file of basic platforms for unique identifiers.
         }
 
         /// <summary>

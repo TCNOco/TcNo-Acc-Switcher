@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace TcNo_Acc_Switcher_Globals
@@ -25,6 +26,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning restore CA2211 // Non-constant fields should not be visible
         public static readonly string Version = "2022-01-04_00";
         public static readonly string[] PlatformList = { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot", "Discord" };
+        // TODO: Add other platforms here from Basic JSON.
 
         #region LOGGER
 
@@ -402,6 +404,16 @@ namespace TcNo_Acc_Switcher_Globals
             if (keepFolders) return;
             baseDir.Delete();
         }
+
+        /// <summary>
+        /// Remove illegal characters from file path string
+        /// </summary>
+        public static string GetCleanFilePath(string f)
+        {
+            var regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+            Regex r = new Regex(string.Format("[{0}]", Regex.Escape(regexSearch)));
+            return r.Replace(f, "");
+        }
         #endregion
 
         /// <summary>
@@ -424,6 +436,18 @@ namespace TcNo_Acc_Switcher_Globals
         public static string GetUnixTime()
         {
             return ((int)DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds).ToString();
+        }
+
+        /// <summary>
+        /// Replaces the input regex string with an 'expanded' regex, if it's an enum
+        /// </summary>
+        public static string ExpandRegex(string regex)
+        {
+            Dictionary<string, string> regexDictionary = new(){
+                { "EMAIL_REGEX", "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])" }
+            };
+
+            return regexDictionary.ContainsKey(regex) ? regexDictionary[regex] : regex;
         }
 
         #region PROCESSES

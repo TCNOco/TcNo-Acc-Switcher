@@ -13,11 +13,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -65,6 +68,31 @@ namespace TcNo_Acc_Switcher_Server.Data
                 NotifyDataChanged();
             }
         }
+
+        private JObject _basicPlatforms;
+
+        public JObject BasicPlatforms
+        {
+            get =>
+                _instance._basicPlatforms ?? (_instance._basicPlatforms =
+                    GeneralFuncs.LoadSettings(Path.Join(Globals.AppDataFolder, "BasicPlatforms.json")));
+
+            set => _instance._basicPlatforms = value;
+        }
+        private string _basicCurrentPlatform;
+
+        public string BasicCurrentPlatform
+        {
+            get => _instance._basicCurrentPlatform;
+            set => _instance._basicCurrentPlatform = value;
+        }
+
+        public string BasicCurrentPlatformSafeString => Globals.GetCleanFilePath(BasicCurrentPlatform);
+
+        public JObject BasicCurrentPlatformJson => (JObject)BasicPlatforms["Platforms"]![BasicCurrentPlatform];
+
+        public string BasicCurrentPlatformSettingsFile => BasicCurrentPlatform + ".json";
+
 
         public event Action OnChange;
 

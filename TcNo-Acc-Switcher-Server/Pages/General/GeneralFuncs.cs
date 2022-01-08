@@ -628,9 +628,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                 // Handle loading accounts for specific platforms
                 // - Init file if it doesn't exist, or isn't fully initialised (adds missing settings when true)
-                if (platform == null) return;
                 switch (platform)
                 {
+                    case null:
+                        return;
+
                     case "BattleNet":
                         await BattleNet.BattleNetSwitcherFuncs.LoadProfiles();
                         Data.Settings.BattleNet.Instance.SaveSettings(!File.Exists(Data.Settings.BattleNet.SettingsFile));
@@ -664,6 +666,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     case "Ubisoft":
                         await Ubisoft.UbisoftSwitcherFuncs.LoadProfiles();
                         Data.Settings.Ubisoft.Instance.SaveSettings(!File.Exists(Data.Settings.Ubisoft.SettingsFile));
+                        break;
+
+                    default:
+                        Basic.BasicSwitcherFuncs.LoadProfiles();
+                        Data.Settings.Basic.Instance.SaveSettings( !File.Exists(AppData.Instance.BasicCurrentPlatform));
                         break;
                 }
 

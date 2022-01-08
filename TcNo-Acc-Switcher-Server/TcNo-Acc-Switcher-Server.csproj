@@ -229,6 +229,11 @@
     <None Include="wwwroot\js\ace\worker-xml.js" />
     <None Include="wwwroot\js\ace\worker-xquery.js" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Update="BasicPlatforms.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES11</TypeScriptTarget>
     <TypeScriptJSXEmit>React</TypeScriptJSXEmit>

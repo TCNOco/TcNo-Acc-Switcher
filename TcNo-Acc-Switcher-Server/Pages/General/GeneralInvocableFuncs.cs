@@ -24,6 +24,7 @@ using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.BattleNet;
+using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.Discord;
 using TcNo_Acc_Switcher_Server.Pages.Epic;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
@@ -39,6 +40,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
     {
         private static readonly Lang Lang = Lang.Instance;
 
+        private static readonly Data.Settings.Basic Basic = Data.Settings.Basic.Instance;
         private static readonly Data.Settings.Discord Discord = Data.Settings.Discord.Instance;
         private static readonly Data.Settings.Epic Epic = Data.Settings.Epic.Instance;
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
@@ -107,6 +109,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "BattleNetSettings":
                     BattleNet.FolderPath = path;
                     break;
+                case "BasicSettings":
+                    Basic.FolderPath = path;
+                    break;
                 case "DiscordSettings":
                     Discord.FolderPath = path;
                     break;
@@ -140,6 +145,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 {
                     Discord.SetForgetAcc(true);
                     _ = DiscordSwitcherFuncs.ForgetAccount(accName);
+                    return Task.FromResult("refresh");
+                }
+
+                if (action.StartsWith("AcceptForgetBasicAcc:"))
+                {
+                    Basic.SetForgetAcc(true);
+                    _ = BasicSwitcherFuncs.ForgetAccount(accName);
                     return Task.FromResult("refresh");
                 }
 
@@ -260,6 +272,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 case "BattleNet":
                     BattleNetSwitcherFuncs.ChangeBTag(id, reqName);
+                    break;
+                case "Basic":
+                    BasicSwitcherFuncs.ChangeUsername(id, reqName);
                     break;
                 case "Discord":
                     DiscordSwitcherFuncs.ChangeUsername(id, reqName);
