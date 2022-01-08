@@ -94,6 +94,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             GeneralFuncs.StartProgram(Epic.Exe(), Epic.Admin, args);
 
             Globals.RefreshTrayArea();
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
         [SupportedOSPlatform("windows")]

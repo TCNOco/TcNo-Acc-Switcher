@@ -1,8 +1,10 @@
 {
   "Platforms": {
     "Escape from Tarkov": {
-      "Identifiers": ["eft", "bsg"],
-      "ExeLocationDefault": "C:\\Battlestate Games\\EFT\\EscapeFromTarkov.exe",
+      "Identifiers": [ "eft", "bsg" ],
+      "ExeLocationDefault": "C:\\Battlestate Games\\BsgLauncher\\BsgLauncher.exe",
+      "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
+      "PathListToClear": [ "%AppData%\\Battlestate Games\\BsgLauncher\\settings\\" ],
       "LoginFiles": {
         "%AppData%\\Battlestate Games\\BsgLauncher\\settings": "settings"
       },

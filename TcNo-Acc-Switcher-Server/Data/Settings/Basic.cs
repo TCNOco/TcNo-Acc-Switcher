@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using System.IO;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
@@ -41,8 +42,29 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
 
         // Variables
-        private string _folderPath = "C:\\Program Files (x86)\\Basic Games\\Launcher\\Portal\\Binaries\\Win32\\";
-        [JsonProperty("FolderPath", Order = 1)] public string FolderPath { get => _instance._folderPath; set => _instance._folderPath = value; }
+        private string _folderPath = "";
+
+        [JsonProperty("FolderPath", Order = 1)]
+        public string FolderPath
+        {
+            get
+            {
+                if (_instance._folderPath != "") return _instance._folderPath;
+
+                try
+                {
+                    _instance._folderPath = ((string)AppData.Instance.BasicCurrentPlatformJson["ExeLocationDefault"])?.Replace(
+                        AppData.Instance.BasicCurrentPlatformExe, "");
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+
+                return _instance._folderPath;
+            }
+            set => _instance._folderPath = value;
+        }
         private bool _admin;
         [JsonProperty("Basic_Admin", Order = 2)] public bool Admin { get => _instance._admin; set => _instance._admin = value; }
         private int _trayAccNumber = 3;
@@ -87,7 +109,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Get Basic.exe path from BasicSettings.json
         /// </summary>
         /// <returns>Basic.exe's path string</returns>
-        public string Exe() => Path.Join(FolderPath, "BasicGamesLauncher.exe");
+        public string Exe() => Path.Join(FolderPath, AppData.Instance.BasicCurrentPlatformExe);
 
 
         #region SETTINGS

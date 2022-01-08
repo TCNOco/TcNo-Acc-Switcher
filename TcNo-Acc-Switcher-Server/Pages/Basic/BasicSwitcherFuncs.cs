@@ -80,66 +80,78 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.SwapBasicAccounts] Swapping to: hidden.");
 
+            // Kill game processes
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Basic" }]);
-            if (!GeneralFuncs.CloseProcesses(Data.Settings.Basic.Processes, Data.Settings.Basic.Instance.AltClose))
+            if (!GeneralFuncs.CloseProcesses(AppData.BasicCurrentPlatformProcesses, Data.Settings.Basic.Instance.AltClose))
             {
-                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Basic" }]);
+                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = AppData.BasicCurrentPlatform }]);
                 return;
             };
 
+            // Clear current login
             ClearCurrentLoginBasic();
+
+            // Copy saved files in
             if (accName != "")
             {
                 if (!BasicCopyInAccount(accName)) return;
-                Globals.AddTrayUser("Basic", "+e:" + accName, accName, Basic.TrayAccNumber); // Add to Tray list
+                Globals.AddTrayUser("Basic", $"+{AppData.BasicCurrentPlatformIds[0]}:" + accName, accName, Basic.TrayAccNumber); // Add to Tray list, using first Identifier
             }
 
-            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Basic" }]);
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = AppData.BasicCurrentPlatform }]);
             GeneralFuncs.StartProgram(Basic.Exe(), Basic.Admin, args);
 
             Globals.RefreshTrayArea();
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
         [SupportedOSPlatform("windows")]
         private static void ClearCurrentLoginBasic()
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.ClearCurrentLoginBasic]");
-            // Get current information for logged in user, and save into files:
-            var currentAccountId = (string)Registry.CurrentUser.OpenSubKey(@"Software\Basic Games\Unreal Engine\Identifiers")?.GetValue("AccountId");
 
-            var allIds = ReadAllIds();
-            if (currentAccountId != null && allIds.ContainsKey(currentAccountId))
-                BasicAddCurrent(allIds[currentAccountId]);
+            // Iterate through list of files/folders to delete/clear
+            if (AppData.BasicCurrentPlatformJson["LoginFiles"] == null) throw new Exception("No data in basic platform: " + AppData.BasicCurrentPlatform);
 
-            if (File.Exists(BasicGameUserSettings)) File.Delete(BasicGameUserSettings); // Delete GameUserSettings.ini file
-            using var key = Registry.CurrentUser.CreateSubKey(@"Software\Basic Games\Unreal Engine\Identifiers");
-            key?.SetValue("AccountId", ""); // Clear logged in account in registry, but leave MachineId
+            foreach (var jToken in (JToken)AppData.BasicCurrentPlatformJson["LoginFiles"])
+            {
+                var item = (JProperty)jToken;
+                var path = Environment.ExpandEnvironmentVariables(item.Name);
+
+                if (!(File.Exists(path) || Directory.Exists(path))) continue;
+
+                if (File.GetAttributes(Environment.ExpandEnvironmentVariables(path)).HasFlag(FileAttributes.Directory))
+                {
+                    Globals.RecursiveDelete(new DirectoryInfo(path), true);
+                }
+                else
+                {
+                    File.Delete(path);
+                }
+            }
+
+            // TODO: Handle clearing Registry entries
         }
 
         [SupportedOSPlatform("windows")]
         private static bool BasicCopyInAccount(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.BasicCopyInAccount]");
-            var localCachePath = $"LoginCache\\Basic\\{accName}\\";
-            if (!Directory.Exists(localCachePath))
+
+            var localCachePath = $"LoginCache\\{AppData.BasicCurrentPlatformSafeString}\\{accName}\\";
+            _ = Directory.CreateDirectory(localCachePath);
+
+            if (AppData.BasicCurrentPlatformJson["LoginFiles"] == null) throw new Exception("No data in basic platform: " + AppData.BasicCurrentPlatform);
+
+            foreach (var jToken in (JToken)AppData.BasicCurrentPlatformJson["LoginFiles"])
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = localCachePath }], Lang["DirectoryNotFound"], "toastarea");
-                return false;
+                var item = (JProperty)jToken;
+                var saved = Path.Join(localCachePath, (string)item.Value);
+                if (File.Exists(saved))
+                    File.Copy(saved, Environment.ExpandEnvironmentVariables(item.Name), true);
             }
 
-            File.Copy(Path.Join(localCachePath, "GameUserSettings.ini"), BasicGameUserSettings);
-
-            using var key = Registry.CurrentUser.CreateSubKey(@"Software\Basic Games\Unreal Engine\Identifiers");
-
-            var allIds = ReadAllIds();
-            try
-            {
-                key?.SetValue("AccountId", allIds.Single(x => x.Value == accName).Key);
-            }
-            catch (InvalidOperationException)
-            {
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_DuplicateNames"], Lang["Error"], "toastarea");
-            }
+            // TODO: Handle registry
 
             return true;
         }

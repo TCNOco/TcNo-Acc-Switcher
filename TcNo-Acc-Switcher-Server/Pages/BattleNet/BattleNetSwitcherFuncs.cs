@@ -261,6 +261,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             GeneralFuncs.StartProgram(BattleNet.Exe(), BattleNet.Admin, args);
 
             Globals.RefreshTrayArea();
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
         /// <summary>

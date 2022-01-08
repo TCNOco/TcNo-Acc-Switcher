@@ -128,6 +128,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             GeneralFuncs.StartProgram(Discord.Exe(), Discord.Admin, args);
 
             Globals.RefreshTrayArea();
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
         [SupportedOSPlatform("windows")]

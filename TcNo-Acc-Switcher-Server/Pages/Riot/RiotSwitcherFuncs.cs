@@ -164,8 +164,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
 
             //GeneralFuncs.StartProgram(Riot.Exe(), Riot.Admin);
 
-            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             Globals.RefreshTrayArea();
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
         private static void ClearCurrentLoginRiot()

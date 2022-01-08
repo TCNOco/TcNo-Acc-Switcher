@@ -13,7 +13,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -76,11 +78,9 @@ namespace TcNo_Acc_Switcher_Server.Data
             get =>
                 _instance._basicPlatforms ?? (_instance._basicPlatforms =
                     GeneralFuncs.LoadSettings(Path.Join(Globals.AppDataFolder, "BasicPlatforms.json")));
-
             set => _instance._basicPlatforms = value;
         }
         private string _basicCurrentPlatform;
-
         public string BasicCurrentPlatform
         {
             get => _instance._basicCurrentPlatform;
@@ -91,7 +91,30 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public JObject BasicCurrentPlatformJson => (JObject)BasicPlatforms["Platforms"]![BasicCurrentPlatform];
 
-        public string BasicCurrentPlatformSettingsFile => BasicCurrentPlatform + ".json";
+        public string BasicCurrentPlatformSettingsFile => BasicCurrentPlatformSafeString + ".json";
+
+        private List<string> _basicCurrentPlatformIds;
+        public List<string> BasicCurrentPlatformIds
+        {
+            get => _instance._basicCurrentPlatformIds ?? (_instance._basicCurrentPlatformIds = BasicCurrentPlatformJson["Identifiers"]!.Values<string>().ToList());
+            set => _instance._basicCurrentPlatformIds = value;
+        }
+
+        private string _basicCurrentPlatformExe;
+        public string BasicCurrentPlatformExe
+        {
+            get => _instance._basicCurrentPlatformExe ?? (_instance._basicCurrentPlatformExe = Path.GetFileName((string)AppData.Instance.BasicCurrentPlatformJson["ExeLocationDefault"]));
+            set => _instance._basicCurrentPlatformExe = value;
+        }
+
+        private List<string> _basicCurrentPlatformProcesses;
+
+        public List<string> BasicCurrentPlatformProcesses
+        {
+            get => _instance._basicCurrentPlatformProcesses ?? (_instance._basicCurrentPlatformProcesses =
+                BasicCurrentPlatformJson["ExesToEnd"]!.Values<string>().ToList());
+            set => _instance._basicCurrentPlatformProcesses = value;
+        }
 
 
         public event Action OnChange;

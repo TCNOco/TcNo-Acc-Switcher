@@ -421,6 +421,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             GeneralFuncs.StartProgram(Steam.Exe(), Steam.Admin, args);
 
             Globals.RefreshTrayArea();
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
         /// <summary>

@@ -91,6 +91,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             GeneralFuncs.StartProgram(Origin.Exe(), Origin.Admin, args);
 
             Globals.RefreshTrayArea();
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
 

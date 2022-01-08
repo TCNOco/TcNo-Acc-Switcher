@@ -278,6 +278,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             GeneralFuncs.StartProgram(Ubisoft.Exe(), Ubisoft.Admin, args);
 
             Globals.RefreshTrayArea();
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
         private static void ClearCurrentUser()
