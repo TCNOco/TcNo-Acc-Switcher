@@ -81,7 +81,7 @@ BEGIN
             VALUE "FileDescription", "Easy redistributable installer for the TcNo Account Switcher"
             VALUE "FileVersion", "1.0.0.1"
             VALUE "InternalName", "_First_R.exe"
-            VALUE "LegalCopyright", "Copyright © TechNobo (Wesley Pyburn) 2019-2021"
+            VALUE "LegalCopyright", "Copyright © TechNobo (Wesley Pyburn) 2019-2022"
             VALUE "OriginalFilename", "_First_Run_Installer.exe"
             VALUE "ProductName", "TcNo Account Switcher - Redistributable Installer"
             VALUE "ProductVersion", "1.0.0.1"

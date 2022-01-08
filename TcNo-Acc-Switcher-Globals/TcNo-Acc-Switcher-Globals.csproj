@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>TcNo_Acc_Switcher_Globals</RootNamespace>
-    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2019-2021</Copyright>
+    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2019-2022</Copyright>
     <Authors>TechNobo (Wesley Pyburn)</Authors>
     <Company>TechNobo (Wesley Pyburn)</Company>
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
