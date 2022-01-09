@@ -100,6 +100,20 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     if (Directory.Exists(Data.Settings.Ubisoft.Instance.FolderPath) && File.Exists(Data.Settings.Ubisoft.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Ubisoft/");
                     else _ = GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
                     break;
+
+                default:
+                    if (_appData.PlatformList.Contains(platform)) // Is a basic platform!
+                    {
+                        var platformFullname = _appData.PlatformListFullNames[platform];
+                        var program = _appData.BasicPlatforms["Platforms"][platformFullname];
+                        if (!GeneralFuncs.CanKillProcess(program["ExesToEnd"].Values<string>().ToList())) return;
+
+                        _appData.BasicCurrentPlatform = platformFullname;
+                        Data.Settings.Basic.Instance.LoadFromFile();
+                        if (Directory.Exists(_appData.BasicCurrentPlatformExeFolder) && File.Exists(_appData.BasicCurrentPlatformExeFullPath)) AppData.ActiveNavMan.NavigateTo("/Basic/");
+                        else _ = GeneralInvocableFuncs.ShowModal($"find:{_appData.BasicCurrentPlatform}:{_appData.BasicCurrentPlatformExe}:{_appData.BasicCurrentPlatform}");
+                    }
+                    break;
             }
         }
 

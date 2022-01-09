@@ -13,8 +13,11 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @page "/Basic/"
+@using Microsoft.AspNetCore.WebUtilities
+@using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
+@using System.IO
 @inject AppData _appData
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
@@ -71,13 +74,50 @@
 
 @code
 {
+    // https://github.com/dotnet/aspnetcore/issues/13582
+    private bool _navBack = false;
+
     // This has to be here for NavManager.
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
     {
         _appSettings.StreamerModeCheck();
-        _appData.BasicCurrentPlatform = "Escape from Tarkov"; // TODO: Grab from URI
+
+        var requestPlat = "";
+        var uri = _navManager.ToAbsoluteUri(_navManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("plat", out var param))
+        {
+            requestPlat = param.First();
+        }
+
+        // Get platform name from URI if not set.
+        if (!string.IsNullOrEmpty(requestPlat))
+            _appData.BasicCurrentPlatform = _appData.PlatformFullName(requestPlat);
+
+        // If current platform is NOT valid -> Go back
+        if (_appData.BasicCurrentPlatform == null || !_appData.BasicPlatformsContains(_appData.BasicCurrentPlatform))
+        {
+            _navBack = true;
+            return;
+        }
+
+    // Either load existing, or safe default settings for platform
+        if (File.Exists(_appData.BasicCurrentPlatformSettingsFileFull)) Data.Settings.Basic.Instance.LoadFromFile();
+        else Data.Settings.Basic.Instance.SaveSettings();
+
+        // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
+        if (File.Exists(_appData.BasicCurrentPlatformExeFullPath)) return;
+
+        _navBack = true;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, _appData.BasicCurrentPlatform);
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_navBack)
+        {
+            _navManager.NavigateTo(_navManager.BaseUri);
+            return;
+        }
+        await GeneralFuncs.HandleFirstRender(firstRender, _appData.BasicCurrentPlatform);
+    }
 }

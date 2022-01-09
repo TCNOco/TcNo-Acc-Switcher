@@ -137,7 +137,13 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public JObject BasicCurrentPlatformJson => (JObject)BasicPlatforms["Platforms"]![BasicCurrentPlatform];
 
+        public bool BasicPlatformsContains(string platform) =>
+            ((JObject) BasicPlatforms["Platforms"]!).ContainsKey(platform);
+
         public string BasicCurrentPlatformSettingsFile => BasicCurrentPlatformSafeString + ".json";
+
+        public string BasicCurrentPlatformSettingsFileFull =>
+            Path.Join(Globals.UserDataFolder, BasicCurrentPlatformSettingsFile);
 
         private List<string> _basicCurrentPlatformIds;
         public List<string> BasicCurrentPlatformIds
@@ -149,9 +155,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         private string _basicCurrentPlatformExe;
         public string BasicCurrentPlatformExe
         {
-            get => _instance._basicCurrentPlatformExe ?? (_instance._basicCurrentPlatformExe = Path.GetFileName((string)AppData.Instance.BasicCurrentPlatformJson["ExeLocationDefault"]));
+            get => _instance._basicCurrentPlatformExe ?? (_instance._basicCurrentPlatformExe = Path.GetFileName(BasicCurrentPlatformExeFullPath));
             set => _instance._basicCurrentPlatformExe = value;
         }
+
+        public string BasicCurrentPlatformExeFullPath => (string)BasicCurrentPlatformJson["ExeLocationDefault"];
+        public string BasicCurrentPlatformExeFolder => Path.GetDirectoryName(BasicCurrentPlatformExeFullPath);
 
         private List<string> _basicCurrentPlatformProcesses;
 
