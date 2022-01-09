@@ -26,6 +26,12 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning restore CA2211 // Non-constant fields should not be visible
         public static readonly string Version = "2022-01-04_00";
         public static readonly string[] PlatformList = { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot", "Discord" };
+        public static readonly Dictionary<string, string> PlatformListFullNames = new() {
+            { "BattleNet", "Battle.Net" }, { "Epic", "Epic Games" }
+        };
+
+        public static string PlatformFullName(string id) => PlatformListFullNames.ContainsKey(id) ? PlatformListFullNames[id] : id;
+
         // TODO: Add other platforms here from Basic JSON.
 
         #region LOGGER

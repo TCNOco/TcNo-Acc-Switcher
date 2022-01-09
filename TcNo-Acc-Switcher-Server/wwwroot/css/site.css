@@ -3,6 +3,10 @@
   font-family: "Catamaran", sans-serif;
   src: url("/css/font/Catamaran-VariableFont_wght.ttf") format("ttf");
 }
+@font-face {
+  font-family: "Raleway", sans-serif;
+  src: url("/css/font/Raleway-VariableFont_wght.ttf") format("ttf");
+}
 /* v (Nessecary for disabling the red highlight saying vars not found [as they're added dynamically later]) v */
 /* ReSharper disable CssNotResolved */
 :root {
@@ -523,7 +527,7 @@ div.advancedClearingButtonCol .buttoncol {
 /* ---------------------------------------- */
 .platform_list_item {
   width: 20vw;
-  max-width: 24.35460302vw;
+  height: 20vw;
   display: inline-block;
   cursor: pointer;
   /* ReSharper disable once InvalidValue */
@@ -532,8 +536,47 @@ div.advancedClearingButtonCol .buttoncol {
   transition: all 100ms ease-in-out;
   transform: scale(1);
   box-shadow: none;
+  font-family: Raleway, sans-serif;
+  font-weight: 900;
+  -webkit-text-stroke: 0.1vw #00a5f8;
+  color: transparent;
 }
-.platform_list_item svg .icoGlass {
+.platform_list_item .fgText {
+  position: absolute;
+  height: 6.666666666vw;
+  width: calc(20vw - 3px);
+  bottom: 0;
+  z-index: 10;
+}
+.platform_list_item .fgText p {
+  font-size: 2.5vw;
+  height: fit-content;
+  padding: 0 !important;
+  bottom: 0px;
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+.platform_list_item .bigText p {
+  font-size: 3.5vw;
+}
+.platform_list_item .fgImg {
+  position: absolute;
+  height: 13.3333333vw;
+  width: 100%;
+  z-index: 10;
+}
+.platform_list_item .fgImg svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  max-width: 50%;
+  max-height: 90%;
+}
+.platform_list_item .icoGlass {
   transition: 500ms all ease-in;
 }
 .platform_list_item:hover:not(:active) {
@@ -543,6 +586,7 @@ div.advancedClearingButtonCol .buttoncol {
 }
 .platform_list_item:hover svg {
   filter: brightness(97%) saturate(1.05) contrast(102%);
+  z-index: 1;
 }
 .platform_list_item:hover svg .icoGlass {
   transform: scale(1.05);
@@ -561,57 +605,19 @@ div.advancedClearingButtonCol .buttoncol {
 
 .ico {
   /* ALL */
-  /* BattleNet */
-  /* Discord */
-  /* Epic Games */
-  /* Origin */
-  /* Riot Games */
-  /* Steam */
-  /* Ubisoft */
 }
 .icoBattleNetBG, .icoDiscordBG, .icoEpicBG, .icoOriginBG, .icoRiotBG, .icoSteamBG, .icoUbisoftBG {
   background: linear-gradient(0deg, #253340 0%, #253340 0%, #202123 100%, #00d4ff 202123%);
 }
-.icoBattleNetText, .icoDiscordText, .icoEpicText, .icoOriginText, .icoRiotText, .icoSteamText, .icoUbisoftText {
-  fill: none;
+.icoBattleNetFG, .icoDiscordFG, .icoEpicFG, .icoOriginFG, .icoRiotFG, .icoSteamFG, .icoUbisoftFG {
+  fill-rule: evenodd;
+  clip-rule: evenodd;
   stroke-linejoin: round;
   stroke-miterlimit: 2;
-  stroke-width: 8.33px;
-  stroke: #00a5f8;
-}
-.icoBattleNetFG, .icoDiscordFG, .icoEpicFG, .icoOriginFG, .icoRiotFG, .icoSteamFG, .icoUbisoftFG {
-  stroke: #00a5f8;
+  fill: #00a5f8;
 }
 .icoBattleNetGlass, .icoDiscordGlass, .icoEpicGlass, .icoOriginGlass, .icoRiotGlass, .icoSteamGlass, .icoUbisoftGlass {
   fill: rgba(255, 255, 255, 0.02);
-}
-.icoBattleNetFG {
-  fill: #00a5f8;
-  stroke-width: 0;
-}
-.icoDiscordFG {
-  fill: #00a5f8;
-  stroke-width: 0;
-}
-.icoEpicFG {
-  fill: #00a5f8;
-  stroke-width: 50px;
-}
-.icoOriginFG {
-  fill: none;
-  stroke-width: 12.51px;
-}
-.icoRiotFG {
-  fill: none;
-  stroke-width: 12.51px;
-}
-.icoSteamFG {
-  fill: none;
-  stroke-width: 12.51px;
-}
-.icoUbisoftFG {
-  fill: none;
-  stroke-width: 12.51px;
 }
 
 /* Modal icons */

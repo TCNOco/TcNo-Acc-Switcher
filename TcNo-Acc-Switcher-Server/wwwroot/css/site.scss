@@ -1,8 +1,12 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 @font-face {
-  font-family: 'Catamaran', sans-serif;
-  src: url("/css/font/Catamaran-VariableFont_wght.ttf") format("ttf");
+    font-family: 'Catamaran', sans-serif;
+    src: url("/css/font/Catamaran-VariableFont_wght.ttf") format("ttf");
+}
+@font-face {
+    font-family: 'Raleway', sans-serif;
+    src: url("/css/font/Raleway-VariableFont_wght.ttf") format("ttf");
 }
 
 /* v (Nessecary for disabling the red highlight saying vars not found [as they're added dynamically later]) v */
@@ -587,7 +591,7 @@ div.advancedClearingButtonCol .buttoncol {
 
 .platform_list_item {
     width: 20vw;
-    max-width: calc(100vw / 4.106);
+    height: 20vw;
     display: inline-block;
     cursor: pointer;
     /* ReSharper disable once InvalidValue */
@@ -596,8 +600,52 @@ div.advancedClearingButtonCol .buttoncol {
     transition: all 100ms ease-in-out;
     transform: scale(1);
     box-shadow: none;
+    font-family: Raleway, sans-serif;
+    font-weight: 900;
+    -webkit-text-stroke: 0.1vw #00a5f8;
+    color: transparent;
 
-    & svg .icoGlass {
+    .fgText {
+        position: absolute;
+        height: 6.666666666vw;
+        width: calc(20vw - 3px);
+        bottom: 0;
+        z-index: 10;
+
+        p {
+            font-size: 2.5vw;
+            height: fit-content;
+            padding: 0 !important;
+            bottom: 0px;
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+        }
+    }
+
+    .bigText p {
+        font-size: 3.5vw;
+    }
+
+    .fgImg {
+        position: absolute;
+        height: 13.3333333vw;
+        width: 100%;
+        z-index: 10;
+
+        svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            max-width: 50%;
+            max-height: 90%;
+        }
+    }
+
+    .icoGlass {
         transition: 500ms all ease-in;
     }
 
@@ -608,10 +656,11 @@ div.advancedClearingButtonCol .buttoncol {
             animation: pulse 2s infinite;
         }
 
-        & svg {
+        svg {
             filter: brightness(97%) saturate(1.05) contrast(102%);
+            z-index: 1;
 
-            & .icoGlass {
+            .icoGlass {
                 transform: scale(1.05);
             }
         }
@@ -639,69 +688,16 @@ div.advancedClearingButtonCol .buttoncol {
             background: linear-gradient(0deg, rgba(37,51,64,1) 0%, rgba(37,51,64,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%);
         }
 
-        &Text {
-            fill: none;
+        &FG {
+            fill-rule: evenodd;
+            clip-rule: evenodd;
             stroke-linejoin: round;
             stroke-miterlimit: 2;
-            stroke-width: 8.33px;
-            stroke: #00a5f8;
-        }
-
-        &FG {
-            stroke: #00a5f8;
+            fill: #00a5f8;
         }
 
         &Glass {
             fill: rgba(255, 255, 255, 0.02);
-        }
-    }
-    /* BattleNet */
-    &BattleNet {
-        &FG {
-            fill: #00a5f8;
-            stroke-width: 0;
-        }
-    }
-    /* Discord */
-    &Discord {
-        &FG {
-            fill: #00a5f8;
-            stroke-width: 0;
-        }
-    }
-    /* Epic Games */
-    &Epic {
-        &FG {
-            fill: #00a5f8;
-            stroke-width: 50px;
-        }
-    }
-    /* Origin */
-    &Origin {
-        &FG {
-            fill: none;
-            stroke-width: 12.51px;
-        }
-    }
-    /* Riot Games */
-    &Riot {
-        &FG {
-            fill: none;
-            stroke-width: 12.51px;
-        }
-    }
-    /* Steam */
-    &Steam {
-        &FG {
-            fill: none;
-            stroke-width: 12.51px;
-        }
-    }
-    /* Ubisoft */
-    &Ubisoft {
-        &FG {
-            fill: none;
-            stroke-width: 12.51px;
         }
     }
 }

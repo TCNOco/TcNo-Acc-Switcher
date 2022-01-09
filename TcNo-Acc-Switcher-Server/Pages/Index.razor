@@ -16,6 +16,7 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Globals
+@using System.Globalization
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 @inject NavigationManager _navManager
@@ -41,9 +42,13 @@
             @if (!AppSettings.Instance.DisabledPlatforms.Contains(platform))
             {
                 <div class="platform_list_item" id="@("Switcher" + platform)" @onclick="() => Check(platform)">
+                    <div class="fgText @(Globals.PlatformFullName(platform).Length < 7 ? "bigText" : "")"><p>@Globals.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
+                    <div class="fgImg">
+                        <svg viewBox="0 0 500 500" draggable="false" alt="@(platform)">
+                            <use href="@($"img/platform/{platform.ToLowerInvariant()}.svg#FG")" class="@($"ico{platform}FG")"></use>
+                        </svg>
+                    </div>
                     <svg viewBox="0 0 2084 2084" draggable="false" alt="@(platform)" class="@($"ico{platform}BG")">
-                        <use href="@($"img/platform/{platform.ToLowerInvariant()}.svg#TEXT")" class="@($"ico{platform}Text")"></use>
-                        <use href="@($"img/platform/{platform.ToLowerInvariant()}.svg#FG")" class="@($"ico{platform}FG")"></use>
                         <use href="img/platform/glass.svg#GLASS" class="icoGlass @($"ico{platform}Glass")"></use>
                     </svg>
                 </div>
