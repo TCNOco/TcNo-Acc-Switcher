@@ -550,6 +550,7 @@ div.advancedClearingButtonCol .buttoncol {
 }
 .platform_list_item .fgText p {
   font-size: 2.5vw;
+  line-height: 1em;
   height: fit-content;
   padding: 0 !important;
   bottom: 0px;
@@ -559,8 +560,14 @@ div.advancedClearingButtonCol .buttoncol {
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
 }
-.platform_list_item .bigText p {
+.platform_list_item .noImageCenterText {
+  height: 20vw;
+}
+.platform_list_item .shortText p {
   font-size: 3.5vw;
+}
+.platform_list_item .longText p {
+  font-size: 2vw;
 }
 .platform_list_item .fgImg {
   position: absolute;
@@ -606,17 +613,17 @@ div.advancedClearingButtonCol .buttoncol {
 .ico {
   /* ALL */
 }
-.icoBattleNetBG, .icoDiscordBG, .icoEpicBG, .icoOriginBG, .icoRiotBG, .icoSteamBG, .icoUbisoftBG {
+.icoBG {
   background: linear-gradient(0deg, #253340 0%, #253340 0%, #202123 100%, #00d4ff 202123%);
 }
-.icoBattleNetFG, .icoDiscordFG, .icoEpicFG, .icoOriginFG, .icoRiotFG, .icoSteamFG, .icoUbisoftFG {
+.icoFG {
   fill-rule: evenodd;
   clip-rule: evenodd;
   stroke-linejoin: round;
   stroke-miterlimit: 2;
   fill: #00a5f8;
 }
-.icoBattleNetGlass, .icoDiscordGlass, .icoEpicGlass, .icoOriginGlass, .icoRiotGlass, .icoSteamGlass, .icoUbisoftGlass {
+.icoGlass {
   fill: rgba(255, 255, 255, 0.02);
 }
 

@@ -32,6 +32,7 @@ using System.Windows.Shapes;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using static TcNo_Acc_Switcher_Client.MainWindow;
@@ -121,7 +122,7 @@ namespace TcNo_Acc_Switcher_Client
                 foreach (var eArg in e.Args)
                 {
                     // Check if arguments are a platform
-                    foreach (var platform in Globals.PlatformList)
+                    foreach (var platform in AppData.Instance.PlatformList)
                     {
                         // Is a platform -- In other words: Show that platform.
                         if (string.Equals(platform, eArg, StringComparison.InvariantCultureIgnoreCase))

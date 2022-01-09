@@ -37,19 +37,22 @@
 <ContextMenu ContextMenuString=@AppSettings.Instance.PlatformContextMenu />
 <div class="platformContainer">
     <div class="platform_list">
-        @foreach (var platform in Globals.PlatformList)
+        @foreach (var platform in _appData.PlatformList)
         {
             @if (!AppSettings.Instance.DisabledPlatforms.Contains(platform))
             {
                 <div class="platform_list_item" id="@("Switcher" + platform)" @onclick="() => Check(platform)">
-                    <div class="fgText @(Globals.PlatformFullName(platform).Length < 7 ? "bigText" : "")"><p>@Globals.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
+                    <div class="fgText @(!System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{platform}.svg")) ? "noImageCenterText" : "") @(_appData.PlatformFullName(platform).Length < 7 ? "shortText" : _appData.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@_appData.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
                     <div class="fgImg">
-                        <svg viewBox="0 0 500 500" draggable="false" alt="@(platform)">
-                            <use href="@($"img/platform/{platform.ToLowerInvariant()}.svg#FG")" class="@($"ico{platform}FG")"></use>
-                        </svg>
+                        @if(System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{platform}.svg")))
+                        {
+                            <svg viewBox="0 0 500 500" draggable="false" alt="@(platform)">
+                                <use href="@($"img/platform/{platform.ToLowerInvariant()}.svg#FG")" class="@($"icoFG")"></use>
+                            </svg>
+                        }
                     </div>
-                    <svg viewBox="0 0 2084 2084" draggable="false" alt="@(platform)" class="@($"ico{platform}BG")">
-                        <use href="img/platform/glass.svg#GLASS" class="icoGlass @($"ico{platform}Glass")"></use>
+                    <svg viewBox="0 0 2084 2084" draggable="false" alt="@(platform)" class="@($"icoBG")">
+                        <use href="img/platform/glass.svg#GLASS" class="icoGlass @($"icoGlass")"></use>
                     </svg>
                 </div>
             }

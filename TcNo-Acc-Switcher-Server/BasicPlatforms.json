@@ -10,6 +10,28 @@
       },
       "UniqueIdFile": "settings",
       "UniqueIdRegex": "EMAIL_REGEX"
+    },
+    "Kevins World": {
+      "Identifiers": [ "k", "bsg" ],
+      "ExeLocationDefault": "C:\\Battlestate Games\\BsgLauncher\\BsgLauncher.exe",
+      "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
+      "PathListToClear": [ "%AppData%\\Battlestate Games\\BsgLauncher\\settings\\" ],
+      "LoginFiles": {
+        "%AppData%\\Battlestate Games\\BsgLauncher\\settings": "settings"
+      },
+      "UniqueIdFile": "settings",
+      "UniqueIdRegex": "EMAIL_REGEX"
+    },
+    "Jason": {
+      "Identifiers": [ "jj", "bsg" ],
+      "ExeLocationDefault": "C:\\Battlestate Games\\BsgLauncher\\BsgLauncher.exe",
+      "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
+      "PathListToClear": [ "%AppData%\\Battlestate Games\\BsgLauncher\\settings\\" ],
+      "LoginFiles": {
+        "%AppData%\\Battlestate Games\\BsgLauncher\\settings": "settings"
+      },
+      "UniqueIdFile": "settings",
+      "UniqueIdRegex": "EMAIL_REGEX"
     }
   }
 }

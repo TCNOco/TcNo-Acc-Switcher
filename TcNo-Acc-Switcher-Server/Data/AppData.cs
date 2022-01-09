@@ -71,6 +71,52 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
+        #region Basic_Platforms
+        private List<string> _platformList;
+        public List<string> PlatformList
+        {
+            get
+            {
+                if (_instance._platformList != null) return _instance._platformList;
+
+                _instance._platformList = new List<string> { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot", "Discord" };
+                foreach (var jToken in BasicPlatforms["Platforms"])
+                {
+                    var x = (JProperty) jToken;
+                    var platformFirstId = BasicPlatforms["Platforms"][x.Name]["Identifiers"][0].ToString();
+                    _instance._platformList.Add(platformFirstId);
+                }
+                return _instance._platformList;
+            }
+            set => _instance._platformList = value;
+        }
+
+        private Dictionary<string, string> _platformListFullNames;
+
+        public Dictionary<string, string> PlatformListFullNames
+        {
+            get
+            {
+                if (_instance._platformListFullNames != null) return _instance._platformListFullNames;
+
+                _instance._platformListFullNames = new Dictionary<string, string>
+                {
+                    { "BattleNet", "Battle.Net" },
+                    { "Epic", "Epic Games" }
+                };
+                foreach (var jToken in BasicPlatforms["Platforms"])
+                {
+                    var x = (JProperty)jToken;
+                    var platformFirstId = BasicPlatforms["Platforms"][x.Name]["Identifiers"][0].ToString();
+                    _instance._platformListFullNames.Add(platformFirstId, x.Name);
+                }
+                return _instance._platformListFullNames;
+            }
+            set => _instance._platformListFullNames = value;
+        }
+        public string PlatformFullName(string id) => PlatformListFullNames.ContainsKey(id) ? PlatformListFullNames[id] : id;
+
+
         private JObject _basicPlatforms;
 
         public JObject BasicPlatforms
@@ -115,7 +161,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 BasicCurrentPlatformJson["ExesToEnd"]!.Values<string>().ToList());
             set => _instance._basicCurrentPlatformProcesses = value;
         }
-
+        #endregion
 
         public event Action OnChange;
 

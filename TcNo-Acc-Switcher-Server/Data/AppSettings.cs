@@ -590,7 +590,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 else
                 {
                     _ = Directory.CreateDirectory(platformsFolder);
-                    foreach (var platform in Globals.PlatformList)
+                    foreach (var platform in AppData.Instance.PlatformList)
                     {
                         CreatePlatformShortcut(platformsFolder, platform, platform.ToLowerInvariant());
                     }
