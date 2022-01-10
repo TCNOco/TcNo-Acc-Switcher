@@ -24,6 +24,9 @@ using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data.Settings;
+using TcNo_Acc_Switcher_Server.Pages.Basic;
+using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -37,7 +40,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         #region ACCOUNT SWITCHER SHARED FUNCTIONS
-        public static bool GenericLoadAccounts(string name)
+        public static bool GenericLoadAccounts(string name, bool isBasic = false)
         {
             var localCachePath = Path.Join(Globals.UserDataFolder, $"LoginCache\\{name}\\");
             if (!Directory.Exists(localCachePath)) return false;
@@ -46,7 +49,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Order
             accList = OrderAccounts(accList, $"{localCachePath}\\order.json");
 
-            InsertAccounts(accList, name);
+            InsertAccounts(accList, name, isBasic);
             return true;
         }
 
@@ -61,7 +64,12 @@ namespace TcNo_Acc_Switcher_Server.Data
             accList = new List<string>();
 
             if (!Directory.Exists(folder)) return false;
-            accList = (from f in Directory.GetDirectories(folder) let lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1 select f[lastSlash..]).ToList();
+            var idsFile = Path.Join(folder, "ids.json");
+            accList = File.Exists(idsFile)
+                ? GeneralFuncs.ReadAllIds_Generic(idsFile).Keys.ToList()
+                : (from f in Directory.GetDirectories(folder)
+                    let lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1
+                    select f[lastSlash..]).ToList();
 
             return true;
         }
@@ -104,8 +112,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         /// <param name="accList">Account list</param>
         /// <param name="platform">Platform name</param>
-        public static void InsertAccounts(IEnumerable accList, string platform)
+        /// <param name="isBasic">(Unused for now) To use Basic platform account's ID as accId)</param>
+        public static void InsertAccounts(IEnumerable accList, string platform, bool isBasic = false)
         {
+            if (isBasic)
+                BasicSwitcherFuncs.LoadAccountIds();
             foreach (var element in accList)
             {
                 string imgPath;
@@ -114,9 +125,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                     imgPath = GetImgPath(platform, str).Replace("%", "%25");
                     try
                     {
+                        var id = str;
+                        if (isBasic)
+                            str = BasicSwitcherFuncs.GetNameFromId(id);
+
                         _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
-                            $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{str}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
-                            $"<label for=\"{str}\" class=\"acc\">\r\n" +
+                            $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{id}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
+                            $"<label for=\"{id}\" class=\"acc\">\r\n" +
                             $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
                             $"<h6>{str}</h6></div>\r\n");
                         //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
@@ -159,7 +174,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <returns>Image path</returns>
         private static string GetImgPath(string platform, string user)
         {
-            var imgPath = $"\\img\\profiles\\{platform.ToLowerInvariant()}\\{Uri.EscapeDataString(user.Replace("#", "-"))}";
+            var imgPath = $"\\img\\profiles\\{platform.ToLowerInvariant()}\\{Globals.GetCleanFilePath(user.Replace("#", "-"))}";
             if (File.Exists("wwwroot\\" + imgPath + ".png")) return imgPath + ".png";
             return imgPath + ".jpg";
         }

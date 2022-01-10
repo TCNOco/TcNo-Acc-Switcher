@@ -167,7 +167,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 var allIds = ReadAllIds_Generic(idsFile);
                 if (accNameIsId)
-                    _ = allIds.Remove(accName);
+                {
+                    var accId = accName;
+                    accName = allIds[accName];
+                    _ = allIds.Remove(accId);
+                }
                 else
                     _ = allIds.Remove(allIds.Single(x => x.Value == accName).Key);
                 File.WriteAllText(idsFile, JsonConvert.SerializeObject(allIds));
@@ -177,7 +181,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\{platform}\\{accName}"), false);
 
             // Remove image
-            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{platform}\\{Uri.EscapeDataString(accName)}.jpg");
+            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{platform}\\{Globals.GetCleanFilePath(accName)}.jpg");
             if (File.Exists(img)) File.Delete(img);
 
             // Remove from Tray

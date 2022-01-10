@@ -32,20 +32,18 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private JObject _jData;
         public JToken GetPlatforms => (JObject)_instance._jData["Platforms"];
-        private readonly Dictionary<string, string> _platformDict = new() {
+        private Dictionary<string, string> _platformDict = new();
+
+        private readonly Dictionary<string, string> _platformDictAllPossible = new()
+        {
             { "BattleNet", "Battle.Net" },
             { "Epic", "Epic Games" }
         };
-
-        private Dictionary<string, string> _platformDictAllPossible;
 
         public BasicPlatforms() {}
         public void BasicPlatformsInit()
         {
             _instance._jData = GeneralFuncs.LoadSettings(Path.Join(Globals.AppDataFolder, "BasicPlatforms.json"));
-            _instance._platformDictAllPossible = _instance._platformDict.ToDictionary(
-                entry => entry.Key,
-                entry => entry.Value);
             // Populate platform Primary Token to Full Name dictionary
             foreach (var jToken in GetPlatforms)
             {
@@ -67,6 +65,19 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void SetCurrentPlatform(string platform) => CurrentPlatform.Instance.CurrentPlatformInit(platform);
         public void SetCurrentPlatformFromShort(string id) => CurrentPlatform.Instance.CurrentPlatformInit(_instance.PlatformFullName(id));
         public Dictionary<string, string> PlatformsDict => _instance._platformDict;
+
+        public Dictionary<string, string> InactivePlatforms()
+        {
+            // Create local copy of platforms dict:
+            var platforms = _instance._platformDict.ToDictionary(
+                entry => entry.Key,
+                entry => entry.Value);
+
+            foreach (var enabledPlat in AppSettings.Instance.EnabledBasicPlatforms)
+                platforms.Remove(enabledPlat);
+
+            return platforms;
+        }
         public string PlatformFullName(string id) => PlatformsDict.ContainsKey(id) ? PlatformsDict[id] : id;
         public string PrimaryIdFromPlatform(string platform) => _instance._platformDictAllPossible.FirstOrDefault(x => x.Value == platform).Key;
         public string GetExeNameFromPlatform(string platform) => Path.GetFileName((string)((JObject)GetPlatforms[platform])["ExeLocationDefault"]);

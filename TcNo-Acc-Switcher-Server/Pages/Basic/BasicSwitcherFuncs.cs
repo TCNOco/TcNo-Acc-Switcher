@@ -32,7 +32,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.LoadProfiles] Loading Basic profiles for: " + Platform.FullName);
             Data.Settings.Basic.Instance.LoadFromFile();
-            _ = GenericFunctions.GenericLoadAccounts(Platform.FullName);
+            _ = GenericFunctions.GenericLoadAccounts(Platform.FullName, true);
         }
 
         /// <summary>
@@ -42,15 +42,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         [JSInvokable]
         public static Task<bool> GetBasicForgetAcc() => Task.FromResult(Basic.ForgetAccountEnabled);
 
+        #region Account IDs
+
+        public static Dictionary<string, string> AccountIds;
+        public static void LoadAccountIds() => AccountIds = GeneralFuncs.ReadAllIds_Generic(Platform.IdsJsonPath);
+        private static void SaveAccountIds() =>
+            File.WriteAllText(Platform.IdsJsonPath, JsonConvert.SerializeObject(AccountIds));
+        public static string GetNameFromId(string accId) => AccountIds.ContainsKey(accId) ? AccountIds[accId] : accId;
+        #endregion
+
         /// <summary>
         /// Restart Basic with a new account selected. Leave args empty to log into a new account.
         /// </summary>
-        /// <param name="accName">(Optional) User's login username</param>
+        /// <param name="accId">(Optional) User's unique account ID</param>
         /// <param name="args">Starting arguments</param>
         [SupportedOSPlatform("windows")]
-        public static void SwapBasicAccounts(string accName = "", string args = "")
+        public static void SwapBasicAccounts(string accId = "", string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.SwapBasicAccounts] Swapping to: hidden.");
+            LoadAccountIds();
+            var accName = GetNameFromId(accId);
 
             // Kill game processes
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Basic" }]);
@@ -60,6 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 return;
             };
 
+            // Add currently logged in account if there is a way of checking unique ID.
             // If saved, and has unique key: Update
             if (Platform.UniqueIdFile is not null)
             {
@@ -69,21 +81,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     _ = ReadRegistryKeyWithErrors(Platform.UniqueIdFile, out uniqueId);
                 }
                 else
-                    uniqueId = GetUniqueId(accName);
+                    uniqueId = GetUniqueId();
 
                 // UniqueId Found >> Save!
                 if (File.Exists(Platform.IdsJsonPath))
                 {
-                    var allIds = ReadAllIds();
-                    if (!string.IsNullOrEmpty(uniqueId) && allIds.ContainsKey(uniqueId))
+                    if (!string.IsNullOrEmpty(uniqueId) && AccountIds.ContainsKey(uniqueId))
                     {
-                        if (accName == allIds[uniqueId])
+                        if (accId == uniqueId)
                         {
                             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_AlreadyLoggedIn"], renderTo: "toastarea");
                             GeneralFuncs.StartProgram(Basic.Exe(), Basic.Admin, args);
                             return;
                         }
-                        BasicAddCurrent(allIds[uniqueId]);
+                        BasicAddCurrent(AccountIds[uniqueId]);
                     }
                 }
             }
@@ -94,8 +105,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // Copy saved files in
             if (accName != "")
             {
-                if (!BasicCopyInAccount(accName)) return;
-                Globals.AddTrayUser(Platform.SafeName, $"+{CurrentPlatform.Instance.PrimaryId}:" + accName, accName, Basic.TrayAccNumber); // Add to Tray list, using first Identifier
+                if (!BasicCopyInAccount(accId)) return;
+                Globals.AddTrayUser(Platform.SafeName, $"+{CurrentPlatform.Instance.PrimaryId}:" + accId, accName, Basic.TrayAccNumber); // Add to Tray list, using first Identifier
             }
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = Platform.FullName }]);
@@ -145,9 +156,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         }
 
         [SupportedOSPlatform("windows")]
-        private static bool BasicCopyInAccount(string accName)
+        private static bool BasicCopyInAccount(string accId)
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.BasicCopyInAccount]");
+            LoadAccountIds();
+            var accName = GetNameFromId(accId);
 
             var localCachePath = Platform.AccountLoginCachePath(accName); ;
             _ = Directory.CreateDirectory(localCachePath);
@@ -220,7 +233,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     return false;
             }
             else
-                uniqueId = GetUniqueId(accName);
+                uniqueId = GetUniqueId();
 
             if (uniqueId == "" && Platform.UniqueIdMethod == "CREATE_ID_FILE")
             {
@@ -277,13 +290,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // Copy in profile image from default
             // TODO: Replace all Uri.EscapeDataString for images with Globals.GetCleanFilePath?
             _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{Platform.SafeName}"));
-            var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{Platform.SafeName}\\{Globals.GetCleanFilePath(accName)}.jpg");
+            var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{Platform.SafeName}\\{Globals.GetCleanFilePath(uniqueId)}.jpg");
             if (!File.Exists(profileImg))
             {
-                var platformImgPath = "\\img\\" + Platform.SafeName + ".png";
-                File.Copy(
-                    File.Exists(Platform.SafeName)
-                        ? Path.Join(GeneralFuncs.WwwRoot(), platformImgPath)
+                var platformImgPath = "\\img\\platform\\" + Platform.SafeName + ".png";
+                var currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), platformImgPath);
+                File.Copy(File.Exists(currentPlatformImgPath)
+                        ? Path.Join(currentPlatformImgPath)
                         : Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png"), profileImg, true);
             }
 
@@ -291,10 +304,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             return true;
         }
 
-        public static string GetUniqueId(string accName, bool fromSaved = false)
+        public static string GetUniqueId()
         {
-            var fileToRead = fromSaved ? Path.Join(Platform.AccountLoginCachePath(accName), Platform.UniqueIdFile) : Platform.GetUniqueFilePath();
-
+            var fileToRead = Platform.GetUniqueFilePath();
             var uniqueId = "";
 
             if (Platform.UniqueIdMethod is "REGKEY")
@@ -348,13 +360,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             return true;
         }
-        public static void ChangeUsername(string oldName, string newName, bool reload = true)
+        public static void ChangeUsername(string accId, string newName, bool reload = true)
         {
-            var allIds = GeneralFuncs.ReadAllIds_Generic(Platform.SafeName);
+            LoadAccountIds();
+            var oldName = GetNameFromId(accId);
+
             try
             {
-                allIds[allIds.Single(x => x.Value == oldName).Key] = newName;
-                File.WriteAllText(Platform.IdsJsonPath, JsonConvert.SerializeObject(allIds));
+                AccountIds[accId] = newName;
+                SaveAccountIds();
             }
             catch (Exception)
             {
@@ -362,21 +376,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 return;
             }
 
-            File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{Platform.SafeName}\\{Uri.EscapeDataString(oldName)}.jpg"),
-                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{Platform.SafeName}\\{Uri.EscapeDataString(newName)}.jpg")); // Rename image
+            // No need to rename image as accId. That step is skipped here.
             Directory.Move($"LoginCache\\{Platform.SafeName}\\{oldName}\\", $"LoginCache\\{Platform.SafeName}\\{newName}\\"); // Rename login cache folder
 
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Basic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ChangedUsername"]), true);
         }
 
-        private static Dictionary<string, string> ReadAllIds()
+        public static Dictionary<string, string> ReadAllIds(string path = null)
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.ReadAllIds]");
             var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
-            if (!File.Exists(Platform.IdsJsonPath)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+            path ??= Platform.IdsJsonPath;
+            if (!File.Exists(path)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
             try
             {
-                s = Globals.ReadAllText(Platform.IdsJsonPath);
+                s = Globals.ReadAllText(path);
             }
             catch (Exception)
             {

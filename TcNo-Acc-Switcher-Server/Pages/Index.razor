@@ -67,6 +67,15 @@
                 <use href="img/icons/ico_settings.svg#icoSettings"></use>
             </svg>
         </button>*@
+        @if (BasicPlatforms.Instance.PlatformsDict.Count > 0)
+        {
+            <button id="btnPlatforms" onclick="location = 'Platforms'">
+                <svg viewBox="0 0 448 512" draggable="false" alt="+" class="footerIcoInline">
+                    <use href="img/fontawesome/plus.svg#img"></use>
+                </svg>
+                @Lang["Button_ManagePlatforms"]
+            </button>
+        }
         <button id="btnSettings" onclick="location = 'Settings'">
             <svg viewBox="0 0 60 60" draggable="false" alt="Settings" class="footerIcoSettings">
                 <use href="img/icons/ico_settings.svg#icoSettings"></use>

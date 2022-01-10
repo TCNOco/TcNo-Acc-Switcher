@@ -50,7 +50,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             // Remove cached files
             GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Origin\\{accName}"), false);
             // Remove image
-            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Uri.EscapeDataString(accName)}.jpg");
+            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Globals.GetCleanFilePath(accName)}.jpg");
             if (File.Exists(img)) File.Delete(img);
             // Remove from Tray
             Globals.RemoveTrayUser("Origin", accName); // Add to Tray list
@@ -233,7 +233,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             }
 
             _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\origin\\"));
-            var destImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Uri.EscapeDataString(accName)}.jpg");
+            var destImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Globals.GetCleanFilePath(accName)}.jpg");
             if (File.Exists(destImg))
             {
                 _ = GeneralFuncs.DeletedOutdatedFile(destImg, Origin.ImageExpiryTime);
@@ -271,8 +271,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             }
             File.WriteAllText("LoginCache\\Origin\\olc.json", JsonConvert.SerializeObject(allOlc));
 
-            File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Uri.EscapeDataString(oldName)}.jpg"),
-                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Uri.EscapeDataString(newName)}.jpg")); // Rename image
+            File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Globals.GetCleanFilePath(oldName)}.jpg"),
+                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Globals.GetCleanFilePath(newName)}.jpg")); // Rename image
             Directory.Move($"LoginCache\\Origin\\{oldName}\\", $"LoginCache\\Origin\\{newName}\\"); // Rename login cache folder
 
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Origin/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ChangedUsername"]), true);

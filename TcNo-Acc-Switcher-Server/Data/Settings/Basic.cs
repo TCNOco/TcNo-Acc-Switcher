@@ -39,6 +39,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             {
                 lock (LockObj)
                 {
+                    // This has no self-auto creation as it requires a platform name from the Platform list.
                     return _instance ??= new Basic();
                 }
             }

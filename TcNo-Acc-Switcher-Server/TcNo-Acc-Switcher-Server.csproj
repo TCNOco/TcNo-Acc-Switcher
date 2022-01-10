@@ -179,6 +179,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Pages\Platforms\" />
     <Folder Include="wwwroot\css\font\" />
   </ItemGroup>
   <ItemGroup>

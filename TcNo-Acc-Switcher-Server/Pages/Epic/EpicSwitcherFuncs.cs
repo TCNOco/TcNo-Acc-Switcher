@@ -148,7 +148,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 
             // Copy in profile image from default
             _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\epic"));
-            var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Uri.EscapeDataString(accName)}.jpg");
+            var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Globals.GetCleanFilePath(accName)}.jpg");
             if (!File.Exists(profileImg)) File.Copy(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\EpicDefault.png"), profileImg, true);
 
             AppData.ActiveNavMan?.NavigateTo("/Epic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_SavedItem", new { item = accName }]), true);
@@ -168,8 +168,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
                 return;
             }
 
-            File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Uri.EscapeDataString(oldName)}.jpg"),
-                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Uri.EscapeDataString(newName)}.jpg")); // Rename image
+            File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Globals.GetCleanFilePath(oldName)}.jpg"),
+                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Globals.GetCleanFilePath(newName)}.jpg")); // Rename image
             Directory.Move($"LoginCache\\Epic\\{oldName}\\", $"LoginCache\\Epic\\{newName}\\"); // Rename login cache folder
 
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Epic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ChangedUsername"]), true);

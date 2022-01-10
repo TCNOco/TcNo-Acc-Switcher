@@ -3,8 +3,8 @@
     "TcNo-Acc-Switcher-Client": {
       "commandName": "Project",
       "remoteDebugEnabled": false,
-      "remoteDebugMachine": "",
-      "authenticationMode": "Windows"
+      "authenticationMode": "Windows",
+      "remoteDebugMachine": ""
     }
   }
 }

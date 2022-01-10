@@ -21,17 +21,21 @@ Button_AdvancedCleaning: Advanced cleaning...
 Button_ClearLog: Clear log
 Button_WikiInfo: More Info (Wiki)
 Button_ClearDiscordCache: Clear Discord Cache
+Button_ManagePlatforms: Manage Extra Platforms
 Settings_Shortcut: ' {platform} Switcher Desktop shortcut'
 Settings_Admin: Run {platform} as Admin
 Settings_ImageExpiry: 'Days before profile images expire:'
 Settings_Header_AppWide: App-wide settings
 Settings_Header_GeneralSettings: General settings
+Settings_Header_ExtraPlatforms: Extra Platform Settings
 Settings_Header_GeneralTools: General Tools
 Settings_Header_OtherTools: Other Tools
 Settings_Header_HiddenPlatforms: Hidden Platforms
 Settings_Header_TraySettings: Tray settings
 Settings_Header_OpenGameFolders: Open game folders
 Settings_TrayMax: 'Max number of accounts to remember:'
+Settings_ExtraPlatformsDisabled: These available extra platforms are currently disabled. Click to enable them.
+Settings_ExtraPlatformsEnabled: These extra platforms are visible. Click to disable them.
 Settings_RTL: Show text as Right-to-Left
 Settings_CurrentLocation: 'Current install location: {path}'
 Settings_PickFolder: Pick {platform} folder

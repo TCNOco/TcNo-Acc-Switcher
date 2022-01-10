@@ -198,8 +198,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
 
         public static void ChangeUsername(string oldName, string newName, bool reload = true)
         {
-            File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{Uri.EscapeDataString(oldName).Replace("#", "-")}.jpg"),
-                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{Uri.EscapeDataString(newName).Replace("#", "-")}.jpg")); // Rename image
+            File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{Globals.GetCleanFilePath(oldName).Replace("#", "-")}.jpg"),
+                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{Globals.GetCleanFilePath(newName).Replace("#", "-")}.jpg")); // Rename image
             Directory.Move($"LoginCache\\Riot\\{oldName}\\", $"LoginCache\\Riot\\{newName}\\"); // Rename login cache folder
 
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Riot/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ChangedUsername"]), true);

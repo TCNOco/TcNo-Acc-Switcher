@@ -108,6 +108,14 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("Background", Order = 12)]
         public string Background { get => _instance._background; set => _instance._background = value; }
 
+        private HashSet<string> _enabledBasicPlatforms = new();
+        [JsonProperty("EnabledBasicPlatforms", Order = 13)]
+        public HashSet<string> EnabledBasicPlatforms
+        {
+            get => _instance._enabledBasicPlatforms;
+            set => _instance._enabledBasicPlatforms = value;
+        }
+
         private bool _desktopShortcut;
         [Newtonsoft.Json.JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
         private bool _startMenu;
@@ -138,7 +146,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static async Task HidePlatform(string platform)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.HidePlatform]");
-            _ = _instance.DisabledPlatforms.Add(platform);
+            if (BasicPlatforms.Instance.PlatformExistsFromShort(platform))
+            {
+                AppSettings.Instance.EnabledBasicPlatforms.Remove(platform);
+            }
+            else
+                _ = _instance.DisabledPlatforms.Add(platform);
             _instance.SaveSettings();
             await AppData.ReloadPage();
         }
@@ -146,7 +159,13 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static async Task ShowPlatform(string platform)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.ShowPlatform]");
-            _ = _instance.DisabledPlatforms.Remove(platform);
+            if (BasicPlatforms.Instance.PlatformExistsFromShort(platform))
+            {
+                if (!AppSettings.Instance.EnabledBasicPlatforms.Contains(platform))
+                    AppSettings.Instance.EnabledBasicPlatforms.Add(platform);
+            }
+            else
+                _ = _instance.DisabledPlatforms.Remove(platform);
             _instance.SaveSettings();
             await AppData.ReloadPage();
         }

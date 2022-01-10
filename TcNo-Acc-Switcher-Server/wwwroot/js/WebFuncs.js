@@ -216,13 +216,18 @@ function openUserdata(e) {
 
 // Create shortcut for selected icon
 function createShortcut(args = '') {
-    var selected = $(".acc:checked");
+    const selected = $(".acc:checked");
     if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
         return;
     }
-    var accId = selected.attr("id");
+    const accId = selected.attr("id");
 
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CreateShortcut", getCurrentPage(), accId, selected.attr("Username"), args);
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server",
+        "CreateShortcut",
+        getCurrentPage(),
+        accId,
+        selected.attr("Username"),
+        args);
 }
 
 function refreshUsername() {
@@ -517,8 +522,8 @@ async function showModal(modaltype) {
 				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>`;
         }
         Modal_RequestedLocated(false);
-
         // Sub in info if this is a basic page
+        var redirectLink = platform;
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform).then((r) => {
             platform = r;
         });
@@ -538,7 +543,7 @@ async function showModal(modaltype) {
 	        <div class="settingsCol inputAndButton">
 				${extraButtons}
 		        <button class="modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('${
-            platform}')"><span>${modalAddCurrentAccount}</span></button>
+            redirectLink}')"><span>${modalAddCurrentAccount}</span></button>
 	        </div>`);
         input = document.getElementById("CurrentAccountName");
     } else if (modaltype === "SetBackground") {

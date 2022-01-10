@@ -22,6 +22,7 @@ using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Data
@@ -79,12 +80,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             get
             {
-                if (_instance._platformList != null) return _instance._platformList;
-
                 _instance._platformList = new List<string> { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot", "Discord" };
-                // Add basic platforms:
+
+                // Add enabled basic platforms:
                 _instance._platformList =
-                    _instance._platformList.Union(BasicPlatforms.Instance.GetAllPrimaryIds()).ToList();
+                    _instance._platformList.Union(AppSettings.Instance.EnabledBasicPlatforms).ToList();
                 return _instance._platformList;
             }
             set => _instance._platformList = value;

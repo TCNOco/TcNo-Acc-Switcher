@@ -268,7 +268,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 
             // Handle profile image:
             _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\profiles\\discord"));
-            var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(accName).Replace("#", "-")}.jpg");
+            var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Globals.GetCleanFilePath(accName).Replace("#", "-")}.jpg");
 
             // Check to see if profile image download required:
             if (!string.IsNullOrEmpty(imgUrl))
@@ -339,7 +339,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             // Check to see if profile image download required:
             if (!string.IsNullOrEmpty(imgUrl))
             {
-                var path = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(newName).Replace("#", "-")}.jpg");
+                var path = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Globals.GetCleanFilePath(newName).Replace("#", "-")}.jpg");
                 // Download new image
                 try
                 {
@@ -349,15 +349,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
                 catch (WebException)
                 {
                     // Move existing image
-                    File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(oldName).Replace("#", "-")}.jpg"),
-                        Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(newName).Replace("#", "-")}.jpg")); // Rename image
+                    File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Globals.GetCleanFilePath(oldName).Replace("#", "-")}.jpg"),
+                        Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Globals.GetCleanFilePath(newName).Replace("#", "-")}.jpg")); // Rename image
                 }
             }
             else
             {
                 // Move existing image
-                File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(oldName).Replace("#", "-")}.jpg"),
-                    Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(newName).Replace("#", "-")}.jpg")); // Rename image
+                File.Move(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Globals.GetCleanFilePath(oldName).Replace("#", "-")}.jpg"),
+                    Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Globals.GetCleanFilePath(newName).Replace("#", "-")}.jpg")); // Rename image
             }
 
             if ($"LoginCache\\Discord\\{oldName}\\" != $"LoginCache\\Discord\\{newName}\\")

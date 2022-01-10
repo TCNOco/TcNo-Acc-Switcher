@@ -1,0 +1,85 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@page "/Platforms/"
+@using TcNo_Acc_Switcher_Server.Data
+@namespace TcNo_Acc_Switcher_Server.Pages.Platforms
+@inject NavigationManager _navManager
+@{ AppData.SetActiveNavMan(_navManager); }
+@inject Data.AppSettings _appSett
+@inject IJSRuntime _jsRuntime
+@{ AppData.SetActiveIJsRuntime(_jsRuntime); }
+@inject Data.Settings.Basic _basic
+
+@inject Lang  _locale
+
+<div class="container mainblock">
+    <div class="row">
+        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
+            <toastarea class="toastarea" />
+            <div class="SettingsHeader">
+                <hr><span>@_locale["Settings_Header_ExtraPlatforms"]</span>
+                <hr>
+            </div>
+
+            @if (BasicPlatforms.Instance.PlatformsDict.Count != AppSettings.Instance.EnabledBasicPlatforms.Count)
+            {
+                <div class="SettingsHeader">
+                    <p>@_locale["Settings_ExtraPlatformsDisabled"]</p>
+                </div>
+
+                <div class="rowSetting">
+                    @foreach (var platform in BasicPlatforms.Instance.InactivePlatforms())
+                    {
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="@platform.Key" @onclick="() => AppSettings.ShowPlatform(platform.Key)"><label class="form-check-label" for="@platform.Key"></label></div><label for="@platform.Key">@platform.Value<br></label>
+                    }
+                </div>
+            }
+
+            @if (AppSettings.Instance.EnabledBasicPlatforms.Count > 0){
+                <div class="SettingsHeader">
+                    <p>@_locale["Settings_ExtraPlatformsEnabled"]</p>
+                </div>
+
+                <div class="rowSetting">
+                    @foreach (var platform in AppSettings.Instance.EnabledBasicPlatforms)
+                    {
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="@platform" checked @onclick="() => AppSettings.HidePlatform(platform)"><label class="form-check-label" for="@platform"></label></div><label for="@platform">@BasicPlatforms.Instance.PlatformFullName(platform)<br></label>
+                    }
+                </div>
+            }
+
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
+        </div>
+    </div>
+</div>
+<div id="blazor-error-ui">
+    <environment include="Staging,Production">
+        An error has occurred. This application may no longer respond until reloaded.
+    </environment>
+    <environment include="Development">
+        An unhandled exception has occurred. See browser dev tools for details.
+    </environment>
+    <a href="">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code
+{
+    public void SaveAndClose()
+    {
+        _appSett.SaveSettings();
+        _navManager.NavigateTo("/");
+    }
+}

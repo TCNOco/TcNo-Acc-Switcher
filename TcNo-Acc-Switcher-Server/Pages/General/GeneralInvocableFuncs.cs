@@ -151,7 +151,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 if (action.StartsWith("AcceptForgetBasicAcc:"))
                 {
                     Basic.SetForgetAcc(true);
-                    _ = GeneralFuncs.ForgetAccount_Generic(accName, CurrentPlatform.Instance.SafeName);
+                    _ = GeneralFuncs.ForgetAccount_Generic(accName, CurrentPlatform.Instance.SafeName, true);
                     return Task.FromResult("refresh");
                 }
 
@@ -272,9 +272,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "BattleNet":
                     BattleNetSwitcherFuncs.ChangeBTag(id, reqName);
                     break;
-                case "Basic":
-                    BasicSwitcherFuncs.ChangeUsername(id, reqName);
-                    break;
                 case "Discord":
                     DiscordSwitcherFuncs.ChangeUsername(id, reqName);
                     break;
@@ -289,6 +286,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     break;
                 case "Ubisoft":
                     UbisoftSwitcherFuncs.SetUsername(id, reqName, true);
+                    break;
+
+                default:
+                    // Is a basic platform!
+                    BasicSwitcherFuncs.ChangeUsername(id, reqName, true);
                     break;
             }
         }
@@ -307,10 +309,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
             var platform = page;
+
             page = page.ToLowerInvariant();
             if (args.Length > 0 && args[0] != ':') args = $" {args}"; // Add a space before arguments if doesn't start with ':'
             var platformName = $"Switch to {accName} [{platform}]";
             var originalAccId = accId;
+            var primaryPlatformId = "" + page[0];
+            var bgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{page}.png");
             switch (page)
             {
                 case "steam":
@@ -327,6 +332,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "discord":
                     accId = accId.Replace("#", "-");
                     break;
+                case "basic":
+                    page = CurrentPlatform.Instance.SafeName;
+                    primaryPlatformId = CurrentPlatform.Instance.PrimaryId;
+                    platform = CurrentPlatform.Instance.FullName;
+                    platformName = $"Switch to {accName} [{platform}]";
+
+                    var platformImgPath = "\\img\\platform\\" + CurrentPlatform.Instance.SafeName + ".png";
+                    var currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), platformImgPath);
+                    bgImg = File.Exists(currentPlatformImgPath)
+                        ? Path.Join(currentPlatformImgPath)
+                        : Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png");
+                    break;
             }
 
             var fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{page}\\{accId}.jpg");
@@ -341,13 +358,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             _ = s.Shortcut_Platform(
                 Shortcut.Desktop,
                 platformName,
-                $"+{page[0]}:{originalAccId}{args}",
+                $"+{primaryPlatformId}:{originalAccId}{args}",
                 $"Switch to {accName} [{platform}] in TcNo Account Switcher",
                 true);
-            s.CreateCombinedIcon(
-                Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{page}.png"),
-                fgImg,
-                $"{accId}.ico");
+            s.CreateCombinedIcon(bgImg, fgImg, $"{accId}.ico");
             s.TryWrite();
 
             _ = AppSettings.Instance.StreamerModeTriggered
