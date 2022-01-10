@@ -38,7 +38,7 @@
                 <div class="rowSetting">
                     @foreach (var item in _appSett.DisabledPlatforms)
                     {
-                        <div class="form-check"><input class="form-check-input" type="checkbox" id="@item" checked @onclick="() => ShowPlatform(item)"><label class="form-check-label" for="@item"></label></div><label for="@item">@item<br></label>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="@item" checked @onclick="() => ShowPlatform(item)"><label class="form-check-label" for="@item"></label></div><label for="@item">@BasicPlatforms.Instance.PlatformFullName(item)<br></label>
                     }
                 </div>
             }

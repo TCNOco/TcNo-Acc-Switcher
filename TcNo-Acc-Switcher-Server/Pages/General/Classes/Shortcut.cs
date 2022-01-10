@@ -219,7 +219,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         {
             Globals.DebugWriteLine(@$"[Func:Data\Settings\Shared.DesktopShortcut_Toggle] platform={platform}");
             var s = new Shortcut();
-            _ = s.Shortcut_Platform(Desktop, platform, platform.ToLowerInvariant());
+            if (BasicPlatforms.Instance.PlatformExists(platform))
+            {
+                _ = s.Shortcut_Platform(Desktop, platform, BasicPlatforms.Instance.PrimaryIdFromPlatform(platform).ToLowerInvariant());
+            }
+            else
+                _ = s.Shortcut_Platform(Desktop, platform, platform.ToLowerInvariant());
             s.ToggleShortcut(!desktopShortcut);
         }
         #endregion

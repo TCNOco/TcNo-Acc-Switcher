@@ -403,6 +403,14 @@ async function showModal(modaltype) {
         var platformExe = modaltype.split(":")[2];
         var platformSettingsPath = modaltype.split(":")[3];
         Modal_RequestedLocated(false);
+        debugger;
+        // Sub in info if this is a basic page
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform).then((r) => {
+            platform = r;
+        });
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatformExe", platform).then((r) => {
+            platformExe = platform === r ? platformExe : r;
+        });
 
         const modalEnterDirectory = await GetLangSub("Modal_EnterDirectory", { platform: platform }),
             modalLocatePlatform = await GetLangSub("Modal_LocatePlatform", { platformExe: platformExe }),
@@ -416,14 +424,12 @@ async function showModal(modaltype) {
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="FolderLocation" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
-		        <button type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFolder=${
-            platformExe}';"><span>${modalLocatePlatform}</span></button>
+		        <button type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFolder=${platformExe}';"><span>${modalLocatePlatform}</span></button>
 	        </div>
 	        <div class="settingsCol inputAndButton">
 		        <div class="folder_indicator notfound"><div id="folder_indicator_text"></div></div>
 		        <div class="folder_indicator_bg notfound"><span>${platformExe}</span></div>
-		        <button class="modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${
-            platformSettingsPath}')"><span>${modalLocatePlatformFolder}</span></button>
+		        <button class="modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${platformSettingsPath}')"><span>${modalLocatePlatformFolder}</span></button>
 	        </div>`);
         input = document.getElementById("FolderLocation");
     } else if (modaltype.startsWith("confirm:")) {

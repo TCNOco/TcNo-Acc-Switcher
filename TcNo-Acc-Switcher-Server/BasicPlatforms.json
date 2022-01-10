@@ -4,15 +4,20 @@
       "Identifiers": [ "eft", "bsg" ],
       "ExeLocationDefault": "C:\\Battlestate Games\\BsgLaunche123r\\BsgLauncher.exe",
       "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
-      "PathListToClear": [ "%AppData%\\Battlestate Games\\BsgLauncher\\settings" ],
+      "PathListToClear": [
+        "%AppData%\\Battlestate Games\\BsgLauncher\\settings"
+
+      ],
       "LoginFiles": {
         "%AppData%\\Battlestate Games\\BsgLauncher\\settings": "settings"
       },
       "UniqueIdFile": "settings",
       "UniqueIdRegex": "EMAIL_REGEX"
-    },
+    }
+  },
+  "Platform-WIP": {
     "Epic Games": {
-      "Identifiers": [],
+      "Identifiers": [ "epg" ],
       "ExeLocationDefault": "",
       "ExesToEnd": [ "" ],
       "PathListToClear": [
@@ -25,9 +30,7 @@
       },
       "UniqueIdFile": "HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId",
       "UniqueIdMethod": "REGKEY"
-    }
-  },
-  "Platform-WIP": {
+    },
     "Origin": {
       "Identifiers": [ "sdfgsdfgsdfg" ],
       "ExeLocationDefault": "C:\\Program Files (x86)\\Origin\\Origin.exe",

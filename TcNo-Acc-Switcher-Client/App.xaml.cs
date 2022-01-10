@@ -122,12 +122,12 @@ namespace TcNo_Acc_Switcher_Client
                 foreach (var eArg in e.Args)
                 {
                     // Check if arguments are a platform
-                    foreach (var platform in AppData.Instance.PlatformList)
-                    {
-                        // Is a platform -- In other words: Show that platform.
-                        if (string.Equals(platform, eArg, StringComparison.InvariantCultureIgnoreCase))
-                            StartPage = platform;
-                    }
+                    if (AppData.Instance.PlatformList.Contains(eArg, StringComparer.OrdinalIgnoreCase))
+                        StartPage = eArg;
+
+                    // Check if platform short is BasicPlatform
+                    if (BasicPlatforms.Instance.PlatformExistsFromShort(StartPage))
+                        StartPage = "Basic?plat=" + StartPage;
 
                     // Check if it was verbose mode.
                     Globals.VerboseMode = Globals.VerboseMode || eArg is "v" or "vv" or "verbose";
@@ -571,6 +571,16 @@ namespace TcNo_Acc_Switcher_Client
                             command.Length > 2 ? int.Parse(command[2]) : -1, string.Join(' ', remainingArguments));
                         break;
                     }
+                // BASIC ACCOUNT PLATFORM
+                default:
+                    if (!BasicPlatforms.Instance.PlatformExistsFromShort(platform)) break;
+                    // Is a basic platform!
+                    BasicPlatforms.Instance.SetCurrentPlatformFromShort(platform);
+                    Globals.WriteToLog(CurrentPlatform.Instance.FullName + " switch requested");
+                    if (!GeneralFuncs.CanKillProcess(CurrentPlatform.Instance.ExesToEnd)) Restart(combinedArgs, true);
+                    Basic.Instance.LoadFromFile();
+                    TcNo_Acc_Switcher_Server.Pages.Basic.BasicSwitcherFuncs.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
+                    break;
             }
         }
 
@@ -666,9 +676,17 @@ namespace TcNo_Acc_Switcher_Client
                     Globals.WriteToLog("Ubisoft Connect logout requested");
                     TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherBase.NewLogin_Ubisoft();
                     break;
-            }
 
-            // TODO: Add IF, if not above: Check JSON file of basic platforms for unique identifiers.
+                // BASIC ACCOUNT PLATFORM
+                default:
+                    if (!BasicPlatforms.Instance.PlatformExistsFromShort(platform)) break;
+                    // Is a basic platform!
+                    BasicPlatforms.Instance.SetCurrentPlatformFromShort(platform);
+                    Globals.WriteToLog(CurrentPlatform.Instance.FullName + " logout requested");
+                    Basic.Instance.LoadFromFile();
+                    TcNo_Acc_Switcher_Server.Pages.Basic.BasicSwitcherBase.NewLogin_Basic();
+                    break;
+            }
         }
 
         /// <summary>

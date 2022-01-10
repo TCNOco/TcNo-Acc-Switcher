@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -110,7 +111,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.FolderPath = Platform.DefaultFolderPath;
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
-            _instance._desktopShortcut = Shortcut.CheckShortcuts("Basic");
+            _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.Instance.FullName);
             _instance._altClose = false;
 
             SaveSettings();
@@ -123,7 +124,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.FolderPath = curSettings.FolderPath;
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
-            _instance._desktopShortcut = Shortcut.CheckShortcuts("Basic");
+            _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.Instance.FullName);
             _instance._altClose = curSettings.AltClose;
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(Platform.SettingsFile, GetJObject()));

@@ -148,6 +148,7 @@ Toast_ClearedImages: "Cleared images"
 Toast_SavedItem: "Saved: {item}"
 Toast_ChangedUsername: Changed Username
 Toast_SetUsername: Set Username
+Toast_AlreadyLoggedIn: Already logged in with this account! (No changes performed)
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]

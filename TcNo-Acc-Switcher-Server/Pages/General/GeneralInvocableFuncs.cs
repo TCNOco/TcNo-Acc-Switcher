@@ -513,5 +513,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static string GiCrowdinList() => new System.Net.Http.HttpClient().GetStringAsync(
                 "https://tcno.co/Projects/AccSwitcher/api/crowdin/").Result;
+
+        [JSInvokable]
+        public static string GiCurrentBasicPlatform(string platform)
+        {
+            if (platform == "Basic")
+                return CurrentPlatform.Instance.FullName;
+            return BasicPlatforms.Instance.PlatformExists(platform)
+                ? BasicPlatforms.Instance.PlatformFullName(platform)
+                : platform;
+        }
+
+        [JSInvokable]
+        public static string GiCurrentBasicPlatformExe(string platform)
+        {
+            // EXE name from current platform by name:
+            if (platform == "Basic")
+                return CurrentPlatform.Instance.ExeName;
+            return BasicPlatforms.Instance.PlatformExists(platform)
+                ? BasicPlatforms.Instance.GetExeNameFromPlatform(platform)
+                : platform;
+        }
     }
 }

@@ -72,9 +72,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     uniqueId = GetUniqueId(accName);
 
                 // UniqueId Found >> Save!
-                if (!string.IsNullOrEmpty(uniqueId))
+                if (File.Exists(Platform.IdsJsonPath))
                 {
-                    BasicAddCurrent(ReadAllIds()[uniqueId]);
+                    var allIds = ReadAllIds();
+                    if (!string.IsNullOrEmpty(uniqueId) && allIds.ContainsKey(uniqueId))
+                    {
+                        if (accName == allIds[uniqueId])
+                        {
+                            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_AlreadyLoggedIn"], renderTo: "toastarea");
+                            GeneralFuncs.StartProgram(Basic.Exe(), Basic.Admin, args);
+                            return;
+                        }
+                        BasicAddCurrent(allIds[uniqueId]);
+                    }
                 }
             }
 
@@ -100,14 +110,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.ClearCurrentLoginBasic]");
 
-            foreach (var jToken in Platform.LoginFiles)
+            foreach (var accFile in Platform.PathListToClear)
             {
-                var item = (JProperty)jToken;
-
                 // The "file" is a registry key
-                if (item.Name.StartsWith("REG:"))
+                if (accFile.StartsWith("REG:"))
                 {
-                    if (!Globals.SetRegistryKey(item.Name[3..])) // Remove "REG:" and read data
+                    if (!Globals.SetRegistryKey(accFile[3..])) // Remove "REG:" and read data
                     {
                         _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
                         return false;
@@ -116,7 +124,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 }
 
 
-                var path = Environment.ExpandEnvironmentVariables(item.Name);
+                var path = Environment.ExpandEnvironmentVariables(accFile);
                 if (!(File.Exists(path) || Directory.Exists(path))) continue;
                 if (File.GetAttributes(Environment.ExpandEnvironmentVariables(path)).HasFlag(FileAttributes.Directory))
                 {
@@ -136,7 +144,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.BasicCopyInAccount]");
 
-            var localCachePath = $"LoginCache\\{Platform.SafeName}\\{accName}\\";
+            var localCachePath = Platform.AccountLoginCachePath(accName); ;
             _ = Directory.CreateDirectory(localCachePath);
 
             if (Platform.LoginFiles == null) throw new Exception("No data in basic platform: " + Platform.FullName);
@@ -148,26 +156,24 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
                 if (!string.IsNullOrEmpty(uniqueId) && !Globals.SetRegistryKey(Platform.UniqueIdFile, uniqueId)) // Remove "REG:" and read data
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_AlreadyLoggedIn"], Lang["Error"], "toastarea");
                     return false;
                 }
             }
 
-            foreach (var jToken in Platform.LoginFiles)
+            foreach (var (accFile, savedFile) in Platform.LoginFiles)
             {
-                var item = (JProperty)jToken;
-
                 // The "file" is a registry key
-                if (item.Name.StartsWith("REG:"))
+                if (accFile.StartsWith("REG:"))
                 {
-                    var regFile = Path.Join(localCachePath, (string) Platform.LoginFiles[item.Name]);
+                    var regFile = Path.Join(localCachePath, (string) Platform.LoginFiles[accFile]);
                     if (!File.Exists(regFile))
                     {
                         _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegSaveMissing"], Lang["Error"], "toastarea");
                         return false;
                     }
 
-                    if (!Globals.SetRegistryKey(item.Name[3..], File.ReadAllText(regFile))) // Remove "REG:" and read data
+                    if (!Globals.SetRegistryKey(accFile[3..], File.ReadAllText(regFile))) // Remove "REG:" and read data
                     {
                         _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
                         return false;
@@ -176,10 +182,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 }
 
 
-                var saved = Path.Join(localCachePath, (string)item.Value);
+                var saved = Path.Join(localCachePath, savedFile);
 
                 if (File.Exists(saved))
-                    File.Copy(saved, Environment.ExpandEnvironmentVariables(item.Name), true);
+                    File.Copy(saved, Environment.ExpandEnvironmentVariables(accFile), true);
             }
 
             // TODO: Handle registry
@@ -187,9 +193,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             return true;
         }
 
-        public static string GetUniqueId(string accName)
+        public static string GetUniqueId(string accName, bool fromSaved = false)
         {
-            var localCachePath = $"LoginCache\\{Platform.SafeName}\\{accName}\\";
+            var fileToRead = fromSaved ? Path.Join(Platform.AccountLoginCachePath(accName), Platform.UniqueIdFile) : Platform.GetUniqueFilePath(); ; ;
             var uniqueId = "";
 
             if (Platform.UniqueIdMethod is "REGKEY")
@@ -198,27 +204,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 return uniqueId;
             }
 
-            if (Platform.UniqueIdFile is not "")
+            if (Platform.UniqueIdFile is not "" && File.Exists(fileToRead))
             {
-                var uniqueIdFullPath = Path.Join(localCachePath, Platform.UniqueIdFile);
                 if (Platform.UniqueIdRegex != null)
                 {
                     var m = Regex.Match(
-                        File.ReadAllText(uniqueIdFullPath),
+                        File.ReadAllText(fileToRead),
                         Platform.UniqueIdRegex, RegexOptions.IgnoreCase);
                     if (m.Success)
                         uniqueId = m.Value;
                 }
                 else if (Platform.UniqueIdMethod is "FILE_MD5") // TODO: TEST THIS! -- This is used for static files that do not change throughout the lifetime of an account login.
                 {
-                    if (!Platform.UniqueIdFile.Contains('*')) uniqueId = GeneralFuncs.GetFileMd5(uniqueIdFullPath);
+                    if (!Platform.UniqueIdFile.Contains('*')) uniqueId = GeneralFuncs.GetFileMd5(fileToRead);
                     else
-                        uniqueId = string.Join('|', (from f in new DirectoryInfo(localCachePath).GetFiles()
+                        uniqueId = string.Join('|', (from f in new DirectoryInfo(fileToRead).GetFiles()
                             where f.Name.EndsWith(Platform.UniqueIdFile.Split('*')[1])
                             select GeneralFuncs.GetFileMd5(f.FullName)).ToList());
                 }
             }
-            else
+            else if (uniqueId != "")
                 uniqueId = Globals.GetSha256HashString(uniqueId);
 
             return uniqueId;
@@ -228,7 +233,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         public static bool BasicAddCurrent(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.BasicAddCurrent]");
-            var localCachePath = $"LoginCache\\{Platform.SafeName}\\{accName}\\";
+            var localCachePath = Platform.AccountLoginCachePath(accName);
             _ = Directory.CreateDirectory(localCachePath);
 
             if (Platform.LoginFiles == null) throw new Exception("No data in basic platform: " + Platform.FullName);
@@ -242,26 +247,23 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             else
                 uniqueId = GetUniqueId(accName);
 
-            foreach (var jToken in Platform.LoginFiles)
-            {
-                var item = (JProperty) jToken;
-
-                // The "file" is a registry key
-                if (item.Name.StartsWith("REG:"))
+            foreach (var (accFile, savedFile) in Platform.LoginFiles)
+            { // The "file" is a registry key
+                if (accFile.StartsWith("REG:"))
                 {
-                    var trimmedName = item.Name[3..];
+                    var trimmedName = accFile[3..];
 
                     if (ReadRegistryKeyWithErrors(trimmedName, out var response)) // Remove "REG:" and read data
                     {
                         // Write registry value to provided file
-                        File.WriteAllText(Path.Join(localCachePath, (string)Platform.LoginFiles[item.Name]), response);
+                        File.WriteAllText(Path.Join(localCachePath, (string)Platform.LoginFiles[accFile]), response);
                         continue;
                     }
                 }
 
-                if (!(Directory.Exists(item.Name) || File.Exists(item.Name)))
+                if (!(Directory.Exists(accFile) || File.Exists(accFile)))
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = item.Name }], Lang["DirectoryNotFound"], "toastarea");
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = accFile }], Lang["DirectoryNotFound"], "toastarea");
                     return false;
                 }
 
@@ -269,13 +271,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 // Add for the start, and end of this function -- To allow 'plugins'?
                 // Use reflection?
 
-                if (File.Exists(Environment.ExpandEnvironmentVariables(item.Name)))
-                    File.Copy(Environment.ExpandEnvironmentVariables(item.Name), Path.Join(localCachePath, (string)item.Value), true);
+                if (File.Exists(Environment.ExpandEnvironmentVariables(accFile)))
+                    File.Copy(Environment.ExpandEnvironmentVariables(accFile), Path.Join(localCachePath, savedFile), true);
             }
 
-            var allIds = GeneralFuncs.ReadAllIds_Generic(Platform.SafeName);
+            var allIds = GeneralFuncs.ReadAllIds_Generic(Platform.IdsJsonPath);
             allIds[uniqueId] = accName;
-            File.WriteAllText($"LoginCache\\{Platform.SafeName}\\ids.json", JsonConvert.SerializeObject(allIds));
+            File.WriteAllText(Platform.IdsJsonPath, JsonConvert.SerializeObject(allIds));
 
             // Copy in profile image from default
             // TODO: Replace all Uri.EscapeDataString for images with Globals.GetCleanFilePath?
@@ -315,7 +317,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             try
             {
                 allIds[allIds.Single(x => x.Value == oldName).Key] = newName;
-                File.WriteAllText($"LoginCache\\{Platform.SafeName}\\ids.json", JsonConvert.SerializeObject(allIds));
+                File.WriteAllText(Platform.IdsJsonPath, JsonConvert.SerializeObject(allIds));
             }
             catch (Exception)
             {
@@ -333,12 +335,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         private static Dictionary<string, string> ReadAllIds()
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.ReadAllIds]");
-            var localAllIds = $"LoginCache\\{Platform.SafeName}\\ids.json";
             var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
-            if (!File.Exists(localAllIds)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+            if (!File.Exists(Platform.IdsJsonPath)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
             try
             {
-                s = Globals.ReadAllText(localAllIds);
+                s = Globals.ReadAllText(Platform.IdsJsonPath);
             }
             catch (Exception)
             {

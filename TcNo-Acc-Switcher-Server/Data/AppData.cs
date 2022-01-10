@@ -82,12 +82,9 @@ namespace TcNo_Acc_Switcher_Server.Data
                 if (_instance._platformList != null) return _instance._platformList;
 
                 _instance._platformList = new List<string> { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot", "Discord" };
-                foreach (var jToken in BasicPlatforms.Instance.GetPlatforms)
-                {
-                    var x = (JProperty) jToken;
-                    var platformFirstId = BasicPlatforms.Instance.GetPlatforms[x.Name]["Identifiers"][0].ToString();
-                    _instance._platformList.Add(platformFirstId);
-                }
+                // Add basic platforms:
+                _instance._platformList =
+                    _instance._platformList.Union(BasicPlatforms.Instance.GetAllPrimaryIds()).ToList();
                 return _instance._platformList;
             }
             set => _instance._platformList = value;
