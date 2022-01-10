@@ -457,7 +457,7 @@ namespace TcNo_Acc_Switcher_Client
             var remainingArguments = args[1..];
             var combinedArgs = string.Join(' ', args);
 
-            switch (platform[^1..])
+            switch (platform)
             {
                 // Battle.Net
                 case "b":

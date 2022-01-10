@@ -41,7 +41,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
                 }
             }
 
-            _ = GenericFunctions.GenericLoadAccounts("Riot");
+            _ = GenericFunctions.GenericLoadAccounts("Riot", true);
         }
 
         // Delayed toasts, as notifications are created in the LoadImportantData() section, and can be before the main process has rendered items.

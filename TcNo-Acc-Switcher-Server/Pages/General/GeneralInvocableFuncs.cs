@@ -144,7 +144,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 if (action.StartsWith("AcceptForgetDiscordAcc:"))
                 {
                     Discord.SetForgetAcc(true);
-                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Discord");
+                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Discord", true);
                     return Task.FromResult("refresh");
                 }
 
@@ -158,7 +158,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 if (action.StartsWith("AcceptForgetEpicAcc:"))
                 {
                     Epic.SetForgetAcc(true);
-                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Epic");
+                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Epic", true);
                     return Task.FromResult("refresh");
                 }
 
@@ -172,7 +172,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 if (action.StartsWith("AcceptForgetOriginAcc:"))
                 {
                     Origin.SetForgetAcc(true);
-                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Origin");
+                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Origin", true);
                     return Task.FromResult("refresh");
                 }
 
@@ -193,7 +193,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 if (action.StartsWith("AcceptForgetRiotAcc:"))
                 {
                     Riot.SetForgetAcc(true);
-                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Riot");
+                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Riot", true);
                     return Task.FromResult("refresh");
                 }
             }

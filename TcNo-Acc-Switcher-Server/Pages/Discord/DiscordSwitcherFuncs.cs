@@ -41,7 +41,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             // Normal:
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.LoadProfiles] Loading Discord profiles");
             Data.Settings.Discord.Instance.LoadFromFile();
-            _ = GenericFunctions.GenericLoadAccounts("Discord");
+            _ = GenericFunctions.GenericLoadAccounts("Discord", true);
         }
 
         /// <summary>

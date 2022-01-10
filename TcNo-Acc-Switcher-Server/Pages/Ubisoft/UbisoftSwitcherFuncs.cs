@@ -54,7 +54,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 }
             }
 
-            GenericFunctions.InsertAccounts(allIds, "ubisoft");
+            GenericFunctions.InsertAccounts(allIds, "ubisoft", true);
         }
 
         public static void UbisoftAddCurrent(string accName = "", bool saveOnlyIfExists = false)
