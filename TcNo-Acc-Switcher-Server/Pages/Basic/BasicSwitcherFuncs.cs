@@ -123,7 +123,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     continue;
                 }
 
-
                 var path = Environment.ExpandEnvironmentVariables(accFile);
                 if (!(File.Exists(path) || Directory.Exists(path))) continue;
                 if (File.GetAttributes(Environment.ExpandEnvironmentVariables(path)).HasFlag(FileAttributes.Directory))
@@ -135,6 +134,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     File.Delete(path);
                 }
             }
+
+            if (Platform.UniqueIdMethod != "CREATE_ID_FILE") return true;
+
+            // Unique ID file --> This needs to be deleted for a new instance
+            var uniqueIdFile = Platform.GetUniqueFilePath();
+            if (File.Exists(uniqueIdFile)) File.Delete(uniqueIdFile);
 
             return true;
         }
@@ -181,6 +186,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     continue;
                 }
 
+                // Check if it's a folder
+                if (accFile.EndsWith('*'))
+                {
+                    var fld = accFile[..^1];
+                    var localFld = Path.Join(localCachePath, savedFile);
+                    Globals.CopyFilesRecursive(localFld, fld, true);
+                    continue;
+                }
 
                 var saved = Path.Join(localCachePath, savedFile);
 
@@ -188,45 +201,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     File.Copy(saved, Environment.ExpandEnvironmentVariables(accFile), true);
             }
 
-            // TODO: Handle registry
-
             return true;
-        }
-
-        public static string GetUniqueId(string accName, bool fromSaved = false)
-        {
-            var fileToRead = fromSaved ? Path.Join(Platform.AccountLoginCachePath(accName), Platform.UniqueIdFile) : Platform.GetUniqueFilePath(); ; ;
-            var uniqueId = "";
-
-            if (Platform.UniqueIdMethod is "REGKEY")
-            {
-                _ = ReadRegistryKeyWithErrors(Platform.UniqueIdFile, out uniqueId);
-                return uniqueId;
-            }
-
-            if (Platform.UniqueIdFile is not "" && File.Exists(fileToRead))
-            {
-                if (Platform.UniqueIdRegex != null)
-                {
-                    var m = Regex.Match(
-                        File.ReadAllText(fileToRead),
-                        Platform.UniqueIdRegex, RegexOptions.IgnoreCase);
-                    if (m.Success)
-                        uniqueId = m.Value;
-                }
-                else if (Platform.UniqueIdMethod is "FILE_MD5") // TODO: TEST THIS! -- This is used for static files that do not change throughout the lifetime of an account login.
-                {
-                    if (!Platform.UniqueIdFile.Contains('*')) uniqueId = GeneralFuncs.GetFileMd5(fileToRead);
-                    else
-                        uniqueId = string.Join('|', (from f in new DirectoryInfo(fileToRead).GetFiles()
-                            where f.Name.EndsWith(Platform.UniqueIdFile.Split('*')[1])
-                            select GeneralFuncs.GetFileMd5(f.FullName)).ToList());
-                }
-            }
-            else if (uniqueId != "")
-                uniqueId = Globals.GetSha256HashString(uniqueId);
-
-            return uniqueId;
         }
 
         [SupportedOSPlatform("windows")]
@@ -247,6 +222,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             else
                 uniqueId = GetUniqueId(accName);
 
+            if (uniqueId == "" && Platform.UniqueIdMethod == "CREATE_ID_FILE")
+            {
+                // Unique ID file, and does not already exist: Therefore create!
+                var uniqueIdFile = Platform.GetUniqueFilePath();
+                uniqueId = Globals.RandomString(16);
+                File.WriteAllText(uniqueIdFile, uniqueId);
+            }
+
             foreach (var (accFile, savedFile) in Platform.LoginFiles)
             { // The "file" is a registry key
                 if (accFile.StartsWith("REG:"))
@@ -260,6 +243,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         continue;
                     }
                 }
+
+                // Check if it's a folder
+                if (accFile.EndsWith('*'))
+                {
+                    var fld = accFile[..^1];
+                    var localFld = Path.Join(localCachePath, savedFile);
+                    if (!Directory.Exists(localFld))
+                        Directory.CreateDirectory(localFld);
+                    Globals.CopyFilesRecursive(fld, localFld, true);
+                    continue;
+                }
+
 
                 if (!(Directory.Exists(accFile) || File.Exists(accFile)))
                 {
@@ -294,6 +289,48 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             AppData.ActiveNavMan?.NavigateTo("/Basic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_SavedItem", new { item = accName }]), true);
             return true;
+        }
+
+        public static string GetUniqueId(string accName, bool fromSaved = false)
+        {
+            var fileToRead = fromSaved ? Path.Join(Platform.AccountLoginCachePath(accName), Platform.UniqueIdFile) : Platform.GetUniqueFilePath();
+
+            var uniqueId = "";
+
+            if (Platform.UniqueIdMethod is "REGKEY")
+            {
+                _ = ReadRegistryKeyWithErrors(Platform.UniqueIdFile, out uniqueId);
+                return uniqueId;
+            }
+
+            if (Platform.UniqueIdMethod is "CREATE_ID_FILE")
+            {
+                return File.Exists(fileToRead) ? File.ReadAllText(fileToRead) : uniqueId;
+            }
+
+            if (Platform.UniqueIdFile is not "" && File.Exists(fileToRead))
+            {
+                if (Platform.UniqueIdRegex != null)
+                {
+                    var m = Regex.Match(
+                        File.ReadAllText(fileToRead),
+                        Platform.UniqueIdRegex, RegexOptions.IgnoreCase);
+                    if (m.Success)
+                        uniqueId = m.Value;
+                }
+                else if (Platform.UniqueIdMethod is "FILE_MD5") // TODO: TEST THIS! -- This is used for static files that do not change throughout the lifetime of an account login.
+                {
+                    if (!Platform.UniqueIdFile.Contains('*')) uniqueId = GeneralFuncs.GetFileMd5(fileToRead);
+                    else
+                        uniqueId = string.Join('|', (from f in new DirectoryInfo(fileToRead).GetFiles()
+                            where f.Name.EndsWith(Platform.UniqueIdFile.Split('*')[1])
+                            select GeneralFuncs.GetFileMd5(f.FullName)).ToList());
+                }
+            }
+            else if (uniqueId != "")
+                uniqueId = Globals.GetSha256HashString(uniqueId);
+
+            return uniqueId;
         }
 
         private static bool ReadRegistryKeyWithErrors(string key, out string value)

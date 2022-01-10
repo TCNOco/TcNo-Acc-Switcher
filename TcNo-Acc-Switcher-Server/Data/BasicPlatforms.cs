@@ -126,6 +126,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             // Variables that may not be set:
             if (jPlatform.ContainsKey("UniqueIdFile")) _instance.UniqueIdFile = (string)jPlatform["UniqueIdFile"];
+            if (jPlatform.ContainsKey("UniqueIdFolder")) _instance.UniqueIdFolder = (string)jPlatform["UniqueIdFolder"];
             if (jPlatform.ContainsKey("UniqueIdRegex")) _instance.UniqueIdRegex = Globals.ExpandRegex((string)jPlatform["UniqueIdRegex"]);
             if (jPlatform.ContainsKey("UniqueIdMethod")) _instance.UniqueIdMethod = Globals.ExpandRegex((string)jPlatform["UniqueIdMethod"]);
 
@@ -136,9 +137,10 @@ namespace TcNo_Acc_Switcher_Server.Data
             _instance.IsInit = true;
         }
         // Variables that may not be set:
-        public string LoginFileFromValue(string val) => Environment.ExpandEnvironmentVariables(_instance.LoginFiles.FirstOrDefault(x => x.Value == val).Key);
+        public string LoginFileFromValue(string val) =>Environment.ExpandEnvironmentVariables(_instance.LoginFiles.FirstOrDefault(x => x.Value == val).Key);
         public string GetUniqueFilePath() => _instance.LoginFileFromValue(_instance.UniqueIdFile);
         public string UniqueIdFile { get; private set; } = "";
+        public string UniqueIdFolder { get; private set; } = "";
         public string UniqueIdRegex { get; private set; } = "";
         public string UniqueIdMethod { get; private set; } = "";
         public string PrimaryId => _platformIds[0];

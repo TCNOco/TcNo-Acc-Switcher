@@ -50,11 +50,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="args">Arguments to pass into the program</param>
         public static void StartProgram(string path, bool elevated, string args)
         {
+
             if (!elevated && IsAdministrator)
                 ProcessHandler.RunAsDesktopUser(path, args);
             else
                 ProcessHandler.StartProgram(path, elevated, args);
-
         }
 
         public static bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
@@ -810,6 +810,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (string.IsNullOrWhiteSpace(fileName))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(fileName));
 
+            // Set working directory
+            var tempWorkingDir = Directory.GetCurrentDirectory();
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(fileName) ?? Directory.GetCurrentDirectory());
+
             // To start process as shell user you will need to carry out these steps:
             // 1. Enable the SeIncreaseQuotaPrivilege in your current token
             // 2. Get an HWND representing the desktop shell (GetShellWindow)
@@ -894,6 +898,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 CloseHandle(hPrimaryToken);
                 CloseHandle(hShellProcess);
             }
+
+            // Reset working directory
+            Directory.SetCurrentDirectory(tempWorkingDir);
 
         }
 

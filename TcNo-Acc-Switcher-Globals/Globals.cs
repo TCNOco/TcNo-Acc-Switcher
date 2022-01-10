@@ -419,6 +419,9 @@ namespace TcNo_Acc_Switcher_Globals
         }
         #endregion
 
+        private static readonly Random Rnd = new();
+        public static string RandomString(int length) => new(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", length).Select(s => s[Rnd.Next(s.Length)]).ToArray());
+
         /// <summary>
         /// Get hash of string
         /// </summary>

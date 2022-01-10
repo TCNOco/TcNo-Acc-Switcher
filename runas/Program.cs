@@ -51,7 +51,8 @@ try
         RedirectStandardError = false,
         RedirectStandardOutput = false,
         Arguments = argString,
-        Verb = args[1] == "1" ? "runas" : ""
+        Verb = args[1] == "1" ? "runas" : "",
+        WorkingDirectory = Path.GetDirectoryName(args[0])
     });
 }
 catch (System.ComponentModel.Win32Exception e)

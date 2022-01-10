@@ -518,6 +518,11 @@ async function showModal(modaltype) {
         }
         Modal_RequestedLocated(false);
 
+        // Sub in info if this is a basic page
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform).then((r) => {
+            platform = r;
+        });
+
         const modalTitleAddNew = await GetLangSub("Modal_Title_AddNew", { platform: platform }),
             modalAddNew = await GetLangSub("Modal_AddNew", { platform: platform }),
             modalAddCurrentAccount = await GetLangSub("Modal_AddCurrentAccount", { platform: platform });

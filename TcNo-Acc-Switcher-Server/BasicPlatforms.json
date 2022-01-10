@@ -6,13 +6,25 @@
       "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
       "PathListToClear": [
         "%AppData%\\Battlestate Games\\BsgLauncher\\settings"
-
       ],
       "LoginFiles": {
         "%AppData%\\Battlestate Games\\BsgLauncher\\settings": "settings"
       },
       "UniqueIdFile": "settings",
       "UniqueIdRegex": "EMAIL_REGEX"
+    },
+    "OBS Studio": {
+      "Identifiers": [ "obs" ],
+      "ExeLocationDefault": "C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe",
+      "ExesToEnd": [ "obs64.exe" ],
+      "PathListToClear": [],
+      "LoginFiles": {
+        "%AppData%\\obs-studio\\global.ini": "global.ini",
+        "%AppData%\\obs-studio\\basic\\*": "basic\\",
+        "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+      },
+      "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE"
     }
   },
   "Platform-WIP": {
