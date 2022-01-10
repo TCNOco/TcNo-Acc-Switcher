@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Tips: Ändrade Discord-inställningar? Spara igen, med 
 Toast_Discord_NoToken: Det gick inte att hitta användarens token! Avsluta Discord normalt och spara sedan igen.
 Toast_CantChangeUsername: Kunde inte ändra användarnamn
 Toast_CantClearLoginFiles: Det gick inte att rensa gamla inloggningsfiler
-Toast_Epic_AccountIdReg: Det gick inte att hämta kontonummer från registret!
+Toast_AccountIdReg: Det gick inte att hämta kontonummer från registret!
 Toast_DuplicateNames: Kunde inte byta konto. Duplicera konton med samma användarnamn?
 Toast_CouldNotLocate: Kunde inte hitta inloggad användare
 Toast_StreamerModeHint: Privat info är dold! - Se inställningar

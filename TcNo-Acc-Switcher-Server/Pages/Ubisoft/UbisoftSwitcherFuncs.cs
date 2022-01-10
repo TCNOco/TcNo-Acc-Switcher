@@ -34,7 +34,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             const string localCachePath = "LoginCache\\Ubisoft\\";
             if (!Directory.Exists(localCachePath) || !File.Exists(Path.Join(localCachePath, "ids.json"))) return;
-            var allIds = ReadAllIds();
+            var allIds = GeneralFuncs.ReadAllIds_Generic("Ubisoft");
 
             // Order
             if (File.Exists("LoginCache\\Ubisoft\\order.json"))
@@ -104,7 +104,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 return "";
             }
 
-            var allIds = ReadAllIds();
+            var allIds = GeneralFuncs.ReadAllIds_Generic("Ubisoft");
             return (allIds.ContainsKey(userId) ? allIds[userId] : "");
         }
 
@@ -135,29 +135,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         public static void SetUsername(string id, string username, bool reload)
         {
-            var allIds = ReadAllIds();
+            var allIds = GeneralFuncs.ReadAllIds_Generic("Ubisoft");
             allIds[id] = username;
             File.WriteAllText("LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_SetUsername"]), true);
-        }
-
-
-        public static Dictionary<string, string> ReadAllIds()
-        {
-            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.ReadAllIds]");
-            const string localAllIds = "LoginCache\\Ubisoft\\ids.json";
-            var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
-            if (!File.Exists(localAllIds)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
-            try
-            {
-                s = Globals.ReadAllText(localAllIds);
-            }
-            catch (Exception)
-            {
-                //
-            }
-
-            return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
         }
 
         public static void ImportAvatar(string userId)
@@ -224,25 +205,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         [JSInvokable]
         public static Task<bool> GetUbisoftForgetAcc() => Task.FromResult(Ubisoft.ForgetAccountEnabled);
 
-        /// <summary>
-        /// Remove requested account
-        /// </summary>
-        /// <param name="userId">ID of the user account to remove</param>
-        public static bool ForgetAccount(string userId)
-        {
-            Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.ForgetAccount] Forgetting account:hidden");
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Ubisoft\\{userId}"), false);
-
-            var allIds = ReadAllIds();
-            _ = allIds.Remove(userId);
-            File.WriteAllText("LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
-
-
-            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\ubisoft\\{userId}.png");
-            if (File.Exists(img)) File.Delete(img);
-            return true;
-        }
-
         // Overload for below
         public static void SwapUbisoftAccounts() => SwapUbisoftAccounts("", 0);
 
@@ -268,7 +230,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             if (userId != "")
             {
                 if (!UbisoftCopyInAccount(userId, state)) return;
-                Globals.AddTrayUser("Ubisoft", "+u:" + userId, ReadAllIds()[userId], Ubisoft.TrayAccNumber); // Add to Tray list
+                Globals.AddTrayUser("Ubisoft", "+u:" + userId, GeneralFuncs.ReadAllIds_Generic("Ubisoft")[userId], Ubisoft.TrayAccNumber); // Add to Tray list
             }
             else
                 ClearCurrentUser();

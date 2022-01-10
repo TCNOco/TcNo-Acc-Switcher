@@ -46,14 +46,6 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     else _ = GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
                     break;
 
-                case "Basic":
-                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Basic.Processes)) return;
-                    Data.Settings.Basic.Instance.LoadFromFile();
-                    if (Directory.Exists(Data.Settings.Basic.Instance.FolderPath) && File.Exists(Data.Settings.Basic.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Basic/");
-                    else _ = GeneralInvocableFuncs.ShowModal("find:Basic:PROGRAM.exe:EpicSettings");
-                    // TODO: Replace PROGRAM.exe from text in basic JSON.
-                    break;
-
                 case "Discord":
                     if (!GeneralFuncs.CanKillProcess(Data.Settings.Discord.Processes)) return;
                     Data.Settings.Discord.Instance.LoadFromFile();
@@ -102,16 +94,14 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     break;
 
                 default:
-                    if (_appData.PlatformList.Contains(platform)) // Is a basic platform!
+                    if (BasicPlatforms.Instance.PlatformExistsFromShort(platform)) // Is a basic platform!
                     {
-                        var platformFullname = _appData.PlatformListFullNames[platform];
-                        var program = _appData.BasicPlatforms["Platforms"][platformFullname];
-                        if (!GeneralFuncs.CanKillProcess(program["ExesToEnd"].Values<string>().ToList())) return;
+                        BasicPlatforms.Instance.SetCurrentPlatformFromShort(platform);
+                        if (!GeneralFuncs.CanKillProcess(CurrentPlatform.Instance.ExesToEnd)) return;
 
-                        _appData.BasicCurrentPlatform = platformFullname;
                         Data.Settings.Basic.Instance.LoadFromFile();
-                        if (Directory.Exists(_appData.BasicCurrentPlatformExeFolder) && File.Exists(_appData.BasicCurrentPlatformExeFullPath)) AppData.ActiveNavMan.NavigateTo("/Basic/");
-                        else _ = GeneralInvocableFuncs.ShowModal($"find:{_appData.BasicCurrentPlatform}:{_appData.BasicCurrentPlatformExe}:{_appData.BasicCurrentPlatform}");
+                        if (Directory.Exists(Data.Settings.Basic.Instance.FolderPath) && File.Exists(Data.Settings.Basic.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Basic/");
+                        else _ = GeneralInvocableFuncs.ShowModal($"find:{CurrentPlatform.Instance.SafeName}:{CurrentPlatform.Instance.ExeName}:{CurrentPlatform.Instance.SafeName}");
                     }
                     break;
             }

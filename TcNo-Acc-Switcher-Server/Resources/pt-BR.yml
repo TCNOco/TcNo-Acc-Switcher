@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Dica: Alteradas as configurações do Discord? Salve no
 Toast_Discord_NoToken: Falha ao encontrar o token do usuário! Saia do Discord normalmente, e então salve novamente.
 Toast_CantChangeUsername: Não foi possível alterar o nome de usuário
 Toast_CantClearLoginFiles: Falha ao limpar arquivos de login antigos
-Toast_Epic_AccountIdReg: Falha ao obter AccountId do Registry!
+Toast_AccountIdReg: Falha ao obter AccountId do Registry!
 Toast_DuplicateNames: Não foi possível trocar. Contas duplicadas com o mesmo nome de usuário?
 Toast_CouldNotLocate: Não foi possível localizar o usuário conectado
 Toast_StreamerModeHint: Informação privada está oculta! - Veja as configurações

@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "تلميح: تغيير إعدادات ديسكورد؟ 
 Toast_Discord_NoToken: فشل في العثور على الرمز المميز للمستخدم! قم بإنهاء ديسكورد بشكل طبيعي، ثم قم بالحفظ مرة أخرى.
 Toast_CantChangeUsername: تعذر تغيير اسم المستخدم
 Toast_CantClearLoginFiles: فشل في مسح ملفات تسجيل الدخول القديمة
-Toast_Epic_AccountIdReg: فشل في الحصول على معرف الحساب من السجل!
+Toast_AccountIdReg: فشل في الحصول على معرف الحساب من السجل!
 Toast_DuplicateNames: لا يمكن المبادلة. تكرار الحسابات بنفس اسم المستخدم؟
 Toast_CouldNotLocate: تعذر تحديد موقع المستخدم المسجل
 Toast_StreamerModeHint: المعلومات الخاصة مخفية! - شاهد الإعدادات

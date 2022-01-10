@@ -46,27 +46,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
         public static Task<bool> GetEpicForgetAcc() => Task.FromResult(Epic.ForgetAccountEnabled);
 
         /// <summary>
-        /// Remove requested account from loginusers.vdf
-        /// </summary>
-        /// <param name="accName">Epic account name</param>
-        public static bool ForgetAccount(string accName)
-        {
-            Globals.DebugWriteLine(@"[Func:EpicEpicSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
-            // Remove ID from list of ids
-            var allIds = ReadAllIds();
-            _ = allIds.Remove(allIds.Single(x => x.Value == accName).Key);
-            File.WriteAllText("LoginCache\\Epic\\ids.json", JsonConvert.SerializeObject(allIds));
-            // Remove cached files
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Epic\\{accName}"), false);
-            // Remove image
-            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\epic\\{Uri.EscapeDataString(accName)}.jpg");
-            if (File.Exists(img)) File.Delete(img);
-            // Remove from Tray
-            Globals.RemoveTrayUser("Epic", accName); // Add to Tray list
-            return true;
-        }
-
-        /// <summary>
         /// Restart Epic with a new account selected. Leave args empty to log into a new account.
         /// </summary>
         /// <param name="accName">(Optional) User's login username</param>
@@ -104,7 +83,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             // Get current information for logged in user, and save into files:
             var currentAccountId = (string)Registry.CurrentUser.OpenSubKey(@"Software\Epic Games\Unreal Engine\Identifiers")?.GetValue("AccountId");
 
-            var allIds = ReadAllIds();
+            var allIds = GeneralFuncs.ReadAllIds_Generic("Epic");
             if (currentAccountId != null && allIds.ContainsKey(currentAccountId))
                 EpicAddCurrent(allIds[currentAccountId]);
 
@@ -128,7 +107,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 
             using var key = Registry.CurrentUser.CreateSubKey(@"Software\Epic Games\Unreal Engine\Identifiers");
 
-            var allIds = ReadAllIds();
+            var allIds = GeneralFuncs.ReadAllIds_Generic("Epic");
             try
             {
                 key?.SetValue("AccountId", allIds.Single(x => x.Value == accName).Key);
@@ -159,11 +138,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             var currentAccountId = (string)Registry.CurrentUser.OpenSubKey(@"Software\Epic Games\Unreal Engine\Identifiers")?.GetValue("AccountId");
             if (currentAccountId == null)
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Epic_AccountIdReg"], Lang["Error"], "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_AccountIdReg"], Lang["Error"], "toastarea");
                 return;
             }
 
-            var allIds = ReadAllIds();
+            var allIds = GeneralFuncs.ReadAllIds_Generic("Epic");
             allIds[currentAccountId] = accName;
             File.WriteAllText("LoginCache\\Epic\\ids.json", JsonConvert.SerializeObject(allIds));
 
@@ -177,7 +156,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
 
         public static void ChangeUsername(string oldName, string newName, bool reload = true)
         {
-            var allIds = ReadAllIds();
+            var allIds = GeneralFuncs.ReadAllIds_Generic("Epic");
             try
             {
                 allIds[allIds.Single(x => x.Value == oldName).Key] = newName;
@@ -194,24 +173,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Epic
             Directory.Move($"LoginCache\\Epic\\{oldName}\\", $"LoginCache\\Epic\\{newName}\\"); // Rename login cache folder
 
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Epic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ChangedUsername"]), true);
-        }
-
-        private static Dictionary<string, string> ReadAllIds()
-        {
-            Globals.DebugWriteLine(@"[Func:Epic\EpicSwitcherFuncs.ReadAllIds]");
-            const string localAllIds = "LoginCache\\Epic\\ids.json";
-            var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
-            if (!File.Exists(localAllIds)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
-            try
-            {
-                s = Globals.ReadAllText(localAllIds);
-            }
-            catch (Exception)
-            {
-                //
-            }
-
-            return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
         }
     }
 }

@@ -109,7 +109,10 @@ Toast_Discord_SaveHint: "Hint: Changed Discord settings? Save again, with the sa
 Toast_Discord_NoToken: Failed to find user's token! Quit Discord normally, then save again.
 Toast_CantChangeUsername: Could not change username
 Toast_CantClearLoginFiles: Failed to clear old login files
-Toast_Epic_AccountIdReg: Failed to get AccountId from Registry!
+Toast_AccountIdReg: Failed to get Account Id from Registry!
+Toast_RegFailWrite: Failed to Write to Windows Regsitry!
+Toast_RegFailRead: Failed to Read from Windows Regsitry!
+Toast_RegSaveMissing: Failed Find or Read data from saved Registry files!
 Toast_DuplicateNames: Could not swap. Duplicate accounts with same username?
 Toast_CouldNotLocate: Could not locate logged in user
 Toast_StreamerModeHint: Private info is hidden! - See settings
@@ -221,6 +224,7 @@ Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
 Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
 Title_Steam_Settings: TcNo Account Switcher - Steam Settings
 Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Title_Template_Settings: TcNo Account Switcher - {platformName}
 Installer_Downloading: Downloading {file}
 Installer_DownloadFinished: Finished downloading {file}
 Installer_Installing: "Installing: {runtime}"

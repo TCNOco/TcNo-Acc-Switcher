@@ -144,21 +144,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 if (action.StartsWith("AcceptForgetDiscordAcc:"))
                 {
                     Discord.SetForgetAcc(true);
-                    _ = DiscordSwitcherFuncs.ForgetAccount(accName);
+                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Discord");
                     return Task.FromResult("refresh");
                 }
 
                 if (action.StartsWith("AcceptForgetBasicAcc:"))
                 {
                     Basic.SetForgetAcc(true);
-                    _ = BasicSwitcherFuncs.ForgetAccount(accName);
+                    _ = GeneralFuncs.ForgetAccount_Generic(accName, CurrentPlatform.Instance.SafeName);
                     return Task.FromResult("refresh");
                 }
 
                 if (action.StartsWith("AcceptForgetEpicAcc:"))
                 {
                     Epic.SetForgetAcc(true);
-                    _ = EpicSwitcherFuncs.ForgetAccount(accName);
+                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Epic");
                     return Task.FromResult("refresh");
                 }
 
@@ -172,14 +172,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 if (action.StartsWith("AcceptForgetOriginAcc:"))
                 {
                     Origin.SetForgetAcc(true);
-                    _ = OriginSwitcherFuncs.ForgetAccount(accName);
+                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Origin");
                     return Task.FromResult("refresh");
                 }
 
                 if (action.StartsWith("AcceptForgetUbisoftAcc:"))
                 {
                     Ubisoft.SetForgetAcc(true);
-                    _ = UbisoftSwitcherFuncs.ForgetAccount(accName);
+                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Ubisoft", true);
                     return Task.FromResult("refresh");
                 }
 
@@ -193,7 +193,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 if (action.StartsWith("AcceptForgetRiotAcc:"))
                 {
                     Riot.SetForgetAcc(true);
-                    _ = RiotSwitcherFuncs.ForgetAccount(accName);
+                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Riot");
                     return Task.FromResult("refresh");
                 }
             }
@@ -212,6 +212,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return Task.FromResult("");
         }
 
+        [JSInvokable]
+        public static Task<string> GiGetPlatformUrl(string platformFullName) => AppData.Instance.OldPlatformList.Contains(platformFullName)
+                ? Task.FromResult(platformFullName)
+                : Task.FromResult("Basic/?plat=" + CurrentPlatform.Instance.PrimaryId);
 
         [JSInvokable]
         public static Task<string> GiGetVersion() => Task.FromResult(Globals.Version);

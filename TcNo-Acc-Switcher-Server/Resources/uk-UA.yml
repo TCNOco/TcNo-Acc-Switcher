@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Підказка: Змінено налаштуванн
 Toast_Discord_NoToken: Не вдалося знайти токен користувача! Для коректного виходу з Discord, потім збережіть його знову.
 Toast_CantChangeUsername: Не вдалося змінити ім'я користувача
 Toast_CantClearLoginFiles: Не вдалося очистити старі файли входу
-Toast_Epic_AccountIdReg: Не вдалося отримати AccountId від реєстру!
+Toast_AccountIdReg: Не вдалося отримати AccountId від реєстру!
 Toast_DuplicateNames: Не вдалося змахнути. Дублювати облікові записи з таким самим ім'ям користувача?
 Toast_CouldNotLocate: Не вдалося знайти авторизованого користувача
 Toast_StreamerModeHint: Приватна інформація прихована! - Переглянути налаштування

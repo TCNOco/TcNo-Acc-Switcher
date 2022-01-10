@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Tipp: Megváltoztatták az ellentét beállításait? M
 Toast_Discord_NoToken: Nem sikerült megtalálni a felhasználó tokent! Lépjen ki a Discord-ból rendesen, majd mentse újra.
 Toast_CantChangeUsername: Nem sikerült megváltoztatni a felhasználónevet
 Toast_CantClearLoginFiles: Nem sikerült törölni a régi bejelentkezési fájlokat
-Toast_Epic_AccountIdReg: Nem sikerült megszerezni a AccountId-t a nyilvántartásból!
+Toast_AccountIdReg: Nem sikerült megszerezni a AccountId-t a nyilvántartásból!
 Toast_DuplicateNames: Nem sikerült felcserélni. Ismétlődő számlák ugyanazzal a felhasználónévvel?
 Toast_CouldNotLocate: Nem sikerült megtalálni a bejelentkezett felhasználót
 Toast_StreamerModeHint: A privát információk rejtve vannak! - Lásd a beállításokat

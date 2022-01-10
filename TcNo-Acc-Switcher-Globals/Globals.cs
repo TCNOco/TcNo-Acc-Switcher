@@ -6,9 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 
 namespace TcNo_Acc_Switcher_Globals
@@ -449,6 +452,79 @@ namespace TcNo_Acc_Switcher_Globals
 
             return regexDictionary.ContainsKey(regex) ? regexDictionary[regex] : regex;
         }
+
+        #region REGISTRY
+        [SupportedOSPlatform("windows")]
+        public static RegistryKey ExpandRegistryAbbreviation(string abv)
+        {
+            return abv switch
+            {
+                "HKCR" => Registry.ClassesRoot,
+                "HKCU" => Registry.CurrentUser,
+                "HKLM" => Registry.LocalMachine,
+                "HKCC" => Registry.CurrentConfig,
+                "HKPD" => Registry.PerformanceData,
+                _ => null
+            };
+        }
+
+        /// <summary>
+        /// Break an encoded registry key into it's seperate parts
+        /// </summary>
+        /// <param name="encodedPath">HKXX\\path:subkey</param>
+        private static (RegistryKey, string, string) ExplodeRegistryKey(string encodedPath)
+        {
+            var rootKey = Globals.ExpandRegistryAbbreviation(encodedPath[..3]); // Get HKXX
+            encodedPath = encodedPath[4..]; // Remove HKXX\\
+            var path = encodedPath.Split(":")[0];
+            var subKey = encodedPath.Split(":")[1];
+
+            return (rootKey, path, subKey);
+        }
+
+        /// <summary>
+        /// Read the value of a Registry key (Requires special path)
+        /// </summary>
+        /// <param name="encodedPath">HKXX\\path:subkey</param>
+        public static string ReadRegistryKey(string encodedPath)
+        {
+            var (rootKey, path, subKey) = ExplodeRegistryKey(encodedPath);
+            var currentAccountId = "";
+
+            try
+            {
+                currentAccountId = (string)rootKey.OpenSubKey(path)?.GetValue(subKey);
+            }
+            catch (Exception)
+            {
+                // TODO: WRITE ERRORS TO LOGS!
+                return "ERROR-READ";
+            }
+            return currentAccountId ?? "ERROR-NULL";
+        }
+
+        /// <summary>
+        /// Sets the value of a Registry key (Requires special path)
+        /// </summary>
+        /// <param name="encodedPath">HKXX\\path:subkey</param>
+        /// <param name="value">Value, or empty to "clear"</param>
+        public static bool SetRegistryKey(string encodedPath, string value = "")
+        {
+            var (rootKey, path, subKey) = ExplodeRegistryKey(encodedPath);
+
+            try
+            {
+                using var key = rootKey.CreateSubKey(path);
+                key?.SetValue(subKey, value);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        #endregion
 
         #region PROCESSES
         /// <summary>

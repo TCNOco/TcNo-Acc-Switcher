@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Consell: heu canviat la configuració de Discord? Torne
 Toast_Discord_NoToken: No s'ha pogut trobar el testimoni de l'usuari. Sortiu de Discord normalment i deseu-lo de nou.
 Toast_CantChangeUsername: No s'ha pogut canviar el nom d'usuari
 Toast_CantClearLoginFiles: No s'han pogut esborrar els fitxers d'inici de sessió antics
-Toast_Epic_AccountIdReg: No s'ha pogut obtenir AccountId del registre.
+Toast_AccountIdReg: No s'ha pogut obtenir AccountId del registre.
 Toast_DuplicateNames: No s'ha pogut canviar. Voleu duplicar comptes amb el mateix nom d'usuari?
 Toast_CouldNotLocate: No s'ha pogut localitzar l'usuari connectat
 Toast_StreamerModeHint: La informació privada està oculta. - Veure configuració

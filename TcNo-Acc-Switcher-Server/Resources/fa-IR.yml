@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "نکته: تنظیمات Discord را تغییر داد
 Toast_Discord_NoToken: رمز کاربر پیدا نشد! از Discord به طور معمول خارج شوید، سپس دوباره ذخیره کنید.
 Toast_CantChangeUsername: نام کاربری تغییر نکرد
 Toast_CantClearLoginFiles: فایل های لاگین قدیمی پاک نشد
-Toast_Epic_AccountIdReg: AccountId از Registry دریافت نشد!
+Toast_AccountIdReg: AccountId از Registry دریافت نشد!
 Toast_DuplicateNames: امکان تعویض وجود ندارد. حساب های تکراری با نام کاربری مشابه؟
 Toast_CouldNotLocate: کاربر وارد شده را پیدا نکرد
 Toast_StreamerModeHint: اطلاعات خصوصی پنهان است! - تنظیمات را ببینید

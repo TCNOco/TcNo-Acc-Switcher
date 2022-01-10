@@ -109,6 +109,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Globals.DebugWriteLine(@"[Func:Data\Settings\Riot.ResetSettings]");
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
+            _instance._altClose = false;
 
             // Notice install directories are intentionally left out here.
             // They are just saved for user ease-of-access.
@@ -124,6 +125,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             if (curSettings == null) return;
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
+            _instance._altClose = curSettings.AltClose;
 
             // Notice install directories are intentionally left out here.
             // They are just saved for user ease-of-access.

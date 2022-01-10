@@ -13,7 +13,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -27,6 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
     {
         private static readonly Lang Lang = Lang.Instance;
         private static Basic _instance = new();
+        private static readonly CurrentPlatform Platform = CurrentPlatform.Instance;
 
         private static readonly object LockObj = new();
         public static Basic Instance
@@ -50,21 +53,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             get
             {
                 if (_instance._folderPath != "") return _instance._folderPath;
-
-                try
-                {
-                    _instance._folderPath = ((string)AppData.Instance.BasicCurrentPlatformJson["ExeLocationDefault"])?.Replace(
-                        AppData.Instance.BasicCurrentPlatformExe, "");
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                _instance._folderPath = Platform.DefaultFolderPath;
 
                 return _instance._folderPath;
             }
             set => _instance._folderPath = value;
         }
+
         private bool _admin;
         [JsonProperty("Basic_Admin", Order = 2)] public bool Admin { get => _instance._admin; set => _instance._admin = value; }
         private int _trayAccNumber = 3;
@@ -77,13 +72,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
 
-        // Constants
-        [JsonIgnore] public static readonly string SettingsFile = "BasicSettings.json";
-        /*
-            [JsonIgnore] public string BasicImagePath = "wwwroot/img/profiles/basic/";
-            [JsonIgnore] public string BasicImagePathHtml = "img/profiles/basic/";
-        */
-        [JsonIgnore] public static readonly string Processes = "BasicGamesLauncher";
         [JsonIgnore] public readonly string ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
@@ -109,7 +97,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Get Basic.exe path from BasicSettings.json
         /// </summary>
         /// <returns>Basic.exe's path string</returns>
-        public string Exe() => Path.Join(FolderPath, AppData.Instance.BasicCurrentPlatformExe);
+        public string Exe() => Path.Join(FolderPath, Platform.ExeName);
 
 
         #region SETTINGS
@@ -119,7 +107,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public void ResetSettings()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Basic.ResetSettings]");
-            _instance.FolderPath = "";
+            _instance.FolderPath = Platform.DefaultFolderPath;
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Basic");
@@ -138,10 +126,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Basic");
             _instance._altClose = curSettings.AltClose;
         }
-        public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(AppData.Instance.BasicCurrentPlatformSettingsFile, GetJObject()));
+        public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(Platform.SettingsFile, GetJObject()));
         public JObject GetJObject() => JObject.FromObject(this);
         [JSInvokable]
-        public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(AppData.Instance.BasicCurrentPlatformSettingsFile, GetJObject(), mergeNewIntoOld);
+        public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(Platform.SettingsFile, GetJObject(), mergeNewIntoOld);
         #endregion
     }
 }

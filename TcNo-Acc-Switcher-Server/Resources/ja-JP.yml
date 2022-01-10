@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "ヒント：Discordの設定を変更しましたか？
 Toast_Discord_NoToken: ユーザーのトークンが見つかりませんでした！Discordを正常に終了してからもう一度保存してください。
 Toast_CantChangeUsername: ユーザー名を変更できませんでした
 Toast_CantClearLoginFiles: 古いログインファイルの消去に失敗しました
-Toast_Epic_AccountIdReg: RegistryからAccountIdを取得できませんでした！
+Toast_AccountIdReg: RegistryからAccountIdを取得できませんでした！
 Toast_DuplicateNames: 同じユーザー名でアカウントを複製できませんでしたか？
 Toast_CouldNotLocate: ログインしているユーザーが見つかりませんでした
 Toast_StreamerModeHint: プライベート情報は非表示です! - 設定を参照してください

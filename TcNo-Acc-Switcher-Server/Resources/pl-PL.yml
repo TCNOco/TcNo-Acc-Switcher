@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Wskazówka: Zmieniłeś ustawienia Discorda? Zapisz pon
 Toast_Discord_NoToken: Nie udało się znaleźć tokenu użytkownika! Zamknij Discorda normalnie, a następnie zapisz ponownie.
 Toast_CantChangeUsername: Nie można zmienić nazwy użytkownika
 Toast_CantClearLoginFiles: Nie udało się wyczyścić starych plików logowania
-Toast_Epic_AccountIdReg: Nie udało się uzyskać identyfikatora konta z rejestru!
+Toast_AccountIdReg: Nie udało się uzyskać identyfikatora konta z rejestru!
 Toast_DuplicateNames: Nie można zamienić. Zduplikowane konta z tą samą nazwą użytkownika?
 Toast_CouldNotLocate: Nie można zlokalizować zalogowanego użytkownika
 Toast_StreamerModeHint: Prywatne informacje są ukryte! - Zobacz ustawienia

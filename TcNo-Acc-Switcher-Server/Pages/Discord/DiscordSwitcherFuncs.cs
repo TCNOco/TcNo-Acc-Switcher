@@ -51,28 +51,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         [JSInvokable]
         public static Task<bool> GetDiscordForgetAcc() => Task.FromResult(Discord.ForgetAccountEnabled);
 
-        /// <summary>
-        /// Remove requested account from loginusers.vdf
-        /// </summary>
-        /// <param name="accName">Discord account name</param>
-        public static bool ForgetAccount(string accName)
-        {
-            Globals.DebugWriteLine(@"[Func:DiscordDiscordSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
-            // Remove ID from list of ids
-            var allIds = ReadAllIds();
-            _ = allIds.Remove(allIds.Single(x => x.Value == accName).Key);
-            File.WriteAllText("LoginCache\\Discord\\ids.json", JsonConvert.SerializeObject(allIds));
-
-            // Remove cached files
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Discord\\{accName}"), false);
-            // Remove image
-            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\discord\\{Uri.EscapeDataString(accName)}.jpg");
-            if (File.Exists(img)) File.Delete(img);
-            // Remove from Tray
-            Globals.RemoveTrayUser("Discord", accName); // Add to Tray list
-            return true;
-        }
-
         private static string GetHashedDiscordToken()
         {
             // Loop through log/ldb files:
@@ -137,7 +115,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.ClearCurrentLoginDiscord]");
             // Save current
             var hash = GetHashedDiscordToken();
-            var allIds = ReadAllIds();
+            var allIds = GeneralFuncs.ReadAllIds_Generic("Discord");
             if (allIds.ContainsKey(hash))
                 DiscordAddCurrent(allIds[hash]);
 
@@ -255,7 +233,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 
             if (string.IsNullOrEmpty(hash)) return;
 
-            var allIds = ReadAllIds();
+            var allIds = GeneralFuncs.ReadAllIds_Generic("Discord");
             allIds[hash] = accName;
             File.WriteAllText("LoginCache\\Discord\\ids.json", JsonConvert.SerializeObject(allIds));
 
@@ -328,7 +306,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         {
             // Save current
             var hash = GetHashedDiscordToken();
-            var allIds = ReadAllIds();
+            var allIds = GeneralFuncs.ReadAllIds_Generic("Discord");
             if (!allIds.ContainsKey(hash)) return false;
             // Else list already contains the token, so just save with the same username.
             DiscordAddCurrent(allIds[hash]);
@@ -346,8 +324,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
                 newName = parts[1];
             }
 
-
-            var allIds = ReadAllIds();
+            var allIds = GeneralFuncs.ReadAllIds_Generic("Discord");
             try
             {
                 allIds[allIds.Single(x => x.Value == oldName).Key] = newName;
@@ -387,24 +364,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
                 Directory.Move($"LoginCache\\Discord\\{oldName}\\", $"LoginCache\\Discord\\{newName}\\"); // Rename login cache folder
 
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Discord/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ChangedUsername"]), true);
-        }
-
-        private static Dictionary<string, string> ReadAllIds()
-        {
-            Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.ReadAllIds]");
-            const string localAllIds = "LoginCache\\Discord\\ids.json";
-            var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
-            if (!File.Exists(localAllIds)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
-            try
-            {
-                s = Globals.ReadAllText(localAllIds);
-            }
-            catch (Exception)
-            {
-                //
-            }
-
-            return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
         }
 
         #region DISCORD_MANAGEMENT

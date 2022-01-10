@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Vihje: Muutettu Discordin asetuksia? Tallenna uudelleen
 Toast_Discord_NoToken: Käyttäjän tunnusta ei löytynyt! Lopeta Discord normaalisti ja tallenna sitten uudelleen.
 Toast_CantChangeUsername: Käyttäjänimeä ei voitu muuttaa
 Toast_CantClearLoginFiles: Vanhojen kirjautumistiedostojen tyhjentäminen epäonnistui
-Toast_Epic_AccountIdReg: Tilisivun haku rekisteristä epäonnistui!
+Toast_AccountIdReg: Tilisivun haku rekisteristä epäonnistui!
 Toast_DuplicateNames: Ei voitu vaihtaa. Monista tilit samalla käyttäjätunnuksella?
 Toast_CouldNotLocate: Kirjautunut käyttäjä ei löytänyt
 Toast_StreamerModeHint: Yksityinen tieto on piilotettu! - Katso asetukset

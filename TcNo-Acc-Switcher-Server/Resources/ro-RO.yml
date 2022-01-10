@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Sugestie: Schimbă setările Discord? Economisește din
 Toast_Discord_NoToken: Eșec în găsirea token-ului utilizatorului! Părăsește Discord în mod normal, apoi salvează din nou.
 Toast_CantChangeUsername: Nu s-a putut schimba numele de utilizator
 Toast_CantClearLoginFiles: Ștergerea fișierelor vechi de autentificare a eșuat
-Toast_Epic_AccountIdReg: Nu s-a reușit obținerea AccountId din Registru!
+Toast_AccountIdReg: Nu s-a reușit obținerea AccountId din Registru!
 Toast_DuplicateNames: Nu s-a putut face swap. Duplicați conturile cu același nume de utilizator?
 Toast_CouldNotLocate: Nu s-a putut localiza utilizatorul logat
 Toast_StreamerModeHint: Informațiile private sunt ascunse! - Vezi setările

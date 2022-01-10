@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Συμβουλή: Άλλαξε τις ρυθμίσει�
 Toast_Discord_NoToken: Αποτυχία εύρεσης διακριτικού χρήστη! Έξοδος από το Discord κανονικά, και μετά αποθήκευση ξανά.
 Toast_CantChangeUsername: Αδυναμία αλλαγής ονόματος χρήστη
 Toast_CantClearLoginFiles: Αποτυχία εκκαθάρισης παλιών αρχείων σύνδεσης
-Toast_Epic_AccountIdReg: Αποτυχία λήψης του AccountId από το μητρώο!
+Toast_AccountIdReg: Αποτυχία λήψης του AccountId από το μητρώο!
 Toast_DuplicateNames: Αδυναμία ανταλλαγής. Αντιγραφή λογαριασμών με το ίδιο όνομα χρήστη?
 Toast_CouldNotLocate: Αδυναμία εντοπισμού του συνδεδεμένου χρήστη
 Toast_StreamerModeHint: Οι ιδιωτικές πληροφορίες είναι κρυμμένες! - Δείτε τις ρυθμίσεις

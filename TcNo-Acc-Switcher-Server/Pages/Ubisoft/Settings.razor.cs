@@ -59,7 +59,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         // BUTTON: RefreshImages
         public static void RefreshImages()
         {
-            var allIds = UbisoftSwitcherFuncs.ReadAllIds();
+            var allIds = GeneralFuncs.ReadAllIds_Generic("Ubisoft");
             foreach (var (userId, _) in allIds)
             {
                 UbisoftSwitcherFuncs.ImportAvatar(userId);

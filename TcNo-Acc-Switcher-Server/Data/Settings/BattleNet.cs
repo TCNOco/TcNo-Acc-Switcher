@@ -137,6 +137,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance._overwatchMode = true;
             // Should this also clear ignored accounts?
             _instance._desktopShortcut = Shortcut.CheckShortcuts("BattleNet");
+            _instance._altClose = false;
+
             SaveSettings();
         }
         public void SetFromJObject(JObject j)
@@ -149,6 +151,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
             _instance._overwatchMode = curSettings._overwatchMode;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("BattleNet");
+            _instance._altClose = curSettings.AltClose;
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
         public JObject GetJObject() => JObject.FromObject(this);

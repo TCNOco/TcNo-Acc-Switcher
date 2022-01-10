@@ -55,6 +55,8 @@ namespace TcNo_Acc_Switcher_Server
             // Persistent settings:
             _ = services.AddSingleton<AppSettings>();
             _ = services.AddSingleton<AppData>();
+            _ = services.AddSingleton<BasicPlatforms>();
+            _ = services.AddSingleton<CurrentPlatform>();
             _ = services.AddSingleton<Data.Settings.BattleNet>();
             _ = services.AddSingleton<Data.Settings.Basic>();
             _ = services.AddSingleton<Data.Settings.Discord>();

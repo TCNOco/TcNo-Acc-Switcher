@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Astuce : Changement des paramètres Discord ? Sauvegard
 Toast_Discord_NoToken: Impossible de trouver le jeton d'utilisateur ! Quittez Discord normalement, puis enregistrez à nouveau.
 Toast_CantChangeUsername: Impossible de changer le nom d'utilisateur
 Toast_CantClearLoginFiles: Impossible d'effacer les anciens fichiers de connexion
-Toast_Epic_AccountIdReg: Impossible d'obtenir l'ID du compte depuis le Registre !
+Toast_AccountIdReg: Impossible d'obtenir l'ID du compte depuis le Registre !
 Toast_DuplicateNames: Impossible d'échanger. Dupliquer les comptes avec le même nom d'utilisateur ?
 Toast_CouldNotLocate: Impossible de localiser l'utilisateur connecté
 Toast_StreamerModeHint: Les informations privées sont masquées! - Voir les paramètres

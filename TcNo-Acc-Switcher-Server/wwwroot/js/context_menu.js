@@ -1,6 +1,13 @@
 ﻿// Selected Element on list, for use in other JS functions
 var selectedElem = "";
 
+// Returns "Steam" or "Riot" for example, based on the current URL
+function getCurrentPage() {
+    return (window.location.pathname.split("/")[0] !== "" ?
+        window.location.pathname.split("/")[0] :
+        window.location.pathname.split("/")[1]);
+}
+
 async function initContextMenu() {
     let group = "acc";
     if (getCurrentPage() === "") {
@@ -56,7 +63,7 @@ async function initContextMenu() {
             // Set currently selected element
             selectedElem = $(e.currentTarget).prop("id").substr(8);
         }
-        
+
         //Get window size:
         const winWidth = $(document).width();
         const winHeight = $(document).height();

@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Tip: Ændrede Discord indstillinger? Gem igen, med samm
 Toast_Discord_NoToken: Mislykkedes at finde brugerens token! Afslut Discord normalt, og gem derefter igen.
 Toast_CantChangeUsername: Kunne ikke ændre brugernavn
 Toast_CantClearLoginFiles: Mislykkedes at rydde gamle login-filer
-Toast_Epic_AccountIdReg: Kunne ikke hente konto Id fra Registrering!
+Toast_AccountIdReg: Kunne ikke hente konto Id fra Registrering!
 Toast_DuplicateNames: Kunne ikke bytte. Dupliker konti med samme brugernavn?
 Toast_CouldNotLocate: Kunne ikke finde brugeren logget ind
 Toast_StreamerModeHint: Privat info er skjult! - Se indstillinger

@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Tip: Gewijzigde Discord-instellingen? Sla opnieuw op me
 Toast_Discord_NoToken: Fout bij het vinden van gebruikersnaam! Sluit Discord normaal, en sla dan opnieuw op.
 Toast_CantChangeUsername: Kon gebruikersnaam niet wijzigen
 Toast_CantClearLoginFiles: Mislukt om oude loginbestanden te wissen
-Toast_Epic_AccountIdReg: Fout bij het ophalen van AccountId van Registratie!
+Toast_AccountIdReg: Fout bij het ophalen van AccountId van Registratie!
 Toast_DuplicateNames: Kan niet wisselen. Een account dupliceren met dezelfde gebruikersnaam?
 Toast_CouldNotLocate: Kan aangemelde gebruiker niet vinden
 Toast_StreamerModeHint: Privé info is verborgen! - Zie instellingen

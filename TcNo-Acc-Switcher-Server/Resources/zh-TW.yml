@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "提示：更改了 Discord 設置？再次保存，同�
 Toast_Discord_NoToken: 未能找到用戶的令牌！正常退出 Discord，然後再次保存。
 Toast_CantChangeUsername: 無法更改用戶名
 Toast_CantClearLoginFiles: 無法清除舊的登錄文件
-Toast_Epic_AccountIdReg: 無法從註冊表中獲取 AccountId！
+Toast_AccountIdReg: 無法從註冊表中獲取 AccountId！
 Toast_DuplicateNames: 無法交換。具有相同用戶名的重複帳戶？
 Toast_CouldNotLocate: 找不到登錄的用戶
 Toast_StreamerModeHint: 隱私信息被隱藏！ - 查看設置

@@ -137,6 +137,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Discord");
+            _instance._altClose = false;
 
             SaveSettings();
         }
@@ -149,6 +150,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Discord");
+            _instance._altClose = curSettings.AltClose;
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
         public JObject GetJObject() => JObject.FromObject(this);

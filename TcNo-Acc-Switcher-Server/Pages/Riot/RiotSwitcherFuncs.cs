@@ -115,23 +115,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
         public static Task<bool> GetRiotForgetAcc() => Task.FromResult(Riot.ForgetAccountEnabled);
 
         /// <summary>
-        /// Remove requested account from loginusers.vdf
-        /// </summary>
-        /// <param name="accName">Riot account name</param>
-        public static bool ForgetAccount(string accName)
-        {
-            Globals.DebugWriteLine(@"[Func:RiotRiotSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
-            // Remove image
-            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\riot\\{accName.Replace("#", "-")}.jpg");
-            if (File.Exists(img)) File.Delete(img);
-            // Remove cached files
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Riot\\{accName}"), false);
-            // Remove from Tray
-            Globals.RemoveTrayUser("Riot", accName); // Add to Tray list
-            return true;
-        }
-
-        /// <summary>
         /// Arguments set by CLI, for use when starting Riot games.
         /// </summary>
         private static string _startArguments = "";

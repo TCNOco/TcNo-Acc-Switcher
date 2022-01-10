@@ -72,6 +72,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         #region Basic_Platforms
+
+        public List<string> OldPlatformList = new() {"Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot", "Discord"};
         private List<string> _platformList;
         public List<string> PlatformList
         {
@@ -80,95 +82,15 @@ namespace TcNo_Acc_Switcher_Server.Data
                 if (_instance._platformList != null) return _instance._platformList;
 
                 _instance._platformList = new List<string> { "Steam", "Origin", "Ubisoft", "BattleNet", "Epic", "Riot", "Discord" };
-                foreach (var jToken in BasicPlatforms["Platforms"])
+                foreach (var jToken in BasicPlatforms.Instance.GetPlatforms)
                 {
                     var x = (JProperty) jToken;
-                    var platformFirstId = BasicPlatforms["Platforms"][x.Name]["Identifiers"][0].ToString();
+                    var platformFirstId = BasicPlatforms.Instance.GetPlatforms[x.Name]["Identifiers"][0].ToString();
                     _instance._platformList.Add(platformFirstId);
                 }
                 return _instance._platformList;
             }
             set => _instance._platformList = value;
-        }
-
-        private Dictionary<string, string> _platformListFullNames;
-
-        public Dictionary<string, string> PlatformListFullNames
-        {
-            get
-            {
-                if (_instance._platformListFullNames != null) return _instance._platformListFullNames;
-
-                _instance._platformListFullNames = new Dictionary<string, string>
-                {
-                    { "BattleNet", "Battle.Net" },
-                    { "Epic", "Epic Games" }
-                };
-                foreach (var jToken in BasicPlatforms["Platforms"])
-                {
-                    var x = (JProperty)jToken;
-                    var platformFirstId = BasicPlatforms["Platforms"][x.Name]["Identifiers"][0].ToString();
-                    _instance._platformListFullNames.Add(platformFirstId, x.Name);
-                }
-                return _instance._platformListFullNames;
-            }
-            set => _instance._platformListFullNames = value;
-        }
-        public string PlatformFullName(string id) => PlatformListFullNames.ContainsKey(id) ? PlatformListFullNames[id] : id;
-
-
-        private JObject _basicPlatforms;
-
-        public JObject BasicPlatforms
-        {
-            get =>
-                _instance._basicPlatforms ?? (_instance._basicPlatforms =
-                    GeneralFuncs.LoadSettings(Path.Join(Globals.AppDataFolder, "BasicPlatforms.json")));
-            set => _instance._basicPlatforms = value;
-        }
-        private string _basicCurrentPlatform;
-        public string BasicCurrentPlatform
-        {
-            get => _instance._basicCurrentPlatform;
-            set => _instance._basicCurrentPlatform = value;
-        }
-
-        public string BasicCurrentPlatformSafeString => Globals.GetCleanFilePath(BasicCurrentPlatform);
-
-        public JObject BasicCurrentPlatformJson => (JObject)BasicPlatforms["Platforms"]![BasicCurrentPlatform];
-
-        public bool BasicPlatformsContains(string platform) =>
-            ((JObject) BasicPlatforms["Platforms"]!).ContainsKey(platform);
-
-        public string BasicCurrentPlatformSettingsFile => BasicCurrentPlatformSafeString + ".json";
-
-        public string BasicCurrentPlatformSettingsFileFull =>
-            Path.Join(Globals.UserDataFolder, BasicCurrentPlatformSettingsFile);
-
-        private List<string> _basicCurrentPlatformIds;
-        public List<string> BasicCurrentPlatformIds
-        {
-            get => _instance._basicCurrentPlatformIds ?? (_instance._basicCurrentPlatformIds = BasicCurrentPlatformJson["Identifiers"]!.Values<string>().ToList());
-            set => _instance._basicCurrentPlatformIds = value;
-        }
-
-        private string _basicCurrentPlatformExe;
-        public string BasicCurrentPlatformExe
-        {
-            get => _instance._basicCurrentPlatformExe ?? (_instance._basicCurrentPlatformExe = Path.GetFileName(BasicCurrentPlatformExeFullPath));
-            set => _instance._basicCurrentPlatformExe = value;
-        }
-
-        public string BasicCurrentPlatformExeFullPath => (string)BasicCurrentPlatformJson["ExeLocationDefault"];
-        public string BasicCurrentPlatformExeFolder => Path.GetDirectoryName(BasicCurrentPlatformExeFullPath);
-
-        private List<string> _basicCurrentPlatformProcesses;
-
-        public List<string> BasicCurrentPlatformProcesses
-        {
-            get => _instance._basicCurrentPlatformProcesses ?? (_instance._basicCurrentPlatformProcesses =
-                BasicCurrentPlatformJson["ExesToEnd"]!.Values<string>().ToList());
-            set => _instance._basicCurrentPlatformProcesses = value;
         }
         #endregion
 

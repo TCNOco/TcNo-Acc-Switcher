@@ -29,7 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         public AppData AppData { get; set; }
         protected override void OnInitialized()
         {
-            AppData.Instance.WindowTitle = Lang["Title_Basic_Settings"];
+            AppData.Instance.WindowTitle = Lang["Title_Template_Settings", new { platformName = CurrentPlatform.Instance.FullName }];
             Globals.DebugWriteLine(@"[Auto:Basic\Settings.razor.cs.OnInitializedAsync]");
         }
 

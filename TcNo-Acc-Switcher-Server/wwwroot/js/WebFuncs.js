@@ -644,11 +644,22 @@ function Modal_RequestedLocated(found) {
     }
 }
 
-function Modal_Finalise(platform, platformSettingsPath) {
+//function Modal_Finalise(platform, platformSettingsPath) {
+//    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
+//    $(".modalBG").fadeOut();
+//    window.location.assign(platformSettingsPath.split("Settings")[0]);
+//}
+
+async function Modal_Finalise(platform, platformSettingsPath) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
     $(".modalBG").fadeOut();
-    window.location.assign(platformSettingsPath.split("Settings")[0]);
+
+    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetPlatformUrl", platformSettingsPath.split("Settings")[0]).then((r) => {
+        window.location.assign(window.location.host + "/" + r);
+    });
+    var result = await promise;
 }
+
 async function Modal_Confirm(action, value) {
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value).then((r) => {
         if (r === "refresh") location.reload();

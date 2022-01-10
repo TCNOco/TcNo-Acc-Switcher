@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Gợi ý: Đã thay đổi cài đặt Discord? Lưu l�
 Toast_Discord_NoToken: Không tìm thấy mã thông báo của người dùng! Thoát Discord bình thường, sau đó lưu lại.
 Toast_CantChangeUsername: Không thể thay đổi tên người dùng
 Toast_CantClearLoginFiles: Không xóa được các tệp đăng nhập cũ
-Toast_Epic_AccountIdReg: Không lấy được AccountId từ Registry!
+Toast_AccountIdReg: Không lấy được AccountId từ Registry!
 Toast_DuplicateNames: Không thể hoán đổi. Các tài khoản trùng lặp với cùng một tên người dùng?
 Toast_CouldNotLocate: Không thể định vị người dùng đã đăng nhập
 Toast_StreamerModeHint: Thông tin cá nhân bị ẩn! - Xem cài đặt

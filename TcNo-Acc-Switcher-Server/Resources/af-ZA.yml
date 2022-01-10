@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "Wenk: Veranderde instellings vir onenigheid? Spaar weer
 Toast_Discord_NoToken: Kon nie gebruiker se token vind nie! Sluit normaalweg met Discord en stoor dan weer.
 Toast_CantChangeUsername: Kon nie gebruikersnaam verander nie
 Toast_CantClearLoginFiles: Kon nie ou aanmeldlêers uitvee nie
-Toast_Epic_AccountIdReg: Kon nie AccountId van die register kry nie!
+Toast_AccountIdReg: Kon nie AccountId van die register kry nie!
 Toast_DuplicateNames: Kon nie omruil nie. Dupliseer rekeninge met dieselfde gebruikersnaam?
 Toast_CouldNotLocate: Kon nie die aangemelde gebruiker opspoor nie
 Toast_StreamerModeHint: Privaat inligting is versteek! - Sien instellings

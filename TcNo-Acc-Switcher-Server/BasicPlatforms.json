@@ -2,36 +2,45 @@
   "Platforms": {
     "Escape from Tarkov": {
       "Identifiers": [ "eft", "bsg" ],
-      "ExeLocationDefault": "C:\\Battlestate Games\\BsgLauncher\\BsgLauncher.exe",
+      "ExeLocationDefault": "C:\\Battlestate Games\\BsgLaunche123r\\BsgLauncher.exe",
       "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
-      "PathListToClear": [ "%AppData%\\Battlestate Games\\BsgLauncher\\settings\\" ],
+      "PathListToClear": [ "%AppData%\\Battlestate Games\\BsgLauncher\\settings" ],
       "LoginFiles": {
         "%AppData%\\Battlestate Games\\BsgLauncher\\settings": "settings"
       },
       "UniqueIdFile": "settings",
       "UniqueIdRegex": "EMAIL_REGEX"
     },
-    "Kevins World": {
-      "Identifiers": [ "k", "bsg" ],
-      "ExeLocationDefault": "C:\\Battlestate Games\\BsgLauncher\\BsgLauncher.exe",
-      "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
-      "PathListToClear": [ "%AppData%\\Battlestate Games\\BsgLauncher\\settings\\" ],
+    "Epic Games": {
+      "Identifiers": [],
+      "ExeLocationDefault": "",
+      "ExesToEnd": [ "" ],
+      "PathListToClear": [
+        "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId",
+        "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\Windows\\GameUserSettings.ini"
+      ],
       "LoginFiles": {
-        "%AppData%\\Battlestate Games\\BsgLauncher\\settings": "settings"
+        "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\Windows\\GameUserSettings.ini": "GameUserSettings.ini",
+        "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId": "UNIQUE_ID"
       },
-      "UniqueIdFile": "settings",
-      "UniqueIdRegex": "EMAIL_REGEX"
-    },
-    "Jason": {
-      "Identifiers": [ "jj", "bsg" ],
-      "ExeLocationDefault": "C:\\Battlestate Games\\BsgLauncher\\BsgLauncher.exe",
-      "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
-      "PathListToClear": [ "%AppData%\\Battlestate Games\\BsgLauncher\\settings\\" ],
+      "UniqueIdFile": "HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId",
+      "UniqueIdMethod": "REGKEY"
+    }
+  },
+  "Platform-WIP": {
+    "Origin": {
+      "Identifiers": [ "sdfgsdfgsdfg" ],
+      "ExeLocationDefault": "C:\\Program Files (x86)\\Origin\\Origin.exe",
+      "ExesToEnd": [ "Origin.exe" ],
+      "PathListToClear": [ "%AppData%\\Origin\\ConsolidatedCache\\" ],
       "LoginFiles": {
-        "%AppData%\\Battlestate Games\\BsgLauncher\\settings": "settings"
+        "%AppData%\\Origin\\ConsolidatedCache\\": "ConsolidatedCache",
+        "%AppData%\\Origin\\NucleusCache\\": "NucleusCache",
+        "%AppData%\\Origin\\Logs\\": "Logs",
+        "%ProgramData%\\Origin\\Subscription\\": "Subscription"
       },
-      "UniqueIdFile": "settings",
-      "UniqueIdRegex": "EMAIL_REGEX"
+      "UniqueIdFile": "*.olc",
+      "UniqueIdMethod": "FILE_MD5"
     }
   }
 }

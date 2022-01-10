@@ -150,7 +150,9 @@ echo Creating installer
 "%NSIS%" "%origDir%\..\other\NSIS\nsis-build-x64.nsi"
 echo Done. Moving...
 move /Y "..\..\..\..\other\NSIS\TcNo Account Switcher - Installer.exe" "TcNo Account Switcher - Installer.exe"
-"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a "TcNo Account Switcher - Installer.exe"
+IF EXIST A:\AccountSwitcherConfig\sign.txt (
+	"%SIGNTOOL%" sign /tr http://timestamp.sectigo.com?td=sha256 /td SHA256 /fd SHA256 /a "TcNo Account Switcher - Installer.exe"
+)
 
 ECHO Moving CEF files BACK (for update)
 

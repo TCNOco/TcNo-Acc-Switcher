@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "רמז: שינו את הגדרות הדיסקורד? ש
 Toast_Discord_NoToken: מציאת אסימון המשתמש נכשלה! צא מ- Discord כרגיל ואז שמור שוב.
 Toast_CantChangeUsername: לא ניתן היה לשנות את שם המשתמש
 Toast_CantClearLoginFiles: ניקוי קבצי הכניסה הישנים נכשל
-Toast_Epic_AccountIdReg: השגת AccountId מהרישום נכשלה!
+Toast_AccountIdReg: השגת AccountId מהרישום נכשלה!
 Toast_DuplicateNames: לא ניתן היה להחליף. שכפול חשבונות עם אותו שם משתמש?
 Toast_CouldNotLocate: לא ניתן היה לאתר משתמש מחובר
 Toast_StreamerModeHint: מידע פרטי מוסתר! - ראה הגדרות

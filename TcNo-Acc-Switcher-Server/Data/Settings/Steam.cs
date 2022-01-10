@@ -158,6 +158,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.TrayAccNumber = 3;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Steam");
             _ = Shortcut.StartWithWindows_Enabled();
+            _instance._altClose = false;
 
             SaveSettings();
         }
@@ -216,6 +217,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.ImageExpiryTime = curSettings.ImageExpiryTime;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
             _instance._desktopShortcut = Shortcut.CheckShortcuts("Steam");
+            _instance._altClose = curSettings.AltClose;
             _ = Shortcut.StartWithWindows_Enabled();
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));

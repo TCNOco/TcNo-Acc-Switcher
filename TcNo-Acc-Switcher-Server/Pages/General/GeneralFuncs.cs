@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
@@ -149,6 +150,62 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         #endregion
 
         #region FILE_OPERATIONS
+
+        /// <summary>
+        /// Remove requested account from account switcher (Generic file/ids.json operation)
+        /// </summary>
+        /// <param name="accName">Basic account name</param>
+        /// <param name="platform">Platform string (file safe)</param>
+        /// <param name="accNameIsId">Whether the accName is the unique ID in ids.json (false by default)</param>
+        public static bool ForgetAccount_Generic(string accName, string platform, bool accNameIsId = false)
+        {
+            Globals.DebugWriteLine(@"[Func:General\GeneralSwitcherFuncs.ForgetAccount_Generic] Forgetting account: hidden, Platform: " + platform);
+
+            // Remove ID from list of ids
+            var idsFile = $"LoginCache\\{platform}\\ids.json";
+            if (File.Exists(idsFile))
+            {
+                var allIds = ReadAllIds_Generic(idsFile);
+                if (accNameIsId)
+                    _ = allIds.Remove(accName);
+                else
+                    _ = allIds.Remove(allIds.Single(x => x.Value == accName).Key);
+                File.WriteAllText(idsFile, JsonConvert.SerializeObject(allIds));
+            }
+
+            // Remove cached files
+            GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\{platform}\\{accName}"), false);
+
+            // Remove image
+            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{platform}\\{Uri.EscapeDataString(accName)}.jpg");
+            if (File.Exists(img)) File.Delete(img);
+
+            // Remove from Tray
+            Globals.RemoveTrayUser(platform, accName); // Add to Tray list
+            return true;
+        }
+
+        /// <summary>
+        /// Read all ids from requested platform file
+        /// </summary>
+        /// <param name="idsFile">Full ids.json file path (file safe)</param>
+        public static Dictionary<string, string> ReadAllIds_Generic(string idsFile)
+        {
+            Globals.DebugWriteLine(@"[Func:General\GeneralSwitcherFuncs.ReadAllIds_Generic]");
+            var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
+            if (!File.Exists(idsFile)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+            try
+            {
+                s = Globals.ReadAllText(idsFile);
+            }
+            catch (Exception)
+            {
+                //
+            }
+
+            return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+        }
+
 
         public static string WwwRoot()
         {
@@ -670,7 +727,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                     default:
                         Basic.BasicSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Basic.Instance.SaveSettings( !File.Exists(AppData.Instance.BasicCurrentPlatform));
+                        Data.Settings.Basic.Instance.SaveSettings( !File.Exists(CurrentPlatform.Instance.FullName));
                         break;
                 }
 

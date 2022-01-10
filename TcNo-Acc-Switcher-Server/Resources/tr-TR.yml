@@ -109,7 +109,7 @@ Toast_Discord_SaveHint: "İpucu: Discord ayarları değiştirildi mi? Aynı adla
 Toast_Discord_NoToken: Kullanıcının jetonu bulunamadı! Discord'dan normal şekilde çıkın, ardından tekrar kaydedin.
 Toast_CantChangeUsername: Kullanıcı adı değiştirilemedi
 Toast_CantClearLoginFiles: Eski oturum açma dosyaları temizlenemedi
-Toast_Epic_AccountIdReg: Kayıt Defterinden AccountId alınamadı!
+Toast_AccountIdReg: Kayıt Defterinden AccountId alınamadı!
 Toast_DuplicateNames: Değiştirilemedi. Aynı kullanıcı adına sahip yinelenen hesaplar?
 Toast_CouldNotLocate: Oturum açmış kullanıcı bulunamadı
 Toast_StreamerModeHint: Özel bilgiler gizli! - Ayarlara bakın

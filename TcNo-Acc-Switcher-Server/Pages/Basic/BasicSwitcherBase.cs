@@ -34,7 +34,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         public static void BasicAddCurrent(string accName)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Basic\BasicSwitcherBase.BasicAddCurrent] accName:hidden");
-            BasicSwitcherFuncs.BasicAddCurrent(accName);
+            _ = BasicSwitcherFuncs.BasicAddCurrent(accName);
         }
     }
 }

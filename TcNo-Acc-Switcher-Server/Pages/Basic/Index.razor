@@ -92,21 +92,17 @@
 
         // Get platform name from URI if not set.
         if (!string.IsNullOrEmpty(requestPlat))
-            _appData.BasicCurrentPlatform = _appData.PlatformFullName(requestPlat);
+            BasicPlatforms.Instance.SetCurrentPlatformFromShort(requestPlat);
 
         // If current platform is NOT valid -> Go back
-        if (_appData.BasicCurrentPlatform == null || !_appData.BasicPlatformsContains(_appData.BasicCurrentPlatform))
+        if (!CurrentPlatform.Instance.IsInit)
         {
             _navBack = true;
             return;
         }
 
-    // Either load existing, or safe default settings for platform
-        if (File.Exists(_appData.BasicCurrentPlatformSettingsFileFull)) Data.Settings.Basic.Instance.LoadFromFile();
-        else Data.Settings.Basic.Instance.SaveSettings();
-
         // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
-        if (File.Exists(_appData.BasicCurrentPlatformExeFullPath)) return;
+        if (File.Exists(_basic.Exe())) return;
 
         _navBack = true;
     }
@@ -118,6 +114,6 @@
             _navManager.NavigateTo(_navManager.BaseUri);
             return;
         }
-        await GeneralFuncs.HandleFirstRender(firstRender, _appData.BasicCurrentPlatform);
+        await GeneralFuncs.HandleFirstRender(firstRender, CurrentPlatform.Instance.FullName);
     }
 }

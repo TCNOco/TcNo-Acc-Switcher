@@ -42,7 +42,7 @@
             @if (!AppSettings.Instance.DisabledPlatforms.Contains(platform))
             {
                 <div class="platform_list_item" id="@("Switcher" + platform)" @onclick="() => Check(platform)">
-                    <div class="fgText @(!System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{platform}.svg")) ? "noImageCenterText" : "") @(_appData.PlatformFullName(platform).Length < 7 ? "shortText" : _appData.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@_appData.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
+                    <div class="fgText @(!System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{platform}.svg")) ? "noImageCenterText" : "") @(BasicPlatforms.Instance.PlatformFullName(platform).Length < 7 ? "shortText" : BasicPlatforms.Instance.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@BasicPlatforms.Instance.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
                     <div class="fgImg">
                         @if(System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{platform}.svg")))
                         {
