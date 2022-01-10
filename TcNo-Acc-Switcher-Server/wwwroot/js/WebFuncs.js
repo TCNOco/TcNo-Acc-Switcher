@@ -403,7 +403,7 @@ async function showModal(modaltype) {
         var platformExe = modaltype.split(":")[2];
         var platformSettingsPath = modaltype.split(":")[3];
         Modal_RequestedLocated(false);
-        debugger;
+
         // Sub in info if this is a basic page
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform).then((r) => {
             platform = r;
@@ -660,10 +660,7 @@ async function Modal_Finalise(platform, platformSettingsPath) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
     $(".modalBG").fadeOut();
 
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetPlatformUrl", platformSettingsPath.split("Settings")[0]).then((r) => {
-        window.location.assign(window.location.host + "/" + r);
-    });
-    var result = await promise;
+    location.reload();
 }
 
 async function Modal_Confirm(action, value) {

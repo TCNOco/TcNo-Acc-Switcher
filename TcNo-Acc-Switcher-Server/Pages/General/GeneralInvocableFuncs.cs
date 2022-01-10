@@ -213,9 +213,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         [JSInvokable]
-        public static Task<string> GiGetPlatformUrl(string platformFullName) => AppData.Instance.OldPlatformList.Contains(platformFullName)
+        public static Task<string> GiGetPlatformUrl(string platformFullName)
+        {
+            if (platformFullName.EndsWith("Settings"))
+                platformFullName = platformFullName.Split("Settings")[0];
+            return AppData.Instance.OldPlatformList.Contains(platformFullName)
                 ? Task.FromResult(platformFullName)
                 : Task.FromResult("Basic/?plat=" + CurrentPlatform.Instance.PrimaryId);
+        }
 
         [JSInvokable]
         public static Task<string> GiGetVersion() => Task.FromResult(Globals.Version);
