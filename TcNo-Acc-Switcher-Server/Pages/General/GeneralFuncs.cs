@@ -165,7 +165,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             var idsFile = $"LoginCache\\{platform}\\ids.json";
             if (File.Exists(idsFile))
             {
-                var allIds = ReadAllIds_Generic(idsFile);
+                var allIds = ReadDict(idsFile);
                 if (accNameIsId)
                 {
                     var accId = accName;
@@ -192,15 +192,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <summary>
         /// Read all ids from requested platform file
         /// </summary>
-        /// <param name="idsFile">Full ids.json file path (file safe)</param>
-        public static Dictionary<string, string> ReadAllIds_Generic(string idsFile)
+        /// <param name="dictPath">Full *.json file path (file safe)</param>
+        public static Dictionary<string, string> ReadDict(string dictPath, bool isBasic = false)
         {
-            Globals.DebugWriteLine(@"[Func:General\GeneralSwitcherFuncs.ReadAllIds_Generic]");
+            Globals.DebugWriteLine(@"[Func:General\GeneralSwitcherFuncs.ReadDict]");
             var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
-            if (!File.Exists(idsFile)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+            if (!File.Exists(dictPath))
+            {
+                if (isBasic && !Globals.IsDirectoryEmpty(Path.GetDirectoryName(dictPath)))
+                {
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegSaveMissing"], Lang["Error"], "toastarea");
+                }
+                return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+            }
             try
             {
-                s = Globals.ReadAllText(idsFile);
+                s = Globals.ReadAllText(dictPath);
             }
             catch (Exception)
             {
@@ -208,6 +215,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
 
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+        }
+
+        public static void SaveDict(Dictionary<string, string> dict, string path, bool deleteIfEmpty = false)
+        {
+            Globals.DebugWriteLine(@"[Func:General\GeneralSwitcherFuncs.SaveDict]");
+            if (path == null) return;
+            var outText = JsonConvert.SerializeObject(dict);
+            if (outText.Length < 4 && File.Exists(path))
+                 File.Delete(path);
+            else
+                File.WriteAllText(path, outText);
         }
 
 
@@ -702,11 +720,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     case "Discord":
                         Discord.DiscordSwitcherFuncs.LoadProfiles();
                         Data.Settings.Discord.Instance.SaveSettings(!File.Exists(Data.Settings.Discord.SettingsFile));
-                        break;
-
-                    case "Epic Games":
-                        Epic.EpicSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Epic.Instance.SaveSettings(!File.Exists(Data.Settings.Epic.SettingsFile));
                         break;
 
                     case "Origin":

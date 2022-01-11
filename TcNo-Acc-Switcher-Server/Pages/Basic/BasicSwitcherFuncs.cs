@@ -45,7 +45,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         #region Account IDs
 
         public static Dictionary<string, string> AccountIds;
-        public static void LoadAccountIds() => AccountIds = GeneralFuncs.ReadAllIds_Generic(Platform.IdsJsonPath);
+        public static void LoadAccountIds() => AccountIds = GeneralFuncs.ReadDict(Platform.IdsJsonPath);
         private static void SaveAccountIds() =>
             File.WriteAllText(Platform.IdsJsonPath, JsonConvert.SerializeObject(AccountIds));
         public static string GetNameFromId(string accId) => AccountIds.ContainsKey(accId) ? AccountIds[accId] : accId;
@@ -126,7 +126,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 // The "file" is a registry key
                 if (accFile.StartsWith("REG:"))
                 {
-                    if (!Globals.SetRegistryKey(accFile[3..])) // Remove "REG:" and read data
+                    if (!Globals.SetRegistryKey(accFile[4..])) // Remove "REG:" and read data
                     {
                         _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
                         return false;
@@ -170,7 +170,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // Get unique ID from IDs file if unique ID is a registry key. Set if exists.
             if (Platform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(Platform.UniqueIdFile))
             {
-                var uniqueId = GeneralFuncs.ReadAllIds_Generic(Platform.SafeName).FirstOrDefault(x => x.Value == accName).Key;
+                var uniqueId = GeneralFuncs.ReadDict(Platform.SafeName).FirstOrDefault(x => x.Value == accName).Key;
 
                 if (!string.IsNullOrEmpty(uniqueId) && !Globals.SetRegistryKey(Platform.UniqueIdFile, uniqueId)) // Remove "REG:" and read data
                 {
@@ -179,19 +179,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 }
             }
 
+            var regJson = Platform.ReadRegJson(accName);
+
             foreach (var (accFile, savedFile) in Platform.LoginFiles)
             {
                 // The "file" is a registry key
                 if (accFile.StartsWith("REG:"))
                 {
-                    var regFile = Path.Join(localCachePath, (string) Platform.LoginFiles[accFile]);
-                    if (!File.Exists(regFile))
-                    {
-                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegSaveMissing"], Lang["Error"], "toastarea");
-                        return false;
-                    }
+                    var regValue = regJson[accFile] ?? "";
 
-                    if (!Globals.SetRegistryKey(accFile[3..], File.ReadAllText(regFile))) // Remove "REG:" and read data
+                    if (!Globals.SetRegistryKey(accFile[4..], regValue)) // Remove "REG:" and read data
                     {
                         _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
                         return false;
@@ -243,16 +240,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 File.WriteAllText(uniqueIdFile, uniqueId);
             }
 
+            var regJson = Platform.ReadRegJson(accName);
+
             foreach (var (accFile, savedFile) in Platform.LoginFiles)
             { // The "file" is a registry key
                 if (accFile.StartsWith("REG:"))
                 {
-                    var trimmedName = accFile[3..];
+                    var trimmedName = accFile[4..];
 
                     if (ReadRegistryKeyWithErrors(trimmedName, out var response)) // Remove "REG:" and read data
                     {
                         // Write registry value to provided file
-                        File.WriteAllText(Path.Join(localCachePath, (string)Platform.LoginFiles[accFile]), response);
+                        regJson[accFile] = response;
                         continue;
                     }
                 }
@@ -283,12 +282,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     File.Copy(Environment.ExpandEnvironmentVariables(accFile), Path.Join(localCachePath, savedFile), true);
             }
 
-            var allIds = GeneralFuncs.ReadAllIds_Generic(Platform.IdsJsonPath);
+            Platform.SaveRegJson(regJson, accName);
+
+            var allIds = GeneralFuncs.ReadDict(Platform.IdsJsonPath);
             allIds[uniqueId] = accName;
             File.WriteAllText(Platform.IdsJsonPath, JsonConvert.SerializeObject(allIds));
 
             // Copy in profile image from default
-            // TODO: Replace all Uri.EscapeDataString for images with Globals.GetCleanFilePath?
             _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{Platform.SafeName}"));
             var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{Platform.SafeName}\\{Globals.GetCleanFilePath(uniqueId)}.jpg");
             if (!File.Exists(profileImg))

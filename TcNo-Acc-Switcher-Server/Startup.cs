@@ -60,7 +60,6 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddSingleton<Data.Settings.BattleNet>();
             _ = services.AddSingleton<Data.Settings.Basic>();
             _ = services.AddSingleton<Data.Settings.Discord>();
-            _ = services.AddSingleton<Data.Settings.Epic>();
             _ = services.AddSingleton<Data.Settings.Origin>();
             _ = services.AddSingleton<Data.Settings.Riot>();
             _ = services.AddSingleton<Data.Settings.Steam>();

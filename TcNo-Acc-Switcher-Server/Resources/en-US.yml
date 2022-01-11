@@ -219,7 +219,7 @@ Context_ExportAccList: Export account list
 Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
 Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
 Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
+Title_Platforms_Settings: TcNo Account Switcher - Extra Platform Settings
 Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - Text Editor
 Title_Origin_Settings: TcNo Account Switcher - Origin Settings
@@ -229,7 +229,7 @@ Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
 Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
 Title_Steam_Settings: TcNo Account Switcher - Steam Settings
 Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
-Title_Template_Settings: TcNo Account Switcher - {platformName}
+Title_Template_Settings: TcNo Account Switcher - {platformName} Settings
 Installer_Downloading: Downloading {file}
 Installer_DownloadFinished: Finished downloading {file}
 Installer_Installing: "Installing: {runtime}"

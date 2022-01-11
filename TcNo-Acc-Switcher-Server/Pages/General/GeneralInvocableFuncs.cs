@@ -26,7 +26,6 @@ using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.Discord;
-using TcNo_Acc_Switcher_Server.Pages.Epic;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Origin;
 using TcNo_Acc_Switcher_Server.Pages.Riot;
@@ -42,7 +41,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         private static readonly Data.Settings.Basic Basic = Data.Settings.Basic.Instance;
         private static readonly Data.Settings.Discord Discord = Data.Settings.Discord.Instance;
-        private static readonly Data.Settings.Epic Epic = Data.Settings.Epic.Instance;
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
         private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
         private static readonly Data.Settings.Ubisoft Ubisoft = Data.Settings.Ubisoft.Instance;
@@ -115,9 +113,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "DiscordSettings":
                     Discord.FolderPath = path;
                     break;
-                case "EpicSettings":
-                    Epic.FolderPath = path;
-                    break;
                 case "SteamSettings":
                     Steam.FolderPath = path;
                     break;
@@ -152,13 +147,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 {
                     Basic.SetForgetAcc(true);
                     _ = GeneralFuncs.ForgetAccount_Generic(accName, CurrentPlatform.Instance.SafeName, true);
-                    return Task.FromResult("refresh");
-                }
-
-                if (action.StartsWith("AcceptForgetEpicAcc:"))
-                {
-                    Epic.SetForgetAcc(true);
-                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Epic", true);
                     return Task.FromResult("refresh");
                 }
 
@@ -274,9 +262,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     break;
                 case "Discord":
                     DiscordSwitcherFuncs.ChangeUsername(id, reqName);
-                    break;
-                case "Epic":
-                    EpicSwitcherFuncs.ChangeUsername(id, reqName);
                     break;
                 case "Riot":
                     RiotSwitcherFuncs.ChangeUsername(id, reqName);

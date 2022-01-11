@@ -516,16 +516,6 @@ namespace TcNo_Acc_Switcher_Client
 
                         return;
                     }
-                // Epic Games
-                case "e":
-                    {
-                        // Epic Games format: +e:<username>
-                        Globals.WriteToLog("Epic Games switch requested");
-                        if (!GeneralFuncs.CanKillProcess(Epic.Processes)) Restart(combinedArgs, true);
-                        Epic.Instance.LoadFromFile();
-                        TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherFuncs.SwapEpicAccounts(account, string.Join(' ', remainingArguments));
-                        return;
-                    }
                 // Origin
                 case "o":
                     {
@@ -635,14 +625,6 @@ namespace TcNo_Acc_Switcher_Client
                 case "discord":
                     Globals.WriteToLog("Discord logout requested");
                     TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherBase.NewLogin_Discord();
-                    break;
-
-                // Epic Games
-                case "e":
-                case "epic":
-                case "epicgames":
-                    Globals.WriteToLog("Epic Games logout requested");
-                    TcNo_Acc_Switcher_Server.Pages.Epic.EpicSwitcherBase.NewLogin_Epic();
                     break;
 
                 // Origin

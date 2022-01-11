@@ -1,7 +1,7 @@
 {
   "Platforms": {
     "Escape from Tarkov": {
-      "Identifiers": [ "eft", "bsg" ],
+      "Identifiers": [ "eft", "bsg", "tarkov" ],
       "ExeLocationDefault": "C:\\Battlestate Games\\BsgLaunche123r\\BsgLauncher.exe",
       "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
       "PathListToClear": [
@@ -25,13 +25,11 @@
       },
       "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
-    }
-  },
-  "Platform-WIP": {
+    },
     "Epic Games": {
-      "Identifiers": [ "epg" ],
-      "ExeLocationDefault": "",
-      "ExesToEnd": [ "" ],
+      "Identifiers": [ "e", "epg", "epic", "epicgames" ],
+      "ExeLocationDefault": "C:\\Program Files (x86)\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\EpicGamesLauncher.exe",
+      "ExesToEnd": [ "EpicGamesLauncher.exe" ],
       "PathListToClear": [
         "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId",
         "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\Windows\\GameUserSettings.ini"
@@ -41,8 +39,11 @@
         "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId": "UNIQUE_ID"
       },
       "UniqueIdFile": "HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId",
-      "UniqueIdMethod": "REGKEY"
-    },
+      "UniqueIdMethod": "REGKEY",
+      "STATUS": "WIP"
+    }
+  },
+  "Platform-WIP": {
     "Origin": {
       "Identifiers": [ "sdfgsdfgsdfg" ],
       "ExeLocationDefault": "C:\\Program Files (x86)\\Origin\\Origin.exe",
@@ -55,7 +56,8 @@
         "%ProgramData%\\Origin\\Subscription\\": "Subscription"
       },
       "UniqueIdFile": "*.olc",
-      "UniqueIdMethod": "FILE_MD5"
+      "UniqueIdMethod": "FILE_MD5",
+      "STATUS": "WIP"
     }
   }
 }

@@ -286,6 +286,10 @@ namespace TcNo_Acc_Switcher_Globals
         #endregion
 
         #region FILES
+        public static bool IsDirectoryEmpty(string path)
+        {
+            return !Directory.EnumerateFileSystemEntries(path).Any();
+        }
 
         /// <summary>
         /// A replacement for File.ReadAllText() that doesn't crash if a file is in use.
@@ -477,8 +481,8 @@ namespace TcNo_Acc_Switcher_Globals
         /// <param name="encodedPath">HKXX\\path:subkey</param>
         private static (RegistryKey, string, string) ExplodeRegistryKey(string encodedPath)
         {
-            var rootKey = Globals.ExpandRegistryAbbreviation(encodedPath[..3]); // Get HKXX
-            encodedPath = encodedPath[4..]; // Remove HKXX\\
+            var rootKey = ExpandRegistryAbbreviation(encodedPath[..4]); // Get HKXX
+            encodedPath = encodedPath[5..]; // Remove HKXX\\
             var path = encodedPath.Split(":")[0];
             var subKey = encodedPath.Split(":")[1];
 

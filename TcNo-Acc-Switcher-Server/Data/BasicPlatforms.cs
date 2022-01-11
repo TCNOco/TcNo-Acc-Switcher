@@ -36,8 +36,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private readonly Dictionary<string, string> _platformDictAllPossible = new()
         {
-            { "BattleNet", "Battle.Net" },
-            { "Epic", "Epic Games" }
+            { "BattleNet", "Battle.Net" }
         };
 
         public BasicPlatforms() {}
@@ -79,6 +78,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             return platforms;
         }
         public string PlatformFullName(string id) => PlatformsDict.ContainsKey(id) ? PlatformsDict[id] : id;
+        public string PlatformSafeName(string id) =>
+            PlatformsDict.ContainsKey(id) ? Globals.GetCleanFilePath(PlatformsDict[id]) : id;
         public string PrimaryIdFromPlatform(string platform) => _instance._platformDictAllPossible.FirstOrDefault(x => x.Value == platform).Key;
         public string GetExeNameFromPlatform(string platform) => Path.GetFileName((string)((JObject)GetPlatforms[platform])["ExeLocationDefault"]);
         public List<string> GetAllPrimaryIds() => _instance._platformDict.Keys.ToList();
@@ -157,5 +158,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         public string PrimaryId => _platformIds[0];
         public string IdsJsonPath => $"LoginCache\\{_instance.SafeName}\\ids.json";
         public string AccountLoginCachePath(string acc) => $"LoginCache\\{_instance.SafeName}\\{acc}\\";
+
+        public Dictionary<string, string> ReadRegJson(string acc) =>
+            GeneralFuncs.ReadDict(Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
+        public void SaveRegJson(Dictionary<string, string> regJson, string acc) =>
+            GeneralFuncs.SaveDict(regJson, Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
     }
 }

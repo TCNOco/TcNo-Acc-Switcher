@@ -42,12 +42,12 @@
             @if (!AppSettings.Instance.DisabledPlatforms.Contains(platform))
             {
                 <div class="platform_list_item" id="@("Switcher" + platform)" @onclick="() => Check(platform)">
-                    <div class="fgText @(!System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{platform}.svg")) ? "noImageCenterText" : "") @(BasicPlatforms.Instance.PlatformFullName(platform).Length < 7 ? "shortText" : BasicPlatforms.Instance.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@BasicPlatforms.Instance.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
+                    <div class="fgText @(!System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.Instance.PlatformSafeName(platform)}.svg")) ? "noImageCenterText" : "") @(BasicPlatforms.Instance.PlatformFullName(platform).Length < 7 ? "shortText" : BasicPlatforms.Instance.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@BasicPlatforms.Instance.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
                     <div class="fgImg">
-                        @if(System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{platform}.svg")))
+                        @if(System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.Instance.PlatformSafeName(platform)}.svg")))
                         {
-                            <svg viewBox="0 0 500 500" draggable="false" alt="@(platform)">
-                                <use href="@($"img/platform/{platform.ToLowerInvariant()}.svg#FG")" class="@($"icoFG")"></use>
+                            <svg viewBox="0 0 500 500" draggable="false" alt="@(BasicPlatforms.Instance.PlatformSafeName(platform))">
+                                <use href="@($"img/platform/{BasicPlatforms.Instance.PlatformSafeName(platform)}.svg#FG")" class="@($"icoFG")"></use>
                             </svg>
                         }
                     </div>
@@ -110,6 +110,11 @@
 			AppData.InvokeVoidAsync("initContextMenu");
 			//await AppData.InvokeVoidAsync("initAccListSortable");
 		}
+
+	    foreach (var platform in _appData.PlatformList)
+	    {
+	        Console.WriteLine(platform);
+	    }
 	}
 	protected override void OnInitialized()
 	{

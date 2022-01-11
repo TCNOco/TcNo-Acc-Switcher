@@ -66,7 +66,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!Directory.Exists(folder)) return false;
             var idsFile = Path.Join(folder, "ids.json");
             accList = File.Exists(idsFile)
-                ? GeneralFuncs.ReadAllIds_Generic(idsFile).Keys.ToList()
+                ? GeneralFuncs.ReadDict(idsFile).Keys.ToList()
                 : (from f in Directory.GetDirectories(folder)
                     let lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1
                     select f[lastSlash..]).ToList();

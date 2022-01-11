@@ -115,7 +115,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
             Globals.DebugWriteLine(@"[Func:Discord\DiscordSwitcherFuncs.ClearCurrentLoginDiscord]");
             // Save current
             var hash = GetHashedDiscordToken();
-            var allIds = GeneralFuncs.ReadAllIds_Generic("Discord");
+            var allIds = GeneralFuncs.ReadDict("Discord");
             if (allIds.ContainsKey(hash))
                 DiscordAddCurrent(allIds[hash]);
 
@@ -233,7 +233,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
 
             if (string.IsNullOrEmpty(hash)) return;
 
-            var allIds = GeneralFuncs.ReadAllIds_Generic("Discord");
+            var allIds = GeneralFuncs.ReadDict("Discord");
             allIds[hash] = accName;
             File.WriteAllText("LoginCache\\Discord\\ids.json", JsonConvert.SerializeObject(allIds));
 
@@ -306,7 +306,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
         {
             // Save current
             var hash = GetHashedDiscordToken();
-            var allIds = GeneralFuncs.ReadAllIds_Generic("Discord");
+            var allIds = GeneralFuncs.ReadDict("Discord");
             if (!allIds.ContainsKey(hash)) return false;
             // Else list already contains the token, so just save with the same username.
             DiscordAddCurrent(allIds[hash]);
@@ -324,7 +324,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Discord
                 newName = parts[1];
             }
 
-            var allIds = GeneralFuncs.ReadAllIds_Generic("Discord");
+            var allIds = GeneralFuncs.ReadDict("Discord");
             try
             {
                 allIds[allIds.Single(x => x.Value == oldName).Key] = newName;

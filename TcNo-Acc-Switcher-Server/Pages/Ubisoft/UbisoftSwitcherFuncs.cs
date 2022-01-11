@@ -34,7 +34,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             const string localCachePath = "LoginCache\\Ubisoft\\";
             if (!Directory.Exists(localCachePath) || !File.Exists(Path.Join(localCachePath, "ids.json"))) return;
-            var allIds = GeneralFuncs.ReadAllIds_Generic("Ubisoft");
+            var allIds = GeneralFuncs.ReadDict("Ubisoft");
 
             // Order
             if (File.Exists("LoginCache\\Ubisoft\\order.json"))
@@ -104,7 +104,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                 return "";
             }
 
-            var allIds = GeneralFuncs.ReadAllIds_Generic("Ubisoft");
+            var allIds = GeneralFuncs.ReadDict("Ubisoft");
             return (allIds.ContainsKey(userId) ? allIds[userId] : "");
         }
 
@@ -135,7 +135,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
         public static void SetUsername(string id, string username, bool reload)
         {
-            var allIds = GeneralFuncs.ReadAllIds_Generic("Ubisoft");
+            var allIds = GeneralFuncs.ReadDict("Ubisoft");
             allIds[id] = username;
             File.WriteAllText("LoginCache\\Ubisoft\\ids.json", JsonConvert.SerializeObject(allIds));
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Ubisoft/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_SetUsername"]), true);
@@ -230,7 +230,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
             if (userId != "")
             {
                 if (!UbisoftCopyInAccount(userId, state)) return;
-                Globals.AddTrayUser("Ubisoft", "+u:" + userId, GeneralFuncs.ReadAllIds_Generic("Ubisoft")[userId], Ubisoft.TrayAccNumber); // Add to Tray list
+                Globals.AddTrayUser("Ubisoft", "+u:" + userId, GeneralFuncs.ReadDict("Ubisoft")[userId], Ubisoft.TrayAccNumber); // Add to Tray list
             }
             else
                 ClearCurrentUser();

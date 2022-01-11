@@ -53,13 +53,6 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     else _ = GeneralInvocableFuncs.ShowModal("find:Discord:Discord.exe:DiscordSettings");
                     break;
 
-                case "Epic":
-                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Epic.Processes)) return;
-                    Data.Settings.Epic.Instance.LoadFromFile();
-                    if (Directory.Exists(Data.Settings.Epic.Instance.FolderPath) && File.Exists(Data.Settings.Epic.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Epic/");
-                    else _ = GeneralInvocableFuncs.ShowModal("find:Epic:EpicGamesLauncher.exe:EpicSettings");
-                    break;
-
                 case "Origin":
                     if (!GeneralFuncs.CanKillProcess(Data.Settings.Origin.Processes)) return;
                     Data.Settings.Origin.Instance.LoadFromFile();
