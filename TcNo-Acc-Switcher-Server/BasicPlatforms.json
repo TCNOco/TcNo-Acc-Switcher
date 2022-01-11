@@ -4,9 +4,7 @@
       "Identifiers": [ "eft", "bsg", "tarkov" ],
       "ExeLocationDefault": "C:\\Battlestate Games\\BsgLaunche123r\\BsgLauncher.exe",
       "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
-      "PathListToClear": [
-        "%AppData%\\Battlestate Games\\BsgLauncher\\settings"
-      ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
         "%AppData%\\Battlestate Games\\BsgLauncher\\settings": "settings"
       },
@@ -21,7 +19,15 @@
       "LoginFiles": {
         "%AppData%\\obs-studio\\global.ini": "global.ini",
         "%AppData%\\obs-studio\\basic\\*": "basic\\",
-        "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+        "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance",
+
+
+        "%AppData%\\discord\\Cache\\index": "Cache\\index",
+        "%AppData%\\discord\\Cache\\data_*": "Cache\\",
+        "%AppData%\\discord\\Local Storage\\leveldb\\*.log": "Local Storage\\leveldb\\",
+        "%AppData%\\discord\\Local Storage\\leveldb\\*.ldb": "Local Storage\\leveldb\\",
+        "%AppData%\\discord\\Session Storage\\*.log": "Session Storage\\",
+        "%AppData%\\discord\\Session Storage\\*.ldb": "Session Storage\\"
       },
       "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
@@ -30,16 +36,44 @@
       "Identifiers": [ "e", "epg", "epic", "epicgames" ],
       "ExeLocationDefault": "C:\\Program Files (x86)\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\EpicGamesLauncher.exe",
       "ExesToEnd": [ "EpicGamesLauncher.exe" ],
-      "PathListToClear": [
-        "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId",
-        "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\Windows\\GameUserSettings.ini"
-      ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
         "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\Windows\\GameUserSettings.ini": "GameUserSettings.ini",
         "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId": "UNIQUE_ID"
       },
       "UniqueIdFile": "HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId",
-      "UniqueIdMethod": "REGKEY",
+      "UniqueIdMethod": "REGKEY"
+    },
+    "Discord": {
+      "Identifiers": [ "d", "discord" ],
+      "ExeLocationDefault": "%LocalAppData%\\DiscordCanary\\Update.exe",
+      "ExeExtraArgs": "--processStart DiscordCanary.exe",
+      "ExesToEnd": [ "DiscordCanary.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "%AppData%\\discordcanary\\settings.json": "settings.json",
+        "%AppData%\\discordcanary\\Cookies": "Cookies",
+        "%AppData%\\discordcanary\\Network Persistent State": "Network Persistent State",
+        "%AppData%\\discordcanary\\Preferences": "Preferences",
+        "%AppData%\\discordcanary\\TransportSecurity": "TransportSecurity",
+        "%AppData%\\discordcanary\\Cache\\index": "Cache\\index",
+        "%AppData%\\discordcanary\\Cache\\data_*": "Cache\\",
+        "%AppData%\\discordcanary\\Local Storage\\leveldb\\*.log": "Local Storage\\leveldb\\",
+        "%AppData%\\discordcanary\\Local Storage\\leveldb\\*.log": "Local Storage\\leveldb\\",
+        "%AppData%\\discordcanary\\Session Storage\\*.log": "Session Storage\\",
+        "%AppData%\\discordcanary\\Session Storage\\*.ldb": "Session Storage\\",
+        "%AppData%\\discordcanary\\blob_storage\\*": "blob_storage\\",
+        "%AppData%\\discordcanary\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+      },
+      "ExitBeforeInteract": true,
+      "PeacefulExit": true,
+      "extras": {
+        "CachePaths": [ "%AppData%\\discordcanary\\Cache\\*" ],
+        "UsernameModalCopyText": "Platforms\\Discord\\UsernameCopy.txt",
+        "UsernameModalHintText": "Platform_DiscordPasteHint"
+      },
+      "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE",
       "STATUS": "WIP"
     }
   },

@@ -81,7 +81,7 @@ Toast_TrayFail: 트레이 응용 프로그램을 시작할 수 없습니다!
 Toast_TrayPosition: "종료 버튼 클릭 시: Windows 트레이에 표시됩니다! (시작 표시줄 오른쪽)"
 Toast_TrayHint: "힌트: Ctrl+'X'를 클릭하여 나를 완전히 닫거나 트레이 > '종료'를 통해"
 Toast_Copied: 복사됨
-Toast_PasteDiscordConsole: Discord 콘솔에 붙여넣고 결과를 입력에 붙여넣으세요!
+Platform_DiscordPasteHint: Discord 콘솔에 붙여넣고 결과를 입력에 붙여넣으세요!
 Toast_AlreadyProcessing: 이미 계정 처리 중...
 Toast_FailedRestore: 계정 복원 실패(콘솔 참조)
 Toast_Restored: 계정이 복구되었습니다!

@@ -287,19 +287,6 @@ function saveFile(fileName, urlFile) {
 	a.remove();
 }
 
-
-// Add currently logged in Origin account
-async function currentDiscordLogin() {
-    // Check to see if it is necessary first
-    var skipQuestion = false;
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SkipGetUsername").then((r) => {
-	    skipQuestion = r;
-    });
-    _ = await promise;
-
-    if (!skipQuestion)
-		showModal("accString");
-}
 // Add currently logged in Ubisoft account
 async function currentUbisoftLogin() {
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftHasUserSaved").then((r) => {
@@ -375,10 +362,10 @@ async function showModal(modaltype) {
         Modal_RequestedLocated(false);
         var platformName = modaltype.split(":")[1] ?? "username";
         let extraButtons = "";
-        if (getCurrentPage() === "Discord") {
-            extraButtons = `
-                <button class="modalOK extra" type="button" id="set_account_name" onclick="discordCopyJS()"><span><svg viewBox="0 0 448 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/copy.svg#img"></use></svg></span></button>
-				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>`;
+        if (platform === "Basic") {
+            await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText", platform).then((r) => {
+                extraButtons = r;
+            });
         }
 
         let platformText = (platformName === "username" ? " (Only changes it in the TcNo Account Switcher)" : "");
@@ -448,8 +435,7 @@ async function showModal(modaltype) {
         let header = `<h3>${modalConfirmAction}:</h3>`;
         if (action.startsWith("AcceptForgetSteamAcc")) {
             message = await GetLang("Prompt_ForgetSteam");
-        } else if (action.startsWith("AcceptForgetDiscordAcc") ||
-            action.startsWith("AcceptForgetBasicAcc") ||
+        } else if (action.startsWith("AcceptForgetBasicAcc") ||
             action.startsWith("AcceptForgetOriginAcc") ||
             action.startsWith("AcceptForgetUbisoftAcc") ||
             action.startsWith("AcceptForgetBattleNetAcc") ||
@@ -515,11 +501,10 @@ async function showModal(modaltype) {
     } else if (modaltype === "accString") {
         platform = getCurrentPage();
         let extraButtons = "";
-        if (platform === "Discord") {
-            extraButtons = `
-                <button class="modalOK extra" type="button" id="set_account_name" onclick="discordCopyJS()"><span><svg viewBox="0 0 448 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/copy.svg#img"></use></svg></span></button>
-				<button class="modalOK extra" type="button" id="set_account_name" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>`;
-        }
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText", platform).then((r) => {
+            extraButtons = r;
+        });
+
         Modal_RequestedLocated(false);
         // Sub in info if this is a basic page
         var redirectLink = platform;
@@ -563,9 +548,6 @@ async function showModal(modaltype) {
 		        <button class="modalOK" type="button" id="set_background" onclick="window.location = window.location + '?selectFile=*.*';"><span>${modalChooseLocal}</span></button>
 		        <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseBackground()"><span>${modalSetBackgroundButton}</span></button>
 	        </div>`);
-    } else if (modaltype === "password") {
-        let x = await showPasswordModal();
-        if (!x) return;
     } else {
 
         const notice = await GetLang("Notice");
@@ -584,59 +566,6 @@ async function showModal(modaltype) {
 
         }
     });
-}
-
-async function showPasswordModal() {
-    platform = getCurrentPage();
-    // Remove click-off action:
-    $(".modalBG")[0].onclick = () => false;
-    $("#btnClose-modal")[0].removeAttribute("onclick");
-    $("#btnClose-modal")[0].onclick = () => btnBack_Click();
-
-    // Check if a password is set
-    const modalNewPassword = await GetLangSub("Modal_EnterNewPassword", { platform: platform }),
-        modalAddPassword = await GetLangSub("Modal_EnterPassword", { platform: platform });
-
-    let skipEntry = false;
-    let infoText = modalNewPassword;
-    let creatingPass = true;
-    let dPromise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GiCheckPlatformPassword`, platform).then((r) => {
-        if (r === 1) {
-            infoText = modalAddPassword;
-            creatingPass = false;
-        } else if (r === 2) {
-	        skipEntry = true; // Skip as it's already entered.
-        }
-    });
-    _ = await dPromise;
-
-    if (skipEntry) return false;
-
-    const modalAddNewTitle = await GetLangSub("Modal_Title_AddNew", { platform: platform }),
-        modalEnterPassword = await GetLang("Modal_EnterPasswordShort"),
-        modalEnterPasswordRepeat = await GetLang("Modal_EnterPasswordRepeat"),
-        modalPasswordsMatch = await GetLang("Modal_PasswordsMatch"),
-        modalPasswordsNoMatch = await GetLang("Modal_PasswordsNoMatch"),
-        ok = await GetLang("Ok");
-
-	$("#modalTitle").text(modalAddNewTitle);
-    $("#modal_contents").empty();
-    $("#modal_contents").append(`<div>
-		        <span class="modal-text">${infoText}</span>
-	        </div>
-	        <div class="inputWithTitle">
-				<span class="modal-text">${modalEnterPassword}:</span>
-		        <input type="password" id="Password" style="width: 100%;padding: 8px;"` + (creatingPass ? "" : `onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();">`) + `
-	        </div>		        ` +
-        (creatingPass ? `<div class="inputWithTitle"><span class="modal-text">${modalEnterPasswordRepeat}:</span><input type="password" id="PasswordConfirm" style="width: 100%;padding: 8px;" onkeyup="javascript: if($('#Password').val() !== $('#PasswordConfirm').val()) $('#formNotice').html('${modalPasswordsNoMatch}').css('color','red'); else $('#formNotice').html('${modalPasswordsMatch}').css('color','lime')"></div>	` : "")
-	    + `
-			<p id="formNotice"></p>
-	        <div class="settingsCol inputAndButton">
-				<button class="modalOK extra" type="button" id="help" onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#why-a-password');"><span><svg viewBox="0 0 384 512" draggable="false" alt="C" class="footerIcoInline"><use href="img/fontawesome/question.svg#img"></use></svg></span></button>
-		        <button class="modalOK" style="padding: 0 40px;" type="button" id="set_account_name" onclick="Modal_HandlePassword()"><span>${ok}</span></button>
-	        </div>`);
-
-    return true;
 }
 
 function Modal_SetFilepath(path) {
@@ -680,10 +609,18 @@ async function Modal_Confirm(action, value) {
     $(".modalBG").fadeOut();
 }
 
-function Modal_FinaliseAccString(platform) {
-    // Supported: Discord, Origin, Riot, BASIC
-    let raw = $("#CurrentAccountName").val();
-    let name = (raw.indexOf("TCNO:") === -1 ? raw.replace(/[<>: \.\"\/\\|?*]/g, "-") : raw); // Clean string if not a command string.
+async function Modal_FinaliseAccString(platform) {
+    // Supported: Origin, Riot, BASIC
+    const raw = $("#CurrentAccountName").val();
+    let name = raw;
+
+    // Clean string if not a command string.
+    if (raw.indexOf(":{") === -1) {
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetCleanFilePath", raw).then((r) => {
+            name = r;
+        });
+    }
+
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", name);
     $(".modalBG").fadeOut();
     $("#acc_list").click();
@@ -699,32 +636,6 @@ function Modal_FinaliseAccNameChange() {
     let raw = $("#NewAccountName").val();
 	let name = (raw.indexOf("TCNO:") === -1 ? raw.replace(/[<>: \.\"\/\\|?*]/g, "-") : raw); // Clean string if not a command string.
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name, getCurrentPage());
-}
-
-
-async function Modal_HandlePassword() {
-	if ($("#PasswordConfirm").length && $("#PasswordConfirm").val() !== $("#Password").val())
-		return false;
-    let pass = $('#Password').val();
-
-    const modalPasswordsNoMatch = await GetLang("Modal_PasswordsNoMatch"),
-        toastRetryOrDeleteDiscordCache = await GetLang("Toast_RetryOrDeleteDiscordCache");
-
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiVerifyPlatformPassword", getCurrentPage(), pass).then((r) => {
-        if (!r)
-	        window.notification.new({
-		        type: "error",
-                title: modalPasswordsNoMatch,
-                message: toastRetryOrDeleteDiscordCache,
-		        renderTo: "toastarea",
-		        duration: 5000
-	        });
-        else {
-            $(".modalBG").fadeOut();
-            $("#acc_list").click();
-        }
-    });
-    var result = await promise;
 }
 
 var appendDelay = 100; // Milliseconds
@@ -762,59 +673,23 @@ function refetchRank() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RefetchRank", $(".acc:checked").attr("id"));
 }
 
-async function discordCopyJS() {
-    // Clicks the User Settings button
-    // Then immediately copies the 'src' of the profile image, and the username, as well as the #.
-    // Then copy to clipboard.
-    const findOptionsButtonText = await GetLang("Prompt_DiscordCopy1"),
-        checkStreamerModeText = await GetLang("Prompt_DiscordCopy2"),
-        userCheckStreamerMode = await GetLang("Prompt_DiscordCopy3")
-		getNameText = await GetLang("Prompt_DiscordCopy4"),
-        getAvatarText = await GetLang("Prompt_DiscordCopy5"),
-        copyAvatarText = await GetLang("Prompt_DiscordCopy6"),
-        closeOptionsText = await GetLang("Prompt_DiscordCopy7"),
-        notifyUserText = await GetLang("Prompt_DiscordCopy8"),
-        successfullyCopiedText = await GetLang("Prompt_DiscordCopy9"),
-        instrutionsText = await GetLang("Prompt_DiscordCopy10"),
-        toastCopied = await GetLang("Toast_Copied"),
-        toastPasteDiscordConsole = await GetLang("Toast_PasteDiscordConsole");
+async function usernameModalCopyText() {
+    let toastTitle = await GetLang("Toast_Copied"),
+        toastHintText = "",
+        platform = getCurrentPage();
 
-    let code = `
-// ${findOptionsButtonText}
-let btns = document.getElementsByClassName("button-14-BFJ");
-btns[btns.length-1].click();
-
-// ${checkStreamerModeText}
-let streamerMode = false;
-try { streamerMode = $("[class^='streamerModeEnabledBtn']") !== null;} catch (e) {streamerMode = false;}
-if (streamerMode){
-console.log.apply(console, ["%cTcNo Account Switcher%c: ERROR!\\n${userCheckStreamerMode}\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list ", 'background: #290000; color: #F00','background: #290000; color: white','background: #222; color: lightblue']);
-}else{
-  // ${getNameText}
-  let name = $("[class^='usernameInnerRow']").firstElementChild.innerText + $("[class^='usernameInnerRow']").lastElementChild.innerText;
-  // ${getAvatarText}
-  let avatar = $("[class^='accountProfileCard']").getElementsByTagName("img")[0].src;
-
-  // ${copyAvatarText}
-  copy(\`TCNO: \${avatar}|\${name}\`);
-
-  let possibleExit = $("[class^='contentRegionScroller']").getElementsByTagName('svg');
-  let closeButton = possibleExit[possibleExit.length-1].parentElement;
-
-  await new Promise(resolve => setTimeout(resolve, 500)); // Wait 500ms
-
-  // ${closeOptionsText}
-  closeButton.click();
-
-  // ${notifyUserText}
-  console.log.apply(console, ["%cTcNo Account Switcher%c: ${successfullyCopiedText}\\n${instrutionsText}\\n%chttps://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Discord#adding-accounts-to-the-discord-switcher-list ", 'background: #222; color: #bada55','background: #222; color: white','background: #222; color: lightblue']);
-}`;
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformHintText", platform).then((r) => {
+        toastHintText = r;
+    });
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText", platform).then((r) => {
+        code = r;
+    });
 
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", code);
     window.notification.new({
 	    type: "success",
-	    title: toastCopied,
-        message: toastPasteDiscordConsole,
+        title: toastTitle,
+        message: toastHintText,
 	    renderTo: "toastarea",
 	    duration: 5000
     });

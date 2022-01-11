@@ -178,7 +178,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
 
             // Remove cached files
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\{platform}\\{accName}"), false);
+            RecursiveDelete($"LoginCache\\{platform}\\{accName}", false);
 
             // Remove image
             var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{platform}\\{Globals.GetCleanFilePath(accName)}.jpg");
@@ -359,7 +359,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         // Overload for below
-        public static void RecursiveDelete(DirectoryInfo baseDir, bool keepFolders) => RecursiveDelete(baseDir, keepFolders, "");
+        public static void RecursiveDelete(string baseDir, bool keepFolders) => RecursiveDelete(new DirectoryInfo(baseDir), keepFolders, "");
 
         /// <summary>
         /// Recursively delete files in folders (Choose to keep or delete folders too)
@@ -715,11 +715,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     case "BattleNet":
                         await BattleNet.BattleNetSwitcherFuncs.LoadProfiles();
                         Data.Settings.BattleNet.Instance.SaveSettings(!File.Exists(Data.Settings.BattleNet.SettingsFile));
-                        break;
-
-                    case "Discord":
-                        Discord.DiscordSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Discord.Instance.SaveSettings(!File.Exists(Data.Settings.Discord.SettingsFile));
                         break;
 
                     case "Origin":

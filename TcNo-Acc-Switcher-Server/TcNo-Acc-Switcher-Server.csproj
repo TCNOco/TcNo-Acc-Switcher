@@ -6,7 +6,7 @@
     <Version>4.0.0</Version>
     <Authors>TechNobo (Wesley Pyburn)</Authors>
     <Product>TcNo Account Switcher - Server</Product>
-    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2020</Copyright>
+    <Copyright>Copyright © TechNobo (Wesley Pyburn) 2022</Copyright>
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <AssemblyName>TcNo-Acc-Switcher-Server</AssemblyName>
@@ -79,6 +79,10 @@
         <DeploymentContent>true</DeploymentContent>
     </Content>
     <Content Update="themes\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DeploymentContent>true</DeploymentContent>
+    </Content>
+    <Content Include="Platforms\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DeploymentContent>true</DeploymentContent>
     </Content>

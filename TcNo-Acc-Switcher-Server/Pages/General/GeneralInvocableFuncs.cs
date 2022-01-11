@@ -25,7 +25,6 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
-using TcNo_Acc_Switcher_Server.Pages.Discord;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Origin;
 using TcNo_Acc_Switcher_Server.Pages.Riot;
@@ -40,7 +39,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         private static readonly Lang Lang = Lang.Instance;
 
         private static readonly Data.Settings.Basic Basic = Data.Settings.Basic.Instance;
-        private static readonly Data.Settings.Discord Discord = Data.Settings.Discord.Instance;
         private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
         private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
         private static readonly Data.Settings.Ubisoft Ubisoft = Data.Settings.Ubisoft.Instance;
@@ -110,9 +108,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "BasicSettings":
                     Basic.FolderPath = path;
                     break;
-                case "DiscordSettings":
-                    Discord.FolderPath = path;
-                    break;
                 case "SteamSettings":
                     Steam.FolderPath = path;
                     break;
@@ -135,13 +130,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (split.Length > 1)
             {
                 var accName = split[1];
-
-                if (action.StartsWith("AcceptForgetDiscordAcc:"))
-                {
-                    Discord.SetForgetAcc(true);
-                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Discord", true);
-                    return Task.FromResult("refresh");
-                }
 
                 if (action.StartsWith("AcceptForgetBasicAcc:"))
                 {
@@ -260,9 +248,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "BattleNet":
                     BattleNetSwitcherFuncs.ChangeBTag(id, reqName);
                     break;
-                case "Discord":
-                    DiscordSwitcherFuncs.ChangeUsername(id, reqName);
-                    break;
                 case "Riot":
                     RiotSwitcherFuncs.ChangeUsername(id, reqName);
                     break;
@@ -313,9 +298,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "riot":
                     accId = accId.Replace("#", "-");
                     originalAccId = accId;
-                    break;
-                case "discord":
-                    accId = accId.Replace("#", "-");
                     break;
                 case "basic":
                     page = CurrentPlatform.Instance.SafeName;
@@ -448,55 +430,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return Path.Join("Exported", platform + ".csv");
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="platform"></param>
-        /// <returns>
-        /// 0 = Does not have a password set
-        /// 1 = Has a password set
-        /// 2 = Password already inputted
-        /// </returns>
         [JSInvokable]
-        public static int GiCheckPlatformPassword(string platform)
-        {
-            if (!File.Exists(Path.Join(Globals.UserDataFolder, "LoginCache", platform, "pass"))) return 0;
-
-            // Check if password entered (Will not be empty if correct)
-            return platform switch
-            {
-                "Discord" => (string.IsNullOrEmpty(Data.Settings.Discord.Instance.Password) ? 1 : 2),
-                _ => 1
-            };
-        }
-
+        public static string PlatformUserModalCopyText() => CurrentPlatform.Instance.GetUserModalCopyTextHtml;
         [JSInvokable]
-        public static bool GiVerifyPlatformPassword(string platform, string password)
-        {
-            var passFolder = Path.Join(Globals.UserDataFolder, "LoginCache", platform);
-            _ = Directory.CreateDirectory(passFolder);
-            var passFile = Path.Join(passFolder, "pass");
-            var hashedPass = Globals.GetSha256HashString(password);
-
-            if (File.Exists(passFile))
-            {
-                if (hashedPass != Globals.ReadAllText(passFile)) return false; // Check if password matches the one in the file
-            }
-            else
-            {
-                // Save password, as this is the first time.
-                File.WriteAllText(passFile, hashedPass);
-            }
-
-            // Passwords match. Handle password for each switcher
-            Data.Settings.Discord.Instance.Password = platform switch
-            {
-                "Discord" => password,
-                _ => Data.Settings.Discord.Instance.Password
-            };
-
-            return true;
-        }
+        public static string PlatformHintText() => CurrentPlatform.Instance.GetUserModalHintText();
 
         [JSInvokable]
         public static string GiLocale(string k) => Lang.Instance[k];
@@ -528,5 +465,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 ? BasicPlatforms.Instance.GetExeNameFromPlatform(platform)
                 : platform;
         }
+
+        [JSInvokable]
+        public static string GiGetCleanFilePath(string f) => Globals.GetCleanFilePath(f);
     }
 }

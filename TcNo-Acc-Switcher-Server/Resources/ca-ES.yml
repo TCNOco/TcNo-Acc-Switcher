@@ -81,7 +81,7 @@ Toast_TrayFail: No s'ha pogut iniciar l'aplicació de la safata.
 Toast_TrayPosition: "En fer clic al botó Surt: estaré a la safata de Windows. (Barra de la dreta de la sortida)"
 Toast_TrayHint: "Consell: Ctrl + Feu clic a la \"X\" per tancar-me completament o mitjançant la safata> \"Surt\""
 Toast_Copied: Copiat
-Toast_PasteDiscordConsole: Enganxeu a la consola Discord i, a continuació, enganxeu el resultat a l'entrada.
+Platform_DiscordPasteHint: Enganxeu a la consola Discord i, a continuació, enganxeu el resultat a l'entrada.
 Toast_AlreadyProcessing: Ja s'està processant comptes ...
 Toast_FailedRestore: No s'han pogut restaurar els comptes (vegeu la consola)
 Toast_Restored: Comptes restaurats.

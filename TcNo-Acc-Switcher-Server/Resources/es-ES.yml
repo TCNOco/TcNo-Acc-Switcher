@@ -81,7 +81,7 @@ Toast_TrayFail: '¡No se pudo iniciar la aplicación de la bandeja!'
 Toast_TrayPosition: "Al hacer clic en el botón Salir: ¡Estaré en la bandeja de Windows! (barra de inicio derecho)"
 Toast_TrayHint: "Sugerencia: Ctrl+Haz clic en la 'X' para cerrarme completamente, o a través de la bandeja > 'Salir'"
 Toast_Copied: Copiado
-Toast_PasteDiscordConsole: '¡Pegue la consola de Discord y luego pegue el resultado en la entrada!'
+Platform_DiscordPasteHint: '¡Pegue la consola de Discord y luego pegue el resultado en la entrada!'
 Toast_AlreadyProcessing: Ya procesando cuentas...
 Toast_FailedRestore: Error al restaurar cuentas (Ver consola)
 Toast_Restored: '¡Cuentas restauradas!'

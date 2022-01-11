@@ -81,7 +81,7 @@ Toast_TrayFail: Impossible de démarrer l'application dans la zone de notificati
 Toast_TrayPosition: "En cliquant sur le bouton Quitter : je serai dans la barre d'état de Windows ! (à droite de la barre de démarrage)"
 Toast_TrayHint: "Astuce : Ctrl+Cliquer sur le 'X' pour me fermer complètement, ou via la zone de notification > 'Quitter'"
 Toast_Copied: Copié
-Toast_PasteDiscordConsole: Collez dans la console Discord, puis collez le résultat en entrée !
+Platform_DiscordPasteHint: Collez dans la console Discord, puis collez le résultat en entrée !
 Toast_AlreadyProcessing: Déjà en cours de traitement des comptes...
 Toast_FailedRestore: Échec de la restauration des comptes (Voir la console)
 Toast_Restored: Comptes restaurés !

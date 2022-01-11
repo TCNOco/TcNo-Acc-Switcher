@@ -81,7 +81,7 @@ Toast_TrayFail: Kon nie laaitoepassing begin nie!
 Toast_TrayPosition: "As u op die Uitgang-knoppie klik, sal ek op die Windows-bak verskyn! (Regs van die beginbalk)"
 Toast_TrayHint: "Wenk: Ctrl + Klik op 'X' om my heeltemal te sluit, of via die laai> 'Uitgang'"
 Toast_Copied: Gekopieer
-Toast_PasteDiscordConsole: Plak in die Discord-konsole en plak dan die resultaat!
+Platform_DiscordPasteHint: Plak in die Discord-konsole en plak dan die resultaat!
 Toast_AlreadyProcessing: Verwerk tans rekeninge ...
 Toast_FailedRestore: Kon nie rekeninge herstel nie (sien konsole)
 Toast_Restored: Herstel rekeninge!

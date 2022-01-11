@@ -81,7 +81,7 @@ Toast_TrayFail: Nem sikerült elindítani a tálca alkalmazását!
 Toast_TrayPosition: "Az Exit gombra kattintva: a Windows tálcáján leszek! (A kezdősáv jobb oldala)"
 Toast_TrayHint: "Tipp: Ctrl + Kattintson az 'X' gombra a teljes bezáráshoz, vagy a tálca> 'Kilépés'"
 Toast_Copied: Másolva
-Toast_PasteDiscordConsole: Illessze be a Discord konzolba, majd illessze be az eredményt az inputba!
+Platform_DiscordPasteHint: Illessze be a Discord konzolba, majd illessze be az eredményt az inputba!
 Toast_AlreadyProcessing: Fiókok már feldolgozás alatt állnak ...
 Toast_FailedRestore: Nem sikerült visszaállítani a fiókokat (lásd konzol)
 Toast_Restored: Visszaállított számlák!

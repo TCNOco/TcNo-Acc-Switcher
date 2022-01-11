@@ -81,7 +81,7 @@ Toast_TrayFail: برنامه سینی شروع نشد!
 Toast_TrayPosition: "با کلیک بر روی دکمه خروج: من در سینی ویندوز خواهم بود! (نوار شروع سمت راست)"
 Toast_TrayHint: "نکته: Ctrl+ روی \"X\" کلیک کنید تا من کاملا بسته شوم یا از طریق سینی > \"خروج\""
 Toast_Copied: کپی شد
-Toast_PasteDiscordConsole: در کنسول Discord جای‌گذاری کنید و سپس نتیجه را در ورودی قرار دهید!
+Platform_DiscordPasteHint: در کنسول Discord جای‌گذاری کنید و سپس نتیجه را در ورودی قرار دهید!
 Toast_AlreadyProcessing: در حال حاضر در حال پردازش حساب‌ها...
 Toast_FailedRestore: بازیابی حساب ها انجام نشد (به کنسول مراجعه کنید)
 Toast_Restored: حساب های بازیابی شده!

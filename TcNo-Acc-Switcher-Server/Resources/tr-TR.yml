@@ -81,7 +81,7 @@ Toast_TrayFail: Tepsi uygulaması başlatılamadı!
 Toast_TrayPosition: "Çıkış düğmesine tıkladığınızda: Windows Tepsisinde olacağım! (Başlangıç Çubuğunun Sağında)"
 Toast_TrayHint: "İpucu: Beni tamamen kapatmak için Ctrl + 'X'i tıklayın veya Tepsi > 'Çıkış' aracılığıyla"
 Toast_Copied: kopyalandı
-Toast_PasteDiscordConsole: Discord konsoluna yapıştırın ve sonucu girdiye yapıştırın!
+Platform_DiscordPasteHint: Discord konsoluna yapıştırın ve sonucu girdiye yapıştırın!
 Toast_AlreadyProcessing: Hesaplar zaten işleniyor...
 Toast_FailedRestore: Hesaplar geri yüklenemedi (Konsol'a bakın)
 Toast_Restored: Geri yüklenen hesaplar!

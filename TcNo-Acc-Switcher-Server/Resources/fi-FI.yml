@@ -81,7 +81,7 @@ Toast_TrayFail: Ei voitu käynnistää tarjotinsovellusta!
 Toast_TrayPosition: "Kun napsautan poistumispainiketta: Minä olen Windows Tray! (oikeassa aloituspalkissa)"
 Toast_TrayHint: "Vihje: Ctrl+Napsauta 'X' sulkeaksesi minut kokonaan, tai kaukosäädin > 'Poistu' -painiketta"
 Toast_Copied: Kopioitu
-Toast_PasteDiscordConsole: Liitä Discordin konsoliin ja liitä sitten tulo!
+Platform_DiscordPasteHint: Liitä Discordin konsoliin ja liitä sitten tulo!
 Toast_AlreadyProcessing: Käsittely jo tilejä...
 Toast_FailedRestore: Tilien palauttaminen epäonnistui (Katso konsoli)
 Toast_Restored: Palautetut tilit!

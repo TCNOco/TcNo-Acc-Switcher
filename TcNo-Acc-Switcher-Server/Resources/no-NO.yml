@@ -81,7 +81,7 @@ Toast_TrayFail: Kunne ikke starte Tray programmet!
 Toast_TrayPosition: "Om klikke på Avbryt-knappen: Jeg vil være på Windows Tray! (Høyre over Startstolpen)"
 Toast_TrayHint: "Tips: Ctrl+klikk 'X' for å lukke meg fullstendig, eller via verktøyet> 'Exit'"
 Toast_Copied: Kopiert
-Toast_PasteDiscordConsole: Lim inn i Discord konsollen, og så lim inn resultatet!
+Platform_DiscordPasteHint: Lim inn i Discord konsollen, og så lim inn resultatet!
 Toast_AlreadyProcessing: Behandler allerede kontoer...
 Toast_FailedRestore: Kan ikke gjenopprette kontoer (se konsollen)
 Toast_Restored: Gjenopprettet konto!

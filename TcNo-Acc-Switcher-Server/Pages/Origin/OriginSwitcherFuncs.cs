@@ -48,7 +48,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         {
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
             // Remove cached files
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo($"LoginCache\\Origin\\{accName}"), false);
+            GeneralFuncs.RecursiveDelete($"LoginCache\\Origin\\{accName}", false);
             // Remove image
             var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Globals.GetCleanFilePath(accName)}.jpg");
             if (File.Exists(img)) File.Delete(img);
@@ -124,10 +124,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             }
 
             // Clear for next login
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(OriginRoaming, "ConsolidatedCache")), true);
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(OriginRoaming, "NucleusCache")), true);
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(OriginRoaming, "Logs")), true);
-            GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(OriginProgramData, "Subscription")), false);
+            GeneralFuncs.RecursiveDelete(Path.Join(OriginRoaming, "ConsolidatedCache"), true);
+            GeneralFuncs.RecursiveDelete(Path.Join(OriginRoaming, "NucleusCache"), true);
+            GeneralFuncs.RecursiveDelete(Path.Join(OriginRoaming, "Logs"), true);
+            GeneralFuncs.RecursiveDelete(Path.Join(OriginProgramData, "Subscription"), false);
             _ = Directory.CreateDirectory(Path.Join(OriginProgramData, "Subscription"));
 
             foreach (var f in new DirectoryInfo(OriginRoaming).GetFiles())

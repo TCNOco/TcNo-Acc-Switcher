@@ -20,7 +20,6 @@ Button_ResetSettings: Reset settings
 Button_AdvancedCleaning: Advanced cleaning...
 Button_ClearLog: Clear log
 Button_WikiInfo: More Info (Wiki)
-Button_ClearDiscordCache: Clear Discord Cache
 Button_ManagePlatforms: Manage Extra Platforms
 Settings_Shortcut: ' {platform} Switcher Desktop shortcut'
 Settings_Admin: Run {platform} as Admin
@@ -77,7 +76,6 @@ Restore_Button_Restore: Restore selected
 Ignored_RemoveAccounts: Remove accounts from ignore list
 Ignored_Description: If you previously "ignored" an account, you can show them again here
 Ignored_Stop: Stop ignoring selected
-Toast_RetryOrDeleteDiscordCache: Retry, or delete the Discord Cache to reset password (See the Wiki).
 Toast_TrayStarted: Tray started!
 Toast_TrayRunning: Tray already open
 Toast_TrayUsersMissing: No tray users saved
@@ -85,7 +83,6 @@ Toast_TrayFail: Could not start tray application!
 Toast_TrayPosition: "On clicking the Exit button: I'll be on the Windows Tray! (Right of Start Bar)"
 Toast_TrayHint: "Hint: Ctrl+Click the 'X' to close me completely, or via the Tray > 'Exit'"
 Toast_Copied: Copied
-Toast_PasteDiscordConsole: Paste into Discord console, and then paste result in input!
 Toast_AlreadyProcessing: Already processing accounts...
 Toast_FailedRestore: Failed to restore accounts (See console)
 Toast_Restored: Restored accounts!
@@ -107,10 +104,6 @@ Toast_BNet_CantLoadConfigCorrupt: Could not load accounts file for Blizzard (Bat
 Toast_BNet_NamePolicy: BattleTag did not match naming policy.
 Toast_ItemNotFound: "{item} was not found"
 Toast_DeletedTotal: "{files} of {totalFiles} deleted. Total: {totalSize}"
-Toast_DeletedTotalTitle: Cleared Discord cache!
-Toast_Discord_SignOutHint: "Hint: You must sign out of Discord in your browser"
-Toast_Discord_SaveHint: "Hint: Changed Discord settings? Save again, with the same name!"
-Toast_Discord_NoToken: Failed to find user's token! Quit Discord normally, then save again.
 Toast_CantChangeUsername: Could not change username
 Toast_CantClearLoginFiles: Failed to clear old login files
 Toast_AccountIdReg: Failed to get Account Id from Registry!
@@ -178,12 +171,6 @@ Modal_LocatePlatformFolder: Select {platform} folder
 Modal_ConfirmAction: Confirm action
 Modal_AddNew: Please enter a name for the {platform} account you're logged into.
 Modal_AddCurrentAccount: Add current {platform} account
-Modal_EnterNewPassword: Please enter a new password to secure your {platform} accounts in the switcher.<br>  Keep it safe. It can not be recovered later.
-Modal_EnterPassword: Please enter your password for TcNo Account Switcher's {platform} platform.
-Modal_EnterPasswordShort: Enter password
-Modal_EnterPasswordRepeat: Enter password again
-Modal_PasswordsMatch: Passwords match
-Modal_PasswordsNoMatch: Passwords do not match
 Status_SelectedAccount: "Selected: {name}"
 Status_Init: "Status: Initialising"
 Status_ClosingPlatform: "Closing {platform}"
@@ -218,7 +205,6 @@ Context_HidePlatform: Hide platform
 Context_ExportAccList: Export account list
 Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
 Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
 Title_Platforms_Settings: TcNo Account Switcher - Extra Platform Settings
 Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - Text Editor
@@ -343,18 +329,9 @@ DeletingFile: "Deleting: {file}"
 DeletingFolder: "Deleting Folder: "
 CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
 CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
-Prompt_DiscordCopy1: Find options button, and click
-Prompt_DiscordCopy2: "Check that streamer mode is not enabled, otherwise: Give error."
-Prompt_DiscordCopy3: Make sure that Streamer Mode is disabled/not active when running this command!
-Prompt_DiscordCopy4: Get name from bottom-left of screen
-Prompt_DiscordCopy5: Get Avatar and username from page
-Prompt_DiscordCopy6: Copy avatar and username
-Prompt_DiscordCopy7: Close options
-Prompt_DiscordCopy8: Let the user know in console.
-Prompt_DiscordCopy9: Successfully copied information!
-Prompt_DiscordCopy10: Paste it into the input box in the account switcher to update/set image and username.
 Prompt_RestartAsAdmin: "<h3><bold>This program will restart as Admin</bold></h3><p>Hit \"Yes\" in UAC when prompted for admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>You are about to forget an account!</h3> <h4>What does this mean?</h4> <p>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.<br/> - TcNo Account Switcher will also no longer show the account, until it's signed into again through Steam.</p> <p>Your account will remain untouched. It is just forgotten on this computer.</p> <h4>What if something goes wrong?</h4> <p>Don't panic, you can bring back forgotten accounts via backups in the Settings screen.<br/> You can also remove previous backups from there when you are sure everything is working as expected.</p> <h4>Do you understand?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>You are about to forget an account!</h3> <h4>What does this mean?</h4> <p>TcNo Account Switcher will also no longer show the account,<br/> until it's signed into again through {platform}, and added to the list.</p> <p>Your account will remain untouched. It is just forgotten on this computer.</p> <h4>Do you understand?</h4>
+Platform_DiscordPasteHint: Paste into Discord console, and then paste result in input!

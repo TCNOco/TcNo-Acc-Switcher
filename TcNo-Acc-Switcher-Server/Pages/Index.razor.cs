@@ -46,13 +46,6 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     else _ = GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
                     break;
 
-                case "Discord":
-                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Discord.Processes)) return;
-                    Data.Settings.Discord.Instance.LoadFromFile();
-                    if (Directory.Exists(Data.Settings.Discord.Instance.FolderPath) && File.Exists(Data.Settings.Discord.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Discord/");
-                    else _ = GeneralInvocableFuncs.ShowModal("find:Discord:Discord.exe:DiscordSettings");
-                    break;
-
                 case "Origin":
                     if (!GeneralFuncs.CanKillProcess(Data.Settings.Origin.Processes)) return;
                     Data.Settings.Origin.Instance.LoadFromFile();
@@ -185,7 +178,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 var updaterDict = verifyDictionary.Where(pair => pair.Key.StartsWith("updater")).ToDictionary(pair => pair.Key, pair => pair.Value);
 
                 // Download and replace broken files
-                if (Directory.Exists("newUpdater")) GeneralFuncs.RecursiveDelete(new DirectoryInfo("newUpdater"), false);
+                if (Directory.Exists("newUpdater")) GeneralFuncs.RecursiveDelete("newUpdater", false);
                 foreach (var (key, value) in updaterDict)
                 {
                     if (File.Exists(key) && value == GeneralFuncs.GetFileMd5(key))

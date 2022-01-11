@@ -186,7 +186,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         //            username = temp.Substring(38, temp.IndexOf(":", StringComparison.Ordinal) - 38);
 
 
-        //            GeneralFuncs.RecursiveDelete(new DirectoryInfo("LoginCache\\Ubisoft\\temp\\"), false);
+        //            GeneralFuncs.RecursiveDelete("LoginCache\\Ubisoft\\temp\\", false);
         //            Directory.CreateDirectory($"LoginCache\\Ubisoft\\{username}\\");
         //            File.Copy(Path.Join(UbisoftAppData, "settings.yaml"), $"LoginCache\\Ubisoft\\{username}\\settings.yaml", true);
         //            File.Copy(Path.Join(UbisoftAppData, "user.dat"), $"LoginCache\\Ubisoft\\{username}\\user.dat", true);

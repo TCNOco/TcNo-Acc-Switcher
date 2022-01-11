@@ -81,7 +81,7 @@ Toast_TrayFail: Kunde inte starta fackapplikationen!
 Toast_TrayPosition: "När du klickar på Avsluta knappen: Jag kommer att vara på Windows Tray! (höger om Start Bar)"
 Toast_TrayHint: "Tips: Ctrl+Klicka på \"X\" för att stänga mig helt, eller via facket > \"Avsluta\""
 Toast_Copied: Kopierad
-Toast_PasteDiscordConsole: Klistra in i Discord-konsolen och klistra sedan in resultatet i inmatningen!
+Platform_DiscordPasteHint: Klistra in i Discord-konsolen och klistra sedan in resultatet i inmatningen!
 Toast_AlreadyProcessing: Behandlar redan konton...
 Toast_FailedRestore: Kunde inte återställa konton (Se konsolen)
 Toast_Restored: Återställda konton!

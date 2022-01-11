@@ -81,7 +81,7 @@ Toast_TrayFail: Kunne ikke starte bakkeprogram!
 Toast_TrayPosition: "Når du klikker på Afslut-knappen: Jeg vil være på Windows Bakke! (Højre Start Bar)"
 Toast_TrayHint: "Tip: Ctrl+Klik på 'X' for at lukke mig helt, eller via bakken > 'Afslut'"
 Toast_Copied: Kopieret
-Toast_PasteDiscordConsole: Indsæt i Discord konsol, og indsæt derefter resultere i input!
+Platform_DiscordPasteHint: Indsæt i Discord konsol, og indsæt derefter resultere i input!
 Toast_AlreadyProcessing: Behandler allerede konti...
 Toast_FailedRestore: Kunne ikke gendanne konti (Se konsol)
 Toast_Restored: Gendannede konti!

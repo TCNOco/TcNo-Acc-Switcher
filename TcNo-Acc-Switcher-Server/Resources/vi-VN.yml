@@ -81,7 +81,7 @@ Toast_TrayFail: Không thể khởi động ứng dụng khay!
 Toast_TrayPosition: "Khi nhấp vào nút Thoát: Tôi sẽ ở trên Khay Windows! (Bên phải Thanh Bắt đầu)"
 Toast_TrayHint: "Gợi ý: Ctrl + Nhấp vào 'X' để đóng tôi hoàn toàn hoặc qua Khay> 'Thoát'"
 Toast_Copied: Đã sao chép
-Toast_PasteDiscordConsole: Dán vào bảng điều khiển Discord, rồi dán kết quả vào đầu vào!
+Platform_DiscordPasteHint: Dán vào bảng điều khiển Discord, rồi dán kết quả vào đầu vào!
 Toast_AlreadyProcessing: Đã xử lý tài khoản ...
 Toast_FailedRestore: Không khôi phục được tài khoản (Xem bảng điều khiển)
 Toast_Restored: Đã khôi phục tài khoản!

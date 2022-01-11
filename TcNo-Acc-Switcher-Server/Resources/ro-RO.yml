@@ -81,7 +81,7 @@ Toast_TrayFail: Nu s-a putut începe aplicația pentru tăviță!
 Toast_TrayPosition: "Apăsând pe butonul de ieşire: Voi fi pe Tagma Windows (bara Dreapta de start)"
 Toast_TrayHint: "Sugestie: Ctrl+Click pe 'X' pentru a mă închide complet, sau prin Tăvire > 'Ieșire'"
 Toast_Copied: Copiat
-Toast_PasteDiscordConsole: Lipiți în consola Discord, iar apoi lipiți rezultatul de intrare!
+Platform_DiscordPasteHint: Lipiți în consola Discord, iar apoi lipiți rezultatul de intrare!
 Toast_AlreadyProcessing: Deja se procesează conturile...
 Toast_FailedRestore: Nu s-a reușit restaurarea conturilor (Vezi consola)
 Toast_Restored: Conturi restaurate!

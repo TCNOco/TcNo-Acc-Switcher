@@ -81,7 +81,7 @@ Toast_TrayFail: Αδυναμία εκκίνησης εφαρμογής στο δ
 Toast_TrayPosition: "Κάνοντας κλικ στο κουμπί Έξοδος: Θα είμαι στο Windows Tray! (Right of Start Bar)"
 Toast_TrayHint: "Υπόδειξη: Ctrl+Κάντε κλικ στο 'X' για να με κλείσετε εντελώς, ή μέσω του δίσκου > 'Έξοδος'"
 Toast_Copied: Αντιγράφηκε
-Toast_PasteDiscordConsole: Επικόλληση στην κονσόλα Discord, και στη συνέχεια επικόλληση αποτέλεσμα σε εισαγωγή!
+Platform_DiscordPasteHint: Επικόλληση στην κονσόλα Discord, και στη συνέχεια επικόλληση αποτέλεσμα σε εισαγωγή!
 Toast_AlreadyProcessing: Ήδη επεξεργασία λογαριασμών...
 Toast_FailedRestore: Αποτυχία επαναφοράς λογαριασμών (δείτε την κονσόλα)
 Toast_Restored: Επαναφορά λογαριασμών!

@@ -81,7 +81,7 @@ Toast_TrayFail: לא ניתן היה להפעיל את יישום המגש!
 Toast_TrayPosition: "בלחיצה על כפתור היציאה: אני אהיה במגש Windows! (ימין של סרגל ההתחלה)"
 Toast_TrayHint: "רמז: Ctrl + לחץ על 'X' כדי לסגור אותי לחלוטין, או דרך המגש> 'יציאה'"
 Toast_Copied: מוּעֲתָק
-Toast_PasteDiscordConsole: הדבק למסוף הדיסקורד ולאחר מכן הדבק את התוצאה בקלט!
+Platform_DiscordPasteHint: הדבק למסוף הדיסקורד ולאחר מכן הדבק את התוצאה בקלט!
 Toast_AlreadyProcessing: כבר מעבד חשבונות ...
 Toast_FailedRestore: שחזור החשבונות נכשל (ראה מסוף)
 Toast_Restored: חשבונות משוחזרים!

@@ -605,7 +605,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (platforms)
             {
                 var platformsFolder = Path.Join(Shortcut.StartMenu, "Platforms");
-                if (Directory.Exists(platformsFolder)) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(Shortcut.StartMenu, "Platforms")), false);
+                if (Directory.Exists(platformsFolder)) GeneralFuncs.RecursiveDelete(Path.Join(Shortcut.StartMenu, "Platforms"), false);
                 else
                 {
                     _ = Directory.CreateDirectory(platformsFolder);

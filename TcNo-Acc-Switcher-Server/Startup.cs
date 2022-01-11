@@ -59,7 +59,6 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddSingleton<CurrentPlatform>();
             _ = services.AddSingleton<Data.Settings.BattleNet>();
             _ = services.AddSingleton<Data.Settings.Basic>();
-            _ = services.AddSingleton<Data.Settings.Discord>();
             _ = services.AddSingleton<Data.Settings.Origin>();
             _ = services.AddSingleton<Data.Settings.Riot>();
             _ = services.AddSingleton<Data.Settings.Steam>();
@@ -86,7 +85,7 @@ namespace TcNo_Acc_Switcher_Server
             // Copy LoginCache
             if (Directory.Exists(Path.Join(Globals.AppDataFolder, "LoginCache\\")))
             {
-                if (Directory.Exists(Path.Join(Globals.UserDataFolder, "LoginCache"))) GeneralFuncs.RecursiveDelete(new DirectoryInfo(Path.Join(Globals.UserDataFolder, "LoginCache")), true);
+                if (Directory.Exists(Path.Join(Globals.UserDataFolder, "LoginCache"))) GeneralFuncs.RecursiveDelete(Path.Join(Globals.UserDataFolder, "LoginCache"), true);
                 Globals.CopyFilesRecursive(Path.Join(Globals.AppDataFolder, "LoginCache"), Path.Join(Globals.UserDataFolder, "LoginCache"));
             }
 

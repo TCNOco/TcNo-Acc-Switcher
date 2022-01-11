@@ -81,7 +81,7 @@ Toast_TrayFail: Tray applicatie kan niet worden gestart!
 Toast_TrayPosition: "Als ik op de knop Sluiten klik: ik zit in het Windows Tray! (Rechts van Start Bar)"
 Toast_TrayHint: "Tip: Ctrl+Klik op de 'X' om me volledig te sluiten, of via de Tray > 'Sluiten'"
 Toast_Copied: Gekoppeld
-Toast_PasteDiscordConsole: Plak de Discord console, en plak de resultaten in de invoer!
+Platform_DiscordPasteHint: Plak de Discord console, en plak de resultaten in de invoer!
 Toast_AlreadyProcessing: Rekeningen worden al verwerkt...
 Toast_FailedRestore: Kan accounts niet herstellen (Zie console)
 Toast_Restored: Rekeningen hersteld!

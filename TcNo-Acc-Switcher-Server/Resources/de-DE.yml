@@ -81,7 +81,7 @@ Toast_TrayFail: Konnte Tray-Anwendung nicht starten!
 Toast_TrayPosition: "Wenn du den Exit button klickst bin ich im Windows Tray! (Rechte Seite der Taskleiste)"
 Toast_TrayHint: "Tipp: Strg+Klick auf das 'X' um mich komplett zu schließen, oder über das Tray > 'Beenden'"
 Toast_Copied: Kopiert
-Toast_PasteDiscordConsole: In Discord-Konsole einfügen und dann das Ergebnis in die Eingabe einfügen!
+Platform_DiscordPasteHint: In Discord-Konsole einfügen und dann das Ergebnis in die Eingabe einfügen!
 Toast_AlreadyProcessing: Accounts werden bereits verarbeitet...
 Toast_FailedRestore: Fehler beim Wiederherstellen der Accounts (siehe Konsole)
 Toast_Restored: Accounts wiederhergestellt!

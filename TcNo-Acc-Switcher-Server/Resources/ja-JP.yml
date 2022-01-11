@@ -81,7 +81,7 @@ Toast_TrayFail: トレイアプリケーションを起動できませんでし�
 Toast_TrayPosition: "Exitボタンをクリックすると: Windows Trayに移動します! (右のスタートバー)"
 Toast_TrayHint: "ヒント：「X」をCtrl+クリックして完全に閉じるか、トレイ>「出口」を介して閉じます。"
 Toast_Copied: コピーしました
-Toast_PasteDiscordConsole: Discordコンソールに貼り付けて、結果を入力してください！
+Platform_DiscordPasteHint: Discordコンソールに貼り付けて、結果を入力してください！
 Toast_AlreadyProcessing: 既にアカウントを処理しています...
 Toast_FailedRestore: アカウントの復元に失敗しました（コンソール参照）
 Toast_Restored: アカウントを復元しました！

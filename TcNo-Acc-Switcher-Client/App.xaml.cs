@@ -192,13 +192,13 @@ namespace TcNo_Acc_Switcher_Client
             {
                 try
                 {
-                    GeneralFuncs.RecursiveDelete(new DirectoryInfo("updater"), false);
+                    GeneralFuncs.RecursiveDelete("updater", false);
                 }
                 catch (IOException)
                 {
                     // Catch first IOException and try to kill the updater, if it's running... Then continue.
                     Globals.KillProcess("TcNo-Acc-Switcher-Updater");
-                    GeneralFuncs.RecursiveDelete(new DirectoryInfo("updater"), false);
+                    GeneralFuncs.RecursiveDelete("updater", false);
                 }
 
                 Directory.Move("newUpdater", "updater");
@@ -470,52 +470,6 @@ namespace TcNo_Acc_Switcher_Client
                         _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account, string.Join(' ', remainingArguments));
                         return;
                     }
-                // Discord
-                case "d":
-                    {
-                        // Discord format: +d:<username>
-                        Globals.WriteToLog("Discord switch requested");
-                        if (!GeneralFuncs.CanKillProcess(Discord.Processes)) Restart(combinedArgs, true);
-
-                        string pass;
-                        if (command.Length < 3) // Get password as third argument, or as input from user.
-                        {
-                            while (true)
-                            {
-                                // Get password from user
-                                Globals.WriteToLog("Please insert your Discord account switcher password:");
-                                pass = CliGetPass();
-                                Globals.WriteToLog(Environment.NewLine);
-
-                                if (string.IsNullOrEmpty(pass))
-                                {
-                                    Globals.WriteToLog("Error: Password is required to decrypt data, to switch accounts.");
-                                    Console.WriteLine(Environment.NewLine + @"Press any key to close this window...");
-                                    return;
-                                }
-
-                                if (!GeneralInvocableFuncs.GiVerifyPlatformPassword("Discord", pass))
-                                    Globals.WriteToLog("Error: Password is incorrect." + Environment.NewLine);
-                                else
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            pass = command[2];
-                            if (!GeneralInvocableFuncs.GiVerifyPlatformPassword("Discord", pass))
-                            {
-                                Globals.WriteToLog("Error: Password is incorrect.");
-                                Console.WriteLine(Environment.NewLine + @"Press any key to close this window...");
-                                return;
-                            }
-                        }
-
-                        Discord.Instance.LoadFromFile();
-                        TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherFuncs.SwapDiscordAccounts(account, string.Join(' ', remainingArguments));
-
-                        return;
-                    }
                 // Origin
                 case "o":
                     {
@@ -618,13 +572,6 @@ namespace TcNo_Acc_Switcher_Client
                 case "blizzard":
                     Globals.WriteToLog("Battle.net logout requested");
                     await TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherBase.NewLogin_BattleNet();
-                    break;
-
-                // Discord
-                case "d":
-                case "discord":
-                    Globals.WriteToLog("Discord logout requested");
-                    TcNo_Acc_Switcher_Server.Pages.Discord.DiscordSwitcherBase.NewLogin_Discord();
                     break;
 
                 // Origin

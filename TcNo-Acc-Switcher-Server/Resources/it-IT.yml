@@ -81,7 +81,7 @@ Toast_TrayFail: Impossibile avviare l'applicazione dell'area di notifica!
 Toast_TrayPosition: "Cliccando il pulsante Esci: Sarò sull'Area di Notifica di Windows! (A Destra della Barra Start)"
 Toast_TrayHint: "Suggerimento: Ctrl+Click su 'X' per chiudermi completamente o tramite l'Area di Notifica > 'Esci'"
 Toast_Copied: Copiato
-Toast_PasteDiscordConsole: Incolla nella console di Discord e poi incolla il risultato in input!
+Platform_DiscordPasteHint: Incolla nella console di Discord e poi incolla il risultato in input!
 Toast_AlreadyProcessing: Elaborazione dei profili già in corso...
 Toast_FailedRestore: Impossibile ripristinare i profili (Vedi console)
 Toast_Restored: Profili ripristinati!

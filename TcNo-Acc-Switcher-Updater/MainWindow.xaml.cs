@@ -252,7 +252,7 @@ namespace TcNo_Acc_Switcher_Updater
                 "TcNo Account Switcher\\");
             if (Directory.Exists(oldDocuments))
                 CopyFilesRecursive(oldDocuments, UserDataFolder); // Overwrites by default
-            RecursiveDelete(new DirectoryInfo(oldDocuments), false);
+            RecursiveDelete(oldDocuments, false);
         }
 
         private void Init()
@@ -523,7 +523,7 @@ namespace TcNo_Acc_Switcher_Updater
             SetStatusAndLog("Moving files...");
             Directory.CreateDirectory("runtimes//win-x64//native");
             MoveFilesRecursive(tempCef, "runtimes//win-x64//native");
-            RecursiveDelete(new DirectoryInfo(tempCef), false);
+            RecursiveDelete(tempCef, false);
             SetStatusAndLog("Done.");
 
             SetStatusAndLog("Starting account switcher in 3 seconds.");
@@ -656,7 +656,7 @@ namespace TcNo_Acc_Switcher_Updater
 
             if (Directory.Exists("wwwroot"))
             {
-                if (Directory.Exists("originalwwwroot")) RecursiveDelete(new DirectoryInfo("originalwwwroot"), false);
+                if (Directory.Exists("originalwwwroot")) RecursiveDelete("originalwwwroot", false);
                 Directory.Move("wwwroot", "originalwwwroot");
             }
 
@@ -974,7 +974,7 @@ namespace TcNo_Acc_Switcher_Updater
             const string newFolder = "TcNo-Acc-Switcher";
             const string outputFolder = "UpdateOutput";
             var deleteFileList = Path.Join(outputFolder, "filesToDelete.txt");
-            RecursiveDelete(new DirectoryInfo(outputFolder), false);
+            RecursiveDelete(outputFolder, false);
             if (File.Exists(deleteFileList)) File.Delete(deleteFileList);
 
             List<string> filesToDelete = new(); // Simply ignore these later
@@ -1061,6 +1061,10 @@ namespace TcNo_Acc_Switcher_Updater
 
             WriteLine($"/C TASKKILL /F /T /IM {procName}*");
         }
+
+
+        private static void RecursiveDelete(string baseDir, bool keepFolders) =>
+            RecursiveDelete(new DirectoryInfo(baseDir), keepFolders);
 
         /// <summary>
         /// Recursively delete files in folders (Choose to keep or delete folders too)

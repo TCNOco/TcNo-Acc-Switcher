@@ -628,7 +628,7 @@ div.advancedClearingButtonCol .buttoncol {
 }
 
 /* Modal icons */
-.modalIcoDiscord, .modalIcoGitHub, .modalIcoNetworking, .modalIcoDoc {
+.modalIcoGitHub, .modalIcoNetworking, .modalIcoDoc {
   fill: white;
 }
 

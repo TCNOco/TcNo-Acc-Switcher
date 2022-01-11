@@ -81,7 +81,7 @@ Toast_TrayFail: 无法启动托盘应用程序！
 Toast_TrayPosition: "点击退出按钮时：我会出现在 Windows 托盘上！（任务栏右侧）"
 Toast_TrayHint: "提示：按住 Ctrl 键时点击 'X' 来完全关闭我，或者点击托盘 > '退出'"
 Toast_Copied: 已复制
-Toast_PasteDiscordConsole: 粘贴到 Discord 控制台，然后把结果粘贴到输入框！
+Platform_DiscordPasteHint: 粘贴到 Discord 控制台，然后把结果粘贴到输入框！
 Toast_AlreadyProcessing: 已经在处理帐户…
 Toast_FailedRestore: 恢复帐户失败（见控制台）
 Toast_Restored: 已恢复帐户！

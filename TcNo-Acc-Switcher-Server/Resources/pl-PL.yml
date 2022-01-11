@@ -81,7 +81,7 @@ Toast_TrayFail: Nie można uruchomić aplikacji w zasobniku!
 Toast_TrayPosition: "Po kliknięciu przycisku Wyjdź: Będę w zasobniku systemu Windows! (na prawo od paska startowego)"
 Toast_TrayHint: "Wskazówka: Ctrl+kliknięcie 'X', aby całkowicie mnie zamknąć, lub przez Zasobnik > 'Wyjdź'"
 Toast_Copied: Skopiowano
-Toast_PasteDiscordConsole: Wklej do konsoli Discorda, a następnie wklej wynik do pola wprowadzania!
+Platform_DiscordPasteHint: Wklej do konsoli Discorda, a następnie wklej wynik do pola wprowadzania!
 Toast_AlreadyProcessing: Przetwarzanie kont...
 Toast_FailedRestore: Nie udało się przywrócić kont (zobacz konsolę)
 Toast_Restored: Przywrócono konta!

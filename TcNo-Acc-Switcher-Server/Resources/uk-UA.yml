@@ -81,7 +81,7 @@ Toast_TrayFail: Не вдалося запустити тайм-додаток!
 Toast_TrayPosition: "Натискаючи кнопку Вихід я буду на треї Windows (Право запуску Bar)"
 Toast_TrayHint: "Підказка: Ctrl+Натисніть кнопку 'X', щоб повністю закрити мене або через лоток > 'Вийти'"
 Toast_Copied: Скопійовано
-Toast_PasteDiscordConsole: Вставити в консоль Discord і потім вставити результат введення!
+Platform_DiscordPasteHint: Вставити в консоль Discord і потім вставити результат введення!
 Toast_AlreadyProcessing: Вже обробляються облікові записи...
 Toast_FailedRestore: Не вдалося відновити облікові записи (див. консоль)
 Toast_Restored: Відновлені облікові записи!

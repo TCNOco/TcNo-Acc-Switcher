@@ -81,7 +81,7 @@ Toast_TrayFail: Nelze spustit aplikaci v systémové liště!
 Toast_TrayPosition: "Kliknutím na tlačítko Ukončit: Budu v systémové liště Windows! (Napravo od startovací lišty)"
 Toast_TrayHint: "Tip: Ctrl+Klikni na 'X' pro úplné zavření, nebo přes Tray > 'Ukončit'"
 Toast_Copied: Zkopírováno
-Toast_PasteDiscordConsole: Vložte do Discord konzole a pak výsledek vložte do vstupu!
+Platform_DiscordPasteHint: Vložte do Discord konzole a pak výsledek vložte do vstupu!
 Toast_AlreadyProcessing: Již zpracovávám účty...
 Toast_FailedRestore: Nepodařilo se obnovit účty (viz konzole)
 Toast_Restored: Účty obnoveny!

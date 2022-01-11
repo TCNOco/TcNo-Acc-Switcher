@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -11,6 +13,7 @@ using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 
@@ -218,7 +221,7 @@ namespace TcNo_Acc_Switcher_Globals
             // Check to see if folder still located in My Documents (from Pre 2021-07-05)
             var oldDocuments = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
             if (Directory.Exists(oldDocuments)) CopyFilesRecursive(oldDocuments, UserDataFolder, true);
-            RecursiveDelete(new DirectoryInfo(oldDocuments), false);
+            RecursiveDelete(oldDocuments, false);
         }
 
         /// <summary>
@@ -259,8 +262,8 @@ namespace TcNo_Acc_Switcher_Globals
             var codeCache = Path.Join(UserDataFolder, "EBWebView\\Default\\Code Cache");
             try
             {
-                if (Directory.Exists(cache)) RecursiveDelete(new DirectoryInfo(cache), true);
-                if (Directory.Exists(codeCache)) RecursiveDelete(new DirectoryInfo(codeCache), true);
+                if (Directory.Exists(cache)) RecursiveDelete(cache, true);
+                if (Directory.Exists(codeCache)) RecursiveDelete(codeCache, true);
             }
             catch (Exception)
             {
@@ -291,6 +294,23 @@ namespace TcNo_Acc_Switcher_Globals
             return !Directory.EnumerateFileSystemEntries(path).Any();
         }
 
+        private static readonly HttpClient HClient = new();
+        public static bool DownloadFile(string url, string path)
+        {
+            try
+            {
+                if (!Uri.TryCreate(url, UriKind.Absolute, out _))
+                    throw new InvalidOperationException("URI is invalid.");
+
+                var fileBytes = HClient.GetByteArrayAsync(url).Result;
+                File.WriteAllBytes(path, fileBytes);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
         /// <summary>
         /// A replacement for File.ReadAllText() that doesn't crash if a file is in use.
         /// </summary>
@@ -391,6 +411,8 @@ namespace TcNo_Acc_Switcher_Globals
             return BitConverter.ToString(md5.Hash ?? Array.Empty<byte>()).Replace("-", "").ToLower();
         }
 
+        public static void RecursiveDelete(string baseDir, bool keepFolders) =>
+            RecursiveDelete(new DirectoryInfo(baseDir), keepFolders);
         public static void RecursiveDelete(DirectoryInfo baseDir, bool keepFolders)
         {
             if (!baseDir.Exists)
@@ -418,7 +440,7 @@ namespace TcNo_Acc_Switcher_Globals
         public static string GetCleanFilePath(string f)
         {
             var regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-            Regex r = new Regex(string.Format("[{0}]", Regex.Escape(regexSearch)));
+            Regex r = new Regex($"[{Regex.Escape(regexSearch)}]");
             return r.Replace(f, "");
         }
         #endregion
