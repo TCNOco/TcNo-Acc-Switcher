@@ -15,6 +15,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -23,8 +24,11 @@ using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
 using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -52,9 +56,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
 
             if (!elevated && IsAdministrator)
-                ProcessHandler.RunAsDesktopUser(path, args);
+                Globals.ProcessHandler.RunAsDesktopUser(path, args);
             else
-                ProcessHandler.StartProgram(path, elevated, args);
+                Globals.ProcessHandler.StartProgram(path, elevated, args);
         }
 
         public static bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
@@ -91,18 +95,30 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + procName);
             if (!GeneralFuncs.CanKillProcess(procName)) return false;
-            Globals.KillProcess(procName, altMethod);
+            Globals.TaskKillProcess(procName, altMethod);
 
             return GeneralFuncs.WaitForClose(procName);
         }
-        public static bool CloseProcesses(List<string> procNames, bool altMethod = false)
+        public static bool CloseProcesses(List<string> procNames, string exitMethod = "")
         {
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + string.Join(", ", procNames));
-            if (!GeneralFuncs.CanKillProcess(procNames)) return false;
-            Globals.KillProcess(procNames, altMethod);
+            if (!CanKillProcess(procNames)) return false;
 
-            return GeneralFuncs.WaitForClose(procNames);
+            if (exitMethod == "Open_AltF4")
+            {
+                var navTo = AppData.ActiveNavMan.Uri.Split("?")[0].Replace(AppData.ActiveNavMan.BaseUri, "") +
+                            "?Open_AltF4&exe=" +
+                            HttpUtility.UrlEncode(Data.Settings.Basic.Instance.Exe()) + "&extraArgs=" +
+                            HttpUtility.UrlEncode(CurrentPlatform.Instance.ExeExtraArgs) + "&process=" +
+                            CurrentPlatform.Instance.ExesToEnd[0];
+                AppData.ActiveNavMan.NavigateTo(navTo, true);
+            }
+            else
+                Globals.KillProcess(procNames, exitMethod);
+
+
+            return WaitForClose(procNames);
         }
 
         /// <summary>
@@ -784,256 +800,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return true;
         }
 
-
-        #endregion
-    }
-
-    public class ProcessHandler
-    {
-        /// <summary>
-        /// Start a program
-        /// </summary>
-        /// <param name="fileName">Path to file</param>
-        /// <param name="elevated">Whether program should be elevated</param>
-        /// <param name="args">Arguments for program</param>
-        public static void StartProgram(string fileName, bool elevated, string args = "")
-        {
-            // This runas.exe program is a temporary workaround for processes closing when this closes.
-            try
-            {
-                Process.Start(new ProcessStartInfo()
-                {
-                    FileName = Path.Join(Globals.AppDataFolder, "runas.exe"),
-                    Arguments = $"\"{fileName}\" {(elevated ? "1" : "0")} {args}",
-                    Verb = elevated ? "runas" : ""
-                });
-            }
-            catch (System.ComponentModel.Win32Exception e)
-            {
-                if (e.HResult != -2147467259) // Not because it was cancelled by user
-                    throw;
-            }
-        }
-
-        // See unmodified code source from link below:
-        // https://stackoverflow.com/a/40501607/5165437
-        public static void RunAsDesktopUser(string fileName, string args = "")
-        {
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(fileName));
-
-            // Set working directory
-            var tempWorkingDir = Directory.GetCurrentDirectory();
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(fileName) ?? Directory.GetCurrentDirectory());
-
-            // To start process as shell user you will need to carry out these steps:
-            // 1. Enable the SeIncreaseQuotaPrivilege in your current token
-            // 2. Get an HWND representing the desktop shell (GetShellWindow)
-            // 3. Get the Process ID(PID) of the process associated with that window(GetWindowThreadProcessId)
-            // 4. Open that process(OpenProcess)
-            // 5. Get the access token from that process (OpenProcessToken)
-            // 6. Make a primary token with that token(DuplicateTokenEx)
-            // 7. Start the new process with that primary token(CreateProcessWithTokenW)
-
-            var hProcessToken = IntPtr.Zero;
-            // Enable SeIncreaseQuotaPrivilege in this process.  (This won't work if current process is not elevated.)
-            try
-            {
-                var process = GetCurrentProcess();
-                if (!OpenProcessToken(process, 0x0020, ref hProcessToken))
-                    return;
-
-                var tkp = new TokenPrivileges
-                {
-                    PrivilegeCount = 1,
-                    Privileges = new LuidAndAttributes[1]
-                };
-
-                if (!LookupPrivilegeValue(null, "SeIncreaseQuotaPrivilege", ref tkp.Privileges[0].Luid))
-                    return;
-
-                tkp.Privileges[0].Attributes = 0x00000002;
-
-                if (!AdjustTokenPrivileges(hProcessToken, false, ref tkp, 0, IntPtr.Zero, IntPtr.Zero))
-                    return;
-            }
-            finally
-            {
-                CloseHandle(hProcessToken);
-            }
-
-            // Get an HWND representing the desktop shell.
-            // CAVEATS:  This will fail if the shell is not running (crashed or terminated), or the default shell has been
-            // replaced with a custom shell.  This also won't return what you probably want if Explorer has been terminated and
-            // restarted elevated.
-            var hwnd = GetShellWindow();
-            if (hwnd == IntPtr.Zero)
-                return;
-
-            var hShellProcess = IntPtr.Zero;
-            var hShellProcessToken = IntPtr.Zero;
-            var hPrimaryToken = IntPtr.Zero;
-            try
-            {
-                // Get the PID of the desktop shell process.
-                if (GetWindowThreadProcessId(hwnd, out var dwPid) == 0)
-                    return;
-
-                // Open the desktop shell process in order to query it (get the token)
-                hShellProcess = OpenProcess(ProcessAccessFlags.QueryInformation, false, dwPid);
-                if (hShellProcess == IntPtr.Zero)
-                    return;
-
-                // Get the process token of the desktop shell.
-                if (!OpenProcessToken(hShellProcess, 0x0002, ref hShellProcessToken))
-                    return;
-
-                const uint dwTokenRights = 395U;
-
-                // Duplicate the shell's process token to get a primary token.
-                // Based on experimentation, this is the minimal set of rights required for CreateProcessWithTokenW (contrary to current documentation).
-                if (!DuplicateTokenEx(hShellProcessToken, dwTokenRights, IntPtr.Zero, SecurityImpersonationLevel.SecurityImpersonation, TokenType.TokenPrimary, out hPrimaryToken))
-                    return;
-
-                // Arguments need a space just before, for some reason.
-                if (args.Length > 1 && args[0] != ' ') args = ' ' + args;
-
-                // Start the target process with the new token.
-                var si = new StartupInfo();
-                var pi = new ProcessInformation();
-                if (!CreateProcessWithTokenW(hPrimaryToken, 0, fileName, args, 0, IntPtr.Zero, Path.GetDirectoryName(fileName), ref si, out pi))
-                    return;
-            }
-            finally
-            {
-                CloseHandle(hShellProcessToken);
-                CloseHandle(hPrimaryToken);
-                CloseHandle(hShellProcess);
-            }
-
-            // Reset working directory
-            Directory.SetCurrentDirectory(tempWorkingDir);
-
-        }
-
-        #region Interop
-
-        private struct TokenPrivileges
-        {
-            public uint PrivilegeCount;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1)]
-            public LuidAndAttributes[] Privileges;
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        private struct LuidAndAttributes
-        {
-            public Luid Luid;
-            public uint Attributes;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private readonly struct Luid
-        {
-            private readonly uint LowPart;
-            private readonly int HighPart;
-        }
-
-        [Flags]
-        private enum ProcessAccessFlags : uint
-        {
-            All = 0x001F0FFF,
-            Terminate = 0x00000001,
-            CreateThread = 0x00000002,
-            VirtualMemoryOperation = 0x00000008,
-            VirtualMemoryRead = 0x00000010,
-            VirtualMemoryWrite = 0x00000020,
-            DuplicateHandle = 0x00000040,
-            CreateProcess = 0x000000080,
-            SetQuota = 0x00000100,
-            SetInformation = 0x00000200,
-            QueryInformation = 0x00000400,
-            QueryLimitedInformation = 0x00001000,
-            Synchronize = 0x00100000
-        }
-
-        private enum SecurityImpersonationLevel
-        {
-            SecurityAnonymous,
-            SecurityIdentification,
-            SecurityImpersonation,
-            SecurityDelegation
-        }
-
-        private enum TokenType
-        {
-            TokenPrimary = 1,
-            TokenImpersonation
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private readonly struct ProcessInformation
-        {
-            private readonly IntPtr hProcess;
-            private readonly IntPtr hThread;
-            private readonly int dwProcessId;
-            private readonly int dwThreadId;
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        private readonly struct StartupInfo
-        {
-            private readonly int cb;
-            private readonly string lpReserved;
-            private readonly string lpDesktop;
-            private readonly string lpTitle;
-            private readonly int dwX;
-            private readonly int dwY;
-            private readonly int dwXSize;
-            private readonly int dwYSize;
-            private readonly int dwXCountChars;
-            private readonly int dwYCountChars;
-            private readonly int dwFillAttribute;
-            private readonly int dwFlags;
-            private readonly int wShowWindow;
-            private readonly int cbReserved2;
-            private readonly int lpReserved2;
-            private readonly int hStdInput;
-            private readonly int hStdOutput;
-            private readonly int hStdError;
-        }
-
-        [DllImport("kernel32.dll", ExactSpelling = true)]
-        private static extern IntPtr GetCurrentProcess();
-
-        [DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]
-        private static extern bool OpenProcessToken(IntPtr h, int acc, ref IntPtr phtok);
-
-        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern bool LookupPrivilegeValue(string host, string name, ref Luid pluid);
-
-        [DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]
-        private static extern bool AdjustTokenPrivileges(IntPtr htok, bool disall, ref TokenPrivileges newst, int len, IntPtr prev, IntPtr relen);
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool CloseHandle(IntPtr hObject);
-
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetShellWindow();
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern IntPtr OpenProcess(ProcessAccessFlags processAccess, bool bInheritHandle, uint processId);
-
-        [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern bool DuplicateTokenEx(IntPtr hExistingToken, uint dwDesiredAccess, IntPtr lpTokenAttributes, SecurityImpersonationLevel impersonationLevel, TokenType tokenType, out IntPtr phNewToken);
-
-        [DllImport("advapi32", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern bool CreateProcessWithTokenW(IntPtr hToken, int dwLogonFlags, string lpApplicationName, string lpCommandLine, int dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref StartupInfo lpStartupInfo, out ProcessInformation lpProcessInformation);
 
         #endregion
     }

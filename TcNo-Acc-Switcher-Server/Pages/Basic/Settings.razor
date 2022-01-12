@@ -37,9 +37,6 @@
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="AltClose" @bind="_basic.AltClose"><label class="form-check-label" for="AltClose"></label></div><label for="AltClose">@_locale["Settings_AltClose"]</label>
-            </div>
-            <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_basic.DesktopShortcut" @onclick="() => Shortcut.DesktopShortcut_Toggle(CurrentPlatform.Instance.FullName, _basic.DesktopShortcut)"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
 		            @_locale["Settings_Shortcut", new { platform = CurrentPlatform.Instance.FullName }]<br></label>
             </div>

@@ -181,7 +181,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 // This can be improved. Somehow ignore self, and make sure all processes are killed before self.
                 if (GeneralFuncs.CanKillProcess("TcNo"))
-                    Globals.KillProcess("TcNo");
+                    Globals.TaskKillProcess("TcNo");
             }
 
             // Single instance:
@@ -197,7 +197,7 @@ namespace TcNo_Acc_Switcher_Client
                 catch (IOException)
                 {
                     // Catch first IOException and try to kill the updater, if it's running... Then continue.
-                    Globals.KillProcess("TcNo-Acc-Switcher-Updater");
+                    Globals.TaskKillProcess("TcNo-Acc-Switcher-Updater");
                     GeneralFuncs.RecursiveDelete("updater", false);
                 }
 

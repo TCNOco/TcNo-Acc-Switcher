@@ -72,7 +72,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             // Kill game processes
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Basic" }]);
-            if (!GeneralFuncs.CloseProcesses(CurrentPlatform.Instance.ExesToEnd, Data.Settings.Basic.Instance.AltClose))
+            if (!GeneralFuncs.CloseProcesses(CurrentPlatform.Instance.ExesToEnd, CurrentPlatform.Instance.ExitMethod))
             {
                 _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.Instance.FullName }]);
                 return;
@@ -345,7 +345,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             {
                 // Kill game processes
                 _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Basic" }]);
-                if (!GeneralFuncs.CloseProcesses(CurrentPlatform.Instance.ExesToEnd, Data.Settings.Basic.Instance.AltClose))
+                if (!GeneralFuncs.CloseProcesses(CurrentPlatform.Instance.ExesToEnd, CurrentPlatform.Instance.ExitMethod))
                 {
                     _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.Instance.FullName }]);
                     return false;

@@ -407,7 +407,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform  = "Steam" }]);
-            if (!GeneralFuncs.CloseProcesses(Data.Settings.Steam.Processes, Data.Settings.Steam.Instance.AltClose))
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Steam.Processes, Data.Settings.Steam.Instance.AltClose ? "TaskKill" : ""))
             {
                 _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
                 return;

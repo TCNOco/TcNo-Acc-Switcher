@@ -131,7 +131,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
 
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Riot" }]);
-            if (!GeneralFuncs.CloseProcesses(Data.Settings.Riot.Processes, Data.Settings.Riot.Instance.AltClose))
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Riot.Processes, Data.Settings.Riot.Instance.AltClose ? "TaskKill" : ""))
             {
                 _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Riot" }]);
                 return;

@@ -68,8 +68,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Basic_TrayAccNumber", Order = 3)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
         private bool _forgetAccountEnabled;
         [JsonProperty("ForgetAccountEnabled", Order = 4)] public bool ForgetAccountEnabled { get => _instance._forgetAccountEnabled; set => _instance._forgetAccountEnabled = value; }
-        private bool _altClose;
-        [JsonProperty("AltClose", Order = 5)] public bool AltClose { get => _instance._altClose; set => _instance._altClose = value; }
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
@@ -113,7 +111,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
             _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.Instance.FullName);
-            _instance._altClose = false;
 
             SaveSettings();
         }
@@ -126,7 +123,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.Admin = curSettings.Admin;
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
             _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.Instance.FullName);
-            _instance._altClose = curSettings.AltClose;
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(Platform.SettingsFile, GetJObject()));
         public JObject GetJObject() => JObject.FromObject(this);

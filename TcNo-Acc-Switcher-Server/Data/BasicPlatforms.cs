@@ -159,7 +159,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (jPlatform.ContainsKey("UniqueIdRegex")) _instance.UniqueIdRegex = Globals.ExpandRegex((string)jPlatform["UniqueIdRegex"]);
             if (jPlatform.ContainsKey("UniqueIdMethod")) _instance.UniqueIdMethod = Globals.ExpandRegex((string)jPlatform["UniqueIdMethod"]);
             if (jPlatform.ContainsKey("ExitBeforeInteract")) _instance.ExitBeforeInteract = (bool)jPlatform["ExitBeforeInteract"];
-            if (jPlatform.ContainsKey("PeacefulExit")) _instance.PeacefulExit = (bool)jPlatform["PeacefulExit"];
+            if (jPlatform.ContainsKey("ExitMethod")) _instance.ExitMethod = (string)jPlatform["ExitMethod"];
 
             // Process "Extras"
             JObject extras = null;
@@ -167,9 +167,11 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (extras != null)
             {
                 _instance.HasExtras = true;
+                if (extras.ContainsKey("UsernameModalExtraButtons"))
+                    _instance.UsernameModalExtraButtons = (string)extras["UsernameModalExtraButtons"];
                 if (extras.ContainsKey("UsernameModalCopyText"))
-                    _instance.UserModalCopyText = (string) extras["UsernameModalCopyText"];
-                if (extras.ContainsKey("UsernameModalHintText"))
+                    _instance.UserModalCopyText = (string)extras["UsernameModalCopyText"];
+                if (extras.ContainsKey("UsernameModalCopyText"))
                     _instance.UserModalHintText = (string) extras["UsernameModalHintText"];
                 if (extras.ContainsKey("CachePaths"))
                     _instance.CachePaths = extras["CachePaths"]!.Values<string>().ToList();
@@ -190,7 +192,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public string UniqueIdRegex { get; private set; } = "";
         public string UniqueIdMethod { get; private set; } = "";
         public bool ExitBeforeInteract { get; private set; }
-        public bool PeacefulExit { get; private set; }
+        public string ExitMethod { get; private set; } = "";
         public string PrimaryId => _platformIds[0];
         public string IdsJsonPath => $"LoginCache\\{_instance.SafeName}\\ids.json";
         public string AccountLoginCachePath(string acc) => $"LoginCache\\{_instance.SafeName}\\{acc}\\";
@@ -198,6 +200,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         #region EXTRAS
         public bool HasExtras { get; private set; } = false;
+        public string UsernameModalExtraButtons { get; private set; } = "";
         public string UserModalCopyText { get; private set; } = "";
         public string UserModalHintText { get; private set; } = "";
         public List<string> CachePaths { get; private set; } = null;
@@ -209,7 +212,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         public void SaveRegJson(Dictionary<string, string> regJson, string acc) =>
             GeneralFuncs.SaveDict(regJson, Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
 
-        public string GetUserModalCopyTextHtml => _instance.UserModalCopyText == "" ? "" : Globals.ReadAllText(Path.Join(Globals.AppDataFolder, _instance.UserModalCopyText));
+        public string GetUserModalExtraButtons => _instance.UsernameModalExtraButtons == "" ? "" :
+            Globals.ReadAllText(Path.Join(Globals.AppDataFolder, _instance.UsernameModalExtraButtons));
+        public string GetUserModalCopyText => _instance.UserModalCopyText == "" ? "" :
+            Globals.ReadAllText(Path.Join(Globals.AppDataFolder, _instance.UserModalCopyText));
 
         public string GetUserModalHintText()
         {

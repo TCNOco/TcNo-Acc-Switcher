@@ -65,7 +65,7 @@ namespace TcNo_Acc_Switcher_Client
             if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(serverPath)).Length > 0)
             {
                 Globals.WriteToLog("Server was already running. Killing process.");
-                Globals.KillProcess(serverPath); // Kill server if already running
+                Globals.TaskKillProcess(serverPath); // Kill server if already running
             }
 
             var attempts = 0;
@@ -457,6 +457,32 @@ namespace TcNo_Acc_Switcher_Client
 
                 if (_mainBrowser == "WebView") _mView2.Reload();
                 else if (_mainBrowser == "CEF") _cefView.Reload();
+            }
+            else if (uriArg.StartsWith("Open_AltF4"))
+            {
+                uriArg = HttpUtility.UrlDecode(uriArg);
+                string exe = "", extraArgs = "", process = "";
+                foreach (var arg in uriArg.Split("&"))
+                {
+                    if (arg.StartsWith("exe"))
+                        exe = arg.Split("=")[1];
+                    if (arg.StartsWith("extraArgs"))
+                        extraArgs = arg.Split("=")[1];
+                    if (arg.StartsWith("process"))
+                        process = arg.Split("=")[1];
+                }
+
+                // Open the program, then Alt+F4.
+                Globals.ProcessHandler.StartProgram(exe, false, extraArgs);
+                Thread.Sleep(2000);
+                foreach (var p in Process.GetProcessesByName(process.Split(".exe")[0]))
+                {
+                    Globals.ProcessHandler.BringWindowToForeground(p);
+                }
+                Thread.Sleep(500);
+                SendKeys.Send("f");
+                Thread.Sleep(500);
+                SendKeys.Send("%{F4}");
             }
         }
         #endregion

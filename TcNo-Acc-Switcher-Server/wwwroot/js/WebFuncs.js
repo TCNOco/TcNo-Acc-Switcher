@@ -363,7 +363,7 @@ async function showModal(modaltype) {
         var platformName = getCurrentPage();
         let extraButtons = "";
         if (platformName === "Basic") {
-            await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText", platformName).then((r) => {
+            await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalExtraButtons").then((r) => {
                 extraButtons = r;
             });
             await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platformName).then((r) => {
@@ -503,7 +503,7 @@ async function showModal(modaltype) {
     } else if (modaltype === "accString") {
         platform = getCurrentPage();
         let extraButtons = "";
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText", platform).then((r) => {
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalExtraButtons").then((r) => {
             extraButtons = r;
         });
 
@@ -678,12 +678,13 @@ function refetchRank() {
 async function usernameModalCopyText() {
     let toastTitle = await GetLang("Toast_Copied"),
         toastHintText = "",
-        platform = getCurrentPage();
+        platform = getCurrentPage(),
+        code = "";
 
     await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformHintText", platform).then((r) => {
         toastHintText = r;
     });
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText", platform).then((r) => {
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText").then((r) => {
         code = r;
     });
 
