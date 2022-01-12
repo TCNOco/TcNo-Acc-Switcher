@@ -62,13 +62,16 @@
         "%AppData%\\discordcanary\\Local Storage\\leveldb\\*.log": "Local Storage\\leveldb\\",
         "%AppData%\\discordcanary\\Session Storage\\*.log": "Session Storage\\",
         "%AppData%\\discordcanary\\Session Storage\\*.ldb": "Session Storage\\",
-        "%AppData%\\discordcanary\\blob_storage\\*": "blob_storage\\",
+        "%AppData%\\discordcanary\\blob_storage": "blob_storage\\",
         "%AppData%\\discordcanary\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
       },
       "ExitBeforeInteract": true,
       "PeacefulExit": true,
-      "extras": {
-        "CachePaths": [ "%AppData%\\discordcanary\\Cache\\*" ],
+      "Extras": {
+        "CachePaths": [
+          "%AppData%\\discordcanary\\Cache\\f_*",
+          "%AppData%\\discordcanary\\GPUCache\\"
+        ],
         "UsernameModalCopyText": "Platforms\\Discord\\UsernameCopy.txt",
         "UsernameModalHintText": "Platform_DiscordPasteHint"
       },

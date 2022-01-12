@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Data
@@ -61,8 +62,16 @@ namespace TcNo_Acc_Switcher_Server.Data
         public bool PlatformExistsFromShort(string id) => ((JObject)GetPlatforms).ContainsKey(PlatformFullName(id));
 
         // ---------------
-        public void SetCurrentPlatform(string platform) => CurrentPlatform.Instance.CurrentPlatformInit(platform);
-        public void SetCurrentPlatformFromShort(string id) => CurrentPlatform.Instance.CurrentPlatformInit(_instance.PlatformFullName(id));
+        public void SetCurrentPlatform(string platform)
+        {
+            CurrentPlatform.Instance = new CurrentPlatform();
+            CurrentPlatform.Instance.CurrentPlatformInit(platform);
+        }
+        public void SetCurrentPlatformFromShort(string id)
+        {
+            CurrentPlatform.Instance = new CurrentPlatform();
+            CurrentPlatform.Instance.CurrentPlatformInit(_instance.PlatformFullName(id));
+        }
         public Dictionary<string, string> PlatformsDict => _instance._platformDict;
 
         public Dictionary<string, string> InactivePlatforms()
@@ -124,9 +133,9 @@ namespace TcNo_Acc_Switcher_Server.Data
             _instance.SafeName = Globals.GetCleanFilePath(platform);
             _instance.SettingsFile = _instance.SafeName + ".json";
 
-            _instance.DefaultExePath = Environment.ExpandEnvironmentVariables((string)BasicPlatforms.Instance.GetPlatformJson(platform)["ExeLocationDefault"]);
+            _instance.DefaultExePath = BasicSwitcherFuncs.ExpandEnvironmentVariables((string)BasicPlatforms.Instance.GetPlatformJson(platform)["ExeLocationDefault"]);
             _instance.ExeExtraArgs = (string)BasicPlatforms.Instance.GetPlatformJson(platform)["ExeExtraArgs"];
-            _instance.DefaultFolderPath = Environment.ExpandEnvironmentVariables(Path.GetDirectoryName(_instance.DefaultExePath));
+            _instance.DefaultFolderPath = BasicSwitcherFuncs.ExpandEnvironmentVariables(Path.GetDirectoryName(_instance.DefaultExePath));
             _instance.ExeName = Path.GetFileName(_instance.DefaultExePath);
 
             var jPlatform = BasicPlatforms.Instance.GetPlatformJson(platform);
@@ -136,7 +145,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             _instance.LoginFiles.Clear();
             foreach (var (k,v) in jPlatform["LoginFiles"].ToObject<Dictionary<string, string>>())
             {
-                _instance.LoginFiles.Add(Environment.ExpandEnvironmentVariables(k), v);
+                _instance.LoginFiles.Add(BasicSwitcherFuncs.ExpandEnvironmentVariables(k), v);
                 if (k.Contains("REG:")) _instance.HasRegistryFiles = true;
             }
 
@@ -154,7 +163,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             // Process "Extras"
             JObject extras = null;
-            if (jPlatform.ContainsKey("extras")) extras = (JObject)jPlatform["extras"];
+            if (jPlatform.ContainsKey("Extras")) extras = (JObject)jPlatform["Extras"];
             if (extras != null)
             {
                 _instance.HasExtras = true;
@@ -173,7 +182,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             _instance.IsInit = true;
         }
         // Variables that may not be set:
-        public string LoginFileFromValue(string val) =>Environment.ExpandEnvironmentVariables(_instance.LoginFiles.FirstOrDefault(x => x.Value == val).Key);
+        public string LoginFileFromValue(string val) => BasicSwitcherFuncs.ExpandEnvironmentVariables(_instance.LoginFiles.FirstOrDefault(x => x.Value == val).Key);
         public string GetUniqueFilePath() => _instance.LoginFileFromValue(_instance.UniqueIdFile);
         #region OPTIONAL
         public string UniqueIdFile { get; private set; } = "";
@@ -191,7 +200,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public bool HasExtras { get; private set; } = false;
         public string UserModalCopyText { get; private set; } = "";
         public string UserModalHintText { get; private set; } = "";
-        public List<string> CachePaths { get; private set; } = new();
+        public List<string> CachePaths { get; private set; } = null;
         #endregion
 
 

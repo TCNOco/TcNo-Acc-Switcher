@@ -69,19 +69,27 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             get
             {
-                if (!Strings.ContainsKey(key)) return key;
-                var s = Strings[key];
-                if (obj is JsonElement)
-                    foreach (var (k, v) in JObject.FromObject(JsonConvert.DeserializeObject(obj.ToString()!)!))
-                        s = s.Replace($"{{{k}}}", v.Value<string>());
-                else
-                    foreach (var pi in obj.GetType().GetProperties())
-                    {
-                        dynamic val = pi.GetValue(obj, null);
-                        if (val is int) val = val.ToString();
-                        s = s.Replace($"{{{pi.Name}}}", (string)val);
-                    }
-                return s;
+                try
+                {
+                    if (!Strings.ContainsKey(key)) return key;
+                    var s = Strings[key];
+                    if (obj is JsonElement)
+                        foreach (var (k, v) in JObject.FromObject(JsonConvert.DeserializeObject(obj.ToString()!)!))
+                            s = s.Replace($"{{{k}}}", v.Value<string>());
+                    else
+                        foreach (var pi in obj.GetType().GetProperties())
+                        {
+                            dynamic val = pi.GetValue(obj, null);
+                            if (val is int) val = val.ToString();
+                            s = s.Replace($"{{{pi.Name}}}", (string)val);
+                        }
+                    return s;
+                }
+                catch (NullReferenceException e)
+                {
+                    Globals.WriteToLog(e);
+                    return "[Failed to get text: missing parameter] " + key;
+                }
             }
         }
 

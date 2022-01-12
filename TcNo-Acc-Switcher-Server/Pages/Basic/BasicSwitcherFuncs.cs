@@ -23,7 +23,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         private static readonly Lang Lang = Lang.Instance;
 
         private static readonly Data.Settings.Basic Basic = Data.Settings.Basic.Instance;
-        private static readonly CurrentPlatform Platform = CurrentPlatform.Instance;
         /// <summary>
         /// Main function for Basic Account Switcher. Run on load.
         /// Collects accounts from cache folder
@@ -32,9 +31,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
         public static void LoadProfiles()
         {
-            Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.LoadProfiles] Loading Basic profiles for: " + Platform.FullName);
+            Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.LoadProfiles] Loading Basic profiles for: " + CurrentPlatform.Instance.FullName);
             Data.Settings.Basic.Instance.LoadFromFile();
-            _ = GenericFunctions.GenericLoadAccounts(Platform.FullName, true);
+            _ = GenericFunctions.GenericLoadAccounts(CurrentPlatform.Instance.FullName, true);
         }
 
         /// <summary>
@@ -47,9 +46,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         #region Account IDs
 
         public static Dictionary<string, string> AccountIds;
-        public static void LoadAccountIds() => AccountIds = GeneralFuncs.ReadDict(Platform.IdsJsonPath);
+        public static void LoadAccountIds() => AccountIds = GeneralFuncs.ReadDict(CurrentPlatform.Instance.IdsJsonPath);
         private static void SaveAccountIds() =>
-            File.WriteAllText(Platform.IdsJsonPath, JsonConvert.SerializeObject(AccountIds));
+            File.WriteAllText(CurrentPlatform.Instance.IdsJsonPath, JsonConvert.SerializeObject(AccountIds));
         public static string GetNameFromId(string accId) => AccountIds.ContainsKey(accId) ? AccountIds[accId] : accId;
         #endregion
 
@@ -63,9 +62,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.SwapBasicAccounts] Swapping to: hidden.");
             // Handle args:
-            if (Platform.ExeExtraArgs != "")
+            if (CurrentPlatform.Instance.ExeExtraArgs != "")
             {
-                args = Platform.ExeExtraArgs + (args == "" ? "" : " " + args);
+                args = CurrentPlatform.Instance.ExeExtraArgs + (args == "" ? "" : " " + args);
             }
 
             LoadAccountIds();
@@ -73,26 +72,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             // Kill game processes
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Basic" }]);
-            if (!GeneralFuncs.CloseProcesses(Platform.ExesToEnd, Data.Settings.Basic.Instance.AltClose))
+            if (!GeneralFuncs.CloseProcesses(CurrentPlatform.Instance.ExesToEnd, Data.Settings.Basic.Instance.AltClose))
             {
-                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = Platform.FullName }]);
+                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.Instance.FullName }]);
                 return;
             };
 
             // Add currently logged in account if there is a way of checking unique ID.
             // If saved, and has unique key: Update
-            if (Platform.UniqueIdFile is not null)
+            if (CurrentPlatform.Instance.UniqueIdFile is not null)
             {
                 string uniqueId;
-                if (Platform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(Platform.UniqueIdFile))
+                if (CurrentPlatform.Instance.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.Instance.UniqueIdFile))
                 {
-                    _ = ReadRegistryKeyWithErrors(Platform.UniqueIdFile, out uniqueId);
+                    _ = ReadRegistryKeyWithErrors(CurrentPlatform.Instance.UniqueIdFile, out uniqueId);
                 }
                 else
                     uniqueId = GetUniqueId();
 
                 // UniqueId Found >> Save!
-                if (File.Exists(Platform.IdsJsonPath))
+                if (File.Exists(CurrentPlatform.Instance.IdsJsonPath))
                 {
                     if (!string.IsNullOrEmpty(uniqueId) && AccountIds.ContainsKey(uniqueId))
                     {
@@ -114,10 +113,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (accName != "")
             {
                 if (!BasicCopyInAccount(accId)) return;
-                Globals.AddTrayUser(Platform.SafeName, $"+{Platform.PrimaryId}:" + accId, accName, Basic.TrayAccNumber); // Add to Tray list, using first Identifier
+                Globals.AddTrayUser(CurrentPlatform.Instance.SafeName, $"+{CurrentPlatform.Instance.PrimaryId}:" + accId, accName, Basic.TrayAccNumber); // Add to Tray list, using first Identifier
             }
 
-            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = Platform.FullName }]);
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.Instance.FullName }]);
             GeneralFuncs.StartProgram(Basic.Exe(), Basic.Admin, args);
 
             Globals.RefreshTrayArea();
@@ -129,94 +128,197 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.ClearCurrentLoginBasic]");
 
-            foreach (var accFile in Platform.PathListToClear)
+            // Foreach file/folder/reg in Platform.PathListToClear
+            if (CurrentPlatform.Instance.PathListToClear.Any(accFile => !DeleteFileOrFolder(accFile)))
             {
-                // The "file" is a registry key
-                if (accFile.StartsWith("REG:"))
-                {
-                    if (!Globals.SetRegistryKey(accFile[4..])) // Remove "REG:" and read data
-                    {
-                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
-                        return false;
-                    }
-                    continue;
-                }
-
-
-                // Handle wildcards
-                if (accFile.Contains("*"))
-                {
-                    var folder = Environment.ExpandEnvironmentVariables(Path.GetDirectoryName(accFile) ?? "");
-                    var file = Path.GetFileName(accFile);
-
-                    // Handle "...\\*" folder.
-                    if (file == "*")
-                    {
-                        if (!Directory.Exists(Path.GetDirectoryName(accFile))) return false;
-                        Globals.RecursiveDelete(Path.GetDirectoryName(accFile), false);
-                        continue;
-                    }
-
-                    // Handle "...\\*.log" or "...\\file_*", etc.
-                    // This is NOT recursive - Specify folders manually in JSON
-                    foreach (var f in Directory.GetFiles(folder, file))
-                        if (File.Exists(f)) File.Delete(f);
-
-                    continue;
-                }
-
-                var fullPath = Environment.ExpandEnvironmentVariables(accFile);
-                // Is folder? Recursive copy folder
-                if (Directory.Exists(accFile))
-                {
-                    Globals.RecursiveDelete(Path.GetDirectoryName(fullPath), false);
-                    continue;
-                }
-
-                // Is file? Delete file
-                if (File.Exists(fullPath))
-                    File.Delete(fullPath);
+                return false;
             }
 
-            if (Platform.UniqueIdMethod != "CREATE_ID_FILE") return true;
+            if (CurrentPlatform.Instance.UniqueIdMethod != "CREATE_ID_FILE") return true;
 
             // Unique ID file --> This needs to be deleted for a new instance
-            var uniqueIdFile = Platform.GetUniqueFilePath();
+            var uniqueIdFile = CurrentPlatform.Instance.GetUniqueFilePath();
             if (File.Exists(uniqueIdFile)) File.Delete(uniqueIdFile);
 
             return true;
         }
 
-        [SupportedOSPlatform("windows")]
+        public static void ClearCache()
+        {
+
+            Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.ClearCache]");
+            var totalFiles = 0;
+            var totalSize = Globals.FileLengthToString(CurrentPlatform.Instance.CachePaths.Sum(x => SizeOfFile(x, ref totalFiles)));
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Platform_ClearCacheTotal", new { totalFileCount = totalFiles, totalSizeMB = totalSize }], Lang["Working"], "toastarea");
+
+            // Foreach file/folder/reg in Platform.PathListToClear
+            foreach (var f in CurrentPlatform.Instance.CachePaths.Where(f => !DeleteFileOrFolder(f)))
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Platform_CouldNotDeleteLog", new { logPath = Path.Join(Globals.UserDataFolder, "log.txt") }], Lang["Working"], "toastarea");
+                Globals.WriteToLog("Could not delete: " + f);
+            }
+
+            _ = GeneralInvocableFuncs.ShowToast("success", Lang["DeletedFiles"], Lang["Working"], "toastarea");
+        }
+
+        private static long SizeOfFile(string accFile, ref int numFiles)
+        {
+            // The "file" is a registry key
+            if (accFile.StartsWith("REG:"))
+                return 0;
+
+            long totalSize = 0;
+            numFiles = 0;
+
+            // Handle wildcards
+            DirectoryInfo di;
+            if (accFile.Contains("*"))
+            {
+                var folder = ExpandEnvironmentVariables(Path.GetDirectoryName(accFile) ?? "");
+                var file = Path.GetFileName(accFile);
+                di = new DirectoryInfo(folder);
+
+                var so = SearchOption.TopDirectoryOnly;
+                var searchPattern = file;
+                // "...\\*" is recursive
+                if (file == "*")
+                {
+                    searchPattern = "*";
+                    so = SearchOption.AllDirectories;
+                }
+
+                // while "...\\*.log" or "...\\file_*" are not.
+                foreach (var fi in di.EnumerateFiles(searchPattern, so))
+                {
+                    totalSize += fi.Length;
+                    numFiles++;
+                }
+
+                return totalSize;
+            }
+
+            var fullPath = ExpandEnvironmentVariables(accFile);
+            // Is folder? Recursive get file size
+            if (Directory.Exists(fullPath))
+            {
+                di = new DirectoryInfo(fullPath);
+                foreach (var fi in di.EnumerateFiles("*", SearchOption.AllDirectories))
+                {
+                    totalSize += fi.Length;
+                    numFiles++;
+                }
+
+                return totalSize;
+            }
+
+            // Is file? Get file size
+            if (!File.Exists(fullPath)) return 0;
+            numFiles++;
+            return new FileInfo(fullPath).Length;
+        }
+
+        private static bool DeleteFileOrFolder(string accFile)
+        {
+            // The "file" is a registry key
+            if (OperatingSystem.IsWindows() && accFile.StartsWith("REG:"))
+            {
+                if (Globals.SetRegistryKey(accFile[4..])) return true;
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
+                return false;
+            }
+
+            // Handle wildcards
+            if (accFile.Contains("*"))
+            {
+                var folder = ExpandEnvironmentVariables(Path.GetDirectoryName(accFile) ?? "");
+                var file = Path.GetFileName(accFile);
+
+                // Handle "...\\*" folder.
+                if (file == "*")
+                {
+                    if (!Directory.Exists(Path.GetDirectoryName(folder)))
+                        return true;
+                    if (!Globals.RecursiveDelete(folder, false))
+                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Platform_DeleteFail"], Lang["Error"], "toastarea"); ;
+                    return true;
+                }
+
+                // Handle "...\\*.log" or "...\\file_*", etc.
+                // This is NOT recursive - Specify folders manually in JSON
+                foreach (var f in Directory.GetFiles(folder, file))
+                    if (File.Exists(f)) File.Delete(f);
+
+                return true;
+            }
+
+            var fullPath = ExpandEnvironmentVariables(accFile);
+            // Is folder? Recursive copy folder
+            if (Directory.Exists(fullPath))
+            {
+                if (!Globals.RecursiveDelete(fullPath, false))
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Platform_DeleteFail"], Lang["Error"], "toastarea");
+                return true;
+            }
+
+            try
+            {
+                // Is file? Delete file
+                if (File.Exists(fullPath))
+                    File.Delete(fullPath);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Globals.WriteToLog(e);
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Platform_DeleteFail"], Lang["Error"], "toastarea");
+            }
+            return true;
+        }
+
+        public static string ExpandEnvironmentVariables(string path)
+        {
+            var variables = new Dictionary<string, string>()
+            {
+                { "%Game_Folder%", Basic.FolderPath ?? "" },
+                { "%TCNO_UserData%", Globals.UserDataFolder },
+                { "%TCNO_AppData%", Globals.AppDataFolder }
+            };
+
+            foreach (var (k,v) in variables)
+                path = path.Replace(k, v);
+
+            return Environment.ExpandEnvironmentVariables(path);
+        }
+
+
         private static bool BasicCopyInAccount(string accId)
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.BasicCopyInAccount]");
             LoadAccountIds();
             var accName = GetNameFromId(accId);
 
-            var localCachePath = Platform.AccountLoginCachePath(accName);
+            var localCachePath = CurrentPlatform.Instance.AccountLoginCachePath(accName);
             _ = Directory.CreateDirectory(localCachePath);
 
-            if (Platform.LoginFiles == null) throw new Exception("No data in basic platform: " + Platform.FullName);
+            if (CurrentPlatform.Instance.LoginFiles == null) throw new Exception("No data in basic platform: " + CurrentPlatform.Instance.FullName);
 
             // Get unique ID from IDs file if unique ID is a registry key. Set if exists.
-            if (Platform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(Platform.UniqueIdFile))
+            if (OperatingSystem.IsWindows() && CurrentPlatform.Instance.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.Instance.UniqueIdFile))
             {
-                var uniqueId = GeneralFuncs.ReadDict(Platform.SafeName).FirstOrDefault(x => x.Value == accName).Key;
+                var uniqueId = GeneralFuncs.ReadDict(CurrentPlatform.Instance.SafeName).FirstOrDefault(x => x.Value == accName).Key;
 
-                if (!string.IsNullOrEmpty(uniqueId) && !Globals.SetRegistryKey(Platform.UniqueIdFile, uniqueId)) // Remove "REG:" and read data
+                if (!string.IsNullOrEmpty(uniqueId) && !Globals.SetRegistryKey(CurrentPlatform.Instance.UniqueIdFile, uniqueId)) // Remove "REG:" and read data
                 {
                     _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_AlreadyLoggedIn"], Lang["Error"], "toastarea");
                     return false;
                 }
             }
 
-            var regJson = Platform.HasRegistryFiles ? Platform.ReadRegJson(accName) : new Dictionary<string, string>();
+            var regJson = CurrentPlatform.Instance.HasRegistryFiles ? CurrentPlatform.Instance.ReadRegJson(accName) : new Dictionary<string, string>();
 
-            foreach (var (accFile, savedFile) in Platform.LoginFiles)
+            foreach (var (accFile, savedFile) in CurrentPlatform.Instance.LoginFiles)
             {
                 // The "file" is a registry key
-                if (accFile.StartsWith("REG:"))
+                if (OperatingSystem.IsWindows() && accFile.StartsWith("REG:"))
                 {
                     var regValue = regJson[accFile] ?? "";
 
@@ -239,45 +341,45 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         public static bool BasicAddCurrent(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.BasicAddCurrent]");
-            if (Platform.ExitBeforeInteract)
+            if (CurrentPlatform.Instance.ExitBeforeInteract)
             {
                 // Kill game processes
                 _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Basic" }]);
-                if (!GeneralFuncs.CloseProcesses(Platform.ExesToEnd, Data.Settings.Basic.Instance.AltClose))
+                if (!GeneralFuncs.CloseProcesses(CurrentPlatform.Instance.ExesToEnd, Data.Settings.Basic.Instance.AltClose))
                 {
-                    _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = Platform.FullName }]);
+                    _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.Instance.FullName }]);
                     return false;
                 };
             }
 
             // Separate special arguments (if any)
             var specialString = "";
-            if (Platform.HasExtras && accName.Contains(":{"))
+            if (CurrentPlatform.Instance.HasExtras && accName.Contains(":{"))
             {
                 var index = accName.IndexOf(":{")! + 1;
                 specialString = accName[index..];
                 accName = accName.Split(":{")[0];
             }
 
-            var localCachePath = Platform.AccountLoginCachePath(accName);
+            var localCachePath = CurrentPlatform.Instance.AccountLoginCachePath(accName);
             _ = Directory.CreateDirectory(localCachePath);
 
-            if (Platform.LoginFiles == null) throw new Exception("No data in basic platform: " + Platform.FullName);
+            if (CurrentPlatform.Instance.LoginFiles == null) throw new Exception("No data in basic platform: " + CurrentPlatform.Instance.FullName);
 
             // Handle unique ID
             var uniqueId = "";
-            if (Platform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(Platform.UniqueIdFile))
+            if (CurrentPlatform.Instance.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.Instance.UniqueIdFile))
             {
-                if (!ReadRegistryKeyWithErrors(Platform.UniqueIdFile, out uniqueId))
+                if (!ReadRegistryKeyWithErrors(CurrentPlatform.Instance.UniqueIdFile, out uniqueId))
                     return false;
             }
             else
                 uniqueId = GetUniqueId();
 
-            if (uniqueId == "" && Platform.UniqueIdMethod == "CREATE_ID_FILE")
+            if (uniqueId == "" && CurrentPlatform.Instance.UniqueIdMethod == "CREATE_ID_FILE")
             {
                 // Unique ID file, and does not already exist: Therefore create!
-                var uniqueIdFile = Platform.GetUniqueFilePath();
+                var uniqueIdFile = CurrentPlatform.Instance.GetUniqueFilePath();
                 uniqueId = Globals.RandomString(16);
                 File.WriteAllText(uniqueIdFile, uniqueId);
             }
@@ -286,9 +388,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             var hadSpecialProperties = ProcessSpecialAccName(specialString, accName, uniqueId);
 
 
-            var regJson = Platform.HasRegistryFiles ? Platform.ReadRegJson(accName) : new Dictionary<string, string>();
+            var regJson = CurrentPlatform.Instance.HasRegistryFiles ? CurrentPlatform.Instance.ReadRegJson(accName) : new Dictionary<string, string>();
 
-            foreach (var (accFile, savedFile) in Platform.LoginFiles)
+            foreach (var (accFile, savedFile) in CurrentPlatform.Instance.LoginFiles)
             {
                 // HANDLE REGISTRY KEY
                 if (accFile.StartsWith("REG:"))
@@ -315,20 +417,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 // Use reflection?
             }
 
-            Platform.SaveRegJson(regJson, accName);
+            CurrentPlatform.Instance.SaveRegJson(regJson, accName);
 
-            var allIds = GeneralFuncs.ReadDict(Platform.IdsJsonPath);
+            var allIds = GeneralFuncs.ReadDict(CurrentPlatform.Instance.IdsJsonPath);
             allIds[uniqueId] = accName;
-            File.WriteAllText(Platform.IdsJsonPath, JsonConvert.SerializeObject(allIds));
+            File.WriteAllText(CurrentPlatform.Instance.IdsJsonPath, JsonConvert.SerializeObject(allIds));
 
             // Copy in profile image from default -- As long as not already handled by special arguments
             if (!hadSpecialProperties.Contains("IMAGE|"))
             {
-                _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{Platform.SafeName}"));
-                var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{Platform.SafeName}\\{Globals.GetCleanFilePath(uniqueId)}.jpg");
+                _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{CurrentPlatform.Instance.SafeName}"));
+                var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{CurrentPlatform.Instance.SafeName}\\{Globals.GetCleanFilePath(uniqueId)}.jpg");
                 if (!File.Exists(profileImg))
                 {
-                    var platformImgPath = "\\img\\platform\\default_images\\" + Platform.SafeName + "Default.png";
+                    var platformImgPath = "\\img\\platform\\default_images\\" + CurrentPlatform.Instance.SafeName + "Default.png";
                     var currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), platformImgPath);
                     File.Copy(File.Exists(currentPlatformImgPath)
                         ? Path.Join(currentPlatformImgPath)
@@ -349,14 +451,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         /// <param name="reverse">FALSE: Platform -> LoginCache. TRUE: LoginCache -> Platform</param>
         private static bool HandleFileOrFolder(string fromPath, string toPath, string localCachePath, bool reverse)
         {
-            var toFullPath = Path.Join(localCachePath, toPath);
+            // Expand, or join localCachePath
+            var toFullPath = toPath.Contains("%")
+                ? ExpandEnvironmentVariables(toPath)
+                : Path.Join(localCachePath, toPath);
 
             // Reverse if necessary. Explained in summary above.
             if (reverse && fromPath.Contains("*"))
             {
                 (toPath, fromPath) = (fromPath, toPath); // Reverse
                 var wildcard = Path.GetFileName(toPath);
-                fromPath = Path.Join(localCachePath, fromPath, wildcard);
+                // Expand, or join localCachePath
+                fromPath = fromPath.Contains("%")
+                    ? ExpandEnvironmentVariables(Path.Join(fromPath, wildcard))
+                    : Path.Join(localCachePath, fromPath, wildcard);
                 toPath = toPath.Replace(wildcard, "");
                 toFullPath = toPath;
             }
@@ -364,7 +472,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // Handle wildcards
             if (fromPath.Contains("*"))
             {
-                var folder = Environment.ExpandEnvironmentVariables(Path.GetDirectoryName(fromPath) ?? "");
+                var folder = ExpandEnvironmentVariables(Path.GetDirectoryName(fromPath) ?? "");
                 var file = Path.GetFileName(fromPath);
 
                 // Handle "...\\*" folder.
@@ -390,12 +498,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (reverse)
                 (fromPath, toFullPath) = (toFullPath, fromPath);
 
-            var fullPath = Environment.ExpandEnvironmentVariables(fromPath);
+            var fullPath = ExpandEnvironmentVariables(fromPath);
             // Is folder? Recursive copy folder
-            if (Directory.Exists(fromPath))
+            if (Directory.Exists(fullPath))
             {
                 _ = Directory.CreateDirectory(toFullPath);
-                Globals.CopyFilesRecursive(Path.GetDirectoryName(fullPath), toFullPath, true);
+                Globals.CopyFilesRecursive(fullPath, toFullPath, true);
                 return true;
             }
 
@@ -420,12 +528,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         {
             // Verify existence of possible extra properties
             var hadSpecialProperties = "";
-            if (!Platform.HasExtras) return hadSpecialProperties;
+            if (!CurrentPlatform.Instance.HasExtras) return hadSpecialProperties;
             var specialProperties = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonString);
             if (specialProperties == null) return hadSpecialProperties;
 
             // HANDLE SPECIAL IMAGE
-            var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{Platform.SafeName}\\{Globals.GetCleanFilePath(uniqueId)}.jpg");
+            var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{CurrentPlatform.Instance.SafeName}\\{Globals.GetCleanFilePath(uniqueId)}.jpg");
             if (specialProperties.ContainsKey("image"))
             {
                 var imageIsUrl = Uri.TryCreate(specialProperties["image"], UriKind.Absolute, out var uriResult)
@@ -442,7 +550,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     try
                     {
                         if (File.Exists(specialProperties["image"]))
-                            File.Copy(specialProperties["image"], profileImg, true);
+                            File.Copy(ExpandEnvironmentVariables(specialProperties["image"]), profileImg, true);
                         hadSpecialProperties = "IMAGE|";
                     }
                     catch (Exception)
@@ -457,36 +565,36 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
         public static string GetUniqueId()
         {
-            var fileToRead = Platform.GetUniqueFilePath();
+            var fileToRead = CurrentPlatform.Instance.GetUniqueFilePath();
             var uniqueId = "";
 
-            if (Platform.UniqueIdMethod is "REGKEY")
+            if (CurrentPlatform.Instance.UniqueIdMethod is "REGKEY")
             {
-                _ = ReadRegistryKeyWithErrors(Platform.UniqueIdFile, out uniqueId);
+                _ = ReadRegistryKeyWithErrors(CurrentPlatform.Instance.UniqueIdFile, out uniqueId);
                 return uniqueId;
             }
 
-            if (Platform.UniqueIdMethod is "CREATE_ID_FILE")
+            if (CurrentPlatform.Instance.UniqueIdMethod is "CREATE_ID_FILE")
             {
                 return File.Exists(fileToRead) ? File.ReadAllText(fileToRead) : uniqueId;
             }
 
-            if (Platform.UniqueIdFile is not "" && File.Exists(fileToRead))
+            if (CurrentPlatform.Instance.UniqueIdFile is not "" && File.Exists(fileToRead))
             {
-                if (Platform.UniqueIdRegex != null)
+                if (CurrentPlatform.Instance.UniqueIdRegex != null)
                 {
                     var m = Regex.Match(
                         File.ReadAllText(fileToRead),
-                        Platform.UniqueIdRegex, RegexOptions.IgnoreCase);
+                        CurrentPlatform.Instance.UniqueIdRegex);
                     if (m.Success)
                         uniqueId = m.Value;
                 }
-                else if (Platform.UniqueIdMethod is "FILE_MD5") // TODO: TEST THIS! -- This is used for static files that do not change throughout the lifetime of an account login.
+                else if (CurrentPlatform.Instance.UniqueIdMethod is "FILE_MD5") // TODO: TEST THIS! -- This is used for static files that do not change throughout the lifetime of an account login.
                 {
-                    if (!Platform.UniqueIdFile.Contains('*')) uniqueId = GeneralFuncs.GetFileMd5(fileToRead);
+                    if (!CurrentPlatform.Instance.UniqueIdFile.Contains('*')) uniqueId = GeneralFuncs.GetFileMd5(fileToRead);
                     else
                         uniqueId = string.Join('|', (from f in new DirectoryInfo(fileToRead).GetFiles()
-                            where f.Name.EndsWith(Platform.UniqueIdFile.Split('*')[1])
+                            where f.Name.EndsWith(CurrentPlatform.Instance.UniqueIdFile.Split('*')[1])
                             select GeneralFuncs.GetFileMd5(f.FullName)).ToList());
                 }
             }
@@ -518,17 +626,28 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             try
             {
+                // No need to rename image as accId. That step is skipped here.
+                Directory.Move($"LoginCache\\{CurrentPlatform.Instance.SafeName}\\{oldName}\\", $"LoginCache\\{CurrentPlatform.Instance.SafeName}\\{newName}\\"); // Rename login cache folder
+            }
+            catch (IOException e)
+            {
+                Globals.WriteToLog("Failed to write to file: " + e);
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Error_FileAccessDenied", new { logPath = Path.Join(Globals.UserDataFolder, "log.txt") }], Lang["Error"], "toastarea");
+                return;
+            }
+
+            try
+            {
                 AccountIds[accId] = newName;
                 SaveAccountIds();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Globals.WriteToLog("Failed to change username: " + e);
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantChangeUsername"], Lang["Error"], "toastarea");
                 return;
             }
 
-            // No need to rename image as accId. That step is skipped here.
-            Directory.Move($"LoginCache\\{Platform.SafeName}\\{oldName}\\", $"LoginCache\\{Platform.SafeName}\\{newName}\\"); // Rename login cache folder
 
             if (reload) AppData.ActiveNavMan?.NavigateTo("/Basic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ChangedUsername"]), true);
         }
@@ -537,7 +656,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.ReadAllIds]");
             var s = JsonConvert.SerializeObject(new Dictionary<string, string>());
-            path ??= Platform.IdsJsonPath;
+            path ??= CurrentPlatform.Instance.IdsJsonPath;
             if (!File.Exists(path)) return JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
             try
             {

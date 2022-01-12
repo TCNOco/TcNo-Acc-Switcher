@@ -35,12 +35,15 @@ namespace TcNo_Acc_Switcher_Globals
         // TODO: Add other platforms here from Basic JSON.
 
         #region LOGGER
-
+        public static string GetLogPath() => Path.Join(UserDataFolder, "log.txt");
         public static void DebugWriteLine(string s)
         {
             // Toggle here so it only shows in Verbose mode etc.
             if (VerboseMode) Console.WriteLine(s);
         }
+
+        public static void WriteToLog(Exception e) => WriteToLog($"HANDLED/IGNORED ERROR: {e}");
+        public static void WriteToLog(string desc, Exception e) => WriteToLog($"ERROR: {desc}\n{e}");
 
         /// <summary>
         /// Append line to log file
@@ -164,12 +167,12 @@ namespace TcNo_Acc_Switcher_Globals
             {
 
                 if (!string.IsNullOrEmpty(_userDataFolder)) return _userDataFolder;
-                // Has not yet been initialised
+                // Has not yet been initialized
                 // Check if set to something different
-                if (File.Exists(Path.Join(AppDataFolder, "userdata_path.txt")))
-                    _userDataFolder = ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim();
-                else
-                    _userDataFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\");
+                _userDataFolder = File.Exists(Path.Join(AppDataFolder, "userdata_path.txt"))
+                    ? ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim()
+                    : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        "TcNo Account Switcher\\");
 
                 return _userDataFolder;
             }
@@ -289,6 +292,27 @@ namespace TcNo_Acc_Switcher_Globals
         #endregion
 
         #region FILES
+        static readonly string[] SizeSuffixes =
+            { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+
+        /// <summary>
+        /// Convert byte length of file to string (KB, MB, GB...)
+        /// </summary>
+        public static string FileLengthToString(long value, int decimalPlaces = 2)
+        {
+            if (value < 0) { return "-" + FileLengthToString(-value, decimalPlaces); }
+
+            var i = 0;
+            var dValue = (decimal)value;
+            while (Math.Round(dValue, decimalPlaces) >= 1000)
+            {
+                dValue /= 1024;
+                i++;
+            }
+
+            return string.Format("{0:n" + decimalPlaces + "} {1}", dValue, SizeSuffixes[i]);
+        }
+
         public static bool IsDirectoryEmpty(string path)
         {
             return !Directory.EnumerateFileSystemEntries(path).Any();
@@ -311,6 +335,7 @@ namespace TcNo_Acc_Switcher_Globals
             }
             return true;
         }
+
         /// <summary>
         /// A replacement for File.ReadAllText() that doesn't crash if a file is in use.
         /// </summary>
@@ -411,27 +436,36 @@ namespace TcNo_Acc_Switcher_Globals
             return BitConverter.ToString(md5.Hash ?? Array.Empty<byte>()).Replace("-", "").ToLower();
         }
 
-        public static void RecursiveDelete(string baseDir, bool keepFolders) =>
+        public static bool RecursiveDelete(string baseDir, bool keepFolders) =>
             RecursiveDelete(new DirectoryInfo(baseDir), keepFolders);
-        public static void RecursiveDelete(DirectoryInfo baseDir, bool keepFolders)
+        public static bool RecursiveDelete(DirectoryInfo baseDir, bool keepFolders)
         {
             if (!baseDir.Exists)
-                return;
+                return true;
 
-            foreach (var dir in baseDir.EnumerateDirectories())
+            try
             {
-                RecursiveDelete(dir, keepFolders);
-            }
-            var files = baseDir.GetFiles();
-            foreach (var file in files)
-            {
-                if (!file.Exists) continue;
-                file.IsReadOnly = false;
-                file.Delete();
-            }
+                foreach (var dir in baseDir.EnumerateDirectories())
+                {
+                    RecursiveDelete(dir, keepFolders);
+                }
+                var files = baseDir.GetFiles();
+                foreach (var file in files)
+                {
+                    if (!file.Exists) continue;
+                    file.IsReadOnly = false;
+                    file.Delete();
+                }
 
-            if (keepFolders) return;
-            baseDir.Delete();
+                if (keepFolders) return true;
+                baseDir.Delete();
+                return true;
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                WriteToLog("RecursiveDelete failed", e);
+                return false;
+            }
         }
 
         /// <summary>
@@ -451,16 +485,10 @@ namespace TcNo_Acc_Switcher_Globals
         /// <summary>
         /// Get hash of string
         /// </summary>
-        public static string GetSha256HashString(string text)
-        {
-            if (string.IsNullOrEmpty(text))
-                return string.Empty;
-
-            using var sha = new SHA256Managed();
-            var textData = Encoding.UTF8.GetBytes(text);
-            var hash = sha.ComputeHash(textData);
-            return BitConverter.ToString(hash).Replace("-", string.Empty);
-        }
+        public static string GetSha256HashString(string text) => string.IsNullOrEmpty(text)
+            ? string.Empty
+            : SHA512.Create().ComputeHash(Encoding.UTF8.GetBytes(text))
+                .Aggregate("", (current, x) => current + $"{x:x2}");
 
         /// <summary>
         /// Gets the unix timestamp string.
@@ -498,9 +526,9 @@ namespace TcNo_Acc_Switcher_Globals
         }
 
         /// <summary>
-        /// Break an encoded registry key into it's seperate parts
+        /// Break an encoded registry key into it's separate parts
         /// </summary>
-        /// <param name="encodedPath">HKXX\\path:subkey</param>
+        /// <param name="encodedPath">HKXX\\path:SubKey</param>
         private static (RegistryKey, string, string) ExplodeRegistryKey(string encodedPath)
         {
             var rootKey = ExpandRegistryAbbreviation(encodedPath[..4]); // Get HKXX
@@ -514,7 +542,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// <summary>
         /// Read the value of a Registry key (Requires special path)
         /// </summary>
-        /// <param name="encodedPath">HKXX\\path:subkey</param>
+        /// <param name="encodedPath">HKXX\\path:SubKey</param>
         public static string ReadRegistryKey(string encodedPath)
         {
             var (rootKey, path, subKey) = ExplodeRegistryKey(encodedPath);
@@ -537,6 +565,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// </summary>
         /// <param name="encodedPath">HKXX\\path:subkey</param>
         /// <param name="value">Value, or empty to "clear"</param>
+        [SupportedOSPlatform("windows")]
         public static bool SetRegistryKey(string encodedPath, string value = "")
         {
             var (rootKey, path, subKey) = ExplodeRegistryKey(encodedPath);
@@ -548,6 +577,7 @@ namespace TcNo_Acc_Switcher_Globals
             }
             catch (Exception e)
             {
+                WriteToLog("SetRegistryKey failed", e);
                 return false;
             }
 

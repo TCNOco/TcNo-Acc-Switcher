@@ -62,7 +62,13 @@
             </div>
             <p>@_locale["Settings_CurrentLocation", new { path = _basic.FolderPath }]</p>
             <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = CurrentPlatform.Instance.FullName }]</span></button><button id="OpenFolder" type="button" @onclick="OpenFolder"><span>@_locale["Settings_OpenFolder", new { platform = CurrentPlatform.Instance.FullName }]</span></button></div>
-            <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button></div>
+            <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button>
+                @if (CurrentPlatform.Instance.CachePaths != null)
+                {
+                    <button id="ClearCache" type="button" @onclick="BasicSwitcherFuncs.ClearCache"><span>@_locale["Platform_ClearCache"]</span></button>
+                }
+            </div>
+
             <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
         </div>
     </div>

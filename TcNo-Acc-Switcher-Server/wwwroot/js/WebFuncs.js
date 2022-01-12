@@ -360,18 +360,20 @@ async function showModal(modaltype) {
     } else if (modaltype.startsWith("changeUsername")) {
         // USAGE: "changeUsername"
         Modal_RequestedLocated(false);
-        var platformName = modaltype.split(":")[1] ?? "username";
+        var platformName = getCurrentPage();
         let extraButtons = "";
-        if (platform === "Basic") {
-            await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText", platform).then((r) => {
+        if (platformName === "Basic") {
+            await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText", platformName).then((r) => {
                 extraButtons = r;
+            });
+            await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platformName).then((r) => {
+                platformName = r;
             });
         }
 
-        let platformText = (platformName === "username" ? " (Only changes it in the TcNo Account Switcher)" : "");
         const modalChangeUsername =
-                  await GetLangSub("Modal_ChangeUsername", { platformText: platformName, optional: platformText }),
-            modalChangeUsernameType = await GetLangSub("Modal_ChangeUsernameType", { UsernameOrOther: platformName }),
+            await GetLangSub("Modal_ChangeUsername", { platform: platformName }),
+            modalChangeUsernameType = await GetLangSub("Modal_ChangeUsernameType", { platform: platformName }),
             modalTitleChangeUsername = await GetLang("Modal_Title_ChangeUsername");
 
         $("#modalTitle").text(modalTitleChangeUsername);

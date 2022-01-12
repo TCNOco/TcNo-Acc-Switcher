@@ -58,10 +58,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             _ = Process.Start("explorer.exe", new Data.Settings.Basic().FolderPath);
         }
 
-
-        // BUTTON: Advanced Cleaning...
-        // Might add later
-
         #endregion
 
     }

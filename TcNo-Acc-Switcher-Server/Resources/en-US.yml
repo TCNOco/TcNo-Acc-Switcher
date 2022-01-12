@@ -163,8 +163,8 @@ Modal_Title_Background: Set a background image
 Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
 Modal_SetBackground_Button: Set background
 Modal_SetBackground_ChooseImage: Choose local image
-Modal_ChangeUsername: Please enter a new {platformText} for your account
-Modal_ChangeUsernameType: Change {UsernameOrOther}
+Modal_ChangeUsername: Please enter a new username for your account
+Modal_ChangeUsernameType: Change {platform} username
 Modal_EnterDirectory: "Please enter {platform}'s directory, as such: C:\\Program Files\\{platform}"
 Modal_LocatePlatform: Locate {platformExe}
 Modal_LocatePlatformFolder: Select {platform} folder
@@ -320,7 +320,9 @@ Failed: Failed
 Success: Success
 NotFound: Not found
 Done: Done
+Working: Working...
 ForName: "For: {name}"
+DeletedFiles: Deleted files
 CouldNotFindX: Could not find {x}
 CouldNotCloseX: Could not close {x}!
 DirectoryNotFound: Directory not found
@@ -335,3 +337,8 @@ Prompt_ForgetSteam: >
 Prompt_ForgetAccount: >
   <h3 style='color:red'>You are about to forget an account!</h3> <h4>What does this mean?</h4> <p>TcNo Account Switcher will also no longer show the account,<br/> until it's signed into again through {platform}, and added to the list.</p> <p>Your account will remain untouched. It is just forgotten on this computer.</p> <h4>Do you understand?</h4>
 Platform_DiscordPasteHint: Paste into Discord console, and then paste result in input!
+Platform_ClearCache: Clear Cache
+Platform_ClearCacheTotal: Clearing {totalFileCount} files ({totalSizeMB})
+Platform_DeleteFail: Could not delete some files (Program may be running?)
+Platform_CouldNotDeleteLog: Could not delete file! Check {logPath}
+Error_FileAccessDenied: Failed to access file! Check {logPath}
