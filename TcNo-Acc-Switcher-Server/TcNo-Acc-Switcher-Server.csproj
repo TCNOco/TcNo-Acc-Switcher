@@ -21,6 +21,7 @@
     <Content Remove="compilerconfig.json" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Platforms\Discord\Username.js" />
     <None Remove="TcNoAccSw-Icon-100x100.png" />
     <None Remove="themes\Dracula_Cyan\info.yaml" />
     <None Remove="themes\Dracula_Cyan\style.scss" />

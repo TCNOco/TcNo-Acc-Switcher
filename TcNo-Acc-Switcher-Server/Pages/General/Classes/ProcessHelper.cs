@@ -62,7 +62,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         [SupportedOSPlatform("windows")]
         public static bool IsProcessRunning(string processName)
         {
-            var proc = Process.GetProcessesByName(processName);
+            var proc = Process.GetProcessesByName(processName.Split(".exe")[0]);
 
             return proc.Length != 0;
         }

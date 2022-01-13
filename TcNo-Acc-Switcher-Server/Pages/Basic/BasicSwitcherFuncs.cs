@@ -245,6 +245,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
                 // Handle "...\\*.log" or "...\\file_*", etc.
                 // This is NOT recursive - Specify folders manually in JSON
+                if (!Directory.Exists(folder)) return true;
                 foreach (var f in Directory.GetFiles(folder, file))
                     if (File.Exists(f)) File.Delete(f);
 
@@ -350,6 +351,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.Instance.FullName }]);
                     return false;
                 };
+            }
+
+            // If set to clear LoginCache for account before adding (Enabled by default):
+            if (CurrentPlatform.Instance.ClearLoginCache)
+            {
+                Globals.RecursiveDelete(CurrentPlatform.Instance.AccountLoginCachePath(accName), false);
             }
 
             // Separate special arguments (if any)

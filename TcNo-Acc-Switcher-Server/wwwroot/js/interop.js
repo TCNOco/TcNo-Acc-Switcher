@@ -77,7 +77,7 @@ function updateStatus(status) {
     $("#CurrentStatus").val(status);
 };
 
-function initAccListSortable() {
+async function initAccListSortable() {
 	if (document.getElementsByClassName("acc_list").length === 0) return;
     // Create sortable list
     sortable(".acc_list", {
@@ -92,6 +92,12 @@ function initAccListSortable() {
             $(e).prop("checked", false);
         });
     });
+
+    var platformName = getCurrentPage();
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platformName).then((r) => {
+        platformName = r;
+    });
+
     // On drag end, save list of items.
     sortable(".acc_list")[0].addEventListener("sortupdate", (e) => {
         const order = [];
@@ -99,7 +105,8 @@ function initAccListSortable() {
             if (!$(i).is("div")) return; // Ignore <toastarea class="toastarea" />
             order.push(i.getElementsByTagName("input")[0].getAttribute("id"));
         });
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", `LoginCache\\${getCurrentPage()}\\order.json`, JSON.stringify(order));
+
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", `LoginCache\\${platformName}\\order.json`, JSON.stringify(order));
     });
 };
 

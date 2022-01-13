@@ -65,7 +65,7 @@ namespace TcNo_Acc_Switcher_Client
             if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(serverPath)).Length > 0)
             {
                 Globals.WriteToLog("Server was already running. Killing process.");
-                Globals.KillProcess(serverPath); // Kill server if already running
+                Globals.TaskKillProcess(serverPath); // Kill server if already running
             }
 
             var attempts = 0;

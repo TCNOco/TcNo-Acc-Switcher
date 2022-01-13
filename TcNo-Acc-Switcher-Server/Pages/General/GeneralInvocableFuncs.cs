@@ -431,7 +431,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         [JSInvokable]
-        public static string PlatformUserModalCopyText() => CurrentPlatform.Instance.GetUserModalCopyTextHtml;
+        public static string PlatformUserModalExtraButtons() => CurrentPlatform.Instance.GetUserModalExtraButtons;
+        [JSInvokable]
+        public static string PlatformUserModalCopyText() => CurrentPlatform.Instance.GetUserModalCopyText;
         [JSInvokable]
         public static string PlatformHintText() => CurrentPlatform.Instance.GetUserModalHintText();
 

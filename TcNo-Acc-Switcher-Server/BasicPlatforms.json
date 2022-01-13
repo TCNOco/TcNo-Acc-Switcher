@@ -19,15 +19,7 @@
       "LoginFiles": {
         "%AppData%\\obs-studio\\global.ini": "global.ini",
         "%AppData%\\obs-studio\\basic\\*": "basic\\",
-        "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance",
-
-
-        "%AppData%\\discord\\Cache\\index": "Cache\\index",
-        "%AppData%\\discord\\Cache\\data_*": "Cache\\",
-        "%AppData%\\discord\\Local Storage\\leveldb\\*.log": "Local Storage\\leveldb\\",
-        "%AppData%\\discord\\Local Storage\\leveldb\\*.ldb": "Local Storage\\leveldb\\",
-        "%AppData%\\discord\\Session Storage\\*.log": "Session Storage\\",
-        "%AppData%\\discord\\Session Storage\\*.ldb": "Session Storage\\"
+        "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
       },
       "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
@@ -58,8 +50,10 @@
         "%AppData%\\discordcanary\\TransportSecurity": "TransportSecurity",
         "%AppData%\\discordcanary\\Cache\\index": "Cache\\index",
         "%AppData%\\discordcanary\\Cache\\data_*": "Cache\\",
+        "%AppData%\\discordcanary\\Code Cache\\js\\index-dir\\the-real-index": "Code Cache\\js\\index-dir\\the-real-index",
+        "%AppData%\\discordcanary\\GPUCache\\index": "GPUCache\\index",
         "%AppData%\\discordcanary\\Local Storage\\leveldb\\*.log": "Local Storage\\leveldb\\",
-        "%AppData%\\discordcanary\\Local Storage\\leveldb\\*.log": "Local Storage\\leveldb\\",
+        "%AppData%\\discordcanary\\Local Storage\\leveldb\\*.ldb": "Local Storage\\leveldb\\",
         "%AppData%\\discordcanary\\Session Storage\\*.log": "Session Storage\\",
         "%AppData%\\discordcanary\\Session Storage\\*.ldb": "Session Storage\\",
         "%AppData%\\discordcanary\\blob_storage": "blob_storage\\",
@@ -72,7 +66,8 @@
           "%AppData%\\discordcanary\\Cache\\f_*",
           "%AppData%\\discordcanary\\GPUCache\\"
         ],
-        "UsernameModalCopyText": "Platforms\\Discord\\UsernameCopy.txt",
+        "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
+        "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
         "UsernameModalHintText": "Platform_DiscordPasteHint"
       },
       "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
