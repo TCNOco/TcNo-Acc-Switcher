@@ -43,10 +43,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void ClearVacStatus()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
-            if (SteamSwitcherFuncs.DeleteVacCacheFile())
-                _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_Steam_VacCleared"], renderTo: "toastarea");
-            else
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_CantDeleteVacCache"], Lang["Error"], "toastarea");
+            _ = Globals.DeleteFile(Data.Settings.Steam.Instance.VacCacheFile)
+                ? GeneralInvocableFuncs.ShowToast("success", Lang["Toast_Steam_VacCleared"], renderTo: "toastarea")
+                : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_CantDeleteVacCache"], Lang["Error"],"toastarea");
         }
 
         // BUTTON: Reset settings

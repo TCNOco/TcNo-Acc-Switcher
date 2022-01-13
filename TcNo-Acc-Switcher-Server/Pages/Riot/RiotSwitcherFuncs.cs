@@ -147,15 +147,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Riot
 
             //GeneralFuncs.StartProgram(Riot.Exe(), Riot.Admin);
 
-            Globals.RefreshTrayArea();
+            NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
         private static void ClearCurrentLoginRiot()
         {
             Globals.DebugWriteLine(@"[Func:Riot\RiotSwitcherFuncs.ClearCurrentLoginRiot]");
-            if (File.Exists(_riotClientPrivateSettings)) File.Delete(_riotClientPrivateSettings);
-            if (File.Exists(_riotClientConfig)) File.Delete(_riotClientConfig);
+            Globals.DeleteFile(_riotClientPrivateSettings);
+            Globals.DeleteFile(_riotClientConfig);
         }
 
         private static bool RiotCopyInAccount(string accName)

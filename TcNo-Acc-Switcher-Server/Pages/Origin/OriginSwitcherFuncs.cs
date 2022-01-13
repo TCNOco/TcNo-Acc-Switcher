@@ -48,10 +48,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         {
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.ForgetAccount] Forgetting account: hidden");
             // Remove cached files
-            GeneralFuncs.RecursiveDelete($"LoginCache\\Origin\\{accName}", false);
+            Globals.RecursiveDelete($"LoginCache\\Origin\\{accName}", false);
             // Remove image
-            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Globals.GetCleanFilePath(accName)}.jpg");
-            if (File.Exists(img)) File.Delete(img);
+            Globals.DeleteFile(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Globals.GetCleanFilePath(accName)}.jpg"));
             // Remove from Tray
             Globals.RemoveTrayUser("Origin", accName); // Add to Tray list
             return true;
@@ -88,9 +87,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             }
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Origin" }]);
-            GeneralFuncs.StartProgram(Origin.Exe(), Origin.Admin, args);
+            Globals.StartProgram(Origin.Exe(), Origin.Admin, args);
 
-            Globals.RefreshTrayArea();
+            NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
@@ -124,24 +123,24 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             }
 
             // Clear for next login
-            GeneralFuncs.RecursiveDelete(Path.Join(OriginRoaming, "ConsolidatedCache"), true);
-            GeneralFuncs.RecursiveDelete(Path.Join(OriginRoaming, "NucleusCache"), true);
-            GeneralFuncs.RecursiveDelete(Path.Join(OriginRoaming, "Logs"), true);
-            GeneralFuncs.RecursiveDelete(Path.Join(OriginProgramData, "Subscription"), false);
+            Globals.RecursiveDelete(Path.Join(OriginRoaming, "ConsolidatedCache"), true);
+            Globals.RecursiveDelete(Path.Join(OriginRoaming, "NucleusCache"), true);
+            Globals.RecursiveDelete(Path.Join(OriginRoaming, "Logs"), true);
+            Globals.RecursiveDelete(Path.Join(OriginProgramData, "Subscription"), false);
             _ = Directory.CreateDirectory(Path.Join(OriginProgramData, "Subscription"));
 
             foreach (var f in new DirectoryInfo(OriginRoaming).GetFiles())
             {
                 if (f.Name.StartsWith("local") && f.Name.EndsWith(".xml"))
                 {
-                    File.Delete(f.FullName);
+                    Globals.DeleteFile(f.FullName);
                 }
             }
             foreach (var f in new DirectoryInfo(OriginProgramData).GetFiles())
             {
                 if (f.Name.EndsWith(".xml") || f.Name.EndsWith(".olc"))
                 {
-                    File.Delete(f.FullName);
+                    Globals.DeleteFile(f.FullName);
                 }
             }
             File.WriteAllText(OriginProgramData + "\\local.xml", "<?xml version=\"1.0\"?><Settings><Setting key=\"OfflineLoginUrl\" value=\"https://signin.ea.com/p/originX/offline\" type=\"10\"/></Settings>");

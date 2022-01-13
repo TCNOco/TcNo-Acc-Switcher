@@ -81,52 +81,6 @@
 
     // For draggable regions:
     // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
-    public class EventForwarder
-    {
-        public const int WmNclButtonDown = 0xA1;
-        public const int WmSysCommand = 0x112;
-        public const int HtCaption = 0x2;
-
-        [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
-        [DllImport("user32.dll")]
-        public static extern bool ReleaseCapture();
-
-        readonly IntPtr _target;
-
-        public EventForwarder(IntPtr target)
-        {
-            _target = target;
-        }
-
-        public void MouseDownDrag()
-        {
-            ReleaseCapture();
-            SendMessage(_target, WmNclButtonDown, HtCaption, 0);
-        }
-
-        public void MouseResizeDrag(int wParam)
-        {
-            if (wParam == 0) return;
-            ReleaseCapture();
-            SendMessage(_target, WmNclButtonDown, wParam, 0);
-        }
-
-        public void WindowAction(int action)
-        {
-            ReleaseCapture();
-            if (action != 0x0010) SendMessage(_target, WmSysCommand, action, 0);
-            else SendMessage(_target, 0x0010, 0, 0);
-        }
-
-        public void HideWindow()
-        {
-            ReleaseCapture();
-            SendMessage(_target, WmSysCommand, 0xF020, 0); // Minimize
-            Globals.HideWindow(_target); // Hide from start bar
-            Globals.StartTrayIfNotRunning();
-        }
-    }
     // This is not used here, but these values are used in js for MouseResizeDrag.
     // Checking once through everything is better than comparing things multiple times.
     public enum SysCommandSize

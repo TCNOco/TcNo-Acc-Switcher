@@ -1,0 +1,145 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace TcNo_Acc_Switcher_Globals
+{
+    public partial class Globals
+    {
+        #region LOGGER
+        public static string MessageFromHResult(int hr)
+        {
+            return Marshal.GetExceptionForHR(hr)?.Message;
+        }
+        public static string GetLogPath() => Path.Join(UserDataFolder, "log.txt");
+        public static void DebugWriteLine(string s)
+        {
+            // Toggle here so it only shows in Verbose mode etc.
+            if (VerboseMode) Console.WriteLine(s);
+        }
+
+        public static void WriteToLog(Exception e) => WriteToLog($"HANDLED/IGNORED ERROR: {e}");
+        public static void WriteToLog(string desc, Exception e) => WriteToLog($"ERROR: {desc}\n{e}");
+
+        /// <summary>
+        /// Append line to log file
+        /// </summary>
+        public static void WriteToLog(string s)
+        {
+            var attempts = 0;
+            while (attempts <= 30) // Up to 3 seconds
+            {
+                try
+                {
+                    File.AppendAllText(Path.Join(UserDataFolder, "log.txt"), s + Environment.NewLine);
+                    break;
+                }
+                catch (IOException)
+                {
+                    if (attempts == 5)
+                        throw;
+                    attempts++;
+                    Thread.Sleep(100);
+                }
+            }
+
+            if (NativeMethods.GetConsoleWindow() != IntPtr.Zero) // Console exists
+                Console.WriteLine(s);
+        }
+
+        /// <summary>
+        /// Clear log files & Combine other log files.
+        /// </summary>
+        public static void ClearLogs()
+        {
+            // Clear original log file
+            DeleteFile("log.txt");
+            // Check for other log files. Combine them and delete them.
+            var filepath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            if (filepath == null) return;
+            var d = new DirectoryInfo(filepath);
+            var appendText = new List<string>();
+            var oldFilesFound = false;
+            foreach (var file in d.GetFiles("log*.txt"))
+            {
+                if (appendText.Count == 0) appendText.Add(Environment.NewLine + "-------- OLD --------");
+                try
+                {
+                    appendText.AddRange(ReadAllLines(file.FullName));
+                    File.Delete(file.FullName);
+                    oldFilesFound = true;
+                }
+                catch (Exception)
+                {
+                    //
+                }
+            }
+
+            if (oldFilesFound) appendText.Add(Environment.NewLine + "-------- END OF OLD --------");
+
+            // Insert their contents into the actual log file
+            try
+            {
+                File.WriteAllLines("log.txt", appendText);
+            }
+            catch (IOException)
+            {
+                // Could not write to log file.
+                // Probably in use.
+                // Just ignore. Don't crash.
+                // Crashing happened way too often because of this. Makes no sense to log these elsewhere.
+            }
+        }
+
+        /// <summary>
+        /// Exception handling for all programs
+        /// </summary>
+        public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            // Set working directory to documents folder
+            Directory.SetCurrentDirectory(UserDataFolder);
+
+            // Log Unhandled Exception
+            try
+            {
+                var exceptionStr = e.ExceptionObject.ToString();
+                _ = Directory.CreateDirectory("CrashLogs");
+                var filePath = $"CrashLogs\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
+                if (File.Exists(filePath))
+                {
+                    Random r = new();
+                    filePath = $"CrashLogs\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}{r.Next(0, 100)}.txt";
+                }
+
+                using (var sw = File.AppendText(filePath))
+                {
+                    sw.WriteLine(
+                        $"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({Version})\t{Strings.ErrUnhandledCrash}: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
+                }
+
+                WriteToLog(Strings.ErrUnhandledException + Path.GetFullPath(filePath));
+                WriteToLog(Strings.ErrSubmitCrashlog);
+
+                //To display an error notification, the main program needs to be started as that's the Windows client. This is a cross-platform compatible binary. Adding the Presentation DLL causes issues.
+                File.WriteAllText("LastError.txt",
+                    "Fatal error occurred!" + Environment.NewLine +
+                    "This crashlog will be automatically submitted next launch." + Environment.NewLine +
+                    Environment.NewLine + "Error: " + e.ExceptionObject);
+            }
+            catch (Exception)
+            {
+                // This is just to prevent a complete crash. Sometimes there are multiple errors super close together, that cause it to break and we end up here.
+            }
+        }
+
+        #endregion
+
+    }
+}

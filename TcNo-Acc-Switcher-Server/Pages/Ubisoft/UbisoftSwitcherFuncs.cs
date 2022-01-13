@@ -125,7 +125,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
                     lastUser = line;
                 }
             }
-            File.Delete("templog");
+            Globals.DeleteFile("templog");
 
             return lastUser != "" ? lastUser : "NOTFOUND";
         }
@@ -186,7 +186,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         //            username = temp.Substring(38, temp.IndexOf(":", StringComparison.Ordinal) - 38);
 
 
-        //            GeneralFuncs.RecursiveDelete("LoginCache\\Ubisoft\\temp\\", false);
+        //            Globals.RecursiveDelete("LoginCache\\Ubisoft\\temp\\", false);
         //            Directory.CreateDirectory($"LoginCache\\Ubisoft\\{username}\\");
         //            File.Copy(Path.Join(UbisoftAppData, "settings.yaml"), $"LoginCache\\Ubisoft\\{username}\\settings.yaml", true);
         //            File.Copy(Path.Join(UbisoftAppData, "user.dat"), $"LoginCache\\Ubisoft\\{username}\\user.dat", true);
@@ -237,17 +237,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Ubisoft" }]);
 
-            GeneralFuncs.StartProgram(Ubisoft.Exe(), Ubisoft.Admin, args);
+            Globals.StartProgram(Ubisoft.Exe(), Ubisoft.Admin, args);
 
-            Globals.RefreshTrayArea();
+            NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
         private static void ClearCurrentUser()
         {
             Globals.DebugWriteLine(@"[Func:Ubisoft\UbisoftSwitcherFuncs.ClearCurrentUser]");
-            File.Delete(Path.Join(_ubisoftAppData, "settings.yml"));
-            File.Delete(Path.Join(_ubisoftAppData, "user.dat"));
+            Globals.DeleteFile(Path.Join(_ubisoftAppData, "settings.yml"));
+            Globals.DeleteFile(Path.Join(_ubisoftAppData, "user.dat"));
         }
 
         /// <summary>

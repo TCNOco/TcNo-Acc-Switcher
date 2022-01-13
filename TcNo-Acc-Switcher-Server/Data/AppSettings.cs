@@ -116,6 +116,13 @@ namespace TcNo_Acc_Switcher_Server.Data
             set => _instance._enabledBasicPlatforms = value;
         }
 
+        public List<string> EnabledBasicPlatformSorted()
+        {
+            var enabled = EnabledBasicPlatforms.ToList();
+            enabled.Sort();
+            return enabled;
+        }
+
         private bool _desktopShortcut;
         [Newtonsoft.Json.JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
         private bool _startMenu;
@@ -349,10 +356,10 @@ namespace TcNo_Acc_Switcher_Server.Data
                 throw;
             }
             // Convert from SCSS to CSS. The arguments are for "exception reporting", according to the SharpScss Git Repo.
-            if (File.Exists(StylesheetFile)) File.Delete(StylesheetFile);
+            Globals.DeleteFile(StylesheetFile);
             File.WriteAllText(StylesheetFile, convertedScss.Css);
 
-            if (File.Exists(StylesheetFile + ".map")) File.Delete(StylesheetFile + ".map");
+            Globals.DeleteFile(StylesheetFile + ".map");
             File.WriteAllText(StylesheetFile + ".map", convertedScss.SourceMap);
         }
 
@@ -605,7 +612,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (platforms)
             {
                 var platformsFolder = Path.Join(Shortcut.StartMenu, "Platforms");
-                if (Directory.Exists(platformsFolder)) GeneralFuncs.RecursiveDelete(Path.Join(Shortcut.StartMenu, "Platforms"), false);
+                if (Directory.Exists(platformsFolder)) Globals.RecursiveDelete(Path.Join(Shortcut.StartMenu, "Platforms"), false);
                 else
                 {
                     _ = Directory.CreateDirectory(platformsFolder);
@@ -633,7 +640,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public void StartNow()
         {
-            _ = Globals.StartTrayIfNotRunning() switch
+            _ = NativeFuncs.StartTrayIfNotRunning() switch
             {
                 "Started Tray" => GeneralInvocableFuncs.ShowToast("success", Lang["Toast_TrayStarted"], renderTo: "toastarea"),
                 "Already running" => GeneralInvocableFuncs.ShowToast("info", Lang["Toast_TrayRunning"], renderTo: "toastarea"),

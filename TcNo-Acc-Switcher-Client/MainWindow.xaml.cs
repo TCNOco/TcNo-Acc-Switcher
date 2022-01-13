@@ -96,7 +96,7 @@ namespace TcNo_Acc_Switcher_Client
             {
                 if (Globals.InstalledToProgramFiles() && !IsAdmin() || !Globals.HasFolderAccess(Globals.AppDataFolder))
                     Restart("", true);
-                if (Directory.Exists(Globals.OriginalWwwroot)) GeneralFuncs.RecursiveDelete(Globals.OriginalWwwroot, false);
+                Globals.RecursiveDelete(Globals.OriginalWwwroot, false);
                 Directory.Move(Path.Join(Globals.AppDataFolder, "wwwroot"), Globals.OriginalWwwroot);
             }
 
@@ -267,7 +267,7 @@ namespace TcNo_Acc_Switcher_Client
             _ = Dispatcher.BeginInvoke(new Action(() =>
             {
                 var actionValue = (IDictionary<string, object>)e.Message;
-                var eventForwarder = new Headerbar.EventForwarder(new WindowInteropHelper(this).Handle);
+                var eventForwarder = new EventForwarder(new WindowInteropHelper(this).Handle);
                 switch (actionValue["action"].ToString())
                 {
                     case "WindowAction":
@@ -322,7 +322,7 @@ namespace TcNo_Acc_Switcher_Client
                         AppSettings.SaveSettings();
                         _ = MessageBox.Show("WebView2 Runtime is not installed. The program will now download and use the fallback CEF browser. (Less performance, more compatibility)", "Required runtime not found! Using fallback.", MessageBoxButton.OK, MessageBoxImage.Error);
                         TcNo_Acc_Switcher_Server.Pages.Index.AutoStartUpdaterAsAdmin("downloadCEF");
-                        File.Delete(failFile);
+                        Globals.DeleteFile(failFile);
                         Environment.Exit(1);
                     }
                 }
@@ -352,7 +352,7 @@ namespace TcNo_Acc_Switcher_Client
         {
             if (_mainBrowser != "WebView") return;
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.MViewAddForwarders]");
-            var eventForwarder = new Headerbar.EventForwarder(new WindowInteropHelper(this).Handle);
+            var eventForwarder = new EventForwarder(new WindowInteropHelper(this).Handle);
 
             try
             {

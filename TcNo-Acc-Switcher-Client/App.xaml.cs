@@ -54,39 +54,9 @@ namespace TcNo_Acc_Switcher_Client
 #pragma warning restore CA2211 // Non-constant fields should not be visible
         private static readonly HttpClient Client = new();
 
-        internal static class NativeMethods
-        {
-            // http://msdn.microsoft.com/en-us/library/ms681944(VS.85).aspx
-            // See: http://www.codeproject.com/tips/68979/Attaching-a-Console-to-a-WinForms-application.aspx
-            // And: https://stackoverflow.com/questions/2669463/console-writeline-does-not-show-up-in-output-window/2669596#2669596
-            [DllImport("kernel32.dll", SetLastError = true)]
-            internal static extern int AllocConsole();
-
-            [DllImport("kernel32.dll", SetLastError = true)]
-            internal static extern int FreeConsole();
-
-            [DllImport("kernel32.dll", SetLastError = true)]
-            private static extern IntPtr GetConsoleWindow();
-
-            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-            private static extern bool SetWindowText(IntPtr hwnd, string lpString);
-
-            [DllImport("kernel32.dll", SetLastError = true)]
-            private static extern bool AttachConsole(int dwProcessId);
-
-            public static void SetWindowText(string text)
-            {
-                var handle = GetConsoleWindow();
-
-                _ = SetWindowText(handle, text);
-            }
-
-            public static bool AttachToConsole(int dwProcessId) => AttachConsole(dwProcessId);
-        }
-
         protected override void OnExit(ExitEventArgs e)
         {
-            _ = NativeMethods.FreeConsole();
+            _ = NativeFuncs.FreeConsole();
 #if DEBUG
             try
             {
@@ -139,28 +109,28 @@ namespace TcNo_Acc_Switcher_Client
                 // - But, do check if the tcno:\\ cli command was issued, and only that - If it was: start the program.
                 if (StartPage == "" && !(Globals.VerboseMode && e.Args.Length == 1) && !(e.Args.Length == 1 && (e.Args[0] == @"tcno:\\" || e.Args[0] == "tcno:\\")))
                 {
-                    if (!NativeMethods.AttachToConsole(-1)) // Attach to a parent process console (ATTACH_PARENT_PROCESS)
-                        _ = NativeMethods.AllocConsole();
+                    if (!NativeFuncs.AttachToConsole(-1)) // Attach to a parent process console (ATTACH_PARENT_PROCESS)
+                        _ = NativeFuncs.AllocConsole();
                     Console.WriteLine(Environment.NewLine);
                     var shouldClose = await ConsoleMain(e).ConfigureAwait(false);
                     if (shouldClose)
                     {
                         Console.WriteLine(Environment.NewLine + @"Press any key to close this window...");
-                        _ = NativeMethods.FreeConsole();
+                        _ = NativeFuncs.FreeConsole();
                         Environment.Exit(0);
                         return;
                     }
                     else
                     {
-                        _ = NativeMethods.FreeConsole();
+                        _ = NativeFuncs.FreeConsole();
                     }
                 }
 
             }
 
 #if DEBUG
-            _ = NativeMethods.AllocConsole();
-            NativeMethods.SetWindowText("Debug console");
+            _ = NativeFuncs.AllocConsole();
+            NativeFuncs.SetWindowText("Debug console");
             Globals.WriteToLog("Debug Console started");
 #endif
             try
@@ -192,13 +162,13 @@ namespace TcNo_Acc_Switcher_Client
             {
                 try
                 {
-                    GeneralFuncs.RecursiveDelete("updater", false);
+                    Globals.RecursiveDelete("updater", false);
                 }
                 catch (IOException)
                 {
                     // Catch first IOException and try to kill the updater, if it's running... Then continue.
                     Globals.TaskKillProcess("TcNo-Acc-Switcher-Updater");
-                    GeneralFuncs.RecursiveDelete("updater", false);
+                    Globals.RecursiveDelete("updater", false);
                 }
 
                 Directory.Move("newUpdater", "updater");
@@ -214,15 +184,14 @@ namespace TcNo_Acc_Switcher_Client
             var mainWindow = new MainWindow();
             mainWindow.Show();
 
-            if (File.Exists("LastError.txt"))
-            {
-                var lastError = await File.ReadAllLinesAsync("LastError.txt");
-                lastError = lastError.Skip(1).ToArray();
-                // TODO: Work in progress:
-                //ShowErrorMessage("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
-                MessageBox.Show("Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError), "Error from last crash", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
-                File.Delete("LastError.txt");
-            }
+            if (!File.Exists("LastError.txt")) return;
+
+            var lastError = await File.ReadAllLinesAsync("LastError.txt");
+            lastError = lastError.Skip(1).ToArray();
+            // TODO: Work in progress:
+            //ShowErrorMessage("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
+            MessageBox.Show("Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError), "Error from last crash", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
+            Globals.DeleteFile("LastError.txt");
         }
 
         private static void ShowErrorMessage(string title, string text)
@@ -251,10 +220,6 @@ namespace TcNo_Acc_Switcher_Client
                     ["CloseBackgroundActive"] = GetStylesheetColor("windowControlsCloseBackground-active", "#F1707A")
                 }
             };
-
-
-
-
 
             _ = cmb.ShowDialog();
         }
@@ -304,7 +269,7 @@ namespace TcNo_Acc_Switcher_Client
                 // If set to minimize to tray, try open it.
                 if (AppSettings.Instance.TrayMinimizeNotExit)
                 {
-                    if (Globals.BringToFront())
+                    if (NativeFuncs.BringToFront())
                         Environment.Exit(1056); // 1056	An instance of the service is already running.
                 }
 
@@ -651,7 +616,6 @@ namespace TcNo_Acc_Switcher_Client
                 try
                 {
                     postData.Add("logs", Compress(Globals.ReadAllText("log.txt")));
-
                 }
                 catch (Exception e)
                 {
@@ -702,9 +666,9 @@ namespace TcNo_Acc_Switcher_Client
             try
             {
 #if DEBUG
-                var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + Globals.Version));
+                var latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + Globals.Version);
 #else
-                var latestVersion = new WebClient().DownloadString(new Uri("https://tcno.co/Projects/AccSwitcher/api?v=" + Globals.Version));
+                var latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?v=" + Globals.Version);
 #endif
                 if (CheckLatest(latestVersion)) return;
                 // Show notification

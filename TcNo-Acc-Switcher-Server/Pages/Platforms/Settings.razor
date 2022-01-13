@@ -40,9 +40,10 @@
                 </div>
 
                 <div class="rowSetting">
-                    @foreach (var platform in BasicPlatforms.Instance.InactivePlatforms())
+                    @foreach (var (key, value) in BasicPlatforms.Instance.InactivePlatformsSorted())
                     {
-                        <div class="form-check"><input class="form-check-input" type="checkbox" id="@platform.Key" @onclick="() => AppSettings.ShowPlatform(platform.Key)"><label class="form-check-label" for="@platform.Key"></label></div><label for="@platform.Key">@platform.Value<br></label>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="@key" @onclick="() => AppSettings.ShowPlatform(key)"><label class="form-check-label" for="@key"></label></div><label for="@key">
+                                                                                                                                                                                                                                                                                  @value<br></label>
                     }
                 </div>
             }
@@ -53,7 +54,7 @@
                 </div>
 
                 <div class="rowSetting">
-                    @foreach (var platform in AppSettings.Instance.EnabledBasicPlatforms)
+                    @foreach (var platform in AppSettings.Instance.EnabledBasicPlatformSorted())
                     {
                         <div class="form-check"><input class="form-check-input" type="checkbox" id="@platform" checked @onclick="() => AppSettings.HidePlatform(platform)"><label class="form-check-label" for="@platform"></label></div><label for="@platform">@BasicPlatforms.Instance.PlatformFullName(platform)<br></label>
                     }

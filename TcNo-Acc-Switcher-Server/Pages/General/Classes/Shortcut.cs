@@ -52,7 +52,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.WriteShortcut]");
             _ = Directory.CreateDirectory(ShortcutDir());
             if (File.Exists(ShortcutPath)) return;
-            if (File.Exists("CreateShortcut.vbs")) File.Delete("CreateShortcut.vbs");
+            Globals.DeleteFile("CreateShortcut.vbs");
 
             File.WriteAllLines("CreateShortcut.vbs", new[] {
                 "set WshShell = WScript.CreateObject(\"WScript.Shell\")",
@@ -82,7 +82,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             _ = vbsProcess.StandardOutput.ReadToEnd();
             vbsProcess.Close();
 
-            File.Delete("CreateShortcut.vbs");
+            Globals.DeleteFile("CreateShortcut.vbs");
         }
 
         /// <summary>
@@ -92,8 +92,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         public void DeleteShortcut(bool delFolder)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.DeleteShortcut] delFolder={delFolder}");
-            if (File.Exists(ShortcutPath))
-                File.Delete(ShortcutPath);
+            Globals.DeleteFile(ShortcutPath);
             if (!delFolder) return;
             if (Directory.GetFiles(ShortcutDir()).Length == 0)
                 Directory.Delete(ShortcutDir());

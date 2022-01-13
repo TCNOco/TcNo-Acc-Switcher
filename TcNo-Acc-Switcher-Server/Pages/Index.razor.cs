@@ -164,8 +164,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 Directory.SetCurrentDirectory(Globals.AppDataFolder);
                 // Download latest hash list
                 var hashFilePath = Path.Join(Globals.UserDataFolder, "hashes.json");
-                var client = new WebClient();
-                client.DownloadFile(new Uri("https://tcno.co/Projects/AccSwitcher/latest/hashes.json"), hashFilePath);
+                Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/hashes.json", hashFilePath);
 
                 // Verify updater files
                 var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(Globals.ReadAllText(hashFilePath));
@@ -178,13 +177,13 @@ namespace TcNo_Acc_Switcher_Server.Pages
                 var updaterDict = verifyDictionary.Where(pair => pair.Key.StartsWith("updater")).ToDictionary(pair => pair.Key, pair => pair.Value);
 
                 // Download and replace broken files
-                if (Directory.Exists("newUpdater")) GeneralFuncs.RecursiveDelete("newUpdater", false);
+                Globals.RecursiveDelete("newUpdater", false);
                 foreach (var (key, value) in updaterDict)
                 {
+                    if (key == null) continue;
                     if (File.Exists(key) && value == GeneralFuncs.GetFileMd5(key))
                         continue;
-                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'));
-                    client.DownloadFile(uri, key);
+                    Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'),key);
                 }
 
                 AutoStartUpdaterAsAdmin();

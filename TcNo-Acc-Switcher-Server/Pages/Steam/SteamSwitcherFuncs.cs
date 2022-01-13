@@ -212,18 +212,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         /// <summary>
-        /// Deletes cached VAC/Limited status file
-        /// </summary>
-        /// <returns>Whether deletion successful</returns>
-        public static bool DeleteVacCacheFile()
-        {
-            Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.DeleteVacCacheFile] Deleting VAC cache file:hidden");
-            if (!File.Exists(Steam.VacCacheFile)) return true;
-            File.Delete(Steam.VacCacheFile);
-            return true;
-        }
-
-        /// <summary>
         /// Loads List of VacStatus classes into input cache from file, or deletes if outdated.
         /// </summary>
         /// <param name="vsl">Reference to List of VacStatus</param>
@@ -236,7 +224,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             vsl = JsonConvert.DeserializeObject<List<VacStatus>>(Globals.ReadAllText(Steam.VacCacheFile));
 
             if (vsl != null) return true;
-            File.Delete(Steam.VacCacheFile);
+            Globals.DeleteFile(Steam.VacCacheFile);
             vsl = new List<VacStatus>();
             return true;
         }
@@ -297,10 +285,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 if (string.IsNullOrEmpty(imageUrl)) return vs;
                 try
                 {
-                    using (var client = new WebClient())
-                    {
-                        client.DownloadFile(new Uri(imageUrl), dlDir);
-                    }
+                    Globals.DownloadFile(imageUrl, dlDir);
                     su.ImgUrl = $"{Steam.SteamImagePathHtml}{su.SteamId}.jpg";
                 }
                 catch (WebException ex)
@@ -418,9 +403,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Steam" }]);
             if (!autoStartSteam) return;
 
-            GeneralFuncs.StartProgram(Steam.Exe(), Steam.Admin, args);
+            Globals.StartProgram(Steam.Exe(), Steam.Admin, args);
 
-            Globals.RefreshTrayArea();
+            NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
@@ -456,7 +441,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // -----------------------------------
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_UpdatingFile", new { file = "loginusers.vdf" }]);
             var tempFile = Steam.LoginUsersVdf() + "_temp";
-            File.Delete(tempFile);
+            Globals.DeleteFile(tempFile);
 
             // MostRec is "00" by default, just update the one that matches SteamID.
             userAccounts.Where(x => x.SteamId == selectedSteamId).ToList().ForEach(u =>
@@ -542,7 +527,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 Directory.Delete(legacyBackupPath, true);
 
             // Handle new method:
-            if (File.Exists("SteamForgotten.json")) File.Delete("SteamForgotten.json");
+            Globals.DeleteFile("SteamForgotten.json");
         }
 
         /// <summary>
@@ -556,10 +541,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantClearImages"], Lang["Error"], "toastarea");
             }
-            foreach (var file in Directory.GetFiles(Steam.SteamImagePath))
-            {
-                File.Delete(file);
-            }
+            Globals.DeleteFiles(Steam.SteamImagePath);
             // Reload page, then display notification using a new thread.
             AppData.ActiveNavMan?.NavigateTo("/steam/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ClearedImages"]), true);
         }
@@ -661,7 +643,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             // Remove image
             var img = $"{Steam.SteamImagePathHtml}{steamId}.jpg";
-            if (File.Exists(img)) File.Delete(img);
+            Globals.DeleteFile(img);
 
             // Remove from Tray
             Globals.RemoveTrayUserByArg("Steam", "+s:" + steamId);

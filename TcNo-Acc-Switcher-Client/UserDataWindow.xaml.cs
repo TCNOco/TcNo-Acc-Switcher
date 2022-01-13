@@ -14,6 +14,7 @@
 
 using System.IO;
 using System.Net;
+using TcNo_Acc_Switcher_Globals;
 
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, un-comment.
 
@@ -64,8 +65,8 @@ namespace TcNo_Acc_Switcher_Client
 
             if (!File.Exists("cache\\SteamMasterAppList.json") || overwrite)
             {
-                using var client = new WebClient();
-                client.DownloadFile("https://api.steampowered.com/ISteamApps/GetAppList/v2/", "cache\\SteamMasterAppList.json");
+                Globals.DownloadFile("https://api.steampowered.com/ISteamApps/GetAppList/v2/",
+                    "cache\\SteamMasterAppList.json");
                 // Contains "applist":{ "apps":[ {"appid":<appid>,"name":<name>}, {}... ] }
             }
             else
@@ -78,7 +79,7 @@ namespace TcNo_Acc_Switcher_Client
         {
             // Check and get names from LocalAppList.
 
-            // If not all app names found: 
+            // If not all app names found:
 
             LoadAppList();
             // foreach appId (not cached) => Get app name from appId

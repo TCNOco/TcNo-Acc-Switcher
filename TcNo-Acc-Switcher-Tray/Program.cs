@@ -190,7 +190,7 @@ namespace TcNo_Acc_Switcher_Tray
         private void StartSwitcher(string args = "")
         {
             if (AlreadyRunning() && args == "")
-                _ = Globals.BringToFront();
+                _ = NativeFuncs.BringToFront();
             else
             {
                 if (File.Exists(_mainProgram))

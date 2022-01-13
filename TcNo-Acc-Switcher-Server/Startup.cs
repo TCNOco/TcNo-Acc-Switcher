@@ -85,7 +85,7 @@ namespace TcNo_Acc_Switcher_Server
             // Copy LoginCache
             if (Directory.Exists(Path.Join(Globals.AppDataFolder, "LoginCache\\")))
             {
-                if (Directory.Exists(Path.Join(Globals.UserDataFolder, "LoginCache"))) GeneralFuncs.RecursiveDelete(Path.Join(Globals.UserDataFolder, "LoginCache"), true);
+                Globals.RecursiveDelete(Path.Join(Globals.UserDataFolder, "LoginCache"), true);
                 Globals.CopyFilesRecursive(Path.Join(Globals.AppDataFolder, "LoginCache"), Path.Join(Globals.UserDataFolder, "LoginCache"));
             }
 
@@ -120,7 +120,7 @@ namespace TcNo_Acc_Switcher_Server
         {
             if (File.Exists(Path.Join(Globals.AppDataFolder, f)))
                 File.Copy(Path.Join(Globals.AppDataFolder, f), Path.Join(Globals.UserDataFolder, f), true);
-            File.Delete(Path.Join(Globals.AppDataFolder, f));
+            Globals.DeleteFile(Path.Join(Globals.AppDataFolder, f));
         }
     }
 }

@@ -44,50 +44,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         private static readonly Lang Lang = Lang.Instance;
 
         #region PROCESS_OPERATIONS
-        public static bool IsAdministrator => OperatingSystem.IsWindows() && new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
-        public static void StartProgram(string path, bool elevated) => StartProgram(path, elevated, "");
-        /// <summary>
-        /// Starts a process with or without Admin
-        /// </summary>
-        /// <param name="path">Path of process to start</param>
-        /// <param name="elevated">Whether the process should start elevated or not</param>
-        /// <param name="args">Arguments to pass into the program</param>
-        public static void StartProgram(string path, bool elevated, string args)
-        {
-
-            if (!elevated && IsAdministrator)
-                Globals.ProcessHandler.RunAsDesktopUser(path, args);
-            else
-                Globals.ProcessHandler.StartProgram(path, elevated, args);
-        }
 
         public static bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
 
         public static bool CanKillProcess(string processName, bool showModal = true)
         {
-            // Checks whether program is running as Admin or not
-            var currentlyElevated = false;
-            if (OperatingSystem.IsWindows())
-            {
-                var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
-                if (securityIdentifier is not null) currentlyElevated = securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
-            }
-
-            bool canKill;
-            if (currentlyElevated)
-                canKill = true; // Elevated process can kill most other processes.
-            else
-            {
-                if (OperatingSystem.IsWindows())
-                    canKill = !ProcessHelper.IsProcessAdmin(processName); // If other process is admin, this process can't kill it (because it's not admin)
-                else
-                    canKill = false;
-            }
-
-            // Restart self as admin.
-            if (!canKill && showModal) _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
-
-            return canKill;
+            // Restart self as if can't close admin.
+            if (Globals.CanKillProcess(processName)) return true;
+            if (showModal)
+                _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+            return false;
         }
 
         public static bool CloseProcesses(string procName, bool altMethod = false)
@@ -97,7 +63,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (!CanKillProcess(procName)) return false;
             Globals.TaskKillProcess(procName, altMethod);
 
-            return GeneralFuncs.WaitForClose(procName);
+            return WaitForClose(procName);
         }
         public static bool CloseProcesses(List<string> procNames, bool altMethod = false)
         {
@@ -106,7 +72,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (!CanKillProcess(procNames)) return false;
             Globals.TaskKillProcess(procNames, altMethod);
 
-            return GeneralFuncs.WaitForClose(procNames);
+            return WaitForClose(procNames);
         }
 
         /// <summary>
@@ -118,11 +84,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             if (!OperatingSystem.IsWindows()) return false;
             var timeout = 0;
-            while (ProcessHelper.IsProcessRunning(procName) && timeout < 10)
+            while (Globals.ProcessHelper.IsProcessRunning(procName) && timeout < 10)
             {
                 timeout++;
                 _ = AppData.InvokeVoidAsync("updateStatus", $"Waiting for {procName} to close ({timeout}/10 seconds)");
-                System.Threading.Thread.Sleep(1000);
+                Thread.Sleep(1000);
             }
 
             if (timeout == 10)
@@ -134,22 +100,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             if (!OperatingSystem.IsWindows()) return false;
             var timeout = 0;
-            while (procNames.All(ProcessHelper.IsProcessRunning) && timeout < 10)
+            while (procNames.All(Globals.ProcessHelper.IsProcessRunning) && timeout < 10)
             {
                 timeout++;
                 _ = AppData.InvokeVoidAsync("updateStatus", $"Waiting for {procNames[0]} & {procNames.Count - 1} others to close ({timeout}/10 seconds)");
                 System.Threading.Thread.Sleep(1000);
             }
 
-            if (timeout == 10)
-            {
+            if (timeout != 10) return true; // Returns true if timeout wasn't reached.
 #pragma warning disable CA1416 // Validate platform compatibility
-                var leftOvers = procNames.Where(x => !ProcessHelper.IsProcessRunning(x));
+            var leftOvers = procNames.Where(x => !Globals.ProcessHelper.IsProcessRunning(x));
 #pragma warning restore CA1416 // Validate platform compatibility
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotCloseX", new { x = string.Join(", ", leftOvers.ToArray()) }], Lang["Error"], "toastarea");
-            }
-
-            return timeout != 10; // Returns true if timeout wasn't reached.
+            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotCloseX", new { x = string.Join(", ", leftOvers.ToArray()) }], Lang["Error"], "toastarea");
+            return false; // Returns true if timeout wasn't reached.
         }
         #endregion
 
@@ -182,11 +145,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
 
             // Remove cached files
-            RecursiveDelete($"LoginCache\\{platform}\\{accName}", false);
+            Globals.RecursiveDelete($"LoginCache\\{platform}\\{accName}", false);
 
             // Remove image
-            var img = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{platform}\\{Globals.GetCleanFilePath(accName)}.jpg");
-            if (File.Exists(img)) File.Delete(img);
+            Globals.DeleteFile(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{platform}\\{Globals.GetCleanFilePath(accName)}.jpg"));
 
             // Remove from Tray
             Globals.RemoveTrayUser(platform, accName); // Add to Tray list
@@ -227,7 +189,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (path == null) return;
             var outText = JsonConvert.SerializeObject(dict);
             if (outText.Length < 4 && File.Exists(path))
-                 File.Delete(path);
+                Globals.DeleteFile(path);
             else
                 File.WriteAllText(path, outText);
         }
@@ -252,7 +214,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeletedOutdatedFile] filename={filename.Substring(filename.Length - 8, 8)}, daysOld={daysOld}");
             if (!File.Exists(filename)) return true;
             if (DateTime.Now.Subtract(File.GetLastWriteTime(filename)).Days <= daysOld) return false;
-            File.Delete(filename);
+            Globals.DeleteFile(filename);
             return true;
         }
 
@@ -268,7 +230,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 if (File.Exists(filename) && OperatingSystem.IsWindows() && !IsValidGdiPlusImage(filename)) // Delete image if is not as valid, working image.
                 {
-                    File.Delete(filename);
+                    Globals.DeleteFile(filename);
                     return true;
                 }
             }
@@ -276,7 +238,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 try
                 {
-                    File.Delete(filename);
+                    Globals.DeleteFile(filename);
                     return true;
                 }
                 catch (Exception)
@@ -361,9 +323,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFolder] folder={folder}, jsDest={jsDest}");
             RecursiveDelete(new DirectoryInfo(folder), true, jsDest);
         }
-
-        // Overload for below
-        public static void RecursiveDelete(string baseDir, bool keepFolders) => RecursiveDelete(new DirectoryInfo(baseDir), keepFolders, "");
 
         /// <summary>
         /// Recursively delete files in folders (Choose to keep or delete folders too)
@@ -454,11 +413,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 _ = AppData.InvokeVoidAsync(jsDest, Lang["DeletingFile", new { file }]);
                 try
                 {
-                    File.Delete(file);
+                    Globals.DeleteFile(file);
                 }
                 catch (Exception ex)
                 {
-                    _ = AppData.InvokeVoidAsync(jsDest, Lang["ErrorDetails", new { ex }]);
+                    _ = AppData.InvokeVoidAsync(jsDest, Lang["ErrorDetails", new { ex = Globals.MessageFromHResult(ex.HResult) }]);
                 }
             }
             JsDestNewline(jsDest);
@@ -615,7 +574,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                         // Reset file:
                         var errFile = sFilename.Replace(".json", "_err.json");
-                        if (File.Exists(errFile)) File.Delete(errFile);
+                        Globals.DeleteFile(errFile);
                         File.Move(sFilename, errFile);
 
                         File.WriteAllText("LastError.txt", "LAST CRASH DETAILS:\nThe following file appears to be corrupt:" + sFilename + "\nThe file was reset. Check the CrashLogs folder for more details.");

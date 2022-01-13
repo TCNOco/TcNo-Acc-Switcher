@@ -171,7 +171,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
             if (File.Exists(dlDir))
             {
-                if (GeneralFuncs.GetFileMd5(dlDir) == GeneralFuncs.GetFileMd5("wwwroot\\img\\BattleNetDefault.png")) File.Delete(dlDir);
+                if (GeneralFuncs.GetFileMd5(dlDir) == GeneralFuncs.GetFileMd5("wwwroot\\img\\BattleNetDefault.png")) Globals.DeleteFile(dlDir);
                 _ = GeneralFuncs.DeletedOutdatedFile(dlDir, BattleNet.ImageExpiryTime);
                 _ = GeneralFuncs.DeletedInvalidImage(dlDir);
             }
@@ -179,10 +179,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             if (File.Exists(dlDir)) return dlDir;
             try
             {
-                using var client = new WebClient();
-                client.DownloadFile(new Uri(imgUrl), dlDir);
+                Globals.DownloadFile(imgUrl, dlDir);
             }
-            catch (WebException ex)
+            catch (Exception ex)
             {
                 File.Copy("wwwroot\\img\\BattleNetDefault.png", dlDir);
                 Globals.WriteToLog("ERROR: Could not connect and download BattleNet profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " + ex);
@@ -258,9 +257,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             await File.WriteAllTextAsync(_battleNetRoaming + "\\Battle.net.config", jObject.ToString());
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "BattleNet" }]);
-            GeneralFuncs.StartProgram(BattleNet.Exe(), BattleNet.Admin, args);
+            Globals.StartProgram(BattleNet.Exe(), BattleNet.Admin, args);
 
-            Globals.RefreshTrayArea();
+            NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
@@ -343,7 +342,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             if (account == null) return;
             // Remove image
             var img = Path.Join(BattleNet.ImagePath, $"{account.BTag ?? account.Email}.png");
-            if (File.Exists(img)) File.Delete(img);
+            Globals.DeleteFile(img);
             // Remove from Tray
             Globals.RemoveTrayUser("BattleNet", account.BTag ?? account.Email); // Add to Tray list
             // Remove from accounts list

@@ -98,7 +98,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         if (accId == uniqueId)
                         {
                             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_AlreadyLoggedIn"], renderTo: "toastarea");
-                            GeneralFuncs.StartProgram(Basic.Exe(), Basic.Admin, args);
+                            Globals.StartProgram(Basic.Exe(), Basic.Admin, args);
                             return;
                         }
                         BasicAddCurrent(AccountIds[uniqueId]);
@@ -117,9 +117,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             }
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.Instance.FullName }]);
-            GeneralFuncs.StartProgram(Basic.Exe(), Basic.Admin, args);
+            Globals.StartProgram(Basic.Exe(), Basic.Admin, args);
 
-            Globals.RefreshTrayArea();
+            NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
 
@@ -138,7 +138,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             // Unique ID file --> This needs to be deleted for a new instance
             var uniqueIdFile = CurrentPlatform.Instance.GetUniqueFilePath();
-            if (File.Exists(uniqueIdFile)) File.Delete(uniqueIdFile);
+            Globals.DeleteFile(uniqueIdFile);
 
             return true;
         }
@@ -154,7 +154,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // Foreach file/folder/reg in Platform.PathListToClear
             foreach (var f in CurrentPlatform.Instance.CachePaths.Where(f => !DeleteFileOrFolder(f)))
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Platform_CouldNotDeleteLog", new { logPath = Path.Join(Globals.UserDataFolder, "log.txt") }], Lang["Working"], "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Platform_CouldNotDeleteLog", new { logPath = Globals.GetLogPath() }], Lang["Working"], "toastarea");
                 Globals.WriteToLog("Could not delete: " + f);
             }
 
@@ -247,7 +247,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 // This is NOT recursive - Specify folders manually in JSON
                 if (!Directory.Exists(folder)) return true;
                 foreach (var f in Directory.GetFiles(folder, file))
-                    if (File.Exists(f)) File.Delete(f);
+                    Globals.DeleteFile(f);
 
                 return true;
             }
@@ -264,8 +264,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             try
             {
                 // Is file? Delete file
-                if (File.Exists(fullPath))
-                    File.Delete(fullPath);
+                Globals.DeleteFile(fullPath, true);
             }
             catch (UnauthorizedAccessException e)
             {
@@ -639,7 +638,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             catch (IOException e)
             {
                 Globals.WriteToLog("Failed to write to file: " + e);
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Error_FileAccessDenied", new { logPath = Path.Join(Globals.UserDataFolder, "log.txt") }], Lang["Error"], "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Error_FileAccessDenied", new { logPath = Globals.GetLogPath() }], Lang["Error"], "toastarea");
                 return;
             }
 

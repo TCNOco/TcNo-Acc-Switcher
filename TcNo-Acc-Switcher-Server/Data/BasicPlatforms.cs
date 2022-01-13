@@ -74,7 +74,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
         public Dictionary<string, string> PlatformsDict => _instance._platformDict;
 
-        public Dictionary<string, string> InactivePlatforms()
+        private Dictionary<string, string> InactivePlatforms()
         {
             // Create local copy of platforms dict:
             var platforms = _instance._platformDict.ToDictionary(
@@ -85,6 +85,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                 platforms.Remove(enabledPlat);
 
             return platforms;
+        }
+
+        public List<KeyValuePair<string, string>> InactivePlatformsSorted()
+        {
+            var inactive = InactivePlatforms().ToList();
+            inactive.Sort((p1, p2) => string.Compare(p1.Key, p2.Key, StringComparison.Ordinal));
+            return inactive;
         }
         public string PlatformFullName(string id) => PlatformsDict.ContainsKey(id) ? PlatformsDict[id] : id;
         public string PlatformSafeName(string id) =>
@@ -160,6 +167,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (jPlatform.ContainsKey("UniqueIdMethod")) _instance.UniqueIdMethod = Globals.ExpandRegex((string)jPlatform["UniqueIdMethod"]);
             if (jPlatform.ContainsKey("ExitBeforeInteract")) _instance.ExitBeforeInteract = (bool)jPlatform["ExitBeforeInteract"];
             if (jPlatform.ContainsKey("PeacefulExit")) _instance.PeacefulExit = (bool)jPlatform["PeacefulExit"];
+            if (jPlatform.ContainsKey("ClearLoginCache")) _instance.ClearLoginCache = (bool)jPlatform["ClearLoginCache"];
 
             // Process "Extras"
             JObject extras = null;

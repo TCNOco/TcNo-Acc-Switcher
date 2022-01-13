@@ -567,21 +567,24 @@ div.advancedClearingButtonCol .buttoncol {
   padding: 0.25em 3em !important;
 }
 
-.platformContainer {
-  width: 100%;
-  height: calc(100% - 42px);
-  position: relative;
-  display: table;
-  text-align: center;
+.platformTable {
+    height: 100%;
+    max-height: calc(100% - 42px);
+    overflow-y: auto;
+    width: 100%;
+    position: relative;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .platform_list {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  display: table-cell;
-  vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    display: block;
 }
 
 
@@ -592,6 +595,8 @@ div.advancedClearingButtonCol .buttoncol {
 .platform_list_item {
     width: 20vw;
     height: 20vw;
+    max-width: 175px;
+    max-height: 175px;
     display: inline-block;
     cursor: pointer;
     /* ReSharper disable once InvalidValue */
@@ -602,18 +607,20 @@ div.advancedClearingButtonCol .buttoncol {
     box-shadow: none;
     font-family: Raleway, sans-serif;
     font-weight: 900;
-    -webkit-text-stroke: 0.1vw #00a5f8;
+    -webkit-text-stroke: min(0.1vw, 0.875px) #00a5f8;
     color: transparent;
 
     .fgText {
         position: absolute;
         height: 6.666666666vw;
+        max-height: 58.33px;
         width: calc(20vw - 3px);
+        max-width: 172px;
         bottom: 0;
         z-index: 10;
 
         p {
-            font-size: 2.5vw;
+            font-size: min(2.5vw, 21.875px);
             line-height: 1em;
             height: fit-content;
             padding: 0 !important;
@@ -627,20 +634,22 @@ div.advancedClearingButtonCol .buttoncol {
     }
 
     .noImageCenterText {
-        height: 20vw;
+        height: min(20vw, 175px);
+        max-height: 175px;
     }
 
     .shortText p {
-        font-size: 3.5vw;
+        font-size: min(3.5vw, 30px);
     }
 
     .longText p {
-        font-size: 2vw;
+        font-size: min(2vw, 17.5px);
     }
 
     .fgImg {
         position: absolute;
         height: 13.3333333vw;
+        max-height: 116.66px;
         width: 100%;
         z-index: 10;
 
