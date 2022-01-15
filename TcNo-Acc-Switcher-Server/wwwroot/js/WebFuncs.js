@@ -697,3 +697,48 @@ async function usernameModalCopyText() {
 	    duration: 5000
     });
 }
+
+
+// Basic account switcher: Shortcut dropdown
+var sDropdownOpen = false;
+var sDropdownInitialized = false;
+function sDropdownReposition() {
+    const drop = $("#shortcutDropdown");
+    const btnPos = $("#shortcutDropdownBtn").position();
+    $("#shortcutDropdown").css({ top: btnPos.top - drop.height() - 12, left: btnPos.left + 16 - (drop.width() / 2) });
+}
+
+function sDropdownInit() {
+    if (sDropdownInitialized) return;
+    sDropdownInitialized = true;
+    // Create sortable list
+    sortable(".shortcuts, #shortcutDropdown", {
+        connectWith: "shortcutJoined",
+        forcePlaceholderSize: true,
+        placeholderClass: "shortcutPlaceholder",
+        items: ":not(#shortcutDropdownBtn)"
+    });
+
+    $(".shortcuts, #shortcutDropdown").toArray().forEach(el => {
+        el.addEventListener("sortstart", function (e) {
+            $(".shortcuts").addClass("expandShortcuts");
+        });
+        el.addEventListener("sortstop", function (e) {
+            $(".shortcuts").removeClass("expandShortcuts");
+            sDropdownReposition();
+        });
+    });
+}
+function shortcutDropdownBtnClick() {
+    if (!sDropdownOpen) {
+        sDropdownInit();
+        $("#shortcutDropdown").show();
+        sDropdownReposition();
+        $("#shortcutDropdownBtn").addClass("flip");
+        sDropdownOpen = true;
+    } else {
+        $("#shortcutDropdown").hide();
+        $("#shortcutDropdownBtn").removeClass("flip");
+        sDropdownOpen = false;
+    }
+}

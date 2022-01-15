@@ -240,17 +240,18 @@ namespace TcNo_Acc_Switcher_Server.Data
                 }
 
                 // Now get images for all the shortcuts in the folder, as long as they don't already exist:
-                foreach (var f in new DirectoryInfo(cacheShortcuts).GetFiles())
-                {
-                    var imageName = f.Name.Replace(".lnk", ".png").Replace(".url", ".png");
-                    var imagePath = Path.Join(cacheImages, imageName);
-
-                    // Extract image and place in wwwroot (Only if not already there):
-                    if (!File.Exists(imagePath))
+                if (Directory.Exists(cacheShortcuts))
+                    foreach (var f in new DirectoryInfo(cacheShortcuts).GetFiles())
                     {
-                        Globals.SaveIconFromFile(f.FullName, imagePath);
+                        var imageName = f.Name.Replace(".lnk", ".png").Replace(".url", ".png");
+                        var imagePath = Path.Join(cacheImages, imageName);
+
+                        // Extract image and place in wwwroot (Only if not already there):
+                        if (!File.Exists(imagePath))
+                        {
+                            Globals.SaveIconFromFile(f.FullName, imagePath);
+                        }
                     }
-                }
             }
 
             // Either load existing, or safe default settings for platform

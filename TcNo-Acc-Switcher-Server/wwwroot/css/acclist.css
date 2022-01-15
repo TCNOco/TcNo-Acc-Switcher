@@ -150,7 +150,7 @@ label.acc p {
       color: #DDD;
     }
 
-  .acc_list_actionbar div {
+  .acc_list_actionbar > div {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;

@@ -359,3 +359,73 @@ button .caret {
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNgYGBgYHB3d/8PAAOIAdULw8qMAAAAAElFTkSuQmCC) right repeat-y;
   }
 }
+
+/* SHORTCUTS for basic platforms */
+.shortcuts, .shortcutDropdown {
+    border: 1px solid #274560;
+    background: linear-gradient(90deg,#11181d,#0e1419 100%);
+    width: fit-content;
+    padding: 1px;
+    max-width: 260px;
+
+    button, .shortcutPlaceholder {
+        min-width: 30px;
+        min-height: 30px;
+        max-width: 30px;
+        max-height: 30px;
+        margin: 1px;
+    }
+}
+#shortcutDropdownBtn {
+    min-width: 36px;
+    min-height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+    margin: 0;
+
+    i {
+        transition: all 150ms ease-out;
+    }
+
+    &.flip {
+        border-color: var(--accent) !important;
+
+        i {
+            transform: rotate(180deg);
+        }
+    }
+}
+/* For sortable */
+.shortcutPlaceholder {
+    border: 2px dashed #039CBF;
+    background: #13222f;
+}
+.shortcuts {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    border-right: none;
+
+    &:hover {
+        padding: 1px;
+    }
+
+    &:empty {
+        padding: 0;
+    }
+
+    &.expandShortcuts {
+        padding-left: 33px;
+    }
+}
+.shortcutDropdown {
+    position: absolute;
+    z-index: 500;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 36px;
+    min-height: 36px;
+}

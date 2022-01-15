@@ -49,7 +49,7 @@
     align-items: flex-end;
   }
 
-.acc_list_actionbar div .btn_login,
+.acc_list_actionbar > div .btn_login,
 .btn_close span {
   padding: 0.25em 5em;
 }

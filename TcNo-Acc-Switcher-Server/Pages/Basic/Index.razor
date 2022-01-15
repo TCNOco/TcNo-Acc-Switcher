@@ -34,27 +34,42 @@
 <div id="acc_list" class="acc_list">
     <toastarea class="toastarea" />
 </div>
+
+<div class="shortcutDropdown" id="shortcutDropdown" style="display: none">
+    <button>F</button>
+    <button>F</button>
+    <button>F</button>
+    <button>F</button>
+</div>
+
 <div class="acc_list_actionbar">
     <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@_appData.CurrentStatus" spellcheck="false" disabled></div>
     <div>
-		<button id="btnAddNew" onclick="newLogin()">
-			<svg viewBox="0 0 448 512" draggable="false" alt="+" class="footerIcoInline">
-				<use href="img/fontawesome/plus.svg#img"></use>
-			</svg>
-			<span>@_locale["Button_AddNew"]</span>
-		</button>
-		<button id="btnAddCurrent" onclick="showModal('accString');">
-			<svg viewBox="0 0 448 512" draggable="false" alt="v" class="footerIcoInline">
-				<use href="img/fontawesome/save.svg#img"></use>
-			</svg>
-			<span>@_locale["Button_SaveCurrent"]</span>
-		</button>
-		<button class="btn_login" id="btnLogin" onclick="swapTo(-1, event)">
-			<span>@_locale["Button_Login"]</span>
-			<svg viewBox="0 0 192 512" draggable="false" alt="v" class="footerIcoInline">
-				<use href="img/fontawesome/caret-right.svg#img"></use>
-			</svg>
-		</button>
+
+        <div class="shortcuts">
+            <button>F</button>
+        </div>
+        <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()"><i class="fas fa-chevron-up"></i></button>
+
+
+        <button id="btnAddNew" onclick="newLogin()">
+            <svg viewBox="0 0 448 512" draggable="false" alt="+" class="footerIcoInline">
+                <use href="img/fontawesome/plus.svg#img"></use>
+            </svg>
+            <span>@_locale["Button_AddNew"]</span>
+        </button>
+        <button id="btnAddCurrent" onclick="showModal('accString');">
+            <svg viewBox="0 0 448 512" draggable="false" alt="v" class="footerIcoInline">
+                <use href="img/fontawesome/save.svg#img"></use>
+            </svg>
+            <span>@_locale["Button_SaveCurrent"]</span>
+        </button>
+        <button class="btn_login" id="btnLogin" onclick="swapTo(-1, event)">
+            <span>@_locale["Button_Login"]</span>
+            <svg viewBox="0 0 192 512" draggable="false" alt="v" class="footerIcoInline">
+                <use href="img/fontawesome/caret-right.svg#img"></use>
+            </svg>
+        </button>
 
         <button id="btnSettings" onclick="location = 'Basic/Settings'">
             <svg viewBox="0 0 60 60" draggable="false" alt="Settings" class="footerIcoSettings">
