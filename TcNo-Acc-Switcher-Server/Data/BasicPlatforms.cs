@@ -205,6 +205,9 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             var sExisting = Basic.Instance.Shortcuts; // Existing shortcuts
             if (OperatingSystem.IsWindows())
+            {
+                var cacheShortcuts = Path.Join(PlatformLoginCache, "Shortcuts\\"); // Shortcut cache
+                var cacheImages = Path.Join(Globals.UserDataFolder, $"wwwroot\\img\\shortcuts\\{_instance.SafeName}\\"); // Shotcut image cache
                 foreach (var sFolder in _instance.ShortcutFolders)
                 {
                     // Foreach file in folder
@@ -216,31 +219,39 @@ namespace TcNo_Acc_Switcher_Server.Data
                         // Check if in saved shortcuts and If ignored
                         if (sExisting.ContainsKey(fName))
                         {
-                            if (sExisting[fName] == -1) continue;
+                            if (sExisting[fName] == -1)
+                            {
+                                var imagePath = Path.Join(cacheImages,
+                                    fName.Replace(".lnk", ".png").Replace(".url", ".png"));
+                                if (File.Exists(imagePath)) File.Delete(imagePath);
+                                continue;
+                            }
                         }
                         else
                             Basic.Instance.Shortcuts.Add(fName, 99); // Organization added later
 
-                        var cachePath = Path.Join(PlatformLoginCache, "Shortcuts\\");
-                        Directory.CreateDirectory(cachePath);
-                        var outputShortcut = Path.Join(cachePath, fName);
-
-                        // Extract image and place in wwwroot (Only if not already there):
-                        if (!File.Exists(outputShortcut))
-                        {
-                            // Get full exe path from shortcut:
-
-
-                            Globals.SaveIconFromFile(shortcut.FullName,
-                                Path.Join(Globals.UserDataFolder,
-                                    $"wwwroot\\img\\shortcuts\\{_instance.SafeName}\\{fName}"));
-                        }
+                        Directory.CreateDirectory(cacheShortcuts);
+                        var outputShortcut = Path.Join(cacheShortcuts, fName);
 
                         // Exists and is not ignored: Update shortcut
                         File.Copy(shortcut.FullName, outputShortcut, true);
                         // Organization will be saved in HTML/JS
                     }
                 }
+
+                // Now get images for all the shortcuts in the folder, as long as they don't already exist:
+                foreach (var f in new DirectoryInfo(cacheShortcuts).GetFiles())
+                {
+                    var imageName = f.Name.Replace(".lnk", ".png").Replace(".url", ".png");
+                    var imagePath = Path.Join(cacheImages, imageName);
+
+                    // Extract image and place in wwwroot (Only if not already there):
+                    if (!File.Exists(imagePath))
+                    {
+                        Globals.SaveIconFromFile(f.FullName, imagePath);
+                    }
+                }
+            }
 
             // Either load existing, or safe default settings for platform
             if (File.Exists(Path.Join(Globals.UserDataFolder, _instance.SettingsFile))) Settings.Basic.Instance.LoadFromFile();

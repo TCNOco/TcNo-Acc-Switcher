@@ -1,4 +1,18 @@
-﻿using System;
+﻿// TcNo Account Switcher - A Super fast account switcher
+// Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -162,48 +176,89 @@ namespace TcNo_Acc_Switcher_Globals
         [SupportedOSPlatform("windows")]
         public static void SaveIconFromFile(string path, string output)
         {
-            var test = Shortcut.ReadFromFile(path);
-
-
+            Icon ico;
 
             if (path.EndsWith("lnk"))
+            {
+                var shortcutInfo = Shortcut.ReadFromFile(path);
+                // Check if points to ico, and save if it does:
+                var iconPath = shortcutInfo.ExtraData?.IconEnvironmentDataBlock?.TargetUnicode;
+                if (iconPath != null && SaveImageFromIco(iconPath, output)) return;
+
+                // Otherwise go to main EXE and get icon from that
                 path = GetShortcutTargetFile(path);
-            var theIcon = ExtractIconFromFilePath(path);
+                ico = IconExtractor.ExtractIconFromExecutable(path);
+                if (!SaveImageFromIco(ico, output))
+                    SaveIconFromExtension("lnk", output); // Fallback
+            }
+            else if (path.EndsWith("url"))
+            {
+                // There is probably a real way of doing this, but this works.
+                var urlLines = File.ReadAllLines(path);
+                foreach (var l in urlLines)
+                {
+                    if (!l.StartsWith("IconFile")) continue;
+                    var icoPath = l.Split("=")[1];
+                    if (icoPath != "" && SaveImageFromIco(icoPath, output)) return;
+                }
+                // OTHERWISE:
+                // Get default icon for ext from that extension thing
+                SaveIconFromExtension("url", output); // Fallback
+            }
+            else
+            {
+                ico = ExtractIconFromFilePath(path);
+                SaveImageFromIco(ico, output);
+            }
+        }
+
+        // Consider this a fallback for when the image can not be extracted from shortcuts.
+        // Will usually be Chrome, IE or any other logo - But could also just be a blank page.
+        [SupportedOSPlatform("windows")]
+        private static void SaveIconFromExtension(string ext, string output)
+        {
+            var img = IconExtractor.GetPngFromExtension(ext, IconSizes.Jumbo);
+            img?.Save(output);
+        }
+
+        [SupportedOSPlatform("windows")]
+        private static bool SaveImageFromIco(Icon ico, string output)
+        {
+            var memoryStream = new MemoryStream();
+            ico.Save(memoryStream);
+            memoryStream.Seek(0, SeekOrigin.Begin);
 
             var mi = new MultiIcon();
-            using (FileStream fs = new FileStream("temp.ico", FileMode.Create))
-                theIcon.Save(fs);
+            mi.Load(memoryStream);
+            return SaveImageFromIco(mi, output);
+        }
 
-            mi.Load("temp.ico");
-            var si = mi.FirstOrDefault();
-            if (si == null) return;
-            IconImage icon;
-            icon = si.Where(x => x.Size.Height >= 128).OrderBy(x => x.Size.Height).FirstOrDefault();
-            var max = si.Max(i => i.Size.Height);
-            icon = si.FirstOrDefault(i => i.Size.Height == max);
-            icon.Image.Save(output);
-            icon.Transparent.Save(output + "2.bmp");
+        [SupportedOSPlatform("windows")]
+        private static bool SaveImageFromIco(string ico, string output)
+        {
+            var mi = new MultiIcon();
+            mi.Load(Environment.ExpandEnvironmentVariables(ico));
+            return SaveImageFromIco(mi, output);
+        }
 
+        [SupportedOSPlatform("windows")]
+        private static bool SaveImageFromIco(MultiIcon mi, string output)
+        {
+            try
+            {
+                var si = mi.FirstOrDefault();
+                if (si == null) return false;
+                var icon = si.Where(x => x.Size.Height >= 128).OrderBy(x => x.Size.Height).FirstOrDefault();
+                var max = si.Max(i => i.Size.Height);
+                icon = si.FirstOrDefault(i => i.Size.Height == max);
+                icon?.Transparent.Save(output);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
 
-
-
-            if (path.EndsWith("lnk"))
-                path = GetShortcutTargetFile(path);
-            //var theIcon = ExtractIconFromFilePath(path);
-
-            if (theIcon == null) return;
-            Directory.CreateDirectory(Path.GetDirectoryName(output)!);
-            if (!output.EndsWith(".png")) output += ".png";
-            if (File.Exists(output)) File.Delete(output);
-            theIcon.ToBitmap().Save(output + "2.png");
-
-            //using var stream = new FileStream(output, FileMode.CreateNew);
-            //theIcon.Save(stream);
-
-            var mIcon = new MultiIcon();
-            var sIcon = mIcon.Add("notepad");
-            sIcon.CreateFrom(theIcon!.ToBitmap(), IconOutputFormat.Vista);
-            sIcon.Icon.ToBitmap().Save(output);
+            return true;
         }
 
         // TODO: Use this newly added library to create shortcuts too
