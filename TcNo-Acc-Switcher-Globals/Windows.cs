@@ -223,6 +223,9 @@ namespace TcNo_Acc_Switcher_Globals
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool AttachConsole(int dwProcessId);
+
+        [DllImport("shell32.dll", SetLastError = true)]
+        public static extern IntPtr ExtractIcon(IntPtr hInst, string lpszExeFileName, int nIconIndex);
     }
 
     public static class WindowsClipboard

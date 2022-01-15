@@ -685,11 +685,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                         Data.Settings.Origin.Instance.SaveSettings(!File.Exists(Data.Settings.Origin.SettingsFile));
                         break;
 
-                    case "Riot Games":
-                        Riot.RiotSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Riot.Instance.SaveSettings(!File.Exists(Data.Settings.Riot.SettingsFile));
-                        break;
-
                     case "Steam":
                         await Steam.SteamSwitcherFuncs.LoadProfiles();
                         Data.Settings.Steam.Instance.SaveSettings(!File.Exists(Data.Settings.Steam.SettingsFile));

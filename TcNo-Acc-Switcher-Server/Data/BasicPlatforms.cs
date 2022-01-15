@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
@@ -130,6 +131,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         public string SettingsFile { get; private set; }
         public string ExeName { get; private set; }
         public Dictionary<string, string> LoginFiles { get; private set; } = new();
+        public List<string> ShortcutFolders { get; private set; } = new();
+        public List<string> ShortcutIgnore { get; private set; } = new();
         public List<string> PathListToClear { get; private set; }
         public bool HasRegistryFiles { get; private set; }
         public void CurrentPlatformInit(string platform)
@@ -156,9 +159,12 @@ namespace TcNo_Acc_Switcher_Server.Data
                 if (k.Contains("REG:")) _instance.HasRegistryFiles = true;
             }
 
-            _instance.PathListToClear = jPlatform["PathListToClear"]!.Values<string>().ToList();
-            if (_instance.PathListToClear.Contains("SAME_AS_LOGIN_FILES"))
-                _instance.PathListToClear = _instance.LoginFiles.Keys.ToList();
+            if (jPlatform.ContainsKey("PathListToClear"))
+            {
+                _instance.PathListToClear = jPlatform["PathListToClear"]!.Values<string>().ToList();
+                if (_instance.PathListToClear.Contains("SAME_AS_LOGIN_FILES"))
+                    _instance.PathListToClear = _instance.LoginFiles.Keys.ToList();
+            }
 
             // Variables that may not be set:
             if (jPlatform.ContainsKey("UniqueIdFile")) _instance.UniqueIdFile = (string)jPlatform["UniqueIdFile"];
@@ -183,7 +189,58 @@ namespace TcNo_Acc_Switcher_Server.Data
                     _instance.UserModalHintText = (string) extras["UsernameModalHintText"];
                 if (extras.ContainsKey("CachePaths"))
                     _instance.CachePaths = extras["CachePaths"]!.Values<string>().ToList();
+                if (extras.ContainsKey("ShortcutFolders"))
+                    _instance.ShortcutFolders = extras["ShortcutFolders"]!.Values<string>().ToList();
+                if (extras.ContainsKey("ShortcutIgnore"))
+                    _instance.ShortcutIgnore = extras["ShortcutIgnore"]!.Values<string>().ToList();
             }
+
+            // Foreach app shortcut in ShortcutFolders:
+            // - Add as {<Name>: true} if not included in Basic.Instance.Shortcuts, and copy to cache shortcuts folder (each launch)
+            // - If exists as true copy to cache shortcuts folder (each launch)
+            // - If set to false: Ignore.
+            //
+            // These will be displayed next to the add new button in the switcher.
+            // Maybe a pop-up menu if there are enough (Up arrow button on far right?)
+
+            var sExisting = Basic.Instance.Shortcuts; // Existing shortcuts
+            if (OperatingSystem.IsWindows())
+                foreach (var sFolder in _instance.ShortcutFolders)
+                {
+                    // Foreach file in folder
+                    foreach (var shortcut in new DirectoryInfo(BasicSwitcherFuncs.ExpandEnvironmentVariables(sFolder)).GetFiles())
+                    {
+                        var fName = shortcut.Name;
+                        if (_instance.ShortcutIgnore.Contains(fName.Replace(".lnk", ""))) continue;
+
+                        // Check if in saved shortcuts and If ignored
+                        if (sExisting.ContainsKey(fName))
+                        {
+                            if (sExisting[fName] == -1) continue;
+                        }
+                        else
+                            Basic.Instance.Shortcuts.Add(fName, 99); // Organization added later
+
+                        var cachePath = Path.Join(PlatformLoginCache, "Shortcuts\\");
+                        Directory.CreateDirectory(cachePath);
+                        var outputShortcut = Path.Join(cachePath, fName);
+
+                        // Extract image and place in wwwroot (Only if not already there):
+                        if (!File.Exists(outputShortcut))
+                        {
+                            // Get full exe path from shortcut:
+
+
+                            Globals.SaveIconFromFile(shortcut.FullName,
+                                Path.Join(Globals.UserDataFolder,
+                                    $"wwwroot\\img\\shortcuts\\{_instance.SafeName}\\{fName}"));
+                        }
+
+                        // Exists and is not ignored: Update shortcut
+                        File.Copy(shortcut.FullName, outputShortcut, true);
+                        // Organization will be saved in HTML/JS
+                    }
+                }
 
             // Either load existing, or safe default settings for platform
             if (File.Exists(Path.Join(Globals.UserDataFolder, _instance.SettingsFile))) Settings.Basic.Instance.LoadFromFile();
@@ -203,8 +260,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         public bool ClearLoginCache { get; private set; } = true;
         public bool PeacefulExit { get; private set; }
         public string PrimaryId => _platformIds[0];
-        public string IdsJsonPath => $"LoginCache\\{_instance.SafeName}\\ids.json";
-        public string AccountLoginCachePath(string acc) => $"LoginCache\\{_instance.SafeName}\\{acc}\\";
+        public string PlatformLoginCache => $"LoginCache\\{_instance.SafeName}\\";
+        public string IdsJsonPath => Path.Join(_instance.PlatformLoginCache, "ids.json");
+        public string AccountLoginCachePath(string acc) => Path.Join(_instance.PlatformLoginCache, "{acc}\\");
         #endregion
 
         #region EXTRAS

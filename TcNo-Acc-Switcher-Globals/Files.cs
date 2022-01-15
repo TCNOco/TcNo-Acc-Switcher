@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
+using System.Drawing.IconLib;
+using System.Runtime.Versioning;
+using ShellLink;
+using System.Runtime.InteropServices;
 
 namespace TcNo_Acc_Switcher_Globals
 {
     public partial class Globals
     {
         #region FILES
-
         public static bool DeleteFiles(string path, bool throwErr = false)
         {
             return Directory.GetFiles(path).Aggregate(false, (current, f) => DeleteFile(f, true) || current);
@@ -135,6 +140,74 @@ namespace TcNo_Acc_Switcher_Globals
             }
         }
 
+        /// <summary>
+        /// Returns icon from specified file.
+        /// </summary>
+        [SupportedOSPlatform("windows")]
+        public static Icon ExtractIconFromFilePath(string path)
+        {
+            var result = (Icon)null;
+            try
+            {
+                result = Icon.ExtractAssociatedIcon(path);
+            }
+            catch (Exception)
+            {
+                // Cannot get image
+            }
+
+            return result;
+        }
+
+        [SupportedOSPlatform("windows")]
+        public static void SaveIconFromFile(string path, string output)
+        {
+            var test = Shortcut.ReadFromFile(path);
+
+
+
+            if (path.EndsWith("lnk"))
+                path = GetShortcutTargetFile(path);
+            var theIcon = ExtractIconFromFilePath(path);
+
+            var mi = new MultiIcon();
+            using (FileStream fs = new FileStream("temp.ico", FileMode.Create))
+                theIcon.Save(fs);
+
+            mi.Load("temp.ico");
+            var si = mi.FirstOrDefault();
+            if (si == null) return;
+            IconImage icon;
+            icon = si.Where(x => x.Size.Height >= 128).OrderBy(x => x.Size.Height).FirstOrDefault();
+            var max = si.Max(i => i.Size.Height);
+            icon = si.FirstOrDefault(i => i.Size.Height == max);
+            icon.Image.Save(output);
+            icon.Transparent.Save(output + "2.bmp");
+
+
+
+
+            if (path.EndsWith("lnk"))
+                path = GetShortcutTargetFile(path);
+            //var theIcon = ExtractIconFromFilePath(path);
+
+            if (theIcon == null) return;
+            Directory.CreateDirectory(Path.GetDirectoryName(output)!);
+            if (!output.EndsWith(".png")) output += ".png";
+            if (File.Exists(output)) File.Delete(output);
+            theIcon.ToBitmap().Save(output + "2.png");
+
+            //using var stream = new FileStream(output, FileMode.CreateNew);
+            //theIcon.Save(stream);
+
+            var mIcon = new MultiIcon();
+            var sIcon = mIcon.Add("notepad");
+            sIcon.CreateFrom(theIcon!.ToBitmap(), IconOutputFormat.Vista);
+            sIcon.Icon.ToBitmap().Save(output);
+        }
+
+        // TODO: Use this newly added library to create shortcuts too
+        public static string GetShortcutTargetFile(string shortcut) => Shortcut.ReadFromFile(shortcut).LinkTargetIDList.Path;
         #endregion
     }
 }

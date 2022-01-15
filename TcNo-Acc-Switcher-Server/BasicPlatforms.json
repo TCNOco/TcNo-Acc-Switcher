@@ -71,10 +71,28 @@
         "UsernameModalHintText": "Platform_DiscordPasteHint"
       },
       "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE",
-      "STATUS": "WIP"
-    }
-  },
+      "UniqueIdMethod": "CREATE_ID_FILE"
+    },
+    "Riot Games": {
+      "Identifiers": [ "r", "riot", "riotgames" ],
+      "ExeLocationDefault": "C:\\Riot Games\\Riot Client\\RiotClientServices.exe",
+      "ExesToEnd": [ "LeagueClient.exe", "LoR.exe", "VALORANT.exe", "RiotClientServices.exe", "RiotClientUx.exe", "RiotClientUxRender.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "%LocalAppData%\\Riot Games\\Riot Client\\Data": "RiotClientPrivateSettings.yaml",
+        "%LocalAppData%\\Riot Games\\Riot Client\\Config": "RiotClientSettings.yaml"
+      },
+      "Extras": {
+        "ShortcutFolders": [
+          "%ProgramData%\\Microsoft\\Windows\\Start Menu\\Programs\\Riot Games\\"
+        ],
+        "ShortcutIgnore": [ "Riot Client" ]
+      },
+      "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
+        "UniqueIdMethod": "CREATE_ID_FILE",
+        "STATUS": "WIP"
+      }
+    },
   "Platform-WIP": {
     "Origin": {
       "Identifiers": [ "sdfgsdfgsdfg" ],

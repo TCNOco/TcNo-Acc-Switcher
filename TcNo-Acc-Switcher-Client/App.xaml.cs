@@ -372,7 +372,7 @@ namespace TcNo_Acc_Switcher_Client
                             " -   Discord format: +d:<username>",
                             " -   Epic Games format: +e:<username>",
                             " -   Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]",
-                            " -   Riot Games format: +e:<username>",
+                            " -   Riot Games format: +r:<username>",
                             " -   Steam format: +s:<steamId>[:<PersonaState (0-7)>]",
                             " -   Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]",
                             " --- Other platforms: +<2-3 letter code>:<unique identifiers>",
@@ -444,16 +444,6 @@ namespace TcNo_Acc_Switcher_Client
                         Origin.Instance.LoadFromFile();
                         TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account,
                             command.Length > 2 ? int.Parse(command[2]) : 0, string.Join(' ', remainingArguments));
-                        return;
-                    }
-                // Riot Games
-                case "r":
-                    {
-                        // Riot Games format: +e:<username>
-                        Globals.WriteToLog("Riot Games switch requested");
-                        if (!GeneralFuncs.CanKillProcess(Riot.Processes)) Restart(combinedArgs, true);
-                        Riot.Instance.LoadFromFile();
-                        TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherFuncs.SwapRiotAccounts(account.Replace('-', '#'), string.Join(' ', remainingArguments));
                         return;
                     }
                 // Steam
@@ -547,13 +537,6 @@ namespace TcNo_Acc_Switcher_Client
                     TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherBase.NewLogin_Origin();
                     break;
 
-                // Riot Games
-                case "r":
-                case "riot":
-                case "riotgames":
-                    Globals.WriteToLog("Riot Games logout requested");
-                    TcNo_Acc_Switcher_Server.Pages.Riot.RiotSwitcherBase.NewLogin_Riot();
-                    break;
                 // Steam
                 case "s":
                 case "steam":

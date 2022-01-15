@@ -37,7 +37,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         [JSInvokable]
         public static void UbisoftAddCurrent(string accName)
         {
-            Globals.DebugWriteLine(@"[JSInvoke:Riot\RiotSwitcherBase.RiotAddCurrent] accName:hidden");
+            Globals.DebugWriteLine(@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.UbisoftAddCurrent] accName:hidden");
             UbisoftSwitcherFuncs.UbisoftAddCurrent(accName);
         }
 

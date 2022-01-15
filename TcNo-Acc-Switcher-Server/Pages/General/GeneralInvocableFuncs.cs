@@ -27,7 +27,6 @@ using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Origin;
-using TcNo_Acc_Switcher_Server.Pages.Riot;
 using TcNo_Acc_Switcher_Server.Pages.Ubisoft;
 using Task = System.Threading.Tasks.Task;
 
@@ -43,7 +42,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
         private static readonly Data.Settings.Ubisoft Ubisoft = Data.Settings.Ubisoft.Instance;
         private static readonly Data.Settings.BattleNet BattleNet = Data.Settings.BattleNet.Instance;
-        private static readonly Data.Settings.Riot Riot = Data.Settings.Riot.Instance;
 
         /// <summary>
         /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file
@@ -165,13 +163,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     BattleNetSwitcherFuncs.ForgetAccount(accName);
                     return Task.FromResult("refresh");
                 }
-
-                if (action.StartsWith("AcceptForgetRiotAcc:"))
-                {
-                    Riot.SetForgetAcc(true);
-                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Riot", true);
-                    return Task.FromResult("refresh");
-                }
             }
             switch (action)
             {
@@ -248,9 +239,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "BattleNet":
                     BattleNetSwitcherFuncs.ChangeBTag(id, reqName);
                     break;
-                case "Riot":
-                    RiotSwitcherFuncs.ChangeUsername(id, reqName);
-                    break;
                 case "Origin":
                     OriginSwitcherFuncs.ChangeUsername(id, reqName, true);
                     break;
@@ -295,10 +283,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                         platformName = $"Switch to {accName} {(args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "")} [{platform}]";
                         break;
                     }
-                case "riot":
-                    accId = accId.Replace("#", "-");
-                    originalAccId = accId;
-                    break;
                 case "basic":
                     page = CurrentPlatform.Instance.SafeName;
                     primaryPlatformId = CurrentPlatform.Instance.PrimaryId;

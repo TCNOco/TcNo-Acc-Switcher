@@ -68,6 +68,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             accList = File.Exists(idsFile)
                 ? GeneralFuncs.ReadDict(idsFile).Keys.ToList()
                 : (from f in Directory.GetDirectories(folder)
+                    where !f.EndsWith("Shortcuts")
                     let lastSlash = f.LastIndexOf("\\", StringComparison.Ordinal) + 1
                     select f[lastSlash..]).ToList();
 

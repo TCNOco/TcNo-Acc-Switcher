@@ -53,13 +53,6 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     else _ = GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
                     break;
 
-                case "Riot":
-                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Riot.Processes)) return;
-                    Data.Settings.Riot.Instance.LoadFromFile();
-                    if (Directory.Exists(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Riot Games\\Riot Client\\Data"))) AppData.ActiveNavMan.NavigateTo("/Riot/");
-                    else _ = GeneralInvocableFuncs.ShowModal("find:Riot:RiotClientPrivateSettings.yaml:RiotSettings");
-                    break;
-
                 case "Steam":
                     if (!GeneralFuncs.CanKillProcess(Data.Settings.Steam.Processes)) return;
                     Data.Settings.Steam.Instance.LoadFromFile();

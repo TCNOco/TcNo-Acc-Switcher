@@ -280,7 +280,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             {
                 { "%Game_Folder%", Basic.FolderPath ?? "" },
                 { "%TCNO_UserData%", Globals.UserDataFolder },
-                { "%TCNO_AppData%", Globals.AppDataFolder }
+                { "%TCNO_AppData%", Globals.AppDataFolder },
+                { "%Documents%", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) },
+                { "%Music%", Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) },
+                { "%Pictures%", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) },
+                { "%Videos%", Environment.GetFolderPath(Environment.SpecialFolder.MyVideos) },
+                { "%StartMenu%", Environment.GetFolderPath(Environment.SpecialFolder.StartMenu) },
             };
 
             foreach (var (k,v) in variables)
@@ -288,7 +293,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             return Environment.ExpandEnvironmentVariables(path);
         }
-
 
         private static bool BasicCopyInAccount(string accId)
         {
