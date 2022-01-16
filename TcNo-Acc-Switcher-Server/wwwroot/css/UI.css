@@ -306,6 +306,13 @@ button .caret {
   max-height: 30px;
   margin: 1px;
 }
+.shortcuts button, .shortcutDropdown button {
+  padding: 3px;
+}
+.shortcuts img, .shortcutDropdown img {
+  height: 100%;
+  width: 100%;
+}
 
 #shortcutDropdownBtn {
   min-width: 36px;
@@ -326,7 +333,7 @@ button .caret {
 
 /* For sortable */
 .shortcutPlaceholder {
-  border: 2px dashed #039CBF;
+  border: 2px dashed var(--accent);
   background: #13222f;
 }
 
@@ -356,4 +363,15 @@ button .caret {
   flex-wrap: wrap;
   min-width: 36px;
   min-height: 36px;
+  max-height: 260px;
+}
+.shortcutDropdown #btnOpenShortcutFolder {
+  position: absolute;
+  right: -38px;
+  top: 50%;
+  transform: translateY(calc(-50% - 1px));
+  min-width: 36px;
+  min-height: 36px;
+  max-width: 36px;
+  max-height: 36px;
 }

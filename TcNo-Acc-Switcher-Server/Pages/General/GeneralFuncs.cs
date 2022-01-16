@@ -473,7 +473,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="file">File path to save JSON string to</param>
         /// <param name="joNewSettings">JObject of settings to be saved</param>
         /// <param name="mergeNewIntoOld">True merges old with new settings, false merges new with old</param>
-        public static void SaveSettings(string file, JObject joNewSettings, bool mergeNewIntoOld)
+        public static void SaveSettings(string file, JObject joNewSettings, bool mergeNewIntoOld, bool replaceAll = false)
         {
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.SaveSettings] file={file}, joNewSettings=hidden, mergeNewIntoOld={mergeNewIntoOld}");
             var sFilename = file.EndsWith(".json") ? file : file + ".json";

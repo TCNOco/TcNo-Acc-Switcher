@@ -202,33 +202,33 @@ namespace TcNo_Acc_Switcher_Server.Data
             //
             // These will be displayed next to the add new button in the switcher.
             // Maybe a pop-up menu if there are enough (Up arrow button on far right?)
+            Basic.Instance.LoadFromFile();
 
             var sExisting = Basic.Instance.Shortcuts; // Existing shortcuts
+            if (Basic.Instance.Shortcuts == new Dictionary<int, string>()) // If nothing set, make sure it's loaded!
+                Basic.Instance.LoadFromFile();
+
             if (OperatingSystem.IsWindows())
             {
-                var cacheShortcuts = Path.Join(PlatformLoginCache, "Shortcuts\\"); // Shortcut cache
-                var cacheImages = Path.Join(Globals.UserDataFolder, $"wwwroot\\img\\shortcuts\\{_instance.SafeName}\\"); // Shotcut image cache
+                var cacheShortcuts = _instance.ShortcutFolder; // Shortcut cache
                 foreach (var sFolder in _instance.ShortcutFolders)
                 {
                     // Foreach file in folder
                     foreach (var shortcut in new DirectoryInfo(BasicSwitcherFuncs.ExpandEnvironmentVariables(sFolder)).GetFiles())
                     {
                         var fName = shortcut.Name;
-                        if (_instance.ShortcutIgnore.Contains(fName.Replace(".lnk", ""))) continue;
+                        if (_instance.ShortcutIgnore.Contains(RemoveShortcutExt(fName))) continue;
 
                         // Check if in saved shortcuts and If ignored
-                        if (sExisting.ContainsKey(fName))
+                        if (sExisting.ContainsValue(fName))
                         {
-                            if (sExisting[fName] == -1)
+                            if (sExisting.First(x => x.Value == fName).Key == -1)
                             {
-                                var imagePath = Path.Join(cacheImages,
-                                    fName.Replace(".lnk", ".png").Replace(".url", ".png"));
+                                var imagePath = Path.Join(GetShortcutImagePath(), RemoveShortcutExt(fName) + ".png");
                                 if (File.Exists(imagePath)) File.Delete(imagePath);
                                 continue;
                             }
                         }
-                        else
-                            Basic.Instance.Shortcuts.Add(fName, 99); // Organization added later
 
                         Directory.CreateDirectory(cacheShortcuts);
                         var outputShortcut = Path.Join(cacheShortcuts, fName);
@@ -240,11 +240,20 @@ namespace TcNo_Acc_Switcher_Server.Data
                 }
 
                 // Now get images for all the shortcuts in the folder, as long as they don't already exist:
+                List<string> existingShortcuts = new();
                 if (Directory.Exists(cacheShortcuts))
                     foreach (var f in new DirectoryInfo(cacheShortcuts).GetFiles())
                     {
-                        var imageName = f.Name.Replace(".lnk", ".png").Replace(".url", ".png");
-                        var imagePath = Path.Join(cacheImages, imageName);
+                        var imageName = RemoveShortcutExt(f.Name) + ".png";
+                        var imagePath = Path.Join(GetShortcutImagePath(), imageName);
+                        existingShortcuts.Add(f.Name);
+                        if (!Basic.Instance.Shortcuts.ContainsValue(f.Name))
+                        {
+                            // Not found in list, so add!
+                            var last = Basic.Instance.Shortcuts.Count > 0 ? Basic.Instance.Shortcuts.Last().Key : -1;
+                            last = last == -1 ? 0 : last + 1;
+                            Basic.Instance.Shortcuts.Add(last, f.Name); // Organization added later
+                        }
 
                         // Extract image and place in wwwroot (Only if not already there):
                         if (!File.Exists(imagePath))
@@ -252,11 +261,15 @@ namespace TcNo_Acc_Switcher_Server.Data
                             Globals.SaveIconFromFile(f.FullName, imagePath);
                         }
                     }
+
+                foreach (var (i, s) in Basic.Instance.Shortcuts)
+                {
+                    if (!existingShortcuts.Contains(s))
+                        Basic.Instance.Shortcuts.Remove(i);
+                }
             }
 
-            // Either load existing, or safe default settings for platform
-            if (File.Exists(Path.Join(Globals.UserDataFolder, _instance.SettingsFile))) Settings.Basic.Instance.LoadFromFile();
-            else Settings.Basic.Instance.SaveSettings();
+            Basic.Instance.SaveSettings();
 
             _instance.IsInit = true;
         }
@@ -272,6 +285,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public bool ClearLoginCache { get; private set; } = true;
         public bool PeacefulExit { get; private set; }
         public string PrimaryId => _platformIds[0];
+        public string ShortcutFolder => Path.Join(PlatformLoginCache, "Shortcuts\\");
         public string PlatformLoginCache => $"LoginCache\\{_instance.SafeName}\\";
         public string IdsJsonPath => Path.Join(_instance.PlatformLoginCache, "ids.json");
         public string AccountLoginCachePath(string acc) => Path.Join(_instance.PlatformLoginCache, "{acc}\\");
@@ -285,6 +299,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         public List<string> CachePaths { get; private set; } = null;
         #endregion
 
+        public static string GetShortcutImageFolder => $"img\\shortcuts\\{Instance.SafeName}\\";
+        public static string GetShortcutImagePath() => Path.Join(Globals.UserDataFolder, "wwwroot\\", GetShortcutImageFolder);
+
+        public static string RemoveShortcutExt(string s) => s.Replace(".lnk", "").Replace(".url", "");
+        public static string GetShortcutImagePath(string gameShortcutName) =>
+            Path.Join(GetShortcutImageFolder, RemoveShortcutExt(gameShortcutName) + ".png");
 
         public Dictionary<string, string> ReadRegJson(string acc) =>
             GeneralFuncs.ReadDict(Path.Join(AccountLoginCachePath(acc), "reg.json"), true);

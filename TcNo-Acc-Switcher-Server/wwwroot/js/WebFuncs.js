@@ -716,7 +716,7 @@ function sDropdownInit() {
         connectWith: "shortcutJoined",
         forcePlaceholderSize: true,
         placeholderClass: "shortcutPlaceholder",
-        items: ":not(#shortcutDropdownBtn)"
+        items: ":not(#btnOpenShortcutFolder)"
     });
 
     $(".shortcuts, #shortcutDropdown").toArray().forEach(el => {
@@ -726,6 +726,7 @@ function sDropdownInit() {
         el.addEventListener("sortstop", function (e) {
             $(".shortcuts").removeClass("expandShortcuts");
             sDropdownReposition();
+            serializeShortcuts();
         });
     });
 }
@@ -741,4 +742,19 @@ function shortcutDropdownBtnClick() {
         $("#shortcutDropdownBtn").removeClass("flip");
         sDropdownOpen = false;
     }
+}
+
+function serializeShortcuts() {
+    var output = {};
+    // Serialize highlighted items
+    var numHighlightedShortcuts = $(".shortcuts button").children().length + 1;
+    $(".shortcuts button").each((i, e) => output[i - numHighlightedShortcuts] = $(e).attr("id"));
+
+    // Serialize dropdown items
+    $(".shortcutDropdown button").each((i, e) => {
+        if ($(e).attr("id") == "btnOpenShortcutFolder") return;
+        output[i] = $(e).attr("id");
+    });
+
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrder", output);
 }

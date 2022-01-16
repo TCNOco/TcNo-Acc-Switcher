@@ -16,10 +16,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SteamKit2.GC.Artifact.Internal;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
@@ -70,8 +72,26 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ForgetAccountEnabled", Order = 4)] public bool ForgetAccountEnabled { get => _instance._forgetAccountEnabled; set => _instance._forgetAccountEnabled = value; }
         private bool _altClose;
         [JsonProperty("AltClose", Order = 5)] public bool AltClose { get => _instance._altClose; set => _instance._altClose = value; }
-        private Dictionary<string, int> _shortcuts = new();
-        [JsonProperty("Shortcuts", Order = 6)] public Dictionary<string, int> Shortcuts { get => _instance._shortcuts; set => _instance._shortcuts = value; }
+        private Dictionary<int, string> _shortcuts = new();
+        [JsonIgnore] public Dictionary<int, string> Shortcuts { get => _instance._shortcuts; set => _instance._shortcuts = value; }
+        [JsonProperty("ShortcutsJson", Order = 6)]
+        string ShortcutsJson // This HAS to be a string. Shortcuts is an object, and just adds keys instead of replacing it entirely. It doesn't save properly.
+        {
+            get => JsonConvert.SerializeObject(_instance._shortcuts);
+            set => _instance._shortcuts = value == "{}" ? _instance._shortcuts : JsonConvert.DeserializeObject<Dictionary<int, string>>(value);
+        }
+        //[JsonProperty("Shortcuts", Order = 6)]
+        //List<object> ShortcutsJson
+        //{
+        //    get => _instance._shortcuts.Cast<object>().ToList();
+        //    set
+        //    {
+        //        if (value.Count == 0) return;
+        //        var newList = value.Cast<KeyValuePair<int, string>>().ToList();
+        //        _instance._shortcuts = newList.ToDictionary(x => x.Key, x => x.Value);
+        //    }
+        //}
+
 
         private bool _desktopShortcut;
         [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
@@ -83,7 +103,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 				{{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
 				{{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";
-
 
         /// <summary>
         /// Updates the ForgetAccountEnabled bool in settings file
@@ -103,11 +122,24 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// <returns>Basic.exe's path string</returns>
         public string Exe() => Path.Join(FolderPath, Platform.ExeName);
 
+        [JSInvokable]
+        public static void SaveShortcutOrder(Dictionary<int, string> o)
+        {
+            Instance.Shortcuts = o;
+            // Sort by value
+            //Dictionary<string, int> sorted = new();
+            //foreach (var (k, v) in Instance.Shortcuts.OrderByDescending(key => key.Value))
+            //{
+            //    sorted.Add(k, v);
+            //}
+
+            //Instance.Shortcuts = Instance.Shortcuts.OrderBy(key => key.Value).ToDictionary(pair => pair.Key, pair => pair.Value).Reverse().ToDictionary(x => x.Key, x => x.Value);
+            Instance.SaveSettings();
+        }
 
         #region SETTINGS
         /// <summary>
-        /// Default settings for BasicSettings.json
-        /// </summary>
+         /// </summary>
         public void ResetSettings()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Basic.ResetSettings]");
@@ -116,7 +148,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.TrayAccNumber = 3;
             _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.Instance.FullName);
             _instance._altClose = false;
-            _instance._shortcuts = new Dictionary<string, int>();
+            ShortcutsJson = "{}";
 
             SaveSettings();
         }
@@ -130,7 +162,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance.TrayAccNumber = curSettings.TrayAccNumber;
             _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.Instance.FullName);
             _instance._altClose = curSettings.AltClose;
-            _instance._shortcuts = curSettings.Shortcuts;
+            ShortcutsJson = curSettings.ShortcutsJson;
         }
         public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(Platform.SettingsFile, GetJObject()));
         public JObject GetJObject() => JObject.FromObject(this);

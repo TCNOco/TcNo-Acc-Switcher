@@ -76,6 +76,7 @@ Restore_Button_Restore: Restore selected
 Ignored_RemoveAccounts: Remove accounts from ignore list
 Ignored_Description: If you previously "ignored" an account, you can show them again here
 Ignored_Stop: Stop ignoring selected
+Toast_PlaceShortcutFiles: A folder is opening. Place game shortcuts in that folder, and restart the account switcher.
 Toast_TrayStarted: Tray started!
 Toast_TrayRunning: Tray already open
 Toast_TrayUsersMissing: No tray users saved

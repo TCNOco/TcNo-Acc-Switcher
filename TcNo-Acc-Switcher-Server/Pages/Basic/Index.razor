@@ -18,6 +18,7 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.IO
+@using System.Diagnostics
 @inject AppData _appData
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
@@ -36,10 +37,16 @@
 </div>
 
 <div class="shortcutDropdown" id="shortcutDropdown" style="display: none">
-    <button>F</button>
-    <button>F</button>
-    <button>F</button>
-    <button>F</button>
+    @foreach (var (i, shortcut) in _basic.Shortcuts)
+    {
+        @if (i >= 0)
+        {
+            <button id="@(shortcut)" @onclick="() => RunShortcut(shortcut)">
+                <img src="@(CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+            </button>
+        }
+    }
+    <button id="btnOpenShortcutFolder" @onclick="() => OpenFolder(Path.GetFullPath(CurrentPlatform.Instance.ShortcutFolder))"><i class="fas fa-plus"></i></button>
 </div>
 
 <div class="acc_list_actionbar">
@@ -47,7 +54,15 @@
     <div>
 
         <div class="shortcuts">
-            <button>F</button>
+            @foreach (var (i, shortcut) in _basic.Shortcuts)
+            {
+                @if (i < -1)
+                {
+                    <button id="@(shortcut)" @onclick="() => RunShortcut(shortcut)">
+                        <img src="@(CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                    </button>
+                }
+            }
         </div>
         <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()"><i class="fas fa-chevron-up"></i></button>
 
@@ -89,6 +104,23 @@
 
 @code
 {
+    private void OpenFolder(string folder)
+    {
+        System.Diagnostics.Process.Start("explorer.exe", folder);
+        _ = GeneralInvocableFuncs.ShowToast("info", _locale["Toast_PlaceShortcutFiles"], duration: 15000, renderTo: "toastarea");
+    }
+
+    private void RunShortcut(string s)
+    {
+        var proc = new Process();
+        proc.StartInfo = new ProcessStartInfo{
+            FileName = Path.GetFullPath(Path.Join(CurrentPlatform.Instance.ShortcutFolder, s)),
+            UseShellExecute = true
+        };
+        proc.Start();
+        _ = GeneralInvocableFuncs.ShowToast("info", _locale["Status_StartingPlatform", new {platform = CurrentPlatform.RemoveShortcutExt(s)}], duration: 15000, renderTo: "toastarea");
+    }
+
     // https://github.com/dotnet/aspnetcore/issues/13582
     private bool _navBack;
 
