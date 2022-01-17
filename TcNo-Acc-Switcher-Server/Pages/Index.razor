@@ -37,11 +37,11 @@
 <ContextMenu ContextMenuString=@AppSettings.Instance.PlatformContextMenu ContextMenuId="AccOrPlatList" />
 <div class="platformTable">
     <div class="platform_list">
-        @foreach (var platform in _appData.PlatformList)
+        @foreach (var platform in _appData.SortedPlatformList())
         {
             @if (!AppSettings.Instance.DisabledPlatforms.Contains(platform))
             {
-                <div class="platform_list_item" id="@("Switcher" + platform)" @onclick="() => Check(platform)">
+                <div class="platform_list_item" id="@(platform)" @onclick="() => Check(platform)">
                     <div class="fgText @(!System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.Instance.PlatformSafeName(platform)}.svg")) ? "noImageCenterText" : "") @(BasicPlatforms.Instance.PlatformFullName(platform).Length < 7 ? "shortText" : BasicPlatforms.Instance.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@BasicPlatforms.Instance.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
                     <div class="fgImg">
                         @if(System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.Instance.PlatformSafeName(platform)}.svg")))
@@ -99,7 +99,8 @@
 		if (firstRender)
 		{
 			GeneralFuncs.HandleQueries();
-			AppData.InvokeVoidAsync("initContextMenu");
+		    _ = AppData.InvokeVoidAsync("initContextMenu");
+		    _ = AppData.InvokeVoidAsync("initPlatformListSortable");
 			//await AppData.InvokeVoidAsync("initAccListSortable");
 		}
 	}

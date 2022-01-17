@@ -77,6 +77,24 @@ function updateStatus(status) {
     $("#CurrentStatus").val(status);
 };
 
+async function initPlatformListSortable() {
+    // Create sortable list
+    sortable(".platform_list", {
+        forcePlaceholderSize: true,
+        placeholderClass: "placeHolderPlat",
+        hoverClass: "accountHover",
+        items: ":not(toastarea)"
+    });
+
+    // On drag end, save list of items.
+    sortable(".platform_list")[0].addEventListener("sortupdate", (e) => {
+        var order = [];
+        $(".platform_list > div").each((i, e) => { order.push(e.id) });
+
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", `Settings\\platformOrder.json`, JSON.stringify(order));
+    });
+}
+
 async function initAccListSortable() {
 	if (document.getElementsByClassName("acc_list").length === 0) return;
     // Create sortable list

@@ -143,7 +143,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// <summary>
         /// Saves trayUsers list to file.
         /// </summary>
-        public static void SaveUsers(Dictionary<string, List<TrayUser>> trayUsers) => File.WriteAllText("Tray_Users.json", JsonConvert.SerializeObject(trayUsers));
+        public static void SaveUsers(Dictionary<string, List<TrayUser>> trayUsers) => File.WriteAllText("Tray_Users.json", JsonConvert.SerializeObject(new SortedDictionary<string, List<TrayUser>>(trayUsers)));
     }
 
 }

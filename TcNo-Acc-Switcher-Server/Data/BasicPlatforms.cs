@@ -34,7 +34,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private JObject _jData;
         public JToken GetPlatforms => (JObject)Instance._jData["Platforms"];
-        private Dictionary<string, string> _platformDict = new();
+        private SortedDictionary<string, string> _platformDict = new();
 
         private readonly Dictionary<string, string> _platformDictAllPossible = new()
         {
@@ -73,7 +73,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             CurrentPlatform.Instance = new CurrentPlatform();
             CurrentPlatform.Instance.CurrentPlatformInit(Instance.PlatformFullName(id));
         }
-        public Dictionary<string, string> PlatformsDict => Instance._platformDict;
+        public SortedDictionary<string, string> PlatformsDict => Instance._platformDict;
 
         private Dictionary<string, string> InactivePlatforms()
         {
@@ -143,7 +143,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             Instance.FullName = platform;
             Instance.SafeName = Globals.GetCleanFilePath(platform);
-            Instance.SettingsFile = Instance.SafeName + ".json";
+            Instance.SettingsFile = Path.Join("Settings\\", Instance.SafeName + ".json");
 
             Instance.DefaultExePath = BasicSwitcherFuncs.ExpandEnvironmentVariables((string)BasicPlatforms.Instance.GetPlatformJson(platform)["ExeLocationDefault"]);
             Instance.ExeExtraArgs = (string)BasicPlatforms.Instance.GetPlatformJson(platform)["ExeExtraArgs"];

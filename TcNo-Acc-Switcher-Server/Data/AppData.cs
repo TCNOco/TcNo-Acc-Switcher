@@ -80,14 +80,19 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             get
             {
-                _instance._platformList = new List<string> { "Steam", "Origin", "Ubisoft", "BattleNet" };
+                Instance._platformList = new List<string> { "Steam", "Origin", "Ubisoft", "BattleNet" };
 
                 // Add enabled basic platforms:
-                _instance._platformList =
-                    _instance._platformList.Union(AppSettings.Instance.EnabledBasicPlatforms).ToList();
-                return _instance._platformList;
+                Instance._platformList =
+                    Instance._platformList.Union(AppSettings.Instance.EnabledBasicPlatforms).ToList();
+                return Instance._platformList;
             }
-            set => _instance._platformList = value;
+            set => Instance._platformList = value;
+        }
+
+        public List<string> SortedPlatformList()
+        {
+            return GenericFunctions.OrderAccounts(Instance.PlatformList, "Settings\\platformOrder.json");
         }
         #endregion
 
@@ -96,12 +101,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         private void NotifyDataChanged() => OnChange?.Invoke();
 
         private IJSRuntime _activeIJsRuntime;
-        [JsonIgnore] public static IJSRuntime ActiveIJsRuntime { get => _instance._activeIJsRuntime; set => _instance._activeIJsRuntime = value; }
-        public void SetActiveIJsRuntime(IJSRuntime jsr) => _instance._activeIJsRuntime = jsr;
+        [JsonIgnore] public static IJSRuntime ActiveIJsRuntime { get => Instance._activeIJsRuntime; set => Instance._activeIJsRuntime = value; }
+        public void SetActiveIJsRuntime(IJSRuntime jsr) => Instance._activeIJsRuntime = jsr;
 
         private NavigationManager _activeNavMan;
-        [JsonIgnore] public static NavigationManager ActiveNavMan { get => _instance._activeNavMan; set => _instance._activeNavMan = value; }
-        public void SetActiveNavMan(NavigationManager nm) => _instance._activeNavMan = nm;
+        [JsonIgnore] public static NavigationManager ActiveNavMan { get => Instance._activeNavMan; set => Instance._activeNavMan = value; }
+        public void SetActiveNavMan(NavigationManager nm) => Instance._activeNavMan = nm;
 
         #region JS_INTEROP
         public static bool InvokeVoidAsync(string func)

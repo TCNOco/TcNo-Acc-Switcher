@@ -25,8 +25,6 @@
 // runas.exe <process path> <1/0 for admin> <optional arguments>
 using System.Diagnostics;
 
-File.WriteAllLines("a.txt", args);
-
 if (args.Length < 2)
 {
     Console.WriteLine("Please do not launch this process directly.");

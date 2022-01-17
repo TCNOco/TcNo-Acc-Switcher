@@ -40,6 +40,18 @@
   background: #13222f;
 }
 
+.placeHolderPlat {
+    border: 2px dashed #039CBF;
+    background: #13222f;
+    width: 20vw;
+    height: 20vw;
+    max-width: 175px;
+    max-height: 175px;
+    display: inline-block;
+    margin: 10px;
+    vertical-align: middle;
+}
+
 .accountHover {
   border: 0.1em solid #039CBF;
   /* Seperate because added by sortable */

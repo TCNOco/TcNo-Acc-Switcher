@@ -313,9 +313,22 @@ button#LocateProgramExe,
   border-radius: 0.9rem;
 }
 
+.placeHolderPlat {
+    background-color: #3e3e3e;
+    border: #fce566 2px solid;
+    width: 20vw;
+    height: 20vw;
+    max-width: 175px;
+    max-height: 175px;
+    display: inline-block;
+    margin: 10px;
+    vertical-align: middle;
+}
+
+
 .contextmenu li:hover {
-  border-left: 2px solid #fce566;
-  background: #131313;
+    border-left: 2px solid #fce566;
+    background: #131313;
 }
 
 input.acc:checked + label.acc {
