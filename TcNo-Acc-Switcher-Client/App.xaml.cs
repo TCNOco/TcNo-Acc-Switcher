@@ -96,8 +96,8 @@ namespace TcNo_Acc_Switcher_Client
                         StartPage = eArg;
 
                     // Check if platform short is BasicPlatform
-                    if (BasicPlatforms.Instance.PlatformExistsFromShort(StartPage))
-                        StartPage = "Basic?plat=" + StartPage;
+                    if (BasicPlatforms.Instance.PlatformExistsFromShort(eArg))
+                        StartPage = "Basic?plat=" + eArg;
 
                     // Check if it was verbose mode.
                     Globals.VerboseMode = Globals.VerboseMode || eArg is "v" or "vv" or "verbose";
@@ -329,7 +329,7 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         /// <param name="e">StartupEventArgs for the program</param>
         /// <returns>True if handled and should close. False if launch GUI.</returns>
-            private static async Task<bool> ConsoleMain(StartupEventArgs e)
+        private static async Task<bool> ConsoleMain(StartupEventArgs e)
         {
             Console.WriteLine(@"Welcome to the TcNo Account Switcher - Command Line Interface!");
             Console.WriteLine(@"Use -h (or --help) for more info." + Environment.NewLine);

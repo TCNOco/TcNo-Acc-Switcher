@@ -442,11 +442,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{CurrentPlatform.Instance.SafeName}\\{Globals.GetCleanFilePath(uniqueId)}.jpg");
                 if (!File.Exists(profileImg))
                 {
-                    var platformImgPath = "\\img\\platform\\default_images\\" + CurrentPlatform.Instance.SafeName + "Default.png";
+                    var platformImgPath = "\\img\\platform\\" + CurrentPlatform.Instance.SafeName + "Default.png";
                     var currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), platformImgPath);
                     File.Copy(File.Exists(currentPlatformImgPath)
                         ? Path.Join(currentPlatformImgPath)
-                        : Path.Join(GeneralFuncs.WwwRoot(), "\\img\\default_images\\BasicDefault.png"), profileImg, true);
+                        : Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png"), profileImg, true);
                 }
             }
 

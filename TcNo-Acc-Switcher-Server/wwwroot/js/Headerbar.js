@@ -37,31 +37,16 @@ const WindowNotifications = {
 };
 
 var possibleAnimations = [
-    "rotateY",
-    "rotateX",
-    "rotateZ"
+    "Y",
+    "X",
+    "Z"
 ];
-var lastDeg = 360;
-
-function randomAni(e) {
-    lastDeg = -lastDeg;
-
-    $({ deg: 0 }).animate(
-        {
-            deg: lastDeg,
-            easing: "swing"
-        }, {
-            duration: 500,
-            step: (now) => {
-                $(e).css({
-                    transform: possibleAnimations[Math.floor(Math.random() * possibleAnimations.length)] + "(" + now + "deg)"
-                });
-            }
-    });
-}
 
 function btnBack_Click() {
-    if (window.location.pathname === "/") randomAni("#btnBack .icon");
+    if (window.location.pathname === "/") {
+        $("#btnBack i").css({ "transform": "rotate" + possibleAnimations[Math.floor(Math.random() * possibleAnimations.length)] + "(360deg)", "transition": "transform 500ms ease-in-out" });
+        setTimeout(() => $("#btnBack i").css({ "transform": "", "transition": "transform 0ms ease-in-out" }), 500);
+    }
     else {
 	    const tempUri = document.location.href.split("?")[0];
 	    document.location.href = tempUri + (tempUri.endsWith("/") ? "../" : "/../");

@@ -174,7 +174,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (jPlatform.ContainsKey("UniqueIdRegex")) Instance.UniqueIdRegex = Globals.ExpandRegex((string)jPlatform["UniqueIdRegex"]);
             if (jPlatform.ContainsKey("UniqueIdMethod")) Instance.UniqueIdMethod = Globals.ExpandRegex((string)jPlatform["UniqueIdMethod"]);
             if (jPlatform.ContainsKey("ExitBeforeInteract")) Instance.ExitBeforeInteract = (bool)jPlatform["ExitBeforeInteract"];
-            if (jPlatform.ContainsKey("PeacefulExit")) Instance.PeacefulExit = (bool)jPlatform["PeacefulExit"];
             if (jPlatform.ContainsKey("ClearLoginCache")) Instance.ClearLoginCache = (bool)jPlatform["ClearLoginCache"];
 
             // Process "Extras"
@@ -316,12 +315,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         public string UniqueIdMethod { get; private set; } = "";
         public bool ExitBeforeInteract { get; private set; }
         public bool ClearLoginCache { get; private set; } = true;
-        public bool PeacefulExit { get; private set; }
         public string PrimaryId => _platformIds[0];
         public string ShortcutFolder => Path.Join(PlatformLoginCache, "Shortcuts\\");
         public string PlatformLoginCache => $"LoginCache\\{Instance.SafeName}\\";
         public string IdsJsonPath => Path.Join(Instance.PlatformLoginCache, "ids.json");
-        public string AccountLoginCachePath(string acc) => Path.Join(Instance.PlatformLoginCache, "{acc}\\");
+        public string AccountLoginCachePath(string acc) => Path.Join(Instance.PlatformLoginCache, $"{acc}\\");
         #endregion
 
         #region EXTRAS

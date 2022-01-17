@@ -36,34 +36,24 @@
     <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@_appData.CurrentStatus" spellcheck="false" disabled></div>
     <div>
 		<button id="btnAddNew" onclick="newLogin()">
-			<svg viewBox="0 0 448 512" draggable="false" alt="+" class="footerIcoInline">
-				<use href="img/fontawesome/plus.svg#img"></use>
-			</svg>
+            <i class="fas fa-plus footerIcoInline"></i>
 			<span>@_locale["Button_AddNew"]</span>
 		</button>
 		<button id="btnAddCurrent" onclick="showModal('accString');">
-			<svg viewBox="0 0 448 512" draggable="false" alt="v" class="footerIcoInline">
-				<use href="img/fontawesome/save.svg#img"></use>
-			</svg>
+            <i class="fas fa-save footerIcoInline"></i>
 			<span>@_locale["Button_SaveCurrent"]</span>
 		</button>
 		<button class="btn_login" id="btnLogin" onclick="swapTo(-1, event)">
 			<span>@_locale["Button_Login"]</span>
-			<svg viewBox="0 0 192 512" draggable="false" alt="v" class="footerIcoInline">
-				<use href="img/fontawesome/caret-right.svg#img"></use>
-			</svg>
+            <i class="fas fa-caret-right footerIcoInline"></i>
 		</button>
 
-        <button id="btnSettings" onclick="location = 'Origin/Settings'">
-            <svg viewBox="0 0 60 60" draggable="false" alt="Settings" class="footerIcoSettings">
-                <use href="img/icons/ico_settings.svg#icoSettings"></use>
-            </svg>
+        <button id="btnSettings" onclick="location = 'Origin/Settings'" data-toggle="tooltip" title="@(_locale["Tooltip_Settings"])">
+            <i class="fas fa-cog footerIcoSettings"></i>
         </button>
 
-        <button id="btnHelp" onclick="showModal('info');">
-            <svg viewBox="0 0 60 60" draggable="false" alt="Question" class="footerIcoQuestion">
-                <use href="img/icons/ico_question.svg#icoQuestion"></use>
-            </svg>
+        <button id="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="@(_locale["Tooltip_Info"])">
+            <i class="fas fa-question footerIcoQuestion"></i>
         </button>
     </div>
 

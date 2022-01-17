@@ -136,14 +136,19 @@ label {
 }
 
 #btnBack {
-  width: 46px;
-  height: 32px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  pointer-events: all;
-  margin-top: -2px;
+    width: 46px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    pointer-events: all;
+    margin-top: -2px;
+    transition: transform 500ms ease-in-out;
+
+    i {
+        transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+    }
 }
 
 #window-controls,
@@ -576,7 +581,7 @@ div.advancedClearingButtonCol .buttoncol {
     text-align: center;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .platform_list {
@@ -720,7 +725,7 @@ div.advancedClearingButtonCol .buttoncol {
 
 /* Modal icons */
 .modalIco {
-    &GitHub, &Networking, &Doc {
+    &GitHub, &Networking, &Doc, &Discord {
         fill: white;
     }
 }
@@ -732,20 +737,11 @@ div.advancedClearingButtonCol .buttoncol {
     }
 }
 
-/* Riot icons */
-.riotIco {
-    &League, &Runeterra {
-        fill: rgb(255, 215, 85);
-    }
-
-    &Valorant {
-        fill: rgb(255, 85, 85);
-    }
-}
-
 /* Footer icons */
-.footerIco {
-    &Settings, &Question {
-        fill: white;
+#btnSettings, #btnHelp {
+    width: 36px;
+
+    i {
+        font-size: 16px;
     }
 }

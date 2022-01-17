@@ -155,7 +155,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.HidePlatform]");
             if (BasicPlatforms.Instance.PlatformExistsFromShort(platform))
             {
-                AppSettings.Instance.EnabledBasicPlatforms.Remove(platform);
+                Instance.EnabledBasicPlatforms.Remove(platform);
             }
             else
                 _ = _instance.DisabledPlatforms.Add(platform);
@@ -168,8 +168,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.ShowPlatform]");
             if (BasicPlatforms.Instance.PlatformExistsFromShort(platform))
             {
-                if (!AppSettings.Instance.EnabledBasicPlatforms.Contains(platform))
-                    AppSettings.Instance.EnabledBasicPlatforms.Add(platform);
+                if (!Instance.EnabledBasicPlatforms.Contains(platform))
+                    Instance.EnabledBasicPlatforms.Add(platform);
             }
             else
                 _ = _instance.DisabledPlatforms.Remove(platform);

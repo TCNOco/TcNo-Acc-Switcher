@@ -333,6 +333,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static async Task<string> GiExportAccountList(string platform)
         {
             Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiExportAccountList] platform={platform}");
+            platform = BasicPlatforms.Instance.PlatformFullName(platform);
             if (!Directory.Exists(Path.Join("LoginCache", platform)))
             {
                 _ = ShowToast("error", Lang["Toast_AddAccountsFirst"], Lang["Toast_AddAccountsFirstTitle"], "toastarea");

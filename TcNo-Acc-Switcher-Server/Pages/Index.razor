@@ -34,7 +34,7 @@
     </div>
 }
 
-<ContextMenu ContextMenuString=@AppSettings.Instance.PlatformContextMenu />
+<ContextMenu ContextMenuString=@AppSettings.Instance.PlatformContextMenu ContextMenuId="AccOrPlatList" />
 <div class="platformTable">
     <div class="platform_list">
         @foreach (var platform in _appData.PlatformList)
@@ -63,28 +63,20 @@
 <div class="acc_list_actionbar">
     <div>
         @*<button id="btnTextEditor" onclick="location = 'TextEditor'">
-            <svg viewBox="0 0 60 60" draggable="false" alt="Settings" class="footerIcoSettings">
-                <use href="img/icons/ico_settings.svg#icoSettings"></use>
-            </svg>
+            <i class="fas fa-cog footerIcoSettings"></i>
         </button>*@
         @if (BasicPlatforms.Instance.PlatformsDict.Count > 0)
         {
-            <button id="btnPlatforms" onclick="location = 'Platforms'">
-                <svg viewBox="0 0 448 512" draggable="false" alt="+" class="footerIcoInline">
-                    <use href="img/fontawesome/plus.svg#img"></use>
-                </svg>
+            <button id="btnPlatforms" onclick="location = 'Platforms'" data-toggle="tooltip" title="@(_locale["Tooltip_ManagePlatforms"])">
+                <i class="fas fa-plus footerIcoInline"></i>
                 @Lang["Button_ManagePlatforms"]
             </button>
         }
-        <button id="btnSettings" onclick="location = 'Settings'">
-            <svg viewBox="0 0 60 60" draggable="false" alt="Settings" class="footerIcoSettings">
-                <use href="img/icons/ico_settings.svg#icoSettings"></use>
-            </svg>
+        <button id="btnSettings" onclick="location = 'Settings'" data-toggle="tooltip" title="@(_locale["Tooltip_Settings"])">
+            <i class="fas fa-cog footerIcoSettings"></i>
         </button>
-        <button id="btnHelp" onclick="showModal('info');">
-            <svg viewBox="0 0 60 60" draggable="false" alt="Question" class="footerIcoQuestion">
-                <use href="img/icons/ico_question.svg#icoQuestion"></use>
-            </svg>
+        <button id="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="@(_locale["Tooltip_Info"])">
+            <i class="fas fa-question footerIcoQuestion"></i>
         </button>
     </div>
 </div>
@@ -111,6 +103,7 @@
 			//await AppData.InvokeVoidAsync("initAccListSortable");
 		}
 	}
+
 	protected override void OnInitialized()
 	{
 

@@ -7,15 +7,13 @@ function getCurrentPage() {
         window.location.pathname.split("/")[1]);
 }
 
-function docReady(fn) {
-    // see if DOM is already available
-    if (document.readyState === "complete" || document.readyState === "interactive") {
-        // call on next available tick
-        setTimeout(fn, 1);
-    } else {
-        document.addEventListener("DOMContentLoaded", fn);
-    }
-}
+window.addEventListener('load',
+    () => {
+        // I don't know of an easier way to do this.
+        setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 1000);
+        setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 2000);
+        setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 4000);
+    });
 
 // Clear Cache reload:
 var winUrl = window.location.href.split("?");
@@ -230,15 +228,6 @@ function createShortcut(args = '') {
         args);
 }
 
-function refreshUsername() {
-    var selected = $(".acc:checked");
-    if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
-        return;
-    }
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftRefreshUsername", selected.attr("id"));
-}
-
-
 // NEW LOGIN
 function newLogin() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `NewLogin_${getCurrentPage()}`);
@@ -353,7 +342,7 @@ async function showModal(modaltype) {
 
         $("#modal_contents").append(`<div class="infoWindow">
             <div class="fullWidthContent crowdin">
-                <h2>${modalCrowdinHeader}<svg viewBox="0 0 512 512" draggable="false" alt="<3" class="heart"><use href="img/fontawesome/heart.svg#img"></use></svg></h2>
+                <h2>${modalCrowdinHeader}<i class="fas fa-heart heart"></i></h2>
                     <p>${modalCrowdinInfo}</p>
                     <ul>${listUsers}</ul>
             </div></div>`);

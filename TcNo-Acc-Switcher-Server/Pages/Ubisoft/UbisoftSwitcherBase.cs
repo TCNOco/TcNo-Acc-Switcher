@@ -44,7 +44,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         [JSInvokable]
         public static Task<string> UbisoftHasUserSaved()
         {
-            Globals.DebugWriteLine(@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.UbisoftRefreshUsername]");
+            Globals.DebugWriteLine(@"[JSInvoke:Ubisoft\UbisoftSwitcherBase.UbisoftHasUserSaved]");
             return Task.FromResult(UbisoftSwitcherFuncs.HasUserSaved());
         }
     }

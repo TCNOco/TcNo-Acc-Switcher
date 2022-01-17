@@ -56,45 +56,45 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         {
             get
             {
-                if (_instance._folderPath != "") return _instance._folderPath;
-                _instance._folderPath = CurrentPlatform.Instance.DefaultFolderPath;
+                if (!string.IsNullOrEmpty(Instance._folderPath)) return Instance._folderPath;
+                Instance._folderPath = CurrentPlatform.Instance.DefaultFolderPath;
 
-                return _instance._folderPath;
+                return Instance._folderPath;
             }
-            set => _instance._folderPath = value;
+            set => Instance._folderPath = value;
         }
 
         private bool _admin;
-        [JsonProperty("Basic_Admin", Order = 2)] public bool Admin { get => _instance._admin; set => _instance._admin = value; }
+        [JsonProperty("Basic_Admin", Order = 2)] public bool Admin { get => Instance._admin; set => Instance._admin = value; }
         private int _trayAccNumber = 3;
-        [JsonProperty("Basic_TrayAccNumber", Order = 3)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
+        [JsonProperty("Basic_TrayAccNumber", Order = 3)] public int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
         private bool _forgetAccountEnabled;
-        [JsonProperty("ForgetAccountEnabled", Order = 4)] public bool ForgetAccountEnabled { get => _instance._forgetAccountEnabled; set => _instance._forgetAccountEnabled = value; }
+        [JsonProperty("ForgetAccountEnabled", Order = 4)] public bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
         private bool _altClose;
-        [JsonProperty("AltClose", Order = 5)] public bool AltClose { get => _instance._altClose; set => _instance._altClose = value; }
+        [JsonProperty("AltClose", Order = 5)] public bool AltClose { get => Instance._altClose; set => Instance._altClose = value; }
         private Dictionary<int, string> _shortcuts = new();
-        [JsonIgnore] public Dictionary<int, string> Shortcuts { get => _instance._shortcuts; set => _instance._shortcuts = value; }
+        [JsonIgnore] public Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
         [JsonProperty("ShortcutsJson", Order = 6)]
         string ShortcutsJson // This HAS to be a string. Shortcuts is an object, and just adds keys instead of replacing it entirely. It doesn't save properly.
         {
-            get => JsonConvert.SerializeObject(_instance._shortcuts);
-            set => _instance._shortcuts = value == "{}" ? _instance._shortcuts : JsonConvert.DeserializeObject<Dictionary<int, string>>(value);
+            get => JsonConvert.SerializeObject(Instance._shortcuts);
+            set => Instance._shortcuts = value == "{}" ? Instance._shortcuts : JsonConvert.DeserializeObject<Dictionary<int, string>>(value);
         }
         //[JsonProperty("Shortcuts", Order = 6)]
         //List<object> ShortcutsJson
         //{
-        //    get => _instance._shortcuts.Cast<object>().ToList();
+        //    get => Instance._shortcuts.Cast<object>().ToList();
         //    set
         //    {
         //        if (value.Count == 0) return;
         //        var newList = value.Cast<KeyValuePair<int, string>>().ToList();
-        //        _instance._shortcuts = newList.ToDictionary(x => x.Key, x => x.Value);
+        //        Instance._shortcuts = newList.ToDictionary(x => x.Key, x => x.Value);
         //    }
         //}
 
 
         private bool _desktopShortcut;
-        [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
+        [JsonIgnore] public bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
         [JsonIgnore] public readonly string ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
@@ -199,11 +199,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public void ResetSettings()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Basic.ResetSettings]");
-            _instance.FolderPath = CurrentPlatform.Instance.DefaultFolderPath;
-            _instance.Admin = false;
-            _instance.TrayAccNumber = 3;
-            _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.Instance.FullName);
-            _instance._altClose = false;
+            Instance.FolderPath = CurrentPlatform.Instance.DefaultFolderPath;
+            Instance.Admin = false;
+            Instance.TrayAccNumber = 3;
+            Instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.Instance.FullName);
+            Instance._altClose = false;
             ShortcutsJson = "{}";
 
             SaveSettings();
@@ -213,11 +213,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Globals.DebugWriteLine(@"[Func:Data\Settings\Basic.SetFromJObject]");
             var curSettings = j.ToObject<Basic>();
             if (curSettings == null) return;
-            _instance.FolderPath = curSettings.FolderPath;
-            _instance.Admin = curSettings.Admin;
-            _instance.TrayAccNumber = curSettings.TrayAccNumber;
-            _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.Instance.FullName);
-            _instance._altClose = curSettings.AltClose;
+            Instance.FolderPath = curSettings.FolderPath;
+            Instance.Admin = curSettings.Admin;
+            Instance.TrayAccNumber = curSettings.TrayAccNumber;
+            Instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.Instance.FullName);
+            Instance._altClose = curSettings.AltClose;
             ShortcutsJson = curSettings.ShortcutsJson;
         }
 

@@ -344,3 +344,8 @@ Platform_ClearCacheTotal: Clearing {totalFileCount} files ({totalSizeMB})
 Platform_DeleteFail: Could not delete some files (Program may be running?)
 Platform_CouldNotDeleteLog: Could not delete file! Check {logPath}
 Error_FileAccessDenied: Failed to access file! Check {logPath}
+Tooltip_Settings: Settings
+Tooltip_Info: Info
+Tooltip_ManagePlatforms: Show or Hide other platforms
+Tooltip_ExpandShortcuts: Expand Game & Shortcut selection
+Tooltip_ShortcutFolder: Open shortcut folder. Place shortcuts in there, and the TcNo Account Switcher to see them.

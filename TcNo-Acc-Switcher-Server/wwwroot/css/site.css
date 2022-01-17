@@ -138,6 +138,10 @@ label {
   cursor: pointer;
   pointer-events: all;
   margin-top: -2px;
+  transition: transform 500ms ease-in-out;
+}
+#btnBack i {
+  transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
 }
 
 #window-controls,
@@ -514,7 +518,7 @@ div.advancedClearingButtonCol .buttoncol {
   text-align: center;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .platform_list {
@@ -637,7 +641,7 @@ div.advancedClearingButtonCol .buttoncol {
 }
 
 /* Modal icons */
-.modalIcoGitHub, .modalIcoNetworking, .modalIcoDoc {
+.modalIcoGitHub, .modalIcoNetworking, .modalIcoDoc, .modalIcoDiscord {
   fill: white;
 }
 
@@ -646,15 +650,10 @@ div.advancedClearingButtonCol .buttoncol {
   fill: white;
 }
 
-/* Riot icons */
-.riotIcoLeague, .riotIcoRuneterra {
-  fill: #ffd755;
-}
-.riotIcoValorant {
-  fill: #ff5555;
-}
-
 /* Footer icons */
-.footerIcoSettings, .footerIcoQuestion {
-  fill: white;
+#btnSettings, #btnHelp {
+  width: 36px;
+}
+#btnSettings i, #btnHelp i {
+  font-size: 16px;
 }
