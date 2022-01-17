@@ -178,6 +178,7 @@ Status_ClosingPlatformFailed: "Failed to close {platform}"
 Status_StartingPlatform: "Starting {platform}"
 Status_UpdatingFile: "Updating {file}"
 Status_UpdatingRegistry: Updating Windows registry
+Status_FailedLog: Action failed. See log for details.
 Context_SwapTo: Swap to account
 Context_CreateShortcut: Create Desktop Shortcut
 Context_CreateShortcutSubmenu: Create Desktop Shortcut...
@@ -203,6 +204,8 @@ Context_Steam_OpenUserdata: Open userdata
 Context_CopyOtherSubmenu: Copy other...
 Context_HidePlatform: Hide platform
 Context_ExportAccList: Export account list
+Context_RunAdmin: Run as Admin
+Context_Hide: Hide
 Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
 Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
 Title_Platforms_Settings: TcNo Account Switcher - Extra Platform Settings

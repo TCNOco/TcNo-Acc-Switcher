@@ -10,15 +10,17 @@ namespace TcNo_Acc_Switcher_Server.Shared
     public partial class ContextMenu
     {
         private static string _htmlOut = "";
+
         /// <summary>
         /// Creates a context menu from input json
         /// </summary>
         /// <param name="contextMenuText">JSON string making up context menu</param>
+        /// <param name="id">ID for context menu</param>
         /// <returns>String of HTML elements, making up the context menu</returns>
-        private static string GetContextMenu(string contextMenuText)
+        private static string GetContextMenu(string contextMenuText, string id)
         {
             Globals.DebugWriteLine(@"[Func:Shared\ContextMenu.GetContextMenu]");
-            _htmlOut = "<ul class=\"contextmenu\">";
+            _htmlOut = $"<ul class=\"contextmenu\" id=\"{id}\"> ";
             var submenuDepth = 1;
 
             var jO = JArray.Parse(contextMenuText.Replace("\r\n", ""));

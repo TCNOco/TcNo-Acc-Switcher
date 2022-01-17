@@ -27,7 +27,8 @@
 @inject Data.Settings.Origin _origin
 
 
-<ContextMenu ContextMenuString="@_origin.ContextMenuJson" />
+<ContextMenu ContextMenuString="@_origin.ContextMenuJson" ContextMenuId="AccOrPlatList" />
+@*<ContextMenu ContextMenuString="@_origin.ContextMenuJson" ContextMenuId="Shortcuts" />*@
 <div id="acc_list" class="acc_list">
     <toastarea class="toastarea" />
 </div>

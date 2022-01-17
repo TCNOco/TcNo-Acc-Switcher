@@ -31,7 +31,8 @@
 @inject Data.Settings.BattleNet _battleNet
 @inject Lang  _locale
 
-<ContextMenu ContextMenuString="@_battleNet.ContextMenuJson" />
+<ContextMenu ContextMenuString="@_battleNet.ContextMenuJson" ContextMenuId="AccOrPlatList" />
+@*<ContextMenu ContextMenuString="@_battleNet.ContextMenuJson" ContextMenuId="Shortcuts" />*@
 <div id="acc_list" class="acc_list">
     <toastarea class="toastarea" />
 </div>

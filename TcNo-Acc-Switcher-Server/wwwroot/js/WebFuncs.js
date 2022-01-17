@@ -747,7 +747,7 @@ function shortcutDropdownBtnClick() {
 function serializeShortcuts() {
     var output = {};
     // Serialize highlighted items
-    var numHighlightedShortcuts = $(".shortcuts button").children().length + 1;
+    var numHighlightedShortcuts = $(".shortcuts button").children().length;
     $(".shortcuts button").each((i, e) => output[i - numHighlightedShortcuts] = $(e).attr("id"));
 
     // Serialize dropdown items
@@ -757,4 +757,12 @@ function serializeShortcuts() {
     });
 
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrder", output);
+}
+
+// Context menu buttons
+function shortcut(action) {
+    const reqId = $(selectedElem).prop("id");
+    console.log(reqId);
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutAction", reqId, action);
+    if (action === "hide") $(selectedElem).remove();
 }

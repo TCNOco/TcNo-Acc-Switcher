@@ -42,9 +42,9 @@ namespace TcNo_Acc_Switcher_Globals
         {
 
             if (!elevated && IsAdministrator)
-                Globals.ProcessHandler.RunAsDesktopUser(path, args);
+                ProcessHandler.RunAsDesktopUser(path, args);
             else
-                Globals.ProcessHandler.StartProgram(path, elevated, args);
+                ProcessHandler.StartProgram(path, elevated, args);
         }
 
 
@@ -152,7 +152,7 @@ namespace TcNo_Acc_Switcher_Globals
                 {
                     Process.Start(new ProcessStartInfo()
                     {
-                        FileName = Path.Join(Globals.AppDataFolder, "runas.exe"),
+                        FileName = Path.Join(AppDataFolder, "runas.exe"),
                         Arguments = $"\"{fileName}\" {(elevated ? "1" : "0")} {args}",
                         Verb = elevated ? "runas" : ""
                     });

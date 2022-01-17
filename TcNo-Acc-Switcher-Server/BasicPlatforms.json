@@ -68,7 +68,8 @@
         ],
         "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
         "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
-        "UsernameModalHintText": "Platform_DiscordPasteHint"
+        "UsernameModalHintText": "Platform_DiscordPasteHint",
+        "SearchStartMenuForIcon": true
       },
       "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
@@ -84,9 +85,10 @@
       },
       "Extras": {
         "ShortcutFolders": [
-          "%ProgramData%\\Microsoft\\Windows\\Start Menu\\Programs\\Riot Games\\"
+          "%StartMenuProgramData%\\Riot Games\\"
         ],
-        "ShortcutIgnore": [ "Riot Client" ]
+        "ShortcutIgnore": [ "Riot Client" ],
+        "ShortcutIncludeMainExe": false
       },
       "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
         "UniqueIdMethod": "CREATE_ID_FILE",

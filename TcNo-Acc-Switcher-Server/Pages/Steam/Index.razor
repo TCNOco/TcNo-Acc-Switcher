@@ -27,7 +27,8 @@
 @inject Lang  _locale
 @inject Data.Settings.Steam _steam
 
-<ContextMenu ContextMenuString="@_steam.ContextMenuJson" />
+<ContextMenu ContextMenuString="@_steam.ContextMenuJson" ContextMenuId="AccOrPlatList" />
+@*<ContextMenu ContextMenuString="@_steam.ContextMenuJson" ContextMenuId="Shortcuts" />*@
 <div id="acc_list" class="acc_list">
     <toastarea class="toastarea" />
 </div>

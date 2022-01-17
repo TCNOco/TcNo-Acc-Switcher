@@ -33,6 +33,37 @@ async function initContextMenu() {
     }
 
     const selectedText = await GetLangSub("Status_SelectedAccount", { name: "XXX" });
+    // Show shortcut contextmenu on Right-Click
+    $(`.HasContextMenu`).contextmenu((e) => {
+        // Set currently selected element
+        selectedElem = $(e.currentTarget);
+
+        //Get window size:
+        const winWidth = $(document).width();
+        const winHeight = $(document).height();
+        //Get pointer position:
+        const posX = e.pageX - 14;
+        const posY = e.pageY - 42; // Offset for header bar
+        //Get contextmenu size:
+        const menuWidth = $("#Shortcuts").width();
+        const menuHeight = $("#Shortcuts").height();
+
+        // Header offset + 10:
+        const hOffset = 42;
+        // Prevent page overflow:
+        const xOverflow = posX + menuWidth + hOffset - winWidth;
+        const yOverflow = posY + menuHeight + hOffset - winHeight;
+        var posLeft = posX + (xOverflow > 0 ? - menuWidth : 10) + "px";
+        var posTop = posY + (yOverflow > 0 ? - yOverflow : 10) + "px";
+
+        //Display contextmenu:
+        $("#Shortcuts").css({
+            "left": posLeft,
+            "top": posTop
+        }).show();
+        //Prevent browser default contextmenu.
+        return false;
+    });
     //Show contextmenu on Right-Click:
     $(`.${group}_list_item`).contextmenu((e) => {
         if (group === "acc") {
@@ -71,8 +102,8 @@ async function initContextMenu() {
         const posX = e.pageX - 14;
         const posY = e.pageY - 42; // Offset for header bar
         //Get contextmenu size:
-        const menuWidth = $(".contextmenu").width();
-        const menuHeight = $(".contextmenu").height();
+        const menuWidth = $("#AccOrPlatList").width();
+        const menuHeight = $("#AccOrPlatList").height();
 
         // Header offset + 10:
         const hOffset = 42;
@@ -83,7 +114,7 @@ async function initContextMenu() {
         var posTop = posY + (yOverflow > 0 ? - yOverflow : 10) + "px";
 
         //Display contextmenu:
-        $(".contextmenu").css({
+        $("#AccOrPlatList").css({
             "left": posLeft,
             "top": posTop
         }).show();

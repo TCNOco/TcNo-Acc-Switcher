@@ -31,7 +31,8 @@
 @inject Data.Settings.Basic _basic
 
 
-<ContextMenu ContextMenuString="@_basic.ContextMenuJson" />
+<ContextMenu ContextMenuString="@_basic.ContextMenuJson" ContextMenuId="AccOrPlatList" />
+<ContextMenu ContextMenuString="@_basic.ContextMenuShortcutJson" ContextMenuId="Shortcuts" />
 <div id="acc_list" class="acc_list">
     <toastarea class="toastarea" />
 </div>
@@ -41,7 +42,7 @@
     {
         @if (i >= 0)
         {
-            <button id="@(shortcut)" @onclick="() => RunShortcut(shortcut)">
+            <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Data.Settings.Basic.RunShortcut(shortcut)">
                 <img src="@(CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
             </button>
         }
@@ -56,9 +57,9 @@
         <div class="shortcuts">
             @foreach (var (i, shortcut) in _basic.Shortcuts)
             {
-                @if (i < -1)
+                @if (i < 0)
                 {
-                    <button id="@(shortcut)" @onclick="() => RunShortcut(shortcut)">
+                    <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Data.Settings.Basic.RunShortcut(shortcut)">
                         <img src="@(CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                     </button>
                 }
@@ -66,6 +67,12 @@
         </div>
         <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()"><i class="fas fa-chevron-up"></i></button>
 
+        @if (CurrentPlatform.Instance.ShortcutIncludeMainExe)
+        {
+            <button id="btnStartPlat" @onclick="() => Data.Settings.Basic.RunPlatform()">
+                <img src="@(CurrentPlatform.GetShortcutImagePath(CurrentPlatform.Instance.SafeName))" alt="Start platform"/>
+            </button>
+        }
 
         <button id="btnAddNew" onclick="newLogin()">
             <svg viewBox="0 0 448 512" draggable="false" alt="+" class="footerIcoInline">
@@ -106,19 +113,9 @@
 {
     private void OpenFolder(string folder)
     {
-        System.Diagnostics.Process.Start("explorer.exe", folder);
+        Directory.CreateDirectory(folder); // Create if doesn't exist
+        Process.Start("explorer.exe", folder);
         _ = GeneralInvocableFuncs.ShowToast("info", _locale["Toast_PlaceShortcutFiles"], duration: 15000, renderTo: "toastarea");
-    }
-
-    private void RunShortcut(string s)
-    {
-        var proc = new Process();
-        proc.StartInfo = new ProcessStartInfo{
-            FileName = Path.GetFullPath(Path.Join(CurrentPlatform.Instance.ShortcutFolder, s)),
-            UseShellExecute = true
-        };
-        proc.Start();
-        _ = GeneralInvocableFuncs.ShowToast("info", _locale["Status_StartingPlatform", new {platform = CurrentPlatform.RemoveShortcutExt(s)}], duration: 15000, renderTo: "toastarea");
     }
 
     // https://github.com/dotnet/aspnetcore/issues/13582

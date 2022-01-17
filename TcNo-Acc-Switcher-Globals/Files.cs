@@ -205,6 +205,18 @@ namespace TcNo_Acc_Switcher_Globals
                 // Get default icon for ext from that extension thing
                 SaveIconFromExtension("url", output); // Fallback
             }
+            else if (path.EndsWith("exe"))
+            {
+                try
+                {
+                    ico = IconExtractor.ExtractIconFromExecutable(path);
+                }
+                catch (Exception e)
+                {
+                    ico = ExtractIconFromFilePath(path);
+                }
+                SaveImageFromIco(ico, output);
+            }
             else
             {
                 ico = ExtractIconFromFilePath(path);
@@ -251,6 +263,7 @@ namespace TcNo_Acc_Switcher_Globals
                 var icon = si.Where(x => x.Size.Height >= 128).OrderBy(x => x.Size.Height).FirstOrDefault();
                 var max = si.Max(i => i.Size.Height);
                 icon = si.FirstOrDefault(i => i.Size.Height == max);
+                Directory.CreateDirectory(Path.GetDirectoryName(output) ?? string.Empty);
                 icon?.Transparent.Save(output);
             }
             catch (Exception)

@@ -319,7 +319,7 @@ button .caret {
   min-height: 36px;
   max-width: 36px;
   max-height: 36px;
-  margin: 0;
+  margin: 0 0.25em 0 0;
 }
 #shortcutDropdownBtn i {
   transition: all 150ms ease-out;
@@ -350,9 +350,11 @@ button .caret {
 }
 .shortcuts:empty {
   padding: 0;
+  border: none;
 }
 .shortcuts.expandShortcuts {
   padding-left: 33px;
+  border: 1px solid #274560;
 }
 
 .shortcutDropdown {
@@ -374,4 +376,16 @@ button .caret {
   min-height: 36px;
   max-width: 36px;
   max-height: 36px;
+}
+
+#btnStartPlat {
+  min-width: 36px;
+  min-height: 36px;
+  max-width: 36px;
+  max-height: 36px;
+  padding: 0.5em;
+}
+#btnStartPlat img {
+  width: 100%;
+  height: 100%;
 }

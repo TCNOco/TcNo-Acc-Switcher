@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -32,7 +33,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
     {
         private static readonly Lang Lang = Lang.Instance;
         private static Basic _instance = new();
-        private static readonly CurrentPlatform Platform = CurrentPlatform.Instance;
 
         private static readonly object LockObj = new();
         public static Basic Instance
@@ -57,7 +57,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             get
             {
                 if (_instance._folderPath != "") return _instance._folderPath;
-                _instance._folderPath = Platform.DefaultFolderPath;
+                _instance._folderPath = CurrentPlatform.Instance.DefaultFolderPath;
 
                 return _instance._folderPath;
             }
@@ -104,6 +104,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 				{{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";
 
+        [JsonIgnore] public readonly string ContextMenuShortcutJson = $@"[
+				{{""{Lang["Context_RunAdmin"]}"": ""shortcut('admin')""}},
+				{{""{Lang["Context_Hide"]}"": ""shortcut('hide')""}}
+            ]";
+
         /// <summary>
         /// Updates the ForgetAccountEnabled bool in settings file
         /// </summary>
@@ -120,30 +125,81 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Get Basic.exe path from BasicSettings.json
         /// </summary>
         /// <returns>Basic.exe's path string</returns>
-        public string Exe() => Path.Join(FolderPath, Platform.ExeName);
+        public string Exe() => Path.Join(FolderPath, CurrentPlatform.Instance.ExeName);
 
         [JSInvokable]
         public static void SaveShortcutOrder(Dictionary<int, string> o)
         {
             Instance.Shortcuts = o;
-            // Sort by value
-            //Dictionary<string, int> sorted = new();
-            //foreach (var (k, v) in Instance.Shortcuts.OrderByDescending(key => key.Value))
-            //{
-            //    sorted.Add(k, v);
-            //}
-
-            //Instance.Shortcuts = Instance.Shortcuts.OrderBy(key => key.Value).ToDictionary(pair => pair.Key, pair => pair.Value).Reverse().ToDictionary(x => x.Key, x => x.Value);
             Instance.SaveSettings();
+        }
+
+        public static void RunPlatform()
+        {
+            Globals.StartProgram(Data.Settings.Basic.Instance.Exe(), Data.Settings.Basic.Instance.Admin,
+                CurrentPlatform.Instance.ExeExtraArgs);
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.Instance.SafeName }], duration: 15000, renderTo: "toastarea");
+        }
+        public static void RunShortcut(string s, bool admin = false)
+        {
+            var proc = new Process();
+            proc.StartInfo = new ProcessStartInfo
+            {
+                FileName = Path.GetFullPath(Path.Join(CurrentPlatform.Instance.ShortcutFolder, s)),
+                UseShellExecute = true,
+                Verb = admin ? "runas" : ""
+            };
+
+            if (Globals.IsAdministrator && !admin)
+            {
+                proc.StartInfo.Arguments = proc.StartInfo.FileName;
+                proc.StartInfo.FileName = "explorer.exe";
+            }
+
+            try
+            {
+                proc.Start();
+                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.RemoveShortcutExt(s) }], duration: 15000, renderTo: "toastarea");
+            }
+            catch (Exception e)
+            {
+                // Cancelled by user, or another error.
+                Globals.WriteToLog($"Tried to start \"{s}\" but failed.", e);
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Status_FailedLog"], duration: 15000, renderTo: "toastarea");
+            }
+
+        }
+
+        [JSInvokable]
+        public static void HandleShortcutAction(string shortcut, string action)
+        {
+            if (!Instance.Shortcuts.ContainsValue(shortcut)) return;
+            switch (action)
+            {
+                case "hide":
+                {
+                    // Remove shortcut from folder, and list.
+                    Instance.Shortcuts.Remove(Instance.Shortcuts.First(e => e.Value == shortcut).Key);
+                    var f = Path.Join(CurrentPlatform.Instance.ShortcutFolder, shortcut);
+                    if (File.Exists(f)) File.Move(f, f.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
+
+                    // Save.
+                    Instance.SaveSettings();
+                    break;
+                }
+                case "admin":
+                    RunShortcut(shortcut, true);
+                    break;
+            }
         }
 
         #region SETTINGS
         /// <summary>
-         /// </summary>
+        /// </summary>
         public void ResetSettings()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Basic.ResetSettings]");
-            _instance.FolderPath = Platform.DefaultFolderPath;
+            _instance.FolderPath = CurrentPlatform.Instance.DefaultFolderPath;
             _instance.Admin = false;
             _instance.TrayAccNumber = 3;
             _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.Instance.FullName);
@@ -164,10 +220,15 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _instance._altClose = curSettings.AltClose;
             ShortcutsJson = curSettings.ShortcutsJson;
         }
-        public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(Platform.SettingsFile, GetJObject()));
+
+        public void LoadFromFile(string platformFile = "-")
+        {
+            if (platformFile == "-") platformFile = CurrentPlatform.Instance.SettingsFile;
+            SetFromJObject(GeneralFuncs.LoadSettings(platformFile, GetJObject()));
+        }
         public JObject GetJObject() => JObject.FromObject(this);
         [JSInvokable]
-        public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(Platform.SettingsFile, GetJObject(), mergeNewIntoOld);
+        public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(CurrentPlatform.Instance.SettingsFile, GetJObject(), mergeNewIntoOld);
         #endregion
     }
 }

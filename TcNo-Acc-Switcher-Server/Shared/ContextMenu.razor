@@ -1,6 +1,8 @@
 ﻿@code{
     [Parameter]
     public string ContextMenuString { get; set; }
+    [Parameter]
+    public string ContextMenuId { get; set; }
 }
 
-@(new MarkupString(GetContextMenu(ContextMenuString)))
+@(new MarkupString(GetContextMenu(ContextMenuString, ContextMenuId)))

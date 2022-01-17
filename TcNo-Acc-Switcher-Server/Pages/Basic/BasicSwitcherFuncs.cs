@@ -286,6 +286,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 { "%Pictures%", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) },
                 { "%Videos%", Environment.GetFolderPath(Environment.SpecialFolder.MyVideos) },
                 { "%StartMenu%", Environment.GetFolderPath(Environment.SpecialFolder.StartMenu) },
+                { "%StartMenuProgramData%", Environment.ExpandEnvironmentVariables(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu), "\\Programs")) },
+                { "%StartMenuAppData%", Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "\\Programs") }
             };
 
             foreach (var (k,v) in variables)
