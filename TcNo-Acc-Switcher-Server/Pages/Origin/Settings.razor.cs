@@ -42,7 +42,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         public static void ClearSettings()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.ClearSettings]");
-            new Data.Settings.Origin().ResetSettings();
+            Data.Settings.Origin.ResetSettings();
             AppData.ActiveNavMan.NavigateTo("/Origin?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ClearedPlatformSettings", new { platform = "Origin" }]));
         }
         #endregion
@@ -52,7 +52,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         public static void OpenFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.OpenOriginFolder]");
-            _ = Process.Start("explorer.exe", new Data.Settings.Origin().FolderPath);
+            _ = Process.Start("explorer.exe", Data.Settings.Origin.FolderPath);
         }
 
 

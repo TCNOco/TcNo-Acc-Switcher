@@ -49,11 +49,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         private Dictionary<string, string> _strings = new();
-        public Dictionary<string, string> Strings { get => _instance._strings; set => _instance._strings = value; }
-
         private string _current = "";
 
-        public string Current { get => _instance._current; set => _instance._current = value; }
+        public static Dictionary<string, string> Strings { get => Instance._strings; set => Instance._strings = value; }
+        public static string Current { get => Instance._current; set => Instance._current = value; }
 
         /// <summary>
         /// Get a string
@@ -98,7 +97,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Loads the programs default language: English.
         /// </summary>
-        public void LoadDefault()
+        public static void LoadDefault()
         {
             _ = Load("en-US");
         }
@@ -106,20 +105,20 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Loads the system's language, or the user's saved language
         /// </summary>
-        public void LoadLocalised()
+        public static void LoadLocalised()
         {
             LoadDefault();
             // If setting does not exist in settings file then load the system default
-            _ = Instance.Load(AppSettings.Instance.Language == ""
+            _ = Load(AppSettings.Language == ""
                 ? CultureInfo.CurrentCulture.Name
-                : AppSettings.Instance.Language);
+                : AppSettings.Language);
         }
 
         /// <summary>
         /// Tries to load a requested language
         /// </summary>
         /// <param name="lang">Formatted language, example: "en-US"</param>
-        public bool LoadLang(string lang)
+        public static bool LoadLang(string lang)
         {
             LoadDefault();
             return Load(lang, true);
@@ -128,18 +127,18 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Get list of files in Resources folder
         /// </summary>
-        public List<string> GetAvailableLanguages() => Directory.GetFiles(Path.Join(Globals.AppDataFolder, "Resources")).Select(f => Path.GetFileName(f).Split(".yml")[0]).ToList();
-        public Dictionary<string, string> GetAvailableLanguagesDict() => GetAvailableLanguages().ToDictionary(l => new CultureInfo(l).DisplayName);
-        public KeyValuePair<string, string> GetCurrentLanguage() => new(new CultureInfo(Current).DisplayName, Current);
+        public static List<string> GetAvailableLanguages() => Directory.GetFiles(Path.Join(Globals.AppDataFolder, "Resources")).Select(f => Path.GetFileName(f).Split(".yml")[0]).ToList();
+        public static Dictionary<string, string> GetAvailableLanguagesDict() => GetAvailableLanguages().ToDictionary(l => new CultureInfo(l).DisplayName);
+        public static KeyValuePair<string, string> GetCurrentLanguage() => new(new CultureInfo(Current).DisplayName, Current);
 
-        public bool Load(string filename, bool save = false)
+        public static bool Load(string filename, bool save = false)
         {
             var path = Path.Join(Globals.AppDataFolder, "Resources", filename + ".yml");
             Current = filename;
             if (save && Current == filename)
             {
-                AppSettings.Instance.Language = filename;
-                AppSettings.Instance.SaveSettings();
+                AppSettings.Language = filename;
+                AppSettings.SaveSettings();
             }
             if (!File.Exists(path))
             {
@@ -156,8 +155,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                     Current = l;
                     if (save && Current == l)
                     {
-                        AppSettings.Instance.Language = l;
-                        AppSettings.Instance.SaveSettings();
+                        AppSettings.Language = l;
+                        AppSettings.SaveSettings();
                     }
                     break;
                 }
@@ -180,50 +179,5 @@ namespace TcNo_Acc_Switcher_Server.Data
             return true;
         }
         #endregion
-    }
-
-    public static partial class JsonExtensions
-    {
-        public static T ToObject<T>(this JsonElement element, JsonSerializerOptions options = null)
-        {
-            var bufferWriter = new ArrayBufferWriter<byte>();
-            using (var writer = new Utf8JsonWriter(bufferWriter))
-            {
-                element.WriteTo(writer);
-            }
-
-            return JsonSerializer.Deserialize<T>(bufferWriter.WrittenSpan, options);
-        }
-
-        public static T ToObject<T>(this JsonDocument document, JsonSerializerOptions options = null)
-        {
-            if (document == null)
-            {
-                throw new ArgumentNullException(nameof(document));
-            }
-
-            return document.RootElement.ToObject<T>(options);
-        }
-
-        public static object ToObject(this JsonElement element, Type returnType, JsonSerializerOptions options = null)
-        {
-            var bufferWriter = new ArrayBufferWriter<byte>();
-            using (var writer = new Utf8JsonWriter(bufferWriter))
-            {
-                element.WriteTo(writer);
-            }
-
-            return JsonSerializer.Deserialize(bufferWriter.WrittenSpan, returnType, options);
-        }
-
-        public static object ToObject(this JsonDocument document, Type returnType, JsonSerializerOptions options = null)
-        {
-            if (document == null)
-            {
-                throw new ArgumentNullException(nameof(document));
-            }
-
-            return document.RootElement.ToObject(returnType, options);
-        }
     }
 }

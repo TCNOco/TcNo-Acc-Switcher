@@ -46,7 +46,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static void ClearSettings()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.ClearSettings]");
-            new Data.Settings.BattleNet().ResetSettings();
+            Data.Settings.BattleNet.ResetSettings();
             AppData.ActiveNavMan.NavigateTo("/BattleNet?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ClearedPlatformSettings", new {platform = "BattleNet"}]));
         }
 
@@ -59,16 +59,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         // BUTTON: Clear Forgotten
         public static void ClearForgotten()
         {
-            Data.Settings.BattleNet.Instance.IgnoredAccounts.Clear();
-            Data.Settings.BattleNet.Instance.SaveAccounts();
+            Data.Settings.BattleNet.IgnoredAccounts.Clear();
+            Data.Settings.BattleNet.SaveAccounts();
         }
 
         // BUTTON: Clear accounts
         public static void ClearAccounts()
         {
-            Data.Settings.BattleNet.Instance.Accounts = new List<BattleNetSwitcherBase.BattleNetUser>();
-            Data.Settings.BattleNet.Instance.IgnoredAccounts = new List<string>();
-            Data.Settings.BattleNet.Instance.SaveAccounts();
+            Data.Settings.BattleNet.Accounts = new List<BattleNetSwitcherBase.BattleNetUser>();
+            Data.Settings.BattleNet.IgnoredAccounts = new List<string>();
+            Data.Settings.BattleNet.SaveAccounts();
         }
         #endregion
 
@@ -77,7 +77,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static void OpenFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:BattleNet\Settings.razor.cs.OpenBattleNetFolder]");
-            _ = Process.Start("explorer.exe", new Data.Settings.BattleNet().FolderPath);
+            _ = Process.Start("explorer.exe", Data.Settings.BattleNet.FolderPath);
         }
 
 

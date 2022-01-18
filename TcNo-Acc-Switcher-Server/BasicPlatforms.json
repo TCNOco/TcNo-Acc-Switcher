@@ -2,7 +2,7 @@
   "Platforms": {
     "Escape from Tarkov": {
       "Identifiers": [ "eft", "bsg", "tarkov" ],
-      "ExeLocationDefault": "C:\\Battlestate Games\\BsgLaunche123r\\BsgLauncher.exe",
+      "ExeLocationDefault": "C:\\Battlestate Games\\BsgLauncher\\BsgLauncher.exe",
       "ExesToEnd": [ "EscapeFromTarkov.exe", "BsgLauncher.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {

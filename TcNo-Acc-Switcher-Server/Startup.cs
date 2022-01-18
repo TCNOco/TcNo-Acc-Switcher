@@ -68,7 +68,7 @@ namespace TcNo_Acc_Switcher_Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            Lang.Instance.LoadLocalised();
+            Lang.LoadLocalised();
 
             _ = env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseExceptionHandler("/Error");
 

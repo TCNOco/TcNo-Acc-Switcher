@@ -96,7 +96,7 @@ namespace TcNo_Acc_Switcher_Client
                         StartPage = eArg;
 
                     // Check if platform short is BasicPlatform
-                    if (BasicPlatforms.Instance.PlatformExistsFromShort(eArg))
+                    if (BasicPlatforms.PlatformExistsFromShort(eArg))
                         StartPage = "Basic?plat=" + eArg;
 
                     // Check if it was verbose mode.
@@ -229,9 +229,9 @@ namespace TcNo_Acc_Switcher_Client
             string color;
             try
             {
-                var start = AppSettings.Instance.Stylesheet.IndexOf(key + ":", StringComparison.Ordinal) + key.Length + 1;
-                var end = AppSettings.Instance.Stylesheet.IndexOf(";", start, StringComparison.Ordinal);
-                color = AppSettings.Instance.Stylesheet[start..end];
+                var start = AppSettings.Stylesheet.IndexOf(key + ":", StringComparison.Ordinal) + key.Length + 1;
+                var end = AppSettings.Stylesheet.IndexOf(";", start, StringComparison.Ordinal);
+                color = AppSettings.Stylesheet[start..end];
                 color = color.Trim(); // Remove whitespace around variable
             }
             catch (Exception)
@@ -259,7 +259,7 @@ namespace TcNo_Acc_Switcher_Client
         private static void IsRunningAlready()
         {
 
-            AppSettings.Instance.LoadFromFile();
+            AppSettings.LoadFromFile();
             try
             {
                 // Check if program is running, if not: return.
@@ -267,7 +267,7 @@ namespace TcNo_Acc_Switcher_Client
 
                 // The program is running at this point.
                 // If set to minimize to tray, try open it.
-                if (AppSettings.Instance.TrayMinimizeNotExit)
+                if (AppSettings.TrayMinimizeNotExit)
                 {
                     if (NativeFuncs.BringToFront())
                         Environment.Exit(1056); // 1056	An instance of the service is already running.
@@ -296,7 +296,7 @@ namespace TcNo_Acc_Switcher_Client
                 }
                 else
                 {
-	                if (!AppSettings.Instance.ShownMinimizedNotification)
+	                if (!AppSettings.ShownMinimizedNotification)
 	                {
 		                text = "TcNo Account Switcher was running." + Environment.NewLine +
 		                       "I've brought it to the top." + Environment.NewLine +
@@ -309,8 +309,8 @@ namespace TcNo_Acc_Switcher_Client
 			                MessageBoxImage.Information,
 			                MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
 
-		                AppSettings.Instance.ShownMinimizedNotification = true;
-		                AppSettings.Instance.SaveSettings();
+		                AppSettings.ShownMinimizedNotification = true;
+		                AppSettings.SaveSettings();
 	                }
 
 	                Environment.Exit(1056); // 1056	An instance of the service is already running.
@@ -431,7 +431,7 @@ namespace TcNo_Acc_Switcher_Client
                         Globals.WriteToLog("Battle.net switch requested");
                         if (!GeneralFuncs.CanKillProcess(BattleNet.Processes))
                             Restart(combinedArgs, true);
-                        BattleNet.Instance.LoadFromFile();
+                        BattleNet.LoadFromFile();
                         _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account, string.Join(' ', remainingArguments));
                         return;
                     }
@@ -441,7 +441,7 @@ namespace TcNo_Acc_Switcher_Client
                         // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
                         Globals.WriteToLog("Origin switch requested");
                         if (!GeneralFuncs.CanKillProcess(Origin.Processes)) Restart(combinedArgs, true);
-                        Origin.Instance.LoadFromFile();
+                        Origin.LoadFromFile();
                         TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account,
                             command.Length > 2 ? int.Parse(command[2]) : 0, string.Join(' ', remainingArguments));
                         return;
@@ -452,7 +452,7 @@ namespace TcNo_Acc_Switcher_Client
                         // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
                         Globals.WriteToLog("Steam switch requested");
                         if (!GeneralFuncs.CanKillProcess(Steam.Processes)) Restart(combinedArgs, true);
-                        Steam.Instance.LoadFromFile();
+                        Steam.LoadFromFile();
                         TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
                             ePersonaState: command.Length > 2
                                 ? int.Parse(command[2])
@@ -465,19 +465,19 @@ namespace TcNo_Acc_Switcher_Client
                         // Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]
                         Globals.WriteToLog("Ubisoft Connect switch requested");
                         if (!GeneralFuncs.CanKillProcess(Ubisoft.Processes)) Restart(combinedArgs, true);
-                        Ubisoft.Instance.LoadFromFile();
+                        Ubisoft.LoadFromFile();
                         TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account,
                             command.Length > 2 ? int.Parse(command[2]) : -1, string.Join(' ', remainingArguments));
                         break;
                     }
                 // BASIC ACCOUNT PLATFORM
                 default:
-                    if (!BasicPlatforms.Instance.PlatformExistsFromShort(platform)) break;
+                    if (!BasicPlatforms.PlatformExistsFromShort(platform)) break;
                     // Is a basic platform!
-                    BasicPlatforms.Instance.SetCurrentPlatformFromShort(platform);
-                    Globals.WriteToLog(CurrentPlatform.Instance.FullName + " switch requested");
-                    if (!GeneralFuncs.CanKillProcess(CurrentPlatform.Instance.ExesToEnd)) Restart(combinedArgs, true);
-                    Basic.Instance.LoadFromFile();
+                    BasicPlatforms.SetCurrentPlatformFromShort(platform);
+                    Globals.WriteToLog(CurrentPlatform.FullName + " switch requested");
+                    if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
+                    Basic.LoadFromFile();
                     TcNo_Acc_Switcher_Server.Pages.Basic.BasicSwitcherFuncs.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
                     break;
             }
@@ -556,12 +556,12 @@ namespace TcNo_Acc_Switcher_Client
 
                 // BASIC ACCOUNT PLATFORM
                 default:
-                    if (!BasicPlatforms.Instance.PlatformExistsFromShort(platform)) break;
+                    if (!BasicPlatforms.PlatformExistsFromShort(platform)) break;
                     // Is a basic platform!
-                    BasicPlatforms.Instance.SetCurrentPlatformFromShort(platform);
-                    Globals.WriteToLog(CurrentPlatform.Instance.FullName + " logout requested");
-                    Basic.Instance.LoadFromFile();
-                    TcNo_Acc_Switcher_Server.Pages.Basic.BasicSwitcherBase.NewLogin_Basic();
+                    BasicPlatforms.SetCurrentPlatformFromShort(platform);
+                    Globals.WriteToLog(CurrentPlatform.FullName + " logout requested");
+                    Basic.LoadFromFile();
+                    TcNo_Acc_Switcher_Server.Pages.Basic.BasicSwitcherBase.NewLoginBasic();
                     break;
             }
         }
@@ -655,7 +655,7 @@ namespace TcNo_Acc_Switcher_Client
 #endif
                 if (CheckLatest(latestVersion)) return;
                 // Show notification
-                AppSettings.Instance.UpdateAvailable = true;
+                AppSettings.UpdateAvailable = true;
             }
             catch (WebException e)
             {

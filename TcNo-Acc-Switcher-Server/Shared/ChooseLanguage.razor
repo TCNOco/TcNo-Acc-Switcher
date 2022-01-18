@@ -25,8 +25,8 @@
 }
 
 @code {
-	private readonly string _selectedCulture = Lang.Instance.GetCurrentLanguage().Key;
-	private Dictionary<string, string> _cultures = Lang.Instance.GetAvailableLanguagesDict();
+	private readonly string _selectedCulture = Lang.GetCurrentLanguage().Key;
+	private Dictionary<string, string> _cultures = Lang.GetAvailableLanguagesDict();
 
 	protected override void OnInitialized()
 	{
@@ -36,8 +36,8 @@
 	private async Task RequestCultureChange(string key)
 	{
 		if (string.IsNullOrWhiteSpace(key)) return;
-		Lang.Instance.LoadLang(key);
-	    AppSettings.Instance.Rtl = new CultureInfo(Lang.Instance.Current).TextInfo.IsRightToLeft;
+	    Lang.LoadLang(key);
+	    AppSettings.Rtl = new CultureInfo(Lang.Current).TextInfo.IsRightToLeft;
 		await AppData.ReloadPage();
 	}
 }

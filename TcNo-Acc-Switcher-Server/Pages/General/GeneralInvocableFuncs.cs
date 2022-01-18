@@ -29,19 +29,17 @@ using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Origin;
 using TcNo_Acc_Switcher_Server.Pages.Ubisoft;
 using Task = System.Threading.Tasks.Task;
-
+using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
+using BattleNetSettings = TcNo_Acc_Switcher_Server.Data.Settings.BattleNet;
+using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
+using OriginSettings = TcNo_Acc_Switcher_Server.Data.Settings.Origin;
+using UbisoftSettings = TcNo_Acc_Switcher_Server.Data.Settings.Ubisoft;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
 {
     public class GeneralInvocableFuncs
     {
         private static readonly Lang Lang = Lang.Instance;
-
-        private static readonly Data.Settings.Basic Basic = Data.Settings.Basic.Instance;
-        private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
-        private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
-        private static readonly Data.Settings.Ubisoft Ubisoft = Data.Settings.Ubisoft.Instance;
-        private static readonly Data.Settings.BattleNet BattleNet = Data.Settings.BattleNet.Instance;
 
         /// <summary>
         /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file
@@ -101,19 +99,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             switch (file)
             {
                 case "BattleNetSettings":
-                    BattleNet.FolderPath = path;
+                    BattleNetSettings.FolderPath = path;
                     break;
                 case "BasicSettings":
-                    Basic.FolderPath = path;
+                    BasicSettings.FolderPath = path;
                     break;
                 case "SteamSettings":
-                    Steam.FolderPath = path;
+                    SteamSettings.FolderPath = path;
                     break;
                 case "OriginSettings":
-                    Origin.FolderPath = path;
+                    OriginSettings.FolderPath = path;
                     break;
                 case "UbisoftSettings":
-                    Ubisoft.FolderPath = path;
+                    UbisoftSettings.FolderPath = path;
                     break;
             }
         }
@@ -131,35 +129,35 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                 if (action.StartsWith("AcceptForgetBasicAcc:"))
                 {
-                    Basic.SetForgetAcc(true);
-                    _ = GeneralFuncs.ForgetAccount_Generic(accName, CurrentPlatform.Instance.SafeName, true);
+                    BasicSettings.SetForgetAcc(true);
+                    _ = GeneralFuncs.ForgetAccount_Generic(accName, CurrentPlatform.SafeName, true);
                     return Task.FromResult("refresh");
                 }
 
                 if (action.StartsWith("AcceptForgetSteamAcc:"))
                 {
-                    Steam.SetForgetAcc(true);
+                    SteamSettings.SetForgetAcc(true);
                     _ = SteamSwitcherFuncs.ForgetAccount(accName);
                     return Task.FromResult("refresh");
                 }
 
                 if (action.StartsWith("AcceptForgetOriginAcc:"))
                 {
-                    Origin.SetForgetAcc(true);
+                    OriginSettings.SetForgetAcc(true);
                     _ = GeneralFuncs.ForgetAccount_Generic(accName, "Origin", true);
                     return Task.FromResult("refresh");
                 }
 
                 if (action.StartsWith("AcceptForgetUbisoftAcc:"))
                 {
-                    Ubisoft.SetForgetAcc(true);
+                    UbisoftSettings.SetForgetAcc(true);
                     _ = GeneralFuncs.ForgetAccount_Generic(accName, "Ubisoft", true);
                     return Task.FromResult("refresh");
                 }
 
                 if (action.StartsWith("AcceptForgetBattleNetAcc:"))
                 {
-                    BattleNet.SetForgetAcc(true);
+                    BattleNetSettings.SetForgetAcc(true);
                     BattleNetSwitcherFuncs.ForgetAccount(accName);
                     return Task.FromResult("refresh");
                 }
@@ -284,12 +282,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                         break;
                     }
                 case "basic":
-                    page = CurrentPlatform.Instance.SafeName;
-                    primaryPlatformId = CurrentPlatform.Instance.PrimaryId;
-                    platform = CurrentPlatform.Instance.FullName;
+                    page = CurrentPlatform.SafeName;
+                    primaryPlatformId = CurrentPlatform.PrimaryId;
+                    platform = CurrentPlatform.FullName;
                     platformName = $"Switch to {accName} [{platform}]";
 
-                    var platformImgPath = "\\img\\platform\\" + CurrentPlatform.Instance.SafeName + ".png";
+                    var platformImgPath = "\\img\\platform\\" + CurrentPlatform.SafeName + ".png";
                     var currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), platformImgPath);
                     bgImg = File.Exists(currentPlatformImgPath)
                         ? Path.Join(currentPlatformImgPath)
@@ -315,7 +313,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             s.CreateCombinedIcon(bgImg, fgImg, $"{accId}.ico");
             s.TryWrite();
 
-            _ = AppSettings.Instance.StreamerModeTriggered
+            _ = AppSettings.StreamerModeTriggered
                 ? ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea")
                 : ShowToast("success", Lang["ForName", new { name = accName }], Lang["Toast_ShortcutCreated"], "toastarea");
         }
@@ -333,7 +331,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static async Task<string> GiExportAccountList(string platform)
         {
             Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiExportAccountList] platform={platform}");
-            platform = BasicPlatforms.Instance.PlatformFullName(platform);
+            platform = BasicPlatforms.PlatformFullName(platform);
             if (!Directory.Exists(Path.Join("LoginCache", platform)))
             {
                 _ = ShowToast("error", Lang["Toast_AddAccountsFirst"], Lang["Toast_AddAccountsFirstTitle"], "toastarea");
@@ -349,7 +347,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 allAccountsTable.Add("SEP=,");
                 allAccountsTable.Add("Account name:,Community name:,SteamID:,VAC status:,Last login:,Saved profile image:");
 
-                var userAccounts = SteamSwitcherFuncs.GetSteamUsers(Steam.LoginUsersVdf());
+                var userAccounts = SteamSwitcherFuncs.GetSteamUsers(SteamSettings.LoginUsersVdf());
                 var vacStatusList = new List<SteamSwitcherFuncs.VacStatus>();
                 var loadedVacCache = SteamSwitcherFuncs.LoadVacInfo(ref vacStatusList);
 
@@ -369,7 +367,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                         vacInfo += "N/A";
                     }
 
-                    var imagePath = Path.GetFullPath($"{Steam.SteamImagePath + ua.SteamId}.jpg");
+                    var imagePath = Path.GetFullPath($"{SteamSettings.SteamImagePath + ua.SteamId}.jpg");
                     allAccountsTable.Add(ua.AccName + s +
                                          ua.Name + s +
                                          ua.SteamId + s +
@@ -386,7 +384,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                 await BattleNetSwitcherFuncs.LoadProfiles();
 
-                foreach (var ba in BattleNet.Accounts)
+                foreach (var ba in BattleNetSettings.Accounts)
                 {
                     var imagePath = Path.GetFullPath($"wwwroot\\img\\profiles\\battlenet\\{ba.Email}.png");
                     allAccountsTable.Add(ba.Email + s +
@@ -416,11 +414,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         [JSInvokable]
-        public static string PlatformUserModalExtraButtons() => CurrentPlatform.Instance.GetUserModalExtraButtons;
+        public static string PlatformUserModalExtraButtons() => CurrentPlatform.GetUserModalExtraButtons;
         [JSInvokable]
-        public static string PlatformUserModalCopyText() => CurrentPlatform.Instance.GetUserModalCopyText;
+        public static string PlatformUserModalCopyText() => CurrentPlatform.GetUserModalCopyText;
         [JSInvokable]
-        public static string PlatformHintText() => CurrentPlatform.Instance.GetUserModalHintText();
+        public static string PlatformHintText() => CurrentPlatform.GetUserModalHintText();
 
         [JSInvokable]
         public static string GiLocale(string k) => Lang.Instance[k];
@@ -436,9 +434,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static string GiCurrentBasicPlatform(string platform)
         {
             if (platform == "Basic")
-                return CurrentPlatform.Instance.FullName;
-            return BasicPlatforms.Instance.PlatformExists(platform)
-                ? BasicPlatforms.Instance.PlatformFullName(platform)
+                return CurrentPlatform.FullName;
+            return BasicPlatforms.PlatformExists(platform)
+                ? BasicPlatforms.PlatformFullName(platform)
                 : platform;
         }
 
@@ -447,9 +445,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             // EXE name from current platform by name:
             if (platform == "Basic")
-                return CurrentPlatform.Instance.ExeName;
-            return BasicPlatforms.Instance.PlatformExists(platform)
-                ? BasicPlatforms.Instance.GetExeNameFromPlatform(platform)
+                return CurrentPlatform.ExeName;
+            return BasicPlatforms.PlatformExists(platform)
+                ? BasicPlatforms.GetExeNameFromPlatform(platform)
                 : platform;
         }
 

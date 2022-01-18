@@ -29,6 +29,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SharpScss;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using YamlDotNet.Serialization;
@@ -60,63 +61,56 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         // Variables
         private bool _updateAvailable;
-        [Newtonsoft.Json.JsonIgnore] public bool UpdateAvailable { get => _instance._updateAvailable; set => _instance._updateAvailable = value; }
+        [Newtonsoft.Json.JsonIgnore] public static bool UpdateAvailable { get => Instance._updateAvailable; set => Instance._updateAvailable = value; }
 
         private string _lang = "";
-        [JsonProperty("Language", Order = 0)] public string Language { get => _instance._lang; set => _instance._lang = value; }
+        [JsonProperty("Language", Order = 0)] public static string Language { get => Instance._lang; set => Instance._lang = value; }
 
-        private bool _rtl = System.Globalization.CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
-        [JsonProperty("Rtl", Order = 1)] public bool Rtl { get => _instance._rtl; set => _instance._rtl = value; }
+        private bool _rtl = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
+        [JsonProperty("Rtl", Order = 1)] public static bool Rtl { get => Instance._rtl; set => Instance._rtl = value; }
 
         private bool _streamerModeEnabled = true;
-        [JsonProperty("StreamerModeEnabled", Order = 2)] public bool StreamerModeEnabled { get => _instance._streamerModeEnabled; set => _instance._streamerModeEnabled = value; }
+        [JsonProperty("StreamerModeEnabled", Order = 2)] public static bool StreamerModeEnabled { get => Instance._streamerModeEnabled; set => Instance._streamerModeEnabled = value; }
 
         private int _serverPort = 1337;
-        [JsonProperty("ServerPort", Order = 3)] public int ServerPort { get => _instance._serverPort; set => _instance._serverPort = value; }
+        [JsonProperty("ServerPort", Order = 3)] public static int ServerPort { get => Instance._serverPort; set => Instance._serverPort = value; }
 
         private Point _windowSize = new() { X = 800, Y = 450 };
-        [JsonProperty("WindowSize", Order = 4)] public Point WindowSize { get => _instance._windowSize; set => _instance._windowSize = value; }
+        [JsonProperty("WindowSize", Order = 4)] public static Point WindowSize { get => Instance._windowSize; set => Instance._windowSize = value; }
 
         private readonly string _version = Globals.Version;
-        [JsonProperty("Version", Order = 5)] public string Version => _instance._version;
+        [JsonProperty("Version", Order = 5)] public static string Version => Instance._version;
 
         private SortedSet<string> _disabledPlatforms = new();
-        [JsonProperty("DisabledPlatforms", Order = 6)]
-        public SortedSet<string> DisabledPlatforms { get => _instance._disabledPlatforms; set => _instance._disabledPlatforms = value; }
+        [JsonProperty("DisabledPlatforms", Order = 6)] public static SortedSet<string> DisabledPlatforms { get => Instance._disabledPlatforms; set => Instance._disabledPlatforms = value; }
 
         private bool _trayMinimizeNotExit;
-        [JsonProperty("TrayMinimizeNotExit", Order = 7)]
-        public bool TrayMinimizeNotExit { get => _instance._trayMinimizeNotExit; set => _instance._trayMinimizeNotExit = value; }
+        [JsonProperty("TrayMinimizeNotExit", Order = 7)] public static bool TrayMinimizeNotExit { get => Instance._trayMinimizeNotExit; set => Instance._trayMinimizeNotExit = value; }
 
         private bool _shownMinimizedNotification;
-        [JsonProperty("ShownMinimizedNotification", Order = 8)]
-        public bool ShownMinimizedNotification { get => _instance._shownMinimizedNotification; set => _instance._shownMinimizedNotification = value; }
+        [JsonProperty("ShownMinimizedNotification", Order = 8)] public static bool ShownMinimizedNotification { get => Instance._shownMinimizedNotification; set => Instance._shownMinimizedNotification = value; }
 
         private bool _startCentered;
-        [JsonProperty("StartCentered", Order = 9)]
-        public bool StartCentered { get => _instance._startCentered; set => _instance._startCentered = value; }
+        [JsonProperty("StartCentered", Order = 9)] public static bool StartCentered { get => Instance._startCentered; set => Instance._startCentered = value; }
 
         private string _activeTheme = "Dracula_Cyan";
-        [JsonProperty("ActiveTheme", Order = 10)]
-        public string ActiveTheme { get => _instance._activeTheme; set => _instance._activeTheme = value; }
+        [JsonProperty("ActiveTheme", Order = 10)] public static string ActiveTheme { get => Instance._activeTheme; set => Instance._activeTheme = value; }
 
         private string _activeBrowser = "WebView";
-        [JsonProperty("ActiveBrowser", Order = 11)]
-        public string ActiveBrowser { get => _instance._activeBrowser; set => _instance._activeBrowser = value; }
+        [JsonProperty("ActiveBrowser", Order = 11)] public static string ActiveBrowser { get => Instance._activeBrowser; set => Instance._activeBrowser = value; }
 
         private string _background = "";
-        [JsonProperty("Background", Order = 12)]
-        public string Background { get => _instance._background; set => _instance._background = value; }
+        [JsonProperty("Background", Order = 12)] public static string Background { get => Instance._background; set => Instance._background = value; }
 
         private HashSet<string> _enabledBasicPlatforms = new();
         [JsonProperty("EnabledBasicPlatforms", Order = 13)]
-        public HashSet<string> EnabledBasicPlatforms
+        public static HashSet<string> EnabledBasicPlatforms
         {
-            get => _instance._enabledBasicPlatforms;
-            set => _instance._enabledBasicPlatforms = value;
+            get => Instance._enabledBasicPlatforms;
+            set => Instance._enabledBasicPlatforms = value;
         }
 
-        public List<string> EnabledBasicPlatformSorted()
+        public static List<string> EnabledBasicPlatformSorted()
         {
             var enabled = EnabledBasicPlatforms.ToList();
             enabled.Sort();
@@ -124,25 +118,25 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         private bool _desktopShortcut;
-        [Newtonsoft.Json.JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
+        [Newtonsoft.Json.JsonIgnore] public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
         private bool _startMenu;
-        [Newtonsoft.Json.JsonIgnore] public bool StartMenu { get => _instance._startMenu; set => _instance._startMenu = value; }
+        [Newtonsoft.Json.JsonIgnore] public static bool StartMenu { get => Instance._startMenu; set => Instance._startMenu = value; }
         private bool _startMenuPlatforms;
-        [Newtonsoft.Json.JsonIgnore] public bool StartMenuPlatforms { get => _instance._startMenuPlatforms; set => _instance._startMenuPlatforms = value; }
+        [Newtonsoft.Json.JsonIgnore] public static bool StartMenuPlatforms { get => Instance._startMenuPlatforms; set => Instance._startMenuPlatforms = value; }
         private bool _protocolEnabled;
-        [Newtonsoft.Json.JsonIgnore] public bool ProtocolEnabled { get => _instance._protocolEnabled; set => _instance._protocolEnabled = value; }
+        [Newtonsoft.Json.JsonIgnore] public static bool ProtocolEnabled { get => Instance._protocolEnabled; set => Instance._protocolEnabled = value; }
         private bool _trayStartup;
-        [Newtonsoft.Json.JsonIgnore] public bool TrayStartup { get => _instance._trayStartup; set => _instance._trayStartup = value; }
+        [Newtonsoft.Json.JsonIgnore] public static bool TrayStartup { get => Instance._trayStartup; set => Instance._trayStartup = value; }
 
 
         /// <summary>
         /// Some features only work in the 'official browser' such as picking files, this will need to be adjusted for pure-web users, using just the server and another browser.
         /// </summary>
         private bool _usingTcNoBrowser;
-        [Newtonsoft.Json.JsonIgnore] public bool UsingTcNoBrowser { get => _instance._usingTcNoBrowser; set => _instance._usingTcNoBrowser = value; }
+        [Newtonsoft.Json.JsonIgnore] public static bool UsingTcNoBrowser { get => Instance._usingTcNoBrowser; set => Instance._usingTcNoBrowser = value; }
 
         [Newtonsoft.Json.JsonIgnore]
-        public string PlatformContextMenu =>
+        public static string PlatformContextMenu =>
             Lang == null ? "" : $@"[
               {{""{Lang["Context_HidePlatform"]}"": ""hidePlatform()""}},
               {{""{Lang["Context_CreateShortcut"]}"": ""createPlatformShortcut()""}},
@@ -153,77 +147,66 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static async Task HidePlatform(string platform)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.HidePlatform]");
-            if (BasicPlatforms.Instance.PlatformExistsFromShort(platform))
+            if (BasicPlatforms.PlatformExistsFromShort(platform))
             {
-                Instance.EnabledBasicPlatforms.Remove(platform);
+                EnabledBasicPlatforms.Remove(platform);
             }
             else
-                _ = _instance.DisabledPlatforms.Add(platform);
-            _instance.SaveSettings();
+                _ = DisabledPlatforms.Add(platform);
+            SaveSettings();
             await AppData.ReloadPage();
         }
 
         public static async Task ShowPlatform(string platform)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Data\AppSettings.ShowPlatform]");
-            if (BasicPlatforms.Instance.PlatformExistsFromShort(platform))
+            if (BasicPlatforms.PlatformExistsFromShort(platform))
             {
-                if (!Instance.EnabledBasicPlatforms.Contains(platform))
-                    Instance.EnabledBasicPlatforms.Add(platform);
+                if (!EnabledBasicPlatforms.Contains(platform))
+                    EnabledBasicPlatforms.Add(platform);
             }
             else
-                _ = _instance.DisabledPlatforms.Remove(platform);
-            _instance.SaveSettings();
+                _ = DisabledPlatforms.Remove(platform);
+            SaveSettings();
             await AppData.ReloadPage();
         }
 
         private string _stylesheet;
-        [Newtonsoft.Json.JsonIgnore] public string Stylesheet { get => _instance._stylesheet; set => _instance._stylesheet = value; }
+        [Newtonsoft.Json.JsonIgnore] public static string Stylesheet { get => Instance._stylesheet; set => Instance._stylesheet = value; }
 
         private bool _windowsAccent;
-        public bool WindowsAccent { get => _instance._windowsAccent; set => _instance._windowsAccent = value; }
+        public static bool WindowsAccent { get => Instance._windowsAccent; set => Instance._windowsAccent = value; }
 
         private string _windowsAccentColor = "";
-        [Newtonsoft.Json.JsonIgnore] public string WindowsAccentColor { get => _instance._windowsAccentColor; set => _instance._windowsAccentColor = value; }
+        [Newtonsoft.Json.JsonIgnore] public static string WindowsAccentColor { get => Instance._windowsAccentColor; set => Instance._windowsAccentColor = value; }
 
         private (float, float, float) _windowsAccentColorHsl = (0, 0, 0);
-        [Newtonsoft.Json.JsonIgnore] public (float, float, float) WindowsAccentColorHsl { get => _instance._windowsAccentColorHsl; set => _instance._windowsAccentColorHsl = value; }
+        [Newtonsoft.Json.JsonIgnore] public static (float, float, float) WindowsAccentColorHsl { get => Instance._windowsAccentColorHsl; set => Instance._windowsAccentColorHsl = value; }
 
         [SupportedOSPlatform("windows")]
-        [Newtonsoft.Json.JsonIgnore] public (int, int, int) WindowsAccentColorInt => GetAccentColor();
+        [Newtonsoft.Json.JsonIgnore] public static (int, int, int) WindowsAccentColorInt => GetAccentColor();
 
         // Constants
-        [Newtonsoft.Json.JsonIgnore] public readonly string SettingsFile = "WindowSettings.json";
-        [Newtonsoft.Json.JsonIgnore] private string StylesheetFile => Path.Join("themes", ActiveTheme, "style.css");
-        [Newtonsoft.Json.JsonIgnore] private string StylesheetInfoFile => Path.Join("themes", ActiveTheme, "info.yaml");
+        [Newtonsoft.Json.JsonIgnore] public static readonly string SettingsFile = "WindowSettings.json";
+        [Newtonsoft.Json.JsonIgnore] private static string StylesheetFile => Path.Join("themes", ActiveTheme, "style.css");
+        [Newtonsoft.Json.JsonIgnore] private static string StylesheetInfoFile => Path.Join("themes", ActiveTheme, "info.yaml");
         private Dictionary<string, string> _stylesheetInfo;
-        [Newtonsoft.Json.JsonIgnore] public Dictionary<string, string> StylesheetInfo { get => _instance._stylesheetInfo; set => _instance._stylesheetInfo = value; }
+        [Newtonsoft.Json.JsonIgnore] public static Dictionary<string, string> StylesheetInfo { get => Instance._stylesheetInfo; set => Instance._stylesheetInfo = value; }
 
-        [Newtonsoft.Json.JsonIgnore] public bool StreamerModeTriggered;
+        [Newtonsoft.Json.JsonIgnore] public static bool StreamerModeTriggered;
 
         /// <summary>
         /// Check if any streaming software is running. Do let me know if you have a program name that you'd like to expand this list with!
         /// It's basically the program's .exe file, but without ".exe".
         /// </summary>
         /// <returns>True when streaming software is running</returns>
-        public bool StreamerModeCheck()
+        public static bool StreamerModeCheck()
         {
             Globals.DebugWriteLine(@"[Func:Data\AppSettings.StreamerModeCheck]");
-            if (!_streamerModeEnabled) return false; // Don't hide anything if disabled.
-            _instance.StreamerModeTriggered = false;
+            if (!StreamerModeEnabled) return false; // Don't hide anything if disabled.
+            StreamerModeTriggered = false;
             foreach (var p in Process.GetProcesses())
             {
-                //try
-                //{
-                //    if (p.MainModule == null) continue;
-                //}
-                //catch (System.ComponentModel.Win32Exception e)
-                //{
-                //    // This is just something the process can't access.
-                //    // Ignore and move on.
-                //    continue;
-                //}
-
                 switch (p.ProcessName.ToLowerInvariant())
                 {
                     case "obs":
@@ -234,7 +217,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     case "xsplit.core":
                     case "xsplit.gamecaster":
                     case "twitchstudio":
-                        _instance.StreamerModeTriggered = true;
+                        StreamerModeTriggered = true;
                         Globals.WriteToLog($"Streamer mode found: {p.ProcessName}");
                         return true;
                 }
@@ -247,12 +230,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         /// <returns></returns>
         [JSInvokable]
-        public static Task<bool> GetTrayMinimizeNotExit() => Task.FromResult(_instance.TrayMinimizeNotExit);
+        public static Task<bool> GetTrayMinimizeNotExit() => Task.FromResult(TrayMinimizeNotExit);
 
         /// <summary>
         /// Sets the active browser
         /// </summary>
-        public Task SetActiveBrowser(string browser)
+        public static Task SetActiveBrowser(string browser)
         {
             ActiveBrowser = browser;
             _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_RestartRequired"], Lang["Notice"], "toastarea");
@@ -260,27 +243,27 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
 
-        public void ResetSettings()
+        public static void ResetSettings()
         {
-            _instance.StreamerModeEnabled = true;
+            StreamerModeEnabled = true;
             SaveSettings();
         }
 
-        public void SetFromJObject(JObject j)
+        public static void SetFromJObject(JObject j)
         {
             Globals.DebugWriteLine(@"[Func:Data\AppSettings.SetFromJObject]");
             var curSettings = j.ToObject<AppSettings>();
             if (curSettings == null) return;
-            _instance.StreamerModeEnabled = curSettings.StreamerModeEnabled;
+            StreamerModeEnabled = curSettings._streamerModeEnabled;
             CheckShortcuts();
         }
 
-        public bool LoadFromFile()
+        public static bool LoadFromFile()
         {
             Globals.DebugWriteLine(@"[Func:Data\AppSettings.LoadFromFile]");
             // Main settings
             if (!File.Exists(SettingsFile)) SaveSettings();
-            else SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
+            else SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, JObject.FromObject(new AppSettings())));
             // Stylesheet
             return LoadStylesheetFromFile();
         }
@@ -289,13 +272,13 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
         /// </summary>
-        public string GetCssBlock() => ".streamerCensor { display: " + (_instance.StreamerModeEnabled && _instance.StreamerModeTriggered ? "none!important" : "block") + "}";
+        public static string GetCssBlock() => ".streamerCensor { display: " + (StreamerModeEnabled && StreamerModeTriggered ? "none!important" : "block") + "}";
 
         /// <summary>
         /// Swaps in a requested stylesheet, and loads styles from file.
         /// </summary>
         /// <param name="swapTo">Stylesheet name (without .json) to copy and load</param>
-        public async Task SwapStylesheet(string swapTo)
+        public static async Task SwapStylesheet(string swapTo)
         {
             ActiveTheme = swapTo.Replace(" ", "_");
             try
@@ -314,7 +297,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Load stylesheet settings from stylesheet file.
         /// </summary>
-        public bool LoadStylesheetFromFile()
+        public static bool LoadStylesheetFromFile()
         {
 #if DEBUG
             if (true) // Always generate file in debug mode.
@@ -343,7 +326,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             return true;
         }
 
-        private void GenCssFromScss(string scss)
+        private static void GenCssFromScss(string scss)
         {
             ScssResult convertedScss;
             try
@@ -363,7 +346,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             File.WriteAllText(StylesheetFile + ".map", convertedScss.SourceMap);
         }
 
-        private void LoadStylesheet()
+        private static void LoadStylesheet()
         {
             // Load new stylesheet
             var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
@@ -384,7 +367,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Returns a list of Stylesheets in the Stylesheet folder.
         /// </summary>
-        public string[] GetStyleList()
+        public static string[] GetStyleList()
         {
             var themeList = Directory.GetDirectories("themes");
             for (var i = 0; i < themeList.Length; i++)
@@ -446,39 +429,36 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JSInvokable]
         public static async Task SetBackground(string path)
         {
-            Instance.Background = $"{path}";
+            Background = $"{path}";
 
             if (File.Exists(path) && path != "")
             {
                 Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\"));
                 File.Copy(path, Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\background" + Path.GetExtension(path)), true);
-                Instance.Background = $"img/custom/background{Path.GetExtension(path)}";
-                _instance.SaveSettings();
+                Background = $"img/custom/background{Path.GetExtension(path)}";
+                SaveSettings();
             }
             await AppData.CacheReloadPage();
         }
 
         #endregion
 
-        public JObject GetJObject() => JObject.FromObject(this);
-
-        [JSInvokable]
-        public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
+        public static void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, JObject.FromObject(Instance), mergeNewIntoOld);
 
         #region SHORTCUTS
-        public void CheckShortcuts()
+        public static void CheckShortcuts()
         {
             Globals.DebugWriteLine(@"[Func:Data\AppSettings.CheckShortcuts]");
-            _instance._desktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
-            _instance._startMenu = File.Exists(Path.Join(Shortcut.StartMenu, "TcNo Account Switcher.lnk"));
-            _instance._startMenuPlatforms = Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
-            _instance._trayStartup = Shortcut.StartWithWindows_Enabled();
+            DesktopShortcut = File.Exists(Path.Join(Shortcut.Desktop, "TcNo Account Switcher.lnk"));
+            StartMenu = File.Exists(Path.Join(Shortcut.StartMenu, "TcNo Account Switcher.lnk"));
+            StartMenuPlatforms = Directory.Exists(Path.Join(Shortcut.StartMenu, "Platforms"));
+            TrayStartup = Shortcut.StartWithWindows_Enabled();
 
             if (OperatingSystem.IsWindows())
-                _instance._protocolEnabled = Protocol_IsEnabled();
+                ProtocolEnabled = Protocol_IsEnabled();
         }
 
-        public void DesktopShortcut_Toggle()
+        public static void DesktopShortcut_Toggle()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
             var s = new Shortcut();
@@ -486,7 +466,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             s.ToggleShortcut(!DesktopShortcut);
         }
 
-        public void TrayMinimizeNotExit_Toggle()
+        public static void TrayMinimizeNotExit_Toggle()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.DesktopShortcut_Toggle]");
             if (TrayMinimizeNotExit) return;
@@ -508,7 +488,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Toggle protocol functionality in Windows
         /// </summary>
         [SupportedOSPlatform("windows")]
-        public void Protocol_Toggle()
+        public static void Protocol_Toggle()
         {
             try
             {
@@ -527,7 +507,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     Registry.ClassesRoot.DeleteSubKeyTree("tcno");
                     _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ProtocolDisabled"], Lang["Toast_ProtocolDisabledTitle"], "toastarea");
                 }
-                _instance._protocolEnabled = Protocol_IsEnabled();
+                ProtocolEnabled = Protocol_IsEnabled();
             }
             catch (UnauthorizedAccessException)
             {
@@ -538,7 +518,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         #region WindowsAccent
         [SupportedOSPlatform("windows")]
-        public void WindowsAccent_Toggle()
+        public static void WindowsAccent_Toggle()
         {
             if (!WindowsAccent)
                 SetAccentColor(true);
@@ -554,9 +534,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         [SupportedOSPlatform("windows")]
         private static void SetAccentColor(bool userInvoked)
         {
-            Instance.WindowsAccentColor = GetAccentColorHexString();
+            WindowsAccentColor = GetAccentColorHexString();
             var (r, g, b) = GetAccentColor();
-            Instance.WindowsAccentColorHsl = FromRgb(r, g, b);
+            WindowsAccentColorHsl = FromRgb(r, g, b);
 
             if (userInvoked)
                 _ = AppData.ReloadPage();
@@ -606,7 +586,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Create shortcuts in Start Menu
         /// </summary>
         /// <param name="platforms">true creates Platforms folder & drops shortcuts, otherwise only places main program & tray shortcut</param>
-        public void StartMenu_Toggle(bool platforms)
+        public static void StartMenu_Toggle(bool platforms)
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.StartMenu_Toggle]");
             if (platforms)
@@ -632,13 +612,13 @@ namespace TcNo_Acc_Switcher_Server.Data
             _ = s.Shortcut_Tray(Shortcut.StartMenu);
             s.ToggleShortcut(!StartMenu, false);
         }
-        public void AutoStart_Toggle()
+        public static void AutoStart_Toggle()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.Task_Toggle]");
             Shortcut.StartWithWindows_Toggle(!TrayStartup);
         }
 
-        public void StartNow()
+        public static void StartNow()
         {
             _ = NativeFuncs.StartTrayIfNotRunning() switch
             {
@@ -649,7 +629,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             };
         }
 
-        private void CreatePlatformShortcut(string folder, string platformName, string args)
+        private static void CreatePlatformShortcut(string folder, string platformName, string args)
         {
             var s = new Shortcut();
             _ = s.Shortcut_Platform(folder, platformName, args);

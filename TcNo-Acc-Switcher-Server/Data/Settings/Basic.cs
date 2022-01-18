@@ -50,53 +50,43 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         // Variables
         private string _folderPath = "";
+        private bool _admin;
+        private int _trayAccNumber = 3;
+        private bool _forgetAccountEnabled;
+        private bool _altClose;
+        private Dictionary<int, string> _shortcuts = new();
+        private bool _desktopShortcut;
+
+
 
         [JsonProperty("FolderPath", Order = 1)]
-        public string FolderPath
+        public static string FolderPath
         {
             get
             {
                 if (!string.IsNullOrEmpty(Instance._folderPath)) return Instance._folderPath;
-                Instance._folderPath = CurrentPlatform.Instance.DefaultFolderPath;
+                Instance._folderPath = CurrentPlatform.DefaultFolderPath;
 
                 return Instance._folderPath;
             }
             set => Instance._folderPath = value;
         }
 
-        private bool _admin;
-        [JsonProperty("Basic_Admin", Order = 2)] public bool Admin { get => Instance._admin; set => Instance._admin = value; }
-        private int _trayAccNumber = 3;
-        [JsonProperty("Basic_TrayAccNumber", Order = 3)] public int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
-        private bool _forgetAccountEnabled;
-        [JsonProperty("ForgetAccountEnabled", Order = 4)] public bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
-        private bool _altClose;
-        [JsonProperty("AltClose", Order = 5)] public bool AltClose { get => Instance._altClose; set => Instance._altClose = value; }
-        private Dictionary<int, string> _shortcuts = new();
-        [JsonIgnore] public Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
+        [JsonProperty("Basic_Admin", Order = 2)] public static bool Admin { get => Instance._admin; set => Instance._admin = value; }
+        [JsonProperty("Basic_TrayAccNumber", Order = 3)] public static int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
+        [JsonProperty("ForgetAccountEnabled", Order = 4)] public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
+        [JsonProperty("AltClose", Order = 5)] public static bool AltClose { get => Instance._altClose; set => Instance._altClose = value; }
+        [JsonIgnore] public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
         [JsonProperty("ShortcutsJson", Order = 6)]
-        string ShortcutsJson // This HAS to be a string. Shortcuts is an object, and just adds keys instead of replacing it entirely. It doesn't save properly.
+        static string ShortcutsJson // This HAS to be a string. Shortcuts is an object, and just adds keys instead of replacing it entirely. It doesn't save properly.
         {
             get => JsonConvert.SerializeObject(Instance._shortcuts);
             set => Instance._shortcuts = value == "{}" ? Instance._shortcuts : JsonConvert.DeserializeObject<Dictionary<int, string>>(value);
         }
-        //[JsonProperty("Shortcuts", Order = 6)]
-        //List<object> ShortcutsJson
-        //{
-        //    get => Instance._shortcuts.Cast<object>().ToList();
-        //    set
-        //    {
-        //        if (value.Count == 0) return;
-        //        var newList = value.Cast<KeyValuePair<int, string>>().ToList();
-        //        Instance._shortcuts = newList.ToDictionary(x => x.Key, x => x.Value);
-        //    }
-        //}
 
+        [JsonIgnore] public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
-        private bool _desktopShortcut;
-        [JsonIgnore] public bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
-
-        [JsonIgnore] public readonly string ContextMenuJson = $@"[
+        [JsonIgnore] public static readonly string ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
 				{{""{Lang["Context_CreateShortcut"]}"": ""createShortcut()""}},
@@ -104,7 +94,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 				{{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";
 
-        [JsonIgnore] public readonly string ContextMenuShortcutJson = $@"[
+        [JsonIgnore] public static readonly string ContextMenuShortcutJson = $@"[
 				{{""{Lang["Context_RunAdmin"]}"": ""shortcut('admin')""}},
 				{{""{Lang["Context_Hide"]}"": ""shortcut('hide')""}}
             ]";
@@ -113,7 +103,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Updates the ForgetAccountEnabled bool in settings file
         /// </summary>
         /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
-        public void SetForgetAcc(bool enabled)
+        public static void SetForgetAcc(bool enabled)
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Basic.SetForgetAcc]");
             if (ForgetAccountEnabled == enabled) return; // Ignore if already set
@@ -125,27 +115,26 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Get Basic.exe path from BasicSettings.json
         /// </summary>
         /// <returns>Basic.exe's path string</returns>
-        public string Exe() => Path.Join(FolderPath, CurrentPlatform.Instance.ExeName);
+        public static string Exe() => Path.Join(FolderPath, CurrentPlatform.ExeName);
 
         [JSInvokable]
         public static void SaveShortcutOrder(Dictionary<int, string> o)
         {
-            Instance.Shortcuts = o;
-            Instance.SaveSettings();
+            Shortcuts = o;
+            SaveSettings();
         }
 
         public static void RunPlatform()
         {
-            Globals.StartProgram(Data.Settings.Basic.Instance.Exe(), Data.Settings.Basic.Instance.Admin,
-                CurrentPlatform.Instance.ExeExtraArgs);
-            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.Instance.SafeName }], duration: 15000, renderTo: "toastarea");
+            Globals.StartProgram(Exe(), Admin, CurrentPlatform.ExeExtraArgs);
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], duration: 15000, renderTo: "toastarea");
         }
         public static void RunShortcut(string s, bool admin = false)
         {
             var proc = new Process();
             proc.StartInfo = new ProcessStartInfo
             {
-                FileName = Path.GetFullPath(Path.Join(CurrentPlatform.Instance.ShortcutFolder, s)),
+                FileName = Path.GetFullPath(Path.Join(CurrentPlatform.ShortcutFolder, s)),
                 UseShellExecute = true,
                 Verb = admin ? "runas" : ""
             };
@@ -173,18 +162,18 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JSInvokable]
         public static void HandleShortcutAction(string shortcut, string action)
         {
-            if (!Instance.Shortcuts.ContainsValue(shortcut)) return;
+            if (!Shortcuts.ContainsValue(shortcut)) return;
             switch (action)
             {
                 case "hide":
                 {
                     // Remove shortcut from folder, and list.
-                    Instance.Shortcuts.Remove(Instance.Shortcuts.First(e => e.Value == shortcut).Key);
-                    var f = Path.Join(CurrentPlatform.Instance.ShortcutFolder, shortcut);
+                    Shortcuts.Remove(Shortcuts.First(e => e.Value == shortcut).Key);
+                    var f = Path.Join(CurrentPlatform.ShortcutFolder, shortcut);
                     if (File.Exists(f)) File.Move(f, f.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
 
                     // Save.
-                    Instance.SaveSettings();
+                    SaveSettings();
                     break;
                 }
                 case "admin":
@@ -196,39 +185,37 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         #region SETTINGS
         /// <summary>
         /// </summary>
-        public void ResetSettings()
+        public static void ResetSettings()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Basic.ResetSettings]");
-            Instance.FolderPath = CurrentPlatform.Instance.DefaultFolderPath;
-            Instance.Admin = false;
-            Instance.TrayAccNumber = 3;
-            Instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.Instance.FullName);
-            Instance._altClose = false;
+            FolderPath = CurrentPlatform.DefaultFolderPath;
+            Admin = false;
+            TrayAccNumber = 3;
+            DesktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.FullName);
+            AltClose = false;
             ShortcutsJson = "{}";
 
             SaveSettings();
         }
-        public void SetFromJObject(JObject j)
+        public static void SetFromJObject(JObject j)
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Basic.SetFromJObject]");
             var curSettings = j.ToObject<Basic>();
             if (curSettings == null) return;
-            Instance.FolderPath = curSettings.FolderPath;
-            Instance.Admin = curSettings.Admin;
-            Instance.TrayAccNumber = curSettings.TrayAccNumber;
-            Instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.Instance.FullName);
-            Instance._altClose = curSettings.AltClose;
-            ShortcutsJson = curSettings.ShortcutsJson;
+            FolderPath = curSettings._folderPath;
+            Admin = curSettings._admin;
+            TrayAccNumber = curSettings._trayAccNumber;
+            DesktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.FullName);
+            AltClose = curSettings._altClose;
+            ShortcutsJson = JsonConvert.SerializeObject(curSettings._shortcuts);
         }
 
-        public void LoadFromFile(string platformFile = "-")
+        public static void LoadFromFile(string platformFile = "-")
         {
-            if (platformFile == "-") platformFile = CurrentPlatform.Instance.SettingsFile;
-            SetFromJObject(GeneralFuncs.LoadSettings(platformFile, GetJObject()));
+            if (platformFile == "-") platformFile = CurrentPlatform.SettingsFile;
+            SetFromJObject(GeneralFuncs.LoadSettings(platformFile, JObject.FromObject(new Basic())));
         }
-        public JObject GetJObject() => JObject.FromObject(this);
-        [JSInvokable]
-        public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(CurrentPlatform.Instance.SettingsFile, GetJObject(), mergeNewIntoOld);
+        public static void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(CurrentPlatform.SettingsFile, JObject.FromObject(Instance), mergeNewIntoOld);
         #endregion
     }
 }

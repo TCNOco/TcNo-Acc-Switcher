@@ -15,12 +15,11 @@
 @page "/Ubisoft/Settings"
 @using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @using TcNo_Acc_Switcher_Server.Data
+@using Ubisoft = TcNo_Acc_Switcher_Server.Data.Settings.Ubisoft;
 @namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
 @inject NavigationManager _navManager
 @inject AppData _appData
 @{ _appData.SetActiveNavMan(_navManager); }
-@inject Data.Settings.Ubisoft _ubisoft
-@inject AppSettings _appSett
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 @inject Lang  _locale
@@ -42,31 +41,31 @@
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="AltClose" @bind="_ubisoft.AltClose"><label class="form-check-label" for="AltClose"></label></div><label for="AltClose">@_locale["Settings_AltClose"]</label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="AltClose" @bind="Ubisoft.AltClose"><label class="form-check-label" for="AltClose"></label></div><label for="AltClose">@_locale["Settings_AltClose"]</label>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_ubisoft.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Ubisoft", _ubisoft.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="Ubisoft.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Ubisoft", Ubisoft.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
 		            @_locale["Settings_Shortcut", new { platform = Platform }]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_ubisoft.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="Ubisoft.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
 		            @_locale["Settings_Admin", new { platform = Platform }]<br></label>
             </div>
-            <div class="form-text"><span>@_locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="_ubisoft.ImageExpiryTime"></div>
+            <div class="form-text"><span>@_locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="Ubisoft.ImageExpiryTime"></div>
 
 
             <div class="SettingsHeader">
                 <hr><span>@_locale["Settings_Header_TraySettings"]</span>
                 <hr>
             </div>
-            <div class="form-text"><span>@_locale["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="_ubisoft.TrayAccNumber"></div>
+            <div class="form-text"><span>@_locale["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="Ubisoft.TrayAccNumber"></div>
 
 
             <div class="SettingsHeader">
                 <hr><span>@_locale["Settings_Header_GeneralTools"]</span>
                 <hr>
             </div>
-            <p>@_locale["Settings_CurrentLocation", new { path = _ubisoft.FolderPath }]</p>
+            <p>@_locale["Settings_CurrentLocation", new { path = Ubisoft.FolderPath }]</p>
             <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = Platform }]</span></button><button id="OpenFolder" type="button" @onclick="OpenFolder"><span>@_locale["Settings_OpenFolder", new { platform = Platform }]</span></button></div>
             <div class="buttoncol"><button id="Steam_ResetImages" type="button" @onclick="RefreshImages"><span>@_locale["Button_RefreshImages"]</span></button><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button></div>
 
@@ -89,8 +88,8 @@
 {
     public void SaveAndClose()
     {
-        _appSett.SaveSettings();
-        _ubisoft.SaveSettings();
+        AppSettings.SaveSettings();
+        Ubisoft.SaveSettings();
 
         _navManager.NavigateTo("/Ubisoft");
     }

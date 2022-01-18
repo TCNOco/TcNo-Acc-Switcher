@@ -43,7 +43,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public static void ClearSettings()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Ubisoft\Settings.razor.cs.ClearSettings]");
-            new Data.Settings.Ubisoft().ResetSettings();
+            Data.Settings.Ubisoft.ResetSettings();
             AppData.ActiveNavMan.NavigateTo("/Ubisoft?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ClearedPlatformSettings", new { platform = "Ubisoft" }]));
         }
         #endregion
@@ -53,7 +53,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Ubisoft
         public static void OpenFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Ubisoft\Settings.razor.cs.OpenUbisoftFolder]");
-            _ = Process.Start("explorer.exe", new Data.Settings.Ubisoft().FolderPath);
+            _ = Process.Start("explorer.exe", Data.Settings.Ubisoft.FolderPath);
         }
 
         // BUTTON: RefreshImages

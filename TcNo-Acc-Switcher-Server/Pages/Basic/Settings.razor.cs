@@ -29,7 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         public AppData AppData { get; set; }
         protected override void OnInitialized()
         {
-            AppData.Instance.WindowTitle = Lang["Title_Template_Settings", new { platformName = CurrentPlatform.Instance.FullName }];
+            AppData.Instance.WindowTitle = Lang["Title_Template_Settings", new { platformName = CurrentPlatform.FullName }];
             Globals.DebugWriteLine(@"[Auto:Basic\Settings.razor.cs.OnInitializedAsync]");
         }
 
@@ -45,7 +45,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         public static void ClearSettings()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.ClearSettings]");
-            new Data.Settings.Basic().ResetSettings();
+            Data.Settings.Basic.ResetSettings();
             AppData.ActiveNavMan.NavigateTo("/Basic?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ClearedPlatformSettings", new { platform = "Basic" }]));
         }
         #endregion
@@ -55,7 +55,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         public static void OpenFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.OpenBasicFolder]");
-            _ = Process.Start("explorer.exe", new Data.Settings.Basic().FolderPath);
+            _ = Process.Start("explorer.exe", Data.Settings.Basic.FolderPath);
         }
 
         #endregion

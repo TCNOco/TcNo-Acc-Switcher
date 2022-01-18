@@ -43,6 +43,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Globals.DebugWriteLine(@"[JSInvoke:BattleNet\BattleNetSwitcherBase.SwapToBattleNet] accName:hidden");
             await BattleNetSwitcherFuncs.SwapBattleNetAccounts(accName);
         }
+
         /// <summary>
         /// JS function handler for swapping to a new BattleNet account (No inputs)
         /// </summary>
@@ -60,8 +61,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             [JsonProperty("BattleTag", Order = 1)] public string BTag { get; set; }
             [JsonProperty("OwTankSr", Order = 2)] public int OwTankSr { get; set; }
             [JsonProperty("OwDpsSr", Order = 3)] public int OwDpsSr { get; set; }
-            [JsonProperty("OwSupportSr", Order = 4)] public int OwSupportSr { get; set; }
-            [JsonProperty("LastTimeChecked", Order = 5)] public DateTime LastTimeChecked { get; set; }
+
+            [JsonProperty("OwSupportSr", Order = 4)]
+            public int OwSupportSr { get; set; }
+
+            [JsonProperty("LastTimeChecked", Order = 5)]
+            public DateTime LastTimeChecked { get; set; }
+
             [JsonIgnore] public string ImgUrl { get; set; }
 
 
@@ -76,9 +82,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 var responseStream = req.GetResponse().GetResponseStream();
                 if (responseStream == null)
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_StatsFail", new { BTag = BTag }], renderTo: "toastarea");
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_StatsFail", new {BTag = BTag}],
+                        renderTo: "toastarea");
                     return false;
                 }
+
                 using (var reader = new StreamReader(responseStream))
                 {
                     doc.LoadHtml(reader.ReadToEnd());
@@ -87,18 +95,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 // If the PlayOverwatch site is overloaded
                 if (doc.DocumentNode.SelectSingleNode("/html/body/section[1]/section/div/h1") != null)
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_StatsFail", new { BTag = BTag }], renderTo: "toastarea");
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_StatsFail", new {BTag = BTag}],
+                        renderTo: "toastarea");
                     return false;
                 }
 
                 // If the Profile is private
                 if (doc.DocumentNode.SelectSingleNode(
-                    "/html/body/section[1]/div[1]/section/div/div/div/div/div[1]/p")?.InnerHtml == "Private Profile")
+                        "/html/body/section[1]/div[1]/section/div/div/div/div/div[1]/p")?.InnerHtml ==
+                    "Private Profile")
                 {
                     ImgUrl = doc.DocumentNode
                         .SelectSingleNode("/html/body/section[1]/div[1]/section/div/div/div/div/div[2]/img")
                         .Attributes["src"].Value;
-                    _ = GeneralInvocableFuncs.ShowToast("warning", Lang["Toast_BNet_Private", new { BTag = BTag }], renderTo: "toastarea");
+                    _ = GeneralInvocableFuncs.ShowToast("warning", Lang["Toast_BNet_Private", new {BTag = BTag}],
+                        renderTo: "toastarea");
                     _ = BattleNetSwitcherFuncs.DownloadImage(Email, ImgUrl);
                     LastTimeChecked = DateTime.Now - TimeSpan.FromMinutes(1435); // 23 Hours 55 Minutes
                     return false;
@@ -106,9 +117,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
                 // If BattleTag is invalid
                 if (doc.DocumentNode.SelectSingleNode(
-                    "/html/body/section[1]/section/div/h1")?.InnerHtml == "PROFILE NOT FOUND")
+                        "/html/body/section[1]/section/div/h1")?.InnerHtml == "PROFILE NOT FOUND")
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_ItemNotFound", new { item = BTag }], renderTo: "toastarea");
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_ItemNotFound", new {item = BTag}],
+                        renderTo: "toastarea");
                     return false;
                 }
 
@@ -118,13 +130,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     .Attributes["src"].Value;
                 _ = BattleNetSwitcherFuncs.DownloadImage(Email, ImgUrl);
 
-                var ranks = doc.DocumentNode.SelectNodes("/html/body/section[1]/div[1]/section/div/div[2]/div/div/div[2]/div/div[3]");
+                var ranks = doc.DocumentNode.SelectNodes(
+                    "/html/body/section[1]/div[1]/section/div/div[2]/div/div/div[2]/div/div[3]");
                 foreach (var node in ranks.Elements())
                 {
                     if (!int.TryParse(node.LastChild.LastChild.InnerHtml, out var sr))
                     {
                         continue;
                     }
+
                     switch (node.LastChild.FirstChild.Attributes["data-ow-tooltip-text"].Value.Split(" ").First())
                     {
                         case "Tank":
@@ -140,6 +154,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                             continue;
                     }
                 }
+
                 return true;
             }
         }

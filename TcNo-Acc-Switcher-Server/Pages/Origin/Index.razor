@@ -15,20 +15,19 @@
 @page "/Origin/"
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
+@using Origin = TcNo_Acc_Switcher_Server.Data.Settings.Origin;
 @inject AppData _appData
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 @inject NavigationManager _navManager
 @{ _appData.SetActiveNavMan(_navManager); }
 
-@inject AppSettings _appSettings
-<style>@(new AppSettings().GetCssBlock())</style>
+<style>@(AppSettings.GetCssBlock())</style>
 @inject Lang _locale
-@inject Data.Settings.Origin _origin
 
 
-<ContextMenu ContextMenuString="@_origin.ContextMenuJson" ContextMenuId="AccOrPlatList" />
-@*<ContextMenu ContextMenuString="@_origin.ContextMenuJson" ContextMenuId="Shortcuts" />*@
+<ContextMenu ContextMenuString="@Origin.ContextMenuJson" ContextMenuId="AccOrPlatList" />
+@*<ContextMenu ContextMenuString="@Origin.ContextMenuJson" ContextMenuId="Shortcuts" />*@
 <div id="acc_list" class="acc_list">
     <toastarea class="toastarea" />
 </div>
@@ -66,7 +65,7 @@
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
     {
-        _appSettings.StreamerModeCheck();
+        AppSettings.StreamerModeCheck();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Origin");

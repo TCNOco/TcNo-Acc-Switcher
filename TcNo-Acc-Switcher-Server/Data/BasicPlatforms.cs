@@ -10,7 +10,7 @@ using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
-    public class BasicPlatforms
+    public sealed class BasicPlatforms
     {
         // Make this a singleton
         private static BasicPlatforms _instance;
@@ -24,7 +24,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     if (_instance != null) return _instance;
 
                     _instance = new BasicPlatforms();
-                    _instance.BasicPlatformsInit();
+                    BasicPlatformsInit();
                     return _instance;
                 }
             }
@@ -33,18 +33,48 @@ namespace TcNo_Acc_Switcher_Server.Data
         // ---------------
 
         private JObject _jData;
-        public JToken GetPlatforms => (JObject)Instance._jData["Platforms"];
-        private SortedDictionary<string, string> _platformDict = new();
-
+        private readonly SortedDictionary<string, string> _platformDict = new();
         private readonly Dictionary<string, string> _platformDictAllPossible = new()
         {
             { "BattleNet", "Battle.Net" }
         };
 
-        public BasicPlatforms() {}
-        public void BasicPlatformsInit()
+        private static JObject JData { get => Instance._jData; set => Instance._jData = value; }
+        public static JToken GetPlatforms => (JObject)Instance._jData["Platforms"];
+        public static SortedDictionary<string, string> PlatformDict => Instance._platformDict;
+        public static Dictionary<string, string> PlatformDictAllPossible => Instance._platformDictAllPossible;
+        public static JObject GetPlatformJson(string platform) => (JObject)GetPlatforms![platform];
+        public static bool PlatformExists(string platform) => ((JObject)GetPlatforms).ContainsKey(platform);
+        public static bool PlatformExistsFromShort(string id) => ((JObject)GetPlatforms).ContainsKey(PlatformFullName(id));
+
+        // ---------------
+        public static void SetCurrentPlatform(string platform)
         {
-            Instance._jData = GeneralFuncs.LoadSettings(Path.Join(Globals.AppDataFolder, "BasicPlatforms.json"));
+            CurrentPlatform.Instance = new CurrentPlatform();
+            CurrentPlatform.Instance.CurrentPlatformInit(platform);
+        }
+        public static void SetCurrentPlatformFromShort(string id)
+        {
+            CurrentPlatform.Instance = new CurrentPlatform();
+            CurrentPlatform.Instance.CurrentPlatformInit(PlatformFullName(id));
+        }
+
+        private static Dictionary<string, string> InactivePlatforms()
+        {
+            // Create local copy of platforms dict:
+            var platforms = PlatformDict.ToDictionary(
+                entry => entry.Key,
+                entry => entry.Value);
+
+            foreach (var enabledPlat in AppSettings.EnabledBasicPlatforms)
+                platforms.Remove(enabledPlat);
+
+            return platforms;
+        }
+
+        public static void BasicPlatformsInit()
+        {
+            JData = GeneralFuncs.LoadSettings(Path.Join(Globals.AppDataFolder, "BasicPlatforms.json"));
             // Populate platform Primary Token to Full Name dictionary
             foreach (var jToken in GetPlatforms)
             {
@@ -52,57 +82,26 @@ namespace TcNo_Acc_Switcher_Server.Data
                 var identifiers = GetPlatforms[x.Name]["Identifiers"].ToObject<List<string>>();
                 foreach (var platformShort in identifiers)
                 {
-                    Instance._platformDictAllPossible.Add(platformShort, x.Name);
+                    PlatformDictAllPossible.Add(platformShort, x.Name);
                 }
-                Instance._platformDict.Add(identifiers[0], x.Name);
+                PlatformDict.Add(identifiers[0], x.Name);
             }
         }
-
-        public JObject GetPlatformJson(string platform) => (JObject)GetPlatforms![platform];
-        public bool PlatformExists(string platform) => ((JObject)GetPlatforms).ContainsKey(platform);
-        public bool PlatformExistsFromShort(string id) => ((JObject)GetPlatforms).ContainsKey(PlatformFullName(id));
-
-        // ---------------
-        public void SetCurrentPlatform(string platform)
-        {
-            CurrentPlatform.Instance = new CurrentPlatform();
-            CurrentPlatform.Instance.CurrentPlatformInit(platform);
-        }
-        public void SetCurrentPlatformFromShort(string id)
-        {
-            CurrentPlatform.Instance = new CurrentPlatform();
-            CurrentPlatform.Instance.CurrentPlatformInit(Instance.PlatformFullName(id));
-        }
-        public SortedDictionary<string, string> PlatformsDict => Instance._platformDict;
-
-        private Dictionary<string, string> InactivePlatforms()
-        {
-            // Create local copy of platforms dict:
-            var platforms = Instance._platformDict.ToDictionary(
-                entry => entry.Key,
-                entry => entry.Value);
-
-            foreach (var enabledPlat in AppSettings.Instance.EnabledBasicPlatforms)
-                platforms.Remove(enabledPlat);
-
-            return platforms;
-        }
-
-        public List<KeyValuePair<string, string>> InactivePlatformsSorted()
+        public static List<KeyValuePair<string, string>> InactivePlatformsSorted()
         {
             var inactive = InactivePlatforms().ToList();
             inactive.Sort((p1, p2) => string.Compare(p1.Key, p2.Key, StringComparison.Ordinal));
             return inactive;
         }
-        public string PlatformFullName(string id) => PlatformsDict.ContainsKey(id) ? PlatformsDict[id] : id;
-        public string PlatformSafeName(string id) =>
-            PlatformsDict.ContainsKey(id) ? Globals.GetCleanFilePath(PlatformsDict[id]) : id;
-        public string PrimaryIdFromPlatform(string platform) => Instance._platformDictAllPossible.FirstOrDefault(x => x.Value == platform).Key;
-        public string GetExeNameFromPlatform(string platform) => Path.GetFileName((string)((JObject)GetPlatforms[platform])["ExeLocationDefault"]);
-        public List<string> GetAllPrimaryIds() => Instance._platformDict.Keys.ToList();
+        public static string PlatformFullName(string id) => PlatformDict.ContainsKey(id) ? PlatformDict[id] : id;
+        public static string PlatformSafeName(string id) =>
+            PlatformDict.ContainsKey(id) ? Globals.GetCleanFilePath(PlatformDict[id]) : id;
+        public static string PrimaryIdFromPlatform(string platform) => PlatformDictAllPossible.FirstOrDefault(x => x.Value == platform).Key;
+        public static string GetExeNameFromPlatform(string platform) => Path.GetFileName((string)((JObject)GetPlatforms[platform])["ExeLocationDefault"]);
+        public static List<string> GetAllPrimaryIds() => PlatformDict.Keys.ToList();
     }
 
-    public class CurrentPlatform
+    public sealed class CurrentPlatform
     {
         public CurrentPlatform() { }
         // Make this a singleton
@@ -120,135 +119,186 @@ namespace TcNo_Acc_Switcher_Server.Data
             set => _instance = value;
         }
         // ---------------
+        #region Backing Fields
         private List<string> _platformIds;
-        public List<string> ExesToEnd { get; private set; }
-        public bool IsInit { get; private set; }
-        public string FullName { get; private set; }
-        public string DefaultExePath { get; private set; }
-        public string ExeExtraArgs { get; private set; }
-        public string DefaultFolderPath { get; private set; }
-        public string SafeName { get; private set; }
-        public string SettingsFile { get; private set; }
-        public string ExeName { get; private set; }
-        public Dictionary<string, string> LoginFiles { get; private set; } = new();
-        public List<string> ShortcutFolders { get; private set; } = new();
-        public List<string> ShortcutIgnore { get; private set; } = new();
-        public List<string> PathListToClear { get; private set; }
-        public bool ShortcutIncludeMainExe { get; private set; } = true;
-        public bool SearchStartMenuForIcon { get; private set; } = false;
-        public bool HasRegistryFiles { get; private set; }
+        private List<string> _exesToEnd;
+        private bool _isInit;
+        private string _fullName;
+        private string _defaultExePath;
+        private string _exeExtraArgs;
+        private string _defaultFolderPath;
+        private string _safeName;
+        private string _settingsFile;
+        private string _exeName;
+        private Dictionary<string, string> _loginFiles = new();
+        private List<string> _shortcutFolders = new();
+        private List<string> _shortcutIgnore = new();
+        private List<string> _pathListToClear;
+        private bool _shortcutIncludeMainExe = true;
+        private bool _searchStartMenuForIcon = false;
+        private bool _hasRegistryFiles;
+        // Extras
+        private bool _hasExtras = false;
+        private string _usernameModalExtraButtons = "";
+        private string _userModalCopyText = "";
+        private string _userModalHintText = "";
+        private List<string> _cachePaths = null;
+        // Optional
+        private string _uniqueIdFile = "";
+        private string _uniqueIdFolder = "";
+        private string _uniqueIdRegex = "";
+        private string _uniqueIdMethod = "";
+        private bool _exitBeforeInteract;
+        private bool _clearLoginCache = true;
+        #endregion
+        #region Properties
+        public static List<string> PlatformIds { get => Instance._platformIds; set => Instance._platformIds = value; }
+        public static List<string> ExesToEnd { get => Instance._exesToEnd; private set => Instance._exesToEnd = value; }
+        public static bool IsInit { get => Instance._isInit; private set => Instance._isInit = value; }
+        public static string FullName { get => Instance._fullName; private set => Instance._fullName = value; }
+        public static string DefaultExePath { get => Instance._defaultExePath; private set => Instance._defaultExePath = value; }
+        public static string ExeExtraArgs { get => Instance._exeExtraArgs; private set => Instance._exeExtraArgs = value; }
+        public static string DefaultFolderPath { get => Instance._defaultFolderPath; private set => Instance._defaultFolderPath = value; }
+        public static string SafeName { get => Instance._safeName; private set => Instance._safeName = value; }
+        public static string SettingsFile { get => Instance._settingsFile; private set => Instance._settingsFile = value; }
+        public static string ExeName { get => Instance._exeName; private set => Instance._exeName = value; }
+        public static Dictionary<string, string> LoginFiles { get => Instance._loginFiles; private set => Instance._loginFiles = value; }
+        public static List<string> ShortcutFolders { get => Instance._shortcutFolders; private set => Instance._shortcutFolders = value; }
+        public static List<string> ShortcutIgnore { get => Instance._shortcutIgnore; private set => Instance._shortcutIgnore = value; }
+        public static List<string> PathListToClear { get => Instance._pathListToClear; private set => Instance._pathListToClear = value; }
+        public static bool ShortcutIncludeMainExe { get => Instance._shortcutIncludeMainExe; private set => Instance._shortcutIncludeMainExe = value; }
+        public static bool SearchStartMenuForIcon { get => Instance._searchStartMenuForIcon; private set => Instance._searchStartMenuForIcon = value; }
+        public static bool HasRegistryFiles { get => Instance._hasRegistryFiles; private set => Instance._hasRegistryFiles = value; }
+
+        // Optional
+        public static string UniqueIdFile { get => Instance._uniqueIdFile; private set => Instance._uniqueIdFile = value; }
+        public static string UniqueIdFolder { get => Instance._uniqueIdFolder; private set => Instance._uniqueIdFolder = value; }
+        public static string UniqueIdRegex { get => Instance._uniqueIdRegex; private set => Instance._uniqueIdRegex = value; }
+        public static string UniqueIdMethod { get => Instance._uniqueIdMethod; private set => Instance._uniqueIdMethod = value; }
+        public static bool ExitBeforeInteract { get => Instance._exitBeforeInteract; private set => Instance._exitBeforeInteract = value; }
+        public static bool ClearLoginCache { get => Instance._clearLoginCache; private set => Instance._clearLoginCache = value; }
+
+        // Extras
+        public static bool HasExtras { get => Instance._hasExtras; private set => Instance._hasExtras = value; }
+        public static string UsernameModalExtraButtons { get => Instance._usernameModalExtraButtons; private set => Instance._usernameModalExtraButtons = value; }
+        public static string UserModalCopyText { get => Instance._userModalCopyText; private set => Instance._userModalCopyText = value; }
+        public static string UserModalHintText { get => Instance._userModalHintText; private set => Instance._userModalHintText = value; }
+        public static List<string> CachePaths { get => Instance._cachePaths; private set => Instance._cachePaths = value; }
+        // ----------
+        #endregion
+
         public void CurrentPlatformInit(string platform)
         {
-            if (!(BasicPlatforms.Instance.PlatformExists(platform) || BasicPlatforms.Instance.PlatformExistsFromShort(platform))) return;
+            if (!(BasicPlatforms.PlatformExists(platform) || BasicPlatforms.PlatformExistsFromShort(platform))) return;
 
-            Instance.FullName = platform;
-            Instance.SafeName = Globals.GetCleanFilePath(platform);
-            Instance.SettingsFile = Path.Join("Settings\\", Instance.SafeName + ".json");
+            FullName = platform;
+            SafeName = Globals.GetCleanFilePath(platform);
+            SettingsFile = Path.Join("Settings\\", SafeName + ".json");
 
-            Instance.DefaultExePath = BasicSwitcherFuncs.ExpandEnvironmentVariables((string)BasicPlatforms.Instance.GetPlatformJson(platform)["ExeLocationDefault"]);
-            Instance.ExeExtraArgs = (string)BasicPlatforms.Instance.GetPlatformJson(platform)["ExeExtraArgs"];
-            Instance.DefaultFolderPath = BasicSwitcherFuncs.ExpandEnvironmentVariables(Path.GetDirectoryName(Instance.DefaultExePath));
-            Instance.ExeName = Path.GetFileName(Instance.DefaultExePath);
+            DefaultExePath = BasicSwitcherFuncs.ExpandEnvironmentVariables((string)BasicPlatforms.GetPlatformJson(platform)["ExeLocationDefault"]);
+            ExeExtraArgs = (string)BasicPlatforms.GetPlatformJson(platform)["ExeExtraArgs"];
+            DefaultFolderPath = BasicSwitcherFuncs.ExpandEnvironmentVariables(Path.GetDirectoryName(DefaultExePath));
+            ExeName = Path.GetFileName(DefaultExePath);
 
-            var jPlatform = BasicPlatforms.Instance.GetPlatformJson(platform);
-            Instance._platformIds = jPlatform["Identifiers"]!.Values<string>().ToList();
-            Instance.ExesToEnd = jPlatform["ExesToEnd"]!.Values<string>().ToList();
+            var jPlatform = BasicPlatforms.GetPlatformJson(platform);
+            PlatformIds = jPlatform["Identifiers"]!.Values<string>().ToList();
+            ExesToEnd = jPlatform["ExesToEnd"]!.Values<string>().ToList();
 
-            Instance.LoginFiles.Clear();
+            LoginFiles.Clear();
             foreach (var (k,v) in jPlatform["LoginFiles"].ToObject<Dictionary<string, string>>())
             {
-                Instance.LoginFiles.Add(BasicSwitcherFuncs.ExpandEnvironmentVariables(k), v);
-                if (k.Contains("REG:")) Instance.HasRegistryFiles = true;
+                LoginFiles.Add(BasicSwitcherFuncs.ExpandEnvironmentVariables(k), v);
+                if (k.Contains("REG:")) HasRegistryFiles = true;
             }
 
             if (jPlatform.ContainsKey("PathListToClear"))
             {
-                Instance.PathListToClear = jPlatform["PathListToClear"]!.Values<string>().ToList();
-                if (Instance.PathListToClear.Contains("SAME_AS_LOGIN_FILES"))
-                    Instance.PathListToClear = Instance.LoginFiles.Keys.ToList();
+                PathListToClear = jPlatform["PathListToClear"]!.Values<string>().ToList();
+                if (PathListToClear.Contains("SAME_AS_LOGIN_FILES"))
+                    PathListToClear = LoginFiles.Keys.ToList();
             }
 
             // Variables that may not be set:
-            if (jPlatform.ContainsKey("UniqueIdFile")) Instance.UniqueIdFile = (string)jPlatform["UniqueIdFile"];
-            if (jPlatform.ContainsKey("UniqueIdFolder")) Instance.UniqueIdFolder = (string)jPlatform["UniqueIdFolder"];
-            if (jPlatform.ContainsKey("UniqueIdRegex")) Instance.UniqueIdRegex = Globals.ExpandRegex((string)jPlatform["UniqueIdRegex"]);
-            if (jPlatform.ContainsKey("UniqueIdMethod")) Instance.UniqueIdMethod = Globals.ExpandRegex((string)jPlatform["UniqueIdMethod"]);
-            if (jPlatform.ContainsKey("ExitBeforeInteract")) Instance.ExitBeforeInteract = (bool)jPlatform["ExitBeforeInteract"];
-            if (jPlatform.ContainsKey("ClearLoginCache")) Instance.ClearLoginCache = (bool)jPlatform["ClearLoginCache"];
+            if (jPlatform.ContainsKey("UniqueIdFile")) UniqueIdFile = (string)jPlatform["UniqueIdFile"];
+            if (jPlatform.ContainsKey("UniqueIdFolder")) UniqueIdFolder = (string)jPlatform["UniqueIdFolder"];
+            if (jPlatform.ContainsKey("UniqueIdRegex")) UniqueIdRegex = Globals.ExpandRegex((string)jPlatform["UniqueIdRegex"]);
+            if (jPlatform.ContainsKey("UniqueIdMethod")) UniqueIdMethod = Globals.ExpandRegex((string)jPlatform["UniqueIdMethod"]);
+            if (jPlatform.ContainsKey("ExitBeforeInteract")) ExitBeforeInteract = (bool)jPlatform["ExitBeforeInteract"];
+            if (jPlatform.ContainsKey("ClearLoginCache")) ClearLoginCache = (bool)jPlatform["ClearLoginCache"];
 
             // Process "Extras"
             JObject extras = null;
             if (jPlatform.ContainsKey("Extras")) extras = (JObject)jPlatform["Extras"];
             if (extras != null)
             {
-                Instance.HasExtras = true;
+                HasExtras = true;
                 if (extras.ContainsKey("UsernameModalExtraButtons"))
-                    Instance.UsernameModalExtraButtons = (string)extras["UsernameModalExtraButtons"];
+                    UsernameModalExtraButtons = (string)extras["UsernameModalExtraButtons"];
                 if (extras.ContainsKey("UsernameModalCopyText"))
-                    Instance.UserModalCopyText = (string)extras["UsernameModalCopyText"];
+                    UserModalCopyText = (string)extras["UsernameModalCopyText"];
                 if (extras.ContainsKey("UsernameModalCopyText"))
-                    Instance.UserModalHintText = (string) extras["UsernameModalHintText"];
+                    UserModalHintText = (string) extras["UsernameModalHintText"];
                 if (extras.ContainsKey("CachePaths"))
-                    Instance.CachePaths = extras["CachePaths"]!.Values<string>().ToList();
+                    CachePaths = extras["CachePaths"]!.Values<string>().ToList();
                 if (extras.ContainsKey("ShortcutFolders"))
-                    Instance.ShortcutFolders = extras["ShortcutFolders"]!.Values<string>().ToList();
+                    ShortcutFolders = extras["ShortcutFolders"]!.Values<string>().ToList();
                 if (extras.ContainsKey("ShortcutIgnore"))
-                    Instance.ShortcutIgnore = extras["ShortcutIgnore"]!.Values<string>().ToList();
+                    ShortcutIgnore = extras["ShortcutIgnore"]!.Values<string>().ToList();
                 if (extras.ContainsKey("ShortcutIncludeMainExe"))
-                    Instance.ShortcutIncludeMainExe = (bool)extras["ShortcutIncludeMainExe"];
+                    ShortcutIncludeMainExe = (bool)extras["ShortcutIncludeMainExe"];
                 if (extras.ContainsKey("SearchStartMenuForIcon"))
-                    Instance.SearchStartMenuForIcon = (bool)extras["SearchStartMenuForIcon"];
+                    SearchStartMenuForIcon = (bool)extras["SearchStartMenuForIcon"];
             }
 
             // Foreach app shortcut in ShortcutFolders:
-            // - Add as {<Name>: true} if not included in Basic.Instance.Shortcuts, and copy to cache shortcuts folder (each launch)
+            // - Add as {<Name>: true} if not included in Basic.Shortcuts, and copy to cache shortcuts folder (each launch)
             // - If exists as true copy to cache shortcuts folder (each launch)
             // - If set to false: Ignore.
             //
             // These will be displayed next to the add new button in the switcher.
             // Maybe a pop-up menu if there are enough (Up arrow button on far right?)
-            Basic.Instance.LoadFromFile(Instance.SettingsFile);
+            Basic.LoadFromFile(SettingsFile);
 
-            var sExisting = Basic.Instance.Shortcuts; // Existing shortcuts
-            if (Basic.Instance.Shortcuts == new Dictionary<int, string>()) // If nothing set, make sure it's loaded!
-                Basic.Instance.LoadFromFile();
+            var sExisting = Basic.Shortcuts; // Existing shortcuts
+            if (Basic.Shortcuts == new Dictionary<int, string>()) // If nothing set, make sure it's loaded!
+                Basic.LoadFromFile();
 
             if (OperatingSystem.IsWindows())
             {
                 // Add image for main platform button:
-                if (Instance.ShortcutIncludeMainExe)
+                if (ShortcutIncludeMainExe)
                 {
-                    var imagePath = Path.Join(GetShortcutImagePath(), Instance.SafeName + ".png");
+                    var imagePath = Path.Join(GetShortcutImagePath(), SafeName + ".png");
 
                     if (!File.Exists(imagePath))
                     {
-                        if (Instance.SearchStartMenuForIcon)
+                        if (SearchStartMenuForIcon)
                         {
-                            var startMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuAppData%"), Instance.SafeName + ".lnk", SearchOption.AllDirectories);
-                            var commonStartMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuProgramData%"), Instance.SafeName + ".lnk", SearchOption.AllDirectories);
+                            var startMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuAppData%"), SafeName + ".lnk", SearchOption.AllDirectories);
+                            var commonStartMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuProgramData%"), SafeName + ".lnk", SearchOption.AllDirectories);
                             if (startMenuFiles.Length > 0)
                                 Globals.SaveIconFromFile(startMenuFiles[0], imagePath);
                             else if (commonStartMenuFiles.Length > 0)
                                 Globals.SaveIconFromFile(commonStartMenuFiles[0], imagePath);
                             else
-                                Globals.SaveIconFromFile(Basic.Instance.Exe(), imagePath);
+                                Globals.SaveIconFromFile(Basic.Exe(), imagePath);
                         }
                         else
                         {
-                            Globals.SaveIconFromFile(Basic.Instance.Exe(), imagePath);
+                            Globals.SaveIconFromFile(Basic.Exe(), imagePath);
                         }
                     }
                 }
 
 
-                var cacheShortcuts = Instance.ShortcutFolder; // Shortcut cache
-                foreach (var sFolder in Instance.ShortcutFolders)
+                var cacheShortcuts = ShortcutFolder; // Shortcut cache
+                foreach (var sFolder in ShortcutFolders)
                 {
                     // Foreach file in folder
                     foreach (var shortcut in new DirectoryInfo(BasicSwitcherFuncs.ExpandEnvironmentVariables(sFolder)).GetFiles())
                     {
                         var fName = shortcut.Name;
-                        if (Instance.ShortcutIgnore.Contains(RemoveShortcutExt(fName))) continue;
+                        if (ShortcutIgnore.Contains(RemoveShortcutExt(fName))) continue;
 
                         // Check if in saved shortcuts and If ignored
                         if (File.Exists(GetShortcutIgnoredPath(fName)))
@@ -256,8 +306,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                             var imagePath = Path.Join(GetShortcutImagePath(), RemoveShortcutExt(fName) + ".png");
                             if (File.Exists(imagePath)) File.Delete(imagePath);
                             fName = fName.Replace("_ignored", "");
-                            if (Basic.Instance.Shortcuts.ContainsValue(fName))
-                                Basic.Instance.Shortcuts.Remove(Basic.Instance.Shortcuts.First(e => e.Value == fName).Key);
+                            if (Basic.Shortcuts.ContainsValue(fName))
+                                Basic.Shortcuts.Remove(Basic.Shortcuts.First(e => e.Value == fName).Key);
                             continue;
                         }
 
@@ -279,12 +329,12 @@ namespace TcNo_Acc_Switcher_Server.Data
                         var imageName = RemoveShortcutExt(f.Name) + ".png";
                         var imagePath = Path.Join(GetShortcutImagePath(), imageName);
                         existingShortcuts.Add(f.Name);
-                        if (!Basic.Instance.Shortcuts.ContainsValue(f.Name))
+                        if (!Basic.Shortcuts.ContainsValue(f.Name))
                         {
                             // Not found in list, so add!
-                            var last = Basic.Instance.Shortcuts.Count > 0 ? Basic.Instance.Shortcuts.Last().Key : -1;
+                            var last = Basic.Shortcuts.Count > 0 ? Basic.Shortcuts.Last().Key : -1;
                             last += 1;
-                            Basic.Instance.Shortcuts.Add(last, f.Name); // Organization added later
+                            Basic.Shortcuts.Add(last, f.Name); // Organization added later
                         }
 
                         // Extract image and place in wwwroot (Only if not already there):
@@ -294,69 +344,52 @@ namespace TcNo_Acc_Switcher_Server.Data
                         }
                     }
 
-                foreach (var (i, s) in Basic.Instance.Shortcuts)
+                foreach (var (i, s) in Basic.Shortcuts)
                 {
                     if (!existingShortcuts.Contains(s))
-                        Basic.Instance.Shortcuts.Remove(i);
+                        Basic.Shortcuts.Remove(i);
                 }
             }
 
-            Basic.Instance.SaveSettings();
+            Basic.SaveSettings();
 
-            Instance.IsInit = true;
+            IsInit = true;
         }
+
         // Variables that may not be set:
-        public string LoginFileFromValue(string val) => BasicSwitcherFuncs.ExpandEnvironmentVariables(Instance.LoginFiles.FirstOrDefault(x => x.Value == val).Key);
-        public string GetUniqueFilePath() => Instance.LoginFileFromValue(Instance.UniqueIdFile);
-        #region OPTIONAL
-        public string UniqueIdFile { get; private set; } = "";
-        public string UniqueIdFolder { get; private set; } = "";
-        public string UniqueIdRegex { get; private set; } = "";
-        public string UniqueIdMethod { get; private set; } = "";
-        public bool ExitBeforeInteract { get; private set; }
-        public bool ClearLoginCache { get; private set; } = true;
-        public string PrimaryId => _platformIds[0];
-        public string ShortcutFolder => Path.Join(PlatformLoginCache, "Shortcuts\\");
-        public string PlatformLoginCache => $"LoginCache\\{Instance.SafeName}\\";
-        public string IdsJsonPath => Path.Join(Instance.PlatformLoginCache, "ids.json");
-        public string AccountLoginCachePath(string acc) => Path.Join(Instance.PlatformLoginCache, $"{acc}\\");
-        #endregion
-
-        #region EXTRAS
-        public bool HasExtras { get; private set; } = false;
-        public string UsernameModalExtraButtons { get; private set; } = "";
-        public string UserModalCopyText { get; private set; } = "";
-        public string UserModalHintText { get; private set; } = "";
-        public List<string> CachePaths { get; private set; } = null;
-        #endregion
-
-        public static string GetShortcutImageFolder => $"img\\shortcuts\\{Instance.SafeName}\\";
+        public static string LoginFileFromValue(string val) => BasicSwitcherFuncs.ExpandEnvironmentVariables(LoginFiles.FirstOrDefault(x => x.Value == val).Key);
+        public static string GetUniqueFilePath() => LoginFileFromValue(UniqueIdFile);
+        public static string GetShortcutImageFolder => $"img\\shortcuts\\{SafeName}\\";
         public static string GetShortcutImagePath() => Path.Join(Globals.UserDataFolder, "wwwroot\\", GetShortcutImageFolder);
-        public static string GetShortcutIgnoredPath(string shortcut) => Path.Join(Instance.ShortcutFolder, shortcut.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
-
+        public static string GetShortcutIgnoredPath(string shortcut) => Path.Join(ShortcutFolder, shortcut.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
+        public static string PrimaryId => PlatformIds[0];
+        public static string ShortcutFolder => Path.Join(PlatformLoginCache, "Shortcuts\\");
+        public static string PlatformLoginCache => $"LoginCache\\{SafeName}\\";
+        public static string IdsJsonPath => Path.Join(PlatformLoginCache, "ids.json");
+        public static string AccountLoginCachePath(string acc) => Path.Join(PlatformLoginCache, $"{acc}\\");
         public static string RemoveShortcutExt(string s) => s.Replace(".lnk", "").Replace(".url", "");
         public static string GetShortcutImagePath(string gameShortcutName) =>
             Path.Join(GetShortcutImageFolder, RemoveShortcutExt(gameShortcutName) + ".png");
 
-        public Dictionary<string, string> ReadRegJson(string acc) =>
+        public static Dictionary<string, string> ReadRegJson(string acc) =>
             GeneralFuncs.ReadDict(Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
-        public void SaveRegJson(Dictionary<string, string> regJson, string acc) =>
+        public static void SaveRegJson(Dictionary<string, string> regJson, string acc) =>
             GeneralFuncs.SaveDict(regJson, Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
 
-        public string GetUserModalExtraButtons => Instance.UsernameModalExtraButtons == "" ? "" :
-            Globals.ReadAllText(Path.Join(Globals.AppDataFolder, Instance.UsernameModalExtraButtons));
-        public string GetUserModalCopyText => Instance.UserModalCopyText == "" ? "" :
-            Globals.ReadAllText(Path.Join(Globals.AppDataFolder, Instance.UserModalCopyText));
+        public static string GetUserModalExtraButtons => UsernameModalExtraButtons == "" ? "" :
+            Globals.ReadAllText(Path.Join(Globals.AppDataFolder, UsernameModalExtraButtons));
+        public static string GetUserModalCopyText => UserModalCopyText == "" ? "" :
+            Globals.ReadAllText(Path.Join(Globals.AppDataFolder, UserModalCopyText));
 
-        public string GetUserModalHintText()
+        public static string GetUserModalHintText()
         {
             try
             {
-                return Lang.Instance[Instance.UserModalHintText];
+                return Lang.Instance[UserModalHintText];
             }
             catch (Exception e)
             {
-                return Instance.UserModalHintText;
+                return UserModalHintText;
             }
         }
     }

@@ -43,7 +43,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void ClearVacStatus()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
-            _ = Globals.DeleteFile(Data.Settings.Steam.Instance.VacCacheFile)
+            _ = Globals.DeleteFile(Data.Settings.Steam.VacCacheFile)
                 ? GeneralInvocableFuncs.ShowToast("success", Lang["Toast_Steam_VacCleared"], renderTo: "toastarea")
                 : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_CantDeleteVacCache"], Lang["Error"],"toastarea");
         }
@@ -52,7 +52,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void ClearSettings()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearSettings]");
-            new Data.Settings.Steam().ResetSettings();
+            Data.Settings.Steam.ResetSettings();
             AppData.ActiveNavMan.NavigateTo("/Steam?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ClearedPlatformSettings", new { platform = "Steam" }]));
         }
 
@@ -73,7 +73,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void OpenFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.OpenSteamFolder]");
-            _ = Process.Start("explorer.exe", new Data.Settings.Steam().FolderPath);
+            _ = Process.Start("explorer.exe", Data.Settings.Steam.FolderPath);
         }
 
         // BUTTON: Advanced Cleaning...

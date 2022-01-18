@@ -15,22 +15,21 @@
 @page "/Ubisoft/"
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
+@using Ubisoft = TcNo_Acc_Switcher_Server.Data.Settings.Ubisoft;
 @inject AppData _appData
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 @inject NavigationManager _navManager
 @{ _appData.SetActiveNavMan(_navManager); }
 
-@inject AppSettings _appSettings
-<style>@(new AppSettings().GetCssBlock())</style>
+<style>@(AppSettings.GetCssBlock())</style>
 
 
-@inject Data.Settings.Ubisoft _ubisoft
 @inject Lang  _locale
 
 
-<ContextMenu ContextMenuString="@_ubisoft.ContextMenuJson" ContextMenuId="AccOrPlatList" />
-@*<ContextMenu ContextMenuString="@_ubisoft.ContextMenuJson" ContextMenuId="Shortcuts" />*@
+<ContextMenu ContextMenuString="@Ubisoft.ContextMenuJson" ContextMenuId="AccOrPlatList" />
+@*<ContextMenu ContextMenuString="@Ubisoft.ContextMenuJson" ContextMenuId="Shortcuts" />*@
 <div id="acc_list" class="acc_list">
     <toastarea class="toastarea"></toastarea>
 </div>
@@ -68,7 +67,7 @@
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
     {
-        _appSettings.StreamerModeCheck();
+        AppSettings.StreamerModeCheck();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Ubisoft");

@@ -19,20 +19,19 @@
 @page "/BattleNet/"
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
+@using BattleNet = TcNo_Acc_Switcher_Server.Data.Settings.BattleNet;
 @inject AppData _appData
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 @inject NavigationManager _navManager
 @{ _appData.SetActiveNavMan(_navManager); }
 
-@inject AppSettings _appSettings
-<style>@(new AppSettings().GetCssBlock())</style>
+<style>@(AppSettings.GetCssBlock())</style>
 
-@inject Data.Settings.BattleNet _battleNet
 @inject Lang  _locale
 
-<ContextMenu ContextMenuString="@_battleNet.ContextMenuJson" ContextMenuId="AccOrPlatList" />
-@*<ContextMenu ContextMenuString="@_battleNet.ContextMenuJson" ContextMenuId="Shortcuts" />*@
+<ContextMenu ContextMenuString="@BattleNet.ContextMenuJson" ContextMenuId="AccOrPlatList" />
+@*<ContextMenu ContextMenuString="@BattleNet.ContextMenuJson" ContextMenuId="Shortcuts" />*@
 <div id="acc_list" class="acc_list">
     <toastarea class="toastarea" />
 </div>
@@ -66,7 +65,7 @@
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
     {
-        _appSettings.StreamerModeCheck();
+        AppSettings.StreamerModeCheck();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "BattleNet");

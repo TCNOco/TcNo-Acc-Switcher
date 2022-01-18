@@ -20,7 +20,6 @@
 @inject NavigationManager _navManager
 @{ _appData.SetActiveNavMan(_navManager); }
 
-@inject AppSettings _appSettings
 @inject Lang  _locale
 
 <div class="text-editor d-flex flex-column">
@@ -48,7 +47,7 @@ Actions will show here
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
     {
-        _appSettings.StreamerModeCheck();
+        AppSettings.StreamerModeCheck();
     }
 
     protected override void OnInitialized()

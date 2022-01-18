@@ -41,22 +41,22 @@ namespace TcNo_Acc_Switcher_Server.Pages
             {
                 case "BattleNet":
                     if (!GeneralFuncs.CanKillProcess(Data.Settings.BattleNet.Processes)) return;
-                    Data.Settings.BattleNet.Instance.LoadFromFile();
-                    if (Directory.Exists(Data.Settings.BattleNet.Instance.FolderPath) && File.Exists(Data.Settings.BattleNet.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/BattleNet/");
+                    Data.Settings.BattleNet.LoadFromFile();
+                    if (Directory.Exists(Data.Settings.BattleNet.FolderPath) && File.Exists(Data.Settings.BattleNet.Exe())) AppData.ActiveNavMan.NavigateTo("/BattleNet/");
                     else _ = GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
                     break;
 
                 case "Origin":
                     if (!GeneralFuncs.CanKillProcess(Data.Settings.Origin.Processes)) return;
-                    Data.Settings.Origin.Instance.LoadFromFile();
-                    if (Directory.Exists(Data.Settings.Origin.Instance.FolderPath) && File.Exists(Data.Settings.Origin.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Origin/");
+                    Data.Settings.Origin.LoadFromFile();
+                    if (Directory.Exists(Data.Settings.Origin.FolderPath) && File.Exists(Data.Settings.Origin.Exe())) AppData.ActiveNavMan.NavigateTo("/Origin/");
                     else _ = GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
                     break;
 
                 case "Steam":
                     if (!GeneralFuncs.CanKillProcess(Data.Settings.Steam.Processes)) return;
-                    Data.Settings.Steam.Instance.LoadFromFile();
-                    if (!Directory.Exists(Data.Settings.Steam.Instance.FolderPath) || !File.Exists(Data.Settings.Steam.Instance.Exe()))
+                    Data.Settings.Steam.LoadFromFile();
+                    if (!Directory.Exists(Data.Settings.Steam.FolderPath) || !File.Exists(Data.Settings.Steam.Exe()))
                     {
                         _ = GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
                         return;
@@ -67,20 +67,20 @@ namespace TcNo_Acc_Switcher_Server.Pages
 
                 case "Ubisoft":
                     if (!GeneralFuncs.CanKillProcess(Data.Settings.Ubisoft.Processes)) return;
-                    Data.Settings.Ubisoft.Instance.LoadFromFile();
-                    if (Directory.Exists(Data.Settings.Ubisoft.Instance.FolderPath) && File.Exists(Data.Settings.Ubisoft.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Ubisoft/");
+                    Data.Settings.Ubisoft.LoadFromFile();
+                    if (Directory.Exists(Data.Settings.Ubisoft.FolderPath) && File.Exists(Data.Settings.Ubisoft.Exe())) AppData.ActiveNavMan.NavigateTo("/Ubisoft/");
                     else _ = GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
                     break;
 
                 default:
-                    if (BasicPlatforms.Instance.PlatformExistsFromShort(platform)) // Is a basic platform!
+                    if (BasicPlatforms.PlatformExistsFromShort(platform)) // Is a basic platform!
                     {
-                        BasicPlatforms.Instance.SetCurrentPlatformFromShort(platform);
-                        if (!GeneralFuncs.CanKillProcess(CurrentPlatform.Instance.ExesToEnd)) return;
+                        BasicPlatforms.SetCurrentPlatformFromShort(platform);
+                        if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) return;
 
-                        Data.Settings.Basic.Instance.LoadFromFile();
-                        if (Directory.Exists(Data.Settings.Basic.Instance.FolderPath) && File.Exists(Data.Settings.Basic.Instance.Exe())) AppData.ActiveNavMan.NavigateTo("/Basic/");
-                        else _ = GeneralInvocableFuncs.ShowModal($"find:{CurrentPlatform.Instance.SafeName}:{CurrentPlatform.Instance.ExeName}:{CurrentPlatform.Instance.SafeName}");
+                        Data.Settings.Basic.LoadFromFile();
+                        if (Directory.Exists(Data.Settings.Basic.FolderPath) && File.Exists(Data.Settings.Basic.Exe())) AppData.ActiveNavMan.NavigateTo("/Basic/");
+                        else _ = GeneralInvocableFuncs.ShowModal($"find:{CurrentPlatform.SafeName}:{CurrentPlatform.ExeName}:{CurrentPlatform.SafeName}");
                     }
                     break;
             }

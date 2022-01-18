@@ -136,7 +136,7 @@ namespace TcNo_Acc_Switcher_Client
             // Each window in the program would have its own size. IE Resize for Steam, and more.
 
             // Center:
-            if (!AppSettings.Instance.StartCentered) return;
+            if (!AppSettings.StartCentered) return;
             Left = (SystemParameters.PrimaryScreenWidth / 2) - (Width / 2);
             Top = (SystemParameters.PrimaryScreenHeight / 2) - (Height / 2);
         }

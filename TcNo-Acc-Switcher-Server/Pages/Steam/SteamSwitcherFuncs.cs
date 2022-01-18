@@ -32,6 +32,8 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
+
 
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
@@ -39,14 +41,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
     {
         private static readonly Lang Lang = Lang.Instance;
 
-        private static readonly Data.Settings.Steam Steam = Data.Settings.Steam.Instance;
-
         #region STEAM_SWITCHER_MAIN
         public static bool SteamSettingsValid()
         {
             // Checks if Steam path set properly, and can load.
-            Steam.LoadFromFile();
-            return Steam.LoginUsersVdf() != "RESET_PATH";
+            SteamSettings.LoadFromFile();
+            return SteamSettings.LoginUsersVdf() != "RESET_PATH";
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static async Task LoadProfiles()
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.LoadProfiles] Loading Steam profiles");
-            Data.Settings.Steam.Instance.LoadFromFile();
+            Data.Settings.Steam.LoadFromFile();
 
-            var userAccounts = GetSteamUsers(Steam.LoginUsersVdf());
+            var userAccounts = GetSteamUsers(SteamSettings.LoginUsersVdf());
             var vacStatusList = new List<VacStatus>();
             var loadedVacCache = LoadVacInfo(ref vacStatusList);
 
@@ -101,13 +101,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     vacStatusList.Add(va);
                 }
 
-                var extraClasses = (Steam.ShowVac && va.Vac ? " status_vac" : "") + (Steam.ShowLimited && va.Ltd ? " status_limited" : "");
+                var extraClasses = (SteamSettings.ShowVac && va.Vac ? " status_vac" : "") + (SteamSettings.ShowLimited && va.Ltd ? " status_limited" : "");
 
                 var element =
                     $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{ua.SteamId}\" DisplayName=\"{GeneralFuncs.EscapeText(ua.Name)}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{GeneralFuncs.EscapeText(ua.AccName)}\" Line2=\"{GeneralFuncs.EscapeText(ua.Name)}\" Line3=\"{GeneralFuncs.EscapeText(ua.LastLogin)}\" ExtraClasses=\"{extraClasses}\" onchange=\"selectedItemChanged()\" />\r\n" +
                     $"<label for=\"{ua.AccName}\" class=\"acc {extraClasses}\">\r\n" +
                     $"<img class=\"{extraClasses}\" src=\"{ua.ImgUrl}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
-                    (Steam.ShowAccUsername ? $"<p class=\"streamerCensor\">{ua.AccName}</p>\r\n" : "") +
+                    (SteamSettings.ShowAccUsername ? $"<p class=\"streamerCensor\">{ua.AccName}</p>\r\n" : "") +
                     $"<h6>{GeneralFuncs.EscapeText(ua.Name)}</h6>\r\n" +
                     $"<p class=\"streamerCensor steamId\">{ua.SteamId}</p>\r\n" +
                     $"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p></label></div>\r\n";
@@ -219,12 +219,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static bool LoadVacInfo(ref List<VacStatus> vsl)
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.LoadVacInfo] Loading VAC info: hidden");
-            _ = GeneralFuncs.DeletedOutdatedFile(Steam.VacCacheFile);
-            if (!File.Exists(Steam.VacCacheFile)) return false;
-            vsl = JsonConvert.DeserializeObject<List<VacStatus>>(Globals.ReadAllText(Steam.VacCacheFile));
+            _ = GeneralFuncs.DeletedOutdatedFile(SteamSettings.VacCacheFile);
+            if (!File.Exists(SteamSettings.VacCacheFile)) return false;
+            vsl = JsonConvert.DeserializeObject<List<VacStatus>>(Globals.ReadAllText(SteamSettings.VacCacheFile));
 
             if (vsl != null) return true;
-            Globals.DeleteFile(Steam.VacCacheFile);
+            Globals.DeleteFile(SteamSettings.VacCacheFile);
             vsl = new List<VacStatus>();
             return true;
         }
@@ -234,8 +234,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         public static void SaveVacInfo(List<VacStatus> vsList)
         {
-            _ = Directory.CreateDirectory(Path.GetDirectoryName(Steam.VacCacheFile) ?? string.Empty);
-            File.WriteAllText(Steam.VacCacheFile, JsonConvert.SerializeObject(vsList));
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(SteamSettings.VacCacheFile) ?? string.Empty);
+            File.WriteAllText(SteamSettings.VacCacheFile, JsonConvert.SerializeObject(vsList));
         }
 
         /// <summary>
@@ -269,10 +269,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         private static VacStatus PrepareProfileImage(Index.Steamuser su)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.PrepareProfileImage] Preparing profile image for: {su.SteamId.Substring(su.SteamId.Length - 4, 4)}");
-            _ = Directory.CreateDirectory(Steam.SteamImagePath);
-            var dlDir = $"{Steam.SteamImagePath}{su.SteamId}.jpg";
+            _ = Directory.CreateDirectory(SteamSettings.SteamImagePath);
+            var dlDir = $"{SteamSettings.SteamImagePath}{su.SteamId}.jpg";
             // Delete outdated file, if it exists
-            _ = GeneralFuncs.DeletedOutdatedFile(dlDir, Steam.ImageExpiryTime);
+            _ = GeneralFuncs.DeletedOutdatedFile(dlDir, SteamSettings.ImageExpiryTime);
             // ... & invalid files
             _ = GeneralFuncs.DeletedInvalidImage(dlDir);
 
@@ -286,7 +286,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 try
                 {
                     Globals.DownloadFile(imageUrl, dlDir);
-                    su.ImgUrl = $"{Steam.SteamImagePathHtml}{su.SteamId}.jpg";
+                    su.ImgUrl = $"{SteamSettings.SteamImagePathHtml}{su.SteamId}.jpg";
                 }
                 catch (WebException ex)
                 {
@@ -298,7 +298,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
             else
             {
-                su.ImgUrl = $"{Steam.SteamImagePathHtml}{su.SteamId}.jpg";
+                su.ImgUrl = $"{SteamSettings.SteamImagePathHtml}{su.SteamId}.jpg";
                 var profileXml = new XmlDocument();
                 var cachedFile = $"LoginCache/Steam/VACCache/{su.SteamId}.xml";
                 _ = Directory.CreateDirectory("LoginCache/Steam/VACCache/");
@@ -392,7 +392,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform  = "Steam" }]);
-            if (!GeneralFuncs.CloseProcesses(Data.Settings.Steam.Processes, Data.Settings.Steam.Instance.AltClose))
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Steam.Processes, Data.Settings.Steam.AltClose))
             {
                 _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
                 return;
@@ -403,7 +403,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Steam" }]);
             if (!autoStartSteam) return;
 
-            Globals.StartProgram(Steam.Exe(), Steam.Admin, args);
+            Globals.StartProgram(SteamSettings.Exe(), SteamSettings.Admin, args);
 
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
@@ -435,12 +435,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void UpdateLoginUsers(string selectedSteamId, int pS)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.UpdateLoginUsers] Updating loginusers: selectedSteamId={(selectedSteamId.Length > 0 ? selectedSteamId.Substring(selectedSteamId.Length - 4, 4) : "")}, pS={pS}");
-            var userAccounts = GetSteamUsers(Steam.LoginUsersVdf());
+            var userAccounts = GetSteamUsers(SteamSettings.LoginUsersVdf());
             // -----------------------------------
             // ----- Manage "loginusers.vdf" -----
             // -----------------------------------
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_UpdatingFile", new { file = "loginusers.vdf" }]);
-            var tempFile = Steam.LoginUsersVdf() + "_temp";
+            var tempFile = SteamSettings.LoginUsersVdf() + "_temp";
             Globals.DeleteFile(tempFile);
 
             // MostRec is "00" by default, just update the one that matches SteamID.
@@ -484,7 +484,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // ------Update Tray users list ------
             // -----------------------------------
             if (selectedSteamId != "")
-                Globals.AddTrayUser("Steam", "+s:" + user.SteamId, Steam.TrayAccName ? user.AccName : user.Name, Steam.TrayAccNumber);
+                Globals.AddTrayUser("Steam", "+s:" + user.SteamId, SteamSettings.TrayAccName ? user.AccName : user.Name, SteamSettings.TrayAccNumber);
         }
 
         /// <summary>
@@ -502,9 +502,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
 
             // Write changes to files.
-            var tempFile = Steam.LoginUsersVdf() + "_temp";
+            var tempFile = SteamSettings.LoginUsersVdf() + "_temp";
             File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
-            File.Replace(tempFile, Steam.LoginUsersVdf(), Steam.LoginUsersVdf() + "_last");
+            File.Replace(tempFile, SteamSettings.LoginUsersVdf(), SteamSettings.LoginUsersVdf() + "_last");
         }
 
         /// <summary>
@@ -522,7 +522,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void ClearForgotten_Confirmed()
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.ClearForgotten_Confirmed] Confirmation received to clear forgotten backups.");
-            var legacyBackupPath = Path.Join(Steam.FolderPath, "config\\\\TcNo-Acc-Switcher-Backups\\\\");
+            var legacyBackupPath = Path.Join(SteamSettings.FolderPath, "config\\\\TcNo-Acc-Switcher-Backups\\\\");
             if (Directory.Exists(legacyBackupPath))
                 Directory.Delete(legacyBackupPath, true);
 
@@ -537,11 +537,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void ClearImages()
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.ClearImages] Clearing images.");
-            if (!Directory.Exists(Steam.SteamImagePath))
+            if (!Directory.Exists(SteamSettings.SteamImagePath))
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantClearImages"], Lang["Error"], "toastarea");
             }
-            Globals.DeleteFiles(Steam.SteamImagePath);
+            Globals.DeleteFiles(SteamSettings.SteamImagePath);
             // Reload page, then display notification using a new thread.
             AppData.ActiveNavMan?.NavigateTo("/steam/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ClearedImages"]), true);
         }
@@ -557,7 +557,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // Values:
             // 0: Offline, 1: Online, 2: Busy, 3: Away, 4: Snooze, 5: Looking to Trade, 6: Looking to Play, 7: Invisible
             var id32 = new SteamIdConvert(steamId).Id32; // Get SteamID
-            var localConfigFilePath = Path.Join(Steam.FolderPath, "userdata", id32, "config", "localconfig.vdf");
+            var localConfigFilePath = Path.Join(SteamSettings.FolderPath, "userdata", id32, "config", "localconfig.vdf");
             if (!File.Exists(localConfigFilePath)) return;
             var localConfigText = Globals.ReadAllText(localConfigFilePath); // Read relevant localconfig.vdf
 
@@ -608,7 +608,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         /// <returns></returns>
         [JSInvokable]
-        public static Task<bool> GetSteamForgetAcc() => Task.FromResult(Steam.ForgetAccountEnabled);
+        public static Task<bool> GetSteamForgetAcc() => Task.FromResult(SteamSettings.ForgetAccountEnabled);
 
         /// <summary>
         /// Purely a class used for backing up forgotten Steam users, used in ForgetAccount() and RestoreAccount()
@@ -627,22 +627,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.ForgetAccount] Forgetting account: {steamId.Substring(steamId.Length - 4, 4)}");
             // Load and remove account that matches SteamID above.
-            var userAccounts = GetSteamUsers(Steam.LoginUsersVdf());
+            var userAccounts = GetSteamUsers(SteamSettings.LoginUsersVdf());
             var forgottenUser = userAccounts.First(x => x.SteamId == steamId); // Get the removed user to save into restore file
             _ = userAccounts.RemoveAll(x => x.SteamId == steamId);
 
             // Instead of backing up EVERY TIME like the previous version (Was: BackupLoginUsers(settings: settings);)
             // Rather just save the users in a file, for better restoring later if necessary.
-            var fFileContents = File.Exists(Steam.ForgottenFile) ? Globals.ReadAllText(Steam.ForgottenFile) : "";
+            var fFileContents = File.Exists(SteamSettings.ForgottenFile) ? Globals.ReadAllText(SteamSettings.ForgottenFile) : "";
             var fUsers = fFileContents == "" ? new List<ForgottenSteamuser>() : JsonConvert.DeserializeObject<List<ForgottenSteamuser>>(fFileContents);
             if (fUsers!.All(x => x.SteamId != forgottenUser.SteamId)) fUsers.Add(new ForgottenSteamuser { SteamId = forgottenUser.SteamId, Steamuser = forgottenUser }); // Add to list if user with SteamID doesn't exist in it.
-            File.WriteAllText(Steam.ForgottenFile, JsonConvert.SerializeObject(fUsers));
+            File.WriteAllText(SteamSettings.ForgottenFile, JsonConvert.SerializeObject(fUsers));
 
             // Save updated loginusers.vdf file
             SaveSteamUsersIntoVdf(userAccounts);
 
             // Remove image
-            var img = $"{Steam.SteamImagePathHtml}{steamId}.jpg";
+            var img = $"{SteamSettings.SteamImagePathHtml}{steamId}.jpg";
             Globals.DeleteFile(img);
 
             // Remove from Tray
@@ -659,11 +659,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             foreach (var s in requestedSteamIds) Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.RestoreAccounts] Restoring account: {s.Substring(s.Length - 4, 4)}");
 
-            if (!File.Exists(Steam.ForgottenFile)) return false;
-            var forgottenAccounts = JsonConvert.DeserializeObject<List<ForgottenSteamuser>>(Globals.ReadAllText(Steam.ForgottenFile));
+            if (!File.Exists(SteamSettings.ForgottenFile)) return false;
+            var forgottenAccounts = JsonConvert.DeserializeObject<List<ForgottenSteamuser>>(Globals.ReadAllText(SteamSettings.ForgottenFile));
             if (forgottenAccounts == null) return false;
             // Load existing accounts
-            var userAccounts = GetSteamUsers(Steam.LoginUsersVdf());
+            var userAccounts = GetSteamUsers(SteamSettings.LoginUsersVdf());
             // Create list of existing SteamIds (as to not add duplicates)
             var existingIds = userAccounts.Select(ua => ua.SteamId).ToList();
 
@@ -681,7 +681,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             // Update & Save SteamForgotten.json
             forgottenAccounts = forgottenAccounts.Except(selectedForgottenPossibleDuplicates).ToList();
-            File.WriteAllText(Steam.ForgottenFile, JsonConvert.SerializeObject(forgottenAccounts));
+            File.WriteAllText(SteamSettings.ForgottenFile, JsonConvert.SerializeObject(forgottenAccounts));
             return true;
         }
         #endregion

@@ -84,7 +84,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                 // Add enabled basic platforms:
                 Instance._platformList =
-                    Instance._platformList.Union(AppSettings.Instance.EnabledBasicPlatforms).ToList();
+                    Instance._platformList.Union(AppSettings.EnabledBasicPlatforms).ToList();
                 return Instance._platformList;
             }
             set => Instance._platformList = value;

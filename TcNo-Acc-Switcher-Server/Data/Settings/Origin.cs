@@ -42,20 +42,25 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         // Variables
         private string _folderPath = "C:\\Program Files (x86)\\Origin\\";
-        [JsonProperty("FolderPath", Order = 1)] public string FolderPath { get => _instance._folderPath; set => _instance._folderPath = value; }
         private bool _admin;
-        [JsonProperty("Origin_Admin", Order = 2)] public bool Admin { get => _instance._admin; set => _instance._admin = value; }
         private int _trayAccNumber = 3;
-        [JsonProperty("Origin_TrayAccNumber", Order = 3)] public int TrayAccNumber { get => _instance._trayAccNumber; set => _instance._trayAccNumber = value; }
         private bool _forgetAccountEnabled;
-        [JsonProperty("ForgetAccountEnabled", Order = 4)] public bool ForgetAccountEnabled { get => _instance._forgetAccountEnabled; set => _instance._forgetAccountEnabled = value; }
         private int _imageExpiryTime = 7;
-        [JsonProperty("ImageExpiryTime", Order = 5)] public int ImageExpiryTime { get => _instance._imageExpiryTime; set => _instance._imageExpiryTime = value; }
         private bool _altClose;
-        [JsonProperty("AltClose", Order = 6)] public bool AltClose { get => _instance._altClose; set => _instance._altClose = value; }
-
         private bool _desktopShortcut;
-        [JsonIgnore] public bool DesktopShortcut { get => _instance._desktopShortcut; set => _instance._desktopShortcut = value; }
+        [JsonProperty("FolderPath", Order = 1)] public static string FolderPath { get => Instance._folderPath; set => Instance._folderPath = value; }
+
+        [JsonProperty("Origin_Admin", Order = 2)] public static bool Admin { get => Instance._admin; set => Instance._admin = value; }
+
+        [JsonProperty("Origin_TrayAccNumber", Order = 3)] public static int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
+
+        [JsonProperty("ForgetAccountEnabled", Order = 4)] public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
+
+        [JsonProperty("ImageExpiryTime", Order = 5)] public static int ImageExpiryTime { get => Instance._imageExpiryTime; set => Instance._imageExpiryTime = value; }
+
+        [JsonProperty("AltClose", Order = 6)] public static bool AltClose { get => Instance._altClose; set => Instance._altClose = value; }
+
+        [JsonIgnore] public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
         // Constants
         [JsonIgnore] public static readonly string SettingsFile = "OriginSettings.json";
@@ -64,7 +69,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] public string OriginImagePathHtml = "img/profiles/origin/";
         */
         [JsonIgnore] public static readonly string Processes = "Origin";
-        [JsonIgnore] public readonly string ContextMenuJson = $@"[
+        [JsonIgnore] public static readonly string ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
 				{{""{Lang["Context_CreateShortcut"]}"": ""createShortcut()""}},
@@ -77,7 +82,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Updates the ForgetAccountEnabled bool in settings file
         /// </summary>
         /// <param name="enabled">Whether will NOT prompt user if they're sure or not</param>
-        public void SetForgetAcc(bool enabled)
+        public static void SetForgetAcc(bool enabled)
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Origin.SetForgetAcc]");
             if (ForgetAccountEnabled == enabled) return; // Ignore if already set
@@ -89,39 +94,38 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Get Origin.exe path from OriginSettings.json
         /// </summary>
         /// <returns>Origin.exe's path string</returns>
-        public string Exe() => Path.Join(FolderPath, "Origin.exe");
+        public static string Exe() => Path.Join(FolderPath, "Origin.exe");
 
 
         #region SETTINGS
+
         /// <summary>
         /// Default settings for OriginSettings.json
         /// </summary>
-        public void ResetSettings()
+        public static void ResetSettings()
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Origin.ResetSettings]");
-            _instance.FolderPath = "C:\\Program Files (x86)\\Origin\\";
-            _instance.Admin = false;
-            _instance.TrayAccNumber = 3;
-            _instance._desktopShortcut = Shortcut.CheckShortcuts("Origin");
-            _instance._altClose = false;
+            FolderPath = "C:\\Program Files (x86)\\Origin\\";
+            Admin = false;
+            TrayAccNumber = 3;
+            DesktopShortcut = Shortcut.CheckShortcuts("Origin");
+            AltClose = false;
 
             SaveSettings();
         }
-        public void SetFromJObject(JObject j)
+        public static void SetFromJObject(JObject j)
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Origin.SetFromJObject]");
             var curSettings = j.ToObject<Origin>();
             if (curSettings == null) return;
-            _instance.FolderPath = curSettings.FolderPath;
-            _instance.Admin = curSettings.Admin;
-            _instance.TrayAccNumber = curSettings.TrayAccNumber;
-            _instance._desktopShortcut = Shortcut.CheckShortcuts("Origin");
-            _instance._altClose = curSettings.AltClose;
+            FolderPath = curSettings._folderPath;
+            Admin = curSettings._admin;
+            TrayAccNumber = curSettings._trayAccNumber;
+            DesktopShortcut = Shortcut.CheckShortcuts("Origin");
+            AltClose = curSettings._altClose;
         }
-        public void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, GetJObject()));
-        public JObject GetJObject() => JObject.FromObject(this);
-        [JSInvokable]
-        public void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, GetJObject(), mergeNewIntoOld);
+        public static void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, JObject.FromObject(new Origin())));
+        public static void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, JObject.FromObject(Instance), mergeNewIntoOld);
         #endregion
     }
 }

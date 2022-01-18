@@ -16,12 +16,11 @@
 @using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @using TcNo_Acc_Switcher_Server.Data
 @using Task = System.Threading.Tasks.Task
+@using Steam = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager _navManager
 @inject AppData _appData
 @{ _appData.SetActiveNavMan(_navManager); }
-@inject Data.Settings.Steam _steam
-@inject AppSettings _appSett
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 
@@ -43,27 +42,27 @@
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="AltClose" @bind="_steam.AltClose"><label class="form-check-label" for="AltClose"></label></div><label for="AltClose">@_locale["Settings_AltClose"]</label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="AltClose" @bind="Steam.AltClose"><label class="form-check-label" for="AltClose"></label></div><label for="AltClose">@_locale["Settings_AltClose"]</label>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="_steam.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Steam", _steam.DesktopShortcut)'><label class="form-check-label" for="Steam_DesktopShortcut"></label></div><label for="Steam_DesktopShortcut">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="Steam.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Steam", Steam.DesktopShortcut)'><label class="form-check-label" for="Steam_DesktopShortcut"></label></div><label for="Steam_DesktopShortcut">
 		            @_locale["Settings_Shortcut", new { platform = Platform }]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin" @bind="_steam.Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label for="Steam_Admin">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin" @bind="Steam.Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label for="Steam_Admin">
 		            @_locale["Settings_Admin", new { platform = Platform }]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowSteamID" @bind="_steam.ShowSteamId"><label class="form-check-label" for="Steam_ShowSteamID"></label></div><label for="Steam_ShowSteamID">@_locale["Steam_ShowSteamID"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowSteamID" @bind="Steam.ShowSteamId"><label class="form-check-label" for="Steam_ShowSteamID"></label></div><label for="Steam_ShowSteamID">@_locale["Steam_ShowSteamID"]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowVAC" @bind="_steam.ShowVac"><label class="form-check-label" for="Steam_ShowVAC"></label></div><label for="Steam_ShowVAC">@_locale["Steam_ShowVac"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowVAC" @bind="Steam.ShowVac"><label class="form-check-label" for="Steam_ShowVAC"></label></div><label for="Steam_ShowVAC">@_locale["Steam_ShowVac"]<br></label>
             </div>
             <div>
-	            <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowLimited" @bind="_steam.ShowLimited"><label class="form-check-label" for="Steam_ShowLimited"></label></div><label for="Steam_ShowLimited">@_locale["Steam_ShowLimited"]<br></label>
+	            <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowLimited" @bind="Steam.ShowLimited"><label class="form-check-label" for="Steam_ShowLimited"></label></div><label for="Steam_ShowLimited">@_locale["Steam_ShowLimited"]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowAccUsername" @bind="_steam.ShowAccUsername"><label class="form-check-label" for="Steam_ShowAccUsername"></label></div><label for="Steam_ShowAccUsername">@_locale["Steam_ShowAccUsername"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowAccUsername" @bind="Steam.ShowAccUsername"><label class="form-check-label" for="Steam_ShowAccUsername"></label></div><label for="Steam_ShowAccUsername">@_locale["Steam_ShowAccUsername"]<br></label>
             </div>
             <div>
                 <div class="rowSetting rowDropdown">
@@ -88,9 +87,9 @@
                 </div>
 
 
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowAccUsername" @bind="_steam.ShowAccUsername"><label class="form-check-label" for="Steam_ShowAccUsername"></label></div><label for="Steam_ShowAccUsername">@_locale["Steam_ShowAccUsername"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowAccUsername" @bind="Steam.ShowAccUsername"><label class="form-check-label" for="Steam_ShowAccUsername"></label></div><label for="Steam_ShowAccUsername">@_locale["Steam_ShowAccUsername"]<br></label>
             </div>
-            <div class="form-text"><span>@_locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="_steam.ImageExpiryTime"></div>
+            <div class="form-text"><span>@_locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="Steam.ImageExpiryTime"></div>
 
 
             <div class="SettingsHeader">
@@ -98,16 +97,16 @@
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_TrayAccountName" @bind="_steam.TrayAccName"><label class="form-check-label" for="Steam_TrayAccountName"></label></div><label for="Steam_TrayAccountName">@_locale["Steam_Tray_AccountName"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_TrayAccountName" @bind="Steam.TrayAccName"><label class="form-check-label" for="Steam_TrayAccountName"></label></div><label for="Steam_TrayAccountName">@_locale["Steam_Tray_AccountName"]<br></label>
             </div>
-            <div class="form-text"><span>@_locale["Settings_TrayMax"]</span><input type="number" id="Steam_TrayAccNumber" min="0" max="365" @bind="_steam.TrayAccNumber"></div>
+            <div class="form-text"><span>@_locale["Settings_TrayMax"]</span><input type="number" id="Steam_TrayAccNumber" min="0" max="365" @bind="Steam.TrayAccNumber"></div>
 
 
             <div class="SettingsHeader">
                 <hr><span>@_locale["Settings_Header_GeneralTools"]</span>
                 <hr>
             </div>
-            <p>@_locale["Settings_CurrentLocation", new { path = _steam.FolderPath }]</p>
+            <p>@_locale["Settings_CurrentLocation", new { path = Steam.FolderPath }]</p>
             <div class="buttoncol"><button id="Steam_PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = Platform }]</span></button><button id="Steam_CheckVAC" type="button" @onclick="ClearVacStatus"><span>@_locale["Steam_CheckVac"]</span></button></div>
             <div class="buttoncol"><button id="Steam_ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button><button id="Steam_ResetImages" type="button" @onclick="ClearImages"><span>@_locale["Button_RefreshImages"]</span></button></div>
 
@@ -137,16 +136,16 @@
 {
     public void SaveAndClose()
     {
-        _appSett.SaveSettings();
-        _steam.SaveSettings();
+        AppSettings.SaveSettings();
+        Steam.SaveSettings();
 
         _navManager.NavigateTo("/Steam");
     }
 
-    private string _selectedState = Data.Settings.Steam.StateToString(Data.Settings.Steam.Instance.OverrideState);
+    private string _selectedState = Data.Settings.Steam.StateToString(Data.Settings.Steam.OverrideState);
     private Task DefaultState(int state)
     {
-        Data.Settings.Steam.Instance.OverrideState = state;
+        Data.Settings.Steam.OverrideState = state;
         _selectedState = Data.Settings.Steam.StateToString(state);
         return Task.CompletedTask;
     }

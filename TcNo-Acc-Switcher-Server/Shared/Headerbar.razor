@@ -33,7 +33,7 @@
         <use href="img/TcNo_Logo_Flat.svg#logo"></use>
     </svg>
     <span>@AppData.Instance.WindowTitle</span>
-    @if (AppSettings.Instance.UsingTcNoBrowser)
+    @if (AppSettings.UsingTcNoBrowser)
     {
         <div id="window-controls">
             <button id="btnMin">
@@ -65,7 +65,7 @@
     protected override void OnInitialized()
     {
         AppData.Instance.OnChange += OnMyChangeHandler;
-        AppSettings.Instance.UsingTcNoBrowser = httpContextAccessor.HttpContext?.Request.Headers["User-Agent"][0].Contains("TcNo") == true;
+        AppSettings.UsingTcNoBrowser = httpContextAccessor.HttpContext?.Request.Headers["User-Agent"][0].Contains("TcNo") == true;
     }
     private async void OnMyChangeHandler()
     {

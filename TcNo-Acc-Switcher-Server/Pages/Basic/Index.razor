@@ -19,35 +19,33 @@
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.IO
 @using System.Diagnostics
+@using Basic = Data.Settings.Basic
 @inject AppData _appData
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 @inject NavigationManager _navManager
 @{ _appData.SetActiveNavMan(_navManager); }
 
-@inject AppSettings _appSettings
-<style>@(new AppSettings().GetCssBlock())</style>
+<style>@(AppSettings.GetCssBlock())</style>
 @inject Lang _locale
-@inject Data.Settings.Basic _basic
 
-
-<ContextMenu ContextMenuString="@_basic.ContextMenuJson" ContextMenuId="AccOrPlatList" />
-<ContextMenu ContextMenuString="@_basic.ContextMenuShortcutJson" ContextMenuId="Shortcuts" />
+<ContextMenu ContextMenuString="@Basic.ContextMenuJson" ContextMenuId="AccOrPlatList" />
+<ContextMenu ContextMenuString="@Basic.ContextMenuShortcutJson" ContextMenuId="Shortcuts" />
 <div id="acc_list" class="acc_list">
     <toastarea class="toastarea" />
 </div>
 
 <div class="shortcutDropdown" id="shortcutDropdown" style="display: none">
-    @foreach (var (i, shortcut) in _basic.Shortcuts)
+    @foreach (var (i, shortcut) in Basic.Shortcuts)
     {
         @if (i >= 0)
         {
-            <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Data.Settings.Basic.RunShortcut(shortcut)" data-toggle="tooltip" title="@(shortcut[0])">
+            <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Basic.RunShortcut(shortcut)" data-toggle="tooltip" title="@(shortcut[0])">
                 <img src="@(CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
             </button>
         }
     }
-    <button id="btnOpenShortcutFolder" @onclick="() => OpenFolder(Path.GetFullPath(CurrentPlatform.Instance.ShortcutFolder))" data-toggle="tooltip" title="@(_locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
+    <button id="btnOpenShortcutFolder" @onclick="() => OpenFolder(Path.GetFullPath(CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(_locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
 </div>
 
 <div class="acc_list_actionbar">
@@ -55,7 +53,7 @@
     <div>
 
         <div class="shortcuts">
-            @foreach (var (i, shortcut) in _basic.Shortcuts)
+            @foreach (var (i, shortcut) in Basic.Shortcuts)
             {
                 @if (i < 0)
                 {
@@ -67,10 +65,10 @@
         </div>
         <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(_locale["Tooltip_ExpandShortcuts"])" data-placement="left"><i class="fas fa-chevron-up"></i></button>
 
-        @if (CurrentPlatform.Instance.ShortcutIncludeMainExe)
+        @if (CurrentPlatform.ShortcutIncludeMainExe)
         {
-            <button id="btnStartPlat" @onclick="() => Data.Settings.Basic.RunPlatform()" data-toggle="tooltip" title="@(CurrentPlatform.Instance.SafeName)">
-                <img src="@(CurrentPlatform.GetShortcutImagePath(CurrentPlatform.Instance.SafeName))" alt="Start platform"/>
+            <button id="btnStartPlat" @onclick="() => Data.Settings.Basic.RunPlatform()" data-toggle="tooltip" title="@(CurrentPlatform.SafeName)">
+                <img src="@(CurrentPlatform.GetShortcutImagePath(CurrentPlatform.SafeName))" alt="Start platform"/>
             </button>
         }
 
@@ -115,7 +113,7 @@
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
     {
-        _appSettings.StreamerModeCheck();
+        AppSettings.StreamerModeCheck();
 
         var requestPlat = "";
         var uri = _navManager.ToAbsoluteUri(_navManager.Uri);
@@ -126,17 +124,17 @@
 
         // Get platform name from URI if not set.
         if (!string.IsNullOrEmpty(requestPlat))
-            BasicPlatforms.Instance.SetCurrentPlatformFromShort(requestPlat);
+            BasicPlatforms.SetCurrentPlatformFromShort(requestPlat);
 
         // If current platform is NOT valid -> Go back
-        if (!CurrentPlatform.Instance.IsInit)
+        if (!CurrentPlatform.IsInit)
         {
             _navBack = true;
             return;
         }
 
         // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
-        if (File.Exists(_basic.Exe())) return;
+        if (File.Exists(Basic.Exe())) return;
 
         _navBack = true;
     }
@@ -148,6 +146,6 @@
             _navManager.NavigateTo(_navManager.BaseUri);
             return;
         }
-        await GeneralFuncs.HandleFirstRender(firstRender, CurrentPlatform.Instance.FullName);
+        await GeneralFuncs.HandleFirstRender(firstRender, CurrentPlatform.FullName);
     }
 }

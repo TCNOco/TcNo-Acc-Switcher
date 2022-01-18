@@ -15,11 +15,10 @@
 @page "/Basic/Settings"
 @using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @using TcNo_Acc_Switcher_Server.Data
+@using Basic = Data.Settings.Basic
 @namespace TcNo_Acc_Switcher_Server.Pages.Basic
 @inject NavigationManager _navManager
 @{ AppData.SetActiveNavMan(_navManager); }
-@inject Data.Settings.Basic _basic
-@inject Data.AppSettings _appSett
 @inject IJSRuntime _jsRuntime
 @{ AppData.SetActiveIJsRuntime(_jsRuntime); }
 
@@ -37,15 +36,15 @@
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="AltClose" @bind="_basic.AltClose"><label class="form-check-label" for="AltClose"></label></div><label for="AltClose">@_locale["Settings_AltClose"]</label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="AltClose" @bind="Basic.AltClose"><label class="form-check-label" for="AltClose"></label></div><label for="AltClose">@_locale["Settings_AltClose"]</label>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="_basic.DesktopShortcut" @onclick="() => Shortcut.DesktopShortcut_Toggle(CurrentPlatform.Instance.FullName, _basic.DesktopShortcut)"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
-		            @_locale["Settings_Shortcut", new { platform = CurrentPlatform.Instance.FullName }]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="Basic.DesktopShortcut" @onclick="() => Shortcut.DesktopShortcut_Toggle(CurrentPlatform.FullName, Basic.DesktopShortcut)"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
+		            @_locale["Settings_Shortcut", new { platform = CurrentPlatform.FullName }]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="_basic.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
-		            @_locale["Settings_Admin", new { platform = CurrentPlatform.Instance.FullName }]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="Basic.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
+		            @_locale["Settings_Admin", new { platform = CurrentPlatform.FullName }]<br></label>
             </div>
 
 
@@ -53,17 +52,17 @@
                 <hr><span>@_locale["Settings_Header_TraySettings"]</span>
                 <hr>
             </div>
-            <div class="form-text"><span>@_locale["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="_basic.TrayAccNumber"></div>
+            <div class="form-text"><span>@_locale["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="Basic.TrayAccNumber"></div>
 
 
             <div class="SettingsHeader">
                 <hr><span>@_locale["Settings_Header_GeneralTools"]</span>
                 <hr>
             </div>
-            <p>@_locale["Settings_CurrentLocation", new { path = _basic.FolderPath }]</p>
-            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = CurrentPlatform.Instance.FullName }]</span></button><button id="OpenFolder" type="button" @onclick="OpenFolder"><span>@_locale["Settings_OpenFolder", new { platform = CurrentPlatform.Instance.FullName }]</span></button></div>
+            <p>@_locale["Settings_CurrentLocation", new { path = Basic.FolderPath }]</p>
+            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = CurrentPlatform.FullName }]</span></button><button id="OpenFolder" type="button" @onclick="OpenFolder"><span>@_locale["Settings_OpenFolder", new { platform = CurrentPlatform.FullName }]</span></button></div>
             <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button>
-                @if (CurrentPlatform.Instance.CachePaths != null)
+                @if (CurrentPlatform.CachePaths != null)
                 {
                     <button id="ClearCache" type="button" @onclick="BasicSwitcherFuncs.ClearCache"><span>@_locale["Platform_ClearCache"]</span></button>
                 }
@@ -88,8 +87,8 @@
 {
     public void SaveAndClose()
     {
-        _appSett.SaveSettings();
-        _basic.SaveSettings();
+        AppSettings.SaveSettings();
+        Basic.SaveSettings();
 
         _navManager.NavigateTo("/Basic");
     }

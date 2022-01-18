@@ -28,29 +28,29 @@ namespace TcNo_Acc_Switcher_Server.Shared
     {
         public string GetStylesheetMarkupString()
         {
-            if (_appSettings.Stylesheet == null)
+            if (AppSettings.Stylesheet == null)
             {
-                _ = AppSettings.Instance.LoadFromFile();
+                _ = AppSettings.LoadFromFile();
             }
 
-            var style = AppSettings.Instance.Stylesheet;
+            var style = AppSettings.Stylesheet;
 
-            if (OperatingSystem.IsWindows() && AppSettings.Instance.WindowsAccent)
+            if (OperatingSystem.IsWindows() && AppSettings.WindowsAccent)
             {
                 var start = style.IndexOf("--accent:", StringComparison.Ordinal);
                 var end = style.IndexOf(";", start, StringComparison.Ordinal) - start;
                 style = style.Replace(style.Substring(start, end), "");
 
-                var (h, s, l) = AppSettings.Instance.WindowsAccentColorHsl;
-                var (r, g, b) = AppSettings.Instance.WindowsAccentColorInt;
-                style = $":root {{ --accentHS: {h}, {s}%; --accentL: {l}%; --accent: {AppSettings.Instance.WindowsAccentColor}}}\n\n; --accentInt: {r}, {g}, {b}" + style;
+                var (h, s, l) = AppSettings.WindowsAccentColorHsl;
+                var (r, g, b) = AppSettings.WindowsAccentColorInt;
+                style = $":root {{ --accentHS: {h}, {s}%; --accentL: {l}%; --accent: {AppSettings.WindowsAccentColor}}}\n\n; --accentInt: {r}, {g}, {b}" + style;
             }
 
-            if (AppSettings.Instance.Rtl)
+            if (AppSettings.Rtl)
                 style = "@import url(css/rtl.min.css);\n" + style;
 
-            if (AppSettings.Instance.Background != "")
-                style += ".programMain {background: url(" + AppSettings.Instance.Background + ")!important;background-size:cover!important;}";
+            if (AppSettings.Background != "")
+                style += ".programMain {background: url(" + AppSettings.Background + ")!important;background-size:cover!important;}";
 
             return style;
         }

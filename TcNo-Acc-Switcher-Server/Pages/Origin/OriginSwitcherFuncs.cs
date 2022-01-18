@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using OriginSettings = TcNo_Acc_Switcher_Server.Data.Settings.Origin;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Origin
 {
@@ -16,7 +17,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
     {
         private static readonly Lang Lang = Lang.Instance;
 
-        private static readonly Data.Settings.Origin Origin = Data.Settings.Origin.Instance;
         private static readonly string OriginRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Origin");
         private static readonly string OriginProgramData = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Origin");
         /// <summary>
@@ -29,7 +29,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         {
             // Normal:
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.LoadProfiles] Loading Origin profiles");
-            Data.Settings.Origin.Instance.LoadFromFile();
+            Data.Settings.Origin.LoadFromFile();
             _ = GenericFunctions.GenericLoadAccounts("Origin", true);
         }
 
@@ -38,7 +38,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
         /// </summary>
         /// <returns></returns>
         [JSInvokable]
-        public static Task<bool> GetOriginForgetAcc() => Task.FromResult(Origin.ForgetAccountEnabled);
+        public static Task<bool> GetOriginForgetAcc() => Task.FromResult(OriginSettings.ForgetAccountEnabled);
 
         /// <summary>
         /// Remove requested account from loginusers.vdf
@@ -69,7 +69,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             Globals.DebugWriteLine(@"[Func:Origin\OriginSwitcherFuncs.SwapOriginAccounts] Swapping to: hidden.");
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Origin" }]);
-            if (!GeneralFuncs.CloseProcesses(Data.Settings.Origin.Processes, Data.Settings.Origin.Instance.AltClose))
+            if (!GeneralFuncs.CloseProcesses(Data.Settings.Origin.Processes, Data.Settings.Origin.AltClose))
             {
                 _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Origin" }]);
                 return;
@@ -83,11 +83,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             if (accName != "")
             {
                 if (!OriginCopyInAccount(accName, state)) return;
-                Globals.AddTrayUser("Origin", "+o:" + accName, accName, Origin.TrayAccNumber); // Add to Tray list
+                Globals.AddTrayUser("Origin", "+o:" + accName, accName, OriginSettings.TrayAccNumber); // Add to Tray list
             }
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Origin" }]);
-            Globals.StartProgram(Origin.Exe(), Origin.Admin, args);
+            Globals.StartProgram(OriginSettings.Exe(), OriginSettings.Admin, args);
 
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
@@ -235,7 +235,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Origin
             var destImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\origin\\{Globals.GetCleanFilePath(accName)}.jpg");
             if (File.Exists(destImg))
             {
-                _ = GeneralFuncs.DeletedOutdatedFile(destImg, Origin.ImageExpiryTime);
+                _ = GeneralFuncs.DeletedOutdatedFile(destImg, OriginSettings.ImageExpiryTime);
                 _ = GeneralFuncs.DeletedInvalidImage(destImg);
             }
             if (!File.Exists(destImg)) File.Copy((pfpFilePath != "" ? pfpFilePath : Path.Join(GeneralFuncs.WwwRoot(), "img\\QuestionMark.jpg"))!, destImg, true);

@@ -71,7 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.SwapToSteam] {(steamId.Length > 0 ? steamId.Substring(steamId.Length - 4, 4) : "")}, ePersonaState: {ePersonaState}");
             // If just double-clicked
-            if (ePersonaState == -1) ePersonaState = Data.Settings.Steam.Instance.OverrideState;
+            if (ePersonaState == -1) ePersonaState = Data.Settings.Steam.OverrideState;
             SteamSwitcherFuncs.SwapSteamAccounts(steamId, ePersonaState: ePersonaState);
         }
 
@@ -79,7 +79,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static void SteamOpenUserdata(string steamId)
         {
             var steamId32 = new Converters.SteamIdConvert(steamId);
-            var folder = Path.Join(Data.Settings.Steam.Instance.FolderPath, $"userdata\\{steamId32.Id32}");
+            var folder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{steamId32.Id32}");
             if (Directory.Exists(folder)) _ = Process.Start("explorer.exe", folder);
             else _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"], "toastarea");
         }

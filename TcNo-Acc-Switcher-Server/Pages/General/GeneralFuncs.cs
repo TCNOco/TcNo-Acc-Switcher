@@ -665,7 +665,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (firstRender)
             {
                 // Handle Streamer Mode notification
-                if (AppSettings.Instance.StreamerModeEnabled && AppSettings.Instance.StreamerModeTriggered)
+                if (AppSettings.StreamerModeEnabled && AppSettings.StreamerModeTriggered)
                     _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_StreamerModeHint"], Lang["Toast_StreamerModeTitle"], "toastarea");
 
                 // Handle loading accounts for specific platforms
@@ -677,27 +677,27 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                     case "BattleNet":
                         await BattleNet.BattleNetSwitcherFuncs.LoadProfiles();
-                        Data.Settings.BattleNet.Instance.SaveSettings(!File.Exists(Data.Settings.BattleNet.SettingsFile));
+                        Data.Settings.BattleNet.SaveSettings(!File.Exists(Data.Settings.BattleNet.SettingsFile));
                         break;
 
                     case "Origin":
                         Origin.OriginSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Origin.Instance.SaveSettings(!File.Exists(Data.Settings.Origin.SettingsFile));
+                        Data.Settings.Origin.SaveSettings(!File.Exists(Data.Settings.Origin.SettingsFile));
                         break;
 
                     case "Steam":
                         await Steam.SteamSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Steam.Instance.SaveSettings(!File.Exists(Data.Settings.Steam.SettingsFile));
+                        Data.Settings.Steam.SaveSettings(!File.Exists(Data.Settings.Steam.SettingsFile));
                         break;
 
                     case "Ubisoft":
                         await Ubisoft.UbisoftSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Ubisoft.Instance.SaveSettings(!File.Exists(Data.Settings.Ubisoft.SettingsFile));
+                        Data.Settings.Ubisoft.SaveSettings(!File.Exists(Data.Settings.Ubisoft.SettingsFile));
                         break;
 
                     default:
                         Basic.BasicSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Basic.Instance.SaveSettings( !File.Exists(CurrentPlatform.Instance.FullName));
+                        Data.Settings.Basic.SaveSettings( !File.Exists(CurrentPlatform.FullName));
                         break;
                 }
 

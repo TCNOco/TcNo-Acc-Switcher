@@ -18,7 +18,6 @@
 @inject NavigationManager _navManager
 @inject AppData _appData
 @{ _appData.SetActiveNavMan(_navManager); }
-@inject AppSettings _appSett
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 @inject Lang  _locale
@@ -29,16 +28,16 @@
             <div class="toastarea"></div>
             <SharedSettings />
 
-            @if (_appSett.DisabledPlatforms.Count > 0)
+            @if (AppSettings.DisabledPlatforms.Count > 0)
             {
                 <div class="SettingsHeader">
                     <hr><span>@_locale["Settings_Header_HiddenPlatforms"]</span>
                     <hr>
                 </div>
                 <div class="rowSetting">
-                    @foreach (var item in _appSett.DisabledPlatforms)
+                    @foreach (var item in AppSettings.DisabledPlatforms)
                     {
-                        <div class="form-check"><input class="form-check-input" type="checkbox" id="@item" checked @onclick="() => ShowPlatform(item)"><label class="form-check-label" for="@item"></label></div><label for="@item">@BasicPlatforms.Instance.PlatformFullName(item)<br></label>
+                        <div class="form-check"><input class="form-check-input" type="checkbox" id="@item" checked @onclick="() => ShowPlatform(item)"><label class="form-check-label" for="@item"></label></div><label for="@item">@BasicPlatforms.PlatformFullName(item)<br></label>
                     }
                 </div>
             }
@@ -62,7 +61,7 @@
 {
     public void SaveAndClose()
     {
-        _appSett.SaveSettings();
+        AppSettings.SaveSettings();
 
         _navManager.NavigateTo("/");
     }

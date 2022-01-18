@@ -15,20 +15,19 @@
 @page "/Steam/"
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
+@using Steam = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
 @inject AppData _appData
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 @inject NavigationManager _navManager
 @{ _appData.SetActiveNavMan(_navManager); }
 
-@inject AppSettings _appSettings
-<style>@(new AppSettings().GetCssBlock())</style>
-<style>@(new Data.Settings.Steam().GetSteamIdCssBlock())</style>
+<style>@(AppSettings.GetCssBlock())</style>
+<style>@(Steam.GetSteamIdCssBlock())</style>
 @inject Lang  _locale
-@inject Data.Settings.Steam _steam
 
-<ContextMenu ContextMenuString="@_steam.ContextMenuJson" ContextMenuId="AccOrPlatList" />
-@*<ContextMenu ContextMenuString="@_steam.ContextMenuJson" ContextMenuId="Shortcuts" />*@
+<ContextMenu ContextMenuString="@Steam.ContextMenuJson" ContextMenuId="AccOrPlatList" />
+@*<ContextMenu ContextMenuString="@Steam.ContextMenuJson" ContextMenuId="Shortcuts" />*@
 <div id="acc_list" class="acc_list">
     <toastarea class="toastarea" />
 </div>
@@ -61,8 +60,8 @@
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
     {
-        _appSettings.StreamerModeCheck();
-        //var f = AppSettings.Instance.UsingTcNoBrowser;
+        AppSettings.StreamerModeCheck();
+        //var f = AppSettings.UsingTcNoBrowser;
     }
 
     //protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "Steam");

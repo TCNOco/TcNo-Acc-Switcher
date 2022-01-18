@@ -210,7 +210,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         public static bool CheckShortcuts(string platform)
         {
             Globals.DebugWriteLine(@$"[Func:Data\Settings\Shared.CheckShortcuts] platform={platform}");
-            AppSettings.Instance.CheckShortcuts();
+            AppSettings.CheckShortcuts();
             return File.Exists(Path.Join(Desktop, $"{platform} - TcNo Account Switcher.lnk"));
         }
 
@@ -218,9 +218,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         {
             Globals.DebugWriteLine(@$"[Func:Data\Settings\Shared.DesktopShortcut_Toggle] platform={platform}");
             var s = new Shortcut();
-            if (BasicPlatforms.Instance.PlatformExists(platform))
+            if (BasicPlatforms.PlatformExists(platform))
             {
-                _ = s.Shortcut_Platform(Desktop, platform, BasicPlatforms.Instance.PrimaryIdFromPlatform(platform).ToLowerInvariant());
+                _ = s.Shortcut_Platform(Desktop, platform, BasicPlatforms.PrimaryIdFromPlatform(platform).ToLowerInvariant());
             }
             else
                 _ = s.Shortcut_Platform(Desktop, platform, platform.ToLowerInvariant());
