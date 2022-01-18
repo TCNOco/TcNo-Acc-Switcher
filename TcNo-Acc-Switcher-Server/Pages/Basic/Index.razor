@@ -40,7 +40,7 @@
     {
         @if (i >= 0)
         {
-            <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Basic.RunShortcut(shortcut)" data-toggle="tooltip" title="@(shortcut[0])">
+            <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Basic.RunShortcut(shortcut)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
                 <img src="@(CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
             </button>
         }
@@ -57,7 +57,7 @@
             {
                 @if (i < 0)
                 {
-                    <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Data.Settings.Basic.RunShortcut(shortcut)" data-toggle="tooltip" title="@(shortcut[0])">
+                    <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Basic.RunShortcut(shortcut)" data-toggle="tooltip" title="@(RemoveShortcutExt(shortcut))">
                         <img src="@(CurrentPlatform.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                     </button>
                 }
@@ -99,6 +99,8 @@
 
 @code
 {
+    private string RemoveShortcutExt(string s) => s.Replace(".lnk", "").Replace(".url", "");
+
     private void OpenFolder(string folder)
     {
         Directory.CreateDirectory(folder); // Create if doesn't exist

@@ -35,61 +35,83 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             {
                 lock (LockObj)
                 {
-                    return _instance ??= new Steam();
+                    // Load settings if have changed, or not set
+                    if (_instance is { _currentlyModifying: true }) return _instance;
+                    if (_instance != new Steam() && Globals.GetFileMd5(SettingsFile) == _instance._lastHash) return _instance;
+
+                    _instance = new Steam { _currentlyModifying = true };
+
+                    if (File.Exists(SettingsFile))
+                    {
+                        _instance = JsonConvert.DeserializeObject<Steam>(File.ReadAllText(SettingsFile), new JsonSerializerSettings() { });
+                        _instance._lastHash = Globals.GetFileMd5(SettingsFile);
+                    }
+                    else
+                    {
+                        SaveSettings();
+                    }
+
+                    _instance._currentlyModifying = false;
+
+                    return _instance;
                 }
             }
             set => _instance = value;
         }
+        private string _lastHash = "";
+        private bool _currentlyModifying = false;
+        public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
+
 
         // Variables
-        private bool _forgetAccountEnabled;
-        private string _folderPath = "C:\\Program Files (x86)\\Steam\\";
-        private bool _admin;
-        private bool _showSteamId;
-        private bool _showVac = true;
-        private bool _showLimited = true;
-        private bool _showAccUsername = true;
-        private bool _trayAccName;
-        private int _imageExpiryTime = 7;
-        private int _trayAccNumber = 3;
-        private int _overrideState = -1;
-        private bool _altClose;
-        private bool _desktopShortcut;
+        [JsonProperty("ForgetAccountEnabled", Order = 0)] private bool _forgetAccountEnabled;
+        [JsonProperty("FolderPath", Order = 1)] private string _folderPath = "C:\\Program Files (x86)\\Steam\\";
+        [JsonProperty("Steam_Admin", Order = 3)] private bool _admin;
+        [JsonProperty("Steam_ShowSteamID", Order = 4)] private bool _showSteamId;
+        [JsonProperty("Steam_ShowVAC", Order = 5)] private bool _showVac = true;
+        [JsonProperty("Steam_ShowLimited", Order = 6)] private bool _showLimited = true;
+        [JsonProperty("Steam_ShowAccUsername", Order = 7)] private bool _showAccUsername = true;
+        [JsonProperty("Steam_TrayAccountName", Order = 8)] private bool _trayAccName;
+        [JsonProperty("Steam_ImageExpiryTime", Order = 9)] private int _imageExpiryTime = 7;
+        [JsonProperty("Steam_TrayAccNumber", Order = 10)] private int _trayAccNumber = 3;
+        [JsonProperty("Steam_OverrideState", Order = 11)] private int _overrideState = -1;
+        [JsonProperty("AltClose", Order = 13)] private bool _altClose;
+        [JsonIgnore] private bool _desktopShortcut;
 
-        [JsonProperty("ForgetAccountEnabled", Order = 0)] public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
+        public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
 
-        [JsonProperty("FolderPath", Order = 1)] public static string FolderPath { get => Instance._folderPath; set => Instance._folderPath = value; }
+        public static string FolderPath { get => Instance._folderPath; set => Instance._folderPath = value; }
 
-        [JsonProperty("Steam_Admin", Order = 3)] public static bool Admin { get => Instance._admin; set => Instance._admin = value; }
+        public static bool Admin { get => Instance._admin; set => Instance._admin = value; }
 
-        [JsonProperty("Steam_ShowSteamID", Order = 4)] public static bool ShowSteamId { get => Instance._showSteamId; set => Instance._showSteamId = value; }
+        public static bool ShowSteamId { get => Instance._showSteamId; set => Instance._showSteamId = value; }
 
-        [JsonProperty("Steam_ShowVAC", Order = 5)] public static bool ShowVac { get => Instance._showVac; set => Instance._showVac = value; }
+        public static bool ShowVac { get => Instance._showVac; set => Instance._showVac = value; }
 
-        [JsonProperty("Steam_ShowLimited", Order = 6)] public static bool ShowLimited { get => Instance._showLimited; set => Instance._showLimited = value; }
+        public static bool ShowLimited { get => Instance._showLimited; set => Instance._showLimited = value; }
 
-        [JsonProperty("Steam_ShowAccUsername", Order = 7)] public static bool ShowAccUsername { get => Instance._showAccUsername; set => Instance._showAccUsername = value; }
+        public static bool ShowAccUsername { get => Instance._showAccUsername; set => Instance._showAccUsername = value; }
 
-        [JsonProperty("Steam_TrayAccountName", Order = 8)] public static bool TrayAccName { get => Instance._trayAccName; set => Instance._trayAccName = value; }
+        public static bool TrayAccName { get => Instance._trayAccName; set => Instance._trayAccName = value; }
 
-        [JsonProperty("Steam_ImageExpiryTime", Order = 9)] public static int ImageExpiryTime { get => Instance._imageExpiryTime; set => Instance._imageExpiryTime = value; }
+        public static int ImageExpiryTime { get => Instance._imageExpiryTime; set => Instance._imageExpiryTime = value; }
 
-        [JsonProperty("Steam_TrayAccNumber", Order = 10)] public static int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
+        public static int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
 
-        [JsonProperty("Steam_OverrideState", Order = 11)] public static int OverrideState { get => Instance._overrideState; set => Instance._overrideState = value; }
+        public static int OverrideState { get => Instance._overrideState; set => Instance._overrideState = value; }
 
-        [JsonProperty("AltClose", Order = 13)] public static bool AltClose { get => Instance._altClose; set => Instance._altClose = value; }
+        public static bool AltClose { get => Instance._altClose; set => Instance._altClose = value; }
 
-        [JsonIgnore] public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
+        public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
         // Constants
-        [JsonIgnore] public static readonly List<string> Processes = new() { "steam.exe", "steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
-        [JsonIgnore] public static readonly string VacCacheFile = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
-        [JsonIgnore] public static readonly string SettingsFile = "SteamSettings.json";
-        [JsonIgnore] public static readonly string ForgottenFile = "SteamForgotten.json";
-        [JsonIgnore] public static readonly string SteamImagePath = "wwwroot/img/profiles/steam/";
-        [JsonIgnore] public static readonly string SteamImagePathHtml = "img/profiles/steam/";
-        [JsonIgnore] public static readonly string ContextMenuJson = $@"[
+        public static readonly List<string> Processes = new() { "steam.exe", "steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
+        public static readonly string VacCacheFile = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
+        public static readonly string SettingsFile = "SteamSettings.json";
+        public static readonly string ForgottenFile = "SteamForgotten.json";
+        public static readonly string SteamImagePath = "wwwroot/img/profiles/steam/";
+        public static readonly string SteamImagePathHtml = "img/profiles/steam/";
+        public static readonly string ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_LoginAsSubmenu"]}"": [
 					{{""{Lang["Invisible"]}"": ""swapTo(7, event)""}},
@@ -212,29 +234,5 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
         /// </summary>
         public static string GetSteamIdCssBlock() => ".steamId { display: " + (_instance._showSteamId ? "block" : "none") + " }";
-
-        #region SETTINGS
-        public static void SetFromJObject(JObject j)
-        {
-            Globals.DebugWriteLine(@"[Func:Data\Settings\Steam.SetFromJObject]");
-            var curSettings = j.ToObject<Steam>();
-            if (curSettings == null) return;
-            ForgetAccountEnabled = curSettings._forgetAccountEnabled;
-            FolderPath = curSettings._folderPath;
-            Admin = curSettings._admin;
-            ShowSteamId = curSettings._showSteamId;
-            ShowVac = curSettings._showVac;
-            ShowLimited = curSettings._showLimited;
-            TrayAccName = curSettings._trayAccName;
-            ImageExpiryTime = curSettings._imageExpiryTime;
-            TrayAccNumber = curSettings._trayAccNumber;
-            DesktopShortcut = Shortcut.CheckShortcuts("Steam");
-            AltClose = curSettings._altClose;
-            _ = Shortcut.StartWithWindows_Enabled();
-        }
-        public static void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, JObject.FromObject(new Steam())));
-
-        public static void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, JObject.FromObject(Instance), mergeNewIntoOld);
-        #endregion
     }
 }

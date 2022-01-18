@@ -32,7 +32,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         public static void LoadProfiles()
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.LoadProfiles] Loading Basic profiles for: " + CurrentPlatform.FullName);
-            BasicSettings.LoadFromFile();
             _ = GenericFunctions.GenericLoadAccounts(CurrentPlatform.FullName, true);
         }
 
@@ -273,6 +272,33 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             }
             return true;
         }
+        private static string RegexSearchFileOrFolder(string accFile, string regex)
+        {
+            // The "file" is a registry key
+            if (OperatingSystem.IsWindows() && accFile.StartsWith("REG:"))
+                return Globals.ReadRegistryKey(accFile);
+
+            // Handle wildcards
+            if (accFile.Contains("*"))
+            {
+                var folder = ExpandEnvironmentVariables(Path.GetDirectoryName(accFile) ?? "");
+                var file = Path.GetFileName(accFile);
+
+                // Handle "...\\*" folder.
+                // as well as "...\\*.log" or "...\\file_*", etc.
+                // This is NOT recursive - Specify folders manually in JSON
+                return Directory.Exists(folder) ? Globals.RegexSearchFolder(folder, regex, file) : "";
+            }
+
+            var fullPath = ExpandEnvironmentVariables(accFile);
+            // Is folder? Search folder.
+            if (Directory.Exists(fullPath))
+                return Globals.RegexSearchFolder(fullPath, regex);
+
+            // Is file? Search file
+            var m = Regex.Match(File.ReadAllText(fullPath!), regex);
+            return m.Success ? m.Value : "";
+        }
 
         public static string ExpandEnvironmentVariables(string path)
         {
@@ -351,7 +377,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             {
                 // Kill game processes
                 _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Basic" }]);
-                if (!GeneralFuncs.CloseProcesses(CurrentPlatform.ExesToEnd, Data.Settings.Basic.AltClose))
+                if (!GeneralFuncs.CloseProcesses(CurrentPlatform.ExesToEnd, BasicSettings.AltClose))
                 {
                     _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.FullName }]);
                     return false;
@@ -399,7 +425,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // Handle special args in username
             var hadSpecialProperties = ProcessSpecialAccName(specialString, accName, uniqueId);
 
-
             var regJson = CurrentPlatform.HasRegistryFiles ? CurrentPlatform.ReadRegJson(accName) : new Dictionary<string, string>();
 
             foreach (var (accFile, savedFile) in CurrentPlatform.LoginFiles)
@@ -436,6 +461,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             File.WriteAllText(CurrentPlatform.IdsJsonPath, JsonConvert.SerializeObject(allIds));
 
             // Copy in profile image from default -- As long as not already handled by special arguments
+            // Or if has ProfilePicFromFile and ProfilePicRegex.
             if (!hadSpecialProperties.Contains("IMAGE|"))
             {
                 _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{CurrentPlatform.SafeName}"));
@@ -443,10 +469,29 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 if (!File.Exists(profileImg))
                 {
                     var platformImgPath = "\\img\\platform\\" + CurrentPlatform.SafeName + "Default.png";
-                    var currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), platformImgPath);
-                    File.Copy(File.Exists(currentPlatformImgPath)
-                        ? Path.Join(currentPlatformImgPath)
-                        : Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png"), profileImg, true);
+
+                    // Copy in profile picture (if found) from Regex search of files (if defined)
+                    if (CurrentPlatform.ProfilePicFromFile != "" && CurrentPlatform.ProfilePicRegex != "")
+                    {
+                        var res = RegexSearchFileOrFolder(CurrentPlatform.ProfilePicFromFile,
+                            CurrentPlatform.ProfilePicRegex);
+                        if (res != "" && File.Exists(res))
+                            try
+                            {
+                                File.Copy(res, profileImg, true);
+                            }
+                            catch (Exception e)
+                            {
+                                Globals.WriteToLog("Tried to save profile picture from path (ProfilePicFromFile, ProfilePicRegex method)", e);
+                            }
+                    }
+                    else
+                    {
+                        var currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), platformImgPath);
+                        File.Copy(File.Exists(currentPlatformImgPath)
+                            ? Path.Join(currentPlatformImgPath)
+                            : Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png"), profileImg, true);
+                    }
                 }
             }
 
@@ -497,10 +542,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
                 // Handle "...\\*.log" or "...\\file_*", etc.
                 // This is NOT recursive - Specify folders manually in JSON
-                _ = Directory.CreateDirectory(toFullPath);
+                _ = Directory.CreateDirectory(folder);
                 foreach (var f in Directory.GetFiles(folder, file))
                 {
-                    var fullOutputPath = Path.Join(toFullPath, Path.GetFileName(f));
+                    var fullOutputPath = Path.Join(folder, Path.GetFileName(f));
                     if (File.Exists(f)) File.Copy(f, fullOutputPath, true);
                 }
 
@@ -595,11 +640,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             {
                 if (CurrentPlatform.UniqueIdRegex != null)
                 {
-                    var m = Regex.Match(
-                        File.ReadAllText(fileToRead),
-                        CurrentPlatform.UniqueIdRegex);
-                    if (m.Success)
-                        uniqueId = m.Value;
+                    uniqueId = RegexSearchFileOrFolder(fileToRead, CurrentPlatform.UniqueIdRegex);
                 }
                 else if (CurrentPlatform.UniqueIdMethod is "FILE_MD5") // TODO: TEST THIS! -- This is used for static files that do not change throughout the lifetime of an account login.
                 {

@@ -113,7 +113,10 @@
       "UniqueIdMethod": "CREATE_ID_FILE"
     },
     "Discord PTB": {
-      "Identifiers": [ "dp", "discordptb", "ptb"
+      "Identifiers": [
+        "dp",
+        "discordptb",
+        "ptb"
       ],
       "ExeLocationDefault": "%LocalAppData%\\DiscordPTB\\Update.exe",
       "ExeExtraArgs": "--processStart DiscordPTB.exe",
@@ -169,23 +172,33 @@
       "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE",
       "STATUS": "WIP"
-    }
-  },
-  "Platform-WIP": {
+    },
     "Origin": {
-      "Identifiers": [ "sdfgsdfgsdfg" ],
+      "Identifiers": [ "o", "origin" ],
       "ExeLocationDefault": "C:\\Program Files (x86)\\Origin\\Origin.exe",
-      "ExesToEnd": [ "Origin.exe" ],
-      "PathListToClear": [ "%AppData%\\Origin\\ConsolidatedCache\\" ],
+      "ExesToEnd": [ "Origin.exe", "SERVICE:OriginWebHelperService.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
-        "%AppData%\\Origin\\ConsolidatedCache\\": "ConsolidatedCache",
-        "%AppData%\\Origin\\NucleusCache\\": "NucleusCache",
-        "%AppData%\\Origin\\Logs\\": "Logs",
-        "%ProgramData%\\Origin\\Subscription\\": "Subscription"
+        "%ProgramData%\\Origin\\*.olc": "ProgramData\\*.olc",
+        "%AppData%\\Origin\\ConsolidatedCache\\": "AppData\\ConsolidatedCache",
+        "%AppData%\\Origin\\NucleusCache\\": "AppData\\NucleusCache",
+        "%AppData%\\Origin\\Logs\\": "AppData\\Logs",
+        "%ProgramData%\\Origin\\Subscription\\": "ProgramData\\Subscription",
+        "%AppData%\\Origin\\local*": "AppData\\",
+        "%AppData%\\Origin\\*.xml": "AppData\\",
+        "%ProgramData%\\Origin\\*.xml": "ProgramData\\",
+        "%ProgramData%\\Origin\\local.xml": "ProgramData\\"
       },
-      "UniqueIdFile": "*.olc",
+      "ExitBeforeInteract": true,
+      "Extras": {
+        "ProfilePicFromFile": "%AppData%\\Origin\\local*",
+        "ProfilePicRegex": "WIN_FILEPATH_REGEX"
+      },
+      "UniqueIdFile": "ProgramData\\*.olc",
       "UniqueIdMethod": "FILE_MD5",
       "STATUS": "WIP"
     }
+  },
+  "Platform-WIP": {
   }
 }

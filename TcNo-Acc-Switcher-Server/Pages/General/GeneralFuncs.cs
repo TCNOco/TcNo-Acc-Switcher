@@ -45,7 +45,23 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         #region PROCESS_OPERATIONS
 
-        public static bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
+        //public static bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
+        public static bool CanKillProcess(List<string> procNames, bool showModal = true)
+        {
+            var canKillAll = true;
+            foreach (var procName in procNames)
+            {
+                if (procName.StartsWith("SERVICE:")) // Services need admin to close (as far as I understand)
+                {
+                    if (showModal)
+                        _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+                    return false;
+                }
+                canKillAll = canKillAll && CanKillProcess(procName);
+            }
+
+            return canKillAll;
+        }
 
         public static bool CanKillProcess(string processName, bool showModal = true)
         {
@@ -100,6 +116,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             if (!OperatingSystem.IsWindows()) return false;
             var timeout = 0;
+            var areAnyRunning = false;
+            while (timeout <=10)
+            {
+                timeout++;
+                foreach (var procName in procNames)
+                {
+                    areAnyRunning = areAnyRunning || Globals.ProcessHelper.IsProcessRunning(procName);
+                    _ = AppData.InvokeVoidAsync("updateStatus", $"Waiting for {procNames[0]} & {procNames.Count - 1} others to close ({timeout}/10 seconds)");
+                }
+                if (areAnyRunning)
+                    Thread.Sleep(1000);
+                areAnyRunning = false;
+            }
             while (procNames.All(Globals.ProcessHelper.IsProcessRunning) && timeout < 10)
             {
                 timeout++;
@@ -467,6 +496,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         #region SETTINGS
         // Overload for below
         public static void SaveSettings(string file, JObject joNewSettings) => SaveSettings(file, joNewSettings, false);
+
+        public static void SaveSettings<T>(string file, T jSettings)
+        {
+            try
+            {
+                file = file.EndsWith(".json") ? file : file + ".json";
+
+                // Create folder if it doesn't exist:
+                var folder = Path.GetDirectoryName(file);
+                if (folder != "") _ = Directory.CreateDirectory(folder ?? string.Empty);
+
+                File.WriteAllText(file,
+                    JsonConvert.SerializeObject(JObject.FromObject(jSettings), Formatting.Indented));
+            }
+            catch (Exception ex)
+            {
+                Globals.WriteToLog(ex.ToString());
+            }
+        }
+
         /// <summary>
         /// Saves input JObject of settings to input file path
         /// </summary>
@@ -616,16 +665,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         #endregion
 
-        #region WINDOW SETTINGS
-        private static readonly AppSettings AppSettings = AppSettings.Instance;
-        public static bool WindowSettingsValid()
-        {
-            Globals.DebugWriteLine(@"[Func:General\GeneralFuncs.WindowSettingsValid]");
-            _ = AppSettings.LoadFromFile();
-            return true;
-        }
-        #endregion
-
         #region OTHER
         /// <summary>
         /// Replaces last occurrence of string in string
@@ -677,7 +716,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                     case "BattleNet":
                         await BattleNet.BattleNetSwitcherFuncs.LoadProfiles();
-                        Data.Settings.BattleNet.SaveSettings(!File.Exists(Data.Settings.BattleNet.SettingsFile));
+                        Data.Settings.BattleNet.SaveSettings();
                         break;
 
                     case "Origin":
@@ -687,7 +726,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                     case "Steam":
                         await Steam.SteamSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Steam.SaveSettings(!File.Exists(Data.Settings.Steam.SettingsFile));
+                        Data.Settings.Steam.SaveSettings();
                         break;
 
                     case "Ubisoft":
@@ -697,7 +736,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                     default:
                         Basic.BasicSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Basic.SaveSettings( !File.Exists(CurrentPlatform.FullName));
+                        Data.Settings.Basic.SaveSettings();
                         break;
                 }
 

@@ -23,6 +23,7 @@ using System.Runtime.Versioning;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
 using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -44,66 +45,80 @@ namespace TcNo_Acc_Switcher_Server.Data
         private static AppSettings _instance = new();
 
         private static readonly object LockObj = new();
-
         public static AppSettings Instance
         {
             get
             {
                 lock (LockObj)
                 {
-                    return _instance ??= new AppSettings();
+                    // Load settings if have changed, or not set
+                    if (_instance is {_currentlyModifying: true}) return _instance;
+                    if (_instance != new AppSettings() && Globals.GetFileMd5(SettingsFile) == _instance._lastHash) return _instance;
+
+                    _instance = new AppSettings { _currentlyModifying = true };
+
+                    if (File.Exists(SettingsFile))
+                    {
+                        _instance = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(SettingsFile), new JsonSerializerSettings() { });
+                        _instance._lastHash = Globals.GetFileMd5(SettingsFile);
+                    }else
+                    {
+                        SaveSettings();
+                    }
+
+                    LoadStylesheetFromFile();
+                    CheckShortcuts();
+
+                    _instance._currentlyModifying = false;
+
+                    return _instance;
                 }
             }
             set => _instance = value;
         }
 
         private static readonly Lang Lang = Lang.Instance;
+        private string _lastHash = "";
+        private bool _currentlyModifying = false;
+        public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
 
         // Variables
         private bool _updateAvailable;
-        [Newtonsoft.Json.JsonIgnore] public static bool UpdateAvailable { get => Instance._updateAvailable; set => Instance._updateAvailable = value; }
+        [JsonProperty("Language", Order = 0)] private string _lang = "";
+        [JsonProperty("Rtl", Order = 1)] private bool _rtl = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
+        [JsonProperty("StreamerModeEnabled", Order = 2)] private bool _streamerModeEnabled = true;
+        [JsonProperty("ServerPort", Order = 3)] private int _serverPort = 1337;
+        [JsonProperty("WindowSize", Order = 4)] private Point _windowSize = new() { X = 800, Y = 450 };
+        [JsonProperty("Version", Order = 5)] private readonly string _version = Globals.Version;
+        [JsonProperty("DisabledPlatforms", Order = 6)] private SortedSet<string> _disabledPlatforms = new();
+        [JsonProperty("TrayMinimizeNotExit", Order = 7)] private bool _trayMinimizeNotExit;
+        [JsonProperty("ShownMinimizedNotification", Order = 8)] private bool _shownMinimizedNotification;
+        [JsonProperty("StartCentered", Order = 9)] private bool _startCentered;
+        [JsonProperty("ActiveTheme", Order = 10)] private string _activeTheme = "Dracula_Cyan";
+        [JsonProperty("ActiveBrowser", Order = 11)] private string _activeBrowser = "WebView";
+        [JsonProperty("Background", Order = 12)] private string _background = "";
+        [JsonProperty("EnabledBasicPlatforms", Order = 13)] private HashSet<string> _enabledBasicPlatforms = new();
+        [Newtonsoft.Json.JsonIgnore] private bool _desktopShortcut;
+        [Newtonsoft.Json.JsonIgnore] private bool _startMenu;
+        [Newtonsoft.Json.JsonIgnore] private bool _startMenuPlatforms;
+        [Newtonsoft.Json.JsonIgnore] private bool _protocolEnabled;
+        [Newtonsoft.Json.JsonIgnore] private bool _trayStartup;
 
-        private string _lang = "";
-        [JsonProperty("Language", Order = 0)] public static string Language { get => Instance._lang; set => Instance._lang = value; }
+        public static bool UpdateAvailable { get => Instance._updateAvailable; set => Instance._updateAvailable = value; }
+        public static string Language { get => Instance._lang; set => Instance._lang = value; }
+        public static bool Rtl { get => Instance._rtl; set => Instance._rtl = value; }
+        public static bool StreamerModeEnabled { get => Instance._streamerModeEnabled; set => Instance._streamerModeEnabled = value; }
+        public static int ServerPort { get => Instance._serverPort; set => Instance._serverPort = value; }
+        public static Point WindowSize { get => Instance._windowSize; set => Instance._windowSize = value; }
+        public static string Version => Instance._version;
+        public static SortedSet<string> DisabledPlatforms { get => Instance._disabledPlatforms; set => Instance._disabledPlatforms = value; }
+        public static bool TrayMinimizeNotExit { get => Instance._trayMinimizeNotExit; set => Instance._trayMinimizeNotExit = value; }
+        public static bool ShownMinimizedNotification { get => Instance._shownMinimizedNotification; set => Instance._shownMinimizedNotification = value; }
+        public static bool StartCentered { get => Instance._startCentered; set => Instance._startCentered = value; }
+        public static string ActiveTheme { get => Instance._activeTheme; set => Instance._activeTheme = value; }
+        public static string ActiveBrowser { get => Instance._activeBrowser; set => Instance._activeBrowser = value; }
+        public static string Background { get => Instance._background; set => Instance._background = value; }
 
-        private bool _rtl = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
-        [JsonProperty("Rtl", Order = 1)] public static bool Rtl { get => Instance._rtl; set => Instance._rtl = value; }
-
-        private bool _streamerModeEnabled = true;
-        [JsonProperty("StreamerModeEnabled", Order = 2)] public static bool StreamerModeEnabled { get => Instance._streamerModeEnabled; set => Instance._streamerModeEnabled = value; }
-
-        private int _serverPort = 1337;
-        [JsonProperty("ServerPort", Order = 3)] public static int ServerPort { get => Instance._serverPort; set => Instance._serverPort = value; }
-
-        private Point _windowSize = new() { X = 800, Y = 450 };
-        [JsonProperty("WindowSize", Order = 4)] public static Point WindowSize { get => Instance._windowSize; set => Instance._windowSize = value; }
-
-        private readonly string _version = Globals.Version;
-        [JsonProperty("Version", Order = 5)] public static string Version => Instance._version;
-
-        private SortedSet<string> _disabledPlatforms = new();
-        [JsonProperty("DisabledPlatforms", Order = 6)] public static SortedSet<string> DisabledPlatforms { get => Instance._disabledPlatforms; set => Instance._disabledPlatforms = value; }
-
-        private bool _trayMinimizeNotExit;
-        [JsonProperty("TrayMinimizeNotExit", Order = 7)] public static bool TrayMinimizeNotExit { get => Instance._trayMinimizeNotExit; set => Instance._trayMinimizeNotExit = value; }
-
-        private bool _shownMinimizedNotification;
-        [JsonProperty("ShownMinimizedNotification", Order = 8)] public static bool ShownMinimizedNotification { get => Instance._shownMinimizedNotification; set => Instance._shownMinimizedNotification = value; }
-
-        private bool _startCentered;
-        [JsonProperty("StartCentered", Order = 9)] public static bool StartCentered { get => Instance._startCentered; set => Instance._startCentered = value; }
-
-        private string _activeTheme = "Dracula_Cyan";
-        [JsonProperty("ActiveTheme", Order = 10)] public static string ActiveTheme { get => Instance._activeTheme; set => Instance._activeTheme = value; }
-
-        private string _activeBrowser = "WebView";
-        [JsonProperty("ActiveBrowser", Order = 11)] public static string ActiveBrowser { get => Instance._activeBrowser; set => Instance._activeBrowser = value; }
-
-        private string _background = "";
-        [JsonProperty("Background", Order = 12)] public static string Background { get => Instance._background; set => Instance._background = value; }
-
-        private HashSet<string> _enabledBasicPlatforms = new();
-        [JsonProperty("EnabledBasicPlatforms", Order = 13)]
         public static HashSet<string> EnabledBasicPlatforms
         {
             get => Instance._enabledBasicPlatforms;
@@ -117,23 +132,14 @@ namespace TcNo_Acc_Switcher_Server.Data
             return enabled;
         }
 
-        private bool _desktopShortcut;
-        [Newtonsoft.Json.JsonIgnore] public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
-        private bool _startMenu;
-        [Newtonsoft.Json.JsonIgnore] public static bool StartMenu { get => Instance._startMenu; set => Instance._startMenu = value; }
-        private bool _startMenuPlatforms;
-        [Newtonsoft.Json.JsonIgnore] public static bool StartMenuPlatforms { get => Instance._startMenuPlatforms; set => Instance._startMenuPlatforms = value; }
-        private bool _protocolEnabled;
-        [Newtonsoft.Json.JsonIgnore] public static bool ProtocolEnabled { get => Instance._protocolEnabled; set => Instance._protocolEnabled = value; }
-        private bool _trayStartup;
-        [Newtonsoft.Json.JsonIgnore] public static bool TrayStartup { get => Instance._trayStartup; set => Instance._trayStartup = value; }
+        public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
+        public static bool StartMenu { get => Instance._startMenu; set => Instance._startMenu = value; }
 
-        /// <summary>
-        /// Some features only work in the 'official browser' such as picking files, this will need to be adjusted for pure-web users, using just the server and another browser.
-        /// </summary>
-        private bool _usingTcNoBrowser;
-        [Newtonsoft.Json.JsonIgnore] public static bool UsingTcNoBrowser { get => Instance._usingTcNoBrowser; set => Instance._usingTcNoBrowser = value; }
+        public static bool StartMenuPlatforms { get => Instance._startMenuPlatforms; set => Instance._startMenuPlatforms = value; }
+
+        public static bool ProtocolEnabled { get => Instance._protocolEnabled; set => Instance._protocolEnabled = value; }
+        public static bool TrayStartup { get => Instance._trayStartup; set => Instance._trayStartup = value; }
 
         [Newtonsoft.Json.JsonIgnore]
         public static string PlatformContextMenu =>
@@ -172,28 +178,28 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         private string _stylesheet;
-        [Newtonsoft.Json.JsonIgnore] public static string Stylesheet { get => Instance._stylesheet; set => Instance._stylesheet = value; }
+        public static string Stylesheet { get => Instance._stylesheet; set => Instance._stylesheet = value; }
 
         private bool _windowsAccent;
         public static bool WindowsAccent { get => Instance._windowsAccent; set => Instance._windowsAccent = value; }
 
         private string _windowsAccentColor = "";
-        [Newtonsoft.Json.JsonIgnore] public static string WindowsAccentColor { get => Instance._windowsAccentColor; set => Instance._windowsAccentColor = value; }
+        public static string WindowsAccentColor { get => Instance._windowsAccentColor; set => Instance._windowsAccentColor = value; }
 
         private (float, float, float) _windowsAccentColorHsl = (0, 0, 0);
-        [Newtonsoft.Json.JsonIgnore] public static (float, float, float) WindowsAccentColorHsl { get => Instance._windowsAccentColorHsl; set => Instance._windowsAccentColorHsl = value; }
+        public static (float, float, float) WindowsAccentColorHsl { get => Instance._windowsAccentColorHsl; set => Instance._windowsAccentColorHsl = value; }
 
         [SupportedOSPlatform("windows")]
-        [Newtonsoft.Json.JsonIgnore] public static (int, int, int) WindowsAccentColorInt => GetAccentColor();
+        public static (int, int, int) WindowsAccentColorInt => GetAccentColor();
 
         // Constants
-        [Newtonsoft.Json.JsonIgnore] public static readonly string SettingsFile = "WindowSettings.json";
-        [Newtonsoft.Json.JsonIgnore] private static string StylesheetFile => Path.Join("themes", ActiveTheme, "style.css");
-        [Newtonsoft.Json.JsonIgnore] private static string StylesheetInfoFile => Path.Join("themes", ActiveTheme, "info.yaml");
+        public static readonly string SettingsFile = "WindowSettings.json";
+        private static string StylesheetFile => Path.Join("themes", ActiveTheme, "style.css");
+        private static string StylesheetInfoFile => Path.Join("themes", ActiveTheme, "info.yaml");
         private Dictionary<string, string> _stylesheetInfo;
-        [Newtonsoft.Json.JsonIgnore] public static Dictionary<string, string> StylesheetInfo { get => Instance._stylesheetInfo; set => Instance._stylesheetInfo = value; }
+        public static Dictionary<string, string> StylesheetInfo { get => Instance._stylesheetInfo; set => Instance._stylesheetInfo = value; }
 
-        [Newtonsoft.Json.JsonIgnore] public static bool StreamerModeTriggered;
+        public static bool StreamerModeTriggered;
 
         /// <summary>
         /// Check if any streaming software is running. Do let me know if you have a program name that you'd like to expand this list with!
@@ -247,25 +253,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             StreamerModeEnabled = true;
             SaveSettings();
-        }
-
-        public static void SetFromJObject(JObject j)
-        {
-            Globals.DebugWriteLine(@"[Func:Data\AppSettings.SetFromJObject]");
-            var curSettings = j.ToObject<AppSettings>();
-            if (curSettings == null) return;
-            StreamerModeEnabled = curSettings._streamerModeEnabled;
-            CheckShortcuts();
-        }
-
-        public static bool LoadFromFile()
-        {
-            Globals.DebugWriteLine(@"[Func:Data\AppSettings.LoadFromFile]");
-            // Main settings
-            if (!File.Exists(SettingsFile)) SaveSettings();
-            else SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, JObject.FromObject(new AppSettings())));
-            // Stylesheet
-            return LoadStylesheetFromFile();
         }
 
         #region STYLESHEET
@@ -442,8 +429,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         #endregion
-
-        public static void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, JObject.FromObject(Instance), mergeNewIntoOld);
 
         #region SHORTCUTS
         public static void CheckShortcuts()

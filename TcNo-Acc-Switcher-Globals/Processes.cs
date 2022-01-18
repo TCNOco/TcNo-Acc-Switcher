@@ -18,6 +18,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.Principal;
@@ -47,6 +48,31 @@ namespace TcNo_Acc_Switcher_Globals
                 ProcessHandler.StartProgram(path, elevated, args);
         }
 
+        [SupportedOSPlatform("windows")]
+        public static bool IsProcessService(string processFullPath)
+        {
+            string servicePath = null;
+            if (processFullPath.Contains(".exe"))
+            {
+                using var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Service WHERE PathName =" + "\"" + processFullPath + "\"");
+                foreach (var o in searcher.Get())
+                {
+                    var service = (ManagementObject)o;
+                    servicePath = service["PathName"].ToString();
+                }
+            }
+            else
+            {
+                using var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Service WHERE Name =" + "\"" + processFullPath + "\"");
+                foreach (var o in searcher.Get())
+                {
+                    var service = (ManagementObject)o;
+                    servicePath = service["PathName"].ToString();
+                }
+            }
+
+            return true;
+        }
 
         public static bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
 
@@ -115,6 +141,49 @@ namespace TcNo_Acc_Switcher_Globals
         /// </summary>
         public static void TaskKillProcess(List<string> procNames, bool altMethod = false)
         {
+            // Check for services, and close them separately.
+            List<string> toRemove = new();
+            foreach (var procName in procNames)
+                if (procName.StartsWith("SERVICE:"))
+                {
+                    var pathOrName = procName[8..]; // Remove "SERVICE:"
+                    toRemove.Add(pathOrName);
+                    // Get full path if .exe, otherwise it's the name of the service (Hopefully)
+                    if (pathOrName.Contains(".exe"))
+                    {
+                        var processes = Process.GetProcesses();
+                        var nameWithoutExe = pathOrName.Replace(".exe", "");
+                        foreach (var p in processes)
+                        {
+                            if (!p.ProcessName.Contains(nameWithoutExe)) continue; // Admin is required for this!
+                            pathOrName = p.MainModule?.FileName;
+                            break;
+                        }
+                    }
+
+                    if (pathOrName == null) continue; // This process was already closed, or is not running.
+                    // TODO: Kill service (if any found)
+                }
+                else
+                {
+                    // Was not explicitly tagged as a service, but checking anyway is good!
+                    if (OperatingSystem.IsWindows() && IsProcessService(procName[8..]))
+                    {
+                        // TODO: Kill service (if any found)
+                        // Look up: c# System.Management kill service
+                        // Maybe https://www.codeproject.com/Articles/31688/Using-the-ServiceController-in-C-to-stop-and-start
+                        //
+                        // Otherwise default back to taskkill?
+
+                        // Todo: was sidetracked to this from ProfilePicFromFile and ProfilePicRegex as OriginWebHelper is a service, and doesn't want to close...
+						
+						// Do also try and get the MainModule.Filename (or whatever it is) in the CanKillProcess function, to check if can kill... This seems to be a more reliable way of checking as well? Maybe just for services... use IsProcessService() for that as well?
+                    }
+                }
+
+            foreach (var rem in toRemove)
+                procNames.Remove(rem);
+
             if (!altMethod)
             {
                 procNames.ForEach(e => TaskKillProcess(e));

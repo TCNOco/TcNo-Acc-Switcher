@@ -19,7 +19,7 @@
 @using TcNo_Acc_Switcher_Globals
 
 @using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContextAccessor
+@inject IHttpContextAccessor _httpContextAccessor
 
 <div id="window-title">
     <div class="resizeTop"></div>
@@ -33,7 +33,7 @@
         <use href="img/TcNo_Logo_Flat.svg#logo"></use>
     </svg>
     <span>@AppData.Instance.WindowTitle</span>
-    @if (AppSettings.UsingTcNoBrowser)
+    @if (_httpContextAccessor.HttpContext?.Request.Headers["User-Agent"][0].Contains("TcNo") == true)
     {
         <div id="window-controls">
             <button id="btnMin">
@@ -65,7 +65,6 @@
     protected override void OnInitialized()
     {
         AppData.Instance.OnChange += OnMyChangeHandler;
-        AppSettings.UsingTcNoBrowser = httpContextAccessor.HttpContext?.Request.Headers["User-Agent"][0].Contains("TcNo") == true;
     }
     private async void OnMyChangeHandler()
     {

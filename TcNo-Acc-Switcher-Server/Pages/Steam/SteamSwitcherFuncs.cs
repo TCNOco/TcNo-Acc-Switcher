@@ -42,12 +42,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         private static readonly Lang Lang = Lang.Instance;
 
         #region STEAM_SWITCHER_MAIN
-        public static bool SteamSettingsValid()
-        {
-            // Checks if Steam path set properly, and can load.
-            SteamSettings.LoadFromFile();
-            return SteamSettings.LoginUsersVdf() != "RESET_PATH";
-        }
+        // Checks if Steam path set properly, and can load.
+        public static bool SteamSettingsValid() => SteamSettings.LoginUsersVdf() != "RESET_PATH";
 
         /// <summary>
         /// Main function for Steam Account Switcher. Run on load.
@@ -59,7 +55,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static async Task LoadProfiles()
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.LoadProfiles] Loading Steam profiles");
-            Data.Settings.Steam.LoadFromFile();
 
             var userAccounts = GetSteamUsers(SteamSettings.LoginUsersVdf());
             var vacStatusList = new List<VacStatus>();

@@ -41,7 +41,6 @@ namespace TcNo_Acc_Switcher_Server.Pages
             {
                 case "BattleNet":
                     if (!GeneralFuncs.CanKillProcess(Data.Settings.BattleNet.Processes)) return;
-                    Data.Settings.BattleNet.LoadFromFile();
                     if (Directory.Exists(Data.Settings.BattleNet.FolderPath) && File.Exists(Data.Settings.BattleNet.Exe())) AppData.ActiveNavMan.NavigateTo("/BattleNet/");
                     else _ = GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
                     break;
@@ -55,7 +54,6 @@ namespace TcNo_Acc_Switcher_Server.Pages
 
                 case "Steam":
                     if (!GeneralFuncs.CanKillProcess(Data.Settings.Steam.Processes)) return;
-                    Data.Settings.Steam.LoadFromFile();
                     if (!Directory.Exists(Data.Settings.Steam.FolderPath) || !File.Exists(Data.Settings.Steam.Exe()))
                     {
                         _ = GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
@@ -78,7 +76,6 @@ namespace TcNo_Acc_Switcher_Server.Pages
                         BasicPlatforms.SetCurrentPlatformFromShort(platform);
                         if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) return;
 
-                        Data.Settings.Basic.LoadFromFile();
                         if (Directory.Exists(Data.Settings.Basic.FolderPath) && File.Exists(Data.Settings.Basic.Exe())) AppData.ActiveNavMan.NavigateTo("/Basic/");
                         else _ = GeneralInvocableFuncs.ShowModal($"find:{CurrentPlatform.SafeName}:{CurrentPlatform.ExeName}:{CurrentPlatform.SafeName}");
                     }

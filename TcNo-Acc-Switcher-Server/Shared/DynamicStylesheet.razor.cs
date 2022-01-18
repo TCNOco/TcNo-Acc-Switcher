@@ -28,11 +28,6 @@ namespace TcNo_Acc_Switcher_Server.Shared
     {
         public string GetStylesheetMarkupString()
         {
-            if (AppSettings.Stylesheet == null)
-            {
-                _ = AppSettings.LoadFromFile();
-            }
-
             var style = AppSettings.Stylesheet;
 
             if (OperatingSystem.IsWindows() && AppSettings.WindowsAccent)

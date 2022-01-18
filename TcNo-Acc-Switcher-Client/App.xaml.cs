@@ -258,8 +258,6 @@ namespace TcNo_Acc_Switcher_Client
         /// </summary>
         private static void IsRunningAlready()
         {
-
-            AppSettings.LoadFromFile();
             try
             {
                 // Check if program is running, if not: return.
@@ -431,7 +429,6 @@ namespace TcNo_Acc_Switcher_Client
                         Globals.WriteToLog("Battle.net switch requested");
                         if (!GeneralFuncs.CanKillProcess(BattleNet.Processes))
                             Restart(combinedArgs, true);
-                        BattleNet.LoadFromFile();
                         _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account, string.Join(' ', remainingArguments));
                         return;
                     }
@@ -452,7 +449,6 @@ namespace TcNo_Acc_Switcher_Client
                         // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
                         Globals.WriteToLog("Steam switch requested");
                         if (!GeneralFuncs.CanKillProcess(Steam.Processes)) Restart(combinedArgs, true);
-                        Steam.LoadFromFile();
                         TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
                             ePersonaState: command.Length > 2
                                 ? int.Parse(command[2])
@@ -477,7 +473,6 @@ namespace TcNo_Acc_Switcher_Client
                     BasicPlatforms.SetCurrentPlatformFromShort(platform);
                     Globals.WriteToLog(CurrentPlatform.FullName + " switch requested");
                     if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
-                    Basic.LoadFromFile();
                     TcNo_Acc_Switcher_Server.Pages.Basic.BasicSwitcherFuncs.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
                     break;
             }
@@ -560,7 +555,6 @@ namespace TcNo_Acc_Switcher_Client
                     // Is a basic platform!
                     BasicPlatforms.SetCurrentPlatformFromShort(platform);
                     Globals.WriteToLog(CurrentPlatform.FullName + " logout requested");
-                    Basic.LoadFromFile();
                     TcNo_Acc_Switcher_Server.Pages.Basic.BasicSwitcherBase.NewLoginBasic();
                     break;
             }

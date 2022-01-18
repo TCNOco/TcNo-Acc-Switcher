@@ -65,7 +65,6 @@ namespace TcNo_Acc_Switcher_Server
 
             if (string.IsNullOrEmpty(port))
             {
-                AppSettings.LoadFromFile();
                 FindOpenPort();
                 port = AppSettings.ServerPort.ToString();
                 Console.WriteLine("Using saved/random port: " + port);

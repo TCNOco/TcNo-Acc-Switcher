@@ -44,7 +44,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static async Task LoadProfiles()
         {
             Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.LoadProfiles] Loading BattleNet profiles");
-            Data.Settings.BattleNet.LoadFromFile();
 
             LoadImportantData();
             BattleNetSettings.LoadAccounts();

@@ -40,52 +40,74 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             {
                 lock (LockObj)
                 {
-                    return _instance ??= new BattleNet();
+                    // Load settings if have changed, or not set
+                    if (_instance is { _currentlyModifying: true }) return _instance;
+                    if (_instance != new BattleNet() && Globals.GetFileMd5(SettingsFile) == _instance._lastHash) return _instance;
+
+                    _instance = new BattleNet { _currentlyModifying = true };
+
+                    if (File.Exists(SettingsFile))
+                    {
+                        _instance = JsonConvert.DeserializeObject<BattleNet>(File.ReadAllText(SettingsFile), new JsonSerializerSettings() { });
+                        _instance._lastHash = Globals.GetFileMd5(SettingsFile);
+                    }
+                    else
+                    {
+                        SaveSettings();
+                    }
+
+                    _instance._desktopShortcut = Shortcut.CheckShortcuts("BattleNet");
+                    _instance._currentlyModifying = false;
+
+                    return _instance;
                 }
             }
             set => _instance = value;
         }
+        private string _lastHash = "";
+        private bool _currentlyModifying = false;
+        public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
 
         #region VARIABLES
 
-        private string _folderPath = "C:\\Program Files (x86)\\Battle.net";
-        private int _trayAccNumber = 3;
-        private bool _admin;
-        private bool _forgetAccountEnabled;
-        private bool _overwatchMode = true;
-        private int _imageExpiryTime = 7;
-        private bool _altClose;
-        private bool _desktopShortcut;
-        private List<BattleNetSwitcherBase.BattleNetUser> _accounts = new();
-        private List<string> _ignoredAccounts = new();
+        [JsonProperty("FolderPath", Order = 1)] private string _folderPath = "C:\\Program Files (x86)\\Battle.net";
+        [JsonProperty("BattleNet_Admin", Order = 3)] private bool _admin;
+        [JsonProperty("BattleNet_TrayAccNumber", Order = 4)] private int _trayAccNumber = 3;
+        [JsonProperty("ForgetAccountEnabled", Order = 5)] private bool _forgetAccountEnabled;
+        [JsonProperty("OverwatchMode", Order = 6)] private bool _overwatchMode = true;
+        [JsonProperty("ImageExpiryTime", Order = 7)] private int _imageExpiryTime = 7;
+        [JsonProperty("AltClose", Order = 8)] private bool _altClose;
+        [JsonIgnore] private bool _desktopShortcut;
+        [JsonIgnore] private List<BattleNetSwitcherBase.BattleNetUser> _accounts = new();
+        [JsonIgnore] private List<string> _ignoredAccounts = new();
 
-        [JsonProperty("FolderPath", Order = 1)] public static string FolderPath { get => Instance._folderPath; set => Instance._folderPath = value; }
+        public static string FolderPath { get => Instance._folderPath; set => Instance._folderPath = value; }
 
-        [JsonProperty("BattleNet_Admin", Order = 3)] public static bool Admin { get => Instance._admin; set => Instance._admin = value; }
+        public static bool Admin { get => Instance._admin; set => Instance._admin = value; }
 
-        [JsonProperty("BattleNet_TrayAccNumber", Order = 4)] public static int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
+        public static int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
 
-        [JsonProperty("ForgetAccountEnabled", Order = 5)] public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
+        public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
 
-        [JsonProperty("OverwatchMode", Order = 6)] public static bool OverwatchMode { get => Instance._overwatchMode; set => Instance._overwatchMode = value; }
+        public static bool OverwatchMode { get => Instance._overwatchMode; set => Instance._overwatchMode = value; }
 
-        [JsonProperty("ImageExpiryTime", Order = 7)] public static int ImageExpiryTime { get => Instance._imageExpiryTime; set => Instance._imageExpiryTime = value; }
+        public static int ImageExpiryTime { get => Instance._imageExpiryTime; set => Instance._imageExpiryTime = value; }
 
-        [JsonProperty("AltClose", Order = 8)] public static bool AltClose { get => Instance._altClose; set => Instance._altClose = value; }
+        public static bool AltClose { get => Instance._altClose; set => Instance._altClose = value; }
 
-        [JsonIgnore] public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
+        public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
-        [JsonIgnore] public static List<BattleNetSwitcherBase.BattleNetUser> Accounts { get => Instance._accounts; set => Instance._accounts = value; }
+        public static List<BattleNetSwitcherBase.BattleNetUser> Accounts { get => Instance._accounts; set => Instance._accounts = value; }
 
-        [JsonIgnore] public static List<string> IgnoredAccounts { get => Instance._ignoredAccounts; set => Instance._ignoredAccounts = value; }
+        public static List<string> IgnoredAccounts { get => Instance._ignoredAccounts; set => Instance._ignoredAccounts = value; }
 
         // Constants
-        [JsonIgnore] public static readonly string SettingsFile = "BattleNetSettings.json";
-        [JsonIgnore] public static readonly string Processes = "Battle.net";
-        [JsonIgnore] public static readonly string StoredAccPath = "LoginCache\\BattleNet\\StoredAccounts.json";
-        [JsonIgnore] public static readonly string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
-        [JsonIgnore] public static readonly string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";
-        [JsonIgnore] public static readonly string ContextMenuJson = $@"[
+        public static readonly string SettingsFile = "BattleNetSettings.json";
+        public static readonly string Processes = "Battle.net";
+        public static readonly string StoredAccPath = "LoginCache\\BattleNet\\StoredAccounts.json";
+        public static readonly string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
+        public static readonly string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";
+        public static readonly string ContextMenuJson = $@"[
               {{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
               {{""{Lang["Context_BNet_SetBTag"]}"": ""showModal('changeUsername:BattleTag')""}},
               {{""{Lang["Context_BNet_DelBTag"]}"": ""forgetBattleTag()""}},
@@ -139,21 +161,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
             SaveSettings();
         }
-        public static void SetFromJObject(JObject j)
-        {
-            Globals.DebugWriteLine(@"[Func:Data\Settings\BattleNet.SetFromJObject]");
-            var curSettings = j.ToObject<BattleNet>();
-            if (curSettings == null) return;
-            FolderPath = curSettings._folderPath;
-            Admin = curSettings._admin;
-            TrayAccNumber = curSettings._trayAccNumber;
-            OverwatchMode = curSettings._overwatchMode;
-            DesktopShortcut = Shortcut.CheckShortcuts("BattleNet");
-            AltClose = curSettings._altClose;
-        }
-        public static void LoadFromFile() => SetFromJObject(GeneralFuncs.LoadSettings(SettingsFile, JObject.FromObject(new BattleNet())));
-
-        public static void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(SettingsFile, JObject.FromObject(Instance), mergeNewIntoOld);
 
         /// <summary>
         /// Load the Stored Accounts and Ignored Accounts

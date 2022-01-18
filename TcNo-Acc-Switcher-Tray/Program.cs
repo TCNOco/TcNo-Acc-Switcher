@@ -82,8 +82,8 @@ namespace TcNo_Acc_Switcher_Tray
                     "Tray Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(0);
             }
-            if (string.Equals(Program.LastHash, GetFileMd5("Tray_Users.json"), StringComparison.Ordinal)) return; // Don't init again
-            Program.LastHash = GetFileMd5("Tray_Users.json");
+            if (string.Equals(Program.LastHash, Globals.GetFileMd5("Tray_Users.json"), StringComparison.Ordinal)) return; // Don't init again
+            Program.LastHash = Globals.GetFileMd5("Tray_Users.json");
 
             Program.TrayUsers = TrayUser.ReadTrayUsers();
 
@@ -143,17 +143,6 @@ namespace TcNo_Acc_Switcher_Tray
         {
             if (e.Button == MouseButtons.Right)
                 InitMenu(false);
-        }
-        /// <summary>
-        /// Gets a file's MD5 Hash
-        /// </summary>
-        /// <param name="filePath">Path to file to get hash of</param>
-        /// <returns></returns>
-        public static string GetFileMd5(string filePath)
-        {
-            using var md5 = MD5.Create();
-            using var stream = File.OpenRead(filePath);
-            return stream.Length != 0 ? BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLowerInvariant() : "0";
         }
 
         private void ContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)

@@ -115,7 +115,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
             SaveSettings();
         }
-        public static void SetFromJObject(JObject j)
+        private static void SetFromJObject(JObject j)
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Ubisoft.SetFromJObject]");
             var curSettings = j.ToObject<Ubisoft>();

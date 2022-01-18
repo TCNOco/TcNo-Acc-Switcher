@@ -85,9 +85,6 @@
                         </button>
                     </div>
                 </div>
-
-
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowAccUsername" @bind="Steam.ShowAccUsername"><label class="form-check-label" for="Steam_ShowAccUsername"></label></div><label for="Steam_ShowAccUsername">@_locale["Steam_ShowAccUsername"]<br></label>
             </div>
             <div class="form-text"><span>@_locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="Steam.ImageExpiryTime"></div>
 
@@ -142,11 +139,11 @@
         _navManager.NavigateTo("/Steam");
     }
 
-    private string _selectedState = Data.Settings.Steam.StateToString(Data.Settings.Steam.OverrideState);
+    private string _selectedState = Steam.StateToString(Steam.OverrideState);
     private Task DefaultState(int state)
     {
-        Data.Settings.Steam.OverrideState = state;
-        _selectedState = Data.Settings.Steam.StateToString(state);
+        Steam.OverrideState = state;
+        _selectedState = Steam.StateToString(state);
         return Task.CompletedTask;
     }
 }

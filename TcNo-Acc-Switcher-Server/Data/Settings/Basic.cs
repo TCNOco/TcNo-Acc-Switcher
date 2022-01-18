@@ -41,25 +41,45 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             {
                 lock (LockObj)
                 {
-                    // This has no self-auto creation as it requires a platform name from the Platform list.
-                    return _instance ??= new Basic();
+                    // Load settings if have changed, or not set
+                    if (_instance is { _currentlyModifying: true }) return _instance;
+                    if (_instance != new Basic() && Globals.GetFileMd5(CurrentPlatform.SettingsFile) == _instance._lastHash) return _instance;
+
+                    _instance = new Basic { _currentlyModifying = true };
+
+                    if (File.Exists(CurrentPlatform.SettingsFile))
+                    {
+                        _instance = JsonConvert.DeserializeObject<Basic>(File.ReadAllText(CurrentPlatform.SettingsFile), new JsonSerializerSettings() { });
+                        _instance._lastHash = Globals.GetFileMd5(CurrentPlatform.SettingsFile);
+                    }
+                    else
+                    {
+                        SaveSettings();
+                    }
+
+                    _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.FullName);
+                    _instance._currentlyModifying = false;
+
+                    return _instance;
                 }
             }
             set => _instance = value;
         }
+        private string _lastHash = "";
+        private bool _currentlyModifying = false;
+
+        public static void SaveSettings() => GeneralFuncs.SaveSettings(CurrentPlatform.SettingsFile, Instance);
 
         // Variables
-        private string _folderPath = "";
-        private bool _admin;
-        private int _trayAccNumber = 3;
-        private bool _forgetAccountEnabled;
-        private bool _altClose;
-        private Dictionary<int, string> _shortcuts = new();
-        private bool _desktopShortcut;
+        [JsonProperty("FolderPath", Order = 1)] private string _folderPath = "";
+        [JsonProperty("Basic_Admin", Order = 2)] private bool _admin;
+        [JsonProperty("Basic_TrayAccNumber", Order = 3)] private int _trayAccNumber = 3;
+        [JsonProperty("ForgetAccountEnabled", Order = 4)] private bool _forgetAccountEnabled;
+        [JsonProperty("AltClose", Order = 5)] private bool _altClose;
+        [JsonProperty("ShortcutsJson", Order = 6)] private Dictionary<int, string> _shortcuts = new();
+        [JsonIgnore] private bool _desktopShortcut;
 
 
-
-        [JsonProperty("FolderPath", Order = 1)]
         public static string FolderPath
         {
             get
@@ -72,21 +92,15 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             set => Instance._folderPath = value;
         }
 
-        [JsonProperty("Basic_Admin", Order = 2)] public static bool Admin { get => Instance._admin; set => Instance._admin = value; }
-        [JsonProperty("Basic_TrayAccNumber", Order = 3)] public static int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
-        [JsonProperty("ForgetAccountEnabled", Order = 4)] public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
-        [JsonProperty("AltClose", Order = 5)] public static bool AltClose { get => Instance._altClose; set => Instance._altClose = value; }
-        [JsonIgnore] public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
-        [JsonProperty("ShortcutsJson", Order = 6)]
-        static string ShortcutsJson // This HAS to be a string. Shortcuts is an object, and just adds keys instead of replacing it entirely. It doesn't save properly.
-        {
-            get => JsonConvert.SerializeObject(Instance._shortcuts);
-            set => Instance._shortcuts = value == "{}" ? Instance._shortcuts : JsonConvert.DeserializeObject<Dictionary<int, string>>(value);
-        }
+        public static bool Admin { get => Instance._admin; set => Instance._admin = value; }
+        public static int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
+        public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
+        public static bool AltClose { get => Instance._altClose; set => Instance._altClose = value; }
+        public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
 
-        [JsonIgnore] public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
+        public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
-        [JsonIgnore] public static readonly string ContextMenuJson = $@"[
+        public static readonly string ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
 				{{""{Lang["Context_CreateShortcut"]}"": ""createShortcut()""}},
@@ -94,7 +108,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 				{{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";
 
-        [JsonIgnore] public static readonly string ContextMenuShortcutJson = $@"[
+        public static readonly string ContextMenuShortcutJson = $@"[
 				{{""{Lang["Context_RunAdmin"]}"": ""shortcut('admin')""}},
 				{{""{Lang["Context_Hide"]}"": ""shortcut('hide')""}}
             ]";
@@ -159,7 +173,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         }
 
-        [JSInvokable]
         public static void HandleShortcutAction(string shortcut, string action)
         {
             if (!Shortcuts.ContainsValue(shortcut)) return;
@@ -193,29 +206,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             TrayAccNumber = 3;
             DesktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.FullName);
             AltClose = false;
-            ShortcutsJson = "{}";
 
             SaveSettings();
         }
-        public static void SetFromJObject(JObject j)
-        {
-            Globals.DebugWriteLine(@"[Func:Data\Settings\Basic.SetFromJObject]");
-            var curSettings = j.ToObject<Basic>();
-            if (curSettings == null) return;
-            FolderPath = curSettings._folderPath;
-            Admin = curSettings._admin;
-            TrayAccNumber = curSettings._trayAccNumber;
-            DesktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.FullName);
-            AltClose = curSettings._altClose;
-            ShortcutsJson = JsonConvert.SerializeObject(curSettings._shortcuts);
-        }
-
-        public static void LoadFromFile(string platformFile = "-")
-        {
-            if (platformFile == "-") platformFile = CurrentPlatform.SettingsFile;
-            SetFromJObject(GeneralFuncs.LoadSettings(platformFile, JObject.FromObject(new Basic())));
-        }
-        public static void SaveSettings(bool mergeNewIntoOld = false) => GeneralFuncs.SaveSettings(CurrentPlatform.SettingsFile, JObject.FromObject(Instance), mergeNewIntoOld);
         #endregion
     }
 }

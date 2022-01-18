@@ -66,6 +66,18 @@ namespace TcNo_Acc_Switcher_Globals
 
             return BitConverter.ToString(md5.Hash ?? Array.Empty<byte>()).Replace("-", "").ToLower();
         }
+        /// <summary>
+        /// Gets a file's MD5 Hash
+        /// </summary>
+        /// <param name="filePath">Path to file to get hash of</param>
+        /// <returns></returns>
+        public static string GetFileMd5(string filePath)
+        {
+            if (!File.Exists(filePath)) return "ENOTFOUND";
+            using var md5 = MD5.Create();
+            using var stream = File.OpenRead(filePath);
+            return stream.Length != 0 ? BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLowerInvariant() : "0";
+        }
 
         public static bool RecursiveDelete(string baseDir, bool keepFolders) =>
             RecursiveDelete(new DirectoryInfo(baseDir), keepFolders);

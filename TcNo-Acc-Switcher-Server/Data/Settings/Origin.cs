@@ -113,7 +113,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
             SaveSettings();
         }
-        public static void SetFromJObject(JObject j)
+        private static void SetFromJObject(JObject j)
         {
             Globals.DebugWriteLine(@"[Func:Data\Settings\Origin.SetFromJObject]");
             var curSettings = j.ToObject<Origin>();

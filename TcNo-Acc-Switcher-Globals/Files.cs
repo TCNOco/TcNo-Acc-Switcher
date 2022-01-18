@@ -25,12 +25,34 @@ using System.Drawing.IconLib;
 using System.Runtime.Versioning;
 using ShellLink;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace TcNo_Acc_Switcher_Globals
 {
     public partial class Globals
     {
         #region FILES
+
+
+        public static string RegexSearchFile(string file, string pattern)
+        {
+            var m = Regex.Match(File.ReadAllText(file), pattern);
+            return m.Success ? m.Value : "";
+        }
+        public static string RegexSearchFolder(string folder, string pattern, string wildcard = "")
+        {
+            var result = "";
+            // Foreach file in folder (until match):
+            foreach (var f in Directory.GetFiles(folder, wildcard))
+            {
+                result = RegexSearchFile(f, pattern);
+                if (result == "") continue;
+                return result;
+            }
+
+            return "";
+        }
+
         public static bool DeleteFiles(string path, bool throwErr = false)
         {
             return Directory.GetFiles(path).Aggregate(false, (current, f) => DeleteFile(f, true) || current);

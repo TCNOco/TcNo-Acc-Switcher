@@ -143,6 +143,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         private string _userModalCopyText = "";
         private string _userModalHintText = "";
         private List<string> _cachePaths = null;
+        private string _profilePicFromFile = "";
+        private string _profilePicRegex = "";
         // Optional
         private string _uniqueIdFile = "";
         private string _uniqueIdFolder = "";
@@ -184,6 +186,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static string UserModalCopyText { get => Instance._userModalCopyText; private set => Instance._userModalCopyText = value; }
         public static string UserModalHintText { get => Instance._userModalHintText; private set => Instance._userModalHintText = value; }
         public static List<string> CachePaths { get => Instance._cachePaths; private set => Instance._cachePaths = value; }
+        public static string ProfilePicFromFile { get => Instance._profilePicFromFile; private set => Instance._profilePicFromFile = value; }
+        public static string ProfilePicRegex { get => Instance._profilePicRegex; private set => Instance._profilePicRegex = value; }
+
         // ----------
         #endregion
 
@@ -248,6 +253,10 @@ namespace TcNo_Acc_Switcher_Server.Data
                     ShortcutIncludeMainExe = (bool)extras["ShortcutIncludeMainExe"];
                 if (extras.ContainsKey("SearchStartMenuForIcon"))
                     SearchStartMenuForIcon = (bool)extras["SearchStartMenuForIcon"];
+                if (extras.ContainsKey("ProfilePicFromFile"))
+                    ProfilePicFromFile = (string)extras["ProfilePicFromFile"];
+                if (extras.ContainsKey("ProfilePicRegex"))
+                    ProfilePicRegex = (string)extras["ProfilePicRegex"];
             }
 
             // Foreach app shortcut in ShortcutFolders:
@@ -257,11 +266,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             //
             // These will be displayed next to the add new button in the switcher.
             // Maybe a pop-up menu if there are enough (Up arrow button on far right?)
-            Basic.LoadFromFile(SettingsFile);
 
             var sExisting = Basic.Shortcuts; // Existing shortcuts
-            if (Basic.Shortcuts == new Dictionary<int, string>()) // If nothing set, make sure it's loaded!
-                Basic.LoadFromFile();
 
             if (OperatingSystem.IsWindows())
             {
@@ -357,7 +363,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         // Variables that may not be set:
-        public static string LoginFileFromValue(string val) => BasicSwitcherFuncs.ExpandEnvironmentVariables(LoginFiles.FirstOrDefault(x => x.Value == val).Key);
+        public static string LoginFileFromValue(string val) => BasicSwitcherFuncs.ExpandEnvironmentVariables(LoginFiles.FirstOrDefault(x => x.Value.EndsWith(val)).Key);
         public static string GetUniqueFilePath() => LoginFileFromValue(UniqueIdFile);
         public static string GetShortcutImageFolder => $"img\\shortcuts\\{SafeName}\\";
         public static string GetShortcutImagePath() => Path.Join(Globals.UserDataFolder, "wwwroot\\", GetShortcutImageFolder);

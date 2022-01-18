@@ -90,11 +90,6 @@
 	protected override void OnAfterRender(bool firstRender)
 	{
 		AppData.Instance.WindowTitle = "TcNo Account Switcher";
-		if (!GeneralFuncs.WindowSettingsValid())
-		{
-			// Do something here if necessary.
-			// For now this is just being used to load settings.
-		}
 		if (firstRender)
 		{
 			GeneralFuncs.HandleQueries();
