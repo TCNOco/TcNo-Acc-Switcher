@@ -274,6 +274,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         }
         private static string RegexSearchFileOrFolder(string accFile, string regex)
         {
+            accFile = ExpandEnvironmentVariables(accFile);
+            regex = Globals.ExpandRegex(regex);
             // The "file" is a registry key
             if (OperatingSystem.IsWindows() && accFile.StartsWith("REG:"))
                 return Globals.ReadRegistryKey(accFile);
@@ -405,6 +407,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (CurrentPlatform.LoginFiles == null) throw new Exception("No data in basic platform: " + CurrentPlatform.FullName);
 
             // Handle unique ID
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_GetUniqueId"]);
+
             var uniqueId = "";
             if (CurrentPlatform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.UniqueIdFile))
             {
@@ -427,6 +431,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             var regJson = CurrentPlatform.HasRegistryFiles ? CurrentPlatform.ReadRegJson(accName) : new Dictionary<string, string>();
 
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_CopyingFiles"]);
             foreach (var (accFile, savedFile) in CurrentPlatform.LoginFiles)
             {
                 // HANDLE REGISTRY KEY
@@ -464,6 +469,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // Or if has ProfilePicFromFile and ProfilePicRegex.
             if (!hadSpecialProperties.Contains("IMAGE|"))
             {
+                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_HandlingImage"]);
+
                 _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{CurrentPlatform.SafeName}"));
                 var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{CurrentPlatform.SafeName}\\{Globals.GetCleanFilePath(uniqueId)}.jpg");
                 if (!File.Exists(profileImg))
@@ -505,7 +512,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         /// <param name="fromPath"></param>
         /// <param name="toPath"></param>
         /// <param name="localCachePath"></param>
-        /// <param name="reverse">FALSE: Platform -> LoginCache. TRUE: LoginCache -> Platform</param>
+        /// <param name="reverse">FALSE: Platform -> LoginCache. TRUE: LoginCache -> J••Platform</param>
         private static bool HandleFileOrFolder(string fromPath, string toPath, string localCachePath, bool reverse)
         {
             // Expand, or join localCachePath
@@ -545,7 +552,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 _ = Directory.CreateDirectory(folder);
                 foreach (var f in Directory.GetFiles(folder, file))
                 {
-                    var fullOutputPath = Path.Join(folder, Path.GetFileName(f));
+                    if (toFullPath == null) return false;
+                    if (toFullPath.Contains("*")) toFullPath = Path.GetDirectoryName(toFullPath);
+                    var fullOutputPath = Path.Join(toFullPath, Path.GetFileName(f));
                     if (File.Exists(f)) File.Copy(f, fullOutputPath, true);
                 }
 
@@ -565,14 +574,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             }
 
             // Is file? Copy file
-            if (File.Exists(fullPath))
-            {
-                _ = Directory.CreateDirectory(Path.GetDirectoryName(toFullPath));
-                File.Copy(fullPath, toFullPath, true);
-                return true;
-            }
-
+            if (!File.Exists(fullPath)) return false;
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(toFullPath));
+            var dest = Path.Join(Path.GetDirectoryName(toFullPath), Path.GetFileName(fullPath));
+            File.Copy(fullPath, dest, true);
             return true;
+
         }
 
         /// <summary>
@@ -636,19 +643,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 return File.Exists(fileToRead) ? File.ReadAllText(fileToRead) : uniqueId;
             }
 
-            if (CurrentPlatform.UniqueIdFile is not "" && File.Exists(fileToRead))
+            if (CurrentPlatform.UniqueIdFile is not "" && (File.Exists(fileToRead) || fileToRead.Contains("*")))
             {
-                if (CurrentPlatform.UniqueIdRegex != null)
+                if (!string.IsNullOrEmpty(CurrentPlatform.UniqueIdRegex))
                 {
                     uniqueId = RegexSearchFileOrFolder(fileToRead, CurrentPlatform.UniqueIdRegex);
                 }
                 else if (CurrentPlatform.UniqueIdMethod is "FILE_MD5") // TODO: TEST THIS! -- This is used for static files that do not change throughout the lifetime of an account login.
                 {
-                    if (!CurrentPlatform.UniqueIdFile.Contains('*')) uniqueId = GeneralFuncs.GetFileMd5(fileToRead);
+                    if (fileToRead.Contains("*"))
+                        uniqueId = GeneralFuncs.GetFileMd5(Directory.GetFiles(Path.GetDirectoryName(fileToRead), Path.GetFileName(fileToRead)).First());
                     else
-                        uniqueId = string.Join('|', (from f in new DirectoryInfo(fileToRead).GetFiles()
-                            where f.Name.EndsWith(CurrentPlatform.UniqueIdFile.Split('*')[1])
-                            select GeneralFuncs.GetFileMd5(f.FullName)).ToList());
+                        uniqueId = GeneralFuncs.GetFileMd5(fileToRead);
                 }
             }
             else if (uniqueId != "")

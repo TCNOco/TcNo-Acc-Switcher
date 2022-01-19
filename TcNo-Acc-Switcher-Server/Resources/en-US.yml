@@ -179,6 +179,11 @@ Status_StartingPlatform: "Starting {platform}"
 Status_UpdatingFile: "Updating {file}"
 Status_UpdatingRegistry: Updating Windows registry
 Status_FailedLog: Action failed. See log for details.
+Status_WaitingForClose: "Waiting for {processName} to close ({timeout}/{timeLimit} seconds)"
+Status_WaitingForMultipleClose: "Waiting for {processName} & {count} others to close ({timeout}/{timeLimit} seconds)"
+Status_GetUniqueId: Collecting unique user ID
+Status_CopyingFiles: Copying user files...
+Status_HandlingImage: Handling account profile image
 Context_SwapTo: Swap to account
 Context_CreateShortcut: Create Desktop Shortcut
 Context_CreateShortcutSubmenu: Create Desktop Shortcut...

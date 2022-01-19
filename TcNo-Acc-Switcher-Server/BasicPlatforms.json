@@ -21,7 +21,7 @@
         "%AppData%\\obs-studio\\basic\\*": "basic\\",
         "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
       },
-      "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
+      "UniqueIdFile": "%AppData%\\obs-studio\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
     },
     "Epic Games": {
@@ -69,7 +69,7 @@
         "UsernameModalHintText": "Platform_DiscordPasteHint",
         "SearchStartMenuForIcon": true
       },
-      "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
+      "UniqueIdFile": "%AppData%\\discord\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
     },
     "Discord Canary": {
@@ -109,7 +109,7 @@
         "UsernameModalHintText": "Platform_DiscordPasteHint",
         "SearchStartMenuForIcon": true
       },
-      "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
+      "UniqueIdFile": "%AppData%\\discordcanary\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
     },
     "Discord PTB": {
@@ -149,7 +149,7 @@
         "UsernameModalHintText": "Platform_DiscordPasteHint",
         "SearchStartMenuForIcon": true
       },
-      "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
+      "UniqueIdFile": "%AppData%\\discordptb\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
     },
     "Riot Games": {
@@ -169,33 +169,33 @@
         "ShortcutIgnore": [ "Riot Client" ],
         "ShortcutIncludeMainExe": false
       },
-      "UniqueIdFile": "TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE",
-      "STATUS": "WIP"
+      "UniqueIdFile": "%LocalAppData%\\Riot Games\\Riot Client\\TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE"
     },
     "Origin": {
       "Identifiers": [ "o", "origin" ],
       "ExeLocationDefault": "C:\\Program Files (x86)\\Origin\\Origin.exe",
-      "ExesToEnd": [ "Origin.exe", "SERVICE:OriginWebHelperService.exe" ],
+      "ExesToEnd": [ "Origin.exe", "OriginWebHelperService.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
-        "%ProgramData%\\Origin\\*.olc": "ProgramData\\*.olc",
         "%AppData%\\Origin\\ConsolidatedCache\\": "AppData\\ConsolidatedCache",
-        "%AppData%\\Origin\\NucleusCache\\": "AppData\\NucleusCache",
         "%AppData%\\Origin\\Logs\\": "AppData\\Logs",
-        "%ProgramData%\\Origin\\Subscription\\": "ProgramData\\Subscription",
-        "%AppData%\\Origin\\local*": "AppData\\",
+        "%AppData%\\Origin\\NucleusCache\\": "AppData\\NucleusCache",
         "%AppData%\\Origin\\*.xml": "AppData\\",
-        "%ProgramData%\\Origin\\*.xml": "ProgramData\\",
-        "%ProgramData%\\Origin\\local.xml": "ProgramData\\"
+        "%AppData%\\Origin\\Logs\\dserrors.data": "AppData\\Logs\\dserrors.data",
+        "%ProgramData%\\Origin\\AchievementCache\\": "ProgramData\\AchievementCache",
+        "%ProgramData%\\Origin\\Subscription\\": "ProgramData\\Subscription",
+        "%ProgramData%\\Origin\\local.xml": "ProgramData\\local.xml",
+        "%ProgramData%\\Origin\\*.olc": "ProgramData\\",
+        "%ProgramData%\\Origin\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
       },
       "ExitBeforeInteract": true,
       "Extras": {
         "ProfilePicFromFile": "%AppData%\\Origin\\local*",
         "ProfilePicRegex": "WIN_FILEPATH_REGEX"
       },
-      "UniqueIdFile": "ProgramData\\*.olc",
-      "UniqueIdMethod": "FILE_MD5",
+      "UniqueIdFile": "%ProgramData%\\Origin\\TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE",
       "STATUS": "WIP"
     }
   },

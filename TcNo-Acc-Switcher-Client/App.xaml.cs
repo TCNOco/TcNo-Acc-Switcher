@@ -555,7 +555,7 @@ namespace TcNo_Acc_Switcher_Client
                     // Is a basic platform!
                     BasicPlatforms.SetCurrentPlatformFromShort(platform);
                     Globals.WriteToLog(CurrentPlatform.FullName + " logout requested");
-                    TcNo_Acc_Switcher_Server.Pages.Basic.BasicSwitcherBase.NewLoginBasic();
+                    TcNo_Acc_Switcher_Server.Pages.Basic.BasicSwitcherBase.NewLogin_Basic();
                     break;
             }
         }

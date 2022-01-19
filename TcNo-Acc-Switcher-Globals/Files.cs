@@ -33,6 +33,42 @@ namespace TcNo_Acc_Switcher_Globals
     {
         #region FILES
 
+        public static bool CopyFile(string source, string dest, bool overwrite = true)
+        {
+            if (!File.Exists(source)) return false;
+            if (File.Exists(dest) && !overwrite) return false;
+            // Try copy the file normally - This will fail if in use
+            try
+            {
+                File.Copy(source, dest, overwrite);
+                return true;
+            }
+            catch (Exception e)
+            {
+                // Try another method to copy.
+                if (e.HResult == -2147024864) // File in use
+                {
+                    try
+                    {
+                        if (File.Exists(dest)) File.Delete(dest);
+                        using var inputFile = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                        using var outputFile = new FileStream(dest, FileMode.Create);
+                        var buffer = new byte[0x10000];
+                        int bytes;
+
+                        while ((bytes = inputFile.Read(buffer, 0, buffer.Length)) > 0)
+                            outputFile.Write(buffer, 0, bytes);
+                        return true;
+                    }
+                    catch (Exception exception)
+                    {
+                        WriteToLog("Failed to copy file! From: " + source + ", To: " + dest, exception);
+                    }
+                }
+            }
+            return false;
+        }
+
 
         public static string RegexSearchFile(string file, string pattern)
         {

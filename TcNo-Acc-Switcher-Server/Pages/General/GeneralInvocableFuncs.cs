@@ -93,9 +93,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static void GiUpdatePath(string file, string path)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiUpdatePath] file={file}, path={path}");
-            var settings = GeneralFuncs.LoadSettings(file);
+            var settingsFile = file;
+            if (BasicPlatforms.PlatformExists(file))
+            {
+                settingsFile = CurrentPlatform.SettingsFile;
+            }
+
+            var settings = GeneralFuncs.LoadSettings(settingsFile);
             settings["FolderPath"] = path;
-            GeneralFuncs.SaveSettings(file, settings);
+            GeneralFuncs.SaveSettings(settingsFile, settings);
             switch (file)
             {
                 case "BattleNetSettings":

@@ -125,7 +125,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private bool _isInit;
         private string _fullName;
         private string _defaultExePath;
-        private string _exeExtraArgs;
+        private string _exeExtraArgs = "";
         private string _defaultFolderPath;
         private string _safeName;
         private string _settingsFile;
@@ -201,7 +201,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             SettingsFile = Path.Join("Settings\\", SafeName + ".json");
 
             DefaultExePath = BasicSwitcherFuncs.ExpandEnvironmentVariables((string)BasicPlatforms.GetPlatformJson(platform)["ExeLocationDefault"]);
-            ExeExtraArgs = (string)BasicPlatforms.GetPlatformJson(platform)["ExeExtraArgs"];
+            ExeExtraArgs = (string)BasicPlatforms.GetPlatformJson(platform)["ExeExtraArgs"] ?? "";
             DefaultFolderPath = BasicSwitcherFuncs.ExpandEnvironmentVariables(Path.GetDirectoryName(DefaultExePath));
             ExeName = Path.GetFileName(DefaultExePath);
 
@@ -363,8 +363,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         // Variables that may not be set:
-        public static string LoginFileFromValue(string val) => BasicSwitcherFuncs.ExpandEnvironmentVariables(LoginFiles.FirstOrDefault(x => x.Value.EndsWith(val)).Key);
-        public static string GetUniqueFilePath() => LoginFileFromValue(UniqueIdFile);
+        public static string GetUniqueFilePath() => BasicSwitcherFuncs.ExpandEnvironmentVariables(UniqueIdFile);
         public static string GetShortcutImageFolder => $"img\\shortcuts\\{SafeName}\\";
         public static string GetShortcutImagePath() => Path.Join(Globals.UserDataFolder, "wwwroot\\", GetShortcutImageFolder);
         public static string GetShortcutIgnoredPath(string shortcut) => Path.Join(ShortcutFolder, shortcut.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));

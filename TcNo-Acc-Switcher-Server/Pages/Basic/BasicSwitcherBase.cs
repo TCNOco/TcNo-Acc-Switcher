@@ -23,9 +23,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         /// </summary>
         [JSInvokable]
         [SupportedOSPlatform("windows")]
-        public static void NewLoginBasic()
+        public static void NewLogin_Basic()
         {
-            Globals.DebugWriteLine(@"[JSInvoke:Basic\BasicSwitcherBase.NewLoginBasic]");
+            Globals.DebugWriteLine(@"[JSInvoke:Basic\BasicSwitcherBase.NewLogin_Basic]");
             BasicSwitcherFuncs.SwapBasicAccounts();
         }
 

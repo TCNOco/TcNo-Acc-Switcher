@@ -51,12 +51,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             var canKillAll = true;
             foreach (var procName in procNames)
             {
-                if (procName.StartsWith("SERVICE:")) // Services need admin to close (as far as I understand)
-                {
-                    if (showModal)
-                        _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
-                    return false;
-                }
                 canKillAll = canKillAll && CanKillProcess(procName);
             }
 
@@ -65,6 +59,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         public static bool CanKillProcess(string processName, bool showModal = true)
         {
+            if (processName.StartsWith("SERVICE:")) // Services need admin to close (as far as I understand)
+                processName = processName[8..].Split(".exe")[0];
+
+
             // Restart self as if can't close admin.
             if (Globals.CanKillProcess(processName)) return true;
             if (showModal)
@@ -103,7 +101,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             while (Globals.ProcessHelper.IsProcessRunning(procName) && timeout < 10)
             {
                 timeout++;
-                _ = AppData.InvokeVoidAsync("updateStatus", $"Waiting for {procName} to close ({timeout}/10 seconds)");
+                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForMultipleClose", new { processName = procName, count = timeout, timeout, timeLimit = "10" }]);
                 Thread.Sleep(1000);
             }
 
@@ -119,21 +117,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             var areAnyRunning = false;
             while (timeout <=10)
             {
+                var appCount = 0;
                 timeout++;
                 foreach (var procName in procNames)
                 {
                     areAnyRunning = areAnyRunning || Globals.ProcessHelper.IsProcessRunning(procName);
-                    _ = AppData.InvokeVoidAsync("updateStatus", $"Waiting for {procNames[0]} & {procNames.Count - 1} others to close ({timeout}/10 seconds)");
+                    if (areAnyRunning) appCount++;
+
                 }
+                if (procNames.Count > 0)
+                    _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForMultipleClose", new { processName = procNames[0], count = appCount, timeout, timeLimit = "10" }]);
                 if (areAnyRunning)
                     Thread.Sleep(1000);
+                else
+                    break;
                 areAnyRunning = false;
-            }
-            while (procNames.All(Globals.ProcessHelper.IsProcessRunning) && timeout < 10)
-            {
-                timeout++;
-                _ = AppData.InvokeVoidAsync("updateStatus", $"Waiting for {procNames[0]} & {procNames.Count - 1} others to close ({timeout}/10 seconds)");
-                System.Threading.Thread.Sleep(1000);
             }
 
             if (timeout != 10) return true; // Returns true if timeout wasn't reached.
