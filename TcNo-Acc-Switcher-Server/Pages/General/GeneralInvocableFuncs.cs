@@ -26,13 +26,11 @@ using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
-using TcNo_Acc_Switcher_Server.Pages.Origin;
 using TcNo_Acc_Switcher_Server.Pages.Ubisoft;
 using Task = System.Threading.Tasks.Task;
 using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
 using BattleNetSettings = TcNo_Acc_Switcher_Server.Data.Settings.BattleNet;
 using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
-using OriginSettings = TcNo_Acc_Switcher_Server.Data.Settings.Origin;
 using UbisoftSettings = TcNo_Acc_Switcher_Server.Data.Settings.Ubisoft;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
@@ -113,9 +111,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 case "SteamSettings":
                     SteamSettings.FolderPath = path;
                     break;
-                case "OriginSettings":
-                    OriginSettings.FolderPath = path;
-                    break;
                 case "UbisoftSettings":
                     UbisoftSettings.FolderPath = path;
                     break;
@@ -144,13 +139,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 {
                     SteamSettings.SetForgetAcc(true);
                     _ = SteamSwitcherFuncs.ForgetAccount(accName);
-                    return Task.FromResult("refresh");
-                }
-
-                if (action.StartsWith("AcceptForgetOriginAcc:"))
-                {
-                    OriginSettings.SetForgetAcc(true);
-                    _ = GeneralFuncs.ForgetAccount_Generic(accName, "Origin", true);
                     return Task.FromResult("refresh");
                 }
 
@@ -242,9 +230,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 case "BattleNet":
                     BattleNetSwitcherFuncs.ChangeBTag(id, reqName);
-                    break;
-                case "Origin":
-                    OriginSwitcherFuncs.ChangeUsername(id, reqName, true);
                     break;
                 case "Ubisoft":
                     UbisoftSwitcherFuncs.SetUsername(id, reqName, true);

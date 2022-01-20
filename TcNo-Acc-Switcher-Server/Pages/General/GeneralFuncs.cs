@@ -101,7 +101,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             while (Globals.ProcessHelper.IsProcessRunning(procName) && timeout < 10)
             {
                 timeout++;
-                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForMultipleClose", new { processName = procName, count = timeout, timeout, timeLimit = "10" }]);
+                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForClose", new { processName = procName, timeout, timeLimit = "10" }]);
                 Thread.Sleep(1000);
             }
 
@@ -113,20 +113,29 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static bool WaitForClose(List<string> procNames)
         {
             if (!OperatingSystem.IsWindows()) return false;
+            var procToClose = new List<string>(procNames); // Make a copy to edit
+
             var timeout = 0;
             var areAnyRunning = false;
-            while (timeout <=10)
+            while (timeout < 10) // Gives 10 seconds to verify app is closed.
             {
+                var alreadyClosed = new List<string>();
                 var appCount = 0;
                 timeout++;
-                foreach (var procName in procNames)
+                foreach (var p in procToClose)
                 {
-                    areAnyRunning = areAnyRunning || Globals.ProcessHelper.IsProcessRunning(procName);
+                    var isProcRunning = Globals.ProcessHelper.IsProcessRunning(p);
+                    if (!isProcRunning)
+                        alreadyClosed.Add(p); // Already closed, so remove from list after loop
+                    areAnyRunning = areAnyRunning || Globals.ProcessHelper.IsProcessRunning(p);
                     if (areAnyRunning) appCount++;
-
                 }
-                if (procNames.Count > 0)
-                    _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForMultipleClose", new { processName = procNames[0], count = appCount, timeout, timeLimit = "10" }]);
+
+                foreach (var p in alreadyClosed)
+                    procToClose.Remove(p);
+
+                if (procToClose.Count > 0)
+                    _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForMultipleClose", new { processName = procToClose[0], count = appCount, timeout, timeLimit = "10" }]);
                 if (areAnyRunning)
                     Thread.Sleep(1000);
                 else
@@ -715,11 +724,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     case "BattleNet":
                         await BattleNet.BattleNetSwitcherFuncs.LoadProfiles();
                         Data.Settings.BattleNet.SaveSettings();
-                        break;
-
-                    case "Origin":
-                        Origin.OriginSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Origin.SaveSettings(!File.Exists(Data.Settings.Origin.SettingsFile));
                         break;
 
                     case "Steam":

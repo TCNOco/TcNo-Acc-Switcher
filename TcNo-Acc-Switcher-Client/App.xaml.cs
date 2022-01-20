@@ -369,7 +369,7 @@ namespace TcNo_Acc_Switcher_Client
                             " -   Battlenet format: +b:<email>",
                             " -   Discord format: +d:<username>",
                             " -   Epic Games format: +e:<username>",
-                            " -   Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]",
+                            " -   Origin format: +o:<accName>",
                             " -   Riot Games format: +r:<username>",
                             " -   Steam format: +s:<steamId>[:<PersonaState (0-7)>]",
                             " -   Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]",
@@ -379,7 +379,7 @@ namespace TcNo_Acc_Switcher_Client
                             "Available platforms:",
                             " -   BattleNet: b, bnet, battlenet, blizzard",
                             " -   Epic Games: e, epic, epicgames",
-                            " -   Origin: o, origin, ea",
+                            " -   Origin: o, origin",
                             " -   Riot Games: r, riot, riotgames",
                             " -   Steam: s, steam",
                             " -   Ubisoft Connect: u, ubi, ubisoft, ubisoftconnect, uplay",
@@ -430,17 +430,6 @@ namespace TcNo_Acc_Switcher_Client
                         if (!GeneralFuncs.CanKillProcess(BattleNet.Processes))
                             Restart(combinedArgs, true);
                         _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account, string.Join(' ', remainingArguments));
-                        return;
-                    }
-                // Origin
-                case "o":
-                    {
-                        // Origin format: +o:<accName>[:<State (10 = Offline/0 = Default)>]
-                        Globals.WriteToLog("Origin switch requested");
-                        if (!GeneralFuncs.CanKillProcess(Origin.Processes)) Restart(combinedArgs, true);
-                        Origin.LoadFromFile();
-                        TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherFuncs.SwapOriginAccounts(account,
-                            command.Length > 2 ? int.Parse(command[2]) : 0, string.Join(' ', remainingArguments));
                         return;
                     }
                 // Steam
@@ -522,14 +511,6 @@ namespace TcNo_Acc_Switcher_Client
                 case "blizzard":
                     Globals.WriteToLog("Battle.net logout requested");
                     await TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherBase.NewLogin_BattleNet();
-                    break;
-
-                // Origin
-                case "o":
-                case "origin":
-                case "ea":
-                    Globals.WriteToLog("Origin logout requested");
-                    TcNo_Acc_Switcher_Server.Pages.Origin.OriginSwitcherBase.NewLogin_Origin();
                     break;
 
                 // Steam

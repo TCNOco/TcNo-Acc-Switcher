@@ -56,7 +56,7 @@ a:not([href]):not([class]), a:not([href]):not([class]):hover {
     border: #FFAA00 1px solid;
 }
 .ico {
-    &BattleNetBG, &OriginBG, &RiotBG, &SteamBG, &UbisoftBG {
+    &BattleNetBG, &RiotBG, &SteamBG, &UbisoftBG {
         background: linear-gradient(0deg, rgba(31,37,48,1) 0%, rgba(31,37,48,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%);
     }
 }

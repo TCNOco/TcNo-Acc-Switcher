@@ -286,6 +286,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         public static bool LoadStylesheetFromFile()
         {
+            // This is the first function that's called, and sometimes fails if this is not reset after being changed previously.
+            Directory.SetCurrentDirectory(Globals.UserDataFolder);
 #if DEBUG
             if (true) // Always generate file in debug mode.
 #else
@@ -293,6 +295,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 #endif
             {
                 // Check if SCSS file exists.
+                var temp = Directory.GetCurrentDirectory();
                 var scss = StylesheetFile.Replace("css", "scss");
                 if (File.Exists(scss)) GenCssFromScss(scss);
                 else

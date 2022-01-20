@@ -378,8 +378,12 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public static Dictionary<string, string> ReadRegJson(string acc) =>
             GeneralFuncs.ReadDict(Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
-        public static void SaveRegJson(Dictionary<string, string> regJson, string acc) =>
-            GeneralFuncs.SaveDict(regJson, Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
+
+        public static void SaveRegJson(Dictionary<string, string> regJson, string acc)
+        {
+            if (regJson != new Dictionary<string, string>()) GeneralFuncs.SaveDict(regJson, Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
+        }
+
 
         public static string GetUserModalExtraButtons => UsernameModalExtraButtons == "" ? "" :
             Globals.ReadAllText(Path.Join(Globals.AppDataFolder, UsernameModalExtraButtons));

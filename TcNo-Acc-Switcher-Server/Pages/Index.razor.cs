@@ -45,13 +45,6 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     else _ = GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
                     break;
 
-                case "Origin":
-                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Origin.Processes)) return;
-                    Data.Settings.Origin.LoadFromFile();
-                    if (Directory.Exists(Data.Settings.Origin.FolderPath) && File.Exists(Data.Settings.Origin.Exe())) AppData.ActiveNavMan.NavigateTo("/Origin/");
-                    else _ = GeneralInvocableFuncs.ShowModal("find:Origin:Origin.exe:OriginSettings");
-                    break;
-
                 case "Steam":
                     if (!GeneralFuncs.CanKillProcess(Data.Settings.Steam.Processes)) return;
                     if (!Directory.Exists(Data.Settings.Steam.FolderPath) || !File.Exists(Data.Settings.Steam.Exe()))

@@ -601,7 +601,7 @@ async function Modal_Confirm(action, value) {
 }
 
 async function Modal_FinaliseAccString(platform) {
-    // Supported: Origin, Riot, BASIC
+    // Supported: Riot, BASIC
     const raw = $("#CurrentAccountName").val();
     let name = raw;
 

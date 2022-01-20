@@ -79,9 +79,6 @@ async function initContextMenu() {
                 case "Steam":
 	                statusText = $(selectedElem).attr("Line2");
                 break;
-                case "Origin":
-	                statusText = $(selectedElem).attr("id");
-                break;
                 case "Ubisoft":
 	                statusText = $(selectedElem).attr("Username");
                 break;

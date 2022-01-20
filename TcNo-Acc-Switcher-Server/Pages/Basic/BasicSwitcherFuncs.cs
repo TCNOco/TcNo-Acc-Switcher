@@ -69,13 +69,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             LoadAccountIds();
             var accName = GetNameFromId(accId);
 
-            // Kill game processes
-            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Basic" }]);
-            if (!GeneralFuncs.CloseProcesses(CurrentPlatform.ExesToEnd, Data.Settings.Basic.AltClose))
-            {
-                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.FullName }]);
+            if (!KillGameProcesses())
                 return;
-            };
 
             // Add currently logged in account if there is a way of checking unique ID.
             // If saved, and has unique key: Update
@@ -255,7 +250,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // Is folder? Recursive copy folder
             if (Directory.Exists(fullPath))
             {
-                if (!Globals.RecursiveDelete(fullPath, false))
+                if (!Globals.RecursiveDelete(fullPath, true))
                     _ = GeneralInvocableFuncs.ShowToast("error", Lang["Platform_DeleteFail"], Lang["Error"], "toastarea");
                 return true;
             }
@@ -371,20 +366,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             return true;
         }
 
+        private static bool KillGameProcesses()
+        {
+            // Kill game processes
+            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = CurrentPlatform.FullName }]);
+            if (!GeneralFuncs.CloseProcesses(CurrentPlatform.ExesToEnd, BasicSettings.AltClose))
+            {
+                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.FullName }]);
+                return false;
+            };
+
+            return true;
+        }
+
         [SupportedOSPlatform("windows")]
         public static bool BasicAddCurrent(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.BasicAddCurrent]");
             if (CurrentPlatform.ExitBeforeInteract)
-            {
-                // Kill game processes
-                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "Basic" }]);
-                if (!GeneralFuncs.CloseProcesses(CurrentPlatform.ExesToEnd, BasicSettings.AltClose))
-                {
-                    _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.FullName }]);
+                if (!KillGameProcesses())
                     return false;
-                };
-            }
 
             // If set to clear LoginCache for account before adding (Enabled by default):
             if (CurrentPlatform.ClearLoginCache)
@@ -647,7 +648,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             {
                 if (!string.IsNullOrEmpty(CurrentPlatform.UniqueIdRegex))
                 {
-                    uniqueId = RegexSearchFileOrFolder(fileToRead, CurrentPlatform.UniqueIdRegex);
+                    uniqueId = Globals.GetCleanFilePath(RegexSearchFileOrFolder(fileToRead, CurrentPlatform.UniqueIdRegex)); // Get unique ID from Regex, but replace any illegal characters.
                 }
                 else if (CurrentPlatform.UniqueIdMethod is "FILE_MD5") // TODO: TEST THIS! -- This is used for static files that do not change throughout the lifetime of an account login.
                 {

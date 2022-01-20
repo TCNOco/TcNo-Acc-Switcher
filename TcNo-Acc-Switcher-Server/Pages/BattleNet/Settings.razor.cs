@@ -45,7 +45,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         // BUTTON: Reset settings
         public static void ClearSettings()
         {
-            Globals.DebugWriteLine(@"[ButtonClicked:Origin\Settings.razor.cs.ClearSettings]");
+            Globals.DebugWriteLine(@"[ButtonClicked:BattleNet\Settings.razor.cs.ClearSettings]");
             Data.Settings.BattleNet.ResetSettings();
             AppData.ActiveNavMan.NavigateTo("/BattleNet?toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ClearedPlatformSettings", new {platform = "BattleNet"}]));
         }

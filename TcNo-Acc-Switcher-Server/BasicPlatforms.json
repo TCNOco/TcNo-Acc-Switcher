@@ -197,6 +197,19 @@
       "UniqueIdFile": "%ProgramData%\\Origin\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE",
       "STATUS": "WIP"
+    },
+    "EA Desktop": {
+      "Identifiers": [ "ea", "eadesktop" ],
+      "ExeLocationDefault": "C:\\Program Files\\Electronic Arts\\EA Desktop\\EA Desktop\\EADesktop.exe",
+      "ExesToEnd": [ "EADesktop.exe", "EABackgroundService.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "%LocalAppData%\\Electronic Arts\\EA Desktop\\": "LocalAppData\\"
+      },
+      "ExitBeforeInteract": true,
+      "UniqueIdFile": "%LocalAppData%\\Electronic Arts\\EA Desktop\\telemetry.ini",
+      "UniqueIdRegex": "(?<=\\=).*",
+      "STATUS": "WIP"
     }
   },
   "Platform-WIP": {

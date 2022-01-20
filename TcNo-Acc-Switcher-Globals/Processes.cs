@@ -44,9 +44,18 @@ namespace TcNo_Acc_Switcher_Globals
         {
 
             if (!elevated && IsAdministrator)
-                ProcessHandler.RunAsDesktopUser(path, args);
+            {
+                // Set working directory
+                Directory.SetCurrentDirectory(Path.GetDirectoryName(path) ?? Directory.GetCurrentDirectory());
+
+                var res = ProcessHandler.TryRunAsDesktopUser(path, args);
+
+                // Reset working dir
+                Directory.SetCurrentDirectory(UserDataFolder);
+            }
             else
                 ProcessHandler.StartProgram(path, elevated, args);
+            Directory.SetCurrentDirectory(UserDataFolder);
         }
 
         [SupportedOSPlatform("windows")]
@@ -179,14 +188,6 @@ namespace TcNo_Acc_Switcher_Globals
                 if (OperatingSystem.IsWindows() && IsProcessService(pathOrName, out var sName))
                 {
                     if (sName == null) continue;
-                    // TODO: Kill service (if any found)
-                    // Look up: c# System.Management kill service
-                    // Maybe https://www.codeproject.com/Articles/31688/Using-the-ServiceController-in-C-to-stop-and-start
-                    //
-                    // Otherwise default back to taskkill?
-
-                    // Todo: was sidetracked to this from ProfilePicFromFile and ProfilePicRegex as OriginWebHelper is a service, and doesn't want to close...
-
                     // Do also try and get the MainModule.Filename (or whatever it is) in the CanKillProcess function, to check if can kill... This seems to be a more reliable way of checking as well? Maybe just for services... use IsProcessService() for that as well?
                     scList.Add(new ServiceController(sName));
                     scListProcNames.Add(pathOrName);
@@ -205,7 +206,7 @@ namespace TcNo_Acc_Switcher_Globals
                     {
                         scList[i].Stop();
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         // Catch cannot stop on computer... Then end using less reliable TaskKill.
                         TaskKillProcess(scListProcNames[i]);
@@ -263,14 +264,27 @@ namespace TcNo_Acc_Switcher_Globals
 
             // See unmodified code source from link below:
             // https://stackoverflow.com/a/40501607/5165437
-            public static void RunAsDesktopUser(string fileName, string args = "")
+            public static bool TryRunAsDesktopUser(string fileName, string args = "")
+            {
+                var res = false;
+                try
+                {
+                    res = RunAsDesktopUser(fileName, args);
+                }
+                catch (Exception e)
+                {
+                    WriteToLog("FAILED: TryRunAsDesktopUser.", e);
+                }
+
+                return res;
+            }
+            public static bool RunAsDesktopUser(string fileName, string args = "")
             {
                 if (string.IsNullOrWhiteSpace(fileName))
-                    throw new ArgumentException("Value cannot be null or whitespace.", nameof(fileName));
-
-                // Set working directory
-                var tempWorkingDir = Directory.GetCurrentDirectory();
-                Directory.SetCurrentDirectory(Path.GetDirectoryName(fileName) ?? Directory.GetCurrentDirectory());
+                {
+                    WriteToLog("Value cannot be null or whitespace." + fileName);
+                    return false;
+                }
 
                 // To start process as shell user you will need to carry out these steps:
                 // 1. Enable the SeIncreaseQuotaPrivilege in your current token
@@ -287,7 +301,10 @@ namespace TcNo_Acc_Switcher_Globals
                 {
                     var process = NativeMethods.GetCurrentProcess();
                     if (!NativeMethods.OpenProcessToken(process, 0x0020, ref hProcessToken))
-                        return;
+                    {
+                        WriteToLog("FAILED: RunAsDesktopUser - OpenProcessToken" + fileName);
+                        return false;
+                    }
 
                     var tkp = new NativeMethods.TokenPrivileges
                     {
@@ -296,12 +313,18 @@ namespace TcNo_Acc_Switcher_Globals
                     };
 
                     if (!NativeMethods.LookupPrivilegeValue(null, "SeIncreaseQuotaPrivilege", ref tkp.Privileges[0].Luid))
-                        return;
+                    {
+                        WriteToLog("FAILED: RunAsDesktopUser - LookupPrivilegeValue" + fileName);
+                        return false;
+                    }
 
                     tkp.Privileges[0].Attributes = 0x00000002;
 
                     if (!NativeMethods.AdjustTokenPrivileges(hProcessToken, false, ref tkp, 0, IntPtr.Zero, IntPtr.Zero))
-                        return;
+                    {
+                        WriteToLog("FAILED: RunAsDesktopUser - AdjustTokenPrivileges" + fileName);
+                        return false;
+                    }
                 }
                 finally
                 {
@@ -314,7 +337,10 @@ namespace TcNo_Acc_Switcher_Globals
                 // restarted elevated.
                 var hwnd = NativeMethods.GetShellWindow();
                 if (hwnd == IntPtr.Zero)
-                    return;
+                {
+                    WriteToLog("FAILED: RunAsDesktopUser - hwnd == IntPtr.Zero" + fileName);
+                    return false;
+                }
 
                 var hShellProcess = IntPtr.Zero;
                 var hShellProcessToken = IntPtr.Zero;
@@ -323,23 +349,35 @@ namespace TcNo_Acc_Switcher_Globals
                 {
                     // Get the PID of the desktop shell process.
                     if (NativeMethods.GetWindowThreadProcessId(hwnd, out var dwPid) == 0)
-                        return;
+                    {
+                        WriteToLog("FAILED: RunAsDesktopUser - GetWindowThreadProcessId" + fileName);
+                        return false;
+                    }
 
                     // Open the desktop shell process in order to query it (get the token)
                     hShellProcess = NativeMethods.OpenProcess(NativeMethods.ProcessAccessFlags.QueryInformation, false, dwPid);
                     if (hShellProcess == IntPtr.Zero)
-                        return;
+                    {
+                        WriteToLog("FAILED: RunAsDesktopUser - hShellProcess == IntPtr.Zero" + fileName);
+                        return false;
+                    }
 
                     // Get the process token of the desktop shell.
                     if (!NativeMethods.OpenProcessToken(hShellProcess, 0x0002, ref hShellProcessToken))
-                        return;
+                    {
+                        WriteToLog("FAILED: RunAsDesktopUser - OpenProcessToken" + fileName);
+                        return false;
+                    }
 
                     const uint dwTokenRights = 395U;
 
                     // Duplicate the shell's process token to get a primary token.
                     // Based on experimentation, this is the minimal set of rights required for CreateProcessWithTokenW (contrary to current documentation).
                     if (!NativeMethods.DuplicateTokenEx(hShellProcessToken, dwTokenRights, IntPtr.Zero, NativeMethods.SecurityImpersonationLevel.SecurityImpersonation, NativeMethods.TokenType.TokenPrimary, out hPrimaryToken))
-                        return;
+                    {
+                        WriteToLog("FAILED: RunAsDesktopUser - DuplicateTokenEx" + fileName);
+                        return false;
+                    }
 
                     // Arguments need a space just before, for some reason.
                     if (args != null && args.Length > 1 && args[0] != ' ') args = ' ' + args;
@@ -348,7 +386,10 @@ namespace TcNo_Acc_Switcher_Globals
                     var si = new NativeMethods.StartupInfo();
                     var pi = new NativeMethods.ProcessInformation();
                     if (!NativeMethods.CreateProcessWithTokenW(hPrimaryToken, 0, fileName, args, 0, IntPtr.Zero, Path.GetDirectoryName(fileName), ref si, out pi))
-                        return;
+                    {
+                        WriteToLog("FAILED: RunAsDesktopUser - CreateProcessWithTokenW" + fileName);
+                        return false;
+                    }
                 }
                 finally
                 {
@@ -357,9 +398,7 @@ namespace TcNo_Acc_Switcher_Globals
                     NativeMethods.CloseHandle(hShellProcess);
                 }
 
-                // Reset working directory
-                Directory.SetCurrentDirectory(tempWorkingDir);
-
+                return true;
             }
 
             public static void BringWindowToForeground(string appName) { Process.GetProcessesByName(appName).FirstOrDefault(); }
