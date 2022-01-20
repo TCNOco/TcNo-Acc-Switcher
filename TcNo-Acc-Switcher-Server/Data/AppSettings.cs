@@ -128,7 +128,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static List<string> EnabledBasicPlatformSorted()
         {
             var enabled = EnabledBasicPlatforms.ToList();
-            enabled.Sort();
+            enabled.Sort(StringComparer.InvariantCultureIgnoreCase);
             return enabled;
         }
 

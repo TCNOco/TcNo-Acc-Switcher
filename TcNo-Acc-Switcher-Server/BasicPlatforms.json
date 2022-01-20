@@ -33,6 +33,13 @@
         "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\Windows\\GameUserSettings.ini": "GameUserSettings.ini",
         "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId": "UNIQUE_ID"
       },
+      "Extras": {
+        "CachePaths": [
+          "%LocalAppData%\\Epic Games\\Epic Online Services\\UI Helper\\Cache\\Cache",
+          "%LocalAppData%\\Epic Games\\Epic Online Services\\UI Helper\\Cache\\GPUCache",
+          "%LocalAppData%\\Epic Games\\EOSOverlay\\BrowserCache\\Cache"
+        ]
+      },
       "UniqueIdFile": "HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId",
       "UniqueIdMethod": "REGKEY"
     },
@@ -191,12 +198,16 @@
       },
       "ExitBeforeInteract": true,
       "Extras": {
+        "CachePaths": [
+          "%ProgramData%\\Origin\\DownloadCache",
+          "%LocalAppData%\\Origin\\Origin\\cache\\QtWebEngine\\Default\\Cache",
+          "%LocalAppData%\\Origin\\Origin\\QtWebEngine\\Default\\Application Cache\\Cache"
+        ],
         "ProfilePicFromFile": "%AppData%\\Origin\\local*",
         "ProfilePicRegex": "WIN_FILEPATH_REGEX"
       },
       "UniqueIdFile": "%ProgramData%\\Origin\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE",
-      "STATUS": "WIP"
+      "UniqueIdMethod": "CREATE_ID_FILE"
     },
     "EA Desktop": {
       "Identifiers": [ "ea", "eadesktop" ],
@@ -206,10 +217,35 @@
       "LoginFiles": {
         "%LocalAppData%\\Electronic Arts\\EA Desktop\\": "LocalAppData\\"
       },
+      "Extras": {
+        "CachePaths": [
+          "%LocalAppData%\\EADesktop\\QtWebEngine\\Default\\GPUCache",
+          "%LocalAppData%\\EADesktop\\cache\\QtWebEngine\\Default\\Cache",
+          "%LocalAppData%\\EADesktop\\cache\\qmlcache"
+        ]
+      },
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%LocalAppData%\\Electronic Arts\\EA Desktop\\telemetry.ini",
-      "UniqueIdRegex": "(?<=\\=).*",
-      "STATUS": "WIP"
+      "UniqueIdRegex": "(?<=\\=).*"
+    },
+    "GeForce Now": {
+      "Identifiers": [ "gn", "geforce", "geforcenow" ],
+      "ExeLocationDefault": "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CEF\\GeForceNOW.exe",
+      "ExesToEnd": [ "GeForceNOW.exe", "GeForceNOWContainer.exe", "GeForceNOWReliabilityMonitor.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\sharedstorage.json": "LocalAppData\\sharedstorage.json",
+        "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+      },
+      "Extras": {
+        "CachePaths": [
+          "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CefCache\\Cache",
+          "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\CefCache\\GPUCache"
+        ]
+      },
+      "ExitBeforeInteract": true,
+      "UniqueIdFile": "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE"
     }
   },
   "Platform-WIP": {
