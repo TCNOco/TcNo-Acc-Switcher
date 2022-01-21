@@ -146,9 +146,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
             switch (action)
             {
-                case "ClearSteamBackups":
-                    SteamSwitcherFuncs.ClearForgotten_Confirmed();
-                    break;
                 case "ClearBattleNetIgnored":
                     BattleNetSwitcherFuncs.ClearIgnored_Confirmed();
                     break;

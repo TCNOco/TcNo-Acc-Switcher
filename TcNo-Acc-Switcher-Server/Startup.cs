@@ -75,7 +75,6 @@ namespace TcNo_Acc_Switcher_Server
             {
                 MoveIfFileExists(p + "Settings.json");
             }
-            MoveIfFileExists("SteamForgotten.json");
             MoveIfFileExists("Tray_Users.json");
             MoveIfFileExists("WindowSettings.json");
 

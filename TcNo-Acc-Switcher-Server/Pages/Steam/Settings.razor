@@ -112,7 +112,6 @@
                 <hr><span>@_locale["Settings_Header_OtherTools"]</span>
                 <hr>
             </div>
-            <div class="buttoncol"><button type="button" @onclick='() => _navManager.NavigateTo("/Steam/RestoreForgotten")'><span>@_locale["Settings_RestoreForgotten"]</span></button><button type="button" @onclick="SteamSwitcherFuncs.ClearForgotten"><span>@_locale["Settings_ClearForgotten"]</span></button></div>
             <div class="buttoncol"><button id="OpenFolder" type="button" @onclick="OpenFolder"><span>@_locale["Settings_OpenFolder", new { platform = Platform }]</span></button><button id="Steam_AdvancedClearing" type="button" @onclick='() => _navManager.NavigateTo("/Steam/AdvancedClearing")'><span>@_locale["Button_AdvancedCleaning"]</span></button></div>
             <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
         </div>

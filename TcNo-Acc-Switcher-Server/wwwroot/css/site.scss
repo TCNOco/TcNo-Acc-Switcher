@@ -509,64 +509,6 @@ div.advancedClearingButtonCol .buttoncol {
   margin: 0;
 }
 
-/* Forgotten Steam account */
-
-.forgottenListActions {
-  text-align: end;
-}
-
-.forgottenList {
-  display: flex;
-  margin-bottom: 2em;
-
-  & select {
-    overflow: auto;
-    background: #0E1419;
-    border: solid #888 0.1em;
-    color: white;
-    width: 100%;
-    padding: 0.5em;
-
-    &:focus {
-      border: solid #888 0.1em;
-    }
-
-    & option {
-      &:checked {
-        box-shadow: 0 0 10px 100px var(--accent) inset;
-        color: white;
-
-        &::before {
-          color: var(--accent);
-
-          /* margin-left: 0.5em; */
-        }
-
-        &::after {
-          content: attr(visible-content);
-          color: #8BE9FD;
-        }
-      }
-
-      /*
-          Workaround to set color BECAUSE YOU CAN'T SET TEXT COLOR?!
-          This is for showing the arrow before, and the SteamID afterwards in a different color
-      */
-
-      &::before {
-        content: ">";
-        color: var(--accent);
-        margin-right: 0.5em;
-      }
-
-      &::after {
-        content: attr(visible-content);
-        color: #8BE9FD;
-      }
-    }
-  }
-}
-
 .btn_RestoreSelected {
   margin-right: 1em !important;
   padding: 0.25em 3em !important;

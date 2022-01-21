@@ -503,29 +503,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         /// <summary>
-        /// Clears backups of forgotten accounts
-        /// </summary>
-        public static void ClearForgotten()
-        {
-            Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.ClearForgotten] Clearing forgotten backups.");
-            _ = GeneralInvocableFuncs.ShowModal("confirm:ClearSteamBackups:" + Lang["Toast_ClearForgottenCheck"].Replace(' ', '_'));
-            // Confirmed in GeneralInvocableFuncs.GiConfirmAction for rest of function
-        }
-        /// <summary>
-        /// Fires after being confirmed by above function, and actually performs task.
-        /// </summary>
-        public static void ClearForgotten_Confirmed()
-        {
-            Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.ClearForgotten_Confirmed] Confirmation received to clear forgotten backups.");
-            var legacyBackupPath = Path.Join(SteamSettings.FolderPath, "config\\\\TcNo-Acc-Switcher-Backups\\\\");
-            if (Directory.Exists(legacyBackupPath))
-                Directory.Delete(legacyBackupPath, true);
-
-            // Handle new method:
-            Globals.DeleteFile("SteamForgotten.json");
-        }
-
-        /// <summary>
         /// Clears images folder of contents, to re-download them on next load.
         /// </summary>
         /// <returns>Whether files were deleted or not</returns>
@@ -606,15 +583,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static Task<bool> GetSteamForgetAcc() => Task.FromResult(SteamSettings.ForgetAccountEnabled);
 
         /// <summary>
-        /// Purely a class used for backing up forgotten Steam users, used in ForgetAccount() and RestoreAccount()
-        /// </summary>
-        public class ForgottenSteamuser
-        {
-            [JsonProperty("SteamId", Order = 0)] public string SteamId { get; set; }
-            [JsonProperty("SteamUser", Order = 1)] public Index.Steamuser Steamuser { get; set; }
-        }
-
-        /// <summary>
         /// Remove requested account from loginusers.vdf
         /// </summary>
         /// <param name="steamId">SteamId of account to be removed</param>
@@ -623,15 +591,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.ForgetAccount] Forgetting account: {steamId.Substring(steamId.Length - 4, 4)}");
             // Load and remove account that matches SteamID above.
             var userAccounts = GetSteamUsers(SteamSettings.LoginUsersVdf());
-            var forgottenUser = userAccounts.First(x => x.SteamId == steamId); // Get the removed user to save into restore file
             _ = userAccounts.RemoveAll(x => x.SteamId == steamId);
-
-            // Instead of backing up EVERY TIME like the previous version (Was: BackupLoginUsers(settings: settings);)
-            // Rather just save the users in a file, for better restoring later if necessary.
-            var fFileContents = File.Exists(SteamSettings.ForgottenFile) ? Globals.ReadAllText(SteamSettings.ForgottenFile) : "";
-            var fUsers = fFileContents == "" ? new List<ForgottenSteamuser>() : JsonConvert.DeserializeObject<List<ForgottenSteamuser>>(fFileContents);
-            if (fUsers!.All(x => x.SteamId != forgottenUser.SteamId)) fUsers.Add(new ForgottenSteamuser { SteamId = forgottenUser.SteamId, Steamuser = forgottenUser }); // Add to list if user with SteamID doesn't exist in it.
-            File.WriteAllText(SteamSettings.ForgottenFile, JsonConvert.SerializeObject(fUsers));
 
             // Save updated loginusers.vdf file
             SaveSteamUsersIntoVdf(userAccounts);
@@ -642,41 +602,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             // Remove from Tray
             Globals.RemoveTrayUserByArg("Steam", "+s:" + steamId);
-            return true;
-        }
-
-        /// <summary>
-        /// Restores requested SteamIds: Moves them from ForgottenFile, back into loginusers.vdf
-        /// </summary>
-        /// <param name="requestedSteamIds">List of SteamID64s (strings)</param>
-        /// <returns>Whether the forgotten file even exists or not</returns>
-        public static bool RestoreAccounts(string[] requestedSteamIds)
-        {
-            foreach (var s in requestedSteamIds) Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.RestoreAccounts] Restoring account: {s.Substring(s.Length - 4, 4)}");
-
-            if (!File.Exists(SteamSettings.ForgottenFile)) return false;
-            var forgottenAccounts = JsonConvert.DeserializeObject<List<ForgottenSteamuser>>(Globals.ReadAllText(SteamSettings.ForgottenFile));
-            if (forgottenAccounts == null) return false;
-            // Load existing accounts
-            var userAccounts = GetSteamUsers(SteamSettings.LoginUsersVdf());
-            // Create list of existing SteamIds (as to not add duplicates)
-            var existingIds = userAccounts.Select(ua => ua.SteamId).ToList();
-
-            var selectedForgottenPossibleDuplicates = forgottenAccounts.Where(fsu => requestedSteamIds.Contains(fsu.SteamId)).ToList(); // To remove items in Loginusers from forgotten list
-            var selectedForgotten = selectedForgottenPossibleDuplicates.Where(fsu => !existingIds.Contains(fsu.SteamId)).ToList(); // To add new items to Loginusers (So there's no duplicates)
-            foreach (var fa in selectedForgotten)
-            {
-                var su = fa.Steamuser;
-                su.SteamId = fa.SteamId;
-                userAccounts.Add(su);
-            }
-
-            // Save updated loginusers.vdf file
-            SaveSteamUsersIntoVdf(userAccounts);
-
-            // Update & Save SteamForgotten.json
-            forgottenAccounts = forgottenAccounts.Except(selectedForgottenPossibleDuplicates).ToList();
-            File.WriteAllText(SteamSettings.ForgottenFile, JsonConvert.SerializeObject(forgottenAccounts));
             return true;
         }
         #endregion

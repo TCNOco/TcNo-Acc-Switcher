@@ -357,7 +357,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// </summary>
         public static void ClearIgnored_Confirmed()
         {
-            Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.ClearForgotten_Confirmed] Confirmation received to clear ignored list.");
+            Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.ClearIgnored_Confirmed] Confirmation received to clear ignored list.");
             BattleNetSettings.IgnoredAccounts = new List<string>();
             BattleNetSettings.SaveAccounts();
         }

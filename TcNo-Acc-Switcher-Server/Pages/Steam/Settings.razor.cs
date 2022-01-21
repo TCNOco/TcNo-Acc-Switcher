@@ -65,10 +65,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         #endregion
 
         #region SETTINGS_TOOLS
-        // Restore forgotten accounts
-
-        // BUTTON: Clear forgotten backups
-
         // BUTTON: Open Folder
         public static void OpenFolder()
         {

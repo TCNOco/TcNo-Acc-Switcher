@@ -127,21 +127,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NewLine();
         }
 
-        // BUTTON: Forgotten account backups
-        public void Steam_Clear_Forgotten()
-        {
-            Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Forgotten]");
-            SteamSwitcherFuncs.ClearForgotten();
-            WriteLine("Cleared forgotten account backups");
-            NewLine();
-        }
-
         // BUTTON: ..\Steam\config\config.vdf
         public void Steam_Clear_Config()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Clear_Config]");
             GeneralFuncs.DeleteFile(Path.Join(SteamSettings.FolderPath, "config\\config.vdf"), SteamReturn);
-            WriteLine("[ Don't forget to clear forgotten account backups as well ]");
             WriteLine("Cleared config\\config.vdf");
             NewLine();
         }

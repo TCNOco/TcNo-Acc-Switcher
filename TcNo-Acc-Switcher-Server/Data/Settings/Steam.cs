@@ -286,7 +286,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static readonly List<string> Processes = new() { "steam.exe", "steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
         public static readonly string VacCacheFile = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
         public static readonly string SettingsFile = "SteamSettings.json";
-        public static readonly string ForgottenFile = "SteamForgotten.json";
         public static readonly string SteamImagePath = "wwwroot/img/profiles/steam/";
         public static readonly string SteamImagePathHtml = "img/profiles/steam/";
         public static readonly string ContextMenuJson = $@"[

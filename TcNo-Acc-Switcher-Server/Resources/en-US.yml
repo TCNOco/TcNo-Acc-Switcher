@@ -41,7 +41,6 @@ Settings_PickFolder: Pick {platform} folder
 Settings_OpenFolder: Open {platform} Folder
 Settings_ClearForgotten: Clear Forgotten
 Settings_ClearAccounts: Clear Accounts
-Settings_RestoreForgotten: Restore forgotten account
 Settings_StreamerMode: Enable streamer mode
 Settings_ExitToTray: Exit minimises to tray
 Settings_DesktopShortcut: Desktop shortcut
@@ -69,7 +68,6 @@ Cleaning_ImportantInfo: >
 Cleaning_Button_KillProcess: Kill {platform} process
 Cleaning_Button_ForgottenBackups: Forgotten account backups
 Cleaning_Understand: I understand what these buttons do.
-Restore_Header: Restore forgotten accounts
 Restore_Info: >
   If you previously "forgot" an account, you can restore them here.<br /> This adds them back into your loginusers.vdf file, allowing you to switch to them.
 Restore_Button_Restore: Restore selected
@@ -216,7 +214,6 @@ Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - Text Editor
 Title_Settings: TcNo Account Switcher - Settings
 Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
 Title_Steam_Settings: TcNo Account Switcher - Steam Settings
 Title_Template_Settings: TcNo Account Switcher - {platformName} Settings
 Installer_Downloading: Downloading {file}
@@ -337,7 +334,7 @@ CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
 CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
 Prompt_RestartAsAdmin: "<h3><bold>This program will restart as Admin</bold></h3><p>Hit \"Yes\" in UAC when prompted for admin.</p>"
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>You are about to forget an account!</h3> <h4>What does this mean?</h4> <p>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.<br/> - TcNo Account Switcher will also no longer show the account, until it's signed into again through Steam.</p> <p>Your account will remain untouched. It is just forgotten on this computer.</p> <h4>What if something goes wrong?</h4> <p>Don't panic, you can bring back forgotten accounts via backups in the Settings screen.<br/> You can also remove previous backups from there when you are sure everything is working as expected.</p> <h4>Do you understand?</h4>
+  <h3 style='color:red'>You are about to forget an account!</h3> <h4>What does this mean?</h4> <p>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.<br/> - TcNo Account Switcher will also no longer show the account, until it's signed into again through Steam.</p> <p>Your account will remain untouched. It is just forgotten on this computer.</p><h4>Do you understand?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>You are about to forget an account!</h3> <h4>What does this mean?</h4> <p>TcNo Account Switcher will also no longer show the account,<br/> until it's signed into again through {platform}, and added to the list.</p> <p>Your account will remain untouched. It is just forgotten on this computer.</p> <h4>Do you understand?</h4>
 Platform_DiscordPasteHint: Paste into Discord console, and then paste result in input!
