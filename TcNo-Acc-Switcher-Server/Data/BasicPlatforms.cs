@@ -144,6 +144,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private string _userModalHintText = "";
         private List<string> _cachePaths = null;
         private string _profilePicFromFile = "";
+        private string _profilePicPath = "";
         private string _profilePicRegex = "";
         // Optional
         private string _uniqueIdFile = "";
@@ -187,6 +188,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static string UserModalHintText { get => Instance._userModalHintText; private set => Instance._userModalHintText = value; }
         public static List<string> CachePaths { get => Instance._cachePaths; private set => Instance._cachePaths = value; }
         public static string ProfilePicFromFile { get => Instance._profilePicFromFile; private set => Instance._profilePicFromFile = value; }
+        public static string ProfilePicPath { get => Instance._profilePicPath; private set => Instance._profilePicPath = value; }
         public static string ProfilePicRegex { get => Instance._profilePicRegex; private set => Instance._profilePicRegex = value; }
 
         // ----------
@@ -255,6 +257,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                     SearchStartMenuForIcon = (bool)extras["SearchStartMenuForIcon"];
                 if (extras.ContainsKey("ProfilePicFromFile"))
                     ProfilePicFromFile = (string)extras["ProfilePicFromFile"];
+                if (extras.ContainsKey("ProfilePicPath"))
+                    ProfilePicPath = (string)extras["ProfilePicPath"];
                 if (extras.ContainsKey("ProfilePicRegex"))
                     ProfilePicRegex = (string)extras["ProfilePicRegex"];
             }
@@ -381,7 +385,8 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public static void SaveRegJson(Dictionary<string, string> regJson, string acc)
         {
-            if (regJson != new Dictionary<string, string>()) GeneralFuncs.SaveDict(regJson, Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
+            if (regJson.Count > 0)
+                GeneralFuncs.SaveDict(regJson, Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
         }
 
 

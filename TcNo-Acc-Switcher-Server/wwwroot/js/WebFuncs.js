@@ -7,6 +7,17 @@ function getCurrentPage() {
         window.location.pathname.split("/")[1]);
 }
 
+async function getCurrentPageFullname() {
+    // If a name for text is required, rather than code (Steam instead of steam or basic)
+    var platform = getCurrentPage();
+    if (platform === "Basic") {
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform).then((r) => {
+            platform = r;
+        });
+    }
+    return platform;
+}
+
 window.addEventListener('load',
     () => {
         // I don't know of an easier way to do this.
@@ -276,19 +287,6 @@ function saveFile(fileName, urlFile) {
 	a.remove();
 }
 
-// Add currently logged in Ubisoft account
-async function currentUbisoftLogin() {
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftHasUserSaved").then((r) => {
-        if (r === "")
-            // If userId not saved:
-            showModal('accString');
-        else {
-            DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UbisoftAddCurrent", r);
-        }
-    });
-    var result = await promise;
-}
-
 
 
 $(".acc").dblclick(() => {
@@ -355,9 +353,7 @@ async function showModal(modaltype) {
             await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalExtraButtons").then((r) => {
                 extraButtons = r;
             });
-            await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platformName).then((r) => {
-                platformName = r;
-            });
+            platformName = await getCurrentPageFullname();
         }
 
         const modalChangeUsername =
@@ -427,11 +423,8 @@ async function showModal(modaltype) {
         if (action.startsWith("AcceptForgetSteamAcc")) {
             message = await GetLang("Prompt_ForgetSteam");
         } else if (action.startsWith("AcceptForgetBasicAcc") ||
-            action.startsWith("AcceptForgetOriginAcc") ||
-            action.startsWith("AcceptForgetUbisoftAcc") ||
-            action.startsWith("AcceptForgetBattleNetAcc") ||
-            action.startsWith("AcceptForgetRiotAcc")) {
-            message = await GetLangSub("Prompt_ForgetAccount", { platform: getCurrentPage() });
+            action.startsWith("AcceptForgetBattleNetAcc")) {
+            message = await GetLangSub("Prompt_ForgetAccount", { platform: await getCurrentPageFullname() });
         } else {
             message = `<p>${modaltype.split(":")[2].replaceAll("_", " ")}</p>`;
             // The only exception to confirm:<prompt> was AcceptForgetSteamAcc, as that was confirm:AcceptForgetSteamAcc:steamId
@@ -601,7 +594,7 @@ async function Modal_Confirm(action, value) {
 }
 
 async function Modal_FinaliseAccString(platform) {
-    // Supported: Riot, BASIC
+    // Supported: BASIC
     const raw = $("#CurrentAccountName").val();
     let name = raw;
 

@@ -56,13 +56,6 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     else _ = GeneralInvocableFuncs.ShowModal(Lang["Toast_Steam_CantLocateLoginusers"]);
                     break;
 
-                case "Ubisoft":
-                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Ubisoft.Processes)) return;
-                    Data.Settings.Ubisoft.LoadFromFile();
-                    if (Directory.Exists(Data.Settings.Ubisoft.FolderPath) && File.Exists(Data.Settings.Ubisoft.Exe())) AppData.ActiveNavMan.NavigateTo("/Ubisoft/");
-                    else _ = GeneralInvocableFuncs.ShowModal("find:Ubisoft:upc.exe:UbisoftSettings");
-                    break;
-
                 default:
                     if (BasicPlatforms.PlatformExistsFromShort(platform)) // Is a basic platform!
                     {

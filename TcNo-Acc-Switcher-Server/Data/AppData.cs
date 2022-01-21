@@ -74,13 +74,13 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         #region Basic_Platforms
 
-        public List<string> OldPlatformList = new() { "Steam", "Ubisoft", "BattleNet" };
+        public List<string> OldPlatformList = new() { "Steam", "BattleNet" };
         private List<string> _platformList;
         public List<string> PlatformList
         {
             get
             {
-                Instance._platformList = new List<string> { "Steam", "Ubisoft", "BattleNet" };
+                Instance._platformList = new List<string>(OldPlatformList);
 
                 // Add enabled basic platforms:
                 Instance._platformList =

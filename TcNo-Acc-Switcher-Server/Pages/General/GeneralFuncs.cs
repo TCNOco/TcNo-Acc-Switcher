@@ -731,11 +731,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                         Data.Settings.Steam.SaveSettings();
                         break;
 
-                    case "Ubisoft":
-                        await Ubisoft.UbisoftSwitcherFuncs.LoadProfiles();
-                        Data.Settings.Ubisoft.SaveSettings(!File.Exists(Data.Settings.Ubisoft.SettingsFile));
-                        break;
-
                     default:
                         Basic.BasicSwitcherFuncs.LoadProfiles();
                         Data.Settings.Basic.SaveSettings();

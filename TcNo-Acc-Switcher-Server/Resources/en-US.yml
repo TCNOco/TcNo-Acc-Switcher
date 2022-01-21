@@ -132,9 +132,6 @@ Toast_Steam_FailedLoginusers: Failed to load steam/config/loginusers.vdf
 Toast_Steam_CantLocateLoginusers: Cannot locate '.../Steam/config/loginusers.vdf'. Try signing into an account first.
 Toast_CantClearImages: Could not clear images
 Toast_RefreshedImages: Refreshed images
-Toast_Ubisoft_NoUsername: Could not find last logged in user. Try logging into Ubisoft again first.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat could not be found. The last active account was not saved."
-Toast_Ubisoft_NoUser: Could not find last logged in user. Try logging into Ubisoft again first.
 Toast_ClearForgottenCheck: Are you sure you want to clear backups of forgotten accounts?
 Toast_BattleNet_ChangedBTag: Changed BattleTag
 Toast_BattleNet_DeletedBTag: Deleted BattleTag
@@ -220,7 +217,6 @@ Title_Settings: TcNo Account Switcher - Settings
 Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
 Title_Steam_Restore: TcNo Account Switcher - Restore forgotten Steam account
 Title_Steam_Settings: TcNo Account Switcher - Steam Settings
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
 Title_Template_Settings: TcNo Account Switcher - {platformName} Settings
 Installer_Downloading: Downloading {file}
 Installer_DownloadFinished: Finished downloading {file}
@@ -329,6 +325,7 @@ Done: Done
 Working: Working...
 ForName: "For: {name}"
 DeletedFiles: Deleted files
+FileFoldersToClear: "List of files/folders to clear:"
 CouldNotFindX: Could not find {x}
 CouldNotCloseX: Could not close {x}!
 DirectoryNotFound: Directory not found

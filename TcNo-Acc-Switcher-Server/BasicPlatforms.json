@@ -246,6 +246,29 @@
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%LocalAppData%\\NVIDIA Corporation\\GeForceNOW\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
+    },
+    "Ubisoft": {
+      "Identifiers": [ "u", "ubi", "uplay", "ubisoft" ],
+      "ExeLocationDefault": "C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game launcher\\upc.exe",
+      "ExesToEnd": [ "upc.exe", "UplayService.exe", "UplayWebCore.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "%Platform_Folder%\\logs\\launcher_log.txt": "logs\\launcher_log.txt",
+        "%LocalAppData%\\Ubisoft Game Launcher\\settings.yaml": "settings.yaml",
+        "%LocalAppData%\\Ubisoft Game Launcher\\user.dat": "user.dat"
+      },
+      "Extras": {
+        "ProfilePicPath": "%Platform_Folder%\\cache\\avatars\\%UniqueId%_256.png",
+        "CachePaths": [
+          "%Platform_Folder%\\cache\\achievements",
+          "%Platform_Folder%\\cache\\assets",
+          "%Platform_Folder%\\cache\\download",
+          "%Platform_Folder%\\cache\\http2"
+        ]
+      },
+      "ExitBeforeInteract": true,
+      "UniqueIdFile": "%Platform_Folder%\\logs\\launcher_log.txt",
+      "UniqueIdRegex": "(?<=User: ).*"
     }
   },
   "Platform-WIP": {

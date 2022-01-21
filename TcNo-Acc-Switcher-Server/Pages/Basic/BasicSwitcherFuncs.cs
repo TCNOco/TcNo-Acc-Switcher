@@ -46,6 +46,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
         public static Dictionary<string, string> AccountIds;
         public static void LoadAccountIds() => AccountIds = GeneralFuncs.ReadDict(CurrentPlatform.IdsJsonPath);
+        //public static void LoadAccountIds()
+        //{
+        //    var p = Path.GetFullPath(CurrentPlatform.IdsJsonPath);
+        //    AccountIds = GeneralFuncs.ReadDict(p);
+        //    return;
+        //}
         private static void SaveAccountIds() =>
             File.WriteAllText(CurrentPlatform.IdsJsonPath, JsonConvert.SerializeObject(AccountIds));
         public static string GetNameFromId(string accId) => AccountIds.ContainsKey(accId) ? AccountIds[accId] : accId;
@@ -124,9 +130,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             // Foreach file/folder/reg in Platform.PathListToClear
             if (CurrentPlatform.PathListToClear.Any(accFile => !DeleteFileOrFolder(accFile)))
-            {
                 return false;
-            }
 
             if (CurrentPlatform.UniqueIdMethod != "CREATE_ID_FILE") return true;
 
@@ -301,7 +305,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         {
             var variables = new Dictionary<string, string>()
             {
-                { "%Game_Folder%", BasicSettings.FolderPath ?? "" },
+                { "%Platform_Folder%", BasicSettings.FolderPath ?? "" },
                 { "%TCNO_UserData%", Globals.UserDataFolder },
                 { "%TCNO_AppData%", Globals.AppDataFolder },
                 { "%Documents%", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) },
@@ -481,19 +485,41 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     // Copy in profile picture (if found) from Regex search of files (if defined)
                     if (CurrentPlatform.ProfilePicFromFile != "" && CurrentPlatform.ProfilePicRegex != "")
                     {
-                        var res = RegexSearchFileOrFolder(CurrentPlatform.ProfilePicFromFile,
-                            CurrentPlatform.ProfilePicRegex);
-                        if (res != "" && File.Exists(res))
+                        var res = Globals.GetCleanFilePath(RegexSearchFileOrFolder(CurrentPlatform.ProfilePicFromFile, CurrentPlatform.ProfilePicRegex));
+                        var sourcePath = res;
+                        if (CurrentPlatform.ProfilePicPath != "")
+                        {
+                            // The regex result should be considered a filename.
+                            // Sub in %FileName% from res, and %UniqueId% from uniqueId
+                            sourcePath = ExpandEnvironmentVariables(CurrentPlatform.ProfilePicPath.Replace("%FileName%", res).Replace("%UniqueId", uniqueId));
+                        }
+
+                        if (res != "" && File.Exists(sourcePath))
                             try
                             {
-                                File.Copy(res, profileImg, true);
+                                File.Copy(sourcePath, profileImg, true);
                             }
                             catch (Exception e)
                             {
                                 Globals.WriteToLog("Tried to save profile picture from path (ProfilePicFromFile, ProfilePicRegex method)", e);
                             }
                     }
-                    else
+                    else if (CurrentPlatform.ProfilePicPath != "")
+                    {
+                        var sourcePath = ExpandEnvironmentVariables(Globals.GetCleanFilePath(CurrentPlatform.ProfilePicPath.Replace("%UniqueId", uniqueId))) ?? "";
+                        if (sourcePath != "" && File.Exists(sourcePath))
+                            try
+                            {
+                                File.Copy(sourcePath, profileImg, true);
+                            }
+                            catch (Exception e)
+                            {
+                                Globals.WriteToLog("Tried to save profile picture from path (ProfilePicPath method)", e);
+                            }
+                    }
+
+                    // Else (If file couldn't be saved, or not found -> Default.
+                    if (!File.Exists(profileImg))
                     {
                         var currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), platformImgPath);
                         File.Copy(File.Exists(currentPlatformImgPath)

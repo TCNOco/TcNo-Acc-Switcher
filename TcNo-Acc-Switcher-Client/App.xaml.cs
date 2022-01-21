@@ -372,7 +372,7 @@ namespace TcNo_Acc_Switcher_Client
                             " -   Origin format: +o:<accName>",
                             " -   Riot Games format: +r:<username>",
                             " -   Steam format: +s:<steamId>[:<PersonaState (0-7)>]",
-                            " -   Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]",
+                            " -   Ubisoft Connect format: +u:<accName>",
                             " --- Other platforms: +<2-3 letter code>:<unique identifiers>",
                             "--- Log out of accounts ---",
                             "logout:<platform> = Logout of a specific platform (Allowing you to sign into and add a new account)",
@@ -382,7 +382,7 @@ namespace TcNo_Acc_Switcher_Client
                             " -   Origin: o, origin",
                             " -   Riot Games: r, riot, riotgames",
                             " -   Steam: s, steam",
-                            " -   Ubisoft Connect: u, ubi, ubisoft, ubisoftconnect, uplay",
+                            " -   Ubisoft Connect: u, ubi, ubisoft, uplay",
                             " --- Other platforms via custom commands: <unique identifiers>",
                             "--- Other arguments ---",
                             "v, vv, verbose = Verbose mode (Shows a lot of details, somewhat useful for debugging)"
@@ -444,17 +444,7 @@ namespace TcNo_Acc_Switcher_Client
                                 : -1, args: string.Join(' ', remainingArguments)); // Request has a PersonaState in it
                         return;
                     }
-                // Ubisoft
-                case "u":
-                    {
-                        // Ubisoft Connect format: +u:<email>[:<0 = Online/1 = Offline>]
-                        Globals.WriteToLog("Ubisoft Connect switch requested");
-                        if (!GeneralFuncs.CanKillProcess(Ubisoft.Processes)) Restart(combinedArgs, true);
-                        Ubisoft.LoadFromFile();
-                        TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherFuncs.SwapUbisoftAccounts(account,
-                            command.Length > 2 ? int.Parse(command[2]) : -1, string.Join(' ', remainingArguments));
-                        break;
-                    }
+
                 // BASIC ACCOUNT PLATFORM
                 default:
                     if (!BasicPlatforms.PlatformExistsFromShort(platform)) break;
@@ -518,16 +508,6 @@ namespace TcNo_Acc_Switcher_Client
                 case "steam":
                     Globals.WriteToLog("Steam logout requested");
                     TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherBase.NewLogin_Steam();
-                    break;
-
-                // Ubisoft Connect
-                case "u":
-                case "ubi":
-                case "ubisoft":
-                case "ubisoftconnect":
-                case "uplay":
-                    Globals.WriteToLog("Ubisoft Connect logout requested");
-                    TcNo_Acc_Switcher_Server.Pages.Ubisoft.UbisoftSwitcherBase.NewLogin_Ubisoft();
                     break;
 
                 // BASIC ACCOUNT PLATFORM

@@ -64,7 +64,7 @@
             <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button>
                 @if (CurrentPlatform.CachePaths != null)
                 {
-                    <button id="ClearCache" type="button" @onclick="BasicSwitcherFuncs.ClearCache"><span>@_locale["Platform_ClearCache"]</span></button>
+                    <button id="ClearCache" type="button" @onclick="BasicSwitcherFuncs.ClearCache" data-toggle="tooltip" title="@(GetCacheList())" data-html="true"><span>@_locale["Platform_ClearCache"]</span></button>
                 }
             </div>
 
@@ -91,5 +91,11 @@
         Basic.SaveSettings();
 
         _navManager.NavigateTo("/Basic");
+    }
+
+    private static string GetCacheList()
+    {
+        var listOfFiles = new List<string>(CurrentPlatform.CachePaths);
+        return Lang["FileFoldersToClear"] + "<br>" + string.Join("<br>", listOfFiles.Select(x => x.Replace("Platform_Folder", CurrentPlatform.FullName)).ToList());
     }
 }
