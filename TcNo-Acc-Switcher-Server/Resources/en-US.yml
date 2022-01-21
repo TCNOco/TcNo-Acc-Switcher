@@ -173,6 +173,7 @@ Status_Init: "Status: Initialising"
 Status_ClosingPlatform: "Closing {platform}"
 Status_ClosingPlatformFailed: "Failed to close {platform}"
 Status_StartingPlatform: "Starting {platform}"
+Toast_UrlAdminErr: You can not run .url files as admin. Try another shortcut type. Launching as normal user.
 Status_UpdatingFile: "Updating {file}"
 Status_UpdatingRegistry: Updating Windows registry
 Status_FailedLog: Action failed. See log for details.

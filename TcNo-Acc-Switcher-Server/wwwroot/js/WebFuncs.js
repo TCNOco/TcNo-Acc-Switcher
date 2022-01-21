@@ -738,13 +738,19 @@ function serializeShortcuts() {
         output[i] = $(e).attr("id");
     });
 
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrder", output);
+    if (getCurrentPage() === "Steam")
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrderSteam", output);
+    else
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrder", output);
 }
 
 // Context menu buttons
 function shortcut(action) {
     const reqId = $(selectedElem).prop("id");
     console.log(reqId);
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutAction", reqId, action);
+    if (getCurrentPage() === "Steam")
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutActionSteam", reqId, action);
+    else
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutAction", reqId, action);
     if (action === "hide") $(selectedElem).remove();
 }

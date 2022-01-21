@@ -16,6 +16,10 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using Steam = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
+@using Basic = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
+@using System.IO
+@using TcNo_Acc_Switcher_Globals
+@using System.Diagnostics
 @inject AppData _appData
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
@@ -24,24 +28,56 @@
 
 <style>@(AppSettings.GetCssBlock())</style>
 <style>@(Steam.GetSteamIdCssBlock())</style>
-@inject Lang  _locale
+@inject Lang _locale
 
 <ContextMenu ContextMenuString="@Steam.ContextMenuJson" ContextMenuId="AccOrPlatList" />
-@*<ContextMenu ContextMenuString="@Steam.ContextMenuJson" ContextMenuId="Shortcuts" />*@
+<ContextMenu ContextMenuString="@Basic.ContextMenuShortcutJson" ContextMenuId="Shortcuts" />
+<ContextMenu ContextMenuString="@Basic.ContextMenuPlatformJson" ContextMenuId="Platform" />
 <div id="acc_list" class="acc_list">
     <toastarea class="toastarea" />
 </div>
+
+<div class="shortcutDropdown" id="shortcutDropdown" style="display: none">
+    @foreach (var (i, shortcut) in Steam.Shortcuts)
+    {
+        @if (i >= 0)
+        {
+            <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Steam.RunShortcut(shortcut)" data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
+                <img src="@(Steam.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+            </button>
+        }
+    }
+    <button id="btnOpenShortcutFolder" @onclick="() => OpenFolder(Path.GetFullPath(Steam.ShortcutFolder))" data-toggle="tooltip" title="@(_locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
+</div>
+
 <div class="acc_list_actionbar">
     <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@_appData.CurrentStatus" spellcheck="false" disabled></div>
     <div>
-		<button id="btnAddNew" onclick="newLogin()">
+        <div class="shortcuts">
+            @foreach (var (i, shortcut) in Steam.Shortcuts)
+            {
+                @if (i < 0)
+                {
+                    <button class="HasContextMenu" id="@(shortcut)" @onclick="() => Steam.RunShortcut(shortcut)" data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
+                        <img src="@(Steam.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                    </button>
+                }
+            }
+        </div>
+        <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(_locale["Tooltip_ExpandShortcuts"])" data-placement="left"><i class="fas fa-chevron-up"></i></button>
+
+        <button id="btnStartPlat" @onclick="() => RunPlatform()" data-toggle="tooltip" title="Steam">
+            <img src="@(Steam.GetShortcutImagePath("Steam"))" alt="Start platform"/>
+        </button>
+
+        <button id="btnAddNew" onclick="newLogin()">
             <i class="fas fa-plus footerIcoInline"></i>
-			<span>@_locale["Button_AddNew"]</span>
-		</button>
-		<button class="btn_login" id="btnLogin" onclick="swapTo(-1, event)">
-			<span>@_locale["Button_Login"]</span>
+            <span>@_locale["Button_AddNew"]</span>
+        </button>
+        <button class="btn_login" id="btnLogin" onclick="swapTo(-1, event)">
+            <span>@_locale["Button_Login"]</span>
             <i class="fas fa-caret-right footerIcoInline"></i>
-		</button>
+        </button>
 
         <button id="btnSettings" onclick="location = 'Steam/Settings'" data-toggle="tooltip" title="@(_locale["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
@@ -69,4 +105,19 @@
     {
         await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
     }
+
+    #region FromBasics:
+    private void RunPlatform()
+    {
+        Globals.StartProgram(Steam.Exe(), Steam.Admin);
+        _ = GeneralInvocableFuncs.ShowToast("info", _locale["Status_StartingPlatform", new { platform = "Steam" }], renderTo: "toastarea");
+    }
+
+    private void OpenFolder(string folder)
+    {
+        Directory.CreateDirectory(folder); // Create if doesn't exist
+        Process.Start("explorer.exe", folder);
+        _ = GeneralInvocableFuncs.ShowToast("info", _locale["Toast_PlaceShortcutFiles"], renderTo: "toastarea");
+    }
+    #endregion
 }

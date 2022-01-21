@@ -301,11 +301,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             return m.Success ? m.Value : "";
         }
 
-        public static string ExpandEnvironmentVariables(string path)
+        /// <summary>
+        /// Expands custom environment variables.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="noIncludeBasicCheck">Whether to skip initializing BasicSettings - Useful for Steam and other hardcoded platforms</param>
+        /// <returns></returns>
+        public static string ExpandEnvironmentVariables(string path, bool noIncludeBasicCheck = false)
         {
             var variables = new Dictionary<string, string>()
             {
-                { "%Platform_Folder%", BasicSettings.FolderPath ?? "" },
                 { "%TCNO_UserData%", Globals.UserDataFolder },
                 { "%TCNO_AppData%", Globals.AppDataFolder },
                 { "%Documents%", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) },
@@ -316,6 +321,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 { "%StartMenuProgramData%", Environment.ExpandEnvironmentVariables(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu), "\\Programs")) },
                 { "%StartMenuAppData%", Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "\\Programs") }
             };
+            if (!noIncludeBasicCheck)
+                variables.Add("%Platform_Folder%", BasicSettings.FolderPath ?? "");
 
             foreach (var (k,v) in variables)
                 path = path.Replace(k, v);

@@ -64,6 +64,7 @@ async function initContextMenu() {
         //Prevent browser default contextmenu.
         return false;
     });
+
     //Show contextmenu on Right-Click:
     $(`.${group}_list_item`).contextmenu((e) => {
         if (group === "acc") {
@@ -109,6 +110,58 @@ async function initContextMenu() {
 
         //Display contextmenu:
         $("#AccOrPlatList").css({
+            "left": posLeft,
+            "top": posTop
+        }).show();
+        //Prevent browser default contextmenu.
+        return false;
+    });
+
+    //Show contextmenu on Right-Click (platform shortcut):
+    $(`#btnStartPlat`).contextmenu((e) => {
+        if (group === "acc") {
+            // Select item that was right-clicked.
+            $(e.currentTarget).children("input").click();
+
+            // Set currently selected element
+            selectedElem = $(e.currentTarget);
+
+            // Update status for element
+            let statusText = "";
+            switch (getCurrentPage()) {
+                case "Steam":
+	                statusText = $(selectedElem).attr("Line2");
+                break;
+            default:
+                break;
+            }
+            updateStatus(selectedText.replace("XXX", statusText));
+
+        } else if (group === "platform") {
+            // Set currently selected element
+            selectedElem = $(e.currentTarget).prop("id").substr(8);
+        }
+
+        //Get window size:
+        const winWidth = $(document).width();
+        const winHeight = $(document).height();
+        //Get pointer position:
+        const posX = e.pageX - 14;
+        const posY = e.pageY - 42; // Offset for header bar
+        //Get contextmenu size:
+        const menuWidth = $("#Platform").width();
+        const menuHeight = $("#Platform").height();
+
+        // Header offset + 10:
+        const hOffset = 42;
+        // Prevent page overflow:
+        const xOverflow = posX + menuWidth + hOffset - winWidth;
+        const yOverflow = posY + menuHeight + hOffset - winHeight;
+        var posLeft = posX + (xOverflow > 0 ? - menuWidth : 10) + "px";
+        var posTop = posY + (yOverflow > 0 ? - yOverflow : 10) + "px";
+
+        //Display contextmenu:
+        $("#Platform").css({
             "left": posLeft,
             "top": posTop
         }).show();

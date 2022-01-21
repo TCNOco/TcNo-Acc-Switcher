@@ -113,6 +113,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 				{{""{Lang["Context_Hide"]}"": ""shortcut('hide')""}}
             ]";
 
+        public static readonly string ContextMenuPlatformJson = $@"[
+				{{""{Lang["Context_RunAdmin"]}"": ""shortcut('admin')""}}
+            ]";
+
         /// <summary>
         /// Updates the ForgetAccountEnabled bool in settings file
         /// </summary>
@@ -138,10 +142,15 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             SaveSettings();
         }
 
+        public static void RunPlatform(bool admin)
+        {
+            Globals.StartProgram(Exe(), admin, CurrentPlatform.ExeExtraArgs);
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
+        }
         public static void RunPlatform()
         {
             Globals.StartProgram(Exe(), Admin, CurrentPlatform.ExeExtraArgs);
-            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], duration: 15000, renderTo: "toastarea");
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
         }
         public static void RunShortcut(string s, bool admin = false)
         {
@@ -153,7 +162,19 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 Verb = admin ? "runas" : ""
             };
 
-            if (Globals.IsAdministrator && !admin)
+            if (s.EndsWith(".url"))
+            {
+                // These can not be run as admin...
+                proc.StartInfo.UseShellExecute = false;
+                proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                proc.StartInfo.Arguments = $"/C \"{proc.StartInfo.FileName}\"";
+                proc.StartInfo.FileName = "cmd.exe";
+                proc.StartInfo.CreateNoWindow = true;
+                proc.StartInfo.RedirectStandardInput = true;
+                proc.StartInfo.RedirectStandardOutput = true;
+                if (admin) _ = GeneralInvocableFuncs.ShowToast("warning", Lang["Toast_UrlAdminErr"], duration: 15000, renderTo: "toastarea");
+            }
+            else if (Globals.IsAdministrator && !admin)
             {
                 proc.StartInfo.Arguments = proc.StartInfo.FileName;
                 proc.StartInfo.FileName = "explorer.exe";
@@ -162,7 +183,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             try
             {
                 proc.Start();
-                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.RemoveShortcutExt(s) }], duration: 15000, renderTo: "toastarea");
+                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = PlatformFuncs.RemoveShortcutExt(s) }], renderTo: "toastarea");
             }
             catch (Exception e)
             {
@@ -170,12 +191,19 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 Globals.WriteToLog($"Tried to start \"{s}\" but failed.", e);
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Status_FailedLog"], duration: 15000, renderTo: "toastarea");
             }
-
         }
 
+        [JSInvokable]
         public static void HandleShortcutAction(string shortcut, string action)
         {
+            if (shortcut == "btnStartPlat") // Start platform requested
+            {
+                RunPlatform(action == "admin");
+                return;
+            }
+
             if (!Shortcuts.ContainsValue(shortcut)) return;
+
             switch (action)
             {
                 case "hide":

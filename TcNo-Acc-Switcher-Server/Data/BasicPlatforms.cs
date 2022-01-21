@@ -271,8 +271,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             // These will be displayed next to the add new button in the switcher.
             // Maybe a pop-up menu if there are enough (Up arrow button on far right?)
 
-            var sExisting = Basic.Shortcuts; // Existing shortcuts
-
             if (OperatingSystem.IsWindows())
             {
                 // Add image for main platform button:
@@ -308,12 +306,12 @@ namespace TcNo_Acc_Switcher_Server.Data
                     foreach (var shortcut in new DirectoryInfo(BasicSwitcherFuncs.ExpandEnvironmentVariables(sFolder)).GetFiles())
                     {
                         var fName = shortcut.Name;
-                        if (ShortcutIgnore.Contains(RemoveShortcutExt(fName))) continue;
+                        if (ShortcutIgnore.Contains(PlatformFuncs.RemoveShortcutExt(fName))) continue;
 
                         // Check if in saved shortcuts and If ignored
                         if (File.Exists(GetShortcutIgnoredPath(fName)))
                         {
-                            var imagePath = Path.Join(GetShortcutImagePath(), RemoveShortcutExt(fName) + ".png");
+                            var imagePath = Path.Join(GetShortcutImagePath(), PlatformFuncs.RemoveShortcutExt(fName) + ".png");
                             if (File.Exists(imagePath)) File.Delete(imagePath);
                             fName = fName.Replace("_ignored", "");
                             if (Basic.Shortcuts.ContainsValue(fName))
@@ -336,7 +334,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     foreach (var f in new DirectoryInfo(cacheShortcuts).GetFiles())
                     {
                         if (f.Name.Contains("_ignored")) continue;
-                        var imageName = RemoveShortcutExt(f.Name) + ".png";
+                        var imageName = PlatformFuncs.RemoveShortcutExt(f.Name) + ".png";
                         var imagePath = Path.Join(GetShortcutImagePath(), imageName);
                         existingShortcuts.Add(f.Name);
                         if (!Basic.Shortcuts.ContainsValue(f.Name))
@@ -376,9 +374,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static string PlatformLoginCache => $"LoginCache\\{SafeName}\\";
         public static string IdsJsonPath => Path.Join(PlatformLoginCache, "ids.json");
         public static string AccountLoginCachePath(string acc) => Path.Join(PlatformLoginCache, $"{acc}\\");
-        public static string RemoveShortcutExt(string s) => s.Replace(".lnk", "").Replace(".url", "");
         public static string GetShortcutImagePath(string gameShortcutName) =>
-            Path.Join(GetShortcutImageFolder, RemoveShortcutExt(gameShortcutName) + ".png");
+            Path.Join(GetShortcutImageFolder, PlatformFuncs.RemoveShortcutExt(gameShortcutName) + ".png");
 
         public static Dictionary<string, string> ReadRegJson(string acc) =>
             GeneralFuncs.ReadDict(Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
@@ -406,5 +403,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                 return UserModalHintText;
             }
         }
+    }
+
+    /// <summary>
+    /// A place for all the basic functions, such as text replacement.
+    /// </summary>
+    public static class PlatformFuncs
+    {
+        public static string RemoveShortcutExt(string s) => !string.IsNullOrEmpty(s) ? s.Replace(".lnk", "").Replace(".url", "") : "";
     }
 }
