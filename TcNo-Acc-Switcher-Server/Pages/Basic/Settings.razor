@@ -68,6 +68,15 @@
                 }
             </div>
 
+            @if (CurrentPlatform.BackupPaths.Count > 0)
+            {
+                <div class="buttoncol">
+                    <button id="Steam_Backup" type="button" @onclick="() => BackupButton()" data-toggle="tooltip" title="@(_locale["Tooltip_Backup"])" data-placement="bottom"><span>@_locale["Button_Backup"]</span></button>
+                    <button id="Steam_BackupEverything" type="button" @onclick="() => BackupButton(true)" data-toggle="tooltip" title="@(_locale["Tooltip_BackupAll"])" data-placement="bottom"><span>@_locale["Button_BackupAll"]</span></button>
+                </div>
+            }
+
+
             <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
         </div>
     </div>

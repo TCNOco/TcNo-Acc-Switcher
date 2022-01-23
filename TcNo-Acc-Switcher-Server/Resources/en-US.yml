@@ -21,6 +21,8 @@ Button_AdvancedCleaning: Advanced cleaning...
 Button_ClearLog: Clear log
 Button_WikiInfo: More Info (Wiki)
 Button_ManagePlatforms: Manage Extra Platforms
+Button_Backup: Backup
+Button_BackupAll: Backup everything
 Settings_Shortcut: ' {platform} Switcher Desktop shortcut'
 Settings_Admin: Run {platform} as Admin
 Settings_ImageExpiry: 'Days before profile images expire:'
@@ -141,6 +143,11 @@ Toast_SavedItem: "Saved: {item}"
 Toast_ChangedUsername: Changed Username
 Toast_SetUsername: Set Username
 Toast_AlreadyLoggedIn: Already logged in with this account! (No changes performed)
+Toast_BackupCopy: (1/3) Copying files to a temporary location...
+Toast_BackupCompress: (2/3) Compressing files ({size}). This will take some time...
+Toast_BackupComplete: (3/3) Finished compressing! ({size} to {compressedSize})
+Toast_BackupProgress: "Backup in progress (Compressed size: {compressedSize})"
+Toast_BackupBusy: Backup already in progress!
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
@@ -348,3 +355,5 @@ Tooltip_Info: Info
 Tooltip_ManagePlatforms: Show or Hide other platforms
 Tooltip_ExpandShortcuts: Expand Game & Shortcut selection
 Tooltip_ShortcutFolder: Open shortcut folder. Place shortcuts in there, and the TcNo Account Switcher to see them.
+Tooltip_Backup: Backup config files/folders, as defined in platform settings.
+Tooltip_BackupAll: Backup ALL config files/folders, including images and other large files.

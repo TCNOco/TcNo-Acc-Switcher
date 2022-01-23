@@ -14,6 +14,8 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Globals;
@@ -60,5 +62,101 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
         #endregion
 
+        private static bool _currentlyBackingUp = false;
+
+        /// <summary>
+        /// Backs up platform folders, settings, etc - as defined in the platform settings json
+        /// </summary>
+        private void BackupButton(bool everything = false)
+        {
+            if (!_currentlyBackingUp)
+                _currentlyBackingUp = true;
+            else
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BackupBusy"], renderTo: "toastarea");
+                return;
+            }
+            // Let user know it's copying files to a temp location
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCopy"], renderTo: "toastarea");
+
+            // Generate temporary folder:
+            var tempFolder = $"Backup_{CurrentPlatform.FullName}_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
+            Directory.CreateDirectory(tempFolder);
+            Directory.CreateDirectory("Backups");
+
+            if (!everything)
+                foreach (var (f, t) in CurrentPlatform.BackupPaths)
+                {
+                    var fExpanded = BasicSwitcherFuncs.ExpandEnvironmentVariables(f);
+                    var dest = Path.Join(tempFolder, t);
+
+                    // Handle file entry
+                    if (Globals.IsFile(f))
+                    {
+                        Globals.CopyFile(f, dest);
+                        continue;
+                    }
+
+                    // Handle folder entry
+                    if (CurrentPlatform.BackupFileTypesInclude.Count > 0)
+                        Globals.CopyFilesRecursive(fExpanded, dest, true, CurrentPlatform.BackupFileTypesInclude, true);
+                    else if (CurrentPlatform.BackupFileTypesIgnore.Count > 0)
+                        Globals.CopyFilesRecursive(fExpanded, dest, true, CurrentPlatform.BackupFileTypesIgnore, false);
+                }
+            else
+                foreach (var (f, t) in CurrentPlatform.BackupPaths)
+                {
+                    var fExpanded = BasicSwitcherFuncs.ExpandEnvironmentVariables(f);
+                    var dest = Path.Join(tempFolder, t);
+
+                    // Handle file entry
+                    if (Globals.IsFile(f))
+                    {
+                        Globals.CopyFile(f, dest);
+                        continue;
+                    }
+
+                    // Handle folder entry
+                    Globals.CopyFilesRecursive(fExpanded, dest, true);
+                }
+
+            var backupThread = new Thread(() => FinishBackup(tempFolder));
+            backupThread.Start();
+        }
+
+        /// <summary>
+        /// Runs async so the previous function can return, and an error isn't thrown with the Blazor function timeout
+        /// </summary>
+        private static void FinishBackup(string tempFolder)
+        {
+
+            var folderSize = Globals.FolderSizeString(tempFolder);
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCompress", new { size = folderSize }], duration: 3000, renderTo: "toastarea");
+
+            var zipFile = Path.Join("Backups", tempFolder + ".7z");
+
+            var backupWatcher = new Thread(() => CompressionUpdater(zipFile));
+            backupWatcher.Start();
+
+            Globals.CompressFolder(tempFolder, zipFile);
+
+            Globals.RecursiveDelete(tempFolder, false);
+            _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_BackupComplete", new { size = folderSize, compressedSize = Globals.FileSizeString(zipFile) }], renderTo: "toastarea");
+
+            _currentlyBackingUp = false;
+        }
+
+        /// <summary>
+        /// Keeps the user updated with compression progress
+        /// </summary>
+        private static void CompressionUpdater(string zipFile)
+        {
+            Thread.Sleep(3500);
+            while (_currentlyBackingUp)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupProgress", new { compressedSize = Globals.FileSizeString(zipFile) }], duration: 1000, renderTo: "toastarea");
+                Thread.Sleep(2000);
+            }
+        }
     }
 }

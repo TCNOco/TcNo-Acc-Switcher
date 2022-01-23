@@ -22,10 +22,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.IconLib;
+using System.Reflection;
 using System.Runtime.Versioning;
 using ShellLink;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using SevenZip;
 
 namespace TcNo_Acc_Switcher_Globals
 {
@@ -33,6 +35,8 @@ namespace TcNo_Acc_Switcher_Globals
     {
         #region FILES
 
+        public static bool IsFolder(string path) => File.GetAttributes(path).HasFlag(FileAttributes.Directory);
+        public static bool IsFile(string path) => !File.GetAttributes(path).HasFlag(FileAttributes.Directory);
         public static bool CopyFile(string source, string dest, bool overwrite = true)
         {
             if (!File.Exists(source)) return false;
@@ -112,6 +116,22 @@ namespace TcNo_Acc_Switcher_Globals
 
         private static readonly string[] SizeSuffixes =
             { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+
+        public static string FolderSizeString(string path) => FileLengthToString(FolderSize(path));
+        public static long FolderSize(string path) => FolderSize(new DirectoryInfo(path));
+        public static long FolderSize(DirectoryInfo d)
+        {
+            var fis = d.GetFiles();
+            var size = fis.Sum(fi => fi.Length);
+            var dis = d.GetDirectories();
+            size += dis.Sum(FolderSize);
+
+            return size;
+
+        }
+
+        public static string FileSizeString(string f) => FileSizeString(new FileInfo(f));
+        public static string FileSizeString(FileInfo fi) => FileLengthToString(fi.Length);
 
         /// <summary>
         /// Convert byte length of file to string (KB, MB, GB...)
@@ -210,6 +230,75 @@ namespace TcNo_Acc_Switcher_Globals
 
                 File.Copy(newPath, dest, true);
             }
+        }
+
+        /// <summary>
+        /// Recursively copy files and directories - With a filter for file  types
+        /// </summary>
+        /// <param name="inputFolder">Folder to copy files recursively from</param>
+        /// <param name="outputFolder">Destination folder</param>
+        /// <param name="overwrite">Whether to overwrite files or not</param>
+        /// <param name="fileTypes">List of file types to include or exclude</param>
+        /// <param name="include">True: include files from file types ONLY, or FALSE: Exclude any file type matches</param>
+        public static void CopyFilesRecursive(string inputFolder, string outputFolder, bool overwrite, List<string> fileTypes, bool include)
+        {
+            _ = Directory.CreateDirectory(outputFolder);
+            outputFolder = outputFolder.EndsWith("\\") ? outputFolder : outputFolder + "\\";
+            //Now Create all of the directories
+            foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
+                _ = Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
+
+            //Copy all the files & Replaces any files with the same name
+            foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
+            {
+                var fileTypesContains = fileTypes.Contains(Path.GetExtension(newPath));
+                // Filter:
+                if (include && !fileTypesContains)
+                {
+                    // Include only in list, and wasn't found in list
+                    continue;
+                }
+
+                if (!include && fileTypesContains)
+                {
+                    // Exclude if in list, and was found in list
+                    continue;
+                }
+
+                var dest = newPath.Replace(inputFolder, outputFolder);
+                if (!overwrite && File.Exists(dest)) continue;
+
+                File.Copy(newPath, dest, true);
+            }
+        }
+
+        public static void CompressFolder(string folder, string output)
+        {
+            // Get file dictionary
+            Dictionary<string, string> files = new();
+            foreach (var f in Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories))
+            {
+                var destFolder = f.Replace(folder + "\\", "");
+                files.Add(destFolder, f);
+            }
+
+            if (!output.EndsWith(".7z"))
+                output += ".7z";
+
+            // Compress file
+            SevenZipBase.SetLibraryPath(Path.Combine(AppDataFolder, Environment.Is64BitProcess ? "x64" : "x86", "7z.dll"));
+
+            var szc = new SevenZipCompressor
+            {
+                CompressionLevel = CompressionLevel.Normal,
+                ArchiveFormat = OutArchiveFormat.SevenZip,
+                CompressionMethod = CompressionMethod.Default,
+                CompressionMode = CompressionMode.Create
+            };
+            szc.CustomParameters.Add("mt", "on"); // Multi-threading ON
+            szc.CustomParameters.Add("s", "off"); // Solid mode OFF
+
+            szc.CompressFileDictionary(files, output);
         }
 
         /// <summary>

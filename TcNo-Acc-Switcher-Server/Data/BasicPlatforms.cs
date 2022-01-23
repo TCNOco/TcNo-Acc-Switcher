@@ -146,6 +146,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         private string _profilePicFromFile = "";
         private string _profilePicPath = "";
         private string _profilePicRegex = "";
+        private Dictionary<string, string> _backupPaths = new();
+        private List<string> _backupFileTypesIgnore = new();
+        private List<string> _backupFileTypesInclude = new();
         // Optional
         private string _uniqueIdFile = "";
         private string _uniqueIdFolder = "";
@@ -190,6 +193,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static string ProfilePicFromFile { get => Instance._profilePicFromFile; private set => Instance._profilePicFromFile = value; }
         public static string ProfilePicPath { get => Instance._profilePicPath; private set => Instance._profilePicPath = value; }
         public static string ProfilePicRegex { get => Instance._profilePicRegex; private set => Instance._profilePicRegex = value; }
+        public static Dictionary<string, string> BackupPaths { get => Instance._backupPaths; private set => Instance._backupPaths = value; }
+        public static List<string> BackupFileTypesIgnore { get => Instance._backupFileTypesIgnore; private set => Instance._backupFileTypesIgnore = value; }
+        public static List<string> BackupFileTypesInclude { get => Instance._backupFileTypesInclude; private set => Instance._backupFileTypesInclude = value; }
 
         // ----------
         #endregion
@@ -245,8 +251,12 @@ namespace TcNo_Acc_Switcher_Server.Data
                     UserModalCopyText = (string)extras["UsernameModalCopyText"];
                 if (extras.ContainsKey("UsernameModalCopyText"))
                     UserModalHintText = (string) extras["UsernameModalHintText"];
+
+                // Extras - Cache clearing
                 if (extras.ContainsKey("CachePaths"))
                     CachePaths = extras["CachePaths"]!.Values<string>().ToList();
+
+                // Extras - Shortcuts
                 if (extras.ContainsKey("ShortcutFolders"))
                     ShortcutFolders = extras["ShortcutFolders"]!.Values<string>().ToList();
                 if (extras.ContainsKey("ShortcutIgnore"))
@@ -255,12 +265,28 @@ namespace TcNo_Acc_Switcher_Server.Data
                     ShortcutIncludeMainExe = (bool)extras["ShortcutIncludeMainExe"];
                 if (extras.ContainsKey("SearchStartMenuForIcon"))
                     SearchStartMenuForIcon = (bool)extras["SearchStartMenuForIcon"];
+
+                // Extras - Profile pic
                 if (extras.ContainsKey("ProfilePicFromFile"))
                     ProfilePicFromFile = (string)extras["ProfilePicFromFile"];
                 if (extras.ContainsKey("ProfilePicPath"))
                     ProfilePicPath = (string)extras["ProfilePicPath"];
                 if (extras.ContainsKey("ProfilePicRegex"))
                     ProfilePicRegex = (string)extras["ProfilePicRegex"];
+
+                // Extras - Backups
+                if (extras.ContainsKey("BackupFolders"))
+                {
+                    BackupPaths.Clear();
+                    foreach (var (k, v) in extras["BackupFolders"].ToObject<Dictionary<string, string>>())
+                    {
+                        BackupPaths.Add(BasicSwitcherFuncs.ExpandEnvironmentVariables(k), v);
+                    }
+                }
+                if (extras.ContainsKey("BackupFileTypesIgnore"))
+                    BackupFileTypesIgnore = extras["BackupFileTypesIgnore"]!.Values<string>().ToList();
+                if (extras.ContainsKey("BackupFileTypesInclude"))
+                    BackupFileTypesInclude = extras["BackupFileTypesInclude"]!.Values<string>().ToList();
             }
 
             // Foreach app shortcut in ShortcutFolders:

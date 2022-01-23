@@ -272,5 +272,33 @@
     }
   },
   "Platform-WIP": {
+  },
+  "Reference": {
+    "Steam": {
+      "NOTE": "This isn't used anywhere. It's just here for reference.",
+      "Extras": {
+        "BackupFolders": {
+          "%Platform_Folder%\\config": "config",
+          "%Platform_Folder%\\userdata": "userdata"
+        },
+        "BackupFileTypesInclude": [
+          ".cfg",
+          ".ini",
+          ".dat",
+          ".db",
+          ".json",
+          ".ProfileData",
+          ".sav",
+          ".save",
+          ".nfo",
+          ".txt",
+          ".vcfg",
+          ".vdf",
+          ".vdf_last",
+          ".vrmanifest",
+          ".xml"
+        ]
+      }
+    }
   }
 }

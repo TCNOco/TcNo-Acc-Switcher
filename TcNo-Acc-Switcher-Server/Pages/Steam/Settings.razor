@@ -17,6 +17,12 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using Task = System.Threading.Tasks.Task
 @using Steam = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
+@using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Pages.General
+@using System.IO
+@using System.IO.Compression
+@using System.Threading
+@using TcNo_Acc_Switcher_Server.Pages.Basic
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager _navManager
 @inject AppData _appData
@@ -107,6 +113,11 @@
             <div class="buttoncol"><button id="Steam_PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = Platform }]</span></button><button id="Steam_CheckVAC" type="button" @onclick="ClearVacStatus"><span>@_locale["Steam_CheckVac"]</span></button></div>
             <div class="buttoncol"><button id="Steam_ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button><button id="Steam_ResetImages" type="button" @onclick="ClearImages"><span>@_locale["Button_RefreshImages"]</span></button></div>
 
+            <div class="buttoncol">
+                <button id="Steam_Backup" type="button" @onclick="() => BackupButton()" data-toggle="tooltip" title="@(_locale["Tooltip_Backup"])" data-placement="bottom"><span>@_locale["Button_Backup"]</span></button>
+                <button id="Steam_BackupEverything" type="button" @onclick="() => BackupButton(true)" data-toggle="tooltip" title="@(_locale["Tooltip_BackupAll"])" data-placement="bottom"><span>@_locale["Button_BackupAll"]</span></button>
+            </div>
+
 
             <div class="SettingsHeader">
                 <hr><span>@_locale["Settings_Header_OtherTools"]</span>
@@ -144,5 +155,90 @@
         Steam.OverrideState = state;
         _selectedState = Steam.StateToString(state);
         return Task.CompletedTask;
+    }
+
+    private readonly Dictionary<string, string> _backupPaths = new()
+    {
+        { "%Platform_Folder%\\config", "config" },
+        { "%Platform_Folder%\\userdata", "userdata" }
+    };
+
+    private readonly List<string> _backupFileTypesInclude = new()
+    {
+        ".cfg", ".ini", ".dat", ".db", ".json", ".ProfileData", ".sav", ".save", ".nfo",".txt", ".vcfg", ".vdf", ".vdf_last", ".vrmanifest", ".xml"
+    };
+
+    private static bool _currentlyBackingUp = false;
+
+    /// <summary>
+    /// Backs up platform folders, settings, etc - as defined in the platform settings json
+    /// </summary>
+    private void BackupButton(bool everything = false)
+    {
+        if (!_currentlyBackingUp)
+            _currentlyBackingUp = true;
+        else
+        {
+            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BackupBusy"], renderTo: "toastarea");
+            return;
+        }
+        // Let user know it's copying files to a temp location
+        _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCopy"], renderTo: "toastarea");
+
+        // Generate temporary folder:
+        var tempFolder = $"Backup_Steam_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
+        Directory.CreateDirectory(tempFolder);
+        Directory.CreateDirectory("Backups");
+
+        if (!everything)
+            foreach (var (f, t) in _backupPaths)
+            {
+                var fExpanded = f.Replace("%Platform_Folder%", Steam.FolderPath);
+                Globals.CopyFilesRecursive(fExpanded, Path.Join(tempFolder, t), true, _backupFileTypesInclude, true);
+            }
+        else
+            foreach (var (f, t) in _backupPaths)
+            {
+                var fExpanded = f.Replace("%Platform_Folder%", Steam.FolderPath);
+                Globals.CopyFilesRecursive(fExpanded ,Path.Join(tempFolder, t), true);
+            }
+
+        var backupThread = new Thread(() => FinishBackup(tempFolder));
+        backupThread.Start();
+    }
+
+    /// <summary>
+    /// Runs async so the previous function can return, and an error isn't thrown with the Blazor function timeout
+    /// </summary>
+    private static void FinishBackup(string tempFolder)
+    {
+
+        var folderSize = Globals.FolderSizeString(tempFolder);
+        _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCompress", new {size = folderSize}], duration: 3000, renderTo: "toastarea");
+
+        var zipFile = Path.Join("Backups", tempFolder + ".7z");
+
+        var backupWatcher = new Thread(() => CompressionUpdater(zipFile));
+        backupWatcher.Start();
+
+        Globals.CompressFolder(tempFolder, zipFile);
+
+        Globals.RecursiveDelete(tempFolder, false);
+        _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_BackupComplete", new {size = folderSize, compressedSize = Globals.FileSizeString(zipFile)}], renderTo: "toastarea");
+
+        _currentlyBackingUp = false;
+    }
+
+    /// <summary>
+    /// Keeps the user updated with compression progress
+    /// </summary>
+    private static void CompressionUpdater(string zipFile)
+    {
+        Thread.Sleep(3500);
+        while (_currentlyBackingUp)
+        {
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupProgress", new {compressedSize = Globals.FileSizeString(zipFile)}], duration: 1000, renderTo: "toastarea");
+            Thread.Sleep(2000);
+        }
     }
 }

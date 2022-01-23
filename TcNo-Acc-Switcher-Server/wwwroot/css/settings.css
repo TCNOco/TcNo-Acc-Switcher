@@ -47,6 +47,7 @@
     bottom: auto;
     flex-direction: column;
     align-items: flex-end;
+    z-index: 5000;
   }
 
 .acc_list_actionbar > div .btn_login,
