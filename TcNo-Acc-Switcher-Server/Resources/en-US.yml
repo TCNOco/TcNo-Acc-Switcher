@@ -23,6 +23,8 @@ Button_WikiInfo: More Info (Wiki)
 Button_ManagePlatforms: Manage Extra Platforms
 Button_Backup: Backup
 Button_BackupAll: Backup everything
+Button_Restore: Restore
+Button_OpenBackup: Open Backup Folder
 Settings_Shortcut: ' {platform} Switcher Desktop shortcut'
 Settings_Admin: Run {platform} as Admin
 Settings_ImageExpiry: 'Days before profile images expire:'
@@ -34,6 +36,7 @@ Settings_Header_OtherTools: Other Tools
 Settings_Header_HiddenPlatforms: Hidden Platforms
 Settings_Header_TraySettings: Tray settings
 Settings_Header_OpenGameFolders: Open game folders
+Settings_Header_BackupRestore: Backup & Restore platform settings
 Settings_TrayMax: 'Max number of accounts to remember:'
 Settings_ExtraPlatformsDisabled: These available extra platforms are currently disabled. Click to enable them.
 Settings_ExtraPlatformsEnabled: These extra platforms are visible. Click to disable them.
@@ -148,6 +151,12 @@ Toast_BackupCompress: (2/3) Compressing files ({size}). This will take some time
 Toast_BackupComplete: (3/3) Finished compressing! ({size} to {compressedSize})
 Toast_BackupProgress: "Backup in progress (Compressed size: {compressedSize})"
 Toast_BackupBusy: Backup already in progress!
+Toast_RestoreBusy: Restore already in progress!
+Toast_RestoreExt: Extracting archive.
+Toast_RestoreCopying: Moving files back into platform
+Toast_RestoreDeleting: Deleting temporary files
+Toast_RestoreComplete: Restore finished!
+Tooltip_Restore: Click to select a 7z file, or drag it onto this button.
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]

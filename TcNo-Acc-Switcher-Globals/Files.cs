@@ -301,6 +301,19 @@ namespace TcNo_Acc_Switcher_Globals
             szc.CompressFileDictionary(files, output);
         }
 
+        public static void DecompressZip(string zipPath, string output)
+        {
+            SevenZipBase.SetLibraryPath(Path.Combine(AppDataFolder, Environment.Is64BitProcess ? "x64" : "x86", "7z.dll"));
+            using var file = new SevenZip.SevenZipExtractor(zipPath);
+            file.ExtractArchive(output);
+        }
+        public static void DecompressZip(Stream zipData, string output)
+        {
+            SevenZipBase.SetLibraryPath(Path.Combine(AppDataFolder, Environment.Is64BitProcess ? "x64" : "x86", "7z.dll"));
+            using var file = new SevenZip.SevenZipExtractor(zipData);
+            file.ExtractArchive(output);
+        }
+
         /// <summary>
         /// Returns icon from specified file.
         /// </summary>

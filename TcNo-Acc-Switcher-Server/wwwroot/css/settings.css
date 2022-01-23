@@ -146,10 +146,10 @@ input[type='checkbox'] {
   height: 3.6em;
 }
 
-  .settingsCol .buttoncol button {
-    position: absolute;
-    width: 49%;
-  }
+    .settingsCol .buttoncol button, .settingsCol .buttoncol .button {
+        position: absolute;
+        width: 49%;
+    }
 
   .settingsCol .buttoncol :first-child {
     left: 0;

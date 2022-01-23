@@ -18,6 +18,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -63,6 +64,67 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         #endregion
 
         private static bool _currentlyBackingUp = false;
+        private static bool _currentlyRestoring = false;
+        private async void RestoreFile(InputFileChangeEventArgs e)
+        {
+            if (!_currentlyRestoring)
+                _currentlyRestoring = true;
+            else
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestoreBusy"], renderTo: "toastarea");
+                return;
+            }
+
+            foreach (var file in e.GetMultipleFiles(1))
+            {
+                try
+                {
+                    if (!file.Name.EndsWith("7z")) continue;
+
+                    _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreExt"], renderTo: "toastarea");
+
+                    var outputFolder = Path.Join("Restore", Path.GetFileNameWithoutExtension(file.Name));
+                    Directory.CreateDirectory(outputFolder);
+                    var tempFile = Path.Join("Restore", file.Name);
+
+                    // Import 7z
+                    var s = file.OpenReadStream(4294967296); // 4 GB as bytes
+                    var fs = File.Create(tempFile);
+                    await s.CopyToAsync(fs);
+                    fs.Close();
+
+                    // Decompress and remove temp file
+                    Globals.DecompressZip(tempFile, outputFolder);
+                    File.Delete(tempFile);
+
+                    _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreCopying"], renderTo: "toastarea");
+
+                    // Move files and folders back
+                    foreach (var (toPath, fromPath) in CurrentPlatform.BackupPaths)
+                    {
+                        var fullFromPath = Path.Join(outputFolder, fromPath);
+                        if (Globals.IsFile(fullFromPath))
+                            File.Copy(fullFromPath, toPath, true);
+
+                        Globals.CopyFilesRecursive(fullFromPath, toPath, true);
+                    }
+
+                    _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreDeleting"], renderTo: "toastarea");
+
+                    // Remove temp files
+                    Globals.RecursiveDelete(outputFolder, false);
+
+                    _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_RestoreComplete"], renderTo: "toastarea");
+                }
+                catch (Exception ex)
+                {
+                    Globals.WriteToLog("Failed to restore from file: " + file.Name, ex);
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Status_FailedLog"], renderTo: "toastarea");
+
+                }
+                _currentlyRestoring = false;
+            }
+        }
 
         /// <summary>
         /// Backs up platform folders, settings, etc - as defined in the platform settings json
@@ -96,6 +158,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         Globals.CopyFile(f, dest);
                         continue;
                     }
+                    if (!Directory.Exists(fExpanded)) continue;
 
                     // Handle folder entry
                     if (CurrentPlatform.BackupFileTypesInclude.Count > 0)
@@ -115,6 +178,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         Globals.CopyFile(f, dest);
                         continue;
                     }
+                    if (!Directory.Exists(fExpanded)) continue;
 
                     // Handle folder entry
                     Globals.CopyFilesRecursive(fExpanded, dest, true);
@@ -157,6 +221,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupProgress", new { compressedSize = Globals.FileSizeString(zipFile) }], duration: 1000, renderTo: "toastarea");
                 Thread.Sleep(2000);
             }
+        }
+
+        private void OpenBackupFolder()
+        {
+            if (Directory.Exists("Backups"))
+                Process.Start("explorer.exe", Path.GetFullPath("Backups"));
         }
     }
 }

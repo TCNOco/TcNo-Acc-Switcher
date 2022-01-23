@@ -9,6 +9,7 @@
 /* Buttons */
 button,
 .button {
+  text-align: center;
   background: #274560;
   border-color: #274560;
   border-radius: 0;
@@ -62,8 +63,16 @@ button svg.footerIcoInline,
 }
 
 /* Dropdown */
-button .caret {
+button .caret, .button .caret {
   margin-left: 0;
+}
+
+.button input[type=file] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }
 
 .rowDropdown {
@@ -149,7 +158,7 @@ button .caret {
 .text-editor .d-flex {
   padding: 0 0.5em 0.5em 0;
 }
-.text-editor .d-flex button {
+.text-editor .d-flex button, .text-editor .d-flex .button {
   margin: 0 0 0 0.5em;
 }
 
@@ -300,14 +309,14 @@ button .caret {
   padding: 1px;
   max-width: 260px;
 }
-.shortcuts button, .shortcuts .shortcutPlaceholder, .shortcutDropdown button, .shortcutDropdown .shortcutPlaceholder {
+.shortcuts button, .shortcuts .button, .shortcuts .shortcutPlaceholder, .shortcutDropdown button, .shortcutDropdown .button, .shortcutDropdown .shortcutPlaceholder {
   min-width: 30px;
   min-height: 30px;
   max-width: 30px;
   max-height: 30px;
   margin: 1px;
 }
-.shortcuts button, .shortcutDropdown button {
+.shortcuts button, .shortcuts .button, .shortcutDropdown button, .shortcutDropdown .button {
   padding: 3px;
 }
 .shortcuts img, .shortcutDropdown img {

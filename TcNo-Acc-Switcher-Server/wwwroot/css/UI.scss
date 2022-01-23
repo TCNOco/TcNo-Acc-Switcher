@@ -11,50 +11,51 @@
 /* Buttons */
 button,
 .button {
-  background: #274560;
-  border-color: #274560;
-  border-radius: 0;
-  border-style: solid;
-  border-width: 0.1em;
-  box-shadow: none;
-  color: white;
-  cursor: pointer;
-  margin: 0 0.25em;
-  padding: 0.25em 0.651em;
-  transition: ease-in-out 60ms;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  width: max-content;
-
-  &:active,
-  &:target {
-    background: #28374E !important;
-    border-color: var(--accent) !important;
-  }
-
-  &:hover {
-    background: #28374E;
+    text-align: center;
+    background: #274560;
     border-color: #274560;
-  }
-  /* Button children */
-  & span {
-    line-height: 2.5em;
-  }
+    border-radius: 0;
+    border-style: solid;
+    border-width: 0.1em;
+    box-shadow: none;
+    color: white;
+    cursor: pointer;
+    margin: 0 0.25em;
+    padding: 0.25em 0.651em;
+    transition: ease-in-out 60ms;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width: max-content;
 
-  & svg {
-    width: 1.5em;
-
-    &.footerIcoInline {
-      fill: white;
-      color: white;
-      height: 1em;
-      width: auto;
-      margin: 0 2px 2px 2px;
-      -webkit-user-drag: none;
+    &:active,
+    &:target {
+        background: #28374E !important;
+        border-color: var(--accent) !important;
     }
-  }
+
+    &:hover {
+        background: #28374E;
+        border-color: #274560;
+    }
+    /* Button children */
+    & span {
+        line-height: 2.5em;
+    }
+
+    & svg {
+        width: 1.5em;
+
+        &.footerIcoInline {
+            fill: white;
+            color: white;
+            height: 1em;
+            width: auto;
+            margin: 0 2px 2px 2px;
+            -webkit-user-drag: none;
+        }
+    }
 }
 
 .show > .dropdown-toggle {
@@ -64,8 +65,16 @@ button,
 
 
 /* Dropdown */
-button .caret {
-  margin-left: 0;
+button .caret, .button .caret {
+    margin-left: 0;
+}
+
+.button input[type=file] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
 }
 
 .rowDropdown {
@@ -136,34 +145,34 @@ button .caret {
 
 /* Text Editor */
 .text-editor {
-  margin: 0;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
-  & .editor-container {
-    position: relative;
-    margin: 0.5em;
+    & .editor-container {
+        position: relative;
+        margin: 0.5em;
 
-    & #editor {
-      margin: 0;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
+        & #editor {
+            margin: 0;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
     }
-  }
 
-  & .d-flex {
-    padding: 0 0.5em 0.5em 0;
+    & .d-flex {
+        padding: 0 0.5em 0.5em 0;
 
-    & button {
-      margin: 0 0 0 0.5em;
+        & button, & .button {
+            margin: 0 0 0 0.5em;
+        }
     }
-  }
 }
 
 /* Other */
@@ -369,7 +378,7 @@ button .caret {
     padding: 1px;
     max-width: 260px;
 
-    button, .shortcutPlaceholder {
+    button, .button, .shortcutPlaceholder {
         min-width: 30px;
         min-height: 30px;
         max-width: 30px;
@@ -377,7 +386,7 @@ button .caret {
         margin: 1px;
     }
 
-    button {
+    button, .button {
         padding: 3px;
     }
 
