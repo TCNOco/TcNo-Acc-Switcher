@@ -79,6 +79,9 @@ namespace TcNo_Acc_Switcher_Client
             // Ensure files in documents are available.
             Globals.CreateDataFolder(false);
 
+            // Remove leftover files from previous operations
+            CleanupAppFolder();
+
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
 
             // Crash handler
@@ -192,6 +195,17 @@ namespace TcNo_Acc_Switcher_Client
             //ShowErrorMessage("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
             MessageBox.Show("Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError), "Error from last crash", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
             Globals.DeleteFile("LastError.txt");
+        }
+
+        /// <summary>
+        /// Cleanup leftover files from previous operations
+        /// </summary>
+        private static void CleanupAppFolder()
+        {
+            var backupTemp = Path.Join(Globals.UserDataFolder, "BackupTemp");
+            if (Directory.Exists(backupTemp)) Globals.RecursiveDelete(backupTemp, false);
+            var restoreTemp = Path.Join(Globals.UserDataFolder, "Restore");
+            if (Directory.Exists(restoreTemp)) Globals.RecursiveDelete(restoreTemp, false);
         }
 
         private static void ShowErrorMessage(string title, string text)

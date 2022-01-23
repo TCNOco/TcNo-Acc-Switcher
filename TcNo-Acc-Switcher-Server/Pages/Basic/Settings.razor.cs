@@ -105,8 +105,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         var fullFromPath = Path.Join(outputFolder, fromPath);
                         if (Globals.IsFile(fullFromPath))
                             File.Copy(fullFromPath, toPath, true);
-
-                        Globals.CopyFilesRecursive(fullFromPath, toPath, true);
+                        else if (Globals.IsFolder(fullFromPath))
+                            Globals.CopyFilesRecursive(fullFromPath, toPath, true);
                     }
 
                     _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreDeleting"], renderTo: "toastarea");
@@ -142,7 +142,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCopy"], renderTo: "toastarea");
 
             // Generate temporary folder:
-            var tempFolder = $"Backup_{CurrentPlatform.FullName}_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
+            var tempFolder = $"BackupTemp\\Backup_{CurrentPlatform.FullName}_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
             Directory.CreateDirectory(tempFolder);
             Directory.CreateDirectory("Backups");
 
@@ -197,7 +197,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             var folderSize = Globals.FolderSizeString(tempFolder);
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCompress", new { size = folderSize }], duration: 3000, renderTo: "toastarea");
 
-            var zipFile = Path.Join("Backups", tempFolder + ".7z");
+            var zipFile = Path.Join("Backups", (tempFolder.Contains("\\") ? tempFolder.Split("\\")[1] : tempFolder) + ".7z");
 
             var backupWatcher = new Thread(() => CompressionUpdater(zipFile));
             backupWatcher.Start();

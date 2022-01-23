@@ -76,13 +76,24 @@
                 </div>
 
                 <div class="buttoncol">
-                    <button id="Backup" type="button" @onclick="() => BackupButton()" data-toggle="tooltip" title="@(_locale["Tooltip_Backup"])" data-placement="bottom"><span>@_locale["Button_Backup"]</span></button>
+                    @if (CurrentPlatform.BackupFileTypesInclude.Count != 0 || CurrentPlatform.BackupFileTypesIgnore.Count != 0){
+                        <button id="Backup" type="button" @onclick="() => BackupButton()" data-toggle="tooltip" title="@(_locale["Tooltip_Backup"])" data-placement="bottom"><span>@_locale["Button_Backup"]</span></button>
+                    }
+
                     <button id="BackupEverything" type="button" @onclick="() => BackupButton(true)" data-toggle="tooltip" title="@(_locale["Tooltip_BackupAll"])" data-placement="bottom"><span>@_locale["Button_BackupAll"]</span></button>
+
+                    @if (CurrentPlatform.BackupFileTypesInclude.Count == 0 && CurrentPlatform.BackupFileTypesIgnore.Count == 0) {
+                        <button id="OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@_locale["Button_OpenBackup"]</span></button>
+                    }
                 </div>
                 <div class="buttoncol">
-                    <button id="OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@_locale["Button_OpenBackup"]</span></button>
+
+                    @if (CurrentPlatform.BackupFileTypesInclude.Count != 0 || CurrentPlatform.BackupFileTypesIgnore.Count != 0) {
+                        <button id="OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@_locale["Button_OpenBackup"]</span></button>
+                    }
+
                     <div class="button" id="Restore" type="button" data-toggle="tooltip" title="@(_locale["Tooltip_Restore"])" data-placement="bottom">
-                        <InputFile OnChange="@RestoreFile" />
+                        <InputFile OnChange="@RestoreFile"/>
                         <span>@_locale["Button_Restore"]</span>
                     </div>
                 </div>

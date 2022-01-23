@@ -79,9 +79,9 @@ namespace TcNo_Acc_Switcher_Globals
             return stream.Length != 0 ? BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLowerInvariant() : "0";
         }
 
-        public static bool RecursiveDelete(string baseDir, bool keepFolders) =>
-            RecursiveDelete(new DirectoryInfo(baseDir), keepFolders);
-        public static bool RecursiveDelete(DirectoryInfo baseDir, bool keepFolders)
+        public static bool RecursiveDelete(string baseDir, bool keepFolders, bool throwOnError = false) =>
+            RecursiveDelete(new DirectoryInfo(baseDir), keepFolders, throwOnError);
+        public static bool RecursiveDelete(DirectoryInfo baseDir, bool keepFolders, bool throwOnError = false)
         {
             if (!baseDir.Exists)
                 return true;
@@ -97,11 +97,31 @@ namespace TcNo_Acc_Switcher_Globals
                 {
                     if (!file.Exists) continue;
                     file.IsReadOnly = false;
-                    file.Delete();
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception e)
+                    {
+                        if (throwOnError)
+                        {
+                            WriteToLog("Recursive Delete could not delete file.", e);
+                        }
+                    }
                 }
 
                 if (keepFolders) return true;
-                baseDir.Delete();
+                try
+                {
+                    baseDir.Delete();
+                }
+                catch (Exception e)
+                {
+                    if (throwOnError)
+                    {
+                        WriteToLog("Recursive Delete could not delete folder.", e);
+                    }
+                }
                 return true;
             }
             catch (UnauthorizedAccessException e)

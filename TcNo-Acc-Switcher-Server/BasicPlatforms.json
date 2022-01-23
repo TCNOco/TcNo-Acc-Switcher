@@ -264,7 +264,11 @@
           "%Platform_Folder%\\cache\\assets",
           "%Platform_Folder%\\cache\\download",
           "%Platform_Folder%\\cache\\http2"
-        ]
+        ],
+        "BackupFolders": {
+          "%LocalAppData%\\Ubisoft Game Launcher\\settings.yaml": "settings.yaml",
+          "%Platform_Folder%\\savegames\\": "savegames\\"
+        }
       },
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%Platform_Folder%\\logs\\launcher_log.txt",

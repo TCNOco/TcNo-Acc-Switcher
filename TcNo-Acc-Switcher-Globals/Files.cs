@@ -35,8 +35,11 @@ namespace TcNo_Acc_Switcher_Globals
     {
         #region FILES
 
-        public static bool IsFolder(string path) => File.GetAttributes(path).HasFlag(FileAttributes.Directory);
-        public static bool IsFile(string path) => !File.GetAttributes(path).HasFlag(FileAttributes.Directory);
+        public static bool FileOrDirectoryExists(string p) => (Directory.Exists(p) || File.Exists(p));
+
+        public static bool IsFolder(string path) => FileOrDirectoryExists(path) && File.GetAttributes(path).HasFlag(FileAttributes.Directory);
+        public static bool IsFile(string path) => FileOrDirectoryExists(path) && !File.GetAttributes(path).HasFlag(FileAttributes.Directory);
+
         public static bool CopyFile(string source, string dest, bool overwrite = true)
         {
             if (!File.Exists(source)) return false;
