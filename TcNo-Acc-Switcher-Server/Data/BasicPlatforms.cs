@@ -328,6 +328,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 var cacheShortcuts = ShortcutFolder; // Shortcut cache
                 foreach (var sFolder in ShortcutFolders)
                 {
+                    if (sFolder == "") continue;
                     // Foreach file in folder
                     foreach (var shortcut in new DirectoryInfo(BasicSwitcherFuncs.ExpandEnvironmentVariables(sFolder)).GetFiles())
                     {

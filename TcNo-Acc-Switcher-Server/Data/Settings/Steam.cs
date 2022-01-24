@@ -87,8 +87,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 if (!File.Exists(imagePath))
                 {
                     // Search start menu for Steam.
-                    var startMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuAppData%"), "Steam.lnk", SearchOption.AllDirectories);
-                    var commonStartMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuProgramData%"), "Steam.lnk", SearchOption.AllDirectories);
+                    var startMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuAppData%", true), "Steam.lnk", SearchOption.AllDirectories);
+                    var commonStartMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuProgramData%", true), "Steam.lnk", SearchOption.AllDirectories);
                     if (startMenuFiles.Length > 0)
                         Globals.SaveIconFromFile(startMenuFiles[0], imagePath);
                     else if (commonStartMenuFiles.Length > 0)
@@ -101,6 +101,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 var cacheShortcuts = ShortcutFolder; // Shortcut cache
                 foreach (var sFolder in ShortcutFolders)
                 {
+                    if (sFolder == "") continue;
                     // Foreach file in folder
                     foreach (var shortcut in new DirectoryInfo(BasicSwitcherFuncs.ExpandEnvironmentVariables(sFolder, true)).GetFiles())
                     {
@@ -173,8 +174,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         {
             if (shortcut == "btnStartPlat") // Start platform requested
             {
-                Globals.StartProgram(Steam.Exe(), action == "admin");
-                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = "Steam" }], renderTo: "toastarea");
+                Basic.RunPlatform(Exe(), action == "admin", "", "Steam");
                 return;
             }
 
@@ -194,48 +194,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     break;
                 }
                 case "admin":
-                    RunShortcut(shortcut, true);
+                    Basic.RunShortcut(shortcut, "LoginCache\\Steam\\Shortcuts", true);
                     break;
-            }
-        }
-        public static void RunShortcut(string s, bool admin = false)
-        {
-            var proc = new Process();
-            proc.StartInfo = new ProcessStartInfo
-            {
-                FileName = Path.GetFullPath(Path.Join("LoginCache\\Steam\\Shortcuts", s)),
-                UseShellExecute = true,
-                Verb = admin ? "runas" : ""
-            };
-
-            if (s.EndsWith(".url"))
-            {
-                // These can not be run as admin...
-                proc.StartInfo.UseShellExecute = false;
-                proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                proc.StartInfo.Arguments = $"/C \"{proc.StartInfo.FileName}\"";
-                proc.StartInfo.FileName = "cmd.exe";
-                proc.StartInfo.CreateNoWindow = true;
-                proc.StartInfo.RedirectStandardInput = true;
-                proc.StartInfo.RedirectStandardOutput = true;
-                if (admin) _ = GeneralInvocableFuncs.ShowToast("warning", Lang["Toast_UrlAdminErr"], duration: 15000, renderTo: "toastarea");
-            }
-            else if (Globals.IsAdministrator && !admin)
-            {
-                proc.StartInfo.Arguments = proc.StartInfo.FileName;
-                proc.StartInfo.FileName = "explorer.exe";
-            }
-
-            try
-            {
-                proc.Start();
-                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = PlatformFuncs.RemoveShortcutExt(s) }], renderTo: "toastarea");
-            }
-            catch (Exception e)
-            {
-                // Cancelled by user, or another error.
-                Globals.WriteToLog($"Tried to start \"{s}\" but failed.", e);
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Status_FailedLog"], duration: 15000, renderTo: "toastarea");
             }
         }
         #endregion

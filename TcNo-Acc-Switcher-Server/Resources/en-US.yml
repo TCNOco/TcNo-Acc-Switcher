@@ -156,6 +156,7 @@ Toast_RestoreExt: Extracting archive.
 Toast_RestoreCopying: Moving files back into platform
 Toast_RestoreDeleting: Deleting temporary files
 Toast_RestoreComplete: Restore finished!
+Toast_FailedLoad: Failed to load {platform}! Click the platform to see the error.
 Tooltip_Restore: Click to select a 7z file, or drag it onto this button.
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."

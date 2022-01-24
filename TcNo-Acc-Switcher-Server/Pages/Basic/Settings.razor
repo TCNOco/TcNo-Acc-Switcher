@@ -60,7 +60,7 @@
                 <hr>
             </div>
             <p>@_locale["Settings_CurrentLocation", new { path = Basic.FolderPath }]</p>
-            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = CurrentPlatform.FullName }]</span></button><button id="OpenFolder" type="button" @onclick="OpenFolder"><span>@_locale["Settings_OpenFolder", new { platform = CurrentPlatform.FullName }]</span></button></div>
+            <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = CurrentPlatform.FullName }]</span></button><button id="OpenFolder" type="button" @onclick="() => Basic.OpenFolder(Basic.FolderPath)"><span>@_locale["Settings_OpenFolder", new { platform = CurrentPlatform.FullName }]</span></button></div>
             <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button>
                 @if (CurrentPlatform.CachePaths != null)
                 {

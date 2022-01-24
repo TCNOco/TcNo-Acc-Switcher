@@ -15,12 +15,15 @@
 // Special thanks to iR3turnZ for contributing to this platform's account switcher
 // iR3turnZ: https://github.com/HoeblingerDaniel
 
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
@@ -56,6 +59,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         SaveSettings();
                     }
 
+                    LoadBasicCompat(); // Add missing features in templated platforms system.
+
                     _instance._desktopShortcut = Shortcut.CheckShortcuts("BattleNet");
                     _instance._currentlyModifying = false;
 
@@ -68,6 +73,138 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         private bool _currentlyModifying = false;
         public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
 
+        #region Basic Compatability
+        public static string GetShortcutImagePath(string gameShortcutName) =>
+            Path.Join(GetShortcutImageFolder, PlatformFuncs.RemoveShortcutExt(gameShortcutName) + ".png");
+        public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
+        private static string GetShortcutImageFolder => $"img\\shortcuts\\BattleNet\\";
+        private static string GetShortcutImagePath() => Path.Join(Globals.UserDataFolder, "wwwroot\\", GetShortcutImageFolder);
+        public static string ShortcutFolder => "LoginCache\\BattleNet\\Shortcuts\\";
+        private static readonly List<string> ShortcutFolders = new();
+        private static string GetShortcutIgnoredPath(string shortcut) => Path.Join(ShortcutFolder, shortcut.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
+        private static void LoadBasicCompat()
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                // Add image for main platform button:
+                var imagePath = Path.Join(GetShortcutImagePath(), "BattleNet.png");
+
+                if (!File.Exists(imagePath))
+                {
+                    // Search start menu for BattleNet.
+                    var startMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuAppData%", true), "Battle.net.lnk", SearchOption.AllDirectories);
+                    var commonStartMenuFiles = Directory.GetFiles(BasicSwitcherFuncs.ExpandEnvironmentVariables("%StartMenuProgramData%", true), "Battle.net.lnk", SearchOption.AllDirectories);
+                    if (startMenuFiles.Length > 0)
+                        Globals.SaveIconFromFile(startMenuFiles[0], imagePath);
+                    else if (commonStartMenuFiles.Length > 0)
+                        Globals.SaveIconFromFile(commonStartMenuFiles[0], imagePath);
+                    else
+                        Globals.SaveIconFromFile(Exe(), imagePath);
+                }
+
+
+                var cacheShortcuts = ShortcutFolder; // Shortcut cache
+                foreach (var sFolder in ShortcutFolders)
+                {
+                    if (sFolder == "") continue;
+                    // Foreach file in folder
+                    foreach (var shortcut in new DirectoryInfo(BasicSwitcherFuncs.ExpandEnvironmentVariables(sFolder, true)).GetFiles())
+                    {
+                        var fName = shortcut.Name;
+                        if (PlatformFuncs.RemoveShortcutExt(fName) == "BattleNet") continue; // Ignore self
+
+                        // Check if in saved shortcuts and If ignored
+                        if (File.Exists(GetShortcutIgnoredPath(fName)))
+                        {
+                            imagePath = Path.Join(GetShortcutImagePath(), PlatformFuncs.RemoveShortcutExt(fName) + ".png");
+                            if (File.Exists(imagePath)) File.Delete(imagePath);
+                            fName = fName.Replace("_ignored", "");
+                            if (Shortcuts.ContainsValue(fName))
+                                Shortcuts.Remove(Shortcuts.First(e => e.Value == fName).Key);
+                            continue;
+                        }
+
+                        Directory.CreateDirectory(cacheShortcuts);
+                        var outputShortcut = Path.Join(cacheShortcuts, fName);
+
+                        // Exists and is not ignored: Update shortcut
+                        File.Copy(shortcut.FullName, outputShortcut, true);
+                        // Organization will be saved in HTML/JS
+                    }
+                }
+
+                // Now get images for all the shortcuts in the folder, as long as they don't already exist:
+                List<string> existingShortcuts = new();
+                if (Directory.Exists(cacheShortcuts))
+                    foreach (var f in new DirectoryInfo(cacheShortcuts).GetFiles())
+                    {
+                        if (f.Name.Contains("_ignored")) continue;
+                        var imageName = PlatformFuncs.RemoveShortcutExt(f.Name) + ".png";
+                        imagePath = Path.Join(GetShortcutImagePath(), imageName);
+                        existingShortcuts.Add(f.Name);
+                        if (!Shortcuts.ContainsValue(f.Name))
+                        {
+                            // Not found in list, so add!
+                            var last = Shortcuts.Count > 0 ? Shortcuts.Last().Key : -1;
+                            last += 1;
+                            Shortcuts.Add(last, f.Name); // Organization added later
+                        }
+
+                        // Extract image and place in wwwroot (Only if not already there):
+                        if (!File.Exists(imagePath))
+                        {
+                            Globals.SaveIconFromFile(f.FullName, imagePath);
+                        }
+                    }
+
+                foreach (var (i, s) in Shortcuts)
+                {
+                    if (!existingShortcuts.Contains(s))
+                        Shortcuts.Remove(i);
+                }
+            }
+
+            SaveSettings();
+        }
+
+        [JSInvokable]
+        public static void SaveShortcutOrderBNet(Dictionary<int, string> o)
+        {
+            Shortcuts = o;
+            SaveSettings();
+        }
+
+        [JSInvokable]
+        public static void HandleShortcutActionBNet(string shortcut, string action)
+        {
+            if (shortcut == "btnStartPlat") // Start platform requested
+            {
+                Basic.RunPlatform(Exe(), action == "admin", "", "BattleNet");
+                return;
+            }
+
+            if (!Shortcuts.ContainsValue(shortcut)) return;
+
+            switch (action)
+            {
+                case "hide":
+                    {
+                        // Remove shortcut from folder, and list.
+                        Shortcuts.Remove(Shortcuts.First(e => e.Value == shortcut).Key);
+                        var f = Path.Join(ShortcutFolder, shortcut);
+                        if (File.Exists(f)) File.Move(f, f.Replace(".lnk", "_ignored.lnk").Replace(".url", "_ignored.url"));
+
+                        // Save.
+                        SaveSettings();
+                        break;
+                    }
+                case "admin":
+                    Basic.RunShortcut(shortcut, "LoginCache\\BattleNet\\Shortcuts", true);
+                    break;
+            }
+        }
+        #endregion
+
         #region VARIABLES
 
         [JsonProperty("FolderPath", Order = 1)] private string _folderPath = "C:\\Program Files (x86)\\Battle.net";
@@ -77,6 +214,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("OverwatchMode", Order = 6)] private bool _overwatchMode = true;
         [JsonProperty("ImageExpiryTime", Order = 7)] private int _imageExpiryTime = 7;
         [JsonProperty("AltClose", Order = 8)] private bool _altClose;
+        [JsonProperty("ShortcutsJson", Order = 9)] private Dictionary<int, string> _shortcuts = new();
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private List<BattleNetSwitcherBase.BattleNetUser> _accounts = new();
         [JsonIgnore] private List<string> _ignoredAccounts = new();

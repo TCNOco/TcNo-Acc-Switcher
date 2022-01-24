@@ -97,7 +97,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("ActiveTheme", Order = 10)] private string _activeTheme = "Dracula_Cyan";
         [JsonProperty("ActiveBrowser", Order = 11)] private string _activeBrowser = "WebView";
         [JsonProperty("Background", Order = 12)] private string _background = "";
-        [JsonProperty("EnabledBasicPlatforms", Order = 13)] private HashSet<string> _enabledBasicPlatforms = new();
+        [JsonProperty("EnabledBasicPlatforms", Order = 13)] private HashSet<string> _enabledBasicPlatforms = null;
         [Newtonsoft.Json.JsonIgnore] private bool _desktopShortcut;
         [Newtonsoft.Json.JsonIgnore] private bool _startMenu;
         [Newtonsoft.Json.JsonIgnore] private bool _startMenuPlatforms;
@@ -121,7 +121,9 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public static HashSet<string> EnabledBasicPlatforms
         {
-            get => Instance._enabledBasicPlatforms;
+            get =>
+                Instance._enabledBasicPlatforms ??
+                (Instance._enabledBasicPlatforms = new HashSet<string> {"o", "u", "e", "r", "d"});
             set => Instance._enabledBasicPlatforms = value;
         }
 

@@ -707,6 +707,8 @@ function serializeShortcuts() {
 
     if (getCurrentPage() === "Steam")
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrderSteam", output);
+    else if (getCurrentPage() === "BattleNet")
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrderBNet", output);
     else
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrder", output);
 }
@@ -717,6 +719,8 @@ function shortcut(action) {
     console.log(reqId);
     if (getCurrentPage() === "Steam")
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutActionSteam", reqId, action);
+    else if (getCurrentPage() === "BattleNet")
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutActionBNet", reqId, action);
     else
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutAction", reqId, action);
     if (action === "hide") $(selectedElem).remove();

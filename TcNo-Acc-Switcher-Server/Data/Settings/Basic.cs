@@ -141,6 +141,19 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Shortcuts = o;
             SaveSettings();
         }
+        public static void OpenFolder(string folder)
+        {
+            Directory.CreateDirectory(folder); // Create if doesn't exist
+            Process.Start("explorer.exe", folder);
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_PlaceShortcutFiles"], renderTo: "toastarea");
+        }
+
+        public static void RunPlatform(string exePath, bool admin, string args, string platName)
+        {
+            Globals.StartProgram(exePath, admin, args);
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = platName }], renderTo: "toastarea");
+        }
+
 
         public static void RunPlatform(bool admin)
         {
@@ -152,12 +165,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Globals.StartProgram(Exe(), Admin, CurrentPlatform.ExeExtraArgs);
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
         }
-        public static void RunShortcut(string s, bool admin = false)
+        public static void RunShortcut(string s, string shortcutFolder = "", bool admin = false)
         {
+            if (shortcutFolder == "")
+                shortcutFolder = CurrentPlatform.ShortcutFolder;
             var proc = new Process();
             proc.StartInfo = new ProcessStartInfo
             {
-                FileName = Path.GetFullPath(Path.Join(CurrentPlatform.ShortcutFolder, s)),
+                FileName = Path.GetFullPath(Path.Join(shortcutFolder, s)),
                 UseShellExecute = true,
                 Verb = admin ? "runas" : ""
             };
@@ -218,7 +233,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     break;
                 }
                 case "admin":
-                    RunShortcut(shortcut, true);
+                    RunShortcut(shortcut, admin: true);
                     break;
             }
         }

@@ -295,8 +295,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static void GiCreatePlatformShortcut(string platform)
         {
             Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiCreatePlatformShortcut] platform={platform}");
+            var platId = platform.ToLowerInvariant();
+            platform = BasicPlatforms.PlatformFullName(platform); // If it's a basic platform
+
             var s = new Shortcut();
-            _ = s.Shortcut_Platform(Shortcut.Desktop, platform, platform.ToLowerInvariant());
+            _ = s.Shortcut_Platform(Shortcut.Desktop, platform, platId);
             s.ToggleShortcut(true);
         }
 

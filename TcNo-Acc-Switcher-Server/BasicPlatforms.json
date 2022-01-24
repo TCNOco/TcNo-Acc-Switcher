@@ -38,7 +38,10 @@
           "%LocalAppData%\\Epic Games\\Epic Online Services\\UI Helper\\Cache\\Cache",
           "%LocalAppData%\\Epic Games\\Epic Online Services\\UI Helper\\Cache\\GPUCache",
           "%LocalAppData%\\Epic Games\\EOSOverlay\\BrowserCache\\Cache"
-        ]
+        ],
+        "BackupFolders": {
+          "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\": "Config"
+        }
       },
       "UniqueIdFile": "HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId",
       "UniqueIdMethod": "REGKEY"
@@ -204,7 +207,11 @@
           "%LocalAppData%\\Origin\\Origin\\QtWebEngine\\Default\\Application Cache\\Cache"
         ],
         "ProfilePicFromFile": "%AppData%\\Origin\\local*",
-        "ProfilePicRegex": "WIN_FILEPATH_REGEX"
+        "ProfilePicRegex": "WIN_FILEPATH_REGEX",
+        "BackupFolders": {
+          "%ProgramData%\\Origin\\LocalContent\\": "LocalContent",
+          "%ProgramData%\\Origin\\local.xml": "local.xml"
+        }
       },
       "UniqueIdFile": "%ProgramData%\\Origin\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
@@ -222,6 +229,12 @@
           "%LocalAppData%\\EADesktop\\QtWebEngine\\Default\\GPUCache",
           "%LocalAppData%\\EADesktop\\cache\\QtWebEngine\\Default\\Cache",
           "%LocalAppData%\\EADesktop\\cache\\qmlcache"
+        ],
+        "BackupFolders": {
+          "%LocalAppData%\\Electronic Arts\\EA Desktop\\": "LocalAppData"
+        },
+        "BackupFileTypesIgnore": [
+          ".log"
         ]
       },
       "ExitBeforeInteract": true,

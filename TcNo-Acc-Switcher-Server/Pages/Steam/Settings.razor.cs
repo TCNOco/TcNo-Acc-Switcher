@@ -63,19 +63,5 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             SteamSwitcherFuncs.ClearImages(); // ADD A TOAST TO THIS
         }
         #endregion
-
-        #region SETTINGS_TOOLS
-        // BUTTON: Open Folder
-        public static void OpenFolder()
-        {
-            Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.OpenSteamFolder]");
-            _ = Process.Start("explorer.exe", Data.Settings.Steam.FolderPath);
-        }
-
-        // BUTTON: Advanced Cleaning...
-        // Handled on page
-
-        #endregion
-
     }
 }

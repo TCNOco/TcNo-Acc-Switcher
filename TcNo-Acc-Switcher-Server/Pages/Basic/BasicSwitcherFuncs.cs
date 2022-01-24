@@ -116,12 +116,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 Globals.AddTrayUser(CurrentPlatform.SafeName, $"+{CurrentPlatform.PrimaryId}:" + accId, accName, BasicSettings.TrayAccNumber); // Add to Tray list, using first Identifier
             }
 
-            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.FullName }]);
-            Globals.StartProgram(BasicSettings.Exe(), BasicSettings.Admin, args);
+            BasicSettings.RunPlatform(BasicSettings.Exe(), BasicSettings.Admin, args, CurrentPlatform.FullName);
 
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
         }
+
+        public static void StartPlatform(){}
+
 
         [SupportedOSPlatform("windows")]
         private static bool ClearCurrentLoginBasic()

@@ -71,16 +71,5 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Data.Settings.BattleNet.SaveAccounts();
         }
         #endregion
-
-        #region SETTINGS_TOOLS
-        // BUTTON: Open Folder
-        public static void OpenFolder()
-        {
-            Globals.DebugWriteLine(@"[ButtonClicked:BattleNet\Settings.razor.cs.OpenBattleNetFolder]");
-            _ = Process.Start("explorer.exe", Data.Settings.BattleNet.FolderPath);
-        }
-
-
-        #endregion
     }
 }

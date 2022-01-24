@@ -255,8 +255,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             jToken?.Replace(replaceString);
             await File.WriteAllTextAsync(BattleNetRoaming + "\\Battle.net.config", jObject.ToString());
 
-            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "BattleNet" }]);
-            Globals.StartProgram(BattleNetSettings.Exe(), BattleNetSettings.Admin, args);
+            Data.Settings.Basic.RunPlatform(BattleNetSettings.Exe(), BattleNetSettings.Admin, args, "BattleNet");
 
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);

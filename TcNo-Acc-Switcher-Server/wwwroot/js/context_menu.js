@@ -87,7 +87,7 @@ async function initContextMenu() {
 
         } else if (group === "platform") {
             // Set currently selected element
-            selectedElem = $(e.currentTarget).prop("id").substr(8);
+            selectedElem = $(e.currentTarget).prop("id");
         }
 
         //Get window size:

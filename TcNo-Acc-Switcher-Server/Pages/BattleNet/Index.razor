@@ -20,6 +20,8 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using BattleNet = TcNo_Acc_Switcher_Server.Data.Settings.BattleNet;
+@using Basic = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
+@using System.IO
 @inject AppData _appData
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
@@ -31,14 +33,44 @@
 @inject Lang  _locale
 
 <ContextMenu ContextMenuString="@BattleNet.ContextMenuJson" ContextMenuId="AccOrPlatList" />
-@*<ContextMenu ContextMenuString="@BattleNet.ContextMenuJson" ContextMenuId="Shortcuts" />*@
+<ContextMenu ContextMenuString="@Basic.ContextMenuShortcutJson" ContextMenuId="Shortcuts" />
+<ContextMenu ContextMenuString="@Basic.ContextMenuPlatformJson" ContextMenuId="Platform" />
+
 <div id="acc_list" class="acc_list">
     <toastarea class="toastarea" />
 </div>
+
+<div class="shortcutDropdown" id="shortcutDropdown" style="display: none">
+    @foreach (var (i, shortcut) in BattleNet.Shortcuts)
+    {
+        @if (i >= 0)
+        {
+            <button class="HasContextMenu" id="@(shortcut)" @onclick='() => Basic.RunShortcut(shortcut, "LoginCache\\BattleNet\\Shortcuts")' data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
+                <img src="@(BattleNet.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+            </button>
+        }
+    }
+    <button id="btnOpenShortcutFolder" @onclick="() => Data.Settings.Basic.OpenFolder(Path.GetFullPath(BattleNet.ShortcutFolder))" data-toggle="tooltip" title="@(_locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
+</div>
+
 <div class="acc_list_actionbar">
     <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@_appData.CurrentStatus" spellcheck="false" disabled></div>
     <div>
-		<button id="btnAddNew" onclick="newLogin()">
+        <div class="shortcuts">
+            @foreach (var (i, shortcut) in BattleNet.Shortcuts)
+            {
+                @if (i < 0)
+                {
+                    <button class="HasContextMenu" id="@(shortcut)" @onclick='() => Basic.RunShortcut(shortcut, "LoginCache\\BattleNet\\Shortcuts")' data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
+                        <img src="@(BattleNet.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                    </button>
+                }
+            }
+        </div>
+        <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(_locale["Tooltip_ExpandShortcuts"])" data-placement="right"><i class="fas fa-chevron-up"></i></button>
+
+
+        <button id="btnAddNew" onclick="newLogin()">
             <i class="fas fa-plus footerIcoInline"></i>
 			<span>@_locale["Button_AddNew"]</span>
 		</button>

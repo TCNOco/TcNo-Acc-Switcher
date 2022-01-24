@@ -46,7 +46,7 @@
             </button>
         }
     }
-    <button id="btnOpenShortcutFolder" @onclick="() => OpenFolder(Path.GetFullPath(CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(_locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
+    <button id="btnOpenShortcutFolder" @onclick="() => Basic.OpenFolder(Path.GetFullPath(CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(_locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
 </div>
 
 <div class="acc_list_actionbar">
@@ -101,13 +101,6 @@
 {
     private string RemoveShortcutExt(string s) => s.Replace(".lnk", "").Replace(".url", "");
 
-    private void OpenFolder(string folder)
-    {
-        Directory.CreateDirectory(folder); // Create if doesn't exist
-        Process.Start("explorer.exe", folder);
-        _ = GeneralInvocableFuncs.ShowToast("info", _locale["Toast_PlaceShortcutFiles"], renderTo: "toastarea");
-    }
-
     // https://github.com/dotnet/aspnetcore/issues/13582
     private bool _navBack;
 
@@ -145,7 +138,7 @@
     {
         if (_navBack)
         {
-            _navManager.NavigateTo(_navManager.BaseUri);
+            AppData.ActiveNavMan.NavigateTo(_navManager.BaseUri + "?toast_type=error&toast_title=Error&toast_message=" + Uri.EscapeDataString(Lang.Instance["Toast_FailedLoad", new { platform = CurrentPlatform.FullName }]));
             return;
         }
         await GeneralFuncs.HandleFirstRender(firstRender, CurrentPlatform.FullName);

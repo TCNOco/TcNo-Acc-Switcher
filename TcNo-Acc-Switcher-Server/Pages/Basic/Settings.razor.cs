@@ -53,16 +53,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         }
         #endregion
 
-        #region SETTINGS_TOOLS
-        // BUTTON: Open Folder
-        public static void OpenFolder()
-        {
-            Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.OpenBasicFolder]");
-            _ = Process.Start("explorer.exe", Data.Settings.Basic.FolderPath);
-        }
-
-        #endregion
-
         private static bool _currentlyBackingUp = false;
         private static bool _currentlyRestoring = false;
         private async void RestoreFile(InputFileChangeEventArgs e)
