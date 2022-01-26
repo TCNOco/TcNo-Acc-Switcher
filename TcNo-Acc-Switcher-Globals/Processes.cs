@@ -252,6 +252,7 @@ namespace TcNo_Acc_Switcher_Globals
                     {
                         FileName = Path.Join(AppDataFolder, "runas.exe"),
                         Arguments = $"\"{fileName}\" {(elevated ? "1" : "0")} {args}",
+                        UseShellExecute = true,
                         Verb = elevated ? "runas" : ""
                     });
                 }

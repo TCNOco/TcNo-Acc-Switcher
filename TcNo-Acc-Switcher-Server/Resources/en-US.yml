@@ -254,7 +254,7 @@ Installer_Ready: "One or more are ready for install. If and when prompted if you
 Installer_PressStart: Press any key to start install...
 Installer_VerifyMin: "Verify you meet the minimum recommended requirements:"
 Installer_VerifyAlready: "It looks like everything is installed. Verify you meet the minimum recommended requirements:"
-Installer_Complete: That should be everything. The main program, TcNo-Acc-Switcher.exe, will auto-run when you press a key to continue.
+Installer_Complete: That should be everything. The main program, TcNo-Acc-Switcher.exe, will auto-run.
 Installer_Complete2: "If it doesn't work, please refer to install instructions, here: {link}"
 Global_FatalNext: "Fatal error occurred! This crashlog will be automatically submitted next launch."
 Tray_Error: Tray Error

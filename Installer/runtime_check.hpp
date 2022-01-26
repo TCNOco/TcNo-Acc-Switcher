@@ -174,8 +174,37 @@ void find_installed_net_runtimes(const bool x32, bool &min_webview_met, bool &mi
 	RegCloseKey(h_uninst_key);
 }
 
-void exec_program(const std::wstring &path, const std::wstring &exe, const std::wstring &param, const bool show_window = true)
+/**
+ * \brief This does not wait for the child process to exit.
+ */
+inline void exec_process(const std::wstring& path, const std::wstring& exe, const std::wstring& param, const bool show_window = true, const bool wait_for_exit = false)
 {
+	//JOBOBJECT_EXTENDED_LIMIT_INFORMATION job = { 0 };
+	//PROCESS_INFORMATION                  pi = { nullptr };
+	//STARTUPINFO                          si = { 0 };
+
+
+	//HANDLE h_job = CreateJobObject(nullptr, nullptr);
+
+	//job.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+	//SetInformationJobObject(h_job, JobObjectExtendedLimitInformation, &job, sizeof(job));
+
+	//si.cb = sizeof(si);
+	//const auto show = show_window ? 0 : CREATE_NO_WINDOW;
+	//CreateProcess(nullptr, &(path + exe + L" " + param)[0], nullptr, nullptr, FALSE,
+	//	CREATE_SUSPENDED | show, nullptr, nullptr, &si, &pi);
+
+	//AssignProcessToJobObject(h_job, pi.hProcess);
+
+	//ResumeThread(pi.hThread);
+	////// This is commented out, as it waits for the program to close -> Keeping it as a child. I don't want children...
+	////WaitForSingleObject(pi.hProcess, INFINITE);
+
+	//CloseHandle(pi.hThread);
+	//CloseHandle(pi.hProcess);
+	//CloseHandle(h_job);
+
+
 	DWORD exitCode = 0;
 	SHELLEXECUTEINFO ShExecInfo = { 0 };
 	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
@@ -191,7 +220,9 @@ void exec_program(const std::wstring &path, const std::wstring &exe, const std::
 	DWORD dwExitCode;
 	const bool bResult = ShellExecuteEx(&ShExecInfo);
 	if (bResult) {
-		WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+		if (wait_for_exit){
+			WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+		}
 
 		if (!GetExitCodeProcess(ShExecInfo.hProcess, &dwExitCode)) {
 			//failed to terminate normally
@@ -204,33 +235,6 @@ void exec_program(const std::wstring &path, const std::wstring &exe, const std::
 
 		//failed to execute the exe file
 	}
-}
-
-void exec_child(const std::wstring& path, const std::wstring& exe, const std::wstring& param, const bool show_window = true)
-{
-	JOBOBJECT_EXTENDED_LIMIT_INFORMATION job = { 0 };
-	PROCESS_INFORMATION                  pi = { nullptr };
-	STARTUPINFO                          si = { 0 };
-
-
-	HANDLE h_job = CreateJobObject(nullptr, nullptr);
-
-	job.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-	SetInformationJobObject(h_job, JobObjectExtendedLimitInformation, &job, sizeof(job));
-
-	si.cb = sizeof(si);
-	const auto show = show_window ? 0 : CREATE_NO_WINDOW;
-	CreateProcess(nullptr, &(path + exe + L" " + param)[0], nullptr, nullptr, FALSE,
-		CREATE_SUSPENDED | show, nullptr, nullptr, &si, &pi);
-
-	AssignProcessToJobObject(h_job, pi.hProcess);
-
-	ResumeThread(pi.hThread);
-	WaitForSingleObject(pi.hProcess, INFINITE);
-
-	CloseHandle(pi.hThread);
-	CloseHandle(pi.hProcess);
-	CloseHandle(h_job);
 }
 
 

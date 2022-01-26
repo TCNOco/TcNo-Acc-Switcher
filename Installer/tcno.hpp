@@ -302,7 +302,7 @@ void download_install_missing_runtimes()
 		" - Edge WebView2 Runtime 91.0+" << endl <<
 		" - C++ Redistributable 2015-2022 14.30.30704+" << endl <<
 		"------------------------------------------------------------------------" << endl << endl <<
-		"That should be everything. The main program, TcNo-Acc-Switcher.exe, will auto-run when you press a key to continue." << endl << endl <<
+		"That should be everything. The main program, TcNo-Acc-Switcher.exe, will auto-run." << endl << endl <<
 		"If it doesn't work, please refer to install instructions, here:" << endl <<
 		"https://github.com/TcNobo/TcNo-Acc-Switcher#required-runtimes-download-and-install" << endl << endl;
 }

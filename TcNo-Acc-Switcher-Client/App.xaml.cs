@@ -296,7 +296,7 @@ namespace TcNo_Acc_Switcher_Client
 #else
                 // Try to show from tray, as user may not know it's hidden there.
                 string text;
-                if (!Globals.BringToFront())
+                if (!NativeFuncs.BringToFront())
                 {
 	                text = "Another TcNo Account Switcher instance has been detected." + Environment.NewLine +
 	                       "[Something wrong? Hold Hold Alt, Ctrl, Shift or Scroll Lock while starting to close all TcNo processes!]";

@@ -24,17 +24,19 @@
 
 #include <limits.h>
 #include <stdlib.h>
+
 int main(int argc, char* argv[])
 {
 	const std::string self = getSelfName(), window_title = "Runtime Verifier - " + self;
 	const size_t last_hyphen = self.find_last_of('-');
-	const std::string easy_name = self.substr(last_hyphen + 1, self.find_last_of('.') - last_hyphen - 1); // Will be "Switcher", "Updater", etc.
+	// Will be "Switcher", "Updater", etc.
+	const std::string easy_name = self.substr(last_hyphen + 1, self.find_last_of('.') - last_hyphen - 1);
 	SetConsoleTitle(s2ws(window_title).c_str());
 
 	std::cout << "Verifying .NET versions before attempting to launch " << easy_name << std::endl;
 	bool min_webview_met = false,
-		min_desktop_runtime_met = false,
-		min_aspcore_met = false;
+	     min_desktop_runtime_met = false,
+	     min_aspcore_met = false;
 	find_installed_net_runtimes(false, min_webview_met, min_desktop_runtime_met, min_aspcore_met, true);
 
 	if (!min_webview_met || !min_desktop_runtime_met || !min_aspcore_met)
@@ -42,7 +44,8 @@ int main(int argc, char* argv[])
 		// Launch installer to get these!
 		std::string self_path = getOperatingPath();
 		std::string s_args("net " + self);
-		exec_program(std::wstring(self_path.begin(), self_path.end()), L"_First_Run_Installer.exe", std::wstring(s_args.begin(), s_args.end()));
+		exec_process(std::wstring(self_path.begin(), self_path.end()), L"_First_Run_Installer.exe",
+		             std::wstring(s_args.begin(), s_args.end()));
 	}
 	else
 	{
@@ -52,7 +55,7 @@ int main(int argc, char* argv[])
 
 
 		std::string full_path = operating_path,
-			args;
+		            args;
 		if (full_path.back() != '\\') full_path += '\\';
 		full_path += exe_name;
 
@@ -66,9 +69,9 @@ int main(int argc, char* argv[])
 		std::cout << "FULL PATH: " << full_path << std::endl;
 
 
-		exec_child(std::wstring(operating_path.begin(), operating_path.end()),
-			std::wstring(exe_name.begin(), exe_name.end()),
-			std::wstring(args.begin(), args.end()));
+		exec_process(std::wstring(operating_path.begin(), operating_path.end()),
+		             std::wstring(exe_name.begin(), exe_name.end()),
+		             std::wstring(args.begin(), args.end()));
 	}
 
 	exit(1);

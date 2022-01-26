@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <BaseOutputPath>$(SolutionDir)\TcNo-Acc-Switcher-Client\bin\runas\</BaseOutputPath>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
 </Project>

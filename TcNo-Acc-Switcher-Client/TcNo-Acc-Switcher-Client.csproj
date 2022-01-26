@@ -15,11 +15,12 @@
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <AssemblyName>TcNo-Acc-Switcher</AssemblyName>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <Platforms>AnyCPU;x64</Platforms>
+    <Platforms>x64</Platforms>
     <SignAssembly>false</SignAssembly>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <AnalysisLevel>6.0</AnalysisLevel>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+	<RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -55,7 +56,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="call &quot;$(ProjectDir)\PostBuild.bat&quot;" IgnoreExitCode="true" />
+    <Exec Command="if $(ConfigurationName) == Release (&#xD;&#xA; call &quot;$(ProjectDir)\PostBuild.bat&quot;&#xD;&#xA;) else (&#xD;&#xA; call &quot;$(ProjectDir)\PostBuild-Debug.bat&quot;&#xD;&#xA;)" IgnoreExitCode="true" />
   </Target>
 
   <ItemGroup>

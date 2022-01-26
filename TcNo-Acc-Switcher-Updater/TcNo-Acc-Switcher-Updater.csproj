@@ -12,6 +12,7 @@
     <Copyright>Copyright © TechNobo (Wesley Pyburn) 2020</Copyright>
     <PackageProjectUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

@@ -26,14 +26,14 @@
 @inject NavigationManager _navManager
 @{ _appData.SetActiveNavMan(_navManager); }
 
-<style>@(AppSettings.GetCssBlock())</style>
+<style>@(AppSettings.GetCssBlock()) </style>
 @inject Lang _locale
 
-<ContextMenu ContextMenuString="@Basic.ContextMenuJson" ContextMenuId="AccOrPlatList" />
-<ContextMenu ContextMenuString="@Basic.ContextMenuShortcutJson" ContextMenuId="Shortcuts" />
-<ContextMenu ContextMenuString="@Basic.ContextMenuPlatformJson" ContextMenuId="Platform" />
+<ContextMenu ContextMenuString="@Basic.ContextMenuJson" ContextMenuId="AccOrPlatList"/>
+<ContextMenu ContextMenuString="@Basic.ContextMenuShortcutJson" ContextMenuId="Shortcuts"/>
+<ContextMenu ContextMenuString="@Basic.ContextMenuPlatformJson" ContextMenuId="Platform"/>
 <div id="acc_list" class="acc_list">
-    <toastarea class="toastarea" />
+    <toastarea class="toastarea"/>
 </div>
 
 <div class="shortcutDropdown" id="shortcutDropdown" style="display: none">
@@ -46,11 +46,15 @@
             </button>
         }
     }
-    <button id="btnOpenShortcutFolder" @onclick="() => Basic.OpenFolder(Path.GetFullPath(CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(_locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
+    <button id="btnOpenShortcutFolder" @onclick="() => Basic.OpenFolder(Path.GetFullPath(CurrentPlatform.ShortcutFolder))" data-toggle="tooltip" title="@(_locale["Tooltip_ShortcutFolder"])" data-placement="right">
+        <i class="fas fa-plus"></i>
+    </button>
 </div>
 
 <div class="acc_list_actionbar">
-    <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@_appData.CurrentStatus" spellcheck="false" disabled></div>
+    <div class="statusBar">
+        <div></div><input id="CurrentStatus" @bind="@_appData.CurrentStatus" spellcheck="false" disabled>
+    </div>
     <div>
         <div class="shortcuts">
             @foreach (var (i, shortcut) in Basic.Shortcuts)
@@ -63,11 +67,13 @@
                 }
             }
         </div>
-        <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(_locale["Tooltip_ExpandShortcuts"])" data-placement="right"><i class="fas fa-chevron-up"></i></button>
+        <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(_locale["Tooltip_ExpandShortcuts"])" data-placement="right">
+            <i class="fas fa-chevron-up"></i>
+        </button>
 
         @if (CurrentPlatform.ShortcutIncludeMainExe)
         {
-            <button id="btnStartPlat" @onclick="() => Data.Settings.Basic.RunPlatform()" data-toggle="tooltip" title="@(CurrentPlatform.SafeName)">
+            <button id="btnStartPlat" @onclick="Basic.RunPlatform" data-toggle="tooltip" title="@(CurrentPlatform.SafeName)">
                 <img src="@(CurrentPlatform.GetShortcutImagePath(CurrentPlatform.SafeName))" alt="Start platform"/>
             </button>
         }
@@ -99,7 +105,10 @@
 
 @code
 {
-    private string RemoveShortcutExt(string s) => s.Replace(".lnk", "").Replace(".url", "");
+    private string RemoveShortcutExt(string s)
+    {
+        return s.Replace(".lnk", "").Replace(".url", "");
+    }
 
     // https://github.com/dotnet/aspnetcore/issues/13582
     private bool _navBack;
@@ -117,18 +126,18 @@
             requestPlat = param.First();
         }
 
-        // Get platform name from URI if not set.
+    // Get platform name from URI if not set.
         if (!string.IsNullOrEmpty(requestPlat))
             BasicPlatforms.SetCurrentPlatformFromShort(requestPlat);
 
-        // If current platform is NOT valid -> Go back
+    // If current platform is NOT valid -> Go back
         if (!CurrentPlatform.IsInit)
         {
             _navBack = true;
             return;
         }
 
-        // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
+    // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
         if (File.Exists(Basic.Exe())) return;
 
         _navBack = true;
@@ -138,7 +147,7 @@
     {
         if (_navBack)
         {
-            AppData.ActiveNavMan.NavigateTo(_navManager.BaseUri + "?toast_type=error&toast_title=Error&toast_message=" + Uri.EscapeDataString(Lang.Instance["Toast_FailedLoad", new { platform = CurrentPlatform.FullName }]));
+            AppData.ActiveNavMan.NavigateTo(_navManager.BaseUri + "?toast_type=error&toast_title=Error&toast_message=" + Uri.EscapeDataString(Lang.Instance["Toast_FailedLoad", new {platform = CurrentPlatform.FullName}]));
             return;
         }
         await GeneralFuncs.HandleFirstRender(firstRender, CurrentPlatform.FullName);

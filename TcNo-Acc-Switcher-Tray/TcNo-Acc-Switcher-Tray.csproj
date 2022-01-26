@@ -13,9 +13,10 @@
     <RepositoryUrl>https://github.com/TcNobo/TcNo-Acc-Switcher</RepositoryUrl>
     <PackageIcon>TcNoAccSw-Icon-100x100.png</PackageIcon>
     <SignAssembly>false</SignAssembly>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutputPath>C:\Users\TCNO\source\repos\TcNo-Acc-Switcher\TcNo-Acc-Switcher-Client\bin\Debug\</OutputPath>
   </PropertyGroup>
 
