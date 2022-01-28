@@ -20,17 +20,30 @@
 @{ AppData.SetActiveNavMan(_navManager); }
 @inject IJSRuntime _jsRuntime
 @{ AppData.SetActiveIJsRuntime(_jsRuntime); }
-
+@inject AppData _appData
 @inject Lang  _locale
 
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
             <toastarea class="toastarea" />
-            <div class="SettingsHeader">
-                <hr><span>@_locale["Settings_Header_ExtraPlatforms"]</span>
-                <hr>
-            </div>
+
+            @if (!_appData.AnyPlatformsShowing())
+            {
+                <span>@_locale["Settings_NoPlatforms"]</span>
+
+                <div class="SettingsHeader mt-4"> <!-- I couldn't just include the opening tag here, so copy/paste everything... -->
+                    <hr><span>@_locale["Settings_Header_ExtraPlatforms"]</span>
+                    <hr>
+                </div>
+            }
+            else
+            {
+                <div class="SettingsHeader">
+                    <hr><span>@_locale["Settings_Header_ExtraPlatforms"]</span>
+                    <hr>
+                </div>
+            }
 
             @if (BasicPlatforms.PlatformDict.Count != AppSettings.EnabledBasicPlatforms.Count)
             {
@@ -41,26 +54,33 @@
                 <div class="rowSetting">
                     @foreach (var (key, value) in BasicPlatforms.InactivePlatformsSorted())
                     {
-                        <div class="form-check"><input class="form-check-input" type="checkbox" id="@key" @onclick="() => AppSettings.ShowPlatform(key)"><label class="form-check-label" for="@key"></label></div><label for="@key">
-                                                                                                                                                                                                                                                                                  @value<br></label>
+                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="@key" @onclick="() => AppSettings.ShowPlatform(key)"><label class="form-check-label" for="@key"></label><label for="@key">@value<br></label></div>
+                    }
+
+                    @foreach (var item in AppSettings.DisabledPlatforms)
+                    {
+                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="@item" @onclick="() => AppSettings.ShowPlatform(item)"><label class="form-check-label" for="@item"></label><label for="@item">@BasicPlatforms.PlatformFullName(item)<br></label></div>
                     }
                 </div>
             }
 
-            @if (AppSettings.EnabledBasicPlatforms.Count > 0){
-                <div class="SettingsHeader">
+            @if (_appData.AnyPlatformsShowing()) {
+                <div class="SettingsHeader mt-2">
                     <p>@_locale["Settings_ExtraPlatformsEnabled"]</p>
                 </div>
 
                 <div class="rowSetting">
-                    @foreach (var platform in AppSettings.EnabledBasicPlatformSorted())
+                    @foreach (var item in _appData.EnabledPlatformSorted())
                     {
-                        <div class="form-check"><input class="form-check-input" type="checkbox" id="@platform" checked @onclick="() => AppSettings.HidePlatform(platform)"><label class="form-check-label" for="@platform"></label></div><label for="@platform">@BasicPlatforms.PlatformFullName(platform)<br></label>
+                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="@item" checked @onclick="() => AppSettings.HidePlatform(item)"><label class="form-check-label" for="@item"></label><label for="@item">@BasicPlatforms.PlatformFullName(item)<br></label></div>
                     }
                 </div>
             }
 
-            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
+            @if (_appData.AnyPlatformsShowing())
+            {
+                <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
+            }
         </div>
     </div>
 </div>

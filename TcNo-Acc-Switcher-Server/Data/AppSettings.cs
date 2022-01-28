@@ -111,7 +111,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static int ServerPort { get => Instance._serverPort; set => Instance._serverPort = value; }
         public static Point WindowSize { get => Instance._windowSize; set => Instance._windowSize = value; }
         public static string Version => Instance._version;
+
         public static SortedSet<string> DisabledPlatforms { get => Instance._disabledPlatforms; set => Instance._disabledPlatforms = value; }
+
         public static bool TrayMinimizeNotExit { get => Instance._trayMinimizeNotExit; set => Instance._trayMinimizeNotExit = value; }
         public static bool ShownMinimizedNotification { get => Instance._shownMinimizedNotification; set => Instance._shownMinimizedNotification = value; }
         public static bool StartCentered { get => Instance._startCentered; set => Instance._startCentered = value; }
@@ -125,13 +127,6 @@ namespace TcNo_Acc_Switcher_Server.Data
                 Instance._enabledBasicPlatforms ??
                 (Instance._enabledBasicPlatforms = new HashSet<string> {"o", "u", "e", "r", "d"});
             set => Instance._enabledBasicPlatforms = value;
-        }
-
-        public static List<string> EnabledBasicPlatformSorted()
-        {
-            var enabled = EnabledBasicPlatforms.ToList();
-            enabled.Sort(StringComparer.InvariantCultureIgnoreCase);
-            return enabled;
         }
 
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
@@ -161,6 +156,10 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
             else
                 _ = DisabledPlatforms.Add(platform);
+
+            if (DisabledPlatforms.Contains(""))
+                DisabledPlatforms.Remove("");
+
             SaveSettings();
             await AppData.ReloadPage();
         }

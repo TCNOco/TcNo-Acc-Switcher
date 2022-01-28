@@ -425,7 +425,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 return Lang.Instance[UserModalHintText];
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return UserModalHintText;
             }

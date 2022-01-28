@@ -82,9 +82,9 @@ label { margin-left: 0.5em; }
     margin: 0;
 }
 
-.rowSetting > label {
-    margin-right: 1rem;
-}
+    .form-check label:nth-of-type(2) {
+        margin: 0 1rem 0 0.5rem;
+    }
 
 /* Checkbox */
 

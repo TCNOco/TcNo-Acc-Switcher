@@ -36,25 +36,22 @@
 <ContextMenu ContextMenuString="@AppSettings.PlatformContextMenu" ContextMenuId="AccOrPlatList" />
 <div class="platformTable">
     <div class="platform_list">
-        @foreach (var platform in _appData.SortedPlatformList())
+        @foreach (var platform in _appData.SortedPlatformListHandleDisabled())
         {
-            @if (!AppSettings.DisabledPlatforms.Contains(platform))
-            {
-                <div class="platform_list_item" id="@(platform)" @onclick="() => Check(platform)">
-                    <div class="fgText @(!System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")) ? "noImageCenterText" : "") @(BasicPlatforms.PlatformFullName(platform).Length < 7 ? "shortText" : BasicPlatforms.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@BasicPlatforms.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
-                    <div class="fgImg">
-                        @if(System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")))
-                        {
-                            <svg viewBox="0 0 500 500" draggable="false" alt="@(BasicPlatforms.PlatformSafeName(platform))">
-                                <use href="@($"img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg#FG")" class="@($"icoFG")"></use>
-                            </svg>
-                        }
-                    </div>
-                    <svg viewBox="0 0 2084 2084" draggable="false" alt="@(platform)" class="@($"icoBG")">
-                        <use href="img/platform/glass.svg#GLASS" class="icoGlass @($"icoGlass")"></use>
-                    </svg>
+            <div class="platform_list_item" id="@(platform)" @onclick="() => Check(platform)">
+                <div class="fgText @(!System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")) ? "noImageCenterText" : "") @(BasicPlatforms.PlatformFullName(platform).Length < 7 ? "shortText" : BasicPlatforms.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@BasicPlatforms.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
+                <div class="fgImg">
+                    @if(System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")))
+                    {
+                        <svg viewBox="0 0 500 500" draggable="false" alt="@(BasicPlatforms.PlatformSafeName(platform))">
+                            <use href="@($"img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg#FG")" class="@($"icoFG")"></use>
+                        </svg>
+                    }
                 </div>
-            }
+                <svg viewBox="0 0 2084 2084" draggable="false" alt="@(platform)" class="@($"icoBG")">
+                    <use href="img/platform/glass.svg#GLASS" class="icoGlass @($"icoGlass")"></use>
+                </svg>
+            </div>
         }
     </div>
 </div>
@@ -90,7 +87,13 @@
 	protected override void OnAfterRender(bool firstRender)
 	{
 		AppData.Instance.WindowTitle = "TcNo Account Switcher";
-		if (firstRender)
+
+	    if (!_appData.AnyPlatformsShowing())
+	    {
+            _navManager.NavigateTo("Platforms");
+	    }
+
+	    if (firstRender)
 		{
 			GeneralFuncs.HandleQueries();
 		    _ = AppData.InvokeVoidAsync("initContextMenu");

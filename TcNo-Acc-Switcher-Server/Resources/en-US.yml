@@ -33,7 +33,6 @@ Settings_Header_GeneralSettings: General settings
 Settings_Header_ExtraPlatforms: Extra Platform Settings
 Settings_Header_GeneralTools: General Tools
 Settings_Header_OtherTools: Other Tools
-Settings_Header_HiddenPlatforms: Hidden Platforms
 Settings_Header_TraySettings: Tray settings
 Settings_Header_OpenGameFolders: Open game folders
 Settings_Header_BackupRestore: Backup & Restore platform settings
@@ -63,6 +62,7 @@ Settings_HelpTranslate: "[Help translate]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Set rendering engine:"
 Settings_AltClose: "Alternate exit method (when platform doesn't close)"
+Settings_NoPlatforms: There are currently no platforms enabled. Please tick optional platforms below to enable them, or uncheck disabled platforms.
 Cleaning_Header_StartMenuShortcuts: 'Shortcuts for Start Menu:'
 Cleaning_Header_General: General Cleaning
 Cleaning_Header_LoginHistory: Clean my login history

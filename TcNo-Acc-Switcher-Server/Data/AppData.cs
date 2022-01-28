@@ -94,6 +94,19 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             return GenericFunctions.OrderAccounts(Instance.PlatformList, "Settings\\platformOrder.json");
         }
+
+        public List<string> SortedPlatformListHandleDisabled() => GenericFunctions.OrderAccounts(
+            Instance.PlatformList.Where(p => !AppSettings.DisabledPlatforms.Contains(p)).ToList(),
+            "Settings\\platformOrder.json");
+
+        public List<string> EnabledPlatformSorted()
+        {
+            var enabled = Instance.PlatformList.Where(p => !AppSettings.DisabledPlatforms.Contains(p)).ToList();
+            enabled.Sort(StringComparer.InvariantCultureIgnoreCase);
+            return enabled;
+        }
+
+        public bool AnyPlatformsShowing() => Instance.PlatformList.Count > AppSettings.DisabledPlatforms.Count;
         #endregion
 
         public event Action OnChange;

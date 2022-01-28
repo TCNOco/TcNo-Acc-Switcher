@@ -28,20 +28,6 @@
             <div class="toastarea"></div>
             <SharedSettings />
 
-            @if (AppSettings.DisabledPlatforms.Count > 0)
-            {
-                <div class="SettingsHeader">
-                    <hr><span>@_locale["Settings_Header_HiddenPlatforms"]</span>
-                    <hr>
-                </div>
-                <div class="rowSetting">
-                    @foreach (var item in AppSettings.DisabledPlatforms)
-                    {
-                        <div class="form-check"><input class="form-check-input" type="checkbox" id="@item" checked @onclick="() => ShowPlatform(item)"><label class="form-check-label" for="@item"></label></div><label for="@item">@BasicPlatforms.PlatformFullName(item)<br></label>
-                    }
-                </div>
-            }
-
             <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
         </div>
     </div>
@@ -65,6 +51,4 @@
 
         _navManager.NavigateTo("/");
     }
-
-    public async Task ShowPlatform(string item) => await AppSettings.ShowPlatform(item);
 }
