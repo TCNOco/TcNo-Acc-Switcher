@@ -330,7 +330,9 @@ namespace TcNo_Acc_Switcher_Server.Data
                 {
                     if (sFolder == "") continue;
                     // Foreach file in folder
-                    foreach (var shortcut in new DirectoryInfo(BasicSwitcherFuncs.ExpandEnvironmentVariables(sFolder)).GetFiles())
+                    var desktopShortcutFolder = BasicSwitcherFuncs.ExpandEnvironmentVariables(sFolder, true);
+                    if (!Directory.Exists(desktopShortcutFolder)) continue;
+                    foreach (var shortcut in new DirectoryInfo(desktopShortcutFolder).GetFiles())
                     {
                         var fName = shortcut.Name;
                         if (ShortcutIgnore.Contains(PlatformFuncs.RemoveShortcutExt(fName))) continue;

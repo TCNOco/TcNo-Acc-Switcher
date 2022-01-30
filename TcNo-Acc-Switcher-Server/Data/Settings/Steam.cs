@@ -103,7 +103,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 {
                     if (sFolder == "") continue;
                     // Foreach file in folder
-                    foreach (var shortcut in new DirectoryInfo(BasicSwitcherFuncs.ExpandEnvironmentVariables(sFolder, true)).GetFiles())
+                    var desktopShortcutFolder = BasicSwitcherFuncs.ExpandEnvironmentVariables(sFolder, true);
+                    if (!Directory.Exists(desktopShortcutFolder)) continue;
+                    foreach (var shortcut in new DirectoryInfo(desktopShortcutFolder).GetFiles())
                     {
                         var fName = shortcut.Name;
                         if (PlatformFuncs.RemoveShortcutExt(fName) == "Steam") continue; // Ignore self
