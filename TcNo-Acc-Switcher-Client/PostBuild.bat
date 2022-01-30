@@ -165,7 +165,14 @@ copy /b/v/y CEF\vk_swiftshader.dll TcNo-Acc-Switcher\runtimes\win-x64\native\vk_
 copy /b/v/y CEF\chrome_elf.dll TcNo-Acc-Switcher\runtimes\win-x64\native\chrome_elf.dll
 copy /b/v/y CEF\CefSharp.BrowserSubprocess.Core.dll TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.BrowserSubprocess.Core.dll
 
+REM Verifying file sign state
+
+IF EXIST A:\AccountSwitcherConfig\sign.txt (
+	ECHO Verifying signatures of binaries
+	call ../../../VerifySignatures.ps1
+) ELSE ECHO ----- SKIPPING SIGNATURE VERIFICATION -----
 
 cd %origDir%
+goto :eof
 
 :end

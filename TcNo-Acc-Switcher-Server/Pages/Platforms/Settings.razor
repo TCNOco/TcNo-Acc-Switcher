@@ -45,7 +45,7 @@
                 </div>
             }
 
-            @if (AppSettings.DisabledPlatforms.Count > 0)
+            @if (AppSettings.DisabledPlatforms.Count > 0 || BasicPlatforms.PlatformDict.Count != AppSettings.EnabledBasicPlatforms.Count)
             {
                 <div class="SettingsHeader">
                     <p>@_locale["Settings_ExtraPlatformsDisabled"]</p>
