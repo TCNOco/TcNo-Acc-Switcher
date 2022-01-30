@@ -516,14 +516,13 @@ div.advancedClearingButtonCol .buttoncol {
 
 .platformTable {
     height: 100%;
-    max-height: calc(100% - 42px);
-    overflow-y: auto;
     width: 100%;
+    max-height: calc(100% - 42px);
     position: relative;
     text-align: center;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .platform_list {
@@ -531,7 +530,9 @@ div.advancedClearingButtonCol .buttoncol {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    max-height: 100%;
     display: block;
+    overflow-y: auto;
 }
 
 
@@ -554,8 +555,10 @@ div.advancedClearingButtonCol .buttoncol {
     box-shadow: none;
     font-family: Raleway, sans-serif;
     font-weight: 900;
-    -webkit-text-stroke: min(0.1vw, 0.875px) #00a5f8;
-    color: transparent;
+    /*-webkit-text-stroke: min(0.1vw, 0.875px) #00a5f8;*/
+    /*color: transparent;*/
+    color: #00a5f8;
+    text-shadow: 2px 2px 10px #00000099;
 
     .fgText {
         position: absolute;

@@ -59,7 +59,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             CurrentPlatform.Instance.CurrentPlatformInit(PlatformFullName(id));
         }
 
-        private static Dictionary<string, string> InactivePlatforms()
+        public static Dictionary<string, string> InactivePlatforms()
         {
             // Create local copy of platforms dict:
             var platforms = PlatformDict.ToDictionary(
@@ -367,7 +367,9 @@ namespace TcNo_Acc_Switcher_Server.Data
                         if (!Basic.Shortcuts.ContainsValue(f.Name))
                         {
                             // Not found in list, so add!
-                            var last = Basic.Shortcuts.Count > 0 ? Basic.Shortcuts.Last().Key : -1;
+                            var last = 0;
+                            foreach (var (k,v) in Basic.Shortcuts)
+                                if (k > last) last = k;
                             last += 1;
                             Basic.Shortcuts.Add(last, f.Name); // Organization added later
                         }

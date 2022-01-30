@@ -140,7 +140,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         if (!Shortcuts.ContainsValue(f.Name))
                         {
                             // Not found in list, so add!
-                            var last = Shortcuts.Count > 0 ? Shortcuts.Last().Key : -1;
+                            var last = 0;
+                            foreach (var (k,v) in Shortcuts)
+                                if (k > last) last = k;
                             last += 1;
                             Shortcuts.Add(last, f.Name); // Organization added later
                         }

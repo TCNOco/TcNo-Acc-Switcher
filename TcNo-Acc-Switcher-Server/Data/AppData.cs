@@ -105,6 +105,13 @@ namespace TcNo_Acc_Switcher_Server.Data
             enabled.Sort(StringComparer.InvariantCultureIgnoreCase);
             return enabled;
         }
+        public List<string> DisabledPlatformSorted()
+        {
+            var disabled = new List<string>(BasicPlatforms.InactivePlatforms().Keys);
+            disabled = disabled.Concat(Instance.PlatformList.Where(p => AppSettings.DisabledPlatforms.Contains(p)).ToList()).ToList();
+            disabled.Sort(StringComparer.InvariantCultureIgnoreCase);
+            return disabled;
+        }
 
         public bool AnyPlatformsShowing() => Instance.PlatformList.Count > AppSettings.DisabledPlatforms.Count;
         #endregion

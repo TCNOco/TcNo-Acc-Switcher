@@ -153,11 +153,11 @@ input[type="checkbox"] + label {
 }
 
 .platformTable {
-  width: 100%;
-  height: calc(100% - 56px);
-  position: relative;
-  display: table;
-  text-align: center;
+    width: 100%;
+    max-height: calc(100% - 56px);
+    position: relative;
+    display: table;
+    text-align: center;
 }
 
 use.icoGlass {
