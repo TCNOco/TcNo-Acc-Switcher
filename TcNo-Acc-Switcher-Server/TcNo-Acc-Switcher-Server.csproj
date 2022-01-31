@@ -228,7 +228,7 @@
     <None Include="wwwroot\js\ace\worker-json.js" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="BasicPlatforms.json">
+    <Content Update="Platforms.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

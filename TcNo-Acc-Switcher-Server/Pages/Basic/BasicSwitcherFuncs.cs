@@ -468,7 +468,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = accFile }], Lang["DirectoryNotFound"], "toastarea");
                 return false;
 
-                // TODO: Run some action that can be specified in the BasicPlatforms.json file
+                // TODO: Run some action that can be specified in the Platforms.json file
                 // Add for the start, and end of this function -- To allow 'plugins'?
                 // Use reflection?
             }
