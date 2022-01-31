@@ -42,6 +42,8 @@ if (args.Length > 2)
 
 try
 {
+    Directory.SetCurrentDirectory(Path.GetDirectoryName(args[0]) ?? Directory.GetCurrentDirectory());
+
     Process.Start(new ProcessStartInfo()
     {
         FileName = args[0],
@@ -50,7 +52,7 @@ try
         RedirectStandardOutput = false,
         Arguments = argString,
         Verb = args[1] == "1" ? "runas" : "",
-        WorkingDirectory = Path.GetDirectoryName(args[0])
+        WorkingDirectory = Path.GetDirectoryName(args[0]) ?? Directory.GetCurrentDirectory()
     });
 }
 catch (System.ComponentModel.Win32Exception e)

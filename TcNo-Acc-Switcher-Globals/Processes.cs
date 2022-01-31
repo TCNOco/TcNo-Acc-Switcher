@@ -40,9 +40,9 @@ namespace TcNo_Acc_Switcher_Globals
         /// <param name="path">Path of process to start</param>
         /// <param name="elevated">Whether the process should start elevated or not</param>
         /// <param name="args">Arguments to pass into the program</param>
-        public static void StartProgram(string path, bool elevated, string args)
+        public static bool StartProgram(string path, bool elevated, string args)
         {
-
+            var retStatus = true;
             if (!elevated && IsAdministrator)
             {
                 // Set working directory
@@ -54,8 +54,20 @@ namespace TcNo_Acc_Switcher_Globals
                 Directory.SetCurrentDirectory(UserDataFolder);
             }
             else
-                ProcessHandler.StartProgram(path, elevated, args);
+            {
+                try
+                {
+                    ProcessHandler.StartProgram(path, elevated, args);
+                }
+                catch (Exception e)
+                {
+                    WriteToLog($"Failed to start process {path} due to error.", e);
+                    retStatus = false;
+                }
+            }
+
             Directory.SetCurrentDirectory(UserDataFolder);
+            return retStatus;
         }
 
         [SupportedOSPlatform("windows")]
@@ -177,7 +189,14 @@ namespace TcNo_Acc_Switcher_Globals
                     foreach (var p in processes)
                     {
                         if (!p.ProcessName.Contains(nameWithoutExe)) continue;
-                        pathOrName = p.MainModule?.FileName; // Admin is required for this!
+                        try
+                        {
+                            pathOrName = p.MainModule?.FileName; // Admin is required for this!
+                        }
+                        catch (Win32Exception e)
+                        {
+                            WriteToLog("Tried to get MainModule from process but failed.", e);
+                        }
                         break;
                     }
                 }
@@ -245,12 +264,15 @@ namespace TcNo_Acc_Switcher_Globals
             /// <param name="args">Arguments for program</param>
             public static void StartProgram(string fileName, bool elevated, string args = "")
             {
+                var runasPath = Path.Join(AppDataFolder, "runas.exe");
+                if (!File.Exists(runasPath)) throw new Exception("Could not find runas.exe");
+
                 // This runas.exe program is a temporary workaround for processes closing when this closes.
                 try
                 {
                     Process.Start(new ProcessStartInfo()
                     {
-                        FileName = Path.Join(AppDataFolder, "runas.exe"),
+                        FileName = runasPath,
                         Arguments = $"\"{fileName}\" {(elevated ? "1" : "0")} {args}",
                         UseShellExecute = true,
                         Verb = elevated ? "runas" : ""

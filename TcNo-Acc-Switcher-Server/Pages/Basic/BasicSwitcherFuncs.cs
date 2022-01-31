@@ -98,7 +98,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         if (accId == uniqueId)
                         {
                             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_AlreadyLoggedIn"], renderTo: "toastarea");
-                            Globals.StartProgram(BasicSettings.Exe(), BasicSettings.Admin, args);
+                            if (Globals.StartProgram(BasicSettings.Exe(), BasicSettings.Admin, args))
+                                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
+                            else
+                                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
                             return;
                         }
                         BasicAddCurrent(AccountIds[uniqueId]);

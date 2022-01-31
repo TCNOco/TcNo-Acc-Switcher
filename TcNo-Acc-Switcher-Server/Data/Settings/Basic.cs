@@ -150,15 +150,19 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         public static void RunPlatform(string exePath, bool admin, string args, string platName)
         {
-            Globals.StartProgram(exePath, admin, args);
-            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = platName }], renderTo: "toastarea");
+            if (Globals.StartProgram(exePath, admin, args))
+                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = platName }], renderTo: "toastarea");
+            else
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = platName }], renderTo: "toastarea");
         }
 
 
         public static void RunPlatform(bool admin)
         {
-            Globals.StartProgram(Exe(), admin, CurrentPlatform.ExeExtraArgs);
-            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
+            if (Globals.StartProgram(Exe(), admin, CurrentPlatform.ExeExtraArgs))
+                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
+            else
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
         }
         public static void RunPlatform()
         {
