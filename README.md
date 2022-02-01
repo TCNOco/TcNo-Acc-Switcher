@@ -87,6 +87,8 @@ Head into the folder where you installed the program and run `_FIRST_RUN.exe` to
   <img alt="Steam account switcher" src="https://i.imgur.com/OtJzRAz.png" width=773">
 <h4>Advanced cleaning and settings</h4>
   <img alt="Combined image of multiple pages" src="https://i.imgur.com/Ob4C80c.png" width=773">
+<h4>Now with Shortcuts for games</h4>
+  <img alt="Game and platform shortcuts" src="https://user-images.githubusercontent.com/10319195/149788470-009e3861-6b8a-4858-8dab-5549b0564a2f.gif" width=773">
 </a>
 </p>
 
