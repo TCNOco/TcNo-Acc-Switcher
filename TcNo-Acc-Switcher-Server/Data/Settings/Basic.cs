@@ -75,8 +75,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Basic_Admin", Order = 2)] private bool _admin;
         [JsonProperty("Basic_TrayAccNumber", Order = 3)] private int _trayAccNumber = 3;
         [JsonProperty("ForgetAccountEnabled", Order = 4)] private bool _forgetAccountEnabled;
-        [JsonProperty("AltClose", Order = 5)] private bool _altClose;
-        [JsonProperty("ShortcutsJson", Order = 6)] private Dictionary<int, string> _shortcuts = new();
+        [JsonProperty("ShortcutsJson", Order = 5)] private Dictionary<int, string> _shortcuts = new();
         [JsonIgnore] private bool _desktopShortcut;
 
 
@@ -95,7 +94,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static bool Admin { get => Instance._admin; set => Instance._admin = value; }
         public static int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
         public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
-        public static bool AltClose { get => Instance._altClose; set => Instance._altClose = value; }
         public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
 
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
@@ -252,7 +250,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Admin = false;
             TrayAccNumber = 3;
             DesktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.FullName);
-            AltClose = false;
 
             SaveSettings();
         }

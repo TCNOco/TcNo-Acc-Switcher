@@ -125,7 +125,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         var outputShortcut = Path.Join(cacheShortcuts, fName);
 
                         // Exists and is not ignored: Update shortcut
-                        File.Copy(shortcut.FullName, outputShortcut, true);
+                        Globals.CopyFile(shortcut.FullName, outputShortcut);
                         // Organization will be saved in HTML/JS
                     }
                 }
@@ -216,8 +216,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Steam_ImageExpiryTime", Order = 9)] private int _imageExpiryTime = 7;
         [JsonProperty("Steam_TrayAccNumber", Order = 10)] private int _trayAccNumber = 3;
         [JsonProperty("Steam_OverrideState", Order = 11)] private int _overrideState = -1;
-        [JsonProperty("AltClose", Order = 13)] private bool _altClose;
-        [JsonProperty("ShortcutsJson", Order = 14)] private Dictionary<int, string> _shortcuts = new();
+        [JsonProperty("ShortcutsJson", Order = 13)] private Dictionary<int, string> _shortcuts = new();
         [JsonIgnore] private bool _desktopShortcut;
 
         public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
@@ -241,8 +240,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
 
         public static int OverrideState { get => Instance._overrideState; set => Instance._overrideState = value; }
-
-        public static bool AltClose { get => Instance._altClose; set => Instance._altClose = value; }
 
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
@@ -333,7 +330,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             TrayAccNumber = 3;
             DesktopShortcut = Shortcut.CheckShortcuts("Steam");
             _ = Shortcut.StartWithWindows_Enabled();
-            AltClose = false;
 
             SaveSettings();
         }

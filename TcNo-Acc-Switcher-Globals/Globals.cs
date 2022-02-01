@@ -50,7 +50,6 @@ namespace TcNo_Acc_Switcher_Globals
         {
             get
             {
-
                 if (!string.IsNullOrEmpty(_userDataFolder)) return _userDataFolder;
                 // Has not yet been initialized
                 // Check if set to something different

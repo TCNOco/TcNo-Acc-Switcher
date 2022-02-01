@@ -61,7 +61,6 @@ Settings_WindowsAccent: Use the Windows Accent Colour
 Settings_HelpTranslate: "[Help translate]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Set rendering engine:"
-Settings_AltClose: "Alternate exit method (when platform doesn't close)"
 Settings_NoPlatforms: There are currently no platforms enabled. Please tick optional platforms below to enable them, or uncheck disabled platforms.
 Cleaning_Header_StartMenuShortcuts: 'Shortcuts for Start Menu:'
 Cleaning_Header_General: General Cleaning

@@ -70,21 +70,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return false;
         }
 
-        public static bool CloseProcesses(string procName, bool altMethod = false)
+        public static bool CloseProcesses(string procName)
         {
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + procName);
             if (!CanKillProcess(procName)) return false;
-            Globals.TaskKillProcess(procName, altMethod);
+            Globals.TaskKillProcess(procName);
 
             return WaitForClose(procName);
         }
-        public static bool CloseProcesses(List<string> procNames, bool altMethod = false)
+        public static bool CloseProcesses(List<string> procNames)
         {
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + string.Join(", ", procNames));
             if (!CanKillProcess(procNames)) return false;
-            Globals.TaskKillProcess(procNames, altMethod);
+            Globals.TaskKillProcess(procNames);
 
             return WaitForClose(procNames);
         }

@@ -130,7 +130,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         var outputShortcut = Path.Join(cacheShortcuts, fName);
 
                         // Exists and is not ignored: Update shortcut
-                        File.Copy(shortcut.FullName, outputShortcut, true);
+                        Globals.CopyFile(shortcut.FullName, outputShortcut);
                         // Organization will be saved in HTML/JS
                     }
                 }
@@ -217,8 +217,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ForgetAccountEnabled", Order = 5)] private bool _forgetAccountEnabled;
         [JsonProperty("OverwatchMode", Order = 6)] private bool _overwatchMode = true;
         [JsonProperty("ImageExpiryTime", Order = 7)] private int _imageExpiryTime = 7;
-        [JsonProperty("AltClose", Order = 8)] private bool _altClose;
-        [JsonProperty("ShortcutsJson", Order = 9)] private Dictionary<int, string> _shortcuts = new();
+        [JsonProperty("ShortcutsJson", Order = 8)] private Dictionary<int, string> _shortcuts = new();
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private List<BattleNetSwitcherBase.BattleNetUser> _accounts = new();
         [JsonIgnore] private List<string> _ignoredAccounts = new();
@@ -234,8 +233,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static bool OverwatchMode { get => Instance._overwatchMode; set => Instance._overwatchMode = value; }
 
         public static int ImageExpiryTime { get => Instance._imageExpiryTime; set => Instance._imageExpiryTime = value; }
-
-        public static bool AltClose { get => Instance._altClose; set => Instance._altClose = value; }
 
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
@@ -299,7 +296,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             OverwatchMode = true;
             // Should this also clear ignored accounts?
             DesktopShortcut = Shortcut.CheckShortcuts("BattleNet");
-            AltClose = false;
 
             SaveSettings();
         }

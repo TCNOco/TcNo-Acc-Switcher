@@ -386,9 +386,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         {
             // Kill game processes
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = CurrentPlatform.FullName }]);
-            if (!GeneralFuncs.CloseProcesses(CurrentPlatform.ExesToEnd, BasicSettings.AltClose))
+            if (!GeneralFuncs.CloseProcesses(CurrentPlatform.ExesToEnd))
             {
-                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.FullName }]);
+                if (Globals.IsAdministrator)
+                    _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.FullName }]);
+                else
+                {
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
+                    _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+                }
                 return false;
             };
 
@@ -507,36 +513,24 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         }
 
                         if (res != "" && File.Exists(sourcePath))
-                            try
-                            {
-                                File.Copy(sourcePath, profileImg, true);
-                            }
-                            catch (Exception e)
-                            {
-                                Globals.WriteToLog("Tried to save profile picture from path (ProfilePicFromFile, ProfilePicRegex method)", e);
-                            }
+                            if (!Globals.CopyFile(sourcePath, profileImg))
+                                Globals.WriteToLog("Tried to save profile picture from path (ProfilePicFromFile, ProfilePicRegex method)");
                     }
                     else if (CurrentPlatform.ProfilePicPath != "")
                     {
                         var sourcePath = ExpandEnvironmentVariables(Globals.GetCleanFilePath(CurrentPlatform.ProfilePicPath.Replace("%UniqueId", uniqueId))) ?? "";
                         if (sourcePath != "" && File.Exists(sourcePath))
-                            try
-                            {
-                                File.Copy(sourcePath, profileImg, true);
-                            }
-                            catch (Exception e)
-                            {
-                                Globals.WriteToLog("Tried to save profile picture from path (ProfilePicPath method)", e);
-                            }
+                            if (!Globals.CopyFile(sourcePath, profileImg))
+                                Globals.WriteToLog("Tried to save profile picture from path (ProfilePicPath method)");
                     }
 
                     // Else (If file couldn't be saved, or not found -> Default.
                     if (!File.Exists(profileImg))
                     {
                         var currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), platformImgPath);
-                        File.Copy(File.Exists(currentPlatformImgPath)
+                        Globals.CopyFile(File.Exists(currentPlatformImgPath)
                             ? Path.Join(currentPlatformImgPath)
-                            : Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png"), profileImg, true);
+                            : Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png"), profileImg);
                     }
                 }
             }
@@ -594,7 +588,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     if (toFullPath == null) return false;
                     if (toFullPath.Contains("*")) toFullPath = Path.GetDirectoryName(toFullPath);
                     var fullOutputPath = Path.Join(toFullPath, Path.GetFileName(f));
-                    if (File.Exists(f)) File.Copy(f, fullOutputPath, true);
+                    Globals.CopyFile(f, fullOutputPath);
                 }
 
                 return true;
@@ -616,7 +610,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (!File.Exists(fullPath)) return false;
             _ = Directory.CreateDirectory(Path.GetDirectoryName(toFullPath));
             var dest = Path.Join(Path.GetDirectoryName(toFullPath), Path.GetFileName(fullPath));
-            File.Copy(fullPath, dest, true);
+            Globals.CopyFile(fullPath, dest);
             return true;
 
         }
@@ -650,16 +644,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 else
                 {
                     // Is not url -> Copy file
-                    try
-                    {
-                        if (File.Exists(specialProperties["image"]))
-                            File.Copy(ExpandEnvironmentVariables(specialProperties["image"]), profileImg, true);
+                    if (Globals.CopyFile(ExpandEnvironmentVariables(specialProperties["image"]), profileImg))
                         hadSpecialProperties = "IMAGE|";
-                    }
-                    catch (Exception)
-                    {
-                        //
-                    }
                 }
             }
 

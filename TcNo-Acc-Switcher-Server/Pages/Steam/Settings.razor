@@ -49,9 +49,6 @@
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="AltClose" @bind="Steam.AltClose"><label class="form-check-label" for="AltClose"></label></div><label for="AltClose">@_locale["Settings_AltClose"]</label>
-            </div>
-            <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="Steam.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Steam", Steam.DesktopShortcut)'><label class="form-check-label" for="Steam_DesktopShortcut"></label></div><label for="Steam_DesktopShortcut">
 		            @_locale["Settings_Shortcut", new { platform = Platform }]<br></label>
             </div>
@@ -307,7 +304,7 @@
                 {
                     var fullFromPath = Path.Join(outputFolder, fromPath);
                     if (Globals.IsFile(fullFromPath))
-                        File.Copy(fullFromPath, toPath, true);
+                        Globals.CopyFile(fullFromPath, toPath, true);
                     else if (Globals.IsFolder(fullFromPath))
                         Globals.CopyFilesRecursive(fullFromPath, toPath, true);
                 }

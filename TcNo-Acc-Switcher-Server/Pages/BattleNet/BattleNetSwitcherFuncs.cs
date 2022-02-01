@@ -164,7 +164,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             _ = Directory.CreateDirectory(BattleNetSettings.ImagePath);
             if (imgUrl == "")
             {
-                File.Copy("wwwroot\\img\\BattleNetDefault.png", dlDir);
+                Globals.CopyFile("wwwroot\\img\\BattleNetDefault.png", dlDir);
                 return dlDir;
             }
 
@@ -182,7 +182,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             }
             catch (Exception ex)
             {
-                File.Copy("wwwroot\\img\\BattleNetDefault.png", dlDir);
+                Globals.CopyFile("wwwroot\\img\\BattleNetDefault.png", dlDir);
                 Globals.WriteToLog("ERROR: Could not connect and download BattleNet profile's image from Steam servers.\nCheck your internet connection.\n\nDetails: " + ex);
             }
 
@@ -201,9 +201,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             if (BattleNetSettings.Accounts.Count == 0) BattleNetSettings.LoadAccounts();
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "BattleNet" }]);
-            if (!GeneralFuncs.CloseProcesses(Data.Settings.BattleNet.Processes, Data.Settings.BattleNet.AltClose))
+            if (!GeneralFuncs.CloseProcesses(BattleNetSettings.Processes))
             {
-                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "BattleNet" }]);
+                if (Globals.IsAdministrator)
+                    _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "BattleNet" }]);
+                else
+                {
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
+                    _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+                }
                 return;
             };
 

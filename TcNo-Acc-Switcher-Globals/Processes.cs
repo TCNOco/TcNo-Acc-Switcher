@@ -105,14 +105,7 @@ namespace TcNo_Acc_Switcher_Globals
         public static bool CanKillProcess(string processName)
         {
             // Checks whether program is running as Admin or not
-            var currentlyElevated = false;
-            if (OperatingSystem.IsWindows())
-            {
-                var securityIdentifier = WindowsIdentity.GetCurrent().Owner;
-                if (securityIdentifier is not null) currentlyElevated = securityIdentifier.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid);
-            }
-
-            if (currentlyElevated)
+            if (IsAdministrator)
                 return true; // Elevated process can kill most other processes.
             if (OperatingSystem.IsWindows())
                 return !ProcessHelper.IsProcessAdmin(processName); // If other process is admin, this process can't kill it (because it's not admin)
@@ -123,49 +116,52 @@ namespace TcNo_Acc_Switcher_Globals
         /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Doesn't start with "SUCCESS")
         /// </summary>
         /// <param name="procName">Process name to kill (Will be used as {name}*)</param>
-        /// <param name="altMethod">Uses another method to kill processes via name (Will be used as {name}*)</param>
-        public static bool TaskKillProcess(string procName, bool altMethod = false)
+        public static bool TaskKillProcess(string procName)
         {
             if (!CanKillProcess(procName)) return false;
-            if (!altMethod)
-            {
-                var outputText = "";
-                var startInfo = new ProcessStartInfo
-                {
-                    UseShellExecute = false,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    FileName = "cmd.exe",
-                    Arguments = $"/C TASKKILL /F /T /IM {procName}*",
-                    CreateNoWindow = true,
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true
-                };
-                var process = new Process { StartInfo = startInfo };
-                process.OutputDataReceived += (_, e) => outputText += e.Data + "\n";
-                _ = process.Start();
-                process.BeginOutputReadLine();
-                process.WaitForExit();
-
-                WriteToLog(outputText.StartsWith("SUCCESS") || outputText.Length <= 1
-                    ? $"Successfully closed {procName}."
-                    : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
-                return true;
-            }
-
+            // Try normal method first
             var processList = Process.GetProcesses().Where(pr => pr.ProcessName == procName.Split(".exe")[0]);
 
-            foreach (var process in processList)
+            foreach (var p in processList)
             {
-                process.Kill();
+                p.Kill();
             }
 
+            // Refresh process list
+            processList = Process.GetProcesses().Where(pr => pr.ProcessName == procName.Split(".exe")[0]);
+            // Then, just to make sure, run the other method
+            if (!processList.Any())
+                return true;
+
+            // Run alternate method if any still running
+            var outputText = "";
+            var startInfo = new ProcessStartInfo
+            {
+                UseShellExecute = false,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                FileName = "cmd.exe",
+                Arguments = $"/C TASKKILL /F /T /IM {procName}*",
+                CreateNoWindow = true,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true
+            };
+
+            var process = new Process { StartInfo = startInfo };
+            process.OutputDataReceived += (_, e) => outputText += e.Data + "\n";
+            _ = process.Start();
+            process.BeginOutputReadLine();
+            process.WaitForExit();
+
+            WriteToLog(outputText.StartsWith("SUCCESS") || outputText.Length <= 1
+                ? $"Successfully closed {procName}."
+                : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
             return true;
         }
 
         /// <summary>
         /// Kills requested processes (List of string). Will Write to Log and Console if unexpected output occurs (Doesn't start with "SUCCESS")
         /// </summary>
-        public static void TaskKillProcess(List<string> inProcesses, bool altMethod = false)
+        public static void TaskKillProcess(List<string> inProcesses)
         {
             var procNames = new List<string>(inProcesses); // Don't leave as a reference -- This prevents removing it from the list too...
 
@@ -232,12 +228,7 @@ namespace TcNo_Acc_Switcher_Globals
                     }
                 }
 
-            if (!altMethod)
-            {
-                procNames.ForEach(e => TaskKillProcess(e));
-                return;
-            }
-
+            // Try normal method
             var processedNames = procNames.Select(procName => procName.Split(".exe")[0]).ToList();
 
             var processList = Process.GetProcesses().Where(pr => processedNames.Contains(pr.ProcessName));
@@ -253,6 +244,9 @@ namespace TcNo_Acc_Switcher_Globals
                     // Already closed
                 }
             }
+
+            // Try TaskKill method
+            procNames.ForEach(e => TaskKillProcess(e));
         }
         public class ProcessHandler
         {
@@ -464,7 +458,7 @@ namespace TcNo_Acc_Switcher_Globals
             [SupportedOSPlatform("windows")]
             public static bool IsProcessAdmin(string processName)
             {
-                var processes = Process.GetProcessesByName(processName);
+                var processes = Process.GetProcessesByName(processName.Split(".exe")[0]);
                 if (processes.Length == 0) return false; // Program is not running
                 var proc = processes[0];
 
@@ -485,7 +479,7 @@ namespace TcNo_Acc_Switcher_Globals
                     }
                     catch (Exception a)
                     {
-                        WriteToLog(a.ToString());
+                        WriteToLog($"Handled error. Tried to check admin status of process: {processName}", a);
                     }
                 }
 

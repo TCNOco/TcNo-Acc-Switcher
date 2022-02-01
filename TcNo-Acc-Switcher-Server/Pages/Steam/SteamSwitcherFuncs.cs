@@ -387,9 +387,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform  = "Steam" }]);
-            if (!GeneralFuncs.CloseProcesses(Data.Settings.Steam.Processes, Data.Settings.Steam.AltClose))
+            if (!GeneralFuncs.CloseProcesses(SteamSettings.Processes))
             {
-                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
+                if (Globals.IsAdministrator)
+                    _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "Steam" }]);
+                else
+                {
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
+                    _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+                }
                 return;
             };
 

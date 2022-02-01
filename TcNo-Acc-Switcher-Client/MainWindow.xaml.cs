@@ -453,7 +453,7 @@ namespace TcNo_Acc_Switcher_Client
 
                 var result = dlg.ShowDialog();
                 if (result != true) return;
-                File.Copy(dlg.FileName, imageDest, true);
+                Globals.CopyFile(dlg.FileName, imageDest);
 
                 if (_mainBrowser == "WebView") _mView2.Reload();
                 else if (_mainBrowser == "CEF") _cefView.Reload();

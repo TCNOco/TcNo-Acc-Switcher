@@ -114,8 +114,7 @@ namespace TcNo_Acc_Switcher_Server
 
         private static void MoveIfFileExists(string f)
         {
-            if (File.Exists(Path.Join(Globals.AppDataFolder, f)))
-                File.Copy(Path.Join(Globals.AppDataFolder, f), Path.Join(Globals.UserDataFolder, f), true);
+            Globals.CopyFile(Path.Join(Globals.AppDataFolder, f), Path.Join(Globals.UserDataFolder, f));
             Globals.DeleteFile(Path.Join(Globals.AppDataFolder, f));
         }
     }

@@ -94,7 +94,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     {
                         var fullFromPath = Path.Join(outputFolder, fromPath);
                         if (Globals.IsFile(fullFromPath))
-                            File.Copy(fullFromPath, toPath, true);
+                            Globals.CopyFile(fullFromPath, toPath);
                         else if (Globals.IsFolder(fullFromPath))
                             Globals.CopyFilesRecursive(fullFromPath, toPath, true);
                     }

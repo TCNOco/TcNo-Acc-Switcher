@@ -425,7 +425,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (File.Exists(path) && path != "")
             {
                 Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\"));
-                File.Copy(path, Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\background" + Path.GetExtension(path)), true);
+                Globals.CopyFile(path, Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\background" + Path.GetExtension(path)));
                 Background = $"img/custom/background{Path.GetExtension(path)}";
                 SaveSettings();
             }
