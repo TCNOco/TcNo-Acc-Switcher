@@ -1,4 +1,3 @@
-
 <p align="center">
   <a href="https://tcno.co/">
     <img src="/other/img/Banner.png"></a>
@@ -30,26 +29,27 @@
 *Wastes no time closing, switching and restarting Steam and other platforms.*<br />
 **NOTE:** Not created for cheating purposes. All it does is change accounts. Use it as you see fit, accepting responsibility.
 
-## Help wanted!
-I created this project because I use it. Platforms change, and some switcher functionality breaks. I get literally nothing from this project, and I'm no longer able to prioritize it. I will put in effort when I can. If you know how to code, your help fixing or extending the program is always welcome! Please do commit, or contact me for more details.
-
 # How does it work?
 Simple. It swaps out files and registry values, pointing to your last logged in account while the program is closed. Think of it as freezing a platform like Steam in time, and replacing the "account block" with a previously frozen "account block", then unfreezing it. To Steam and your Steam account, it "looks" like you pulled your plug out and put it back in a week or so later, meanwhile you were playing on other accounts. Swapping the account block lets the program: Not interact with passwords, and not interact with 2-factor, so you can "Skip" both of those in the login process.
 
 # What's new
 
-The new version is now out of beta! Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord). Download the Beta in the Discord (This is to prevent confusion here)
+Version 5.0 is released (Jan 2022)! Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord).
 
 <p><img alt="Youtube" src="/other/img/youtube.svg" height=18"> <b>Guides:</b> <a href="https://youtu.be/cvbo_VY05bo">BattleNet</a>, <a href="https://youtu.be/qRYra_fQt0I">Origin</a>, <a href="https://youtu.be/rLXGs1Yr3m8">Steam</a>, <a href="https://youtu.be/XKBkIQaJzOA">UPlay</a></p>
 
+The new version adds the ability to easily create and maintain platforms by editing a simple text file `Platforms.json`. If you'd like to learn more, see this [Wiki page](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Help-code-a-platform).
+
 **List of all platforms:**
-**Epic Games**, **Origin**, **Riot Games** (Valorant, League...), **Steam**, **Ubisoft Connect** and **Battle.net** Thank's to [iR3turnZ](https://github.com/HoeblingerDaniel) :),
+**Discord (+ PTB & Canary)**, **Epic Games**, **EA Desktop**, **Escape from Tarkov**, **GeForce Now**, **Origin**, **OBS Studio**, **Riot Games** (Valorant, League...), **Steam**, **Ubisoft Connect** and **Battle.net** Thank's to [iR3turnZ](https://github.com/HoeblingerDaniel) :),
+*This list may not be up-to-date as platforms can now be added a lot faster.
 
 **Featuring**
 -  **Better UI**, with animations. Fully user/community customisable **theme system**. 2 Themes built in (so far).
 -   **Streamer mode** to hide SteamIDs and more while Stream software is running (ie OBS, XSplit...)
 -   **Automatic updates** WAY smaller updates, due to using a new Patch system. No more redownloading the entire app. Only a few KB/MB at a time.
 -  **Steam: Log in as Invisible, Offline and more!** Copy profile links, SteamID and create quick-switch desktop shortcuts!
+- **Easily add new platforms** since version 5.0 (Jan 2022).
 
 \[For info on how any of these work, see the [Wiki](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki)]
 
@@ -78,8 +78,6 @@ Head into the folder where you installed the program and run `_FIRST_RUN.exe` to
 [See more info HERE](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki#2-running-the-tcno-account-switcher)
 
 ## Screenshots
-
-[imgur library](https://imgur.com/prhdlks)
 
 <p>
 <a href="https://imgur.com/a/5E8qkmS">
