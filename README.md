@@ -92,41 +92,16 @@ Head into the folder where you installed the program and run `_FIRST_RUN.exe` to
 </a>
 </p>
 
-## LEGACY STEAM ONLY VERSION
-
-[This](https://github.com/TcNobo/TcNo-Acc-Switcher/releases/tag/3.0.02) is then final release of the Steam only legacy version. You'll also need the .NET Framework 4.8 Runtime, below. Microsoft .NET Framework 4.8 Runtime: [Web Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer), [Offline Installer](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-offline-installer), [Other languages](https://dotnet.microsoft.com/download/dotnet-framework/net48)
-
-**Screenshots:** [imgur library](https://imgur.com/prhdlks)
-
-**Running the program:**
-After installing using the installer, or downloading your .zip (portable version) from the [GitHub Releases](https://github.com/TcNobo/TcNo-Acc-Switcher/releases/tag/3.0.02) page, extract everything to a folder of your choice and run `TcNo Account Switcher.exe`
-
-> If [HardenTools](https://github.com/securitywithoutborders/hardentools) was used, ensure that cmd.exe (Command Prompt) access is still allowed; if access is denied, TcNo Account Switcher will encounter a fatal unhandled exception (crash).
-
-### How does the Steam switcher work
-
-1.  It lists your accounts based on the names in "C:\\Program Files (x86)\\Steam\\config\\loginusers.vdf"
-2.  After picking one, it edits that file so that the one you chose is the latest, and makes sure Remember Password is set to true.
-3.  It edits "HKEY_CURRENT_USER\\Software\\Valve\\Steam\\AutoLoginUser" to your selected username, and also sets the RememberPassword DWORD to True.
-
--   It ends any processes that start with "Steam", and then restarts Steam.exe once the switch is made. You don't need to do anything but use the arrow keys and press Enter.
-
-**Options available**: Start Steam as Administrator, Hide VAC Status for each account and Show Steam ID, Start as Invisible, Offline and more. 
-
-### Known issues
-
--   Issues caused by .NET Core (TcNo Account Switcher 2.0) are solved. No more issues clearing your `%temp%`
-    (This is not an issue in the new Beta version, hence no fix)
+### Looking for the legacy Steam only version?
+See this Wiki page: [Platform: Steam Legacy](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Platform:-Steam-Legacy).
 
 #### Disclaimer
 
 ```
-All trademarks and materials are property of their respective owners and their licensors. This project is not affiliated
-with Battle.net or Blizzard Entertainment Inc, Epic Games Inc or the Epic Games Launcher, Origin or Electronic Arts Inc,
-League of Legends or Legends of Runeterra or Valorant or Riot Games Inc, Steam or Valve Corporation, Ubisoft Connect or
-Ubisoft Entertainment, or any other companies or groups that this software may have reference to. This project should
-not be considered "Official" or related to platforms mentioned in any way. All it does it let you move your files around
-on your computer.
+All trademarks and materials are the property of their respective owners and their licensors. This project is not affiliated
+with Battle.net or Blizzard Entertainment Inc, Steam or Valve Corporation, or any other companies or groups that this software may have reference to. This project should
+not be considered "Official" or related to platforms mentioned in any way. All it does is let you move your files around
+on your computer. The use of these names, icons and trademarks does not indicate endorsement of the trademark holder by this project or its creators, nor vice versa. They are only used to visually indicate which programs this project interacts with easily to the end-user.
 
 I am not responsible for the contents of external links.
 For the rest of the disclaimer, refer to the License (GNU General Public License v3.0) file:
