@@ -76,10 +76,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             // Check if Platforms.json exists.
             // If it doesnt: Copy it from the programs' folder to the user data folder.
-            var basicPlatformsPath = Path.Join(Globals.UserDataFolder, "Platforms.json");
-            var basicPlatformsDefaultPath = Path.Join(Globals.AppDataFolder, "Platforms.json");
-            if (!File.Exists(basicPlatformsPath) && File.Exists(basicPlatformsDefaultPath))
-                    File.Copy(basicPlatformsDefaultPath, basicPlatformsPath);
+            var basicPlatformsPath = Path.Join(Globals.AppDataFolder, "Platforms.json");
             if (!File.Exists(basicPlatformsPath))
             {
                 // Once again verify the file exists. If it doesn't throw an error here.
@@ -89,7 +86,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 return;
             }
 
-            JData = GeneralFuncs.LoadSettings(Path.Join(Globals.UserDataFolder, "Platforms.json"));
+            JData = GeneralFuncs.LoadSettings(Path.Join(Globals.AppDataFolder, "Platforms.json"));
             // Populate platform Primary Token to Full Name dictionary
             foreach (var jToken in GetPlatforms)
             {

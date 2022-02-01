@@ -13,7 +13,7 @@
     },
     "OBS Studio": {
       "Identifiers": [ "obs" ],
-      "ExeLocationDefault": "C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe",
+      "ExeLocationDefault": "%ProgramFiles%\\obs-studio\\bin\\64bit\\obs64.exe",
       "ExesToEnd": [ "obs64.exe" ],
       "PathListToClear": [],
       "LoginFiles": {
@@ -184,7 +184,7 @@
     },
     "Origin": {
       "Identifiers": [ "o", "origin" ],
-      "ExeLocationDefault": "C:\\Program Files (x86)\\Origin\\Origin.exe",
+      "ExeLocationDefault": "%ProgramFiles(x86)%\\Origin\\Origin.exe",
       "ExesToEnd": [ "Origin.exe", "OriginWebHelperService.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -218,7 +218,7 @@
     },
     "EA Desktop": {
       "Identifiers": [ "ea", "eadesktop" ],
-      "ExeLocationDefault": "C:\\Program Files\\Electronic Arts\\EA Desktop\\EA Desktop\\EADesktop.exe",
+      "ExeLocationDefault": "%ProgramFiles%\\Electronic Arts\\EA Desktop\\EA Desktop\\EADesktop.exe",
       "ExesToEnd": [ "EADesktop.exe", "EABackgroundService.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -262,7 +262,7 @@
     },
     "Ubisoft": {
       "Identifiers": [ "u", "ubi", "uplay", "ubisoft" ],
-      "ExeLocationDefault": "C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game launcher\\upc.exe",
+      "ExeLocationDefault": "%ProgramFiles(x86)%\\Ubisoft\\Ubisoft Game launcher\\upc.exe",
       "ExesToEnd": [ "upc.exe", "UplayService.exe", "UplayWebCore.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -286,6 +286,32 @@
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%Platform_Folder%\\logs\\launcher_log.txt",
       "UniqueIdRegex": "(?<=User: ).*"
+    },
+    "Oculus": {
+      "Identifiers": [ "oc", "oculus" ],
+      "ExeLocationDefault": "%ProgramFiles%\\Oculus\\Support\\oculus-client\\OculusClient.exe",
+      "ExesToEnd": [ "OculusClient.exe", "OculusDash.exe", "OVRRedit.exe", "OVRServer_x64.exe", "OVRServiceLauncher.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "%AppData%\\Oculus\\sessions\\": "AppData-OculusSessions\\",
+        "%AppData%\\OculusClient\\Cache\\index": "Cache\\index",
+        "%AppData%\\OculusClient\\Cache\\data_*": "Cache\\",
+        "%AppData%\\OculusClient\\Local Storage\\leveldb\\": "Local Storage\\leveldb\\",
+        "%AppData%\\OculusClient\\GPUCache\\index": "GPUCache\\index",
+        "%AppData%\\OculusClient\\Cookies": "Cookies",
+        "%AppData%\\OculusClient\\Network Persistent State": "Network Persistent State",
+        "%AppData%\\OculusClient\\blob_storage": "blob_storage\\",
+        "%AppData%\\Oculus\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+      },
+      "Extras": {
+        "CachePaths": [
+          "%AppData%\\OculusClient\\Cache\\f_*",
+          "%AppData%\\OculusClient\\GPUCache\\"
+        ]
+      },
+      "ExitBeforeInteract": true,
+      "UniqueIdFile": "%AppData%\\Oculus\\TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE"
     }
   },
   "Platform-WIP": {

@@ -335,7 +335,7 @@ async function showModal(modaltype) {
 		        <span class="modal-text">${modalChangeUsername}.</span>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="NewAccountName" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('change_username').click();">
+		        <input type="text" id="NewAccountName" style="width: 100%;padding: 8px;" autocomplete="off" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('change_username').click();">
 	        </div>
 	        <div class="settingsCol inputAndButton">
 				${extraButtons}
@@ -369,7 +369,7 @@ async function showModal(modaltype) {
 		        <span class="modal-text">${modalEnterDirectory}</span>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="FolderLocation" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
+		        <input type="text" id="FolderLocation" autocomplete="off" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
 		        <button type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFolder=${platformExe}';"><span>${modalLocatePlatform}</span></button>
 	        </div>
 	        <div class="settingsCol inputAndButton">
@@ -473,7 +473,7 @@ async function showModal(modaltype) {
 		        <span class="modal-text">${modalAddNew}</span>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="CurrentAccountName" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();" onkeypress='return /[^<>:\\.\\"\\/\\\\|?*]/i.test(event.key)'>
+		        <input type="text" id="CurrentAccountName" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();" onkeypress='return /[^<>:\\.\\"\\/\\\\|?*]/i.test(event.key)'>
 	        </div>
 	        <div class="settingsCol inputAndButton">
 				${extraButtons}
@@ -493,7 +493,7 @@ async function showModal(modaltype) {
 		        <p class="modal-text">${modalSetBackground}</p>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="FolderLocation" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
+		        <input type="text" id="FolderLocation" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
 	        </div>
 	        <div class="settingsCol inputAndButton">
 		        <button class="modalOK" type="button" id="set_background" onclick="window.location = window.location + '?selectFile=*.*';"><span>${modalChooseLocal}</span></button>
