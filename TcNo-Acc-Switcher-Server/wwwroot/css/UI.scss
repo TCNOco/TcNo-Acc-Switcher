@@ -475,3 +475,62 @@ button .caret, .button .caret {
         height: 100%;
     }
 }
+
+/* Path picker */
+.pathPicker {
+    color: white;
+    background: #070a0d;
+    width: calc(100% - 2em);
+    max-width: 900px;
+    max-height: 50vh;
+    padding: 1em;
+    margin: auto;
+    overflow: auto;
+
+    .c, .c::before {
+        color: var(--accent) !important;
+    }
+
+    div {
+        padding-left: 1em;
+
+        &:not(:first-child) {
+            border-left: 1px solid #00252c
+        }
+    }
+
+    span {
+        line-height: 1.4em;
+        display: block;
+        cursor: pointer;
+        user-select: none;
+
+        &:not(.c):hover {
+            color: #b1f2ff
+        }
+
+        &::before {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            margin-right: 0.3em;
+            content: "\f15b";
+            margin-right: 7px;
+            color: #FFE9A2;
+        }
+
+        &.folder::before {
+            content: "\f07b";
+            margin-right: 5px;
+            color: #fdb900;
+        }
+
+        &.head::before {
+            content: "\f07c";
+            margin-right: 5px;
+        }
+
+        &.head {
+            margin-left: -1em;
+        }
+    }
+}

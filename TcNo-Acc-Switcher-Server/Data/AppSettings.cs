@@ -432,6 +432,42 @@ namespace TcNo_Acc_Switcher_Server.Data
             await AppData.CacheReloadPage();
         }
 
+        [JSInvokable]
+        public static async Task SetUserData(string path)
+        {
+            // Verify this is different.
+            var diOriginal = new DirectoryInfo(Globals.AppDataFolder);
+            var diNew = new DirectoryInfo(path);
+            if (diOriginal.FullName == diNew.FullName) return;
+
+            Background = $"{path}";
+
+            if (Directory.Exists(path) && path != "")
+            {
+                await File.WriteAllTextAsync(Path.Join(Globals.AppDataFolder, "userdata_path.txt"), path);
+            }
+
+            bool folderEmpty;
+            if (Directory.Exists(path))
+                folderEmpty = Globals.IsDirectoryEmpty(path);
+            else
+            {
+                folderEmpty = true;
+                Directory.CreateDirectory(path);
+            }
+
+
+            if (folderEmpty)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationCopying"], renderTo: "toastarea");
+                Globals.CopyFilesRecursive(Globals.AppDataFolder, path, true);
+            }
+            else
+                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationNotCopying"], renderTo: "toastarea");
+
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationSet"], renderTo: "toastarea");
+        }
+
         #endregion
 
         #region SHORTCUTS

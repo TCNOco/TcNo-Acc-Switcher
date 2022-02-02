@@ -71,8 +71,7 @@
       "ExitBeforeInteract": true,
       "Extras": {
         "CachePaths": [
-          "%AppData%\\discord\\Cache\\f_*",
-          "%AppData%\\discord\\GPUCache\\"
+          "%AppData%\\discord\\Cache\\f_*"
         ],
         "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
         "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
@@ -111,8 +110,7 @@
       "ExitBeforeInteract": true,
       "Extras": {
         "CachePaths": [
-          "%AppData%\\discordcanary\\Cache\\f_*",
-          "%AppData%\\discordcanary\\GPUCache\\"
+          "%AppData%\\discordcanary\\Cache\\f_*"
         ],
         "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
         "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
@@ -151,8 +149,7 @@
       "ExitBeforeInteract": true,
       "Extras": {
         "CachePaths": [
-          "%AppData%\\discordptb\\Cache\\f_*",
-          "%AppData%\\discordptb\\GPUCache\\"
+          "%AppData%\\discordptb\\Cache\\f_*"
         ],
         "UsernameModalExtraButtons": "Platforms\\Discord\\Username.html",
         "UsernameModalCopyText": "Platforms\\Discord\\Username.js",
@@ -305,8 +302,7 @@
       },
       "Extras": {
         "CachePaths": [
-          "%AppData%\\OculusClient\\Cache\\f_*",
-          "%AppData%\\OculusClient\\GPUCache\\"
+          "%AppData%\\OculusClient\\Cache\\f_*"
         ]
       },
       "ExitBeforeInteract": true,

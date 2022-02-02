@@ -41,6 +41,11 @@ Settings_ExtraPlatformsDisabled: These available extra platforms are currently d
 Settings_ExtraPlatformsEnabled: These extra platforms are visible. Click to disable them.
 Settings_RTL: Show text as Right-to-Left
 Settings_CurrentLocation: 'Current install location: {path}'
+Settings_CurrentDataLocation: 'Current user data location: {path}'
+Settings_SetDataLocation: "[Set custom user data location]"
+Toast_DataLocationCopying: (1/2) Copying existing files into the new user data folder!
+Toast_DataLocationNotCopying: (1/2) Folder already has files! Will not migrate user data.
+Toast_DataLocationSet: (2/2) Restart the account switcher to use the new folder!
 Settings_PickFolder: Pick {platform} folder
 Settings_OpenFolder: Open {platform} Folder
 Settings_ClearForgotten: Clear Forgotten
@@ -172,9 +177,13 @@ Modal_Title_ConfirmAction: TcNo Account Switcher Confirm Action
 Modal_Title_LocatePlatform: Please locate the {platform} directory
 Modal_Title_AddNew: Add new {platform} account
 Modal_Title_Background: Set a background image
+Modal_Title_Userdata: Set a userdata folder
 Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
 Modal_SetBackground_Button: Set background
 Modal_SetBackground_ChooseImage: Choose local image
+Modal_SetUserdata: Enter a folder path below and click set.
+Modal_SetUserdata_ChooseFolder: Select a folder
+Modal_SetUserdata_Button: Set user data
 Modal_ChangeUsername: Please enter a new username for your account
 Modal_ChangeUsernameType: Change {platform} username
 Modal_EnterDirectory: "Please enter {platform}'s directory, as such: C:\\Program Files\\{platform}"

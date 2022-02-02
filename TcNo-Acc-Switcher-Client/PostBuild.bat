@@ -94,8 +94,8 @@ move /Y "TcNo-Acc-Switcher-Updater.pdb" "updater\TcNo-Acc-Switcher-Updater.pdb"
 copy /B /Y "TcNo-Acc-Switcher-Updater.dll" "updater\TcNo-Acc-Switcher-Updater.dll"
 move /Y "TcNo-Acc-Switcher-Updater.deps.json" "updater\TcNo-Acc-Switcher-Updater.deps.json"
 copy /B /Y "SevenZipExtractor.dll" "updater\SevenZipExtractor.dll"
-move /Y "x86\7z.dll" "updater\x86\7z.dll"
-move /Y "x64\7z.dll" "updater\x64\7z.dll"
+copy /Y "x86\7z.dll" "updater\x86\7z.dll"
+copy /Y "x64\7z.dll" "updater\x64\7z.dll"
 copy /B /Y "ref\TcNo-Acc-Switcher-Updater.dll" "updater\ref\TcNo-Acc-Switcher-Updater.dll"
 copy /B /Y "Newtonsoft.Json.dll" "updater\Newtonsoft.Json.dll"
 RMDIR /Q/S "runtimes\linux-musl-x64"
@@ -105,8 +105,6 @@ RMDIR /Q/S "runtimes\osx-x64"
 RMDIR /Q/S "runtimes\unix"
 RMDIR /Q/S "runtimes\win-arm64"
 RMDIR /Q/S "runtimes\win-x86"
-RMDIR /Q x64
-RMDIR /Q x86
 REN "wwwroot" "originalwwwroot"
 cd ..\
 RMDIR /Q/S %origDir%\bin\x64\Release\TcNo-Acc-Switcher

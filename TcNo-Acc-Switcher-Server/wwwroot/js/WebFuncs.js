@@ -483,22 +483,51 @@ async function showModal(modaltype) {
         input = document.getElementById("CurrentAccountName");
     } else if (modaltype === "SetBackground") {
         const modalTitleBackground = await GetLang("Modal_Title_Background"),
-            modalSetBackground = await GetLang("Modal_SetBackground"),
-            modalChooseLocal = await GetLang("Modal_SetBackground_ChooseImage"),
-            modalSetBackgroundButton = await GetLang("Modal_SetBackground_Button");
+            modalHeading = await GetLang("Modal_SetBackground"),
+            modalChooseButton = await GetLang("Modal_SetBackground_ChooseImage"),
+            modalSetButton = await GetLang("Modal_SetBackground_Button");
 
         $("#modalTitle").text(modalTitleBackground);
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div>
-		        <p class="modal-text">${modalSetBackground}</p>
+		        <p class="modal-text">${modalHeading}</p>
 	        </div>
 	        <div class="inputAndButton">
 		        <input type="text" id="FolderLocation" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
 	        </div>
 	        <div class="settingsCol inputAndButton">
-		        <button class="modalOK" type="button" id="set_background" onclick="window.location = window.location + '?selectFile=*.*';"><span>${modalChooseLocal}</span></button>
-		        <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseBackground()"><span>${modalSetBackgroundButton}</span></button>
+		        <button class="modalOK" type="button" id="set_background" onclick="window.location = window.location + '?selectFile=*.*';"><span>${modalChooseButton}</span></button>
+		        <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseBackground()"><span>${modalSetButton}</span></button>
 	        </div>`);
+    } else if (modaltype === "SetUserdata") {
+        const modalTitleBackground = await GetLang("Modal_Title_Userdata"),
+            modalHeading = await GetLang("Modal_SetUserdata"),
+            modalChooseButton = await GetLang("Modal_SetUserdata_ChooseFolder"),
+            modalSetButton = await GetLang("Modal_SetUserdata_Button");
+        var folderContent = "";
+
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetLogicalDrives").then((r) => {
+            folderContent = "<div>";
+            r.Folders.forEach((f) => { folderContent += "<span class=\"folder\" path=\"" + f + "\">" + f + "</span>" });
+            folderContent += "</div>";
+        });
+
+        $("#modalTitle").text(modalTitleBackground);
+        $("#modal_contents").empty();
+        $("#modal_contents").append(`<div>
+		        <p class="modal-text">${modalHeading}</p>
+	        </div>
+	        <div class="inputAndButton">
+		        <input type="text" id="FolderLocation" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
+	        </div>
+            <div class="pathPicker">
+                ${folderContent}
+            </div>
+	        <div class="settingsCol inputAndButton">
+                <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseUserDataFolder()"><span>${modalSetButton}</span></button>
+	        </div>`);
+
+        $(".pathPicker").on("click", PathPickerClick);
     } else {
 
         const notice = await GetLang("Notice");
@@ -517,6 +546,45 @@ async function showModal(modaltype) {
 
         }
     });
+}
+
+
+async function PathPickerClick(e) {
+    let result = $(e.target).attr("path");
+    if (result === undefined) return;
+    console.log(result);
+    $("#FolderLocation").val(result);
+    let currentSpanPath = $(e.target).attr("path");
+    var folderContent = "";
+
+    // If is not currently open: Continue
+    if ($(e.target).hasClass("c")) return;
+
+    $(".pathPicker .c").each((_, s) => {
+        var path = $(s).attr("path");
+        if (!result.includes(path)) {
+            $(s).parent().replaceWith("<span class=\"folder\" path=\"" + path + "\">" + path + "</span>");
+        }
+    });
+
+    //console.log($(e.target).parent().find(".c").not(":first").each((_, s) => {
+    //    var path = $(s).attr("path");
+    //    console.log(path);
+    //    $($(s)).replaceWith("<span class=\"folder\" path=\"" + path + "\">" + path + "</span>");
+    //}));
+
+    // Expand folder
+    if ($(e.target).hasClass("folder") && !$(e.target).hasClass("c")) {
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetFoldersAndFiles", result).then((r) => {
+            folderContent = "<div path=\"" + currentSpanPath + "\"><span class=\"folder c head\" path=\"" + currentSpanPath + "\">" + currentSpanPath + "</span>";
+            r.Folders.forEach((f) => { folderContent += "<span class=\"folder\" path=\"" + f + "\">" + f + "</span>" });
+            r.Files.forEach((f) => { folderContent += "<span path=\"" + f + "\">" + f + "</span>" });
+            folderContent += "</div>";
+
+            console.log(folderContent);
+            $(e.target).replaceWith(folderContent);
+        });
+    }
 }
 
 function Modal_SetFilepath(path) {
@@ -580,6 +648,12 @@ async function Modal_FinaliseAccString(platform) {
 function Modal_FinaliseBackground() {
     let pathOrUrl = $("#FolderLocation").val();
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetBackground", pathOrUrl);
+    $(".modalBG").fadeOut();
+}
+
+function Modal_FinaliseUserDataFolder() {
+    let pathOrUrl = $("#FolderLocation").val();
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetUserData", pathOrUrl);
     $(".modalBG").fadeOut();
 }
 

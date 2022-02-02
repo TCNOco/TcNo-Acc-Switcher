@@ -136,6 +136,7 @@
     padding: 2em;
     background: #0E1419;
     overflow: auto;
+    min-width: 600px;
 
     .modal_button_close {
         right: 0 !important;
@@ -145,6 +146,7 @@
 
     input[type=text], input[type=password] {
         margin: 0;
+        height: 43px;
         padding-bottom: 2px;
         padding-bottom: 0;
         border-bottom: 2px solid #888;
