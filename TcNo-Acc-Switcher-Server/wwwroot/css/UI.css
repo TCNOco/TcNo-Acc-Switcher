@@ -440,7 +440,7 @@ button .caret, .button .caret {
 .pathPicker span.folder::before {
   content: "\f07b";
   margin-right: 5px;
-  color: #fdb900;
+  color: #FDB900;
 }
 .pathPicker span.head::before {
   content: "\f07c";
@@ -448,4 +448,11 @@ button .caret, .button .caret {
 }
 .pathPicker span.head {
   margin-left: -1em;
+}
+.pathPicker span.suggested {
+  background: #006215;
+}
+.pathPicker span.selected-path, .pathPicker spanselected-path::before {
+  color: var(--accent) !important;
+  background-color: #0E1419;
 }

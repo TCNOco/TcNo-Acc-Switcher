@@ -265,6 +265,7 @@ function OpenLinkInBrowser(link) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "OpenLinkInBrowser", link);
 }
 
+let pathPickerRequestedFile = "";
 
 // Info Window
 async function showModal(modaltype) {
@@ -369,14 +370,19 @@ async function showModal(modaltype) {
 		        <span class="modal-text">${modalEnterDirectory}</span>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="FolderLocation" autocomplete="off" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
-		        <button type="button" id="LocateProgramExe" onclick="window.location = window.location + '?selectFolder=${platformExe}';"><span>${modalLocatePlatform}</span></button>
+		        <input type="text" id="FolderLocation" oninput="updateIndicator()" autocomplete="off" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
 	        </div>
+            <div class="pathPicker">
+                ${await getLogicalDrives()}
+            </div>
 	        <div class="settingsCol inputAndButton">
 		        <div class="folder_indicator notfound"><div id="folder_indicator_text"></div></div>
 		        <div class="folder_indicator_bg notfound"><span>${platformExe}</span></div>
 		        <button class="modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${platformSettingsPath}')"><span>${modalLocatePlatformFolder}</span></button>
 	        </div>`);
+
+        pathPickerRequestedFile = platformExe;
+        $(".pathPicker").on("click", pathPickerClick);
         input = document.getElementById("FolderLocation");
     } else if (modaltype.startsWith("confirm:")) {
         // USAGE: "confirm:<prompt>
@@ -493,24 +499,22 @@ async function showModal(modaltype) {
 		        <p class="modal-text">${modalHeading}</p>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="FolderLocation" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
+		        <input type="text" id="FolderLocation" oninput="updateIndicator()" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
 	        </div>
+            <div class="pathPicker">
+                ${await getLogicalDrives()}
+            </div>
 	        <div class="settingsCol inputAndButton">
-		        <button class="modalOK" type="button" id="set_background" onclick="window.location = window.location + '?selectFile=*.*';"><span>${modalChooseButton}</span></button>
 		        <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseBackground()"><span>${modalSetButton}</span></button>
 	        </div>`);
+
+        pathPickerRequestedFile = "AnyFile";
+        $(".pathPicker").on("click", pathPickerClick);
     } else if (modaltype === "SetUserdata") {
         const modalTitleBackground = await GetLang("Modal_Title_Userdata"),
             modalHeading = await GetLang("Modal_SetUserdata"),
             modalChooseButton = await GetLang("Modal_SetUserdata_ChooseFolder"),
             modalSetButton = await GetLang("Modal_SetUserdata_Button");
-        var folderContent = "";
-
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetLogicalDrives").then((r) => {
-            folderContent = "<div>";
-            r.Folders.forEach((f) => { folderContent += "<span class=\"folder\" path=\"" + f + "\">" + f + "</span>" });
-            folderContent += "</div>";
-        });
 
         $("#modalTitle").text(modalTitleBackground);
         $("#modal_contents").empty();
@@ -518,16 +522,17 @@ async function showModal(modaltype) {
 		        <p class="modal-text">${modalHeading}</p>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="FolderLocation" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
+		        <input type="text" id="FolderLocation" oninput="updateIndicator()" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
 	        </div>
             <div class="pathPicker">
-                ${folderContent}
+                ${await getLogicalDrives()}
             </div>
 	        <div class="settingsCol inputAndButton">
                 <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseUserDataFolder()"><span>${modalSetButton}</span></button>
 	        </div>`);
 
-        $(".pathPicker").on("click", PathPickerClick);
+        pathPickerRequestedFile = "AnyFolder";
+        $(".pathPicker").on("click", pathPickerClick);
     } else {
 
         const notice = await GetLang("Notice");
@@ -548,11 +553,35 @@ async function showModal(modaltype) {
     });
 }
 
+async function getLogicalDrives() {
+    var folderContent = "";
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetLogicalDrives").then((r) => {
+        folderContent = "<div>";
+        r.Folders.forEach((f) => { folderContent += "<span class=\"folder\" path=\"" + f + "\">" + f + "</span>" });
+        folderContent += "</div>";
+    });
+    return folderContent;
+}
 
-async function PathPickerClick(e) {
+function updateIndicator() {
+    console.log("Update Indicator REQUESTED");
+    // Update Found/Not Found preview
+    var foundRequested = false;
+    if (pathPickerRequestedFile === "AnyFolder" && $(e.target).hasClass("folder")) {
+        foundRequested = true;
+    } else if (pathPickerRequestedFile === "AnyFile" && !$(e.target).hasClass("folder")) {
+        foundRequested = true;
+    } else {
+        // Everything else
+        pathPickerRequestedFile = pathPickerRequestedFile.replace("*", "");
+        foundRequested = $("#FolderLocation").val().includes(pathPickerRequestedFile);
+    }
+    Modal_RequestedLocated(foundRequested);
+}
+async function pathPickerClick(e) {
     let result = $(e.target).attr("path");
     if (result === undefined) return;
-    console.log(result);
+    //console.log(result);
     $("#FolderLocation").val(result);
     let currentSpanPath = $(e.target).attr("path");
     var folderContent = "";
@@ -563,25 +592,27 @@ async function PathPickerClick(e) {
     $(".pathPicker .c").each((_, s) => {
         var path = $(s).attr("path");
         if (!result.includes(path)) {
-            $(s).parent().replaceWith("<span class=\"folder\" path=\"" + path + "\">" + path + "</span>");
+            $(s).parent().replaceWith("<span class=\"folder\" path=\"" + path + "\">" + (path.at(-1) !== "\\" ? path.split("\\").at(-1) : path) + "</span>");
         }
     });
 
-    //console.log($(e.target).parent().find(".c").not(":first").each((_, s) => {
-    //    var path = $(s).attr("path");
-    //    console.log(path);
-    //    $($(s)).replaceWith("<span class=\"folder\" path=\"" + path + "\">" + path + "</span>");
-    //}));
+    // Reset all selected-path highlights.
+    $(".pathPicker .selected-path").removeClass("selected-path");
+    $(e.target).addClass("selected-path");
 
     // Expand folder
     if ($(e.target).hasClass("folder") && !$(e.target).hasClass("c")) {
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetFoldersAndFiles", result).then((r) => {
-            folderContent = "<div path=\"" + currentSpanPath + "\"><span class=\"folder c head\" path=\"" + currentSpanPath + "\">" + currentSpanPath + "</span>";
-            r.Folders.forEach((f) => { folderContent += "<span class=\"folder\" path=\"" + f + "\">" + f + "</span>" });
-            r.Files.forEach((f) => { folderContent += "<span path=\"" + f + "\">" + f + "</span>" });
+            folderContent = "<div path=\"" + currentSpanPath + "\"><span class=\"folder c head selected-path\" path=\"" + currentSpanPath + "\">" + (currentSpanPath.at(-1) !== "\\" ? currentSpanPath.split("\\").at(-1) : currentSpanPath) + "</span>";
+            r.Folders.forEach((f) => {
+                folderContent += "<span class=\"folder\" path=\"" + f + "\">" + (f.at(-1) !== "\\" ? f.split("\\").at(-1) : f) + "</span>";
+            });
+            r.Files.forEach((f) => {
+                folderContent += "<span " + (f.includes(pathPickerRequestedFile) ? "class=\"suggested\" " : "") + "path=\"" + f + "\">" + (f.at(-1) !== "\\" ? f.split("\\").at(-1) : f) + "</span>";
+            });
             folderContent += "</div>";
 
-            console.log(folderContent);
+            //console.log(folderContent);
             $(e.target).replaceWith(folderContent);
         });
     }

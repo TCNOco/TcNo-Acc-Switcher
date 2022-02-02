@@ -521,7 +521,7 @@ button .caret, .button .caret {
         &.folder::before {
             content: "\f07b";
             margin-right: 5px;
-            color: #fdb900;
+            color: #FDB900;
         }
 
         &.head::before {
@@ -531,6 +531,15 @@ button .caret, .button .caret {
 
         &.head {
             margin-left: -1em;
+        }
+
+        &.suggested {
+            background: #006215;
+        }
+
+        &.selected-path, &selected-path::before {
+            color: var(--accent) !important;
+            background-color: #0E1419;
         }
     }
 }
