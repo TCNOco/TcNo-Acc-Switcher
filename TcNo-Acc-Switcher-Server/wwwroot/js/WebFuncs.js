@@ -174,12 +174,47 @@ function swapTo(request, e) {
 }
 
 // Swapping accounts
-function changeImage(e) {
+async function changeImage(e) {
     if (e !== undefined) e.preventDefault();
     if (!getSelected()) return;
 
     let path = $(".acc:checked").next("label").children("img")[0].getAttribute("src").split('?')[0];
-    window.location = window.location + `${(window.location.href.includes("?") ? "&" : "?")}selectImage=${encodeURI(path)}`;
+
+    const modalTitleBackground = await GetLang("Modal_Title_Userdata"),
+        modalHeading = await GetLang("Modal_SetImageHeader"),
+        modalSetButton = await GetLang("Modal_SetImage");
+
+    $("#modalTitle").text(modalTitleBackground);
+    $("#modal_contents").empty();
+    $("#modal_contents").append(`<div>
+		        <p class="modal-text">${modalHeading}</p>
+	        </div>
+	        <div class="inputAndButton">
+		        <input type="text" id="FolderLocation" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
+	        </div>
+            <div class="pathPicker">
+                ${await getLogicalDrives()}
+            </div>
+	        <div class="settingsCol inputAndButton">
+                <button class="modalOK" type="button" id="set_background" onclick="Modal_FinalizeImage('${encodeURI(path)}')"><span>${modalSetButton}</span></button>
+	        </div>`);
+
+    pathPickerRequestedFile = "AnyFolder";
+    $(".pathPicker").on("click", pathPickerClick);
+    $(".modalBG").fadeIn(() => {
+        if (input === undefined) return;
+        try {
+            input.focus();
+            input.select();
+        }
+        catch (err) {
+
+        }
+    });
+}
+
+async function Modal_FinalizeImage(dest) {
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `ImportNewImage`, JSON.stringify({ dest: dest, path: $("#FolderLocation").val() }));
 }
 
 // Open Steam\userdata\<steamID> folder
@@ -370,7 +405,7 @@ async function showModal(modaltype) {
 		        <span class="modal-text">${modalEnterDirectory}</span>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="FolderLocation" oninput="updateIndicator()" autocomplete="off" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
+		        <input type="text" id="FolderLocation" oninput="updateIndicator('')" autocomplete="off" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
 	        </div>
             <div class="pathPicker">
                 ${await getLogicalDrives()}
@@ -490,7 +525,6 @@ async function showModal(modaltype) {
     } else if (modaltype === "SetBackground") {
         const modalTitleBackground = await GetLang("Modal_Title_Background"),
             modalHeading = await GetLang("Modal_SetBackground"),
-            modalChooseButton = await GetLang("Modal_SetBackground_ChooseImage"),
             modalSetButton = await GetLang("Modal_SetBackground_Button");
 
         $("#modalTitle").text(modalTitleBackground);
@@ -499,7 +533,7 @@ async function showModal(modaltype) {
 		        <p class="modal-text">${modalHeading}</p>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="FolderLocation" oninput="updateIndicator()" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
+		        <input type="text" id="FolderLocation" oninput="updateIndicator('')" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
 	        </div>
             <div class="pathPicker">
                 ${await getLogicalDrives()}
@@ -513,7 +547,6 @@ async function showModal(modaltype) {
     } else if (modaltype === "SetUserdata") {
         const modalTitleBackground = await GetLang("Modal_Title_Userdata"),
             modalHeading = await GetLang("Modal_SetUserdata"),
-            modalChooseButton = await GetLang("Modal_SetUserdata_ChooseFolder"),
             modalSetButton = await GetLang("Modal_SetUserdata_Button");
 
         $("#modalTitle").text(modalTitleBackground);
@@ -522,7 +555,7 @@ async function showModal(modaltype) {
 		        <p class="modal-text">${modalHeading}</p>
 	        </div>
 	        <div class="inputAndButton">
-		        <input type="text" id="FolderLocation" oninput="updateIndicator()" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
+		        <input type="text" id="FolderLocation" oninput="updateIndicator('')" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
 	        </div>
             <div class="pathPicker">
                 ${await getLogicalDrives()}
@@ -563,13 +596,13 @@ async function getLogicalDrives() {
     return folderContent;
 }
 
-function updateIndicator() {
+function updateIndicator(e) {
     console.log("Update Indicator REQUESTED");
     // Update Found/Not Found preview
     var foundRequested = false;
-    if (pathPickerRequestedFile === "AnyFolder" && $(e.target).hasClass("folder")) {
+    if (pathPickerRequestedFile === "AnyFolder" && e !== "" && $(e.target).hasClass("folder")) {
         foundRequested = true;
-    } else if (pathPickerRequestedFile === "AnyFile" && !$(e.target).hasClass("folder")) {
+    } else if (pathPickerRequestedFile === "AnyFile" && e !== "" && !$(e.target).hasClass("folder")) {
         foundRequested = true;
     } else {
         // Everything else
@@ -583,6 +616,7 @@ async function pathPickerClick(e) {
     if (result === undefined) return;
     //console.log(result);
     $("#FolderLocation").val(result);
+    updateIndicator(e); // Because the above doesn't trigger the event
     let currentSpanPath = $(e.target).attr("path");
     var folderContent = "";
 

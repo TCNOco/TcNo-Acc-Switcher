@@ -12,12 +12,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
@@ -429,5 +431,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         [JSInvokable]
         public static string GiGetCleanFilePath(string f) => Globals.GetCleanFilePath(f);
+
+        [JSInvokable]
+        public static void ImportNewImage(string o)
+        {
+            var f = JObject.Parse(o);
+            var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot" + HttpUtility.UrlDecode(f.Value<string>("dest")));
+            Globals.CopyFile(f.Value<string>("path"), imageDest);
+            _ = AppData.ReloadPage();
+        }
     }
 }

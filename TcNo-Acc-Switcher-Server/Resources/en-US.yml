@@ -192,6 +192,8 @@ Modal_LocatePlatformFolder: Select {platform} folder
 Modal_ConfirmAction: Confirm action
 Modal_AddNew: Please enter a name for the {platform} account you're logged into.
 Modal_AddCurrentAccount: Add current {platform} account
+Modal_SetImageHeader: Set profile image
+Modal_SetImage: Set Image
 Status_SelectedAccount: "Selected: {name}"
 Status_Init: "Status: Initialising"
 Status_ClosingPlatform: Closing {platform}

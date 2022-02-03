@@ -158,7 +158,6 @@ namespace TcNo_Acc_Switcher_Client
                     InitializeChromium();
                     _cefView = new ChromiumWebBrowser();
                     _cefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
-                    _cefView.AddressChanged += CefViewOnAddressChanged;
                     _cefView.PreviewMouseUp += MainBackgroundOnPreviewMouseUp;
                     _cefView.ConsoleMessage += CefViewOnConsoleMessage;
                     _cefView.KeyboardHandler = new CefKeyboardHandler();
@@ -256,12 +255,6 @@ namespace TcNo_Acc_Switcher_Client
             }
         }
 
-        private void CefViewOnAddressChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
-            UrlChanged(e.NewValue.ToString() ?? string.Empty);
-        }
-
         private void CefView_OnJavascriptMessageReceived(object? sender, JavascriptMessageReceivedEventArgs e)
         {
             _ = Dispatcher.BeginInvoke(new Action(() =>
@@ -299,7 +292,6 @@ namespace TcNo_Acc_Switcher_Client
 
                 _mView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
                 MViewAddForwarders();
-                _mView2.NavigationStarting += MViewUrlChanged;
                 _mView2.CoreWebView2.ProcessFailed += CoreWebView2OnProcessFailed;
 
                 _mView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
@@ -340,12 +332,6 @@ namespace TcNo_Acc_Switcher_Client
             //MView2.CoreWebView2.OpenDevToolsWindow();
         }
 
-        private void MViewUrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
-        {
-            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
-            UrlChanged(args.Uri, args);
-        }
-
         // For draggable regions:
         // https://github.com/MicrosoftEdge/WebView2Feedback/issues/200
         private void MViewAddForwarders()
@@ -382,44 +368,6 @@ namespace TcNo_Acc_Switcher_Client
             _mView2.Visibility = Visibility.Hidden;
             _mView2.Visibility = Visibility.Visible;
             _firstLoad = false;
-        }
-        #endregion
-
-        #region BROWSER_SHARED
-
-        /// <summary>
-        /// Rungs on URI change in the WebView.
-        /// </summary>
-        private void UrlChanged(string uri, CoreWebView2NavigationStartingEventArgs mViewArgs = null)
-        {
-            Globals.WriteToLog(uri);
-
-            if (uri.Contains("RESTART_AS_ADMIN")) Restart(uri.Contains("arg=") ? uri.Split("arg=")[1] : "", true);
-            if (uri.Contains("EXIT_APP")) Environment.Exit(0);
-
-            if (!uri.Contains("?")) return;
-            // Needs to be here as:
-            // Importing Microsoft.Win32 and System.Windows didn't get OpenFileDialog to work.
-            var uriArg = uri.Split("?").Last();
-
-            if (uriArg.StartsWith("selectImage"))
-            {
-                // Select file and replace requested file with it.
-                if (mViewArgs != null) mViewArgs.Cancel = true;
-                var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot\\" + HttpUtility.UrlDecode(uriArg.Split("=")[1]));
-
-                var dlg = new OpenFileDialog
-                {
-                    Filter = "Any image file (.png, .jpg, .bmp...)|*.*"
-                };
-
-                var result = dlg.ShowDialog();
-                if (result != true) return;
-                Globals.CopyFile(dlg.FileName, imageDest);
-
-                if (_mainBrowser == "WebView") _mView2.Reload();
-                else if (_mainBrowser == "CEF") _cefView.Reload();
-            }
         }
         #endregion
 
