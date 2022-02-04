@@ -129,14 +129,12 @@
 }
 
 #modal_contents {
-    display: grid;
     position: relative;
     width: 100%;
     height: 100%;
     padding: 2em;
     background: #0E1419;
     overflow: auto;
-    min-width: 600px;
 
     .modal_button_close {
         right: 0 !important;

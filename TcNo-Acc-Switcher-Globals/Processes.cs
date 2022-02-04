@@ -116,137 +116,154 @@ namespace TcNo_Acc_Switcher_Globals
         /// Kills requested process. Will Write to Log and Console if unexpected output occurs (Doesn't start with "SUCCESS")
         /// </summary>
         /// <param name="procName">Process name to kill (Will be used as {name}*)</param>
-        public static bool TaskKillProcess(string procName)
+        /// <param name="closingMethod">Closing method (Combined, Close, TaskKill)</param>
+        public static bool KillProcess(string procName, string closingMethod = "Combined")
         {
-            if (!CanKillProcess(procName)) return false;
-            // Try normal method first
-            var processList = Process.GetProcesses().Where(pr => pr.ProcessName == procName.Split(".exe")[0]);
-
-            foreach (var p in processList)
+            if (closingMethod == "Combined" || closingMethod == "Close")
             {
-                p.Kill();
+                if (!CanKillProcess(procName)) return false;
+
+                // Try normal method first
+                var processList = Process.GetProcesses().Where(pr => pr.ProcessName == procName.Split(".exe")[0]);
+
+                foreach (var p in processList)
+                {
+                    p.Kill();
+                }
             }
 
-            // Refresh process list
-            processList = Process.GetProcesses().Where(pr => pr.ProcessName == procName.Split(".exe")[0]);
-            // Then, just to make sure, run the other method
-            if (!processList.Any())
-                return true;
-
-            // Run alternate method if any still running
-            var outputText = "";
-            var startInfo = new ProcessStartInfo
+            if (closingMethod == "Combined" || closingMethod == "TaskKill")
             {
-                UseShellExecute = false,
-                WindowStyle = ProcessWindowStyle.Hidden,
-                FileName = "cmd.exe",
-                Arguments = $"/C TASKKILL /F /T /IM {procName}*",
-                CreateNoWindow = true,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true
-            };
+                // Refresh process list
+                var processList = Process.GetProcesses().Where(pr => pr.ProcessName == procName.Split(".exe")[0]);
 
-            var process = new Process { StartInfo = startInfo };
-            process.OutputDataReceived += (_, e) => outputText += e.Data + "\n";
-            _ = process.Start();
-            process.BeginOutputReadLine();
-            process.WaitForExit();
+                // Then, just to make sure, run the other method
+                if (!processList.Any())
+                    return true;
 
-            WriteToLog(outputText.StartsWith("SUCCESS") || outputText.Length <= 1
-                ? $"Successfully closed {procName}."
-                : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
+                // Run alternate method if any still running
+                var outputText = "";
+                var startInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = false,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    FileName = "cmd.exe",
+                    Arguments = $"/C TASKKILL /F /T /IM {procName}*",
+                    CreateNoWindow = true,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true
+                };
+
+                var process = new Process { StartInfo = startInfo };
+                process.OutputDataReceived += (_, e) => outputText += e.Data + "\n";
+                _ = process.Start();
+                process.BeginOutputReadLine();
+                process.WaitForExit();
+
+                WriteToLog(outputText.StartsWith("SUCCESS") || outputText.Length <= 1
+                    ? $"Successfully closed {procName}."
+                    : $"Tried to close {procName}. Unexpected output from cmd:\r\n{outputText}");
+            }
             return true;
         }
 
         /// <summary>
         /// Kills requested processes (List of string). Will Write to Log and Console if unexpected output occurs (Doesn't start with "SUCCESS")
         /// </summary>
-        public static void TaskKillProcess(List<string> inProcesses)
+        /// <param name="inProcesses">List of processes to kill</param>
+        /// <param name="closingMethod">Closing method (Combined, Close, TaskKill)</param>
+        public static void KillProcess(List<string> inProcesses, string closingMethod = "Combined")
         {
             var procNames = new List<string>(inProcesses); // Don't leave as a reference -- This prevents removing it from the list too...
 
-            // Check for services, and close them separately.
-            List<string> toRemove = new();
-            List<ServiceController> scList = null;
-            if (OperatingSystem.IsWindows())
-                scList = new List<ServiceController>();
-            var scListProcNames = new List<string>();
-            foreach (var procName in procNames)
+            if (closingMethod == "Combined" || closingMethod == "TaskKill")
             {
-                var pathOrName = procName;
-                if (procName.StartsWith("SERVICE:"))
-                    pathOrName = procName[8..]; // Remove "SERVICE:"
+                // Try TaskKill method
+                procNames.ForEach(p => KillProcess(p, "TaskKill"));
+            }
 
-                // Get full path if .exe, otherwise it's the name of the service (Hopefully)
-                if (pathOrName.Contains(".exe"))
+            if (closingMethod == "Combined" || closingMethod == "Close")
+            {
+                // Check for services, and close them separately.
+                List<string> toRemove = new();
+                List<ServiceController> scList = null;
+                if (OperatingSystem.IsWindows())
+                    scList = new List<ServiceController>();
+                var scListProcNames = new List<string>();
+                foreach (var procName in procNames)
                 {
-                    var processes = Process.GetProcesses();
-                    var nameWithoutExe = pathOrName.Replace(".exe", "");
-                    foreach (var p in processes)
+                    var pathOrName = procName;
+                    if (procName.StartsWith("SERVICE:"))
+                        pathOrName = procName[8..]; // Remove "SERVICE:"
+
+                    // Get full path if .exe, otherwise it's the name of the service (Hopefully)
+                    if (pathOrName.Contains(".exe"))
                     {
-                        if (!p.ProcessName.Contains(nameWithoutExe)) continue;
-                        try
+                        var processes = Process.GetProcesses();
+                        var nameWithoutExe = pathOrName.Replace(".exe", "");
+                        foreach (var p in processes)
                         {
-                            pathOrName = p.MainModule?.FileName; // Admin is required for this!
+                            if (!p.ProcessName.Contains(nameWithoutExe)) continue;
+                            try
+                            {
+                                pathOrName = p.MainModule?.FileName; // Admin is required for this!
+                            }
+                            catch (Win32Exception e)
+                            {
+                                WriteToLog("Tried to get MainModule from process but failed.", e);
+                            }
+                            break;
                         }
-                        catch (Win32Exception e)
-                        {
-                            WriteToLog("Tried to get MainModule from process but failed.", e);
-                        }
-                        break;
+                    }
+
+                    if (pathOrName == null) continue; // This process was already closed, or is not running.
+
+                    // Was not explicitly tagged as a service, but checking anyway is good!
+                    if (OperatingSystem.IsWindows() && IsProcessService(pathOrName, out var sName))
+                    {
+                        if (sName == null) continue;
+                        // Do also try and get the MainModule.Filename (or whatever it is) in the CanKillProcess function, to check if can kill... This seems to be a more reliable way of checking as well? Maybe just for services... use IsProcessService() for that as well?
+                        scList.Add(new ServiceController(sName));
+                        scListProcNames.Add(pathOrName);
+                        toRemove.Add(procName);
                     }
                 }
 
-                if (pathOrName == null) continue; // This process was already closed, or is not running.
+                foreach (var rem in toRemove)
+                    procNames.Remove(rem);
 
-                // Was not explicitly tagged as a service, but checking anyway is good!
-                if (OperatingSystem.IsWindows() && IsProcessService(pathOrName, out var sName))
-                {
-                    if (sName == null) continue;
-                    // Do also try and get the MainModule.Filename (or whatever it is) in the CanKillProcess function, to check if can kill... This seems to be a more reliable way of checking as well? Maybe just for services... use IsProcessService() for that as well?
-                    scList.Add(new ServiceController(sName));
-                    scListProcNames.Add(pathOrName);
-                    toRemove.Add(procName);
-                }
-            }
+                // Kill services all at once to speed everything up.
+                if (OperatingSystem.IsWindows() && scList != null)
+                    for (var i = 0; i < scList.Count; i++)
+                    {
+                        try
+                        {
+                            scList[i].Stop();
+                        }
+                        catch (Exception)
+                        {
+                            // Catch cannot stop on computer... Then end using less reliable TaskKill.
+                            KillProcess(scListProcNames[i], "TaskKill");
+                        }
+                    }
 
-            foreach (var rem in toRemove)
-                procNames.Remove(rem);
+                // Try normal method
+                var processedNames = procNames.Select(procName => procName.Split(".exe")[0]).ToList();
 
-            // Kill services all at once to speed everything up.
-            if (OperatingSystem.IsWindows() && scList != null)
-                for (var i = 0; i < scList.Count; i++)
+                var processList = Process.GetProcesses().Where(pr => processedNames.Contains(pr.ProcessName));
+
+                foreach (var process in processList)
                 {
                     try
                     {
-                        scList[i].Stop();
+                        process.Kill();
                     }
-                    catch (Exception)
+                    catch (Win32Exception)
                     {
-                        // Catch cannot stop on computer... Then end using less reliable TaskKill.
-                        TaskKillProcess(scListProcNames[i]);
+                        // Already closed
                     }
-                }
-
-            // Try normal method
-            var processedNames = procNames.Select(procName => procName.Split(".exe")[0]).ToList();
-
-            var processList = Process.GetProcesses().Where(pr => processedNames.Contains(pr.ProcessName));
-
-            foreach (var process in processList)
-            {
-                try
-                {
-                    process.Kill();
-                }
-                catch (Win32Exception)
-                {
-                    // Already closed
                 }
             }
-
-            // Try TaskKill method
-            procNames.ForEach(e => TaskKillProcess(e));
         }
         public class ProcessHandler
         {

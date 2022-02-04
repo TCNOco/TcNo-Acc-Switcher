@@ -77,6 +77,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static string GetShortcutImagePath(string gameShortcutName) =>
             Path.Join(GetShortcutImageFolder, PlatformFuncs.RemoveShortcutExt(gameShortcutName) + ".png");
         public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
+        public static string ClosingMethod { get => Instance._closingMethod; set => Instance._closingMethod = value; }
         private static string GetShortcutImageFolder => $"img\\shortcuts\\BattleNet\\";
         private static string GetShortcutImagePath() => Path.Join(Globals.UserDataFolder, "wwwroot\\", GetShortcutImageFolder);
         public static string ShortcutFolder => "LoginCache\\BattleNet\\Shortcuts\\";
@@ -178,6 +179,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             SaveSettings();
         }
 
+        public static void SetClosingMethod(string method)
+        {
+            ClosingMethod = method;
+            SaveSettings();
+        }
+
         [JSInvokable]
         public static void HandleShortcutActionBNet(string shortcut, string action)
         {
@@ -218,6 +225,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("OverwatchMode", Order = 6)] private bool _overwatchMode = true;
         [JsonProperty("ImageExpiryTime", Order = 7)] private int _imageExpiryTime = 7;
         [JsonProperty("ShortcutsJson", Order = 8)] private Dictionary<int, string> _shortcuts = new();
+        [JsonProperty("ClosingMethod", Order = 9)] private string _closingMethod = "Combined";
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private List<BattleNetSwitcherBase.BattleNetUser> _accounts = new();
         [JsonIgnore] private List<string> _ignoredAccounts = new();

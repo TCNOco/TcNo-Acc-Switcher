@@ -386,7 +386,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         {
             // Kill game processes
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = CurrentPlatform.FullName }]);
-            if (!GeneralFuncs.CloseProcesses(CurrentPlatform.ExesToEnd))
+            if (!GeneralFuncs.CloseProcesses(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod))
             {
                 if (Globals.IsAdministrator)
                     _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.FullName }]);

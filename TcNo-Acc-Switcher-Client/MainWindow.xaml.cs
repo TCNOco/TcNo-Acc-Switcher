@@ -65,7 +65,7 @@ namespace TcNo_Acc_Switcher_Client
             if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(serverPath)).Length > 0)
             {
                 Globals.WriteToLog("Server was already running. Killing process.");
-                Globals.TaskKillProcess(serverPath); // Kill server if already running
+                Globals.KillProcess(serverPath); // Kill server if already running
             }
 
             var attempts = 0;
@@ -158,6 +158,7 @@ namespace TcNo_Acc_Switcher_Client
                     InitializeChromium();
                     _cefView = new ChromiumWebBrowser();
                     _cefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
+                    _cefView.AddressChanged += CefViewOnAddressChanged;
                     _cefView.PreviewMouseUp += MainBackgroundOnPreviewMouseUp;
                     _cefView.ConsoleMessage += CefViewOnConsoleMessage;
                     _cefView.KeyboardHandler = new CefKeyboardHandler();
@@ -280,6 +281,28 @@ namespace TcNo_Acc_Switcher_Client
         }
         #endregion
 
+        #region BROWSER_SHARED
+        private void CefViewOnAddressChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
+            UrlChanged(e.NewValue.ToString() ?? string.Empty);
+        }
+        private void MViewUrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
+        {
+            Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
+            UrlChanged(args.Uri, args);
+        }
+        /// <summary>
+        /// Rungs on URI change in the WebView.
+        /// </summary>
+        private void UrlChanged(string uri, CoreWebView2NavigationStartingEventArgs mViewArgs = null)
+        {
+            Globals.WriteToLog(uri);
+
+            if (uri.Contains("RESTART_AS_ADMIN")) Restart(uri.Contains("arg=") ? uri.Split("arg=")[1] : "", true);
+            if (uri.Contains("EXIT_APP")) Environment.Exit(0);
+        }
+        #endregion
 
         #region WebView
         private async void MView2_OnInitialised(object sender, EventArgs e)
@@ -292,6 +315,7 @@ namespace TcNo_Acc_Switcher_Client
 
                 _mView2.Source = new Uri($"http://localhost:{AppSettings.ServerPort}/{App.StartPage}");
                 MViewAddForwarders();
+                _mView2.NavigationStarting += MViewUrlChanged;
                 _mView2.CoreWebView2.ProcessFailed += CoreWebView2OnProcessFailed;
 
                 _mView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;

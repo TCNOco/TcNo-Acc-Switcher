@@ -46,19 +46,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         #region PROCESS_OPERATIONS
 
         //public static bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
-        public static bool CanKillProcess(List<string> procNames, bool showModal = true)
+        public static bool CanKillProcess(List<string> procNames, string closingMethod = "Combined", bool showModal = true)
         {
             var canKillAll = true;
             foreach (var procName in procNames)
             {
-                canKillAll = canKillAll && CanKillProcess(procName);
+                if (procName.StartsWith("SERVICE:") && closingMethod == "TaskKill") continue; // Ignore explicit services when using TaskKill - Admin isn't ALWAYS needed. Eg: Steam.
+                canKillAll = canKillAll && CanKillProcess(procName, closingMethod);
             }
 
             return canKillAll;
         }
 
-        public static bool CanKillProcess(string processName, bool showModal = true)
+        public static bool CanKillProcess(string processName, string closingMethod = "Combined", bool showModal = true)
         {
+            if (processName.StartsWith("SERVICE:") && closingMethod == "TaskKill") return true; // Ignore explicit services when using TaskKill - Admin isn't ALWAYS needed. Eg: Steam.
             if (processName.StartsWith("SERVICE:")) // Services need admin to close (as far as I understand)
                 processName = processName[8..].Split(".exe")[0];
 
@@ -70,21 +72,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return false;
         }
 
-        public static bool CloseProcesses(string procName)
+        public static bool CloseProcesses(string procName, string closingMethod)
         {
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + procName);
-            if (!CanKillProcess(procName)) return false;
-            Globals.TaskKillProcess(procName);
+            if (!CanKillProcess(procName, closingMethod)) return false;
+            Globals.KillProcess(procName, closingMethod);
 
             return WaitForClose(procName);
         }
-        public static bool CloseProcesses(List<string> procNames)
+        public static bool CloseProcesses(List<string> procNames, string closingMethod)
         {
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + string.Join(", ", procNames));
-            if (!CanKillProcess(procNames)) return false;
-            Globals.TaskKillProcess(procNames);
+            if (!CanKillProcess(procNames, closingMethod)) return false;
+            Globals.KillProcess(procNames, closingMethod);
 
             return WaitForClose(procNames);
         }

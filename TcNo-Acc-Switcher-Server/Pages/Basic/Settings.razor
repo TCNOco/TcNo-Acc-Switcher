@@ -43,6 +43,20 @@
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="Basic.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
 		            @_locale["Settings_Admin", new { platform = CurrentPlatform.FullName }]<br></label>
             </div>
+            <div class="rowSetting rowDropdown">
+                <span>@_locale["Settings_Header_ClosingMethod", new { platform = CurrentPlatform.FullName }]</span>
+                <div class="dropdown">
+                    <ul class="custom-dropdown-menu dropdown-menu">
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetClosingMethod("Combined")'>Combined (Best)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetClosingMethod("Close")'>Close</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetClosingMethod("TaskKill")'>TaskKill (Old)</li>
+                    </ul>
+                    <button class="dropdown-toggle" type="button" data-toggle="dropdown">
+                        @Basic.ClosingMethod
+                        <span class="caret"></span>
+                    </button>
+                </div>
+            </div>
 
 
             <div class="SettingsHeader">

@@ -55,7 +55,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public void Steam_Close()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\AdvancedClearing.razor.cs.Steam_Close]");
-            WriteLine(GeneralFuncs.CloseProcesses(SteamSettings.Processes) ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
+            WriteLine(GeneralFuncs.CloseProcesses(SteamSettings.Processes, SteamSettings.ClosingMethod) ? "Closed Steam." : "ERROR: COULD NOT CLOSE STEAM!");
             NewLine();
         }
 

@@ -201,7 +201,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             if (BattleNetSettings.Accounts.Count == 0) BattleNetSettings.LoadAccounts();
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "BattleNet" }]);
-            if (!GeneralFuncs.CloseProcesses(BattleNetSettings.Processes))
+            if (!GeneralFuncs.CloseProcesses(BattleNetSettings.Processes, BattleNetSettings.ClosingMethod))
             {
                 if (Globals.IsAdministrator)
                     _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = "BattleNet" }]);

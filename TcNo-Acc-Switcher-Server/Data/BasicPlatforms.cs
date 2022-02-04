@@ -161,6 +161,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         private Dictionary<string, string> _backupPaths = new();
         private List<string> _backupFileTypesIgnore = new();
         private List<string> _backupFileTypesInclude = new();
+        private string _closingMethod = "Combined";
+
         // Optional
         private string _uniqueIdFile = "";
         private string _uniqueIdFolder = "";
@@ -208,6 +210,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static Dictionary<string, string> BackupPaths { get => Instance._backupPaths; private set => Instance._backupPaths = value; }
         public static List<string> BackupFileTypesIgnore { get => Instance._backupFileTypesIgnore; private set => Instance._backupFileTypesIgnore = value; }
         public static List<string> BackupFileTypesInclude { get => Instance._backupFileTypesInclude; private set => Instance._backupFileTypesInclude = value; }
+        public static string ClosingMethod { get => Instance._closingMethod; set => Instance._closingMethod = value; }
 
         // ----------
         #endregion
@@ -299,6 +302,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                     BackupFileTypesIgnore = extras["BackupFileTypesIgnore"]!.Values<string>().ToList();
                 if (extras.ContainsKey("BackupFileTypesInclude"))
                     BackupFileTypesInclude = extras["BackupFileTypesInclude"]!.Values<string>().ToList();
+                if (extras.ContainsKey("ClosingMethod"))
+                    ClosingMethod = (string)extras["ClosingMethod"];
             }
 
             // Foreach app shortcut in ShortcutFolders:

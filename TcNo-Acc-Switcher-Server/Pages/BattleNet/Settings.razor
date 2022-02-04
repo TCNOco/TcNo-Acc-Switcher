@@ -51,6 +51,20 @@
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="BattleNet.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
 		            @_locale["Settings_Admin", new { platform = Platform }]<br></label>
             </div>
+            <div class="rowSetting rowDropdown">
+                <span>@_locale["Settings_Header_ClosingMethod", new { platform = "BattleNet" }]</span>
+                <div class="dropdown">
+                    <ul class="custom-dropdown-menu dropdown-menu">
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => BattleNet.SetClosingMethod("Combined")'>Combined (Best)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => BattleNet.SetClosingMethod("Close")'>Close</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => BattleNet.SetClosingMethod("TaskKill")'>TaskKill (Old)</li>
+                    </ul>
+                    <button class="dropdown-toggle" type="button" data-toggle="dropdown">
+                        @BattleNet.ClosingMethod
+                        <span class="caret"></span>
+                    </button>
+                </div>
+            </div>
             <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="OverwatchMode" @bind="BattleNet.OverwatchMode" @onclick="OverwatchToggle"><label class="form-check-label" for="OverwatchMode"></label></div><label for="OverwatchMode">@_locale["BattleNet_ShowSR"]<br></label>
             </div>

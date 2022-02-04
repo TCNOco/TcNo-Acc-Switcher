@@ -56,6 +56,20 @@
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin" @bind="Steam.Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label for="Steam_Admin">
 		            @_locale["Settings_Admin", new { platform = Platform }]<br></label>
             </div>
+            <div class="rowSetting rowDropdown">
+                <span>@_locale["Settings_Header_ClosingMethod", new { platform = "Steam" }]</span>
+                <div class="dropdown">
+                    <ul class="custom-dropdown-menu dropdown-menu">
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => Steam.SetClosingMethod("Combined")'>Combined (Best)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => Steam.SetClosingMethod("Close")'>Close</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => Steam.SetClosingMethod("TaskKill")'>TaskKill (Old)</li>
+                    </ul>
+                    <button class="dropdown-toggle" type="button" data-toggle="dropdown">
+                        @Steam.ClosingMethod
+                        <span class="caret"></span>
+                    </button>
+                </div>
+            </div>
             <div>
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowSteamID" @bind="Steam.ShowSteamId"><label class="form-check-label" for="Steam_ShowSteamID"></label></div><label for="Steam_ShowSteamID">@_locale["Steam_ShowSteamID"]<br></label>
             </div>

@@ -66,6 +66,7 @@ Settings_WindowsAccent: Use the Windows Accent Colour
 Settings_HelpTranslate: "[Help translate]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Set rendering engine:"
+Settings_Header_ClosingMethod: "[Advanced] Set method to close {platform}"
 Settings_NoPlatforms: There are currently no platforms enabled. Please tick optional platforms below to enable them, or uncheck disabled platforms.
 Cleaning_Header_StartMenuShortcuts: 'Shortcuts for Start Menu:'
 Cleaning_Header_General: General Cleaning
@@ -177,7 +178,7 @@ Modal_Title_ConfirmAction: TcNo Account Switcher Confirm Action
 Modal_Title_LocatePlatform: Please locate the {platform} directory
 Modal_Title_AddNew: Add new {platform} account
 Modal_Title_Background: Set a background image
-Modal_Title_Userdata: Set a userdata folder
+Modal_Title_Userdata: Set the user data folder
 Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
 Modal_SetBackground_Button: Set background
 Modal_SetBackground_ChooseImage: Choose local image

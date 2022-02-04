@@ -76,6 +76,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Basic_TrayAccNumber", Order = 3)] private int _trayAccNumber = 3;
         [JsonProperty("ForgetAccountEnabled", Order = 4)] private bool _forgetAccountEnabled;
         [JsonProperty("ShortcutsJson", Order = 5)] private Dictionary<int, string> _shortcuts = new();
+        [JsonProperty("ClosingMethod", Order = 6)] private string _closingMethod = "";
         [JsonIgnore] private bool _desktopShortcut;
 
 
@@ -95,6 +96,17 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
         public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
         public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
+        public static string ClosingMethod
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Instance._closingMethod)) return Instance._closingMethod;
+                Instance._closingMethod = CurrentPlatform.ClosingMethod;
+
+                return Instance._closingMethod;
+            }
+            set => Instance._closingMethod = value;
+        }
 
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
@@ -137,6 +149,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static void SaveShortcutOrder(Dictionary<int, string> o)
         {
             Shortcuts = o;
+            SaveSettings();
+        }
+
+        public static void SetClosingMethod(string method)
+        {
+            ClosingMethod = method;
             SaveSettings();
         }
         public static void OpenFolder(string folder)

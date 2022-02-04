@@ -486,6 +486,7 @@ button .caret, .button .caret {
     padding: 1em;
     margin: auto;
     overflow: auto;
+    min-width: 600px;
 
     .c, .c::before {
         color: var(--accent) !important;

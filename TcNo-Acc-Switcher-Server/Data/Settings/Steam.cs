@@ -72,6 +72,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static string GetShortcutImagePath(string gameShortcutName) =>
             Path.Join(GetShortcutImageFolder, PlatformFuncs.RemoveShortcutExt(gameShortcutName) + ".png");
         public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
+        public static string ClosingMethod { get => Instance._closingMethod; set => Instance._closingMethod = value; }
         private static string GetShortcutImageFolder => $"img\\shortcuts\\Steam\\";
         private static string GetShortcutImagePath() => Path.Join(Globals.UserDataFolder, "wwwroot\\", GetShortcutImageFolder);
         public static string ShortcutFolder => "LoginCache\\Steam\\Shortcuts\\";
@@ -173,6 +174,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             SaveSettings();
         }
 
+        public static void SetClosingMethod(string method)
+        {
+            ClosingMethod = method;
+            SaveSettings();
+        }
+
         [JSInvokable]
         public static void HandleShortcutActionSteam(string shortcut, string action)
         {
@@ -217,6 +224,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Steam_TrayAccNumber", Order = 10)] private int _trayAccNumber = 3;
         [JsonProperty("Steam_OverrideState", Order = 11)] private int _overrideState = -1;
         [JsonProperty("ShortcutsJson", Order = 13)] private Dictionary<int, string> _shortcuts = new();
+        [JsonProperty("ClosingMethod", Order = 14)] private string _closingMethod = "TaskKill";
         [JsonIgnore] private bool _desktopShortcut;
 
         public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
@@ -244,7 +252,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
         // Constants
-        public static readonly List<string> Processes = new() { "steam.exe", "steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
+        public static readonly List<string> Processes = new() { "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
         public static readonly string VacCacheFile = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\VACCache\\SteamVACCache.json");
         public static readonly string SettingsFile = "SteamSettings.json";
         public static readonly string SteamImagePath = "wwwroot/img/profiles/steam/";

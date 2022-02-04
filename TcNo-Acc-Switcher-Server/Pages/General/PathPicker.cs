@@ -46,5 +46,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
             return ro;
         }
+
+        [JSInvokable]
+        public static object GetFolders(string path)
+        {
+            var ro = ReturnObject;
+            try
+            {
+                ro["Folders"] = Directory.GetDirectories(path).ToList();
+            }
+            catch (Exception e)
+            {
+                Globals.WriteToLog("Could not get list of files and folders.", e);
+            }
+            return ro;
+        }
     }
 }

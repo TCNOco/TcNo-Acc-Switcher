@@ -199,7 +199,7 @@ async function changeImage(e) {
                 <button class="modalOK" type="button" id="set_background" onclick="Modal_FinalizeImage('${encodeURI(path)}')"><span>${modalSetButton}</span></button>
 	        </div>`);
 
-    pathPickerRequestedFile = "AnyFolder";
+    pathPickerRequestedFile = "AnyFile";
     $(".pathPicker").on("click", pathPickerClick);
     $(".modalBG").fadeIn(() => {
         if (input === undefined) return;
@@ -636,7 +636,10 @@ async function pathPickerClick(e) {
 
     // Expand folder
     if ($(e.target).hasClass("folder") && !$(e.target).hasClass("c")) {
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetFoldersAndFiles", result).then((r) => {
+        let getFunc = "GetFoldersAndFiles";
+        if (pathPickerRequestedFile === "AnyFolder") getFunc = "GetFolders";
+
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", getFunc, result).then((r) => {
             folderContent = "<div path=\"" + currentSpanPath + "\"><span class=\"folder c head selected-path\" path=\"" + currentSpanPath + "\">" + (currentSpanPath.at(-1) !== "\\" ? currentSpanPath.split("\\").at(-1) : currentSpanPath) + "</span>";
             r.Folders.forEach((f) => {
                 folderContent += "<span class=\"folder\" path=\"" + f + "\">" + (f.at(-1) !== "\\" ? f.split("\\").at(-1) : f) + "</span>";
@@ -652,9 +655,7 @@ async function pathPickerClick(e) {
     }
 }
 
-function Modal_SetFilepath(path) {
-    $("#FolderLocation").val(path);
-}
+
 // For finding files with modal:
 function Modal_RequestedLocated(found) {
     try {

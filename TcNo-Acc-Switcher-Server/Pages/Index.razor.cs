@@ -28,6 +28,10 @@ using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 
+using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
+using BattleNetSettings = TcNo_Acc_Switcher_Server.Data.Settings.BattleNet;
+using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
+
 namespace TcNo_Acc_Switcher_Server.Pages
 {
     public partial class Index
@@ -40,14 +44,14 @@ namespace TcNo_Acc_Switcher_Server.Pages
             switch (platform)
             {
                 case "BattleNet":
-                    if (!GeneralFuncs.CanKillProcess(Data.Settings.BattleNet.Processes)) return;
-                    if (Directory.Exists(Data.Settings.BattleNet.FolderPath) && File.Exists(Data.Settings.BattleNet.Exe())) AppData.ActiveNavMan.NavigateTo("/BattleNet/");
+                    if (!GeneralFuncs.CanKillProcess(BattleNetSettings.Processes, BattleNetSettings.ClosingMethod)) return;
+                    if (Directory.Exists(BattleNetSettings.FolderPath) && File.Exists(BattleNetSettings.Exe())) AppData.ActiveNavMan.NavigateTo("/BattleNet/");
                     else _ = GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
                     break;
 
                 case "Steam":
-                    if (!GeneralFuncs.CanKillProcess(Data.Settings.Steam.Processes)) return;
-                    if (!Directory.Exists(Data.Settings.Steam.FolderPath) || !File.Exists(Data.Settings.Steam.Exe()))
+                    if (!GeneralFuncs.CanKillProcess(SteamSettings.Processes, SteamSettings.ClosingMethod)) return;
+                    if (!Directory.Exists(SteamSettings.FolderPath) || !File.Exists(SteamSettings.Exe()))
                     {
                         _ = GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
                         return;
@@ -60,9 +64,9 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     if (BasicPlatforms.PlatformExistsFromShort(platform)) // Is a basic platform!
                     {
                         BasicPlatforms.SetCurrentPlatformFromShort(platform);
-                        if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) return;
+                        if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return;
 
-                        if (Directory.Exists(Data.Settings.Basic.FolderPath) && File.Exists(Data.Settings.Basic.Exe())) AppData.ActiveNavMan.NavigateTo("/Basic/");
+                        if (Directory.Exists(BasicSettings.FolderPath) && File.Exists(BasicSettings.Exe())) AppData.ActiveNavMan.NavigateTo("/Basic/");
                         else _ = GeneralInvocableFuncs.ShowModal($"find:{CurrentPlatform.SafeName}:{CurrentPlatform.ExeName}:{CurrentPlatform.SafeName}");
                     }
                     break;
