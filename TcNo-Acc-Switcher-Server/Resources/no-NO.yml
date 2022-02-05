@@ -20,25 +20,36 @@ Button_ResetSettings: Tilbakestill innstillinger
 Button_AdvancedCleaning: Avansert rengjøring...
 Button_ClearLog: Tøm logg
 Button_WikiInfo: Mer info (Wiki)
-Button_ClearDiscordCache: Tøm Discord-buffer
+Button_ManagePlatforms: Administrer ekstra plattformer
+Button_Backup: Sikkerhetskopiering
+Button_BackupAll: Sikkerhetskopier alt
+Button_Restore: Restaurere
+Button_OpenBackup: Åpne Backup-mappe
 Settings_Shortcut: ' {platform} Snarvei for skrivebord'
 Settings_Admin: Kjør {platform} som Admin
 Settings_ImageExpiry: 'Dager før profilbildene utløper:'
 Settings_Header_AppWide: Innstillinger for App-wide
 Settings_Header_GeneralSettings: Generelle innstillinger
+Settings_Header_ExtraPlatforms: Ekstra plattforminnstillinger
 Settings_Header_GeneralTools: Generelle verktøy
 Settings_Header_OtherTools: Andre verktøy
-Settings_Header_HiddenPlatforms: Skjult Plattformer
 Settings_Header_TraySettings: Innstillinger for verktøykassen
 Settings_Header_OpenGameFolders: Åpne spillmapper
+Settings_Header_BackupRestore: Sikkerhetskopier og gjenopprett plattforminnstillinger
 Settings_TrayMax: 'Maks antall kontoer å huske:'
+Settings_ExtraPlatformsDisabled: Disse tilgjengelige ekstra plattformene er for øyeblikket deaktivert. Klikk for å aktivere dem.
+Settings_ExtraPlatformsEnabled: Disse ekstra plattformene er synlige. Klikk for å deaktivere dem.
 Settings_RTL: Vis tekst som høyre-til-venstre
 Settings_CurrentLocation: 'Gjeldende installasjonssted: {path}'
+Settings_CurrentDataLocation: 'Gjeldende brukerdataplassering: {path}'
+Settings_SetDataLocation: "[Angi tilpasset brukerdataplassering]"
+Toast_DataLocationCopying: (1/2) Kopierer eksisterende filer til den nye brukerdatamappen!
+Toast_DataLocationNotCopying: (1/2) Mappen har allerede filer! Vil ikke migrere brukerdata.
+Toast_DataLocationSet: (2/2) Start kontobytteren på nytt for å bruke den nye mappen!
 Settings_PickFolder: Velg mappe for {platform}
 Settings_OpenFolder: Åpne {platform} -mappen
 Settings_ClearForgotten: Fjern glemte
 Settings_ClearAccounts: Slett kontoer
-Settings_RestoreForgotten: Gjenopprett glemt konto
 Settings_StreamerMode: Aktiver strømningsmodus
 Settings_ExitToTray: Avslutt minimerer til verktøykassen
 Settings_DesktopShortcut: Skrivebord snarvei
@@ -55,7 +66,8 @@ Settings_WindowsAccent: Bruk Windows Accent Colour
 Settings_HelpTranslate: "[Hjelp oversette]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Sett gjengivelsesmotor:"
-Settings_AltClose: "Alternativ utgangsmetode (når plattformen ikke lukkes)"
+Settings_Header_ClosingMethod: "[Advanced] Angi metode for å lukke {platform}"
+Settings_NoPlatforms: Det er for øyeblikket ingen plattformer aktivert. Merk av for valgfrie plattformer nedenfor for å aktivere dem, eller fjern merket for deaktiverte plattformer.
 Cleaning_Header_StartMenuShortcuts: 'Snarveier for Start-menyen:'
 Cleaning_Header_General: Generell rengjøring
 Cleaning_Header_LoginHistory: Rens logg
@@ -66,14 +78,13 @@ Cleaning_ImportantInfo: >
 Cleaning_Button_KillProcess: Avslutt {platform} prosess
 Cleaning_Button_ForgottenBackups: Glemt konto-sikkerhetskopiering
 Cleaning_Understand: Jeg forstår hva disse knappene gjør.
-Restore_Header: Gjenopprett glemte kontoer
 Restore_Info: >
   Hvis du tidligere "glemte" en konto, kan du gjenopprette dem her.<br /> Dette legger dem tilbake i din brukere.vdf fil, slik at du kan bytte til dem.
 Restore_Button_Restore: Gjenopprett valgte
 Ignored_RemoveAccounts: Fjern kontoer fra ignoreringslisten
 Ignored_Description: Hvis du tidligere "ignorerte" en konto, kan du vise dem igjen her
 Ignored_Stop: Stopp ignorering av valgt
-Toast_RetryOrDeleteDiscordCache: Prøv på nytt, eller slett Discord for å tilbakestille passordet (se Wiki).
+Toast_PlaceShortcutFiles: En mappe åpnes. Plasser spillsnarveier i den mappen, og start kontobytteren på nytt.
 Toast_TrayStarted: Fellefeltet har startet!
 Toast_TrayRunning: Feltfeltet er allerede åpent
 Toast_TrayUsersMissing: Ingen trafikanter lagret
@@ -81,7 +92,6 @@ Toast_TrayFail: Kunne ikke starte Tray programmet!
 Toast_TrayPosition: "Om klikke på Avbryt-knappen: Jeg vil være på Windows Tray! (Høyre over Startstolpen)"
 Toast_TrayHint: "Tips: Ctrl+klikk 'X' for å lukke meg fullstendig, eller via verktøyet> 'Exit'"
 Toast_Copied: Kopiert
-Platform_DiscordPasteHint: Lim inn i Discord konsollen, og så lim inn resultatet!
 Toast_AlreadyProcessing: Behandler allerede kontoer...
 Toast_FailedRestore: Kan ikke gjenopprette kontoer (se konsollen)
 Toast_Restored: Gjenopprettet konto!
@@ -103,13 +113,12 @@ Toast_BNet_CantLoadConfigCorrupt: Kunne ikke laste inn kontofil for Blizzard (Ba
 Toast_BNet_NamePolicy: BattleTag samsvarte ikke med navngivingspolicy.
 Toast_ItemNotFound: "{item} ble ikke funnet"
 Toast_DeletedTotal: "{files} av {totalFiles} slettet. Totalt: {totalSize}"
-Toast_DeletedTotalTitle: Tømte Discord cache!
-Toast_Discord_SignOutHint: "Tips: Du må logge ut av Discord i nettleseren din"
-Toast_Discord_SaveHint: "Tips: Endret Discord innstillinger? Spar igjen med samme navn!"
-Toast_Discord_NoToken: Mislyktes å finne brukerens tok! Avslutt Discord normalt, og lagre på nytt.
 Toast_CantChangeUsername: Kan ikke endre brukernavn
 Toast_CantClearLoginFiles: Kunne ikke tømme gamle innloggingsfiler
-Toast_AccountIdReg: Kan ikke hente konto-Id fra registeret!
+Toast_AccountIdReg: Kunne ikke hente konto-ID fra registeret!
+Toast_RegFailWrite: Kunne ikke skrive til Windows Regsitry!
+Toast_RegFailRead: Kunne ikke lese fra Windows Regsitry!
+Toast_RegSaveMissing: Kunne ikke finne eller lese data fra lagrede registerfiler!
 Toast_DuplicateNames: Kunne ikke bytte kart. Dupliserte kontoer med samme brukernavn?
 Toast_CouldNotLocate: Kunne ikke finne innlogget bruker
 Toast_StreamerModeHint: Privat info er skjult! - Se innstillinger
@@ -121,7 +130,6 @@ Toast_CantCreateShortcut: Kan ikke opprette snarvei
 Toast_ShortcutCreated: Snarvei opprettet!
 Toast_FailedUpdateCheck: Kunne ikke se etter oppdateringer
 Toast_UpdateVerifyFail: Kan ikke verifisere oppdateringsfiler. Last ned siste versjon og erstatt filer i mappen.
-Toast_Riot_StartGame: Endret bruker. Start et spill nedenfor.
 Toast_StartedGame: Startet {program}
 Toast_Steam_VacCleared: VAC status for kontoer ble fullført
 Toast_Steam_CantDeleteVacCache: Kunne ikke slette 'Login-Cache/Steam/VACCache/SteamVACCache.json'
@@ -132,9 +140,6 @@ Toast_Steam_FailedLoginusers: Kan ikke laste inn steam/config/loginusers.vdf
 Toast_Steam_CantLocateLoginusers: Finner ikke '.../Steam/config/loginusers.vdf'. Prøv å logge inn på en konto først.
 Toast_CantClearImages: Kunne ikke fjerne bildene
 Toast_RefreshedImages: Oppdaterte bilder
-Toast_Ubisoft_NoUsername: Kunne ikke finne siste påloggede brukere. Prøv å logge inn på Ubisoft igjen først.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kunne ikke bli funnet. Den siste aktive kontoen ble ikke lagret."
-Toast_Ubisoft_NoUser: Kunne ikke finne siste påloggede brukere. Prøv å logge inn på Ubisoft igjen først.
 Toast_ClearForgottenCheck: Er du sikker på at du vil slette sikkerhetskopieringen av glemte kontoer?
 Toast_BattleNet_ChangedBTag: Endret BattleTag
 Toast_BattleNet_DeletedBTag: Slettet BattleTag
@@ -145,6 +150,20 @@ Toast_ClearedImages: "Fjernede bilder"
 Toast_SavedItem: "Lagret: {item}"
 Toast_ChangedUsername: Endret brukernavn
 Toast_SetUsername: Angi brukernavn
+Toast_AlreadyLoggedIn: Allerede logget på med denne kontoen! (Ingen endringer utført)
+Toast_BackupCopy: (1/3) Kopierer filer til en midlertidig plassering...
+Toast_BackupCompress: (2/3) Komprimering av filer ({size}). Dette vil ta litt tid...
+Toast_BackupComplete: (3/3) Ferdig komprimering! ({size} til {compressedSize})
+Toast_BackupProgress: "Sikkerhetskopiering pågår (komprimert størrelse: {compressedSize})"
+Toast_BackupBusy: Sikkerhetskopiering pågår allerede!
+Toast_RestoreBusy: Gjenoppretting pågår allerede!
+Toast_RestoreExt: Trekker ut arkiv.
+Toast_RestoreCopying: Flytter filer tilbake til plattformen
+Toast_RestoreDeleting: Sletting av midlertidige filer
+Toast_RestoreComplete: Gjenoppretting fullført!
+Toast_FailedLoad: Kunne ikke laste {platform}! Klikk på plattformen for å se feilen.
+Toast_FailedPlatformsLoad: Kunne ikke laste inn Platforms.json! Vennligst bekreft at denne filen eksisterer.
+Tooltip_Restore: Klikk for å velge en 7z-fil, eller dra den til denne knappen.
 Modal_Crowdin_Header: Crowdin-oversettere
 Modal_Crowdin_Info: "Her er alle som hjalp til med å oversette denne programvaren.<br>Brukere med språk ved siden av hjalp mye med oversettelse (korrekturleserrolle)."
 Modal_Info_Creator: Opprettet av TechNobo [Wesley Pyburn]
@@ -159,30 +178,38 @@ Modal_Title_ConfirmAction: TcIngen konto velger Bekreft handling
 Modal_Title_LocatePlatform: Finn mappen {platform}
 Modal_Title_AddNew: Legg til ny {platform} konto
 Modal_Title_Background: Sett et bakgrunnsbilde
+Modal_Title_Userdata: Angi brukerdatamappen
 Modal_SetBackground: 'Velg et bilde, eller skriv inn en URL nedenfor.<br>La stå tomt og still inn på tilbakestilling.<br>(For mer avansert kontroll, se temaet på Wiki):'
 Modal_SetBackground_Button: Sett bakgrunn
 Modal_SetBackground_ChooseImage: Velg lokalt bilde
-Modal_ChangeUsername: Skriv inn en ny {platformText} for kontoen din
-Modal_ChangeUsernameType: Endre {UsernameOrOther}
+Modal_SetUserdata: Skriv inn en mappebane nedenfor og klikk på sett.
+Modal_SetUserdata_ChooseFolder: Velg en mappe
+Modal_SetUserdata_Button: Angi brukerdata
+Modal_ChangeUsername: Vennligst skriv inn et nytt brukernavn for kontoen din
+Modal_ChangeUsernameType: Endre {platform} brukernavn
 Modal_EnterDirectory: "Skriv inn {platform}sin mappe som such: C:\\Program Filer\\{platform}"
 Modal_LocatePlatform: Finn {platformExe}
 Modal_LocatePlatformFolder: Velg mappe for {platform}
 Modal_ConfirmAction: Bekreft handlingen
 Modal_AddNew: Vennligst skriv inn et navn på {platform} kontoen du er logget på.
 Modal_AddCurrentAccount: Legg til en ny konto på {platform}
-Modal_EnterNewPassword: Skriv inn et nytt passord for å sikre din {platform} konto i switcheren.<br>  Hold den trygg. Det kan ikke gjenopprettes senere.
-Modal_EnterPassword: Vennligst skriv inn passordet ditt for TcNo Account Switchers {platform} platform.
-Modal_EnterPasswordShort: Skriv inn passord
-Modal_EnterPasswordRepeat: Skriv inn passord igjen
-Modal_PasswordsMatch: Passordene samsvarer
-Modal_PasswordsNoMatch: Passordene samsvarer ikke
+Modal_SetImageHeader: Angi profilbilde
+Modal_SetImage: Sett bilde
 Status_SelectedAccount: "Valgt: {name}"
 Status_Init: "Status: initialisering"
-Status_ClosingPlatform: "Avslutning {platform}"
-Status_ClosingPlatformFailed: "Kunne ikke lukke {platform}"
-Status_StartingPlatform: "Starter {platform}"
+Status_ClosingPlatform: Avslutning {platform}
+Status_ClosingPlatformFailed: Kunne ikke lukke {platform}
+Status_StartingPlatform: Starter {platform}
+Toast_StartingPlatformFailed: Kunne ikke starte {platform}! Se logg for flere detaljer.
+Toast_UrlAdminErr: Du kan ikke kjøre .url-filer som admin. Prøv en annen snarveistype. Starter som vanlig bruker.
 Status_UpdatingFile: "Oppdaterer {file}"
 Status_UpdatingRegistry: Oppdaterer Windows-registeret
+Status_FailedLog: Handlingen mislyktes. Se logg for detaljer.
+Status_WaitingForClose: "Venter på at {processName} skal lukkes ({timeout}{timeLimit})"
+Status_WaitingForMultipleClose: "Venter på at {processName} og {count} andre skal lukkes ({timeout}{timeLimit})"
+Status_GetUniqueId: Samler unik bruker-ID
+Status_CopyingFiles: Kopierer brukerfiler...
+Status_HandlingImage: Håndtering av kontoprofilbilde
 Context_SwapTo: Bytt til konto
 Context_CreateShortcut: Lag snarvei på skrivebordet
 Context_CreateShortcutSubmenu: Lag skrivebordssnarvei...
@@ -208,19 +235,17 @@ Context_Steam_OpenUserdata: Åpne brukerdata
 Context_CopyOtherSubmenu: Kopier andre...
 Context_HidePlatform: Skjul plattform
 Context_ExportAccList: Eksporter kontoliste
+Context_RunAdmin: Kjør som Admin
+Context_Hide: Gjemme seg
 Title_BNet_Settings: TcIngen konto-brytere - BattleNet innstillinger
 Title_BNet_ManageIgnored: TcIngen kontomasjon - Administrer ignorerte BattleNet kontoer
-Title_Discord_Settings: TcIngen kontovelger - Discord-innstillinger
-Title_Epic_Settings: TcIngen kontovelger - Episke innstillinger
+Title_Platforms_Settings: TcNo Account Switcher - Ekstra plattforminnstillinger
 Title_AccountsList: TcIngen Konto-bytter - {platform}
 Title_TextEditor: TcIngen kontovelger - tekstbehandler
-Title_Origin_Settings: TcIngen kontovelger - Opprinnelsesinnstillinger
-Title_Riot_Settings: TcIngen kontovelger - Riot innstillinger
 Title_Settings: TcIngen kontomerter - Innstillinger
 Title_Steam_Cleaning: TcIngen kontovelger - Steam rengjøring
-Title_Steam_Restore: TcIngen kontobryter - Gjenopprett glemt Steam konto
 Title_Steam_Settings: TcIngen Konto-bytter - Steam-innstillinger
-Title_Ubisoft_Settings: TcIngen kontomasjonsholder - Ubisoft Innstillinger
+Title_Template_Settings: TcNo Account Switcher - {platformName} Innstillinger
 Installer_Downloading: Laster ned {file}
 Installer_DownloadFinished: Ferdig med nedlasting av {file}
 Installer_Installing: "Installerer: {runtime}"
@@ -242,7 +267,7 @@ Installer_Ready: "Én eller flere er klar for installasjon. Hvis og når du blir
 Installer_PressStart: Trykk på en tast for å starte installasjonen...
 Installer_VerifyMin: "Bekreft at du oppfyller minimumskravene:"
 Installer_VerifyAlready: "Det ser ut som alt er installert. Kontroller at du oppfyller minimumskravene som anbefales:"
-Installer_Complete: Det skal være alt. Hovedprogrammet, TcNo-Acc-Switcher.exe, vil automatisk kjøre når du trykker på en nøkkel for å fortsette.
+Installer_Complete: Det burde være alt. Hovedprogrammet, TcNo-Acc-Switcher.exe, kjøres automatisk.
 Installer_Complete2: "Hvis det ikke fungerer, vennligst se installasjonsinstruksjoner, her: {link}"
 Global_FatalNext: "En alvorlig feil oppstod! Dette krasjloggen vil bli automatisk sendt neste oppstart."
 Tray_Error: Feil i verktøykassen
@@ -325,7 +350,10 @@ Failed: Mislyktes
 Success: Vellykket
 NotFound: Ikke funnet
 Done: Ferdig
+Working: Jobber...
 ForName: "For: {name}"
+DeletedFiles: Slettede filer
+FileFoldersToClear: "Liste over filer/mapper som skal slettes:"
 CouldNotFindX: Fant ikke {x}
 CouldNotCloseX: Kunne ikke lukke {x}!
 DirectoryNotFound: Fant ikke mappe
@@ -334,18 +362,21 @@ DeletingFile: "Sletter: {file}"
 DeletingFolder: "Sletter mappe: "
 CouldntDeleteX: "FEIL: COULDN'T DELETE: {x}"
 CouldntDeleteUndefined: "FEIL: COULDN'T SLETT UNDEFINERT FIL"
-Prompt_DiscordCopy1: Finn alternativer-knappen, og klikk
-Prompt_DiscordCopy2: "Kontroller at strømmen-modus ikke er aktivert, annet: Gi feil."
-Prompt_DiscordCopy3: Kontroller at strømningsmodus er deaktivert/ikke aktiv ved kjøring av denne kommandoen!
-Prompt_DiscordCopy4: Hent navn fra nederste venstre side av skjermen
-Prompt_DiscordCopy5: Få profilbilde og brukernavn fra side
-Prompt_DiscordCopy6: Kopier avatar og brukernavn
-Prompt_DiscordCopy7: Lukk valgene
-Prompt_DiscordCopy8: La brukeren få vite det i konsollen.
-Prompt_DiscordCopy9: Kopiert informasjon vellykket!
-Prompt_DiscordCopy10: Lim den inn i boksen i kontopolet for å oppdatere/angi bilde og brukernavn.
 Prompt_RestartAsAdmin: "<h3><bold>Dette programmet vil restarte som Admin</bold></h3><p>Slå \"Ja\" i UAC når du blir spurt for admin.</p>"
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>Du holder på å glemme en konto!</h3> <h4>Hva betyr dette?</h4> <p>- Steam vil ikke lenger ha kontoen listet i Big Picture Mode og vil ikke huske passord.<br/> - TcNo Account Switcher vil ikke lenger vise kontoen, før den er logget inn igjen via Steam.</p> <p>Din konto vil forbli urørt. Den er nettopp glemt på denne datamaskinen.</p> <h4>Hva skjer dersom noe går galt?</h4> <p>Ikke med rute, kan du hente glemt kontoer igjen via sikkerhetskopier i Innstillingsskjermen.<br/> Du kan også fjerne tidligere sikkerhetskopier der når du er sikker på at alt fungerer som forventet.</p> <h4>forstår du?</h4>
+  <h3 style='color:red'>Du er i ferd med å glemme en konto!</h3> <h4>Hva betyr dette?</h4> <p>- Steam vil ikke lenger ha kontoen oppført i Big Picture Mode og vil ikke huske passord.<br/> - TcNo Account Switcher vil heller ikke lenger vise kontoen før den er logget på igjen via Steam.</p> <p>Kontoen din forblir urørt. Det er bare glemt på denne datamaskinen.</p><h4>Forstår du?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Du holder på å glemme en konto!</h3> <h4>Hva betyr dette?</h4> <p>TcIngen kontomerter vil heller ikke lenger vise kontoen.<br/> til det er logget inn på nytt gjennom {platform}og lagt til i listen.</p> <p>Din konto vil forbli usynlig. Den har nettopp glemt på denne datamaskinen.</p> <h4>Bekrefte deg?</h4>
+Platform_DiscordPasteHint: Lim inn i Discord-konsollen, og lim deretter inn resultatet i input!
+Platform_ClearCache: Tøm cache
+Platform_ClearCacheTotal: Sletter {totalFileCount} filer ({totalSizeMB})
+Platform_DeleteFail: Kunne ikke slette enkelte filer (kan det hende programmet kjører?)
+Platform_CouldNotDeleteLog: Kunne ikke slette filen! Sjekk {logPath}
+Error_FileAccessDenied: Kunne ikke få tilgang til filen! Sjekk {logPath}
+Tooltip_Settings: Innstillinger
+Tooltip_Info: Info
+Tooltip_ManagePlatforms: Vis eller skjul andre plattformer
+Tooltip_ExpandShortcuts: Utvid utvalget av spill og snarveier
+Tooltip_ShortcutFolder: Åpne snarveismappen. Plasser snarveier der, og TcNo Account Switcher for å se dem.
+Tooltip_Backup: Sikkerhetskopier konfigurasjonsfiler/mapper, som definert i plattforminnstillingene.
+Tooltip_BackupAll: Sikkerhetskopier ALLE konfigurasjonsfiler/mapper, inkludert bilder og andre store filer.
