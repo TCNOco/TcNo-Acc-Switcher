@@ -338,8 +338,12 @@ namespace TcNo_Acc_Switcher_Globals
         }
 
         [SupportedOSPlatform("windows")]
-        public static void SaveIconFromFile(string path, string output)
+        public static bool SaveIconFromFile(string path, string output)
         {
+            // Check if file exists, otherwise return false.
+            if (!File.Exists(path))
+                return false;
+
             Icon ico;
 
             if (path.EndsWith("lnk"))
@@ -347,7 +351,7 @@ namespace TcNo_Acc_Switcher_Globals
                 var shortcutInfo = Shortcut.ReadFromFile(path);
                 // Check if points to ico, and save if it does:
                 var iconPath = shortcutInfo.ExtraData?.IconEnvironmentDataBlock?.TargetUnicode;
-                if (iconPath != null && SaveImageFromIco(iconPath, output)) return;
+                if (iconPath != null && SaveImageFromIco(iconPath, output)) return true;
 
                 // Otherwise go to main EXE and get icon from that
                 path = GetShortcutTargetFile(path);
@@ -363,7 +367,7 @@ namespace TcNo_Acc_Switcher_Globals
                 {
                     if (!l.StartsWith("IconFile")) continue;
                     var icoPath = l.Split("=")[1];
-                    if (icoPath != "" && SaveImageFromIco(icoPath, output)) return;
+                    if (icoPath != "" && SaveImageFromIco(icoPath, output)) return true;
                 }
                 // OTHERWISE:
                 // Get default icon for ext from that extension thing
@@ -386,6 +390,8 @@ namespace TcNo_Acc_Switcher_Globals
                 ico = ExtractIconFromFilePath(path);
                 SaveImageFromIco(ico, output);
             }
+
+            return true;
         }
 
         // Consider this a fallback for when the image can not be extracted from shortcuts.
@@ -412,8 +418,10 @@ namespace TcNo_Acc_Switcher_Globals
         [SupportedOSPlatform("windows")]
         private static bool SaveImageFromIco(string ico, string output)
         {
+            var iconPath = Environment.ExpandEnvironmentVariables(ico);
+            if (!File.Exists(iconPath)) return false;
             var mi = new MultiIcon();
-            mi.Load(Environment.ExpandEnvironmentVariables(ico));
+            mi.Load(iconPath);
             return SaveImageFromIco(mi, output);
         }
 
