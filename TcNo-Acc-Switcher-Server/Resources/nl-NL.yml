@@ -13,32 +13,43 @@ Button_AddNew: Nieuwe toevoegen
 Button_SaveCurrent: Huidige opslaan
 Button_SaveFile: Bestand opslaan
 Button_Cancel: Annuleren
-Button_Login: Aanmelden
+Button_Login: Inloggen
 Button_Close: Afsluiten
 Button_RefreshImages: Vernieuw afbeeldingen
 Button_ResetSettings: Instellingen herstellen
 Button_AdvancedCleaning: Geavanceerd schoonmaken...
 Button_ClearLog: Logboek wissen
 Button_WikiInfo: Meer informatie (Wiki)
-Button_ClearDiscordCache: Wis Discord Cache
+Button_ManagePlatforms: Beheer extra platforms
+Button_Backup: back-up
+Button_BackupAll: Maak een back-up van alles
+Button_Restore: Herstellen
+Button_OpenBackup: Back-upmap openen
 Settings_Shortcut: ' {platform} Switcher Desktop snelkoppeling'
 Settings_Admin: '{platform} uitvoeren als Beheerder'
 Settings_ImageExpiry: 'Dagen voordat profielafbeeldingen vervallen:'
 Settings_Header_AppWide: App-brede instellingen
 Settings_Header_GeneralSettings: Algemene instellingen
+Settings_Header_ExtraPlatforms: Extra platforminstellingen
 Settings_Header_GeneralTools: Algemene hulpmiddelen
 Settings_Header_OtherTools: Andere hulpmiddelen
-Settings_Header_HiddenPlatforms: Verborgen platformen
 Settings_Header_TraySettings: Systeemvak instellingen
 Settings_Header_OpenGameFolders: Open spelmappen
+Settings_Header_BackupRestore: Back-up en herstel platforminstellingen
 Settings_TrayMax: 'Maximaal aantal te onthouden accounts:'
+Settings_ExtraPlatformsDisabled: Deze extra platformen zijn momenteel uitgeschakeld. Klik om ze te activeren.
+Settings_ExtraPlatformsEnabled: Deze extra platforms zijn zichtbaar. Klik om ze uit te schakelen.
 Settings_RTL: Toon tekst van rechts naar links
 Settings_CurrentLocation: 'Huidige installatielocatie: {path}'
+Settings_CurrentDataLocation: 'Huidige gebruikersgegevenslocatie: {path}'
+Settings_SetDataLocation: "[Stel aangepaste gebruikersgegevenslocatie in]"
+Toast_DataLocationCopying: (1/2) Bestaande bestanden naar de nieuwe gebruikersgegevensmap kopiëren!
+Toast_DataLocationNotCopying: (1/2) Map heeft al bestanden! Migreert geen gebruikersgegevens.
+Toast_DataLocationSet: (2/2) Start de accountwisselaar opnieuw om de nieuwe map te gebruiken!
 Settings_PickFolder: Kies {platform} map
 Settings_OpenFolder: Open {platform} map
 Settings_ClearForgotten: Leeg vergeten
 Settings_ClearAccounts: Accounts wissen
-Settings_RestoreForgotten: Account herstellen
 Settings_StreamerMode: Schakel streamer modus in
 Settings_ExitToTray: Minimalisaties naar systeemvak afsluiten
 Settings_DesktopShortcut: Bureaublad snelkoppeling
@@ -55,7 +66,8 @@ Settings_WindowsAccent: Gebruik de Windows Accent Kleur
 Settings_HelpTranslate: "[Help vertalen]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Stel de weergave-engine in:"
-Settings_AltClose: "Alternatieve uitgangsmethode (wanneer platform niet sluit)"
+Settings_Header_ClosingMethod: "[Advanced] Stel methode in om {platform}. te sluiten"
+Settings_NoPlatforms: Er zijn momenteel geen platforms ingeschakeld. Vink hieronder optionele platforms aan om ze in te schakelen, of schakel uitgeschakelde platforms uit.
 Cleaning_Header_StartMenuShortcuts: 'Snelkoppelingen voor Start Menu:'
 Cleaning_Header_General: Algemeen schoonmaken
 Cleaning_Header_LoginHistory: Schoon mijn inloggeschiedenis op
@@ -66,14 +78,13 @@ Cleaning_ImportantInfo: >
 Cleaning_Button_KillProcess: Vermoord {platform} proces
 Cleaning_Button_ForgottenBackups: Account back-ups vergeten
 Cleaning_Understand: Ik begrijp wat deze knoppen doen.
-Restore_Header: Herstel vergeten accounts
 Restore_Info: >
   Als je eerder een account hebt "vergeten", kun je ze hier herstellen.<br /> Dit voegt ze terug toe aan je loginusers.vdf bestand, zodat je naar hen kunt overschakelen.
 Restore_Button_Restore: Herstel geselecteerde
 Ignored_RemoveAccounts: Verwijder accounts van negeerlijst
 Ignored_Description: Als je eerder een "genegeerde" account hebt gehad, kun je ze hier opnieuw laten zien
 Ignored_Stop: Stop met negeren geselecteerd
-Toast_RetryOrDeleteDiscordCache: Probeer opnieuw of verwijder de Discord cache om het wachtwoord te resetten (Bekijk de Wiki).
+Toast_PlaceShortcutFiles: Er wordt een map geopend. Plaats spelsnelkoppelingen in die map en start de accountwisselaar opnieuw.
 Toast_TrayStarted: Tray gestart!
 Toast_TrayRunning: Tray is al geopend
 Toast_TrayUsersMissing: Geen systeemgebruikers opgeslagen
@@ -81,7 +92,6 @@ Toast_TrayFail: Tray applicatie kan niet worden gestart!
 Toast_TrayPosition: "Als ik op de knop Sluiten klik: ik zit in het Windows Tray! (Rechts van Start Bar)"
 Toast_TrayHint: "Tip: Ctrl+Klik op de 'X' om me volledig te sluiten, of via de Tray > 'Sluiten'"
 Toast_Copied: Gekoppeld
-Platform_DiscordPasteHint: Plak de Discord console, en plak de resultaten in de invoer!
 Toast_AlreadyProcessing: Rekeningen worden al verwerkt...
 Toast_FailedRestore: Kan accounts niet herstellen (Zie console)
 Toast_Restored: Rekeningen hersteld!
@@ -103,13 +113,12 @@ Toast_BNet_CantLoadConfigCorrupt: Kan geen accounts bestand laden voor Blizzard 
 Toast_BNet_NamePolicy: BattleTag kwam niet overeen met het naambeleid.
 Toast_ItemNotFound: "{item} is niet gevonden"
 Toast_DeletedTotal: "{files} van {totalFiles} verwijderd. Totaal: {totalSize}"
-Toast_DeletedTotalTitle: Discord-cache gewist!
-Toast_Discord_SignOutHint: "Tip: Je moet je afmelden bij Discord in je browser"
-Toast_Discord_SaveHint: "Tip: Gewijzigde Discord-instellingen? Sla opnieuw op met dezelfde naam!"
-Toast_Discord_NoToken: Fout bij het vinden van gebruikersnaam! Sluit Discord normaal, en sla dan opnieuw op.
 Toast_CantChangeUsername: Kon gebruikersnaam niet wijzigen
 Toast_CantClearLoginFiles: Mislukt om oude loginbestanden te wissen
-Toast_AccountIdReg: Fout bij het ophalen van AccountId van Registratie!
+Toast_AccountIdReg: Kan account-Id niet ophalen uit het register!
+Toast_RegFailWrite: Schrijven naar Windows-register is mislukt!
+Toast_RegFailRead: Kan niet lezen van Windows Regsitry!
+Toast_RegSaveMissing: Mislukt Zoeken of lezen van gegevens van opgeslagen registerbestanden!
 Toast_DuplicateNames: Kan niet wisselen. Een account dupliceren met dezelfde gebruikersnaam?
 Toast_CouldNotLocate: Kan aangemelde gebruiker niet vinden
 Toast_StreamerModeHint: Privé info is verborgen! - Zie instellingen
@@ -121,7 +130,6 @@ Toast_CantCreateShortcut: Kan snelkoppeling niet aanmaken
 Toast_ShortcutCreated: Snelkoppeling gemaakt!
 Toast_FailedUpdateCheck: Controleren op updates mislukt
 Toast_UpdateVerifyFail: Kan bestanden updater niet verifiëren. Download de nieuwste versie en vervang bestanden in uw map.
-Toast_Riot_StartGame: Gebruiker veranderd. Start een spel hieronder.
 Toast_StartedGame: Gestart op {program}
 Toast_Steam_VacCleared: VAC-status voor accounts werd gewist
 Toast_Steam_CantDeleteVacCache: Kan 'LoginCache/Steam/VACCache/SteamVACCache.json' niet verwijderen
@@ -132,9 +140,6 @@ Toast_Steam_FailedLoginusers: Laden van steam/config/loginusers.vdf mislukt
 Toast_Steam_CantLocateLoginusers: Kan '.../Steam/config/loginusers.vdf' niet vinden. Probeer eerst aan te melden bij een account.
 Toast_CantClearImages: Kan afbeeldingen niet wissen
 Toast_RefreshedImages: Vernieuwde afbeeldingen
-Toast_Ubisoft_NoUsername: Kon de laatst ingelogde gebruiker niet vinden. Probeer eerst opnieuw in te loggen op Ubisoft.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat kon niet worden gevonden. Het laatste actieve account werd niet opgeslagen."
-Toast_Ubisoft_NoUser: Kon de laatst ingelogde gebruiker niet vinden. Probeer eerst opnieuw in te loggen op Ubisoft.
 Toast_ClearForgottenCheck: Weet u zeker dat u back-ups van vergeten accounts wilt wissen?
 Toast_BattleNet_ChangedBTag: Gewijzigde BattleTag
 Toast_BattleNet_DeletedBTag: BattleTag verwijderd
@@ -145,6 +150,20 @@ Toast_ClearedImages: "Gewiste afbeeldingen"
 Toast_SavedItem: "Opgeslagen: {item}"
 Toast_ChangedUsername: Gebruikersnaam gewijzigd
 Toast_SetUsername: Gebruikersnaam instellen
+Toast_AlreadyLoggedIn: Al ingelogd met dit account! (Geen wijzigingen doorgevoerd)
+Toast_BackupCopy: (1/3) Bestanden kopiëren naar een tijdelijke locatie...
+Toast_BackupCompress: (2/3) Bestanden comprimeren ({size}). Dit zal enige tijd duren...
+Toast_BackupComplete: (3/3) Klaar met comprimeren! ({size} tot {compressedSize})
+Toast_BackupProgress: "Back-up bezig (Gecomprimeerde grootte: {compressedSize})"
+Toast_BackupBusy: Back-up al bezig!
+Toast_RestoreBusy: Herstel wordt al uitgevoerd!
+Toast_RestoreExt: Archief uitpakken.
+Toast_RestoreCopying: Bestanden terug naar platform verplaatsen
+Toast_RestoreDeleting: Tijdelijke bestanden verwijderen
+Toast_RestoreComplete: Herstel voltooid!
+Toast_FailedLoad: Kan {platform}niet laden! Klik op het platform om de fout te zien.
+Toast_FailedPlatformsLoad: Kan Platforms.json niet laden! Controleer of dit bestand bestaat.
+Tooltip_Restore: Klik om een 7z-bestand te selecteren of sleep het naar deze knop.
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is iedereen die heeft geholpen met het vertalen van deze software.<br>Gebruikers met talen naast zich hebben veel geholpen bij het vertalen (rol van proeflezer)."
 Modal_Info_Creator: Gemaakt door TechNobo [Wesley Pyburn]
@@ -159,30 +178,38 @@ Modal_Title_ConfirmAction: TcNo Account switcher Bevestig Actie
 Modal_Title_LocatePlatform: Zoek a.u.b. de map {platform}
 Modal_Title_AddNew: Nieuw {platform} account toevoegen
 Modal_Title_Background: Een achtergrondafbeelding instellen
+Modal_Title_Userdata: Stel de gebruikersgegevensmap in
 Modal_SetBackground: 'Selecteer een afbeelding of voer hieronder een URL in.<br>Leeg laten en instellen op reset.<br>(Zie de thema''s op de Wiki voor meer geavanceerde controle):'
 Modal_SetBackground_Button: Achtergrond instellen
 Modal_SetBackground_ChooseImage: Kies lokale afbeelding
-Modal_ChangeUsername: Voer een nieuwe {platformText} in voor uw account
-Modal_ChangeUsernameType: '{UsernameOrOther} wijzigen'
+Modal_SetUserdata: Voer hieronder een mappad in en klik op instellen.
+Modal_SetUserdata_ChooseFolder: Selecteer een map
+Modal_SetUserdata_Button: Gebruikersgegevens instellen
+Modal_ChangeUsername: Voer een nieuwe gebruikersnaam in voor uw account
+Modal_ChangeUsernameType: Verander {platform} gebruikersnaam
 Modal_EnterDirectory: "Voer de map van {platform}als volgt in: C:\\Programmabestanden\\{platform}"
 Modal_LocatePlatform: Vind {platformExe}
 Modal_LocatePlatformFolder: Selecteer {platform} map
 Modal_ConfirmAction: Bevestig actie
 Modal_AddNew: Voer een naam in voor het {platform} -account waarmee je bent ingelogd.
 Modal_AddCurrentAccount: Huidige {platform} account toevoegen
-Modal_EnterNewPassword: Voer een nieuw wachtwoord in om uw {platform} -account in de switcher te beveiligen.<br>  Bewaar het veilig. Het kan later niet meer worden hersteld.
-Modal_EnterPassword: Voer uw wachtwoord in voor TcNo Account Switcher's {platform} platform.
-Modal_EnterPasswordShort: Wachtwoord invoeren
-Modal_EnterPasswordRepeat: Wachtwoord opnieuw invoeren
-Modal_PasswordsMatch: Wachtwoorden komen overeen
-Modal_PasswordsNoMatch: Wachtwoorden komen niet overeen
+Modal_SetImageHeader: Profielafbeelding instellen
+Modal_SetImage: Afbeelding instellen
 Status_SelectedAccount: "Geselecteerd: {name}"
 Status_Init: "Status: initialiseren"
-Status_ClosingPlatform: "Sluiten {platform}"
-Status_ClosingPlatformFailed: "{platform}niet sluiten"
-Status_StartingPlatform: "Beginnend {platform}"
+Status_ClosingPlatform: Sluiten {platform}
+Status_ClosingPlatformFailed: '{platform}niet sluiten'
+Status_StartingPlatform: Beginnend {platform}
+Toast_StartingPlatformFailed: Kan {platform}niet starten! Zie log voor meer details.
+Toast_UrlAdminErr: U kunt geen .url-bestanden als admin uitvoeren. Probeer een ander snelkoppelingstype. Starten als normale gebruiker.
 Status_UpdatingFile: "{file}bijwerken"
 Status_UpdatingRegistry: Windows-register bijwerken
+Status_FailedLog: Herstellen mislukt, zie logboek voor details.
+Status_WaitingForClose: "Wachten op {processName} om te sluiten ({timeout}/{timeLimit} seconden)"
+Status_WaitingForMultipleClose: "Wachten tot {processName} & {count} anderen sluiten ({timeout}/{timeLimit} seconden)"
+Status_GetUniqueId: Unieke gebruikers-ID verzamelen
+Status_CopyingFiles: Gebruikersbestanden kopiëren...
+Status_HandlingImage: Accountprofielafbeelding verwerken
 Context_SwapTo: Wissel naar account
 Context_CreateShortcut: Maak een bureaubladsneltoets
 Context_CreateShortcutSubmenu: Maak een bureaubladsnelheid...
@@ -208,19 +235,17 @@ Context_Steam_OpenUserdata: Gebruikersgegevens openen
 Context_CopyOtherSubmenu: Kopieer anderen...
 Context_HidePlatform: Verberg platform
 Context_ExportAccList: Accountlijst exporteren
+Context_RunAdmin: Uitvoeren als beheerder
+Context_Hide: Verberg
 Title_BNet_Settings: TcGeen account switcher - BattleNet Instellingen
 Title_BNet_ManageIgnored: TcNo Account Switcher - Beheer genegeerde BattleNet accounts
-Title_Discord_Settings: TcGeen accountkiezer - Discord instellingen
-Title_Epic_Settings: TcNo Account Switcher - Epische Instellingen
+Title_Platforms_Settings: TcNo Account Switcher - Extra platforminstellingen
 Title_AccountsList: TcGeen accountkiezer - {platform}
 Title_TextEditor: TcNo Account Switcher - Tekstverwerker
-Title_Origin_Settings: TcNo Account Switcher - Origin Instellingen
-Title_Riot_Settings: TcNo Account Switcher - Riot Instellingen
 Title_Settings: TcGeen accountkiezer - Instellingen
 Title_Steam_Cleaning: TcNo account switcher - Steam schoonmaken
-Title_Steam_Restore: TcNo Account Switcher - Herstel Steam account vergeten
 Title_Steam_Settings: TcNo account switcher - Steam instellingen
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Instellingen
+Title_Template_Settings: TcNo Account Switcher - {platformName} Instellingen
 Installer_Downloading: Downloaden {file}
 Installer_DownloadFinished: Downloaden van {file} voltooid
 Installer_Installing: "Installeren: {runtime}"
@@ -242,7 +267,7 @@ Installer_Ready: "Eén of meer zijn klaar voor installatie. Indien gevraagd word
 Installer_PressStart: Druk op een toets om de installatie te starten...
 Installer_VerifyMin: "Controleer of u voldoet aan de minimaal aanbevolen vereisten:"
 Installer_VerifyAlready: "Het lijkt erop dat alles is geïnstalleerd. Controleer of je voldoet aan de minimale aanbevolen vereisten:"
-Installer_Complete: Dat moet alles zijn. Het hoofdprogramma, TcNo-Acc-Switcher.exe, wordt automatisch uitgevoerd wanneer u op een toets drukt om verder te gaan.
+Installer_Complete: Dat zou alles moeten zijn. Het hoofdprogramma, TcNo-Acc-Switcher.exe, wordt automatisch gestart.
 Installer_Complete2: "Als het niet werkt, raadpleeg dan de installatie-instructies, hier: {link}"
 Global_FatalNext: "Fatale fout opgetreden! Dit crashlogboek zal automatisch worden ingediend bij de volgende start."
 Tray_Error: Tray fout
@@ -325,7 +350,10 @@ Failed: Mislukt
 Success: Geslaagd
 NotFound: Niet gevonden
 Done: Voltooid
+Working: Bezig...
 ForName: "Voor: {name}"
+DeletedFiles: Verwijderde bestanden
+FileFoldersToClear: "Lijst met te wissen bestanden/mappen:"
 CouldNotFindX: Kan {x} niet vinden
 CouldNotCloseX: '{x} kon niet worden gesloten!'
 DirectoryNotFound: Map niet gevonden
@@ -334,18 +362,21 @@ DeletingFile: "Verwijderen: {file}"
 DeletingFolder: "Map verwijderen: "
 CouldntDeleteX: "FOUT: VERKLARINGEN VERWIJDEREN: {x}"
 CouldntDeleteUndefined: "FOUT: VERWIJDEREN VERWIJDEREN FILE"
-Prompt_DiscordCopy1: Zoek optiesknop en klik op
-Prompt_DiscordCopy2: "Controleer of streamer modus niet is ingeschakeld, andere: fout geven."
-Prompt_DiscordCopy3: Zorg ervoor dat Streamer Mode is uitgeschakeld/niet actief bij het uitvoeren van deze opdracht!
-Prompt_DiscordCopy4: Haal naam op van linksonder het scherm
-Prompt_DiscordCopy5: Avatar en gebruikersnaam van pagina verkrijgen
-Prompt_DiscordCopy6: Kopieer avatar en gebruikersnaam
-Prompt_DiscordCopy7: Sluit opties
-Prompt_DiscordCopy8: Laat de gebruiker weten in de console.
-Prompt_DiscordCopy9: Informatie succesvol gekopieerd.
-Prompt_DiscordCopy10: Plak het in het invoervak in de account-wisselaar om de afbeelding en gebruikersnaam bij te werken/in te stellen.
 Prompt_RestartAsAdmin: "<h3><bold>Dit programma zal opnieuw opstarten als Admin</bold></h3><p>Druk op \"Ja\" in UAC, wanneer gevraagd wordt om admin.</p>"
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>Je staat op het punt een account te vergeten!</h3> <h4>Wat betekent dit?</h4> <p>- Steam heeft het account niet langer in de Big Picture modus staan en onthoudt wachtwoord niet.<br/> - TcNo Account Switcher zal ook de account niet meer tonen, totdat het opnieuw is aangemeld via Steam.</p> <p>Je account blijft onaangeroerd. Het is gewoon vergeten op deze computer.</p> <h4>Wat als er iets misgaat?</h4> <p>Niet paniek, u kunt vergeten accounts meenemen via back-ups in het instellingenscherm.<br/> U kunt de vorige back-ups daar ook verwijderen als u zeker weet dat alles werkt zoals verwacht.</p> <h4>Begrijp je?</h4>
+  <h3 style='color:red'>Je staat op het punt een account te vergeten!</h3> <h4>Wat betekent dit?</h4> <p>- Steam heeft niet langer het account in de Big Picture-modus en onthoudt het wachtwoord niet.<br/> - TcNo Account Switcher zal het account ook niet langer tonen, totdat het opnieuw is aangemeld via Steam.</p> <p>Uw account blijft ongewijzigd. Het is gewoon vergeten op deze computer.</p><h4>Begrijp je het?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Je staat op het punt een account te vergeten!</h3> <h4>Wat betekent dit?</h4> <p>TcNo Account Switcher zal ook niet langer het account weergeven.<br/> totdat het opnieuw is aangemeld via {platform}, en aan de lijst is toegevoegd.</p> <p>Je account blijft onaangeroerd. Je bent vergeten op deze computer.</p> <h4>Begrijp je dat?</h4>
+Platform_DiscordPasteHint: Plak in Discord-console en plak het resultaat in invoer!
+Platform_ClearCache: Cache legen
+Platform_ClearCacheTotal: Wissen van {totalFileCount} bestanden ({totalSizeMB})
+Platform_DeleteFail: Kan sommige bestanden niet verwijderen (het programma is mogelijk actief?)
+Platform_CouldNotDeleteLog: Kan bestand niet verwijderen! Controleer {logPath}
+Error_FileAccessDenied: Geen toegang tot bestand! Controleer {logPath}
+Tooltip_Settings: Instellingen
+Tooltip_Info: Informatie
+Tooltip_ManagePlatforms: Toon of verberg andere platforms
+Tooltip_ExpandShortcuts: Spel en Snelkoppeling selectie uitbreiden
+Tooltip_ShortcutFolder: Open sneltoets map. Plaats daar snelkoppelingen en de TcNo Account Switcher om ze te bekijken.
+Tooltip_Backup: Maak een back-up van configuratiebestanden/mappen, zoals gedefinieerd in platforminstellingen.
+Tooltip_BackupAll: Maak een back-up van ALLE configuratiebestanden/mappen, inclusief afbeeldingen en andere grote bestanden.

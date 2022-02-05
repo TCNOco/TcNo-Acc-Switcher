@@ -20,25 +20,36 @@ Button_ResetSettings: Réinitialiser les paramètres
 Button_AdvancedCleaning: Nettoyage avancé...
 Button_ClearLog: Effacer le journal
 Button_WikiInfo: Plus d'informations (Wiki)
-Button_ClearDiscordCache: Vider le cache Discord
+Button_ManagePlatforms: Gérer des plates-formes supplémentaires
+Button_Backup: Sauvegarde
+Button_BackupAll: Sauvegardez tout
+Button_Restore: Restaurer
+Button_OpenBackup: Ouvrir le dossier de sauvegarde
 Settings_Shortcut: ' Raccourci bureau du commutateur {platform}'
 Settings_Admin: Exécuter {platform} en tant qu'administrateur
 Settings_ImageExpiry: 'Jours avant l''expiration des images de profil:'
 Settings_Header_AppWide: Paramètres de l'application
 Settings_Header_GeneralSettings: Paramètres généraux
+Settings_Header_ExtraPlatforms: Paramètres de plate-forme supplémentaires
 Settings_Header_GeneralTools: Outils généraux
 Settings_Header_OtherTools: Autres outils
-Settings_Header_HiddenPlatforms: Plateformes cachées
 Settings_Header_TraySettings: Paramètres de la zone de notification
 Settings_Header_OpenGameFolders: Ouvrir les dossiers du jeu
+Settings_Header_BackupRestore: Paramètres de la plate-forme de sauvegarde et de restauration
 Settings_TrayMax: 'Nombre maximum de comptes à retenir :'
+Settings_ExtraPlatformsDisabled: Ces plates-formes supplémentaires disponibles sont actuellement désactivées. Cliquez pour les activer.
+Settings_ExtraPlatformsEnabled: Ces plates-formes supplémentaires sont visibles. Cliquez pour les désactiver.
 Settings_RTL: Afficher le texte de droite à gauche
 Settings_CurrentLocation: 'Emplacement d''installation actuel : {path}'
+Settings_CurrentDataLocation: 'Emplacement actuel des données utilisateur : {path}'
+Settings_SetDataLocation: "[Définir l'emplacement des données utilisateur personnalisées]"
+Toast_DataLocationCopying: (1/2) Copie des fichiers existants dans le nouveau dossier de données utilisateur !
+Toast_DataLocationNotCopying: (1/2) Le dossier contient déjà des fichiers ! Ne migrera pas les données utilisateur.
+Toast_DataLocationSet: (2/2) Redémarrez le sélecteur de compte pour utiliser le nouveau dossier !
 Settings_PickFolder: Choisir le dossier {platform}
 Settings_OpenFolder: Ouvrir le dossier {platform}
 Settings_ClearForgotten: Effacer Oublié
 Settings_ClearAccounts: Effacer les comptes
-Settings_RestoreForgotten: Restaurer le compte oublié
 Settings_StreamerMode: Activer le mode streamer
 Settings_ExitToTray: Quitter minimise dans la barre d'état
 Settings_DesktopShortcut: Raccourci du bureau
@@ -55,7 +66,8 @@ Settings_WindowsAccent: Utiliser la couleur d'accentuation Windows
 Settings_HelpTranslate: "[Aider à traduire]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Définir le moteur de rendu :"
-Settings_AltClose: "Méthode de sortie alternative (lorsque la plate-forme ne se ferme pas)"
+Settings_Header_ClosingMethod: "[Advanced] Définir la méthode pour fermer {platform}"
+Settings_NoPlatforms: Il n'y a actuellement aucune plate-forme activée. Veuillez cocher les plates-formes facultatives ci-dessous pour les activer, ou décochez les plates-formes désactivées.
 Cleaning_Header_StartMenuShortcuts: 'Raccourcis pour le Menu Démarrer:'
 Cleaning_Header_General: Nettoyage général
 Cleaning_Header_LoginHistory: Nettoyer mon historique de connexion
@@ -66,14 +78,13 @@ Cleaning_ImportantInfo: >
 Cleaning_Button_KillProcess: Tuer le processus {platform}
 Cleaning_Button_ForgottenBackups: Sauvegardes de compte oubliées
 Cleaning_Understand: Je comprends ce que font ces boutons.
-Restore_Header: Restaurer les comptes oubliés
 Restore_Info: >
   Si vous avez déjà "oublié" un compte, vous pouvez les restaurer ici.<br /> Cela les rajoute à nouveau dans votre fichier loginusers.vdf, vous permettant de basculer vers eux.
 Restore_Button_Restore: Restaurer la sélection
 Ignored_RemoveAccounts: Supprimer les comptes de la liste des ignorés
 Ignored_Description: Si vous avez précédemment "ignoré" un compte, vous pouvez les afficher à nouveau ici
 Ignored_Stop: Arrêter d'ignorer la sélection
-Toast_RetryOrDeleteDiscordCache: Réessayez, ou supprimez le cache Discord pour réinitialiser le mot de passe (Voir le Wiki).
+Toast_PlaceShortcutFiles: Un dossier s'ouvre. Placez les raccourcis de jeu dans ce dossier et redémarrez le sélecteur de compte.
 Toast_TrayStarted: La barre d'état a commencé !
 Toast_TrayRunning: La barre d'état est déjà ouverte
 Toast_TrayUsersMissing: Aucun utilisateur de la zone de notification sauvegardé
@@ -81,7 +92,6 @@ Toast_TrayFail: Impossible de démarrer l'application dans la zone de notificati
 Toast_TrayPosition: "En cliquant sur le bouton Quitter : je serai dans la barre d'état de Windows ! (à droite de la barre de démarrage)"
 Toast_TrayHint: "Astuce : Ctrl+Cliquer sur le 'X' pour me fermer complètement, ou via la zone de notification > 'Quitter'"
 Toast_Copied: Copié
-Platform_DiscordPasteHint: Collez dans la console Discord, puis collez le résultat en entrée !
 Toast_AlreadyProcessing: Déjà en cours de traitement des comptes...
 Toast_FailedRestore: Échec de la restauration des comptes (Voir la console)
 Toast_Restored: Comptes restaurés !
@@ -103,13 +113,12 @@ Toast_BNet_CantLoadConfigCorrupt: Impossible de charger le fichier des comptes B
 Toast_BNet_NamePolicy: BattleTag ne correspond pas à la politique de nommage.
 Toast_ItemNotFound: "{item} n'a pas été trouvé"
 Toast_DeletedTotal: "{files} sur {totalFiles} supprimé. Total : {totalSize}"
-Toast_DeletedTotalTitle: Cache Discord effacé !
-Toast_Discord_SignOutHint: "Astuce : Vous devez vous déconnecter de Discord dans votre navigateur"
-Toast_Discord_SaveHint: "Astuce : Changement des paramètres Discord ? Sauvegardez à nouveau, avec le même nom !"
-Toast_Discord_NoToken: Impossible de trouver le jeton d'utilisateur ! Quittez Discord normalement, puis enregistrez à nouveau.
 Toast_CantChangeUsername: Impossible de changer le nom d'utilisateur
 Toast_CantClearLoginFiles: Impossible d'effacer les anciens fichiers de connexion
-Toast_AccountIdReg: Impossible d'obtenir l'ID du compte depuis le Registre !
+Toast_AccountIdReg: Échec de l'obtention de l'identifiant de compte à partir du registre !
+Toast_RegFailWrite: Échec de l'écriture dans le registre Windows !
+Toast_RegFailRead: Échec de la lecture à partir du registre Windows !
+Toast_RegSaveMissing: Échec de la recherche ou de la lecture des données des fichiers de registre enregistrés !
 Toast_DuplicateNames: Impossible d'échanger. Dupliquer les comptes avec le même nom d'utilisateur ?
 Toast_CouldNotLocate: Impossible de localiser l'utilisateur connecté
 Toast_StreamerModeHint: Les informations privées sont masquées! - Voir les paramètres
@@ -121,7 +130,6 @@ Toast_CantCreateShortcut: Impossible de créer le raccourci
 Toast_ShortcutCreated: Raccourci créé !
 Toast_FailedUpdateCheck: Impossible de vérifier les mises à jour
 Toast_UpdateVerifyFail: Impossible de vérifier les fichiers de mise à jour. Téléchargez la dernière version et remplacez les fichiers dans votre répertoire.
-Toast_Riot_StartGame: Utilisateur modifié. Commencer une partie ci-dessous.
 Toast_StartedGame: Démarré {program}
 Toast_Steam_VacCleared: Le statut du VAC pour les comptes a été effacé
 Toast_Steam_CantDeleteVacCache: Impossible de supprimer 'LoginCache/Steam/VACCache/SteamVACCache.json'
@@ -132,9 +140,6 @@ Toast_Steam_FailedLoginusers: Impossible de charger steam/config/loginusers.vdf
 Toast_Steam_CantLocateLoginusers: Impossible de localiser '.../Steam/config/loginusers.vdf'. Essayez d'abord de vous connecter à un compte.
 Toast_CantClearImages: Impossible d'effacer les images
 Toast_RefreshedImages: Images actualisées
-Toast_Ubisoft_NoUsername: Impossible de trouver le dernier utilisateur connecté. Essayez d'abord de vous connecter à Ubisoft.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat n'a pas pu être trouvé. Le dernier compte actif n'a pas été enregistré."
-Toast_Ubisoft_NoUser: Impossible de trouver le dernier utilisateur connecté. Essayez d'abord de vous connecter à Ubisoft.
 Toast_ClearForgottenCheck: Êtes-vous sûr de vouloir effacer les sauvegardes des comptes oubliés ?
 Toast_BattleNet_ChangedBTag: BattleTag modifié
 Toast_BattleNet_DeletedBTag: BattleTag supprimé
@@ -145,6 +150,20 @@ Toast_ClearedImages: "Images effacées"
 Toast_SavedItem: "Enregistré : {item}"
 Toast_ChangedUsername: Nom d'utilisateur modifié
 Toast_SetUsername: Définir le nom d'utilisateur
+Toast_AlreadyLoggedIn: Déjà connecté avec ce compte ! (Aucun changement effectué)
+Toast_BackupCopy: (1/3) Copie de fichiers vers un emplacement temporaire...
+Toast_BackupCompress: (2/3) Compresser les fichiers ({size}). Cela prendra un certain temps...
+Toast_BackupComplete: (3/3) Compression terminée ! ({size} à {compressedSize})
+Toast_BackupProgress: "Sauvegarde en cours (Taille compressée : {compressedSize})"
+Toast_BackupBusy: Sauvegarde déjà en cours !
+Toast_RestoreBusy: Restauration déjà en cours !
+Toast_RestoreExt: Extraction d'archives.
+Toast_RestoreCopying: Déplacer les fichiers vers la plate-forme
+Toast_RestoreDeleting: Suppression des fichiers temporaires
+Toast_RestoreComplete: Restauration terminée !
+Toast_FailedLoad: Impossible de charger {platform} ! Cliquez sur la plate-forme pour voir l'erreur.
+Toast_FailedPlatformsLoad: Échec du chargement de Platforms.json ! Veuillez vérifier que ce fichier existe.
+Tooltip_Restore: Cliquez pour sélectionner un fichier 7z ou faites-le glisser sur ce bouton.
 Modal_Crowdin_Header: Traducteurs Crowdin
 Modal_Crowdin_Info: "Voici tous ceux qui ont aidé à traduire ce logiciel.<br>Les utilisateurs avec des langues voisines ont beaucoup aidé à la traduction (rôle de correcteur)."
 Modal_Info_Creator: Créé par TechNobo [Wesley Pyburn]
@@ -159,30 +178,38 @@ Modal_Title_ConfirmAction: Confirmer l'action de changement de compte TcNo
 Modal_Title_LocatePlatform: Veuillez localiser le répertoire {platform}
 Modal_Title_AddNew: Ajouter un nouveau compte {platform}
 Modal_Title_Background: Définir une image d'arrière-plan
+Modal_Title_Userdata: Définir le dossier de données utilisateur
 Modal_SetBackground: 'Sélectionnez une image ou entrez une URL ci-dessous.<br>Laisser vide et régler pour réinitialiser.<br>(Pour un contrôle plus avancé, voir le Theming sur le Wiki) :'
 Modal_SetBackground_Button: Définir l'arrière-plan
 Modal_SetBackground_ChooseImage: Choisissez une image locale
-Modal_ChangeUsername: Veuillez entrer un nouveau {platformText} pour votre compte
-Modal_ChangeUsernameType: Changer {UsernameOrOther}
+Modal_SetUserdata: Entrez un chemin de dossier ci-dessous et cliquez sur définir.
+Modal_SetUserdata_ChooseFolder: Sélectionnez un dossier
+Modal_SetUserdata_Button: Définir les données utilisateur
+Modal_ChangeUsername: Veuillez entrer un nouveau nom d'utilisateur pour votre compte
+Modal_ChangeUsernameType: Changer {platform} nom d'utilisateur
 Modal_EnterDirectory: "Veuillez entrer le répertoire de {platform}, en tant que tel : C:\\Program Files\\{platform}"
 Modal_LocatePlatform: Localiser {platformExe}
 Modal_LocatePlatformFolder: Sélectionnez le dossier {platform}
 Modal_ConfirmAction: Confirmer l'action
 Modal_AddNew: Veuillez entrer un nom pour le compte {platform} auquel vous êtes connecté.
 Modal_AddCurrentAccount: Ajouter un compte en {platform} actuel
-Modal_EnterNewPassword: Veuillez entrer un nouveau mot de passe pour sécuriser vos comptes {platform} dans le sélecteur.<br>  Gardez-le en sécurité. Il ne pourra pas être récupéré plus tard.
-Modal_EnterPassword: Veuillez entrer votre mot de passe pour la plateforme {platform} du commutateur de compte TcNo .
-Modal_EnterPasswordShort: Entrez le mot de passe
-Modal_EnterPasswordRepeat: Entrez à nouveau le mot de passe
-Modal_PasswordsMatch: Les mots de passe correspondent
-Modal_PasswordsNoMatch: Les mots de passe ne correspondent pas
+Modal_SetImageHeader: Définir l'image de profil
+Modal_SetImage: Définir l'image
 Status_SelectedAccount: "Sélectionné: {name}"
 Status_Init: "Statut: initialisation"
-Status_ClosingPlatform: "Fermeture {platform}"
-Status_ClosingPlatformFailed: "Échec de la fermeture {platform}"
-Status_StartingPlatform: "À partir de {platform}"
+Status_ClosingPlatform: Fermeture {platform}
+Status_ClosingPlatformFailed: Échec de la fermeture {platform}
+Status_StartingPlatform: À partir de {platform}
+Toast_StartingPlatformFailed: Impossible de démarrer {platform}! Voir le journal pour plus de détails.
+Toast_UrlAdminErr: Vous ne pouvez pas exécuter les fichiers .url en tant qu'administrateur. Essayez un autre type de raccourci. Lancement en tant qu'utilisateur normal.
 Status_UpdatingFile: "Mise à jour {file}"
 Status_UpdatingRegistry: Mise à jour du registre Windows
+Status_FailedLog: 'Action: échoué. Voir le journal pour plus de détails.'
+Status_WaitingForClose: "Attente de {processName} pour fermer ({timeout}{timeLimit})"
+Status_WaitingForMultipleClose: "En attente de {processName} & {count} autres pour fermer ({timeout}/{timeLimit} secondes)"
+Status_GetUniqueId: Collecte d'un ID utilisateur unique
+Status_CopyingFiles: Copie des fichiers utilisateur...
+Status_HandlingImage: Gestion de l'image de profil du compte
 Context_SwapTo: Echanger vers un compte
 Context_CreateShortcut: Créer un raccourci sur le bureau
 Context_CreateShortcutSubmenu: Créer un raccourci sur le Bureau...
@@ -208,19 +235,17 @@ Context_Steam_OpenUserdata: Ouvrir les données utilisateur
 Context_CopyOtherSubmenu: Copier un autre...
 Context_HidePlatform: Cacher la plateforme
 Context_ExportAccList: Exporter la liste des comptes
+Context_RunAdmin: Exécuter en tant qu'administrateur
+Context_Hide: Cacher
 Title_BNet_Settings: Commutateur de compte TcNo - Paramètres BattleNet
 Title_BNet_ManageIgnored: Changeur de compte TcNo - Gérer les comptes BattleNet ignorés
-Title_Discord_Settings: Changeur de compte TcNo - Paramètres Discord
-Title_Epic_Settings: Changeur de compte TcNo - Paramètres Epic
+Title_Platforms_Settings: TcNo Account Switcher - Paramètres de plate-forme supplémentaires
 Title_AccountsList: Changeur de compte TcNo - {platform}
 Title_TextEditor: Changeur de compte TcNo - Éditeur de texte
-Title_Origin_Settings: Changeur de compte TcNo - Paramètres d'origine
-Title_Riot_Settings: Changeur de compte TcNo - Paramètres de l'émeute
 Title_Settings: Changeur de compte TcNo - Paramètres
 Title_Steam_Cleaning: Changeur de compte TcNo - Nettoyage Steam
-Title_Steam_Restore: Changeur de compte TcNo - Restaurer le compte Steam oublié
 Title_Steam_Settings: Changeur de compte TcNo - Paramètres Steam
-Title_Ubisoft_Settings: Commutateur de compte TcNo - Paramètres Ubisoft
+Title_Template_Settings: Commutateur de compte TcNo - {platformName} paramètres
 Installer_Downloading: Téléchargement de {file}
 Installer_DownloadFinished: Téléchargement terminé {file}
 Installer_Installing: "Installation : {runtime}"
@@ -242,7 +267,7 @@ Installer_Ready: "Une ou plusieurs personnes sont prêtes à être installées. 
 Installer_PressStart: Appuyez sur n'importe quelle touche pour démarrer l'installation...
 Installer_VerifyMin: "Vérifiez que vous remplissez les conditions minimales recommandées :"
 Installer_VerifyAlready: "On dirait que tout est installé. Vérifiez que vous remplissez les conditions minimales recommandées :"
-Installer_Complete: Cela devrait être tout. Le programme principal, TcNo-Acc-Switcher.exe, s'exécutera automatiquement lorsque vous appuyez sur une touche pour continuer.
+Installer_Complete: Cela devrait être tout. Le programme principal, TcNo-Acc-Switcher.exe, s'exécutera automatiquement.
 Installer_Complete2: "Si cela ne fonctionne pas, reportez-vous aux instructions d'installation ici : {link}"
 Global_FatalNext: "Une erreur fatale s'est produite ! Ce crashlog sera automatiquement soumis au prochain lancement."
 Tray_Error: Erreur dans la zone de notification
@@ -325,7 +350,10 @@ Failed: Echoué
 Success: Succès
 NotFound: Non trouvé
 Done: Fait
+Working: Travail...
 ForName: "Pour : {name}"
+DeletedFiles: Fichiers supprimés
+FileFoldersToClear: "Liste des fichiers/dossiers à effacer :"
 CouldNotFindX: Impossible de trouver {x}
 CouldNotCloseX: Impossible de fermer {x}!
 DirectoryNotFound: Répertoire introuvable
@@ -334,18 +362,21 @@ DeletingFile: "Suppression : {file}"
 DeletingFolder: "Suppression du dossier : "
 CouldntDeleteX: "ERREUR : SUPPRIMER LA SUPPRESSION : {x}"
 CouldntDeleteUndefined: "ERREUR : SUPPRIMER LE FICHIER INDÉFINI"
-Prompt_DiscordCopy1: Bouton de recherche d'options et cliquez sur
-Prompt_DiscordCopy2: "Vérifiez que le mode streamer n'est pas activé, sinon: Erreur de diffusion."
-Prompt_DiscordCopy3: Assurez-vous que le mode Streamer est désactivé/non actif lors de l'exécution de cette commande !
-Prompt_DiscordCopy4: Obtenir le nom en bas à gauche de l'écran
-Prompt_DiscordCopy5: Obtenir l'avatar et le nom d'utilisateur de la page
-Prompt_DiscordCopy6: Copier l'avatar et le nom d'utilisateur
-Prompt_DiscordCopy7: Fermer les options
-Prompt_DiscordCopy8: Faites savoir à l'utilisateur dans la console.
-Prompt_DiscordCopy9: Informations copiées avec succès !
-Prompt_DiscordCopy10: Collez-le dans la zone de saisie du sélecteur de compte pour mettre à jour/définir l'image et le nom d'utilisateur.
 Prompt_RestartAsAdmin: "<h3><bold>Ce programme redémarrera en tant qu'administrateur</bold></h3><p>Appuyez sur \"Oui\" dans l'UAC lorsque vous serez invité à l'administrateur.</p>"
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>Vous êtes sur le point d'oublier un compte !</h3> <h4>Qu'est-ce que cela signifie ?</h4> <p>- Steam n'aura plus le compte dans le mode Big Picture et ne se souviendra plus du mot de passe.<br/> - Le commutateur de compte TcNo n'affichera pas non plus le compte, jusqu'à ce qu'il soit à nouveau connecté via Steam.</p> <p>Votre compte restera intact. Il est juste oublié sur cet ordinateur.</p> <h4>Que se passe-t-il si quelque chose ne va pas ?</h4> <p>Ne paniquez pas, vous pouvez ramener les comptes oubliés par des sauvegardes dans l'écran Paramètres.<br/> Vous pouvez également supprimer les sauvegardes précédentes lorsque vous êtes sûr que tout fonctionne comme prévu.</p> <h4>Comprenez-vous ?</h4>
+  <h3 style='color:red'>Vous êtes sur le point d'oublier un compte !</h3> <h4>Qu'est-ce que cela signifie ?</h4> <p>- Steam n'aura plus le compte répertorié dans le mode Big Picture et ne se souviendra pas du mot de passe.<br/> - TcNo Account Switcher n'affichera plus le compte, jusqu'à ce qu'il soit reconnecté via Steam.</p> <p>Votre compte restera intact. C'est juste oublié sur cet ordinateur.</p><h4>Comprenez-vous?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Vous êtes sur le point d'oublier un compte !</h3> <h4>Qu'est-ce que cela signifie ?</h4> <p>Le commutateur de compte TcNo n'affichera pas non plus le compte,<br/> jusqu'à ce qu'il soit à nouveau signé via {platform}, et ajouté à la liste.</p> <p>Votre compte restera intact. Il est juste oublié sur cet ordinateur.</p> <h4>Comprenez-vous ?</h4>
+Platform_DiscordPasteHint: Collez dans la console Discord, puis collez le résultat dans l'entrée !
+Platform_ClearCache: Vider le cache
+Platform_ClearCacheTotal: Effacer {totalFileCount} fichiers ({totalSizeMB})
+Platform_DeleteFail: Impossible de supprimer certains fichiers (le programme est peut-être en cours d'exécution ?)
+Platform_CouldNotDeleteLog: Impossible de supprimer le fichier ! Chèque {logPath}
+Error_FileAccessDenied: Impossible d'accéder au fichier ! Chèque {logPath}
+Tooltip_Settings: Réglages
+Tooltip_Info: Info
+Tooltip_ManagePlatforms: Afficher ou masquer les autres plates-formes
+Tooltip_ExpandShortcuts: Développer la sélection de jeux et de raccourcis
+Tooltip_ShortcutFolder: Ouvrir le dossier de raccourcis. Placez-y des raccourcis et le sélecteur de compte TcNo pour les voir.
+Tooltip_Backup: Fichiers/dossiers de configuration de sauvegarde, tels que définis dans les paramètres de la plate-forme.
+Tooltip_BackupAll: Sauvegardez TOUS les fichiers/dossiers de configuration, y compris les images et autres fichiers volumineux.

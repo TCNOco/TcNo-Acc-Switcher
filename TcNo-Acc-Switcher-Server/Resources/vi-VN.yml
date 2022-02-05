@@ -20,25 +20,36 @@ Button_ResetSettings: Đặt lại cài đặt
 Button_AdvancedCleaning: Làm sạch nâng cao ...
 Button_ClearLog: Xóa nhật ký
 Button_WikiInfo: Thông tin thêm (Wiki)
-Button_ClearDiscordCache: Xóa bộ nhớ đệm Discord
+Button_ManagePlatforms: Quản lý nền tảng bổ sung
+Button_Backup: Sao lưu
+Button_BackupAll: Sao lưu mọi thứ
+Button_Restore: Khôi phục
+Button_OpenBackup: Mở thư mục sao lưu
 Settings_Shortcut: ' {platform} Switcher Phím tắt trên màn hình'
 Settings_Admin: Chạy {platform} với tư cách quản trị viên
 Settings_ImageExpiry: 'Vài ngày trước khi ảnh hồ sơ hết hạn:'
 Settings_Header_AppWide: Cài đặt toàn ứng dụng
 Settings_Header_GeneralSettings: Cài đặt chung
+Settings_Header_ExtraPlatforms: Cài đặt nền tảng bổ sung
 Settings_Header_GeneralTools: Công cụ chung
 Settings_Header_OtherTools: Các công cụ khác
-Settings_Header_HiddenPlatforms: Nền tảng ẩn
 Settings_Header_TraySettings: Cài đặt khay
 Settings_Header_OpenGameFolders: Mở thư mục trò chơi
+Settings_Header_BackupRestore: Sao lưu và khôi phục cài đặt nền tảng
 Settings_TrayMax: 'Số tài khoản tối đa cần nhớ:'
+Settings_ExtraPlatformsDisabled: Các nền tảng bổ sung có sẵn này hiện đang bị vô hiệu hóa. Nhấp để kích hoạt chúng.
+Settings_ExtraPlatformsEnabled: Các nền tảng bổ sung này có thể nhìn thấy được. Nhấp để vô hiệu hóa chúng.
 Settings_RTL: Hiển thị văn bản dưới dạng từ phải sang trái
 Settings_CurrentLocation: 'Vị trí cài đặt hiện tại: {path}'
+Settings_CurrentDataLocation: 'Vị trí dữ liệu người dùng hiện tại: {path}'
+Settings_SetDataLocation: "[Đặt vị trí dữ liệu người dùng tùy chỉnh]"
+Toast_DataLocationCopying: (1/2) Sao chép các tệp hiện có vào thư mục dữ liệu người dùng mới!
+Toast_DataLocationNotCopying: (1/2) Thư mục đã có tệp! Sẽ không di chuyển dữ liệu người dùng.
+Toast_DataLocationSet: (2/2) Khởi động lại trình chuyển đổi tài khoản để sử dụng thư mục mới!
 Settings_PickFolder: Chọn {platform} thư mục
 Settings_OpenFolder: Mở thư mục {platform}
 Settings_ClearForgotten: Xóa bỏ quên
 Settings_ClearAccounts: Xóa tài khoản
-Settings_RestoreForgotten: Khôi phục tài khoản bị quên
 Settings_StreamerMode: Bật chế độ phát trực tiếp
 Settings_ExitToTray: Thoát thu nhỏ vào khay
 Settings_DesktopShortcut: Phím tắt máy tính để bàn
@@ -55,7 +66,8 @@ Settings_WindowsAccent: Sử dụng Màu nhấn Windows
 Settings_HelpTranslate: "[Giúp dịch]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Đặt công cụ kết xuất:"
-Settings_AltClose: "Phương pháp thoát thay thế (khi nền tảng không đóng)"
+Settings_Header_ClosingMethod: "[Advanced] Đặt phương thức để đóng {platform}"
+Settings_NoPlatforms: Hiện tại không có nền tảng nào được kích hoạt. Vui lòng đánh dấu vào các nền tảng tùy chọn bên dưới để bật chúng hoặc bỏ chọn các nền tảng bị vô hiệu hóa.
 Cleaning_Header_StartMenuShortcuts: 'Các phím tắt cho Start Menu:'
 Cleaning_Header_General: Vệ sinh chung
 Cleaning_Header_LoginHistory: Xóa lịch sử đăng nhập của tôi
@@ -66,14 +78,13 @@ Cleaning_ImportantInfo: >
 Cleaning_Button_KillProcess: Quá trình giết {platform}
 Cleaning_Button_ForgottenBackups: Quên sao lưu tài khoản
 Cleaning_Understand: Tôi hiểu những gì các nút này làm.
-Restore_Header: Khôi phục tài khoản đã quên
 Restore_Info: >
   Nếu trước đó bạn "quên" tài khoản, bạn có thể khôi phục chúng tại đây.<br /> Điều này sẽ thêm chúng trở lại vào tệp loginusers.vdf của bạn, cho phép bạn chuyển sang chúng.
 Restore_Button_Restore: Khôi phục đã chọn
 Ignored_RemoveAccounts: Xóa tài khoản khỏi danh sách bỏ qua
 Ignored_Description: Nếu trước đó bạn đã "bỏ qua" một tài khoản, bạn có thể hiển thị lại chúng tại đây
 Ignored_Stop: Ngừng bỏ qua đã chọn
-Toast_RetryOrDeleteDiscordCache: Thử lại hoặc xóa Discord Cache để đặt lại mật khẩu (Xem Wiki).
+Toast_PlaceShortcutFiles: Một thư mục đang mở. Đặt các phím tắt trò chơi vào thư mục đó và khởi động lại trình chuyển đổi tài khoản.
 Toast_TrayStarted: Đã khởi động khay!
 Toast_TrayRunning: Khay đã mở
 Toast_TrayUsersMissing: Không có người dùng khay nào được lưu
@@ -81,7 +92,6 @@ Toast_TrayFail: Không thể khởi động ứng dụng khay!
 Toast_TrayPosition: "Khi nhấp vào nút Thoát: Tôi sẽ ở trên Khay Windows! (Bên phải Thanh Bắt đầu)"
 Toast_TrayHint: "Gợi ý: Ctrl + Nhấp vào 'X' để đóng tôi hoàn toàn hoặc qua Khay> 'Thoát'"
 Toast_Copied: Đã sao chép
-Platform_DiscordPasteHint: Dán vào bảng điều khiển Discord, rồi dán kết quả vào đầu vào!
 Toast_AlreadyProcessing: Đã xử lý tài khoản ...
 Toast_FailedRestore: Không khôi phục được tài khoản (Xem bảng điều khiển)
 Toast_Restored: Đã khôi phục tài khoản!
@@ -103,13 +113,12 @@ Toast_BNet_CantLoadConfigCorrupt: Không thể tải tệp tài khoản cho Bliz
 Toast_BNet_NamePolicy: BattleTag không phù hợp với chính sách đặt tên.
 Toast_ItemNotFound: "{item} không được tìm thấy"
 Toast_DeletedTotal: "{files} của {totalFiles} đã bị xóa. Tổng: {totalSize}"
-Toast_DeletedTotalTitle: Đã xóa bộ nhớ cache Discord!
-Toast_Discord_SignOutHint: "Gợi ý: Bạn phải đăng xuất khỏi Discord trong trình duyệt của mình"
-Toast_Discord_SaveHint: "Gợi ý: Đã thay đổi cài đặt Discord? Lưu lại, với cùng một tên!"
-Toast_Discord_NoToken: Không tìm thấy mã thông báo của người dùng! Thoát Discord bình thường, sau đó lưu lại.
 Toast_CantChangeUsername: Không thể thay đổi tên người dùng
 Toast_CantClearLoginFiles: Không xóa được các tệp đăng nhập cũ
-Toast_AccountIdReg: Không lấy được AccountId từ Registry!
+Toast_AccountIdReg: Không lấy được Id tài khoản từ Registry!
+Toast_RegFailWrite: Không thể ghi vào Windows Regsitry!
+Toast_RegFailRead: Không thể đọc từ Windows Regsitry!
+Toast_RegSaveMissing: Không tìm thấy hoặc đọc dữ liệu từ các tệp đăng ký đã lưu!
 Toast_DuplicateNames: Không thể hoán đổi. Các tài khoản trùng lặp với cùng một tên người dùng?
 Toast_CouldNotLocate: Không thể định vị người dùng đã đăng nhập
 Toast_StreamerModeHint: Thông tin cá nhân bị ẩn! - Xem cài đặt
@@ -121,7 +130,6 @@ Toast_CantCreateShortcut: Không thể tạo lối tắt
 Toast_ShortcutCreated: Đã tạo lối tắt!
 Toast_FailedUpdateCheck: Không kiểm tra được các bản cập nhật
 Toast_UpdateVerifyFail: Không thể xác minh tệp trình cập nhật. Tải xuống phiên bản mới nhất và thay thế các tệp trong thư mục của bạn.
-Toast_Riot_StartGame: Đã thay đổi người dùng. Bắt đầu một trò chơi dưới đây.
 Toast_StartedGame: Bắt đầu {program}
 Toast_Steam_VacCleared: Trạng thái VAC cho các tài khoản đã bị xóa
 Toast_Steam_CantDeleteVacCache: Không thể xóa 'LoginCache / Steam / VACCache / SteamVACCache.json'
@@ -132,9 +140,6 @@ Toast_Steam_FailedLoginusers: Không tải được steam / config / loginusers.
 Toast_Steam_CantLocateLoginusers: Không thể định vị '... / Steam / config / loginusers.vdf'. Trước tiên, hãy thử đăng nhập vào một tài khoản.
 Toast_CantClearImages: Không thể xóa hình ảnh
 Toast_RefreshedImages: Hình ảnh được làm mới
-Toast_Ubisoft_NoUsername: Không thể tìm thấy người dùng đăng nhập lần cuối. Trước tiên, hãy thử đăng nhập lại vào Ubisoft.
-Toast_Ubisoft_NoDat: "Không thể tìm thấy %LocalAppData%Tài khoản hoạt động cuối cùng không được lưu."
-Toast_Ubisoft_NoUser: Không thể tìm thấy người dùng đăng nhập lần cuối. Trước tiên, hãy thử đăng nhập lại vào Ubisoft.
 Toast_ClearForgottenCheck: Bạn có chắc chắn muốn xóa các bản sao lưu của các tài khoản bị quên không?
 Toast_BattleNet_ChangedBTag: Đã thay đổi thẻ BattleTag
 Toast_BattleNet_DeletedBTag: BattleTag đã xóa
@@ -145,6 +150,20 @@ Toast_ClearedImages: "Hình ảnh đã xóa"
 Toast_SavedItem: "Đã lưu: {item}"
 Toast_ChangedUsername: Tên người dùng đã thay đổi
 Toast_SetUsername: Đặt tên người dùng
+Toast_AlreadyLoggedIn: Đã đăng nhập bằng tài khoản này! (Không có thay đổi nào được thực hiện)
+Toast_BackupCopy: (1/3) Sao chép tệp vào một vị trí tạm thời ...
+Toast_BackupCompress: (2/3) Nén tệp ({size}). Điều này sẽ mất một thời gian...
+Toast_BackupComplete: (3/3) Nén xong! ({size} đến {compressedSize})
+Toast_BackupProgress: "Đang sao lưu (Kích thước nén: {compressedSize})"
+Toast_BackupBusy: Đã tiến hành sao lưu!
+Toast_RestoreBusy: Đang khôi phục!
+Toast_RestoreExt: Đang giải nén kho lưu trữ.
+Toast_RestoreCopying: Di chuyển tệp trở lại nền tảng
+Toast_RestoreDeleting: Xóa các tệp tạm thời
+Toast_RestoreComplete: Đã khôi phục xong!
+Toast_FailedLoad: Không tải được {platform}! Nhấp vào nền tảng để xem lỗi.
+Toast_FailedPlatformsLoad: Không tải được Platforms.json! Vui lòng xác minh tệp này tồn tại.
+Tooltip_Restore: Nhấp để chọn tệp 7z hoặc kéo tệp đó vào nút này.
 Modal_Crowdin_Header: Người dịch Crowdin
 Modal_Crowdin_Info: "Đây là tất cả những người đã giúp dịch phần mềm này.<br>Người dùng có ngôn ngữ bên cạnh họ đã giúp rất nhiều trong việc dịch thuật (vai trò người hiệu đính)."
 Modal_Info_Creator: Tạo bởi TechNobo [Wesley Pyburn]
@@ -159,30 +178,38 @@ Modal_Title_ConfirmAction: Hành động Xác nhận Trình chuyển đổi Tài
 Modal_Title_LocatePlatform: Vui lòng định vị thư mục {platform}
 Modal_Title_AddNew: Thêm tài khoản {platform}
 Modal_Title_Background: Đặt hình nền
+Modal_Title_Userdata: Đặt thư mục dữ liệu người dùng
 Modal_SetBackground: 'Chọn một hình ảnh hoặc nhập một URL bên dưới.<br>Để trống và đặt để đặt lại.<br>(Để kiểm soát nâng cao hơn, hãy xem Chủ đề trên Wiki):'
 Modal_SetBackground_Button: Chỉnh nền
 Modal_SetBackground_ChooseImage: Chọn hình ảnh địa phương
-Modal_ChangeUsername: Vui lòng nhập số {platformText} mới cho tài khoản của bạn
-Modal_ChangeUsernameType: Thay đổi {UsernameOrOther}
+Modal_SetUserdata: Nhập đường dẫn thư mục bên dưới và nhấp vào đặt.
+Modal_SetUserdata_ChooseFolder: Chọn một thư mục
+Modal_SetUserdata_Button: Đặt dữ liệu người dùng
+Modal_ChangeUsername: Vui lòng nhập tên người dùng mới cho tài khoản của bạn
+Modal_ChangeUsernameType: Thay đổi {platform} tên người dùng
 Modal_EnterDirectory: "Vui lòng nhập thư mục của {platform}, chẳng hạn như: C: \\ Program Files \\{platform}"
 Modal_LocatePlatform: Xác định vị trí {platformExe}
 Modal_LocatePlatformFolder: Chọn {platform} thư mục
 Modal_ConfirmAction: Xác nhận hành động
 Modal_AddNew: Vui lòng nhập tên cho {platform} tài khoản bạn đã đăng nhập.
 Modal_AddCurrentAccount: Thêm tài khoản {platform} hiện tại
-Modal_EnterNewPassword: Vui lòng nhập mật khẩu mới để bảo mật {platform} tài khoản của bạn trong trình chuyển đổi.<br>  Giữ nó an toàn. Nó không thể được phục hồi sau đó.
-Modal_EnterPassword: Vui lòng nhập mật khẩu của bạn cho nền tảng {platform}
-Modal_EnterPasswordShort: Nhập mật khẩu
-Modal_EnterPasswordRepeat: Nhập lại mật khẩu
-Modal_PasswordsMatch: Mật khẩu phù hợp
-Modal_PasswordsNoMatch: mất khẩu không hợp lệ
+Modal_SetImageHeader: Đặt hình ảnh hồ sơ
+Modal_SetImage: Đặt hình ảnh
 Status_SelectedAccount: "Đã chọn: {name}"
 Status_Init: "Tình trạng: Đang khởi tạo"
-Status_ClosingPlatform: "Đóng cửa {platform}"
-Status_ClosingPlatformFailed: "Không đóng được {platform}"
-Status_StartingPlatform: "Bắt đầu từ {platform}"
+Status_ClosingPlatform: Đóng cửa {platform}
+Status_ClosingPlatformFailed: Không đóng được {platform}
+Status_StartingPlatform: Bắt đầu từ {platform}
+Toast_StartingPlatformFailed: Không thể bắt đầu {platform}! Xem nhật ký để biết thêm chi tiết.
+Toast_UrlAdminErr: Bạn không thể chạy tệp .url với tư cách quản trị viên. Hãy thử một kiểu phím tắt khác. Khởi chạy như người dùng bình thường.
 Status_UpdatingFile: "Đang cập nhật {file}"
 Status_UpdatingRegistry: Cập nhật sổ đăng ký Windows
+Status_FailedLog: 'Diễn: Đã thất bại. Xem nhật ký để biết chi tiết.'
+Status_WaitingForClose: "Chờ {processName} đóng ({timeout}{timeLimit})"
+Status_WaitingForMultipleClose: "Chờ {processName} & {count} người khác đóng ({timeout}{timeLimit})"
+Status_GetUniqueId: Thu thập ID người dùng duy nhất
+Status_CopyingFiles: Đang sao chép tệp người dùng ...
+Status_HandlingImage: Xử lý hình ảnh hồ sơ tài khoản
 Context_SwapTo: Chuyển sang tài khoản
 Context_CreateShortcut: Tạo lối tắt trên màn hình
 Context_CreateShortcutSubmenu: Tạo lối tắt trên màn hình ...
@@ -208,19 +235,17 @@ Context_Steam_OpenUserdata: Mở dữ liệu người dùng
 Context_CopyOtherSubmenu: Sao chép khác ...
 Context_HidePlatform: Ẩn nền tảng
 Context_ExportAccList: Xuất danh sách tài khoản
+Context_RunAdmin: Chạy với tư cách quản trị viên
+Context_Hide: Giấu
 Title_BNet_Settings: TcNo Account Switcher - Cài đặt BattleNet
 Title_BNet_ManageIgnored: TcNo Account Switcher - Quản lý các tài khoản BattleNet bị bỏ qua
-Title_Discord_Settings: TcNo Account Switcher - Discord Settings
-Title_Epic_Settings: TcNo Account Switcher - Epic Settings
+Title_Platforms_Settings: Công cụ chuyển đổi tài khoản TcNo - Cài đặt nền tảng bổ sung
 Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - Text Editor
-Title_Origin_Settings: TcNo Account Switcher - Origin Settings
-Title_Riot_Settings: TcNo Account Switcher - Riot Settings
 Title_Settings: TcNo Account Switcher - Cài đặt
 Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Khôi phục tài khoản Steam bị quên
 Title_Steam_Settings: TcNo Account Switcher - Cài đặt Steam
-Title_Ubisoft_Settings: TcNo Account Switcher - Ubisoft Settings
+Title_Template_Settings: TcNo Account Switcher - {platformName} Cài đặt
 Installer_Downloading: Đang tải xuống {file}
 Installer_DownloadFinished: Tải xong {file}
 Installer_Installing: "Đang cài đặt: {runtime}"
@@ -242,7 +267,7 @@ Installer_Ready: "Một hoặc nhiều đã sẵn sàng để cài đặt. Nếu
 Installer_PressStart: Nhấn phím bất kỳ để bắt đầu cài đặt ...
 Installer_VerifyMin: "Xác minh rằng bạn đáp ứng các yêu cầu tối thiểu được đề xuất:"
 Installer_VerifyAlready: "Có vẻ như mọi thứ đã được cài đặt. Xác minh rằng bạn đáp ứng các yêu cầu tối thiểu được đề xuất:"
-Installer_Complete: Đó phải là tất cả mọi thứ. Chương trình chính, TcNo-Acc-Switcher.exe, sẽ tự động chạy khi bạn nhấn một phím để tiếp tục.
+Installer_Complete: Đó phải là tất cả mọi thứ. Chương trình chính, TcNo-Acc-Switcher.exe, sẽ tự động chạy.
 Installer_Complete2: "Nếu nó không hoạt động, vui lòng tham khảo hướng dẫn cài đặt, tại đây: {link}"
 Global_FatalNext: "Đã xảy ra lỗi nghiêm trọng! Nhật ký sự cố này sẽ được tự động gửi lần khởi chạy tiếp theo."
 Tray_Error: Lỗi khay
@@ -325,7 +350,10 @@ Failed: Thất bại
 Success: Sự thành công
 NotFound: Không tìm thấy
 Done: Làm xong
+Working: Đang làm việc...
 ForName: "Đối với: {name}"
+DeletedFiles: Tệp đã xóa
+FileFoldersToClear: "Danh sách các tệp / thư mục cần xóa:"
 CouldNotFindX: Không thể tìm thấy {x}
 CouldNotCloseX: Không thể đóng {x}!
 DirectoryNotFound: Thư mục không được tìm thấy
@@ -334,18 +362,21 @@ DeletingFile: "Đang xóa: {file}"
 DeletingFolder: "Xóa thư mục: "
 CouldntDeleteX: "LỖI: COULDN KHÔNG XÓA: {x}"
 CouldntDeleteUndefined: "LỖI: COULDN KHÔNG XÓA FILE UNDEFINED"
-Prompt_DiscordCopy1: Tìm nút tùy chọn và nhấp vào
-Prompt_DiscordCopy2: "Kiểm tra xem chế độ streamer chưa được bật, nếu không: Đưa ra lỗi."
-Prompt_DiscordCopy3: Đảm bảo rằng Chế độ Streamer bị tắt / không hoạt động khi chạy lệnh này!
-Prompt_DiscordCopy4: Lấy tên từ dưới cùng bên trái của màn hình
-Prompt_DiscordCopy5: Nhận Hình đại diện và tên người dùng từ trang
-Prompt_DiscordCopy6: Sao chép hình đại diện và tên người dùng
-Prompt_DiscordCopy7: Đóng các tùy chọn
-Prompt_DiscordCopy8: Cho người dùng biết trong bảng điều khiển.
-Prompt_DiscordCopy9: Đã sao chép thông tin thành công!
-Prompt_DiscordCopy10: Dán nó vào hộp nhập trong trình chuyển đổi tài khoản để cập nhật / đặt hình ảnh và tên người dùng.
 Prompt_RestartAsAdmin: "<h3><bold>Chương trình này sẽ khởi động lại với tư cách Quản trị viên</bold></h3><p>Nhấn \"Có\" trong UAC khi được nhắc quản trị viên.</p>"
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>Bạn sắp quên tài khoản!</h3> <h4>Điều này có nghĩa là gì?</h4> <p>- Steam sẽ không còn tài khoản được liệt kê ở Chế độ ảnh lớn và sẽ không ghi nhớ mật khẩu.<br/> - TcNo Account Switcher cũng sẽ không hiển thị tài khoản nữa, cho đến khi tài khoản được đăng nhập lại thông qua Steam.</p> <p>Tài khoản của bạn sẽ không bị ảnh hưởng. Nó chỉ bị quên trên máy tính này.</p> <h4>Điều gì sẽ xảy ra nếu có sự cố?</h4> <p>Đừng lo lắng, bạn có thể khôi phục các tài khoản đã quên thông qua bản sao lưu trong màn hình Cài đặt.<br/> Bạn cũng có thể xóa các bản sao lưu trước đó từ đó khi bạn chắc chắn rằng mọi thứ đang hoạt động như mong đợi.</p> <h4>Bạn có hiểu không?</h4>
+  <h3 style='color:red'>Bạn sắp quên tài khoản!</h3> <h4>Điều này có nghĩa là gì?</h4> <p>- Steam sẽ không còn tài khoản được liệt kê ở Chế độ ảnh lớn và sẽ không ghi nhớ mật khẩu.<br/> - TcNo Account Switcher cũng sẽ không hiển thị tài khoản nữa, cho đến khi tài khoản được đăng nhập lại thông qua Steam.</p> <p>Tài khoản của bạn sẽ không bị ảnh hưởng. Nó chỉ bị quên trên máy tính này.</p><h4>Bạn có hiểu không?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Bạn sắp quên tài khoản!</h3> <h4>Điều này có nghĩa là gì?</h4> <p>TcNo Account Switcher cũng sẽ không hiển thị tài khoản nữa,<br/> cho đến khi tài khoản được đăng nhập lại đến hết {platform}và được thêm vào danh sách.</p> <p>Tài khoản của bạn sẽ không bị ảnh hưởng. Nó chỉ bị quên trên máy tính này.</p> <h4>Bạn có hiểu không?</h4>
+Platform_DiscordPasteHint: Dán vào bảng điều khiển Discord, rồi dán kết quả vào đầu vào!
+Platform_ClearCache: Xóa bộ nhớ đệm
+Platform_ClearCacheTotal: Xóa {totalFileCount} tệp ({totalSizeMB})
+Platform_DeleteFail: Không thể xóa một số tệp (Chương trình có thể đang chạy?)
+Platform_CouldNotDeleteLog: Không thể xóa tệp! Kiểm tra {logPath}
+Error_FileAccessDenied: Không thể truy cập tệp! Kiểm tra {logPath}
+Tooltip_Settings: Cài đặt
+Tooltip_Info: Thông tin
+Tooltip_ManagePlatforms: Hiển thị hoặc Ẩn các nền tảng khác
+Tooltip_ExpandShortcuts: Mở rộng lựa chọn Trò chơi & Lối tắt
+Tooltip_ShortcutFolder: Mở thư mục lối tắt. Đặt các phím tắt vào đó và Công cụ chuyển đổi tài khoản TcNo để xem chúng.
+Tooltip_Backup: Sao lưu các tệp / thư mục cấu hình, như được xác định trong cài đặt nền tảng.
+Tooltip_BackupAll: Sao lưu TẤT CẢ các tệp / thư mục cấu hình, bao gồm cả hình ảnh và các tệp lớn khác.

@@ -20,25 +20,36 @@ Button_ResetSettings: אפס הגדרות
 Button_AdvancedCleaning: ניקוי מתקדם ...
 Button_ClearLog: נקה יומן
 Button_WikiInfo: מידע נוסף (Wiki)
-Button_ClearDiscordCache: נקה מטמון דיסקורד
+Button_ManagePlatforms: ניהול פלטפורמות נוספות
+Button_Backup: גיבוי
+Button_BackupAll: גבה הכל
+Button_Restore: לשחזר
+Button_OpenBackup: פתח את תיקיית הגיבוי
 Settings_Shortcut: ' {platform} קיצור דרך לשולחן העבודה'
 Settings_Admin: הפעל {platform} כמנהל
 Settings_ImageExpiry: 'ימים לפני שתמונות הפרופיל פג:'
 Settings_Header_AppWide: הגדרות לכל אפליקציות
 Settings_Header_GeneralSettings: הגדרות כלליות
+Settings_Header_ExtraPlatforms: הגדרות פלטפורמה נוספות
 Settings_Header_GeneralTools: כלים כלליים
 Settings_Header_OtherTools: כלים אחרים
-Settings_Header_HiddenPlatforms: פלטפורמות נסתרות
 Settings_Header_TraySettings: הגדרות מגש
 Settings_Header_OpenGameFolders: פתח תיקיות משחק
+Settings_Header_BackupRestore: גיבוי ושחזור הגדרות פלטפורמה
 Settings_TrayMax: 'מספר חשבונות מקסימלי שיש לזכור:'
+Settings_ExtraPlatformsDisabled: הפלטפורמות הנוספות הזמינות הללו מושבתות כעת. לחץ כדי להפעיל אותם.
+Settings_ExtraPlatformsEnabled: פלטפורמות נוספות אלה גלויות. לחץ כדי להשבית אותם.
 Settings_RTL: הצג טקסט בתור מימין לשמאל
 Settings_CurrentLocation: 'מיקום ההתקנה הנוכחי: {path}'
+Settings_CurrentDataLocation: 'מיקום נתוני משתמש נוכחי: {path}'
+Settings_SetDataLocation: "[הגדר מיקום נתוני משתמש מותאם אישית]"
+Toast_DataLocationCopying: (1/2) העתקת קבצים קיימים לתיקיית נתוני המשתמש החדשה!
+Toast_DataLocationNotCopying: (1/2) בתיקייה כבר יש קבצים! לא יעביר נתוני משתמש.
+Toast_DataLocationSet: (2/2) הפעל מחדש את מחליף החשבונות כדי להשתמש בתיקייה החדשה!
 Settings_PickFolder: בחר תיקייה {platform}
 Settings_OpenFolder: פתח את תיקיית {platform}
 Settings_ClearForgotten: נקה נשכח
 Settings_ClearAccounts: נקה חשבונות
-Settings_RestoreForgotten: שחזר חשבון שנשכח
 Settings_StreamerMode: אפשר מצב סטרימר
 Settings_ExitToTray: היציאה ממזערת למגש
 Settings_DesktopShortcut: קיצור דרך בשולחן העבודה
@@ -55,7 +66,8 @@ Settings_WindowsAccent: השתמש בצבע המבטא של Windows
 Settings_HelpTranslate: "[עזרה בתרגום]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] הגדר את מנוע העיבוד:"
-Settings_AltClose: "שיטת יציאה חלופית (כאשר הפלטפורמה לא נסגרת)"
+Settings_Header_ClosingMethod: "[Advanced] הגדר שיטה לסגירה {platform}"
+Settings_NoPlatforms: כרגע אין פלטפורמות מופעלות. אנא סמן פלטפורמות אופציונליות למטה כדי להפעיל אותן, או בטל את הסימון של פלטפורמות מושבתות.
 Cleaning_Header_StartMenuShortcuts: 'קיצורי דרך לתפריט התחלה:'
 Cleaning_Header_General: ניקוי כללי
 Cleaning_Header_LoginHistory: נקה את היסטוריית הכניסה שלי
@@ -66,14 +78,13 @@ Cleaning_ImportantInfo: >
 Cleaning_Button_KillProcess: להרוג תהליך {platform}
 Cleaning_Button_ForgottenBackups: גיבויים לחשבון שנשכחו
 Cleaning_Understand: אני מבין מה הכפתורים האלה עושים.
-Restore_Header: שחזר חשבונות שנשכחו
 Restore_Info: >
   אם בעבר "שכחת" חשבון, תוכל לשחזר אותו כאן.<br /> זה מחזיר אותם לקובץ loginusers.vdf שלך, ומאפשר לך לעבור אליהם.
 Restore_Button_Restore: שחזר נבחר
 Ignored_RemoveAccounts: הסר חשבונות מרשימת ההתעלמות
 Ignored_Description: אם בעבר "התעלמת" מחשבון, תוכל להציג אותו שוב כאן
 Ignored_Stop: הפסק להתעלם מהנבחר
-Toast_RetryOrDeleteDiscordCache: נסה שוב או מחק את מטמון הדיסקורד לאיפוס הסיסמה (ראה Wiki).
+Toast_PlaceShortcutFiles: נפתחת תיקיה. מקם קיצורי דרך למשחק באותה תיקיה, והפעל מחדש את מחליף החשבונות.
 Toast_TrayStarted: המגש התחיל!
 Toast_TrayRunning: המגש כבר פתוח
 Toast_TrayUsersMissing: לא נשמרו משתמשים במגש
@@ -81,7 +92,6 @@ Toast_TrayFail: לא ניתן היה להפעיל את יישום המגש!
 Toast_TrayPosition: "בלחיצה על כפתור היציאה: אני אהיה במגש Windows! (ימין של סרגל ההתחלה)"
 Toast_TrayHint: "רמז: Ctrl + לחץ על 'X' כדי לסגור אותי לחלוטין, או דרך המגש> 'יציאה'"
 Toast_Copied: מוּעֲתָק
-Platform_DiscordPasteHint: הדבק למסוף הדיסקורד ולאחר מכן הדבק את התוצאה בקלט!
 Toast_AlreadyProcessing: כבר מעבד חשבונות ...
 Toast_FailedRestore: שחזור החשבונות נכשל (ראה מסוף)
 Toast_Restored: חשבונות משוחזרים!
@@ -103,13 +113,12 @@ Toast_BNet_CantLoadConfigCorrupt: לא ניתן היה לטעון את קובץ 
 Toast_BNet_NamePolicy: BattleTag לא תאם את מדיניות השמות.
 Toast_ItemNotFound: "{item} לא נמצא"
 Toast_DeletedTotal: "{files} מתוך {totalFiles} נמחקו. סה\"כ: {totalSize}"
-Toast_DeletedTotalTitle: מטמון הדיסקורד נוקה!
-Toast_Discord_SignOutHint: "רמז: עליך לצאת מ- Discord בדפדפן שלך"
-Toast_Discord_SaveHint: "רמז: שינו את הגדרות הדיסקורד? שמור שוב, עם אותו שם!"
-Toast_Discord_NoToken: מציאת אסימון המשתמש נכשלה! צא מ- Discord כרגיל ואז שמור שוב.
 Toast_CantChangeUsername: לא ניתן היה לשנות את שם המשתמש
 Toast_CantClearLoginFiles: ניקוי קבצי הכניסה הישנים נכשל
-Toast_AccountIdReg: השגת AccountId מהרישום נכשלה!
+Toast_AccountIdReg: נכשל קבלת זיהוי חשבון מהרישום!
+Toast_RegFailWrite: הכתיבה ל-Windows Regsitry נכשלה!
+Toast_RegFailRead: נכשל לקרוא מ-Windows Regsitry!
+Toast_RegSaveMissing: נכשל חיפוש או קריאה של נתונים מקבצי רישום שמורים!
 Toast_DuplicateNames: לא ניתן היה להחליף. שכפול חשבונות עם אותו שם משתמש?
 Toast_CouldNotLocate: לא ניתן היה לאתר משתמש מחובר
 Toast_StreamerModeHint: מידע פרטי מוסתר! - ראה הגדרות
@@ -121,7 +130,6 @@ Toast_CantCreateShortcut: לא ניתן ליצור קיצור דרך
 Toast_ShortcutCreated: קיצור הדרך נוצר!
 Toast_FailedUpdateCheck: נכשל בדיקת העדכונים
 Toast_UpdateVerifyFail: לא ניתן לאמת קבצי עדכון. הורד את הגרסה האחרונה והחלף קבצים בספריה שלך.
-Toast_Riot_StartGame: משתמש שונה. התחל משחק למטה.
 Toast_StartedGame: התחיל {program}
 Toast_Steam_VacCleared: סטטוס ה- VAC לחשבונות נוקה
 Toast_Steam_CantDeleteVacCache: לא ניתן למחוק את 'LoginCache / Steam / VACCache / SteamVACCache.json'
@@ -132,9 +140,6 @@ Toast_Steam_FailedLoginusers: טעינת הקיטור / config / loginusers.vdf 
 Toast_Steam_CantLocateLoginusers: לא ניתן לאתר את '... / Steam / config / loginusers.vdf'. נסה להיכנס לחשבון תחילה.
 Toast_CantClearImages: לא ניתן היה לנקות תמונות
 Toast_RefreshedImages: תמונות רעננות
-Toast_Ubisoft_NoUsername: לא ניתן למצוא משתמש מחובר אחרון. נסה להתחבר שוב ל- Ubisoft.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat לא נמצא. החשבון הפעיל האחרון לא נשמר."
-Toast_Ubisoft_NoUser: לא ניתן למצוא משתמש מחובר אחרון. נסה להתחבר שוב ל- Ubisoft.
 Toast_ClearForgottenCheck: האם אתה בטוח שברצונך לנקות גיבויים של חשבונות שנשכחו?
 Toast_BattleNet_ChangedBTag: שינה BattleTag
 Toast_BattleNet_DeletedBTag: BattleTag נמחק
@@ -145,6 +150,20 @@ Toast_ClearedImages: "תמונות נמחקו"
 Toast_SavedItem: "נשמר: {item}"
 Toast_ChangedUsername: שם משתמש שונה
 Toast_SetUsername: הגדר שם משתמש
+Toast_AlreadyLoggedIn: כבר מחובר עם חשבון זה! (לא בוצעו שינויים)
+Toast_BackupCopy: (1/3) העתקת קבצים למיקום זמני...
+Toast_BackupCompress: (2/3) דחיסת קבצים ({size}). זה ייקח קצת זמן...
+Toast_BackupComplete: (3/3) סיים את הדחיסה! ({size} עד {compressedSize})
+Toast_BackupProgress: "גיבוי מתבצע (גודל דחוס: {compressedSize})"
+Toast_BackupBusy: הגיבוי כבר מתבצע!
+Toast_RestoreBusy: השחזור כבר מתבצע!
+Toast_RestoreExt: מחלץ ארכיון.
+Toast_RestoreCopying: העברת קבצים חזרה לפלטפורמה
+Toast_RestoreDeleting: מחיקת קבצים זמניים
+Toast_RestoreComplete: השחזור הסתיים!
+Toast_FailedLoad: טעינת {platform}נכשלה! לחץ על הפלטפורמה כדי לראות את השגיאה.
+Toast_FailedPlatformsLoad: טעינת Platforms.json נכשלה! אנא ודא שקובץ זה קיים.
+Tooltip_Restore: לחץ כדי לבחור קובץ 7z, או גרור אותו ללחצן זה.
 Modal_Crowdin_Header: מתרגמי Crowdin
 Modal_Crowdin_Info: "הנה כל מי שעזר לתרגם את התוכנה הזו.<br>משתמשים עם שפות לידם עזרו רבות בתרגום (תפקיד הגהה)."
 Modal_Info_Creator: נוצר על ידי TechNobo [Wesley Pyburn]
@@ -159,30 +178,38 @@ Modal_Title_ConfirmAction: אישור פעולה TcNo מחליף חשבון
 Modal_Title_LocatePlatform: אנא אתר את ספריית {platform}
 Modal_Title_AddNew: הוסף חשבון {platform}
 Modal_Title_Background: הגדר תמונת רקע
+Modal_Title_Userdata: הגדר את תיקיית נתוני המשתמש
 Modal_SetBackground: 'בחר תמונה, או הזן כתובת אתר למטה.<br>השאר ריק והגדר לאיפוס.<br>(לשליטה מתקדמת יותר ראה את הנושא בוויקי):'
 Modal_SetBackground_Button: הגדר רקע
 Modal_SetBackground_ChooseImage: בחר תמונה מקומית
-Modal_ChangeUsername: אנא הזן {platformText} חדש לחשבונך
-Modal_ChangeUsernameType: שנה {UsernameOrOther}
+Modal_SetUserdata: הזן נתיב תיקיה למטה ולחץ על הגדר.
+Modal_SetUserdata_ChooseFolder: בחר תיקיה
+Modal_SetUserdata_Button: הגדר נתוני משתמש
+Modal_ChangeUsername: אנא הזן שם משתמש חדש עבור חשבונך
+Modal_ChangeUsernameType: שנה {platform} שם משתמש
 Modal_EnterDirectory: "אנא הכנס {platform}, ככזה: C: \\ קבצי תוכנה \\{platform}"
 Modal_LocatePlatform: אתר {platformExe}
 Modal_LocatePlatformFolder: בחר תיקיה {platform}
 Modal_ConfirmAction: אשר פעולה
 Modal_AddNew: אנא הזן שם {platform} שאתה מחובר אליו.
 Modal_AddCurrentAccount: הוסף חשבון {platform}
-Modal_EnterNewPassword: אנא הזן סיסמה חדשה כדי לאבטח את {platform} חשבונותיך במתג.<br>  שמור על בטיחותו. לא ניתן לשחזר אותו מאוחר יותר.
-Modal_EnterPassword: אנא הכנס את הסיסמה שלך לפלטפורמת {platform}
-Modal_EnterPasswordShort: הזן את הסיסמה
-Modal_EnterPasswordRepeat: הקלד את הסיסמא מחדש
-Modal_PasswordsMatch: סיסמאות תואמות
-Modal_PasswordsNoMatch: סיסמאות לא תואמות
+Modal_SetImageHeader: הגדר תמונת פרופיל
+Modal_SetImage: הגדר תמונה
 Status_SelectedAccount: "נבחר: {name}"
 Status_Init: "סטטוס: אתחול"
-Status_ClosingPlatform: "סוגרים {platform}"
-Status_ClosingPlatformFailed: "סגירת {platform}"
-Status_StartingPlatform: "מתחיל {platform}"
+Status_ClosingPlatform: סוגרים {platform}
+Status_ClosingPlatformFailed: סגירת {platform}
+Status_StartingPlatform: מתחיל {platform}
+Toast_StartingPlatformFailed: ההתחלה של {platform}נכשלה! ראה יומן לפרטים נוספים.
+Toast_UrlAdminErr: אינך יכול להפעיל קובצי url כמנהל מערכת. נסה סוג קיצור אחר. מופעל כמשתמש רגיל.
 Status_UpdatingFile: "מעדכן {file}"
 Status_UpdatingRegistry: עדכון הרישום של Windows
+Status_FailedLog: 'פעולה: נכשל. ראה יומן לפרטים.'
+Status_WaitingForClose: "ממתין ל {processName} לסגירה ({timeout}שניות{timeLimit}"
+Status_WaitingForMultipleClose: "ממתין לסגירה של {processName} ו {count} אחרים ({timeout}{timeLimit})"
+Status_GetUniqueId: איסוף מזהה משתמש ייחודי
+Status_CopyingFiles: מעתיק קבצי משתמש...
+Status_HandlingImage: טיפול בתמונת פרופיל חשבון
 Context_SwapTo: החלף לחשבון
 Context_CreateShortcut: צור קיצור דרך לשולחן העבודה
 Context_CreateShortcutSubmenu: צור קיצור דרך לשולחן העבודה...
@@ -208,19 +235,17 @@ Context_Steam_OpenUserdata: פתח נתונים נתונים
 Context_CopyOtherSubmenu: העתק אחר ...
 Context_HidePlatform: הסתר פלטפורמה
 Context_ExportAccList: ייצא רשימת חשבונות
+Context_RunAdmin: הפעל כמנהל
+Context_Hide: להתחבא
 Title_BNet_Settings: TcNo Account Switcher - הגדרות BattleNet
 Title_BNet_ManageIgnored: TcNo Account Switcher - נהל חשבונות BattleNet שהתעלמו מהם
-Title_Discord_Settings: מחליף חשבון TcNo - הגדרות מחלוקת
-Title_Epic_Settings: מחליף חשבון TcNo - הגדרות אפי
+Title_Platforms_Settings: TcNo Account Switcher - הגדרות פלטפורמה נוספות
 Title_AccountsList: מחליף חשבון TcNo - {platform}
 Title_TextEditor: מחליף חשבון TcNo - עורך טקסטים
-Title_Origin_Settings: מחליף TcNo חשבון - הגדרות מקור
-Title_Riot_Settings: מחליף חשבון TcNo - הגדרות מהומות
 Title_Settings: מחליף TcNo חשבון - הגדרות
 Title_Steam_Cleaning: TcNo Account Switcher - ניקוי קיטור
-Title_Steam_Restore: TcNo Account Switcher - שחזר חשבון Steam שנשכח
 Title_Steam_Settings: מחליף חשבון TcNo - הגדרות Steam
-Title_Ubisoft_Settings: TcNo Account Switcher - הגדרות Ubisoft
+Title_Template_Settings: TcNo Account Switcher - {platformName} הגדרות
 Installer_Downloading: מוריד {file}
 Installer_DownloadFinished: ההורדה הסתיימה {file}
 Installer_Installing: "התקנה: {runtime}"
@@ -242,7 +267,7 @@ Installer_Ready: "אחד או יותר מוכנים להתקנה. אם וכאש�
 Installer_PressStart: לחץ על מקש כלשהו כדי להתחיל בהתקנה ...
 Installer_VerifyMin: "ודא שאתה עומד בדרישות המינימליות המומלצות:"
 Installer_VerifyAlready: "נראה שהכל מותקן. ודא שאתה עומד בדרישות המינימליות המומלצות:"
-Installer_Complete: זה צריך להיות הכל. התוכנית הראשית, TcNo-Acc-Switcher.exe, תפעל אוטומטית כאשר תלחץ על מקש כדי להמשיך.
+Installer_Complete: זה צריך להיות הכל. התוכנית הראשית, TcNo-Acc-Switcher.exe, תפעל אוטומטית.
 Installer_Complete2: "אם זה לא עובד, עיין בהוראות ההתקנה, כאן: {link}"
 Global_FatalNext: "אירעה שגיאה אנושה! הבלוג הזה יוגש באופן אוטומטי בהשקה הבאה."
 Tray_Error: שגיאת מגש
@@ -325,7 +350,10 @@ Failed: נִכשָׁל
 Success: הַצלָחָה
 NotFound: לא נמצא
 Done: בוצע
+Working: עובד...
 ForName: "עבור: {name}"
+DeletedFiles: קבצים שנמחקו
+FileFoldersToClear: "רשימת קבצים/תיקיות לניקוי:"
 CouldNotFindX: לא נמצא {x}
 CouldNotCloseX: לא ניתן היה לסגור {x}!
 DirectoryNotFound: המדריך לא נמצא
@@ -334,18 +362,21 @@ DeletingFile: "מוחק: {file}"
 DeletingFolder: "מחיקת תיקיה: "
 CouldntDeleteX: "שגיאה: לא יכול למחוק: {x}"
 CouldntDeleteUndefined: "שגיאה: לא יכול למחוק קובץ לא מוגדר"
-Prompt_DiscordCopy1: לחץ על לחצן אפשרויות ולחץ
-Prompt_DiscordCopy2: "בדוק שמצב הסטרימר אינו מופעל, אחרת: תן שגיאה."
-Prompt_DiscordCopy3: וודא שמצב Streamer מושבת / אינו פעיל בעת הפעלת פקודה זו!
-Prompt_DiscordCopy4: קבל שם מפינה השמאלית התחתונה של המסך
-Prompt_DiscordCopy5: קבל את הדמות ואת שם המשתמש מהדף
-Prompt_DiscordCopy6: העתק את הדמות ואת שם המשתמש
-Prompt_DiscordCopy7: סגור אפשרויות
-Prompt_DiscordCopy8: יידע את המשתמש במסוף.
-Prompt_DiscordCopy9: מידע שהועתק בהצלחה!
-Prompt_DiscordCopy10: הדבק אותו בתיבת הקלט בממתג החשבונות כדי לעדכן / להגדיר תמונה ושם משתמש.
 Prompt_RestartAsAdmin: "<h3><bold>תוכנית זו תופעל מחדש כמנהל</bold></h3><p>\"כן\" ב- UAC כאשר תתבקש למנהל.</p>"
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>אתה עומד לשכוח חשבון!</h3> <h4>מה זה אומר?</h4> <p>- Steam כבר לא יופיע החשבון במצב Big Picture ולא יזכור את הסיסמה.<br/> - TcNo Account Switcher גם לא יציג עוד את החשבון עד שייכנס שוב דרך Steam.</p> <p>חשבונך יישאר ללא פגע. זה פשוט נשכח במחשב הזה.</p> <h4>מה אם משהו ישתבש?</h4> <p>אל תיבהל, אתה יכול להחזיר חשבונות שנשכחו באמצעות גיבויים במסך ההגדרות.<br/> תוכל גם להסיר משם גיבויים קודמים כאשר אתה בטוח שהכל עובד כמצופה.</p> <h4>אתה מבין?</h4>
+  <h3 style='color:red'>אתה עומד לשכוח חשבון!</h3> <h4>מה זה אומר?</h4> <p>- ל-Steam כבר לא יהיה החשבון הרשום במצב Big Picture ולא יזכור את הסיסמה.<br/> - TcNo Account Switcher גם לא יציג יותר את החשבון, עד שייכנס שוב דרך Steam.</p> <p>החשבון שלך לא ייפגע. זה פשוט נשכח במחשב הזה.</p><h4>אתה מבין?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>אתה עומד לשכוח חשבון!</h3> <h4>מה זה אומר?</h4> <p>TcNo Account Switcher לא יציג עוד את החשבון,<br/> עד שייכנס שוב עד {platform}ויתווסף לרשימה.</p> <p>חשבונך יישאר ללא פגע. זה פשוט נשכח במחשב הזה.</p> <h4>אתה מבין?</h4>
+Platform_DiscordPasteHint: הדבק בקונסולת Discord ולאחר מכן הדבק את התוצאה בקלט!
+Platform_ClearCache: נקה מטמון
+Platform_ClearCacheTotal: ניקוי {totalFileCount} קבצים ({totalSizeMB})
+Platform_DeleteFail: לא ניתן למחוק חלק מהקבצים (ייתכן שהתוכנית פועלת?)
+Platform_CouldNotDeleteLog: לא ניתן למחוק את הקובץ! בדוק {logPath}
+Error_FileAccessDenied: הגישה לקובץ נכשלה! בדוק {logPath}
+Tooltip_Settings: הגדרות
+Tooltip_Info: מידע
+Tooltip_ManagePlatforms: הצג או הסתר פלטפורמות אחרות
+Tooltip_ExpandShortcuts: הרחב את בחירת המשחקים וקיצורי הדרך
+Tooltip_ShortcutFolder: פתח את תיקיית קיצורי הדרך. הצב שם קיצורי דרך ואת מחליף החשבון TcNo כדי לראות אותם.
+Tooltip_Backup: גיבוי קבצי/תיקיות תצורה, כפי שהוגדר בהגדרות הפלטפורמה.
+Tooltip_BackupAll: גבה את כל קבצי/תיקיות התצורה, כולל תמונות וקבצים גדולים אחרים.

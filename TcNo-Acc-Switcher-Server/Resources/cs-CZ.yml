@@ -20,25 +20,36 @@ Button_ResetSettings: Obnovit nastavení
 Button_AdvancedCleaning: Pokročilé čištění...
 Button_ClearLog: Vymazat záznam
 Button_WikiInfo: Další informace (Wiki)
-Button_ClearDiscordCache: Vymazat mezipaměť Discord
+Button_ManagePlatforms: Spravujte další platformy
+Button_Backup: Záloha
+Button_BackupAll: Zálohujte vše
+Button_Restore: Obnovit
+Button_OpenBackup: Otevřete složku Backup Folder
 Settings_Shortcut: ' Přidat zástupce {platform} přepínače na plochu'
 Settings_Admin: Spustit {platform} jako správce
 Settings_ImageExpiry: 'Dny před vypršením platnosti profilových obrázků:'
 Settings_Header_AppWide: Nastavení celé aplikace
 Settings_Header_GeneralSettings: Obecná nastavení
+Settings_Header_ExtraPlatforms: Další nastavení platformy
 Settings_Header_GeneralTools: Obecné nástroje
 Settings_Header_OtherTools: Ostatní nástroje
-Settings_Header_HiddenPlatforms: Skryté platformy
 Settings_Header_TraySettings: Nastavení v systémové liště
 Settings_Header_OpenGameFolders: Otevřít herní složky
+Settings_Header_BackupRestore: Nastavení platformy zálohování a obnovení
 Settings_TrayMax: 'Maximální počet účtů, které chcete pamatovat:'
+Settings_ExtraPlatformsDisabled: Tyto dostupné další platformy jsou aktuálně zakázány. Kliknutím je povolíte.
+Settings_ExtraPlatformsEnabled: Tyto další platformy jsou viditelné. Kliknutím je deaktivujete.
 Settings_RTL: Zobrazit text jako zprava doleva
 Settings_CurrentLocation: 'Aktuální umístění instalace: {path}'
+Settings_CurrentDataLocation: 'Aktuální umístění uživatelských dat: {path}'
+Settings_SetDataLocation: "[Nastavit vlastní umístění uživatelských dat]"
+Toast_DataLocationCopying: (1/2) Kopírování stávajících souborů do nové složky uživatelských dat!
+Toast_DataLocationNotCopying: (1/2) Složka již obsahuje soubory! Nebudou migrovat uživatelská data.
+Toast_DataLocationSet: (2/2) Chcete-li použít novou složku, restartujte přepínač účtů!
 Settings_PickFolder: Vybrat složku {platform}
 Settings_OpenFolder: Otevřít složku {platform}
 Settings_ClearForgotten: Vymazat zapomenuté
 Settings_ClearAccounts: Vymazat účty
-Settings_RestoreForgotten: Obnovit zapomenutý účet
 Settings_StreamerMode: Povolit streamovací režim
 Settings_ExitToTray: Tlačítko ukončit minimalizuje do lišty
 Settings_DesktopShortcut: Zástupce na ploše
@@ -55,7 +66,8 @@ Settings_WindowsAccent: Použí barvu motivu Windows
 Settings_HelpTranslate: "[Pomozte s překladem]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Nastavit vykreslovací modul:"
-Settings_AltClose: "Alternativní způsob ukončení (když se platforma nezavře)"
+Settings_Header_ClosingMethod: "[Advanced] Nastavit způsob uzavření {platform}"
+Settings_NoPlatforms: Momentálně nejsou povoleny žádné platformy. Zaškrtněte prosím níže volitelné platformy, abyste je povolili, nebo zrušte zaškrtnutí zakázaných platforem.
 Cleaning_Header_StartMenuShortcuts: 'Zkratky pro nabídku startu:'
 Cleaning_Header_General: Obecné čištění
 Cleaning_Header_LoginHistory: Vyčistit historii přihlášení
@@ -66,14 +78,13 @@ Cleaning_ImportantInfo: >
 Cleaning_Button_KillProcess: Ukončit {platform} proces
 Cleaning_Button_ForgottenBackups: Zapomenuté zálohy účtu
 Cleaning_Understand: Rozumím, co tato tlačítka dělají.
-Restore_Header: Obnovit zapomenuté účty
 Restore_Info: >
   Pokud jste dříve účet "zapomněli", můžete ho zde obnovit.<br /> Toto je přidá zpět do souboru loginusers.vdf, což vám umožní přepnout na ně.
 Restore_Button_Restore: Obnovit vybrané
 Ignored_RemoveAccounts: Odstranit účty ze seznamu ignorovaných
 Ignored_Description: Pokud jste dříve "ignorovali" účet, můžete je znovu zobrazit zde
 Ignored_Stop: Přestat ignorovat vybrané
-Toast_RetryOrDeleteDiscordCache: Opakujte nebo odstraňte mezipaměť Discordu pro obnovení hesla (viz Wiki).
+Toast_PlaceShortcutFiles: Otevírá se složka. Do této složky umístěte zástupce her a restartujte přepínač účtů.
 Toast_TrayStarted: Spuštěno na liště!
 Toast_TrayRunning: Aplikace je již spuštěna
 Toast_TrayUsersMissing: Žádní uživatelé nebyli uloženi
@@ -81,7 +92,6 @@ Toast_TrayFail: Nelze spustit aplikaci v systémové liště!
 Toast_TrayPosition: "Kliknutím na tlačítko Ukončit: Budu v systémové liště Windows! (Napravo od startovací lišty)"
 Toast_TrayHint: "Tip: Ctrl+Klikni na 'X' pro úplné zavření, nebo přes Tray > 'Ukončit'"
 Toast_Copied: Zkopírováno
-Platform_DiscordPasteHint: Vložte do Discord konzole a pak výsledek vložte do vstupu!
 Toast_AlreadyProcessing: Již zpracovávám účty...
 Toast_FailedRestore: Nepodařilo se obnovit účty (viz konzole)
 Toast_Restored: Účty obnoveny!
@@ -103,13 +113,12 @@ Toast_BNet_CantLoadConfigCorrupt: Nelze načíst soubor účtů pro Blizzard (Ba
 Toast_BNet_NamePolicy: BattleTag se neshodoval s pravidly jmenování.
 Toast_ItemNotFound: "{item} nebyl nalezen"
 Toast_DeletedTotal: "{files} z {totalFiles} odstraněn. Celkem: {totalSize}"
-Toast_DeletedTotalTitle: Vymazána mezipaměť Discord!
-Toast_Discord_SignOutHint: "Tip: Musíš se odhlásit z Discordu v prohlížeči"
-Toast_Discord_SaveHint: "Tip: Změněno nastavení Discordu? Ušetřete znovu, se stejným jménem!"
-Toast_Discord_NoToken: Nepodařilo se najít token uživatele! Běžně ukončete Discord a znovu uložte.
 Toast_CantChangeUsername: Uživatelské jméno nelze změnit
 Toast_CantClearLoginFiles: Nepodařilo se vymazat staré přihlašovací soubory
-Toast_AccountIdReg: Nepodařilo se získat ID účtu z registrů!
+Toast_AccountIdReg: Nepodařilo se získat ID účtu z registru!
+Toast_RegFailWrite: Zápis do registru systému Windows se nezdařil!
+Toast_RegFailRead: Čtení z registru systému Windows se nezdařilo!
+Toast_RegSaveMissing: Selhalo hledání nebo čtení dat z uložených souborů registru!
 Toast_DuplicateNames: Nelze vyměnit. Duplikovat účty se stejným uživatelským jménem?
 Toast_CouldNotLocate: Nelze najít přihlášený uživatel
 Toast_StreamerModeHint: Soukromé informace jsou skryty! - Viz nastavení
@@ -121,7 +130,6 @@ Toast_CantCreateShortcut: Nelze vytvořit zástupce
 Toast_ShortcutCreated: Zástupce vytvořen!
 Toast_FailedUpdateCheck: Nepodařilo se zkontrolovat aktualizace
 Toast_UpdateVerifyFail: Nelze ověřit soubory aktualizací. Stáhněte si nejnovější verzi a nahraďte soubory ve vašem adresáři.
-Toast_Riot_StartGame: Změněný uživatel. Spusťte hru níže.
 Toast_StartedGame: Spuštěn {program}
 Toast_Steam_VacCleared: Status VAC pro účty byl vymazán
 Toast_Steam_CantDeleteVacCache: Nelze odstranit 'LoginCache/Steam/VACCache/SteamVACCache.json'
@@ -132,9 +140,6 @@ Toast_Steam_FailedLoginusers: Nepodařilo se načíst steam/config/loginusers.vd
 Toast_Steam_CantLocateLoginusers: Nelze nalézt '.../Steam/config/loginusers.vdf'. Zkuste se nejdříve přihlásit k účtu.
 Toast_CantClearImages: Nelze vymazat obrázky
 Toast_RefreshedImages: Obrázky Obnoveny
-Toast_Ubisoft_NoUsername: Nelze najít poslední přihlášené uživatele. Zkuste se nejdříve přihlásit do Ubisoft.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat nebyl nalezen. Poslední aktivní účet nebyl uložen."
-Toast_Ubisoft_NoUser: Nelze najít poslední přihlášené uživatele. Zkuste se nejdříve přihlásit do Ubisoft.
 Toast_ClearForgottenCheck: Opravdu chcete vymazat zálohy zapomenutých účtů?
 Toast_BattleNet_ChangedBTag: Změněn BattleTag
 Toast_BattleNet_DeletedBTag: Smazán BattleTag
@@ -145,6 +150,20 @@ Toast_ClearedImages: "Vyčištěné obrázky"
 Toast_SavedItem: "Uloženo: {item}"
 Toast_ChangedUsername: Uživatelské jméno bylo změněno
 Toast_SetUsername: Nastavit uživatelské jméno
+Toast_AlreadyLoggedIn: Již jste přihlášeni pomocí tohoto účtu! (Neprovedeny žádné změny)
+Toast_BackupCopy: (1/3) Kopírování souborů do dočasného umístění...
+Toast_BackupCompress: (2/3) Komprese souborů ({size}). Bude to chvíli trvat...
+Toast_BackupComplete: (3/3) Komprese dokončena! ({size} až {compressedSize})
+Toast_BackupProgress: "Probíhá zálohování (komprimovaná velikost: {compressedSize})"
+Toast_BackupBusy: Zálohování již probíhá!
+Toast_RestoreBusy: Obnovení již probíhá!
+Toast_RestoreExt: Rozbalení archivu.
+Toast_RestoreCopying: Přesouvání souborů zpět na platformu
+Toast_RestoreDeleting: Mazání dočasných souborů
+Toast_RestoreComplete: Obnovení dokončeno!
+Toast_FailedLoad: Nepodařilo se načíst {platform}! Chybu zobrazíte kliknutím na platformu.
+Toast_FailedPlatformsLoad: Načtení Platforms.json se nezdařilo! Prosím ověřte, že tento soubor existuje.
+Tooltip_Restore: Klepnutím vyberte soubor 7z nebo jej přetáhněte na toto tlačítko.
 Modal_Crowdin_Header: Crowdinští překladatelé
 Modal_Crowdin_Info: "Zde jsou všichni, kteří pomohli přeložit tento software.<br>překladu hodně pomohli uživatelé s jazyky vedle sebe (role korektora)."
 Modal_Info_Creator: Vytvořeno společností TechNobo [Wesley Pyburn]
@@ -159,30 +178,38 @@ Modal_Title_ConfirmAction: Akce Přepínače účtu TcNo
 Modal_Title_LocatePlatform: Vyhledejte prosím složku {platform}
 Modal_Title_AddNew: Přidat nový {platform} účet
 Modal_Title_Background: Nastavte obrázek na pozadí
+Modal_Title_Userdata: Nastavte složku uživatelských dat
 Modal_SetBackground: 'Vyberte obrázek nebo níže zadejte adresu URL.<br>Ponechte prázdné a nastavte reset.<br>(Pro pokročilejší ovládání viz Theming na Wiki):'
 Modal_SetBackground_Button: Nastavit pozadí
 Modal_SetBackground_ChooseImage: Vyberte místní obrázek
-Modal_ChangeUsername: Zadejte prosím nový {platformText} pro váš účet
-Modal_ChangeUsernameType: Změnit {UsernameOrOther}
+Modal_SetUserdata: Níže zadejte cestu ke složce a klikněte na nastavit.
+Modal_SetUserdata_ChooseFolder: Vyberte složku
+Modal_SetUserdata_Button: Nastavit uživatelská data
+Modal_ChangeUsername: Zadejte prosím nové uživatelské jméno pro svůj účet
+Modal_ChangeUsernameType: Změňte {platform} uživatelské jméno
 Modal_EnterDirectory: "Zadejte prosím adresář {platform} jako takový: C:\\Program Files\\{platform}"
 Modal_LocatePlatform: Najít {platformExe}
 Modal_LocatePlatformFolder: Vybrat složku {platform}
 Modal_ConfirmAction: Potvrdit akci
 Modal_AddNew: Zadejte název účtu {platform} , ke kterému jste přihlášeni.
 Modal_AddCurrentAccount: Přidat aktuální účet {platform}
-Modal_EnterNewPassword: Zadejte prosím nové heslo pro zabezpečení Vašich {platform} účtů v přepínači.<br>  Uchovávejte ho v bezpečí. Nelze ho později obnovit.
-Modal_EnterPassword: Zadejte prosím své heslo pro platformu {platform} Přepínače TcNo.
-Modal_EnterPasswordShort: Zadejte heslo
-Modal_EnterPasswordRepeat: Zopakujte heslo
-Modal_PasswordsMatch: Hesla se shodují
-Modal_PasswordsNoMatch: Hesla se neshodují
+Modal_SetImageHeader: Nastavit profilový obrázek
+Modal_SetImage: Nastavit obrázek
 Status_SelectedAccount: "Vybráno: {name}"
 Status_Init: "Stav: inicializace"
-Status_ClosingPlatform: "Zavírání {platform}"
-Status_ClosingPlatformFailed: "Nepodařilo se zavřít {platform}"
-Status_StartingPlatform: "Počínaje {platform}"
+Status_ClosingPlatform: Zavírání {platform}
+Status_ClosingPlatformFailed: Nepodařilo se zavřít {platform}
+Status_StartingPlatform: Počínaje {platform}
+Toast_StartingPlatformFailed: Nepodařilo se spustit {platform}! Další podrobnosti naleznete v protokolu.
+Toast_UrlAdminErr: Soubory .url nemůžete spouštět jako správce. Zkuste jiný typ zkratky. Spuštění jako normální uživatel.
 Status_UpdatingFile: "Aktualizace {file}"
 Status_UpdatingRegistry: Aktualizace registru Windows
+Status_FailedLog: Akce se nezdařila. Podrobnosti naleznete v protokolu.
+Status_WaitingForClose: "Čekání na zavření {processName} ({timeout}{timeLimit})"
+Status_WaitingForMultipleClose: "Čekání na zavření {processName} a {count} dalšího ({timeout}{timeLimit})"
+Status_GetUniqueId: Shromažďování jedinečného ID uživatele
+Status_CopyingFiles: Kopírování uživatelských souborů...
+Status_HandlingImage: Manipulace s profilovým obrázkem účtu
 Context_SwapTo: Prohodit účet
 Context_CreateShortcut: Vytvořit zástupce na ploše
 Context_CreateShortcutSubmenu: Vytvořit zástupce na ploše...
@@ -208,19 +235,17 @@ Context_Steam_OpenUserdata: Otevřít uživatelská data
 Context_CopyOtherSubmenu: Kopírovat ostatní...
 Context_HidePlatform: Skrýt platformu
 Context_ExportAccList: Exportovat seznam účtů
+Context_RunAdmin: Spustit jako správce
+Context_Hide: Skrýt
 Title_BNet_Settings: Přepínač účtu TcNo - Nastavení BattleNet
 Title_BNet_ManageIgnored: Přepínač účtu TcNo - Správa ignorovaných účtů BattleNet
-Title_Discord_Settings: Přepínač účtu TcNo - Nastavení Discordu
-Title_Epic_Settings: Přepínač TcNo účtu - Nastavení Epiky
+Title_Platforms_Settings: Přepínač účtů TcNo – Extra nastavení platformy
 Title_AccountsList: Přepínač TcNo účtu - {platform}
 Title_TextEditor: Přepínač účtu TcNo - Editor textu
-Title_Origin_Settings: Přepínač TcNo účtu - Nastavení původu
-Title_Riot_Settings: Přepínač TcNo účtu - Nastavení Riot
 Title_Settings: Přepínač TcNo účtu - Nastavení
 Title_Steam_Cleaning: Přepínač účtu TcNo - čištění Steam
-Title_Steam_Restore: Přepínač účtu TcNo - Obnovení zapomenutého Steam účtu
 Title_Steam_Settings: Přepínač TcNo účtu - nastavení Steam
-Title_Ubisoft_Settings: Přepínač účtu TcNo - Nastavení Ubisoft
+Title_Template_Settings: TcNo Account Switcher - {platformName} Settings
 Installer_Downloading: Stahování souboru {file}
 Installer_DownloadFinished: Stahování {file} dokončeno
 Installer_Installing: "Instalace: {runtime}"
@@ -242,7 +267,7 @@ Installer_Ready: "Jeden nebo více je připraveno k instalaci. Pokud a kdy budet
 Installer_PressStart: Stiskněte libovolné tlačítko pro spuštění instalace...
 Installer_VerifyMin: "Ověřte, zda splňujete minimální doporučené požadavky:"
 Installer_VerifyAlready: "Vypadá to, že je vše nainstalováno. Ověřte, zda splňujete minimální doporučené požadavky:"
-Installer_Complete: To by mělo být vše. Hlavní program, TcNo-Acc-Switcher.exe, se automaticky spustí, když stisknete klávesu pro pokračování.
+Installer_Complete: To by mělo být vše. Hlavní program, TcNo-Acc-Switcher.exe, se spustí automaticky.
 Installer_Complete2: "Pokud to nefunguje, podívejte se na pokyny k instalaci, zde: {link}"
 Global_FatalNext: "Došlo k závažné chybě! Tento protokol selhání bude automaticky odeslán při příštím spuštění."
 Tray_Error: Chyba v systémové liště
@@ -325,7 +350,10 @@ Failed: Operace selhala
 Success: Operace úspěšná
 NotFound: Nenalezeno
 Done: Hotovo
+Working: Pracovní...
 ForName: "Pro: {name}"
+DeletedFiles: Smazané soubory
+FileFoldersToClear: "Seznam souborů/složek k vymazání:"
 CouldNotFindX: Nelze najít {x}
 CouldNotCloseX: Nelze zavřít {x}!
 DirectoryNotFound: Adresář nebyl nalezen
@@ -334,18 +362,21 @@ DeletingFile: "Odstraňuji: {file}"
 DeletingFolder: "Odstraňování složky: "
 CouldntDeleteX: "CHYBA: NELZE SMAZAT: {x}"
 CouldntDeleteUndefined: "CHYBA: SOUULDNOVAT NEDEFINOVANÝ FILE"
-Prompt_DiscordCopy1: Najít tlačítko možností a kliknout
-Prompt_DiscordCopy2: "Zkontrolujte, že streamovací režim není povolen, v opačném případě: Dejte chybu."
-Prompt_DiscordCopy3: Ujistěte se, že streamovací režim je zakázán/není aktivní při spuštění tohoto příkazu!
-Prompt_DiscordCopy4: Získat jméno z levé dolní části obrazovky
-Prompt_DiscordCopy5: Získat Avatar a uživatelské jméno ze stránky
-Prompt_DiscordCopy6: Kopírovat avatar a uživatelské jméno
-Prompt_DiscordCopy7: Zavřít možnosti
-Prompt_DiscordCopy8: Dejte uživateli vědět v konzoli.
-Prompt_DiscordCopy9: Informace byly úspěšně zkopírovány!
-Prompt_DiscordCopy10: Vložte jej do vstupního pole do přepínače účtů pro aktualizaci/nastavení obrázku a uživatelského jména.
 Prompt_RestartAsAdmin: "<h3><bold>Tento program bude restartován jako Správce</bold></h3><p>stiskněte tlačítko \"Ano\" v UAC při výzvě správce.</p>"
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>Chystáte se zapomenout na účet!</h3> <h4>Co to znamená?</h4> <p>- Steam již nebude mít účet v režimu velkého obrazu a nebude si pamatovat heslo.<br/> - Přepínač účtů TcNo již nebude zobrazovat účet, dokud nebude znovu přihlášen přes Steam.</p> <p>Váš účet zůstane nedotčen. Na tomto počítači je to zapomenuto.</p> <h4>Co když se něco pokazí?</h4> <p>Nenechte panikařit, můžete obnovit zapomenuté účty prostřednictvím záloh v obrazovce Nastavení.<br/> Můžete také odstranit předchozí zálohy, pokud jste si jisti, že vše funguje podle očekávání.</p> <h4>Rozumíš?</h4>
+  <h3 style='color:red'>Chystáte se zapomenout účet!</h3> <h4>Co to znamená?</h4> <p>- Steam již nebude mít účet uvedený v režimu Big Picture a nebude si pamatovat heslo.<br/> – Přepínač účtů TcNo již také nebude zobrazovat účet, dokud se znovu nepřihlásí prostřednictvím služby Steam.</p> <p>Váš účet zůstane nedotčen. V tomto počítači je to prostě zapomenuto.</p><h4>Rozumíte?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Chystáte se zapomenout na účet!</h3> <h4>Co to znamená?</h4> <p>Přepínač TcNo účtu již nebude zobrazovat účet,<br/> dokud není znovu přihlášen přes {platform}a není přidán do seznamu.</p> <p>Váš účet zůstane nedotčen. Na tomto počítači je zapomenut.</p> <h4>Rozrozumíte?</h4>
+Platform_DiscordPasteHint: Vložte do Discord konzole a pak výsledek vložte do vstupu!
+Platform_ClearCache: Vyčistit mezipaměť
+Platform_ClearCacheTotal: Mazání {totalFileCount} souborů ({totalSizeMB})
+Platform_DeleteFail: Některé soubory nelze smazat (může být spuštěn program?)
+Platform_CouldNotDeleteLog: Soubor nelze smazat! Zkontrolujte {logPath}
+Error_FileAccessDenied: Nepodařilo se získat přístup k souboru! Zkontrolujte {logPath}
+Tooltip_Settings: Nastavení
+Tooltip_Info: Info
+Tooltip_ManagePlatforms: Zobrazit nebo skrýt další platformy
+Tooltip_ExpandShortcuts: Rozbalte výběr her a zástupců
+Tooltip_ShortcutFolder: Otevřete složku zástupců. Umístěte tam zástupce a přepínač účtů TcNo, abyste je viděli.
+Tooltip_Backup: Zálohujte konfigurační soubory/složky, jak je definováno v nastavení platformy.
+Tooltip_BackupAll: Zálohujte VŠECHNY konfigurační soubory/složky, včetně obrázků a dalších velkých souborů.

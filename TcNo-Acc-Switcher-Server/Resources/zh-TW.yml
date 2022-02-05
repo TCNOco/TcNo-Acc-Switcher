@@ -1,87 +1,97 @@
 ---
-Update: 更新可用！單擊此處開始。
+Update: 有可用的更新！請按此開啟。
 Header_ChooseLanguage: '選擇語言：'
 BattleNet_ShowSR: 顯示 Overwatch SR 並使用 Overwatch 個人資料圖片。
-Steam_ShowSteamID: 顯示 SteamID
+Steam_ShowSteamID: 顯示 Steam ID
 Steam_ShowVac: 顯示 VAC 狀態
-Steam_CheckVac: 檢查帳戶 VAC 狀態
+Steam_CheckVac: 確認帳號的 VAC 狀態
 Steam_ShowLimited: 顯示受限狀態
-Steam_ShowAccUsername: 顯示帳戶用戶名
-Steam_Tray_AccountName: 顯示帳戶名稱 [不是朋友名稱]
-Steam_OverrideDefaultState: "覆蓋默認登錄狀態："
-Button_AddNew: 添新
-Button_SaveCurrent: 保存當前
-Button_SaveFile: 保存存檔
+Steam_ShowAccUsername: 顯示帳號的使用者名稱
+Steam_Tray_AccountName: 顯示帳號名稱 [非好友名稱]
+Steam_OverrideDefaultState: "將預設登入狀態取代為："
+Button_AddNew: 新增
+Button_SaveCurrent: 儲存目前內容
+Button_SaveFile: 儲存檔案
 Button_Cancel: 取消
-Button_Login: 登錄
+Button_Login: 登入
 Button_Close: 關閉
-Button_RefreshImages: 刷新圖像
-Button_ResetSettings: 重新設置
-Button_AdvancedCleaning: 高級清潔...
+Button_RefreshImages: 重新載入圖像
+Button_ResetSettings: 重置設定
+Button_AdvancedCleaning: 進階清理…
 Button_ClearLog: 清除日誌
 Button_WikiInfo: 更多信息（維基）
-Button_ClearDiscordCache: 清除 Discord 緩存
-Settings_Shortcut: ' {platform} 切換台桌面快捷方式'
-Settings_Admin: 以管理員身份運行 {platform}
+Button_ManagePlatforms: 管理額外平台
+Button_Backup: 備份
+Button_BackupAll: 全部備份
+Button_Restore: 回復
+Button_OpenBackup: 開啟備份資料夾
+Settings_Shortcut: ' {platform} 切換器桌面捷徑'
+Settings_Admin: 以管理員身份執行 {platform}
 Settings_ImageExpiry: '個人資料圖片過期前的天數：'
 Settings_Header_AppWide: 應用範圍的設置
-Settings_Header_GeneralSettings: 常規設置
-Settings_Header_GeneralTools: 通用工具
+Settings_Header_GeneralSettings: 一般設定
+Settings_Header_ExtraPlatforms: 額外平台設定
+Settings_Header_GeneralTools: 一般工具
 Settings_Header_OtherTools: 其他工具
-Settings_Header_HiddenPlatforms: 隱藏平台
-Settings_Header_TraySettings: 托盤設置
-Settings_Header_OpenGameFolders: 打開遊戲文件夾
-Settings_TrayMax: '要記住的最大帳戶數：'
-Settings_RTL: 從右到左顯示文本
-Settings_CurrentLocation: '當前安裝位置： {path}'
-Settings_PickFolder: 選擇 {platform} 文件夾
-Settings_OpenFolder: 打開 {platform} 文件夾
-Settings_ClearForgotten: 清除遺忘
-Settings_ClearAccounts: 清除帳戶
-Settings_RestoreForgotten: 恢復忘記的帳戶
-Settings_StreamerMode: 啟用流媒體模式
-Settings_ExitToTray: 退出最小化到托盤
-Settings_DesktopShortcut: 桌面快捷方式
-Settings_StartMenu_ProgramTray: 程序和托盤
+Settings_Header_TraySettings: 通知列設定
+Settings_Header_OpenGameFolders: 開啟遊戲資料夾
+Settings_Header_BackupRestore: 備份和回復平台設定
+Settings_TrayMax: '帳號記憶上限數量：'
+Settings_ExtraPlatformsDisabled: 這些可用的額外平台當前被禁用。單擊以啟用它們。
+Settings_ExtraPlatformsEnabled: 這些額外的平台是可見的。單擊以禁用它們。
+Settings_RTL: 文字顯示為自右到左
+Settings_CurrentLocation: '目前安裝路徑： {path}'
+Settings_CurrentDataLocation: '當前用戶數據位置： {path}'
+Settings_SetDataLocation: "[設置自定義用戶數據位置]"
+Toast_DataLocationCopying: (1/2) 將現有文件複製到新的用戶數據文件夾中！
+Toast_DataLocationNotCopying: (1/2) 文件夾已有文件！不會遷移用戶數據。
+Toast_DataLocationSet: (2/2) 重啟賬號切換器即可使用新文件夾！
+Settings_PickFolder: 選擇 {platform} 資料夾
+Settings_OpenFolder: 開啟 {platform} 資料夾
+Settings_ClearForgotten: 清除忘記帳號的備份
+Settings_ClearAccounts: 清除帳號
+Settings_StreamerMode: 啟用串流模式
+Settings_ExitToTray: 退出時最小化至通知列
+Settings_DesktopShortcut: 桌面捷徑
+Settings_StartMenu_ProgramTray: 程式與通知列
 Settings_StartMenu_Platform: 平台
-Settings_Tray_StartWindows: 使用 Windows 啟動托盤
-Settings_Tray_StartNow: '[現在開始托盤]'
-Settings_CurrentStyle: 當前風格
-Settings_ThemeBackground: '[設置背景]'
-Settings_ThemeOpenFolder: '[打開主題文件夾]'
-Settings_Protocol: '啟用 tcno:\\ 協議（推薦）'
-Settings_StartCentered: 啟動程序居中
+Settings_Tray_StartWindows: 啟用 Windows 通知列圖示
+Settings_Tray_StartNow: '[馬上啟用通知列圖示]'
+Settings_CurrentStyle: 目前主題
+Settings_ThemeBackground: '[設定背景]'
+Settings_ThemeOpenFolder: '[開啟主題資料夾]'
+Settings_Protocol: '啟用 tcno:\\ protocol（建議）'
+Settings_StartCentered: 啟動程式時居中
 Settings_WindowsAccent: 使用 Windows 強調色
-Settings_HelpTranslate: "[幫助翻譯]"
+Settings_HelpTranslate: "[協助翻譯]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] 設置渲染引擎："
-Settings_AltClose: "替代退出方法（當平台未關閉時）"
-Cleaning_Header_StartMenuShortcuts: '開始菜單快捷鍵：'
-Cleaning_Header_General: 一般清洗
-Cleaning_Header_LoginHistory: 清理我的登錄歷史
-Cleaning_Header_PlatformCleaning: '{platform} 切換台'
-Cleaning_ImportantInfoHeader: '重要信息：'
+Settings_Header_ActiveBrowser: "[進階] 設定運算引擎："
+Settings_Header_ClosingMethod: "[Advanced] 設置關閉方法 {platform}"
+Settings_NoPlatforms: 當前沒有啟用任何平台。請勾選下面的可選平台以啟用它們，或取消選中禁用的平台。
+Cleaning_Header_StartMenuShortcuts: '開始功能表捷徑：'
+Cleaning_Header_General: 一般清除
+Cleaning_Header_LoginHistory: 清除我的登入紀錄
+Cleaning_Header_PlatformCleaning: '{platform} 切換器'
+Cleaning_ImportantInfoHeader: '重要資訊：'
 Cleaning_ImportantInfo: >
   單擊按鈕將從您的 Steam 安裝中刪除相關文件。<br /> 刪除 loginusers.vdf 將導致此帳戶切換器不顯示任何帳戶。<br /> 您需要使用 Steam 登錄它們才能取回它們。
-Cleaning_Button_KillProcess: 殺死 {platform} 進程
-Cleaning_Button_ForgottenBackups: 忘記帳戶備份
+Cleaning_Button_KillProcess: 終止 {platform} 行程
+Cleaning_Button_ForgottenBackups: 忘記帳號的備份
 Cleaning_Understand: 我明白這些按鈕的作用。
-Restore_Header: 恢復忘記的帳戶
 Restore_Info: >
   如果您之前“忘記”了一個帳戶，您可以在此處恢復它們。<br /> 這會將它們添加回您的 loginusers.vdf 文件，允許您切換到它們。
 Restore_Button_Restore: 恢復選擇
 Ignored_RemoveAccounts: 從忽略列表中刪除帳戶
 Ignored_Description: 如果您之前“忽略”了一個帳戶，您可以在此處再次顯示它們
 Ignored_Stop: 停止忽略所選
-Toast_RetryOrDeleteDiscordCache: 重試或刪除 Discord 緩存以重置密碼（請參閱 Wiki）。
-Toast_TrayStarted: 托盤開始！
-Toast_TrayRunning: 托盤已打開
-Toast_TrayUsersMissing: 未保存託盤用戶
+Toast_PlaceShortcutFiles: 一個文件夾正在打開。將游戲快捷方式放在該文件夾中，然後重新啟動帳戶切換器。
+Toast_TrayStarted: 通知列圖示已啟用！
+Toast_TrayRunning: 通知列圖示已啟用
+Toast_TrayUsersMissing: 未儲存通知列使用者
 Toast_TrayFail: 無法啟動托盤應用程序！
-Toast_TrayPosition: "單擊“退出”按鈕時：我將在 Windows 托盤上！ （開始欄右側）"
-Toast_TrayHint: "提示：Ctrl+單擊“X”完全關閉我，或通過托盤>“退出”"
+Toast_TrayPosition: "按下退出後，我會繼續待在 Windows 通知列（工作列右側）！"
+Toast_TrayHint: "小提示：Ctrl+右上角按X可將我完全關閉，也可透過通知列→退出"
 Toast_Copied: 已復制
-Platform_DiscordPasteHint: 粘貼到 Discord 控制台，然後將結果粘貼到輸入中！
 Toast_AlreadyProcessing: 已在處理帳戶...
 Toast_FailedRestore: 無法恢復帳戶（請參閱控制台）
 Toast_Restored: 帳號已恢復！
@@ -103,13 +113,12 @@ Toast_BNet_CantLoadConfigCorrupt: 無法加載暴雪的帳戶文件（Battle.net
 Toast_BNet_NamePolicy: BattleTag 與命名策略不匹配。
 Toast_ItemNotFound: "{item} 未找到"
 Toast_DeletedTotal: "已刪除 {totalFiles} {files} 總計： {totalSize}"
-Toast_DeletedTotalTitle: 清除 Discord 緩存！
-Toast_Discord_SignOutHint: "提示：您必須在瀏覽器中退出 Discord"
-Toast_Discord_SaveHint: "提示：更改了 Discord 設置？再次保存，同名！"
-Toast_Discord_NoToken: 未能找到用戶的令牌！正常退出 Discord，然後再次保存。
 Toast_CantChangeUsername: 無法更改用戶名
 Toast_CantClearLoginFiles: 無法清除舊的登錄文件
-Toast_AccountIdReg: 無法從註冊表中獲取 AccountId！
+Toast_AccountIdReg: 無法從註冊表中獲取帳戶 ID！
+Toast_RegFailWrite: 無法寫入 Windows 註冊表！
+Toast_RegFailRead: 從 Windows 註冊表讀取失敗！
+Toast_RegSaveMissing: 從保存的註冊表文件中查找或讀取數據失敗！
 Toast_DuplicateNames: 無法交換。具有相同用戶名的重複帳戶？
 Toast_CouldNotLocate: 找不到登錄的用戶
 Toast_StreamerModeHint: 隱私信息被隱藏！ - 查看設置
@@ -121,7 +130,6 @@ Toast_CantCreateShortcut: 無法創建快捷方式
 Toast_ShortcutCreated: 快捷方式已創建！
 Toast_FailedUpdateCheck: 未能檢查更新
 Toast_UpdateVerifyFail: 無法驗證更新程序文件。下載最新版本並替換目錄中的文件。
-Toast_Riot_StartGame: 改變了用戶。下面開始遊戲。
 Toast_StartedGame: 開始 {program}
 Toast_Steam_VacCleared: 帳戶的 VAC 狀態已清除
 Toast_Steam_CantDeleteVacCache: 無法刪除“LoginCache/Steam/VACCache/SteamVACCache.json”
@@ -132,9 +140,6 @@ Toast_Steam_FailedLoginusers: 無法加載 steam/config/loginusers.vdf
 Toast_Steam_CantLocateLoginusers: 找不到“.../Steam/config/loginusers.vdf”。先嘗試登錄一個帳戶。
 Toast_CantClearImages: 無法清除圖像
 Toast_RefreshedImages: 刷新的圖像
-Toast_Ubisoft_NoUsername: 找不到上次登錄的用戶。先嘗試再次登錄育碧。
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat 無法找到。未保存最後一個活動帳戶。"
-Toast_Ubisoft_NoUser: 找不到上次登錄的用戶。先嘗試再次登錄育碧。
 Toast_ClearForgottenCheck: 您確定要清除忘記帳戶的備份嗎？
 Toast_BattleNet_ChangedBTag: 更改了戰鬥標籤
 Toast_BattleNet_DeletedBTag: 已刪除的戰鬥標籤
@@ -145,6 +150,20 @@ Toast_ClearedImages: "清除圖像"
 Toast_SavedItem: "已保存： {item}"
 Toast_ChangedUsername: 更改用戶名
 Toast_SetUsername: 設置用戶名
+Toast_AlreadyLoggedIn: 已經用這個賬號登錄了！ （未進行任何更改）
+Toast_BackupCopy: (1/3) 將文件複製到臨時位置...
+Toast_BackupCompress: (2/3) 壓縮文件 ({size})。這將需要一些時間...
+Toast_BackupComplete: (3/3) 壓縮完畢！ ({size} 到 {compressedSize})
+Toast_BackupProgress: "正在進行備份（壓縮大小： {compressedSize}）"
+Toast_BackupBusy: 備份已在進行中！
+Toast_RestoreBusy: 恢復已經在進行中！
+Toast_RestoreExt: 提取存檔。
+Toast_RestoreCopying: 將文件移回平台
+Toast_RestoreDeleting: 刪除臨時文件
+Toast_RestoreComplete: 恢復完畢！
+Toast_FailedLoad: '{platform}加載失敗！單擊平台以查看錯誤。'
+Toast_FailedPlatformsLoad: 無法加載 Platforms.json！請驗證此文件是否存在。
+Tooltip_Restore: 單擊以選擇 7z 文件，或將其拖到此按鈕上。
 Modal_Crowdin_Header: Crowdin 譯者
 Modal_Crowdin_Info: "這是幫助翻譯此軟件的每個人。<br>語言相鄰的用戶在翻譯方面提供了很多幫助（校對角色）。"
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 創建
@@ -159,33 +178,41 @@ Modal_Title_ConfirmAction: TcNo 帳戶切換器確認操作
 Modal_Title_LocatePlatform: 請定位 {platform} 目錄
 Modal_Title_AddNew: 添加新的 {platform} 帳戶
 Modal_Title_Background: 設置背景圖片
+Modal_Title_Userdata: 設置用戶數據文件夾
 Modal_SetBackground: '選擇圖像，或在下方輸入 URL。<br>留空並設置為重置。<br>（有關更高級的控制，請參閱 Wiki 上的主題）：'
 Modal_SetBackground_Button: 設置背景
 Modal_SetBackground_ChooseImage: 選擇本地圖片
-Modal_ChangeUsername: 請為您的帳戶輸入一個新的 {platformText}
-Modal_ChangeUsernameType: 更改 {UsernameOrOther}
+Modal_SetUserdata: 在下方輸入文件夾路徑，然後單擊設置。
+Modal_SetUserdata_ChooseFolder: 選擇資料夾
+Modal_SetUserdata_Button: 設置用戶數據
+Modal_ChangeUsername: 請為您的帳戶輸入新用戶名
+Modal_ChangeUsernameType: 更改 {platform} 用戶名
 Modal_EnterDirectory: "請輸入 {platform}的目錄，例如：C:\\Program Files\\{platform}"
 Modal_LocatePlatform: 定位 {platformExe}
 Modal_LocatePlatformFolder: 選擇 {platform} 文件夾
 Modal_ConfirmAction: 確認操作
 Modal_AddNew: 請輸入您登錄 {platform}
 Modal_AddCurrentAccount: 添加當前 {platform} 帳戶
-Modal_EnterNewPassword: 請輸入新密碼以保護您在切換器中的 {platform}<br>  保持安全。以後無法恢復。
-Modal_EnterPassword: 請輸入您的 TcNo Account Switcher {platform} 平台密碼。
-Modal_EnterPasswordShort: 輸入密碼
-Modal_EnterPasswordRepeat: 再次輸入密碼
-Modal_PasswordsMatch: 密碼匹配
-Modal_PasswordsNoMatch: 密碼不匹配
+Modal_SetImageHeader: 設置個人資料圖片
+Modal_SetImage: 設置圖像
 Status_SelectedAccount: "已選擇： {name}"
 Status_Init: "狀態：正在初始化"
-Status_ClosingPlatform: "關閉 {platform}"
-Status_ClosingPlatformFailed: "關閉失敗 {platform}"
-Status_StartingPlatform: "從 {platform}"
+Status_ClosingPlatform: 關閉 {platform}
+Status_ClosingPlatformFailed: 關閉失敗 {platform}
+Status_StartingPlatform: 從 {platform}
+Toast_StartingPlatformFailed: '{platform} 啟動失敗！有關詳細信息，請參閱日誌。'
+Toast_UrlAdminErr: 您不能以管理員身份運行 .url 文件。嘗試另一種快捷方式。以普通用戶身份啟動。
 Status_UpdatingFile: "更新 {file}"
 Status_UpdatingRegistry: 更新 Windows 註冊表
+Status_FailedLog: 操作失敗。有關詳細信息，請參閱日誌。
+Status_WaitingForClose: "等待 {processName} 關閉（{timeout}/{timeLimit} 秒）"
+Status_WaitingForMultipleClose: "等待 {processName} 和 {count} 人關閉（{timeout}/{timeLimit} 秒）"
+Status_GetUniqueId: 收集唯一的用戶 ID
+Status_CopyingFiles: 正在復制用戶文件...
+Status_HandlingImage: 處理帳戶資料圖片
 Context_SwapTo: 換到賬戶
-Context_CreateShortcut: 創建桌面快捷方式
-Context_CreateShortcutSubmenu: 創建桌面快捷方式...
+Context_CreateShortcut: 建立桌面捷徑
+Context_CreateShortcutSubmenu: 建立桌面捷徑…
 Context_ChangeImage: 更改圖像
 Context_BNet_SetBTag: 設置戰鬥標籤
 Context_BNet_DelBTag: 刪除戰鬥標籤
@@ -208,19 +235,17 @@ Context_Steam_OpenUserdata: 打開用戶數據
 Context_CopyOtherSubmenu: 複製其他...
 Context_HidePlatform: 隱藏平台
 Context_ExportAccList: 導出賬戶列表
+Context_RunAdmin: 以管理員身份運行
+Context_Hide: 隱藏
 Title_BNet_Settings: TcNo 賬號切換器 - 戰網設置
 Title_BNet_ManageIgnored: TcNo Account Switcher - 管理被忽略的戰網賬戶
-Title_Discord_Settings: TcNo 帳戶切換器 - 不和諧設置
-Title_Epic_Settings: TcNo 帳戶切換器 - 史詩設置
+Title_Platforms_Settings: TcNo 帳戶切換器 - 額外平台設置
 Title_AccountsList: TcNo 帳戶切換器 - {platform}
 Title_TextEditor: TcNo 帳戶切換器 - 文本編輯器
-Title_Origin_Settings: TcNo 帳戶切換器 - 來源設置
-Title_Riot_Settings: TcNo 賬戶切換器 - Riot 設置
 Title_Settings: TcNo 帳戶切換器 - 設置
 Title_Steam_Cleaning: TcNo 帳戶切換器 - Steam 清潔
-Title_Steam_Restore: TcNo Account Switcher - 恢復忘記的 Steam 帳戶
 Title_Steam_Settings: TcNo 帳戶切換器 - Steam 設置
-Title_Ubisoft_Settings: TcNo 賬戶切換器 - 育碧設置
+Title_Template_Settings: TcNo 帳戶切換器 - {platformName} 設置
 Installer_Downloading: 下載 {file}
 Installer_DownloadFinished: 下載完成 {file}
 Installer_Installing: "安裝： {runtime}"
@@ -242,11 +267,11 @@ Installer_Ready: "一個或多個已準備好安裝。如果系統提示您是�
 Installer_PressStart: 按任意鍵開始安裝...
 Installer_VerifyMin: "驗證您是否滿足最低推薦要求："
 Installer_VerifyAlready: "看起來一切都安裝好了。驗證您是否滿足最低推薦要求："
-Installer_Complete: 那應該就是一切。當您按一個鍵繼續時，主程序 TcNo-Acc-Switcher.exe 將自動運行。
+Installer_Complete: 那應該就是一切。主程序 TcNo-Acc-Switcher.exe 將自動運行。
 Installer_Complete2: "如果它不起作用，請參閱安裝說明，這裡： {link}"
 Global_FatalNext: "發生致命錯誤！此崩潰日誌將在下次啟動時自動提交。"
 Tray_Error: 托盤錯誤
-Tray_NoAccs: "沒有找到帳戶。\n首先嘗試切換帳戶，或找到“Tray_Users.json”"
+Tray_NoAccs: "未搜尋到帳號。\n請先嘗試切換帳號，或尋找「Tray_Users.json」"
 Tray_Switch: "切換到： {account}"
 Tray_CantOpenExe: "無法打開主 .exe。確保它存在。\n\n我試圖打開："
 Tray_LaunchFail: "TcNo 帳戶切換器 - 托盤啟動失敗"
@@ -295,13 +320,13 @@ Updater_Start: 啟動 TcNo 帳戶切換器
 Updater_Begin: 開始升級
 Updater_Exit: 出口
 FatalError: 發生致命錯誤！
-Online: 在線的
-OnlineDefault: 在線（默認）
+Online: 線上
+OnlineDefault: 線上（預設）
 Offline: 離線
-Invisible: 無形的
-Busy: 忙
+Invisible: 隱身
+Busy: 忙碌
 Away: 離開
-Snooze: 打盹
+Snooze: 暫離
 LookingToTrade: 尋求交易
 LookingToPlay: 想玩
 Unrecognized_EPersonaState: 無法識別的 ePersonaState
@@ -325,7 +350,10 @@ Failed: 失敗的
 Success: 成功
 NotFound: 未找到
 Done: 完畢
+Working: 工作中...
 ForName: "對於： {name}"
+DeletedFiles: 已刪除檔案
+FileFoldersToClear: "要清除的文件/文件夾列表："
 CouldNotFindX: 找不到 {x}
 CouldNotCloseX: 無法關閉 {x}！
 DirectoryNotFound: 找不到目錄
@@ -334,18 +362,21 @@ DeletingFile: "刪除： {file}"
 DeletingFolder: "刪除文件夾： "
 CouldntDeleteX: "錯誤：無法刪除： {x}"
 CouldntDeleteUndefined: "錯誤：無法刪除未定義的文件"
-Prompt_DiscordCopy1: 查找選項按鈕，然後單擊
-Prompt_DiscordCopy2: "檢查是否未啟用流媒體模式，否則：給出錯誤。"
-Prompt_DiscordCopy3: 運行此命令時，請確保 Streamer 模式已禁用/未激活！
-Prompt_DiscordCopy4: 從屏幕左下角獲取名稱
-Prompt_DiscordCopy5: 從頁面獲取頭像和用戶名
-Prompt_DiscordCopy6: 複製頭像和用戶名
-Prompt_DiscordCopy7: 關閉選項
-Prompt_DiscordCopy8: 在控制台中讓用戶知道。
-Prompt_DiscordCopy9: 信息複製成功！
-Prompt_DiscordCopy10: 將其粘貼到帳戶切換器的輸入框中以更新/設置圖像和用戶名。
 Prompt_RestartAsAdmin: "<h3><bold>該程序將以管理員身份重新啟動</bold></h3><p>當提示輸入管理員時，在 UAC 中點擊“是”。</p>"
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>您即將忘記一個帳戶！</h3> <h4>這是什麼意思？</h4> <p>- Steam 將不再擁有大圖片模式中列出的帳戶，並且不會記住密碼。<br/> - TcNo 帳戶切換器也將不再顯示該帳戶，直到它通過 Steam 再次登錄。</p> <p>您的帳戶將保持不變。只是在這台電腦上忘記了。</p> <h4>如果出現問題怎麼辦？</h4> <p>不要驚慌，您可以通過“設置”屏幕中的備份找回忘記的帳戶。<br/> 當您確定一切正常時，您還可以從那裡刪除以前的備份。</p> <h4>你明白嗎？</h4>
+  <h3 style='color:red'>您即將忘記帳戶！</h3> <h4>這是什麼意思？</h4> <p>- Steam 將不再在大畫面模式中列出該帳戶，並且不會記住密碼。<br/> - TcNo Account Switcher 也將不再顯示該帳戶，直到它再次通過 Steam 登錄。</p> <p>您的帳戶將保持不變。它只是在這台計算機上被遺忘了。</p><h4>你明白嗎？</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>您即將忘記一個帳戶！</h3> <h4>這是什麼意思？</h4> <p>TcNo Account Switcher 也將不再顯示該帳戶，<br/> 直到它通過 {platform}再次登錄並添加到列表中。</p> <p>您的帳戶將保持不變。只是在這台電腦上忘記了。</p> <h4>你明白嗎？</h4>
+Platform_DiscordPasteHint: 粘貼到 Discord 控制台，然後將結果粘貼到輸入中！
+Platform_ClearCache: 清除快取
+Platform_ClearCacheTotal: 清除 {totalFileCount} 文件 ({totalSizeMB})
+Platform_DeleteFail: 無法刪除某些文件（程序可能正在運行？）
+Platform_CouldNotDeleteLog: 無法刪除文件！檢查 {logPath}
+Error_FileAccessDenied: 無法訪問文件！檢查 {logPath}
+Tooltip_Settings: 設置
+Tooltip_Info: 資訊
+Tooltip_ManagePlatforms: 顯示或隱藏其他平台
+Tooltip_ExpandShortcuts: 展開遊戲和快捷方式選擇
+Tooltip_ShortcutFolder: 打開快捷方式文件夾。將快捷方式放在那裡，然後使用 TcNo 帳戶切換器來查看它們。
+Tooltip_Backup: 備份配置文件/文件夾，如平台設置中所定義。
+Tooltip_BackupAll: 備份所有配置文件/文件夾，包括圖像和其他大文件。
