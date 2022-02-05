@@ -20,25 +20,36 @@ Button_ResetSettings: Nollaa asetukset
 Button_AdvancedCleaning: Edistynyt siivoaminen...
 Button_ClearLog: Tyhjennä loki
 Button_WikiInfo: Lisää Tietoja (Wiki)
-Button_ClearDiscordCache: Tyhjennä Discordin Välimuisti
+Button_ManagePlatforms: Hallitse lisäalustoja
+Button_Backup: Varmuuskopioida
+Button_BackupAll: Varmuuskopioi kaikki
+Button_Restore: Palauttaa
+Button_OpenBackup: Avaa varmuuskopiokansio
 Settings_Shortcut: ' {platform} Switcher Desktop pikakuvake'
 Settings_Admin: Suorita {platform} ylläpitäjänä
 Settings_ImageExpiry: 'Päivää ennen profiilikuvien vanhenemista:'
 Settings_Header_AppWide: Sovelluksen laajuiset asetukset
 Settings_Header_GeneralSettings: Yleiset asetukset
+Settings_Header_ExtraPlatforms: Ylimääräiset alustaasetukset
 Settings_Header_GeneralTools: Yleiset Työkalut
 Settings_Header_OtherTools: Muut Työkalut
-Settings_Header_HiddenPlatforms: Piilotetut Alustat
 Settings_Header_TraySettings: Kaukalon asetukset
 Settings_Header_OpenGameFolders: Avaa pelikansiot
+Settings_Header_BackupRestore: Varmuuskopioi ja palauta alustan asetukset
 Settings_TrayMax: 'Suurin muistettavien tilien määrä:'
+Settings_ExtraPlatformsDisabled: Nämä saatavilla olevat lisäalustat ovat tällä hetkellä poissa käytöstä. Ota ne käyttöön napsauttamalla.
+Settings_ExtraPlatformsEnabled: Nämä ylimääräiset alustat ovat näkyvissä. Napsauta poistaaksesi ne käytöstä.
 Settings_RTL: Näytä teksti oikealta vasemmalle
 Settings_CurrentLocation: 'Nykyinen asennuspaikka: {path}'
+Settings_CurrentDataLocation: 'Nykyinen käyttäjätietojen sijainti: {path}'
+Settings_SetDataLocation: "[Aseta mukautettu käyttäjätietojen sijainti]"
+Toast_DataLocationCopying: (1/2) Kopioidaan olemassa olevia tiedostoja uuteen käyttäjätietokansioon!
+Toast_DataLocationNotCopying: (1/2) Kansiolla on jo tiedostoja! Ei siirrä käyttäjätietoja.
+Toast_DataLocationSet: (2/2) Käynnistä tilin vaihtaja uudelleen käyttääksesi uutta kansiota!
 Settings_PickFolder: Valitse {platform} kansio
 Settings_OpenFolder: Avaa {platform} kansio
 Settings_ClearForgotten: Tyhjennä Unohtunut
 Settings_ClearAccounts: Tyhjennä Tilit
-Settings_RestoreForgotten: Palauta unohdettu tili
 Settings_StreamerMode: Ota suoratoistotila käyttöön
 Settings_ExitToTray: Poistuminen minimoi tarjotin
 Settings_DesktopShortcut: Työpöydän pikakuvake
@@ -55,7 +66,8 @@ Settings_WindowsAccent: Käytä Windows-hehkutuksen väriä
 Settings_HelpTranslate: "[Auta kääntämään]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Aseta renderöintimoottori:"
-Settings_AltClose: "Vaihtoehtoinen poistumistapa (kun alusta ei sulkeudu)"
+Settings_Header_ClosingMethod: "[Advanced] Aseta sulkemistapa {platform}"
+Settings_NoPlatforms: Tällä hetkellä ei ole käytössä alustoja. Ota ne käyttöön valitsemalla valinnaiset alustat alta tai poista käytöstä poistettujen alustojen valinta.
 Cleaning_Header_StartMenuShortcuts: 'Käynnistysvalikon pikakuvakkeet:'
 Cleaning_Header_General: Yleinen Puhdistus
 Cleaning_Header_LoginHistory: Puhdista kirjautumishistoriani
@@ -66,14 +78,13 @@ Cleaning_ImportantInfo: >
 Cleaning_Button_KillProcess: Tapa {platform} prosessi
 Cleaning_Button_ForgottenBackups: Unohtuneiden tilien varmuuskopiointi
 Cleaning_Understand: Ymmärrän, mitä nämä painikkeet tekevät.
-Restore_Header: Palauta unohtuneet tilit
 Restore_Info: >
   Jos olet aiemmin "unohtanut" tili, voit palauttaa ne tänne.<br /> Tämä lisää ne takaisin loginusers.vdf-tiedostoon, jonka avulla voit vaihtaa niihin.
 Restore_Button_Restore: Palauta valitut
 Ignored_RemoveAccounts: Poista tilit ohituslistalta
 Ignored_Description: Jos olet aiemmin "ohittanut" tili, voit näyttää ne uudelleen täällä
 Ignored_Stop: Lopeta ohittaminen valituista
-Toast_RetryOrDeleteDiscordCache: Yritä uudelleen tai poista Discordin välimuisti nollataksesi salasanan (Katso Wiki).
+Toast_PlaceShortcutFiles: Kansio avautuu. Aseta pelin pikakuvakkeet kyseiseen kansioon ja käynnistä tilin vaihtaja uudelleen.
 Toast_TrayStarted: Kaukalo alkoi!
 Toast_TrayRunning: Kaukalo on jo auki
 Toast_TrayUsersMissing: Yhtään tarjotin käyttäjää ei tallennettu
@@ -81,7 +92,6 @@ Toast_TrayFail: Ei voitu käynnistää tarjotinsovellusta!
 Toast_TrayPosition: "Kun napsautan poistumispainiketta: Minä olen Windows Tray! (oikeassa aloituspalkissa)"
 Toast_TrayHint: "Vihje: Ctrl+Napsauta 'X' sulkeaksesi minut kokonaan, tai kaukosäädin > 'Poistu' -painiketta"
 Toast_Copied: Kopioitu
-Platform_DiscordPasteHint: Liitä Discordin konsoliin ja liitä sitten tulo!
 Toast_AlreadyProcessing: Käsittely jo tilejä...
 Toast_FailedRestore: Tilien palauttaminen epäonnistui (Katso konsoli)
 Toast_Restored: Palautetut tilit!
@@ -103,13 +113,12 @@ Toast_BNet_CantLoadConfigCorrupt: Blizzardin tilejä ei voitu ladata (Battle.net
 Toast_BNet_NamePolicy: BattleTag ei vastannut nimeämiskäytäntöä.
 Toast_ItemNotFound: "{item} ei löytynyt"
 Toast_DeletedTotal: "{files} / {totalFiles} poistettu. Yhteensä: {totalSize}"
-Toast_DeletedTotalTitle: Discordin välimuisti!
-Toast_Discord_SignOutHint: "Vihje: Sinun täytyy kirjautua ulos Discordista selaimessasi"
-Toast_Discord_SaveHint: "Vihje: Muutettu Discordin asetuksia? Tallenna uudelleen, samalla nimellä!"
-Toast_Discord_NoToken: Käyttäjän tunnusta ei löytynyt! Lopeta Discord normaalisti ja tallenna sitten uudelleen.
 Toast_CantChangeUsername: Käyttäjänimeä ei voitu muuttaa
 Toast_CantClearLoginFiles: Vanhojen kirjautumistiedostojen tyhjentäminen epäonnistui
-Toast_AccountIdReg: Tilisivun haku rekisteristä epäonnistui!
+Toast_AccountIdReg: Tilitunnuksen saaminen rekisteristä epäonnistui!
+Toast_RegFailWrite: Kirjoittaminen Windows Regsitryyn epäonnistui!
+Toast_RegFailRead: Lukeminen Windows Regsitrystä epäonnistui!
+Toast_RegSaveMissing: Tallennettujen rekisteritiedostojen tietojen etsiminen tai lukeminen epäonnistui!
 Toast_DuplicateNames: Ei voitu vaihtaa. Monista tilit samalla käyttäjätunnuksella?
 Toast_CouldNotLocate: Kirjautunut käyttäjä ei löytänyt
 Toast_StreamerModeHint: Yksityinen tieto on piilotettu! - Katso asetukset
@@ -121,7 +130,6 @@ Toast_CantCreateShortcut: Pikakuvaketta ei voi luoda
 Toast_ShortcutCreated: Pikakuvake luotu!
 Toast_FailedUpdateCheck: Päivitysten tarkistus epäonnistui
 Toast_UpdateVerifyFail: Päivittäjätiedostoja ei voida todentaa. Lataa uusin versio ja korvaa tiedostot hakemistoon.
-Toast_Riot_StartGame: Vaihdettu käyttäjä. Aloita peli alla.
 Toast_StartedGame: Aloitettu {program}
 Toast_Steam_VacCleared: Tilien VAC tila tarkastettu ja hyväksytty
 Toast_Steam_CantDeleteVacCache: Ei voitu poistaa 'LoginCache/Steam/VACCache/SteamVACCache.json'
@@ -132,9 +140,6 @@ Toast_Steam_FailedLoginusers: Steam/config/loginusers.vdf lataaminen epäonnistu
 Toast_Steam_CantLocateLoginusers: Ei löydy '.../Steam/config/loginusers.vdf'. Yritä kirjautua ensin tilille.
 Toast_CantClearImages: Kuvia ei voitu tyhjentää
 Toast_RefreshedImages: Päivitetyt kuvat
-Toast_Ubisoft_NoUsername: Viimeksi kirjautunut käyttäjä ei löytynyt. Yritä kirjautua Ubisoftiin ensin.
-Toast_Ubisoft_NoDat: "%LocalAppData%/UbisoftGameLauncher/user.dat ei löytynyt. Viimeistä aktiivista tiliä ei tallennettu."
-Toast_Ubisoft_NoUser: Viimeksi kirjautunut käyttäjä ei löytynyt. Yritä kirjautua Ubisoftiin ensin.
 Toast_ClearForgottenCheck: Oletko varma, että haluat tyhjentää unohdettujen tilien varmuuskopiot?
 Toast_BattleNet_ChangedBTag: BattleTag vaihdettu
 Toast_BattleNet_DeletedBTag: BattleTag poistettu
@@ -145,6 +150,20 @@ Toast_ClearedImages: "Poistetut kuvat"
 Toast_SavedItem: "Tallennettu: {item}"
 Toast_ChangedUsername: Käyttäjänimi vaihdettu
 Toast_SetUsername: Aseta käyttäjätunnus
+Toast_AlreadyLoggedIn: Olet jo kirjautunut sisään tällä tilillä! (Ei muutoksia tehty)
+Toast_BackupCopy: (1/3) Kopioidaan tiedostoja väliaikaiseen sijaintiin...
+Toast_BackupCompress: (2/3) Tiedostojen pakkaaminen ({size}). Tämä kestää jonkin aikaa...
+Toast_BackupComplete: (3/3) Pakkaaminen valmis! ({size} - {compressedSize})
+Toast_BackupProgress: "Varmuuskopiointi käynnissä (pakattu koko: {compressedSize})"
+Toast_BackupBusy: Varmuuskopiointi on jo käynnissä!
+Toast_RestoreBusy: Palautus on jo käynnissä!
+Toast_RestoreExt: Puretaan arkistoa.
+Toast_RestoreCopying: Tiedostojen siirtäminen takaisin alustalle
+Toast_RestoreDeleting: Väliaikaisten tiedostojen poistaminen
+Toast_RestoreComplete: Palautus valmis!
+Toast_FailedLoad: '{platform}:n lataus epäonnistui! Napsauta alustaa nähdäksesi virheen.'
+Toast_FailedPlatformsLoad: Platforms.jsonin lataaminen epäonnistui! Varmista, että tämä tiedosto on olemassa.
+Tooltip_Restore: Valitse 7z-tiedosto napsauttamalla tai vedä se tähän painikkeeseen.
 Modal_Crowdin_Header: Crowdinin kääntäjät
 Modal_Crowdin_Info: "Tässä ovat kaikki, jotka auttoivat kääntämään tämän ohjelmiston.<br>Käyttäjät, joiden kieli on vieressä, auttoivat paljon kääntämisessä (oikolukijan rooli)."
 Modal_Info_Creator: TechNobon luoma [Wesley Pyburn]
@@ -159,30 +178,38 @@ Modal_Title_ConfirmAction: TcNo Tilin Vaihtaja Vahvista Toiminta
 Modal_Title_LocatePlatform: Ole hyvä ja etsi {platform} kansio
 Modal_Title_AddNew: Lisää uusi {platform} tili
 Modal_Title_Background: Aseta taustakuva
+Modal_Title_Userdata: Aseta käyttäjätietokansio
 Modal_SetBackground: 'Valitse kuva tai kirjoita URL-osoite alle.<br>Jätä tyhjäksi ja aseta palautus.<br>(Katso lisäohjausta Wikin teemasta):'
 Modal_SetBackground_Button: Aseta tausta
 Modal_SetBackground_ChooseImage: Valitse paikallinen kuva
-Modal_ChangeUsername: Ole hyvä ja syötä uusi {platformText} tilillesi
-Modal_ChangeUsernameType: Vaihda {UsernameOrOther}
+Modal_SetUserdata: Kirjoita kansion polku alle ja napsauta Aseta.
+Modal_SetUserdata_ChooseFolder: Valitse kansio
+Modal_SetUserdata_Button: Aseta käyttäjätiedot
+Modal_ChangeUsername: Anna tilillesi uusi käyttäjätunnus
+Modal_ChangeUsernameType: Muuta {platform} käyttäjätunnusta
 Modal_EnterDirectory: "Syötä {platform}hakemisto sellaisenaan: C:\\ Program Files\\{platform}"
 Modal_LocatePlatform: Paikanna {platformExe}
 Modal_LocatePlatformFolder: Valitse {platform} kansio
 Modal_ConfirmAction: Vahvista toiminto
 Modal_AddNew: Anna nimi käyttäjälle {platform} tilille, johon olet kirjautunut.
 Modal_AddCurrentAccount: Lisää nykyinen {platform} tili
-Modal_EnterNewPassword: Anna uusi salasana suojataksesi {platform} tilisi kytkimessä.<br>  Pidä se turvassa. Sitä ei voi palauttaa myöhemmin.
-Modal_EnterPassword: Anna salasanasi TcNo Tilinvaihtajan {platform} alustalle.
-Modal_EnterPasswordShort: Syötä salasana
-Modal_EnterPasswordRepeat: Syötä salasana uudelleen
-Modal_PasswordsMatch: Salasanat täsmää
-Modal_PasswordsNoMatch: Salasanat eivät täsmää
+Modal_SetImageHeader: Aseta profiilikuva
+Modal_SetImage: Aseta kuva
 Status_SelectedAccount: "Valittu: {name}"
 Status_Init: "Tila: alustetaan"
-Status_ClosingPlatform: "Sulkeminen {platform}"
-Status_ClosingPlatformFailed: "{platform}sulkeminen epäonnistui"
-Status_StartingPlatform: "Alkaen {platform}"
+Status_ClosingPlatform: Sulkeminen {platform}
+Status_ClosingPlatformFailed: '{platform}sulkeminen epäonnistui'
+Status_StartingPlatform: Alkaen {platform}
+Toast_StartingPlatformFailed: Ei käynnistynyt {platform}! Katso lisätiedot lokista.
+Toast_UrlAdminErr: Et voi käyttää .url-tiedostoja järjestelmänvalvojana. Kokeile toista pikakuvaketyyppiä. Käynnistetään tavallisena käyttäjänä.
 Status_UpdatingFile: "Päivitetään {file}"
 Status_UpdatingRegistry: Windowsin rekisterin päivittäminen
+Status_FailedLog: Toiminto epäonnistui. Katso lisätietoja lokista.
+Status_WaitingForClose: "Odotetaan {processName} :n sulkemista ({timeout}{timeLimit})"
+Status_WaitingForMultipleClose: "Odotetaan, että {processName} ja {count} muu sulkeutuvat ({timeout}sekuntia{timeLimit}"
+Status_GetUniqueId: Kerää yksilöllistä käyttäjätunnusta
+Status_CopyingFiles: Kopioidaan käyttäjätiedostoja...
+Status_HandlingImage: Tilin profiilikuvan käsittely
 Context_SwapTo: Vaihda tiliin
 Context_CreateShortcut: Luo Pikakuvake Työpöydälle
 Context_CreateShortcutSubmenu: Luo Pikakuvake...
@@ -208,19 +235,17 @@ Context_Steam_OpenUserdata: Avaa käyttäjätiedot
 Context_CopyOtherSubmenu: Kopioi muu...
 Context_HidePlatform: Piilota alusta
 Context_ExportAccList: Vie tililuettelo
+Context_RunAdmin: Suorita järjestelmänvalvojana
+Context_Hide: Piilottaa
 Title_BNet_Settings: TcNo Tilin Vaihtaja - BattleNet Asetukset
 Title_BNet_ManageIgnored: TcNo Account Switcher - Hallitse ohitettuja BattleNet-tilejä
-Title_Discord_Settings: TcNo Tilin Vaihtaja - Discord-Asetukset
-Title_Epic_Settings: TcNo Tilin Vaihtaja - Epic Asetukset
+Title_Platforms_Settings: TcNo Account Switcher - Extra Platform Settings
 Title_AccountsList: TcEi Tilin vaihtajaa - {platform}
 Title_TextEditor: TcNo Tilin Vaihtaja - Tekstieditori
-Title_Origin_Settings: TcNo Tilin Vaihtaja - Alkuperäasetukset
-Title_Riot_Settings: TcNo Tilin Vaihtaja - Riot Asetukset
 Title_Settings: TcNo Tilin Vaihtaja - Asetukset
 Title_Steam_Cleaning: TcNo Tilin Vaihtaja - Steam Cleaning
-Title_Steam_Restore: TcNo Account Switcher - Unohdetun Steam-tilin palauttaminen
 Title_Steam_Settings: TcNo Account Switcher - Steam-asetukset
-Title_Ubisoft_Settings: TcNo Tilin Vaihtaja - Ubisoft Asetukset
+Title_Template_Settings: TcNo Account Switcher - {platformName} asetusta
 Installer_Downloading: Ladataan {file}
 Installer_DownloadFinished: Lataaminen valmis {file}
 Installer_Installing: "Asennus: {runtime}"
@@ -242,7 +267,7 @@ Installer_Ready: "Yksi tai useampi on valmis asennettavaksi. Jos ja kun kehoteta
 Installer_PressStart: Paina mitä tahansa näppäintä aloittaaksesi asennuksen...
 Installer_VerifyMin: "Varmista, että täytät suositellut vähimmäisvaatimukset:"
 Installer_VerifyAlready: "Näyttää siltä, että kaikki on asennettu. Varmista, että täytät suositellut vähimmäisvaatimukset:"
-Installer_Complete: Tämän pitäisi olla kaikki. Pääohjelma, TcNo-Acc-Switcher.exe, automaattisesti käynnistetään, kun painat näppäintä jatkaaksesi.
+Installer_Complete: Siinä pitäisi olla kaikki. Pääohjelma, TcNo-Acc-Switcher.exe, käynnistyy automaattisesti.
 Installer_Complete2: "Jos se ei toimi, katso asennusohjeita, tässä: {link}"
 Global_FatalNext: "Vakava virhe tapahtui! Tämä kaatumisloki lähetetään automaattisesti seuraavan käynnistyksen."
 Tray_Error: Virhe Kaukalossa
@@ -325,7 +350,10 @@ Failed: Epäonnistui
 Success: Onnistui
 NotFound: Ei löydy
 Done: Valmis
+Working: Työskentelee...
 ForName: "Vastaanottaja: {name}"
+DeletedFiles: Poistetut tiedostot
+FileFoldersToClear: "Luettelo tyhjennettävistä tiedostoista/kansioista:"
 CouldNotFindX: Kohdetta {x} ei löytynyt
 CouldNotCloseX: Ei voitu sulkea {x}!
 DirectoryNotFound: Hakemistoa ei löytynyt
@@ -334,18 +362,21 @@ DeletingFile: "Poistetaan: {file}"
 DeletingFolder: "Poistetaan Kansiota: "
 CouldntDeleteX: "VIRHE: VÄHINTÄÄN POISTA {x}"
 CouldntDeleteUndefined: "VIRHE: VÄHINTÄÄN POISTA TIEDOSTOLLE"
-Prompt_DiscordCopy1: Etsi asetuspainike ja napsauta
-Prompt_DiscordCopy2: "Tarkista, että streamer tila ei ole käytössä, muuten: Anna virhe."
-Prompt_DiscordCopy3: Varmista, että Streamer-tila on poissa käytöstä/ei aktiivinen kun käytät tätä komentoa!
-Prompt_DiscordCopy4: Hae nimi näytön alareunasta
-Prompt_DiscordCopy5: Hae profiilikuva ja käyttäjänimi sivulta
-Prompt_DiscordCopy6: Kopioi profiilikuva ja käyttäjänimi
-Prompt_DiscordCopy7: Sulje asetukset
-Prompt_DiscordCopy8: Anna käyttäjän tietää konsolissa.
-Prompt_DiscordCopy9: Tiedot kopioitu onnistuneesti!
-Prompt_DiscordCopy10: Liitä se syötekenttään tilin vaihtaja päivittää / asettaa kuva ja käyttäjätunnus.
 Prompt_RestartAsAdmin: "<h3><bold>Tämä ohjelma käynnistyy uudelleen ylläpitäjänä</bold></h3><p>Hit \"Kyllä\" UAC:ssa, kun sitä pyydetään ylläpitäjälle.</p>"
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>Olet aikeissa unohtaa tilin!</h3> <h4>Mitä tämä tarkoittaa?</h4> <p>- Steam ei enää ole Big Picture -tilassa listattua tiliä eikä muista salasanaa.<br/> - TcNo Tilin vaihtaja ei enää näytä tiliä, ennen kuin se on jälleen allekirjoitettu Steamin kautta.</p> <p>Tilisi pysyy koskemattomana. Se on vain unohdettu tällä tietokoneella.</p> <h4>Mitä jos jokin menee pieleen?</h4> <p>Älä paniikki, voit tuoda takaisin unohdettuja tilejä varmuuskopioiden kautta Asetukset-näytössä.<br/> Voit myös poistaa aiemmat varmuuskopiot sieltä, kun olet varma, että kaikki toimii odotetulla tavalla.</p> <h4>Ymmärrätkö sen?</h4>
+  <h3 style='color:red'>Olet unohtamassa tilin!</h3> <h4>Mitä tämä tarkoittaa?</h4> <p>- Steamilla ei ole enää Big Picture Mode -tilassa olevaa tiliä, eikä se muista salasanaa.<br/> - TcNo Account Switcher ei myöskään enää näytä tiliä, ennen kuin se kirjataan uudelleen sisään Steamin kautta.</p> <p>Tilisi pysyy ennallaan. Se on vain unohdettu tälle tietokoneelle.</p><h4>Ymmärrätkö?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Olet aikeissa unohtaa tilin!</h3> <h4>Mitä tämä tarkoittaa?</h4> <p>TcEi Tilin vaihtaja ei myöskään enää näytä tiliä,<br/> kunnes se on kirjautunut uudelleen {platform}kautta ja lisätty luetteloon.</p> <p>Tilisi pysyy koskemattomana. Se on juuri unohdettu tällä tietokoneella.</p> <h4>Ymmärrätkö sen?</h4>
+Platform_DiscordPasteHint: Liitä Discord-konsoliin ja liitä tulos syötteeseen!
+Platform_ClearCache: Tyhjennä välimuisti
+Platform_ClearCacheTotal: Tyhjennetään {totalFileCount} tiedostoa ({totalSizeMB})
+Platform_DeleteFail: Joitakin tiedostoja ei voitu poistaa (Ohjelma saattaa olla käynnissä?)
+Platform_CouldNotDeleteLog: Tiedostoa ei voitu poistaa! Tarkista {logPath}
+Error_FileAccessDenied: Tiedoston käyttö epäonnistui! Tarkista {logPath}
+Tooltip_Settings: asetukset
+Tooltip_Info: Tiedot
+Tooltip_ManagePlatforms: Näytä tai piilota muut alustat
+Tooltip_ExpandShortcuts: Laajenna Peli- ja pikanäppäinvalikoima
+Tooltip_ShortcutFolder: Avaa pikakuvakekansio. Aseta pikakuvakkeet sinne ja TcNo Account Switcher nähdäksesi ne.
+Tooltip_Backup: Varmuuskopioi konfiguraatiotiedostot/kansiot alustan asetuksissa määritetyllä tavalla.
+Tooltip_BackupAll: Varmuuskopioi KAIKKI asetustiedostot/kansiot, mukaan lukien kuvat ja muut suuret tiedostot.
