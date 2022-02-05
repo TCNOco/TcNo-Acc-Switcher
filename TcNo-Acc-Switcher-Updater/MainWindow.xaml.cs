@@ -237,7 +237,7 @@ namespace TcNo_Acc_Switcher_Updater
             }
             catch (Exception ex)
             {
-                _ = MessageBox.Show(@"This program must be run as an administrator!" + Environment.NewLine + ex);
+                _ = MessageBox.Show($"This program must be run as an administrator!{Environment.NewLine}{ex}");
                 Environment.Exit(0);
             }
         }
@@ -662,7 +662,7 @@ namespace TcNo_Acc_Switcher_Updater
 
             // APPLY UPDATE
             // Cleanup previous updates
-            if (Directory.Exists("temp_update")) Directory.Delete("temp_update", true);
+            RecursiveDelete("temp_update", false);
 
             foreach (var (key, _) in _updatesAndChanges)
             {
@@ -678,43 +678,49 @@ namespace TcNo_Acc_Switcher_Updater
                 try
                 {
                     ApplyUpdate(updateFilePath);
+                    SetStatusAndLog("Patch applied.");
                 }
-                catch (SevenZipException)
+                catch (Exception ex) when (ex is SevenZipException or ex is FormatException)
                 {
                     // Skip straight to verification
                     WriteLine("Failed to extract update.");
                     WriteLine("Verifying files to skip all small updates, and just jump to latest.");
+                    SetStatus("Patch failed.");
                     break;
                 }
-                catch (UnauthorizedAccessException)
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
                 {
                     // Stop process and add verify button
                     string[] lines =
                     {
-                        "ERROR: Some of the files are in use and can not be updated.",
+                        "ERROR: Some of the files are in use and/or can not be updated.",
                         "",
                         "1. Make sure all TcNo processes are completely closed",
                         "(or restart your PC)",
                         "",
                         "2. Then click Verify below, or if you restarted:",
                         "-   Open this updater and verify files",
-                        "    (located in the 'updater' folder in the install directory)"
+                        "    (located in the 'updater' folder in the install directory)",
+                        "",
+                        "See <Install>/UpdaterErrorLogs/ for details."
                     };
                     foreach (var l in lines)
                         WriteLine(l);
-                    _ = MessageBox.Show(string.Join(Environment.NewLine, lines), "Unable to check for updates",
+                    _ = MessageBox.Show(string.Join(Environment.NewLine, lines), "Unable to update",
                         MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    App.LogToErrorFile($"Failed update due to file error: {ex}");
+
                     SetStatus("Press button below!");
                     CreateVerifyAndExitButton();
                     return;
                 }
 
-                SetStatusAndLog("Patch applied.");
                 WriteLine("");
 
                 // Cleanup
-                Directory.Delete("temp_update", true);
-                File.Delete(updateFilePath);
+                RecursiveDelete("temp_update", false);
+                DeleteFile(updateFilePath);
                 _oldDict = new Dictionary<string, string>();
                 _newDict = new Dictionary<string, string>();
                 _patchList = new List<string>();
@@ -791,55 +797,87 @@ namespace TcNo_Acc_Switcher_Updater
                 Environment.Exit(1);
             }
 
-            var verifyDictionary =
-                JsonConvert.DeserializeObject<Dictionary<string, string>>(UGlobals.ReadAllText(hashFilePath));
-            if (verifyDictionary != null)
+            try
             {
-                var verifyDictTotal = verifyDictionary.Count;
-                var cur = 0;
-                UpdateProgress(0);
-                foreach (var (oKey, value) in verifyDictionary)
+                var verifyDictionary =
+                    JsonConvert.DeserializeObject<Dictionary<string, string>>(UGlobals.ReadAllText(hashFilePath));
+                if (verifyDictionary != null)
                 {
-                    var key = oKey;
-                    if (key.StartsWith("updater")) continue; // Ignore own files >> Otherwise IOException
-                    if (key.StartsWith("runtimes") && IsCefFile(key))
+                    var verifyDictTotal = verifyDictionary.Count;
+                    var cur = 0;
+                    UpdateProgress(0);
+                    foreach (var (oKey, value) in verifyDictionary)
                     {
-                        if (!File.Exists(key)) File.Create(key).Dispose(); // Create empty file
-                        if (_mainBrowser != "CEF") continue; // Ignore CEF files if not using CEF
+                        var key = oKey;
+                        if (key.StartsWith("updater")) continue; // Ignore own files >> Otherwise IOException
+                        if (key.StartsWith("runtimes") && IsCefFile(key))
+                        {
+                            if (!File.Exists(key)) File.Create(key).Dispose(); // Create empty file
+                            if (_mainBrowser != "CEF") continue; // Ignore CEF files if not using CEF
+                        }
+                        cur++;
+                        UpdateProgress(cur * 100 / verifyDictTotal);
+                        if (!File.Exists(key))
+                            WriteLine("FILE MISSING: " + key);
+                        else
+                        {
+                            var md5 = GetFileMd5(key);
+                            if (value == md5) continue;
+
+                            WriteLine("File: " + key + " has MD5: " + md5 + " EXPECTED: " + value);
+                            WriteLine("Deleting: " + key);
+                            DeleteFile(key);
+                        }
+
+                        WriteLine("Downloading file from website...");
+                        var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + oKey.Replace('\\', '/'));
+
+                        var path = Path.GetDirectoryName(key);
+                        if (!string.IsNullOrEmpty(path))
+                            _ = Directory.CreateDirectory(path);
+
+                        client.DownloadFile(uri, key);
                     }
-                    cur++;
-                    UpdateProgress(cur * 100 / verifyDictTotal);
-                    if (!File.Exists(key))
-                        WriteLine("FILE MISSING: " + key);
-                    else
-                    {
-                        var md5 = GetFileMd5(key);
-                        if (value == md5) continue;
 
-                        WriteLine("File: " + key + " has MD5: " + md5 + " EXPECTED: " + value);
-                        WriteLine("Deleting: " + key);
-                        DeleteFile(key);
-                    }
-
-                    WriteLine("Downloading file from website...");
-                    var uri = new Uri("https://tcno.co/Projects/AccSwitcher/latest/" + oKey.Replace('\\', '/'));
-
-                    var path = Path.GetDirectoryName(key);
-                    if (!string.IsNullOrEmpty(path))
-                        _ = Directory.CreateDirectory(path);
-
-                    client.DownloadFile(uri, key);
+                    WriteLine(Environment.NewLine +
+                              "Copying files to %AppData%/TcNo Account Switcher... (unless set otherwise)");
+                    InitWwwroot(true); // Overwrite files in Documents
+                    WriteLine("Done.");
                 }
 
-                WriteLine(Environment.NewLine +
-                          "Copying files to %AppData%/TcNo Account Switcher... (unless set otherwise)");
-                InitWwwroot(true); // Overwrite files in Documents
-                WriteLine("Done.");
+                DeleteFile(hashFilePath);
+                WriteLine("Files verified!");
+                UpdateProgress(100);
+            }
+            catch (Exception ex)
+            {
+                // Stop process and add verify button
+                string[] lines =
+                {
+                    "ERROR: Some of the files are in use and/or can not be verified.",
+                    "",
+                    "1. Make sure all TcNo processes are completely closed",
+                    "(or restart your PC)",
+                    "",
+                    "2. Then click Verify below (to try again), or if you restarted:",
+                    "-   Open this updater and verify files",
+                    "    (located in the 'updater' folder in the install directory)",
+                    "",
+                    "See <Install>/UpdaterErrorLogs/ for details."
+                };
+                foreach (var l in lines)
+                    WriteLine(l);
+                _ = MessageBox.Show(string.Join(Environment.NewLine, lines), "Unable to verify files",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+
+                App.LogToErrorFile($"Failed verify due to file error: {ex}");
+
+                SetStatus("Press button below!");
+                CreateVerifyAndExitButton();
+                return;
             }
 
-            File.Delete(hashFilePath);
-            WriteLine("Files verified!");
-            UpdateProgress(100);
+
         }
 
         /// <summary>
@@ -975,7 +1013,7 @@ namespace TcNo_Acc_Switcher_Updater
             const string outputFolder = "UpdateOutput";
             var deleteFileList = Path.Join(outputFolder, "filesToDelete.txt");
             RecursiveDelete(outputFolder, false);
-            if (File.Exists(deleteFileList)) File.Delete(deleteFileList);
+            DeleteFile(deleteFileList);
 
             List<string> filesToDelete = new(); // Simply ignore these later
             CreateFolderPatches(oldFolder, newFolder, outputFolder, ref filesToDelete);
@@ -1018,7 +1056,7 @@ namespace TcNo_Acc_Switcher_Updater
 
             foreach (var f in filesToDelete)
             {
-                File.Delete(f);
+                DeleteFile(f);
             }
         }
 

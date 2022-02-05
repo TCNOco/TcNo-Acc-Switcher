@@ -87,6 +87,32 @@ namespace TcNo_Acc_Switcher_Updater
         public static string AppDataFolder =>
             Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty)?.FullName;
 
+        public static void LogToErrorFile(string log)
+        {
+            // Log Unhandled Exception
+            _ = Directory.CreateDirectory("UpdaterErrorLogs");
+            var filePath = $"UpdaterErrorLogs\\AccSwitcher-Updater-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
+            using var sw = File.AppendText(filePath);
+            sw.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({GetVersion()}){Environment.NewLine}{log}");
+        }
+
+        private static string GetVersion()
+        {
+            try
+            {
+                if (File.Exists("WindowSettings.json"))
+                {
+                    var o = JObject.Parse(UGlobals.ReadAllText("WindowSettings.json"));
+                    return o["Version"]?.ToString();
+                }
+            }
+            catch (Exception)
+            {
+                //
+            }
+            return "unknown";
+        }
+
         /// <summary>
         /// Exception handling for all programs
         /// </summary>
@@ -97,26 +123,20 @@ namespace TcNo_Acc_Switcher_Updater
                 Directory.SetCurrentDirectory(UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim());
             else
                 Directory.SetCurrentDirectory(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\"));
-            var version = "unknown";
-            try
-            {
-                if (File.Exists("WindowSettings.json"))
-                {
-                    var o = JObject.Parse(UGlobals.ReadAllText("WindowSettings.json"));
-                    version = o["Version"]?.ToString();
-                }
-            }
-            catch (Exception)
-            {
-                //
-            }
 
             // Log Unhandled Exception
             var exceptionStr = e.ExceptionObject.ToString();
             _ = Directory.CreateDirectory("CrashLogs");
             var filePath = $"CrashLogs\\AccSwitcher-Updater-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
             using var sw = File.AppendText(filePath);
-            sw.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({version})\tUNHANDLED CRASH: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
+            sw.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}({GetVersion()})\tUNHANDLED CRASH: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
+
+            if (e.ExceptionObject is FileNotFoundException && (exceptionStr?.Contains("SevenZipExtractor") ?? false))
+            {
+                _ = MessageBox.Show($"A fatal error was hit. A required file was not found. Please make sure the x64 and x86 folders exist in the install directory AND the updater folder. If one has files, and the other not: Copy so they are the same and try again.{Environment.NewLine}Currently installed to: {AppDataFolder}", "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+            }
+            else
+                _ = MessageBox.Show("This crashlog will be automatically submitted next launch." + Environment.NewLine + Environment.NewLine + "Error: " + e.ExceptionObject, "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
 
             //if (e.ExceptionObject.)
             //{
@@ -133,7 +153,6 @@ namespace TcNo_Acc_Switcher_Updater
             // else
             //  throw;
             //})
-            _ = MessageBox.Show("This crashlog will be automatically submitted next launch." + Environment.NewLine + Environment.NewLine + "Error: " + e.ExceptionObject, "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
         }
     }
 }
