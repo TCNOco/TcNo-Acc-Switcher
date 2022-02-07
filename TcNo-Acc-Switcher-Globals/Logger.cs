@@ -135,7 +135,7 @@ namespace TcNo_Acc_Switcher_Globals
                 using (var sw = File.AppendText(filePath))
                 {
                     sw.WriteLine(
-                        $"Build {Version}: {DateTime.Now.ToString(CultureInfo.InvariantCulture)}({Version})\t{Strings.ErrUnhandledCrash}: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
+                        $"{DateTime.Now.ToString(CultureInfo.InvariantCulture)} ({Version})\t{Strings.ErrUnhandledCrash}: {exceptionStr}{Environment.NewLine}{Environment.NewLine}");
                 }
 
                 WriteToLog(Strings.ErrUnhandledException + Path.GetFullPath(filePath));

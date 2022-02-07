@@ -163,7 +163,7 @@ namespace TcNo_Acc_Switcher_Tray
         }
         private void NotifyIcon_DoubleClick(object sender, EventArgs e) => StartSwitcher();
 
-        private static bool AlreadyRunning() => Process.GetProcessesByName("TcNo-Acc-Switcher").Length > 0;
+        private static bool AlreadyRunning() => Process.GetProcessesByName("TcNo-Acc-Switcher_main").Length > 0;
 
         // Start with Windows login, using https://stackoverflow.com/questions/15191129/selectively-disabling-uac-for-specific-programs-on-windows-programatically for automatic administrator.
         // Adding to Start Menu shortcut also creates "Start in Tray", which is a shortcut to this program.
@@ -171,7 +171,7 @@ namespace TcNo_Acc_Switcher_Tray
 
         private static void CloseMainProcess()
         {
-            var proc = Process.GetProcessesByName("TcNo-Acc-Switcher").FirstOrDefault();
+            var proc = Process.GetProcessesByName("TcNo-Acc-Switcher_main").FirstOrDefault();
             if (proc == null || proc.MainWindowHandle == IntPtr.Zero) return;
             _ = proc.CloseMainWindow();
             proc.WaitForExit();

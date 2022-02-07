@@ -200,10 +200,11 @@ async function changeImage(e) {
 	        </div>`);
 
     pathPickerRequestedFile = "AnyFile";
+    let input = document.getElementById("FolderLocation");
     $(".pathPicker").on("click", pathPickerClick);
     $(".modalBG").fadeIn(() => {
-        if (input === undefined) return;
         try {
+            if (input === undefined) return;
             input.focus();
             input.select();
         }
@@ -544,6 +545,7 @@ async function showModal(modaltype) {
 
         pathPickerRequestedFile = "AnyFile";
         $(".pathPicker").on("click", pathPickerClick);
+        input = document.getElementById("FolderLocation");
     } else if (modaltype === "SetUserdata") {
         const modalTitleBackground = await GetLang("Modal_Title_Userdata"),
             modalHeading = await GetLang("Modal_SetUserdata"),
@@ -566,6 +568,7 @@ async function showModal(modaltype) {
 
         pathPickerRequestedFile = "AnyFolder";
         $(".pathPicker").on("click", pathPickerClick);
+        input = document.getElementById("FolderLocation");
     } else {
 
         const notice = await GetLang("Notice");
@@ -575,8 +578,8 @@ async function showModal(modaltype) {
         $("#modal_contents").append(`<div class="infoWindow"><div class="fullWidthContent">${modaltype}</div></div>`);
     }
     $(".modalBG").fadeIn(() => {
-        if (input === undefined) return;
         try {
+            if (input === undefined) return;
             input.focus();
             input.select();
         }

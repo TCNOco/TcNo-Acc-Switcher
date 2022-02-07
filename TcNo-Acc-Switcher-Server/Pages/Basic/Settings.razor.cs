@@ -133,8 +133,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             // Generate temporary folder:
             var tempFolder = $"BackupTemp\\Backup_{CurrentPlatform.FullName}_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
-            Directory.CreateDirectory(tempFolder);
-            Directory.CreateDirectory("Backups");
+            Directory.CreateDirectory("Backups\\BackupTemp");
 
             if (!everything)
                 foreach (var (f, t) in CurrentPlatform.BackupPaths)

@@ -406,7 +406,7 @@ namespace TcNo_Acc_Switcher_Globals
         public static bool BringToFront()
         {
             // This does not work in debug, as the console has the same name
-            var proc = Process.GetProcessesByName("TcNo-Acc-Switcher").FirstOrDefault();
+            var proc = Process.GetProcessesByName("TcNo-Acc-Switcher_main").FirstOrDefault();
             if (proc == null || proc.MainWindowHandle == IntPtr.Zero) return false;
             const int swRestore = 9;
             var hwnd = proc.MainWindowHandle;

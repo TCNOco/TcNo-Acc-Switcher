@@ -680,7 +680,7 @@ namespace TcNo_Acc_Switcher_Updater
                     ApplyUpdate(updateFilePath);
                     SetStatusAndLog("Patch applied.");
                 }
-                catch (Exception ex) when (ex is SevenZipException or ex is FormatException)
+                catch (Exception ex) when (ex is SevenZipException or FormatException)
                 {
                     // Skip straight to verification
                     WriteLine("Failed to extract update.");

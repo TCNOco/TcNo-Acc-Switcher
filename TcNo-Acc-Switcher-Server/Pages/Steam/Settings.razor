@@ -219,7 +219,7 @@
 
         // Generate temporary folder:
         var tempFolder = $"BackupTemp\\Backup_Steam_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
-        Directory.CreateDirectory(tempFolder);
+        Directory.CreateDirectory("BackupTemp");
         Directory.CreateDirectory("Backups");
 
         if (!everything)
@@ -246,12 +246,12 @@
     /// </summary>
     private static void FinishBackup(string tempFolder)
     {
-        _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreExtracting"], renderTo: "toastarea");
+        _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCompress"], renderTo: "toastarea");
 
         var folderSize = Globals.FolderSizeString(tempFolder);
         _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCompress", new {size = folderSize}], duration: 3000, renderTo: "toastarea");
 
-        var zipFile = Path.Join("Backups", tempFolder + ".7z");
+        var zipFile = Path.Join("Backups", tempFolder.Split(Path.DirectorySeparatorChar).Last() + ".7z");
 
         var backupWatcher = new Thread(() => CompressionUpdater(zipFile));
         backupWatcher.Start();

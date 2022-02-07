@@ -88,7 +88,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (!CanKillProcess(procNames, closingMethod)) return false;
             Globals.KillProcess(procNames, closingMethod);
 
-            return WaitForClose(procNames);
+            return WaitForClose(procNames, closingMethod);
         }
 
         /// <summary>
@@ -112,10 +112,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             return timeout != 10; // Returns true if timeout wasn't reached.
         }
-        public static bool WaitForClose(List<string> procNames)
+        public static bool WaitForClose(List<string> procNames, string closingMethod)
         {
             if (!OperatingSystem.IsWindows()) return false;
-            var procToClose = new List<string>(procNames); // Make a copy to edit
+            var procToClose = new List<string>(); // Make a copy to edit
+            foreach (var p in procNames)
+            {
+                var cur = p;
+                if (cur.StartsWith("SERVICE:"))
+                {
+                    if (closingMethod == "TaskKill")
+                        continue; // Ignore explicit services when using TaskKill - Admin isn't ALWAYS needed. Eg: Steam.
+                    cur = cur[8..].Split(".exe")[0]; // Remove "SERVICE:" and ".exe"
+                }
+                procToClose.Add(cur);
+            }
 
             var timeout = 0;
             var areAnyRunning = false;
