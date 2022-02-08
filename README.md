@@ -32,7 +32,7 @@
 # How does it work?
 Simple. It swaps out files and registry values, pointing to your last logged in account while the program is closed. Think of it as freezing a platform like Steam in time, and replacing the "account block" with a previously frozen "account block", then unfreezing it. To Steam and your Steam account, it "looks" like you pulled your plug out and put it back in a week or so later, meanwhile you were playing on other accounts. Swapping the account block lets the program: Not interact with passwords, and not interact with 2-factor, so you can "Skip" both of those in the login process.
 
-## Things not working? See the [FAQ](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Frequently-Asked-Questions)
+### Things not working? See the [FAQ](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Frequently-Asked-Questions)
 
 # What's new
 
