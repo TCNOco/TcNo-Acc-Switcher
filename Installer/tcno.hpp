@@ -159,7 +159,7 @@ void install_runtime(const string& path, const string& name, const bool& passive
 	PROCESS_INFORMATION pi;
 
 	wstring args;
-	if (passive) args = L"/install /passive";
+	if (passive) args = L"/install /passive /norestart";
 
 	CreateProcessW(s2_ws(path).c_str(), &args[0], nullptr,
 		nullptr, 0, 0, nullptr, nullptr, &si, &pi);
