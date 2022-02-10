@@ -379,7 +379,7 @@ namespace TcNo_Acc_Switcher_Globals
                 {
                     ico = IconExtractor.ExtractIconFromExecutable(path);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     ico = ExtractIconFromFilePath(path);
                 }

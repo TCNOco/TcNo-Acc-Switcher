@@ -586,7 +586,7 @@ namespace TcNo_Acc_Switcher_Client
             }
             catch (Exception e)
             {
-                File.WriteAllText($"CrashLogs\\CrashLogUploadErr-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt", e.ToString());
+                File.WriteAllText($"CrashLogs\\CrashLogUploadErr-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt", Globals.GetEnglishError(e));
             }
         }
 
@@ -626,7 +626,7 @@ namespace TcNo_Acc_Switcher_Client
                 // Show notification
                 AppSettings.UpdateAvailable = true;
             }
-            catch (WebException e)
+            catch (Exception e) when (e is WebException or AggregateException)
             {
                 if (File.Exists("WindowSettings.json"))
                 {

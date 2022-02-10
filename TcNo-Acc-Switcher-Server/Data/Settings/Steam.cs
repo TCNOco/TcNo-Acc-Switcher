@@ -48,6 +48,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     if (File.Exists(SettingsFile))
                     {
                         _instance = JsonConvert.DeserializeObject<Steam>(File.ReadAllText(SettingsFile), new JsonSerializerSettings() { });
+                        if (_instance == null)
+                        {
+                            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
+                            if (File.Exists(SettingsFile))
+                                Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"), true);
+                            _instance = new Steam { _currentlyModifying = true };
+                        }
                         _instance._lastHash = Globals.GetFileMd5(SettingsFile);
                     }
                     else

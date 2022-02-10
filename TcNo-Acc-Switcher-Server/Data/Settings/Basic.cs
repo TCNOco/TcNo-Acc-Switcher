@@ -50,6 +50,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     if (File.Exists(CurrentPlatform.SettingsFile))
                     {
                         _instance = JsonConvert.DeserializeObject<Basic>(File.ReadAllText(CurrentPlatform.SettingsFile), new JsonSerializerSettings() { });
+                        if (_instance == null)
+                        {
+                            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
+                            if (File.Exists(CurrentPlatform.SettingsFile))
+                                Globals.CopyFile(CurrentPlatform.SettingsFile, CurrentPlatform.SettingsFile.Replace(".json", ".old.json"), true);
+                            _instance = new Basic { _currentlyModifying = true };
+                        }
                         _instance._lastHash = Globals.GetFileMd5(CurrentPlatform.SettingsFile);
                     }
                     else

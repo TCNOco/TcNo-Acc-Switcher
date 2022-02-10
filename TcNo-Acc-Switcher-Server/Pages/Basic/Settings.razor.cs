@@ -190,8 +190,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             var backupWatcher = new Thread(() => CompressionUpdater(zipFile));
             backupWatcher.Start();
-
-            Globals.CompressFolder(tempFolder, zipFile);
+            try
+            {
+                Globals.CompressFolder(tempFolder, zipFile);
+            }
+            catch (Exception e)
+            {
+                if (e is FileNotFoundException && e.ToString().Contains("7z.dll"))
+                {
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Error_RequiredFileVerify"],
+                        "Stylesheet error", "toastarea");
+                }
+            }
 
             Globals.RecursiveDelete(tempFolder, false);
             _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_BackupComplete", new { size = folderSize, compressedSize = Globals.FileSizeString(zipFile) }], renderTo: "toastarea");

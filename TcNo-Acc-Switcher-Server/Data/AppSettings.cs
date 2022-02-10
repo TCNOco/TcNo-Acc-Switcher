@@ -60,6 +60,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                     if (File.Exists(SettingsFile))
                     {
                         _instance = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(SettingsFile), new JsonSerializerSettings() { });
+                        if (_instance == null)
+                        {
+                            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
+                            if (File.Exists(SettingsFile))
+                                Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"), true);
+                            _instance = new AppSettings { _currentlyModifying = true };
+                        }
                         _instance._lastHash = Globals.GetFileMd5(SettingsFile);
                     }else
                     {
@@ -330,11 +337,19 @@ namespace TcNo_Acc_Switcher_Server.Data
                 throw;
             }
             // Convert from SCSS to CSS. The arguments are for "exception reporting", according to the SharpScss Git Repo.
-            Globals.DeleteFile(StylesheetFile);
-            File.WriteAllText(StylesheetFile, convertedScss.Css);
+            if (Globals.DeleteFile(StylesheetFile))
+            {
+                File.WriteAllText(StylesheetFile, convertedScss.Css);
+                if (Globals.DeleteFile(StylesheetFile + ".map"))
+                    File.WriteAllText(StylesheetFile + ".map", convertedScss.SourceMap);
+            }
+            else
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
+                    "Stylesheet error", "toastarea");
+                Globals.WriteToLog($"Could not delete stylesheet file: {StylesheetFile}. Could not refresh stylesheet from scss.");
+            }
 
-            Globals.DeleteFile(StylesheetFile + ".map");
-            File.WriteAllText(StylesheetFile + ".map", convertedScss.SourceMap);
         }
 
         private static void LoadStylesheet()

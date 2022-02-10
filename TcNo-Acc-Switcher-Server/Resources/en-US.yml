@@ -103,7 +103,7 @@ Toast_RestartAsAdmin: Please start as Admin and try again.
 Toast_RestartAfterClose: Please restart the program after clicking Close.
 Toast_RestartAfterCloseTitle: Accent color disabled
 Toast_RestartRequired: Restart to apply changes
-Toast_LoadStylesheetFailed: Failed to load stylesheet! See documents folder for details.
+Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
 Toast_BNet_Private: "{BTag}'s profile is private"
 Toast_BNet_StatsFail: "Error trying to get stats for {BTag}"
 Toast_BNet_CantSwapAccounts: Could not swap accounts (Battle.net.config file corrupt)
@@ -163,6 +163,7 @@ Toast_RestoreDeleting: Deleting temporary files
 Toast_RestoreComplete: Restore finished!
 Toast_FailedLoad: Failed to load {platform}! Click the platform to see the error.
 Toast_FailedPlatformsLoad: Failed to load Platforms.json! Please verify this file exists.
+Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
 Tooltip_Restore: Click to select a 7z file, or drag it onto this button.
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
@@ -373,6 +374,7 @@ Platform_ClearCacheTotal: Clearing {totalFileCount} files ({totalSizeMB})
 Platform_DeleteFail: Could not delete some files (Program may be running?)
 Platform_CouldNotDeleteLog: Could not delete file! Check {logPath}
 Error_FileAccessDenied: Failed to access file! Check {logPath}
+Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
 Tooltip_Settings: Settings
 Tooltip_Info: Info
 Tooltip_ManagePlatforms: Show or Hide other platforms

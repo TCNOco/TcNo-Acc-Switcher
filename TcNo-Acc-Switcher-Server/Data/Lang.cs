@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Pages.General;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -133,50 +134,59 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public static bool Load(string filename, bool save = false)
         {
-            var path = Path.Join(Globals.AppDataFolder, "Resources", filename + ".yml");
-            Current = filename;
-            if (save && Current == filename)
+            try
             {
-                AppSettings.Language = filename;
-                AppSettings.SaveSettings();
-            }
-            if (!File.Exists(path))
-            {
-                // Get list of files in Resources folder
-                var availableLang = GetAvailableLanguages();
-
-                // Get closest available language
-                var langGroup = filename.Split('-')[0];
-                var foundClose = false;
-                foreach (var l in availableLang.Where(l => l.StartsWith(langGroup)))
+                var path = Path.Join(Globals.AppDataFolder, "Resources", filename + ".yml");
+                Current = filename;
+                if (save && Current == filename)
                 {
-                    path = Path.Join(Globals.AppDataFolder, "Resources", l + ".yml");
-                    foundClose = true;
-                    Current = l;
-                    if (save && Current == l)
+                    AppSettings.Language = filename;
+                    AppSettings.SaveSettings();
+                }
+                if (!File.Exists(path))
+                {
+                    // Get list of files in Resources folder
+                    var availableLang = GetAvailableLanguages();
+
+                    // Get closest available language
+                    var langGroup = filename.Split('-')[0];
+                    var foundClose = false;
+                    foreach (var l in availableLang.Where(l => l.StartsWith(langGroup)))
                     {
-                        AppSettings.Language = l;
-                        AppSettings.SaveSettings();
+                        path = Path.Join(Globals.AppDataFolder, "Resources", l + ".yml");
+                        foundClose = true;
+                        Current = l;
+                        if (save && Current == l)
+                        {
+                            AppSettings.Language = l;
+                            AppSettings.SaveSettings();
+                        }
+                        break;
                     }
-                    break;
+
+                    // If could not find a language close to requested
+                    if (!foundClose)
+                        return false;
                 }
 
-                // If could not find a language close to requested
-                if (!foundClose)
-                    return false;
-            }
+                // Load from en-EN file into Strings
+                var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
+                var text = Globals.ReadAllText(path);
+                var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(text)));
+                Debug.Assert(dict != null, nameof(dict) + " != null"); // These files have to exist, or the program will break in many ways
+                foreach (var (k, v) in dict)
+                {
+                    Strings[k] = v;
+                }
 
-            // Load from en-EN file into Strings
-            var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
-            var text = Globals.ReadAllText(path);
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(text)));
-            Debug.Assert(dict != null, nameof(dict) + " != null"); // These files have to exist, or the program will break in many ways
-            foreach (var (k, v) in dict)
+                return true;
+            }
+            catch (Exception e)
             {
-                Strings[k] = v;
+                _ = GeneralInvocableFuncs.ShowToast("error", "Can not load language information! See log for more info!", "Stylesheet error", "toastarea");
+                Globals.WriteToLog("Could not load language information!", e);
+                return false;
             }
-
-            return true;
         }
         #endregion
     }

@@ -138,6 +138,10 @@ namespace TcNo_Acc_Switcher_Updater
             else
                 _ = MessageBox.Show("This crashlog will be automatically submitted next launch." + Environment.NewLine + Environment.NewLine + "Error: " + e.ExceptionObject, "Fatal error occurred!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
 
+
+            // Throw for bad image errors (bad dlls in computer):
+            if (e.ExceptionObject is BadImageFormatException exception) throw exception;
+
             //if (e.ExceptionObject.)
             //{
             // if (e.HResult == -2147024671)

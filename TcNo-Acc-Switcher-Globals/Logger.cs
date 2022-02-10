@@ -39,8 +39,25 @@ namespace TcNo_Acc_Switcher_Globals
             if (VerboseMode) Console.WriteLine(s);
         }
 
-        public static void WriteToLog(Exception e) => WriteToLog($"HANDLED/IGNORED ERROR: {e}");
-        public static void WriteToLog(string desc, Exception e) => WriteToLog($"ERROR: {desc}\n{e}");
+        public static void WriteToLog(Exception e) => WriteToLog($"HANDLED/IGNORED ERROR: {GetEnglishError(e)}");
+        public static void WriteToLog(string desc, Exception e) => WriteToLog($"ERROR: {desc}\n{GetEnglishError(e)}");
+
+        public static string GetEnglishError(Exception e)
+        {
+            var toReturn = "";
+            // Set error to English
+            var oldCulture = Thread.CurrentThread.CurrentCulture;
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            toReturn = e.ToString();
+
+            // Reset language
+            Thread.CurrentThread.CurrentCulture = oldCulture;
+            Thread.CurrentThread.CurrentUICulture = oldCulture;
+
+            return toReturn;
+        }
 
         /// <summary>
         /// Append line to log file
@@ -123,6 +140,11 @@ namespace TcNo_Acc_Switcher_Globals
             // Log Unhandled Exception
             try
             {
+                // Set error to English
+                var oldCulture = Thread.CurrentThread.CurrentCulture;
+                Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
                 var exceptionStr = e.ExceptionObject.ToString();
                 _ = Directory.CreateDirectory("CrashLogs");
                 var filePath = $"CrashLogs\\AccSwitcher-Crashlog-{DateTime.Now:dd-MM-yy_hh-mm-ss.fff}.txt";
@@ -146,6 +168,10 @@ namespace TcNo_Acc_Switcher_Globals
                     "Fatal error occurred!" + Environment.NewLine +
                     "This crashlog will be automatically submitted next launch." + Environment.NewLine +
                     Environment.NewLine + "Error: " + e.ExceptionObject);
+
+                // Reset language
+                Thread.CurrentThread.CurrentCulture = oldCulture;
+                Thread.CurrentThread.CurrentUICulture = oldCulture;
             }
             catch (Exception)
             {
