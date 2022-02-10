@@ -187,9 +187,9 @@ namespace TcNo_Acc_Switcher_Client
                     // ReSharper disable once PossibleNullReferenceException
                     Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - CEF: " + e.Message.Replace("\n", "\n\t"));
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Globals.WriteToLog(e);
+                    Globals.WriteToLog(ex);
                 }
 #endif
             }
@@ -426,9 +426,9 @@ namespace TcNo_Acc_Switcher_Client
                         Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2: " + jo.SelectToken("value")?.ToString().Replace("\n", "\n\t"));
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Globals.WriteToLog(e);
+                    Globals.WriteToLog(ex);
                 }
 #endif
             }

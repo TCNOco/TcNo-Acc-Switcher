@@ -252,6 +252,7 @@
         _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCompress", new {size = folderSize}], duration: 3000, renderTo: "toastarea");
 
         var zipFile = Path.Join("Backups", tempFolder.Split(Path.DirectorySeparatorChar).Last() + ".7z");
+        Directory.CreateDirectory("Backups");
 
         var backupWatcher = new Thread(() => CompressionUpdater(zipFile));
         backupWatcher.Start();
