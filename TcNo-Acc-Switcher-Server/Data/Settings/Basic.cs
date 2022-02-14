@@ -84,6 +84,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ForgetAccountEnabled", Order = 4)] private bool _forgetAccountEnabled;
         [JsonProperty("ShortcutsJson", Order = 5)] private Dictionary<int, string> _shortcuts = new();
         [JsonProperty("ClosingMethod", Order = 6)] private string _closingMethod = "";
+        [JsonProperty("StartingMethod", Order = 7)] private string _startingMethod = "";
         [JsonIgnore] private bool _desktopShortcut;
 
 
@@ -115,6 +116,16 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             set => Instance._closingMethod = value;
         }
 
+        public static string StartingMethod {
+            get
+            {
+                if (!string.IsNullOrEmpty(Instance._startingMethod)) return Instance._startingMethod;
+                Instance._startingMethod = CurrentPlatform.StartingMethod;
+
+                return Instance._startingMethod;
+            }
+            set => Instance._startingMethod = value;
+        }
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
         public static readonly string ContextMenuJson = $@"[
@@ -164,6 +175,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             ClosingMethod = method;
             SaveSettings();
         }
+        public static void SetStartingMethod(string method)
+        {
+            StartingMethod = method;
+            SaveSettings();
+        }
         public static void OpenFolder(string folder)
         {
             Directory.CreateDirectory(folder); // Create if doesn't exist
@@ -171,9 +187,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_PlaceShortcutFiles"], renderTo: "toastarea");
         }
 
-        public static void RunPlatform(string exePath, bool admin, string args, string platName)
+        public static void RunPlatform(string exePath, bool admin, string args, string platName, string startingMethod = "Default")
         {
-            if (Globals.StartProgram(exePath, admin, args))
+            if (Globals.StartProgram(exePath, admin, args, startingMethod))
                 _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = platName }], renderTo: "toastarea");
             else
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = platName }], renderTo: "toastarea");
@@ -182,14 +198,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         public static void RunPlatform(bool admin)
         {
-            if (Globals.StartProgram(Exe(), admin, CurrentPlatform.ExeExtraArgs))
+            if (Globals.StartProgram(Exe(), admin, CurrentPlatform.ExeExtraArgs, CurrentPlatform.StartingMethod))
                 _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
             else
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
         }
         public static void RunPlatform()
         {
-            Globals.StartProgram(Exe(), Admin, CurrentPlatform.ExeExtraArgs);
+            Globals.StartProgram(Exe(), Admin, CurrentPlatform.ExeExtraArgs, CurrentPlatform.StartingMethod);
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
         }
         public static void RunShortcut(string s, string shortcutFolder = "", bool admin = false)

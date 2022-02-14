@@ -45,7 +45,7 @@
             </div>
             <div class="rowSetting rowDropdown">
                 <span>@_locale["Settings_Header_ClosingMethod", new { platform = CurrentPlatform.FullName }]</span>
-                <div class="dropdown">
+                <div class="dropdown" data-toggle="tooltip" title="@(_locale["Tooltip_ClosingMethod"])" data-placement="right">
                     <ul class="custom-dropdown-menu dropdown-menu">
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetClosingMethod("Combined")'>Combined (Best)</li>
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetClosingMethod("Close")'>Close</li>
@@ -53,6 +53,19 @@
                     </ul>
                     <button class="dropdown-toggle" type="button" data-toggle="dropdown">
                         @Basic.ClosingMethod
+                        <span class="caret"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="rowSetting rowDropdown">
+                <span>@_locale["Settings_Header_StartingMethod", new { platform = CurrentPlatform.FullName }]</span>
+                <div class="dropdown" data-toggle="tooltip" title="@(_locale["Tooltip_StartingMethod"])" data-placement="right">
+                    <ul class="custom-dropdown-menu dropdown-menu">
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetStartingMethod("Default")'>Default (Best)</li>
+                        <li class="custom-dropdown-item dropdown-item" @onclick='() => Basic.SetStartingMethod("Direct")'>Direct</li>
+                    </ul>
+                    <button class="dropdown-toggle" type="button" data-toggle="dropdown">
+                        @Basic.StartingMethod
                         <span class="caret"></span>
                     </button>
                 </div>

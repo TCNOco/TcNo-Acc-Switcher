@@ -98,7 +98,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         if (accId == uniqueId)
                         {
                             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_AlreadyLoggedIn"], renderTo: "toastarea");
-                            if (Globals.StartProgram(BasicSettings.Exe(), BasicSettings.Admin, args))
+                            if (Globals.StartProgram(BasicSettings.Exe(), BasicSettings.Admin, args, CurrentPlatform.StartingMethod))
                                 _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
                             else
                                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
@@ -119,7 +119,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 Globals.AddTrayUser(CurrentPlatform.SafeName, $"+{CurrentPlatform.PrimaryId}:" + accId, accName, BasicSettings.TrayAccNumber); // Add to Tray list, using first Identifier
             }
 
-            BasicSettings.RunPlatform(BasicSettings.Exe(), BasicSettings.Admin, args, CurrentPlatform.FullName);
+            BasicSettings.RunPlatform(BasicSettings.Exe(), BasicSettings.Admin, args, CurrentPlatform.FullName, CurrentPlatform.StartingMethod);
 
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);

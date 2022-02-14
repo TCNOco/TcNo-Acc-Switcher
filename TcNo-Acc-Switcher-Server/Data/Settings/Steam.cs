@@ -80,6 +80,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Path.Join(GetShortcutImageFolder, PlatformFuncs.RemoveShortcutExt(gameShortcutName) + ".png");
         public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
         public static string ClosingMethod { get => Instance._closingMethod; set => Instance._closingMethod = value; }
+        public static string StartingMethod { get => Instance._startingMethod; set => Instance._startingMethod = value; }
         private static string GetShortcutImageFolder => $"img\\shortcuts\\Steam\\";
         private static string GetShortcutImagePath() => Path.Join(Globals.UserDataFolder, "wwwroot\\", GetShortcutImageFolder);
         public static string ShortcutFolder => "LoginCache\\Steam\\Shortcuts\\";
@@ -186,13 +187,18 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             ClosingMethod = method;
             SaveSettings();
         }
+        public static void SetStartingMethod(string method)
+        {
+            StartingMethod = method;
+            SaveSettings();
+        }
 
         [JSInvokable]
         public static void HandleShortcutActionSteam(string shortcut, string action)
         {
             if (shortcut == "btnStartPlat") // Start platform requested
             {
-                Basic.RunPlatform(Exe(), action == "admin", "", "Steam");
+                Basic.RunPlatform(Exe(), action == "admin", "", "Steam", StartingMethod);
                 return;
             }
 
@@ -232,6 +238,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Steam_OverrideState", Order = 11)] private int _overrideState = -1;
         [JsonProperty("ShortcutsJson", Order = 13)] private Dictionary<int, string> _shortcuts = new();
         [JsonProperty("ClosingMethod", Order = 14)] private string _closingMethod = "TaskKill";
+        [JsonProperty("StartingMethod", Order = 15)] private string _startingMethod = "Default";
         [JsonIgnore] private bool _desktopShortcut;
 
         public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }

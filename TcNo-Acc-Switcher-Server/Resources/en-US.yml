@@ -67,6 +67,7 @@ Settings_HelpTranslate: "[Help translate]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "[Advanced] Set rendering engine:"
 Settings_Header_ClosingMethod: "[Advanced] Set method to close {platform}"
+Settings_Header_StartingMethod: "[Advanced] Set method to start {platform}"
 Settings_NoPlatforms: There are currently no platforms enabled. Please tick optional platforms below to enable them, or uncheck disabled platforms.
 Cleaning_Header_StartMenuShortcuts: 'Shortcuts for Start Menu:'
 Cleaning_Header_General: General Cleaning
@@ -382,3 +383,5 @@ Tooltip_ExpandShortcuts: Expand Game & Shortcut selection
 Tooltip_ShortcutFolder: Open shortcut folder. Place shortcuts in there, and the TcNo Account Switcher to see them.
 Tooltip_Backup: Backup config files/folders, as defined in platform settings.
 Tooltip_BackupAll: Backup ALL config files/folders, including images and other large files.
+Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
+Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"

@@ -404,7 +404,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Steam" }]);
             if (!autoStartSteam) return;
 
-            if (Globals.StartProgram(SteamSettings.Exe(), SteamSettings.Admin, args))
+            if (Globals.StartProgram(SteamSettings.Exe(), SteamSettings.Admin, args, SteamSettings.StartingMethod))
                 _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = "Steam" }], renderTo: "toastarea");
             else
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = "Steam" }], renderTo: "toastarea");

@@ -40,7 +40,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// <param name="path">Path of process to start</param>
         /// <param name="elevated">Whether the process should start elevated or not</param>
         /// <param name="args">Arguments to pass into the program</param>
-        public static bool StartProgram(string path, bool elevated, string args)
+        public static bool StartProgram(string path, bool elevated, string args, string startMethod = "Default")
         {
             var retStatus = true;
             if (!elevated && IsAdministrator)
@@ -57,7 +57,7 @@ namespace TcNo_Acc_Switcher_Globals
             {
                 try
                 {
-                    ProcessHandler.StartProgram(path, elevated, args);
+                    ProcessHandler.StartProgram(path, elevated, args, startMethod);
                 }
                 catch (Exception e)
                 {
@@ -273,21 +273,38 @@ namespace TcNo_Acc_Switcher_Globals
             /// <param name="fileName">Path to file</param>
             /// <param name="elevated">Whether program should be elevated</param>
             /// <param name="args">Arguments for program</param>
-            public static void StartProgram(string fileName, bool elevated, string args = "")
+            public static void StartProgram(string fileName, bool elevated, string args = "", string startMethod = "Default")
             {
-                var runasPath = Path.Join(AppDataFolder, "runas.exe");
-                if (!File.Exists(runasPath)) throw new Exception("Could not find runas.exe");
+                ProcessStartInfo prodStartInfo;
 
-                // This runas.exe program is a temporary workaround for processes closing when this closes.
-                try
+                if (startMethod == "Default")
                 {
-                    Process.Start(new ProcessStartInfo()
+                    var runasPath = Path.Join(AppDataFolder, "runas.exe");
+                    if (!File.Exists(runasPath)) throw new Exception("Could not find runas.exe");
+
+                    // This runas.exe program is a temporary workaround for processes closing when this closes.
+                    prodStartInfo = new ProcessStartInfo()
                     {
                         FileName = runasPath,
                         Arguments = $"\"{fileName}\" {(elevated ? "1" : "0")} {args}",
                         UseShellExecute = true,
                         Verb = elevated ? "runas" : ""
-                    });
+                    };
+                }
+                else
+                {
+                    prodStartInfo = new ProcessStartInfo()
+                    {
+                        FileName = fileName,
+                        Arguments = args,
+                        UseShellExecute = true,
+                        Verb = elevated ? "runas" : ""
+                    };
+                }
+
+                try
+                {
+                    Process.Start(prodStartInfo);
                 }
                 catch (Win32Exception e)
                 {

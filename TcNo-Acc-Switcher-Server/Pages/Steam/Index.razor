@@ -66,7 +66,7 @@
         </div>
         <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(_locale["Tooltip_ExpandShortcuts"])" data-placement="right"><i class="fas fa-chevron-up"></i></button>
 
-        <button id="btnStartPlat" @onclick='() => Basic.RunPlatform(Steam.Exe(), Steam.Admin, "", "Steam")' data-toggle="tooltip" title="Steam">
+        <button id="btnStartPlat" @onclick='() => Basic.RunPlatform(Steam.Exe(), Steam.Admin, "", "Steam", Steam.StartingMethod)' data-toggle="tooltip" title="Steam">
             <img src="@(Steam.GetShortcutImagePath("Steam"))" alt="Start platform"/>
         </button>
 
