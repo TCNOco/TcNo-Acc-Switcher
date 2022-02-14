@@ -273,7 +273,7 @@ async function exportAllAccounts() {
     }
     exportingAccounts = true;
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiExportAccountList", selectedElem).then((r) => {
-        let filename = r.split('/')
+        let filename = r.split('/');
         saveFile(filename[filename.length - 1], r);
         exportingAccounts = false;
     });
@@ -593,7 +593,7 @@ async function getLogicalDrives() {
     var folderContent = "";
     await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetLogicalDrives").then((r) => {
         folderContent = "<div>";
-        r.Folders.forEach((f) => { folderContent += "<span class=\"folder\" path=\"" + f + "\">" + f + "</span>" });
+        r.Folders.forEach((f) => { folderContent += "<span class=\"folder\" path=\"" + f + "\">" + f + "</span>"; });
         folderContent += "</div>";
     });
     return folderContent;

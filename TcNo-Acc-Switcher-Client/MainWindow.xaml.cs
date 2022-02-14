@@ -172,7 +172,7 @@ namespace TcNo_Acc_Switcher_Client
         {
             if (e.Level == LogSeverity.Error)
             {
-                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - CEF EXCEPTION (Handled: refreshed): " + e.Message);
+                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - CEF EXCEPTION (Handled: refreshed): {e.Message + Environment.NewLine}LINE: {e.Line + Environment.NewLine}SOURCE: {e.Source}");
                 _refreshFixAttempts++;
                 if (_refreshFixAttempts < 5)
                     _cefView.Reload();
@@ -425,7 +425,7 @@ namespace TcNo_Acc_Switcher_Client
             var message = JObject.Parse(e.ParameterObjectAsJson);
             if (message.ContainsKey("exceptionDetails"))
             {
-                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION (Handled: refreshed): " + message.SelectToken("exceptionDetails.exception.description"));
+                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION (Handled: refreshed): {message.SelectToken("exceptionDetails.exception.description")}{Environment.NewLine}FULL ERROR: {e.ParameterObjectAsJson}");
                 _refreshFixAttempts++;
                 if (_refreshFixAttempts < 5)
                     _mView2.Reload();

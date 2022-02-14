@@ -22,7 +22,7 @@ $(function () {
     $(document).bind("mouseup", (e) => {
         if (e.which === 4 || e.which === 5) { // Backward & Forward mouse button
             e.preventDefault();
-        };
+        }
 
         if (e.which === 4) { // Backward mouse button
             if (window.location.pathname === "/") randomAni("#btnBack .icon");
@@ -37,14 +37,14 @@ $(function () {
 
 function jQueryAppend(jQuerySelector, strToInsert) {
 	$(jQuerySelector).append(strToInsert);
-};
+}
 
 function jQueryProcessAccListSize() {
     let maxHeight = 0;
     $(".acc_list_item label").each((_, e) => { maxHeight = Math.max(maxHeight, e.offsetHeight); });
     if (document.getElementById("acc_list"))
 	    document.getElementById("acc_list").setAttribute("style", `grid-template-rows: repeat(auto-fill, ${maxHeight}px)`);
-};
+}
 
 // Removes arguments like "?toast_type, &toast_title, &toast_message" from the URL.
 function removeUrlArgs(argString) {
@@ -75,7 +75,7 @@ function removeUrlArgs(argString) {
 
 function updateStatus(status) {
     $("#CurrentStatus").val(status);
-};
+}
 
 async function initPlatformListSortable() {
     // Create sortable list
@@ -89,7 +89,7 @@ async function initPlatformListSortable() {
     // On drag end, save list of items.
     sortable(".platform_list")[0].addEventListener("sortupdate", (e) => {
         var order = [];
-        $(".platform_list > div").each((i, e) => { order.push(e.id) });
+        $(".platform_list > div").each((i, e) => { order.push(e.id); });
 
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", `Settings\\platformOrder.json`, JSON.stringify(order));
     });
@@ -126,11 +126,11 @@ async function initAccListSortable() {
 
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiSaveOrder", `LoginCache\\${platformName}\\order.json`, JSON.stringify(order));
     });
-};
+}
 
 function steamAdvancedClearingAddLine(text) {
     queuedJQueryAppend("#lines", `<p>${text}</p>`);
-};
+}
 
 
 function initEditor() {
