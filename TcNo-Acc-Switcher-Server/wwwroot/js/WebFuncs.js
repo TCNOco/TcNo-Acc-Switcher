@@ -610,7 +610,7 @@ function updateIndicator(e) {
     } else {
         // Everything else
         pathPickerRequestedFile = pathPickerRequestedFile.replace("*", "");
-        foundRequested = $("#FolderLocation").val().includes(pathPickerRequestedFile);
+        foundRequested = $("#FolderLocation").val().toLowerCase().includes(pathPickerRequestedFile.toLowerCase());
     }
     Modal_RequestedLocated(foundRequested);
 }

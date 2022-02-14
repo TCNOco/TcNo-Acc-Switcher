@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
 using System.Web;
@@ -318,12 +319,20 @@ namespace TcNo_Acc_Switcher_Client
                 _mView2.NavigationStarting += MViewUrlChanged;
                 _mView2.CoreWebView2.ProcessFailed += CoreWebView2OnProcessFailed;
 
-                _mView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled").DevToolsProtocolEventReceived += ConsoleMessage;
-                _mView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown").DevToolsProtocolEventReceived += ConsoleMessage;
+                _mView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.consoleAPICalled")
+                    .DevToolsProtocolEventReceived += ConsoleMessage;
+                _mView2.CoreWebView2.GetDevToolsProtocolEventReceiver("Runtime.exceptionThrown")
+                    .DevToolsProtocolEventReceived += ConsoleMessage;
                 _ = await _mView2.CoreWebView2.CallDevToolsProtocolMethodAsync("Runtime.enable", "{}");
             }
-            catch (WebView2RuntimeNotFoundException)
+            catch (Exception ex) when (ex is BadImageFormatException or WebView2RuntimeNotFoundException or COMException)
             {
+                if (ex is System.Runtime.InteropServices.COMException && !ex.ToString().Contains("WebView2"))
+                {
+                    // Is not a WebView2 exception
+                    throw;
+                }
+
                 // WebView2 is not installed!
                 // Create counter for WebView failed checks
                 var failFile = Path.Join(Globals.UserDataFolder, "WebViewNotInstalled");
@@ -336,14 +345,19 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         AppSettings.ActiveBrowser = "CEF";
                         AppSettings.SaveSettings();
-                        _ = MessageBox.Show("WebView2 Runtime is not installed. The program will now download and use the fallback CEF browser. (Less performance, more compatibility)", "Required runtime not found! Using fallback.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        _ = MessageBox.Show(
+                            "WebView2 Runtime is not installed. The program will now download and use the fallback CEF browser. (Less performance, more compatibility)",
+                            "Required runtime not found! Using fallback.", MessageBoxButton.OK, MessageBoxImage.Error);
                         TcNo_Acc_Switcher_Server.Pages.Index.AutoStartUpdaterAsAdmin("downloadCEF");
                         Globals.DeleteFile(failFile);
                         Environment.Exit(1);
                     }
                 }
 
-                var result = MessageBox.Show("WebView2 Runtime is not installed. I've opened the website you need to download it from.", "Required runtime not found!", MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                var result =
+                    MessageBox.Show(
+                        "WebView2 Runtime is not installed. I've opened the website you need to download it from.",
+                        "Required runtime not found!", MessageBoxButton.OKCancel, MessageBoxImage.Error);
                 if (result == MessageBoxResult.OK)
                 {
                     _ = Process.Start(new ProcessStartInfo("https://go.microsoft.com/fwlink/p/?LinkId=2124703")
@@ -351,8 +365,10 @@ namespace TcNo_Acc_Switcher_Client
                         UseShellExecute = true,
                         Verb = "open"
                     });
-                } else Environment.Exit(1);
+                }
+                else Environment.Exit(1);
             }
+
             //MView2.CoreWebView2.OpenDevToolsWindow();
         }
 

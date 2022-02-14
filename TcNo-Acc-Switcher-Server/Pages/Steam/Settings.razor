@@ -273,7 +273,13 @@
         Globals.CompressFolder(tempFolder, zipFile);
 
         Globals.RecursiveDelete(tempFolder, false);
-        _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_BackupComplete", new {size = folderSize, compressedSize = Globals.FileSizeString(zipFile)}], renderTo: "toastarea");
+        if (!File.Exists(zipFile))
+            _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_BackupComplete", new {size = folderSize, compressedSize = Globals.FileSizeString(zipFile)}], renderTo: "toastarea");
+        else
+        {
+            Globals.WriteToLog($"ERROR: Could not find compressed backup file! Expected path: {zipFile}");
+            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BackupFail"], renderTo: "toastarea");
+        }
 
         _currentlyBackingUp = false;
     }

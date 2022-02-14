@@ -42,6 +42,8 @@ namespace TcNo_Acc_Switcher_Globals
 
         public static bool CopyFile(string source, string dest, bool overwrite = true)
         {
+            if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(dest)) return false;
+
             if (!File.Exists(source)) return false;
             if (File.Exists(dest) && !overwrite) return false;
             Directory.CreateDirectory(Path.GetDirectoryName(dest) ?? "");
@@ -134,7 +136,12 @@ namespace TcNo_Acc_Switcher_Globals
 
         }
 
-        public static string FileSizeString(string f) => FileSizeString(new FileInfo(f));
+        public static string FileSizeString(string f)
+        {
+            if (!File.Exists(f)) return "ERR: NOT FOUND";
+            var fi = new FileInfo(f);
+            return FileSizeString(fi);
+        }
         public static string FileSizeString(FileInfo fi) => FileLengthToString(fi.Length);
 
         /// <summary>

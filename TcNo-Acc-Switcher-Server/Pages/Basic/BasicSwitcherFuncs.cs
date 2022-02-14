@@ -365,6 +365,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 // The "file" is a registry key
                 if (OperatingSystem.IsWindows() && accFile.StartsWith("REG:"))
                 {
+                    if (!regJson.ContainsKey(accFile))
+                    {
+                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailReadSaved"], Lang["Error"], "toastarea");
+                        continue;
+                    }
+
                     var regValue = regJson[accFile] ?? "";
 
                     if (!Globals.SetRegistryKey(accFile[4..], regValue)) // Remove "REG:" and read data

@@ -165,6 +165,7 @@
       "ExesToEnd": [ "LeagueClient.exe", "LoR.exe", "VALORANT.exe", "RiotClientServices.exe", "RiotClientUx.exe", "RiotClientUxRender.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
+        "%LocalAppData%\\Riot Games\\Riot Client\\Cookies\\": "Cookies",
         "%LocalAppData%\\Riot Games\\Riot Client\\Data": "RiotClientPrivateSettings.yaml",
         "%LocalAppData%\\Riot Games\\Riot Client\\Config": "RiotClientSettings.yaml",
         "%LocalAppData%\\Riot Games\\Riot Client\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"

@@ -336,18 +336,24 @@ namespace TcNo_Acc_Switcher_Server.Data
                 Globals.DebugWriteLine("ERROR in CSS: " + e.Message);
                 throw;
             }
+
             // Convert from SCSS to CSS. The arguments are for "exception reporting", according to the SharpScss Git Repo.
-            if (Globals.DeleteFile(StylesheetFile))
+            try
             {
-                File.WriteAllText(StylesheetFile, convertedScss.Css);
-                if (Globals.DeleteFile(StylesheetFile + ".map"))
-                    File.WriteAllText(StylesheetFile + ".map", convertedScss.SourceMap);
+                if (Globals.DeleteFile(StylesheetFile))
+                {
+                    File.WriteAllText(StylesheetFile, convertedScss.Css);
+                    if (Globals.DeleteFile(StylesheetFile + ".map"))
+                        File.WriteAllText(StylesheetFile + ".map", convertedScss.SourceMap);
+                }
+                else throw new Exception($"Could not delete StylesheetFile: '{StylesheetFile}'");
             }
-            else
+            catch (Exception ex)
             {
+                // Catches generic errors, as well as not being able to overwrite file errors, etc.
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
                     "Stylesheet error", "toastarea");
-                Globals.WriteToLog($"Could not delete stylesheet file: {StylesheetFile}. Could not refresh stylesheet from scss.");
+                Globals.WriteToLog($"Could not delete stylesheet file: {StylesheetFile}. Could not refresh stylesheet from scss.", ex);
             }
 
         }

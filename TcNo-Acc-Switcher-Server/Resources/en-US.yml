@@ -119,6 +119,7 @@ Toast_CantClearLoginFiles: Failed to clear old login files
 Toast_AccountIdReg: Failed to get Account Id from Registry!
 Toast_RegFailWrite: Failed to Write to Windows Regsitry!
 Toast_RegFailRead: Failed to Read from Windows Regsitry!
+Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
 Toast_RegSaveMissing: Failed Find or Read data from saved Registry files!
 Toast_DuplicateNames: Could not swap. Duplicate accounts with same username?
 Toast_CouldNotLocate: Could not locate logged in user
@@ -156,6 +157,7 @@ Toast_BackupCopy: (1/3) Copying files to a temporary location...
 Toast_BackupCompress: (2/3) Compressing files ({size}). This will take some time...
 Toast_BackupComplete: (3/3) Finished compressing! ({size} to {compressedSize})
 Toast_BackupProgress: "Backup in progress (Compressed size: {compressedSize})"
+Toast_BackupFail: Backup failed - See log!
 Toast_BackupBusy: Backup already in progress!
 Toast_RestoreBusy: Restore already in progress!
 Toast_RestoreExt: Extracting archive.
