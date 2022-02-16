@@ -62,9 +62,9 @@ Settings_StartCentered: Start programma gecentreerd
 Settings_WindowsAccent: Gebruik de Windows Accent Kleur
 Settings_HelpTranslate: "[Help vertalen]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
-Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
-Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
+Settings_Header_ActiveBrowser: "(Geavanceerd) Renderengine instellen:"
+Settings_Header_ClosingMethod: "(Geavanceerd) Methode instellen om {platform}. te sluiten"
+Settings_Header_StartingMethod: "(Geavanceerd) Methode instellen om {platform}. te starten"
 Settings_NoPlatforms: Er zijn momenteel geen platforms ingeschakeld. Vink hieronder optionele platforms aan om ze in te schakelen, of schakel uitgeschakelde platforms uit.
 Cleaning_Header_StartMenuShortcuts: 'Snelkoppelingen voor Start Menu:'
 Cleaning_Header_General: Algemeen schoonmaken
@@ -104,7 +104,7 @@ Toast_RestartAsAdmin: Start als Admin en probeer het opnieuw.
 Toast_RestartAfterClose: Herstart het programma na het klikken op 'sluiten'.
 Toast_RestartAfterCloseTitle: Accent kleur uitgeschakeld
 Toast_RestartRequired: Herstart om wijzigingen toe te passen
-Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
+Toast_LoadStylesheetFailed: Het laden van stylesheet is mislukt! Zie gebruikersgegevensmap voor details.
 Toast_BNet_Private: "Profiel van {BTag}is privé"
 Toast_BNet_StatsFail: "Fout bij het ophalen van statistieken voor {BTag}"
 Toast_BNet_CantSwapAccounts: Kan geen accounts wisselen (Battle.net.config bestand beschadigd)
@@ -119,7 +119,7 @@ Toast_CantClearLoginFiles: Mislukt om oude loginbestanden te wissen
 Toast_AccountIdReg: Kan account-Id niet ophalen uit het register!
 Toast_RegFailWrite: Schrijven naar Windows-register is mislukt!
 Toast_RegFailRead: Kan niet lezen van Windows Regsitry!
-Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
+Toast_RegFailReadSaved: Kan opgeslagen registervermelding niet lezen. Probeer het account te verwijderen en opnieuw toe te voegen als dit niet lukt.
 Toast_RegSaveMissing: Mislukt Zoeken of lezen van gegevens van opgeslagen registerbestanden!
 Toast_DuplicateNames: Kan niet wisselen. Een account dupliceren met dezelfde gebruikersnaam?
 Toast_CouldNotLocate: Kan aangemelde gebruiker niet vinden
@@ -157,7 +157,7 @@ Toast_BackupCopy: (1/3) Bestanden kopiëren naar een tijdelijke locatie...
 Toast_BackupCompress: (2/3) Bestanden comprimeren ({size}). Dit zal enige tijd duren...
 Toast_BackupComplete: (3/3) Klaar met comprimeren! ({size} tot {compressedSize})
 Toast_BackupProgress: "Back-up bezig (Gecomprimeerde grootte: {compressedSize})"
-Toast_BackupFail: Backup failed - See log!
+Toast_BackupFail: Back-up mislukt - Zie log!
 Toast_BackupBusy: Back-up al bezig!
 Toast_RestoreBusy: Herstel wordt al uitgevoerd!
 Toast_RestoreExt: Archief uitpakken.
@@ -166,10 +166,10 @@ Toast_RestoreDeleting: Tijdelijke bestanden verwijderen
 Toast_RestoreComplete: Herstel voltooid!
 Toast_FailedLoad: Kan {platform}niet laden! Klik op het platform om de fout te zien.
 Toast_FailedPlatformsLoad: Kan Platforms.json niet laden! Controleer of dit bestand bestaat.
-Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
-Toast_FileCopyFail: Failed to copy files! See log for more details.
-Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
-Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
+Toast_FailedLoadSettings: "Kan instellingen niet laden! In plaats daarvan standaardinstellingen laden. 'oud' toevoegen aan bestaande instellingenbestandsnaam."
+Toast_FileCopyFail: Kan bestanden niet kopiëren! Zie log voor meer details.
+Toast_UserDataLoadFail: Kan gebruikersgegevens niet laden {UserData}\\WindowSettings.json. Back-up maken en resetten! Opgeslagen fout om te loggen.
+Toast_UpdateCheckFail: Kon https://tcno.co/ niet bereiken om te controleren op updates. Dit bericht wordt één keer per dag weergegeven.
 Tooltip_Restore: Klik om een 7z-bestand te selecteren of sleep het naar deze knop.
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is iedereen die heeft geholpen met het vertalen van deze software.<br>Gebruikers met talen naast zich hebben veel geholpen bij het vertalen (rol van proeflezer)."
@@ -380,7 +380,7 @@ Platform_ClearCacheTotal: Wissen van {totalFileCount} bestanden ({totalSizeMB})
 Platform_DeleteFail: Kan sommige bestanden niet verwijderen (het programma is mogelijk actief?)
 Platform_CouldNotDeleteLog: Kan bestand niet verwijderen! Controleer {logPath}
 Error_FileAccessDenied: Geen toegang tot bestand! Controleer {logPath}
-Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
+Error_RequiredFileVerify: Er is geen vereist bestand gevonden. Zorg ervoor dat de x64- en x86-mappen aanwezig zijn in de installatiemap. Als dit niet het geval is, voert u TcNo-Acc-Switcher-Updater.exe uit en controleert u de bestanden.
 Tooltip_Settings: Instellingen
 Tooltip_Info: Informatie
 Tooltip_ManagePlatforms: Toon of verberg andere platforms
@@ -388,5 +388,5 @@ Tooltip_ExpandShortcuts: Spel en Snelkoppeling selectie uitbreiden
 Tooltip_ShortcutFolder: Open sneltoets map. Plaats daar snelkoppelingen en de TcNo Account Switcher om ze te bekijken.
 Tooltip_Backup: Maak een back-up van configuratiebestanden/mappen, zoals gedefinieerd in platforminstellingen.
 Tooltip_BackupAll: Maak een back-up van ALLE configuratiebestanden/mappen, inclusief afbeeldingen en andere grote bestanden.
-Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
-Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
+Tooltip_ClosingMethod: "Gecombineerd is het beste. Sluiten probeert rechtstreeks te sluiten via een sluitfunctie en TaskKill gebruikt CMD (het beste als gecombineerd niet werkt)"
+Tooltip_StartingMethod: "Standaard is het beste. Direct heeft geen controle over beheerdersniveau of UAC. Het begint op hetzelfde niveau (of hoger - maar niet lager) dan deze accountwisselaar"
