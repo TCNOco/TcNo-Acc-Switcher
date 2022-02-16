@@ -62,9 +62,9 @@ Settings_StartCentered: Start program centered
 Settings_WindowsAccent: Use the Windows Accent Colour
 Settings_HelpTranslate: "[Help translate]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] Set rendering engine:"
-Settings_Header_ClosingMethod: "[Advanced] Set method to close {platform}"
-Settings_Header_StartingMethod: "[Advanced] Set method to start {platform}"
+Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
+Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
+Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
 Settings_NoPlatforms: There are currently no platforms enabled. Please tick optional platforms below to enable them, or uncheck disabled platforms.
 Cleaning_Header_StartMenuShortcuts: 'Shortcuts for Start Menu:'
 Cleaning_Header_General: General Cleaning
