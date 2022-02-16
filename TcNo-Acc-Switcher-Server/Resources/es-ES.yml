@@ -62,9 +62,9 @@ Settings_StartCentered: Iniciar programa centrado
 Settings_WindowsAccent: Usar el color de acento de Windows
 Settings_HelpTranslate: "[Ayuda a traducir]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
-Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
-Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
+Settings_Header_ActiveBrowser: "(Avanzado) Establecer motor de renderizado:"
+Settings_Header_ClosingMethod: "(Avanzado) Establecer método para cerrar {platform}"
+Settings_Header_StartingMethod: "(Avanzado) Establecer método para iniciar {platform}"
 Settings_NoPlatforms: Actualmente no hay plataformas habilitadas. Marque las plataformas opcionales a continuación para habilitarlas o desmarque las plataformas deshabilitadas.
 Cleaning_Header_StartMenuShortcuts: 'Atajos para Menú Inicio:'
 Cleaning_Header_General: Limpieza general
@@ -104,7 +104,7 @@ Toast_RestartAsAdmin: Por favor comience como Administrador y vuelva a intentarl
 Toast_RestartAfterClose: Por favor, reinicie el programa después de hacer clic en Cerrar.
 Toast_RestartAfterCloseTitle: Color de acento desactivado
 Toast_RestartRequired: Reiniciar para aplicar cambios
-Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
+Toast_LoadStylesheetFailed: '¡Error al cargar la hoja de estilo! Consulte la carpeta de datos de usuario para obtener más información.'
 Toast_BNet_Private: "El perfil de {BTag}es privado"
 Toast_BNet_StatsFail: "Error al intentar obtener estadísticas para {BTag}"
 Toast_BNet_CantSwapAccounts: No se pudo intercambiar cuentas (archivo Battle.net.config corrupto)
@@ -119,7 +119,7 @@ Toast_CantClearLoginFiles: Error al eliminar archivos antiguos de inicio de sesi
 Toast_AccountIdReg: '¡No se pudo obtener la identificación de la cuenta del registro!'
 Toast_RegFailWrite: '¡Error al escribir en el registro de Windows!'
 Toast_RegFailRead: '¡Error al leer desde el registro de Windows!'
-Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
+Toast_RegFailReadSaved: No se pudo leer la entrada de registro guardada. Intente eliminar y agregar la cuenta nuevamente si no tiene éxito.
 Toast_RegSaveMissing: '¡Error en la búsqueda o lectura de datos de archivos de registro guardados!'
 Toast_DuplicateNames: No se pudo intercambiar. ¿Duplicar cuentas con el mismo nombre de usuario?
 Toast_CouldNotLocate: No se pudo localizar usuario conectado
@@ -157,7 +157,7 @@ Toast_BackupCopy: (1/3) Copiando archivos a una ubicación temporal...
 Toast_BackupCompress: (2/3) Comprimir archivos ({size}). Esto tomará algún tiempo...
 Toast_BackupComplete: (3/3) ¡Terminó de comprimir! ({size} a {compressedSize})
 Toast_BackupProgress: "Copia de seguridad en curso (Tamaño comprimido: {compressedSize})"
-Toast_BackupFail: Backup failed - See log!
+Toast_BackupFail: 'La copia de seguridad falló: ¡vea el registro!'
 Toast_BackupBusy: '¡La copia de seguridad ya está en progreso!'
 Toast_RestoreBusy: '¡Restauración ya en curso!'
 Toast_RestoreExt: Extrayendo archivo.
@@ -166,10 +166,10 @@ Toast_RestoreDeleting: Eliminación de archivos temporales
 Toast_RestoreComplete: '¡Restauración terminada!'
 Toast_FailedLoad: Error al cargar {platform}! Haga clic en la plataforma para ver el error.
 Toast_FailedPlatformsLoad: '¡No se pudo cargar Platforms.json! Verifique que este archivo exista.'
-Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
-Toast_FileCopyFail: Failed to copy files! See log for more details.
-Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
-Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
+Toast_FailedLoadSettings: "¡Error al cargar la configuración! Cargando la configuración predeterminada en su lugar. Agregar 'antiguo' al nombre del archivo de configuración existente."
+Toast_FileCopyFail: '¡Error al copiar archivos! Ver registro para más detalles.'
+Toast_UserDataLoadFail: No se pudieron cargar los datos de usuario {UserData}\\WindowSettings.json. ¡Haciendo copias de seguridad y reiniciando! Error guardado en el registro.
+Toast_UpdateCheckFail: No se pudo acceder a https://tcno.co/ para buscar actualizaciones. Este mensaje se mostrará una vez al día.
 Tooltip_Restore: Haga clic para seleccionar un archivo 7z o arrástrelo a este botón.
 Modal_Crowdin_Header: Traductores de Crowdin
 Modal_Crowdin_Info: "Aquí están todos los que ayudaron a traducir este software.<br>Los usuarios con idiomas a su lado ayudaron mucho en la traducción (función de corrector de pruebas)."
@@ -380,7 +380,7 @@ Platform_ClearCacheTotal: Limpiando {totalFileCount} archivos ({totalSizeMB})
 Platform_DeleteFail: No se pudieron eliminar algunos archivos (¿el programa puede estar ejecutándose?)
 Platform_CouldNotDeleteLog: '¡No se pudo eliminar el archivo! cheque {logPath}'
 Error_FileAccessDenied: '¡Error al acceder al archivo! cheque {logPath}'
-Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
+Error_RequiredFileVerify: No se encontró un archivo requerido. Asegúrese de que las carpetas x64 y x86 existan en el directorio de instalación. Si no, ejecute TcNo-Acc-Switcher-Updater.exe y verifique los archivos.
 Tooltip_Settings: Ajustes
 Tooltip_Info: Información
 Tooltip_ManagePlatforms: Mostrar u ocultar otras plataformas
@@ -388,5 +388,5 @@ Tooltip_ExpandShortcuts: Ampliar la selección de juegos y atajos
 Tooltip_ShortcutFolder: Abra la carpeta de acceso directo. Coloque accesos directos allí y el conmutador de cuenta TcNo para verlos.
 Tooltip_Backup: Copia de seguridad de archivos/carpetas de configuración, como se define en la configuración de la plataforma.
 Tooltip_BackupAll: Haga una copia de seguridad de TODOS los archivos/carpetas de configuración, incluidas las imágenes y otros archivos grandes.
-Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
-Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
+Tooltip_ClosingMethod: "Combinado es lo mejor. Cerrar intenta cerrar directamente a través de una función de cierre, y TaskKill usa CMD (Mejor si la combinación no funciona)"
+Tooltip_StartingMethod: "El valor predeterminado es el mejor. Direct no tiene control sobre el nivel de administrador o UAC. Comenzará en el mismo nivel (o superior, pero no inferior) que este cambiador de cuenta"
