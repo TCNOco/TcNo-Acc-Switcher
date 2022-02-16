@@ -43,9 +43,6 @@ Settings_RTL: Vis tekst som højre mod venstre
 Settings_CurrentLocation: 'Aktuel installationsplacering: {path}'
 Settings_CurrentDataLocation: 'Nuværende brugerdataplacering: {path}'
 Settings_SetDataLocation: "[Indstil tilpasset brugerdataplacering]"
-Toast_DataLocationCopying: (1/2) Kopiering af eksisterende filer til den nye brugerdatamappe!
-Toast_DataLocationNotCopying: (1/2) Mappe har allerede filer! Migrerer ikke brugerdata.
-Toast_DataLocationSet: (2/2) Genstart kontoskifteren for at bruge den nye mappe!
 Settings_PickFolder: Vælg {platform} mappe
 Settings_OpenFolder: Åbn {platform} mappe
 Settings_ClearForgotten: Ryd Glemt
@@ -65,8 +62,9 @@ Settings_StartCentered: Start program centreret
 Settings_WindowsAccent: Brug Windows Accent Colour
 Settings_HelpTranslate: "[Hjælp oversætte]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] Indstil gengivelsesmotor:"
-Settings_Header_ClosingMethod: "[Advanced] Indstil metode til at lukke {platform}"
+Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
+Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
+Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
 Settings_NoPlatforms: Der er i øjeblikket ingen platforme aktiveret. Sæt kryds ved valgfrie platforme nedenfor for at aktivere dem, eller fjern markeringen af deaktiverede platforme.
 Cleaning_Header_StartMenuShortcuts: 'Genveje til startmenuen:'
 Cleaning_Header_General: Generel Rengøring
@@ -84,6 +82,9 @@ Restore_Button_Restore: Gendan valgte
 Ignored_RemoveAccounts: Fjern konti fra Ignorér liste
 Ignored_Description: Hvis du tidligere har "ignoreret" en konto, kan du vise dem igen her
 Ignored_Stop: Stop ignorering af valgte
+Toast_DataLocationCopying: (1/2) Kopiering af eksisterende filer til den nye brugerdatamappe!
+Toast_DataLocationNotCopying: (1/2) Mappe har allerede filer! Migrerer ikke brugerdata.
+Toast_DataLocationSet: (2/2) Genstart kontoskifteren for at bruge den nye mappe!
 Toast_PlaceShortcutFiles: En mappe åbner sig. Placer spilgenveje i den mappe, og genstart kontoskifteren.
 Toast_TrayStarted: Bakke startet!
 Toast_TrayRunning: Bakken er allerede åben
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: Start venligst som administrator, og prøv igen.
 Toast_RestartAfterClose: Genstart venligst programmet, når du klikker Luk.
 Toast_RestartAfterCloseTitle: Accent farve deaktiveret
 Toast_RestartRequired: Genstart for at anvende ændringer
-Toast_LoadStylesheetFailed: Kunne ikke indlæse stilark! Se dokumentmappe for detaljer.
+Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
 Toast_BNet_Private: "{BTag}'s profil er privat"
 Toast_BNet_StatsFail: "Fejl ved forsøg på at hente statistik for {BTag}"
 Toast_BNet_CantSwapAccounts: Kunne ikke bytte konti (Battle.net.config fil korrupt)
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: Mislykkedes at rydde gamle login-filer
 Toast_AccountIdReg: Kunne ikke hente konto-id fra registreringsdatabasen!
 Toast_RegFailWrite: Kunne ikke skrive til Windows Regsitry!
 Toast_RegFailRead: Kunne ikke læse fra Windows Regsitry!
+Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
 Toast_RegSaveMissing: Kunne ikke finde eller læse data fra gemte registreringsdatabasefiler!
 Toast_DuplicateNames: Kunne ikke bytte. Dupliker konti med samme brugernavn?
 Toast_CouldNotLocate: Kunne ikke finde brugeren logget ind
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) Kopierer filer til en midlertidig placering...
 Toast_BackupCompress: (2/3) Komprimering af filer ({size}). Det vil tage noget tid...
 Toast_BackupComplete: (3/3) Færdig komprimering! ({size} til {compressedSize})
 Toast_BackupProgress: "Sikkerhedskopiering i gang (komprimeret størrelse: {compressedSize})"
+Toast_BackupFail: Backup failed - See log!
 Toast_BackupBusy: Sikkerhedskopiering er allerede i gang!
 Toast_RestoreBusy: Gendannelse er allerede i gang!
 Toast_RestoreExt: Udpakning af arkiv.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: Sletning af midlertidige filer
 Toast_RestoreComplete: Gendannelse afsluttet!
 Toast_FailedLoad: Kunne ikke indlæse {platform}! Klik på platformen for at se fejlen.
 Toast_FailedPlatformsLoad: Kunne ikke indlæse Platforms.json! Bekræft venligst, at denne fil eksisterer.
+Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
+Toast_FileCopyFail: Failed to copy files! See log for more details.
+Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
+Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
 Tooltip_Restore: Klik for at vælge en 7z-fil, eller træk den til denne knap.
 Modal_Crowdin_Header: Crowdin-oversættere
 Modal_Crowdin_Info: "Her er alle, der hjalp med at oversætte denne software.<br>Brugere med sprog ved siden af hjalp meget med oversættelsen (korrekturlæserrolle)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: Rydder {totalFileCount} filer ({totalSizeMB})
 Platform_DeleteFail: Kunne ikke slette nogle filer (programmet kører muligvis?)
 Platform_CouldNotDeleteLog: Kunne ikke slette filen! Tjek {logPath}
 Error_FileAccessDenied: Kunne ikke få adgang til filen! Tjek {logPath}
+Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
 Tooltip_Settings: Indstillinger
 Tooltip_Info: Info
 Tooltip_ManagePlatforms: Vis eller skjul andre platforme
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: Udvid udvalget af spil og genveje
 Tooltip_ShortcutFolder: Åbn genvejsmappen. Placer genveje derinde, og TcNo Account Switcher for at se dem.
 Tooltip_Backup: Sikkerhedskopier konfigurationsfiler/mapper, som defineret i platformsindstillinger.
 Tooltip_BackupAll: Sikkerhedskopier ALLE konfigurationsfiler/mapper, inklusive billeder og andre store filer.
+Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
+Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
