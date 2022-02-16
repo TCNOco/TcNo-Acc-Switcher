@@ -43,9 +43,6 @@ Settings_RTL: Wys teks as Regs-na-Links
 Settings_CurrentLocation: 'Huidige installasieligging: {path}'
 Settings_CurrentDataLocation: 'Huidige gebruikerdataligging: {path}'
 Settings_SetDataLocation: "[Stel pasgemaakte gebruikerdataligging in]"
-Toast_DataLocationCopying: (1/2) Kopieer bestaande lêers na die nuwe gebruikersdata-lêergids!
-Toast_DataLocationNotCopying: (1/2) Die gids het reeds lêers! Sal nie gebruikerdata migreer nie.
-Toast_DataLocationSet: (2/2) Herbegin die rekeningwisselaar om die nuwe vouer te gebruik!
 Settings_PickFolder: Kies {platform} lêergids
 Settings_OpenFolder: Maak {platform} vouer oop
 Settings_ClearForgotten: Duidelik vergete
@@ -65,8 +62,9 @@ Settings_StartCentered: Begin program gesentreer
 Settings_WindowsAccent: Gebruik die Windows-aksentkleur
 Settings_HelpTranslate: "[Help vertaal]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] Stel weergawe-enjin:"
-Settings_Header_ClosingMethod: "[Advanced] Stel metode om toe te maak {platform}"
+Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
+Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
+Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
 Settings_NoPlatforms: Daar is tans geen platforms geaktiveer nie. Merk asseblief opsionele platforms hieronder om hulle te aktiveer, of ontmerk gedeaktiveerde platforms.
 Cleaning_Header_StartMenuShortcuts: 'Kortpaaie vir die Start Menu:'
 Cleaning_Header_General: Algemene skoonmaak
@@ -84,6 +82,9 @@ Restore_Button_Restore: Herstel gekies
 Ignored_RemoveAccounts: Verwyder rekeninge uit die lys ignoreer
 Ignored_Description: As u voorheen 'n rekening 'geïgnoreer' het, kan u dit weer hier wys
 Ignored_Stop: Hou op om gekies te ignoreer
+Toast_DataLocationCopying: (1/2) Kopieer bestaande lêers na die nuwe gebruikersdata-lêergids!
+Toast_DataLocationNotCopying: (1/2) Die gids het reeds lêers! Sal nie gebruikerdata migreer nie.
+Toast_DataLocationSet: (2/2) Herbegin die rekeningwisselaar om die nuwe vouer te gebruik!
 Toast_PlaceShortcutFiles: '''n Voer word oopgemaak. Plaas speletjiekortpaaie in daardie gids en herbegin die rekeningwisselaar.'
 Toast_TrayStarted: Laai begin!
 Toast_TrayRunning: Laai is reeds oop
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: Begin as admin en probeer weer.
 Toast_RestartAfterClose: Begin die program weer nadat u op Sluit geklik het.
 Toast_RestartAfterCloseTitle: Aksentkleur is gedeaktiveer
 Toast_RestartRequired: Herbegin om veranderinge toe te pas
-Toast_LoadStylesheetFailed: Kon nie stylblad laai nie! Sien die dokumentmap vir meer inligting.
+Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
 Toast_BNet_Private: "{BTag}se profiel is privaat"
 Toast_BNet_StatsFail: "Kon nie statistieke vir {BTag}"
 Toast_BNet_CantSwapAccounts: Kon nie rekeninge omruil nie (Battle.net.config-lêer is korrup)
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: Kon nie ou aanmeldlêers uitvee nie
 Toast_AccountIdReg: Kon nie rekening-ID van die register kry nie!
 Toast_RegFailWrite: Kon nie na Windows Regsitry skryf nie!
 Toast_RegFailRead: Kon nie lees vanaf Windows Regsitry nie!
+Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
 Toast_RegSaveMissing: Kon nie vind of lees data van gestoorde registerlêers nie!
 Toast_DuplicateNames: Kon nie omruil nie. Dupliseer rekeninge met dieselfde gebruikersnaam?
 Toast_CouldNotLocate: Kon nie die aangemelde gebruiker opspoor nie
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) Kopieer tans lêers na 'n tydelike ligging...
 Toast_BackupCompress: (2/3) Komprimeer lêers ({size}). Dit sal 'n rukkie neem...
 Toast_BackupComplete: (3/3) Klaar saamgepers! ({size} tot {compressedSize})
 Toast_BackupProgress: "Rugsteun aan die gang (saamgeperste grootte: {compressedSize})"
+Toast_BackupFail: Backup failed - See log!
 Toast_BackupBusy: Rugsteun reeds aan die gang!
 Toast_RestoreBusy: Herstel reeds aan die gang!
 Toast_RestoreExt: Onttrek argief.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: Vee tydelike lêers uit
 Toast_RestoreComplete: Herstel voltooi!
 Toast_FailedLoad: Kon nie {platform}laai nie! Klik op die platform om die fout te sien.
 Toast_FailedPlatformsLoad: Kon nie Platforms.json laai nie! Verifieer asseblief dat hierdie lêer bestaan.
+Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
+Toast_FileCopyFail: Failed to copy files! See log for more details.
+Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
+Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
 Tooltip_Restore: Klik om 'n 7z-lêer te kies, of sleep dit na hierdie knoppie.
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is almal wat gehelp het om hierdie sagteware te vertaal.<br>Gebruikers met tale langs hulle het baie gehelp met vertaling (proefleserrol)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: Vee {totalFileCount} lêers uit ({totalSizeMB})
 Platform_DeleteFail: Kon sommige lêers nie uitvee nie (program loop dalk?)
 Platform_CouldNotDeleteLog: Kon nie lêer uitvee nie! Tjek {logPath}
 Error_FileAccessDenied: Kon nie toegang tot lêer kry nie! Tjek {logPath}
+Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
 Tooltip_Settings: Instellings
 Tooltip_Info: Inligting
 Tooltip_ManagePlatforms: Wys of versteek ander platforms
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: Brei speletjie- en kortpad-keuse uit
 Tooltip_ShortcutFolder: Maak kortpadlêer oop. Plaas kortpaaie daarin, en die TcNo Account Switcher om dit te sien.
 Tooltip_Backup: Rugsteun konfigurasielêers/vouers, soos gedefinieer in platforminstellings.
 Tooltip_BackupAll: Rugsteun ALLE konfigurasielêers/vouers, insluitend beelde en ander groot lêers.
+Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
+Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
