@@ -62,9 +62,9 @@ Settings_StartCentered: Start program sentrert
 Settings_WindowsAccent: Bruk Windows Accent Colour
 Settings_HelpTranslate: "[Hjelp oversette]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
-Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
-Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
+Settings_Header_ActiveBrowser: "(Avansert) Angi gjengivelsesmotor:"
+Settings_Header_ClosingMethod: "(Avansert) Angi metode for å lukke {platform}"
+Settings_Header_StartingMethod: "(Avansert) Angi metode for å starte {platform}"
 Settings_NoPlatforms: Det er for øyeblikket ingen plattformer aktivert. Merk av for valgfrie plattformer nedenfor for å aktivere dem, eller fjern merket for deaktiverte plattformer.
 Cleaning_Header_StartMenuShortcuts: 'Snarveier for Start-menyen:'
 Cleaning_Header_General: Generell rengjøring
@@ -104,7 +104,7 @@ Toast_RestartAsAdmin: Start som Admin og prøv igjen.
 Toast_RestartAfterClose: Start programmet på nytt etter å ha klikket på lukket.
 Toast_RestartAfterCloseTitle: Uthevet farge deaktivert
 Toast_RestartRequired: Start på nytt for å bruke endringer
-Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
+Toast_LoadStylesheetFailed: Kunne ikke laste stilarket! Se mappen med brukerdata for detaljer.
 Toast_BNet_Private: "{BTag}sin profil er privat"
 Toast_BNet_StatsFail: "Feil under forsøk på å få statistikker for {BTag}"
 Toast_BNet_CantSwapAccounts: Kan ikke bytte konto (Battle.net.config filendelser
@@ -119,7 +119,7 @@ Toast_CantClearLoginFiles: Kunne ikke tømme gamle innloggingsfiler
 Toast_AccountIdReg: Kunne ikke hente konto-ID fra registeret!
 Toast_RegFailWrite: Kunne ikke skrive til Windows Regsitry!
 Toast_RegFailRead: Kunne ikke lese fra Windows Regsitry!
-Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
+Toast_RegFailReadSaved: Kunne ikke lese lagret registeroppføring. Prøv å fjerne og legge til kontoen på nytt hvis det ikke lykkes.
 Toast_RegSaveMissing: Kunne ikke finne eller lese data fra lagrede registerfiler!
 Toast_DuplicateNames: Kunne ikke bytte kart. Dupliserte kontoer med samme brukernavn?
 Toast_CouldNotLocate: Kunne ikke finne innlogget bruker
@@ -157,7 +157,7 @@ Toast_BackupCopy: (1/3) Kopierer filer til en midlertidig plassering...
 Toast_BackupCompress: (2/3) Komprimering av filer ({size}). Dette vil ta litt tid...
 Toast_BackupComplete: (3/3) Ferdig komprimering! ({size} til {compressedSize})
 Toast_BackupProgress: "Sikkerhetskopiering pågår (komprimert størrelse: {compressedSize})"
-Toast_BackupFail: Backup failed - See log!
+Toast_BackupFail: Sikkerhetskopiering mislyktes - Se logg!
 Toast_BackupBusy: Sikkerhetskopiering pågår allerede!
 Toast_RestoreBusy: Gjenoppretting pågår allerede!
 Toast_RestoreExt: Trekker ut arkiv.
@@ -166,10 +166,10 @@ Toast_RestoreDeleting: Sletting av midlertidige filer
 Toast_RestoreComplete: Gjenoppretting fullført!
 Toast_FailedLoad: Kunne ikke laste {platform}! Klikk på plattformen for å se feilen.
 Toast_FailedPlatformsLoad: Kunne ikke laste inn Platforms.json! Vennligst bekreft at denne filen eksisterer.
-Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
-Toast_FileCopyFail: Failed to copy files! See log for more details.
-Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
-Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
+Toast_FailedLoadSettings: "Kunne ikke laste inn innstillingene! Laster inn standardinnstillinger i stedet. Legger til \"gammel\" til eksisterende innstillingsfilnavn."
+Toast_FileCopyFail: Kunne ikke kopiere filer! Se logg for flere detaljer.
+Toast_UserDataLoadFail: Kunne ikke laste brukerdata {UserData}\\WindowSettings.json. Sikkerhetskopierer og tilbakestiller! Lagret feil til logg.
+Toast_UpdateCheckFail: Kunne ikke nå https://tcno.co/ for å se etter oppdateringer. Denne meldingen vises en gang om dagen.
 Tooltip_Restore: Klikk for å velge en 7z-fil, eller dra den til denne knappen.
 Modal_Crowdin_Header: Crowdin-oversettere
 Modal_Crowdin_Info: "Her er alle som hjalp til med å oversette denne programvaren.<br>Brukere med språk ved siden av hjalp mye med oversettelse (korrekturleserrolle)."
@@ -380,7 +380,7 @@ Platform_ClearCacheTotal: Sletter {totalFileCount} filer ({totalSizeMB})
 Platform_DeleteFail: Kunne ikke slette enkelte filer (kan det hende programmet kjører?)
 Platform_CouldNotDeleteLog: Kunne ikke slette filen! Sjekk {logPath}
 Error_FileAccessDenied: Kunne ikke få tilgang til filen! Sjekk {logPath}
-Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
+Error_RequiredFileVerify: En nødvendig fil ble ikke funnet. Kontroller at x64- og x86-mappene finnes i installasjonsmappen. Hvis ikke, kjør TcNo-Acc-Switcher-Updater.exe og bekreft filene.
 Tooltip_Settings: Innstillinger
 Tooltip_Info: Info
 Tooltip_ManagePlatforms: Vis eller skjul andre plattformer
@@ -388,5 +388,5 @@ Tooltip_ExpandShortcuts: Utvid utvalget av spill og snarveier
 Tooltip_ShortcutFolder: Åpne snarveismappen. Plasser snarveier der, og TcNo Account Switcher for å se dem.
 Tooltip_Backup: Sikkerhetskopier konfigurasjonsfiler/mapper, som definert i plattforminnstillingene.
 Tooltip_BackupAll: Sikkerhetskopier ALLE konfigurasjonsfiler/mapper, inkludert bilder og andre store filer.
-Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
-Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
+Tooltip_ClosingMethod: "Kombinert er best. Lukk forsøker å lukke direkte gjennom en lukkefunksjon, og TaskKill bruker CMD (best hvis kombinert ikke fungerer)"
+Tooltip_StartingMethod: "Standard er best. Direct har ingen kontroll over administratornivå eller UAC. Det vil starte på samme nivå (eller høyere - men ikke lavere) enn denne kontobytteren"
