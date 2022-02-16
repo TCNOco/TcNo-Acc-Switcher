@@ -137,3 +137,14 @@ function initEditor() {
     const editor = ace.edit("editor");
     editor.session.setMode("ace/mode/batchfile");
 }
+
+async function showUpdateBar() {
+    $(".programMain").prepend(`<div class="updateBar"><span>${await GetLang("Update")}</span><i class="fas fa-times-circle" id="closeUpdateBar"></i></div>`);
+    $(document).on("click", ".updateBar", function (event) {
+        if (event.target.id === "closeUpdateBar") {
+            $(".updateBar").fadeOut();
+        } else {
+            updateBarClick();
+        }
+    });
+}

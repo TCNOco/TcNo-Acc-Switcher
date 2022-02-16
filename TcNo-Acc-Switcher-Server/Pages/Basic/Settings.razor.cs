@@ -96,7 +96,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         if (Globals.IsFile(fullFromPath))
                             Globals.CopyFile(fullFromPath, toPath);
                         else if (Globals.IsFolder(fullFromPath))
-                            Globals.CopyFilesRecursive(fullFromPath, toPath, true);
+                        {
+                            if (!Globals.CopyFilesRecursive(fullFromPath, toPath, true))
+                                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
+                        }
                     }
 
                     _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreDeleting"], renderTo: "toastarea");
@@ -170,7 +173,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     if (!Directory.Exists(fExpanded)) continue;
 
                     // Handle folder entry
-                    Globals.CopyFilesRecursive(fExpanded, dest, true);
+                    if (!Globals.CopyFilesRecursive(fExpanded, dest, true))
+                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
                 }
 
             var backupThread = new Thread(() => FinishBackup(tempFolder));

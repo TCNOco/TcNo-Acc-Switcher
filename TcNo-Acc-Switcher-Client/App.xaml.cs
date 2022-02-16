@@ -30,6 +30,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
@@ -179,9 +180,6 @@ namespace TcNo_Acc_Switcher_Client
 
             // Clear WebView2 cache
             Globals.ClearWebCache();
-
-            // Check for update in another thread
-            new Thread(CheckForUpdate).Start();
 
             // Show window (Because no command line commands were parsed)
             var mainWindow = new MainWindow();
@@ -608,66 +606,6 @@ namespace TcNo_Acc_Switcher_Client
 
             return Convert.ToBase64String(compressedData);
         }
-
-        /// <summary>
-        /// Checks for an update
-        /// </summary>
-        /// <returns>True if update found, show notification</returns>
-        public static void CheckForUpdate()
-        {
-            try
-            {
-#if DEBUG
-                var latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + Globals.Version);
-#else
-                var latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?v=" + Globals.Version);
-#endif
-                if (CheckLatest(latestVersion)) return;
-                // Show notification
-                AppSettings.UpdateAvailable = true;
-            }
-            catch (Exception e) when (e is WebException or AggregateException)
-            {
-                if (File.Exists("WindowSettings.json"))
-                {
-                    var o = JObject.Parse(Globals.ReadAllText("WindowSettings.json"));
-                    if (o.ContainsKey("LastUpdateCheckFail"))
-                    {
-                        if (!(DateTime.TryParseExact((string)o["LastUpdateCheckFail"], "yyyy-MM-dd HH:mm:ss.fff",
-                                  CultureInfo.InvariantCulture, DateTimeStyles.None, out var timediff) &&
-                              DateTime.Now.Subtract(timediff).Days >= 1)) return;
-                    }
-                    // Has not shown error today
-                    MessageBox.Show("Could not reach https://tcno.co/ to check for updates. [This message will show once a day]", "Unable to check for updates", MessageBoxButton.OK, MessageBoxImage.Error);
-                    o["LastUpdateCheckFail"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                    File.WriteAllText("WindowSettings.json", o.ToString());
-                }
-                Globals.WriteToLog(@"Could not reach https://tcno.co/ to check for updates.\n" + e);
-            }
-        }
-
-        /// <summary>
-        /// Checks whether the program version is equal to or newer than the servers
-        /// </summary>
-        /// <param name="latest">Latest version provided by server</param>
-        /// <returns>True when the program is up-to-date or ahead</returns>
-        private static bool CheckLatest(string latest)
-        {
-            latest = latest.Replace("\r", "").Replace("\n", "");
-            if (DateTime.TryParseExact(latest, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var latestDate))
-            {
-                if (DateTime.TryParseExact(Globals.Version, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var currentDate))
-                {
-                    if (latestDate.Equals(currentDate) || currentDate.Subtract(latestDate) > TimeSpan.Zero) return true;
-                }
-                else
-                    Globals.WriteToLog(@$"Unable to convert '{0}' to a date and time. {latest}");
-            }
-            else
-                Globals.WriteToLog(@$"Unable to convert '{0}' to a date and time. {latest}");
-            return false;
-        }
-
 
         #region ResizeWindows
         // https://stackoverflow.com/a/27157947/5165437

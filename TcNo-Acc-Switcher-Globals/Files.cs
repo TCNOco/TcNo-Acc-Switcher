@@ -42,7 +42,11 @@ namespace TcNo_Acc_Switcher_Globals
 
         public static bool CopyFile(string source, string dest, bool overwrite = true)
         {
-            if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(dest)) return false;
+            if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(dest))
+            {
+                WriteToLog("Failed to copy file! Either path is empty or invalid! From: " + source + ", To: " + dest);
+                return false;
+            }
 
             if (!File.Exists(source)) return false;
             if (File.Exists(dest) && !overwrite) return false;
@@ -177,6 +181,7 @@ namespace TcNo_Acc_Switcher_Globals
                     throw new InvalidOperationException("URI is invalid.");
 
                 var fileBytes = HClient.GetByteArrayAsync(url).Result;
+                if (path.Contains("\\")) Directory.CreateDirectory(Path.GetDirectoryName(path)!);
                 File.WriteAllBytes(path, fileBytes);
             }
             catch (Exception)
@@ -216,31 +221,40 @@ namespace TcNo_Acc_Switcher_Globals
             return l.ToArray();
         }
 
-        // Overload for below
-        public static void CopyFilesRecursive(string inputFolder, string outputFolder) =>
-            CopyFilesRecursive(inputFolder, outputFolder, false);
         /// <summary>
         /// Recursively copy files and directories
         /// </summary>
         /// <param name="inputFolder">Folder to copy files recursively from</param>
         /// <param name="outputFolder">Destination folder</param>
         /// <param name="overwrite">Whether to overwrite files or not</param>
-        public static void CopyFilesRecursive(string inputFolder, string outputFolder, bool overwrite)
+        /// <param name="throwOnError">When false, error is only logged (default)</param>
+        public static bool CopyFilesRecursive(string inputFolder, string outputFolder, bool overwrite = true, bool throwOnError = false)
         {
-            _ = Directory.CreateDirectory(outputFolder);
-            outputFolder = outputFolder.EndsWith("\\") ? outputFolder : outputFolder + "\\";
-            //Now Create all of the directories
-            foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
-                _ = Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
-
-            //Copy all the files & Replaces any files with the same name
-            foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
+            try
             {
-                var dest = newPath.Replace(inputFolder, outputFolder);
-                if (!overwrite && File.Exists(dest)) continue;
+                _ = Directory.CreateDirectory(outputFolder);
+                outputFolder = outputFolder.EndsWith("\\") ? outputFolder : outputFolder + "\\";
+                //Now Create all of the directories
+                foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
+                    _ = Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
 
-                File.Copy(newPath, dest, true);
+                //Copy all the files & Replaces any files with the same name
+                foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
+                {
+                    var dest = newPath.Replace(inputFolder, outputFolder);
+                    if (!overwrite && File.Exists(dest)) continue;
+
+                    File.Copy(newPath, dest, true);
+                }
             }
+            catch (Exception e)
+            {
+                WriteToLog($"Failed to CopyFilesRecursive: {inputFolder} -> {outputFolder} (Overwrite {overwrite})", e);
+                if (throwOnError) throw;
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -251,36 +265,47 @@ namespace TcNo_Acc_Switcher_Globals
         /// <param name="overwrite">Whether to overwrite files or not</param>
         /// <param name="fileTypes">List of file types to include or exclude</param>
         /// <param name="include">True: include files from file types ONLY, or FALSE: Exclude any file type matches</param>
-        public static void CopyFilesRecursive(string inputFolder, string outputFolder, bool overwrite, List<string> fileTypes, bool include)
+        public static bool CopyFilesRecursive(string inputFolder, string outputFolder, bool overwrite, List<string> fileTypes, bool include, bool throwOnError = false)
         {
-            _ = Directory.CreateDirectory(outputFolder);
-            outputFolder = outputFolder.EndsWith("\\") ? outputFolder : outputFolder + "\\";
-            //Now Create all of the directories
-            foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
-                _ = Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
-
-            //Copy all the files & Replaces any files with the same name
-            foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
+            try
             {
-                var fileTypesContains = fileTypes.Contains(Path.GetExtension(newPath));
-                // Filter:
-                if (include && !fileTypesContains)
+                _ = Directory.CreateDirectory(outputFolder);
+                outputFolder = outputFolder.EndsWith("\\") ? outputFolder : outputFolder + "\\";
+                //Now Create all of the directories
+                foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
+                    _ = Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
+
+                //Copy all the files & Replaces any files with the same name
+                foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
                 {
-                    // Include only in list, and wasn't found in list
-                    continue;
+                    var fileTypesContains = fileTypes.Contains(Path.GetExtension(newPath));
+                    // Filter:
+                    if (include && !fileTypesContains)
+                    {
+                        // Include only in list, and wasn't found in list
+                        continue;
+                    }
+
+                    if (!include && fileTypesContains)
+                    {
+                        // Exclude if in list, and was found in list
+                        continue;
+                    }
+
+                    var dest = newPath.Replace(inputFolder, outputFolder);
+                    if (!overwrite && File.Exists(dest)) continue;
+
+                    File.Copy(newPath, dest, true);
                 }
-
-                if (!include && fileTypesContains)
-                {
-                    // Exclude if in list, and was found in list
-                    continue;
-                }
-
-                var dest = newPath.Replace(inputFolder, outputFolder);
-                if (!overwrite && File.Exists(dest)) continue;
-
-                File.Copy(newPath, dest, true);
             }
+            catch (Exception e)
+            {
+                WriteToLog($"Failed to CopyFilesRecursive: {inputFolder} -> {outputFolder} (Overwrite {overwrite}, File types: {string.Join(',', fileTypes)}, Include {include})", e);
+                if (throwOnError) throw;
+                return false;
+            }
+
+            return true;
         }
 
         public static void CompressFolder(string folder, string output)

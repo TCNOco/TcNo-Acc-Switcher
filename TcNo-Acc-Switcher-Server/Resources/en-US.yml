@@ -43,9 +43,6 @@ Settings_RTL: Show text as Right-to-Left
 Settings_CurrentLocation: 'Current install location: {path}'
 Settings_CurrentDataLocation: 'Current user data location: {path}'
 Settings_SetDataLocation: "[Set custom user data location]"
-Toast_DataLocationCopying: (1/2) Copying existing files into the new user data folder!
-Toast_DataLocationNotCopying: (1/2) Folder already has files! Will not migrate user data.
-Toast_DataLocationSet: (2/2) Restart the account switcher to use the new folder!
 Settings_PickFolder: Pick {platform} folder
 Settings_OpenFolder: Open {platform} Folder
 Settings_ClearForgotten: Clear Forgotten
@@ -85,6 +82,9 @@ Restore_Button_Restore: Restore selected
 Ignored_RemoveAccounts: Remove accounts from ignore list
 Ignored_Description: If you previously "ignored" an account, you can show them again here
 Ignored_Stop: Stop ignoring selected
+Toast_DataLocationCopying: (1/2) Copying existing files into the new user data folder!
+Toast_DataLocationNotCopying: (1/2) Folder already has files! Will not migrate user data.
+Toast_DataLocationSet: (2/2) Restart the account switcher to use the new folder!
 Toast_PlaceShortcutFiles: A folder is opening. Place game shortcuts in that folder, and restart the account switcher.
 Toast_TrayStarted: Tray started!
 Toast_TrayRunning: Tray already open
@@ -167,6 +167,9 @@ Toast_RestoreComplete: Restore finished!
 Toast_FailedLoad: Failed to load {platform}! Click the platform to see the error.
 Toast_FailedPlatformsLoad: Failed to load Platforms.json! Please verify this file exists.
 Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
+Toast_FileCopyFail: Failed to copy files! See log for more details.
+Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
+Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
 Tooltip_Restore: Click to select a 7z file, or drag it onto this button.
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."

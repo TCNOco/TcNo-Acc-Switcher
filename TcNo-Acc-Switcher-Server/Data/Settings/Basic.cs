@@ -92,7 +92,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         {
             get
             {
-                if (!string.IsNullOrEmpty(Instance._folderPath)) return Instance._folderPath;
+                if (!string.IsNullOrWhiteSpace(Instance._folderPath)) return Instance._folderPath;
                 Instance._folderPath = CurrentPlatform.DefaultFolderPath;
 
                 return Instance._folderPath;
@@ -108,7 +108,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         {
             get
             {
-                if (!string.IsNullOrEmpty(Instance._closingMethod)) return Instance._closingMethod;
+                if (!string.IsNullOrWhiteSpace(Instance._closingMethod)) return Instance._closingMethod;
                 Instance._closingMethod = CurrentPlatform.ClosingMethod;
 
                 return Instance._closingMethod;
@@ -119,7 +119,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static string StartingMethod {
             get
             {
-                if (!string.IsNullOrEmpty(Instance._startingMethod)) return Instance._startingMethod;
+                if (!string.IsNullOrWhiteSpace(Instance._startingMethod)) return Instance._startingMethod;
                 Instance._startingMethod = CurrentPlatform.StartingMethod;
 
                 return Instance._startingMethod;

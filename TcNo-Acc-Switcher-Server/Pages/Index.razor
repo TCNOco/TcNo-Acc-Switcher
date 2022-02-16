@@ -17,6 +17,7 @@
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Globals
 @using System.Globalization
+@using System.Threading
 @inject IJSRuntime _jsRuntime
 @{ _appData.SetActiveIJsRuntime(_jsRuntime); }
 @inject NavigationManager _navManager
@@ -24,14 +25,6 @@
 @inject AppData _appData
 
 @inject Lang  _locale
-
-@*@if (true)*@
-@if (AppSettings.UpdateAvailable)
-{
-    <div class="updateBar" @onclick="UpdateNow">
-        <span>@_locale["Update"]</span>
-    </div>
-}
 
 <ContextMenu ContextMenuString="@AppSettings.PlatformContextMenu" ContextMenuId="AccOrPlatList" />
 <div class="platformTable">
@@ -100,6 +93,9 @@
 		    _ = AppData.InvokeVoidAsync("initPlatformListSortable");
 			//await AppData.InvokeVoidAsync("initAccListSortable");
 		}
+
+        // Check for update in another thread
+	    new Thread(AppSettings.CheckForUpdate).Start();
 	}
 
 	protected override void OnInitialized()

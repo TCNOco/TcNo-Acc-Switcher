@@ -247,7 +247,8 @@
             {
                 var fExpanded = f.Replace("%Platform_Folder%", Steam.FolderPath);
                 if (!Directory.Exists(fExpanded)) continue;
-                Globals.CopyFilesRecursive(fExpanded ,Path.Join(tempFolder, t), true);
+                if (!Globals.CopyFilesRecursive(fExpanded ,Path.Join(tempFolder, t), true))
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
             }
 
         var backupThread = new Thread(() => FinishBackup(tempFolder));
@@ -340,7 +341,10 @@
                     if (Globals.IsFile(fullFromPath))
                         Globals.CopyFile(fullFromPath, toPath, true);
                     else if (Globals.IsFolder(fullFromPath))
-                        Globals.CopyFilesRecursive(fullFromPath, toPath, true);
+                    {
+                        if (!Globals.CopyFilesRecursive(fullFromPath, toPath, true))
+                            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
+                    }
                 }
 
                 _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_RestoreDeleting"], renderTo: "toastarea");

@@ -41,7 +41,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
         public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-        public static readonly string Version = "2022-02-10_00";
+        public static readonly string Version = "2022-02-16_00";
 
         #region INITIALISATION
 
@@ -50,7 +50,7 @@ namespace TcNo_Acc_Switcher_Globals
         {
             get
             {
-                if (!string.IsNullOrEmpty(_userDataFolder)) return _userDataFolder;
+                if (!string.IsNullOrWhiteSpace(_userDataFolder)) return _userDataFolder;
                 // Has not yet been initialized
                 // Check if set to something different
                 _userDataFolder = File.Exists(Path.Join(AppDataFolder, "userdata_path.txt"))
@@ -166,12 +166,12 @@ namespace TcNo_Acc_Switcher_Globals
         private static void InitFolder(string f, bool overwrite)
         {
             if (overwrite || !Directory.Exists(Path.Join(UserDataFolder, f)))
-                CopyFilesRecursive(Path.Join(AppDataFolder, f), Path.Join(UserDataFolder, f));
+                CopyFilesRecursive(Path.Join(AppDataFolder, f), Path.Join(UserDataFolder, f), true);
         }
         private static void InitWwwroot(string root, bool overwrite)
         {
             if (Directory.Exists(root))
-                CopyFilesRecursive(root, Path.Join(UserDataFolder, "wwwroot"), overwrite);
+                CopyFilesRecursive(root, Path.Join(UserDataFolder, "wwwroot"), overwrite, true);
         }
 
         #endregion

@@ -546,7 +546,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         }
 
         /// <summary>
-        ///
+        /// Handles copying files or folders around
         /// </summary>
         /// <param name="fromPath"></param>
         /// <param name="toPath"></param>
@@ -582,8 +582,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 if (file == "*")
                 {
                     if (!Directory.Exists(Path.GetDirectoryName(fromPath))) return false;
-                    Globals.CopyFilesRecursive(Path.GetDirectoryName(fromPath), toFullPath, true);
-                    return true;
+                    if (!Globals.CopyFilesRecursive(Path.GetDirectoryName(fromPath), toFullPath, true)) return true;
+
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
+                    return false;
                 }
 
                 // Handle "...\\*.log" or "...\\file_*", etc.
@@ -608,8 +610,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (Directory.Exists(fullPath))
             {
                 _ = Directory.CreateDirectory(toFullPath);
-                Globals.CopyFilesRecursive(fullPath, toFullPath, true);
-                return true;
+                if (Globals.CopyFilesRecursive(fullPath, toFullPath, true)) return true;
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
+                return false;
             }
 
             // Is file? Copy file

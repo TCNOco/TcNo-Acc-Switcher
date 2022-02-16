@@ -460,6 +460,6 @@ namespace TcNo_Acc_Switcher_Server.Data
     /// </summary>
     public static class PlatformFuncs
     {
-        public static string RemoveShortcutExt(string s) => !string.IsNullOrEmpty(s) ? s.Replace(".lnk", "").Replace(".url", "") : "";
+        public static string RemoveShortcutExt(string s) => !string.IsNullOrWhiteSpace(s) ? s.Replace(".lnk", "").Replace(".url", "") : "";
     }
 }

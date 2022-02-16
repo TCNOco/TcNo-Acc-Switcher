@@ -245,7 +245,7 @@ namespace TcNo_Acc_Switcher_Client
                 var result = MessageBox.Show("CEF files not found. Download? (No reverts to WebView2, which requires WebView2 Runtime to be installed)", "Required runtime not found!", MessageBoxButton.YesNo, MessageBoxImage.Error);
                 if (result == MessageBoxResult.Yes)
                 {
-                    TcNo_Acc_Switcher_Server.Pages.Index.AutoStartUpdaterAsAdmin("downloadCEF");
+                    AppSettings.AutoStartUpdaterAsAdmin("downloadCEF");
                     Environment.Exit(1);
                 }
                 else
@@ -348,7 +348,7 @@ namespace TcNo_Acc_Switcher_Client
                         _ = MessageBox.Show(
                             "WebView2 Runtime is not installed. The program will now download and use the fallback CEF browser. (Less performance, more compatibility)",
                             "Required runtime not found! Using fallback.", MessageBoxButton.OK, MessageBoxImage.Error);
-                        TcNo_Acc_Switcher_Server.Pages.Index.AutoStartUpdaterAsAdmin("downloadCEF");
+                        AppSettings.AutoStartUpdaterAsAdmin("downloadCEF");
                         Globals.DeleteFile(failFile);
                         Environment.Exit(1);
                     }

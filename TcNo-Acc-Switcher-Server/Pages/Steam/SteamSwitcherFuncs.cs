@@ -28,6 +28,8 @@ using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using HtmlAgilityPack;
+using SteamKit2;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
 using TcNo_Acc_Switcher_Server.Data;
@@ -44,6 +46,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         #region STEAM_SWITCHER_MAIN
         // Checks if Steam path set properly, and can load.
         public static bool SteamSettingsValid() => SteamSettings.LoginUsersVdf() != "RESET_PATH";
+
+        private static string GetName(Index.Steamuser su) => string.IsNullOrWhiteSpace(su.Name) ? su.AccName : su.Name;
 
         /// <summary>
         /// Main function for Steam Account Switcher. Run on load.
@@ -99,11 +103,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 var extraClasses = (SteamSettings.ShowVac && va.Vac ? " status_vac" : "") + (SteamSettings.ShowLimited && va.Ltd ? " status_limited" : "");
 
                 var element =
-                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{ua.SteamId}\" DisplayName=\"{GeneralFuncs.EscapeText(ua.Name)}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{GeneralFuncs.EscapeText(ua.AccName)}\" Line2=\"{GeneralFuncs.EscapeText(ua.Name)}\" Line3=\"{GeneralFuncs.EscapeText(ua.LastLogin)}\" ExtraClasses=\"{extraClasses}\" onchange=\"selectedItemChanged()\" />\r\n" +
+                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{ua.SteamId}\" DisplayName=\"{GeneralFuncs.EscapeText(GetName(ua))}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{GeneralFuncs.EscapeText(ua.AccName)}\" Line2=\"{GeneralFuncs.EscapeText(GetName(ua))}\" Line3=\"{GeneralFuncs.EscapeText(ua.LastLogin)}\" ExtraClasses=\"{extraClasses}\" onchange=\"selectedItemChanged()\" />\r\n" +
                     $"<label for=\"{ua.AccName}\" class=\"acc {extraClasses}\">\r\n" +
                     $"<img class=\"{extraClasses}\" src=\"{ua.ImgUrl}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
                     (SteamSettings.ShowAccUsername ? $"<p class=\"streamerCensor\">{ua.AccName}</p>\r\n" : "") +
-                    $"<h6>{GeneralFuncs.EscapeText(ua.Name)}</h6>\r\n" +
+                    $"<h6>{GeneralFuncs.EscapeText(GetName(ua))}</h6>\r\n" +
                     $"<p class=\"streamerCensor steamId\">{ua.SteamId}</p>\r\n" +
                     $"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p></label></div>\r\n";
 
@@ -151,8 +155,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 {
                     userAccounts.AddRange(from user in loginUsers["users"]
                                           let steamId = user.ToObject<JProperty>()?.Name
-                                          where !string.IsNullOrEmpty(steamId) &&
-                                                !string.IsNullOrEmpty(user.First?["AccountName"]?.ToString())
+                                          where !string.IsNullOrWhiteSpace(steamId) &&
+                                                !string.IsNullOrWhiteSpace(user.First?["AccountName"]?.ToString())
                                           select new Index.Steamuser
                                           {
                                               Name = user.First?["PersonaName"]?.ToString(),
@@ -160,7 +164,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                                               SteamId = steamId,
                                               ImgUrl = "img/QuestionMark.jpg",
                                               LastLogin = user.First?["Timestamp"]?.ToString(),
-                                              OfflineMode = !string.IsNullOrEmpty(user.First?["WantsOfflineMode"]?.ToString())
+                                              OfflineMode = !string.IsNullOrWhiteSpace(user.First?["WantsOfflineMode"]?.ToString())
                                                   ? user.First?["WantsOfflineMode"]?.ToString()
                                                   : "0"
                                           });
@@ -489,7 +493,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // ------Update Tray users list ------
             // -----------------------------------
             if (selectedSteamId != "")
-                Globals.AddTrayUser("Steam", "+s:" + user.SteamId, SteamSettings.TrayAccName ? user.AccName : user.Name, SteamSettings.TrayAccNumber);
+                Globals.AddTrayUser("Steam", "+s:" + user.SteamId, SteamSettings.TrayAccName ? user.AccName : GetName(user), SteamSettings.TrayAccNumber);
         }
 
         /// <summary>

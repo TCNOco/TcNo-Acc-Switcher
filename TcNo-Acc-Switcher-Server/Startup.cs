@@ -95,7 +95,7 @@ namespace TcNo_Acc_Switcher_Server
             }
             catch (DirectoryNotFoundException)
             {
-                Globals.CopyFilesRecursive(Globals.OriginalWwwroot, "wwwroot");
+                Globals.CopyFilesRecursive(Globals.OriginalWwwroot, "wwwroot", throwOnError: true);
             }
 
             _ = app.UseStaticFiles(); // Second call due to: https://github.com/dotnet/aspnetcore/issues/19578

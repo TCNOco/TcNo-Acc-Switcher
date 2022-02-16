@@ -868,3 +868,7 @@ function shortcut(action) {
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutAction", reqId, action);
     if (action === "hide") $(selectedElem).remove();
 }
+
+async function updateBarClick() {
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UpdateNow");
+}

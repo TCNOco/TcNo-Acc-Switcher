@@ -19,6 +19,8 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Reflection;
 using System.Runtime.Versioning;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -110,6 +112,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [Newtonsoft.Json.JsonIgnore] private bool _startMenuPlatforms;
         [Newtonsoft.Json.JsonIgnore] private bool _protocolEnabled;
         [Newtonsoft.Json.JsonIgnore] private bool _trayStartup;
+        [Newtonsoft.Json.JsonIgnore] private bool _updateCheckRan;
 
         public static bool UpdateAvailable { get => Instance._updateAvailable; set => Instance._updateAvailable = value; }
         public static string Language { get => Instance._lang; set => Instance._lang = value; }
@@ -144,6 +147,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public static bool ProtocolEnabled { get => Instance._protocolEnabled; set => Instance._protocolEnabled = value; }
         public static bool TrayStartup { get => Instance._trayStartup; set => Instance._trayStartup = value; }
+        private static bool UpdateCheckRan { get =>Instance._updateCheckRan; set => Instance._updateCheckRan = value; }
 
         [Newtonsoft.Json.JsonIgnore]
         public static string PlatformContextMenu =>
@@ -481,7 +485,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (folderEmpty)
             {
                 _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationCopying"], renderTo: "toastarea");
-                Globals.CopyFilesRecursive(Globals.AppDataFolder, path, true);
+                if (!Globals.CopyFilesRecursive(Globals.AppDataFolder, path, true))
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
             }
             else
                 _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationNotCopying"], renderTo: "toastarea");
@@ -680,6 +685,187 @@ namespace TcNo_Acc_Switcher_Server.Data
             var s = new Shortcut();
             _ = s.Shortcut_Platform(folder, platformName, args);
             s.ToggleShortcut(!StartMenuPlatforms, false);
+        }
+        #endregion
+
+
+        #region Updater
+
+        /// <summary>
+        /// Checks for an update
+        /// </summary>
+        public static void CheckForUpdate()
+        {
+            if (UpdateCheckRan) return;
+            UpdateCheckRan = true;
+
+            try
+            {
+#if DEBUG
+                var latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?debug&v=" + Globals.Version);
+#else
+                var latestVersion = Globals.DownloadString("https://tcno.co/Projects/AccSwitcher/api?v=" + Globals.Version);
+#endif
+                if (CheckLatest(latestVersion)) return;
+                // Show notification
+                UpdateAvailable = true;
+
+                _ = AppData.InvokeVoidAsync("showUpdateBar");
+            }
+            catch (Exception e) when (e is WebException or AggregateException)
+            {
+                if (File.Exists("WindowSettings.json"))
+                {
+                    try
+                    {
+                        var o = JObject.Parse(Globals.ReadAllText("WindowSettings.json"));
+                        if (o.ContainsKey("LastUpdateCheckFail"))
+                        {
+                            if (!(DateTime.TryParseExact((string)o["LastUpdateCheckFail"], "yyyy-MM-dd HH:mm:ss.fff",
+                                      CultureInfo.InvariantCulture, DateTimeStyles.None, out var timediff) &&
+                                  DateTime.Now.Subtract(timediff).Days >= 1)) return;
+                        }
+
+                        // Has not shown error today
+                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_UpdateCheckFail"], renderTo: "toastarea", duration: 15000);
+                        o["LastUpdateCheckFail"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        File.WriteAllText("WindowSettings.json", o.ToString());
+                    }
+                    catch (JsonException je)
+                    {
+                        Globals.WriteToLog("Could not interpret <User Data>\\WindowSettings.json.", je);
+                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_UserDataLoadFail"], renderTo: "toastarea", duration: 15000);
+                        File.Move("WindowSettings.json", "WindowSettings.bak.json", true);
+                    }
+                }
+                Globals.WriteToLog(@"Could not reach https://tcno.co/ to check for updates.\n" + e);
+            }
+        }
+
+        /// <summary>
+        /// Verify updater files and start update
+        /// </summary>
+        [JSInvokable]
+        public static void UpdateNow()
+        {
+            try
+            {
+                if (Globals.InstalledToProgramFiles() && !Globals.IsAdministrator || !Globals.HasFolderAccess(Globals.AppDataFolder))
+                {
+                    _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+                    return;
+                }
+
+                Directory.SetCurrentDirectory(Globals.AppDataFolder);
+                // Download latest hash list
+                var hashFilePath = Path.Join(Globals.UserDataFolder, "hashes.json");
+                Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/hashes.json", hashFilePath);
+
+                // Verify updater files
+                var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(Globals.ReadAllText(hashFilePath));
+                if (verifyDictionary == null)
+                {
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_UpdateVerifyFail"]);
+                    return;
+                }
+
+                var updaterDict = verifyDictionary.Where(pair => pair.Key.StartsWith("updater")).ToDictionary(pair => pair.Key, pair => pair.Value);
+
+                // Download and replace broken files
+                Globals.RecursiveDelete("newUpdater", false);
+                foreach (var (key, value) in updaterDict)
+                {
+                    if (key == null) continue;
+                    if (File.Exists(key) && value == GeneralFuncs.GetFileMd5(key))
+                        continue;
+                    Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'), key);
+                }
+
+                AutoStartUpdaterAsAdmin();
+            }
+            catch (Exception e)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedUpdateCheck"]);
+                Globals.WriteToLog("Failed to check for updates:" + e);
+            }
+            Directory.SetCurrentDirectory(Globals.UserDataFolder);
+        }
+
+        /// <summary>
+        /// Checks whether the program version is equal to or newer than the servers
+        /// </summary>
+        /// <param name="latest">Latest version provided by server</param>
+        /// <returns>True when the program is up-to-date or ahead</returns>
+        private static bool CheckLatest(string latest)
+        {
+            latest = latest.Replace("\r", "").Replace("\n", "");
+            if (DateTime.TryParseExact(latest, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var latestDate))
+            {
+                if (DateTime.TryParseExact(Globals.Version, "yyyy-MM-dd_mm", null, DateTimeStyles.None, out var currentDate))
+                {
+                    if (latestDate.Equals(currentDate) || currentDate.Subtract(latestDate) > TimeSpan.Zero) return true;
+                }
+                else
+                    Globals.WriteToLog($"Unable to convert '{latest}' to a date and time.");
+            }
+            else
+                Globals.WriteToLog($"Unable to convert '{latest}' to a date and time.");
+            return false;
+        }
+
+        public static void StartUpdaterAsAdmin(string args = "")
+        {
+            var exeLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? Environment.CurrentDirectory;
+            Directory.SetCurrentDirectory(exeLocation);
+
+            var proc = new ProcessStartInfo
+            {
+                WorkingDirectory = exeLocation,
+                FileName = "updater\\TcNo-Acc-Switcher-Updater.exe",
+                Arguments = args,
+                UseShellExecute = true,
+                Verb = "runas"
+            };
+
+            try
+            {
+                _ = Process.Start(proc);
+                AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
+            }
+            catch (Exception ex)
+            {
+                Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
+                try
+                {
+                    AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
+                }
+                catch (Exception e)
+                {
+                    Globals.WriteToLog("Could not close application... Just ending the server." + Environment.NewLine + e);
+                    Environment.Exit(0);
+                }
+            }
+        }
+
+        public static void AutoStartUpdaterAsAdmin(string args = "")
+        {
+            // Run updater
+            if (Globals.InstalledToProgramFiles() || !Globals.HasFolderAccess(Globals.AppDataFolder))
+            {
+                StartUpdaterAsAdmin(args);
+            }
+            else
+            {
+                _ = Process.Start(new ProcessStartInfo(Path.Join(Globals.AppDataFolder, @"updater\\TcNo-Acc-Switcher-Updater.exe")) { UseShellExecute = true, Arguments = args });
+                try
+                {
+                    AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
+                }
+                catch (NullReferenceException)
+                {
+                    Environment.Exit(0);
+                }
+            }
         }
         #endregion
     }

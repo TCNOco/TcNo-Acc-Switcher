@@ -110,6 +110,16 @@ label {
   -ms-user-select: none;
   user-select: none;
 }
+.updateBar #closeUpdateBar {
+  padding: 0 1em;
+  position: absolute;
+  right: 0;
+  height: 24px;
+  line-height: 24px;
+}
+.updateBar #closeUpdateBar:hover {
+  background: #00000033;
+}
 
 #window-controls {
   display: grid;
