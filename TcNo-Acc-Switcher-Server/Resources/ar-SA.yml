@@ -62,9 +62,9 @@ Settings_StartCentered: بدء البرنامج في منتصف الشاشة
 Settings_WindowsAccent: استخدام لون ثيم ويندوز
 Settings_HelpTranslate: "[ساعد في الترجمة]"
 Settings_ViewTranslators: "[الشكر]"
-Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
-Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
-Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
+Settings_Header_ActiveBrowser: "(متقدم) تعيين محرك التقديم:"
+Settings_Header_ClosingMethod: "(متقدم) اضبط الطريقة للإغلاق {platform}"
+Settings_Header_StartingMethod: "(متقدم) اضبط الطريقة على البدء {platform}"
 Settings_NoPlatforms: لا توجد حاليا منصات تمكين. يرجى تحديد الأنظمة الأساسية الاختيارية أدناه لتمكينها ، أو إلغاء تحديد الأنظمة الأساسية المعطلة.
 Cleaning_Header_StartMenuShortcuts: 'اختصارات لقائمة البدء:'
 Cleaning_Header_General: تنظيف عام
@@ -104,7 +104,7 @@ Toast_RestartAsAdmin: الرجاء التشغيل كمسؤول والمحاول�
 Toast_RestartAfterClose: الرجاء إعادة تشغيل البرنامج بعد النقر على زر الإغلاق.
 Toast_RestartAfterCloseTitle: لون التمييز مُعطّل
 Toast_RestartRequired: أعد التشغيل لتطبيق التغييرات
-Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
+Toast_LoadStylesheetFailed: فشل تحميل ورقة الأنماط! انظر مجلد بيانات المستخدم للحصول على التفاصيل.
 Toast_BNet_Private: "الملف الشخصي {BTag}خاص"
 Toast_BNet_StatsFail: "خطأ في محاولة الحصول على إحصائيات لـ {BTag}"
 Toast_BNet_CantSwapAccounts: لا يمكن تبديل الحسابات (Battle.net.config ملف فاسد)
@@ -119,7 +119,7 @@ Toast_CantClearLoginFiles: فشل في مسح ملفات تسجيل الدخول
 Toast_AccountIdReg: فشل الحصول على معرف الحساب من الريجسيتري!
 Toast_RegFailWrite: فشل في الكتابة إلى ريجسيتري ويندوز!
 Toast_RegFailRead: فشل القراءة من ريجسيتري ويندوز!
-Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
+Toast_RegFailReadSaved: فشل في قراءة إدخال التسجيل المحفوظ. حاول إزالة الحساب وإضافته مرة أخرى إذا لم تنجح.
 Toast_RegSaveMissing: فشل العثور على البيانات أو قراءتها من ملفات ريجسيتري المحفوظة!
 Toast_DuplicateNames: لا يمكن المبادلة. تكرار الحسابات بنفس اسم المستخدم؟
 Toast_CouldNotLocate: تعذر تحديد موقع المستخدم المسجل
@@ -157,7 +157,7 @@ Toast_BackupCopy: (1/3) نسخ الملفات إلى مكان مؤقت ...
 Toast_BackupCompress: (2/3) ضغط الملفات ({size}). سيستغرق هذا بعض الوقت ...
 Toast_BackupComplete: (3/3) تم الانتهاء من الضغط! ({size} إلى {compressedSize})
 Toast_BackupProgress: "النسخ الاحتياطي قيد التقدم (الحجم المضغوط: {compressedSize})"
-Toast_BackupFail: Backup failed - See log!
+Toast_BackupFail: فشل النسخ الاحتياطي - انظر السجل!
 Toast_BackupBusy: النسخ الاحتياطي قيد التقدم بالفعل!
 Toast_RestoreBusy: الاستعادة قيد التقدم بالفعل!
 Toast_RestoreExt: استخراج المحفوظات.
@@ -166,10 +166,10 @@ Toast_RestoreDeleting: حذف الملفات المؤقتة
 Toast_RestoreComplete: انتهت الاستعادة!
 Toast_FailedLoad: فشل تحميل منصة {platform}! انقر المنصة لعرض الخطأ.
 Toast_FailedPlatformsLoad: فشل تحميل Platforms.json! يرجى التحقق من وجود هذا الملف.
-Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
-Toast_FileCopyFail: Failed to copy files! See log for more details.
-Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
-Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
+Toast_FailedLoadSettings: "فشل تحميل الإعدادات! تحميل الإعدادات الافتراضية بدلاً من ذلك. إضافة \"قديم\" إلى اسم ملف الإعدادات الموجودة."
+Toast_FileCopyFail: فشل نسخ الملفات! انظر سجل لمزيد من التفاصيل.
+Toast_UserDataLoadFail: فشل تحميل بيانات المستخدم {UserData}\\ WindowSettings.json. النسخ الاحتياطي وإعادة الضبط! خطأ محفوظ في التسجيل.
+Toast_UpdateCheckFail: تعذر الوصول إلى https://tcno.co/ للتحقق من وجود تحديثات. ستظهر هذه الرسالة مرة واحدة في اليوم.
 Tooltip_Restore: انقر لتحديد ملف 7z ، أو اسحبه إلى هذا الزر.
 Modal_Crowdin_Header: مترجمين كرودين
 Modal_Crowdin_Info: "هنا كل من ساعد في ترجمة هذا البرنامج.<br>المستخدمين الذين لديهم لغات بجانبهم ساعدوا كثيرًا في الترجمة (دور المدقق اللغوي)."
@@ -380,7 +380,7 @@ Platform_ClearCacheTotal: مسح ملفات {totalFileCount} ({totalSizeMB})
 Platform_DeleteFail: تعذر حذف بعض الملفات (ربما يكون البرنامج قيد التشغيل؟)
 Platform_CouldNotDeleteLog: تعذر حذف الملف! تحقق من {logPath}
 Error_FileAccessDenied: فشل الوصول إلى الملف! تحقق من {logPath}
-Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
+Error_RequiredFileVerify: لم يتم العثور على الملف المطلوب. يرجى التأكد من وجود مجلدي x64 و x86 في دليل التثبيت. إذا لم يتم تشغيل TcNo-Acc-Switcher-Updater.exe وتحقق من الملفات.
 Tooltip_Settings: إعدادات
 Tooltip_Info: معلومات
 Tooltip_ManagePlatforms: عرض أو إخفاء المنصات الأخرى
@@ -388,5 +388,5 @@ Tooltip_ExpandShortcuts: قم بتوسيع اختيار اللعبة والاخ�
 Tooltip_ShortcutFolder: افتح مجلد الاختصار. ضع الاختصارات هناك ، و TcNo Account Switcher لرؤيتها.
 Tooltip_Backup: النسخ الاحتياطي لملفات الإعدادات/المجلدات، كما هو محدد في إعدادات المنصة.
 Tooltip_BackupAll: النسخ الاحتياطي لجميع ملفات / مجلدات التكوين ، بما في ذلك الصور والملفات الكبيرة الأخرى.
-Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
-Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
+Tooltip_ClosingMethod: "مجتمعة هو الأفضل. إغلاق محاولات الإغلاق مباشرة من خلال وظيفة الإغلاق ، ويستخدم TaskKill CMD (الأفضل إذا لم ينجح الجمع)"
+Tooltip_StartingMethod: "الافتراضي هو الأفضل. لا يتحكم المباشر في مستوى المسؤول أو التحكم بحساب المستخدم. سيبدأ بنفس المستوى (أو أعلى - ولكن ليس أقل) من محوّل الحساب هذا"
