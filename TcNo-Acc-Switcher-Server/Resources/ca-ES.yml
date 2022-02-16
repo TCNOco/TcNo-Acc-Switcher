@@ -62,9 +62,9 @@ Settings_StartCentered: Inicia el programa centrat
 Settings_WindowsAccent: Utilitzeu el Windows Accent Color
 Settings_HelpTranslate: "[Ajuda a traduir]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
-Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
-Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
+Settings_Header_ActiveBrowser: "(Avançat) Configura el motor de renderització:"
+Settings_Header_ClosingMethod: "(Avançat) Estableix el mètode per tancar {platform}"
+Settings_Header_StartingMethod: "(Avançat) Establiu el mètode per començar {platform}"
 Settings_NoPlatforms: Actualment no hi ha plataformes habilitades. Marqueu les plataformes opcionals a continuació per activar-les o desmarqueu les plataformes desactivades.
 Cleaning_Header_StartMenuShortcuts: 'Dreceres per al menú Inici:'
 Cleaning_Header_General: Neteja general
@@ -104,7 +104,7 @@ Toast_RestartAsAdmin: Comenceu com a administrador i torneu-ho a provar.
 Toast_RestartAfterClose: Reinicieu el programa després de fer clic a Tanca.
 Toast_RestartAfterCloseTitle: S'ha desactivat el color de l'accent
 Toast_RestartRequired: Reinicieu per aplicar els canvis
-Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
+Toast_LoadStylesheetFailed: No s'ha pogut carregar el full d'estils! Consulteu la carpeta de dades d'usuari per obtenir-ne més informació.
 Toast_BNet_Private: "El perfil de {BTag}"
 Toast_BNet_StatsFail: "Error en intentar obtenir estadístiques de {BTag}"
 Toast_BNet_CantSwapAccounts: No s'han pogut canviar els comptes (el fitxer Battle.net.config està malmès)
@@ -119,7 +119,7 @@ Toast_CantClearLoginFiles: No s'han pogut esborrar els fitxers d'inici de sessi�
 Toast_AccountIdReg: No s'ha pogut obtenir l'identificador del compte del registre!
 Toast_RegFailWrite: No s'ha pogut escriure al registre de Windows!
 Toast_RegFailRead: No s'ha pogut llegir des del registre de Windows!
-Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
+Toast_RegFailReadSaved: No s'ha pogut llegir l'entrada desada del registre. Proveu d'eliminar i afegir el compte de nou si no ho feu.
 Toast_RegSaveMissing: No s'ha pogut trobar o llegir dades dels fitxers de registre desats!
 Toast_DuplicateNames: No s'ha pogut canviar. Voleu duplicar comptes amb el mateix nom d'usuari?
 Toast_CouldNotLocate: No s'ha pogut localitzar l'usuari connectat
@@ -157,7 +157,7 @@ Toast_BackupCopy: (1/3) S'estan copiant fitxers a una ubicació temporal...
 Toast_BackupCompress: (2/3) Comprimint fitxers ({size}). Això trigarà un temps...
 Toast_BackupComplete: (3/3) S'ha acabat de comprimir! ({size} a {compressedSize})
 Toast_BackupProgress: "Còpia de seguretat en curs (mida comprimida: {compressedSize})"
-Toast_BackupFail: Backup failed - See log!
+Toast_BackupFail: La còpia de seguretat ha fallat - Vegeu el registre!
 Toast_BackupBusy: Còpia de seguretat ja en curs!
 Toast_RestoreBusy: La restauració ja està en curs!
 Toast_RestoreExt: Extracció de l'arxiu.
@@ -166,10 +166,10 @@ Toast_RestoreDeleting: Eliminació de fitxers temporals
 Toast_RestoreComplete: S'ha acabat la restauració!
 Toast_FailedLoad: No s'ha pogut carregar {platform}! Feu clic a la plataforma per veure l'error.
 Toast_FailedPlatformsLoad: No s'ha pogut carregar Platforms.json! Si us plau, verifiqueu que aquest fitxer existeix.
-Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
-Toast_FileCopyFail: Failed to copy files! See log for more details.
-Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
-Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
+Toast_FailedLoadSettings: "No s'ha pogut carregar la configuració! S'està carregant la configuració predeterminada. Afegint \"vell\" al nom del fitxer de configuració existent."
+Toast_FileCopyFail: No s'han pogut copiar els fitxers! Consulteu el registre per a més detalls.
+Toast_UserDataLoadFail: No s'han pogut carregar les dades d'usuari {UserData}\\WindowSettings.json. Còpia de seguretat i reinici! Error desat al registre.
+Toast_UpdateCheckFail: No s'ha pogut contactar amb https://tcno.co/ per comprovar si hi ha actualitzacions. Aquest missatge es mostrarà un cop al dia.
 Tooltip_Restore: Feu clic per seleccionar un fitxer 7z o arrossegueu-lo a aquest botó.
 Modal_Crowdin_Header: Traductors crowdin
 Modal_Crowdin_Info: "Aquí teniu tots els que han ajudat a traduir aquest programari.<br>Els usuaris amb idiomes al costat van ajudar molt en la traducció (rol de corrector)."
@@ -380,7 +380,7 @@ Platform_ClearCacheTotal: Esborrant {totalFileCount} fitxers ({totalSizeMB})
 Platform_DeleteFail: No s'han pogut suprimir alguns fitxers (el programa pot estar en execució?)
 Platform_CouldNotDeleteLog: No s'ha pogut suprimir el fitxer! Comprova {logPath}
 Error_FileAccessDenied: No s'ha pogut accedir al fitxer! Comprova {logPath}
-Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
+Error_RequiredFileVerify: No s'ha trobat cap fitxer obligatori. Assegureu-vos que les carpetes x64 i x86 existeixen al directori d'instal·lació. Si no, executeu TcNo-Acc-Switcher-Updater.exe i verifiqueu els fitxers.
 Tooltip_Settings: Configuració
 Tooltip_Info: Informació
 Tooltip_ManagePlatforms: Mostra o amaga altres plataformes
@@ -388,5 +388,5 @@ Tooltip_ExpandShortcuts: Amplieu la selecció de jocs i dreceres
 Tooltip_ShortcutFolder: Obre la carpeta de dreceres. Col·loqueu dreceres allà i el commutador de comptes de TcNo per veure-les.
 Tooltip_Backup: Còpia de seguretat dels fitxers/carpetes de configuració, tal com es defineix a la configuració de la plataforma.
 Tooltip_BackupAll: Feu una còpia de seguretat de TOTS els fitxers/carpetes de configuració, incloses les imatges i altres fitxers grans.
-Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
-Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
+Tooltip_ClosingMethod: "El millor és combinar. Tanca els intents de tancar directament mitjançant una funció de tancament i TaskKill utilitza CMD (el millor si es combina no funciona)"
+Tooltip_StartingMethod: "Per defecte és el millor. Direct no té control sobre el nivell d'administració o UAC. Començarà amb el mateix nivell (o superior, però no inferior) que aquest commutador de comptes"
