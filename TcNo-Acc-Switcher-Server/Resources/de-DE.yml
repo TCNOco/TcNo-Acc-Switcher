@@ -62,9 +62,9 @@ Settings_StartCentered: Programm zentriert starten
 Settings_WindowsAccent: Verwende die Windows-Akzentfarbe
 Settings_HelpTranslate: "[Beim Übersetzen helfen]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
-Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
-Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
+Settings_Header_ActiveBrowser: "(Erweitert) Rendering-Engine einstellen:"
+Settings_Header_ClosingMethod: "(Erweitert) Setze die Methode auf {platform}"
+Settings_Header_StartingMethod: "(Fortgeschritten) Methode auf Start {platform}setzen"
 Settings_NoPlatforms: Derzeit sind keine Plattformen aktiviert. Bitte wähle optionale Plattformen unten aus, um sie zu aktivieren, oder wähle deaktivierte Plattformen ab.
 Cleaning_Header_StartMenuShortcuts: 'Verknüpfungen für das Startmenü:'
 Cleaning_Header_General: Allgemeine Reinigung
@@ -119,7 +119,7 @@ Toast_CantClearLoginFiles: Fehler beim Löschen der alten Login-Dateien
 Toast_AccountIdReg: Account-ID konnte nicht aus der Registry abgerufen werden!
 Toast_RegFailWrite: Fehler beim Schreiben in die Windows-Registry!
 Toast_RegFailRead: Fehler beim Lesen aus der Windows-Registry!
-Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
+Toast_RegFailReadSaved: Gespeicherter Registrierungseintrag konnte nicht gelesen werden. Versuchen Sie, das Konto zu entfernen und erneut hinzuzufügen, wenn dies nicht erfolgreich ist.
 Toast_RegSaveMissing: Fehler beim Finden oder Lesen von Daten aus gespeicherten Registry-Dateien!
 Toast_DuplicateNames: Wechseln nicht möglich. Accounts mit selbem Namen duplizieren?
 Toast_CouldNotLocate: Konnte angemeldeten Benutzer nicht finden
@@ -157,7 +157,7 @@ Toast_BackupCopy: (1/3) Dateien werden an einen temporären Ort kopiert...
 Toast_BackupCompress: (2/3) Dateien komprimieren ({size}). Dies wird einige Zeit dauern...
 Toast_BackupComplete: (3/3) Fertig komprimiert! ({size} zu {compressedSize})
 Toast_BackupProgress: "Sicherung läuft (komprimierte Größe: {compressedSize})"
-Toast_BackupFail: Backup failed - See log!
+Toast_BackupFail: Sicherung fehlgeschlagen - Siehe Protokoll!
 Toast_BackupBusy: Sicherung ist bereits in Bearbeitung!
 Toast_RestoreBusy: Wiederherstellung ist bereits in Bearbeitung!
 Toast_RestoreExt: Archiv wird entpackt.
@@ -167,9 +167,9 @@ Toast_RestoreComplete: Wiederherstellung abgeschlossen!
 Toast_FailedLoad: '{platform} konnte nicht geladen werden! Klicke auf die Plattform, um den Fehler anzuzeigen.'
 Toast_FailedPlatformsLoad: Platforms.json konnte nicht geladen werden! Bitte überprüfe, ob diese Datei existiert.
 Toast_FailedLoadSettings: "Einstellungen konnten nicht geladen werden! Lade stattdessen die Standardeinstellungen. Hinzufügen von 'alt' zum Namen der vorhandenen Einstellungsdatei."
-Toast_FileCopyFail: Failed to copy files! See log for more details.
-Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
-Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
+Toast_FileCopyFail: Dateien konnten nicht kopiert werden! Siehe Protokoll für weitere Details.
+Toast_UserDataLoadFail: Fehler beim Laden der Benutzerdaten {UserData}\\WindowSettings.json. Sichern und Zurücksetzen! Fehler im Protokoll gespeichert.
+Toast_UpdateCheckFail: https://tcno.co/ konnte nicht erreicht werden, um nach Updates zu suchen. Diese Nachricht wird einmal täglich angezeigt.
 Tooltip_Restore: Klicken, um eine 7z-Datei auszuwählen, oder ziehe eine auf diesen Button.
 Modal_Crowdin_Header: Crowdin-Übersetzer
 Modal_Crowdin_Info: "Hier sind alle, die geholfen haben, diese Software zu übersetzen.<br>Benutzer mit Sprachen neben ihnen haben bei der Übersetzung sehr geholfen (Rolle des Korrekturlesers)."
@@ -388,5 +388,5 @@ Tooltip_ExpandShortcuts: Spiele & Verknüpfungen anzeigen
 Tooltip_ShortcutFolder: Verknüpfungsordner öffnen. Platziere dort und im TcNo Account Switcher Verknüpfungen, um sie anzuzeigen.
 Tooltip_Backup: Konfigurations-Dateien und -Order sichern, wie es in den Plattformeinstellungen festgelegt wurde.
 Tooltip_BackupAll: Sichern ALLER Konfigurations-Dateien und -Ordner, inklusive Bilder und anderer großer Dateien.
-Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
-Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
+Tooltip_ClosingMethod: "Kombiniert ist am besten. Schließen versucht, direkt über eine Schließfunktion zu schließen, und TaskKill verwendet CMD (Best, wenn Kombination nicht funktioniert)."
+Tooltip_StartingMethod: "Standard ist das Beste. Direct hat keine Kontrolle über die Administratorebene oder UAC. Es beginnt auf der gleichen Ebene (oder höher - aber nicht niedriger) als dieser Kontowechsler"
