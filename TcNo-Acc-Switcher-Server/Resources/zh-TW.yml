@@ -62,9 +62,9 @@ Settings_StartCentered: 啟動程式時居中
 Settings_WindowsAccent: 使用 Windows 強調色
 Settings_HelpTranslate: "[協助翻譯]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
-Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
-Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
+Settings_Header_ActiveBrowser: "（高級）設置渲染引擎："
+Settings_Header_ClosingMethod: "（高級）設置方法關閉 {platform}"
+Settings_Header_StartingMethod: "（高級）設置方法開始 {platform}"
 Settings_NoPlatforms: 當前沒有啟用任何平台。請勾選下面的可選平台以啟用它們，或取消選中禁用的平台。
 Cleaning_Header_StartMenuShortcuts: '開始功能表捷徑：'
 Cleaning_Header_General: 一般清除
@@ -104,7 +104,7 @@ Toast_RestartAsAdmin: 請以管理員身份啟動，然後重試。
 Toast_RestartAfterClose: 請在單擊關閉後重新啟動程序。
 Toast_RestartAfterCloseTitle: 禁用強調色
 Toast_RestartRequired: 重新啟動以應用更改
-Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
+Toast_LoadStylesheetFailed: 加載樣式表失敗！有關詳細信息，請參見用戶數據文件夾。
 Toast_BNet_Private: "{BTag}的個人資料是私人的"
 Toast_BNet_StatsFail: "{BTag}統計信息時出錯"
 Toast_BNet_CantSwapAccounts: 無法交換帳戶（Battle.net.config 文件已損壞）
@@ -119,7 +119,7 @@ Toast_CantClearLoginFiles: 無法清除舊的登錄文件
 Toast_AccountIdReg: 無法從註冊表中獲取帳戶 ID！
 Toast_RegFailWrite: 無法寫入 Windows 註冊表！
 Toast_RegFailRead: 從 Windows 註冊表讀取失敗！
-Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
+Toast_RegFailReadSaved: 無法讀取已保存的註冊表項。如果不成功，請嘗試重新刪除並添加帳戶。
 Toast_RegSaveMissing: 從保存的註冊表文件中查找或讀取數據失敗！
 Toast_DuplicateNames: 無法交換。具有相同用戶名的重複帳戶？
 Toast_CouldNotLocate: 找不到登錄的用戶
@@ -157,7 +157,7 @@ Toast_BackupCopy: (1/3) 將文件複製到臨時位置...
 Toast_BackupCompress: (2/3) 壓縮文件 ({size})。這將需要一些時間...
 Toast_BackupComplete: (3/3) 壓縮完畢！ ({size} 到 {compressedSize})
 Toast_BackupProgress: "正在進行備份（壓縮大小： {compressedSize}）"
-Toast_BackupFail: Backup failed - See log!
+Toast_BackupFail: 備份失敗 - 查看日誌！
 Toast_BackupBusy: 備份已在進行中！
 Toast_RestoreBusy: 恢復已經在進行中！
 Toast_RestoreExt: 提取存檔。
@@ -166,10 +166,10 @@ Toast_RestoreDeleting: 刪除臨時文件
 Toast_RestoreComplete: 恢復完畢！
 Toast_FailedLoad: '{platform}加載失敗！單擊平台以查看錯誤。'
 Toast_FailedPlatformsLoad: 無法加載 Platforms.json！請驗證此文件是否存在。
-Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
-Toast_FileCopyFail: Failed to copy files! See log for more details.
-Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
-Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
+Toast_FailedLoadSettings: "加載設置失敗！而是加載默認設置。將“舊”添加到現有設置文件名。"
+Toast_FileCopyFail: 複製文件失敗！有關詳細信息，請參閱日誌。
+Toast_UserDataLoadFail: 無法加載用戶數據 {UserData}\\WindowSettings.json。備份和重置！將錯誤保存到日誌。
+Toast_UpdateCheckFail: 無法訪問 https://tcno.co/ 以檢查更新。此消息將每天顯示一次。
 Tooltip_Restore: 單擊以選擇 7z 文件，或將其拖到此按鈕上。
 Modal_Crowdin_Header: Crowdin 譯者
 Modal_Crowdin_Info: "這是幫助翻譯此軟件的每個人。<br>語言相鄰的用戶在翻譯方面提供了很多幫助（校對角色）。"
@@ -380,7 +380,7 @@ Platform_ClearCacheTotal: 清除 {totalFileCount} 文件 ({totalSizeMB})
 Platform_DeleteFail: 無法刪除某些文件（程序可能正在運行？）
 Platform_CouldNotDeleteLog: 無法刪除文件！檢查 {logPath}
 Error_FileAccessDenied: 無法訪問文件！檢查 {logPath}
-Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
+Error_RequiredFileVerify: 未找到所需文件。請確保安裝目錄中存在 x64 和 x86 文件夾。如果沒有運行 TcNo-Acc-Switcher-Updater.exe 並驗證文件。
 Tooltip_Settings: 設置
 Tooltip_Info: 資訊
 Tooltip_ManagePlatforms: 顯示或隱藏其他平台
@@ -388,5 +388,5 @@ Tooltip_ExpandShortcuts: 展開遊戲和快捷方式選擇
 Tooltip_ShortcutFolder: 打開快捷方式文件夾。將快捷方式放在那裡，然後使用 TcNo 帳戶切換器來查看它們。
 Tooltip_Backup: 備份配置文件/文件夾，如平台設置中所定義。
 Tooltip_BackupAll: 備份所有配置文件/文件夾，包括圖像和其他大文件。
-Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
-Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
+Tooltip_ClosingMethod: "組合最好。 Close嘗試通過close函數直接關閉，TaskKill使用CMD（如果組合不行最好）"
+Tooltip_StartingMethod: "默認是最好的。 Direct 無法控制管理員級別或 UAC。它將以與此帳戶切換器相同的級別（或更高 - 但不低於）開始"
