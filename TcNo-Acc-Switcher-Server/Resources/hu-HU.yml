@@ -43,9 +43,6 @@ Settings_RTL: Szöveg megjelenítése jobbról balra haladva
 Settings_CurrentLocation: 'Jelenlegi telepítési hely: {path}'
 Settings_CurrentDataLocation: 'Jelenlegi felhasználói adatok helye: {path}'
 Settings_SetDataLocation: "[Egyéni felhasználói adatok helyének beállítása]"
-Toast_DataLocationCopying: (1/2) Meglévő fájlok másolása az új felhasználói adatok mappába!
-Toast_DataLocationNotCopying: (1/2) A mappában már vannak fájlok! Nem migrálja a felhasználói adatokat.
-Toast_DataLocationSet: (2/2) Indítsa újra a fiókváltót az új mappa használatához!
 Settings_PickFolder: Válasszon {platform} mappát
 Settings_OpenFolder: Nyissa meg a {platform} mappát
 Settings_ClearForgotten: Clear Forgotten
@@ -65,8 +62,9 @@ Settings_StartCentered: Indítsa el a programot középre
 Settings_WindowsAccent: Használja a Windows Kiemelő színét
 Settings_HelpTranslate: "[Segítség a fordításban]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] Renderelőmotor beállítása:"
-Settings_Header_ClosingMethod: "[Advanced] Bezárási mód beállítása {platform}"
+Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
+Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
+Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
 Settings_NoPlatforms: Jelenleg nincs engedélyezve platform. Kérjük, jelölje be alább az opcionális platformokat az engedélyezésükhöz, vagy törölje a letiltott platformok jelölését.
 Cleaning_Header_StartMenuShortcuts: 'A Start menü parancsikonjai:'
 Cleaning_Header_General: Általános takarítás
@@ -84,6 +82,9 @@ Restore_Button_Restore: Visszaállítás kiválasztva
 Ignored_RemoveAccounts: Fiókok eltávolítása az ignorálási listáról
 Ignored_Description: Ha korábban "figyelmen kívül hagyott" egy fiókot, itt újra megmutathatja őket
 Ignored_Stop: Ne hagyja figyelmen kívül a kiválasztottakat
+Toast_DataLocationCopying: (1/2) Meglévő fájlok másolása az új felhasználói adatok mappába!
+Toast_DataLocationNotCopying: (1/2) A mappában már vannak fájlok! Nem migrálja a felhasználói adatokat.
+Toast_DataLocationSet: (2/2) Indítsa újra a fiókváltót az új mappa használatához!
 Toast_PlaceShortcutFiles: Egy mappa nyílik meg. Helyezze el a játék parancsikonjait ebbe a mappába, és indítsa újra a fiókváltót.
 Toast_TrayStarted: A tálca elindult!
 Toast_TrayRunning: A tálca már nyitva van
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: Kérjük, kezdje rendszergazdaként, és próbálja újra.
 Toast_RestartAfterClose: A Bezárás gombra kattintás után indítsa újra a programot.
 Toast_RestartAfterCloseTitle: Kiemelő szín letiltva
 Toast_RestartRequired: Indítsa újra a módosítások alkalmazásához
-Toast_LoadStylesheetFailed: Nem sikerült betölteni a stíluslapot! A részletekért lásd a Dokumentumok mappát.
+Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
 Toast_BNet_Private: "{BTag}profilja privát"
 Toast_BNet_StatsFail: "Hiba történt a {BTag}"
 Toast_BNet_CantSwapAccounts: Nem sikerült felcserélni a fiókokat (a Battle.net.config fájl sérült)
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: Nem sikerült törölni a régi bejelentkezési fájl
 Toast_AccountIdReg: Nem sikerült lekérni a fiókazonosítót a rendszerleíró adatbázisból!
 Toast_RegFailWrite: Nem sikerült írni a Windows Regsitry-be!
 Toast_RegFailRead: Nem sikerült beolvasni a Windows Regsitry-ből!
+Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
 Toast_RegSaveMissing: Sikertelen adatok keresése vagy olvasása a mentett rendszerleíró fájlokból!
 Toast_DuplicateNames: Nem sikerült felcserélni. Ismétlődő számlák ugyanazzal a felhasználónévvel?
 Toast_CouldNotLocate: Nem sikerült megtalálni a bejelentkezett felhasználót
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) Fájlok másolása ideiglenes helyre...
 Toast_BackupCompress: (2/3) Fájlok tömörítése ({size}). Ez eltart egy ideig...
 Toast_BackupComplete: (3/3) A tömörítés kész! ({size} - {compressedSize})
 Toast_BackupProgress: "Biztonsági mentés folyamatban (Tömörített méret: {compressedSize})"
+Toast_BackupFail: Backup failed - See log!
 Toast_BackupBusy: A biztonsági mentés már folyamatban van!
 Toast_RestoreBusy: A visszaállítás már folyamatban van!
 Toast_RestoreExt: Archívum kibontása.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: Ideiglenes fájlok törlése
 Toast_RestoreComplete: A visszaállítás kész!
 Toast_FailedLoad: Nem sikerült betölteni a {platform}-t! Kattintson a platformra a hiba megtekintéséhez.
 Toast_FailedPlatformsLoad: Nem sikerült betölteni a Platforms.json fájlt! Kérjük, ellenőrizze, hogy ez a fájl létezik.
+Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
+Toast_FileCopyFail: Failed to copy files! See log for more details.
+Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
+Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
 Tooltip_Restore: Kattintson ide egy 7z fájl kiválasztásához, vagy húzza át erre a gombra.
 Modal_Crowdin_Header: Crowdin fordítók
 Modal_Crowdin_Info: "Itt van mindenki, aki segített lefordítani ezt a szoftvert.<br>A mellettük lévő nyelvű felhasználók sokat segítettek a fordításban (lektori szerep)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: '{totalFileCount} fájl törlése ({totalSizeMB})'
 Platform_DeleteFail: Nem sikerült törölni néhány fájlt (lehet, hogy a program fut?)
 Platform_CouldNotDeleteLog: Nem sikerült törölni a fájlt! Ellenőrizze a {logPath}
 Error_FileAccessDenied: Nem sikerült elérni a fájlt! Ellenőrizze a {logPath}
+Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
 Tooltip_Settings: Beállítások
 Tooltip_Info: Info
 Tooltip_ManagePlatforms: Más platformok megjelenítése vagy elrejtése
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: Bontsa ki a Játékok és parancsikonok választékát
 Tooltip_ShortcutFolder: Nyissa meg a parancsikon mappát. Helyezze el a parancsikonokat oda, és a TcNo fiókváltót, hogy megtekinthesse őket.
 Tooltip_Backup: A konfigurációs fájlok/mappák biztonsági mentése a platform beállításaiban meghatározottak szerint.
 Tooltip_BackupAll: Készítsen biztonsági másolatot az ÖSSZES konfigurációs fájlról/mappáról, beleértve a képeket és más nagy fájlokat is.
+Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
+Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
