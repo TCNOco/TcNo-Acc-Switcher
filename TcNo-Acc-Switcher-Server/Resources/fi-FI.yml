@@ -43,9 +43,6 @@ Settings_RTL: Näytä teksti oikealta vasemmalle
 Settings_CurrentLocation: 'Nykyinen asennuspaikka: {path}'
 Settings_CurrentDataLocation: 'Nykyinen käyttäjätietojen sijainti: {path}'
 Settings_SetDataLocation: "[Aseta mukautettu käyttäjätietojen sijainti]"
-Toast_DataLocationCopying: (1/2) Kopioidaan olemassa olevia tiedostoja uuteen käyttäjätietokansioon!
-Toast_DataLocationNotCopying: (1/2) Kansiolla on jo tiedostoja! Ei siirrä käyttäjätietoja.
-Toast_DataLocationSet: (2/2) Käynnistä tilin vaihtaja uudelleen käyttääksesi uutta kansiota!
 Settings_PickFolder: Valitse {platform} kansio
 Settings_OpenFolder: Avaa {platform} kansio
 Settings_ClearForgotten: Tyhjennä Unohtunut
@@ -65,8 +62,9 @@ Settings_StartCentered: Käynnistä keskitetty ohjelma
 Settings_WindowsAccent: Käytä Windows-hehkutuksen väriä
 Settings_HelpTranslate: "[Auta kääntämään]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] Aseta renderöintimoottori:"
-Settings_Header_ClosingMethod: "[Advanced] Aseta sulkemistapa {platform}"
+Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
+Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
+Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
 Settings_NoPlatforms: Tällä hetkellä ei ole käytössä alustoja. Ota ne käyttöön valitsemalla valinnaiset alustat alta tai poista käytöstä poistettujen alustojen valinta.
 Cleaning_Header_StartMenuShortcuts: 'Käynnistysvalikon pikakuvakkeet:'
 Cleaning_Header_General: Yleinen Puhdistus
@@ -84,6 +82,9 @@ Restore_Button_Restore: Palauta valitut
 Ignored_RemoveAccounts: Poista tilit ohituslistalta
 Ignored_Description: Jos olet aiemmin "ohittanut" tili, voit näyttää ne uudelleen täällä
 Ignored_Stop: Lopeta ohittaminen valituista
+Toast_DataLocationCopying: (1/2) Kopioidaan olemassa olevia tiedostoja uuteen käyttäjätietokansioon!
+Toast_DataLocationNotCopying: (1/2) Kansiolla on jo tiedostoja! Ei siirrä käyttäjätietoja.
+Toast_DataLocationSet: (2/2) Käynnistä tilin vaihtaja uudelleen käyttääksesi uutta kansiota!
 Toast_PlaceShortcutFiles: Kansio avautuu. Aseta pelin pikakuvakkeet kyseiseen kansioon ja käynnistä tilin vaihtaja uudelleen.
 Toast_TrayStarted: Kaukalo alkoi!
 Toast_TrayRunning: Kaukalo on jo auki
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: Käynnistä järjestelmänvalvojana ja yritä uudelleen.
 Toast_RestartAfterClose: Käynnistä ohjelma uudelleen suljettujen klikkausten jälkeen.
 Toast_RestartAfterCloseTitle: Korostusväri pois käytöstä
 Toast_RestartRequired: Ota muutokset käyttöön käynnistämällä se uudelleen
-Toast_LoadStylesheetFailed: Tyylitiedoston lataaminen epäonnistui! Katso dokumenttikansio lisätietoja.
+Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
 Toast_BNet_Private: "{BTag}profiili on yksityinen"
 Toast_BNet_StatsFail: "Virhe yritettäessä saada tilastoja {BTag}"
 Toast_BNet_CantSwapAccounts: Ei voitu vaihtaa tilejä (Battle.net.config-tiedosto vioittunut)
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: Vanhojen kirjautumistiedostojen tyhjentäminen epäon
 Toast_AccountIdReg: Tilitunnuksen saaminen rekisteristä epäonnistui!
 Toast_RegFailWrite: Kirjoittaminen Windows Regsitryyn epäonnistui!
 Toast_RegFailRead: Lukeminen Windows Regsitrystä epäonnistui!
+Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
 Toast_RegSaveMissing: Tallennettujen rekisteritiedostojen tietojen etsiminen tai lukeminen epäonnistui!
 Toast_DuplicateNames: Ei voitu vaihtaa. Monista tilit samalla käyttäjätunnuksella?
 Toast_CouldNotLocate: Kirjautunut käyttäjä ei löytänyt
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) Kopioidaan tiedostoja väliaikaiseen sijaintiin...
 Toast_BackupCompress: (2/3) Tiedostojen pakkaaminen ({size}). Tämä kestää jonkin aikaa...
 Toast_BackupComplete: (3/3) Pakkaaminen valmis! ({size} - {compressedSize})
 Toast_BackupProgress: "Varmuuskopiointi käynnissä (pakattu koko: {compressedSize})"
+Toast_BackupFail: Backup failed - See log!
 Toast_BackupBusy: Varmuuskopiointi on jo käynnissä!
 Toast_RestoreBusy: Palautus on jo käynnissä!
 Toast_RestoreExt: Puretaan arkistoa.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: Väliaikaisten tiedostojen poistaminen
 Toast_RestoreComplete: Palautus valmis!
 Toast_FailedLoad: '{platform}:n lataus epäonnistui! Napsauta alustaa nähdäksesi virheen.'
 Toast_FailedPlatformsLoad: Platforms.jsonin lataaminen epäonnistui! Varmista, että tämä tiedosto on olemassa.
+Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
+Toast_FileCopyFail: Failed to copy files! See log for more details.
+Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
+Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
 Tooltip_Restore: Valitse 7z-tiedosto napsauttamalla tai vedä se tähän painikkeeseen.
 Modal_Crowdin_Header: Crowdinin kääntäjät
 Modal_Crowdin_Info: "Tässä ovat kaikki, jotka auttoivat kääntämään tämän ohjelmiston.<br>Käyttäjät, joiden kieli on vieressä, auttoivat paljon kääntämisessä (oikolukijan rooli)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: Tyhjennetään {totalFileCount} tiedostoa ({totalSizeM
 Platform_DeleteFail: Joitakin tiedostoja ei voitu poistaa (Ohjelma saattaa olla käynnissä?)
 Platform_CouldNotDeleteLog: Tiedostoa ei voitu poistaa! Tarkista {logPath}
 Error_FileAccessDenied: Tiedoston käyttö epäonnistui! Tarkista {logPath}
+Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
 Tooltip_Settings: asetukset
 Tooltip_Info: Tiedot
 Tooltip_ManagePlatforms: Näytä tai piilota muut alustat
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: Laajenna Peli- ja pikanäppäinvalikoima
 Tooltip_ShortcutFolder: Avaa pikakuvakekansio. Aseta pikakuvakkeet sinne ja TcNo Account Switcher nähdäksesi ne.
 Tooltip_Backup: Varmuuskopioi konfiguraatiotiedostot/kansiot alustan asetuksissa määritetyllä tavalla.
 Tooltip_BackupAll: Varmuuskopioi KAIKKI asetustiedostot/kansiot, mukaan lukien kuvat ja muut suuret tiedostot.
+Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
+Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
