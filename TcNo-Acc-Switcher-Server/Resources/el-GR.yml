@@ -43,9 +43,6 @@ Settings_RTL: Εμφάνιση κειμένου ως από τα δεξιά πρ
 Settings_CurrentLocation: 'Τρέχουσα τοποθεσία εγκατάστασης: {path}'
 Settings_CurrentDataLocation: 'Τρέχουσα τοποθεσία δεδομένων χρήστη: {path}'
 Settings_SetDataLocation: "[Ορισμός προσαρμοσμένης τοποθεσίας δεδομένων χρήστη]"
-Toast_DataLocationCopying: (1/2) Αντιγραφή υπαρχόντων αρχείων στον νέο φάκελο δεδομένων χρήστη!
-Toast_DataLocationNotCopying: (1/2) Ο φάκελος έχει ήδη αρχεία! Δεν θα γίνει μετεγκατάσταση δεδομένων χρήστη.
-Toast_DataLocationSet: (2/2) Κάντε επανεκκίνηση του εναλλάκτη λογαριασμού για να χρησιμοποιήσετε τον νέο φάκελο!
 Settings_PickFolder: Επιλέξτε {platform} φάκελο
 Settings_OpenFolder: Άνοιγμα φακέλου {platform}
 Settings_ClearForgotten: Εκκαθάριση Ξεχασμένων
@@ -65,8 +62,9 @@ Settings_StartCentered: Εκκίνηση προγράμματος στο κέν�
 Settings_WindowsAccent: Χρησιμοποιήστε το χρώμα έμφασης των Windows
 Settings_HelpTranslate: "[Βοηθήστε στη μετάφραση]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] Σετ κινητήρα απόδοσης:"
-Settings_Header_ClosingMethod: "[Advanced] Ορίστε τη μέθοδο για κλείσιμο {platform}"
+Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
+Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
+Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
 Settings_NoPlatforms: Αυτήν τη στιγμή δεν υπάρχουν ενεργοποιημένες πλατφόρμες. Επιλέξτε τις προαιρετικές πλατφόρμες παρακάτω για να τις ενεργοποιήσετε ή αποεπιλέξτε τις απενεργοποιημένες πλατφόρμες.
 Cleaning_Header_StartMenuShortcuts: 'Συντομεύσεις για το μενού έναρξης:'
 Cleaning_Header_General: Γενικός Καθαρισμός
@@ -84,6 +82,9 @@ Restore_Button_Restore: Επαναφορά επιλεγμένων
 Ignored_RemoveAccounts: Αφαίρεση λογαριασμών από τη λίστα αγνόησης
 Ignored_Description: Αν προηγουμένως "αγνοήθηκε" έναν λογαριασμό, μπορείτε να τον εμφανίσετε ξανά εδώ
 Ignored_Stop: Διακοπή αγνόησης επιλεγμένων
+Toast_DataLocationCopying: (1/2) Αντιγραφή υπαρχόντων αρχείων στον νέο φάκελο δεδομένων χρήστη!
+Toast_DataLocationNotCopying: (1/2) Ο φάκελος έχει ήδη αρχεία! Δεν θα γίνει μετεγκατάσταση δεδομένων χρήστη.
+Toast_DataLocationSet: (2/2) Κάντε επανεκκίνηση του εναλλάκτη λογαριασμού για να χρησιμοποιήσετε τον νέο φάκελο!
 Toast_PlaceShortcutFiles: Ανοίγει ένας φάκελος. Τοποθετήστε τις συντομεύσεις παιχνιδιού σε αυτόν τον φάκελο και επανεκκινήστε το πρόγραμμα εναλλαγής λογαριασμού.
 Toast_TrayStarted: Ο Τροφοδότης Χαρτιού ξεκίνησε!
 Toast_TrayRunning: Τροφοδότης χαρτιού ήδη ανοικτό
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: Παρακαλώ ξεκινήστε ως Διαχειρι�
 Toast_RestartAfterClose: Παρακαλούμε επανεκκινήστε το πρόγραμμα αφού κάνετε κλικ στο Κλείσιμο.
 Toast_RestartAfterCloseTitle: Χρώμα έμφασης απενεργοποιημένο
 Toast_RestartRequired: Κάντε επανεκκίνηση για να εφαρμόσετε αλλαγές
-Toast_LoadStylesheetFailed: Αποτυχία φόρτωσης stylesheet! Δείτε το φάκελο εγγράφων για λεπτομέρειες.
+Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
 Toast_BNet_Private: "{BTag}προφίλ είναι ιδιωτικό"
 Toast_BNet_StatsFail: "Σφάλμα κατά την λήψη στατιστικών για το {BTag}"
 Toast_BNet_CantSwapAccounts: Αδυναμία ανταλλαγής λογαριασμών (Battle.net.config αρχείο κατεστραμμένο)
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: Αποτυχία εκκαθάρισης παλιών 
 Toast_AccountIdReg: Αποτυχία λήψης αναγνωριστικού λογαριασμού από το Μητρώο!
 Toast_RegFailWrite: Απέτυχε η εγγραφή στο μητρώο των Windows!
 Toast_RegFailRead: Αποτυχία ανάγνωσης από το μητρώο των Windows!
+Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
 Toast_RegSaveMissing: Αποτυχία εύρεσης ή ανάγνωσης δεδομένων από αποθηκευμένα αρχεία μητρώου!
 Toast_DuplicateNames: Αδυναμία ανταλλαγής. Αντιγραφή λογαριασμών με το ίδιο όνομα χρήστη?
 Toast_CouldNotLocate: Αδυναμία εντοπισμού του συνδεδεμένου χρήστη
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) Αντιγραφή αρχείων σε προσωριν�
 Toast_BackupCompress: (2/3) Συμπίεση αρχείων ({size}). Αυτό θα πάρει λίγο χρόνο...
 Toast_BackupComplete: (3/3) Ολοκληρώθηκε η συμπίεση! ({size} προς {compressedSize})
 Toast_BackupProgress: "Δημιουργία αντιγράφων ασφαλείας σε εξέλιξη (συμπιεσμένο μέγεθος: {compressedSize})"
+Toast_BackupFail: Backup failed - See log!
 Toast_BackupBusy: Η δημιουργία αντιγράφων ασφαλείας βρίσκεται ήδη σε εξέλιξη!
 Toast_RestoreBusy: Η επαναφορά βρίσκεται ήδη σε εξέλιξη!
 Toast_RestoreExt: Εξαγωγή αρχείου.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: Διαγραφή προσωρινών αρχείων
 Toast_RestoreComplete: Η επαναφορά ολοκληρώθηκε!
 Toast_FailedLoad: Αποτυχία φόρτωσης {platform}! Κάντε κλικ στην πλατφόρμα για να δείτε το σφάλμα.
 Toast_FailedPlatformsLoad: Η φόρτωση του Platforms.json απέτυχε! Επαληθεύστε ότι αυτό το αρχείο υπάρχει.
+Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
+Toast_FileCopyFail: Failed to copy files! See log for more details.
+Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
+Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
 Tooltip_Restore: Κάντε κλικ για να επιλέξετε ένα αρχείο 7z ή σύρετέ το σε αυτό το κουμπί.
 Modal_Crowdin_Header: Μεταφραστές Crowdin
 Modal_Crowdin_Info: "Εδώ είναι όλοι όσοι βοήθησαν στη μετάφραση αυτού του λογισμικού.<br>Χρήστες με γλώσσες δίπλα τους βοήθησαν πολύ στη μετάφραση (ρόλος διορθωτή)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: Εκκαθάριση {totalFileCount} αρχείων (
 Platform_DeleteFail: Δεν ήταν δυνατή η διαγραφή ορισμένων αρχείων (το πρόγραμμα μπορεί να εκτελείται;)
 Platform_CouldNotDeleteLog: Δεν ήταν δυνατή η διαγραφή του αρχείου! Έλεγχος {logPath}
 Error_FileAccessDenied: Αποτυχία πρόσβασης στο αρχείο! Έλεγχος {logPath}
+Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
 Tooltip_Settings: Ρυθμίσεις
 Tooltip_Info: Πληροφορίες
 Tooltip_ManagePlatforms: Εμφάνιση ή Απόκρυψη άλλων πλατφορμών
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: Αναπτύξτε την επιλογή Παιχνίδ
 Tooltip_ShortcutFolder: Ανοίξτε το φάκελο συντόμευσης. Τοποθετήστε τις συντομεύσεις εκεί και το TcNo Account Switcher για να τις δείτε.
 Tooltip_Backup: Δημιουργία αντιγράφων ασφαλείας αρχείων/φακέλων διαμόρφωσης, όπως ορίζεται στις ρυθμίσεις πλατφόρμας.
 Tooltip_BackupAll: Δημιουργία αντιγράφων ασφαλείας ΟΛΑ τα αρχεία/φακέλους διαμόρφωσης, συμπεριλαμβανομένων των εικόνων και άλλων μεγάλων αρχείων.
+Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
+Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
