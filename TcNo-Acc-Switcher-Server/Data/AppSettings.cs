@@ -92,7 +92,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
 
         // Variables
-        private bool _updateAvailable;
         [JsonProperty("Language", Order = 0)] private string _lang = "";
         [JsonProperty("Rtl", Order = 1)] private bool _rtl = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
         [JsonProperty("StreamerModeEnabled", Order = 2)] private bool _streamerModeEnabled = true;
@@ -113,8 +112,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         [Newtonsoft.Json.JsonIgnore] private bool _protocolEnabled;
         [Newtonsoft.Json.JsonIgnore] private bool _trayStartup;
         [Newtonsoft.Json.JsonIgnore] private bool _updateCheckRan;
+        [Newtonsoft.Json.JsonIgnore] private bool _preRenderUpdate;
 
-        public static bool UpdateAvailable { get => Instance._updateAvailable; set => Instance._updateAvailable = value; }
         public static string Language { get => Instance._lang; set => Instance._lang = value; }
         public static bool Rtl { get => Instance._rtl; set => Instance._rtl = value; }
         public static bool StreamerModeEnabled { get => Instance._streamerModeEnabled; set => Instance._streamerModeEnabled = value; }
@@ -148,6 +147,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static bool ProtocolEnabled { get => Instance._protocolEnabled; set => Instance._protocolEnabled = value; }
         public static bool TrayStartup { get => Instance._trayStartup; set => Instance._trayStartup = value; }
         private static bool UpdateCheckRan { get =>Instance._updateCheckRan; set => Instance._updateCheckRan = value; }
+        public static bool PreRenderUpdate { get =>Instance._preRenderUpdate; set => Instance._preRenderUpdate = value; }
 
         [Newtonsoft.Json.JsonIgnore]
         public static string PlatformContextMenu =>
@@ -393,53 +393,42 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
             return themeList;
         }
-        private static (int, int, int) FromRgb(byte R, byte G, byte B)
+        private static (int, int, int) FromRgb(byte r, byte g, byte b)
         {
             // Adapted from: https://stackoverflow.com/a/4794649/5165437
-            var _R = (R / 255f);
-            var _G = (G / 255f);
-            var _B = (B / 255f);
+            var rf = (r / 255f);
+            var gf = (g / 255f);
+            var bf = (b / 255f);
 
-            var _Min = Math.Min(Math.Min(_R, _G), _B);
-            var _Max = Math.Max(Math.Max(_R, _G), _B);
-            var _Delta = _Max - _Min;
+            var min = Math.Min(Math.Min(rf, gf), bf);
+            var max = Math.Max(Math.Max(rf, gf), bf);
+            var delta = max - min;
 
-            var H = (float)0;
-            var S = (float)0;
-            var L = (_Max + _Min) / 2.0f;
+            var h = (float)0;
+            var s = (float)0;
+            var l = (max + min) / 2.0f;
 
-            if (_Delta != 0)
+            if (delta != 0)
             {
-                if (L < 0.5f)
-                {
-                    S = _Delta / (_Max + _Min);
-                }
+                if (l < 0.5f)
+                    s = delta / (max + min);
                 else
-                {
-                    S = _Delta / (2.0f - _Max - _Min);
-                }
+                    s = delta / (2.0f - max - min);
 
-
-                if (Math.Abs(_R - _Max) < 0.01)
-                {
-                    H = (_G - _B) / _Delta;
-                }
-                else if (Math.Abs(_G - _Max) < 0.01)
-                {
-                    H = 2f + (_B - _R) / _Delta;
-                }
-                else if (Math.Abs(_B - _Max) < 0.01)
-                {
-                    H = 4f + (_R - _G) / _Delta;
-                }
+                if (Math.Abs(rf - max) < 0.01)
+                    h = (gf - bf) / delta;
+                else if (Math.Abs(gf - max) < 0.01)
+                    h = 2f + (bf - rf) / delta;
+                else if (Math.Abs(bf - max) < 0.01)
+                    h = 4f + (rf - gf) / delta;
             }
 
             // Rounding and formatting for CSS
-            H *= 60;
-            S *= 100;
-            L *= 100;
+            h *= 60;
+            s *= 100;
+            l *= 100;
 
-            return ((int)Math.Round(H), (int)Math.Round(S), (int)Math.Round(L));
+            return ((int)Math.Round(h), (int)Math.Round(s), (int)Math.Round(l));
         }
 
         [JSInvokable]
@@ -708,9 +697,14 @@ namespace TcNo_Acc_Switcher_Server.Data
 #endif
                 if (CheckLatest(latestVersion)) return;
                 // Show notification
-                UpdateAvailable = true;
-
-                _ = AppData.InvokeVoidAsync("showUpdateBar");
+                try
+                {
+                    _ = AppData.InvokeVoidAsync("showUpdateBar");
+                }
+                catch (Exception)
+                {
+                    PreRenderUpdate = true;
+                }
             }
             catch (Exception e) when (e is WebException or AggregateException)
             {
@@ -738,7 +732,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                         File.Move("WindowSettings.json", "WindowSettings.bak.json", true);
                     }
                 }
-                Globals.WriteToLog(@"Could not reach https://tcno.co/ to check for updates.\n" + e);
+                Globals.WriteToLog(@"Could not reach https://tcno.co/ to check for updates.", e);
             }
         }
 

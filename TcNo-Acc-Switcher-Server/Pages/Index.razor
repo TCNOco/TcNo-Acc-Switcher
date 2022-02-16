@@ -26,6 +26,14 @@
 
 @inject Lang  _locale
 
+@if (AppSettings.PreRenderUpdate)
+{
+    <div class="updateBar">
+        <span>@_locale["Update"]</span>
+        <i class="fas fa-times-circle" id="closeUpdateBar"></i>
+    </div>
+}
+
 <ContextMenu ContextMenuString="@AppSettings.PlatformContextMenu" ContextMenuId="AccOrPlatList" />
 <div class="platformTable">
     <div class="platform_list">
