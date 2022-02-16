@@ -43,9 +43,6 @@ Settings_RTL: Mostra il testo come da destra a sinistra
 Settings_CurrentLocation: 'Posizione di installazione corrente: {path}'
 Settings_CurrentDataLocation: 'Posizione attuale dei dati dell''utente: {path}'
 Settings_SetDataLocation: "[Imposta posizione dati utente personalizzata]"
-Toast_DataLocationCopying: (1/2) Copia di file esistenti nella nuova cartella dei dati utente!
-Toast_DataLocationNotCopying: (1/2) La cartella contiene già dei file! Non eseguirà la migrazione dei dati dell'utente.
-Toast_DataLocationSet: (2/2) Riavvia il selettore di account per utilizzare la nuova cartella!
 Settings_PickFolder: Seleziona la cartella di {platform}
 Settings_OpenFolder: Apri la cartella di {platform}
 Settings_ClearForgotten: Cancella Dimenticato
@@ -65,8 +62,9 @@ Settings_StartCentered: Avvia programma centrato
 Settings_WindowsAccent: Usa il Colore Secondario di Windows
 Settings_HelpTranslate: "[Aiuta a tradurre]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] Imposta il motore di rendering:"
-Settings_Header_ClosingMethod: "[Advanced] Imposta il metodo per chiudere {platform}"
+Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
+Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
+Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
 Settings_NoPlatforms: Al momento non ci sono piattaforme abilitate. Spunta le piattaforme opzionali di seguito per abilitarle o deseleziona le piattaforme disabilitate.
 Cleaning_Header_StartMenuShortcuts: 'Scorciatoie per il Menu Iniziale:'
 Cleaning_Header_General: Pulizia Generale
@@ -84,6 +82,9 @@ Restore_Button_Restore: Ripristina selezionati
 Ignored_RemoveAccounts: Rimuovi i profili dall'elenco ignorati
 Ignored_Description: Se precedentemente hai "ignorato" un profilo, puoi mostrarlo nuovamente qui
 Ignored_Stop: Smetti di ignorare selezionato
+Toast_DataLocationCopying: (1/2) Copia di file esistenti nella nuova cartella dei dati utente!
+Toast_DataLocationNotCopying: (1/2) La cartella contiene già dei file! Non eseguirà la migrazione dei dati dell'utente.
+Toast_DataLocationSet: (2/2) Riavvia il selettore di account per utilizzare la nuova cartella!
 Toast_PlaceShortcutFiles: Si sta aprendo una cartella. Inserisci le scorciatoie di gioco in quella cartella e riavvia il selettore di account.
 Toast_TrayStarted: Area di notifica avviata!
 Toast_TrayRunning: Area di notifica aperta
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: Sei pregato di avviare come Amministratore e riprovare.
 Toast_RestartAfterClose: Sei pregato di riavviare il programma dopo aver cliccato Chiudi.
 Toast_RestartAfterCloseTitle: Colore secondario disabilitato
 Toast_RestartRequired: Riavvia per applicare le modifiche
-Toast_LoadStylesheetFailed: Impossibile caricare il foglio di stile! Vedi la cartella dei documenti per i dettagli.
+Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
 Toast_BNet_Private: "Il profilo di {BTag} è privato"
 Toast_BNet_StatsFail: "Errore provando a ottenere le statistiche per {BTag}"
 Toast_BNet_CantSwapAccounts: Impossibile scambiare i profili (File Battle.net.config corrotto)
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: Impossibile cancellare i vecchi file d'accesso
 Toast_AccountIdReg: Impossibile ottenere l'ID account dal registro!
 Toast_RegFailWrite: Impossibile scrivere nel registro di Windows!
 Toast_RegFailRead: Impossibile leggere dal registro di Windows!
+Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
 Toast_RegSaveMissing: Impossibile trovare o leggere i dati dai file di registro salvati!
 Toast_DuplicateNames: Impossibile scambiare. Duplicare i profili con lo stesso nome utente?
 Toast_CouldNotLocate: Impossibile individuare l'utente connesso
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) Copia di file in una posizione temporanea...
 Toast_BackupCompress: (2/3) Compressione di file ({size}). Ci vorrà del tempo...
 Toast_BackupComplete: (3/3) Compressione finita! ( da{size} a {compressedSize})
 Toast_BackupProgress: "Backup in corso (dimensione compressa: {compressedSize})"
+Toast_BackupFail: Backup failed - See log!
 Toast_BackupBusy: Backup già in corso!
 Toast_RestoreBusy: Ripristino già in corso!
 Toast_RestoreExt: Estrazione archivio.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: Eliminazione di file temporanei
 Toast_RestoreComplete: Ripristino terminato!
 Toast_FailedLoad: Impossibile caricare {platform}! Fare clic sulla piattaforma per visualizzare l'errore.
 Toast_FailedPlatformsLoad: Impossibile caricare Platforms.json! Verifica che questo file esista.
+Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
+Toast_FileCopyFail: Failed to copy files! See log for more details.
+Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
+Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
 Tooltip_Restore: Fare clic per selezionare un file 7z o trascinarlo su questo pulsante.
 Modal_Crowdin_Header: Crowdin traduttori
 Modal_Crowdin_Info: "Ecco tutti coloro che hanno contribuito a tradurre questo software.<br>Gli utenti con lingue accanto hanno aiutato molto nella traduzione (ruolo di correttore di bozze)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: Cancellazione di {totalFileCount} file ({totalSizeMB})
 Platform_DeleteFail: Impossibile eliminare alcuni file (il programma potrebbe essere in esecuzione?)
 Platform_CouldNotDeleteLog: Impossibile eliminare il file! Controlla {logPath}
 Error_FileAccessDenied: Impossibile accedere al file! Controlla {logPath}
+Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
 Tooltip_Settings: Impostazioni
 Tooltip_Info: Informazioni
 Tooltip_ManagePlatforms: Mostra o nascondi altre piattaforme
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: Espandi Selezione gioco e scorciatoia
 Tooltip_ShortcutFolder: Apri la cartella dei collegamenti. Inserisci le scorciatoie lì e il selettore di account TcNo per vederle.
 Tooltip_Backup: Eseguire il backup di file/cartelle di configurazione, come definito nelle impostazioni della piattaforma.
 Tooltip_BackupAll: Eseguire il backup di TUTTI i file/cartelle di configurazione, comprese le immagini e altri file di grandi dimensioni.
+Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
+Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
