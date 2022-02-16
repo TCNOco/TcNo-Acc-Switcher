@@ -43,9 +43,6 @@ Settings_RTL: テキストを右から左に表示
 Settings_CurrentLocation: '現在のインストール場所： {path}'
 Settings_CurrentDataLocation: '現在のユーザーデータの場所： {path}'
 Settings_SetDataLocation: "[カスタムユーザーデータの場所を設定する]"
-Toast_DataLocationCopying: '（1/2）既存のファイルを新しいユーザーデータフォルダにコピーします！'
-Toast_DataLocationNotCopying: '（1/2）フォルダにはすでにファイルがあります！ユーザーデータを移行しません。'
-Toast_DataLocationSet: '（2/2）アカウントスイッチャーを再起動して、新しいフォルダーを使用します。'
 Settings_PickFolder: '{platform} フォルダを選択'
 Settings_OpenFolder: '{platform} フォルダを開く'
 Settings_ClearForgotten: 忘れた項目をクリア
@@ -65,8 +62,9 @@ Settings_StartCentered: プログラムを中心に開始
 Settings_WindowsAccent: Windowsアクセントカラーを使用する
 Settings_HelpTranslate: "format@@0"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] レンダリングエンジンを設定します。"
-Settings_Header_ClosingMethod: "[Advanced] メソッドを閉じるように設定します {platform}"
+Settings_Header_ActiveBrowser: "（詳細）レンダリングエンジンの設定："
+Settings_Header_ClosingMethod: "（詳細）メソッドを閉じる {platform}に設定"
+Settings_Header_StartingMethod: "（詳細）メソッドを {platform}から開始するように設定します"
 Settings_NoPlatforms: 現在、有効になっているプラットフォームはありません。以下のオプションのプラットフォームにチェックマークを付けて有効にするか、無効になっているプラットフォームのチェックを外してください。
 Cleaning_Header_StartMenuShortcuts: 'format@@0メニューのショートカット:'
 Cleaning_Header_General: 一般的なクリーニング
@@ -84,6 +82,9 @@ Restore_Button_Restore: 選択したものを復元
 Ignored_RemoveAccounts: 無視リストからアカウントを削除
 Ignored_Description: 以前にアカウントを「無視」した場合は、ここで再度表示することができます
 Ignored_Stop: 選択された無視を停止
+Toast_DataLocationCopying: '（1/2）既存のファイルを新しいユーザーデータフォルダにコピーします！'
+Toast_DataLocationNotCopying: '（1/2）フォルダにはすでにファイルがあります！ユーザーデータを移行しません。'
+Toast_DataLocationSet: '（2/2）アカウントスイッチャーを再起動して、新しいフォルダーを使用します。'
 Toast_PlaceShortcutFiles: フォルダが開いています。そのフォルダにゲームのショートカットを配置し、アカウントスイッチャーを再起動します。
 Toast_TrayStarted: トレイが始まりました！
 Toast_TrayRunning: トレイは既に開いています
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: 管理者として開始して、もう一度やり直し�
 Toast_RestartAfterClose: 閉じるをクリックした後、プログラムを再起動してください。
 Toast_RestartAfterCloseTitle: アクセントカラーは無効です
 Toast_RestartRequired: 再起動して変更を適用します
-Toast_LoadStylesheetFailed: スタイルシートの読み込みに失敗しました！詳細はドキュメントフォルダを参照してください。
+Toast_LoadStylesheetFailed: スタイルシートの読み込みに失敗しました！詳細については、ユーザーデータフォルダを参照してください。
 Toast_BNet_Private: "{BTag}のプロフィールは非公開です"
 Toast_BNet_StatsFail: "{BTag} の統計情報を取得しようとしてエラーが発生しました"
 Toast_BNet_CantSwapAccounts: アカウントを交換できませんでした（BATle.net.config ファイルが破損しています）
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: 古いログインファイルの消去に失敗し�
 Toast_AccountIdReg: レジストリからアカウントIDを取得できませんでした！
 Toast_RegFailWrite: Windowsレジストリへの書き込みに失敗しました！
 Toast_RegFailRead: Windowsレジストリからの読み取りに失敗しました！
+Toast_RegFailReadSaved: 保存されたレジストリエントリの読み取りに失敗しました。失敗した場合は、アカウントを削除して再度追加してみてください。
 Toast_RegSaveMissing: 保存されたレジストリファイルからのデータの検索または読み取りに失敗しました！
 Toast_DuplicateNames: 同じユーザー名でアカウントを複製できませんでしたか？
 Toast_CouldNotLocate: ログインしているユーザーが見つかりませんでした
@@ -155,6 +157,7 @@ Toast_BackupCopy: '（1/3）ファイルを一時的な場所にコピーして�
 Toast_BackupCompress: '（2/3）ファイルの圧縮（{size}）。これには少し時間がかかります...'
 Toast_BackupComplete: '（3/3）圧縮が終了しました！ （{size} から {compressedSize}）'
 Toast_BackupProgress: "バックアップが進行中です（圧縮サイズ： {compressedSize}）"
+Toast_BackupFail: バックアップに失敗しました-ログを参照してください！
 Toast_BackupBusy: バックアップはすでに進行中です！
 Toast_RestoreBusy: すでに進行中の復元！
 Toast_RestoreExt: アーカイブを抽出しています。
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: 一時ファイルの削除
 Toast_RestoreComplete: 復元が完了しました。
 Toast_FailedLoad: '{platform}の読み込みに失敗しました！プラットフォームをクリックしてエラーを確認します。'
 Toast_FailedPlatformsLoad: Platforms.jsonの読み込みに失敗しました！このファイルが存在することを確認してください。
+Toast_FailedLoadSettings: "設定の読み込みに失敗しました！代わりにデフォルト設定をロードします。既存の設定ファイル名に「old」を追加します。"
+Toast_FileCopyFail: ファイルのコピーに失敗しました！詳細については、ログを参照してください。
+Toast_UserDataLoadFail: userdata {UserData}\\ WindowSettings.jsonの読み込みに失敗しました。バックアップとリセット！エラーをログに保存しました。
+Toast_UpdateCheckFail: https://tcno.co/にアクセスして更新を確認できませんでした。このメッセージは1日1回表示されます。
 Tooltip_Restore: クリックして7zファイルを選択するか、このボタンにドラッグします。
 Modal_Crowdin_Header: Crowdinの翻訳者
 Modal_Crowdin_Info: "このソフトウェアの翻訳を手伝ってくれた皆さんです。<br>隣に言語があるユーザーは、翻訳に大いに役立ちました（校正者の役割）。"
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: '{totalFileCount} ファイルのクリア（{totalSiz
 Platform_DeleteFail: 一部のファイルを削除できませんでした（プログラムが実行されている可能性がありますか？）
 Platform_CouldNotDeleteLog: ファイルを削除できませんでした！チェック {logPath}
 Error_FileAccessDenied: ファイルにアクセスできませんでした！チェック {logPath}
+Error_RequiredFileVerify: 必要なファイルが見つかりませんでした。 x64およびx86フォルダーがインストールディレクトリに存在することを確認してください。そうでない場合は、TcNo-Acc-Switcher-Updater.exeを実行し、ファイルを確認します。
 Tooltip_Settings: 設定
 Tooltip_Info: 情報
 Tooltip_ManagePlatforms: 他のプラットフォームを表示または非表示
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: ゲームとショートカットの選択を展開
 Tooltip_ShortcutFolder: ショートカットフォルダを開きます。そこにショートカットを配置し、TcNoアカウントスイッチャーでそれらを表示します。
 Tooltip_Backup: プラットフォーム設定で定義されているように、構成ファイル/フォルダーをバックアップします。
 Tooltip_BackupAll: 画像やその他の大きなファイルを含む、すべての構成ファイル/フォルダーをバックアップします。
+Tooltip_ClosingMethod: "組み合わせるのが最適です。 Closeは、close関数を介して直接閉じようとし、TaskKillはCMDを使用します（組み合わせて機能しない場合に最適）"
+Tooltip_StartingMethod: "デフォルトが最適です。 Directは、管理者レベルまたはUACを制御できません。このアカウントスイッチャーと同じレベル（またはそれ以上-ただしそれ以下ではない）で開始します"

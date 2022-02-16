@@ -43,9 +43,6 @@ Settings_RTL: Hiển thị văn bản dưới dạng từ phải sang trái
 Settings_CurrentLocation: 'Vị trí cài đặt hiện tại: {path}'
 Settings_CurrentDataLocation: 'Vị trí dữ liệu người dùng hiện tại: {path}'
 Settings_SetDataLocation: "[Đặt vị trí dữ liệu người dùng tùy chỉnh]"
-Toast_DataLocationCopying: (1/2) Sao chép các tệp hiện có vào thư mục dữ liệu người dùng mới!
-Toast_DataLocationNotCopying: (1/2) Thư mục đã có tệp! Sẽ không di chuyển dữ liệu người dùng.
-Toast_DataLocationSet: (2/2) Khởi động lại trình chuyển đổi tài khoản để sử dụng thư mục mới!
 Settings_PickFolder: Chọn {platform} thư mục
 Settings_OpenFolder: Mở thư mục {platform}
 Settings_ClearForgotten: Xóa bỏ quên
@@ -65,8 +62,9 @@ Settings_StartCentered: Bắt đầu chương trình làm trung tâm
 Settings_WindowsAccent: Sử dụng Màu nhấn Windows
 Settings_HelpTranslate: "[Giúp dịch]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] Đặt công cụ kết xuất:"
-Settings_Header_ClosingMethod: "[Advanced] Đặt phương thức để đóng {platform}"
+Settings_Header_ActiveBrowser: "(Nâng cao) Đặt công cụ kết xuất:"
+Settings_Header_ClosingMethod: "(Nâng cao) Đặt phương thức đóng {platform}"
+Settings_Header_StartingMethod: "(Nâng cao) Đặt phương thức để bắt đầu {platform}"
 Settings_NoPlatforms: Hiện tại không có nền tảng nào được kích hoạt. Vui lòng đánh dấu vào các nền tảng tùy chọn bên dưới để bật chúng hoặc bỏ chọn các nền tảng bị vô hiệu hóa.
 Cleaning_Header_StartMenuShortcuts: 'Các phím tắt cho Start Menu:'
 Cleaning_Header_General: Vệ sinh chung
@@ -84,6 +82,9 @@ Restore_Button_Restore: Khôi phục đã chọn
 Ignored_RemoveAccounts: Xóa tài khoản khỏi danh sách bỏ qua
 Ignored_Description: Nếu trước đó bạn đã "bỏ qua" một tài khoản, bạn có thể hiển thị lại chúng tại đây
 Ignored_Stop: Ngừng bỏ qua đã chọn
+Toast_DataLocationCopying: (1/2) Sao chép các tệp hiện có vào thư mục dữ liệu người dùng mới!
+Toast_DataLocationNotCopying: (1/2) Thư mục đã có tệp! Sẽ không di chuyển dữ liệu người dùng.
+Toast_DataLocationSet: (2/2) Khởi động lại trình chuyển đổi tài khoản để sử dụng thư mục mới!
 Toast_PlaceShortcutFiles: Một thư mục đang mở. Đặt các phím tắt trò chơi vào thư mục đó và khởi động lại trình chuyển đổi tài khoản.
 Toast_TrayStarted: Đã khởi động khay!
 Toast_TrayRunning: Khay đã mở
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: Vui lòng bắt đầu với tư cách Quản trị viên 
 Toast_RestartAfterClose: Vui lòng khởi động lại chương trình sau khi nhấp vào Đóng.
 Toast_RestartAfterCloseTitle: Đã tắt màu dấu trọng âm
 Toast_RestartRequired: Khởi động lại để áp dụng các thay đổi
-Toast_LoadStylesheetFailed: Không tải được biểu định kiểu! Xem thư mục tài liệu để biết chi tiết.
+Toast_LoadStylesheetFailed: Không tải được biểu định kiểu! Xem thư mục dữ liệu người dùng để biết chi tiết.
 Toast_BNet_Private: "Hồ sơ của {BTag}"
 Toast_BNet_StatsFail: "Lỗi khi cố gắng lấy số liệu thống kê cho {BTag}"
 Toast_BNet_CantSwapAccounts: Không thể hoán đổi tài khoản (tệp Battle.net.config bị hỏng)
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: Không xóa được các tệp đăng nhập cũ
 Toast_AccountIdReg: Không lấy được Id tài khoản từ Registry!
 Toast_RegFailWrite: Không thể ghi vào Windows Regsitry!
 Toast_RegFailRead: Không thể đọc từ Windows Regsitry!
+Toast_RegFailReadSaved: Không thể đọc mục đăng ký đã lưu. Thử xóa và thêm lại tài khoản nếu không thành công.
 Toast_RegSaveMissing: Không tìm thấy hoặc đọc dữ liệu từ các tệp đăng ký đã lưu!
 Toast_DuplicateNames: Không thể hoán đổi. Các tài khoản trùng lặp với cùng một tên người dùng?
 Toast_CouldNotLocate: Không thể định vị người dùng đã đăng nhập
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) Sao chép tệp vào một vị trí tạm thời ...
 Toast_BackupCompress: (2/3) Nén tệp ({size}). Điều này sẽ mất một thời gian...
 Toast_BackupComplete: (3/3) Nén xong! ({size} đến {compressedSize})
 Toast_BackupProgress: "Đang sao lưu (Kích thước nén: {compressedSize})"
+Toast_BackupFail: Sao lưu không thành công - Xem nhật ký!
 Toast_BackupBusy: Đã tiến hành sao lưu!
 Toast_RestoreBusy: Đang khôi phục!
 Toast_RestoreExt: Đang giải nén kho lưu trữ.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: Xóa các tệp tạm thời
 Toast_RestoreComplete: Đã khôi phục xong!
 Toast_FailedLoad: Không tải được {platform}! Nhấp vào nền tảng để xem lỗi.
 Toast_FailedPlatformsLoad: Không tải được Platforms.json! Vui lòng xác minh tệp này tồn tại.
+Toast_FailedLoadSettings: "Không tải được cài đặt! Đang tải cài đặt mặc định thay thế. Thêm 'cũ' vào tên tệp cài đặt hiện có."
+Toast_FileCopyFail: Không thể sao chép tệp! Xem nhật ký để biết thêm chi tiết.
+Toast_UserDataLoadFail: Không tải được dữ liệu người dùng {UserData}\\ WindowSettings.json. Sao lưu và đặt lại! Đã lưu lỗi để ghi nhật ký.
+Toast_UpdateCheckFail: Không thể truy cập https://tcno.co/ để kiểm tra các bản cập nhật. Thông báo này sẽ hiển thị mỗi ngày một lần.
 Tooltip_Restore: Nhấp để chọn tệp 7z hoặc kéo tệp đó vào nút này.
 Modal_Crowdin_Header: Người dịch Crowdin
 Modal_Crowdin_Info: "Đây là tất cả những người đã giúp dịch phần mềm này.<br>Người dùng có ngôn ngữ bên cạnh họ đã giúp rất nhiều trong việc dịch thuật (vai trò người hiệu đính)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: Xóa {totalFileCount} tệp ({totalSizeMB})
 Platform_DeleteFail: Không thể xóa một số tệp (Chương trình có thể đang chạy?)
 Platform_CouldNotDeleteLog: Không thể xóa tệp! Kiểm tra {logPath}
 Error_FileAccessDenied: Không thể truy cập tệp! Kiểm tra {logPath}
+Error_RequiredFileVerify: Một tệp bắt buộc không được tìm thấy. Hãy đảm bảo rằng các thư mục x64 và x86 tồn tại trong thư mục cài đặt. Nếu không chạy TcNo-Acc-Switcher-Updater.exe và xác minh các tệp.
 Tooltip_Settings: Cài đặt
 Tooltip_Info: Thông tin
 Tooltip_ManagePlatforms: Hiển thị hoặc Ẩn các nền tảng khác
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: Mở rộng lựa chọn Trò chơi & Lối tắt
 Tooltip_ShortcutFolder: Mở thư mục lối tắt. Đặt các phím tắt vào đó và Công cụ chuyển đổi tài khoản TcNo để xem chúng.
 Tooltip_Backup: Sao lưu các tệp / thư mục cấu hình, như được xác định trong cài đặt nền tảng.
 Tooltip_BackupAll: Sao lưu TẤT CẢ các tệp / thư mục cấu hình, bao gồm cả hình ảnh và các tệp lớn khác.
+Tooltip_ClosingMethod: "Kết hợp là tốt nhất. Đóng cố gắng đóng trực tiếp thông qua một hàm đóng và TaskKill sử dụng CMD (Tốt nhất nếu kết hợp không hoạt động)"
+Tooltip_StartingMethod: "Mặc định là tốt nhất. Direct không có quyền kiểm soát cấp quản trị hoặc UAC. Nó sẽ bắt đầu ở cùng cấp (hoặc cao hơn - nhưng không thấp hơn) so với trình chuyển đổi tài khoản này"

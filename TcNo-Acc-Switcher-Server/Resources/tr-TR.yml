@@ -43,9 +43,6 @@ Settings_RTL: Metni Sağdan Sola olarak göster
 Settings_CurrentLocation: 'Geçerli yükleme konumu: {path}'
 Settings_CurrentDataLocation: 'Geçerli kullanıcı verileri konumu: {path}'
 Settings_SetDataLocation: "[Özel kullanıcı verileri konumunu ayarla]"
-Toast_DataLocationCopying: (1/2) Mevcut dosyaların yeni kullanıcı verileri klasörüne kopyalanması!
-Toast_DataLocationNotCopying: (1/2) Klasörde zaten dosyalar var! Kullanıcı verilerini taşımaz.
-Toast_DataLocationSet: (2/2) Yeni klasörü kullanmak için hesap değiştiriciyi yeniden başlatın!
 Settings_PickFolder: '{platform} klasörü seç'
 Settings_OpenFolder: '{platform} Klasörünü Aç'
 Settings_ClearForgotten: Unutulanları Temizle
@@ -65,8 +62,9 @@ Settings_StartCentered: Programı merkezli başlat
 Settings_WindowsAccent: Windows Vurgu Rengini kullanın
 Settings_HelpTranslate: "[Çevirmeye yardım edin]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] Oluşturma motorunu ayarla:"
-Settings_Header_ClosingMethod: "[Advanced] {platform}kapatmak için yöntemi ayarlayın"
+Settings_Header_ActiveBrowser: "(Gelişmiş) Oluşturma motorunu ayarla:"
+Settings_Header_ClosingMethod: "(Gelişmiş) {platform}kapatmak için yöntemi ayarlayın"
+Settings_Header_StartingMethod: "(Gelişmiş) {platform}başlatmak için yöntemi ayarlayın"
 Settings_NoPlatforms: Şu anda etkin platform yok. Lütfen bunları etkinleştirmek için aşağıdaki isteğe bağlı platformları işaretleyin veya devre dışı bırakılmış platformların işaretini kaldırın.
 Cleaning_Header_StartMenuShortcuts: 'Başlat Menüsü Kısayolları:'
 Cleaning_Header_General: Genel temizlik
@@ -84,6 +82,9 @@ Restore_Button_Restore: Seçileni geri yükle
 Ignored_RemoveAccounts: Hesapları yoksayma listesinden kaldır
 Ignored_Description: Daha önce bir hesabı "yoksaydıysanız", burada tekrar gösterebilirsiniz.
 Ignored_Stop: Seçileni yoksaymayı durdur
+Toast_DataLocationCopying: (1/2) Mevcut dosyaların yeni kullanıcı verileri klasörüne kopyalanması!
+Toast_DataLocationNotCopying: (1/2) Klasörde zaten dosyalar var! Kullanıcı verilerini taşımaz.
+Toast_DataLocationSet: (2/2) Yeni klasörü kullanmak için hesap değiştiriciyi yeniden başlatın!
 Toast_PlaceShortcutFiles: Bir klasör açılıyor. Oyun kısayollarını bu klasöre yerleştirin ve hesap değiştiriciyi yeniden başlatın.
 Toast_TrayStarted: Tepsi başladı!
 Toast_TrayRunning: Tepsi zaten açık
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: Lütfen Yönetici olarak başlayın ve tekrar deneyin.
 Toast_RestartAfterClose: Lütfen Kapat'ı tıkladıktan sonra programı yeniden başlatın.
 Toast_RestartAfterCloseTitle: Vurgu rengi devre dışı
 Toast_RestartRequired: Değişiklikleri uygulamak için yeniden başlatın
-Toast_LoadStylesheetFailed: Stil sayfası yüklenemedi! Ayrıntılar için belgeler klasörüne bakın.
+Toast_LoadStylesheetFailed: Stil sayfası yüklenemedi! Ayrıntılar için kullanıcı verileri klasörüne bakın.
 Toast_BNet_Private: "{BTag}profili gizli"
 Toast_BNet_StatsFail: "{BTag}için istatistik almaya çalışırken hata oluştu"
 Toast_BNet_CantSwapAccounts: Hesaplar değiştirilemedi (Battle.net.config dosyası bozuk)
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: Eski oturum açma dosyaları temizlenemedi
 Toast_AccountIdReg: Kayıt Defterinden Hesap Kimliği alınamadı!
 Toast_RegFailWrite: Windows Kayıt Defterine Yazılamadı!
 Toast_RegFailRead: Windows Kayıt Defterinden Okunamadı!
+Toast_RegFailReadSaved: Kaydedilmiş Kayıt Defteri girdisi okunamadı. Başarısız olursa, hesabı kaldırıp yeniden eklemeyi deneyin.
 Toast_RegSaveMissing: Kaydedilmiş Kayıt Dosyalarından Veri Bulun veya Okunamadı!
 Toast_DuplicateNames: Değiştirilemedi. Aynı kullanıcı adına sahip yinelenen hesaplar?
 Toast_CouldNotLocate: Oturum açmış kullanıcı bulunamadı
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) Dosyalar geçici bir konuma kopyalanıyor...
 Toast_BackupCompress: (2/3) Dosyaları sıkıştırma ({size}). Bu biraz zaman alacak...
 Toast_BackupComplete: (3/3) Sıkıştırma tamamlandı! ({size} {compressedSize})
 Toast_BackupProgress: "Yedekleme devam ediyor (Sıkıştırılmış boyut: {compressedSize})"
+Toast_BackupFail: Yedekleme başarısız - Günlüğe bakın!
 Toast_BackupBusy: Yedekleme zaten devam ediyor!
 Toast_RestoreBusy: Geri yükleme zaten devam ediyor!
 Toast_RestoreExt: Arşiv ayıklanıyor.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: Geçici dosyaları silme
 Toast_RestoreComplete: Geri yükleme tamamlandı!
 Toast_FailedLoad: '{platform}yüklenemedi! Hatayı görmek için platforma tıklayın.'
 Toast_FailedPlatformsLoad: Platforms.json yüklenemedi! Lütfen bu dosyanın var olduğunu doğrulayın.
+Toast_FailedLoadSettings: "Ayarlar yüklenemedi! Bunun yerine varsayılan ayarlar yükleniyor. Mevcut ayarlar dosya adına 'eski' ekleniyor."
+Toast_FileCopyFail: Dosyalar kopyalanamadı! Daha fazla ayrıntı için günlüğe bakın.
+Toast_UserDataLoadFail: '{UserData}\\WindowSettings.json kullanıcı verileri yüklenemedi. Yedekleme ve sıfırlama! Günlüğe kaydedilen hata.'
+Toast_UpdateCheckFail: Güncellemeleri kontrol etmek için https://tcno.co/ adresine ulaşılamadı. Bu mesaj günde bir kez gösterilecektir.
 Tooltip_Restore: Bir 7z dosyası seçmek için tıklayın veya bu düğmeye sürükleyin.
 Modal_Crowdin_Header: Crowdin çevirmenleri
 Modal_Crowdin_Info: "İşte bu yazılımı çevirmeye yardım eden herkes.<br>Dilleri yanlarında olan kullanıcılar çeviride çok yardımcı oldular (düzeltici rolü)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: '{totalFileCount} dosya temizleniyor ({totalSizeMB})'
 Platform_DeleteFail: Bazı dosyalar silinemedi (Program çalışıyor olabilir mi?)
 Platform_CouldNotDeleteLog: Dosya silinemedi! {logPath}kontrol et
 Error_FileAccessDenied: Dosyaya erişilemedi! {logPath}kontrol et
+Error_RequiredFileVerify: Gerekli bir dosya bulunamadı. Lütfen yükleme dizininde x64 ve x86 klasörlerinin bulunduğundan emin olun. Değilse, TcNo-Acc-Switcher-Updater.exe dosyasını çalıştırın ve dosyaları doğrulayın.
 Tooltip_Settings: Ayarlar
 Tooltip_Info: Bilgi
 Tooltip_ManagePlatforms: Diğer platformları göster veya gizle
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: Oyun ve Kısayol seçimini genişlet
 Tooltip_ShortcutFolder: Kısayol klasörünü açın. Kısayolları ve bunları görmek için TcNo Account Switcher'ı buraya yerleştirin.
 Tooltip_Backup: Platform ayarlarında tanımlandığı şekilde yapılandırma dosyalarını/klasörlerini yedekleyin.
 Tooltip_BackupAll: Resimler ve diğer büyük dosyalar dahil TÜM yapılandırma dosyalarını/klasörlerini yedekleyin.
+Tooltip_ClosingMethod: "Kombine en iyisidir. Kapat, bir kapatma işlevi aracılığıyla doğrudan kapatma girişiminde bulunur ve TaskKill, CMD'yi kullanır (Birleştirilmişse en iyisi çalışmıyorsa)"
+Tooltip_StartingMethod: "Varsayılan en iyisidir. Direct'in yönetici düzeyi veya UAC üzerinde hiçbir kontrolü yoktur. Bu hesap değiştiriciyle aynı düzeyde (veya daha yüksek - ancak daha düşük değil) başlayacak"

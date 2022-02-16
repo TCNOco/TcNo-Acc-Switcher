@@ -43,9 +43,6 @@ Settings_RTL: Afișați textul ca de la dreapta la stânga
 Settings_CurrentLocation: 'Locația curentă de instalare: {path}'
 Settings_CurrentDataLocation: 'Locația curentă a datelor utilizatorului: {path}'
 Settings_SetDataLocation: "[Setați locația personalizată a datelor utilizatorului]"
-Toast_DataLocationCopying: (1/2) Copierea fișierelor existente în noul folder de date utilizator!
-Toast_DataLocationNotCopying: (1/2) Folderul are deja fișiere! Nu va migra datele utilizatorului.
-Toast_DataLocationSet: (2/2) Reporniți comutatorul de cont pentru a utiliza noul folder!
 Settings_PickFolder: Alege dosarul {platform}
 Settings_OpenFolder: Deschide dosarul {platform}
 Settings_ClearForgotten: Curăță uitat
@@ -65,8 +62,9 @@ Settings_StartCentered: Pornire program centrat
 Settings_WindowsAccent: Folosește culoarea de cent Windows
 Settings_HelpTranslate: "[Ajutor traduce]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] Setați motorul de randare:"
-Settings_Header_ClosingMethod: "[Advanced] Setați metoda pentru a închide {platform}"
+Settings_Header_ActiveBrowser: "(Avansat) Setați motorul de randare:"
+Settings_Header_ClosingMethod: "(Avansat) Setați metoda pentru a închide {platform}"
+Settings_Header_StartingMethod: "(Avansat) Setați metoda pentru a începe {platform}"
 Settings_NoPlatforms: În prezent, nu există platforme activate. Vă rugăm să bifați mai jos platformele opționale pentru a le activa sau debifați platformele dezactivate.
 Cleaning_Header_StartMenuShortcuts: 'Comenzi rapide pentru Meniul Pornire:'
 Cleaning_Header_General: Curățare generală
@@ -84,6 +82,9 @@ Restore_Button_Restore: Restaurează selecţia
 Ignored_RemoveAccounts: Elimină conturile din lista de ignorare
 Ignored_Description: Dacă anterior ați "ignorat" un cont, le puteți afișa din nou aici
 Ignored_Stop: Oprește ignorarea selecției
+Toast_DataLocationCopying: (1/2) Copierea fișierelor existente în noul folder de date utilizator!
+Toast_DataLocationNotCopying: (1/2) Folderul are deja fișiere! Nu va migra datele utilizatorului.
+Toast_DataLocationSet: (2/2) Reporniți comutatorul de cont pentru a utiliza noul folder!
 Toast_PlaceShortcutFiles: Se deschide un folder. Plasați comenzile rapide ale jocului în acel dosar și reporniți comutatorul de cont.
 Toast_TrayStarted: Tăierea a început!
 Toast_TrayRunning: Tăierea este deja deschisă
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: Vă rugăm să începeți ca Administrator și încercați
 Toast_RestartAfterClose: Vă rugăm să reporniți programul după ce faceți clic pe Închidere.
 Toast_RestartAfterCloseTitle: Culoare de accent dezactivată
 Toast_RestartRequired: Reporniți pentru a aplica modificările
-Toast_LoadStylesheetFailed: Încărcarea foii de stylesheet! A se vedea dosarul cu documente pentru detalii.
+Toast_LoadStylesheetFailed: Nu s-a încărcat foaia de stil! Consultați folderul cu datele utilizatorului pentru detalii.
 Toast_BNet_Private: "Profilul {BTag}este privat"
 Toast_BNet_StatsFail: "Eroare la încercarea de a obține statistici pentru {BTag}"
 Toast_BNet_CantSwapAccounts: Nu s-au putut schimba conturile (Battle.net.config fișier corupt)
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: Ștergerea fișierelor vechi de autentificare a eșua
 Toast_AccountIdReg: Nu s-a putut obține ID-ul contului din Registry!
 Toast_RegFailWrite: Nu s-a putut scrie în Registrul Windows!
 Toast_RegFailRead: Nu s-a putut citi din Registrul Windows!
+Toast_RegFailReadSaved: Nu s-a putut citi intrarea salvată în registry. Încercați să eliminați și să adăugați din nou contul dacă nu reușiți.
 Toast_RegSaveMissing: Nu a reușit Găsirea sau citirea datelor din fișierele de registry salvate!
 Toast_DuplicateNames: Nu s-a putut face swap. Duplicați conturile cu același nume de utilizator?
 Toast_CouldNotLocate: Nu s-a putut localiza utilizatorul logat
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) Se copiază fișierele într-o locație temporară...
 Toast_BackupCompress: (2/3) Comprimarea fișierelor ({size}). Acest lucru va dura ceva timp...
 Toast_BackupComplete: (3/3) S-a terminat de comprimat! ({size} la {compressedSize})
 Toast_BackupProgress: "Backup în curs (dimensiune comprimată: {compressedSize})"
+Toast_BackupFail: Backup nu a reușit - Vedeți jurnalul!
 Toast_BackupBusy: Backup deja în desfășurare!
 Toast_RestoreBusy: Restaurare deja în desfășurare!
 Toast_RestoreExt: Extragerea arhivei.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: Ștergerea fișierelor temporare
 Toast_RestoreComplete: Restaurare terminată!
 Toast_FailedLoad: Nu s-a încărcat {platform}! Faceți clic pe platformă pentru a vedea eroarea.
 Toast_FailedPlatformsLoad: Nu s-a încărcat Platforms.json! Verificați dacă acest fișier există.
+Toast_FailedLoadSettings: "Nu s-au încărcat setările! În schimb, se încarcă setările implicite. Adăugarea „vechi” la numele fișierului de setări existente."
+Toast_FileCopyFail: Nu s-au putut copia fișierele! Consultați jurnalul pentru mai multe detalii.
+Toast_UserDataLoadFail: Nu s-a încărcat datele utilizatorului {UserData}\\WindowSettings.json. Backup și resetare! Eroare salvată în log.
+Toast_UpdateCheckFail: Nu s-a putut accesa https://tcno.co/ pentru a verifica dacă există actualizări. Acest mesaj va apărea o dată pe zi.
 Tooltip_Restore: Faceți clic pentru a selecta un fișier 7z sau trageți-l pe acest buton.
 Modal_Crowdin_Header: Crowdin traducători
 Modal_Crowdin_Info: "Iată toți cei care au ajutat la traducerea acestui software.<br>Utilizatorii cu limbi lângă ei au ajutat foarte mult la traducere (rol de corector)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: Se șterge {totalFileCount} fișiere ({totalSizeMB})
 Platform_DeleteFail: Nu s-au putut șterge unele fișiere (este posibil ca programul să ruleze?)
 Platform_CouldNotDeleteLog: Nu s-a putut șterge fișierul! Verificați {logPath}
 Error_FileAccessDenied: Nu s-a putut accesa fișierul! Verificați {logPath}
+Error_RequiredFileVerify: Un fișier necesar nu a fost găsit. Vă rugăm să vă asigurați că folderele x64 și x86 există în directorul de instalare. Dacă nu, rulați TcNo-Acc-Switcher-Updater.exe și verificați fișierele.
 Tooltip_Settings: Setări
 Tooltip_Info: Info
 Tooltip_ManagePlatforms: Afișați sau Ascundeți alte platforme
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: Extindeți selecția de jocuri și comenzi rapide
 Tooltip_ShortcutFolder: Deschideți folderul de comenzi rapide. Plasați comenzi rapide acolo și comutatorul de cont TcNo pentru a le vedea.
 Tooltip_Backup: Faceți backup pentru fișierele/folderele de configurare, așa cum este definit în setările platformei.
 Tooltip_BackupAll: Faceți backup pentru TOATE fișierele/folderele de configurare, inclusiv imaginile și alte fișiere mari.
+Tooltip_ClosingMethod: "Combinat este cel mai bine. Închidere încearcă să se închidă direct printr-o funcție de închidere, iar TaskKill folosește CMD (Cel mai bine dacă este combinat nu funcționează)"
+Tooltip_StartingMethod: "Implicit este cel mai bun. Direct nu are control asupra nivelului de administrator sau UAC. Va începe la același nivel (sau mai mare - dar nu mai mic) decât acest comutator de cont"

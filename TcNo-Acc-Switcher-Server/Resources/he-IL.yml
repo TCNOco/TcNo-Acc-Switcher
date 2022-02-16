@@ -43,9 +43,6 @@ Settings_RTL: הצג טקסט בתור מימין לשמאל
 Settings_CurrentLocation: 'מיקום ההתקנה הנוכחי: {path}'
 Settings_CurrentDataLocation: 'מיקום נתוני משתמש נוכחי: {path}'
 Settings_SetDataLocation: "[הגדר מיקום נתוני משתמש מותאם אישית]"
-Toast_DataLocationCopying: (1/2) העתקת קבצים קיימים לתיקיית נתוני המשתמש החדשה!
-Toast_DataLocationNotCopying: (1/2) בתיקייה כבר יש קבצים! לא יעביר נתוני משתמש.
-Toast_DataLocationSet: (2/2) הפעל מחדש את מחליף החשבונות כדי להשתמש בתיקייה החדשה!
 Settings_PickFolder: בחר תיקייה {platform}
 Settings_OpenFolder: פתח את תיקיית {platform}
 Settings_ClearForgotten: נקה נשכח
@@ -65,8 +62,9 @@ Settings_StartCentered: התוכנית התחילה ממוקדת
 Settings_WindowsAccent: השתמש בצבע המבטא של Windows
 Settings_HelpTranslate: "[עזרה בתרגום]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] הגדר את מנוע העיבוד:"
-Settings_Header_ClosingMethod: "[Advanced] הגדר שיטה לסגירה {platform}"
+Settings_Header_ActiveBrowser: "(מתקדם) הגדר מנוע עיבוד:"
+Settings_Header_ClosingMethod: "(מתקדם) הגדר את השיטה לסגירת {platform}"
+Settings_Header_StartingMethod: "(מתקדם) הגדר את השיטה להתחיל {platform}"
 Settings_NoPlatforms: כרגע אין פלטפורמות מופעלות. אנא סמן פלטפורמות אופציונליות למטה כדי להפעיל אותן, או בטל את הסימון של פלטפורמות מושבתות.
 Cleaning_Header_StartMenuShortcuts: 'קיצורי דרך לתפריט התחלה:'
 Cleaning_Header_General: ניקוי כללי
@@ -84,6 +82,9 @@ Restore_Button_Restore: שחזר נבחר
 Ignored_RemoveAccounts: הסר חשבונות מרשימת ההתעלמות
 Ignored_Description: אם בעבר "התעלמת" מחשבון, תוכל להציג אותו שוב כאן
 Ignored_Stop: הפסק להתעלם מהנבחר
+Toast_DataLocationCopying: (1/2) העתקת קבצים קיימים לתיקיית נתוני המשתמש החדשה!
+Toast_DataLocationNotCopying: (1/2) בתיקייה כבר יש קבצים! לא יעביר נתוני משתמש.
+Toast_DataLocationSet: (2/2) הפעל מחדש את מחליף החשבונות כדי להשתמש בתיקייה החדשה!
 Toast_PlaceShortcutFiles: נפתחת תיקיה. מקם קיצורי דרך למשחק באותה תיקיה, והפעל מחדש את מחליף החשבונות.
 Toast_TrayStarted: המגש התחיל!
 Toast_TrayRunning: המגש כבר פתוח
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: התחל כמנהל ונסה שוב.
 Toast_RestartAfterClose: אנא הפעל מחדש את התוכנית לאחר לחיצה על סגור.
 Toast_RestartAfterCloseTitle: צבע המבטא מושבת
 Toast_RestartRequired: הפעל מחדש כדי להחיל שינויים
-Toast_LoadStylesheetFailed: טעינת גיליון הסגנונות נכשלה! לפרטים, עיין בתיקיית המסמכים.
+Toast_LoadStylesheetFailed: טעינת גיליון הסגנונות נכשלה! ראה תיקיית נתוני משתמש לפרטים.
 Toast_BNet_Private: "הפרופיל של {BTag}"
 Toast_BNet_StatsFail: "שגיאה בניסיון להשיג נתונים סטטיסטיים עבור {BTag}"
 Toast_BNet_CantSwapAccounts: לא ניתן היה להחליף חשבונות (קובץ Battle.net.config פגום)
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: ניקוי קבצי הכניסה הישנים נכש�
 Toast_AccountIdReg: נכשל קבלת זיהוי חשבון מהרישום!
 Toast_RegFailWrite: הכתיבה ל-Windows Regsitry נכשלה!
 Toast_RegFailRead: נכשל לקרוא מ-Windows Regsitry!
+Toast_RegFailReadSaved: קריאת רשומת הרישום השמורה נכשלה. נסה להסיר ולהוסיף שוב את החשבון אם לא יצליח.
 Toast_RegSaveMissing: נכשל חיפוש או קריאה של נתונים מקבצי רישום שמורים!
 Toast_DuplicateNames: לא ניתן היה להחליף. שכפול חשבונות עם אותו שם משתמש?
 Toast_CouldNotLocate: לא ניתן היה לאתר משתמש מחובר
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) העתקת קבצים למיקום זמני...
 Toast_BackupCompress: (2/3) דחיסת קבצים ({size}). זה ייקח קצת זמן...
 Toast_BackupComplete: (3/3) סיים את הדחיסה! ({size} עד {compressedSize})
 Toast_BackupProgress: "גיבוי מתבצע (גודל דחוס: {compressedSize})"
+Toast_BackupFail: הגיבוי נכשל - ראה יומן!
 Toast_BackupBusy: הגיבוי כבר מתבצע!
 Toast_RestoreBusy: השחזור כבר מתבצע!
 Toast_RestoreExt: מחלץ ארכיון.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: מחיקת קבצים זמניים
 Toast_RestoreComplete: השחזור הסתיים!
 Toast_FailedLoad: טעינת {platform}נכשלה! לחץ על הפלטפורמה כדי לראות את השגיאה.
 Toast_FailedPlatformsLoad: טעינת Platforms.json נכשלה! אנא ודא שקובץ זה קיים.
+Toast_FailedLoadSettings: "טעינת ההגדרות נכשלה! טוען הגדרות ברירת מחדל במקום זאת. הוספת 'ישן' לשם קובץ ההגדרות הקיים."
+Toast_FileCopyFail: ההעתקה של הקבצים נכשלה! ראה יומן לפרטים נוספים.
+Toast_UserDataLoadFail: טעינת נתוני משתמש {UserData}\\WindowSettings.json נכשלה. גיבוי ואיפוס! שגיאה נשמרה ביומן.
+Toast_UpdateCheckFail: לא ניתן היה להגיע אל https://tcno.co/ כדי לחפש עדכונים. הודעה זו תופיע פעם ביום.
 Tooltip_Restore: לחץ כדי לבחור קובץ 7z, או גרור אותו ללחצן זה.
 Modal_Crowdin_Header: מתרגמי Crowdin
 Modal_Crowdin_Info: "הנה כל מי שעזר לתרגם את התוכנה הזו.<br>משתמשים עם שפות לידם עזרו רבות בתרגום (תפקיד הגהה)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: ניקוי {totalFileCount} קבצים ({totalSizeMB})
 Platform_DeleteFail: לא ניתן למחוק חלק מהקבצים (ייתכן שהתוכנית פועלת?)
 Platform_CouldNotDeleteLog: לא ניתן למחוק את הקובץ! בדוק {logPath}
 Error_FileAccessDenied: הגישה לקובץ נכשלה! בדוק {logPath}
+Error_RequiredFileVerify: לא נמצא קובץ נדרש. אנא ודא שהתיקיות x64 ו-x86 קיימות בספריית ההתקנה. אם לא הפעל את TcNo-Acc-Switcher-Updater.exe ואמת קבצים.
 Tooltip_Settings: הגדרות
 Tooltip_Info: מידע
 Tooltip_ManagePlatforms: הצג או הסתר פלטפורמות אחרות
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: הרחב את בחירת המשחקים וקיצורי 
 Tooltip_ShortcutFolder: פתח את תיקיית קיצורי הדרך. הצב שם קיצורי דרך ואת מחליף החשבון TcNo כדי לראות אותם.
 Tooltip_Backup: גיבוי קבצי/תיקיות תצורה, כפי שהוגדר בהגדרות הפלטפורמה.
 Tooltip_BackupAll: גבה את כל קבצי/תיקיות התצורה, כולל תמונות וקבצים גדולים אחרים.
+Tooltip_ClosingMethod: "משולב זה הכי טוב. סגור ניסיונות לסגור ישירות דרך פונקציית סגירה, ו-TaskKill משתמש ב-CMD (הכי טוב אם השילוב לא עובד)"
+Tooltip_StartingMethod: "ברירת המחדל היא הטובה ביותר. ל-Direct אין שליטה על רמת הניהול או ה-UAC. זה יתחיל באותה רמה (או גבוה יותר - אבל לא נמוך יותר) מאשר מחליף חשבון זה"

@@ -43,9 +43,6 @@ Settings_RTL: Visa text som höger till vänster
 Settings_CurrentLocation: 'Aktuell installationsplats: {path}'
 Settings_CurrentDataLocation: 'Aktuell plats för användardata: {path}'
 Settings_SetDataLocation: "[Ange anpassad plats för användardata]"
-Toast_DataLocationCopying: (1/2) Kopierar befintliga filer till den nya användardatamappen!
-Toast_DataLocationNotCopying: (1/2) Mappen har redan filer! Kommer inte att migrera användardata.
-Toast_DataLocationSet: (2/2) Starta om kontoväxlaren för att använda den nya mappen!
 Settings_PickFolder: Välj {platform} mapp
 Settings_OpenFolder: Öppna {platform} -mappen
 Settings_ClearForgotten: Rensa bortglömda
@@ -65,8 +62,9 @@ Settings_StartCentered: Starta program centrerat
 Settings_WindowsAccent: Använd Windows Accent Färg
 Settings_HelpTranslate: "[Hjälp översätta]"
 Settings_ViewTranslators: "[Tack till]"
-Settings_Header_ActiveBrowser: "[Advanced] Ställ in renderingsmotor:"
-Settings_Header_ClosingMethod: "[Advanced] Ställ in metod för att stänga {platform}"
+Settings_Header_ActiveBrowser: "(Avancerat) Ställ in renderingsmotor:"
+Settings_Header_ClosingMethod: "(Avancerat) Ställ in metod för att stänga {platform}"
+Settings_Header_StartingMethod: "(Avancerat) Ställ in metod för att starta {platform}"
 Settings_NoPlatforms: Det finns för närvarande inga plattformar aktiverade. Vänligen kryssa för valfria plattformar nedan för att aktivera dem, eller avmarkera inaktiverade plattformar.
 Cleaning_Header_StartMenuShortcuts: 'Genvägar till Start-menyn:'
 Cleaning_Header_General: Allmänt Städning
@@ -84,6 +82,9 @@ Restore_Button_Restore: Återställ vald
 Ignored_RemoveAccounts: Ta bort konton från ignoreringslistan
 Ignored_Description: Om du tidigare "ignorerade" ett konto, kan du visa dem igen här
 Ignored_Stop: Sluta ignorera valda
+Toast_DataLocationCopying: (1/2) Kopierar befintliga filer till den nya användardatamappen!
+Toast_DataLocationNotCopying: (1/2) Mappen har redan filer! Kommer inte att migrera användardata.
+Toast_DataLocationSet: (2/2) Starta om kontoväxlaren för att använda den nya mappen!
 Toast_PlaceShortcutFiles: En mapp öppnas. Placera spelgenvägar i den mappen och starta om kontoväxlaren.
 Toast_TrayStarted: Bricka startad!
 Toast_TrayRunning: Brickan är redan öppen
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: Vänligen börja som Admin och försök igen.
 Toast_RestartAfterClose: Starta om programmet efter att ha klickat på Stäng.
 Toast_RestartAfterCloseTitle: Accentfärg inaktiverad
 Toast_RestartRequired: Starta om för att tillämpa ändringar
-Toast_LoadStylesheetFailed: Det gick inte att läsa in stilmallar! Se dokumentmappen för detaljer.
+Toast_LoadStylesheetFailed: Det gick inte att läsa in stilmall! Se användardatamappen för detaljer.
 Toast_BNet_Private: "{BTag}s profil är privat"
 Toast_BNet_StatsFail: "Fel vid försök att hämta statistik för {BTag}"
 Toast_BNet_CantSwapAccounts: Kunde inte byta konto (Battle.net.config fil skadad)
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: Det gick inte att rensa gamla inloggningsfiler
 Toast_AccountIdReg: Det gick inte att hämta konto-ID från registret!
 Toast_RegFailWrite: Det gick inte att skriva till Windows Regsitry!
 Toast_RegFailRead: Det gick inte att läsa från Windows Regsitry!
+Toast_RegFailReadSaved: Det gick inte att läsa sparad registerpost. Försök att ta bort och lägga till kontot igen om det misslyckas.
 Toast_RegSaveMissing: Det gick inte att hitta eller läsa data från sparade registerfiler!
 Toast_DuplicateNames: Kunde inte byta konto. Duplicera konton med samma användarnamn?
 Toast_CouldNotLocate: Kunde inte hitta inloggad användare
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) Kopierar filer till en tillfällig plats...
 Toast_BackupCompress: (2/3) Komprimering av filer ({size}). Det här kommer att ta lite tid...
 Toast_BackupComplete: (3/3) Komprimeringen är klar! ({size} till {compressedSize})
 Toast_BackupProgress: "Säkerhetskopiering pågår (komprimerad storlek: {compressedSize})"
+Toast_BackupFail: Säkerhetskopiering misslyckades - Se logg!
 Toast_BackupBusy: Säkerhetskopiering pågår redan!
 Toast_RestoreBusy: Återställning pågår redan!
 Toast_RestoreExt: Extraherar arkiv.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: Ta bort temporära filer
 Toast_RestoreComplete: Återställningen är klar!
 Toast_FailedLoad: Det gick inte att ladda {platform}! Klicka på plattformen för att se felet.
 Toast_FailedPlatformsLoad: Det gick inte att ladda Platforms.json! Kontrollera att filen finns.
+Toast_FailedLoadSettings: "Det gick inte att läsa in inställningarna! Laddar standardinställningar istället. Lägger till \"gammal\" till befintligt inställningsfilnamn."
+Toast_FileCopyFail: Det gick inte att kopiera filer! Se logg för mer information.
+Toast_UserDataLoadFail: Det gick inte att läsa in användardata {UserData}\\WindowSettings.json. Säkerhetskopiera och återställa! Sparat fel i loggen.
+Toast_UpdateCheckFail: Det gick inte att nå https://tcno.co/ för att söka efter uppdateringar. Detta meddelande visas en gång om dagen.
 Tooltip_Restore: Klicka för att välja en 7z-fil, eller dra den till den här knappen.
 Modal_Crowdin_Header: Crowdin-översättare
 Modal_Crowdin_Info: "Här är alla som hjälpte till att översätta denna programvara.<br>Användare med språk bredvid sig hjälpte mycket vid översättningen (korrekturläsarroll)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: Rensar {totalFileCount} filer ({totalSizeMB})
 Platform_DeleteFail: Det gick inte att ta bort vissa filer (programmet kanske körs?)
 Platform_CouldNotDeleteLog: Kunde inte radera filen! Kontrollera {logPath}
 Error_FileAccessDenied: Det gick inte att komma åt filen! Kontrollera {logPath}
+Error_RequiredFileVerify: En obligatorisk fil hittades inte. Se till att mapparna x64 och x86 finns i installationskatalogen. Om inte, kör TcNo-Acc-Switcher-Updater.exe och verifiera filerna.
 Tooltip_Settings: inställningar
 Tooltip_Info: Info
 Tooltip_ManagePlatforms: Visa eller dölj andra plattformar
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: Utöka urvalet av spel och genvägar
 Tooltip_ShortcutFolder: Öppna genvägsmappen. Placera genvägar där och TcNo Account Switcher för att se dem.
 Tooltip_Backup: Säkerhetskopiera konfigurationsfiler/mappar, enligt definition i plattformsinställningar.
 Tooltip_BackupAll: Säkerhetskopiera ALLA konfigurationsfiler/mappar, inklusive bilder och andra stora filer.
+Tooltip_ClosingMethod: "Kombinerad är bäst. Stäng försöker stänga direkt genom en stängningsfunktion, och TaskKill använder CMD (bäst om kombinerat inte fungerar)"
+Tooltip_StartingMethod: "Standard är bäst. Direct har ingen kontroll över administratörsnivå eller UAC. Det kommer att börja på samma nivå (eller högre - men inte lägre) än den här kontoväxaren"

@@ -43,9 +43,6 @@ Settings_RTL: Zobrazit text jako zprava doleva
 Settings_CurrentLocation: 'Aktuální umístění instalace: {path}'
 Settings_CurrentDataLocation: 'Aktuální umístění uživatelských dat: {path}'
 Settings_SetDataLocation: "[Nastavit vlastní umístění uživatelských dat]"
-Toast_DataLocationCopying: (1/2) Kopírování stávajících souborů do nové složky uživatelských dat!
-Toast_DataLocationNotCopying: (1/2) Složka již obsahuje soubory! Nebudou migrovat uživatelská data.
-Toast_DataLocationSet: (2/2) Chcete-li použít novou složku, restartujte přepínač účtů!
 Settings_PickFolder: Vybrat složku {platform}
 Settings_OpenFolder: Otevřít složku {platform}
 Settings_ClearForgotten: Vymazat zapomenuté
@@ -65,8 +62,9 @@ Settings_StartCentered: Spustit program se středem
 Settings_WindowsAccent: Použí barvu motivu Windows
 Settings_HelpTranslate: "[Pomozte s překladem]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] Nastavit vykreslovací modul:"
-Settings_Header_ClosingMethod: "[Advanced] Nastavit způsob uzavření {platform}"
+Settings_Header_ActiveBrowser: "(Pokročilé) Nastavit vykreslovací modul:"
+Settings_Header_ClosingMethod: "(Pokročilé) Nastavte metodu na zavření {platform}"
+Settings_Header_StartingMethod: "(Pokročilé) Nastavte metodu na začátek {platform}"
 Settings_NoPlatforms: Momentálně nejsou povoleny žádné platformy. Zaškrtněte prosím níže volitelné platformy, abyste je povolili, nebo zrušte zaškrtnutí zakázaných platforem.
 Cleaning_Header_StartMenuShortcuts: 'Zkratky pro nabídku startu:'
 Cleaning_Header_General: Obecné čištění
@@ -84,6 +82,9 @@ Restore_Button_Restore: Obnovit vybrané
 Ignored_RemoveAccounts: Odstranit účty ze seznamu ignorovaných
 Ignored_Description: Pokud jste dříve "ignorovali" účet, můžete je znovu zobrazit zde
 Ignored_Stop: Přestat ignorovat vybrané
+Toast_DataLocationCopying: (1/2) Kopírování stávajících souborů do nové složky uživatelských dat!
+Toast_DataLocationNotCopying: (1/2) Složka již obsahuje soubory! Nebudou migrovat uživatelská data.
+Toast_DataLocationSet: (2/2) Chcete-li použít novou složku, restartujte přepínač účtů!
 Toast_PlaceShortcutFiles: Otevírá se složka. Do této složky umístěte zástupce her a restartujte přepínač účtů.
 Toast_TrayStarted: Spuštěno na liště!
 Toast_TrayRunning: Aplikace je již spuštěna
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: Spusťte jako Správce a zkuste to znovu.
 Toast_RestartAfterClose: Po kliknutí na tlačítko Zavřít restartujte program.
 Toast_RestartAfterCloseTitle: Barva zvýraznění zakázána
 Toast_RestartRequired: Restartujte pro použití změn
-Toast_LoadStylesheetFailed: Nepodařilo se načíst vzhled! Podrobnosti naleznete ve složce dokumentů.
+Toast_LoadStylesheetFailed: Načtení šablony stylů se nezdařilo! Podrobnosti naleznete ve složce uživatelských dat.
 Toast_BNet_Private: "Profil uživatele {BTag}je soukromý"
 Toast_BNet_StatsFail: "Chyba při pokusu získat statistiky pro {BTag}"
 Toast_BNet_CantSwapAccounts: Nelze přepnout účty (Battle.net.config soubor je poškozen)
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: Nepodařilo se vymazat staré přihlašovací soubory
 Toast_AccountIdReg: Nepodařilo se získat ID účtu z registru!
 Toast_RegFailWrite: Zápis do registru systému Windows se nezdařil!
 Toast_RegFailRead: Čtení z registru systému Windows se nezdařilo!
+Toast_RegFailReadSaved: Nepodařilo se přečíst uloženou položku registru. Pokud se to nepodaří, zkuste účet odebrat a znovu přidat.
 Toast_RegSaveMissing: Selhalo hledání nebo čtení dat z uložených souborů registru!
 Toast_DuplicateNames: Nelze vyměnit. Duplikovat účty se stejným uživatelským jménem?
 Toast_CouldNotLocate: Nelze najít přihlášený uživatel
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) Kopírování souborů do dočasného umístění...
 Toast_BackupCompress: (2/3) Komprese souborů ({size}). Bude to chvíli trvat...
 Toast_BackupComplete: (3/3) Komprese dokončena! ({size} až {compressedSize})
 Toast_BackupProgress: "Probíhá zálohování (komprimovaná velikost: {compressedSize})"
+Toast_BackupFail: Zálohování se nezdařilo – viz protokol!
 Toast_BackupBusy: Zálohování již probíhá!
 Toast_RestoreBusy: Obnovení již probíhá!
 Toast_RestoreExt: Rozbalení archivu.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: Mazání dočasných souborů
 Toast_RestoreComplete: Obnovení dokončeno!
 Toast_FailedLoad: Nepodařilo se načíst {platform}! Chybu zobrazíte kliknutím na platformu.
 Toast_FailedPlatformsLoad: Načtení Platforms.json se nezdařilo! Prosím ověřte, že tento soubor existuje.
+Toast_FailedLoadSettings: "Nastavení se nepodařilo načíst! Místo toho se načtou výchozí nastavení. Přidání „starého“ k názvu existujícího souboru nastavení."
+Toast_FileCopyFail: Soubory se nepodařilo zkopírovat! Další podrobnosti naleznete v protokolu.
+Toast_UserDataLoadFail: Nepodařilo se načíst uživatelská data {UserData}\\WindowSettings.json. Zálohování a resetování! Chyba uložena do protokolu.
+Toast_UpdateCheckFail: Nelze se dostat na https://tcno.co/ a zkontrolovat aktualizace. Tato zpráva se bude zobrazovat jednou denně.
 Tooltip_Restore: Klepnutím vyberte soubor 7z nebo jej přetáhněte na toto tlačítko.
 Modal_Crowdin_Header: Crowdinští překladatelé
 Modal_Crowdin_Info: "Zde jsou všichni, kteří pomohli přeložit tento software.<br>překladu hodně pomohli uživatelé s jazyky vedle sebe (role korektora)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: Mazání {totalFileCount} souborů ({totalSizeMB})
 Platform_DeleteFail: Některé soubory nelze smazat (může být spuštěn program?)
 Platform_CouldNotDeleteLog: Soubor nelze smazat! Zkontrolujte {logPath}
 Error_FileAccessDenied: Nepodařilo se získat přístup k souboru! Zkontrolujte {logPath}
+Error_RequiredFileVerify: Požadovaný soubor nebyl nalezen. Ujistěte se, že v instalačním adresáři existují složky x64 a x86. Pokud ne, spusťte TcNo-Acc-Switcher-Updater.exe a ověřte soubory.
 Tooltip_Settings: Nastavení
 Tooltip_Info: Info
 Tooltip_ManagePlatforms: Zobrazit nebo skrýt další platformy
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: Rozbalte výběr her a zástupců
 Tooltip_ShortcutFolder: Otevřete složku zástupců. Umístěte tam zástupce a přepínač účtů TcNo, abyste je viděli.
 Tooltip_Backup: Zálohujte konfigurační soubory/složky, jak je definováno v nastavení platformy.
 Tooltip_BackupAll: Zálohujte VŠECHNY konfigurační soubory/složky, včetně obrázků a dalších velkých souborů.
+Tooltip_ClosingMethod: "Kombinovaný je nejlepší. Zavřít se pokusí zavřít přímo pomocí zavírací funkce a TaskKill používá CMD (nejlépe, pokud kombinovaná nefunguje)"
+Tooltip_StartingMethod: "Výchozí je nejlepší. Direct nemá žádnou kontrolu nad úrovní správce nebo UAC. Spustí se na stejné úrovni (nebo vyšší - ale ne nižší) než tento přepínač účtů"

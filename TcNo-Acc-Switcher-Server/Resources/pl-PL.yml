@@ -43,9 +43,6 @@ Settings_RTL: Pokaż tekst od prawej do lewej
 Settings_CurrentLocation: 'Aktualna lokalizacja instalacji: {path}'
 Settings_CurrentDataLocation: 'Aktualna lokalizacja danych użytkownika: {path}'
 Settings_SetDataLocation: "[Ustaw niestandardową lokalizację danych użytkownika]"
-Toast_DataLocationCopying: (1/2) Kopiowanie istniejących plików do nowego folderu danych użytkownika!
-Toast_DataLocationNotCopying: (1/2) Folder zawiera już pliki! Nie przeprowadzi migracji danych użytkownika.
-Toast_DataLocationSet: (2/2) Uruchom ponownie przełącznik kont, aby użyć nowego folderu!
 Settings_PickFolder: Wybierz folder {platform}
 Settings_OpenFolder: Otwórz folder {platform}
 Settings_ClearForgotten: Wyczyść zapomniane
@@ -65,8 +62,9 @@ Settings_StartCentered: Uruchom program wyśrodkowany
 Settings_WindowsAccent: Używaj kolorów wiodących Windowsa
 Settings_HelpTranslate: "[Pomóż tłumaczyć]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] Ustaw silnik renderujący:"
-Settings_Header_ClosingMethod: "[Advanced] Ustaw metodę na zamknięcie {platform}"
+Settings_Header_ActiveBrowser: "(Zaawansowane) Ustaw silnik renderujący:"
+Settings_Header_ClosingMethod: "(Zaawansowane) Ustaw metodę na zamknięcie {platform}"
+Settings_Header_StartingMethod: "(Zaawansowane) Ustaw metodę startu {platform}"
 Settings_NoPlatforms: Obecnie nie są włączone żadne platformy. Proszę zaznaczyć opcjonalne platformy poniżej, aby je włączyć, lub odznaczyć nieaktywne platformy.
 Cleaning_Header_StartMenuShortcuts: 'Skróty dla menu startowego:'
 Cleaning_Header_General: Ogólne czyszczenie
@@ -84,6 +82,9 @@ Restore_Button_Restore: Przywróć wybrane
 Ignored_RemoveAccounts: Usuń konta z listy ignorowanych
 Ignored_Description: Jeśli wcześniej "zignorowałeś" konto, możesz pokazać je ponownie tutaj
 Ignored_Stop: Przestań ignorować wybrane
+Toast_DataLocationCopying: (1/2) Kopiowanie istniejących plików do nowego folderu danych użytkownika!
+Toast_DataLocationNotCopying: (1/2) Folder zawiera już pliki! Nie przeprowadzi migracji danych użytkownika.
+Toast_DataLocationSet: (2/2) Uruchom ponownie przełącznik kont, aby użyć nowego folderu!
 Toast_PlaceShortcutFiles: Otwiera się folder. Umieść skróty do gier w tym folderze i uruchom ponownie przełącznik kont.
 Toast_TrayStarted: Zasobnik wystartował!
 Toast_TrayRunning: Zasobnik już jest otwarty
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: Uruchom jako Administrator i spróbuj ponownie.
 Toast_RestartAfterClose: Uruchom ponownie program po kliknięciu Zamknij.
 Toast_RestartAfterCloseTitle: Kolor wiodący jest wyłączony
 Toast_RestartRequired: Uruchom ponownie, aby zastosować zmiany
-Toast_LoadStylesheetFailed: Nie udało się załadować arkusza stylów! Zobacz folder dokumentów, aby uzyskać szczegółowe informacje.
+Toast_LoadStylesheetFailed: Nie udało się załadować arkusza stylów! Zobacz folder danych użytkownika, aby uzyskać szczegółowe informacje.
 Toast_BNet_Private: "Profil {BTag} jest prywatny"
 Toast_BNet_StatsFail: "Błąd podczas próby uzyskania statystyk dla {BTag}"
 Toast_BNet_CantSwapAccounts: Nie można zamienić konta (Battle.net.config jest uszkodzony)
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: Nie udało się wyczyścić starych plików logowania
 Toast_AccountIdReg: Nie udało się uzyskać Id konta z rejestru!
 Toast_RegFailWrite: Błąd zapisu do rejestru!
 Toast_RegFailRead: Błąd odczytu z rejestru!
+Toast_RegFailReadSaved: Nie udało się odczytać zapisanego wpisu rejestru. Spróbuj usunąć i dodać konto ponownie, jeśli się nie powiedzie.
 Toast_RegSaveMissing: Nie udało się znaleźć lub odczytać danych z zapisanych plików Rejestru!
 Toast_DuplicateNames: Nie można zamienić. Zduplikowane konta z tą samą nazwą użytkownika?
 Toast_CouldNotLocate: Nie można zlokalizować zalogowanego użytkownika
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) Kopiowanie plików do tymczasowej lokalizacji...
 Toast_BackupCompress: (2/3) Kompresja plików ({size}). To zajmie trochę czasu...
 Toast_BackupComplete: (3/3) Zakończono kompresję! ({size} do {compressedSize})
 Toast_BackupProgress: "Trwa tworzenie kopii zapasowej (Skompresowany rozmiar: {compressedSize})"
+Toast_BackupFail: Kopia zapasowa nie powiodła się — zobacz dziennik!
 Toast_BackupBusy: Kopia zapasowa już w toku!
 Toast_RestoreBusy: Przywracanie już w toku!
 Toast_RestoreExt: Rozpakowywanie archiwum.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: Usuwanie plików tymczasowych
 Toast_RestoreComplete: Przywracanie zakończone!
 Toast_FailedLoad: Nie udało się załadować {platform}! Kliknij platformę, aby zobaczyć błąd.
 Toast_FailedPlatformsLoad: Nie udało się załadować pliku Platforms.json! Proszę sprawdzić, czy ten plik istnieje.
+Toast_FailedLoadSettings: "Nie udało się wczytać ustawień! Zamiast tego wczytuję ustawienia domyślne. Dodanie „starego” do nazwy istniejącego pliku ustawień."
+Toast_FileCopyFail: Nie udało się skopiować plików! Zobacz dziennik, aby uzyskać więcej informacji.
+Toast_UserDataLoadFail: Nie udało się załadować danych użytkownika {UserData}\\WindowSettings.json. Tworzenie kopii zapasowej i resetowanie! Zapisano błąd w logu.
+Toast_UpdateCheckFail: Nie można uzyskać dostępu do https://tcno.co/, aby sprawdzić dostępność aktualizacji. Ta wiadomość będzie wyświetlana raz dziennie.
 Tooltip_Restore: Kliknij, aby wybrać plik 7z, lub przeciągnij go na ten przycisk.
 Modal_Crowdin_Header: Tłumacze Crowdin
 Modal_Crowdin_Info: "Oto wszyscy, którzy pomogli przetłumaczyć to oprogramowanie.<br>Użytkownicy którzy znają te języki bardzo pomogli w tłumaczeniu (rola korektora)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: Czyszczenie plików {totalFileCount} ({totalSizeMB})
 Platform_DeleteFail: Nie można usunąć niektórych plików (Program może być uruchomiony?)
 Platform_CouldNotDeleteLog: Nie można usunąć pliku! Sprawdź {logPath}
 Error_FileAccessDenied: Nie udało się uzyskać dostępu do pliku! Sprawdź {logPath}
+Error_RequiredFileVerify: Nie znaleziono wymaganego pliku. Upewnij się, że foldery x64 i x86 istnieją w katalogu instalacyjnym. Jeśli nie, uruchom TcNo-Acc-Switcher-Updater.exe i zweryfikuj pliki.
 Tooltip_Settings: Ustawienia
 Tooltip_Info: Informacje
 Tooltip_ManagePlatforms: Pokaż lub ukryj inne platformy
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: Rozwiń wybór gier i skrótów
 Tooltip_ShortcutFolder: Otwórz folder skrótów. Umieść tam skróty, a Przełącznik kont TcNo będzie je widział.
 Tooltip_Backup: Kopia zapasowa plików konfiguracyjnych/folderów, jak określono w ustawieniach platformy.
 Tooltip_BackupAll: Kopia zapasowa WSZYSTKICH plików konfiguracyjnych/folderów, w tym obrazów i innych dużych plików.
+Tooltip_ClosingMethod: "Połączenie jest najlepsze. Close próbuje zamknąć bezpośrednio przez funkcję close, a TaskKill używa CMD (najlepiej, jeśli połączenie nie działa)"
+Tooltip_StartingMethod: "Najlepsze jest domyślne. Direct nie ma kontroli nad poziomem administratora ani UAC. Rozpocznie się na tym samym poziomie (lub wyższym - ale nie niższym) niż ten przełącznik kont"
