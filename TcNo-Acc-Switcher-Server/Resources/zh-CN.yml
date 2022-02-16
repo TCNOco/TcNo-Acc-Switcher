@@ -43,9 +43,6 @@ Settings_RTL: 从右到左显示文本
 Settings_CurrentLocation: '当前安装位置：{path}'
 Settings_CurrentDataLocation: '当前用户数据位置：{path}'
 Settings_SetDataLocation: "[设置自定义用户数据位置]"
-Toast_DataLocationCopying: (1/2) 正在复制现有文件到新用户数据文件夹！
-Toast_DataLocationNotCopying: (1/2) 文件夹已有文件！不会迁移用户数据。
-Toast_DataLocationSet: (2/2) 重新启动帐户切换器使用新文件夹！
 Settings_PickFolder: 选择 {platform} 文件夹
 Settings_OpenFolder: 打开 {platform} 文件夹
 Settings_ClearForgotten: 清空已忘记
@@ -65,8 +62,9 @@ Settings_StartCentered: 启动程序时居中
 Settings_WindowsAccent: 使用 Windows 主题色
 Settings_HelpTranslate: "[帮助翻译]"
 Settings_ViewTranslators: "[致谢]"
-Settings_Header_ActiveBrowser: "[高级] 设置渲染引擎："
-Settings_Header_ClosingMethod: "[Advanced] 设置关闭方法 {platform}"
+Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
+Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
+Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
 Settings_NoPlatforms: 当前未启用任何平台。请勾选下方的可选平台来启用，或者取消勾选来禁用。      
 Cleaning_Header_StartMenuShortcuts: '开始菜单的快捷方式：'
 Cleaning_Header_General: 常规清理
@@ -84,6 +82,9 @@ Restore_Button_Restore: 恢复所选
 Ignored_RemoveAccounts: 从忽略列表中删除帐户
 Ignored_Description: 如果您曾经“忽略”一个帐户，可以在这里再次显示它们
 Ignored_Stop: 停止忽略所选
+Toast_DataLocationCopying: (1/2) 正在复制现有文件到新用户数据文件夹！
+Toast_DataLocationNotCopying: (1/2) 文件夹已有文件！不会迁移用户数据。
+Toast_DataLocationSet: (2/2) 重新启动帐户切换器使用新文件夹！
 Toast_PlaceShortcutFiles: 正在打开一个文件夹。将游戏快捷方式放在该文件夹中，然后重新启动帐户切换器。
 Toast_TrayStarted: 托盘已启动！
 Toast_TrayRunning: 托盘已经启动
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: 请以管理员身份启动，然后重试。
 Toast_RestartAfterClose: 请点击关闭后重启程序。
 Toast_RestartAfterCloseTitle: 已禁用主题色
 Toast_RestartRequired: 重新启动以应用更改
-Toast_LoadStylesheetFailed: 加载样式表失败！查看文档文件夹了解详情。
+Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
 Toast_BNet_Private: "{BTag} 的个人资料是私密的"
 Toast_BNet_StatsFail: "尝试获取 {BTag} 的统计数据时出错"
 Toast_BNet_CantSwapAccounts: 无法交换帐户（Battle.net.config 文件损坏）
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: 清理旧登录文件失败
 Toast_AccountIdReg: 从注册表获取 Account Id 失败！
 Toast_RegFailWrite: 写入 Windows 注册表失败
 Toast_RegFailRead: 读取 Windows 注册表失败！
+Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
 Toast_RegSaveMissing: 查找或读取已保存的注册表文件失败！
 Toast_DuplicateNames: 无法交换。使用相同的用户名创建帐户副本吗？
 Toast_CouldNotLocate: 无法定位已登录用户
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) 正在复制文件到临时位置……
 Toast_BackupCompress: (2/3) 正在压缩文件（{size}）。这会需要一些时间……
 Toast_BackupComplete: (3/3) 压缩完成！（{size} 到 {compressedSize}）
 Toast_BackupProgress: "备份正在进行中（压缩后大小：{compressedSize}）"
+Toast_BackupFail: Backup failed - See log!
 Toast_BackupBusy: 备份已经在进行中了！
 Toast_RestoreBusy: 还原已经在进行中了！
 Toast_RestoreExt: 正在解压档案。
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: 正在删除临时文件
 Toast_RestoreComplete: 还原完成！
 Toast_FailedLoad: 加载 {platform} 失败！点击平台查看错误信息。
 Toast_FailedPlatformsLoad: 加载 Platforms.json 失败！请确认此文件存在。
+Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
+Toast_FileCopyFail: Failed to copy files! See log for more details.
+Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
+Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
 Tooltip_Restore: 点击选择一个 7z 文件，或者将它拖动到此按钮上。     
 Modal_Crowdin_Header: Crowdin 译者
 Modal_Crowdin_Info: "这是帮助翻译此软件的所有人。<br>名字旁边有语言的用户在翻译方面提供了很多帮助（审核员身份）。"
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: 正在清理 {totalFileCount} 个文件（{totalSizeMB
 Platform_DeleteFail: 无法删除某些文件（程序可能正在运行？）
 Platform_CouldNotDeleteLog: 无法删除文件！请查看日志 {logPath}
 Error_FileAccessDenied: 访问文件失败！请查看日志 {logPath}
+Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
 Tooltip_Settings: 设置
 Tooltip_Info: 信息
 Tooltip_ManagePlatforms: 显示或隐藏其他平台
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: 展开游戏和快捷方式选择
 Tooltip_ShortcutFolder: 打开快捷方式文件夹。将快捷方式放在那里，然后使用 TcNo 帐户切换器来查看它们。
 Tooltip_Backup: 根据平台设置，备份配置文件/文件夹。
 Tooltip_BackupAll: 备份所有配置文件/文件夹，包括头像和其他大文件。
+Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
+Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
