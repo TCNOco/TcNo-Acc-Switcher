@@ -43,9 +43,6 @@ Settings_RTL: 텍스트를 오른쪽에서 왼쪽으로 표시
 Settings_CurrentLocation: '현재 설치 위치: {path}'
 Settings_CurrentDataLocation: '현재 사용자 데이터 위치: {path}'
 Settings_SetDataLocation: "[사용자 지정 사용자 데이터 위치 설정]"
-Toast_DataLocationCopying: (1/2) 기존 파일을 새 사용자 데이터 폴더에 복사!
-Toast_DataLocationNotCopying: (1/2) 폴더에 이미 파일이 있습니다! 사용자 데이터를 마이그레이션하지 않습니다.
-Toast_DataLocationSet: (2/2) 새 폴더를 사용하려면 계정 전환기를 다시 시작하세요!
 Settings_PickFolder: '{platform} 폴더 선택'
 Settings_OpenFolder: 폴더 {platform} 열기
 Settings_ClearForgotten: 잊혀진 지우기
@@ -65,8 +62,9 @@ Settings_StartCentered: 프로그램 중심으로 시작
 Settings_WindowsAccent: Windows 강조 색상 사용
 Settings_HelpTranslate: "[번역을 도와주세요]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "[Advanced] 렌더링 엔진 설정:"
-Settings_Header_ClosingMethod: "[Advanced] 닫기 방법을 {platform}로 설정"
+Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
+Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
+Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
 Settings_NoPlatforms: 현재 활성화된 플랫폼이 없습니다. 아래에서 옵션 플랫폼을 선택하여 활성화하거나 비활성화된 플랫폼을 선택 취소하십시오.
 Cleaning_Header_StartMenuShortcuts: '시작 메뉴 바로 가기:'
 Cleaning_Header_General: 일반 청소
@@ -84,6 +82,9 @@ Restore_Button_Restore: 선택 항목 복원
 Ignored_RemoveAccounts: 무시 목록에서 계정 제거
 Ignored_Description: 이전에 계정을 "무시"한 경우 여기에 다시 표시할 수 있습니다.
 Ignored_Stop: 선택한 항목 무시 중지
+Toast_DataLocationCopying: (1/2) 기존 파일을 새 사용자 데이터 폴더에 복사!
+Toast_DataLocationNotCopying: (1/2) 폴더에 이미 파일이 있습니다! 사용자 데이터를 마이그레이션하지 않습니다.
+Toast_DataLocationSet: (2/2) 새 폴더를 사용하려면 계정 전환기를 다시 시작하세요!
 Toast_PlaceShortcutFiles: 폴더가 열려 있습니다. 해당 폴더에 게임 바로 가기를 넣고 계정 전환기를 다시 시작하십시오.
 Toast_TrayStarted: 트레이 시작했습니다!
 Toast_TrayRunning: 트레이가 이미 열려 있음
@@ -103,7 +104,7 @@ Toast_RestartAsAdmin: 관리자로 시작하고 다시 시도하십시오.
 Toast_RestartAfterClose: 닫기를 클릭한 후 프로그램을 다시 시작하십시오.
 Toast_RestartAfterCloseTitle: 강조 색상 비활성화됨
 Toast_RestartRequired: 변경 사항을 적용하려면 다시 시작
-Toast_LoadStylesheetFailed: 스타일시트를 로드하지 못했습니다! 자세한 내용은 문서 폴더를 참조하십시오.
+Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
 Toast_BNet_Private: "{BTag}의 프로필은 비공개입니다"
 Toast_BNet_StatsFail: "{BTag}대한 통계를 가져오는 동안 오류가 발생했습니다."
 Toast_BNet_CantSwapAccounts: 계정을 교환할 수 없습니다(Battle.net.config 파일 손상).
@@ -118,6 +119,7 @@ Toast_CantClearLoginFiles: 이전 로그인 파일을 지우지 못했습니다.
 Toast_AccountIdReg: 레지스트리에서 계정 ID를 가져오지 못했습니다!
 Toast_RegFailWrite: Windows 레지스트리에 쓰지 못했습니다!
 Toast_RegFailRead: Windows 레지스트리에서 읽지 못했습니다!
+Toast_RegFailReadSaved: Failed to Read saved Registry entry. Try removing and adding the account again if unsuccessful.
 Toast_RegSaveMissing: 저장된 레지스트리 파일에서 데이터 찾기 또는 읽기 실패!
 Toast_DuplicateNames: 교환할 수 없습니다. 동일한 사용자 이름을 가진 중복 계정이 있습니까?
 Toast_CouldNotLocate: 로그인한 사용자를 찾을 수 없습니다
@@ -155,6 +157,7 @@ Toast_BackupCopy: (1/3) 임시 위치에 파일 복사 중...
 Toast_BackupCompress: (2/3) 파일 압축({size}). 시간이 좀 걸립니다...
 Toast_BackupComplete: (3/3) 압축 완료! ({size} ~ {compressedSize})
 Toast_BackupProgress: "백업 진행 중(압축 크기: {compressedSize})"
+Toast_BackupFail: Backup failed - See log!
 Toast_BackupBusy: 백업이 이미 진행 중입니다!
 Toast_RestoreBusy: 복원이 이미 진행 중입니다!
 Toast_RestoreExt: 아카이브를 추출 중입니다.
@@ -163,6 +166,10 @@ Toast_RestoreDeleting: 임시 파일 삭제
 Toast_RestoreComplete: 복원 완료!
 Toast_FailedLoad: '{platform}을(를) 로드하지 못했습니다! 오류를 보려면 플랫폼을 클릭하십시오.'
 Toast_FailedPlatformsLoad: Platforms.json을 로드하지 못했습니다! 이 파일이 있는지 확인하십시오.
+Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
+Toast_FileCopyFail: Failed to copy files! See log for more details.
+Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
+Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
 Tooltip_Restore: 7z 파일을 클릭하여 선택하거나 이 버튼으로 끌어다 놓습니다.
 Modal_Crowdin_Header: Crowdin 번역가
 Modal_Crowdin_Info: "이 소프트웨어를 번역하는 데 도움을 준 모든 사람이 있습니다.<br>옆에 언어가 있는 사용자가 번역에 많은 도움이 되었습니다(교정자 역할)."
@@ -373,6 +380,7 @@ Platform_ClearCacheTotal: '{totalFileCount} 개 파일 지우기({totalSizeMB})'
 Platform_DeleteFail: 일부 파일을 삭제할 수 없습니다(프로그램이 실행 중일 수 있습니까?)
 Platform_CouldNotDeleteLog: 파일을 삭제할 수 없습니다! 체크 {logPath}
 Error_FileAccessDenied: 파일에 액세스하지 못했습니다! 체크 {logPath}
+Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
 Tooltip_Settings: 설정
 Tooltip_Info: 정보
 Tooltip_ManagePlatforms: 다른 플랫폼 표시 또는 숨기기
@@ -380,3 +388,5 @@ Tooltip_ExpandShortcuts: 게임 및 바로 가기 선택 확장
 Tooltip_ShortcutFolder: 바로 가기 폴더를 엽니다. 거기에 바로가기를 배치하고 TcNo Account Switcher를 사용하여 볼 수 있습니다.
 Tooltip_Backup: 플랫폼 설정에 정의된 백업 구성 파일/폴더.
 Tooltip_BackupAll: 이미지 및 기타 대용량 파일을 포함한 모든 구성 파일/폴더를 백업합니다.
+Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function, and TaskKill uses CMD (Best if combined doesn't work)"
+Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
