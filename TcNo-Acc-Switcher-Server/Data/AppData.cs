@@ -155,7 +155,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 func();
             }
-            catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException or ArgumentNullException)
+            catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException or ArgumentNullException or TaskCanceledException)
             {
                 return false;
             }
