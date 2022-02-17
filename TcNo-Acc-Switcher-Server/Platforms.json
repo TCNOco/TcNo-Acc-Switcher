@@ -312,22 +312,15 @@
     },
     "Genshin Impact": {
       "Identifiers": [ "gi", "genshin", "genshinimpact" ],
-      "ExeLocationDefault": "C: \\Program Files\\Genshin Impact\\Genshin Impact game\\GenshinImpact.exe",
+      "ExeLocationDefault": "C:\\Program Files\\Genshin Impact\\launcher.exe",
       "ExesToEnd": [ "GenshinImpact.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
-        "%Platform_Folder%\\GenshinImpact_Data\\webCaches\\Cookies": "webCaches\\Cookies",
-        "%Platform_Folder%\\GenshinImpact_Data\\webCaches\\Cache\\index": "Cache\\index",
-        "%Platform_Folder%\\GenshinImpact_Data\\webCaches\\Cache\\data_*": "Cache\\",
-        "%Platform_Folder%\\GenshinImpact_Data\\webCaches\\Local Storage\\leveldb\\": "Local Storage\\leveldb\\",
-        "%Platform_Folder%\\GenshinImpact_Data\\webCaches\\Code Cache\\js\\index-dir": "Code Cache\\js\\index-dir",
-        "%Platform_Folder%\\GenshinImpact_Data\\webCaches\\GPUCache\\index": "GPUCache\\index",
-        "%Platform_Folder%\\GenshinImpact_Data\\webCaches\\blob_storage": "blob_storage\\",
-        "%Platform_Folder%\\GenshinImpact_Data\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+        "REG:HKCU\\Software\\miHoYo\\Genshin Impact:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810": "UNIQUE_ID"
       },
       "ExitBeforeInteract": true,
-      "UniqueIdFile": "%Platform_Folder%\\GenshinImpact_Data\\TcNoAccSwitcher-ID.instance",
-      "UniqueIdMethod": "CREATE_ID_FILE"
+      "UniqueIdFile": "HKCU\\SOFTWARE\\miHoYo\\Genshin Impact:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810",
+      "UniqueIdMethod": "REGKEY"
     }
   },
   "Platform-WIP": {

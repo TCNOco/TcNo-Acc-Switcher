@@ -31,13 +31,14 @@ namespace TcNo_Acc_Switcher_Server
         public static void Main(string[] args)
         {
             // Empty
-            _ = MainProgram(args, out _);
+            _ = MainProgram(args);
         }
-        public static bool MainProgram(string[] args, out Exception e)
+        public static bool MainProgram(string[] args)
         {
             // Set working directory to documents folder
             Globals.CreateDataFolder(false);
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
+
             try
             {
                 CreateHostBuilder(args).Build().Run();
@@ -45,11 +46,11 @@ namespace TcNo_Acc_Switcher_Server
             catch (IOException ioe)
             {
                 // Failed to bind to port
-                e = ioe;
+                if (ioe.HResult != -2146232800) throw;
+                Globals.WriteToLog(ioe);
                 return false;
             }
 
-            e = null;
             return true;
         }
 

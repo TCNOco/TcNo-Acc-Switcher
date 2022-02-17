@@ -57,21 +57,29 @@ namespace TcNo_Acc_Switcher_Globals
         /// Read the value of a Registry key (Requires special path)
         /// </summary>
         /// <param name="encodedPath">HKXX\\path:SubKey</param>
-        public static string ReadRegistryKey(string encodedPath)
+        public static dynamic ReadRegistryKey(string encodedPath)
         {
             var (rootKey, path, subKey) = ExplodeRegistryKey(encodedPath);
-            var currentAccountId = "";
 
             try
             {
-                currentAccountId = (string)rootKey.OpenSubKey(path)?.GetValue(subKey);
+                return rootKey.OpenSubKey(path)?.GetValue(subKey) ?? "ERROR-NULL";
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // TODO: WRITE ERRORS TO LOGS!
+                WriteToLog("ReadRegistryKey failed", e);
                 return "ERROR-READ";
             }
-            return currentAccountId ?? "ERROR-NULL";
+        }
+
+        public static string ByteArrayToString(byte[] ba) => BitConverter.ToString(ba).Replace("-", "");
+        public static byte[] StringToByteArray(string hex)
+        {
+            var NumberChars = hex.Length;
+            var bytes = new byte[NumberChars / 2];
+            for (var i = 0; i < NumberChars; i += 2)
+                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            return bytes;
         }
 
         /// <summary>
@@ -86,8 +94,15 @@ namespace TcNo_Acc_Switcher_Globals
 
             try
             {
+                dynamic iVal = value;
                 using var key = rootKey.CreateSubKey(path);
-                key?.SetValue(subKey, value);
+                if (value.StartsWith("(hex)"))
+                {
+                    value = value[6..];
+                    key?.SetValue(subKey, StringToByteArray(value));
+                }
+                else
+                    key?.SetValue(subKey, value);
             }
             catch (Exception e)
             {

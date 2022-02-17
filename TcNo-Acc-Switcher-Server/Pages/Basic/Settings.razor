@@ -43,6 +43,10 @@
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="Basic.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
 		            @_locale["Settings_Admin", new { platform = CurrentPlatform.FullName }]<br></label>
             </div>
+            <div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="AutoStart" @bind="Basic.AutoStart"><label class="form-check-label" for="AutoStart"></label></div><label for="AutoStart">
+		            @_locale["Settings_AutoStart", new { platform = CurrentPlatform.FullName }]<br></label>
+            </div>
             <div class="rowSetting rowDropdown">
                 <span>@_locale["Settings_Header_ClosingMethod", new { platform = CurrentPlatform.FullName }]</span>
                 <div class="dropdown" data-toggle="tooltip" title="@(_locale["Tooltip_ClosingMethod"])" data-placement="right">

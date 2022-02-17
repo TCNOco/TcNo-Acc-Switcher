@@ -70,15 +70,14 @@ namespace TcNo_Acc_Switcher_Client
             }
 
             var attempts = 0;
-            Exception last;
-            while (!Program.MainProgram(new[] { _address, "nobrowser" }, out last) && attempts < 10)
+            while (!Program.MainProgram(new[] { _address, "nobrowser" }) && attempts < 10)
             {
                 Program.NewPort();
                 _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
                 attempts++;
             }
-            if (attempts == 10 && last != null)
-                throw last;
+            if (attempts == 10)
+                MessageBox.Show("The TcNo-Acc-Switcher-Server.exe attempted to launch 10 times and failed every time. Every attempted port is taken, or another issue occurred. Check the log file for more info.", "Server start failed!", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private static bool IsAdmin()

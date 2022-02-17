@@ -184,6 +184,10 @@ namespace TcNo_Acc_Switcher_Globals
             : SHA512.Create().ComputeHash(Encoding.UTF8.GetBytes(text))
                 .Aggregate("", (current, x) => current + $"{x:x2}");
 
+        public static string GetSha256HashString(byte[] b) => b.Length == 0
+            ? string.Empty
+            : SHA512.Create().ComputeHash(b).Aggregate("", (current, x) => current + $"{x:x2}");
+
         public static string GetUnixTime()
         {
             return ((int)DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds).ToString();

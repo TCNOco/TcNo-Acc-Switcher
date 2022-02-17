@@ -85,7 +85,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 string uniqueId;
                 if (CurrentPlatform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.UniqueIdFile))
                 {
-                    _ = ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out uniqueId);
+                    dynamic t;
+                    _ = ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out t);
+                    if (t is string s) uniqueId = s;
+                    else if (t is byte[]) uniqueId = Globals.GetSha256HashString(t);
+                    else
+                    {
+                        Globals.WriteToLog("Unexpected registry type encountered! Report to TechNobo.");
+                        return;
+                    }
                 }
                 else
                     uniqueId = GetUniqueId();
@@ -98,10 +106,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                         if (accId == uniqueId)
                         {
                             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_AlreadyLoggedIn"], renderTo: "toastarea");
-                            if (Globals.StartProgram(BasicSettings.Exe(), BasicSettings.Admin, args, CurrentPlatform.StartingMethod))
-                                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
-                            else
-                                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
+                            if (BasicSettings.AutoStart)
+                            {
+                                if (Globals.StartProgram(BasicSettings.Exe(), BasicSettings.Admin, args, CurrentPlatform.StartingMethod))
+                                    _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
+                                else
+                                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
+                            }
+                            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
+
                             return;
                         }
                         BasicAddCurrent(AccountIds[uniqueId]);
@@ -119,7 +132,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 Globals.AddTrayUser(CurrentPlatform.SafeName, $"+{CurrentPlatform.PrimaryId}:" + accId, accName, BasicSettings.TrayAccNumber); // Add to Tray list, using first Identifier
             }
 
-            BasicSettings.RunPlatform(BasicSettings.Exe(), BasicSettings.Admin, args, CurrentPlatform.FullName, CurrentPlatform.StartingMethod);
+            if (BasicSettings.AutoStart)
+                BasicSettings.RunPlatform(BasicSettings.Exe(), BasicSettings.Admin, args, CurrentPlatform.FullName, CurrentPlatform.StartingMethod);
 
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
@@ -276,13 +290,34 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             }
             return true;
         }
+
+        /// <summary>
+        /// Get string contents of registry file, or path to file matching regex/wildcards.
+        /// </summary>
+        /// <param name="accFile"></param>
+        /// <param name="regex"></param>
+        /// <returns></returns>
         private static string RegexSearchFileOrFolder(string accFile, string regex)
         {
             accFile = ExpandEnvironmentVariables(accFile);
             regex = Globals.ExpandRegex(regex);
             // The "file" is a registry key
             if (OperatingSystem.IsWindows() && accFile.StartsWith("REG:"))
-                return Globals.ReadRegistryKey(accFile);
+            {
+                var res = Globals.ReadRegistryKey(accFile);
+                switch (res)
+                {
+                    case string:
+                        return res;
+                    case byte[] bytes:
+                        return Globals.GetSha256HashString(bytes);
+                    default:
+                        Globals.WriteToLog($"REG was read, and was returned something that is not a string or byte array! {accFile}.");
+                        Globals.WriteToLog("Check to see what is expected here and report to TechNobo.");
+                        return res;
+                }
+            }
+
 
             // Handle wildcards
             if (accFile.Contains("*"))
@@ -441,8 +476,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             var uniqueId = "";
             if (CurrentPlatform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.UniqueIdFile))
             {
-                if (!ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out uniqueId))
+                if (!ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out var r))
                     return false;
+
+                if (r is string s) uniqueId = s;
+                else if (r is byte[]) uniqueId = Globals.GetSha256HashString(r);
+                else
+                {
+                    Globals.WriteToLog($"Unexpected registry type encountered (1)! Report to TechNobo. {r.GetType()}");
+                    return false;
+                }
+
             }
             else
                 uniqueId = GetUniqueId();
@@ -471,7 +515,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     if (ReadRegistryKeyWithErrors(trimmedName, out var response)) // Remove "REG:" and read data
                     {
                         // Write registry value to provided file
-                        regJson[accFile] = response;
+                        if (response is string s) regJson[accFile] = s;
+                        else if (response is byte[] ba) regJson[accFile] = "(hex) " + Globals.ByteArrayToString(ba);
+                        else Globals.WriteToLog($"Unexpected registry type encountered (2)! Report to TechNobo. {response.GetType()}");
                     }
                     continue;
                 }
@@ -668,7 +714,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             if (CurrentPlatform.UniqueIdMethod is "REGKEY")
             {
-                _ = ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out uniqueId);
+                dynamic r;
+                _ = ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out r);
+                if (r is string) uniqueId = r;
+                else if (r is byte[] ba) uniqueId = Globals.GetSha256HashString(ba);
+                else Globals.WriteToLog($"Unexpected registry type encountered (3)! Report to TechNobo. {r.GetType()}");
                 return uniqueId;
             }
 
@@ -697,7 +747,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             return uniqueId;
         }
 
-        private static bool ReadRegistryKeyWithErrors(string key, out string value)
+        private static bool ReadRegistryKeyWithErrors(string key, out dynamic value)
         {
             value = Globals.ReadRegistryKey(key);
             switch (value)

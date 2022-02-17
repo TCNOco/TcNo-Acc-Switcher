@@ -239,6 +239,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ShortcutsJson", Order = 13)] private Dictionary<int, string> _shortcuts = new();
         [JsonProperty("ClosingMethod", Order = 14)] private string _closingMethod = "TaskKill";
         [JsonProperty("StartingMethod", Order = 15)] private string _startingMethod = "Default";
+        [JsonProperty("AutoStart", Order = 16)] private bool _autoStart = true;
         [JsonIgnore] private bool _desktopShortcut;
 
         public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
@@ -246,6 +247,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static string FolderPath { get => Instance._folderPath; set => Instance._folderPath = value; }
 
         public static bool Admin { get => Instance._admin; set => Instance._admin = value; }
+
+        public static bool AutoStart { get => Instance._autoStart; set => Instance._autoStart = value; }
 
         public static bool ShowSteamId { get => Instance._showSteamId; set => Instance._showSteamId = value; }
 

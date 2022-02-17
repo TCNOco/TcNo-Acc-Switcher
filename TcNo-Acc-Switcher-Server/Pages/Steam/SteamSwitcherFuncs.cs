@@ -382,9 +382,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="autoStartSteam">(Optional) Whether Steam should start after switching [Default: true]</param>
         /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
         /// <param name="args">Starting arguments</param>
-        public static void SwapSteamAccounts(string steamId = "", bool autoStartSteam = true, int ePersonaState = -1, string args = "")
+        public static void SwapSteamAccounts(string steamId = "", int ePersonaState = -1, string args = "")
         {
-            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SwapSteamAccounts] Swapping to: hidden. autoStartSteam={autoStartSteam}, ePersonaState={ePersonaState}");
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.SwapSteamAccounts] Swapping to: hidden. ePersonaState={ePersonaState}");
             if (steamId != "" && !VerifySteamId(steamId))
             {
                 return;
@@ -406,13 +406,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             if (OperatingSystem.IsWindows()) UpdateLoginUsers(steamId, ePersonaState);
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Steam" }]);
-            if (!autoStartSteam) return;
-
-            if (Globals.StartProgram(SteamSettings.Exe(), SteamSettings.Admin, args, SteamSettings.StartingMethod))
-                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = "Steam" }], renderTo: "toastarea");
-            else
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = "Steam" }], renderTo: "toastarea");
-
+            if (SteamSettings.AutoStart)
+            {
+                if (Globals.StartProgram(SteamSettings.Exe(), SteamSettings.Admin, args, SteamSettings.StartingMethod))
+                    _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = "Steam" }], renderTo: "toastarea");
+                else
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = "Steam" }], renderTo: "toastarea");
+            }
 
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
