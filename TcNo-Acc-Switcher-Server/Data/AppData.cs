@@ -131,21 +131,25 @@ namespace TcNo_Acc_Switcher_Server.Data
         #region JS_INTEROP
         public static bool InvokeVoidAsync(string func)
         {
+            Globals.WriteToLog($"JS CALL (1): {func}");
             return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func));
         }
 
         public static bool InvokeVoidAsync(string func, string arg)
         {
+            Globals.WriteToLog($"JS CALL (2): {func}, {arg}");
             return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
         }
 
         public static bool InvokeVoidAsync(string func, object arg)
         {
+            Globals.WriteToLog($"JS CALL (3): {func}, {JsonConvert.SerializeObject(arg)}");
             return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
         }
 
         public static bool InvokeVoidAsync(string func, string arg, string arg2)
         {
+            Globals.WriteToLog($"JS CALL (4): {func}, {arg}, {arg2}");
             return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg, arg2));
         }
 
@@ -155,7 +159,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 func();
             }
-            catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException or ArgumentNullException or TaskCanceledException)
+            catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException
+                                          or ArgumentNullException or TaskCanceledException or JSDisconnectedException)
             {
                 return false;
             }

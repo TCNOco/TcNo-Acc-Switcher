@@ -50,8 +50,12 @@ namespace TcNo_Acc_Switcher_Globals
 
             if (!File.Exists(source)) return false;
             if (File.Exists(dest) && !overwrite) return false;
-            Directory.CreateDirectory(Path.GetDirectoryName(dest) ?? "");
+
             // Try copy the file normally - This will fail if in use
+            var dirName = Path.GetDirectoryName(dest);
+            if (!string.IsNullOrWhiteSpace(dirName)) // This could be a file in the working directory, instead of a file in a folder -> No need to create folder if exists.
+                Directory.CreateDirectory(dirName);
+
             try
             {
                 File.Copy(source, dest, overwrite);

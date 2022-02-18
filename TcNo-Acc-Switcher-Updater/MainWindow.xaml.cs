@@ -109,10 +109,23 @@ namespace TcNo_Acc_Switcher_Updater
         public MainWindow() => InitializeComponent();
         private void StartUpdate_Click(object sender, RoutedEventArgs e) => new Thread(DoUpdate).Start();
 
-        private static void LaunchAccSwitcher(object sender, RoutedEventArgs e)
+        private void LaunchAccSwitcher(object sender, RoutedEventArgs e)
         {
-            _ = Process.Start(new ProcessStartInfo(@"TcNo-Acc-Switcher.exe") {UseShellExecute = true});
-            Process.GetCurrentProcess().Kill();
+            try
+            {
+                _ = Process.Start(new ProcessStartInfo(@"TcNo-Acc-Switcher.exe") { UseShellExecute = true });
+                Process.GetCurrentProcess().Kill();
+            }
+            catch (Win32Exception we)
+            {
+                MessageBox.Show(
+                    $"An error occurred while trying to start. Patching may have failed. Try verify using this updater, or re-download a fresh copy from the TcNo Account Switcher GitHub.{Environment.NewLine}{we}",
+                    "Could not start TcNo Account Switcher", MessageBoxButton.OK, MessageBoxImage.Error);
+
+
+                SetStatus("An error occurred while trying to start. Patching may have failed. Try verify using this updater, or re-download a fresh copy from the TcNo Account Switcher GitHub.");
+                CreateVerifyAndExitButton();
+            }
         }
 
         private static void ExitProgram(object sender, RoutedEventArgs e) => Environment.Exit(0);
