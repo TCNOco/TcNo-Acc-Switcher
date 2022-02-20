@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Авторы]"
 Settings_Header_ActiveBrowser: "(Дополнительно) Установите механизм рендеринга:"
 Settings_Header_ClosingMethod: "(Дополнительно) Установить способ закрытия {platform}"
 Settings_Header_StartingMethod: "(Дополнительно) Установить способ запуска {platform}"
+Settings_AutoStart: "Автоматически запускать {platform} при переключении аккаунта"
 Settings_NoPlatforms: В настоящее время нет активных платформ. Пожалуйста, отметьте необязательные платформы ниже, чтобы включить их, или снимите флажок с отключенных платформ.
 Cleaning_Header_StartMenuShortcuts: 'Ярлыки для меню Пуск:'
 Cleaning_Header_General: Общая очистка
