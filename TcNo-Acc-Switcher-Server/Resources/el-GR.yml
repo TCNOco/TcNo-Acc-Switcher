@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Για προχωρημένους) Σετ μηχανής απόδοσης:"
 Settings_Header_ClosingMethod: "(Για προχωρημένους) Ορίστε τη μέθοδο στο κλείσιμο {platform}"
 Settings_Header_StartingMethod: "(Για προχωρημένους) Ρυθμίστε τη μέθοδο για έναρξη {platform}"
+Settings_AutoStart: "Αυτόματη εκκίνηση {platform} στον διακόπτη λογαριασμού"
 Settings_NoPlatforms: Αυτήν τη στιγμή δεν υπάρχουν ενεργοποιημένες πλατφόρμες. Επιλέξτε τις προαιρετικές πλατφόρμες παρακάτω για να τις ενεργοποιήσετε ή αποεπιλέξτε τις απενεργοποιημένες πλατφόρμες.
 Cleaning_Header_StartMenuShortcuts: 'Συντομεύσεις για το μενού έναρξης:'
 Cleaning_Header_General: Γενικός Καθαρισμός
