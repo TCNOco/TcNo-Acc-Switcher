@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Erweitert) Rendering-Engine einstellen:"
 Settings_Header_ClosingMethod: "(Erweitert) Setze die Methode auf {platform}"
 Settings_Header_StartingMethod: "(Fortgeschritten) Methode auf Start {platform}setzen"
+Settings_AutoStart: "Bei Kontowechsel automatisch {platform} starten"
 Settings_NoPlatforms: Derzeit sind keine Plattformen aktiviert. Bitte wähle optionale Plattformen unten aus, um sie zu aktivieren, oder wähle deaktivierte Plattformen ab.
 Cleaning_Header_StartMenuShortcuts: 'Verknüpfungen für das Startmenü:'
 Cleaning_Header_General: Allgemeine Reinigung
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: Spiele & Verknüpfungen anzeigen
 Tooltip_ShortcutFolder: Verknüpfungsordner öffnen. Platziere dort und im TcNo Account Switcher Verknüpfungen, um sie anzuzeigen.
 Tooltip_Backup: Konfigurations-Dateien und -Order sichern, wie es in den Plattformeinstellungen festgelegt wurde.
 Tooltip_BackupAll: Sichern ALLER Konfigurations-Dateien und -Ordner, inklusive Bilder und anderer großer Dateien.
-Tooltip_ClosingMethod: "Kombiniert ist am besten. Schließen versucht, direkt über eine Schließfunktion zu schließen, und TaskKill verwendet CMD (Best, wenn Kombination nicht funktioniert)."
+Tooltip_ClosingMethod: "Kombiniert ist am besten. Schließen versucht, direkt über eine Schließfunktion zu schließen, und TaskKill verwendet CMD (Am besten, wenn Kombination nicht funktioniert)."
 Tooltip_StartingMethod: "Standard ist das Beste. Direct hat keine Kontrolle über die Administratorebene oder UAC. Es beginnt auf der gleichen Ebene (oder höher - aber nicht niedriger) als dieser Kontowechsler"
