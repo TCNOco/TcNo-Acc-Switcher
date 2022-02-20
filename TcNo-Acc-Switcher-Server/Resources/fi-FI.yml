@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Lisäasetukset) Aseta renderöintimoottori:"
 Settings_Header_ClosingMethod: "(Lisäasetukset) Aseta menetelmä sulkemaan {platform}"
 Settings_Header_StartingMethod: "(Lisäasetukset) Aseta aloitustapa {platform}"
+Settings_AutoStart: "Käynnistä {platform} automaattisesti tilikytkimessä"
 Settings_NoPlatforms: Tällä hetkellä ei ole käytössä alustoja. Ota ne käyttöön valitsemalla valinnaiset alustat alta tai poista käytöstä poistettujen alustojen valinta.
 Cleaning_Header_StartMenuShortcuts: 'Käynnistysvalikon pikakuvakkeet:'
 Cleaning_Header_General: Yleinen Puhdistus
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: Laajenna Peli- ja pikanäppäinvalikoima
 Tooltip_ShortcutFolder: Avaa pikakuvakekansio. Aseta pikakuvakkeet sinne ja TcNo Account Switcher nähdäksesi ne.
 Tooltip_Backup: Varmuuskopioi konfiguraatiotiedostot/kansiot alustan asetuksissa määritetyllä tavalla.
 Tooltip_BackupAll: Varmuuskopioi KAIKKI asetustiedostot/kansiot, mukaan lukien kuvat ja muut suuret tiedostot.
-Tooltip_ClosingMethod: "Yhdistetty on paras. Sulje yrittää sulkea suoraan sulkemistoiminnon kautta, ja TaskKill käyttää CMD:tä (Paras yhdistettynä ei toimi)"
+Tooltip_ClosingMethod: "Yhdistetty on paras. Sulje yrittää sulkea suoraan sulkemistoiminnon kautta ja TaskKill käyttää CMD:tä (Paras yhdistettynä ei toimi)"
 Tooltip_StartingMethod: "Oletus on paras. Direct ei hallitse järjestelmänvalvojatasoa tai UAC:tä. Se alkaa samalla tasolla (tai korkeammalta – mutta ei alempana) kuin tämä tilin vaihtaja"
