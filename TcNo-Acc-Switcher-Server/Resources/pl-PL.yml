@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Zaawansowane) Ustaw silnik renderujący:"
 Settings_Header_ClosingMethod: "(Zaawansowane) Ustaw metodę na zamknięcie {platform}"
 Settings_Header_StartingMethod: "(Zaawansowane) Ustaw metodę startu {platform}"
+Settings_AutoStart: "Automatycznie rozpocznij {platform} przy zmianie konta"
 Settings_NoPlatforms: Obecnie nie są włączone żadne platformy. Proszę zaznaczyć opcjonalne platformy poniżej, aby je włączyć, lub odznaczyć nieaktywne platformy.
 Cleaning_Header_StartMenuShortcuts: 'Skróty dla menu startowego:'
 Cleaning_Header_General: Ogólne czyszczenie
