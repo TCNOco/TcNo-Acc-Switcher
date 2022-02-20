@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Avancé) Définir le moteur de rendu :"
 Settings_Header_ClosingMethod: "(Avancé) Définir la méthode pour fermer {platform}"
 Settings_Header_StartingMethod: "(Avancé) Définir la méthode pour démarrer {platform}"
+Settings_AutoStart: "Démarrer automatiquement {platform} lors du changement de compte"
 Settings_NoPlatforms: Il n'y a actuellement aucune plate-forme activée. Veuillez cocher les plates-formes facultatives ci-dessous pour les activer, ou décochez les plates-formes désactivées.
 Cleaning_Header_StartMenuShortcuts: 'Raccourcis pour le Menu Démarrer:'
 Cleaning_Header_General: Nettoyage général
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: Développer la sélection de jeux et de raccourcis
 Tooltip_ShortcutFolder: Ouvrir le dossier de raccourcis. Placez-y des raccourcis et le sélecteur de compte TcNo pour les voir.
 Tooltip_Backup: Fichiers/dossiers de configuration de sauvegarde, tels que définis dans les paramètres de la plate-forme.
 Tooltip_BackupAll: Sauvegardez TOUS les fichiers/dossiers de configuration, y compris les images et autres fichiers volumineux.
-Tooltip_ClosingMethod: "Combiné c'est mieux. Close tente de fermer directement via une fonction de fermeture, et TaskKill utilise CMD (Meilleur si la combinaison ne fonctionne pas)"
+Tooltip_ClosingMethod: "Combiné c'est mieux. Close tente de fermer directement via une fonction de fermeture et TaskKill utilise CMD (Meilleur si la combinaison ne fonctionne pas)"
 Tooltip_StartingMethod: "La valeur par défaut est la meilleure. Direct n'a aucun contrôle sur le niveau d'administration ou l'UAC. Il commencera au même niveau (ou supérieur - mais pas inférieur) que ce sélecteur de compte"
