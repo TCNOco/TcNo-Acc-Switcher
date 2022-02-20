@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Avanzado) Establecer motor de renderizado:"
 Settings_Header_ClosingMethod: "(Avanzado) Establecer método para cerrar {platform}"
 Settings_Header_StartingMethod: "(Avanzado) Establecer método para iniciar {platform}"
+Settings_AutoStart: "Iniciar automáticamente {platform} al cambiar de cuenta"
 Settings_NoPlatforms: Actualmente no hay plataformas habilitadas. Marque las plataformas opcionales a continuación para habilitarlas o desmarque las plataformas deshabilitadas.
 Cleaning_Header_StartMenuShortcuts: 'Atajos para Menú Inicio:'
 Cleaning_Header_General: Limpieza general
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: Ampliar la selección de juegos y atajos
 Tooltip_ShortcutFolder: Abra la carpeta de acceso directo. Coloque accesos directos allí y el conmutador de cuenta TcNo para verlos.
 Tooltip_Backup: Copia de seguridad de archivos/carpetas de configuración, como se define en la configuración de la plataforma.
 Tooltip_BackupAll: Haga una copia de seguridad de TODOS los archivos/carpetas de configuración, incluidas las imágenes y otros archivos grandes.
-Tooltip_ClosingMethod: "Combinado es lo mejor. Cerrar intenta cerrar directamente a través de una función de cierre, y TaskKill usa CMD (Mejor si la combinación no funciona)"
+Tooltip_ClosingMethod: "Combinado es lo mejor. Cerrar intenta cerrar directamente a través de una función de cierre y TaskKill usa CMD (Mejor si la combinación no funciona)"
 Tooltip_StartingMethod: "El valor predeterminado es el mejor. Direct no tiene control sobre el nivel de administrador o UAC. Comenzará en el mismo nivel (o superior, pero no inferior) que este cambiador de cuenta"
