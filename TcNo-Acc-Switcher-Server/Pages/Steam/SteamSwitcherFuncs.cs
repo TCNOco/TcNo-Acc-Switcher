@@ -151,21 +151,30 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
                 if (loginUsers["users"] != null)
                 {
-                    userAccounts.AddRange(from user in loginUsers["users"]
-                                          let steamId = user.ToObject<JProperty>()?.Name
-                                          where !string.IsNullOrWhiteSpace(steamId) &&
-                                                !string.IsNullOrWhiteSpace(user.First?["AccountName"]?.ToString())
-                                          select new Index.Steamuser
-                                          {
-                                              Name = user.First?["PersonaName"]?.ToString(),
-                                              AccName = user.First?["AccountName"]?.ToString(),
-                                              SteamId = steamId,
-                                              ImgUrl = "img/QuestionMark.jpg",
-                                              LastLogin = user.First?["Timestamp"]?.ToString(),
-                                              OfflineMode = !string.IsNullOrWhiteSpace(user.First?["WantsOfflineMode"]?.ToString())
-                                                  ? user.First?["WantsOfflineMode"]?.ToString()
-                                                  : "0"
-                                          });
+                    foreach (var jUsr in loginUsers["users"])
+                    {
+                        try
+                        {
+                            var jOUsr = (JObject)jUsr.First();
+                            var steamId = jUsr.ToObject<JProperty>()?.Name;
+                            if (string.IsNullOrWhiteSpace(steamId) && string.IsNullOrWhiteSpace(jOUsr.GetValue("AccountName", StringComparison.OrdinalIgnoreCase)?.Value<string>())) continue;
+
+                            userAccounts.Add(new Index.Steamuser
+                            {
+                                Name = jOUsr.GetValue("PersonaName", StringComparison.OrdinalIgnoreCase)?.Value<string>() ?? "PersonaNotFound",
+                                AccName = jOUsr.GetValue("AccountName", StringComparison.OrdinalIgnoreCase)?.Value<string>() ?? "NameNotFound",
+                                SteamId = steamId,
+                                ImgUrl = "img/QuestionMark.jpg",
+                                LastLogin = jOUsr.GetValue("Timestamp", StringComparison.OrdinalIgnoreCase)?.Value<string>() ?? "0",
+                                OfflineMode = !string.IsNullOrWhiteSpace(jOUsr.GetValue("WantsOfflineMode", StringComparison.OrdinalIgnoreCase)?.Value<string>())
+                                    ? jOUsr.GetValue("WantsOfflineMode", StringComparison.OrdinalIgnoreCase)?.Value<string>() : "0"
+                            });
+                        }
+                        catch (Exception)
+                        {
+                            Globals.WriteToLog("Could not import Steam user. Please send your loginusers.vdf file to TechNobo for analysis.");
+                        }
+                    }
                 }
             }
             catch (FileNotFoundException)
