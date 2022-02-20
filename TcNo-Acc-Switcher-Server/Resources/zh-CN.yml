@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[致谢]"
 Settings_Header_ActiveBrowser: "（高级）设置渲染引擎："
 Settings_Header_ClosingMethod: "（高级）设置方法关闭 {platform}"
 Settings_Header_StartingMethod: "（高级）设置方法开始 {platform}"
+Settings_AutoStart: "账号切换时自动启动 {platform}"
 Settings_NoPlatforms: 当前未启用任何平台。请勾选下方的可选平台来启用，或者取消勾选来禁用。      
 Cleaning_Header_StartMenuShortcuts: '开始菜单的快捷方式：'
 Cleaning_Header_General: 常规清理
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: 展开游戏和快捷方式选择
 Tooltip_ShortcutFolder: 打开快捷方式文件夹。将快捷方式放在那里，然后使用 TcNo 帐户切换器来查看它们。
 Tooltip_Backup: 根据平台设置，备份配置文件/文件夹。
 Tooltip_BackupAll: 备份所有配置文件/文件夹，包括头像和其他大文件。
-Tooltip_ClosingMethod: "组合最好。 Close尝试通过close函数直接关闭，TaskKill使用CMD（如果组合不行最好）"
+Tooltip_ClosingMethod: "组合最好。关闭尝试直接通过关闭函数关闭，TaskKill 使用 CMD（如果组合不起作用，则最好）"
 Tooltip_StartingMethod: "默认是最好的。 Direct 无法控制管理员级别或 UAC。它将以与此帐户切换器相同的级别（或更高 - 但不低于）开始"
