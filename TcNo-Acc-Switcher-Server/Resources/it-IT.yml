@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Avanzato) Imposta motore di rendering:"
 Settings_Header_ClosingMethod: "(Avanzate) Imposta il metodo per chiudere {platform}"
 Settings_Header_StartingMethod: "(Avanzate) Imposta il metodo per iniziare {platform}"
+Settings_AutoStart: "Avvia automaticamente {platform} al passaggio dell'account"
 Settings_NoPlatforms: Al momento non ci sono piattaforme abilitate. Spunta le piattaforme opzionali di seguito per abilitarle o deseleziona le piattaforme disabilitate.
 Cleaning_Header_StartMenuShortcuts: 'Scorciatoie per il Menu Iniziale:'
 Cleaning_Header_General: Pulizia Generale
