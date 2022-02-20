@@ -264,8 +264,6 @@
     /// </summary>
     private static void FinishBackup(string tempFolder)
     {
-        _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCompress"], renderTo: "toastarea");
-
         var folderSize = Globals.FolderSizeString(tempFolder);
         _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BackupCompress", new {size = folderSize}], duration: 3000, renderTo: "toastarea");
 
@@ -278,7 +276,7 @@
         Globals.CompressFolder(tempFolder, zipFile);
 
         Globals.RecursiveDelete(tempFolder, false);
-        if (!File.Exists(zipFile))
+        if (File.Exists(zipFile))
             _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_BackupComplete", new {size = folderSize, compressedSize = Globals.FileSizeString(zipFile)}], renderTo: "toastarea");
         else
         {

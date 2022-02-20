@@ -2,6 +2,7 @@
     Webcompiler doesn't like these values, so this needs to be in a seperate .css file.
 */
 /* ReSharper disable CssNotResolved */
+/* ReSharper disable RequiresFallbackColor */ /* Chrome is default the ONLY browser - CEF/WebView */
 
 :root {
     /* All these extra accent steps and redefinitions are required for Windows accent options */
@@ -10,7 +11,20 @@
     --accentHS: 190, 100%; /* "H, S%" from accent as HSL */
     --accentL: 50%; /* "L" from accent HSL */
     --accentInt: 0, 212, 255; /* accent as "r, g, b" */
-}
+    /* Automatic accent variations */
+    --accentDark: hsl(var(--accentHS), calc(var(--accentL) - 20%));
+    --accentDarker: hsl(var(--accentHS), calc(var(--accentL) - 40%));
+    --accentDarkest: hsl(var(--accentHS), calc(var(--accentL) - 60%));
+    /* Notification colours */
+    --notification-main-bg: #274560;
+    --notification-info-border: rgba(3, 166, 240, .25);
+    --notification-info-highlight: rgb(3, 166, 240);
+    --notification-success-border: rgba(80, 250, 123, .25);
+    --notification-success-highlight: rgb(80, 250, 123);
+    --notification-warning-border: rgba(255, 184, 108, .25);
+    --notification-warning-highlight: rgb(255, 184, 108);
+    --notification-error-border: rgba(255, 85, 85, .25);
+    --notification-error-highlight: rgb(255, 85, 85);
 }
 
 ::selection {

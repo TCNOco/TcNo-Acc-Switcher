@@ -806,8 +806,10 @@ var sDropdownOpen = false;
 var sDropdownInitialized = false;
 function sDropdownReposition() {
     const drop = $("#shortcutDropdown");
-    const btnPos = $("#shortcutDropdownBtn").position();
-    $("#shortcutDropdown").css({ top: btnPos.top - drop.height() - 12, left: btnPos.left + 16 - (drop.width() / 2) });
+    const btn = $("#shortcutDropdownBtn");
+    const btnPos = btn[0].getBoundingClientRect();
+    $("#shortcutDropdown").css({ top: btnPos.top - drop.height() - btn.height() - 16, left: btnPos.left + 16 - (drop.width() / 2) });
+
 }
 
 function sDropdownInit() {

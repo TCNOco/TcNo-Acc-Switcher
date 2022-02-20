@@ -185,122 +185,122 @@
     cursor: pointer;
   }
 
-  .notification.info {
-    border: solid var(--notification-border-std) rgba(3, 166, 240, .25);
-    background: #274560;
-  }
-
-    .notification.info > .close {
-      color: rgb(3, 166, 240);
+    .notification.info {
+        border: solid var(--notification-border-std) var(--notification-info-border);
+        background: var(--notification-main-bg);
     }
 
-    .notification.info > .counter {
-      border: solid var(--notification-border-std) rgb(3, 166, 240);
-      background: rgb(3, 166, 240) -lighter;
+        .notification.info > .close {
+            color: var(--notification-info-highlight);
+        }
+
+        .notification.info > .counter {
+            border: solid var(--notification-border-std) var(--notification-info-highlight);
+            background: var(--notification-info-highlight);
+        }
+
+        .notification.info.top-border {
+            border-top: solid var(--notification-border-thick) var(--notification-info-highlight);
+        }
+
+        .notification.info.bottom-border {
+            border-bottom: solid var(--notification-border-thick) var(--notification-info-highlight);
+        }
+
+        .notification.info.left-border {
+            border-left: solid var(--notification-border-thick) var(--notification-info-highlight);
+        }
+
+        .notification.info.right-border {
+            border-right: solid var(--notification-border-thick) var(--notification-info-highlight);
+        }
+
+    .notification.success {
+        border: solid var(--notification-border-std) var(--notification-success-border);
+        background: var(--notification-main-bg);
     }
 
-    .notification.info.top-border {
-      border-top: solid var(--notification-border-thick) rgb(3, 166, 240);
+        .notification.success > .close {
+            color: var(--notification-success-highlight);
+        }
+
+        .notification.success > .counter {
+            border: solid var(--notification-border-std) var(--notification-success-highlight);
+            background: var(--notification-main-bg);
+        }
+
+        .notification.success.top-border {
+            border-top: solid var(--notification-border-thick) var(--notification-success-highlight);
+        }
+
+        .notification.success.bottom-border {
+            border-bottom: solid var(--notification-border-thick) var(--notification-success-highlight);
+        }
+
+        .notification.success.left-border {
+            border-left: solid var(--notification-border-thick) var(--notification-success-highlight);
+        }
+
+        .notification.success.right-border {
+            border-right: solid var(--notification-border-thick) var(--notification-success-highlight);
+        }
+
+    .notification.warning {
+        border: solid var(--notification-border-std) var(--notification-warning-border);
+        background: var(--notification-main-bg);
     }
 
-    .notification.info.bottom-border {
-      border-bottom: solid var(--notification-border-thick) rgb(3, 166, 240);
+        .notification.warning > .close {
+            color: var(--notification-warning-highlight);
+        }
+
+        .notification.warning > .counter {
+            border: solid var(--notification-border-std) var(--notification-warning-highlight);
+            background: var(--notification-main-bg);
+        }
+
+        .notification.warning.top-border {
+            border-top: solid var(--notification-border-thick) var(--notification-warning-highlight);
+        }
+
+        .notification.warning.bottom-border {
+            border-bottom: solid var(--notification-border-thick) var(--notification-warning-highlight);
+        }
+
+        .notification.warning.left-border {
+            border-left: solid var(--notification-border-thick) var(--notification-warning-highlight);
+        }
+
+        .notification.warning.right-border {
+            border-right: solid var(--notification-border-thick) var(--notification-warning-highlight);
+        }
+
+    .notification.error {
+        border: solid var(--notification-border-std) var(--notification-error-border);
+        background: var(--notification-main-bg);
     }
 
-    .notification.info.left-border {
-      border-left: solid var(--notification-border-thick) rgb(3, 166, 240);
-    }
+        .notification.error > .close {
+            color: var(--notification-error-highlight);
+        }
 
-    .notification.info.right-border {
-      border-right: solid var(--notification-border-thick) rgb(3, 166, 240);
-    }
+        .notification.error > .counter {
+            border: solid var(--notification-border-std) var(--notification-error-highlight);
+            background: var(--notification-main-bg);
+        }
 
-  .notification.success {
-    border: solid var(--notification-border-std) rgba(80, 250, 123, .25);
-    background: #274560;
-  }
+        .notification.error.top-border {
+            border-top: solid var(--notification-border-thick) var(--notification-error-highlight);
+        }
 
-    .notification.success > .close {
-      color: rgb(80, 250, 123);
-    }
+        .notification.error.bottom-border {
+            border-bottom: solid var(--notification-border-thick) var(--notification-error-highlight);
+        }
 
-    .notification.success > .counter {
-      border: solid var(--notification-border-std) rgb(80, 250, 123);
-      background: #274560;
-    }
+        .notification.error.left-border {
+            border-left: solid var(--notification-border-thick) var(--notification-error-highlight);
+        }
 
-    .notification.success.top-border {
-      border-top: solid var(--notification-border-thick) rgb(80, 250, 123);
-    }
-
-    .notification.success.bottom-border {
-      border-bottom: solid var(--notification-border-thick) rgb(80, 250, 123);
-    }
-
-    .notification.success.left-border {
-      border-left: solid var(--notification-border-thick) rgb(80, 250, 123);
-    }
-
-    .notification.success.right-border {
-      border-right: solid var(--notification-border-thick) rgb(80, 250, 123);
-    }
-
-  .notification.warning {
-    border: solid var(--notification-border-std) rgba(255, 184, 108, .25);
-    background: #274560;
-  }
-
-    .notification.warning > .close {
-      color: rgb(255, 184, 108);
-    }
-
-    .notification.warning > .counter {
-      border: solid var(--notification-border-std) rgb(255, 184, 108);
-      background: #274560;
-    }
-
-    .notification.warning.top-border {
-      border-top: solid var(--notification-border-thick) rgb(255, 184, 108);
-    }
-
-    .notification.warning.bottom-border {
-      border-bottom: solid var(--notification-border-thick) rgb(255, 184, 108);
-    }
-
-    .notification.warning.left-border {
-      border-left: solid var(--notification-border-thick) rgb(255, 184, 108);
-    }
-
-    .notification.warning.right-border {
-      border-right: solid var(--notification-border-thick) rgb(255, 184, 108);
-    }
-
-  .notification.error {
-    border: solid var(--notification-border-std) rgba(255, 85, 85, .25);
-    background: #274560;
-  }
-
-    .notification.error > .close {
-      color: rgb(255, 85, 85);
-    }
-
-    .notification.error > .counter {
-      border: solid var(--notification-border-std) rgb(255, 85, 85);
-      background: #274560;
-    }
-
-    .notification.error.top-border {
-      border-top: solid var(--notification-border-thick) rgb(255, 85, 85);
-    }
-
-    .notification.error.bottom-border {
-      border-bottom: solid var(--notification-border-thick) rgb(255, 85, 85);
-    }
-
-    .notification.error.left-border {
-      border-left: solid var(--notification-border-thick) rgb(255, 85, 85);
-    }
-
-    .notification.error.right-border {
-      border-right: solid var(--notification-border-thick) rgb(255, 85, 85);
-    }
+        .notification.error.right-border {
+            border-right: solid var(--notification-border-thick) var(--notification-error-highlight);
+        }

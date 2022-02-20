@@ -258,7 +258,7 @@ namespace TcNo_Acc_Switcher_Updater
         /// <summary>
         /// Move pre 2021-07-05 Documents userdata folder into AppData.
         /// </summary>
-        private static void OldDocumentsToAppData()
+        private void OldDocumentsToAppData()
         {
             // Check to see if folder still located in My Documents (from Pre 2021-07-05)
             var oldDocuments = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
@@ -597,17 +597,31 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         /// <param name="inputFolder">Folder to copy files recursively from</param>
         /// <param name="outputFolder">Destination folder</param>
-        public static void CopyFilesRecursive(string inputFolder, string outputFolder)
+        public bool CopyFilesRecursive(string inputFolder, string outputFolder)
         {
-            _ = Directory.CreateDirectory(outputFolder);
-            if (!outputFolder.EndsWith("\\")) outputFolder += "\\";
-            //Now Create all of the directories
-            foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
-                _ = Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
+            if (Directory.Exists(inputFolder)) return false;
+            try
+            {
+                _ = Directory.CreateDirectory(outputFolder);
+                if (!outputFolder.EndsWith("\\")) outputFolder += "\\";
+                //Now Create all of the directories
+                foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
+                    _ = Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
 
-            //Copy all the files & Replaces any files with the same name
-            foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
-                File.Copy(newPath, newPath.Replace(inputFolder, outputFolder), true);
+                //Copy all the files & Replaces any files with the same name
+                foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
+                    File.Copy(newPath, newPath.Replace(inputFolder, outputFolder), true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                WriteLine("Failed to copy files. Make sure you have permission to access the files, and they are not in use.");
+                WriteLine("----------");
+                WriteLine(ex.ToString());
+                return false;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -615,13 +629,13 @@ namespace TcNo_Acc_Switcher_Updater
         /// </summary>
         /// <param name="f">Folder to recursively copy</param>
         /// <param name="overwrite">Whether files should be overwritten anyways</param>
-        private static void InitFolder(string f, bool overwrite)
+        private void InitFolder(string f, bool overwrite)
         {
             if (overwrite || !Directory.Exists(Path.Join(UserDataFolder, f)))
                 CopyFilesRecursive(Path.Join(MainAppDataFolder, f), Path.Join(UserDataFolder, f));
         }
 
-        private static void InitWwwroot(bool overwrite)
+        private void InitWwwroot(bool overwrite)
         {
             if (!overwrite && Directory.Exists(Path.Join(UserDataFolder, "wwwroot"))) return;
             if (Directory.Exists(OriginalWwwroot))

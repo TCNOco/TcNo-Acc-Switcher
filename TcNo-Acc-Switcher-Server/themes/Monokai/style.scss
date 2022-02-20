@@ -5,9 +5,10 @@
 
 :root {
   --accent: #fce566;
-  --accentHS: 190, 100%;
-  --accentL: 50%;
-  --accentInt: 0, 212, 255;
+  --accentHS: 50, 96%;
+  --accentL: 69%;
+  --accentInt: 252, 229, 102;
+  --notification-main-bg: #131313;
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Anton&family=Tajawal&display=swap");
@@ -24,19 +25,20 @@ body {
   font-size: medium;
 }
 
+.button,
 button,
 button#modal_true,
 button#btnLogin {
-  background: #3f3f3f;
-  font-size: smaller;
-  border-color: #191919;
-  border-radius: 0.9rem;
+    background: #3f3f3f;
+    font-size: smaller;
+    border-color: #191919;
+    border-radius: 0.9rem;
 
-  &:hover {
-    background-color: lighten($color: #3f3f3f, $amount: 10%);
-    border-radius: 0.5rem;
-    border-color: lighten($color: #191919, $amount: 10%);
-  }
+    &:hover {
+        background-color: lighten($color: #3f3f3f, $amount: 10%);
+        border-radius: 0.5rem;
+        border-color: lighten($color: #191919, $amount: 10%);
+    }
 }
 
 button:active,
@@ -47,15 +49,56 @@ button:active,
   border-color: var(--accent) !important;
 }
 
+#btnStartPlat, #shortcutDropdownBtn, .shortcutDropdown #btnOpenShortcutFolder {
+    min-width: 48px;
+    min-height: 48px;
+    max-width: 48px;
+    max-height: 48px;
+}
+
+.shortcutDropdown #btnOpenShortcutFolder {
+    right: -50px;
+}
+
+.shortcuts button, .shortcuts .button, .shortcuts .shortcutPlaceholder, .shortcutDropdown button, .shortcutDropdown .button, .shortcutDropdown .shortcutPlaceholder {
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 40px;
+    max-height: 40px;
+    padding: 6px;
+}
+
+.advancedClearingButtonCol button {
+    font-size: 1em;
+}
+
+.shortcutPlaceholder {
+    background: #131313;
+}
+
+.shortcuts, .shortcutDropdown {
+    border-radius: 0.5rem;
+    background: #131313;
+    max-width: 262px;
+}
+
+.shortcuts {
+    border: .1em solid transparent;
+}
+
+.shortcutDropdown, .shortcuts.expandShortcuts {
+    border: .1em solid var(--accent);
+}
+
 .custom-dropdown-menu {
-  background: #202020 !important;
-  border-radius: 0.8rem;
-  border: 6px solid #131313;
-  top: 0.5rem !important;
-  font-size: medium;
-  max-height: 60vh;
-  overflow-y: auto;
-  box-shadow: none;
+    background: #202020 !important;
+    border-radius: 0.8rem;
+    border: 6px solid #131313;
+    top: 0.5rem !important;
+    font-size: medium;
+    max-height: 60vh;
+    overflow-y: auto;
+    box-shadow: none;
 }
 
 a.fancyLink {
@@ -115,41 +158,67 @@ input[type="checkbox"] + label {
   left: 0;
 }
 
+.pathPicker {
+    background: #131313;
+
+    span:not(.c):hover {
+        color: var(--accent) !important;
+    }
+
+    span.selected-path, spanselected-path::before {
+        background-color: var(--accentDarkest);
+    }
+}
+
 .acc_list_item,
 .platform_list_item {
-  font-size: small;
+    font-size: small;
 }
 
 .platform_list {
   top: 28px;
+  height: 100%;
 }
 
 .platform_list_item {
-  border-radius: 40px;
-  border: #fce566 1px solid;
-
-  &#SwitcherSteam svg,
-  &#SwitcherBattleNet svg,
-  &#SwitcherRiot svg {
     border-radius: 40px;
-    filter: grayscale(100%);
-  }
+    border: var(--accent) 1px solid;
+    color: #888888;
+    text-shadow: none;
+    overflow: hidden;
 
-  &:hover {
-    border-radius: 1rem;
-  }
+    .icoFG {
+        fill: #888888;
+    }
 
-  &#SwitcherSteam:hover svg,
-  &#SwitcherBattleNet:hover svg,
-  &#SwitcherRiot:hover svg {
-    border-radius: 1rem;
-  }
+    .icoBG {
+        background: linear-gradient(0deg,#303030 0%,#212121 100%)
+    }
 
-  &:hover:not(:active) {
-    animation: effect 1s ease-in-out 0s infinite normal none running;
-    // animation: pulse 0s;
-    // transform: none;
-  }
+    &#SwitcherSteam svg, &#SwitcherBattleNet svg, &#SwitcherRiot svg {
+        border-radius: 40px;
+        filter: grayscale(100%);
+    }
+
+    &:hover {
+        border-radius: 1rem;
+    }
+
+    &#SwitcherSteam:hover svg,
+    &#SwitcherBattleNet:hover svg,
+    &#SwitcherRiot:hover svg {
+        border-radius: 1rem;
+    }
+
+    &:hover:not(:active) {
+        animation: effect 1s ease-in-out 0s infinite normal none running;
+        // animation: pulse 0s;
+        // transform: none;
+    }
+}
+
+.platform_list_item:hover:not(:active) {
+    animation: none;
 }
 
 .platformTable {
@@ -298,20 +367,20 @@ button#LocateProgramExe,
 .accountHover,
 .accountHover {
   background-color: #1b1b1b;
-  border: #fce566 1px solid;
+  border: var(--accent) 1px solid;
   border-radius: 0.9rem;
 }
 
 .placeHolderAcc {
   background-color: #3e3e3e;
   border-style: dashed !important;
-  border: #fce566 2px solid;
+  border: var(--accent) 2px solid;
   border-radius: 0.9rem;
 }
 
 .placeHolderPlat {
     background-color: #3e3e3e;
-    border: #fce566 2px solid;
+    border: var(--accent) 2px solid;
     width: 20vw;
     height: 20vw;
     max-width: 175px;
@@ -323,19 +392,19 @@ button#LocateProgramExe,
 
 
 .contextmenu li:hover {
-    border-left: 2px solid #fce566;
+    border-left: 2px solid var(--accent);
     background: #131313;
 }
 
 input.acc:checked + label.acc {
-  border-color: #fce566;
+  border-color: var(--accent);
   background: #3e3e3e;
   border-radius: 0.8rem;
 }
 
 @keyframes effect {
   0% {
-    border: #fce566 -1px solid;
+    border: var(--accent) -1px solid;
   }
 
   100% {

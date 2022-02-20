@@ -33,6 +33,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// <returns>Hash string</returns>
         public static string GetDataFolderMd5(string path)
         {
+            if (!Directory.Exists(path)) return "ENOTFOUND";
             // assuming you want to include nested folders
             var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).OrderBy(p => p).ToList();
 
