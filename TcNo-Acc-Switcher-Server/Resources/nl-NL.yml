@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Geavanceerd) Renderengine instellen:"
 Settings_Header_ClosingMethod: "(Geavanceerd) Methode instellen om {platform}. te sluiten"
 Settings_Header_StartingMethod: "(Geavanceerd) Methode instellen om {platform}. te starten"
+Settings_AutoStart: "Start automatisch {platform} bij accountwisseling"
 Settings_NoPlatforms: Er zijn momenteel geen platforms ingeschakeld. Vink hieronder optionele platforms aan om ze in te schakelen, of schakel uitgeschakelde platforms uit.
 Cleaning_Header_StartMenuShortcuts: 'Snelkoppelingen voor Start Menu:'
 Cleaning_Header_General: Algemeen schoonmaken
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: Spel en Snelkoppeling selectie uitbreiden
 Tooltip_ShortcutFolder: Open sneltoets map. Plaats daar snelkoppelingen en de TcNo Account Switcher om ze te bekijken.
 Tooltip_Backup: Maak een back-up van configuratiebestanden/mappen, zoals gedefinieerd in platforminstellingen.
 Tooltip_BackupAll: Maak een back-up van ALLE configuratiebestanden/mappen, inclusief afbeeldingen en andere grote bestanden.
-Tooltip_ClosingMethod: "Gecombineerd is het beste. Sluiten probeert rechtstreeks te sluiten via een sluitfunctie en TaskKill gebruikt CMD (het beste als gecombineerd niet werkt)"
+Tooltip_ClosingMethod: "Gecombineerd is het beste. Sluiten probeert direct te sluiten via een sluitfunctie en TaskKill gebruikt CMD (het beste als gecombineerd niet werkt)"
 Tooltip_StartingMethod: "Standaard is het beste. Direct heeft geen controle over beheerdersniveau of UAC. Het begint op hetzelfde niveau (of hoger - maar niet lager) dan deze accountwisselaar"
