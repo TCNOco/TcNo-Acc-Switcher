@@ -28,6 +28,13 @@ body, .programMain, .mainblock {
 .acc_list_actionbar {
     background: #222;
 }
+.shortcuts, .shortcutDropdown, .shortcuts.expandShortcuts {
+    background: #222;
+    border-color: #888;
+}
+.shortcutPlaceholder {
+    background: #222;
+}
 ::-webkit-scrollbar-track {
     background: #1F202D;
 }
@@ -53,14 +60,20 @@ a:not([href]):not([class]), a:not([href]):not([class]):hover {
 
 // Platform list
 .platform_list_item {
-    background: linear-gradient(0deg, rgba(31,37,48,1) 0%, rgba(31,37,48,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%);
     border: #FFAA00 1px solid;
-}
-.ico {
-    &BattleNetBG, &RiotBG, &SteamBG {
+    -webkit-text-stroke: 1px #00A5F8;
+    color: transparent;
+    text-shadow: none;
+
+    .icoFG {
+        fill: #00A5F8;
+    }
+
+    .icoBG {
         background: linear-gradient(0deg, rgba(31,37,48,1) 0%, rgba(31,37,48,1) 0%, rgba(32,33,35,1) 100%, rgba(0,212,255,1) 202123%);
     }
 }
+
 .accountHover {
     border: 0.1 em solid #2777A4;
     background: #28374E;
@@ -91,6 +104,17 @@ a:not([href]):not([class]), a:not([href]):not([class]):hover {
     &:active {
         border-color: #FFAA00;
         background: #222 !important;
+    }
+}
+.pathPicker {
+    background: #212529;
+
+    span.selected-path, spanselected-path::before {
+        background-color: var(--accentDarker);
+    }
+
+    span:not(.c):hover {
+        color: var(--accentDark);
     }
 }
 
@@ -124,6 +148,11 @@ button, .button {
     &-item:hover {
         background: #222 !important;
     }
+}
+.dropdown-menu {
+    -webkit-box-shadow: 0 0 15px 3px rgba(0, 0, 0, .50);
+    -moz-box-shadow: 0 0 15px 3px rgba(0,0,0,.50);
+    box-shadow: 0 0 15px 3px rgba(0, 0, 0, .50);
 }
 .show > .dropdown-toggle {
     background: #222 !important;
