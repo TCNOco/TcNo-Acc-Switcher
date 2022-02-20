@@ -58,6 +58,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                             _instance = new Basic { _currentlyModifying = true };
                         }
                         _instance._lastHash = Globals.GetFileMd5(CurrentPlatform.SettingsFile);
+                        if (_instance._folderPath.EndsWith(".exe"))
+                            _instance._folderPath = Path.GetDirectoryName(_instance._folderPath) ?? string.Join("\\", _instance._folderPath.Split("\\")[..^1]);
                     }
                     else
                     {

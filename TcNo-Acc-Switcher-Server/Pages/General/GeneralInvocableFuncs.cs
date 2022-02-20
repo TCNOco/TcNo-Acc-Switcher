@@ -101,6 +101,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             settings["FolderPath"] = path;
             GeneralFuncs.SaveSettings(settingsFile, settings);
             path = Path.GetDirectoryName(path); // Remove .exe
+            if (!string.IsNullOrWhiteSpace(path) && path.EndsWith(".exe"))
+                path = Path.GetDirectoryName(path) ?? string.Join("\\", path.Split("\\")[..^1]);
             switch (file)
             {
                 case "BattleNetSettings":

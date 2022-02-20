@@ -192,12 +192,12 @@ async function changeImage(e) {
 	        <div class="inputAndButton">
 		        <input type="text" id="FolderLocation" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
 	        </div>
-            <div class="pathPicker">
-                ${await getLogicalDrives()}
-            </div>
 	        <div class="settingsCol inputAndButton">
                 <button class="modalOK" type="button" id="set_background" onclick="Modal_FinalizeImage('${encodeURI(path)}')"><span>${modalSetButton}</span></button>
-	        </div>`);
+	        </div>
+            <div class="pathPicker">
+                ${await getLogicalDrives()}
+            </div>`);
 
     pathPickerRequestedFile = "AnyFile";
     let input = document.getElementById("FolderLocation");
@@ -408,14 +408,14 @@ async function showModal(modaltype) {
 	        <div class="inputAndButton">
 		        <input type="text" id="FolderLocation" oninput="updateIndicator('')" autocomplete="off" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
 	        </div>
-            <div class="pathPicker">
-                ${await getLogicalDrives()}
-            </div>
 	        <div class="settingsCol inputAndButton">
 		        <div class="folder_indicator notfound"><div id="folder_indicator_text"></div></div>
 		        <div class="folder_indicator_bg notfound"><span>${platformExe}</span></div>
 		        <button class="modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${platformSettingsPath}')"><span>${modalLocatePlatformFolder}</span></button>
-	        </div>`);
+	        </div>
+            <div class="pathPicker">
+                ${await getLogicalDrives()}
+            </div>`);
 
         pathPickerRequestedFile = platformExe;
         $(".pathPicker").on("click", pathPickerClick);
@@ -536,12 +536,12 @@ async function showModal(modaltype) {
 	        <div class="inputAndButton">
 		        <input type="text" id="FolderLocation" oninput="updateIndicator('')" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
 	        </div>
-            <div class="pathPicker">
-                ${await getLogicalDrives()}
-            </div>
 	        <div class="settingsCol inputAndButton">
 		        <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseBackground()"><span>${modalSetButton}</span></button>
-	        </div>`);
+	        </div>
+            <div class="pathPicker">
+                ${await getLogicalDrives()}
+            </div>`);
 
         pathPickerRequestedFile = "AnyFile";
         $(".pathPicker").on("click", pathPickerClick);
@@ -559,12 +559,12 @@ async function showModal(modaltype) {
 	        <div class="inputAndButton">
 		        <input type="text" id="FolderLocation" oninput="updateIndicator('')" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
 	        </div>
-            <div class="pathPicker">
-                ${await getLogicalDrives()}
-            </div>
 	        <div class="settingsCol inputAndButton">
                 <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseUserDataFolder()"><span>${modalSetButton}</span></button>
-	        </div>`);
+	        </div>
+            <div class="pathPicker">
+                ${await getLogicalDrives()}
+            </div>`);
 
         pathPickerRequestedFile = "AnyFolder";
         $(".pathPicker").on("click", pathPickerClick);
@@ -623,6 +623,11 @@ async function pathPickerClick(e) {
     let currentSpanPath = $(e.target).attr("path");
     var folderContent = "";
 
+    // Because this is reset: see if has .exe inside it.
+    if ($(e.target).hasClass("folder") && pathPickerRequestedFile.endsWith(".exe")) {
+        console.log($(e.target).parent().html());
+        Modal_RequestedLocated($(e.target).parent().html().toLowerCase().includes(pathPickerRequestedFile.toLowerCase()));
+    }
     // If is not currently open: Continue
     if ($(e.target).hasClass("c")) return;
 
@@ -655,6 +660,11 @@ async function pathPickerClick(e) {
             //console.log(folderContent);
             $(e.target).replaceWith(folderContent);
         });
+
+        // After expanding, see if has .exe inside it.
+        if ($(e.target).hasClass("folder") && pathPickerRequestedFile.endsWith(".exe")) {
+            Modal_RequestedLocated(folderContent.toLowerCase().includes(pathPickerRequestedFile.toLowerCase()));
+        }
     }
 }
 
