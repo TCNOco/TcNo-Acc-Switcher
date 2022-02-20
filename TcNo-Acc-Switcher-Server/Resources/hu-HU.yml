@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Speciális) Renderingmotor beállítása:"
 Settings_Header_ClosingMethod: "(Speciális) A bezárási módszer beállítása {platform}"
 Settings_Header_StartingMethod: "(Speciális) Állítsa be az indítási módszert {platform}-ra"
+Settings_AutoStart: "{platform} automatikus indítása a fiókkapcsolónál"
 Settings_NoPlatforms: Jelenleg nincs engedélyezve platform. Kérjük, jelölje be alább az opcionális platformokat az engedélyezésükhöz, vagy törölje a letiltott platformok jelölését.
 Cleaning_Header_StartMenuShortcuts: 'A Start menü parancsikonjai:'
 Cleaning_Header_General: Általános takarítás

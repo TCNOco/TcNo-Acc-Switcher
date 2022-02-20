@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Avançado) Definir mecanismo de renderização:"
 Settings_Header_ClosingMethod: "(Avançado) Definir método para fechar {platform}"
 Settings_Header_StartingMethod: "(Avançado) Definir método para iniciar {platform}"
+Settings_AutoStart: "Iniciar {platform} automaticamente na troca de conta"
 Settings_NoPlatforms: No momento, não há plataformas habilitadas. Marque as plataformas opcionais abaixo para habilitá-las ou desmarque as plataformas desabilitadas.
 Cleaning_Header_StartMenuShortcuts: 'Atalhos para o Menu Inicial:'
 Cleaning_Header_General: Limpeza geral
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: Expandir a seleção de jogos e atalhos
 Tooltip_ShortcutFolder: Abra a pasta de atalho. Coloque atalhos lá e o TcNo Account Switcher para vê-los.
 Tooltip_Backup: Arquivos/pastas de configuração de backup, conforme definido nas configurações da plataforma.
 Tooltip_BackupAll: Faça backup de TODOS os arquivos/pastas de configuração, incluindo imagens e outros arquivos grandes.
-Tooltip_ClosingMethod: "Combinado é melhor. Close tenta fechar diretamente por meio de uma função close e TaskKill usa CMD (Melhor se combinado não funciona)"
+Tooltip_ClosingMethod: "Combinado é melhor. Close tenta fechar diretamente através de uma função close e TaskKill usa CMD (Melhor se combinado não funciona)"
 Tooltip_StartingMethod: "O padrão é o melhor. Direct não tem controle sobre o nível de administrador ou UAC. Ele começará no mesmo nível (ou superior - mas não inferior) que este alternador de contas"

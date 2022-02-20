@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Gevorderd) Stel weergawe-enjin:"
 Settings_Header_ClosingMethod: "(Gevorderd) Stel metode om {platform}te sluit"
 Settings_Header_StartingMethod: "(Gevorderd) Stel metode om {platform}te begin"
+Settings_AutoStart: "Begin outomaties {platform} op rekeningskakelaar"
 Settings_NoPlatforms: Daar is tans geen platforms geaktiveer nie. Merk asseblief opsionele platforms hieronder om hulle te aktiveer, of ontmerk gedeaktiveerde platforms.
 Cleaning_Header_StartMenuShortcuts: 'Kortpaaie vir die Start Menu:'
 Cleaning_Header_General: Algemene skoonmaak
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: Brei speletjie- en kortpad-keuse uit
 Tooltip_ShortcutFolder: Maak kortpadlêer oop. Plaas kortpaaie daarin, en die TcNo Account Switcher om dit te sien.
 Tooltip_Backup: Rugsteun konfigurasielêers/vouers, soos gedefinieer in platforminstellings.
 Tooltip_BackupAll: Rugsteun ALLE konfigurasielêers/vouers, insluitend beelde en ander groot lêers.
-Tooltip_ClosingMethod: "Gekombineer is die beste. Sluit pogings om direk toe te maak deur 'n toemaakfunksie, en TaskKill gebruik CMD (beste as gekombineer nie werk nie)"
+Tooltip_ClosingMethod: "Gekombineer is die beste. Sluit pogings om direk toe te maak deur 'n afsluitfunksie en TaskKill gebruik CMD (beste as gekombineer nie werk nie)"
 Tooltip_StartingMethod: "Standaard is die beste. Direct het geen beheer oor administrasievlak of UAC nie. Dit sal begin as dieselfde vlak (of hoër - maar nie laer nie) as hierdie rekeningwisselaar"

@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "（高級）設置渲染引擎："
 Settings_Header_ClosingMethod: "（高級）設置方法關閉 {platform}"
 Settings_Header_StartingMethod: "（高級）設置方法開始 {platform}"
+Settings_AutoStart: "賬號切換時自動啟動 {platform}"
 Settings_NoPlatforms: 當前沒有啟用任何平台。請勾選下面的可選平台以啟用它們，或取消選中禁用的平台。
 Cleaning_Header_StartMenuShortcuts: '開始功能表捷徑：'
 Cleaning_Header_General: 一般清除
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: 展開遊戲和快捷方式選擇
 Tooltip_ShortcutFolder: 打開快捷方式文件夾。將快捷方式放在那裡，然後使用 TcNo 帳戶切換器來查看它們。
 Tooltip_Backup: 備份配置文件/文件夾，如平台設置中所定義。
 Tooltip_BackupAll: 備份所有配置文件/文件夾，包括圖像和其他大文件。
-Tooltip_ClosingMethod: "組合最好。 Close嘗試通過close函數直接關閉，TaskKill使用CMD（如果組合不行最好）"
+Tooltip_ClosingMethod: "組合最好。關閉嘗試通過關閉函數直接關閉，TaskKill 使用 CMD（如果組合不起作用，則最好）"
 Tooltip_StartingMethod: "默認是最好的。 Direct 無法控制管理員級別或 UAC。它將以與此帳戶切換器相同的級別（或更高 - 但不低於）開始"

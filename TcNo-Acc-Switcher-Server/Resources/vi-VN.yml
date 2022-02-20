@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Nâng cao) Đặt công cụ kết xuất:"
 Settings_Header_ClosingMethod: "(Nâng cao) Đặt phương thức đóng {platform}"
 Settings_Header_StartingMethod: "(Nâng cao) Đặt phương thức để bắt đầu {platform}"
+Settings_AutoStart: "Tự động bắt đầu {platform} khi chuyển đổi tài khoản"
 Settings_NoPlatforms: Hiện tại không có nền tảng nào được kích hoạt. Vui lòng đánh dấu vào các nền tảng tùy chọn bên dưới để bật chúng hoặc bỏ chọn các nền tảng bị vô hiệu hóa.
 Cleaning_Header_StartMenuShortcuts: 'Các phím tắt cho Start Menu:'
 Cleaning_Header_General: Vệ sinh chung
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: Mở rộng lựa chọn Trò chơi & Lối tắt
 Tooltip_ShortcutFolder: Mở thư mục lối tắt. Đặt các phím tắt vào đó và Công cụ chuyển đổi tài khoản TcNo để xem chúng.
 Tooltip_Backup: Sao lưu các tệp / thư mục cấu hình, như được xác định trong cài đặt nền tảng.
 Tooltip_BackupAll: Sao lưu TẤT CẢ các tệp / thư mục cấu hình, bao gồm cả hình ảnh và các tệp lớn khác.
-Tooltip_ClosingMethod: "Kết hợp là tốt nhất. Đóng cố gắng đóng trực tiếp thông qua một hàm đóng và TaskKill sử dụng CMD (Tốt nhất nếu kết hợp không hoạt động)"
+Tooltip_ClosingMethod: "Kết hợp là tốt nhất. Đóng cố gắng đóng trực tiếp thông qua một chức năng đóng và TaskKill sử dụng CMD (Tốt nhất nếu kết hợp không hoạt động)"
 Tooltip_StartingMethod: "Mặc định là tốt nhất. Direct không có quyền kiểm soát cấp quản trị hoặc UAC. Nó sẽ bắt đầu ở cùng cấp (hoặc cao hơn - nhưng không thấp hơn) so với trình chuyển đổi tài khoản này"

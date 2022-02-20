@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Avanceret) Indstil gengivelsesmotor:"
 Settings_Header_ClosingMethod: "(Avanceret) Indstil metode til at lukke {platform}"
 Settings_Header_StartingMethod: "(Avanceret) Indstil metode til at starte {platform}"
+Settings_AutoStart: "Start automatisk {platform} ved kontoskift"
 Settings_NoPlatforms: Der er i øjeblikket ingen platforme aktiveret. Sæt kryds ved valgfrie platforme nedenfor for at aktivere dem, eller fjern markeringen af deaktiverede platforme.
 Cleaning_Header_StartMenuShortcuts: 'Genveje til startmenuen:'
 Cleaning_Header_General: Generel Rengøring

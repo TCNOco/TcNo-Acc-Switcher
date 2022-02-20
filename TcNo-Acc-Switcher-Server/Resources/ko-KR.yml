@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(고급) 렌더링 엔진 설정:"
 Settings_Header_ClosingMethod: "(고급) 닫기 방법을 {platform}으로 설정"
 Settings_Header_StartingMethod: "(고급) 시작 방법을 {platform}으로 설정"
+Settings_AutoStart: "계정 전환 시 자동으로 {platform} 시작"
 Settings_NoPlatforms: 현재 활성화된 플랫폼이 없습니다. 아래에서 옵션 플랫폼을 선택하여 활성화하거나 비활성화된 플랫폼을 선택 취소하십시오.
 Cleaning_Header_StartMenuShortcuts: '시작 메뉴 바로 가기:'
 Cleaning_Header_General: 일반 청소
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: 게임 및 바로 가기 선택 확장
 Tooltip_ShortcutFolder: 바로 가기 폴더를 엽니다. 거기에 바로가기를 배치하고 TcNo Account Switcher를 사용하여 볼 수 있습니다.
 Tooltip_Backup: 플랫폼 설정에 정의된 백업 구성 파일/폴더.
 Tooltip_BackupAll: 이미지 및 기타 대용량 파일을 포함한 모든 구성 파일/폴더를 백업합니다.
-Tooltip_ClosingMethod: "결합이 가장 좋습니다. 닫기는 닫기 기능을 통해 직접 닫기를 시도하고 TaskKill은 CMD를 사용합니다(결합이 작동하지 않는 경우 최상)."
+Tooltip_ClosingMethod: "결합이 가장 좋습니다. 닫기는 닫기 기능을 통해 직접 닫기를 시도하고 TaskKill은 CMD를 사용합니다(결합이 작동하지 않는 경우 가장 좋음)."
 Tooltip_StartingMethod: "기본값이 가장 좋습니다. Direct는 관리자 수준이나 UAC를 제어할 수 없습니다. 이 계정 전환기와 동일한 수준(또는 더 높지만 낮지는 않음)으로 시작됩니다."

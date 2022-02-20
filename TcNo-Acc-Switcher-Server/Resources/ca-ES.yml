@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Avançat) Configura el motor de renderització:"
 Settings_Header_ClosingMethod: "(Avançat) Estableix el mètode per tancar {platform}"
 Settings_Header_StartingMethod: "(Avançat) Establiu el mètode per començar {platform}"
+Settings_AutoStart: "Inicieu {platform} automàticament al canvi de compte"
 Settings_NoPlatforms: Actualment no hi ha plataformes habilitades. Marqueu les plataformes opcionals a continuació per activar-les o desmarqueu les plataformes desactivades.
 Cleaning_Header_StartMenuShortcuts: 'Dreceres per al menú Inici:'
 Cleaning_Header_General: Neteja general

@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Tack till]"
 Settings_Header_ActiveBrowser: "(Avancerat) Ställ in renderingsmotor:"
 Settings_Header_ClosingMethod: "(Avancerat) Ställ in metod för att stänga {platform}"
 Settings_Header_StartingMethod: "(Avancerat) Ställ in metod för att starta {platform}"
+Settings_AutoStart: "Starta automatiskt {platform} vid kontoväxling"
 Settings_NoPlatforms: Det finns för närvarande inga plattformar aktiverade. Vänligen kryssa för valfria plattformar nedan för att aktivera dem, eller avmarkera inaktiverade plattformar.
 Cleaning_Header_StartMenuShortcuts: 'Genvägar till Start-menyn:'
 Cleaning_Header_General: Allmänt Städning
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: Utöka urvalet av spel och genvägar
 Tooltip_ShortcutFolder: Öppna genvägsmappen. Placera genvägar där och TcNo Account Switcher för att se dem.
 Tooltip_Backup: Säkerhetskopiera konfigurationsfiler/mappar, enligt definition i plattformsinställningar.
 Tooltip_BackupAll: Säkerhetskopiera ALLA konfigurationsfiler/mappar, inklusive bilder och andra stora filer.
-Tooltip_ClosingMethod: "Kombinerad är bäst. Stäng försöker stänga direkt genom en stängningsfunktion, och TaskKill använder CMD (bäst om kombinerat inte fungerar)"
+Tooltip_ClosingMethod: "Kombinerad är bäst. Stäng försöker stänga direkt genom en stängningsfunktion och TaskKill använder CMD (bäst om kombinerat inte fungerar)"
 Tooltip_StartingMethod: "Standard är bäst. Direct har ingen kontroll över administratörsnivå eller UAC. Det kommer att börja på samma nivå (eller högre - men inte lägre) än den här kontoväxaren"

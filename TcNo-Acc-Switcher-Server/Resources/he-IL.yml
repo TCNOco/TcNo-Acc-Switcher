@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(מתקדם) הגדר מנוע עיבוד:"
 Settings_Header_ClosingMethod: "(מתקדם) הגדר את השיטה לסגירת {platform}"
 Settings_Header_StartingMethod: "(מתקדם) הגדר את השיטה להתחיל {platform}"
+Settings_AutoStart: "הפעל אוטומטית {platform} בהחלפת חשבון"
 Settings_NoPlatforms: כרגע אין פלטפורמות מופעלות. אנא סמן פלטפורמות אופציונליות למטה כדי להפעיל אותן, או בטל את הסימון של פלטפורמות מושבתות.
 Cleaning_Header_StartMenuShortcuts: 'קיצורי דרך לתפריט התחלה:'
 Cleaning_Header_General: ניקוי כללי
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: הרחב את בחירת המשחקים וקיצורי 
 Tooltip_ShortcutFolder: פתח את תיקיית קיצורי הדרך. הצב שם קיצורי דרך ואת מחליף החשבון TcNo כדי לראות אותם.
 Tooltip_Backup: גיבוי קבצי/תיקיות תצורה, כפי שהוגדר בהגדרות הפלטפורמה.
 Tooltip_BackupAll: גבה את כל קבצי/תיקיות התצורה, כולל תמונות וקבצים גדולים אחרים.
-Tooltip_ClosingMethod: "משולב זה הכי טוב. סגור ניסיונות לסגור ישירות דרך פונקציית סגירה, ו-TaskKill משתמש ב-CMD (הכי טוב אם השילוב לא עובד)"
+Tooltip_ClosingMethod: "משולב זה הכי טוב. ניסיונות סגור לסגור ישירות דרך פונקציית סגירה ו-TaskKill משתמש ב-CMD (הכי טוב אם השילוב לא עובד)"
 Tooltip_StartingMethod: "ברירת המחדל היא הטובה ביותר. ל-Direct אין שליטה על רמת הניהול או ה-UAC. זה יתחיל באותה רמה (או גבוה יותר - אבל לא נמוך יותר) מאשר מחליף חשבון זה"

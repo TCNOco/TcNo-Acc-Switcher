@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Avansert) Angi gjengivelsesmotor:"
 Settings_Header_ClosingMethod: "(Avansert) Angi metode for å lukke {platform}"
 Settings_Header_StartingMethod: "(Avansert) Angi metode for å starte {platform}"
+Settings_AutoStart: "Start {platform} automatisk ved kontobytte"
 Settings_NoPlatforms: Det er for øyeblikket ingen plattformer aktivert. Merk av for valgfrie plattformer nedenfor for å aktivere dem, eller fjern merket for deaktiverte plattformer.
 Cleaning_Header_StartMenuShortcuts: 'Snarveier for Start-menyen:'
 Cleaning_Header_General: Generell rengjøring
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: Utvid utvalget av spill og snarveier
 Tooltip_ShortcutFolder: Åpne snarveismappen. Plasser snarveier der, og TcNo Account Switcher for å se dem.
 Tooltip_Backup: Sikkerhetskopier konfigurasjonsfiler/mapper, som definert i plattforminnstillingene.
 Tooltip_BackupAll: Sikkerhetskopier ALLE konfigurasjonsfiler/mapper, inkludert bilder og andre store filer.
-Tooltip_ClosingMethod: "Kombinert er best. Lukk forsøker å lukke direkte gjennom en lukkefunksjon, og TaskKill bruker CMD (best hvis kombinert ikke fungerer)"
+Tooltip_ClosingMethod: "Kombinert er best. Lukk forsøker å lukke direkte gjennom en lukkefunksjon og TaskKill bruker CMD (best hvis kombinert ikke fungerer)"
 Tooltip_StartingMethod: "Standard er best. Direct har ingen kontroll over administratornivå eller UAC. Det vil starte på samme nivå (eller høyere - men ikke lavere) enn denne kontobytteren"

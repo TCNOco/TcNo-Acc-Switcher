@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Avansat) Setați motorul de randare:"
 Settings_Header_ClosingMethod: "(Avansat) Setați metoda pentru a închide {platform}"
 Settings_Header_StartingMethod: "(Avansat) Setați metoda pentru a începe {platform}"
+Settings_AutoStart: "Porniți automat {platform} la comutarea contului"
 Settings_NoPlatforms: În prezent, nu există platforme activate. Vă rugăm să bifați mai jos platformele opționale pentru a le activa sau debifați platformele dezactivate.
 Cleaning_Header_StartMenuShortcuts: 'Comenzi rapide pentru Meniul Pornire:'
 Cleaning_Header_General: Curățare generală
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: Extindeți selecția de jocuri și comenzi rapide
 Tooltip_ShortcutFolder: Deschideți folderul de comenzi rapide. Plasați comenzi rapide acolo și comutatorul de cont TcNo pentru a le vedea.
 Tooltip_Backup: Faceți backup pentru fișierele/folderele de configurare, așa cum este definit în setările platformei.
 Tooltip_BackupAll: Faceți backup pentru TOATE fișierele/folderele de configurare, inclusiv imaginile și alte fișiere mari.
-Tooltip_ClosingMethod: "Combinat este cel mai bine. Închidere încearcă să se închidă direct printr-o funcție de închidere, iar TaskKill folosește CMD (Cel mai bine dacă este combinat nu funcționează)"
+Tooltip_ClosingMethod: "Combinat este cel mai bun. Închidere încearcă să se închidă direct printr-o funcție de închidere și TaskKill folosește CMD (cel mai bine dacă combinat nu funcționează)"
 Tooltip_StartingMethod: "Implicit este cel mai bun. Direct nu are control asupra nivelului de administrator sau UAC. Va începe la același nivel (sau mai mare - dar nu mai mic) decât acest comutator de cont"

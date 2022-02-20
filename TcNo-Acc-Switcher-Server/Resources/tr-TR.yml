@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Gelişmiş) Oluşturma motorunu ayarla:"
 Settings_Header_ClosingMethod: "(Gelişmiş) {platform}kapatmak için yöntemi ayarlayın"
 Settings_Header_StartingMethod: "(Gelişmiş) {platform}başlatmak için yöntemi ayarlayın"
+Settings_AutoStart: "Otomatik Olarak {platform} hesap değiştirince başlat"
 Settings_NoPlatforms: Şu anda etkin platform yok. Lütfen bunları etkinleştirmek için aşağıdaki isteğe bağlı platformları işaretleyin veya devre dışı bırakılmış platformların işaretini kaldırın.
 Cleaning_Header_StartMenuShortcuts: 'Başlat Menüsü Kısayolları:'
 Cleaning_Header_General: Genel temizlik
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: Oyun ve Kısayol seçimini genişlet
 Tooltip_ShortcutFolder: Kısayol klasörünü açın. Kısayolları ve bunları görmek için TcNo Account Switcher'ı buraya yerleştirin.
 Tooltip_Backup: Platform ayarlarında tanımlandığı şekilde yapılandırma dosyalarını/klasörlerini yedekleyin.
 Tooltip_BackupAll: Resimler ve diğer büyük dosyalar dahil TÜM yapılandırma dosyalarını/klasörlerini yedekleyin.
-Tooltip_ClosingMethod: "Kombine en iyisidir. Kapat, bir kapatma işlevi aracılığıyla doğrudan kapatma girişiminde bulunur ve TaskKill, CMD'yi kullanır (Birleştirilmişse en iyisi çalışmıyorsa)"
+Tooltip_ClosingMethod: "Kombine en iyisidir. Kapat, bir kapatma işlevi aracılığıyla doğrudan kapatma girişiminde bulunur ve TaskKill, CMD'yi kullanır (Birleşik çalışmazsa en iyisi)"
 Tooltip_StartingMethod: "Varsayılan en iyisidir. Direct'in yönetici düzeyi veya UAC üzerinde hiçbir kontrolü yoktur. Bu hesap değiştiriciyle aynı düzeyde (veya daha yüksek - ancak daha düşük değil) başlayacak"
