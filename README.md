@@ -43,7 +43,8 @@ Version 5.0 is released (Jan 2022)! Please report any and all bugs, as well as s
 The new version adds the ability to easily create and maintain platforms by editing a simple text file `Platforms.json`. If you'd like to learn more, see this [Wiki page](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Help-code-a-platform).
 
 **List of all platforms:**
-**Discord (+ PTB & Canary)**, **Epic Games**, **EA Desktop**, **Escape from Tarkov**, **GeForce Now**, **Origin**, **OBS Studio**, **Riot Games** (Valorant, League...), **Steam**, **Ubisoft Connect** and **Battle.net** Thank's to [iR3turnZ](https://github.com/HoeblingerDaniel) :),
+**Discord (+ PTB & Canary)**, **Epic Games**, **EA Desktop**, **Escape from Tarkov**, **GeForce Now**, **Genshin Impact**, **Origin**, **OBS Studio**, **Riot Games** (Valorant, League...), **Steam**, **Ubisoft Connect** and **Battle.net** Thank's to [iR3turnZ](https://github.com/HoeblingerDaniel) :),
+	
 *This list may not be up-to-date as platforms can now be added a lot faster.
 
 **Featuring**
