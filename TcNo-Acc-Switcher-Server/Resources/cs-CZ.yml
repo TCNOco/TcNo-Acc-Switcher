@@ -65,6 +65,7 @@ Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Pokročilé) Nastavit vykreslovací modul:"
 Settings_Header_ClosingMethod: "(Pokročilé) Nastavte metodu na zavření {platform}"
 Settings_Header_StartingMethod: "(Pokročilé) Nastavte metodu na začátek {platform}"
+Settings_AutoStart: "Automaticky spustit {platform} při přepnutí účtu"
 Settings_NoPlatforms: Momentálně nejsou povoleny žádné platformy. Zaškrtněte prosím níže volitelné platformy, abyste je povolili, nebo zrušte zaškrtnutí zakázaných platforem.
 Cleaning_Header_StartMenuShortcuts: 'Zkratky pro nabídku startu:'
 Cleaning_Header_General: Obecné čištění
@@ -388,5 +389,5 @@ Tooltip_ExpandShortcuts: Rozbalte výběr her a zástupců
 Tooltip_ShortcutFolder: Otevřete složku zástupců. Umístěte tam zástupce a přepínač účtů TcNo, abyste je viděli.
 Tooltip_Backup: Zálohujte konfigurační soubory/složky, jak je definováno v nastavení platformy.
 Tooltip_BackupAll: Zálohujte VŠECHNY konfigurační soubory/složky, včetně obrázků a dalších velkých souborů.
-Tooltip_ClosingMethod: "Kombinovaný je nejlepší. Zavřít se pokusí zavřít přímo pomocí zavírací funkce a TaskKill používá CMD (nejlépe, pokud kombinovaná nefunguje)"
+Tooltip_ClosingMethod: "Kombinovaný je nejlepší. Zavřít se pokouší zavřít přímo pomocí funkce zavřít a TaskKill používá CMD (nejlépe, pokud kombinovaná nefunguje)"
 Tooltip_StartingMethod: "Výchozí je nejlepší. Direct nemá žádnou kontrolu nad úrovní správce nebo UAC. Spustí se na stejné úrovni (nebo vyšší - ale ne nižší) než tento přepínač účtů"
