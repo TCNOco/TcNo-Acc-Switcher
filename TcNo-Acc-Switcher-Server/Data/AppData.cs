@@ -132,40 +132,65 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static bool InvokeVoidAsync(string func)
         {
             Globals.WriteToLog($"JS CALL (1): {func}");
-            return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func));
-        }
-
-        public static bool InvokeVoidAsync(string func, string arg)
-        {
-            Globals.WriteToLog($"JS CALL (2): {func}, {arg}");
-            return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
-        }
-
-        public static bool InvokeVoidAsync(string func, object arg)
-        {
-            Globals.WriteToLog($"JS CALL (3): {func}, {JsonConvert.SerializeObject(arg)}");
-            return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg));
-        }
-
-        public static bool InvokeVoidAsync(string func, string arg, string arg2)
-        {
-            Globals.WriteToLog($"JS CALL (4): {func}, {arg}, {arg2}");
-            return ActiveIJsRuntime is not null && InvokeVoidAsync(async () => await ActiveIJsRuntime.InvokeVoidAsync(func, arg, arg2));
-        }
-
-        private static bool InvokeVoidAsync(Action func)
-        {
             try
             {
-                func();
+                if (ActiveIJsRuntime is null) return false;
+                ActiveIJsRuntime.InvokeVoidAsync(func);
+                return true;
             }
             catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException
                                           or ArgumentNullException or TaskCanceledException or JSDisconnectedException)
             {
                 return false;
             }
+        }
 
-            return true;
+        public static bool InvokeVoidAsync(string func, string arg)
+        {
+            Globals.WriteToLog($"JS CALL (2): {func}, {arg}");
+            try
+            {
+                if (ActiveIJsRuntime is null) return false;
+                ActiveIJsRuntime.InvokeVoidAsync(func, arg);
+                return true;
+            }
+            catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException
+                                          or ArgumentNullException or TaskCanceledException or JSDisconnectedException)
+            {
+                return false;
+            }
+        }
+
+        public static bool InvokeVoidAsync(string func, object arg)
+        {
+            Globals.WriteToLog($"JS CALL (3): {func}, {JsonConvert.SerializeObject(arg)}");
+            try
+            {
+                if (ActiveIJsRuntime is null) return false;
+                ActiveIJsRuntime.InvokeVoidAsync(func, arg);
+                return true;
+            }
+            catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException
+                                          or ArgumentNullException or TaskCanceledException or JSDisconnectedException)
+            {
+                return false;
+            }
+        }
+
+        public static bool InvokeVoidAsync(string func, string arg, string arg2)
+        {
+            Globals.WriteToLog($"JS CALL (4): {func}, {arg}, {arg2}");
+            try
+            {
+                if (ActiveIJsRuntime is null) return false;
+                ActiveIJsRuntime.InvokeVoidAsync(func, arg, arg2);
+                return true;
+            }
+            catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException
+                                          or ArgumentNullException or TaskCanceledException or JSDisconnectedException)
+            {
+                return false;
+            }
         }
 
         public static async Task ReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload");

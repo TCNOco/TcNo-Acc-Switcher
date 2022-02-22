@@ -124,6 +124,19 @@ namespace TcNo_Acc_Switcher_Server.Data
                 if (element is string str)
                 {
                     imgPath = GetImgPath(platform, str).Replace("%", "%25");
+                    var actualImagePath = Path.Join("wwwroot\\", GetImgPath(platform, str));
+                    if (!File.Exists(actualImagePath))
+                    {
+                        // Make sure the directory exists
+                        Directory.CreateDirectory(Path.GetDirectoryName(actualImagePath)!);
+                        var defaultPng = $"wwwroot\\img\\platform\\{platform}Default.png";
+                        const string defaultFallback = "wwwroot\\img\\BasicDefault.png";
+                        if (File.Exists(defaultPng))
+                            File.Copy(defaultPng, actualImagePath, true);
+                        else if (File.Exists(defaultFallback))
+                            File.Copy(defaultFallback, actualImagePath, true);
+                    }
+
                     try
                     {
                         var id = str;

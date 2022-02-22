@@ -180,11 +180,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                         _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedCreateIcon"]);
                         return;
                     }
-                    else
-                    {
-                        sBgImg = fallbackBg;
-                        CreateIcon(sBgImg, sFgImg, ref icoOutput);
-                    }
+                    // Else:
+                    sBgImg = fallbackBg;
+                    CreateIcon(sBgImg, sFgImg, ref icoOutput);
                 }
 
                 // Load SVG into memory.
@@ -212,6 +210,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
                 file.CopyTo(ms);
             }
 
+
+            if (!File.Exists(sFgImg))
+                sFgImg = Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png");
 
             Globals.DebugWriteLine(@"[Func:General\Classes\Shortcut.CreateIcon]");
             using var ms16 = new MemoryStream();

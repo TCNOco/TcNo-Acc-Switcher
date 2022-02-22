@@ -85,8 +85,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 string uniqueId;
                 if (CurrentPlatform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.UniqueIdFile))
                 {
-                    dynamic t;
-                    _ = ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out t);
+                    _ = ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out var t);
                     if (t is string s) uniqueId = s;
                     else if (t is byte[]) uniqueId = Globals.GetSha256HashString(t);
                     else
@@ -628,7 +627,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 if (file == "*")
                 {
                     if (!Directory.Exists(Path.GetDirectoryName(fromPath))) return false;
-                    if (!Globals.CopyFilesRecursive(Path.GetDirectoryName(fromPath), toFullPath, true)) return true;
+                    if (Globals.CopyFilesRecursive(Path.GetDirectoryName(fromPath), toFullPath, true)) return true;
 
                     _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
                     return false;

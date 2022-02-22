@@ -311,6 +311,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             var s = new Shortcut();
             _ = s.Shortcut_Platform(Shortcut.Desktop, platform, platId);
             s.ToggleShortcut(true);
+
+            _ = ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea");
         }
 
         [JSInvokable]
