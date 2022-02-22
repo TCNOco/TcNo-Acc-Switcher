@@ -171,6 +171,7 @@ Toast_FailedLoadSettings: "Failed to load settings! Loading default settings ins
 Toast_FileCopyFail: Failed to copy files! See log for more details.
 Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
 Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
+Toast_FailedCreateIcon: Failed to create icon. See log for details.
 Tooltip_Restore: Click to select a 7z file, or drag it onto this button.
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."

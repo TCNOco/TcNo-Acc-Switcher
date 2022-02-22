@@ -20,3 +20,6 @@ windowControlsBackground: "#14151E"
 windowControlsBackground-active: "#43444B"
 windowControlsCloseBackground: "#E81123"
 windowControlsCloseBackground-active: "#F1707A"
+# For platform shortcuts on desktop (For consistency make sure these match your CSS)
+platformLogoForeground: "#FFAA00"
+platformLogoBackground: "#202123"

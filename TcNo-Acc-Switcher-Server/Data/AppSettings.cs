@@ -268,6 +268,37 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         #region STYLESHEET
+
+        public static string TryGetStyle(string key)
+        {
+            try
+            {
+                return StylesheetInfo[key];
+            }
+            catch (Exception ex)
+            {
+                // Try load default theme for values
+                var fallback = Path.Join("themes", "Dracula_Cyan", "info.yaml");
+                if (File.Exists(fallback))
+                {
+                    var desc = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
+                    var fallbackSheet = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(string.Join(Environment.NewLine, Globals.ReadAllLines(fallback)))));
+                    try
+                    {
+                        return fallbackSheet[key];
+                    }
+                    catch (Exception exFallback)
+                    {
+                        Globals.WriteToLog($"Could not find {key} in fallback stylesheet Dracula_Cyan", exFallback);
+                        return "";
+                    }
+                }
+
+                Globals.WriteToLog($"Could not find {key} in stylesheet, and fallback Dracula_Cyan does not exist", ex);
+                return "";
+            }
+        }
+
         /// <summary>
         /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
         /// </summary>

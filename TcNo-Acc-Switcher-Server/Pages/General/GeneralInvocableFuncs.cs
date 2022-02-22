@@ -249,29 +249,34 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             var platformName = $"Switch to {accName} [{platform}]";
             var originalAccId = accId;
             var primaryPlatformId = "" + page[0];
-            var bgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{page}.png");
+            var bgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{page}.svg");
+            string currentPlatformImgPath = "", currentPlatformImgPathOverride = "";
             switch (page)
             {
                 case "steam":
-                    {
-                        var ePersonaState = -1;
-                        if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
-                        platformName = $"Switch to {accName} {(args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "")} [{platform}]";
-                        break;
-                    }
+                    currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\Steam.svg");
+                    currentPlatformImgPathOverride = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\Steam.png");
+                    var ePersonaState = -1;
+                    if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
+                    platformName = $"Switch to {accName} {(args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "")} [{platform}]";
+                    break;
                 case "basic":
+                    currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{CurrentPlatform.SafeName}.svg");
+                    currentPlatformImgPathOverride = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{CurrentPlatform.SafeName}.png");
                     page = CurrentPlatform.SafeName;
                     primaryPlatformId = CurrentPlatform.PrimaryId;
                     platform = CurrentPlatform.FullName;
                     platformName = $"Switch to {accName} [{platform}]";
-
-                    var platformImgPath = "\\img\\platform\\" + CurrentPlatform.SafeName + ".png";
-                    var currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), platformImgPath);
-                    bgImg = File.Exists(currentPlatformImgPath)
-                        ? Path.Join(currentPlatformImgPath)
-                        : Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png");
                     break;
             }
+
+            if (File.Exists(currentPlatformImgPathOverride))
+                bgImg = currentPlatformImgPathOverride;
+            else if (File.Exists(currentPlatformImgPath))
+                bgImg = currentPlatformImgPath;
+            else if (File.Exists(Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png")))
+                bgImg = Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png");
+
 
             var fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{page}\\{accId}.jpg");
             if (!File.Exists(fgImg)) fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{page}\\{accId}.png");

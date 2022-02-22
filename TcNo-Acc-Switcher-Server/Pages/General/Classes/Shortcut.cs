@@ -172,8 +172,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         public void CreateCombinedIcon(string bgImg, string fgImg, string iconName)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateCombinedIcon] bgImg={bgImg}, fgImg={fgImg.Substring(fgImg.Length - 6, 6)}, iconName=hidden");
-            IconFactory.CreateIcon(bgImg, fgImg, ref iconName);
-            IconDir = Path.GetFullPath(iconName);
+            try
+            {
+                IconFactory.CreateIcon(bgImg, fgImg, ref iconName);
+                IconDir = Path.GetFullPath(iconName);
+            }
+            catch (Exception e)
+            {
+                Globals.WriteToLog($"Failed to CreateIcon! '{bgImg}', '{fgImg}, '{iconName}'", e);
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedCreateIcon"]);
+                return;
+            }
         }
         #endregion
 

@@ -166,10 +166,39 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         {
             var ms = new MemoryStream();
             // If input is SVG, create PNG
-            if (sBgImg.EndsWith(".svg"))
+            // AND If override PNG does NOT exists:
+            if (sBgImg.EndsWith(".svg") && !File.Exists(sBgImg.Replace(".svg",".png")))
             {
+                // If background doesn't exist:
+                if (!File.Exists(sBgImg))
+                {
+                    var fallbackBg = Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png");
+                    // If fallback file doesn't exist, or has already been re-run, fail:
+                    if (!File.Exists(fallbackBg) || fallbackBg == sBgImg)
+                    {
+                        Globals.WriteToLog($"Failed to CreateIcon! File does not exist: '{sBgImg}'. Other requested file: '{sFgImg}'");
+                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedCreateIcon"]);
+                        return;
+                    }
+                    else
+                    {
+                        sBgImg = fallbackBg;
+                        CreateIcon(sBgImg, sFgImg, ref icoOutput);
+                    }
+                }
+
+                // Load SVG into memory.
+                var svgContent = File.ReadAllText(sBgImg);
+                if (svgContent.Contains("id=\"FG\""))
+                {
+                    // Set color of foreground content, and insert background image
+                    svgContent = svgContent.Replace("<path id=\"FG\"", $"<rect fill=\"{AppSettings.TryGetStyle("platformLogoBackground")}\" width=\"500\" height=\"500\"></rect>\"<path id=\"FG\" fill=\"{AppSettings.TryGetStyle("platformLogoForeground")}\"");
+                    // Add the glass effect
+                    svgContent = svgContent.Replace("/></svg>", "/><path d=\"M500, 0L0, 0L0, 500L500, 0Z\" fill=\"#FFFFFF\" fill-opacity=\"0.02\"/></svg>");
+                }
+
                 using var svg = new SKSvg();
-                if (svg.Load(sBgImg) is { })
+                if (svg.FromSvg(svgContent) is { })
                 {
                     //var tempBg =  Path.Join("temp", Path.GetFileNameWithoutExtension(sBgImg) + ".png");
                     //using var svgToPngStream = File.OpenWrite(tempBg);
