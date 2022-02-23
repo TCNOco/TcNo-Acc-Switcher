@@ -312,7 +312,7 @@
     },
     "Genshin Impact": {
       "Identifiers": [ "gi", "genshin", "genshinimpact" ],
-      "ExeLocationDefault": "C:\\Program Files\\Genshin Impact\\launcher.exe",
+      "ExeLocationDefault": "C:\\Program Files\\Genshin Impact\\Genshin Impact Game\\GenshinImpact.exe",
       "ExesToEnd": [ "GenshinImpact.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
