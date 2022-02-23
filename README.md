@@ -22,6 +22,8 @@
 </p>
 <p align="center"><a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher-Themes">
   <img alt="Themes" src="/other/img/Themes.png" height=70"></a>
+  <a target="_blank" href="https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Frequently-Asked-Questions">
+  <img alt="Themes" src="/other/img/FAQButton.png" height=70"></a>
 </p>
   
 **A Super fast account switcher for Steam, Battle.net, Epic Games, Origin, Riot Games and Ubisoft (and more soon)**
