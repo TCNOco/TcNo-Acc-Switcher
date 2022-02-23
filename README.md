@@ -36,18 +36,20 @@ Simple. It swaps out files and registry values, pointing to your last logged in 
 
 ### Things not working? See the [FAQ](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Frequently-Asked-Questions)
 
+
+<h2><img alt="Youtube" src="/other/img/youtube.svg" height=18"> List of all platforms (Click for video guides):</h2>
+
+**Discord (+ PTB & Canary)**, **[Epic Games](https://www.youtube.com/watch?v=gd9oS6wiKmU&list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6&index=7&t=26s)**, **[EA Desktop](https://youtu.be/BxUL27qVgaU?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)**, **Escape from Tarkov**, **GeForce Now**, **[Genshin Impact](https://youtu.be/WFt5DvKQ7pc?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)**, **[Origin](https://youtu.be/qRYra_fQt0I?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)**, **OBS Studio**, **Riot Games** (Valorant, League...), **[Steam](https://youtu.be/rLXGs1Yr3m8?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)**, **[Ubisoft Connect](https://youtu.be/XKBkIQaJzOA?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)** and **[Battle.net](https://youtu.be/cvbo_VY05bo?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)** Thank's to [iR3turnZ](https://github.com/HoeblingerDaniel) :) - [YouTube Playlist](https://www.youtube.com/playlist?list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6)
+	
+*This list may not be up-to-date as platforms can now be added a lot faster.
+
+[TcNo Account Switcher Install Guide](https://www.youtube.com/watch?v=sjJ8OZ_urJY&list=PLsSFD61FiOVmAwChPSrIFkjDLoLsyqcU6&index=1&t=27s)
+
 # What's new
 
 Version 5.0 is released (Jan 2022)! Please report any and all bugs, as well as steps to recreate them into the Issues section, or the `#bug-report` channel under `TCNO ACCOUNT SWITCHER` section on the [Community Discord](https://s.tcno.co/AccSwitcherDiscord).
 
-<p><img alt="Youtube" src="/other/img/youtube.svg" height=18"> <b>Guides:</b> <a href="https://youtu.be/cvbo_VY05bo">BattleNet</a>, <a href="https://youtu.be/qRYra_fQt0I">Origin</a>, <a href="https://youtu.be/rLXGs1Yr3m8">Steam</a>, <a href="https://youtu.be/XKBkIQaJzOA">UPlay</a></p>
-
 The new version adds the ability to easily create and maintain platforms by editing a simple text file `Platforms.json`. If you'd like to learn more, see this [Wiki page](https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/Help-code-a-platform).
-
-**List of all platforms:**
-**Discord (+ PTB & Canary)**, **Epic Games**, **EA Desktop**, **Escape from Tarkov**, **GeForce Now**, **Genshin Impact**, **Origin**, **OBS Studio**, **Riot Games** (Valorant, League...), **Steam**, **Ubisoft Connect** and **Battle.net** Thank's to [iR3turnZ](https://github.com/HoeblingerDaniel) :),
-	
-*This list may not be up-to-date as platforms can now be added a lot faster.
 
 **Featuring**
 -  **Better UI**, with animations. Fully user/community customisable **theme system**. 2 Themes built in (so far).
