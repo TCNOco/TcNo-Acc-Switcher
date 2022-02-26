@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-inline std::string required_min_webview = "91.0",
+inline std::string required_min_webview = "98.0",
                    required_min_desktop_runtime = "6.0.1",
                    required_min_aspcore = "6.0.1",
                    required_min_vc = "14.30.30704";

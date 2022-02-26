@@ -185,7 +185,7 @@ namespace TcNo_Acc_Switcher_Globals
                     throw new InvalidOperationException("URI is invalid.");
 
                 var fileBytes = HClient.GetByteArrayAsync(url).Result;
-                if (path.Contains("\\")) Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                if (path.Contains('\\')) Directory.CreateDirectory(Path.GetDirectoryName(path)!);
                 File.WriteAllBytes(path, fileBytes);
             }
             catch (Exception)

@@ -188,7 +188,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             // Handle wildcards
             DirectoryInfo di;
-            if (accFile.Contains("*"))
+            if (accFile.Contains('*'))
             {
                 var folder = ExpandEnvironmentVariables(Path.GetDirectoryName(accFile) ?? "");
                 var file = Path.GetFileName(accFile);
@@ -244,7 +244,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             }
 
             // Handle wildcards
-            if (accFile.Contains("*"))
+            if (accFile.Contains('*'))
             {
                 var folder = ExpandEnvironmentVariables(Path.GetDirectoryName(accFile) ?? "");
                 var file = Path.GetFileName(accFile);
@@ -319,7 +319,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
 
             // Handle wildcards
-            if (accFile.Contains("*"))
+            if (accFile.Contains('*'))
             {
                 var folder = ExpandEnvironmentVariables(Path.GetDirectoryName(accFile) ?? "");
                 var file = Path.GetFileName(accFile);
@@ -600,17 +600,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         private static bool HandleFileOrFolder(string fromPath, string toPath, string localCachePath, bool reverse)
         {
             // Expand, or join localCachePath
-            var toFullPath = toPath.Contains("%")
+            var toFullPath = toPath.Contains('%')
                 ? ExpandEnvironmentVariables(toPath)
                 : Path.Join(localCachePath, toPath);
 
             // Reverse if necessary. Explained in summary above.
-            if (reverse && fromPath.Contains("*"))
+            if (reverse && fromPath.Contains('*'))
             {
                 (toPath, fromPath) = (fromPath, toPath); // Reverse
                 var wildcard = Path.GetFileName(toPath);
                 // Expand, or join localCachePath
-                fromPath = fromPath.Contains("%")
+                fromPath = fromPath.Contains('%')
                     ? ExpandEnvironmentVariables(Path.Join(fromPath, wildcard))
                     : Path.Join(localCachePath, fromPath, wildcard);
                 toPath = toPath.Replace(wildcard, "");
@@ -618,7 +618,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             }
 
             // Handle wildcards
-            if (fromPath.Contains("*"))
+            if (fromPath.Contains('*'))
             {
                 var folder = ExpandEnvironmentVariables(Path.GetDirectoryName(fromPath) ?? "");
                 var file = Path.GetFileName(fromPath);
@@ -639,7 +639,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 foreach (var f in Directory.GetFiles(folder, file))
                 {
                     if (toFullPath == null) return false;
-                    if (toFullPath.Contains("*")) toFullPath = Path.GetDirectoryName(toFullPath);
+                    if (toFullPath.Contains('*')) toFullPath = Path.GetDirectoryName(toFullPath);
                     var fullOutputPath = Path.Join(toFullPath, Path.GetFileName(f));
                     Globals.CopyFile(f, fullOutputPath);
                 }
@@ -713,8 +713,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             if (CurrentPlatform.UniqueIdMethod is "REGKEY")
             {
-                dynamic r;
-                _ = ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out r);
+                _ = ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out var r);
                 if (r is string) uniqueId = r;
                 else if (r is byte[] ba) uniqueId = Globals.GetSha256HashString(ba);
                 else Globals.WriteToLog($"Unexpected registry type encountered (3)! Report to TechNobo. {r.GetType()}");
@@ -726,7 +725,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 return File.Exists(fileToRead) ? File.ReadAllText(fileToRead) : uniqueId;
             }
 
-            if (CurrentPlatform.UniqueIdFile is not "" && (File.Exists(fileToRead) || fileToRead.Contains("*")))
+            if (CurrentPlatform.UniqueIdFile is not "" && (File.Exists(fileToRead) || fileToRead.Contains('*')))
             {
                 if (!string.IsNullOrEmpty(CurrentPlatform.UniqueIdRegex))
                 {
@@ -734,7 +733,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 }
                 else if (CurrentPlatform.UniqueIdMethod is "FILE_MD5") // TODO: TEST THIS! -- This is used for static files that do not change throughout the lifetime of an account login.
                 {
-                    if (fileToRead.Contains("*"))
+                    if (fileToRead.Contains('*'))
                         uniqueId = GeneralFuncs.GetFileMd5(Directory.GetFiles(Path.GetDirectoryName(fileToRead), Path.GetFileName(fileToRead)).First());
                     else
                         uniqueId = GeneralFuncs.GetFileMd5(fileToRead);
