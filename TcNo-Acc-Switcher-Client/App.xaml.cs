@@ -96,8 +96,11 @@ namespace TcNo_Acc_Switcher_Client
                 foreach (var eArg in e.Args)
                 {
                     // Check if arguments are a platform
-                    if (AppData.Instance.PlatformList.Contains(eArg, StringComparer.OrdinalIgnoreCase))
-                        StartPage = eArg;
+                    foreach (var p in AppData.Instance.PlatformList.Where(p => p.Equals(eArg, StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        StartPage = p;
+                        break;
+                    }
 
                     // Check if platform short is BasicPlatform
                     if (BasicPlatforms.PlatformExistsFromShort(eArg))
@@ -373,33 +376,56 @@ namespace TcNo_Acc_Switcher_Client
                     case "-h":
                     case "help":
                     case "--help":
-                        string[] help =
+                        var availableList = new List<string>();
+                        var switchList = new List<string>();
+                        foreach (var jToken in BasicPlatforms.GetPlatforms)
                         {
+                            var line = "";
+                            var x = (JProperty)jToken;
+                            var identifiers = BasicPlatforms.GetPlatforms[x.Name]["Identifiers"].ToObject<List<string>>();
+
+                            switchList.Add($" -   {x.Name}: {identifiers[0]}:<identifier>");
+
+                            foreach (var platformShort in identifiers)
+                            {
+                                if (line == "")
+                                    line = $" -   {x.Name}: {platformShort}";
+                                else
+                                    line += $", {platformShort}";
+                            }
+                            availableList.Add(line);
+                        }
+
+                        availableList.Sort();
+                        switchList.Sort();
+
+                        var helpLines = new List<string>(){
                             "This is the command line interface. You are able to use any of the following arguments with this program:",
                             "--- Switching to accounts ---",
                             "Usage (don't include spaces): + <PlatformLetter> : <...details>",
                             " -   Battlenet format: +b:<email>",
-                            " -   Discord format: +d:<username>",
-                            " -   Epic Games format: +e:<username>",
-                            " -   Origin format: +o:<accName>",
-                            " -   Riot Games format: +r:<username>",
-                            " -   Steam format: +s:<steamId>[:<PersonaState (0-7)>]",
-                            " -   Ubisoft Connect format: +u:<accName>",
+                            " -   Steam format: +s:<steamId>[:<PersonaState (0-7)>]"
+                        };
+                        helpLines.AddRange(switchList);
+
+                        helpLines.AddRange(new List<string>()
+                        {
                             " --- Other platforms: +<2-3 letter code>:<unique identifiers>",
                             "--- Log out of accounts ---",
                             "logout:<platform> = Logout of a specific platform (Allowing you to sign into and add a new account)",
                             "Available platforms:",
                             " -   BattleNet: b, bnet, battlenet, blizzard",
-                            " -   Epic Games: e, epic, epicgames",
-                            " -   Origin: o, origin",
-                            " -   Riot Games: r, riot, riotgames",
                             " -   Steam: s, steam",
-                            " -   Ubisoft Connect: u, ubi, ubisoft, uplay",
+                        });
+                        helpLines.AddRange(availableList);
+                        helpLines.AddRange(new List<string>()
+                        {
                             " --- Other platforms via custom commands: <unique identifiers>",
                             "--- Other arguments ---",
                             "v, vv, verbose = Verbose mode (Shows a lot of details, somewhat useful for debugging)"
-                        };
-                        Console.WriteLine(string.Join(Environment.NewLine, help));
+                        });
+
+                        Console.WriteLine(string.Join(Environment.NewLine, helpLines));
                         return true;
                     case "v":
                     case "vv":
