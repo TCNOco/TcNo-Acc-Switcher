@@ -77,9 +77,8 @@ namespace TcNo_Acc_Switcher_Tray
         {
             if (!File.Exists("Tray_Users.json"))
             {
-                _ = MessageBox.Show(
-                    "There were no accounts found. Try switching accounts first, or locate 'Tray_Users.json'",
-                    "Tray Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _ = MessageBox.Show(GLang.Instance["Tray_NoAccs"],
+                    GLang.Instance["Tray_Error"], MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(0);
             }
             if (string.Equals(Program.LastHash, Globals.GetFileMd5("Tray_Users.json"), StringComparison.Ordinal)) return; // Don't init again
@@ -106,7 +105,7 @@ namespace TcNo_Acc_Switcher_Tray
                     _ = tsi.DropDownItems.Add(new ToolStripMenuItem
                     {
                         Name = trayUsers.Arg,
-                        Text = $@"Switch to: {trayUsers.Name}",
+                        Text = GLang.Instance["Tray_Switch", new { account = trayUsers.Name}],
                         ForeColor = Color.White,
                         BackColor = Color.FromArgb(255, 34, 34, 34)
                     });
@@ -210,7 +209,7 @@ namespace TcNo_Acc_Switcher_Tray
                     }
                 }
                 else
-                    _ = MessageBox.Show("Could not open the main .exe. Make sure it exists.\n\nI attempted to open: " + _mainProgram, "TcNo Account Switcher - Tray launch fail");
+                    _ = MessageBox.Show($"{GLang.Instance["Tray_CantOpenExe"]} {_mainProgram}", GLang.Instance["Tray_LaunchFail"]);
             }
         }
 
