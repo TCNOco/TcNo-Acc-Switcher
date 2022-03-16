@@ -20,7 +20,7 @@ Button_ResetSettings: Réinitialiser les paramètres
 Button_AdvancedCleaning: Nettoyage avancé...
 Button_ClearLog: Effacer le journal
 Button_WikiInfo: Plus d'informations (Wiki)
-Button_ManagePlatforms: Manage Platforms
+Button_ManagePlatforms: Gérer les plateformes
 Button_Backup: Sauvegarde
 Button_BackupAll: Sauvegardez tout
 Button_Restore: Restaurer
@@ -30,15 +30,15 @@ Settings_Admin: Exécuter {platform} en tant qu'administrateur
 Settings_ImageExpiry: 'Jours avant l''expiration des images de profil:'
 Settings_Header_AppWide: Paramètres de l'application
 Settings_Header_GeneralSettings: Paramètres généraux
-Settings_Header_ExtraPlatforms: Platform Settings
+Settings_Header_ExtraPlatforms: Paramètres de la plate-forme
 Settings_Header_GeneralTools: Outils généraux
 Settings_Header_OtherTools: Autres outils
 Settings_Header_TraySettings: Paramètres de la zone de notification
 Settings_Header_OpenGameFolders: Ouvrir les dossiers du jeu
 Settings_Header_BackupRestore: Paramètres de la plate-forme de sauvegarde et de restauration
 Settings_TrayMax: 'Nombre maximum de comptes à retenir :'
-Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
-Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
+Settings_ExtraPlatformsDisabled: Plateformes désactivées. Cliquez pour les activer.
+Settings_ExtraPlatformsEnabled: Plates-formes visibles. Cliquez pour les désactiver.
 Settings_RTL: Afficher le texte de droite à gauche
 Settings_CurrentLocation: 'Emplacement d''installation actuel : {path}'
 Settings_CurrentDataLocation: 'Emplacement actuel des données utilisateur : {path}'
@@ -171,7 +171,7 @@ Toast_FailedLoadSettings: "Échec du chargement des paramètres ! Chargement de
 Toast_FileCopyFail: Échec de la copie des fichiers ! Voir le journal pour plus de détails.
 Toast_UserDataLoadFail: Échec du chargement des données utilisateur {UserData}\\WindowSettings.json. Sauvegarde et réinitialisation ! Erreur enregistrée dans le journal.
 Toast_UpdateCheckFail: Impossible d'accéder à https://tcno.co/ pour vérifier les mises à jour. Ce message s'affichera une fois par jour.
-Toast_FailedCreateIcon: Failed to create icon. See log for details.
+Toast_FailedCreateIcon: Échec de la création de l'icône. Voir le journal pour plus de détails.
 Tooltip_Restore: Cliquez pour sélectionner un fichier 7z ou faites-le glisser sur ce bouton.
 Modal_Crowdin_Header: Traducteurs Crowdin
 Modal_Crowdin_Info: "Voici tous ceux qui ont aidé à traduire ce logiciel.<br>Les utilisateurs avec des langues voisines ont beaucoup aidé à la traduction (rôle de correcteur)."
@@ -248,7 +248,7 @@ Context_RunAdmin: Exécuter en tant qu'administrateur
 Context_Hide: Cacher
 Title_BNet_Settings: Commutateur de compte TcNo - Paramètres BattleNet
 Title_BNet_ManageIgnored: Changeur de compte TcNo - Gérer les comptes BattleNet ignorés
-Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
+Title_Platforms_Settings: TcNo Account Switcher - Paramètres de la plate-forme
 Title_AccountsList: Changeur de compte TcNo - {platform}
 Title_TextEditor: Changeur de compte TcNo - Éditeur de texte
 Title_Settings: Changeur de compte TcNo - Paramètres
