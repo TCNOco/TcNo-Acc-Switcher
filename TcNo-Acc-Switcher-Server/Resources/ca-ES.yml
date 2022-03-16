@@ -20,7 +20,7 @@ Button_ResetSettings: Restableix la configuració
 Button_AdvancedCleaning: Neteja avançada ...
 Button_ClearLog: Esborra el registre
 Button_WikiInfo: Més informació (Wiki)
-Button_ManagePlatforms: Gestionar plataformes addicionals
+Button_ManagePlatforms: Manage Platforms
 Button_Backup: Còpia de seguretat
 Button_BackupAll: Fes una còpia de seguretat de tot
 Button_Restore: Restaurar
@@ -30,15 +30,15 @@ Settings_Admin: Executeu {platform} com a administrador
 Settings_ImageExpiry: 'Dies abans que caduquin les imatges de perfil:'
 Settings_Header_AppWide: Configuració de tota l'aplicació
 Settings_Header_GeneralSettings: Configuració general
-Settings_Header_ExtraPlatforms: Configuració addicional de la plataforma
+Settings_Header_ExtraPlatforms: Platform Settings
 Settings_Header_GeneralTools: Eines generals
 Settings_Header_OtherTools: Altres eines
 Settings_Header_TraySettings: Configuració de la safata
 Settings_Header_OpenGameFolders: Obrir carpetes de jocs
 Settings_Header_BackupRestore: Còpia de seguretat i restauració de la configuració de la plataforma
 Settings_TrayMax: 'Nombre màxim de comptes que cal recordar:'
-Settings_ExtraPlatformsDisabled: Aquestes plataformes addicionals disponibles actualment estan desactivades. Feu clic per activar-los.
-Settings_ExtraPlatformsEnabled: Aquestes plataformes addicionals són visibles. Feu clic per desactivar-los.
+Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
+Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
 Settings_RTL: Mostra el text com a de dreta a esquerra
 Settings_CurrentLocation: 'Localització actual d''instal·lació: {path}'
 Settings_CurrentDataLocation: 'Ubicació actual de les dades de l''usuari: {path}'
@@ -171,6 +171,7 @@ Toast_FailedLoadSettings: "No s'ha pogut carregar la configuració! S'està carr
 Toast_FileCopyFail: No s'han pogut copiar els fitxers! Consulteu el registre per a més detalls.
 Toast_UserDataLoadFail: No s'han pogut carregar les dades d'usuari {UserData}\\WindowSettings.json. Còpia de seguretat i reinici! Error desat al registre.
 Toast_UpdateCheckFail: No s'ha pogut contactar amb https://tcno.co/ per comprovar si hi ha actualitzacions. Aquest missatge es mostrarà un cop al dia.
+Toast_FailedCreateIcon: Failed to create icon. See log for details.
 Tooltip_Restore: Feu clic per seleccionar un fitxer 7z o arrossegueu-lo a aquest botó.
 Modal_Crowdin_Header: Traductors crowdin
 Modal_Crowdin_Info: "Aquí teniu tots els que han ajudat a traduir aquest programari.<br>Els usuaris amb idiomes al costat van ajudar molt en la traducció (rol de corrector)."
@@ -247,7 +248,7 @@ Context_RunAdmin: Executar com a administrador
 Context_Hide: Amaga
 Title_BNet_Settings: 'TcNo Account Switcher: configuració de BattleNet'
 Title_BNet_ManageIgnored: 'TcNo Account Switcher: gestioneu els comptes BattleNet ignorats'
-Title_Platforms_Settings: TcNo Account Switcher - Configuració addicional de la plataforma
+Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
 Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: 'TcNo Account Switcher: editor de text'
 Title_Settings: TcNo Account Switcher - Configuració
