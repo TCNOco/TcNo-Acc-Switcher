@@ -20,7 +20,7 @@ Button_ResetSettings: Сбросить настройки
 Button_AdvancedCleaning: Расширенная очистка
 Button_ClearLog: Очистить журнал
 Button_WikiInfo: Больше информации (Wiki)
-Button_ManagePlatforms: Manage Platforms
+Button_ManagePlatforms: Управление платформами
 Button_Backup: Резервное копирование
 Button_BackupAll: Полное резервное копирование
 Button_Restore: Восстановить
@@ -30,15 +30,15 @@ Settings_Admin: Запускать {platform} от имени администр
 Settings_ImageExpiry: 'Дней до исчезновения изображений профиля:'
 Settings_Header_AppWide: Основные настройки
 Settings_Header_GeneralSettings: Общие настройки
-Settings_Header_ExtraPlatforms: Platform Settings
+Settings_Header_ExtraPlatforms: Настройки платформы
 Settings_Header_GeneralTools: Основные инструменты
 Settings_Header_OtherTools: Другие инструменты
 Settings_Header_TraySettings: Настройки трея
 Settings_Header_OpenGameFolders: Открыть папку с игрой
 Settings_Header_BackupRestore: Резервное копирование и восстановление настроек платформы
 Settings_TrayMax: 'Максимальное количество учетных записей, которое нужно запомнить:'
-Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
-Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
+Settings_ExtraPlatformsDisabled: Инвалидные платформы. Нажмите, чтобы включить их.
+Settings_ExtraPlatformsEnabled: Видимые платформы. Нажмите, чтобы отключить их.
 Settings_RTL: Показывать текст справа налево
 Settings_CurrentLocation: 'Текущее расположение: {path}'
 Settings_CurrentDataLocation: 'Расположение пользовательских данных: {path}'
@@ -248,7 +248,7 @@ Context_RunAdmin: Запуск от имени администратора
 Context_Hide: Скрыть
 Title_BNet_Settings: TcNo Account Switcher - Настройки BattleNet
 Title_BNet_ManageIgnored: TcNo Account Switcher - Управление игнорируемыми аккаунтами BattleNet
-Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
+Title_Platforms_Settings: TcNo Account Switcher - Настройки платформы
 Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - текстовый редактор
 Title_Settings: TcNo Account Switcher - Настройки
