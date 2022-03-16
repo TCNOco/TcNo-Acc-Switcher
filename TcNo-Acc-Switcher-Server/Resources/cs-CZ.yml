@@ -20,7 +20,7 @@ Button_ResetSettings: Obnovit nastavení
 Button_AdvancedCleaning: Pokročilé čištění...
 Button_ClearLog: Vymazat záznam
 Button_WikiInfo: Další informace (Wiki)
-Button_ManagePlatforms: Spravujte další platformy
+Button_ManagePlatforms: Manage Platforms
 Button_Backup: Záloha
 Button_BackupAll: Zálohujte vše
 Button_Restore: Obnovit
@@ -30,15 +30,15 @@ Settings_Admin: Spustit {platform} jako správce
 Settings_ImageExpiry: 'Dny před vypršením platnosti profilových obrázků:'
 Settings_Header_AppWide: Nastavení celé aplikace
 Settings_Header_GeneralSettings: Obecná nastavení
-Settings_Header_ExtraPlatforms: Další nastavení platformy
+Settings_Header_ExtraPlatforms: Platform Settings
 Settings_Header_GeneralTools: Obecné nástroje
 Settings_Header_OtherTools: Ostatní nástroje
 Settings_Header_TraySettings: Nastavení v systémové liště
 Settings_Header_OpenGameFolders: Otevřít herní složky
 Settings_Header_BackupRestore: Nastavení platformy zálohování a obnovení
 Settings_TrayMax: 'Maximální počet účtů, které chcete pamatovat:'
-Settings_ExtraPlatformsDisabled: Tyto dostupné další platformy jsou aktuálně zakázány. Kliknutím je povolíte.
-Settings_ExtraPlatformsEnabled: Tyto další platformy jsou viditelné. Kliknutím je deaktivujete.
+Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
+Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
 Settings_RTL: Zobrazit text jako zprava doleva
 Settings_CurrentLocation: 'Aktuální umístění instalace: {path}'
 Settings_CurrentDataLocation: 'Aktuální umístění uživatelských dat: {path}'
@@ -171,6 +171,7 @@ Toast_FailedLoadSettings: "Nastavení se nepodařilo načíst! Místo toho se na
 Toast_FileCopyFail: Soubory se nepodařilo zkopírovat! Další podrobnosti naleznete v protokolu.
 Toast_UserDataLoadFail: Nepodařilo se načíst uživatelská data {UserData}\\WindowSettings.json. Zálohování a resetování! Chyba uložena do protokolu.
 Toast_UpdateCheckFail: Nelze se dostat na https://tcno.co/ a zkontrolovat aktualizace. Tato zpráva se bude zobrazovat jednou denně.
+Toast_FailedCreateIcon: Failed to create icon. See log for details.
 Tooltip_Restore: Klepnutím vyberte soubor 7z nebo jej přetáhněte na toto tlačítko.
 Modal_Crowdin_Header: Crowdinští překladatelé
 Modal_Crowdin_Info: "Zde jsou všichni, kteří pomohli přeložit tento software.<br>překladu hodně pomohli uživatelé s jazyky vedle sebe (role korektora)."
@@ -247,7 +248,7 @@ Context_RunAdmin: Spustit jako správce
 Context_Hide: Skrýt
 Title_BNet_Settings: Přepínač účtu TcNo - Nastavení BattleNet
 Title_BNet_ManageIgnored: Přepínač účtu TcNo - Správa ignorovaných účtů BattleNet
-Title_Platforms_Settings: Přepínač účtů TcNo – Extra nastavení platformy
+Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
 Title_AccountsList: Přepínač TcNo účtu - {platform}
 Title_TextEditor: Přepínač účtu TcNo - Editor textu
 Title_Settings: Přepínač TcNo účtu - Nastavení
