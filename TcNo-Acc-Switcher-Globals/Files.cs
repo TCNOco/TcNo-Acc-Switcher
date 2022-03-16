@@ -95,11 +95,10 @@ namespace TcNo_Acc_Switcher_Globals
         }
         public static string RegexSearchFolder(string folder, string pattern, string wildcard = "")
         {
-            var result = "";
             // Foreach file in folder (until match):
             foreach (var f in Directory.GetFiles(folder, wildcard))
             {
-                result = RegexSearchFile(f, pattern);
+                var result = RegexSearchFile(f, pattern);
                 if (result == "") continue;
                 return result;
             }
@@ -107,7 +106,7 @@ namespace TcNo_Acc_Switcher_Globals
             return "";
         }
 
-        public static bool DeleteFiles(string path, bool throwErr = false)
+        public static bool DeleteFiles(string path)
         {
             return Directory.GetFiles(path).Aggregate(false, (current, f) => DeleteFile(f, true) || current);
         }

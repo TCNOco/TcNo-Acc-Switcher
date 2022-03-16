@@ -24,9 +24,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CefSharp.Common" Version="98.1.210" />
-    <PackageReference Include="CefSharp.Wpf.NETCore" Version="98.1.210" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1108.44" />
+    <PackageReference Include="CefSharp.Common" Version="99.2.90" />
+    <PackageReference Include="CefSharp.Wpf.NETCore" Version="99.2.90" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1150.38" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,15 +60,21 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-arm64" Version="98.1.21" />
+    <Reference Include="WindowsFormsIntegration">
+      <HintPath>..\..\..\..\..\..\Program Files\Reference Assemblies\Microsoft\Framework\v3.0\WindowsFormsIntegration.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="98.1.21" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-arm64" Version="99.2.9" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-x86" Version="98.1.21" />
+    <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="99.2.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="chromiumembeddedframework.runtime.win-x86" Version="99.2.9" />
   </ItemGroup>
 
 </Project>

@@ -217,7 +217,6 @@ namespace TcNo_Acc_Switcher_Globals
             set => _instance = value;
         }
 
-        private static readonly GLang Lang = GLang.Instance;
         private string _lastHash = "";
         private bool _currentlyModifying = false;
 
