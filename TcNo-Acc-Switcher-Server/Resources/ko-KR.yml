@@ -20,25 +20,25 @@ Button_ResetSettings: 설정 초기화
 Button_AdvancedCleaning: 고급 정리...
 Button_ClearLog: 로그 삭제
 Button_WikiInfo: 추가 정보(위키)
-Button_ManagePlatforms: Manage Platforms
+Button_ManagePlatforms: 플랫폼 관리
 Button_Backup: 백업
 Button_BackupAll: 모두 백업
 Button_Restore: 복원
 Button_OpenBackup: 백업 폴더 열기
-Settings_Shortcut: ' {platform} 스위쳐 바탕화면 바로 가기'
+Settings_Shortcut: ' {platform} Switcher 바탕화면 바로 가기'
 Settings_Admin: 관리자 권한으로 {platform} 실행
 Settings_ImageExpiry: '다음 날짜가 지나면 프로필 이미지 만료:'
 Settings_Header_AppWide: 앱 전체 설정
 Settings_Header_GeneralSettings: 일반 설정
-Settings_Header_ExtraPlatforms: Platform Settings
+Settings_Header_ExtraPlatforms: 플랫폼 설정
 Settings_Header_GeneralTools: 일반 도구
 Settings_Header_OtherTools: 기타 도구
 Settings_Header_TraySettings: 트레이 설정
 Settings_Header_OpenGameFolders: 게임 폴더 열기
 Settings_Header_BackupRestore: 플랫폼 설정 백업 및 복원
 Settings_TrayMax: '기억할 최대 계정 수:'
-Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
-Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
+Settings_ExtraPlatformsDisabled: 비활성화된 플랫폼. 활성화하려면 클릭하세요.
+Settings_ExtraPlatformsEnabled: 보여질 플랫폼. 비활성화하려면 클릭하세요. 
 Settings_RTL: 텍스트를 오른쪽에서 왼쪽으로 표시
 Settings_CurrentLocation: '현재 설치 위치: {path}'
 Settings_CurrentDataLocation: '현재 사용자 데이터 위치: {path}'
@@ -68,34 +68,34 @@ Settings_Header_StartingMethod: "(고급) {platform}을 시작하는 방법을 �
 Settings_AutoStart: "계정 전환 시 자동으로 {platform} 시작"
 Settings_NoPlatforms: 현재 활성화된 플랫폼이 없습니다. 아래에서 플랫폼을 선택하여 활성화하거나 비활성화된 플랫폼을 선택 취소하십시오.
 Cleaning_Header_StartMenuShortcuts: '시작 메뉴 바로 가기:'
-Cleaning_Header_General: 일반 청소
+Cleaning_Header_General: 일반 정리
 Cleaning_Header_LoginHistory: 내 로그인 기록 정리
-Cleaning_Header_PlatformCleaning: '{platform} 스위처'
+Cleaning_Header_PlatformCleaning: '{platform} Switcher'
 Cleaning_ImportantInfoHeader: '중요 정보:'
 Cleaning_ImportantInfo: >
   버튼을 클릭하면 Steam 설치폴더에서 관련 파일이 삭제됩니다.<br /> loginusers.vdf를 삭제하면 이 계정 전환기에 계정이 표시되지 않습니다.<br /> 다시 파일을 받으려면 Steam을 사용하여 로그인해야 합니다.
 Cleaning_Button_KillProcess: '{platform} 프로세스 종료'
 Cleaning_Button_ForgottenBackups: 잊어버린 계정 백업
-Cleaning_Understand: 이 버튼이 무엇을 하는지 이해합니다.
+Cleaning_Understand: 이 버튼들이 어떠한 역할을 하는지 잘 이해하고 있습니다.
 Restore_Info: >
   이전에 계정을 "잊었다"면 여기에서 복원할 수 있습니다.<br /> 그러면 loginusers.vdf 파일에 다시 추가되어 전환할 수 있습니다.
 Restore_Button_Restore: 선택 항목 복원
 Ignored_RemoveAccounts: 무시 목록에서 계정 제거
-Ignored_Description: 이전에 계정을 "무시"한 경우 여기에 다시 표시할 수 있습니다.
-Ignored_Stop: 선택한 항목 무시 중지
-Toast_DataLocationCopying: (1/2) 기존 파일을 새 사용자 데이터 폴더에 복사!
+Ignored_Description: 이전에 계정을 "무시"하도록 한 경우 다시 표시하도록 할 수 있습니다.
+Ignored_Stop: 선택한 항목 무시하기 중지
+Toast_DataLocationCopying: (1/2) 기존 파일을 새 사용자 데이터 폴더에 복사 중!
 Toast_DataLocationNotCopying: (1/2) 폴더에 이미 파일이 있습니다! 사용자 데이터를 마이그레이션하지 않습니다.
-Toast_DataLocationSet: (2/2) 새 폴더를 사용하려면 계정 전환기를 다시 시작하세요!
-Toast_PlaceShortcutFiles: 폴더가 열려 있습니다. 해당 폴더에 게임 바로 가기를 넣고 계정 전환기를 다시 시작하십시오.
-Toast_TrayStarted: 트레이 시작했습니다!
+Toast_DataLocationSet: (2/2) 새 폴더를 사용하려면 계정 전환기를 재시작하세요!
+Toast_PlaceShortcutFiles: 폴더를 열었습니다. 해당 폴더에 게임 바로 가기를 넣고 계정 전환기를 다시 시작하십시오.
+Toast_TrayStarted: 트레이 시작됨!
 Toast_TrayRunning: 트레이가 이미 열려 있음
 Toast_TrayUsersMissing: 저장된 트레이 사용자가 없습니다.
 Toast_TrayFail: 트레이 응용 프로그램을 시작할 수 없습니다!
-Toast_TrayPosition: "종료 버튼 클릭 시: Windows 트레이에 표시됩니다! (시작 표시줄 오른쪽)"
-Toast_TrayHint: "힌트: Ctrl+'X'를 클릭하여 나를 완전히 닫거나 트레이 > '종료'를 통해"
+Toast_TrayPosition: "종료 버튼을 클릭 시: Windows 트레이에 표시됩니다! (시작 표시줄 오른쪽)"
+Toast_TrayHint: "힌트: Ctrl+'X'를 눌러 완전히 닫거나 트레이 > '종료'를 통해 종료할 수 있습니다."
 Toast_Copied: 복사됨
-Toast_AlreadyProcessing: 이미 계정 처리 중...
-Toast_FailedRestore: 계정 복원 실패(콘솔 참조)
+Toast_AlreadyProcessing: 이미 계정을 처리하고 있습니다...
+Toast_FailedRestore: 계정 복원 실패 (콘솔 참조)
 Toast_Restored: 계정이 복구되었습니다!
 Toast_ProtocolEnabled: 이 프로그램은 이제 Windows에서 tcno:\\에 응답합니다.
 Toast_ProtocolEnabledTitle: 프로토콜 추가됨
@@ -106,23 +106,23 @@ Toast_RestartAfterClose: 닫기를 클릭한 후 프로그램을 다시 시작�
 Toast_RestartAfterCloseTitle: 강조 색상 비활성화됨
 Toast_RestartRequired: 변경 사항을 적용하려면 다시 시작
 Toast_LoadStylesheetFailed: 스타일시트를 로드하지 못했습니다! 자세한 내용은 사용자 데이터 폴더를 참조하십시오.
-Toast_BNet_Private: "{BTag}의 프로필은 비공개입니다"
-Toast_BNet_StatsFail: "{BTag}대한 통계를 가져오는 동안 오류가 발생했습니다."
-Toast_BNet_CantSwapAccounts: 계정을 교환할 수 없습니다(Battle.net.config 파일 손상).
-Toast_BNet_CantLoadNotFound: Battle.net.config를 찾을 수 없습니다
-Toast_BNet_CantLoadEmpty: Blizzard에 대한 계정 파일을 로드할 수 없습니다(계정을 찾을 수 없음)
-Toast_BNet_CantLoadConfigCorrupt: Blizzard 계정 파일을 로드할 수 없습니다(Battle.net.config 파일 손상).
-Toast_BNet_NamePolicy: BattleTag가 명명 정책과 일치하지 않습니다.
-Toast_ItemNotFound: "{item} 을 찾을 수 없습니다"
-Toast_DeletedTotal: "{files} 의 {totalFiles} 삭제. 총계: {totalSize}"
+Toast_BNet_Private: "{BTag}의 프로필은 비공개 상태입니다."
+Toast_BNet_StatsFail: "{BTag}에 대한 통계를 가져오는 동안 오류가 발생했습니다."
+Toast_BNet_CantSwapAccounts: 계정을 변경할 수 없습니다. (Battle.net.config 파일 손상).
+Toast_BNet_CantLoadNotFound: Battle.net.config을 찾을 수 없습니다
+Toast_BNet_CantLoadEmpty: Blizzard에 대한 계정 파일을 로드할 수 없습니다. (계정을 찾을 수 없음)
+Toast_BNet_CantLoadConfigCorrupt: Blizzard 계정 파일을 로드할 수 없습니다. (Battle.net.config 파일 손상).
+Toast_BNet_NamePolicy: BattleTag가 이름 규칙과 일치하지 않습니다.
+Toast_ItemNotFound: "{item}을 찾을 수 없습니다"
+Toast_DeletedTotal: "{totalFiles} 중에서 {files}개의 파일을 삭제했습니다. 합계: {totalSize}"
 Toast_CantChangeUsername: 사용자 이름을 변경할 수 없습니다.
 Toast_CantClearLoginFiles: 이전 로그인 파일을 지우지 못했습니다.
 Toast_AccountIdReg: 레지스트리에서 계정 ID를 가져오지 못했습니다!
 Toast_RegFailWrite: Windows 레지스트리에 쓰지 못했습니다!
 Toast_RegFailRead: Windows 레지스트리에서 읽지 못했습니다!
-Toast_RegFailReadSaved: 저장된 레지스트리 항목을 읽지 못했습니다. 실패하면 계정을 제거했다가 다시 추가하십시오.
+Toast_RegFailReadSaved: 저장된 레지스트리 항목을 읽지 못했습니다. 계정을 제거했다가 다시 추가해보십시오.
 Toast_RegSaveMissing: 저장된 레지스트리 파일에서 데이터 찾기 또는 읽기 실패!
-Toast_DuplicateNames: 교환할 수 없습니다. 동일한 사용자 이름을 가진 중복 계정이 있습니까?
+Toast_DuplicateNames: 교환할 수 없습니다. 혹시 동일한 사용자 이름을 가진 중복 계정이 있습니까?
 Toast_CouldNotLocate: 로그인한 사용자를 찾을 수 없습니다
 Toast_StreamerModeHint: 개인정보가 숨겨져 있습니다! - 설정 보기
 Toast_StreamerModeTitle: 스트리머 모드
@@ -130,65 +130,65 @@ Toast_AddAccountsFirst: 목록에서 플랫폼을 열고 먼저 몇 개의 계�
 Toast_AddAccountsFirstTitle: 저장된 계정 없음
 Toast_CantFindImage: 사용자의 이미지를 찾지 못했습니다.
 Toast_CantCreateShortcut: 바로가기를 만들 수 없습니다
-Toast_ShortcutCreated: 바로가기 생성!
+Toast_ShortcutCreated: 바로가기 생성 완료!
 Toast_FailedUpdateCheck: 업데이트를 확인하지 못했습니다.
-Toast_UpdateVerifyFail: 업데이터 파일을 확인할 수 없습니다. 최신 버전을 다운로드하고 디렉토리의 파일을 교체하십시오.
-Toast_StartedGame: 시작 {program}
-Toast_Steam_VacCleared: 계정의 VAC 상태가 지워졌습니다.
+Toast_UpdateVerifyFail: 최신 업데이트 된 파일을 확인할 수 없습니다. 최신 버전을 다운로드하고 디렉토리의 파일을 교체하십시오.
+Toast_StartedGame: '{program} 시작됨'
+Toast_Steam_VacCleared: 계정의 VAC 상태 항목이 지워졌습니다.
 Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json''을 삭제할 수 없습니다.'
 Toast_NoFindSteamUserdata: Steam\\userdata 폴더를 찾을 수 없습니다
-Toast_Steam_VdfLast: vdf_last에서 로드할 수 있습니다. 일부 계정이 없을 수 있습니다.
-Toast_PartiallyFixed: 부분적으로 고정
+Toast_Steam_VdfLast: vdf_last에서 로드할 수 있었습니다. 일부 계정이 없을 수도 있습니다.
+Toast_PartiallyFixed: 부분적으로 고쳐짐
 Toast_Steam_FailedLoginusers: steam/config/loginusers.vdf 불러오기 실패
 Toast_Steam_CantLocateLoginusers: '''.../Steam/config/loginusers.vdf''를 찾을 수 없습니다. 먼저 계정에 로그인해 보십시오.'
 Toast_CantClearImages: 이미지를 지울 수 없음
-Toast_RefreshedImages: 새로고침한 이미지
+Toast_RefreshedImages: 이미지 새로고침 완료
 Toast_ClearForgottenCheck: 잊어버린 계정의 백업을 지우시겠습니까?
-Toast_BattleNet_ChangedBTag: 변경된 BattleTag
-Toast_BattleNet_DeletedBTag: 삭제된 BattleTag
-Toast_FetchedRank: 가져온 순위
-Toast_ForgotAccount: 계정을 잊으셨나요?
-Toast_ClearedPlatformSettings: "{platform} 스위처 설정 지우기"
-Toast_ClearedImages: "지워진 이미지"
+Toast_BattleNet_ChangedBTag: BattleTag 변경됨
+Toast_BattleNet_DeletedBTag: BattleTag 삭제됨
+Toast_FetchedRank: 불러온 랭크
+Toast_ForgotAccount: 계정 잊기
+Toast_ClearedPlatformSettings: "{platform} Switcher 설정 지우기"
+Toast_ClearedImages: "이미지 지워짐"
 Toast_SavedItem: "저장됨: {item}"
 Toast_ChangedUsername: 변경된 사용자 이름
 Toast_SetUsername: 사용자 이름 설정
-Toast_AlreadyLoggedIn: 이 계정으로 이미 로그인했습니다! (변경 사항이 수행되지 않음)
+Toast_AlreadyLoggedIn: 이 계정으로 이미 로그인되어있습니다! (변경 사항이 수행되지 않음)
 Toast_BackupCopy: (1/3) 임시 위치에 파일 복사 중...
-Toast_BackupCompress: (2/3) 파일 압축({size}). 시간이 좀 걸립니다...
+Toast_BackupCompress: (2/3) 파일 압축 ({size}). 시간이 좀 걸립니다...
 Toast_BackupComplete: (3/3) 압축 완료! ({size} ~ {compressedSize})
-Toast_BackupProgress: "백업 진행 중(압축 크기: {compressedSize})"
+Toast_BackupProgress: "백업 진행 중 (압축 크기: {compressedSize})"
 Toast_BackupFail: 백업 실패 - 로그 참조!
 Toast_BackupBusy: 백업이 이미 진행 중입니다!
 Toast_RestoreBusy: 복원이 이미 진행 중입니다!
-Toast_RestoreExt: 아카이브를 추출 중입니다.
-Toast_RestoreCopying: 파일을 플랫폼으로 다시 이동
-Toast_RestoreDeleting: 임시 파일 삭제
+Toast_RestoreExt: 아카이브를 압축 해제 중입니다.
+Toast_RestoreCopying: 파일을 플랫폼으로 다시 이동 중
+Toast_RestoreDeleting: 임시 파일 삭제 중
 Toast_RestoreComplete: 복원 완료!
 Toast_FailedLoad: '{platform}을(를) 로드하지 못했습니다! 오류를 보려면 플랫폼을 클릭하십시오.'
 Toast_FailedPlatformsLoad: Platforms.json을 로드하지 못했습니다! 이 파일이 있는지 확인하십시오.
 Toast_FailedLoadSettings: "설정을 로드하지 못했습니다! 대신 기본 설정을 로드합니다. 기존 설정 파일 이름에 'old'를 추가합니다."
 Toast_FileCopyFail: 파일 복사에 실패했습니다! 자세한 내용은 로그를 참조하십시오.
-Toast_UserDataLoadFail: 사용자 데이터 {UserData}\\WindowSettings.json을 로드하지 못했습니다. 백업 및 재설정! 로그에 오류를 저장했습니다.
+Toast_UserDataLoadFail: 사용자 데이터 {UserData}\\WindowSettings.json을 로드하지 못했습니다. 백업 및 초기화 중입니다! 로그에 오류를 저장했습니다.
 Toast_UpdateCheckFail: 업데이트를 확인하기 위해 https://tcno.co/에 연결할 수 없습니다. 이 메시지는 하루에 한 번 표시됩니다.
 Toast_FailedCreateIcon: 아이콘 생성에 실패했습니다. 자세한 내용은 로그에 있습니다.
-Tooltip_Restore: 7z 파일을 클릭하여 선택하거나 이 버튼으로 끌어다 놓습니다.
+Tooltip_Restore: 7z 파일을 클릭하여 선택하거나 이 버튼에 끌어다 놓습니다.
 Modal_Crowdin_Header: Crowdin 번역가
-Modal_Crowdin_Info: "이 소프트웨어를 번역하는 데 도움을 준 모든 사람이 있습니다.<br>옆에 언어가 있는 사용자가 번역에 많은 도움이 되었습니다(교정자 역할)."
+Modal_Crowdin_Info: "이 소프트웨어를 번역하는 데 도움을 준 모든 사람이 있습니다.<br>옆에 언어가 있는 사용자가 번역에 많은 도움을 주었습니다. (검수자 역할)"
 Modal_Info_Creator: TechNobo [Wesley Pyburn] 제작
 Modal_Info_Version: 버전
 Modal_Info_ViewGitHub: GitHub에서 보기
 Modal_Info_BugReport: 버그 신고/기능 요청
-Modal_Info_VisitSite: tcno.co 방문
-Modal_Info_Disclaimer: 부인 성명
-Modal_Title_Info: TcNo 계정 전환기 정보
+Modal_Info_VisitSite: tcno.co 방문하기
+Modal_Info_Disclaimer: 면책 조항
+Modal_Title_Info: TcNo Account Switcher 정보
 Modal_Title_ChangeUsername: 사용자 이름 변경
-Modal_Title_ConfirmAction: TcNo 계정 전환기 확인 작업
+Modal_Title_ConfirmAction: TcNo Account Switcher 작업 확인
 Modal_Title_LocatePlatform: '{platform} 디렉토리를 찾으십시오'
 Modal_Title_AddNew: 새 {platform} 계정 추가
 Modal_Title_Background: 배경 이미지 설정
 Modal_Title_Userdata: 사용자 데이터 폴더 설정
-Modal_SetBackground: '이미지를 선택하거나 아래에 URL을 입력하세요.<br>공백으로 두고 재설정하도록 설정합니다.<br>(고급 제어는 Wiki의 테마 참조):'
+Modal_SetBackground: '이미지를 선택하거나 아래에 URL을 입력하세요.<br>공백으로 둔다면 초기화합니다.<br>(고급 컨트롤은 Wiki의 테마 참조):'
 Modal_SetBackground_Button: 배경 설정
 Modal_SetBackground_ChooseImage: 로컬 이미지 선택
 Modal_SetUserdata: 아래 폴더 경로를 입력하고 설정을 클릭합니다.
@@ -206,17 +206,17 @@ Modal_SetImageHeader: 프로필 이미지 설정
 Modal_SetImage: 이미지 설정
 Status_SelectedAccount: "선택됨: {name}"
 Status_Init: "상태: 초기화 중"
-Status_ClosingPlatform: 마감 {platform}
+Status_ClosingPlatform: '{platform} 닫는 중'
 Status_ClosingPlatformFailed: 닫기 실패 {platform}
-Status_StartingPlatform: 시작 {platform}
+Status_StartingPlatform: '{platform} 시작하는 중'
 Toast_StartingPlatformFailed: '{platform}을(를) 시작하지 못했습니다! 자세한 내용은 로그를 참조하십시오.'
-Toast_UrlAdminErr: .url 파일을 관리자로 실행할 수 없습니다. 다른 단축키 유형을 시도하십시오. 일반 사용자로 시작합니다.
+Toast_UrlAdminErr: .url 파일을 관리자로 실행할 수 없습니다. 다른 바로가기 유형을 시도하십시오. 일반 사용자로 시작합니다.
 Status_UpdatingFile: "{file}업데이트 중"
-Status_UpdatingRegistry: Windows 레지스트리 업데이트
+Status_UpdatingRegistry: Windows 레지스트리 업데이트 중
 Status_FailedLog: 작업이 실패했습니다. 자세한 내용은 로그를 참조하십시오.
-Status_WaitingForClose: "{processName} 이 닫힐 때까지 기다림({timeout}초{timeLimit}"
-Status_WaitingForMultipleClose: "다른 {processName} 및 {count} 이(가) 닫힐 때까지 대기 중{timeLimit} {timeout}초)"
-Status_GetUniqueId: 고유 사용자 ID 수집
+Status_WaitingForClose: "{processName} 이 닫힐 때까지 기다리는 중 ({timeLimit}초 중 / {timeout}초)"
+Status_WaitingForMultipleClose: "다른 {processName} 및 {count} 이(가) 닫힐 때까지 대기 중 ({timeLimit}초 중 {timeout}초)"
+Status_GetUniqueId: 사용자 고유 ID 수집
 Status_CopyingFiles: 사용자 파일 복사 중...
 Status_HandlingImage: 계정 프로필 이미지 처리
 Context_SwapTo: 계정으로 전환
@@ -225,11 +225,11 @@ Context_CreateShortcutSubmenu: 바탕 화면 바로 가기 만들기...
 Context_ChangeImage: 이미지 변경
 Context_BNet_SetBTag: BattleTag 설정
 Context_BNet_DelBTag: BattleTag 삭제
-Context_BNet_GetRAnk: 순위 다시 가져오기
-Context_ChangeName: 스위처 이름 변경
+Context_BNet_GetRAnk: 랭크 다시 가져오기
+Context_ChangeName: Switcher 이름 변경
 Context_LoginAsSubmenu: 다음으로 로그인...
 Context_UsernameSubmenu: 사용자 이름...
-Context_RefreshName: 새로고침 이름
+Context_RefreshName: 이름 새로고침
 Context_CopySubmenu: 복사...
 Context_CopyProfileSubmenu: 프로필 복사...
 Context_CommunityUrl: 커뮤니티 URL
@@ -240,112 +240,112 @@ Context_Steam_Id: SteamID [STEAM0:~]
 Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: 스팀ID32
 Context_Steam_Id64: 스팀ID64 7656~
-Context_Steam_OpenUserdata: 사용자 데이터 열기
+Context_Steam_OpenUserdata: userdata 열기
 Context_CopyOtherSubmenu: 다른 복사...
 Context_HidePlatform: 플랫폼 숨기기
 Context_ExportAccList: 계정 목록 내보내기
 Context_RunAdmin: 관리자로 실행
-Context_Hide: 숨다
-Title_BNet_Settings: TcNo 계정 전환기 - BattleNet 설정
-Title_BNet_ManageIgnored: TcNo 계정 전환기 - 무시된 BattleNet 계정 관리
-Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
-Title_AccountsList: TcNo 계정 전환기 - {platform}
-Title_TextEditor: TcNo 계정 전환기 - 텍스트 편집기
-Title_Settings: TcNo 계정 전환기 - 설정
-Title_Steam_Cleaning: TcNo 계정 전환기 - 스팀 청소
-Title_Steam_Settings: TcNo 계정 전환기 - Steam 설정
-Title_Template_Settings: TcNo 계정 전환기 - {platformName} 설정
-Installer_Downloading: '{file}다운로드 중'
+Context_Hide: 숨기기
+Title_BNet_Settings: TcNo Account Switcher - BattleNet 설정
+Title_BNet_ManageIgnored: TcNo Account Switcher - 무시된 BattleNet 계정 관리
+Title_Platforms_Settings: TcNo Account Switcher - 플랫폼 설정
+Title_AccountsList: TcNo Account Switcher - {platform}
+Title_TextEditor: TcNo Account Switcher - 텍스트 편집기
+Title_Settings: TcNo Account Switcher - 설정
+Title_Steam_Cleaning: TcNo Account Switcher - 스팀 청소
+Title_Steam_Settings: TcNo Account Switcher - Steam 설정
+Title_Template_Settings: TcNo Account Switcher - {platformName} 설정
+Installer_Downloading: '{file} 다운로드 중'
 Installer_DownloadFinished: 다운로드 완료 {file}
-Installer_Installing: "설치: {runtime}"
-Installer_RuntimeTitle: TcNo 계정 전환기 - 런타임 설치 프로그램
-Installer_Welcome: TcNo 계정 전환기 - 런타임 설치 프로그램에 오신 것을 환영합니다.
+Installer_Installing: "설치 중: {runtime}"
+Installer_RuntimeTitle: TcNo Account Switcher - 런타임 설치 프로그램
+Installer_Welcome: TcNo Account Switcher - 런타임 설치 프로그램에 오신 것을 환영합니다.
 Installer_InstalledRuntimes: "현재 설치된 런타임:"
 Installer_ErrorRuntime: "하나 이상의 런타임이 설치되지 않았습니다."
-Installer_RuntimeNote: "[~{size1} MB ~ +{size2} MB하면서 설치]"
+Installer_RuntimeNote: "[~{size1} MB ~ +{size2} MB 설치 중]"
 Installer_TotalSize: "총 다운로드 크기 : ~{size} MB"
 Installer_AnyKeyStart: 아무 키나 눌러 다운로드를 시작하세요...
 Runtime_WebView2: 마이크로소프트 웹뷰2 런타임
 Runtime_Desktop: Microsoft .NET 5 데스크톱 런타임
-Runtime_ASP: 마이크로소프트 마이크로소프트 ASP.NET 코어 {version} 런타임
+Runtime_ASP: 마이크로소프트 Microsoft ASP.NET 코어 {version} 런타임
 Installer_FailedFolder: "폴더 생성 실패:"
 Installer_FailedWV: "Microsoft WebView2 런타임을 다운로드 및 설치하지 못했습니다. 다운로드하려면: 1. 아래 링크를 클릭하십시오. {link} 2. 서버 앱 실행에서 '호스팅 번들 다운로드'를 클릭하십시오."
 Installer_FailedDR: ".NET 5 Desktop Runtime을 다운로드 및 설치하지 못했습니다. 여기에서 다운로드하십시오:"
 Installed_FailedASP: "{version} 런타임을 다운로드하고 설치하지 못했습니다. 다운로드하려면: 1. 아래 링크를 클릭합니다. {link} 2. 데스크톱 앱 실행 아래에서 'x64 다운로드'를 클릭합니다."
-Installer_Ready: "하나 이상이 설치 준비가 되었습니다. 설치 여부를 묻는 메시지가 표시되면 '예'를 클릭합니다."
+Installer_Ready: "하나 이상이 설치 준비가 되었습니다. 설치 여부를 묻는 메시지가 표시되면 '예'를 클릭하세요."
 Installer_PressStart: 아무 키나 눌러 설치를 시작하십시오...
 Installer_VerifyMin: "최소 권장 요구 사항을 충족하는지 확인합니다."
-Installer_VerifyAlready: "모두 설치되어 있는 모습입니다. 최소 권장 요구 사항을 충족하는지 확인합니다."
-Installer_Complete: 그것이 전부여야 합니다. 주 프로그램인 TcNo-Acc-Switcher.exe가 자동으로 실행됩니다.
+Installer_VerifyAlready: "모두 설치되어 있는 것 같습니다. 최소 권장 요구 사항을 충족하는지 확인합니다."
+Installer_Complete: 그게 끝이여야 합니다. 주 프로그램인 TcNo-Acc-Switcher.exe가 자동으로 실행됩니다.
 Installer_Complete2: "작동하지 않으면 설치 지침을 참조하십시오. {link}"
 Global_FatalNext: "치명적인 오류가 발생했습니다! 이 충돌 로그는 다음 실행에 자동으로 제출됩니다."
 Tray_Error: 트레이 오류
-Tray_NoAccs: "계정을 찾을 수 없습니다.\n먼저 계정 전환을 시도하거나 'Tray_Users.json'을 찾습니다."
+Tray_NoAccs: "계정을 찾을 수 없습니다.\n먼저 계정 전환을 시도하거나 'Tray_Users.json'을 찾아보세요."
 Tray_Switch: "다음으로 전환: {account}"
-Tray_CantOpenExe: "기본 .exe를 열 수 없습니다. 존재하는지 확인하십시오.\n\n열려고 했습니다:"
-Tray_LaunchFail: "TcNo 계정 전환기 - 트레이 시작 실패"
-Updater_Duplicate: 다른 TcNo 계정 전환기 업데이터 인스턴스가 감지되었습니다.
+Tray_CantOpenExe: "main .exe를 열 수 없습니다. 존재하는지 확인하십시오.\n\n열려고 한 파일:"
+Tray_LaunchFail: "TcNo Account Switcher- 트레이 시작 실패"
+Updater_Duplicate: 다른 TcNo Account Switcher업데이터 인스턴스가 감지되었습니다.
 Updater_Unknown: "알 수 없는 인수: {arg}"
 Updater_NeedsAdmin: 이 프로그램은 관리자로 실행해야 합니다!
 Updater_StatusChecking: 버전 확인 중
-Updater_FailedVersionCheck: "버전을 가져올 수 없습니다. 파일을 업데이트 및 확인하려면 \"확인\"을 클릭하세요."
+Updater_FailedVersionCheck: "버전을 가져올 수 없습니다. 파일을 업데이트 및 검사하려면 \"검사\"을 클릭하세요."
 Updater_PressBelow: 아래 버튼을 눌러주세요!
 Updater_PressBelowStart: 업데이트를 시작하려면 아래 버튼을 클릭하세요.
 Updater_PatchApplied: 패치가 적용되었습니다!
-Updater_UpdatingAppData: AppData에서 파일 업데이트 중!
+Updater_UpdatingAppData: AppData의 파일을 업데이트 중!
 Updater_Complete: 모든 업데이트가 완료되었습니다!
-Updater_Checking: 업데이트 확인
-Updater_UpdateToVerify: 파일을 확인하려면 먼저 업데이트해야 합니다.
-Updater_ClosingTcNo: TcNo Account Switcher 인스턴스를 닫습니다(있는 경우).
-Updater_Downloading: "업데이트 다운로드: {version}"
+Updater_Checking: 업데이트 확인 중
+Updater_UpdateToVerify: 파일을 검사하려면 먼저 업데이트해야 합니다.
+Updater_ClosingTcNo: TcNo Account Switcher 인스턴스를 닫고 있습니다. (열려있다면)
+Updater_Downloading: "업데이트 다운로드 중 : {version}"
 Updater_Downloaded: 다운로드를 완료하였습니다.
-Updater_CantExtract: 업데이트를 추출하지 못했습니다.
-Updater_Verify: 파일 확인
+Updater_CantExtract: 업데이트를 압축 해제하지 못했습니다.
+Updater_Verify: 파일 무결성 검사
 Updater_Verifying: 확인 중...
-Updater_VerifySkip: 모든 작은 업데이트를 건너뛰고 최신 업데이트로 건너뛰도록 파일을 확인합니다.
+Updater_VerifySkip: 작은 업데이트를 모두 건너뛰고 최신 업데이트로 건너뛰도록 파일을 확인합니다.
 Updater_NoConnection: "파일을 확인하기 위해 tcno.co에 연결할 수 없습니다. GitHub 페이지에서 설치 프로그램을 수동으로 다운로드하고 다시 설치하여 업데이트할 수 있습니다.\n\n오류:"
 Updater_NoServer: 업데이트 서버에 연결할 수 없습니다.
 Updater_Hashlist: 최신 해시 목록 다운로드 중...
 Updater_CantCheck: 업데이트를 확인할 수 없습니다
-Updater_Failed: "오류: 일부 파일이 사용 중이며 업데이트할 수 없습니다.\n\n1. 모든 TcNo 프로세스가 완전히 닫혀 있는지 확인합니다.\n(또는 PC를 다시 시작합니다.)\n\n2. 그런 다음 아래에서 확인을 클릭\n- 이 업데이터를 열고 파일을 확인합니다.\n    ('updater' 폴더에 있음) 설치 디렉토리)"
+Updater_Failed: "오류: 일부 파일이 사용 중이며 업데이트할 수 없습니다.\n\n1. 모든 TcNo 프로세스가 완전히 닫혀 있는지 확인합니다.\n(또는 PC를 다시 시작합니다.)\n\n2. 그런 다음 아래에서 확인을 클릭\n- 이 업데이터를 열고 파일을 확인합니다.\n    (설치 디렉토리의 'updater' 폴더에 있음)"
 Updater_Missing: "누락된 파일: {file}"
 Updater_FileMismatch: "파일: {file} MD5: {md5} 예상: {value}"
 Updater_DownloadingWeb: 웹사이트에서 파일 다운로드 중...
-Updater_UnpackingAppData: 파일을 %AppData%/TcNo Account Switcher에 복사 중...(달리 설정하지 않는 한)
+Updater_UnpackingAppData: 파일을 %AppData%/TcNo Account Switcher에 복사 중... (별도의 설정이 없다면)
 Updater_VerifyComplete: 파일이 확인되었습니다!
 Updater_UpdateFound: "업데이트 발견: {name} [{updateSize}]"
-Updater_TotalFound: "발견된 총 업데이트: {x}"
+Updater_TotalFound: "발견된 총 업데이트 수: {x}"
 Updater_TotalSize: "총 크기: {size}"
 Updater_AwaitingUser: 사용자 입력을 기다리는 중...
-Updater_UpToDate: "최신 정보입니다.\n:)"
-Updater_FailedDecode: 이것은 나(TechNobo)가 업데이트를 푸시하고 .json 업데이트 파일을 손상시키는 오타를 냈기 때문일 가능성이 큽니다. 알려주세요 :)
+Updater_UpToDate: "최신 버전입니다.\n:)"
+Updater_FailedDecode: 이것은 제가(TechNobo) 업데이트를 푸시하고 .json 업데이트 파일을 손상시킬만한 오타를 냈기 때문일 가능성이 큽니다. 저에게 알려주세요 :)
 Updater_FailedDecodeTitle: 업데이트 목록을 디코딩하지 못했습니다.
-Updater_Extracting: 패치 파일 추출
+Updater_Extracting: 패치 파일 압축 해제 중
 Updater_Applying: 패치 적용 중...
 Updater_Moving: 파일 이동 중...
-Updater_Title: TcNo 계정 전환기 업데이터
+Updater_Title: TcNo Account Switcher 업데이터
 Updater_Started: 시작됨
-Updater_Start: TcNo 계정 전환기 시작
+Updater_Start: TcNo Account Switcher 시작
 Updater_Begin: 업데이트 시작
-Updater_Exit: 출구
+Updater_Exit: 나가기
 FatalError: 치명적인 오류가 발생했습니다!
 Online: 온라인
-OnlineDefault: 온라인(기본값)
+OnlineDefault: 온라인 (기본값)
 Offline: 오프라인
-Invisible: 보이지 않는
-Busy: 바쁜
-Away: 떨어져
-Snooze: 선잠
-LookingToTrade: 거래를 찾고 있습니다
-LookingToPlay: 놀고 싶어
-Unrecognized_EPersonaState: 인식할 수 없는 ePersonaState
-Reg_DoesntExist: "{subKey} 이 존재하지 않습니다."
-Reg_DoesntContain: "{subKey} {val}포함하지 않습니다"
-Reg_Removing: '{subKey}\\{val}제거'
-PngInvalid_Format: 필수 픽셀 형식은 PixelFormat입니다.{x}.
-PngRequired: 필수 이미지 형식은 휴대용 네트워크 그래픽(png)입니다.
-PngDimensions: '{MaxIconWidth}x{MaxIconHeight}보다 작거나 같아야 합니다.'
-ThemeSyntaxAnd: "구문 오류가 발생했습니다(자세한 내용은 아래 참조)! 과:"
+Invisible: 숨기
+Busy: 바쁨
+Away: 자리 비움
+Snooze: 방해 금지
+LookingToTrade: 거래를 찾는 중
+LookingToPlay: 플레이를 찾는 중
+Unrecognized_EPersonaState: 알 수 없는 ePersonaState
+Reg_DoesntExist: "{subKey}이(가) 존재하지 않습니다."
+Reg_DoesntContain: "{subKey}가 {val}을(를) 포함하고 있지 않습니다"
+Reg_Removing: '{subKey}\\{val} 제거 중'
+PngInvalid_Format: 필수 픽셀 포맷은 PixelFormat입니다. {x}.
+PngRequired: 필수 이미지 형식은 포터블 네트워크 그래픽(png)입니다.
+PngDimensions: 해상도는 {MaxIconWidth}x{MaxIconHeight}보다 작거나 같아야 합니다.
+ThemeSyntaxAnd: "구문 오류가 발생했습니다(자세한 내용은 아래 참조)!:"
 ThemesNotFound: "TcNo Account Switcher 디렉토리에서 \"themes\" 폴더를 찾을 수 없습니다. 이 소프트웨어를 실행하려면 이 폴더(특히 'Dracula_Cyan' 폴더)가 필요합니다.\n\"updater\" 폴더에서 Updater를 실행하여 파일을 확인하고 누락된 파일을 복원할 수 있습니다."
 Yes: "예"
 No: "아니요"
@@ -355,40 +355,40 @@ Forget: 지우기
 Notice: 주의
 Error: 오류
 ErrorDetails: "오류: {ex}"
-Failed: 실패한
+Failed: 실패
 Success: 성공
 NotFound: 찾을 수 없음
-Done: 끝난
-Working: 일하고있는...
+Done: 완료
+Working: 작업중...
 ForName: "대상: {name}"
-DeletedFiles: 삭제된 파일
+DeletedFiles: 파일 삭제됨
 FileFoldersToClear: "지울 파일/폴더 목록:"
-CouldNotFindX: '{x}찾을 수 없습니다'
-CouldNotCloseX: '{x}닫을 수 없습니다!'
+CouldNotFindX: '{x}을(를) 찾을 수 없습니다'
+CouldNotCloseX: '{x}을(를) 닫을 수 없습니다!'
 DirectoryNotFound: 디렉토리를 찾을 수 없음
 DirectoryNotFoundFolder: "디렉토리를 찾을 수 없음: {folder}"
-DeletingFile: "삭제: {file}"
-DeletingFolder: "폴더 삭제: "
+DeletingFile: "파일 삭제 중: {file}"
+DeletingFolder: "폴더 삭제 중: "
 CouldntDeleteX: "오류: 삭제할 수 없음: {x}"
 CouldntDeleteUndefined: "오류: 정의되지 않은 파일을 삭제할 수 없습니다."
-Prompt_RestartAsAdmin: "<h3><bold>이 프로그램은 관리자로 다시 시작됩니다.</bold></h3><p>관리자를 묻는 메시지가 표시되면 UAC에서 \"예\"를 누릅니다.</p>"
+Prompt_RestartAsAdmin: "<h3><bold>이 프로그램은 관리자로 다시 시작됩니다.</bold></h3><p>관리자 권한을 묻는 메시지가 표시되면 UAC에서 \"예\"를 누르세요.</p>"
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>계정을 잊어버리려고 합니다!</h3> <h4>이것은 무엇을 의미합니까?</h4> <p>- Steam은 더 이상 Big Picture 모드에 계정을 등록하지 않으며 비밀번호를 기억하지 않습니다.<br/> - TcNo Account Switcher는 Steam을 통해 다시 로그인할 때까지 더 이상 계정을 표시하지 않습니다.</p> <p>귀하의 계정은 그대로 유지됩니다. 이 컴퓨터에서는 그냥 잊어버렸습니다.</p><h4>알겠어요?</h4>
+  <h3 style='color:red'>계정을 잊어버리려고 합니다!</h3> <h4>이것은 즉,</h4> <p>- Steam은 더 이상 Big Picture 모드에서 해당 계정을 등록하지 않으며 비밀번호 또한 기억하지 않습니다.<br/> - TcNo Account Switcher는 Steam을 통해 다시 로그인할 때까지 더 이상 계정을 표시하지 않습니다.</p> <p>귀하의 계정은 그대로 유지됩니다. 이 컴퓨터에서 그냥 잊혀질 뿐입니다.</p><h4>계속하시겠습니까?</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>계정을 잊어버리려고 합니다!</h3> <h4>이것은 무엇을 의미합니까?</h4> <p>TcNo Account Switcher는 {platform}통해 다시 로그인하고 목록에 추가할<br/></p> <p>귀하의 계정은 그대로 유지됩니다. 이 컴퓨터에서는 그냥 잊어버렸습니다.</p> <h4>알겠어요?</h4>
-Platform_DiscordPasteHint: Discord 콘솔에 붙여넣고 결과를 입력에 붙여넣으세요!
+  <h3 style='color:red'>계정을 잊어버리려고 합니다!</h3> <h4>이것은 즉,</h4> <p>TcNo Account Switcher에 더 이상 표시되지 않고 {platform}을(를) 통해 다시 로그인해야만 목록에 추가됩니다.<br/></p> <p>귀하의 계정은 그대로 유지됩니다. 이 컴퓨터에서 그냥 잊혀질 뿐입니다.</p> <h4>계속하시겠습니까?</h4>
+Platform_DiscordPasteHint: Discord 콘솔에 붙여넣고 결과를 입력창에 붙여넣으세요!
 Platform_ClearCache: 캐시 지우기
-Platform_ClearCacheTotal: '{totalFileCount} 개 파일 지우기({totalSizeMB})'
-Platform_DeleteFail: 일부 파일을 삭제할 수 없습니다(프로그램이 실행 중일 수 있습니까?)
-Platform_CouldNotDeleteLog: 파일을 삭제할 수 없습니다! 체크 {logPath}
-Error_FileAccessDenied: 파일에 액세스하지 못했습니다! 체크 {logPath}
-Error_RequiredFileVerify: 필요한 파일을 찾을 수 없습니다. x64 및 x86 폴더가 설치 디렉토리에 있는지 확인하십시오. TcNo-Acc-Switcher-Updater.exe를 실행하지 않고 파일을 확인합니다.
+Platform_ClearCacheTotal: '{totalFileCount}개의 파일을 지우는 중 ({totalSizeMB})'
+Platform_DeleteFail: 일부 파일을 삭제할 수 없습니다. (프로그램이 이미 실행 중일 수도 있습니다)
+Platform_CouldNotDeleteLog: 파일을 삭제할 수 없습니다! {logPath}을(를) 확인해보세요.
+Error_FileAccessDenied: 파일에 액세스하지 못했습니다! {logPath}을(를) 확인해보세요.
+Error_RequiredFileVerify: 필요한 파일을 찾을 수 없습니다. x64 및 x86 폴더가 설치 디렉토리에 있는지 확인하십시오. 없을 경우 TcNo-Acc-Switcher-Updater.exe를 실행하고 파일을 검사하세요.
 Tooltip_Settings: 설정
 Tooltip_Info: 정보
 Tooltip_ManagePlatforms: 다른 플랫폼 표시 또는 숨기기
-Tooltip_ExpandShortcuts: 게임 및 바로 가기 선택 확장
+Tooltip_ExpandShortcuts: 게임 및 바로 가기 선택 펼치기
 Tooltip_ShortcutFolder: 바로 가기 폴더를 엽니다. 거기에 바로가기를 배치하고 TcNo Account Switcher를 사용하여 볼 수 있습니다.
 Tooltip_Backup: 플랫폼 설정에 정의된 백업 구성 파일/폴더.
 Tooltip_BackupAll: 이미지 및 기타 대용량 파일을 포함한 모든 구성 파일/폴더를 백업합니다.
-Tooltip_ClosingMethod: "결합이 가장 좋습니다. 닫기는 닫기 기능을 통해 직접 닫기를 시도하고 TaskKill은 CMD를 사용합니다(결합이 작동하지 않는 경우 가장 좋음)."
-Tooltip_StartingMethod: "기본값이 가장 좋습니다. Direct는 관리자 수준이나 UAC를 제어할 수 없습니다. 이 계정 전환기와 동일한 수준(또는 더 높지만 낮지는 않음)으로 시작됩니다."
+Tooltip_ClosingMethod: "Combined가 가장 좋습니다. 닫기는 닫기 기능을 통해 직접 닫기를 시도하고 TaskKill은 CMD를 사용합니다. (Combined가 작동하지 않는 경우 가장 좋음)."
+Tooltip_StartingMethod: "기본값이 가장 좋습니다. Direct는 관리자 수준이나 UAC를 제어할 수 없습니다. 이 Account Switcher와 동일한 수준 (또는 더 높지만 낮지는 않은) 으로 시작됩니다."
