@@ -20,7 +20,7 @@ Button_ResetSettings: Скинути налаштування
 Button_AdvancedCleaning: Розширене очищення...
 Button_ClearLog: Очистити журнал
 Button_WikiInfo: Більше інформації (Wiki)
-Button_ManagePlatforms: Manage Platforms
+Button_ManagePlatforms: Керуйте платформами
 Button_Backup: Резервне копіювання
 Button_BackupAll: Резервне копіювання всього
 Button_Restore: Відновлення
@@ -30,15 +30,15 @@ Settings_Admin: Запустити {platform} як адміністратор
 Settings_ImageExpiry: 'Днів до закінчення зображення профіля закінчується:'
 Settings_Header_AppWide: Параметри розширеного додатку
 Settings_Header_GeneralSettings: Загальні налаштування
-Settings_Header_ExtraPlatforms: Platform Settings
+Settings_Header_ExtraPlatforms: Налаштування платформи
 Settings_Header_GeneralTools: Загальні інструменти
 Settings_Header_OtherTools: Інші інструменти
 Settings_Header_TraySettings: Налаштування лотка
 Settings_Header_OpenGameFolders: Відкрити ігрові папки
 Settings_Header_BackupRestore: Резервне копіювання та відновлення налаштувань платформи
 Settings_TrayMax: 'Максимальна кількість запам''ятовувань:'
-Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
-Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
+Settings_ExtraPlatformsDisabled: Відключені платформи. Натисніть, щоб увімкнути їх.
+Settings_ExtraPlatformsEnabled: Видимі платформи. Натисніть, щоб вимкнути їх.
 Settings_RTL: Показати текст як справа наліво
 Settings_CurrentLocation: 'Поточне місце встановлення: {path}'
 Settings_CurrentDataLocation: 'Поточне розташування даних користувача: {path}'
@@ -171,7 +171,7 @@ Toast_FailedLoadSettings: "Не вдалося завантажити налаш
 Toast_FileCopyFail: Не вдалося скопіювати файли! Дивіться журнал для більш детальної інформації.
 Toast_UserDataLoadFail: Не вдалося завантажити дані користувача {UserData}\\WindowSettings.json. Резервне копіювання та скидання! Помилка збережена в журналі.
 Toast_UpdateCheckFail: Не вдалося зв’язатися з https://tcno.co/, щоб перевірити наявність оновлень. Це повідомлення відображатиметься раз на день.
-Toast_FailedCreateIcon: Failed to create icon. See log for details.
+Toast_FailedCreateIcon: Не вдалося створити значок. Подробиці дивіться в журналі.
 Tooltip_Restore: Натисніть, щоб вибрати файл 7z, або перетягніть його на цю кнопку.
 Modal_Crowdin_Header: Перекладачі Crowdin
 Modal_Crowdin_Info: "Ось усі, хто допоміг перекласти це програмне забезпечення.<br>Користувачі з мовами поруч дуже допомогли в перекладі (роль коректора)."
@@ -248,7 +248,7 @@ Context_RunAdmin: Запустити від імені адміністрато�
 Context_Hide: Сховати
 Title_BNet_Settings: Перемикач TcNo рахунку - Налаштування BattleNet
 Title_BNet_ManageIgnored: Перемикання TcNo Account - Керування ігнорованими обліковими записами BattleNet
-Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
+Title_Platforms_Settings: TcNo Account Switcher - Налаштування платформи
 Title_AccountsList: Перемикання облікового запису TcNo - {platform}
 Title_TextEditor: Перемикач облікового запису TcNo - Текстовий редактор
 Title_Settings: Перемикач TcNo рахунку - Налаштування
