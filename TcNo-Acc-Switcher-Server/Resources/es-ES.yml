@@ -20,7 +20,7 @@ Button_ResetSettings: Restablecer ajustes
 Button_AdvancedCleaning: Limpieza avanzada...
 Button_ClearLog: Limpiar registro
 Button_WikiInfo: Más información (Wiki)
-Button_ManagePlatforms: Manage Platforms
+Button_ManagePlatforms: Administrar plataformas
 Button_Backup: Respaldo
 Button_BackupAll: Copia de seguridad de todo
 Button_Restore: Restaurar
@@ -30,15 +30,15 @@ Settings_Admin: Ejecutar {platform} como administrador
 Settings_ImageExpiry: 'Días antes de que expiren las imágenes de perfil:'
 Settings_Header_AppWide: Ajustes de la aplicación
 Settings_Header_GeneralSettings: Ajustes generales
-Settings_Header_ExtraPlatforms: Platform Settings
+Settings_Header_ExtraPlatforms: Configuración de la plataforma
 Settings_Header_GeneralTools: Herramientas generales
 Settings_Header_OtherTools: Otras herramientas
 Settings_Header_TraySettings: Ajustes de la bandeja
 Settings_Header_OpenGameFolders: Abrir carpetas del juego
 Settings_Header_BackupRestore: Configuración de la plataforma de copia de seguridad y restauración
 Settings_TrayMax: 'Número máximo de cuentas a recordar:'
-Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
-Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
+Settings_ExtraPlatformsDisabled: Plataformas deshabilitadas. Haga clic para habilitarlos.
+Settings_ExtraPlatformsEnabled: Plataformas visibles. Haga clic para deshabilitarlos.
 Settings_RTL: Mostrar texto de derecha a izquierda
 Settings_CurrentLocation: 'Ubicación de instalación actual: {path}'
 Settings_CurrentDataLocation: 'Ubicación de datos de usuario actual: {path}'
@@ -248,7 +248,7 @@ Context_RunAdmin: Ejecutar como administrador
 Context_Hide: Esconder
 Title_BNet_Settings: Cambiador de cuenta TcNo - Configuración de BattleNet
 Title_BNet_ManageIgnored: Cambiador de cuenta TcNo - Administrar cuentas BattleNet ignoradas
-Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
+Title_Platforms_Settings: Conmutador de cuenta TcNo - Configuración de la plataforma
 Title_AccountsList: Interruptor de cuenta TcNo - {platform}
 Title_TextEditor: Cambiador de cuenta TcNo - Editor de texto
 Title_Settings: Cambiador de cuenta TcNo - Configuración
