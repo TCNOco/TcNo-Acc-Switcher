@@ -20,7 +20,7 @@ Button_ResetSettings: Instellingen herstellen
 Button_AdvancedCleaning: Geavanceerd schoonmaken...
 Button_ClearLog: Logboek wissen
 Button_WikiInfo: Meer informatie (Wiki)
-Button_ManagePlatforms: Beheer extra platforms
+Button_ManagePlatforms: Manage Platforms
 Button_Backup: back-up
 Button_BackupAll: Maak een back-up van alles
 Button_Restore: Herstellen
@@ -30,15 +30,15 @@ Settings_Admin: '{platform} uitvoeren als Beheerder'
 Settings_ImageExpiry: 'Dagen voordat profielafbeeldingen vervallen:'
 Settings_Header_AppWide: App-brede instellingen
 Settings_Header_GeneralSettings: Algemene instellingen
-Settings_Header_ExtraPlatforms: Extra platforminstellingen
+Settings_Header_ExtraPlatforms: Platform Settings
 Settings_Header_GeneralTools: Algemene hulpmiddelen
 Settings_Header_OtherTools: Andere hulpmiddelen
 Settings_Header_TraySettings: Systeemvak instellingen
 Settings_Header_OpenGameFolders: Open spelmappen
 Settings_Header_BackupRestore: Back-up en herstel platforminstellingen
 Settings_TrayMax: 'Maximaal aantal te onthouden accounts:'
-Settings_ExtraPlatformsDisabled: Deze extra platformen zijn momenteel uitgeschakeld. Klik om ze te activeren.
-Settings_ExtraPlatformsEnabled: Deze extra platforms zijn zichtbaar. Klik om ze uit te schakelen.
+Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
+Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
 Settings_RTL: Toon tekst van rechts naar links
 Settings_CurrentLocation: 'Huidige installatielocatie: {path}'
 Settings_CurrentDataLocation: 'Huidige gebruikersgegevenslocatie: {path}'
@@ -171,6 +171,7 @@ Toast_FailedLoadSettings: "Kan instellingen niet laden! In plaats daarvan standa
 Toast_FileCopyFail: Kan bestanden niet kopiëren! Zie log voor meer details.
 Toast_UserDataLoadFail: Kan gebruikersgegevens niet laden {UserData}\\WindowSettings.json. Back-up maken en resetten! Opgeslagen fout om te loggen.
 Toast_UpdateCheckFail: Kon https://tcno.co/ niet bereiken om te controleren op updates. Dit bericht wordt één keer per dag weergegeven.
+Toast_FailedCreateIcon: Failed to create icon. See log for details.
 Tooltip_Restore: Klik om een 7z-bestand te selecteren of sleep het naar deze knop.
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is iedereen die heeft geholpen met het vertalen van deze software.<br>Gebruikers met talen naast zich hebben veel geholpen bij het vertalen (rol van proeflezer)."
@@ -247,7 +248,7 @@ Context_RunAdmin: Uitvoeren als beheerder
 Context_Hide: Verberg
 Title_BNet_Settings: TcGeen account switcher - BattleNet Instellingen
 Title_BNet_ManageIgnored: TcNo Account Switcher - Beheer genegeerde BattleNet accounts
-Title_Platforms_Settings: TcNo Account Switcher - Extra platforminstellingen
+Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
 Title_AccountsList: TcGeen accountkiezer - {platform}
 Title_TextEditor: TcNo Account Switcher - Tekstverwerker
 Title_Settings: TcGeen accountkiezer - Instellingen
