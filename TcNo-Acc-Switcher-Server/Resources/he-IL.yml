@@ -20,7 +20,7 @@ Button_ResetSettings: אפס הגדרות
 Button_AdvancedCleaning: ניקוי מתקדם ...
 Button_ClearLog: נקה יומן
 Button_WikiInfo: מידע נוסף (Wiki)
-Button_ManagePlatforms: Manage Platforms
+Button_ManagePlatforms: ניהול פלטפורמות
 Button_Backup: גיבוי
 Button_BackupAll: גבה הכל
 Button_Restore: לשחזר
@@ -30,15 +30,15 @@ Settings_Admin: הפעל {platform} כמנהל
 Settings_ImageExpiry: 'ימים לפני שתמונות הפרופיל פג:'
 Settings_Header_AppWide: הגדרות לכל אפליקציות
 Settings_Header_GeneralSettings: הגדרות כלליות
-Settings_Header_ExtraPlatforms: Platform Settings
+Settings_Header_ExtraPlatforms: הגדרות פלטפורמה
 Settings_Header_GeneralTools: כלים כלליים
 Settings_Header_OtherTools: כלים אחרים
 Settings_Header_TraySettings: הגדרות מגש
 Settings_Header_OpenGameFolders: פתח תיקיות משחק
 Settings_Header_BackupRestore: גיבוי ושחזור הגדרות פלטפורמה
 Settings_TrayMax: 'מספר חשבונות מקסימלי שיש לזכור:'
-Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
-Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
+Settings_ExtraPlatformsDisabled: פלטפורמות מושבתות. לחץ כדי להפעיל אותם.
+Settings_ExtraPlatformsEnabled: פלטפורמות גלויות. לחץ כדי להשבית אותם.
 Settings_RTL: הצג טקסט בתור מימין לשמאל
 Settings_CurrentLocation: 'מיקום ההתקנה הנוכחי: {path}'
 Settings_CurrentDataLocation: 'מיקום נתוני משתמש נוכחי: {path}'
@@ -171,7 +171,7 @@ Toast_FailedLoadSettings: "טעינת ההגדרות נכשלה! טוען הגד
 Toast_FileCopyFail: ההעתקה של הקבצים נכשלה! ראה יומן לפרטים נוספים.
 Toast_UserDataLoadFail: טעינת נתוני משתמש {UserData}\\WindowSettings.json נכשלה. גיבוי ואיפוס! שגיאה נשמרה ביומן.
 Toast_UpdateCheckFail: לא ניתן היה להגיע אל https://tcno.co/ כדי לחפש עדכונים. הודעה זו תופיע פעם ביום.
-Toast_FailedCreateIcon: Failed to create icon. See log for details.
+Toast_FailedCreateIcon: יצירת הסמל נכשלה. ראה יומן לפרטים.
 Tooltip_Restore: לחץ כדי לבחור קובץ 7z, או גרור אותו ללחצן זה.
 Modal_Crowdin_Header: מתרגמי Crowdin
 Modal_Crowdin_Info: "הנה כל מי שעזר לתרגם את התוכנה הזו.<br>משתמשים עם שפות לידם עזרו רבות בתרגום (תפקיד הגהה)."
@@ -248,7 +248,7 @@ Context_RunAdmin: הפעל כמנהל
 Context_Hide: להתחבא
 Title_BNet_Settings: TcNo Account Switcher - הגדרות BattleNet
 Title_BNet_ManageIgnored: TcNo Account Switcher - נהל חשבונות BattleNet שהתעלמו מהם
-Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
+Title_Platforms_Settings: TcNo Account Switcher - הגדרות פלטפורמה
 Title_AccountsList: מחליף חשבון TcNo - {platform}
 Title_TextEditor: מחליף חשבון TcNo - עורך טקסטים
 Title_Settings: מחליף TcNo חשבון - הגדרות
