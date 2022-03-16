@@ -16,3 +16,6 @@ Being asked for a password every time you switch is likely user error, or someth
 I will assist to the best of my ability, but if the issue isn't widespread it's not something I can easily solve most of the time - **I assume you have already tried the steps mentioned in the FAQ before opening an issue**, so PLEASE make sure you have. 
 
 If you have followed the FAQ above, you may open an issue on this topic. Please make sure to include as much relevant information as possible to help speed up the process. I will likely ask for more info, so make sure to check your email, or this page once in a while for updates.
+
+--------------------------------------------------------------
+Remove all the text in this issue before entering your own information.
