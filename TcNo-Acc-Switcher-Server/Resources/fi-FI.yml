@@ -20,7 +20,7 @@ Button_ResetSettings: Nollaa asetukset
 Button_AdvancedCleaning: Edistynyt siivoaminen...
 Button_ClearLog: Tyhjennä loki
 Button_WikiInfo: Lisää Tietoja (Wiki)
-Button_ManagePlatforms: Hallitse lisäalustoja
+Button_ManagePlatforms: Hallinnoi alustoja
 Button_Backup: Varmuuskopioida
 Button_BackupAll: Varmuuskopioi kaikki
 Button_Restore: Palauttaa
@@ -30,15 +30,15 @@ Settings_Admin: Suorita {platform} ylläpitäjänä
 Settings_ImageExpiry: 'Päivää ennen profiilikuvien vanhenemista:'
 Settings_Header_AppWide: Sovelluksen laajuiset asetukset
 Settings_Header_GeneralSettings: Yleiset asetukset
-Settings_Header_ExtraPlatforms: Ylimääräiset alustaasetukset
+Settings_Header_ExtraPlatforms: Alustan asetukset
 Settings_Header_GeneralTools: Yleiset Työkalut
 Settings_Header_OtherTools: Muut Työkalut
 Settings_Header_TraySettings: Kaukalon asetukset
 Settings_Header_OpenGameFolders: Avaa pelikansiot
 Settings_Header_BackupRestore: Varmuuskopioi ja palauta alustan asetukset
 Settings_TrayMax: 'Suurin muistettavien tilien määrä:'
-Settings_ExtraPlatformsDisabled: Nämä saatavilla olevat lisäalustat ovat tällä hetkellä poissa käytöstä. Ota ne käyttöön napsauttamalla.
-Settings_ExtraPlatformsEnabled: Nämä ylimääräiset alustat ovat näkyvissä. Napsauta poistaaksesi ne käytöstä.
+Settings_ExtraPlatformsDisabled: Käytöstä poistetut alustat. Ota ne käyttöön napsauttamalla.
+Settings_ExtraPlatformsEnabled: Näkyvät alustat. Napsauta poistaaksesi ne käytöstä.
 Settings_RTL: Näytä teksti oikealta vasemmalle
 Settings_CurrentLocation: 'Nykyinen asennuspaikka: {path}'
 Settings_CurrentDataLocation: 'Nykyinen käyttäjätietojen sijainti: {path}'
@@ -171,6 +171,7 @@ Toast_FailedLoadSettings: "Asetusten lataaminen epäonnistui! Ladataan sen sijaa
 Toast_FileCopyFail: Tiedostojen kopioiminen epäonnistui! Katso lisätiedot lokista.
 Toast_UserDataLoadFail: Käyttäjätietojen {UserData}\\WindowSettings.json lataaminen epäonnistui. Varmuuskopiointi ja nollaus! Virhe tallennettuun lokiin.
 Toast_UpdateCheckFail: Ei saatu yhteyttä osoitteeseen https://tcno.co/ päivitysten tarkistamiseksi. Tämä viesti näkyy kerran päivässä.
+Toast_FailedCreateIcon: Kuvakkeen luominen epäonnistui. Katso lisätietoja lokista.
 Tooltip_Restore: Valitse 7z-tiedosto napsauttamalla tai vedä se tähän painikkeeseen.
 Modal_Crowdin_Header: Crowdinin kääntäjät
 Modal_Crowdin_Info: "Tässä ovat kaikki, jotka auttoivat kääntämään tämän ohjelmiston.<br>Käyttäjät, joiden kieli on vieressä, auttoivat paljon kääntämisessä (oikolukijan rooli)."
@@ -247,7 +248,7 @@ Context_RunAdmin: Suorita järjestelmänvalvojana
 Context_Hide: Piilottaa
 Title_BNet_Settings: TcNo Tilin Vaihtaja - BattleNet Asetukset
 Title_BNet_ManageIgnored: TcNo Account Switcher - Hallitse ohitettuja BattleNet-tilejä
-Title_Platforms_Settings: TcNo Account Switcher - Extra Platform Settings
+Title_Platforms_Settings: TcNo Account Switcher – alustan asetukset
 Title_AccountsList: TcEi Tilin vaihtajaa - {platform}
 Title_TextEditor: TcNo Tilin Vaihtaja - Tekstieditori
 Title_Settings: TcNo Tilin Vaihtaja - Asetukset

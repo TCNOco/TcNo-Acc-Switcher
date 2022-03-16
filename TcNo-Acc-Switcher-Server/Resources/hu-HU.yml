@@ -20,7 +20,7 @@ Button_ResetSettings: Beállítások alaphelyzetbe állítása
 Button_AdvancedCleaning: Haladó tisztítás ...
 Button_ClearLog: Napló törlése
 Button_WikiInfo: További információ (Wiki)
-Button_ManagePlatforms: Extra platformok kezelése
+Button_ManagePlatforms: Platformok kezelése
 Button_Backup: biztonsági mentés
 Button_BackupAll: Biztonsági mentés mindenről
 Button_Restore: visszaállítás
@@ -30,15 +30,15 @@ Settings_Admin: Futtassa a {platform} t rendszergazdaként
 Settings_ImageExpiry: 'A profilképek lejárta előtt néhány nappal:'
 Settings_Header_AppWide: Alkalmazásszintű beállítások
 Settings_Header_GeneralSettings: Általános beállítások
-Settings_Header_ExtraPlatforms: Extra platformbeállítások
+Settings_Header_ExtraPlatforms: Platform beállítások
 Settings_Header_GeneralTools: Általános eszközök
 Settings_Header_OtherTools: Egyéb eszközök
 Settings_Header_TraySettings: Tálca beállításai
 Settings_Header_OpenGameFolders: Nyissa meg a játékmappákat
 Settings_Header_BackupRestore: Biztonsági mentés és visszaállítás platformbeállítások
 Settings_TrayMax: 'A felejtendő fiókok maximális száma:'
-Settings_ExtraPlatformsDisabled: Ezek az elérhető extra platformok jelenleg le vannak tiltva. Kattintson az engedélyezésükhöz.
-Settings_ExtraPlatformsEnabled: Ezek az extra platformok láthatóak. Kattintson a letiltáshoz.
+Settings_ExtraPlatformsDisabled: Letiltott platformok. Kattintson az engedélyezésükhöz.
+Settings_ExtraPlatformsEnabled: Látható platformok. Kattintson a letiltáshoz.
 Settings_RTL: Szöveg megjelenítése jobbról balra haladva
 Settings_CurrentLocation: 'Jelenlegi telepítési hely: {path}'
 Settings_CurrentDataLocation: 'Jelenlegi felhasználói adatok helye: {path}'
@@ -171,6 +171,7 @@ Toast_FailedLoadSettings: "Nem sikerült betölteni a beállításokat! Ehelyett
 Toast_FileCopyFail: Nem sikerült másolni a fájlokat! További részletekért lásd a naplót.
 Toast_UserDataLoadFail: Nem sikerült betölteni a felhasználói adatokat {UserData}\\WindowSettings.json. Biztonsági mentés és visszaállítás! Mentett hiba a naplózáshoz.
 Toast_UpdateCheckFail: Nem sikerült elérni a https://tcno.co/ webhelyet a frissítések kereséséhez. Ez az üzenet naponta egyszer jelenik meg.
+Toast_FailedCreateIcon: Nem sikerült létrehozni az ikont. A részletekért lásd a naplót.
 Tooltip_Restore: Kattintson ide egy 7z fájl kiválasztásához, vagy húzza át erre a gombra.
 Modal_Crowdin_Header: Crowdin fordítók
 Modal_Crowdin_Info: "Itt van mindenki, aki segített lefordítani ezt a szoftvert.<br>A mellettük lévő nyelvű felhasználók sokat segítettek a fordításban (lektori szerep)."
@@ -247,7 +248,7 @@ Context_RunAdmin: Futtasson rendszergazdaként
 Context_Hide: Elrejt
 Title_BNet_Settings: TcNo Account Switcher - BattleNet beállítások
 Title_BNet_ManageIgnored: TcNo Account Switcher - A figyelmen kívül hagyott BattleNet-fiókok kezelése
-Title_Platforms_Settings: TcNo fiókváltó – Extra platformbeállítások
+Title_Platforms_Settings: TcNo fiókváltó – Platformbeállítások
 Title_AccountsList: TcNo fiókváltó - {platform}
 Title_TextEditor: TcNo Account Switcher - Szövegszerkesztő
 Title_Settings: TcNo Account Switcher - Beállítások
