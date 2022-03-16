@@ -41,7 +41,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
         public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-        public static readonly string Version = "2022-02-22_00";
+        public static readonly string Version = "2022-03-16_00";
 
         #region INITIALISATION
 
@@ -170,8 +170,16 @@ namespace TcNo_Acc_Switcher_Globals
         }
         private static void InitWwwroot(string root, bool overwrite)
         {
-            if (Directory.Exists(root))
+            if (!Directory.Exists(root)) return;
+
+            try
+            {
                 CopyFilesRecursive(root, Path.Join(UserDataFolder, "wwwroot"), overwrite, true);
+            }
+            catch (IOException e)
+            {
+                Globals.WriteToLog("Failed to run InitWwwroot due to error. Another copy of the TcNo Account Switcher, or related software is likely running.", e);
+            }
         }
 
         #endregion

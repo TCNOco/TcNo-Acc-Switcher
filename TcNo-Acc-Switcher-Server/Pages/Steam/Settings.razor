@@ -238,6 +238,7 @@
         var tempFolder = $"BackupTemp\\Backup_Steam_{DateTime.Now:dd-MM-yyyy_hh-mm-ss}";
         Directory.CreateDirectory("BackupTemp");
         Directory.CreateDirectory("Backups");
+        Directory.CreateDirectory(tempFolder);
 
         if (!everything)
             foreach (var (f, t) in _backupPaths)
