@@ -20,7 +20,7 @@ Button_ResetSettings: 恢復預設值
 Button_AdvancedCleaning: 高級清理…
 Button_ClearLog: 清除日誌
 Button_WikiInfo: 更多資訊（維基）
-Button_ManagePlatforms: Manage Platforms
+Button_ManagePlatforms: 管理平台
 Button_Backup: 備份
 Button_BackupAll: 備份全部
 Button_Restore: 復原
@@ -30,15 +30,15 @@ Settings_Admin: 以管理員身份執行 {platform}
 Settings_ImageExpiry: '個人資料圖片過期前的天數：'
 Settings_Header_AppWide: 應用程式設定
 Settings_Header_GeneralSettings: 一般設定
-Settings_Header_ExtraPlatforms: Platform Settings
+Settings_Header_ExtraPlatforms: 平台設置
 Settings_Header_GeneralTools: 一般工具
 Settings_Header_OtherTools: 其他工具
 Settings_Header_TraySettings: 通知列設定
 Settings_Header_OpenGameFolders: 開啟遊戲資料夾
 Settings_Header_BackupRestore: 備份和復原平台設定
 Settings_TrayMax: '帳號上限：'
-Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
-Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
+Settings_ExtraPlatformsDisabled: 禁用平台。單擊以啟用它們。
+Settings_ExtraPlatformsEnabled: 可見平台。單擊以禁用它們。
 Settings_RTL: 文字顯示右到左
 Settings_CurrentLocation: '目前安裝路徑： {path}'
 Settings_CurrentDataLocation: '目前用戶數據路徑： {path}'
@@ -248,7 +248,7 @@ Context_RunAdmin: 以管理員身份運行
 Context_Hide: 隱藏
 Title_BNet_Settings: TcNo 賬號切換器 - BattleNet 設置
 Title_BNet_ManageIgnored: TcNo Account Switcher - 管理被忽略的 BattleNet 賬戶
-Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
+Title_Platforms_Settings: TcNo 帳戶切換器 - 平台設置
 Title_AccountsList: TcNo 帳戶切換器 - {platform}
 Title_TextEditor: TcNo 帳戶切換器 - 文本編輯器
 Title_Settings: TcNo 帳戶切換器 - 設置
