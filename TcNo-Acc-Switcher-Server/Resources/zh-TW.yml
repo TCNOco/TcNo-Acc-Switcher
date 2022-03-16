@@ -6,43 +6,43 @@ Steam_ShowSteamID: 顯示 Steam ID
 Steam_ShowVac: 顯示 VAC 狀態
 Steam_CheckVac: 確認帳號的 VAC 狀態
 Steam_ShowLimited: 顯示受限狀態
-Steam_ShowAccUsername: 顯示帳號的使用者名稱
+Steam_ShowAccUsername: 顯示帳號使用者名稱
 Steam_Tray_AccountName: 顯示帳號名稱 [非好友名稱]
-Steam_OverrideDefaultState: "將預設登入狀態取代為："
+Steam_OverrideDefaultState: "預設登入狀態："
 Button_AddNew: 新增
-Button_SaveCurrent: 儲存目前內容
+Button_SaveCurrent: 保存目前內容
 Button_SaveFile: 儲存檔案
 Button_Cancel: 取消
 Button_Login: 登入
 Button_Close: 關閉
 Button_RefreshImages: 重新載入圖像
-Button_ResetSettings: 重置設定
-Button_AdvancedCleaning: 進階清理…
+Button_ResetSettings: 恢復預設值
+Button_AdvancedCleaning: 高級清理…
 Button_ClearLog: 清除日誌
-Button_WikiInfo: 更多信息（維基）
-Button_ManagePlatforms: 管理額外平台
+Button_WikiInfo: 更多資訊（維基）
+Button_ManagePlatforms: Manage Platforms
 Button_Backup: 備份
-Button_BackupAll: 全部備份
-Button_Restore: 回復
+Button_BackupAll: 備份全部
+Button_Restore: 復原
 Button_OpenBackup: 開啟備份資料夾
 Settings_Shortcut: ' {platform} 切換器桌面捷徑'
 Settings_Admin: 以管理員身份執行 {platform}
 Settings_ImageExpiry: '個人資料圖片過期前的天數：'
-Settings_Header_AppWide: 應用範圍的設置
+Settings_Header_AppWide: 應用程式設定
 Settings_Header_GeneralSettings: 一般設定
-Settings_Header_ExtraPlatforms: 額外平台設定
+Settings_Header_ExtraPlatforms: Platform Settings
 Settings_Header_GeneralTools: 一般工具
 Settings_Header_OtherTools: 其他工具
 Settings_Header_TraySettings: 通知列設定
 Settings_Header_OpenGameFolders: 開啟遊戲資料夾
-Settings_Header_BackupRestore: 備份和回復平台設定
-Settings_TrayMax: '帳號記憶上限數量：'
-Settings_ExtraPlatformsDisabled: 這些可用的額外平台當前被禁用。單擊以啟用它們。
-Settings_ExtraPlatformsEnabled: 這些額外的平台是可見的。單擊以禁用它們。
-Settings_RTL: 文字顯示為自右到左
+Settings_Header_BackupRestore: 備份和復原平台設定
+Settings_TrayMax: '帳號上限：'
+Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
+Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
+Settings_RTL: 文字顯示右到左
 Settings_CurrentLocation: '目前安裝路徑： {path}'
-Settings_CurrentDataLocation: '當前用戶數據位置： {path}'
-Settings_SetDataLocation: "[設置自定義用戶數據位置]"
+Settings_CurrentDataLocation: '目前用戶數據路徑： {path}'
+Settings_SetDataLocation: "[自定義用戶數據路徑]"
 Settings_PickFolder: 選擇 {platform} 資料夾
 Settings_OpenFolder: 開啟 {platform} 資料夾
 Settings_ClearForgotten: 清除忘記帳號的備份
@@ -53,260 +53,261 @@ Settings_DesktopShortcut: 桌面捷徑
 Settings_StartMenu_ProgramTray: 程式與通知列
 Settings_StartMenu_Platform: 平台
 Settings_Tray_StartWindows: 啟用 Windows 通知列圖示
-Settings_Tray_StartNow: '[馬上啟用通知列圖示]'
+Settings_Tray_StartNow: '[現在啟用通知列圖示]'
 Settings_CurrentStyle: 目前主題
 Settings_ThemeBackground: '[設定背景]'
-Settings_ThemeOpenFolder: '[開啟主題資料夾]'
+Settings_ThemeOpenFolder: '[開啟背景資料夾]'
 Settings_Protocol: '啟用 tcno:\\ protocol（建議）'
 Settings_StartCentered: 啟動程式時居中
-Settings_WindowsAccent: 使用 Windows 強調色
+Settings_WindowsAccent: 使用 Windows 強調色彩
 Settings_HelpTranslate: "[協助翻譯]"
-Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "（高級）設置渲染引擎："
-Settings_Header_ClosingMethod: "（高級）設置方法關閉 {platform}"
-Settings_Header_StartingMethod: "（高級）設置方法開始 {platform}"
-Settings_AutoStart: "賬號切換時自動啟動 {platform}"
-Settings_NoPlatforms: 當前沒有啟用任何平台。請勾選下面的可選平台以啟用它們，或取消選中禁用的平台。
+Settings_ViewTranslators: "[感謝名單]"
+Settings_Header_ActiveBrowser: "（進階）設置渲染引擎："
+Settings_Header_ClosingMethod: "（進階）設置關閉方法 {platform}"
+Settings_Header_StartingMethod: "（進階）設置開啟方法 {platform}"
+Settings_AutoStart: "賬號切換時自啟動 {platform}"
+Settings_NoPlatforms: 當前沒有啟用任何平台。請勾選下面的可選平台以啟用它們，或取消勾選禁用平台。
 Cleaning_Header_StartMenuShortcuts: '開始功能表捷徑：'
-Cleaning_Header_General: 一般清除
+Cleaning_Header_General: 一般清理
 Cleaning_Header_LoginHistory: 清除我的登入紀錄
 Cleaning_Header_PlatformCleaning: '{platform} 切換器'
 Cleaning_ImportantInfoHeader: '重要資訊：'
 Cleaning_ImportantInfo: >
-  單擊按鈕將從您的 Steam 安裝中刪除相關文件。<br /> 刪除 loginusers.vdf 將導致此帳戶切換器不顯示任何帳戶。<br /> 您需要使用 Steam 登錄它們才能取回它們。
+  點擊下列按鈕將從您的 Steam 安裝檔案中刪除相關文件。<br /> 刪除 loginusers.vdf 將導致此帳戶切換器不顯示任何帳戶。<br /> 您需要使用 Steam 重新登錄才能顯示它們。
 Cleaning_Button_KillProcess: 終止 {platform} 行程
-Cleaning_Button_ForgottenBackups: 忘記帳號的備份
-Cleaning_Understand: 我明白這些按鈕的作用。
+Cleaning_Button_ForgottenBackups: 忘記帳戶備份
+Cleaning_Understand: 我了解下列按鈕的作用。
 Restore_Info: >
-  如果您之前“忘記”了一個帳戶，您可以在此處恢復它們。<br /> 這會將它們添加回您的 loginusers.vdf 文件，允許您切換到它們。
-Restore_Button_Restore: 恢復選擇
-Ignored_RemoveAccounts: 從忽略列表中刪除帳戶
-Ignored_Description: 如果您之前“忽略”了一個帳戶，您可以在此處再次顯示它們
+  如果您之前“忘記”了一個帳戶，您可以在此處恢復它們。<br /> 這會將它們添加回 loginusers.vdf 文件，並允許您切換到它們。
+Restore_Button_Restore: 還原已選擇
+Ignored_RemoveAccounts: 刪除忽略列表中的帳戶
+Ignored_Description: 如果您之前“忽略”了一個帳戶，您可以在此處恢復顯示它們
 Ignored_Stop: 停止忽略所選
-Toast_DataLocationCopying: (1/2) 將現有文件複製到新的用戶數據文件夾中！
-Toast_DataLocationNotCopying: (1/2) 文件夾已有文件！不會遷移用戶數據。
-Toast_DataLocationSet: (2/2) 重啟賬號切換器即可使用新文件夾！
-Toast_PlaceShortcutFiles: 一個文件夾正在打開。將游戲快捷方式放在該文件夾中，然後重新啟動帳戶切換器。
+Toast_DataLocationCopying: (1/2) 將現有文件複製到新的用戶數據資料夾中！
+Toast_DataLocationNotCopying: (1/2) 資料夾已有文件！將停止複製用戶數據。
+Toast_DataLocationSet: (2/2) 重啟切換器即可使用新資料夾！
+Toast_PlaceShortcutFiles: 資料夾正在打開。將游戲捷徑放在該資料夾中，然後重新啟動帳戶切換器。
 Toast_TrayStarted: 通知列圖示已啟用！
-Toast_TrayRunning: 通知列圖示已啟用
-Toast_TrayUsersMissing: 未儲存通知列使用者
-Toast_TrayFail: 無法啟動托盤應用程序！
-Toast_TrayPosition: "按下退出後，我會繼續待在 Windows 通知列（工作列右側）！"
-Toast_TrayHint: "小提示：Ctrl+右上角按X可將我完全關閉，也可透過通知列→退出"
-Toast_Copied: 已復制
-Toast_AlreadyProcessing: 已在處理帳戶...
+Toast_TrayRunning: 通知列圖示已經開啟
+Toast_TrayUsersMissing: 沒有儲存的通知列使用者
+Toast_TrayFail: 無法啟動通知列應用程式！
+Toast_TrayPosition: "按下退出後，我會繼續待在 Windows 通知列！（工作列右側）"
+Toast_TrayHint: "小提示：Ctrl+按右上角的'X'可將我完全關閉，也可透過通知列 > '退出'"
+Toast_Copied: 已複製
+Toast_AlreadyProcessing: 帳戶已在處理中...
 Toast_FailedRestore: 無法恢復帳戶（請參閱控制台）
 Toast_Restored: 帳號已恢復！
-Toast_ProtocolEnabled: 該程序現在將在 Windows 中響應 tcno:\\
-Toast_ProtocolEnabledTitle: 添加了協議
+Toast_ProtocolEnabled: 此程序将响应 Windows 中的 tcno:\\。
+Toast_ProtocolEnabledTitle: 已添加協議
 Toast_ProtocolDisabled: 此程序將不再響應 tcno:\\
-Toast_ProtocolDisabledTitle: 刪除了協議
+Toast_ProtocolDisabledTitle: 已刪除協議
 Toast_RestartAsAdmin: 請以管理員身份啟動，然後重試。
-Toast_RestartAfterClose: 請在單擊關閉後重新啟動程序。
-Toast_RestartAfterCloseTitle: 禁用強調色
-Toast_RestartRequired: 重新啟動以應用更改
-Toast_LoadStylesheetFailed: 加載樣式表失敗！有關詳細信息，請參見用戶數據文件夾。
-Toast_BNet_Private: "{BTag}的個人資料是私人的"
-Toast_BNet_StatsFail: "{BTag}統計信息時出錯"
-Toast_BNet_CantSwapAccounts: 無法交換帳戶（Battle.net.config 文件已損壞）
+Toast_RestartAfterClose: 請點擊關閉後重新啟動程序。
+Toast_RestartAfterCloseTitle: 已禁用強調色彩
+Toast_RestartRequired: 重新啟動以套用變更
+Toast_LoadStylesheetFailed: 加載樣式表失敗！詳細信息請參見用戶數據資料夾。
+Toast_BNet_Private: "{BTag}該設定檔不公開"
+Toast_BNet_StatsFail: "嘗試獲取 {BTag} 的統計數據時出錯"
+Toast_BNet_CantSwapAccounts: 無法變更帳戶（Battle.net.config 文件已損壞）
 Toast_BNet_CantLoadNotFound: 找不到 Battle.net.config
 Toast_BNet_CantLoadEmpty: 無法加載暴雪的帳戶文件（未找到帳戶）
 Toast_BNet_CantLoadConfigCorrupt: 無法加載暴雪的帳戶文件（Battle.net.config 文件已損壞）
-Toast_BNet_NamePolicy: BattleTag 與命名策略不匹配。
-Toast_ItemNotFound: "{item} 未找到"
-Toast_DeletedTotal: "已刪除 {totalFiles} {files} 總計： {totalSize}"
-Toast_CantChangeUsername: 無法更改用戶名
-Toast_CantClearLoginFiles: 無法清除舊的登錄文件
-Toast_AccountIdReg: 無法從註冊表中獲取帳戶 ID！
-Toast_RegFailWrite: 無法寫入 Windows 註冊表！
-Toast_RegFailRead: 從 Windows 註冊表讀取失敗！
-Toast_RegFailReadSaved: 無法讀取已保存的註冊表項。如果不成功，請嘗試重新刪除並添加帳戶。
+Toast_BNet_NamePolicy: BattleTag 與命名政策相沖。
+Toast_ItemNotFound: "未找到 {item}"
+Toast_DeletedTotal: "已刪除 {files} / {totalFiles} 總大小： {totalSize}"
+Toast_CantChangeUsername: 無法更改使用者名稱
+Toast_CantClearLoginFiles: 清除舊登錄文件失敗
+Toast_AccountIdReg: 從註冊表獲取 Account Id 失敗！
+Toast_RegFailWrite: 寫入 Windows 註冊表失敗！
+Toast_RegFailRead: 讀取 Windows 註冊表失敗！
+Toast_RegFailReadSaved: 已保存的註冊表無法讀取。如果不成功，請再次嘗試刪除並添加帳戶。
 Toast_RegSaveMissing: 從保存的註冊表文件中查找或讀取數據失敗！
-Toast_DuplicateNames: 無法交換。具有相同用戶名的重複帳戶？
-Toast_CouldNotLocate: 找不到登錄的用戶
-Toast_StreamerModeHint: 隱私信息被隱藏！ - 查看設置
-Toast_StreamerModeTitle: 流光模式
+Toast_DuplicateNames: 無法交換。使用相同的用戶名創建帳戶？
+Toast_CouldNotLocate: 找不到已登錄用戶
+Toast_StreamerModeHint: 隱私信息已隱藏！ - 查看設置
+Toast_StreamerModeTitle: 直播模式
 Toast_AddAccountsFirst: 從列表中打開平台，先添加幾個賬號
 Toast_AddAccountsFirstTitle: 沒有已保存的帳戶
-Toast_CantFindImage: 未能找到用戶的圖片。
-Toast_CantCreateShortcut: 無法創建快捷方式
-Toast_ShortcutCreated: 快捷方式已創建！
-Toast_FailedUpdateCheck: 未能檢查更新
+Toast_CantFindImage: 查找用戶圖像失敗。
+Toast_CantCreateShortcut: 無法創建捷徑
+Toast_ShortcutCreated: 捷徑已創建！
+Toast_FailedUpdateCheck: 檢查更新失敗
 Toast_UpdateVerifyFail: 無法驗證更新程序文件。下載最新版本並替換目錄中的文件。
 Toast_StartedGame: 開始 {program}
-Toast_Steam_VacCleared: 帳戶的 VAC 狀態已清除
-Toast_Steam_CantDeleteVacCache: 無法刪除“LoginCache/Steam/VACCache/SteamVACCache.json”
+Toast_Steam_VacCleared: 已清除帳戶的 VAC 狀態
+Toast_Steam_CantDeleteVacCache: 無法刪除 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: 找不到 Steam\\userdata 文件夾
-Toast_Steam_VdfLast: 能夠從 vdf_last 加載。某些帳戶可能會丟失。
-Toast_PartiallyFixed: 部分固定
+Toast_Steam_VdfLast: 能夠從 vdf_last 加載。某些帳戶可能丟失。
+Toast_PartiallyFixed: 已修復部分
 Toast_Steam_FailedLoginusers: 無法加載 steam/config/loginusers.vdf
-Toast_Steam_CantLocateLoginusers: 找不到“.../Steam/config/loginusers.vdf”。先嘗試登錄一個帳戶。
+Toast_Steam_CantLocateLoginusers: 找不到 '.../Steam/config/loginusers.vdf'。請先登錄一個帳戶。
 Toast_CantClearImages: 無法清除圖像
-Toast_RefreshedImages: 刷新的圖像
+Toast_RefreshedImages: 已刷新圖像
 Toast_ClearForgottenCheck: 您確定要清除忘記帳戶的備份嗎？
-Toast_BattleNet_ChangedBTag: 更改了戰鬥標籤
-Toast_BattleNet_DeletedBTag: 已刪除的戰鬥標籤
+Toast_BattleNet_ChangedBTag: 已更改 BattleTag
+Toast_BattleNet_DeletedBTag: 已删除 BattleTag
 Toast_FetchedRank: 獲取排名
 Toast_ForgotAccount: 忘記帳號
-Toast_ClearedPlatformSettings: "清除 {platform} 切換台設置"
+Toast_ClearedPlatformSettings: "清除 {platform} 切換器設定"
 Toast_ClearedImages: "清除圖像"
 Toast_SavedItem: "已保存： {item}"
-Toast_ChangedUsername: 更改用戶名
-Toast_SetUsername: 設置用戶名
-Toast_AlreadyLoggedIn: 已經用這個賬號登錄了！ （未進行任何更改）
-Toast_BackupCopy: (1/3) 將文件複製到臨時位置...
-Toast_BackupCompress: (2/3) 壓縮文件 ({size})。這將需要一些時間...
+Toast_ChangedUsername: 已更改用戶名
+Toast_SetUsername: 設定用戶名稱
+Toast_AlreadyLoggedIn: 此帳號已被登錄！ （未進行任何更改）
+Toast_BackupCopy: (1/3) 正在複製文件到臨時位置……
+Toast_BackupCompress: (2/3) 正在壓縮文件 ({size})。這需要一些時間...
 Toast_BackupComplete: (3/3) 壓縮完畢！ ({size} 到 {compressedSize})
 Toast_BackupProgress: "正在進行備份（壓縮大小： {compressedSize}）"
-Toast_BackupFail: 備份失敗 - 查看日誌！
-Toast_BackupBusy: 備份已在進行中！
-Toast_RestoreBusy: 恢復已經在進行中！
-Toast_RestoreExt: 提取存檔。
-Toast_RestoreCopying: 將文件移回平台
-Toast_RestoreDeleting: 刪除臨時文件
-Toast_RestoreComplete: 恢復完畢！
-Toast_FailedLoad: '{platform}加載失敗！單擊平台以查看錯誤。'
+Toast_BackupFail: 備份失敗 - 請參閱日誌！
+Toast_BackupBusy: 備份在進行中！
+Toast_RestoreBusy: 恢復在進行中！
+Toast_RestoreExt: 正在解壓縮檔案。
+Toast_RestoreCopying: 正在將文件移回平台
+Toast_RestoreDeleting: 正在刪除臨時文件
+Toast_RestoreComplete: 還原成功！
+Toast_FailedLoad: 加載{platform} 失敗！點擊平台以查看錯誤。
 Toast_FailedPlatformsLoad: 無法加載 Platforms.json！請驗證此文件是否存在。
-Toast_FailedLoadSettings: "加載設置失敗！而是加載默認設置。將“舊”添加到現有設置文件名。"
-Toast_FileCopyFail: 複製文件失敗！有關詳細信息，請參閱日誌。
-Toast_UserDataLoadFail: 無法加載用戶數據 {UserData}\\WindowSettings.json。備份和重置！將錯誤保存到日誌。
+Toast_FailedLoadSettings: "加載設置失敗！更改為加載默認設置。正在將“old”添加到現有設置文件名。"
+Toast_FileCopyFail: 複製文件失敗！請參閱日誌了解詳情。
+Toast_UserDataLoadFail: 無法加載用戶數據 {UserData}\\WindowSettings.json。請備份和重置！正在將錯誤保存到日誌。
 Toast_UpdateCheckFail: 無法訪問 https://tcno.co/ 以檢查更新。此消息將每天顯示一次。
-Tooltip_Restore: 單擊以選擇 7z 文件，或將其拖到此按鈕上。
+Toast_FailedCreateIcon: 創建圖像失敗，參閱日誌檔了解詳細資訊。
+Tooltip_Restore: 點擊選擇一個 7z 文件，或拖動到此按鈕上。
 Modal_Crowdin_Header: Crowdin 譯者
-Modal_Crowdin_Info: "這是幫助翻譯此軟件的每個人。<br>語言相鄰的用戶在翻譯方面提供了很多幫助（校對角色）。"
+Modal_Crowdin_Info: "這是幫助翻譯此軟件的所有人。 <br>名字旁邊有語言的用戶在翻譯方面提供了很多幫助（審核員身份）。"
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 創建
 Modal_Info_Version: 版本
 Modal_Info_ViewGitHub: 在 GitHub 上查看
-Modal_Info_BugReport: 錯誤報告/功能請求
+Modal_Info_BugReport: 報告錯誤/功能請求
 Modal_Info_VisitSite: 訪問 tcno.co
 Modal_Info_Disclaimer: 免責聲明
 Modal_Title_Info: TcNo 帳戶切換器信息
-Modal_Title_ChangeUsername: 更改用戶名
+Modal_Title_ChangeUsername: 變更使用者名稱
 Modal_Title_ConfirmAction: TcNo 帳戶切換器確認操作
 Modal_Title_LocatePlatform: 請定位 {platform} 目錄
 Modal_Title_AddNew: 添加新的 {platform} 帳戶
 Modal_Title_Background: 設置背景圖片
-Modal_Title_Userdata: 設置用戶數據文件夾
-Modal_SetBackground: '選擇圖像，或在下方輸入 URL。<br>留空並設置為重置。<br>（有關更高級的控制，請參閱 Wiki 上的主題）：'
-Modal_SetBackground_Button: 設置背景
-Modal_SetBackground_ChooseImage: 選擇本地圖片
-Modal_SetUserdata: 在下方輸入文件夾路徑，然後單擊設置。
+Modal_Title_Userdata: 設置用戶數據資料夾
+Modal_SetBackground: '選擇圖像，或在下方輸入 URL。<br>留空為重置。<br>（有關進階控制，請參閱 Wiki 上的''Theming''）：'
+Modal_SetBackground_Button: 設定背景為
+Modal_SetBackground_ChooseImage: 選擇本機圖片
+Modal_SetUserdata: 在下方輸入資料夾路徑，然後點擊設置。
 Modal_SetUserdata_ChooseFolder: 選擇資料夾
 Modal_SetUserdata_Button: 設置用戶數據
-Modal_ChangeUsername: 請為您的帳戶輸入新用戶名
-Modal_ChangeUsernameType: 更改 {platform} 用戶名
-Modal_EnterDirectory: "請輸入 {platform}的目錄，例如：C:\\Program Files\\{platform}"
+Modal_ChangeUsername: 請為您的帳戶輸入新的使用者名稱
+Modal_ChangeUsernameType: 更改 {platform} 使用者名稱
+Modal_EnterDirectory: "請輸入 {platform} 的路徑，例如：C:\\Program Files\\{platform}"
 Modal_LocatePlatform: 定位 {platformExe}
-Modal_LocatePlatformFolder: 選擇 {platform} 文件夾
-Modal_ConfirmAction: 確認操作
-Modal_AddNew: 請輸入您登錄 {platform}
+Modal_LocatePlatformFolder: 選擇 {platform} 資料夾
+Modal_ConfirmAction: 請確認是否執行目前的操作
+Modal_AddNew: 請輸入您登錄 {platform} 帳戶的名稱。
 Modal_AddCurrentAccount: 添加當前 {platform} 帳戶
-Modal_SetImageHeader: 設置個人資料圖片
-Modal_SetImage: 設置圖像
+Modal_SetImageHeader: 設置個人資料相片
+Modal_SetImage: 設置頭像
 Status_SelectedAccount: "已選擇： {name}"
 Status_Init: "狀態：正在初始化"
-Status_ClosingPlatform: 關閉 {platform}
+Status_ClosingPlatform: 正在關閉 {platform}
 Status_ClosingPlatformFailed: 關閉失敗 {platform}
-Status_StartingPlatform: 從 {platform}
-Toast_StartingPlatformFailed: '{platform} 啟動失敗！有關詳細信息，請參閱日誌。'
-Toast_UrlAdminErr: 您不能以管理員身份運行 .url 文件。嘗試另一種快捷方式。以普通用戶身份啟動。
-Status_UpdatingFile: "更新 {file}"
-Status_UpdatingRegistry: 更新 Windows 註冊表
-Status_FailedLog: 操作失敗。有關詳細信息，請參閱日誌。
-Status_WaitingForClose: "等待 {processName} 關閉（{timeout}/{timeLimit} 秒）"
-Status_WaitingForMultipleClose: "等待 {processName} 和 {count} 人關閉（{timeout}/{timeLimit} 秒）"
-Status_GetUniqueId: 收集唯一的用戶 ID
-Status_CopyingFiles: 正在復制用戶文件...
-Status_HandlingImage: 處理帳戶資料圖片
+Status_StartingPlatform: 正在啟動 {platform}
+Toast_StartingPlatformFailed: '{platform} 啟動失敗！請查看日誌了解詳情。'
+Toast_UrlAdminErr: 您不能以管理員身份執行 .url 文件。請嘗試以非管理員身份執行。
+Status_UpdatingFile: "正在更新 {file}"
+Status_UpdatingRegistry: 正在更新 Windows 註冊表
+Status_FailedLog: 操作失敗。請查看日誌了解詳情。
+Status_WaitingForClose: "正在等待 {processName} 關閉（{timeout}/{timeLimit} 秒）"
+Status_WaitingForMultipleClose: "正在等待 {processName} 和 {count} 個程式關閉（{timeout}/{timeLimit} 秒）"
+Status_GetUniqueId: 正在收集唯一的用戶 ID
+Status_CopyingFiles: 正在複製用戶文件...
+Status_HandlingImage: 正在處理帳戶資料圖片
 Context_SwapTo: 換到賬戶
 Context_CreateShortcut: 建立桌面捷徑
 Context_CreateShortcutSubmenu: 建立桌面捷徑…
 Context_ChangeImage: 更改圖像
-Context_BNet_SetBTag: 設置戰鬥標籤
-Context_BNet_DelBTag: 刪除戰鬥標籤
-Context_BNet_GetRAnk: 重新獲取排名
+Context_BNet_SetBTag: 設置 BattleTag
+Context_BNet_DelBTag: 刪除 BattleTag
+Context_BNet_GetRAnk: 刷新等級
 Context_ChangeName: 更改切換器名稱
 Context_LoginAsSubmenu: 登錄為...
-Context_UsernameSubmenu: 用戶名...
-Context_RefreshName: 刷新名稱
+Context_UsernameSubmenu: 使用者名稱...
+Context_RefreshName: 刷新使用者名稱
 Context_CopySubmenu: 複製...
-Context_CopyProfileSubmenu: 複製配置文件...
+Context_CopyProfileSubmenu: 複製個人資料...
 Context_CommunityUrl: 社區網址
-Context_CommunityUsername: 社區用戶名
-Context_LoginUsername: 登錄用戶名
+Context_CommunityUsername: 社區使用者名稱
+Context_LoginUsername: 登錄使用者名稱
 Context_CopySteamIdSubmenu: 複製 SteamID...
 Context_Steam_Id: SteamID [STEAM0:~]
 Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
-Context_Steam_OpenUserdata: 打開用戶數據
+Context_Steam_OpenUserdata: 打開 userdata
 Context_CopyOtherSubmenu: 複製其他...
 Context_HidePlatform: 隱藏平台
 Context_ExportAccList: 導出賬戶列表
 Context_RunAdmin: 以管理員身份運行
 Context_Hide: 隱藏
-Title_BNet_Settings: TcNo 賬號切換器 - 戰網設置
-Title_BNet_ManageIgnored: TcNo Account Switcher - 管理被忽略的戰網賬戶
-Title_Platforms_Settings: TcNo 帳戶切換器 - 額外平台設置
+Title_BNet_Settings: TcNo 賬號切換器 - BattleNet 設置
+Title_BNet_ManageIgnored: TcNo Account Switcher - 管理被忽略的 BattleNet 賬戶
+Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
 Title_AccountsList: TcNo 帳戶切換器 - {platform}
 Title_TextEditor: TcNo 帳戶切換器 - 文本編輯器
 Title_Settings: TcNo 帳戶切換器 - 設置
-Title_Steam_Cleaning: TcNo 帳戶切換器 - Steam 清潔
+Title_Steam_Cleaning: TcNo 帳戶切換器 - Steam 清理
 Title_Steam_Settings: TcNo 帳戶切換器 - Steam 設置
 Title_Template_Settings: TcNo 帳戶切換器 - {platformName} 設置
-Installer_Downloading: 下載 {file}
+Installer_Downloading: 下載 {file} 中
 Installer_DownloadFinished: 下載完成 {file}
-Installer_Installing: "安裝： {runtime}"
+Installer_Installing: "安裝 {runtime} 中"
 Installer_RuntimeTitle: TcNo Account Switcher - 運行時安裝程序
 Installer_Welcome: 歡迎使用 TcNo 帳戶切換器 - 運行時安裝程序
 Installer_InstalledRuntimes: "當前安裝的運行時："
 Installer_ErrorRuntime: "未安裝一個或多個運行時："
 Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB 安裝時]"
 Installer_TotalSize: "總下載大小：~{size} MB"
-Installer_AnyKeyStart: 按任意鍵開始下載...
+Installer_AnyKeyStart: 按下任意鍵開始下載...
 Runtime_WebView2: Microsoft WebView2 運行時
 Runtime_Desktop: Microsoft .NET 5 桌面運行時
 Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} 運行時
 Installer_FailedFolder: "無法創建文件夾："
-Installer_FailedWV: "無法下載和安裝 Microsoft WebView2 運行時。下載： 1. 單擊下面的鏈接： {link} 2. 單擊運行服務器應用程序下的“下載託管捆綁包”。"
+Installer_FailedWV: "無法下載和安裝 Microsoft WebView2 Runtime。手動下載方法： 1. 點擊鏈接： {link} 2. 點擊 Run server apps 下的 'Download Hosting Bundle'。"
 Installer_FailedDR: "無法下載和安裝 .NET 5 桌面運行時。請在此處下載："
-Installed_FailedASP: "無法下載和安裝 ASP.NET Core {version} 運行時。下載： 1. 單擊下面的鏈接： {link} 2. 單擊運行桌面應用程序下的“下載 x64”。"
-Installer_Ready: "一個或多個已準備好安裝。如果系統提示您是否要安裝，請單擊“是”。"
-Installer_PressStart: 按任意鍵開始安裝...
-Installer_VerifyMin: "驗證您是否滿足最低推薦要求："
-Installer_VerifyAlready: "看起來一切都安裝好了。驗證您是否滿足最低推薦要求："
-Installer_Complete: 那應該就是一切。主程序 TcNo-Acc-Switcher.exe 將自動運行。
-Installer_Complete2: "如果它不起作用，請參閱安裝說明，這裡： {link}"
+Installed_FailedASP: "無法下載和安裝 ASP.NET Core {version} 運行時。手動下載方法： 1. 點擊鏈接： {link} 2. 點擊Run Desktop apps下的 'Download x64'。"
+Installer_Ready: "一個或多個已準備好安裝。如果系統提示您是否要安裝，請點擊“是”。"
+Installer_PressStart: 按下任意鍵開始下載...
+Installer_VerifyMin: "請驗證您是否滿足最低要求："
+Installer_VerifyAlready: "看起來一切都安裝好了。請驗證您是否滿足最低要求："
+Installer_Complete: 一切應該都已完成。主程序 TcNo-Acc-Switcher.exe 將自動運行。
+Installer_Complete2: "如果不起作用，請參閱安裝說明： {link}"
 Global_FatalNext: "發生致命錯誤！此崩潰日誌將在下次啟動時自動提交。"
 Tray_Error: 托盤錯誤
-Tray_NoAccs: "未搜尋到帳號。\n請先嘗試切換帳號，或尋找「Tray_Users.json」"
+Tray_NoAccs: "沒有找到帳戶。\n請嘗試切換帳戶，或找到 'Tray_Users.json'"
 Tray_Switch: "切換到： {account}"
 Tray_CantOpenExe: "無法打開主 .exe。確保它存在。\n\n我試圖打開："
 Tray_LaunchFail: "TcNo 帳戶切換器 - 托盤啟動失敗"
-Updater_Duplicate: 已檢測到另一個 TcNo Account Switcher Updater 實例。
+Updater_Duplicate: 檢測到另一個 TcNo 帳戶切換器更新程序正在運行。
 Updater_Unknown: "未知參數： {arg}"
 Updater_NeedsAdmin: 此程序必須以管理員身份運行！
-Updater_StatusChecking: 檢查版本
-Updater_FailedVersionCheck: "無法獲取版本。單擊“驗證”以更新和驗證文件"
-Updater_PressBelow: 按下下面的按鈕！
-Updater_PressBelowStart: 單擊下面的按鈕開始更新。
+Updater_StatusChecking: 正在檢查版本
+Updater_FailedVersionCheck: "無法獲取版本。點擊“驗證”以更新和驗證文件"
+Updater_PressBelow: 點擊下面的按鈕！
+Updater_PressBelowStart: 點擊下面的按鈕開始更新。
 Updater_PatchApplied: 補丁已應用！
 Updater_UpdatingAppData: 更新 AppData 中的文件！
-Updater_Complete: 所有更新完成！
-Updater_Checking: 查詢更新
-Updater_UpdateToVerify: 要驗證文件，您需要先更新。
-Updater_ClosingTcNo: 關閉 TcNo Account Switcher 實例（如果有）。
-Updater_Downloading: "下載更新： {version}"
+Updater_Complete: 所有更新已完成！
+Updater_Checking: 正在檢查更新
+Updater_UpdateToVerify: 您需要先更新才可以驗證文件。
+Updater_ClosingTcNo: 關閉 TcNo 帳戶切換器實例（如有）。
+Updater_Downloading: "正在下載更新： {version}"
 Updater_Downloaded: 下載完成。
-Updater_CantExtract: 無法提取更新。
+Updater_CantExtract: 無法解壓縮更新。
 Updater_Verify: 驗證文件
 Updater_Verifying: 正在驗證...
-Updater_VerifySkip: 驗證文件以跳過所有小更新，直接跳轉到最新。
+Updater_VerifySkip: 正在驗證文件以跳過所有小更新，直接轉到最新版本。
 Updater_NoConnection: "無法連接到 tcno.co 以驗證文件。您可以嘗試從 GitHub 頁面手動下載安裝程序，然後重新安裝以進行更新。\n\n錯誤："
-Updater_NoServer: 無法訪問更新服務器
+Updater_NoServer: 無法連接更新服務器
 Updater_Hashlist: 正在下載最新的哈希列表...
 Updater_CantCheck: 無法檢查更新
-Updater_Failed: "錯誤：某些文件正在使用中，無法更新。\n\n1. 確保所有 TcNo 進程完全關閉\n（或重新啟動您的 PC）\n\n2. 然後單擊下面的驗證，或者如果您重新啟動：\n- 打開此更新程序並驗證文件\n    （位於安裝目錄）"
+Updater_Failed: "錯誤：某些文件正在使用中，無法更新。\n\n1. 確保所有 TcNo 進程完全關閉\n（或重新啟動您的電腦）\n\n2. 然後點擊下面的驗證，或者如果您重新啟動：\n- 打開此更新程序並驗證文件\n    （位於安裝目錄）"
 Updater_Missing: "文件丟失： {file}"
 Updater_FileMismatch: "文件： {file} 有 MD5： {md5} 預期： {value}"
 Updater_DownloadingWeb: 正在從網站下載文件...
@@ -316,18 +317,18 @@ Updater_UpdateFound: "發現更新： {name} [{updateSize}]"
 Updater_TotalFound: "找到的更新總數： {x}"
 Updater_TotalSize: "總大小： {size}"
 Updater_AwaitingUser: 等待用戶輸入...
-Updater_UpToDate: "你是最新的。\n:)"
+Updater_UpToDate: "您已是最新版本。\n:)"
 Updater_FailedDecode: 這很可能是由於我 (TechNobo) 推送更新，並且打錯了 .json 更新文件。請讓我知道:)
 Updater_FailedDecodeTitle: 無法解碼更新列表
 Updater_Extracting: 提取補丁文件
-Updater_Applying: 應用補丁...
-Updater_Moving: 移動文件...
+Updater_Applying: 正在應用補丁...
+Updater_Moving: 正在移動文件...
 Updater_Title: TcNo 帳戶切換器更新程序
 Updater_Started: 開始
 Updater_Start: 啟動 TcNo 帳戶切換器
 Updater_Begin: 開始升級
-Updater_Exit: 出口
-FatalError: 發生致命錯誤！
+Updater_Exit: 關閉
+FatalError: 發生嚴重錯誤！
 Online: 線上
 OnlineDefault: 線上（預設）
 Offline: 離線
@@ -342,42 +343,42 @@ Reg_DoesntExist: "{subKey} 不存在。"
 Reg_DoesntContain: "{subKey} 不包含 {val}"
 Reg_Removing: 刪除 {subKey}\\{val}
 PngInvalid_Format: 所需的像素格式為 PixelFormat。{x}.
-PngRequired: 所需的圖像格式是便攜式網絡圖形 (png)。
+PngRequired: 所需的圖像格式是 Png。
 PngDimensions: 尺寸必須小於或等於 {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "遇到語法錯誤（更多詳情見下文）！和："
-ThemesNotFound: "在 TcNo Account Switcher 的目錄中找不到“themes”文件夾。這個（尤其是“Dracula_Cyan”文件夾）是這個軟件運行所必需的。\n您可以運行“更新程序”文件夾中的更新程序來驗證文件，並恢復這些丟失的文件。"
-Yes: "是的"
-No: "不"
-NoDefault: 否（默認）
-Ok: "好的"
+ThemesNotFound: "在 TcNo 帳戶切換器的路徑中找不到 'themes' 資料夾。'themes' 資料夾是這個軟件運行所必需的（尤其是 'Dracula_Cyan' 資料夾）。\n您可以運行“更新程序”資料夾中的更新程序來驗證文件，並恢復這些丟失的資料。"
+Yes: "確定"
+No: "取消"
+NoDefault: 無（默認）
+Ok: "確定"
 Forget: 忘記
-Notice: 注意
+Notice: 溫馨提示
 Error: 錯誤
 ErrorDetails: "錯誤： {ex}"
-Failed: 失敗的
+Failed: 失敗
 Success: 成功
 NotFound: 未找到
-Done: 完畢
-Working: 工作中...
+Done: 完成
+Working: 正在處理……
 ForName: "對於： {name}"
 DeletedFiles: 已刪除檔案
-FileFoldersToClear: "要清除的文件/文件夾列表："
-CouldNotFindX: 找不到 {x}
+FileFoldersToClear: "要清除的資料/資料夾列表："
+CouldNotFindX: 無法找到 {x}
 CouldNotCloseX: 無法關閉 {x}！
-DirectoryNotFound: 找不到目錄
-DirectoryNotFoundFolder: "未找到目錄： {folder}"
-DeletingFile: "刪除： {file}"
-DeletingFolder: "刪除文件夾： "
+DirectoryNotFound: 無法找到目錄
+DirectoryNotFoundFolder: "無法找到目錄： {folder}"
+DeletingFile: "正在刪除： {file}"
+DeletingFolder: "正在刪除資料夾： "
 CouldntDeleteX: "錯誤：無法刪除： {x}"
 CouldntDeleteUndefined: "錯誤：無法刪除未定義的文件"
 Prompt_RestartAsAdmin: "<h3><bold>該程序將以管理員身份重新啟動</bold></h3><p>當提示輸入管理員時，在 UAC 中點擊“是”。</p>"
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>您即將忘記帳戶！</h3> <h4>這是什麼意思？</h4> <p>- Steam 將不再在大畫面模式中列出該帳戶，並且不會記住密碼。<br/> - TcNo Account Switcher 也將不再顯示該帳戶，直到它再次通過 Steam 登錄。</p> <p>您的帳戶將保持不變。它只是在這台計算機上被遺忘了。</p><h4>你明白嗎？</h4>
+  <h3 style='color:red'>您即將忘記帳戶！</h3> <h4>這是什麼意思？</h4> <p>- Steam 將不再在大畫面模式中列出該帳戶，並且不會記住密碼。<br/> - TcNo 帳戶切換器也將不再顯示該帳戶，直到它再次通過 Steam 登錄。</p> <p>您的帳戶將保持不變。它只是在這台電腦上被遺忘了。</p><h4>你明白嗎？</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>您即將忘記一個帳戶！</h3> <h4>這是什麼意思？</h4> <p>TcNo Account Switcher 也將不再顯示該帳戶，<br/> 直到它通過 {platform}再次登錄並添加到列表中。</p> <p>您的帳戶將保持不變。只是在這台電腦上忘記了。</p> <h4>你明白嗎？</h4>
-Platform_DiscordPasteHint: 粘貼到 Discord 控制台，然後將結果粘貼到輸入中！
+  <h3 style='color:red'>您即將忘記一個帳戶！</h3> <h4>這是什麼意思？</h4> <p>TcNo 帳戶切換器也將不再顯示該帳戶，<br/> 直到它通過 {platform}再次登錄並添加到列表中。</p> <p>您的帳戶將保持不變。只是在這台電腦上忘記了。</p> <h4>你明白嗎？</h4>
+Platform_DiscordPasteHint: 貼上到 Discord 控制台，然後把結果貼上到輸入框！
 Platform_ClearCache: 清除快取
-Platform_ClearCacheTotal: 清除 {totalFileCount} 文件 ({totalSizeMB})
+Platform_ClearCacheTotal: 正在清除 {totalFileCount} 文件 ({totalSizeMB})
 Platform_DeleteFail: 無法刪除某些文件（程序可能正在運行？）
 Platform_CouldNotDeleteLog: 無法刪除文件！檢查 {logPath}
 Error_FileAccessDenied: 無法訪問文件！檢查 {logPath}
@@ -385,9 +386,9 @@ Error_RequiredFileVerify: 未找到所需文件。請確保安裝目錄中存在
 Tooltip_Settings: 設置
 Tooltip_Info: 資訊
 Tooltip_ManagePlatforms: 顯示或隱藏其他平台
-Tooltip_ExpandShortcuts: 展開遊戲和快捷方式選擇
-Tooltip_ShortcutFolder: 打開快捷方式文件夾。將快捷方式放在那裡，然後使用 TcNo 帳戶切換器來查看它們。
-Tooltip_Backup: 備份配置文件/文件夾，如平台設置中所定義。
-Tooltip_BackupAll: 備份所有配置文件/文件夾，包括圖像和其他大文件。
-Tooltip_ClosingMethod: "組合最好。關閉嘗試通過關閉函數直接關閉，TaskKill 使用 CMD（如果組合不起作用，則最好）"
-Tooltip_StartingMethod: "默認是最好的。 Direct 無法控制管理員級別或 UAC。它將以與此帳戶切換器相同的級別（或更高 - 但不低於）開始"
+Tooltip_ExpandShortcuts: 展開遊戲和捷徑選擇
+Tooltip_ShortcutFolder: 打開捷徑資料夾。將捷徑放在那裡，然後使用 TcNo 帳戶切換器來查看它們。
+Tooltip_Backup: 備份配置資料/資料夾，如平台設置中所定義。
+Tooltip_BackupAll: 備份所有配置資料/資料夾，包括圖像和其他大文件。
+Tooltip_ClosingMethod: "組合使用效果最佳。 “關閉”嘗試直接調用一次關閉函數，TaskKill 則使用 CMD（如果組合不起作用，則此方式效果更好）"
+Tooltip_StartingMethod: "默認效果最好。 Direct 無法控制管理員級別或 UAC。它將以與此帳戶切換器相同的級別（或更高 - 但不更低）啟動"
