@@ -20,7 +20,7 @@ Button_ResetSettings: Reset settings
 Button_AdvancedCleaning: Advanced cleaning...
 Button_ClearLog: Clear log
 Button_WikiInfo: More Info (Wiki)
-Button_ManagePlatforms: Manage Extra Platforms
+Button_ManagePlatforms: Manage Platforms
 Button_Backup: Backup
 Button_BackupAll: Backup everything
 Button_Restore: Restore
@@ -30,15 +30,15 @@ Settings_Admin: Run {platform} as Admin
 Settings_ImageExpiry: 'Days before profile images expire:'
 Settings_Header_AppWide: App-wide settings
 Settings_Header_GeneralSettings: General settings
-Settings_Header_ExtraPlatforms: Extra Platform Settings
+Settings_Header_ExtraPlatforms: Platform Settings
 Settings_Header_GeneralTools: General Tools
 Settings_Header_OtherTools: Other Tools
 Settings_Header_TraySettings: Tray settings
 Settings_Header_OpenGameFolders: Open game folders
 Settings_Header_BackupRestore: Backup & Restore platform settings
 Settings_TrayMax: 'Max number of accounts to remember:'
-Settings_ExtraPlatformsDisabled: These available extra platforms are currently disabled. Click to enable them.
-Settings_ExtraPlatformsEnabled: These extra platforms are visible. Click to disable them.
+Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
+Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
 Settings_RTL: Show text as Right-to-Left
 Settings_CurrentLocation: 'Current install location: {path}'
 Settings_CurrentDataLocation: 'Current user data location: {path}'
@@ -248,7 +248,7 @@ Context_RunAdmin: Run as Admin
 Context_Hide: Hide
 Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
 Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
-Title_Platforms_Settings: TcNo Account Switcher - Extra Platform Settings
+Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
 Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - Text Editor
 Title_Settings: TcNo Account Switcher - Settings
