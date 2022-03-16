@@ -20,7 +20,7 @@ Button_ResetSettings: Ayarları Sıfırla
 Button_AdvancedCleaning: Gelişmiş temizlik...
 Button_ClearLog: Günlüğü temizle
 Button_WikiInfo: Daha Fazla Bilgi (Wiki)
-Button_ManagePlatforms: Ekstra Platformları Yönetin
+Button_ManagePlatforms: Platformları Yönet
 Button_Backup: Destek olmak
 Button_BackupAll: Her şeyi yedekle
 Button_Restore: Eski haline getirmek
@@ -30,15 +30,15 @@ Settings_Admin: '{platform} Yönetici olarak çalıştır'
 Settings_ImageExpiry: 'Profil resimlerinin süresinin dolmasına günler kala:'
 Settings_Header_AppWide: Uygulama genelindeki ayarlar
 Settings_Header_GeneralSettings: Genel Ayarlar
-Settings_Header_ExtraPlatforms: Ekstra Platform Ayarları
+Settings_Header_ExtraPlatforms: Platform Ayarları
 Settings_Header_GeneralTools: Genel Araçlar
 Settings_Header_OtherTools: Diğer Araçlar
 Settings_Header_TraySettings: Tepsi ayarları
 Settings_Header_OpenGameFolders: Oyun klasörlerini aç
 Settings_Header_BackupRestore: Yedekleme ve Geri Yükleme platformu ayarları
 Settings_TrayMax: 'Hatırlanması gereken maksimum hesap sayısı:'
-Settings_ExtraPlatformsDisabled: Bu mevcut ekstra platformlar şu anda devre dışı. Bunları etkinleştirmek için tıklayın.
-Settings_ExtraPlatformsEnabled: Bu ekstra platformlar görülebilir. Bunları devre dışı bırakmak için tıklayın.
+Settings_ExtraPlatformsDisabled: Engelli platformları. Bunları etkinleştirmek için tıklayın.
+Settings_ExtraPlatformsEnabled: Görünür platformlar. Bunları devre dışı bırakmak için tıklayın.
 Settings_RTL: Metni Sağdan Sola olarak göster
 Settings_CurrentLocation: 'Geçerli yükleme konumu: {path}'
 Settings_CurrentDataLocation: 'Geçerli kullanıcı verileri konumu: {path}'
@@ -171,6 +171,7 @@ Toast_FailedLoadSettings: "Ayarlar yüklenemedi! Bunun yerine varsayılan ayarla
 Toast_FileCopyFail: Dosyalar kopyalanamadı! Daha fazla ayrıntı için günlüğe bakın.
 Toast_UserDataLoadFail: '{UserData}\\WindowSettings.json kullanıcı verileri yüklenemedi. Yedekleme ve sıfırlama! Günlüğe kaydedilen hata.'
 Toast_UpdateCheckFail: Güncellemeleri kontrol etmek için https://tcno.co/ adresine ulaşılamadı. Bu mesaj günde bir kez gösterilecektir.
+Toast_FailedCreateIcon: Simge oluşturulamadı. Ayrıntılar için günlüğe bakın.
 Tooltip_Restore: Bir 7z dosyası seçmek için tıklayın veya bu düğmeye sürükleyin.
 Modal_Crowdin_Header: Crowdin çevirmenleri
 Modal_Crowdin_Info: "İşte bu yazılımı çevirmeye yardım eden herkes.<br>Dilleri yanlarında olan kullanıcılar çeviride çok yardımcı oldular (düzeltici rolü)."
@@ -247,7 +248,7 @@ Context_RunAdmin: Yönetici olarak çalıştır
 Context_Hide: Saklamak
 Title_BNet_Settings: TcNo Hesap Değiştirici - BattleNet Ayarları
 Title_BNet_ManageIgnored: TcNo Account Switcher - Yok sayılan BattleNet hesaplarını yönetin
-Title_Platforms_Settings: TcNo Account Switcher - Ekstra Platform Ayarları
+Title_Platforms_Settings: TcNo Hesap Değiştirici - Platform Ayarları
 Title_AccountsList: TcNo Hesap Değiştirici - {platform}
 Title_TextEditor: TcNo Hesap Değiştirici - Metin Düzenleyici
 Title_Settings: TcNo Hesap Değiştirici - Ayarlar

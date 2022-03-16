@@ -20,7 +20,7 @@ Button_ResetSettings: تنظیمات را بازنشانی کنید
 Button_AdvancedCleaning: نظافت پیشرفته ...
 Button_ClearLog: پاک کردن گزارش
 Button_WikiInfo: اطلاعات بیشتر (ویکی)
-Button_ManagePlatforms: پلتفرم های اضافی را مدیریت کنید
+Button_ManagePlatforms: مدیریت پلتفرم ها
 Button_Backup: پشتیبان گیری
 Button_BackupAll: از همه چیز بک آپ بگیرید
 Button_Restore: بازگرداندن
@@ -30,15 +30,15 @@ Settings_Admin: '{platform} به عنوان Admin اجرا کنید'
 Settings_ImageExpiry: 'چند روز قبل از انقضای تصاویر نمایه:'
 Settings_Header_AppWide: تنظیمات در سطح برنامه
 Settings_Header_GeneralSettings: تنظیمات عمومی
-Settings_Header_ExtraPlatforms: تنظیمات پلتفرم اضافی
+Settings_Header_ExtraPlatforms: تنظیمات پلتفرم
 Settings_Header_GeneralTools: ابزارهای عمومی
 Settings_Header_OtherTools: ابزارهای دیگر
 Settings_Header_TraySettings: تنظیمات سینی
 Settings_Header_OpenGameFolders: پوشه های بازی را باز کنید
 Settings_Header_BackupRestore: پشتیبان گیری و بازیابی تنظیمات پلت فرم
 Settings_TrayMax: 'حداکثر تعداد حساب هایی که باید به خاطر بسپارید:'
-Settings_ExtraPlatformsDisabled: این پلتفرم‌های اضافی موجود در حال حاضر غیرفعال هستند. برای فعال کردن آنها کلیک کنید.
-Settings_ExtraPlatformsEnabled: این پلتفرم های اضافی قابل مشاهده هستند. برای غیرفعال کردن آنها کلیک کنید.
+Settings_ExtraPlatformsDisabled: پلتفرم های غیر فعال برای فعال کردن آنها کلیک کنید.
+Settings_ExtraPlatformsEnabled: پلتفرم های قابل مشاهده برای غیرفعال کردن آنها کلیک کنید.
 Settings_RTL: نمایش متن به صورت راست به چپ
 Settings_CurrentLocation: 'محل نصب فعلی: {path}'
 Settings_CurrentDataLocation: 'مکان اطلاعات کاربر فعلی: {path}'
@@ -171,6 +171,7 @@ Toast_FailedLoadSettings: "تنظیمات بارگیری نشد! به جای آ�
 Toast_FileCopyFail: فایل ها کپی نشد! برای جزئیات بیشتر به گزارش مراجعه کنید.
 Toast_UserDataLoadFail: داده های کاربر {UserData}\\WindowSettings.json بارگیری نشد. پشتیبان گیری و بازنشانی! خطا برای ورود ذخیره شد.
 Toast_UpdateCheckFail: دسترسی به https://tcno.co/ برای بررسی به‌روزرسانی‌ها امکان‌پذیر نیست. این پیام یک بار در روز نمایش داده می شود.
+Toast_FailedCreateIcon: نماد ایجاد نشد. برای جزئیات بیشتر به گزارش مراجعه کنید.
 Tooltip_Restore: برای انتخاب یک فایل 7z کلیک کنید یا آن را روی این دکمه بکشید.
 Modal_Crowdin_Header: مترجمان کرودین
 Modal_Crowdin_Info: "در اینجا همه کسانی هستند که در ترجمه این نرم افزار کمک کردند.<br>کاربرانی که زبان های کناری داشتند در ترجمه کمک زیادی کردند (نقش تصحیح کننده)."
@@ -247,7 +248,7 @@ Context_RunAdmin: به عنوان Admin اجرا شود
 Context_Hide: پنهان شدن
 Title_BNet_Settings: TcNo Account Switcher - تنظیمات BattleNet
 Title_BNet_ManageIgnored: TcNo Account Switcher - حساب های BattleNet نادیده گرفته شده را مدیریت کنید
-Title_Platforms_Settings: TcNo Account Switcher - تنظیمات پلتفرم اضافی
+Title_Platforms_Settings: TcNo Account Switcher - تنظیمات پلتفرم
 Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - ویرایشگر متن
 Title_Settings: TcNo Account Switcher - تنظیمات

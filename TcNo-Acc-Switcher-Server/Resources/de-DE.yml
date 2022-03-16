@@ -20,7 +20,7 @@ Button_ResetSettings: Einstellungen zurücksetzen
 Button_AdvancedCleaning: Erweiterte Reinigung...
 Button_ClearLog: Log löschen
 Button_WikiInfo: Mehr Info (Wiki)
-Button_ManagePlatforms: Zusätzliche Plattformen verwalten
+Button_ManagePlatforms: Plattformen verwalten
 Button_Backup: Sicherung
 Button_BackupAll: Alles sichern
 Button_Restore: Wiederherstellen
@@ -30,15 +30,15 @@ Settings_Admin: '{platform} als Admin ausführen'
 Settings_ImageExpiry: 'Tage vor Löschung der Profilbilder:'
 Settings_Header_AppWide: Programm-weite Einstellungen
 Settings_Header_GeneralSettings: Allgemeine Einstellungen
-Settings_Header_ExtraPlatforms: Zusätzliche Plattformeinstellungen
+Settings_Header_ExtraPlatforms: Plattformeinstellungen
 Settings_Header_GeneralTools: Allgemeine Werkzeuge
 Settings_Header_OtherTools: Andere Tools
 Settings_Header_TraySettings: Tray-Einstellungen
 Settings_Header_OpenGameFolders: Spielordner öffnen
 Settings_Header_BackupRestore: Plattformeinstellungen sichern und wiederherstellen
 Settings_TrayMax: 'Maximale Anzahl an zu merkenden Konten:'
-Settings_ExtraPlatformsDisabled: Diese verfügbaren zusätzlichen Plattformen sind derzeit deaktiviert. Klicken, um sie zu aktivieren.
-Settings_ExtraPlatformsEnabled: Diese zusätzlichen Plattformen sind sichtbar. Klicken, um sie zu deaktivieren.
+Settings_ExtraPlatformsDisabled: Deaktivierte Plattformen. Klicken Sie, um sie zu aktivieren.
+Settings_ExtraPlatformsEnabled: Sichtbare Plattformen. Klicken Sie, um sie zu deaktivieren.
 Settings_RTL: Text von rechts nach links anzeigen
 Settings_CurrentLocation: 'Aktueller Installationsort: {path}'
 Settings_CurrentDataLocation: 'Aktueller Speicherort der Benutzerdaten: {path}'
@@ -171,6 +171,7 @@ Toast_FailedLoadSettings: "Einstellungen konnten nicht geladen werden! Lade stat
 Toast_FileCopyFail: Dateien konnten nicht kopiert werden! Siehe Protokoll für weitere Details.
 Toast_UserDataLoadFail: Fehler beim Laden der Benutzerdaten {UserData}\\WindowSettings.json. Sichern und Zurücksetzen! Fehler im Protokoll gespeichert.
 Toast_UpdateCheckFail: https://tcno.co/ konnte nicht erreicht werden, um nach Updates zu suchen. Diese Nachricht wird einmal täglich angezeigt.
+Toast_FailedCreateIcon: Symbol konnte nicht erstellt werden. Siehe Protokoll für Details.
 Tooltip_Restore: Klicken, um eine 7z-Datei auszuwählen, oder ziehe eine auf diesen Button.
 Modal_Crowdin_Header: Crowdin-Übersetzer
 Modal_Crowdin_Info: "Hier sind alle, die geholfen haben, diese Software zu übersetzen.<br>Benutzer mit Sprachen neben ihnen haben bei der Übersetzung sehr geholfen (Rolle des Korrekturlesers)."
@@ -247,7 +248,7 @@ Context_RunAdmin: Als Administrator ausführen
 Context_Hide: Ausblenden
 Title_BNet_Settings: TcNo Account Switcher - BattleNet Einstellungen
 Title_BNet_ManageIgnored: TcNo Account Switcher - Ignorierte BattleNet-Konten verwalten
-Title_Platforms_Settings: TcNo Account Switcher - Zusätzliche Plattformeinstellungen
+Title_Platforms_Settings: TcNo Account Switcher - Plattformeinstellungen
 Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - Texteditor
 Title_Settings: TcNo Account Switcher - Einstellungen

@@ -20,7 +20,7 @@ Button_ResetSettings: 重置设置
 Button_AdvancedCleaning: 高级清理…
 Button_ClearLog: 清除日志
 Button_WikiInfo: 更多信息（Wiki）
-Button_ManagePlatforms: 管理扩展平台
+Button_ManagePlatforms: 管理平台
 Button_Backup: 备份
 Button_BackupAll: 备份所有内容
 Button_Restore: 还原
@@ -30,15 +30,15 @@ Settings_Admin: 以管理员身份运行 {platform}
 Settings_ImageExpiry: '个人资料头像过期之前的天数：'
 Settings_Header_AppWide: 应用全局设置
 Settings_Header_GeneralSettings: 常规设置
-Settings_Header_ExtraPlatforms: 扩展平台设置
+Settings_Header_ExtraPlatforms: 平台设置
 Settings_Header_GeneralTools: 常规工具
 Settings_Header_OtherTools: 其他工具
 Settings_Header_TraySettings: 托盘设置
 Settings_Header_OpenGameFolders: 打开游戏文件夹
 Settings_Header_BackupRestore: 备份和还原平台设置
 Settings_TrayMax: '要记住的帐户数量上限：'
-Settings_ExtraPlatformsDisabled: 这些扩展平台已禁用。点击以启用。
-Settings_ExtraPlatformsEnabled: 这些扩展平台是可见的。点击以禁用。
+Settings_ExtraPlatformsDisabled: 禁用平台。单击以启用它们。
+Settings_ExtraPlatformsEnabled: 可见平台。单击以禁用它们。
 Settings_RTL: 从右到左显示文本
 Settings_CurrentLocation: '当前安装位置：{path}'
 Settings_CurrentDataLocation: '当前用户数据位置：{path}'
@@ -64,8 +64,8 @@ Settings_HelpTranslate: "[帮助翻译]"
 Settings_ViewTranslators: "[致谢]"
 Settings_Header_ActiveBrowser: "（高级）设置渲染引擎："
 Settings_Header_ClosingMethod: "（高级）设置方法关闭 {platform}"
-Settings_Header_StartingMethod: "（高级）设置方法开始 {platform}"
-Settings_AutoStart: "账号切换时自动启动 {platform}"
+Settings_Header_StartingMethod: "（高级）设置方法启动 {platform}"
+Settings_AutoStart: "帐户切换时自动启动 {platform}"
 Settings_NoPlatforms: 当前未启用任何平台。请勾选下方的可选平台来启用，或者取消勾选来禁用。      
 Cleaning_Header_StartMenuShortcuts: '开始菜单的快捷方式：'
 Cleaning_Header_General: 常规清理
@@ -105,7 +105,7 @@ Toast_RestartAsAdmin: 请以管理员身份启动，然后重试。
 Toast_RestartAfterClose: 请点击关闭后重启程序。
 Toast_RestartAfterCloseTitle: 已禁用主题色
 Toast_RestartRequired: 重新启动以应用更改
-Toast_LoadStylesheetFailed: 加载样式表失败！有关详细信息，请参见用户数据文件夹。
+Toast_LoadStylesheetFailed: 加载样式表失败！请查看用户数据文件夹了解详情。
 Toast_BNet_Private: "{BTag} 的个人资料是私密的"
 Toast_BNet_StatsFail: "尝试获取 {BTag} 的统计数据时出错"
 Toast_BNet_CantSwapAccounts: 无法交换帐户（Battle.net.config 文件损坏）
@@ -120,7 +120,7 @@ Toast_CantClearLoginFiles: 清理旧登录文件失败
 Toast_AccountIdReg: 从注册表获取 Account Id 失败！
 Toast_RegFailWrite: 写入 Windows 注册表失败
 Toast_RegFailRead: 读取 Windows 注册表失败！
-Toast_RegFailReadSaved: 无法读取已保存的注册表项。如果不成功，请尝试重新删除并添加帐户。
+Toast_RegFailReadSaved: 读取已保存的注册表项失败。如果不成功，请尝试删除并重新添加帐户。
 Toast_RegSaveMissing: 查找或读取已保存的注册表文件失败！
 Toast_DuplicateNames: 无法交换。使用相同的用户名创建帐户副本吗？
 Toast_CouldNotLocate: 无法定位已登录用户
@@ -158,7 +158,7 @@ Toast_BackupCopy: (1/3) 正在复制文件到临时位置……
 Toast_BackupCompress: (2/3) 正在压缩文件（{size}）。这会需要一些时间……
 Toast_BackupComplete: (3/3) 压缩完成！（{size} 到 {compressedSize}）
 Toast_BackupProgress: "备份正在进行中（压缩后大小：{compressedSize}）"
-Toast_BackupFail: 备份失败 - 查看日志！
+Toast_BackupFail: 备份失败 - 请查看日志！
 Toast_BackupBusy: 备份已经在进行中了！
 Toast_RestoreBusy: 还原已经在进行中了！
 Toast_RestoreExt: 正在解压档案。
@@ -167,10 +167,11 @@ Toast_RestoreDeleting: 正在删除临时文件
 Toast_RestoreComplete: 还原完成！
 Toast_FailedLoad: 加载 {platform} 失败！点击平台查看错误信息。
 Toast_FailedPlatformsLoad: 加载 Platforms.json 失败！请确认此文件存在。
-Toast_FailedLoadSettings: "加载设置失败！而是加载默认设置。将“旧”添加到现有设置文件名。"
-Toast_FileCopyFail: 复制文件失败！有关详细信息，请参阅日志。
-Toast_UserDataLoadFail: 无法加载用户数据 {UserData}\\WindowSettings.json。备份和重置！将错误保存到日志。
+Toast_FailedLoadSettings: "加载设置失败！已改为加载默认设置。将“old”添加到现有设置文件名。"
+Toast_FileCopyFail: 复制文件失败！请查看日志了解详情。
+Toast_UserDataLoadFail: 加载用户数据 {UserData}\\WindowSettings.json 失败。请备份并重置！错误信息已保存到日志。
 Toast_UpdateCheckFail: 无法访问 https://tcno.co/ 以检查更新。此消息将每天显示一次。
+Toast_FailedCreateIcon: 创建图标失败。请查看日志了解详情。
 Tooltip_Restore: 点击选择一个 7z 文件，或者将它拖动到此按钮上。     
 Modal_Crowdin_Header: Crowdin 译者
 Modal_Crowdin_Info: "这是帮助翻译此软件的所有人。<br>名字旁边有语言的用户在翻译方面提供了很多帮助（审核员身份）。"
@@ -247,7 +248,7 @@ Context_RunAdmin: 以管理员身份运行
 Context_Hide: 隐藏
 Title_BNet_Settings: TcNo 帐户切换器 - 战网设置
 Title_BNet_ManageIgnored: TcNo 帐户切换器 - 管理已忽略的战网帐户
-Title_Platforms_Settings: TcNo 帐户切换器 - 扩展平台设置
+Title_Platforms_Settings: TcNo 帐户切换器 - 平台设置
 Title_AccountsList: TcNo 帐户切换器 - {platform}
 Title_TextEditor: TcNo 帐户切换器 - 文本编辑器
 Title_Settings: TcNo 帐户切换器 - 设置
@@ -381,7 +382,7 @@ Platform_ClearCacheTotal: 正在清理 {totalFileCount} 个文件（{totalSizeMB
 Platform_DeleteFail: 无法删除某些文件（程序可能正在运行？）
 Platform_CouldNotDeleteLog: 无法删除文件！请查看日志 {logPath}
 Error_FileAccessDenied: 访问文件失败！请查看日志 {logPath}
-Error_RequiredFileVerify: 未找到所需文件。请确保安装目录中存在 x64 和 x86 文件夹。如果没有运行 TcNo-Acc-Switcher-Updater.exe 并验证文件。
+Error_RequiredFileVerify: 未找到某个所需文件。请确保安装目录中存在 x64 和 x86 文件夹。如果没有，请运行 TcNo-Acc-Switcher-Updater.exe 验证文件。
 Tooltip_Settings: 设置
 Tooltip_Info: 信息
 Tooltip_ManagePlatforms: 显示或隐藏其他平台
@@ -389,5 +390,5 @@ Tooltip_ExpandShortcuts: 展开游戏和快捷方式选择
 Tooltip_ShortcutFolder: 打开快捷方式文件夹。将快捷方式放在那里，然后使用 TcNo 帐户切换器来查看它们。
 Tooltip_Backup: 根据平台设置，备份配置文件/文件夹。
 Tooltip_BackupAll: 备份所有配置文件/文件夹，包括头像和其他大文件。
-Tooltip_ClosingMethod: "组合最好。关闭尝试直接通过关闭函数关闭，TaskKill 使用 CMD（如果组合不起作用，则最好）"
-Tooltip_StartingMethod: "默认是最好的。 Direct 无法控制管理员级别或 UAC。它将以与此帐户切换器相同的级别（或更高 - 但不低于）开始"
+Tooltip_ClosingMethod: "组合使用效果最佳。“关闭”尝试直接调用一次关闭函数，TaskKill 则使用 CMD（如果组合不起作用，则此方式效果更好）"
+Tooltip_StartingMethod: "默认效果最好。 Direct 无法控制管理员级别或 UAC。它将以与此帐户切换器相同的级别（或更高 - 但不更低）启动 "

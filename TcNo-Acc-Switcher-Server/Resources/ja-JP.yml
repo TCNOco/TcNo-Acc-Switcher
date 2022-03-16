@@ -20,7 +20,7 @@ Button_ResetSettings: 設定をリセット
 Button_AdvancedCleaning: 高度なクリーニング中...
 Button_ClearLog: ログをクリア
 Button_WikiInfo: 詳細情報 (Wiki)
-Button_ManagePlatforms: 追加のプラットフォームを管理する
+Button_ManagePlatforms: プラットフォームの管理
 Button_Backup: バックアップ
 Button_BackupAll: すべてをバックアップする
 Button_Restore: 戻す
@@ -30,15 +30,15 @@ Settings_Admin: '{platform} を管理者として実行'
 Settings_ImageExpiry: 'プロフィール画像が期限切れになるまでの日数:'
 Settings_Header_AppWide: アプリ全体の設定
 Settings_Header_GeneralSettings: 一般設定
-Settings_Header_ExtraPlatforms: 追加のプラットフォーム設定
+Settings_Header_ExtraPlatforms: プラットフォーム設定
 Settings_Header_GeneralTools: 一般的なツール
 Settings_Header_OtherTools: その他のツール
 Settings_Header_TraySettings: トレイの設定
 Settings_Header_OpenGameFolders: ゲームフォルダを開く
 Settings_Header_BackupRestore: プラットフォーム設定のバックアップと復元
 Settings_TrayMax: '覚えておくアカウントの最大数:'
-Settings_ExtraPlatformsDisabled: これらの利用可能な追加プラットフォームは現在無効になっています。クリックして有効にします。
-Settings_ExtraPlatformsEnabled: これらの追加のプラットフォームが表示されます。クリックして無効にします。
+Settings_ExtraPlatformsDisabled: 無効化されたプラットフォーム。クリックして有効にします。
+Settings_ExtraPlatformsEnabled: 目に見えるプラットフォーム。クリックして無効にします。
 Settings_RTL: テキストを右から左に表示
 Settings_CurrentLocation: '現在のインストール場所： {path}'
 Settings_CurrentDataLocation: '現在のユーザーデータの場所： {path}'
@@ -171,6 +171,7 @@ Toast_FailedLoadSettings: "設定の読み込みに失敗しました！代わ�
 Toast_FileCopyFail: ファイルのコピーに失敗しました！詳細については、ログを参照してください。
 Toast_UserDataLoadFail: userdata {UserData}\\ WindowSettings.jsonの読み込みに失敗しました。バックアップとリセット！エラーをログに保存しました。
 Toast_UpdateCheckFail: https://tcno.co/にアクセスして更新を確認できませんでした。このメッセージは1日1回表示されます。
+Toast_FailedCreateIcon: アイコンの作成に失敗しました。詳細については、ログを参照してください。
 Tooltip_Restore: クリックして7zファイルを選択するか、このボタンにドラッグします。
 Modal_Crowdin_Header: Crowdinの翻訳者
 Modal_Crowdin_Info: "このソフトウェアの翻訳を手伝ってくれた皆さんです。<br>隣に言語があるユーザーは、翻訳に大いに役立ちました（校正者の役割）。"
@@ -247,7 +248,7 @@ Context_RunAdmin: 管理者として実行
 Context_Hide: 隠れる
 Title_BNet_Settings: TcNoアカウント切り替え - バトルネット設定
 Title_BNet_ManageIgnored: TcNo Account Switcher - 無視されたBattleNetアカウントを管理
-Title_Platforms_Settings: TcNoアカウントスイッチャー-追加のプラットフォーム設定
+Title_Platforms_Settings: TcNoアカウントスイッチャー-プラットフォーム設定
 Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - テキストエディター
 Title_Settings: TcNo Account Switcher - 設定

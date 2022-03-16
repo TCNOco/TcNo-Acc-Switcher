@@ -20,7 +20,7 @@ Button_ResetSettings: Đặt lại cài đặt
 Button_AdvancedCleaning: Làm sạch nâng cao ...
 Button_ClearLog: Xóa nhật ký
 Button_WikiInfo: Thông tin thêm (Wiki)
-Button_ManagePlatforms: Quản lý nền tảng bổ sung
+Button_ManagePlatforms: Quản lý nền tảng
 Button_Backup: Sao lưu
 Button_BackupAll: Sao lưu mọi thứ
 Button_Restore: Khôi phục
@@ -30,15 +30,15 @@ Settings_Admin: Chạy {platform} với tư cách quản trị viên
 Settings_ImageExpiry: 'Vài ngày trước khi ảnh hồ sơ hết hạn:'
 Settings_Header_AppWide: Cài đặt toàn ứng dụng
 Settings_Header_GeneralSettings: Cài đặt chung
-Settings_Header_ExtraPlatforms: Cài đặt nền tảng bổ sung
+Settings_Header_ExtraPlatforms: Cài đặt nền tảng
 Settings_Header_GeneralTools: Công cụ chung
 Settings_Header_OtherTools: Các công cụ khác
 Settings_Header_TraySettings: Cài đặt khay
 Settings_Header_OpenGameFolders: Mở thư mục trò chơi
 Settings_Header_BackupRestore: Sao lưu và khôi phục cài đặt nền tảng
 Settings_TrayMax: 'Số tài khoản tối đa cần nhớ:'
-Settings_ExtraPlatformsDisabled: Các nền tảng bổ sung có sẵn này hiện đang bị vô hiệu hóa. Nhấp để kích hoạt chúng.
-Settings_ExtraPlatformsEnabled: Các nền tảng bổ sung này có thể nhìn thấy được. Nhấp để vô hiệu hóa chúng.
+Settings_ExtraPlatformsDisabled: Nền tảng bị vô hiệu hóa. Nhấp để kích hoạt chúng.
+Settings_ExtraPlatformsEnabled: Nền tảng hiển thị. Nhấp để vô hiệu hóa chúng.
 Settings_RTL: Hiển thị văn bản dưới dạng từ phải sang trái
 Settings_CurrentLocation: 'Vị trí cài đặt hiện tại: {path}'
 Settings_CurrentDataLocation: 'Vị trí dữ liệu người dùng hiện tại: {path}'
@@ -171,6 +171,7 @@ Toast_FailedLoadSettings: "Không tải được cài đặt! Đang tải cài �
 Toast_FileCopyFail: Không thể sao chép tệp! Xem nhật ký để biết thêm chi tiết.
 Toast_UserDataLoadFail: Không tải được dữ liệu người dùng {UserData}\\ WindowSettings.json. Sao lưu và đặt lại! Đã lưu lỗi để ghi nhật ký.
 Toast_UpdateCheckFail: Không thể truy cập https://tcno.co/ để kiểm tra các bản cập nhật. Thông báo này sẽ hiển thị mỗi ngày một lần.
+Toast_FailedCreateIcon: Không tạo được biểu tượng. Xem nhật ký để biết chi tiết.
 Tooltip_Restore: Nhấp để chọn tệp 7z hoặc kéo tệp đó vào nút này.
 Modal_Crowdin_Header: Người dịch Crowdin
 Modal_Crowdin_Info: "Đây là tất cả những người đã giúp dịch phần mềm này.<br>Người dùng có ngôn ngữ bên cạnh họ đã giúp rất nhiều trong việc dịch thuật (vai trò người hiệu đính)."
@@ -247,7 +248,7 @@ Context_RunAdmin: Chạy với tư cách quản trị viên
 Context_Hide: Giấu
 Title_BNet_Settings: TcNo Account Switcher - Cài đặt BattleNet
 Title_BNet_ManageIgnored: TcNo Account Switcher - Quản lý các tài khoản BattleNet bị bỏ qua
-Title_Platforms_Settings: Công cụ chuyển đổi tài khoản TcNo - Cài đặt nền tảng bổ sung
+Title_Platforms_Settings: Công cụ chuyển đổi tài khoản TcNo - Cài đặt nền tảng
 Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - Text Editor
 Title_Settings: TcNo Account Switcher - Cài đặt
