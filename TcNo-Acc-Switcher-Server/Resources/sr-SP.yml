@@ -20,7 +20,7 @@ Button_ResetSettings: Ресетујте поставке
 Button_AdvancedCleaning: Напредно чишћење...
 Button_ClearLog: Обриши "log"
 Button_WikiInfo: Више информација (Wiki)
-Button_ManagePlatforms: Управљајте додатним платформама
+Button_ManagePlatforms: Manage Platforms
 Button_Backup: Бацкуп
 Button_BackupAll: Направите резервну копију свега
 Button_Restore: Ресторе
@@ -30,15 +30,15 @@ Settings_Admin: Покрените {platform} као администратор
 Settings_ImageExpiry: 'Дани пре истека профила:'
 Settings_Header_AppWide: Подешавања за целу апликацију
 Settings_Header_GeneralSettings: Општа подешавања
-Settings_Header_ExtraPlatforms: Додатне поставке платформе
+Settings_Header_ExtraPlatforms: Platform Settings
 Settings_Header_GeneralTools: Опште Алатке
 Settings_Header_OtherTools: Остале алатке
 Settings_Header_TraySettings: '"Tray" подешавања'
 Settings_Header_OpenGameFolders: Отворите фасцикле игара
 Settings_Header_BackupRestore: Подешавања платформе за прављење резервних копија и враћање
 Settings_TrayMax: 'Максималан број налога које треба запамтити:'
-Settings_ExtraPlatformsDisabled: Ове доступне додатне платформе су тренутно онемогућене. Кликните да бисте их омогућили.
-Settings_ExtraPlatformsEnabled: Ове додатне платформе су видљиве. Кликните да бисте их онемогућили.
+Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
+Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
 Settings_RTL: Прикажи текст здесна налево
 Settings_CurrentLocation: 'Тренутна локација за инсталацију: {path}'
 Settings_CurrentDataLocation: 'Тренутна локација корисничких података: {path}'
@@ -171,6 +171,7 @@ Toast_FailedLoadSettings: "Учитавање подешавања није ус
 Toast_FileCopyFail: Копирање датотека није успело! Погледајте дневник за више детаља.
 Toast_UserDataLoadFail: Учитавање корисничких података {UserData}\\ВиндовСеттингс.јсон није успело. Прављење резервне копије и ресетовање! Грешка је сачувана за евиденцију.
 Toast_UpdateCheckFail: Није могуће доћи до хттпс://тцно.цо/ ради провере ажурирања. Ова порука ће се приказивати једном дневно.
+Toast_FailedCreateIcon: Failed to create icon. See log for details.
 Tooltip_Restore: Кликните да бисте изабрали 7з датотеку или је превуците на ово дугме.
 Modal_Crowdin_Header: Цровдин преводиоци
 Modal_Crowdin_Info: "Ево свих који су помогли у превођењу овог софтвера.<br>Корисници са језицима поред њих су много помогли у преводу (улога лектора)."
@@ -247,7 +248,7 @@ Context_RunAdmin: Покрени као администратор
 Context_Hide: Сакрити
 Title_BNet_Settings: ТцНо Аццоунт Свитцхер - БаттлеНет подешавања
 Title_BNet_ManageIgnored: ТцНо Аццоунт Свитцхер - Управљање занемареним БаттлеНет рачунима
-Title_Platforms_Settings: ТцНо Аццоунт Свитцхер - Додатне поставке платформе
+Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
 Title_AccountsList: ТцНо Аццоунт Свитцхер - {platform}
 Title_TextEditor: ТцНо Аццоунт Свитцхер - уређивач текста
 Title_Settings: ТцНо Аццоунт Свитцхер - подешавања
