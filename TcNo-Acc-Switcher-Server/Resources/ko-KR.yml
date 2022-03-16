@@ -1,79 +1,79 @@
 ---
 Update: 업데이트 가능! 시작하려면 여기를 클릭하세요.
 Header_ChooseLanguage: '언어 선택'
-BattleNet_ShowSR: Overwatch SR을 보여주고 Overwatch 프로필 사진을 사용하십시오.
+BattleNet_ShowSR: Overwatch SR 랭크를 보여주고 Overwatch 프로필 사진을 사용.
 Steam_ShowSteamID: SteamID 표시
 Steam_ShowVac: VAC 상태 표시
 Steam_CheckVac: 계정 VAC 상태 확인
 Steam_ShowLimited: 제한된 상태 표시
 Steam_ShowAccUsername: 계정 사용자 이름 표시
 Steam_Tray_AccountName: 계정 이름 표시 [친구 이름 아님]
-Steam_OverrideDefaultState: "기본 로그인 상태 재정의:"
+Steam_OverrideDefaultState: "기본 로그인 상태 덮어쓰기:"
 Button_AddNew: 새 계정 추가
-Button_SaveCurrent: 현재 저장
+Button_SaveCurrent: 현재 상태 저장
 Button_SaveFile: 파일을 저장
 Button_Cancel: 취소
 Button_Login: 로그인
 Button_Close: 닫기
 Button_RefreshImages: 이미지 새로고침
-Button_ResetSettings: 설정 재설정
-Button_AdvancedCleaning: 고급 청소...
-Button_ClearLog: 로그 지우기
+Button_ResetSettings: 설정 초기화
+Button_AdvancedCleaning: 고급 정리...
+Button_ClearLog: 로그 삭제
 Button_WikiInfo: 추가 정보(위키)
-Button_ManagePlatforms: 추가 플랫폼 관리
-Button_Backup: 지원
+Button_ManagePlatforms: Manage Platforms
+Button_Backup: 백업
 Button_BackupAll: 모두 백업
 Button_Restore: 복원
 Button_OpenBackup: 백업 폴더 열기
-Settings_Shortcut: ' {platform} 스위처 바탕 화면 바로 가기'
-Settings_Admin: 관리자로 {platform} 실행
-Settings_ImageExpiry: '프로필 이미지가 만료되기 전 일:'
+Settings_Shortcut: ' {platform} 스위쳐 바탕화면 바로 가기'
+Settings_Admin: 관리자 권한으로 {platform} 실행
+Settings_ImageExpiry: '다음 날짜가 지나면 프로필 이미지 만료:'
 Settings_Header_AppWide: 앱 전체 설정
 Settings_Header_GeneralSettings: 일반 설정
-Settings_Header_ExtraPlatforms: 추가 플랫폼 설정
+Settings_Header_ExtraPlatforms: Platform Settings
 Settings_Header_GeneralTools: 일반 도구
 Settings_Header_OtherTools: 기타 도구
 Settings_Header_TraySettings: 트레이 설정
 Settings_Header_OpenGameFolders: 게임 폴더 열기
-Settings_Header_BackupRestore: 백업 및 복원 플랫폼 설정
+Settings_Header_BackupRestore: 플랫폼 설정 백업 및 복원
 Settings_TrayMax: '기억할 최대 계정 수:'
-Settings_ExtraPlatformsDisabled: 사용 가능한 추가 플랫폼은 현재 비활성화되어 있습니다. 활성화하려면 클릭하세요.
-Settings_ExtraPlatformsEnabled: 이러한 추가 플랫폼이 표시됩니다. 비활성화하려면 클릭하세요.
+Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
+Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
 Settings_RTL: 텍스트를 오른쪽에서 왼쪽으로 표시
 Settings_CurrentLocation: '현재 설치 위치: {path}'
 Settings_CurrentDataLocation: '현재 사용자 데이터 위치: {path}'
-Settings_SetDataLocation: "[사용자 지정 사용자 데이터 위치 설정]"
+Settings_SetDataLocation: "[사용자 데이터 위치 설정]"
 Settings_PickFolder: '{platform} 폴더 선택'
-Settings_OpenFolder: 폴더 {platform} 열기
-Settings_ClearForgotten: 잊혀진 지우기
+Settings_OpenFolder: '{platform} 폴더 열기'
+Settings_ClearForgotten: 잊혀진 정보 지우기
 Settings_ClearAccounts: 계정 지우기
 Settings_StreamerMode: 스트리머 모드 활성화
-Settings_ExitToTray: 트레이로 나가기 최소화
+Settings_ExitToTray: 나가기 버튼을 누르면 트레이로 최소화하기
 Settings_DesktopShortcut: 바탕 화면 바로 가기
 Settings_StartMenu_ProgramTray: 프로그램 및 트레이
 Settings_StartMenu_Platform: 플랫폼
-Settings_Tray_StartWindows: Windows에서 트레이 시작
+Settings_Tray_StartWindows: 윈도우 시작 시 트레이로 실행하기
 Settings_Tray_StartNow: '[지금 트레이 시작]'
 Settings_CurrentStyle: 현재 스타일
 Settings_ThemeBackground: '[배경 설정]'
 Settings_ThemeOpenFolder: '[테마 폴더 열기]'
 Settings_Protocol: 'tcno:\\ 프로토콜 활성화(권장)'
-Settings_StartCentered: 프로그램 중심으로 시작
+Settings_StartCentered: 프로그램을 시작할때 화면 중앙에 표시하기
 Settings_WindowsAccent: Windows 강조 색상 사용
 Settings_HelpTranslate: "[번역을 도와주세요]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(고급) 렌더링 엔진 설정:"
-Settings_Header_ClosingMethod: "(고급) 닫기 방법을 {platform}으로 설정"
-Settings_Header_StartingMethod: "(고급) 시작 방법을 {platform}으로 설정"
+Settings_Header_ClosingMethod: "(고급) {platform}을 닫는 방법을 다음으로 설정"
+Settings_Header_StartingMethod: "(고급) {platform}을 시작하는 방법을 다음으로 설정"
 Settings_AutoStart: "계정 전환 시 자동으로 {platform} 시작"
-Settings_NoPlatforms: 현재 활성화된 플랫폼이 없습니다. 아래에서 옵션 플랫폼을 선택하여 활성화하거나 비활성화된 플랫폼을 선택 취소하십시오.
+Settings_NoPlatforms: 현재 활성화된 플랫폼이 없습니다. 아래에서 플랫폼을 선택하여 활성화하거나 비활성화된 플랫폼을 선택 취소하십시오.
 Cleaning_Header_StartMenuShortcuts: '시작 메뉴 바로 가기:'
 Cleaning_Header_General: 일반 청소
 Cleaning_Header_LoginHistory: 내 로그인 기록 정리
 Cleaning_Header_PlatformCleaning: '{platform} 스위처'
 Cleaning_ImportantInfoHeader: '중요 정보:'
 Cleaning_ImportantInfo: >
-  버튼을 클릭하면 Steam 설치에서 관련 파일이 삭제됩니다.<br /> loginusers.vdf를 삭제하면 이 계정 전환기에 계정이 표시되지 않습니다.<br /> 다시 받으려면 Steam을 사용하여 로그인해야 합니다.
+  버튼을 클릭하면 Steam 설치폴더에서 관련 파일이 삭제됩니다.<br /> loginusers.vdf를 삭제하면 이 계정 전환기에 계정이 표시되지 않습니다.<br /> 다시 파일을 받으려면 Steam을 사용하여 로그인해야 합니다.
 Cleaning_Button_KillProcess: '{platform} 프로세스 종료'
 Cleaning_Button_ForgottenBackups: 잊어버린 계정 백업
 Cleaning_Understand: 이 버튼이 무엇을 하는지 이해합니다.
@@ -171,6 +171,7 @@ Toast_FailedLoadSettings: "설정을 로드하지 못했습니다! 대신 기본
 Toast_FileCopyFail: 파일 복사에 실패했습니다! 자세한 내용은 로그를 참조하십시오.
 Toast_UserDataLoadFail: 사용자 데이터 {UserData}\\WindowSettings.json을 로드하지 못했습니다. 백업 및 재설정! 로그에 오류를 저장했습니다.
 Toast_UpdateCheckFail: 업데이트를 확인하기 위해 https://tcno.co/에 연결할 수 없습니다. 이 메시지는 하루에 한 번 표시됩니다.
+Toast_FailedCreateIcon: 아이콘 생성에 실패했습니다. 자세한 내용은 로그에 있습니다.
 Tooltip_Restore: 7z 파일을 클릭하여 선택하거나 이 버튼으로 끌어다 놓습니다.
 Modal_Crowdin_Header: Crowdin 번역가
 Modal_Crowdin_Info: "이 소프트웨어를 번역하는 데 도움을 준 모든 사람이 있습니다.<br>옆에 언어가 있는 사용자가 번역에 많은 도움이 되었습니다(교정자 역할)."
@@ -218,7 +219,7 @@ Status_WaitingForMultipleClose: "다른 {processName} 및 {count} 이(가) 닫�
 Status_GetUniqueId: 고유 사용자 ID 수집
 Status_CopyingFiles: 사용자 파일 복사 중...
 Status_HandlingImage: 계정 프로필 이미지 처리
-Context_SwapTo: 계정으로 스왑
+Context_SwapTo: 계정으로 전환
 Context_CreateShortcut: 바탕 화면 바로 가기 만들기
 Context_CreateShortcutSubmenu: 바탕 화면 바로 가기 만들기...
 Context_ChangeImage: 이미지 변경
@@ -229,7 +230,7 @@ Context_ChangeName: 스위처 이름 변경
 Context_LoginAsSubmenu: 다음으로 로그인...
 Context_UsernameSubmenu: 사용자 이름...
 Context_RefreshName: 새로고침 이름
-Context_CopySubmenu: 부...
+Context_CopySubmenu: 복사...
 Context_CopyProfileSubmenu: 프로필 복사...
 Context_CommunityUrl: 커뮤니티 URL
 Context_CommunityUsername: 커뮤니티 사용자 이름
@@ -247,7 +248,7 @@ Context_RunAdmin: 관리자로 실행
 Context_Hide: 숨다
 Title_BNet_Settings: TcNo 계정 전환기 - BattleNet 설정
 Title_BNet_ManageIgnored: TcNo 계정 전환기 - 무시된 BattleNet 계정 관리
-Title_Platforms_Settings: TcNo 계정 전환기 - 추가 플랫폼 설정
+Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
 Title_AccountsList: TcNo 계정 전환기 - {platform}
 Title_TextEditor: TcNo 계정 전환기 - 텍스트 편집기
 Title_Settings: TcNo 계정 전환기 - 설정
@@ -347,10 +348,10 @@ PngDimensions: '{MaxIconWidth}x{MaxIconHeight}보다 작거나 같아야 합니�
 ThemeSyntaxAnd: "구문 오류가 발생했습니다(자세한 내용은 아래 참조)! 과:"
 ThemesNotFound: "TcNo Account Switcher 디렉토리에서 \"themes\" 폴더를 찾을 수 없습니다. 이 소프트웨어를 실행하려면 이 폴더(특히 'Dracula_Cyan' 폴더)가 필요합니다.\n\"updater\" 폴더에서 Updater를 실행하여 파일을 확인하고 누락된 파일을 복원할 수 있습니다."
 Yes: "예"
-No: "아니"
+No: "아니요"
 NoDefault: 아니요(기본값)
 Ok: "확인"
-Forget: 잊다
+Forget: 지우기
 Notice: 주의
 Error: 오류
 ErrorDetails: "오류: {ex}"
