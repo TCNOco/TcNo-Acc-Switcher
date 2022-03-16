@@ -20,7 +20,7 @@ Button_ResetSettings: Tilbakestill innstillinger
 Button_AdvancedCleaning: Avansert rengjøring...
 Button_ClearLog: Tøm logg
 Button_WikiInfo: Mer info (Wiki)
-Button_ManagePlatforms: Manage Platforms
+Button_ManagePlatforms: Administrer plattformer
 Button_Backup: Sikkerhetskopiering
 Button_BackupAll: Sikkerhetskopier alt
 Button_Restore: Restaurere
@@ -30,15 +30,15 @@ Settings_Admin: Kjør {platform} som Admin
 Settings_ImageExpiry: 'Dager før profilbildene utløper:'
 Settings_Header_AppWide: Innstillinger for App-wide
 Settings_Header_GeneralSettings: Generelle innstillinger
-Settings_Header_ExtraPlatforms: Platform Settings
+Settings_Header_ExtraPlatforms: Plattforminnstillinger
 Settings_Header_GeneralTools: Generelle verktøy
 Settings_Header_OtherTools: Andre verktøy
 Settings_Header_TraySettings: Innstillinger for verktøykassen
 Settings_Header_OpenGameFolders: Åpne spillmapper
 Settings_Header_BackupRestore: Sikkerhetskopier og gjenopprett plattforminnstillinger
 Settings_TrayMax: 'Maks antall kontoer å huske:'
-Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
-Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
+Settings_ExtraPlatformsDisabled: Deaktiverte plattformer. Klikk for å aktivere dem.
+Settings_ExtraPlatformsEnabled: Synlige plattformer. Klikk for å deaktivere dem.
 Settings_RTL: Vis tekst som høyre-til-venstre
 Settings_CurrentLocation: 'Gjeldende installasjonssted: {path}'
 Settings_CurrentDataLocation: 'Gjeldende brukerdataplassering: {path}'
@@ -171,7 +171,7 @@ Toast_FailedLoadSettings: "Kunne ikke laste inn innstillingene! Laster inn stand
 Toast_FileCopyFail: Kunne ikke kopiere filer! Se logg for flere detaljer.
 Toast_UserDataLoadFail: Kunne ikke laste brukerdata {UserData}\\WindowSettings.json. Sikkerhetskopierer og tilbakestiller! Lagret feil til logg.
 Toast_UpdateCheckFail: Kunne ikke nå https://tcno.co/ for å se etter oppdateringer. Denne meldingen vises en gang om dagen.
-Toast_FailedCreateIcon: Failed to create icon. See log for details.
+Toast_FailedCreateIcon: Kunne ikke opprette ikon. Se logg for detaljer.
 Tooltip_Restore: Klikk for å velge en 7z-fil, eller dra den til denne knappen.
 Modal_Crowdin_Header: Crowdin-oversettere
 Modal_Crowdin_Info: "Her er alle som hjalp til med å oversette denne programvaren.<br>Brukere med språk ved siden av hjalp mye med oversettelse (korrekturleserrolle)."
@@ -248,7 +248,7 @@ Context_RunAdmin: Kjør som Admin
 Context_Hide: Gjemme seg
 Title_BNet_Settings: TcIngen konto-brytere - BattleNet innstillinger
 Title_BNet_ManageIgnored: TcIngen kontomasjon - Administrer ignorerte BattleNet kontoer
-Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
+Title_Platforms_Settings: TcNo Account Switcher - Plattforminnstillinger
 Title_AccountsList: TcIngen Konto-bytter - {platform}
 Title_TextEditor: TcIngen kontovelger - tekstbehandler
 Title_Settings: TcIngen kontomerter - Innstillinger
