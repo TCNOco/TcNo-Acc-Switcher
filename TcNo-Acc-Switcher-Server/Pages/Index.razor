@@ -89,10 +89,20 @@
 	{
 		AppData.Instance.WindowTitle = "TcNo Account Switcher";
 
+        // If no platforms are showing:
 	    if (!_appData.AnyPlatformsShowing())
 	    {
             _navManager.NavigateTo("Platforms");
 	    }
+
+        // If just 1 platform is showing, and first launch: Nav into:
+	    if (AppData.FirstLaunch && _appData.SortedPlatformListHandleDisabled().Count == 1)
+	    {
+	        AppData.FirstLaunch = false;
+	        var onlyPlatform = _appData.SortedPlatformListHandleDisabled().First();
+	        Check(onlyPlatform);
+	    }
+	    AppData.FirstLaunch = false;
 
 	    if (firstRender)
 		{

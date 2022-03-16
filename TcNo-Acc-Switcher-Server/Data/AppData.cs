@@ -126,6 +126,9 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private NavigationManager _activeNavMan;
         [JsonIgnore] public static NavigationManager ActiveNavMan { get => Instance._activeNavMan; set => Instance._activeNavMan = value; }
+
+        private bool _firstLaunch = true;
+        [JsonIgnore] public static bool FirstLaunch { get => Instance._firstLaunch; set => Instance._firstLaunch = value; }
         public void SetActiveNavMan(NavigationManager nm) => Instance._activeNavMan = nm;
 
         #region JS_INTEROP
