@@ -20,7 +20,7 @@ Button_ResetSettings: Resetare setări
 Button_AdvancedCleaning: Curățare avansată...
 Button_ClearLog: Curăță jurnalul
 Button_WikiInfo: Mai multe informaţii (Wiki)
-Button_ManagePlatforms: Manage Platforms
+Button_ManagePlatforms: Gestionați platformele
 Button_Backup: Backup
 Button_BackupAll: Faceți backup pentru tot
 Button_Restore: Restabili
@@ -30,15 +30,15 @@ Settings_Admin: Rulează {platform} ca Admin
 Settings_ImageExpiry: 'Zile înainte de expirarea imaginilor de profil:'
 Settings_Header_AppWide: Setări pentru întreaga aplicație
 Settings_Header_GeneralSettings: Setări generale
-Settings_Header_ExtraPlatforms: Platform Settings
+Settings_Header_ExtraPlatforms: Setări platformă
 Settings_Header_GeneralTools: Unelte Generale
 Settings_Header_OtherTools: Alte instrumente
 Settings_Header_TraySettings: Setări jurnal
 Settings_Header_OpenGameFolders: Deschide folderele jocului
 Settings_Header_BackupRestore: Backup și restaurare setările platformei
 Settings_TrayMax: 'Numărul maxim de conturi de reţinut:'
-Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
-Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
+Settings_ExtraPlatformsDisabled: Platforme dezactivate. Faceți clic pentru a le activa.
+Settings_ExtraPlatformsEnabled: Platforme vizibile. Faceți clic pentru a le dezactiva.
 Settings_RTL: Afișați textul ca de la dreapta la stânga
 Settings_CurrentLocation: 'Locația curentă de instalare: {path}'
 Settings_CurrentDataLocation: 'Locația curentă a datelor utilizatorului: {path}'
@@ -171,7 +171,7 @@ Toast_FailedLoadSettings: "Nu s-au încărcat setările! În schimb, se încarc�
 Toast_FileCopyFail: Nu s-au putut copia fișierele! Consultați jurnalul pentru mai multe detalii.
 Toast_UserDataLoadFail: Nu s-a încărcat datele utilizatorului {UserData}\\WindowSettings.json. Backup și resetare! Eroare salvată în log.
 Toast_UpdateCheckFail: Nu s-a putut accesa https://tcno.co/ pentru a verifica dacă există actualizări. Acest mesaj va apărea o dată pe zi.
-Toast_FailedCreateIcon: Failed to create icon. See log for details.
+Toast_FailedCreateIcon: Nu s-a putut crea pictograma. Consultați jurnalul pentru detalii.
 Tooltip_Restore: Faceți clic pentru a selecta un fișier 7z sau trageți-l pe acest buton.
 Modal_Crowdin_Header: Crowdin traducători
 Modal_Crowdin_Info: "Iată toți cei care au ajutat la traducerea acestui software.<br>Utilizatorii cu limbi lângă ei au ajutat foarte mult la traducere (rol de corector)."
@@ -248,7 +248,7 @@ Context_RunAdmin: Rulați ca administrator
 Context_Hide: Ascunde
 Title_BNet_Settings: TcNo Account Switcher - Setări BattleNet
 Title_BNet_ManageIgnored: Comutator de cont TcNo - Gestionați conturile BattleNet ignorate
-Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
+Title_Platforms_Settings: TcNo Account Switcher - Setări platformă
 Title_AccountsList: Comutator de cont TcNo - {platform}
 Title_TextEditor: Comutator de cont TcNo - Editor de text
 Title_Settings: Comutator de cont TcNo - Setări
