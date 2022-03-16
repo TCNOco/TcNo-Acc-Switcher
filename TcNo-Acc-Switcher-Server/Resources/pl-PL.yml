@@ -20,7 +20,7 @@ Button_ResetSettings: Zresetuj ustawienia
 Button_AdvancedCleaning: Zaawansowane czyszczenie...
 Button_ClearLog: Wyczyść logi
 Button_WikiInfo: Więcej informacji (Wiki)
-Button_ManagePlatforms: Manage Platforms
+Button_ManagePlatforms: Zarządzaj platformami
 Button_Backup: Kopia zapasowa
 Button_BackupAll: Zrób kopię zapasową wszystkiego
 Button_Restore: Przywróć
@@ -30,15 +30,15 @@ Settings_Admin: Uruchom {platform} jako Administrator
 Settings_ImageExpiry: 'Dni przed wygaśnięciem zdjęć profilowych:'
 Settings_Header_AppWide: Ustawienia całej aplikacji
 Settings_Header_GeneralSettings: Ustawienia ogólne
-Settings_Header_ExtraPlatforms: Platform Settings
+Settings_Header_ExtraPlatforms: Ustawienia platformy
 Settings_Header_GeneralTools: Narzędzia ogólne
 Settings_Header_OtherTools: Inne narzędzia
 Settings_Header_TraySettings: Ustawienia zasobnika
 Settings_Header_OpenGameFolders: Otwórz foldery gier
 Settings_Header_BackupRestore: Tworzenie kopii zapasowej i przywracanie ustawień platformy
 Settings_TrayMax: 'Maksymalna liczba kont do zapamiętania:'
-Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
-Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
+Settings_ExtraPlatformsDisabled: Platformy dla niepełnosprawnych. Kliknij, aby je włączyć.
+Settings_ExtraPlatformsEnabled: Widoczne platformy. Kliknij, aby je wyłączyć.
 Settings_RTL: Pokaż tekst od prawej do lewej
 Settings_CurrentLocation: 'Aktualna lokalizacja instalacji: {path}'
 Settings_CurrentDataLocation: 'Aktualna lokalizacja danych użytkownika: {path}'
@@ -171,7 +171,7 @@ Toast_FailedLoadSettings: "Nie udało się wczytać ustawień! Zamiast tego wczy
 Toast_FileCopyFail: Nie udało się skopiować plików! Zobacz dziennik, aby uzyskać więcej informacji.
 Toast_UserDataLoadFail: Nie udało się załadować danych użytkownika {UserData}\\WindowSettings.json. Tworzenie kopii zapasowej i resetowanie! Zapisano błąd w logu.
 Toast_UpdateCheckFail: Nie można uzyskać dostępu do https://tcno.co/, aby sprawdzić dostępność aktualizacji. Ta wiadomość będzie wyświetlana raz dziennie.
-Toast_FailedCreateIcon: Failed to create icon. See log for details.
+Toast_FailedCreateIcon: Nie udało się utworzyć ikony. Zobacz dziennik, aby uzyskać szczegółowe informacje.
 Tooltip_Restore: Kliknij, aby wybrać plik 7z, lub przeciągnij go na ten przycisk.
 Modal_Crowdin_Header: Tłumacze Crowdin
 Modal_Crowdin_Info: "Oto wszyscy, którzy pomogli przetłumaczyć to oprogramowanie.<br>Użytkownicy którzy znają te języki bardzo pomogli w tłumaczeniu (rola korektora)."
@@ -248,7 +248,7 @@ Context_RunAdmin: Uruchom jako Administrator
 Context_Hide: Ukryj
 Title_BNet_Settings: Przełącznik kont TcNo - Ustawienia BattleNet
 Title_BNet_ManageIgnored: Przełącznik kont TcNo - Zarządzaj ignorowanymi kontami BattleNet
-Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
+Title_Platforms_Settings: Przełącznik konta TcNo — ustawienia platformy
 Title_AccountsList: Przełącznik kont TcNo - {platform}
 Title_TextEditor: Przełącznik kont TcNo - Edytor tekstu
 Title_Settings: Przełącznik kont TcNo - Ustawienia
