@@ -123,6 +123,7 @@ Toast_RegFailRead: Windowsレジストリからの読み取りに失敗しまし
 Toast_RegFailReadSaved: 保存されたレジストリエントリの読み取りに失敗しました。失敗した場合は、アカウントを削除して再度追加してみてください。
 Toast_RegSaveMissing: 保存されたレジストリファイルからのデータの検索または読み取りに失敗しました！
 Toast_DuplicateNames: 同じユーザー名でアカウントを複製できませんでしたか？
+Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
 Toast_CouldNotLocate: ログインしているユーザーが見つかりませんでした
 Toast_StreamerModeHint: プライベート情報は非表示です! - 設定を参照してください
 Toast_StreamerModeTitle: 配信モード
