@@ -123,6 +123,7 @@ Toast_RegFailRead: Lukeminen Windows Regsitrystä epäonnistui!
 Toast_RegFailReadSaved: Tallennetun rekisterimerkinnän lukeminen epäonnistui. Yritä poistaa ja lisätä tili uudelleen, jos se ei onnistu.
 Toast_RegSaveMissing: Tallennettujen rekisteritiedostojen tietojen etsiminen tai lukeminen epäonnistui!
 Toast_DuplicateNames: Ei voitu vaihtaa. Monista tilit samalla käyttäjätunnuksella?
+Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
 Toast_CouldNotLocate: Kirjautunut käyttäjä ei löytänyt
 Toast_StreamerModeHint: Yksityinen tieto on piilotettu! - Katso asetukset
 Toast_StreamerModeTitle: Lähetystila
