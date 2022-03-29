@@ -123,6 +123,7 @@ Toast_RegFailRead: Không thể đọc từ Windows Regsitry!
 Toast_RegFailReadSaved: Không thể đọc mục đăng ký đã lưu. Thử xóa và thêm lại tài khoản nếu không thành công.
 Toast_RegSaveMissing: Không tìm thấy hoặc đọc dữ liệu từ các tệp đăng ký đã lưu!
 Toast_DuplicateNames: Không thể hoán đổi. Các tài khoản trùng lặp với cùng một tên người dùng?
+Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
 Toast_CouldNotLocate: Không thể định vị người dùng đã đăng nhập
 Toast_StreamerModeHint: Thông tin cá nhân bị ẩn! - Xem cài đặt
 Toast_StreamerModeTitle: Chế độ phát trực tiếp
