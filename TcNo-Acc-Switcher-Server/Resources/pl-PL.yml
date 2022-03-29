@@ -123,6 +123,7 @@ Toast_RegFailRead: Błąd odczytu z rejestru!
 Toast_RegFailReadSaved: Nie udało się odczytać zapisanego wpisu rejestru. Spróbuj usunąć i dodać konto ponownie, jeśli się nie powiedzie.
 Toast_RegSaveMissing: Nie udało się znaleźć lub odczytać danych z zapisanych plików Rejestru!
 Toast_DuplicateNames: Nie można zamienić. Zduplikowane konta z tą samą nazwą użytkownika?
+Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
 Toast_CouldNotLocate: Nie można zlokalizować zalogowanego użytkownika
 Toast_StreamerModeHint: Prywatne informacje są ukryte! - Zobacz ustawienia
 Toast_StreamerModeTitle: Tryb streamera
