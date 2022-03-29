@@ -123,6 +123,7 @@ Toast_RegFailRead: Det gick inte att läsa från Windows Regsitry!
 Toast_RegFailReadSaved: Det gick inte att läsa sparad registerpost. Försök att ta bort och lägga till kontot igen om det misslyckas.
 Toast_RegSaveMissing: Det gick inte att hitta eller läsa data från sparade registerfiler!
 Toast_DuplicateNames: Kunde inte byta konto. Duplicera konton med samma användarnamn?
+Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
 Toast_CouldNotLocate: Kunde inte hitta inloggad användare
 Toast_StreamerModeHint: Privat info är dold! - Se inställningar
 Toast_StreamerModeTitle: Streamer läge
