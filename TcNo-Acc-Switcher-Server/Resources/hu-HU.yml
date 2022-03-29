@@ -123,6 +123,7 @@ Toast_RegFailRead: Nem sikerült beolvasni a Windows Regsitry-ből!
 Toast_RegFailReadSaved: Nem sikerült beolvasni a rendszerleíró adatbázis mentett bejegyzését. Ha nem sikerül, próbálja meg eltávolítani és újra hozzáadni a fiókot.
 Toast_RegSaveMissing: Sikertelen adatok keresése vagy olvasása a mentett rendszerleíró fájlokból!
 Toast_DuplicateNames: Nem sikerült felcserélni. Ismétlődő számlák ugyanazzal a felhasználónévvel?
+Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
 Toast_CouldNotLocate: Nem sikerült megtalálni a bejelentkezett felhasználót
 Toast_StreamerModeHint: A privát információk rejtve vannak! - Lásd a beállításokat
 Toast_StreamerModeTitle: Streamer mód
