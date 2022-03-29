@@ -133,6 +133,7 @@ namespace TcNo_Acc_Switcher_Globals
         private static readonly IntPtr RtIcon = (IntPtr)3;
         private static readonly IntPtr RtGroupIcon = (IntPtr)14;
 
+        [SupportedOSPlatform("windows")]
         public static Icon ExtractIconFromExecutable(string path)
         {
             var hModule = NativeMethods.LoadLibraryEx(path, IntPtr.Zero, LoadLibraryAsDatafile);

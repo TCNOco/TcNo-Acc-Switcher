@@ -745,6 +745,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             return uniqueId;
         }
 
+        [SupportedOSPlatform("windows")]
         private static bool ReadRegistryKeyWithErrors(string key, out dynamic value)
         {
             value = Globals.ReadRegistryKey(key);

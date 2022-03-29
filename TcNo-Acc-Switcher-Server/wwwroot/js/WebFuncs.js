@@ -625,7 +625,7 @@ async function pathPickerClick(e) {
 
     // Because this is reset: see if has .exe inside it.
     if ($(e.target).hasClass("folder") && pathPickerRequestedFile.endsWith(".exe")) {
-        console.log($(e.target).parent().html());
+        //console.log($(e.target).parent().html());
         Modal_RequestedLocated($(e.target).parent().html().toLowerCase().includes(pathPickerRequestedFile.toLowerCase()));
     }
     // If is not currently open: Continue

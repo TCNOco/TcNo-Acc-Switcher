@@ -43,6 +43,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// Break an encoded registry key into it's separate parts
         /// </summary>
         /// <param name="encodedPath">HKXX\\path:SubKey</param>
+        [SupportedOSPlatform("windows")]
         private static (RegistryKey, string, string) ExplodeRegistryKey(string encodedPath)
         {
             var rootKey = ExpandRegistryAbbreviation(encodedPath[..4]); // Get HKXX
@@ -57,6 +58,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// Read the value of a Registry key (Requires special path)
         /// </summary>
         /// <param name="encodedPath">HKXX\\path:SubKey</param>
+        [SupportedOSPlatform("windows")]
         public static dynamic ReadRegistryKey(string encodedPath)
         {
             var (rootKey, path, subKey) = ExplodeRegistryKey(encodedPath);
