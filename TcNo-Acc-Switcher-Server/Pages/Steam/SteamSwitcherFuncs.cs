@@ -480,8 +480,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             if (pS != -1) SetPersonaState(selectedSteamId, pS); // Update persona state, if defined above.
 
             Index.Steamuser user = new() { AccName = "" };
-            if (selectedSteamId != "")
-                user = userAccounts.Single(x => x.SteamId == selectedSteamId);
+            try
+            {
+                if (selectedSteamId != "")
+                    user = userAccounts.Single(x => x.SteamId == selectedSteamId);
+            }
+            catch (InvalidOperationException)
+            {
+                GeneralInvocableFuncs.ShowToast("error", Lang["Toast_MissingUserId"]);
+            }
             // -----------------------------------
             // --------- Manage registry ---------
             // -----------------------------------
@@ -520,7 +527,28 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // Write changes to files.
             var tempFile = SteamSettings.LoginUsersVdf() + "_temp";
             File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
-            File.Replace(tempFile, SteamSettings.LoginUsersVdf(), SteamSettings.LoginUsersVdf() + "_last");
+            if (!File.Exists(tempFile))
+            {
+                File.Replace(tempFile, SteamSettings.LoginUsersVdf(), SteamSettings.LoginUsersVdf() + "_last");
+                return;
+            }
+            try
+            {
+                // Let's try break this down, as some users are having issues with the above function.
+                // Step 1: Backup
+                if (File.Exists(SteamSettings.LoginUsersVdf()))
+                {
+                    File.Copy(SteamSettings.LoginUsersVdf(), SteamSettings.LoginUsersVdf() + "_last", true);
+                }
+
+                // Step 2: Write new info
+                File.WriteAllText(SteamSettings.LoginUsersVdf(), @"""users""" + Environment.NewLine + outJObject.ToVdf());
+            }
+            catch (Exception ex)
+            {
+                Globals.WriteToLog("Failed to swap Steam users! Could not create temp loginusers.vdf file, and replace original using workaround! Contact TechNobo.", ex);
+                GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = tempFile }]);
+            }
         }
 
         /// <summary>

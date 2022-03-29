@@ -354,7 +354,18 @@ namespace TcNo_Acc_Switcher_Server.Data
                 }
             }
 
-            LoadStylesheet();
+            try
+            {
+                LoadStylesheet();
+            }
+            catch (FileNotFoundException ex)
+            {
+                // Check if CEF issue, and download if missing.
+                if (!ex.ToString().Contains("YamlDotNet")) throw;
+                AutoStartUpdaterAsAdmin("verify");
+                Environment.Exit(1);
+                throw;
+            }
 
             return true;
         }

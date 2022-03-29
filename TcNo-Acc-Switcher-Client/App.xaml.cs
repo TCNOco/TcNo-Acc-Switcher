@@ -185,8 +185,19 @@ namespace TcNo_Acc_Switcher_Client
             Globals.ClearWebCache();
 
             // Show window (Because no command line commands were parsed)
-            var mainWindow = new MainWindow();
-            mainWindow.Show();
+            try
+            {
+                var mainWindow = new MainWindow();
+                mainWindow.Show();
+            }
+            catch (FileNotFoundException ex)
+            {
+                // Check if CEF issue, and download if missing.
+                if (!ex.ToString().Contains("CefSharp")) throw;
+                AppSettings.AutoStartUpdaterAsAdmin("downloadCEF");
+                Environment.Exit(1);
+                throw;
+            }
 
             if (!File.Exists("LastError.txt")) return;
 
