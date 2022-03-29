@@ -123,6 +123,7 @@ Toast_RegFailRead: Kon nie lees vanaf Windows Regsitry nie!
 Toast_RegFailReadSaved: Kon nie gestoorde registerinskrywing lees nie. Probeer om die rekening weer te verwyder en by te voeg as dit onsuksesvol is.
 Toast_RegSaveMissing: Kon nie vind of lees data van gestoorde registerlêers nie!
 Toast_DuplicateNames: Kon nie omruil nie. Dupliseer rekeninge met dieselfde gebruikersnaam?
+Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
 Toast_CouldNotLocate: Kon nie die aangemelde gebruiker opspoor nie
 Toast_StreamerModeHint: Privaat inligting is versteek! - Sien instellings
 Toast_StreamerModeTitle: Streamer-modus
