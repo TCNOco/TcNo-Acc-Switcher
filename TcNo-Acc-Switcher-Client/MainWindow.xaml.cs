@@ -19,11 +19,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Forms;
@@ -36,11 +39,13 @@ using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TcNo_Acc_Switcher_Client.Steam;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Shared;
+using Cookie = CefSharp.Cookie;
 using MessageBox = System.Windows.MessageBox;
 using MessageBoxOptions = System.Windows.MessageBoxOptions;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
@@ -299,8 +304,63 @@ namespace TcNo_Acc_Switcher_Client
         {
             Globals.WriteToLog(uri);
 
+            // Currently just for testing!
+            // This is used with Steam/SteamKeys.cs for future functionality!
+            if (uri.Contains("store.steampowered.com"))
+                RunCookieCheck("steampowered.com");
+
+
             if (uri.Contains("RESTART_AS_ADMIN")) Restart(uri.Contains("arg=") ? uri.Split("arg=")[1] : "", true);
             if (uri.Contains("EXIT_APP")) Environment.Exit(0);
+        }
+
+        /// <summary>
+        /// Gets all cookies, with optional filter.
+        /// </summary>
+        /// <returns>Cookies string "Key=Val; ..."</returns>
+        private async Task<string> RunCookieCheck(string filter)
+        {
+            // Currently only used for Steam, but the filter is implemented for future possible functionality.
+
+            var cookies = await _mView2.CoreWebView2.CookieManager.GetCookiesAsync(null);
+            var cookiesTxt = "";
+            var failedCookies = new List<string>();
+            foreach (var c in cookies.Where(c => c.Domain.Contains(filter)))
+            {
+                if (string.IsNullOrWhiteSpace(c.Value))
+                    failedCookies.Add(c.Name);
+                else
+                    cookiesTxt += $"{c.Name}={c.Value}; ";
+            }
+
+            // Reiterate over cookies with no values (They have values, just sometimes one or two are missed for some reason.
+            foreach (var failedCookie in failedCookies)
+            {
+                if (cookiesTxt.Contains($"{failedCookie}=")) continue;
+                var attempts = 0;
+                while (attempts < 5)
+                {
+                    cookies = await _mView2.CoreWebView2.CookieManager.GetCookiesAsync(null);
+                    if (!cookies.Any(c => c.Name == failedCookie && !string.IsNullOrWhiteSpace(c.Value))) continue;
+                    cookiesTxt += $"{failedCookie}={cookies.First(c => c.Name == failedCookie).Value}; ";
+                    break;
+                }
+            }
+
+            // "sessionid" cookie not found? (for Steam only)
+            if (filter == "steampowered.com")
+            {
+
+            }
+            if (!cookiesTxt.Contains("sessionid="))
+            {
+                var docCookies = await _mView2.CoreWebView2.ExecuteScriptAsync("document.cookie");
+                var sid = docCookies.Split("sessionid=")[1].Split(";")[0];
+                if (sid[^1] == '"') sid = sid[..^1]; // If last char is quotation mark: remove
+                cookiesTxt += $"sessionid={sid};";
+            }
+            Console.WriteLine(cookiesTxt);
+            return cookiesTxt;
         }
         #endregion
 
