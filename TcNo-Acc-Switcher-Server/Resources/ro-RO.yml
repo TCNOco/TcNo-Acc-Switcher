@@ -123,7 +123,7 @@ Toast_RegFailRead: Nu s-a putut citi din Registrul Windows!
 Toast_RegFailReadSaved: Nu s-a putut citi intrarea salvată în registry. Încercați să eliminați și să adăugați din nou contul dacă nu reușiți.
 Toast_RegSaveMissing: Nu a reușit Găsirea sau citirea datelor din fișierele de registry salvate!
 Toast_DuplicateNames: Nu s-a putut face swap. Duplicați conturile cu același nume de utilizator?
-Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
+Toast_MissingUserId: "Nu s-a putut schimba. ID-ul utilizatorului lipsește. Verificați Wiki „Erori comune”."
 Toast_CouldNotLocate: Nu s-a putut localiza utilizatorul logat
 Toast_StreamerModeHint: Informațiile private sunt ascunse! - Vezi setările
 Toast_StreamerModeTitle: Mod streaming
