@@ -123,7 +123,7 @@ Toast_RegFailRead: 無法讀取 Windows 登錄檔！
 Toast_RegFailReadSaved: 無法讀取已存的登錄檔。請試著移除帳號並重新登入。
 Toast_RegSaveMissing: 無法從已存的登錄檔中查詢或存取資料！
 Toast_DuplicateNames: 無法切換。要複製一個相同名稱的帳號嗎？
-Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
+Toast_MissingUserId: "無法交換。缺少用戶 ID。檢查 Wiki '常見錯誤'。"
 Toast_CouldNotLocate: 找不到登入中的使用者
 Toast_StreamerModeHint: 隱私權資訊已隱藏！ - 請前往設定頁面確認
 Toast_StreamerModeTitle: 直播模式
