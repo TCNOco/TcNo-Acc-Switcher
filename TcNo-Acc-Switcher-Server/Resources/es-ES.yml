@@ -123,6 +123,7 @@ Toast_RegFailRead: '¡Error al leer desde el registro de Windows!'
 Toast_RegFailReadSaved: No se pudo leer la entrada de registro guardada. Intente eliminar y agregar la cuenta nuevamente si no tiene éxito.
 Toast_RegSaveMissing: '¡Error en la búsqueda o lectura de datos de archivos de registro guardados!'
 Toast_DuplicateNames: No se pudo intercambiar. ¿Duplicar cuentas con el mismo nombre de usuario?
+Toast_MissingUserId: "No se pudo intercambiar. Falta el ID de usuario. Consulte los 'Errores comunes' de Wiki."
 Toast_CouldNotLocate: No se pudo localizar usuario conectado
 Toast_StreamerModeHint: '¡La información privada está oculta! - Ver ajustes'
 Toast_StreamerModeTitle: Modo Streamer

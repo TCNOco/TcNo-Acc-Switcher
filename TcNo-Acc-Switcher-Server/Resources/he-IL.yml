@@ -123,6 +123,7 @@ Toast_RegFailRead: נכשל לקרוא מ-Windows Regsitry!
 Toast_RegFailReadSaved: קריאת רשומת הרישום השמורה נכשלה. נסה להסיר ולהוסיף שוב את החשבון אם לא יצליח.
 Toast_RegSaveMissing: נכשל חיפוש או קריאה של נתונים מקבצי רישום שמורים!
 Toast_DuplicateNames: לא ניתן היה להחליף. שכפול חשבונות עם אותו שם משתמש?
+Toast_MissingUserId: "לא ניתן היה להחליף. זיהוי משתמש חסר. בדוק את Wiki 'שגיאות נפוצות'."
 Toast_CouldNotLocate: לא ניתן היה לאתר משתמש מחובר
 Toast_StreamerModeHint: מידע פרטי מוסתר! - ראה הגדרות
 Toast_StreamerModeTitle: מצב סטרימר
