@@ -123,7 +123,7 @@ Toast_RegFailRead: Не вдалося прочитати з реєстру Wind
 Toast_RegFailReadSaved: Не вдалося прочитати збережений запис реєстру. Спробуйте видалити та додати обліковий запис знову, якщо не вдасться.
 Toast_RegSaveMissing: Не вдалося знайти або прочитати дані із збережених файлів реєстру!
 Toast_DuplicateNames: Не вдалося змахнути. Дублювати облікові записи з таким самим ім'ям користувача?
-Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
+Toast_MissingUserId: "Не вдалося поміняти. Відсутній ідентифікатор користувача. Перевірте Wiki «Поширені помилки»."
 Toast_CouldNotLocate: Не вдалося знайти авторизованого користувача
 Toast_StreamerModeHint: Приватна інформація прихована! - Переглянути налаштування
 Toast_StreamerModeTitle: Режим стрімера
