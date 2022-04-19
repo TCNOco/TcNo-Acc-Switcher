@@ -123,7 +123,7 @@ Toast_RegFailRead: فشل القراءة من ريجسيتري ويندوز!
 Toast_RegFailReadSaved: فشل في قراءة إدخال التسجيل المحفوظ. حاول إزالة الحساب وإضافته مرة أخرى إذا لم تنجح.
 Toast_RegSaveMissing: فشل العثور على البيانات أو قراءتها من ملفات ريجسيتري المحفوظة!
 Toast_DuplicateNames: لا يمكن المبادلة. تكرار الحسابات بنفس اسم المستخدم؟
-Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
+Toast_MissingUserId: "لا يمكن المبادلة. معرف المستخدم مفقود. تحقق من Wiki \"الأخطاء الشائعة\"."
 Toast_CouldNotLocate: تعذر تحديد موقع المستخدم المسجل
 Toast_StreamerModeHint: المعلومات الخاصة مخفية! - شاهد الإعدادات
 Toast_StreamerModeTitle: وضع البث
