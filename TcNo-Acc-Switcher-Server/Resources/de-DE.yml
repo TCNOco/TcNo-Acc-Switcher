@@ -123,7 +123,7 @@ Toast_RegFailRead: Fehler beim Lesen aus der Windows-Registry!
 Toast_RegFailReadSaved: Gespeicherter Registrierungseintrag konnte nicht gelesen werden. Versuchen Sie, das Konto zu entfernen und erneut hinzuzufügen, wenn dies nicht erfolgreich ist.
 Toast_RegSaveMissing: Fehler beim Finden oder Lesen von Daten aus gespeicherten Registry-Dateien!
 Toast_DuplicateNames: Wechseln nicht möglich. Accounts mit selbem Namen duplizieren?
-Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
+Toast_MissingUserId: "Konnte nicht tauschen. Benutzer-ID fehlt. Überprüfen Sie Wiki 'Häufige Fehler'."
 Toast_CouldNotLocate: Konnte angemeldeten Benutzer nicht finden
 Toast_StreamerModeHint: Private Informationen sind versteckt! - Siehe Einstellungen
 Toast_StreamerModeTitle: Streamer-Modus
