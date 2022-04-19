@@ -123,7 +123,7 @@ Toast_RegFailRead: Čtení z registru systému Windows se nezdařilo!
 Toast_RegFailReadSaved: Nepodařilo se přečíst uloženou položku registru. Pokud se to nepodaří, zkuste účet odebrat a znovu přidat.
 Toast_RegSaveMissing: Selhalo hledání nebo čtení dat z uložených souborů registru!
 Toast_DuplicateNames: Nelze vyměnit. Duplikovat účty se stejným uživatelským jménem?
-Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
+Toast_MissingUserId: "Nelze vyměnit. Chybí ID uživatele. Zkontrolujte Wiki 'Běžné chyby'."
 Toast_CouldNotLocate: Nelze najít přihlášený uživatel
 Toast_StreamerModeHint: Soukromé informace jsou skryty! - Viz nastavení
 Toast_StreamerModeTitle: Streamovací režim
