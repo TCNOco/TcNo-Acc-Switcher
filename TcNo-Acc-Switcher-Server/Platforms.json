@@ -321,6 +321,24 @@
       "ExitBeforeInteract": true,
       "UniqueIdFile": "HKCU\\SOFTWARE\\miHoYo\\Genshin Impact:MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810",
       "UniqueIdMethod": "REGKEY"
+    },
+    "Magic Arena": {
+      "Identifiers": [ "mtga", "magicarena" ],
+      "ExeLocationDefault": "C:\\Program Files\\Wizards of the Coast\\MTGA\\MTGALauncher\\MTGALauncher.exe",
+      "ExesToEnd": [ "MTGA.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginString_h2517025721": "UNIQUE_ID",
+        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginDate_h202577560": "",
+        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:RefreshToken_h992839947": "",
+        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:RememberMe_h1678977314": "",
+        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:WAS-RememberMe_h1678977314": "",
+        "REG:HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:WAS-RefreshToken_h992839947": ""
+      },
+      "RegDeleteOnClear": true,
+      "ExitBeforeInteract": true,
+      "UniqueIdFile": "HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginString_h2517025721",
+      "UniqueIdMethod": "REGKEY"
     }
   },
   "Platform-WIP": {

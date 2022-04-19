@@ -114,6 +114,25 @@ namespace TcNo_Acc_Switcher_Globals
 
             return true;
         }
+
+        [SupportedOSPlatform("windows")]
+        public static bool DeleteRegistryKey(string encodedPath)
+        {
+            var (rootKey, path, subKey) = ExplodeRegistryKey(encodedPath);
+
+            try
+            {
+                using var key = rootKey.OpenSubKey(path, true);
+                key?.DeleteValue(subKey);
+            }
+            catch (Exception e)
+            {
+                WriteToLog("DeleteRegistryKey failed", e);
+                return false;
+            }
+
+            return true;
+        }
         #endregion
     }
 }

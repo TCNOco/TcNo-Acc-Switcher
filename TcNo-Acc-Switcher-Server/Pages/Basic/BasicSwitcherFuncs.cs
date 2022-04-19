@@ -238,7 +238,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // The "file" is a registry key
             if (OperatingSystem.IsWindows() && accFile.StartsWith("REG:"))
             {
-                if (Globals.SetRegistryKey(accFile[4..])) return true;
+                // If set to clear LoginCache for account before adding (Enabled by default):
+                if (CurrentPlatform.RegDeleteOnClear)
+                {
+                    if (Globals.DeleteRegistryKey(accFile[4..])) return true;
+                }
+                else
+                {
+                    if (Globals.SetRegistryKey(accFile[4..])) return true;
+                }
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
                 return false;
             }

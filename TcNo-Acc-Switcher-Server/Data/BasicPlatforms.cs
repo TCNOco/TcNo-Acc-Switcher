@@ -163,6 +163,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private List<string> _backupFileTypesInclude = new();
         private string _closingMethod = "Combined";
         private string _startingMethod = "Default";
+        private bool _regDeleteOnClear = false;
 
         // Optional
         private string _uniqueIdFile = "";
@@ -213,6 +214,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static List<string> BackupFileTypesInclude { get => Instance._backupFileTypesInclude; private set => Instance._backupFileTypesInclude = value; }
         public static string ClosingMethod { get => Instance._closingMethod; set => Instance._closingMethod = value; }
         public static string StartingMethod { get => Instance._startingMethod; set => Instance._startingMethod = value; }
+        public static bool RegDeleteOnClear { get => Instance._regDeleteOnClear; set => Instance._regDeleteOnClear = value; }
 
         // ----------
         #endregion
@@ -255,6 +257,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (jPlatform.ContainsKey("UniqueIdMethod")) UniqueIdMethod = Globals.ExpandRegex((string)jPlatform["UniqueIdMethod"]);
             if (jPlatform.ContainsKey("ExitBeforeInteract")) ExitBeforeInteract = (bool)jPlatform["ExitBeforeInteract"];
             if (jPlatform.ContainsKey("ClearLoginCache")) ClearLoginCache = (bool)jPlatform["ClearLoginCache"];
+            if (jPlatform.ContainsKey("RegDeleteOnClear")) RegDeleteOnClear = (bool)jPlatform["RegDeleteOnClear"];
 
             // Process "Extras"
             JObject extras = null;

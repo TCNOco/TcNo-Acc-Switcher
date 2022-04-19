@@ -486,7 +486,7 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
                         Globals.WriteToLog("Steam switch requested");
-                        if (!GeneralFuncs.CanKillProcess(Steam.Processes)) Restart(combinedArgs, true);
+                        if (!GeneralFuncs.CanKillProcess(TcNo_Acc_Switcher_Server.Data.Settings.Steam.Processes)) Restart(combinedArgs, true);
                         TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
                             ePersonaState: command.Length > 2
                                 ? int.Parse(command[2])
