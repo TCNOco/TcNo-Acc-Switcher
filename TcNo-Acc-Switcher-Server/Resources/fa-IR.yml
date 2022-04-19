@@ -123,7 +123,7 @@ Toast_RegFailRead: خواندن از رجیستری ویندوز انجام نش
 Toast_RegFailReadSaved: خواندن ورودی رجیستری ذخیره شده انجام نشد. در صورت ناموفق بودن، سعی کنید حساب را حذف کرده و دوباره اضافه کنید.
 Toast_RegSaveMissing: یافتن یا خواندن داده ها از فایل های ذخیره شده رجیستری ناموفق بود!
 Toast_DuplicateNames: امکان تعویض وجود ندارد. حساب های تکراری با نام کاربری مشابه؟
-Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
+Toast_MissingUserId: "امکان تعویض وجود ندارد. شناسه کاربری وجود ندارد. \"خطاهای رایج\" ویکی را بررسی کنید."
 Toast_CouldNotLocate: کاربر وارد شده را پیدا نکرد
 Toast_StreamerModeHint: اطلاعات خصوصی پنهان است! - تنظیمات را ببینید
 Toast_StreamerModeTitle: حالت استریمر
