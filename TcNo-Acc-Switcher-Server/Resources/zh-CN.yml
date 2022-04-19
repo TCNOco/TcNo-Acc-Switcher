@@ -123,7 +123,7 @@ Toast_RegFailRead: 读取 Windows 注册表失败！
 Toast_RegFailReadSaved: 读取已保存的注册表项失败。如果不成功，请尝试删除并重新添加帐户。
 Toast_RegSaveMissing: 查找或读取已保存的注册表文件失败！
 Toast_DuplicateNames: 无法交换。使用相同的用户名创建帐户副本吗？
-Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
+Toast_MissingUserId: "无法交换。缺少用户 ID。请检查 Wiki 上的“Common Errors”。"
 Toast_CouldNotLocate: 无法定位已登录用户
 Toast_StreamerModeHint: 私密信息已隐藏！- 见设置
 Toast_StreamerModeTitle: 主播模式
