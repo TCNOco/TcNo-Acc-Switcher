@@ -123,7 +123,7 @@ Toast_RegFailRead: Не удалось прочитать из реестра Wi
 Toast_RegFailReadSaved: Не удалось прочитать сохраненную запись реестра. В случае неудачи попробуйте удалить и добавить учетную запись снова.
 Toast_RegSaveMissing: Не удалось найти или прочитать данные из сохраненных файлов реестра!
 Toast_DuplicateNames: Не удалось переключить. Дублировать аккаунты с одинаковым именем пользователя?
-Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
+Toast_MissingUserId: "Не смог поменяться. Идентификатор пользователя отсутствует. Проверьте Wiki «Распространенные ошибки»."
 Toast_CouldNotLocate: Не удалось найти активного пользователя
 Toast_StreamerModeHint: Личная информация скрыта! - Смотрите настройки
 Toast_StreamerModeTitle: Режим "Стримера"
@@ -216,7 +216,7 @@ Status_UpdatingFile: "Обновление {file}"
 Status_UpdatingRegistry: Обновление реестра Windows
 Status_FailedLog: Действие не выполнено. Подробности смотрите в журнале.
 Status_WaitingForClose: "Ожидание закрытия {processName} ({timeout}{timeLimit})"
-Status_WaitingForMultipleClose: "Ожидание закрытия {processName} и {count} других ({timeout}{timeLimit})"
+Status_WaitingForMultipleClose: "Ожидание закрытия {processName} и {count} других ({timeout}/{timeLimit} секунд)"
 Status_GetUniqueId: Сбор уникального идентификатора пользователя
 Status_CopyingFiles: Копирование пользовательских файлов...
 Status_HandlingImage: Обработка изображения профиля учетной записи
