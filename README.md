@@ -106,9 +106,10 @@ See this Wiki page: [Platform: Steam Legacy](https://github.com/TcNobo/TcNo-Acc-
 
 ```
 All trademarks and materials are the property of their respective owners and their licensors. This project is not affiliated
-with Battle.net or Blizzard Entertainment Inc, Steam or Valve Corporation, or any other companies or groups that this software may have reference to. This project should
-not be considered "Official" or related to platforms mentioned in any way. All it does is let you move your files around
-on your computer. The use of these names, icons and trademarks does not indicate endorsement of the trademark holder by this project or its creators, nor vice versa. They are only used to visually indicate which programs this project interacts with easily to the end-user.
+with any companies referenced. This is not "Official" software or related to any companies mentioned. All it does is let you
+move your files around on your computer the same way you can. The use of names, icons and trademarks does not indicate
+endorsement of the trademark holder by this project or its creators, nor vice versa. They are only used to visually indicate
+which programs this project interacts with easily to the end-user.
 
 I am not responsible for the contents of external links.
 For the rest of the disclaimer, refer to the License (GNU General Public License v3.0) file:
