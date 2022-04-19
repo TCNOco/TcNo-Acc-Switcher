@@ -123,7 +123,7 @@ Toast_RegFailRead: Windows Kayıt Defterinden Okunamadı!
 Toast_RegFailReadSaved: Kaydedilmiş Kayıt Defteri girdisi okunamadı. Başarısız olursa, hesabı kaldırıp yeniden eklemeyi deneyin.
 Toast_RegSaveMissing: Kaydedilmiş Kayıt Dosyalarından Veri Bulun veya Okunamadı!
 Toast_DuplicateNames: Değiştirilemedi. Aynı kullanıcı adına sahip yinelenen hesaplar?
-Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
+Toast_MissingUserId: "Değiştirilemedi. Kullanıcı kimliği eksik. Wiki 'Genel Hatalar'ı kontrol edin."
 Toast_CouldNotLocate: Oturum açmış kullanıcı bulunamadı
 Toast_StreamerModeHint: Özel bilgiler gizli! - Ayarlara bakın
 Toast_StreamerModeTitle: yayıncı modu
