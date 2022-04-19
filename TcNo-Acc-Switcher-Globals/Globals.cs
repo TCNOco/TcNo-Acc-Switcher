@@ -41,7 +41,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
         public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-        public static readonly string Version = "2022-03-29_00";
+        public static readonly string Version = "2022-04-20_00";
 
         #region INITIALISATION
 

@@ -180,11 +180,11 @@ void download_install_missing_runtimes()
 			total += 122;
 		}
 		if (!min_aspcore_met) {
-			cout << " + Microsoft Microsoft ASP.NET Core 6.0.3 Runtime [~7,90 MB]" << endl;
+			cout << " + Microsoft Microsoft ASP.NET Core 6.0.4 Runtime [~7,90 MB]" << endl;
 			total += 8;
 		}
 		if (!min_desktop_runtime_met) {
-			cout << " + Microsoft .NET 6.0.3 Desktop Runtime [~52,3 MB]" << endl;
+			cout << " + Microsoft .NET 6.0.4 Desktop Runtime [~52,3 MB]" << endl;
 			total += 52;
 		}
 
@@ -233,7 +233,7 @@ void download_install_missing_runtimes()
 			current_download = d_runtime_name;
 			if (!download_file(d_runtime.c_str(), d_runtime_local.c_str()))
 			{
-				cout << "Failed to download and install .NET 6.0.3 Desktop Runtime. Please download it here:" << endl <<
+				cout << "Failed to download and install .NET 6.0.4 Desktop Runtime. Please download it here:" << endl <<
 					"https://dotnet.microsoft.com/download/dotnet/6.0/runtime" << endl << endl;
 			}
 			else d_runtime_install = true;
@@ -244,8 +244,8 @@ void download_install_missing_runtimes()
 			current_download = a_runtime_name;
 			if (!download_file(a_runtime.c_str(), a_runtime_local.c_str()))
 			{
-				cout << "Failed to download and install ASP.NET Core 6.0.3 Runtime. To download: 1. Click the link below:" << endl <<
-					"https://dotnet.microsoft.com/download/dotnet/6.0.3/runtime" << endl <<
+				cout << "Failed to download and install ASP.NET Core 6.0.4 Runtime. To download: 1. Click the link below:" << endl <<
+					"https://dotnet.microsoft.com/download/dotnet/6.0.4/runtime" << endl <<
 					"2. Click 'Download x64' under Run Desktop apps." << endl << endl;
 			}
 			else a_runtime_install = true;
@@ -297,8 +297,8 @@ void download_install_missing_runtimes()
 		cout << "It looks like everything is installed. Verify you meet the minimum recommended requirements:" << endl;
 	}
 
-	cout << " - Windows Desktop Runtime 6.0.3+" << endl <<
-		" - ASP.NET Core 6.0.3+." << endl <<
+	cout << " - Windows Desktop Runtime 6.0.4+" << endl <<
+		" - ASP.NET Core 6.0.4+." << endl <<
 		" - Edge WebView2 Runtime 91.0+" << endl <<
 		" - C++ Redistributable 2015-2022 14.30.30704+" << endl <<
 		"------------------------------------------------------------------------" << endl << endl <<
