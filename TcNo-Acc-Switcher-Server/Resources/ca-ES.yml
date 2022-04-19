@@ -123,7 +123,7 @@ Toast_RegFailRead: No s'ha pogut llegir des del registre de Windows!
 Toast_RegFailReadSaved: No s'ha pogut llegir l'entrada desada del registre. Proveu d'eliminar i afegir el compte de nou si no ho feu.
 Toast_RegSaveMissing: No s'ha pogut trobar o llegir dades dels fitxers de registre desats!
 Toast_DuplicateNames: No s'ha pogut canviar. Voleu duplicar comptes amb el mateix nom d'usuari?
-Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
+Toast_MissingUserId: "No s'ha pogut canviar. Falta l'identificador d'usuari. Comproveu la Viqui \"Errors comuns\"."
 Toast_CouldNotLocate: No s'ha pogut localitzar l'usuari connectat
 Toast_StreamerModeHint: La informació privada està oculta. - Veure configuració
 Toast_StreamerModeTitle: Mode Streamer
