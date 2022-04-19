@@ -312,7 +312,7 @@
     },
     "Genshin Impact": {
       "Identifiers": [ "gi", "genshin", "genshinimpact" ],
-      "ExeLocationDefault": "C:\\Program Files\\Genshin Impact\\Genshin Impact Game\\GenshinImpact.exe",
+      "ExeLocationDefault": "%ProgramFiles%\\Genshin Impact\\Genshin Impact Game\\GenshinImpact.exe",
       "ExesToEnd": [ "GenshinImpact.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -339,6 +339,19 @@
       "ExitBeforeInteract": true,
       "UniqueIdFile": "HKCU\\SOFTWARE\\Wizards Of The Coast\\MTGA:LastLoginString_h2517025721",
       "UniqueIdMethod": "REGKEY"
+    },
+    "PS Remote Play": {
+      "Identifiers": [ "psr", "psrp", "psremote" ],
+      "ExeLocationDefault": "%ProgramFiles(x86)%\\Sony\\PS Remote Play\\RemotePlay.exe",
+      "ExesToEnd": [ "RemotePlay.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "%LocalAppData%\\Sony Corporation\\PS Remote Play\\setting.cache": "setting.cache",
+        "%LocalAppData%\\Sony Corporation\\PS Remote Play\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+      },
+      "ExitBeforeInteract": true,
+      "UniqueIdFile": "%LocalAppData%\\Sony Corporation\\PS Remote Play\\TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE"
     }
   },
   "Platform-WIP": {
