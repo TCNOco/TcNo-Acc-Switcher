@@ -123,7 +123,7 @@ Toast_RegFailRead: Kunne ikke lese fra Windows Regsitry!
 Toast_RegFailReadSaved: Kunne ikke lese lagret registeroppføring. Prøv å fjerne og legge til kontoen på nytt hvis det ikke lykkes.
 Toast_RegSaveMissing: Kunne ikke finne eller lese data fra lagrede registerfiler!
 Toast_DuplicateNames: Kunne ikke bytte kart. Dupliserte kontoer med samme brukernavn?
-Toast_MissingUserId: "Could not swap. User ID is missing. Check Wiki 'Common Errors'."
+Toast_MissingUserId: "Kunne ikke bytte. Bruker-ID mangler. Sjekk Wiki 'Vanlige feil'."
 Toast_CouldNotLocate: Kunne ikke finne innlogget bruker
 Toast_StreamerModeHint: Privat info er skjult! - Se innstillinger
 Toast_StreamerModeTitle: Strømningsmodus
