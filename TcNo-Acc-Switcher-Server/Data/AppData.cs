@@ -131,6 +131,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] public static bool FirstLaunch { get => Instance._firstLaunch; set => Instance._firstLaunch = value; }
         public void SetActiveNavMan(NavigationManager nm) => Instance._activeNavMan = nm;
 
+
+        private InitializedClasses _initializedClasses = new();
+        [JsonIgnore] public static InitializedClasses InitializedClasses { get => Instance._initializedClasses; set => Instance._initializedClasses = value; }
+
         #region JS_INTEROP
         public static bool InvokeVoidAsync(string func)
         {
@@ -199,5 +203,17 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static async Task ReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload");
         public static async Task CacheReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload(true);");
         #endregion
+    }
+    public class InitializedClasses
+    {
+        public InitializedClasses()
+        {
+            Basic = false;
+            Steam = false;
+            BattleNet = false;
+        }
+        public bool Basic { get; set; }
+        public bool Steam { get; set; }
+        public bool BattleNet { get; set; }
     }
 }

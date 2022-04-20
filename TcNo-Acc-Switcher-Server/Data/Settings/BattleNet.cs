@@ -71,6 +71,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     LoadBasicCompat(); // Add missing features in templated platforms system.
 
                     _instance._desktopShortcut = Shortcut.CheckShortcuts("BattleNet");
+                    InitLang();
+                    AppData.InitializedClasses.BattleNet = true;
                     _instance._currentlyModifying = false;
 
                     return _instance;
@@ -246,6 +248,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private List<BattleNetSwitcherBase.BattleNetUser> _accounts = new();
         [JsonIgnore] private List<string> _ignoredAccounts = new();
+        [JsonIgnore] private string _contextMenuJson = "[]";
 
         public static string FolderPath { get => Instance._folderPath; set => Instance._folderPath = value; }
 
@@ -273,7 +276,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static readonly string StoredAccPath = "LoginCache\\BattleNet\\StoredAccounts.json";
         public static readonly string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
         public static readonly string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";
-        public static readonly string ContextMenuJson = $@"[
+
+        public static string ContextMenuJson { get => Instance._contextMenuJson; set => Instance._contextMenuJson = value; }
+
+        public static void InitLang()
+        {
+            ContextMenuJson = $@"[
               {{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
               {{""{Lang["Context_BNet_SetBTag"]}"": ""showModal('changeUsername:BattleTag')""}},
               {{""{Lang["Context_BNet_DelBTag"]}"": ""forgetBattleTag()""}},
@@ -282,7 +290,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
               {{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
               {{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";
-
+        }
         #endregion
 
         #region FORGETTING_ACCOUNTS

@@ -65,6 +65,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     }
 
                     LoadBasicCompat(); // Add missing features in templated platforms system.
+                    InitLang();
+                    AppData.InitializedClasses.Steam = true;
 
                     _instance._currentlyModifying = false;
 
@@ -243,6 +245,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("StartingMethod", Order = 15)] private string _startingMethod = "Default";
         [JsonProperty("AutoStart", Order = 16)] private bool _autoStart = true;
         [JsonIgnore] private bool _desktopShortcut;
+        [JsonIgnore] private string _contextMenuJson = "[]";
 
         public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
 
@@ -276,7 +279,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static readonly string SettingsFile = "SteamSettings.json";
         public static readonly string SteamImagePath = "wwwroot/img/profiles/steam/";
         public static readonly string SteamImagePathHtml = "img/profiles/steam/";
-        public static readonly string ContextMenuJson = $@"[
+        public static string ContextMenuJson { get => Instance._contextMenuJson; set => Instance._contextMenuJson = value; }
+
+        public static void InitLang()
+        {
+            ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_LoginAsSubmenu"]}"": [
 					{{""{Lang["Invisible"]}"": ""swapTo(7, event)""}},
@@ -322,6 +329,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 				{{""{Lang["Context_Steam_OpenUserdata"]}"": ""openUserdata(event)""}},
 				{{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";
+        }
 
         public static string StateToString(int state)
         {

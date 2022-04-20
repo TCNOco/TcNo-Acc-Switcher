@@ -179,6 +179,14 @@ namespace TcNo_Acc_Switcher_Server.Data
                     Strings[k] = v;
                 }
 
+                // Reload context menus if language changes
+                if (AppData.InitializedClasses.Steam)
+                    Settings.Steam.InitLang();
+                if (AppData.InitializedClasses.BattleNet)
+                    Settings.BattleNet.InitLang();
+                if (AppData.InitializedClasses.Basic)
+                    Settings.Basic.InitLang();
+
                 return true;
             }
             catch (Exception e)

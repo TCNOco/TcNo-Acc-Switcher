@@ -67,6 +67,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     }
 
                     _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.FullName);
+                    InitLang();
+                    AppData.InitializedClasses.Basic = true;
+
                     _instance._currentlyModifying = false;
 
                     return _instance;
@@ -89,6 +92,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("StartingMethod", Order = 7)] private string _startingMethod = "";
         [JsonProperty("AutoStart", Order = 8)] private bool _autoStart = true;
         [JsonIgnore] private bool _desktopShortcut;
+        [JsonIgnore] private string _contextMenuJson = "[]";
+        [JsonIgnore] private string _contextMenuShortcutJson = "[]";
+        [JsonIgnore] private string _contextMenuPlatformJson = "[]";
 
 
         public static string FolderPath
@@ -131,8 +137,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             set => Instance._startingMethod = value;
         }
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
+        public static string ContextMenuJson { get => Instance._contextMenuJson; set => Instance._contextMenuJson = value; }
+        public static string ContextMenuShortcutJson { get => Instance._contextMenuShortcutJson; set => Instance._contextMenuShortcutJson = value; }
+        public static string ContextMenuPlatformJson { get => Instance._contextMenuPlatformJson; set => Instance._contextMenuPlatformJson = value; }
 
-        public static readonly string ContextMenuJson = $@"[
+        public static void InitLang()
+        {
+            ContextMenuJson = $@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
 				{{""{Lang["Context_CreateShortcut"]}"": ""createShortcut()""}},
@@ -140,14 +151,15 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 				{{""{Lang["Forget"]}"": ""forget(event)""}}
             ]";
 
-        public static readonly string ContextMenuShortcutJson = $@"[
+            ContextMenuShortcutJson = $@"[
 				{{""{Lang["Context_RunAdmin"]}"": ""shortcut('admin')""}},
 				{{""{Lang["Context_Hide"]}"": ""shortcut('hide')""}}
             ]";
 
-        public static readonly string ContextMenuPlatformJson = $@"[
+            ContextMenuPlatformJson = $@"[
 				{{""{Lang["Context_RunAdmin"]}"": ""shortcut('admin')""}}
             ]";
+        }
 
         /// <summary>
         /// Updates the ForgetAccountEnabled bool in settings file

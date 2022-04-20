@@ -183,8 +183,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                 if (!EnabledBasicPlatforms.Contains(platform))
                     EnabledBasicPlatforms.Add(platform);
             }
-            else
-                _ = DisabledPlatforms.Remove(platform);
+            _ = DisabledPlatforms.Remove(platform);
+
             SaveSettings();
             await AppData.ReloadPage();
         }
