@@ -447,7 +447,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static void ImportNewImage(string o)
         {
             var f = JObject.Parse(o);
-            var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot" + HttpUtility.UrlDecode(f.Value<string>("dest")));
+            var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot", HttpUtility.UrlDecode(f.Value<string>("dest")));
             Globals.CopyFile(f.Value<string>("path"), imageDest);
             _ = AppData.ReloadPage();
         }

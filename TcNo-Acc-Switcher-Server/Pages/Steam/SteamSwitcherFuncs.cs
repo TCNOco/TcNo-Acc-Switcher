@@ -225,7 +225,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static bool LoadVacInfo(ref List<VacStatus> vsl)
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.LoadVacInfo] Loading VAC info: hidden");
-            _ = GeneralFuncs.DeletedOutdatedFile(SteamSettings.VacCacheFile);
+            _ = GeneralFuncs.DeletedOutdatedFile(SteamSettings.VacCacheFile, SteamSettings.ImageExpiryTime);
             if (!File.Exists(SteamSettings.VacCacheFile)) return false;
             vsl = JsonConvert.DeserializeObject<List<VacStatus>>(Globals.ReadAllText(SteamSettings.VacCacheFile));
 
