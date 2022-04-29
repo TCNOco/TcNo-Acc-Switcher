@@ -10,7 +10,7 @@ Steam_ShowAccUsername: Hesap kullanıcı adını göster
 Steam_Tray_AccountName: Hesap adını göster [arkadaş adı değil]
 Steam_OverrideDefaultState: "Varsayılan oturum açma durumunu geçersiz kıl:"
 Button_AddNew: Yeni ekle
-Button_SaveCurrent: Mevcut Kaydet
+Button_SaveCurrent: Mevcut Oturumu Kaydet
 Button_SaveFile: Dosyayı kaydet
 Button_Cancel: İptal et
 Button_Login: Oturum aç
@@ -18,15 +18,15 @@ Button_Close: Kapat
 Button_RefreshImages: Resimleri yenile
 Button_ResetSettings: Ayarları Sıfırla
 Button_AdvancedCleaning: Gelişmiş temizlik...
-Button_ClearLog: Günlüğü temizle
+Button_ClearLog: Log'u temizle
 Button_WikiInfo: Daha Fazla Bilgi (Wiki)
 Button_ManagePlatforms: Platformları Yönet
-Button_Backup: Destek olmak
+Button_Backup: Yedek
 Button_BackupAll: Her şeyi yedekle
 Button_Restore: Eski haline getirmek
 Button_OpenBackup: Yedekleme Klasörünü Aç
 Settings_Shortcut: ' {platform} Switcher Masaüstü kısayolu'
-Settings_Admin: '{platform} Yönetici olarak çalıştır'
+Settings_Admin: '{platform} platformunu Yönetici olarak çalıştır'
 Settings_ImageExpiry: 'Profil resimlerinin süresinin dolmasına günler kala:'
 Settings_Header_AppWide: Uygulama genelindeki ayarlar
 Settings_Header_GeneralSettings: Genel Ayarlar
@@ -37,7 +37,7 @@ Settings_Header_TraySettings: Tepsi ayarları
 Settings_Header_OpenGameFolders: Oyun klasörlerini aç
 Settings_Header_BackupRestore: Yedekleme ve Geri Yükleme platformu ayarları
 Settings_TrayMax: 'Hatırlanması gereken maksimum hesap sayısı:'
-Settings_ExtraPlatformsDisabled: Engelli platformları. Bunları etkinleştirmek için tıklayın.
+Settings_ExtraPlatformsDisabled: Devre dışı platformlar. Etkinleştirmek için tıklayın.
 Settings_ExtraPlatformsEnabled: Görünür platformlar. Bunları devre dışı bırakmak için tıklayın.
 Settings_RTL: Metni Sağdan Sola olarak göster
 Settings_CurrentLocation: 'Geçerli yükleme konumu: {path}'
@@ -134,7 +134,7 @@ Toast_CantCreateShortcut: Kısayol oluşturulamıyor
 Toast_ShortcutCreated: Kısayol oluşturuldu!
 Toast_FailedUpdateCheck: Güncellemeler kontrol edilemedi
 Toast_UpdateVerifyFail: Güncelleyici dosyaları doğrulanamıyor. En son sürümü indirin ve dizininizdeki dosyaları değiştirin.
-Toast_StartedGame: '{program}başladı'
+Toast_StartedGame: '{program} başlatıldı'
 Toast_Steam_VacCleared: Hesaplar için VAC durumu temizlendi
 Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json'' silinemedi'
 Toast_NoFindSteamUserdata: Steam\\userdata klasörü bulunamadı
@@ -209,7 +209,7 @@ Status_SelectedAccount: "Seçildi: {name}"
 Status_Init: "Durum: Başlatılıyor"
 Status_ClosingPlatform: kapanış {platform}
 Status_ClosingPlatformFailed: '{platform}kapatılamadı'
-Status_StartingPlatform: '{platform}başlayarak'
+Status_StartingPlatform: '{platform} başlatılıyor'
 Toast_StartingPlatformFailed: '{platform}başlatılamadı! Daha fazla ayrıntı için günlüğe bakın.'
 Toast_UrlAdminErr: .url dosyalarını yönetici olarak çalıştıramazsınız. Başka bir kısayol türü deneyin. Normal kullanıcı olarak başlatılıyor.
 Status_UpdatingFile: "{file}güncelleniyor"
