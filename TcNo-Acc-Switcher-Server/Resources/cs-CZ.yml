@@ -1,13 +1,13 @@
 ---
 Update: Dostupná aktualizace! Klikněte zde pro její spuštění.
 Header_ChooseLanguage: 'Vyberte jazyk:'
-BattleNet_ShowSR: Zobrazit přehlídky SR a použít profilový obrázek Přehlížet.
+BattleNet_ShowSR: Zobrazit Overwatch SR a použít profilový obrázek Overwatch.
 Steam_ShowSteamID: Zobrazit SteamID
 Steam_ShowVac: Zobrazit stav VAC
 Steam_CheckVac: Zkontrolovat stav VAC účtu
 Steam_ShowLimited: Zobrazit omezený stav
 Steam_ShowAccUsername: Zobrazit uživatelské jméno účtu
-Steam_Tray_AccountName: Zobrazit jméno účtu [není jméno přítele]
+Steam_Tray_AccountName: Zobrazit jméno účtu [ne jméno přítele]
 Steam_OverrideDefaultState: "Přepsat výchozí stav přihlášení:"
 Button_AddNew: Přidat nový
 Button_SaveCurrent: Uložit aktuální
@@ -21,10 +21,10 @@ Button_AdvancedCleaning: Pokročilé čištění...
 Button_ClearLog: Vymazat záznam
 Button_WikiInfo: Další informace (Wiki)
 Button_ManagePlatforms: Správa platforem
-Button_Backup: Záloha
-Button_BackupAll: Zálohujte vše
+Button_Backup: Zálohovat
+Button_BackupAll: Zálohovat vše
 Button_Restore: Obnovit
-Button_OpenBackup: Otevřete složku Backup Folder
+Button_OpenBackup: Otevřete složku Záloh
 Settings_Shortcut: ' Přidat zástupce {platform} přepínače na plochu'
 Settings_Admin: Spustit {platform} jako správce
 Settings_ImageExpiry: 'Dny před vypršením platnosti profilových obrázků:'
@@ -34,8 +34,8 @@ Settings_Header_ExtraPlatforms: Nastavení platformy
 Settings_Header_GeneralTools: Obecné nástroje
 Settings_Header_OtherTools: Ostatní nástroje
 Settings_Header_TraySettings: Nastavení v systémové liště
-Settings_Header_OpenGameFolders: Otevřít herní složky
-Settings_Header_BackupRestore: Nastavení platformy zálohování a obnovení
+Settings_Header_OpenGameFolders: Otevřít složky her
+Settings_Header_BackupRestore: Nastavení zálohování a obnovení platformy
 Settings_TrayMax: 'Maximální počet účtů, které chcete pamatovat:'
 Settings_ExtraPlatformsDisabled: Deaktivované platformy. Kliknutím je povolíte.
 Settings_ExtraPlatformsEnabled: Viditelné platformy. Kliknutím je deaktivujete.
@@ -58,7 +58,7 @@ Settings_CurrentStyle: Aktuální vzhled
 Settings_ThemeBackground: '[Nastavit pozadí]'
 Settings_ThemeOpenFolder: '[Otevřít složku motivu]'
 Settings_Protocol: 'Povolit tcno:\\ protokol (doporučeno)'
-Settings_StartCentered: Spustit program se středem
+Settings_StartCentered: Spustit program ve středu
 Settings_WindowsAccent: Použí barvu motivu Windows
 Settings_HelpTranslate: "[Pomozte s překladem]"
 Settings_ViewTranslators: "[Credits]"
