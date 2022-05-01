@@ -17,6 +17,7 @@
     iR3turnZ: https://github.com/HoeblingerDaniel*@
 
 @page "/BattleNet/ManageIgnored"
+@using TcNo_Acc_Switcher_Server.Data
 @namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 @inject NavigationManager _navManager
 @{ AppData.SetActiveNavMan(_navManager); }
@@ -59,3 +60,11 @@
     <a href="">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code
+{
+    protected override void OnAfterRender(bool firstRender)
+    {
+        AppStats.NewNavigation("/BattleNet/ManageIgnored");
+    }
+}

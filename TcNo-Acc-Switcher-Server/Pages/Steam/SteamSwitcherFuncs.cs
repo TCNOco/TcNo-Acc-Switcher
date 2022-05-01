@@ -116,6 +116,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             SaveVacInfo(vacStatusList);
             GenericFunctions.FinaliseAccountList();
+            AppStats.SetAccountCount("Steam", userAccounts.Count);
         }
 
         /// <summary>
@@ -423,6 +424,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
+            AppStats.IncrementSwitches("Steam");
         }
 
         /// <summary>

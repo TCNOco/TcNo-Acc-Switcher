@@ -183,6 +183,11 @@
 
 @code
 {
+    protected override void OnAfterRender(bool firstRender)
+    {
+        AppStats.NewNavigation("/Steam/Settings");
+    }
+
     public void SaveAndClose()
     {
         AppSettings.SaveSettings();

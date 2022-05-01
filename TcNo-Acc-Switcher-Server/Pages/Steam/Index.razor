@@ -104,5 +104,6 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
+        AppStats.NewNavigation("/Steam/");
     }
 }

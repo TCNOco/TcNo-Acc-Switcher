@@ -132,6 +132,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             GenericFunctions.FinaliseAccountList(); // Init context menu & Sorting
             if (BattleNetSettings.OverwatchMode)
                 await InitOverwatchMode();
+
+            AppStats.SetAccountCount("BattleNet", BattleNetSettings.Accounts.Count);
         }
 
 
@@ -266,6 +268,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
+            AppStats.IncrementSwitches("BattleNet");
         }
 
         /// <summary>

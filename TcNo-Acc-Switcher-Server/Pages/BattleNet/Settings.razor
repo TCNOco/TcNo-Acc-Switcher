@@ -141,6 +141,11 @@
 
 @code
 {
+    protected override void OnAfterRender(bool firstRender)
+    {
+        AppStats.NewNavigation("/BattleNet/Settings");
+    }
+
     public void SaveAndClose()
     {
         AppSettings.SaveSettings();

@@ -151,5 +151,6 @@
             return;
         }
         await GeneralFuncs.HandleFirstRender(firstRender, CurrentPlatform.FullName);
+        AppStats.NewNavigation($"/Basic[{CurrentPlatform.SafeName}]");
     }
 }

@@ -106,6 +106,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("ActiveBrowser", Order = 11)] private string _activeBrowser = "WebView";
         [JsonProperty("Background", Order = 12)] private string _background = "";
         [JsonProperty("EnabledBasicPlatforms", Order = 13)] private HashSet<string> _enabledBasicPlatforms = null;
+        [JsonProperty("CollectStats", Order = 14)] private bool _statsEnabled = true;
+        [JsonProperty("ShareAnonymousStats", Order = 15)] private bool _statsShare = true;
         [Newtonsoft.Json.JsonIgnore] private bool _desktopShortcut;
         [Newtonsoft.Json.JsonIgnore] private bool _startMenu;
         [Newtonsoft.Json.JsonIgnore] private bool _startMenuPlatforms;
@@ -137,6 +139,9 @@ namespace TcNo_Acc_Switcher_Server.Data
                 (Instance._enabledBasicPlatforms = new HashSet<string> {"o", "u", "e", "r", "d"});
             set => Instance._enabledBasicPlatforms = value;
         }
+
+        public static bool StatsEnabled { get => Instance._statsEnabled; set => Instance._statsEnabled = value; }
+        public static bool StatsShare { get => Instance._statsShare; set => Instance._statsShare = value; }
 
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 

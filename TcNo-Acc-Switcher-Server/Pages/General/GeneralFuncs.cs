@@ -519,6 +519,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         public static void SaveSettings<T>(string file, T jSettings)
         {
+            if (file is null) return;
             try
             {
                 file = file.EndsWith(".json") ? file : file + ".json";

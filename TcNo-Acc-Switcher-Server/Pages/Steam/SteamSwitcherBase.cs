@@ -54,7 +54,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         /// <summary>
         /// [Wrapper with fewer arguments]
-        /// </summary>        
+        /// </summary>
         [JSInvokable]
         [SupportedOSPlatform("windows")]
         public static void SwapToSteamWithReq(string steamId, int request) => SwapToSteam(steamId, request);

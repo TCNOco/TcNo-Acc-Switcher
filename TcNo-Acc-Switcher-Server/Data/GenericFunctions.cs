@@ -50,6 +50,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             accList = OrderAccounts(accList, $"{localCachePath}\\order.json");
 
             InsertAccounts(accList, name, isBasic);
+            AppStats.SetAccountCount(CurrentPlatform.SafeName, accList.Count);
             return true;
         }
 

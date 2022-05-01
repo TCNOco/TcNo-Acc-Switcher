@@ -100,5 +100,9 @@
         AppSettings.StreamerModeCheck();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) => await GeneralFuncs.HandleFirstRender(firstRender, "BattleNet");
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await GeneralFuncs.HandleFirstRender(firstRender, "BattleNet");
+        AppStats.NewNavigation("/BattleNet/");
+    }
 }

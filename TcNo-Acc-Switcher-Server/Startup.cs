@@ -54,6 +54,7 @@ namespace TcNo_Acc_Switcher_Server
 
             // Persistent settings:
             _ = services.AddSingleton<AppSettings>();
+            _ = services.AddSingleton<AppStats>();
             _ = services.AddSingleton<AppData>();
             _ = services.AddSingleton<BasicPlatforms>();
             _ = services.AddSingleton<CurrentPlatform>();
@@ -110,6 +111,10 @@ namespace TcNo_Acc_Switcher_Server
                   _ = endpoints.MapBlazorHub();
                   _ = endpoints.MapFallbackToPage("/_Host");
               });
+
+            // Increment launch count. I don't know if this should be here, but it is.
+            AppStats.LaunchCount++;
+            AppStats.SaveSettings();
         }
 
         private static void MoveIfFileExists(string f)

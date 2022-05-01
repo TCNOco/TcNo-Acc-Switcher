@@ -14,6 +14,7 @@
 
 @page "/Steam/AdvancedClearing"
 @using TcNo_Acc_Switcher_Server.Pages.General
+@using TcNo_Acc_Switcher_Server.Data
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject IJSRuntime _jsRuntime
 @{ AppData.SetActiveIJsRuntime(_jsRuntime); }
@@ -108,6 +109,11 @@
 
 @code
 {
+    protected override void OnAfterRender(bool firstRender)
+    {
+        AppStats.NewNavigation("/Steam/AdvancedClearing/");
+    }
+
     private bool _notAccepted;
 
     public bool Accepted

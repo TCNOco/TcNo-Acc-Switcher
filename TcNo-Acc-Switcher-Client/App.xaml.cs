@@ -207,6 +207,9 @@ namespace TcNo_Acc_Switcher_Client
             //ShowErrorMessage("Error from last crash", "Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError));
             MessageBox.Show("Last error message:" + Environment.NewLine + string.Join(Environment.NewLine, lastError), "Error from last crash", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
             Globals.DeleteFile("LastError.txt");
+
+            AppStats.CrashCount++;
+            AppStats.SaveSettings();
         }
 
         /// <summary>

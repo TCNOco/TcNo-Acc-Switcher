@@ -145,6 +145,11 @@
 
 @code
 {
+    protected override void OnAfterRender(bool firstRender)
+    {
+        AppStats.NewNavigation($"/Basic[{CurrentPlatform.SafeName}]/Settings");
+    }
+
     public void SaveAndClose()
     {
         AppSettings.SaveSettings();

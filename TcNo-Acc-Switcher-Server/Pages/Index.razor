@@ -114,10 +114,6 @@
 
         // Check for update in another thread
 	    new Thread(AppSettings.CheckForUpdate).Start();
-	}
-
-	protected override void OnInitialized()
-	{
-
+	    AppStats.NewNavigation("/");
 	}
 }

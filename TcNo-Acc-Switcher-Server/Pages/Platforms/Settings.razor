@@ -92,6 +92,11 @@
 
 @code
 {
+    protected override void OnAfterRender(bool firstRender)
+    {
+        AppStats.NewNavigation("/Platforms/");
+    }
+
     public void SaveAndClose()
     {
         AppSettings.SaveSettings();
