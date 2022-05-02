@@ -14,23 +14,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
@@ -39,8 +32,6 @@ using TcNo_Acc_Switcher_Server.Pages.General;
 using static TcNo_Acc_Switcher_Client.MainWindow;
 using AppSettings = TcNo_Acc_Switcher_Server.Data.AppSettings;
 using MessageBox = System.Windows.MessageBox;
-using MessageBoxOptions = System.Windows.MessageBoxOptions;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using Path = System.IO.Path;
 
 namespace TcNo_Acc_Switcher_Client

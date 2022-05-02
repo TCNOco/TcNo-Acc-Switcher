@@ -30,7 +30,7 @@
 
 inline void split_version(const std::string& str, std::vector<int>& arr, const char& delimiter)
 {
-	std::string s_num = "";
+	std::string s_num;
 	for (const char i : str)
 	{
 		if (i != delimiter)
@@ -94,7 +94,7 @@ inline void find_installed_c_runtimes(bool &min_vc_met)
 	{
 		RegCloseKey(key);
 		return;
-	};
+	}
 
 	if (RegQueryValueEx(key, L"Version", nullptr, &dw_type, reinterpret_cast<unsigned char*>(version), &dw_v_buffer_size) == ERROR_SUCCESS)
 	{

@@ -13,7 +13,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.IO;
-using System.Net;
 using TcNo_Acc_Switcher_Globals;
 
 //using System.Windows.Shapes; -- Commented because of clash with System.IO.Path. If causes issues, un-comment.

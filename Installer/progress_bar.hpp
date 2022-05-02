@@ -19,7 +19,7 @@
 #pragma once
 #ifndef _PROGRESS_BAR_
 #define _PROGRESS_BAR_
-#include <windows.h>
+#include <Windows.h>
 #include <iostream>
 #include <iomanip>
 #define TOTAL_PERCENTAGE 100.0
@@ -39,8 +39,8 @@ private:
 	const char* description{};
 	const char* unit_bar{};
 	const char* unit_space{};
-	void ClearBarField();
+	void ClearBarField() const;
 	static int GetConsoleWidth();
-	int GetBarLength();
+	int GetBarLength() const;
 };
 #endif

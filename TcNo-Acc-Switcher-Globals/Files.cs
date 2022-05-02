@@ -14,18 +14,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.IconLib;
-using System.Reflection;
 using System.Runtime.Versioning;
 using ShellLink;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using SevenZip;
 
@@ -470,9 +465,8 @@ namespace TcNo_Acc_Switcher_Globals
             {
                 var si = mi.FirstOrDefault();
                 if (si == null) return false;
-                IconImage icon;
                 var max = si.Max(i => i.Size.Height);
-                icon = si.FirstOrDefault(i => i.Size.Height == max);
+                var icon = si.FirstOrDefault(i => i.Size.Height == max);
                 Directory.CreateDirectory(Path.GetDirectoryName(output) ?? string.Empty);
                 icon?.Transparent.Save(output);
             }

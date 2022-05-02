@@ -19,11 +19,11 @@
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
 #include "../Installer/runtime_check.hpp"
-#include <windows.h>n
+#include <Windows.h>
 #include <filesystem>
 
-#include <limits.h>
-#include <stdlib.h>
+#include <climits>
+#include <cstdlib>
 
 int main(int argc, char* argv[])
 {

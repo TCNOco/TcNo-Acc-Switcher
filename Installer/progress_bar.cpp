@@ -28,12 +28,14 @@ int ProgressBar::GetConsoleWidth() {
 	const int width = buffer_info.srWindow.Right - buffer_info.srWindow.Left;
 	return width;
 }
-int ProgressBar::GetBarLength() {
+int ProgressBar::GetBarLength() const
+{
 	// get console width and according adjust the length of the progress bar
 	const int bar_length = static_cast<int>((static_cast<double>(GetConsoleWidth()) - desc_width - CHARACTER_WIDTH_PERCENTAGE) / 2.);
 	return bar_length;
 }
-void ProgressBar::ClearBarField() {
+void ProgressBar::ClearBarField() const
+{
 	for (int i = 0; i < GetConsoleWidth(); ++i) {
 		*out << " ";
 	}

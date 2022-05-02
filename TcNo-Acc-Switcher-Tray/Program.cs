@@ -18,7 +18,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Windows.Forms;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Tray.Properties;

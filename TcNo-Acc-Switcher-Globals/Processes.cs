@@ -19,12 +19,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
-using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.Principal;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TcNo_Acc_Switcher_Globals
 {
