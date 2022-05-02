@@ -1,5 +1,6 @@
 #include "progress_bar.hpp"
-ProgressBar::ProgressBar() {}
+ProgressBar::ProgressBar() = default;
+
 ProgressBar::ProgressBar(unsigned long n_, const char* description_, std::ostream& out_) {
 	n = n_;
 	frequency_update = n_;
@@ -48,7 +49,7 @@ void ProgressBar::Progressed(unsigned long idx_)
 		const int bar_size = GetBarLength();
 		// calculate percentage of progress
 		const double progress_percent = idx_ * TOTAL_PERCENTAGE / n;
-		// calculate the percentage value of a unit bar 
+		// calculate the percentage value of a unit bar
 		const double percent_per_unit_bar = TOTAL_PERCENTAGE / bar_size;
 		// display progress bar
 		*out << " " << description << " [";

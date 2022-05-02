@@ -209,7 +209,7 @@ namespace TcNo_Acc_Switcher_Tray
                     }
                 }
                 else
-                    _ = MessageBox.Show($"{GLang.Instance["Tray_CantOpenExe"]} {_mainProgram}", GLang.Instance["Tray_LaunchFail"]);
+                    _ = MessageBox.Show(@$"{GLang.Instance["Tray_CantOpenExe"]} {_mainProgram}", GLang.Instance["Tray_LaunchFail"]);
             }
         }
 

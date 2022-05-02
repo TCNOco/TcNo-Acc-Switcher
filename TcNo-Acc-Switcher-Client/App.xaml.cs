@@ -223,6 +223,7 @@ namespace TcNo_Acc_Switcher_Client
             if (Directory.Exists(restoreTemp)) Globals.RecursiveDelete(restoreTemp, false);
         }
 
+/*
         private static void ShowErrorMessage(string title, string text)
         {
             var cmb = new CustomMessageBox(title, text)
@@ -252,6 +253,7 @@ namespace TcNo_Acc_Switcher_Client
 
             _ = cmb.ShowDialog();
         }
+*/
 
         public static SolidColorBrush GetStylesheetColor(string key, string fallback)
         {
@@ -306,9 +308,7 @@ namespace TcNo_Acc_Switcher_Client
                 if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
 
                 // Ignore other processes running while in DEBUG mode.
-#if DEBUG
-                return;
-#else
+#if RELEASE
                 // Try to show from tray, as user may not know it's hidden there.
                 string text;
                 if (!NativeFuncs.BringToFront())
@@ -396,17 +396,21 @@ namespace TcNo_Acc_Switcher_Client
                         {
                             var line = "";
                             var x = (JProperty)jToken;
-                            var identifiers = BasicPlatforms.GetPlatforms[x.Name]["Identifiers"].ToObject<List<string>>();
+                            var identifiers = BasicPlatforms.GetPlatforms[x.Name]?["Identifiers"]?.ToObject<List<string>>();
 
-                            switchList.Add($" -   {x.Name}: {identifiers[0]}:<identifier>");
-
-                            foreach (var platformShort in identifiers)
+                            if (identifiers != null)
                             {
-                                if (line == "")
-                                    line = $" -   {x.Name}: {platformShort}";
-                                else
-                                    line += $", {platformShort}";
+                                switchList.Add($" -   {x.Name}: {identifiers[0]}:<identifier>");
+
+                                foreach (var platformShort in identifiers)
+                                {
+                                    if (line == "")
+                                        line = $" -   {x.Name}: {platformShort}";
+                                    else
+                                        line += $", {platformShort}";
+                                }
                             }
+
                             availableList.Add(line);
                         }
 
@@ -620,68 +624,72 @@ namespace TcNo_Acc_Switcher_Client
         }
 
         #region ResizeWindows
+        /*
         // https://stackoverflow.com/a/27157947/5165437
         private bool _resizeInProcess;
-        private void Resize_Init(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is not Rectangle senderRect) return;
-            _resizeInProcess = true;
-            _ = senderRect.CaptureMouse();
-        }
-
-        private void Resize_End(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is not Rectangle senderRect) return;
-            _resizeInProcess = false;
-            senderRect.ReleaseMouseCapture();
-        }
-
-        private void Resizing_Form(object sender, MouseEventArgs e)
-        {
-            if (!_resizeInProcess) return;
-            if (sender is not Rectangle senderRect) return;
-            var mainWindow = senderRect.Tag as Window;
-            var width = e.GetPosition(mainWindow).X;
-            var height = e.GetPosition(mainWindow).Y;
-            _ = senderRect.CaptureMouse();
-            if (senderRect.Name.ToLowerInvariant().Contains("right"))
-            {
-                width += 5;
-                if (width > 0)
-                    if (mainWindow != null)
-                        mainWindow.Width = width;
-            }
-            if (senderRect.Name.ToLowerInvariant().Contains("left"))
-            {
-                width -= 5;
-                if (mainWindow != null)
+                private void Resize_Init(object sender, MouseButtonEventArgs e)
                 {
-                    mainWindow.Left += width;
-                    width = mainWindow.Width - width;
-                    if (width > 0)
+                    if (sender is not Rectangle senderRect) return;
+                    _resizeInProcess = true;
+                    _ = senderRect.CaptureMouse();
+                }
+
+
+
+                private void Resize_End(object sender, MouseButtonEventArgs e)
+                {
+                    if (sender is not Rectangle senderRect) return;
+                    _resizeInProcess = false;
+                    senderRect.ReleaseMouseCapture();
+                }
+
+                private void Resizing_Form(object sender, MouseEventArgs e)
+                {
+                    if (!_resizeInProcess) return;
+                    if (sender is not Rectangle senderRect) return;
+                    var mainWindow = senderRect.Tag as Window;
+                    var width = e.GetPosition(mainWindow).X;
+                    var height = e.GetPosition(mainWindow).Y;
+                    _ = senderRect.CaptureMouse();
+                    if (senderRect.Name.ToLowerInvariant().Contains("right"))
                     {
-                        mainWindow.Width = width;
+                        width += 5;
+                        if (width > 0)
+                            if (mainWindow != null)
+                                mainWindow.Width = width;
+                    }
+                    if (senderRect.Name.ToLowerInvariant().Contains("left"))
+                    {
+                        width -= 5;
+                        if (mainWindow != null)
+                        {
+                            mainWindow.Left += width;
+                            width = mainWindow.Width - width;
+                            if (width > 0)
+                            {
+                                mainWindow.Width = width;
+                            }
+                        }
+                    }
+                    if (senderRect.Name.ToLowerInvariant().Contains("bottom"))
+                    {
+                        height += 5;
+                        if (height > 0)
+                            if (mainWindow != null)
+                                mainWindow.Height = height;
+                    }
+
+                    if (!senderRect.Name.ToLowerInvariant().Contains("top")) return;
+                    height -= 5;
+                    if (mainWindow == null) return;
+                    mainWindow.Top += height;
+                    height = mainWindow.Height - height;
+                    if (height > 0)
+                    {
+                        mainWindow.Height = height;
                     }
                 }
-            }
-            if (senderRect.Name.ToLowerInvariant().Contains("bottom"))
-            {
-                height += 5;
-                if (height > 0)
-                    if (mainWindow != null)
-                        mainWindow.Height = height;
-            }
-
-            if (!senderRect.Name.ToLowerInvariant().Contains("top")) return;
-            height -= 5;
-            if (mainWindow == null) return;
-            mainWindow.Top += height;
-            height = mainWindow.Height - height;
-            if (height > 0)
-            {
-                mainWindow.Height = height;
-            }
-        }
+        */
         #endregion
     }
 }

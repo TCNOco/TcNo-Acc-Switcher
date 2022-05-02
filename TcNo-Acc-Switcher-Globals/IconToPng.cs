@@ -29,8 +29,8 @@ namespace TcNo_Acc_Switcher_Globals
     {
         // SEE https://stackoverflow.com/a/28530403/5165437
 
-        const string IID_IImageList = "46EB5926-582E-4017-9FDF-E8998DAA0950";
-        const string IID_IImageList2 = "192B9D83-50FC-457B-90A0-2B82A8B5DAE1";
+        private const string IidIImageList = "46EB5926-582E-4017-9FDF-E8998DAA0950";
+        private const string IidIImageList2 = "192B9D83-50FC-457B-90A0-2B82A8B5DAE1";
 
         //Working example as of 2017/05/19 on windows 10 x64
         //example found here.
@@ -49,7 +49,7 @@ namespace TcNo_Acc_Switcher_Globals
             ext = ext.Replace("*", "").Replace(".", ""); //clean the param up.
 
             var hIcon = GetIcon(GetIconIndex("*." + ext), size);
-            Image result = null;
+            Image result;
             // from native to managed
             try
             {
@@ -73,11 +73,11 @@ namespace TcNo_Acc_Switcher_Globals
         }
 
         [SupportedOSPlatform("windows")]
-        public static Image GetPngFromExtension(string ext, SHIL_IconSizes size)
+        public static Image GetPngFromExtension(string ext, ShIlIconSizes size)
         {
             ext = ext.Replace("*", "").Replace(".", "");
             var hIcon = GetIcon(GetIconIndex("*." + ext), size);
-            Image result = null;
+            Image result;
             // from native to managed
             using (var ico = (Icon)Icon.FromHandle(hIcon).Clone())
             {
@@ -96,23 +96,23 @@ namespace TcNo_Acc_Switcher_Globals
         static IntPtr GetIcon(int iImage, IconSizes size)
         {
             IImageList spiml = null;
-            var guil = new Guid(IID_IImageList2);//or IID_IImageList
+            var guil = new Guid(IidIImageList2);//or IID_IImageList
 
             NativeMethods.SHGetImageList((int)size, ref guil, ref spiml);
             var hIcon = IntPtr.Zero;
-            spiml.GetIcon(iImage, NativeMethods.ILD_TRANSPARENT | NativeMethods.ILD_IMAGE, ref hIcon);
+            spiml.GetIcon(iImage, NativeMethods.IldTransparent | NativeMethods.IldImage, ref hIcon);
 
             return hIcon;
         }
 
-        static IntPtr GetIcon(int iImage, SHIL_IconSizes size)
+        static IntPtr GetIcon(int iImage, ShIlIconSizes size)
         {
             IImageList spiml = null;
-            var guil = new Guid(IID_IImageList2);//or IID_IImageList
+            var guil = new Guid(IidIImageList2);//or IID_IImageList
 
             NativeMethods.SHGetImageList((int)size, ref guil, ref spiml);
             var hIcon = IntPtr.Zero;
-            spiml.GetIcon(iImage, NativeMethods.ILD_TRANSPARENT | NativeMethods.ILD_IMAGE, ref hIcon);
+            spiml.GetIcon(iImage, NativeMethods.IldTransparent | NativeMethods.IldImage, ref hIcon);
 
             return hIcon;
         }
@@ -122,7 +122,7 @@ namespace TcNo_Acc_Switcher_Globals
             NativeMethods.SHGetFileInfo(pszFile
                 , 0
                 , ref sfi
-                , (uint)System.Runtime.InteropServices.Marshal.SizeOf(sfi)
+                , (uint)Marshal.SizeOf(sfi)
                 , (uint)(SHGFI.SysIconIndex | SHGFI.LargeIcon | SHGFI.UseFileAttributes));
             return sfi.iIcon;
         }
@@ -184,7 +184,7 @@ namespace TcNo_Acc_Switcher_Globals
                 return true;
             }
 
-            NativeMethods.EnumResourceNames(hModule, RtGroupIcon, (NativeMethods.EnumResNameProc) Callback, IntPtr.Zero);
+            NativeMethods.EnumResourceNames(hModule, RtGroupIcon, Callback, IntPtr.Zero);
             var iconData = tmpData.ToArray();
             using var ms = new MemoryStream(iconData[0]);
             return new Icon(ms);
@@ -210,8 +210,8 @@ namespace TcNo_Acc_Switcher_Globals
 
     #region Definitions
     [ComImport()]
-    [GuidAttribute("46EB5926-582E-4017-9FDF-E8998DAA0950")]
-    [InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
+    [Guid("46EB5926-582E-4017-9FDF-E8998DAA0950")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     internal interface IImageList
     {
         [PreserveSig]
@@ -286,7 +286,7 @@ namespace TcNo_Acc_Switcher_Globals
         [PreserveSig]
         int GetImageRect(
         int i,
-        ref RECT prc);
+        ref Rect prc);
 
         [PreserveSig]
         int GetIconSize(
@@ -351,8 +351,8 @@ namespace TcNo_Acc_Switcher_Globals
 
         [PreserveSig]
         int GetDragImage(
-        ref POINT ppt,
-        ref POINT pptHotspot,
+        ref Point ppt,
+        ref Point pptHotspot,
         ref Guid riid,
         ref IntPtr ppv);
 
@@ -375,7 +375,7 @@ namespace TcNo_Acc_Switcher_Globals
         public IntPtr hbmMask;
         public int Unused1;
         public int Unused2;
-        public RECT rcImage;
+        public Rect rcImage;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -402,33 +402,35 @@ namespace TcNo_Acc_Switcher_Globals
 
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct POINT
+    internal struct Point
     {
-        int x;
-        int y;
+        private readonly int x;
+        private readonly int y;
     }
 
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct RECT
+    internal struct Rect
     {
         public int left, top, right, bottom;
     }
 
 
-    public enum SHIL_IconSizes
+    public enum ShIlIconSizes
     {
-        SHIL_LARGE = 0x0,
-        SHIL_SMALL = 0x1,
-        SHIL_EXTRALARGE = 0x2,
-        SHIL_SYSSMALL = 0x3,
-        SHIL_JUMBO = 0x4,
-        SHIL_LAST = 0x4,
+        ShIlLarge = 0x0,
+        ShIlSmall = 0x1,
+        /*
+        ShilExtraLarge = 0x2,
+        ShIlSysSmall = 0x3,
+        ShIlJumbo = 0x4,
+        */
+        ShIlLast = 0x4,
     }
 
 
     /// <summary>
-    /// More user friend version of <see cref="SHIL_IconSizes"/>, note this does not contain the "last" option, which would point to Jumbo.
+    /// More user friend version of <see cref="ShIlIconSizes"/>, note this does not contain the "last" option, which would point to Jumbo.
     /// </summary>
     public enum IconSizes
     {
@@ -449,7 +451,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// </summary>
         SystemSmall = 0x3,
         /// <summary>
-        /// SHIL_JUMBO, 256x256
+        /// ShIlJumbo, 256x256
         /// </summary>
         Jumbo = 0x4,
     }
@@ -490,7 +492,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// <summary>show icon in selected state</summary>
         Selected = 0x000010000,
         /// <summary>get only specified attributes</summary>
-        Attr_Specified = 0x000020000,
+        AttrSpecified = 0x000020000,
         /// <summary>get large icon</summary>
         LargeIcon = 0x000000000,
         /// <summary>get small icon</summary>

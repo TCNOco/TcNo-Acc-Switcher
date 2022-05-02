@@ -18,18 +18,18 @@
 @using TcNo_Acc_Switcher_Globals
 @using System.Globalization
 @using System.Threading
-@inject IJSRuntime _jsRuntime
-@{ _appData.SetActiveIJsRuntime(_jsRuntime); }
-@inject NavigationManager _navManager
-@{ _appData.SetActiveNavMan(_navManager); }
-@inject AppData _appData
+@inject IJSRuntime JsRuntime
+@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@inject NavigationManager NavManager
+@{ AData.SetActiveNavMan(NavManager); }
+@inject AppData AData
 
-@inject Lang  _locale
+@inject Lang Locale
 
 @if (AppSettings.PreRenderUpdate)
 {
     <div class="updateBar">
-        <span>@_locale["Update"]</span>
+        <span>@Locale["Update"]</span>
         <i class="fas fa-times-circle" id="closeUpdateBar"></i>
     </div>
 }
@@ -37,7 +37,7 @@
 <ContextMenu ContextMenuString="@AppSettings.PlatformContextMenu" ContextMenuId="AccOrPlatList" />
 <div class="platformTable">
     <div class="platform_list">
-        @foreach (var platform in _appData.SortedPlatformListHandleDisabled())
+        @foreach (var platform in AData.SortedPlatformListHandleDisabled())
         {
             <div class="platform_list_item" id="@(platform)" @onclick="() => Check(platform)">
                 <div class="fgText @(!System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")) ? "noImageCenterText" : "") @(BasicPlatforms.PlatformFullName(platform).Length < 7 ? "shortText" : BasicPlatforms.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@BasicPlatforms.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
@@ -45,12 +45,12 @@
                     @if(System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")))
                     {
                         <svg viewBox="0 0 500 500" draggable="false" alt="@(BasicPlatforms.PlatformSafeName(platform))">
-                            <use href="@($"img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg#FG")" class="@($"icoFG")"></use>
+                            <use href="@($"img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg#FG")" class="@("icoFG")"></use>
                         </svg>
                     }
                 </div>
-                <svg viewBox="0 0 2084 2084" draggable="false" alt="@(platform)" class="@($"icoBG")">
-                    <use href="img/platform/glass.svg#GLASS" class="icoGlass @($"icoGlass")"></use>
+                <svg viewBox="0 0 2084 2084" draggable="false" alt="@(platform)" class="@("icoBG")">
+                    <use href="img/platform/glass.svg#GLASS" class="icoGlass @("icoGlass")"></use>
                 </svg>
             </div>
         }
@@ -64,15 +64,15 @@
         </button>*@
         @if (BasicPlatforms.PlatformDict.Count > 0)
         {
-            <button id="btnPlatforms" onclick="location = 'Platforms'" data-toggle="tooltip" title="@(_locale["Tooltip_ManagePlatforms"])">
+            <button id="btnPlatforms" onclick="location = 'Platforms'" data-toggle="tooltip" title="@(Locale["Tooltip_ManagePlatforms"])">
                 <i class="fas fa-plus footerIcoInline"></i>
                 @Lang["Button_ManagePlatforms"]
             </button>
         }
-        <button id="btnSettings" onclick="location = 'Settings'" data-toggle="tooltip" title="@(_locale["Tooltip_Settings"])">
+        <button id="btnSettings" onclick="location = 'Settings'" data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
-        <button id="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="@(_locale["Tooltip_Info"])">
+        <button id="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="@(Locale["Tooltip_Info"])">
             <i class="fas fa-question footerIcoQuestion"></i>
         </button>
     </div>
@@ -90,16 +90,16 @@
 		AppData.Instance.WindowTitle = "TcNo Account Switcher";
 
         // If no platforms are showing:
-	    if (!_appData.AnyPlatformsShowing())
+	    if (!AData.AnyPlatformsShowing())
 	    {
-            _navManager.NavigateTo("Platforms");
+            NavManager.NavigateTo("Platforms");
 	    }
 
         // If just 1 platform is showing, and first launch: Nav into:
-	    if (AppData.FirstLaunch && _appData.SortedPlatformListHandleDisabled().Count == 1)
+	    if (AppData.FirstLaunch && AData.SortedPlatformListHandleDisabled().Count == 1)
 	    {
 	        AppData.FirstLaunch = false;
-	        var onlyPlatform = _appData.SortedPlatformListHandleDisabled().First();
+	        var onlyPlatform = AData.SortedPlatformListHandleDisabled().First();
 	        Check(onlyPlatform);
 	    }
 	    AppData.FirstLaunch = false;
@@ -109,7 +109,7 @@
 			GeneralFuncs.HandleQueries();
 		    _ = AppData.InvokeVoidAsync("initContextMenu");
 		    _ = AppData.InvokeVoidAsync("initPlatformListSortable");
-			//await AppData.InvokeVoidAsync("initAccListSortable");
+			//await AData.InvokeVoidAsync("initAccListSortable");
 		}
 
         // Check for update in another thread

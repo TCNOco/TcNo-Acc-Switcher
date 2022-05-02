@@ -82,7 +82,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 var responseStream = req.GetResponse().GetResponseStream();
                 if (responseStream == null)
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_StatsFail", new {BTag = BTag}],
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_StatsFail", new {BTag}],
                         renderTo: "toastarea");
                     return false;
                 }
@@ -95,7 +95,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 // If the PlayOverwatch site is overloaded
                 if (doc.DocumentNode.SelectSingleNode("/html/body/section[1]/section/div/h1") != null)
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_StatsFail", new {BTag = BTag}],
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_StatsFail", new {BTag}],
                         renderTo: "toastarea");
                     return false;
                 }
@@ -108,7 +108,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     ImgUrl = doc.DocumentNode
                         .SelectSingleNode("/html/body/section[1]/div[1]/section/div/div/div/div/div[2]/img")
                         .Attributes["src"].Value;
-                    _ = GeneralInvocableFuncs.ShowToast("warning", Lang["Toast_BNet_Private", new {BTag = BTag}],
+                    _ = GeneralInvocableFuncs.ShowToast("warning", Lang["Toast_BNet_Private", new {BTag}],
                         renderTo: "toastarea");
                     _ = BattleNetSwitcherFuncs.DownloadImage(Email, ImgUrl);
                     LastTimeChecked = DateTime.Now - TimeSpan.FromMinutes(1435); // 23 Hours 55 Minutes

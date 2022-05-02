@@ -37,7 +37,7 @@ namespace TcNo_Acc_Switcher_Client
             return false;
         }
     }
-    public class CefMenuHandler : CefSharp.IContextMenuHandler
+    public class CefMenuHandler : IContextMenuHandler
     {
         public void OnBeforeContextMenu(IWebBrowser browserControl, IBrowser browser, IFrame frame, IContextMenuParams parameters, IMenuModel model)
         {

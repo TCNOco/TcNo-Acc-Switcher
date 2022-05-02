@@ -18,7 +18,7 @@ namespace TcNo_Acc_Switcher_Client
     /// <summary>
     /// Interaction logic for CustomMessageBox.xaml
     /// </summary>
-    public partial class CustomMessageBox : Window
+    public partial class CustomMessageBox
     {
         private void BtnExit(object sender, RoutedEventArgs e) =>
             Close();
@@ -49,10 +49,12 @@ namespace TcNo_Acc_Switcher_Client
         {
             window.WindowState = WindowState.Minimized;
         }
+/*
         public static void BtnExit(object sender, RoutedEventArgs e, Window window)
         {
             window.Close();
         }
+*/
         public static void DragWindow(object sender, MouseButtonEventArgs e, Window window)
         {
             if (e.LeftButton == MouseButtonState.Pressed)

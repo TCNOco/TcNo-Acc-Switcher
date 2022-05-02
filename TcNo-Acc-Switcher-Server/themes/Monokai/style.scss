@@ -86,6 +86,10 @@ button:active,
     border: .1em solid transparent;
 }
 
+.HasContextMenu, .footerIcoSettings, .footerIcoQuestion, .forgottenList, .forgottenListActions, .submenu1, .submenu2 {
+    /* Set so the compiler/editor doesn't complain about unknown CSS classes */
+}
+
 .shortcutDropdown, .shortcuts.expandShortcuts {
     border: .1em solid var(--accent);
 }

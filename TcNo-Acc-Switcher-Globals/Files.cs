@@ -166,7 +166,7 @@ namespace TcNo_Acc_Switcher_Globals
                 i++;
             }
 
-            return string.Format("{0:n" + decimalPlaces + "} {1}", dValue, SizeSuffixes[i]);
+            return string.Format("{{0:n" + decimalPlaces + "}} {1}", dValue, SizeSuffixes[i]);
         }
 
         public static bool IsDirectoryEmpty(string path)
@@ -268,6 +268,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// <param name="overwrite">Whether to overwrite files or not</param>
         /// <param name="fileTypes">List of file types to include or exclude</param>
         /// <param name="include">True: include files from file types ONLY, or FALSE: Exclude any file type matches</param>
+        /// <param name="throwOnError"></param>
         public static bool CopyFilesRecursive(string inputFolder, string outputFolder, bool overwrite, List<string> fileTypes, bool include, bool throwOnError = false)
         {
             try
@@ -346,12 +347,14 @@ namespace TcNo_Acc_Switcher_Globals
             using var file = new SevenZip.SevenZipExtractor(zipPath);
             file.ExtractArchive(output);
         }
+/*
         public static void DecompressZip(Stream zipData, string output)
         {
             SevenZipBase.SetLibraryPath(Path.Combine(AppDataFolder, Environment.Is64BitProcess ? "x64" : "x86", "7z.dll"));
             using var file = new SevenZip.SevenZipExtractor(zipData);
             file.ExtractArchive(output);
         }
+*/
 
         /// <summary>
         /// Returns icon from specified file.
@@ -467,7 +470,7 @@ namespace TcNo_Acc_Switcher_Globals
             {
                 var si = mi.FirstOrDefault();
                 if (si == null) return false;
-                var icon = si.Where(x => x.Size.Height >= 128).OrderBy(x => x.Size.Height).FirstOrDefault();
+                IconImage icon;
                 var max = si.Max(i => i.Size.Height);
                 icon = si.FirstOrDefault(i => i.Size.Height == max);
                 Directory.CreateDirectory(Path.GetDirectoryName(output) ?? string.Empty);

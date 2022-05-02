@@ -32,7 +32,7 @@ namespace TcNo_Acc_Switcher_Globals
 {
     public class GLang
     {
-        private static GLang _instance = null;
+        private static GLang _instance;
 
         private static readonly object LockObj = new();
 
@@ -52,12 +52,18 @@ namespace TcNo_Acc_Switcher_Globals
                     return _instance;
                 }
             }
-            set => _instance = value;
+            set
+            {
+                lock (LockObj)
+                {
+                    _instance = value;
+                }
+            }
         }
 
         private Dictionary<string, string> _strings = new();
         private string _current = "";
-        private bool _currentlyModifying = false;
+        private bool _currentlyModifying;
 
         public static Dictionary<string, string> Strings { get => Instance._strings; set => Instance._strings = value; }
         public static string Current { get => Instance._current; set => Instance._current = value; }
@@ -82,7 +88,9 @@ namespace TcNo_Acc_Switcher_Globals
                     var s = Strings[key];
                     if (obj is JsonElement)
                         foreach (var (k, v) in JObject.FromObject(JsonConvert.DeserializeObject(obj.ToString()!)!))
-                            s = s.Replace($"{{{k}}}", v.Value<string>());
+                        {
+                            if (v != null) s = s.Replace($"{{{k}}}", v.Value<string>());
+                        }
                     else
                         foreach (var pi in obj.GetType().GetProperties())
                         {
@@ -200,7 +208,7 @@ namespace TcNo_Acc_Switcher_Globals
 
                     if (File.Exists(SettingsFile))
                     {
-                        _instance = JsonConvert.DeserializeObject<GLangAppSettings>(File.ReadAllText(SettingsFile), new JsonSerializerSettings() { });
+                        _instance = JsonConvert.DeserializeObject<GLangAppSettings>(File.ReadAllText(SettingsFile), new JsonSerializerSettings());
                         if (_instance == null)
                         {
                             Globals.WriteToLog("Globals-Lang: Failed to load settings. Loading defaults.");
@@ -214,11 +222,17 @@ namespace TcNo_Acc_Switcher_Globals
                     return _instance;
                 }
             }
-            set => _instance = value;
+            set
+            {
+                lock (LockObj)
+                {
+                    _instance = value;
+                }
+            }
         }
 
         private string _lastHash = "";
-        private bool _currentlyModifying = false;
+        private bool _currentlyModifying;
 
         // Constants
         public static readonly string SettingsFile = "WindowSettings.json";

@@ -61,14 +61,14 @@ namespace TcNo_Acc_Switcher_Server
             {
                 if (!arg.Contains("--url")) continue;
                 port = Regex.Match(arg, @"[\d]+", RegexOptions.IgnoreCase).Value;
-                Console.WriteLine("Using port (from --url arg): " + port);
+                Console.WriteLine(@"Using port (from --url arg): " + port);
             }
 
             if (string.IsNullOrEmpty(port))
             {
                 FindOpenPort();
                 port = AppSettings.ServerPort.ToString();
-                Console.WriteLine("Using saved/random port: " + port);
+                Console.WriteLine(@"Using saved/random port: " + port);
             }
 
             // Start browser - if not started with nobrowser

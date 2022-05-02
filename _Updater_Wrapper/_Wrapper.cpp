@@ -27,11 +27,11 @@
 
 int main(int argc, char* argv[])
 {
-	const std::string self = getSelfName(), window_title = "Runtime Verifier - " + self;
+	const std::string self = get_self_name(), window_title = "Runtime Verifier - " + self;
 	const size_t last_hyphen = self.find_last_of('-');
 	// Will be "Switcher", "Updater", etc.
 	const std::string easy_name = self.substr(last_hyphen + 1, self.find_last_of('.') - last_hyphen - 1);
-	SetConsoleTitle(s2ws(window_title).c_str());
+	SetConsoleTitle(s2_ws(window_title).c_str());
 
 	std::cout << "Verifying .NET versions before attempting to launch " << easy_name << std::endl;
 	bool min_webview_met = false,
@@ -42,14 +42,14 @@ int main(int argc, char* argv[])
 	if (!min_webview_met || !min_desktop_runtime_met || !min_aspcore_met)
 	{
 		// Launch installer to get these!
-		std::string self_path = getOperatingPath();
+		std::string self_path = get_operating_path();
 		std::string s_args("net " + self);
 		exec_process(std::wstring(self_path.begin(), self_path.end()), L"_First_Run_Installer.exe",
 		             std::wstring(s_args.begin(), s_args.end()));
 	}
 	else
 	{
-		std::string operating_path = getOperatingPath();
+		std::string operating_path = get_operating_path();
 		const std::string exe_name = self + "_main.exe";
 		//const std::string exe_name = "TcNo-Acc-Switcher_main.exe";
 

@@ -16,12 +16,12 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.Globalization
-@inject NavigationManager _navigationManager
-@inject Lang  _locale
+@inject NavigationManager NavigationManager
+@inject Lang Locale
 
 @if (_cultures != null)
 {
-	<span>@_locale["Header_ChooseLanguage"]</span>
+	<span>@Locale["Header_ChooseLanguage"]</span>
 	<div class="dropdown">
 		<ul class="custom-dropdown-menu dropdown-menu">
 			@foreach (var (key, value) in _cultures)
@@ -33,8 +33,8 @@
 			@_selectedCulture
 			<span class="caret"></span>
 		</button>
-		&nbsp;<a class="fancyLink" @onclick='() => { GeneralInvocableFuncs.OpenLinkInBrowser("https://crowdin.com/project/tcno-account-switcher"); }'>@_locale["Settings_HelpTranslate"]</a>
-		&nbsp;<a class="fancyLink" onclick='showModal("crowdin")'>@_locale["Settings_ViewTranslators"]</a>
+		&nbsp;<a class="fancyLink" @onclick='() => { GeneralInvocableFuncs.OpenLinkInBrowser("https://crowdin.com/project/tcno-account-switcher"); }'>@Locale["Settings_HelpTranslate"]</a>
+		&nbsp;<a class="fancyLink" onclick='showModal("crowdin")'>@Locale["Settings_ViewTranslators"]</a>
 	</div>
 }
 

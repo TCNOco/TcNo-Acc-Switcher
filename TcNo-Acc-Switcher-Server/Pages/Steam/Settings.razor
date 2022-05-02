@@ -25,16 +25,16 @@
 @using TcNo_Acc_Switcher_Server.Pages.Basic
 @using System.Diagnostics
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
-@inject NavigationManager _navManager
-@inject AppData _appData
-@{ _appData.SetActiveNavMan(_navManager); }
-@inject IJSRuntime _jsRuntime
-@{ _appData.SetActiveIJsRuntime(_jsRuntime); }
+@inject NavigationManager NavManager
+@inject AppData AData
+@{ AData.SetActiveNavMan(NavManager); }
+@inject IJSRuntime JsRuntime
+@{ AData.SetActiveIJsRuntime(JsRuntime); }
 
-@inject Lang  _locale
+@inject Lang Locale
 @code
 {
-	    private const string Platform = "Steam";
+    private const string Platform = "Steam";
 }
 
 <div class="container mainblock">
@@ -45,24 +45,24 @@
 
 
             <div class="SettingsHeader">
-                <hr><span>@_locale["Settings_Header_GeneralSettings"]</span>
+                <hr><span>@Locale["Settings_Header_GeneralSettings"]</span>
                 <hr>
             </div>
             <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="Steam.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Steam", Steam.DesktopShortcut)'><label class="form-check-label" for="Steam_DesktopShortcut"></label></div><label for="Steam_DesktopShortcut">
-		            @_locale["Settings_Shortcut", new { platform = Platform }]<br></label>
+		            @Locale["Settings_Shortcut", new { platform = Platform }]<br></label>
             </div>
             <div>
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin" @bind="Steam.Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label for="Steam_Admin">
-		            @_locale["Settings_Admin", new { platform = Platform }]<br></label>
+		            @Locale["Settings_Admin", new { platform = Platform }]<br></label>
             </div>
             <div>
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="AutoStart" @bind="Steam.AutoStart"><label class="form-check-label" for="AutoStart"></label></div><label for="AutoStart">
-                    @_locale["Settings_AutoStart", new { platform = "Steam" }]<br></label>
+                    @Locale["Settings_AutoStart", new { platform = "Steam" }]<br></label>
             </div>
             <div class="rowSetting rowDropdown">
-                <span>@_locale["Settings_Header_ClosingMethod", new { platform = "Steam" }]</span>
-                <div class="dropdown" data-toggle="tooltip" title="@(_locale["Tooltip_ClosingMethod"])" data-placement="right">
+                <span>@Locale["Settings_Header_ClosingMethod", new { platform = "Steam" }]</span>
+                <div class="dropdown" data-toggle="tooltip" title="@(Locale["Tooltip_ClosingMethod"])" data-placement="right">
                     <ul class="custom-dropdown-menu dropdown-menu">
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => Steam.SetClosingMethod("Combined")'>Combined (Best)</li>
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => Steam.SetClosingMethod("Close")'>Close</li>
@@ -75,8 +75,8 @@
                 </div>
             </div>
             <div class="rowSetting rowDropdown">
-                <span>@_locale["Settings_Header_StartingMethod", new { platform = "Steam" }]</span>
-                <div class="dropdown" data-toggle="tooltip" title="@(_locale["Tooltip_StartingMethod"])" data-placement="right">
+                <span>@Locale["Settings_Header_StartingMethod", new { platform = "Steam" }]</span>
+                <div class="dropdown" data-toggle="tooltip" title="@(Locale["Tooltip_StartingMethod"])" data-placement="right">
                     <ul class="custom-dropdown-menu dropdown-menu">
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => Steam.SetStartingMethod("Default")'>Default (Best)</li>
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => Steam.SetStartingMethod("Direct")'>Direct</li>
@@ -88,31 +88,31 @@
                 </div>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowSteamID" @bind="Steam.ShowSteamId"><label class="form-check-label" for="Steam_ShowSteamID"></label></div><label for="Steam_ShowSteamID">@_locale["Steam_ShowSteamID"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowSteamID" @bind="Steam.ShowSteamId"><label class="form-check-label" for="Steam_ShowSteamID"></label></div><label for="Steam_ShowSteamID">@Locale["Steam_ShowSteamID"]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowVAC" @bind="Steam.ShowVac"><label class="form-check-label" for="Steam_ShowVAC"></label></div><label for="Steam_ShowVAC">@_locale["Steam_ShowVac"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowVAC" @bind="Steam.ShowVac"><label class="form-check-label" for="Steam_ShowVAC"></label></div><label for="Steam_ShowVAC">@Locale["Steam_ShowVac"]<br></label>
             </div>
             <div>
-	            <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowLimited" @bind="Steam.ShowLimited"><label class="form-check-label" for="Steam_ShowLimited"></label></div><label for="Steam_ShowLimited">@_locale["Steam_ShowLimited"]<br></label>
+	            <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowLimited" @bind="Steam.ShowLimited"><label class="form-check-label" for="Steam_ShowLimited"></label></div><label for="Steam_ShowLimited">@Locale["Steam_ShowLimited"]<br></label>
             </div>
             <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowAccUsername" @bind="Steam.ShowAccUsername"><label class="form-check-label" for="Steam_ShowAccUsername"></label></div><label for="Steam_ShowAccUsername">@_locale["Steam_ShowAccUsername"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_ShowAccUsername" @bind="Steam.ShowAccUsername"><label class="form-check-label" for="Steam_ShowAccUsername"></label></div><label for="Steam_ShowAccUsername">@Locale["Steam_ShowAccUsername"]<br></label>
             </div>
             <div>
                 <div class="rowSetting rowDropdown">
-                    <span>@_locale["Steam_OverrideDefaultState"]</span>
+                    <span>@Locale["Steam_OverrideDefaultState"]</span>
                     <div class="dropdown">
                         <ul class="custom-dropdown-menu dropdown-menu">
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(-1)">@_locale["NoDefault"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(1)">@_locale["Online"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(7)">@_locale["Invisible"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(0)">@_locale["Offline"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(2)">@_locale["Busy"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(3)">@_locale["Away"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(4)">@_locale["Snooze"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(5)">@_locale["LookingToTrade"]</li>
-                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(6)">@_locale["LookingToPlay"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(-1)">@Locale["NoDefault"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(1)">@Locale["Online"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(7)">@Locale["Invisible"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(0)">@Locale["Offline"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(2)">@Locale["Busy"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(3)">@Locale["Away"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(4)">@Locale["Snooze"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(5)">@Locale["LookingToTrade"]</li>
+                            <li class="custom-dropdown-item dropdown-item" @onclick="() => DefaultState(6)">@Locale["LookingToPlay"]</li>
                         </ul>
                         <button class="dropdown-toggle" type="button" data-toggle="dropdown">
                             @_selectedState
@@ -121,52 +121,52 @@
                     </div>
                 </div>
             </div>
-            <div class="form-text"><span>@_locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="Steam.ImageExpiryTime"></div>
+            <div class="form-text"><span>@Locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="Steam.ImageExpiryTime"></div>
 
 
             <div class="SettingsHeader">
-                <hr><span>@_locale["Settings_Header_TraySettings"]</span>
+                <hr><span>@Locale["Settings_Header_TraySettings"]</span>
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_TrayAccountName" @bind="Steam.TrayAccName"><label class="form-check-label" for="Steam_TrayAccountName"></label></div><label for="Steam_TrayAccountName">@_locale["Steam_Tray_AccountName"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_TrayAccountName" @bind="Steam.TrayAccName"><label class="form-check-label" for="Steam_TrayAccountName"></label></div><label for="Steam_TrayAccountName">@Locale["Steam_Tray_AccountName"]<br></label>
             </div>
-            <div class="form-text"><span>@_locale["Settings_TrayMax"]</span><input type="number" id="Steam_TrayAccNumber" min="0" max="365" @bind="Steam.TrayAccNumber"></div>
+            <div class="form-text"><span>@Locale["Settings_TrayMax"]</span><input type="number" id="Steam_TrayAccNumber" min="0" max="365" @bind="Steam.TrayAccNumber"></div>
 
 
             <div class="SettingsHeader">
-                <hr><span>@_locale["Settings_Header_GeneralTools"]</span>
+                <hr><span>@Locale["Settings_Header_GeneralTools"]</span>
                 <hr>
             </div>
-            <p>@_locale["Settings_CurrentLocation", new { path = Steam.FolderPath }]</p>
-            <div class="buttoncol"><button id="Steam_PickFolder" type="button" @onclick="PickFolder"><span>@_locale["Settings_PickFolder", new { platform = Platform }]</span></button><button id="Steam_CheckVAC" type="button" @onclick="ClearVacStatus"><span>@_locale["Steam_CheckVac"]</span></button></div>
-            <div class="buttoncol"><button id="Steam_ResetSettings" type="button" @onclick="ClearSettings"><span>@_locale["Button_ResetSettings"]</span></button><button id="Steam_ResetImages" type="button" @onclick="ClearImages"><span>@_locale["Button_RefreshImages"]</span></button></div>
+            <p>@Locale["Settings_CurrentLocation", new { path = Steam.FolderPath }]</p>
+            <div class="buttoncol"><button id="Steam_PickFolder" type="button" @onclick="PickFolder"><span>@Locale["Settings_PickFolder", new { platform = Platform }]</span></button><button id="Steam_CheckVAC" type="button" @onclick="ClearVacStatus"><span>@Locale["Steam_CheckVac"]</span></button></div>
+            <div class="buttoncol"><button id="Steam_ResetSettings" type="button" @onclick="ClearSettings"><span>@Locale["Button_ResetSettings"]</span></button><button id="Steam_ResetImages" type="button" @onclick="ClearImages"><span>@Locale["Button_RefreshImages"]</span></button></div>
 
 
             <div class="SettingsHeader">
-                <hr><span>@_locale["Settings_Header_BackupRestore"]</span>
+                <hr><span>@Locale["Settings_Header_BackupRestore"]</span>
                 <hr>
             </div>
 
             <div class="buttoncol">
-                <button id="Steam_Backup" type="button" @onclick="() => BackupButton()" data-toggle="tooltip" title="@(_locale["Tooltip_Backup"])" data-placement="bottom"><span>@_locale["Button_Backup"]</span></button>
-                <button id="Steam_BackupEverything" type="button" @onclick="() => BackupButton(true)" data-toggle="tooltip" title="@(_locale["Tooltip_BackupAll"])" data-placement="bottom"><span>@_locale["Button_BackupAll"]</span></button>
+                <button id="Steam_Backup" type="button" @onclick="() => BackupButton()" data-toggle="tooltip" title="@(Locale["Tooltip_Backup"])" data-placement="bottom"><span>@Locale["Button_Backup"]</span></button>
+                <button id="Steam_BackupEverything" type="button" @onclick="() => BackupButton(true)" data-toggle="tooltip" title="@(Locale["Tooltip_BackupAll"])" data-placement="bottom"><span>@Locale["Button_BackupAll"]</span></button>
             </div>
             <div class="buttoncol">
-                <button id="Steam_OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@_locale["Button_OpenBackup"]</span></button>
-                <div class="button" id="Restore" type="button" data-toggle="tooltip" title="@(_locale["Tooltip_Restore"])" data-placement="bottom">
+                <button id="Steam_OpenBackupFolder" type="button" @onclick="OpenBackupFolder"><span>@Locale["Button_OpenBackup"]</span></button>
+                <div class="button" id="Restore" type="button" data-toggle="tooltip" title="@(Locale["Tooltip_Restore"])" data-placement="bottom">
                     <InputFile OnChange="@RestoreFile"/>
-                    <span>@_locale["Button_Restore"]</span>
+                    <span>@Locale["Button_Restore"]</span>
                 </div>
             </div>
 
 
             <div class="SettingsHeader">
-                <hr><span>@_locale["Settings_Header_OtherTools"]</span>
+                <hr><span>@Locale["Settings_Header_OtherTools"]</span>
                 <hr>
             </div>
-            <div class="buttoncol"><button id="OpenFolder" type="button" @onclick="() => Data.Settings.Basic.OpenFolder(Steam.FolderPath)"><span>@_locale["Settings_OpenFolder", new { platform = Platform }]</span></button><button id="Steam_AdvancedClearing" type="button" @onclick='() => _navManager.NavigateTo("/Steam/AdvancedClearing")'><span>@_locale["Button_AdvancedCleaning"]</span></button></div>
-            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
+            <div class="buttoncol"><button id="OpenFolder" type="button" @onclick="() => Data.Settings.Basic.OpenFolder(Steam.FolderPath)"><span>@Locale["Settings_OpenFolder", new { platform = Platform }]</span></button><button id="Steam_AdvancedClearing" type="button" @onclick='() => NavManager.NavigateTo("/Steam/AdvancedClearing")'><span>@Locale["Button_AdvancedCleaning"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
         </div>
     </div>
 </div>
@@ -193,7 +193,7 @@
         AppSettings.SaveSettings();
         Steam.SaveSettings();
 
-        _navManager.NavigateTo("/Steam");
+        NavManager.NavigateTo("/Steam");
     }
 
     private string _selectedState = Steam.StateToString(Steam.OverrideState);
@@ -257,7 +257,7 @@
             {
                 var fExpanded = f.Replace("%Platform_Folder%", Steam.FolderPath);
                 if (!Directory.Exists(fExpanded)) continue;
-                if (!Globals.CopyFilesRecursive(fExpanded ,Path.Join(tempFolder, t), true))
+                if (!Globals.CopyFilesRecursive(fExpanded ,Path.Join(tempFolder, t)))
                     _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
             }
 
@@ -347,10 +347,10 @@
                 {
                     var fullFromPath = Path.Join(outputFolder, fromPath);
                     if (Globals.IsFile(fullFromPath))
-                        Globals.CopyFile(fullFromPath, toPath, true);
+                        Globals.CopyFile(fullFromPath, toPath);
                     else if (Globals.IsFolder(fullFromPath))
                     {
-                        if (!Globals.CopyFilesRecursive(fullFromPath, toPath, true))
+                        if (!Globals.CopyFilesRecursive(fullFromPath, toPath))
                             _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
                     }
                 }

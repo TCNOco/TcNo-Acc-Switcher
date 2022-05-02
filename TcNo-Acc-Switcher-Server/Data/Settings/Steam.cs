@@ -47,12 +47,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
                     if (File.Exists(SettingsFile))
                     {
-                        _instance = JsonConvert.DeserializeObject<Steam>(File.ReadAllText(SettingsFile), new JsonSerializerSettings() { });
+                        _instance = JsonConvert.DeserializeObject<Steam>(File.ReadAllText(SettingsFile), new JsonSerializerSettings());
                         if (_instance == null)
                         {
                             _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
                             if (File.Exists(SettingsFile))
-                                Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"), true);
+                                Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"));
                             _instance = new Steam { _currentlyModifying = true };
                         }
                         _instance._lastHash = Globals.GetFileMd5(SettingsFile);
@@ -73,7 +73,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     return _instance;
                 }
             }
-            set => _instance = value;
+            set
+            {
+                lock (LockObj)
+                {
+                    _instance = value;
+                }
+            }
         }
         private string _lastHash = "";
         private bool _currentlyModifying = false;
@@ -85,7 +91,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
         public static string ClosingMethod { get => Instance._closingMethod; set => Instance._closingMethod = value; }
         public static string StartingMethod { get => Instance._startingMethod; set => Instance._startingMethod = value; }
-        private static string GetShortcutImageFolder => $"img\\shortcuts\\Steam\\";
+        private static string GetShortcutImageFolder => "img\\shortcuts\\Steam\\";
         private static string GetShortcutImagePath() => Path.Join(Globals.UserDataFolder, "wwwroot\\", GetShortcutImageFolder);
         public static string ShortcutFolder => "LoginCache\\Steam\\Shortcuts\\";
         private static readonly List<string> ShortcutFolders = new () { "%StartMenuAppData%\\Steam\\" };
@@ -176,6 +182,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 }
             }
 
+            AppStats.SetGameShortcutCount("Steam", Shortcuts);
             SaveSettings();
         }
 
@@ -222,7 +229,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     break;
                 }
                 case "admin":
-                    Basic.RunShortcut(shortcut, "LoginCache\\Steam\\Shortcuts", true);
+                    Basic.RunShortcut(shortcut, "LoginCache\\Steam\\Shortcuts", true, "Steam");
                     break;
             }
         }

@@ -46,7 +46,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                     return _instance ??= new Lang();
                 }
             }
-            set => _instance = value;
+            set
+            {
+                lock (LockObj)
+                {
+                    _instance = value;
+                }
+            }
         }
 
         private Dictionary<string, string> _strings = new();
@@ -75,7 +81,9 @@ namespace TcNo_Acc_Switcher_Server.Data
                     var s = Strings[key];
                     if (obj is JsonElement)
                         foreach (var (k, v) in JObject.FromObject(JsonConvert.DeserializeObject(obj.ToString()!)!))
-                            s = s.Replace($"{{{k}}}", v.Value<string>());
+                        {
+                            if (v != null) s = s.Replace($"{{{k}}}", v.Value<string>());
+                        }
                     else
                         foreach (var pi in obj.GetType().GetProperties())
                         {

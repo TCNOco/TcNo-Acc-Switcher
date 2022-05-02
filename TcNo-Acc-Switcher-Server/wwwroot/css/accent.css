@@ -12,9 +12,13 @@
     --accentL: 50%; /* "L" from accent HSL */
     --accentInt: 0, 212, 255; /* accent as "r, g, b" */
     /* Automatic accent variations */
+    /* ReSharper disable InvalidValue */
+    /* ReSharper disable Redundant */
     --accentDark: hsl(var(--accentHS), calc(var(--accentL) - 20%));
     --accentDarker: hsl(var(--accentHS), calc(var(--accentL) - 40%));
     --accentDarkest: hsl(var(--accentHS), calc(var(--accentL) - 60%));
+    /* ReSharper restore Redundant */
+    /* ReSharper restore InvalidValue */
     /* Notification colours */
     --notification-main-bg: #274560;
     --notification-info-border: rgba(3, 166, 240, .25);
@@ -39,6 +43,7 @@
     margin: 1px 0;
 }
 
+/* ReSharper disable InvalidValue */
 .infoWindow .rightContent .linksList a:hover, .fancyLink:hover {
     color: hsl(var(--accentHS), calc(var(--accentL) - 5%));
 }
@@ -46,15 +51,17 @@
 .infoWindow .rightContent .linksList a:active, .fancyLink:active {
     color: hsl(var(--accentHS), calc(var(--accentL) - 10%));
 }
+/* ReSharper restore InvalidValue */
 
 /* ---------------------------------------- */
     /*                ANIMATIONS                */
     /* ---------------------------------------- */
 
+/* ReSharper disable InvalidValue */
     @keyframes pulse {
         0% {
             transform: scale(1);
-            box-shadow: 0 0 0 0 rgba(var(--accentInt), 0.7);
+            box-shadow: 0 0 0 0 rgba(var(--accentInt), 70%);
         }
 
         70% {
@@ -67,3 +74,4 @@
             box-shadow: 0 0 0 10px rgba(var(--accentInt), 0);
         }
     }
+/* ReSharper restore InvalidValue */

@@ -244,8 +244,8 @@ namespace TcNo_Acc_Switcher_Globals
 
 
         // For grabbing image from icons:
-        public const int ILD_TRANSPARENT = 0x00000001;
-        public const int ILD_IMAGE = 0x00000020;
+        public const int IldTransparent = 0x00000001;
+        public const int IldImage = 0x00000020;
 
         [DllImport("shell32.dll", EntryPoint = "#727")]
         public static extern int SHGetImageList(int iImageList, ref Guid riid, ref IImageList ppv);

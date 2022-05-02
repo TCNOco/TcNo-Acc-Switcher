@@ -42,6 +42,7 @@ namespace TcNo_Acc_Switcher_Server.Shared
         /// </summary>
         /// <param name="s">Text to display on current element</param>
         /// <param name="o">Either string with action, or JToken containing more (string, string) or (string, JArray) pairs</param>
+        /// <param name="submenuDepth"></param>
         private static void ProcessContextItem(string s, object o, ref int submenuDepth)
         {
             var j = JToken.FromObject(o);
@@ -77,8 +78,11 @@ namespace TcNo_Acc_Switcher_Server.Shared
                             foreach (var (key, value) in JObject.FromObject(jToken))
                             {
                                 if (key == "")
-                                    _htmlOut = GeneralFuncs.ReplaceLast(_htmlOut, "event.preventDefault();",
-                                        value.Value<string>()); // Replace last occurrence
+                                {
+                                    if (value != null)
+                                        _htmlOut = GeneralFuncs.ReplaceLast(_htmlOut, "event.preventDefault();",
+                                            value.Value<string>()); // Replace last occurrence
+                                }
                                 else ProcessContextItem(key, value, ref submenuDepth);
                             }
                         }

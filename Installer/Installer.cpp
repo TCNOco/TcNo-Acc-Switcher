@@ -26,7 +26,7 @@ bool args_contain(const char* needle, int argc, char* argv[])
 void launch_tcno_program(const char* arg)
 {
 	const std::string program(arg);
-	std::string operating_path = getOperatingPath();
+	std::string operating_path = get_operating_path();
 	const std::string exe_name = program + "_main.exe";
 
 	std::string full_path = operating_path;
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
 	// Goal of this application:
 	// - Check for the existence of required runtimes, and install them if missing. [First run ever on a computer]
 	// --- [Unlikely] Maybe in the future: Verify application folders, and handle zipping and sending error logs? Possibly just the first or none of these.
-	const string operating_path = getOperatingPath();
+	const string operating_path = get_operating_path();
 	SetConsoleTitle(_T("TcNo Account Switcher - Runtime installer"));
 	cout << "Welcome to the TcNo Account Switcher - Runtime installer" << endl <<
 		"------------------------------------------------------------------------" << endl << endl;

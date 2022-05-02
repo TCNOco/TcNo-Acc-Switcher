@@ -97,7 +97,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                             Globals.CopyFile(fullFromPath, toPath);
                         else if (Globals.IsFolder(fullFromPath))
                         {
-                            if (!Globals.CopyFilesRecursive(fullFromPath, toPath, true))
+                            if (!Globals.CopyFilesRecursive(fullFromPath, toPath))
                                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
                         }
                     }
@@ -173,7 +173,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     if (!Directory.Exists(fExpanded)) continue;
 
                     // Handle folder entry
-                    if (!Globals.CopyFilesRecursive(fExpanded, dest, true))
+                    if (!Globals.CopyFilesRecursive(fExpanded, dest))
                         _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
                 }
 

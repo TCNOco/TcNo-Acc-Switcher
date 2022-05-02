@@ -307,7 +307,7 @@ namespace TcNo_Acc_Switcher_Client
             // Currently just for testing!
             // This is used with Steam/SteamKeys.cs for future functionality!
             if (uri.Contains("store.steampowered.com"))
-                RunCookieCheck("steampowered.com");
+                _ = RunCookieCheck("steampowered.com");
 
 
             if (uri.Contains("RESTART_AS_ADMIN")) Restart(uri.Contains("arg=") ? uri.Split("arg=")[1] : "", true);
@@ -340,6 +340,7 @@ namespace TcNo_Acc_Switcher_Client
                 var attempts = 0;
                 while (attempts < 5)
                 {
+                    attempts++;
                     cookies = await _mView2.CoreWebView2.CookieManager.GetCookiesAsync(null);
                     if (!cookies.Any(c => c.Name == failedCookie && !string.IsNullOrWhiteSpace(c.Value))) continue;
                     cookiesTxt += $"{failedCookie}={cookies.First(c => c.Name == failedCookie).Value}; ";
@@ -386,7 +387,7 @@ namespace TcNo_Acc_Switcher_Client
             }
             catch (Exception ex) when (ex is BadImageFormatException or WebView2RuntimeNotFoundException or COMException)
             {
-                if (ex is System.Runtime.InteropServices.COMException && !ex.ToString().Contains("WebView2"))
+                if (ex is COMException && !ex.ToString().Contains("WebView2"))
                 {
                     // Is not a WebView2 exception
                     throw;

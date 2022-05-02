@@ -165,7 +165,7 @@ function getSelected() {
 
 // Swapping accounts
 function swapTo(request, e) {
-    if (e !== undefined) e.preventDefault();
+    if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
 
 
@@ -175,7 +175,7 @@ function swapTo(request, e) {
 
 // Swapping accounts
 async function changeImage(e) {
-    if (e !== undefined) e.preventDefault();
+    if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
 
     let path = $(".acc:checked").next("label").children("img")[0].getAttribute("src").split('?')[0];
@@ -220,7 +220,7 @@ async function Modal_FinalizeImage(dest) {
 
 // Open Steam\userdata\<steamID> folder
 function openUserdata(e) {
-	if (e !== undefined) e.preventDefault();
+    if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
 
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SteamOpenUserdata`, selected.attr("id"));
@@ -602,7 +602,7 @@ async function getLogicalDrives() {
 function updateIndicator(e) {
     console.log("Update Indicator REQUESTED");
     // Update Found/Not Found preview
-    var foundRequested = false;
+    var foundRequested;
     if (pathPickerRequestedFile === "AnyFolder" && e !== "" && $(e.target).hasClass("folder")) {
         foundRequested = true;
     } else if (pathPickerRequestedFile === "AnyFile" && e !== "" && !$(e.target).hasClass("folder")) {
@@ -824,9 +824,11 @@ function sDropdownInit() {
     });
 
     $(".shortcuts, #shortcutDropdown").toArray().forEach(el => {
+// ReSharper disable once Html.EventNotResolved
         el.addEventListener("sortstart", function (e) {
             $(".shortcuts").addClass("expandShortcuts");
         });
+// ReSharper disable once Html.EventNotResolved
         el.addEventListener("sortstop", function (e) {
             $(".shortcuts").removeClass("expandShortcuts");
             sDropdownReposition();
@@ -856,7 +858,7 @@ function serializeShortcuts() {
 
     // Serialize dropdown items
     $(".shortcutDropdown button").each((i, e) => {
-        if ($(e).attr("id") == "btnOpenShortcutFolder") return;
+        if ($(e).attr("id") === "btnOpenShortcutFolder") return;
         output[i] = $(e).attr("id");
     });
 

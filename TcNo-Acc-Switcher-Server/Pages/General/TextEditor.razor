@@ -14,13 +14,13 @@
 
 @page "/TextEditor/"
 @using TcNo_Acc_Switcher_Server.Data
-@inject AppData _appData
-@inject IJSRuntime _jsRuntime
-@{ _appData.SetActiveIJsRuntime(_jsRuntime); }
-@inject NavigationManager _navManager
-@{ _appData.SetActiveNavMan(_navManager); }
+@inject AppData AData
+@inject IJSRuntime JsRuntime
+@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@inject NavigationManager NavManager
+@{ AData.SetActiveNavMan(NavManager); }
 
-@inject Lang  _locale
+@inject Lang Locale
 
 <div class="text-editor d-flex flex-column">
     <div class="flex-grow-1 editor-container">
@@ -32,10 +32,10 @@ Actions will show here
     </div>
     <div class="d-flex justify-content-end">
         <button id="btnCancel" onclick="btnBack_Click()">
-            <span>@_locale["Button_Cancel"]</span>
+            <span>@Locale["Button_Cancel"]</span>
         </button>
         <button id="btnSave" @onclick="SaveFile">
-            <span>@_locale["Button_SaveFile"]</span>
+            <span>@Locale["Button_SaveFile"]</span>
         </button>
     </div>
 </div>
@@ -60,7 +60,7 @@ Actions will show here
     {
         //
 
-        _navManager.NavigateTo("/Steam");
+        NavManager.NavigateTo("/Steam");
     }
 
     public void Cancel()

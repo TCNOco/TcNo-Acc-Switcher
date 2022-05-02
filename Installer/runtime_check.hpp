@@ -17,26 +17,18 @@
 // If .NET is missing > Open installer, then after install relaunch.
 
 #pragma once
-#include <algorithm>
-#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <vector>
 #include <Windows.h>
-#include <conio.h>
 
 #include <iostream>
 #include <string>
 #include <tchar.h>
-#include <urlmon.h>
-#include "progress_bar.hpp"
-
-#include <curl/curl.h>
-#include <openssl/ssl.h>
 
 #include "versions.h"
 
-void split_version(std::string& str, std::vector<int>& arr, const char& delimiter)
+inline void split_version(const std::string& str, std::vector<int>& arr, const char& delimiter)
 {
 	std::string s_num = "";
 	for (const char i : str)
@@ -60,7 +52,7 @@ void split_version(std::string& str, std::vector<int>& arr, const char& delimite
 /// Returns whether v2 is newer than, or equal to v1.
 /// Works with unequal string sizes.
 /// </summary>
-bool compare_versions(std::string v1, std::string v2, const char& delimiter)
+inline bool compare_versions(std::string v1, std::string v2, const char& delimiter)
 {
 	if (v1 == v2) return true;
 	try
@@ -89,7 +81,7 @@ bool compare_versions(std::string v1, std::string v2, const char& delimiter)
 /// <summary>
 /// Gets C++ Runtime versions, and sets min_vc_met
 /// </summary>
-void find_installed_c_runtimes(bool &min_vc_met)
+inline void find_installed_c_runtimes(bool &min_vc_met)
 {
 	// Get C+++ Runtime info
 	HKEY key = nullptr;
@@ -116,7 +108,7 @@ void find_installed_c_runtimes(bool &min_vc_met)
 /// <summary>
 /// Finds existing NET runtimes, and sets min_{runtime}_met for aspcore, webview and desktop_runtime
 /// </summary>
-void find_installed_net_runtimes(const bool x32, bool &min_webview_met, bool &min_desktop_runtime_met, bool &min_aspcore_met, const bool output = true)
+inline void find_installed_net_runtimes(const bool x32, bool &min_webview_met, bool &min_desktop_runtime_met, bool &min_aspcore_met, const bool output = true)
 {
 	// Get .NET info
 	// Find installed runtimes, and add them to the list
@@ -223,28 +215,26 @@ inline void exec_process(const std::wstring& path, const std::wstring& exe, cons
 	//CloseHandle(h_job);
 
 
-	DWORD exitCode = 0;
 	SHELLEXECUTEINFO ShExecInfo = { 0 };
 	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
 	ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
-	ShExecInfo.hwnd = NULL;
+	ShExecInfo.hwnd = nullptr;
 	ShExecInfo.lpVerb = _T("open");
 	ShExecInfo.lpFile = exe.c_str();
 	ShExecInfo.lpParameters = param.c_str();
 	ShExecInfo.lpDirectory = path.c_str();
 	ShExecInfo.nShow = show_window ? SW_SHOW : SW_HIDE;
-	ShExecInfo.hInstApp = NULL;
+	ShExecInfo.hInstApp = nullptr;
 
-	DWORD dwExitCode;
-	const bool bResult = ShellExecuteEx(&ShExecInfo);
-	if (bResult) {
+	DWORD dw_exit_code;
+	if (ShellExecuteEx(&ShExecInfo)) {
 		if (wait_for_exit){
 			WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
 		}
 
-		if (!GetExitCodeProcess(ShExecInfo.hProcess, &dwExitCode)) {
+		if (!GetExitCodeProcess(ShExecInfo.hProcess, &dw_exit_code)) {
 			//failed to terminate normally
-			std::cout << dwExitCode << std::endl;
+			std::cout << dw_exit_code << std::endl;
 		}
 
 		CloseHandle(ShExecInfo.hProcess);
@@ -258,19 +248,18 @@ inline void exec_process(const std::wstring& path, const std::wstring& exe, cons
 
 #pragma region Utilities
 // This doesn't REALLY belong here, but it's used by both programs that use this file so...
-std::wstring s2ws(const std::string& s)
+inline std::wstring s2_ws(const std::string& s)
 {
-	int len;
-	int slength = (int)s.length() + 1;
-	len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
-	wchar_t* buf = new wchar_t[len];
-	MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+	const int s_length = static_cast<int>(s.length()) + 1;
+	const int len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), s_length, nullptr, 0);
+	const auto buf = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, s.c_str(), s_length, buf, len);
 	std::wstring r(buf);
 	delete[] buf;
 	return r;
 }
 
-std::string getSelfLocation()
+inline std::string get_self_location()
 {
 	const HMODULE h_module = GetModuleHandleW(nullptr);
 	WCHAR pth[MAX_PATH];
@@ -279,18 +268,19 @@ std::string getSelfLocation()
 	const std::string path(ws.begin(), ws.end());
 	return path;
 }
-std::string getOperatingPath() {
-	const std::string path(getSelfLocation());
+
+inline std::string get_operating_path() {
+	const std::string path(get_self_location());
 	return path.substr(0, path.find_last_of('\\') + 1);
 }
 
-std::string getSelfName() {
-	const std::string path(getSelfLocation());
+inline std::string get_self_name() {
+	const std::string path(get_self_location());
 	const size_t last_slash = path.find_last_of('\\');
 	return path.substr(last_slash + 1, path.find_last_of('.') - last_slash - 1);
 }
 
-std::string dotnet_path()
+inline std::string dotnet_path()
 {
 	// Get C+++ Runtime info
 	HKEY key = nullptr;
@@ -299,9 +289,8 @@ std::string dotnet_path()
 	WCHAR path[1024];
 	DWORD dw_v_buffer_size = sizeof(path);
 
-	std::string ret = "";
-	const auto subkey = L"SOFTWARE\\dotnet\\Setup\\InstalledVersions\\x64\\sharedhost";
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, subkey, 0, KEY_READ, &key) != ERROR_SUCCESS)
+	std::string ret;
+	if (const auto sub_key = L"SOFTWARE\\dotnet\\Setup\\InstalledVersions\\x64\\sharedhost"; RegOpenKeyEx(HKEY_LOCAL_MACHINE, sub_key, 0, KEY_READ, &key) != ERROR_SUCCESS)
 	{
 		RegCloseKey(key);
 		return ret;

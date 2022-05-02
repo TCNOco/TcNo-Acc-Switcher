@@ -16,31 +16,31 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using Basic = Data.Settings.Basic
 @namespace TcNo_Acc_Switcher_Server.Pages.Platforms
-@inject NavigationManager _navManager
-@{ AppData.SetActiveNavMan(_navManager); }
-@inject IJSRuntime _jsRuntime
-@{ AppData.SetActiveIJsRuntime(_jsRuntime); }
-@inject AppData _appData
-@inject Lang  _locale
+@inject NavigationManager NavManager
+@{ AppData.SetActiveNavMan(NavManager); }
+@inject IJSRuntime JsRuntime
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
+@inject AppData AData
+@inject Lang Locale
 
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
             <toastarea class="toastarea" />
 
-            @if (!_appData.AnyPlatformsShowing())
+            @if (!AData.AnyPlatformsShowing())
             {
-                <span>@_locale["Settings_NoPlatforms"]</span>
+                <span>@Locale["Settings_NoPlatforms"]</span>
 
                 <div class="SettingsHeader mt-4"> <!-- I couldn't just include the opening tag here, so copy/paste everything... -->
-                    <hr><span>@_locale["Settings_Header_ExtraPlatforms"]</span>
+                    <hr><span>@Locale["Settings_Header_ExtraPlatforms"]</span>
                     <hr>
                 </div>
             }
             else
             {
                 <div class="SettingsHeader">
-                    <hr><span>@_locale["Settings_Header_ExtraPlatforms"]</span>
+                    <hr><span>@Locale["Settings_Header_ExtraPlatforms"]</span>
                     <hr>
                 </div>
             }
@@ -48,33 +48,33 @@
             @if (AppSettings.DisabledPlatforms.Count > 0 || BasicPlatforms.PlatformDict.Count != AppSettings.EnabledBasicPlatforms.Count)
             {
                 <div class="SettingsHeader">
-                    <p>@_locale["Settings_ExtraPlatformsDisabled"]</p>
+                    <p>@Locale["Settings_ExtraPlatformsDisabled"]</p>
                 </div>
 
                 <div class="rowSetting">
-                    @foreach (var item in _appData.DisabledPlatformSorted())
+                    @foreach (var item in AData.DisabledPlatformSorted())
                     {
                         <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="@item" @onclick="() => AppSettings.ShowPlatform(item)"><label class="form-check-label" for="@item"></label><label for="@item">@BasicPlatforms.PlatformFullName(item)<br></label></div>
                     }
                 </div>
             }
 
-            @if (_appData.AnyPlatformsShowing()) {
+            @if (AData.AnyPlatformsShowing()) {
                 <div class="SettingsHeader mt-2">
-                    <p>@_locale["Settings_ExtraPlatformsEnabled"]</p>
+                    <p>@Locale["Settings_ExtraPlatformsEnabled"]</p>
                 </div>
 
                 <div class="rowSetting">
-                    @foreach (var item in _appData.EnabledPlatformSorted())
+                    @foreach (var item in AData.EnabledPlatformSorted())
                     {
                         <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="@item" checked @onclick="() => AppSettings.HidePlatform(item)"><label class="form-check-label" for="@item"></label><label for="@item">@BasicPlatforms.PlatformFullName(item)<br></label></div>
                     }
                 </div>
             }
 
-            @if (_appData.AnyPlatformsShowing())
+            @if (AData.AnyPlatformsShowing())
             {
-                <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
+                <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
             }
         </div>
     </div>
@@ -100,6 +100,6 @@
     public void SaveAndClose()
     {
         AppSettings.SaveSettings();
-        _navManager.NavigateTo("/");
+        NavManager.NavigateTo("/");
     }
 }

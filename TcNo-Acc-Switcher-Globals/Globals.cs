@@ -107,7 +107,7 @@ namespace TcNo_Acc_Switcher_Globals
         {
             // Check to see if folder still located in My Documents (from Pre 2021-07-05)
             var oldDocuments = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TcNo Account Switcher\\");
-            if (Directory.Exists(oldDocuments)) CopyFilesRecursive(oldDocuments, UserDataFolder, true);
+            if (Directory.Exists(oldDocuments)) CopyFilesRecursive(oldDocuments, UserDataFolder);
             RecursiveDelete(oldDocuments, false);
         }
 
@@ -166,7 +166,7 @@ namespace TcNo_Acc_Switcher_Globals
         private static void InitFolder(string f, bool overwrite)
         {
             if (overwrite || !Directory.Exists(Path.Join(UserDataFolder, f)))
-                CopyFilesRecursive(Path.Join(AppDataFolder, f), Path.Join(UserDataFolder, f), true);
+                CopyFilesRecursive(Path.Join(AppDataFolder, f), Path.Join(UserDataFolder, f));
         }
         private static void InitWwwroot(string root, bool overwrite)
         {
@@ -213,5 +213,74 @@ namespace TcNo_Acc_Switcher_Globals
 
             return regexDictionary.ContainsKey(regex) ? regexDictionary[regex] : regex;
         }
+
+        public static string GetOsString()
+        {
+            var os = Environment.OSVersion;
+            var vs = os.Version;
+            var operatingSystem = "";
+
+            switch (os.Platform)
+            {
+                case PlatformID.Win32Windows:
+                    operatingSystem = vs.Minor switch
+                    {
+                        0 => "95",
+                        10 => vs.Revision.ToString() == "2222A" ? "98SE" : "98",
+                        90 => "Me",
+                        _ => operatingSystem
+                    };
+
+                    break;
+                case PlatformID.Win32NT:
+                    operatingSystem = vs.Major switch
+                    {
+                        3 => "NT 3.51",
+                        4 => "NT 4.0",
+                        5 => vs.Minor == 0 ? "Windows 2000" : "Windows XP",
+                        6 => vs.Minor switch
+                        {
+                            0 => "Windows Vista",
+                            1 => "Windows 7",
+                            2 => "Windows 8",
+                            3 => "Windows 8.1",
+                            _ => operatingSystem
+                        },
+                        _ => vs.Build switch
+                        {
+                            >= 10240 and < 10586 => "Windows 10 1507",
+                            < 14393 => "Windows 10 1511",
+                            < 15063 => "Windows 10 1607",
+                            < 16299 => "Windows 10 1703",
+                            < 17134 => "Windows 10 1709",
+                            < 17763 => "Windows 10 1803",
+                            < 18362 => "Windows 10 1809",
+                            < 18363 => "Windows 10 1903",
+                            < 19041 => "Windows 10 1909",
+                            < 19042 => "Windows 10 2004",
+                            < 19043 => "Windows 10 20H2",
+                            < 19044 => "Windows 10 21H1",
+                            < 22000 => "Windows 10 21H2",
+                            >= 22000 => "Windows 11 21H2"
+                        }
+                    };
+
+                    break;
+                case PlatformID.Unix:
+                    return $"Unix unknown ({Environment.OSVersion.VersionString})";
+                case PlatformID.MacOSX:
+                    return $"MacOSX unknown ({Environment.OSVersion.VersionString})";
+                case PlatformID.Xbox:
+                case PlatformID.WinCE:
+                case PlatformID.Win32S:
+                case PlatformID.Other:
+                    return $"Unknown ({Environment.OSVersion.VersionString})";
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return $"{operatingSystem} ({vs.Major}.{vs.Minor}.{vs.Build}) {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}";
+        }
+
     }
 }

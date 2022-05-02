@@ -35,7 +35,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
     {
         private static readonly Lang Lang = Lang.Instance;
 
-        private static string BattleNetRoaming;
+        private static string _battleNetRoaming;
 
         /// <summary>
         /// Main function for Battle.net Account Switcher. Run on load.
@@ -48,14 +48,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             LoadImportantData();
             BattleNetSettings.LoadAccounts();
             // Check if accounts file exists
-            if (!File.Exists(BattleNetRoaming + "\\Battle.net.config"))
+            if (!File.Exists(_battleNetRoaming + "\\Battle.net.config"))
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_CantLoadNotFound"], "toastarea");
                 return;
             }
 
             // Read lines in accounts file
-            var file = await File.ReadAllTextAsync(BattleNetRoaming + "\\Battle.net.config").ConfigureAwait(false);
+            var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config").ConfigureAwait(false);
             if (JsonConvert.DeserializeObject(file) is not JObject accountsFile)
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_CantLoadConfigCorrupt"], "toastarea");
@@ -142,7 +142,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// </summary>
         private static void LoadImportantData()
         {
-            BattleNetRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battle.net");
+            _battleNetRoaming = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battle.net");
         }
 
         public static async Task InitOverwatchMode()
@@ -213,10 +213,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
                 }
                 return;
-            };
+            }
 
             // Load settings into JObject
-            var file = await File.ReadAllTextAsync(BattleNetRoaming + "\\Battle.net.config").ConfigureAwait(false);
+            var file = await File.ReadAllTextAsync(_battleNetRoaming + "\\Battle.net.config").ConfigureAwait(false);
             if (JsonConvert.DeserializeObject(file) is not JObject jObject)
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_CantSwapAccounts"], "toastarea");
@@ -261,7 +261,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
             // Replace and write the new Json
             jToken?.Replace(replaceString);
-            await File.WriteAllTextAsync(BattleNetRoaming + "\\Battle.net.config", jObject.ToString());
+            await File.WriteAllTextAsync(_battleNetRoaming + "\\Battle.net.config", jObject.ToString());
 
             if (BattleNetSettings.AutoStart)
                 Data.Settings.Basic.RunPlatform(BattleNetSettings.Exe(), BattleNetSettings.Admin, args, "BattleNet", BattleNetSettings.StartingMethod);

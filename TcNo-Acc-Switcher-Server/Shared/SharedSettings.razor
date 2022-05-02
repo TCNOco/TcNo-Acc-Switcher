@@ -18,10 +18,10 @@
 @using System.IO
 @using TcNo_Acc_Switcher_Globals
 
-@inject Lang _locale
+@inject Lang Locale
 
 <div class="SettingsHeader">
-    <hr><span>@_locale["Settings_Header_AppWide"]</span>
+    <hr><span>@Locale["Settings_Header_AppWide"]</span>
     <hr>
 </div>
 <div class="rowSetting rowDropdown">
@@ -32,11 +32,11 @@
         <input class="form-check-input" type="checkbox" id="RTL" @bind="AppSettings.Rtl" @onclick="AppData.ReloadPage"><label class="form-check-label" for="RTL"></label>
     </div>
     <label for="RTL">
-        @_locale["Settings_RTL"]<br>
+        @Locale["Settings_RTL"]<br>
     </label>
 </div>
 <div class="rowSetting rowDropdown">
-    <span>@_locale["Settings_Header_ActiveBrowser"]</span>
+    <span>@Locale["Settings_Header_ActiveBrowser"]</span>
     <div class="dropdown">
         <ul class="custom-dropdown-menu dropdown-menu">
             <li class="custom-dropdown-item dropdown-item" @onclick='() => AppSettings.SetActiveBrowser("WebView")'>WebView</li>
@@ -53,55 +53,55 @@
         <input class="form-check-input" type="checkbox" id="StreamerMode" @bind="AppSettings.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label>
     </div>
     <label for="StreamerMode">
-        @_locale["Settings_StreamerMode"]<br>
+        @Locale["Settings_StreamerMode"]<br>
     </label>
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="AppSettings.TrayMinimizeNotExit" @onclick="() => AppSettings.TrayMinimizeNotExit_Toggle()"><label class="form-check-label" for="TrayMinimizeNotExit"></label>
+        <input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="AppSettings.TrayMinimizeNotExit" @onclick="AppSettings.TrayMinimizeNotExit_Toggle"><label class="form-check-label" for="TrayMinimizeNotExit"></label>
     </div>
     <label for="TrayMinimizeNotExit">
-        @_locale["Settings_ExitToTray"]<br>
+        @Locale["Settings_ExitToTray"]<br>
     </label>
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="AppSettings.DesktopShortcut" @onclick="() => AppSettings.DesktopShortcut_Toggle()"><label class="form-check-label" for="AppSett_DesktopShortcut"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="AppSettings.DesktopShortcut" @onclick="AppSettings.DesktopShortcut_Toggle"><label class="form-check-label" for="AppSett_DesktopShortcut"></label>
     </div>
     <label for="AppSett_DesktopShortcut">
-        @_locale["Settings_DesktopShortcut"]<br>
+        @Locale["Settings_DesktopShortcut"]<br>
     </label>
 </div>
 <div class="rowSetting">
-    <span>@_locale["Cleaning_Header_StartMenuShortcuts"]</span>
+    <span>@Locale["Cleaning_Header_StartMenuShortcuts"]</span>
     <div class="form-check">
         <input class="form-check-input" type="checkbox" id="AppSett_StartMenu" @bind="AppSettings.StartMenu" @onclick="() => AppSettings.StartMenu_Toggle(false)"><label class="form-check-label" for="AppSett_StartMenu"></label>
     </div>
     <label for="AppSett_StartMenu">
-        @_locale["Settings_StartMenu_ProgramTray"]<br>
+        @Locale["Settings_StartMenu_ProgramTray"]<br>
     </label>
     <div class="form-check">
         <input class="form-check-input" type="checkbox" id="AppSett_StartMenuPlatform" @bind="AppSettings.StartMenuPlatforms" @onclick="() => AppSettings.StartMenu_Toggle(true)"><label class="form-check-label" for="AppSett_StartMenuPlatform"></label>
     </div>
     <label for="AppSett_StartMenuPlatform">
-        @_locale["Settings_StartMenu_Platform"]<br>
+        @Locale["Settings_StartMenu_Platform"]<br>
     </label>
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="AppSettings.TrayStartup" @onclick="() => AppSettings.AutoStart_Toggle()"><label class="form-check-label" for="AppSett_TrayStartup"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_TrayStartup" @bind="AppSettings.TrayStartup" @onclick="AppSettings.AutoStart_Toggle"><label class="form-check-label" for="AppSett_TrayStartup"></label>
     </div>
     <label for="AppSett_TrayStartup">
-        @_locale["Settings_Tray_StartWindows"]<br>
-    </label>&nbsp;<a class="fancyLink" @onclick="() => AppSettings.StartNow()">@_locale["Settings_Tray_StartNow"]</a>
+        @Locale["Settings_Tray_StartWindows"]<br>
+    </label>&nbsp;<a class="fancyLink" @onclick="AppSettings.StartNow">@Locale["Settings_Tray_StartNow"]</a>
 </div>
 
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_Protocol" @bind="AppSettings.ProtocolEnabled" @onclick="() => AppSettings.Protocol_Toggle()"><label class="form-check-label" for="AppSett_Protocol"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_Protocol" @bind="AppSettings.ProtocolEnabled" @onclick="AppSettings.Protocol_Toggle"><label class="form-check-label" for="AppSett_Protocol"></label>
     </div>
     <label for="AppSett_Protocol">
-        @_locale["Settings_Protocol"]<br>
+        @Locale["Settings_Protocol"]<br>
     </label>
 </div>
 
@@ -110,13 +110,13 @@
         <input class="form-check-input" type="checkbox" id="AppSett_StartCentered" @bind="AppSettings.StartCentered"><label class="form-check-label" for="AppSett_StartCentered"></label>
     </div>
     <label for="AppSett_StartCentered">
-        @_locale["Settings_StartCentered"]<br>
+        @Locale["Settings_StartCentered"]<br>
     </label>
 </div>
 
 
 <div class="rowSetting rowDropdown">
-    <span>@_locale["Settings_CurrentStyle"]</span>
+    <span>@Locale["Settings_CurrentStyle"]</span>
     <div class="dropdown">
         <button class="dropdown-toggle" type="button" data-toggle="dropdown">
             @AppSettings.StylesheetInfo["name"]
@@ -133,18 +133,18 @@
 <div class="rowSetting listWithBars">
     <ul>
         <li>
-            <a class="fancyLink" @onclick='() => GeneralInvocableFuncs.ShowModal("SetBackground")'>@_locale["Settings_ThemeBackground"]</a>
+            <a class="fancyLink" @onclick='() => GeneralInvocableFuncs.ShowModal("SetBackground")'>@Locale["Settings_ThemeBackground"]</a>
         </li>
         <li>
-            <a class="fancyLink" @onclick='() => Process.Start("explorer.exe", Path.Join(Globals.UserDataFolder, "themes"))'>@_locale["Settings_ThemeOpenFolder"]</a>
+            <a class="fancyLink" @onclick='() => Process.Start("explorer.exe", Path.Join(Globals.UserDataFolder, "themes"))'>@Locale["Settings_ThemeOpenFolder"]</a>
         </li>
     </ul>
 </div>
 <div class="rowSetting">
     <p>
-        @_locale["Settings_CurrentDataLocation", new {path = Globals.UserDataFolder}]
+        @Locale["Settings_CurrentDataLocation", new {path = Globals.UserDataFolder}]
         <br>
-        <a class="fancyLink" @onclick='() => TrySetUserData()'>@_locale["Settings_SetDataLocation"]</a>
+        <a class="fancyLink" @onclick="TrySetUserData">@Locale["Settings_SetDataLocation"]</a>
     </p>
 
 </div>
@@ -152,10 +152,10 @@
 
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_WinAccent" @bind="AppSettings.WindowsAccent" @onclick="() => AppSettings.WindowsAccent_Toggle()"><label class="form-check-label" for="AppSett_WinAccent"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_WinAccent" @bind="AppSettings.WindowsAccent" @onclick="AppSettings.WindowsAccent_Toggle"><label class="form-check-label" for="AppSett_WinAccent"></label>
     </div>
     <label for="AppSett_WinAccent">
-        @_locale["Settings_WindowsAccent"]<br>
+        @Locale["Settings_WindowsAccent"]<br>
     </label>
 </div>
 
@@ -178,7 +178,7 @@
         }
         catch (Exception)
         {
-            _ = GeneralInvocableFuncs.ShowToast("info", _locale["Toast_RestartRequired"], _locale["Notice"], "toastarea");
+            _ = GeneralInvocableFuncs.ShowToast("info", Locale["Toast_RestartRequired"], Locale["Notice"], "toastarea");
         }
     }
 }

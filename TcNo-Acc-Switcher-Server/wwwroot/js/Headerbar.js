@@ -9,7 +9,6 @@
 	chrome = null;
 }
 
-
 const d = new Date();
 var monthDay = "";
 
@@ -45,7 +44,7 @@ var possibleAnimations = [
 function btnBack_Click() {
     if (window.location.pathname === "/") {
         $("#btnBack i").css({ "transform": "rotate" + possibleAnimations[Math.floor(Math.random() * possibleAnimations.length)] + "(360deg)", "transition": "transform 500ms ease-in-out" });
-        setTimeout(() => $("#btnBack i").css({ "transform": "", "transition": "transform 0ms ease-in-out" }), 500);
+        setTimeout(() => $("#btnBack i").css({ "transform": "", "transition": "transform 0 ease-in-out" }), 500);
     }
     else {
 	    const tempUri = document.location.href.split("?")[0];
@@ -61,6 +60,16 @@ function handleWindowControls() {
     if (navigator.appVersion.indexOf("TcNo") === -1) return;
 
     if (navigator.appVersion.indexOf("TcNo-CEF") !== -1) {
+        if (CefSharp === undefined) {
+            window.notification.new({
+                type: "error",
+                title: "",
+                message: "A critical component could not be loaded (CefSharp). Please restart the application!",
+                renderTo: "toastarea",
+                duration: 10000
+            });
+            CefSharp = null;
+        }
         document.getElementById("btnMin").addEventListener("click", () => {
             CefSharp.PostMessage({ "action": "WindowAction", "value": SysCommandSize.ScMinimise });
         });

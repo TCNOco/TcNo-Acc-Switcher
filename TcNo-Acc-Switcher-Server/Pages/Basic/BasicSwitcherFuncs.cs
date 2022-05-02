@@ -107,10 +107,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_AlreadyLoggedIn"], renderTo: "toastarea");
                             if (BasicSettings.AutoStart)
                             {
-                                if (Globals.StartProgram(BasicSettings.Exe(), BasicSettings.Admin, args, CurrentPlatform.StartingMethod))
-                                    _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
-                                else
-                                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
+                                _ = Globals.StartProgram(BasicSettings.Exe(), BasicSettings.Admin, args,
+                                    CurrentPlatform.StartingMethod)
+                                    ? GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new {platform = CurrentPlatform.SafeName}], renderTo: "toastarea")
+                                    : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new {platform = CurrentPlatform.SafeName}], renderTo: "toastarea");
                             }
                             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
 
@@ -264,7 +264,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     if (!Directory.Exists(Path.GetDirectoryName(folder)))
                         return true;
                     if (!Globals.RecursiveDelete(folder, false))
-                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Platform_DeleteFail"], Lang["Error"], "toastarea"); ;
+                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Platform_DeleteFail"], Lang["Error"], "toastarea");
                     return true;
                 }
 
@@ -445,7 +445,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
                 }
                 return false;
-            };
+            }
 
             return true;
         }
@@ -468,7 +468,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             var specialString = "";
             if (CurrentPlatform.HasExtras && accName.Contains(":{"))
             {
-                var index = accName.IndexOf(":{")! + 1;
+                var index = accName.IndexOf(":{", StringComparison.Ordinal)! + 1;
                 specialString = accName[index..];
                 accName = accName.Split(":{")[0];
             }
@@ -481,20 +481,24 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // Handle unique ID
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_GetUniqueId"]);
 
-            var uniqueId = "";
+            string uniqueId;
             if (CurrentPlatform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.UniqueIdFile))
             {
                 if (!ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out var r))
                     return false;
 
-                if (r is string s) uniqueId = s;
-                else if (r is byte[]) uniqueId = Globals.GetSha256HashString(r);
-                else
+                switch (r)
                 {
-                    Globals.WriteToLog($"Unexpected registry type encountered (1)! Report to TechNobo. {r.GetType()}");
-                    return false;
+                    case string s:
+                        uniqueId = s;
+                        break;
+                    case byte[]:
+                        uniqueId = Globals.GetSha256HashString(r);
+                        break;
+                    default:
+                        Globals.WriteToLog($"Unexpected registry type encountered (1)! Report to TechNobo. {r.GetType()}");
+                        return false;
                 }
-
             }
             else
                 uniqueId = GetUniqueId();
@@ -636,7 +640,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 if (file == "*")
                 {
                     if (!Directory.Exists(Path.GetDirectoryName(fromPath))) return false;
-                    if (Globals.CopyFilesRecursive(Path.GetDirectoryName(fromPath), toFullPath, true)) return true;
+                    if (Globals.CopyFilesRecursive(Path.GetDirectoryName(fromPath), toFullPath)) return true;
 
                     _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
                     return false;
@@ -664,14 +668,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (Directory.Exists(fullPath))
             {
                 _ = Directory.CreateDirectory(toFullPath);
-                if (Globals.CopyFilesRecursive(fullPath, toFullPath, true)) return true;
+                if (Globals.CopyFilesRecursive(fullPath, toFullPath)) return true;
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
                 return false;
             }
 
             // Is file? Copy file
             if (!File.Exists(fullPath)) return false;
-            _ = Directory.CreateDirectory(Path.GetDirectoryName(toFullPath));
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(toFullPath) ?? string.Empty);
             var dest = Path.Join(Path.GetDirectoryName(toFullPath), Path.GetFileName(fullPath));
             Globals.CopyFile(fullPath, dest);
             return true;
@@ -734,7 +738,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 return File.Exists(fileToRead) ? File.ReadAllText(fileToRead) : uniqueId;
             }
 
-            if (CurrentPlatform.UniqueIdFile is not "" && (File.Exists(fileToRead) || fileToRead.Contains('*')))
+            if (fileToRead != null && CurrentPlatform.UniqueIdFile is not "" && (File.Exists(fileToRead) || fileToRead.Contains('*')))
             {
                 if (!string.IsNullOrEmpty(CurrentPlatform.UniqueIdRegex))
                 {
@@ -742,10 +746,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 }
                 else if (CurrentPlatform.UniqueIdMethod is "FILE_MD5") // TODO: TEST THIS! -- This is used for static files that do not change throughout the lifetime of an account login.
                 {
-                    if (fileToRead.Contains('*'))
-                        uniqueId = GeneralFuncs.GetFileMd5(Directory.GetFiles(Path.GetDirectoryName(fileToRead), Path.GetFileName(fileToRead)).First());
-                    else
-                        uniqueId = GeneralFuncs.GetFileMd5(fileToRead);
+                    uniqueId = GeneralFuncs.GetFileMd5(fileToRead.Contains('*')
+                        ? Directory.GetFiles(Path.GetDirectoryName(fileToRead) ?? string.Empty, Path.GetFileName(fileToRead)).First()
+                        : fileToRead);
                 }
             }
             else if (uniqueId != "")

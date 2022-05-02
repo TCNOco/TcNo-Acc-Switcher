@@ -19,33 +19,33 @@
 @page "/BattleNet/ManageIgnored"
 @using TcNo_Acc_Switcher_Server.Data
 @namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
-@inject NavigationManager _navManager
-@{ AppData.SetActiveNavMan(_navManager); }
-@inject IJSRuntime _jsRuntime
-@{ AppData.SetActiveIJsRuntime(_jsRuntime); }
+@inject NavigationManager NavManager
+@{ AppData.SetActiveNavMan(NavManager); }
+@inject IJSRuntime JsRuntime
+@{ AppData.SetActiveIJsRuntime(JsRuntime); }
 
-@inject Data.Lang _locale;
+@inject Lang Locale;
 
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
             <toastarea class="toastarea" />
             <div class="SettingsHeader">
-                <hr><span>@_locale["Ignored_RemoveAccounts"]</span>
+                <hr><span>@Locale["Ignored_RemoveAccounts"]</span>
                 <hr>
             </div>
             <p>
-                @_locale["Ignored_Description"]
+                @Locale["Ignored_Description"]
             </p>
             <div class="forgottenList">
                 <select name="IgnoredAccounts" size="15" multiple id="IgnoredAccounts">
                 </select>
             </div>
             <div class="forgottenListActions">
-                <button class="btn_RestoreSelected" type="button" onclick="restoreBattleNetAccounts()"><span>@_locale["Ignored_Stop"]</span></button>
+                <button class="btn_RestoreSelected" type="button" onclick="restoreBattleNetAccounts()"><span>@Locale["Ignored_Stop"]</span></button>
             </div>
             <div class="buttoncol col_close">
-                <button class="btn_close" type="button" @onclick='() => _navManager.NavigateTo("/BattleNet/Settings")'><span>@_locale["Button_Close"]</span></button>
+                <button class="btn_close" type="button" @onclick='() => NavManager.NavigateTo("/BattleNet/Settings")'><span>@Locale["Button_Close"]</span></button>
             </div>
         </div>
     </div>

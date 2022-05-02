@@ -44,13 +44,12 @@ namespace TcNo_Acc_Switcher_Globals
 
         public static string GetEnglishError(Exception e)
         {
-            var toReturn = "";
             // Set error to English
             var oldCulture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
-            toReturn = e.ToString();
+            var toReturn = e.ToString();
 
             // Reset language
             Thread.CurrentThread.CurrentCulture = oldCulture;

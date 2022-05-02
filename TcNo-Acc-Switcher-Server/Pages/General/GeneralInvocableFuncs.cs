@@ -225,7 +225,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
                 default:
                     // Is a basic platform!
-                    BasicSwitcherFuncs.ChangeUsername(id, reqName, true);
+                    BasicSwitcherFuncs.ChangeUsername(id, reqName);
                     break;
             }
         }
@@ -255,8 +255,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             switch (page)
             {
                 case "steam":
-                    currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\Steam.svg");
-                    currentPlatformImgPathOverride = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\Steam.png");
+                    currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), "\\img\\platform\\Steam.svg");
+                    currentPlatformImgPathOverride = Path.Join(GeneralFuncs.WwwRoot(), "\\img\\platform\\Steam.png");
                     var ePersonaState = -1;
                     if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
                     platformName = $"Switch to {accName} {(args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "")} [{platform}]";

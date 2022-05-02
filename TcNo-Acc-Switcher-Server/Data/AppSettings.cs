@@ -61,12 +61,12 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                     if (File.Exists(SettingsFile))
                     {
-                        _instance = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(SettingsFile), new JsonSerializerSettings() { });
+                        _instance = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(SettingsFile), new JsonSerializerSettings());
                         if (_instance == null)
                         {
                             _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
                             if (File.Exists(SettingsFile))
-                                Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"), true);
+                                Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"));
                             _instance = new AppSettings { _currentlyModifying = true };
                         }
                         _instance._lastHash = Globals.GetFileMd5(SettingsFile);
@@ -83,7 +83,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                     return _instance;
                 }
             }
-            set => _instance = value;
+            set
+            {
+                lock (LockObj)
+                {
+                    _instance = value;
+                }
+            }
         }
 
         private static readonly Lang Lang = Lang.Instance;
@@ -290,7 +296,9 @@ namespace TcNo_Acc_Switcher_Server.Data
                     var fallbackSheet = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(desc.Deserialize<object>(string.Join(Environment.NewLine, Globals.ReadAllLines(fallback)))));
                     try
                     {
-                        return fallbackSheet[key];
+                        if (fallbackSheet is not null) return fallbackSheet[key];
+                        Globals.WriteToLog("fallback stylesheet was null!");
+                        return "";
                     }
                     catch (Exception exFallback)
                     {
@@ -521,7 +529,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (folderEmpty)
             {
                 _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationCopying"], renderTo: "toastarea");
-                if (!Globals.CopyFilesRecursive(Globals.AppDataFolder, path, true))
+                if (!Globals.CopyFilesRecursive(Globals.AppDataFolder, path))
                     _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
             }
             else
@@ -632,8 +640,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [SupportedOSPlatform("windows")]
         public static string GetAccentColorHexString()
         {
-            byte r, g, b;
-            (r, g, b) = GetAccentColor();
+            var (r, g, b) = GetAccentColor();
             byte[] rgb = { r, g, b };
             return '#' + BitConverter.ToString(rgb).Replace("-", string.Empty);
         }

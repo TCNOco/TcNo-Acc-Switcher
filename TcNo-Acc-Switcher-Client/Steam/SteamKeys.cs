@@ -11,10 +11,12 @@ namespace TcNo_Acc_Switcher_Client.Steam
     internal class SteamKeys
     {
         private HttpClient _client;
+
         /// <summary>
         /// Input a Steam key to activate, as well as cookies for the session.
         /// SteamKeys.ActivateKey(cookie, "XXXXX-XXXXX-XXXXX", out var noMore);
         /// </summary>
+        /// <param name="cookie"></param>
         /// <param name="key">Steam key</param>
         /// <param name="noMore">(out) If true, do not try any more keys.</param>
         /// <returns>(bool) Success</returns>
@@ -24,7 +26,7 @@ namespace TcNo_Acc_Switcher_Client.Steam
             // "browserid=XXX; timezoneOffset=XXXX,0; _ga=GA1.XXXXX; _gid=GA1.XXXXX; steamMachineAuth765XXXXXXX=XXXX; steamRememberLogin=XXXX; steamRememberLogin=XXXX; sessionid=XXXX;"
 
             noMore = false;
-            var keyUrl = "https://store.steampowered.com/account/ajaxregisterkey/";
+            const string keyUrl = "https://store.steampowered.com/account/ajaxregisterkey/";
             var baseAddress = new Uri(keyUrl);
             // Note this doesn't seem like it needs headers to work, so I've just left out "Headers =".
             // The cookies are manually being set below. They can't be set in "Headers ="
@@ -45,9 +47,9 @@ namespace TcNo_Acc_Switcher_Client.Steam
             _client.DefaultRequestHeaders.Add("Cookie", cookie);
             var response = _client.SendAsync(httpRequestMessage).Result;
             var result = response.Content.ReadAsStringAsync().Result;
-            Console.WriteLine("-----");
+            Console.WriteLine(@"-----");
             Console.WriteLine(result);
-            Console.WriteLine("-----");
+            Console.WriteLine(@"-----");
 
             // Decode json result
             var json = JObject.Parse(result);
@@ -111,7 +113,7 @@ namespace TcNo_Acc_Switcher_Client.Steam
                 if (json.ContainsKey("purchase_result_details"))
                 {
                     var reciept = json.Value<JObject>("purchase_receipt_info");
-                    if (reciept == null) return Task.FromResult(success);
+                    if (reciept == null) return Task.FromResult(false);
                     ProcessSteamReciept(json, ref recieptText, ref logText);
                 }
 
@@ -123,7 +125,7 @@ namespace TcNo_Acc_Switcher_Client.Steam
 
             // DO SOMETHING WITH recieptText HERE!
             Console.WriteLine(recieptText);
-            Console.WriteLine("----");
+            Console.WriteLine(@"----");
             Console.WriteLine(logText);
             return Task.FromResult(success);
         }

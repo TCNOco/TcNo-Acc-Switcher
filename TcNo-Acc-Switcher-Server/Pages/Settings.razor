@@ -15,12 +15,12 @@
 @page "/Settings"
 @using TcNo_Acc_Switcher_Server.Data
 @namespace TcNo_Acc_Switcher_Server.Pages
-@inject NavigationManager _navManager
-@inject AppData _appData
-@{ _appData.SetActiveNavMan(_navManager); }
-@inject IJSRuntime _jsRuntime
-@{ _appData.SetActiveIJsRuntime(_jsRuntime); }
-@inject Lang  _locale
+@inject NavigationManager NavManager
+@inject AppData AData
+@{ AData.SetActiveNavMan(NavManager); }
+@inject IJSRuntime JsRuntime
+@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@inject Lang Locale
 
 <div class="container mainblock">
     <div class="row">
@@ -28,7 +28,7 @@
             <div class="toastarea"></div>
             <SharedSettings />
 
-            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@_locale["Button_Close"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
         </div>
     </div>
 </div>
@@ -49,7 +49,7 @@
     {
         AppSettings.SaveSettings();
 
-        _navManager.NavigateTo("/");
+        NavManager.NavigateTo("/");
     }
 
     protected override void OnAfterRender(bool firstRender)

@@ -10,7 +10,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
     public class PathPicker
     {
-        private static Dictionary<string, List<string>> ReturnObject = new Dictionary<string, List<string>>()
+        private static readonly Dictionary<string, List<string>> ReturnObject = new()
         {
             {"Folders", new List<string>()},
             {"Files", new List<string>()}
@@ -22,7 +22,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             var ro = ReturnObject;
             try
             {
-                ro["Folders"] = System.IO.Directory.GetLogicalDrives().ToList();
+                ro["Folders"] = Directory.GetLogicalDrives().ToList();
             }
             catch (Exception e)
             {

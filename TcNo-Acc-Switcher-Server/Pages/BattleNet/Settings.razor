@@ -22,12 +22,12 @@
 @using System.Linq
 @using BattleNet = TcNo_Acc_Switcher_Server.Data.Settings.BattleNet;
 @namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
-@inject NavigationManager _navManager
-@inject AppData _appData
-@{ _appData.SetActiveNavMan(_navManager); }
-@inject IJSRuntime _jsRuntime
-@{ _appData.SetActiveIJsRuntime(_jsRuntime); }
-@inject Lang  _locale
+@inject NavigationManager NavManager
+@inject AppData AData
+@{ AData.SetActiveNavMan(NavManager); }
+@inject IJSRuntime JsRuntime
+@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@inject Lang Locale
 
 @code
 {
@@ -41,23 +41,23 @@
             <SharedSettings />
 
             <div class="SettingsHeader">
-                <hr><span>@_locale["Settings_Header_GeneralSettings"]</span>
+                <hr><span>@Locale["Settings_Header_GeneralSettings"]</span>
                 <hr>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="BattleNet.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("BattleNet", BattleNet.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">@_locale["Settings_Shortcut", new { platform = Platform }]</label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="BattleNet.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("BattleNet", BattleNet.DesktopShortcut)'><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">@Locale["Settings_Shortcut", new { platform = Platform }]</label>
             </div>
             <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="Admin" @bind="BattleNet.Admin"><label class="form-check-label" for="Admin"></label></div><label for="Admin">
-		            @_locale["Settings_Admin", new { platform = Platform }]<br></label>
+		            @Locale["Settings_Admin", new { platform = Platform }]<br></label>
             </div>
             <div>
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="AutoStart" @bind="BattleNet.AutoStart"><label class="form-check-label" for="AutoStart"></label></div><label for="AutoStart">
-                    @_locale["Settings_AutoStart", new { platform = "BattleNet" }]<br></label>
+                    @Locale["Settings_AutoStart", new { platform = "BattleNet" }]<br></label>
             </div>
             <div class="rowSetting rowDropdown">
-                <span>@_locale["Settings_Header_ClosingMethod", new { platform = "BattleNet" }]</span>
-                <div class="dropdown" data-toggle="tooltip" title="@(_locale["Tooltip_ClosingMethod"])" data-placement="right">
+                <span>@Locale["Settings_Header_ClosingMethod", new { platform = "BattleNet" }]</span>
+                <div class="dropdown" data-toggle="tooltip" title="@(Locale["Tooltip_ClosingMethod"])" data-placement="right">
                     <ul class="custom-dropdown-menu dropdown-menu">
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => BattleNet.SetClosingMethod("Combined")'>Combined (Best)</li>
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => BattleNet.SetClosingMethod("Close")'>Close</li>
@@ -70,8 +70,8 @@
                 </div>
             </div>
             <div class="rowSetting rowDropdown">
-                <span>@_locale["Settings_Header_StartingMethod", new { platform = "BattleNet" }]</span>
-                <div class="dropdown" data-toggle="tooltip" title="@(_locale["Tooltip_StartingMethod"])" data-placement="right">
+                <span>@Locale["Settings_Header_StartingMethod", new { platform = "BattleNet" }]</span>
+                <div class="dropdown" data-toggle="tooltip" title="@(Locale["Tooltip_StartingMethod"])" data-placement="right">
                     <ul class="custom-dropdown-menu dropdown-menu">
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => BattleNet.SetStartingMethod("Default")'>Default (Best)</li>
                         <li class="custom-dropdown-item dropdown-item" @onclick='() => BattleNet.SetStartingMethod("Direct")'>Direct</li>
@@ -83,46 +83,46 @@
                 </div>
             </div>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="OverwatchMode" @bind="BattleNet.OverwatchMode" @onclick="OverwatchToggle"><label class="form-check-label" for="OverwatchMode"></label></div><label for="OverwatchMode">@_locale["BattleNet_ShowSR"]<br></label>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="OverwatchMode" @bind="BattleNet.OverwatchMode" @onclick="OverwatchToggle"><label class="form-check-label" for="OverwatchMode"></label></div><label for="OverwatchMode">@Locale["BattleNet_ShowSR"]<br></label>
             </div>
-            <div class="form-text"><span>@_locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="BattleNet.ImageExpiryTime"></div>
+            <div class="form-text"><span>@Locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="BattleNet.ImageExpiryTime"></div>
 
             <div class="SettingsHeader">
-                <hr><span>@_locale["Settings_Header_TraySettings"]</span>
+                <hr><span>@Locale["Settings_Header_TraySettings"]</span>
                 <hr>
             </div>
             <div class="form-text">
-                <span>@_locale["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="BattleNet.TrayAccNumber">
+                <span>@Locale["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="BattleNet.TrayAccNumber">
             </div>
             <div class="SettingsHeader">
-                <hr><span>@_locale["Settings_Header_GeneralTools"]</span>
+                <hr><span>@Locale["Settings_Header_GeneralTools"]</span>
                 <hr>
             </div>
-            <p>@_locale["Settings_CurrentLocation", new { path = BattleNet.FolderPath }]</p>
+            <p>@Locale["Settings_CurrentLocation", new { path = BattleNet.FolderPath }]</p>
             <div class="buttoncol">
                 <button id="PickFolder" type="button" @onclick="PickFolder">
-                    <span>@_locale["Settings_PickFolder", new { platform = Platform }]</span>
+                    <span>@Locale["Settings_PickFolder", new { platform = Platform }]</span>
                 </button>
                 <button id="ResetSettings" type="button" @onclick="ClearSettings">
-                    <span>@_locale["Button_ResetSettings"]</span>
+                    <span>@Locale["Button_ResetSettings"]</span>
                 </button>
             </div>
             <div class="buttoncol">
                 <button id="OpenFolder" type="button" @onclick="() => Data.Settings.Basic.OpenFolder(BattleNet.FolderPath)">
-                    <span>@_locale["Settings_OpenFolder", new { platform = Platform }]</span>
+                    <span>@Locale["Settings_OpenFolder", new { platform = Platform }]</span>
                 </button>
                 <button id="ClearForgotten" type="button" @onclick="ClearForgotten">
-                    <span>@_locale["Settings_ClearForgotten"]</span>
+                    <span>@Locale["Settings_ClearForgotten"]</span>
                 </button>
             </div>
             <div class="buttoncol">
                 <button id="ClearAccounts" type="button" @onclick="ClearAccounts">
-                    <span>@_locale["Settings_ClearAccounts"]</span>
+                    <span>@Locale["Settings_ClearAccounts"]</span>
                 </button>
             </div>
             <div class="buttoncol col_close">
                 <button class="btn_close" type="button" @onclick="SaveAndClose">
-                    <span>@_locale["Button_Close"]</span>
+                    <span>@Locale["Button_Close"]</span>
                 </button>
             </div>
         </div>
@@ -151,6 +151,6 @@
         AppSettings.SaveSettings();
         BattleNet.SaveSettings();
 
-        _navManager.NavigateTo("/BattleNet");
+        NavManager.NavigateTo("/BattleNet");
     }
 }

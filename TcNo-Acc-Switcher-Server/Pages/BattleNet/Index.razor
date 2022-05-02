@@ -22,15 +22,15 @@
 @using BattleNet = TcNo_Acc_Switcher_Server.Data.Settings.BattleNet;
 @using Basic = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
 @using System.IO
-@inject AppData _appData
-@inject IJSRuntime _jsRuntime
-@{ _appData.SetActiveIJsRuntime(_jsRuntime); }
-@inject NavigationManager _navManager
-@{ _appData.SetActiveNavMan(_navManager); }
+@inject AppData AData
+@inject IJSRuntime JsRuntime
+@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@inject NavigationManager NavManager
+@{ AData.SetActiveNavMan(NavManager); }
 
 <style>@(AppSettings.GetCssBlock())</style>
 
-@inject Lang  _locale
+@inject Lang Locale
 
 <ContextMenu ContextMenuString="@BattleNet.ContextMenuJson" ContextMenuId="AccOrPlatList" />
 <ContextMenu ContextMenuString="@Basic.ContextMenuShortcutJson" ContextMenuId="Shortcuts" />
@@ -45,45 +45,45 @@
     {
         @if (i >= 0)
         {
-            <button class="HasContextMenu" id="@(shortcut)" @onclick='() => Basic.RunShortcut(shortcut, "LoginCache\\BattleNet\\Shortcuts")' data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
+            <button class="HasContextMenu" id="@(shortcut)" @onclick='() => Basic.RunShortcut(shortcut, "LoginCache\\BattleNet\\Shortcuts", platform: "BattleNet")' data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
                 <img src="@(BattleNet.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
             </button>
         }
     }
-    <button id="btnOpenShortcutFolder" @onclick="() => Data.Settings.Basic.OpenFolder(Path.GetFullPath(BattleNet.ShortcutFolder))" data-toggle="tooltip" title="@(_locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
+    <button id="btnOpenShortcutFolder" @onclick="() => Basic.OpenFolder(Path.GetFullPath(BattleNet.ShortcutFolder))" data-toggle="tooltip" title="@(Locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
 </div>
 
 <div class="acc_list_actionbar">
-    <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@_appData.CurrentStatus" spellcheck="false" disabled></div>
+    <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@AData.CurrentStatus" spellcheck="false" disabled></div>
     <div>
         <div class="shortcuts">
             @foreach (var (i, shortcut) in BattleNet.Shortcuts)
             {
                 @if (i < 0)
                 {
-                    <button class="HasContextMenu" id="@(shortcut)" @onclick='() => Basic.RunShortcut(shortcut, "LoginCache\\BattleNet\\Shortcuts")' data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
+                    <button class="HasContextMenu" id="@(shortcut)" @onclick='() => Basic.RunShortcut(shortcut, "LoginCache\\BattleNet\\Shortcuts", platform: "BattleNet")' data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
                         <img src="@(BattleNet.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
                     </button>
                 }
             }
         </div>
-        <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(_locale["Tooltip_ExpandShortcuts"])" data-placement="right"><i class="fas fa-chevron-up"></i></button>
+        <button id="shortcutDropdownBtn" onclick="shortcutDropdownBtnClick()" data-toggle="tooltip" title="@(Locale["Tooltip_ExpandShortcuts"])" data-placement="right"><i class="fas fa-chevron-up"></i></button>
 
 
         <button id="btnAddNew" onclick="newLogin()">
             <i class="fas fa-plus footerIcoInline"></i>
-			<span>@_locale["Button_AddNew"]</span>
+			<span>@Locale["Button_AddNew"]</span>
 		</button>
         <button class="btn_login" id="btnLogin" onclick="swapTo(-1, event)">
-            <span>@_locale["Button_Login"]</span>
+            <span>@Locale["Button_Login"]</span>
             <i class="fas fa-caret-right footerIcoInline"></i>
         </button>
 
-        <button id="btnSettings" onclick="location = 'BattleNet/Settings'" data-toggle="tooltip" title="@(_locale["Tooltip_Settings"])">
+        <button id="btnSettings" onclick="location = 'BattleNet/Settings'" data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
 
-        <button id="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="@(_locale["Tooltip_Info"])">
+        <button id="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="@(Locale["Tooltip_Info"])">
             <i class="fas fa-question footerIcoQuestion"></i>
         </button>
     </div>

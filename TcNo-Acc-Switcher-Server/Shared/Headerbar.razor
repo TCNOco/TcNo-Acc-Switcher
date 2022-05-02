@@ -12,14 +12,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
-@inject IJSRuntime _jsRuntime
+@inject IJSRuntime JsRuntime
 
 @using TcNo_Acc_Switcher_Server.Data
 @using System.Runtime.InteropServices
 @using TcNo_Acc_Switcher_Globals
 
 @using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor _httpContextAccessor
+@inject IHttpContextAccessor HttpContextAccessor
 
 <div id="window-title">
     <div class="resizeTop"></div>
@@ -33,7 +33,7 @@
         <use href="img/TcNo_Logo_Flat.svg#logo"></use>
     </svg>
     <span>@AppData.Instance.WindowTitle</span>
-    @if (_httpContextAccessor.HttpContext?.Request.Headers["User-Agent"][0].Contains("TcNo") == true)
+    @if (HttpContextAccessor.HttpContext?.Request.Headers["User-Agent"][0].Contains("TcNo") == true)
     {
         <div id="window-controls">
             <button id="btnMin">
@@ -75,7 +75,7 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-            await _jsRuntime.InvokeVoidAsync("handleWindowControls");
+            await JsRuntime.InvokeVoidAsync("handleWindowControls");
     }
 
     // For draggable regions:

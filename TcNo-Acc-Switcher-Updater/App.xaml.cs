@@ -119,10 +119,9 @@ namespace TcNo_Acc_Switcher_Updater
         public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             // Set working directory to parent
-            if (File.Exists(Path.Join(AppDataFolder, "userdata_path.txt")))
-                Directory.SetCurrentDirectory(UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim());
-            else
-                Directory.SetCurrentDirectory(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\"));
+            Directory.SetCurrentDirectory(File.Exists(Path.Join(AppDataFolder, "userdata_path.txt"))
+                ? UGlobals.ReadAllLines(Path.Join(AppDataFolder, "userdata_path.txt"))[0].Trim()
+                : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TcNo Account Switcher\\"));
 
             // Log Unhandled Exception
             var exceptionStr = e.ExceptionObject.ToString();

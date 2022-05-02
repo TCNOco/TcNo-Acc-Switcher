@@ -491,10 +491,10 @@ namespace TcNo_Acc_Switcher_Updater
             {
                 using var vcKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\DevDiv\\VC\\Servicing\\14.0\\RuntimeMinimum");
                 if (vcKey == null) return false;
-                var version = vcKey.GetValue("Version")?.ToString() ?? null;
+                var version = vcKey.GetValue("Version")?.ToString();
                 return !string.IsNullOrEmpty(version) && compare_versions(MinimumVc, version, ".");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -605,12 +605,18 @@ namespace TcNo_Acc_Switcher_Updater
                 _ = Directory.CreateDirectory(outputFolder);
                 if (!outputFolder.EndsWith("\\")) outputFolder += "\\";
                 //Now Create all of the directories
+                if (inputFolder == null)
+                {
+                    WriteLine("Failed to copy files. Input folder was null.");
+                    return true;
+                }
                 foreach (var dirPath in Directory.GetDirectories(inputFolder, "*", SearchOption.AllDirectories))
                     _ = Directory.CreateDirectory(dirPath.Replace(inputFolder, outputFolder));
 
                 //Copy all the files & Replaces any files with the same name
                 foreach (var newPath in Directory.GetFiles(inputFolder, "*.*", SearchOption.AllDirectories))
                     File.Copy(newPath, newPath.Replace(inputFolder, outputFolder), true);
+
                 return true;
             }
             catch (Exception ex)
@@ -620,8 +626,6 @@ namespace TcNo_Acc_Switcher_Updater
                 WriteLine(ex.ToString());
                 return false;
             }
-
-            return false;
         }
 
         /// <summary>
@@ -901,7 +905,6 @@ namespace TcNo_Acc_Switcher_Updater
 
                 SetStatus("Press button below!");
                 CreateVerifyAndExitButton();
-                return;
             }
 
 
@@ -1418,7 +1421,7 @@ namespace TcNo_Acc_Switcher_Updater
         {
             window.Close();
         }
-        public static void DragWindow(object _, MouseButtonEventArgs e, Window window)
+        public static void DragWindow(object o, MouseButtonEventArgs e, Window window)
         {
             if (e.LeftButton != MouseButtonState.Pressed) return;
             if (e.ClickCount == 2)
@@ -1437,7 +1440,7 @@ namespace TcNo_Acc_Switcher_Updater
 
                     window.WindowState = WindowState.Normal;
 
-                    _ = GetCursorPos(out var lMousePosition);
+                    GetCursorPos(out var lMousePosition);
 
                     window.Left = lMousePosition.X - targetHorizontal;
                     window.Top = lMousePosition.Y - targetVertical;

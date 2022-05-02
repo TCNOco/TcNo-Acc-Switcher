@@ -23,9 +23,7 @@
 #define CRT_SECURE_NO_WARNINGS
 #include <algorithm>
 #include <chrono>
-#include <fstream>
 #include <iostream>
-#include <vector>
 #include <Windows.h>
 #include <conio.h>
 
@@ -42,34 +40,29 @@
 #include "versions.h"
 using namespace std;
 
-bool min_vc_met = false,
+inline bool min_vc_met = false,
 	min_webview_met = false,
 	min_desktop_runtime_met = false,
 	min_aspcore_met = false;
 
-constexpr bool test_mode = false;
-constexpr bool test_downloads = false;
-constexpr bool test_installs = false;
-
-
 #pragma region Misc Functions
-void insert_empty_line()
+inline void insert_empty_line()
 {
 	CONSOLE_SCREEN_BUFFER_INFO buffer_info;
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &buffer_info);
 
-	std::string s(static_cast<double>(buffer_info.srWindow.Right) - static_cast<double>(buffer_info.srWindow.Left), ' ');
+	const std::string s(static_cast<double>(buffer_info.srWindow.Right) - static_cast<double>(buffer_info.srWindow.Left), ' ');
 	std::cout << s << '\r';
 }
 
-double round_off(const double n) {
+inline double round_off(const double n) {
 	double d = n * 100.0;
 	const int i = static_cast<int>((double)0.5 + d);
 	d = static_cast<double>(i) / 100.0;
 	return d;
 }
 
-void wait_for_input()
+inline void wait_for_input()
 {
 	_getch();
 }
@@ -78,26 +71,15 @@ void wait_for_input()
 
 
 #pragma region File Operations
-string current_download;
-chrono::time_point<chrono::system_clock> last_time = std::chrono::system_clock::now();
+inline string current_download;
+inline chrono::time_point<chrono::system_clock> last_time = std::chrono::system_clock::now();
 
-size_t write_data(void* ptr, const size_t size, size_t n_mem_b, FILE* stream) {
+inline size_t write_data(const void* ptr, const size_t size, const size_t n_mem_b, FILE* stream) {
 	const size_t written = fwrite(ptr, size, n_mem_b, stream);
 	return written;
 }
 
-wstring s2_ws(const string& s)
-{
-	const int s_length = static_cast<int>(s.length()) + 1;
-	const int len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), s_length, nullptr, 0);
-	const auto buf = new wchar_t[len];
-	MultiByteToWideChar(CP_ACP, 0, s.c_str(), s_length, buf, len);
-	wstring r(buf);
-	delete[] buf;
-	return r;
-}
-
-string convert_size(size_t size) {
+inline string convert_size(size_t size) {
 	static const char* sizes[] = { "B", "KB", "MB", "GB" };
 	int div = 0;
 	size_t rem = 0;
@@ -113,7 +95,7 @@ string convert_size(size_t size) {
 	return result;
 }
 
-int progress_bar(
+inline int progress_bar(
 	void* client_progress_data,
 	const double dl_total,
 	const double dl_now,
@@ -132,7 +114,7 @@ int progress_bar(
 	return 0;
 }
 
-bool download_file(const char* url, const char* dest) {
+inline bool download_file(const char* url, const char* dest) {
 	if (CURL* curl = curl_easy_init(); curl) {
 		FILE* fp;
 		fopen_s(&fp, dest, "wb");
@@ -159,7 +141,7 @@ bool download_file(const char* url, const char* dest) {
 }
 
 inline bool file_exists(const std::string& name) {
-	struct stat buffer;
+	struct stat buffer{};
 	return stat(name.c_str(), &buffer) == 0;
 }
 #pragma endregion
@@ -170,7 +152,7 @@ inline bool file_exists(const std::string& name) {
 /// <summary>
 /// Installs specified runtime.
 /// </summary>
-void install_runtime(const string& path, const string& name, const bool& passive)
+inline void install_runtime(const string& path, const string& name, const bool& passive)
 {
 	cout << "Installing: " << name << endl;
 	STARTUPINFO si = { sizeof(STARTUPINFO) };
@@ -184,12 +166,12 @@ void install_runtime(const string& path, const string& name, const bool& passive
 	WaitForSingleObject(pi.hProcess, INFINITE);
 }
 
-void download_install_missing_runtimes()
+inline void download_install_missing_runtimes()
 {
-	const string operating_path = getOperatingPath();
+	const string operating_path = get_operating_path();
 
 	/* Warn about runtime downloads */
-	if (!min_webview_met || !min_aspcore_met || !min_desktop_runtime_met || !min_vc_met || test_mode)
+	if (!min_webview_met || !min_aspcore_met || !min_desktop_runtime_met || !min_vc_met)
 	{
 		cout << "One or more runtimes were not installed:" << endl;
 		int total = 0;
@@ -227,14 +209,14 @@ void download_install_missing_runtimes()
 			a_runtime_local = runtime_folder + a_exe,
 			c_runtime_local = runtime_folder + c_exe;
 
-		if (!(CreateDirectoryA(runtime_folder.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError()))
+		if (!(CreateDirectoryA(runtime_folder.c_str(), nullptr) || ERROR_ALREADY_EXISTS == GetLastError()))
 		{
 			cout << "Failed to create folder: " << runtime_folder << endl;
 			system("pause");
 			return;
 		}
 
-		if (!min_webview_met || test_downloads)
+		if (!min_webview_met)
 		{
 			current_download = w_runtime_name;
 			if (!download_file(w_runtime.c_str(), w_runtime_local.c_str()))
@@ -246,7 +228,7 @@ void download_install_missing_runtimes()
 			else w_runtime_install = true;
 		}
 
-		if (!min_desktop_runtime_met || test_downloads)
+		if (!min_desktop_runtime_met)
 		{
 			current_download = d_runtime_name;
 			if (!download_file(d_runtime.c_str(), d_runtime_local.c_str()))
@@ -257,7 +239,7 @@ void download_install_missing_runtimes()
 			else d_runtime_install = true;
 		}
 
-		if (!min_aspcore_met || test_downloads)
+		if (!min_aspcore_met)
 		{
 			current_download = a_runtime_name;
 			if (!download_file(a_runtime.c_str(), a_runtime_local.c_str()))
@@ -269,7 +251,7 @@ void download_install_missing_runtimes()
 			else a_runtime_install = true;
 		}
 
-		if (!min_vc_met || test_downloads)
+		if (!min_vc_met)
 		{
 			current_download = c_runtime_name;
 			if (!download_file(c_runtime.c_str(), c_runtime_local.c_str()))
@@ -283,23 +265,23 @@ void download_install_missing_runtimes()
 
 		cout << endl;
 
-		if (w_runtime_install || d_runtime_install || a_runtime_install || c_runtime_install || test_installs)
+		if (w_runtime_install || d_runtime_install || a_runtime_install || c_runtime_install)
 		{
 			cout << "------------------------------------------------------------------------" << endl << endl <<
 				"One or more are ready for install. If and when prompted if you would like to install, click 'Yes'." << endl << endl <<
 				"Press any key to start install..." << endl;
 			wait_for_input();
 
-			if (w_runtime_install || test_installs)
+			if (w_runtime_install)
 				install_runtime(w_runtime_local, w_runtime_name, false); // Does not support "/passive"
 
-			if (d_runtime_install || test_installs)
+			if (d_runtime_install)
 				install_runtime(d_runtime_local, d_runtime_name, true);
 
-			if (a_runtime_install || test_installs)
+			if (a_runtime_install)
 				install_runtime(a_runtime_local, a_runtime_name, true);
 
-			if (c_runtime_install || test_installs)
+			if (c_runtime_install)
 				install_runtime(c_runtime_local, c_runtime_name, true);
 		}
 
@@ -329,17 +311,17 @@ void download_install_missing_runtimes()
 /// <summary>
 /// Downloads and installs latest C++ runtime, if not installed already
 /// </summary>
-void verify_vc()
+inline void verify_vc()
 {
 	cout << "Downloading C++ Redistributable 2015-2022" << endl;
 	current_download = "Downloading C++ Redistributable 2015-2022";
 
 	bool c_runtime_install = false;
-	const string runtime_folder = getOperatingPath() + "runtime_installers\\";
+	const string runtime_folder = get_operating_path() + "runtime_installers\\";
 	const string c_runtime_local = runtime_folder + "VC_redist.x64.exe",
 		c_runtime_name = "Downloading C++ Redistributable 2015-2022";
 
-	if (!(CreateDirectoryA(runtime_folder.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError()))
+	if (!(CreateDirectoryA(runtime_folder.c_str(), nullptr) || ERROR_ALREADY_EXISTS == GetLastError()))
 	{
 		cout << "Failed to create folder: " << runtime_folder << endl;
 		system("pause");
@@ -361,7 +343,7 @@ void verify_vc()
 /// <summary>
 /// Downloads and installs latest .NEt runtime, if not installed already
 /// </summary>
-void verify_net()
+inline void verify_net()
 {
 	cout << "Checking computer for .NET Runtimes. Currently installed:" << endl;
 	find_installed_net_runtimes(false, min_webview_met, min_desktop_runtime_met, min_aspcore_met);

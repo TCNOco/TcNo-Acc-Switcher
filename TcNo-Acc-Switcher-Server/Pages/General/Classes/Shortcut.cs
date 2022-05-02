@@ -181,7 +181,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             {
                 Globals.WriteToLog($"Failed to CreateIcon! '{bgImg}', '{fgImg}, '{iconName}'", e);
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedCreateIcon"]);
-                return;
             }
         }
         #endregion
@@ -227,12 +226,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         {
             Globals.DebugWriteLine(@$"[Func:Data\Settings\Shared.DesktopShortcut_Toggle] platform={platform}");
             var s = new Shortcut();
-            if (BasicPlatforms.PlatformExists(platform))
-            {
-                _ = s.Shortcut_Platform(Desktop, platform, BasicPlatforms.PrimaryIdFromPlatform(platform).ToLowerInvariant());
-            }
-            else
-                _ = s.Shortcut_Platform(Desktop, platform, platform.ToLowerInvariant());
+            _ = s.Shortcut_Platform(Desktop, platform,
+                BasicPlatforms.PlatformExists(platform)
+                    ? BasicPlatforms.PrimaryIdFromPlatform(platform).ToLowerInvariant()
+                    : platform.ToLowerInvariant());
             s.ToggleShortcut(!desktopShortcut);
         }
         #endregion

@@ -344,7 +344,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 {
                     try
                     {
-                        imageUrl = profileXml.DocumentElement.SelectNodes("/profile/avatarFull")[0].InnerText;
+                        imageUrl = profileXml.DocumentElement.SelectNodes("/profile/avatarFull")?[0]?.InnerText;
                         XmlGetVacLimitedStatus(ref vs, profileXml);
                     }
                     catch (NullReferenceException) // User has not set up their account, or does not have an image.
@@ -373,9 +373,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             try
             {
                 if (profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0] != null)
-                    vs.Vac = profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0].InnerText == "1";
+                    vs.Vac = profileXml.DocumentElement.SelectNodes("/profile/vacBanned")?[0]?.InnerText == "1";
                 if (profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0] != null)
-                    vs.Ltd = profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0].InnerText == "1";
+                    vs.Ltd = profileXml.DocumentElement.SelectNodes("/profile/isLimitedAccount")?[0]?.InnerText == "1";
             }
             catch (NullReferenceException)
             {
@@ -387,7 +387,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// Restart Steam with a new account selected. Leave args empty to log into a new account.
         /// </summary>
         /// <param name="steamId">(Optional) User's SteamID</param>
-        /// <param name="autoStartSteam">(Optional) Whether Steam should start after switching [Default: true]</param>
         /// <param name="ePersonaState">(Optional) Persona state for user [0: Offline, 1: Online...]</param>
         /// <param name="args">Starting arguments</param>
         public static void SwapSteamAccounts(string steamId = "", int ePersonaState = -1, string args = "")
@@ -409,17 +408,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
                 }
                 return;
-            };
+            }
 
             if (OperatingSystem.IsWindows()) UpdateLoginUsers(steamId, ePersonaState);
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_StartingPlatform", new { platform = "Steam" }]);
             if (SteamSettings.AutoStart)
             {
-                if (Globals.StartProgram(SteamSettings.Exe(), SteamSettings.Admin, args, SteamSettings.StartingMethod))
-                    _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = "Steam" }], renderTo: "toastarea");
-                else
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = "Steam" }], renderTo: "toastarea");
+                _ = Globals.StartProgram(SteamSettings.Exe(), SteamSettings.Admin, args, SteamSettings.StartingMethod)
+                    ? GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new {platform = "Steam"}], renderTo: "toastarea")
+                    : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new {platform = "Steam"}], renderTo: "toastarea");
             }
 
             NativeFuncs.RefreshTrayArea();

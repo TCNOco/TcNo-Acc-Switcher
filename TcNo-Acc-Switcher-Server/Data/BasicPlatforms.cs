@@ -28,7 +28,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                     return _instance;
                 }
             }
-            set => _instance = value;
+            set
+            {
+                lock (LockObj)
+                {
+                    _instance = value;
+                }
+            }
         }
         // ---------------
 
@@ -91,11 +97,13 @@ namespace TcNo_Acc_Switcher_Server.Data
             foreach (var jToken in GetPlatforms)
             {
                 var x = (JProperty)jToken;
-                var identifiers = GetPlatforms[x.Name]["Identifiers"].ToObject<List<string>>();
+                var identifiers = GetPlatforms[x.Name]?["Identifiers"]?.ToObject<List<string>>();
+                if (identifiers == null) continue;
                 foreach (var platformShort in identifiers)
                 {
                     PlatformDictAllPossible.Add(platformShort, x.Name);
                 }
+
                 PlatformDict.Add(identifiers[0], x.Name);
             }
         }
@@ -109,7 +117,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static string PlatformSafeName(string id) =>
             PlatformDict.ContainsKey(id) ? Globals.GetCleanFilePath(PlatformDict[id]) : id;
         public static string PrimaryIdFromPlatform(string platform) => PlatformDictAllPossible.FirstOrDefault(x => x.Value == platform).Key;
-        public static string GetExeNameFromPlatform(string platform) => Path.GetFileName((string)((JObject)GetPlatforms[platform])["ExeLocationDefault"]);
+        public static string GetExeNameFromPlatform(string platform) => Path.GetFileName((string)((JObject)GetPlatforms[platform])?["ExeLocationDefault"]);
         public static List<string> GetAllPrimaryIds() => PlatformDict.Keys.ToList();
     }
 
@@ -128,7 +136,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                     return _instance;
                 }
             }
-            set => _instance = value;
+            set
+            {
+                lock (LockObj)
+                {
+                    _instance = value;
+                }
+            }
         }
         // ---------------
         #region Backing Fields
@@ -237,7 +251,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             ExesToEnd = jPlatform["ExesToEnd"]!.Values<string>().ToList();
 
             LoginFiles.Clear();
-            foreach (var (k,v) in jPlatform["LoginFiles"].ToObject<Dictionary<string, string>>())
+            foreach (var (k,v) in jPlatform["LoginFiles"]?.ToObject<Dictionary<string, string>>()!)
             {
                 LoginFiles.Add(BasicSwitcherFuncs.ExpandEnvironmentVariables(k), v);
                 if (k.Contains("REG:")) HasRegistryFiles = true;
@@ -412,6 +426,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 }
             }
 
+            AppStats.SetGameShortcutCount(SafeName, Basic.Shortcuts);
             Basic.SaveSettings();
 
             IsInit = true;

@@ -49,12 +49,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
                     if (File.Exists(CurrentPlatform.SettingsFile))
                     {
-                        _instance = JsonConvert.DeserializeObject<Basic>(File.ReadAllText(CurrentPlatform.SettingsFile), new JsonSerializerSettings() { });
+                        _instance = JsonConvert.DeserializeObject<Basic>(File.ReadAllText(CurrentPlatform.SettingsFile), new JsonSerializerSettings());
                         if (_instance == null)
                         {
                             _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadSettings"]);
                             if (File.Exists(CurrentPlatform.SettingsFile))
-                                Globals.CopyFile(CurrentPlatform.SettingsFile, CurrentPlatform.SettingsFile.Replace(".json", ".old.json"), true);
+                                Globals.CopyFile(CurrentPlatform.SettingsFile, CurrentPlatform.SettingsFile.Replace(".json", ".old.json"));
                             _instance = new Basic { _currentlyModifying = true };
                         }
                         _instance._lastHash = Globals.GetFileMd5(CurrentPlatform.SettingsFile);
@@ -75,7 +75,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     return _instance;
                 }
             }
-            set => _instance = value;
+            set
+            {
+                lock (LockObj)
+                {
+                    _instance = value;
+                }
+            }
         }
         private string _lastHash = "";
         private bool _currentlyModifying = false;
@@ -205,27 +211,27 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         public static void RunPlatform(string exePath, bool admin, string args, string platName, string startingMethod = "Default")
         {
-            if (Globals.StartProgram(exePath, admin, args, startingMethod))
-                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = platName }], renderTo: "toastarea");
-            else
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = platName }], renderTo: "toastarea");
+            _ = Globals.StartProgram(exePath, admin, args, startingMethod)
+                ? GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new {platform = platName}], renderTo: "toastarea")
+                : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new {platform = platName}], renderTo: "toastarea");
         }
 
 
         public static void RunPlatform(bool admin)
         {
-            if (Globals.StartProgram(Exe(), admin, CurrentPlatform.ExeExtraArgs, CurrentPlatform.StartingMethod))
-                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
-            else
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
+            _ = Globals.StartProgram(Exe(), admin, CurrentPlatform.ExeExtraArgs, CurrentPlatform.StartingMethod)
+                ? GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new {platform = CurrentPlatform.SafeName}], renderTo: "toastarea")
+                : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new {platform = CurrentPlatform.SafeName}], renderTo: "toastarea");
         }
         public static void RunPlatform()
         {
             Globals.StartProgram(Exe(), Admin, CurrentPlatform.ExeExtraArgs, CurrentPlatform.StartingMethod);
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
         }
-        public static void RunShortcut(string s, string shortcutFolder = "", bool admin = false)
+        public static void RunShortcut(string s, string shortcutFolder = "", bool admin = false, string platform = "")
         {
+            AppStats.IncrementGameLaunches(platform);
+
             if (shortcutFolder == "")
                 shortcutFolder = CurrentPlatform.ShortcutFolder;
             var proc = new Process();

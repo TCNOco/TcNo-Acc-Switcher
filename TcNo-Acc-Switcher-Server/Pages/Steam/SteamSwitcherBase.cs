@@ -38,16 +38,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             switch (request)
             {
                 case "SteamId":
-                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id);
+                    GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id);
                     break;
                 case "SteamId3":
-                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id3);
+                    GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id3);
                     break;
                 case "SteamId32":
-                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id32);
+                    GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id32);
                     break;
                 case "SteamId64":
-                    Data.GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id64);
+                    GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id64);
                     break;
             }
         }

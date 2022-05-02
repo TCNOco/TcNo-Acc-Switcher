@@ -57,12 +57,12 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                     if (File.Exists(SettingsFile))
                     {
-                        _instance = JsonConvert.DeserializeObject<AppStats>(File.ReadAllText(SettingsFile), new JsonSerializerSettings() { });
+                        _instance = JsonConvert.DeserializeObject<AppStats>(File.ReadAllText(SettingsFile), new JsonSerializerSettings());
                         if (_instance == null)
                         {
                             _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadStats"]);
                             if (File.Exists(SettingsFile))
-                                Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"), true);
+                                Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"));
                             _instance = new AppStats { _currentlyModifying = true };
                         }
                         _instance._lastHash = Globals.GetFileMd5(SettingsFile);
@@ -88,33 +88,48 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private static readonly Lang Lang = Lang.Instance;
         private string _lastHash = "";
-        private bool _currentlyModifying = false;
+        private bool _currentlyModifying;
         public static readonly string SettingsFile = "Statistics.json";
-        public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
+
+        public static void SaveSettings()
+        {
+            GenerateTotals();
+            GeneralFuncs.SaveSettings(SettingsFile, Instance);
+        }
+
 
         #region System stats
-        [JsonProperty("OperatingSystem")] private string _operatingSystem = Environment.OSVersion.VersionString;
+
+        private string _operatingSystem;
+        [JsonProperty("OperatingSystem", Order = 0)] private static string OperatingSystem => Instance._operatingSystem ?? (Instance._operatingSystem = Globals.GetOsString());
+
         #endregion
+
 
         #region User stats
 
-        [JsonProperty("LaunchCount")] private int _launchCount = 0;
+        [JsonProperty("LaunchCount", Order = 1)] private int _launchCount;
         public static int LaunchCount { get => Instance._launchCount; set => Instance._launchCount = value; }
 
 
-        [JsonProperty("CrashCount")] private int _crashCount = 0;
+        [JsonProperty("CrashCount", Order = 2)] private int _crashCount;
         public static int CrashCount { get => Instance._crashCount; set => Instance._crashCount = value; }
 
-        [JsonProperty("FirstLaunch")] private DateTime _firstLaunch = DateTime.Now;
+        [JsonProperty("FirstLaunch", Order = 3)] private DateTime _firstLaunch = DateTime.Now;
         public static DateTime FirstLaunch { get => Instance._firstLaunch; set => Instance._firstLaunch = value; }
+
+        [JsonProperty("MostUsedPlatform", Order = 4)] private string _mostUsed = "";
+        public static string MostUsedPlatform { get => Instance._mostUsed; set => Instance._mostUsed = value; }
 
         #endregion
 
+
         #region Page stats
+
         // EXAMPLE:
         // "Steam": {TotalTime: 3600, TotalVisits: 10}
         // "SteamSettings": {TotalTime: 300, TotalVisits: 6}
-        [JsonProperty("PageStats")] private Dictionary<string, PageStat> _pageStats = new();
+        [JsonProperty("PageStats", Order = 5)] private Dictionary<string, PageStat> _pageStats = new() { { "_Total", new PageStat() } };
         public static Dictionary<string, PageStat> PageStats { get => Instance._pageStats; set => Instance._pageStats = value; }
 
         // Total time is incremented on navigating to a new page.
@@ -146,32 +161,116 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!PageStats.ContainsKey(newPage)) PageStats.Add(newPage, new PageStat());
             PageStats[newPage].Visits++;
         }
+
         #endregion
 
+
         #region Switcher stats
+
         // EXAMPLE:
         // "Steam": {Accounts: 0, Switches: 0, Days: 0, LastActive: 2022-05-01}
-        [JsonProperty("SwitcherStats")] private Dictionary<string, SwitcherStat> _switcherStats = new();
+        [JsonProperty("SwitcherStats", Order = 6)] private Dictionary<string, SwitcherStat> _switcherStats = new() { { "_Total", new SwitcherStat() } };
         public static Dictionary<string, SwitcherStat> SwitcherStats { get => Instance._switcherStats; set => Instance._switcherStats = value; }
+
+        private static void AddPlatformIfNotExist(string platform)
+        {
+            if (!SwitcherStats.ContainsKey(platform)) SwitcherStats.Add(platform, new SwitcherStat());
+        }
+
+        private static void IncrementSwitcherLastActive(string platform)
+        {
+            if (!AppSettings.StatsEnabled) return;
+            // Increment unique days if day is not the same (Compares year, month, day - As we're not looking for 24 hours)
+            if (SwitcherStats[platform].LastActive.ToShortDateString() == DateTime.Now.ToShortDateString()) return;
+            SwitcherStats[platform].UniqueDays += 1;
+            SwitcherStats[platform].LastActive = DateTime.Now;
+        }
 
         public static void IncrementSwitches(string platform)
         {
-            if (!SwitcherStats.ContainsKey(platform)) SwitcherStats.Add(platform, new SwitcherStat());
+            if (!AppSettings.StatsEnabled) return;
+            AddPlatformIfNotExist(platform);
             SwitcherStats[platform].Switches++;
 
-            // Increment unique days if day is not the same (Compares year, month, day - As we're not looking for 24 hours)
-            if (SwitcherStats[platform].LastActive.ToShortDateString() != DateTime.Now.ToShortDateString())
-            {
-                SwitcherStats[platform].UniqueDays += 1;
-                SwitcherStats[platform].LastActive = DateTime.Now;
-            }
+            IncrementSwitcherLastActive(platform);
         }
 
         public static void SetAccountCount(string platform, int count)
         {
-            if (!SwitcherStats.ContainsKey(platform)) SwitcherStats.Add(platform, new SwitcherStat());
+            if (!AppSettings.StatsEnabled) return;
+            AddPlatformIfNotExist(platform);
             SwitcherStats[platform].Accounts = count;
         }
+
+        public static void IncrementGameLaunches(string platform)
+        {
+            if (!AppSettings.StatsEnabled) return;
+            AddPlatformIfNotExist(platform);
+            SwitcherStats[platform].GamesLaunched++;
+
+            IncrementSwitcherLastActive(platform);
+        }
+
+        public static void SetGameShortcutCount(string platform, Dictionary<int, string> shortcuts)
+        {
+            if (!AppSettings.StatsEnabled) return;
+            AddPlatformIfNotExist(platform);
+            SwitcherStats[platform].GameShortcuts = shortcuts.Count;
+
+            // Hotbar shortcuts:
+            var tHShortcuts = 0;
+            foreach (var (i, _) in shortcuts)
+            {
+                if (i < 0) tHShortcuts++;
+            }
+            SwitcherStats[platform].GameShortcutsHotbar = tHShortcuts;
+        }
+
+        public static void GenerateTotals()
+        {
+            // Account stat totals
+            var totalAccounts = 0;
+            var totalSwitches = 0;
+            var totalGameShortcuts = 0;
+            var totalGamesLaunched = 0;
+            var mostUsedPlatform = "";
+            var mostUsedCount = 0;
+            foreach (var (k, v) in SwitcherStats)
+            {
+                if (k == "_Total") continue;
+                totalAccounts += v.Accounts;
+                totalSwitches += v.Switches;
+                totalGameShortcuts += v.GameShortcuts;
+                totalGamesLaunched += v.GamesLaunched;
+
+                if (v.Switches <= mostUsedCount) continue;
+                mostUsedCount = v.Switches;
+                mostUsedPlatform = k;
+            }
+
+            var totStat = new SwitcherStat {
+                Accounts = totalAccounts,
+                Switches = totalSwitches,
+                GameShortcuts = totalGameShortcuts,
+                GamesLaunched = totalGamesLaunched
+            };
+            SwitcherStats["_Total"] = totStat;
+
+            // Program totals
+            var totalTime = 0;
+            var totalVisits = 0;
+            foreach (var (k, v) in PageStats)
+            {
+                if (k == "_Total") continue;
+                totalTime += v.TotalTime;
+                totalVisits += v.Visits;
+            }
+
+            var totPageStat = new PageStat { TotalTime = totalTime, Visits = totalVisits };
+            PageStats["_Total"] = totPageStat;
+            MostUsedPlatform = mostUsedPlatform;
+        }
+
         #endregion
 
     }
@@ -194,12 +293,18 @@ namespace TcNo_Acc_Switcher_Server.Data
             Accounts = 0;
             Switches = 0;
             UniqueDays = 1; // First day is init day
+            GameShortcuts = 0;
+            GameShortcutsHotbar = 0;
+            GamesLaunched = 0;
             FirstActive = DateTime.Now;
             LastActive = DateTime.Now;
         }
         public int Accounts { get; set; }
         public int Switches { get; set; }
         public int UniqueDays { get; set; }
+        public int GameShortcuts { get; set; }
+        public int GameShortcutsHotbar { get; set; }
+        public int GamesLaunched { get; set; }
         public DateTime FirstActive { get; set; }
         public DateTime LastActive { get; set; }
     }

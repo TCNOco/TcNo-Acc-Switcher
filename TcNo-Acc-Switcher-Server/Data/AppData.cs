@@ -43,7 +43,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                     return _instance ??= new AppData();
                 }
             }
-            set => _instance = value;
+            set
+            {
+                lock (LockObj)
+                {
+                    _instance = value;
+                }
+            }
         }
 
 

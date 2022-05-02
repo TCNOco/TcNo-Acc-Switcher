@@ -40,6 +40,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// <param name="path">Path of process to start</param>
         /// <param name="elevated">Whether the process should start elevated or not</param>
         /// <param name="args">Arguments to pass into the program</param>
+        /// <param name="startMethod"></param>
         public static bool StartProgram(string path, bool elevated, string args, string startMethod = "Default")
         {
             var retStatus = true;
@@ -219,14 +220,12 @@ namespace TcNo_Acc_Switcher_Globals
                     if (pathOrName == null) continue; // This process was already closed, or is not running.
 
                     // Was not explicitly tagged as a service, but checking anyway is good!
-                    if (OperatingSystem.IsWindows() && IsProcessService(pathOrName, out var sName))
-                    {
-                        if (sName == null) continue;
-                        // Do also try and get the MainModule.Filename (or whatever it is) in the CanKillProcess function, to check if can kill... This seems to be a more reliable way of checking as well? Maybe just for services... use IsProcessService() for that as well?
-                        scList.Add(new ServiceController(sName));
-                        scListProcNames.Add(pathOrName);
-                        toRemove.Add(procName);
-                    }
+                    if (!OperatingSystem.IsWindows() || !IsProcessService(pathOrName, out var sName)) continue;
+                    if (sName == null) continue;
+                    // Do also try and get the MainModule.Filename (or whatever it is) in the CanKillProcess function, to check if can kill... This seems to be a more reliable way of checking as well? Maybe just for services... use IsProcessService() for that as well?
+                    scList?.Add(new ServiceController(sName));
+                    scListProcNames.Add(pathOrName);
+                    toRemove.Add(procName);
                 }
 
                 foreach (var rem in toRemove)
@@ -273,6 +272,7 @@ namespace TcNo_Acc_Switcher_Globals
             /// <param name="fileName">Path to file</param>
             /// <param name="elevated">Whether program should be elevated</param>
             /// <param name="args">Arguments for program</param>
+            /// <param name="startMethod"></param>
             public static void StartProgram(string fileName, bool elevated, string args = "", string startMethod = "Default")
             {
                 ProcessStartInfo prodStartInfo;
@@ -431,7 +431,7 @@ namespace TcNo_Acc_Switcher_Globals
                     }
 
                     // Arguments need a space just before, for some reason.
-                    if (args != null && args.Length > 1 && args[0] != ' ') args = ' ' + args;
+                    if (args is {Length: > 1} && args[0] != ' ') args = ' ' + args;
 
                     // Start the target process with the new token.
                     var si = new NativeMethods.StartupInfo();
@@ -452,6 +452,7 @@ namespace TcNo_Acc_Switcher_Globals
                 return true;
             }
 
+            /* Unused
             public static void BringWindowToForeground(string appName) { Process.GetProcessesByName(appName).FirstOrDefault(); }
             public static void BringWindowToForeground(Process p)
             {
@@ -461,8 +462,8 @@ namespace TcNo_Acc_Switcher_Globals
                 NativeMethods.SetForegroundWindow(h);
             }
 
-            #region Interop
 
+            #region Interop
             public static void SendMessageToProcess(IntPtr hWnd)
             {
                 // I am stuck with this for Discord... https://stackoverflow.com/questions/60893997/how-to-close-discord-programmatically
@@ -472,6 +473,7 @@ namespace TcNo_Acc_Switcher_Globals
 
             }
             #endregion
+            */
         }
         public class ProcessHelper
         {

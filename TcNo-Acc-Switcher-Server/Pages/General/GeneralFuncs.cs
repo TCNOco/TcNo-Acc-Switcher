@@ -208,6 +208,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// Read all ids from requested platform file
         /// </summary>
         /// <param name="dictPath">Full *.json file path (file safe)</param>
+        /// <param name="isBasic"></param>
         public static Dictionary<string, string> ReadDict(string dictPath, bool isBasic = false)
         {
             Globals.DebugWriteLine(@"[Func:General\GeneralSwitcherFuncs.ReadDict]");
@@ -354,8 +355,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             catch (Exception e)
             {
                 if (string.IsNullOrEmpty(jsDest)) return;
-                if (f != null) _ = AppData.InvokeVoidAsync(jsDest, Lang["CouldntDeleteX", new { x = f.FullName }]);
-                else _ = AppData.InvokeVoidAsync(jsDest, Lang["CouldntDeleteUndefined"]);
+                _ = AppData.InvokeVoidAsync(jsDest,
+                    f != null ? Lang["CouldntDeleteX", new {x = f.FullName}] : Lang["CouldntDeleteUndefined"]);
                 _ = AppData.InvokeVoidAsync(jsDest, e.ToString());
                 JsDestNewline(jsDest);
             }
@@ -543,6 +544,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="file">File path to save JSON string to</param>
         /// <param name="joNewSettings">JObject of settings to be saved</param>
         /// <param name="mergeNewIntoOld">True merges old with new settings, false merges new with old</param>
+        /// <param name="replaceAll"></param>
         public static void SaveSettings(string file, JObject joNewSettings, bool mergeNewIntoOld, bool replaceAll = false)
         {
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.SaveSettings] file={file}, joNewSettings=hidden, mergeNewIntoOld={mergeNewIntoOld}");
@@ -636,7 +638,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     if (handledError)
                         File.WriteAllLines(sFilename, fileSettingsText);
                 }
-                catch (Newtonsoft.Json.JsonReaderException e)
+                catch (JsonReaderException e)
                 {
                     if (handledError) // Only try once
                     {

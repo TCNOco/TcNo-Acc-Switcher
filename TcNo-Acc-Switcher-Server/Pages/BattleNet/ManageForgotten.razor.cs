@@ -33,7 +33,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         {
             Globals.DebugWriteLine(@"[Auto:BattleNet\ManageForgotten.razor.cs.OnInitializedAsync]");
             AppData.Instance.WindowTitle = Lang["Title_BNet_ManageIgnored"];
-            _jsModule = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/battlenet/ManageIgnored.js");
+            _jsModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/battlenet/ManageIgnored.js");
             _ = await _jsModule.InvokeAsync<string>("jsLoadIgnored");
         }
 
