@@ -17,6 +17,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         // ID should be used in place of IP in error reports, where available, for anonymous correlation.
         // These are to remain as anonymous as possible. I don't need nor want to collect personal info. Just info to improve the app.
         // Stats are submitted on a background thread once a day on app launch.
+        // Stats are saved on program (server) close. I'm not too sure about on crash.
 
         // --------------------
         // STATS TO COLLECT:
@@ -37,11 +38,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         // - Switches
         // - Unique days platform switcher used (For switches/day stats, for each platform)
         // - First and Last active days
-
-        // DESIGN:
-        // Array [] = [
-        //      "Steam": {},
-        // ]
 
         private static AppStats _instance = new();
 
@@ -81,7 +77,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                     return _instance;
                 }
             }
-            set => _instance = value;
+            set
+            {
+                lock (LockObj)
+                {
+                    _instance = value;
+                }
+            }
         }
 
         private static readonly Lang Lang = Lang.Instance;
@@ -89,6 +91,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         private bool _currentlyModifying = false;
         public static readonly string SettingsFile = "Statistics.json";
         public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
+
+        #region System stats
+        [JsonProperty("OperatingSystem")] private string _operatingSystem = Environment.OSVersion.VersionString;
+        #endregion
 
         #region User stats
 
@@ -139,8 +145,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Also, add to the visit count.
             if (!PageStats.ContainsKey(newPage)) PageStats.Add(newPage, new PageStat());
             PageStats[newPage].Visits++;
-
-            SaveSettings();
         }
         #endregion
 
@@ -161,16 +165,12 @@ namespace TcNo_Acc_Switcher_Server.Data
                 SwitcherStats[platform].UniqueDays += 1;
                 SwitcherStats[platform].LastActive = DateTime.Now;
             }
-
-            SaveSettings();
         }
 
         public static void SetAccountCount(string platform, int count)
         {
             if (!SwitcherStats.ContainsKey(platform)) SwitcherStats.Add(platform, new SwitcherStat());
             SwitcherStats[platform].Accounts = count;
-
-            SaveSettings();
         }
         #endregion
 
@@ -193,7 +193,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             Accounts = 0;
             Switches = 0;
-            UniqueDays = 0;
+            UniqueDays = 1; // First day is init day
             FirstActive = DateTime.Now;
             LastActive = DateTime.Now;
         }

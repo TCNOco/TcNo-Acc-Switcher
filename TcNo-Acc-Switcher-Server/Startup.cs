@@ -45,6 +45,7 @@ namespace TcNo_Acc_Switcher_Server
         {
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
+            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_OnProcessExit;
             _ = services.AddControllers();
 
             _ = services.AddRazorPages();
@@ -114,7 +115,18 @@ namespace TcNo_Acc_Switcher_Server
 
             // Increment launch count. I don't know if this should be here, but it is.
             AppStats.LaunchCount++;
-            AppStats.SaveSettings();
+        }
+
+        public static void CurrentDomain_OnProcessExit(object sender, EventArgs e)
+        {
+            try
+            {
+                AppStats.SaveSettings();
+            }
+            catch (Exception)
+            {
+                // Do nothing, just close.
+            }
         }
 
         private static void MoveIfFileExists(string f)
