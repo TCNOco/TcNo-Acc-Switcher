@@ -103,5 +103,7 @@
     {
         await GeneralFuncs.HandleFirstRender(firstRender, "Steam");
         AppStats.NewNavigation("/Steam/");
+        if (!firstRender) return;
+        _ = AppData.InvokeVoidAsync("initCopyHotKey");
     }
 }

@@ -55,5 +55,7 @@
     protected override void OnAfterRender(bool firstRender)
     {
         AppStats.NewNavigation("/Settings/");
+        if (!firstRender) return;
+        _ = AppData.InvokeVoidAsync("initSavingHotKey");
     }
 }

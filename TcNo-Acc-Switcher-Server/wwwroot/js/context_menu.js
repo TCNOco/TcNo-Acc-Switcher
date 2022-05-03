@@ -29,6 +29,7 @@ async function initContextMenu() {
         $(".acc_list_item").click((e) => {
             $(e.currentTarget).children("input")[0].click();
             e.stopPropagation();
+            selectedElem = $(e.currentTarget).children("input")[0];
         });
     }
 

@@ -38,7 +38,6 @@
 
 .linksList a, .fancyLink {
     color: var(--accent);
-    line-height: 24px;
     cursor: pointer;
     margin: 1px 0;
 }

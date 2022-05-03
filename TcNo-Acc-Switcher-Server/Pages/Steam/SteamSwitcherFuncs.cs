@@ -562,7 +562,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
             Globals.DeleteFiles(SteamSettings.SteamImagePath);
             // Reload page, then display notification using a new thread.
-            AppData.ActiveNavMan?.NavigateTo("/steam/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ClearedImages"]), true);
+            AppData.ActiveNavMan?.NavigateTo(
+                $"/steam/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_ClearedImages"])}", true);
         }
 
         /// <summary>

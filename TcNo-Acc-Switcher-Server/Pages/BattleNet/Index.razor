@@ -104,5 +104,7 @@
     {
         await GeneralFuncs.HandleFirstRender(firstRender, "BattleNet");
         AppStats.NewNavigation("/BattleNet/");
+        if (!firstRender) return;
+        _ = AppData.InvokeVoidAsync("initCopyHotKey");
     }
 }

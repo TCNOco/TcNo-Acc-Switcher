@@ -886,3 +886,34 @@ function shortcut(action) {
 async function updateBarClick() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UpdateNow");
 }
+
+async function initSavingHotKey() {
+    hotkeys("ctrl+s", function (event, handler) {
+        event.preventDefault();
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCtrlS", getCurrentPage());
+    });
+}
+
+async function initCopyHotKey() {
+    const toastCopied = await GetLang("Toast_Copied");
+    hotkeys("ctrl+c,ctrl+shift+c,alt+c", function (event, handler) {
+        // Doesn't prevent default!
+        switch (handler.key) {
+        case "ctrl+shift+c":
+        case "alt+c":
+                copyToClipboard($(selectedElem).prop("id"));
+            break;
+        case "ctrl+c":
+                copyToClipboard($(selectedElem).attr("displayname"));
+            break;
+        }
+
+        window.notification.new({
+            type: "info",
+            title: "",
+            message: toastCopied,
+            renderTo: "toastarea",
+            duration: 2000
+        });
+    });
+}

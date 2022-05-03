@@ -148,6 +148,8 @@
     protected override void OnAfterRender(bool firstRender)
     {
         AppStats.NewNavigation($"/[{CurrentPlatform.SafeName}]/Settings");
+        if (!firstRender) return;
+        _ = AppData.InvokeVoidAsync("initSavingHotKey");
     }
 
     public void SaveAndClose()

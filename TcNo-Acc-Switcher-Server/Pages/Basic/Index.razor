@@ -145,10 +145,12 @@
     {
         if (_navBack)
         {
-            AppData.ActiveNavMan.NavigateTo(NavManager.BaseUri + "?toast_type=error&toast_title=Error&toast_message=" + Uri.EscapeDataString(Lang.Instance["Toast_FailedLoad", new {platform = CurrentPlatform.FullName}]));
+            AppData.ActiveNavMan.NavigateTo($"{NavManager.BaseUri}?toast_type=error&toast_title={Uri.EscapeDataString(Locale["Error"])}&toast_message={Uri.EscapeDataString(Lang.Instance["Toast_FailedLoad", new {platform = CurrentPlatform.FullName}])}");
             return;
         }
         await GeneralFuncs.HandleFirstRender(firstRender, CurrentPlatform.FullName);
         AppStats.NewNavigation($"/[{CurrentPlatform.SafeName}]");
+        if (!firstRender) return;
+        _ = AppData.InvokeVoidAsync("initCopyHotKey");
     }
 }

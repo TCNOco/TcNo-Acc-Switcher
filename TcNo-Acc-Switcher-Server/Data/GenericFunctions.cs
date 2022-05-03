@@ -28,11 +28,36 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class GenericFunctions
     {
+        private static readonly Lang Lang = Lang.Instance;
+
         [JSInvokable]
         public static void CopyToClipboard(string toCopy)
         {
             Globals.DebugWriteLine(@"[JSInvoke:Data\GenericFunctions.CopyToClipboard] toCopy=hidden");
             WindowsClipboard.SetText(toCopy);
+        }
+
+
+        /// <summary>
+        /// Save settings with Ctrl+S Hot key
+        /// </summary>
+        [JSInvokable]
+        public static void GiCtrlS(string platform)
+        {
+            AppSettings.SaveSettings();
+            switch (platform)
+            {
+                case "Steam":
+                    Settings.Steam.SaveSettings();
+                    break;
+                case "BattleNet":
+                    Settings.BattleNet.SaveSettings();
+                    break;
+                case "Basic":
+                    Settings.Basic.SaveSettings();
+                    break;
+            }
+            _ = GeneralInvocableFuncs.ShowToast("success", Lang["Saved"], renderTo:"toastarea");
         }
 
         #region ACCOUNT SWITCHER SHARED FUNCTIONS

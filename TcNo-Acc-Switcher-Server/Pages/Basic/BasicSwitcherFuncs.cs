@@ -594,7 +594,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 }
             }
 
-            AppData.ActiveNavMan?.NavigateTo("/Basic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_SavedItem", new { item = accName }]), true);
+            AppData.ActiveNavMan?.NavigateTo(
+                $"/Basic/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_SavedItem", new {item = accName}])}", true);
             return true;
         }
 
@@ -798,7 +799,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             }
 
 
-            if (reload) AppData.ActiveNavMan?.NavigateTo("/Basic/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ChangedUsername"]), true);
+            if (reload) AppData.ActiveNavMan?.NavigateTo(
+                $"/Basic/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_ChangedUsername"])}", true);
         }
 
         public static Dictionary<string, string> ReadAllIds(string path = null)

@@ -290,7 +290,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 BattleNetSettings.Accounts.First(x => x.Email == email).LastTimeChecked = new DateTime();
                 BattleNetSettings.SaveAccounts();
                 Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.SetBattleTag] accName:hidden, bTag:hidden");
-                AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_BattleNet_ChangedBTag"]), true);
+                AppData.ActiveNavMan?.NavigateTo(
+                    $"/BattleNet/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_BattleNet_ChangedBTag"])}", true);
             }
             else
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_NamePolicy"]);
@@ -320,7 +321,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             account.OwTankSr = 0;
             Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.DeleteBattleTag] accName:hidden");
             BattleNetSettings.SaveAccounts();
-            AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_BattleNet_DeletedBTag"]), true);
+            AppData.ActiveNavMan?.NavigateTo(
+                $"/BattleNet/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_BattleNet_DeletedBTag"])}", true);
         }
 
         /// <summary>
@@ -331,7 +333,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static void RefetchRank(string email)
         {
             Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.DeleteBattleTag] accName:hidden");
-            if (BattleNetSettings.Accounts.First(x => x.Email == email).FetchRank()) AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_FetchedRank"]), true);
+            if (BattleNetSettings.Accounts.First(x => x.Email == email).FetchRank()) AppData.ActiveNavMan?.NavigateTo(
+                $"/BattleNet/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_FetchedRank"])}", true);
         }
 
 
@@ -357,7 +360,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             BattleNetSettings.IgnoredAccounts.Add(account.Email);
             BattleNetSettings.SaveAccounts();
 
-            AppData.ActiveNavMan?.NavigateTo("/BattleNet/?cacheReload&toast_type=success&toast_title=Success&toast_message=" + Uri.EscapeDataString(Lang["Toast_ForgotAccount"]), true);
+            AppData.ActiveNavMan?.NavigateTo(
+                $"/BattleNet/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_ForgotAccount"])}", true);
         }
 
         /// <summary>
