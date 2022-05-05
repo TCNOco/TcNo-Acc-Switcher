@@ -19,6 +19,7 @@ using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Steamworks;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -34,6 +35,10 @@ namespace TcNo_Acc_Switcher_Server
         }
         public static bool MainProgram(string[] args)
         {
+            File.WriteAllText("steam_appid.txt", "1976280");
+            SteamAPI.IsSteamRunning();
+            SteamAPI.Init();
+
             // Set working directory to documents folder
             Globals.CreateDataFolder(false);
             Directory.SetCurrentDirectory(Globals.UserDataFolder);

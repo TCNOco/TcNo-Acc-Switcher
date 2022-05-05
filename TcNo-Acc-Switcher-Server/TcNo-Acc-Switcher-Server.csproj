@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Platforms\Discord\Username.js" />
+    <None Remove="steam_appid.txt" />
     <None Remove="TcNoAccSw-Icon-100x100.png" />
     <None Remove="themes\Dracula_Cyan\info.yaml" />
     <None Remove="themes\Dracula_Cyan\style.scss" />
@@ -35,6 +36,12 @@
     <_ContentIncludedByDefault Remove="wwwroot\css\site.css" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="steam_api64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="steam_appid.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="themes\Dracula_Cyan\info.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -226,6 +233,11 @@
     <None Include="wwwroot\js\ace\snippets\text.js" />
     <None Include="wwwroot\js\ace\snippets\yaml.js" />
     <None Include="wwwroot\js\ace\worker-json.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Steamworks.NET">
+      <HintPath>plugins\Steamworks.NET.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Update="Platforms.json">
