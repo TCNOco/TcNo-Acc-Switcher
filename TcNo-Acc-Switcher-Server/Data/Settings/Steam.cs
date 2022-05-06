@@ -18,10 +18,12 @@ using System.IO;
 using System.Linq;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
+using SteamKit2;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
+using Index = TcNo_Acc_Switcher_Server.Pages.Steam.Index;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
@@ -79,8 +81,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 }
             }
         }
+
         private string _lastHash = "";
-        private bool _currentlyModifying = false;
+        private bool _currentlyModifying;
         public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
 
         #region Basic Compatability

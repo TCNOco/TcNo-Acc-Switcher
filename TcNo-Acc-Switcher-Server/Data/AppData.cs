@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 
 namespace TcNo_Acc_Switcher_Server.Data
@@ -48,6 +49,16 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
+        #region Accounts
+        // These hold accounts for different switchers. Changing settings reloads the Settings, wiping them. This is the second best place to store these.
+
+        private JToken _bNetAccountsList;
+        public static JToken BNetAccountsList { get => Instance._bNetAccountsList; set => Instance._bNetAccountsList = value; }
+
+        private List<Pages.Steam.Index.Steamuser> _steamUsers;
+        public static List<Pages.Steam.Index.Steamuser> SteamUsers { get => Instance._steamUsers; set => Instance._steamUsers = value; }
+
+        #endregion
 
         // Window stuff
         private string _windowTitle = "TcNo Account Switcher";

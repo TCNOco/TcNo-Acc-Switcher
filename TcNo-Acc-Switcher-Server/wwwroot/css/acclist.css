@@ -78,7 +78,7 @@ label.acc {
   max-width: 100px;
   min-height: 135px;
   height: 100%;
-  margin: 0;
+  margin: -0.1em;
   padding: 0.5em;
   border-width: 0.1em;
   border-style: solid;
@@ -90,9 +90,19 @@ label.acc {
   transition: all 50ms ease-in;
 }
 
+input.acc:checked + label.acc.currentAcc {
+    border-color: #8aff80;
+    border-style: solid;
+}
+
 input.acc:checked + label.acc {
-  border-color: #8BE9FD;
-  background: #274560;
+    border-color: #8BE9FD;
+    background: #274560;
+}
+
+label.acc.currentAcc {
+    border-color: #8aff80;
+    border-style: dashed;
 }
 
 label.acc img.status_vac {

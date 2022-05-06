@@ -77,20 +77,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // If saved, and has unique key: Update
             if (CurrentPlatform.UniqueIdFile is not null)
             {
-                string uniqueId;
-                if (CurrentPlatform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.UniqueIdFile))
-                {
-                    _ = ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out var t);
-                    if (t is string s) uniqueId = s;
-                    else if (t is byte[]) uniqueId = Globals.GetSha256HashString(t);
-                    else
-                    {
-                        Globals.WriteToLog("Unexpected registry type encountered! Report to TechNobo.");
-                        return;
-                    }
-                }
-                else
-                    uniqueId = GetUniqueId();
+                var uniqueId = GetUniqueId();
 
                 // UniqueId Found >> Save!
                 if (File.Exists(CurrentPlatform.IdsJsonPath))
@@ -132,6 +119,24 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             AppStats.IncrementSwitches(CurrentPlatform.SafeName);
+        }
+
+        public static string GetCurrentAccountId()
+        {
+            try
+            {
+                var uniqueId = GetUniqueId();
+
+                // UniqueId Found in saved file >> return value
+                if (File.Exists(CurrentPlatform.IdsJsonPath) && !string.IsNullOrEmpty(uniqueId) && AccountIds.ContainsKey(uniqueId))
+                    return uniqueId;
+            }
+            catch (Exception)
+            {
+                //
+            }
+
+            return "";
         }
 
         public static void StartPlatform(){}
@@ -476,27 +481,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // Handle unique ID
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_GetUniqueId"]);
 
-            string uniqueId;
-            if (CurrentPlatform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.UniqueIdFile))
-            {
-                if (!ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out var r))
-                    return false;
-
-                switch (r)
-                {
-                    case string s:
-                        uniqueId = s;
-                        break;
-                    case byte[]:
-                        uniqueId = Globals.GetSha256HashString(r);
-                        break;
-                    default:
-                        Globals.WriteToLog($"Unexpected registry type encountered (1)! Report to TechNobo. {r.GetType()}");
-                        return false;
-                }
-            }
-            else
-                uniqueId = GetUniqueId();
+            var uniqueId = GetUniqueId();
 
             if (uniqueId == "" && CurrentPlatform.UniqueIdMethod == "CREATE_ID_FILE")
             {
@@ -717,17 +702,25 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
         public static string GetUniqueId()
         {
+            if (OperatingSystem.IsWindows() && CurrentPlatform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.UniqueIdFile))
+            {
+                if (!ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out var r))
+                    return "";
+
+                switch (r)
+                {
+                    case string s:
+                        return s;
+                    case byte[]:
+                        return Globals.GetSha256HashString(r);
+                    default:
+                        Globals.WriteToLog($"Unexpected registry type encountered (1)! Report to TechNobo. {r.GetType()}");
+                        return "";
+                }
+            }
+
             var fileToRead = CurrentPlatform.GetUniqueFilePath();
             var uniqueId = "";
-
-            if (CurrentPlatform.UniqueIdMethod is "REGKEY")
-            {
-                _ = ReadRegistryKeyWithErrors(CurrentPlatform.UniqueIdFile, out var r);
-                if (r is string) uniqueId = r;
-                else if (r is byte[] ba) uniqueId = Globals.GetSha256HashString(ba);
-                else Globals.WriteToLog($"Unexpected registry type encountered (3)! Report to TechNobo. {r.GetType()}");
-                return uniqueId;
-            }
 
             if (CurrentPlatform.UniqueIdMethod is "CREATE_ID_FILE")
             {

@@ -166,7 +166,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                             str = BasicSwitcherFuncs.GetNameFromId(id);
 
                         _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
-                            $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{id}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
+                            $"<div class=\"acc_list_item\" data-toggle=\"tooltip\"><input type=\"radio\" id=\"{id}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                             $"<label for=\"{id}\" class=\"acc\">\r\n" +
                             $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
                             $"<h6>{str}</h6></div>\r\n");

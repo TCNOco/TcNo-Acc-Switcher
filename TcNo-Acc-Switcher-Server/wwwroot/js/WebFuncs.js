@@ -20,11 +20,15 @@ async function getCurrentPageFullname() {
 
 window.addEventListener('load',
     () => {
-        // I don't know of an easier way to do this.
-        setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 1000);
-        setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 2000);
-        setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 4000);
+        initTooltips();
     });
+
+function initTooltips() {
+    // I don't know of an easier way to do this.
+    setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 1000);
+    setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 2000);
+    setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 4000);
+}
 
 // Clear Cache reload:
 var winUrl = window.location.href.split("?");
@@ -916,4 +920,31 @@ async function initCopyHotKey() {
             duration: 2000
         });
     });
+}
+
+async function highlightCurrentAccount(curAcc) {
+    const toastCopied = await GetLang("Tooltip_CurrentAccount");
+    let parentEl = $(`[for='${curAcc}']`).addClass("currentAcc").parent();
+    parentEl.attr("title", toastCopied);
+
+    // Because this can be placed below, and go off the screen.. Figure out where the element is.
+    const parentPos = parentEl[0].getBoundingClientRect();
+    const parentHeight = parentEl.height();
+    const parentWidth = parentEl.width();
+
+    const parentLeft = parentPos.left;
+    const parentRight = parentLeft + parentWidth;
+
+    const parentTop = parentPos.top;
+    const parentBottom = parentTop + parentHeight;
+
+
+    // Because this can be placed right or below, and go off the screen.. Figure out where the element is.
+    var bestOffset = "bottom";
+    // Too close to sides -- Basically 1 account gap
+    if (parentLeft < 100) bestOffset = "right";
+    else if (screen.width - parentRight < 100) bestOffset = "left";
+    parentEl.attr("data-placement", bestOffset);
+
+    initTooltips();
 }

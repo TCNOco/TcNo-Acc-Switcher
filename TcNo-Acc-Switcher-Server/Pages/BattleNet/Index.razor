@@ -106,5 +106,8 @@
         AppStats.NewNavigation("/BattleNet/");
         if (!firstRender) return;
         _ = AppData.InvokeVoidAsync("initCopyHotKey");
+
+        var curAcc = BattleNetSwitcherFuncs.GetCurrentAccountId();
+        if (curAcc != "") _ = AppData.InvokeVoidAsync("highlightCurrentAccount", curAcc);
     }
 }

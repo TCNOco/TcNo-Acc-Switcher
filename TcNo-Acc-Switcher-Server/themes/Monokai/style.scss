@@ -186,7 +186,7 @@ input[type="checkbox"] + label {
 
 .platform_list_item {
     border-radius: 40px;
-    border: var(--accent) 1px solid;
+    border: var(--accent) 0.1em solid;
     color: #888888;
     text-shadow: none;
     overflow: hidden;
@@ -371,7 +371,7 @@ button#LocateProgramExe,
 .accountHover,
 .accountHover {
   background-color: #1b1b1b;
-  border: var(--accent) 1px solid;
+  border: var(--accent) 0.1em solid;
   border-radius: 0.9rem;
 }
 
@@ -400,15 +400,30 @@ button#LocateProgramExe,
     background: #131313;
 }
 
-input.acc:checked + label.acc {
-  border-color: var(--accent);
-  background: #3e3e3e;
-  border-radius: 0.8rem;
+label.acc {
+    height: 101.9%;
 }
+
+label.acc.currentAcc {
+    border-color: var(--accent);
+    border-style: dashed;
+    border-radius: 0.8rem;
+}
+input.acc:checked + label.acc.currentAcc {
+    border-color: var(--accent);
+    border-style: solid;
+}
+
+input.acc:checked + label.acc {
+    border-color: var(--accent);
+    background: #3e3e3e;
+    border-radius: 0.8rem;
+}
+
 
 @keyframes effect {
   0% {
-    border: var(--accent) -1px solid;
+    border: var(--accent) -0.1em solid;
   }
 
   100% {

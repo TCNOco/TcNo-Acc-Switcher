@@ -58,7 +58,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.LoadProfiles] Loading Steam profiles");
 
-            var userAccounts = GetSteamUsers(SteamSettings.LoginUsersVdf());
+            AppData.SteamUsers = GetSteamUsers(SteamSettings.LoginUsersVdf());
             var vacStatusList = new List<VacStatus>();
             var loadedVacCache = LoadVacInfo(ref vacStatusList);
 
@@ -70,16 +70,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 {
                     var index = 0;
                     if (savedOrder is { Count: > 0 })
-                        foreach (var acc in from i in savedOrder where userAccounts.Any(x => x.SteamId == i) select userAccounts.Single(x => x.SteamId == i))
+                        foreach (var acc in from i in savedOrder where AppData.SteamUsers.Any(x => x.SteamId == i) select AppData.SteamUsers.Single(x => x.SteamId == i))
                         {
-                            _ = userAccounts.Remove(acc);
-                            userAccounts.Insert(index, acc);
+                            _ = AppData.SteamUsers.Remove(acc);
+                            AppData.SteamUsers.Insert(index, acc);
                             index++;
                         }
                 }
             }
 
-            foreach (var ua in userAccounts)
+            foreach (var ua in AppData.SteamUsers)
             {
                 var va = new VacStatus();
                 if (loadedVacCache)
@@ -101,7 +101,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 var extraClasses = (SteamSettings.ShowVac && va.Vac ? " status_vac" : "") + (SteamSettings.ShowLimited && va.Ltd ? " status_limited" : "");
 
                 var element =
-                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{ua.SteamId}\" DisplayName=\"{GeneralFuncs.EscapeText(GetName(ua))}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{GeneralFuncs.EscapeText(ua.AccName)}\" Line2=\"{GeneralFuncs.EscapeText(GetName(ua))}\" Line3=\"{GeneralFuncs.EscapeText(ua.LastLogin)}\" ExtraClasses=\"{extraClasses}\" onchange=\"selectedItemChanged()\" />\r\n" +
+                    $"<div class=\"acc_list_item\" data-toggle=\"tooltip\"><input type=\"radio\" id=\"{ua.SteamId}\" DisplayName=\"{GeneralFuncs.EscapeText(GetName(ua))}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{GeneralFuncs.EscapeText(ua.AccName)}\" Line2=\"{GeneralFuncs.EscapeText(GetName(ua))}\" Line3=\"{GeneralFuncs.EscapeText(ua.LastLogin)}\" ExtraClasses=\"{extraClasses}\" onchange=\"selectedItemChanged()\" />\r\n" +
                     $"<label for=\"{ua.AccName}\" class=\"acc {extraClasses}\">\r\n" +
                     $"<img class=\"{extraClasses}\" src=\"{ua.ImgUrl}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
                     (SteamSettings.ShowAccUsername ? $"<p class=\"streamerCensor\">{ua.AccName}</p>\r\n" : "") +
@@ -114,7 +114,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             SaveVacInfo(vacStatusList);
             GenericFunctions.FinaliseAccountList();
-            AppStats.SetAccountCount("Steam", userAccounts.Count);
+            AppStats.SetAccountCount("Steam", AppData.SteamUsers.Count);
+        }
+
+        public static string GetCurrentAccountId()
+        {
+            try
+            {
+                return AppData.SteamUsers[0].AccName;
+            }
+            catch (Exception)
+            {
+                //
+            }
+
+            return "";
         }
 
         /// <summary>

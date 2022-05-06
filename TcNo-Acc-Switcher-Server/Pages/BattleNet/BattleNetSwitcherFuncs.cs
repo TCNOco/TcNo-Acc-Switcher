@@ -62,14 +62,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             }
 
             // Verify that there are accounts to iterate over
-            var savedAccountsList = accountsFile.SelectToken("Client.SavedAccountNames");
-            if (savedAccountsList == null)
+            AppData.BNetAccountsList = accountsFile.SelectToken("Client.SavedAccountNames");
+            if (AppData.BNetAccountsList == null)
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_CantLoadEmpty"], "toastarea");
                 return;
             }
 
-            foreach (var mail in savedAccountsList.ToString().Split(','))
+            foreach (var mail in AppData.BNetAccountsList.ToString().Split(','))
             {
                 if (string.IsNullOrEmpty(mail) || string.IsNullOrWhiteSpace(mail)) continue; // Ignores blank emails sometimes added: ".com, , asdf@..."
                 try
@@ -105,7 +105,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 if (!File.Exists(Path.Join(BattleNetSettings.ImagePath, $"{acc.Email}.png"))) _ = DownloadImage(acc.Email);
                 var username = acc.BTag == null ? acc.Email : acc.BTag.Contains('#') ? acc.BTag.Split("#")[0] : acc.BTag;
                 var element =
-                    $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{acc.Email}\" Username=\"{username}\" DisplayName=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
+                    $"<div class=\"acc_list_item\" data-toggle=\"tooltip\"><input type=\"radio\" id=\"{acc.Email}\" Username=\"{username}\" DisplayName=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                     $"<label for=\"{acc.Email}\" class=\"acc\">\r\n" +
                     $"<img src=\"img\\profiles\\battlenet\\{acc.Email}.png?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
                     $"<h6>{GeneralFuncs.EscapeText(username)}</h6>\r\n";
@@ -135,6 +135,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             AppStats.SetAccountCount("BattleNet", BattleNetSettings.Accounts.Count);
         }
 
+        public static string GetCurrentAccountId()
+        {
+            try
+            {
+                return AppData.BNetAccountsList == null ? "" : AppData.BNetAccountsList.ToString().Split(',')[0];
+            }
+            catch (Exception)
+            {
+                //
+            }
+
+            return "";
+        }
+
+        // private static SavedAccountsList
 
         /// <summary>
         /// Run necessary functions and load data when being launcher without a GUI (From command line for example).

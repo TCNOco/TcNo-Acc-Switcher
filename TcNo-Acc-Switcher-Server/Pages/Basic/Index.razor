@@ -152,5 +152,8 @@
         AppStats.NewNavigation($"/[{CurrentPlatform.SafeName}]");
         if (!firstRender) return;
         _ = AppData.InvokeVoidAsync("initCopyHotKey");
+
+        var curAcc = BasicSwitcherFuncs.GetCurrentAccountId();
+        if (curAcc != "") _ = AppData.InvokeVoidAsync("highlightCurrentAccount", curAcc);
     }
 }
