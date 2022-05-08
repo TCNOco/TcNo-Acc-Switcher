@@ -498,6 +498,7 @@ namespace TcNo_Acc_Switcher_Updater
                 return false;
             }
         }
+
         private void DownloadCefNow()
         {
             // Check if VCRuntime 2015-2022 installed or not. If not, download and install.
@@ -527,9 +528,24 @@ namespace TcNo_Acc_Switcher_Updater
 
             SetStatusAndLog("Extracting...");
             var tempCef = Path.Join(_updaterDirectory, "../CEF");
-            using (var archiveFile = new ArchiveFile(updateFilePath))
+            using var archiveFile = new ArchiveFile(updateFilePath);
+            try
             {
                 archiveFile.Extract(tempCef, true); // extract all to parent folder (not updater)
+            }
+            catch (Exception e)
+            {
+                SetStatusAndLog("Error extracting CEF files: " + e.Message);
+                try
+                {
+                    File.Delete(updateFilePath);
+                    RecursiveDelete(tempCef, false);
+                }
+                catch (Exception exception)
+                {
+                    SetStatusAndLog("Error deleting CEF files: " + exception.Message);
+                }
+                return;
             }
 
             SetStatusAndLog("Moving files...");

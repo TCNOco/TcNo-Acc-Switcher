@@ -110,7 +110,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             GenerateTotals();
             SaveSettings();
             var returnString = $@"<h3>TcNo Account Switcher Stats - {DateTime.Now:yyyy-MM-dd HH:mm:ss}</h3><br>" +
-                (AppSettings.StatsShare ? Lang["Stats_ShareEnabled", new { WebsiteLink = "https://github.com/TcNobo/TcNo-Acc-Switcher/" }] : Lang["Stats_ShareDisabled", new { WebsiteLink = "https://github.com/TcNobo/TcNo-Acc-Switcher/" }]) +
+                (AppSettings.StatsShare ? Lang["Stats_ShareEnabled", new { WebsiteLink = "https://tcno.co/Projects/AccSwitcher/stats/" }] : Lang["Stats_ShareDisabled", new { WebsiteLink = "https://tcno.co/Projects/AccSwitcher/stats/" }]) +
                 @$"<pre><br>
 <b>{Lang["Stats_OperatingSystem"]}</b>{OperatingSystem}
 <b>{Lang["Stats_FirstLaunch"]}</b>{FirstLaunch.ToString("yyyy-MM-dd HH:mm:ss")}

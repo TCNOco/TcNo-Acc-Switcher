@@ -94,7 +94,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                         foreach (var acc in from i in savedOrder where BattleNetSettings.Accounts.Any(x => x.Email == i) select BattleNetSettings.Accounts.Single(x => x.Email == i))
                         {
                             _ = BattleNetSettings.Accounts.Remove(acc);
-                            BattleNetSettings.Accounts.Insert(index, acc);
+                            BattleNetSettings.Accounts.Insert(Math.Min(index, BattleNetSettings.Accounts.Count), acc);
                             index++;
                         }
                 }

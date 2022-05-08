@@ -73,7 +73,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                         foreach (var acc in from i in savedOrder where AppData.SteamUsers.Any(x => x.SteamId == i) select AppData.SteamUsers.Single(x => x.SteamId == i))
                         {
                             _ = AppData.SteamUsers.Remove(acc);
-                            AppData.SteamUsers.Insert(index, acc);
+                            AppData.SteamUsers.Insert(Math.Min(index, AppData.SteamUsers.Count), acc);
                             index++;
                         }
                 }
@@ -474,15 +474,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             Globals.DeleteFile(tempFile);
 
             // MostRec is "00" by default, just update the one that matches SteamID.
-            userAccounts.Where(x => x.SteamId == selectedSteamId).ToList().ForEach(u =>
+            try
             {
-                u.MostRec = "1";
-                u.RememberPass = "1";
-                u.OfflineMode = pS == -1 ? u.OfflineMode : pS > 1 ? "0" : pS == 1 ? "0" : "1";
-                // u.OfflineMode: Set ONLY if defined above
-                // If defined & > 1, it's custom, therefor: Online
-                // Otherwise, invert [0 == Offline => Online, 1 == Online => Offline]
-            });
+                userAccounts.Where(x => x.SteamId == selectedSteamId).ToList().ForEach(u =>
+                {
+                    u.MostRec = "1";
+                    u.RememberPass = "1";
+                    u.OfflineMode = pS == -1 ? u.OfflineMode : pS > 1 ? "0" : pS == 1 ? "0" : "1";
+                    // u.OfflineMode: Set ONLY if defined above
+                    // If defined & > 1, it's custom, therefor: Online
+                    // Otherwise, invert [0 == Offline => Online, 1 == Online => Offline]
+                });
+            }
+            catch (InvalidOperationException)
+            {
+                GeneralInvocableFuncs.ShowToast("error", Lang["Toast_MissingUserId"]);
+            }
             //userAccounts.Single(x => x.SteamId == selectedSteamId).MostRec = "1";
 
             // Save updated loginusers.vdf

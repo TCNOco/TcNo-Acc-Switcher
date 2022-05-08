@@ -114,7 +114,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             foreach (var acc in from i in savedOrder where accList.Any(x => x == i) select accList.Single(x => x == i))
             {
                 _ = accList.Remove(acc);
-                accList.Insert(index, acc);
+                accList.Insert(Math.Min(index, accList.Count), acc);
                 index++;
             }
             return accList;
