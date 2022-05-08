@@ -280,6 +280,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             if (BattleNetSettings.AutoStart)
                 Data.Settings.Basic.RunPlatform(BattleNetSettings.Exe(), BattleNetSettings.Admin, args, "BattleNet", BattleNetSettings.StartingMethod);
 
+            if (BattleNetSettings.AutoStart && AppSettings.MinimizeOnSwitch) _ = AppData.InvokeVoidAsync("hideWindow");
+
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             AppStats.IncrementSwitches("BattleNet");

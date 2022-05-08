@@ -1,7 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.JSInterop;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
@@ -97,28 +103,134 @@ namespace TcNo_Acc_Switcher_Server.Data
             GeneralFuncs.SaveSettings(SettingsFile, Instance);
         }
 
+        [JSInvokable]
+        public static string GetStatsString()
+        {
+            if (!AppSettings.StatsEnabled) return Lang["Stats_Disabled"];
+            GenerateTotals();
+            SaveSettings();
+            var returnString = $@"<h3>TcNo Account Switcher Stats - {DateTime.Now:yyyy-MM-dd HH:mm:ss}</h3><br>" +
+                (AppSettings.StatsShare ? Lang["Stats_ShareEnabled", new { WebsiteLink = "https://github.com/TcNobo/TcNo-Acc-Switcher/" }] : Lang["Stats_ShareDisabled", new { WebsiteLink = "https://github.com/TcNobo/TcNo-Acc-Switcher/" }]) +
+                @$"<pre><br>
+<b>{Lang["Stats_OperatingSystem"]}</b>{OperatingSystem}
+<b>{Lang["Stats_FirstLaunch"]}</b>{FirstLaunch.ToString("yyyy-MM-dd HH:mm:ss")}
+<b>{Lang["Stats_LaunchCount"]}</b>{LaunchCount}
+<b>{Lang["Stats_CrashCount"]}</b>{CrashCount}
+<b>{Lang["Stats_MostUsedPlatform"]}</b>{MostUsedPlatform}
+<b>{Lang["Stats_TotalTime"]}</b>{TimeSpan.FromSeconds(PageStats["_Total"].TotalTime).ToString("hh\\:mm\\:ss")}
+<b>{Lang["Stats_TotalSwitches"]}</b>{SwitcherStats["_Total"].Switches}
+<b>{Lang["Stats_TotalGamesLaunched"]}</b>{SwitcherStats["_Total"].GamesLaunched}
+<b>{Lang["Stats_UniqueDaysLong"]}</b>{SwitcherStats["_Total"].UniqueDays}
+<br></pre>";
+
+            return $"{returnString}<h4>{Lang["Stats_InDepth"]}</h4><pre><br>{GetInDepthStatsString()}</pre>";
+        }
+
+        /// <summary>
+        /// This compliments GetStatsString(), but gives an in-depth breakdown per platform, etc.
+        /// </summary>
+        private static string GetInDepthStatsString()
+        {
+            //<b>{Lang[""]}</b>{}<br>
+            if (!AppSettings.StatsEnabled) return "";
+            var returnString = $@"<b>Uuid</b>: {Uuid}<br>
+<b>{Lang["Stats_LastUpload"]}</b>{LastUpload:yyyy-MM-dd HH:mm:ss}<br>";
+
+            if (SwitcherStats.Count > 1)
+                returnString += $"<b>{Lang["Stats_SwitcherStats"]}</b><br>";
+            foreach (var switcherStat in SwitcherStats)
+            {
+                if (switcherStat.Key == "_Total") continue;
+                returnString += $@"- <b>{switcherStat.Key}: </b>
+   - <b>{Lang["Stats_Accounts"]}</b>{switcherStat.Value.Accounts}
+   - <b>{Lang["Stats_Switches"]}</b>{switcherStat.Value.Switches}
+   - <b>{Lang["Stats_FirstActive"]}</b>{switcherStat.Value.FirstActive.ToString("yyyy-MM-dd HH:mm:ss")}
+   - <b>{Lang["Stats_LastActive"]}</b>{switcherStat.Value.LastActive.ToString("yyyy-MM-dd HH:mm:ss")}
+   - <b>{Lang["Stats_UniqueDays"]}</b>{switcherStat.Value.UniqueDays}
+   - <b>{Lang["Stats_GameShortcuts"]}</b>{switcherStat.Value.GameShortcuts}
+   - <b>{Lang["Stats_GameShortcutsHotbar"]}</b>{switcherStat.Value.GameShortcutsHotbar}
+   - <b>{Lang["Stats_GamesLaunched"]}</b>{switcherStat.Value.GamesLaunched}<br>";
+            }
+
+            if (PageStats.Count > 1)
+                returnString += $"<b>{Lang["Stats_PageStats"]}</b><br>";
+            foreach (var pageStat in PageStats)
+            {
+                if (pageStat.Key == "_Total") continue;
+                returnString += $@"- <b>{pageStat.Key}: </b>{Lang["Stats_VisitsTotalTime", new
+                {
+                    visits = pageStat.Value.Visits,
+                    hours = TimeSpan.FromSeconds(pageStat.Value.TotalTime).ToString("hh\\:mm\\:ss")
+                }]}<br>";
+
+            }
+
+            return returnString;
+        }
+
+
+        [JSInvokable]
+        public static void ClearStats()
+        {
+            Instance = _instance = new AppStats { _currentlyModifying = true };
+            SaveSettings();
+        }
+
+        public static void UploadStats()
+        {
+            // Upload stats file if enabled.
+            if (!AppSettings.StatsEnabled || !AppSettings.StatsShare) return;
+            // If not a new day
+            if (LastUpload.Date == DateTime.Now.Date) return;
+
+            // Save data in temp file.
+            var tempFile = Path.GetTempFileName();
+            var statsJson = JsonConvert.SerializeObject(JObject.FromObject(Instance), Formatting.None);
+            File.WriteAllText(tempFile, statsJson);
+
+            // Upload using HTTPClient
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "TcNo Account Switcher");
+            var response = httpClient.PostAsync("https://tcno.co/Projects/AccSwitcher/api/stats/",
+                new FormUrlEncodedContent(new Dictionary<string, string>
+                {
+                    ["uuid"] = Uuid,
+                    ["statsData"] = statsJson
+                })).Result;
+
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                Globals.WriteToLog("Failed to upload stats file. Status code: " + response.StatusCode);
+
+            LastUpload = DateTime.Now;
+            SaveSettings();
+        }
 
         #region System stats
+        [JsonProperty("LastUpload", Order = 1)] private DateTime _lastUpload = DateTime.MinValue;
+        public static DateTime LastUpload { get => Instance._lastUpload; set => Instance._lastUpload = value; }
 
-        private string _operatingSystem;
-        [JsonProperty("OperatingSystem", Order = 0)] private static string OperatingSystem => Instance._operatingSystem ?? (Instance._operatingSystem = Globals.GetOsString());
+        [JsonProperty("OperatingSystem", Order = 2)] private string _operatingSystem;
+        private static string OperatingSystem => Instance._operatingSystem ?? (Instance._operatingSystem = Globals.GetOsString());
 
         #endregion
 
 
         #region User stats
 
-        [JsonProperty("LaunchCount", Order = 1)] private int _launchCount;
+        [JsonProperty("Uuid", Order = 0)] private string _uuid = Guid.NewGuid().ToString();
+        public static string Uuid { get => Instance._uuid; set => Instance._uuid = value; }
+
+        [JsonProperty("LaunchCount", Order = 2)] private int _launchCount;
         public static int LaunchCount { get => Instance._launchCount; set => Instance._launchCount = value; }
 
 
-        [JsonProperty("CrashCount", Order = 2)] private int _crashCount;
+        [JsonProperty("CrashCount", Order = 3)] private int _crashCount;
         public static int CrashCount { get => Instance._crashCount; set => Instance._crashCount = value; }
 
-        [JsonProperty("FirstLaunch", Order = 3)] private DateTime _firstLaunch = DateTime.Now;
+        [JsonProperty("FirstLaunch", Order = 4)] private DateTime _firstLaunch = DateTime.Now;
         public static DateTime FirstLaunch { get => Instance._firstLaunch; set => Instance._firstLaunch = value; }
 
-        [JsonProperty("MostUsedPlatform", Order = 4)] private string _mostUsed = "";
+        [JsonProperty("MostUsedPlatform", Order = 5)] private string _mostUsed = "";
         public static string MostUsedPlatform { get => Instance._mostUsed; set => Instance._mostUsed = value; }
 
         #endregion
@@ -129,7 +241,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         // EXAMPLE:
         // "Steam": {TotalTime: 3600, TotalVisits: 10}
         // "SteamSettings": {TotalTime: 300, TotalVisits: 6}
-        [JsonProperty("PageStats", Order = 5)] private Dictionary<string, PageStat> _pageStats = new() { { "_Total", new PageStat() } };
+        [JsonProperty("PageStats", Order = 6)] private Dictionary<string, PageStat> _pageStats = new() { { "_Total", new PageStat() } };
         public static Dictionary<string, PageStat> PageStats { get => Instance._pageStats; set => Instance._pageStats = value; }
 
         // Total time is incremented on navigating to a new page.
@@ -181,7 +293,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             if (!AppSettings.StatsEnabled) return;
             // Increment unique days if day is not the same (Compares year, month, day - As we're not looking for 24 hours)
-            if (SwitcherStats[platform].LastActive.ToShortDateString() == DateTime.Now.ToShortDateString()) return;
+            if (SwitcherStats[platform].LastActive.Date == DateTime.Now.Date) return;
             SwitcherStats[platform].UniqueDays += 1;
             SwitcherStats[platform].LastActive = DateTime.Now;
         }

@@ -116,6 +116,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (BasicSettings.AutoStart)
                 BasicSettings.RunPlatform(BasicSettings.Exe(), BasicSettings.Admin, args, CurrentPlatform.FullName, CurrentPlatform.StartingMethod);
 
+            if (accName != "" && BasicSettings.AutoStart && AppSettings.MinimizeOnSwitch) _ = AppData.InvokeVoidAsync("hideWindow");
+
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             AppStats.IncrementSwitches(CurrentPlatform.SafeName);

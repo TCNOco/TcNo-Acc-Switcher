@@ -110,6 +110,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("EnabledBasicPlatforms", Order = 13)] private HashSet<string> _enabledBasicPlatforms = null;
         [JsonProperty("CollectStats", Order = 14)] private bool _statsEnabled = true;
         [JsonProperty("ShareAnonymousStats", Order = 15)] private bool _statsShare = true;
+        [JsonProperty("MinimizeOnSwitch", Order = 16)] private bool _minimizeOnSwitch;
         [Newtonsoft.Json.JsonIgnore] private bool _desktopShortcut;
         [Newtonsoft.Json.JsonIgnore] private bool _startMenu;
         [Newtonsoft.Json.JsonIgnore] private bool _startMenuPlatforms;
@@ -144,7 +145,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public static bool StatsEnabled { get => Instance._statsEnabled; set => Instance._statsEnabled = value; }
         public static bool StatsShare { get => Instance._statsShare; set => Instance._statsShare = value; }
-
+        public static bool MinimizeOnSwitch { get => Instance._minimizeOnSwitch; set => Instance._minimizeOnSwitch = value; }
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
         public static bool StartMenu { get => Instance._startMenu; set => Instance._startMenu = value; }

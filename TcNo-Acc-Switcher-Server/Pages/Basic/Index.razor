@@ -155,5 +155,7 @@
 
         var curAcc = BasicSwitcherFuncs.GetCurrentAccountId();
         if (curAcc != "") _ = AppData.InvokeVoidAsync("highlightCurrentAccount", curAcc);
+
+        AppData.FirstLaunchCheck();
     }
 }

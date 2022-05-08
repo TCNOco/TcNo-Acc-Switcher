@@ -52,6 +52,13 @@ function btnBack_Click() {
     }
 }
 
+function hideWindow() {
+    // Used in hide window on account switch
+    if (navigator.appVersion.indexOf("TcNo") === -1) return;
+    if (navigator.appVersion.indexOf("TcNo-CEF") !== -1) CefSharp.PostMessage({ "action": "HideWindow" });
+    else chrome.webview.hostObjects.sync.eventForwarder.HideWindow();
+}
+
 function handleWindowControls() {
     document.getElementById("btnBack").addEventListener("click", () => {
         btnBack_Click();

@@ -76,7 +76,7 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 
-label { margin-left: 0.5em; }
+label { margin: 0 0.5em; }
 
 .form-check label {
     margin: 0;

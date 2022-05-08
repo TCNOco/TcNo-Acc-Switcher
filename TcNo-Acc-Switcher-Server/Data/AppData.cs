@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -48,6 +49,28 @@ namespace TcNo_Acc_Switcher_Server.Data
                 }
             }
         }
+
+        #region First Launch
+        // I'm not really sure where to include this for the first page visit, so it is here and called on every page.
+        // As far as I understand this works like a browser, and getting it to try and display something may not work the best...
+        // So it's called on each page, but only run once.
+        private bool _firstLaunch = true;
+        private static bool FirstLaunch { get => Instance._firstLaunch; set => Instance._firstLaunch = value; }
+        /// <summary>
+        /// (Only one time) Checks for update, and submits statistics if enabled.
+        /// </summary>
+        public static void FirstLaunchCheck()
+        {
+            if (!FirstLaunch) return;
+            FirstLaunch = false;
+            // Check for update in another thread
+            // Also submit statistics, if enabled
+            new Thread(AppSettings.CheckForUpdate).Start();
+            if (AppSettings.StatsEnabled && AppSettings.StatsShare)
+                new Thread(AppStats.UploadStats).Start();
+
+        }
+        #endregion
 
         #region Accounts
         // These hold accounts for different switchers. Changing settings reloads the Settings, wiping them. This is the second best place to store these.
@@ -140,8 +163,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         private NavigationManager _activeNavMan;
         [JsonIgnore] public static NavigationManager ActiveNavMan { get => Instance._activeNavMan; set => Instance._activeNavMan = value; }
 
-        private bool _firstLaunch = true;
-        [JsonIgnore] public static bool FirstLaunch { get => Instance._firstLaunch; set => Instance._firstLaunch = value; }
+        private bool _firstMainMenuVisit = true;
+        [JsonIgnore] public static bool FirstMainMenuVisit { get => Instance._firstMainMenuVisit; set => Instance._firstMainMenuVisit = value; }
         public void SetActiveNavMan(NavigationManager nm) => Instance._activeNavMan = nm;
 
 

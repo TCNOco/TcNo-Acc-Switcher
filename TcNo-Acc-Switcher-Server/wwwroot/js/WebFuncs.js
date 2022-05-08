@@ -311,11 +311,11 @@ let pathPickerRequestedFile = "";
 async function showModal(modaltype) {
     let input, platform;
     if (modaltype === "info") {
-	    const modalInfoCreator = await GetLang("Modal_Info_Creator"),
-		    modalInfoVersion = await GetLang("Modal_Info_Version"),
-		    modalInfoDisclaimer = await GetLang("Modal_Info_Disclaimer"),
-		    modalInfoVisitSite = await GetLang("Modal_Info_VisitSite"),
-		    modalInfoBugReport = await GetLang("Modal_Info_BugReport"),
+        const modalInfoCreator = await GetLang("Modal_Info_Creator"),
+            modalInfoVersion = await GetLang("Modal_Info_Version"),
+            modalInfoDisclaimer = await GetLang("Modal_Info_Disclaimer"),
+            modalInfoVisitSite = await GetLang("Modal_Info_VisitSite"),
+            modalInfoBugReport = await GetLang("Modal_Info_BugReport"),
             modalInfoViewGitHub = await GetLang("Modal_Info_ViewGitHub"),
             modalTitleInfo = await GetLang("Modal_Title_Info");
 
@@ -331,10 +331,14 @@ async function showModal(modaltype) {
                     <h2>TcNo Account Switcher</h2>
                     <p>${modalInfoCreator}</p>
                     <div class="linksList">
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');"><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>${modalInfoViewGitHub}</a>
-                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');"><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>${modalInfoBugReport}</a>
-                        <a onclick="OpenLinkInBrowser('https://tcno.co');"><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>${modalInfoVisitSite}</a>
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');"><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>${modalInfoDisclaimer}</a>
+                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');"><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>${
+                modalInfoViewGitHub}</a>
+                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');"><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>${
+                modalInfoBugReport}</a>
+                        <a onclick="OpenLinkInBrowser('https://tcno.co');"><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>${
+                modalInfoVisitSite}</a>
+                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');"><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>${
+                modalInfoDisclaimer}</a>
                     </div>
                 </div>
                 </div><div class="versionIdentifier"><span>${modalInfoVersion}: ${currentVersion}</span></div>`);
@@ -365,7 +369,7 @@ async function showModal(modaltype) {
         }
 
         const modalChangeUsername =
-            await GetLangSub("Modal_ChangeUsername", { platform: platformName }),
+                  await GetLangSub("Modal_ChangeUsername", { platform: platformName }),
             modalChangeUsernameType = await GetLangSub("Modal_ChangeUsernameType", { platform: platformName }),
             modalTitleChangeUsername = await GetLang("Modal_Title_ChangeUsername");
 
@@ -415,7 +419,8 @@ async function showModal(modaltype) {
 	        <div class="settingsCol inputAndButton">
 		        <div class="folder_indicator notfound"><div id="folder_indicator_text"></div></div>
 		        <div class="folder_indicator_bg notfound"><span>${platformExe}</span></div>
-		        <button class="modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${platformSettingsPath}')"><span>${modalLocatePlatformFolder}</span></button>
+		        <button class="modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${
+            platformSettingsPath}')"><span>${modalLocatePlatformFolder}</span></button>
 	        </div>
             <div class="pathPicker">
                 ${await getLogicalDrives()}
@@ -438,6 +443,8 @@ async function showModal(modaltype) {
         } else if (action.startsWith("AcceptForgetBasicAcc") ||
             action.startsWith("AcceptForgetBattleNetAcc")) {
             message = await GetLangSub("Prompt_ForgetAccount", { platform: await getCurrentPageFullname() });
+        } else if (action.startsWith("ClearStats")) {
+            message = await GetLang("Prompt_ClearStats");
         } else {
             message = `<p>${modaltype.split(":")[2].replaceAll("_", " ")}</p>`;
             // The only exception to confirm:<prompt> was AcceptForgetSteamAcc, as that was confirm:AcceptForgetSteamAcc:steamId
@@ -541,7 +548,8 @@ async function showModal(modaltype) {
 		        <input type="text" id="FolderLocation" oninput="updateIndicator('')" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
 	        </div>
 	        <div class="settingsCol inputAndButton">
-		        <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseBackground()"><span>${modalSetButton}</span></button>
+		        <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseBackground()"><span>${
+            modalSetButton}</span></button>
 	        </div>
             <div class="pathPicker">
                 ${await getLogicalDrives()}
@@ -564,7 +572,8 @@ async function showModal(modaltype) {
 		        <input type="text" id="FolderLocation" oninput="updateIndicator('')" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
 	        </div>
 	        <div class="settingsCol inputAndButton">
-                <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseUserDataFolder()"><span>${modalSetButton}</span></button>
+                <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseUserDataFolder()"><span>${
+            modalSetButton}</span></button>
 	        </div>
             <div class="pathPicker">
                 ${await getLogicalDrives()}
@@ -573,6 +582,21 @@ async function showModal(modaltype) {
         pathPickerRequestedFile = "AnyFolder";
         $(".pathPicker").on("click", pathPickerClick);
         input = document.getElementById("FolderLocation");
+    } else if (modaltype === "ShowStats") {
+        let modalTitle = await GetLang("Modal_Title_Stats"),
+            modalText = "";
+
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetStatsString").then((r) => {
+            modalText = r;
+        });
+
+        $("#modalTitle").text(modalTitle);
+        $("#modal_contents").empty();
+        $("#modal_contents").append(`<div class="infoWindow">
+        <div class="fullWidthContent">
+            <div style="text-align:left"><p>${modalText}</p></div>
+        </div>
+        </div>`);
     } else {
 
         const notice = await GetLang("Notice");
@@ -704,8 +728,17 @@ async function Modal_Finalise(platform, platformSettingsPath) {
 }
 
 async function Modal_Confirm(action, value) {
+    let success = await GetLang("Success");
     var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value).then((r) => {
         if (r === "refresh") location.reload();
+        else if (r === "success")
+            window.notification.new({
+                type: "success",
+                title: "",
+                message: success,
+                renderTo: "toastarea",
+                duration: 3000
+            });
     });
     var result = await promise;
     $(".modalBG").fadeOut();

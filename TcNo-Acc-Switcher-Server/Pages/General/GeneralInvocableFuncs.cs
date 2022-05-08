@@ -156,6 +156,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     break;
                 case "RestartAsAdmin":
                     break;
+                case "ClearStats":
+                    AppStats.ClearStats();
+                    return Task.FromResult("success");
             }
 
             return Task.FromResult("");

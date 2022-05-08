@@ -159,6 +159,34 @@
     </label>
 </div>
 
+<div class="rowSetting">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="AppSett_MinimizeOnSwitch" @bind="AppSettings.MinimizeOnSwitch"><label class="form-check-label" for="AppSett_MinimizeOnSwitch"></label>
+    </div>
+    <label for="AppSett_MinimizeOnSwitch">
+        @Locale["Settings_MinimizeOnSwitch"]<br>
+    </label>
+</div>
+
+
+<div class="rowSetting">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="AppSett_CollectStats" @bind="AppSettings.StatsEnabled"><label class="form-check-label" for="AppSett_CollectStats"></label>
+    </div>
+    <label for="AppSett_CollectStats">
+        @Locale["Settings_CollectStats"]<br>
+    </label>
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="AppSett_ShareStats" @bind="AppSettings.StatsShare"><label class="form-check-label" for="AppSett_ShareStats"></label>
+    </div>
+    <label for="AppSett_ShareStats">
+        @Locale["Settings_ShareStats"]<br>
+    </label>
+
+    <button id="AppSett_ViewStats" type="button" onclick='showModal("ShowStats")'><span>@Locale["Settings_ViewStats"]</span></button>
+    <button id="AppSett_ClearStats" type="button" onclick='showModal("confirm:ClearStats")'><span>@Locale["Settings_ClearStats"]</span></button>
+</div>
 
 @code
 {

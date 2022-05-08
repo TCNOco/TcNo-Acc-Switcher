@@ -618,6 +618,9 @@ div.advancedClearingButtonCol .buttoncol {
 /* Footer icons */
 #btnSettings, #btnHelp {
   width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #btnSettings i, #btnHelp i {
   font-size: 16px;

@@ -432,6 +432,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new {platform = "Steam"}], renderTo: "toastarea");
             }
 
+            if (SteamSettings.AutoStart && AppSettings.MinimizeOnSwitch) _ = AppData.InvokeVoidAsync("hideWindow");
+
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             AppStats.IncrementSwitches("Steam");

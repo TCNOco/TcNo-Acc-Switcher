@@ -96,13 +96,13 @@
 	    }
 
         // If just 1 platform is showing, and first launch: Nav into:
-	    if (AppData.FirstLaunch && AData.SortedPlatformListHandleDisabled().Count == 1)
+	    if (AppData.FirstMainMenuVisit && AData.SortedPlatformListHandleDisabled().Count == 1)
 	    {
-	        AppData.FirstLaunch = false;
+	        AppData.FirstMainMenuVisit = false;
 	        var onlyPlatform = AData.SortedPlatformListHandleDisabled().First();
 	        Check(onlyPlatform);
 	    }
-	    AppData.FirstLaunch = false;
+	    AppData.FirstMainMenuVisit = false;
 
 	    if (firstRender)
 		{
@@ -112,8 +112,8 @@
 			//await AData.InvokeVoidAsync("initAccListSortable");
 		}
 
-        // Check for update in another thread
-	    new Thread(AppSettings.CheckForUpdate).Start();
+	    AppData.FirstLaunchCheck();
+
 	    AppStats.NewNavigation("/");
 	}
 }

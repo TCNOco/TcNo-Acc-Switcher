@@ -40,6 +40,10 @@ Settings_TrayMax: 'Max number of accounts to remember:'
 Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
 Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
 Settings_RTL: Show text as Right-to-Left
+Settings_CollectStats: Collect statistics
+Settings_ShareStats: Share stats annoymously (recommended)
+Settings_ViewStats: View stats
+Settings_ClearStats: Reset
 Settings_CurrentLocation: 'Current install location: {path}'
 Settings_CurrentDataLocation: 'Current user data location: {path}'
 Settings_SetDataLocation: "[Set custom user data location]"
@@ -67,6 +71,32 @@ Settings_Header_ClosingMethod: "(Advanced) Set method to close {platform}"
 Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
 Settings_AutoStart: "Automatically start {platform} on account switch"
 Settings_NoPlatforms: There are currently no platforms enabled. Please tick optional platforms below to enable them, or uncheck disabled platforms.
+Settings_MinimizeOnSwitch: Minimize switcher on account switch
+Stats_Disabled: "Statistics collection is disabled."
+Stats_InDepth: In-depth statistics breakdown
+Stats_ShareEnabled: "These statistics are shared anonymously and will add to the total <a href=\"{WebsiteLink}\" class=\"fancyLink\">here</a>."
+Stats_ShareDisabled: "These statistics are NOT shared anonymously and will NOT add to the total <a href=\"{WebsiteLink}\" class=\"fancyLink\">here</a>."
+Stats_OperatingSystem: "Operating system: "
+Stats_FirstLaunch: "First launch: "
+Stats_LaunchCount: "Launch count: "
+Stats_CrashCount: "Crash count: "
+Stats_MostUsedPlatform: "Most used platform: "
+Stats_TotalTime: "Total time spent in-app: "
+Stats_TotalSwitches: "Total account switches: "
+Stats_TotalGamesLaunched: "Total apps/games launched via switcher: "
+Stats_UniqueDaysLong: "Unique days with accounts switched: "
+Stats_LastUpload: "Last Upload: "
+Stats_SwitcherStats: "Switcher statistics: "
+Stats_PageStats: "Page statistics: "
+Stats_VisitsTotalTime: "{visits} total visits, {hours} total time"
+Stats_Accounts: "Accounts: "
+Stats_Switches: "Switches: "
+Stats_FirstActive: "First active: "
+Stats_LastActive: "Last active: "
+Stats_UniqueDays: "Unique days: "
+Stats_GameShortcuts: "Game shortcuts: "
+Stats_GameShortcutsHotbar: "Game shortcuts (on hotbar): "
+Stats_GamesLaunched: "Games launched: "
 Cleaning_Header_StartMenuShortcuts: 'Shortcuts for Start Menu:'
 Cleaning_Header_General: General Cleaning
 Cleaning_Header_LoginHistory: Clean my login history
@@ -190,6 +220,7 @@ Modal_Title_LocatePlatform: Please locate the {platform} directory
 Modal_Title_AddNew: Add new {platform} account
 Modal_Title_Background: Set a background image
 Modal_Title_Userdata: Set the user data folder
+Modal_Title_Stats: Your statistics
 Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
 Modal_SetBackground_Button: Set background
 Modal_SetBackground_ChooseImage: Choose local image
@@ -378,6 +409,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>You are about to forget an account!</h3> <h4>What does this mean?</h4> <p>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.<br/> - TcNo Account Switcher will also no longer show the account, until it's signed into again through Steam.</p> <p>Your account will remain untouched. It is just forgotten on this computer.</p><h4>Do you understand?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>You are about to forget an account!</h3> <h4>What does this mean?</h4> <p>TcNo Account Switcher will also no longer show the account,<br/> until it's signed into again through {platform}, and added to the list.</p> <p>Your account will remain untouched. It is just forgotten on this computer.</p> <h4>Do you understand?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>You are about to clear your statistics!</h3> <p>You can not undo this action.</p>
 Platform_DiscordPasteHint: Paste into Discord console, and then paste result in input!
 Platform_ClearCache: Clear Cache
 Platform_ClearCacheTotal: Clearing {totalFileCount} files ({totalSizeMB})
