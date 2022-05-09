@@ -26,7 +26,8 @@
   <img alt="Themes" src="/other/img/FAQButton.png" height=70"></a>
 </p>
   
-**A Super fast account switcher for Steam, Battle.net, Epic Games, Origin, Riot Games and Ubisoft (and more soon)**
+**A Superfast open-source account switcher for Steam, Battle.net, Epic Games, Origin, Riot Games, Ubisoft, and more**.
+							     
 **Saves NO passwords** or any user information*. Most switchers, including Steam work purely off changing a file and a few registry keys.
 *Wastes no time closing, switching and restarting Steam and other platforms.*<br />
 **NOTE:** Not created for cheating purposes. All it does is change accounts. Use it as you see fit, accepting responsibility.
