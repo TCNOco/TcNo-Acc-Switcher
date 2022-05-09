@@ -23,6 +23,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Data.Settings;
 
 namespace TcNo_Acc_Switcher_Server
 {
@@ -55,9 +56,9 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddSingleton<AppData>();
             _ = services.AddSingleton<BasicPlatforms>();
             _ = services.AddSingleton<CurrentPlatform>();
-            _ = services.AddSingleton<Data.Settings.BattleNet>();
-            _ = services.AddSingleton<Data.Settings.Basic>();
-            _ = services.AddSingleton<Data.Settings.Steam>();
+            _ = services.AddSingleton<BattleNet>();
+            _ = services.AddSingleton<Basic>();
+            _ = services.AddSingleton<Steam>();
             _ = services.AddSingleton<Lang>();
         }
 

@@ -23,6 +23,8 @@
 
 // Required arguments:
 // runas.exe <process path> <1/0 for admin> <optional arguments>
+
+using System.ComponentModel;
 using System.Diagnostics;
 
 if (args.Length < 2)
@@ -44,7 +46,7 @@ try
 {
     Directory.SetCurrentDirectory(Path.GetDirectoryName(args[0]) ?? Directory.GetCurrentDirectory());
 
-    Process.Start(new ProcessStartInfo()
+    Process.Start(new ProcessStartInfo
     {
         FileName = args[0],
         UseShellExecute = true,
@@ -55,7 +57,7 @@ try
         WorkingDirectory = Path.GetDirectoryName(args[0]) ?? Directory.GetCurrentDirectory()
     });
 }
-catch (System.ComponentModel.Win32Exception e)
+catch (Win32Exception e)
 {
     if (e.HResult != -2147467259) // Not because it was cancelled by user
         throw;

@@ -164,7 +164,7 @@ namespace TcNo_Acc_Switcher_Globals
             }
             catch (IOException e)
             {
-                Globals.WriteToLog("Failed to run InitWwwroot due to error. Another copy of the TcNo Account Switcher, or related software is likely running.", e);
+                WriteToLog("Failed to run InitWwwroot due to error. Another copy of the TcNo Account Switcher, or related software is likely running.", e);
             }
         }
 

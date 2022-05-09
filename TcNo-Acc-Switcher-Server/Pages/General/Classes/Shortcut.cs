@@ -15,6 +15,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Versioning;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
@@ -40,7 +41,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         public static string ParentDirectory(string dir) => dir[..dir.LastIndexOf(Path.DirectorySeparatorChar)];
         public bool ShortcutExist() => File.Exists(ShortcutPath);
         public string ShortcutDir() => Path.GetDirectoryName(ShortcutPath) ?? throw new InvalidOperationException();
-        public string GetSelfPath() => System.Reflection.Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe");
+        public string GetSelfPath() => Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe");
 
 
         /// <summary>

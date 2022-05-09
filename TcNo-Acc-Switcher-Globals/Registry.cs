@@ -92,7 +92,6 @@ namespace TcNo_Acc_Switcher_Globals
 
             try
             {
-                dynamic iVal = value;
                 using var key = rootKey.CreateSubKey(path);
                 if (value.StartsWith("(hex)"))
                 {

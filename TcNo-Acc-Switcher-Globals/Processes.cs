@@ -280,7 +280,7 @@ namespace TcNo_Acc_Switcher_Globals
                     if (!File.Exists(runasPath)) throw new Exception("Could not find runas.exe");
 
                     // This runas.exe program is a temporary workaround for processes closing when this closes.
-                    prodStartInfo = new ProcessStartInfo()
+                    prodStartInfo = new ProcessStartInfo
                     {
                         FileName = runasPath,
                         Arguments = $"\"{fileName}\" {(elevated ? "1" : "0")} {args}",
@@ -290,7 +290,7 @@ namespace TcNo_Acc_Switcher_Globals
                 }
                 else
                 {
-                    prodStartInfo = new ProcessStartInfo()
+                    prodStartInfo = new ProcessStartInfo
                     {
                         FileName = fileName,
                         Arguments = args,
@@ -432,8 +432,7 @@ namespace TcNo_Acc_Switcher_Globals
 
                     // Start the target process with the new token.
                     var si = new NativeMethods.StartupInfo();
-                    var pi = new NativeMethods.ProcessInformation();
-                    if (!NativeMethods.CreateProcessWithTokenW(hPrimaryToken, 0, fileName, args, 0, IntPtr.Zero, Path.GetDirectoryName(fileName), ref si, out pi))
+                    if (!NativeMethods.CreateProcessWithTokenW(hPrimaryToken, 0, fileName, args, 0, IntPtr.Zero, Path.GetDirectoryName(fileName), ref si, out _))
                     {
                         WriteToLog("FAILED: RunAsDesktopUser - CreateProcessWithTokenW" + fileName);
                         return false;
@@ -499,7 +498,6 @@ namespace TcNo_Acc_Switcher_Globals
                 try
                 {
                     handle = proc.Handle;
-                    var test = proc.MainModule?.FileName;
                     return IsHandleAdmin(handle);
                 }
                 catch (Exception)
@@ -507,7 +505,6 @@ namespace TcNo_Acc_Switcher_Globals
                     try
                     {
                         handle = proc.MainWindowHandle;
-                        var test = proc.MainModule?.FileName;
                         return IsHandleAdmin(handle);
                     }
                     catch (Exception a)

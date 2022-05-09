@@ -24,6 +24,7 @@ using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using Index = TcNo_Acc_Switcher_Server.Pages.Steam.Index;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -101,7 +102,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             DiscordClient ??= new DiscordRpcClient("973188269405765682")
             {
-                Logger = new ConsoleLogger() { Level = LogLevel.Warning },
+                Logger = new ConsoleLogger { Level = LogLevel.Warning },
             };
             if (!DiscordClient.IsInitialized) DiscordClient.Initialize();
             else timestamp = DiscordClient.CurrentPresence.Timestamps;
@@ -114,7 +115,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
 
 
-            DiscordClient.SetPresence(new RichPresence()
+            DiscordClient.SetPresence(new RichPresence
             {
                 Details = Lang["Discord_Status"],
                 State = state,
@@ -124,7 +125,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     Url = "https://github.com/TcNobo/TcNo-Acc-Switcher/",
                     Label = Lang["Website"]
                 }},
-                Assets = new Assets()
+                Assets = new Assets
                 {
                     LargeImageKey = "switcher",
                     LargeImageText = "TcNo Account Switcher"
@@ -139,8 +140,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         private JToken _bNetAccountsList;
         public static JToken BNetAccountsList { get => Instance._bNetAccountsList; set => Instance._bNetAccountsList = value; }
 
-        private List<Pages.Steam.Index.Steamuser> _steamUsers;
-        public static List<Pages.Steam.Index.Steamuser> SteamUsers { get => Instance._steamUsers; set => Instance._steamUsers = value; }
+        private List<Index.Steamuser> _steamUsers;
+        public static List<Index.Steamuser> SteamUsers { get => Instance._steamUsers; set => Instance._steamUsers = value; }
 
         #endregion
 
@@ -185,11 +186,6 @@ namespace TcNo_Acc_Switcher_Server.Data
                 return Instance._platformList;
             }
             set => Instance._platformList = value;
-        }
-
-        public List<string> SortedPlatformList()
-        {
-            return GenericFunctions.OrderAccounts(Instance.PlatformList, "Settings\\platformOrder.json");
         }
 
         public List<string> SortedPlatformListHandleDisabled() => GenericFunctions.OrderAccounts(

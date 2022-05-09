@@ -141,8 +141,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             return "";
         }
 
-        public static void StartPlatform(){}
-
 
         [SupportedOSPlatform("windows")]
         private static bool ClearCurrentLoginBasic()
@@ -359,7 +357,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         /// <returns></returns>
         public static string ExpandEnvironmentVariables(string path, bool noIncludeBasicCheck = false)
         {
-            var variables = new Dictionary<string, string>()
+            var variables = new Dictionary<string, string>
             {
                 { "%TCNO_UserData%", Globals.UserDataFolder },
                 { "%TCNO_AppData%", Globals.AppDataFolder },

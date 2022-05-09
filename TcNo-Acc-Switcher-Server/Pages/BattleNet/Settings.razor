@@ -17,9 +17,9 @@
     iR3turnZ: https://github.com/HoeblingerDaniel*@
 
 @page "/BattleNet/Settings"
-@using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @using TcNo_Acc_Switcher_Server.Data
-@using BattleNet = TcNo_Acc_Switcher_Server.Data.Settings.BattleNet;
+@using TcNo_Acc_Switcher_Server.Data.Settings
+@using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 @inject NavigationManager NavManager
 @inject AppData AData
@@ -105,7 +105,7 @@
                 </button>
             </div>
             <div class="buttoncol">
-                <button id="OpenFolder" type="button" @onclick="() => Data.Settings.Basic.OpenFolder(BattleNet.FolderPath)">
+                <button id="OpenFolder" type="button" @onclick="() => Basic.OpenFolder(BattleNet.FolderPath)">
                     <span>@Locale["Settings_OpenFolder", new { platform = Platform }]</span>
                 </button>
                 <button id="ClearForgotten" type="button" @onclick="ClearForgotten">

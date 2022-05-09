@@ -28,11 +28,11 @@ using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Data.Settings;
+using TcNo_Acc_Switcher_Server.Pages.Basic;
+using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Pages.Steam;
 using static TcNo_Acc_Switcher_Client.MainWindow;
-using AppSettings = TcNo_Acc_Switcher_Server.Data.AppSettings;
-using MessageBox = System.Windows.MessageBox;
-using Path = System.IO.Path;
 
 namespace TcNo_Acc_Switcher_Client
 {
@@ -118,10 +118,8 @@ namespace TcNo_Acc_Switcher_Client
                         Environment.Exit(0);
                         return;
                     }
-                    else
-                    {
-                        _ = NativeFuncs.FreeConsole();
-                    }
+
+                    _ = NativeFuncs.FreeConsole();
                 }
 
             }
@@ -296,10 +294,14 @@ namespace TcNo_Acc_Switcher_Client
                 // Otherwise: It has probably just closed. Wait a few and try again
                 Thread.Sleep(2000); // 2 seconds before just making sure -- Might be an admin restart
 
-                if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
-
                 // Ignore other processes running while in DEBUG mode.
+                var release = false;
 #if RELEASE
+release = true;
+#endif
+                if (Mutex.WaitOne(TimeSpan.Zero, true)) return;
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                if (!release) return;
                 // Try to show from tray, as user may not know it's hidden there.
                 string text;
                 if (!NativeFuncs.BringToFront())
@@ -333,7 +335,6 @@ namespace TcNo_Acc_Switcher_Client
 
 	                Environment.Exit(1056); // 1056	An instance of the service is already running.
                 }
-#endif
             }
             catch (AbandonedMutexException)
             {
@@ -408,7 +409,8 @@ namespace TcNo_Acc_Switcher_Client
                         availableList.Sort();
                         switchList.Sort();
 
-                        var helpLines = new List<string>(){
+                        var helpLines = new List<string>
+                        {
                             "This is the command line interface. You are able to use any of the following arguments with this program:",
                             "--- Switching to accounts ---",
                             "Usage (don't include spaces): + <PlatformLetter> : <...details>",
@@ -417,7 +419,7 @@ namespace TcNo_Acc_Switcher_Client
                         };
                         helpLines.AddRange(switchList);
 
-                        helpLines.AddRange(new List<string>()
+                        helpLines.AddRange(new List<string>
                         {
                             " --- Other platforms: +<2-3 letter code>:<unique identifiers>",
                             "--- Log out of accounts ---",
@@ -427,7 +429,7 @@ namespace TcNo_Acc_Switcher_Client
                             " -   Steam: s, steam",
                         });
                         helpLines.AddRange(availableList);
-                        helpLines.AddRange(new List<string>()
+                        helpLines.AddRange(new List<string>
                         {
                             " --- Other platforms via custom commands: <unique identifiers>",
                             "--- Other arguments ---",
@@ -476,7 +478,7 @@ namespace TcNo_Acc_Switcher_Client
                         Globals.WriteToLog("Battle.net switch requested");
                         if (!GeneralFuncs.CanKillProcess(BattleNet.Processes))
                             Restart(combinedArgs, true);
-                        _ = TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherFuncs.SwapBattleNetAccounts(account, string.Join(' ', remainingArguments));
+                        _ = BattleNetSwitcherFuncs.SwapBattleNetAccounts(account, string.Join(' ', remainingArguments));
                         return;
                     }
                 // Steam
@@ -485,7 +487,7 @@ namespace TcNo_Acc_Switcher_Client
                         // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
                         Globals.WriteToLog("Steam switch requested");
                         if (!GeneralFuncs.CanKillProcess(TcNo_Acc_Switcher_Server.Data.Settings.Steam.Processes)) Restart(combinedArgs, true);
-                        TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
+                        SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
                             ePersonaState: command.Length > 2
                                 ? int.Parse(command[2])
                                 : -1, args: string.Join(' ', remainingArguments)); // Request has a PersonaState in it
@@ -499,7 +501,7 @@ namespace TcNo_Acc_Switcher_Client
                     BasicPlatforms.SetCurrentPlatformFromShort(platform);
                     Globals.WriteToLog(CurrentPlatform.FullName + " switch requested");
                     if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
-                    TcNo_Acc_Switcher_Server.Pages.Basic.BasicSwitcherFuncs.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
+                    BasicSwitcherFuncs.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
                     break;
             }
         }
@@ -519,14 +521,14 @@ namespace TcNo_Acc_Switcher_Client
                 case "battlenet":
                 case "blizzard":
                     Globals.WriteToLog("Battle.net logout requested");
-                    await TcNo_Acc_Switcher_Server.Pages.BattleNet.BattleNetSwitcherBase.NewLogin_BattleNet();
+                    await BattleNetSwitcherBase.NewLogin_BattleNet();
                     break;
 
                 // Steam
                 case "s":
                 case "steam":
                     Globals.WriteToLog("Steam logout requested");
-                    TcNo_Acc_Switcher_Server.Pages.Steam.SteamSwitcherBase.NewLogin_Steam();
+                    SteamSwitcherBase.NewLogin_Steam();
                     break;
 
                 // BASIC ACCOUNT PLATFORM
@@ -535,7 +537,7 @@ namespace TcNo_Acc_Switcher_Client
                     // Is a basic platform!
                     BasicPlatforms.SetCurrentPlatformFromShort(platform);
                     Globals.WriteToLog(CurrentPlatform.FullName + " logout requested");
-                    TcNo_Acc_Switcher_Server.Pages.Basic.BasicSwitcherBase.NewLogin_Basic();
+                    BasicSwitcherBase.NewLogin_Basic();
                     break;
             }
         }

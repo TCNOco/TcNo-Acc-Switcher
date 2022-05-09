@@ -18,12 +18,10 @@ using System.IO;
 using System.Linq;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
-using SteamKit2;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
-using Index = TcNo_Acc_Switcher_Server.Pages.Steam.Index;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
@@ -163,7 +161,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         {
                             // Not found in list, so add!
                             var last = 0;
-                            foreach (var (k,v) in Shortcuts)
+                            foreach (var (k,_) in Shortcuts)
                                 if (k > last) last = k;
                             last += 1;
                             Shortcuts.Add(last, f.Name); // Organization added later

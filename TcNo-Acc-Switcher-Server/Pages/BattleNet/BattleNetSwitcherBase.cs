@@ -24,13 +24,14 @@ using HtmlAgilityPack;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 {
     public class BattleNetSwitcherBase
     {
-        private static readonly Data.Lang Lang = Data.Lang.Instance;
+        private static readonly Lang Lang = Lang.Instance;
 
         /// <summary>
         /// JS function handler for swapping to another Battle.net account.

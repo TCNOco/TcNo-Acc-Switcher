@@ -33,8 +33,6 @@ using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
-using Task = System.Threading.Tasks.Task;
-
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -90,7 +88,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private static readonly Lang Lang = Lang.Instance;
         private string _lastHash = "";
-        private bool _currentlyModifying = false;
+        private bool _currentlyModifying;
         public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
 
         // Variables
@@ -107,19 +105,19 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("ActiveTheme", Order = 10)] private string _activeTheme = "Dracula_Cyan";
         [JsonProperty("ActiveBrowser", Order = 11)] private string _activeBrowser = "WebView";
         [JsonProperty("Background", Order = 12)] private string _background = "";
-        [JsonProperty("EnabledBasicPlatforms", Order = 13)] private HashSet<string> _enabledBasicPlatforms = null;
+        [JsonProperty("EnabledBasicPlatforms", Order = 13)] private HashSet<string> _enabledBasicPlatforms;
         [JsonProperty("CollectStats", Order = 14)] private bool _statsEnabled = true;
         [JsonProperty("ShareAnonymousStats", Order = 15)] private bool _statsShare = true;
         [JsonProperty("MinimizeOnSwitch", Order = 16)] private bool _minimizeOnSwitch;
         [JsonProperty("DiscordRpcEnabled", Order = 17)] private bool _discordRpc = true;
         [JsonProperty("DiscordRpcShareTotalSwitches", Order = 18)] private bool _discordRpcShare = true;
-        [Newtonsoft.Json.JsonIgnore] private bool _desktopShortcut;
-        [Newtonsoft.Json.JsonIgnore] private bool _startMenu;
-        [Newtonsoft.Json.JsonIgnore] private bool _startMenuPlatforms;
-        [Newtonsoft.Json.JsonIgnore] private bool _protocolEnabled;
-        [Newtonsoft.Json.JsonIgnore] private bool _trayStartup;
-        [Newtonsoft.Json.JsonIgnore] private bool _updateCheckRan;
-        [Newtonsoft.Json.JsonIgnore] private bool _preRenderUpdate;
+        [JsonIgnore] private bool _desktopShortcut;
+        [JsonIgnore] private bool _startMenu;
+        [JsonIgnore] private bool _startMenuPlatforms;
+        [JsonIgnore] private bool _protocolEnabled;
+        [JsonIgnore] private bool _trayStartup;
+        [JsonIgnore] private bool _updateCheckRan;
+        [JsonIgnore] private bool _preRenderUpdate;
 
         public static string Language { get => Instance._lang; set => Instance._lang = value; }
         public static bool Rtl { get => Instance._rtl; set => Instance._rtl = value; }
@@ -176,7 +174,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private static bool UpdateCheckRan { get =>Instance._updateCheckRan; set => Instance._updateCheckRan = value; }
         public static bool PreRenderUpdate { get =>Instance._preRenderUpdate; set => Instance._preRenderUpdate = value; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public static string PlatformContextMenu =>
             Lang == null ? "" : $@"[
               {{""{Lang["Context_HidePlatform"]}"": ""hidePlatform()""}},
@@ -287,13 +285,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             return Task.CompletedTask;
         }
 
-
-        public static void ResetSettings()
-        {
-            StreamerModeEnabled = true;
-            SaveSettings();
-        }
-
         #region STYLESHEET
 
         public static string TryGetStyle(string key)
@@ -367,7 +358,6 @@ namespace TcNo_Acc_Switcher_Server.Data
 #endif
             {
                 // Check if SCSS file exists.
-                var temp = Directory.GetCurrentDirectory();
                 var scss = StylesheetFile.Replace("css", "scss");
                 if (File.Exists(scss)) GenCssFromScss(scss);
                 else
@@ -404,7 +394,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             ScssResult convertedScss;
             try
             {
-                convertedScss = Scss.ConvertFileToCss(scss, new ScssOptions() { InputFile = scss, OutputFile = StylesheetFile });
+                convertedScss = Scss.ConvertFileToCss(scss, new ScssOptions { InputFile = scss, OutputFile = StylesheetFile });
             }
             catch (ScssException e)
             {
@@ -673,11 +663,9 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 return ParseDWordColor(accentColorDWord);
             }
-            else
-            {
-                const string valueExMsg = "The \"HKCU\\Software\\Microsoft\\Windows\\DWM\\AccentColor\" registry key value could not be parsed as an ABGR color.";
-                throw new InvalidOperationException(valueExMsg);
-            }
+
+            const string valueExMsg = "The \"HKCU\\Software\\Microsoft\\Windows\\DWM\\AccentColor\" registry key value could not be parsed as an ABGR color.";
+            throw new InvalidOperationException(valueExMsg);
         }
 
         private static (byte r, byte g, byte b) ParseDWordColor(int color)

@@ -22,6 +22,7 @@ using System.Text.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -186,11 +187,11 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                 // Reload context menus if language changes
                 if (AppData.InitializedClasses.Steam)
-                    Settings.Steam.InitLang();
+                    Steam.InitLang();
                 if (AppData.InitializedClasses.BattleNet)
-                    Settings.BattleNet.InitLang();
+                    BattleNet.InitLang();
                 if (AppData.InitializedClasses.Basic)
-                    Settings.Basic.InitLang();
+                    Basic.InitLang();
 
                 return true;
             }

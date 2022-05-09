@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
@@ -48,13 +49,13 @@ namespace TcNo_Acc_Switcher_Server.Data
             switch (platform)
             {
                 case "Steam":
-                    Settings.Steam.SaveSettings();
+                    Steam.SaveSettings();
                     break;
                 case "BattleNet":
-                    Settings.BattleNet.SaveSettings();
+                    BattleNet.SaveSettings();
                     break;
                 case "Basic":
-                    Settings.Basic.SaveSettings();
+                    Basic.SaveSettings();
                     break;
             }
             _ = GeneralInvocableFuncs.ShowToast("success", Lang["Saved"], renderTo:"toastarea");

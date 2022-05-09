@@ -53,8 +53,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         }
         #endregion
 
-        private static bool _currentlyBackingUp = false;
-        private static bool _currentlyRestoring = false;
+        private static bool _currentlyBackingUp;
+        private static bool _currentlyRestoring;
         private async void RestoreFile(InputFileChangeEventArgs e)
         {
             if (!_currentlyRestoring)

@@ -35,8 +35,6 @@ using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server;
 using TcNo_Acc_Switcher_Server.Data;
-using MessageBox = System.Windows.MessageBox;
-using MessageBoxOptions = System.Windows.MessageBoxOptions;
 using Point = System.Drawing.Point;
 
 namespace TcNo_Acc_Switcher_Client
@@ -49,7 +47,6 @@ namespace TcNo_Acc_Switcher_Client
     public partial class MainWindow
     {
         private static readonly Thread Server = new(RunServer);
-        public static readonly AppSettings AppSettings = AppSettings.Instance;
         private static string _address = "";
         private readonly string _mainBrowser = AppSettings.ActiveBrowser; // <CEF/WebView>
 
@@ -208,7 +205,7 @@ namespace TcNo_Acc_Switcher_Client
         private static void InitializeChromium()
         {
             Globals.DebugWriteLine(@"[Func:(Client-CEF)MainWindow.xaml.cs.InitializeChromium]");
-            var settings = new CefSettings()
+            var settings = new CefSettings
             {
                 CachePath = Path.Join(Globals.UserDataFolder, "CEF\\Cache"),
                 UserAgent = "TcNo-CEF 1.0",
@@ -285,12 +282,12 @@ namespace TcNo_Acc_Switcher_Client
         private void MViewUrlChanged(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
             Globals.DebugWriteLine(@"[Func:(Client)MainWindow.xaml.cs.UrlChanged]");
-            UrlChanged(args.Uri, args);
+            UrlChanged(args.Uri);
         }
         /// <summary>
         /// Rungs on URI change in the WebView.
         /// </summary>
-        private void UrlChanged(string uri, CoreWebView2NavigationStartingEventArgs mViewArgs = null)
+        private void UrlChanged(string uri)
         {
             Globals.WriteToLog(uri);
 

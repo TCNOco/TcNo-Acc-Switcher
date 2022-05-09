@@ -22,7 +22,6 @@
 #include <Windows.h>
 #include <filesystem>
 
-#include <climits>
 #include <cstdlib>
 
 int main(int argc, char* argv[])

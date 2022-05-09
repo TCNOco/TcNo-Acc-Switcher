@@ -14,15 +14,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.IconLib;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Drawing;
-using System.Drawing.IconLib;
 using System.Runtime.Versioning;
-using ShellLink;
 using System.Text.RegularExpressions;
 using SevenZip;
+using ShellLink;
 
 namespace TcNo_Acc_Switcher_Globals
 {

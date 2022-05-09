@@ -68,10 +68,6 @@ namespace TcNo_Acc_Switcher_Client
                     "cache\\SteamMasterAppList.json");
                 // Contains "applist":{ "apps":[ {"appid":<appid>,"name":<name>}, {}... ] }
             }
-            else
-            {
-
-            }
         }
 
         private void GetAppNames(string[] appId)

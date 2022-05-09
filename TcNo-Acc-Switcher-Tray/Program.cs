@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -191,7 +192,7 @@ namespace TcNo_Acc_Switcher_Tray
                         startInfo.Arguments = args;
                         _ = Process.Start(startInfo);
                     }
-                    catch (System.ComponentModel.Win32Exception win32Exception)
+                    catch (Win32Exception win32Exception)
                     {
                         if (win32Exception.HResult != -2147467259) throw; // Throw is error is not: Requires elevation
                         try
@@ -201,7 +202,7 @@ namespace TcNo_Acc_Switcher_Tray
                             _ = Process.Start(startInfo);
                         }
 
-                        catch (System.ComponentModel.Win32Exception win32Exception2)
+                        catch (Win32Exception win32Exception2)
                         {
                             if (win32Exception2.HResult != -2147467259) throw; // Throw is error is not: cancelled by user
                         }

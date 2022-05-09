@@ -53,12 +53,13 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static bool PlatformExists(string platform) => ((JObject)GetPlatforms).ContainsKey(platform);
         public static bool PlatformExistsFromShort(string id) => ((JObject)GetPlatforms).ContainsKey(PlatformFullName(id));
 
-        // ---------------
+        /* ---------------
         public static void SetCurrentPlatform(string platform)
         {
             CurrentPlatform.Instance = new CurrentPlatform();
             CurrentPlatform.Instance.CurrentPlatformInit(platform);
         }
+        */
         public static void SetCurrentPlatformFromShort(string id)
         {
             CurrentPlatform.Instance = new CurrentPlatform();
@@ -107,23 +108,16 @@ namespace TcNo_Acc_Switcher_Server.Data
                 PlatformDict.Add(identifiers[0], x.Name);
             }
         }
-        public static List<KeyValuePair<string, string>> InactivePlatformsSorted()
-        {
-            var inactive = InactivePlatforms().ToList();
-            inactive.Sort((p1, p2) => string.Compare(p1.Key, p2.Key, StringComparison.Ordinal));
-            return inactive;
-        }
+
         public static string PlatformFullName(string id) => PlatformDict.ContainsKey(id) ? PlatformDict[id] : id;
         public static string PlatformSafeName(string id) =>
             PlatformDict.ContainsKey(id) ? Globals.GetCleanFilePath(PlatformDict[id]) : id;
         public static string PrimaryIdFromPlatform(string platform) => PlatformDictAllPossible.FirstOrDefault(x => x.Value == platform).Key;
         public static string GetExeNameFromPlatform(string platform) => Path.GetFileName((string)((JObject)GetPlatforms[platform])?["ExeLocationDefault"]);
-        public static List<string> GetAllPrimaryIds() => PlatformDict.Keys.ToList();
     }
 
     public sealed class CurrentPlatform
     {
-        public CurrentPlatform() { }
         // Make this a singleton
         private static CurrentPlatform _instance = new();
         private static readonly object LockObj = new();
@@ -161,14 +155,14 @@ namespace TcNo_Acc_Switcher_Server.Data
         private List<string> _shortcutIgnore = new();
         private List<string> _pathListToClear;
         private bool _shortcutIncludeMainExe = true;
-        private bool _searchStartMenuForIcon = false;
+        private bool _searchStartMenuForIcon;
         private bool _hasRegistryFiles;
         // Extras
-        private bool _hasExtras = false;
+        private bool _hasExtras;
         private string _usernameModalExtraButtons = "";
         private string _userModalCopyText = "";
         private string _userModalHintText = "";
-        private List<string> _cachePaths = null;
+        private List<string> _cachePaths;
         private string _profilePicFromFile = "";
         private string _profilePicPath = "";
         private string _profilePicRegex = "";
@@ -177,7 +171,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private List<string> _backupFileTypesInclude = new();
         private string _closingMethod = "Combined";
         private string _startingMethod = "Default";
-        private bool _regDeleteOnClear = false;
+        private bool _regDeleteOnClear;
 
         // Optional
         private string _uniqueIdFile = "";
@@ -198,7 +192,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static string SafeName { get => Instance._safeName; private set => Instance._safeName = value; }
         public static string SettingsFile { get => Instance._settingsFile; private set => Instance._settingsFile = value; }
         public static string ExeName { get => Instance._exeName; private set => Instance._exeName = value; }
-        public static Dictionary<string, string> LoginFiles { get => Instance._loginFiles; private set => Instance._loginFiles = value; }
+        public static Dictionary<string, string> LoginFiles => Instance._loginFiles;
         public static List<string> ShortcutFolders { get => Instance._shortcutFolders; private set => Instance._shortcutFolders = value; }
         public static List<string> ShortcutIgnore { get => Instance._shortcutIgnore; private set => Instance._shortcutIgnore = value; }
         public static List<string> PathListToClear { get => Instance._pathListToClear; private set => Instance._pathListToClear = value; }
@@ -223,7 +217,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static string ProfilePicFromFile { get => Instance._profilePicFromFile; private set => Instance._profilePicFromFile = value; }
         public static string ProfilePicPath { get => Instance._profilePicPath; private set => Instance._profilePicPath = value; }
         public static string ProfilePicRegex { get => Instance._profilePicRegex; private set => Instance._profilePicRegex = value; }
-        public static Dictionary<string, string> BackupPaths { get => Instance._backupPaths; private set => Instance._backupPaths = value; }
+        public static Dictionary<string, string> BackupPaths => Instance._backupPaths;
         public static List<string> BackupFileTypesIgnore { get => Instance._backupFileTypesIgnore; private set => Instance._backupFileTypesIgnore = value; }
         public static List<string> BackupFileTypesInclude { get => Instance._backupFileTypesInclude; private set => Instance._backupFileTypesInclude = value; }
         public static string ClosingMethod { get => Instance._closingMethod; set => Instance._closingMethod = value; }
@@ -406,7 +400,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                         {
                             // Not found in list, so add!
                             var last = 0;
-                            foreach (var (k,v) in Basic.Shortcuts)
+                            foreach (var (k,_) in Basic.Shortcuts)
                                 if (k > last) last = k;
                             last += 1;
                             Basic.Shortcuts.Add(last, f.Name); // Organization added later

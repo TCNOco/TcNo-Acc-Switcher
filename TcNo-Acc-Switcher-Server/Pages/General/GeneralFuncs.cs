@@ -15,6 +15,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -28,6 +29,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Pages.Basic;
+using TcNo_Acc_Switcher_Server.Pages.BattleNet;
+using TcNo_Acc_Switcher_Server.Pages.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
 {
@@ -189,7 +193,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.RecursiveDelete($"LoginCache\\{platform}\\{accName}", false);
 
             // Remove image
-            Globals.DeleteFile(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{platform}\\{Globals.GetCleanFilePath(accName)}.jpg"));
+            Globals.DeleteFile(Path.Join(WwwRoot(), $"\\img\\profiles\\{platform}\\{Globals.GetCleanFilePath(accName)}.jpg"));
 
             // Remove from Tray
             Globals.RemoveTrayUser(platform, accName); // Add to Tray list
@@ -305,7 +309,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             //From https://stackoverflow.com/questions/8846654/read-image-and-determine-if-its-corrupt-c-sharp
             try
             {
-                using var bmp = new System.Drawing.Bitmap(filename);
+                using var bmp = new Bitmap(filename);
                 return true;
             }
             catch
@@ -730,17 +734,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                         return;
 
                     case "BattleNet":
-                        await BattleNet.BattleNetSwitcherFuncs.LoadProfiles();
+                        await BattleNetSwitcherFuncs.LoadProfiles();
                         Data.Settings.BattleNet.SaveSettings();
                         break;
 
                     case "Steam":
-                        await Steam.SteamSwitcherFuncs.LoadProfiles();
+                        await SteamSwitcherFuncs.LoadProfiles();
                         Data.Settings.Steam.SaveSettings();
                         break;
 
                     default:
-                        Basic.BasicSwitcherFuncs.LoadProfiles();
+                        BasicSwitcherFuncs.LoadProfiles();
                         Data.Settings.Basic.SaveSettings();
                         break;
                 }

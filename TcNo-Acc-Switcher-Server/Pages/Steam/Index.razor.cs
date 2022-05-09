@@ -14,7 +14,6 @@
 
 using Newtonsoft.Json;
 
-
 namespace TcNo_Acc_Switcher_Server.Pages.Steam
 {
     public partial class Index

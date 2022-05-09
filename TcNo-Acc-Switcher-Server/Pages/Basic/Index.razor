@@ -13,11 +13,11 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @page "/Basic/"
-@using Microsoft.AspNetCore.WebUtilities
 @using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.IO
-@using Basic = Data.Settings.Basic
+@using Microsoft.AspNetCore.WebUtilities
 @inject AppData AData
 @inject IJSRuntime JsRuntime
 @{ AData.SetActiveIJsRuntime(JsRuntime); }

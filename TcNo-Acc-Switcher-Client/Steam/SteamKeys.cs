@@ -40,7 +40,7 @@ namespace TcNo_Acc_Switcher_Client.Steam
             };
 
             // Assign client if not already
-            _client ??= new HttpClient() { BaseAddress = baseAddress };
+            _client ??= new HttpClient { BaseAddress = baseAddress };
 
             _client.DefaultRequestHeaders.Add("Cookie", cookie);
             var response = _client.SendAsync(httpRequestMessage).Result;
@@ -65,7 +65,7 @@ namespace TcNo_Acc_Switcher_Client.Steam
             if (!success && json.ContainsKey("purchase_result_details"))
             {
                 var resultCode = json.Value<int>("purchase_result_details");
-                var codeText = "";
+                var codeText;
                 switch (resultCode)
                 {
                     case 9:

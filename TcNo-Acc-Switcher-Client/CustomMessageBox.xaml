@@ -8,7 +8,7 @@
         MinHeight="180" MinWidth="510"
 		Height="250" Width="650"
         Background="#253340" d:DesignWidth="510.5" d:DesignHeight="190.5">
-	<Grid Name="MainContent" Width="Auto" Height="Auto">
+	<Grid Width="Auto" Height="Auto">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>

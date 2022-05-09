@@ -13,15 +13,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @page "/Steam/Settings"
-@using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @using TcNo_Acc_Switcher_Server.Data
-@using Task = System.Threading.Tasks.Task
-@using Steam = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
-@using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
-@using System.IO
-@using System.Threading
+@using TcNo_Acc_Switcher_Server.Pages.General.Classes
 @using System.Diagnostics
+@using System.IO
+@using TcNo_Acc_Switcher_Globals
+@using System.Threading
 @namespace TcNo_Acc_Switcher_Server.Pages.Steam
 @inject NavigationManager NavManager
 @inject AppData AData
@@ -149,7 +148,7 @@
 
 
             <h2 class="SettingsHeader">@Locale["Settings_Header_OtherTools"]</h2>
-            <div class="buttoncol"><button id="OpenFolder" type="button" @onclick="() => Data.Settings.Basic.OpenFolder(Steam.FolderPath)"><span>@Locale["Settings_OpenFolder", new { platform = Platform }]</span></button><button id="Steam_AdvancedClearing" type="button" @onclick='() => NavManager.NavigateTo("/Steam/AdvancedClearing")'><span>@Locale["Button_AdvancedCleaning"]</span></button></div>
+            <div class="buttoncol"><button id="OpenFolder" type="button" @onclick="() => Basic.OpenFolder(Steam.FolderPath)"><span>@Locale["Settings_OpenFolder", new { platform = Platform }]</span></button><button id="Steam_AdvancedClearing" type="button" @onclick='() => NavManager.NavigateTo("/Steam/AdvancedClearing")'><span>@Locale["Button_AdvancedCleaning"]</span></button></div>
             <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
 
             <SharedSettings />
@@ -210,7 +209,7 @@
         ".cfg", ".ini", ".dat", ".db", ".json", ".ProfileData", ".sav", ".save", ".nfo",".txt", ".vcfg", ".vdf", ".vdf_last", ".vrmanifest", ".xml"
     };
 
-    private static bool _currentlyBackingUp = false;
+    private static bool _currentlyBackingUp;
 
     /// <summary>
     /// Backs up platform folders, settings, etc - as defined in the platform settings json
@@ -296,7 +295,7 @@
     }
 
 
-    private static bool _currentlyRestoring = false;
+    private static bool _currentlyRestoring;
     private async void RestoreFile(InputFileChangeEventArgs e)
     {
         if (!_currentlyRestoring)

@@ -157,12 +157,6 @@ namespace TcNo_Acc_Switcher_Server.Converters
             CalcSteamId64();
         }
 
-        public string PrintAll()
-        {
-            Globals.DebugWriteLine(@"[Func:Converters\SteamIdConvert.PrintAll]");
-            return $"SteamID: {Id}\nSteamID3: {Id3}\nSteamID32: {Id32}\nSteamID64: {Id64}";
-        }
-
         public class SteamIdConvertException : Exception
         {
             public SteamIdConvertException(string message) : base(message)

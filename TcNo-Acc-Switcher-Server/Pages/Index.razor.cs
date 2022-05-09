@@ -17,7 +17,6 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
-
 using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
 using BattleNetSettings = TcNo_Acc_Switcher_Server.Data.Settings.BattleNet;
 using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;

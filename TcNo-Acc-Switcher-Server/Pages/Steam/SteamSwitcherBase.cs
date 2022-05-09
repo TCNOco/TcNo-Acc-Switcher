@@ -17,6 +17,7 @@ using System.IO;
 using System.Runtime.Versioning;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Converters;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
@@ -38,16 +39,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             switch (request)
             {
                 case "SteamId":
-                    GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id);
+                    GenericFunctions.CopyToClipboard(new SteamIdConvert(anySteamId).Id);
                     break;
                 case "SteamId3":
-                    GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id3);
+                    GenericFunctions.CopyToClipboard(new SteamIdConvert(anySteamId).Id3);
                     break;
                 case "SteamId32":
-                    GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id32);
+                    GenericFunctions.CopyToClipboard(new SteamIdConvert(anySteamId).Id32);
                     break;
                 case "SteamId64":
-                    GenericFunctions.CopyToClipboard(new Converters.SteamIdConvert(anySteamId).Id64);
+                    GenericFunctions.CopyToClipboard(new SteamIdConvert(anySteamId).Id64);
                     break;
             }
         }
@@ -78,7 +79,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         [JSInvokable]
         public static void SteamOpenUserdata(string steamId)
         {
-            var steamId32 = new Converters.SteamIdConvert(steamId);
+            var steamId32 = new SteamIdConvert(steamId);
             var folder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{steamId32.Id32}");
             if (Directory.Exists(folder)) _ = Process.Start("explorer.exe", folder);
             else _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"], "toastarea");

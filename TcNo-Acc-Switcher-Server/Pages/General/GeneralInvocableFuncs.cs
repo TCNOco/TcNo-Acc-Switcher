@@ -15,21 +15,22 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
-using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
+using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
-using Task = System.Threading.Tasks.Task;
+using TcNo_Acc_Switcher_Server.Pages.Steam;
 using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
 using BattleNetSettings = TcNo_Acc_Switcher_Server.Data.Settings.BattleNet;
 using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
@@ -357,7 +358,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 return "";
             }
 
-            var s = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
+            var s = CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
 
             List<string> allAccountsTable = new();
             if (platform == "Steam")
@@ -446,8 +447,37 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static string GiLocaleObj(string k, object obj) => Lang.Instance[k, obj];
 
         [JSInvokable]
-        public static string GiCrowdinList() => new System.Net.Http.HttpClient().GetStringAsync(
+        public static string GiCrowdinList()
+        {
+            var html = new HttpClient().GetStringAsync(
                 "https://tcno.co/Projects/AccSwitcher/api/crowdin/").Result;
+            var persons = html.Split("</li><li>");
+            List<string> proofreaders = new();
+            List<string> normal = new();
+
+            // Loop once for proofreaders.
+            // Then again for those who aren't.
+            foreach (var person in persons)
+            {
+                if (person.Contains(" - ")) proofreaders.Add(GiCrowdinPersonHtml(person));
+                if (!person.Contains(" - ")) normal.Add(GiCrowdinPersonHtml(person));
+            }
+
+            proofreaders.Sort();
+            normal.Sort();
+
+            return string.Join("", proofreaders) + "<li>----------</li>" + string.Join("", normal);
+        }
+
+        private static string GiCrowdinPersonHtml(string person)
+        {
+
+            if (person.StartsWith("<li>"))
+                return $"{person}</li>";
+            if (person.EndsWith("</li>"))
+                return $"<li>{person}";
+            return $"<li>{person}</li>";
+        }
 
         [JSInvokable]
         public static string GiCurrentBasicPlatform(string platform)

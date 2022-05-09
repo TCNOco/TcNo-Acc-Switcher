@@ -61,7 +61,7 @@ function copyToClipboard(str) {
 async function forget(e) {
     e.preventDefault();
     const reqId = $(selectedElem).attr("id");
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}ForgetAcc`).then((r) => {
+    const promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}ForgetAcc`).then((r) => {
         if (!r) showModal(`confirm:AcceptForget${getCurrentPage()}Acc:${reqId}`);
         else Modal_Confirm(`AcceptForget${getCurrentPage()}Acc:${reqId}`, true);
     });
@@ -77,7 +77,7 @@ async function restoreBattleNetAccounts() {
         return $(item).attr("value");
     });
 
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BattleNet_RestoreSelected", reqBattleNetId).then((r) => {
+    const promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BattleNet_RestoreSelected", reqBattleNetId).then((r) => {
         if (r === true) {
             reqBattleNetId.forEach((e) => {
                 $("#IgnoredAccounts").find(`option[value="${e}"]`).remove();
@@ -90,7 +90,7 @@ async function restoreBattleNetAccounts() {
                 });
             });
         } else {
-	        window.notification.new({
+            window.notification.new({
                 type: "error",
                 title: "",
                 message: toastFailedRestore,
@@ -99,7 +99,7 @@ async function restoreBattleNetAccounts() {
             });
         }
     });
-    var result = await promise;
+    await promise;
 }
 
 
@@ -120,7 +120,7 @@ function copy(request, e) {
 
     // Steam:
     function steam() {
-        var steamId64 = $(selectedElem).attr("id");
+        const steamId64 = $(selectedElem).attr("id");
         switch (request) {
             case "URL":
                 copyToClipboard(`https://steamcommunity.com/profiles/${steamId64}`);
@@ -182,7 +182,7 @@ async function changeImage(e) {
     if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
 
-    let path = $(".acc:checked").next("label").children("img")[0].getAttribute("src").split('?')[0];
+    const path = $(".acc:checked").next("label").children("img")[0].getAttribute("src").split('?')[0];
 
     const modalTitleBackground = await GetLang("Modal_Title_Userdata"),
         modalHeading = await GetLang("Modal_SetImageHeader"),
@@ -204,7 +204,7 @@ async function changeImage(e) {
             </div>`);
 
     pathPickerRequestedFile = "AnyFile";
-    let input = document.getElementById("FolderLocation");
+    const input = document.getElementById("FolderLocation");
     $(".pathPicker").on("click", pathPickerClick);
     $(".modalBG").fadeIn(() => {
         try {
@@ -276,8 +276,8 @@ async function exportAllAccounts() {
         return;
     }
     exportingAccounts = true;
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiExportAccountList", selectedElem).then((r) => {
-        let filename = r.split('/');
+    const promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiExportAccountList", selectedElem).then((r) => {
+        const filename = r.split('/');
         saveFile(filename[filename.length - 1], r);
         exportingAccounts = false;
     });
@@ -285,7 +285,7 @@ async function exportAllAccounts() {
 }
 
 function saveFile(fileName, urlFile) {
-	let a = document.createElement("a");
+	const a = document.createElement("a");
 	a.style = "display: none";
 	document.body.appendChild(a);
 	a.href = urlFile;
@@ -404,7 +404,6 @@ async function showModal(modaltype) {
         });
 
         const modalEnterDirectory = await GetLangSub("Modal_EnterDirectory", { platform: platform }),
-            modalLocatePlatform = await GetLangSub("Modal_LocatePlatform", { platformExe: platformExe }),
             modalLocatePlatformFolder = await GetLangSub("Modal_LocatePlatformFolder", { platform: platform }),
             modalLocatePlatformTitle = await GetLangSub("Modal_Title_LocatePlatform", { platform: platform });
 
@@ -643,12 +642,12 @@ function updateIndicator(e) {
     Modal_RequestedLocated(foundRequested);
 }
 async function pathPickerClick(e) {
-    let result = $(e.target).attr("path");
+    const result = $(e.target).attr("path");
     if (result === undefined) return;
     //console.log(result);
     $("#FolderLocation").val(result);
     updateIndicator(e); // Because the above doesn't trigger the event
-    let currentSpanPath = $(e.target).attr("path");
+    const currentSpanPath = $(e.target).attr("path");
     var folderContent = "";
 
     // Because this is reset: see if has .exe inside it.
@@ -728,8 +727,8 @@ async function Modal_Finalise(platform, platformSettingsPath) {
 }
 
 async function Modal_Confirm(action, value) {
-    let success = await GetLang("Success");
-    var promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value).then((r) => {
+    const success = await GetLang("Success");
+    const promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value).then((r) => {
         if (r === "refresh") location.reload();
         else if (r === "success")
             window.notification.new({
@@ -740,7 +739,7 @@ async function Modal_Confirm(action, value) {
                 duration: 3000
             });
     });
-    var result = await promise;
+    await promise;
     $(".modalBG").fadeOut();
 }
 
@@ -762,20 +761,20 @@ async function Modal_FinaliseAccString(platform) {
 }
 
 function Modal_FinaliseBackground() {
-    let pathOrUrl = $("#FolderLocation").val();
+    const pathOrUrl = $("#FolderLocation").val();
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetBackground", pathOrUrl);
     $(".modalBG").fadeOut();
 }
 
 function Modal_FinaliseUserDataFolder() {
-    let pathOrUrl = $("#FolderLocation").val();
+    const pathOrUrl = $("#FolderLocation").val();
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetUserData", pathOrUrl);
     $(".modalBG").fadeOut();
 }
 
 function Modal_FinaliseAccNameChange() {
-    let raw = $("#NewAccountName").val();
-	let name = (raw.indexOf("TCNO:") === -1 ? raw.replace(/[<>: \.\"\/\\|?*]/g, "-") : raw); // Clean string if not a command string.
+    const raw = $("#NewAccountName").val();
+	const name = (raw.indexOf("TCNO:") === -1 ? raw.replace(/[<>: \.\"\/\\|?*]/g, "-") : raw); // Clean string if not a command string.
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name, getCurrentPage());
 }
 
@@ -815,10 +814,10 @@ function refetchRank() {
 }
 
 async function usernameModalCopyText() {
-    let toastTitle = await GetLang("Toast_Copied"),
-        toastHintText = "",
-        platform = getCurrentPage(),
-        code = "";
+    const toastTitle = await GetLang("Toast_Copied");
+    let toastHintText = "";
+    const platform = getCurrentPage();
+    let code = "";
 
     await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformHintText", platform).then((r) => {
         toastHintText = r;
@@ -862,11 +861,11 @@ function sDropdownInit() {
 
     $(".shortcuts, #shortcutDropdown").toArray().forEach(el => {
 // ReSharper disable once Html.EventNotResolved
-        el.addEventListener("sortstart", function (e) {
+        el.addEventListener("sortstart", function () {
             $(".shortcuts").addClass("expandShortcuts");
         });
 // ReSharper disable once Html.EventNotResolved
-        el.addEventListener("sortstop", function (e) {
+        el.addEventListener("sortstop", function () {
             $(".shortcuts").removeClass("expandShortcuts");
             sDropdownReposition();
             serializeShortcuts();
@@ -925,7 +924,7 @@ async function updateBarClick() {
 }
 
 async function initSavingHotKey() {
-    hotkeys("ctrl+s", function (event, handler) {
+    hotkeys("ctrl+s", function (event) {
         event.preventDefault();
         DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCtrlS", getCurrentPage());
     });
@@ -957,7 +956,7 @@ async function initCopyHotKey() {
 
 async function highlightCurrentAccount(curAcc) {
     const toastCopied = await GetLang("Tooltip_CurrentAccount");
-    let parentEl = $(`[for='${curAcc}']`).addClass("currentAcc").parent();
+    const parentEl = $(`[for='${curAcc}']`).addClass("currentAcc").parent();
     parentEl.attr("title", toastCopied);
 
     // Because this can be placed below, and go off the screen.. Figure out where the element is.
@@ -967,10 +966,6 @@ async function highlightCurrentAccount(curAcc) {
 
     const parentLeft = parentPos.left;
     const parentRight = parentLeft + parentWidth;
-
-    const parentTop = parentPos.top;
-    const parentBottom = parentTop + parentHeight;
-
 
     // Because this can be placed right or below, and go off the screen.. Figure out where the element is.
     var bestOffset = "bottom";

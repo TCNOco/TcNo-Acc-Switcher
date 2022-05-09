@@ -80,7 +80,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             }
         }
         private string _lastHash = "";
-        private bool _currentlyModifying = false;
+        private bool _currentlyModifying;
 
         public static void SaveSettings() => GeneralFuncs.SaveSettings(CurrentPlatform.SettingsFile, Instance);
 

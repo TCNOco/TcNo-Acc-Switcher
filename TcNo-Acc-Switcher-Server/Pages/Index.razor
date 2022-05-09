@@ -15,9 +15,9 @@
 @page "/"
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
-@using TcNo_Acc_Switcher_Globals
 @using System.Globalization
-@using System.Threading
+@using System.IO
+@using TcNo_Acc_Switcher_Globals
 @inject IJSRuntime JsRuntime
 @{ AData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
@@ -40,9 +40,9 @@
         @foreach (var platform in AData.SortedPlatformListHandleDisabled())
         {
             <div class="platform_list_item" id="@(platform)" @onclick="() => Check(platform)">
-                <div class="fgText @(!System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")) ? "noImageCenterText" : "") @(BasicPlatforms.PlatformFullName(platform).Length < 7 ? "shortText" : BasicPlatforms.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@BasicPlatforms.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
+                <div class="fgText @(!File.Exists(Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")) ? "noImageCenterText" : "") @(BasicPlatforms.PlatformFullName(platform).Length < 7 ? "shortText" : BasicPlatforms.PlatformFullName(platform).Length > 12 ? "longText" : "")"><p>@BasicPlatforms.PlatformFullName(platform).ToUpper(CultureInfo.InvariantCulture)</p></div>
                 <div class="fgImg">
-                    @if(System.IO.File.Exists(System.IO.Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")))
+                    @if(File.Exists(Path.Join(Globals.UserDataFolder, $"wwwroot/img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg")))
                     {
                         <svg viewBox="0 0 500 500" draggable="false" alt="@(BasicPlatforms.PlatformSafeName(platform))">
                             <use href="@($"img/platform/{BasicPlatforms.PlatformSafeName(platform)}.svg#FG")" class="@("icoFG")"></use>

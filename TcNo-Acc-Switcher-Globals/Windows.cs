@@ -95,6 +95,7 @@ namespace TcNo_Acc_Switcher_Globals
         public enum ProcessAccessFlags : uint
         {
             All = 0x001F0FFF,
+            /*
             Terminate = 0x00000001,
             CreateThread = 0x00000002,
             VirtualMemoryOperation = 0x00000008,
@@ -104,23 +105,26 @@ namespace TcNo_Acc_Switcher_Globals
             CreateProcess = 0x000000080,
             SetQuota = 0x00000100,
             SetInformation = 0x00000200,
-            QueryInformation = 0x00000400,
             QueryLimitedInformation = 0x00001000,
             Synchronize = 0x00100000
+            */
+            QueryInformation = 0x00000400,
         }
 
         public enum SecurityImpersonationLevel
         {
+            SecurityImpersonation
+            /*
             SecurityAnonymous,
             SecurityIdentification,
-            SecurityImpersonation,
             SecurityDelegation
+            */
         }
 
         public enum TokenType
         {
-            TokenPrimary = 1,
-            TokenImpersonation
+            TokenPrimary = 1
+            //TokenImpersonation
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -187,12 +191,6 @@ namespace TcNo_Acc_Switcher_Globals
         [DllImport("advapi32", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern bool CreateProcessWithTokenW(IntPtr hToken, int dwLogonFlags, string lpApplicationName, string lpCommandLine, int dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref StartupInfo lpStartupInfo, out ProcessInformation lpProcessInformation);
 
-        [DllImport("user32.Dll")]
-        public static extern int PostMessage(IntPtr hWnd, UInt32 msg, int wParam, int lParam);
-
-        public const uint WmQueryEndSession = 0x11;
-        public const int EndSessionCloseApp = 0x1;
-
         [DllImport("advapi32.dll", SetLastError = true)]
         public static extern bool OpenProcessToken(IntPtr processHandle, uint desiredAccess, out IntPtr tokenHandle);
 
@@ -236,9 +234,6 @@ namespace TcNo_Acc_Switcher_Globals
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool AttachConsole(int dwProcessId);
 
-        [DllImport("shell32.dll", SetLastError = true)]
-        public static extern IntPtr ExtractIcon(IntPtr hInst, string lpszExeFileName, int nIconIndex);
-
 
         // For grabbing image from icons:
         public const int IldTransparent = 0x00000001;
@@ -249,9 +244,6 @@ namespace TcNo_Acc_Switcher_Globals
 
         [DllImport("user32.dll", EntryPoint = "DestroyIcon", SetLastError = true)]
         public static extern int DestroyIcon(IntPtr hIcon);
-
-        [DllImport("shell32.dll")]
-        public static extern uint SHGetIDListFromObject([MarshalAs(UnmanagedType.IUnknown)] object iUnknown, out IntPtr ppidl);
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr SHGetFileInfo(

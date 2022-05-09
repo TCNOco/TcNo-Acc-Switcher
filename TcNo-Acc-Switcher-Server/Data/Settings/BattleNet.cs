@@ -21,7 +21,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.BattleNet;
@@ -87,7 +86,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             }
         }
         private string _lastHash = "";
-        private bool _currentlyModifying = false;
+        private bool _currentlyModifying;
         public static void SaveSettings() => GeneralFuncs.SaveSettings(SettingsFile, Instance);
 
         #region Basic Compatability
@@ -167,7 +166,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         {
                             // Not found in list, so add!
                             var last = 0;
-                            foreach (var (k, v) in Shortcuts)
+                            foreach (var (k, _) in Shortcuts)
                                 if (k > last) last = k;
                             last += 1;
                             Shortcuts.Add(last, f.Name); // Organization added later

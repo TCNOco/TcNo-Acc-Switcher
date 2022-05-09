@@ -87,7 +87,7 @@ async function initPlatformListSortable() {
     });
 
     // On drag end, save list of items.
-    sortable(".platform_list")[0].addEventListener("sortupdate", (e) => {
+    sortable(".platform_list")[0].addEventListener("sortupdate", () => {
         var order = [];
         $(".platform_list > div").each((i, e) => { order.push(e.id); });
 

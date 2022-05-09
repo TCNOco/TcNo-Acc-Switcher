@@ -33,8 +33,8 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SevenZipExtractor;
-using VCDiff.Encoders;
 using VCDiff.Decoders;
+using VCDiff.Encoders;
 using VCDiff.Includes;
 using VCDiff.Shared;
 using YamlDotNet.Serialization;
@@ -472,8 +472,8 @@ namespace TcNo_Acc_Switcher_Updater
         {
             if (v1 == v2) return true;
 
-            var v1Arr = Array.ConvertAll<string, int>(v1.Split(delimiter), int.Parse);
-            var v2Arr = Array.ConvertAll<string, int>(v2.Split(delimiter), int.Parse);
+            var v1Arr = Array.ConvertAll(v1.Split(delimiter), int.Parse);
+            var v2Arr = Array.ConvertAll(v2.Split(delimiter), int.Parse);
 
             for (var i = 0; i < Math.Min(v1Arr.Length, v2Arr.Length); ++i)
             {

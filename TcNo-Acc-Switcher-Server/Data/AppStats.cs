@@ -1,10 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -198,7 +196,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     ["statsData"] = statsJson
                 })).Result;
 
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
                 Globals.WriteToLog("Failed to upload stats file. Status code: " + response.StatusCode);
 
             LastUpload = DateTime.Now;
