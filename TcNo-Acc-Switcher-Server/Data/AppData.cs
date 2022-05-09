@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DiscordRPC;
+using DiscordRPC.Logging;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
@@ -69,6 +71,65 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (AppSettings.StatsEnabled && AppSettings.StatsShare)
                 new Thread(AppStats.UploadStats).Start();
 
+            // Discord integration
+            RefreshDiscordPresence();
+
+            // Unused. Idk if I will use these, but they are here just in-case.
+            //DiscordClient.OnReady += (sender, e) => { Console.WriteLine("Received Ready from user {0}", e.User.Username); };
+            //DiscordClient.OnPresenceUpdate += (sender, e) => { Console.WriteLine("Received Update! {0}", e.Presence); };
+        }
+
+        public static void RefreshDiscordPresenceAsync()
+        {
+            var dThread = new Thread(RefreshDiscordPresence);
+            dThread.Start();
+        }
+
+        public static void RefreshDiscordPresence()
+        {
+            Thread.Sleep(1000);
+
+            if (!AppSettings.DiscordRpc)
+            {
+                if (!DiscordClient.IsInitialized) return;
+                DiscordClient.Deinitialize();
+                DiscordClient = null;
+                return;
+            }
+
+            var timestamp = Timestamps.Now;
+
+            DiscordClient ??= new DiscordRpcClient("973188269405765682")
+            {
+                Logger = new ConsoleLogger() { Level = LogLevel.Warning },
+            };
+            if (!DiscordClient.IsInitialized) DiscordClient.Initialize();
+            else timestamp = DiscordClient.CurrentPresence.Timestamps;
+
+            var state = "";
+            if (AppSettings.StatsEnabled && AppSettings.DiscordRpcShare)
+            {
+                AppStats.GenerateTotals();
+                state = Lang["Discord_StatusDetails", new { number = AppStats.SwitcherStats["_Total"].Switches }];
+            }
+
+
+            DiscordClient.SetPresence(new RichPresence()
+            {
+                Details = Lang["Discord_Status"],
+                State = state,
+                Timestamps = timestamp,
+                Buttons = new Button[]
+                { new() {
+                    Url = "https://github.com/TcNobo/TcNo-Acc-Switcher/",
+                    Label = Lang["Website"]
+                }},
+                Assets = new Assets()
+                {
+                    LargeImageKey = "switcher",
+                    LargeImageText = "TcNo Account Switcher"
+                }
+            });
         }
         #endregion
 
@@ -170,6 +231,16 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private InitializedClasses _initializedClasses = new();
         [JsonIgnore] public static InitializedClasses InitializedClasses { get => Instance._initializedClasses; set => Instance._initializedClasses = value; }
+
+
+        private DiscordRpcClient _discordClient;
+        [JsonIgnore] public static DiscordRpcClient DiscordClient { get => Instance._discordClient; set => Instance._discordClient = value; }
+
+        /// <summary>
+        /// Contains whether the Client app is running, and the server is it's child.
+        /// </summary>
+        private bool _tcNoClientApp;
+        [JsonIgnore] public static bool TcNoClientApp { get => Instance._tcNoClientApp; set => Instance._tcNoClientApp = value; }
 
         #region JS_INTEROP
         public static bool InvokeVoidAsync(string func)

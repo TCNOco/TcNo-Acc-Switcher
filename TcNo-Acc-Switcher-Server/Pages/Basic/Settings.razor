@@ -28,13 +28,9 @@
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
             <toastarea class="toastarea" />
-            <SharedSettings />
 
 
-            <div class="SettingsHeader">
-                <hr><span>@Locale["Settings_Header_GeneralSettings"]</span>
-                <hr>
-            </div>
+            <h2 class="SettingsHeader">@Locale["Settings_Header_GeneralSettings"]</h2>
             <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="DesktopShortcut" @bind="Basic.DesktopShortcut" @onclick="() => Shortcut.DesktopShortcut_Toggle(CurrentPlatform.FullName, Basic.DesktopShortcut)"><label class="form-check-label" for="DesktopShortcut"></label></div><label for="DesktopShortcut">
 		            @Locale["Settings_Shortcut", new { platform = CurrentPlatform.FullName }]<br></label>
@@ -76,17 +72,12 @@
             </div>
 
 
-            <div class="SettingsHeader">
-                <hr><span>@Locale["Settings_Header_TraySettings"]</span>
-                <hr>
-            </div>
+
+            <h2 class="SettingsHeader">@Locale["Settings_Header_TraySettings"]</h2>
             <div class="form-text"><span>@Locale["Settings_TrayMax"]</span><input type="number" id="TrayAccNumber" min="0" max="365" @bind="Basic.TrayAccNumber"></div>
 
 
-            <div class="SettingsHeader">
-                <hr><span>@Locale["Settings_Header_GeneralTools"]</span>
-                <hr>
-            </div>
+            <h2 class="SettingsHeader">@Locale["Settings_Header_GeneralTools"]</h2>
             <p>@Locale["Settings_CurrentLocation", new { path = Basic.FolderPath }]</p>
             <div class="buttoncol"><button id="PickFolder" type="button" @onclick="PickFolder"><span>@Locale["Settings_PickFolder", new { platform = CurrentPlatform.FullName }]</span></button><button id="OpenFolder" type="button" @onclick="() => Basic.OpenFolder(Basic.FolderPath)"><span>@Locale["Settings_OpenFolder", new { platform = CurrentPlatform.FullName }]</span></button></div>
             <div class="buttoncol"><button id="ResetSettings" type="button" @onclick="ClearSettings"><span>@Locale["Button_ResetSettings"]</span></button>
@@ -98,10 +89,7 @@
 
             @if (CurrentPlatform.BackupPaths.Count > 0)
             {
-                <div class="SettingsHeader">
-                    <hr><span>@Locale["Settings_Header_BackupRestore"]</span>
-                    <hr>
-                </div>
+                <h2 class="SettingsHeader">@Locale["Settings_Header_BackupRestore"]</h2>
 
                 <div class="buttoncol">
                     @if (CurrentPlatform.BackupFileTypesInclude.Count != 0 || CurrentPlatform.BackupFileTypesIgnore.Count != 0){
@@ -128,6 +116,8 @@
             }
 
 
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
+            <SharedSettings />
             <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
         </div>
     </div>

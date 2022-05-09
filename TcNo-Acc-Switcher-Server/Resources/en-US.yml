@@ -36,12 +36,20 @@ Settings_Header_OtherTools: Other Tools
 Settings_Header_TraySettings: Tray settings
 Settings_Header_OpenGameFolders: Open game folders
 Settings_Header_BackupRestore: Backup & Restore platform settings
+Settings_Header_Language: Language
+Settings_Header_System: System
+Settings_Header_Theme: Theme
+Settings_Header_Program: Program
+Settings_Header_StatsSharing: Statistics & Sharing
+Settings_Header_Platform: "{platformName} settings"
 Settings_TrayMax: 'Max number of accounts to remember:'
 Settings_ExtraPlatformsDisabled: Disabled platforms. Click to enable them.
 Settings_ExtraPlatformsEnabled: Visible platforms. Click to disable them.
 Settings_RTL: Show text as Right-to-Left
 Settings_CollectStats: Collect statistics
 Settings_ShareStats: Share stats annoymously (recommended)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Share total switches
 Settings_ViewStats: View stats
 Settings_ClearStats: Reset
 Settings_CurrentLocation: 'Current install location: {path}'
@@ -428,3 +436,6 @@ Tooltip_BackupAll: Backup ALL config files/folders, including images and other l
 Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function and TaskKill uses CMD (Best if combined doesn't work)"
 Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
 Tooltip_CurrentAccount: You are currently logged into this account.
+Discord_Status: Currently switching accounts.
+Discord_StatusDetails: "Accounts Switched: {number}"
+Website: Website

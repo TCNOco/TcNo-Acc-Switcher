@@ -305,6 +305,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             SwitcherStats[platform].Switches++;
 
             IncrementSwitcherLastActive(platform);
+            AppData.RefreshDiscordPresenceAsync();
         }
 
         public static void SetAccountCount(string platform, int count)

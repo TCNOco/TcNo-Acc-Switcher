@@ -486,7 +486,7 @@ async function showModal(modaltype) {
         let header = `<h3>${modalConfirmAction}:</h3>`;
         if (action.startsWith("RestartAsAdmin")) {
             message = await GetLang("Prompt_RestartAsAdmin");
-            action = (args !== "" ? `location = 'RESTART_AS_ADMIN?arg=${args}'` : "location = 'RESTART_AS_ADMIN'");
+            action = (args !== "" ? `restartAsAdmin(${args})` : "restartAsAdmin()");
         } else {
             message = `<p>${modaltype.split(":")[2].replaceAll("_", " ")}</p>`;
             action = action.split(":")[0];
@@ -980,4 +980,8 @@ async function highlightCurrentAccount(curAcc) {
     parentEl.attr("data-placement", bestOffset);
 
     initTooltips();
+}
+
+async function restartAsAdmin(args = "") {
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiRestartAsAdmin", args);
 }

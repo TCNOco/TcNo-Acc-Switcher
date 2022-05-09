@@ -111,6 +111,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("CollectStats", Order = 14)] private bool _statsEnabled = true;
         [JsonProperty("ShareAnonymousStats", Order = 15)] private bool _statsShare = true;
         [JsonProperty("MinimizeOnSwitch", Order = 16)] private bool _minimizeOnSwitch;
+        [JsonProperty("DiscordRpcEnabled", Order = 17)] private bool _discordRpc = true;
+        [JsonProperty("DiscordRpcShareTotalSwitches", Order = 18)] private bool _discordRpcShare = true;
         [Newtonsoft.Json.JsonIgnore] private bool _desktopShortcut;
         [Newtonsoft.Json.JsonIgnore] private bool _startMenu;
         [Newtonsoft.Json.JsonIgnore] private bool _startMenuPlatforms;
@@ -143,7 +145,24 @@ namespace TcNo_Acc_Switcher_Server.Data
             set => Instance._enabledBasicPlatforms = value;
         }
 
-        public static bool StatsEnabled { get => Instance._statsEnabled; set => Instance._statsEnabled = value; }
+        public static bool DiscordRpc { get => Instance._discordRpc; set
+        {
+            if (!value) Instance._discordRpcShare = false;
+            Instance._discordRpc = value;
+        }
+    }
+        public static bool DiscordRpcShare { get => Instance._discordRpcShare; set => Instance._discordRpcShare = value; }
+
+        public static bool StatsEnabled
+        {
+            get => Instance._statsEnabled;
+            set
+            {
+                if (!value) Instance._statsShare = false;
+                Instance._statsEnabled = value;
+            }
+        }
+
         public static bool StatsShare { get => Instance._statsShare; set => Instance._statsShare = value; }
         public static bool MinimizeOnSwitch { get => Instance._minimizeOnSwitch; set => Instance._minimizeOnSwitch = value; }
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }

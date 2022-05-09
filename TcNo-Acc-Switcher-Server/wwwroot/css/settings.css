@@ -11,22 +11,22 @@
     color: white;
 }
 
-.SettingsHeader { color: white; }
-
-.SettingsHeader hr {
-    display: inline-block;
-    border: 1px solid #BBB;
-    vertical-align: middle;
+.SettingsHeader {
+    color: white;
+    font-weight: bold;
+    padding: 0.25em;
+    margin-bottom: 0.5em;
 }
 
-.SettingsHeader hr:first-of-type { width: 20px; }
+h1.SettingsHeader {
+    border-bottom: 2px solid var(--accent);
+}
 
-.SettingsHeader hr:last-of-type { width: 100px; }
-
-.SettingsHeader span {
-    display: inline-block;
-    margin: 0 0.75em;
-    font-weight: bold;
+h2.SettingsHeader {
+    padding: 0.1em 0.5em;
+    margin-top: 0.5em;
+    border-bottom: 1px solid var(--accent);
+    width: fit-content;
 }
 
 .settingsCol { position: relative; }
@@ -129,6 +129,11 @@ input[type='checkbox']:checked + label {
     height: 3.6em;
 }
 
+    .settingsCol .buttoncol button:disabled, .settingsCol .buttoncol button[disabled] {
+        opacity: 0.5;
+        cursor: default;
+    }
+
 .settingsCol .buttoncol button, .settingsCol .buttoncol .button {
     position: absolute;
     width: 49%;
@@ -146,4 +151,7 @@ input[type='checkbox']:checked + label {
     width: 35% !important;
 }
 
-.col_close { margin-top: 2em; }
+.col_close {
+    margin-top: 2em;
+    margin-bottom: 4em;
+}

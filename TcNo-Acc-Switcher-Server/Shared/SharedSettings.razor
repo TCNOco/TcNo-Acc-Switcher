@@ -20,10 +20,10 @@
 
 @inject Lang Locale
 
-<div class="SettingsHeader">
-    <hr><span>@Locale["Settings_Header_AppWide"]</span>
-    <hr>
-</div>
+<h1 class="SettingsHeader">@Locale["Settings_Header_AppWide"]</h1>
+
+
+<h2 class="SettingsHeader">@Locale["Settings_Header_Language"]</h2>
 <div class="rowSetting rowDropdown">
     <ChooseLanguage/>
 </div>
@@ -35,35 +35,47 @@
         @Locale["Settings_RTL"]<br>
     </label>
 </div>
+
+
+
+<h2 class="SettingsHeader">@Locale["Settings_Header_Theme"]</h2>
 <div class="rowSetting rowDropdown">
-    <span>@Locale["Settings_Header_ActiveBrowser"]</span>
+    <span>@Locale["Settings_CurrentStyle"]</span>
     <div class="dropdown">
-        <ul class="custom-dropdown-menu dropdown-menu">
-            <li class="custom-dropdown-item dropdown-item" @onclick='() => AppSettings.SetActiveBrowser("WebView")'>WebView</li>
-            <li class="custom-dropdown-item dropdown-item" @onclick='() => AppSettings.SetActiveBrowser("CEF")'>CEF</li>
-        </ul>
         <button class="dropdown-toggle" type="button" data-toggle="dropdown">
-            @AppSettings.ActiveBrowser
+            @AppSettings.StylesheetInfo["name"]
             <span class="caret"></span>
         </button>
+        <ul class="custom-dropdown-menu dropdown-menu">
+            @foreach (var item in AppSettings.GetStyleList())
+            {
+                <li class="custom-dropdown-item dropdown-item" @onclick="() => AppSettings.SwapStylesheet(item)">@item</li>
+            }
+        </ul>
     </div>
 </div>
-<div>
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="StreamerMode" @bind="AppSettings.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label>
-    </div>
-    <label for="StreamerMode">
-        @Locale["Settings_StreamerMode"]<br>
-    </label>
+<div class="rowSetting listWithBars">
+    <ul>
+        <li>
+            <a class="fancyLink" @onclick='() => GeneralInvocableFuncs.ShowModal("SetBackground")'>@Locale["Settings_ThemeBackground"]</a>
+        </li>
+        <li>
+            <a class="fancyLink" @onclick='() => Process.Start("explorer.exe", Path.Join(Globals.UserDataFolder, "themes"))'>@Locale["Settings_ThemeOpenFolder"]</a>
+        </li>
+    </ul>
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="AppSettings.TrayMinimizeNotExit" @onclick="AppSettings.TrayMinimizeNotExit_Toggle"><label class="form-check-label" for="TrayMinimizeNotExit"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_WinAccent" @bind="AppSettings.WindowsAccent" @onclick="AppSettings.WindowsAccent_Toggle"><label class="form-check-label" for="AppSett_WinAccent"></label>
     </div>
-    <label for="TrayMinimizeNotExit">
-        @Locale["Settings_ExitToTray"]<br>
+    <label for="AppSett_WinAccent">
+        @Locale["Settings_WindowsAccent"]<br>
     </label>
 </div>
+
+
+
+<h2 class="SettingsHeader">@Locale["Settings_Header_System"]</h2>
 <div class="rowSetting">
     <div class="form-check">
         <input class="form-check-input" type="checkbox" id="AppSett_DesktopShortcut" @bind="AppSettings.DesktopShortcut" @onclick="AppSettings.DesktopShortcut_Toggle"><label class="form-check-label" for="AppSett_DesktopShortcut"></label>
@@ -105,73 +117,73 @@
     </label>
 </div>
 
-<div class="rowSetting">
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_StartCentered" @bind="AppSettings.StartCentered"><label class="form-check-label" for="AppSett_StartCentered"></label>
+@if (AppData.TcNoClientApp)
+{
+    <div class="rowSetting">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="AppSett_StartCentered" @bind="AppSettings.StartCentered"><label class="form-check-label" for="AppSett_StartCentered"></label>
+        </div>
+        <label for="AppSett_StartCentered">
+            @Locale["Settings_StartCentered"]<br>
+        </label>
     </div>
-    <label for="AppSett_StartCentered">
-        @Locale["Settings_StartCentered"]<br>
-    </label>
-</div>
+}
 
 
-<div class="rowSetting rowDropdown">
-    <span>@Locale["Settings_CurrentStyle"]</span>
-    <div class="dropdown">
-        <button class="dropdown-toggle" type="button" data-toggle="dropdown">
-            @AppSettings.StylesheetInfo["name"]
-            <span class="caret"></span>
-        </button>
-        <ul class="custom-dropdown-menu dropdown-menu">
-            @foreach (var item in AppSettings.GetStyleList())
-            {
-                <li class="custom-dropdown-item dropdown-item" @onclick="() => AppSettings.SwapStylesheet(item)">@item</li>
-            }
-        </ul>
-    </div>
-</div>
-<div class="rowSetting listWithBars">
-    <ul>
-        <li>
-            <a class="fancyLink" @onclick='() => GeneralInvocableFuncs.ShowModal("SetBackground")'>@Locale["Settings_ThemeBackground"]</a>
-        </li>
-        <li>
-            <a class="fancyLink" @onclick='() => Process.Start("explorer.exe", Path.Join(Globals.UserDataFolder, "themes"))'>@Locale["Settings_ThemeOpenFolder"]</a>
-        </li>
-    </ul>
-</div>
+<h2 class="SettingsHeader">@Locale["Settings_Header_Program"]</h2>
 <div class="rowSetting">
     <p>
         @Locale["Settings_CurrentDataLocation", new {path = Globals.UserDataFolder}]
         <br>
         <a class="fancyLink" @onclick="TrySetUserData">@Locale["Settings_SetDataLocation"]</a>
     </p>
-
 </div>
-
-
-<div class="rowSetting">
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_WinAccent" @bind="AppSettings.WindowsAccent" @onclick="AppSettings.WindowsAccent_Toggle"><label class="form-check-label" for="AppSett_WinAccent"></label>
+@if (AppData.TcNoClientApp)
+{
+    <div class="rowSetting rowDropdown">
+        <span>@Locale["Settings_Header_ActiveBrowser"]</span>
+        <div class="dropdown">
+            <ul class="custom-dropdown-menu dropdown-menu">
+                <li class="custom-dropdown-item dropdown-item" @onclick='() => AppSettings.SetActiveBrowser("WebView")'>WebView</li>
+                <li class="custom-dropdown-item dropdown-item" @onclick='() => AppSettings.SetActiveBrowser("CEF")'>CEF</li>
+            </ul>
+            <button class="dropdown-toggle" type="button" data-toggle="dropdown">
+                @AppSettings.ActiveBrowser
+                <span class="caret"></span>
+            </button>
+        </div>
     </div>
-    <label for="AppSett_WinAccent">
-        @Locale["Settings_WindowsAccent"]<br>
+    <div class="rowSetting">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="TrayMinimizeNotExit" @bind="AppSettings.TrayMinimizeNotExit" @onclick="AppSettings.TrayMinimizeNotExit_Toggle"><label class="form-check-label" for="TrayMinimizeNotExit"></label>
+        </div>
+        <label for="TrayMinimizeNotExit">
+            @Locale["Settings_ExitToTray"]<br>
+        </label>
+    </div>
+    <div class="rowSetting">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="AppSett_MinimizeOnSwitch" @bind="AppSettings.MinimizeOnSwitch"><label class="form-check-label" for="AppSett_MinimizeOnSwitch"></label>
+        </div>
+        <label for="AppSett_MinimizeOnSwitch">
+            @Locale["Settings_MinimizeOnSwitch"]<br>
+        </label>
+    </div>
+}
+<div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="StreamerMode" @bind="AppSettings.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label>
+    </div>
+    <label for="StreamerMode">
+        @Locale["Settings_StreamerMode"]<br>
     </label>
 </div>
 
+
+<h2 class="SettingsHeader">@Locale["Settings_Header_StatsSharing"]</h2>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_MinimizeOnSwitch" @bind="AppSettings.MinimizeOnSwitch"><label class="form-check-label" for="AppSett_MinimizeOnSwitch"></label>
-    </div>
-    <label for="AppSett_MinimizeOnSwitch">
-        @Locale["Settings_MinimizeOnSwitch"]<br>
-    </label>
-</div>
-
-
-<div class="rowSetting">
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_CollectStats" @bind="AppSettings.StatsEnabled"><label class="form-check-label" for="AppSett_CollectStats"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_CollectStats" @bind="AppSettings.StatsEnabled" @onclick="AppData.RefreshDiscordPresenceAsync"><label class="form-check-label" for="AppSett_CollectStats"></label>
     </div>
     <label for="AppSett_CollectStats">
         @Locale["Settings_CollectStats"]<br>
@@ -186,6 +198,21 @@
 
     <button id="AppSett_ViewStats" type="button" onclick='showModal("ShowStats")'><span>@Locale["Settings_ViewStats"]</span></button>
     <button id="AppSett_ClearStats" type="button" onclick='showModal("confirm:ClearStats")'><span>@Locale["Settings_ClearStats"]</span></button>
+</div>
+<div class="rowSetting">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpc" @bind="AppSettings.DiscordRpc" @onclick="AppData.RefreshDiscordPresenceAsync"><label class="form-check-label" for="AppSett_DiscordRpc"></label>
+    </div>
+    <label for="AppSett_DiscordRpc">
+        @Locale["Settings_DiscordRpc"]<br>
+    </label>
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpcSwitches" @bind="AppSettings.DiscordRpcShare" @onclick="AppData.RefreshDiscordPresenceAsync"><label class="form-check-label" for="AppSett_DiscordRpcSwitches"></label>
+    </div>
+    <label for="AppSett_DiscordRpcSwitches">
+        @Locale["Settings_DiscordRpcShare"]<br>
+    </label>
 </div>
 
 @code

@@ -12,10 +12,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Web;
@@ -37,6 +39,32 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
     public class GeneralInvocableFuncs
     {
         private static readonly Lang Lang = Lang.Instance;
+
+        [JSInvokable]
+        public static void GiRestartAsAdmin(string args)
+        {
+            var fileName = "TcNo-Acc-Switcher_main.exe";
+            if (!AppData.TcNoClientApp) fileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher-Server_main.exe";
+
+            var proc = new ProcessStartInfo
+            {
+                WorkingDirectory = Globals.AppDataFolder,
+                FileName = fileName,
+                UseShellExecute = true,
+                Arguments = args,
+                Verb = "runas"
+            };
+            try
+            {
+                _ = Process.Start(proc);
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
+                Environment.Exit(0);
+            }
+        }
 
         /// <summary>
         /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file

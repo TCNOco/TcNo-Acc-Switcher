@@ -96,6 +96,8 @@ namespace TcNo_Acc_Switcher_Client
             Program.FindOpenPort();
             _address = "--urls=http://localhost:" + AppSettings.ServerPort + "/";
 
+            AppData.TcNoClientApp = true;
+
             // Start web server
             Server.IsBackground = true;
             Server.Start();
@@ -297,8 +299,6 @@ namespace TcNo_Acc_Switcher_Client
             if (uri.Contains("store.steampowered.com"))
                 _ = RunCookieCheck("steampowered.com");
 
-
-            if (uri.Contains("RESTART_AS_ADMIN")) Restart(uri.Contains("arg=") ? uri.Split("arg=")[1] : "", true);
             if (uri.Contains("EXIT_APP")) Environment.Exit(0);
         }
 

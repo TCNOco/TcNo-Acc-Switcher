@@ -26,9 +26,7 @@
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol clearingPage">
             <toastarea class="toastarea" />
-            <div class="SettingsHeader">
-                <hr><span>@Locale["Cleaning_ImportantInfoHeader"]</span><hr>
-            </div>
+            <h2 class="SettingsHeader">@Locale["Cleaning_ImportantInfoHeader"]</h2>
             <div>
                 <p>
                     @(new MarkupString(Locale["Cleaning_ImportantInfo"]))
@@ -41,9 +39,7 @@
 
             <div class="clearingRow">
                 <div class="clearingLeft advancedClearingButtonCol">
-                    <div class="SettingsHeader">
-                        <hr><span>@Locale["Cleaning_Header_General"]</span><hr>
-                    </div>
+                    <h2 class="SettingsHeader">@Locale["Cleaning_Header_General"]</h2>
                     <div class="buttoncol">
                         <button id="Steam_Clear_Logs" type="button" @onclick="Steam_Clear_Logs" disabled="@Accepted"><span>..\Steam\Logs</span></button>
                         <button id="Steam_Clear_Dumps" type="button" @onclick="Steam_Clear_Dumps" disabled="@Accepted"><span>..\Steam\Dumps</span></button>
@@ -60,9 +56,7 @@
                         <button id="Steam_Clear_DepotCache" type="button" @onclick="Steam_Clear_DepotCache" disabled="@Accepted"><span>..\Steam\depotcache</span></button>
                     </div>
 
-                    <div class="SettingsHeader">
-                        <hr><span>@Locale["Cleaning_Header_LoginHistory"]</span><hr>
-                    </div>
+                    <h2 class="SettingsHeader">@Locale["Cleaning_Header_LoginHistory"]</h2>
                     <div class="buttoncol">
                         <button id="Steam_Clear_LoginUsers" type="button" @onclick="Steam_Clear_LoginUsers" disabled="@Accepted"><span>..\Steam\config\loginusers.vdf</span></button>
                         <button id="Steam_Clear_Ssfn" type="button" @onclick="Steam_Clear_Ssfn" disabled="@Accepted"><span>..\Steam\ssfn*</span></button>
@@ -77,9 +71,6 @@
                     </div>
                     <div class="buttoncol">
                         <button id="Steam_Clear_RememberPassword" type="button" @onclick="Steam_Clear_RememberPassword" disabled="@Accepted"><span>HKCU\..\RememberPassword</span></button>
-                    </div>
-                    <div class="SettingsHeader">
-                        <hr><span>@Locale["Cleaning_Header_PlatformCleaning", new { platform = "Steam" }]</span><hr>
                     </div>
                 </div>
                 <div class="clearingRight">
