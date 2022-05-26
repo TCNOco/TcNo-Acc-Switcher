@@ -23,7 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Platforms\Discord\Username.js" />
-    <None Remove="steam_appid.txt" />
     <None Remove="TcNoAccSw-Icon-100x100.png" />
     <None Remove="themes\Dracula_Cyan\info.yaml" />
     <None Remove="themes\Dracula_Cyan\style.scss" />
@@ -36,12 +35,6 @@
     <_ContentIncludedByDefault Remove="wwwroot\css\site.css" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="steam_api64.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="steam_appid.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="themes\Dracula_Cyan\info.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
