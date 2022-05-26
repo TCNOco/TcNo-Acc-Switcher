@@ -36,10 +36,22 @@ Settings_Header_OtherTools: 其他工具
 Settings_Header_TraySettings: 通知列設定
 Settings_Header_OpenGameFolders: 開啟遊戲資料夾
 Settings_Header_BackupRestore: 備份和復原平台設定
+Settings_Header_Language: 語言
+Settings_Header_System: 系統
+Settings_Header_Theme: 主題
+Settings_Header_Program: 程序
+Settings_Header_StatsSharing: 統計與分享
+Settings_Header_Platform: "{platformName} 個設置"
 Settings_TrayMax: '帳號上限：'
 Settings_ExtraPlatformsDisabled: 停用的平台（按一下啟用）
 Settings_ExtraPlatformsEnabled: 啟用中平台（按一下停用）
 Settings_RTL: 由右至左顯示文字
+Settings_CollectStats: 收集統計數據
+Settings_ShareStats: 匿名分享統計數據（推薦）
+Settings_DiscordRpc: 不和諧豐富的存在（RPC）
+Settings_DiscordRpcShare: 共享總開關
+Settings_ViewStats: 查看統計信息
+Settings_ClearStats: 重啟
 Settings_CurrentLocation: '目前安裝路徑： {path}'
 Settings_CurrentDataLocation: '目前使用者資料路徑： {path}'
 Settings_SetDataLocation: "[自訂使用者資料路徑]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "（進階）設定 {platform} 的關閉方式"
 Settings_Header_StartingMethod: "（進階）設定 {platform} 的開啟方式"
 Settings_AutoStart: "切換帳號後自動啟動 {platform}"
 Settings_NoPlatforms: 目前未啟用任何平台。請勾選以下平台來啟用/停用。
+Settings_MinimizeOnSwitch: 最小化帳戶切換時的切換器
+Stats_Disabled: "統計信息收集被禁用。"
+Stats_InDepth: 深入的統計細分
+Stats_ShareEnabled: "這些統計信息是匿名共享的，並將在此處添加到總數 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>。"
+Stats_ShareDisabled: "這些統計信息不會匿名共享，也不會添加到此處 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">的總數</a>。"
+Stats_OperatingSystem: "操作系統： "
+Stats_FirstLaunch: "首發： "
+Stats_LaunchCount: "發射次數： "
+Stats_CrashCount: "崩潰次數： "
+Stats_MostUsedPlatform: "最常用的平台： "
+Stats_TotalTime: "在應用內花費的總時間： "
+Stats_TotalSwitches: "總賬戶切換： "
+Stats_TotalGamesLaunched: "通過切換器啟動的應用程序/遊戲總數： "
+Stats_UniqueDaysLong: "帳戶切換的特殊日子： "
+Stats_LastUpload: "最後上傳： "
+Stats_SwitcherStats: "切換器統計： "
+Stats_PageStats: "頁面統計： "
+Stats_VisitsTotalTime: "{visits} 總訪問， {hours} 總時間"
+Stats_Accounts: "賬戶： "
+Stats_Switches: "開關： "
+Stats_FirstActive: "第一個活躍： "
+Stats_LastActive: "最後登錄： "
+Stats_UniqueDays: "獨特的日子： "
+Stats_GameShortcuts: "遊戲快捷鍵： "
+Stats_GameShortcutsHotbar: "遊戲快捷方式（在快捷欄上）： "
+Stats_GamesLaunched: "推出的遊戲： "
 Cleaning_Header_StartMenuShortcuts: '開始功能表捷徑：'
 Cleaning_Header_General: 一般清理
 Cleaning_Header_LoginHistory: 清除我的登入紀錄
@@ -123,7 +161,7 @@ Toast_RegFailRead: 無法讀取 Windows 登錄檔！
 Toast_RegFailReadSaved: 無法讀取已存的登錄檔。請試著移除帳號並重新登入。
 Toast_RegSaveMissing: 無法從已存的登錄檔中查詢或存取資料！
 Toast_DuplicateNames: 無法切換。要複製一個相同名稱的帳號嗎？
-Toast_MissingUserId: "無法交換。缺少用戶 ID。檢查 Wiki '常見錯誤'。"
+Toast_MissingUserId: "無法交換。缺少用戶 ID。請檢查 Wiki '常見錯誤'。"
 Toast_CouldNotLocate: 找不到登入中的使用者
 Toast_StreamerModeHint: 隱私權資訊已隱藏！ - 請前往設定頁面確認
 Toast_StreamerModeTitle: 直播模式
@@ -169,6 +207,7 @@ Toast_RestoreComplete: 復原完畢！
 Toast_FailedLoad: '{platform} 載入失敗！點選平台查看錯誤。'
 Toast_FailedPlatformsLoad: 無法載入 Platforms.json！請確認此檔案是否存在。
 Toast_FailedLoadSettings: "無法載入設定檔，將改為載入預設設定。將於現有的設定檔案名稱前加上「old」字樣。"
+Toast_FailedLoadStats: "加載統計信息失敗！開始新鮮。"
 Toast_FileCopyFail: 複製文件失敗！請參閱日誌了解詳情。
 Toast_UserDataLoadFail: 無法載入使用者資料 {UserData}\\WindowSettings.json，請備份並重置！已將錯誤寫入紀錄檔。
 Toast_UpdateCheckFail: 無法訪問 https://tcno.co/ 以檢查更新。此消息將每天顯示一次。
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: 請定位 {platform} 目錄
 Modal_Title_AddNew: 添加新的 {platform} 帳戶
 Modal_Title_Background: 設置背景圖片
 Modal_Title_Userdata: 設定使用者資料夾
+Modal_Title_Stats: 您的統計數據
 Modal_SetBackground: '選擇圖像，或在下方輸入 URL。<br>留空為重置。<br>（有關進階控制，請參閱 Wiki 上的''Theming''）：'
 Modal_SetBackground_Button: 設定背景為
 Modal_SetBackground_ChooseImage: 選擇本機圖片
@@ -310,7 +350,7 @@ Updater_Hashlist: 正在下載最新的雜湊表...
 Updater_CantCheck: 無法檢查更新
 Updater_Failed: "錯誤：某些文件正在使用中，無法更新。\n\n1. 確保所有 TcNo 進程完全關閉\n（或重新啟動您的電腦）\n\n2. 然後點擊下面的驗證，或者如果您重新啟動：\n- 打開此更新程序並驗證文件\n    （位於安裝目錄）"
 Updater_Missing: "缺少檔案：{file}"
-Updater_FileMismatch: "檔案 {file} 有 MD5：{md5} 應有： {value}"
+Updater_FileMismatch: "文件： {file} 的 MD5： {md5} 預期： {value}"
 Updater_DownloadingWeb: 正在從網站下載檔案...
 Updater_UnpackingAppData: 正在將檔案複製到 %AppData%/TcNo Account Switcher…（除非路徑已變更）
 Updater_VerifyComplete: 文件已驗證！
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>您即將遺忘這個帳號！</h3> <h4>遺忘了會怎麼樣？</h4> <p>- 該帳號將不再顯示於 Steam 的 Big Picture 模式，也不再會記住密碼。<br/> - 該帳號也將不再顯示於 TcNo 帳號切換器，直到您透過 Steam 重新登入該帳號。</p> <p>此變更不會影響您的帳號本身，只會刪除本機的所有紀錄。</p><h4>您瞭解以上說明嗎？</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>您即將遺忘這個帳號！</h3> <h4>遺忘了會怎麼樣？</h4> <p>- 該帳號將不再顯示於 TcNo 帳號切換器<br/>直到您透過 {platform} 重新登入該帳號。</p> <p>此變更不會影響您的帳號本身，只會刪除本機的所有紀錄。</p><h4>您瞭解以上說明嗎？</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>您即將清除統計信息！</h3> <p>您無法撤消此操作。</p>
 Platform_DiscordPasteHint: 貼上到 Discord 控制台，然後把結果貼上到輸入框！
 Platform_ClearCache: 清除快取
 Platform_ClearCacheTotal: 正在清除 {totalFileCount} 文件 ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: 備份配置資料/資料夾，如平台設置中所定義。
 Tooltip_BackupAll: 備份所有配置資料/資料夾，包括圖像和其他大文件。
 Tooltip_ClosingMethod: "組合使用效果最佳。 “關閉”嘗試直接調用一次關閉函數，TaskKill 則使用 CMD（如果組合不起作用，則此方式效果更好）"
 Tooltip_StartingMethod: "請使用預設設定以獲最佳效果。 Direct 並無管理員或 UAC 權限，其啟動權限等級會和 TcNo 帳號切換器相同（可能更高，但不會更低）"
+Tooltip_CurrentAccount: 您當前已登錄此帳戶。
+Discord_Status: 目前正在切換帳戶。
+Discord_StatusDetails: "帳戶切換： {number}"
+Website: 網站
