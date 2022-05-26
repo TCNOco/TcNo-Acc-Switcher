@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Alte instrumente
 Settings_Header_TraySettings: Setări jurnal
 Settings_Header_OpenGameFolders: Deschide folderele jocului
 Settings_Header_BackupRestore: Backup și restaurare setările platformei
+Settings_Header_Language: Limba
+Settings_Header_System: Sistem
+Settings_Header_Theme: Temă
+Settings_Header_Program: Program
+Settings_Header_StatsSharing: Statistici și partajare
+Settings_Header_Platform: "{platformName} setari"
 Settings_TrayMax: 'Numărul maxim de conturi de reţinut:'
 Settings_ExtraPlatformsDisabled: Platforme dezactivate. Faceți clic pentru a le activa.
 Settings_ExtraPlatformsEnabled: Platforme vizibile. Faceți clic pentru a le dezactiva.
 Settings_RTL: Afișați textul ca de la dreapta la stânga
+Settings_CollectStats: Colectați statistici
+Settings_ShareStats: Distribuiți statistici enervant (recomandat)
+Settings_DiscordRpc: Prezență bogată în Discord (RPC)
+Settings_DiscordRpcShare: Distribuiți totalul comutatoarelor
+Settings_ViewStats: Vedeți statistici
+Settings_ClearStats: Resetați
 Settings_CurrentLocation: 'Locația curentă de instalare: {path}'
 Settings_CurrentDataLocation: 'Locația curentă a datelor utilizatorului: {path}'
 Settings_SetDataLocation: "[Setați locația personalizată a datelor utilizatorului]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Avansat) Setați metoda pentru a închide {plat
 Settings_Header_StartingMethod: "(Avansat) Setați metoda pentru a începe {platform}"
 Settings_AutoStart: "Porniți automat {platform} la comutarea contului"
 Settings_NoPlatforms: În prezent, nu există platforme activate. Vă rugăm să bifați mai jos platformele opționale pentru a le activa sau debifați platformele dezactivate.
+Settings_MinimizeOnSwitch: Minimizați comutatorul la comutatorul de cont
+Stats_Disabled: "Colectarea statisticilor este dezactivată."
+Stats_InDepth: Defalcare aprofundată a statisticilor
+Stats_ShareEnabled: "Aceste statistici sunt partajate anonim și se vor adăuga la totalul <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aici</a>."
+Stats_ShareDisabled: "Aceste statistici NU sunt partajate anonim și NU se vor adăuga la totalul <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aici</a>."
+Stats_OperatingSystem: "Sistem de operare: "
+Stats_FirstLaunch: "Prima lansare: "
+Stats_LaunchCount: "Număr de lansări: "
+Stats_CrashCount: "Număr de accidente: "
+Stats_MostUsedPlatform: "Cea mai folosită platformă: "
+Stats_TotalTime: "Timp total petrecut în aplicație: "
+Stats_TotalSwitches: "Total schimburi de cont: "
+Stats_TotalGamesLaunched: "Total aplicații/jocuri lansate prin comutator: "
+Stats_UniqueDaysLong: "Zile unice cu conturile schimbate: "
+Stats_LastUpload: "Ultima încărcare: "
+Stats_SwitcherStats: "Statistici comutatoare: "
+Stats_PageStats: "Statistici pagini: "
+Stats_VisitsTotalTime: "{visits} vizite în total, {hours} timp total"
+Stats_Accounts: "Conturi: "
+Stats_Switches: "Comutatoare: "
+Stats_FirstActive: "Primul activ: "
+Stats_LastActive: "Ultima data activ: "
+Stats_UniqueDays: "Zile unice: "
+Stats_GameShortcuts: "Comenzi rapide pentru jocuri: "
+Stats_GameShortcutsHotbar: "Comenzi rapide pentru jocuri (pe bara rapidă): "
+Stats_GamesLaunched: "Jocuri lansate: "
 Cleaning_Header_StartMenuShortcuts: 'Comenzi rapide pentru Meniul Pornire:'
 Cleaning_Header_General: Curățare generală
 Cleaning_Header_LoginHistory: Curăță istoricul autentificărilor
@@ -169,6 +207,7 @@ Toast_RestoreComplete: Restaurare terminată!
 Toast_FailedLoad: Nu s-a încărcat {platform}! Faceți clic pe platformă pentru a vedea eroarea.
 Toast_FailedPlatformsLoad: Nu s-a încărcat Platforms.json! Verificați dacă acest fișier există.
 Toast_FailedLoadSettings: "Nu s-au încărcat setările! În schimb, se încarcă setările implicite. Adăugarea „vechi” la numele fișierului de setări existente."
+Toast_FailedLoadStats: "Nu s-au încărcat statisticile! Începând proaspăt."
 Toast_FileCopyFail: Nu s-au putut copia fișierele! Consultați jurnalul pentru mai multe detalii.
 Toast_UserDataLoadFail: Nu s-a încărcat datele utilizatorului {UserData}\\WindowSettings.json. Backup și resetare! Eroare salvată în log.
 Toast_UpdateCheckFail: Nu s-a putut accesa https://tcno.co/ pentru a verifica dacă există actualizări. Acest mesaj va apărea o dată pe zi.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Vă rugăm să localizați directorul {platform}
 Modal_Title_AddNew: Adaugă un cont nou {platform}
 Modal_Title_Background: Setați o imagine de fundal
 Modal_Title_Userdata: Setați folderul de date utilizator
+Modal_Title_Stats: Statisticile tale
 Modal_SetBackground: 'Selectați o imagine sau introduceți o adresă URL mai jos.<br>Lăsați necompletat și setați resetarea.<br>(Pentru un control mai avansat, consultați Tematica de pe Wiki):'
 Modal_SetBackground_Button: Setați fundalul
 Modal_SetBackground_ChooseImage: Alegeți imaginea locală
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Ești pe cale să uiți un cont!</h3> <h4>Ce înseamnă asta?</h4> <p>- Steam nu va mai avea contul listat în modul Big Picture și nu va reține parola.<br/> - TcNo Account Switcher nu va mai afișa contul până când nu se va conecta din nou prin Steam.</p> <p>Contul dvs. va rămâne neatins. Este doar uitat pe acest computer.</p><h4>Înțelegi?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Sunteți pe cale să uitați un cont!</h3> <h4>Ce înseamnă acest lucru?</h4> <p>TcNo Account Switcher nu va mai arăta contul,<br/> până când se conectează din nou prin {platform}și a fost adăugat în listă.</p> <p>Contul dvs. va rămâne neatins. Acesta este doar uitat de acest calculator.</p> <h4>Înțelegeți?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Sunteți pe cale să vă ștergeți statisticile!</h3> <p>Nu puteți anula această acțiune.</p>
 Platform_DiscordPasteHint: Lipiți în consola Discord și apoi lipiți rezultatul în intrare!
 Platform_ClearCache: Goliți memoria cache
 Platform_ClearCacheTotal: Se șterge {totalFileCount} fișiere ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: Faceți backup pentru fișierele/folderele de configurare, așa 
 Tooltip_BackupAll: Faceți backup pentru TOATE fișierele/folderele de configurare, inclusiv imaginile și alte fișiere mari.
 Tooltip_ClosingMethod: "Combinat este cel mai bun. Închidere încearcă să se închidă direct printr-o funcție de închidere și TaskKill folosește CMD (cel mai bine dacă combinat nu funcționează)"
 Tooltip_StartingMethod: "Implicit este cel mai bun. Direct nu are control asupra nivelului de administrator sau UAC. Va începe la același nivel (sau mai mare - dar nu mai mic) decât acest comutator de cont"
+Tooltip_CurrentAccount: În prezent sunteți conectat la acest cont.
+Discord_Status: În prezent se schimbă conturile.
+Discord_StatusDetails: "Conturi schimbate: {number}"
+Website: Site-ul web
