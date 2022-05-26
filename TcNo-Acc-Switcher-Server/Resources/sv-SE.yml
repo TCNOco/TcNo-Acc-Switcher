@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Andra verktyg
 Settings_Header_TraySettings: Inställningar för fack
 Settings_Header_OpenGameFolders: Öppna spelmappar
 Settings_Header_BackupRestore: Säkerhetskopiera och återställa plattformsinställningar
+Settings_Header_Language: Språk
+Settings_Header_System: Systemet
+Settings_Header_Theme: Tema
+Settings_Header_Program: Program
+Settings_Header_StatsSharing: Statistik & delning
+Settings_Header_Platform: "{platformName} inställningar"
 Settings_TrayMax: 'Max antal konton att komma ihåg:'
 Settings_ExtraPlatformsDisabled: Funktionshindrade plattformar. Klicka för att aktivera dem.
 Settings_ExtraPlatformsEnabled: Synliga plattformar. Klicka för att inaktivera dem.
 Settings_RTL: Visa text som höger till vänster
+Settings_CollectStats: Samla statistik
+Settings_ShareStats: Dela statistik irriterande (rekommenderas)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Dela totalt växlar
+Settings_ViewStats: Visa statistik
+Settings_ClearStats: Återställa
 Settings_CurrentLocation: 'Aktuell installationsplats: {path}'
 Settings_CurrentDataLocation: 'Aktuell plats för användardata: {path}'
 Settings_SetDataLocation: "[Ange anpassad plats för användardata]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Avancerat) Ställ in metod för att stänga {pl
 Settings_Header_StartingMethod: "(Avancerat) Ställ in metod för att starta {platform}"
 Settings_AutoStart: "Starta automatiskt {platform} vid kontoväxling"
 Settings_NoPlatforms: Det finns för närvarande inga plattformar aktiverade. Vänligen kryssa för valfria plattformar nedan för att aktivera dem, eller avmarkera inaktiverade plattformar.
+Settings_MinimizeOnSwitch: Minimera switcher på konto switch
+Stats_Disabled: "Statistikinsamling är inaktiverad."
+Stats_InDepth: Fördjupad statistikfördelning
+Stats_ShareEnabled: "Denna statistik delas anonymt och kommer att läggas till den totala <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">här</a>."
+Stats_ShareDisabled: "Denna statistik delas INTE anonymt och kommer INTE att läggas till den totala <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">här</a>."
+Stats_OperatingSystem: "Operativ system: "
+Stats_FirstLaunch: "Första lanseringen: "
+Stats_LaunchCount: "Lanseringsantal: "
+Stats_CrashCount: "Antal krascher: "
+Stats_MostUsedPlatform: "Mest använda plattformen: "
+Stats_TotalTime: "Total tid spenderad i appen: "
+Stats_TotalSwitches: "Totalt antal kontobyten: "
+Stats_TotalGamesLaunched: "Totalt antal appar/spel lanserade via switcher: "
+Stats_UniqueDaysLong: "Unika dagar med byte av konton: "
+Stats_LastUpload: "Senaste uppladdning: "
+Stats_SwitcherStats: "Växlarstatistik: "
+Stats_PageStats: "Sidstatistik: "
+Stats_VisitsTotalTime: "{visits} totalt besök, {hours} total tid"
+Stats_Accounts: "Konton: "
+Stats_Switches: "Omkopplare: "
+Stats_FirstActive: "Första aktiva: "
+Stats_LastActive: "Senast aktiv: "
+Stats_UniqueDays: "Unika dagar: "
+Stats_GameShortcuts: "Spelgenvägar: "
+Stats_GameShortcutsHotbar: "Spelgenvägar (på hotbar): "
+Stats_GamesLaunched: "Spel lanserade: "
 Cleaning_Header_StartMenuShortcuts: 'Genvägar till Start-menyn:'
 Cleaning_Header_General: Allmänt Städning
 Cleaning_Header_LoginHistory: Rensa min inloggningshistorik
@@ -169,6 +207,7 @@ Toast_RestoreComplete: Återställningen är klar!
 Toast_FailedLoad: Det gick inte att ladda {platform}! Klicka på plattformen för att se felet.
 Toast_FailedPlatformsLoad: Det gick inte att ladda Platforms.json! Kontrollera att filen finns.
 Toast_FailedLoadSettings: "Det gick inte att läsa in inställningarna! Laddar standardinställningar istället. Lägger till \"gammal\" till befintligt inställningsfilnamn."
+Toast_FailedLoadStats: "Det gick inte att ladda statistik! Börjar fräscht."
 Toast_FileCopyFail: Det gick inte att kopiera filer! Se logg för mer information.
 Toast_UserDataLoadFail: Det gick inte att läsa in användardata {UserData}\\WindowSettings.json. Säkerhetskopiera och återställa! Sparat fel i loggen.
 Toast_UpdateCheckFail: Det gick inte att nå https://tcno.co/ för att söka efter uppdateringar. Detta meddelande visas en gång om dagen.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Vänligen hitta katalogen {platform}
 Modal_Title_AddNew: Lägg till nytt {platform} -konto
 Modal_Title_Background: Ställ in en bakgrundsbild
 Modal_Title_Userdata: Ställ in användardatamappen
+Modal_Title_Stats: Din statistik
 Modal_SetBackground: 'Välj en bild eller ange en URL nedan.<br>Lämna tomt och ställ in på återställning.<br>(För mer avancerad kontroll se Teman på Wiki):'
 Modal_SetBackground_Button: Ställ in bakgrund
 Modal_SetBackground_ChooseImage: Välj lokal bild
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Du håller på att glömma ett konto!</h3> <h4>Vad betyder detta?</h4> <p>- Steam kommer inte längre att ha kontot listat i Big Picture Mode och kommer inte ihåg lösenordet.<br/> - TcNo Account Switcher kommer inte längre att visa kontot förrän det har loggats in igen via Steam.</p> <p>Ditt konto kommer att förbli orört. Det är bara glömt på den här datorn.</p><h4>Förstår du?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Du är på väg att glömma ett konto!</h3> <h4>Vad betyder detta?</h4> <p>TcNo Account Switcher kommer inte längre att visa kontot.<br/> tills den har loggats in igen genom {platform}och lagts till i listan.</p> <p>Ditt konto förblir orört. Det glöms bara bort på denna dator.</p> <h4>Förstår du?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Du är på väg att rensa din statistik!</h3> <p>Du kan inte ångra den här åtgärden.</p>
 Platform_DiscordPasteHint: Klistra in i Discord-konsolen och klistra sedan in resultatet i input!
 Platform_ClearCache: Rensa cache
 Platform_ClearCacheTotal: Rensar {totalFileCount} filer ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: Säkerhetskopiera konfigurationsfiler/mappar, enligt definition 
 Tooltip_BackupAll: Säkerhetskopiera ALLA konfigurationsfiler/mappar, inklusive bilder och andra stora filer.
 Tooltip_ClosingMethod: "Kombinerad är bäst. Stäng försöker stänga direkt genom en stängningsfunktion och TaskKill använder CMD (bäst om kombinerat inte fungerar)"
 Tooltip_StartingMethod: "Standard är bäst. Direct har ingen kontroll över administratörsnivå eller UAC. Det kommer att börja på samma nivå (eller högre - men inte lägre) än den här kontoväxaren"
+Tooltip_CurrentAccount: Du är för närvarande inloggad på detta konto.
+Discord_Status: Byter konto just nu.
+Discord_StatusDetails: "Byt konton: {number}"
+Website: Hemsida
