@@ -65,7 +65,7 @@ namespace TcNo_Acc_Switcher_Client.Steam
             if (!success && json.ContainsKey("purchase_result_details"))
             {
                 var resultCode = json.Value<int>("purchase_result_details");
-                var codeText;
+                string codeText;
                 switch (resultCode)
                 {
                     case 9:

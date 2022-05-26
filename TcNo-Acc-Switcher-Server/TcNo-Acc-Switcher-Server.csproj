@@ -236,11 +236,6 @@
     <None Include="wwwroot\js\ace\worker-json.js" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Steamworks.NET">
-      <HintPath>plugins\Steamworks.NET.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Update="Platforms.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
