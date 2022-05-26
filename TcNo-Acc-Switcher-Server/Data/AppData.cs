@@ -73,7 +73,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 new Thread(AppStats.UploadStats).Start();
 
             // Discord integration
-            RefreshDiscordPresence();
+            RefreshDiscordPresenceAsync();
 
             // Unused. Idk if I will use these, but they are here just in-case.
             //DiscordClient.OnReady += (sender, e) => { Console.WriteLine("Received Ready from user {0}", e.User.Username); };
@@ -92,9 +92,13 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (!AppSettings.DiscordRpc)
             {
-                if (!DiscordClient.IsInitialized) return;
-                DiscordClient.Deinitialize();
-                DiscordClient = null;
+                if (DiscordClient != null)
+                {
+                    if (!DiscordClient.IsInitialized) return;
+                    DiscordClient.Deinitialize();
+                    DiscordClient = null;
+                }
+
                 return;
             }
 
