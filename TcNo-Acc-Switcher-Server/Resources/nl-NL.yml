@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Andere hulpmiddelen
 Settings_Header_TraySettings: Systeemvak instellingen
 Settings_Header_OpenGameFolders: Open spelmappen
 Settings_Header_BackupRestore: Back-up en herstel platforminstellingen
+Settings_Header_Language: Taal
+Settings_Header_System: Systeem
+Settings_Header_Theme: Thema
+Settings_Header_Program: Programma
+Settings_Header_StatsSharing: Statistieken en delen
+Settings_Header_Platform: "{platformName} instellingen"
 Settings_TrayMax: 'Maximaal aantal te onthouden accounts:'
 Settings_ExtraPlatformsDisabled: Uitgeschakelde platforms. Klik om ze in te schakelen.
 Settings_ExtraPlatformsEnabled: Zichtbare platforms. Klik om ze uit te schakelen.
 Settings_RTL: Toon tekst van rechts naar links
+Settings_CollectStats: Statistieken verzamelen
+Settings_ShareStats: Deel statistieken op een vervelende manier (aanbevolen)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Totaal aantal schakelaars delen
+Settings_ViewStats: Statistieken bekijken
+Settings_ClearStats: Resetten
 Settings_CurrentLocation: 'Huidige installatielocatie: {path}'
 Settings_CurrentDataLocation: 'Huidige gebruikersgegevenslocatie: {path}'
 Settings_SetDataLocation: "[Stel aangepaste gebruikersgegevenslocatie in]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Geavanceerd) Methode instellen om {platform}. t
 Settings_Header_StartingMethod: "(Geavanceerd) Methode instellen om {platform}. te starten"
 Settings_AutoStart: "Start automatisch {platform} bij accountwisseling"
 Settings_NoPlatforms: Er zijn momenteel geen platforms ingeschakeld. Vink hieronder optionele platforms aan om ze in te schakelen, of schakel uitgeschakelde platforms uit.
+Settings_MinimizeOnSwitch: Minimaliseer switcher bij account switch
+Stats_Disabled: "Het verzamelen van statistieken is uitgeschakeld."
+Stats_InDepth: Uitgebreid overzicht van statistieken
+Stats_ShareEnabled: "Deze statistieken worden anoniem gedeeld en worden hier opgeteld bij de <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>."
+Stats_ShareDisabled: "Deze statistieken worden NIET anoniem gedeeld en zullen NIET optellen bij de totaal <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">hier</a>."
+Stats_OperatingSystem: "Besturingssysteem: "
+Stats_FirstLaunch: "Eerste lancering: "
+Stats_LaunchCount: "Aantal lanceringen: "
+Stats_CrashCount: "Aantal crashes: "
+Stats_MostUsedPlatform: "Meest gebruikte platform: "
+Stats_TotalTime: "Totale tijd doorgebracht in de app: "
+Stats_TotalSwitches: "Totaal aantal accountwisselingen: "
+Stats_TotalGamesLaunched: "Totaal aantal apps/games gelanceerd via switcher: "
+Stats_UniqueDaysLong: "Unieke dagen met accounts gewisseld: "
+Stats_LastUpload: "Laatste upload: "
+Stats_SwitcherStats: "Statistieken switcher: "
+Stats_PageStats: "Paginastatistieken: "
+Stats_VisitsTotalTime: "{visits} totale bezoeken, {hours} totale tijd"
+Stats_Accounts: "rekeningen: "
+Stats_Switches: "Schakelaars: "
+Stats_FirstActive: "Eerste actief: "
+Stats_LastActive: "Laatst actief: "
+Stats_UniqueDays: "Unieke dagen: "
+Stats_GameShortcuts: "Sneltoetsen voor games: "
+Stats_GameShortcutsHotbar: "Sneltoetsen voor games (op de hotbar): "
+Stats_GamesLaunched: "Games gelanceerd: "
 Cleaning_Header_StartMenuShortcuts: 'Snelkoppelingen voor Start Menu:'
 Cleaning_Header_General: Algemeen schoonmaken
 Cleaning_Header_LoginHistory: Schoon mijn inloggeschiedenis op
@@ -169,6 +207,7 @@ Toast_RestoreComplete: Herstel voltooid!
 Toast_FailedLoad: Kan {platform}niet laden! Klik op het platform om de fout te zien.
 Toast_FailedPlatformsLoad: Kan Platforms.json niet laden! Controleer of dit bestand bestaat.
 Toast_FailedLoadSettings: "Kan instellingen niet laden! In plaats daarvan standaardinstellingen laden. 'oud' toevoegen aan bestaande instellingenbestandsnaam."
+Toast_FailedLoadStats: "Kan statistieken niet laden! Vers beginnen."
 Toast_FileCopyFail: Kan bestanden niet kopiëren! Zie log voor meer details.
 Toast_UserDataLoadFail: Kan gebruikersgegevens niet laden {UserData}\\WindowSettings.json. Back-up maken en resetten! Opgeslagen fout om te loggen.
 Toast_UpdateCheckFail: Kon https://tcno.co/ niet bereiken om te controleren op updates. Dit bericht wordt één keer per dag weergegeven.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Zoek a.u.b. de map {platform}
 Modal_Title_AddNew: Nieuw {platform} account toevoegen
 Modal_Title_Background: Een achtergrondafbeelding instellen
 Modal_Title_Userdata: Stel de gebruikersgegevensmap in
+Modal_Title_Stats: Uw statistieken
 Modal_SetBackground: 'Selecteer een afbeelding of voer hieronder een URL in.<br>Leeg laten en instellen op reset.<br>(Zie de thema''s op de Wiki voor meer geavanceerde controle):'
 Modal_SetBackground_Button: Achtergrond instellen
 Modal_SetBackground_ChooseImage: Kies lokale afbeelding
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Je staat op het punt een account te vergeten!</h3> <h4>Wat betekent dit?</h4> <p>- Steam heeft niet langer het account in de Big Picture-modus en onthoudt het wachtwoord niet.<br/> - TcNo Account Switcher zal het account ook niet langer tonen, totdat het opnieuw is aangemeld via Steam.</p> <p>Uw account blijft ongewijzigd. Het is gewoon vergeten op deze computer.</p><h4>Begrijp je het?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Je staat op het punt een account te vergeten!</h3> <h4>Wat betekent dit?</h4> <p>TcNo Account Switcher zal ook niet langer het account weergeven.<br/> totdat het opnieuw is aangemeld via {platform}, en aan de lijst is toegevoegd.</p> <p>Je account blijft onaangeroerd. Je bent vergeten op deze computer.</p> <h4>Begrijp je dat?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>U staat op het punt uw statistieken te wissen!</h3> <p>U kunt deze actie niet ongedaan maken.</p>
 Platform_DiscordPasteHint: Plak in Discord-console en plak het resultaat in invoer!
 Platform_ClearCache: Cache legen
 Platform_ClearCacheTotal: Wissen van {totalFileCount} bestanden ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: Maak een back-up van configuratiebestanden/mappen, zoals gedefin
 Tooltip_BackupAll: Maak een back-up van ALLE configuratiebestanden/mappen, inclusief afbeeldingen en andere grote bestanden.
 Tooltip_ClosingMethod: "Gecombineerd is het beste. Sluiten probeert direct te sluiten via een sluitfunctie en TaskKill gebruikt CMD (het beste als gecombineerd niet werkt)"
 Tooltip_StartingMethod: "Standaard is het beste. Direct heeft geen controle over beheerdersniveau of UAC. Het begint op hetzelfde niveau (of hoger - maar niet lager) dan deze accountwisselaar"
+Tooltip_CurrentAccount: U bent momenteel ingelogd op dit account.
+Discord_Status: Wisselt momenteel van account.
+Discord_StatusDetails: "Accounts gewisseld: {number}"
+Website: Website
