@@ -36,10 +36,22 @@ Settings_Header_OtherTools: 其他工具
 Settings_Header_TraySettings: 托盘设置
 Settings_Header_OpenGameFolders: 打开游戏文件夹
 Settings_Header_BackupRestore: 备份和还原平台设置
+Settings_Header_Language: 语言
+Settings_Header_System: 系统
+Settings_Header_Theme: 主题
+Settings_Header_Program: 程序
+Settings_Header_StatsSharing: 统计与分享
+Settings_Header_Platform: "{platformName} 个设置"
 Settings_TrayMax: '要记住的帐户数量上限：'
 Settings_ExtraPlatformsDisabled: 已禁用的平台。点击以启用它们。
 Settings_ExtraPlatformsEnabled: 可见的平台。点击以禁用它们。
 Settings_RTL: 从右到左显示文本
+Settings_CollectStats: 收集统计数据
+Settings_ShareStats: 匿名分享统计数据（推荐）
+Settings_DiscordRpc: 不和谐丰富的存在（RPC）
+Settings_DiscordRpcShare: 共享总开关
+Settings_ViewStats: 查看统计信息
+Settings_ClearStats: 重启
 Settings_CurrentLocation: '当前安装位置：{path}'
 Settings_CurrentDataLocation: '当前用户数据位置：{path}'
 Settings_SetDataLocation: "[设置自定义用户数据位置]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "（高级）设置方法关闭 {platform}"
 Settings_Header_StartingMethod: "（高级）设置方法启动 {platform}"
 Settings_AutoStart: "帐户切换时自动启动 {platform}"
 Settings_NoPlatforms: 当前未启用任何平台。请勾选下方的可选平台来启用，或者取消勾选来禁用。      
+Settings_MinimizeOnSwitch: 最小化帐户切换时的切换器
+Stats_Disabled: "统计信息收集被禁用。"
+Stats_InDepth: 深入的统计细分
+Stats_ShareEnabled: "这些统计信息是匿名共享的，并将在此处添加到总数 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>。"
+Stats_ShareDisabled: "这些统计信息不会匿名共享，也不会添加到此处 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">的总数</a>。"
+Stats_OperatingSystem: "操作系统： "
+Stats_FirstLaunch: "首发： "
+Stats_LaunchCount: "发射次数： "
+Stats_CrashCount: "崩溃次数： "
+Stats_MostUsedPlatform: "最常用的平台： "
+Stats_TotalTime: "在应用内花费的总时间： "
+Stats_TotalSwitches: "总账户切换： "
+Stats_TotalGamesLaunched: "通过切换器启动的应用程序/游戏总数： "
+Stats_UniqueDaysLong: "帐户切换的特殊日子： "
+Stats_LastUpload: "最后上传： "
+Stats_SwitcherStats: "切换器统计： "
+Stats_PageStats: "页面统计： "
+Stats_VisitsTotalTime: "{visits} 总访问， {hours} 总时间"
+Stats_Accounts: "账户： "
+Stats_Switches: "开关： "
+Stats_FirstActive: "第一个活跃： "
+Stats_LastActive: "最后登录： "
+Stats_UniqueDays: "独特的日子： "
+Stats_GameShortcuts: "游戏快捷键： "
+Stats_GameShortcutsHotbar: "游戏快捷方式（在快捷栏上）： "
+Stats_GamesLaunched: "推出的游戏： "
 Cleaning_Header_StartMenuShortcuts: '开始菜单的快捷方式：'
 Cleaning_Header_General: 常规清理
 Cleaning_Header_LoginHistory: 清理我的登录历史
@@ -169,6 +207,7 @@ Toast_RestoreComplete: 还原完成！
 Toast_FailedLoad: 加载 {platform} 失败！点击平台查看错误信息。
 Toast_FailedPlatformsLoad: 加载 Platforms.json 失败！请确认此文件存在。
 Toast_FailedLoadSettings: "加载设置失败！已改为加载默认设置。将“old”添加到现有设置文件名。"
+Toast_FailedLoadStats: "加载统计失败！正在重启。"
 Toast_FileCopyFail: 复制文件失败！请查看日志了解详情。
 Toast_UserDataLoadFail: 加载用户数据 {UserData}\\WindowSettings.json 失败。请备份并重置！错误信息已保存到日志。
 Toast_UpdateCheckFail: 无法访问 https://tcno.co/ 以检查更新。此消息将每天显示一次。
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: 请定位到 {platform} 目录
 Modal_Title_AddNew: 添加新的 {platform} 帐户
 Modal_Title_Background: 设置背景图片
 Modal_Title_Userdata: 设置用户数据文件夹
+Modal_Title_Stats: 您的统计数据
 Modal_SetBackground: '选择图片，或在下面输入 URL。<br>留空表示重置。<br>（有关更高级的控制，请参考 Wiki 上的“Theming”）：'
 Modal_SetBackground_Button: 设置背景
 Modal_SetBackground_ChooseImage: 选择本地图片
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>您即将忘记一个帐户！</h3> <h4>这意味着什么？</h4> <p>- Steam 不会再将此帐户显示在大屏幕模式中，并且不会记住密码。<br/>- TcNo 帐户切换器也将不再显示此帐户，直到再次通过 Steam 登录。</p> <p>您的帐户将保持不变。只是您在这台计算机上忘记了它。</p><h4>您明白了吗？</h4><p>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>您即将忘记一个帐户！</h3> <h4>这意味着什么？</h4> <p>TcNo 帐户切换器将不再显示此帐户，<br/>直到通过 {platform} 再次登录并添加到列表中。</p> <p>您的帐户将保持不变。只是您在这台计算机上忘记了它。</p> <h4>您明白了吗？</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>您即将清除统计信息！</h3> <p>您无法撤消此操作。</p>
 Platform_DiscordPasteHint: 粘贴到 Discord 控制台，然后把结果粘贴到输入框！
 Platform_ClearCache: 清理缓存
 Platform_ClearCacheTotal: 正在清理 {totalFileCount} 个文件（{totalSizeMB}）
@@ -393,3 +435,7 @@ Tooltip_Backup: 根据平台设置，备份配置文件/文件夹。
 Tooltip_BackupAll: 备份所有配置文件/文件夹，包括头像和其他大文件。
 Tooltip_ClosingMethod: "组合使用效果最佳。“关闭”尝试直接调用一次关闭函数，TaskKill 则使用 CMD（如果组合不起作用，则此方式效果更好）"
 Tooltip_StartingMethod: "默认效果最好。 Direct 无法控制管理员级别或 UAC。它将以与此帐户切换器相同的级别（或更高 - 但不更低）启动 "
+Tooltip_CurrentAccount: 您当前已登录此帐户。
+Discord_Status: 目前正在切换帐户。
+Discord_StatusDetails: "帐户切换： {number}"
+Website: 网站
