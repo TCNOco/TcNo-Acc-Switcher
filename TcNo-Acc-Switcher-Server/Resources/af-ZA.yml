@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Ander gereedskap
 Settings_Header_TraySettings: Laai-instellings
 Settings_Header_OpenGameFolders: Maak speletjie-vouers oop
 Settings_Header_BackupRestore: Rugsteun en herstel platforminstellings
+Settings_Header_Language: Taal
+Settings_Header_System: Stelsel
+Settings_Header_Theme: Tema
+Settings_Header_Program: Program
+Settings_Header_StatsSharing: Statistiek en deel
+Settings_Header_Platform: "{platformName} instellings"
 Settings_TrayMax: 'Maksimum aantal rekeninge om te onthou:'
 Settings_ExtraPlatformsDisabled: Gedeaktiveerde platforms. Klik om hulle te aktiveer.
 Settings_ExtraPlatformsEnabled: Sigbare platforms. Klik om hulle te deaktiveer.
 Settings_RTL: Wys teks as Regs-na-Links
+Settings_CollectStats: Versamel statistieke
+Settings_ShareStats: Deel statistieke irriterend (aanbeveel)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Deel totale skakelaars
+Settings_ViewStats: Bekyk statistieke
+Settings_ClearStats: Stel terug
 Settings_CurrentLocation: 'Huidige installasieligging: {path}'
 Settings_CurrentDataLocation: 'Huidige gebruikerdataligging: {path}'
 Settings_SetDataLocation: "[Stel pasgemaakte gebruikerdataligging in]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Gevorderd) Stel metode om {platform}te sluit"
 Settings_Header_StartingMethod: "(Gevorderd) Stel metode om {platform}te begin"
 Settings_AutoStart: "Begin outomaties {platform} op rekeningskakelaar"
 Settings_NoPlatforms: Daar is tans geen platforms geaktiveer nie. Merk asseblief opsionele platforms hieronder om hulle te aktiveer, of ontmerk gedeaktiveerde platforms.
+Settings_MinimizeOnSwitch: Minimaliseer skakelaar op rekeningskakelaar
+Stats_Disabled: "Statistiekversameling is gedeaktiveer."
+Stats_InDepth: In-diepte statistiek uiteensetting
+Stats_ShareEnabled: "Hierdie statistieke word anoniem gedeel en sal by die totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">hier</a>voeg."
+Stats_ShareDisabled: "Hierdie statistieke word NIE anoniem gedeel nie en sal NIE by die totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">hier</a>voeg nie."
+Stats_OperatingSystem: "Bedryfstelsel: "
+Stats_FirstLaunch: "Eerste bekendstelling: "
+Stats_LaunchCount: "Begintelling: "
+Stats_CrashCount: "Omval telling: "
+Stats_MostUsedPlatform: "Mees gebruikte platform: "
+Stats_TotalTime: "Totale tyd spandeer in-program: "
+Stats_TotalSwitches: "Totale rekeningskakelaars: "
+Stats_TotalGamesLaunched: "Totale programme/speletjies wat via skakelaar bekendgestel is: "
+Stats_UniqueDaysLong: "Unieke dae met rekeninge omgeskakel: "
+Stats_LastUpload: "Laaste oplaai: "
+Stats_SwitcherStats: "Skakelaarstatistieke: "
+Stats_PageStats: "Bladsystatistieke: "
+Stats_VisitsTotalTime: "{visits} totale besoeke, {hours} totale tyd"
+Stats_Accounts: "Rekeninge: "
+Stats_Switches: "Skakelaars: "
+Stats_FirstActive: "Eerste aktiewe: "
+Stats_LastActive: "Laaste aktief: "
+Stats_UniqueDays: "Unieke dae: "
+Stats_GameShortcuts: "Spelkortpaaie: "
+Stats_GameShortcutsHotbar: "Spelkortpaaie (op hotbar): "
+Stats_GamesLaunched: "Speletjies bekendgestel: "
 Cleaning_Header_StartMenuShortcuts: 'Kortpaaie vir die Start Menu:'
 Cleaning_Header_General: Algemene skoonmaak
 Cleaning_Header_LoginHistory: Maak my aanmeldingsgeskiedenis skoon
@@ -169,6 +207,7 @@ Toast_RestoreComplete: Herstel voltooi!
 Toast_FailedLoad: Kon nie {platform}laai nie! Klik op die platform om die fout te sien.
 Toast_FailedPlatformsLoad: Kon nie Platforms.json laai nie! Verifieer asseblief dat hierdie lêer bestaan.
 Toast_FailedLoadSettings: "Kon nie instellings laai nie! Laai eerder verstekinstellings. Voeg 'ou' by bestaande instellingslêernaam."
+Toast_FailedLoadStats: "Kon nie statistieke laai nie! Begin nuut."
 Toast_FileCopyFail: Kon nie lêers kopieer nie! Sien log vir meer besonderhede.
 Toast_UserDataLoadFail: Kon nie gebruikerdata {UserData}\\WindowSettings.json laai nie. Rugsteun en stel terug! Stoor fout om aan te meld.
 Toast_UpdateCheckFail: Kon nie https://tcno.co/ bereik om na opdaterings te kyk nie. Hierdie boodskap sal een keer per dag wys.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Soek die {platform} gids
 Modal_Title_AddNew: Voeg 'n nuwe {platform} rekening by
 Modal_Title_Background: Stel 'n agtergrondprent
 Modal_Title_Userdata: Stel die gebruikerdata-lêergids in
+Modal_Title_Stats: Jou statistieke
 Modal_SetBackground: 'Kies ''n prent, of voer ''n URL hieronder in.<br>Laat leeg en stel om terug te stel.<br>(Vir meer gevorderde beheer, sien die Tema op die Wiki):'
 Modal_SetBackground_Button: Stel agtergrond
 Modal_SetBackground_ChooseImage: Kies plaaslike prent
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Jy is op die punt om 'n rekening te vergeet!</h3> <h4>Wat beteken dit?</h4> <p>- Steam sal nie meer die rekening in Big Picture Mode gelys hê nie en sal nie wagwoord onthou nie.<br/> - TcNo Account Switcher sal ook nie meer die rekening wys totdat dit weer deur Steam aangemeld is nie.</p> <p>Jou rekening sal onaangeraak bly. Dit is net vergeet op hierdie rekenaar.</p><h4>Verstaan jy?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>U is op die punt om 'n rekening te vergeet!</h3> <h4>Wat beteken dit?</h4> <p>TcNo Account Switcher sal ook nie meer die rekening wys nie,<br/> totdat dit weer tot {platform}aangemeld is en by die lys gevoeg is.</p> <p>U rekening sal onaangeraak bly. Dit word net op hierdie rekenaar vergeet.</p> <h4>Verstaan jy?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Jy is op die punt om jou statistieke skoon te maak!</h3> <p>Jy kan nie hierdie handeling ongedaan maak nie.</p>
 Platform_DiscordPasteHint: Plak in Discord-konsole, en plak dan resultaat in invoer!
 Platform_ClearCache: Vee kas uit
 Platform_ClearCacheTotal: Vee {totalFileCount} lêers uit ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: Rugsteun konfigurasielêers/vouers, soos gedefinieer in platform
 Tooltip_BackupAll: Rugsteun ALLE konfigurasielêers/vouers, insluitend beelde en ander groot lêers.
 Tooltip_ClosingMethod: "Gekombineer is die beste. Sluit pogings om direk toe te maak deur 'n afsluitfunksie en TaskKill gebruik CMD (beste as gekombineer nie werk nie)"
 Tooltip_StartingMethod: "Standaard is die beste. Direct het geen beheer oor administrasievlak of UAC nie. Dit sal begin as dieselfde vlak (of hoër - maar nie laer nie) as hierdie rekeningwisselaar"
+Tooltip_CurrentAccount: Jy is tans by hierdie rekening aangemeld.
+Discord_Status: Verander tans rekeninge.
+Discord_StatusDetails: "Rekeninge verander: {number}"
+Website: Webwerf
