@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Altri Strumenti
 Settings_Header_TraySettings: Impostazioni area di notifica
 Settings_Header_OpenGameFolders: Apri cartelle del gioco
 Settings_Header_BackupRestore: Backup e ripristino delle impostazioni della piattaforma
+Settings_Header_Language: Lingua
+Settings_Header_System: Sistema
+Settings_Header_Theme: Tema
+Settings_Header_Program: Programma
+Settings_Header_StatsSharing: Statistiche e condivisione
+Settings_Header_Platform: "{platformName} impostazioni"
 Settings_TrayMax: 'Numero massimo di profili da ricordare:'
 Settings_ExtraPlatformsDisabled: Piattaforme disabilitate. Fare clic per abilitarli.
 Settings_ExtraPlatformsEnabled: Piattaforme visibili. Fare clic per disabilitarli.
 Settings_RTL: Mostra il testo come da destra a sinistra
+Settings_CollectStats: Raccogli le statistiche
+Settings_ShareStats: Condividi le statistiche in modo fastidioso (consigliato)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Condividi gli switch totali
+Settings_ViewStats: Visualizza le statistiche
+Settings_ClearStats: Ripristina
 Settings_CurrentLocation: 'Posizione di installazione corrente: {path}'
 Settings_CurrentDataLocation: 'Posizione attuale dei dati dell''utente: {path}'
 Settings_SetDataLocation: "[Imposta posizione dati utente personalizzata]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Avanzate) Imposta il metodo per chiudere {platf
 Settings_Header_StartingMethod: "(Avanzate) Imposta il metodo per iniziare {platform}"
 Settings_AutoStart: "Avvia automaticamente {platform} al passaggio dell'account"
 Settings_NoPlatforms: Al momento non ci sono piattaforme abilitate. Spunta le piattaforme opzionali di seguito per abilitarle o deseleziona le piattaforme disabilitate.
+Settings_MinimizeOnSwitch: Riduci a icona switcher sul cambio account
+Stats_Disabled: "La raccolta delle statistiche è disabilitata."
+Stats_InDepth: Scomposizione statistica approfondita
+Stats_ShareEnabled: "Queste statistiche sono condivise in modo anonimo e si aggiungeranno al totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">qui</a>."
+Stats_ShareDisabled: "Queste statistiche NON sono condivise in modo anonimo e NON verranno aggiunte al totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">qui</a>."
+Stats_OperatingSystem: "Sistema operativo: "
+Stats_FirstLaunch: "Primo lancio: "
+Stats_LaunchCount: "Conteggio lanci: "
+Stats_CrashCount: "Conteggio arresti anomali: "
+Stats_MostUsedPlatform: "Piattaforma più utilizzata: "
+Stats_TotalTime: "Tempo totale trascorso nell'app: "
+Stats_TotalSwitches: "Totale cambi di account: "
+Stats_TotalGamesLaunched: "Totale app/giochi lanciati tramite switcher: "
+Stats_UniqueDaysLong: "Giorni unici con cambio di account: "
+Stats_LastUpload: "Ultimo caricamento: "
+Stats_SwitcherStats: "Statistiche del commutatore: "
+Stats_PageStats: "Statistiche della pagina: "
+Stats_VisitsTotalTime: "{visits} visite totali, {hours} tempo totale"
+Stats_Accounts: "Conti: "
+Stats_Switches: "Interruttori: "
+Stats_FirstActive: "Primo attivo: "
+Stats_LastActive: "Ultimo attivo: "
+Stats_UniqueDays: "Giorni unici: "
+Stats_GameShortcuts: "Scorciatoie di gioco: "
+Stats_GameShortcutsHotbar: "Scorciatoie di gioco (su hotbar): "
+Stats_GamesLaunched: "Giochi lanciati: "
 Cleaning_Header_StartMenuShortcuts: 'Scorciatoie per il Menu Iniziale:'
 Cleaning_Header_General: Pulizia Generale
 Cleaning_Header_LoginHistory: Cancella la mia cronologia degli accessi
@@ -169,6 +207,7 @@ Toast_RestoreComplete: Ripristino terminato!
 Toast_FailedLoad: Impossibile caricare {platform}! Fare clic sulla piattaforma per visualizzare l'errore.
 Toast_FailedPlatformsLoad: Impossibile caricare Platforms.json! Verifica che questo file esista.
 Toast_FailedLoadSettings: "Impossibile caricare le impostazioni! Caricamento invece delle impostazioni predefinite. Aggiunta di \"vecchio\" al nome del file delle impostazioni esistenti."
+Toast_FailedLoadStats: "Impossibile caricare le statistiche! Ricominciare da capo."
 Toast_FileCopyFail: Impossibile copiare i file! Vedi registro per maggiori dettagli.
 Toast_UserDataLoadFail: Impossibile caricare i dati utente {UserData}\\WindowSettings.json. Backup e ripristino! Errore salvato per la registrazione.
 Toast_UpdateCheckFail: Impossibile raggiungere https://tcno.co/ per verificare la disponibilità di aggiornamenti. Questo messaggio verrà visualizzato una volta al giorno.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Sei pregato di individuare la cartella di {platform}
 Modal_Title_AddNew: Aggiungi nuovo profilo di {platform}
 Modal_Title_Background: Imposta un'immagine di sfondo
 Modal_Title_Userdata: Impostare la cartella dei dati utente
+Modal_Title_Stats: Le tue statistiche
 Modal_SetBackground: 'Seleziona un''immagine o inserisci un URL di seguito.<br>Lascia vuoto e imposta per ripristinare.<br>(Per un controllo più avanzato vedere il Theming sul Wiki):'
 Modal_SetBackground_Button: Imposta sfondo
 Modal_SetBackground_ChooseImage: Scegli l'immagine locale
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Stai per dimenticare un account!</h3> <h4>Cosa significa?</h4> <p>- Steam non avrà più l'account elencato in modalità Big Picture e non ricorderà la password.<br/> - Anche TcNo Account Switcher non mostrerà più l'account, fino a quando non verrà eseguito nuovamente l'accesso tramite Steam.</p> <p>Il tuo account rimarrà intatto. È appena stato dimenticato su questo computer.</p><h4>Capisci?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Stai per dimenticare un profilo!</h3> <h4>Che significa?</h4> <p>Il Selettore di Profili di TcNo inoltre non mostrerà più il profilo,<br/> finché acceduto nuovamente tramite {platform} e aggiunto all'elenco.</p> <p>Il tuo profilo rimarrà intatto. Semplicemente, è dimenticato su questo computer.</p> <h4>Capito?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Stai per cancellare le tue statistiche!</h3> <p>Non è possibile annullare questa azione.</p>
 Platform_DiscordPasteHint: Incolla nella console di Discord e poi incolla il risultato in input!
 Platform_ClearCache: Cancella cache
 Platform_ClearCacheTotal: Cancellazione di {totalFileCount} file ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: Eseguire il backup di file/cartelle di configurazione, come defi
 Tooltip_BackupAll: Eseguire il backup di TUTTI i file/cartelle di configurazione, comprese le immagini e altri file di grandi dimensioni.
 Tooltip_ClosingMethod: "Combinato è il migliore. Close tenta di chiudere direttamente tramite una funzione di chiusura e TaskKill utilizza CMD (meglio se combinato non funziona)"
 Tooltip_StartingMethod: "L'impostazione predefinita è la migliore. Direct non ha alcun controllo sul livello di amministratore o sull'UAC. Inizierà con lo stesso livello (o superiore, ma non inferiore) di questo selettore di account"
+Tooltip_CurrentAccount: Attualmente sei connesso a questo account.
+Discord_Status: Attualmente cambio account.
+Discord_StatusDetails: "Conti cambiati: {number}"
+Website: Sito web
