@@ -36,10 +36,22 @@ Settings_Header_OtherTools: כלים אחרים
 Settings_Header_TraySettings: הגדרות מגש
 Settings_Header_OpenGameFolders: פתח תיקיות משחק
 Settings_Header_BackupRestore: גיבוי ושחזור הגדרות פלטפורמה
+Settings_Header_Language: שפה
+Settings_Header_System: מערכת
+Settings_Header_Theme: נושא
+Settings_Header_Program: תכנית
+Settings_Header_StatsSharing: סטטיסטיקה ושיתוף
+Settings_Header_Platform: "{platformName} הגדרות"
 Settings_TrayMax: 'מספר חשבונות מקסימלי שיש לזכור:'
 Settings_ExtraPlatformsDisabled: פלטפורמות מושבתות. לחץ כדי להפעיל אותם.
 Settings_ExtraPlatformsEnabled: פלטפורמות גלויות. לחץ כדי להשבית אותם.
 Settings_RTL: הצג טקסט בתור מימין לשמאל
+Settings_CollectStats: אסוף סטטיסטיקות
+Settings_ShareStats: שתף סטטיסטיקה בצורה עצבנית (מומלץ)
+Settings_DiscordRpc: נוכחות עשירה בדיסקורד (RPC)
+Settings_DiscordRpcShare: שתף את סך המתגים
+Settings_ViewStats: צפה בסטטיסטיקה
+Settings_ClearStats: אִתחוּל
 Settings_CurrentLocation: 'מיקום ההתקנה הנוכחי: {path}'
 Settings_CurrentDataLocation: 'מיקום נתוני משתמש נוכחי: {path}'
 Settings_SetDataLocation: "[הגדר מיקום נתוני משתמש מותאם אישית]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(מתקדם) הגדר את השיטה לסגיר
 Settings_Header_StartingMethod: "(מתקדם) הגדר את השיטה להתחיל {platform}"
 Settings_AutoStart: "הפעל אוטומטית {platform} בהחלפת חשבון"
 Settings_NoPlatforms: כרגע אין פלטפורמות מופעלות. אנא סמן פלטפורמות אופציונליות למטה כדי להפעיל אותן, או בטל את הסימון של פלטפורמות מושבתות.
+Settings_MinimizeOnSwitch: צמצם את המחליף במתג החשבון
+Stats_Disabled: "איסוף הנתונים הסטטיסטיים מושבת."
+Stats_InDepth: פירוט סטטיסטיקה מעמיק
+Stats_ShareEnabled: "הנתונים הסטטיסטיים האלה משותפים בעילום שם ויוסיפו לסך ה <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">כאן</a>."
+Stats_ShareDisabled: "נתונים סטטיסטיים אלה אינם משותפים בעילום שם ולא יתווספו ל <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">הכולל כאן</a>."
+Stats_OperatingSystem: "מערכת הפעלה: "
+Stats_FirstLaunch: "השקה ראשונה: "
+Stats_LaunchCount: "ספירת השקות: "
+Stats_CrashCount: "ספירת קריסות: "
+Stats_MostUsedPlatform: "הפלטפורמה הנפוצה ביותר: "
+Stats_TotalTime: "סך הזמן שהושקע באפליקציה: "
+Stats_TotalSwitches: "סך כל החלפות החשבון: "
+Stats_TotalGamesLaunched: "סך כל האפליקציות/משחקים שהושקו באמצעות מחליף: "
+Stats_UniqueDaysLong: "ימים ייחודיים עם החלפת חשבונות: "
+Stats_LastUpload: "העלאה אחרונה: "
+Stats_SwitcherStats: "סטטיסטיקות מחליף: "
+Stats_PageStats: "סטטיסטיקות עמודים: "
+Stats_VisitsTotalTime: "{visits} ביקורים סה\"כ, {hours} זמן סה\"כ"
+Stats_Accounts: "חשבונות: "
+Stats_Switches: "מתגים: "
+Stats_FirstActive: "פעיל ראשון: "
+Stats_LastActive: "פעיל אחרון: "
+Stats_UniqueDays: "ימים ייחודיים: "
+Stats_GameShortcuts: "קיצורי דרך למשחק: "
+Stats_GameShortcutsHotbar: "קיצורי דרך למשחק (בסרגל החם): "
+Stats_GamesLaunched: "משחקים שהושקו: "
 Cleaning_Header_StartMenuShortcuts: 'קיצורי דרך לתפריט התחלה:'
 Cleaning_Header_General: ניקוי כללי
 Cleaning_Header_LoginHistory: נקה את היסטוריית הכניסה שלי
@@ -169,6 +207,7 @@ Toast_RestoreComplete: השחזור הסתיים!
 Toast_FailedLoad: טעינת {platform}נכשלה! לחץ על הפלטפורמה כדי לראות את השגיאה.
 Toast_FailedPlatformsLoad: טעינת Platforms.json נכשלה! אנא ודא שקובץ זה קיים.
 Toast_FailedLoadSettings: "טעינת ההגדרות נכשלה! טוען הגדרות ברירת מחדל במקום זאת. הוספת 'ישן' לשם קובץ ההגדרות הקיים."
+Toast_FailedLoadStats: "טעינת הנתונים הסטטיסטיים נכשלה! מתחילים טריים."
 Toast_FileCopyFail: ההעתקה של הקבצים נכשלה! ראה יומן לפרטים נוספים.
 Toast_UserDataLoadFail: טעינת נתוני משתמש {UserData}\\WindowSettings.json נכשלה. גיבוי ואיפוס! שגיאה נשמרה ביומן.
 Toast_UpdateCheckFail: לא ניתן היה להגיע אל https://tcno.co/ כדי לחפש עדכונים. הודעה זו תופיע פעם ביום.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: אנא אתר את ספריית {platform}
 Modal_Title_AddNew: הוסף חשבון {platform}
 Modal_Title_Background: הגדר תמונת רקע
 Modal_Title_Userdata: הגדר את תיקיית נתוני המשתמש
+Modal_Title_Stats: הסטטיסטיקה שלך
 Modal_SetBackground: 'בחר תמונה, או הזן כתובת אתר למטה.<br>השאר ריק והגדר לאיפוס.<br>(לשליטה מתקדמת יותר ראה את הנושא בוויקי):'
 Modal_SetBackground_Button: הגדר רקע
 Modal_SetBackground_ChooseImage: בחר תמונה מקומית
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>אתה עומד לשכוח חשבון!</h3> <h4>מה זה אומר?</h4> <p>- ל-Steam כבר לא יהיה החשבון הרשום במצב Big Picture ולא יזכור את הסיסמה.<br/> - TcNo Account Switcher גם לא יציג יותר את החשבון, עד שייכנס שוב דרך Steam.</p> <p>החשבון שלך לא ייפגע. זה פשוט נשכח במחשב הזה.</p><h4>אתה מבין?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>אתה עומד לשכוח חשבון!</h3> <h4>מה זה אומר?</h4> <p>TcNo Account Switcher לא יציג עוד את החשבון,<br/> עד שייכנס שוב עד {platform}ויתווסף לרשימה.</p> <p>חשבונך יישאר ללא פגע. זה פשוט נשכח במחשב הזה.</p> <h4>אתה מבין?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>אתה עומד לנקות את הסטטיסטיקה שלך!</h3> <p>לא ניתן לבטל פעולה זו.</p>
 Platform_DiscordPasteHint: הדבק בקונסולת Discord ולאחר מכן הדבק את התוצאה בקלט!
 Platform_ClearCache: נקה מטמון
 Platform_ClearCacheTotal: ניקוי {totalFileCount} קבצים ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: גיבוי קבצי/תיקיות תצורה, כפי שהוגדר
 Tooltip_BackupAll: גבה את כל קבצי/תיקיות התצורה, כולל תמונות וקבצים גדולים אחרים.
 Tooltip_ClosingMethod: "משולב זה הכי טוב. ניסיונות סגור לסגור ישירות דרך פונקציית סגירה ו-TaskKill משתמש ב-CMD (הכי טוב אם השילוב לא עובד)"
 Tooltip_StartingMethod: "ברירת המחדל היא הטובה ביותר. ל-Direct אין שליטה על רמת הניהול או ה-UAC. זה יתחיל באותה רמה (או גבוה יותר - אבל לא נמוך יותר) מאשר מחליף חשבון זה"
+Tooltip_CurrentAccount: אתה מחובר כעת לחשבון זה.
+Discord_Status: כרגע מחליף חשבונות.
+Discord_StatusDetails: "חשבונות שהוחלפו: {number}"
+Website: אתר אינטרנט

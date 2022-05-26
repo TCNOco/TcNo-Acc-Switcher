@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Các công cụ khác
 Settings_Header_TraySettings: Cài đặt khay
 Settings_Header_OpenGameFolders: Mở thư mục trò chơi
 Settings_Header_BackupRestore: Sao lưu và khôi phục cài đặt nền tảng
+Settings_Header_Language: Ngôn ngữ
+Settings_Header_System: Hệ thống
+Settings_Header_Theme: Chủ đề
+Settings_Header_Program: Chương trình
+Settings_Header_StatsSharing: Thống kê & Chia sẻ
+Settings_Header_Platform: "{platformName} cài đặt"
 Settings_TrayMax: 'Số tài khoản tối đa cần nhớ:'
 Settings_ExtraPlatformsDisabled: Nền tảng bị vô hiệu hóa. Nhấp để kích hoạt chúng.
 Settings_ExtraPlatformsEnabled: Nền tảng hiển thị. Nhấp để vô hiệu hóa chúng.
 Settings_RTL: Hiển thị văn bản dưới dạng từ phải sang trái
+Settings_CollectStats: Thu thập số liệu thống kê
+Settings_ShareStats: Chia sẻ thống kê một cách đáng chú ý (được khuyến nghị)
+Settings_DiscordRpc: Sự hiện diện phong phú bất hòa (RPC)
+Settings_DiscordRpcShare: Chia sẻ tổng số công tắc
+Settings_ViewStats: Xem số liệu thống kê
+Settings_ClearStats: Cài lại
 Settings_CurrentLocation: 'Vị trí cài đặt hiện tại: {path}'
 Settings_CurrentDataLocation: 'Vị trí dữ liệu người dùng hiện tại: {path}'
 Settings_SetDataLocation: "[Đặt vị trí dữ liệu người dùng tùy chỉnh]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Nâng cao) Đặt phương thức đóng {platf
 Settings_Header_StartingMethod: "(Nâng cao) Đặt phương thức để bắt đầu {platform}"
 Settings_AutoStart: "Tự động bắt đầu {platform} khi chuyển đổi tài khoản"
 Settings_NoPlatforms: Hiện tại không có nền tảng nào được kích hoạt. Vui lòng đánh dấu vào các nền tảng tùy chọn bên dưới để bật chúng hoặc bỏ chọn các nền tảng bị vô hiệu hóa.
+Settings_MinimizeOnSwitch: Thu nhỏ trình chuyển đổi khi chuyển đổi tài khoản
+Stats_Disabled: "Thu thập thống kê bị vô hiệu hóa."
+Stats_InDepth: Phân tích thống kê chuyên sâu
+Stats_ShareEnabled: "Những thống kê này được chia sẻ ẩn danh và sẽ cộng vào tổng số <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">ở đây</a>."
+Stats_ShareDisabled: "Các thống kê này KHÔNG được chia sẻ ẩn danh và sẽ KHÔNG cộng vào tổng số <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">ở đây</a>."
+Stats_OperatingSystem: "Hệ điều hành: "
+Stats_FirstLaunch: "Lần ra mắt đầu tiên: "
+Stats_LaunchCount: "Số lần khởi chạy: "
+Stats_CrashCount: "Số sự cố: "
+Stats_MostUsedPlatform: "Nền tảng được sử dụng nhiều nhất: "
+Stats_TotalTime: "Tổng thời gian dành cho ứng dụng: "
+Stats_TotalSwitches: "Tổng số lần chuyển đổi tài khoản: "
+Stats_TotalGamesLaunched: "Tổng số ứng dụng / trò chơi được khởi chạy qua trình chuyển đổi: "
+Stats_UniqueDaysLong: "Những ngày duy nhất có tài khoản được chuyển đổi: "
+Stats_LastUpload: "Tải lên lần cuối: "
+Stats_SwitcherStats: "Số liệu thống kê về bộ chuyển mạch: "
+Stats_PageStats: "Thống kê trang: "
+Stats_VisitsTotalTime: "Tổng số lượt truy cập là {visits} , tổng thời gian là {hours} lượt"
+Stats_Accounts: "Tài khoản: "
+Stats_Switches: "Công tắc: "
+Stats_FirstActive: "Hoạt động đầu tiên: "
+Stats_LastActive: "Lần hoạt động cuối cùng: "
+Stats_UniqueDays: "Ngày duy nhất: "
+Stats_GameShortcuts: "Các phím tắt trò chơi: "
+Stats_GameShortcutsHotbar: "Các phím tắt trò chơi (trên hotbar): "
+Stats_GamesLaunched: "Trò chơi đã ra mắt: "
 Cleaning_Header_StartMenuShortcuts: 'Các phím tắt cho Start Menu:'
 Cleaning_Header_General: Vệ sinh chung
 Cleaning_Header_LoginHistory: Xóa lịch sử đăng nhập của tôi
@@ -169,6 +207,7 @@ Toast_RestoreComplete: Đã khôi phục xong!
 Toast_FailedLoad: Không tải được {platform}! Nhấp vào nền tảng để xem lỗi.
 Toast_FailedPlatformsLoad: Không tải được Platforms.json! Vui lòng xác minh tệp này tồn tại.
 Toast_FailedLoadSettings: "Không tải được cài đặt! Đang tải cài đặt mặc định thay thế. Thêm 'cũ' vào tên tệp cài đặt hiện có."
+Toast_FailedLoadStats: "Không tải được số liệu thống kê! Bắt đầu mới."
 Toast_FileCopyFail: Không thể sao chép tệp! Xem nhật ký để biết thêm chi tiết.
 Toast_UserDataLoadFail: Không tải được dữ liệu người dùng {UserData}\\ WindowSettings.json. Sao lưu và đặt lại! Đã lưu lỗi để ghi nhật ký.
 Toast_UpdateCheckFail: Không thể truy cập https://tcno.co/ để kiểm tra các bản cập nhật. Thông báo này sẽ hiển thị mỗi ngày một lần.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Vui lòng định vị thư mục {platform}
 Modal_Title_AddNew: Thêm tài khoản {platform}
 Modal_Title_Background: Đặt hình nền
 Modal_Title_Userdata: Đặt thư mục dữ liệu người dùng
+Modal_Title_Stats: Thống kê của bạn
 Modal_SetBackground: 'Chọn một hình ảnh hoặc nhập một URL bên dưới.<br>Để trống và đặt để đặt lại.<br>(Để kiểm soát nâng cao hơn, hãy xem Chủ đề trên Wiki):'
 Modal_SetBackground_Button: Chỉnh nền
 Modal_SetBackground_ChooseImage: Chọn hình ảnh địa phương
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Bạn sắp quên tài khoản!</h3> <h4>Điều này có nghĩa là gì?</h4> <p>- Steam sẽ không còn tài khoản được liệt kê ở Chế độ ảnh lớn và sẽ không ghi nhớ mật khẩu.<br/> - TcNo Account Switcher cũng sẽ không hiển thị tài khoản nữa, cho đến khi tài khoản được đăng nhập lại thông qua Steam.</p> <p>Tài khoản của bạn sẽ không bị ảnh hưởng. Nó chỉ bị quên trên máy tính này.</p><h4>Bạn có hiểu không?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Bạn sắp quên tài khoản!</h3> <h4>Điều này có nghĩa là gì?</h4> <p>TcNo Account Switcher cũng sẽ không hiển thị tài khoản nữa,<br/> cho đến khi tài khoản được đăng nhập lại đến hết {platform}và được thêm vào danh sách.</p> <p>Tài khoản của bạn sẽ không bị ảnh hưởng. Nó chỉ bị quên trên máy tính này.</p> <h4>Bạn có hiểu không?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Bạn sắp xóa số liệu thống kê của mình!</h3> <p>Bạn không thể hoàn tác hành động này.</p>
 Platform_DiscordPasteHint: Dán vào bảng điều khiển Discord, rồi dán kết quả vào đầu vào!
 Platform_ClearCache: Xóa bộ nhớ đệm
 Platform_ClearCacheTotal: Xóa {totalFileCount} tệp ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: Sao lưu các tệp / thư mục cấu hình, như được xác
 Tooltip_BackupAll: Sao lưu TẤT CẢ các tệp / thư mục cấu hình, bao gồm cả hình ảnh và các tệp lớn khác.
 Tooltip_ClosingMethod: "Kết hợp là tốt nhất. Đóng cố gắng đóng trực tiếp thông qua một chức năng đóng và TaskKill sử dụng CMD (Tốt nhất nếu kết hợp không hoạt động)"
 Tooltip_StartingMethod: "Mặc định là tốt nhất. Direct không có quyền kiểm soát cấp quản trị hoặc UAC. Nó sẽ bắt đầu ở cùng cấp (hoặc cao hơn - nhưng không thấp hơn) so với trình chuyển đổi tài khoản này"
+Tooltip_CurrentAccount: Bạn hiện đã đăng nhập vào tài khoản này.
+Discord_Status: Hiện đang chuyển đổi tài khoản.
+Discord_StatusDetails: "Tài khoản được Chuyển đổi: {number}"
+Website: Trang mạng

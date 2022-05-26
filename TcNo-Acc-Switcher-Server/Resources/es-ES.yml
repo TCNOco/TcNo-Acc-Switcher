@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Otras herramientas
 Settings_Header_TraySettings: Ajustes de la bandeja
 Settings_Header_OpenGameFolders: Abrir carpetas del juego
 Settings_Header_BackupRestore: Configuración de la plataforma de copia de seguridad y restauración
+Settings_Header_Language: Idioma
+Settings_Header_System: Sistema
+Settings_Header_Theme: Temática
+Settings_Header_Program: Programa
+Settings_Header_StatsSharing: Estadísticas y uso compartido
+Settings_Header_Platform: "{platformName} ajustes"
 Settings_TrayMax: 'Número máximo de cuentas a recordar:'
 Settings_ExtraPlatformsDisabled: Plataformas deshabilitadas. Haga clic para habilitarlos.
 Settings_ExtraPlatformsEnabled: Plataformas visibles. Haga clic para deshabilitarlos.
 Settings_RTL: Mostrar texto de derecha a izquierda
+Settings_CollectStats: Recopilar estadísticas
+Settings_ShareStats: Compartir estadísticas de forma anónima (recomendado)
+Settings_DiscordRpc: Presencia rica en discordia (RPC)
+Settings_DiscordRpcShare: Compartir cambios totales
+Settings_ViewStats: Ver estadísticas
+Settings_ClearStats: Reiniciar
 Settings_CurrentLocation: 'Ubicación de instalación actual: {path}'
 Settings_CurrentDataLocation: 'Ubicación de datos de usuario actual: {path}'
 Settings_SetDataLocation: "[Establecer ubicación de datos de usuario personalizada]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Avanzado) Establecer método para cerrar {platf
 Settings_Header_StartingMethod: "(Avanzado) Establecer método para iniciar {platform}"
 Settings_AutoStart: "Iniciar automáticamente {platform} al cambiar de cuenta"
 Settings_NoPlatforms: Actualmente no hay plataformas habilitadas. Marque las plataformas opcionales a continuación para habilitarlas o desmarque las plataformas deshabilitadas.
+Settings_MinimizeOnSwitch: Minimizar el conmutador en el cambio de cuenta
+Stats_Disabled: "La recopilación de estadísticas está deshabilitada."
+Stats_InDepth: Desglose detallado de estadísticas
+Stats_ShareEnabled: "Estas estadísticas se comparten de forma anónima y se sumarán al total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aquí</a>."
+Stats_ShareDisabled: "Estas estadísticas NO se comparten de forma anónima y NO se sumarán al total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aquí</a>."
+Stats_OperatingSystem: "Sistema operativo: "
+Stats_FirstLaunch: "Primer lanzamiento: "
+Stats_LaunchCount: "Número de lanzamientos: "
+Stats_CrashCount: "Recuento de accidentes: "
+Stats_MostUsedPlatform: "Plataforma más utilizada: "
+Stats_TotalTime: "Tiempo total pasado en la aplicación: "
+Stats_TotalSwitches: "Total de cambios de cuenta: "
+Stats_TotalGamesLaunched: "Total de aplicaciones/juegos lanzados a través del conmutador: "
+Stats_UniqueDaysLong: "Días únicos con cuentas cambiadas: "
+Stats_LastUpload: "Última carga: "
+Stats_SwitcherStats: "Estadísticas del conmutador: "
+Stats_PageStats: "Estadísticas de la página: "
+Stats_VisitsTotalTime: "{visits} visitas totales, {hours} tiempo total"
+Stats_Accounts: "Cuentas: "
+Stats_Switches: "Interruptores: "
+Stats_FirstActive: "Primero activo: "
+Stats_LastActive: "Último Activo: "
+Stats_UniqueDays: "Días únicos: "
+Stats_GameShortcuts: "Atajos del juego: "
+Stats_GameShortcutsHotbar: "Accesos directos del juego (en la barra de acceso directo): "
+Stats_GamesLaunched: "Juegos lanzados: "
 Cleaning_Header_StartMenuShortcuts: 'Atajos para Menú Inicio:'
 Cleaning_Header_General: Limpieza general
 Cleaning_Header_LoginHistory: Limpiar mi historial de acceso
@@ -169,6 +207,7 @@ Toast_RestoreComplete: '¡Restauración terminada!'
 Toast_FailedLoad: Error al cargar {platform}! Haga clic en la plataforma para ver el error.
 Toast_FailedPlatformsLoad: '¡No se pudo cargar Platforms.json! Verifique que este archivo exista.'
 Toast_FailedLoadSettings: "¡Error al cargar la configuración! Cargando la configuración predeterminada en su lugar. Agregar 'antiguo' al nombre del archivo de configuración existente."
+Toast_FailedLoadStats: "¡No se han podido cargar las estadísticas! Empezando de nuevo."
 Toast_FileCopyFail: '¡Error al copiar archivos! Ver registro para más detalles.'
 Toast_UserDataLoadFail: No se pudieron cargar los datos de usuario {UserData}\\WindowSettings.json. ¡Haciendo copias de seguridad y reiniciando! Error guardado en el registro.
 Toast_UpdateCheckFail: No se pudo acceder a https://tcno.co/ para buscar actualizaciones. Este mensaje se mostrará una vez al día.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Por favor, localice el directorio {platform}
 Modal_Title_AddNew: Añadir nueva cuenta de {platform}
 Modal_Title_Background: Establecer una imagen de fondo
 Modal_Title_Userdata: Establecer la carpeta de datos de usuario
+Modal_Title_Stats: Tus estadísticas
 Modal_SetBackground: 'Seleccione una imagen o ingrese una URL a continuación.<br>Déjelo en blanco y configúrelo para reiniciar.<br>(Para un control más avanzado, consulte Theming on the Wiki):'
 Modal_SetBackground_Button: Definir fondo
 Modal_SetBackground_ChooseImage: Elija imagen local
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>¡Estás a punto de olvidar una cuenta!</h3> <h4>¿Qué significa esto?</h4> <p>- Steam ya no tendrá la cuenta listada en el modo de imagen grande y no recordará la contraseña.<br/> - TcNo Account Switcher ya no mostrará la cuenta, hasta que se inicie sesión nuevamente a través de Steam.</p> <p>Su cuenta permanecerá intacta. Simplemente está olvidado en esta computadora.</p><h4>¿Entiendes?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>¡Estás a punto de olvidar una cuenta!</h3> <h4>¿Qué significa esto?</h4> <p>TcNo Account Switch también dejará de mostrar la cuenta.<br/> hasta que haya iniciado sesión de nuevo a través de {platform}, y añadido a la lista.</p> <p>Tu cuenta permanecerá intacta. Acaba de ser olvidada en este ordenador.</p> <h4>¿Entienes?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>¡Estás a punto de borrar tus estadísticas!</h3> <p>No puede deshacer esta acción.</p>
 Platform_DiscordPasteHint: '¡Pegue en la consola Discord y luego pegue el resultado en la entrada!'
 Platform_ClearCache: Limpiar cache
 Platform_ClearCacheTotal: Limpiando {totalFileCount} archivos ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: Copia de seguridad de archivos/carpetas de configuración, como 
 Tooltip_BackupAll: Haga una copia de seguridad de TODOS los archivos/carpetas de configuración, incluidas las imágenes y otros archivos grandes.
 Tooltip_ClosingMethod: "Combinado es lo mejor. Cerrar intenta cerrar directamente a través de una función de cierre y TaskKill usa CMD (Mejor si la combinación no funciona)"
 Tooltip_StartingMethod: "El valor predeterminado es el mejor. Direct no tiene control sobre el nivel de administrador o UAC. Comenzará en el mismo nivel (o superior, pero no inferior) que este cambiador de cuenta"
+Tooltip_CurrentAccount: Actualmente está conectado a esta cuenta.
+Discord_Status: Actualmente cambiando de cuenta.
+Discord_StatusDetails: "Cuentas cambiadas: {number}"
+Website: Sitio web

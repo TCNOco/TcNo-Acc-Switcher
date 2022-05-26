@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Andre Værktøjer
 Settings_Header_TraySettings: Indstillinger for bakke
 Settings_Header_OpenGameFolders: Åbn spilmapper
 Settings_Header_BackupRestore: Sikkerhedskopiering og gendannelse af platformsindstillinger
+Settings_Header_Language: Sprog
+Settings_Header_System: System
+Settings_Header_Theme: Tema
+Settings_Header_Program: Program
+Settings_Header_StatsSharing: Statistik & Deling
+Settings_Header_Platform: "{platformName} indstillinger"
 Settings_TrayMax: 'Maks. antal konti der skal huskes:'
 Settings_ExtraPlatformsDisabled: Deaktiverede platforme. Klik for at aktivere dem.
 Settings_ExtraPlatformsEnabled: Synlige platforme. Klik for at deaktivere dem.
 Settings_RTL: Vis tekst som højre mod venstre
+Settings_CollectStats: Saml statistik
+Settings_ShareStats: Del statistik irriterende (anbefales)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Del total switches
+Settings_ViewStats: Se statistik
+Settings_ClearStats: Nulstil
 Settings_CurrentLocation: 'Aktuel installationsplacering: {path}'
 Settings_CurrentDataLocation: 'Nuværende brugerdataplacering: {path}'
 Settings_SetDataLocation: "[Indstil tilpasset brugerdataplacering]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Avanceret) Indstil metode til at lukke {platfor
 Settings_Header_StartingMethod: "(Avanceret) Indstil metode til at starte {platform}"
 Settings_AutoStart: "Start automatisk {platform} ved kontoskift"
 Settings_NoPlatforms: Der er i øjeblikket ingen platforme aktiveret. Sæt kryds ved valgfrie platforme nedenfor for at aktivere dem, eller fjern markeringen af deaktiverede platforme.
+Settings_MinimizeOnSwitch: Minimer switcher på kontoskift
+Stats_Disabled: "Statistikindsamling er deaktiveret."
+Stats_InDepth: Dybdegående statistikopdeling
+Stats_ShareEnabled: "Disse statistikker deles anonymt og vil tilføje til det samlede <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">her</a>."
+Stats_ShareDisabled: "Disse statistikker deles IKKE anonymt og vil IKKE tilføjes til det samlede <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">her</a>."
+Stats_OperatingSystem: "Operativ system: "
+Stats_FirstLaunch: "Første lancering: "
+Stats_LaunchCount: "Startantal: "
+Stats_CrashCount: "Antal nedbrud: "
+Stats_MostUsedPlatform: "Mest brugte platform: "
+Stats_TotalTime: "Samlet tid brugt i appen: "
+Stats_TotalSwitches: "Samlet kontoskift: "
+Stats_TotalGamesLaunched: "Samlet antal apps/spil lanceret via switcher: "
+Stats_UniqueDaysLong: "Unikke dage med skiftet konti: "
+Stats_LastUpload: "Sidste upload: "
+Stats_SwitcherStats: "Switcher statistik: "
+Stats_PageStats: "Sidestatistik: "
+Stats_VisitsTotalTime: "{visits} besøg i alt, {hours} tid i alt"
+Stats_Accounts: "Konti: "
+Stats_Switches: "Kontakter: "
+Stats_FirstActive: "Første aktive: "
+Stats_LastActive: "Sidst aktive: "
+Stats_UniqueDays: "Unikke dage: "
+Stats_GameShortcuts: "Spilgenveje: "
+Stats_GameShortcutsHotbar: "Spilgenveje (på hotbar): "
+Stats_GamesLaunched: "Spil lanceret: "
 Cleaning_Header_StartMenuShortcuts: 'Genveje til startmenuen:'
 Cleaning_Header_General: Generel Rengøring
 Cleaning_Header_LoginHistory: Rens min login-historik
@@ -169,6 +207,7 @@ Toast_RestoreComplete: Gendannelse afsluttet!
 Toast_FailedLoad: Kunne ikke indlæse {platform}! Klik på platformen for at se fejlen.
 Toast_FailedPlatformsLoad: Kunne ikke indlæse Platforms.json! Bekræft venligst, at denne fil eksisterer.
 Toast_FailedLoadSettings: "Indstillingerne kunne ikke indlæses! Indlæser standardindstillinger i stedet. Tilføjelse af 'gammel' til eksisterende indstillingsfilnavn."
+Toast_FailedLoadStats: "Kunne ikke indlæse statistik! Starter frisk."
 Toast_FileCopyFail: Kunne ikke kopiere filer! Se log for flere detaljer.
 Toast_UserDataLoadFail: Kunne ikke indlæse brugerdata {UserData}\\WindowSettings.json. Sikkerhedskopiering og nulstilling! Gemt fejl til log.
 Toast_UpdateCheckFail: Kunne ikke nå https://tcno.co/ for at søge efter opdateringer. Denne besked vises én gang om dagen.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Find venligst mappen {platform}
 Modal_Title_AddNew: Tilføj ny {platform} konto
 Modal_Title_Background: Indstil et baggrundsbillede
 Modal_Title_Userdata: Indstil brugerdatamappen
+Modal_Title_Stats: Din statistik
 Modal_SetBackground: 'Vælg et billede, eller indtast en URL nedenfor.<br>Lad stå tomt og indstil til nulstilling.<br>(For mere avanceret kontrol se temaet på Wiki):'
 Modal_SetBackground_Button: Indstil baggrund
 Modal_SetBackground_ChooseImage: Vælg lokalt billede
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Du er ved at glemme en konto!</h3> <h4>Hvad betyder det?</h4> <p>- Steam vil ikke længere have kontoen angivet i Big Picture Mode og vil ikke huske adgangskoden.<br/> - TcNo Account Switcher vil heller ikke længere vise kontoen, før den er logget ind igen via Steam.</p> <p>Din konto forbliver uberørt. Det er bare glemt på denne computer.</p><h4>Forstår du det?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Du er ved at glemme en konto!</h3> <h4>Hvad betyder det?</h4> <p>TcNo Account Switcher vil heller ikke længere vise kontoen,<br/> indtil den er logget ind igen gennem {platform}og føjet til listen.</p> <p>Din konto vil forblive uberørt. Den er lige glemt på denne computer.</p> <h4>Forstår du?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Du er ved at rydde din statistik!</h3> <p>Du kan ikke fortryde denne handling.</p>
 Platform_DiscordPasteHint: Indsæt i Discord-konsollen, og indsæt derefter resultatet i input!
 Platform_ClearCache: Ryd cache
 Platform_ClearCacheTotal: Rydder {totalFileCount} filer ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: Sikkerhedskopier konfigurationsfiler/mapper, som defineret i pla
 Tooltip_BackupAll: Sikkerhedskopier ALLE konfigurationsfiler/mapper, inklusive billeder og andre store filer.
 Tooltip_ClosingMethod: "Kombineret er bedst. Luk forsøger at lukke direkte gennem en lukkefunktion, og TaskKill bruger CMD (bedst hvis kombineret ikke virker)"
 Tooltip_StartingMethod: "Standard er den bedste. Direct har ingen kontrol over administratorniveau eller UAC. Det vil starte som det samme niveau (eller højere - men ikke lavere) end denne kontoskifter"
+Tooltip_CurrentAccount: Du er i øjeblikket logget ind på denne konto.
+Discord_Status: Skifter i øjeblikket konto.
+Discord_StatusDetails: "Skiftet konti: {number}"
+Website: Internet side

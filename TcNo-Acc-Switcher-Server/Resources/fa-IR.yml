@@ -36,10 +36,22 @@ Settings_Header_OtherTools: ابزارهای دیگر
 Settings_Header_TraySettings: تنظیمات سینی
 Settings_Header_OpenGameFolders: پوشه های بازی را باز کنید
 Settings_Header_BackupRestore: پشتیبان گیری و بازیابی تنظیمات پلت فرم
+Settings_Header_Language: زبان
+Settings_Header_System: سیستم
+Settings_Header_Theme: موضوع
+Settings_Header_Program: برنامه
+Settings_Header_StatsSharing: آمار و اشتراک گذاری
+Settings_Header_Platform: "{platformName} تنظیمات"
 Settings_TrayMax: 'حداکثر تعداد حساب هایی که باید به خاطر بسپارید:'
 Settings_ExtraPlatformsDisabled: پلتفرم های غیر فعال برای فعال کردن آنها کلیک کنید.
 Settings_ExtraPlatformsEnabled: پلتفرم های قابل مشاهده برای غیرفعال کردن آنها کلیک کنید.
 Settings_RTL: نمایش متن به صورت راست به چپ
+Settings_CollectStats: جمع آوری آمار
+Settings_ShareStats: به اشتراک گذاری آمار به صورت آزاردهنده (توصیه می شود)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: کل سوئیچ ها را به اشتراک بگذارید
+Settings_ViewStats: مشاهده آمار
+Settings_ClearStats: بازنشانی کنید
 Settings_CurrentLocation: 'محل نصب فعلی: {path}'
 Settings_CurrentDataLocation: 'مکان اطلاعات کاربر فعلی: {path}'
 Settings_SetDataLocation: "[تنظیم مکان داده های کاربر سفارشی]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(پیشرفته) روش را روی {platform}ت
 Settings_Header_StartingMethod: "(پیشرفته) روش را روی {platform}تنظیم کنید"
 Settings_AutoStart: "شروع خودکار {platform} در سوئیچ حساب"
 Settings_NoPlatforms: در حال حاضر هیچ پلتفرمی فعال نیست. لطفاً پلتفرم‌های اختیاری را در زیر علامت بزنید تا فعال شوند، یا علامت پلتفرم‌های غیرفعال را بردارید.
+Settings_MinimizeOnSwitch: سوئیچ در حساب کاربری را به حداقل برسانید
+Stats_Disabled: "جمع آوری آمار غیرفعال است."
+Stats_InDepth: تجزیه آماری عمیق
+Stats_ShareEnabled: "این آمار به صورت ناشناس به اشتراک گذاشته شده است و به کل <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">در اینجا</a>اضافه می شود."
+Stats_ShareDisabled: "این آمار به صورت ناشناس به اشتراک گذاشته نمی شود و به کل <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">در اینجا اضافه نخواهد شد</a>."
+Stats_OperatingSystem: "سیستم عامل: "
+Stats_FirstLaunch: "اولین راه اندازی: "
+Stats_LaunchCount: "تعداد راه اندازی: "
+Stats_CrashCount: "تعداد خرابی ها: "
+Stats_MostUsedPlatform: "پر استفاده ترین پلت فرم: "
+Stats_TotalTime: "کل زمان صرف شده در برنامه: "
+Stats_TotalSwitches: "کل سوئیچ های حساب: "
+Stats_TotalGamesLaunched: "مجموع برنامه ها/بازی های راه اندازی شده از طریق سوئیچر: "
+Stats_UniqueDaysLong: "روزهای منحصر به فرد با تغییر حساب: "
+Stats_LastUpload: "آخرین بارگذاری: "
+Stats_SwitcherStats: "آمار سوئیچر: "
+Stats_PageStats: "آمار صفحه: "
+Stats_VisitsTotalTime: "{visits} بازدید کل، {hours} کل زمان"
+Stats_Accounts: "حساب ها: "
+Stats_Switches: "سوئیچ ها: "
+Stats_FirstActive: "اولین فعال: "
+Stats_LastActive: "آخرین فعالیت: "
+Stats_UniqueDays: "روزهای بی نظیر: "
+Stats_GameShortcuts: "میانبرهای بازی: "
+Stats_GameShortcutsHotbar: "میانبرهای بازی (در هاتبار): "
+Stats_GamesLaunched: "بازی های راه اندازی شده: "
 Cleaning_Header_StartMenuShortcuts: 'میانبرهای منوی استارت:'
 Cleaning_Header_General: نظافت عمومی
 Cleaning_Header_LoginHistory: تاریخچه ورود من را پاک کنید
@@ -169,6 +207,7 @@ Toast_RestoreComplete: بازیابی به پایان رسید!
 Toast_FailedLoad: '{platform}بارگیری نشد! برای مشاهده خطا روی پلتفرم کلیک کنید.'
 Toast_FailedPlatformsLoad: Platforms.json بارگیری نشد! لطفاً بررسی کنید که این فایل وجود دارد.
 Toast_FailedLoadSettings: "تنظیمات بارگیری نشد! به جای آن تنظیمات پیش فرض بارگیری می شود. افزودن «قدیمی» به نام فایل تنظیمات موجود."
+Toast_FailedLoadStats: "آمار بارگیری نشد! شروع تازه"
 Toast_FileCopyFail: فایل ها کپی نشد! برای جزئیات بیشتر به گزارش مراجعه کنید.
 Toast_UserDataLoadFail: داده های کاربر {UserData}\\WindowSettings.json بارگیری نشد. پشتیبان گیری و بازنشانی! خطا برای ورود ذخیره شد.
 Toast_UpdateCheckFail: دسترسی به https://tcno.co/ برای بررسی به‌روزرسانی‌ها امکان‌پذیر نیست. این پیام یک بار در روز نمایش داده می شود.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: لطفا دایرکتوری {platform} را پیدا
 Modal_Title_AddNew: اضافه کردن {platform} حساب جدید
 Modal_Title_Background: یک تصویر پس زمینه تنظیم کنید
 Modal_Title_Userdata: پوشه اطلاعات کاربر را تنظیم کنید
+Modal_Title_Stats: آمار شما
 Modal_SetBackground: 'یک تصویر را انتخاب کنید یا یک URL در زیر وارد کنید.<br>خالی بگذارید و تنظیم مجدد کنید.<br>(برای کنترل پیشرفته تر به Theming در ویکی مراجعه کنید):'
 Modal_SetBackground_Button: تنظیم پس زمینه
 Modal_SetBackground_ChooseImage: تصویر محلی را انتخاب کنید
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>شما در حال فراموش کردن یک حساب کاربری هستید!</h3> <h4>این به چه معناست؟</h4> <p>- Steam دیگر حسابی را در حالت Big Picture Mode نخواهد داشت و رمز عبور را به خاطر نمی آورد.<br/> - TcNo Account Switcher نیز دیگر اکانت را نشان نمی دهد، تا زمانی که دوباره از طریق Steam وارد سیستم شوید.</p> <p>حساب شما دست نخورده باقی خواهد ماند. فقط در این کامپیوتر فراموش شده است.</p><h4>آیا متوجه شدید؟</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>شما در حال فراموش کردن یک حساب کاربری هستید!</h3> <h4>این به چه معناست؟</h4> <p>TcNo Account Switcher نیز دیگر حساب را نشان نمی‌دهد،<br/> تا زمانی که مجدداً از طریق {platform}شده و به لیست اضافه شود.</p> <p>حساب شما دست نخورده باقی خواهد ماند. فقط در این کامپیوتر فراموش شده است.</p> <h4>می فهمی؟</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>شما در شرف پاک کردن آمار خود هستید!</h3> <p>نمی توانید این عمل را واگرد کنید.</p>
 Platform_DiscordPasteHint: در کنسول Discord جای‌گذاری کنید و سپس نتیجه را در ورودی قرار دهید!
 Platform_ClearCache: پاک کردن حافظه پنهان
 Platform_ClearCacheTotal: پاک کردن {totalFileCount} فایل ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: از فایل‌ها/پوشه‌های پیکربندی پشتی
 Tooltip_BackupAll: از همه فایل‌ها/پوشه‌های پیکربندی، از جمله تصاویر و سایر فایل‌های بزرگ پشتیبان‌گیری کنید.
 Tooltip_ClosingMethod: "ترکیبی بهترین است. Close سعی می‌کند مستقیماً از طریق یک تابع بسته ببندد و TaskKill از CMD استفاده می‌کند (بهترین اگر ترکیب شود کار نمی‌کند)"
 Tooltip_StartingMethod: "پیش فرض بهترین است. Direct هیچ کنترلی بر سطح مدیریت یا UAC ندارد. در همان سطح (یا بالاتر - اما نه پایین تر) از این تغییر حساب شروع می شود"
+Tooltip_CurrentAccount: شما در حال حاضر به این حساب وارد شده اید.
+Discord_Status: در حال حاضر تغییر حساب
+Discord_StatusDetails: "تغییر حساب ها: {number}"
+Website: سایت اینترنتی

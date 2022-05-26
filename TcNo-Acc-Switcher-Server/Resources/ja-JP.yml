@@ -36,10 +36,22 @@ Settings_Header_OtherTools: その他のツール
 Settings_Header_TraySettings: トレイの設定
 Settings_Header_OpenGameFolders: ゲームフォルダを開く
 Settings_Header_BackupRestore: プラットフォーム設定のバックアップと復元
+Settings_Header_Language: 言語
+Settings_Header_System: システム
+Settings_Header_Theme: テーマ
+Settings_Header_Program: プログラム
+Settings_Header_StatsSharing: 統計と共有
+Settings_Header_Platform: "{platformName} 設定"
 Settings_TrayMax: '覚えておくアカウントの最大数:'
 Settings_ExtraPlatformsDisabled: 無効化されたプラットフォーム。クリックして有効にします。
 Settings_ExtraPlatformsEnabled: 目に見えるプラットフォーム。クリックして無効にします。
 Settings_RTL: テキストを右から左に表示
+Settings_CollectStats: 統計を収集する
+Settings_ShareStats: 統計を迷惑に共有する（推奨）
+Settings_DiscordRpc: Discord Rich Presence（RPC）
+Settings_DiscordRpcShare: 合計スイッチを共有する
+Settings_ViewStats: 統計を見る
+Settings_ClearStats: リセット
 Settings_CurrentLocation: '現在のインストール場所： {path}'
 Settings_CurrentDataLocation: '現在のユーザーデータの場所： {path}'
 Settings_SetDataLocation: "[カスタムユーザーデータの場所を設定する]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "（詳細）メソッドを閉じる {platform}�
 Settings_Header_StartingMethod: "（詳細）メソッドを {platform}から開始するように設定します"
 Settings_AutoStart: "アカウント切り替え時に自動的に {platform} を開始"
 Settings_NoPlatforms: 現在、有効になっているプラットフォームはありません。以下のオプションのプラットフォームにチェックマークを付けて有効にするか、無効になっているプラットフォームのチェックを外してください。
+Settings_MinimizeOnSwitch: アカウントスイッチのスイッチャーを最小化する
+Stats_Disabled: "統計収集が無効になっています。"
+Stats_InDepth: 詳細な統計の内訳
+Stats_ShareEnabled: "これらの統計は匿名で共有され、ここでは合計 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">に追加されます</a>。"
+Stats_ShareDisabled: "これらの統計は匿名で共有されることはなく、ここでは合計 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">に追加されません</a>。"
+Stats_OperatingSystem: "オペレーティング·システム： "
+Stats_FirstLaunch: "最初の起動： "
+Stats_LaunchCount: "起動カウント： "
+Stats_CrashCount: "クラッシュカウント： "
+Stats_MostUsedPlatform: "最も使用されるプラットフォーム： "
+Stats_TotalTime: "アプリ内で費やされた合計時間： "
+Stats_TotalSwitches: "アカウント切り替えの合計： "
+Stats_TotalGamesLaunched: "スイッチャーを介して起動されたアプリ/ゲームの合計： "
+Stats_UniqueDaysLong: "アカウントが切り替えられたユニークな日： "
+Stats_LastUpload: "最終アップロード： "
+Stats_SwitcherStats: "スイッチャーの統計： "
+Stats_PageStats: "ページ統計： "
+Stats_VisitsTotalTime: "合計{visits} 回の訪問、合計 {hours} 回"
+Stats_Accounts: "アカウント： "
+Stats_Switches: "スイッチ： "
+Stats_FirstActive: "最初にアクティブ： "
+Stats_LastActive: "最後にログインした時： "
+Stats_UniqueDays: "ユニークな日： "
+Stats_GameShortcuts: "ゲームのショートカット： "
+Stats_GameShortcutsHotbar: "ゲームのショートカット（ホットバー上）： "
+Stats_GamesLaunched: "開始されたゲーム： "
 Cleaning_Header_StartMenuShortcuts: 'format@@0メニューのショートカット:'
 Cleaning_Header_General: 一般的なクリーニング
 Cleaning_Header_LoginHistory: ログイン履歴を消去
@@ -169,6 +207,7 @@ Toast_RestoreComplete: 復元が完了しました。
 Toast_FailedLoad: '{platform}の読み込みに失敗しました！プラットフォームをクリックしてエラーを確認します。'
 Toast_FailedPlatformsLoad: Platforms.jsonの読み込みに失敗しました！このファイルが存在することを確認してください。
 Toast_FailedLoadSettings: "設定の読み込みに失敗しました！代わりにデフォルト設定をロードします。既存の設定ファイル名に「old」を追加します。"
+Toast_FailedLoadStats: "統計の読み込みに失敗しました！新しく始めます。"
 Toast_FileCopyFail: ファイルのコピーに失敗しました！詳細については、ログを参照してください。
 Toast_UserDataLoadFail: userdata {UserData}\\ WindowSettings.jsonの読み込みに失敗しました。バックアップとリセット！エラーをログに保存しました。
 Toast_UpdateCheckFail: https://tcno.co/にアクセスして更新を確認できませんでした。このメッセージは1日1回表示されます。
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: '{platform} ディレクトリを見つけてくだ�
 Modal_Title_AddNew: 新しい {platform} アカウントを追加
 Modal_Title_Background: 背景画像を設定する
 Modal_Title_Userdata: ユーザーデータフォルダを設定する
+Modal_Title_Stats: あなたの統計
 Modal_SetBackground: '画像を選択するか、以下にURLを入力してください。<br>空白のままにして、リセットに設定します。<br>（より高度な制御については、Wikiのテーマを参照してください）：'
 Modal_SetBackground_Button: 背景を設定する
 Modal_SetBackground_ChooseImage: ローカル画像を選択
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>アカウントを忘れようとしています！</h3> <h4>これはどういう意味ですか？</h4> <p>-SteamのアカウントはBigPictureモードで表示されなくなり、パスワードを記憶しなくなります。<br/> -TcNo Account Switcherは、Steamを介して再度サインインするまで、アカウントを表示しなくなります。</p> <p>は変更されません。このコンピューターでは忘れられています。</p><h4>分かりますか？</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>アカウントを忘れようとしています！</h3> <h4>これは何を意味するのでしょうか？</h4> <p>TcNo Account Switcherは、{platform}を介して再度サインインし、リストに追加されるまで、<br/>アカウントを表示しなくなります。</p> <p>アカウントは変更されません。 このコンピューターでは忘れられています。</p> <h4>わかりますか？</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>統計をクリアしようとしています！</h3> このアクションを元に <p>ことはできません。</p>
 Platform_DiscordPasteHint: Discordコンソールに貼り付けて、結果を入力してください！
 Platform_ClearCache: キャッシュの消去
 Platform_ClearCacheTotal: '{totalFileCount} ファイルのクリア（{totalSizeMB}）'
@@ -393,3 +435,7 @@ Tooltip_Backup: プラットフォーム設定で定義されているように�
 Tooltip_BackupAll: 画像やその他の大きなファイルを含む、すべての構成ファイル/フォルダーをバックアップします。
 Tooltip_ClosingMethod: "組み合わせるのが最適です。 Closeは、close関数を介して直接閉じようとし、TaskKillはCMDを使用します（組み合わせて機能しない場合に最適）"
 Tooltip_StartingMethod: "デフォルトが最適です。 Directは、管理者レベルまたはUACを制御できません。このアカウントスイッチャーと同じレベル（またはそれ以上-ただしそれ以下ではない）で開始します"
+Tooltip_CurrentAccount: 現在、このアカウントにログインしています。
+Discord_Status: 現在、アカウントを切り替えています。
+Discord_StatusDetails: "切り替えられたアカウント： {number}"
+Website: Webサイト

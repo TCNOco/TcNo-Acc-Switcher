@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Інші інструменти
 Settings_Header_TraySettings: Налаштування лотка
 Settings_Header_OpenGameFolders: Відкрити ігрові папки
 Settings_Header_BackupRestore: Резервне копіювання та відновлення налаштувань платформи
+Settings_Header_Language: Мова
+Settings_Header_System: система
+Settings_Header_Theme: Тема
+Settings_Header_Program: Програма
+Settings_Header_StatsSharing: Статистика та обмін
+Settings_Header_Platform: "{platformName} налаштувань"
 Settings_TrayMax: 'Максимальна кількість запам''ятовувань:'
 Settings_ExtraPlatformsDisabled: Відключені платформи. Натисніть, щоб увімкнути їх.
 Settings_ExtraPlatformsEnabled: Видимі платформи. Натисніть, щоб вимкнути їх.
 Settings_RTL: Показати текст як справа наліво
+Settings_CollectStats: Збирати статистику
+Settings_ShareStats: Поділіться статистикою досадно (рекомендовано)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Спільний перемикач
+Settings_ViewStats: Переглянути статистику
+Settings_ClearStats: Скинути
 Settings_CurrentLocation: 'Поточне місце встановлення: {path}'
 Settings_CurrentDataLocation: 'Поточне розташування даних користувача: {path}'
 Settings_SetDataLocation: "[Встановити користувацьке розташування даних користувача]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Додатково) Встановіть мет
 Settings_Header_StartingMethod: "(Додатково) Установіть метод для початку {platform}"
 Settings_AutoStart: "Автоматично запускати {platform} при перемиканні облікового запису"
 Settings_NoPlatforms: Наразі не ввімкнено жодну платформу. Будь ласка, поставте прапорці нижче додаткові платформи, щоб увімкнути їх, або зніміть прапорець біля вимкнених платформ.
+Settings_MinimizeOnSwitch: Згорніть перемикач при перемиканні облікового запису
+Stats_Disabled: "Збір статистики вимкнено."
+Stats_InDepth: Поглиблена розбивка статистики
+Stats_ShareEnabled: "Ці статистичні дані надаються анонімно і додадуть до загальної кількості <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">тут</a>."
+Stats_ShareDisabled: "Ця статистика НЕ поширюється анонімно і НЕ буде додавати до загальної кількості <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">тут</a>."
+Stats_OperatingSystem: "Операційна система: "
+Stats_FirstLaunch: "Перший запуск: "
+Stats_LaunchCount: "Кількість запусків: "
+Stats_CrashCount: "Кількість аварій: "
+Stats_MostUsedPlatform: "Найчастіше використовувана платформа: "
+Stats_TotalTime: "Загальний час, проведений у програмі: "
+Stats_TotalSwitches: "Усього змін облікового запису: "
+Stats_TotalGamesLaunched: "Усього програм/ігор, запущених за допомогою перемикача: "
+Stats_UniqueDaysLong: "Унікальні дні із зміненими обліковими записами: "
+Stats_LastUpload: "Останнє завантаження: "
+Stats_SwitcherStats: "Статистика перемикача: "
+Stats_PageStats: "Статистика сторінки: "
+Stats_VisitsTotalTime: "{visits} всього відвідувань, {hours} загальний час"
+Stats_Accounts: "Рахунки: "
+Stats_Switches: "Перемикачі: "
+Stats_FirstActive: "Перший активний: "
+Stats_LastActive: "Останній активний: "
+Stats_UniqueDays: "Унікальні дні: "
+Stats_GameShortcuts: "Ярлики гри: "
+Stats_GameShortcutsHotbar: "Ярлики гри (на гарячій панелі): "
+Stats_GamesLaunched: "Запущені ігри: "
 Cleaning_Header_StartMenuShortcuts: 'Комбінації клавіш для меню запуску:'
 Cleaning_Header_General: Загальне очищення
 Cleaning_Header_LoginHistory: Очистити мою історію входу в систему
@@ -169,6 +207,7 @@ Toast_RestoreComplete: Відновлення завершено!
 Toast_FailedLoad: Не вдалося завантажити {platform}! Натисніть платформу, щоб побачити помилку.
 Toast_FailedPlatformsLoad: Не вдалося завантажити Platforms.json! Будь ласка, переконайтеся, що цей файл існує.
 Toast_FailedLoadSettings: "Не вдалося завантажити налаштування! Натомість завантажуються налаштування за замовчуванням. Додавання \"старого\" до існуючої назви файлу налаштувань."
+Toast_FailedLoadStats: "Не вдалося завантажити статистику! Початок свіжого."
 Toast_FileCopyFail: Не вдалося скопіювати файли! Дивіться журнал для більш детальної інформації.
 Toast_UserDataLoadFail: Не вдалося завантажити дані користувача {UserData}\\WindowSettings.json. Резервне копіювання та скидання! Помилка збережена в журналі.
 Toast_UpdateCheckFail: Не вдалося зв’язатися з https://tcno.co/, щоб перевірити наявність оновлень. Це повідомлення відображатиметься раз на день.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Будь ласка, знайдіть теку {plat
 Modal_Title_AddNew: Додати новий обліковий запис {platform}
 Modal_Title_Background: Встановіть фонове зображення
 Modal_Title_Userdata: Встановіть папку даних користувача
+Modal_Title_Stats: Ваша статистика
 Modal_SetBackground: 'Виберіть зображення або введіть URL-адресу нижче.<br>Залиште порожнім і встановіть скидання.<br>(Для більш розширеного керування див. Теми на Вікі):'
 Modal_SetBackground_Button: Встановити фон
 Modal_SetBackground_ChooseImage: Виберіть локальне зображення
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Ви збираєтеся забути обліковий запис!</h3> <h4>Що це означає?</h4> <p>- Steam більше не матиме облікового запису, зазначеного в режимі Big Picture Mode, і не запам'ятовуватиме пароль.<br/> - TcNo Account Switcher також більше не показуватиме обліковий запис, доки він не ввійде знову через Steam.</p> <p>Ваш обліковий запис залишиться недоторканим. Це просто забуто на цьому комп’ютері.</p><h4>Ви розумієте?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Ви ось-ось забудете рахунок!</h3> <h4>Що це означає?</h4> <p>Перемикач облікового запису TcNo також більше не буде показувати обліковий запис,<br/> поки вона не ввійде знову через {platform}і не додається до списку.</p> <p>Ваш обліковий запис залишиться без дотику. Він просто забутий на цьому комп'ютері</p> <h4>Ви розумієте?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Ви збираєтеся очистити свою статистику!</h3> <p>Ви не можете скасувати цю дію.</p>
 Platform_DiscordPasteHint: Вставте в консоль Discord, а потім вставте результат у вхід!
 Platform_ClearCache: Очистити кеш
 Platform_ClearCacheTotal: Очищення {totalFileCount} файлів ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: Резервне копіювання файлів/папок к
 Tooltip_BackupAll: Створіть резервну копію УСІХ файлів/папок конфігурації, включаючи зображення та інші великі файли.
 Tooltip_ClosingMethod: "Найкраще комбінувати. Закрити спроби закритися безпосередньо за допомогою функції закриття, і TaskKill використовує CMD (Найкраще, якщо комбінація не працює)"
 Tooltip_StartingMethod: "За замовчуванням найкраще. Direct не контролює рівень адміністратора чи UAC. Він почнеться на тому самому рівні (або вище, але не нижче), ніж цей перемикач облікових записів"
+Tooltip_CurrentAccount: Наразі ви ввійшли в цей обліковий запис.
+Discord_Status: Наразі змінюються облікові записи.
+Discord_StatusDetails: "Змінено облікових записів: {number}"
+Website: веб-сайт

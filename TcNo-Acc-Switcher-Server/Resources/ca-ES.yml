@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Altres eines
 Settings_Header_TraySettings: Configuració de la safata
 Settings_Header_OpenGameFolders: Obrir carpetes de jocs
 Settings_Header_BackupRestore: Còpia de seguretat i restauració de la configuració de la plataforma
+Settings_Header_Language: Llenguatge
+Settings_Header_System: Sistema
+Settings_Header_Theme: Tema
+Settings_Header_Program: Programa
+Settings_Header_StatsSharing: Estadístiques i intercanvi
+Settings_Header_Platform: "{platformName} configuracions"
 Settings_TrayMax: 'Nombre màxim de comptes que cal recordar:'
 Settings_ExtraPlatformsDisabled: Plataformes discapacitats. Feu clic per activar-los.
 Settings_ExtraPlatformsEnabled: Plataformes visibles. Feu clic per desactivar-los.
 Settings_RTL: Mostra el text com a de dreta a esquerra
+Settings_CollectStats: Recull estadístiques
+Settings_ShareStats: Comparteix les estadístiques de manera molesta (recomanat)
+Settings_DiscordRpc: Presència rica de Discord (RPC)
+Settings_DiscordRpcShare: Comparteix el total d'interruptors
+Settings_ViewStats: Veure estadístiques
+Settings_ClearStats: Restableix
 Settings_CurrentLocation: 'Localització actual d''instal·lació: {path}'
 Settings_CurrentDataLocation: 'Ubicació actual de les dades de l''usuari: {path}'
 Settings_SetDataLocation: "[Estableix la ubicació personalitzada de les dades d'usuari]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Avançat) Estableix el mètode per tancar {plat
 Settings_Header_StartingMethod: "(Avançat) Establiu el mètode per començar {platform}"
 Settings_AutoStart: "Inicieu {platform} automàticament al canvi de compte"
 Settings_NoPlatforms: Actualment no hi ha plataformes habilitades. Marqueu les plataformes opcionals a continuació per activar-les o desmarqueu les plataformes desactivades.
+Settings_MinimizeOnSwitch: Minimitza el commutador al canvi de compte
+Stats_Disabled: "La recopilació d'estadístiques està desactivada."
+Stats_InDepth: Desglossament estadístic en profunditat
+Stats_ShareEnabled: "Aquestes estadístiques es comparteixen de manera anònima i s'afegiran al total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aquí</a>."
+Stats_ShareDisabled: "Aquestes estadístiques NO es comparteixen de manera anònima i NO s'afegiran al total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aquí</a>."
+Stats_OperatingSystem: "Sistema operatiu: "
+Stats_FirstLaunch: "Primer llançament: "
+Stats_LaunchCount: "Recompte de llançaments: "
+Stats_CrashCount: "Recompte d'accidents: "
+Stats_MostUsedPlatform: "Plataforma més utilitzada: "
+Stats_TotalTime: "Temps total dedicat a l'aplicació: "
+Stats_TotalSwitches: "Total de canvis de compte: "
+Stats_TotalGamesLaunched: "Total d'aplicacions/jocs llançats mitjançant el commutador: "
+Stats_UniqueDaysLong: "Dies únics amb els comptes canviats: "
+Stats_LastUpload: "Última càrrega: "
+Stats_SwitcherStats: "Estadístiques del commutador: "
+Stats_PageStats: "estadístiques de la pàgina: "
+Stats_VisitsTotalTime: "{visits} visites totals, {hours} temps total"
+Stats_Accounts: "Comptes: "
+Stats_Switches: "Interruptors: "
+Stats_FirstActive: "Primer actiu: "
+Stats_LastActive: "Últim actiu: "
+Stats_UniqueDays: "Dies únics: "
+Stats_GameShortcuts: "Dreceres del joc: "
+Stats_GameShortcutsHotbar: "Dreceres del joc (a la barra d'accés ràpid): "
+Stats_GamesLaunched: "Jocs llançats: "
 Cleaning_Header_StartMenuShortcuts: 'Dreceres per al menú Inici:'
 Cleaning_Header_General: Neteja general
 Cleaning_Header_LoginHistory: Neteja el meu historial d'inici de sessió
@@ -169,6 +207,7 @@ Toast_RestoreComplete: S'ha acabat la restauració!
 Toast_FailedLoad: No s'ha pogut carregar {platform}! Feu clic a la plataforma per veure l'error.
 Toast_FailedPlatformsLoad: No s'ha pogut carregar Platforms.json! Si us plau, verifiqueu que aquest fitxer existeix.
 Toast_FailedLoadSettings: "No s'ha pogut carregar la configuració! S'està carregant la configuració predeterminada. Afegint \"vell\" al nom del fitxer de configuració existent."
+Toast_FailedLoadStats: "No s'han pogut carregar les estadístiques! Començant fresc."
 Toast_FileCopyFail: No s'han pogut copiar els fitxers! Consulteu el registre per a més detalls.
 Toast_UserDataLoadFail: No s'han pogut carregar les dades d'usuari {UserData}\\WindowSettings.json. Còpia de seguretat i reinici! Error desat al registre.
 Toast_UpdateCheckFail: No s'ha pogut contactar amb https://tcno.co/ per comprovar si hi ha actualitzacions. Aquest missatge es mostrarà un cop al dia.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Localitzeu el directori {platform}
 Modal_Title_AddNew: Afegiu un compte {platform}
 Modal_Title_Background: Estableix una imatge de fons
 Modal_Title_Userdata: Estableix la carpeta de dades de l'usuari
+Modal_Title_Stats: Les teves estadístiques
 Modal_SetBackground: 'Seleccioneu una imatge o introduïu un URL a continuació.<br>Deixa en blanc i configura per restablir.<br>(Per a un control més avançat, vegeu la Theming a la Viqui):'
 Modal_SetBackground_Button: Estableix el fons
 Modal_SetBackground_ChooseImage: Trieu la imatge local
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Estàs a punt d'oblidar un compte!</h3> <h4>Què vol dir això?</h4> <p>- Steam ja no tindrà el compte llistat en el mode d'imatge gran i no recordarà la contrasenya.<br/> - TcNo Account Switcher tampoc mostrarà el compte fins que no torni a iniciar la sessió a través de Steam.</p> <p>El vostre compte no es tocarà. Només s'ha oblidat en aquest ordinador.</p><h4>Ho entens?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Esteu a punt d'oblidar-vos d'un compte.</h3> <h4>Què significa això?</h4> <p>TcNo Account Switcher tampoc deixarà de mostrar el compte,<br/> fins que no torni a iniciar la sessió fins al {platform}i s'afegeixi a la llista.</p> <p>vostre compte es mantindrà intacte. Simplement s’oblida en aquest ordinador.</p> <h4>Ho entens?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Esteu a punt d'esborrar les vostres estadístiques!</h3> <p>No podeu desfer aquesta acció.</p>
 Platform_DiscordPasteHint: Enganxeu a la consola de Discord i, a continuació, enganxeu el resultat a l'entrada!
 Platform_ClearCache: Netejar memòria cau
 Platform_ClearCacheTotal: Esborrant {totalFileCount} fitxers ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: Còpia de seguretat dels fitxers/carpetes de configuració, tal 
 Tooltip_BackupAll: Feu una còpia de seguretat de TOTS els fitxers/carpetes de configuració, incloses les imatges i altres fitxers grans.
 Tooltip_ClosingMethod: "El millor és combinar. Tanca els intents de tancar directament mitjançant una funció de tancament i TaskKill utilitza CMD (el millor si es combina no funciona)"
 Tooltip_StartingMethod: "Per defecte és el millor. Direct no té control sobre el nivell d'administració o UAC. Començarà amb el mateix nivell (o superior, però no inferior) que aquest commutador de comptes"
+Tooltip_CurrentAccount: Actualment esteu connectat a aquest compte.
+Discord_Status: Actualment canviant de compte.
+Discord_StatusDetails: "Comptes canviats: {number}"
+Website: Lloc web

@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Ostatní nástroje
 Settings_Header_TraySettings: Nastavení v systémové liště
 Settings_Header_OpenGameFolders: Otevřít složky her
 Settings_Header_BackupRestore: Nastavení zálohování a obnovení platformy
+Settings_Header_Language: Jazyk
+Settings_Header_System: Systém
+Settings_Header_Theme: Téma
+Settings_Header_Program: Program
+Settings_Header_StatsSharing: Statistiky a sdílení
+Settings_Header_Platform: "{platformName} nastavení"
 Settings_TrayMax: 'Maximální počet účtů, které chcete pamatovat:'
 Settings_ExtraPlatformsDisabled: Deaktivované platformy. Kliknutím je povolíte.
 Settings_ExtraPlatformsEnabled: Viditelné platformy. Kliknutím je deaktivujete.
 Settings_RTL: Zobrazit text jako zprava doleva
+Settings_CollectStats: Sbírejte statistiky
+Settings_ShareStats: Sdílejte statistiky otravně (doporučeno)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Sdílejte celkové přepínače
+Settings_ViewStats: Zobrazit statistiky
+Settings_ClearStats: Resetovat
 Settings_CurrentLocation: 'Aktuální umístění instalace: {path}'
 Settings_CurrentDataLocation: 'Aktuální umístění uživatelských dat: {path}'
 Settings_SetDataLocation: "[Nastavit vlastní umístění uživatelských dat]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Pokročilé) Nastavte metodu na zavření {plat
 Settings_Header_StartingMethod: "(Pokročilé) Nastavte metodu na začátek {platform}"
 Settings_AutoStart: "Automaticky spustit {platform} při přepnutí účtu"
 Settings_NoPlatforms: Momentálně nejsou povoleny žádné platformy. Zaškrtněte prosím níže volitelné platformy, abyste je povolili, nebo zrušte zaškrtnutí zakázaných platforem.
+Settings_MinimizeOnSwitch: Minimalizovat přepínač na přepínači účtu
+Stats_Disabled: "Shromažďování statistik je zakázáno."
+Stats_InDepth: Hloubkový rozpis statistik
+Stats_ShareEnabled: "Tyto statistiky jsou sdíleny anonymně a přidají se k celkovému počtu <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">zde</a>."
+Stats_ShareDisabled: "Tyto statistiky NEJSOU sdíleny anonymně a NEBUDOU se přidávat k celkovému počtu <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">zde</a>."
+Stats_OperatingSystem: "Operační systém: "
+Stats_FirstLaunch: "První spuštění: "
+Stats_LaunchCount: "Počet spuštění: "
+Stats_CrashCount: "Počet pádů: "
+Stats_MostUsedPlatform: "Nejpoužívanější platforma: "
+Stats_TotalTime: "Celkový čas strávený v aplikaci: "
+Stats_TotalSwitches: "Celkový počet přepnutí účtů: "
+Stats_TotalGamesLaunched: "Celkový počet aplikací/her spuštěných pomocí přepínače: "
+Stats_UniqueDaysLong: "Jedinečné dny se změněnými účty: "
+Stats_LastUpload: "Poslední nahrání: "
+Stats_SwitcherStats: "Statistika přepínače: "
+Stats_PageStats: "Statistiky stránky: "
+Stats_VisitsTotalTime: "{visits} návštěv celkem, celkem {hours} čas"
+Stats_Accounts: "účty: "
+Stats_Switches: "Přepínače: "
+Stats_FirstActive: "První aktivní: "
+Stats_LastActive: "Poslední aktivní: "
+Stats_UniqueDays: "Jedinečné dny: "
+Stats_GameShortcuts: "Herní zkratky: "
+Stats_GameShortcutsHotbar: "Herní zkratky (na aktivní liště): "
+Stats_GamesLaunched: "Hry spuštěny: "
 Cleaning_Header_StartMenuShortcuts: 'Zkratky pro nabídku startu:'
 Cleaning_Header_General: Obecné čištění
 Cleaning_Header_LoginHistory: Vyčistit historii přihlášení
@@ -169,6 +207,7 @@ Toast_RestoreComplete: Obnovení dokončeno!
 Toast_FailedLoad: Nepodařilo se načíst {platform}! Chybu zobrazíte kliknutím na platformu.
 Toast_FailedPlatformsLoad: Načtení Platforms.json se nezdařilo! Prosím ověřte, že tento soubor existuje.
 Toast_FailedLoadSettings: "Nastavení se nepodařilo načíst! Místo toho se načtou výchozí nastavení. Přidání „starého“ k názvu existujícího souboru nastavení."
+Toast_FailedLoadStats: "Statistiky se nepodařilo načíst! Začínáme znovu."
 Toast_FileCopyFail: Soubory se nepodařilo zkopírovat! Další podrobnosti naleznete v protokolu.
 Toast_UserDataLoadFail: Nepodařilo se načíst uživatelská data {UserData}\\WindowSettings.json. Zálohování a resetování! Chyba uložena do protokolu.
 Toast_UpdateCheckFail: Nelze se dostat na https://tcno.co/ a zkontrolovat aktualizace. Tato zpráva se bude zobrazovat jednou denně.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Vyhledejte prosím složku {platform}
 Modal_Title_AddNew: Přidat nový {platform} účet
 Modal_Title_Background: Nastavte obrázek na pozadí
 Modal_Title_Userdata: Nastavte složku uživatelských dat
+Modal_Title_Stats: Vaše statistiky
 Modal_SetBackground: 'Vyberte obrázek nebo níže zadejte adresu URL.<br>Ponechte prázdné a nastavte reset.<br>(Pro pokročilejší ovládání viz Theming na Wiki):'
 Modal_SetBackground_Button: Nastavit pozadí
 Modal_SetBackground_ChooseImage: Vyberte místní obrázek
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Chystáte se zapomenout účet!</h3> <h4>Co to znamená?</h4> <p>- Steam již nebude mít účet uvedený v režimu Big Picture a nebude si pamatovat heslo.<br/> – Přepínač účtů TcNo již také nebude zobrazovat účet, dokud se znovu nepřihlásí prostřednictvím služby Steam.</p> <p>Váš účet zůstane nedotčen. V tomto počítači je to prostě zapomenuto.</p><h4>Rozumíte?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Chystáte se zapomenout na účet!</h3> <h4>Co to znamená?</h4> <p>Přepínač TcNo účtu již nebude zobrazovat účet,<br/> dokud není znovu přihlášen přes {platform}a není přidán do seznamu.</p> <p>Váš účet zůstane nedotčen. Na tomto počítači je zapomenut.</p> <h4>Rozrozumíte?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Chystáte se vymazat své statistiky!</h3> <p>Tuto akci nelze vrátit zpět.</p>
 Platform_DiscordPasteHint: Vložte do Discord konzole a pak výsledek vložte do vstupu!
 Platform_ClearCache: Vyčistit mezipaměť
 Platform_ClearCacheTotal: Mazání {totalFileCount} souborů ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: Zálohujte konfigurační soubory/složky, jak je definováno v 
 Tooltip_BackupAll: Zálohujte VŠECHNY konfigurační soubory/složky, včetně obrázků a dalších velkých souborů.
 Tooltip_ClosingMethod: "Kombinovaný je nejlepší. Zavřít se pokouší zavřít přímo pomocí funkce zavřít a TaskKill používá CMD (nejlépe, pokud kombinovaná nefunguje)"
 Tooltip_StartingMethod: "Výchozí je nejlepší. Direct nemá žádnou kontrolu nad úrovní správce nebo UAC. Spustí se na stejné úrovni (nebo vyšší - ale ne nižší) než tento přepínač účtů"
+Tooltip_CurrentAccount: Momentálně jste přihlášeni k tomuto účtu.
+Discord_Status: Aktuálně přepínáte účty.
+Discord_StatusDetails: "Vyměněné účty: {number}"
+Website: webová stránka

@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Andre verktøy
 Settings_Header_TraySettings: Innstillinger for verktøykassen
 Settings_Header_OpenGameFolders: Åpne spillmapper
 Settings_Header_BackupRestore: Sikkerhetskopier og gjenopprett plattforminnstillinger
+Settings_Header_Language: Språk
+Settings_Header_System: System
+Settings_Header_Theme: Tema
+Settings_Header_Program: Program
+Settings_Header_StatsSharing: Statistikk og deling
+Settings_Header_Platform: "{platformName} innstillinger"
 Settings_TrayMax: 'Maks antall kontoer å huske:'
 Settings_ExtraPlatformsDisabled: Deaktiverte plattformer. Klikk for å aktivere dem.
 Settings_ExtraPlatformsEnabled: Synlige plattformer. Klikk for å deaktivere dem.
 Settings_RTL: Vis tekst som høyre-til-venstre
+Settings_CollectStats: Samle statistikk
+Settings_ShareStats: Del statistikk irritert (anbefalt)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Del totalt brytere
+Settings_ViewStats: Se statistikk
+Settings_ClearStats: Nullstille
 Settings_CurrentLocation: 'Gjeldende installasjonssted: {path}'
 Settings_CurrentDataLocation: 'Gjeldende brukerdataplassering: {path}'
 Settings_SetDataLocation: "[Angi tilpasset brukerdataplassering]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Avansert) Angi metode for å lukke {platform}"
 Settings_Header_StartingMethod: "(Avansert) Angi metode for å starte {platform}"
 Settings_AutoStart: "Start {platform} automatisk ved kontobytte"
 Settings_NoPlatforms: Det er for øyeblikket ingen plattformer aktivert. Merk av for valgfrie plattformer nedenfor for å aktivere dem, eller fjern merket for deaktiverte plattformer.
+Settings_MinimizeOnSwitch: Minimer bytter på kontosvitsj
+Stats_Disabled: "Innsamling av statistikk er deaktivert."
+Stats_InDepth: Inngående statistikkoversikt
+Stats_ShareEnabled: "Denne statistikken deles anonymt og vil legge til den totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">her</a>."
+Stats_ShareDisabled: "Denne statistikken deles IKKE anonymt og vil IKKE legges til den totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">her</a>."
+Stats_OperatingSystem: "Operativsystem: "
+Stats_FirstLaunch: "Første lansering: "
+Stats_LaunchCount: "Lanseringstall: "
+Stats_CrashCount: "Antall krasj: "
+Stats_MostUsedPlatform: "Mest brukte plattform: "
+Stats_TotalTime: "Total tid brukt i appen: "
+Stats_TotalSwitches: "Totalt kontobytte: "
+Stats_TotalGamesLaunched: "Totalt antall apper/spill lansert via switcher: "
+Stats_UniqueDaysLong: "Unike dager med byttet konto: "
+Stats_LastUpload: "Siste opplasting: "
+Stats_SwitcherStats: "Bytterstatistikk: "
+Stats_PageStats: "Sidestatistikk: "
+Stats_VisitsTotalTime: "{visits} totalt besøk, {hours} total tid"
+Stats_Accounts: "Kontoer: "
+Stats_Switches: "Brytere: "
+Stats_FirstActive: "Første aktive: "
+Stats_LastActive: "Sist aktiv: "
+Stats_UniqueDays: "Unike dager: "
+Stats_GameShortcuts: "Spillsnarveier: "
+Stats_GameShortcutsHotbar: "Spillsnarveier (på hotbar): "
+Stats_GamesLaunched: "Spill lansert: "
 Cleaning_Header_StartMenuShortcuts: 'Snarveier for Start-menyen:'
 Cleaning_Header_General: Generell rengjøring
 Cleaning_Header_LoginHistory: Rens logg
@@ -169,6 +207,7 @@ Toast_RestoreComplete: Gjenoppretting fullført!
 Toast_FailedLoad: Kunne ikke laste {platform}! Klikk på plattformen for å se feilen.
 Toast_FailedPlatformsLoad: Kunne ikke laste inn Platforms.json! Vennligst bekreft at denne filen eksisterer.
 Toast_FailedLoadSettings: "Kunne ikke laste inn innstillingene! Laster inn standardinnstillinger i stedet. Legger til \"gammel\" til eksisterende innstillingsfilnavn."
+Toast_FailedLoadStats: "Kunne ikke laste statistikk! Starter friskt."
 Toast_FileCopyFail: Kunne ikke kopiere filer! Se logg for flere detaljer.
 Toast_UserDataLoadFail: Kunne ikke laste brukerdata {UserData}\\WindowSettings.json. Sikkerhetskopierer og tilbakestiller! Lagret feil til logg.
 Toast_UpdateCheckFail: Kunne ikke nå https://tcno.co/ for å se etter oppdateringer. Denne meldingen vises en gang om dagen.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Finn mappen {platform}
 Modal_Title_AddNew: Legg til ny {platform} konto
 Modal_Title_Background: Sett et bakgrunnsbilde
 Modal_Title_Userdata: Angi brukerdatamappen
+Modal_Title_Stats: Statistikken din
 Modal_SetBackground: 'Velg et bilde, eller skriv inn en URL nedenfor.<br>La stå tomt og still inn på tilbakestilling.<br>(For mer avansert kontroll, se temaet på Wiki):'
 Modal_SetBackground_Button: Sett bakgrunn
 Modal_SetBackground_ChooseImage: Velg lokalt bilde
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Du er i ferd med å glemme en konto!</h3> <h4>Hva betyr dette?</h4> <p>- Steam vil ikke lenger ha kontoen oppført i Big Picture Mode og vil ikke huske passord.<br/> - TcNo Account Switcher vil heller ikke lenger vise kontoen før den er logget på igjen via Steam.</p> <p>Kontoen din forblir urørt. Det er bare glemt på denne datamaskinen.</p><h4>Forstår du?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Du holder på å glemme en konto!</h3> <h4>Hva betyr dette?</h4> <p>TcIngen kontomerter vil heller ikke lenger vise kontoen.<br/> til det er logget inn på nytt gjennom {platform}og lagt til i listen.</p> <p>Din konto vil forbli usynlig. Den har nettopp glemt på denne datamaskinen.</p> <h4>Bekrefte deg?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Du er i ferd med å slette statistikken din!</h3> <p>Du kan ikke angre denne handlingen.</p>
 Platform_DiscordPasteHint: Lim inn i Discord-konsollen, og lim deretter inn resultatet i input!
 Platform_ClearCache: Tøm cache
 Platform_ClearCacheTotal: Sletter {totalFileCount} filer ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: Sikkerhetskopier konfigurasjonsfiler/mapper, som definert i plat
 Tooltip_BackupAll: Sikkerhetskopier ALLE konfigurasjonsfiler/mapper, inkludert bilder og andre store filer.
 Tooltip_ClosingMethod: "Kombinert er best. Lukk forsøker å lukke direkte gjennom en lukkefunksjon og TaskKill bruker CMD (best hvis kombinert ikke fungerer)"
 Tooltip_StartingMethod: "Standard er best. Direct har ingen kontroll over administratornivå eller UAC. Det vil starte på samme nivå (eller høyere - men ikke lavere) enn denne kontobytteren"
+Tooltip_CurrentAccount: Du er for øyeblikket logget på denne kontoen.
+Discord_Status: Bytter konto for øyeblikket.
+Discord_StatusDetails: "Kontoer byttet: {number}"
+Website: Nettsted

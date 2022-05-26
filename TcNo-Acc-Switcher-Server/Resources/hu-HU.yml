@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Egyéb eszközök
 Settings_Header_TraySettings: Tálca beállításai
 Settings_Header_OpenGameFolders: Nyissa meg a játékmappákat
 Settings_Header_BackupRestore: Biztonsági mentés és visszaállítás platformbeállítások
+Settings_Header_Language: Nyelv
+Settings_Header_System: Rendszer
+Settings_Header_Theme: Téma
+Settings_Header_Program: Program
+Settings_Header_StatsSharing: Statisztika és megosztás
+Settings_Header_Platform: "{platformName} beállítás"
 Settings_TrayMax: 'A felejtendő fiókok maximális száma:'
 Settings_ExtraPlatformsDisabled: Letiltott platformok. Kattintson az engedélyezésükhöz.
 Settings_ExtraPlatformsEnabled: Látható platformok. Kattintson a letiltáshoz.
 Settings_RTL: Szöveg megjelenítése jobbról balra haladva
+Settings_CollectStats: Gyűjts statisztikákat
+Settings_ShareStats: Statisztikák bosszantó megosztása (ajánlott)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Ossza meg az összes kapcsolót
+Settings_ViewStats: Statisztikák megtekintése
+Settings_ClearStats: Visszaállítás
 Settings_CurrentLocation: 'Jelenlegi telepítési hely: {path}'
 Settings_CurrentDataLocation: 'Jelenlegi felhasználói adatok helye: {path}'
 Settings_SetDataLocation: "[Egyéni felhasználói adatok helyének beállítása]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Speciális) A bezárási módszer beállítása
 Settings_Header_StartingMethod: "(Speciális) Állítsa be az indítási módszert {platform}-ra"
 Settings_AutoStart: "{platform} automatikus indítása a fiókkapcsolónál"
 Settings_NoPlatforms: Jelenleg nincs engedélyezve platform. Kérjük, jelölje be alább az opcionális platformokat az engedélyezésükhöz, vagy törölje a letiltott platformok jelölését.
+Settings_MinimizeOnSwitch: A fiókkapcsoló kapcsolójának minimalizálása
+Stats_Disabled: "A statisztikai adatok gyűjtése le van tiltva."
+Stats_InDepth: Részletes statisztikai bontás
+Stats_ShareEnabled: "Ezeket a statisztikákat névtelenül osztják meg, és hozzáadják az itt szereplő összes <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">-hoz</a>."
+Stats_ShareDisabled: "Ezeket a statisztikákat NEM osztják meg névtelenül, és NEM adják hozzá a teljes <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">-hoz itt</a>."
+Stats_OperatingSystem: "Operációs rendszer: "
+Stats_FirstLaunch: "Első indítás: "
+Stats_LaunchCount: "Indítások száma: "
+Stats_CrashCount: "Összeomlások száma: "
+Stats_MostUsedPlatform: "Leggyakrabban használt platform: "
+Stats_TotalTime: "Az alkalmazásban eltöltött teljes idő: "
+Stats_TotalSwitches: "Összes fiókváltás: "
+Stats_TotalGamesLaunched: "A váltón keresztül elindított összes alkalmazás/játék: "
+Stats_UniqueDaysLong: "Egyedi napok fiókváltással: "
+Stats_LastUpload: "Utolsó feltöltés: "
+Stats_SwitcherStats: "Váltó statisztika: "
+Stats_PageStats: "Oldalstatisztikák: "
+Stats_VisitsTotalTime: "Összesen {visits} látogatás, összesen {hours} alkalommal"
+Stats_Accounts: "Fiókok: "
+Stats_Switches: "Kapcsolók: "
+Stats_FirstActive: "Első aktív: "
+Stats_LastActive: "Utoljára aktív: "
+Stats_UniqueDays: "Egyedi napok: "
+Stats_GameShortcuts: "Játék parancsikonok: "
+Stats_GameShortcutsHotbar: "Játék parancsikonok (a hotbaron): "
+Stats_GamesLaunched: "Elindult játékok: "
 Cleaning_Header_StartMenuShortcuts: 'A Start menü parancsikonjai:'
 Cleaning_Header_General: Általános takarítás
 Cleaning_Header_LoginHistory: Tisztítsa meg a bejelentkezési előzményeket
@@ -169,6 +207,7 @@ Toast_RestoreComplete: A visszaállítás kész!
 Toast_FailedLoad: Nem sikerült betölteni a {platform}-t! Kattintson a platformra a hiba megtekintéséhez.
 Toast_FailedPlatformsLoad: Nem sikerült betölteni a Platforms.json fájlt! Kérjük, ellenőrizze, hogy ez a fájl létezik.
 Toast_FailedLoadSettings: "Nem sikerült betölteni a beállításokat! Ehelyett az alapértelmezett beállítások betöltése. „régi” hozzáadása a meglévő beállítások fájlnevéhez."
+Toast_FailedLoadStats: "Nem sikerült betölteni a statisztikákat! Kezdve frissen."
 Toast_FileCopyFail: Nem sikerült másolni a fájlokat! További részletekért lásd a naplót.
 Toast_UserDataLoadFail: Nem sikerült betölteni a felhasználói adatokat {UserData}\\WindowSettings.json. Biztonsági mentés és visszaállítás! Mentett hiba a naplózáshoz.
 Toast_UpdateCheckFail: Nem sikerült elérni a https://tcno.co/ webhelyet a frissítések kereséséhez. Ez az üzenet naponta egyszer jelenik meg.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Kérjük, keresse meg a {platform} könyvtárat
 Modal_Title_AddNew: Új {platform} fiók hozzáadása
 Modal_Title_Background: Állítson be háttérképet
 Modal_Title_Userdata: Állítsa be a felhasználói adatok mappáját
+Modal_Title_Stats: Az Ön statisztikái
 Modal_SetBackground: 'Válasszon ki egy képet, vagy írjon be egy URL-t alább.<br>Hagyja üresen, és állítsa vissza alaphelyzetbe.<br>(További vezérlésért lásd a témaválasztást a Wikin):'
 Modal_SetBackground_Button: Háttér beállítása
 Modal_SetBackground_ChooseImage: Válasszon helyi képet
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Mindjárt elfelejt egy fiókot!</h3> <h4>Mit jelent ez?</h4> <p>- A Steam többé nem rendelkezik a Big Picture módban szereplő fiókkal, és nem emlékszik meg a jelszóra.<br/> – A TcNo Account Switcher szintén nem fogja megjeleníteni a fiókot, amíg újra be nem jelentkezik a Steamen keresztül.</p> <p>Fiókja érintetlen marad. Egyszerűen feledésbe merült ezen a számítógépen.</p><h4>Érted?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Ön egy fiók elfelejtésére készül!</h3> <h4>Mit jelent ez?</h4> <p>TcNo Account Switcher szintén nem jeleníti meg a fiókot (<br/> {platform}ig újra be nem jelentkezik és fel nem kerül a listára.</p> <p>Fiókja érintetlen marad. Csak elfelejtette ezt a számítógépet.</p> <h4>Érted?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>A statisztikák törlésére készülsz!</h3> <p>Ez a művelet nem vonható vissza.</p>
 Platform_DiscordPasteHint: Illessze be a Discord konzolba, majd illessze be az eredményt a bevitelbe!
 Platform_ClearCache: Törölje a gyorsítótárat
 Platform_ClearCacheTotal: '{totalFileCount} fájl törlése ({totalSizeMB})'
@@ -393,3 +435,7 @@ Tooltip_Backup: A konfigurációs fájlok/mappák biztonsági mentése a platfor
 Tooltip_BackupAll: Készítsen biztonsági másolatot az ÖSSZES konfigurációs fájlról/mappáról, beleértve a képeket és más nagy fájlokat is.
 Tooltip_ClosingMethod: "Kombinált a legjobb. A bezárás megpróbál közvetlenül bezárni egy bezárási funkción keresztül, a TaskKill pedig CMD-t használ (A legjobb, ha kombinálva nem működik)"
 Tooltip_StartingMethod: "Az alapértelmezett a legjobb. A Directnek nincs befolyása az adminisztrátori szintre vagy az UAC-ra. Ugyanazon a szinten (vagy magasabban – de nem alacsonyabban) indul, mint ez a fiókváltó"
+Tooltip_CurrentAccount: Jelenleg be vagy jelentkezve ebbe a fiókba.
+Discord_Status: Jelenleg fiókváltás folyik.
+Discord_StatusDetails: "Váltott fiókok: {number}"
+Website: Weboldal
