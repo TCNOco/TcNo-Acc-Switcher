@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Diğer Araçlar
 Settings_Header_TraySettings: Tepsi ayarları
 Settings_Header_OpenGameFolders: Oyun klasörlerini aç
 Settings_Header_BackupRestore: Yedekleme ve Geri Yükleme platformu ayarları
+Settings_Header_Language: Dilim
+Settings_Header_System: sistem
+Settings_Header_Theme: Tema
+Settings_Header_Program: programı
+Settings_Header_StatsSharing: İstatistikler ve Paylaşım
+Settings_Header_Platform: "{platformName} ayar"
 Settings_TrayMax: 'Hatırlanması gereken maksimum hesap sayısı:'
 Settings_ExtraPlatformsDisabled: Devre dışı platformlar. Etkinleştirmek için tıklayın.
 Settings_ExtraPlatformsEnabled: Görünür platformlar. Bunları devre dışı bırakmak için tıklayın.
 Settings_RTL: Metni Sağdan Sola olarak göster
+Settings_CollectStats: İstatistikleri topla
+Settings_ShareStats: İstatistikleri rahatsız edici bir şekilde paylaşın (önerilir)
+Settings_DiscordRpc: Uyuşmazlık Zengin Varlık (RPC)
+Settings_DiscordRpcShare: Toplam anahtarları paylaş
+Settings_ViewStats: İstatistikleri görüntüle
+Settings_ClearStats: Sıfırla
 Settings_CurrentLocation: 'Geçerli yükleme konumu: {path}'
 Settings_CurrentDataLocation: 'Geçerli kullanıcı verileri konumu: {path}'
 Settings_SetDataLocation: "[Özel kullanıcı verileri konumunu ayarla]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Gelişmiş) {platform}kapatmak için yöntemi a
 Settings_Header_StartingMethod: "(Gelişmiş) {platform}başlatmak için yöntemi ayarlayın"
 Settings_AutoStart: "Otomatik Olarak {platform} hesap değiştirince başlat"
 Settings_NoPlatforms: Şu anda etkin platform yok. Lütfen bunları etkinleştirmek için aşağıdaki isteğe bağlı platformları işaretleyin veya devre dışı bırakılmış platformların işaretini kaldırın.
+Settings_MinimizeOnSwitch: Hesap geçişinde değiştiriciyi simge durumuna küçült
+Stats_Disabled: "İstatistik toplama devre dışı."
+Stats_InDepth: Ayrıntılı istatistik dökümü
+Stats_ShareEnabled: "Bu istatistikler anonim olarak paylaşılır ve buradaki toplam <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>eklenir."
+Stats_ShareDisabled: "Bu istatistikler anonim olarak PAYLAŞILMAZ ve burada toplam <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>."
+Stats_OperatingSystem: "İşletim sistemi: "
+Stats_FirstLaunch: "İlk lansman: "
+Stats_LaunchCount: "Başlatma sayısı: "
+Stats_CrashCount: "Kilitlenme sayısı: "
+Stats_MostUsedPlatform: "En çok kullanılan platform: "
+Stats_TotalTime: "Uygulama içinde harcanan toplam süre: "
+Stats_TotalSwitches: "Toplam hesap geçişleri: "
+Stats_TotalGamesLaunched: "Switcher aracılığıyla başlatılan toplam uygulamalar/oyunlar: "
+Stats_UniqueDaysLong: "Hesapların değiştirildiği benzersiz günler: "
+Stats_LastUpload: "Son Yükleme: "
+Stats_SwitcherStats: "Anahtarlayıcı istatistikleri: "
+Stats_PageStats: "Sayfa istatistikleri: "
+Stats_VisitsTotalTime: "{visits} toplam ziyaret, {hours} toplam süre"
+Stats_Accounts: "Hesaplar: "
+Stats_Switches: "Anahtarlar: "
+Stats_FirstActive: "İlk aktif: "
+Stats_LastActive: "Son aktif: "
+Stats_UniqueDays: "Eşsiz günler: "
+Stats_GameShortcuts: "Oyun kısayolları: "
+Stats_GameShortcutsHotbar: "Oyun kısayolları (hotbar'da): "
+Stats_GamesLaunched: "Başlatılan oyunlar: "
 Cleaning_Header_StartMenuShortcuts: 'Başlat Menüsü Kısayolları:'
 Cleaning_Header_General: Genel temizlik
 Cleaning_Header_LoginHistory: Giriş geçmişimi temizle
@@ -169,6 +207,7 @@ Toast_RestoreComplete: Geri yükleme tamamlandı!
 Toast_FailedLoad: '{platform}yüklenemedi! Hatayı görmek için platforma tıklayın.'
 Toast_FailedPlatformsLoad: Platforms.json yüklenemedi! Lütfen bu dosyanın var olduğunu doğrulayın.
 Toast_FailedLoadSettings: "Ayarlar yüklenemedi! Bunun yerine varsayılan ayarlar yükleniyor. Mevcut ayarlar dosya adına 'eski' ekleniyor."
+Toast_FailedLoadStats: "İstatistikler yüklenemedi! Taze başlıyor."
 Toast_FileCopyFail: Dosyalar kopyalanamadı! Daha fazla ayrıntı için günlüğe bakın.
 Toast_UserDataLoadFail: '{UserData}\\WindowSettings.json kullanıcı verileri yüklenemedi. Yedekleme ve sıfırlama! Günlüğe kaydedilen hata.'
 Toast_UpdateCheckFail: Güncellemeleri kontrol etmek için https://tcno.co/ adresine ulaşılamadı. Bu mesaj günde bir kez gösterilecektir.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Lütfen {platform} dizini bulun
 Modal_Title_AddNew: Yeni {platform} hesap ekle
 Modal_Title_Background: Bir arka plan resmi ayarla
 Modal_Title_Userdata: Kullanıcı verileri klasörünü ayarlayın
+Modal_Title_Stats: istatistikleriniz
 Modal_SetBackground: 'Bir resim seçin veya aşağıya bir URL girin.<br>Boş bırakın ve sıfırlamaya ayarlayın.<br>(Daha gelişmiş kontrol için Wiki''deki Temaya bakın):'
 Modal_SetBackground_Button: Arka planı ayarla
 Modal_SetBackground_ChooseImage: Yerel resmi seçin
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Bir hesabı unutmak üzeresiniz!</h3> <h4>Bu ne anlama geliyor?</h4> <p>- Steam, artık Büyük Resim Modunda listelenen hesaba sahip olmayacak ve Parolayı Hatırlamayacaktır.<br/> - TcNo Account Switcher, Steam üzerinden tekrar oturum açılana kadar hesabı artık göstermeyecek.</p> <p>Hesabınıza dokunulmayacak. Sadece bu bilgisayarda unutuldu.</p><h4>Anlıyor musun?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Bir hesabı unutmak üzeresiniz!</h3> <h4>Bu ne anlama geliyor?</h4> <p>TcNo Account Switcher, {platform}üzerinden tekrar oturum açılıncaya ve listeye eklenene<br/></p> <p>Hesabınıza dokunulmayacak. Sadece bu bilgisayarda unutuldu.</p> <h4>Anlıyor musun?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>İstatistiklerinizi temizlemek üzeresiniz!</h3> <p>Bu eylemi geri alamazsınız.</p>
 Platform_DiscordPasteHint: Discord konsoluna yapıştırın ve sonucu girdiye yapıştırın!
 Platform_ClearCache: Önbelleği Temizle
 Platform_ClearCacheTotal: '{totalFileCount} dosya temizleniyor ({totalSizeMB})'
@@ -393,3 +435,7 @@ Tooltip_Backup: Platform ayarlarında tanımlandığı şekilde yapılandırma d
 Tooltip_BackupAll: Resimler ve diğer büyük dosyalar dahil TÜM yapılandırma dosyalarını/klasörlerini yedekleyin.
 Tooltip_ClosingMethod: "Kombine en iyisidir. Kapat, bir kapatma işlevi aracılığıyla doğrudan kapatma girişiminde bulunur ve TaskKill, CMD'yi kullanır (Birleşik çalışmazsa en iyisi)"
 Tooltip_StartingMethod: "Varsayılan en iyisidir. Direct'in yönetici düzeyi veya UAC üzerinde hiçbir kontrolü yoktur. Bu hesap değiştiriciyle aynı düzeyde (veya daha yüksek - ancak daha düşük değil) başlayacak"
+Tooltip_CurrentAccount: Şu anda bu hesaba giriş yaptınız.
+Discord_Status: Şu anda hesaplar arasında geçiş yapılıyor.
+Discord_StatusDetails: "Değiştirilen Hesaplar: {number}"
+Website: İnternet sitesi
