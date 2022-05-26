@@ -137,6 +137,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
         public static string GetCurrentAccountId()
         {
+            // 30 second window - For when changing accounts
+            if (BattleNetSettings.LastAccName != "" && BattleNetSettings.LastAccTimestamp - Globals.GetUnixTimeInt() < 30)
+                return BattleNetSettings.LastAccName;
+
             try
             {
                 return AppData.BNetAccountsList == null ? "" : AppData.BNetAccountsList.ToString().Split(',')[0];
@@ -285,6 +289,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             AppStats.IncrementSwitches("BattleNet");
+
+            try
+            {
+                BattleNetSettings.LastAccName = email;
+                BattleNetSettings.LastAccTimestamp = Globals.GetUnixTimeInt();
+                if (BattleNetSettings.LastAccName != "") _ = AppData.InvokeVoidAsync("highlightCurrentAccount", BattleNetSettings.LastAccName);
+            }
+            catch (Exception)
+            {
+                //
+            }
         }
 
         /// <summary>

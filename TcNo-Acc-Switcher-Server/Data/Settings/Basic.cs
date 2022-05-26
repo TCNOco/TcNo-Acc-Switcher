@@ -97,6 +97,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] private string _contextMenuJson = "[]";
         [JsonIgnore] private string _contextMenuShortcutJson = "[]";
         [JsonIgnore] private string _contextMenuPlatformJson = "[]";
+        [JsonIgnore] private int _lastAccTimestamp = 0;
+        [JsonIgnore] private string _lastAccName = "";
+
+        public static int LastAccTimestamp { get => Instance._lastAccTimestamp; set => Instance._lastAccTimestamp = value; }
+        public static string LastAccName { get => Instance._lastAccName; set => Instance._lastAccName = value; }
 
 
         public static string FolderPath

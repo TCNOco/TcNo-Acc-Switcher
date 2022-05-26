@@ -121,10 +121,25 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             AppStats.IncrementSwitches(CurrentPlatform.SafeName);
+
+            try
+            {
+                BasicSettings.LastAccName = accId;
+                BasicSettings.LastAccTimestamp = Globals.GetUnixTimeInt();
+                if (BasicSettings.LastAccName != "") _ = AppData.InvokeVoidAsync("highlightCurrentAccount", BasicSettings.LastAccName);
+            }
+            catch (Exception)
+            {
+                //
+            }
         }
 
         public static string GetCurrentAccountId()
         {
+            // 30 second window - For when changing accounts
+            if (BasicSettings.LastAccName != "" && BasicSettings.LastAccTimestamp - Globals.GetUnixTimeInt() < 30)
+                return BasicSettings.LastAccName;
+
             try
             {
                 var uniqueId = GetUniqueId();

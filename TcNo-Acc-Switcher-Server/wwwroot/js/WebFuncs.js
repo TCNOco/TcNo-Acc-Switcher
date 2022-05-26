@@ -955,6 +955,14 @@ async function initCopyHotKey() {
 }
 
 async function highlightCurrentAccount(curAcc) {
+    // Remove existing highlighted elements, if any.
+    $(".currentAcc").each((_, e) => {
+        var j = $(e);
+        j.removeClass("currentAcc");
+        j.parent().removeAttr("title").removeAttr("data-original-title").removeAttr("data-placement");
+    });
+
+    // Start adding classes
     const toastCopied = await GetLang("Tooltip_CurrentAccount");
     const parentEl = $(`[for='${curAcc}']`).addClass("currentAcc").parent();
     parentEl.attr("title", toastCopied);

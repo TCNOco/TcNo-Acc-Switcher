@@ -117,11 +117,36 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             AppStats.SetAccountCount("Steam", AppData.SteamUsers.Count);
         }
 
+        /// <summary>
+        /// This relies on Steam updating loginusers.vdf. It could go out of sync assuming it's not updated reliably. There is likely a better way to do this.
+        /// I am avoiding using the Steam API because it's another DLL to include, but is the next best thing - I assume.
+        /// </summary>
         public static string GetCurrentAccountId()
         {
+            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.GetCurrentAccountId]");
             try
             {
-                return AppData.SteamUsers[0].AccName;
+                // Refreshing the list of SteamUsers doesn't help here when switching, as the account list is not updated by Steam just yet.
+                Index.Steamuser mostRecent = null;
+                foreach (var su in AppData.SteamUsers)
+                {
+                    var last = 0;
+                    int.TryParse(su.LastLogin, out last);
+
+                    var recent = 0;
+                    int.TryParse(mostRecent?.LastLogin, out recent);
+
+                    if (mostRecent == null || last > recent)
+                        mostRecent = su;
+                }
+
+                var mrTimestamp = 0;
+                int.TryParse(mostRecent.LastLogin, out mrTimestamp);
+
+                if (SteamSettings.LastAccTimestamp > mrTimestamp)
+                    return SteamSettings.LastAccName;
+
+                return mostRecent.AccName ?? "";
             }
             catch (Exception)
             {
@@ -437,6 +462,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             AppStats.IncrementSwitches("Steam");
+
+            try
+            {
+                SteamSettings.LastAccName = AppData.SteamUsers.Where(x => x.SteamId == steamId).ToList()[0].AccName;
+                SteamSettings.LastAccTimestamp = Globals.GetUnixTimeInt();
+                if (SteamSettings.LastAccName != "") _ = AppData.InvokeVoidAsync("highlightCurrentAccount", SteamSettings.LastAccName);
+            }
+            catch (Exception)
+            {
+                //
+            }
         }
 
         /// <summary>

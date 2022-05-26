@@ -27,7 +27,7 @@ namespace TcNo_Acc_Switcher_Globals
 #pragma warning disable CA2211 // Non-constant fields should not be visible - This is necessary due to it being a launch parameter.
         public static bool VerboseMode;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
-        public static readonly string Version = "2022-05-04_00";
+        public static readonly string Version = "2022-05-26_00";
 
         #region INITIALISATION
 
@@ -182,9 +182,11 @@ namespace TcNo_Acc_Switcher_Globals
             ? string.Empty
             : SHA512.Create().ComputeHash(b).Aggregate("", (current, x) => current + $"{x:x2}");
 
+        public static int GetUnixTimeInt() => (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
         public static string GetUnixTime()
         {
-            return ((int)DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds).ToString();
+            return ((int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds).ToString();
         }
 
         /// <summary>
