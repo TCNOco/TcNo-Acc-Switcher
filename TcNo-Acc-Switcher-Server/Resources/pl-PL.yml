@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Inne narzędzia
 Settings_Header_TraySettings: Ustawienia zasobnika
 Settings_Header_OpenGameFolders: Otwórz foldery gier
 Settings_Header_BackupRestore: Tworzenie kopii zapasowej i przywracanie ustawień platformy
+Settings_Header_Language: Język
+Settings_Header_System: System
+Settings_Header_Theme: Temat
+Settings_Header_Program: Program
+Settings_Header_StatsSharing: Statystyki i udostępnianie
+Settings_Header_Platform: "{platformName} ustawień"
 Settings_TrayMax: 'Maksymalna liczba kont do zapamiętania:'
 Settings_ExtraPlatformsDisabled: Wyłączone platformy. Kliknij, aby je włączyć.
 Settings_ExtraPlatformsEnabled: Widoczne platformy. Kliknij, aby je wyłączyć.
 Settings_RTL: Pokaż tekst od prawej do lewej
+Settings_CollectStats: Zbieraj statystyki
+Settings_ShareStats: Udostępniaj statystyki w sposób irytujący (zalecane)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Udostępnij łączne przełączniki
+Settings_ViewStats: Zobacz statystyki
+Settings_ClearStats: Resetowanie
 Settings_CurrentLocation: 'Aktualna lokalizacja instalacji: {path}'
 Settings_CurrentDataLocation: 'Aktualna lokalizacja danych użytkownika: {path}'
 Settings_SetDataLocation: "[Ustaw niestandardową lokalizację danych użytkownika]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Zaawansowane) Ustaw metodę na zamknięcie {pla
 Settings_Header_StartingMethod: "(Zaawansowane) Ustaw metodę startu {platform}"
 Settings_AutoStart: "Automatycznie rozpocznij {platform} przy zmianie konta"
 Settings_NoPlatforms: Obecnie nie są włączone żadne platformy. Proszę zaznaczyć opcjonalne platformy poniżej, aby je włączyć, lub odznaczyć nieaktywne platformy.
+Settings_MinimizeOnSwitch: Zminimalizuj przełącznik przy zmianie konta
+Stats_Disabled: "Zbieranie statystyk jest wyłączone."
+Stats_InDepth: Szczegółowy podział statystyk
+Stats_ShareEnabled: "Te statystyki są udostępniane anonimowo i dodają do całkowitej <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">tutaj</a>."
+Stats_ShareDisabled: "Te statystyki NIE są udostępniane anonimowo i NIE są dodawane do całkowitej liczby <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">tutaj</a>."
+Stats_OperatingSystem: "System operacyjny: "
+Stats_FirstLaunch: "Pierwsze uruchomienie: "
+Stats_LaunchCount: "Liczba uruchomień: "
+Stats_CrashCount: "Liczba awarii: "
+Stats_MostUsedPlatform: "Najczęściej używana platforma: "
+Stats_TotalTime: "Całkowity czas spędzony w aplikacji: "
+Stats_TotalSwitches: "Łączna liczba przełączeń kont: "
+Stats_TotalGamesLaunched: "Całkowita liczba aplikacji/gier uruchomionych za pomocą przełącznika: "
+Stats_UniqueDaysLong: "Unikalne dni z przełączonymi kontami: "
+Stats_LastUpload: "Ostatnie przesłanie: "
+Stats_SwitcherStats: "Statystyki przełączników: "
+Stats_PageStats: "Statystyki strony: "
+Stats_VisitsTotalTime: "{visits} wszystkich wizyt, {hours} całkowity czas"
+Stats_Accounts: "Konta: "
+Stats_Switches: "Przełączniki: "
+Stats_FirstActive: "Pierwszy aktywny: "
+Stats_LastActive: "Ostatnio aktywny: "
+Stats_UniqueDays: "Wyjątkowe dni: "
+Stats_GameShortcuts: "Skróty do gier: "
+Stats_GameShortcutsHotbar: "Skróty do gry (na pasku skrótów): "
+Stats_GamesLaunched: "Uruchomione gry: "
 Cleaning_Header_StartMenuShortcuts: 'Skróty dla menu startowego:'
 Cleaning_Header_General: Ogólne czyszczenie
 Cleaning_Header_LoginHistory: Wyczyść moją historię logowania
@@ -169,6 +207,7 @@ Toast_RestoreComplete: Przywracanie zakończone!
 Toast_FailedLoad: Nie udało się załadować {platform}! Kliknij platformę, aby zobaczyć błąd.
 Toast_FailedPlatformsLoad: Nie udało się załadować pliku Platforms.json! Proszę sprawdzić, czy ten plik istnieje.
 Toast_FailedLoadSettings: "Nie udało się załadować ustawień! Zamiast tego załadowano ustawienia domyślne. Dodanie 'old' do istniejącej nazwy pliku z ustawieniami."
+Toast_FailedLoadStats: "Nie udało się załadować statystyk! Rozpoczynam od nowa."
 Toast_FileCopyFail: Nie udało się skopiować plików! Zobacz dziennik, aby uzyskać więcej informacji.
 Toast_UserDataLoadFail: Nie udało się załadować danych użytkownika {UserData}\\WindowSettings.json. Tworzenie kopii zapasowej i resetowanie! Zapisano błąd w dzienniku.
 Toast_UpdateCheckFail: Nie można uzyskać dostępu do https://tcno.co/, aby sprawdzić dostępność aktualizacji. Ta wiadomość będzie wyświetlana raz dziennie.
@@ -179,7 +218,7 @@ Modal_Crowdin_Info: "Oto wszyscy, którzy pomogli przetłumaczyć to oprogramowa
 Modal_Info_Creator: Stworzone przez TechNobo [Wesley Pyburn]
 Modal_Info_Version: Wersja
 Modal_Info_ViewGitHub: Zobacz na GitHub
-Modal_Info_BugReport: Zgłoszenie błędu/Prośba o nową funkcję
+Modal_Info_BugReport: Zgłaszanie błędów / Prośba o nową funkcję
 Modal_Info_VisitSite: Odwiedź tcno.co
 Modal_Info_Disclaimer: Zastrzeżenie
 Modal_Title_Info: Informacje o Przełączniku kont TcNo
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Proszę zlokalizować katalog {platform}
 Modal_Title_AddNew: Dodaj nowe konto {platform}
 Modal_Title_Background: Ustaw obraz tła
 Modal_Title_Userdata: Ustaw folder danych użytkownika
+Modal_Title_Stats: Twoje statystyki
 Modal_SetBackground: 'Wybierz obraz lub wprowadź adres URL poniżej.<br>Zostaw puste i ustaw na resetowanie.<br>(Dla bardziej zaawansowanej kontroli zobacz Theming na Wiki):'
 Modal_SetBackground_Button: Ustaw tło
 Modal_SetBackground_ChooseImage: Wybierz obraz lokalny
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Zaraz zapomnisz o koncie!</h3> <h4>Co to oznacza?</h4> <p>- Steam nie będzie miał już konta na liście w trybie Big Picture Mode i nie będzie pamiętał hasła.<br/> - Przełącznik kont TcNo również nie będzie już pokazywał konta, dopóki nie zostanie ono ponownie zalogowane przez Steam.</p> <p>Twoje konto pozostanie nietknięte. Jest ono po prostu zapomniane na tym komputerze.</p><h4>Rozumiesz?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Za chwilę konto zostanie zapomniane!</h3> <h4>Co to oznacza?</h4> <p>Przełącznik kont TcNo nie będzie już pokazywał konta,<br/> dopóki nie zostanie ono ponownie zalogowane poprzez {platform} i dodane do listy.</p> <p>Twoje konto pozostanie bez zmian. Zostanie ono po prostu zapomniane na tym komputerze.</p> <h4>Czy dobrze to zrozumiałeś?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Zaraz wyczyścisz swoje statystyki!</h3> <p>Tej akcji nie można cofnąć.</p>
 Platform_DiscordPasteHint: Wklej do konsoli Discorda, a następnie wklej wynik w polu wprowadzania!
 Platform_ClearCache: Wyczyść pamięć podręczną
 Platform_ClearCacheTotal: Czyszczenie plików {totalFileCount} ({totalSizeMB})
@@ -391,5 +433,9 @@ Tooltip_ExpandShortcuts: Rozwiń wybór gier i skrótów
 Tooltip_ShortcutFolder: Otwórz folder skrótów. Umieść tam skróty, a Przełącznik kont TcNo będzie je widział.
 Tooltip_Backup: Kopia zapasowa plików konfiguracyjnych/folderów, jak określono w ustawieniach platformy.
 Tooltip_BackupAll: Kopia zapasowa WSZYSTKICH plików konfiguracyjnych/folderów, w tym obrazów i innych dużych plików.
-Tooltip_ClosingMethod: "Połączenie jest najlepsze. Close próbuje zamknąć bezpośrednio przez funkcję close, a TaskKill używa CMD (najlepiej, jeśli połączenie nie działa)"
-Tooltip_StartingMethod: "Najlepsze jest domyślne. Direct nie ma kontroli nad poziomem administratora ani UAC. Rozpocznie się na tym samym poziomie (lub wyższym - ale nie niższym) niż ten przełącznik kont"
+Tooltip_ClosingMethod: "Najlepszą metodą jest łączenie. Close próbuje zamknąć program bezpośrednio za pomocą funkcji close, a TaskKill używa CMD (najlepiej, jeśli łączenie nie działa)"
+Tooltip_StartingMethod: "Najlepsza jest opcja domyślna. Direct nie ma kontroli nad poziomem administratora ani UAC. Uruchomi się na tym samym poziomie (lub wyższym, ale nie niższym) co przełącznik kont"
+Tooltip_CurrentAccount: Jesteś obecnie zalogowany na tym koncie.
+Discord_Status: Obecnie przełączam konta.
+Discord_StatusDetails: "Przełączone konta: {number}"
+Website: Stronie internetowej
