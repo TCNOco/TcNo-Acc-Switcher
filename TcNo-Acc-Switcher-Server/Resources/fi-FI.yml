@@ -36,10 +36,22 @@ Settings_Header_OtherTools: Muut Työkalut
 Settings_Header_TraySettings: Kaukalon asetukset
 Settings_Header_OpenGameFolders: Avaa pelikansiot
 Settings_Header_BackupRestore: Varmuuskopioi ja palauta alustan asetukset
+Settings_Header_Language: Kieli
+Settings_Header_System: Järjestelmä
+Settings_Header_Theme: Teema
+Settings_Header_Program: Ohjelmoida
+Settings_Header_StatsSharing: Tilastot ja jakaminen
+Settings_Header_Platform: "{platformName} asetusta"
 Settings_TrayMax: 'Suurin muistettavien tilien määrä:'
 Settings_ExtraPlatformsDisabled: Käytöstä poistetut alustat. Ota ne käyttöön napsauttamalla.
 Settings_ExtraPlatformsEnabled: Näkyvät alustat. Napsauta poistaaksesi ne käytöstä.
 Settings_RTL: Näytä teksti oikealta vasemmalle
+Settings_CollectStats: Kerää tilastoja
+Settings_ShareStats: Jaa tilastot ärsyttävästi (suositus)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Jaa kaikki kytkimet
+Settings_ViewStats: Näytä tilastot
+Settings_ClearStats: Nollaa
 Settings_CurrentLocation: 'Nykyinen asennuspaikka: {path}'
 Settings_CurrentDataLocation: 'Nykyinen käyttäjätietojen sijainti: {path}'
 Settings_SetDataLocation: "[Aseta mukautettu käyttäjätietojen sijainti]"
@@ -67,6 +79,32 @@ Settings_Header_ClosingMethod: "(Lisäasetukset) Aseta menetelmä sulkemaan {pla
 Settings_Header_StartingMethod: "(Lisäasetukset) Aseta aloitustapa {platform}"
 Settings_AutoStart: "Käynnistä {platform} automaattisesti tilikytkimessä"
 Settings_NoPlatforms: Tällä hetkellä ei ole käytössä alustoja. Ota ne käyttöön valitsemalla valinnaiset alustat alta tai poista käytöstä poistettujen alustojen valinta.
+Settings_MinimizeOnSwitch: Minimoi vaihtaja tilikytkimessä
+Stats_Disabled: "Tilastojen kerääminen on poistettu käytöstä."
+Stats_InDepth: Yksityiskohtainen tilastojen erittely
+Stats_ShareEnabled: "Nämä tilastot jaetaan anonyymisti ja ne lisäävät <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">:aan täällä</a>."
+Stats_ShareDisabled: "Näitä tilastoja EI jaeta anonyymisti, eivätkä ne lisää kokonaismäärään <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">tässä</a>."
+Stats_OperatingSystem: "Käyttöjärjestelmä: "
+Stats_FirstLaunch: "Ensimmäinen käynnistys: "
+Stats_LaunchCount: "Käynnistysten määrä: "
+Stats_CrashCount: "Kaatumismäärä: "
+Stats_MostUsedPlatform: "Eniten käytetty alusta: "
+Stats_TotalTime: "Sovelluksessa vietetty aika yhteensä: "
+Stats_TotalSwitches: "Tilivaihdot yhteensä: "
+Stats_TotalGamesLaunched: "Vaihtimen kautta käynnistetyt sovellukset/pelit yhteensä: "
+Stats_UniqueDaysLong: "Ainutlaatuiset päivät tilien vaihdolla: "
+Stats_LastUpload: "Viimeisin lataus: "
+Stats_SwitcherStats: "Vaihtimen tilastot: "
+Stats_PageStats: "Sivun tilastot: "
+Stats_VisitsTotalTime: "Yhteensä {visits} käyntiä, yhteensä {hours} kerta"
+Stats_Accounts: "Tilit: "
+Stats_Switches: "Kytkimet: "
+Stats_FirstActive: "Ensimmäinen aktiivinen: "
+Stats_LastActive: "Viimeksi aktiivinen: "
+Stats_UniqueDays: "Ainutlaatuisia päiviä: "
+Stats_GameShortcuts: "Pelin pikakuvakkeet: "
+Stats_GameShortcutsHotbar: "Pelin pikakuvakkeet (hotbarissa): "
+Stats_GamesLaunched: "Pelit julkaistu: "
 Cleaning_Header_StartMenuShortcuts: 'Käynnistysvalikon pikakuvakkeet:'
 Cleaning_Header_General: Yleinen Puhdistus
 Cleaning_Header_LoginHistory: Puhdista kirjautumishistoriani
@@ -169,6 +207,7 @@ Toast_RestoreComplete: Palautus valmis!
 Toast_FailedLoad: '{platform}:n lataus epäonnistui! Napsauta alustaa nähdäksesi virheen.'
 Toast_FailedPlatformsLoad: Platforms.jsonin lataaminen epäonnistui! Varmista, että tämä tiedosto on olemassa.
 Toast_FailedLoadSettings: "Asetusten lataaminen epäonnistui! Ladataan sen sijaan oletusasetuksia. Lisätään \"vanha\" olemassa olevaan asetustiedoston nimeen."
+Toast_FailedLoadStats: "Tilastojen lataaminen epäonnistui! Alkaen tuoreesta."
 Toast_FileCopyFail: Tiedostojen kopioiminen epäonnistui! Katso lisätiedot lokista.
 Toast_UserDataLoadFail: Käyttäjätietojen {UserData}\\WindowSettings.json lataaminen epäonnistui. Varmuuskopiointi ja nollaus! Virhe tallennettuun lokiin.
 Toast_UpdateCheckFail: Ei saatu yhteyttä osoitteeseen https://tcno.co/ päivitysten tarkistamiseksi. Tämä viesti näkyy kerran päivässä.
@@ -189,6 +228,7 @@ Modal_Title_LocatePlatform: Ole hyvä ja etsi {platform} kansio
 Modal_Title_AddNew: Lisää uusi {platform} tili
 Modal_Title_Background: Aseta taustakuva
 Modal_Title_Userdata: Aseta käyttäjätietokansio
+Modal_Title_Stats: Sinun tilastosi
 Modal_SetBackground: 'Valitse kuva tai kirjoita URL-osoite alle.<br>Jätä tyhjäksi ja aseta palautus.<br>(Katso lisäohjausta Wikin teemasta):'
 Modal_SetBackground_Button: Aseta tausta
 Modal_SetBackground_ChooseImage: Valitse paikallinen kuva
@@ -377,6 +417,8 @@ Prompt_ForgetSteam: >
   <h3 style='color:red'>Olet unohtamassa tilin!</h3> <h4>Mitä tämä tarkoittaa?</h4> <p>- Steamilla ei ole enää Big Picture Mode -tilassa olevaa tiliä, eikä se muista salasanaa.<br/> - TcNo Account Switcher ei myöskään enää näytä tiliä, ennen kuin se kirjataan uudelleen sisään Steamin kautta.</p> <p>Tilisi pysyy ennallaan. Se on vain unohdettu tälle tietokoneelle.</p><h4>Ymmärrätkö?</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>Olet aikeissa unohtaa tilin!</h3> <h4>Mitä tämä tarkoittaa?</h4> <p>TcEi Tilin vaihtaja ei myöskään enää näytä tiliä,<br/> kunnes se on kirjautunut uudelleen {platform}kautta ja lisätty luetteloon.</p> <p>Tilisi pysyy koskemattomana. Se on juuri unohdettu tällä tietokoneella.</p> <h4>Ymmärrätkö sen?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Olet tyhjentämässä tilastojasi!</h3> <p>Tätä toimintoa ei voi kumota.</p>
 Platform_DiscordPasteHint: Liitä Discord-konsoliin ja liitä tulos syötteeseen!
 Platform_ClearCache: Tyhjennä välimuisti
 Platform_ClearCacheTotal: Tyhjennetään {totalFileCount} tiedostoa ({totalSizeMB})
@@ -393,3 +435,7 @@ Tooltip_Backup: Varmuuskopioi konfiguraatiotiedostot/kansiot alustan asetuksissa
 Tooltip_BackupAll: Varmuuskopioi KAIKKI asetustiedostot/kansiot, mukaan lukien kuvat ja muut suuret tiedostot.
 Tooltip_ClosingMethod: "Yhdistetty on paras. Sulje yrittää sulkea suoraan sulkemistoiminnon kautta ja TaskKill käyttää CMD:tä (Paras yhdistettynä ei toimi)"
 Tooltip_StartingMethod: "Oletus on paras. Direct ei hallitse järjestelmänvalvojatasoa tai UAC:tä. Se alkaa samalla tasolla (tai korkeammalta – mutta ei alempana) kuin tämä tilin vaihtaja"
+Tooltip_CurrentAccount: Olet tällä hetkellä kirjautuneena tälle tilille.
+Discord_Status: Tiliä vaihdetaan parhaillaan.
+Discord_StatusDetails: "Vaihdettu tili: {number}"
+Website: Verkkosivusto
