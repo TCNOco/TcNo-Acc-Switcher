@@ -82,8 +82,8 @@ Settings_NoPlatforms: There are currently no platforms enabled. Please tick opti
 Settings_MinimizeOnSwitch: Minimize switcher on account switch
 Stats_Disabled: "Statistics collection is disabled."
 Stats_InDepth: In-depth statistics breakdown
-Stats_ShareEnabled: "These statistics are shared anonymously and will add to the total <a href=\"{WebsiteLink}\" class=\"fancyLink\">here</a>."
-Stats_ShareDisabled: "These statistics are NOT shared anonymously and will NOT add to the total <a href=\"{WebsiteLink}\" class=\"fancyLink\">here</a>."
+Stats_ShareEnabled: "These statistics are shared anonymously and will add to the total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">here</a>."
+Stats_ShareDisabled: "These statistics are NOT shared anonymously and will NOT add to the total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">here</a>."
 Stats_OperatingSystem: "Operating system: "
 Stats_FirstLaunch: "First launch: "
 Stats_LaunchCount: "Launch count: "
