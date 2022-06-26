@@ -176,31 +176,38 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public static void UploadStats()
         {
-            // Upload stats file if enabled.
-            if (!AppSettings.StatsEnabled || !AppSettings.StatsShare) return;
-            // If not a new day
-            if (LastUpload.Date == DateTime.Now.Date) return;
+            try
+            {
+                // Upload stats file if enabled.
+                if (!AppSettings.StatsEnabled || !AppSettings.StatsShare) return;
+                // If not a new day
+                if (LastUpload.Date == DateTime.Now.Date) return;
 
-            // Save data in temp file.
-            var tempFile = Path.GetTempFileName();
-            var statsJson = JsonConvert.SerializeObject(JObject.FromObject(Instance), Formatting.None);
-            File.WriteAllText(tempFile, statsJson);
+                // Save data in temp file.
+                var tempFile = Path.GetTempFileName();
+                var statsJson = JsonConvert.SerializeObject(JObject.FromObject(Instance), Formatting.None);
+                File.WriteAllText(tempFile, statsJson);
 
-            // Upload using HTTPClient
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "TcNo Account Switcher");
-            var response = httpClient.PostAsync("https://tcno.co/Projects/AccSwitcher/api/stats/",
-                new FormUrlEncodedContent(new Dictionary<string, string>
-                {
-                    ["uuid"] = Uuid,
-                    ["statsData"] = statsJson
-                })).Result;
+                // Upload using HTTPClient
+                var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("User-Agent", "TcNo Account Switcher");
+                var response = httpClient.PostAsync("https://tcno.co/Projects/AccSwitcher/api/stats/",
+                    new FormUrlEncodedContent(new Dictionary<string, string>
+                    {
+                        ["uuid"] = Uuid,
+                        ["statsData"] = statsJson
+                    })).Result;
 
-            if (response.StatusCode != HttpStatusCode.OK)
-                Globals.WriteToLog("Failed to upload stats file. Status code: " + response.StatusCode);
+                if (response.StatusCode != HttpStatusCode.OK)
+                    Globals.WriteToLog("Failed to upload stats file. Status code: " + response.StatusCode);
 
-            LastUpload = DateTime.Now;
-            SaveSettings();
+                LastUpload = DateTime.Now;
+                SaveSettings();
+            } catch (Exception e)
+            {
+                // Ignore any errors here.
+                Globals.WriteToLog(@"Could not reach https://tcno.co/ to upload statistics.", e);
+            }
         }
 
         #region System stats
