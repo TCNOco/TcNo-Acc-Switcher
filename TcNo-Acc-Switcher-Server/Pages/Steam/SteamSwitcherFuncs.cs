@@ -121,7 +121,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// This relies on Steam updating loginusers.vdf. It could go out of sync assuming it's not updated reliably. There is likely a better way to do this.
         /// I am avoiding using the Steam API because it's another DLL to include, but is the next best thing - I assume.
         /// </summary>
-        public static string GetCurrentAccountId()
+        public static string GetCurrentAccountId(bool getNumericId = false)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.GetCurrentAccountId]");
             try
@@ -144,8 +144,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 int.TryParse(mostRecent.LastLogin, out mrTimestamp);
 
                 if (SteamSettings.LastAccTimestamp > mrTimestamp)
+                {
                     return SteamSettings.LastAccName;
-
+                }
+                    
+                if (getNumericId) return mostRecent.SteamId ?? "";
                 return mostRecent.AccName ?? "";
             }
             catch (Exception)
@@ -175,7 +178,34 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_VdfLast"], Lang["Toast_PartiallyFixed"], "toastarea", 10000);
             return userAccounts;
         }
-
+        public static void BackupGameDataFolder(string folder)
+        {
+            var backupFolder = folder + "_switcher_backup";
+            if (!Directory.Exists(folder)) return;
+            if (Directory.Exists(backupFolder)) return;
+            Globals.CopyDirectory(folder, backupFolder, true);
+        }
+        public static List<string> LoadInstalledGames()
+        {
+            List<string> gameIds;
+            try
+            {
+                var libraryFile = Path.Join(Data.Settings.Steam.FolderPath, "\\steamapps\\libraryfolders.vdf");
+                var libraryVdf = VdfConvert.Deserialize(File.ReadAllText(libraryFile));
+                var library = new JObject { libraryVdf.ToJson() };
+                gameIds = library["libraryfolders"]
+                    .SelectMany(folder => (folder.First["apps"] as JObject)
+                        .Properties()
+                        .Select(p => p.Name))
+                    .ToList();
+            }
+            catch (Exception e)
+            {
+                Globals.WriteToLog("ERROR: Could not fetch Steam game library.\nDetails: " + e);
+                gameIds = new List<string>();
+            }
+            return gameIds;
+        }
         private static bool LoadFromVdf(string vdf, out List<Index.Steamuser> userAccounts)
         {
             userAccounts = new List<Index.Steamuser>();

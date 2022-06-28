@@ -84,6 +84,66 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             if (Directory.Exists(folder)) _ = Process.Start("explorer.exe", folder);
             else _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"], "toastarea");
         }
+        [JSInvokable]
+        public static void CopySettingsFrom(string sourceSteamId, string game)
+        {
+            var destSteamId = SteamSwitcherFuncs.GetCurrentAccountId(true);
+            if (!SteamSwitcherFuncs.VerifySteamId(sourceSteamId) || !SteamSwitcherFuncs.VerifySteamId(destSteamId))
+            {
+                GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoValidSteamId"], Lang["Failed"],
+                    "toastarea"); 
+                return;
+            }
+            if (destSteamId == sourceSteamId) return;
+            
+            var sourceSteamId32 = new SteamIdConvert(sourceSteamId).Id32;
+            var destSteamId32 = new SteamIdConvert(destSteamId).Id32;
+            var sourceFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{sourceSteamId32}\\{Data.Settings.Steam.AppIds[game]}");
+            var destFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{destSteamId32}\\{Data.Settings.Steam.AppIds[game]}");
+            if (!Directory.Exists(sourceFolder))
+            {
+                GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"],
+                    "toastarea");
+                return;
+            }
+
+            if (Directory.Exists(destFolder))
+            {
+                SteamSwitcherFuncs.BackupGameDataFolder(destFolder);
+                Directory.Delete(destFolder, true);
+            }
+            Globals.CopyDirectory(sourceFolder, destFolder, true);
+            GeneralInvocableFuncs.ShowToast("success", Lang["Toast_SettingsCopied"], Lang["Success"], "toastarea");
+        }
+        [JSInvokable]
+        public static void RestoreSettingsTo(string steamId, string game)
+        {
+            if (!SteamSwitcherFuncs.VerifySteamId(steamId)) return;
+            var steamId32 = new SteamIdConvert(steamId).Id32;
+            var backupFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{steamId32}\\{Data.Settings.Steam.AppIds[game]}_switcher_backup");
+            var folder = backupFolder.Replace("_switcher_backup", "");
+            if (!Directory.Exists(backupFolder))
+            {
+                GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindGameBackup"], Lang["Failed"],
+                    "toastarea");
+                return;
+            }
+            if (Directory.Exists(folder)) Directory.Delete(folder, true);
+            Globals.CopyDirectory(backupFolder, folder, true);
+            Directory.Delete(backupFolder, true);
+            GeneralInvocableFuncs.ShowToast("success", Lang["Toast_GameDataRestored"], Lang["Success"], "toastarea");
+        }
+        [JSInvokable]
+        public static void BackupGameData(string steamId, string game)
+        {
+            if (!SteamSwitcherFuncs.VerifySteamId(steamId)) return;
+            var steamId32 = new SteamIdConvert(steamId).Id32;
+            var sourceFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{steamId32}\\{Data.Settings.Steam.AppIds[game]}");
+            var destFolder = sourceFolder + "_switcher_backup";
+            if (Directory.Exists(destFolder)) Directory.Delete(destFolder, true);
+            SteamSwitcherFuncs.BackupGameDataFolder(sourceFolder);
+            GeneralInvocableFuncs.ShowToast("success", Lang["Toast_GameBackupDone"], Lang["Success"], "toastarea");
+        }
 
         /// <summary>
         /// JS function handler for swapping to a new Steam account (No inputs)
