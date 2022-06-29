@@ -14,6 +14,7 @@
 
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.Versioning;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
@@ -85,7 +86,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             else _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"], "toastarea");
         }
         [JSInvokable]
-        public static void CopySettingsFrom(string sourceSteamId, string game)
+        public static void CopySettingsFrom(string sourceSteamId, string gameName)
         {
             var destSteamId = SteamSwitcherFuncs.GetCurrentAccountId(true);
             if (!SteamSwitcherFuncs.VerifySteamId(sourceSteamId) || !SteamSwitcherFuncs.VerifySteamId(destSteamId))
@@ -98,8 +99,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             
             var sourceSteamId32 = new SteamIdConvert(sourceSteamId).Id32;
             var destSteamId32 = new SteamIdConvert(destSteamId).Id32;
-            var sourceFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{sourceSteamId32}\\{Data.Settings.Steam.AppIds[game]}");
-            var destFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{destSteamId32}\\{Data.Settings.Steam.AppIds[game]}");
+            var gameId = Data.Settings.Steam.AppIds.Value.First(game => game.Value == gameName).Key;
+            var sourceFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{sourceSteamId32}\\{gameId}");
+            var destFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{destSteamId32}\\{gameId}");
             if (!Directory.Exists(sourceFolder))
             {
                 GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"],
@@ -116,11 +118,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             GeneralInvocableFuncs.ShowToast("success", Lang["Toast_SettingsCopied"], Lang["Success"], "toastarea");
         }
         [JSInvokable]
-        public static void RestoreSettingsTo(string steamId, string game)
+        public static void RestoreSettingsTo(string steamId, string gameName)
         {
             if (!SteamSwitcherFuncs.VerifySteamId(steamId)) return;
             var steamId32 = new SteamIdConvert(steamId).Id32;
-            var backupFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{steamId32}\\{Data.Settings.Steam.AppIds[game]}_switcher_backup");
+            var gameId = Data.Settings.Steam.AppIds.Value.First(game => game.Value == gameName).Key;
+            var backupFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{steamId32}\\{gameId}_switcher_backup");
             var folder = backupFolder.Replace("_switcher_backup", "");
             if (!Directory.Exists(backupFolder))
             {
@@ -134,11 +137,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             GeneralInvocableFuncs.ShowToast("success", Lang["Toast_GameDataRestored"], Lang["Success"], "toastarea");
         }
         [JSInvokable]
-        public static void BackupGameData(string steamId, string game)
+        public static void BackupGameData(string steamId, string gameName)
         {
             if (!SteamSwitcherFuncs.VerifySteamId(steamId)) return;
             var steamId32 = new SteamIdConvert(steamId).Id32;
-            var sourceFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{steamId32}\\{Data.Settings.Steam.AppIds[game]}");
+            var gameId = Data.Settings.Steam.AppIds.Value.First(game => game.Value == gameName).Key;
+            var sourceFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{steamId32}\\" + $"{gameId}");
             var destFolder = sourceFolder + "_switcher_backup";
             if (Directory.Exists(destFolder)) Directory.Delete(destFolder, true);
             SteamSwitcherFuncs.BackupGameDataFolder(sourceFolder);

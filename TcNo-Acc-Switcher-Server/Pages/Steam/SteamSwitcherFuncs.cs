@@ -18,6 +18,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
@@ -177,6 +178,84 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_VdfLast"], Lang["Toast_PartiallyFixed"], "toastarea", 10000);
             return userAccounts;
+        }
+        /// <summary>
+        /// Fetches the names corresponding to each game ID from Valve's API.
+        /// </summary>
+        /// <returns></returns>
+        private static string FetchSteamAppsData()
+        {
+            try
+            {
+                var client = new HttpClient();
+                var response = client.Send(new HttpRequestMessage(HttpMethod.Get,
+                    "https://api.steampowered.com/ISteamApps/GetAppList/v2/"));
+                var responseReader = new StreamReader(response.Content.ReadAsStream());
+                return responseReader.ReadToEnd();
+            }
+            catch (Exception e)
+            {
+                Globals.DebugWriteLine($@"Error downloading Steam app list: {e.ToString()}");
+                return "";
+            }
+        }
+        /// <summary>
+        /// Given a JSON string fetched from Valve's API, return a dictionary mapping game IDs to names.
+        /// </summary>
+        /// <param name="text">A JSON string matching Valve's API format</param>
+        /// <returns></returns>
+        private static Dictionary<string, string> ParseSteamAppsText(string text)
+        {
+            var appIds = new Dictionary<string, string>();
+            try
+            {
+                var json = JObject.Parse(text);
+                foreach (var app in json["applist"]["apps"])
+                {
+                    if (appIds.ContainsKey(app["appid"].Value<string>())) continue;
+                    appIds.Add(app["appid"].Value<string>(), app["name"].Value<string>());
+                }
+            }
+            catch (Exception e)
+            {
+                Globals.DebugWriteLine($@"Error parsing Steam app list: {e.ToString()}");
+            }
+            return appIds;
+        }
+        public static Dictionary<string, string> LoadAppNames()
+        {
+            var cacheFilePath = Path.Join(Globals.UserDataFolder, "app_ids_cache.json");
+            var appIds = new Dictionary<string, string>();
+            var gameList = Data.Settings.Steam.InstalledGames.Value;
+            try
+            {
+                // Check if all the IDs we need are in the cache, i.e. the user has not installed any new games.
+                if (File.Exists(cacheFilePath))
+                {
+                    var cachedAppIds = ParseSteamAppsText(File.ReadAllText(cacheFilePath));
+                    if (gameList.All(id => cachedAppIds.ContainsKey(id)))
+                    {
+                        return cachedAppIds;
+                    }
+                }
+                // If the cache is missing or incomplete, fetch app Ids from Steam's API
+                appIds =
+                    (from game in ParseSteamAppsText(FetchSteamAppsData())
+                        where gameList.Contains(game.Key)
+                        select game)
+                    .ToDictionary(game => game.Key, game => game.Value);
+                // Write the IDs of currently installed games to the cache
+                dynamic cacheObject = new System.Dynamic.ExpandoObject();
+                cacheObject.applist = new System.Dynamic.ExpandoObject();
+                cacheObject.applist.apps = (from app in appIds
+                    select new { appid = app.Key, name = app.Value }).ToArray();
+                File.WriteAllText(cacheFilePath, JObject.FromObject(cacheObject).ToString());
+            }
+            catch (Exception e)
+            {
+                Globals.DebugWriteLine($@"Error Loading names for Steam game IDs: {e.ToString()}");
+            }
+            return appIds;
         }
         public static void BackupGameDataFolder(string folder)
         {
