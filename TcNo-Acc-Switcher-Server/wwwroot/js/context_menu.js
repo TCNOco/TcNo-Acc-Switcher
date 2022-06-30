@@ -204,6 +204,97 @@ async function initContextMenu() {
     $(document).click(() => {
         $(".contextmenu").hide();
     });
+    
+    function addSearchAndPaging(ele, itemsPerPage) {
+        let pageCount = (visibleOnly = true) => {
+            const childCount = visibleOnly ? ele.querySelectorAll(':scope > li:not(.filteredItem)').length
+                : ele.querySelectorAll(':scope > li').length;
+            return Math.ceil( childCount / itemsPerPage);
+        };
+        let currentPage = 1;
+        if (pageCount(false) < 2) return;
+        
+        let paginationContainer = document.createElement("div");
+        paginationContainer.classList.add("paginationContainer");
+        let paginationDiv = document.createElement("div");
+        paginationDiv.classList.add("pagination");
+        paginationDiv.onclick = ((e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        let pageText = document.createElement("span");
+        pageText.innerText = `${currentPage} / ${pageCount()}`;
+
+        let searchInputItem = document.createElement("li");
+        searchInputItem.innerHTML = "<input type='text' placeholder='Search'></input>";
+        searchInputItem.onclick = (e => {
+            e.stopPropagation();
+        });
+
+        let updateButtons = () => {
+            const currentlyVisible = ele.querySelectorAll(':scope > li:not(:first-child):not(.filteredItem)').length;
+            if (currentPage === 1 || currentlyVisible <= 6)
+                backButton.style.visibility = "hidden";
+            else
+                backButton.style.visibility = "visible";
+            if (currentPage >= pageCount() || currentlyVisible <= 6)
+                forwardButton.style.visibility = "hidden";
+            else
+                forwardButton.style.visibility = "visible";
+        };
+        let updateVisibleElements = () => {
+            ele.querySelectorAll(':scope > li:not(:first-child):not(.filteredItem)').forEach((child, index) => {
+                if (Math.ceil((index + 1)/ itemsPerPage) === currentPage) {
+                    child.classList.remove('pagedOutItem');
+                }
+                else {
+                    child.classList.add('pagedOutItem');
+                }
+            });
+            const currentlyVisible = ele.querySelectorAll(':scope > li:not(:first-child):not(.filteredItem)').length;
+            pageText.innerText = currentlyVisible > 6 ? `${currentPage} / ${pageCount()}` : '';
+            updateButtons();
+        }
+        let navigate = (forward, event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (forward) currentPage = Math.min(currentPage + 1, pageCount());
+            else currentPage = Math.max(1, currentPage - 1);
+            pageText.innerText = `${currentPage} / ${pageCount().toString()}`;
+            updateVisibleElements();
+        };
+
+        let backButton = document.createElement("a");
+        backButton.innerText = "⬅️";
+        backButton.addEventListener("click", navigate.bind(null, false), false);
+
+
+        let forwardButton = document.createElement("a");
+        forwardButton.innerText = "➡️";
+        forwardButton.addEventListener("click", navigate.bind(null, true), false);
+
+        searchInputItem.querySelector('input').addEventListener('input', (event => {
+            currentPage = 1;
+            searchInputItem.parentElement.querySelectorAll(':scope > li:not(:first-child) > a').forEach(item => {
+                if (item.innerText.toLowerCase().includes(event.target.value.toLowerCase()))
+                    item.parentElement.classList.remove('filteredItem');
+                else item.parentElement.classList.add('filteredItem');
+            });
+            updateVisibleElements();
+        }));
+
+        ele.prepend(searchInputItem);
+        ele.appendChild(paginationContainer);
+        paginationContainer.appendChild(paginationDiv);
+        paginationDiv.appendChild(backButton);
+        paginationDiv.appendChild(pageText);
+        paginationDiv.appendChild(forwardButton);
+        updateVisibleElements();
+    }
+    document.querySelectorAll('ul.submenu').forEach(ele => {
+        addSearchAndPaging(ele, 6);
+    });
 };
 
 async function selectedItemChanged() {

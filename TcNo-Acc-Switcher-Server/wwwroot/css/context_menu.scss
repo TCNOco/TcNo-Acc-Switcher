@@ -15,6 +15,7 @@
     display: none;
     position: absolute;
     width: 15em;
+    height: 26em;
     margin: 0;
     padding: 0;
     border-radius: 0.2em;
@@ -61,6 +62,7 @@
         }
 
         > .submenu {
+            height: 26em;
             display: block;
             position: absolute;
             top: 0;
@@ -74,7 +76,6 @@
         }
     }
 }
-
 
 @keyframes expand {
   from {
@@ -90,16 +91,24 @@
   }
 }
 
+.filteredItem, .pagedOutItem {
+    display: none !important;
+}
 
+div.paginationContainer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
 
+div.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
 
-
-
-
-
-
-
-
-
-
-
+div.pagination span {
+    font-size: 1.5em;
+    color: white;
+    vertical-align: bottom;
+}
