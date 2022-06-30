@@ -148,7 +148,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 {
                     return SteamSettings.LastAccName;
                 }
-                    
+
                 if (getNumericId) return mostRecent.SteamId ?? "";
                 return mostRecent.AccName ?? "";
             }
@@ -195,7 +195,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
             catch (Exception e)
             {
-                Globals.DebugWriteLine($@"Error downloading Steam app list: {e.ToString()}");
+                Globals.DebugWriteLine($@"Error downloading Steam app list: {e}");
                 return "";
             }
         }
@@ -218,7 +218,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
             catch (Exception e)
             {
-                Globals.DebugWriteLine($@"Error parsing Steam app list: {e.ToString()}");
+                Globals.DebugWriteLine($@"Error parsing Steam app list: {e}");
             }
             return appIds;
         }
@@ -249,20 +249,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 cacheObject.applist = new System.Dynamic.ExpandoObject();
                 cacheObject.applist.apps = (from app in appIds
                     select new { appid = app.Key, name = app.Value }).ToArray();
-                File.WriteAllText(cacheFilePath, JObject.FromObject(cacheObject).ToString());
+                File.WriteAllText(cacheFilePath, JObject.FromObject(cacheObject).ToString(Newtonsoft.Json.Formatting.None));
             }
             catch (Exception e)
             {
-                Globals.DebugWriteLine($@"Error Loading names for Steam game IDs: {e.ToString()}");
+                Globals.DebugWriteLine($@"Error Loading names for Steam game IDs: {e}");
             }
             return appIds;
         }
-        public static void BackupGameDataFolder(string folder)
+        public static bool BackupGameDataFolder(string folder)
         {
             var backupFolder = folder + "_switcher_backup";
-            if (!Directory.Exists(folder)) return;
-            if (Directory.Exists(backupFolder)) return;
+            if (!Directory.Exists(folder) || Directory.Exists(backupFolder)) return false;
             Globals.CopyDirectory(folder, backupFolder, true);
+            return true;
         }
         public static List<string> LoadInstalledGames()
         {

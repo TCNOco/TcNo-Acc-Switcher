@@ -180,7 +180,7 @@ Toast_Steam_VacCleared: O status de VAC para contas foi limpo
 Toast_Steam_CantDeleteVacCache: Não foi possível excluir 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Não foi possível encontrar a pasta Steam\\userdata
 Toast_NoFindGameBackup: Não foi possível encontrar uma pasta de backup deste jogo para esta conta.
-Toast_GameBackupDone: Backup dos dados de jogo feito com sucesso.
+Toast_GameBackupDone: "Backup dos dados de jogo feito com sucesso: {folderLocation}"
 Toast_Steam_VdfLast: Foi possível carregar da vdf_last. Algumas contas podem estar faltando.
 Toast_PartiallyFixed: Parcialmente corrigida
 Toast_Steam_FailedLoginusers: Falha ao carregar steam/config/loginusers.vdf

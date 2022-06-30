@@ -234,9 +234,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     break;
             }
         }
-        public static readonly Lazy<List<string>> InstalledGames = 
+        public static readonly Lazy<List<string>> InstalledGames =
             new (SteamSwitcherFuncs.LoadInstalledGames);
-        public static readonly Lazy<Dictionary<string, string>> AppIds = 
+        public static readonly Lazy<Dictionary<string, string>> AppIds =
             new (SteamSwitcherFuncs.LoadAppNames);
 
         #endregion
@@ -348,15 +348,37 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 				{{""{Lang["Context_Steam_OpenUserdata"]}"": ""openUserdata(event)""}},
                 {{""{Lang["Forget"]}"": ""forget(event)""}},
                 {{""{Lang["Context_GameDataSubmenu"]}"": [");
-            foreach (var game in InstalledGames.Value)
+
+            SortedList<string, int> listOfGames = new();
+            List<int> gameIdsOnly = new();
+
+            foreach (var gameId in InstalledGames.Value)
+            {
+                var gameName = AppIds.Value.ContainsKey(gameId) ? AppIds.Value[gameId] : gameId;
+                if (gameName == gameId) gameIdsOnly.Add(int.Parse(gameId));
+                else listOfGames.Add(gameName, int.Parse(gameId));
+            }
+
+            foreach (var (gameName, gameId) in listOfGames)
             {
                 contextMenuJsonBuilder.Append($@"
-                {{""{AppIds.Value[game]}"": [
-                    {{""{Lang["Context_Game_CopySettingsFrom"]}"": ""CopySettingsFrom(event, '{AppIds.Value[game]}')""}},
-                    {{""{Lang["Context_Game_RestoreSettingsTo"]}"": ""RestoreSettingsTo(event, '{AppIds.Value[game]}')""}},
-                    {{""{Lang["Context_Game_BackupData"]}"": ""BackupGameData(event, '{AppIds.Value[game]}')""}},
+                {{""{gameName}"": [
+                    {{""{Lang["Context_Game_CopySettingsFrom"]}"": ""CopySettingsFrom(event, '{gameId}')""}},
+                    {{""{Lang["Context_Game_RestoreSettingsTo"]}"": ""RestoreSettingsTo(event, '{gameId}')""}},
+                    {{""{Lang["Context_Game_BackupData"]}"": ""BackupGameData(event, '{gameId}')""}},
                 ]}},");
             }
+
+            foreach (var gameId in gameIdsOnly)
+            {
+                contextMenuJsonBuilder.Append($@"
+                {{""{gameId}"": [
+                    {{""{Lang["Context_Game_CopySettingsFrom"]}"": ""CopySettingsFrom(event, '{gameId}')""}},
+                    {{""{Lang["Context_Game_RestoreSettingsTo"]}"": ""RestoreSettingsTo(event, '{gameId}')""}},
+                    {{""{Lang["Context_Game_BackupData"]}"": ""BackupGameData(event, '{gameId}')""}},
+                ]}},");
+            }
+
             contextMenuJsonBuilder.Append("\n]}]");
             ContextMenuJson = contextMenuJsonBuilder.ToString();
         }

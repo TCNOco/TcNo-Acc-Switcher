@@ -204,7 +204,7 @@ async function initContextMenu() {
     $(document).click(() => {
         $(".contextmenu").hide();
     });
-    
+
     function addSearchAndPaging(ele, itemsPerPage) {
         let pageCount = (visibleOnly = true) => {
             const childCount = visibleOnly ? ele.querySelectorAll(':scope > li:not(.filteredItem)').length
@@ -213,7 +213,7 @@ async function initContextMenu() {
         };
         let currentPage = 1;
         if (pageCount(false) < 2) return;
-        
+
         let paginationContainer = document.createElement("div");
         paginationContainer.classList.add("paginationContainer");
         let paginationDiv = document.createElement("div");
@@ -227,6 +227,7 @@ async function initContextMenu() {
         pageText.innerText = `${currentPage} / ${pageCount()}`;
 
         let searchInputItem = document.createElement("li");
+        searchInputItem.classList.add("contextSearch");
         searchInputItem.innerHTML = "<input type='text' placeholder='Search'></input>";
         searchInputItem.onclick = (e => {
             e.stopPropagation();
@@ -266,12 +267,12 @@ async function initContextMenu() {
         };
 
         let backButton = document.createElement("a");
-        backButton.innerText = "⬅️";
+        backButton.innerHTML = '<i class="fas fa-arrow-left"></i>';
         backButton.addEventListener("click", navigate.bind(null, false), false);
 
 
         let forwardButton = document.createElement("a");
-        forwardButton.innerText = "➡️";
+        forwardButton.innerHTML = '<i class="fas fa-arrow-right"></i>';
         forwardButton.addEventListener("click", navigate.bind(null, true), false);
 
         searchInputItem.querySelector('input').addEventListener('input', (event => {

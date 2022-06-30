@@ -15,7 +15,7 @@
     display: none;
     position: absolute;
     width: 15em;
-    height: 26em;
+    max-height: 26em;
     margin: 0;
     padding: 0;
     border-radius: 0.2em;
@@ -50,6 +50,75 @@
                 color: #FFFFFF !important;
             }
         }
+
+        .paginationContainer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            border-left: none;
+
+            .pagination {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                color: #fff;
+
+                a {
+                    width: 38px;
+                    text-align: center;
+
+                    &:hover {
+                        background: #1B2737;
+
+                        i {
+                            color: var(--accent);
+                        }
+                    }
+
+                    border-left: 0px solid var(--accent);
+                    transition: ease 0.075s;
+
+                    &:first-of-type:hover {
+                        transition: ease 0.075s;
+                        border-left: 2px solid var(--accent);
+                    }
+
+                    &:last-of-type:hover {
+                        transition: ease 0.075s;
+                        border-right: 2px solid var(--accent);
+                    }
+                }
+
+                span {
+                    border-bottom: 2px solid var(--accent);
+                }
+            }
+        }
+
+        .contextSearch {
+            border-left: 2px solid transparent;
+
+            &:hover {
+                border-left: 2px solid var(--accent);
+            }
+
+            input {
+                margin: 0;
+                padding: 10px;
+                width: 100%;
+
+                &:placeholder-shown {
+                    opacity: 0.8;
+                }
+            }
+        }
+    }
+
+    /* Only first submenu has shortenable names - for now (Game names). Evertyhing else wrap. */
+    .submenu1 > li > a {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
 
@@ -62,7 +131,6 @@
         }
 
         > .submenu {
-            height: 26em;
             display: block;
             position: absolute;
             top: 0;
@@ -93,22 +161,4 @@
 
 .filteredItem, .pagedOutItem {
     display: none !important;
-}
-
-div.paginationContainer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-}
-
-div.pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
-
-div.pagination span {
-    font-size: 1.5em;
-    color: white;
-    vertical-align: bottom;
 }

@@ -171,7 +171,7 @@ Toast_CantFindImage: Failed to find users' image.
 Toast_CantCreateShortcut: Can not create shortcut
 Toast_ShortcutCreated: Shortcut created!
 Toast_SettingsCopied: Settings successfully copied to current account.
-Toast_GameDataRestored: Successfully restored game data for this account. 
+Toast_GameDataRestored: Successfully restored game data for this account.
 Toast_NoValidSteamId: Unable to find a valid Steam ID.
 Toast_FailedUpdateCheck: Failed to check for updates
 Toast_UpdateVerifyFail: Can't verify updater files. Download latest version and replace files in your directory.
@@ -180,7 +180,7 @@ Toast_Steam_VacCleared: VAC status for accounts was cleared
 Toast_Steam_CantDeleteVacCache: Could not delete 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Could not find Steam\\userdata folder
 Toast_NoFindGameBackup: Unable to find backup game data folder for this account.
-Toast_GameBackupDone: Game data folder backed up successfully.
+Toast_GameBackupDone: "Game data folder backed up successfully: {folderLocation}"
 Toast_Steam_VdfLast: Was able to load from vdf_last. Some accounts may be missing.
 Toast_PartiallyFixed: Partially fixed
 Toast_Steam_FailedLoginusers: Failed to load steam/config/loginusers.vdf
@@ -217,6 +217,7 @@ Toast_FileCopyFail: Failed to copy files! See log for more details.
 Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
 Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
 Toast_FailedCreateIcon: Failed to create icon. See log for details.
+Toast_SameAccount: Cannot copy files to/from the same account. Try a different account, or see Wiki for more info.
 Tooltip_Restore: Click to select a 7z file, or drag it onto this button.
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
@@ -288,8 +289,8 @@ Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Open userdata
 Context_GameDataSubmenu: Game data
-Context_Game_CopySettingsFrom: Copy settings from this account
-Context_Game_RestoreSettingsTo: Restore game data from backup
+Context_Game_CopySettingsFrom: Copy settings to current
+Context_Game_RestoreSettingsTo: Restore game data
 Context_Game_BackupData: Backup game data
 Context_CopyOtherSubmenu: Copy other...
 Context_HidePlatform: Hide platform

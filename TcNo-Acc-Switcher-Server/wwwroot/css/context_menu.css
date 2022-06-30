@@ -1,4 +1,4 @@
-/* ReSharper disable CssNotResolved */
+﻿/* ReSharper disable CssNotResolved */
 /* Text selection styling */
 ::selection {
   color: #402B00;
@@ -15,12 +15,13 @@
   display: none;
   position: absolute;
   width: 15em;
-  height: 26em;
+  max-height: 26em;
   margin: 0;
   padding: 0;
   border-radius: 0.2em;
   list-style: none;
   z-index: 999999;
+  /* Only first submenu has shortenable names - for now (Game names). Evertyhing else wrap. */
 }
 .contextmenu li {
   border-left: 1em solid transparent;
@@ -47,6 +48,60 @@
 .contextmenu .submenu li a {
   color: #FFFFFF !important;
 }
+.contextmenu .submenu .paginationContainer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-left: none;
+}
+.contextmenu .submenu .paginationContainer .pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+}
+.contextmenu .submenu .paginationContainer .pagination a {
+  width: 38px;
+  text-align: center;
+  border-left: 0px solid var(--accent);
+  transition: ease 0.075s;
+}
+.contextmenu .submenu .paginationContainer .pagination a:hover {
+  background: #1B2737;
+}
+.contextmenu .submenu .paginationContainer .pagination a:hover i {
+  color: var(--accent);
+}
+.contextmenu .submenu .paginationContainer .pagination a:first-of-type:hover {
+  transition: ease 0.075s;
+  border-left: 2px solid var(--accent);
+}
+.contextmenu .submenu .paginationContainer .pagination a:last-of-type:hover {
+  transition: ease 0.075s;
+  border-right: 2px solid var(--accent);
+}
+.contextmenu .submenu .paginationContainer .pagination span {
+  border-bottom: 2px solid var(--accent);
+}
+.contextmenu .submenu .contextSearch {
+  border-left: 2px solid transparent;
+}
+.contextmenu .submenu .contextSearch:hover {
+  border-left: 2px solid var(--accent);
+}
+.contextmenu .submenu .contextSearch input {
+  margin: 0;
+  padding: 10px;
+  width: 100%;
+}
+.contextmenu .submenu .contextSearch input:placeholder-shown {
+  opacity: 0.8;
+}
+.contextmenu .submenu1 > li > a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .contextmenu li:hover {
   border-left: 2px solid #8BE9FD;
   background: #1B2737;
@@ -55,7 +110,6 @@
   color: #FFFFFF;
 }
 .contextmenu li:hover > .submenu {
-  height: 26em;
   display: block;
   position: absolute;
   top: 0;
@@ -82,22 +136,4 @@
 }
 .filteredItem, .pagedOutItem {
   display: none !important;
-}
-
-div.paginationContainer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-}
-
-div.pagination {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-
-div.pagination span {
-  font-size: 1.5em;
-  color: white;
-  vertical-align: bottom;
 }
