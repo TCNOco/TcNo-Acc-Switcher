@@ -13,17 +13,22 @@ async function initContextMenu() {
     if (getCurrentPage() === "") {
         group = "platform";
     }
+    if (getCurrentPage() === "Settings") {
+        group = "preview";
+    }
     $(`.${group}_list`).on("click", () => {
         $("input:checked").each((_, e) => {
             $(e).prop("checked", false);
         });
     });
 
-    if (group === "acc") {
+    if (group === "acc" || group === "preview") {
         // Ready accounts for double-click
-        $(".acc_list_item").dblclick((event) => {
-            swapTo(-1, event);
-        });
+        if (group === "acc") {
+            $(".acc_list_item").dblclick((event) => {
+                swapTo(-1, event);
+            });
+        }
 
         // Handle Left-clicks:
         $(".acc_list_item").click((e) => {
@@ -68,7 +73,7 @@ async function initContextMenu() {
 
     //Show contextmenu on Right-Click:
     $(`.${group}_list_item`).contextmenu((e) => {
-        if (group === "acc") {
+        if (group === "acc" || group === "preview") {
             // Select item that was right-clicked.
             $(e.currentTarget).children("input").click();
 
@@ -120,7 +125,7 @@ async function initContextMenu() {
 
     //Show contextmenu on Right-Click (platform shortcut):
     $(`#btnStartPlat`).contextmenu((e) => {
-        if (group === "acc") {
+        if (group === "acc" || group === "preview") {
             // Select item that was right-clicked.
             $(e.currentTarget).children("input").click();
 

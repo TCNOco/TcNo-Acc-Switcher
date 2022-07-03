@@ -6,7 +6,7 @@ ul.contextmenu,
 .rightContent,
 .infoWindow .rightContent {
   direction: rtl !important;
-  margin-left: 0;
+  margin-left: 0em;
   margin-right: 1em;
 }
 
@@ -20,7 +20,7 @@ ul.contextmenu,
 
 label {
   margin-right: 0.5em;
-  margin-left: 0;
+  margin-left: 0em;
 }
 
 .infoWindow .rightContent .linksList a svg {

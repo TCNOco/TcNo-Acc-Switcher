@@ -181,6 +181,13 @@ namespace TcNo_Acc_Switcher_Server.Data
               {{""{Lang["Context_CreateShortcut"]}"": ""createPlatformShortcut()""}},
               {{""{Lang["Context_ExportAccList"]}"": ""exportAllAccounts()""}}
             ]";
+        [JsonIgnore]
+        public static string PreviewContextMenu =>
+            Lang == null ? "" : $@"[
+              {{""{Lang["Context_HidePlatform"]}"": """"}},
+              {{""{Lang["Context_CreateShortcut"]}"": """"}},
+              {{""{Lang["Context_ExportAccList"]}"": """"}}
+            ]";
 
         [JSInvokable]
         public static async Task HidePlatform(string platform)

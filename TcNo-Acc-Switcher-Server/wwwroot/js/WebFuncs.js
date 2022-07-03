@@ -720,6 +720,11 @@ function Modal_RequestedLocated(found) {
 //}
 
 async function Modal_Finalise(platform, platformSettingsPath) {
+    if (window.location.href.includes("PreviewCss")) {
+        // Do nothing for CSS preview page.
+        return;
+    }
+
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
     $(".modalBG").fadeOut();
 
@@ -727,6 +732,11 @@ async function Modal_Finalise(platform, platformSettingsPath) {
 }
 
 async function Modal_Confirm(action, value) {
+    if (window.location.href.includes("PreviewCss")) {
+        // Do nothing for CSS preview page.
+        return;
+    }
+
     const success = await GetLang("Success");
     const promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value).then((r) => {
         if (r === "refresh") location.reload();
@@ -744,6 +754,11 @@ async function Modal_Confirm(action, value) {
 }
 
 async function Modal_FinaliseAccString(platform) {
+    if (window.location.href.includes("PreviewCss")) {
+        // Do nothing for CSS preview page.
+        return;
+    }
+
     // Supported: BASIC
     const raw = $("#CurrentAccountName").val();
     let name = raw;
@@ -767,12 +782,22 @@ function Modal_FinaliseBackground() {
 }
 
 function Modal_FinaliseUserDataFolder() {
+    if (window.location.href.includes("PreviewCss")) {
+        // Do nothing for CSS preview page.
+        return;
+    }
+
     const pathOrUrl = $("#FolderLocation").val();
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetUserData", pathOrUrl);
     $(".modalBG").fadeOut();
 }
 
 function Modal_FinaliseAccNameChange() {
+    if (window.location.href.includes("PreviewCss")) {
+        // Do nothing for CSS preview page.
+        return;
+    }
+
     const raw = $("#NewAccountName").val();
 	const name = (raw.indexOf("TCNO:") === -1 ? raw.replace(/[<>: \.\"\/\\|?*]/g, "-") : raw); // Clean string if not a command string.
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name, getCurrentPage());

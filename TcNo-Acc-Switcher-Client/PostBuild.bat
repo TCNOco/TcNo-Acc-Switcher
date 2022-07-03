@@ -171,6 +171,10 @@ copy /b/v/y CEF\vk_swiftshader.dll TcNo-Acc-Switcher\runtimes\win-x64\native\vk_
 copy /b/v/y CEF\chrome_elf.dll TcNo-Acc-Switcher\runtimes\win-x64\native\chrome_elf.dll
 copy /b/v/y CEF\CefSharp.BrowserSubprocess.Core.dll TcNo-Acc-Switcher\runtimes\win-x64\native\CefSharp.BrowserSubprocess.Core.dll
 
+REM create archive including CEF
+echo Creating .7z archive
+"%zip%" a -t7z -mmt24 -mx9  "TcNo-Acc-Switcher_and_CEF.7z" ".\TcNo-Acc-Switcher\*"
+
 REM Verifying file sign state
 
 cd %origDir%

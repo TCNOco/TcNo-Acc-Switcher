@@ -25,6 +25,8 @@ Button_Backup: Backup
 Button_BackupAll: Backup everything
 Button_Restore: Restore
 Button_OpenBackup: Open Backup Folder
+Button_Back: Back
+Button_RestartAdmin: Restart as Admin
 Settings_Shortcut: ' {platform} Switcher Desktop shortcut'
 Settings_Admin: Run {platform} as Admin
 Settings_ImageExpiry: 'Days before profile images expire:'
@@ -51,6 +53,7 @@ Settings_ShareStats: Share stats annoymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Share total switches
 Settings_ViewStats: View stats
+Preview: Preview
 Settings_ClearStats: Reset
 Settings_CurrentLocation: 'Current install location: {path}'
 Settings_CurrentDataLocation: 'Current user data location: {path}'
@@ -80,6 +83,9 @@ Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
 Settings_AutoStart: "Automatically start {platform} on account switch"
 Settings_NoPlatforms: There are currently no platforms enabled. Please tick optional platforms below to enable them, or uncheck disabled platforms.
 Settings_MinimizeOnSwitch: Minimize switcher on account switch
+PreviewCss: Preview CSS
+Settings_PreviewCss: This is the CSS preview page. You can view some elements that pop up in the program and see what they look like with your theme. This page is useful for those creating themes!
+Settings_PreviewCssHeader: CSS Preview Page
 Stats_Disabled: "Statistics collection is disabled."
 Stats_InDepth: In-depth statistics breakdown
 Stats_ShareEnabled: "These statistics are shared anonymously and will add to the total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">here</a>."
@@ -290,6 +296,7 @@ Context_Hide: Hide
 Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
 Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
 Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
+Title_Settings_TestCss: TcNo Account Switcher - Test CSS Styling
 Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - Text Editor
 Title_Settings: TcNo Account Switcher - Settings
@@ -439,3 +446,8 @@ Tooltip_CurrentAccount: You are currently logged into this account.
 Discord_Status: Currently switching accounts.
 Discord_StatusDetails: "Accounts Switched: {number}"
 Website: Website
+Preview_Platforms: Platforms preview
+Preview_Accounts: Accounts preview
+Preview_Notifications: Toast notifications preview
+Preview_Settings: Settings preview
+Preview_Modals: Modals preview

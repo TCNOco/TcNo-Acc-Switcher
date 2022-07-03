@@ -18,6 +18,9 @@
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
 @inject Lang Locale
+@inject NavigationManager NavManager
+@inject AppData AData
+@{ AData.SetActiveNavMan(NavManager); }
 
 <h1 class="SettingsHeader">@Locale["Settings_Header_AppWide"]</h1>
 
@@ -52,6 +55,7 @@
             }
         </ul>
     </div>
+    <button id="AppSett_TestCss" type="button" @onclick='() => NavManager.NavigateTo("/Settings/PreviewCss")'><span>@Locale["PreviewCss"]</span></button>
 </div>
 <div class="rowSetting listWithBars">
     <ul>
@@ -169,7 +173,7 @@
         </label>
     </div>
 }
-<div>
+<div class="rowSetting">
     <div class="form-check">
         <input class="form-check-input" type="checkbox" id="StreamerMode" @bind="AppSettings.StreamerModeEnabled"><label class="form-check-label" for="StreamerMode"></label>
     </div>

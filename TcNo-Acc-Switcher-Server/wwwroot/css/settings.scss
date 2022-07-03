@@ -1,0 +1,181 @@
+﻿/* ReSharper disable CssNotResolved */
+.toastarea {
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+}
+
+.container {
+    max-width: 100%;
+    overflow: visible;
+    color: white;
+}
+
+.SettingsHeader {
+    color: white;
+    font-weight: bold;
+    padding: 0.25em;
+    margin-bottom: 0.5em;
+}
+
+h1.SettingsHeader {
+    border-bottom: 2px solid var(--accent);
+}
+
+h2.SettingsHeader {
+    padding: 0.1em 0.5em;
+    margin-top: 0.5em;
+    border-bottom: 1px solid var(--accent);
+    width: fit-content;
+}
+
+.acc_list_actionbar > div .btn_login,
+.btn_close span { padding: 0.25em 5em; }
+
+div.form-text {
+    color: white;
+    font-size: 12px !important;
+}
+
+input[type=number],
+input[type=text],
+input[type=password] {
+    -moz-appearance: textfield;
+    display: inline-block;
+    margin: 0 0.5em 2px 0.5em;
+    padding: 0.5em;
+    border: 0;
+    border-bottom: none;
+    outline: 0;
+    background: #070A0D;
+    color: white;
+}
+
+input[type=number] { border-bottom: 2px solid #888; }
+
+input[type=number]:focus,
+input[type=text]:focus,
+input[type=password]:focus { border-bottom: 2px solid var(--accent); }
+
+input[type=number]::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+label { margin: 0 0.5em; }
+
+/* Checkbox */
+.form-check {
+    display: inline-block;
+    padding: 0;
+
+    label {
+        margin: 0;
+    }
+
+    label:nth-of-type(2) {
+        margin: 0 1rem 0 0.5rem;
+    }
+}
+
+input[type='checkbox'] {
+    opacity: 0;
+    z-index: -1;
+}
+
+input[type='checkbox'] + label {
+    display: inline-block;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    -moz-transition: 0.5s ease all;
+    -webkit-transition: 0.5s ease all;
+    border: 1px solid #6272A4;
+    background: none;
+    transition: 0.5s ease all;
+    vertical-align: middle;
+}
+
+input[type='checkbox']:checked + label {
+    border: 1px solid #6272A4;
+    background: var(--accent);
+}
+
+.settingsCol {
+    position: relative;
+
+    &:first-child {
+        margin-top: 1em;
+    }
+
+    .toastarea {
+        display: flex;
+        position: fixed;
+        top: 35px;
+        right: 16px;
+        bottom: auto;
+        flex-direction: column;
+        align-items: flex-end;
+        z-index: 5000;
+    }
+
+    .buttoncol {
+        position: relative;
+        width: 100%;
+        height: 3.6em;
+
+        :first-child {
+            left: 0;
+        }
+
+        :last-child {
+            right: 0;
+        }
+
+        button:focus {
+            box-shadow: none;
+        }
+
+        button:disabled, button[disabled] {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        button, .button {
+            position: absolute;
+            width: 49%;
+        }
+    }
+}
+
+
+.btn_close {
+    right: 0 !important;
+    left: unset !important;
+    width: 35% !important;
+}
+
+.col_close {
+    margin-top: 2em;
+    margin-bottom: 4em;
+}
+
+
+
+.preview_element {
+    margin: 1em 2.5%;
+    border: var(--accent) 1px solid;
+    position: relative;
+
+    .notification-container {
+        position: relative;
+        z-index: 10;
+    }
+
+    .SettingsHeader {
+        padding-top: 1em;
+    }
+}
