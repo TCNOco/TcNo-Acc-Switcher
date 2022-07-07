@@ -77,6 +77,10 @@ label {
   background: linear-gradient(90deg, #11181d, #0E1419 100%);
 }
 
+.previewMain .acc_list_actionbar {
+  position: unset;
+}
+
 /* Based on https://github.com/binaryfunt/electron-seamless-titlebar-tutorial */
 .headerbar {
   z-index: 5;

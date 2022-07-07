@@ -51,10 +51,10 @@
 
     <h2 class="SettingsHeader">@Locale["Preview_Platforms"]</h2>
     <div class="preview_element">
-        <ContextMenu ContextMenuString="@Data.Settings.Steam.ContextMenuJson" ContextMenuId="AccOrPlatList" />
+        <ContextMenu ContextMenuString="@Data.Settings.Basic.ContextMenuJson" ContextMenuId="AccOrPlatList" />
         <ContextMenu ContextMenuString="@Data.Settings.Basic.ContextMenuShortcutJson" ContextMenuId="Shortcuts" />
         <ContextMenu ContextMenuString="@Data.Settings.Basic.ContextMenuPlatformJson" ContextMenuId="Platform" />
-        <div class="programMain">
+        <div class="programMain previewMain">
             <div class="platformTable">
                 <div class="platform_list" aria-dropeffect="move">
                     <div class="platform_list_item preview_list_item" id="Steam" draggable="true" role="option" aria-grabbed="false">
@@ -85,7 +85,7 @@
 
 
     <h2 class="SettingsHeader">@Locale["Preview_Accounts"]</h2>
-    <div class="preview_element">
+    <div class="preview_element previewMain">
         <div id="acc_list" class="acc_list" style="grid-template-rows: repeat(auto-fill, 135px)" aria-dropeffect="move">
             <div class="acc_list_item preview_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false" title="" data-placement="right" data-original-title="You are currently logged into this account.">
                 <input type="radio" id="1234" displayname="Current Account" class="acc" name="accounts" username="1234" steamid64="1234" line1="testacc1" line2="Current Account" line3="1656860000" extraclasses="" onchange="selectedItemChanged()">

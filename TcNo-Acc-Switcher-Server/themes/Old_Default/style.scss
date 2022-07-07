@@ -13,48 +13,81 @@
 }
 
 // Main UI
-.headerbar, .resizeTopLeft, .resizeTop, .resizeTopRight, .resizeRight, .resizeBottomRight, .resizeBottom, .resizeBottomLeft, .resizeLeft {
+.headerbar,
+.resizeTopLeft,
+.resizeTop,
+.resizeTopRight,
+.resizeRight,
+.resizeBottomRight,
+.resizeBottom,
+.resizeBottomLeft,
+.resizeLeft {
     background: #14151E;
 }
-body, .programMain, .mainblock {
+
+body,
+.programMain,
+.mainblock {
     background: url(../img/noise.png), linear-gradient( 90deg, #28293A, #28293A 100%);
 }
-#window-controls, #btnBack {
+
+#window-controls,
+#btnBack {
     background: #14151E;
 }
-#window-controls button:hover, #btnBack:hover {
+
+#window-controls button:hover,
+#btnBack:hover {
     background: rgba(255,255,255,0.1);
 }
+
 .acc_list_actionbar {
     background: #222;
 }
-.shortcuts, .shortcutDropdown, .shortcuts.expandShortcuts {
+
+.shortcuts,
+.shortcutDropdown,
+.shortcuts.expandShortcuts {
     background: #222;
     border-color: #888;
 }
+
 .shortcutPlaceholder {
     background: #222;
 }
+
 ::-webkit-scrollbar-track {
     background: #1F202D;
 }
+
 ::-webkit-scrollbar-thumb {
     border-radius: 0.3em;
     background: #515164;
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
-button:active, button:target, .button:active, .button:target {
+
+button:active,
+button:target,
+.button:active,
+.button:target {
     background-color: #222 !important;
 }
-.infoWindow .rightContent .linksList a:hover, .fancyLink:hover {
+
+.infoWindow .rightContent .linksList a:hover,
+.fancyLink:hover {
     color: #FFDD00;
 }
-.infoWindow .rightContent .linksList a:active, .fancyLink:active {
+
+.infoWindow .rightContent .linksList a:active,
+.fancyLink:active {
     color: #CC7700;
 }
-a:not([href]):not([class]), a:not([href]):not([class]):hover {
+
+a:not([href]):not([class]),
+a:not([href]):not([class]):hover {
     color: #FFAA00;
 }
 
@@ -83,15 +116,20 @@ a:not([href]):not([class]), a:not([href]):not([class]):hover {
 .modalFG {
     background: #14151E;
 }
+
 #modal_contents {
     background: #28293A;
 }
-#modal_contents input[type=text], #modal_contents input[type=password] {
+
+#modal_contents input[type=text],
+#modal_contents input[type=password] {
     background: #212529
 }
+
 #window-title-modal {
     background: #14151E;
 }
+
 #modal_contents button {
     border-color: #888;
     background: #333;
@@ -109,7 +147,8 @@ a:not([href]):not([class]), a:not([href]):not([class]):hover {
 .pathPicker {
     background: #212529;
 
-    span.selected-path, spanselected-path::before {
+    span.selected-path,
+    spanselected-path::before {
         background-color: var(--accentDarker);
     }
 
@@ -123,7 +162,8 @@ input[type='checkbox'] + label {
     border: 1px solid #FFF;
 }
 
-button, .button {
+button,
+.button {
     background: #333;
     border-color: #888;
 
@@ -137,32 +177,39 @@ button, .button {
         border-color: #888;
     }
 }
+
 .dropdown {
     color: white;
 
     &-menu {
         background: #333;
         border-color: #888;
+        -webkit-box-shadow: 0 0 15px 3px rgba(0, 0, 0, .50);
+        -moz-box-shadow: 0 0 15px 3px rgba(0,0,0,.50);
+        box-shadow: 0 0 15px 3px rgba(0, 0, 0, .50);
     }
 
     &-item:hover {
         background: #222 !important;
     }
 }
-.dropdown-menu {
-    -webkit-box-shadow: 0 0 15px 3px rgba(0, 0, 0, .50);
-    -moz-box-shadow: 0 0 15px 3px rgba(0,0,0,.50);
-    box-shadow: 0 0 15px 3px rgba(0, 0, 0, .50);
-}
+
 .show > .dropdown-toggle {
     background: #222 !important;
 }
-input[type=number], input[type=text], input[type=password] {
+
+input[type=number],
+input[type=text],
+input[type=password],
+textarea {
     background: #212529;
 }
-#modal_contents input[type=text], #modal_contents input[type=password] {
+
+#modal_contents input[type=text],
+#modal_contents input[type=password] {
     background: #212529 !important;
 }
+
 div.clearingRight {
     background: #222;
 }
@@ -171,16 +218,18 @@ div.clearingRight {
 .contextmenu {
     background: #14151E;
 
-    li a {
-        color: #B0BEC5;
-    }
+    li {
+        &:hover {
+            border-left: 2px solid #364E6E;
+            background: #1B2737;
 
-    li:hover {
-        border-left: 2px solid #364E6E;
-        background: #1B2737;
+            .submenu {
+                background: #14151E;
+            }
+        }
 
-        .submenu {
-            background: #14151E;
+        a {
+            color: #B0BEC5;
         }
     }
 }

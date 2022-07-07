@@ -49,7 +49,8 @@ button:active,
   border-color: var(--accent) !important;
 }
 
-#btnStartPlat, #shortcutDropdownBtn, .shortcutDropdown #btnOpenShortcutFolder {
+#btnStartPlat, #shortcutDropdownBtn,
+.shortcutDropdown #btnOpenShortcutFolder {
     min-width: 48px;
     min-height: 48px;
     max-width: 48px;
@@ -60,7 +61,12 @@ button:active,
     right: -50px;
 }
 
-.shortcuts button, .shortcuts .button, .shortcuts .shortcutPlaceholder, .shortcutDropdown button, .shortcutDropdown .button, .shortcutDropdown .shortcutPlaceholder {
+.shortcuts button,
+.shortcuts .button,
+.shortcuts .shortcutPlaceholder,
+.shortcutDropdown button,
+.shortcutDropdown .button,
+.shortcutDropdown .shortcutPlaceholder {
     min-width: 40px;
     min-height: 40px;
     max-width: 40px;
@@ -76,7 +82,8 @@ button:active,
     background: #131313;
 }
 
-.shortcuts, .shortcutDropdown {
+.shortcuts,
+.shortcutDropdown {
     border-radius: 0.5rem;
     background: #131313;
     max-width: 262px;
@@ -84,10 +91,6 @@ button:active,
 
 .shortcuts {
     border: .1em solid transparent;
-}
-
-.HasContextMenu, .footerIcoSettings, .footerIcoQuestion, .forgottenList, .forgottenListActions, .submenu1, .submenu2 {
-    /* Set so the compiler/editor doesn't complain about unknown CSS classes */
 }
 
 .shortcutDropdown, .shortcuts.expandShortcuts {
@@ -251,9 +254,10 @@ use.icoGlass {
 }
 
 #modal_contents input[type="text"],
-#modal_contents input[type="password"] {
-  background: #131313 !important;
-  border-radius: 0.5rem;
+#modal_contents input[type="password"],
+textarea {
+    background: #131313 !important;
+    border-radius: 0.5rem;
 }
 
 #modal_contents {
@@ -308,6 +312,7 @@ use.icoGlass {
     background-color: #484848 !important;
   }
 }
+
 button#select_location,
 button#LocateProgramExe,
 .folder_indicator_bg.notfound {
@@ -402,13 +407,14 @@ button#LocateProgramExe,
 
 label.acc {
     height: 101.9%;
+
+    &.currentAcc {
+        border-color: var(--accent);
+        border-style: dashed;
+        border-radius: 0.8rem;
+    }
 }
 
-label.acc.currentAcc {
-    border-color: var(--accent);
-    border-style: dashed;
-    border-radius: 0.8rem;
-}
 input.acc:checked + label.acc.currentAcc {
     border-color: var(--accent);
     border-style: solid;
@@ -436,6 +442,7 @@ input.acc:checked + label.acc {
     transform: translate(-50%, -40%);
     opacity: 0.8;
   }
+
   100% {
     transform: translate(-50%, -50%);
     opacity: 1;
