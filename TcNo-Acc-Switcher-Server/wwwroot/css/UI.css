@@ -376,6 +376,8 @@ button .caret, .button .caret {
   min-width: 36px;
   min-height: 36px;
   max-height: 260px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .shortcutDropdown #btnOpenShortcutFolder {
   position: absolute;

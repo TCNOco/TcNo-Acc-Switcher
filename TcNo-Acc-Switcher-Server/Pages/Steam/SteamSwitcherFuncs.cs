@@ -188,6 +188,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns></returns>
         private static string FetchSteamAppsData()
         {
+            // TODO: Copy the GitHub repo that downloads the latest apps, and shares as XML and CSV. Then remove those, and replace it with compressing with 7-zip. Download the latest 7-zip archive here, decompress then read. It takes literally ~1.5MB instead of ~8MB. HUGE saving for super slow internet.
             try
             {
                 var client = new HttpClient();
@@ -241,12 +242,26 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                         return cachedAppIds;
                     }
                 }
+
+                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_DownloadingAppIds"], renderTo: "toastarea", duration: 20000);
+
                 // If the cache is missing or incomplete, fetch app Ids from Steam's API
                 appIds =
                     (from game in ParseSteamAppsText(FetchSteamAppsData())
                         where gameList.Contains(game.Key)
                         select game)
                     .ToDictionary(game => game.Key, game => game.Value);
+
+                // Add any missing games as just the appid. These can include games/apps not on steam (developer Steam accounts), or otherwise removed games from Steam.
+                if (appIds.Count != gameList.Count)
+                {
+                    foreach (var g in (from game in gameList where !appIds.ContainsKey(game) select game))
+                    {
+                        appIds.Add(g, g);
+                    }
+                }
+
+
                 // Write the IDs of currently installed games to the cache
                 dynamic cacheObject = new System.Dynamic.ExpandoObject();
                 cacheObject.applist = new System.Dynamic.ExpandoObject();

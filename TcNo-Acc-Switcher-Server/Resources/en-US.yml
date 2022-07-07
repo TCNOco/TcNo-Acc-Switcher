@@ -225,7 +225,7 @@ Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json.
 Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
 Toast_FailedCreateIcon: Failed to create icon. See log for details.
 Toast_SameAccount: Cannot copy files to/from the same account. Try a different account, or see Wiki for more info.
-Tooltip_Restore: Click to select a 7z file, or drag it onto this button.
+Toast_Steam_DownloadingAppIds: Downloading Steam AppId list...
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
@@ -457,6 +457,7 @@ Tooltip_BackupAll: Backup ALL config files/folders, including images and other l
 Tooltip_ClosingMethod: "Combined is best. Close attempts to close directly through a close function and TaskKill uses CMD (Best if combined doesn't work)"
 Tooltip_StartingMethod: "Default is the best. Direct has no control over admin level or UAC. It will start as the same level (or higher - but not lower) than this account switcher"
 Tooltip_CurrentAccount: You are currently logged into this account.
+Tooltip_Restore: Click to select a 7z file, or drag it onto this button.
 Discord_Status: Currently switching accounts.
 Discord_StatusDetails: "Accounts Switched: {number}"
 Website: Website

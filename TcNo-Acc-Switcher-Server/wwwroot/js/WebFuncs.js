@@ -945,6 +945,13 @@ function sDropdownReposition() {
     const btnPos = btn[0].getBoundingClientRect();
     $("#shortcutDropdown").css({ top: btnPos.top - drop.height() - btn.height() - 16, left: btnPos.left + 16 - (drop.width() / 2) });
 
+    // If overflowing - Widen by scrollbar width to prevent weird overflow gap on side
+    if (checkOverflow($("#shortcutDropdown")[0]) && $(".shortcutDropdown")[0].style.minWidth === '') {
+        let scrollbarWidth = ($("#shortcutDropdown")[0].offsetWidth - $("#shortcutDropdown")[0].clientWidth);
+        let computedStyle = window.getComputedStyle($(".HasContextMenu")[0]);
+        let margin = parseInt(computedStyle.marginLeft) + parseInt(computedStyle.marginRight);
+        $("#shortcutDropdown").css({ minWidth: $("#shortcutDropdown").width() + scrollbarWidth + margin});
+    }
 }
 
 function sDropdownInit() {
@@ -971,6 +978,22 @@ function sDropdownInit() {
         });
     });
 }
+
+// https://stackoverflow.com/a/143889
+function checkOverflow(el) {
+    var curOverflow = el.style.overflow;
+
+    if (!curOverflow || curOverflow === "visible")
+        el.style.overflow = "hidden";
+
+    var isOverflowing = el.clientWidth < el.scrollWidth
+        || el.clientHeight < el.scrollHeight;
+
+    el.style.overflow = curOverflow;
+
+    return isOverflowing;
+}
+
 function shortcutDropdownBtnClick() {
     if (!sDropdownOpen) {
         sDropdownInit();
