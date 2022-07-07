@@ -37,6 +37,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         [JSInvokable]
         public static Task<bool> GetBasicForgetAcc() => Task.FromResult(BasicSettings.ForgetAccountEnabled);
 
+        [JSInvokable]
+        public static Task<string> GetBasicNotes(string id) => Task.FromResult(BasicSettings.AccountNotes.GetValueOrDefault(id) ?? "");
+
+        [JSInvokable]
+        public static void SetBasicNotes(string id, string note)
+        {
+            BasicSettings.AccountNotes[id] = note;
+            BasicSettings.SaveSettings();
+        }
+
         #region Account IDs
 
         public static Dictionary<string, string> AccountIds;
@@ -121,6 +131,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             NativeFuncs.RefreshTrayArea();
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             AppStats.IncrementSwitches(CurrentPlatform.SafeName);
+
+            _ = AppData.InvokeVoidAsync("showNoteTooltips");
 
             try
             {

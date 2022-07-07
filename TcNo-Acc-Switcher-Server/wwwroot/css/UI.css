@@ -457,3 +457,7 @@ button .caret, .button .caret {
   color: var(--accent) !important;
   background-color: #0E1419;
 }
+
+.tooltip-inner {
+  white-space: pre-wrap;
+}

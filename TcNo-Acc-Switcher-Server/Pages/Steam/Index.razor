@@ -105,6 +105,8 @@
         if (!firstRender) return;
         _ = AppData.InvokeVoidAsync("initCopyHotKey");
 
+        _ = AppData.InvokeVoidAsync("showNoteTooltips");
+
         var curAcc = SteamSwitcherFuncs.GetCurrentAccountId();
         if (curAcc != "") _ = AppData.InvokeVoidAsync("highlightCurrentAccount", curAcc);
 

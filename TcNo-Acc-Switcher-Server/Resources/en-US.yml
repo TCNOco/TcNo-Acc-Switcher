@@ -242,6 +242,7 @@ Modal_Title_AddNew: Add new {platform} account
 Modal_Title_Background: Set a background image
 Modal_Title_Userdata: Set the user data folder
 Modal_Title_Stats: Your statistics
+Modal_Title_AccountNotes: "Account Notes for: {accountName}"
 Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
 Modal_SetBackground_Button: Set background
 Modal_SetBackground_ChooseImage: Choose local image
@@ -408,10 +409,12 @@ ThemeSyntaxAnd: "A syntax error was encountered (more details below)! AND:"
 ThemesNotFound: "Could not find \"themes\" folder in TcNo Account Switcher's directory. This (especially the 'Dracula_Cyan' folder) is required for this software to run.\nYou can run the Updater in the \"updater\" folder to verify files, and restore these missing files."
 Yes: "Yes"
 No: "No"
+Save: Save
 NoDefault: No (Default)
 Ok: "OK"
 Forget: Forget
 Notice: Notice
+Notes: Notes
 Error: Error
 ErrorDetails: "ERROR: {ex}"
 Failed: Failed

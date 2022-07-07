@@ -303,7 +303,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
               {{""{Lang["Context_BNet_GetRAnk"]}"": ""refetchRank()""}},
               {{""{Lang["Context_CreateShortcut"]}"": ""createShortcut()""}},
               {{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
-              {{""{Lang["Forget"]}"": ""forget(event)""}}
+              {{""{Lang["Forget"]}"": ""forget(event)""}},
+			  {{""{Lang["Notes"]}"": ""showNotes(event)""}}
             ]";
         }
         #endregion

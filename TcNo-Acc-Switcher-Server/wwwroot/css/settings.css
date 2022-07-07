@@ -41,7 +41,8 @@ div.form-text {
 
 input[type=number],
 input[type=text],
-input[type=password] {
+input[type=password],
+textarea {
   -moz-appearance: textfield;
   display: inline-block;
   margin: 0 0.5em 2px 0.5em;
@@ -53,13 +54,19 @@ input[type=password] {
   color: white;
 }
 
+textarea {
+  border-bottom: 2px solid transparent;
+  resize: both;
+}
+
 input[type=number] {
   border-bottom: 2px solid #888;
 }
 
 input[type=number]:focus,
 input[type=text]:focus,
-input[type=password]:focus {
+input[type=password]:focus,
+textarea:focus {
   border-bottom: 2px solid var(--accent);
 }
 

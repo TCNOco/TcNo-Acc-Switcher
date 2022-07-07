@@ -351,6 +351,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 				{{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
 				{{""{Lang["Context_Steam_OpenUserdata"]}"": ""openUserdata(event)""}},
                 {{""{Lang["Forget"]}"": ""forget(event)""}},
+				{{""{Lang["Notes"]}"": ""showNotes(event)""}},
                 {{""{Lang["Context_GameDataSubmenu"]}"": [");
 
             SortedList<string, int> listOfGames = new();

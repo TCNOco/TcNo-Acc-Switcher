@@ -297,6 +297,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             AppStats.IncrementSwitches("BattleNet");
 
+            _ = AppData.InvokeVoidAsync("showNoteTooltips");
+
             try
             {
                 BattleNetSettings.LastAccName = email;
@@ -315,6 +317,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         /// <returns></returns>
         [JSInvokable]
         public static Task<bool> GetBattleNetForgetAcc() => Task.FromResult(BattleNetSettings.ForgetAccountEnabled);
+
+        [JSInvokable]
+        public static Task<string> GetBattleNetNotes(string id) => Task.FromResult(BattleNetSettings.AccountNotes.GetValueOrDefault(id) ?? "");
+
+        [JSInvokable]
+        public static void SetBattleNetNotes(string id, string note)
+        {
+            BattleNetSettings.AccountNotes[id] = note;
+            BattleNetSettings.SaveSettings();
+        }
 
         /// <summary>
         /// Changes an accounts name on the TcNo Account Switcher

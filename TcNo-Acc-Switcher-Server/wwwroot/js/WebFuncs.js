@@ -66,7 +66,22 @@ async function forget(e) {
         else Modal_Confirm(`AcceptForget${getCurrentPage()}Acc:${reqId}`, true);
     });
     _ = await promise;
+}
 
+// Show the Notes modal for selected account
+async function showNotes(e) {
+    e.preventDefault();
+    showModal(`notes:${$(selectedElem).attr("id")}`);
+}
+
+// Get and return note text for the requested account
+async function getAccNotes(accId) {
+    var accNotes = "";
+    const promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}Notes`, accId).then((r) => {
+        accNotes = r;
+    });
+    _ = await promise;
+    return accNotes;
 }
 
 // STOP IGNORING BATTLENET ACCOUNTS
@@ -187,7 +202,7 @@ function CopySettingsFrom(e, game) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopySettingsFrom", steamId64, game);
 }
 
-// Restores a game's userdata folder from 'backup' 
+// Restores a game's userdata folder from 'backup'
 function RestoreSettingsTo(e, game) {
     if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
@@ -490,13 +505,36 @@ async function showModal(modaltype) {
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">${header + message}
             <div class="YesNo">
-		        <button type="button" id="modal_true" onclick="Modal_Confirm('${action}', true)"><span>${yes
-            }</span></button>
-		        <button type="button" id="modal_false" onclick="Modal_Confirm('${action}', false)"><span>${no
-            }</span></button>
+		        <button type="button" id="modal_true" onclick="Modal_Confirm('${action}', true)"><span>${yes}</span></button>
+		        <button type="button" id="modal_false" onclick="Modal_Confirm('${action}', false)"><span>${no}</span></button>
             </div>
         </div>
         </div>`);
+    } else if (modaltype.startsWith("notes:")) {
+        // USAGE: "notes:accId"
+        // GOAL: Display previously set accNotes, and upon SAVE click, save the new notes.
+        let accId = modaltype.slice(6);
+        if (!getSelected()) return;
+
+        $("#modalTitle").text(await GetLangSub("Modal_Title_AccountNotes", { accountName: selected.attr("displayname") }));
+        const save = await GetLang("Save"),
+            cancel = await GetLang("Button_Cancel");
+
+        var notes = await getAccNotes(accId);
+
+        $("#modal_contents").empty();
+        $("#modal_contents").append(`<div class="infoWindow">
+        <div class="fullWidthContent">
+            <textarea id="accNotes">${notes}</textarea>
+
+            <div class="YesNo">
+		        <button type="button" id="modal_true" onclick="Modal_SaveNotes('${accId}')"><span>${save}</span></button>
+		        <button type="button" id="modal_false" onclick="$('.modalBG').fadeOut();"><span>${cancel}</span></button>
+            </div>
+        </div>
+        </div>`);
+
+
     } else if (modaltype.startsWith("notice:")) {
         // USAGE: "notice:<prompt>
         // GOAL: Runs function when OK clicked.
@@ -833,6 +871,12 @@ function Modal_FinaliseAccNameChange() {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name, getCurrentPage());
 }
 
+async function Modal_SaveNotes(accId) {
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Set${getCurrentPage()}Notes`, accId, $('#accNotes').val()).then((r) => {
+        location.reload(true);
+    });
+}
+
 var appendDelay = 100; // Milliseconds
 var recentlyAppend = false;
 var pendingQueue = {};
@@ -1009,23 +1053,12 @@ async function initCopyHotKey() {
     });
 }
 
-async function highlightCurrentAccount(curAcc) {
-    // Remove existing highlighted elements, if any.
-    $(".currentAcc").each((_, e) => {
-        var j = $(e);
-        j.removeClass("currentAcc");
-        j.parent().removeAttr("title").removeAttr("data-original-title").removeAttr("data-placement");
-    });
-
-    // Start adding classes
-    const toastCopied = await GetLang("Tooltip_CurrentAccount");
-    const parentEl = $(`[for='${curAcc}']`).addClass("currentAcc").parent();
-    parentEl.attr("title", toastCopied);
-
+// Figures out the best place for a tooltip and returns that location
+// el MUST BE A JS VARIABLE
+function getBestOffset(el) {
     // Because this can be placed below, and go off the screen.. Figure out where the element is.
-    const parentPos = parentEl[0].getBoundingClientRect();
-    const parentHeight = parentEl.height();
-    const parentWidth = parentEl.width();
+    const parentPos = el[0].getBoundingClientRect();
+    const parentWidth = el.width();
 
     const parentLeft = parentPos.left;
     const parentRight = parentLeft + parentWidth;
@@ -1035,9 +1068,35 @@ async function highlightCurrentAccount(curAcc) {
     // Too close to sides -- Basically 1 account gap
     if (parentLeft < 100) bestOffset = "right";
     else if (screen.width - parentRight < 100) bestOffset = "left";
-    parentEl.attr("data-placement", bestOffset);
+    return bestOffset;
+}
+
+async function highlightCurrentAccount(curAcc) {
+    // Remove existing highlighted elements, if any.
+    $(".currentAcc").each((_, e) => {
+        var j = $(e);
+        j.removeClass("currentAcc");
+        j.parent().removeAttr("title").removeAttr("data-original-title").removeAttr("data-placement");
+    });
+
+    // Start adding classes
+    const tooltip = await GetLang("Tooltip_CurrentAccount");
+    const parentEl = $(`[for='${curAcc}']`).addClass("currentAcc").parent();
+    parentEl.attr("title", tooltip);
+    parentEl.attr("data-placement", getBestOffset(parentEl));
 
     initTooltips();
+}
+
+async function showNoteTooltips() {
+    $(".acc_note").toArray().forEach((e) => {
+        var j = $(e);
+        var note = j.text();
+        var parentEl = j.parent().parent();
+        parentEl.removeAttr("title").removeAttr("data-original-title").removeAttr("data-placement");
+        parentEl.attr("title", note);
+        parentEl.attr("data-placement", getBestOffset(parentEl));
+    }).then(initTooltips());
 }
 
 async function restartAsAdmin(args = "") {

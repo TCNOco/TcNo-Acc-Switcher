@@ -159,7 +159,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
 				{{""{Lang["Context_CreateShortcut"]}"": ""createShortcut()""}},
 				{{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
-				{{""{Lang["Forget"]}"": ""forget(event)""}}
+				{{""{Lang["Forget"]}"": ""forget(event)""}},
+				{{""{Lang["Notes"]}"": ""showNotes(event)""}}
             ]";
 
             ContextMenuShortcutJson = $@"[

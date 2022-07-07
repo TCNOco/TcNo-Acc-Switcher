@@ -137,18 +137,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 Index.Steamuser mostRecent = null;
                 foreach (var su in AppData.SteamUsers)
                 {
-                    var last = 0;
-                    int.TryParse(su.LastLogin, out last);
+                    int.TryParse(su.LastLogin, out var last);
 
-                    var recent = 0;
-                    int.TryParse(mostRecent?.LastLogin, out recent);
+                    int.TryParse(mostRecent?.LastLogin, out var recent);
 
                     if (mostRecent == null || last > recent)
                         mostRecent = su;
                 }
 
-                var mrTimestamp = 0;
-                int.TryParse(mostRecent.LastLogin, out mrTimestamp);
+                int.TryParse(mostRecent.LastLogin, out var mrTimestamp);
 
                 if (SteamSettings.LastAccTimestamp > mrTimestamp)
                 {
@@ -803,6 +800,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns></returns>
         [JSInvokable]
         public static Task<bool> GetSteamForgetAcc() => Task.FromResult(SteamSettings.ForgetAccountEnabled);
+
+        [JSInvokable]
+        public static Task<string> GetSteamNotes(string id) => Task.FromResult(SteamSettings.AccountNotes.GetValueOrDefault(id) ?? "");
+
+        [JSInvokable]
+        public static void SetSteamNotes(string id, string note)
+        {
+            SteamSettings.AccountNotes[id] = note;
+            SteamSettings.SaveSettings();
+        }
+
 
         /// <summary>
         /// Remove requested account from loginusers.vdf

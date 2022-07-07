@@ -55,6 +55,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="BuildWebCompiler2022" Version="1.14.8" />
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
     <PackageReference Include="Gameloop.Vdf" Version="0.6.2" />
     <PackageReference Include="Gameloop.Vdf.JsonConverter" Version="0.2.1" />
