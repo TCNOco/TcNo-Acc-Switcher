@@ -93,6 +93,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ClosingMethod", Order = 6)] private string _closingMethod = "";
         [JsonProperty("StartingMethod", Order = 7)] private string _startingMethod = "";
         [JsonProperty("AutoStart", Order = 8)] private bool _autoStart = true;
+        [JsonProperty("ShowShortNotes", Order = 9)] private bool _showShortNotes = true;
+        [JsonProperty("AccountNotes", Order = 10)] private Dictionary<string, string> _accountNotes = new();
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private string _contextMenuJson = "[]";
         [JsonIgnore] private string _contextMenuShortcutJson = "[]";
@@ -121,6 +123,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static int TrayAccNumber { get => Instance._trayAccNumber; set => Instance._trayAccNumber = value; }
         public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
         public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
+        public static bool ShowShortNotes { get => Instance._showShortNotes; set => Instance._showShortNotes = value; }
+        public static Dictionary<string, string> AccountNotes { get => Instance._accountNotes; set => Instance._accountNotes = value; }
         public static string ClosingMethod
         {
             get

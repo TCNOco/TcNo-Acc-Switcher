@@ -104,6 +104,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             {
                 if (!File.Exists(Path.Join(BattleNetSettings.ImagePath, $"{acc.Email}.png"))) _ = DownloadImage(acc.Email);
                 var username = acc.BTag == null ? acc.Email : acc.BTag.Contains('#') ? acc.BTag.Split("#")[0] : acc.BTag;
+
+                var note = "";
+                if (BattleNetSettings.ShowShortNotes && BattleNetSettings.AccountNotes.ContainsKey(acc.Email))
+                {
+                    note = $"\r\n<p class=\"acc_note\">{BattleNetSettings.AccountNotes[acc.Email]}</p>";
+                }
+
                 var element =
                     $"<div class=\"acc_list_item\" data-toggle=\"tooltip\"><input type=\"radio\" id=\"{acc.Email}\" Username=\"{username}\" DisplayName=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                     $"<label for=\"{acc.Email}\" class=\"acc\">\r\n" +
@@ -125,7 +132,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     }
                 }
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
-                _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element + "</div>");
+                _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element + note + "</div>");
             }
 
             GenericFunctions.FinaliseAccountList(); // Init context menu & Sorting

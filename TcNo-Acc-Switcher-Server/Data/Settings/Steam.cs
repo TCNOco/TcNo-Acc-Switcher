@@ -88,6 +88,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static string GetShortcutImagePath(string gameShortcutName) =>
             Path.Join(GetShortcutImageFolder, PlatformFuncs.RemoveShortcutExt(gameShortcutName) + ".png");
         public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
+        public static bool ShowShortNotes { get => Instance._showShortNotes; set => Instance._showShortNotes = value; }
+        public static Dictionary<string, string> AccountNotes { get => Instance._accountNotes; set => Instance._accountNotes = value; }
         public static string ClosingMethod { get => Instance._closingMethod; set => Instance._closingMethod = value; }
         public static string StartingMethod { get => Instance._startingMethod; set => Instance._startingMethod = value; }
         private static string GetShortcutImageFolder => "img\\shortcuts\\Steam\\";
@@ -250,6 +252,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ClosingMethod", Order = 14)] private string _closingMethod = "TaskKill";
         [JsonProperty("StartingMethod", Order = 15)] private string _startingMethod = "Default";
         [JsonProperty("AutoStart", Order = 16)] private bool _autoStart = true;
+        [JsonProperty("ShowShortNotes", Order = 17)] private bool _showShortNotes = true;
+        [JsonProperty("AccountNotes", Order = 18)] private Dictionary<string, string> _accountNotes = new();
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private string _contextMenuJson = "[]";
         [JsonIgnore] private int _lastAccTimestamp = 0;

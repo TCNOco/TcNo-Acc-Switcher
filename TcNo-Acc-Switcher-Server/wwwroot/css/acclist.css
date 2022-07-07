@@ -32,13 +32,18 @@
   .acc_list_item > * {
     pointer-events: none;
   }
+    .acc_list_item .acc_note {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-.placeHolderAcc {
-  width: 100px;
-  height: 135px;
-  border: 2px dashed #039CBF;
-  background: #13222f;
-}
+    .placeHolderAcc {
+        width: 100px;
+        height: 135px;
+        border: 2px dashed #039CBF;
+        background: #13222f;
+    }
 
 .placeHolderPlat {
     border: 2px dashed #039CBF;

@@ -100,6 +100,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
                 var extraClasses = (SteamSettings.ShowVac && va.Vac ? " status_vac" : "") + (SteamSettings.ShowLimited && va.Ltd ? " status_limited" : "");
 
+                var note = "";
+                if (SteamSettings.ShowShortNotes && SteamSettings.AccountNotes.ContainsKey(ua.SteamId))
+                {
+                    note = $"\r\n<p class=\"acc_note\">{SteamSettings.AccountNotes[ua.SteamId]}</p>";
+                }
+
                 var element =
                     $"<div class=\"acc_list_item\" data-toggle=\"tooltip\"><input type=\"radio\" id=\"{ua.SteamId}\" DisplayName=\"{GeneralFuncs.EscapeText(GetName(ua))}\" class=\"acc\" name=\"accounts\" Username=\"{ua.AccName}\" SteamId64=\"{ua.SteamId}\" Line1=\"{GeneralFuncs.EscapeText(ua.AccName)}\" Line2=\"{GeneralFuncs.EscapeText(GetName(ua))}\" Line3=\"{GeneralFuncs.EscapeText(ua.LastLogin)}\" ExtraClasses=\"{extraClasses}\" onchange=\"selectedItemChanged()\" />\r\n" +
                     $"<label for=\"{ua.AccName}\" class=\"acc {extraClasses}\">\r\n" +
@@ -107,7 +113,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     (SteamSettings.ShowAccUsername ? $"<p class=\"streamerCensor\">{ua.AccName}</p>\r\n" : "") +
                     $"<h6>{GeneralFuncs.EscapeText(GetName(ua))}</h6>\r\n" +
                     $"<p class=\"streamerCensor steamId\">{ua.SteamId}</p>\r\n" +
-                    $"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p></label></div>\r\n";
+                    $"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>{note}</label></div>\r\n";
 
                 _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
             }
