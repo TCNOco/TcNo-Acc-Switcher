@@ -177,6 +177,36 @@ function swapTo(request, e) {
     else DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}WithReq`, selected.attr("id"), request);
 }
 
+// Copies a game's folder from one userdata directory to another
+function CopySettingsFrom(e, game) {
+    if (e !== undefined && e !== null) e.preventDefault();
+    if (!getSelected()) return;
+    if (!game) return;
+    const steamId64 = selected.attr("id");
+    console.log("Copying settings");
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopySettingsFrom", steamId64, game);
+}
+
+// Restores a game's userdata folder from 'backup' 
+function RestoreSettingsTo(e, game) {
+    if (e !== undefined && e !== null) e.preventDefault();
+    if (!getSelected()) return;
+    if (!game) return;
+    const steamId64 = selected.attr("id");
+    console.log("Restoring settings from backup");
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RestoreSettingsTo", steamId64, game);
+}
+
+//  Manually backup a game's userdata folder
+function BackupGameData(e, game) {
+    if (e !== undefined && e !== null) e.preventDefault();
+    if (!getSelected()) return;
+    if (!game) return;
+    const steamId64 = selected.attr("id");
+    console.log("Backing up settings");
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BackupGameData", steamId64, game);
+}
+
 // Swapping accounts
 async function changeImage(e) {
     if (e !== undefined && e !== null) e.preventDefault();

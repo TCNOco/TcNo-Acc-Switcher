@@ -18,6 +18,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
@@ -127,7 +128,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// This relies on Steam updating loginusers.vdf. It could go out of sync assuming it's not updated reliably. There is likely a better way to do this.
         /// I am avoiding using the Steam API because it's another DLL to include, but is the next best thing - I assume.
         /// </summary>
-        public static string GetCurrentAccountId()
+        public static string GetCurrentAccountId(bool getNumericId = false)
         {
             Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.GetCurrentAccountId]");
             try
@@ -150,8 +151,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 int.TryParse(mostRecent.LastLogin, out mrTimestamp);
 
                 if (SteamSettings.LastAccTimestamp > mrTimestamp)
+                {
                     return SteamSettings.LastAccName;
+                }
 
+                if (getNumericId) return mostRecent.SteamId ?? "";
                 return mostRecent.AccName ?? "";
             }
             catch (Exception)
@@ -181,7 +185,112 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_VdfLast"], Lang["Toast_PartiallyFixed"], "toastarea", 10000);
             return userAccounts;
         }
-
+        /// <summary>
+        /// Fetches the names corresponding to each game ID from Valve's API.
+        /// </summary>
+        /// <returns></returns>
+        private static string FetchSteamAppsData()
+        {
+            try
+            {
+                var client = new HttpClient();
+                var response = client.Send(new HttpRequestMessage(HttpMethod.Get,
+                    "https://api.steampowered.com/ISteamApps/GetAppList/v2/"));
+                var responseReader = new StreamReader(response.Content.ReadAsStream());
+                return responseReader.ReadToEnd();
+            }
+            catch (Exception e)
+            {
+                Globals.DebugWriteLine($@"Error downloading Steam app list: {e}");
+                return "";
+            }
+        }
+        /// <summary>
+        /// Given a JSON string fetched from Valve's API, return a dictionary mapping game IDs to names.
+        /// </summary>
+        /// <param name="text">A JSON string matching Valve's API format</param>
+        /// <returns></returns>
+        private static Dictionary<string, string> ParseSteamAppsText(string text)
+        {
+            var appIds = new Dictionary<string, string>();
+            try
+            {
+                var json = JObject.Parse(text);
+                foreach (var app in json["applist"]["apps"])
+                {
+                    if (appIds.ContainsKey(app["appid"].Value<string>())) continue;
+                    appIds.Add(app["appid"].Value<string>(), app["name"].Value<string>());
+                }
+            }
+            catch (Exception e)
+            {
+                Globals.DebugWriteLine($@"Error parsing Steam app list: {e}");
+            }
+            return appIds;
+        }
+        public static Dictionary<string, string> LoadAppNames()
+        {
+            var cacheFilePath = Path.Join(Globals.UserDataFolder, "app_ids_cache.json");
+            var appIds = new Dictionary<string, string>();
+            var gameList = Data.Settings.Steam.InstalledGames.Value;
+            try
+            {
+                // Check if all the IDs we need are in the cache, i.e. the user has not installed any new games.
+                if (File.Exists(cacheFilePath))
+                {
+                    var cachedAppIds = ParseSteamAppsText(File.ReadAllText(cacheFilePath));
+                    if (gameList.All(id => cachedAppIds.ContainsKey(id)))
+                    {
+                        return cachedAppIds;
+                    }
+                }
+                // If the cache is missing or incomplete, fetch app Ids from Steam's API
+                appIds =
+                    (from game in ParseSteamAppsText(FetchSteamAppsData())
+                        where gameList.Contains(game.Key)
+                        select game)
+                    .ToDictionary(game => game.Key, game => game.Value);
+                // Write the IDs of currently installed games to the cache
+                dynamic cacheObject = new System.Dynamic.ExpandoObject();
+                cacheObject.applist = new System.Dynamic.ExpandoObject();
+                cacheObject.applist.apps = (from app in appIds
+                    select new { appid = app.Key, name = app.Value }).ToArray();
+                File.WriteAllText(cacheFilePath, JObject.FromObject(cacheObject).ToString(Newtonsoft.Json.Formatting.None));
+            }
+            catch (Exception e)
+            {
+                Globals.DebugWriteLine($@"Error Loading names for Steam game IDs: {e}");
+            }
+            return appIds;
+        }
+        public static bool BackupGameDataFolder(string folder)
+        {
+            var backupFolder = folder + "_switcher_backup";
+            if (!Directory.Exists(folder) || Directory.Exists(backupFolder)) return false;
+            Globals.CopyDirectory(folder, backupFolder, true);
+            return true;
+        }
+        public static List<string> LoadInstalledGames()
+        {
+            List<string> gameIds;
+            try
+            {
+                var libraryFile = Path.Join(Data.Settings.Steam.FolderPath, "\\steamapps\\libraryfolders.vdf");
+                var libraryVdf = VdfConvert.Deserialize(File.ReadAllText(libraryFile));
+                var library = new JObject { libraryVdf.ToJson() };
+                gameIds = library["libraryfolders"]
+                    .SelectMany(folder => (folder.First["apps"] as JObject)
+                        .Properties()
+                        .Select(p => p.Name))
+                    .ToList();
+            }
+            catch (Exception e)
+            {
+                Globals.WriteToLog("ERROR: Could not fetch Steam game library.\nDetails: " + e);
+                gameIds = new List<string>();
+            }
+            return gameIds;
+        }
         private static bool LoadFromVdf(string vdf, out List<Index.Steamuser> userAccounts)
         {
             userAccounts = new List<Index.Steamuser>();

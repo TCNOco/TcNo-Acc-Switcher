@@ -170,12 +170,17 @@ Toast_AddAccountsFirstTitle: Nenhuma conta salva
 Toast_CantFindImage: Falha ao encontrar imagem dos usuários.
 Toast_CantCreateShortcut: Não é possível criar um atalho
 Toast_ShortcutCreated: Atalho criado!
+Toast_SettingsCopied: Configurações copiadas para conta com sucesso.
+Toast_GameDataRestored: Configurações de jogo restauradas com successo para esta conta.
+Toast_NoValidSteamId: Erro ao tentar encontrar um ID Steam válido.
 Toast_FailedUpdateCheck: Não foi possível verificar se há atualizações
 Toast_UpdateVerifyFail: Não foi possível verificar os arquivos do atualizador. Baixe a versão mais recente e substitua os arquivos no seu diretório.
 Toast_StartedGame: Iniciado em {program}
 Toast_Steam_VacCleared: O status de VAC para contas foi limpo
 Toast_Steam_CantDeleteVacCache: Não foi possível excluir 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Não foi possível encontrar a pasta Steam\\userdata
+Toast_NoFindGameBackup: Não foi possível encontrar uma pasta de backup deste jogo para esta conta.
+Toast_GameBackupDone: "Backup dos dados de jogo feito com sucesso: {folderLocation}"
 Toast_Steam_VdfLast: Foi possível carregar da vdf_last. Algumas contas podem estar faltando.
 Toast_PartiallyFixed: Parcialmente corrigida
 Toast_Steam_FailedLoginusers: Falha ao carregar steam/config/loginusers.vdf
@@ -282,6 +287,10 @@ Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Abrir dados do usuário
+Context_GameDataSubmenu: Dados de jogos
+Context_Game_CopySettingsFrom: Copiar configurações dessa conta
+Context_Game_RestoreSettingsTo: Restaurar configurações de jogo de um backup
+Context_Game_BackupData: Realizar backup de dados do jogo
 Context_CopyOtherSubmenu: Copiar outro...
 Context_HidePlatform: Ocultar plataforma
 Context_ExportAccList: Exportar lista de conta

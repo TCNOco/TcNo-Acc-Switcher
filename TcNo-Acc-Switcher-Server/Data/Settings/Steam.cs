@@ -22,6 +22,7 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
+using TcNo_Acc_Switcher_Server.Pages.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
@@ -29,7 +30,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
     {
         private static readonly Lang Lang = Lang.Instance;
         private static Steam _instance = new();
-
         private static readonly object LockObj = new();
         public static Steam Instance
         {
@@ -61,8 +61,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     {
                         SaveSettings();
                     }
-
                     LoadBasicCompat(); // Add missing features in templated platforms system.
+                    // Forces lazy values to be instantiated
+                    _ = InstalledGames.Value;
+                    _ = AppIds.Value;
                     InitLang();
                     AppData.InitializedClasses.Steam = true;
 
@@ -234,6 +236,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     break;
             }
         }
+        public static readonly Lazy<List<string>> InstalledGames =
+            new (SteamSwitcherFuncs.LoadInstalledGames);
+        public static readonly Lazy<Dictionary<string, string>> AppIds =
+            new (SteamSwitcherFuncs.LoadAppNames);
+
         #endregion
 
         // Variables
@@ -298,7 +305,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         public static void InitLang()
         {
-            ContextMenuJson = $@"[
+            var contextMenuJsonBuilder = new System.Text.StringBuilder();
+            contextMenuJsonBuilder.Append($@"[
 				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
 				{{""{Lang["Context_LoginAsSubmenu"]}"": [
 					{{""{Lang["Invisible"]}"": ""swapTo(7, event)""}},
@@ -342,8 +350,41 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 				]}},
 				{{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
 				{{""{Lang["Context_Steam_OpenUserdata"]}"": ""openUserdata(event)""}},
-				{{""{Lang["Forget"]}"": ""forget(event)""}}
-            ]";
+                {{""{Lang["Forget"]}"": ""forget(event)""}},
+                {{""{Lang["Context_GameDataSubmenu"]}"": [");
+
+            SortedList<string, int> listOfGames = new();
+            List<int> gameIdsOnly = new();
+
+            foreach (var gameId in InstalledGames.Value)
+            {
+                var gameName = AppIds.Value.ContainsKey(gameId) ? AppIds.Value[gameId] : gameId;
+                if (gameName == gameId) gameIdsOnly.Add(int.Parse(gameId));
+                else listOfGames.Add(gameName, int.Parse(gameId));
+            }
+
+            foreach (var (gameName, gameId) in listOfGames)
+            {
+                contextMenuJsonBuilder.Append($@"
+                {{""{gameName}"": [
+                    {{""{Lang["Context_Game_CopySettingsFrom"]}"": ""CopySettingsFrom(event, '{gameId}')""}},
+                    {{""{Lang["Context_Game_RestoreSettingsTo"]}"": ""RestoreSettingsTo(event, '{gameId}')""}},
+                    {{""{Lang["Context_Game_BackupData"]}"": ""BackupGameData(event, '{gameId}')""}},
+                ]}},");
+            }
+
+            foreach (var gameId in gameIdsOnly)
+            {
+                contextMenuJsonBuilder.Append($@"
+                {{""{gameId}"": [
+                    {{""{Lang["Context_Game_CopySettingsFrom"]}"": ""CopySettingsFrom(event, '{gameId}')""}},
+                    {{""{Lang["Context_Game_RestoreSettingsTo"]}"": ""RestoreSettingsTo(event, '{gameId}')""}},
+                    {{""{Lang["Context_Game_BackupData"]}"": ""BackupGameData(event, '{gameId}')""}},
+                ]}},");
+            }
+
+            contextMenuJsonBuilder.Append("\n]}]");
+            ContextMenuJson = contextMenuJsonBuilder.ToString();
         }
 
         public static string StateToString(int state)

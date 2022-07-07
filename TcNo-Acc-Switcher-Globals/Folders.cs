@@ -139,6 +139,28 @@ namespace TcNo_Acc_Switcher_Globals
             var r = new Regex($"[{Regex.Escape(regexSearch)}]");
             return r.Replace(f, "");
         }
+        // Adapted from: https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories?
+        public static void CopyDirectory(string sourceDir, string destinationDir, bool recursive)
+        {
+            var dir = new DirectoryInfo(sourceDir);
+            if (!dir.Exists) return;;
+
+            var dirs = dir.GetDirectories();
+            Directory.CreateDirectory(destinationDir);
+            foreach (var file in dir.GetFiles())
+            {
+                var targetFilePath = Path.Combine(destinationDir, file.Name);
+                file.CopyTo(targetFilePath);
+            }
+
+            if (!recursive) return;
+            foreach (var subDir in dirs)
+            {
+                var newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                CopyDirectory(subDir.FullName, newDestinationDir, true);
+            }
+        }
+
         #endregion
     }
 }
