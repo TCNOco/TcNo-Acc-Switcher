@@ -27,7 +27,7 @@
 <style>@(Steam.GetSteamIdCssBlock())</style>
 @inject Lang Locale
 
-<ContextMenu ContextMenuString="@Steam.ContextMenuJson" ContextMenuId="AccOrPlatList" />
+<ContextMenu ContextMenuString="@Steam.ContextMenuJson" ContextMenuId="AccOrPlatList" @ref="SteamContextMenu" />
 <ContextMenu ContextMenuString="@Basic.ContextMenuShortcutJson" ContextMenuId="Shortcuts" />
 <ContextMenu ContextMenuString="@Basic.ContextMenuPlatformJson" ContextMenuId="Platform" />
 <div id="acc_list" class="acc_list">
@@ -89,6 +89,7 @@
 
 @code
 {
+    public static ContextMenu SteamContextMenu;
     // This has to be here for NavManager.
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()
@@ -111,8 +112,5 @@
         if (curAcc != "") _ = AppData.InvokeVoidAsync("highlightCurrentAccount", curAcc);
 
         AppData.FirstLaunchCheck();
-
-        // Download Steam AppId list if not already.
-        if (!File.Exists(Steam.SteamAppsListPath)) _ = Task.Run(SteamSwitcherFuncs.DownloadSteamAppsData);
     }
 }

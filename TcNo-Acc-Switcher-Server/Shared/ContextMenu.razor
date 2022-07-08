@@ -11,12 +11,33 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+@inject IJSRuntime Js
 
-@code{
+@code {
+    private MarkupString _markup;
+    private string _contextMenuString;
     [Parameter]
-    public string ContextMenuString { get; set; }
+    public string ContextMenuString {
+        get => _contextMenuString;
+        set
+        {
+            _contextMenuString = value ?? "";
+            _markup = new MarkupString(GetContextMenu(_contextMenuString, ContextMenuId));
+            InvokeAsync(StateHasChanged);
+        } 
+    }
     [Parameter]
     public string ContextMenuId { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _markup = new MarkupString(GetContextMenu(ContextMenuString, ContextMenuId));
+        InvokeAsync(StateHasChanged);       
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await Js.InvokeVoidAsync("window.updatePaging", ContextMenuId);
+    }
 }
 
-@(new MarkupString(GetContextMenu(ContextMenuString, ContextMenuId)))
+@(_markup)

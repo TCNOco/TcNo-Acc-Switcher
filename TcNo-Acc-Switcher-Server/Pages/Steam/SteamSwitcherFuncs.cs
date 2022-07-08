@@ -207,7 +207,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 var data = await responseReader.ReadToEndAsync();
                 var file = new FileInfo(SteamSettings.SteamAppsListPath);
                 if (file.Exists) file.Delete();
-                _ = File.WriteAllTextAsync(file.FullName, data);
+                File.WriteAllText(file.FullName, data);
             }
             catch (Exception e)
             {
@@ -246,8 +246,30 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static Dictionary<string, string> LoadAppNames()
         {
             // Check if cached Steam AppId list is downloaded
-            // If not, skip. Download is handled on page load in razor.
-            if (!File.Exists(SteamSettings.SteamAppsListPath)) return new Dictionary<string, string>();
+            // If not, download in the background. The menu will be updated once the download finishes.
+            if (!File.Exists(SteamSettings.SteamAppsListPath))
+            {
+                // Download Steam AppId list if not already.
+                Task.Run(SteamSwitcherFuncs.DownloadSteamAppsData).ContinueWith(_ =>
+                {
+                    var names = LoadAppNames();
+                    try
+                    {
+                        foreach (var kv in names)
+                        {
+                            SteamSettings.AppIds.Value.Add(kv.Key, kv.Value);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // no real need to handle this exception
+                    }
+                    Data.Settings.Steam.InitLang();
+                    
+                    Index.SteamContextMenu.ContextMenuString = SteamSettings.ContextMenuJson;
+                });
+                return new Dictionary<string, string>();
+            }
 
             var cacheFilePath = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
             var appIds = new Dictionary<string, string>();
