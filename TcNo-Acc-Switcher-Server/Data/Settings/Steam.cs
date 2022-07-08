@@ -265,6 +265,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] private string _contextMenuJson = "[]";
         [JsonIgnore] private int _lastAccTimestamp = 0;
         [JsonIgnore] private string _lastAccName = "";
+        [JsonIgnore] public static readonly string SteamAppsListPath = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\steam_apps.json");
 
         public static int LastAccTimestamp { get => Instance._lastAccTimestamp; set => Instance._lastAccTimestamp = value; }
         public static string LastAccName { get => Instance._lastAccName; set => Instance._lastAccName = value; }
@@ -356,12 +357,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
             SortedList<string, int> listOfGames = new();
             List<int> gameIdsOnly = new();
-
-            foreach (var gameId in InstalledGames.Value)
+            if (AppIds.IsValueCreated)
             {
-                var gameName = AppIds.Value.ContainsKey(gameId) ? AppIds.Value[gameId] : gameId;
-                if (gameName == gameId) gameIdsOnly.Add(int.Parse(gameId));
-                else listOfGames.Add(gameName, int.Parse(gameId));
+                foreach (var gameId in InstalledGames.Value)
+                {
+                    var gameName = AppIds.Value.ContainsKey(gameId) ? AppIds.Value[gameId] : gameId;
+                    if (gameName == gameId) gameIdsOnly.Add(int.Parse(gameId));
+                    else listOfGames.Add(gameName, int.Parse(gameId));
+                }
             }
 
             foreach (var (gameName, gameId) in listOfGames)

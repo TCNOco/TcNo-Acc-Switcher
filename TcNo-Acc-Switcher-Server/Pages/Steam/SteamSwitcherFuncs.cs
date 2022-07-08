@@ -182,27 +182,39 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_VdfLast"], Lang["Toast_PartiallyFixed"], "toastarea", 10000);
             return userAccounts;
         }
+
         /// <summary>
         /// Fetches the names corresponding to each game ID from Valve's API.
         /// </summary>
-        /// <returns></returns>
         private static string FetchSteamAppsData()
         {
             // TODO: Copy the GitHub repo that downloads the latest apps, and shares as XML and CSV. Then remove those, and replace it with compressing with 7-zip. Download the latest 7-zip archive here, decompress then read. It takes literally ~1.5MB instead of ~8MB. HUGE saving for super slow internet.
+            return File.Exists(SteamSettings.SteamAppsListPath) ? File.ReadAllText(SteamSettings.SteamAppsListPath) : "";
+        }
+
+        private static async void DownloadSteamAppsData()
+        {
+            // TODO: Improve this... Maybe not a lazy list? instead something more simple...?
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_DownloadingAppIds"], renderTo: "toastarea", duration: 20000);
+
             try
             {
                 var client = new HttpClient();
                 var response = client.Send(new HttpRequestMessage(HttpMethod.Get,
                     "https://api.steampowered.com/ISteamApps/GetAppList/v2/"));
                 var responseReader = new StreamReader(response.Content.ReadAsStream());
-                return responseReader.ReadToEnd();
+                // Save to file
+                var data = await responseReader.ReadToEndAsync();
+                var file = new FileInfo(SteamSettings.SteamAppsListPath);
+                if (file.Exists) file.Delete();
+                _ = File.WriteAllTextAsync(file.FullName, data);
             }
             catch (Exception e)
             {
                 Globals.DebugWriteLine($@"Error downloading Steam app list: {e}");
-                return "";
             }
         }
+
         /// <summary>
         /// Given a JSON string fetched from Valve's API, return a dictionary mapping game IDs to names.
         /// </summary>
@@ -210,6 +222,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns></returns>
         private static Dictionary<string, string> ParseSteamAppsText(string text)
         {
+            if (text == "") return new Dictionary<string, string>();
+
             var appIds = new Dictionary<string, string>();
             try
             {
@@ -226,11 +240,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
             return appIds;
         }
+
         public static Dictionary<string, string> LoadAppNames()
         {
+            // Check if cached Steam AppId list is downloaded
+            if (!File.Exists(SteamSettings.SteamAppsListPath))
+            {
+                Task.Run(DownloadSteamAppsData);
+                return new Dictionary<string, string>();
+            }
+
+
             var cacheFilePath = Path.Join(Globals.UserDataFolder, "app_ids_cache.json");
             var appIds = new Dictionary<string, string>();
-            var gameList = Data.Settings.Steam.InstalledGames.Value;
+            var gameList = SteamSettings.InstalledGames.Value;
             try
             {
                 // Check if all the IDs we need are in the cache, i.e. the user has not installed any new games.
@@ -243,14 +266,15 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     }
                 }
 
-                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_DownloadingAppIds"], renderTo: "toastarea", duration: 20000);
-
                 // If the cache is missing or incomplete, fetch app Ids from Steam's API
                 appIds =
                     (from game in ParseSteamAppsText(FetchSteamAppsData())
                         where gameList.Contains(game.Key)
                         select game)
                     .ToDictionary(game => game.Key, game => game.Value);
+
+                // Downloading app list for the first time.
+                if (appIds.Count == 0) return appIds;
 
                 // Add any missing games as just the appid. These can include games/apps not on steam (developer Steam accounts), or otherwise removed games from Steam.
                 if (appIds.Count != gameList.Count)
