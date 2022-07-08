@@ -192,10 +192,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             return File.Exists(SteamSettings.SteamAppsListPath) ? File.ReadAllText(SteamSettings.SteamAppsListPath) : "";
         }
 
-        private static async void DownloadSteamAppsData()
+        public static async void DownloadSteamAppsData()
         {
             // TODO: Improve this... Maybe not a lazy list? instead something more simple...?
-            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_DownloadingAppIds"], renderTo: "toastarea", duration: 20000);
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_DownloadingAppIds"], renderTo: "toastarea");
 
             try
             {
@@ -213,6 +213,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 Globals.DebugWriteLine($@"Error downloading Steam app list: {e}");
             }
+
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_Steam_DownloadingAppIdsComplete"], renderTo: "toastarea");
         }
 
         /// <summary>
@@ -244,14 +246,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static Dictionary<string, string> LoadAppNames()
         {
             // Check if cached Steam AppId list is downloaded
-            if (!File.Exists(SteamSettings.SteamAppsListPath))
-            {
-                Task.Run(DownloadSteamAppsData);
-                return new Dictionary<string, string>();
-            }
+            // If not, skip. Download is handled on page load in razor.
+            if (!File.Exists(SteamSettings.SteamAppsListPath)) return new Dictionary<string, string>();
 
-
-            var cacheFilePath = Path.Join(Globals.UserDataFolder, "app_ids_cache.json");
+            var cacheFilePath = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
             var appIds = new Dictionary<string, string>();
             var gameList = SteamSettings.InstalledGames.Value;
             try
@@ -556,6 +554,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <param name="profileXml">User's profile XML string</param>
         private static void XmlGetVacLimitedStatus(ref VacStatus vs, XmlDocument profileXml)
         {
+            // TODO: Save all these in a JSON file... Maybe settings? (Or just a JSON file for all users?) That way individual files don't need to be read. Also wanted to improve this to use web api keys instead of the slower method?
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.XmlGetVacLimitedStatus] Get VAC/Limited status for account.");
             if (profileXml.DocumentElement == null) return;
             try

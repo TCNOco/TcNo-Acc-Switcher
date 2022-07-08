@@ -111,5 +111,8 @@
         if (curAcc != "") _ = AppData.InvokeVoidAsync("highlightCurrentAccount", curAcc);
 
         AppData.FirstLaunchCheck();
+
+        // Download Steam AppId list if not already.
+        if (!File.Exists(Steam.SteamAppsListPath)) _ = Task.Run(SteamSwitcherFuncs.DownloadSteamAppsData);
     }
 }
