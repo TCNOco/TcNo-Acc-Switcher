@@ -236,8 +236,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     break;
             }
         }
+
         public static readonly Lazy<List<string>> InstalledGames =
             new (SteamSwitcherFuncs.LoadInstalledGames);
+
         public static readonly Lazy<Dictionary<string, string>> AppIds =
             new (SteamSwitcherFuncs.LoadAppNames);
 
@@ -265,6 +267,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] private string _contextMenuJson = "[]";
         [JsonIgnore] private int _lastAccTimestamp = 0;
         [JsonIgnore] private string _lastAccName = "";
+        [JsonIgnore] public static readonly string SteamAppsListPath = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsFullListCache.json");
+        [JsonIgnore] public static readonly string SteamAppsUserCache = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
 
         public static int LastAccTimestamp { get => Instance._lastAccTimestamp; set => Instance._lastAccTimestamp = value; }
         public static string LastAccName { get => Instance._lastAccName; set => Instance._lastAccName = value; }
@@ -351,40 +355,44 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 				{{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
 				{{""{Lang["Context_Steam_OpenUserdata"]}"": ""openUserdata(event)""}},
                 {{""{Lang["Forget"]}"": ""forget(event)""}},
-				{{""{Lang["Notes"]}"": ""showNotes(event)""}},
-                {{""{Lang["Context_GameDataSubmenu"]}"": [");
+				{{""{Lang["Notes"]}"": ""showNotes(event)""}},");
 
-            SortedList<string, int> listOfGames = new();
-            List<int> gameIdsOnly = new();
-
-            foreach (var gameId in InstalledGames.Value)
+            if (File.Exists(SteamAppsUserCache) && AppIds.Value.Count > 0)
             {
-                var gameName = AppIds.Value.ContainsKey(gameId) ? AppIds.Value[gameId] : gameId;
-                if (gameName == gameId) gameIdsOnly.Add(int.Parse(gameId));
-                else listOfGames.Add(gameName, int.Parse(gameId));
-            }
+                contextMenuJsonBuilder.Append($@"{{""{Lang["Context_GameDataSubmenu"]}"": [");
 
-            foreach (var (gameName, gameId) in listOfGames)
-            {
-                contextMenuJsonBuilder.Append($@"
+                SortedList<string, int> listOfGames = new();
+                List<int> gameIdsOnly = new();
+                foreach (var gameId in InstalledGames.Value)
+                {
+                    var gameName = AppIds.Value.ContainsKey(gameId) ? AppIds.Value[gameId] : gameId;
+                    if (gameName == gameId) gameIdsOnly.Add(int.Parse(gameId));
+                    else listOfGames.Add(gameName, int.Parse(gameId));
+                }
+
+                foreach (var (gameName, gameId) in listOfGames)
+                {
+                    contextMenuJsonBuilder.Append($@"
                 {{""{gameName}"": [
                     {{""{Lang["Context_Game_CopySettingsFrom"]}"": ""CopySettingsFrom(event, '{gameId}')""}},
                     {{""{Lang["Context_Game_RestoreSettingsTo"]}"": ""RestoreSettingsTo(event, '{gameId}')""}},
                     {{""{Lang["Context_Game_BackupData"]}"": ""BackupGameData(event, '{gameId}')""}},
                 ]}},");
-            }
+                }
 
-            foreach (var gameId in gameIdsOnly)
-            {
-                contextMenuJsonBuilder.Append($@"
+                foreach (var gameId in gameIdsOnly)
+                {
+                    contextMenuJsonBuilder.Append($@"
                 {{""{gameId}"": [
                     {{""{Lang["Context_Game_CopySettingsFrom"]}"": ""CopySettingsFrom(event, '{gameId}')""}},
                     {{""{Lang["Context_Game_RestoreSettingsTo"]}"": ""RestoreSettingsTo(event, '{gameId}')""}},
                     {{""{Lang["Context_Game_BackupData"]}"": ""BackupGameData(event, '{gameId}')""}},
                 ]}},");
+                }
+                contextMenuJsonBuilder.Append("\n]}");
             }
 
-            contextMenuJsonBuilder.Append("\n]}]");
+            contextMenuJsonBuilder.Append("\n]");
             ContextMenuJson = contextMenuJsonBuilder.ToString();
         }
 

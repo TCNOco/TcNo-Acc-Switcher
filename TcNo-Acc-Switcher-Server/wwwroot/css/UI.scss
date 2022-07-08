@@ -551,3 +551,29 @@ button .caret, .button .caret {
 .tooltip-inner {
     white-space: pre-wrap;
 }
+
+.toastarea {
+    display: flex;
+    flex-flow: column;
+    flex-direction: column-reverse;
+}
+
+.notification {
+    align-self: end;
+}
+
+.accNotesContainer {
+    position: relative;
+
+    /*&::after {
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+
+        content: "\f424";
+        right: -18px;
+        bottom: -3px;
+        pointer-events: none;
+        position: absolute;
+        -webkit-transform: rotate(-90deg);
+    }*/
+}

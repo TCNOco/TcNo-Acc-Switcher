@@ -7,6 +7,11 @@
   background: #1E2934;
 }
 
+/* This originally seemed like a good idea, but I can't get it to show properly without showing ALL THE TIME, or with some weird border. Leaving this for now.
+::-webkit-resizer {
+    background: #1E2934;
+}*/
+
 ::-webkit-scrollbar-thumb {
   border-radius: 0.3em;
   background: #8BE9FD;

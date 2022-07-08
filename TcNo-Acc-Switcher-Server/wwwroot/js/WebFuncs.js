@@ -525,8 +525,9 @@ async function showModal(modaltype) {
         $("#modal_contents").empty();
         $("#modal_contents").append(`<div class="infoWindow">
         <div class="fullWidthContent">
-            <textarea id="accNotes">${notes}</textarea>
-
+            <div class="accNotesContainer">
+                <textarea id="accNotes">${notes}</textarea>
+            </div>
             <div class="YesNo">
 		        <button type="button" id="modal_true" onclick="Modal_SaveNotes('${accId}')"><span>${save}</span></button>
 		        <button type="button" id="modal_false" onclick="$('.modalBG').fadeOut();"><span>${cancel}</span></button>

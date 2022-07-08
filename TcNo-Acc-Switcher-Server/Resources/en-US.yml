@@ -226,6 +226,7 @@ Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. Th
 Toast_FailedCreateIcon: Failed to create icon. See log for details.
 Toast_SameAccount: Cannot copy files to/from the same account. Try a different account, or see Wiki for more info.
 Toast_Steam_DownloadingAppIds: Downloading Steam AppId list...
+Toast_Steam_DownloadingAppIdsComplete: Done downloading. Game data submenu will be available next launch.
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
