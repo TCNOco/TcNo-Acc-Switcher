@@ -119,6 +119,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     $"<h6>{GeneralFuncs.EscapeText(username)}</h6>\r\n";
                 if (BattleNetSettings.OverwatchMode && DateTime.Now - acc.LastTimeChecked < TimeSpan.FromDays(1))
                 {
+                    if (acc.OwPlayerLevel != 0)
+                    {
+                        element += $"<h6 class=\"battlenetLevel\"><sup>LVL</sup> {acc.OwPlayerLevel}</h6>\r\n";
+                    }
                     if (acc.OwTankSr != 0)
                     {
                         element += $"<h6 class=\"battlenetIcoOWTank\"><svg viewBox=\"0 0 60.325 60.325\" draggable=\"false\" class=\"battleNetIcon battlenetIcoOWTank\"><use href=\"img/icons/ico_BattleNetTankIcon.svg#icoBattleNetTank\"></use></svg> {acc.OwTankSr}<sup>SR</sup></h6>\r\n";
@@ -176,10 +180,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         {
             if (!BattleNetSettings.OverwatchMode) return;
             var accountFetched = false;
+            var alreadyNotified = false;
             foreach (var acc in BattleNetSettings.Accounts.Where(x => x.BTag != null))
             {
                 if (DateTime.Now - acc.LastTimeChecked <= TimeSpan.FromDays(1)) continue;
-                accountFetched = acc.FetchRank();
+                if (!alreadyNotified)
+                {
+                    alreadyNotified = true;
+                    _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BNet_LoadingStats"], renderTo: "toastarea");
+                }
+
+                accountFetched = accountFetched || acc.FetchRank();
             }
 
             if (!accountFetched) return;
@@ -368,6 +379,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             account.BTag = null;
             account.ImgUrl = null;
             account.LastTimeChecked = new DateTime();
+            account.OwPlayerLevel = 0;
             account.OwDpsSr = 0;
             account.OwSupportSr = 0;
             account.OwTankSr = 0;
@@ -385,8 +397,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static void RefetchRank(string email)
         {
             Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.DeleteBattleTag] accName:hidden");
-            if (BattleNetSettings.Accounts.First(x => x.Email == email).FetchRank()) AppData.ActiveNavMan?.NavigateTo(
+            if (BattleNetSettings.Accounts.First(x => x.Email == email).FetchRank())
+                AppData.ActiveNavMan?.NavigateTo(
                 $"/BattleNet/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_FetchedRank"])}", true);
+            BattleNetSettings.SaveAccounts();
         }
 
 

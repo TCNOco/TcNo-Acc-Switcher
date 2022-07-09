@@ -685,20 +685,30 @@ div.advancedClearingButtonCol .buttoncol {
 
 /* Modal icons */
 .modalIco {
-    &GitHub, &Networking, &Doc, &Discord {
+    &GitHub,
+    &Networking,
+    &Doc,
+   &Discord {
         fill: white;
     }
 }
 
 /* BattleNet icons */
 .battlenet {
-    &IcoOWTank, &IcoOWDamage, &IcoOWSupport {
+    &IcoOWTank,
+    &IcoOWDamage,
+    &IcoOWSupport {
         fill: white;
+    }
+
+    &Level sup {
+        top: -.1em;
     }
 }
 
 /* Footer icons */
-#btnSettings, #btnHelp {
+#btnSettings,
+#btnHelp {
     width: 36px;
     display: flex;
     align-items: center;

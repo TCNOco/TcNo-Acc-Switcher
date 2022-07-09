@@ -66,6 +66,7 @@ Settings_PickFolder: Pick {platform} folder
 Settings_OpenFolder: Open {platform} Folder
 Settings_ClearForgotten: Clear Forgotten
 Settings_ClearAccounts: Clear Accounts
+Settings_RefreshRanks: Refresh Ranks
 Settings_StreamerMode: Enable streamer mode
 Settings_ExitToTray: Exit minimises to tray
 Settings_DesktopShortcut: Desktop shortcut
@@ -162,11 +163,13 @@ Toast_RestartRequired: Restart to apply changes
 Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
 Toast_BNet_Private: "{BTag}'s profile is private"
 Toast_BNet_StatsFail: "Error trying to get stats for {BTag}"
+Toast_BNet_NotFound: Profile {BTag} not found
 Toast_BNet_CantSwapAccounts: Could not swap accounts (Battle.net.config file corrupt)
 Toast_BNet_CantLoadNotFound: Could not find Battle.net.config
 Toast_BNet_CantLoadEmpty: Could not load accounts file for Blizzard (No accounts found)
 Toast_BNet_CantLoadConfigCorrupt: Could not load accounts file for Blizzard (Battle.net.config file corrupt)
 Toast_BNet_NamePolicy: BattleTag did not match naming policy.
+Toast_BNet_LoadingStats: One or more profiles are refreshing stats. Please wait.
 Toast_ItemNotFound: "{item} was not found"
 Toast_DeletedTotal: "{files} of {totalFiles} deleted. Total: {totalSize}"
 Toast_CantChangeUsername: Could not change username

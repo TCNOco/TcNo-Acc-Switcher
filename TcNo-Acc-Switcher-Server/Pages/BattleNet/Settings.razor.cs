@@ -53,6 +53,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         public static void OverwatchToggle()
         {
             GeneralFuncs.ClearFolder("wwwroot\\img\\profiles\\battlenet\\");
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Done"], renderTo: "toastarea");
         }
 
         // BUTTON: Clear Forgotten
@@ -60,6 +61,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         {
             Data.Settings.BattleNet.IgnoredAccounts.Clear();
             Data.Settings.BattleNet.SaveAccounts();
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Done"], renderTo: "toastarea");
         }
 
         // BUTTON: Clear accounts
@@ -68,6 +70,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Data.Settings.BattleNet.Accounts = new List<BattleNetSwitcherBase.BattleNetUser>();
             Data.Settings.BattleNet.IgnoredAccounts = new List<string>();
             Data.Settings.BattleNet.SaveAccounts();
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Done"], renderTo: "toastarea");
+        }
+
+        // BUTTON: Refresh ranks
+        public static void RefreshRanks()
+        {
+            foreach (var battleNetUser in Data.Settings.BattleNet.Accounts)
+            {
+                battleNetUser.LastTimeChecked = DateTime.Now.AddDays(-7);
+            }
+
+            Data.Settings.BattleNet.SaveAccounts();
+            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Done"], renderTo: "toastarea");
         }
         #endregion
     }

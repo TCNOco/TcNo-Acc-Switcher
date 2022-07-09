@@ -364,8 +364,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (platform == "Steam")
             {
                 // Add headings and separator for programs like Excel
-                allAccountsTable.Add("SEP=,");
-                allAccountsTable.Add("Account name:,Community name:,SteamID:,VAC status:,Last login:,Saved profile image:");
+                allAccountsTable.Add($"SEP={s}");
+                allAccountsTable.Add($"Account name:{s}Community name:{s}SteamID:{s}VAC status:{s}Last login:{s}Saved profile image:");
 
                 AppData.SteamUsers = SteamSwitcherFuncs.GetSteamUsers(SteamSettings.LoginUsersVdf());
                 // Load cached ban info
@@ -389,8 +389,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             else if (platform == "BattleNet")
             {
                 // Add headings and separator for programs like Excel
-                allAccountsTable.Add("SEP=,");
-                allAccountsTable.Add("Email:,BattleTag:,Overwatch Support SR:,Overwatch DPS SR:,Overwatch Tank SR:,Saved profile image:");
+                allAccountsTable.Add($"SEP={s}");
+                allAccountsTable.Add($"Email:{s}BattleTag:{s}Overwatch Player Level:{s}Overwatch Support SR:{s}Overwatch DPS SR:{s}Overwatch Tank SR:{s}Saved profile image:");
 
                 await BattleNetSwitcherFuncs.LoadProfiles();
 
@@ -399,6 +399,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     var imagePath = Path.GetFullPath($"wwwroot\\img\\profiles\\battlenet\\{ba.Email}.png");
                     allAccountsTable.Add(ba.Email + s +
                                          ba.BTag + s +
+                                         (ba.OwPlayerLevel != 0 ? ba.OwPlayerLevel : "") + s +
                                          (ba.OwSupportSr != 0 ? ba.OwSupportSr : "") + s +
                                          (ba.OwDpsSr != 0 ? ba.OwDpsSr : "") + s +
                                          (ba.OwTankSr != 0 ? ba.OwTankSr : "") + s +
