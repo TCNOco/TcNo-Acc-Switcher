@@ -46,6 +46,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
             LoadImportantData();
             BattleNetSettings.LoadAccounts();
+
             // Check if accounts file exists
             if (!File.Exists(_battleNetRoaming + "\\Battle.net.config"))
             {
@@ -140,6 +141,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 await InitOverwatchMode();
 
             AppStats.SetAccountCount("BattleNet", BattleNetSettings.Accounts.Count);
+            BattleNetSettings.SaveAccounts();
         }
 
         public static string GetCurrentAccountId()
@@ -226,6 +228,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             Globals.DebugWriteLine(@"[Func:BattleNet\BattleNetSwitcherFuncs.SwapBattleNetAccounts] Swapping to: hidden.");
             LoadImportantData();
             if (BattleNetSettings.Accounts.Count == 0) BattleNetSettings.LoadAccounts();
+            BattleNetSettings.SaveAccounts();
 
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = "BattleNet" }]);
             if (!GeneralFuncs.CloseProcesses(BattleNetSettings.Processes, BattleNetSettings.ClosingMethod))
