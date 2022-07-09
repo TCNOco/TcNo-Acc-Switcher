@@ -264,6 +264,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ShowShortNotes", Order = 17)] private bool _showShortNotes = true;
         [JsonProperty("AccountNotes", Order = 18)] private Dictionary<string, string> _accountNotes = new();
         [JsonProperty("SteamWebApiKey", Order = 19)] private string _steamWebApiKey = "";
+        [JsonProperty("StartSilent", Order = 20)] private bool _startSilent;
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private string _contextMenuJson = "[]";
         [JsonIgnore] private int _lastAccTimestamp = 0;
@@ -301,6 +302,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
         public static string SteamWebApiKey { get => Instance._steamWebApiKey; set => Instance._steamWebApiKey = value; }
+        public static bool StartSilent { get => Instance._startSilent; set => Instance._startSilent = value; }
         public static bool SteamWebApiWasReset { get => Instance._steamWebApiWasReset; set => Instance._steamWebApiWasReset = value; }
 
         // Constants

@@ -9,6 +9,7 @@ Steam_ShowLimited: Show Limited Status
 Steam_ShowAccUsername: Show account username
 Steam_Tray_AccountName: Show account name [not friend name]
 Steam_OverrideDefaultState: "Override default login state:"
+Steam_StartSilent: "Open Steam to task tray on switch (Start Steam with '-silent')"
 Button_AddNew: Add New
 Button_SaveCurrent: Save Current
 Button_SaveFile: Save File
