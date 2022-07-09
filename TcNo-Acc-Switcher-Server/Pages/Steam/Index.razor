@@ -104,7 +104,6 @@
         AppStats.NewNavigation("/Steam/");
         if (!firstRender) return;
         _ = AppData.InvokeVoidAsync("initCopyHotKey");
-
         _ = AppData.InvokeVoidAsync("showNoteTooltips");
 
         var curAcc = SteamSwitcherFuncs.GetCurrentAccountId();

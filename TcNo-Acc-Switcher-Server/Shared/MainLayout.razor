@@ -14,6 +14,13 @@
 
 @inherits LayoutComponentBase
 
+@using TcNo_Acc_Switcher_Server.Data
+@inject IJSRuntime JsRuntime
+@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@inject NavigationManager NavManager
+@{ AData.SetActiveNavMan(NavManager); }
+@inject AppData AData
+
 <div class="headerbar">
     <Headerbar />
 </div>
@@ -27,3 +34,14 @@
     @Body
 </div>
 <DynamicStylesheet />
+
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (AppSettings.PasswordHash != "" && AppSettings.PasswordCurrent != AppSettings.PasswordHash)
+        {
+            if (!NavManager.Uri.Contains("/login")) NavManager.NavigateTo($"/login?returnUrl={Uri.EscapeDataString(NavManager.Uri)}");
+        }
+    }
+}

@@ -1,0 +1,95 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@page "/login"
+@attribute [AllowAnonymous]
+
+@using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Server.Pages.General
+@using System.Globalization
+@using System.IO
+@using TcNo_Acc_Switcher_Globals
+@inject IJSRuntime JsRuntime
+@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@inject NavigationManager NavManager
+@{ AData.SetActiveNavMan(NavManager); }
+@inject AppData AData
+
+@inject Lang Locale
+
+<div class="container mainblock">
+    <div class="row">
+        <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
+            <h1 class="SettingsHeader">@Locale["Locked"]</h1>
+            <p>@Locale["Auth_LoginRequired"]</p>
+            <div class="form-text"><span>@Locale["Auth_EnterPassword"]</span><input type="password" id="password" @bind="_password" spellcheck="false"></div>
+            <div class="buttoncol">
+                <button class="btn_login btn_app_login" id="btnLogin" type="button" @onclick="CheckPassword">
+                    <span>@Locale["Button_Login"]</span>
+                    <i class="fas fa-caret-right footerIcoInline"></i>
+                </button>
+            </div>
+            <br/>
+            <h2 class="mt-5">TcNo Account Switcher</h2>
+            <div class="linksList">
+                <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');return false;" href="">
+                    <svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>
+                    @Locale["Modal_Info_ViewGitHub"]
+                </a>
+                <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');return false;" href="">
+                    <svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>
+                    @Locale["Modal_Info_BugReport"]
+                </a>
+                <a onclick="OpenLinkInBrowser('https://tcno.co');return false;" href="">
+                    <svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>
+                    @Locale["Modal_Info_VisitSite"]
+                </a>
+                <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');return false;" href="">
+                    <svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>
+                    @Locale["Modal_Info_Disclaimer"]
+                </a>
+            </div>
+            <div class="mt-2"><span>@Locale["Modal_Info_Version"]: @Globals.Version</span></div>
+        </div>
+    </div>
+</div>
+
+
+@code
+{
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "returnUrl")]
+    public string ReturnUrl { get; set; } = "/";
+
+    private string _password = "";
+
+    private void CheckPassword()
+    {
+        AppSettings.PasswordCurrent = Globals.GetSha256HashString(_password);
+        if (AppSettings.PasswordCurrent == AppSettings.PasswordHash)
+            NavManager.NavigateTo(ReturnUrl); // Success! Redirect user back.
+        else
+            _ = GeneralInvocableFuncs.ShowToast("error", Locale["Auth_PassIncorrect"]);
+    }
+
+	// This is run before everything is painted on, so that it can get the correct values for the CSS Block.
+	protected override void OnParametersSet()
+	{
+	}
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		AppData.Instance.WindowTitle = Locale["Title_Login"];
+	}
+}

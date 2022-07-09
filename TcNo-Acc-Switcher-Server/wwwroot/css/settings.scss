@@ -32,6 +32,11 @@ h2.SettingsHeader {
 .acc_list_actionbar > div .btn_login,
 .btn_close span { padding: 0.25em 5em; }
 
+.settingsCol .buttoncol button.btn_app_login {
+    width: 250px;
+    margin: 1em 0;
+}
+
 div.form-text {
     color: white;
     font-size: 12px !important;

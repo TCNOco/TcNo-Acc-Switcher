@@ -111,6 +111,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("MinimizeOnSwitch", Order = 16)] private bool _minimizeOnSwitch;
         [JsonProperty("DiscordRpcEnabled", Order = 17)] private bool _discordRpc = true;
         [JsonProperty("DiscordRpcShareTotalSwitches", Order = 18)] private bool _discordRpcShare = true;
+        [JsonProperty("PasswordHash", Order = 19)] private string _passwordHash = "";
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private bool _startMenu;
         [JsonIgnore] private bool _startMenuPlatforms;
@@ -118,6 +119,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] private bool _trayStartup;
         [JsonIgnore] private bool _updateCheckRan;
         [JsonIgnore] private bool _preRenderUpdate;
+        [JsonIgnore] private string _passwordCurrent;
 
         public static string Language { get => Instance._lang; set => Instance._lang = value; }
         public static bool Rtl { get => Instance._rtl; set => Instance._rtl = value; }
@@ -150,6 +152,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
     }
         public static bool DiscordRpcShare { get => Instance._discordRpcShare; set => Instance._discordRpcShare = value; }
+        public static string PasswordHash { get => Instance._passwordHash; set => Instance._passwordHash = value; } // SET should hash password.
+        public static string PasswordCurrent { get => Instance._passwordCurrent; set => Instance._passwordCurrent = value; } // SET should hash password.
 
         public static bool StatsEnabled
         {
@@ -512,6 +516,14 @@ namespace TcNo_Acc_Switcher_Server.Data
                 SaveSettings();
             }
             await AppData.CacheReloadPage();
+        }
+
+        [JSInvokable]
+        public static void SetSwitcherPassword(string pass)
+        {
+            PasswordHash = Globals.GetSha256HashString(pass);
+            SaveSettings();
+            _ = GeneralInvocableFuncs.ShowToast("success", Lang["Toast_PasswordChanged"], renderTo: "toastarea");
         }
 
         [JSInvokable]

@@ -131,6 +131,10 @@
         </label>
     </div>
 }
+<div class="rowSetting">
+    <span>@Locale["Settings_Header_AppPassword"]</span>
+    <button id="AppSett_SetPassword" type="button" @onclick="SetPassword"><span>@Locale["Button_SetPassword"]</span></button>
+</div>
 
 
 <h2 class="SettingsHeader">@Locale["Settings_Header_Program"]</h2>
@@ -220,6 +224,12 @@
 
 @code
 {
+    public void SetPassword()
+    {
+        Globals.DebugWriteLine(@"[ButtonClicked:SharedSettings.razor/SetPassword]");
+        _ = GeneralInvocableFuncs.ShowModal("setAppPassword");
+    }
+
     private void TrySetUserData()
     {
         // Verify that user can create file in program files folder first.

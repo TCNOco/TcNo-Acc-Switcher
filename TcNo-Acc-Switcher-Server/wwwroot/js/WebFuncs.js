@@ -376,13 +376,13 @@ async function showModal(modaltype) {
                     <h2>TcNo Account Switcher</h2>
                     <p>${modalInfoCreator}</p>
                     <div class="linksList">
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');"><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>${
+                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>${
                 modalInfoViewGitHub}</a>
-                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');"><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>${
+                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>${
                 modalInfoBugReport}</a>
-                        <a onclick="OpenLinkInBrowser('https://tcno.co');"><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>${
+                        <a onclick="OpenLinkInBrowser('https://tcno.co');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>${
                 modalInfoVisitSite}</a>
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');"><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>${
+                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');return false;" href=""><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>${
                 modalInfoDisclaimer}</a>
                     </div>
                 </div>
@@ -431,6 +431,28 @@ async function showModal(modaltype) {
 				${extraButtons}
 		        <button class="modalOK" type="button" id="change_username" onclick="Modal_FinaliseAccNameChange()"><span>${
             modalChangeUsernameType}</span></button>
+	        </div>`);
+        input = document.getElementById("NewAccountName");
+    } else if (modaltype.startsWith("setAppPassword")) {
+        // USAGE: "changeUsername"
+        const modalChangeUsername = await GetLang("Modal_SetPassword"),
+            modalSetPasswordButton = await GetLang("Modal_SetPassword_Button"),
+            modalTitleSetPassword = await GetLang("Modal_Title_SetPassword"),
+            modalSetPasswordInfo = await GetLangSub("Modal_SetPassword_Info", { link: "https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/FAQ---More-Info#can-i-put-this-program-on-a-usb-portable" });
+
+        $("#modalTitle").text(modalTitleSetPassword);
+        $("#modal_contents").empty();
+
+        $("#modal_contents").append(`<h3>${modalChangeUsername}</h3>
+	        <div class="inputAndButton">
+		        <input type="text" id="SwitcherPassword" style="width: 100%;padding: 8px;" autocomplete="off" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_password').click();">
+	        </div>
+            <div>
+                <span class="modal-text">${modalSetPasswordInfo}</span>
+            </div>
+	        <div class="settingsCol inputAndButton">
+		        <button class="modalOK" type="button" id="set_password" onclick="Modal_FinaliseSwitcherPassword()"><span>${
+            modalSetPasswordButton}</span></button>
 	        </div>`);
         input = document.getElementById("NewAccountName");
     } else if (modaltype.startsWith("find:")) {
@@ -850,6 +872,12 @@ function Modal_FinaliseBackground() {
     $(".modalBG").fadeOut();
 }
 
+function Modal_FinaliseSwitcherPassword() {
+    const switcherPassword = $("#SwitcherPassword").val();
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetSwitcherPassword", switcherPassword);
+    $(".modalBG").fadeOut();
+}
+
 function Modal_FinaliseUserDataFolder() {
     if (window.location.href.includes("PreviewCss")) {
         // Do nothing for CSS preview page.
@@ -1113,7 +1141,10 @@ async function highlightCurrentAccount(curAcc) {
 }
 
 async function showNoteTooltips() {
-    $(".acc_note").toArray().forEach((e) => {
+    const noteArr = $(".acc_note").toArray();
+    if (noteArr.length === 0) return;
+
+    noteArr.forEach((e) => {
         var j = $(e);
         var note = j.text();
         var parentEl = j.parent().parent();

@@ -100,11 +100,12 @@
 .infoWindow .rightContent h2 {
   font-weight: bold;
 }
-.infoWindow .rightContent .linksList {
+
+.linksList {
   display: flex;
   flex-direction: column;
 }
-.infoWindow .rightContent .linksList a svg {
+.linksList a svg {
   display: inline-block;
   width: 2em;
   margin-right: 0.5em;
@@ -162,6 +163,10 @@
   margin: 0 0.5em 2px 0.5em;
   color: white;
   font-size: 12px !important;
+  display: inline-block;
+}
+#modal_contents h3 {
+  color: white;
 }
 #modal_contents button {
   user-select: none;

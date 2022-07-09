@@ -27,6 +27,7 @@ Button_Restore: Restore
 Button_OpenBackup: Open Backup Folder
 Button_Back: Back
 Button_RestartAdmin: Restart as Admin
+Button_SetPassword: Set App Password
 Settings_Shortcut: ' {platform} Switcher Desktop shortcut'
 Settings_Admin: Run {platform} as Admin
 Settings_ImageExpiry: 'Days before profile images expire:'
@@ -86,6 +87,7 @@ Settings_AutoStart: "Automatically start {platform} on account switch"
 Settings_NoPlatforms: There are currently no platforms enabled. Please tick optional platforms below to enable them, or uncheck disabled platforms.
 Settings_MinimizeOnSwitch: Minimize switcher on account switch
 Settings_ShowShortNotes: Show note preview under username
+Settings_Header_AppPassword: "Stop others using the switcher:"
 PreviewCss: Preview CSS
 Settings_PreviewCss: This is the CSS preview page. You can view some elements that pop up in the program and see what they look like with your theme. This page is useful for those creating themes!
 Settings_PreviewCssHeader: CSS Preview Page
@@ -114,6 +116,10 @@ Stats_UniqueDays: "Unique days: "
 Stats_GameShortcuts: "Game shortcuts: "
 Stats_GameShortcutsHotbar: "Game shortcuts (on hotbar): "
 Stats_GamesLaunched: "Games launched: "
+Auth_LoginRequired: A password was previously set, and is required. Please enter the password below.
+Auth_EnterPassword: "Enter password:"
+Auth_PassIncorrect: Password incorrect.
+Locked: Locked
 Cleaning_Header_StartMenuShortcuts: 'Shortcuts for Start Menu:'
 Cleaning_Header_General: General Cleaning
 Cleaning_Header_LoginHistory: Clean my login history
@@ -231,6 +237,7 @@ Toast_Steam_DownloadingAppIds: Downloading Steam AppId list...
 Toast_Steam_DownloadingAppIdsComplete: Done downloading. Game data submenu will be available next launch.
 Toast_SteamWebKeyInvalid: Steam Web API key seems to be invalid. Please set a new one.
 Toast_DownloadingProfileData: Downloading profile data
+Toast_PasswordChanged: Password changed
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
@@ -248,6 +255,7 @@ Modal_Title_Background: Set a background image
 Modal_Title_Userdata: Set the user data folder
 Modal_Title_Stats: Your statistics
 Modal_Title_AccountNotes: "Account Notes for: {accountName}"
+Modal_Title_SetPassword: Set Password
 Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
 Modal_SetBackground_Button: Set background
 Modal_SetBackground_ChooseImage: Choose local image
@@ -256,6 +264,9 @@ Modal_SetUserdata_ChooseFolder: Select a folder
 Modal_SetUserdata_Button: Set user data
 Modal_ChangeUsername: Please enter a new username for your account
 Modal_ChangeUsernameType: Change {platform} username
+Modal_SetPassword: Enter a password for the TcNo Account Switcher
+Modal_SetPassword_Button: Set password
+Modal_SetPassword_Info: "NOTE: This does not encrypt your accounts. Swapping accounts is as simple as replacing files, or changing a username in a file. The password can be reset by editing text in a file too. This is simple security. It stops simple UI access. You can put this app on a removable USB, set the UserData folder to the same USB and physically remove it for more security. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Moving to an external drive guide</a><br><br>To clear, leave the above empty and click Set."
 Modal_EnterDirectory: "Please enter {platform}'s directory, as such: C:\\Program Files\\{platform}"
 Modal_LocatePlatform: Locate {platformExe}
 Modal_LocatePlatformFolder: Select {platform} folder
@@ -320,6 +331,7 @@ Title_Settings: TcNo Account Switcher - Settings
 Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
 Title_Steam_Settings: TcNo Account Switcher - Steam Settings
 Title_Template_Settings: TcNo Account Switcher - {platformName} Settings
+Title_Login: TcNo Account Switcher - Login
 Installer_Downloading: Downloading {file}
 Installer_DownloadFinished: Finished downloading {file}
 Installer_Installing: "Installing: {runtime}"

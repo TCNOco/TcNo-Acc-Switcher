@@ -300,8 +300,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             AppStats.IncrementSwitches("BattleNet");
 
-            _ = AppData.InvokeVoidAsync("showNoteTooltips");
-
             try
             {
                 BattleNetSettings.LastAccName = email;

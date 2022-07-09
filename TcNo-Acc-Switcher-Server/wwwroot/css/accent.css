@@ -40,14 +40,15 @@
     color: var(--accent);
     cursor: pointer;
     margin: 1px 0;
+    text-decoration: none;
 }
 
 /* ReSharper disable InvalidValue */
-.infoWindow .rightContent .linksList a:hover, .fancyLink:hover {
+.linksList a:hover, .fancyLink:hover {
     color: hsl(var(--accentHS), calc(var(--accentL) - 5%));
 }
 
-.infoWindow .rightContent .linksList a:active, .fancyLink:active {
+.linksList a:active, .fancyLink:active {
     color: hsl(var(--accentHS), calc(var(--accentL) - 10%));
 }
 /* ReSharper restore InvalidValue */

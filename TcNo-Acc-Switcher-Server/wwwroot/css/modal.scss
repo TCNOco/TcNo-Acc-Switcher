@@ -109,18 +109,18 @@
     h2 {
         font-weight: bold;
     }
+}
 
-    .linksList {
-        display: flex;
-        flex-direction: column;
+.linksList {
+    display: flex;
+    flex-direction: column;
 
-        a svg {
-            display: inline-block;
-            width: 2em;
-            margin-right: 0.5em;
-            vertical-align: bottom;
-            padding: 1px;
-        }
+    a svg {
+        display: inline-block;
+        width: 2em;
+        margin-right: 0.5em;
+        vertical-align: bottom;
+        padding: 1px;
     }
 }
 
@@ -158,8 +158,8 @@
     }
 
     #accNotes {
-        min-width:497px;
-        min-height:108px;
+        min-width: 497px;
+        min-height: 108px;
     }
 
     .inputAndButton {
@@ -181,6 +181,11 @@
         margin: 0 0.5em 2px 0.5em;
         color: white;
         font-size: 12px !important;
+        display: inline-block
+    }
+
+    h3 {
+        color: white;
     }
 
     button {
