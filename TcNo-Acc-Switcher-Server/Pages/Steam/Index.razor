@@ -35,15 +35,17 @@
 </div>
 
 <div class="shortcutDropdown" id="shortcutDropdown" style="display: none">
-    @foreach (var (i, shortcut) in Steam.Shortcuts)
-    {
-        @if (i >= 0)
+    <div class="shortcutDropdownItems">
+        @foreach (var (i, shortcut) in Steam.Shortcuts)
         {
-            <button class="HasContextMenu" id="@(shortcut)" @onclick='() => Basic.RunShortcut(shortcut, "LoginCache\\Steam\\Shortcuts", platform: "Steam")' data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
-                <img src="@(Steam.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
-            </button>
+            @if (i >= 0)
+            {
+                <button class="HasContextMenu" id="@(shortcut)" @onclick='() => Basic.RunShortcut(shortcut, "LoginCache\\Steam\\Shortcuts", platform: "Steam")' data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
+                    <img src="@(Steam.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                </button>
+            }
         }
-    }
+    </div>
     <button id="btnOpenShortcutFolder" @onclick="() => Basic.OpenFolder(Path.GetFullPath(Steam.ShortcutFolder))" data-toggle="tooltip" title="@(Locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
 </div>
 

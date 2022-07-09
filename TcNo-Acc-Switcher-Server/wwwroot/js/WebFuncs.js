@@ -969,17 +969,31 @@ async function usernameModalCopyText() {
 var sDropdownOpen = false;
 var sDropdownInitialized = false;
 function sDropdownReposition() {
-    const drop = $("#shortcutDropdown");
+    const dropDownContainer = $("#shortcutDropdown");
     const btn = $("#shortcutDropdownBtn");
+    const dropDownItemsContainer = $(".shortcutDropdownItems")[0];
     const btnPos = btn[0].getBoundingClientRect();
-    $("#shortcutDropdown").css({ top: btnPos.top - drop.height() - btn.height() - 16, left: btnPos.left + 16 - (drop.width() / 2) });
+    dropDownContainer.css({ top: btnPos.top - dropDownContainer.height() - btn.height() - 16, left: btnPos.left + 16 - (dropDownContainer.width() / 2) });
 
     // If overflowing - Widen by scrollbar width to prevent weird overflow gap on side
-    if (checkOverflow($("#shortcutDropdown")[0]) && $(".shortcutDropdown")[0].style.minWidth === '') {
-        let scrollbarWidth = ($("#shortcutDropdown")[0].offsetWidth - $("#shortcutDropdown")[0].clientWidth);
-        let computedStyle = window.getComputedStyle($(".HasContextMenu")[0]);
-        let margin = parseInt(computedStyle.marginLeft) + parseInt(computedStyle.marginRight);
-        $("#shortcutDropdown").css({ minWidth: $("#shortcutDropdown").width() + scrollbarWidth + margin});
+    if (checkOverflow(dropDownItemsContainer) && dropDownItemsContainer.style.minWidth === '') {
+        let scrollbarWidth = (dropDownItemsContainer.offsetWidth - dropDownItemsContainer.clientWidth);
+        let hasContextMenu = $(".HasContextMenu");
+        if (hasContextMenu.length > 0) {
+            let computedStyle = window.getComputedStyle($(".HasContextMenu")[0]);
+            let computedStyleContainer = window.getComputedStyle($("#shortcutDropdown")[0]);
+            let marginX = parseInt(computedStyle.marginLeft) + parseInt(computedStyle.marginRight);
+            let marginY = parseInt(computedStyle.marginBottom) + parseInt(computedStyle.marginTop);
+            let paddingX = parseInt(computedStyleContainer.paddingLeft) + parseInt(computedStyleContainer.paddingRight);
+            let paddingY = parseInt(computedStyleContainer.paddingTop) + parseInt(computedStyleContainer.paddingBottom);
+            let borderY = parseInt(computedStyleContainer.borderTopWidth) + parseInt(computedStyleContainer.borderBottomWidth);
+            dropDownContainer.css({
+                minWidth: $(dropDownItemsContainer).width() + scrollbarWidth + marginX + paddingX
+            });
+            $(dropDownItemsContainer).css({
+                maxHeight: dropDownContainer.height() - paddingY - borderY + marginY
+            });
+        }
     }
 }
 
@@ -987,14 +1001,14 @@ function sDropdownInit() {
     if (sDropdownInitialized) return;
     sDropdownInitialized = true;
     // Create sortable list
-    sortable(".shortcuts, #shortcutDropdown", {
+    sortable(".shortcuts, #shortcutDropdownItems", {
         connectWith: "shortcutJoined",
         forcePlaceholderSize: true,
         placeholderClass: "shortcutPlaceholder",
         items: ":not(#btnOpenShortcutFolder)"
     });
 
-    $(".shortcuts, #shortcutDropdown").toArray().forEach(el => {
+    $(".shortcuts, #shortcutDropdownItems").toArray().forEach(el => {
 // ReSharper disable once Html.EventNotResolved
         el.addEventListener("sortstart", function () {
             $(".shortcuts").addClass("expandShortcuts");
@@ -1044,7 +1058,7 @@ function serializeShortcuts() {
     $(".shortcuts button").each((i, e) => output[i - numHighlightedShortcuts] = $(e).attr("id"));
 
     // Serialize dropdown items
-    $(".shortcutDropdown button").each((i, e) => {
+    $(".shortcutDropdownItems button").each((i, e) => {
         if ($(e).attr("id") === "btnOpenShortcutFolder") return;
         output[i] = $(e).attr("id");
     });
