@@ -230,6 +230,7 @@ Toast_SameAccount: Cannot copy files to/from the same account. Try a different a
 Toast_Steam_DownloadingAppIds: Downloading Steam AppId list...
 Toast_Steam_DownloadingAppIdsComplete: Done downloading. Game data submenu will be available next launch.
 Toast_SteamWebKeyInvalid: Steam Web API key seems to be invalid. Please set a new one.
+Toast_DownloadingProfileData: Downloading profile data
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]

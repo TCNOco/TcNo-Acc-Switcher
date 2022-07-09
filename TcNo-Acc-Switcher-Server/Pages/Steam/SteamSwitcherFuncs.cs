@@ -83,7 +83,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             if (SteamSettings.SteamWebApiKey != "")
             {
                 // Handle all image downloads
-                WebApiPrepareImages();
+                await WebApiPrepareImages();
                 WebApiPrepareBans();
 
                 // Key was fine? Continue. If not, the non-api method will be used.
@@ -623,7 +623,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <summary>
         /// Download all missing or outdated Steam profile images, multi-threaded
         /// </summary>
-        private static async void WebApiPrepareImages()
+        private static async Task WebApiPrepareImages()
         {
             // Create a queue of SteamUsers to download images for
             var queue = new List<Index.Steamuser>();
@@ -641,7 +641,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             // Either return if queue is empty, or download queued images and then continue.
             if (queue.Count != 0)
-                await Globals.MultiThreadParallelDownloads(WebApiGetImageList(queue));
+            {
+                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DownloadingProfileData"], renderTo: "toastarea");
+                await Globals.MultiThreadParallelDownloads(WebApiGetImageList(queue)).ConfigureAwait(true);
+            }
 
             // Set the correct path
             foreach (var su in AppData.SteamUsers)
