@@ -21,6 +21,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using SevenZip;
 using ShellLink;
 
@@ -181,6 +182,23 @@ namespace TcNo_Acc_Switcher_Globals
                 var fileBytes = HClient.GetByteArrayAsync(url).Result;
                 if (path.Contains('\\')) Directory.CreateDirectory(Path.GetDirectoryName(path)!);
                 File.WriteAllBytes(path, fileBytes);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
+        public static async Task<bool> DownloadFileAsync(string url, string path)
+        {
+            try
+            {
+                if (!Uri.TryCreate(url, UriKind.Absolute, out _))
+                    throw new InvalidOperationException("URI is invalid.");
+
+                var fileBytes = HClient.GetByteArrayAsync(url).Result;
+                if (path.Contains('\\')) Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                await File.WriteAllBytesAsync(path, fileBytes);
             }
             catch (Exception)
             {

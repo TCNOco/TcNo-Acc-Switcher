@@ -176,6 +176,10 @@ button .caret, .button .caret {
   content: "  |  ";
 }
 
+.subtext {
+  font-size: 0.8em;
+}
+
 /* Ace Editor */
 .ace_editor {
   background: #282a36;

@@ -263,6 +263,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("AutoStart", Order = 16)] private bool _autoStart = true;
         [JsonProperty("ShowShortNotes", Order = 17)] private bool _showShortNotes = true;
         [JsonProperty("AccountNotes", Order = 18)] private Dictionary<string, string> _accountNotes = new();
+        [JsonProperty("SteamWebApiKey", Order = 19)] private string _steamWebApiKey = "";
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private string _contextMenuJson = "[]";
         [JsonIgnore] private int _lastAccTimestamp = 0;
@@ -298,6 +299,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static int OverrideState { get => Instance._overrideState; set => Instance._overrideState = value; }
 
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
+        public static string SteamWebApiKey { get => Instance._steamWebApiKey; set => Instance._steamWebApiKey = value; }
 
         // Constants
         public static readonly List<string> Processes = new() { "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };

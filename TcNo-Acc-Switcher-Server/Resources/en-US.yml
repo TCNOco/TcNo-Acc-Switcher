@@ -30,6 +30,8 @@ Button_RestartAdmin: Restart as Admin
 Settings_Shortcut: ' {platform} Switcher Desktop shortcut'
 Settings_Admin: Run {platform} as Admin
 Settings_ImageExpiry: 'Days before profile images expire:'
+Settings_SteamAPIKey: "Steam Web API key (optional)"
+Settings_SteamAPIKey_Note: Setting an API key will make the Limited indicator (yellow border) show for accounts that are Community Banned instead.
 Settings_Header_AppWide: App-wide settings
 Settings_Header_GeneralSettings: General settings
 Settings_Header_ExtraPlatforms: Platform Settings

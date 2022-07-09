@@ -33,7 +33,7 @@ namespace TcNo_Acc_Switcher_Globals
         public static void DebugWriteLine(string s)
         {
             // Toggle here so it only shows in Verbose mode etc.
-            if (VerboseMode) Console.WriteLine(s);
+            if (VerboseMode) Console.WriteLine($@"{DateTime.Now:hh:mm:ss.fff} - {s}");
         }
 
         public static void WriteToLog(Exception e) => WriteToLog($"HANDLED/IGNORED ERROR: {GetEnglishError(e)}");
@@ -175,7 +175,7 @@ namespace TcNo_Acc_Switcher_Globals
             }
         }
 
-        #endregion
+#endregion
 
     }
 }

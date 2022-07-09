@@ -142,7 +142,8 @@
         width: 35% !important;
     }
 
-    input[type=text], input[type=password] {
+    input[type=text],
+    input[type=password] {
         margin: 0;
         height: 43px;
         padding-bottom: 2px;
@@ -151,7 +152,8 @@
         background: #070A0D;
     }
 
-    input[type=text], input[type=password]:focus {
+    input[type=text],
+    input[type=password]:focus {
         border-bottom: 2px solid var(--accent);
     }
 
