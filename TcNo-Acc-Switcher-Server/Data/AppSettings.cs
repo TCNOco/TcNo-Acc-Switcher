@@ -97,21 +97,22 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("StreamerModeEnabled", Order = 2)] private bool _streamerModeEnabled = true;
         [JsonProperty("ServerPort", Order = 3)] private int _serverPort = 1337;
         [JsonProperty("WindowSize", Order = 4)] private Point _windowSize = new() { X = 800, Y = 450 };
-        [JsonProperty("Version", Order = 5)] private readonly string _version = Globals.Version;
-        [JsonProperty("DisabledPlatforms", Order = 6)] private SortedSet<string> _disabledPlatforms = new();
-        [JsonProperty("TrayMinimizeNotExit", Order = 7)] private bool _trayMinimizeNotExit;
-        [JsonProperty("ShownMinimizedNotification", Order = 8)] private bool _shownMinimizedNotification;
-        [JsonProperty("StartCentered", Order = 9)] private bool _startCentered;
-        [JsonProperty("ActiveTheme", Order = 10)] private string _activeTheme = "Dracula_Cyan";
-        [JsonProperty("ActiveBrowser", Order = 11)] private string _activeBrowser = "WebView";
-        [JsonProperty("Background", Order = 12)] private string _background = "";
-        [JsonProperty("EnabledBasicPlatforms", Order = 13)] private HashSet<string> _enabledBasicPlatforms;
-        [JsonProperty("CollectStats", Order = 14)] private bool _statsEnabled = true;
-        [JsonProperty("ShareAnonymousStats", Order = 15)] private bool _statsShare = true;
-        [JsonProperty("MinimizeOnSwitch", Order = 16)] private bool _minimizeOnSwitch;
-        [JsonProperty("DiscordRpcEnabled", Order = 17)] private bool _discordRpc = true;
-        [JsonProperty("DiscordRpcShareTotalSwitches", Order = 18)] private bool _discordRpcShare = true;
-        [JsonProperty("PasswordHash", Order = 19)] private string _passwordHash = "";
+        [JsonProperty("AllowTransparency", Order = 5)] private bool _allowTransparency = true;
+        [JsonProperty("Version", Order = 6)] private readonly string _version = Globals.Version;
+        [JsonProperty("DisabledPlatforms", Order = 7)] private SortedSet<string> _disabledPlatforms = new();
+        [JsonProperty("TrayMinimizeNotExit", Order = 8)] private bool _trayMinimizeNotExit;
+        [JsonProperty("ShownMinimizedNotification", Order = 9)] private bool _shownMinimizedNotification;
+        [JsonProperty("StartCentered", Order = 10)] private bool _startCentered;
+        [JsonProperty("ActiveTheme", Order = 11)] private string _activeTheme = "Dracula_Cyan";
+        [JsonProperty("ActiveBrowser", Order = 12)] private string _activeBrowser = "WebView";
+        [JsonProperty("Background", Order = 13)] private string _background = "";
+        [JsonProperty("EnabledBasicPlatforms", Order = 14)] private HashSet<string> _enabledBasicPlatforms;
+        [JsonProperty("CollectStats", Order = 15)] private bool _statsEnabled = true;
+        [JsonProperty("ShareAnonymousStats", Order = 16)] private bool _statsShare = true;
+        [JsonProperty("MinimizeOnSwitch", Order = 17)] private bool _minimizeOnSwitch;
+        [JsonProperty("DiscordRpcEnabled", Order = 18)] private bool _discordRpc = true;
+        [JsonProperty("DiscordRpcShareTotalSwitches", Order = 19)] private bool _discordRpcShare = true;
+        [JsonProperty("PasswordHash", Order = 20)] private string _passwordHash = "";
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private bool _startMenu;
         [JsonIgnore] private bool _startMenuPlatforms;
@@ -126,6 +127,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static bool StreamerModeEnabled { get => Instance._streamerModeEnabled; set => Instance._streamerModeEnabled = value; }
         public static int ServerPort { get => Instance._serverPort; set => Instance._serverPort = value; }
         public static Point WindowSize { get => Instance._windowSize; set => Instance._windowSize = value; }
+        public static bool AllowTransparency { get => Instance._allowTransparency; set => Instance._allowTransparency = value; }
         public static string Version => Instance._version;
 
         public static SortedSet<string> DisabledPlatforms { get => Instance._disabledPlatforms; set => Instance._disabledPlatforms = value; }
