@@ -30,10 +30,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             [JsonProperty("mostrecent", Order = 3)] public string MostRec = "0";
             [JsonProperty("Timestamp", Order = 4)] public string LastLogin { get; set; }
             [JsonProperty("WantsOfflineMode", Order = 5)] public string OfflineMode = "0";
+            [JsonIgnore] public string ImageDownloadUrl { get; set; }
             [JsonIgnore] public string ImgUrl { get; set; }
+            [JsonIgnore] public bool BanInfoLoaded { get; set; }
             [JsonIgnore] public bool Vac { get; set; }
             // Either Limited or Community banned status (when using Steam Web API)
             [JsonIgnore] public bool Limited { get; set; }
+
         }
     }
 }

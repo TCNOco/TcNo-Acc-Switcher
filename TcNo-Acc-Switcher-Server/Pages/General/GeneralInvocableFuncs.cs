@@ -367,32 +367,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 allAccountsTable.Add("SEP=,");
                 allAccountsTable.Add("Account name:,Community name:,SteamID:,VAC status:,Last login:,Saved profile image:");
 
-                var userAccounts = SteamSwitcherFuncs.GetSteamUsers(SteamSettings.LoginUsersVdf());
-                var vacStatusList = new List<SteamSwitcherFuncs.VacStatus>();
-                var loadedVacCache = SteamSwitcherFuncs.LoadVacInfo(ref vacStatusList);
+                AppData.SteamUsers = SteamSwitcherFuncs.GetSteamUsers(SteamSettings.LoginUsersVdf());
+                // Load cached ban info
+                SteamSwitcherFuncs.LoadCachedBanInfo();
 
-                foreach (var ua in userAccounts)
+                foreach (var su in AppData.SteamUsers)
                 {
-                    var vacInfo = "";
-                    // Get VAC/Limited info
-                    if (loadedVacCache)
-                        foreach (var vsi in vacStatusList.Where(vsi => vsi.SteamId == ua.SteamId))
-                        {
-                            if (vsi.Vac && vsi.Ltd) vacInfo += "VAC + Limited";
-                            else vacInfo += (vsi.Vac ? "VAC" : "") + (vsi.Ltd ? "Limited" : "");
-                            break;
-                        }
-                    else
-                    {
-                        vacInfo += "N/A";
-                    }
+                    var banInfo = "";
+                    if (su.Vac && su.Limited) banInfo += "VAC + Limited";
+                    else banInfo += (su.Vac ? "VAC" : "") + (su.Limited ? "Limited" : "");
 
-                    var imagePath = Path.GetFullPath($"{SteamSettings.SteamImagePath + ua.SteamId}.jpg");
-                    allAccountsTable.Add(ua.AccName + s +
-                                         ua.Name + s +
-                                         ua.SteamId + s +
-                                         vacInfo + s +
-                                         SteamSwitcherFuncs.UnixTimeStampToDateTime(ua.LastLogin) + s +
+                    var imagePath = Path.GetFullPath($"{SteamSettings.SteamImagePath + su.SteamId}.jpg");
+                    allAccountsTable.Add(su.AccName + s +
+                                         su.Name + s +
+                                         su.SteamId + s +
+                                         banInfo + s +
+                                         SteamSwitcherFuncs.UnixTimeStampToDateTime(su.LastLogin) + s +
                                          (File.Exists(imagePath) ? imagePath : "Missing from disk"));
                 }
             }

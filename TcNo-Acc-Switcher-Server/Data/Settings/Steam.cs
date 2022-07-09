@@ -268,6 +268,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] private string _contextMenuJson = "[]";
         [JsonIgnore] private int _lastAccTimestamp = 0;
         [JsonIgnore] private string _lastAccName = "";
+        [JsonIgnore] private bool _steamWebApiWasReset;
         [JsonIgnore] public static readonly string SteamAppsListPath = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsFullListCache.json");
         [JsonIgnore] public static readonly string SteamAppsUserCache = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
 
@@ -300,6 +301,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
         public static string SteamWebApiKey { get => Instance._steamWebApiKey; set => Instance._steamWebApiKey = value; }
+        public static bool SteamWebApiWasReset { get => Instance._steamWebApiWasReset; set => Instance._steamWebApiWasReset = value; }
 
         // Constants
         public static readonly List<string> Processes = new() { "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
