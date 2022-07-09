@@ -437,7 +437,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 su.BanInfoLoaded = banInfo != null;
                 if (!su.BanInfoLoaded) continue;
 
-                su.Vac = banInfo.Vac;
+                su.Vac = banInfo!.Vac;
                 su.Limited = banInfo.Ltd;
             }
         }
