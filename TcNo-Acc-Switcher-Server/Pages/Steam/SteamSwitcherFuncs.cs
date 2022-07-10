@@ -221,7 +221,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 var file = new FileInfo(SteamSettings.SteamAppsListPath);
                 if (file.Exists) file.Delete();
                 if (Globals.ReadWebUrl("https://api.steampowered.com/ISteamApps/GetAppList/v2/", out var appList))
-                    _ = File.WriteAllTextAsync(file.FullName, appList);
+                    File.WriteAllText(file.FullName, appList);
                 else
                     throw new Exception("Failed to download Steam apps list.");
             }
