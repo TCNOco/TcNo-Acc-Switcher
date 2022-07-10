@@ -324,7 +324,7 @@
     },
     "Magic Arena": {
       "Identifiers": [ "mtga", "magicarena" ],
-      "ExeLocationDefault": "C:\\Program Files\\Wizards of the Coast\\MTGA\\MTGALauncher\\MTGALauncher.exe",
+      "ExeLocationDefault": "%ProgramFiles%\\Wizards of the Coast\\MTGA\\MTGALauncher\\MTGALauncher.exe",
       "ExesToEnd": [ "MTGA.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
@@ -352,6 +352,21 @@
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%LocalAppData%\\Sony Corporation\\PS Remote Play\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
+    },
+    "Albion Online": {
+      "Identifiers": [ "ao", "albion", "albiononline" ],
+      "ExeLocationDefault": "%ProgramFiles(x86)%\\AlbionOnline\\launcher\\AlbionLauncher.exe",
+      "ExesToEnd": [ "AlbionLauncher.exe", "Albion-Online.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "REG:HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:LastUsedAccountId_h136571812": "UNIQUE_ID",
+        "REG:HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:login.last_h1502067074": "",
+        "REG:HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:login.hash_h1501923354": "",
+        "REG:HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:login.accountname_h1930415854": ""
+      },
+      "ExitBeforeInteract": true,
+      "UniqueIdFile": "HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:LastUsedAccountId_h136571812",
+      "UniqueIdMethod": "REGKEY"
     }
   },
   "Platform-WIP": {
