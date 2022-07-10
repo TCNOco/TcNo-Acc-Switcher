@@ -55,6 +55,7 @@ namespace TcNo_Acc_Switcher_Server
             _ = services.AddSingleton<AppStats>();
             _ = services.AddSingleton<AppData>();
             _ = services.AddSingleton<BasicPlatforms>();
+            _ = services.AddSingleton<BasicStats>();
             _ = services.AddSingleton<CurrentPlatform>();
             _ = services.AddSingleton<BattleNet>();
             _ = services.AddSingleton<Basic>();

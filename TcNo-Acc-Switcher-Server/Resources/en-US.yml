@@ -232,6 +232,8 @@ Toast_FailedLoad: Failed to load {platform}! Click the platform to see the error
 Toast_FailedPlatformsLoad: Failed to load Platforms.json! Please verify this file exists.
 Toast_FailedLoadSettings: "Failed to load settings! Loading default settings instead. Adding 'old' to existing settings file name."
 Toast_FailedLoadStats: "Failed to load statistics! Starting fresh."
+Toast_FailedStatsLoad: Failed to load GameStats.json! Please verify this file exists.
+Toast_GameStatsLoadFail: "Failed to get game stats from web for {Game}"
 Toast_FileCopyFail: Failed to copy files! See log for more details.
 Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
 Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.

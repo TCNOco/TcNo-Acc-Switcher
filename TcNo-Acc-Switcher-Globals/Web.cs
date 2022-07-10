@@ -3,10 +3,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 
 namespace TcNo_Acc_Switcher_Globals
 {
@@ -16,6 +18,11 @@ namespace TcNo_Acc_Switcher_Globals
         {
             var client = new HttpClient();
             var response = client.Send(new HttpRequestMessage(HttpMethod.Get, requestUri));
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                WriteToLog($"ERROR LOADING URL: {requestUri}.\n - Error: {response.StatusCode}");
+            }
+
             var responseReader = new StreamReader(response.Content.ReadAsStream());
             return responseReader.ReadToEnd();
         }
@@ -75,5 +82,20 @@ namespace TcNo_Acc_Switcher_Globals
             }));
         }
 
+
+        public static bool GetWebHtmlDocument(ref HtmlDocument htmlDocument, string url, out string responseText)
+        {
+            responseText = ReadWebUrl(url);
+            try
+            {
+                htmlDocument.LoadHtml(responseText);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

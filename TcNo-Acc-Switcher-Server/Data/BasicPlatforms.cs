@@ -79,7 +79,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             return platforms;
         }
 
-        public static void BasicPlatformsInit()
+        private static void BasicPlatformsInit()
         {
             // Check if Platforms.json exists.
             // If it doesnt: Copy it from the programs' folder to the user data folder.

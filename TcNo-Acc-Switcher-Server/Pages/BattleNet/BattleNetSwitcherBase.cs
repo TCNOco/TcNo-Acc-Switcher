@@ -76,14 +76,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 var split = BTag.Split("#");
                 var url = $"https://playoverwatch.com/en-us/career/pc/{split[0]}-{split[1]}/";
 
-                var doc = new HtmlDocument();
-                var responseText = Globals.ReadWebUrl(url);
-
-                try
-                {
-                    doc.LoadHtml(responseText);
-                }
-                catch (Exception)
+                HtmlDocument doc = new();
+                if (!Globals.GetWebHtmlDocument(ref doc, url, out var responseText))
                 {
                     _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_StatsFail", new { BTag }],
                         renderTo: "toastarea");
