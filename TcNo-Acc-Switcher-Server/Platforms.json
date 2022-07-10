@@ -367,6 +367,30 @@
       "ExitBeforeInteract": true,
       "UniqueIdFile": "HKCU\\Software\\Sandbox Interactive GmbH\\Albion Online Client:LastUsedAccountId_h136571812",
       "UniqueIdMethod": "REGKEY"
+    },
+    "Rockstar": {
+      "Identifiers": [ "rs", "rockstar", "socialclub" ],
+      "ExeLocationDefault": "%ProgramFiles%\\Rockstar Games\\Launcher\\LauncherPatcher.exe",
+      "ExesToEnd": [ "LauncherPatcher.exe", "Launcher.exe", "RockstarErrorHandler.exe", "RockstarService.exe", "SocialClubHelper.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "%LocalAppData%\\Rockstar Games\\Launcher\\settings_user.dat": "settings_user.dat",
+        "%ProgramData%\\Rockstar Games\\Launcher\\settings_machine.dat": "settings_machine.dat",
+        "%Documents%\\Rockstar Games\\Social Club\\Profiles\\*": "Profiles\\",
+        "%ProgramData%\\Rockstar Games\\TcNoAccSwitcher-ID.instance": "TcNoAccSwitcher-ID.instance"
+      },
+      "Extras": {
+        "CachePaths": [
+          "%Documents%\\Rockstar Games\\Social Club\\Launcher\\Renderer\\Cache\\f_*"
+        ],
+        "ShortcutFolders": [
+          "%StartMenuProgramData%\\Rockstar Games\\"
+        ],
+        "ShortcutIgnore": [ "Rockstar Games Launcher" ]
+      },
+      "ExitBeforeInteract": true,
+      "UniqueIdFile": "%ProgramData%\\Rockstar Games\\TcNoAccSwitcher-ID.instance",
+      "UniqueIdMethod": "CREATE_ID_FILE"
     }
   },
   "Platform-WIP": {

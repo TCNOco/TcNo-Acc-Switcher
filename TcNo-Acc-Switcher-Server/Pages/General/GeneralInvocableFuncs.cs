@@ -46,6 +46,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             var fileName = "TcNo-Acc-Switcher_main.exe";
             if (!AppData.TcNoClientApp) fileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher-Server_main.exe";
+            else
+            {
+                // Is client app, but could be developing >> No _main just yet.
+                if (!File.Exists(Path.Join(Globals.AppDataFolder, fileName)) && File.Exists(Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe")))
+                    fileName = Path.Combine(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe");
+            }
 
             var proc = new ProcessStartInfo
             {
