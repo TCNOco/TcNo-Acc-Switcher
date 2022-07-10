@@ -220,7 +220,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 // Save to file
                 var file = new FileInfo(SteamSettings.SteamAppsListPath);
                 if (file.Exists) file.Delete();
-                _ = File.WriteAllTextAsync(file.FullName, Globals.ReadWebUrl("https://api.steampowered.com/ISteamApps/GetAppList/v2/"));
+                File.WriteAllText(file.FullName, Globals.ReadWebUrl("https://api.steampowered.com/ISteamApps/GetAppList/v2/"));
             }
             catch (Exception e)
             {
@@ -259,8 +259,28 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         public static Dictionary<string, string> LoadAppNames()
         {
             // Check if cached Steam AppId list is downloaded
-            // If not, skip. Download is handled on page load in razor.
-            if (!File.Exists(SteamSettings.SteamAppsListPath)) return new Dictionary<string, string>();
+            // If not, skip. Download is handled in a background task.
+            if (!File.Exists(SteamSettings.SteamAppsListPath))
+            {
+                // Download Steam AppId list if not already.
+                Task.Run(SteamSwitcherFuncs.DownloadSteamAppsData).ContinueWith(_ =>
+                {
+                    var names = LoadAppNames();
+                    foreach (var kv in names)
+                    {
+                        try
+                        {
+                            SteamSettings.AppIds.Value.Add(kv.Key, kv.Value);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                        }
+                    }
+                    Data.Settings.Steam.BuildContextMenu();
+                });
+                return new Dictionary<string, string>();
+            }
 
             var cacheFilePath = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
             var appIds = new Dictionary<string, string>();

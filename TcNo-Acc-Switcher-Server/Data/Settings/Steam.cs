@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Microsoft.JSInterop;
@@ -23,7 +24,7 @@ using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
-
+using TcNo_Acc_Switcher_Server.Shared;
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
     public class Steam
@@ -65,7 +66,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     // Forces lazy values to be instantiated
                     _ = InstalledGames.Value;
                     _ = AppIds.Value;
-                    InitLang();
+                    BuildContextMenu();
                     AppData.InitializedClasses.Steam = true;
 
                     _instance._currentlyModifying = false;
@@ -266,7 +267,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("SteamWebApiKey", Order = 19)] private string _steamWebApiKey = "";
         [JsonProperty("StartSilent", Order = 20)] private bool _startSilent;
         [JsonIgnore] private bool _desktopShortcut;
-        [JsonIgnore] private string _contextMenuJson = "[]";
         [JsonIgnore] private int _lastAccTimestamp = 0;
         [JsonIgnore] private string _lastAccName = "";
         [JsonIgnore] private bool _steamWebApiWasReset;
@@ -311,95 +311,97 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static readonly string SettingsFile = "SteamSettings.json";
         public static readonly string SteamImagePath = "wwwroot/img/profiles/steam/";
         public static readonly string SteamImagePathHtml = "img/profiles/steam/";
-        public static string ContextMenuJson { get => Instance._contextMenuJson; set => Instance._contextMenuJson = value; }
-
-        public static void InitLang()
+        public static readonly ObservableCollection<MenuItem> Menu = new();
+        public static void BuildContextMenu()
         {
-            var contextMenuJsonBuilder = new System.Text.StringBuilder();
-            contextMenuJsonBuilder.Append($@"[
-				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
-				{{""{Lang["Context_LoginAsSubmenu"]}"": [
-					{{""{Lang["Invisible"]}"": ""swapTo(7, event)""}},
-					{{""{Lang["Offline"]}"": ""swapTo(0, event)""}},
-					{{""{Lang["Online"]}"": ""swapTo(1, event)""}},
-					{{""{Lang["Busy"]}"": ""swapTo(2, event)""}},
-					{{""{Lang["Away"]}"": ""swapTo(3, event)""}},
-					{{""{Lang["Snooze"]}"": ""swapTo(4, event)""}},
-					{{""{Lang["LookingToTrade"]}"": ""swapTo(5, event)""}},
-					{{""{Lang["LookingToPlay"]}"": ""swapTo(6, event)""}}
-				]}},
-				{{""{Lang["Context_CopySubmenu"]}"": [
-				  {{""{Lang["Context_CopyProfileSubmenu"]}"": [
-				    {{""{Lang["Context_CommunityUrl"]}"": ""copy('URL', event)""}},
-				    {{""{Lang["Context_CommunityUsername"]}"": ""copy('Line2', event)""}},
-				    {{""{Lang["Context_LoginUsername"]}"": ""copy('Username', event)""}}
-				  ]}},
-				  {{""{Lang["Context_CopySteamIdSubmenu"]}"": [
-				    {{""{Lang["Context_Steam_Id"]}"": ""copy('SteamId', event)""}},
-				    {{""{Lang["Context_Steam_Id3"]}"": ""copy('SteamId3', event)""}},
-				    {{""{Lang["Context_Steam_Id32"]}"": ""copy('SteamId32', event)""}},
-				    {{""{Lang["Context_Steam_Id64"]}"": ""copy('id', event)""}}
-				  ]}},
-				  {{""{Lang["Context_CopyOtherSubmenu"]}"": [
-					{{""SteamRep"": ""copy('SteamRep', event)""}},
-					{{""SteamID.uk"": ""copy('SteamID.uk', event)""}},
-					{{""SteamID.io"": ""copy('SteamID.io', event)""}},
-					{{""SteamIDFinder.com"": ""copy('SteamIDFinder.com', event)""}}
-				  ]}},
-				]}},
-				{{""{Lang["Context_CreateShortcutSubmenu"]}"": [
-					{{"""": ""createShortcut()""}},
-					{{""{Lang["OnlineDefault"]}"": ""createShortcut()""}},
-					{{""{Lang["Invisible"]}"": ""createShortcut(':7')""}},
-					{{""{Lang["Offline"]}"": ""createShortcut(':0')""}},
-					{{""{Lang["Busy"]}"": ""createShortcut(':2')""}},
-					{{""{Lang["Away"]}"": ""createShortcut(':3')""}},
-					{{""{Lang["Snooze"]}"": ""createShortcut(':4')""}},
-					{{""{Lang["LookingToTrade"]}"": ""createShortcut(':5')""}},
-					{{""{Lang["LookingToPlay"]}"": ""createShortcut(':6')""}}
-				]}},
-				{{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
-				{{""{Lang["Context_Steam_OpenUserdata"]}"": ""openUserdata(event)""}},
-                {{""{Lang["Forget"]}"": ""forget(event)""}},
-				{{""{Lang["Notes"]}"": ""showNotes(event)""}},");
-
+            Menu.Clear();
+            var menu = MenuBuilder.Build(new Tuple<string, object>[]
+            {
+                new ("Context_SwapTo", "swapTo(-1, event)"),
+                new ("Context_LoginAsSubmenu", new Tuple<string, object>[]
+                    {
+                        new ("Invisible", "swapTo(7, event)"),
+                        new ("Offline", "swapTo(0, event)"),
+                        new ("Online", "swapTo(1, event)"),
+                        new ("Busy", "swapTo(2, event)"),
+                        new ("Away", "swapTo(3, event)"),
+                        new ("Snooze", "swapTo(4, event)"),
+                        new ("LookingToTrade", "swapTo(5, event)"),
+                        new ("LookingToPlay", "swapTo(6, event)"),
+                    }
+                ),
+                new ("Context_CopySubmenu", new Tuple<string, object>[]
+                {
+                    new ("Context_CopyProfileSubmenu", new Tuple<string, object>[]
+                    {
+                        new ("Context_CommunityUrl", "copy('URL', event)"),
+                        new ("Context_CommunityUsername", "copy('Line2', event)"),
+                        new ("Context_LoginUsername", "copy('Username', event)"),
+                    }),
+                    new ("Context_CopySteamIdSubmenu", new Tuple<string, object>[]
+                    {
+                        new ("Context_Steam_Id", "copy('SteamId', event)"),
+                        new ("Context_Steam_Id3", "copy('SteamId3', event)"),
+                        new ("Context_Steam_Id32", "copy('SteamId32', event)"),
+                        new ("Context_Steam_Id64", "copy('id', event)"),
+                    }),
+                    new ("Context_CopyOtherSubmenu", new Tuple<string, object>[]
+                    {
+                        new ("SteamRep", "copy('SteamRep', event)"),
+                        new ("SteamID.uk", "copy('SteamID.uk', event)"),
+                        new ("SteamID.io", "copy('SteamID.io', event)"),
+                        new ("SteamIDFinder.com", "copy('SteamIDFinder.com', event)"),
+                    }),
+                }),
+                new ("Context_CreateShortcutSubmenu", new Tuple<string, object>[]
+                {
+                    new ("OnlineDefault", "createShortcut()"),
+                    new ("Invisible", "createShortcut(':7')"),
+                    new ("Offline", "createShortcut(':0')"),
+                    new ("Busy", "createShortcut(':2')"),
+                    new ("Away", "createShortcut(':3')"),
+                    new ("Snooze", "createShortcut(':4')"),
+                    new ("LookingToTrade", "createShortcut(':5')"),
+                    new ("LookingToPlay", "createShortcut(':6')"),
+                }),
+                new ("Context_ChangeImage", "changeImage(event)"),
+                new ("Context_Steam_OpenUserdata", "openUserdata(event)"),
+                new ("Forget", "forget(event)"),
+                new ("Notes", "showNotes(event)"),
+            });
+            Menu.AddRange(menu);
+            /* Game data submenu */
             if (File.Exists(SteamAppsUserCache) && AppIds.Value.Count > 0)
             {
-                contextMenuJsonBuilder.Append($@"{{""{Lang["Context_GameDataSubmenu"]}"": [");
-
-                SortedList<string, int> listOfGames = new();
-                List<int> gameIdsOnly = new();
-                foreach (var gameId in InstalledGames.Value)
+                Menu.Add(new MenuItem()
                 {
-                    var gameName = AppIds.Value.ContainsKey(gameId) ? AppIds.Value[gameId] : gameId;
-                    if (gameName == gameId) gameIdsOnly.Add(int.Parse(gameId));
-                    else listOfGames.Add(gameName, int.Parse(gameId));
-                }
-
-                foreach (var (gameName, gameId) in listOfGames)
-                {
-                    contextMenuJsonBuilder.Append($@"
-                {{""{gameName}"": [
-                    {{""{Lang["Context_Game_CopySettingsFrom"]}"": ""CopySettingsFrom(event, '{gameId}')""}},
-                    {{""{Lang["Context_Game_RestoreSettingsTo"]}"": ""RestoreSettingsTo(event, '{gameId}')""}},
-                    {{""{Lang["Context_Game_BackupData"]}"": ""BackupGameData(event, '{gameId}')""}},
-                ]}},");
-                }
-
-                foreach (var gameId in gameIdsOnly)
-                {
-                    contextMenuJsonBuilder.Append($@"
-                {{""{gameId}"": [
-                    {{""{Lang["Context_Game_CopySettingsFrom"]}"": ""CopySettingsFrom(event, '{gameId}')""}},
-                    {{""{Lang["Context_Game_RestoreSettingsTo"]}"": ""RestoreSettingsTo(event, '{gameId}')""}},
-                    {{""{Lang["Context_Game_BackupData"]}"": ""BackupGameData(event, '{gameId}')""}},
-                ]}},");
-                }
-                contextMenuJsonBuilder.Append("\n]}");
+                    Text = "Context_GameDataSubmenu",
+                    Children = (
+                        from gameId in InstalledGames.Value select new MenuItem()
+                        {
+                            Text = AppIds.Value.ContainsKey(gameId) ? AppIds.Value[gameId] : gameId,
+                            Children = new List<MenuItem>()
+                            {
+                                new ()
+                                {
+                                    Text = "Context_Game_CopySettingsFrom",
+                                    Content = $"CopySettingsFrom(event, '{gameId}')"
+                                },
+                                new ()
+                                {
+                                    Text = "Context_Game_RestoreSettingsTo",
+                                    Content = $"RestoreSettingsTo(event, '{gameId}"
+                                },
+                                new ()
+                                {
+                                    Text = "Context_Game_BackupData",
+                                    Content = $"BackupGameData(event, '{gameId}')"
+                                },
+                            }
+                        }
+                        ).ToList()
+                });
             }
-
-            contextMenuJsonBuilder.Append("\n]");
-            ContextMenuJson = contextMenuJsonBuilder.ToString();
         }
 
         public static string StateToString(int state)

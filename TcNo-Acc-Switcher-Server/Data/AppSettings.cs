@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -31,6 +32,7 @@ using SharpScss;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
+using TcNo_Acc_Switcher_Server.Shared;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -180,20 +182,13 @@ namespace TcNo_Acc_Switcher_Server.Data
         private static bool UpdateCheckRan { get =>Instance._updateCheckRan; set => Instance._updateCheckRan = value; }
         public static bool PreRenderUpdate { get =>Instance._preRenderUpdate; set => Instance._preRenderUpdate = value; }
 
-        [JsonIgnore]
-        public static string PlatformContextMenu =>
-            Lang == null ? "" : $@"[
-              {{""{Lang["Context_HidePlatform"]}"": ""hidePlatform()""}},
-              {{""{Lang["Context_CreateShortcut"]}"": ""createPlatformShortcut()""}},
-              {{""{Lang["Context_ExportAccList"]}"": ""exportAllAccounts()""}}
-            ]";
-        [JsonIgnore]
-        public static string PreviewContextMenu =>
-            Lang == null ? "" : $@"[
-              {{""{Lang["Context_HidePlatform"]}"": """"}},
-              {{""{Lang["Context_CreateShortcut"]}"": """"}},
-              {{""{Lang["Context_ExportAccList"]}"": """"}}
-            ]";
+        public static readonly ObservableCollection<MenuItem> PlatformContextMenuItems = MenuBuilder.Build(
+            new Tuple<string, object>[]
+            {
+                new ("Context_HidePlatform", "hidePlatform()"),
+                new ("Context_CreateShortcut", "createPlatformShortcut()"),
+                new ("Context_ExportAccList", "exportAllAccounts()"),
+            });
 
         [JSInvokable]
         public static async Task HidePlatform(string platform)

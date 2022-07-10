@@ -51,9 +51,9 @@
 
     <h2 class="SettingsHeader">@Locale["Preview_Platforms"]</h2>
     <div class="preview_element">
-        <ContextMenu ContextMenuString="@Data.Settings.Basic.ContextMenuJson" ContextMenuId="AccOrPlatList" />
-        <ContextMenu ContextMenuString="@Data.Settings.Basic.ContextMenuShortcutJson" ContextMenuId="Shortcuts" />
-        <ContextMenu ContextMenuString="@Data.Settings.Basic.ContextMenuPlatformJson" ContextMenuId="Platform" />
+        <ContextMenu MenuItems="@Data.Settings.Basic.ContextMenuItems" ContextMenuId="AccOrPlatList" />
+        <ContextMenu MenuItems="@Data.Settings.Basic.ContextMenuShortcutItems" ContextMenuId="Shortcuts" />
+        <ContextMenu MenuItems="@Data.Settings.Basic.ContextMenuPlatformItems" ContextMenuId="Platform" />
         <div class="programMain previewMain">
             <div class="platformTable">
                 <div class="platform_list" aria-dropeffect="move">

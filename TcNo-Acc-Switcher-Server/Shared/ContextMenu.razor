@@ -1,4 +1,7 @@
-﻿@*TcNo Account Switcher - A Super fast account switcher
+﻿@using Newtonsoft.Json.Linq
+@using TcNo_Acc_Switcher_Globals
+@using System.Collections.ObjectModel
+@*TcNo Account Switcher - A Super fast account switcher
     Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -11,12 +14,23 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+@inject IJSRuntime Js
 
-@code{
-    [Parameter]
-    public string ContextMenuString { get; set; }
+@code {
     [Parameter]
     public string ContextMenuId { get; set; }
+    [Parameter]
+    public ObservableCollection<MenuItem> MenuItems { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        MenuItems.CollectionChanged += ((_, _) => InvokeAsync(StateHasChanged));
+    }
 }
 
-@(new MarkupString(GetContextMenu(ContextMenuString, ContextMenuId)))
+<ul class="contextmenu" id="@ContextMenuId">
+    @foreach (var item in MenuItems)
+    {
+        <ContextMenuItem Item="@item" Depth="0" />
+    }
+</ul>    

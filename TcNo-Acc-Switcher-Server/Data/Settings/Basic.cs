@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,7 @@ using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
+using TcNo_Acc_Switcher_Server.Shared;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
@@ -63,7 +65,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     }
 
                     _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.FullName);
-                    InitLang();
                     AppData.InitializedClasses.Basic = true;
 
                     _instance._currentlyModifying = false;
@@ -96,9 +97,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ShowShortNotes", Order = 9)] private bool _showShortNotes = true;
         [JsonProperty("AccountNotes", Order = 10)] private Dictionary<string, string> _accountNotes = new();
         [JsonIgnore] private bool _desktopShortcut;
-        [JsonIgnore] private string _contextMenuJson = "[]";
-        [JsonIgnore] private string _contextMenuShortcutJson = "[]";
-        [JsonIgnore] private string _contextMenuPlatformJson = "[]";
         [JsonIgnore] private int _lastAccTimestamp = 0;
         [JsonIgnore] private string _lastAccName = "";
 
@@ -148,30 +146,27 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             set => Instance._startingMethod = value;
         }
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
-        public static string ContextMenuJson { get => Instance._contextMenuJson; set => Instance._contextMenuJson = value; }
-        public static string ContextMenuShortcutJson { get => Instance._contextMenuShortcutJson; set => Instance._contextMenuShortcutJson = value; }
-        public static string ContextMenuPlatformJson { get => Instance._contextMenuPlatformJson; set => Instance._contextMenuPlatformJson = value; }
-
-        public static void InitLang()
+        public static readonly ObservableCollection<MenuItem> ContextMenuItems = MenuBuilder.Build(
+            new Tuple<string, object>[]
         {
-            ContextMenuJson = $@"[
-				{{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
-				{{""{Lang["Context_ChangeName"]}"": ""showModal('changeUsername')""}},
-				{{""{Lang["Context_CreateShortcut"]}"": ""createShortcut()""}},
-				{{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
-				{{""{Lang["Forget"]}"": ""forget(event)""}},
-				{{""{Lang["Notes"]}"": ""showNotes(event)""}}
-            ]";
-
-            ContextMenuShortcutJson = $@"[
-				{{""{Lang["Context_RunAdmin"]}"": ""shortcut('admin')""}},
-				{{""{Lang["Context_Hide"]}"": ""shortcut('hide')""}}
-            ]";
-
-            ContextMenuPlatformJson = $@"[
-				{{""{Lang["Context_RunAdmin"]}"": ""shortcut('admin')""}}
-            ]";
-        }
+            new ("Context_SwapTo", "swapTo(-1, event)"),
+            new ("Context_ChangeName", "showModal('changeUsername')"),
+            new ("Context_CreateShortcut", "createShortcut()"),
+            new ("Context_ChangeImage", "changeImage(event)"),
+            new ("Forget", "forget(event)"),
+            new ("Notes", "showNotes(event)"),
+        });
+        public static readonly ObservableCollection<MenuItem> ContextMenuShortcutItems = MenuBuilder.Build(
+            new Tuple<string, object>[]
+        {
+            new ("Context_RunAdmin", "shortcut('admin')"),
+            new ("Context_Hide", "shortcut('hide')"),
+        });
+        public static readonly ObservableCollection<MenuItem> ContextMenuPlatformItems = MenuBuilder.Build(
+            new Tuple<string, object>[]
+        {
+            new ("Context_RunAdmin", "shortcut('admin')"),
+        });
 
         /// <summary>
         /// Updates the ForgetAccountEnabled bool in settings file
