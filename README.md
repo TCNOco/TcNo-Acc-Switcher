@@ -112,9 +112,10 @@ move your files around on your computer the same way you can. The use of names, 
 endorsement of the trademark holder by this project or its creators, nor vice versa. They are only used to visually indicate
 which programs this project interacts with easily to the end-user.
 
-By enabling optional features that scrape the web for publically available information (such as game/profile statistics and
-other data), you understand and accept full responsibility for doing so on your own volition. If you appreciate accurate
-information, support the servies providing it directly.
+By enabling optional features that scrape the web for publically available information (such as limited game/profile statistics
+and other data), you understand and accept full responsibility for doing so on your own volition. If you appreciate accurate
+information, support the services providing it directly. The information collected is incredibly limited and is no replacement
+or competitor for sites scraped.
 
 I am not responsible for the contents of external links.
 For the rest of the disclaimer, refer to the License (GNU General Public License v3.0) file:
