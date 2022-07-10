@@ -124,6 +124,7 @@ namespace TcNo_Acc_Switcher_Client
 
             Width = AppSettings.WindowSize.X;
             Height = AppSettings.WindowSize.Y;
+            AllowsTransparency = AppSettings.AllowTransparency;
             StateChanged += WindowStateChange;
             // Each window in the program would have its own size. IE Resize for Steam, and more.
 

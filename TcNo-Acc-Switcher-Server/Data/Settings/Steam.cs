@@ -264,9 +264,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("AutoStart", Order = 16)] private bool _autoStart = true;
         [JsonProperty("ShowShortNotes", Order = 17)] private bool _showShortNotes = true;
         [JsonProperty("AccountNotes", Order = 18)] private Dictionary<string, string> _accountNotes = new();
+        [JsonProperty("SteamWebApiKey", Order = 19)] private string _steamWebApiKey = "";
+        [JsonProperty("StartSilent", Order = 20)] private bool _startSilent;
         [JsonIgnore] private bool _desktopShortcut;
-        [JsonIgnore] private int _lastAccTimestamp;
-        [JsonIgnore] private string _lastAccName;
+        [JsonIgnore] private int _lastAccTimestamp = 0;
+        [JsonIgnore] private string _lastAccName = "";
+        [JsonIgnore] private bool _steamWebApiWasReset;
         [JsonIgnore] public static readonly string SteamAppsListPath = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsFullListCache.json");
         [JsonIgnore] public static readonly string SteamAppsUserCache = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
 
@@ -298,6 +301,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static int OverrideState { get => Instance._overrideState; set => Instance._overrideState = value; }
 
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
+        public static string SteamWebApiKey { get => Instance._steamWebApiKey; set => Instance._steamWebApiKey = value; }
+        public static bool StartSilent { get => Instance._startSilent; set => Instance._startSilent = value; }
+        public static bool SteamWebApiWasReset { get => Instance._steamWebApiWasReset; set => Instance._steamWebApiWasReset = value; }
 
         // Constants
         public static readonly List<string> Processes = new() { "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };

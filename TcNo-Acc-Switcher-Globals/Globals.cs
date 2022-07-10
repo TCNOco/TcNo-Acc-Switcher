@@ -127,6 +127,9 @@ namespace TcNo_Acc_Switcher_Globals
             // Initialise folder:
             InitWwwroot(wwwroot, overwrite);
             InitFolder("themes", overwrite);
+
+            // Create logging level file
+            CopyFile(Path.Join(AppDataFolder, "appsettings.json"), Path.Join(UserDataFolder, "appsettings.json"));
         }
 
         public static void ClearWebCache()

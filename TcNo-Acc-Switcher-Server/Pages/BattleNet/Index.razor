@@ -40,15 +40,17 @@
 </div>
 
 <div class="shortcutDropdown" id="shortcutDropdown" style="display: none">
-    @foreach (var (i, shortcut) in BattleNet.Shortcuts)
-    {
-        @if (i >= 0)
+    <div class="shortcutDropdownItems">
+        @foreach (var (i, shortcut) in BattleNet.Shortcuts)
         {
-            <button class="HasContextMenu" id="@(shortcut)" @onclick='() => Basic.RunShortcut(shortcut, "LoginCache\\BattleNet\\Shortcuts", platform: "BattleNet")' data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
-                <img src="@(BattleNet.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
-            </button>
+            @if (i >= 0)
+            {
+                <button class="HasContextMenu" id="@(shortcut)" @onclick='() => Basic.RunShortcut(shortcut, "LoginCache\\BattleNet\\Shortcuts", platform: "BattleNet")' data-toggle="tooltip" title="@(PlatformFuncs.RemoveShortcutExt(shortcut))">
+                    <img src="@(BattleNet.GetShortcutImagePath(shortcut))" alt="@(shortcut[0])"/>
+                </button>
+            }
         }
-    }
+    </div>
     <button id="btnOpenShortcutFolder" @onclick="() => Basic.OpenFolder(Path.GetFullPath(BattleNet.ShortcutFolder))" data-toggle="tooltip" title="@(Locale["Tooltip_ShortcutFolder"])" data-placement="right"><i class="fas fa-plus"></i></button>
 </div>
 
@@ -105,6 +107,7 @@
         AppStats.NewNavigation("/BattleNet/");
         if (!firstRender) return;
         _ = AppData.InvokeVoidAsync("initCopyHotKey");
+        _ = AppData.InvokeVoidAsync("showNoteTooltips");
 
         var curAcc = BattleNetSwitcherFuncs.GetCurrentAccountId();
         if (curAcc != "") _ = AppData.InvokeVoidAsync("highlightCurrentAccount", curAcc);

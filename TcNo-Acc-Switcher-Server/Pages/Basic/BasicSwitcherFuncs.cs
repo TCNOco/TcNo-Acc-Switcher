@@ -132,8 +132,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             AppStats.IncrementSwitches(CurrentPlatform.SafeName);
 
-            _ = AppData.InvokeVoidAsync("showNoteTooltips");
-
             try
             {
                 BasicSettings.LastAccName = accId;

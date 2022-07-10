@@ -176,6 +176,10 @@ button .caret, .button .caret {
   content: "  |  ";
 }
 
+.subtext {
+  font-size: 0.8em;
+}
+
 /* Ace Editor */
 .ace_editor {
   background: #282a36;
@@ -371,13 +375,16 @@ button .caret, .button .caret {
   position: absolute;
   z-index: 500;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-wrap: wrap;
   min-width: 36px;
   min-height: 36px;
   max-height: 260px;
+}
+.shortcutDropdown .shortcutDropdownItems {
+  display: flex;
+  flex-wrap: wrap;
   overflow-x: hidden;
   overflow-y: auto;
+  max-height: inherit;
 }
 .shortcutDropdown #btnOpenShortcutFolder {
   position: absolute;

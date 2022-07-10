@@ -100,11 +100,12 @@
 .infoWindow .rightContent h2 {
   font-weight: bold;
 }
-.infoWindow .rightContent .linksList {
+
+.linksList {
   display: flex;
   flex-direction: column;
 }
-.infoWindow .rightContent .linksList a svg {
+.linksList a svg {
   display: inline-block;
   width: 2em;
   margin-right: 0.5em;
@@ -129,7 +130,8 @@
   left: unset !important;
   width: 35% !important;
 }
-#modal_contents input[type=text], #modal_contents input[type=password] {
+#modal_contents input[type=text],
+#modal_contents input[type=password] {
   margin: 0;
   height: 43px;
   padding-bottom: 2px;
@@ -137,7 +139,8 @@
   border-bottom: 2px solid #888;
   background: #070A0D;
 }
-#modal_contents input[type=text], #modal_contents input[type=password]:focus {
+#modal_contents input[type=text],
+#modal_contents input[type=password]:focus {
   border-bottom: 2px solid var(--accent);
 }
 #modal_contents #accNotes {
@@ -160,6 +163,10 @@
   margin: 0 0.5em 2px 0.5em;
   color: white;
   font-size: 12px !important;
+  display: inline-block;
+}
+#modal_contents h3 {
+  color: white;
 }
 #modal_contents button {
   user-select: none;

@@ -43,16 +43,20 @@
 
             <h2 class="SettingsHeader">@Locale["Settings_Header_GeneralSettings"]</h2>
             <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="Steam.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Steam", Steam.DesktopShortcut)'><label class="form-check-label" for="Steam_DesktopShortcut"></label></div><label for="Steam_DesktopShortcut">
-		            @Locale["Settings_Shortcut", new { platform = Platform }]<br></label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="Steam_DesktopShortcut" @bind="Steam.DesktopShortcut" @onclick='() => Shortcut.DesktopShortcut_Toggle("Steam", Steam.DesktopShortcut)'><label class="form-check-label" for="Steam_DesktopShortcut"></label>
+                </div>
+                <label for="Steam_DesktopShortcut">@Locale["Settings_Shortcut", new { platform = Platform }]<br></label>
             </div>
-            <div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin" @bind="Steam.Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label for="Steam_Admin">
-		            @Locale["Settings_Admin", new { platform = Platform }]<br></label>
+            <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="Steam_Admin" @bind="Steam.Admin"><label class="form-check-label" for="Steam_Admin"></label></div><label for="Steam_Admin">@Locale["Settings_Admin", new { platform = Platform }]<br></label>
             </div>
             <div>
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="AutoStart" @bind="Steam.AutoStart"><label class="form-check-label" for="AutoStart"></label></div><label for="AutoStart">
                     @Locale["Settings_AutoStart", new { platform = "Steam" }]<br></label>
+            </div>
+            <div class="rowSetting">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="StartSilent" disabled="@(!Steam.AutoStart)" @bind="Steam.StartSilent"><label class="form-check-label" for="StartSilent"></label></div><label for="StartSilent">@Locale["Steam_StartSilent"]<br></label>
             </div>
             <div class="rowSetting rowDropdown">
                 <span>@Locale["Settings_Header_ClosingMethod", new { platform = "Steam" }]</span>
@@ -119,6 +123,7 @@
                 </div>
             </div>
             <div class="form-text"><span>@Locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="Steam.ImageExpiryTime"></div>
+            <div class="form-text"><span>@Locale["Settings_SteamAPIKey"]</span><input type="text" id="Steam_SteamAPIKey" @bind="Steam.SteamWebApiKey" spellcheck="false"><p class="subtext">@Locale["Settings_SteamAPIKey_Note"]</p></div>
 
 
 

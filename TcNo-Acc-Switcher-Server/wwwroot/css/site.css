@@ -618,14 +618,19 @@ div.advancedClearingButtonCol .buttoncol {
 .battlenetIcoOWTank, .battlenetIcoOWDamage, .battlenetIcoOWSupport {
   fill: white;
 }
+.battlenetLevel sup {
+  top: -0.1em;
+}
 
 /* Footer icons */
-#btnSettings, #btnHelp {
+#btnSettings,
+#btnHelp {
   width: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-#btnSettings i, #btnHelp i {
+#btnSettings i,
+#btnHelp i {
   font-size: 16px;
 }

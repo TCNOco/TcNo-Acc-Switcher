@@ -61,11 +61,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             [JsonProperty("BattleTag", Order = 1)] public string BTag { get; set; }
             [JsonProperty("OwTankSr", Order = 2)] public int OwTankSr { get; set; }
             [JsonProperty("OwDpsSr", Order = 3)] public int OwDpsSr { get; set; }
+            [JsonProperty("OwSupportSr", Order = 4)] public int OwSupportSr { get; set; }
+            [JsonProperty("OwPlayerLevel", Order = 5)] public int OwPlayerLevel { get; set; }
 
-            [JsonProperty("OwSupportSr", Order = 4)]
-            public int OwSupportSr { get; set; }
-
-            [JsonProperty("LastTimeChecked", Order = 5)]
+            [JsonProperty("LastTimeChecked", Order = 6)]
             public DateTime LastTimeChecked { get; set; }
 
             [JsonIgnore] public string ImgUrl { get; set; }
@@ -75,84 +74,85 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             {
                 if (!BattleNetSwitcherFuncs.ValidateBTag(BTag)) return false;
                 var split = BTag.Split("#");
-                var req = WebRequest.Create($"https://playoverwatch.com/en-us/career/pc/{split[0]}-{split[1]}/");
-                req.Method = "GET";
+                var url = $"https://playoverwatch.com/en-us/career/pc/{split[0]}-{split[1]}/";
 
                 var doc = new HtmlDocument();
-                var responseStream = req.GetResponse().GetResponseStream();
-                if (responseStream == null)
+                var responseText = Globals.ReadWebUrl(url);
+
+                try
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_StatsFail", new {BTag}],
+                    doc.LoadHtml(responseText);
+                }
+                catch (Exception)
+                {
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_StatsFail", new { BTag }],
                         renderTo: "toastarea");
                     return false;
                 }
 
-                using (var reader = new StreamReader(responseStream))
-                {
-                    doc.LoadHtml(reader.ReadToEnd());
-                }
+                //// If the PlayOverwatch site is overloaded
+                //if (doc.DocumentNode.SelectSingleNode("/html/body/section[1]/section/div/h1") != null)
+                //{
+                //    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_StatsFail", new {BTag}],
+                //        renderTo: "toastarea");
+                //    return false;
+                //}
 
-                // If the PlayOverwatch site is overloaded
-                if (doc.DocumentNode.SelectSingleNode("/html/body/section[1]/section/div/h1") != null)
+                // Get image
+                var image = doc.DocumentNode.SelectSingleNode("//img[@class='player-portrait']")?.Attributes["src"]?.Value;
+                if (!string.IsNullOrEmpty(image))
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_StatsFail", new {BTag}],
-                        renderTo: "toastarea");
-                    return false;
+                    ImgUrl = image;
+                    _ = BattleNetSwitcherFuncs.DownloadImage(Email, ImgUrl);
                 }
 
                 // If the Profile is private
-                if (doc.DocumentNode.SelectSingleNode(
-                        "/html/body/section[1]/div[1]/section/div/div/div/div/div[1]/p")?.InnerHtml ==
-                    "Private Profile")
+                if (responseText.Contains("Private Profile"))
                 {
-                    ImgUrl = doc.DocumentNode
-                        .SelectSingleNode("/html/body/section[1]/div[1]/section/div/div/div/div/div[2]/img")
-                        .Attributes["src"].Value;
-                    _ = GeneralInvocableFuncs.ShowToast("warning", Lang["Toast_BNet_Private", new {BTag}],
-                        renderTo: "toastarea");
-                    _ = BattleNetSwitcherFuncs.DownloadImage(Email, ImgUrl);
+                    _ = GeneralInvocableFuncs.ShowToast("warning", Lang["Toast_BNet_Private", new {BTag}], renderTo: "toastarea");
                     LastTimeChecked = DateTime.Now - TimeSpan.FromMinutes(1435); // 23 Hours 55 Minutes
                     return false;
                 }
 
-                // If BattleTag is invalid
-                if (doc.DocumentNode.SelectSingleNode(
-                        "/html/body/section[1]/section/div/h1")?.InnerHtml == "PROFILE NOT FOUND")
+                // If the Profile is not found
+                if (responseText.Contains("Profile Not Found"))
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_ItemNotFound", new {item = BTag}],
-                        renderTo: "toastarea");
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_BNet_NotFound", new {BTag}], renderTo: "toastarea");
+                    return false;
+                }
+
+                // If BattleTag is invalid
+                if (doc.DocumentNode.SelectSingleNode("//h1[@class='u-align-center']")?.InnerHtml == "PROFILE NOT FOUND")
+                {
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_ItemNotFound", new {item = BTag}], renderTo: "toastarea");
                     return false;
                 }
 
                 LastTimeChecked = DateTime.Now;
-                ImgUrl = doc.DocumentNode
-                    .SelectSingleNode("/html/body/section[1]/div[1]/section/div/div[2]/div/div/div[2]/img")
-                    .Attributes["src"].Value;
-                _ = BattleNetSwitcherFuncs.DownloadImage(Email, ImgUrl);
 
-                var ranks = doc.DocumentNode.SelectNodes(
-                    "/html/body/section[1]/div[1]/section/div/div[2]/div/div/div[2]/div/div[3]");
+                // Get player level
+                var playerLevelStr = doc.DocumentNode.SelectNodes("//div[@class='player-level']/div[@class='u-vertical-center']")?.FirstOrDefault()?.InnerHtml;
+                if (int.TryParse(playerLevelStr, out var playerLevel))
+                    OwPlayerLevel = playerLevel;
+
+                // Get Overwatch ranks
+                var ranks = doc.DocumentNode.SelectNodes("//div[@class='competitive-rank-role']");
+                if (ranks is null) return true; // No ranks found
                 foreach (var node in ranks.Elements())
                 {
-                    if (!int.TryParse(node.LastChild.LastChild.InnerHtml, out var sr))
+                    //if (!int.TryParse(node.LastChild.LastChild.InnerHtml, out var sr))
+                    if (!int.TryParse(node.SelectNodes("div[@class='competitive-rank-level']")?[0]?.InnerHtml, out var sr))
                     {
                         continue;
                     }
 
-                    switch (node.LastChild.FirstChild.Attributes["data-ow-tooltip-text"].Value.Split(" ").First())
-                    {
-                        case "Tank":
-                            OwTankSr = sr;
-                            break;
-                        case "Damage":
-                            OwDpsSr = sr;
-                            break;
-                        case "Support":
-                            OwSupportSr = sr;
-                            break;
-                        default:
-                            continue;
-                    }
+                    var innerHtml = node.InnerHtml;
+                    if (innerHtml.Contains("Tank"))
+                        OwTankSr = sr;
+                    else if (innerHtml.Contains("Damage"))
+                        OwDpsSr = sr;
+                    else if (innerHtml.Contains("Support"))
+                        OwSupportSr = sr;
                 }
 
                 return true;

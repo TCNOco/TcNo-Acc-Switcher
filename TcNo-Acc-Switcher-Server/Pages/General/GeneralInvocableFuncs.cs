@@ -46,6 +46,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         {
             var fileName = "TcNo-Acc-Switcher_main.exe";
             if (!AppData.TcNoClientApp) fileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher-Server_main.exe";
+            else
+            {
+                // Is client app, but could be developing >> No _main just yet.
+                if (!File.Exists(Path.Join(Globals.AppDataFolder, fileName)) && File.Exists(Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe")))
+                    fileName = Path.Combine(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe");
+            }
 
             var proc = new ProcessStartInfo
             {
@@ -364,43 +370,33 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (platform == "Steam")
             {
                 // Add headings and separator for programs like Excel
-                allAccountsTable.Add("SEP=,");
-                allAccountsTable.Add("Account name:,Community name:,SteamID:,VAC status:,Last login:,Saved profile image:");
+                allAccountsTable.Add($"SEP={s}");
+                allAccountsTable.Add($"Account name:{s}Community name:{s}SteamID:{s}VAC status:{s}Last login:{s}Saved profile image:");
 
-                var userAccounts = SteamSwitcherFuncs.GetSteamUsers(SteamSettings.LoginUsersVdf());
-                var vacStatusList = new List<SteamSwitcherFuncs.VacStatus>();
-                var loadedVacCache = SteamSwitcherFuncs.LoadVacInfo(ref vacStatusList);
+                AppData.SteamUsers = SteamSwitcherFuncs.GetSteamUsers(SteamSettings.LoginUsersVdf());
+                // Load cached ban info
+                SteamSwitcherFuncs.LoadCachedBanInfo();
 
-                foreach (var ua in userAccounts)
+                foreach (var su in AppData.SteamUsers)
                 {
-                    var vacInfo = "";
-                    // Get VAC/Limited info
-                    if (loadedVacCache)
-                        foreach (var vsi in vacStatusList.Where(vsi => vsi.SteamId == ua.SteamId))
-                        {
-                            if (vsi.Vac && vsi.Ltd) vacInfo += "VAC + Limited";
-                            else vacInfo += (vsi.Vac ? "VAC" : "") + (vsi.Ltd ? "Limited" : "");
-                            break;
-                        }
-                    else
-                    {
-                        vacInfo += "N/A";
-                    }
+                    var banInfo = "";
+                    if (su.Vac && su.Limited) banInfo += "VAC + Limited";
+                    else banInfo += (su.Vac ? "VAC" : "") + (su.Limited ? "Limited" : "");
 
-                    var imagePath = Path.GetFullPath($"{SteamSettings.SteamImagePath + ua.SteamId}.jpg");
-                    allAccountsTable.Add(ua.AccName + s +
-                                         ua.Name + s +
-                                         ua.SteamId + s +
-                                         vacInfo + s +
-                                         SteamSwitcherFuncs.UnixTimeStampToDateTime(ua.LastLogin) + s +
+                    var imagePath = Path.GetFullPath($"{SteamSettings.SteamImagePath + su.SteamId}.jpg");
+                    allAccountsTable.Add(su.AccName + s +
+                                         su.Name + s +
+                                         su.SteamId + s +
+                                         banInfo + s +
+                                         SteamSwitcherFuncs.UnixTimeStampToDateTime(su.LastLogin) + s +
                                          (File.Exists(imagePath) ? imagePath : "Missing from disk"));
                 }
             }
             else if (platform == "BattleNet")
             {
                 // Add headings and separator for programs like Excel
-                allAccountsTable.Add("SEP=,");
-                allAccountsTable.Add("Email:,BattleTag:,Overwatch Support SR:,Overwatch DPS SR:,Overwatch Tank SR:,Saved profile image:");
+                allAccountsTable.Add($"SEP={s}");
+                allAccountsTable.Add($"Email:{s}BattleTag:{s}Overwatch Player Level:{s}Overwatch Support SR:{s}Overwatch DPS SR:{s}Overwatch Tank SR:{s}Saved profile image:");
 
                 await BattleNetSwitcherFuncs.LoadProfiles();
 
@@ -409,6 +405,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     var imagePath = Path.GetFullPath($"wwwroot\\img\\profiles\\battlenet\\{ba.Email}.png");
                     allAccountsTable.Add(ba.Email + s +
                                          ba.BTag + s +
+                                         (ba.OwPlayerLevel != 0 ? ba.OwPlayerLevel : "") + s +
                                          (ba.OwSupportSr != 0 ? ba.OwSupportSr : "") + s +
                                          (ba.OwDpsSr != 0 ? ba.OwDpsSr : "") + s +
                                          (ba.OwTankSr != 0 ? ba.OwTankSr : "") + s +
