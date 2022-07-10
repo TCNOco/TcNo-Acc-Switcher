@@ -253,20 +253,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 Task.Run(SteamSwitcherFuncs.DownloadSteamAppsData).ContinueWith(_ =>
                 {
                     var names = LoadAppNames();
-                    try
+                    foreach (var kv in names)
                     {
-                        foreach (var kv in names)
+                        try
                         {
                             SteamSettings.AppIds.Value.Add(kv.Key, kv.Value);
                         }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        // no real need to handle this exception
-                    }
-                    Data.Settings.Steam.InitLang();
-                    
-                    Index.SteamContextMenu.ContextMenuString = SteamSettings.ContextMenuJson;
+                    Data.Settings.Steam.BuildContextMenu();
                 });
                 return new Dictionary<string, string>();
             }

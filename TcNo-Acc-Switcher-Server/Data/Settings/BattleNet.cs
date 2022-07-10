@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Microsoft.JSInterop;
@@ -26,6 +27,7 @@ using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
+using TcNo_Acc_Switcher_Server.Shared;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
@@ -70,7 +72,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     LoadBasicCompat(); // Add missing features in templated platforms system.
 
                     _instance._desktopShortcut = Shortcut.CheckShortcuts("BattleNet");
-                    InitLang();
                     AppData.InitializedClasses.BattleNet = true;
                     _instance._currentlyModifying = false;
 
@@ -258,7 +259,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private List<BattleNetSwitcherBase.BattleNetUser> _accounts = new();
         [JsonIgnore] private List<string> _ignoredAccounts = new();
-        [JsonIgnore] private string _contextMenuJson = "[]";
         [JsonIgnore] private int _lastAccTimestamp = 0;
         [JsonIgnore] private string _lastAccName = "";
 
@@ -292,21 +292,19 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static readonly string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
         public static readonly string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";
 
-        public static string ContextMenuJson { get => Instance._contextMenuJson; set => Instance._contextMenuJson = value; }
-
-        public static void InitLang()
-        {
-            ContextMenuJson = $@"[
-              {{""{Lang["Context_SwapTo"]}"": ""swapTo(-1, event)""}},
-              {{""{Lang["Context_BNet_SetBTag"]}"": ""showModal('changeUsername:BattleTag')""}},
-              {{""{Lang["Context_BNet_DelBTag"]}"": ""forgetBattleTag()""}},
-              {{""{Lang["Context_BNet_GetRAnk"]}"": ""refetchRank()""}},
-              {{""{Lang["Context_CreateShortcut"]}"": ""createShortcut()""}},
-              {{""{Lang["Context_ChangeImage"]}"": ""changeImage(event)""}},
-              {{""{Lang["Forget"]}"": ""forget(event)""}},
-			  {{""{Lang["Notes"]}"": ""showNotes(event)""}}
-            ]";
-        }
+        public static readonly ObservableCollection<MenuItem> ContextMenuItems = MenuBuilder.Build(
+            new Tuple<string, object>[]
+            {
+                new("Context_SwapTo", "swapTo(-1, event)"),
+                new("Context_BNet_SetBTag", "showModal('changeUsername:BattleTag')"),
+                new("Context_BNet_DelBTag", "forgetBattleTag()"),
+                new("Context_BNet_GetRAnk", "refetchRank()"),
+                new("Context_CreateShortcut", "createShortcut()"),
+                new("Context_ChangeImage", "changeImage(event)"),
+                new("Forget", "forget(event)"),
+                new("Notes", "showNotes(event)"),
+            });
+        
         #endregion
 
         #region FORGETTING_ACCOUNTS

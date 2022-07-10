@@ -34,7 +34,7 @@
     </div>
 }
 
-<ContextMenu ContextMenuString="@AppSettings.PlatformContextMenu" ContextMenuId="AccOrPlatList" />
+<ContextMenu MenuItems="@AppSettings.PlatformContextMenuItems" ContextMenuId="AccOrPlatList" />
 <div class="platformTable">
     <div class="platform_list">
         @foreach (var platform in AData.SortedPlatformListHandleDisabled())

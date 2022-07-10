@@ -26,10 +26,9 @@
 <style>@(AppSettings.GetCssBlock())</style>
 <style>@(Steam.GetSteamIdCssBlock())</style>
 @inject Lang Locale
-
-<ContextMenu ContextMenuString="@Steam.ContextMenuJson" ContextMenuId="AccOrPlatList" @ref="SteamContextMenu" />
-<ContextMenu ContextMenuString="@Basic.ContextMenuShortcutJson" ContextMenuId="Shortcuts" />
-<ContextMenu ContextMenuString="@Basic.ContextMenuPlatformJson" ContextMenuId="Platform" />
+<ContextMenu MenuItems="@Steam.Menu" ContextMenuId="AccOrPlatList" @ref="SteamContextMenu" />
+<ContextMenu MenuItems="@Basic.ContextMenuShortcutItems" ContextMenuId="Shortcuts" />
+<ContextMenu MenuItems="@Basic.ContextMenuPlatformItems" ContextMenuId="Platform" />
 <div id="acc_list" class="acc_list">
     <toastarea class="toastarea" />
 </div>

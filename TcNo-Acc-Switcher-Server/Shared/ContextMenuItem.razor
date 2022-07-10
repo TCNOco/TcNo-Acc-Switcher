@@ -1,0 +1,30 @@
+﻿@using TcNo_Acc_Switcher_Server.Data
+@using System.Collections.ObjectModel
+@inject Lang Locale
+@code {
+    [Parameter] 
+    public MenuItem Item { get; set; }
+    [Parameter]
+    public int Depth { get; set; }
+    private static readonly Lang Lang = Lang.Instance;
+    private int NextDepth => Depth + 1;
+    private string MenuClass => "submenu submenu" + NextDepth.ToString();
+    private string Text => Lang[Item.Text] ?? Item.Text;
+}
+
+@if (Item.Children.Any())
+{
+    <li>
+        <a onclick="event.preventDefault();">@Text</a>
+        <ul class="@MenuClass">
+            @foreach (var item in Item.Children)
+            {
+                <ContextMenuItem Item="@item" Depth="@NextDepth"/>
+            }
+        </ul>
+    </li>
+}
+else
+{
+    <li><a onclick="@Item.Content">@Text</a></li>
+}
