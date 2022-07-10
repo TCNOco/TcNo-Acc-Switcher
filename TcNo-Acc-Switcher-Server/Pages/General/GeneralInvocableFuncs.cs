@@ -414,7 +414,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                                          (ba.OwDpsSr != 0 ? ba.OwDpsSr : "") + s +
                                          (ba.OwTankSr != 0 ? ba.OwTankSr : "") + s +
                                          (File.Exists(imagePath) ? imagePath : "Missing from disk") + s +
-                                         BasicStats.GetGameStatsString(ba.BTag));
+                                         BasicStats.GetGameStatsString(ba.Email));
                 }
             }
             else

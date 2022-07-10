@@ -51,6 +51,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static SortedDictionary<string, List<string>> PlatformGames { get => Instance._platformGames; set => Instance._platformGames = value; }
         public static Dictionary<string, GameStat> GameStats { get => Instance._gameStats; set => Instance._gameStats = value; }
 
+        public static List<string> GetGamesForPlatform(string platform) => PlatformGames[platform];
         public static JToken StatsDefinitions => (JObject)JData["StatsDefinitions"];
         public static JToken PlatformCompatibilities => (JObject)JData["PlatformCompatibilities"];
         public static JObject GetGame(string game) => (JObject) StatsDefinitions![game];
@@ -90,7 +91,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             //}
         }
 
-        public static List<string> PlatformGamesWithStats(string platform) => PlatformGames.ContainsKey(platform) ? PlatformGames[platform] : new List<string>();
+        public static List<string> PlatformGamesWithStats(string platform) => PlatformGames.ContainsKey(platform) ? GetGamesForPlatform(platform) : new List<string>();
 
         /// <summary>
         /// Loads games and stats for requested platform
@@ -102,7 +103,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             GameStats = new Dictionary<string, GameStat>();
             // TODO: Verify this works as intended when more games are added.
-            foreach (var game in PlatformGames[platform])
+            foreach (var game in GetGamesForPlatform(platform))
             {
                 var gs = new GameStat();
                 gs.SetGameStat(game);
