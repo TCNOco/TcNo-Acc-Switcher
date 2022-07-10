@@ -119,16 +119,12 @@
 
 
 
+
+
 	    BasicStats.SetCurrentPlatform("Steam");
-	    if (!BasicStats.GameStats["Apex Legends"].IsLoaded)
-	    {
-	        var account1 = new UserGameStat() {AccountId = "SweatyGoesPro", Vars = new Dictionary<string, string>() {{"Username", "SweatyGoesPro"}}};
-	        BasicStats.GameStats["Apex Legends"].LoadStatsFromWeb(ref account1);
+	    BasicStats.GameStats["Apex Legends"].SetAccount("SweatyGoesPro", new Dictionary<string, string>() {{"Username", "SweatyGoesPro"}});
+	    BasicStats.GameStats["Apex Legends"].SetAccount("Mnr_Poggenpoel", new Dictionary<string, string>() {{"Username", "Mnr_Poggenpoel"}});
 
-	        var account2 = new UserGameStat() {AccountId = "Mnr_Poggenpoel", Vars = new Dictionary<string, string>() {{"Username", "Mnr_Poggenpoel"}}};
-	        BasicStats.GameStats["Apex Legends"].LoadStatsFromWeb(ref account2);
-
-            Console.WriteLine("test");
-	    }
+        Console.WriteLine("test");
 	}
 }

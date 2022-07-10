@@ -169,7 +169,7 @@ Toast_BNet_CantLoadNotFound: Could not find Battle.net.config
 Toast_BNet_CantLoadEmpty: Could not load accounts file for Blizzard (No accounts found)
 Toast_BNet_CantLoadConfigCorrupt: Could not load accounts file for Blizzard (Battle.net.config file corrupt)
 Toast_BNet_NamePolicy: BattleTag did not match naming policy.
-Toast_BNet_LoadingStats: One or more profiles are refreshing stats. Please wait.
+Toast_LoadingStats: One or more profiles are refreshing stats. Please wait.
 Toast_ItemNotFound: "{item} was not found"
 Toast_DeletedTotal: "{files} of {totalFiles} deleted. Total: {totalSize}"
 Toast_CantChangeUsername: Could not change username

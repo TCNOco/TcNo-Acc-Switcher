@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2.GC.CSGO.Internal;
 using TcNo_Acc_Switcher_Globals;
@@ -91,15 +92,50 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public static List<string> PlatformGamesWithStats(string platform) => PlatformGames.ContainsKey(platform) ? PlatformGames[platform] : new List<string>();
 
-        public static void SetCurrentPlatform(string platform)
+        /// <summary>
+        /// Loads games and stats for requested platform
+        /// </summary>
+        /// <returns>If successfully loaded platform</returns>
+        public static bool SetCurrentPlatform(string platform)
         {
+            if (!PlatformGames.ContainsKey(platform)) return false;
+
             GameStats = new Dictionary<string, GameStat>();
-            foreach (var game in GamesDict)
+            // TODO: Verify this works as intended when more games are added.
+            foreach (var game in PlatformGames[platform])
             {
                 var gs = new GameStat();
                 gs.SetGameStat(game);
                 GameStats.Add(game, gs);
             }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Returns a string with all the statistics available for the specified account
+        /// </summary>
+        public static string GetGameStatsString(string accountId)
+        {
+            var outputString = "";
+            // Foreach game in platform
+            foreach (var gs in GameStats)
+            {
+                // Check to see if it contains the requested accountID
+                var cachedStats = gs.Value.CachedStats;
+                if (!cachedStats.ContainsKey(accountId)) continue;
+
+                outputString += $"{gs.Key}: {Environment.NewLine}";
+
+                // Add each stat from account to the string, starting with the game name.
+                var collectedStats = cachedStats["accountId"].Collected;
+                foreach (var stat in collectedStats)
+                {
+                    outputString += $"{stat.Key}: {stat.Value}{Environment.NewLine}";
+                }
+            }
+
+            return outputString;
         }
     }
 
@@ -109,14 +145,20 @@ namespace TcNo_Acc_Switcher_Server.Data
     public sealed class GameStat
     {
         #region Properties
+
+        private DateTime _lastLoadingNotification = DateTime.MinValue;
+
         public bool IsInit;
-        public bool IsLoaded;
         public string Game;
         public string Indicator = "";
         public string Url = "";
         public string Cookies = "";
         public Dictionary<string, string> RequiredVars = new();
         public Dictionary<string, CollectInstruction> ToCollect = new();
+
+        private readonly string _cacheFileFolder = Path.Join(Globals.UserDataFolder, "StatsCache");
+        private string CacheFilePath => Path.Join(_cacheFileFolder, $"{Game}.json");
+        public SortedDictionary<string, UserGameStat> CachedStats = new();
         #endregion
 
         public class CollectInstruction
@@ -154,8 +196,26 @@ namespace TcNo_Acc_Switcher_Server.Data
             //    Collect.Add(k, v);
             //}
 
+            LoadStats();
+
             IsInit = true;
         }
+
+        /// <summary>
+        /// Set up new accounts
+        /// </summary>
+        /// <returns>True if added, False if exists</returns>
+        public bool SetAccount(string accountId, Dictionary<string, string> vars)
+        {
+            if (BasicStats.GameStats[Game].CachedStats.ContainsKey(accountId))
+                return false;
+
+            BasicStats.GameStats[Game].CachedStats[accountId] = new UserGameStat() { Vars = vars };
+
+            LoadStatsFromWeb(accountId);
+            return true;
+        }
+
 
         /// <summary>
         /// Return URL with saved vars subbed in
@@ -173,11 +233,22 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Collects user statistics for account
         /// </summary>
-        /// <param name="userStat">Needs AccountId and Vars set</param>
         /// <returns>Successful or not</returns>
-        public bool LoadStatsFromWeb(ref UserGameStat userStat)
+        public bool LoadStatsFromWeb(string accountId)
         {
-            if (!IsInit || string.IsNullOrEmpty(userStat.AccountId) || userStat.Vars.Count == 0) return false;
+            // Check if init, and list of accounts contains Id
+            if (!IsInit || !CachedStats.ContainsKey(accountId)) return false;
+            var userStat = CachedStats[accountId];
+
+            // Check if account has required variables set.
+            if (userStat.Vars.Count == 0) return false;
+
+            // Notify user than an account is being loaded - >5 seconds apart.
+            if (DateTime.Now.Subtract(_lastLoadingNotification).Seconds >= 5)
+            {
+                _ = GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
+                _lastLoadingNotification = DateTime.Now;
+            }
 
             // Read doc from web
             HtmlDocument doc = new();
@@ -220,7 +291,32 @@ namespace TcNo_Acc_Switcher_Server.Data
                 userStat.Collected.Add(itemName, text);
             }
 
+            userStat.LastUpdated = DateTime.Now;
+
+            CachedStats[accountId] = userStat;
+            SaveStats();
             return true;
+        }
+
+        public void SaveStats()
+        {
+            _ = Directory.CreateDirectory(_cacheFileFolder);
+            File.WriteAllText(CacheFilePath, JsonConvert.SerializeObject(CachedStats));
+        }
+
+        public void LoadStats()
+        {
+            _ = Directory.CreateDirectory(_cacheFileFolder);
+
+            if (!File.Exists(CacheFilePath)) return;
+            var jCachedStats = GeneralFuncs.LoadSettings(CacheFilePath);
+            CachedStats = jCachedStats.ToObject<SortedDictionary<string, UserGameStat>>() ?? new SortedDictionary<string, UserGameStat>();
+
+            // Check for outdated items, and refresh them
+            foreach (var id in CachedStats.Keys.Where(id => DateTime.Now.Subtract(CachedStats[id].LastUpdated).Days >= 1))
+            {
+                LoadStatsFromWeb(id);
+            }
         }
     }
 
@@ -229,8 +325,8 @@ namespace TcNo_Acc_Switcher_Server.Data
     /// </summary>
     public sealed class UserGameStat
     {
-        public string AccountId = "";
         public Dictionary<string, string> Vars = new();
         public Dictionary<string, string> Collected = new();
+        public DateTime LastUpdated;
     }
 }

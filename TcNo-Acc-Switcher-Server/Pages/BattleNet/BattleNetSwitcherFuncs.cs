@@ -187,7 +187,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 if (!alreadyNotified)
                 {
                     alreadyNotified = true;
-                    _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_BNet_LoadingStats"], renderTo: "toastarea");
+                    _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_LoadingStats"], renderTo: "toastarea");
                 }
 
                 accountFetched = accountFetched || acc.FetchRank();
