@@ -3,21 +3,41 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 
 namespace TcNo_Acc_Switcher_Globals
 {
     public partial class Globals
     {
-        public static string ReadWebUrl(string requestUri)
+        /// <summary>
+        /// Reads website as out webText. Returns true if successful.
+        /// </summary>
+        public static bool ReadWebUrl(string requestUri, out string webText, string cookies = "")
         {
-            var client = new HttpClient();
+            using var client = new HttpClient();
+
+            client.DefaultRequestHeaders.Add("user-agent", "TcNo Account Switcher");
+            if (!string.IsNullOrEmpty(cookies))
+            {
+                client.DefaultRequestHeaders.Add("cookie", cookies);
+            }
+            client.DefaultRequestHeaders.Add("dnt", "1");
+            client.DefaultRequestHeaders.Add("cache-control", "max-age=0");
+            client.DefaultRequestHeaders.Add("accept-language", "en-US,en;q=0.9");
+
             var response = client.Send(new HttpRequestMessage(HttpMethod.Get, requestUri));
             var responseReader = new StreamReader(response.Content.ReadAsStream());
-            return responseReader.ReadToEnd();
+            webText = responseReader.ReadToEnd();
+
+            if (response.StatusCode == HttpStatusCode.OK) return true;
+
+            WriteToLog($"ERROR LOADING URL: {requestUri}.\n - Error: {response.StatusCode}");
+            return false;
         }
 
         private static SemaphoreSlim _semaphoreSlim;
@@ -75,5 +95,21 @@ namespace TcNo_Acc_Switcher_Globals
             }));
         }
 
+
+        public static bool GetWebHtmlDocument(ref HtmlDocument htmlDocument, string url, out string responseText, string cookies = "")
+        {
+            var readSuccess = ReadWebUrl(url, out responseText, cookies);
+
+            try
+            {
+                htmlDocument.LoadHtml(responseText);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return readSuccess;
+        }
     }
 }

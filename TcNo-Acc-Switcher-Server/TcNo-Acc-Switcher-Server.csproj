@@ -236,6 +236,9 @@
     <None Include="wwwroot\js\ace\worker-json.js" />
   </ItemGroup>
   <ItemGroup>
+    <Content Update="GameStats.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="Platforms.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

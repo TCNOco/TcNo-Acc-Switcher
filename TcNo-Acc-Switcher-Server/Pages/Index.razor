@@ -18,6 +18,7 @@
 @using System.Globalization
 @using System.IO
 @using TcNo_Acc_Switcher_Globals
+@using System.Configuration
 @inject IJSRuntime JsRuntime
 @{ AData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
@@ -115,5 +116,15 @@
 	    AppData.FirstLaunchCheck();
 
 	    AppStats.NewNavigation("/");
+
+
+
+
+
+	    BasicStats.SetCurrentPlatform("Steam");
+	    BasicStats.GameStats["Apex Legends"].SetAccount("SweatyGoesPro", new Dictionary<string, string>() {{"Username", "SweatyGoesPro"}});
+	    BasicStats.GameStats["Apex Legends"].SetAccount("Mnr_Poggenpoel", new Dictionary<string, string>() {{"Username", "Mnr_Poggenpoel"}});
+
+        Console.WriteLine("test");
 	}
 }

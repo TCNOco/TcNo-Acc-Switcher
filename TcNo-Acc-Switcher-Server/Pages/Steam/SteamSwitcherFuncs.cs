@@ -220,7 +220,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 // Save to file
                 var file = new FileInfo(SteamSettings.SteamAppsListPath);
                 if (file.Exists) file.Delete();
-                File.WriteAllText(file.FullName, Globals.ReadWebUrl("https://api.steampowered.com/ISteamApps/GetAppList/v2/"));
+                if (Globals.ReadWebUrl("https://api.steampowered.com/ISteamApps/GetAppList/v2/", out var appList))
+                    _ = File.WriteAllTextAsync(file.FullName, appList);
+                else
+                    throw new Exception("Failed to download Steam apps list.");
             }
             catch (Exception e)
             {
@@ -620,7 +623,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 var steamIds = steamUsersGroup.Select(su => su.SteamId).ToList();
                 var uri =
                     $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={SteamSettings.SteamWebApiKey}&steamids={string.Join(',', steamIds)}";
-                var jsonString = Globals.ReadWebUrl(uri);
+                Globals.ReadWebUrl(uri, out var jsonString);
                 if (!IsSteamApiKeyValid(jsonString)) return images;
                 var json = JObject.Parse(jsonString);
 
@@ -689,7 +692,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     $"https://api.steampowered.com/ISteamUser/GetPlayerBans/v0001/?key={SteamSettings.SteamWebApiKey}&steamids={string.Join(',', steamIds)}";
                 try
                 {
-                    var jsonString = Globals.ReadWebUrl(uri);
+                    Globals.ReadWebUrl(uri, out var jsonString);
                     if (!IsSteamApiKeyValid(jsonString)) return;
                     var json = JObject.Parse(jsonString);
 

@@ -366,12 +366,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             var s = CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
 
+            BasicStats.SetCurrentPlatform(platform);
+
             List<string> allAccountsTable = new();
             if (platform == "Steam")
             {
                 // Add headings and separator for programs like Excel
                 allAccountsTable.Add($"SEP={s}");
-                allAccountsTable.Add($"Account name:{s}Community name:{s}SteamID:{s}VAC status:{s}Last login:{s}Saved profile image:");
+                allAccountsTable.Add($"Account name:{s}Community name:{s}SteamID:{s}VAC status:{s}Last login:{s}Saved profile image:{s}Stats:");
 
                 AppData.SteamUsers = SteamSwitcherFuncs.GetSteamUsers(SteamSettings.LoginUsersVdf());
                 // Load cached ban info
@@ -384,19 +386,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     else banInfo += (su.Vac ? "VAC" : "") + (su.Limited ? "Limited" : "");
 
                     var imagePath = Path.GetFullPath($"{SteamSettings.SteamImagePath + su.SteamId}.jpg");
+
                     allAccountsTable.Add(su.AccName + s +
                                          su.Name + s +
                                          su.SteamId + s +
                                          banInfo + s +
                                          SteamSwitcherFuncs.UnixTimeStampToDateTime(su.LastLogin) + s +
-                                         (File.Exists(imagePath) ? imagePath : "Missing from disk"));
+                                         (File.Exists(imagePath) ? imagePath : "Missing from disk") + s +
+                                         BasicStats.GetGameStatsString(su.SteamId));
                 }
             }
             else if (platform == "BattleNet")
             {
                 // Add headings and separator for programs like Excel
                 allAccountsTable.Add($"SEP={s}");
-                allAccountsTable.Add($"Email:{s}BattleTag:{s}Overwatch Player Level:{s}Overwatch Support SR:{s}Overwatch DPS SR:{s}Overwatch Tank SR:{s}Saved profile image:");
+                allAccountsTable.Add($"Email:{s}BattleTag:{s}Overwatch Player Level:{s}Overwatch Support SR:{s}Overwatch DPS SR:{s}Overwatch Tank SR:{s}Saved profile image:{s}Stats:");
 
                 await BattleNetSwitcherFuncs.LoadProfiles();
 
@@ -409,16 +413,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                                          (ba.OwSupportSr != 0 ? ba.OwSupportSr : "") + s +
                                          (ba.OwDpsSr != 0 ? ba.OwDpsSr : "") + s +
                                          (ba.OwTankSr != 0 ? ba.OwTankSr : "") + s +
-                                         (File.Exists(imagePath) ? imagePath : "Missing from disk"));
+                                         (File.Exists(imagePath) ? imagePath : "Missing from disk") + s +
+                                         BasicStats.GetGameStatsString(ba.Email));
                 }
             }
             else
             {
                 // Platform does not have specific details other than usernames saved.
-                allAccountsTable.Add("Account name:");
+                allAccountsTable.Add($"Account name:{s}Stats:");
                 foreach (var accDirectory in Directory.GetDirectories(Path.Join("LoginCache", platform)))
                 {
-                    allAccountsTable.Add(Path.GetFileName(accDirectory));
+                    allAccountsTable.Add(Path.GetFileName(accDirectory) + s +
+                                         BasicStats.GetGameStatsString(accDirectory));
                 }
             }
 
