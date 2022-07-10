@@ -3,26 +3,27 @@
     "Apex Legends": {
       "Indicator": "A",
       "Url": "https://apexlegendsstatus.com/core/interface?platform=PC&player={Username}",
+      "RequestCookies": "apexlegendsstatus_ssid=TcNoAccSwitcher",
       "Vars": {
         "Username": "Origin Username"
       },
       "Collect": {
-        "LVL": {
-          "XPath": "\"//*[@class='levelNumber']\"",
-          "Select": "innerHtml",
-          "DisplayAs": "LVL %x%"
-        },
         "BR": {
-          "XPath": "\"//*[contains(text(), ' RP')]\"",
+          "XPath": ".//*[contains(text(), ' RP')]",
           "Select": "innerText",
           "DisplayAs": "%x%",
           "NoDisplayIf": "0 RP"
         },
         "AR": {
-          "XPath": "\"//*[contains(text(), ' AR')]\"",
+          "XPath": ".//*[contains(text(), ' AP')]",
           "Select": "innerText",
           "DisplayAs": "%x%",
           "NoDisplayIf": "0 AP"
+        },
+        "LVL": {
+          "XPath": ".//*[@class='levelNumber']",
+          "Select": "innerHtml",
+          "DisplayAs": "LVL %x%"
         }
       }
     }

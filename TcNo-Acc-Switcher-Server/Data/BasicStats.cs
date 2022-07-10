@@ -114,15 +114,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         public string Game;
         public string Indicator = "";
         public string Url = "";
+        public string Cookies = "";
         public Dictionary<string, string> RequiredVars = new();
         public Dictionary<string, CollectInstruction> ToCollect = new();
-        public Dictionary<string, string> Collected = new();
-
-        // Set by user or loaded
-        public Dictionary<string, string> Vars = new()
-        {
-            {"Username", "SweatyGoesPro" }
-        };
         #endregion
 
         public class CollectInstruction
@@ -145,6 +139,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             Game = game;
             Indicator = (string)jGame["Indicator"];
             Url = (string)jGame["Url"];
+            Cookies = (string)jGame["RequestCookies"];
 
             RequiredVars = jGame["Vars"]?.ToObject<Dictionary<string, string>>();
             //foreach (var (k, v) in jGame["Vars"]?.ToObject<Dictionary<string, string>>()!)
@@ -165,37 +160,48 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Return URL with saved vars subbed in
         /// </summary>
-        private string UrlSubbed
+        private string UrlSubbed(UserGameStat userStat)
         {
-            get
+            var completeUrl = Url;
+            foreach (var (key, value) in userStat.Vars)
             {
-                var completeUrl = Url;
-                foreach (var (key, value) in Vars)
-                {
-                    completeUrl = completeUrl.Replace($"{{{key}}}", value);
-                }
-                return completeUrl;
+                completeUrl = completeUrl.Replace($"{{{key}}}", value);
             }
+            return completeUrl;
         }
 
-        public bool LoadStatsFromWeb()
+        /// <summary>
+        /// Collects user statistics for account
+        /// </summary>
+        /// <param name="userStat">Needs AccountId and Vars set</param>
+        /// <returns>Successful or not</returns>
+        public bool LoadStatsFromWeb(ref UserGameStat userStat)
         {
-            if (!IsInit) return false;
+            if (!IsInit || string.IsNullOrEmpty(userStat.AccountId) || userStat.Vars.Count == 0) return false;
 
             // Read doc from web
             HtmlDocument doc = new();
-            if (!Globals.GetWebHtmlDocument(ref doc, UrlSubbed, out var responseText))
+            if (!Globals.GetWebHtmlDocument(ref doc, UrlSubbed(userStat), out var responseText, Cookies))
             {
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsLoadFail", new { Game }], renderTo: "toastarea");
                 return false;
             }
 
-            return true;
             // Collect each requested element
             foreach (var (itemName, ci) in ToCollect)
             {
                 var text = "";
-                var xPathResponse = doc.DocumentNode.SelectSingleNode(ci.XPath);
+                HtmlNode xPathResponse;
+                try
+                {
+                    xPathResponse = doc.DocumentNode.SelectSingleNode(ci.XPath);
+                }
+                catch (System.Xml.XPath.XPathException e)
+                {
+                    Globals.WriteToLog($"Failed to collect '{itemName}' statistic for '{Game}' ({ci.XPath})", e);
+                    continue;
+                }
+
                 if (xPathResponse is null) continue;
 
                 text = ci.Select switch
@@ -211,10 +217,20 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                 // Else, format as requested
                 text = ci.DisplayAs.Replace("%x%", text);
-                Collected.Add(itemName, text);
+                userStat.Collected.Add(itemName, text);
             }
 
             return true;
         }
+    }
+
+    /// <summary>
+    /// Holds statistics result for an account
+    /// </summary>
+    public sealed class UserGameStat
+    {
+        public string AccountId = "";
+        public Dictionary<string, string> Vars = new();
+        public Dictionary<string, string> Collected = new();
     }
 }
