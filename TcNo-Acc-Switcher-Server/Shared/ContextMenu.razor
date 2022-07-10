@@ -26,10 +26,6 @@
     {
         MenuItems.CollectionChanged += ((_, _) => InvokeAsync(StateHasChanged));
     }
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await Js.InvokeVoidAsync("window.updatePaging", ContextMenuId);
-    }
 }
 
 <ul class="contextmenu" id="@ContextMenuId">

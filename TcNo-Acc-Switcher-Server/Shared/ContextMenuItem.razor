@@ -1,30 +1,68 @@
 ﻿@using TcNo_Acc_Switcher_Server.Data
 @using System.Collections.ObjectModel
-@inject Lang Locale
 @code {
     [Parameter] 
     public MenuItem Item { get; set; }
     [Parameter]
     public int Depth { get; set; }
-    private static readonly Lang Lang = Lang.Instance;
-    private int NextDepth => Depth + 1;
-    private string MenuClass => "submenu submenu" + NextDepth.ToString();
-    private string Text => Lang[Item.Text] ?? Item.Text;
+    
+    /* For handling pagination */
+    private int _currentPage;
+    private string _searchText = ""; 
+    private List<MenuItem> Unfiltered => Item.Children.
+        Where(item => item.Text.ToLower().Contains(_searchText.ToLower())).ToList();
+    private List<MenuItem> Visible => Unfiltered.Skip(_currentPage * 6).Take(6).ToList();
+    private int PageCount => ((Unfiltered.Count - 1) / 6) + 1;
+    
+    private void OnSearchInputChanged(ChangeEventArgs e)
+    {
+        _searchText = e?.Value?.ToString();
+        _currentPage = 0;
+    }
 }
 
 @if (Item.Children.Any())
 {
     <li>
-        <a onclick="event.preventDefault();">@Text</a>
-        <ul class="@MenuClass">
-            @foreach (var item in Item.Children)
+        <a onclick="event.preventDefault();">@Item.Text</a>
+        <ul class="submenu submenu@(Depth + 1)">
+            <li class="contextSearch">
+                <input type='text' placeholder='Search' onclick="event.stopPropagation();"
+                       @oninput="OnSearchInputChanged" />
+            </li>
+            @foreach (var item in Visible)
             {
-                <ContextMenuItem Item="@item" Depth="@NextDepth"/>
+                <ContextMenuItem Item="@item" Depth="@(Depth + 1)"/>
             }
+            @if (PageCount > 1)
+            {
+                <div class="paginationContainer">
+                    <div class="pagination">
+                        @if (_currentPage >= 1)
+                        {
+                            <a class='paginationButton' @onclick="() => _currentPage--"><i class="fas fa-arrow-left"></i></a>
+                        }
+                        else
+                        {
+                            <a class='paginationButton' style="visibility: hidden"><i class="fas fa-arrow-left"></i></a>
+                        }
+                        <span>@(_currentPage + 1) / @PageCount</span>
+                        @if (_currentPage < PageCount - 1)
+                        {
+                            <a class='paginationButton' @onclick="() => _currentPage++"><i class="fas fa-arrow-right"></i></a>
+                        }
+                        else
+                        {
+                            <a class='paginationButton' style="visibility: hidden"><i class="fas fa-arrow-right"></i></a>
+                        }
+                    </div>
+                </div>               
+            }
+
         </ul>
     </li>
 }
 else
 {
-    <li><a onclick="@Item.Content">@Text</a></li>
+    <li><a onclick="@Item.Content">@Item.Text</a></li>
 }
