@@ -112,11 +112,14 @@ move your files around on your computer the same way you can. The use of names, 
 endorsement of the trademark holder by this project or its creators, nor vice versa. They are only used to visually indicate
 which programs this project interacts with easily to the end-user.
 
+By enabling optional features that scrape the web for publically available information (such as game/profile statistics and
+other data), you understand and accept full responsibility for doing so on your own volition. If you appreciate accurate
+information, support the servies providing it directly.
+
 I am not responsible for the contents of external links.
 For the rest of the disclaimer, refer to the License (GNU General Public License v3.0) file:
 https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/LICENSE - See sections like 15, 16 and 17, as well as GitHub's
 'simplification' at the top of the above website.
-
 ```
 
 Additional license information for included NuGet packages and other parts of code can be found in: [HERE](https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/TcNo-Acc-Switcher-Server/Additional%20Licenses.txt) `TcNo-Acc-Switcher-Server/Additional Licenses.txt`, and are copied to the build directory, as well as distributed with release versions of this software.
