@@ -65,22 +65,54 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static UserGameStat GetUserGameStat(string game, string accountId) =>
             GameStats[game].CachedStats.ContainsKey(accountId) ? GameStats[game].CachedStats[accountId] : null;
 
-        public static Dictionary<string, Dictionary<string, string>> GetUserStatsAllGames(string platform, string accountId)
+        /// <summary>
+        /// Get and return icon html markup for specific game
+        /// </summary>
+        public static string GetIcon(string game, string statName) => GameStats[game].ToCollect[statName].Icon;
+
+        public class StatValueAndIcon
         {
-            var returnDict = new Dictionary<string, Dictionary<string, string>>( );
+            public string StatValue { get; set; }
+            public string IndicatorMarkup { get; set; }
+        }
+
+        /// <summary>
+        /// Returns list Dictionary of Game Names:[Dictionary of statistic names and StatValueAndIcon (values and indicator text for HTML)]
+        /// </summary>
+        public static Dictionary<string, Dictionary<string, StatValueAndIcon>> GetUserStatsAllGamesMarkup(string platform, string accountId)
+        {
+            var returnDict = new Dictionary<string, Dictionary<string, StatValueAndIcon>>( );
             // Foreach available game
             foreach (var availableGame in GetAvailableGames(platform))
             {
                 // That has the requested account
-                if (GameStats[availableGame].CachedStats.ContainsKey(accountId))
+                if (!GameStats[availableGame].CachedStats.ContainsKey(accountId)) continue;
+                var gameIndicator = GameStats[availableGame].Indicator;
+
+                var statValueIconDict = new Dictionary<string, StatValueAndIcon>();
+
+                // Add icon or identifier to stat pair for displaying
+                foreach (var (statName, statValue) in GameStats[availableGame].CachedStats[accountId].Collected)
                 {
-                    // Add short game identifier (for displaying) and stats to dictionary to return
-                    returnDict[GameStats[availableGame].Indicator] = GameStats[availableGame].CachedStats[accountId].Collected;
+                    // Foreach stat
+                    // Check if has icon, otherwise use just indicator string
+                    var indicator = GetIcon(availableGame, statName);
+                    if (string.IsNullOrEmpty(indicator))
+                        indicator = $"<sup>{gameIndicator}</sup>";
+
+                    statValueIconDict.Add(statName, new StatValueAndIcon
+                    {
+                        StatValue = statValue,
+                        IndicatorMarkup = indicator
+                    });
                 }
+
+                returnDict[gameIndicator] = statValueIconDict;
             }
 
             return returnDict;
         }
+
         /// <summary>
         /// List of possible games on X platform
         /// </summary>
@@ -224,7 +256,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         public Dictionary<string, string> RequiredVars = new();
         /// <summary>
-        /// Dictionary of GameName:CollectInstructions for collecting stats from web and info from user
+        /// Dictionary of StatName:CollectInstructions for collecting stats from web and info from user
         /// </summary>
         public Dictionary<string, CollectInstruction> ToCollect = new();
 
@@ -245,6 +277,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Optional
             public string SelectAttribute { get; set; } // If Select = "attribute", set the attribute to get here.
             public string NoDisplayIf { get; set; } = ""; // The DisplayAs text will not display if equal to the default value of this.
+            public string Icon { get; set; } = ""; // Icon HTML markup
         }
 
         public void SetGameStat(string game)
@@ -407,6 +440,9 @@ namespace TcNo_Acc_Switcher_Server.Data
     public sealed class UserGameStat
     {
         public Dictionary<string, string> Vars = new();
+        /// <summary>
+        /// Statistic name:value pairs
+        /// </summary>
         public Dictionary<string, string> Collected = new();
         public DateTime LastUpdated;
     }

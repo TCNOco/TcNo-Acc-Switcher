@@ -132,7 +132,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
 
             // Handle game stats (if any enabled and collected.)
-            var userStats = BasicStats.GetUserStatsAllGames("Steam", su.SteamId);
+            var userStats = BasicStats.GetUserStatsAllGamesMarkup("Steam", su.SteamId);
             var userStatsString = "";
             if (userStats.Keys.Count > 0)
             {
@@ -142,7 +142,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     var gameStats = game.Value;
                     foreach (var gameStat in gameStats)
                     {
-                        userStatsString += $"\r\n<h6 class=\"acc_stat\"><sup>{gameName}</sup>{gameStat.Value}</h6>";
+                        userStatsString += $"\r\n<h6 class=\"acc_stat\">{gameStat.Value.IndicatorMarkup}{gameStat.Value.StatValue}</h6>";
                     }
 
                 }

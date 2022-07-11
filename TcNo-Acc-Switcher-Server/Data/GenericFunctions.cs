@@ -170,7 +170,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                         }
 
                         // Handle game stats (if any enabled and collected.)
-                        var userStats = BasicStats.GetUserStatsAllGames(CurrentPlatform.FullName, str);
+                        var userStats = BasicStats.GetUserStatsAllGamesMarkup(CurrentPlatform.FullName, str);
                         var userStatsString = "";
                         if (userStats.Keys.Count > 0)
                         {
@@ -180,7 +180,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                                 var gameStats = game.Value;
                                 foreach (var gameStat in gameStats)
                                 {
-                                    userStatsString += $"\r\n<h6 class=\"acc_stat\"><sup>{gameName}</sup>{gameStat.Value}</h6>";
+                                    userStatsString += $"\r\n<h6 class=\"acc_stat\">{gameStat.Value.IndicatorMarkup}{gameStat.Value.StatValue}</h6>";
                                 }
 
                             }
@@ -218,7 +218,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                     // Handle notes (if any)
                     // Handle game stats (if any enabled and collected.)
-                    var userStats = BasicStats.GetUserStatsAllGames(CurrentPlatform.FullName, key);
+                    var userStats = BasicStats.GetUserStatsAllGamesMarkup(CurrentPlatform.FullName, key);
                     var userStatsString = "";
                     if (userStats.Keys.Count > 0)
                     {
@@ -228,7 +228,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                             var gameStats = game.Value;
                             foreach (var gameStat in gameStats)
                             {
-                                userStatsString += $"\r\n<h6 class=\"acc_stat\"><sup>{gameName}</sup>{gameStat.Value}</h6>";
+                                userStatsString += $"\r\n<h6 class=\"acc_stat\">{gameStat.Value.IndicatorMarkup}{gameStat.Value.StatValue}</h6>";
                             }
 
                         }

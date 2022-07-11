@@ -45,20 +45,23 @@
         "TANK": {
           "XPath": "(.//div[@data-ow-tooltip-text='Tank Skill Rating'])[1]/following-sibling::div[@class='competitive-rank-level']",
           "Select": "innerText",
-          "DisplayAs": "Tank %x%<sup>SR</sup>",
-          "NoDisplayIf": "Tank 0<sup>SR</sup>"
+          "DisplayAs": "%x%<sup>SR</sup>",
+          "NoDisplayIf": "0<sup>SR</sup>",
+          "Icon": "<h6 class=\"battlenetIcoOWTank\"><svg viewBox=\"0 0 60.325 60.325\" draggable=\"false\" class=\"battleNetIcon battlenetIcoOWTank\"><use href=\"img/icons/ico_BattleNetTankIcon.svg#icoBattleNetTank\"></use></svg>"
         },
         "DMG": {
           "XPath": "(.//div[@data-ow-tooltip-text='Damage Skill Rating'])[1]/following-sibling::div[@class='competitive-rank-level']",
           "Select": "innerText",
-          "DisplayAs": "Dmg %x%<sup>SR</sup>",
-          "NoDisplayIf": "Dmg 0<sup>SR</sup>"
+          "DisplayAs": "%x%<sup>SR</sup>",
+          "NoDisplayIf": "0<sup>SR</sup>",
+          "Icon": "<h6 class=\"battlenetIcoOWDamage\"><svg viewBox=\"0 0 60.325 60.325\" draggable=\"false\" class=\"battleNetIcon battlenetIcoOWDamage\"><use href=\"img/icons/ico_BattleNetDamageIcon.svg#icoBattleNetDamage\"></use></svg>"
         },
         "SUPPORT": {
           "XPath": "(.//div[@data-ow-tooltip-text='Support Skill Rating'])[1]/following-sibling::div[@class='competitive-rank-level']",
           "Select": "innerText",
-          "DisplayAs": "Supp %x%<sup>SR</sup>",
-          "NoDisplayIf": "Supp 0<sup>SR</sup>"
+          "DisplayAs": "%x%<sup>SR</sup>",
+          "NoDisplayIf": "0<sup>SR</sup>",
+          "Icon": "<h6 class=\"battlenetIcoOWSupport\"><svg viewBox=\"0 0 60.325 60.325\" draggable=\"false\" class=\"battleNetIcon battlenetIcoOWSupport\"><use href=\"img/icons/ico_BattleNetSupportIcon.svg#icoBattleNetSupport\"></use></svg>"
         }
       }
     }

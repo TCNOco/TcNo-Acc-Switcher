@@ -114,17 +114,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 }
 
                 // Handle game stats (if any enabled and collected.)
-                var userStats = BasicStats.GetUserStatsAllGames("BattleNet", acc.Email);
+                var userStats = BasicStats.GetUserStatsAllGamesMarkup("BattleNet", acc.Email);
                 var userStatsString = "";
                 if (userStats.Keys.Count > 0)
                 {
                     foreach (var game in userStats)
                     {
                         var gameName = game.Key;
+
                         var gameStats = game.Value;
                         foreach (var gameStat in gameStats)
                         {
-                            userStatsString += $"\r\n<h6 class=\"acc_stat\"><sup>{gameName}</sup>{gameStat.Value}</h6>";
+                            userStatsString += $"\r\n<h6 class=\"acc_stat\">{gameStat.Value.IndicatorMarkup}{gameStat.Value.StatValue}</h6>";
                         }
 
                     }
