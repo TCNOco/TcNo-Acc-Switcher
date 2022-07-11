@@ -26,10 +26,46 @@
           "DisplayAs": "LVL %x%"
         }
       }
+    },
+    "Overwatch": {
+      "Indicator": "OW",
+      "Url": "https://playoverwatch.com/en-us/career/pc/{BattleTagName}-{BattleTagNumber}",
+      "RequestCookies": "",
+      "Vars": {
+        "BattleTagName": "BattleTag - NO number [Username]",
+        "BattleTagNumber": "BattleTag - Number ONLY [1234]"
+      },
+      "Collect": {
+        "LVL": {
+          "XPath": ".//div[@class='player-level']/div[@class='u-vertical-center']",
+          "Select": "innerHtml",
+          "DisplayAs": "LVL %x%",
+          "NoDisplayIf": "LVL 0"
+        },
+        "TANK": {
+          "XPath": "(.//div[@data-ow-tooltip-text='Tank Skill Rating'])[1]/following-sibling::div[@class='competitive-rank-level']",
+          "Select": "innerText",
+          "DisplayAs": "Tank %x%<sup>SR</sup>",
+          "NoDisplayIf": "Tank 0<sup>SR</sup>"
+        },
+        "DMG": {
+          "XPath": "(.//div[@data-ow-tooltip-text='Damage Skill Rating'])[1]/following-sibling::div[@class='competitive-rank-level']",
+          "Select": "innerText",
+          "DisplayAs": "Dmg %x%<sup>SR</sup>",
+          "NoDisplayIf": "Dmg 0<sup>SR</sup>"
+        },
+        "SUPPORT": {
+          "XPath": "(.//div[@data-ow-tooltip-text='Support Skill Rating'])[1]/following-sibling::div[@class='competitive-rank-level']",
+          "Select": "innerText",
+          "DisplayAs": "Supp %x%<sup>SR</sup>",
+          "NoDisplayIf": "Supp 0<sup>SR</sup>"
+        }
+      }
     }
   },
   "PlatformCompatibilities": {
     "Origin": [ "Apex Legends" ],
-    "Steam": [ "Apex Legends" ]
+    "Steam": [ "Apex Legends" ],
+    "BattleNet": [ "Overwatch" ]
   }
 }
