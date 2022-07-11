@@ -106,10 +106,28 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 if (!File.Exists(Path.Join(BattleNetSettings.ImagePath, $"{acc.Email}.png"))) _ = DownloadImage(acc.Email);
                 var username = acc.BTag == null ? acc.Email : acc.BTag.Contains('#') ? acc.BTag.Split("#")[0] : acc.BTag;
 
+                // Handle notes (if any)
                 var note = "";
                 if (BattleNetSettings.ShowShortNotes && BattleNetSettings.AccountNotes.ContainsKey(acc.Email))
                 {
                     note = $"\r\n<p class=\"acc_note\">{BattleNetSettings.AccountNotes[acc.Email]}</p>";
+                }
+
+                // Handle game stats (if any enabled and collected.)
+                var userStats = BasicStats.GetUserStatsAllGames("BattleNet", acc.Email);
+                var userStatsString = "";
+                if (userStats.Keys.Count > 0)
+                {
+                    foreach (var game in userStats)
+                    {
+                        var gameName = game.Key;
+                        var gameStats = game.Value;
+                        foreach (var gameStat in gameStats)
+                        {
+                            userStatsString += $"\r\n<h6 class=\"acc_stat\"><sup>{gameName}</sup>{gameStat.Value}</h6>";
+                        }
+
+                    }
                 }
 
                 var element =
@@ -137,7 +155,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     }
                 }
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
-                _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element + note + "</div>");
+                _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", $"{element}{note}{userStatsString}</div>");
             }
 
             GenericFunctions.FinaliseAccountList(); // Init context menu & Sorting

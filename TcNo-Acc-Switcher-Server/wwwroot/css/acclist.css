@@ -1,7 +1,5 @@
 ﻿/* ReSharper disable CssNotResolved */
-
 /* DISABLED DRAGGING ON ITEMS: */
-
 .acc_list_actionbar,
 #acc_list,
 .headerbar,
@@ -28,33 +26,38 @@
 .acc_list_item {
   border: 0.1em solid transparent;
 }
+.acc_list_item > * {
+  pointer-events: none;
+}
+.acc_list_item .acc_note {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.acc_list_item .acc_stat {
+  font-size: 0.8em;
+}
+.acc_list_item .acc_stat sup {
+  margin-right: 0.4em;
+}
 
-  .acc_list_item > * {
-    pointer-events: none;
-  }
-    .acc_list_item .acc_note {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .placeHolderAcc {
-        width: 100px;
-        height: 135px;
-        border: 2px dashed #039CBF;
-        background: #13222f;
-    }
+.placeHolderAcc {
+  width: 100px;
+  height: 135px;
+  border: 2px dashed #039CBF;
+  background: #13222f;
+}
 
 .placeHolderPlat {
-    border: 2px dashed #039CBF;
-    background: #13222f;
-    width: 20vw;
-    height: 20vw;
-    max-width: 175px;
-    max-height: 175px;
-    display: inline-block;
-    margin: 10px;
-    vertical-align: middle;
+  border: 2px dashed #039CBF;
+  background: #13222f;
+  width: 20vw;
+  height: 20vw;
+  max-width: 175px;
+  max-height: 175px;
+  display: inline-block;
+  margin: 10px;
+  vertical-align: middle;
 }
 
 .accountHover {
@@ -94,30 +97,9 @@ label.acc {
   cursor: pointer;
   transition: all 50ms ease-in;
 }
-
-input.acc:checked + label.acc.currentAcc {
-    border-color: #8aff80;
-    border-style: solid;
+label.acc.vac img {
+  border: 2px solid #ff5555;
 }
-
-input.acc:checked + label.acc {
-    border-color: #8BE9FD;
-    background: #274560;
-}
-
-label.acc.currentAcc {
-    border-color: #8aff80;
-    border-style: dashed;
-}
-
-label.acc img.status_vac {
-  border: 2px solid rgb(255, 85, 85) !important;
-}
-
-label.acc img.status_limited {
-  border: 2px solid yellow !important;
-}
-
 label.acc img {
   -webkit-user-drag: none;
   display: inline-block;
@@ -127,11 +109,12 @@ label.acc img {
   border: 2px solid #000;
   border: 2px solid rgba(0, 0, 0, 0);
 }
-
-label.acc.vac img {
-  border: 2px solid rgb(255, 85, 85);
+label.acc img.status_vac {
+  border: 2px solid #ff5555 !important;
 }
-
+label.acc img.status_limited {
+  border: 2px solid yellow !important;
+}
 label.acc h6 {
   max-width: 9em;
   margin: 0;
@@ -140,11 +123,25 @@ label.acc h6 {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 label.acc p {
   margin: 0;
   color: #DDD;
   font-size: 0.75em;
+}
+
+input.acc:checked + label.acc.currentAcc {
+  border-color: #8aff80;
+  border-style: solid;
+}
+
+input.acc:checked + label.acc {
+  border-color: #8BE9FD;
+  background: #274560;
+}
+
+label.acc.currentAcc {
+  border-color: #8aff80;
+  border-style: dashed;
 }
 
 .acc_list_actionbar {
@@ -156,58 +153,50 @@ label.acc p {
   overflow: hidden;
   background: #252A2E;
   color: white;
+  /* Status section */
+}
+.acc_list_actionbar input {
+  user-select: none;
+  width: inherit;
+  padding-left: 1em;
+  border: none;
+  outline: none;
+  background: none;
+  color: #DDD;
+  line-height: 3em;
+}
+.acc_list_actionbar input::selection {
+  user-select: none;
+  background: none;
+  color: #DDD;
+}
+.acc_list_actionbar > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+  height: 3em;
 }
 
-  /* Status section */
-
-  .acc_list_actionbar input {
-    user-select: none;
-    width: inherit;
-    padding-left: 1em;
-    border: none;
-    outline: none;
-    background: none;
-    color: #DDD;
-    line-height: 3em;
-  }
-
-    .acc_list_actionbar input::selection {
-      user-select: none;
-      background: none;
-      color: #DDD;
-    }
-
-  .acc_list_actionbar > div {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    width: 100%;
-    height: 3em;
-  }
-
-    .acc_list_actionbar div .btn_login,
-    .btn_close span {
-      padding: 0.25em 5em;
-    }
+.acc_list_actionbar div .btn_login,
+.btn_close span {
+  padding: 0.25em 5em;
+}
 
 .statusBar {
   position: relative;
 }
-
-  .statusBar div,
-  .statusBar input {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-  }
-
-  .statusBar div {
-    z-index: 5;
-  }
-
-  .statusBar input {
-    z-index: 1;
-  }
+.statusBar div, .statusBar input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.statusBar input {
+  z-index: 1;
+}
+.statusBar div {
+  z-index: 5;
+}
 
 label h6 svg {
   fill: white;

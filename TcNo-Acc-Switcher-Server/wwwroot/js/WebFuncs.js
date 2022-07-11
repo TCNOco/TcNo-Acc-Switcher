@@ -715,7 +715,7 @@ async function showModal(modaltype) {
         </div>
         </div>`);
 
-
+        input = document.getElementById("accNotes");
     } else if (modaltype.startsWith("notice:")) {
         // USAGE: "notice:<prompt>
         // GOAL: Runs function when OK clicked.
@@ -857,7 +857,7 @@ async function showModal(modaltype) {
         try {
             if (input === undefined) return;
             input.focus();
-            input.select();
+            if (input.nodeName !== "TEXTAREA") input.select();
         }
         catch (err) {
 

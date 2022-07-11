@@ -3,7 +3,8 @@ Update: Update available! Click here to start it.
 Header_ChooseLanguage: 'Choose Language:'
 BattleNet_ShowSR: Show Overwatch SR and use the Overwatch profile picture.
 Steam_ShowSteamID: Show SteamID
-Steam_ShowVac: Show VAC Status
+Steam_ShowVac: Show VAC status
+Steam_ShowLastLogin: Show last login time
 Steam_CheckVac: Check account VAC status
 Steam_ShowLimited: Show Limited Status
 Steam_ShowAccUsername: Show account username

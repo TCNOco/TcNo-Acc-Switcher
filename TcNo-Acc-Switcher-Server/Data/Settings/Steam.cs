@@ -253,11 +253,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("Steam_ShowSteamID", Order = 4)] private bool _showSteamId;
         [JsonProperty("Steam_ShowVAC", Order = 5)] private bool _showVac = true;
         [JsonProperty("Steam_ShowLimited", Order = 6)] private bool _showLimited = true;
-        [JsonProperty("Steam_ShowAccUsername", Order = 7)] private bool _showAccUsername = true;
-        [JsonProperty("Steam_TrayAccountName", Order = 8)] private bool _trayAccName;
-        [JsonProperty("Steam_ImageExpiryTime", Order = 9)] private int _imageExpiryTime = 7;
-        [JsonProperty("Steam_TrayAccNumber", Order = 10)] private int _trayAccNumber = 3;
-        [JsonProperty("Steam_OverrideState", Order = 11)] private int _overrideState = -1;
+        [JsonProperty("Steam_ShowLastLogin", Order = 7)] private bool _showLastLogin = true;
+        [JsonProperty("Steam_ShowAccUsername", Order = 8)] private bool _showAccUsername = true;
+        [JsonProperty("Steam_TrayAccountName", Order = 9)] private bool _trayAccName;
+        [JsonProperty("Steam_ImageExpiryTime", Order = 10)] private int _imageExpiryTime = 7;
+        [JsonProperty("Steam_TrayAccNumber", Order = 11)] private int _trayAccNumber = 3;
+        [JsonProperty("Steam_OverrideState", Order = 12)] private int _overrideState = -1;
         [JsonProperty("ShortcutsJson", Order = 13)] private Dictionary<int, string> _shortcuts = new();
         [JsonProperty("ClosingMethod", Order = 14)] private string _closingMethod = "TaskKill";
         [JsonProperty("StartingMethod", Order = 15)] private string _startingMethod = "Default";
@@ -289,6 +290,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static bool ShowVac { get => Instance._showVac; set => Instance._showVac = value; }
 
         public static bool ShowLimited { get => Instance._showLimited; set => Instance._showLimited = value; }
+        public static bool ShowLastLogin { get => Instance._showLastLogin; set => Instance._showLastLogin = value; }
 
         public static bool ShowAccUsername { get => Instance._showAccUsername; set => Instance._showAccUsername = value; }
 
@@ -526,6 +528,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// <summary>
         /// Returns a block of CSS text to be used on the page. Used to hide or show certain things in certain ways, in components that aren't being added through Blazor.
         /// </summary>
-        public static string GetSteamIdCssBlock() => ".steamId { display: " + (_instance._showSteamId ? "block" : "none") + " }";
+        public static string GetSteamIdCssBlock() => ".steamId { display: " + (ShowSteamId ? "block" : "none") + " } .lastLogin { display: " + (ShowLastLogin ? "block" : "none") + " }";
     }
 }

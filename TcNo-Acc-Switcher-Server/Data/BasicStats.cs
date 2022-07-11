@@ -11,6 +11,7 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using String = System.String;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -61,6 +62,25 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         public static Dictionary<string, GameStat> GameStats { get => Instance._gameStats; set => Instance._gameStats = value; }
 
+        public static UserGameStat GetUserGameStat(string game, string accountId) =>
+            GameStats[game].CachedStats.ContainsKey(accountId) ? GameStats[game].CachedStats[accountId] : null;
+
+        public static Dictionary<string, Dictionary<string, string>> GetUserStatsAllGames(string platform, string accountId)
+        {
+            var returnDict = new Dictionary<string, Dictionary<string, string>>( );
+            // Foreach available game
+            foreach (var availableGame in GetAvailableGames(platform))
+            {
+                // That has the requested account
+                if (GameStats[availableGame].CachedStats.ContainsKey(accountId))
+                {
+                    // Add short game identifier (for displaying) and stats to dictionary to return
+                    returnDict[GameStats[availableGame].Indicator] = GameStats[availableGame].CachedStats[accountId].Collected;
+                }
+            }
+
+            return returnDict;
+        }
         /// <summary>
         /// List of possible games on X platform
         /// </summary>

@@ -40,5 +40,12 @@
     "minify": {
       "enabled": true
     }
+  },
+  {
+    "outputFile": "wwwroot/css/acclist.css",
+    "inputFile": "wwwroot/css/acclist.scss",
+    "minify": {
+      "enabled": true
+    }
   }
 ]

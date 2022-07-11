@@ -124,10 +124,28 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             var extraClasses = (SteamSettings.ShowVac && su.Vac ? " status_vac" : "") + (SteamSettings.ShowLimited && su.Limited ? " status_limited" : "");
 
+            // Handle notes (if any)
             var note = "";
             if (SteamSettings.ShowShortNotes && SteamSettings.AccountNotes.ContainsKey(su.SteamId))
             {
                 note = $"\r\n<p class=\"acc_note\">{SteamSettings.AccountNotes[su.SteamId]}</p>";
+            }
+
+            // Handle game stats (if any enabled and collected.)
+            var userStats = BasicStats.GetUserStatsAllGames("Steam", su.SteamId);
+            var userStatsString = "";
+            if (userStats.Keys.Count > 0)
+            {
+                foreach (var game in userStats)
+                {
+                    var gameName = game.Key;
+                    var gameStats = game.Value;
+                    foreach (var gameStat in gameStats)
+                    {
+                        userStatsString += $"\r\n<h6 class=\"acc_stat\"><sup>{gameName}</sup>{gameStat.Value}</h6>";
+                    }
+
+                }
             }
 
             var element =
@@ -137,7 +155,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 (SteamSettings.ShowAccUsername ? $"<p class=\"streamerCensor\">{su.AccName}</p>\r\n" : "") +
                 $"<h6>{GeneralFuncs.EscapeText(GetName(su))}</h6>\r\n" +
                 $"<p class=\"streamerCensor steamId\">{su.SteamId}</p>\r\n" +
-                $"<p>{UnixTimeStampToDateTime(su.LastLogin)}</p>{note}</label></div>\r\n";
+                $"<p class=\"lastLogin\">{UnixTimeStampToDateTime(su.LastLogin)}</p>{note}{userStatsString}</label></div>\r\n";
+
 
             _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
         }

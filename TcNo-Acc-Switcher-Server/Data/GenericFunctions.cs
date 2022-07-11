@@ -162,10 +162,28 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                     try
                     {
+                        // Handle notes (if any)
                         var note = "";
                         if (Basic.ShowShortNotes && Basic.AccountNotes.ContainsKey(str))
                         {
                             note = $"\r\n<p class=\"acc_note\">{Basic.AccountNotes[str]}</p>";
+                        }
+
+                        // Handle game stats (if any enabled and collected.)
+                        var userStats = BasicStats.GetUserStatsAllGames(CurrentPlatform.FullName, str);
+                        var userStatsString = "";
+                        if (userStats.Keys.Count > 0)
+                        {
+                            foreach (var game in userStats)
+                            {
+                                var gameName = game.Key;
+                                var gameStats = game.Value;
+                                foreach (var gameStat in gameStats)
+                                {
+                                    userStatsString += $"\r\n<h6 class=\"acc_stat\"><sup>{gameName}</sup>{gameStat.Value}</h6>";
+                                }
+
+                            }
                         }
 
                         var id = str;
@@ -176,7 +194,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                             $"<div class=\"acc_list_item\" data-toggle=\"tooltip\"><input type=\"radio\" id=\"{id}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                             $"<label for=\"{id}\" class=\"acc\">\r\n" +
                             $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
-                            $"<h6>{str}</h6>{note}</div>\r\n");
+                            $"<h6>{str}</h6>{note}{userStatsString}</div>\r\n");
                         //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                     }
                     catch (TaskCanceledException e)
@@ -197,13 +215,32 @@ namespace TcNo_Acc_Switcher_Server.Data
                     {
                         note = $"\r\n<p class=\"acc_note\">{Basic.AccountNotes[key]}</p>";
                     }
+
+                    // Handle notes (if any)
+                    // Handle game stats (if any enabled and collected.)
+                    var userStats = BasicStats.GetUserStatsAllGames(CurrentPlatform.FullName, key);
+                    var userStatsString = "";
+                    if (userStats.Keys.Count > 0)
+                    {
+                        foreach (var game in userStats)
+                        {
+                            var gameName = game.Key;
+                            var gameStats = game.Value;
+                            foreach (var gameStat in gameStats)
+                            {
+                                userStatsString += $"\r\n<h6 class=\"acc_stat\"><sup>{gameName}</sup>{gameStat.Value}</h6>";
+                            }
+
+                        }
+                    }
+
                     try
                     {
                         _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
                             $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{key}\" Username=\"{value}\" DisplayName=\"{value}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                             $"<label for=\"{key}\" class=\"acc\">\r\n" +
                             $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
-                            $"<h6>{value}</h6>{note}</div>\r\n");
+                            $"<h6>{value}</h6>{note}{userStatsString}</div>\r\n");
                         //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                     }
                     catch (TaskCanceledException e)
