@@ -131,6 +131,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     }
                 }
 
+                // Temporary: Rename old BattleNet PFPs from png to jpg for new scheme:
+                var imagePath = Path.Join(GeneralFuncs.WwwRoot(), $"img\\profiles\\battlenet\\{acc.Email}");
+                if (File.Exists(imagePath + ".png"))
+                {
+                    Globals.CopyFile(imagePath + ".png", imagePath + ".jpg");
+                    Globals.DeleteFile(imagePath + ".png");
+                }
+
                 var element =
                     $"<div class=\"acc_list_item\" data-toggle=\"tooltip\"><input type=\"radio\" id=\"{acc.Email}\" Username=\"{username}\" DisplayName=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                     $"<label for=\"{acc.Email}\" class=\"acc\">\r\n" +

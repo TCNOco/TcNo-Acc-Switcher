@@ -136,7 +136,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static void SetGameVars(string platform, string game, string accountId,
             Dictionary<string, string> returnDict)
         {
-            GameStats[game].SetAccount(accountId, returnDict, platform, game);
+            GameStats[game].SetAccount(accountId, returnDict, platform);
         }
 
         [JSInvokable]
@@ -185,6 +185,23 @@ namespace TcNo_Acc_Switcher_Server.Data
             //    var x = (JProperty)jToken;
             //    PlatformGames.Add(x.Name, x.Value.ToObject<List<string>>());
             //}
+        }
+
+        public void RefreshAccount(string accountId, string game, string platform = "")
+        {
+            GameStats[game].LoadStatsFromWeb(accountId, platform);
+                GameStats[game].SaveStats();
+        }
+
+        public void RefreshAllAccounts(string game, string platform = "")
+        {
+            foreach (var id in GameStats[game].CachedStats.Keys)
+            {
+                GameStats[game].LoadStatsFromWeb(id, platform);
+            }
+
+            if (game != "")
+                GameStats[game].SaveStats();
         }
 
         public static List<string> PlatformGamesWithStats(string platform) => PlatformGames.ContainsKey(platform) ? GetAvailableGames(platform) : new List<string>();
@@ -311,14 +328,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Set up new accounts. Set game name if you want all accounts to save after setting values (Recommended).
         /// </summary>
-        public void SetAccount(string accountId, Dictionary<string, string> vars, string platform = "", string game = "")
+        public void SetAccount(string accountId, Dictionary<string, string> vars, string platform = "")
         {
-            BasicStats.GameStats[Game].CachedStats[accountId] = new UserGameStat() { Vars = vars };
+            CachedStats[accountId] = new UserGameStat() { Vars = vars };
             LoadStatsFromWeb(accountId, platform);
-            if (game != "")
-                BasicStats.GameStats[game].SaveStats();
+            SaveStats();
         }
-
 
         /// <summary>
         /// Return URL with saved vars subbed in
