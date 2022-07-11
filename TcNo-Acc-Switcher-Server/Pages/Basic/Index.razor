@@ -141,6 +141,8 @@
         if (File.Exists(Basic.Exe())) return;
 
         _navBack = true;
+
+        BasicStats.SetCurrentPlatform(CurrentPlatform.FullName);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

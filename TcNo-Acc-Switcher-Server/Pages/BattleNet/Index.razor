@@ -99,6 +99,8 @@
     protected override void OnParametersSet()
     {
         AppSettings.StreamerModeCheck();
+
+        BasicStats.SetCurrentPlatform("BattleNet");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

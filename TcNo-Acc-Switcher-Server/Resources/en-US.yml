@@ -2,13 +2,13 @@
 Update: Update available! Click here to start it.
 Header_ChooseLanguage: 'Choose Language:'
 BattleNet_ShowSR: Show Overwatch SR and use the Overwatch profile picture.
-Steam_ShowSteamID: Show SteamID
-Steam_ShowVac: Show VAC status
-Steam_ShowLastLogin: Show last login time
-Steam_CheckVac: Check account VAC status
-Steam_ShowLimited: Show Limited Status
-Steam_ShowAccUsername: Show account username
+Steam_ShowSteamID: SteamID
+Steam_ShowVac: VAC status
+Steam_ShowLastLogin: Last login time
+Steam_ShowLimited: Limited Status
+Steam_ShowAccUsername: Account username
 Steam_Tray_AccountName: Show account name [not friend name]
+Steam_CheckVac: Check account VAC status
 Steam_OverrideDefaultState: "Override default login state:"
 Steam_StartSilent: "Open Steam to task tray on switch (Start Steam with '-silent')"
 Button_AddNew: Add New
@@ -37,6 +37,7 @@ Settings_SteamAPIKey: "Steam Web API key (optional)"
 Settings_SteamAPIKey_Note: Setting an API key will make the Limited indicator (yellow border) show for accounts that are Community Banned instead.
 Settings_Header_AppWide: App-wide settings
 Settings_Header_GeneralSettings: General settings
+Settings_Header_AccountDisplay: Account Display settings
 Settings_Header_ExtraPlatforms: Platform Settings
 Settings_Header_GeneralTools: General Tools
 Settings_Header_OtherTools: Other Tools
@@ -89,7 +90,7 @@ Settings_Header_StartingMethod: "(Advanced) Set method to start {platform}"
 Settings_AutoStart: "Automatically start {platform} on account switch"
 Settings_NoPlatforms: There are currently no platforms enabled. Please tick optional platforms below to enable them, or uncheck disabled platforms.
 Settings_MinimizeOnSwitch: Minimize switcher on account switch
-Settings_ShowShortNotes: Show note preview under username
+Settings_ShowShortNotes: Note preview under username
 Settings_Header_AppPassword: "Stop others using the switcher:"
 PreviewCss: Preview CSS
 Settings_PreviewCss: This is the CSS preview page. You can view some elements that pop up in the program and see what they look like with your theme. This page is useful for those creating themes!
