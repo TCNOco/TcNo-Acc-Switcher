@@ -111,6 +111,15 @@
     }
 }
 
+.gameStatsWindow {
+    min-width: 400px;
+    color: white;
+
+    .form-text span {
+        margin-right: 1em;
+    }
+}
+
 .linksList {
     display: flex;
     flex-direction: column;

@@ -48,12 +48,54 @@ namespace TcNo_Acc_Switcher_Server.Data
         private SortedDictionary<string, List<string>> _platformGames = new();
         private Dictionary<string, GameStat> _gameStats = new();
 
+        /// <summary>
+        /// List of all games with stats
+        /// </summary>
         public static List<string> GamesDict { get => Instance._gamesDict; set => Instance._gamesDict = value; }
+        /// <summary>
+        /// Dictionary of Platform:List of supported game names
+        /// </summary>
         public static SortedDictionary<string, List<string>> PlatformGames { get => Instance._platformGames; set => Instance._platformGames = value; }
+        /// <summary>
+        /// Dictionary of Game Name:Available user game statistics
+        /// </summary>
         public static Dictionary<string, GameStat> GameStats { get => Instance._gameStats; set => Instance._gameStats = value; }
 
+        /// <summary>
+        /// List of possible games on X platform
+        /// </summary>
         [JSInvokable]
-        public static List<string> GetGamesForPlatform(string platform) => PlatformGames.ContainsKey(platform) ? PlatformGames[platform] : new List<string>();
+        public static List<string> GetAvailableGames(string platform) => PlatformGames.ContainsKey(platform) ? PlatformGames[platform] : new List<string>();
+        /// <summary>
+        /// List of games from X platform, with Y accountId associated.
+        /// </summary>
+        [JSInvokable]
+        public static List<string> GetEnabledGames(string platform, string accountId) => GetAvailableGames(platform).Where(game => GameStats[game].CachedStats.ContainsKey(accountId)).ToList();
+        /// <summary>
+        /// List of games from X platform, NOT with Y accountId associated.
+        /// </summary>
+        [JSInvokable]
+        public static List<string> GetDisabledGames(string platform, string accountId) => GetAvailableGames(platform).Where(game => !GameStats[game].CachedStats.ContainsKey(accountId)).ToList();
+
+        [JSInvokable]
+        public static Dictionary<string, string> GetRequiredVars(string game) => GameStats[game].RequiredVars;
+
+        [JSInvokable]
+        public static void SetGameVars(string game, string accountId,
+            Dictionary<string, string> returnDict)
+        {
+            GameStats[game].SetAccount(accountId, returnDict);
+            GameStats[game].SaveStats();
+        }
+
+        [JSInvokable]
+        public static void DisableGame(string game, string accountId)
+        {
+            if (!GameStats.ContainsKey(game) || !GameStats[game].CachedStats.ContainsKey(accountId)) return;
+
+            GameStats[game].CachedStats.Remove(accountId);
+            GameStats[game].SaveStats();
+        }
         public static bool PlatformHasAnyGames(string platform) => PlatformGames.ContainsKey(platform) && PlatformGames[platform].Count > 0;
         public static JToken StatsDefinitions => (JObject)JData["StatsDefinitions"];
         public static JToken PlatformCompatibilities => (JObject)JData["PlatformCompatibilities"];
@@ -94,7 +136,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             //}
         }
 
-        public static List<string> PlatformGamesWithStats(string platform) => PlatformGames.ContainsKey(platform) ? GetGamesForPlatform(platform) : new List<string>();
+        public static List<string> PlatformGamesWithStats(string platform) => PlatformGames.ContainsKey(platform) ? GetAvailableGames(platform) : new List<string>();
 
         /// <summary>
         /// Loads games and stats for requested platform
@@ -106,7 +148,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             GameStats = new Dictionary<string, GameStat>();
             // TODO: Verify this works as intended when more games are added.
-            foreach (var game in GetGamesForPlatform(platform))
+            foreach (var game in GetAvailableGames(platform))
             {
                 var gs = new GameStat();
                 gs.SetGameStat(game);
@@ -157,11 +199,20 @@ namespace TcNo_Acc_Switcher_Server.Data
         public string Indicator = "";
         public string Url = "";
         public string Cookies = "";
+        /// <summary>
+        ///Dictionary of Variable:Values for each account, for use in statistics web url. Such as Username="Kevin".
+        /// </summary>
         public Dictionary<string, string> RequiredVars = new();
+        /// <summary>
+        /// Dictionary of GameName:CollectInstructions for collecting stats from web and info from user
+        /// </summary>
         public Dictionary<string, CollectInstruction> ToCollect = new();
 
         private readonly string _cacheFileFolder = Path.Join(Globals.UserDataFolder, "StatsCache");
         private string CacheFilePath => Path.Join(_cacheFileFolder, $"{Game}.json");
+        /// <summary>
+        /// Dictionary of AccountId:UserGameStats
+        /// </summary>
         public SortedDictionary<string, UserGameStat> CachedStats = new();
         #endregion
 
@@ -302,12 +353,18 @@ namespace TcNo_Acc_Switcher_Server.Data
             return true;
         }
 
+        /// <summary>
+        /// Save all game stats for all accounts on current platform
+        /// </summary>
         public void SaveStats()
         {
             _ = Directory.CreateDirectory(_cacheFileFolder);
             File.WriteAllText(CacheFilePath, JsonConvert.SerializeObject(CachedStats));
         }
 
+        /// <summary>
+        /// Load all game stats for all accounts on current platform
+        /// </summary>
         public void LoadStats()
         {
             _ = Directory.CreateDirectory(_cacheFileFolder);

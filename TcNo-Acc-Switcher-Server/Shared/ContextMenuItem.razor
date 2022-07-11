@@ -1,15 +1,15 @@
 ﻿@using TcNo_Acc_Switcher_Server.Data
 @using System.Collections.ObjectModel
 @code {
-    [Parameter] 
+    [Parameter]
     public MenuItem Item { get; set; }
     [Parameter]
     public int Depth { get; set; }
-    
+
     /* For handling pagination */
     private const int itemsPerPage = 5;
     private int _currentPage;
-    private string _searchText = ""; 
+    private string _searchText = "";
     private List<MenuItem> Unfiltered => Item.Children.
         Where(item => item.Text.ToLower().Contains(_searchText.ToLower())).ToList();
     private List<MenuItem> Visible => Unfiltered.Skip(_currentPage * itemsPerPage).Take(itemsPerPage).ToList();

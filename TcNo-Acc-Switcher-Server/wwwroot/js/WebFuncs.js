@@ -264,13 +264,160 @@ async function changeImage(e) {
 }
 
 // Open Game Stats menu 1: Enable/Disable stats for specific games
-function ShowGameStatsSetup(e) {
-    // Do nothing yet
+async function ShowGameStatsSetup(e) {
+    if (e !== undefined && e !== null) e.preventDefault();
+    if (!getSelected()) return;
 
+    const accountId = selected.attr("id");
+
+    const modalTitle = await GetLangSub("Modal_Title_GameStats", { accountName: selected.attr("displayname") }),
+        modalHeading = await GetLang("Modal_GameStats_Header");
+
+    const currentPage = await getCurrentPageFullname();
+    let enabledGames = [],
+        disabledGames = [],
+        safeGameNames = [];
+
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetEnabledGames", currentPage, accountId).then((r) => {
+        enabledGames = r;
+    });
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetDisabledGames", currentPage, accountId).then((r) => {
+        disabledGames = r;
+    });
+
+    $("#modalTitle").text(modalTitle);
+    $("#modal_contents").empty();
+    let html = "";
+    html += `<div class="gameStatsWindow">
+		        <p>${modalHeading}</p>
+            <div class="rowSetting">`;
+
+    for (const x in enabledGames) {
+        let game = enabledGames[x];
+        let safeGame = game.replace(/\s/g, '');
+        html += `<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="${safeGame
+            }" checked><label class="form-check-label" for="${safeGame
+            }"></label><label for="${safeGame}">${game}<br></label></div>`;
+        safeGameNames.push(safeGame);
+    }
+    for (const x in disabledGames) {
+        let game = disabledGames[x];
+        let safeGame = game.replace(/\s/g, '');
+        html += `<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="${safeGame
+            }"><label class="form-check-label" for="${safeGame
+            }"></label><label for="${safeGame}">${game}<br></label></div>`;
+        safeGameNames.push(safeGame);
+    }
+
+                //@foreach (var item in AData.EnabledPlatformSorted())
+                //{
+                //
+                //}
+    html += "</div></div>";
+    $("#modal_contents").append(html);
+
+    for (const x in safeGameNames) {
+        let game = safeGameNames[x];
+        $(`#${game}`).change(function () {
+            toggleGameStats(game, this.checked);
+        });
+    }
+
+    $(".modalBG").fadeIn(() => {
+        try {
+            if (input === undefined) return;
+            input.focus();
+            input.select();
+        }
+        catch (err) {
+
+        }
+    });
     // Later:
     // On enabling game, required variables are collected from user, and game stats activated for that game.
     // User stats also collected and displayed.
     // On disabling game, stats are cleared for said game.
+}
+
+async function toggleGameStats(safeGame, isChecked) {
+    if (!getSelected()) return;
+    const accountId = selected.attr("id");
+    const game = $(`label[for='${safeGame}']:last`).text();
+    console.log(game, isChecked);
+
+    if (!isChecked) {
+        // Unchecked: Remove entry and continue.
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `DisableGame`, game, accountId);
+        return;
+    }
+
+    // Checked: Get required variables and present to user.
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game).then((r) => {
+        showGameVarCollectionModel(game, r);
+    });
+}
+
+async function showGameVarCollectionModel(game, requiredVars) {
+    if (!getSelected()) return;
+    const accountId = selected.attr("id");
+    const currentPage = await getCurrentPageFullname();
+
+    const modalTitle = await GetLangSub("Modal_Title_GameVars", { game: game }),
+        modalHeading = await GetLangSub("Modal_GameVars_Header", { game: game, username: selected.attr("displayname"), platform: currentPage }),
+        submit = await GetLang("Submit");
+
+    $("#modalTitle").text(modalTitle);
+    $("#modal_contents").empty();
+    let html = "";
+    html += `<div class="gameStatsWindow">
+                <p>${modalHeading}</p>
+            <div class="rowSetting">`;
+
+    for (const [key, value] of Object.entries(requiredVars)) {
+        console.log(key, value);
+        html +=
+            `<div class="form-text"><span>${value}</span><input type="text" id="acc${key}" spellcheck="false" placeholder="${key}"></div>`;
+    }
+
+    html += `</div><div class="settingsCol inputAndButton">
+        <button class="modalOK" type="button" id="set_password" onclick="Modal_FinaliseGameVars('${game}', '${accountId}')"><span>${
+        submit}</span></button></div>`;
+    $("#modal_contents").append(html);
+
+    $(".modalBG").fadeIn(() => {
+        try {
+            if (input === undefined) return;
+            input.focus();
+            input.select();
+        }
+        catch (err) {
+
+        }
+    });
+}
+
+async function Modal_FinaliseGameVars(game, accountId) {
+    console.log(game, accountId);
+
+    // Get list of variable keys
+    var requiredVars = [];
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game).then((r) => {
+        requiredVars = r;
+        console.log(requiredVars, typeof(requiredVars));
+    });
+
+    // Get value for each key and create dictionary
+    let returnDict = {};
+    for (const [key, value] of Object.entries(requiredVars)) {
+        console.log(key, value, $(`#acc${key}`).val());
+        returnDict[key] = $(`#acc${key}`).val();
+    }
+
+    // Add user statistics for game, with collected variables
+    $(".modalBG").fadeOut();
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SetGameVars`, game, accountId, returnDict);
+
+    location.reload();
 }
 
 

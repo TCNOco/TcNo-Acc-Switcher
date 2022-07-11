@@ -259,7 +259,11 @@ Modal_Title_LocatePlatform: Please locate the {platform} directory
 Modal_Title_AddNew: Add new {platform} account
 Modal_Title_Background: Set a background image
 Modal_Title_Userdata: Set the user data folder
+Modal_Title_GameStats: "Enable/Disable game statistics for: {accountName}"
+Modal_GameStats_Header: "Enable/Disable game statistics: "
 Modal_Title_Stats: Your statistics
+Modal_Title_GameVars: "Input details for {game}"
+Modal_GameVars_Header: "Please enter the following details for your {game} account, {username} on {platform}"
 Modal_Title_AccountNotes: "Account Notes for: {accountName}"
 Modal_Title_SetPassword: Set Password
 Modal_SetBackground: 'Select an image, or enter a URL below.<br>Leave blank and set to reset.<br>(For more advanced control see the Theming on the Wiki):'
@@ -437,6 +441,7 @@ No: "No"
 Save: Save
 NoDefault: No (Default)
 Ok: "OK"
+Submit: Submit
 Forget: Forget
 Notice: Notice
 Notes: Notes
