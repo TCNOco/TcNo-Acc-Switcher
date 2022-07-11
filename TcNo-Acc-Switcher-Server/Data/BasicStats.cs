@@ -133,11 +133,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static Dictionary<string, string> GetRequiredVars(string game) => GameStats[game].RequiredVars;
 
         [JSInvokable]
-        public static void SetGameVars(string game, string accountId,
+        public static void SetGameVars(string platform, string game, string accountId,
             Dictionary<string, string> returnDict)
         {
-            GameStats[game].SetAccount(accountId, returnDict);
-            GameStats[game].SaveStats();
+            GameStats[game].SetAccount(accountId, returnDict, platform, game);
         }
 
         [JSInvokable]
@@ -275,7 +274,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             public string DisplayAs { get; set; } = "%x%";
 
             // Optional
-            public string SelectAttribute { get; set; } // If Select = "attribute", set the attribute to get here.
+            public string SelectAttribute { get; set; } = ""; // If Select = "attribute", set the attribute to get here.
             public string NoDisplayIf { get; set; } = ""; // The DisplayAs text will not display if equal to the default value of this.
             public string Icon { get; set; } = ""; // Icon HTML markup
         }
@@ -310,18 +309,14 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         /// <summary>
-        /// Set up new accounts
+        /// Set up new accounts. Set game name if you want all accounts to save after setting values (Recommended).
         /// </summary>
-        /// <returns>True if added, False if exists</returns>
-        public bool SetAccount(string accountId, Dictionary<string, string> vars)
+        public void SetAccount(string accountId, Dictionary<string, string> vars, string platform = "", string game = "")
         {
-            if (BasicStats.GameStats[Game].CachedStats.ContainsKey(accountId))
-                return false;
-
             BasicStats.GameStats[Game].CachedStats[accountId] = new UserGameStat() { Vars = vars };
-
-            LoadStatsFromWeb(accountId);
-            return true;
+            LoadStatsFromWeb(accountId, platform);
+            if (game != "")
+                BasicStats.GameStats[game].SaveStats();
         }
 
 
@@ -342,7 +337,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Collects user statistics for account
         /// </summary>
         /// <returns>Successful or not</returns>
-        public bool LoadStatsFromWeb(string accountId)
+        public bool LoadStatsFromWeb(string accountId, string platform = "")
         {
             // Check if init, and list of accounts contains Id
             if (!IsInit || !CachedStats.ContainsKey(accountId)) return false;
@@ -387,12 +382,22 @@ namespace TcNo_Acc_Switcher_Server.Data
                 {
                     "innerText" => xPathResponse.InnerText,
                     "innerHtml" => xPathResponse.InnerHtml,
-                    "attribute" => xPathResponse.Attributes["src"]?.Value ?? "",
+                    "attribute" => xPathResponse.Attributes[ci.SelectAttribute]?.Value ?? "",
                     _ => text
                 };
 
                 // Don't display if equal to default
                 if (text == ci.NoDisplayIf) continue;
+
+                // Handle special items
+                if (itemName == "%PROFILEIMAGE%")
+                {
+                    if (platform != "")
+                    {
+                        Globals.DownloadProfileImage(platform, accountId, text, GeneralFuncs.WwwRoot());
+                    }
+                    continue;
+                }
 
                 // Else, format as requested
                 text = ci.DisplayAs.Replace("%x%", text);

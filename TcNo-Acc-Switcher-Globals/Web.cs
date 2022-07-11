@@ -111,5 +111,34 @@ namespace TcNo_Acc_Switcher_Globals
 
             return readSuccess;
         }
+
+        /// <summary>
+        /// Downloads or copies an image to the requested account. Copies default if fails.
+        /// </summary>
+        /// <param name="platformName">Platform name</param>
+        /// <param name="uniqueId">Unique ID of account</param>
+        /// <param name="urlOrPath">URL or filepath to download/copy image from</param>
+        /// <param name="wwwroot">Use GeneralFuncs.WwwRoot()</param>
+        public static void DownloadProfileImage(string platformName, string uniqueId, string urlOrPath, string wwwroot)
+        {
+            var destination = $"wwwroot\\img\\profiles\\{GetCleanFilePath(platformName)}\\{uniqueId}.jpg";
+            try
+            {
+                // Is url -> Download
+                if (!DownloadFile(urlOrPath, destination))
+                {
+                    // Is not url -> Copy file
+                    if (!CopyFile(ExpandEnvironmentVariables(urlOrPath), destination))
+                    {
+                        // Is neither! Copy in the default.
+                        throw new Exception("Could not download or copy file!");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                CopyFile(Path.Join(wwwroot, "\\img\\BasicDefault.png"), destination);
+            }
+        }
     }
 }

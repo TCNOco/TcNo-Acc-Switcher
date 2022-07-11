@@ -31,6 +31,31 @@ namespace TcNo_Acc_Switcher_Globals
     {
         #region FILES
 
+        /// <summary>
+        /// Expands custom environment variables.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string ExpandEnvironmentVariables(string path)
+        {
+            var variables = new Dictionary<string, string>
+            {
+                { "%TCNO_UserData%", Globals.UserDataFolder },
+                { "%TCNO_AppData%", Globals.AppDataFolder },
+                { "%Documents%", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) },
+                { "%Music%", Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) },
+                { "%Pictures%", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) },
+                { "%Videos%", Environment.GetFolderPath(Environment.SpecialFolder.MyVideos) },
+                { "%StartMenu%", Environment.GetFolderPath(Environment.SpecialFolder.StartMenu) },
+                { "%StartMenuProgramData%", Environment.ExpandEnvironmentVariables(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu), "\\Programs")) },
+                { "%StartMenuAppData%", Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "\\Programs") }
+            };
+
+            foreach (var (k, v) in variables)
+                path = path.Replace(k, v);
+
+            return Environment.ExpandEnvironmentVariables(path);
+        }
         public static bool FileOrDirectoryExists(string p) => (Directory.Exists(p) || File.Exists(p));
 
         public static bool IsFolder(string path) => FileOrDirectoryExists(path) && File.GetAttributes(path).HasFlag(FileAttributes.Directory);

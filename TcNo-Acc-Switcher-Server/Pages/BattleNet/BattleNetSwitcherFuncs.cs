@@ -103,7 +103,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
             foreach (var acc in BattleNetSettings.Accounts)
             {
-                if (!File.Exists(Path.Join(BattleNetSettings.ImagePath, $"{acc.Email}.png"))) _ = DownloadImage(acc.Email);
+                if (!File.Exists(Path.Join(BattleNetSettings.ImagePath, $"{acc.Email}.jpg"))) _ = DownloadImage(acc.Email);
                 var username = acc.BTag == null ? acc.Email : acc.BTag.Contains('#') ? acc.BTag.Split("#")[0] : acc.BTag;
 
                 // Handle notes (if any)
@@ -134,7 +134,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 var element =
                     $"<div class=\"acc_list_item\" data-toggle=\"tooltip\"><input type=\"radio\" id=\"{acc.Email}\" Username=\"{username}\" DisplayName=\"{username}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                     $"<label for=\"{acc.Email}\" class=\"acc\">\r\n" +
-                    $"<img src=\"img\\profiles\\battlenet\\{acc.Email}.png?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
+                    $"<img src=\"img\\profiles\\battlenet\\{acc.Email}.jpg?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
                     $"<h6>{GeneralFuncs.EscapeText(username)}</h6>\r\n";
                 if (BattleNetSettings.OverwatchMode && DateTime.Now - acc.LastTimeChecked < TimeSpan.FromDays(1))
                 {
@@ -219,7 +219,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
 
         public static string DownloadImage(string bTag, string imgUrl = "")
         {
-            var dlDir = Path.Join(BattleNetSettings.ImagePath, $"{bTag}.png");
+            var dlDir = Path.Join(BattleNetSettings.ImagePath, $"{bTag}.jpg");
             _ = Directory.CreateDirectory(BattleNetSettings.ImagePath);
             if (imgUrl == "")
             {
@@ -436,7 +436,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
             var account = BattleNetSettings.Accounts.Find(x => x.Email == accName);
             if (account == null) return;
             // Remove image
-            var img = Path.Join(BattleNetSettings.ImagePath, $"{account.BTag ?? account.Email}.png");
+            var img = Path.Join(BattleNetSettings.ImagePath, $"{account.BTag ?? account.Email}.jpg");
             Globals.DeleteFile(img);
             // Remove from Tray
             Globals.RemoveTrayUser("BattleNet", account.BTag ?? account.Email); // Add to Tray list

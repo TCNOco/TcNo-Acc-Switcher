@@ -382,23 +382,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         /// <returns></returns>
         public static string ExpandEnvironmentVariables(string path, bool noIncludeBasicCheck = false)
         {
-            var variables = new Dictionary<string, string>
-            {
-                { "%TCNO_UserData%", Globals.UserDataFolder },
-                { "%TCNO_AppData%", Globals.AppDataFolder },
-                { "%Documents%", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) },
-                { "%Music%", Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) },
-                { "%Pictures%", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) },
-                { "%Videos%", Environment.GetFolderPath(Environment.SpecialFolder.MyVideos) },
-                { "%StartMenu%", Environment.GetFolderPath(Environment.SpecialFolder.StartMenu) },
-                { "%StartMenuProgramData%", Environment.ExpandEnvironmentVariables(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu), "\\Programs")) },
-                { "%StartMenuAppData%", Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "\\Programs") }
-            };
-            if (!noIncludeBasicCheck)
-                variables.Add("%Platform_Folder%", BasicSettings.FolderPath ?? "");
+            path = Globals.ExpandEnvironmentVariables(path);
 
-            foreach (var (k,v) in variables)
-                path = path.Replace(k, v);
+            if (!noIncludeBasicCheck)
+                path = path.Replace("%Platform_Folder%", BasicSettings.FolderPath ?? "");
 
             return Environment.ExpandEnvironmentVariables(path);
         }

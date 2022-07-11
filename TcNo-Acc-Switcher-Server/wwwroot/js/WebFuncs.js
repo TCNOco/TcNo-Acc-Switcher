@@ -398,6 +398,7 @@ async function showGameVarCollectionModel(game, requiredVars) {
 
 async function Modal_FinaliseGameVars(game, accountId) {
     console.log(game, accountId);
+    const currentPage = await getCurrentPageFullname();
 
     // Get list of variable keys
     var requiredVars = [];
@@ -415,7 +416,7 @@ async function Modal_FinaliseGameVars(game, accountId) {
 
     // Add user statistics for game, with collected variables
     $(".modalBG").fadeOut();
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SetGameVars`, game, accountId, returnDict);
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SetGameVars`, currentPage, game, accountId, returnDict);
 
     location.reload();
 }

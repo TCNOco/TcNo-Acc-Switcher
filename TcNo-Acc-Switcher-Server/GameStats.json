@@ -36,6 +36,11 @@
         "BattleTagNumber": "BattleTag - Number ONLY [1234]"
       },
       "Collect": {
+        "%PROFILEIMAGE%": {
+          "XPath": ".//img[@class='player-portrait']",
+          "Select": "attribute",
+          "SelectAttribute": "src"
+        },
         "LVL": {
           "XPath": ".//div[@class='player-level']/div[@class='u-vertical-center']",
           "Select": "innerHtml",
