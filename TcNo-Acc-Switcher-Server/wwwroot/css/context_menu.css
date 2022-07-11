@@ -21,11 +21,22 @@
   border-radius: 0.2em;
   list-style: none;
   z-index: 999999;
-  /* Only first submenu has shortenable names - for now (Game names). Evertyhing else wrap. */
+  /* Only second submenu has shortenable names - for now (Game names). Evertyhing else wrap. */
 }
 .contextmenu li {
   border-left: 1em solid transparent;
   transition: ease 0.2s;
+}
+.contextmenu li.hasSubmenu::after {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  font-size: 0.9em;
+  margin-right: 0.3em;
+  content: "\f105";
+  color: #fff;
+  position: absolute;
+  right: 6px;
+  transform: translateY(-165%);
 }
 .contextmenu li a {
   color: #FFFFFF !important;
@@ -91,13 +102,13 @@
 }
 .contextmenu .submenu .contextSearch input {
   margin: 0;
-  padding: 10px;
+  padding: 9px;
   width: 100%;
 }
 .contextmenu .submenu .contextSearch input:placeholder-shown {
   opacity: 0.8;
 }
-.contextmenu .submenu1 > li > a {
+.contextmenu .submenu2 > li > a {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

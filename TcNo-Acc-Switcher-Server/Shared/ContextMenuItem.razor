@@ -7,13 +7,14 @@
     public int Depth { get; set; }
     
     /* For handling pagination */
+    private const int itemsPerPage = 5;
     private int _currentPage;
     private string _searchText = ""; 
     private List<MenuItem> Unfiltered => Item.Children.
         Where(item => item.Text.ToLower().Contains(_searchText.ToLower())).ToList();
-    private List<MenuItem> Visible => Unfiltered.Skip(_currentPage * 6).Take(6).ToList();
-    private int PageCount => ((Unfiltered.Count - 1) / 6) + 1;
-    
+    private List<MenuItem> Visible => Unfiltered.Skip(_currentPage * itemsPerPage).Take(itemsPerPage).ToList();
+    private int PageCount => ((Unfiltered.Count - 1) / itemsPerPage) + 1;
+
     private void OnSearchInputChanged(ChangeEventArgs e)
     {
         _searchText = e?.Value?.ToString();
@@ -23,13 +24,16 @@
 
 @if (Item.Children.Any())
 {
-    <li>
+    <li class="hasSubmenu">
         <a onclick="event.preventDefault();">@Item.Text</a>
         <ul class="submenu submenu@(Depth + 1)">
-            <li class="contextSearch">
-                <input type='text' placeholder='Search' onclick="event.stopPropagation();"
-                       @oninput="OnSearchInputChanged" />
-            </li>
+            @if (PageCount > 1)
+            {
+                <li class="contextSearch">
+                    <input type='text' placeholder='Search' onclick="event.stopPropagation();"
+                           @oninput="OnSearchInputChanged" />
+                </li>
+            }
             @foreach (var item in Visible)
             {
                 <ContextMenuItem Item="@item" Depth="@(Depth + 1)"/>
@@ -56,7 +60,7 @@
                             <a class='paginationButton' style="visibility: hidden"><i class="fas fa-arrow-right"></i></a>
                         }
                     </div>
-                </div>               
+                </div>
             }
 
         </ul>

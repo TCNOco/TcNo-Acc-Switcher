@@ -353,7 +353,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         new ("SteamIDFinder.com", "copy('SteamIDFinder.com', event)"),
                     }),
                 }),
-                new ("Context_CreateShortcutSubmenu", new Tuple<string, object>[]
+                new ("Context_CreateShortcut", new Tuple<string, object>[]
                 {
                     new ("OnlineDefault", "createShortcut()"),
                     new ("Invisible", "createShortcut(':7')"),
@@ -364,8 +364,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     new ("LookingToTrade", "createShortcut(':5')"),
                     new ("LookingToPlay", "createShortcut(':6')"),
                 }),
-                new ("Context_ChangeImage", "changeImage(event)"),
-                new ("Context_Steam_OpenUserdata", "openUserdata(event)"),
                 new ("Forget", "forget(event)"),
                 new ("Notes", "showNotes(event)"),
             });
@@ -408,12 +406,24 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 };
             }
 
+            var changeImage = new MenuItem()
+            {
+                Text = "Context_ChangeImage",
+                Content = "changeImage(event)"
+            };
+
+            var openUserdata = new MenuItem()
+            {
+                Text = "Context_Steam_OpenUserdata",
+                Content = "openUserdata(event)"
+            };
+
             // If any games with statistic support: Create and add Games... submenu
             if (BasicStats.PlatformHasAnyGames("Steam"))
             {
                 Menu.Add(new MenuItem()
                 {
-                    Text = "Context_GameSubmenu",
+                    Text = "Context_ManageSubmenu",
                     Children = new List<MenuItem>
                     {
                         gameData,
@@ -421,13 +431,24 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         {
                             Text = "Context_ManageGameStats",
                             Content = "ShowGameStatsSetup(event)"
-                        }
+                        },
+                        changeImage,
+                        openUserdata
                     }
                 });
             }
             // Only Game Data should be included, if any.
             else if (gameData is not null)
-                Menu.Add(gameData);
+                Menu.Add(new MenuItem()
+                {
+                    Text = "Context_ManageSubmenu",
+                    Children = new List<MenuItem>
+                    {
+                        gameData,
+                        changeImage,
+                        openUserdata
+                    }
+                });
 
         }
 

@@ -26,6 +26,18 @@
         border-left: 1em solid transparent;
         transition: ease 0.2s;
 
+        &.hasSubmenu::after {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            font-size: 0.9em;
+            margin-right: 0.3em;
+            content: "\f105";
+            color: #fff;
+            position: absolute;
+            right: 6px;
+            transform: translateY(-165%);
+        }
+
         a {
             color: #FFFFFF !important;
             display: block;
@@ -104,7 +116,7 @@
 
             input {
                 margin: 0;
-                padding: 10px;
+                padding: 9px;
                 width: 100%;
 
                 &:placeholder-shown {
@@ -113,13 +125,12 @@
             }
         }
     }
-    /* Only first submenu has shortenable names - for now (Game names). Evertyhing else wrap. */
-    .submenu1 > li > a {
+    /* Only second submenu has shortenable names - for now (Game names). Evertyhing else wrap. */
+    .submenu2 > li > a {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
 
     li:hover {
         border-left: 2px solid #8BE9FD;

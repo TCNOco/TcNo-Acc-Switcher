@@ -297,34 +297,34 @@ Status_GetUniqueId: Collecting unique user ID
 Status_CopyingFiles: Copying user files...
 Status_HandlingImage: Handling account profile image
 Context_SwapTo: Swap to account
-Context_CreateShortcut: Create Desktop Shortcut
-Context_CreateShortcutSubmenu: Create Desktop Shortcut...
+Context_CreateShortcut: Create Shortcut
 Context_ChangeImage: Change image
 Context_BNet_SetBTag: Set BattleTag
 Context_BNet_DelBTag: Delete BattleTag
 Context_BNet_GetRAnk: Refetch Rank
 Context_ChangeName: Change switcher name
-Context_LoginAsSubmenu: Login as...
-Context_UsernameSubmenu: Username...
+Context_LoginAsSubmenu: Login as
+Context_UsernameSubmenu: Username
 Context_RefreshName: Refresh name
-Context_CopySubmenu: Copy...
-Context_CopyProfileSubmenu: Copy Profile...
+Context_CopySubmenu: Copy
+Context_DataSubmenu: Data
+Context_CopyProfileSubmenu: Copy Profile
 Context_CommunityUrl: Community URL
 Context_CommunityUsername: Community Username
 Context_LoginUsername: Login username
-Context_CopySteamIdSubmenu: Copy SteamID...
+Context_CopySteamIdSubmenu: Copy SteamID
 Context_Steam_Id: SteamID [STEAM0:~]
 Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Open userdata
-Context_GameSubmenu: Games...
-Context_GameDataSubmenu: Game data...
+Context_ManageSubmenu: Manage
+Context_GameDataSubmenu: Game data
 Context_ManageGameStats: Manage game stats
 Context_Game_CopySettingsFrom: Copy settings to current
 Context_Game_RestoreSettingsTo: Restore game data
 Context_Game_BackupData: Backup game data
-Context_CopyOtherSubmenu: Copy other...
+Context_CopyOtherSubmenu: Copy other
 Context_HidePlatform: Hide platform
 Context_ExportAccList: Export account list
 Context_RunAdmin: Run as Admin
