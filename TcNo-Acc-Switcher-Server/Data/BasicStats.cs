@@ -131,6 +131,8 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         [JSInvokable]
         public static Dictionary<string, string> GetRequiredVars(string game) => GameStats[game].RequiredVars;
+        [JSInvokable]
+        public static Dictionary<string, string> GetExistingVars(string game, string account) => GameStats[game].CachedStats[account].Vars;
 
         [JSInvokable]
         public static void SetGameVars(string platform, string game, string accountId,
@@ -147,6 +149,14 @@ namespace TcNo_Acc_Switcher_Server.Data
             GameStats[game].CachedStats.Remove(accountId);
             GameStats[game].SaveStats();
         }
+
+        [JSInvokable]
+        public static void RefreshAccount(string accountId, string game, string platform = "")
+        {
+            GameStats[game].LoadStatsFromWeb(accountId, platform);
+            GameStats[game].SaveStats();
+        }
+
         public static bool PlatformHasAnyGames(string platform) => PlatformGames.ContainsKey(platform) && PlatformGames[platform].Count > 0;
         public static JToken StatsDefinitions => (JObject)JData["StatsDefinitions"];
         public static JToken PlatformCompatibilities => (JObject)JData["PlatformCompatibilities"];
@@ -185,12 +195,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             //    var x = (JProperty)jToken;
             //    PlatformGames.Add(x.Name, x.Value.ToObject<List<string>>());
             //}
-        }
-
-        public void RefreshAccount(string accountId, string game, string platform = "")
-        {
-            GameStats[game].LoadStatsFromWeb(accountId, platform);
-                GameStats[game].SaveStats();
         }
 
         public void RefreshAllAccounts(string game, string platform = "")
@@ -416,7 +420,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                 // Else, format as requested
                 text = ci.DisplayAs.Replace("%x%", text);
-                userStat.Collected.Add(itemName, text);
+                userStat.Collected[itemName] = text;
             }
 
             userStat.LastUpdated = DateTime.Now;

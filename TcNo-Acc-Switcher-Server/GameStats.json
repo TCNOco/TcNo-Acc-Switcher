@@ -32,8 +32,8 @@
       "Url": "https://playoverwatch.com/en-us/career/pc/{BattleTagName}-{BattleTagNumber}",
       "RequestCookies": "",
       "Vars": {
-        "BattleTagName": "BattleTag - NO number [Username]",
-        "BattleTagNumber": "BattleTag - Number ONLY [1234]"
+        "BattleTagName": "BattleTag - Text [Username]",
+        "BattleTagNumber": "BattleTag - Number [1234]"
       },
       "Collect": {
         "%PROFILEIMAGE%": {

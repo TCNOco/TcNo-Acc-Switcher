@@ -453,6 +453,8 @@ Failed: Failed
 Success: Success
 NotFound: Not found
 Done: Done
+Edit: Edit
+Refresh: Refresh
 Working: Working...
 ForName: "For: {name}"
 DeletedFiles: Deleted files

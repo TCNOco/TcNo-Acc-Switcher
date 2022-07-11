@@ -271,7 +271,9 @@ async function ShowGameStatsSetup(e) {
     const accountId = selected.attr("id");
 
     const modalTitle = await GetLangSub("Modal_Title_GameStats", { accountName: selected.attr("displayname") }),
-        modalHeading = await GetLang("Modal_GameStats_Header");
+        modalHeading = await GetLang("Modal_GameStats_Header"),
+        edit = await GetLang("Edit"),
+        refresh = await GetLang("Refresh");
 
     const currentPage = await getCurrentPageFullname();
     let enabledGames = [],
@@ -297,7 +299,9 @@ async function ShowGameStatsSetup(e) {
         let safeGame = game.replace(/\s/g, '');
         html += `<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="${safeGame
             }" checked><label class="form-check-label" for="${safeGame
-            }"></label><label for="${safeGame}">${game}<br></label></div>`;
+            }"></label><label for="${safeGame}">${game}<br></label>
+            <button type="button" onclick="showGameStatsVars('${game}')"><span>${edit}</span></button>
+            <button type="button" onclick="refreshAccount('${game}', '${accountId}')"><span>${refresh}</span></button></div></div>`;
         safeGameNames.push(safeGame);
     }
     for (const x in disabledGames) {
@@ -339,10 +343,9 @@ async function ShowGameStatsSetup(e) {
     // On disabling game, stats are cleared for said game.
 }
 
-async function toggleGameStats(safeGame, isChecked) {
+async function toggleGameStats(game, isChecked) {
     if (!getSelected()) return;
     const accountId = selected.attr("id");
-    const game = $(`label[for='${safeGame}']:last`).text();
     console.log(game, isChecked);
 
     if (!isChecked) {
@@ -353,11 +356,25 @@ async function toggleGameStats(safeGame, isChecked) {
 
     // Checked: Get required variables and present to user.
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game).then((r) => {
-        showGameVarCollectionModel(game, r);
+        showGameVarCollectionModel(game, r, {});
     });
 }
 
-async function showGameVarCollectionModel(game, requiredVars) {
+// Open the variable setting menu for game stats for account.
+// This is the Manage button, when variables are already set.
+async function showGameStatsVars(game) {
+    if (!getSelected()) return;
+    const accountId = selected.attr("id");
+
+    // Checked: Get required variables and present to user.
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game).then((required) => {
+        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetExistingVars`, game, accountId).then((existing) => {
+            showGameVarCollectionModel(game, required, existing);
+        });
+    });
+}
+
+async function showGameVarCollectionModel(game, requiredVars, existingVars = null) {
     if (!getSelected()) return;
     const accountId = selected.attr("id");
     const currentPage = await getCurrentPageFullname();
@@ -366,6 +383,9 @@ async function showGameVarCollectionModel(game, requiredVars) {
         modalHeading = await GetLangSub("Modal_GameVars_Header", { game: game, username: selected.attr("displayname"), platform: currentPage }),
         submit = await GetLang("Submit");
 
+    console.log(existingVars);
+
+
     $("#modalTitle").text(modalTitle);
     $("#modal_contents").empty();
     let html = "";
@@ -373,10 +393,18 @@ async function showGameVarCollectionModel(game, requiredVars) {
                 <p>${modalHeading}</p>
             <div class="rowSetting">`;
 
-    for (const [key, value] of Object.entries(requiredVars)) {
+    for (let [key, value] of Object.entries(requiredVars)) {
         console.log(key, value);
+        let placeholder = "";
+        if (value.includes("[") && value.includes("]")) {
+            const parts = value.split("[");
+            value = parts[0].trim();
+            placeholder = parts[1].trim().replace("]", "");
+        }
+
+        const existingValue = key in existingVars ? existingVars[key] : "";
         html +=
-            `<div class="form-text"><span>${value}</span><input type="text" id="acc${key}" spellcheck="false" placeholder="${key}"></div>`;
+            `<div class="form-text"><span>${value}</span><input type="text" id="acc${key}" spellcheck="false" placeholder="${placeholder}" value="${existingValue}"></div>`;
     }
 
     html += `</div><div class="settingsCol inputAndButton">
@@ -420,6 +448,14 @@ async function Modal_FinaliseGameVars(game, accountId) {
 
     location.reload();
 }
+
+async function refreshAccount(game, accountId) {
+    const currentPage = await getCurrentPageFullname();
+    $(".modalBG").fadeOut();
+    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `RefreshAccount`, accountId, game, currentPage);
+    location.reload();
+}
+
 
 
 async function Modal_FinalizeImage(dest) {
