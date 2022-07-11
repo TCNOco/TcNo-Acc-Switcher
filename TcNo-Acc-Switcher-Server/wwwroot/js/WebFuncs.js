@@ -292,23 +292,24 @@ async function ShowGameStatsSetup(e) {
     let html = "";
     html += `<div class="gameStatsWindow">
 		        <p>${modalHeading}</p>
-                <div class="modalScrollSection">
-                    <div class="rowSetting">`;
+                <div class="modalScrollSection">`;
 
     for (const x in enabledGames) {
         let game = enabledGames[x];
-        let safeGame = game.replace(/\s/g, '');
-        html += `       <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="${safeGame}" checked><label class="form-check-label" for="${safeGame}"></label><label for="${safeGame}">${game}<br></label></div>
-                        <div>
-                            <button type="button" onclick="showGameStatsVars('${game}')"><span>${edit}</span></button>
-                            <button type="button" onclick="refreshAccount('${game}', '${accountId}')"><span>${refresh}</span></button>
-                        </div>
-                    </div>`;
+        let safeGame = game.replace(/[/\\?%*:|"<>\s]/g, "");
+        html += `<div class="rowSetting">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="${safeGame}" checked><label class="form-check-label" for="${safeGame}"></label><label for="${safeGame}">${game}<br></label></div>
+                    <div>
+                        <button type="button" onclick="showGameStatsVars('${game}')"><span>${edit}</span></button>
+                        <button type="button" onclick="refreshAccount('${game}', '${accountId}')"><span>${refresh}</span></button>
+                    </div>
+                </div>`;
         safeGameNames.push(safeGame);
     }
     for (const x in disabledGames) {
         let game = disabledGames[x];
-        let safeGame = game.replace(/\s/g, '');
+        let safeGame = game.replace(/[/\\?%*:|"<>\s]/g, "");
         html += `   <div class="form-check mb-2">
                         <input class="form-check-input" type="checkbox" id="${safeGame}"><label class="form-check-label" for="${safeGame}"></label><label for="${safeGame}">${game}<br></label>
                     </div>`;
