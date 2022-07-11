@@ -170,8 +170,9 @@ namespace TcNo_Acc_Switcher_Client
                 Directory.Move("newUpdater", "updater");
             }
 
-            // Clear WebView2 cache
-            Globals.ClearWebCache();
+            //// Clear WebView2 cache
+            //// This is disabled for now in hopes of fixing cache errors in console, causing it to launch with some issues.
+            //Globals.ClearWebCache();
 
             // Show window (Because no command line commands were parsed)
             try

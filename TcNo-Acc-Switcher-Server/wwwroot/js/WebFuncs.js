@@ -270,8 +270,8 @@ async function ShowGameStatsSetup(e) {
 
     const accountId = selected.attr("id");
 
-    const modalTitle = await GetLangSub("Modal_Title_GameStats", { accountName: selected.attr("displayname") }),
-        modalHeading = await GetLang("Modal_GameStats_Header"),
+    const modalHeading = await GetLangSub("Modal_GameStats_Header", { accountName: selected.attr("displayname") }),
+        modalTitle= await GetLang("Modal_Title_GameStats"),
         edit = await GetLang("Edit"),
         refresh = await GetLang("Refresh");
 
@@ -292,24 +292,26 @@ async function ShowGameStatsSetup(e) {
     let html = "";
     html += `<div class="gameStatsWindow">
 		        <p>${modalHeading}</p>
-            <div class="rowSetting">`;
+                <div class="modalScrollSection">
+                    <div class="rowSetting">`;
 
     for (const x in enabledGames) {
         let game = enabledGames[x];
         let safeGame = game.replace(/\s/g, '');
-        html += `<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="${safeGame
-            }" checked><label class="form-check-label" for="${safeGame
-            }"></label><label for="${safeGame}">${game}<br></label>
-            <button type="button" onclick="showGameStatsVars('${game}')"><span>${edit}</span></button>
-            <button type="button" onclick="refreshAccount('${game}', '${accountId}')"><span>${refresh}</span></button></div></div>`;
+        html += `       <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="${safeGame}" checked><label class="form-check-label" for="${safeGame}"></label><label for="${safeGame}">${game}<br></label></div>
+                        <div>
+                            <button type="button" onclick="showGameStatsVars('${game}')"><span>${edit}</span></button>
+                            <button type="button" onclick="refreshAccount('${game}', '${accountId}')"><span>${refresh}</span></button>
+                        </div>
+                    </div>`;
         safeGameNames.push(safeGame);
     }
     for (const x in disabledGames) {
         let game = disabledGames[x];
         let safeGame = game.replace(/\s/g, '');
-        html += `<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="${safeGame
-            }"><label class="form-check-label" for="${safeGame
-            }"></label><label for="${safeGame}">${game}<br></label></div>`;
+        html += `   <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="${safeGame}"><label class="form-check-label" for="${safeGame}"></label><label for="${safeGame}">${game}<br></label>
+                    </div>`;
         safeGameNames.push(safeGame);
     }
 
@@ -317,7 +319,7 @@ async function ShowGameStatsSetup(e) {
                 //{
                 //
                 //}
-    html += "</div></div>";
+    html += "</div></div></div>";
     $("#modal_contents").append(html);
 
     for (const x in safeGameNames) {
@@ -343,8 +345,9 @@ async function ShowGameStatsSetup(e) {
     // On disabling game, stats are cleared for said game.
 }
 
-async function toggleGameStats(game, isChecked) {
+async function toggleGameStats(safeGame, isChecked) {
     if (!getSelected()) return;
+    const game = $(`label[for='${safeGame}']:last`).text();
     const accountId = selected.attr("id");
     console.log(game, isChecked);
 
@@ -391,7 +394,8 @@ async function showGameVarCollectionModel(game, requiredVars, existingVars = nul
     let html = "";
     html += `<div class="gameStatsWindow">
                 <p>${modalHeading}</p>
-            <div class="rowSetting">`;
+                <div class="modalScrollSection centeredContainer">
+                    <div class="centeredSection">`;
 
     for (let [key, value] of Object.entries(requiredVars)) {
         console.log(key, value);
@@ -404,12 +408,15 @@ async function showGameVarCollectionModel(game, requiredVars, existingVars = nul
 
         const existingValue = key in existingVars ? existingVars[key] : "";
         html +=
-            `<div class="form-text"><span>${value}</span><input type="text" id="acc${key}" spellcheck="false" placeholder="${placeholder}" value="${existingValue}"></div>`;
+            `<div class="rowSetting"><span>${value}</span><input type="text" id="acc${key}" spellcheck="false" placeholder="${placeholder}" value="${existingValue}"></div>`;
     }
 
-    html += `</div><div class="settingsCol inputAndButton">
-        <button class="modalOK" type="button" id="set_password" onclick="Modal_FinaliseGameVars('${game}', '${accountId}')"><span>${
-        submit}</span></button></div>`;
+    html += `       </div>
+                </div>
+                <div class="settingsCol inputAndButton">
+                    <button class="modalOK" type="button" id="set_password" onclick="Modal_FinaliseGameVars('${game}', '${accountId}')"><span>${submit}</span></button>
+                </div>
+            </div>`;
     $("#modal_contents").append(html);
 
     $(".modalBG").fadeIn(() => {
