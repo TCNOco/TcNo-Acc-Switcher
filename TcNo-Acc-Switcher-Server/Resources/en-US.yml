@@ -318,7 +318,9 @@ Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Open userdata
-Context_GameDataSubmenu: Game data
+Context_GameSubmenu: Games...
+Context_GameDataSubmenu: Game data...
+Context_ManageGameStats: Manage game stats
 Context_Game_CopySettingsFrom: Copy settings to current
 Context_Game_RestoreSettingsTo: Restore game data
 Context_Game_BackupData: Backup game data

@@ -263,6 +263,17 @@ async function changeImage(e) {
     });
 }
 
+// Open Game Stats menu 1: Enable/Disable stats for specific games
+function ShowGameStatsSetup(e) {
+    // Do nothing yet
+
+    // Later:
+    // On enabling game, required variables are collected from user, and game stats activated for that game.
+    // User stats also collected and displayed.
+    // On disabling game, stats are cleared for said game.
+}
+
+
 async function Modal_FinalizeImage(dest) {
     DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `ImportNewImage`, JSON.stringify({ dest: dest, path: $("#FolderLocation").val() }));
 }

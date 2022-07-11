@@ -70,6 +70,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     }
 
                     LoadBasicCompat(); // Add missing features in templated platforms system.
+                    BuildContextMenu();
 
                     _instance._desktopShortcut = Shortcut.CheckShortcuts("BattleNet");
                     AppData.InitializedClasses.BattleNet = true;
@@ -292,19 +293,35 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static readonly string IgnoredAccPath = "LoginCache\\BattleNet\\IgnoredAccounts.json";
         public static readonly string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";
 
-        public static readonly ObservableCollection<MenuItem> ContextMenuItems = MenuBuilder.Build(
-            new Tuple<string, object>[]
+        public static readonly ObservableCollection<MenuItem> ContextMenuItems = new();
+        public static void BuildContextMenu()
+        {
+            ContextMenuItems.Clear();
+            var menu = MenuBuilder.Build(
+                new Tuple<string, object>[]
+                {
+                    new("Context_SwapTo", "swapTo(-1, event)"),
+                    new("Context_BNet_SetBTag", "showModal('changeUsername:BattleTag')"),
+                    new("Context_BNet_DelBTag", "forgetBattleTag()"),
+                    new("Context_BNet_GetRAnk", "refetchRank()"),
+                    new("Context_CreateShortcut", "createShortcut()"),
+                    new("Context_ChangeImage", "changeImage(event)"),
+                    new("Forget", "forget(event)"),
+                    new("Notes", "showNotes(event)"),
+                });
+            ContextMenuItems.AddRange(menu);
+
+            // Game statistics, if any
+            if (BasicStats.PlatformHasAnyGames("BattleNet"))
             {
-                new("Context_SwapTo", "swapTo(-1, event)"),
-                new("Context_BNet_SetBTag", "showModal('changeUsername:BattleTag')"),
-                new("Context_BNet_DelBTag", "forgetBattleTag()"),
-                new("Context_BNet_GetRAnk", "refetchRank()"),
-                new("Context_CreateShortcut", "createShortcut()"),
-                new("Context_ChangeImage", "changeImage(event)"),
-                new("Forget", "forget(event)"),
-                new("Notes", "showNotes(event)"),
-            });
-        
+                ContextMenuItems.Add(new MenuItem()
+                {
+                    Text = "Context_ManageGameStats",
+                    Content = "ShowGameStatsSetup(event)"
+                });
+            }
+        }
+
         #endregion
 
         #region FORGETTING_ACCOUNTS

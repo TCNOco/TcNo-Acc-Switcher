@@ -370,38 +370,65 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 new ("Notes", "showNotes(event)"),
             });
             Menu.AddRange(menu);
-            /* Game data submenu */
+
+            /* Games submenu, or Game data item */
+
+            // Prepare Game data menu
+            MenuItem gameData = null;
             if (File.Exists(SteamAppsUserCache) && AppIds.Value.Count > 0)
             {
-                Menu.Add(new MenuItem()
+                gameData = new MenuItem()
                 {
                     Text = "Context_GameDataSubmenu",
                     Children = (
-                        from gameId in InstalledGames.Value select new MenuItem()
+                        from gameId in InstalledGames.Value
+                        select new MenuItem()
                         {
                             Text = AppIds.Value.ContainsKey(gameId) ? AppIds.Value[gameId] : gameId,
                             Children = new List<MenuItem>()
                             {
-                                new ()
+                                new()
                                 {
                                     Text = "Context_Game_CopySettingsFrom",
                                     Content = $"CopySettingsFrom(event, '{gameId}')"
                                 },
-                                new ()
+                                new()
                                 {
                                     Text = "Context_Game_RestoreSettingsTo",
                                     Content = $"RestoreSettingsTo(event, '{gameId}"
                                 },
-                                new ()
+                                new()
                                 {
                                     Text = "Context_Game_BackupData",
                                     Content = $"BackupGameData(event, '{gameId}')"
                                 },
                             }
                         }
-                        ).ToList()
+                    ).ToList()
+                };
+            }
+
+            // If any games with statistic support: Create and add Games... submenu
+            if (BasicStats.PlatformHasAnyGames("Steam"))
+            {
+                Menu.Add(new MenuItem()
+                {
+                    Text = "Context_GameSubmenu",
+                    Children = new List<MenuItem>
+                    {
+                        gameData,
+                        new ()
+                        {
+                            Text = "Context_ManageGameStats",
+                            Content = "ShowGameStatsSetup(event)"
+                        }
+                    }
                 });
             }
+            // Only Game Data should be included, if any.
+            else if (gameData is not null)
+                Menu.Add(gameData);
+
         }
 
         public static string StateToString(int state)

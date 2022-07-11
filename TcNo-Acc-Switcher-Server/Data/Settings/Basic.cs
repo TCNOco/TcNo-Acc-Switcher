@@ -64,6 +64,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         SaveSettings();
                     }
 
+                    BuildContextMenu();
+
                     _instance._desktopShortcut = Shortcut.CheckShortcuts(CurrentPlatform.FullName);
                     AppData.InitializedClasses.Basic = true;
 
@@ -146,16 +148,33 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             set => Instance._startingMethod = value;
         }
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
-        public static readonly ObservableCollection<MenuItem> ContextMenuItems = MenuBuilder.Build(
-            new Tuple<string, object>[]
+        public static readonly ObservableCollection<MenuItem> ContextMenuItems = new();
+        public static void BuildContextMenu()
         {
-            new ("Context_SwapTo", "swapTo(-1, event)"),
-            new ("Context_ChangeName", "showModal('changeUsername')"),
-            new ("Context_CreateShortcut", "createShortcut()"),
-            new ("Context_ChangeImage", "changeImage(event)"),
-            new ("Forget", "forget(event)"),
-            new ("Notes", "showNotes(event)"),
-        });
+            ContextMenuItems.Clear();
+            var menu = MenuBuilder.Build(
+                new Tuple<string, object>[]
+                {
+                    new ("Context_SwapTo", "swapTo(-1, event)"),
+                    new ("Context_ChangeName", "showModal('changeUsername')"),
+                    new ("Context_CreateShortcut", "createShortcut()"),
+                    new ("Context_ChangeImage", "changeImage(event)"),
+                    new ("Forget", "forget(event)"),
+                    new ("Notes", "showNotes(event)"),
+                });
+            ContextMenuItems.AddRange(menu);
+
+            // Game statistics, if any
+            if (BasicStats.PlatformHasAnyGames(CurrentPlatform.SafeName))
+            {
+                ContextMenuItems.Add(new MenuItem()
+                {
+                    Text = "Context_ManageGameStats",
+                    Content = "ShowGameStatsSetup(event)"
+                });
+            }
+        }
+
         public static readonly ObservableCollection<MenuItem> ContextMenuShortcutItems = MenuBuilder.Build(
             new Tuple<string, object>[]
         {

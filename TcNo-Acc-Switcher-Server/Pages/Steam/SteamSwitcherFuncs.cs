@@ -280,7 +280,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                             Console.WriteLine(e.ToString());
                         }
                     }
-                    Data.Settings.Steam.BuildContextMenu();
+                    SteamSettings.BuildContextMenu();
                 });
                 return new Dictionary<string, string>();
             }

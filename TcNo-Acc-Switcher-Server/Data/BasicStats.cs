@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using HtmlAgilityPack;
+using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2.GC.CSGO.Internal;
@@ -51,7 +52,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static SortedDictionary<string, List<string>> PlatformGames { get => Instance._platformGames; set => Instance._platformGames = value; }
         public static Dictionary<string, GameStat> GameStats { get => Instance._gameStats; set => Instance._gameStats = value; }
 
-        public static List<string> GetGamesForPlatform(string platform) => PlatformGames[platform];
+        [JSInvokable]
+        public static List<string> GetGamesForPlatform(string platform) => PlatformGames.ContainsKey(platform) ? PlatformGames[platform] : new List<string>();
+        public static bool PlatformHasAnyGames(string platform) => PlatformGames.ContainsKey(platform) && PlatformGames[platform].Count > 0;
         public static JToken StatsDefinitions => (JObject)JData["StatsDefinitions"];
         public static JToken PlatformCompatibilities => (JObject)JData["PlatformCompatibilities"];
         public static JObject GetGame(string game) => (JObject) StatsDefinitions![game];
