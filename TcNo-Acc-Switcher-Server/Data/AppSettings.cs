@@ -182,13 +182,13 @@ namespace TcNo_Acc_Switcher_Server.Data
         private static bool UpdateCheckRan { get =>Instance._updateCheckRan; set => Instance._updateCheckRan = value; }
         public static bool PreRenderUpdate { get =>Instance._preRenderUpdate; set => Instance._preRenderUpdate = value; }
 
-        public static readonly ObservableCollection<MenuItem> PlatformContextMenuItems = MenuBuilder.Build(
+        public static readonly ObservableCollection<MenuItem> PlatformContextMenuItems = new MenuBuilder(
             new Tuple<string, object>[]
             {
                 new ("Context_HidePlatform", "hidePlatform()"),
                 new ("Context_CreateShortcut", "createPlatformShortcut()"),
                 new ("Context_ExportAccList", "exportAllAccounts()"),
-            });
+            }).Result();
 
         [JSInvokable]
         public static async Task HidePlatform(string platform)

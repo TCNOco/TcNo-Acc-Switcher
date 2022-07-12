@@ -149,11 +149,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
         public static readonly ObservableCollection<MenuItem> ContextMenuItems = new();
-        public static void BuildContextMenu()
+        private static void BuildContextMenu()
         {
             ContextMenuItems.Clear();
-            var menu = MenuBuilder.Build(
-                new Tuple<string, object>[]
+            ContextMenuItems.AddRange(new MenuBuilder(
+                new []
                 {
                     new ("Context_SwapTo", "swapTo(-1, event)"),
                     new ("Context_ChangeName", "showModal('changeUsername')"),
@@ -161,31 +161,21 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     new ("Context_ChangeImage", "changeImage(event)"),
                     new ("Forget", "forget(event)"),
                     new ("Notes", "showNotes(event)"),
-                });
-            ContextMenuItems.AddRange(menu);
-
-            // Game statistics, if any
-            if (BasicStats.PlatformHasAnyGames(CurrentPlatform.SafeName))
-            {
-                ContextMenuItems.Add(new MenuItem()
-                {
-                    Text = "Context_ManageGameStats",
-                    Content = "ShowGameStatsSetup(event)"
-                });
-            }
+                    BasicStats.PlatformHasAnyGames(CurrentPlatform.SafeName) ?
+                        new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)") : null,
+                }).Result());
         }
 
-        public static readonly ObservableCollection<MenuItem> ContextMenuShortcutItems = MenuBuilder.Build(
+        public static readonly ObservableCollection<MenuItem> ContextMenuShortcutItems = new MenuBuilder(
             new Tuple<string, object>[]
         {
             new ("Context_RunAdmin", "shortcut('admin')"),
             new ("Context_Hide", "shortcut('hide')"),
-        });
-        public static readonly ObservableCollection<MenuItem> ContextMenuPlatformItems = MenuBuilder.Build(
-            new Tuple<string, object>[]
-        {
-            new ("Context_RunAdmin", "shortcut('admin')"),
-        });
+        }).Result();
+        
+        public static readonly ObservableCollection<MenuItem> ContextMenuPlatformItems = new MenuBuilder(
+            new Tuple<string, object>("Context_RunAdmin", "shortcut('admin')")
+        ).Result();
 
         /// <summary>
         /// Updates the ForgetAccountEnabled bool in settings file
