@@ -27,13 +27,30 @@
         }
       }
     },
+    "Counter-Strike: Global Offensive": {
+      "Indicator": "",
+      "Url": "https://csgostats.gg/player/{SteamId}",
+      "RequestCookies": "",
+      "Vars": {
+        "SteamId": "%Steam%"
+      },
+      "Collect": {
+        "CompRank": {
+          "XPath": ".//div[@class='player-ranks']/img",
+          "Select": "attribute",
+          "SelectAttribute": "src",
+          "SpecialType": "ImageDownload",
+          "DisplayAs": "<img src=\"%x%\" style=\"max-height:3em\"/>"
+        }
+      }
+    },
     "Overwatch": {
       "Indicator": "OW",
       "Url": "https://playoverwatch.com/en-us/career/pc/{BattleTagName}-{BattleTagNumber}",
       "RequestCookies": "",
       "Vars": {
-        "BattleTagName": "BattleTag - NO number [Username]",
-        "BattleTagNumber": "BattleTag - Number ONLY [1234]"
+        "BattleTagName": "BattleTag - Text [Username]",
+        "BattleTagNumber": "BattleTag - Number [1234]"
       },
       "Collect": {
         "%PROFILEIMAGE%": {
@@ -73,7 +90,7 @@
   },
   "PlatformCompatibilities": {
     "Origin": [ "Apex Legends" ],
-    "Steam": [ "Apex Legends" ],
+    "Steam": [ "Apex Legends", "Counter-Strike: Global Offensive" ],
     "BattleNet": [ "Overwatch" ]
   }
 }

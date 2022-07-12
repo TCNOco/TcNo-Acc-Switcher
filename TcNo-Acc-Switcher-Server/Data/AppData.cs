@@ -147,6 +147,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         private List<Index.Steamuser> _steamUsers;
         public static List<Index.Steamuser> SteamUsers { get => Instance._steamUsers; set => Instance._steamUsers = value; }
 
+        private bool _steamLoadingProfiles;
+        public static bool SteamLoadingProfiles { get => Instance._steamLoadingProfiles; set => Instance._steamLoadingProfiles = value; }
         #endregion
 
         // Window stuff

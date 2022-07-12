@@ -111,9 +111,41 @@
     }
 }
 
-.gameStatsWindow {
+#modal_contents .gameStatsWindow {
     min-width: 400px;
     color: white;
+
+    .modalScrollSection {
+        width: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        &.centeredContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .centeredSection {
+                width: fit-content;
+
+                input[type=text] {
+                    margin-left: 2em;
+                }
+            }
+        }
+
+        .rowSetting {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5em;
+
+            button {
+                min-width: 6em;
+            }
+        }
+    }
 
     .form-text span {
         margin-right: 1em;

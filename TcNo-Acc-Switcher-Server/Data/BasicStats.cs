@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
@@ -97,7 +98,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     // Foreach stat
                     // Check if has icon, otherwise use just indicator string
                     var indicator = GetIcon(availableGame, statName);
-                    if (string.IsNullOrEmpty(indicator))
+                    if (!string.IsNullOrEmpty(indicator))
                         indicator = $"<sup>{gameIndicator}</sup>";
 
                     statValueIconDict.Add(statName, new StatValueAndIcon
@@ -131,6 +132,8 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         [JSInvokable]
         public static Dictionary<string, string> GetRequiredVars(string game) => GameStats[game].RequiredVars;
+        [JSInvokable]
+        public static Dictionary<string, string> GetExistingVars(string game, string account) => GameStats[game].CachedStats[account].Vars;
 
         [JSInvokable]
         public static void SetGameVars(string platform, string game, string accountId,
@@ -147,6 +150,14 @@ namespace TcNo_Acc_Switcher_Server.Data
             GameStats[game].CachedStats.Remove(accountId);
             GameStats[game].SaveStats();
         }
+
+        [JSInvokable]
+        public static void RefreshAccount(string accountId, string game, string platform = "")
+        {
+            GameStats[game].LoadStatsFromWeb(accountId, platform);
+            GameStats[game].SaveStats();
+        }
+
         public static bool PlatformHasAnyGames(string platform) => PlatformGames.ContainsKey(platform) && PlatformGames[platform].Count > 0;
         public static JToken StatsDefinitions => (JObject)JData["StatsDefinitions"];
         public static JToken PlatformCompatibilities => (JObject)JData["PlatformCompatibilities"];
@@ -185,12 +196,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             //    var x = (JProperty)jToken;
             //    PlatformGames.Add(x.Name, x.Value.ToObject<List<string>>());
             //}
-        }
-
-        public void RefreshAccount(string accountId, string game, string platform = "")
-        {
-            GameStats[game].LoadStatsFromWeb(accountId, platform);
-                GameStats[game].SaveStats();
         }
 
         public void RefreshAllAccounts(string game, string platform = "")
@@ -277,7 +282,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public Dictionary<string, CollectInstruction> ToCollect = new();
 
         private readonly string _cacheFileFolder = Path.Join(Globals.UserDataFolder, "StatsCache");
-        private string CacheFilePath => Path.Join(_cacheFileFolder, $"{Game}.json");
+        private string CacheFilePath => Globals.GetCleanFilePath(Path.Join(_cacheFileFolder, $"{Game}.json"));
         /// <summary>
         /// Dictionary of AccountId:UserGameStats
         /// </summary>
@@ -292,6 +297,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             // Optional
             public string SelectAttribute { get; set; } = ""; // If Select = "attribute", set the attribute to get here.
+            public string SpecialType { get; set; } = ""; // Possible types: ImageDownload.
             public string NoDisplayIf { get; set; } = ""; // The DisplayAs text will not display if equal to the default value of this.
             public string Icon { get; set; } = ""; // Icon HTML markup
         }
@@ -364,7 +370,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Notify user than an account is being loaded - >5 seconds apart.
             if (DateTime.Now.Subtract(_lastLoadingNotification).Seconds >= 5)
             {
-                _ = GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
+                GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
                 _lastLoadingNotification = DateTime.Now;
             }
 
@@ -414,9 +420,21 @@ namespace TcNo_Acc_Switcher_Server.Data
                     continue;
                 }
 
+                // And special Special Types
+                if (ci.SpecialType == "ImageDownload")
+                {
+                    var fileName = $"{Indicator}-{itemName}-{accountId}.jpg";
+                    var imgPath = Path.Join(GeneralFuncs.WwwRoot(), "img\\statsCache\\" + fileName);
+                    if (!Globals.DownloadFile(text, imgPath))
+                    {
+                        continue;
+                    }
+                    text = "img/statsCache/" + fileName;
+                }
+
                 // Else, format as requested
                 text = ci.DisplayAs.Replace("%x%", text);
-                userStat.Collected.Add(itemName, text);
+                userStat.Collected[itemName] = text;
             }
 
             userStat.LastUpdated = DateTime.Now;

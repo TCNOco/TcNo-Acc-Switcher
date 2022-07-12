@@ -11,9 +11,7 @@ async function getCurrentPageFullname() {
     // If a name for text is required, rather than code (Steam instead of steam or basic)
     var platform = getCurrentPage();
     if (platform === "Basic") {
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform).then((r) => {
-            platform = r;
-        });
+        platform = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform);
     }
     return platform;
 }
@@ -37,35 +35,19 @@ if (winUrl.length > 1 && winUrl[1].indexOf("cacheReload") !== -1) {
     location.reload(true);
 }
 
-async function GetLang(k) {
-    return DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocale", k).then((r) => {
-        return r;
-    });
-}
-async function GetCrowdin() {
-    return DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCrowdinList").then((r) => {
-        return r;
-    });
-}
-async function GetLangSub(key, obj) {
-    return DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocaleObj", key, obj).then((r) => {
-        return r;
-    });
-}
+GetLang = async(k) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocale", k);
+GetCrowdin = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCrowdinList");
+GetLangSub = async(key, obj) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocaleObj", key, obj);
 
-function copyToClipboard(str) {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", str);
-}
+copyToClipboard = async(str) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", str);
 
 // FORGETTING ACCOUNTS
 async function forget(e) {
     e.preventDefault();
     const reqId = $(selectedElem).attr("id");
-    const promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}ForgetAcc`).then((r) => {
-        if (!r) showModal(`confirm:AcceptForget${getCurrentPage()}Acc:${reqId}`);
-        else Modal_Confirm(`AcceptForget${getCurrentPage()}Acc:${reqId}`, true);
-    });
-    _ = await promise;
+    const pageForgetAcc = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}ForgetAcc`);
+    if (!pageForgetAcc) showModal(`confirm:AcceptForget${getCurrentPage()}Acc:${reqId}`);
+    else await Modal_Confirm(`AcceptForget${getCurrentPage()}Acc:${reqId}`, true);
 }
 
 // Show the Notes modal for selected account
@@ -75,14 +57,7 @@ async function showNotes(e) {
 }
 
 // Get and return note text for the requested account
-async function getAccNotes(accId) {
-    var accNotes = "";
-    const promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}Notes`, accId).then((r) => {
-        accNotes = r;
-    });
-    _ = await promise;
-    return accNotes;
-}
+getAccNotes = async(accId) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}Notes`, accId);
 
 // STOP IGNORING BATTLENET ACCOUNTS
 async function restoreBattleNetAccounts() {
@@ -92,33 +67,30 @@ async function restoreBattleNetAccounts() {
         return $(item).attr("value");
     });
 
-    const promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BattleNet_RestoreSelected", reqBattleNetId).then((r) => {
-        if (r === true) {
-            reqBattleNetId.forEach((e) => {
-                $("#IgnoredAccounts").find(`option[value="${e}"]`).remove();
-                window.notification.new({
-                    type: "success",
-                    title: "",
-                    message: toastRestored,
-                    renderTo: "toastarea",
-                    duration: 5000
-                });
-            });
-        } else {
+    if (await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BattleNet_RestoreSelected", reqBattleNetId) === true) {
+        reqBattleNetId.forEach((e) => {
+            $("#IgnoredAccounts").find(`option[value="${e}"]`).remove();
             window.notification.new({
-                type: "error",
+                type: "success",
                 title: "",
-                message: toastFailedRestore,
+                message: toastRestored,
                 renderTo: "toastarea",
                 duration: 5000
             });
-        }
-    });
-    await promise;
+        });
+    } else {
+        window.notification.new({
+            type: "error",
+            title: "",
+            message: toastFailedRestore,
+            renderTo: "toastarea",
+            duration: 5000
+        });
+    }
 }
 
 
-function copy(request, e) {
+async function copy(request, e) {
     e.preventDefault();
 
     // Different function groups based on platform
@@ -127,48 +99,46 @@ function copy(request, e) {
             steam();
             break;
         default:
-            copyToClipboard(unEscapeString($(selectedElem).attr(request)));
+            await copyToClipboard(unEscapeString($(selectedElem).attr(request)));
             break;
     }
     return;
 
 
     // Steam:
-    function steam() {
+    async function steam() {
         const steamId64 = $(selectedElem).attr("id");
         switch (request) {
             case "URL":
-                copyToClipboard(`https://steamcommunity.com/profiles/${steamId64}`);
+                await copyToClipboard(`https://steamcommunity.com/profiles/${steamId64}`);
                 break;
             case "SteamId32":
             case "SteamId3":
             case "SteamId":
-                DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopySteamIdType", request, steamId64);
+                await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopySteamIdType", request, steamId64);
                 break;
 
                 // Links
             case "SteamRep":
-                copyToClipboard(`https://steamrep.com/search?q=${steamId64}`);
+                await copyToClipboard(`https://steamrep.com/search?q=${steamId64}`);
                 break;
             case "SteamID.uk":
-                copyToClipboard(`https://steamid.uk/profile/${steamId64}`);
+                await copyToClipboard(`https://steamid.uk/profile/${steamId64}`);
                 break;
             case "SteamID.io":
-                copyToClipboard(`https://steamid.io/lookup/${steamId64}`);
+                await copyToClipboard(`https://steamid.io/lookup/${steamId64}`);
                 break;
             case "SteamIDFinder.com":
-                copyToClipboard(`https://steamidfinder.com/lookup/${steamId64}/`);
+                await copyToClipboard(`https://steamidfinder.com/lookup/${steamId64}/`);
                 break;
             default:
-                copyToClipboard(unEscapeString($(selectedElem).attr(request)));
+                await copyToClipboard(unEscapeString($(selectedElem).attr(request)));
         }
     }
 }
 
 // Take a string that is HTML escaped, and return a normal string back.
-function unEscapeString(s) {
-	return s.replace("&lt;", "<").replace("&gt;", ">").replace("&#34;", "\"").replace("&#39;", "'").replace("&#47;", "/");
-}
+unEscapeString = (s) => s.replace("&lt;", "<").replace("&gt;", ">").replace("&#34;", "\"").replace("&#39;", "'").replace("&#47;", "/");
 
 
 // General function: Get selected account
@@ -183,43 +153,43 @@ function getSelected() {
 }
 
 // Swapping accounts
-function swapTo(request, e) {
+async function swapTo(request, e) {
     if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
 
 
-    if (request === -1) DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}`, selected.attr("id")); // -1 is for undefined.
-    else DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}WithReq`, selected.attr("id"), request);
+    if (request === -1) await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}`, selected.attr("id")); // -1 is for undefined.
+    else await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}WithReq`, selected.attr("id"), request);
 }
 
 // Copies a game's folder from one userdata directory to another
-function CopySettingsFrom(e, game) {
+async function CopySettingsFrom(e, game) {
     if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
     if (!game) return;
     const steamId64 = selected.attr("id");
     console.log("Copying settings");
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopySettingsFrom", steamId64, game);
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopySettingsFrom", steamId64, game);
 }
 
 // Restores a game's userdata folder from 'backup'
-function RestoreSettingsTo(e, game) {
+async function RestoreSettingsTo(e, game) {
     if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
     if (!game) return;
     const steamId64 = selected.attr("id");
     console.log("Restoring settings from backup");
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RestoreSettingsTo", steamId64, game);
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RestoreSettingsTo", steamId64, game);
 }
 
 //  Manually backup a game's userdata folder
-function BackupGameData(e, game) {
+async function BackupGameData(e, game) {
     if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
     if (!game) return;
     const steamId64 = selected.attr("id");
     console.log("Backing up settings");
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BackupGameData", steamId64, game);
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BackupGameData", steamId64, game);
 }
 
 // Swapping accounts
@@ -270,42 +240,44 @@ async function ShowGameStatsSetup(e) {
 
     const accountId = selected.attr("id");
 
-    const modalTitle = await GetLangSub("Modal_Title_GameStats", { accountName: selected.attr("displayname") }),
-        modalHeading = await GetLang("Modal_GameStats_Header");
+    const modalHeading = await GetLangSub("Modal_GameStats_Header", { accountName: selected.attr("displayname") }),
+        modalTitle= await GetLang("Modal_Title_GameStats"),
+        edit = await GetLang("Edit"),
+        refresh = await GetLang("Refresh");
 
     const currentPage = await getCurrentPageFullname();
-    let enabledGames = [],
-        disabledGames = [],
-        safeGameNames = [];
+    const safeGameNames = [];
 
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetEnabledGames", currentPage, accountId).then((r) => {
-        enabledGames = r;
-    });
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetDisabledGames", currentPage, accountId).then((r) => {
-        disabledGames = r;
-    });
+    const enabledGames =
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetEnabledGames", currentPage, accountId);
+    const disabledGames = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetDisabledGames", currentPage, accountId);
 
     $("#modalTitle").text(modalTitle);
     $("#modal_contents").empty();
     let html = "";
     html += `<div class="gameStatsWindow">
 		        <p>${modalHeading}</p>
-            <div class="rowSetting">`;
+                <div class="modalScrollSection">`;
 
     for (const x in enabledGames) {
-        let game = enabledGames[x];
-        let safeGame = game.replace(/\s/g, '');
-        html += `<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="${safeGame
-            }" checked><label class="form-check-label" for="${safeGame
-            }"></label><label for="${safeGame}">${game}<br></label></div>`;
+        const game = enabledGames[x];
+        const safeGame = game.replace(/[/\\?%*:|"<>\s]/g, "");
+        html += `<div class="rowSetting">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="${safeGame}" checked><label class="form-check-label" for="${safeGame}"></label><label for="${safeGame}">${game}<br></label></div>
+                    <div>
+                        <button type="button" onclick="showGameStatsVars('${game}')"><span>${edit}</span></button>
+                        <button type="button" onclick="refreshAccount('${game}', '${accountId}')"><span>${refresh}</span></button>
+                    </div>
+                </div>`;
         safeGameNames.push(safeGame);
     }
     for (const x in disabledGames) {
-        let game = disabledGames[x];
-        let safeGame = game.replace(/\s/g, '');
-        html += `<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="${safeGame
-            }"><label class="form-check-label" for="${safeGame
-            }"></label><label for="${safeGame}">${game}<br></label></div>`;
+        const game = disabledGames[x];
+        const safeGame = game.replace(/[/\\?%*:|"<>\s]/g, "");
+        html += `   <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="${safeGame}"><label class="form-check-label" for="${safeGame}"></label><label for="${safeGame}">${game}<br></label>
+                    </div>`;
         safeGameNames.push(safeGame);
     }
 
@@ -313,13 +285,13 @@ async function ShowGameStatsSetup(e) {
                 //{
                 //
                 //}
-    html += "</div></div>";
+    html += "</div></div></div>";
     $("#modal_contents").append(html);
 
     for (const x in safeGameNames) {
-        let game = safeGameNames[x];
-        $(`#${game}`).change(function () {
-            toggleGameStats(game, this.checked);
+        const game = safeGameNames[x];
+        $(`#${game}`).change(async function () {
+            await toggleGameStats(game, this.checked);
         });
     }
 
@@ -341,23 +313,34 @@ async function ShowGameStatsSetup(e) {
 
 async function toggleGameStats(safeGame, isChecked) {
     if (!getSelected()) return;
-    const accountId = selected.attr("id");
     const game = $(`label[for='${safeGame}']:last`).text();
+    const accountId = selected.attr("id");
     console.log(game, isChecked);
 
     if (!isChecked) {
         // Unchecked: Remove entry and continue.
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `DisableGame`, game, accountId);
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `DisableGame`, game, accountId);
         return;
     }
 
     // Checked: Get required variables and present to user.
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game).then((r) => {
-        showGameVarCollectionModel(game, r);
-    });
+    const requiredVars = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game);
+    showGameVarCollectionModel(game, requiredVars, {});
 }
 
-async function showGameVarCollectionModel(game, requiredVars) {
+// Open the variable setting menu for game stats for account.
+// This is the Manage button, when variables are already set.
+async function showGameStatsVars(game) {
+    if (!getSelected()) return;
+    const accountId = selected.attr("id");
+
+    // Checked: Get required variables and present to user.
+    const required = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game);
+    const existing = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetExistingVars`, game, accountId);
+    showGameVarCollectionModel(game, required, existing);
+}
+
+async function showGameVarCollectionModel(game, requiredVars, existingVars = null) {
     if (!getSelected()) return;
     const accountId = selected.attr("id");
     const currentPage = await getCurrentPageFullname();
@@ -366,22 +349,37 @@ async function showGameVarCollectionModel(game, requiredVars) {
         modalHeading = await GetLangSub("Modal_GameVars_Header", { game: game, username: selected.attr("displayname"), platform: currentPage }),
         submit = await GetLang("Submit");
 
+    console.log(existingVars);
+
+
     $("#modalTitle").text(modalTitle);
     $("#modal_contents").empty();
     let html = "";
     html += `<div class="gameStatsWindow">
                 <p>${modalHeading}</p>
-            <div class="rowSetting">`;
+                <div class="modalScrollSection centeredContainer">
+                    <div class="centeredSection">`;
 
-    for (const [key, value] of Object.entries(requiredVars)) {
+    for (let [key, value] of Object.entries(requiredVars)) {
         console.log(key, value);
+        let placeholder = "";
+        if (value.includes("[") && value.includes("]")) {
+            const parts = value.split("[");
+            value = parts[0].trim();
+            placeholder = parts[1].trim().replace("]", "");
+        }
+
+        const existingValue = key in existingVars ? existingVars[key] : "";
         html +=
-            `<div class="form-text"><span>${value}</span><input type="text" id="acc${key}" spellcheck="false" placeholder="${key}"></div>`;
+            `<div class="rowSetting"><span>${value}</span><input type="text" id="acc${key}" spellcheck="false" placeholder="${placeholder}" value="${existingValue}"></div>`;
     }
 
-    html += `</div><div class="settingsCol inputAndButton">
-        <button class="modalOK" type="button" id="set_password" onclick="Modal_FinaliseGameVars('${game}', '${accountId}')"><span>${
-        submit}</span></button></div>`;
+    html += `       </div>
+                </div>
+                <div class="settingsCol inputAndButton">
+                    <button class="modalOK" type="button" id="set_password" onclick="Modal_FinaliseGameVars('${game}', '${accountId}')"><span>${submit}</span></button>
+                </div>
+            </div>`;
     $("#modal_contents").append(html);
 
     $(".modalBG").fadeIn(() => {
@@ -401,14 +399,11 @@ async function Modal_FinaliseGameVars(game, accountId) {
     const currentPage = await getCurrentPageFullname();
 
     // Get list of variable keys
-    var requiredVars = [];
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game).then((r) => {
-        requiredVars = r;
-        console.log(requiredVars, typeof(requiredVars));
-    });
+    const requiredVars = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game);
+    console.log(requiredVars, typeof (requiredVars));
 
     // Get value for each key and create dictionary
-    let returnDict = {};
+    const returnDict = {};
     for (const [key, value] of Object.entries(requiredVars)) {
         console.log(key, value, $(`#acc${key}`).val());
         returnDict[key] = $(`#acc${key}`).val();
@@ -421,28 +416,34 @@ async function Modal_FinaliseGameVars(game, accountId) {
     location.reload();
 }
 
-
-async function Modal_FinalizeImage(dest) {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `ImportNewImage`, JSON.stringify({ dest: dest, path: $("#FolderLocation").val() }));
+async function refreshAccount(game, accountId) {
+    const currentPage = await getCurrentPageFullname();
+    $(".modalBG").fadeOut();
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `RefreshAccount`, accountId, game, currentPage);
+    location.reload();
 }
 
+
+
+Modal_FinalizeImage = async(dest) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `ImportNewImage`, JSON.stringify({ dest: dest, path: $("#FolderLocation").val() }));
+
 // Open Steam\userdata\<steamID> folder
-function openUserdata(e) {
+async function openUserdata(e) {
     if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
 
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SteamOpenUserdata`, selected.attr("id"));
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SteamOpenUserdata`, selected.attr("id"));
 }
 
 // Create shortcut for selected icon
-function createShortcut(args = '') {
+async function createShortcut(args = '') {
     const selected = $(".acc:checked");
     if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
         return;
     }
     const accId = selected.attr("id");
 
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server",
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server",
         "CreateShortcut",
         getCurrentPage(),
         accId,
@@ -451,17 +452,9 @@ function createShortcut(args = '') {
 }
 
 // NEW LOGIN
-function newLogin() {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `NewLogin_${getCurrentPage()}`);
-}
-
-function hidePlatform() {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HidePlatform", selectedElem);
-}
-
-function createPlatformShortcut() {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCreatePlatformShortcut", selectedElem);
-}
+newLogin = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `NewLogin_${getCurrentPage()}`);
+hidePlatform = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HidePlatform", selectedElem);
+createPlatformShortcut = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCreatePlatformShortcut", selectedElem);
 
 var exportingAccounts = false;
 
@@ -480,12 +473,10 @@ async function exportAllAccounts() {
         return;
     }
     exportingAccounts = true;
-    const promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiExportAccountList", selectedElem).then((r) => {
-        const filename = r.split('/');
-        saveFile(filename[filename.length - 1], r);
-        exportingAccounts = false;
-    });
-    _ = await promise;
+    const r = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiExportAccountList", selectedElem);
+    const filename = r.split("/");
+    saveFile(filename[filename.length - 1], r);
+    exportingAccounts = false;
 }
 
 function saveFile(fileName, urlFile) {
@@ -498,16 +489,8 @@ function saveFile(fileName, urlFile) {
 	a.remove();
 }
 
-
-
-$(".acc").dblclick(() => {
-    alert("Handler for .dblclick() called.");
-    swapTo();
-});
 // Link handling
-function OpenLinkInBrowser(link) {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "OpenLinkInBrowser", link);
-}
+OpenLinkInBrowser = async(link) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "OpenLinkInBrowser", link);
 
 let pathPickerRequestedFile = "";
 
@@ -525,28 +508,21 @@ async function showModal(modaltype) {
 
         $("#modalTitle").text(modalTitleInfo);
         $("#modal_contents").empty();
-        currentVersion = "";
 
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetVersion").then((r) => {
-            currentVersion = r;
-            $("#modal_contents").append(`<div class="infoWindow">
+        const currentVersion = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetVersion");
+        $("#modal_contents").append(`<div class="infoWindow">
                 <div class="imgDiv"><img width="100" margin="5" src="img/TcNo500.png" draggable="false" onclick="OpenLinkInBrowser('https://tcno.co');"></div>
                 <div class="rightContent">
                     <h2>TcNo Account Switcher</h2>
                     <p>${modalInfoCreator}</p>
                     <div class="linksList">
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>${
-                modalInfoViewGitHub}</a>
-                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>${
-                modalInfoBugReport}</a>
-                        <a onclick="OpenLinkInBrowser('https://tcno.co');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>${
-                modalInfoVisitSite}</a>
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');return false;" href=""><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>${
-                modalInfoDisclaimer}</a>
+                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>${modalInfoViewGitHub}</a>
+                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>${modalInfoBugReport}</a>
+                        <a onclick="OpenLinkInBrowser('https://tcno.co');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>${modalInfoVisitSite}</a>
+                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');return false;" href=""><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>${modalInfoDisclaimer}</a>
                     </div>
                 </div>
                 </div><div class="versionIdentifier"><span>${modalInfoVersion}: ${currentVersion}</span></div>`);
-        });
     } else if (modaltype === "crowdin") {
         const modalCrowdinHeader = await GetLang("Modal_Crowdin_Header"),
             modalCrowdinInfo = await GetLang("Modal_Crowdin_Info"),
@@ -566,9 +542,7 @@ async function showModal(modaltype) {
         var platformName = getCurrentPage();
         let extraButtons = "";
         if (platformName === "Basic") {
-            await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalExtraButtons").then((r) => {
-                extraButtons = r;
-            });
+            extraButtons = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalExtraButtons");
             platformName = await getCurrentPageFullname();
         }
 
@@ -622,12 +596,10 @@ async function showModal(modaltype) {
         Modal_RequestedLocated(false);
 
         // Sub in info if this is a basic page
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform).then((r) => {
-            platform = r;
-        });
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatformExe", platform).then((r) => {
-            platformExe = platform === r ? platformExe : r;
-        });
+        platform = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform);
+        const currentBasicPlatformExe =
+            await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatformExe", platform);
+        platformExe = platform === currentBasicPlatformExe ? platformExe : currentBasicPlatformExe;
 
         const modalEnterDirectory = await GetLangSub("Modal_EnterDirectory", { platform: platform }),
             modalLocatePlatformFolder = await GetLangSub("Modal_LocatePlatformFolder", { platform: platform }),
@@ -753,17 +725,12 @@ async function showModal(modaltype) {
         input = document.getElementById("modal_true");
     } else if (modaltype === "accString") {
         platform = getCurrentPage();
-        let extraButtons = "";
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalExtraButtons").then((r) => {
-            extraButtons = r;
-        });
+        const extraButtons = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalExtraButtons");
 
         Modal_RequestedLocated(false);
         // Sub in info if this is a basic page
         var redirectLink = platform;
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform).then((r) => {
-            platform = r;
-        });
+        platform = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform);
 
         const modalTitleAddNew = await GetLangSub("Modal_Title_AddNew", { platform: platform }),
             modalAddNew = await GetLangSub("Modal_AddNew", { platform: platform }),
@@ -832,12 +799,9 @@ async function showModal(modaltype) {
         $(".pathPicker").on("click", pathPickerClick);
         input = document.getElementById("FolderLocation");
     } else if (modaltype === "ShowStats") {
-        let modalTitle = await GetLang("Modal_Title_Stats"),
-            modalText = "";
+        let modalTitle = await GetLang("Modal_Title_Stats");
 
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetStatsString").then((r) => {
-            modalText = r;
-        });
+        const modalText = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetStatsString");
 
         $("#modalTitle").text(modalTitle);
         $("#modal_contents").empty();
@@ -868,11 +832,11 @@ async function showModal(modaltype) {
 
 async function getLogicalDrives() {
     var folderContent = "";
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetLogicalDrives").then((r) => {
-        folderContent = "<div>";
-        r.Folders.forEach((f) => { folderContent += "<span class=\"folder\" path=\"" + f + "\">" + f + "</span>"; });
-        folderContent += "</div>";
-    });
+    const logicalDrives = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetLogicalDrives");
+    folderContent = "<div>";
+    logicalDrives.Folders.forEach((f) => { folderContent += "<span class=\"folder\" path=\"" + f + "\">" + f + "</span>"; });
+    folderContent += "</div>";
+
     return folderContent;
 }
 
@@ -924,19 +888,18 @@ async function pathPickerClick(e) {
         let getFunc = "GetFoldersAndFiles";
         if (pathPickerRequestedFile === "AnyFolder") getFunc = "GetFolders";
 
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", getFunc, result).then((r) => {
-            folderContent = "<div path=\"" + currentSpanPath + "\"><span class=\"folder c head selected-path\" path=\"" + currentSpanPath + "\">" + (currentSpanPath.at(-1) !== "\\" ? currentSpanPath.split("\\").at(-1) : currentSpanPath) + "</span>";
-            r.Folders.forEach((f) => {
-                folderContent += "<span class=\"folder\" path=\"" + f + "\">" + (f.at(-1) !== "\\" ? f.split("\\").at(-1) : f) + "</span>";
-            });
-            r.Files.forEach((f) => {
-                folderContent += "<span " + (f.includes(pathPickerRequestedFile) ? "class=\"suggested\" " : "") + "path=\"" + f + "\">" + (f.at(-1) !== "\\" ? f.split("\\").at(-1) : f) + "</span>";
-            });
-            folderContent += "</div>";
-
-            //console.log(folderContent);
-            $(e.target).replaceWith(folderContent);
+        const fileSystemResult = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", getFunc, result);
+        folderContent = "<div path=\"" + currentSpanPath + "\"><span class=\"folder c head selected-path\" path=\"" + currentSpanPath + "\">" + (currentSpanPath.at(-1) !== "\\" ? currentSpanPath.split("\\").at(-1) : currentSpanPath) + "</span>";
+        fileSystemResult.Folders.forEach((f) => {
+            folderContent += "<span class=\"folder\" path=\"" + f + "\">" + (f.at(-1) !== "\\" ? f.split("\\").at(-1) : f) + "</span>";
         });
+        fileSystemResult.Files.forEach((f) => {
+            folderContent += "<span " + (f.includes(pathPickerRequestedFile) ? "class=\"suggested\" " : "") + "path=\"" + f + "\">" + (f.at(-1) !== "\\" ? f.split("\\").at(-1) : f) + "</span>";
+        });
+        folderContent += "</div>";
+
+        //console.log(folderContent);
+        $(e.target).replaceWith(folderContent);
 
         // After expanding, see if has .exe inside it.
         if ($(e.target).hasClass("folder") && pathPickerRequestedFile.endsWith(".exe")) {
@@ -975,7 +938,7 @@ async function Modal_Finalise(platform, platformSettingsPath) {
         return;
     }
 
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
     $(".modalBG").fadeOut();
 
     location.reload();
@@ -988,18 +951,17 @@ async function Modal_Confirm(action, value) {
     }
 
     const success = await GetLang("Success");
-    const promise = DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value).then((r) => {
-        if (r === "refresh") location.reload();
-        else if (r === "success")
-            window.notification.new({
-                type: "success",
-                title: "",
-                message: success,
-                renderTo: "toastarea",
-                duration: 3000
-            });
-    });
-    await promise;
+    const confirmAction = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value);
+    if (confirmAction === "refresh") location.reload();
+    else if (confirmAction === "success")
+        window.notification.new({
+            type: "success",
+            title: "",
+            message: success,
+            renderTo: "toastarea",
+            duration: 3000
+        });
+
     $(".modalBG").fadeOut();
 }
 
@@ -1015,40 +977,38 @@ async function Modal_FinaliseAccString(platform) {
 
     // Clean string if not a command string.
     if (raw.indexOf(":{") === -1) {
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetCleanFilePath", raw).then((r) => {
-            name = r;
-        });
+        name = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetCleanFilePath", raw);
     }
 
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", name);
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", name);
     $(".modalBG").fadeOut();
     $("#acc_list").click();
 }
 
-function Modal_FinaliseBackground() {
+async function Modal_FinaliseBackground() {
     const pathOrUrl = $("#FolderLocation").val();
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetBackground", pathOrUrl);
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetBackground", pathOrUrl);
     $(".modalBG").fadeOut();
 }
 
-function Modal_FinaliseSwitcherPassword() {
+async function Modal_FinaliseSwitcherPassword() {
     const switcherPassword = $("#SwitcherPassword").val();
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetSwitcherPassword", switcherPassword);
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetSwitcherPassword", switcherPassword);
     $(".modalBG").fadeOut();
 }
 
-function Modal_FinaliseUserDataFolder() {
+async function Modal_FinaliseUserDataFolder() {
     if (window.location.href.includes("PreviewCss")) {
         // Do nothing for CSS preview page.
         return;
     }
 
     const pathOrUrl = $("#FolderLocation").val();
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetUserData", pathOrUrl);
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetUserData", pathOrUrl);
     $(".modalBG").fadeOut();
 }
 
-function Modal_FinaliseAccNameChange() {
+async function Modal_FinaliseAccNameChange() {
     if (window.location.href.includes("PreviewCss")) {
         // Do nothing for CSS preview page.
         return;
@@ -1056,13 +1016,12 @@ function Modal_FinaliseAccNameChange() {
 
     const raw = $("#NewAccountName").val();
 	const name = (raw.indexOf("TCNO:") === -1 ? raw.replace(/[<>: \.\"\/\\|?*]/g, "-") : raw); // Clean string if not a command string.
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name, getCurrentPage());
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name, getCurrentPage());
 }
 
 async function Modal_SaveNotes(accId) {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Set${getCurrentPage()}Notes`, accId, $('#accNotes').val()).then((r) => {
-        location.reload(true);
-    });
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Set${getCurrentPage()}Notes`, accId, $('#accNotes').val());
+    location.reload(true);
 }
 
 var appendDelay = 100; // Milliseconds
@@ -1092,28 +1051,17 @@ function flushJQueryAppendQueue() {
     $(".clearingRight")[0].scrollTop = $(".clearingRight")[0].scrollHeight;
 }
 
-function forgetBattleTag() {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "DeleteUsername", $(".acc:checked").attr("id"));
-}
-
-function refetchRank() {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RefetchRank", $(".acc:checked").attr("id"));
-}
+forgetBattleTag = async () => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "DeleteUsername", $(".acc:checked").attr("id"));
+refetchRank = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RefetchRank", $(".acc:checked").attr("id"));
 
 async function usernameModalCopyText() {
     const toastTitle = await GetLang("Toast_Copied");
-    let toastHintText = "";
     const platform = getCurrentPage();
-    let code = "";
 
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformHintText", platform).then((r) => {
-        toastHintText = r;
-    });
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText").then((r) => {
-        code = r;
-    });
+    const toastHintText = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformHintText", platform);
+    const code = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText");
 
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", code);
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", code);
     window.notification.new({
 	    type: "success",
         title: toastTitle,
@@ -1125,7 +1073,6 @@ async function usernameModalCopyText() {
 
 
 // Basic account switcher: Shortcut dropdown
-var sDropdownOpen = false;
 var sDropdownInitialized = false;
 function sDropdownReposition() {
     const dropDownContainer = $("#shortcutDropdown");
@@ -1135,22 +1082,21 @@ function sDropdownReposition() {
     dropDownContainer.css({ top: btnPos.top - dropDownContainer.height() - btn.height() - 16, left: btnPos.left + 16 - (dropDownContainer.width() / 2) });
 
     // If overflowing - Widen by scrollbar width to prevent weird overflow gap on side
-    if (checkOverflow(dropDownItemsContainer) && dropDownItemsContainer.style.minWidth === '') {
-        let scrollbarWidth = (dropDownItemsContainer.offsetWidth - dropDownItemsContainer.clientWidth);
-        let hasContextMenu = $(".HasContextMenu");
+    if (checkOverflow(dropDownItemsContainer) && dropDownContainer[0].style.minWidth === '') {
+        const scrollbarWidth = (dropDownItemsContainer.offsetWidth - dropDownItemsContainer.clientWidth);
+        const hasContextMenu = $(".HasContextMenu");
         if (hasContextMenu.length > 0) {
-            let computedStyle = window.getComputedStyle($(".HasContextMenu")[0]);
-            let computedStyleContainer = window.getComputedStyle($("#shortcutDropdown")[0]);
-            let marginX = parseInt(computedStyle.marginLeft) + parseInt(computedStyle.marginRight);
-            let marginY = parseInt(computedStyle.marginBottom) + parseInt(computedStyle.marginTop);
-            let paddingX = parseInt(computedStyleContainer.paddingLeft) + parseInt(computedStyleContainer.paddingRight);
-            let paddingY = parseInt(computedStyleContainer.paddingTop) + parseInt(computedStyleContainer.paddingBottom);
-            let borderY = parseInt(computedStyleContainer.borderTopWidth) + parseInt(computedStyleContainer.borderBottomWidth);
+            const computedStyle = window.getComputedStyle($(".HasContextMenu")[0]);
+            const computedStyleContainer = window.getComputedStyle($("#shortcutDropdown")[0]);
+            const marginX = parseInt(computedStyle.marginLeft) + parseInt(computedStyle.marginRight);
+            const marginY = parseInt(computedStyle.marginBottom) + parseInt(computedStyle.marginTop);
+            const paddingX = parseInt(computedStyleContainer.paddingLeft) + parseInt(computedStyleContainer.paddingRight);
+            const paddingY = parseInt(computedStyleContainer.paddingTop) + parseInt(computedStyleContainer.paddingBottom);
             dropDownContainer.css({
                 minWidth: $(dropDownItemsContainer).width() + scrollbarWidth + marginX + paddingX
             });
             $(dropDownItemsContainer).css({
-                maxHeight: dropDownContainer.height() - paddingY - borderY + marginY
+                maxHeight: dropDownContainer.height() - paddingY + marginY
             });
         }
     }
@@ -1160,14 +1106,14 @@ function sDropdownInit() {
     if (sDropdownInitialized) return;
     sDropdownInitialized = true;
     // Create sortable list
-    sortable(".shortcuts, #shortcutDropdownItems", {
+    sortable(".shortcuts, .shortcutDropdownItems", {
         connectWith: "shortcutJoined",
         forcePlaceholderSize: true,
         placeholderClass: "shortcutPlaceholder",
         items: ":not(#btnOpenShortcutFolder)"
     });
 
-    $(".shortcuts, #shortcutDropdownItems").toArray().forEach(el => {
+    $(".shortcuts, .shortcutDropdownItems").toArray().forEach(el => {
 // ReSharper disable once Html.EventNotResolved
         el.addEventListener("sortstart", function () {
             $(".shortcuts").addClass("expandShortcuts");
@@ -1183,12 +1129,12 @@ function sDropdownInit() {
 
 // https://stackoverflow.com/a/143889
 function checkOverflow(el) {
-    var curOverflow = el.style.overflow;
+    const curOverflow = el.style.overflow;
 
     if (!curOverflow || curOverflow === "visible")
         el.style.overflow = "hidden";
 
-    var isOverflowing = el.clientWidth < el.scrollWidth
+    const isOverflowing = el.clientWidth < el.scrollWidth
         || el.clientHeight < el.scrollHeight;
 
     el.style.overflow = curOverflow;
@@ -1197,20 +1143,18 @@ function checkOverflow(el) {
 }
 
 function shortcutDropdownBtnClick() {
-    if (!sDropdownOpen) {
+    if (!$("#shortcutDropdown").is(":visible")) {
         sDropdownInit();
         $("#shortcutDropdown").show();
         sDropdownReposition();
         $("#shortcutDropdownBtn").addClass("flip");
-        sDropdownOpen = true;
     } else {
         $("#shortcutDropdown").hide();
         $("#shortcutDropdownBtn").removeClass("flip");
-        sDropdownOpen = false;
     }
 }
 
-function serializeShortcuts() {
+async function serializeShortcuts() {
     var output = {};
     // Serialize highlighted items
     var numHighlightedShortcuts = $(".shortcuts button").children().length;
@@ -1223,48 +1167,46 @@ function serializeShortcuts() {
     });
 
     if (getCurrentPage() === "Steam")
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrderSteam", output);
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrderSteam", output);
     else if (getCurrentPage() === "BattleNet")
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrderBNet", output);
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrderBNet", output);
     else
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrder", output);
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrder", output);
 }
 
 // Context menu buttons
-function shortcut(action) {
+async function shortcut(action) {
     const reqId = $(selectedElem).prop("id");
     console.log(reqId);
     if (getCurrentPage() === "Steam")
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutActionSteam", reqId, action);
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutActionSteam", reqId, action);
     else if (getCurrentPage() === "BattleNet")
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutActionBNet", reqId, action);
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutActionBNet", reqId, action);
     else
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutAction", reqId, action);
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutAction", reqId, action);
     if (action === "hide") $(selectedElem).remove();
 }
 
-async function updateBarClick() {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UpdateNow");
-}
+updateBarClick = async () => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "UpdateNow");
 
 async function initSavingHotKey() {
-    hotkeys("ctrl+s", function (event) {
+    hotkeys("ctrl+s", async function (event) {
         event.preventDefault();
-        DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCtrlS", getCurrentPage());
+        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCtrlS", getCurrentPage());
     });
 }
 
 async function initCopyHotKey() {
     const toastCopied = await GetLang("Toast_Copied");
-    hotkeys("ctrl+c,ctrl+shift+c,alt+c", function (event, handler) {
+    hotkeys("ctrl+c,ctrl+shift+c,alt+c", async function (event, handler) {
         // Doesn't prevent default!
         switch (handler.key) {
         case "ctrl+shift+c":
         case "alt+c":
-                copyToClipboard($(selectedElem).prop("id"));
+            await copyToClipboard($(selectedElem).prop("id"));
             break;
         case "ctrl+c":
-                copyToClipboard($(selectedElem).attr("displayname"));
+            await copyToClipboard($(selectedElem).attr("displayname"));
             break;
         }
 
@@ -1327,6 +1269,4 @@ async function showNoteTooltips() {
     }).then(initTooltips());
 }
 
-async function restartAsAdmin(args = "") {
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiRestartAsAdmin", args);
-}
+restartAsAdmin = async(args = "") => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiRestartAsAdmin", args);

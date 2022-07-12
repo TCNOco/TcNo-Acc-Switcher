@@ -351,6 +351,10 @@ button .caret, .button .caret {
   background: #13222f;
 }
 
+.gameShortcuts {
+  /* Empty to keep compiler quiet */
+}
+
 .shortcuts {
   height: 100%;
   overflow: hidden;

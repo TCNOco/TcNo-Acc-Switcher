@@ -101,11 +101,37 @@
   font-weight: bold;
 }
 
-.gameStatsWindow {
+#modal_contents .gameStatsWindow {
   min-width: 400px;
   color: white;
 }
-.gameStatsWindow .form-text span {
+#modal_contents .gameStatsWindow .modalScrollSection {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#modal_contents .gameStatsWindow .modalScrollSection.centeredContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#modal_contents .gameStatsWindow .modalScrollSection.centeredContainer .centeredSection {
+  width: fit-content;
+}
+#modal_contents .gameStatsWindow .modalScrollSection.centeredContainer .centeredSection input[type=text] {
+  margin-left: 2em;
+}
+#modal_contents .gameStatsWindow .modalScrollSection .rowSetting {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5em;
+}
+#modal_contents .gameStatsWindow .modalScrollSection .rowSetting button {
+  min-width: 6em;
+}
+#modal_contents .gameStatsWindow .form-text span {
   margin-right: 1em;
 }
 

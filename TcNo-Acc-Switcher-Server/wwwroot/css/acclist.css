@@ -40,6 +40,10 @@
 .acc_list_item .acc_stat sup {
   margin-right: 0.4em;
 }
+.acc_list_item .acc_stat img {
+  width: auto;
+  height: auto;
+}
 
 .placeHolderAcc {
   width: 100px;

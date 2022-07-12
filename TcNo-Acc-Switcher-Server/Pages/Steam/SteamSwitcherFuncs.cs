@@ -58,7 +58,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
         public static async Task LoadProfiles()
         {
+            if (AppData.SteamLoadingProfiles) return;
             Globals.DebugWriteLine(@"[Func:Steam\SteamSwitcherFuncs.LoadProfiles] Loading Steam profiles");
+            AppData.SteamLoadingProfiles = true;
 
             AppData.SteamUsers = GetSteamUsers(SteamSettings.LoginUsersVdf());
 
@@ -118,6 +120,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             GenericFunctions.FinaliseAccountList();
             AppStats.SetAccountCount("Steam", AppData.SteamUsers.Count);
+            AppData.SteamLoadingProfiles = false;
         }
 
         private static void InsertAccount(Index.Steamuser su)
