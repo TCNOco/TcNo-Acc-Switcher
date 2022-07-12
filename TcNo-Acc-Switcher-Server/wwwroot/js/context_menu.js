@@ -33,6 +33,7 @@ async function initContextMenu() {
         // Handle Left-clicks:
         $(".acc_list_item").click((e) => {
             $(e.currentTarget).children("input")[0].click();
+            hideContextMenus();
             e.stopPropagation();
             selectedElem = $(e.currentTarget).children("input")[0];
         });
@@ -208,13 +209,14 @@ async function initContextMenu() {
 
 //Hide contextmenu
 function hideContextMenus() {
-    document.querySelectorAll('.contextmenu').forEach(menu => {
+    document.querySelectorAll(".contextmenu").forEach(menu => {
+        if (menu == null) return;
         menu.style["display"] = "none";
     });
 }
-document.querySelector('body').addEventListener('click', (e) => {
+document.querySelector("body").addEventListener("click", (e) => {
     const excluded = Array.from(document.querySelectorAll(
-        '.contextmenu, .contextmenu *:not(li,a:not(.paginationButton))'));
+        ".contextmenu, .contextmenu *:not(li,a:not(.paginationButton))"));
     if (!excluded.includes(e.target)) {
         hideContextMenus();
     }

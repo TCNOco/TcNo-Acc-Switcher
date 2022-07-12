@@ -39,7 +39,7 @@
     <toastarea class="toastarea" />
 </div>
 
-<div class="shortcutDropdown" id="shortcutDropdown" style="display: none">
+<div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
     <div class="shortcutDropdownItems">
         @foreach (var (i, shortcut) in BattleNet.Shortcuts)
         {
@@ -56,7 +56,7 @@
 
 <div class="acc_list_actionbar">
     <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@AData.CurrentStatus" spellcheck="false" disabled></div>
-    <div>
+    <div class="gameShortcuts">
         <div class="shortcuts">
             @foreach (var (i, shortcut) in BattleNet.Shortcuts)
             {
