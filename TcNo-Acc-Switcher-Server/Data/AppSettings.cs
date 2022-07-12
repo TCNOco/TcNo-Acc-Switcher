@@ -115,6 +115,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("DiscordRpcEnabled", Order = 18)] private bool _discordRpc = true;
         [JsonProperty("DiscordRpcShareTotalSwitches", Order = 19)] private bool _discordRpcShare = true;
         [JsonProperty("PasswordHash", Order = 20)] private string _passwordHash = "";
+        [JsonProperty("GloballyHiddenMetrics", Order = 21)] private Dictionary<string, Dictionary<string, bool>> _globallyHiddenMetrics = new();
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private bool _startMenu;
         [JsonIgnore] private bool _startMenuPlatforms;
@@ -181,6 +182,18 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static bool TrayStartup { get => Instance._trayStartup; set => Instance._trayStartup = value; }
         private static bool UpdateCheckRan { get =>Instance._updateCheckRan; set => Instance._updateCheckRan = value; }
         public static bool PreRenderUpdate { get =>Instance._preRenderUpdate; set => Instance._preRenderUpdate = value; }
+        public class GameSetting
+        {
+            public string SettingId { get; set; } = "";
+            public bool Checked { get; set; }
+        }
+
+        /// <summary>
+        /// For BasicStats // Game statistics collection and showing
+        /// Keys for metrics on this list are not shown for any account.
+        /// List of all games:[Settings:Hidden metric] metric keys.
+        /// </summary>
+        public static Dictionary<string, Dictionary<string, bool>> GloballyHiddenMetrics { get => Instance._globallyHiddenMetrics; set => Instance._globallyHiddenMetrics = value; }
 
         public static readonly ObservableCollection<MenuItem> PlatformContextMenuItems = new MenuBuilder(
             new Tuple<string, object>[]

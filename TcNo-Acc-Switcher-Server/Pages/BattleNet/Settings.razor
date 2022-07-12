@@ -30,7 +30,8 @@
 
 @code
 {
-	    private const string Platform = "BattleNet";
+    private const string Platform = "BattleNet";
+    private readonly Dictionary<string, Dictionary<string, string>> _gamesAndSettings = BasicStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, BasicStats.GetAllMetrics);
 }
 
 <div class="container mainblock">
@@ -130,6 +131,24 @@
                 </button>
             </div>
 
+            @if (_gamesAndSettings.Count > 0)
+            {
+                <h2 class="SettingsHeader">@Locale["Settings_Header_GameStats"]</h2>
+                <p>@Locale["Settings_GameStats"]</p>
+                @foreach (var (game, settings) in _gamesAndSettings)
+                {
+                    <h3 class="SettingsHeader">@game</h3>
+                @*@foreach (var (metricId, (hidden, metricText)) in settings)*@
+                    @foreach (var (metricId, metricText) in settings)
+                    {
+                        <div class="form-check mb-2">
+                            @*<input class="form-check-input @BasicStats.Instance.GetGameIdFromName(game)_Checkboxes" @bind="AppSettings.GloballyHiddenMetrics[game]." type="checkbox" id="@metricId" checked="@hidden"><label class="form-check-label" for="@metricId"></label><label for="@metricId">@metricText<br></label>*@
+                            <input class="form-check-input" @bind="AppSettings.GloballyHiddenMetrics[game][metricId]" type="checkbox" id="@metricId"><label class="form-check-label" for="@metricId"></label><label for="@metricId">@metricText<br></label>
+                        </div>
+                    }
+                }
+                <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
+            }
 
             <SharedSettings />
             <div class="buttoncol col_close">
@@ -153,6 +172,11 @@
 
 @code
 {
+    protected override void OnParametersSet()
+    {
+        BasicStats.SetCurrentPlatform("BattleNet");
+    }
+
     protected override void OnAfterRender(bool firstRender)
     {
         AppStats.NewNavigation("/BattleNet/Settings");

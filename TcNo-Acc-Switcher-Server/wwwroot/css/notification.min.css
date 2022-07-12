@@ -118,7 +118,7 @@
   .notification .text-container {
     margin-right: var(--notification-margin);
     padding: 0 var(--notification-padding);
-    text-align: justify;
+    text-align: initial;
   }
 
     .notification .text-container h6,

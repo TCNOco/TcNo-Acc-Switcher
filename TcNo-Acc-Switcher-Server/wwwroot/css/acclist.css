@@ -64,7 +64,7 @@
   vertical-align: middle;
 }
 
-.accountHover {
+.accountHover > label.acc {
   border: 0.1em solid #039CBF;
   /* Seperate because added by sortable */
   background: #13222f;

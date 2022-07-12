@@ -374,11 +374,10 @@ button#LocateProgramExe,
   box-shadow: none;
 }
 
-.accountHover,
-.accountHover {
-  background-color: #1b1b1b;
-  border: var(--accent) 0.1em solid;
-  border-radius: 0.9rem;
+.accountHover > label.acc {
+    background-color: #1b1b1b;
+    border: var(--accent) 0.1em solid;
+    border-radius: 0.9rem;
 }
 
 .placeHolderAcc {

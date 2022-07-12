@@ -32,13 +32,14 @@
 @code
 {
     private const string Platform = "Steam";
+    //private readonly Dictionary<string, Dictionary<string, Tuple<bool, string>>> _gamesAndSettings = BasicStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, BasicStats.GetAllMetrics);
+    private readonly Dictionary<string, Dictionary<string, string>> _gamesAndSettings = BasicStats.GetAllCurrentlyEnabledGames().ToDictionary(game => game, BasicStats.GetAllMetrics);
 }
 
 <div class="container mainblock">
     <div class="row">
         <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
             <toastarea class="toastarea" />
-
             <h1 class="SettingsHeader">@Locale["Settings_Header_Platform", new{ platformName = "Steam"}]</h1>
 
             <h2 class="SettingsHeader">@Locale["Settings_Header_GeneralSettings"]</h2>
@@ -164,6 +165,25 @@
             <div class="buttoncol"><button id="OpenFolder" type="button" @onclick="() => Basic.OpenFolder(Steam.FolderPath)"><span>@Locale["Settings_OpenFolder", new { platform = Platform }]</span></button><button id="Steam_AdvancedClearing" type="button" @onclick='() => NavManager.NavigateTo("/Steam/AdvancedClearing")'><span>@Locale["Button_AdvancedCleaning"]</span></button></div>
             <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
 
+            @if (_gamesAndSettings.Count > 0)
+            {
+                <h2 class="SettingsHeader">@Locale["Settings_Header_GameStats"]</h2>
+                <p>@Locale["Settings_GameStats"]</p>
+                @foreach (var (game, settings) in _gamesAndSettings)
+                {
+                    <h3 class="SettingsHeader">@game</h3>
+                @*@foreach (var (metricId, (hidden, metricText)) in settings)*@
+                    @foreach (var (metricId, metricText) in settings)
+                    {
+                        <div class="form-check mb-2">
+                            @*<input class="form-check-input @BasicStats.Instance.GetGameIdFromName(game)_Checkboxes" @bind="AppSettings.GloballyHiddenMetrics[game]." type="checkbox" id="@metricId" checked="@hidden"><label class="form-check-label" for="@metricId"></label><label for="@metricId">@metricText<br></label>*@
+                            <input class="form-check-input" @bind="AppSettings.GloballyHiddenMetrics[game][metricId]" type="checkbox" id="@metricId"><label class="form-check-label" for="@metricId"></label><label for="@metricId">@metricText<br></label>
+                        </div>
+                    }
+                }
+                <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
+            }
+
             <SharedSettings />
             <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="SaveAndClose"><span>@Locale["Button_Close"]</span></button></div>
         </div>
@@ -182,6 +202,11 @@
 
 @code
 {
+    protected override void OnParametersSet()
+    {
+        BasicStats.SetCurrentPlatform("Steam");
+    }
+
     protected override void OnAfterRender(bool firstRender)
     {
         AppStats.NewNavigation("/Steam/Settings");

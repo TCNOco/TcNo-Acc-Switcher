@@ -67,6 +67,22 @@ namespace TcNo_Acc_Switcher_Server.Data
             GameStats[game].CachedStats.ContainsKey(accountId) ? GameStats[game].CachedStats[accountId] : null;
 
         /// <summary>
+        /// Get list of games for current platform - That have at least 1 account for settings.
+        /// </summary>
+        public static List<string> GetAllCurrentlyEnabledGames()
+        {
+            var games = new HashSet<string>();
+            foreach (var gameStat in GameStats)
+            {
+                // Foreach account and game pair in GameStats
+                // Add game name to list
+                if (gameStat.Value.CachedStats.Any()) games.Add(gameStat.Value.Game);
+            }
+
+            return games.ToList();
+        }
+
+        /// <summary>
         /// Get and return icon html markup for specific game
         /// </summary>
         public static string GetIcon(string game, string statName) => GameStats[game].ToCollect[statName].Icon;
@@ -86,6 +102,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Foreach available game
             foreach (var availableGame in GetAvailableGames(platform))
             {
+                if (!GameStats.ContainsKey(availableGame)) continue;
+
                 // That has the requested account
                 if (!GameStats[availableGame].CachedStats.ContainsKey(accountId)) continue;
                 var gameIndicator = GameStats[availableGame].Indicator;
@@ -100,7 +118,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     // Foreach stat
                     // Check if has icon, otherwise use just indicator string
                     var indicator = GetIcon(availableGame, statName);
-                    if (!string.IsNullOrEmpty(indicator))
+                    if (string.IsNullOrEmpty(indicator))
                         indicator = $"<sup>{gameIndicator}</sup>";
 
                     statValueIconDict.Add(statName, new StatValueAndIcon
@@ -138,7 +156,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static Dictionary<string, string> GetExistingVars(string game, string account) => GameStats[game].CachedStats.ContainsKey(account) ? GameStats[game].CachedStats[account].Vars : new Dictionary<string, string>();
 
         /// <summary>
-        /// Gets list of all metric names to collect, as well as whether each is hidden or not, and the text to display in the UI checkbox.
+        /// Gets list of all metric names to collect for the provided account, as well as whether each is hidden or not, and the text to display in the UI checkbox.
         /// </summary>
         [JSInvokable]
         public static Dictionary<string, Tuple<bool, string>> GetHiddenMetrics(string game, string account)
@@ -152,6 +170,30 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
 
             return returnDict;
+        }
+
+        /// <summary>
+        /// Gets list of all metric names to collect, as well as whether each is hidden or not, and the text to display in the UI checkbox.
+        /// Example: "AP":"Arena Points"
+        /// </summary>
+        //public static Dictionary<string, Tuple<bool, string>> GetAllMetrics(string game)
+        public static Dictionary<string, string> GetAllMetrics(string game)
+        {
+            //// Get hidden metrics for this game
+            //var hiddenMetrics = new List<string>();
+            //if (AppSettings.GloballyHiddenMetrics.ContainsKey(game))
+            //    hiddenMetrics = AppSettings.GloballyHiddenMetrics[game];
+
+            // Get list of all metrics and add to list.
+            //var allMetrics = new Dictionary<string, Tuple<bool, string>>();
+            var allMetrics = new Dictionary<string, string>();
+            foreach (var (key, ci) in GameStats[game].ToCollect)
+            {
+                //allMetrics.Add(key, new Tuple<bool, string>(hiddenMetrics.Contains(key), ci.ToggleText));
+                allMetrics.Add(key, ci.ToggleText);
+            }
+
+            return allMetrics;
         }
 
         [JSInvokable]
@@ -201,7 +243,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             JData = GeneralFuncs.LoadSettings(BasicStatsPath);
 
             // Populate the List of all Games with stats
-            GamesDict = StatsDefinitions?.ToObject<Dictionary<string, object>>()?.Keys.ToList();
+            var statsDefinitions = StatsDefinitions?.ToObject<Dictionary<string, JObject>>();
+            GamesDict = statsDefinitions?.Keys.ToList();
             //foreach (var jToken in StatsDefinitions)
             //{
             //    GamesDict.Add(((JProperty)jToken).Name);
@@ -214,7 +257,44 @@ namespace TcNo_Acc_Switcher_Server.Data
             //    var x = (JProperty)jToken;
             //    PlatformGames.Add(x.Name, x.Value.ToObject<List<string>>());
             //}
+
+            // Foreach game:
+            if (GamesDict is null) return;
+            foreach (var game in GamesDict)
+            {
+                // If game not on global settings list, add it to the list.
+                if (!AppSettings.GloballyHiddenMetrics.ContainsKey(game))
+                    AppSettings.GloballyHiddenMetrics.Add(game, new Dictionary<string, bool>());
+
+                var allMetrics = statsDefinitions?[game]["Collect"]?.ToObject<Dictionary<string, JObject>>();
+                if (allMetrics is null) continue;
+                foreach (var key in allMetrics.Keys)
+                {
+                    // Add to list if not there already.
+                    if (!AppSettings.GloballyHiddenMetrics[game].ContainsKey(key))
+                        AppSettings.GloballyHiddenMetrics[game].Add(key, false);
+
+                }
+
+                //// For each game's setting, make sure it exists if not already set.
+                //foreach (var gameMetrics in GetAllMetrics(game))
+                //{
+                //    // Add to list if not there already.
+                //    if (!AppSettings.GloballyHiddenMetrics[game].ContainsKey(gameMetrics.Key))
+                //        AppSettings.GloballyHiddenMetrics[game].Add(gameMetrics.Key, false);
+                //}
+
+            }
         }
+
+        /// <summary>
+        /// Get longer game name from it's short unique ID.
+        /// </summary>
+        public string GetGameNameFromId(string id) => GameStats.FirstOrDefault(x => x.Value.UniqueId.Equals(id, StringComparison.OrdinalIgnoreCase)).Key;
+        /// <summary>
+        /// Get short unique ID from game name.
+        /// </summary>
+        public string GetGameIdFromName(string name) => GameStats.FirstOrDefault(x => x.Key.Equals(name, StringComparison.OrdinalIgnoreCase)).Value.UniqueId;
 
         public void RefreshAllAccounts(string game, string platform = "")
         {
@@ -287,6 +367,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public bool IsInit;
         public string Game;
+        public string UniqueId = "";
         public string Indicator = "";
         public string Url = "";
         public string Cookies = "";
@@ -328,6 +409,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             var jGame = BasicStats.GetGame(game);
 
             Game = game;
+            UniqueId = (string)jGame["UniqueId"];
             Indicator = (string)jGame["Indicator"];
             Url = (string)jGame["Url"];
             Cookies = (string)jGame["RequestCookies"];
@@ -480,8 +562,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!userStat.Collected.Any())
             {
                 Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "temp"));
-                File.WriteAllText(Path.Join(Globals.UserDataFolder, "temp", $"download-{Globals.GetCleanFilePath(Game)}.html"), responseText);
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsEmpty", new { Game = Globals.GetCleanFilePath(Game) }], renderTo: "toastarea");
+                File.WriteAllText(Path.Join(Globals.UserDataFolder, "temp", $"download-{Globals.GetCleanFilePath(accountId)}-{Globals.GetCleanFilePath(Game)}.html"), responseText);
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }], renderTo: "toastarea");
                 if (CachedStats.ContainsKey(accountId))
                     CachedStats.Remove(accountId);
                 return false;

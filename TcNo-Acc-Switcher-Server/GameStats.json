@@ -1,6 +1,7 @@
 {
   "StatsDefinitions": {
     "Apex Legends": {
+      "UniqueId": "AL",
       "Indicator": "APEX",
       "Url": "https://apexlegendsstatus.com/core/interface?platform=PC&player={Username}",
       "RequestCookies": "apexlegendsstatus_ssid=TcNoAccSwitcher",
@@ -31,6 +32,7 @@
       }
     },
     "Counter-Strike: Global Offensive": {
+      "UniqueId": "CSGO",
       "Indicator": "",
       "Url": "https://csgostats.gg/player/{SteamId}",
       "RequestCookies": "",
@@ -49,6 +51,7 @@
       }
     },
     "Overwatch": {
+      "UniqueId": "OW",
       "Indicator": "OW",
       "Url": "https://playoverwatch.com/en-us/career/pc/{BattleTagName}-{BattleTagNumber}",
       "RequestCookies": "",
@@ -98,6 +101,7 @@
   },
   "PlatformCompatibilities": {
     "Origin": [ "Apex Legends" ],
+    "Discord": [ "Apex Legends" ],
     "Steam": [ "Apex Legends", "Counter-Strike: Global Offensive" ],
     "BattleNet": [ "Overwatch" ]
   }
