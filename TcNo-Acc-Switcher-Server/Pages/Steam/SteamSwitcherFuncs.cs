@@ -161,7 +161,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 $"<p class=\"lastLogin\">{UnixTimeStampToDateTime(su.LastLogin)}</p>{note}{userStatsString}</label></div>\r\n";
 
 
-            _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element);
+            _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element, false);
         }
 
 

@@ -194,7 +194,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                             $"<div class=\"acc_list_item\" data-toggle=\"tooltip\"><input type=\"radio\" id=\"{id}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                             $"<label for=\"{id}\" class=\"acc\">\r\n" +
                             $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
-                            $"<h6>{str}</h6>{note}{userStatsString}</div>\r\n");
+                            $"<h6>{str}</h6>{note}{userStatsString}</div>\r\n", false);
                         //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                     }
                     catch (TaskCanceledException e)
@@ -240,7 +240,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                             $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{key}\" Username=\"{value}\" DisplayName=\"{value}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
                             $"<label for=\"{key}\" class=\"acc\">\r\n" +
                             $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
-                            $"<h6>{value}</h6>{note}{userStatsString}</div>\r\n");
+                            $"<h6>{value}</h6>{note}{userStatsString}</div>\r\n", false);
                         //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
                     }
                     catch (TaskCanceledException e)

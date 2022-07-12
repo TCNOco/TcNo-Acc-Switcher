@@ -12,18 +12,21 @@
           "XPath": ".//*[contains(text(), ' RP')]",
           "Select": "innerText",
           "DisplayAs": "%x%",
-          "NoDisplayIf": "0 RP"
+          "NoDisplayIf": "0 RP",
+          "ToggleText": "Ranked Points"
         },
         "AR": {
           "XPath": ".//*[contains(text(), ' AP')]",
           "Select": "innerText",
           "DisplayAs": "%x%",
-          "NoDisplayIf": "0 AP"
+          "NoDisplayIf": "0 AP",
+          "ToggleText": "Arena Points"
         },
         "LVL": {
           "XPath": ".//*[@class='levelNumber']",
           "Select": "innerHtml",
-          "DisplayAs": "LVL %x%"
+          "DisplayAs": "LVL %x%",
+          "ToggleText": "Account Level"
         }
       }
     },
@@ -32,7 +35,7 @@
       "Url": "https://csgostats.gg/player/{SteamId}",
       "RequestCookies": "",
       "Vars": {
-        "SteamId": "%Steam%"
+        "SteamId": "%ACCOUNTID%"
       },
       "Collect": {
         "CompRank": {
@@ -40,7 +43,8 @@
           "Select": "attribute",
           "SelectAttribute": "src",
           "SpecialType": "ImageDownload",
-          "DisplayAs": "<img src=\"%x%\" style=\"max-height:3em\"/>"
+          "DisplayAs": "<img src=\"%x%\" style=\"max-height:3em\"/>",
+          "ToggleText": "Competitive Rank"
         }
       }
     },
@@ -62,28 +66,32 @@
           "XPath": ".//div[@class='player-level']/div[@class='u-vertical-center']",
           "Select": "innerHtml",
           "DisplayAs": "LVL %x%",
-          "NoDisplayIf": "LVL 0"
+          "NoDisplayIf": "LVL 0",
+          "ToggleText": "Level"
         },
         "TANK": {
           "XPath": "(.//div[@data-ow-tooltip-text='Tank Skill Rating'])[1]/following-sibling::div[@class='competitive-rank-level']",
           "Select": "innerText",
           "DisplayAs": "%x%<sup>SR</sup>",
           "NoDisplayIf": "0<sup>SR</sup>",
-          "Icon": "<h6 class=\"battlenetIcoOWTank\"><svg viewBox=\"0 0 60.325 60.325\" draggable=\"false\" class=\"battleNetIcon battlenetIcoOWTank\"><use href=\"img/icons/ico_BattleNetTankIcon.svg#icoBattleNetTank\"></use></svg>"
+          "Icon": "<h6 class=\"battlenetIcoOWTank\"><svg viewBox=\"0 0 60.325 60.325\" draggable=\"false\" class=\"battleNetIcon battlenetIcoOWTank\"><use href=\"img/icons/ico_BattleNetTankIcon.svg#icoBattleNetTank\"></use></svg>",
+          "ToggleText": "Tank SR"
         },
         "DMG": {
           "XPath": "(.//div[@data-ow-tooltip-text='Damage Skill Rating'])[1]/following-sibling::div[@class='competitive-rank-level']",
           "Select": "innerText",
           "DisplayAs": "%x%<sup>SR</sup>",
           "NoDisplayIf": "0<sup>SR</sup>",
-          "Icon": "<h6 class=\"battlenetIcoOWDamage\"><svg viewBox=\"0 0 60.325 60.325\" draggable=\"false\" class=\"battleNetIcon battlenetIcoOWDamage\"><use href=\"img/icons/ico_BattleNetDamageIcon.svg#icoBattleNetDamage\"></use></svg>"
+          "Icon": "<h6 class=\"battlenetIcoOWDamage\"><svg viewBox=\"0 0 60.325 60.325\" draggable=\"false\" class=\"battleNetIcon battlenetIcoOWDamage\"><use href=\"img/icons/ico_BattleNetDamageIcon.svg#icoBattleNetDamage\"></use></svg>",
+          "ToggleText": "Damage SR"
         },
         "SUPPORT": {
           "XPath": "(.//div[@data-ow-tooltip-text='Support Skill Rating'])[1]/following-sibling::div[@class='competitive-rank-level']",
           "Select": "innerText",
           "DisplayAs": "%x%<sup>SR</sup>",
           "NoDisplayIf": "0<sup>SR</sup>",
-          "Icon": "<h6 class=\"battlenetIcoOWSupport\"><svg viewBox=\"0 0 60.325 60.325\" draggable=\"false\" class=\"battleNetIcon battlenetIcoOWSupport\"><use href=\"img/icons/ico_BattleNetSupportIcon.svg#icoBattleNetSupport\"></use></svg>"
+          "Icon": "<h6 class=\"battlenetIcoOWSupport\"><svg viewBox=\"0 0 60.325 60.325\" draggable=\"false\" class=\"battleNetIcon battlenetIcoOWSupport\"><use href=\"img/icons/ico_BattleNetSupportIcon.svg#icoBattleNetSupport\"></use></svg>",
+          "ToggleText": "Support SR"
         }
       }
     }

@@ -164,7 +164,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                     }
                 }
                 //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
-                _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", $"{element}{note}{userStatsString}</div>");
+                _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", $"{element}{note}{userStatsString}</div>", false);
             }
 
             GenericFunctions.FinaliseAccountList(); // Init context menu & Sorting

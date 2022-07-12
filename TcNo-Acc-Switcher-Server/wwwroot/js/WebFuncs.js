@@ -234,7 +234,7 @@ async function changeImage(e) {
 }
 
 // Open Game Stats menu 1: Enable/Disable stats for specific games
-async function ShowGameStatsSetup(e) {
+async function ShowGameStatsSetup(e = null) {
     if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
 
@@ -320,12 +320,12 @@ async function toggleGameStats(safeGame, isChecked) {
     if (!isChecked) {
         // Unchecked: Remove entry and continue.
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `DisableGame`, game, accountId);
+        ShowGameStatsSetup();
         return;
     }
 
     // Checked: Get required variables and present to user.
-    const requiredVars = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game);
-    showGameVarCollectionModel(game, requiredVars, {});
+    showGameStatsVars(game);
 }
 
 // Open the variable setting menu for game stats for account.
@@ -337,19 +337,19 @@ async function showGameStatsVars(game) {
     // Checked: Get required variables and present to user.
     const required = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game);
     const existing = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetExistingVars`, game, accountId);
-    showGameVarCollectionModel(game, required, existing);
+    const hidden = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetHiddenMetrics`, game, accountId);
+    showGameVarCollectionModel(game, required, existing, hidden);
 }
 
-async function showGameVarCollectionModel(game, requiredVars, existingVars = null) {
+async function showGameVarCollectionModel(game, requiredVars, existingVars = {}, hidden = {}) {
     if (!getSelected()) return;
     const accountId = selected.attr("id");
     const currentPage = await getCurrentPageFullname();
 
     const modalTitle = await GetLangSub("Modal_Title_GameVars", { game: game }),
         modalHeading = await GetLangSub("Modal_GameVars_Header", { game: game, username: selected.attr("displayname"), platform: currentPage }),
-        submit = await GetLang("Submit");
-
-    console.log(existingVars);
+        submit = await GetLang("Submit"),
+        metricsToShow = await GetLang("Stats_MetricsToShow");
 
 
     $("#modalTitle").text(modalTitle);
@@ -360,6 +360,8 @@ async function showGameVarCollectionModel(game, requiredVars, existingVars = nul
                 <div class="modalScrollSection centeredContainer">
                     <div class="centeredSection">`;
 
+    let checkboxesMarkup = "";
+
     for (let [key, value] of Object.entries(requiredVars)) {
         console.log(key, value);
         let placeholder = "";
@@ -369,19 +371,38 @@ async function showGameVarCollectionModel(game, requiredVars, existingVars = nul
             placeholder = parts[1].trim().replace("]", "");
         }
 
-        const existingValue = key in existingVars ? existingVars[key] : "";
+        let existingValue = key in existingVars ? existingVars[key] : "";
+        if (value === "%ACCOUNTID%") {
+            value = await GetLang("Stats_AccountId");
+            existingValue = accountId;
+        }
+
         html +=
             `<div class="rowSetting"><span>${value}</span><input type="text" id="acc${key}" spellcheck="false" placeholder="${placeholder}" value="${existingValue}"></div>`;
     }
 
+    for (let [key, value] of Object.entries(hidden)) {
+        const metricHidden = value["item1"], checkboxText = value["item2"];
+        checkboxesMarkup += `<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="${key}" ${(!metricHidden ? "checked" : "")}><label class="form-check-label" for="${key}"></label><label for="${key}">${checkboxText}<br></label></div>`;
+    }
+
     html += `       </div>
+                </div>
+                <div>
+                    <p>${metricsToShow}</p>
+                    ${checkboxesMarkup}
                 </div>
                 <div class="settingsCol inputAndButton">
                     <button class="modalOK" type="button" id="set_password" onclick="Modal_FinaliseGameVars('${game}', '${accountId}')"><span>${submit}</span></button>
                 </div>
             </div>`;
     $("#modal_contents").append(html);
-
+    $("#modalBtnBack").show();
+    $("#modalBtnBack").on("click",
+        () => {
+            $("#modalBtnBack").hide();
+            ShowGameStatsSetup();
+        });
     $(".modalBG").fadeIn(() => {
         try {
             if (input === undefined) return;
@@ -400,6 +421,7 @@ async function Modal_FinaliseGameVars(game, accountId) {
 
     // Get list of variable keys
     const requiredVars = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game);
+    const possibleHidden = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetHiddenMetrics`, game, accountId);
     console.log(requiredVars, typeof (requiredVars));
 
     // Get value for each key and create dictionary
@@ -409,11 +431,19 @@ async function Modal_FinaliseGameVars(game, accountId) {
         returnDict[key] = $(`#acc${key}`).val();
     }
 
+    // Get list of hidden metrics
+    const hidden = [];
+    for (const [key, _] of Object.entries(possibleHidden)) {
+        const checkbox = $(`#${key}`);
+        if (checkbox.is(":not(:checked)")) {
+            hidden.push(key);
+        }
+    }
+
     // Add user statistics for game, with collected variables
     $(".modalBG").fadeOut();
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SetGameVars`, currentPage, game, accountId, returnDict);
-
-    location.reload();
+    const success = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SetGameVars`, currentPage, game, accountId, returnDict, hidden);
+    if (success) location.reload();
 }
 
 async function refreshAccount(game, accountId) {

@@ -261,9 +261,9 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        public static bool InvokeVoidAsync(string func, string arg)
+        public static bool InvokeVoidAsync(string func, string arg, bool showDetails = true)
         {
-            Globals.WriteToLog($"JS CALL (2): {func}, {arg}");
+            Globals.WriteToLog(!showDetails && !Globals.VerboseMode ? $"JS CALL (2): {func}..." : $"JS CALL (4): {func}, {arg}");
             try
             {
                 if (ActiveIJsRuntime is null) return false;
@@ -277,9 +277,9 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        public static bool InvokeVoidAsync(string func, object arg)
+        public static bool InvokeVoidAsync(string func, object arg, bool showDetails = true)
         {
-            Globals.WriteToLog($"JS CALL (3): {func}, {JsonConvert.SerializeObject(arg)}");
+            Globals.WriteToLog(!showDetails && !Globals.VerboseMode ? $"JS CALL (3): {func}..." : $"JS CALL (4): {func}, {JsonConvert.SerializeObject(arg)}");
             try
             {
                 if (ActiveIJsRuntime is null) return false;
@@ -293,9 +293,9 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        public static bool InvokeVoidAsync(string func, string arg, string arg2)
+        public static bool InvokeVoidAsync(string func, string arg, string arg2, bool showDetails = true)
         {
-            Globals.WriteToLog($"JS CALL (4): {func}, {arg}, {arg2}");
+            Globals.WriteToLog(!showDetails && !Globals.VerboseMode ? $"JS CALL (4): {func}..." : $"JS CALL (4): {func}, {arg}, {arg2}");
             try
             {
                 if (ActiveIJsRuntime is null) return false;

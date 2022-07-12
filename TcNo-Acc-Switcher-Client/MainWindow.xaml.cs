@@ -471,7 +471,32 @@ namespace TcNo_Acc_Switcher_Client
             var message = JObject.Parse(e.ParameterObjectAsJson);
             if (message.ContainsKey("exceptionDetails"))
             {
-                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION (Handled: refreshed): {message.SelectToken("exceptionDetails.exception.description")}{Environment.NewLine}FULL ERROR: {e.ParameterObjectAsJson}");
+                var expandedError = "";
+                var details = message["exceptionDetails"];
+                if (details != null)
+                {
+                    var ex = details.Value<JObject>("exception");
+                    if (ex != null)
+                    {
+                        expandedError = $"{Environment.NewLine}{(string)details["url"]}:{(string)details["lineNumber"]}:{(string)details["columnNumber"]} - {(string)ex["description"]}{Environment.NewLine}{Environment.NewLine}Stack Trace:{Environment.NewLine}";
+                    }
+
+                    var stackTrace = details.Value<JObject>("stackTrace");
+                    var callFrames = stackTrace?["callFrames"]?.ToObject<JArray>();
+                    if (callFrames != null)
+                    {
+                        foreach (var callFrame in callFrames)
+                        {
+                            expandedError += $"    at {(string)callFrame["functionName"]} in {(string)details["url"]}:line {(string)callFrame["lineNumber"]}:{(string)callFrame["columnNumber"]}{Environment.NewLine}";
+                        }
+                    }
+                }
+
+
+
+
+                Globals.WriteToLog(@$"{DateTime.Now:dd-MM-yy_hh:mm:ss.fff} - WebView2 EXCEPTION (Handled: refreshed): {message.SelectToken("exceptionDetails.exception.description")}{Environment.NewLine}{expandedError}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}FULL ERROR: {e.ParameterObjectAsJson}");
+                // Load json from string e.ParameterObjectAsJson
                 _refreshFixAttempts++;
                 if (_refreshFixAttempts < 5)
                     _mView2.Reload();

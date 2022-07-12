@@ -17,6 +17,7 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = null;
+    var currentTime = DateTimeOffset.Now.ToUnixTimeSeconds();
 }
 
 <!DOCTYPE html>
@@ -27,24 +28,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TcNo-Acc-Switcher</title>
     <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
-    <script src="js/jquery.3.6.0.min.js"></script>
-    <script src="js/html5sortable.min.js"></script>
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <link href="css/accent.css" rel="stylesheet" />
-    <link href="css/site.min.css" rel="stylesheet" />
-    <link href="css/UI.min.css" rel="stylesheet" />
-    <link href="css/acclist.min.css" rel="stylesheet" />
-    <link href="css/context_menu.min.css" rel="stylesheet" />
-    <link href="css/modal.min.css" rel="stylesheet" />
-    <link href="css/scrollbar.css" rel="stylesheet" />
-    <link href="css/settings.min.css" rel="stylesheet" />
-    <link href="css/notification.min.css" rel="stylesheet" />
-    <link href="css/fontawesome.all.min.css" rel="stylesheet">
-    <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jquery.3.6.0.min.js?@currentTime"></script>
+    <script src="js/html5sortable.min.js?@currentTime"></script>
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css?@currentTime" />
+    <script src="js/bootstrap.bundle.min.js?@currentTime"></script>
+    <link href="css/accent.css?@currentTime" rel="stylesheet" />
+    <link href="css/site.min.css?@currentTime" rel="stylesheet" />
+    <link href="css/UI.min.css?@currentTime" rel="stylesheet" />
+    <link href="css/acclist.min.css?@currentTime" rel="stylesheet" />
+    <link href="css/context_menu.min.css?@currentTime" rel="stylesheet" />
+    <link href="css/modal.min.css?@currentTime" rel="stylesheet" />
+    <link href="css/scrollbar.css?@currentTime" rel="stylesheet" />
+    <link href="css/settings.min.css?@currentTime" rel="stylesheet" />
+    <link href="css/notification.min.css?@currentTime" rel="stylesheet" />
+    <link href="css/fontawesome.all.min.css?@currentTime" rel="stylesheet">
+    <script src="js/ace/ace.js?@currentTime" type="text/javascript" charset="utf-8"></script>
     <script>if (window.module) module = window.module;</script>
-    <script src="js/interop.js"></script>
-    <script src="js/hotkeys.min.js"></script>
+    <script src="js/interop.js?@currentTime"></script>
+    <script src="js/hotkeys.min.js?@currentTime"></script>
 </head>
 <body>
     <app>
@@ -77,6 +78,6 @@
             imgPath: './img/'
         });
     </script>
-    <script src="_framework/blazor.server.js"></script>
+    <script src="_framework/blazor.server.js?@currentTime"></script>
 </body>
 </html>

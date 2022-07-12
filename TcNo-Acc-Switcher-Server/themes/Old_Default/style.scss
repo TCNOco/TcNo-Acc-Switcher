@@ -32,12 +32,14 @@ body,
 }
 
 #window-controls,
-#btnBack {
+#btnBack,
+#modalBtnBack {
     background: #14151E;
 }
 
 #window-controls button:hover,
-#btnBack:hover {
+#btnBack:hover,
+#modalBtnBack:hover {
     background: rgba(255,255,255,0.1);
 }
 

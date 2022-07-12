@@ -128,7 +128,7 @@
   align-items: center;
   margin-bottom: 0.5em;
 }
-#modal_contents .gameStatsWindow .modalScrollSection .rowSetting button {
+#modal_contents .gameStatsWindow .rowSetting button, #modal_contents .gameStatsWindow .inputAndButton #set_password {
   min-width: 6em;
 }
 #modal_contents .gameStatsWindow .form-text span {

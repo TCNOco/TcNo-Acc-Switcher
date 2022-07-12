@@ -150,7 +150,8 @@ label {
   height: 100%;
 }
 
-#btnBack {
+#btnBack,
+#modalBtnBack {
     width: 46px;
     height: 32px;
     display: flex;
@@ -167,8 +168,9 @@ label {
 }
 
 #window-controls,
-#btnBack {
-  background: #253340;
+#btnBack,
+#modalBtnBack {
+    background: #253340;
 }
 
 #btnBack .resizeTop {
@@ -187,11 +189,12 @@ label {
 }
 
 #btnBack,
+#modalBtnBack,
 #window-controls button,
 #window-controls-modal button {
-  background: none;
-  border: none;
-  margin: 0;
+    background: none;
+    border: none;
+    margin: 0;
 }
 
 .headerbar {
@@ -231,13 +234,15 @@ label {
 }
 
 #window-controls button:hover,
-#btnBack:hover {
-  background: #3B4853;
+#btnBack:hover,
+#modalBtnBack:hover {
+    background: #3B4853;
 }
 
 #window-controls button:active,
-#btnBack:active {
-  background: #3B4853;
+#btnBack:active,
+#modalBtnBack:active {
+    background: #3B4853;
 }
 
 /* Resize bars and corners */

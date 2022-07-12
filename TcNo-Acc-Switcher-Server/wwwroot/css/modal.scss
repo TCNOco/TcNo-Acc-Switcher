@@ -140,11 +140,11 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 0.5em;
-
-            button {
-                min-width: 6em;
-            }
         }
+    }
+
+    .rowSetting button, .inputAndButton #set_password {
+        min-width: 6em;
     }
 
     .form-text span {

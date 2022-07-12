@@ -95,6 +95,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                 // Add icon or identifier to stat pair for displaying
                 foreach (var (statName, statValue) in GameStats[availableGame].CachedStats[accountId].Collected)
                 {
+                    if (GameStats[availableGame].CachedStats[accountId].HiddenMetrics.Contains(statName)) continue;
+
                     // Foreach stat
                     // Check if has icon, otherwise use just indicator string
                     var indicator = GetIcon(availableGame, statName);
@@ -133,13 +135,29 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JSInvokable]
         public static Dictionary<string, string> GetRequiredVars(string game) => GameStats[game].RequiredVars;
         [JSInvokable]
-        public static Dictionary<string, string> GetExistingVars(string game, string account) => GameStats[game].CachedStats[account].Vars;
+        public static Dictionary<string, string> GetExistingVars(string game, string account) => GameStats[game].CachedStats.ContainsKey(account) ? GameStats[game].CachedStats[account].Vars : new Dictionary<string, string>();
+
+        /// <summary>
+        /// Gets list of all metric names to collect, as well as whether each is hidden or not, and the text to display in the UI checkbox.
+        /// </summary>
+        [JSInvokable]
+        public static Dictionary<string, Tuple<bool, string>> GetHiddenMetrics(string game, string account)
+        {
+            var returnDict = new Dictionary<string, Tuple<bool, string>>();
+            foreach (var (key, value) in GameStats[game].ToCollect)
+            {
+                var hidden = GameStats[game].CachedStats.ContainsKey(account) && GameStats[game].CachedStats[account].HiddenMetrics.Contains(key);
+                var text = GameStats[game].ToCollect[key].ToggleText;
+                returnDict.Add(key, new Tuple<bool, string>(hidden, text));
+            }
+
+            return returnDict;
+        }
 
         [JSInvokable]
-        public static void SetGameVars(string platform, string game, string accountId,
-            Dictionary<string, string> returnDict)
+        public static bool SetGameVars(string platform, string game, string accountId, Dictionary<string, string> returnDict, List<string> hiddenMetrics)
         {
-            GameStats[game].SetAccount(accountId, returnDict, platform);
+            return GameStats[game].SetAccount(accountId, returnDict, hiddenMetrics, platform);
         }
 
         [JSInvokable]
@@ -282,7 +300,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public Dictionary<string, CollectInstruction> ToCollect = new();
 
         private readonly string _cacheFileFolder = Path.Join(Globals.UserDataFolder, "StatsCache");
-        private string CacheFilePath => Globals.GetCleanFilePath(Path.Join(_cacheFileFolder, $"{Game}.json"));
+        private string CacheFilePath => Path.Join(_cacheFileFolder,Globals.GetCleanFilePath( $"{Game}.json"));
         /// <summary>
         /// Dictionary of AccountId:UserGameStats
         /// </summary>
@@ -294,6 +312,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             public string XPath { get; set; }
             public string Select { get; set; }
             public string DisplayAs { get; set; } = "%x%";
+            public string ToggleText { get; set; } = "";
 
             // Optional
             public string SelectAttribute { get; set; } = ""; // If Select = "attribute", set the attribute to get here.
@@ -321,6 +340,10 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             ToCollect = jGame["Collect"]?.ToObject<Dictionary<string, CollectInstruction>>();
 
+            if (ToCollect != null)
+                foreach (var collectInstruction in ToCollect.Where(collectInstruction => collectInstruction.Key == "%PROFILEIMAGE%"))
+                    collectInstruction.Value.ToggleText = Lang.Instance["ProfileImage_ToggleText"];
+
             //foreach (var (k, v) in jGame["Collect"]?.ToObject<Dictionary<string, CollectInstruction>>()!)
             //{
             //    Collect.Add(k, v);
@@ -334,11 +357,26 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Set up new accounts. Set game name if you want all accounts to save after setting values (Recommended).
         /// </summary>
-        public void SetAccount(string accountId, Dictionary<string, string> vars, string platform = "")
+        public bool SetAccount(string accountId, Dictionary<string, string> vars, List<string> hiddenMetrics, string platform = "")
         {
-            CachedStats[accountId] = new UserGameStat() { Vars = vars };
-            LoadStatsFromWeb(accountId, platform);
-            SaveStats();
+            if (CachedStats.ContainsKey(accountId))
+            {
+                CachedStats[accountId].Vars = vars;
+                CachedStats[accountId].HiddenMetrics = hiddenMetrics;
+            }
+            else
+                CachedStats[accountId] = new UserGameStat() { Vars = vars, HiddenMetrics = hiddenMetrics };
+
+            if (CachedStats[accountId].Collected.Count == 0 || DateTime.Now.Subtract(CachedStats[accountId].LastUpdated).Days >= 1)
+            {
+                GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
+                _lastLoadingNotification = DateTime.Now;
+                return LoadStatsFromWeb(accountId, platform);
+            }
+            else
+                SaveStats();
+
+            return true;
         }
 
         /// <summary>
@@ -439,6 +477,17 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             userStat.LastUpdated = DateTime.Now;
 
+            if (!userStat.Collected.Any())
+            {
+                Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "temp"));
+                File.WriteAllText(Path.Join(Globals.UserDataFolder, "temp", $"download-{Globals.GetCleanFilePath(Game)}.html"), responseText);
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsEmpty", new { Game = Globals.GetCleanFilePath(Game) }], renderTo: "toastarea");
+                if (CachedStats.ContainsKey(accountId))
+                    CachedStats.Remove(accountId);
+                return false;
+            }
+
+
             CachedStats[accountId] = userStat;
             SaveStats();
             return true;
@@ -482,6 +531,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Statistic name:value pairs
         /// </summary>
         public Dictionary<string, string> Collected = new();
+        /// <summary>
+        /// Keys on this list should NOT be displayed under accounts.
+        /// </summary>
+        public List<string> HiddenMetrics = new();
         public DateTime LastUpdated;
     }
 }

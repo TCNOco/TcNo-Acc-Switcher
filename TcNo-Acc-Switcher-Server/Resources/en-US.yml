@@ -120,6 +120,8 @@ Stats_UniqueDays: "Unique days: "
 Stats_GameShortcuts: "Game shortcuts: "
 Stats_GameShortcutsHotbar: "Game shortcuts (on hotbar): "
 Stats_GamesLaunched: "Games launched: "
+Stats_MetricsToShow: "Displayed metrics:"
+Stats_AccountId: "Account Id:"
 Auth_LoginRequired: A password was previously set, and is required. Please enter the password below.
 Auth_EnterPassword: "Enter password:"
 Auth_PassIncorrect: Password incorrect.
@@ -236,6 +238,7 @@ Toast_FailedLoadSettings: "Failed to load settings! Loading default settings ins
 Toast_FailedLoadStats: "Failed to load statistics! Starting fresh."
 Toast_FailedStatsLoad: Failed to load GameStats.json! Please verify this file exists.
 Toast_GameStatsLoadFail: "Failed to get game stats from web for {Game}"
+Toast_GameStatsEmpty: "No game stats found on website for {Game}. Think it's an error? Check the userdata folder and 'temp\\download-{Game}.html' to see if the page had an error!"
 Toast_FileCopyFail: Failed to copy files! See log for more details.
 Toast_UserDataLoadFail: Failed to load userdata {UserData}\\WindowSettings.json. Backing up and resetting! Saved error to log.
 Toast_UpdateCheckFail: Could not reach https://tcno.co/ to check for updates. This message will show once a day.
@@ -335,6 +338,7 @@ Context_HidePlatform: Hide platform
 Context_ExportAccList: Export account list
 Context_RunAdmin: Run as Admin
 Context_Hide: Hide
+ProfileImage_ToggleText: Use image as account image
 Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
 Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
 Title_Platforms_Settings: TcNo Account Switcher - Platform Settings

@@ -77,8 +77,18 @@ namespace TcNo_Acc_Switcher_Globals
                 }
             }
 
-            if (NativeMethods.GetConsoleWindow() != IntPtr.Zero) // Console exists
+            // Console exists
+            if (NativeMethods.GetConsoleWindow() == IntPtr.Zero) return;
+
+            if (s.ToLowerInvariant().Contains("exception"))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(s);
+                Console.ForegroundColor = ConsoleColor.Gray;
+                return;
+            }
+
+            Console.WriteLine(s);
         }
 
         /// <summary>
