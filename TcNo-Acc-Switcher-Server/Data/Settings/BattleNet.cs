@@ -294,11 +294,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static readonly string ImagePath = "wwwroot\\img\\profiles\\battlenet\\";
 
         public static readonly ObservableCollection<MenuItem> ContextMenuItems = new();
-        public static void BuildContextMenu()
+        private static void BuildContextMenu()
         {
             ContextMenuItems.Clear();
-            var menu = MenuBuilder.Build(
-                new Tuple<string, object>[]
+            ContextMenuItems.AddRange(new MenuBuilder(
+                new []
                 {
                     new("Context_SwapTo", "swapTo(-1, event)"),
                     new("Context_BNet_SetBTag", "showModal('changeUsername:BattleTag')"),
@@ -308,18 +308,10 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     new("Context_ChangeImage", "changeImage(event)"),
                     new("Forget", "forget(event)"),
                     new("Notes", "showNotes(event)"),
-                });
-            ContextMenuItems.AddRange(menu);
-
-            // Game statistics, if any
-            if (BasicStats.PlatformHasAnyGames("BattleNet"))
-            {
-                ContextMenuItems.Add(new MenuItem()
-                {
-                    Text = "Context_ManageGameStats",
-                    Content = "ShowGameStatsSetup(event)"
-                });
-            }
+                    BasicStats.PlatformHasAnyGames("BattleNet") ? 
+                        new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)") : null,
+                }
+            ).Result());
         }
 
         #endregion

@@ -68,5 +68,12 @@
 }
 else
 {
-    <li><a onclick="@Item.Content">@Item.Text</a></li>
+    @if (@Item.MenuAction is not null)
+    {
+        <li><a @onclick="() => Item.MenuAction()">@Item.Text</a></li>
+    }
+    else
+    {
+        <li><a onclick="@Item.Content">@Item.Text</a></li>
+    }
 }

@@ -317,7 +317,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static void BuildContextMenu()
         {
             Menu.Clear();
-            var menu = MenuBuilder.Build(new Tuple<string, object>[]
+            var menuBuilder = new MenuBuilder(new Tuple<string, object>[]
             {
                 new ("Context_SwapTo", "swapTo(-1, event)"),
                 new ("Context_LoginAsSubmenu", new Tuple<string, object>[]
@@ -369,11 +369,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 new ("Forget", "forget(event)"),
                 new ("Notes", "showNotes(event)"),
             });
-            Menu.AddRange(menu);
 
             /* Games submenu, or Game data item */
-
-            // Prepare Game data menu
             MenuItem gameData = null;
             if (File.Exists(SteamAppsUserCache) && AppIds.Value.Count > 0)
             {
@@ -407,51 +404,16 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     ).ToList()
                 };
             }
-
-            var changeImage = new MenuItem()
-            {
-                Text = "Context_ChangeImage",
-                Content = "changeImage(event)"
-            };
-
-            var openUserdata = new MenuItem()
-            {
-                Text = "Context_Steam_OpenUserdata",
-                Content = "openUserdata(event)"
-            };
-
-            // If any games with statistic support: Create and add Games... submenu
-            if (BasicStats.PlatformHasAnyGames("Steam"))
-            {
-                Menu.Add(new MenuItem()
+            menuBuilder.AddItem(new Tuple<string, object>("Context_ManageSubmenu", new Tuple<string, object>[]
                 {
-                    Text = "Context_ManageSubmenu",
-                    Children = new List<MenuItem>
-                    {
-                        gameData,
-                        new ()
-                        {
-                            Text = "Context_ManageGameStats",
-                            Content = "ShowGameStatsSetup(event)"
-                        },
-                        changeImage,
-                        openUserdata
-                    }
-                });
-            }
-            // Only Game Data should be included, if any.
-            else if (gameData is not null)
-                Menu.Add(new MenuItem()
-                {
-                    Text = "Context_ManageSubmenu",
-                    Children = new List<MenuItem>
-                    {
-                        gameData,
-                        changeImage,
-                        openUserdata
-                    }
-                });
-
+                    gameData is not null ? 
+                        new Tuple<string, object>("Context_GameDataSubmenu", gameData) : null,
+                    BasicStats.PlatformHasAnyGames("Steam") ? 
+                        new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)") : null,
+                    new ("Context_ChangeImage", "changeImage(event)"),
+                    new ("Context_Steam_OpenUserdata", "openUserdata(event)")
+                }));
+            Menu.AddRange(menuBuilder.Result());
         }
 
         public static string StateToString(int state)
