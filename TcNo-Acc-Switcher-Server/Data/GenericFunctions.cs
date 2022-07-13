@@ -51,9 +51,6 @@ namespace TcNo_Acc_Switcher_Server.Data
                 case "Steam":
                     Steam.SaveSettings();
                     break;
-                case "BattleNet":
-                    BattleNet.SaveSettings();
-                    break;
                 case "Basic":
                     Basic.SaveSettings();
                     break;

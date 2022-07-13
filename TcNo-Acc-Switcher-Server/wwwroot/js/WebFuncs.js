@@ -59,37 +59,6 @@ async function showNotes(e) {
 // Get and return note text for the requested account
 getAccNotes = async(accId) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}Notes`, accId);
 
-// STOP IGNORING BATTLENET ACCOUNTS
-async function restoreBattleNetAccounts() {
-	const toastFailedRestore = await GetLang("Toast_FailedRestore"),
-		toastRestored = await GetLang("Toast_Restored");
-    const reqBattleNetId = $("#IgnoredAccounts").children("option:selected").toArray().map((item) => {
-        return $(item).attr("value");
-    });
-
-    if (await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BattleNet_RestoreSelected", reqBattleNetId) === true) {
-        reqBattleNetId.forEach((e) => {
-            $("#IgnoredAccounts").find(`option[value="${e}"]`).remove();
-            window.notification.new({
-                type: "success",
-                title: "",
-                message: toastRestored,
-                renderTo: "toastarea",
-                duration: 5000
-            });
-        });
-    } else {
-        window.notification.new({
-            type: "error",
-            title: "",
-            message: toastFailedRestore,
-            renderTo: "toastarea",
-            duration: 5000
-        });
-    }
-}
-
-
 async function copy(request, e) {
     e.preventDefault();
 
@@ -668,9 +637,6 @@ async function showModal(modaltype) {
         let header = `<h3>${modalConfirmAction}:</h3>`;
         if (action.startsWith("AcceptForgetSteamAcc")) {
             message = await GetLang("Prompt_ForgetSteam");
-        } else if (action.startsWith("AcceptForgetBasicAcc") ||
-            action.startsWith("AcceptForgetBattleNetAcc")) {
-            message = await GetLangSub("Prompt_ForgetAccount", { platform: await getCurrentPageFullname() });
         } else if (action.startsWith("ClearStats")) {
             message = await GetLang("Prompt_ClearStats");
         } else {
@@ -1201,8 +1167,6 @@ async function serializeShortcuts() {
 
     if (getCurrentPage() === "Steam")
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrderSteam", output);
-    else if (getCurrentPage() === "BattleNet")
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrderBNet", output);
     else
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrder", output);
 }
@@ -1213,8 +1177,6 @@ async function shortcut(action) {
     console.log(reqId);
     if (getCurrentPage() === "Steam")
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutActionSteam", reqId, action);
-    else if (getCurrentPage() === "BattleNet")
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutActionBNet", reqId, action);
     else
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutAction", reqId, action);
     if (action === "hide") $(selectedElem).remove();

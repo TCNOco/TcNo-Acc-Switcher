@@ -101,7 +101,6 @@
   },
   "PlatformCompatibilities": {
     "Origin": [ "Apex Legends" ],
-    "Discord": [ "Apex Legends", "Counter-Strike: Global Offensive" ],
     "Steam": [ "Apex Legends", "Counter-Strike: Global Offensive" ],
     "BattleNet": [ "Overwatch" ]
   }

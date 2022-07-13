@@ -410,9 +410,7 @@
       "ExitBeforeInteract": true,
       "UniqueIdFile": "%ProgramData%\\Rockstar Games\\TcNoAccSwitcher-ID.instance",
       "UniqueIdMethod": "CREATE_ID_FILE"
-    }
-  },
-  "Platform-WIP": {
+    },
     "BattleNet": {
       "Identifiers": [ "b", "bnet", "battlenet", "blizzard" ],
       "ExeLocationDefault": "%ProgramFiles(x86)%\\Battle.net\\Battle.net.exe",
@@ -425,6 +423,8 @@
       "UniqueIdFile": "%AppData%\\Battle.net\\Battle.net.config::$.Client.SavedAccountNames",
       "UniqueIdMethod": "JSON_SELECT_FIRST,"
     }
+  },
+  "Platform-WIP": {
   },
   "Reference": {
     "Steam": {

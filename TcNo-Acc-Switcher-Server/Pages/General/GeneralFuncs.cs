@@ -30,7 +30,6 @@ using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
-using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
@@ -747,11 +746,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 {
                     case null:
                         return;
-
-                    case "BattleNet":
-                        await BattleNetSwitcherFuncs.LoadProfiles();
-                        Data.Settings.BattleNet.SaveSettings();
-                        break;
 
                     case "Steam":
                         await SteamSwitcherFuncs.LoadProfiles();

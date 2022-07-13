@@ -29,7 +29,6 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
-using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 using static TcNo_Acc_Switcher_Client.MainWindow;
@@ -373,7 +372,7 @@ release = true;
                 // --- Log out of accounts ---
                 if (e.Args[i].StartsWith("logout"))
                 {
-                    await CliLogout(e.Args[i]).ConfigureAwait(false);
+                    CliLogout(e.Args[i]);
                     continue;
                 }
 
@@ -415,7 +414,6 @@ release = true;
                             "This is the command line interface. You are able to use any of the following arguments with this program:",
                             "--- Switching to accounts ---",
                             "Usage (don't include spaces): + <PlatformLetter> : <...details>",
-                            " -   Battlenet format: +b:<email>",
                             " -   Steam format: +s:<steamId>[:<PersonaState (0-7)>]"
                         };
                         helpLines.AddRange(switchList);
@@ -426,7 +424,6 @@ release = true;
                             "--- Log out of accounts ---",
                             "logout:<platform> = Logout of a specific platform (Allowing you to sign into and add a new account)",
                             "Available platforms:",
-                            " -   BattleNet: b, bnet, battlenet, blizzard",
                             " -   Steam: s, steam",
                         });
                         helpLines.AddRange(availableList);
@@ -472,16 +469,6 @@ release = true;
 
             switch (platform)
             {
-                // Battle.Net
-                case "b":
-                    {
-                        // Battlenet format: +b:<email>
-                        Globals.WriteToLog("Battle.net switch requested");
-                        if (!GeneralFuncs.CanKillProcess(BattleNet.Processes))
-                            Restart(combinedArgs, true);
-                        _ = BattleNetSwitcherFuncs.SwapBattleNetAccounts(account, string.Join(' ', remainingArguments));
-                        return;
-                    }
                 // Steam
                 case "s":
                     {
@@ -508,23 +495,14 @@ release = true;
         }
 
         /// <summary>
-        /// Handle logouts given as arguments to the CLI
+        /// Handle logout given as arguments to the CLI
         /// </summary>
         /// <param name="arg">Argument to process</param>
-        private static async Task CliLogout(string arg)
+        private static void CliLogout(string arg)
         {
             var platform = arg.Split(':')[1];
             switch (platform.ToLowerInvariant())
             {
-                // Battle.net
-                case "b":
-                case "bnet":
-                case "battlenet":
-                case "blizzard":
-                    Globals.WriteToLog("Battle.net logout requested");
-                    await BattleNetSwitcherBase.NewLogin_BattleNet();
-                    break;
-
                 // Steam
                 case "s":
                 case "steam":

@@ -24,26 +24,6 @@ if ($ === undefined) {
 	$ = null;
 }
 
-// Allow multiple users to be selected.
-// Much easier than people having to hold Ctrl, then click on items to select multiple.
-$("select[name='IgnoredBattleNetAccounts']").mousedown((e) => {
-    e.preventDefault();
-
-    const s = this;
-    const scroll = s.scrollTop;
-
-    e.target.selected = !e.target.selected;
-
-    setTimeout(() => {
-        s.scrollTop = scroll;
-    }, 0);
-
-    $(s).focus();
-}).mousemove((e) => {
-    e.preventDefault();
-});
-
-
 // Set list of users
 function setIgnored(listIgnored) {
     const listAccounts = document.getElementById("IgnoredAccounts");
@@ -51,11 +31,5 @@ function setIgnored(listIgnored) {
     var ignoredUsers = JSON.parse(listIgnored);
     Object.keys(ignoredUsers).forEach((key) => {
         $(listAccounts).append(`<option value="${key}">${ignoredUsers[key]} [${key}]</option>`);
-    });
-}
-// Load list of users
-export function jsLoadIgnored() {
-    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiFileReadAllText", "LoginCache\\BattleNet\\IgnoredAccounts.json").then((r) => {
-        setIgnored(r);
     });
 }

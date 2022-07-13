@@ -18,7 +18,6 @@ using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
-using BattleNetSettings = TcNo_Acc_Switcher_Server.Data.Settings.BattleNet;
 using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Pages
@@ -32,12 +31,6 @@ namespace TcNo_Acc_Switcher_Server.Pages
             Globals.DebugWriteLine($@"[Func:Index.Check] platform={platform}");
             switch (platform)
             {
-                case "BattleNet":
-                    if (!GeneralFuncs.CanKillProcess(BattleNetSettings.Processes, BattleNetSettings.ClosingMethod)) return;
-                    if (Directory.Exists(BattleNetSettings.FolderPath) && File.Exists(BattleNetSettings.Exe())) AppData.ActiveNavMan.NavigateTo("/BattleNet/");
-                    else _ = GeneralInvocableFuncs.ShowModal("find:BattleNet:Battle.net.exe:BattleNetSettings");
-                    break;
-
                 case "Steam":
                     if (!GeneralFuncs.CanKillProcess(SteamSettings.Processes, SteamSettings.ClosingMethod)) return;
                     if (!Directory.Exists(SteamSettings.FolderPath) || !File.Exists(SteamSettings.Exe()))

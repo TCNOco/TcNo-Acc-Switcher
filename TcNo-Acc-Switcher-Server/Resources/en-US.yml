@@ -165,13 +165,6 @@ Toast_RestartAfterClose: Please restart the program after clicking Close.
 Toast_RestartAfterCloseTitle: Accent color disabled
 Toast_RestartRequired: Restart to apply changes
 Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
-Toast_BNet_Private: "{BTag}'s profile is private"
-Toast_BNet_StatsFail: "Error trying to get stats for {BTag}"
-Toast_BNet_NotFound: Profile {BTag} not found
-Toast_BNet_CantSwapAccounts: Could not swap accounts (Battle.net.config file corrupt)
-Toast_BNet_CantLoadNotFound: Could not find Battle.net.config
-Toast_BNet_CantLoadEmpty: Could not load accounts file for Blizzard (No accounts found)
-Toast_BNet_CantLoadConfigCorrupt: Could not load accounts file for Blizzard (Battle.net.config file corrupt)
 Toast_LoadingStats: One or more profiles are refreshing stats. Please wait.
 Toast_ItemNotFound: "{item} was not found"
 Toast_DeletedTotal: "{files} of {totalFiles} deleted. Total: {totalSize}"
@@ -210,7 +203,6 @@ Toast_Steam_CantLocateLoginusers: Cannot locate '.../Steam/config/loginusers.vdf
 Toast_CantClearImages: Could not clear images
 Toast_RefreshedImages: Refreshed images
 Toast_ClearForgottenCheck: Are you sure you want to clear backups of forgotten accounts?
-Toast_FetchedRank: Fetched Rank
 Toast_ForgotAccount: Forgot account
 Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
 Toast_ClearedImages: "Cleared images"
@@ -334,8 +326,6 @@ Context_ExportAccList: Export account list
 Context_RunAdmin: Run as Admin
 Context_Hide: Hide
 ProfileImage_ToggleText: Use image as account image
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
 Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
 Title_Settings_TestCss: TcNo Account Switcher - Test CSS Styling
 Title_AccountsList: TcNo Account Switcher - {platform}
