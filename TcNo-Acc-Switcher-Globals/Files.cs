@@ -196,7 +196,19 @@ namespace TcNo_Acc_Switcher_Globals
         }
 
         private static readonly HttpClient HClient = new();
-        public static string DownloadString(string uri) => HClient.GetStringAsync(uri).Result;
+
+        public static string DownloadString(string uri)
+        {
+            try
+            {
+                return HClient.GetStringAsync(uri).Result;
+            }
+            catch (Exception e)
+            {
+                WriteToLog($"Failed to download string from: {uri}", e);
+                return "";
+            }
+        }
         public static bool DownloadFile(string url, string path)
         {
             try

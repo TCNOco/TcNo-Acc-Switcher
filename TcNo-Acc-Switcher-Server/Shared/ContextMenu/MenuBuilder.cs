@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace TcNo_Acc_Switcher_Server.Shared;
+namespace TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 
 public class MenuBuilder
 {
@@ -16,18 +16,18 @@ public class MenuBuilder
 
     public MenuBuilder(Tuple<string, object> item):this()
     {
-        this.AddItem(item);
+        AddItem(item);
     }
     public MenuBuilder(IEnumerable<Tuple<string, object>> items):this()
     {
-        this.AddItems(items);
+        AddItems(items);
     }
 
     public void AddItems(IEnumerable<Tuple<string, object>> items)
     {
         foreach (var item in items)
         {
-            this.AddItem(item);
+            AddItem(item);
         }
     }
 

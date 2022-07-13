@@ -288,7 +288,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             if (!File.Exists(SteamSettings.SteamAppsListPath))
             {
                 // Download Steam AppId list if not already.
-                Task.Run(SteamSwitcherFuncs.DownloadSteamAppsData).ContinueWith(_ =>
+                Task.Run(DownloadSteamAppsData).ContinueWith(_ =>
                 {
                     var names = LoadAppNames();
                     foreach (var kv in names)

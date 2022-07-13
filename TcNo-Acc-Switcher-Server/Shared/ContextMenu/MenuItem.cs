@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TcNo_Acc_Switcher_Server.Data;
 
-namespace TcNo_Acc_Switcher_Server.Shared;
+namespace TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 
 public class MenuItem
 {
