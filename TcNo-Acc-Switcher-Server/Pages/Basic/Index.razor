@@ -16,6 +16,8 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
+@using TcNo_Acc_Switcher_Server.Shared.ContextMenu
+@using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using System.IO
 @using Microsoft.AspNetCore.WebUtilities
 @inject AppData AData
@@ -30,9 +32,8 @@
 <ContextMenu MenuItems="@Basic.ContextMenuItems" ContextMenuId="AccOrPlatList"/>
 <ContextMenu MenuItems="@Basic.ContextMenuShortcutItems" ContextMenuId="Shortcuts"/>
 <ContextMenu MenuItems="@Basic.ContextMenuPlatformItems" ContextMenuId="Platform"/>
-<div id="acc_list" class="acc_list">
-    <toastarea class="toastarea"/>
-</div>
+
+<AccountList AccountItems="@Basic.Accounts" AccountNotes="Basic.AccountNotes" @ref="BasicAccountList" />
 
 <div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
     <div class="shortcutDropdownItems">
@@ -105,6 +106,8 @@
 
 @code
 {
+    public static AccountList BasicAccountList;
+
     private string RemoveShortcutExt(string s)
     {
         return s.Replace(".lnk", "").Replace(".url", "");
@@ -137,12 +140,11 @@
             return;
         }
 
+        BasicStats.SetCurrentPlatform(CurrentPlatform.FullName);
+
     // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
         if (File.Exists(Basic.Exe())) return;
-
         _navBack = true;
-
-        BasicStats.SetCurrentPlatform(CurrentPlatform.FullName);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

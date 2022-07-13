@@ -24,6 +24,7 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Shared;
+using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
@@ -102,6 +103,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private int _lastAccTimestamp = 0;
         [JsonIgnore] private string _lastAccName = "";
+        [JsonIgnore] private ObservableCollection<Account> _accounts = new();
 
         public static int LastAccTimestamp { get => Instance._lastAccTimestamp; set => Instance._lastAccTimestamp = value; }
         public static string LastAccName { get => Instance._lastAccName; set => Instance._lastAccName = value; }
@@ -126,6 +128,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
         public static bool ShowShortNotes { get => Instance._showShortNotes; set => Instance._showShortNotes = value; }
         public static Dictionary<string, string> AccountNotes { get => Instance._accountNotes; set => Instance._accountNotes = value; }
+        public static ObservableCollection<Account> Accounts { get => Instance._accounts; set => Instance._accounts = value; }
         public static string ClosingMethod
         {
             get
@@ -173,7 +176,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             new ("Context_RunAdmin", "shortcut('admin')"),
             new ("Context_Hide", "shortcut('hide')"),
         }).Result();
-        
+
         public static readonly ObservableCollection<MenuItem> ContextMenuPlatformItems = new MenuBuilder(
             new Tuple<string, object>("Context_RunAdmin", "shortcut('admin')")
         ).Result();

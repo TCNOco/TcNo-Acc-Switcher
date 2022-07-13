@@ -141,9 +141,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         #region Accounts
         // These hold accounts for different switchers. Changing settings reloads the Settings, wiping them. This is the second best place to store these.
 
-        private JToken _bNetAccountsList;
-        public static JToken BNetAccountsList { get => Instance._bNetAccountsList; set => Instance._bNetAccountsList = value; }
-
         private List<Index.Steamuser> _steamUsers;
         public static List<Index.Steamuser> SteamUsers { get => Instance._steamUsers; set => Instance._steamUsers = value; }
 
@@ -178,7 +175,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         #region Basic_Platforms
 
-        public List<string> OldPlatformList = new() { "Steam", "BattleNet" };
+        public List<string> OldPlatformList = new() { "Steam" };
         private List<string> _platformList;
         public List<string> PlatformList
         {
@@ -319,10 +316,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             Basic = false;
             Steam = false;
-            BattleNet = false;
         }
         public bool Basic { get; set; }
         public bool Steam { get; set; }
-        public bool BattleNet { get; set; }
     }
 }

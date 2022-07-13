@@ -59,37 +59,6 @@ async function showNotes(e) {
 // Get and return note text for the requested account
 getAccNotes = async(accId) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}Notes`, accId);
 
-// STOP IGNORING BATTLENET ACCOUNTS
-async function restoreBattleNetAccounts() {
-	const toastFailedRestore = await GetLang("Toast_FailedRestore"),
-		toastRestored = await GetLang("Toast_Restored");
-    const reqBattleNetId = $("#IgnoredAccounts").children("option:selected").toArray().map((item) => {
-        return $(item).attr("value");
-    });
-
-    if (await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BattleNet_RestoreSelected", reqBattleNetId) === true) {
-        reqBattleNetId.forEach((e) => {
-            $("#IgnoredAccounts").find(`option[value="${e}"]`).remove();
-            window.notification.new({
-                type: "success",
-                title: "",
-                message: toastRestored,
-                renderTo: "toastarea",
-                duration: 5000
-            });
-        });
-    } else {
-        window.notification.new({
-            type: "error",
-            title: "",
-            message: toastFailedRestore,
-            renderTo: "toastarea",
-            duration: 5000
-        });
-    }
-}
-
-
 async function copy(request, e) {
     e.preventDefault();
 
@@ -240,7 +209,7 @@ async function ShowGameStatsSetup(e = null) {
 
     const accountId = selected.attr("id");
 
-    const modalHeading = await GetLangSub("Modal_GameStats_Header", { accountName: selected.attr("displayname") }),
+    const modalHeading = await GetLangSub("Modal_GameStats_Header", { accountName: getDisplayName() }),
         modalTitle= await GetLang("Modal_Title_GameStats"),
         edit = await GetLang("Edit"),
         refresh = await GetLang("Refresh");
@@ -347,7 +316,7 @@ async function showGameVarCollectionModel(game, requiredVars, existingVars = {},
     const currentPage = await getCurrentPageFullname();
 
     const modalTitle = await GetLangSub("Modal_Title_GameVars", { game: game }),
-        modalHeading = await GetLangSub("Modal_GameVars_Header", { game: game, username: selected.attr("displayname"), platform: currentPage }),
+        modalHeading = await GetLangSub("Modal_GameVars_Header", { game: game, username: getDisplayName(), platform: currentPage }),
         submit = await GetLang("Submit"),
         metricsToShow = await GetLang("Stats_MetricsToShow");
 
@@ -374,7 +343,8 @@ async function showGameVarCollectionModel(game, requiredVars, existingVars = {},
         let existingValue = key in existingVars ? existingVars[key] : "";
         if (value === "%ACCOUNTID%") {
             value = await GetLang("Stats_AccountId");
-            existingValue = accountId;
+            if (existingValue === "")
+                existingValue = accountId;
         }
 
         html +=
@@ -667,9 +637,6 @@ async function showModal(modaltype) {
         let header = `<h3>${modalConfirmAction}:</h3>`;
         if (action.startsWith("AcceptForgetSteamAcc")) {
             message = await GetLang("Prompt_ForgetSteam");
-        } else if (action.startsWith("AcceptForgetBasicAcc") ||
-            action.startsWith("AcceptForgetBattleNetAcc")) {
-            message = await GetLangSub("Prompt_ForgetAccount", { platform: await getCurrentPageFullname() });
         } else if (action.startsWith("ClearStats")) {
             message = await GetLang("Prompt_ClearStats");
         } else {
@@ -699,7 +666,7 @@ async function showModal(modaltype) {
         let accId = modaltype.slice(6);
         if (!getSelected()) return;
 
-        $("#modalTitle").text(await GetLangSub("Modal_Title_AccountNotes", { accountName: selected.attr("displayname") }));
+        $("#modalTitle").text(await GetLangSub("Modal_Title_AccountNotes", { accountName: getDisplayName() }));
         const save = await GetLang("Save"),
             cancel = await GetLang("Button_Cancel");
 
@@ -1046,7 +1013,7 @@ async function Modal_FinaliseAccNameChange() {
 
     const raw = $("#NewAccountName").val();
 	const name = (raw.indexOf("TCNO:") === -1 ? raw.replace(/[<>: \.\"\/\\|?*]/g, "-") : raw); // Clean string if not a command string.
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name, getCurrentPage());
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name);
 }
 
 async function Modal_SaveNotes(accId) {
@@ -1080,9 +1047,6 @@ function flushJQueryAppendQueue() {
     // have this as detect and run at some point. For now the only use for this function is the Steam Cleaning list thingy
     $(".clearingRight")[0].scrollTop = $(".clearingRight")[0].scrollHeight;
 }
-
-forgetBattleTag = async () => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "DeleteUsername", $(".acc:checked").attr("id"));
-refetchRank = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RefetchRank", $(".acc:checked").attr("id"));
 
 async function usernameModalCopyText() {
     const toastTitle = await GetLang("Toast_Copied");
@@ -1178,9 +1142,14 @@ function shortcutDropdownBtnClick() {
         $("#shortcutDropdown").show();
         sDropdownReposition();
         $("#shortcutDropdownBtn").addClass("flip");
+        // If has no children in main list, add the expandShortcuts CSS to show users they can drag.
+        if ($(".shortcuts button").length === 0) {
+            $(".shortcuts").addClass("expandShortcuts");
+        }
     } else {
         $("#shortcutDropdown").hide();
         $("#shortcutDropdownBtn").removeClass("flip");
+        $(".shortcuts").removeClass("expandShortcuts");
     }
 }
 
@@ -1198,8 +1167,6 @@ async function serializeShortcuts() {
 
     if (getCurrentPage() === "Steam")
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrderSteam", output);
-    else if (getCurrentPage() === "BattleNet")
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrderBNet", output);
     else
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SaveShortcutOrder", output);
 }
@@ -1210,8 +1177,6 @@ async function shortcut(action) {
     console.log(reqId);
     if (getCurrentPage() === "Steam")
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutActionSteam", reqId, action);
-    else if (getCurrentPage() === "BattleNet")
-        await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutActionBNet", reqId, action);
     else
         await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HandleShortcutAction", reqId, action);
     if (action === "hide") $(selectedElem).remove();
@@ -1226,6 +1191,8 @@ async function initSavingHotKey() {
     });
 }
 
+getDisplayName = () => $(selectedElem).siblings("label").find(".displayName").text();
+
 async function initCopyHotKey() {
     const toastCopied = await GetLang("Toast_Copied");
     hotkeys("ctrl+c,ctrl+shift+c,alt+c", async function (event, handler) {
@@ -1236,7 +1203,7 @@ async function initCopyHotKey() {
             await copyToClipboard($(selectedElem).prop("id"));
             break;
         case "ctrl+c":
-            await copyToClipboard($(selectedElem).attr("displayname"));
+                await copyToClipboard(getDisplayName());
             break;
         }
 

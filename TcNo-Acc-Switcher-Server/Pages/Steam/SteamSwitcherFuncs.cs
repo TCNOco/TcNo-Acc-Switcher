@@ -34,6 +34,7 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
 
 
@@ -91,6 +92,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 // Key was fine? Continue. If not, the non-api method will be used.
                 if (!SteamSettings.SteamWebApiWasReset)
                 {
+                    SteamSettings.Accounts.Clear();
                     foreach (var su in AppData.SteamUsers)
                     {
                         InsertAccount(su);
@@ -105,6 +107,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
                 // Load cached ban info
                 LoadCachedBanInfo();
+                SteamSettings.Accounts.Clear();
 
                 foreach (var su in AppData.SteamUsers)
                 {
@@ -125,43 +128,25 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         private static void InsertAccount(Index.Steamuser su)
         {
-            var extraClasses = (SteamSettings.ShowVac && su.Vac ? " status_vac" : "") + (SteamSettings.ShowLimited && su.Limited ? " status_limited" : "");
-
-            // Handle notes (if any)
-            var note = "";
-            if (SteamSettings.ShowShortNotes && SteamSettings.AccountNotes.ContainsKey(su.SteamId))
+            var account = new Account
             {
-                note = $"\r\n<p class=\"acc_note\">{SteamSettings.AccountNotes[su.SteamId]}</p>";
-            }
-
-            // Handle game stats (if any enabled and collected.)
-            var userStats = BasicStats.GetUserStatsAllGamesMarkup("Steam", su.SteamId);
-            var userStatsString = "";
-            if (userStats.Keys.Count > 0)
-            {
-                foreach (var game in userStats)
+                Platform = "Steam",
+                AccountId = su.SteamId,
+                DisplayName = GeneralFuncs.EscapeText(GetName(su)),
+                Classes = new Account.ClassCollection()
                 {
-                    var gameName = game.Key;
-                    var gameStats = game.Value;
-                    foreach (var gameStat in gameStats)
-                    {
-                        userStatsString += $"\r\n<h6 class=\"acc_stat\">{gameStat.Value.IndicatorMarkup}{gameStat.Value.StatValue}</h6>";
-                    }
-
-                }
-            }
-
-            var element =
-                $"<div class=\"acc_list_item\" data-toggle=\"tooltip\"><input type=\"radio\" id=\"{su.SteamId}\" DisplayName=\"{GeneralFuncs.EscapeText(GetName(su))}\" class=\"acc\" name=\"accounts\" Username=\"{su.AccName}\" SteamId64=\"{su.SteamId}\" Line1=\"{GeneralFuncs.EscapeText(su.AccName)}\" Line2=\"{GeneralFuncs.EscapeText(GetName(su))}\" Line3=\"{GeneralFuncs.EscapeText(su.LastLogin)}\" ExtraClasses=\"{extraClasses}\" onchange=\"selectedItemChanged()\" />\r\n" +
-                $"<label for=\"{su.AccName}\" class=\"acc {extraClasses}\">\r\n" +
-                $"<img class=\"{extraClasses}\" src=\"{su.ImgUrl}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
-                (SteamSettings.ShowAccUsername ? $"<p class=\"streamerCensor\">{su.AccName}</p>\r\n" : "") +
-                $"<h6>{GeneralFuncs.EscapeText(GetName(su))}</h6>\r\n" +
-                $"<p class=\"streamerCensor steamId\">{su.SteamId}</p>\r\n" +
-                $"<p class=\"lastLogin\">{UnixTimeStampToDateTime(su.LastLogin)}</p>{note}{userStatsString}</label></div>\r\n";
-
-
-            _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list", element, false);
+                    Image = (SteamSettings.ShowVac && su.Vac ? " status_vac" : "") + (SteamSettings.ShowLimited && su.Limited ? " status_limited" : ""),
+                    Line0 = "streamerCensor",
+                    Line2 = "streamerCensor steamId",
+                    Line3 = "lastLogin"
+                },
+                UserStats = BasicStats.GetUserStatsAllGamesMarkup("Steam", su.SteamId),
+                ImagePath = su.ImgUrl,
+                Line0 = SteamSettings.ShowAccUsername ? su.AccName : "",
+                Line2 = su.SteamId,
+                Line3 = UnixTimeStampToDateTime(su.LastLogin)
+            };
+            SteamSettings.Accounts.Add(account);
         }
 
 

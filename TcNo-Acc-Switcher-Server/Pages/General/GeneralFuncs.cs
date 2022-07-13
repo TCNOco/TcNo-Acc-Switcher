@@ -30,7 +30,6 @@ using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
-using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
@@ -677,6 +676,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return fileSettings;
         }
 
+        /// <summary>
+        /// Read a JSON file from provided path. Returns JObject
+        /// </summary>
+        public static JToken ReadJsonFile(string path)
+        {
+            Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ReadJsonFile] path={path}");
+            JToken jToken             = null;
+
+            if (Globals.TryReadJsonFile(path, ref jToken)) return jToken;
+
+            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotReadFile", new { file = path }], renderTo: "toastarea");
+            return new JObject();
+
+        }
+
         //public static JObject SortJObject(JObject joIn)
         //{
         //    return new JObject( joIn.Properties().OrderByDescending(p => p.Name) );
@@ -732,11 +746,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 {
                     case null:
                         return;
-
-                    case "BattleNet":
-                        await BattleNetSwitcherFuncs.LoadProfiles();
-                        Data.Settings.BattleNet.SaveSettings();
-                        break;
 
                     case "Steam":
                         await SteamSwitcherFuncs.LoadProfiles();

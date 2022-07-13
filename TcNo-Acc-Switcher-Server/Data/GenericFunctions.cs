@@ -51,9 +51,6 @@ namespace TcNo_Acc_Switcher_Server.Data
                 case "Steam":
                     Steam.SaveSettings();
                     break;
-                case "BattleNet":
-                    BattleNet.SaveSettings();
-                    break;
                 case "Basic":
                     Basic.SaveSettings();
                     break;
@@ -141,12 +138,23 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             if (isBasic)
                 BasicSwitcherFuncs.LoadAccountIds();
+
+            Basic.Accounts.Clear();
+
             foreach (var element in accList)
             {
-                string imgPath;
+                var account = new Shared.Accounts.Account
+                {
+                    Platform = CurrentPlatform.SafeName
+                };
+
                 if (element is string str)
                 {
-                    imgPath = GetImgPath(platform, str).Replace("%", "%25");
+                    account.AccountId = str;
+                    account.DisplayName = isBasic ? BasicSwitcherFuncs.GetNameFromId(str) : str;
+
+                    // Handle account image
+                    account.ImagePath = GetImgPath(platform, str).Replace("%", "%25");
                     var actualImagePath = Path.Join("wwwroot\\", GetImgPath(platform, str));
                     if (!File.Exists(actualImagePath))
                     {
@@ -160,93 +168,27 @@ namespace TcNo_Acc_Switcher_Server.Data
                             File.Copy(defaultFallback, actualImagePath, true);
                     }
 
-                    try
-                    {
-                        // Handle notes (if any)
-                        var note = "";
-                        if (Basic.ShowShortNotes && Basic.AccountNotes.ContainsKey(str))
-                        {
-                            note = $"\r\n<p class=\"acc_note\">{Basic.AccountNotes[str]}</p>";
-                        }
+                    // Handle game stats (if any enabled and collected.)
+                    account.UserStats = BasicStats.GetUserStatsAllGamesMarkup(CurrentPlatform.FullName, str);
 
-                        // Handle game stats (if any enabled and collected.)
-                        var userStats = BasicStats.GetUserStatsAllGamesMarkup(CurrentPlatform.FullName, str);
-                        var userStatsString = "";
-                        if (userStats.Keys.Count > 0)
-                        {
-                            foreach (var game in userStats)
-                            {
-                                var gameName = game.Key;
-                                var gameStats = game.Value;
-                                foreach (var gameStat in gameStats)
-                                {
-                                    userStatsString += $"\r\n<h6 class=\"acc_stat\">{gameStat.Value.IndicatorMarkup}{gameStat.Value.StatValue}</h6>";
-                                }
-
-                            }
-                        }
-
-                        var id = str;
-                        if (isBasic)
-                            str = BasicSwitcherFuncs.GetNameFromId(id);
-
-                        _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
-                            $"<div class=\"acc_list_item\" data-toggle=\"tooltip\"><input type=\"radio\" id=\"{id}\" Username=\"{str}\" DisplayName=\"{str}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
-                            $"<label for=\"{id}\" class=\"acc\">\r\n" +
-                            $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
-                            $"<h6>{str}</h6>{note}{userStatsString}</div>\r\n", false);
-                        //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
-                    }
-                    catch (TaskCanceledException e)
-                    {
-                        Globals.WriteToLog(e.ToString());
-                    }
-
+                    Basic.Accounts.Add(account);
                     continue;
                 }
 
                 // TODO: I have no idea what this was for... But the continue skips the section here, right? Or at least there doesn't need to be brackets around it? Lost in my own code here... Whoops.
                 if (element is not KeyValuePair<string, string> pair) continue;
                 {
+                    // Handle account image
                     var (key, value) = pair;
-                    imgPath = GetImgPath(platform, key);
-                    var note = "";
-                    if (Basic.ShowShortNotes && Basic.AccountNotes.ContainsKey(key))
-                    {
-                        note = $"\r\n<p class=\"acc_note\">{Basic.AccountNotes[key]}</p>";
-                    }
+                    account.ImagePath = GetImgPath(platform, key);
 
-                    // Handle notes (if any)
                     // Handle game stats (if any enabled and collected.)
-                    var userStats = BasicStats.GetUserStatsAllGamesMarkup(CurrentPlatform.FullName, key);
-                    var userStatsString = "";
-                    if (userStats.Keys.Count > 0)
-                    {
-                        foreach (var game in userStats)
-                        {
-                            var gameName = game.Key;
-                            var gameStats = game.Value;
-                            foreach (var gameStat in gameStats)
-                            {
-                                userStatsString += $"\r\n<h6 class=\"acc_stat\">{gameStat.Value.IndicatorMarkup}{gameStat.Value.StatValue}</h6>";
-                            }
+                    account.UserStats = BasicStats.GetUserStatsAllGamesMarkup(CurrentPlatform.FullName, key);
 
-                        }
-                    }
+                    account.AccountId = key;
+                    account.DisplayName = value;
 
-                    try
-                    {
-                        _ = AppData.InvokeVoidAsync("jQueryAppend", "#acc_list",
-                            $"<div class=\"acc_list_item\"><input type=\"radio\" id=\"{key}\" Username=\"{value}\" DisplayName=\"{value}\" class=\"acc\" name=\"accounts\" onchange=\"selectedItemChanged()\" />\r\n" +
-                            $"<label for=\"{key}\" class=\"acc\">\r\n" +
-                            $"<img src=\"{imgPath}?{Globals.GetUnixTime()}\" draggable=\"false\" />\r\n" +
-                            $"<h6>{value}</h6>{note}{userStatsString}</div>\r\n", false);
-                        //$"<p>{UnixTimeStampToDateTime(ua.LastLogin)}</p>\r\n</label>";  TODO: Add some sort of "Last logged in" json file
-                    }
-                    catch (TaskCanceledException e)
-                    {
-                        Globals.WriteToLog(e.ToString());
-                    }
+                    Basic.Accounts.Add(account);
                 }
             }
             FinaliseAccountList(); // Init context menu & Sorting

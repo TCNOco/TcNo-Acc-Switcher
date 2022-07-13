@@ -28,11 +28,9 @@ using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
-using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
-using BattleNetSettings = TcNo_Acc_Switcher_Server.Data.Settings.BattleNet;
 using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
@@ -140,9 +138,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 path = Path.GetDirectoryName(path) ?? string.Join("\\", path.Split("\\")[..^1]);
             switch (file)
             {
-                case "BattleNetSettings":
-                    BattleNetSettings.FolderPath = path;
-                    break;
                 case "BasicSettings":
                     BasicSettings.FolderPath = path;
                     break;
@@ -176,19 +171,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     _ = SteamSwitcherFuncs.ForgetAccount(accName);
                     return Task.FromResult("refresh");
                 }
-
-                if (action.StartsWith("AcceptForgetBattleNetAcc:"))
-                {
-                    BattleNetSettings.SetForgetAcc(true);
-                    BattleNetSwitcherFuncs.ForgetAccount(accName);
-                    return Task.FromResult("refresh");
-                }
             }
             switch (action)
             {
-                case "ClearBattleNetIgnored":
-                    BattleNetSwitcherFuncs.ClearIgnored_Confirmed();
-                    break;
                 case "RestartAsAdmin":
                     break;
                 case "ClearStats":
@@ -249,22 +234,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="id">Unique identifier for account</param>
         /// <param name="reqName">Requested new username</param>
-        /// <param name="platform">Platform to change username for unique id</param>
         [JSInvokable]
-        public static void ChangeUsername(string id, string reqName, string platform)
+        public static void ChangeUsername(string id, string reqName)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ChangeUsername] id:hidden, reqName:hidden, platform:{platform}");
-            switch (platform)
-            {
-                case "BattleNet":
-                    BattleNetSwitcherFuncs.ChangeBTag(id, reqName);
-                    break;
-
-                default:
-                    // Is a basic platform!
-                    BasicSwitcherFuncs.ChangeUsername(id, reqName);
-                    break;
-            }
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ChangeUsername] id:hidden, reqName:hidden");
+            BasicSwitcherFuncs.ChangeUsername(id, reqName);
         }
 
 
@@ -394,27 +368,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                                          SteamSwitcherFuncs.UnixTimeStampToDateTime(su.LastLogin) + s +
                                          (File.Exists(imagePath) ? imagePath : "Missing from disk") + s +
                                          BasicStats.GetGameStatsString(su.SteamId));
-                }
-            }
-            else if (platform == "BattleNet")
-            {
-                // Add headings and separator for programs like Excel
-                allAccountsTable.Add($"SEP={s}");
-                allAccountsTable.Add($"Email:{s}BattleTag:{s}Overwatch Player Level:{s}Overwatch Support SR:{s}Overwatch DPS SR:{s}Overwatch Tank SR:{s}Saved profile image:{s}Stats:");
-
-                await BattleNetSwitcherFuncs.LoadProfiles();
-
-                foreach (var ba in BattleNetSettings.Accounts)
-                {
-                    var imagePath = Path.GetFullPath($"wwwroot\\img\\profiles\\battlenet\\{ba.Email}.png");
-                    allAccountsTable.Add(ba.Email + s +
-                                         ba.BTag + s +
-                                         (ba.OwPlayerLevel != 0 ? ba.OwPlayerLevel : "") + s +
-                                         (ba.OwSupportSr != 0 ? ba.OwSupportSr : "") + s +
-                                         (ba.OwDpsSr != 0 ? ba.OwDpsSr : "") + s +
-                                         (ba.OwTankSr != 0 ? ba.OwTankSr : "") + s +
-                                         (File.Exists(imagePath) ? imagePath : "Missing from disk") + s +
-                                         BasicStats.GetGameStatsString(ba.Email));
                 }
             }
             else

@@ -1,7 +1,6 @@
 ---
 Update: Update available! Click here to start it.
 Header_ChooseLanguage: 'Choose Language:'
-BattleNet_ShowSR: Show Overwatch SR and use the Overwatch profile picture.
 Steam_ShowSteamID: SteamID
 Steam_ShowVac: VAC status
 Steam_ShowLastLogin: Last login time
@@ -70,7 +69,6 @@ Settings_PickFolder: Pick {platform} folder
 Settings_OpenFolder: Open {platform} Folder
 Settings_ClearForgotten: Clear Forgotten
 Settings_ClearAccounts: Clear Accounts
-Settings_RefreshRanks: Refresh Ranks
 Settings_StreamerMode: Enable streamer mode
 Settings_ExitToTray: Exit minimises to tray
 Settings_DesktopShortcut: Desktop shortcut
@@ -167,14 +165,6 @@ Toast_RestartAfterClose: Please restart the program after clicking Close.
 Toast_RestartAfterCloseTitle: Accent color disabled
 Toast_RestartRequired: Restart to apply changes
 Toast_LoadStylesheetFailed: Failed to load stylesheet! See user data folder for details.
-Toast_BNet_Private: "{BTag}'s profile is private"
-Toast_BNet_StatsFail: "Error trying to get stats for {BTag}"
-Toast_BNet_NotFound: Profile {BTag} not found
-Toast_BNet_CantSwapAccounts: Could not swap accounts (Battle.net.config file corrupt)
-Toast_BNet_CantLoadNotFound: Could not find Battle.net.config
-Toast_BNet_CantLoadEmpty: Could not load accounts file for Blizzard (No accounts found)
-Toast_BNet_CantLoadConfigCorrupt: Could not load accounts file for Blizzard (Battle.net.config file corrupt)
-Toast_BNet_NamePolicy: BattleTag did not match naming policy.
 Toast_LoadingStats: One or more profiles are refreshing stats. Please wait.
 Toast_ItemNotFound: "{item} was not found"
 Toast_DeletedTotal: "{files} of {totalFiles} deleted. Total: {totalSize}"
@@ -213,9 +203,6 @@ Toast_Steam_CantLocateLoginusers: Cannot locate '.../Steam/config/loginusers.vdf
 Toast_CantClearImages: Could not clear images
 Toast_RefreshedImages: Refreshed images
 Toast_ClearForgottenCheck: Are you sure you want to clear backups of forgotten accounts?
-Toast_BattleNet_ChangedBTag: Changed BattleTag
-Toast_BattleNet_DeletedBTag: Deleted BattleTag
-Toast_FetchedRank: Fetched Rank
 Toast_ForgotAccount: Forgot account
 Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
 Toast_ClearedImages: "Cleared images"
@@ -251,6 +238,7 @@ Toast_Steam_DownloadingAppIdsComplete: Done downloading. Game data submenu has b
 Toast_SteamWebKeyInvalid: Steam Web API key seems to be invalid. Please set a new one.
 Toast_DownloadingProfileData: Downloading profile data
 Toast_PasswordChanged: Password changed
+Toast_JsonFailModify: Failed to modify JSON file. See log.
 Modal_Crowdin_Header: Crowdin translators
 Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users with languages next to them helped a lot in translation (proofreader role)."
 Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
@@ -310,9 +298,6 @@ Status_HandlingImage: Handling account profile image
 Context_SwapTo: Swap to account
 Context_CreateShortcut: Create Shortcut
 Context_ChangeImage: Change image
-Context_BNet_SetBTag: Set BattleTag
-Context_BNet_DelBTag: Delete BattleTag
-Context_BNet_GetRAnk: Refetch Rank
 Context_ChangeName: Change switcher name
 Context_LoginAsSubmenu: Login as
 Context_UsernameSubmenu: Username
@@ -341,8 +326,6 @@ Context_ExportAccList: Export account list
 Context_RunAdmin: Run as Admin
 Context_Hide: Hide
 ProfileImage_ToggleText: Use image as account image
-Title_BNet_Settings: TcNo Account Switcher - BattleNet Settings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Manage ignored BattleNet accounts
 Title_Platforms_Settings: TcNo Account Switcher - Platform Settings
 Title_Settings_TestCss: TcNo Account Switcher - Test CSS Styling
 Title_AccountsList: TcNo Account Switcher - {platform}
@@ -467,6 +450,7 @@ DeletedFiles: Deleted files
 FileFoldersToClear: "List of files/folders to clear:"
 CouldNotFindX: Could not find {x}
 CouldNotCloseX: Could not close {x}!
+CouldNotReadFile: Could not read {file}!
 DirectoryNotFound: Directory not found
 DirectoryNotFoundFolder: "Directory not found: {folder}"
 DeletingFile: "Deleting: {file}"

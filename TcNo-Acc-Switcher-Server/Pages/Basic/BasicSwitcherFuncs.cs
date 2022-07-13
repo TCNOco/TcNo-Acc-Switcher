@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -176,6 +177,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (CurrentPlatform.PathListToClear.Any(accFile => !DeleteFileOrFolder(accFile)))
                 return false;
 
+            if (CurrentPlatform.UniqueIdMethod.StartsWith("JSON_SELECT"))
+            {
+                var path = CurrentPlatform.GetUniqueFilePath().Split("::")[0];
+                var selector = CurrentPlatform.GetUniqueFilePath().Split("::")[1];
+                Globals.ReplaceVarInJsonFile(path, selector, "");
+            }
+
             if (CurrentPlatform.UniqueIdMethod != "CREATE_ID_FILE") return true;
 
             // Unique ID file --> This needs to be deleted for a new instance
@@ -275,6 +283,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 }
                 _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
                 return false;
+            }
+
+            // The "file" is a JSON value
+            if (accFile.StartsWith("JSON"))
+            {
+                if (accFile.StartsWith("JSON_SELECT"))
+                {
+                    var path = accFile.Split("::")[1];
+                    var selector = accFile.Split("::")[2];
+                    Globals.ReplaceVarInJsonFile(path, selector, "");
+                }
             }
 
             // Handle wildcards
@@ -436,6 +455,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     continue;
                 }
 
+                // The "file" is a JSON value
+                if (accFile.StartsWith("JSON"))
+                {
+                    var jToken = GeneralFuncs.ReadJsonFile(Path.Join(localCachePath, savedFile));
+
+                    var path = accFile.Split("::")[1];
+                    var selector = accFile.Split("::")[2];
+                    if (!Globals.ReplaceVarInJsonFile(path, selector, jToken))
+                    {
+                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_JsonFailModify"], Lang["Error"], "toastarea");
+                        return false;
+                    }
+                    continue;
+                }
+
+
                 // FILE OR FOLDER
                 HandleFileOrFolder(accFile, savedFile, localCachePath, true);
             }
@@ -516,13 +551,45 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 {
                     var trimmedName = accFile[4..];
 
-                    if (ReadRegistryKeyWithErrors(trimmedName, out var response)) // Remove "REG:" and read data
+                    if (ReadRegistryKeyWithErrors(trimmedName, out var response)) // Remove "REG:                    " and read data
                     {
                         // Write registry value to provided file
                         if (response is string s) regJson[accFile] = s;
                         else if (response is byte[] ba) regJson[accFile] = "(hex) " + Globals.ByteArrayToString(ba);
                         else Globals.WriteToLog($"Unexpected registry type encountered (2)! Report to TechNobo. {response.GetType()}");
                     }
+                    continue;
+                }
+
+                // HANDLE JSON VALUE
+                if (accFile.StartsWith("JSON"))
+                {
+                    var path = accFile.Split("::")[1];
+                    var selector = accFile.Split("::")[2];
+                    var js = GeneralFuncs.ReadJsonFile(path);
+                    var originalValue = js.SelectToken(selector);
+
+                    // Save if it's JUST getting the value
+                    if (!accFile.StartsWith("JSON_SELECT_"))
+                        Globals.SaveJsonFile(Path.Join(localCachePath, savedFile), originalValue);
+
+                    // Otherwise, if it's selecting a part of it
+                    string delimiter;
+                    var firstResult = true;
+                    if (accFile.StartsWith("JSON_SELECT_FIRST"))
+                    {
+                        delimiter = accFile.Split("JSON_SELECT_FIRST")[1].Split("::")[0];
+                    }
+                    else
+                    {
+                        delimiter = accFile.Split("JSON_SELECT_LAST")[1].Split("::")[0];
+                        firstResult = false;
+                    }
+
+                    var originalValueString = (string) originalValue;
+                    originalValueString = Globals.GetCleanFilePath(firstResult ? originalValueString.Split(delimiter).First() : originalValueString.Split(delimiter).Last());
+
+                    Globals.SaveJsonFile(Path.Join(localCachePath, savedFile), originalValueString);
                     continue;
                 }
 
@@ -737,6 +804,39 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (CurrentPlatform.UniqueIdMethod is "CREATE_ID_FILE")
             {
                 return File.Exists(fileToRead) ? File.ReadAllText(fileToRead) : uniqueId;
+            }
+
+            if (uniqueId == "" && CurrentPlatform.UniqueIdMethod.StartsWith("JSON_SELECT"))
+            {
+                JToken js;
+                string searchFor;
+                if (uniqueId == "" && CurrentPlatform.UniqueIdMethod == "JSON_SELECT")
+                {
+                    js = GeneralFuncs.ReadJsonFile(CurrentPlatform.GetUniqueFilePath().Split("::")[0]);
+                    searchFor = CurrentPlatform.GetUniqueFilePath().Split("::")[1];
+                    uniqueId = Globals.GetCleanFilePath((string)js.SelectToken(searchFor));
+                    return uniqueId;
+                }
+
+                string delimiter;
+                var firstResult = true;
+                if (CurrentPlatform.UniqueIdMethod.StartsWith("JSON_SELECT_FIRST"))
+                {
+                    delimiter = CurrentPlatform.UniqueIdMethod.Split("JSON_SELECT_FIRST")[1];
+                }
+                else
+                {
+                    delimiter = CurrentPlatform.UniqueIdMethod.Split("JSON_SELECT_LAST")[1];
+                    firstResult = false;
+                }
+
+                js = GeneralFuncs.ReadJsonFile(CurrentPlatform.GetUniqueFilePath().Split("::")[0]);
+                searchFor = CurrentPlatform.GetUniqueFilePath().Split("::")[1];
+                var res = (string)js.SelectToken(searchFor);
+                if (res is null)
+                    return "";
+                uniqueId = Globals.GetCleanFilePath(firstResult ? res.Split(delimiter).First() : res.Split(delimiter).Last());
+                return uniqueId;
             }
 
             if (fileToRead != null && CurrentPlatform.UniqueIdFile is not "" && (File.Exists(fileToRead) || fileToRead.Contains('*')))

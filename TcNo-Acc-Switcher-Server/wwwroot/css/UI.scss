@@ -460,6 +460,11 @@ button .caret, .button .caret {
         overflow-x: hidden;
         overflow-y: auto;
         max-height: inherit;
+        min-height: 32px;
+
+        img {
+            pointer-events: none;
+        }
     }
 
     #btnOpenShortcutFolder {
@@ -585,4 +590,8 @@ button .caret, .button .caret {
         position: absolute;
         -webkit-transform: rotate(-90deg);
     }*/
+}
+
+.tooltip {
+    pointer-events: none;
 }

@@ -40,10 +40,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private JObject _jData;
         private readonly SortedDictionary<string, string> _platformDict = new();
-        private readonly Dictionary<string, string> _platformDictAllPossible = new()
-        {
-            { "BattleNet", "Battle.Net" }
-        };
+        private readonly Dictionary<string, string> _platformDictAllPossible = new();
 
         private static JObject JData { get => Instance._jData; set => Instance._jData = value; }
         public static JToken GetPlatforms => (JObject)Instance._jData["Platforms"];

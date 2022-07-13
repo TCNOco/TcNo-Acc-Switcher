@@ -224,6 +224,6 @@ document.querySelector("body").addEventListener("click", (e) => {
 
 async function selectedItemChanged() {
     // Different function groups based on platform
-    const selectedText = await GetLangSub("Status_SelectedAccount", { name: $("input[name=accounts]:checked").attr("DisplayName") });
+    const selectedText = await GetLangSub("Status_SelectedAccount", { name: $("input[name=accounts]:checked").siblings("label").find(".displayName").text() });
     updateStatus(selectedText);
 }
