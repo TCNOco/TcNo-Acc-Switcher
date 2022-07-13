@@ -49,13 +49,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
                 $"/BattleNet?toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_ClearedPlatformSettings", new {platform = "BattleNet"}])}");
         }
 
-        // CHECKBOX: Show Overwatch images
-        public static void OverwatchToggle()
-        {
-            GeneralFuncs.ClearFolder("wwwroot\\img\\profiles\\battlenet\\");
-            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Done"], renderTo: "toastarea");
-        }
-
         // BUTTON: Clear Forgotten
         public static void ClearForgotten()
         {
@@ -67,20 +60,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.BattleNet
         // BUTTON: Clear accounts
         public static void ClearAccounts()
         {
-            Data.Settings.BattleNet.Accounts = new List<BattleNetSwitcherBase.BattleNetUser>();
+            Data.Settings.BattleNet.BNetAccounts = new List<BattleNetSwitcherBase.BattleNetUser>();
             Data.Settings.BattleNet.IgnoredAccounts = new List<string>();
-            Data.Settings.BattleNet.SaveAccounts();
-            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Done"], renderTo: "toastarea");
-        }
-
-        // BUTTON: Refresh ranks
-        public static void RefreshRanks()
-        {
-            foreach (var battleNetUser in Data.Settings.BattleNet.Accounts)
-            {
-                battleNetUser.LastTimeChecked = DateTime.Now.AddDays(-7);
-            }
-
             Data.Settings.BattleNet.SaveAccounts();
             _ = GeneralInvocableFuncs.ShowToast("info", Lang["Done"], renderTo: "toastarea");
         }

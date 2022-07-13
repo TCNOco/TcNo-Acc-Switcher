@@ -28,6 +28,7 @@ using TcNo_Acc_Switcher_Server.Pages.BattleNet;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Shared;
+using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
@@ -247,19 +248,19 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         #region VARIABLES
 
         [JsonProperty("FolderPath", Order = 1)] private string _folderPath = "C:\\Program Files (x86)\\Battle.net";
-        [JsonProperty("BattleNet_Admin", Order = 3)] private bool _admin;
-        [JsonProperty("BattleNet_TrayAccNumber", Order = 4)] private int _trayAccNumber = 3;
-        [JsonProperty("ForgetAccountEnabled", Order = 5)] private bool _forgetAccountEnabled;
-        [JsonProperty("OverwatchMode", Order = 6)] private bool _overwatchMode = true;
-        [JsonProperty("ImageExpiryTime", Order = 7)] private int _imageExpiryTime = 7;
-        [JsonProperty("ShortcutsJson", Order = 8)] private Dictionary<int, string> _shortcuts = new();
-        [JsonProperty("ClosingMethod", Order = 9)] private string _closingMethod = "Combined";
-        [JsonProperty("StartingMethod", Order = 10)] private string _startingMethod = "Default";
-        [JsonProperty("AutoStart", Order = 11)] private bool _autoStart = true;
-        [JsonProperty("ShowShortNotes", Order = 12)] private bool _showShortNotes = true;
-        [JsonProperty("AccountNotes", Order = 13)] private Dictionary<string, string> _accountNotes = new();
+        [JsonProperty("BattleNet_Admin", Order = 2)] private bool _admin;
+        [JsonProperty("BattleNet_TrayAccNumber", Order = 3)] private int _trayAccNumber = 3;
+        [JsonProperty("ForgetAccountEnabled", Order = 4)] private bool _forgetAccountEnabled;
+        [JsonProperty("ImageExpiryTime", Order = 5)] private int _imageExpiryTime = 7;
+        [JsonProperty("ShortcutsJson", Order = 6)] private Dictionary<int, string> _shortcuts = new();
+        [JsonProperty("ClosingMethod", Order = 7)] private string _closingMethod = "Combined";
+        [JsonProperty("StartingMethod", Order = 8)] private string _startingMethod = "Default";
+        [JsonProperty("AutoStart", Order = 9)] private bool _autoStart = true;
+        [JsonProperty("ShowShortNotes", Order = 10)] private bool _showShortNotes = true;
+        [JsonProperty("AccountNotes", Order = 11)] private Dictionary<string, string> _accountNotes = new();
         [JsonIgnore] private bool _desktopShortcut;
-        [JsonIgnore] private List<BattleNetSwitcherBase.BattleNetUser> _accounts = new();
+        [JsonIgnore] private List<BattleNetSwitcherBase.BattleNetUser> _bNetAccounts = new();
+        [JsonIgnore] private ObservableCollection<Account> _accounts = new();
         [JsonIgnore] private List<string> _ignoredAccounts = new();
         [JsonIgnore] private int _lastAccTimestamp = 0;
         [JsonIgnore] private string _lastAccName = "";
@@ -277,15 +278,15 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
 
         public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
 
-        public static bool OverwatchMode { get => Instance._overwatchMode; set => Instance._overwatchMode = value; }
-
         public static int ImageExpiryTime { get => Instance._imageExpiryTime; set => Instance._imageExpiryTime = value; }
 
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
 
-        public static List<BattleNetSwitcherBase.BattleNetUser> Accounts { get => Instance._accounts; set => Instance._accounts = value; }
+        public static List<BattleNetSwitcherBase.BattleNetUser> BNetAccounts { get => Instance._bNetAccounts; set => Instance._bNetAccounts = value; }
 
         public static List<string> IgnoredAccounts { get => Instance._ignoredAccounts; set => Instance._ignoredAccounts = value; }
+
+        public static ObservableCollection<Account> Accounts { get => Instance._accounts; set => Instance._accounts = value; }
 
         // Constants
         public static readonly string SettingsFile = "BattleNetSettings.json";
@@ -302,14 +303,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 new []
                 {
                     new("Context_SwapTo", "swapTo(-1, event)"),
-                    new("Context_BNet_SetBTag", "showModal('changeUsername:BattleTag')"),
-                    new("Context_BNet_DelBTag", "forgetBattleTag()"),
-                    new("Context_BNet_GetRAnk", "refetchRank()"),
                     new("Context_CreateShortcut", "createShortcut()"),
                     new("Context_ChangeImage", "changeImage(event)"),
                     new("Forget", "forget(event)"),
                     new("Notes", "showNotes(event)"),
-                    BasicStats.PlatformHasAnyGames("BattleNet") ? 
+                    BasicStats.PlatformHasAnyGames("BattleNet") ?
                         new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)") : null,
                 }
             ).Result());
@@ -352,7 +350,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             FolderPath = "C:\\Program Files (x86)\\Battle.net";
             Admin = false;
             TrayAccNumber = 3;
-            OverwatchMode = true;
             // Should this also clear ignored accounts?
             DesktopShortcut = Shortcut.CheckShortcuts("BattleNet");
 
@@ -367,7 +364,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             _ = Directory.CreateDirectory("LoginCache\\BattleNet");
             if (File.Exists(StoredAccPath))
             {
-                Accounts = JsonConvert.DeserializeObject<List<BattleNetSwitcherBase.BattleNetUser>>(Globals.ReadAllText(StoredAccPath)) ?? new List<BattleNetSwitcherBase.BattleNetUser>();
+                BNetAccounts = JsonConvert.DeserializeObject<List<BattleNetSwitcherBase.BattleNetUser>>(Globals.ReadAllText(StoredAccPath)) ?? new List<BattleNetSwitcherBase.BattleNetUser>();
             }
 
             if (File.Exists(IgnoredAccPath))
@@ -381,7 +378,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         /// </summary>
         public static void SaveAccounts()
         {
-            File.WriteAllText(StoredAccPath, JsonConvert.SerializeObject(Accounts));
+            File.WriteAllText(StoredAccPath, JsonConvert.SerializeObject(BNetAccounts));
             File.WriteAllText(IgnoredAccPath, JsonConvert.SerializeObject(IgnoredAccounts));
         }
 

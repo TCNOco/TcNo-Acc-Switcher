@@ -81,9 +81,6 @@
                     </button>
                 </div>
             </div>
-            <div class="rowSetting">
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="OverwatchMode" @bind="BattleNet.OverwatchMode" @onclick="OverwatchToggle"><label class="form-check-label" for="OverwatchMode"></label></div><label for="OverwatchMode">@Locale["BattleNet_ShowSR"]<br></label>
-            </div>
             <div class="form-text"><span>@Locale["Settings_ImageExpiry"]</span><input type="number" id="Steam_ImageExpiryTime" min="0" max="365" @bind="BattleNet.ImageExpiryTime"></div>
             <div class="rowSetting">
                 <div class="form-check"><input class="form-check-input" type="checkbox" id="ShowShortNotes" @bind="BattleNet.ShowShortNotes"><label class="form-check-label" for="ShowShortNotes"></label></div><label for="ShowShortNotes">
@@ -120,9 +117,6 @@
             <div class="buttoncol">
                 <button id="ClearAccounts" type="button" @onclick="ClearAccounts">
                     <span>@Locale["Settings_ClearAccounts"]</span>
-                </button>
-                <button id="ClearRanks" type="button" @onclick="RefreshRanks">
-                    <span>@Locale["Settings_RefreshRanks"]</span>
                 </button>
             </div>
             <div class="buttoncol col_close">

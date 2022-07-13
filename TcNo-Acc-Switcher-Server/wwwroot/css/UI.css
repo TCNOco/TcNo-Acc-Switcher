@@ -389,6 +389,10 @@ button .caret, .button .caret {
   overflow-x: hidden;
   overflow-y: auto;
   max-height: inherit;
+  min-height: 32px;
+}
+.shortcutDropdown .shortcutDropdownItems img {
+  pointer-events: none;
 }
 .shortcutDropdown #btnOpenShortcutFolder {
   position: absolute;
@@ -498,4 +502,8 @@ button .caret, .button .caret {
       position: absolute;
       -webkit-transform: rotate(-90deg);
   }*/
+}
+
+.tooltip {
+  pointer-events: none;
 }

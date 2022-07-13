@@ -162,7 +162,14 @@
     "Riot Games": {
       "Identifiers": [ "r", "riot", "riotgames" ],
       "ExeLocationDefault": "C:\\Riot Games\\Riot Client\\RiotClientServices.exe",
-      "ExesToEnd": [ "LeagueClient.exe", "LoR.exe", "VALORANT.exe", "RiotClientServices.exe", "RiotClientUx.exe", "RiotClientUxRender.exe" ],
+      "ExesToEnd": [
+        "LeagueClient.exe",
+        "LoR.exe",
+        "VALORANT.exe",
+        "RiotClientServices.exe",
+        "RiotClientUx.exe",
+        "RiotClientUxRender.exe"
+      ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
         "%LocalAppData%\\Riot Games\\Riot Client\\Data\\Cookies\\": "Cookies",
@@ -288,7 +295,13 @@
     "Oculus": {
       "Identifiers": [ "oc", "oculus" ],
       "ExeLocationDefault": "%ProgramFiles%\\Oculus\\Support\\oculus-client\\OculusClient.exe",
-      "ExesToEnd": [ "OculusClient.exe", "OculusDash.exe", "OVRRedit.exe", "OVRServer_x64.exe", "OVRServiceLauncher.exe" ],
+      "ExesToEnd": [
+        "OculusClient.exe",
+        "OculusDash.exe",
+        "OVRRedit.exe",
+        "OVRServer_x64.exe",
+        "OVRServiceLauncher.exe"
+      ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
         "%AppData%\\Oculus\\sessions\\": "AppData-OculusSessions\\",
@@ -371,7 +384,13 @@
     "Rockstar": {
       "Identifiers": [ "rs", "rockstar", "socialclub" ],
       "ExeLocationDefault": "%ProgramFiles%\\Rockstar Games\\Launcher\\LauncherPatcher.exe",
-      "ExesToEnd": [ "LauncherPatcher.exe", "Launcher.exe", "RockstarErrorHandler.exe", "RockstarService.exe", "SocialClubHelper.exe" ],
+      "ExesToEnd": [
+        "LauncherPatcher.exe",
+        "Launcher.exe",
+        "RockstarErrorHandler.exe",
+        "RockstarService.exe",
+        "SocialClubHelper.exe"
+      ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
         "%LocalAppData%\\Rockstar Games\\Launcher\\settings_user.dat": "settings_user.dat",
@@ -394,6 +413,18 @@
     }
   },
   "Platform-WIP": {
+    "BattleNet": {
+      "Identifiers": [ "b", "bnet", "battlenet", "blizzard" ],
+      "ExeLocationDefault": "%ProgramFiles(x86)%\\Battle.net\\Battle.net.exe",
+      "ExesToEnd": [ "Battle.net" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "JSON_SELECT_FIRST,::%AppData%\\Battle.net\\Battle.net.config::$.Client.SavedAccountNames": "email.json"
+      },
+      "ExitBeforeInteract": true,
+      "UniqueIdFile": "%AppData%\\Battle.net\\Battle.net.config::$.Client.SavedAccountNames",
+      "UniqueIdMethod": "JSON_SELECT_FIRST,"
+    }
   },
   "Reference": {
     "Steam": {

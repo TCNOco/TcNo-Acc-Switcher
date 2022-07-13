@@ -22,6 +22,8 @@ using System.Net.Http;
 using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SevenZip;
 using ShellLink;
 
@@ -29,6 +31,65 @@ namespace TcNo_Acc_Switcher_Globals
 {
     public partial class Globals
     {
+        public static bool ReplaceVarInJsonFile<T>(string path, string selector, T replaceWith)
+        {
+            try
+            {
+                JToken jToken = null;
+                if (!TryReadJsonFile(path, ref jToken)) return false;
+
+                // It is a good idea to check what kind of variable it is to replace it with it's default... Though most of the time a "" will suffice here.
+                //var originalValue = js.SelectToken(selector);
+                var newJs = jToken                .ReplacePath(selector, replaceWith); // Using JsonExtensions.ReplacePath in Globals\Extensions.cs
+                SaveJsonFile(path, newJs);
+            }
+            catch (Exception e)
+            {
+                WriteToLog("Failed to ReplaceVarInJsonFile", e);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Tries to read JSON file. Returns whether it was successful or not.
+        /// </summary>
+        /// <param name="path">Path of JSON file</param>
+        /// <param name="jToken">Ref to JToken to edit.</param>
+        /// <returns></returns>
+        public static bool TryReadJsonFile(string path, ref JToken jToken)
+        {
+            DebugWriteLine($@"[Func:General\GeneralFuncs.ReadJsonFile] path={path}");
+            if (!File.Exists(path)) return false;
+            try
+            {
+                using var file = File.OpenText(path);
+                using var reader = new JsonTextReader(file);
+                jToken =                 JToken.ReadFrom(reader);
+            }
+            catch (Exception e)
+            {
+                WriteToLog("Could not JSON read file: " + path, e);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Saves a JToken into a file. Either with, or without indentation (none by default).
+        /// </summary>
+        public static void SaveJsonFile(string path, JToken jo, bool formatted = true)
+        {
+            File.WriteAllText(path, JsonConvert.SerializeObject(jo, formatted ? Formatting.Indented : Formatting.None));
+        }
+
+
+
+
+
+
         #region FILES
 
         /// <summary>

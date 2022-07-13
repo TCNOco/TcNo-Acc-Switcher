@@ -249,22 +249,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="id">Unique identifier for account</param>
         /// <param name="reqName">Requested new username</param>
-        /// <param name="platform">Platform to change username for unique id</param>
         [JSInvokable]
-        public static void ChangeUsername(string id, string reqName, string platform)
+        public static void ChangeUsername(string id, string reqName)
         {
-            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ChangeUsername] id:hidden, reqName:hidden, platform:{platform}");
-            switch (platform)
-            {
-                case "BattleNet":
-                    BattleNetSwitcherFuncs.ChangeBTag(id, reqName);
-                    break;
-
-                default:
-                    // Is a basic platform!
-                    BasicSwitcherFuncs.ChangeUsername(id, reqName);
-                    break;
-            }
+            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ChangeUsername] id:hidden, reqName:hidden");
+            BasicSwitcherFuncs.ChangeUsername(id, reqName);
         }
 
 
@@ -400,19 +389,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 // Add headings and separator for programs like Excel
                 allAccountsTable.Add($"SEP={s}");
-                allAccountsTable.Add($"Email:{s}BattleTag:{s}Overwatch Player Level:{s}Overwatch Support SR:{s}Overwatch DPS SR:{s}Overwatch Tank SR:{s}Saved profile image:{s}Stats:");
+                allAccountsTable.Add($"Email:{s}Saved profile image:{s}Stats:");
 
                 await BattleNetSwitcherFuncs.LoadProfiles();
 
-                foreach (var ba in BattleNetSettings.Accounts)
+                foreach (var ba in BattleNetSettings.BNetAccounts)
                 {
                     var imagePath = Path.GetFullPath($"wwwroot\\img\\profiles\\battlenet\\{ba.Email}.png");
                     allAccountsTable.Add(ba.Email + s +
-                                         ba.BTag + s +
-                                         (ba.OwPlayerLevel != 0 ? ba.OwPlayerLevel : "") + s +
-                                         (ba.OwSupportSr != 0 ? ba.OwSupportSr : "") + s +
-                                         (ba.OwDpsSr != 0 ? ba.OwDpsSr : "") + s +
-                                         (ba.OwTankSr != 0 ? ba.OwTankSr : "") + s +
                                          (File.Exists(imagePath) ? imagePath : "Missing from disk") + s +
                                          BasicStats.GetGameStatsString(ba.Email));
                 }

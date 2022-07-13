@@ -1047,7 +1047,7 @@ async function Modal_FinaliseAccNameChange() {
 
     const raw = $("#NewAccountName").val();
 	const name = (raw.indexOf("TCNO:") === -1 ? raw.replace(/[<>: \.\"\/\\|?*]/g, "-") : raw); // Clean string if not a command string.
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name, getCurrentPage());
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name);
 }
 
 async function Modal_SaveNotes(accId) {
@@ -1081,9 +1081,6 @@ function flushJQueryAppendQueue() {
     // have this as detect and run at some point. For now the only use for this function is the Steam Cleaning list thingy
     $(".clearingRight")[0].scrollTop = $(".clearingRight")[0].scrollHeight;
 }
-
-forgetBattleTag = async () => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "DeleteUsername", $(".acc:checked").attr("id"));
-refetchRank = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RefetchRank", $(".acc:checked").attr("id"));
 
 async function usernameModalCopyText() {
     const toastTitle = await GetLang("Toast_Copied");
@@ -1179,9 +1176,14 @@ function shortcutDropdownBtnClick() {
         $("#shortcutDropdown").show();
         sDropdownReposition();
         $("#shortcutDropdownBtn").addClass("flip");
+        // If has no children in main list, add the expandShortcuts CSS to show users they can drag.
+        if ($(".shortcuts button").length === 0) {
+            $(".shortcuts").addClass("expandShortcuts");
+        }
     } else {
         $("#shortcutDropdown").hide();
         $("#shortcutDropdownBtn").removeClass("flip");
+        $(".shortcuts").removeClass("expandShortcuts");
     }
 }
 

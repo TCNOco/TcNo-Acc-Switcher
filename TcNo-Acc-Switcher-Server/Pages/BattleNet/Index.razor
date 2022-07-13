@@ -20,6 +20,8 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
+@using TcNo_Acc_Switcher_Server.Shared.ContextMenu
+@using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using System.IO
 @inject AppData AData
 @inject IJSRuntime JsRuntime
@@ -35,9 +37,7 @@
 <ContextMenu MenuItems="@Basic.ContextMenuShortcutItems" ContextMenuId="Shortcuts" />
 <ContextMenu MenuItems="@Basic.ContextMenuPlatformItems" ContextMenuId="Platform" />
 
-<div id="acc_list" class="acc_list">
-    <toastarea class="toastarea" />
-</div>
+<AccountList AccountItems="@BattleNet.Accounts" AccountNotes="BattleNet.AccountNotes" @ref="BattleNetAccountList" />
 
 <div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
     <div class="shortcutDropdownItems">
@@ -94,6 +94,7 @@
 
 @code
 {
+    public static AccountList BattleNetAccountList;
     // This has to be here for NavManager.
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()

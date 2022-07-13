@@ -136,12 +136,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 Classes = new Account.ClassCollection()
                 {
                     Image = (SteamSettings.ShowVac && su.Vac ? " status_vac" : "") + (SteamSettings.ShowLimited && su.Limited ? " status_limited" : ""),
-                    Line0 = "streamerCensor " + (SteamSettings.ShowAccUsername ? su.AccName : ""),
+                    Line0 = "streamerCensor",
                     Line2 = "streamerCensor steamId",
                     Line3 = "lastLogin"
                 },
                 UserStats = BasicStats.GetUserStatsAllGamesMarkup("Steam", su.SteamId),
                 ImagePath = su.ImgUrl,
+                Line0 = SteamSettings.ShowAccUsername ? su.AccName : "",
                 Line2 = su.SteamId,
                 Line3 = UnixTimeStampToDateTime(su.LastLogin)
             };
