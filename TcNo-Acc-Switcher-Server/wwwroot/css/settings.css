@@ -90,6 +90,12 @@ label {
   display: inline-block;
   padding: 0;
 }
+.form-check .form-check-input:disabled {
+  opacity: 0;
+}
+.form-check .form-check-input:disabled ~ label, .form-check .form-check-input[disabled] ~ label {
+  opacity: 0.5;
+}
 .form-check label {
   margin: 0;
 }

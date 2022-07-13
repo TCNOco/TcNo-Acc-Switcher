@@ -47,9 +47,17 @@
         }
         @if (Acc.UserStats.Keys.Count > 0)
         {
-            @foreach (var gameStat in from game in Acc.UserStats let gameName = game.Key select game.Value into gameStats from gameStat in gameStats select gameStat)
+            @foreach (var game in Acc.UserStats)
             {
-                <h6 class="acc_stat">@(new MarkupString(gameStat.Value.IndicatorMarkup + gameStat.Value.StatValue))</h6>
+                var gameName = game.Key;
+                var gameStats = game.Value;
+                foreach (var gameStat in gameStats)
+                {
+                    @if (!AppSettings.GloballyHiddenMetrics[gameName][gameStat.Key])
+                    {
+                        <h6 class="acc_stat">@(new MarkupString(gameStat.Value.IndicatorMarkup + gameStat.Value.StatValue))</h6>
+                    }
+                }
             }
         }
     </label>

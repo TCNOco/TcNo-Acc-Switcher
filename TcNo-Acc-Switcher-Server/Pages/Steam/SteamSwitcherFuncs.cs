@@ -548,9 +548,23 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             // 2. Download new copy of user data if not cached.
             _ = Directory.CreateDirectory("LoginCache/Steam/VACCache/");
             var profileXml = new XmlDocument();
-            profileXml.Load(File.Exists(cachedFile)
-                ? cachedFile
-                : $"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
+            try
+            {
+                profileXml.Load(File.Exists(cachedFile)
+                    ? cachedFile
+                    : $"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
+            }
+            catch (Exception e)
+            {
+                Globals.WriteToLog("Failed to load Steam account XML. ", e);
+                // Issue was caused by web. Throw.
+                if (!File.Exists(cachedFile)) throw;
+                Globals.DeleteFile(cachedFile);
+                Globals.WriteToLog("The issue was the local XML file. It has been deleted and re-downloaded.");
+                // Issue was caused by cached fil. Delete, and re-download.
+                profileXml.Load($"https://steamcommunity.com/profiles/{su.SteamId}?xml=1");
+            }
+
             if (!File.Exists(cachedFile)) profileXml.Save(cachedFile);
 
 

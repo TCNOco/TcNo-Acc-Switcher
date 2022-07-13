@@ -107,6 +107,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 // That has the requested account
                 if (!GameStats[availableGame].CachedStats.ContainsKey(accountId)) continue;
                 var gameIndicator = GameStats[availableGame].Indicator;
+                //var gameUniqueId = GameStats[availableGame].UniqueId;
 
                 var statValueIconDict = new Dictionary<string, StatValueAndIcon>();
 
@@ -128,7 +129,8 @@ namespace TcNo_Acc_Switcher_Server.Data
                     });
                 }
 
-                returnDict[gameIndicator] = statValueIconDict;
+                //returnDict[gameUniqueId] = statValueIconDict;
+                returnDict[availableGame] = statValueIconDict;
             }
 
             return returnDict;
@@ -171,6 +173,13 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             return returnDict;
         }
+
+        /// <summary>
+        /// Get list of metrics that are set to hidden from the settings menu. This overrides individual account settings.
+        /// </summary>
+        [JSInvokable]
+        public static List<string> GetGloballyHiddenMetrics(string game) =>
+            (from metric in AppSettings.GloballyHiddenMetrics[game] where metric.Value select metric.Key).ToList();
 
         /// <summary>
         /// Gets list of all metric names to collect, as well as whether each is hidden or not, and the text to display in the UI checkbox.
@@ -290,11 +299,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Get longer game name from it's short unique ID.
         /// </summary>
-        public string GetGameNameFromId(string id) => GameStats.FirstOrDefault(x => x.Value.UniqueId.Equals(id, StringComparison.OrdinalIgnoreCase)).Key;
+        public static string GetGameNameFromId(string id) => GameStats.FirstOrDefault(x => x.Value.UniqueId.Equals(id, StringComparison.OrdinalIgnoreCase)).Key;
         /// <summary>
         /// Get short unique ID from game name.
         /// </summary>
-        public string GetGameIdFromName(string name) => GameStats.FirstOrDefault(x => x.Key.Equals(name, StringComparison.OrdinalIgnoreCase)).Value.UniqueId;
+        public static string GetGameIdFromName(string name) => GameStats.FirstOrDefault(x => x.Key.Equals(name, StringComparison.OrdinalIgnoreCase)).Value.UniqueId;
 
         public void RefreshAllAccounts(string game, string platform = "")
         {

@@ -84,6 +84,14 @@ label { margin: 0 0.5em; }
     display: inline-block;
     padding: 0;
 
+    .form-check-input:disabled {
+        opacity: 0;
+    }
+
+    .form-check-input:disabled ~ label, .form-check-input[disabled] ~ label {
+        opacity: .5;
+    }
+
     label {
         margin: 0;
     }

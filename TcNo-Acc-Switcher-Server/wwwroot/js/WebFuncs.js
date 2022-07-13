@@ -23,6 +23,7 @@ window.addEventListener('load',
 
 function initTooltips() {
     // I don't know of an easier way to do this.
+    $('[data-toggle="tooltip"]').tooltip();
     setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 1000);
     setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 2000);
     setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 4000);
@@ -307,10 +308,11 @@ async function showGameStatsVars(game) {
     const required = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game);
     const existing = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetExistingVars`, game, accountId);
     const hidden = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetHiddenMetrics`, game, accountId);
-    showGameVarCollectionModel(game, required, existing, hidden);
+    const globallyHidden = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetGloballyHiddenMetrics`, game);
+    showGameVarCollectionModel(game, required, existing, hidden, globallyHidden);
 }
 
-async function showGameVarCollectionModel(game, requiredVars, existingVars = {}, hidden = {}) {
+async function showGameVarCollectionModel(game, requiredVars, existingVars = {}, hidden = {}, globallyHidden = []) {
     if (!getSelected()) return;
     const accountId = selected.attr("id");
     const currentPage = await getCurrentPageFullname();
@@ -318,6 +320,7 @@ async function showGameVarCollectionModel(game, requiredVars, existingVars = {},
     const modalTitle = await GetLangSub("Modal_Title_GameVars", { game: game }),
         modalHeading = await GetLangSub("Modal_GameVars_Header", { game: game, username: getDisplayName(), platform: currentPage }),
         submit = await GetLang("Submit"),
+        disabledGlobally = await GetLang("Tooltip_DisabledGlobally"),
         metricsToShow = await GetLang("Stats_MetricsToShow");
 
 
@@ -353,7 +356,9 @@ async function showGameVarCollectionModel(game, requiredVars, existingVars = {},
 
     for (let [key, value] of Object.entries(hidden)) {
         const metricHidden = value["item1"], checkboxText = value["item2"];
-        checkboxesMarkup += `<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="${key}" ${(!metricHidden ? "checked" : "")}><label class="form-check-label" for="${key}"></label><label for="${key}">${checkboxText}<br></label></div>`;
+        let disabled = false;
+        if (globallyHidden.includes(key)) disabled = true;
+        checkboxesMarkup += `<div class="form-check mb-2" ${disabled ? "data-toggle=\"tooltip\" title=\"" + disabledGlobally + "\"" : ""}><input class="form-check-input" type="checkbox" id="${key}" ${(!metricHidden ? "checked" : "")} ${disabled ? "disabled" : ""}><label class="form-check-label" for="${key}"></label><label for="${key}">${checkboxText}<br></label></div>`;
     }
 
     html += `       </div>
@@ -373,8 +378,10 @@ async function showGameVarCollectionModel(game, requiredVars, existingVars = {},
             $("#modalBtnBack").hide();
             ShowGameStatsSetup();
         });
+
     $(".modalBG").fadeIn(() => {
         try {
+            initTooltips();
             if (input === undefined) return;
             input.focus();
             input.select();
@@ -392,6 +399,7 @@ async function Modal_FinaliseGameVars(game, accountId) {
     // Get list of variable keys
     const requiredVars = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetRequiredVars`, game);
     const possibleHidden = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetHiddenMetrics`, game, accountId);
+    const globallyHidden = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `GetGloballyHiddenMetrics`, game);
     console.log(requiredVars, typeof (requiredVars));
 
     // Get value for each key and create dictionary
