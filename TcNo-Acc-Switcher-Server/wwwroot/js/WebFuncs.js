@@ -240,7 +240,7 @@ async function ShowGameStatsSetup(e = null) {
 
     const accountId = selected.attr("id");
 
-    const modalHeading = await GetLangSub("Modal_GameStats_Header", { accountName: selected.attr("displayname") }),
+    const modalHeading = await GetLangSub("Modal_GameStats_Header", { accountName: getDisplayName() }),
         modalTitle= await GetLang("Modal_Title_GameStats"),
         edit = await GetLang("Edit"),
         refresh = await GetLang("Refresh");
@@ -347,7 +347,7 @@ async function showGameVarCollectionModel(game, requiredVars, existingVars = {},
     const currentPage = await getCurrentPageFullname();
 
     const modalTitle = await GetLangSub("Modal_Title_GameVars", { game: game }),
-        modalHeading = await GetLangSub("Modal_GameVars_Header", { game: game, username: selected.attr("displayname"), platform: currentPage }),
+        modalHeading = await GetLangSub("Modal_GameVars_Header", { game: game, username: getDisplayName(), platform: currentPage }),
         submit = await GetLang("Submit"),
         metricsToShow = await GetLang("Stats_MetricsToShow");
 
@@ -374,7 +374,8 @@ async function showGameVarCollectionModel(game, requiredVars, existingVars = {},
         let existingValue = key in existingVars ? existingVars[key] : "";
         if (value === "%ACCOUNTID%") {
             value = await GetLang("Stats_AccountId");
-            existingValue = accountId;
+            if (existingValue === "")
+                existingValue = accountId;
         }
 
         html +=
@@ -699,7 +700,7 @@ async function showModal(modaltype) {
         let accId = modaltype.slice(6);
         if (!getSelected()) return;
 
-        $("#modalTitle").text(await GetLangSub("Modal_Title_AccountNotes", { accountName: selected.attr("displayname") }));
+        $("#modalTitle").text(await GetLangSub("Modal_Title_AccountNotes", { accountName: getDisplayName() }));
         const save = await GetLang("Save"),
             cancel = await GetLang("Button_Cancel");
 
@@ -1226,6 +1227,8 @@ async function initSavingHotKey() {
     });
 }
 
+getDisplayName = () => $(selectedElem).siblings("label").find(".displayName").text();
+
 async function initCopyHotKey() {
     const toastCopied = await GetLang("Toast_Copied");
     hotkeys("ctrl+c,ctrl+shift+c,alt+c", async function (event, handler) {
@@ -1236,7 +1239,7 @@ async function initCopyHotKey() {
             await copyToClipboard($(selectedElem).prop("id"));
             break;
         case "ctrl+c":
-            await copyToClipboard($(selectedElem).attr("displayname"));
+                await copyToClipboard(getDisplayName());
             break;
         }
 

@@ -25,11 +25,7 @@ $(function () {
         }
 
         if (e.which === 4) { // Backward mouse button
-            if (window.location.pathname === "/") randomAni("#btnBack .icon");
-            else {
-                const tempUri = document.location.href.split("?")[0];
-                document.location.href = tempUri + (tempUri.endsWith("/") ? "../" : "/../");
-            }
+            btnBack_Click();
             return;
         }
     });

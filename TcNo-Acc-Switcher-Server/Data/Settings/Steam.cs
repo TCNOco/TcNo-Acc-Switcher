@@ -25,6 +25,7 @@ using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared;
+using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
@@ -275,6 +276,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] private bool _steamWebApiWasReset;
         [JsonIgnore] public static readonly string SteamAppsListPath = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsFullListCache.json");
         [JsonIgnore] public static readonly string SteamAppsUserCache = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
+        [JsonIgnore] private ObservableCollection<Account> _accounts = new();
 
         public static int LastAccTimestamp { get => Instance._lastAccTimestamp; set => Instance._lastAccTimestamp = value; }
         public static string LastAccName { get => Instance._lastAccName; set => Instance._lastAccName = value; }
@@ -308,6 +310,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static string SteamWebApiKey { get => Instance._steamWebApiKey; set => Instance._steamWebApiKey = value; }
         public static bool StartSilent { get => Instance._startSilent; set => Instance._startSilent = value; }
         public static bool SteamWebApiWasReset { get => Instance._steamWebApiWasReset; set => Instance._steamWebApiWasReset = value; }
+        public static ObservableCollection<Account> Accounts { get => Instance._accounts; set => Instance._accounts = value; }
 
         // Constants
         public static readonly List<string> Processes = new() { "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
@@ -408,9 +411,9 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             }
             menuBuilder.AddItem(new Tuple<string, object>("Context_ManageSubmenu", new Tuple<string, object>[]
                 {
-                    gameData is not null ? 
+                    gameData is not null ?
                         new Tuple<string, object>("Context_GameDataSubmenu", gameData) : null,
-                    BasicStats.PlatformHasAnyGames("Steam") ? 
+                    BasicStats.PlatformHasAnyGames("Steam") ?
                         new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)") : null,
                     new ("Context_ChangeImage", "changeImage(event)"),
                     new ("Context_Steam_OpenUserdata", "openUserdata(event)")

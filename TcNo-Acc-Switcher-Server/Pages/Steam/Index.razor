@@ -17,6 +17,7 @@
 @using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using System.IO
+@using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @inject AppData AData
 @inject IJSRuntime JsRuntime
@@ -30,9 +31,7 @@
 <ContextMenu MenuItems="@Steam.Menu" ContextMenuId="AccOrPlatList" @ref="SteamContextMenu" />
 <ContextMenu MenuItems="@Basic.ContextMenuShortcutItems" ContextMenuId="Shortcuts" />
 <ContextMenu MenuItems="@Basic.ContextMenuPlatformItems" ContextMenuId="Platform" />
-<div id="acc_list" class="acc_list">
-    <toastarea class="toastarea" />
-</div>
+<AccountList AccountItems="@Steam.Accounts" AccountNotes="Steam.AccountNotes" @ref="SteamAccountList" />
 
 <div class="shortcutDropdown gameShortcuts" id="shortcutDropdown" style="display: none">
     <div class="shortcutDropdownItems">
@@ -91,6 +90,8 @@
 
 @code
 {
+    public static AccountList SteamAccountList;
+
     public static ContextMenu SteamContextMenu;
     // This has to be here for NavManager.
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.

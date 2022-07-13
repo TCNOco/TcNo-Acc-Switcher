@@ -117,14 +117,14 @@ namespace TcNo_Acc_Switcher_Server.Data
 
                     // Foreach stat
                     // Check if has icon, otherwise use just indicator string
-                    var indicator = GetIcon(availableGame, statName);
-                    if (string.IsNullOrEmpty(indicator))
-                        indicator = $"<sup>{gameIndicator}</sup>";
+                    var indicatorMarkup = GetIcon(availableGame, statName);
+                    if (string.IsNullOrEmpty(indicatorMarkup) && !string.IsNullOrEmpty(gameIndicator))
+                        indicatorMarkup = $"<sup>{gameIndicator}</sup>";
 
                     statValueIconDict.Add(statName, new StatValueAndIcon
                     {
                         StatValue = statValue,
-                        IndicatorMarkup = indicator
+                        IndicatorMarkup = indicatorMarkup
                     });
                 }
 
