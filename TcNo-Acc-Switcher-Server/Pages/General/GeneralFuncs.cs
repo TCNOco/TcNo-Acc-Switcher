@@ -188,6 +188,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 File.WriteAllText(idsFile, JsonConvert.SerializeObject(allIds));
             }
 
+            // Remove from Steam accounts list
+            Data.Settings.Basic.Accounts.Remove(Data.Settings.Basic.Accounts.First(x => x.AccountId == accName));
+
             // Remove cached files
             Globals.RecursiveDelete($"LoginCache\\{platform}\\{accName}", false);
 

@@ -79,7 +79,7 @@
             </button>
         }
 
-        <button id="btnAddNew" @onclick="() => AppData.SwapToNewAccount()">
+        <button id="btnAddNew" @onclick="() => AppFuncs.SwapToNewAccount()">
             <i class="fas fa-plus footerIcoInline"></i>
             <span>@Locale["Button_AddNew"]</span>
         </button>
@@ -87,7 +87,7 @@
             <i class="fas fa-save footerIcoInline"></i>
             <span>@Locale["Button_SaveCurrent"]</span>
         </button>
-        <button class="btn_login" id="btnLogin" @onclick="() => AppData.SwapToAccount()">
+        <button class="btn_login" id="btnLogin" @onclick="() => AppFuncs.SwapToAccount()">
             <span>@Locale["Button_Login"]</span>
             <i class="fas fa-caret-right footerIcoInline"></i>
         </button>

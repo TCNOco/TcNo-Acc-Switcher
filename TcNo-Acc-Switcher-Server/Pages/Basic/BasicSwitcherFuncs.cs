@@ -32,13 +32,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             await GenericFunctions.GenericLoadAccounts(CurrentPlatform.FullName, true);
         }
 
-        /// <summary>
-        /// Used in JS. Gets whether forget account is enabled (Whether to NOT show prompt, or show it).
-        /// </summary>
-        /// <returns></returns>
-        [JSInvokable]
-        public static Task<bool> GetBasicForgetAcc() => Task.FromResult(BasicSettings.ForgetAccountEnabled);
-
         [JSInvokable]
         public static Task<string> GetBasicNotes(string id) => Task.FromResult(BasicSettings.AccountNotes.GetValueOrDefault(id) ?? "");
 

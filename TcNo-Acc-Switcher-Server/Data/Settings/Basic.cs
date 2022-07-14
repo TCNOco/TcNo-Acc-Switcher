@@ -160,11 +160,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             ContextMenuItems.AddRange(new MenuBuilder(
                 new []
                 {
-                    new ("Context_SwapTo", new Action(async () => await AppData.SwapToAccount())),
+                    new ("Context_SwapTo", new Action(async () => await AppFuncs.SwapToAccount())),
                     new ("Context_ChangeName", "showModal('changeUsername')"),
                     new ("Context_CreateShortcut", "createShortcut()"),
                     new ("Context_ChangeImage", "changeImage(event)"),
-                    new ("Forget", "forget(event)"),
+                    new ("Forget", new Action(async () => await AppFuncs.ForgetAccount())),
                     new ("Notes", "showNotes(event)"),
                     BasicStats.PlatformHasAnyGames(CurrentPlatform.SafeName) ?
                         new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)") : null,

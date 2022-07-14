@@ -507,7 +507,7 @@ release = true;
                 case "steam":
                     Globals.WriteToLog("Steam logout requested");
                     AppData.CurrentSwitcher = "Steam";
-                    await AppData.SwapToNewAccount();
+                    await AppFuncs.SwapToNewAccount();
                     break;
 
                 // BASIC ACCOUNT PLATFORM
@@ -517,7 +517,7 @@ release = true;
                     BasicPlatforms.SetCurrentPlatformFromShort(platform);
                     Globals.WriteToLog(CurrentPlatform.FullName + " logout requested");
                     AppData.CurrentSwitcher = platform;
-                    await AppData.SwapToNewAccount();
+                    await AppFuncs.SwapToNewAccount();
                     break;
             }
         }

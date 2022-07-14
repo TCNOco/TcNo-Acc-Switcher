@@ -152,25 +152,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiConfirmAction] action={action.Split(":")[0]}, value={value}");
             if (!value) return "";
 
-            var split = action.Split(":");
-            if (split.Length > 1)
-            {
-                var accName = split[1];
-
-                if (action.StartsWith("AcceptForgetBasicAcc:"))
-                {
-                    BasicSettings.SetForgetAcc(true);
-                    _ = GeneralFuncs.ForgetAccount_Generic(accName, CurrentPlatform.SafeName, true);
-                    return "refresh";
-                }
-
-                if (action.StartsWith("AcceptForgetSteamAcc:"))
-                {
-                    SteamSettings.SetForgetAcc(true);
-                    _ = SteamSwitcherFuncs.ForgetAccount(accName);
-                    return "refresh";
-                }
-            }
             switch (action)
             {
                 case "RestartAsAdmin":

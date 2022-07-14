@@ -1058,13 +1058,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /* OTHER FUNCTIONS*/
         // STEAM SPECIFIC -- Move to a new file in the future.
 
-        /// <summary>
-        /// Used in JS. Gets whether forget account is enabled (Whether to NOT show prompt, or show it).
-        /// </summary>
-        /// <returns></returns>
-        [JSInvokable]
-        public static Task<bool> GetSteamForgetAcc() => Task.FromResult(SteamSettings.ForgetAccountEnabled);
-
         [JSInvokable]
         public static Task<string> GetSteamNotes(string id) => Task.FromResult(SteamSettings.AccountNotes.GetValueOrDefault(id) ?? "");
 
@@ -1089,6 +1082,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             // Save updated loginusers.vdf file
             await SaveSteamUsersIntoVdf(userAccounts);
+
+            // Remove from Steam accounts list
+            SteamSettings.Accounts.Remove(SteamSettings.Accounts.First(x => x.AccountId == steamId));
 
             // Remove image
             var img = $"{SteamSettings.SteamImagePathHtml}{steamId}.jpg";
