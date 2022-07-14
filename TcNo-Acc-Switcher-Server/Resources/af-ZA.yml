@@ -1,39 +1,46 @@
 ---
 Update: Opdatering beskikbaar! Klik hier om dit te begin.
 Header_ChooseLanguage: 'Kies jou taal:'
-BattleNet_ShowSR: Wys Overwatch SR en gebruik die Overwatch-profielfoto.
-Steam_ShowSteamID: Wys SteamID
-Steam_ShowVac: Toon VAC-status
-Steam_CheckVac: Gaan die rekening se VAC-status na
-Steam_ShowLimited: Toon beperkte status
-Steam_ShowAccUsername: Toon rekeninggebruikernaam
-Steam_Tray_AccountName: Wys rekeningnaam [nie vriendnaam nie]
-Steam_OverrideDefaultState: "Oorheers die standaard aanmeldtoestand:"
+Steam_ShowSteamID: SteamID
+Steam_ShowVac: VAC status
+Steam_ShowLastLogin: Laaste aanmeldtyd
+Steam_ShowLimited: Beperkte status
+Steam_ShowAccUsername: Rekeninggebruikernaam
+Steam_Tray_AccountName: Wys rekeningnaam [nie vriend se naam nie]
+Steam_CheckVac: Gaan rekening VAC status na
+Steam_OverrideDefaultState: "Ignoreer verstek aanmeldstatus:"
+Steam_StartSilent: "Maak Steam oop na taakbalk op skakelaar (Begin Steam met '-stil')"
 Button_AddNew: Voeg nuwe
-Button_SaveCurrent: Stoor stroom
+Button_SaveCurrent: Stoor huidige
 Button_SaveFile: Stoor die lêer
 Button_Cancel: Kanselleer
 Button_Login: Teken aan
 Button_Close: Naby
-Button_RefreshImages: Verfris beelde
-Button_ResetSettings: Stel die instellings terug
-Button_AdvancedCleaning: Gevorderde skoonmaak ...
-Button_ClearLog: Maak logboek skoon
+Button_RefreshImages: Herlaai beelde
+Button_ResetSettings: Stel instellings terug
+Button_AdvancedCleaning: Gevorderde skoonmaak...
+Button_ClearLog: Vee logboek uit
 Button_WikiInfo: Meer inligting (Wiki)
 Button_ManagePlatforms: Bestuur platforms
 Button_Backup: Ondersteuning
 Button_BackupAll: Rugsteun alles
 Button_Restore: Herstel
 Button_OpenBackup: Maak Rugsteungids oop
-Settings_Shortcut: ' {platform} Sneltoets vir skakelaarrekenaar'
-Settings_Admin: Begin {platform} as admin
-Settings_ImageExpiry: 'Dae voordat profielfoto''s verval:'
+Button_Back: Terug
+Button_RestartAdmin: Herbegin as Admin
+Button_SetPassword: Stel programwagwoord in
+Settings_Shortcut: ' {platform} Switcher Desktop kortpad'
+Settings_Admin: Begin {platform} as Admin
+Settings_ImageExpiry: 'Dae voordat profielprente verval:'
+Settings_SteamAPIKey: "Steam Web API-sleutel (opsioneel)"
+Settings_SteamAPIKey_Note: Deur 'n API-sleutel in te stel, sal die Beperkte aanwyser (geel rand) wys vir rekeninge wat eerder gemeenskap verban is.
 Settings_Header_AppWide: App-wye instellings
 Settings_Header_GeneralSettings: Algemene instellings
+Settings_Header_AccountDisplay: Rekeningvertooninstellings
 Settings_Header_ExtraPlatforms: Platforminstellings
 Settings_Header_GeneralTools: Algemene gereedskap
 Settings_Header_OtherTools: Ander gereedskap
-Settings_Header_TraySettings: Laai-instellings
+Settings_Header_TraySettings: Skinkbordinstellings
 Settings_Header_OpenGameFolders: Maak speletjie-vouers oop
 Settings_Header_BackupRestore: Rugsteun en herstel platforminstellings
 Settings_Header_Language: Taal
@@ -42,6 +49,8 @@ Settings_Header_Theme: Tema
 Settings_Header_Program: Program
 Settings_Header_StatsSharing: Statistiek en deel
 Settings_Header_Platform: "{platformName} instellings"
+Settings_Header_GameStats: Globale spelstatistiekinstellings
+Settings_GameStats: Enigiets wat hier gemerk is, sal NIE onder jou gebruikersnaam vir enige rekening wys nie. Gebruik dit as jy dikwels spesifieke items uit jou speletjiestatistieke versteek.
 Settings_TrayMax: 'Maksimum aantal rekeninge om te onthou:'
 Settings_ExtraPlatformsDisabled: Gedeaktiveerde platforms. Klik om hulle te aktiveer.
 Settings_ExtraPlatformsEnabled: Sigbare platforms. Klik om hulle te deaktiveer.
@@ -51,27 +60,28 @@ Settings_ShareStats: Deel statistieke irriterend (aanbeveel)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Deel totale skakelaars
 Settings_ViewStats: Bekyk statistieke
+Preview: Voorskou
 Settings_ClearStats: Stel terug
 Settings_CurrentLocation: 'Huidige installasieligging: {path}'
 Settings_CurrentDataLocation: 'Huidige gebruikerdataligging: {path}'
 Settings_SetDataLocation: "[Stel pasgemaakte gebruikerdataligging in]"
-Settings_PickFolder: Kies {platform} lêergids
-Settings_OpenFolder: Maak {platform} vouer oop
-Settings_ClearForgotten: Duidelik vergete
+Settings_PickFolder: Kies {platform} gids
+Settings_OpenFolder: Maak {platform} -lêergids oop
+Settings_ClearForgotten: Duidelik Vergete
 Settings_ClearAccounts: Vee rekeninge uit
-Settings_StreamerMode: Aktiveer strooimodus
-Settings_ExitToTray: Uitgang verminder tot skinkbord
-Settings_DesktopShortcut: Desktop shortcut
-Settings_StartMenu_ProgramTray: Program en skinkbord
+Settings_StreamerMode: Aktiveer streamer-modus
+Settings_ExitToTray: Uitgang minimaliseer na skinkbord
+Settings_DesktopShortcut: Desktop kortpad
+Settings_StartMenu_ProgramTray: Program & Skinkbord
 Settings_StartMenu_Platform: Platform
 Settings_Tray_StartWindows: Begin Tray met Windows
-Settings_Tray_StartNow: '[Begin laai nou]'
+Settings_Tray_StartNow: '[Begin skinkbord nou]'
 Settings_CurrentStyle: Huidige styl
 Settings_ThemeBackground: '[Stel agtergrond]'
 Settings_ThemeOpenFolder: '[Maak tema-lêergids oop]'
 Settings_Protocol: 'Aktiveer TcNo: \\ protokol (aanbeveel)'
 Settings_StartCentered: Begin program gesentreer
-Settings_WindowsAccent: Gebruik die Windows-aksentkleur
+Settings_WindowsAccent: Gebruik die Windows Accent Color
 Settings_HelpTranslate: "[Help vertaal]"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Gevorderd) Stel weergawe-enjin:"
@@ -80,14 +90,19 @@ Settings_Header_StartingMethod: "(Gevorderd) Stel metode om {platform}te begin"
 Settings_AutoStart: "Begin outomaties {platform} op rekeningskakelaar"
 Settings_NoPlatforms: Daar is tans geen platforms geaktiveer nie. Merk asseblief opsionele platforms hieronder om hulle te aktiveer, of ontmerk gedeaktiveerde platforms.
 Settings_MinimizeOnSwitch: Minimaliseer skakelaar op rekeningskakelaar
+Settings_ShowShortNotes: Let op voorskou onder gebruikernaam
+Settings_Header_AppPassword: "Stop ander wat die skakelaar gebruik:"
+PreviewCss: Voorskou CSS
+Settings_PreviewCss: Dit is die CSS-voorskoubladsy. Jy kan sommige elemente wat in die program verskyn, sien en sien hoe hulle met jou tema lyk. Hierdie bladsy is nuttig vir diegene wat temas skep!
+Settings_PreviewCssHeader: CSS-voorskoubladsy
 Stats_Disabled: "Statistiekversameling is gedeaktiveer."
 Stats_InDepth: In-diepte statistiek uiteensetting
 Stats_ShareEnabled: "Hierdie statistieke word anoniem gedeel en sal by die totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">hier</a>voeg."
 Stats_ShareDisabled: "Hierdie statistieke word NIE anoniem gedeel nie en sal NIE by die totale <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">hier</a>voeg nie."
 Stats_OperatingSystem: "Bedryfstelsel: "
 Stats_FirstLaunch: "Eerste bekendstelling: "
-Stats_LaunchCount: "Begintelling: "
-Stats_CrashCount: "Omval telling: "
+Stats_LaunchCount: "Bekendstellingstelling: "
+Stats_CrashCount: "Omvaltelling: "
 Stats_MostUsedPlatform: "Mees gebruikte platform: "
 Stats_TotalTime: "Totale tyd spandeer in-program: "
 Stats_TotalSwitches: "Totale rekeningskakelaars: "
@@ -105,87 +120,89 @@ Stats_UniqueDays: "Unieke dae: "
 Stats_GameShortcuts: "Spelkortpaaie: "
 Stats_GameShortcutsHotbar: "Spelkortpaaie (op hotbar): "
 Stats_GamesLaunched: "Speletjies bekendgestel: "
-Cleaning_Header_StartMenuShortcuts: 'Kortpaaie vir die Start Menu:'
+Stats_MetricsToShow: "Getoonde maatstawwe:"
+Stats_AccountId: "Rekening ID:"
+Auth_LoginRequired: '''n Wagwoord is voorheen gestel en word vereis. Voer asseblief die wagwoord hieronder in.'
+Auth_EnterPassword: "Sleutel wagwoord in:"
+Auth_PassIncorrect: Wagwoord verkeerd.
+Locked: Gesluit
+Cleaning_Header_StartMenuShortcuts: 'Kortpaaie vir beginkieslys:'
 Cleaning_Header_General: Algemene skoonmaak
-Cleaning_Header_LoginHistory: Maak my aanmeldingsgeskiedenis skoon
+Cleaning_Header_LoginHistory: Maak my aanmeldgeskiedenis skoon
 Cleaning_Header_PlatformCleaning: '{platform} Skakelaar'
 Cleaning_ImportantInfoHeader: 'Belangrike inligting:'
 Cleaning_ImportantInfo: >
-  Deur op 'n knoppie te klik, word die verwante lêer (s) van u Steam-installasie verwyder.<br /> As u loginusers.vdf uitvee, sal hierdie rekeningskakelaar geen rekeninge toon nie.<br /> U sal met Steam by hulle moet aanmeld om dit terug te kry.
+  As u op 'n knoppie klik, sal die verwante lêer(s) van u Steam-installasie verwyder word.<br /> Deur loginusers.vdf uit te vee, sal hierdie rekeningwisselaar geen rekeninge wys nie.<br /> Jy sal met Steam by hulle moet aanmeld om hulle terug te kry.
 Cleaning_Button_KillProcess: Dood {platform} proses
-Cleaning_Button_ForgottenBackups: Vergete rugsteunrekeninge
+Cleaning_Button_ForgottenBackups: Vergete rekeningrugsteun
 Cleaning_Understand: Ek verstaan wat hierdie knoppies doen.
 Restore_Info: >
-  As u 'n rekening voorheen 'vergeet' het, kan u dit hier herstel.<br /> Dit voeg hulle weer by u loginusers.vdf-lêer, sodat u na hulle kan oorskakel.
-Restore_Button_Restore: Herstel gekies
-Ignored_RemoveAccounts: Verwyder rekeninge uit die lys ignoreer
-Ignored_Description: As u voorheen 'n rekening 'geïgnoreer' het, kan u dit weer hier wys
-Ignored_Stop: Hou op om gekies te ignoreer
+  As jy voorheen 'n rekening "vergeet" het, kan jy dit hier herstel.<br /> Dit voeg hulle terug by jou loginusers.vdf-lêer, sodat jy na hulle kan oorskakel.
+Restore_Button_Restore: Herstel geselekteerde
+Ignored_RemoveAccounts: Verwyder rekeninge van ignoreerlys
+Ignored_Description: As jy voorheen 'n rekening "geïgnoreer" het, kan jy dit weer hier wys
+Ignored_Stop: Hou op om geselekteerde te ignoreer
 Toast_DataLocationCopying: (1/2) Kopieer bestaande lêers na die nuwe gebruikersdata-lêergids!
 Toast_DataLocationNotCopying: (1/2) Die gids het reeds lêers! Sal nie gebruikerdata migreer nie.
 Toast_DataLocationSet: (2/2) Herbegin die rekeningwisselaar om die nuwe vouer te gebruik!
 Toast_PlaceShortcutFiles: '''n Voer word oopgemaak. Plaas speletjiekortpaaie in daardie gids en herbegin die rekeningwisselaar.'
-Toast_TrayStarted: Laai begin!
-Toast_TrayRunning: Laai is reeds oop
-Toast_TrayUsersMissing: Geen skinkbordgebruikers gestoor nie
-Toast_TrayFail: Kon nie laaitoepassing begin nie!
-Toast_TrayPosition: "As u op die Uitgang-knoppie klik, sal ek op die Windows-bak verskyn! (Regs van die beginbalk)"
-Toast_TrayHint: "Wenk: Ctrl + Klik op 'X' om my heeltemal te sluit, of via die laai> 'Uitgang'"
+Toast_TrayStarted: Skinkbord het begin!
+Toast_TrayRunning: Skinkbord reeds oop
+Toast_TrayUsersMissing: Geen skinkbordgebruikers is gestoor nie
+Toast_TrayFail: Kon nie skinkbordtoepassing begin nie!
+Toast_TrayPosition: "As ek op die Exit-knoppie klik: Ek sal op die Windows-skinkbord wees! (Regs van Beginbalk)"
+Toast_TrayHint: "Wenk: Ctrl+klik die 'X' om my heeltemal toe te maak, of via die Skinkbord > 'Exit'"
 Toast_Copied: Gekopieer
-Toast_AlreadyProcessing: Verwerk tans rekeninge ...
-Toast_FailedRestore: Kon nie rekeninge herstel nie (sien konsole)
-Toast_Restored: Herstel rekeninge!
+Toast_AlreadyProcessing: Verwerk reeds rekeninge...
+Toast_FailedRestore: Kon nie rekeninge herstel nie (Sien konsole)
+Toast_Restored: Rekeninge herstel!
 Toast_ProtocolEnabled: 'Hierdie program sal nou reageer op TcNo: \\ in Windows'
 Toast_ProtocolEnabledTitle: Protokol bygevoeg
 Toast_ProtocolDisabled: 'Hierdie program sal nie meer reageer op TcNo nie: \\'
 Toast_ProtocolDisabledTitle: Protokol verwyder
-Toast_RestartAsAdmin: Begin as admin en probeer weer.
-Toast_RestartAfterClose: Begin die program weer nadat u op Sluit geklik het.
-Toast_RestartAfterCloseTitle: Aksentkleur is gedeaktiveer
+Toast_RestartAsAdmin: Begin asseblief as Admin en probeer weer.
+Toast_RestartAfterClose: Herbegin asseblief die program nadat jy op Sluit geklik het.
+Toast_RestartAfterCloseTitle: Aksentkleur gedeaktiveer
 Toast_RestartRequired: Herbegin om veranderinge toe te pas
 Toast_LoadStylesheetFailed: Kon nie stylblad laai nie! Sien gebruikersdata-lêergids vir besonderhede.
-Toast_BNet_Private: "{BTag}se profiel is privaat"
-Toast_BNet_StatsFail: "Kon nie statistieke vir {BTag}"
-Toast_BNet_CantSwapAccounts: Kon nie rekeninge omruil nie (Battle.net.config-lêer is korrup)
-Toast_BNet_CantLoadNotFound: Kon nie Battle.net.config vind nie
-Toast_BNet_CantLoadEmpty: Kon nie rekeninglêer vir Blizzard laai nie (geen rekeninge gevind nie)
-Toast_BNet_CantLoadConfigCorrupt: Kon nie rekeninglêer vir Blizzard laai nie (Battle.net.config-lêer is beskadig)
-Toast_BNet_NamePolicy: BattleTag stem nie ooreen met die naambeleid nie.
+Toast_LoadingStats: Een of meer profiele verfris statistieke. Wag asseblief.
 Toast_ItemNotFound: "{item} is nie gevind nie"
 Toast_DeletedTotal: "{files} van {totalFiles} uitgevee. Totaal: {totalSize}"
-Toast_CantChangeUsername: Kon nie gebruikersnaam verander nie
+Toast_CantChangeUsername: Kon nie gebruikernaam verander nie
 Toast_CantClearLoginFiles: Kon nie ou aanmeldlêers uitvee nie
 Toast_AccountIdReg: Kon nie rekening-ID van die register kry nie!
 Toast_RegFailWrite: Kon nie na Windows Regsitry skryf nie!
 Toast_RegFailRead: Kon nie lees vanaf Windows Regsitry nie!
 Toast_RegFailReadSaved: Kon nie gestoorde registerinskrywing lees nie. Probeer om die rekening weer te verwyder en by te voeg as dit onsuksesvol is.
 Toast_RegSaveMissing: Kon nie vind of lees data van gestoorde registerlêers nie!
-Toast_DuplicateNames: Kon nie omruil nie. Dupliseer rekeninge met dieselfde gebruikersnaam?
+Toast_DuplicateNames: Kon nie ruil nie. Duplikaat rekeninge met dieselfde gebruikersnaam?
 Toast_MissingUserId: "Kon nie ruil nie. Gebruiker-ID ontbreek. Gaan Wiki 'Algemene foute' na."
-Toast_CouldNotLocate: Kon nie die aangemelde gebruiker opspoor nie
+Toast_CouldNotLocate: Kon nie aangemelde gebruiker opspoor nie
 Toast_StreamerModeHint: Privaat inligting is versteek! - Sien instellings
 Toast_StreamerModeTitle: Streamer-modus
-Toast_AddAccountsFirst: Open die platform uit die lys en voeg eers 'n paar rekeninge by
+Toast_AddAccountsFirst: Maak die platform vanaf die lys oop en voeg eers 'n paar rekeninge by
 Toast_AddAccountsFirstTitle: Geen gestoorde rekeninge nie
-Toast_CantFindImage: Kon nie die gebruiker se beeld vind nie.
-Toast_CantCreateShortcut: Kan nie 'n kortpad skep nie
+Toast_CantFindImage: Kon nie gebruikers se prent vind nie.
+Toast_CantCreateShortcut: Kan nie kortpad skep nie
 Toast_ShortcutCreated: Kortpad geskep!
-Toast_FailedUpdateCheck: Kon nie na opdaterings kyk nie
-Toast_UpdateVerifyFail: Kan nie opdateringslêers verifieer nie. Laai die nuutste weergawe af en vervang lêers in u gids.
+Toast_SettingsCopied: Instellings is suksesvol na huidige rekening gekopieer.
+Toast_GameDataRestored: Speldata vir hierdie rekening is suksesvol teruggestel.
+Toast_NoValidSteamId: Kan nie 'n geldige Steam ID vind nie.
+Toast_FailedUpdateCheck: Kon nie kyk vir opdaterings nie
+Toast_UpdateVerifyFail: Kan nie opdaterlêers verifieer nie. Laai die nuutste weergawe af en vervang lêers in jou gids.
 Toast_StartedGame: Begin {program}
-Toast_Steam_VacCleared: VAC-status vir rekeninge is skoongemaak
-Toast_Steam_CantDeleteVacCache: Kon nie 'LoginCache / Steam / VACCache / SteamVACCache.json' verwyder nie '
-Toast_NoFindSteamUserdata: Kon nie Steam \\ userdata-lêergids vind nie
-Toast_Steam_VdfLast: Kon laai vanaf vdf_last. Sommige rekeninge kan ontbreek.
+Toast_Steam_VacCleared: VAC-status vir rekeninge is uitgevee
+Toast_Steam_CantDeleteVacCache: Kon nie 'LoginCache/Steam/VACCache/SteamVACCache.json' uitvee nie
+Toast_NoFindSteamUserdata: Kon nie Steam\\userdata-lêergids vind nie
+Toast_NoFindGameBackup: Kan nie rugsteunspeletjiedatavouer vir hierdie rekening vind nie.
+Toast_GameBackupDone: "Speletjiedatavouer is suksesvol gerugsteun: {folderLocation}"
+Toast_Steam_VdfLast: Kon van vdf_last af laai. Sommige rekeninge ontbreek dalk.
 Toast_PartiallyFixed: Gedeeltelik vas
-Toast_Steam_FailedLoginusers: Kon nie steam / config / loginusers.vdf laai nie
-Toast_Steam_CantLocateLoginusers: Kan nie '... / Steam / config / loginusers.vdf' opspoor nie. Probeer eers om by 'n rekening aan te meld.
+Toast_Steam_FailedLoginusers: Kon nie steam/config/loginusers.vdf laai nie
+Toast_Steam_CantLocateLoginusers: Kan nie '.../Steam/config/loginusers.vdf' opspoor nie. Probeer eers om by 'n rekening aan te meld.
 Toast_CantClearImages: Kon nie prente uitvee nie
-Toast_RefreshedImages: Opgedateerde beelde
-Toast_ClearForgottenCheck: Is u seker dat u rugsteune van vergete rekeninge wil uitvee?
-Toast_BattleNet_ChangedBTag: BattleTag verander
-Toast_BattleNet_DeletedBTag: Gevee BattleTag
-Toast_FetchedRank: Rang gehaal
+Toast_RefreshedImages: Verfrisde beelde
+Toast_ClearForgottenCheck: Is jy seker jy wil rugsteune van vergete rekeninge uitvee?
 Toast_ForgotAccount: Rekening vergeet
 Toast_ClearedPlatformSettings: "Het {platform} Switcher-instellings skoongemaak"
 Toast_ClearedImages: "Beelde is skoongemaak"
@@ -208,27 +225,42 @@ Toast_FailedLoad: Kon nie {platform}laai nie! Klik op die platform om die fout t
 Toast_FailedPlatformsLoad: Kon nie Platforms.json laai nie! Verifieer asseblief dat hierdie lêer bestaan.
 Toast_FailedLoadSettings: "Kon nie instellings laai nie! Laai eerder verstekinstellings. Voeg 'ou' by bestaande instellingslêernaam."
 Toast_FailedLoadStats: "Kon nie statistieke laai nie! Begin nuut."
+Toast_FailedStatsLoad: Kon nie GameStats.json laai nie! Verifieer asseblief dat hierdie lêer bestaan.
+Toast_GameStatsLoadFail: "Kon nie speletjiestatistieke van die web af kry vir {Game}nie"
+Toast_GameStatsEmpty: "Geen speletjiestatistieke op webwerf gevind vir {Game}nie. Dink jy dit is 'n fout? Gaan die gebruikersdata-lêergids en 'temp\\download-{AccoundId}-{Game}.html' na om te sien of die bladsy 'n fout gehad het!"
 Toast_FileCopyFail: Kon nie lêers kopieer nie! Sien log vir meer besonderhede.
 Toast_UserDataLoadFail: Kon nie gebruikerdata {UserData}\\WindowSettings.json laai nie. Rugsteun en stel terug! Stoor fout om aan te meld.
-Toast_UpdateCheckFail: Kon nie https://tcno.co/ bereik om na opdaterings te kyk nie. Hierdie boodskap sal een keer per dag wys.
+Toast_UpdateCheckFail: Kon nie https://tcno.co/ bereik om vir opdaterings te kyk nie. Hierdie boodskap sal een keer per dag wys.
 Toast_FailedCreateIcon: Kon nie ikoon skep nie. Sien log vir besonderhede.
-Tooltip_Restore: Klik om 'n 7z-lêer te kies, of sleep dit na hierdie knoppie.
+Toast_SameAccount: Kan nie lêers na/van dieselfde rekening kopieer nie. Probeer 'n ander rekening, of sien Wiki vir meer inligting.
+Toast_Steam_DownloadingAppIds: Laai tans Steam AppId-lys af...
+Toast_Steam_DownloadingAppIdsComplete: Klaar afgelaai. Speldata-subkieslys is opgedateer.
+Toast_SteamWebKeyInvalid: Steam Web API-sleutel blyk ongeldig te wees. Stel asseblief 'n nuwe een.
+Toast_DownloadingProfileData: Laai tans profieldata af
+Toast_PasswordChanged: Wagwoord verander
+Toast_JsonFailModify: Kon nie JSON-lêer wysig nie. Sien log.
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is almal wat gehelp het om hierdie sagteware te vertaal.<br>Gebruikers met tale langs hulle het baie gehelp met vertaling (proefleserrol)."
 Modal_Info_Creator: Geskep deur TechNobo [Wesley Pyburn]
 Modal_Info_Version: Weergawe
-Modal_Info_ViewGitHub: Bekyk op GitHub
-Modal_Info_BugReport: Foutverslag / funksieversoek
+Modal_Info_ViewGitHub: Kyk op GitHub
+Modal_Info_BugReport: Foutverslag/kenmerkversoek
 Modal_Info_VisitSite: Besoek tcno.co
 Modal_Info_Disclaimer: Vrywaring
-Modal_Title_Info: TcNo rekening skakelaar inligting
+Modal_Title_Info: TcNo rekeningwisselaarinligting
 Modal_Title_ChangeUsername: Verander gebruikersnaam
 Modal_Title_ConfirmAction: TcNo Account Switcher Bevestig aksie
-Modal_Title_LocatePlatform: Soek die {platform} gids
-Modal_Title_AddNew: Voeg 'n nuwe {platform} rekening by
+Modal_Title_LocatePlatform: Vind asseblief die {platform} -gids
+Modal_Title_AddNew: Voeg nuwe {platform} -rekening by
 Modal_Title_Background: Stel 'n agtergrondprent
 Modal_Title_Userdata: Stel die gebruikerdata-lêergids in
+Modal_Title_GameStats: Aktiveer/deaktiveer speletjiestatistieke
+Modal_GameStats_Header: "Aktiveer/deaktiveer speletjiestatistieke vir: {accountName}"
 Modal_Title_Stats: Jou statistieke
+Modal_Title_GameVars: "Voer besonderhede vir {game}in"
+Modal_GameVars_Header: "Voer asseblief die volgende besonderhede vir jou {game} -rekening in, {username} op {platform}"
+Modal_Title_AccountNotes: "Rekeningnotas vir: {accountName}"
+Modal_Title_SetPassword: Stel wagwoord in
 Modal_SetBackground: 'Kies ''n prent, of voer ''n URL hieronder in.<br>Laat leeg en stel om terug te stel.<br>(Vir meer gevorderde beheer, sien die Tema op die Wiki):'
 Modal_SetBackground_Button: Stel agtergrond
 Modal_SetBackground_ChooseImage: Kies plaaslike prent
@@ -237,16 +269,19 @@ Modal_SetUserdata_ChooseFolder: Kies 'n gids
 Modal_SetUserdata_Button: Stel gebruikerdata in
 Modal_ChangeUsername: Voer asseblief 'n nuwe gebruikersnaam vir jou rekening in
 Modal_ChangeUsernameType: Verander {platform} gebruikersnaam
-Modal_EnterDirectory: "Voer asb die {platform}-gids in: C: \\ Program Files \\{platform}"
-Modal_LocatePlatform: Soek {platformExe}
-Modal_LocatePlatformFolder: Kies {platform} lêergids
+Modal_SetPassword: Voer 'n wagwoord vir die TcNo Account Switcher in
+Modal_SetPassword_Button: Stel wagwoord in
+Modal_SetPassword_Info: "LET WEL: Dit enkripteer nie jou rekeninge nie. Om rekeninge te ruil is so eenvoudig soos om lêers te vervang, of om 'n gebruikersnaam in 'n lêer te verander. Die wagwoord kan teruggestel word deur ook teks in 'n lêer te wysig. Dit is eenvoudige sekuriteit. Dit stop eenvoudige UI-toegang. Jy kan hierdie toepassing op 'n verwyderbare USB plaas, die UserData-lêergids op dieselfde USB stel en dit fisies verwyder vir meer sekuriteit. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Beweeg na 'n eksterne skyfgids</a><br><br>Om skoon te maak, laat bogenoemde leeg en klik Stel."
+Modal_EnterDirectory: "Voer asseblief {platform}se gids in, as sodanig: C:\\Program Files\\{platform}"
+Modal_LocatePlatform: Vind {platformExe}
+Modal_LocatePlatformFolder: Kies {platform} gids
 Modal_ConfirmAction: Bevestig aksie
-Modal_AddNew: Voer 'n naam in vir die {platform} rekening waarop u ingeteken is.
+Modal_AddNew: Voer asseblief 'n naam in vir die {platform} rekening waarby jy aangemeld is.
 Modal_AddCurrentAccount: Voeg huidige {platform} rekening by
 Modal_SetImageHeader: Stel profielprent
 Modal_SetImage: Stel Beeld
 Status_SelectedAccount: "Gekies: {name}"
-Status_Init: "Status: inisialiseer"
+Status_Init: "Status: Inisialiseer"
 Status_ClosingPlatform: Sluiting {platform}
 Status_ClosingPlatformFailed: Kon nie {platform}
 Status_StartingPlatform: Begin {platform}
@@ -261,114 +296,118 @@ Status_GetUniqueId: Versamel unieke gebruikers-ID
 Status_CopyingFiles: Kopieer tans gebruikerlêers...
 Status_HandlingImage: Hanteer rekeningprofielbeeld
 Context_SwapTo: Ruil na rekening
-Context_CreateShortcut: Skep lessenaarkortpad
-Context_CreateShortcutSubmenu: Skep lessenaarkortpad ...
+Context_CreateShortcut: Skep kortpad
 Context_ChangeImage: Verander beeld
-Context_BNet_SetBTag: Stel BattleTag
-Context_BNet_DelBTag: Vee BattleTag uit
-Context_BNet_GetRAnk: Haal rang
 Context_ChangeName: Verander die naam van die skakelaar
-Context_LoginAsSubmenu: Teken in as ...
-Context_UsernameSubmenu: Gebruikernaam ...
-Context_RefreshName: Verfris naam
-Context_CopySubmenu: Kopieer ...
-Context_CopyProfileSubmenu: Kopieer profiel ...
-Context_CommunityUrl: Gemeenskaps-URL
-Context_CommunityUsername: Gemeenskapsgebruikernaam
+Context_LoginAsSubmenu: Teken in as
+Context_UsernameSubmenu: Gebruikersnaam
+Context_RefreshName: Herlaai naam
+Context_CopySubmenu: Kopieer
+Context_DataSubmenu: Data
+Context_CopyProfileSubmenu: Kopieer profiel
+Context_CommunityUrl: Gemeenskap URL
+Context_CommunityUsername: Gemeenskap gebruikersnaam
 Context_LoginUsername: Teken in gebruikersnaam
-Context_CopySteamIdSubmenu: Kopieer SteamID ...
-Context_Steam_Id: 'SteamID [STEAM0: ~]'
-Context_Steam_Id3: 'SteamID3 [U: 1: ~]'
+Context_CopySteamIdSubmenu: Kopieer SteamID
+Context_Steam_Id: SteamID [STEAM0:~]
+Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: SteamID32
-Context_Steam_Id64: SteamID64 7656 ~
-Context_Steam_OpenUserdata: Maak userdata oop
-Context_CopyOtherSubmenu: Kopieer ander ...
+Context_Steam_Id64: SteamID64 7656~
+Context_Steam_OpenUserdata: Maak gebruikersdata oop
+Context_ManageSubmenu: Bestuur
+Context_GameDataSubmenu: Speldata
+Context_ManageGameStats: Bestuur spelstatistieke
+Context_Game_CopySettingsFrom: Kopieer instellings na huidige
+Context_Game_RestoreSettingsTo: Herstel speldata
+Context_Game_BackupData: Rugsteun speletjiedata
+Context_CopyOtherSubmenu: Kopieer ander
 Context_HidePlatform: Versteek platform
 Context_ExportAccList: Voer rekeninglys uit
 Context_RunAdmin: Begin as Admin
 Context_Hide: Versteek
-Title_BNet_Settings: TcNo Account Switcher - BattleNet-instellings
-Title_BNet_ManageIgnored: TcNo Account Switcher - Bestuur geïgnoreerde BattleNet-rekeninge
+ProfileImage_ToggleText: Gebruik beeld as rekeningbeeld
 Title_Platforms_Settings: TcNo Account Switcher - Platforminstellings
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - teksversorger
+Title_Settings_TestCss: TcNo Account Switcher - Toets CSS-stilering
+Title_AccountsList: TcNo-rekeningwisselaar - {platform}
+Title_TextEditor: TcNo Account Switcher - Teksredigeerder
 Title_Settings: TcNo Account Switcher - Instellings
-Title_Steam_Cleaning: TcNo Account Switcher - Stoomskoonmaak
+Title_Steam_Cleaning: TcNo Account Switcher - Stoom skoonmaak
 Title_Steam_Settings: TcNo Account Switcher - Steam-instellings
 Title_Template_Settings: TcNo-rekeningwisselaar - {platformName} instellings
-Installer_Downloading: Laai tans {file}
-Installer_DownloadFinished: Aflaai is klaar {file}
+Title_Login: TcNo Account Switcher - Teken in
+Installer_Downloading: Laai tans af {file}
+Installer_DownloadFinished: Klaar afgelaai {file}
 Installer_Installing: "Installeer: {runtime}"
-Installer_RuntimeTitle: TcNo Account Switcher - Runtime-installeerder
-Installer_Welcome: Welkom by die TcNo Account Switcher - Runtime-installeerder
-Installer_InstalledRuntimes: "Tans geïnstalleerde looptye:"
+Installer_RuntimeTitle: TcNo Account Switcher - Runtime installeerder
+Installer_Welcome: Welkom by die TcNo Account Switcher - Runtime installeerder
+Installer_InstalledRuntimes: "Huidig geïnstalleerde looptye:"
 Installer_ErrorRuntime: "Een of meer looptye is nie geïnstalleer nie:"
-Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB tydens die installering]"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB tydens installering]"
 Installer_TotalSize: "Totale aflaaigrootte: ~{size} MB"
-Installer_AnyKeyStart: Druk enige sleutel om af te laai ...
+Installer_AnyKeyStart: Druk enige sleutel om aflaai te begin...
 Runtime_WebView2: Microsoft WebView2 Runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
 Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Kon nie vouer skep nie:"
-Installer_FailedWV: "Kon nie Microsoft WebView2 Runtime aflaai en installeer nie. Om af te laai: 1. Klik op die onderstaande skakel: {link} 2. Klik op 'Laai gasheerbundel af' onder Bedienerprogramme hardloop."
+Installer_FailedWV: "Kon nie Microsoft WebView2 Runtime aflaai en installeer nie. Om af te laai: 1. Klik op die skakel hieronder: {link} 2. Klik 'Download Hosting Bundle' onder Run server apps."
 Installer_FailedDR: "Kon nie .NET 5 Desktop Runtime aflaai en installeer nie. Laai dit asseblief hier af:"
 Installed_FailedASP: "Kon nie ASP.NET Core {version} Runtime aflaai en installeer nie. Om af te laai: 1. Klik op die skakel hieronder: {link} 2. Klik 'Download x64' onder Run Desktop apps."
-Installer_Ready: "Een of meer is gereed vir installasie. Klik op 'Ja' as en wanneer u gevra word of u dit wil installeer."
-Installer_PressStart: Druk enige sleutel om te installeer ...
-Installer_VerifyMin: "Maak seker dat u aan die minimum aanbevole vereistes voldoen:"
-Installer_VerifyAlready: "Dit lyk asof alles geïnstalleer is. Maak seker dat u aan die minimum aanbevole vereistes voldoen:"
+Installer_Ready: "Een of meer is gereed vir installering. As en wanneer gevra word of jy wil installeer, klik 'Ja'."
+Installer_PressStart: Druk enige sleutel om te begin installeer...
+Installer_VerifyMin: "Verifieer dat jy aan die minimum aanbevole vereistes voldoen:"
+Installer_VerifyAlready: "Dit lyk of alles geïnstalleer is. Verifieer dat jy aan die minimum aanbevole vereistes voldoen:"
 Installer_Complete: Dit behoort alles te wees. Die hoofprogram, TcNo-Acc-Switcher.exe, sal outomaties loop.
-Installer_Complete2: "As dit nie werk nie, raadpleeg die installasie-instruksies hier: {link}"
-Global_FatalNext: "Noodlottige fout het voorgekom! Hierdie crashlog sal outomaties die volgende bekendstelling ingedien word."
-Tray_Error: Laaifout
-Tray_NoAccs: "Daar is geen rekeninge gevind nie.\nProbeer eers oor rekeninge wissel, of soek 'Tray_Users.json'"
+Installer_Complete2: "As dit nie werk nie, verwys asseblief na die installasie-instruksies, hier: {link}"
+Global_FatalNext: "Noodlottige fout het voorgekom! Hierdie crashlog sal outomaties ingedien word volgende bekendstelling."
+Tray_Error: Skinkbordfout
+Tray_NoAccs: "Daar is geen rekeninge gevind nie.\nProbeer eers om rekeninge te verander, of soek 'Tray_Users.json'"
 Tray_Switch: "Skakel oor na: {account}"
-Tray_CantOpenExe: "Kon die hoofexe nie oopmaak nie. Maak seker dat dit bestaan.\n\nEk het probeer om oop te maak:"
-Tray_LaunchFail: "TcNo-rekening-omskakelaar - die begin van die laai het misluk"
+Tray_CantOpenExe: "Kon nie die hoof-.exe oopmaak nie. Maak seker dit bestaan.\n\nEk het probeer om oop te maak:"
+Tray_LaunchFail: "TcNo Account Switcher - Skinklaai-bekendstelling misluk"
 Updater_Duplicate: Nog 'n TcNo Account Switcher Updater-instansie is opgespoor.
 Updater_Unknown: "Onbekende argument: {arg}"
-Updater_NeedsAdmin: Hierdie program moet as administrateur uitgevoer word!
+Updater_NeedsAdmin: Hierdie program moet as 'n administrateur uitgevoer word!
 Updater_StatusChecking: Kontroleer weergawe
-Updater_FailedVersionCheck: "Kon nie weergawe kry nie. Klik op \"Verifieer\" om lêers op te dateer en te verifieer"
-Updater_PressBelow: Druk die knoppie hieronder!
-Updater_PressBelowStart: Klik op die onderstaande knoppie om die opdatering te begin.
-Updater_PatchApplied: Pleister aangebring!
-Updater_UpdatingAppData: Lêers opdateer in AppData!
+Updater_FailedVersionCheck: "Kon nie weergawe kry nie. Klik \"Verifieer\" om lêers op te dateer en te verifieer"
+Updater_PressBelow: Druk knoppie hieronder!
+Updater_PressBelowStart: Klik op die knoppie hieronder om die opdatering te begin.
+Updater_PatchApplied: Pleister toegepas!
+Updater_UpdatingAppData: Dateer lêers in AppData op!
 Updater_Complete: Alle opdaterings voltooi!
-Updater_Checking: Kyk vir opdaterings
-Updater_UpdateToVerify: Om die lêers te verifieer, moet u eers opdateer.
-Updater_ClosingTcNo: Sluit gevalle van TcNo Account Switcher (indien enige).
+Updater_Checking: Kyk tans vir opdaterings
+Updater_UpdateToVerify: Om lêers te verifieer moet jy eers opdateer.
+Updater_ClosingTcNo: Sluiting van TcNo Account Switcher-gevalle (indien enige).
 Updater_Downloading: "Laai tans opdatering af: {version}"
 Updater_Downloaded: Aflaai voltooi.
 Updater_CantExtract: Kon nie opdatering onttrek nie.
 Updater_Verify: Verifieer lêers
-Updater_Verifying: Verifieer tans ...
-Updater_VerifySkip: Verifieer lêers om alle klein opdaterings oor te slaan en spring na die nuutste.
-Updater_NoConnection: "Kon nie aan tcno.co koppel om lêers te verifieer nie. U kan die installeerder handmatig van die GitHub-bladsy aflaai en weer installeer om dit op te dateer.\n\nFout:"
-Updater_NoServer: Kon nie die opdateringsbediener bereik nie
-Updater_Hashlist: Laai tans die nuutste lysie af af ...
-Updater_CantCheck: Kan nie na opdaterings kyk nie
-Updater_Failed: "FOUT: Sommige van die lêers word gebruik en kan nie opgedateer word nie.\n\n1. Maak seker dat alle TcNo-prosesse heeltemal gesluit is\n(of u rekenaar herbegin)\n\n2. Klik dan op Verifieer hieronder of as u weer begin:\n- Maak hierdie opdatering oop en verifieer lêers\n    (geleë in die 'updater'-gids in die installeer gids)"
-Updater_Missing: "Lêer ontbreek: {file}"
+Updater_Verifying: Verifieer tans …
+Updater_VerifySkip: Verifieer lêers om alle klein opdaterings oor te slaan, en spring net na nuutste.
+Updater_NoConnection: "Kon nie aan tcno.co koppel om lêers te verifieer nie. Jy kan probeer om die installeerder handmatig van die GitHub-bladsy af te laai en weer te installeer om op te dateer.\n\nFout:"
+Updater_NoServer: Kon nie opdateringbediener bereik nie
+Updater_Hashlist: Laai tans nuutste hash-lys af...
+Updater_CantCheck: Kan nie kyk vir opdaterings nie
+Updater_Failed: "FOUT: Sommige van die lêers is in gebruik en kan nie opgedateer word nie.\n\n1. Maak seker dat alle TcNo-prosesse heeltemal gesluit is\n(of herbegin jou rekenaar)\n\n2. Klik dan Verifieer hieronder, of as jy herbegin het:\n- Maak hierdie bywerker oop en verifieer lêers\n    (geleë in die 'updater'-lêergids in die installeer gids)"
+Updater_Missing: "LêER ONTBREE: {file}"
 Updater_FileMismatch: "Lêer: {file} het MD5: {md5} VERWAG: {value}"
-Updater_DownloadingWeb: Laai tans lêer van die webwerf af ...
-Updater_UnpackingAppData: Kopieer lêers na %AppData%/ TcNo Account Switcher ... (tensy anders gestel)
-Updater_VerifyComplete: Lêers is geverifieer!
+Updater_DownloadingWeb: Laai tans lêer van webwerf af...
+Updater_UnpackingAppData: Kopieer lêers na %AppData%/TcNo Account Switcher... (tensy anders gestel)
+Updater_VerifyComplete: Lêers geverifieer!
 Updater_UpdateFound: "Opdatering gevind: {name} [{updateSize}]"
 Updater_TotalFound: "Totale opdaterings gevind: {x}"
 Updater_TotalSize: "Totale grootte: {size}"
-Updater_AwaitingUser: Wag tans op gebruikersinvoer ...
-Updater_UpToDate: "U is op datum.\n:)"
-Updater_FailedDecode: Dit is heel waarskynlik te wyte aan die feit dat ek (TechNobo) 'n opdatering aangepak het en 'n tikfout gemaak het wat die .json-opdateringslêer gebreek het. Laat weet my asseblief :)
+Updater_AwaitingUser: Wag tans vir gebruikerinvoer …
+Updater_UpToDate: "Jy is op datum.\n:)"
+Updater_FailedDecode: Dit is heel waarskynlik te wyte daaraan dat ek (TechNobo) 'n opdatering gedruk het, en 'n tikfout gemaak het wat die .json-opdateringlêer gebreek het. Laat weet my :)
 Updater_FailedDecodeTitle: Kon nie opdateringslys dekodeer nie
 Updater_Extracting: Onttrek pleisterlêers
-Updater_Applying: Pas tans pleister toe ...
-Updater_Moving: Skuif lêers tans ...
+Updater_Applying: Pas tans pleister toe...
+Updater_Moving: Skuif tans lêers …
 Updater_Title: TcNo Account Switcher Updater
-Updater_Started: Begin
+Updater_Started: Het begin
 Updater_Start: Begin TcNo Account Switcher
 Updater_Begin: Begin opdatering
-Updater_Exit: Uitgang
+Updater_Exit: Verlaat
 FatalError: Noodlottige fout het voorgekom!
 Online: Aanlyn
 OnlineDefault: Aanlyn (verstek)
@@ -377,46 +416,52 @@ Invisible: Onsigbaar
 Busy: Besig
 Away: Weg
 Snooze: Sluimer
-LookingToTrade: Op soek na handel
-LookingToPlay: Op soek na Play
+LookingToTrade: Op soek na Handel
+LookingToPlay: Op soek na speel
 Unrecognized_EPersonaState: Onherkenbare ePersonaState
 Reg_DoesntExist: "{subKey} bestaan nie."
-Reg_DoesntContain: "{subKey} bevat nie {val}"
+Reg_DoesntContain: "{subKey} bevat nie {val}nie"
 Reg_Removing: Verwyder {subKey}\\{val}
-PngInvalid_Format: Vereiste pixelformaat is PixelFormat.{x}.
+PngInvalid_Format: Vereiste piekselformaat is PixelFormat.{x}.
 PngRequired: Vereiste beeldformaat is 'n draagbare netwerkgrafika (png).
-PngDimensions: Afmetings moet kleiner wees as of gelyk aan {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "'N Sintaksisfout is opgedoen (meer besonderhede hieronder)! EN:"
+PngDimensions: Afmetings moet minder as of gelyk aan {MaxIconWidth}x{MaxIconHeight}wees
+ThemeSyntaxAnd: "'n Sintaksfout is teëgekom (meer besonderhede hieronder)! EN:"
 ThemesNotFound: "Kon nie \"temas\"-lêergids in TcNo Account Switcher se gids vind nie. Dit (veral die 'Dracula_Cyan'-lêergids) is nodig om hierdie sagteware te laat loop.\nJy kan die Updater in die \"updater\"-lêergids laat loop om lêers te verifieer en hierdie ontbrekende lêers te herstel."
 Yes: "Ja"
 No: "Geen"
+Save: Stoor
 NoDefault: Nee (verstek)
 Ok: "OK"
+Submit: Indien
 Forget: Vergeet
-Notice: Let op
+Notice: Kennisgewing
+Notes: Notas
 Error: Fout
 ErrorDetails: "FOUT: {ex}"
 Failed: Misluk
 Success: Sukses
 NotFound: Nie gevind nie
 Done: Klaar
+Edit: Wysig
+Refresh: Verfris
 Working: Werk tans...
-ForName: "Vir: {name}"
+ForName: "vir: {name}"
 DeletedFiles: Geskrap lêers
 FileFoldersToClear: "Lys van lêers/vouers om skoon te maak:"
-CouldNotFindX: Kon nie {x}
+CouldNotFindX: Kon nie {x}vind nie
 CouldNotCloseX: Kon nie {x}toemaak nie!
+CouldNotReadFile: Kon nie {file}lees nie!
 DirectoryNotFound: Gids nie gevind nie
 DirectoryNotFoundFolder: "Gids nie gevind nie: {folder}"
-DeletingFile: "Skrap tans: {file}"
-DeletingFolder: "Vee gids uit: "
-CouldntDeleteX: "FOUT: KON NIE VERWYDER NIE: {x}"
-CouldntDeleteUndefined: "FOUT: KON NIE ONGEDefinieerde lêer verwyder nie"
-Prompt_RestartAsAdmin: "<h3><bold>Hierdie program sal weer begin as Admin</bold></h3><p>Druk \"Ja\" in UAC wanneer u gevra word vir admin.</p>"
+DeletingFile: "Vee uit: {file}"
+DeletingFolder: "Vee vouer uit: "
+CouldntDeleteX: "FOUT: KON NIE UITVEE NIE: {x}"
+CouldntDeleteUndefined: "FOUT: KON NIE ONGEdefinieerde LêER SKEE NIE"
+Prompt_RestartAsAdmin: "<h3><bold>Hierdie program sal herbegin as Admin</bold></h3><p>Druk \"Ja\" in UAC wanneer vir admin gevra word.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Jy is op die punt om 'n rekening te vergeet!</h3> <h4>Wat beteken dit?</h4> <p>- Steam sal nie meer die rekening in Big Picture Mode gelys hê nie en sal nie wagwoord onthou nie.<br/> - TcNo Account Switcher sal ook nie meer die rekening wys totdat dit weer deur Steam aangemeld is nie.</p> <p>Jou rekening sal onaangeraak bly. Dit is net vergeet op hierdie rekenaar.</p><h4>Verstaan jy?</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>U is op die punt om 'n rekening te vergeet!</h3> <h4>Wat beteken dit?</h4> <p>TcNo Account Switcher sal ook nie meer die rekening wys nie,<br/> totdat dit weer tot {platform}aangemeld is en by die lys gevoeg is.</p> <p>U rekening sal onaangeraak bly. Dit word net op hierdie rekenaar vergeet.</p> <h4>Verstaan jy?</h4>
+  <h3 style='color:red'>Jy is op die punt om 'n rekening te vergeet!</h3> <h4>Wat beteken dit?</h4> <p>TcNo Account Switcher sal ook nie meer die rekening wys nie,<br/> totdat dit weer deur {platform}aangemeld is en by die lys gevoeg is.</p> <p>Jou rekening sal onaangeraak bly. Dit is net vergeet op hierdie rekenaar.</p> <h4>Verstaan jy?</h4>
 Prompt_ClearStats: >
   <h3 style='color:red'>Jy is op die punt om jou statistieke skoon te maak!</h3> <p>Jy kan nie hierdie handeling ongedaan maak nie.</p>
 Platform_DiscordPasteHint: Plak in Discord-konsole, en plak dan resultaat in invoer!
@@ -433,9 +478,16 @@ Tooltip_ExpandShortcuts: Brei speletjie- en kortpad-keuse uit
 Tooltip_ShortcutFolder: Maak kortpadlêer oop. Plaas kortpaaie daarin, en die TcNo Account Switcher om dit te sien.
 Tooltip_Backup: Rugsteun konfigurasielêers/vouers, soos gedefinieer in platforminstellings.
 Tooltip_BackupAll: Rugsteun ALLE konfigurasielêers/vouers, insluitend beelde en ander groot lêers.
-Tooltip_ClosingMethod: "Gekombineer is die beste. Sluit pogings om direk toe te maak deur 'n afsluitfunksie en TaskKill gebruik CMD (beste as gekombineer nie werk nie)"
+Tooltip_ClosingMethod: "Gekombineer is die beste. Sluit pogings om direk toe te maak deur 'n toemaakfunksie en TaskKill gebruik CMD (beste as gekombineer nie werk nie)"
 Tooltip_StartingMethod: "Standaard is die beste. Direct het geen beheer oor administrasievlak of UAC nie. Dit sal begin as dieselfde vlak (of hoër - maar nie laer nie) as hierdie rekeningwisselaar"
 Tooltip_CurrentAccount: Jy is tans by hierdie rekening aangemeld.
+Tooltip_Restore: Klik om 'n 7z-lêer te kies, of sleep dit na hierdie knoppie.
+Tooltip_DisabledGlobally: Hierdie item is vir alle rekeninge versteek. U kan dit in die platforminstellings verander.
 Discord_Status: Verander tans rekeninge.
 Discord_StatusDetails: "Rekeninge verander: {number}"
 Website: Webwerf
+Preview_Platforms: Platforms voorskou
+Preview_Accounts: Rekeninge voorskou
+Preview_Notifications: Roosterbroodkennisgewingsvoorskou
+Preview_Settings: Instellingsvoorskou
+Preview_Modals: Modale voorskou
