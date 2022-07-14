@@ -54,7 +54,7 @@
 
 <div class="acc_list_actionbar">
     <div class="statusBar">
-        <div></div><input id="CurrentStatus" @bind="@AData.CurrentStatus" spellcheck="false" disabled>
+        <div></div><input id="CurrentStatus" @bind="AppData.CurrentStatus" spellcheck="false" disabled>
     </div>
     <div class="gameShortcuts">
         <div class="shortcuts">
@@ -108,6 +108,20 @@
 {
     public static AccountList BasicAccountList;
 
+    protected override void OnInitialized()
+    {
+        AppData.Instance.OnChange += OnChangeHandler;
+    }
+    private async void OnChangeHandler()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        AppData.Instance.OnChange -= OnChangeHandler;
+    }
+
     private string RemoveShortcutExt(string s)
     {
         return s.Replace(".lnk", "").Replace(".url", "");
@@ -140,7 +154,7 @@
             return;
         }
 
-        BasicStats.SetCurrentPlatform(CurrentPlatform.FullName);
+        BasicStats.SetCurrentPlatform(CurrentPlatform.SafeName);
 
     // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
         if (File.Exists(Basic.Exe())) return;

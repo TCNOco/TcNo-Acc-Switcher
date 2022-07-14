@@ -733,7 +733,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         public static async Task HandleFirstRender(bool firstRender, string platform)
         {
-            AppData.Instance.WindowTitle = Lang["Title_AccountsList", new { platform }];
+            AppData.WindowTitle = Lang["Title_AccountsList", new { platform }];
             if (firstRender)
             {
                 // Handle Streamer Mode notification

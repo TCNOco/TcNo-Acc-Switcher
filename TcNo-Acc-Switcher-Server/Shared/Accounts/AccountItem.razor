@@ -24,15 +24,15 @@
     public Dictionary<string, string> AccountNotes { get; set; }
 }
 
-<div class="acc_list_item" data-toggle="tooltip">
-    <input type="radio" id="@Acc.AccountId" DisplayName="@GeneralFuncs.EscapeText(Acc.DisplayName)" class="acc" name="accounts" onchange="selectedItemChanged()">
+<div class="acc_list_item" data-toggle="tooltip" @onclick="() => AppData.SetSelectedAccount(Acc.AccountId, Acc.SafeDisplayName)" @ondblclick="() => AppData.SwapTo(Acc.AccountId)">
+    <input type="radio" id="@Acc.AccountId" DisplayName="@Acc.SafeDisplayName" class="acc" name="accounts">
     <label for="@Acc.AccountId" class="acc @Acc.Classes.Label">
         <img class="@Acc.Classes.Image" src="@Acc.ImagePath?@Globals.GetUnixTime()" draggable="false" alt=""/>
         @if (@Acc.Line0 != "")
         {
             <p class="@Acc.Classes.Line0">@Acc.Line0</p>
         }
-        <h6 class="displayName">@GeneralFuncs.EscapeText(Acc.DisplayName)</h6>
+        <h6 class="displayName">@Acc.SafeDisplayName</h6>
         @if (@Acc.Line2 != "")
         {
             <p class="@Acc.Classes.Line2">@Acc.Line2</p>

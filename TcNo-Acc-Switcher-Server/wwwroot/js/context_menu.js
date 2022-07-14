@@ -24,11 +24,7 @@ async function initContextMenu() {
 
     if (group === "acc" || group === "preview") {
         // Ready accounts for double-click
-        if (group === "acc") {
-            $(".acc_list_item").dblclick((event) => {
-                swapTo(-1, event);
-            });
-        }
+        return;
 
         // Handle Left-clicks:
         $(".acc_list_item").click((e) => {

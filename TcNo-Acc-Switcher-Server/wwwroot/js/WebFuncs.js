@@ -16,7 +16,7 @@ async function getCurrentPageFullname() {
     return platform;
 }
 
-window.addEventListener('load',
+window.addEventListener("load",
     () => {
         initTooltips();
     });
@@ -167,7 +167,7 @@ async function changeImage(e) {
     if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
 
-    const path = $(".acc:checked").next("label").children("img")[0].getAttribute("src").split('?')[0];
+    const path = $(".acc:checked").next("label").children("img")[0].getAttribute("src").split("?")[0];
 
     const modalTitleBackground = await GetLang("Modal_Title_Userdata"),
         modalHeading = await GetLang("Modal_SetImageHeader"),
@@ -444,7 +444,7 @@ async function openUserdata(e) {
 }
 
 // Create shortcut for selected icon
-async function createShortcut(args = '') {
+async function createShortcut(args = "") {
     const selected = $(".acc:checked");
     if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
         return;
@@ -1025,7 +1025,7 @@ async function Modal_FinaliseAccNameChange() {
 }
 
 async function Modal_SaveNotes(accId) {
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Set${getCurrentPage()}Notes`, accId, $('#accNotes').val());
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Set${getCurrentPage()}Notes`, accId, $("#accNotes").val());
     location.reload(true);
 }
 
@@ -1084,7 +1084,7 @@ function sDropdownReposition() {
     dropDownContainer.css({ top: btnPos.top - dropDownContainer.height() - btn.height() - 16, left: btnPos.left + 16 - (dropDownContainer.width() / 2) });
 
     // If overflowing - Widen by scrollbar width to prevent weird overflow gap on side
-    if (checkOverflow(dropDownItemsContainer) && dropDownContainer[0].style.minWidth === '') {
+    if (checkOverflow(dropDownItemsContainer) && dropDownContainer[0].style.minWidth === "") {
         const scrollbarWidth = (dropDownItemsContainer.offsetWidth - dropDownItemsContainer.clientWidth);
         const hasContextMenu = $(".HasContextMenu");
         if (hasContextMenu.length > 0) {

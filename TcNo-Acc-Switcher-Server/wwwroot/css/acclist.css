@@ -26,7 +26,7 @@
 .acc_list_item {
   border: 0.1em solid transparent;
 }
-.acc_list_item > * {
+.acc_list_item * {
   pointer-events: none;
 }
 .acc_list_item .acc_note {

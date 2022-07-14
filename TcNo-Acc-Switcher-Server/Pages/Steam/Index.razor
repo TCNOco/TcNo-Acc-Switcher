@@ -49,7 +49,7 @@
 </div>
 
 <div class="acc_list_actionbar">
-    <div class="statusBar"><div></div><input id="CurrentStatus" @bind="@AData.CurrentStatus" spellcheck="false" disabled></div>
+    <div class="statusBar"><div></div><input id="CurrentStatus" @bind="AppData.CurrentStatus" spellcheck="false" disabled></div>
     <div class="gameShortcuts">
         <div class="shortcuts">
             @foreach (var (i, shortcut) in Steam.Shortcuts)
@@ -93,6 +93,21 @@
     public static AccountList SteamAccountList;
 
     public static ContextMenu SteamContextMenu;
+
+    protected override void OnInitialized()
+    {
+        AppData.Instance.OnChange += OnChangeHandler;
+    }
+    private async void OnChangeHandler()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        AppData.Instance.OnChange -= OnChangeHandler;
+    }
+    
     // This has to be here for NavManager.
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
     protected override void OnParametersSet()

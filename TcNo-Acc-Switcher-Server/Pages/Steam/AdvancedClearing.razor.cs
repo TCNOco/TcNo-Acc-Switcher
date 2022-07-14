@@ -32,7 +32,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         protected override void OnInitialized()
         {
             Globals.DebugWriteLine(@"[Auto:Steam\AdvancedClearing.razor.cs.OnInitialisedAsync]");
-            AppData.Instance.WindowTitle = Lang["Title_Steam_Cleaning"];
+            AppData.WindowTitle = Lang["Title_Steam_Cleaning"];
         }
 
 

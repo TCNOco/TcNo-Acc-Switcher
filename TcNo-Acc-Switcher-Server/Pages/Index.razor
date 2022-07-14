@@ -88,7 +88,7 @@
 
 	protected override void OnAfterRender(bool firstRender)
 	{
-		AppData.Instance.WindowTitle = "TcNo Account Switcher";
+		AppData.WindowTitle = "TcNo Account Switcher";
 
         // If no platforms are showing:
 	    if (!AData.AnyPlatformsShowing())
@@ -108,7 +108,7 @@
 	    if (firstRender)
 		{
 			GeneralFuncs.HandleQueries();
-		    _ = AppData.InvokeVoidAsync("initContextMenu");
+		    //_ = AppData.InvokeVoidAsync("initContextMenu");
 		    _ = AppData.InvokeVoidAsync("initPlatformListSortable");
 			//await AData.InvokeVoidAsync("initAccListSortable");
 		}

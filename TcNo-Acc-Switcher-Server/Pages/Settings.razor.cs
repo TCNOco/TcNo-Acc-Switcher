@@ -22,7 +22,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
         private static readonly Lang Lang = Lang.Instance;
         protected override void OnInitialized()
         {
-            AppData.Instance.WindowTitle = Lang["Title_Settings"];
+            AppData.WindowTitle = Lang["Title_Settings"];
             Globals.DebugWriteLine(@"[Auto:Settings.razor.cs.OnInitializedAsync]");
         }
     }

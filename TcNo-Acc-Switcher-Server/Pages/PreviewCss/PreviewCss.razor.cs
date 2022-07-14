@@ -25,7 +25,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.PreviewCss
         public AppData AppData { get; set; }
         protected override void OnInitialized()
         {
-            AppData.Instance.WindowTitle = Lang["Title_Settings_TestCss"];
+            AppData.WindowTitle = Lang["Title_Settings_TestCss"];
             Globals.DebugWriteLine(@"[Auto:Settings\TestCss.razor.cs.OnInitializedAsync]");
         }
     }

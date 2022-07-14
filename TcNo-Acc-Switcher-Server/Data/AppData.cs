@@ -24,6 +24,8 @@ using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Pages.Basic;
+using TcNo_Acc_Switcher_Server.Pages.Steam;
 using Index = TcNo_Acc_Switcher_Server.Pages.Steam.Index;
 
 namespace TcNo_Acc_Switcher_Server.Data
@@ -151,26 +153,47 @@ namespace TcNo_Acc_Switcher_Server.Data
         // Window stuff
         private string _windowTitle = "TcNo Account Switcher";
 
-        public string WindowTitle
+        public static string WindowTitle
         {
-            get => _windowTitle;
+            get => Instance._windowTitle;
             set
             {
-                _windowTitle = value;
-                NotifyDataChanged();
-                Globals.WriteToLog($"{Environment.NewLine}Window Title changed to: {_windowTitle}");
+                Instance._windowTitle = value;
+                Instance.NotifyDataChanged();
+                Globals.WriteToLog($"{Environment.NewLine}Window Title changed to: {value}");
             }
         }
 
         private string _currentStatus = Lang["Status_Init"];
-        public string CurrentStatus
+        public static string CurrentStatus
         {
-            get => _currentStatus;
-            set
-            {
-                _currentStatus = value;
-                NotifyDataChanged();
-            }
+            get => Instance._currentStatus;
+            set => Instance._currentStatus = value;
+        }
+
+        private string _selectedAccount = "";
+        public static string SelectedAccount
+        {
+            get => Instance._selectedAccount;
+            set => Instance._selectedAccount = value;
+        }
+
+        public static void SetSelectedAccount(string accountId, string displayName)
+        {
+            CurrentStatus = Lang.Instance["Status_SelectedAccount", new { name = displayName }];
+            SelectedAccount = accountId;
+        }
+
+        private string _currentSwitcher = "";
+        public static string CurrentSwitcher { get => Instance._currentSwitcher; set => Instance._currentSwitcher = value; }
+        public static void SwapTo(string accountId)
+        {
+            if (!OperatingSystem.IsWindows()) return;
+
+            if (CurrentSwitcher == "Steam")
+                SteamSwitcherBase.SwapToSteam(accountId, -1);
+
+            BasicSwitcherBase.SwapToBasic(accountId);
         }
 
         #region Basic_Platforms

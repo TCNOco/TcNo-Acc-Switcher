@@ -25,7 +25,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         protected override void OnInitialized()
         {
-            AppData.Instance.WindowTitle = Lang["Title_Steam_Settings"];
+            AppData.WindowTitle = Lang["Title_Steam_Settings"];
             Globals.DebugWriteLine(@"[Auto:Steam\Settings.razor.cs.OnInitializedAsync]");
         }
 
