@@ -1,441 +1,493 @@
 ---
-Update: พร้อมอัพเดท! คลิกที่นี่เพื่อเริ่มต้น
+Update: มีการอัปเดต! คลิกที่นี่เพื่อเริ่มต้น
 Header_ChooseLanguage: 'เลือกภาษา:'
-BattleNet_ShowSR: แสดง Overwatch SR และใช้รูปโปรไฟล์ Overwatch
-Steam_ShowSteamID: แสดง SteamID
-Steam_ShowVac: แสดงสถานะ VAC
-Steam_CheckVac: ตรวจสอบสถานะ VAC ของบัญชี
-Steam_ShowLimited: แสดงสถานะจำกัด
-Steam_ShowAccUsername: แสดงชื่อผู้ใช้บัญชี
+Steam_ShowSteamID: SteamID
+Steam_ShowVac: สถานะ VAC
+Steam_ShowLastLogin: เข้าสู่ระบบครั้งล่าสุด
+Steam_ShowLimited: สถานะจำกัด
+Steam_ShowAccUsername: ชื่อผู้ใช้บัญชี
 Steam_Tray_AccountName: แสดงชื่อบัญชี [ไม่ใช่ชื่อเพื่อน]
+Steam_CheckVac: ตรวจสอบสถานะบัญชี VAC
 Steam_OverrideDefaultState: "แทนที่สถานะการเข้าสู่ระบบเริ่มต้น:"
+Steam_StartSilent: "เปิด Steam ไปยังถาดงานบนสวิทช์ (เริ่ม Steam ด้วยคำสั่ง '- silent ')"
 Button_AddNew: เพิ่มใหม่
 Button_SaveCurrent: บันทึกปัจจุบัน
 Button_SaveFile: บันทึกไฟล์
 Button_Cancel: ยกเลิก
 Button_Login: เข้าสู่ระบบ
-Button_Close: ปิด I
+Button_Close: ปิด
 Button_RefreshImages: รีเฟรชภาพ
-Button_ResetSettings: คืนค่าการตั้งค่า
+Button_ResetSettings: รีเซ็ตการตั้งค่า
 Button_AdvancedCleaning: การทำความสะอาดขั้นสูง...
 Button_ClearLog: ล้างบันทึก
 Button_WikiInfo: ข้อมูลเพิ่มเติม (วิกิ)
 Button_ManagePlatforms: จัดการแพลตฟอร์ม
-Button_Backup: สำรอง
+Button_Backup: สำรองข้อมูล
 Button_BackupAll: สำรองข้อมูลทุกอย่าง
 Button_Restore: คืนค่า
-Button_OpenBackup: เปิดโฟลเดอร์สำรอง
-Settings_Shortcut: ' {platform} Switcher ทางลัดบนเดสก์ท็อป'
+Button_OpenBackup: เปิดโฟลเดอร์สำรองข้อมูล
+Button_Back: ย้อนกลับ
+Button_RestartAdmin: เริ่มต้นใหม่ในฐานะผู้ดูแลระบบ
+Button_SetPassword: ตั้งรหัสผ่านแอพ
+Settings_Shortcut: ' {platform} ทางลัดไปยังเดสก์ท็อปของ Switcher'
 Settings_Admin: เรียกใช้ {platform} ในฐานะผู้ดูแลระบบ
-Settings_ImageExpiry: 'วันก่อนรูปโปรไฟล์จะหมดอายุ:'
-Settings_Header_AppWide: การตั้งค่าทั้งแอป
+Settings_ImageExpiry: 'วันก่อนที่ภาพโปรไฟล์จะหมดอายุ:'
+Settings_SteamAPIKey: "คีย์ API ของเว็บ Steam (ไม่บังคับ)"
+Settings_SteamAPIKey_Note: การตั้งค่าคีย์ API จะทำให้ตัวบ่งชี้แบบจำกัด (กรอบสีเหลือง) แสดงสำหรับบัญชีที่ถูกห้ามโดยชุมชนแทน
+Settings_Header_AppWide: การตั้งค่าทั้งแอพ
 Settings_Header_GeneralSettings: การตั้งค่าทั่วไป
+Settings_Header_AccountDisplay: การตั้งค่าการแสดงบัญชี
 Settings_Header_ExtraPlatforms: การตั้งค่าแพลตฟอร์ม
 Settings_Header_GeneralTools: เครื่องมือทั่วไป
 Settings_Header_OtherTools: เครื่องมืออื่นๆ
 Settings_Header_TraySettings: การตั้งค่าถาด
 Settings_Header_OpenGameFolders: เปิดโฟลเดอร์เกม
-Settings_Header_BackupRestore: สำรองและกู้คืนการตั้งค่าแพลตฟอร์ม
+Settings_Header_BackupRestore: การสำรองข้อมูลและคืนค่าการตั้งค่าแพลตฟอร์ม
 Settings_Header_Language: ภาษา
 Settings_Header_System: ระบบ
-Settings_Header_Theme: ธีม
+Settings_Header_Theme: ชุดรูปแบบ
 Settings_Header_Program: โปรแกรม
 Settings_Header_StatsSharing: สถิติและการแบ่งปัน
 Settings_Header_Platform: "{platformName} การตั้งค่า"
-Settings_TrayMax: 'จำนวนบัญชีสูงสุดที่ต้องจำ:'
-Settings_ExtraPlatformsDisabled: แพลตฟอร์มที่ปิดการใช้งาน คลิกเพื่อเปิดใช้งาน
-Settings_ExtraPlatformsEnabled: แพลตฟอร์มที่มองเห็นได้ คลิกเพื่อปิดการใช้งาน
-Settings_RTL: แสดงข้อความเป็นขวาไปซ้าย
+Settings_Header_GameStats: การตั้งค่าสถิติเกมทั่วโลก
+Settings_GameStats: สิ่งที่ทำเครื่องหมายที่นี่จะไม่แสดงใต้ชื่อผู้ใช้ของคุณสำหรับบัญชีใดๆใช้สิ่งนี้หากคุณซ่อนรายการบางรายการจากสถิติเกมของคุณบ่อยครั้ง
+Settings_TrayMax: 'จำนวนสูงสุดของบัญชีที่ต้องจดจำ:'
+Settings_ExtraPlatformsDisabled: แพลตฟอร์มที่ถูกปิดใช้งานคลิกเพื่อเปิดใช้งาน
+Settings_ExtraPlatformsEnabled: แพลตฟอร์มที่มองเห็นได้คลิกเพื่อปิดใช้งาน
+Settings_RTL: แสดงข้อความเป็นจากขวาไปซ้าย
 Settings_CollectStats: เก็บสถิติ
-Settings_ShareStats: แชร์สถิติน่ารำคาญ (แนะนำ)
-Settings_DiscordRpc: ความไม่ลงรอยกัน Rich Presence (RPC)
-Settings_DiscordRpcShare: แชร์สวิตช์ทั้งหมด
+Settings_ShareStats: แบ่งปันสถิติอย่างน่ารำคาญ (แนะนำ)
+Settings_DiscordRpc: การปรากฏตัวของ Discord Rich (RPC)
+Settings_DiscordRpcShare: แชร์สวิทช์ทั้งหมด
 Settings_ViewStats: ดูสถิติ
+Preview: ดูตัวอย่าง
 Settings_ClearStats: รีเซ็ต
 Settings_CurrentLocation: 'ตำแหน่งการติดตั้งปัจจุบัน: {path}'
 Settings_CurrentDataLocation: 'ตำแหน่งข้อมูลผู้ใช้ปัจจุบัน: {path}'
 Settings_SetDataLocation: "[ตั้งค่าตำแหน่งข้อมูลผู้ใช้ที่กำหนดเอง]"
-Settings_PickFolder: เลือก {platform} โฟลเดอร์
-Settings_OpenFolder: เปิด {platform} โฟลเดอร์
-Settings_ClearForgotten: ล้างลืม
-Settings_ClearAccounts: เคลียร์บัญชี
+Settings_PickFolder: เลือกโฟลเดอร์ {platform}
+Settings_OpenFolder: เปิดโฟลเดอร์ {platform}
+Settings_ClearForgotten: ล้างข้อมูลที่ถูกลืม
+Settings_ClearAccounts: ล้างบัญชี
 Settings_StreamerMode: เปิดใช้งานโหมดสตรีมเมอร์
-Settings_ExitToTray: ออก ย่อขนาดไปที่ถาด
-Settings_DesktopShortcut: ทางลัดบนเดสก์ท็อป
-Settings_StartMenu_ProgramTray: โปรแกรม & ถาด
+Settings_ExitToTray: ออกจากถาดให้น้อยที่สุด
+Settings_DesktopShortcut: ทางลัดไปยังพื้นที่ทำงาน
+Settings_StartMenu_ProgramTray: โปรแกรมและถาด
 Settings_StartMenu_Platform: แพลตฟอร์ม
-Settings_Tray_StartWindows: เริ่มถาดด้วย Windows
-Settings_Tray_StartNow: '[เริ่มถาดทันที]'
-Settings_CurrentStyle: สไตล์ปัจจุบัน
+Settings_Tray_StartWindows: เริ่มต้นถาดด้วย Windows
+Settings_Tray_StartNow: '[เริ่มถาดตอนนี้]'
+Settings_CurrentStyle: รูปแบบปัจจุบัน
 Settings_ThemeBackground: '[ตั้งค่าพื้นหลัง]'
-Settings_ThemeOpenFolder: '[เปิดโฟลเดอร์ธีม]'
+Settings_ThemeOpenFolder: '[เปิดโฟลเดอร์ธีมของคุณ]'
 Settings_Protocol: 'เปิดใช้งานโปรโตคอล tcno:\\ (แนะนำ)'
-Settings_StartCentered: เริ่มโปรแกรมศูนย์กลาง
-Settings_WindowsAccent: ใช้ Windows Accent Color
+Settings_StartCentered: เริ่มต้นโปรแกรมที่อยู่ตรงกลาง
+Settings_WindowsAccent: ใช้สีของวินโดวส์แอคเซนท์
 Settings_HelpTranslate: "[ช่วยแปล]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(ขั้นสูง) ตั้งค่าเอ็นจิ้นการเรนเดอร์:"
+Settings_Header_ActiveBrowser: "(ขั้นสูง) ตั้งค่ากลไกการแสดงผล:"
 Settings_Header_ClosingMethod: "(ขั้นสูง) ตั้งค่าวิธีการปิด {platform}"
-Settings_Header_StartingMethod: "(ขั้นสูง) ตั้งค่าวิธีการเริ่มต้น {platform}"
-Settings_AutoStart: "เริ่ม {platform} โดยอัตโนมัติเมื่อเปลี่ยนบัญชี"
-Settings_NoPlatforms: ขณะนี้ไม่มีแพลตฟอร์มที่เปิดใช้งาน โปรดทำเครื่องหมายที่แพลตฟอร์มเสริมด้านล่างเพื่อเปิดใช้งาน หรือยกเลิกการเลือกแพลตฟอร์มที่ปิดใช้งาน
-Settings_MinimizeOnSwitch: ย่อตัวสลับที่สวิตช์บัญชี
+Settings_Header_StartingMethod: "(ขั้นสูง) ตั้งค่าวิธีการเพื่อเริ่มต้น {platform}"
+Settings_AutoStart: "เริ่ม {platform} โดยอัตโนมัติเมื่อมีการสลับบัญชี"
+Settings_NoPlatforms: ขณะนี้ยังไม่มีการเปิดใช้งานแพลตฟอร์มโปรดเลือกแพลตฟอร์มตัวเลือกด้านล่างเพื่อเปิดใช้งานหรือยกเลิกการเลือกแพลตฟอร์มที่ปิดใช้งาน
+Settings_MinimizeOnSwitch: ลดตัวสลับให้เหลือน้อยที่สุดเมื่อมีการสลับบัญชี
+Settings_ShowShortNotes: หมายเหตุแสดงตัวอย่างภายใต้ชื่อผู้ใช้
+Settings_Header_AppPassword: "หยุดผู้อื่นโดยใช้ตัวสลับ:"
+PreviewCss: ดูตัวอย่าง CSS
+Settings_PreviewCss: นี่คือหน้าตัวอย่าง CSS คุณสามารถดูองค์ประกอบบางอย่างที่ปรากฏขึ้นในโปรแกรมและดูว่าธีมของคุณมีหน้าตาเป็นอย่างไรหน้านี้มีประโยชน์สำหรับผู้ที่สร้างธีม!
+Settings_PreviewCssHeader: หน้าตัวอย่าง CSS
 Stats_Disabled: "การเก็บสถิติถูกปิดใช้งาน"
 Stats_InDepth: รายละเอียดสถิติเชิงลึก
-Stats_ShareEnabled: "สถิติเหล่านี้ถูกแบ่งปันโดยไม่ระบุชื่อและจะเพิ่มเป็น <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">ทั้งหมดที่นี่</a>"
-Stats_ShareDisabled: "สถิติเหล่านี้จะไม่ถูกแบ่งปันโดยไม่เปิดเผยตัวตนและจะไม่บวกกับจำนวนทั้งหมด <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">ที่นี่</a>"
+Stats_ShareEnabled: "สถิติเหล่านี้ถูกแบ่งปันโดยไม่ระบุตัวตนและจะรวมกับ <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">ทั้งหมดตรงนี้</a>"
+Stats_ShareDisabled: "สถิติเหล่านี้จะไม่ถูกแบ่งปันโดยไม่ระบุตัวตนและจะไม่รวมกับ <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">ทั้งหมดตรงนี้</a>"
 Stats_OperatingSystem: "ระบบปฏิบัติการ: "
 Stats_FirstLaunch: "เปิดตัวครั้งแรก: "
-Stats_LaunchCount: "จำนวนการเปิดตัว: "
-Stats_CrashCount: "จำนวนความผิดพลาด: "
+Stats_LaunchCount: "จำนวนการเริ่มต้น: "
+Stats_CrashCount: "จำนวนการชน: "
 Stats_MostUsedPlatform: "แพลตฟอร์มที่ใช้มากที่สุด: "
 Stats_TotalTime: "เวลาทั้งหมดที่ใช้ในแอพ: "
-Stats_TotalSwitches: "การสลับบัญชีทั้งหมด: "
+Stats_TotalSwitches: "สวิทช์บัญชีทั้งหมด: "
 Stats_TotalGamesLaunched: "แอพ/เกมทั้งหมดที่เปิดตัวผ่านตัวสลับ: "
-Stats_UniqueDaysLong: "วันที่ไม่ซ้ำกับการเปลี่ยนบัญชี: "
-Stats_LastUpload: "อัพโหลดล่าสุด: "
-Stats_SwitcherStats: "สถิติตัวสลับ: "
-Stats_PageStats: "สถิติหน้า: "
+Stats_UniqueDaysLong: "วันที่ไม่ซ้ำกับบัญชีที่เปลี่ยนแล้ว: "
+Stats_LastUpload: "อัปโหลดล่าสุด: "
+Stats_SwitcherStats: "สถิติของ Switcher: "
+Stats_PageStats: "สถิติหน้าเว็บ: "
 Stats_VisitsTotalTime: "เข้าชมทั้งหมด {visits} ครั้ง, ทั้งหมด {hours} ครั้ง"
 Stats_Accounts: "บัญชี: "
-Stats_Switches: "สวิตช์: "
+Stats_Switches: "สวิทช์: "
 Stats_FirstActive: "เปิดใช้งานครั้งแรก: "
-Stats_LastActive: "ใช้งานล่าสุด: "
-Stats_UniqueDays: "วันที่ไม่ซ้ำ: "
-Stats_GameShortcuts: "ทางลัดเกม: "
-Stats_GameShortcutsHotbar: "ทางลัดเกม (บนแถบลัด): "
+Stats_LastActive: "ใช้งานครั้งล่าสุด: "
+Stats_UniqueDays: "วันที่ไม่ซ้ำกัน: "
+Stats_GameShortcuts: "ทางลัดสำหรับเกม: "
+Stats_GameShortcutsHotbar: "ทางลัดสำหรับเกม (บน hotbar): "
 Stats_GamesLaunched: "เกมที่เปิดตัว: "
-Cleaning_Header_StartMenuShortcuts: 'ทางลัดสำหรับเมนูเริ่ม:'
-Cleaning_Header_General: ทำความสะอาดทั่วไป
-Cleaning_Header_LoginHistory: ล้างประวัติการเข้าสู่ระบบของฉัน
-Cleaning_Header_PlatformCleaning: '{platform} ตัวสลับ'
+Stats_MetricsToShow: "เมตริกที่แสดง:"
+Stats_AccountId: "ID บัญชี:"
+Auth_LoginRequired: ก่อนหน้านี้มีการตั้งค่ารหัสผ่านและจำเป็นต้องใช้โปรดป้อนรหัสผ่านด้านล่าง
+Auth_EnterPassword: "ป้อนรหัสผ่าน:"
+Auth_PassIncorrect: รหัสผ่านไม่ถูกต้อง
+Locked: ถูกล็อก
+Cleaning_Header_StartMenuShortcuts: 'ปุ่มพิมพ์ลัดสำหรับเมนูเริ่มต้น:'
+Cleaning_Header_General: การทำความสะอาดทั่วไป
+Cleaning_Header_LoginHistory: ทำความสะอาดประวัติการเข้าสู่ระบบของฉัน
+Cleaning_Header_PlatformCleaning: '{platform} สวิตเชอร์ (Switcher)'
 Cleaning_ImportantInfoHeader: 'ข้อมูลสำคัญ:'
 Cleaning_ImportantInfo: >
-  การคลิกปุ่มจะลบไฟล์ที่เกี่ยวข้องออกจากการติดตั้ง Steam ของคุณ<br /> การลบ loginusers.vdf จะส่งผลให้ตัวสลับบัญชีนี้ไม่แสดงบัญชี<br /> คุณจะต้องลงชื่อเข้าใช้พวกเขาโดยใช้ Steam เพื่อกู้คืน
-Cleaning_Button_KillProcess: ฆ่า {platform} กระบวนการ
-Cleaning_Button_ForgottenBackups: ลืมสำรองข้อมูลบัญชี
-Cleaning_Understand: ฉันเข้าใจว่าปุ่มเหล่านี้ทำอะไร
+  การคลิกที่ปุ่มจะลบไฟล์ที่เกี่ยวข้องจากการติดตั้ง Steam ของคุณ<br /> การลบ loginusers.vdf จะส่งผลให้ตัวสลับบัญชีนี้ไม่แสดงบัญชี<br /> คุณจะต้องเข้าสู่ระบบโดยใช้ Steam เพื่อรับพวกเขากลับมา
+Cleaning_Button_KillProcess: กระบวนการ Kill {platform}
+Cleaning_Button_ForgottenBackups: การสำรองข้อมูลบัญชีที่ถูกลืม
+Cleaning_Understand: ฉันเข้าใจว่าปุ่มพวกนี้ทำอะไร
 Restore_Info: >
-  หากก่อนหน้านี้คุณ "ลืม" บัญชี คุณสามารถกู้คืนได้ที่นี่<br /> สิ่งนี้จะเพิ่มกลับเข้าไปในไฟล์ loginusers.vdf ของคุณ ทำให้คุณสามารถเปลี่ยนไปใช้ไฟล์เหล่านี้ได้
-Restore_Button_Restore: คืนค่าที่เลือก
+  หากคุณเคย "ลืม" บัญชีมาก่อนคุณสามารถเรียกคืนบัญชีเหล่านั้นได้ที่นี่<br /> ซึ่งจะเพิ่มบัญชีเหล่านั้นกลับเข้าไปในไฟล์ loginusers.vdf ของคุณซึ่งจะทำให้คุณสามารถสลับไปยังบัญชีเหล่านั้นได้
+Restore_Button_Restore: เรียกคืนค่าที่เลือกไว้
 Ignored_RemoveAccounts: ลบบัญชีออกจากรายการที่ไม่สนใจ
-Ignored_Description: หากก่อนหน้านี้คุณ "ละเลย" บัญชี คุณสามารถแสดงอีกครั้งได้ที่นี่
-Ignored_Stop: หยุดละเว้นที่เลือก
-Toast_DataLocationCopying: (1/2) กำลังคัดลอกไฟล์ที่มีอยู่ไปยังโฟลเดอร์ข้อมูลผู้ใช้ใหม่!
-Toast_DataLocationNotCopying: (1/2) โฟลเดอร์มีไฟล์แล้ว! จะไม่ย้ายข้อมูลผู้ใช้
-Toast_DataLocationSet: (2/2) รีสตาร์ทตัวสลับบัญชีเพื่อใช้โฟลเดอร์ใหม่!
-Toast_PlaceShortcutFiles: กำลังเปิดโฟลเดอร์ วางทางลัดของเกมในโฟลเดอร์นั้น และรีสตาร์ทตัวสลับบัญชี
-Toast_TrayStarted: เริ่มถาด!
-Toast_TrayRunning: ถาดเปิดแล้ว
-Toast_TrayUsersMissing: ไม่มีผู้ใช้ถาดที่บันทึกไว้
-Toast_TrayFail: ไม่สามารถเริ่มแอปพลิเคชันถาดได้!
-Toast_TrayPosition: "เมื่อคลิกปุ่มออก: ฉันจะอยู่บนถาด Windows! (ด้านขวาของแถบสตาร์ท)"
-Toast_TrayHint: "คำแนะนำ: Ctrl+คลิก 'X' เพื่อปิดฉันอย่างสมบูรณ์ หรือผ่านทางถาด > 'ออก'"
+Ignored_Description: หากคุณ "เพิกเฉย" บัญชีก่อนหน้านี้คุณสามารถแสดงบัญชีเหล่านั้นอีกครั้งที่นี่
+Ignored_Stop: หยุดเพิกเฉยต่อสิ่งที่เลือก
+Toast_DataLocationCopying: (1/2) การคัดลอกไฟล์ที่มีอยู่ไปยังโฟลเดอร์ข้อมูลผู้ใช้ใหม่!
+Toast_DataLocationNotCopying: (1/2) โฟลเดอร์มีไฟล์อยู่แล้ว! จะไม่ย้ายข้อมูลผู้ใช้
+Toast_DataLocationSet: (2/2) รีสตาร์ทเครื่องสลับบัญชีเพื่อใช้โฟลเดอร์ใหม่!
+Toast_PlaceShortcutFiles: โฟลเดอร์กำลังเปิดอยู่วางทางลัดเกมไว้ในโฟลเดอร์นั้นแล้วรีสตาร์ทตัวสลับบัญชี
+Toast_TrayStarted: ถาดเริ่มแล้ว!
+Toast_TrayRunning: ถาดเปิดอยู่แล้ว
+Toast_TrayUsersMissing: ไม่มีผู้ใช้งานในถาดที่บันทึกไว้
+Toast_TrayFail: ไม่สามารถเริ่มแอปพลิเคชันบนถาดได้!
+Toast_TrayPosition: "เมื่อคลิกปุ่มออก: ฉันจะอยู่บน Windows Tray! (ด้านขวาของแถบเริ่มต้น)"
+Toast_TrayHint: "เคล็ดลับ: Ctrl + คลิก 'X' เพื่อปิดฉันอย่างสมบูรณ์หรือผ่านถาด > 'ออก'"
 Toast_Copied: คัดลอกแล้ว
-Toast_AlreadyProcessing: กำลังประมวลผลบัญชีอยู่แล้ว...
-Toast_FailedRestore: ไม่สามารถกู้คืนบัญชีได้ (ดูคอนโซล)
-Toast_Restored: กู้คืนบัญชี!
-Toast_ProtocolEnabled: โปรแกรมนี้จะตอบสนองต่อ tcno:\\ ใน Windows
-Toast_ProtocolEnabledTitle: เพิ่มโปรโตคอล
-Toast_ProtocolDisabled: โปรแกรมนี้จะไม่ตอบสนองต่อ tcno:\\
-Toast_ProtocolDisabledTitle: โปรโตคอลถูกลบออก
-Toast_RestartAsAdmin: โปรดเริ่มต้นในฐานะผู้ดูแลระบบแล้วลองอีกครั้ง
+Toast_AlreadyProcessing: กำลังประมวลผลบัญชีอยู่...
+Toast_FailedRestore: การกู้คืนบัญชีล้มเหลว (ดูคอนโซล)
+Toast_Restored: บัญชีที่กู้คืนแล้ว!
+Toast_ProtocolEnabled: ตอนนี้โปรแกรมนี้จะตอบสนองต่อ tcno:\\ ใน Windows
+Toast_ProtocolEnabledTitle: เพิ่มโปรโตคอลแล้ว
+Toast_ProtocolDisabled: โปรแกรมนี้จะไม่ตอบสนองต่อ tcno อีกต่อไป:\\
+Toast_ProtocolDisabledTitle: ลบโปรโตคอลแล้ว
+Toast_RestartAsAdmin: โปรดเริ่มต้นในฐานะผู้ดูแลระบบและลองอีกครั้ง
 Toast_RestartAfterClose: โปรดรีสตาร์ทโปรแกรมหลังจากคลิกปิด
-Toast_RestartAfterCloseTitle: ปิดใช้งานสีเน้นเสียง
+Toast_RestartAfterCloseTitle: สีเน้นปิดการใช้งาน
 Toast_RestartRequired: รีสตาร์ทเพื่อใช้การเปลี่ยนแปลง
-Toast_LoadStylesheetFailed: ไม่สามารถโหลดสไตล์ชีต! ดูโฟลเดอร์ข้อมูลผู้ใช้สำหรับรายละเอียด
-Toast_BNet_Private: "โปรไฟล์ของ {BTag}เป็นแบบส่วนตัว"
-Toast_BNet_StatsFail: "เกิดข้อผิดพลาดในการพยายามรับสถิติสำหรับ {BTag}"
-Toast_BNet_CantSwapAccounts: ไม่สามารถสลับบัญชีได้ (ไฟล์ Battle.net.config เสียหาย)
-Toast_BNet_CantLoadNotFound: ไม่พบ Battle.net.config
-Toast_BNet_CantLoadEmpty: ไม่สามารถโหลดไฟล์บัญชีสำหรับ Blizzard (ไม่พบบัญชี)
-Toast_BNet_CantLoadConfigCorrupt: ไม่สามารถโหลดไฟล์บัญชีสำหรับ Blizzard (ไฟล์ Battle.net.config เสียหาย)
-Toast_BNet_NamePolicy: BattleTag ไม่ตรงกับนโยบายการตั้งชื่อ
+Toast_LoadStylesheetFailed: ไม่สามารถโหลดสไตล์ชีต! ดูรายละเอียดในโฟลเดอร์ข้อมูลผู้ใช้
+Toast_LoadingStats: โปรไฟล์อย่างน้อยหนึ่งโปรไฟล์กำลังรีเฟรชสถิติโปรดรอสักครู่
 Toast_ItemNotFound: "ไม่พบ {item}"
-Toast_DeletedTotal: "{files} จาก {totalFiles} ถูกลบ รวม: {totalSize}"
+Toast_DeletedTotal: "{files} จาก {totalFiles} ลบแล้วทั้งหมด: {totalSize}"
 Toast_CantChangeUsername: ไม่สามารถเปลี่ยนชื่อผู้ใช้
-Toast_CantClearLoginFiles: ไม่สามารถล้างไฟล์เข้าสู่ระบบเก่า
-Toast_AccountIdReg: ไม่สามารถรับ ID บัญชีจาก Registry!
-Toast_RegFailWrite: ไม่สามารถเขียนไปยัง Windows Regsitry!
-Toast_RegFailRead: ไม่สามารถอ่านจากรีจิสทรีของ Windows!
-Toast_RegFailReadSaved: ไม่สามารถอ่านรายการรีจิสทรีที่บันทึกไว้ ลองลบและเพิ่มบัญชีอีกครั้งหากไม่สำเร็จ
-Toast_RegSaveMissing: ค้นหาหรืออ่านข้อมูลจากไฟล์ Registry ที่บันทึกไว้ล้มเหลว!
-Toast_DuplicateNames: ไม่สามารถแลกเปลี่ยนได้ บัญชีซ้ำกับชื่อผู้ใช้เดียวกัน?
-Toast_MissingUserId: "ไม่สามารถแลกเปลี่ยนได้ ไม่มี ID ผู้ใช้ ตรวจสอบ Wiki 'ข้อผิดพลาดทั่วไป'"
-Toast_CouldNotLocate: ไม่พบผู้ใช้ที่เข้าสู่ระบบ
-Toast_StreamerModeHint: ข้อมูลส่วนตัวถูกซ่อน! - ดูการตั้งค่า
+Toast_CantClearLoginFiles: ล้มเหลวในการล้างไฟล์เข้าสู่ระบบเก่า
+Toast_AccountIdReg: ล้มเหลวในการรับ ID บัญชีจากรีจิสทรี!
+Toast_RegFailWrite: ล้มเหลวในการเขียนไปยัง Windows Regsitry!
+Toast_RegFailRead: ล้มเหลวในการอ่านจาก Regsitry ของ Windows!
+Toast_RegFailReadSaved: ล้มเหลวในการอ่านรายการรีจิสทรีที่บันทึกไว้ลองลบและเพิ่มบัญชีอีกครั้งหากไม่สำเร็จ
+Toast_RegSaveMissing: ล้มเหลวในการค้นหาหรืออ่านข้อมูลจากไฟล์รีจิสทรีที่บันทึกไว้!
+Toast_DuplicateNames: ไม่สามารถสลับบัญชีซ้ำกับชื่อผู้ใช้เดียวกันได้ใช่หรือไม่
+Toast_MissingUserId: "ไม่สามารถสลับได้ ID ผู้ใช้หายไปตรวจสอบ 'ข้อผิดพลาดทั่วไป' ในวิกิ"
+Toast_CouldNotLocate: ไม่สามารถค้นหาผู้ใช้ที่เข้าสู่ระบบ
+Toast_StreamerModeHint: ข้อมูลส่วนตัวถูกซ่อนไว้! - ดูการตั้งค่า
 Toast_StreamerModeTitle: โหมดสตรีมเมอร์
-Toast_AddAccountsFirst: เปิดแพลตฟอร์มจากรายการและเพิ่มบัญชีสองสามบัญชีก่อน
+Toast_AddAccountsFirst: เปิดแพลตฟอร์มจากรายการและเพิ่มบัญชีก่อน
 Toast_AddAccountsFirstTitle: ไม่มีบัญชีที่บันทึกไว้
-Toast_CantFindImage: ไม่พบรูปภาพของผู้ใช้
-Toast_CantCreateShortcut: สร้างทางลัดไม่ได้
+Toast_CantFindImage: การค้นหาภาพของผู้ใช้ล้มเหลว
+Toast_CantCreateShortcut: ไม่สามารถสร้างทางลัดได้
 Toast_ShortcutCreated: สร้างทางลัดแล้ว!
-Toast_FailedUpdateCheck: ไม่สามารถตรวจสอบการอัปเดต
-Toast_UpdateVerifyFail: ตรวจสอบไฟล์ตัวอัปเดตไม่ได้ ดาวน์โหลดเวอร์ชันล่าสุดและแทนที่ไฟล์ในไดเร็กทอรีของคุณ
-Toast_StartedGame: เริ่มแล้ว {program}
-Toast_Steam_VacCleared: สถานะ VAC สำหรับบัญชีถูกล้าง
+Toast_SettingsCopied: คัดลอกการตั้งค่าไปยังบัญชีปัจจุบันเรียบร้อยแล้ว
+Toast_GameDataRestored: กู้คืนข้อมูลเกมสำหรับบัญชีนี้สำเร็จแล้ว
+Toast_NoValidSteamId: ไม่พบรหัส Steam ที่ถูกต้อง
+Toast_FailedUpdateCheck: การตรวจสอบการอัปเดตล้มเหลว
+Toast_UpdateVerifyFail: ไม่สามารถยืนยันไฟล์ผู้ให้ข้อมูลได้ดาวน์โหลดเวอร์ชันล่าสุดและแทนที่ไฟล์ในไดเรกทอรีของคุณ
+Toast_StartedGame: เริ่มต้น {program}
+Toast_Steam_VacCleared: ล้างสถานะ VAC สำหรับบัญชีแล้ว
 Toast_Steam_CantDeleteVacCache: ไม่สามารถลบ 'LoginCache/Steam/VACCache/SteamVACCache.json'
-Toast_NoFindSteamUserdata: ไม่พบโฟลเดอร์ Steam\\userdata
-Toast_Steam_VdfLast: สามารถโหลดจาก vdf_last บางบัญชีอาจหายไป
+Toast_NoFindSteamUserdata: ไม่พบโฟลเดอร์ Steam\\ userdata
+Toast_NoFindGameBackup: ไม่พบโฟลเดอร์ข้อมูลเกมสำรองสำหรับบัญชีนี้
+Toast_GameBackupDone: "การสำรองข้อมูลโฟลเดอร์เกมสำเร็จ: {folderLocation}"
+Toast_Steam_VdfLast: สามารถโหลดได้จาก vdf_last บัญชีบางบัญชีอาจขาดหายไป
 Toast_PartiallyFixed: แก้ไขบางส่วน
-Toast_Steam_FailedLoginusers: โหลด steam/config/loginusers.vdf . ไม่สำเร็จ
-Toast_Steam_CantLocateLoginusers: ไม่พบ '.../Steam/config/loginusers.vdf' ลองลงชื่อเข้าใช้บัญชีก่อน
+Toast_Steam_FailedLoginusers: ไม่สามารถโหลด steam/config/loginusers.vdf
+Toast_Steam_CantLocateLoginusers: ไม่สามารถค้นหา '.../Steam/config/loginusers.vdf' ลองลงชื่อเข้าใช้บัญชีก่อน
 Toast_CantClearImages: ล้างภาพไม่ได้
-Toast_RefreshedImages: รูปภาพที่รีเฟรช
+Toast_RefreshedImages: ภาพที่รีเฟรชแล้ว
 Toast_ClearForgottenCheck: คุณแน่ใจหรือไม่ว่าต้องการล้างข้อมูลสำรองของบัญชีที่ถูกลืม
-Toast_BattleNet_ChangedBTag: เปลี่ยน BattleTag
-Toast_BattleNet_DeletedBTag: ลบ BattleTag
-Toast_FetchedRank: ดึงอันดับ
-Toast_ForgotAccount: ลืมบัญชี
-Toast_ClearedPlatformSettings: "ล้างแล้ว {platform} การตั้งค่าตัวสลับ"
-Toast_ClearedImages: "ล้างภาพ"
+Toast_ForgotAccount: ลืมบัญชีผู้ใช้
+Toast_ClearedPlatformSettings: "ล้างการตั้งค่า Switcher {platform} แล้ว"
+Toast_ClearedImages: "ล้างรูปภาพแล้ว"
 Toast_SavedItem: "บันทึกแล้ว: {item}"
-Toast_ChangedUsername: เปลี่ยนชื่อผู้ใช้
-Toast_SetUsername: ตั้งค่าชื่อผู้ใช้
-Toast_AlreadyLoggedIn: เข้าสู่ระบบด้วยบัญชีนี้แล้ว! (ไม่ได้ดำเนินการเปลี่ยนแปลง)
-Toast_BackupCopy: (1/3) กำลังคัดลอกไฟล์ไปยังตำแหน่งชั่วคราว...
-Toast_BackupCompress: (2/3) การบีบอัดไฟล์ ({size}) จะใช้เวลาสักครู่...
-Toast_BackupComplete: (3/3) บีบอัดเสร็จแล้ว! ({size} ถึง {compressedSize})
+Toast_ChangedUsername: เปลี่ยนชื่อผู้ใช้แล้ว
+Toast_SetUsername: ตั้งชื่อผู้ใช้
+Toast_AlreadyLoggedIn: เข้าสู่ระบบด้วยบัญชีนี้แล้ว! (ไม่มีการเปลี่ยนแปลงการดำเนินการ)
+Toast_BackupCopy: (1/3) การคัดลอกไฟล์ไปยังตำแหน่งชั่วคราว...
+Toast_BackupCompress: (2/3) การบีบอัดไฟล์ ({size}) นี่คงต้องใช้เวลาสักพัก...
+Toast_BackupComplete: (3/3) อัดเสร็จแล้ว! ({size} ต่อ {compressedSize})
 Toast_BackupProgress: "กำลังสำรองข้อมูล (ขนาดบีบอัด: {compressedSize})"
 Toast_BackupFail: การสำรองข้อมูลล้มเหลว - ดูบันทึก!
-Toast_BackupBusy: กำลังสำรองข้อมูลอยู่!
-Toast_RestoreBusy: อยู่ระหว่างการกู้คืน!
-Toast_RestoreExt: กำลังแยกไฟล์เก็บถาวร
-Toast_RestoreCopying: การย้ายไฟล์กลับเข้าสู่แพลตฟอร์ม
-Toast_RestoreDeleting: การลบไฟล์ชั่วคราว
-Toast_RestoreComplete: คืนค่าเสร็จแล้ว!
-Toast_FailedLoad: ไม่สามารถโหลด {platform}! คลิกแพลตฟอร์มเพื่อดูข้อผิดพลาด
-Toast_FailedPlatformsLoad: โหลด Platforms.json ไม่สำเร็จ! โปรดตรวจสอบว่ามีไฟล์นี้อยู่
-Toast_FailedLoadSettings: "โหลดการตั้งค่าไม่สำเร็จ! กำลังโหลดการตั้งค่าเริ่มต้นแทน การเพิ่ม 'เก่า' ให้กับชื่อไฟล์การตั้งค่าที่มีอยู่"
-Toast_FailedLoadStats: "ไม่สามารถโหลดสถิติได้! เริ่มต้นกันสดๆ"
-Toast_FileCopyFail: คัดลอกไฟล์ไม่สำเร็จ! ดูบันทึกสำหรับรายละเอียดเพิ่มเติม
-Toast_UserDataLoadFail: โหลด userdata {UserData}\\WindowSettings.json ไม่สำเร็จ กำลังสำรองและรีเซ็ต! บันทึกข้อผิดพลาดในการเข้าสู่ระบบ
-Toast_UpdateCheckFail: ไม่สามารถเข้าถึง https://tcno.co/ เพื่อตรวจสอบการอัปเดต ข้อความนี้จะแสดงวันละครั้ง
-Toast_FailedCreateIcon: ไม่สามารถสร้างไอคอน ดูบันทึกสำหรับรายละเอียด
-Tooltip_Restore: คลิกเพื่อเลือกไฟล์ 7z หรือลากไปไว้บนปุ่มนี้
-Modal_Crowdin_Header: นักแปล Crowdin
-Modal_Crowdin_Info: "นี่คือทุกคนที่ช่วยแปลซอฟต์แวร์นี้<br>ผู้ใช้ที่มีภาษาอยู่ข้างๆ ช่วยได้มากในการแปล (บทบาทผู้ตรวจทาน)"
-Modal_Info_Creator: สร้างโดย TechNobo [Wesley Pyburn]
-Modal_Info_Version: เวอร์ชั่น
+Toast_BackupBusy: กำลังสำรองอยู่!
+Toast_RestoreBusy: กำลังดำเนินการกู้คืนอยู่!
+Toast_RestoreExt: กำลังแตกแฟ้มจัดเก็บ
+Toast_RestoreCopying: การย้ายไฟล์กลับไปยังแพลตฟอร์ม
+Toast_RestoreDeleting: กำลังลบไฟล์ชั่วคราว
+Toast_RestoreComplete: กู้คืนเสร็จแล้ว!
+Toast_FailedLoad: โหลด {platform}ไม่สำเร็จ! คลิกแพลตฟอร์มเพื่อดูข้อผิดพลาด
+Toast_FailedPlatformsLoad: ไม่สามารถโหลด Platforms.json! โปรดตรวจสอบว่าไฟล์นี้มีอยู่แล้ว
+Toast_FailedLoadSettings: "ไม่สามารถโหลดการตั้งค่า! กำลังโหลดการตั้งค่าเริ่มต้นแทนการเพิ่ม 'เก่า' ไปยังชื่อแฟ้มการตั้งค่าที่มีอยู่"
+Toast_FailedLoadStats: "ไม่สามารถโหลดสถิติ! เริ่มต้นใหม่"
+Toast_FailedStatsLoad: ไม่สามารถโหลด GameStats.json! โปรดตรวจสอบว่าไฟล์นี้มีอยู่แล้ว
+Toast_GameStatsLoadFail: "ไม่สามารถรับสถิติเกมจากเว็บเป็นเวลา {Game}"
+Toast_GameStatsEmpty: "ไม่พบสถิติเกมบนเว็บไซต์สำหรับ {Game}คิดว่ามันเป็นข้อผิดพลาดหรือไม่ตรวจสอบโฟลเดอร์ userdata และ '\\ temp download -{AccoundId}-{Game}.html 'เพื่อดูว่าหน้าเว็บมีข้อผิดพลาดหรือไม่!"
+Toast_FileCopyFail: ล้มเหลวในการคัดลอกไฟล์! ดูรายละเอียดเพิ่มเติมที่บันทึก
+Toast_UserDataLoadFail: ไม่สามารถโหลดข้อมูลผู้ใช้ {UserData}\\ WindowSettings.json การสำรองข้อมูลและการรีเซ็ต! บันทึกข้อผิดพลาดเพื่อบันทึก
+Toast_UpdateCheckFail: ไม่สามารถติดต่อ https://tcno.co/ เพื่อตรวจสอบการอัปเดตข้อความนี้จะแสดงวันละครั้ง
+Toast_FailedCreateIcon: การสร้างไอคอนล้มเหลวดูรายละเอียดในบันทึก
+Toast_SameAccount: ไม่สามารถคัดลอกไฟล์ไปยัง/จากบัญชีเดียวกันได้ลองใช้บัญชีอื่นหรือดูข้อมูลเพิ่มเติมที่ Wiki
+Toast_Steam_DownloadingAppIds: กำลังดาวน์โหลดรายการ AppId ของ Steam...
+Toast_Steam_DownloadingAppIdsComplete: ดาวน์โหลดเสร็จแล้วเมนูย่อยข้อมูลเกมได้รับการอัปเดตแล้ว
+Toast_SteamWebKeyInvalid: คีย์ API ของเว็บ Steam ดูเหมือนจะไม่ถูกต้องโปรดตั้งค่าใหม่
+Toast_DownloadingProfileData: กำลังดาวน์โหลดข้อมูลโปรไฟล์
+Toast_PasswordChanged: เปลี่ยนรหัสผ่านแล้ว
+Toast_JsonFailModify: ไม่สามารถแก้ไขไฟล์ JSON ดูบันทึกการทำงาน
+Modal_Crowdin_Header: Crowdin Translators
+Modal_Crowdin_Info: "นี่คือทุกคนที่ช่วยแปลซอฟต์แวร์นี้<br>ผู้ใช้ที่มีภาษาถัดจากพวกเขาช่วยในการแปลมาก (บทพิสูจน์อักษร)"
+Modal_Info_Creator: สร้างสรรค์โดยเทคโนโบ [เวสลีย์ไพเบิร์น]
+Modal_Info_Version: เวอร์ชัน
 Modal_Info_ViewGitHub: ดูบน GitHub
-Modal_Info_BugReport: รายงานข้อผิดพลาด/คำขอคุณสมบัติ
+Modal_Info_BugReport: รายงานข้อผิดพลาด/คำขอคุณลักษณะ
 Modal_Info_VisitSite: เยี่ยมชม tcno.co
 Modal_Info_Disclaimer: ข้อจำกัดความรับผิดชอบ
-Modal_Title_Info: ข้อมูลตัวสลับบัญชี TcNo
+Modal_Title_Info: TcNo ข้อมูลตัวสลับบัญชี
 Modal_Title_ChangeUsername: เปลี่ยนชื่อผู้ใช้
-Modal_Title_ConfirmAction: TcNo Account Switcher ยืนยันการดำเนินการ
-Modal_Title_LocatePlatform: กรุณาค้นหา {platform} ไดเรกทอรี
-Modal_Title_AddNew: เพิ่ม {platform} บัญชีใหม่
+Modal_Title_ConfirmAction: TcNo ตัวสลับบัญชียืนยันการกระทำ
+Modal_Title_LocatePlatform: โปรดค้นหาไดเรกทอรี {platform}
+Modal_Title_AddNew: เพิ่มบัญชีใหม่ {platform}
 Modal_Title_Background: ตั้งค่าภาพพื้นหลัง
 Modal_Title_Userdata: ตั้งค่าโฟลเดอร์ข้อมูลผู้ใช้
+Modal_Title_GameStats: เปิด/ปิดสถิติเกม
+Modal_GameStats_Header: "เปิดใช้งาน/ปิดใช้งานสถิติเกมสำหรับ: {accountName}"
 Modal_Title_Stats: สถิติของคุณ
-Modal_SetBackground: 'เลือกรูปภาพหรือป้อน URL ด้านล่าง<br>เว้นว่างไว้และตั้งค่าให้รีเซ็ต<br>(สำหรับการควบคุมขั้นสูงเพิ่มเติม โปรดดูที่ Theming บน Wiki):'
-Modal_SetBackground_Button: ตั้งพื้นหลัง
-Modal_SetBackground_ChooseImage: เลือกภาพท้องถิ่น
-Modal_SetUserdata: ป้อนเส้นทางโฟลเดอร์ด้านล่างแล้วคลิกตั้งค่า
+Modal_Title_GameVars: "รายละเอียดการป้อนข้อมูลสำหรับ {game}"
+Modal_GameVars_Header: "โปรดป้อนรายละเอียดต่อไปนี้สำหรับบัญชี {game} ของคุณ {username} บน {platform}"
+Modal_Title_AccountNotes: "หมายเหตุบัญชีสำหรับ: {accountName}"
+Modal_Title_SetPassword: ตั้งรหัสผ่าน
+Modal_SetBackground: 'เลือกรูปภาพหรือป้อน URL ด้านล่าง<br>เว้นว่างไว้และตั้งค่าเพื่อรีเซ็ต<br>(สำหรับการควบคุมขั้นสูงให้ดูที่ Theming บนวิกิ):'
+Modal_SetBackground_Button: ตั้งค่าพื้นหลัง
+Modal_SetBackground_ChooseImage: เลือกภาพในเครื่อง
+Modal_SetUserdata: ป้อนเส้นทางโฟลเดอร์ด้านล่างและคลิกที่ตั้ง
 Modal_SetUserdata_ChooseFolder: เลือกโฟลเดอร์
 Modal_SetUserdata_Button: ตั้งค่าข้อมูลผู้ใช้
 Modal_ChangeUsername: โปรดป้อนชื่อผู้ใช้ใหม่สำหรับบัญชีของคุณ
-Modal_ChangeUsernameType: เปลี่ยน {platform} ชื่อผู้ใช้
-Modal_EnterDirectory: "โปรดป้อนไดเรกทอรีของ {platform}เช่น: C:\\Program Files\\{platform}"
+Modal_ChangeUsernameType: เปลี่ยนชื่อผู้ใช้ {platform}
+Modal_SetPassword: ป้อนรหัสผ่านสำหรับ TcNo Account Switcher
+Modal_SetPassword_Button: ตั้งรหัสผ่าน
+Modal_SetPassword_Info: "หมายเหตุ: การดำเนินการนี้ไม่ได้เข้ารหัสบัญชีของคุณการสลับบัญชีเป็นเรื่องง่ายเช่นเดียวกับการแทนที่ไฟล์หรือการเปลี่ยนชื่อผู้ใช้ในไฟล์สามารถรีเซ็ตรหัสผ่านได้โดยการแก้ไขข้อความในไฟล์ด้วยนี่คือการรักษาความปลอดภัยที่เรียบง่ายมันจะหยุดการเข้าถึง UI ที่เรียบง่ายคุณสามารถใส่แอปนี้ลงใน USB ที่ถอดออกได้ตั้งค่าโฟลเดอร์ UserData เป็น USB เดียวกันและลบออกเพื่อความปลอดภัยมากขึ้น <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">การย้ายไปยังไดรฟ์ภายนอกคู่มือ</a><br><br>หากต้องการล้างให้ปล่อยให้โฟลเดอร์ข้างต้นว่างเปล่าและคลิกตั้งค่า"
+Modal_EnterDirectory: "โปรดป้อนไดเรกทอรีของ {platform}เช่น: C:\\ Program Files\\{platform}"
 Modal_LocatePlatform: ค้นหา {platformExe}
-Modal_LocatePlatformFolder: เลือก {platform} โฟลเดอร์
+Modal_LocatePlatformFolder: เลือกโฟลเดอร์ {platform}
 Modal_ConfirmAction: ยืนยันการดำเนินการ
-Modal_AddNew: โปรดป้อนชื่อสำหรับบัญชี {platform} ที่คุณเข้าสู่ระบบ
-Modal_AddCurrentAccount: เพิ่ม {platform} บัญชีปัจจุบัน
-Modal_SetImageHeader: ตั้งค่ารูปโปรไฟล์
+Modal_AddNew: โปรดป้อนชื่อสำหรับบัญชี {platform} ที่คุณกำลังเข้าสู่ระบบ
+Modal_AddCurrentAccount: เพิ่มบัญชีกระแสรายวัน {platform}
+Modal_SetImageHeader: ตั้งค่ารูปโพรไฟล์
 Modal_SetImage: ตั้งค่ารูปภาพ
 Status_SelectedAccount: "เลือกแล้ว: {name}"
 Status_Init: "สถานะ: กำลังเริ่มต้น"
 Status_ClosingPlatform: ปิด {platform}
-Status_ClosingPlatformFailed: ไม่สามารถปิด {platform}
-Status_StartingPlatform: เริ่มต้น {platform}
-Toast_StartingPlatformFailed: ไม่สามารถเริ่มต้น {platform}! ดูบันทึกสำหรับรายละเอียดเพิ่มเติม
-Toast_UrlAdminErr: คุณไม่สามารถเรียกใช้ไฟล์ .url ในฐานะผู้ดูแลระบบ ลองใช้ทางลัดประเภทอื่น เปิดตัวในฐานะผู้ใช้ปกติ
+Status_ClosingPlatformFailed: การปิด {platform}ล้มเหลว
+Status_StartingPlatform: เริ่มต้นที่ {platform}
+Toast_StartingPlatformFailed: การเริ่มต้น {platform}ล้มเหลว! ดูรายละเอียดเพิ่มเติมที่บันทึก
+Toast_UrlAdminErr: คุณไม่สามารถเรียกใช้ไฟล์ .url ในฐานะผู้ดูแลระบบได้ลองใช้ทางลัดประเภทอื่นเปิดใช้งานในฐานะผู้ใช้งานปกติ
 Status_UpdatingFile: "กำลังอัปเดต {file}"
 Status_UpdatingRegistry: กำลังอัปเดตรีจิสทรีของ Windows
-Status_FailedLog: การดำเนินการล้มเหลว ดูบันทึกสำหรับรายละเอียด
-Status_WaitingForClose: "รอ {processName} เพื่อปิด ({timeout}{timeLimit})"
-Status_WaitingForMultipleClose: "รอ {processName} & {count} อื่น ๆ เพื่อปิด ({timeout}/{timeLimit} วินาที)"
-Status_GetUniqueId: การรวบรวม ID ผู้ใช้ที่ไม่ซ้ำ
+Status_FailedLog: การดำเนินการล้มเหลวโปรดดูบันทึกสำหรับรายละเอียด
+Status_WaitingForClose: "กำลังรอให้ {processName} ปิด ({timeout}/{timeLimit} วินาที)"
+Status_WaitingForMultipleClose: "กำลังรอให้บุคคลอื่น {processName} & {count} ปิด ({timeout}/{timeLimit} วินาที)"
+Status_GetUniqueId: กำลังรวบรวม ID ผู้ใช้ที่ไม่ซ้ำกัน
 Status_CopyingFiles: กำลังคัดลอกไฟล์ผู้ใช้...
-Status_HandlingImage: รูปโปรไฟล์บัญชีจัดการ
-Context_SwapTo: สลับไปยังบัญชี
-Context_CreateShortcut: สร้างทางลัดบนเดสก์ท็อป
-Context_CreateShortcutSubmenu: สร้างทางลัดบนเดสก์ท็อป...
+Status_HandlingImage: การจัดการรูปโพรไฟล์บัญชี
+Context_SwapTo: สวอปไปยังบัญชี
+Context_CreateShortcut: สร้างทางลัด
 Context_ChangeImage: เปลี่ยนภาพ
-Context_BNet_SetBTag: ตั้งค่า BattleTag
-Context_BNet_DelBTag: ลบ BattleTag
-Context_BNet_GetRAnk: เรียกอันดับ
 Context_ChangeName: เปลี่ยนชื่อตัวสลับ
-Context_LoginAsSubmenu: เข้าสู่ระบบในฐานะ...
-Context_UsernameSubmenu: ชื่อผู้ใช้...
+Context_LoginAsSubmenu: เข้าสู่ระบบในฐานะ
+Context_UsernameSubmenu: ชื่อผู้ใช้
 Context_RefreshName: รีเฟรชชื่อ
-Context_CopySubmenu: สำเนา...
-Context_CopyProfileSubmenu: คัดลอกโปรไฟล์...
-Context_CommunityUrl: URL ชุมชน
-Context_CommunityUsername: ชื่อผู้ใช้ชุมชน
-Context_LoginUsername: ชื่อผู้ใช้เข้าสู่ระบบ
-Context_CopySteamIdSubmenu: คัดลอก SteamID...
-Context_Steam_Id: SteamID [STEAM0:~]
-Context_Steam_Id3: SteamID3 [U:1:~]
+Context_CopySubmenu: คัดลอก
+Context_DataSubmenu: ข้อมูล
+Context_CopyProfileSubmenu: คัดลอกโปรไฟล์
+Context_CommunityUrl: URL ของชุมชน
+Context_CommunityUsername: ชื่อผู้ใช้งานของชุมชน
+Context_LoginUsername: ชื่อผู้ใช้สำหรับเข้าสู่ระบบ
+Context_CopySteamIdSubmenu: คัดลอก SteamID
+Context_Steam_Id: 'SteamID: [~ STEAM0]'
+Context_Steam_Id3: 'SteamID3 [U: 1 :~]'
 Context_Steam_Id32: SteamID32
-Context_Steam_Id64: SteamID64 7656~
+Context_Steam_Id64: SteamID64 ~ 7656
 Context_Steam_OpenUserdata: เปิดข้อมูลผู้ใช้
-Context_CopyOtherSubmenu: คัดลอกอื่นๆ...
+Context_ManageSubmenu: จัดการ
+Context_GameDataSubmenu: ข้อมูลเกม
+Context_ManageGameStats: จัดการสถิติเกม
+Context_Game_CopySettingsFrom: คัดลอกการตั้งค่าไปยังปัจจุบัน
+Context_Game_RestoreSettingsTo: คืนค่าข้อมูลเกม
+Context_Game_BackupData: ข้อมูลเกมสำรอง
+Context_CopyOtherSubmenu: คัดลอกอื่นๆ
 Context_HidePlatform: ซ่อนแพลตฟอร์ม
 Context_ExportAccList: ส่งออกรายการบัญชี
 Context_RunAdmin: เรียกใช้ในฐานะผู้ดูแลระบบ
 Context_Hide: ซ่อน
-Title_BNet_Settings: TcNo Account Switcher - การตั้งค่า BattleNet
-Title_BNet_ManageIgnored: TcNo Account Switcher - จัดการบัญชี BattleNet ที่ถูกละเว้น
+ProfileImage_ToggleText: ใช้ภาพเป็นภาพบัญชี
 Title_Platforms_Settings: TcNo Account Switcher - การตั้งค่าแพลตฟอร์ม
+Title_Settings_TestCss: TcNo Account Switcher - ทดสอบ CSS Styling
 Title_AccountsList: ตัวสลับบัญชี TcNo - {platform}
-Title_TextEditor: TcNo Account Switcher - โปรแกรมแก้ไขข้อความ
+Title_TextEditor: TcNo Account Switcher - ตัวแก้ไขข้อความ
 Title_Settings: TcNo Account Switcher - การตั้งค่า
-Title_Steam_Cleaning: ตัวสลับบัญชี TcNo - การทำความสะอาด Steam
-Title_Steam_Settings: ตัวสลับบัญชี TcNo - การตั้งค่า Steam
+Title_Steam_Cleaning: TcNo Account Switcher - การทำความสะอาดด้วยไอน้ำ
+Title_Steam_Settings: TcNo Account Switcher - การตั้งค่า Steam
 Title_Template_Settings: TcNo Account Switcher - {platformName} การตั้งค่า
+Title_Login: TcNo Account Switcher - เข้าสู่ระบบ
 Installer_Downloading: กำลังดาวน์โหลด {file}
-Installer_DownloadFinished: ดาวน์โหลดเสร็จแล้ว {file}
+Installer_DownloadFinished: ดาวน์โหลดเสร็จ {file}
 Installer_Installing: "กำลังติดตั้ง: {runtime}"
 Installer_RuntimeTitle: TcNo Account Switcher - ตัวติดตั้งรันไทม์
 Installer_Welcome: ยินดีต้อนรับสู่ TcNo Account Switcher - ตัวติดตั้งรันไทม์
-Installer_InstalledRuntimes: "รันไทม์ที่ติดตั้งในปัจจุบัน:"
+Installer_InstalledRuntimes: "เวลารันไทม์ที่ติดตั้งอยู่ในปัจจุบัน:"
 Installer_ErrorRuntime: "ไม่ได้ติดตั้งรันไทม์อย่างน้อยหนึ่งรายการ:"
-Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB ขณะติดตั้ง]"
-Installer_TotalSize: "ขนาดดาวน์โหลดทั้งหมด: ~{size} MB"
-Installer_AnyKeyStart: กดปุ่มใดก็ได้เพื่อเริ่มดาวน์โหลด...
-Runtime_WebView2: รันไทม์ Microsoft WebView2
-Runtime_Desktop: Microsoft .NET 5 เดสก์ท็อปรันไทม์
-Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} รันไทม์
-Installer_FailedFolder: "ไม่สามารถสร้างโฟลเดอร์:"
-Installer_FailedWV: "ไม่สามารถดาวน์โหลดและติดตั้ง Microsoft WebView2 Runtime วิธีดาวน์โหลด: 1. คลิกลิงก์ด้านล่าง: {link} 2. คลิก 'ดาวน์โหลด Hosting Bundle' ใต้ Run server apps"
-Installer_FailedDR: "ไม่สามารถดาวน์โหลดและติดตั้ง .NET 5 Desktop Runtime กรุณาดาวน์โหลดได้ที่นี่:"
-Installed_FailedASP: "ไม่สามารถดาวน์โหลดและติดตั้งรันไทม์ ASP.NET Core {version} วิธีดาวน์โหลด: 1. คลิกลิงก์ด้านล่าง: {link} 2. คลิก 'ดาวน์โหลด x64' ภายใต้ เรียกใช้แอปเดสก์ท็อป"
-Installer_Ready: "หนึ่งรายการขึ้นไปพร้อมสำหรับการติดตั้ง หากและเมื่อได้รับแจ้งว่าต้องการติดตั้งหรือไม่ ให้คลิก 'ใช่'"
+Installer_RuntimeNote: "[~{size1} MB +~{size2} MB ขณะติดตั้ง]"
+Installer_TotalSize: "ขนาดการดาวน์โหลดทั้งหมด: ~{size} MB"
+Installer_AnyKeyStart: กดปุ่มใดก็ได้เพื่อเริ่มการดาวน์โหลด...
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Microsoft .NET Desktop Runtime 5
+Runtime_ASP: Microsoft Microsoft ASP.NET Core รันไทม์ {version}
+Installer_FailedFolder: "ล้มเหลวในการสร้างโฟลเดอร์:"
+Installer_FailedWV: "ไม่สามารถดาวน์โหลดและติดตั้ง Microsoft WebView2 Runtime วิธีดาวน์โหลด: 1. คลิกลิงค์ด้านล่าง: {link} 2. คลิก 'ดาวน์โหลดชุดโฮสติ้ง' ใต้เรียกใช้แอปเซิร์ฟเวอร์"
+Installer_FailedDR: "ล้มเหลวในการดาวน์โหลดและติดตั้ง .NET Desktop Runtime 5. กรุณาดาวน์โหลดที่นี่:"
+Installed_FailedASP: "ล้มเหลวในการดาวน์โหลดและติดตั้ง ASP.NET Core {version} Runtime วิธีดาวน์โหลด: 1 .คลิกลิงค์ด้านล่าง: {link} 2. คลิก 'ดาวน์โหลด x64' ใต้แอป Run Desktop"
+Installer_Ready: "หนึ่งหรือมากกว่าพร้อมสำหรับการติดตั้งถ้าและเมื่อได้รับแจ้งว่าคุณต้องการติดตั้งให้คลิก 'ใช่'"
 Installer_PressStart: กดปุ่มใดก็ได้เพื่อเริ่มการติดตั้ง...
 Installer_VerifyMin: "ตรวจสอบว่าคุณมีคุณสมบัติตรงตามข้อกำหนดขั้นต่ำที่แนะนำ:"
-Installer_VerifyAlready: "ดูเหมือนว่าทุกอย่างจะถูกติดตั้ง ตรวจสอบว่าคุณมีคุณสมบัติตรงตามข้อกำหนดขั้นต่ำที่แนะนำ:"
-Installer_Complete: นั่นควรเป็นทุกอย่าง โปรแกรมหลัก TcNo-Acc-Switcher.exe จะทำงานอัตโนมัติ
-Installer_Complete2: "หากไม่ได้ผล โปรดดูคำแนะนำในการติดตั้งที่นี่: {link}"
-Global_FatalNext: "เกิดข้อผิดพลาดร้ายแรง! Crashlog นี้จะถูกส่งโดยอัตโนมัติในการเปิดตัวครั้งต่อไป"
-Tray_Error: ถาดผิดพลาด
-Tray_NoAccs: "ไม่พบบัญชี\nลองสลับบัญชีก่อน หรือค้นหา 'Tray_Users.json'"
+Installer_VerifyAlready: "ดูเหมือนว่าทุกอย่างจะติดตั้งเรียบร้อยแล้วตรวจสอบว่าคุณมีคุณสมบัติตรงตามข้อกำหนดขั้นต่ำที่แนะนำ:"
+Installer_Complete: นั่นควรจะเป็นทุกอย่างโปรแกรมหลัก, TcNo-Acc-Switcher.exe, จะทำงานอัตโนมัติ.
+Installer_Complete2: "หากไม่ทำงานโปรดดูคำแนะนำในการติดตั้งที่นี่: {link}"
+Global_FatalNext: "เกิดข้อผิดพลาดร้ายแรง! บันทึกข้อผิดพลาดนี้จะถูกส่งโดยอัตโนมัติในการเปิดใช้งานครั้งต่อไป"
+Tray_Error: เกิดข้อผิดพลาดในถาด
+Tray_NoAccs: "ไม่พบบัญชี\nลองสลับบัญชีก่อนหรือค้นหา 'Tray_Users.json'"
 Tray_Switch: "เปลี่ยนเป็น: {account}"
-Tray_CantOpenExe: "ไม่สามารถเปิด .exe หลักได้ ตรวจสอบให้แน่ใจว่ามี\n\nฉันพยายามเปิด:"
-Tray_LaunchFail: "TcNo Account Switcher - การเปิดถาดล้มเหลว"
-Updater_Duplicate: ตรวจพบอินสแตนซ์ TcNo Account Switcher Updater อื่น
+Tray_CantOpenExe: "ไม่สามารถเปิด .exe หลักได้ตรวจสอบให้แน่ใจว่ามีอยู่\n\nฉันพยายามเปิด:"
+Tray_LaunchFail: "TcNo Account Switcher - การเปิดใช้งานถาดล้มเหลว"
+Updater_Duplicate: ตรวจพบอินสแตนซ์ตัวอัปเดต TcNo Account Switcher อีกตัวหนึ่ง
 Updater_Unknown: "อาร์กิวเมนต์ที่ไม่รู้จัก: {arg}"
-Updater_NeedsAdmin: โปรแกรมนี้จะต้องเรียกใช้ในฐานะผู้ดูแลระบบ!
+Updater_NeedsAdmin: โปรแกรมนี้ต้องเรียกใช้ในฐานะผู้ดูแลระบบ!
 Updater_StatusChecking: กำลังตรวจสอบเวอร์ชัน
-Updater_FailedVersionCheck: "ไม่สามารถรับเวอร์ชัน คลิก \"ยืนยัน\" เพื่ออัปเดตและยืนยันไฟล์"
-Updater_PressBelow: กดปุ่มด้านล่าง!
-Updater_PressBelowStart: คลิกปุ่มด้านล่างเพื่อเริ่มการอัปเดต
-Updater_PatchApplied: ใช้แพทช์แล้ว!
-Updater_UpdatingAppData: กำลังอัปเดตไฟล์ใน AppData!
+Updater_FailedVersionCheck: "ไม่สามารถรับเวอร์ชันได้คลิก \"ยืนยัน\" เพื่ออัปเดตและตรวจสอบไฟล์"
+Updater_PressBelow: กดปุ่มด้านล่างนี้เลย!
+Updater_PressBelowStart: คลิกที่ปุ่มด้านล่างเพื่อเริ่มการอัพเดต.
+Updater_PatchApplied: แพทช์ใช้แล้ว!
+Updater_UpdatingAppData: การอัปเดตไฟล์ใน AppData!
 Updater_Complete: การอัปเดตทั้งหมดเสร็จสมบูรณ์!
-Updater_Checking: ตรวจสอบการปรับปรุง
-Updater_UpdateToVerify: คุณต้องอัปเดตก่อนเพื่อยืนยันไฟล์
-Updater_ClosingTcNo: การปิดอินสแตนซ์ตัวสลับบัญชี TcNo (ถ้ามี)
+Updater_Checking: กำลังตรวจสอบการอัปเดต
+Updater_UpdateToVerify: ในการตรวจสอบไฟล์คุณต้องอัพเดทก่อน
+Updater_ClosingTcNo: การเปิดใช้งาน TcNo Account Switcher (ถ้ามี).
 Updater_Downloading: "กำลังดาวน์โหลดอัปเดต: {version}"
-Updater_Downloaded: ดาวน์โหลดเสร็จสิ้น.
-Updater_CantExtract: ไม่สามารถแยกการอัปเดต
+Updater_Downloaded: ดาวน์โหลดเสร็จสมบูรณ์
+Updater_CantExtract: การแยกอัปเดตล้มเหลว
 Updater_Verify: ตรวจสอบไฟล์
-Updater_Verifying: กำลังตรวจสอบ...
-Updater_VerifySkip: การยืนยันไฟล์เพื่อข้ามการอัปเดตเล็กๆ น้อยๆ ทั้งหมด และข้ามไปยังเวอร์ชันล่าสุดได้เลย
-Updater_NoConnection: "ไม่สามารถเชื่อมต่อกับ tcno.co เพื่อยืนยันไฟล์ คุณสามารถลองดาวน์โหลดตัวติดตั้งด้วยตนเองจากหน้า GitHub และติดตั้งใหม่เพื่ออัปเดต\n\nข้อผิดพลาด:"
-Updater_NoServer: ไม่สามารถเข้าถึงเซิร์ฟเวอร์อัปเดต
+Updater_Verifying: กำลังยืนยัน...
+Updater_VerifySkip: การยืนยันไฟล์เพื่อข้ามการอัปเดตขนาดเล็กทั้งหมดและข้ามไปยังการอัปเดตล่าสุด
+Updater_NoConnection: "ไม่สามารถเชื่อมต่อกับ tcno.co เพื่อยืนยันไฟล์คุณสามารถลองดาวน์โหลดตัวติดตั้งด้วยตนเองจากหน้า GitHub และติดตั้งใหม่เพื่ออัปเดต\n\nข้อผิดพลาด:"
+Updater_NoServer: ไม่สามารถเข้าถึงเซิร์ฟเวอร์อัพเดทได้
 Updater_Hashlist: กำลังดาวน์โหลดรายการแฮชล่าสุด...
 Updater_CantCheck: ไม่สามารถตรวจสอบการอัปเดตได้
-Updater_Failed: "ข้อผิดพลาด: ไฟล์บางไฟล์ถูกใช้งานและไม่สามารถอัปเดตได้\n\n1. ตรวจสอบให้แน่ใจว่ากระบวนการ TcNo ทั้งหมดปิดสนิท\n(หรือรีสตาร์ทพีซีของคุณ)\n\n2. จากนั้นคลิก ยืนยัน ด้านล่าง หรือหากคุณรีสตาร์ท:\n- เปิดตัวอัปเดตนี้และยืนยันไฟล์\n    (อยู่ในโฟลเดอร์ 'updater' ในโฟลเดอร์ 'updater' ติดตั้งไดเรกทอรี)"
+Updater_Failed: "ข้อผิดพลาด: ไฟล์บางไฟล์ถูกใช้งานและไม่สามารถอัปเดตได้\n\n1. ตรวจสอบให้แน่ใจว่ากระบวนการ TcNo ทั้งหมดถูกปิดอย่างสมบูรณ์\n(หรือรีสตาร์ทเครื่องคอมพิวเตอร์ของคุณ)\n\n2. จากนั้นคลิกยืนยันด้านล่างหรือถ้าคุณรีสตาร์ท:\n- เปิดโปรแกรมแก้ไขนี้และยืนยันไฟล์\n    (อยู่ในโฟลเดอร์ 'โปรแกรมแก้ไข' ในไดเรกทอรีการติดตั้ง)"
 Updater_Missing: "ไฟล์หายไป: {file}"
-Updater_FileMismatch: "ไฟล์: {file} มี MD5: {md5} คาดหวัง: {value}"
+Updater_FileMismatch: "ไฟล์: {file} MD5 มี: {md5} คาดว่าจะมี: {value}"
 Updater_DownloadingWeb: กำลังดาวน์โหลดไฟล์จากเว็บไซต์...
-Updater_UnpackingAppData: กำลังคัดลอกไฟล์ไปที่ %AppData%/TcNo Account Switcher... (เว้นแต่จะตั้งค่าเป็นอย่างอื่น)
-Updater_VerifyComplete: ไฟล์ได้รับการตรวจสอบแล้ว!
-Updater_UpdateFound: "พบการอัปเดต: {name} [{updateSize}]"
+Updater_UnpackingAppData: กำลังคัดลอกไฟล์ไปยัง %AppData%/TcNo Account Switcher... (เว้นแต่จะตั้งค่าเป็นอย่างอื่น)
+Updater_VerifyComplete: ไฟล์ได้รับการยืนยันแล้ว!
+Updater_UpdateFound: "พบการอัพเดท: {name} [{updateSize}]"
 Updater_TotalFound: "พบการอัปเดตทั้งหมด: {x}"
-Updater_TotalSize: "ขนาดรวม: {size}"
+Updater_TotalSize: "ขนาดทั้งหมด: {size}"
 Updater_AwaitingUser: กำลังรอการป้อนข้อมูลของผู้ใช้...
-Updater_UpToDate: "คุณเป็นคนทันสมัย\n:)"
-Updater_FailedDecode: เป็นไปได้มากที่สุดเพราะฉัน (TechNobo) ผลักดันการอัปเดต และพิมพ์ผิดที่ทำให้ไฟล์อัปเดต .json เสียหาย แจ้งให้เราทราบ :)
-Updater_FailedDecodeTitle: ไม่สามารถถอดรหัสรายการอัปเดต
-Updater_Extracting: กำลังแยกไฟล์แพตช์
-Updater_Applying: กำลังใช้แพทช์...
-Updater_Moving: กำลังย้ายไฟล์...
-Updater_Title: TcNo Account Switcher Updater
+Updater_UpToDate: "อัพเดทได้แล้วนะครับ:\n)"
+Updater_FailedDecode: ซึ่งน่าจะเป็นเพราะฉัน (TechNobo) ผลักดันการอัปเดตและพิมพ์ผิดที่ทำให้ไฟล์อัปเดต .json แตกรบกวนแจ้งด้วยนะคะ:)
+Updater_FailedDecodeTitle: การถอดรหัสรายการอัปเดตล้มเหลว
+Updater_Extracting: กำลังแยกไฟล์แพทช์
+Updater_Applying: กำลังปรับใช้แพทช์...
+Updater_Moving: กำลังย้ายแฟ้ม...
+Updater_Title: ตัวอัปเดตตัวสลับบัญชี TcNo
 Updater_Started: เริ่ม
-Updater_Start: เริ่มตัวสลับบัญชี TcNo
-Updater_Begin: เริ่มต้นการปรับปรุง
-Updater_Exit: ทางออก
+Updater_Start: เริ่ม TcNo Account Switcher
+Updater_Begin: เริ่มการอัปเดต
+Updater_Exit: ออก
 FatalError: เกิดข้อผิดพลาดร้ายแรง!
-Online: ออนไลน์
+Online: คาสิโนออนไลน์ (Casino Online)
 OnlineDefault: ออนไลน์ (ค่าเริ่มต้น)
 Offline: ออฟไลน์
-Invisible: ล่องหน
-Busy: ยุ่ง
+Invisible: Invisible (อินวิซิเบิล)
+Busy: ไม่ว่าง
 Away: ห่างออกไป
-Snooze: งีบหลับ
-LookingToTrade: มองหาการค้า
-LookingToPlay: กำลังหาที่จะเล่น
-Unrecognized_EPersonaState: ePersonaState ที่ไม่รู้จัก
+Snooze: หยุดใช้งาน
+LookingToTrade: กำลังมองหาการเทรด
+LookingToPlay: กำลังมองหาที่จะเล่น
+Unrecognized_EPersonaState: สถานะ ePersona ที่ไม่รู้จัก
 Reg_DoesntExist: "{subKey} ไม่มีอยู่"
 Reg_DoesntContain: "{subKey} ไม่มี {val}"
 Reg_Removing: กำลังลบ {subKey}\\{val}
-PngInvalid_Format: รูปแบบพิกเซลที่ต้องการคือ PixelFormat{x}.
-PngRequired: รูปแบบรูปภาพที่ต้องการคือกราฟิกเครือข่ายแบบพกพา (png)
+PngInvalid_Format: รูปแบบพิกเซลที่ต้องการคือ PixelFormat.{x}.
+PngRequired: รูปแบบภาพที่ต้องการคือกราฟิกเครือข่ายแบบพกพา (png)
 PngDimensions: ขนาดต้องน้อยกว่าหรือเท่ากับ {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "พบข้อผิดพลาดทางไวยากรณ์ (รายละเอียดเพิ่มเติมด้านล่าง)! และ:"
-ThemesNotFound: "ไม่พบโฟลเดอร์ \"ธีม\" ในไดเรกทอรีของ TcNo Account Switcher สิ่งนี้ (โดยเฉพาะโฟลเดอร์ 'Dracula_Cyan') เป็นสิ่งจำเป็นสำหรับซอฟต์แวร์นี้ในการทำงาน\nคุณสามารถเรียกใช้ Updater ในโฟลเดอร์ \"updater\" เพื่อตรวจสอบไฟล์และกู้คืนไฟล์ที่หายไปเหล่านี้"
+ThemeSyntaxAnd: "พบข้อผิดพลาดทางไวยากรณ์ (รายละเอียดเพิ่มเติมด้านล่าง) และ!:"
+ThemesNotFound: "ไม่พบโฟลเดอร์ \"ธีม\" ในไดเรกทอรี TcNo Account Switcher จำเป็นต้องใช้โฟลเดอร์ (โดยเฉพาะโฟลเดอร์ 'Dracula_Cyan ') สำหรับการเรียกใช้ซอฟต์แวร์นี้\nคุณสามารถเรียกใช้ตัวอัปเดตในโฟลเดอร์ \"ตัวอัปเดต\" เพื่อยืนยันแฟ้มและเรียกคืนแฟ้มที่ขาดหายไปเหล่านี้"
 Yes: "ใช่"
-No: "ไม่"
-NoDefault: ไม่ (ค่าเริ่มต้น)
+No: "ไม่ใช่"
+Save: บันทึก
+NoDefault: ไม่มี (ค่าเริ่มต้น)
 Ok: "ตกลง"
+Submit: ส่ง
 Forget: ลืม
-Notice: สังเกต
+Notice: ประกาศ
+Notes: บันทึกย่อ
 Error: ข้อผิดพลาด
 ErrorDetails: "ข้อผิดพลาด: {ex}"
 Failed: ล้มเหลว
-Success: ความสำเร็จ
+Success: สำเร็จ
 NotFound: ไม่พบ
-Done: เสร็จแล้ว
-Working: การทำงาน...
+Done: เสร็จสิ้น
+Edit: แก้ไข
+Refresh: รีเฟรช
+Working: กำลังทำงาน...
 ForName: "สำหรับ: {name}"
 DeletedFiles: ไฟล์ที่ถูกลบ
-FileFoldersToClear: "รายการไฟล์/โฟลเดอร์ที่จะล้าง:"
+FileFoldersToClear: "รายการของแฟ้ม/โฟลเดอร์ที่จะล้าง:"
 CouldNotFindX: ไม่พบ {x}
-CouldNotCloseX: ปิดไม่ได้ {x}!
+CouldNotCloseX: ไม่สามารถปิด {x}ได้!
+CouldNotReadFile: ไม่สามารถอ่าน {file}ได้!
 DirectoryNotFound: ไม่พบไดเรกทอรี
 DirectoryNotFoundFolder: "ไม่พบไดเรกทอรี: {folder}"
-DeletingFile: "กำลังลบ: {file}"
-DeletingFolder: "การลบโฟลเดอร์: "
-CouldntDeleteX: "ข้อผิดพลาด: ไม่สามารถลบได้: {x}"
-CouldntDeleteUndefined: "ข้อผิดพลาด: ไม่สามารถลบไฟล์ที่ไม่ได้กำหนดได้"
-Prompt_RestartAsAdmin: "<h3><bold>โปรแกรมนี้จะเริ่มต้นใหม่ในฐานะผู้ดูแลระบบ</bold></h3><p>กด \"ใช่\" ใน UAC เมื่อได้รับแจ้งสำหรับผู้ดูแลระบบ</p>"
+DeletingFile: "การลบ: {file}"
+DeletingFolder: "กำลังลบโฟลเดอร์: "
+CouldntDeleteX: "ข้อผิดพลาด: ลบไม่ได้: {x}"
+CouldntDeleteUndefined: "ข้อผิดพลาด: ไม่สามารถลบไฟล์ที่ไม่ได้กำหนด"
+Prompt_RestartAsAdmin: "<h3><bold>This program will restart as Admin</bold></h3><p>Hit \"Yes\" in UAC when prompt for admin</p>."
 Prompt_ForgetSteam: >
-  <h3 style='color:red'>คุณกำลังจะลืมบัญชี!</h3> <h4>นี่หมายความว่าอะไร?</h4> <p>- Steam จะไม่มีบัญชีอยู่ในโหมด Big Picture และจะไม่จำรหัสผ่านอีกต่อไป<br/> - TcNo Account Switcher จะไม่แสดงบัญชีอีกต่อไป จนกว่าจะลงชื่อเข้าใช้อีกครั้งผ่าน Steam</p> <p>บัญชีของคุณจะไม่ถูกแตะต้อง มันเพิ่งถูกลืมในคอมพิวเตอร์เครื่องนี้</p><h4>เข้าใจไหม?</h4>
+  <h3 style='color:red'>คุณกำลังจะลืมบัญชี!</h3> <h4>นี่หมายความว่าอย่างไร?</h4> <p>- Steam จะไม่มีบัญชีที่แสดงในโหมดภาพใหญ่อีกต่อไปและจะจำรหัสผ่านไม่ได้<br/> - TcNo Account Switcher จะไม่แสดงบัญชีอีกต่อไปจนกว่าจะมีการลงชื่อเข้าใช้อีกครั้งผ่าน Steam</p> <p>บัญชีของคุณจะไม่ถูกแตะต้องมันแค่ถูกลืมในคอมพิวเตอร์เครื่องนี้</p><h4>คุณเข้าใจไหม?</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>คุณกำลังจะลืมบัญชี!</h3> <h4>นี่หมายความว่าอะไร?</h4> <p>TcNo Account Switcher จะไม่แสดงบัญชีอีกต่อไป<br/> จนกว่าจะลงชื่อเข้าใช้อีกครั้งผ่าน {platform}และเพิ่มในรายการ</p> <p>บัญชีของคุณจะไม่ถูกแตะต้อง มันเพิ่งถูกลืมในคอมพิวเตอร์เครื่องนี้</p> <h4>เข้าใจไหม?</h4>
+  <h3 style='color:red'>คุณกำลังจะลืมบัญชี!</h3> <h4>นี่หมายความว่าอย่างไร?</h4> <p>TcNo เครื่องสลับบัญชีจะไม่แสดงบัญชีอีกต่อไป<br/> จนกว่าจะมีการลงชื่อเข้าใช้อีกครั้งจนถึง {platform}และเพิ่มลงในรายการ</p> <p>บัญชีของคุณจะไม่ถูกแตะต้องมันแค่ถูกลืมในคอมพิวเตอร์เครื่องนี้</p> <h4>คุณเข้าใจไหม</h4>
 Prompt_ClearStats: >
   <h3 style='color:red'>คุณกำลังจะล้างสถิติของคุณ!</h3> <p>คุณไม่สามารถยกเลิกการกระทำนี้ได้</p>
-Platform_DiscordPasteHint: วางลงในคอนโซล Discord แล้ววางผลลัพธ์ในการป้อนข้อมูล!
+Platform_DiscordPasteHint: วางลงในคอนโซล Discord จากนั้นวางผลลัพธ์ในการป้อนข้อมูล!
 Platform_ClearCache: ล้างแคช
 Platform_ClearCacheTotal: กำลังเคลียร์ {totalFileCount} ไฟล์ ({totalSizeMB})
-Platform_DeleteFail: ไม่สามารถลบบางไฟล์ได้ (โปรแกรมอาจทำงานอยู่?)
-Platform_CouldNotDeleteLog: ลบไฟล์ไม่ได้! ตรวจสอบ {logPath}
-Error_FileAccessDenied: เข้าถึงไฟล์ไม่สำเร็จ! ตรวจสอบ {logPath}
-Error_RequiredFileVerify: ไม่พบไฟล์ที่ต้องการ โปรดตรวจสอบให้แน่ใจว่าโฟลเดอร์ x64 และ x86 มีอยู่ในไดเร็กทอรีการติดตั้ง หากไม่ได้เรียกใช้ TcNo-Acc-Switcher-Updater.exe และตรวจสอบไฟล์
+Platform_DeleteFail: ไม่สามารถลบไฟล์บางไฟล์ได้ (โปรแกรมอาจกำลังทำงานอยู่?)
+Platform_CouldNotDeleteLog: ไม่สามารถลบไฟล์ {logPath}ตรวจสอบ!
+Error_FileAccessDenied: ไม่สามารถเข้าถึงไฟล์ {logPath}ตรวจสอบ!
+Error_RequiredFileVerify: ไม่พบไฟล์ที่ต้องการโปรดตรวจสอบให้แน่ใจว่าโฟลเดอร์ x64 และ x86 มีอยู่ในไดเรกทอรีการติดตั้งถ้าไม่เรียกใช้ TcNo-Acc-Switcher-Updater.exe และยืนยันไฟล์
 Tooltip_Settings: การตั้งค่า
 Tooltip_Info: ข้อมูล
 Tooltip_ManagePlatforms: แสดงหรือซ่อนแพลตฟอร์มอื่น
-Tooltip_ExpandShortcuts: ขยายการเลือกเกมและทางลัด
-Tooltip_ShortcutFolder: เปิดโฟลเดอร์ทางลัด วางทางลัดในนั้นและ TcNo Account Switcher เพื่อดู
-Tooltip_Backup: สำรองไฟล์ / โฟลเดอร์การกำหนดค่าตามที่กำหนดไว้ในการตั้งค่าแพลตฟอร์ม
-Tooltip_BackupAll: สำรองไฟล์/โฟลเดอร์การกำหนดค่าทั้งหมด รวมถึงรูปภาพและไฟล์ขนาดใหญ่อื่นๆ
-Tooltip_ClosingMethod: "รวมกันจะดีที่สุด พยายามปิดเพื่อปิดโดยตรงผ่านฟังก์ชันปิด และ TaskKill ใช้ CMD (ดีที่สุดถ้ารวมกันแล้วไม่ได้ผล)"
-Tooltip_StartingMethod: "ค่าเริ่มต้นจะดีที่สุด Direct ไม่มีการควบคุมระดับผู้ดูแลระบบหรือ UAC มันจะเริ่มต้นในระดับเดียวกัน (หรือสูงกว่า - แต่ไม่ต่ำกว่า) กว่าตัวสลับบัญชีนี้"
-Tooltip_CurrentAccount: คุณกำลังเข้าสู่ระบบบัญชีนี้
-Discord_Status: กำลังเปลี่ยนบัญชี
+Tooltip_ExpandShortcuts: ขยายตัวเลือกทางลัดของเกม
+Tooltip_ShortcutFolder: เปิดโฟลเดอร์ทางลัดวางทางลัดไว้ในนั้นและใช้ TcNo Account Switcher เพื่อดู
+Tooltip_Backup: แฟ้ม/โฟลเดอร์ที่กำหนดค่าการสำรองข้อมูลตามที่กำหนดไว้ในการตั้งค่าแพลตฟอร์ม
+Tooltip_BackupAll: สำรองไฟล์/โฟลเดอร์ที่กำหนดค่าทั้งหมดรวมถึงภาพและไฟล์ขนาดใหญ่อื่นๆ
+Tooltip_ClosingMethod: "รวมกันจะดีที่สุดปิดความพยายามที่จะปิดโดยตรงผ่านฟังก์ชันปิดและ TaskKill ใช้ CMD (ดีที่สุดถ้ารวมกันไม่ทำงาน)"
+Tooltip_StartingMethod: "ค่าเริ่มต้นเป็นสิ่งที่ดีที่สุดโดยตรงไม่มีการควบคุมระดับผู้ดูแลระบบหรือ UAC มันจะเริ่มต้นในระดับเดียวกัน (หรือสูงกว่า - แต่ไม่ต่ำกว่า) กว่าตัวสลับบัญชีนี้"
+Tooltip_CurrentAccount: ขณะนี้คุณกำลังเข้าสู่ระบบบัญชีนี้
+Tooltip_Restore: คลิกเพื่อเลือกไฟล์ 7z หรือลากไปที่ปุ่มนี้
+Tooltip_DisabledGlobally: รายการนี้ถูกซ่อนไว้สำหรับบัญชีทั้งหมดคุณสามารถเปลี่ยนการตั้งค่านี้ได้ในการตั้งค่าแพลตฟอร์ม
+Discord_Status: ปัจจุบันการเข้ารหัสลับบัญชี.
 Discord_StatusDetails: "บัญชีที่เปลี่ยน: {number}"
 Website: เว็บไซต์
+Preview_Platforms: ตัวอย่างแพลตฟอร์ม
+Preview_Accounts: ตัวอย่างบัญชี
+Preview_Notifications: ตัวอย่างการแจ้งเตือนการปิ้งขนมปัง
+Preview_Settings: ตัวอย่างการตั้งค่า
+Preview_Modals: ดูตัวอย่างโมเดล

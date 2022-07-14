@@ -1,191 +1,208 @@
 ---
-Update: Update beschikbaar! Klik hier om te starten.
+Update: Update beschikbaar! Klik hier om het te starten.
 Header_ChooseLanguage: 'Kies taal:'
-BattleNet_ShowSR: Toon Overwatch SR en gebruik de profielfoto van Overwatch
-Steam_ShowSteamID: Toon SteamID
-Steam_ShowVac: Toon VAC-status
-Steam_CheckVac: Controleer account VAC-status
-Steam_ShowLimited: Gelimiteerde status weergeven
-Steam_ShowAccUsername: Toon account gebruikersnaam
-Steam_Tray_AccountName: Toon accountnaam [geen vriendsnaam]
-Steam_OverrideDefaultState: "Overschrijf standaard inlogstatus:"
+Steam_ShowSteamID: StoomID
+Steam_ShowVac: VAC-status
+Steam_ShowLastLogin: Laatste inlogtijd
+Steam_ShowLimited: Beperkte status
+Steam_ShowAccUsername: Account gebruikersnaam
+Steam_Tray_AccountName: Accountnaam tonen [not friend name]
+Steam_CheckVac: Controleer de VAC-status van de rekening
+Steam_OverrideDefaultState: "Standaard aanmeldstatus overschrijven:"
+Steam_StartSilent: "Open Stoom naar taakvak op schakelaar (Start Stoom met '-silent')"
 Button_AddNew: Nieuwe toevoegen
 Button_SaveCurrent: Huidige opslaan
 Button_SaveFile: Bestand opslaan
 Button_Cancel: Annuleren
 Button_Login: Inloggen
-Button_Close: Afsluiten
-Button_RefreshImages: Vernieuw afbeeldingen
-Button_ResetSettings: Instellingen herstellen
-Button_AdvancedCleaning: Geavanceerd schoonmaken...
+Button_Close: Sluiten
+Button_RefreshImages: Afbeeldingen vernieuwen
+Button_ResetSettings: Reset instellingen
+Button_AdvancedCleaning: Geavanceerde reiniging...
 Button_ClearLog: Logboek wissen
-Button_WikiInfo: Meer informatie (Wiki)
+Button_WikiInfo: Meer info (Wiki)
 Button_ManagePlatforms: Platforms beheren
 Button_Backup: back-up
 Button_BackupAll: Maak een back-up van alles
 Button_Restore: Herstellen
 Button_OpenBackup: Back-upmap openen
-Settings_Shortcut: ' {platform} Switcher Desktop snelkoppeling'
+Button_Back: Terug
+Button_RestartAdmin: Opnieuw opstarten als beheerder
+Button_SetPassword: App-wachtwoord instellen
+Settings_Shortcut: ' {platform} Switcher Bureaublad snelkoppeling'
 Settings_Admin: '{platform} uitvoeren als Beheerder'
-Settings_ImageExpiry: 'Dagen voordat profielafbeeldingen vervallen:'
+Settings_ImageExpiry: 'Dagen voordat profielfoto ''s verlopen:'
+Settings_SteamAPIKey: "Steam Web API-sleutel (optioneel)"
+Settings_SteamAPIKey_Note: Als je een API-sleutel instelt, wordt de indicator Beperkt (gele rand) weergegeven voor accounts die in plaats daarvan zijn verboden door de community.
 Settings_Header_AppWide: App-brede instellingen
 Settings_Header_GeneralSettings: Algemene instellingen
+Settings_Header_AccountDisplay: Instellingen voor accountweergave
 Settings_Header_ExtraPlatforms: Platforminstellingen
 Settings_Header_GeneralTools: Algemene hulpmiddelen
 Settings_Header_OtherTools: Andere hulpmiddelen
-Settings_Header_TraySettings: Systeemvak instellingen
-Settings_Header_OpenGameFolders: Open spelmappen
+Settings_Header_TraySettings: Tray-instellingen
+Settings_Header_OpenGameFolders: Spelmappen openen
 Settings_Header_BackupRestore: Back-up en herstel platforminstellingen
 Settings_Header_Language: Taal
 Settings_Header_System: Systeem
 Settings_Header_Theme: Thema
 Settings_Header_Program: Programma
-Settings_Header_StatsSharing: Statistieken en delen
+Settings_Header_StatsSharing: Statistieken & Delen
 Settings_Header_Platform: "{platformName} instellingen"
+Settings_Header_GameStats: Algemene instellingen voor spelstatistieken
+Settings_GameStats: Alles wat hier is aangevinkt, wordt voor GEEN enkel account onder je gebruikersnaam weergegeven. Gebruik dit als u vaak specifieke items verbergt in uw spelstatistieken.
 Settings_TrayMax: 'Maximaal aantal te onthouden accounts:'
 Settings_ExtraPlatformsDisabled: Uitgeschakelde platforms. Klik om ze in te schakelen.
 Settings_ExtraPlatformsEnabled: Zichtbare platforms. Klik om ze uit te schakelen.
 Settings_RTL: Toon tekst van rechts naar links
-Settings_CollectStats: Statistieken verzamelen
-Settings_ShareStats: Deel statistieken op een vervelende manier (aanbevolen)
+Settings_CollectStats: Verzamel statistieken
+Settings_ShareStats: Deel statistieken vervelend (aanbevolen)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Totaal aantal schakelaars delen
-Settings_ViewStats: Statistieken bekijken
-Settings_ClearStats: Resetten
+Settings_ViewStats: Bekijk statistieken
+Preview: Voorvertoning
+Settings_ClearStats: Reset
 Settings_CurrentLocation: 'Huidige installatielocatie: {path}'
 Settings_CurrentDataLocation: 'Huidige gebruikersgegevenslocatie: {path}'
 Settings_SetDataLocation: "[Stel aangepaste gebruikersgegevenslocatie in]"
 Settings_PickFolder: Kies {platform} map
-Settings_OpenFolder: Open {platform} map
-Settings_ClearForgotten: Leeg vergeten
+Settings_OpenFolder: '{platform} map openen'
+Settings_ClearForgotten: Wissen Vergeten
 Settings_ClearAccounts: Accounts wissen
 Settings_StreamerMode: Schakel streamer modus in
-Settings_ExitToTray: Minimalisaties naar systeemvak afsluiten
+Settings_ExitToTray: Minimaliseert naar lade
 Settings_DesktopShortcut: Bureaublad snelkoppeling
-Settings_StartMenu_ProgramTray: Programma & Tray
+Settings_StartMenu_ProgramTray: Programma & lade
 Settings_StartMenu_Platform: Platform
-Settings_Tray_StartWindows: Tray met Windows starten
-Settings_Tray_StartNow: '[Begin Taakje nu]'
+Settings_Tray_StartWindows: Lade starten met Windows
+Settings_Tray_StartNow: '[Lade nu starten]'
 Settings_CurrentStyle: Huidige stijl
 Settings_ThemeBackground: '[Achtergrond instellen]'
 Settings_ThemeOpenFolder: '[Themamap openen]'
 Settings_Protocol: 'tcno:\\ protocol (Aanbevolen) inschakelen'
 Settings_StartCentered: Start programma gecentreerd
-Settings_WindowsAccent: Gebruik de Windows Accent Kleur
+Settings_WindowsAccent: De Windows Accentkleur gebruiken
 Settings_HelpTranslate: "[Help vertalen]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(Geavanceerd) Renderengine instellen:"
-Settings_Header_ClosingMethod: "(Geavanceerd) Methode instellen om {platform}. te sluiten"
-Settings_Header_StartingMethod: "(Geavanceerd) Methode instellen om {platform}. te starten"
-Settings_AutoStart: "Start automatisch {platform} bij accountwisseling"
+Settings_Header_ActiveBrowser: "(Advanced) Set rendering engine:"
+Settings_Header_ClosingMethod: "(Geavanceerd) Stel methode in op sluiten {platform}"
+Settings_Header_StartingMethod: "(Geavanceerd) Stel methode in op start {platform}"
+Settings_AutoStart: "{platform} automatisch starten bij accountwissel"
 Settings_NoPlatforms: Er zijn momenteel geen platforms ingeschakeld. Vink hieronder optionele platforms aan om ze in te schakelen, of schakel uitgeschakelde platforms uit.
-Settings_MinimizeOnSwitch: Minimaliseer switcher bij account switch
-Stats_Disabled: "Het verzamelen van statistieken is uitgeschakeld."
-Stats_InDepth: Uitgebreid overzicht van statistieken
-Stats_ShareEnabled: "Deze statistieken worden anoniem gedeeld en worden hier opgeteld bij de <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>."
-Stats_ShareDisabled: "Deze statistieken worden NIET anoniem gedeeld en zullen NIET optellen bij de totaal <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">hier</a>."
+Settings_MinimizeOnSwitch: Minimaliseer switcher op account switch
+Settings_ShowShortNotes: Notitievoorbeeld onder gebruikersnaam
+Settings_Header_AppPassword: "Anderen stoppen met het gebruik van de switcher:"
+PreviewCss: Voorbeeld CSS
+Settings_PreviewCss: Dit is de CSS voorbeeldpagina. U kunt een aantal elementen bekijken die in het programma opduiken en zien hoe ze eruit zien met uw thema. Deze pagina is handig voor degenen die thema 's maken!
+Settings_PreviewCssHeader: CSS Preview Pagina
+Stats_Disabled: "Statistiekenverzameling is uitgeschakeld."
+Stats_InDepth: Uitsplitsing naar diepgaande statistiek
+Stats_ShareEnabled: "Deze statistieken worden anoniem gedeeld en worden opgeteld bij het totaal van <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">hier</a>."
+Stats_ShareDisabled: "Deze statistieken worden NIET anoniem gedeeld en worden NIET opgeteld bij het totaal van <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">hier</a>."
 Stats_OperatingSystem: "Besturingssysteem: "
 Stats_FirstLaunch: "Eerste lancering: "
 Stats_LaunchCount: "Aantal lanceringen: "
-Stats_CrashCount: "Aantal crashes: "
+Stats_CrashCount: "Aantal ongevallen: "
 Stats_MostUsedPlatform: "Meest gebruikte platform: "
-Stats_TotalTime: "Totale tijd doorgebracht in de app: "
-Stats_TotalSwitches: "Totaal aantal accountwisselingen: "
+Stats_TotalTime: "Totale tijd besteed in de app: "
+Stats_TotalSwitches: "Totaal aantal account switches: "
 Stats_TotalGamesLaunched: "Totaal aantal apps/games gelanceerd via switcher: "
-Stats_UniqueDaysLong: "Unieke dagen met accounts gewisseld: "
+Stats_UniqueDaysLong: "Unieke dagen met verwisselde accounts: "
 Stats_LastUpload: "Laatste upload: "
-Stats_SwitcherStats: "Statistieken switcher: "
-Stats_PageStats: "Paginastatistieken: "
+Stats_SwitcherStats: "Schakelaarstatistieken: "
+Stats_PageStats: "Pagina statistieken: "
 Stats_VisitsTotalTime: "{visits} totale bezoeken, {hours} totale tijd"
-Stats_Accounts: "rekeningen: "
+Stats_Accounts: "Accounts: "
 Stats_Switches: "Schakelaars: "
 Stats_FirstActive: "Eerste actief: "
 Stats_LastActive: "Laatst actief: "
 Stats_UniqueDays: "Unieke dagen: "
-Stats_GameShortcuts: "Sneltoetsen voor games: "
-Stats_GameShortcutsHotbar: "Sneltoetsen voor games (op de hotbar): "
+Stats_GameShortcuts: "Spel snelkoppelingen: "
+Stats_GameShortcutsHotbar: "Spel snelkoppelingen (op de hotbar): "
 Stats_GamesLaunched: "Games gelanceerd: "
-Cleaning_Header_StartMenuShortcuts: 'Snelkoppelingen voor Start Menu:'
-Cleaning_Header_General: Algemeen schoonmaken
-Cleaning_Header_LoginHistory: Schoon mijn inloggeschiedenis op
-Cleaning_Header_PlatformCleaning: '{platform} Wisselaar'
+Stats_MetricsToShow: "Weergegeven statistieken:"
+Stats_AccountId: "Account-ID:"
+Auth_LoginRequired: Een wachtwoord is eerder ingesteld en is vereist. Voer het wachtwoord hieronder in.
+Auth_EnterPassword: "Voer wachtwoord in:"
+Auth_PassIncorrect: Wachtwoord onjuist.
+Locked: Vergrendeld
+Cleaning_Header_StartMenuShortcuts: 'Snelkoppelingen voor het startmenu:'
+Cleaning_Header_General: Algemene reiniging
+Cleaning_Header_LoginHistory: Mijn inloggeschiedenis opschonen
+Cleaning_Header_PlatformCleaning: '{platform} Switcher'
 Cleaning_ImportantInfoHeader: 'Belangrijke informatie:'
 Cleaning_ImportantInfo: >
-  Door op een knop te klikken worden de gerelateerde bestand(en) van je Steam installatie verwijderd.<br /> Inloggebruikers verwijderen. df zal resulteren in deze account switcher met geen accounts.<br /> Je moet inloggen met Steam om ze terug te krijgen.
-Cleaning_Button_KillProcess: Vermoord {platform} proces
-Cleaning_Button_ForgottenBackups: Account back-ups vergeten
+  Als u op een knop klikt, worden de gerelateerde bestanden uit uw Steam-installatie verwijderd.<br /> Als u loginusers.vdf verwijdert, worden er geen accounts weergegeven in deze accountwisselaar.<br /> U moet bij hen inloggen met Steam om ze terug te krijgen.
+Cleaning_Button_KillProcess: Proces Kill {platform}
+Cleaning_Button_ForgottenBackups: Back-ups van accounts vergeten
 Cleaning_Understand: Ik begrijp wat deze knoppen doen.
 Restore_Info: >
-  Als je eerder een account hebt "vergeten", kun je ze hier herstellen.<br /> Dit voegt ze terug toe aan je loginusers.vdf bestand, zodat je naar hen kunt overschakelen.
-Restore_Button_Restore: Herstel geselecteerde
-Ignored_RemoveAccounts: Verwijder accounts van negeerlijst
-Ignored_Description: Als je eerder een "genegeerde" account hebt gehad, kun je ze hier opnieuw laten zien
-Ignored_Stop: Stop met negeren geselecteerd
+  Als je eerder een account bent "vergeten", kun je deze hier herstellen.<br /> Dit voegt ze weer toe aan je loginusers.vdf-bestand, zodat je naar ze kunt overschakelen.
+Restore_Button_Restore: Geselecteerde herstellen
+Ignored_RemoveAccounts: Accounts verwijderen uit negeerlijst
+Ignored_Description: Als u eerder een account "negeerde", kunt u deze hier opnieuw weergeven
+Ignored_Stop: Stop met het negeren van geselecteerde
 Toast_DataLocationCopying: (1/2) Bestaande bestanden naar de nieuwe gebruikersgegevensmap kopiëren!
 Toast_DataLocationNotCopying: (1/2) Map heeft al bestanden! Migreert geen gebruikersgegevens.
 Toast_DataLocationSet: (2/2) Start de accountwisselaar opnieuw om de nieuwe map te gebruiken!
 Toast_PlaceShortcutFiles: Er wordt een map geopend. Plaats spelsnelkoppelingen in die map en start de accountwisselaar opnieuw.
 Toast_TrayStarted: Tray gestart!
-Toast_TrayRunning: Tray is al geopend
-Toast_TrayUsersMissing: Geen systeemgebruikers opgeslagen
-Toast_TrayFail: Tray applicatie kan niet worden gestart!
-Toast_TrayPosition: "Als ik op de knop Sluiten klik: ik zit in het Windows Tray! (Rechts van Start Bar)"
-Toast_TrayHint: "Tip: Ctrl+Klik op de 'X' om me volledig te sluiten, of via de Tray > 'Sluiten'"
-Toast_Copied: Gekoppeld
+Toast_TrayRunning: Lade is al geopend
+Toast_TrayUsersMissing: Geen ladegebruikers opgeslagen
+Toast_TrayFail: Kon lade toepassing niet starten!
+Toast_TrayPosition: "Bij het klikken op de knop Afsluiten: Ik zal op de Windows Tray! (Rechts van de startbalk)"
+Toast_TrayHint: "Tip: Ctrl+Klik op de 'X' om me volledig te sluiten, of via de lade > 'Exit'"
+Toast_Copied: Gekopieerd
 Toast_AlreadyProcessing: Rekeningen worden al verwerkt...
-Toast_FailedRestore: Kan accounts niet herstellen (Zie console)
-Toast_Restored: Rekeningen hersteld!
+Toast_FailedRestore: Kan accounts niet herstellen (zie console)
+Toast_Restored: Herstelde accounts!
 Toast_ProtocolEnabled: Dit programma reageert nu op tcno:\\ in Windows
 Toast_ProtocolEnabledTitle: Protocol toegevoegd
 Toast_ProtocolDisabled: Dit programma reageert niet meer op tcno:\\
 Toast_ProtocolDisabledTitle: Protocol verwijderd
-Toast_RestartAsAdmin: Start als Admin en probeer het opnieuw.
-Toast_RestartAfterClose: Herstart het programma na het klikken op 'sluiten'.
-Toast_RestartAfterCloseTitle: Accent kleur uitgeschakeld
-Toast_RestartRequired: Herstart om wijzigingen toe te passen
-Toast_LoadStylesheetFailed: Het laden van stylesheet is mislukt! Zie gebruikersgegevensmap voor details.
-Toast_BNet_Private: "Profiel van {BTag}is privé"
-Toast_BNet_StatsFail: "Fout bij het ophalen van statistieken voor {BTag}"
-Toast_BNet_CantSwapAccounts: Kan geen accounts wisselen (Battle.net.config bestand beschadigd)
-Toast_BNet_CantLoadNotFound: Kan Battle.net.config niet vinden
-Toast_BNet_CantLoadEmpty: Kan het account bestand niet laden voor Blizzard (geen accounts gevonden)
-Toast_BNet_CantLoadConfigCorrupt: Kan geen accounts bestand laden voor Blizzard (Battle.net.config bestand beschadigd)
-Toast_BNet_NamePolicy: BattleTag kwam niet overeen met het naambeleid.
+Toast_RestartAsAdmin: Begin als beheerder en probeer het opnieuw.
+Toast_RestartAfterClose: Start het programma opnieuw nadat u op Sluiten hebt geklikt.
+Toast_RestartAfterCloseTitle: Accentkleur uitgeschakeld
+Toast_RestartRequired: Opnieuw opstarten om wijzigingen toe te passen
+Toast_LoadStylesheetFailed: Kan stylesheet niet laden! Raadpleeg de map met gebruikersgegevens voor meer informatie.
+Toast_LoadingStats: Een of meer profielen zijn vernieuwende statistieken. Een ogenblik geduld.
 Toast_ItemNotFound: "{item} is niet gevonden"
-Toast_DeletedTotal: "{files} van {totalFiles} verwijderd. Totaal: {totalSize}"
-Toast_CantChangeUsername: Kon gebruikersnaam niet wijzigen
-Toast_CantClearLoginFiles: Mislukt om oude loginbestanden te wissen
+Toast_DeletedTotal: "{files} van {totalFiles} geschrapt. Totaal: {totalSize}"
+Toast_CantChangeUsername: Kan gebruikersnaam niet wijzigen
+Toast_CantClearLoginFiles: Kon oude aanmeldbestanden niet wissen
 Toast_AccountIdReg: Kan account-Id niet ophalen uit het register!
 Toast_RegFailWrite: Schrijven naar Windows-register is mislukt!
 Toast_RegFailRead: Kan niet lezen van Windows Regsitry!
-Toast_RegFailReadSaved: Kan opgeslagen registervermelding niet lezen. Probeer het account te verwijderen en opnieuw toe te voegen als dit niet lukt.
+Toast_RegFailReadSaved: Kan opgeslagen registervermelding niet lezen. Probeer het account te verwijderen en opnieuw toe te voegen als het niet lukt.
 Toast_RegSaveMissing: Mislukt Zoeken of lezen van gegevens van opgeslagen registerbestanden!
-Toast_DuplicateNames: Kan niet wisselen. Een account dupliceren met dezelfde gebruikersnaam?
-Toast_MissingUserId: "Kon niet ruilen. Gebruikers-ID ontbreekt. Controleer Wiki 'Veel voorkomende fouten'."
-Toast_CouldNotLocate: Kan aangemelde gebruiker niet vinden
-Toast_StreamerModeHint: Privé info is verborgen! - Zie instellingen
-Toast_StreamerModeTitle: Streamer modus
-Toast_AddAccountsFirst: Open het platform vanuit de lijst en voeg eerst een paar accounts toe
+Toast_DuplicateNames: Kon niet wisselen. Dubbele accounts met dezelfde gebruikersnaam?
+Toast_MissingUserId: "Kan niet wisselen. Gebruikers-ID ontbreekt. Controleer Wiki 'Veelvoorkomende fouten'."
+Toast_CouldNotLocate: Kon ingelogde gebruiker niet vinden
+Toast_StreamerModeHint: Privé-informatie is verborgen! - Zie instellingen
+Toast_StreamerModeTitle: Streamer-modus
+Toast_AddAccountsFirst: Open het platform uit de lijst en voeg eerst een paar accounts toe
 Toast_AddAccountsFirstTitle: Geen opgeslagen accounts
-Toast_CantFindImage: Fout bij het vinden van gebruikersafbeelding.
-Toast_CantCreateShortcut: Kan snelkoppeling niet aanmaken
-Toast_ShortcutCreated: Snelkoppeling gemaakt!
+Toast_CantFindImage: Kan afbeelding van gebruikers niet vinden.
+Toast_CantCreateShortcut: Kan geen snelkoppeling maken
+Toast_ShortcutCreated: Snelkoppeling aangemaakt!
+Toast_SettingsCopied: Instellingen met succes gekopieerd naar huidige account.
+Toast_GameDataRestored: Spelgegevens voor dit account zijn hersteld.
+Toast_NoValidSteamId: Kan geen geldige Steam-ID vinden.
 Toast_FailedUpdateCheck: Controleren op updates mislukt
-Toast_UpdateVerifyFail: Kan bestanden updater niet verifiëren. Download de nieuwste versie en vervang bestanden in uw map.
-Toast_StartedGame: Gestart op {program}
-Toast_Steam_VacCleared: VAC-status voor accounts werd gewist
-Toast_Steam_CantDeleteVacCache: Kan 'LoginCache/Steam/VACCache/SteamVACCache.json' niet verwijderen
-Toast_NoFindSteamUserdata: Kan Steam\\userdata map niet vinden
-Toast_Steam_VdfLast: Het is gelukt om te laden van vdf_last. Sommige accounts kunnen ontbreken.
-Toast_PartiallyFixed: Gedeeltelijk opgelost
-Toast_Steam_FailedLoginusers: Laden van steam/config/loginusers.vdf mislukt
-Toast_Steam_CantLocateLoginusers: Kan '.../Steam/config/loginusers.vdf' niet vinden. Probeer eerst aan te melden bij een account.
-Toast_CantClearImages: Kan afbeeldingen niet wissen
+Toast_UpdateVerifyFail: Kan updatebestand niet verifiëren. Download de nieuwste versie en vervang bestanden in uw map.
+Toast_StartedGame: Gestart {program}
+Toast_Steam_VacCleared: VAC-status voor accounts is gewist
+Toast_Steam_CantDeleteVacCache: Kon 'LoginCache/Steam/VACCache/SteamVACCache.json' niet verwijderen
+Toast_NoFindSteamUserdata: Kon de map Steam\\userdata niet vinden
+Toast_NoFindGameBackup: Kan de back-upmap met spelgegevens voor dit account niet vinden.
+Toast_GameBackupDone: "Er is een back-up gemaakt van de map met spelgegevens: {folderLocation}"
+Toast_Steam_VdfLast: Kon laden van vdf_last. Sommige accounts ontbreken mogelijk.
+Toast_PartiallyFixed: Gedeeltelijk vast
+Toast_Steam_FailedLoginusers: Kan stoom/config/loginusers.vdf niet laden
+Toast_Steam_CantLocateLoginusers: Kan '.../Steam/config/loginusers.vdf' niet vinden. Probeer eerst in te loggen op een account.
+Toast_CantClearImages: Kon afbeeldingen niet wissen
 Toast_RefreshedImages: Vernieuwde afbeeldingen
 Toast_ClearForgottenCheck: Weet u zeker dat u back-ups van vergeten accounts wilt wissen?
-Toast_BattleNet_ChangedBTag: Gewijzigde BattleTag
-Toast_BattleNet_DeletedBTag: BattleTag verwijderd
-Toast_FetchedRank: Opgehaalde rang
 Toast_ForgotAccount: Account vergeten
 Toast_ClearedPlatformSettings: "Gewist {platform} Switcherinstellingen"
 Toast_ClearedImages: "Gewiste afbeeldingen"
@@ -197,7 +214,7 @@ Toast_BackupCopy: (1/3) Bestanden kopiëren naar een tijdelijke locatie...
 Toast_BackupCompress: (2/3) Bestanden comprimeren ({size}). Dit zal enige tijd duren...
 Toast_BackupComplete: (3/3) Klaar met comprimeren! ({size} tot {compressedSize})
 Toast_BackupProgress: "Back-up bezig (Gecomprimeerde grootte: {compressedSize})"
-Toast_BackupFail: Back-up mislukt - Zie log!
+Toast_BackupFail: Back-up mislukt - zie logboek!
 Toast_BackupBusy: Back-up al bezig!
 Toast_RestoreBusy: Herstel wordt al uitgevoerd!
 Toast_RestoreExt: Archief uitpakken.
@@ -206,29 +223,44 @@ Toast_RestoreDeleting: Tijdelijke bestanden verwijderen
 Toast_RestoreComplete: Herstel voltooid!
 Toast_FailedLoad: Kan {platform}niet laden! Klik op het platform om de fout te zien.
 Toast_FailedPlatformsLoad: Kan Platforms.json niet laden! Controleer of dit bestand bestaat.
-Toast_FailedLoadSettings: "Kan instellingen niet laden! In plaats daarvan standaardinstellingen laden. 'oud' toevoegen aan bestaande instellingenbestandsnaam."
-Toast_FailedLoadStats: "Kan statistieken niet laden! Vers beginnen."
-Toast_FileCopyFail: Kan bestanden niet kopiëren! Zie log voor meer details.
-Toast_UserDataLoadFail: Kan gebruikersgegevens niet laden {UserData}\\WindowSettings.json. Back-up maken en resetten! Opgeslagen fout om te loggen.
-Toast_UpdateCheckFail: Kon https://tcno.co/ niet bereiken om te controleren op updates. Dit bericht wordt één keer per dag weergegeven.
+Toast_FailedLoadSettings: "Laden van instellingen mislukt! In plaats daarvan worden de standaardinstellingen geladen. 'Oud' toevoegen aan bestandsnaam bestaande instellingen."
+Toast_FailedLoadStats: "Laden van statistieken mislukt! Opnieuw beginnen."
+Toast_FailedStatsLoad: Kan GameStats.json niet laden! Controleer of dit bestand bestaat.
+Toast_GameStatsLoadFail: "Kan geen spelstatistieken van het web ophalen voor {Game}"
+Toast_GameStatsEmpty: "Geen spelstatistieken gevonden op website voor {Game}. Denk je dat het een vergissing is? Controleer de userdata map en 'temp\\download-{AccoundId}-{Game}.html' om te zien of de pagina een fout heeft gehad!"
+Toast_FileCopyFail: Kopiëren van bestanden is mislukt! Zie logboek voor meer informatie.
+Toast_UserDataLoadFail: Kan userdata {UserData}\\ WindowSettings.json niet laden. Back-up maken en resetten! Opgeslagen fout om te loggen.
+Toast_UpdateCheckFail: Kon https://tcno.co/ niet bereiken om te controleren op updates. Dit bericht wordt eenmaal per dag weergegeven.
 Toast_FailedCreateIcon: Kan pictogram niet maken. Zie logboek voor details.
-Tooltip_Restore: Klik om een 7z-bestand te selecteren of sleep het naar deze knop.
+Toast_SameAccount: Kan bestanden niet kopiëren van/naar dezelfde account. Probeer een ander account of raadpleeg Wiki voor meer informatie.
+Toast_Steam_DownloadingAppIds: Bezig met downloaden van Steam AppId-lijst...
+Toast_Steam_DownloadingAppIdsComplete: Downloaden voltooid. Het submenu met spelgegevens is bijgewerkt.
+Toast_SteamWebKeyInvalid: Steam Web API-sleutel lijkt ongeldig te zijn. Stel een nieuwe in.
+Toast_DownloadingProfileData: Profielgegevens downloaden
+Toast_PasswordChanged: Wachtwoord gewijzigd
+Toast_JsonFailModify: Kan JSON-bestand niet wijzigen. Zie logboek.
 Modal_Crowdin_Header: Crowdin-vertalers
 Modal_Crowdin_Info: "Hier is iedereen die heeft geholpen met het vertalen van deze software.<br>Gebruikers met talen naast zich hebben veel geholpen bij het vertalen (rol van proeflezer)."
 Modal_Info_Creator: Gemaakt door TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versie
 Modal_Info_ViewGitHub: Bekijk op GitHub
-Modal_Info_BugReport: Bug rapport/Feature verzoek
+Modal_Info_BugReport: Bugrapport/Feature request
 Modal_Info_VisitSite: Bezoek tcno.co
 Modal_Info_Disclaimer: Disclaimer
 Modal_Title_Info: TcNo Account Switcher Informatie
 Modal_Title_ChangeUsername: Gebruikersnaam wijzigen
-Modal_Title_ConfirmAction: TcNo Account switcher Bevestig Actie
-Modal_Title_LocatePlatform: Zoek a.u.b. de map {platform}
-Modal_Title_AddNew: Nieuw {platform} account toevoegen
+Modal_Title_ConfirmAction: TcNo Account Switcher Bevestig Actie
+Modal_Title_LocatePlatform: Zoek de map {platform}
+Modal_Title_AddNew: Nieuw {platform} -account toevoegen
 Modal_Title_Background: Een achtergrondafbeelding instellen
 Modal_Title_Userdata: Stel de gebruikersgegevensmap in
+Modal_Title_GameStats: Spelstatistieken in-/uitschakelen
+Modal_GameStats_Header: "Spelstatistieken in-/uitschakelen voor: {accountName}"
 Modal_Title_Stats: Uw statistieken
+Modal_Title_GameVars: "Invoergegevens voor {game}"
+Modal_GameVars_Header: "Voer de volgende gegevens in voor uw {game} -account, {username} op {platform}"
+Modal_Title_AccountNotes: "Accountnotities voor: {accountName}"
+Modal_Title_SetPassword: Wachtwoord instellen
 Modal_SetBackground: 'Selecteer een afbeelding of voer hieronder een URL in.<br>Leeg laten en instellen op reset.<br>(Zie de thema''s op de Wiki voor meer geavanceerde controle):'
 Modal_SetBackground_Button: Achtergrond instellen
 Modal_SetBackground_ChooseImage: Kies lokale afbeelding
@@ -237,12 +269,15 @@ Modal_SetUserdata_ChooseFolder: Selecteer een map
 Modal_SetUserdata_Button: Gebruikersgegevens instellen
 Modal_ChangeUsername: Voer een nieuwe gebruikersnaam in voor uw account
 Modal_ChangeUsernameType: Verander {platform} gebruikersnaam
-Modal_EnterDirectory: "Voer de map van {platform}als volgt in: C:\\Programmabestanden\\{platform}"
-Modal_LocatePlatform: Vind {platformExe}
-Modal_LocatePlatformFolder: Selecteer {platform} map
+Modal_SetPassword: Voer een wachtwoord in voor de TcNo Account Switcher
+Modal_SetPassword_Button: Wachtwoord instellen
+Modal_SetPassword_Info: "OPMERKING: dit versleutelt uw accounts niet. Het wisselen van accounts is net zo eenvoudig als het vervangen van bestanden of het wijzigen van een gebruikersnaam in een bestand. Het wachtwoord kan worden gereset door ook tekst in een bestand te bewerken. Dit is eenvoudige beveiliging. Het stopt eenvoudige UI-toegang. U kunt deze app op een verwisselbare USB zetten, de UserData-map op dezelfde USB zetten en fysiek verwijderen voor meer veiligheid. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Naar een externe schijfgids gaan</a><br><br>Om te wissen, laat u het bovenstaande leeg en klikt u op Instellen."
+Modal_EnterDirectory: "Voer de map {platform}in als zodanig: C:\\Program Files\\{platform}"
+Modal_LocatePlatform: Zoek {platformExe}
+Modal_LocatePlatformFolder: Selecteer map {platform}
 Modal_ConfirmAction: Bevestig actie
-Modal_AddNew: Voer een naam in voor het {platform} -account waarmee je bent ingelogd.
-Modal_AddCurrentAccount: Huidige {platform} account toevoegen
+Modal_AddNew: Voer een naam in voor het {platform} -account waarop u bent ingelogd.
+Modal_AddCurrentAccount: Huidig {platform} account toevoegen
 Modal_SetImageHeader: Profielafbeelding instellen
 Modal_SetImage: Afbeelding instellen
 Status_SelectedAccount: "Geselecteerd: {name}"
@@ -260,163 +295,173 @@ Status_WaitingForMultipleClose: "Wachten tot {processName} & {count} anderen slu
 Status_GetUniqueId: Unieke gebruikers-ID verzamelen
 Status_CopyingFiles: Gebruikersbestanden kopiëren...
 Status_HandlingImage: Accountprofielafbeelding verwerken
-Context_SwapTo: Wissel naar account
-Context_CreateShortcut: Maak een bureaubladsneltoets
-Context_CreateShortcutSubmenu: Maak een bureaubladsnelheid...
+Context_SwapTo: Wisselen naar account
+Context_CreateShortcut: Snelkoppeling maken
 Context_ChangeImage: Afbeelding wijzigen
-Context_BNet_SetBTag: Slagtag versen
-Context_BNet_DelBTag: Slagtag verwijderen
-Context_BNet_GetRAnk: Rang terugzetten
-Context_ChangeName: Verander wisselaar naam
-Context_LoginAsSubmenu: Inloggen als...
-Context_UsernameSubmenu: Gebruikersnaam...
+Context_ChangeName: Naam wisselaar wijzigen
+Context_LoginAsSubmenu: Inloggen als
+Context_UsernameSubmenu: Gebruikersnaam
 Context_RefreshName: Naam vernieuwen
-Context_CopySubmenu: Kopiëren...
-Context_CopyProfileSubmenu: Profiel kopiëren...
-Context_CommunityUrl: Community URL
-Context_CommunityUsername: Community gebruikersnaam
+Context_CopySubmenu: Kopiëren
+Context_DataSubmenu: Data
+Context_CopyProfileSubmenu: Profiel kopiëren
+Context_CommunityUrl: Community-URL
+Context_CommunityUsername: Community-gebruikersnaam
 Context_LoginUsername: Login gebruikersnaam
-Context_CopySteamIdSubmenu: Kopieer SteamID...
-Context_Steam_Id: SteamID [STEAM0:~]
+Context_CopySteamIdSubmenu: SteamID kopiëren
+Context_Steam_Id: StoomID [STEAM0:~]
 Context_Steam_Id3: SteamID3 [U:1:~]
-Context_Steam_Id32: SteamID32
-Context_Steam_Id64: SteamID64 7656~
-Context_Steam_OpenUserdata: Gebruikersgegevens openen
-Context_CopyOtherSubmenu: Kopieer anderen...
-Context_HidePlatform: Verberg platform
+Context_Steam_Id32: StoomID32
+Context_Steam_Id64: StoomID64 7656~
+Context_Steam_OpenUserdata: Open userdata
+Context_ManageSubmenu: Beheren
+Context_GameDataSubmenu: Spelgegevens
+Context_ManageGameStats: Spelstatistieken beheren
+Context_Game_CopySettingsFrom: Kopieer instellingen naar huidige
+Context_Game_RestoreSettingsTo: Spelgegevens herstellen
+Context_Game_BackupData: Back-up maken van spelgegevens
+Context_CopyOtherSubmenu: Overig kopiëren
+Context_HidePlatform: Platform verbergen
 Context_ExportAccList: Accountlijst exporteren
 Context_RunAdmin: Uitvoeren als beheerder
 Context_Hide: Verberg
-Title_BNet_Settings: TcGeen account switcher - BattleNet Instellingen
-Title_BNet_ManageIgnored: TcNo Account Switcher - Beheer genegeerde BattleNet accounts
+ProfileImage_ToggleText: Afbeelding als accountafbeelding gebruiken
 Title_Platforms_Settings: TcNo Account Switcher - Platforminstellingen
-Title_AccountsList: TcGeen accountkiezer - {platform}
-Title_TextEditor: TcNo Account Switcher - Tekstverwerker
-Title_Settings: TcGeen accountkiezer - Instellingen
-Title_Steam_Cleaning: TcNo account switcher - Steam schoonmaken
-Title_Steam_Settings: TcNo account switcher - Steam instellingen
+Title_Settings_TestCss: TcNo Account Switcher - Test CSS Styling
+Title_AccountsList: TcNo Account Switcher - {platform}
+Title_TextEditor: TcNo Account Switcher - Teksteditor
+Title_Settings: TcNo Account Switcher - Instellingen
+Title_Steam_Cleaning: TcNo Account Switcher - Stoomreiniging
+Title_Steam_Settings: TcNo Account Switcher - Stoominstellingen
 Title_Template_Settings: TcNo Account Switcher - {platformName} Instellingen
+Title_Login: TcNo Account Switcher - Inloggen
 Installer_Downloading: Downloaden {file}
-Installer_DownloadFinished: Downloaden van {file} voltooid
+Installer_DownloadFinished: Downloaden voltooid {file}
 Installer_Installing: "Installeren: {runtime}"
-Installer_RuntimeTitle: TcNo Account switcher - Runtime installer
+Installer_RuntimeTitle: TcNo Account Switcher - Runtime installer
 Installer_Welcome: Welkom bij de TcNo Account Switcher - Runtime installer
-Installer_InstalledRuntimes: "Huidige geïnstalleerde runtimes:"
+Installer_InstalledRuntimes: "Huidig geïnstalleerde runtimes:"
 Installer_ErrorRuntime: "Een of meer runtimes zijn niet geïnstalleerd:"
-Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB tijdens het installeren]"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB tijdens de installatie]"
 Installer_TotalSize: "Totale downloadgrootte: ~{size} MB"
-Installer_AnyKeyStart: Druk op een toets om de download te starten...
-Runtime_WebView2: Microsoft WebView2 Runtime
+Installer_AnyKeyStart: Druk op een toets om het downloaden te starten...
+Runtime_WebView2: Microsoft WebView2-runtime
 Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
 Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Aanmaken map mislukt:"
-Installer_FailedWV: "Downloaden en installeren van Microsoft WebView2 Runtime mislukt. Om te downloaden: 1. Klik de link hieronder: {link} 2. Klik op 'Download Hosting Bundle' onder Run server apps."
-Installer_FailedDR: "Downloaden en installeren van .NET 5 Desktop Runtime mislukt. Download het hier:"
+Installer_FailedWV: "Kan Microsoft WebView2 Runtime niet downloaden en installeren. Om te downloaden: 1. Klik op de onderstaande link: {link} 2. Klik op 'Download Hosting Bundle' onder Run server apps."
+Installer_FailedDR: "Kan .NET 5 Desktop Runtime niet downloaden en installeren. Download het hier:"
 Installed_FailedASP: "{version} Runtime niet downloaden en installeren. Om te downloaden: 1. Klik op de onderstaande link: {link} 2. Klik op 'Download x64' onder Desktop-apps uitvoeren."
-Installer_Ready: "Eén of meer zijn klaar voor installatie. Indien gevraagd wordt of u wilt installeren, klik dan op 'Ja'."
+Installer_Ready: "Een of meer zijn klaar voor installatie. Als u wordt gevraagd of u wilt installeren, klikt u op 'Ja'."
 Installer_PressStart: Druk op een toets om de installatie te starten...
 Installer_VerifyMin: "Controleer of u voldoet aan de minimaal aanbevolen vereisten:"
-Installer_VerifyAlready: "Het lijkt erop dat alles is geïnstalleerd. Controleer of je voldoet aan de minimale aanbevolen vereisten:"
+Installer_VerifyAlready: "Het lijkt erop dat alles is geïnstalleerd. Controleer of u voldoet aan de minimaal aanbevolen vereisten:"
 Installer_Complete: Dat zou alles moeten zijn. Het hoofdprogramma, TcNo-Acc-Switcher.exe, wordt automatisch gestart.
 Installer_Complete2: "Als het niet werkt, raadpleeg dan de installatie-instructies, hier: {link}"
-Global_FatalNext: "Fatale fout opgetreden! Dit crashlogboek zal automatisch worden ingediend bij de volgende start."
-Tray_Error: Tray fout
-Tray_NoAccs: "Er zijn geen accounts gevonden.\nProbeer eerst van account te wisselen, of zoek 'Tray_Users.json'"
+Global_FatalNext: "Fatale fout opgetreden! Deze crashlog wordt automatisch verzonden volgende lancering."
+Tray_Error: Trayfout
+Tray_NoAccs: "Er zijn geen accounts gevonden.\nProbeer eerst van account te wisselen of zoek 'Tray_Users.json'"
 Tray_Switch: "Overschakelen naar: {account}"
-Tray_CantOpenExe: "Kon het hoofd .exe niet openen. Zorg ervoor dat het bestaat.\n\nIk heb geprobeerd te openen:"
-Tray_LaunchFail: "TcNo Account switcher - lancering van tray mislukt"
-Updater_Duplicate: Er is een andere TcNo Account Switcher Updater instantie gedetecteerd.
+Tray_CantOpenExe: "Kan de hoofd .exe niet openen. Zorg ervoor dat het bestaat.\n\nIk probeerde te openen:"
+Tray_LaunchFail: "TcNo Account Switcher - Opstarten van lade mislukt"
+Updater_Duplicate: Een ander exemplaar van de TcNo Account Switcher Updater is gedetecteerd.
 Updater_Unknown: "Onbekend argument: {arg}"
-Updater_NeedsAdmin: Dit programma moet worden uitgevoerd als een beheerder!
+Updater_NeedsAdmin: Dit programma moet worden uitgevoerd als beheerder!
 Updater_StatusChecking: Versie controleren
-Updater_FailedVersionCheck: "Kon versie niet verkrijgen. Klik op \"Verify\" om bestanden bij te werken en te verifiëren"
+Updater_FailedVersionCheck: "Kon versie niet ophalen. Klik op \"Verifiëren\" om bestanden bij te werken en te verifiëren"
 Updater_PressBelow: Druk op de knop hieronder!
-Updater_PressBelowStart: Klik op de knop hieronder om de update te starten.
+Updater_PressBelowStart: Klik op de onderstaande knop om de update te starten.
 Updater_PatchApplied: Patch toegepast!
 Updater_UpdatingAppData: Bestanden bijwerken in AppData!
-Updater_Complete: Alle updates voltooid!
+Updater_Complete: Alle updates zijn voltooid!
 Updater_Checking: Controleren op updates
-Updater_UpdateToVerify: Om bestanden te verifiëren moet je eerst bijwerken.
-Updater_ClosingTcNo: Sluit TcNo Account switcher instanties (indien aanwezig).
+Updater_UpdateToVerify: Om bestanden te verifiëren, moet u eerst bijwerken.
+Updater_ClosingTcNo: TcNo Account Switcher-instanties sluiten (indien van toepassing).
 Updater_Downloading: "Update downloaden: {version}"
 Updater_Downloaded: Download voltooid.
-Updater_CantExtract: Update uitpakken mislukt.
-Updater_Verify: Controleer bestanden
-Updater_Verifying: Verifiëren...
-Updater_VerifySkip: Verifieer bestanden om alle kleine updates over te slaan en naar de laatste springen.
-Updater_NoConnection: "Kan geen verbinding maken met tcno.co om bestanden te verifiëren. U kunt proberen handmatig het installatieprogramma van de GitHub pagina te downloaden en opnieuw te installeren om bij te werken.\n\nFout:"
-Updater_NoServer: Kan updateserver niet bereiken
-Updater_Hashlist: Laatste hash lijst downloaden...
+Updater_CantExtract: Kan update niet uitpakken.
+Updater_Verify: Bestanden verifiëren
+Updater_Verifying: Bezig met verifiëren...
+Updater_VerifySkip: Bestanden controleren om alle kleine updates over te slaan en gewoon naar de nieuwste te springen.
+Updater_NoConnection: "Kon geen verbinding maken met tcno.co om bestanden te verifiëren. U kunt proberen het installatieprogramma handmatig te downloaden van de GitHub-pagina en het opnieuw installeren om bij te werken.\n\nFout:"
+Updater_NoServer: Kon update server niet bereiken
+Updater_Hashlist: Bezig met downloaden van de nieuwste hash-lijst...
 Updater_CantCheck: Kan niet controleren op updates
-Updater_Failed: "FOUT: Sommige bestanden zijn in gebruik en kunnen niet worden bijgewerkt.\n\n1. Zorg ervoor dat alle TcNo processen volledig zijn gesloten\n(of uw PC) herstarten\n\n2. Klik vervolgens op onderstaande verifiëren: of if u opnieuw gestart:\n- Open deze updater en verifieer bestanden\n    (gesitueerd in de 'updater' map in de installatiemap)"
-Updater_Missing: "MIJN BESTAND: {file}"
-Updater_FileMismatch: "Bestand: {file} heeft MD5: {md5} EXPECTED: {value}"
+Updater_Failed: "FOUT: sommige bestanden zijn in gebruik en kunnen niet worden bijgewerkt.\n\n1. Zorg ervoor dat alle TcNo-processen volledig gesloten zijn\n(of start uw pc opnieuw op)\n\n2. Klik vervolgens op Verifiëren hieronder, of als u opnieuw bent gestart:\n-   Open deze update en controleer bestanden\n    (in de map 'update' in de installatiemap)"
+Updater_Missing: "BESTAND ONTBREEKT: {file}"
+Updater_FileMismatch: "Bestand: {file} heeft MD5: {md5} VERWACHT: {value}"
 Updater_DownloadingWeb: Bestand downloaden van website...
 Updater_UnpackingAppData: Bestanden kopiëren naar %AppData%/TcNo Account Switcher... (tenzij anders ingesteld)
 Updater_VerifyComplete: Bestanden geverifieerd!
 Updater_UpdateFound: "Update gevonden: {name} [{updateSize}]"
-Updater_TotalFound: "Totaal gevonden updates: {x}"
+Updater_TotalFound: "Totaal aantal gevonden updates: {x}"
 Updater_TotalSize: "Totale grootte: {size}"
-Updater_AwaitingUser: Wachten op gebruikersinvoer...
-Updater_UpToDate: "U bent up to datum.\n:)"
-Updater_FailedDecode: Dit is waarschijnlijk te wijten aan mij (TechNobo), die een update doorvoert en een typefout maakt dat de . son updatebestand. Laat het me weten :)
-Updater_FailedDecodeTitle: Het decoderen van updatelijst is mislukt
-Updater_Extracting: patch bestanden uitpakken
-Updater_Applying: patch toepassen...
+Updater_AwaitingUser: Wachten op invoer van gebruiker...
+Updater_UpToDate: "Je bent up-to-date.\n:)"
+Updater_FailedDecode: Dit is waarschijnlijk te wijten aan mij (TechNobo) duwen van een update, en het maken van een typfout dat de .json update-bestand brak. Laat het me weten :)
+Updater_FailedDecodeTitle: Kon update lijst niet decoderen
+Updater_Extracting: Patchbestanden uitpakken
+Updater_Applying: Patch wordt toegepast...
 Updater_Moving: Bestanden verplaatsen...
-Updater_Title: TcNo Account switcher Updater
+Updater_Title: TcNo Account Switcher Updater
 Updater_Started: Gestart
 Updater_Start: Start TcNo Account Switcher
 Updater_Begin: Update starten
-Updater_Exit: Afsluiten
+Updater_Exit: Exit
 FatalError: Fatale fout opgetreden!
 Online: Online
-OnlineDefault: Online (Default)
+OnlineDefault: Online (standaard)
 Offline: Offline
 Invisible: Onzichtbaar
 Busy: Bezig
 Away: Afwezig
-Snooze: Uitstellen
-LookingToTrade: Transactie aan het zoeken
-LookingToPlay: Op zoek naar spelen
+Snooze: Pauzeren
+LookingToTrade: Op zoek naar handel
+LookingToPlay: Op zoek om te spelen
 Unrecognized_EPersonaState: Niet-herkende ePersonaState
 Reg_DoesntExist: "{subKey} bestaat niet."
 Reg_DoesntContain: "{subKey} bevat geen {val}"
-Reg_Removing: Verwijderen van {subKey}\\{val}
-PngInvalid_Format: Vereiste pixelformaat is PixelFormat.{x}.
-PngRequired: Vereiste afbeeldingsformaat is een draagbaar netwerk grafische (png).
-PngDimensions: Afmetingen moeten kleiner of gelijk zijn aan {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "Er is een syntaxisfout opgetreden (meer details hieronder)! AND:"
+Reg_Removing: Verwijderen {subKey}\\{val}
+PngInvalid_Format: Vereist pixelformaat is PixelFormat.{x}.
+PngRequired: Vereist afbeeldingsformaat is een draagbare netwerkafbeelding (png).
+PngDimensions: Afmetingen moeten kleiner zijn dan of gelijk zijn aan {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Er is een syntaxisfout opgetreden (meer details hieronder)! EN:"
 ThemesNotFound: "Kan \"thema's\" map niet vinden in TcNo Account Switcher's map. Deze (vooral de \"Dracula_Cyan\" map) is nodig om deze software te laten draaien.\nU kunt de Updater in de map \"updater\" uitvoeren om de bestanden te controleren, en deze ontbrekende bestanden terug te zetten."
-Yes: "ja"
-No: "Neen"
+Yes: "Ja"
+No: "- Nee."
+Save: Opslaan
 NoDefault: Nee (standaard)
-Ok: "Ok"
+Ok: "OK"
+Submit: Verzenden
 Forget: Vergeet
 Notice: Kennisgeving
-Error: Foutmelding
+Notes: Opmerkingen
+Error: Fout
 ErrorDetails: "FOUT: {ex}"
 Failed: Mislukt
-Success: Geslaagd
+Success: Succes
 NotFound: Niet gevonden
-Done: Voltooid
+Done: Gereed
+Edit: Bewerken
+Refresh: Vernieuwen
 Working: Bezig...
 ForName: "Voor: {name}"
 DeletedFiles: Verwijderde bestanden
 FileFoldersToClear: "Lijst met te wissen bestanden/mappen:"
-CouldNotFindX: Kan {x} niet vinden
-CouldNotCloseX: '{x} kon niet worden gesloten!'
+CouldNotFindX: Kon {x}niet vinden
+CouldNotCloseX: Kon {x}niet sluiten!
+CouldNotReadFile: Kon {file}niet lezen!
 DirectoryNotFound: Map niet gevonden
 DirectoryNotFoundFolder: "Map niet gevonden: {folder}"
 DeletingFile: "Verwijderen: {file}"
 DeletingFolder: "Map verwijderen: "
-CouldntDeleteX: "FOUT: VERKLARINGEN VERWIJDEREN: {x}"
-CouldntDeleteUndefined: "FOUT: VERWIJDEREN VERWIJDEREN FILE"
-Prompt_RestartAsAdmin: "<h3><bold>Dit programma zal opnieuw opstarten als Admin</bold></h3><p>Druk op \"Ja\" in UAC, wanneer gevraagd wordt om admin.</p>"
+CouldntDeleteX: "FOUT: KAN NIET VERWIJDEREN: {x}"
+CouldntDeleteUndefined: "FOUT: KAN ONGEDEFINIEERD BESTAND NIET VERWIJDEREN"
+Prompt_RestartAsAdmin: "<h3><bold>Dit programma zal opnieuw starten als Admin</bold></h3><p>Druk op \"Yes\" in UAC wanneer gevraagd voor admin.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Je staat op het punt een account te vergeten!</h3> <h4>Wat betekent dit?</h4> <p>- Steam heeft niet langer het account in de Big Picture-modus en onthoudt het wachtwoord niet.<br/> - TcNo Account Switcher zal het account ook niet langer tonen, totdat het opnieuw is aangemeld via Steam.</p> <p>Uw account blijft ongewijzigd. Het is gewoon vergeten op deze computer.</p><h4>Begrijp je het?</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>Je staat op het punt een account te vergeten!</h3> <h4>Wat betekent dit?</h4> <p>TcNo Account Switcher zal ook niet langer het account weergeven.<br/> totdat het opnieuw is aangemeld via {platform}, en aan de lijst is toegevoegd.</p> <p>Je account blijft onaangeroerd. Je bent vergeten op deze computer.</p> <h4>Begrijp je dat?</h4>
+  <h3 style='color:red'>U staat op het punt een account te vergeten!</h3> <h4>Wat betekent dit?</h4> <p>TcNo Account Switcher zal het account ook niet meer tonen,<br/> totdat het opnieuw is aangemeld via {platform}en aan de lijst is toegevoegd.</p> <p>Uw account zal onaangeroerd blijven. Het is gewoon vergeten op deze computer.</p> <h4>Begrijpt u?</h4>
 Prompt_ClearStats: >
   <h3 style='color:red'>U staat op het punt uw statistieken te wissen!</h3> <p>U kunt deze actie niet ongedaan maken.</p>
 Platform_DiscordPasteHint: Plak in Discord-console en plak het resultaat in invoer!
@@ -425,7 +470,7 @@ Platform_ClearCacheTotal: Wissen van {totalFileCount} bestanden ({totalSizeMB})
 Platform_DeleteFail: Kan sommige bestanden niet verwijderen (het programma is mogelijk actief?)
 Platform_CouldNotDeleteLog: Kan bestand niet verwijderen! Controleer {logPath}
 Error_FileAccessDenied: Geen toegang tot bestand! Controleer {logPath}
-Error_RequiredFileVerify: Er is geen vereist bestand gevonden. Zorg ervoor dat de x64- en x86-mappen aanwezig zijn in de installatiemap. Als dit niet het geval is, voert u TcNo-Acc-Switcher-Updater.exe uit en controleert u de bestanden.
+Error_RequiredFileVerify: Een vereist bestand is niet gevonden. Zorg ervoor dat de mappen x64 en x86 in de installatiemap staan. Zo niet, voer dan TcNo-Acc-Switcher-Updater.exe uit en controleer de bestanden.
 Tooltip_Settings: Instellingen
 Tooltip_Info: Informatie
 Tooltip_ManagePlatforms: Toon of verberg andere platforms
@@ -433,9 +478,16 @@ Tooltip_ExpandShortcuts: Spel en Snelkoppeling selectie uitbreiden
 Tooltip_ShortcutFolder: Open sneltoets map. Plaats daar snelkoppelingen en de TcNo Account Switcher om ze te bekijken.
 Tooltip_Backup: Maak een back-up van configuratiebestanden/mappen, zoals gedefinieerd in platforminstellingen.
 Tooltip_BackupAll: Maak een back-up van ALLE configuratiebestanden/mappen, inclusief afbeeldingen en andere grote bestanden.
-Tooltip_ClosingMethod: "Gecombineerd is het beste. Sluiten probeert direct te sluiten via een sluitfunctie en TaskKill gebruikt CMD (het beste als gecombineerd niet werkt)"
-Tooltip_StartingMethod: "Standaard is het beste. Direct heeft geen controle over beheerdersniveau of UAC. Het begint op hetzelfde niveau (of hoger - maar niet lager) dan deze accountwisselaar"
+Tooltip_ClosingMethod: "Gecombineerd is het beste. Sluit pogingen om direct te sluiten via een sluitfunctie en TaskKill maakt gebruik van CMD (Best if combined does not work)"
+Tooltip_StartingMethod: "Standaard is het beste. Direct heeft geen controle over admin niveau of UAC. Het begint als hetzelfde niveau (of hoger - maar niet lager) dan deze accountwisselaar"
 Tooltip_CurrentAccount: U bent momenteel ingelogd op dit account.
-Discord_Status: Wisselt momenteel van account.
+Tooltip_Restore: Klik om een 7z-bestand te selecteren of sleep het naar deze knop.
+Tooltip_DisabledGlobally: Dit item is verborgen voor alle accounts. Je kunt dit wijzigen in de platforminstellingen.
+Discord_Status: Momenteel van account wisselen.
 Discord_StatusDetails: "Accounts gewisseld: {number}"
 Website: Website
+Preview_Platforms: Platforms preview
+Preview_Accounts: Accounts preview
+Preview_Notifications: Voorbeeld van toastmeldingen
+Preview_Settings: Voorbeeld van instellingen
+Preview_Modals: Voorbeeld van modals

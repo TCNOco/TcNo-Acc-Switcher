@@ -1,191 +1,208 @@
 ---
 Update: Actualizare disponibilă! Click aici pentru a o începe.
 Header_ChooseLanguage: 'Alegeți limba:'
-BattleNet_ShowSR: Arată SR-ul din Overwatch și folosește imaginea de profil din Overwatch
-Steam_ShowSteamID: Afișează SteamID-ul
-Steam_ShowVac: Afișați statusul VAC
+Steam_ShowSteamID: SteamID
+Steam_ShowVac: Stare VCA
+Steam_ShowLastLogin: Ora ultimei autentificări
+Steam_ShowLimited: Stare limitată
+Steam_ShowAccUsername: Numele de utilizator al contului
+Steam_Tray_AccountName: Arată numele contului [not friend name]
 Steam_CheckVac: Verifică statusul VAC
-Steam_ShowLimited: Afișează starea limitată
-Steam_ShowAccUsername: Arată numele de utilizator
-Steam_Tray_AccountName: Arată numele contului [nu și numele prietenului]
-Steam_OverrideDefaultState: "Suprascrie starea implicită de autentificare:"
-Button_AddNew: Adaugă nou
-Button_SaveCurrent: Salvează Curentul
-Button_SaveFile: Salveaza fisier
-Button_Cancel: Anulează
+Steam_OverrideDefaultState: "Suprascrie starea implicită de conectare:"
+Steam_StartSilent: "Deschideți tava de aburi pe comutator (Porniți aburul cu '-silent')"
+Button_AddNew: Adăugare nou
+Button_SaveCurrent: Salvează Curent
+Button_SaveFile: Salvează fișierul
+Button_Cancel: Anulați
 Button_Login: Autentificare
-Button_Close: Inchide
-Button_RefreshImages: Reîmprospătare imagini
+Button_Close: Închide
+Button_RefreshImages: Reîmprospătați imaginile
 Button_ResetSettings: Resetare setări
 Button_AdvancedCleaning: Curățare avansată...
-Button_ClearLog: Curăță jurnalul
-Button_WikiInfo: Mai multe informaţii (Wiki)
+Button_ClearLog: Șterge jurnalul
+Button_WikiInfo: Mai multe informații (Wiki)
 Button_ManagePlatforms: Gestionați platformele
 Button_Backup: Backup
 Button_BackupAll: Faceți backup pentru tot
 Button_Restore: Restabili
 Button_OpenBackup: Deschideți dosarul de rezervă
-Settings_Shortcut: ' {platform} Comutator pe Desktop'
-Settings_Admin: Rulează {platform} ca Admin
+Button_Back: Înapoi
+Button_RestartAdmin: Repornire ca administrator
+Button_SetPassword: Setați parola aplicației
+Settings_Shortcut: ' {platform} Comutator scurtătură desktop'
+Settings_Admin: Execută {platform} ca administrator
 Settings_ImageExpiry: 'Zile înainte de expirarea imaginilor de profil:'
+Settings_SteamAPIKey: "Cheie API web Steam (opțional)"
+Settings_SteamAPIKey_Note: Setarea unei chei API va face ca indicatorul Limitat (chenar galben) să apară pentru conturile care sunt în schimb interzise de Comunitate.
 Settings_Header_AppWide: Setări pentru întreaga aplicație
 Settings_Header_GeneralSettings: Setări generale
-Settings_Header_ExtraPlatforms: Setări platformă
-Settings_Header_GeneralTools: Unelte Generale
+Settings_Header_AccountDisplay: Setări afișare cont
+Settings_Header_ExtraPlatforms: Setările platformei
+Settings_Header_GeneralTools: Instrumente generale
 Settings_Header_OtherTools: Alte instrumente
-Settings_Header_TraySettings: Setări jurnal
-Settings_Header_OpenGameFolders: Deschide folderele jocului
+Settings_Header_TraySettings: Setările tăvii
+Settings_Header_OpenGameFolders: Deschide dosarele de joc
 Settings_Header_BackupRestore: Backup și restaurare setările platformei
 Settings_Header_Language: Limba
 Settings_Header_System: Sistem
-Settings_Header_Theme: Temă
+Settings_Header_Theme: Tema
 Settings_Header_Program: Program
-Settings_Header_StatsSharing: Statistici și partajare
-Settings_Header_Platform: "{platformName} setari"
-Settings_TrayMax: 'Numărul maxim de conturi de reţinut:'
+Settings_Header_StatsSharing: Statistici și distribuire
+Settings_Header_Platform: "{platformName} setări"
+Settings_Header_GameStats: Setările pentru statisticile globale ale jocului
+Settings_GameStats: Orice este bifat aici NU va apărea sub numele dvs. de utilizator pentru niciun cont. Utilizați această opțiune dacă ascundeți adesea anumite elemente din statisticile dvs. de joc.
+Settings_TrayMax: 'Numărul maxim de conturi de reținut:'
 Settings_ExtraPlatformsDisabled: Platforme dezactivate. Faceți clic pentru a le activa.
 Settings_ExtraPlatformsEnabled: Platforme vizibile. Faceți clic pentru a le dezactiva.
 Settings_RTL: Afișați textul ca de la dreapta la stânga
-Settings_CollectStats: Colectați statistici
-Settings_ShareStats: Distribuiți statistici enervant (recomandat)
-Settings_DiscordRpc: Prezență bogată în Discord (RPC)
-Settings_DiscordRpcShare: Distribuiți totalul comutatoarelor
-Settings_ViewStats: Vedeți statistici
-Settings_ClearStats: Resetați
+Settings_CollectStats: Colectare statistici
+Settings_ShareStats: Partajați statistici enervant (recomandat)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Partajați numărul total de comutatoare
+Settings_ViewStats: Vizualizare statistici
+Preview: Previzualizare
+Settings_ClearStats: Resetare
 Settings_CurrentLocation: 'Locația curentă de instalare: {path}'
 Settings_CurrentDataLocation: 'Locația curentă a datelor utilizatorului: {path}'
 Settings_SetDataLocation: "[Setați locația personalizată a datelor utilizatorului]"
-Settings_PickFolder: Alege dosarul {platform}
+Settings_PickFolder: Alegeți dosarul {platform}
 Settings_OpenFolder: Deschide dosarul {platform}
-Settings_ClearForgotten: Curăță uitat
-Settings_ClearAccounts: Curăță conturile
+Settings_ClearForgotten: Șterge cele uitate
+Settings_ClearAccounts: Șterge conturile
 Settings_StreamerMode: Activează modul streamer
-Settings_ExitToTray: Ieșire minimizează în tăviță
-Settings_DesktopShortcut: Scurtătură pe desktop
-Settings_StartMenu_ProgramTray: Program & Tăiere
+Settings_ExitToTray: Ieșirea se reduce la minimum în tavă
+Settings_DesktopShortcut: Comanda rapidă de pe desktop
+Settings_StartMenu_ProgramTray: Program și tavă
 Settings_StartMenu_Platform: Platformă
-Settings_Tray_StartWindows: Începe Tăierea cu Windows
-Settings_Tray_StartNow: '[Începe Tăierea acum]'
-Settings_CurrentStyle: Stil actual
+Settings_Tray_StartWindows: Porniți tava cu Windows
+Settings_Tray_StartNow: '[Porniți tava acum]'
+Settings_CurrentStyle: Stil curent
 Settings_ThemeBackground: '[Setați fundalul]'
 Settings_ThemeOpenFolder: '[Deschide folderul cu teme]'
-Settings_Protocol: 'Activează tcno:\\ protocol (recomandat)'
-Settings_StartCentered: Pornire program centrat
-Settings_WindowsAccent: Folosește culoarea de cent Windows
-Settings_HelpTranslate: "[Ajutor traduce]"
+Settings_Protocol: 'Activați tcno:\\ protocol (recomandat)'
+Settings_StartCentered: Pornește programul centrat
+Settings_WindowsAccent: Utilizează culoarea de accentuare Windows
+Settings_HelpTranslate: "[Help translate] ([Ajutor la traducere])"
 Settings_ViewTranslators: "[Credits]"
 Settings_Header_ActiveBrowser: "(Avansat) Setați motorul de randare:"
-Settings_Header_ClosingMethod: "(Avansat) Setați metoda pentru a închide {platform}"
-Settings_Header_StartingMethod: "(Avansat) Setați metoda pentru a începe {platform}"
+Settings_Header_ClosingMethod: "(Avansat) Setați metoda de închidere {platform}"
+Settings_Header_StartingMethod: "(Avansat) Setați metoda pentru a porni {platform}"
 Settings_AutoStart: "Porniți automat {platform} la comutarea contului"
 Settings_NoPlatforms: În prezent, nu există platforme activate. Vă rugăm să bifați mai jos platformele opționale pentru a le activa sau debifați platformele dezactivate.
-Settings_MinimizeOnSwitch: Minimizați comutatorul la comutatorul de cont
-Stats_Disabled: "Colectarea statisticilor este dezactivată."
-Stats_InDepth: Defalcare aprofundată a statisticilor
-Stats_ShareEnabled: "Aceste statistici sunt partajate anonim și se vor adăuga la totalul <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aici</a>."
-Stats_ShareDisabled: "Aceste statistici NU sunt partajate anonim și NU se vor adăuga la totalul <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aici</a>."
+Settings_MinimizeOnSwitch: Minimizați comutatorul la comutarea contului
+Settings_ShowShortNotes: Previzualizare notă sub numele de utilizator
+Settings_Header_AppPassword: "Opriți alte persoane care utilizează comutatorul:"
+PreviewCss: Previzualizare CSS
+Settings_PreviewCss: Aceasta este pagina de previzualizare CSS. Puteți vizualiza câteva elemente care apar în program și puteți vedea cum arată cu tema dvs. Această pagină este utilă pentru cei care creează teme!
+Settings_PreviewCssHeader: Pagina de previzualizare CSS
+Stats_Disabled: "Colecția de statistici este dezactivată."
+Stats_InDepth: Defalcare în profunzime a statisticilor
+Stats_ShareEnabled: "Aceste statistici sunt distribuite anonim și se vor adăuga la totalul <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aici</a>."
+Stats_ShareDisabled: "Aceste statistici NU sunt distribuite anonim și NU se vor adăuga la totalul <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aici</a>."
 Stats_OperatingSystem: "Sistem de operare: "
 Stats_FirstLaunch: "Prima lansare: "
-Stats_LaunchCount: "Număr de lansări: "
+Stats_LaunchCount: "Numărătoarea lansărilor: "
 Stats_CrashCount: "Număr de accidente: "
-Stats_MostUsedPlatform: "Cea mai folosită platformă: "
-Stats_TotalTime: "Timp total petrecut în aplicație: "
-Stats_TotalSwitches: "Total schimburi de cont: "
+Stats_MostUsedPlatform: "Platforma cea mai utilizată: "
+Stats_TotalTime: "Timpul total petrecut în aplicație: "
+Stats_TotalSwitches: "Total comutatoare de cont: "
 Stats_TotalGamesLaunched: "Total aplicații/jocuri lansate prin comutator: "
-Stats_UniqueDaysLong: "Zile unice cu conturile schimbate: "
+Stats_UniqueDaysLong: "Zile unice cu conturi schimbate: "
 Stats_LastUpload: "Ultima încărcare: "
-Stats_SwitcherStats: "Statistici comutatoare: "
-Stats_PageStats: "Statistici pagini: "
-Stats_VisitsTotalTime: "{visits} vizite în total, {hours} timp total"
+Stats_SwitcherStats: "Statistici comutator: "
+Stats_PageStats: "Statisticile paginii: "
+Stats_VisitsTotalTime: "{visits} vizite în total, {hours} oră în total"
 Stats_Accounts: "Conturi: "
 Stats_Switches: "Comutatoare: "
 Stats_FirstActive: "Primul activ: "
-Stats_LastActive: "Ultima data activ: "
+Stats_LastActive: "Ultimul activ: "
 Stats_UniqueDays: "Zile unice: "
-Stats_GameShortcuts: "Comenzi rapide pentru jocuri: "
-Stats_GameShortcutsHotbar: "Comenzi rapide pentru jocuri (pe bara rapidă): "
+Stats_GameShortcuts: "Comenzi rapide de joc: "
+Stats_GameShortcutsHotbar: "Comenzi rapide de joc (pe bara de comandă rapidă): "
 Stats_GamesLaunched: "Jocuri lansate: "
-Cleaning_Header_StartMenuShortcuts: 'Comenzi rapide pentru Meniul Pornire:'
+Stats_MetricsToShow: "Valori afișate:"
+Stats_AccountId: "Id cont:"
+Auth_LoginRequired: O parolă a fost setată anterior și este necesară. Vă rugăm să introduceți parola mai jos.
+Auth_EnterPassword: "Introduceți parola:"
+Auth_PassIncorrect: Parolă incorectă.
+Locked: Blocat
+Cleaning_Header_StartMenuShortcuts: 'Comenzi rapide pentru meniul Start:'
 Cleaning_Header_General: Curățare generală
-Cleaning_Header_LoginHistory: Curăță istoricul autentificărilor
-Cleaning_Header_PlatformCleaning: 'Comutator {platform}'
+Cleaning_Header_LoginHistory: Curăță istoricul conectărilor
+Cleaning_Header_PlatformCleaning: '{platform} Comutator'
 Cleaning_ImportantInfoHeader: 'Informații importante:'
 Cleaning_ImportantInfo: >
-  Făcând clic pe un buton se vor șterge fișierul(ele) conex(e) din instalarea Steam.<br /> Ștergerea loginuserilor. df va rezulta în acest întrerupător de cont care arată niciun cont.<br /> Va trebui să vă autentificați folosind Steam pentru a le recupera.
-Cleaning_Button_KillProcess: Oprește procesul {platform}
-Cleaning_Button_ForgottenBackups: Salvări cont uitate
-Cleaning_Understand: Înţeleg ce fac aceste butoane.
+  Dacă dai clic pe un buton, vei șterge fișierele asociate din instalația Steam.<br /> Dacă ștergi loginusers.vdf, acest comutator de cont nu va mai afișa niciun cont.<br /> Va trebui să te conectezi la el folosind Steam pentru a-l recupera.
+Cleaning_Button_KillProcess: Procesul Kill {platform}
+Cleaning_Button_ForgottenBackups: Copiile de rezervă ale contului uitate
+Cleaning_Understand: Înțeleg ce fac butoanele astea.
 Restore_Info: >
-  Dacă anterior "aţi uitat" un cont, le puteţi restaura aici.<br /> Aceasta le adaugă înapoi în fişierul loginusers.vdf, permiţându-vă să comutaţi la ele.
-Restore_Button_Restore: Restaurează selecţia
-Ignored_RemoveAccounts: Elimină conturile din lista de ignorare
-Ignored_Description: Dacă anterior ați "ignorat" un cont, le puteți afișa din nou aici
-Ignored_Stop: Oprește ignorarea selecției
+  Dacă anterior ați „uitat” un cont, îl puteți restaura aici.<br /> Aceasta le adaugă înapoi în fișierul loginusers.vdf, permițându-vă să comutați la acesta.
+Restore_Button_Restore: Restabilire selectată
+Ignored_RemoveAccounts: Eliminați conturile din lista de ignorare
+Ignored_Description: Dacă ați „ignorat” anterior un cont, îl puteți afișa din nou aici
+Ignored_Stop: Oprire ignorare selectată
 Toast_DataLocationCopying: (1/2) Copierea fișierelor existente în noul folder de date utilizator!
 Toast_DataLocationNotCopying: (1/2) Folderul are deja fișiere! Nu va migra datele utilizatorului.
 Toast_DataLocationSet: (2/2) Reporniți comutatorul de cont pentru a utiliza noul folder!
 Toast_PlaceShortcutFiles: Se deschide un folder. Plasați comenzile rapide ale jocului în acel dosar și reporniți comutatorul de cont.
-Toast_TrayStarted: Tăierea a început!
-Toast_TrayRunning: Tăierea este deja deschisă
-Toast_TrayUsersMissing: Niciun utilizator de tăviţe salvat
-Toast_TrayFail: Nu s-a putut începe aplicația pentru tăviță!
-Toast_TrayPosition: "Apăsând pe butonul de ieşire: Voi fi pe Tagma Windows (bara Dreapta de start)"
-Toast_TrayHint: "Sugestie: Ctrl+Click pe 'X' pentru a mă închide complet, sau prin Tăvire > 'Ieșire'"
+Toast_TrayStarted: Tava a pornit!
+Toast_TrayRunning: Tava este deja deschisă
+Toast_TrayUsersMissing: Niciun utilizator al tăvii salvat
+Toast_TrayFail: Imposibil de pornit aplicația de tavă!
+Toast_TrayPosition: "La apăsarea butonului Exit (Ieșire): voi fi pe tava Windows! (Dreapta Barei de Start)"
+Toast_TrayHint: "Sugestie: Ctrl+Faceți clic pe „X” pentru a mă închide complet sau prin intermediul tăvii > „Ieșire”"
 Toast_Copied: Copiat
-Toast_AlreadyProcessing: Deja se procesează conturile...
-Toast_FailedRestore: Nu s-a reușit restaurarea conturilor (Vezi consola)
-Toast_Restored: Conturi restaurate!
-Toast_ProtocolEnabled: Acest program va răspunde la tcno:\\ în Windows
+Toast_AlreadyProcessing: Se procesează deja conturile...
+Toast_FailedRestore: Restabilirea conturilor a eșuat (consultați consola)
+Toast_Restored: Conturile au fost restaurate!
+Toast_ProtocolEnabled: Acest program va răspunde acum la tcno:\\ în Windows
 Toast_ProtocolEnabledTitle: Protocol adăugat
 Toast_ProtocolDisabled: Acest program nu va mai răspunde la tcno:\\
 Toast_ProtocolDisabledTitle: Protocol eliminat
-Toast_RestartAsAdmin: Vă rugăm să începeți ca Administrator și încercați din nou.
-Toast_RestartAfterClose: Vă rugăm să reporniți programul după ce faceți clic pe Închidere.
-Toast_RestartAfterCloseTitle: Culoare de accent dezactivată
-Toast_RestartRequired: Reporniți pentru a aplica modificările
-Toast_LoadStylesheetFailed: Nu s-a încărcat foaia de stil! Consultați folderul cu datele utilizatorului pentru detalii.
-Toast_BNet_Private: "Profilul {BTag}este privat"
-Toast_BNet_StatsFail: "Eroare la încercarea de a obține statistici pentru {BTag}"
-Toast_BNet_CantSwapAccounts: Nu s-au putut schimba conturile (Battle.net.config fișier corupt)
-Toast_BNet_CantLoadNotFound: Nu am putut găsi Battle.net.config
-Toast_BNet_CantLoadEmpty: Nu s-a putut încărca fişierul de conturi pentru Blizzard (Nu s-au găsit conturi)
-Toast_BNet_CantLoadConfigCorrupt: Nu s-a putut încărca fişierul de conturi pentru Blizzard (Battle.net.config fişier corupt)
-Toast_BNet_NamePolicy: Tag-ul de luptă nu se potrivește cu politica de numire.
+Toast_RestartAsAdmin: Începeți ca administrator și încercați din nou.
+Toast_RestartAfterClose: Reporniți programul după ce faceți clic pe Închideți.
+Toast_RestartAfterCloseTitle: Culoarea de accentuare este dezactivată
+Toast_RestartRequired: Repornește pentru a aplica modificările
+Toast_LoadStylesheetFailed: Încărcarea foii de stil a eșuat! Pentru detalii, consultați dosarul cu datele utilizatorului.
+Toast_LoadingStats: Unul sau mai multe profiluri sunt statistici revigorante. Vă rugăm să așteptați.
 Toast_ItemNotFound: "{item} nu a fost găsit"
-Toast_DeletedTotal: "{files} din {totalFiles} şterse. Total: {totalSize}"
-Toast_CantChangeUsername: Nu s-a putut schimba numele de utilizator
-Toast_CantClearLoginFiles: Ștergerea fișierelor vechi de autentificare a eșuat
+Toast_DeletedTotal: "{files} din {totalFiles} șters. Total: {totalSize}"
+Toast_CantChangeUsername: Numele de utilizator nu a putut fi modificat
+Toast_CantClearLoginFiles: Ștergerea fișierelor de autentificare vechi a eșuat
 Toast_AccountIdReg: Nu s-a putut obține ID-ul contului din Registry!
 Toast_RegFailWrite: Nu s-a putut scrie în Registrul Windows!
 Toast_RegFailRead: Nu s-a putut citi din Registrul Windows!
-Toast_RegFailReadSaved: Nu s-a putut citi intrarea salvată în registry. Încercați să eliminați și să adăugați din nou contul dacă nu reușiți.
+Toast_RegFailReadSaved: Înregistrarea salvată nu a putut fi citită. Dacă nu reușești, încearcă să elimini și să adaugi din nou contul.
 Toast_RegSaveMissing: Nu a reușit Găsirea sau citirea datelor din fișierele de registry salvate!
-Toast_DuplicateNames: Nu s-a putut face swap. Duplicați conturile cu același nume de utilizator?
-Toast_MissingUserId: "Nu s-a putut schimba. ID-ul utilizatorului lipsește. Verificați Wiki „Erori comune”."
-Toast_CouldNotLocate: Nu s-a putut localiza utilizatorul logat
+Toast_DuplicateNames: Imposibil de schimbat. Duplicați conturile cu același nume de utilizator?
+Toast_MissingUserId: "Imposibil de schimbat. ID-ul de utilizator lipsește. Verificați „Erori comune” Wiki."
+Toast_CouldNotLocate: Nu s-a putut localiza utilizatorul conectat
 Toast_StreamerModeHint: Informațiile private sunt ascunse! - Vezi setările
-Toast_StreamerModeTitle: Mod streaming
-Toast_AddAccountsFirst: Deschideți mai întâi platforma din listă și adăugați câteva conturi
-Toast_AddAccountsFirstTitle: Niciun cont salvat
-Toast_CantFindImage: Nu s-a putut găsi imaginea utilizatorului.
-Toast_CantCreateShortcut: Nu se poate crea scurtătură
-Toast_ShortcutCreated: Scurtătură creată!
-Toast_FailedUpdateCheck: Verificarea actualizărilor a eșuat
-Toast_UpdateVerifyFail: Fișierele de actualizare nu pot fi verificate. Descărcați cea mai recentă versiune și înlocuiți fișierele din directorul dvs.
+Toast_StreamerModeTitle: Modul streamer
+Toast_AddAccountsFirst: Deschideți platforma din listă și adăugați mai întâi câteva conturi
+Toast_AddAccountsFirstTitle: Nu există conturi salvate
+Toast_CantFindImage: Imaginea utilizatorilor nu a putut fi găsită.
+Toast_CantCreateShortcut: Nu se poate crea o comandă rapidă
+Toast_ShortcutCreated: Comandă rapidă creată!
+Toast_SettingsCopied: Setările au fost copiate în contul curent.
+Toast_GameDataRestored: Datele jocului pentru acest cont au fost restaurate.
+Toast_NoValidSteamId: Imposibil de găsit un ID Steam valid.
+Toast_FailedUpdateCheck: Căutarea actualizărilor a eșuat
+Toast_UpdateVerifyFail: Nu se pot verifica fișierele de actualizare. Descărcați cea mai recentă versiune și înlocuiți fișierele din directorul dvs.
 Toast_StartedGame: Început {program}
-Toast_Steam_VacCleared: Starea VAC pentru conturi a fost închisă
-Toast_Steam_CantDeleteVacCache: Nu s-a putut șterge 'LoginCache/Steam/VACCache/SteamVACCache.json'
-Toast_NoFindSteamUserdata: Nu s-a putut găsi dosarul Steam\\userdata
-Toast_Steam_VdfLast: A putut fi încărcat din vdf_last. Unele conturi pot lipsi.
-Toast_PartiallyFixed: Fixare parțială
-Toast_Steam_FailedLoginusers: Nu s-a putut încărca steam/config/loginusers.vdf
-Toast_Steam_CantLocateLoginusers: Nu se poate localiza '.../Steam/config/loginusers.vdf'. Mai întâi încercați să vă conectați la un cont.
-Toast_CantClearImages: Imaginile nu au putut fi șterse
-Toast_RefreshedImages: Reîmprospătați imaginile
-Toast_ClearForgottenCheck: Sunteţi sigur că doriţi să ştergeţi copiile de rezervă ale conturilor uitate?
-Toast_BattleNet_ChangedBTag: S-a schimbat BattleTag
-Toast_BattleNet_DeletedBTag: BattleTag a fost șters
-Toast_FetchedRank: Rang luat
+Toast_Steam_VacCleared: Starea VCA pentru conturi a fost eliminată
+Toast_Steam_CantDeleteVacCache: Nu s-a putut șterge „LoginCache/Steam/VACCache/SteamVACCache.json”
+Toast_NoFindSteamUserdata: Imposibil de găsit dosarul Steam\\ userdata
+Toast_NoFindGameBackup: Imposibil de găsit folderul de date al jocului de rezervă pentru acest cont.
+Toast_GameBackupDone: "Folderul de date al jocului a fost copiat cu succes: {folderLocation}"
+Toast_Steam_VdfLast: S-a putut încărca din vdf_last. Unele conturi pot lipsi.
+Toast_PartiallyFixed: Parțial fix
+Toast_Steam_FailedLoginusers: Nu s-a putut încărca aplicația Steam/config/loginusers.vdf
+Toast_Steam_CantLocateLoginusers: Nu se poate localiza „.../Steam/config/loginusers.vdf”. Mai întâi, încearcă să te conectezi la un cont.
+Toast_CantClearImages: Nu s-au putut șterge imaginile
+Toast_RefreshedImages: Imagini reîmprospătate
+Toast_ClearForgottenCheck: Sigur doriți să ștergeți copiile de rezervă ale conturilor uitate?
 Toast_ForgotAccount: Am uitat contul
 Toast_ClearedPlatformSettings: "S-au șters {platform} setări ale comutatorului"
 Toast_ClearedImages: "Imagini șterse"
@@ -197,7 +214,7 @@ Toast_BackupCopy: (1/3) Se copiază fișierele într-o locație temporară...
 Toast_BackupCompress: (2/3) Comprimarea fișierelor ({size}). Acest lucru va dura ceva timp...
 Toast_BackupComplete: (3/3) S-a terminat de comprimat! ({size} la {compressedSize})
 Toast_BackupProgress: "Backup în curs (dimensiune comprimată: {compressedSize})"
-Toast_BackupFail: Backup nu a reușit - Vedeți jurnalul!
+Toast_BackupFail: Copiere de rezervă eșuată - consultați jurnalul!
 Toast_BackupBusy: Backup deja în desfășurare!
 Toast_RestoreBusy: Restaurare deja în desfășurare!
 Toast_RestoreExt: Extragerea arhivei.
@@ -206,29 +223,44 @@ Toast_RestoreDeleting: Ștergerea fișierelor temporare
 Toast_RestoreComplete: Restaurare terminată!
 Toast_FailedLoad: Nu s-a încărcat {platform}! Faceți clic pe platformă pentru a vedea eroarea.
 Toast_FailedPlatformsLoad: Nu s-a încărcat Platforms.json! Verificați dacă acest fișier există.
-Toast_FailedLoadSettings: "Nu s-au încărcat setările! În schimb, se încarcă setările implicite. Adăugarea „vechi” la numele fișierului de setări existente."
-Toast_FailedLoadStats: "Nu s-au încărcat statisticile! Începând proaspăt."
-Toast_FileCopyFail: Nu s-au putut copia fișierele! Consultați jurnalul pentru mai multe detalii.
-Toast_UserDataLoadFail: Nu s-a încărcat datele utilizatorului {UserData}\\WindowSettings.json. Backup și resetare! Eroare salvată în log.
-Toast_UpdateCheckFail: Nu s-a putut accesa https://tcno.co/ pentru a verifica dacă există actualizări. Acest mesaj va apărea o dată pe zi.
-Toast_FailedCreateIcon: Nu s-a putut crea pictograma. Consultați jurnalul pentru detalii.
-Tooltip_Restore: Faceți clic pentru a selecta un fișier 7z sau trageți-l pe acest buton.
+Toast_FailedLoadSettings: "Încărcarea setărilor a eșuat! Se încarcă în schimb setările implicite. Se adaugă „vechi” la numele fișierului de setări existent."
+Toast_FailedLoadStats: "Încărcarea statisticilor a eșuat! Începeți din nou."
+Toast_FailedStatsLoad: Încărcarea GameStats.json a eșuat! Te rugăm să verifici dacă acest fișier există.
+Toast_GameStatsLoadFail: "Statisticile jocului nu au putut fi obținute de pe web pentru {Game}"
+Toast_GameStatsEmpty: "Nu au fost găsite statistici despre joc pe site-ul web pentru {Game}. Crezi că e o eroare? Verificați folderul de date utilizator și 'temp\\download-{AccoundId}-{Game}.html' pentru a vedea dacă pagina a avut o eroare!"
+Toast_FileCopyFail: Copierea fișierelor a eșuat! Consultați jurnalul pentru mai multe detalii.
+Toast_UserDataLoadFail: Încărcarea datelor de utilizator {UserData}\\ WindowSettings.json a eșuat. Se dă înapoi și se resetează! Eroare salvată în jurnal.
+Toast_UpdateCheckFail: Nu s-a putut contacta https://tcno.co/ pentru a verifica dacă există actualizări. Acest mesaj va fi afișat o dată pe zi.
+Toast_FailedCreateIcon: Eșec la crearea pictogramei. Consultați jurnalul pentru detalii.
+Toast_SameAccount: Nu se pot copia fișiere în/din același cont. Încearcă alt cont sau accesează Wiki pentru mai multe informații.
+Toast_Steam_DownloadingAppIds: Se descarcă lista de aplicații Steam...
+Toast_Steam_DownloadingAppIdsComplete: S-a terminat descărcarea. Submeniul cu datele jocului a fost actualizat.
+Toast_SteamWebKeyInvalid: Cheia API web Steam pare să fie nevalidă. Vă rugăm să setați unul nou.
+Toast_DownloadingProfileData: Se descarcă datele de profil
+Toast_PasswordChanged: Parola a fost schimbată
+Toast_JsonFailModify: Modificarea fișierului JSON a eșuat. Consultați jurnalul.
 Modal_Crowdin_Header: Crowdin traducători
 Modal_Crowdin_Info: "Iată toți cei care au ajutat la traducerea acestui software.<br>Utilizatorii cu limbi lângă ei au ajutat foarte mult la traducere (rol de corector)."
 Modal_Info_Creator: Creat de TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versiune
-Modal_Info_ViewGitHub: Vezi pe GitHub
-Modal_Info_BugReport: Raport de eroare/Solicitare caracteristici
-Modal_Info_VisitSite: Vizitează tcno.co
-Modal_Info_Disclaimer: Notificare
-Modal_Title_Info: Informații despre comutatorul contului TcNo
-Modal_Title_ChangeUsername: Schimbă nume utilizator
+Modal_Info_ViewGitHub: Vizualizare pe GitHub
+Modal_Info_BugReport: Raport de eroare/Solicitare de caracteristici
+Modal_Info_VisitSite: Vizitați tcno.co
+Modal_Info_Disclaimer: Declinarea responsabilității
+Modal_Title_Info: TcNo Account Switcher Information (Fără informații despre comutatorul de cont)
+Modal_Title_ChangeUsername: Schimbați numele de utilizator
 Modal_Title_ConfirmAction: Comutator de cont tcno.confirmare acțiune
 Modal_Title_LocatePlatform: Vă rugăm să localizați directorul {platform}
-Modal_Title_AddNew: Adaugă un cont nou {platform}
+Modal_Title_AddNew: Adăugați un cont {platform} nou
 Modal_Title_Background: Setați o imagine de fundal
 Modal_Title_Userdata: Setați folderul de date utilizator
-Modal_Title_Stats: Statisticile tale
+Modal_Title_GameStats: Activare/Dezactivare statistici joc
+Modal_GameStats_Header: "Activare/Dezactivare statistici joc pentru: {accountName}"
+Modal_Title_Stats: Statisticile dvs.
+Modal_Title_GameVars: "Introdu detaliile pentru {game}"
+Modal_GameVars_Header: "Vă rugăm să introduceți următoarele detalii pentru contul dvs. {game} , {username} la {platform}"
+Modal_Title_AccountNotes: "Note privind contul pentru: {accountName}"
+Modal_Title_SetPassword: Setare parolă
 Modal_SetBackground: 'Selectați o imagine sau introduceți o adresă URL mai jos.<br>Lăsați necompletat și setați resetarea.<br>(Pentru un control mai avansat, consultați Tematica de pe Wiki):'
 Modal_SetBackground_Button: Setați fundalul
 Modal_SetBackground_ChooseImage: Alegeți imaginea locală
@@ -237,12 +269,15 @@ Modal_SetUserdata_ChooseFolder: Selectați un folder
 Modal_SetUserdata_Button: Setați datele utilizatorului
 Modal_ChangeUsername: Vă rugăm să introduceți un nou nume de utilizator pentru contul dvs
 Modal_ChangeUsernameType: Schimbați {platform} nume de utilizator
+Modal_SetPassword: Introduceți o parolă pentru Comutatorul de conturi TcNo
+Modal_SetPassword_Button: Setare parolă
+Modal_SetPassword_Info: "NOTĂ: aceasta nu vă criptează conturile. Schimbarea conturilor este la fel de simplă ca înlocuirea fișierelor sau schimbarea unui nume de utilizator într-un fișier. Parola poate fi resetată prin editarea textului și într-un fișier. Aceasta este o simplă securitate. Oprește accesul simplu la interfața cu utilizatorul. Puteți pune această aplicație pe un USB amovibil, setați folderul UserData pe același USB și scoateți-l fizic pentru mai multă securitate. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Trecerea la un ghid de unitate externă</a><br><br>Pentru a șterge, lăsați necompletat și faceți clic pe Setați."
 Modal_EnterDirectory: "Te rugăm să introduci directorul {platform}, ca atare: C:\\Program Files\\{platform}"
-Modal_LocatePlatform: Localizați {platformExe}
-Modal_LocatePlatformFolder: Selectează dosarul {platform}
+Modal_LocatePlatform: Localizare {platformExe}
+Modal_LocatePlatformFolder: Selectați dosarul {platform}
 Modal_ConfirmAction: Confirmă acțiunea
-Modal_AddNew: Te rugăm să introduci un nume pentru contul {platform} în care ești conectat.
-Modal_AddCurrentAccount: Adaugă contul curent {platform}
+Modal_AddNew: Introduceți un nume pentru contul {platform} la care sunteți conectat (ă).
+Modal_AddCurrentAccount: Adăugați contul curent {platform}
 Modal_SetImageHeader: Setați imaginea de profil
 Modal_SetImage: Setați imaginea
 Status_SelectedAccount: "Selectat: {name}"
@@ -260,163 +295,173 @@ Status_WaitingForMultipleClose: "Se așteaptă ca {processName} și {count} alț
 Status_GetUniqueId: Colectarea ID-ului de utilizator unic
 Status_CopyingFiles: Se copiează fișierele utilizator...
 Status_HandlingImage: Gestionarea imaginii de profil a contului
-Context_SwapTo: Schimbă la cont
-Context_CreateShortcut: Creați scurtătură pe desktop
-Context_CreateShortcutSubmenu: Creează scurtătură pe desktop...
+Context_SwapTo: Comută la cont
+Context_CreateShortcut: Creați o comandă rapidă
 Context_ChangeImage: Schimbă imaginea
-Context_BNet_SetBTag: Setează Tag-Bătălie
-Context_BNet_DelBTag: Șterge Tag-ul bătăliei
-Context_BNet_GetRAnk: Rangul Refacerii
 Context_ChangeName: Schimbă numele comutatorului
-Context_LoginAsSubmenu: Autentificare ca...
-Context_UsernameSubmenu: Nume utilizator...
+Context_LoginAsSubmenu: Conectează-te ca
+Context_UsernameSubmenu: Nume de utilizator
 Context_RefreshName: Reîmprospătare nume
-Context_CopySubmenu: Copiază...
-Context_CopyProfileSubmenu: Copiază profilul...
-Context_CommunityUrl: URL-ul comunității
-Context_CommunityUsername: Utilizator comunitate
-Context_LoginUsername: Utilizator autentificare
-Context_CopySteamIdSubmenu: Copiază SteamID...
-Context_Steam_Id: SteamID [STEAM0:~]
+Context_CopySubmenu: Copiază
+Context_DataSubmenu: Data
+Context_CopyProfileSubmenu: Copiază profilul
+Context_CommunityUrl: URL comunitate
+Context_CommunityUsername: Numele de utilizator al comunității
+Context_LoginUsername: Nume utilizator de autentificare
+Context_CopySteamIdSubmenu: Copiază SteamID
+Context_Steam_Id: SteamID [Steam0:~]
 Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
-Context_Steam_OpenUserdata: Deschide datele utilizatorului
-Context_CopyOtherSubmenu: Copiază altul...
-Context_HidePlatform: Ascunde platforma
+Context_Steam_OpenUserdata: Deschideți datele de utilizator
+Context_ManageSubmenu: Gestionare
+Context_GameDataSubmenu: Date despre joc
+Context_ManageGameStats: Gestionați statisticile jocului
+Context_Game_CopySettingsFrom: Copiază setările în meniul curent
+Context_Game_RestoreSettingsTo: Restaurează datele jocului
+Context_Game_BackupData: Backup game data (Copiere de rezervă date joc)
+Context_CopyOtherSubmenu: Copiază altul
+Context_HidePlatform: Ascundeți platforma
 Context_ExportAccList: Exportă lista de conturi
 Context_RunAdmin: Rulați ca administrator
 Context_Hide: Ascunde
-Title_BNet_Settings: TcNo Account Switcher - Setări BattleNet
-Title_BNet_ManageIgnored: Comutator de cont TcNo - Gestionați conturile BattleNet ignorate
+ProfileImage_ToggleText: Utilizați imaginea ca imagine de cont
 Title_Platforms_Settings: TcNo Account Switcher - Setări platformă
-Title_AccountsList: Comutator de cont TcNo - {platform}
-Title_TextEditor: Comutator de cont TcNo - Editor de text
-Title_Settings: Comutator de cont TcNo - Setări
-Title_Steam_Cleaning: Comutator de cont TcNo - Curățarea Steam
-Title_Steam_Settings: Comutator de cont TcNo - Setări Steam
+Title_Settings_TestCss: TcNo Account Switcher - Test CSS Styling
+Title_AccountsList: TcNo Comutator de cont - {platform}
+Title_TextEditor: TcNo Account Switcher - Text Editor
+Title_Settings: TcNo Account Switcher - Setări
+Title_Steam_Cleaning: TcNo Comutator de cont - Curățare cu abur
+Title_Steam_Settings: TcNo Account Switcher - Steam Settings
 Title_Template_Settings: TcNo Account Switcher - {platformName} Setări
-Installer_Downloading: Se descarcă {file}
+Title_Login: Comutator de cont TcNo - Autentificare
+Installer_Downloading: Descărcare {file}
 Installer_DownloadFinished: Descărcare finalizată {file}
 Installer_Installing: "Instalare: {runtime}"
-Installer_RuntimeTitle: Comutator de cont TcNo - Instalator Runtime
-Installer_Welcome: Bine ați venit la Comutatorul de Cont TcNo - Instalator Runtime
-Installer_InstalledRuntimes: "Executări instalate în prezent:"
-Installer_ErrorRuntime: "Una sau mai multe runtime nu au fost instalate:"
+Installer_RuntimeTitle: TcNo Account Switcher - Instalator runtime
+Installer_Welcome: Bine ați venit la TcNo Account Switcher - Programul de instalare Runtime
+Installer_InstalledRuntimes: "Timpii de execuție instalați în prezent:"
+Installer_ErrorRuntime: "Unul sau mai multe cicluri de execuție nu au fost instalate:"
 Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB în timpul instalării]"
-Installer_TotalSize: "Dimensiunea totală a descărcării: ~{size} MB"
-Installer_AnyKeyStart: Apasă orice buton pentru a începe descărcarea...
+Installer_TotalSize: "Dimensiunea totală a descărcării: ~{size} MO"
+Installer_AnyKeyStart: Apăsați orice tastă pentru a începe descărcarea...
 Runtime_WebView2: Microsoft WebView2 Runtime
-Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_Desktop: Execuție desktop Microsoft .NET 5
 Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
-Installer_FailedFolder: "Nu s-a reușit crearea directorului:"
-Installer_FailedWV: "Descărcarea şi instalarea Microsoft WebView2 Runtime. Pentru a descărca: 1. Faceţi clic pe linkul de mai jos: {link} 2. Faceţi clic pe \"Descărcare găzduire\" sub aplicaţiile serverului."
-Installer_FailedDR: "Descărcarea și instalarea .NET 5 Desktop Runtime. Descărcați-l aici:"
+Installer_FailedFolder: "Crearea dosarului a eșuat:"
+Installer_FailedWV: "Descărcarea și instalarea Microsoft WebView2 Runtime a eșuat. Pentru a descărca: 1. Faceți clic pe link-ul de mai jos: {link} 2. Faceți clic pe „Descărcați pachetul de găzduire” sub Rulați aplicațiile serverului."
+Installer_FailedDR: "Descărcarea și instalarea .NET 5 Desktop Runtime a eșuat. Vă rugăm să îl descărcați aici:"
 Installed_FailedASP: "Nu s-a putut descărca și instala ASP.NET Core {version} Runtime. Pentru a descărca: 1. Faceți clic pe linkul de mai jos: {link} 2. Faceți clic pe „Download x64” sub Run Desktop apps."
-Installer_Ready: "Una sau mai multe sunt gata pentru instalare. Dacă şi când vi se cere dacă doriţi să instalaţi, faceţi clic pe \"Da\"."
+Installer_Ready: "Unul sau mai multe sunt gata de instalare. Dacă și când vi se solicită dacă doriți să instalați, faceți clic pe „Da”."
 Installer_PressStart: Apăsați orice tastă pentru a începe instalarea...
-Installer_VerifyMin: "Verifică dacă îndeplinești cerințele minime recomandate:"
-Installer_VerifyAlready: "Se pare că totul este instalat. Verifică dacă îndeplinești cerințele minime recomandate:"
+Installer_VerifyMin: "Verificați dacă îndepliniți cerințele minime recomandate:"
+Installer_VerifyAlready: "Se pare că totul este instalat. Verificați dacă îndepliniți cerințele minime recomandate:"
 Installer_Complete: Asta ar trebui să fie totul. Programul principal, TcNo-Acc-Switcher.exe, se va rula automat.
-Installer_Complete2: "Dacă nu funcționează, vă rugăm să consultați instrucțiunile de instalare, aici: {link}"
-Global_FatalNext: "Eroare fatală! Acest crashlog va fi trimis automat la următoarea lansare."
-Tray_Error: Eroare de tracțiune
-Tray_NoAccs: "Nu s-a găsit nici un cont.\nÎncercați mai întâi să schimbați contul, sau să localizați 'Tray_Users.json'"
-Tray_Switch: "Schimbă la: {account}"
-Tray_CantOpenExe: "Nu s-a putut deschide .exe. Asigurați-vă că există.\n\nAm încercat să deschid:"
-Tray_LaunchFail: "Comutator de cont TcNo - lansarea comenzii eșuează"
-Updater_Duplicate: O altă instanță de Updater pentru Comutatorul de Cont TcNo a fost detectată.
+Installer_Complete2: "Dacă nu funcționează, consultați instrucțiunile de instalare, aici: {link}"
+Global_FatalNext: "A apărut o eroare fatală! Acest jurnal de accidente va fi trimis automat la următoarea lansare."
+Tray_Error: Eroare tavă
+Tray_NoAccs: "Nu au fost găsite conturi.\nÎncercați mai întâi să comutați conturile sau localizați „Tray_Users.json”"
+Tray_Switch: "Comutare la: {account}"
+Tray_CantOpenExe: "Nu s-a putut deschide .exe-ul principal. Asigură-te că există.\n\nAm încercat să deschid:"
+Tray_LaunchFail: "TcNo Account Switcher - Lansarea tăvii a eșuat"
+Updater_Duplicate: A fost detectată o altă instanță TcNo Account Switcher Updater.
 Updater_Unknown: "Argument necunoscut: {arg}"
-Updater_NeedsAdmin: Acest program trebuie să fie rulat ca administrator!
+Updater_NeedsAdmin: Acest program trebuie rulat ca administrator!
 Updater_StatusChecking: Verificare versiune
-Updater_FailedVersionCheck: "Nu s-a putut obține versiunea. Faceți clic pe \"Verificați\" pentru a actualiza și verifica fișierele"
+Updater_FailedVersionCheck: "Nu s-a putut obține versiunea. Faceți clic pe „Confirmați” pentru a actualiza și verifica fișierele"
 Updater_PressBelow: Apăsați butonul de mai jos!
-Updater_PressBelowStart: Apasă pe butonul de mai jos pentru a începe actualizarea.
+Updater_PressBelowStart: Faceți clic pe butonul de mai jos pentru a începe actualizarea.
 Updater_PatchApplied: Patch aplicat!
 Updater_UpdatingAppData: Se actualizează fișierele în AppData!
-Updater_Complete: Toate actualizările sunt finalizate!
-Updater_Checking: Se caută actualizări
-Updater_UpdateToVerify: Pentru a verifica fișierele, trebuie mai întâi să actualizați.
-Updater_ClosingTcNo: Închide instanțele comutatorului de cont TcNo (dacă există).
+Updater_Complete: Toate actualizările sunt complete!
+Updater_Checking: Se verifică dacă există actualizări
+Updater_UpdateToVerify: Pentru a verifica fișierele, trebuie să actualizați mai întâi.
+Updater_ClosingTcNo: Închiderea instanțelor TcNo Account Switcher (dacă există).
 Updater_Downloading: "Descărcare actualizare: {version}"
 Updater_Downloaded: Descărcare completă.
-Updater_CantExtract: Nu s-a reușit extragerea actualizării.
-Updater_Verify: Verificare fișiere
-Updater_Verifying: Verificare...
-Updater_VerifySkip: Se verifică fișierele pentru a sări peste toate actualizările mici și doar săriți la cele mai recente.
-Updater_NoConnection: "Nu s-a putut conecta la tcno.co pentru a verifica fișierele. Puteți încerca să descărcați manual instalatorul din pagina GitHub și să reinstalați pentru a actualiza.\n\nEroare:"
-Updater_NoServer: Nu s-a putut găsi serverul de actualizare
-Updater_Hashlist: Se descarcă ultima listă de hash...
-Updater_CantCheck: Imposibil de verificat actualizările
-Updater_Failed: "EROARE: Unele dintre fișierele sunt în uz și nu pot fi actualizate.\n\n1. Asiguraţi-vă că toate procesele TcNo sunt complet închise\n(sau reporniţi PC)\n\n2. Apoi apasă Verifică mai jos, sau dacă reporniți:\n- Deschideți acest actualizare și verificați fișierele\n    (localizate în folderul 'updater' din directorul de instalare)"
-Updater_Missing: "MISIUNE FIȘIE: {file}"
-Updater_FileMismatch: "Fișier: {file} are MD5: {md5} EXPECTED: {value}"
-Updater_DownloadingWeb: Se descarcă fişierul de pe site...
-Updater_UnpackingAppData: Copierea fişierelor în %AppData%/TcNo Account Switcher... (dacă nu este setat altfel)
+Updater_CantExtract: Extragerea actualizării a eșuat.
+Updater_Verify: Verifică fișierele
+Updater_Verifying: Se verifică...
+Updater_VerifySkip: Se verifică fișierele pentru a trece peste toate actualizările mici și se trece direct la cele mai recente.
+Updater_NoConnection: "Nu s-a putut realiza conexiunea la tcno.co pentru a verifica fișierele. Puteți încerca să descărcați manual programul de instalare din pagina GitHub și să îl reinstalați pentru actualizare.\n\nEroare:"
+Updater_NoServer: Nu s-a putut ajunge la serverul de actualizare
+Updater_Hashlist: Se descarcă cea mai recentă listă hash...
+Updater_CantCheck: Nu se pot căuta actualizări
+Updater_Failed: "EROARE: Unele fișiere sunt în uz și nu pot fi actualizate.\n\n1. Asigurați-vă că toate procesele TcNo sunt complet închise\n(sau reporniți PC-ul)\n\n2. Apoi faceți clic pe Verify (Verificare) de mai jos sau dacă ați repornit:\n-   Deschideți acest actualizator și verificați fișierele\n    (aflate în folderul „updater” din directorul de instalare)"
+Updater_Missing: "FIȘIER LIPSĂ: {file}"
+Updater_FileMismatch: "Fișier: {file} are MD5: {md5} AȘTEPTAT: {value}"
+Updater_DownloadingWeb: Se descarcă fișierul de pe site-ul web...
+Updater_UnpackingAppData: Se copiază fișierele în %AppData%/TcNo Account Switcher... (exceptând cazul în care există alte setări)
 Updater_VerifyComplete: Fișiere verificate!
-Updater_UpdateFound: "S-a găsit actualizarea: {name} [{updateSize}]"
+Updater_UpdateFound: "Actualizare găsită: {name} [{updateSize}]"
 Updater_TotalFound: "Total actualizări găsite: {x}"
 Updater_TotalSize: "Dimensiune totală: {size}"
-Updater_AwaitingUser: Se așteaptă intrarea utilizatorului...
+Updater_AwaitingUser: Se așteaptă introducerea de către utilizator...
 Updater_UpToDate: "Ești la zi.\n:)"
-Updater_FailedDecode: Acest lucru se datorează cel mai probabil faptului că eu (TechNobo) împing o actualizare și fac o tipografie care a stricat . Fisier de actualizare. Dati-mi voie sa stiu :)
-Updater_FailedDecodeTitle: Decodarea listei de actualizări a eșuat
-Updater_Extracting: Extragere fișiere patch
-Updater_Applying: Se aplică plasturele...
-Updater_Moving: Mutarea fișierelor...
-Updater_Title: Actualizator comutator TcNo Account
+Updater_FailedDecode: Acest lucru se datorează cel mai probabil faptului că eu (TechNobo) am apăsat pe o actualizare și am făcut o greșeală de scriere care a stricat fișierul de actualizare .json. Anunță-mă :)
+Updater_FailedDecodeTitle: Nu s-a reușit decodificarea listei de actualizări
+Updater_Extracting: Extragerea fișierelor patch
+Updater_Applying: Se aplică peticul...
+Updater_Moving: Se mută fișierele...
+Updater_Title: TcNo Account Switcher Updater
 Updater_Started: Început
-Updater_Start: Pornire comutator de cont TcNo
+Updater_Start: Pornește TcNo Account Switcher
 Updater_Begin: Începe actualizarea
 Updater_Exit: Ieșire
 FatalError: A apărut o eroare fatală!
 Online: Online
-OnlineDefault: Online (Default)
-Offline: Offline
+OnlineDefault: Online (implicit)
+Offline: Deconectat
 Invisible: Invizibil
 Busy: Ocupat
-Away: Plecat
-Snooze: Amânare
-LookingToTrade: Interesat să tranzacționezi
-LookingToPlay: Interesat de joc
+Away: Departe
+Snooze: Dezactivare temporară
+LookingToTrade: Privind spre comerț
+LookingToPlay: Căutați să jucați
 Unrecognized_EPersonaState: ePersonaState nerecunoscut
 Reg_DoesntExist: "{subKey} nu există."
 Reg_DoesntContain: "{subKey} nu conține {val}"
 Reg_Removing: Se elimină {subKey}\\{val}
-PngInvalid_Format: Formatul pixelului necesar este PixelFormat.{x}.
-PngRequired: Formatul de imagine necesar este un grafic al rețelei portabile (png).
+PngInvalid_Format: Formatul pixelilor necesari este PixelFormat.{x}.
+PngRequired: Formatul de imagine necesar este un grafic de rețea portabil (png).
 PngDimensions: Dimensiunile trebuie să fie mai mici sau egale cu {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "A apărut o eroare de sintaxă (mai multe detalii mai jos)! ȘI:"
-ThemesNotFound: "Nu s-a putut găsi folderul „teme” în directorul TcNo Account Switcher. Acest lucru (în special folderul „Dracula_Cyan”) este necesar pentru a rula acest software.\nPuteți rula Updater-ul în folderul „updater” pentru a verifica fișierele și a restaura aceste fișiere lipsă."
-Yes: "Da"
-No: "Nr"
-NoDefault: Nu (implicit)
-Ok: "Ok"
-Forget: Uită
-Notice: Notificare
+ThemesNotFound: "Nu s-a putut găsi dosarul „teme” în directorul TcNo Account Switcher. Acest lucru (în special folderul \"Dracula_Cyan\") este necesar pentru ca acest software să ruleze.\nPuteți rula Updater în folderul \"updater\" pentru a verifica fișierele, și de a restaura aceste fișiere lipsă."
+Yes: "- Da, domnule."
+No: "Nu, nu, nu."
+Save: Salvează
+NoDefault: Nu (Implicit)
+Ok: "OK"
+Submit: Trimite
+Forget: Uită.
+Notice: Înștiințare
+Notes: Note
 Error: Eroare
 ErrorDetails: "EROARE: {ex}"
 Failed: Eșuat
 Success: Succes
 NotFound: Nu a fost găsit
-Done: Terminat
+Done: Gata
+Edit: Editați
+Refresh: Reîmprospătare
 Working: Lucru...
-ForName: "Voturi pentru: {name}"
+ForName: "Pentru: {name}"
 DeletedFiles: Fișiere șterse
 FileFoldersToClear: "Lista fișierelor/directoarelor de șters:"
-CouldNotFindX: Nu am putut găsi {x}
+CouldNotFindX: Nu s-a putut găsi {x}
 CouldNotCloseX: Nu s-a putut închide {x}!
+CouldNotReadFile: Nu s-a putut citi {file}!
 DirectoryNotFound: Directorul nu a fost găsit
 DirectoryNotFoundFolder: "Directorul nu a fost găsit: {folder}"
 DeletingFile: "Ștergere: {file}"
-DeletingFolder: "Ştergere dosar: "
-CouldntDeleteX: "EROARE: ȘTERGE COULDN': {x}"
-CouldntDeleteUndefined: "EROARE: ȘTERGE COULDN'T DEFINATE"
+DeletingFolder: "Ștergerea dosarului: "
+CouldntDeleteX: "EROARE: NU S-A PUTUT ȘTERGE: {x}"
+CouldntDeleteUndefined: "EROARE: NU S-A PUTUT ȘTERGE FIȘIERUL NEDEFINIT"
 Prompt_RestartAsAdmin: "<h3><bold>Acest program va reporni ca administrator</bold></h3><p>Apăsați „Da” în UAC când vi se solicită administrator.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Ești pe cale să uiți un cont!</h3> <h4>Ce înseamnă asta?</h4> <p>- Steam nu va mai avea contul listat în modul Big Picture și nu va reține parola.<br/> - TcNo Account Switcher nu va mai afișa contul până când nu se va conecta din nou prin Steam.</p> <p>Contul dvs. va rămâne neatins. Este doar uitat pe acest computer.</p><h4>Înțelegi?</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>Sunteți pe cale să uitați un cont!</h3> <h4>Ce înseamnă acest lucru?</h4> <p>TcNo Account Switcher nu va mai arăta contul,<br/> până când se conectează din nou prin {platform}și a fost adăugat în listă.</p> <p>Contul dvs. va rămâne neatins. Acesta este doar uitat de acest calculator.</p> <h4>Înțelegeți?</h4>
+  <h3 style='color:red'>Sunteți pe cale să uitați un cont!</h3> <h4>Ce înseamnă acest lucru?</h4> <p>TcNo Account Switcher nu va mai afișa contul,<br/> până când nu este conectat din nou prin {platform}și adăugat la listă.</p> <p>Contul dvs. va rămâne neatins. Este pur și simplu uitat pe acest computer.</p> <h4>Înțelegi?</h4>
 Prompt_ClearStats: >
   <h3 style='color:red'>Sunteți pe cale să vă ștergeți statisticile!</h3> <p>Nu puteți anula această acțiune.</p>
 Platform_DiscordPasteHint: Lipiți în consola Discord și apoi lipiți rezultatul în intrare!
@@ -425,7 +470,7 @@ Platform_ClearCacheTotal: Se șterge {totalFileCount} fișiere ({totalSizeMB})
 Platform_DeleteFail: Nu s-au putut șterge unele fișiere (este posibil ca programul să ruleze?)
 Platform_CouldNotDeleteLog: Nu s-a putut șterge fișierul! Verificați {logPath}
 Error_FileAccessDenied: Nu s-a putut accesa fișierul! Verificați {logPath}
-Error_RequiredFileVerify: Un fișier necesar nu a fost găsit. Vă rugăm să vă asigurați că folderele x64 și x86 există în directorul de instalare. Dacă nu, rulați TcNo-Acc-Switcher-Updater.exe și verificați fișierele.
+Error_RequiredFileVerify: Nu a fost găsit un fișier necesar. Asigurați-vă că dosarele x64 și x86 există în directorul de instalare. Dacă nu rulați TcNo-Acc-Switcher-Updater.exe și verificați fișierele.
 Tooltip_Settings: Setări
 Tooltip_Info: Info
 Tooltip_ManagePlatforms: Afișați sau Ascundeți alte platforme
@@ -433,9 +478,16 @@ Tooltip_ExpandShortcuts: Extindeți selecția de jocuri și comenzi rapide
 Tooltip_ShortcutFolder: Deschideți folderul de comenzi rapide. Plasați comenzi rapide acolo și comutatorul de cont TcNo pentru a le vedea.
 Tooltip_Backup: Faceți backup pentru fișierele/folderele de configurare, așa cum este definit în setările platformei.
 Tooltip_BackupAll: Faceți backup pentru TOATE fișierele/folderele de configurare, inclusiv imaginile și alte fișiere mari.
-Tooltip_ClosingMethod: "Combinat este cel mai bun. Închidere încearcă să se închidă direct printr-o funcție de închidere și TaskKill folosește CMD (cel mai bine dacă combinat nu funcționează)"
-Tooltip_StartingMethod: "Implicit este cel mai bun. Direct nu are control asupra nivelului de administrator sau UAC. Va începe la același nivel (sau mai mare - dar nu mai mic) decât acest comutator de cont"
-Tooltip_CurrentAccount: În prezent sunteți conectat la acest cont.
-Discord_Status: În prezent se schimbă conturile.
-Discord_StatusDetails: "Conturi schimbate: {number}"
-Website: Site-ul web
+Tooltip_ClosingMethod: "Combinat este cel mai bine. Închideți încercările de a închide direct printr-o funcție de închidere și TaskKill utilizează Cmd (Cel mai bine dacă este combinat nu funcționează)"
+Tooltip_StartingMethod: "Implicit este cel mai bun. Direct nu are control asupra nivelului de administrare sau UAC. Acesta va începe cu același nivel (sau mai mare - dar nu mai mic) decât acest comutator de cont"
+Tooltip_CurrentAccount: În prezent sunteți conectat (ă) la acest cont.
+Tooltip_Restore: Faceți clic pentru a selecta un fișier 7z sau trageți-l pe acest buton.
+Tooltip_DisabledGlobally: Acest element este ascuns pentru toate conturile. Poți modifica acest lucru în setările platformei.
+Discord_Status: În prezent, își schimbă conturile.
+Discord_StatusDetails: "Conturi comutate: {number}"
+Website: Website
+Preview_Platforms: Previzualizarea platformelor
+Preview_Accounts: Previzualizarea conturilor
+Preview_Notifications: Previzualizare notificări Toast
+Preview_Settings: Previzualizare setări
+Preview_Modals: Previzualizarea modalităților

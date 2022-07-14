@@ -1,22 +1,23 @@
 ---
 Update: Güncelleme mevcut! Başlatmak için buraya tıklayın.
 Header_ChooseLanguage: 'Dil Seçin:'
-BattleNet_ShowSR: Overwatch SR'yi gösterin ve Overwatch profil resmini kullanın.
-Steam_ShowSteamID: SteamID'yi göster
-Steam_ShowVac: VAC durumunu göster
-Steam_CheckVac: Hesap VAC durumunu kontrol et
-Steam_ShowLimited: Sınırlı Durumu Göster
-Steam_ShowAccUsername: Hesap kullanıcı adını göster
+Steam_ShowSteamID: SteamID
+Steam_ShowVac: VAC durumu
+Steam_ShowLastLogin: Son giriş saati
+Steam_ShowLimited: Sınırlı Durum
+Steam_ShowAccUsername: Hesap kullanıcı adı
 Steam_Tray_AccountName: Hesap adını göster [arkadaş adı değil]
+Steam_CheckVac: Hesap VAC durumunu kontrol et
 Steam_OverrideDefaultState: "Varsayılan oturum açma durumunu geçersiz kıl:"
-Button_AddNew: Yeni ekle
+Steam_StartSilent: "Anahtar üzerindeki görev tepsisine buharı açın (Buharı '- sessiz 'ile başlatın)"
+Button_AddNew: Yeni Ekle
 Button_SaveCurrent: Mevcut Oturumu Kaydet
-Button_SaveFile: Dosyayı kaydet
+Button_SaveFile: Dosyayı Kaydet
 Button_Cancel: İptal et
-Button_Login: Oturum aç
+Button_Login: Giriş Yap
 Button_Close: Kapat
 Button_RefreshImages: Resimleri yenile
-Button_ResetSettings: Ayarları Sıfırla
+Button_ResetSettings: Ayarları sıfırla
 Button_AdvancedCleaning: Gelişmiş temizlik...
 Button_ClearLog: Log'u temizle
 Button_WikiInfo: Daha Fazla Bilgi (Wiki)
@@ -25,74 +26,88 @@ Button_Backup: Yedek
 Button_BackupAll: Her şeyi yedekle
 Button_Restore: Eski haline getirmek
 Button_OpenBackup: Yedekleme Klasörünü Aç
-Settings_Shortcut: ' {platform} Switcher Masaüstü kısayolu'
+Button_Back: Geri
+Button_RestartAdmin: Yönetici olarak yeniden başlat
+Button_SetPassword: Uygulama Parolasını Ayarla
+Settings_Shortcut: ' {platform} Anahtarlayıcı Masaüstü kısayolu'
 Settings_Admin: '{platform} platformunu Yönetici olarak çalıştır'
-Settings_ImageExpiry: 'Profil resimlerinin süresinin dolmasına günler kala:'
-Settings_Header_AppWide: Uygulama genelindeki ayarlar
+Settings_ImageExpiry: 'Profil resimlerinin süresi dolmadan önceki günler:'
+Settings_SteamAPIKey: "Steam Web API anahtarı (isteğe bağlı)"
+Settings_SteamAPIKey_Note: Bir API anahtarı ayarlamak, Sınırlı göstergenin (sarı kenarlık) bunun yerine Topluluk Yasaklı hesaplar için gösterilmesini sağlar.
+Settings_Header_AppWide: Uygulama genelinde ayarlar
 Settings_Header_GeneralSettings: Genel Ayarlar
+Settings_Header_AccountDisplay: Hesap Görüntüleme ayarları
 Settings_Header_ExtraPlatforms: Platform Ayarları
 Settings_Header_GeneralTools: Genel Araçlar
 Settings_Header_OtherTools: Diğer Araçlar
 Settings_Header_TraySettings: Tepsi ayarları
 Settings_Header_OpenGameFolders: Oyun klasörlerini aç
 Settings_Header_BackupRestore: Yedekleme ve Geri Yükleme platformu ayarları
-Settings_Header_Language: Dilim
-Settings_Header_System: sistem
+Settings_Header_Language: Dili
+Settings_Header_System: Sistem
 Settings_Header_Theme: Tema
-Settings_Header_Program: programı
+Settings_Header_Program: Program
 Settings_Header_StatsSharing: İstatistikler ve Paylaşım
-Settings_Header_Platform: "{platformName} ayar"
-Settings_TrayMax: 'Hatırlanması gereken maksimum hesap sayısı:'
+Settings_Header_Platform: "{platformName} ayarlar"
+Settings_Header_GameStats: Küresel oyun istatistikleri ayarları
+Settings_GameStats: Burada işaretlenen herhangi bir şey, herhangi bir hesap için kullanıcı adınız altında gösterilmeyecektir. Oyun istatistiklerinizdeki belirli öğeleri sık sık gizliyorsanız bunu kullanın.
+Settings_TrayMax: 'Hatırlanacak maksimum hesap sayısı:'
 Settings_ExtraPlatformsDisabled: Devre dışı platformlar. Etkinleştirmek için tıklayın.
-Settings_ExtraPlatformsEnabled: Görünür platformlar. Bunları devre dışı bırakmak için tıklayın.
+Settings_ExtraPlatformsEnabled: Görünür platformlar. Devre dışı bırakmak için tıklayın.
 Settings_RTL: Metni Sağdan Sola olarak göster
 Settings_CollectStats: İstatistikleri topla
 Settings_ShareStats: İstatistikleri rahatsız edici bir şekilde paylaşın (önerilir)
-Settings_DiscordRpc: Uyuşmazlık Zengin Varlık (RPC)
+Settings_DiscordRpc: Discord Zengin Varlık (RPC)
 Settings_DiscordRpcShare: Toplam anahtarları paylaş
 Settings_ViewStats: İstatistikleri görüntüle
-Settings_ClearStats: Sıfırla
+Preview: Önizleme
+Settings_ClearStats: RESET
 Settings_CurrentLocation: 'Geçerli yükleme konumu: {path}'
 Settings_CurrentDataLocation: 'Geçerli kullanıcı verileri konumu: {path}'
 Settings_SetDataLocation: "[Özel kullanıcı verileri konumunu ayarla]"
-Settings_PickFolder: '{platform} klasörü seç'
+Settings_PickFolder: '{platform} klasör seç'
 Settings_OpenFolder: '{platform} Klasörünü Aç'
 Settings_ClearForgotten: Unutulanları Temizle
 Settings_ClearAccounts: Hesapları Temizle
-Settings_StreamerMode: Yayıncı modunu etkinleştir
-Settings_ExitToTray: Çıkış, tepsiye küçülür
+Settings_StreamerMode: Aktarıcı modunu etkinleştir
+Settings_ExitToTray: Tepsiye çıkışı en aza indirir
 Settings_DesktopShortcut: Masaüstü kısayolu
 Settings_StartMenu_ProgramTray: Program ve Tepsi
-Settings_StartMenu_Platform: Platformu
-Settings_Tray_StartWindows: Windows ile Tepsiyi Başlatın
-Settings_Tray_StartNow: '[Tepsiyi şimdi başlatın]'
+Settings_StartMenu_Platform: Platform
+Settings_Tray_StartWindows: Tepsiyi Pencerelerle Başlat
+Settings_Tray_StartNow: '[Tepsiyi şimdi başlat]'
 Settings_CurrentStyle: Geçerli Stil
 Settings_ThemeBackground: '[Arka planı ayarla]'
 Settings_ThemeOpenFolder: '[Tema klasörünü aç]'
-Settings_Protocol: 'tcno:\\ protokolünü etkinleştir (Önerilen)'
-Settings_StartCentered: Programı merkezli başlat
-Settings_WindowsAccent: Windows Vurgu Rengini kullanın
-Settings_HelpTranslate: "[Çevirmeye yardım edin]"
+Settings_Protocol: 'Tcno''yu etkinleştir:\\ protocol (Önerilen)'
+Settings_StartCentered: Programı merkezde başlat
+Settings_WindowsAccent: Windows Vurgu Rengini Kullan
+Settings_HelpTranslate: "[Help translate]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(Gelişmiş) Oluşturma motorunu ayarla:"
-Settings_Header_ClosingMethod: "(Gelişmiş) {platform}kapatmak için yöntemi ayarlayın"
-Settings_Header_StartingMethod: "(Gelişmiş) {platform}başlatmak için yöntemi ayarlayın"
+Settings_Header_ActiveBrowser: "(Gelişmiş) İşleme motorunu ayarlayın:"
+Settings_Header_ClosingMethod: "(Gelişmiş) Yöntemi kapatmak için ayarlayın {platform}"
+Settings_Header_StartingMethod: "(Gelişmiş) Başlangıç yöntemini ayarlayın {platform}"
 Settings_AutoStart: "Otomatik Olarak {platform} hesap değiştirince başlat"
 Settings_NoPlatforms: Şu anda etkin platform yok. Lütfen bunları etkinleştirmek için aşağıdaki isteğe bağlı platformları işaretleyin veya devre dışı bırakılmış platformların işaretini kaldırın.
-Settings_MinimizeOnSwitch: Hesap geçişinde değiştiriciyi simge durumuna küçült
-Stats_Disabled: "İstatistik toplama devre dışı."
-Stats_InDepth: Ayrıntılı istatistik dökümü
+Settings_MinimizeOnSwitch: Hesap anahtarındaki anahtarlayıcıyı en aza indirin
+Settings_ShowShortNotes: Kullanıcı adı altında not önizlemesi
+Settings_Header_AppPassword: "Anahtarlayıcıyı kullanarak diğerlerini durdurun:"
+PreviewCss: Önizleme CSS
+Settings_PreviewCss: Bu CSS önizleme sayfasıdır. Programda açılan bazı öğeleri görüntüleyebilir ve temanızla nasıl göründüklerini görebilirsiniz. Bu sayfa tema oluşturanlar için kullanışlıdır!
+Settings_PreviewCssHeader: CSS Önizleme Sayfası
+Stats_Disabled: "İstatistik koleksiyonu devre dışı."
+Stats_InDepth: Derinlemesine istatistik dökümü
 Stats_ShareEnabled: "Bu istatistikler anonim olarak paylaşılır ve buradaki toplam <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>eklenir."
-Stats_ShareDisabled: "Bu istatistikler anonim olarak PAYLAŞILMAZ ve burada toplam <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>."
+Stats_ShareDisabled: "Bu istatistikler anonim olarak paylaşılmaz ve buradaki toplam <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">'a EKLENMEZ</a>."
 Stats_OperatingSystem: "İşletim sistemi: "
-Stats_FirstLaunch: "İlk lansman: "
-Stats_LaunchCount: "Başlatma sayısı: "
-Stats_CrashCount: "Kilitlenme sayısı: "
+Stats_FirstLaunch: "İlk fırlatma: "
+Stats_LaunchCount: "Fırlatma sayısı: "
+Stats_CrashCount: "Çökme sayısı: "
 Stats_MostUsedPlatform: "En çok kullanılan platform: "
-Stats_TotalTime: "Uygulama içinde harcanan toplam süre: "
-Stats_TotalSwitches: "Toplam hesap geçişleri: "
-Stats_TotalGamesLaunched: "Switcher aracılığıyla başlatılan toplam uygulamalar/oyunlar: "
-Stats_UniqueDaysLong: "Hesapların değiştirildiği benzersiz günler: "
+Stats_TotalTime: "Uygulamada geçirilen toplam süre: "
+Stats_TotalSwitches: "Toplam hesap anahtarları: "
+Stats_TotalGamesLaunched: "Anahtarlayıcı aracılığıyla başlatılan toplam uygulama/oyun: "
+Stats_UniqueDaysLong: "Hesaplar değiştirilmiş benzersiz günler: "
 Stats_LastUpload: "Son Yükleme: "
 Stats_SwitcherStats: "Anahtarlayıcı istatistikleri: "
 Stats_PageStats: "Sayfa istatistikleri: "
@@ -101,56 +116,56 @@ Stats_Accounts: "Hesaplar: "
 Stats_Switches: "Anahtarlar: "
 Stats_FirstActive: "İlk aktif: "
 Stats_LastActive: "Son aktif: "
-Stats_UniqueDays: "Eşsiz günler: "
+Stats_UniqueDays: "Benzersiz günler: "
 Stats_GameShortcuts: "Oyun kısayolları: "
-Stats_GameShortcutsHotbar: "Oyun kısayolları (hotbar'da): "
+Stats_GameShortcutsHotbar: "Oyun kısayolları (hotbar üzerinde): "
 Stats_GamesLaunched: "Başlatılan oyunlar: "
-Cleaning_Header_StartMenuShortcuts: 'Başlat Menüsü Kısayolları:'
-Cleaning_Header_General: Genel temizlik
+Stats_MetricsToShow: "Görüntülenen metrikler:"
+Stats_AccountId: "Hesap Kimliği:"
+Auth_LoginRequired: Bir parola daha önce ayarlanmıştı ve gereklidir. Lütfen şifreyi aşağıya girin.
+Auth_EnterPassword: "Parolayı girin:"
+Auth_PassIncorrect: Parola yanlış.
+Locked: Kilitli
+Cleaning_Header_StartMenuShortcuts: 'Başlat Menüsü için Kısayollar:'
+Cleaning_Header_General: Genel Temizlik
 Cleaning_Header_LoginHistory: Giriş geçmişimi temizle
-Cleaning_Header_PlatformCleaning: '{platform} Değiştirici'
-Cleaning_ImportantInfoHeader: 'Önemli bilgi:'
+Cleaning_Header_PlatformCleaning: '{platform} Anahtarlayıcı'
+Cleaning_ImportantInfoHeader: 'Önemli bilgiler:'
 Cleaning_ImportantInfo: >
-  Bir düğmeye tıklamak, ilgili dosyaları Steam kurulumunuzdan siler.<br /> loginusers.vdf'nin silinmesi, bu hesap değiştiricinin hesap göstermemesine neden olacaktır.<br /> Onları geri almak için Steam'i kullanarak oturum açmanız gerekecek.
-Cleaning_Button_KillProcess: '{platform} işlemi öldür'
+  Bir düğmeye tıkladığınızda ilgili dosya(lar) Steam kurulumunuzdan silinir.<br /> Loginusers.vdf dosyasını silmek, bu hesap değiştiricinin hiçbir hesap göstermemesine neden olur.<br /> Bu dosyaları geri almak için Steam kullanarak oturum açmanız gerekir.
+Cleaning_Button_KillProcess: Kill {platform} process
 Cleaning_Button_ForgottenBackups: Unutulan hesap yedeklemeleri
-Cleaning_Understand: Bu düğmelerin ne yaptığını anlıyorum.
+Cleaning_Understand: Bu düğmelerin ne işe yaradığını anlıyorum.
 Restore_Info: >
-  Daha önce bir hesabı "unuttuysanız", buradan geri yükleyebilirsiniz.<br /> Bu, onları loginusers.vdf dosyanıza geri ekleyerek onlara geçiş yapmanızı sağlar.
-Restore_Button_Restore: Seçileni geri yükle
-Ignored_RemoveAccounts: Hesapları yoksayma listesinden kaldır
-Ignored_Description: Daha önce bir hesabı "yoksaydıysanız", burada tekrar gösterebilirsiniz.
-Ignored_Stop: Seçileni yoksaymayı durdur
+  Daha önce bir hesabı "unuttuysanız ", buradan geri yükleyebilirsiniz.<br /> Bu, bunları loginusers.vdf dosyanıza geri ekleyerek bunlara geçmenizi sağlar.
+Restore_Button_Restore: Seçilenleri geri yükle
+Ignored_RemoveAccounts: Hesapları yoksay listesinden kaldır
+Ignored_Description: Daha önce bir hesabı "yoksaydı ", burada tekrar gösterebilirsiniz
+Ignored_Stop: Seçilenleri görmezden gelmeyi bırak
 Toast_DataLocationCopying: (1/2) Mevcut dosyaların yeni kullanıcı verileri klasörüne kopyalanması!
 Toast_DataLocationNotCopying: (1/2) Klasörde zaten dosyalar var! Kullanıcı verilerini taşımaz.
 Toast_DataLocationSet: (2/2) Yeni klasörü kullanmak için hesap değiştiriciyi yeniden başlatın!
 Toast_PlaceShortcutFiles: Bir klasör açılıyor. Oyun kısayollarını bu klasöre yerleştirin ve hesap değiştiriciyi yeniden başlatın.
 Toast_TrayStarted: Tepsi başladı!
 Toast_TrayRunning: Tepsi zaten açık
-Toast_TrayUsersMissing: Kayıtlı tepsi kullanıcısı yok
+Toast_TrayUsersMissing: Hiçbir tepsi kullanıcısı kaydedilmedi
 Toast_TrayFail: Tepsi uygulaması başlatılamadı!
-Toast_TrayPosition: "Çıkış düğmesine tıkladığınızda: Windows Tepsisinde olacağım! (Başlangıç Çubuğunun Sağında)"
-Toast_TrayHint: "İpucu: Beni tamamen kapatmak için Ctrl + 'X'i tıklayın veya Tepsi > 'Çıkış' aracılığıyla"
-Toast_Copied: kopyalandı
+Toast_TrayPosition: "Çıkış düğmesine tıkladıktan sonra: Windows Tepsisinde olacağım! (Başlangıç Çubuğunun Sağı)"
+Toast_TrayHint: "İpucu: Ctrl+ Beni tamamen kapatmak için 'X'i tıklayın veya Tepsi >' Çıkış '"
+Toast_Copied: Kopyalandı
 Toast_AlreadyProcessing: Hesaplar zaten işleniyor...
-Toast_FailedRestore: Hesaplar geri yüklenemedi (Konsol'a bakın)
+Toast_FailedRestore: Hesaplar geri yüklenemedi (Bkz. konsol)
 Toast_Restored: Geri yüklenen hesaplar!
-Toast_ProtocolEnabled: Bu program şimdi Windows'ta tcno:\\'ya yanıt verecek
+Toast_ProtocolEnabled: Bu program şimdi Windows'ta tcno :\\' ya yanıt verecek
 Toast_ProtocolEnabledTitle: Protokol eklendi
 Toast_ProtocolDisabled: Bu program artık TcNo'ya yanıt vermeyecek:\\
 Toast_ProtocolDisabledTitle: Protokol kaldırıldı
 Toast_RestartAsAdmin: Lütfen Yönetici olarak başlayın ve tekrar deneyin.
-Toast_RestartAfterClose: Lütfen Kapat'ı tıkladıktan sonra programı yeniden başlatın.
+Toast_RestartAfterClose: Lütfen Kapat'ı tıklattıktan sonra programı yeniden başlatın.
 Toast_RestartAfterCloseTitle: Vurgu rengi devre dışı
 Toast_RestartRequired: Değişiklikleri uygulamak için yeniden başlatın
-Toast_LoadStylesheetFailed: Stil sayfası yüklenemedi! Ayrıntılar için kullanıcı verileri klasörüne bakın.
-Toast_BNet_Private: "{BTag}profili gizli"
-Toast_BNet_StatsFail: "{BTag}için istatistik almaya çalışırken hata oluştu"
-Toast_BNet_CantSwapAccounts: Hesaplar değiştirilemedi (Battle.net.config dosyası bozuk)
-Toast_BNet_CantLoadNotFound: Battle.net.config bulunamadı
-Toast_BNet_CantLoadEmpty: Blizzard için hesap dosyası yüklenemedi (Hesap bulunamadı)
-Toast_BNet_CantLoadConfigCorrupt: Blizzard için hesap dosyası yüklenemedi (Battle.net.config dosyası bozuk)
-Toast_BNet_NamePolicy: BattleTag, adlandırma ilkesiyle eşleşmedi.
+Toast_LoadStylesheetFailed: Stil sayfası yüklenemedi! Ayrıntılar için kullanıcı veri klasörüne bakın.
+Toast_LoadingStats: Bir veya daha fazla profil istatistikleri yeniliyor. Lütfen bekleyin.
 Toast_ItemNotFound: "{item} bulunamadı"
 Toast_DeletedTotal: "{files} / {totalFiles} silindi. Toplam: {totalSize}"
 Toast_CantChangeUsername: Kullanıcı adı değiştirilemedi
@@ -158,34 +173,36 @@ Toast_CantClearLoginFiles: Eski oturum açma dosyaları temizlenemedi
 Toast_AccountIdReg: Kayıt Defterinden Hesap Kimliği alınamadı!
 Toast_RegFailWrite: Windows Kayıt Defterine Yazılamadı!
 Toast_RegFailRead: Windows Kayıt Defterinden Okunamadı!
-Toast_RegFailReadSaved: Kaydedilmiş Kayıt Defteri girdisi okunamadı. Başarısız olursa, hesabı kaldırıp yeniden eklemeyi deneyin.
+Toast_RegFailReadSaved: Kaydedilen Kayıt Defteri girişi okunamadı. Başarısız olursanız hesabı kaldırmayı ve yeniden eklemeyi deneyin.
 Toast_RegSaveMissing: Kaydedilmiş Kayıt Dosyalarından Veri Bulun veya Okunamadı!
 Toast_DuplicateNames: Değiştirilemedi. Aynı kullanıcı adına sahip yinelenen hesaplar?
 Toast_MissingUserId: "Değiştirilemedi. Kullanıcı kimliği eksik. Wiki 'Genel Hatalar'ı kontrol edin."
-Toast_CouldNotLocate: Oturum açmış kullanıcı bulunamadı
-Toast_StreamerModeHint: Özel bilgiler gizli! - Ayarlara bakın
-Toast_StreamerModeTitle: yayıncı modu
-Toast_AddAccountsFirst: Platformu listeden açın ve önce birkaç hesap ekleyin
-Toast_AddAccountsFirstTitle: Kaydedilmiş hesap yok
+Toast_CouldNotLocate: Oturum açmış kullanıcı bulunamıyor
+Toast_StreamerModeHint: Özel bilgiler gizlendi! - Ayarlara bakın
+Toast_StreamerModeTitle: Aktarıcı modu
+Toast_AddAccountsFirst: Listeden platformu açın ve önce birkaç hesap ekleyin
+Toast_AddAccountsFirstTitle: Kayıtlı hesap yok
 Toast_CantFindImage: Kullanıcıların resmi bulunamadı.
 Toast_CantCreateShortcut: Kısayol oluşturulamıyor
 Toast_ShortcutCreated: Kısayol oluşturuldu!
-Toast_FailedUpdateCheck: Güncellemeler kontrol edilemedi
+Toast_SettingsCopied: Ayarlar geçerli hesaba başarıyla kopyalandı.
+Toast_GameDataRestored: Bu hesap için oyun verileri başarıyla geri yüklendi.
+Toast_NoValidSteamId: Geçerli bir Steam Kimliği bulunamıyor.
+Toast_FailedUpdateCheck: Güncellemeler denetlenemedi
 Toast_UpdateVerifyFail: Güncelleyici dosyaları doğrulanamıyor. En son sürümü indirin ve dizininizdeki dosyaları değiştirin.
 Toast_StartedGame: '{program} başlatıldı'
 Toast_Steam_VacCleared: Hesaplar için VAC durumu temizlendi
 Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json'' silinemedi'
 Toast_NoFindSteamUserdata: Steam\\userdata klasörü bulunamadı
-Toast_Steam_VdfLast: vdf_last'tan yüklenebildi. Bazı hesaplar eksik olabilir.
+Toast_NoFindGameBackup: Bu hesap için yedekleme oyunu veri klasörü bulunamıyor.
+Toast_GameBackupDone: "Oyun veri klasörü başarıyla yedeklendi: {folderLocation}"
+Toast_Steam_VdfLast: Vdf_last adresinden yüklenebildi. Bazı hesaplar eksik olabilir.
 Toast_PartiallyFixed: Kısmen sabit
-Toast_Steam_FailedLoginusers: steam/config/loginusers.vdf yüklenemedi
+Toast_Steam_FailedLoginusers: Steam/config/loginusers.vdf yüklenemedi
 Toast_Steam_CantLocateLoginusers: '''.../Steam/config/loginusers.vdf'' bulunamıyor. Önce bir hesapta oturum açmayı deneyin.'
-Toast_CantClearImages: Görüntüler temizlenemedi
+Toast_CantClearImages: Resimler temizlenemedi
 Toast_RefreshedImages: Yenilenen resimler
-Toast_ClearForgottenCheck: Unutulan hesapların yedeklerini temizlemek istediğinizden emin misiniz?
-Toast_BattleNet_ChangedBTag: Savaş Etiketi Değiştirildi
-Toast_BattleNet_DeletedBTag: Silinen Savaş Etiketi
-Toast_FetchedRank: Getirilen Sıra
+Toast_ClearForgottenCheck: Unutulan hesapların yedeklerini silmek istediğinizden emin misiniz?
 Toast_ForgotAccount: Hesabımı unuttum
 Toast_ClearedPlatformSettings: "{platform} Değiştirici ayarları temizlendi"
 Toast_ClearedImages: "Temizlenen resimler"
@@ -207,28 +224,43 @@ Toast_RestoreComplete: Geri yükleme tamamlandı!
 Toast_FailedLoad: '{platform}yüklenemedi! Hatayı görmek için platforma tıklayın.'
 Toast_FailedPlatformsLoad: Platforms.json yüklenemedi! Lütfen bu dosyanın var olduğunu doğrulayın.
 Toast_FailedLoadSettings: "Ayarlar yüklenemedi! Bunun yerine varsayılan ayarlar yükleniyor. Mevcut ayarlar dosya adına 'eski' ekleniyor."
-Toast_FailedLoadStats: "İstatistikler yüklenemedi! Taze başlıyor."
+Toast_FailedLoadStats: "İstatistikler yüklenemedi! Yeni bir başlangıç."
+Toast_FailedStatsLoad: GameStats.json yüklenemedi! Lütfen bu dosyanın mevcut olduğunu doğrulayın.
+Toast_GameStatsLoadFail: "{Game}için web'den oyun istatistikleri alınamadı"
+Toast_GameStatsEmpty: "{Game}için web sitesinde oyun istatistiği bulunamadı. Sence bu bir hata mı? Sayfada bir hata olup olmadığını görmek için kullanıcı verileri klasörünü ve 'temp\\ download -{AccoundId}-{Game}.html' dosyasını kontrol edin!"
 Toast_FileCopyFail: Dosyalar kopyalanamadı! Daha fazla ayrıntı için günlüğe bakın.
-Toast_UserDataLoadFail: '{UserData}\\WindowSettings.json kullanıcı verileri yüklenemedi. Yedekleme ve sıfırlama! Günlüğe kaydedilen hata.'
+Toast_UserDataLoadFail: Kullanıcı verileri yüklenemedi {UserData}\\WindowSettings.json. Geri alınıyor ve sıfırlanıyor! Günlüğe kaydetme hatası.
 Toast_UpdateCheckFail: Güncellemeleri kontrol etmek için https://tcno.co/ adresine ulaşılamadı. Bu mesaj günde bir kez gösterilecektir.
 Toast_FailedCreateIcon: Simge oluşturulamadı. Ayrıntılar için günlüğe bakın.
-Tooltip_Restore: Bir 7z dosyası seçmek için tıklayın veya bu düğmeye sürükleyin.
+Toast_SameAccount: Dosyalar aynı hesaba/aynı hesaptan kopyalanamıyor. Farklı bir hesap deneyin veya daha fazla bilgi için Wiki'ye bakın.
+Toast_Steam_DownloadingAppIds: Steam AppId listesi indiriliyor...
+Toast_Steam_DownloadingAppIdsComplete: İndirme tamamlandı. Oyun verileri alt menüsü güncellendi.
+Toast_SteamWebKeyInvalid: Steam Web API anahtarı geçersiz görünüyor. Lütfen yeni bir tane ayarlayın.
+Toast_DownloadingProfileData: Profil verileri indiriliyor
+Toast_PasswordChanged: Şifre değiştirildi
+Toast_JsonFailModify: JSON dosyası değiştirilemedi. Günlüğe bakın.
 Modal_Crowdin_Header: Crowdin çevirmenleri
 Modal_Crowdin_Info: "İşte bu yazılımı çevirmeye yardım eden herkes.<br>Dilleri yanlarında olan kullanıcılar çeviride çok yardımcı oldular (düzeltici rolü)."
-Modal_Info_Creator: TechNobo [Wesley Pyburn] tarafından düzenlendi
-Modal_Info_Version: Sürüm
-Modal_Info_ViewGitHub: GitHub'da görüntüle
+Modal_Info_Creator: TechNobo [Wesley Pyburn] tarafından oluşturuldu
+Modal_Info_Version: Versiyon
+Modal_Info_ViewGitHub: GitHub'da Görüntüle
 Modal_Info_BugReport: Hata raporu/Özellik isteği
-Modal_Info_VisitSite: tcno.co'yu ziyaret edin
-Modal_Info_Disclaimer: sorumluluk reddi
+Modal_Info_VisitSite: Tcno.co adresini ziyaret edin
+Modal_Info_Disclaimer: Sorumluluk Reddi
 Modal_Title_Info: TcNo Hesap Değiştirici Bilgileri
 Modal_Title_ChangeUsername: Kullanıcı adını değiştir
-Modal_Title_ConfirmAction: TcNo Hesap Değiştirici İşlemi Onayla
-Modal_Title_LocatePlatform: Lütfen {platform} dizini bulun
+Modal_Title_ConfirmAction: TcNo Hesap Değiştirici Eylemi Onayla
+Modal_Title_LocatePlatform: Lütfen {platform} dizinini bulun
 Modal_Title_AddNew: Yeni {platform} hesap ekle
 Modal_Title_Background: Bir arka plan resmi ayarla
 Modal_Title_Userdata: Kullanıcı verileri klasörünü ayarlayın
-Modal_Title_Stats: istatistikleriniz
+Modal_Title_GameStats: Oyun istatistiklerini etkinleştir/devre dışı bırak
+Modal_GameStats_Header: "Oyun istatistiklerini etkinleştir/devre dışı bırak: {accountName}"
+Modal_Title_Stats: İstatistikleriniz
+Modal_Title_GameVars: "{game}için giriş ayrıntıları"
+Modal_GameVars_Header: "Lütfen {game} hesabınız için aşağıdaki bilgileri girin, {username} {platform}"
+Modal_Title_AccountNotes: "Hesap Notları: {accountName}"
+Modal_Title_SetPassword: Parolayı Ayarla
 Modal_SetBackground: 'Bir resim seçin veya aşağıya bir URL girin.<br>Boş bırakın ve sıfırlamaya ayarlayın.<br>(Daha gelişmiş kontrol için Wiki''deki Temaya bakın):'
 Modal_SetBackground_Button: Arka planı ayarla
 Modal_SetBackground_ChooseImage: Yerel resmi seçin
@@ -237,15 +269,18 @@ Modal_SetUserdata_ChooseFolder: Bir klasör seçin
 Modal_SetUserdata_Button: Kullanıcı verilerini ayarla
 Modal_ChangeUsername: Lütfen hesabınız için yeni bir kullanıcı adı girin
 Modal_ChangeUsernameType: '{platform} kullanıcı adını değiştir'
+Modal_SetPassword: TcNo Hesap Değiştirici için bir şifre girin
+Modal_SetPassword_Button: Parolayı ayarla
+Modal_SetPassword_Info: "NOT: Bu, hesaplarınızı şifrelemez. Hesapları değiştirmek, dosyaları değiştirmek veya bir dosyadaki kullanıcı adını değiştirmek kadar basittir. Parola, bir dosyadaki metni de düzenleyerek sıfırlanabilir. Bu basit bir güvenlik. Basit kullanıcı arayüzü erişimini durdurur. Bu uygulamayı çıkarılabilir bir USB'ye koyabilir, UserData klasörünü aynı USB'ye ayarlayabilir ve daha fazla güvenlik için fiziksel olarak kaldırabilirsiniz. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Harici bir sürücü kılavuzuna gitme</a><br><br>Temizlemek için, yukarıdakileri boş bırakın ve Ayarla'yı tıklatın."
 Modal_EnterDirectory: "Lütfen {platform}dizinini şu şekilde girin: C:\\Program Files\\{platform}"
-Modal_LocatePlatform: '{platformExe}bul'
-Modal_LocatePlatformFolder: '{platform} klasörü seç'
-Modal_ConfirmAction: İşlemi onaylayın
-Modal_AddNew: Lütfen oturum açtığınız {platform} hesabı için bir ad girin.
-Modal_AddCurrentAccount: Mevcut {platform} hesabı ekle
+Modal_LocatePlatform: Konum {platformExe}
+Modal_LocatePlatformFolder: '{platform} klasör seç'
+Modal_ConfirmAction: Eylemi onayla
+Modal_AddNew: Lütfen giriş yaptığınız {platform} hesap için bir ad girin.
+Modal_AddCurrentAccount: Geçerli {platform} hesap ekle
 Modal_SetImageHeader: Profil resmini ayarla
 Modal_SetImage: Resmi Ayarla
-Status_SelectedAccount: "Seçildi: {name}"
+Status_SelectedAccount: "Seçili: {name}"
 Status_Init: "Durum: Başlatılıyor"
 Status_ClosingPlatform: kapanış {platform}
 Status_ClosingPlatformFailed: '{platform}kapatılamadı'
@@ -260,163 +295,173 @@ Status_WaitingForMultipleClose: "{processName} ve {count} kişinin daha kapanmas
 Status_GetUniqueId: Benzersiz kullanıcı kimliği toplama
 Status_CopyingFiles: Kullanıcı dosyaları kopyalanıyor...
 Status_HandlingImage: Hesap profil resmini işleme
-Context_SwapTo: hesaba geçiş yap
-Context_CreateShortcut: Masaüstü kısayolu oluşturun
-Context_CreateShortcutSubmenu: Masaüstü kısayolu oluşturun...
+Context_SwapTo: Hesaba geç
+Context_CreateShortcut: Kısayol Oluştur
 Context_ChangeImage: Resmi değiştir
-Context_BNet_SetBTag: Savaş Etiketini Ayarla
-Context_BNet_DelBTag: Savaş Etiketini Sil
-Context_BNet_GetRAnk: Sırayı Yeniden Getir
 Context_ChangeName: Değiştirici adını değiştir
-Context_LoginAsSubmenu: Giriş yap...
-Context_UsernameSubmenu: Kullanıcı adı...
+Context_LoginAsSubmenu: Olarak giriş yap
+Context_UsernameSubmenu: Kullanıcı adı
 Context_RefreshName: Adı yenile
-Context_CopySubmenu: Kopyala...
-Context_CopyProfileSubmenu: Profili Kopyala...
+Context_CopySubmenu: Kopyala
+Context_DataSubmenu: Data
+Context_CopyProfileSubmenu: Profili Kopyala
 Context_CommunityUrl: Topluluk URL'si
 Context_CommunityUsername: Topluluk Kullanıcı Adı
-Context_LoginUsername: Kullanıcı adını gir
-Context_CopySteamIdSubmenu: SteamID'yi kopyalayın...
-Context_Steam_Id: SteamID [STEAM0:~]
-Context_Steam_Id3: SteamID3 [U:1:~]
-Context_Steam_Id32: SteamID32
+Context_LoginUsername: Giriş kullanıcı adı
+Context_CopySteamIdSubmenu: SteamID'yi Kopyala
+Context_Steam_Id: SteamID [STEAM0 :~]
+Context_Steam_Id3: SteamID3 [U:1 :~]
+Context_Steam_Id32: BuharID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Kullanıcı verilerini aç
-Context_CopyOtherSubmenu: Diğerini kopyala...
+Context_ManageSubmenu: Yönetmek
+Context_GameDataSubmenu: Oyun verileri
+Context_ManageGameStats: Oyun istatistiklerini yönet
+Context_Game_CopySettingsFrom: Ayarları şu anki ayarlara kopyala
+Context_Game_RestoreSettingsTo: Oyun verilerini geri yükle
+Context_Game_BackupData: Yedekleme oyunu verileri
+Context_CopyOtherSubmenu: Diğerini kopyala
 Context_HidePlatform: Platformu gizle
 Context_ExportAccList: Hesap listesini dışa aktar
 Context_RunAdmin: Yönetici olarak çalıştır
 Context_Hide: Saklamak
-Title_BNet_Settings: TcNo Hesap Değiştirici - BattleNet Ayarları
-Title_BNet_ManageIgnored: TcNo Account Switcher - Yok sayılan BattleNet hesaplarını yönetin
+ProfileImage_ToggleText: Resmi hesap resmi olarak kullan
 Title_Platforms_Settings: TcNo Hesap Değiştirici - Platform Ayarları
+Title_Settings_TestCss: TcNo Hesap Değiştirici - Test CSS Stili
 Title_AccountsList: TcNo Hesap Değiştirici - {platform}
 Title_TextEditor: TcNo Hesap Değiştirici - Metin Düzenleyici
 Title_Settings: TcNo Hesap Değiştirici - Ayarlar
-Title_Steam_Cleaning: TcNo Hesap Değiştirici - Buharlı Temizleme
-Title_Steam_Settings: TcNo Hesap Değiştirici - Steam Ayarları
+Title_Steam_Cleaning: TcNo Hesap Değiştirici - Buharlı Temizlik
+Title_Steam_Settings: TcNo Hesap Değiştirici - Buhar Ayarları
 Title_Template_Settings: TcNo Hesap Değiştirici - {platformName} Ayarlar
-Installer_Downloading: '{file}'
+Title_Login: TcNo Hesap Değiştirici - Giriş
+Installer_Downloading: İndiriliyor {file}
 Installer_DownloadFinished: İndirme tamamlandı {file}
 Installer_Installing: "Yükleme: {runtime}"
-Installer_RuntimeTitle: TcNo Account Switcher - Çalışma zamanı yükleyicisi
-Installer_Welcome: TcNo Account Switcher - Runtime yükleyicisine hoş geldiniz
-Installer_InstalledRuntimes: "Şu anda yüklü çalışma zamanları:"
-Installer_ErrorRuntime: "Bir veya daha fazla çalışma zamanı yüklenmedi:"
-Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB kurulum sırasında]"
+Installer_RuntimeTitle: TcNo Hesap Değiştirici - Çalışma zamanı yükleyici
+Installer_Welcome: TcNo Hesap Değiştiricisine Hoş Geldiniz - Çalışma zamanı yükleyicisi
+Installer_InstalledRuntimes: "Şu anda kurulu çalışma süreleri:"
+Installer_ErrorRuntime: "Bir veya daha fazla çalışma süresi yüklenmedi:"
+Installer_RuntimeNote: "[Kurulum sırasında ~{size1} MB + ~{size2} MB]"
 Installer_TotalSize: "Toplam indirme boyutu: ~{size} MB"
 Installer_AnyKeyStart: İndirmeyi başlatmak için herhangi bir tuşa basın...
-Runtime_WebView2: Microsoft WebView2 Çalışma Zamanı
-Runtime_Desktop: Microsoft .NET 5 Masaüstü Çalışma Zamanı
+Runtime_WebView2: Microsoft WebView2 Çalışma Süresi
+Runtime_Desktop: Microsoft .NET 5 Masaüstü Çalışma Süresi
 Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Çalışma Zamanı
 Installer_FailedFolder: "Klasör oluşturulamadı:"
-Installer_FailedWV: "Microsoft WebView2 Runtime indirilemedi ve yüklenemedi. İndirmek için: 1. Aşağıdaki bağlantıya tıklayın: {link} 2. Sunucu uygulamalarını çalıştır altında 'Barındırma Paketini İndir'e tıklayın."
-Installer_FailedDR: ".NET 5 Desktop Runtime indirilemedi ve yüklenemedi. Lütfen buradan indirin:"
+Installer_FailedWV: "Microsoft WebView2 Çalışma Zamanı indirilemedi ve yüklenemedi. İndirmek için: 1. Aşağıdaki bağlantıya tıklayın: {link} 2. Sunucu uygulamalarını çalıştır altında 'Hosting Paketini İndir'i tıklayın."
+Installer_FailedDR: ".NET 5 Masaüstü Çalışma Süresi indirilemedi ve yüklenemedi. Lütfen buradan indirin:"
 Installed_FailedASP: "{version} Runtime indirilemedi ve yüklenemedi. İndirmek için: 1. Aşağıdaki bağlantıya tıklayın: {link} 2. Masaüstü uygulamalarını Çalıştır altında 'x64 indir' seçeneğine tıklayın."
-Installer_Ready: "Bir veya daha fazlası kurulum için hazır. Yüklemek isteyip istemediğiniz sorulduğunda, 'Evet'i tıklayın."
+Installer_Ready: "Bir veya daha fazla kurulum için hazır. Yüklemek istediğinizde ve istendiğinde, 'Evet'i tıklayın."
 Installer_PressStart: Kurulumu başlatmak için herhangi bir tuşa basın...
-Installer_VerifyMin: "Önerilen minimum gereksinimleri karşıladığınızı doğrulayın:"
-Installer_VerifyAlready: "Her şey kurulu gibi görünüyor. Önerilen minimum gereksinimleri karşıladığınızı doğrulayın:"
+Installer_VerifyMin: "Önerilen minimum gereksinimleri karşıladığınızdan emin olun:"
+Installer_VerifyAlready: "Her şey kurulu gibi görünüyor. Önerilen minimum gereksinimleri karşıladığınızdan emin olun:"
 Installer_Complete: Her şey bu olmalı. Ana program, TcNo-Acc-Switcher.exe, otomatik olarak çalışacaktır.
-Installer_Complete2: "Çalışmazsa, lütfen buradaki kurulum talimatlarına bakın: {link}"
-Global_FatalNext: "Tehlikeli hata oluştu! Bu kilitlenme günlüğü bir sonraki başlatmada otomatik olarak gönderilecek."
+Installer_Complete2: "Çalışmazsa, lütfen kurulum talimatlarına bakın, burada: {link}"
+Global_FatalNext: "Önemli bir hata oluştu! Bu çökme günlüğü bir sonraki lansmanda otomatik olarak gönderilecektir."
 Tray_Error: Tepsi Hatası
-Tray_NoAccs: "Hesap bulunamadı.\nÖnce hesaplar arasında geçiş yapmayı deneyin veya 'Tray_Users.json' öğesini bulun"
-Tray_Switch: "Şuna geç: {account}"
+Tray_NoAccs: "Hiçbir hesap bulunamadı.\nÖnce hesap değiştirmeyi deneyin veya 'Tray_Users.json'u bulun"
+Tray_Switch: "Şuraya geç: {account}"
 Tray_CantOpenExe: "Ana .exe açılamadı. Var olduğundan emin olun.\n\nAçmaya çalıştım:"
-Tray_LaunchFail: "TcNo Account Switcher - Tepsi başlatma başarısız"
-Updater_Duplicate: Başka bir TcNo Account Switcher Updater örneği algılandı.
+Tray_LaunchFail: "TcNo Hesap Değiştirici - Tepsi başlatma başarısız"
+Updater_Duplicate: Başka bir TcNo Hesap Değiştirici Güncelleyici örneği tespit edildi.
 Updater_Unknown: "Bilinmeyen argüman: {arg}"
 Updater_NeedsAdmin: Bu program yönetici olarak çalıştırılmalıdır!
 Updater_StatusChecking: Sürüm kontrol ediliyor
-Updater_FailedVersionCheck: "Sürüm alınamadı. Dosyaları güncellemek ve doğrulamak için \"Doğrula\"yı tıklayın"
+Updater_FailedVersionCheck: "Sürüm alınamadı. Dosyaları güncellemek ve doğrulamak için \"Doğrula\" yı tıklayın"
 Updater_PressBelow: Aşağıdaki düğmeye basın!
-Updater_PressBelowStart: Güncellemeyi başlatmak için aşağıdaki düğmeyi tıklayın.
+Updater_PressBelowStart: Güncellemeyi başlatmak için aşağıdaki düğmeye tıklayın.
 Updater_PatchApplied: Yama uygulandı!
 Updater_UpdatingAppData: AppData'daki dosyalar güncelleniyor!
 Updater_Complete: Tüm güncellemeler tamamlandı!
-Updater_Checking: Güncellemeleri kontrol etme
+Updater_Checking: Güncellemeler denetleniyor
 Updater_UpdateToVerify: Dosyaları doğrulamak için önce güncellemeniz gerekir.
-Updater_ClosingTcNo: TcNo Account Switcher örneklerinin kapatılması (varsa).
+Updater_ClosingTcNo: TcNo Hesap Değiştirici örneklerinin (varsa) kapatılması.
 Updater_Downloading: "Güncelleme indiriliyor: {version}"
 Updater_Downloaded: İndirme tamamlandı.
-Updater_CantExtract: Güncelleme çıkarılamadı.
+Updater_CantExtract: Güncelleme alınamadı.
 Updater_Verify: Dosyaları doğrula
 Updater_Verifying: Doğrulanıyor...
-Updater_VerifySkip: Tüm küçük güncellemeleri atlamak ve en son güncellemeye geçmek için dosyaları doğrulama.
+Updater_VerifySkip: Tüm küçük güncellemeleri atlamak ve en son güncellemelere atlamak için dosyaları doğrulama.
 Updater_NoConnection: "Dosyaları doğrulamak için tcno.co'ya bağlanılamadı. Yükleyiciyi GitHub sayfasından manuel olarak indirmeyi ve güncellemek için yeniden yüklemeyi deneyebilirsiniz.\n\nHata:"
 Updater_NoServer: Güncelleme sunucusuna ulaşılamadı
-Updater_Hashlist: En son karma listesi indiriliyor...
+Updater_Hashlist: En son özet listesi indiriliyor...
 Updater_CantCheck: Güncellemeler kontrol edilemiyor
 Updater_Failed: "HATA: Bazı dosyalar kullanımda ve güncellenemiyor.\n\n1. Tüm TcNo işlemlerinin tamamen kapatıldığından emin olun\n(veya bilgisayarınızı yeniden başlatın)\n\n2. Ardından aşağıdaki Doğrula'yı tıklayın veya yeniden başlattıysanız:\n- Bu güncelleyiciyi açın ve dosyaları doğrulayın\n    ('güncelleyici' klasöründe bulunur) dizini kurun)"
-Updater_Missing: "DOSYA EKSİK: {file}"
-Updater_FileMismatch: "Dosya: {file} MD5: {md5} BEKLENEN: {value}"
-Updater_DownloadingWeb: Siteden dosya indiriliyor...
-Updater_UnpackingAppData: Dosyalar %AppData%/TcNo Account Switcher'a kopyalanıyor... (aksi ayarlanmadıkça)
+Updater_Missing: "EKSİK DOSYA: {file}"
+Updater_FileMismatch: "Dosya: {file} MD5: {md5} BEKLENİYOR: {value}"
+Updater_DownloadingWeb: Web sitesinden dosya indiriliyor...
+Updater_UnpackingAppData: Dosyalar %AppData%/TcNo Hesap Değiştiriciye kopyalanıyor... (aksi belirtilmedikçe)
 Updater_VerifyComplete: Dosyalar doğrulandı!
 Updater_UpdateFound: "Güncelleme bulundu: {name} [{updateSize}]"
 Updater_TotalFound: "Bulunan toplam güncelleme: {x}"
 Updater_TotalSize: "Toplam boyut: {size}"
 Updater_AwaitingUser: Kullanıcı girişi bekleniyor...
-Updater_UpToDate: "Güncelsin.\n:)"
-Updater_FailedDecode: Bu büyük olasılıkla benim (TechNobo) bir güncellemeyi zorlamamdan ve .json güncelleme dosyasını bozan bir yazım hatası yapmamdan kaynaklanıyor. Bana bildirin :)
-Updater_FailedDecodeTitle: Güncelleme listesinin kodu çözülemedi
-Updater_Extracting: Yama dosyalarının ayıklanması
+Updater_UpToDate: "Güncelsiniz.\n:)"
+Updater_FailedDecode: Bu büyük olasılıkla benim (TechNobo) bir güncellemeye basmamdan ve .json güncelleme dosyasını kıran bir yazım hatası yapmamdan kaynaklanıyor. Lütfen bana bildirin :)
+Updater_FailedDecodeTitle: Güncelleme listesi kodu çözülemedi
+Updater_Extracting: Yama dosyaları ayıklanıyor
 Updater_Applying: Yama uygulanıyor...
 Updater_Moving: Dosyalar taşınıyor...
 Updater_Title: TcNo Hesap Değiştirici Güncelleyici
-Updater_Started: başladı
-Updater_Start: TcNo Account Switcher'ı başlatın
-Updater_Begin: Güncellemeyi Başlat
-Updater_Exit: çıkış
-FatalError: Tehlikeli hata oluştu!
-Online: İnternet üzerinden
+Updater_Started: Başladı
+Updater_Start: TcNo Hesap Değiştiricisini Başlat
+Updater_Begin: Güncellemeyi başlat
+Updater_Exit: Çıkış
+FatalError: Önemli bir hata oluştu!
+Online: Çevrimiçi
 OnlineDefault: Çevrimiçi (Varsayılan)
 Offline: Çevrimdışı
 Invisible: Görünmez
 Busy: Meşgul
 Away: Uzakta
-Snooze: Uyuklama
-LookingToTrade: Değiş tokuş için arıyorum
-LookingToPlay: oynamak için arıyorum
+Snooze: Uyku moduna alma
+LookingToTrade: İşlem Yapmak İstiyoruz
+LookingToPlay: Oynamak İstiyor
 Unrecognized_EPersonaState: Tanınmayan ePersonaState
-Reg_DoesntExist: "{subKey} yok."
-Reg_DoesntContain: "{subKey} , {val}"
-Reg_Removing: '{subKey}\\{val}kaldırılıyor'
-PngInvalid_Format: Gerekli piksel formatı PixelFormat'tır.{x}.
+Reg_DoesntExist: "{subKey} mevcut değil."
+Reg_DoesntContain: "{subKey} , {val}içermez"
+Reg_Removing: Çıkarma {subKey}\\{val}
+PngInvalid_Format: Gerekli piksel formatı PixelFormat.{x}.
 PngRequired: Gerekli görüntü formatı taşınabilir bir ağ grafiğidir (png).
-PngDimensions: Boyutlar daha az ya da eşit olmalıdır {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "Bir sözdizimi hatasıyla karşılaşıldı (daha fazla ayrıntı aşağıda)! VE:"
-ThemesNotFound: "TcNo Account Switcher'ın dizininde \"temalar\" klasörü bulunamadı. Bu (özellikle 'Dracula_Cyan' klasörü) bu yazılımın çalışması için gereklidir.\nDosyaları doğrulamak ve bu eksik dosyaları geri yüklemek için Güncelleyiciyi \"güncelleyici\" klasöründe çalıştırabilirsiniz."
-Yes: "Evet"
-No: "Hayır"
-NoDefault: Standart değil)
-Ok: "TAMAM MI"
-Forget: Unutmak
-Notice: Farkına varmak
+PngDimensions: Boyutlar {MaxIconWidth}x{MaxIconHeight}'den küçük veya eşit olmalıdır
+ThemeSyntaxAnd: "Bir sözdizimi hatasıyla karşılaşıldı (daha fazla bilgi aşağıda verilmiştir)! VE:"
+ThemesNotFound: "TcNo Hesap Değiştirici dizininde \"temalar\" klasörü bulunamadı. Bu yazılımın çalışması için bu (özellikle 'Dracula_Cyan' klasörü) gereklidir.\nDosyaları doğrulamak ve bu eksik dosyaları geri yüklemek için Güncelleyiciyi \"güncelleyici\" klasöründe çalıştırabilirsiniz."
+Yes: "- Evet."
+No: "- Hayır."
+Save: Kaydet
+NoDefault: Hayır (Varsayılan)
+Ok: "- Tamam."
+Submit: Gönder
+Forget: Unut gitsin.
+Notice: Bildirim
+Notes: Notlar
 Error: Hata
 ErrorDetails: "HATA: {ex}"
-Failed: Başarısız oldu
-Success: başarı
+Failed: Başarısız
+Success: Başarı
 NotFound: Bulunamadı
-Done: bitti
+Done: Tamamlandı
+Edit: Düzenle
+Refresh: Yenile
 Working: Çalışma...
-ForName: "için: {name}"
+ForName: "For: {name}"
 DeletedFiles: Silinen dosyalar
 FileFoldersToClear: "Temizlenecek dosya/klasör listesi:"
 CouldNotFindX: '{x}bulunamadı'
 CouldNotCloseX: '{x}kapatılamadı!'
+CouldNotReadFile: '{file}okunamadı!'
 DirectoryNotFound: Dizin bulunamadı
 DirectoryNotFoundFolder: "Dizin bulunamadı: {folder}"
-DeletingFile: "Siliniyor: {file}"
-DeletingFolder: "Klasörü Silme: "
-CouldntDeleteX: "HATA: SİLEMEZ: {x}"
-CouldntDeleteUndefined: "HATA: TANIMLANMAMIŞ DOSYA SİLEMEZ"
-Prompt_RestartAsAdmin: "<h3><bold>Bu program Yönetici olarak yeniden başlayacak.</bold></h3><p>Yönetici istendiğinde UAC'de \"Evet\"e basın.</p>"
+DeletingFile: "Silme: {file}"
+DeletingFolder: "Klasör Siliniyor: "
+CouldntDeleteX: "HATA: SİLİNEMEDİ: {x}"
+CouldntDeleteUndefined: "HATA: TANIMLANMAMIŞ DOSYA SİLİNEMEDİ"
+Prompt_RestartAsAdmin: "<h3><bold>Bu program, Yönetici</bold></h3><p>olarak yeniden başlayacaktır.</p>için istendiğinde UAC'de \"Evet\" e basın."
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Bir hesabı unutmak üzeresiniz!</h3> <h4>Bu ne anlama geliyor?</h4> <p>- Steam, artık Büyük Resim Modunda listelenen hesaba sahip olmayacak ve Parolayı Hatırlamayacaktır.<br/> - TcNo Account Switcher, Steam üzerinden tekrar oturum açılana kadar hesabı artık göstermeyecek.</p> <p>Hesabınıza dokunulmayacak. Sadece bu bilgisayarda unutuldu.</p><h4>Anlıyor musun?</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>Bir hesabı unutmak üzeresiniz!</h3> <h4>Bu ne anlama geliyor?</h4> <p>TcNo Account Switcher, {platform}üzerinden tekrar oturum açılıncaya ve listeye eklenene<br/></p> <p>Hesabınıza dokunulmayacak. Sadece bu bilgisayarda unutuldu.</p> <h4>Anlıyor musun?</h4>
+  <h3 style='color:red'>Bir hesabı unutmak üzeresiniz!</h3> <h4>Bu ne anlama geliyor?</h4> <p>TcNo Hesap Değiştirici artık hesabı göstermeyecek, {platform}'dan tekrar oturum açana ve listeye eklenene kadar<br/> .</p> <p>Hesabınıza dokunulmayacak. Bu bilgisayarda unutuldu.</p> <h4>Anlıyor musunuz?</h4>
 Prompt_ClearStats: >
   <h3 style='color:red'>İstatistiklerinizi temizlemek üzeresiniz!</h3> <p>Bu eylemi geri alamazsınız.</p>
 Platform_DiscordPasteHint: Discord konsoluna yapıştırın ve sonucu girdiye yapıştırın!
@@ -425,7 +470,7 @@ Platform_ClearCacheTotal: '{totalFileCount} dosya temizleniyor ({totalSizeMB})'
 Platform_DeleteFail: Bazı dosyalar silinemedi (Program çalışıyor olabilir mi?)
 Platform_CouldNotDeleteLog: Dosya silinemedi! {logPath}kontrol et
 Error_FileAccessDenied: Dosyaya erişilemedi! {logPath}kontrol et
-Error_RequiredFileVerify: Gerekli bir dosya bulunamadı. Lütfen yükleme dizininde x64 ve x86 klasörlerinin bulunduğundan emin olun. Değilse, TcNo-Acc-Switcher-Updater.exe dosyasını çalıştırın ve dosyaları doğrulayın.
+Error_RequiredFileVerify: Gerekli bir dosya bulunamadı. Lütfen kurulum dizininde x64 ve x86 klasörlerinin bulunduğundan emin olun. Değilse, TcNo-Acc-Switcher-Updater.exe dosyalarını çalıştırın ve dosyaları doğrulayın.
 Tooltip_Settings: Ayarlar
 Tooltip_Info: Bilgi
 Tooltip_ManagePlatforms: Diğer platformları göster veya gizle
@@ -433,9 +478,16 @@ Tooltip_ExpandShortcuts: Oyun ve Kısayol seçimini genişlet
 Tooltip_ShortcutFolder: Kısayol klasörünü açın. Kısayolları ve bunları görmek için TcNo Account Switcher'ı buraya yerleştirin.
 Tooltip_Backup: Platform ayarlarında tanımlandığı şekilde yapılandırma dosyalarını/klasörlerini yedekleyin.
 Tooltip_BackupAll: Resimler ve diğer büyük dosyalar dahil TÜM yapılandırma dosyalarını/klasörlerini yedekleyin.
-Tooltip_ClosingMethod: "Kombine en iyisidir. Kapat, bir kapatma işlevi aracılığıyla doğrudan kapatma girişiminde bulunur ve TaskKill, CMD'yi kullanır (Birleşik çalışmazsa en iyisi)"
-Tooltip_StartingMethod: "Varsayılan en iyisidir. Direct'in yönetici düzeyi veya UAC üzerinde hiçbir kontrolü yoktur. Bu hesap değiştiriciyle aynı düzeyde (veya daha yüksek - ancak daha düşük değil) başlayacak"
-Tooltip_CurrentAccount: Şu anda bu hesaba giriş yaptınız.
-Discord_Status: Şu anda hesaplar arasında geçiş yapılıyor.
-Discord_StatusDetails: "Değiştirilen Hesaplar: {number}"
-Website: İnternet sitesi
+Tooltip_ClosingMethod: "Kombine en iyisidir. Kapatma girişimleri doğrudan bir kapatma işlevi aracılığıyla kapatılır ve TaskKill CMD kullanır (Kombine çalışmazsa en iyi sonucu verir)"
+Tooltip_StartingMethod: "Varsayılan en iyisidir. Doğrudan, yönetici seviyesi veya UAC üzerinde hiçbir kontrole sahip değildir. Bu, bu hesap değiştiriciyle aynı seviye (veya daha yüksek - ancak daha düşük değil) olarak başlayacaktır"
+Tooltip_CurrentAccount: Şu anda bu hesapta oturum açtınız.
+Tooltip_Restore: Bir 7z dosyası seçmek için tıklayın veya bu düğmeye sürükleyin.
+Tooltip_DisabledGlobally: Bu öğe tüm hesaplar için gizlidir. Bunu platform ayarlarından değiştirebilirsiniz.
+Discord_Status: Şu anda hesaplar değiştiriliyor.
+Discord_StatusDetails: "Anahtarlanan Hesaplar: {number}"
+Website: Websitesi
+Preview_Platforms: Platformlar önizlemesi
+Preview_Accounts: Hesaplar önizlemesi
+Preview_Notifications: Tost bildirimleri önizlemesi
+Preview_Settings: Ayarlar önizlemesi
+Preview_Modals: Modal önizlemesi

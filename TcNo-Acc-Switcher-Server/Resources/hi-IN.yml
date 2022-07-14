@@ -1,0 +1,493 @@
+---
+Update: अद्यतन उपलब्ध! इसे शुरू करने के लिए यहां क्लिक करें।
+Header_ChooseLanguage: 'भाषा का चयन करें:'
+Steam_ShowSteamID: स्टीमआईडी
+Steam_ShowVac: VAC स्थिति
+Steam_ShowLastLogin: अंतिम बार लॉगइन करने का समय
+Steam_ShowLimited: सीमित स्थिति
+Steam_ShowAccUsername: खाता उपयोक्तानाम
+Steam_Tray_AccountName: खाता नाम दिखाएँ [not friend name]
+Steam_CheckVac: अकाउंट VAC स्टेटस चेक करें
+Steam_OverrideDefaultState: "डिफ़ॉल्ट लॉगिन स्थिति ओवरराइड करें:"
+Steam_StartSilent: "स्विच पर कार्य ट्रे पर स्टीम खोलें ('- silent 'के साथ स्टीम प्रारंभ करें)"
+Button_AddNew: 'नया जोड़ें @ action: inmenu'
+Button_SaveCurrent: वर्तमान सहेजें
+Button_SaveFile: फ़ाइल सहेजें
+Button_Cancel: रद्द करें
+Button_Login: लॉग इन करें
+Button_Close: बंद करें
+Button_RefreshImages: 'छवियों को ताज़ा करें @ action: button'
+Button_ResetSettings: सेटिंग रीसेट करें
+Button_AdvancedCleaning: उन्नत सफ़ाई...
+Button_ClearLog: लॉग साफ़ करें
+Button_WikiInfo: अधिक जानकारी (Wiki)
+Button_ManagePlatforms: प्लेटफ़ॉर्म प्रबंधित करें
+Button_Backup: बैकअप लें
+Button_BackupAll: सब कुछ बैकअप करें
+Button_Restore: पुनर्स्थापित करें
+Button_OpenBackup: बैकअप फ़ोल्डर खोलें
+Button_Back: 'पीछे @ action: button'
+Button_RestartAdmin: व्यवस्थापक के रूप में पुनरारंभ करें
+Button_SetPassword: ऐप पासवर्ड सेट करें
+Settings_Shortcut: ' {platform} स्विचर डेस्कटॉप शॉर्टकट'
+Settings_Admin: व्यवस्थापक के रूप में {platform} चलाएं
+Settings_ImageExpiry: 'प्रोफ़ाइल छवियाँ समाप्त होने के कुछ दिन पहले:'
+Settings_SteamAPIKey: "स्टीम वेब एपीआई कुंजी (वैकल्पिक)"
+Settings_SteamAPIKey_Note: API कुंजी सेट करने से उन खातों के लिए सीमित संकेतक (पीली सीमा) दिखाई देगी जो इसके बजाय समुदाय प्रतिबंधित हैं।
+Settings_Header_AppWide: ऐप - वाइड सेटिंग्स
+Settings_Header_GeneralSettings: सामान्य सेटिंग
+Settings_Header_AccountDisplay: खाता प्रदर्शन सेटिंग
+Settings_Header_ExtraPlatforms: प्लैटफ़ॉर्म सेटिंग
+Settings_Header_GeneralTools: सामान्य उपकरण
+Settings_Header_OtherTools: अन्य उपकरण
+Settings_Header_TraySettings: ट्रे विन्यास
+Settings_Header_OpenGameFolders: 'खेल फ़ोल्डर खोलें @ info: whatsthis'
+Settings_Header_BackupRestore: बैकअप और पुनर्स्थापित मंच सेटिंग्स
+Settings_Header_Language: 'भाषा (L) @ item: inlistbox'
+Settings_Header_System: तंत्र (सिस्टम)
+Settings_Header_Theme: प्रसंग
+Settings_Header_Program: प्रोग्राम (कार्यक्रम)
+Settings_Header_StatsSharing: सांख्यिकी और शेयरिंग
+Settings_Header_Platform: "{platformName} सेटिंग्स"
+Settings_Header_GameStats: वैश्विक खेल आँकड़े सेटिंग्स
+Settings_GameStats: यहाँ पर टिक की गई कोई भी चीज़ आपके उपयोगकर्ता नाम के तहत किसी भी अकाउंट के लिए नहीं दिखाई देगी। इसका उपयोग करें यदि आप अक्सर अपने गेम आँकड़ों से विशिष्ट आइटम छिपाते हैं।
+Settings_TrayMax: 'याद रखने के लिए खातों की अधिकतम संख्या:'
+Settings_ExtraPlatformsDisabled: अक्षम प्लेटफ़ॉर्म। उन्हें सक्षम करने के लिए क्लिक करें।
+Settings_ExtraPlatformsEnabled: दृश्यमान प्लेटफ़ॉर्म। उन्हें अक्षम करने के लिए क्लिक करें।
+Settings_RTL: 'दाएँ - से - बाएँ पाठ दिखाएँ @ info: whatsthis'
+Settings_CollectStats: आंकड़े एकत्र करें
+Settings_ShareStats: कष्टप्रद रूप से आँकड़े साझा करें (अनुशंसित)
+Settings_DiscordRpc: कलह अमीर उपस्थिति (आरपीसी)
+Settings_DiscordRpcShare: कुल स्विच शेयर करें
+Settings_ViewStats: आँकड़े देखें
+Preview: पूर्वावलोकन (P)
+Settings_ClearStats: रीसेट करें
+Settings_CurrentLocation: 'वर्तमान संस्थापित स्थान: {path}'
+Settings_CurrentDataLocation: 'वर्तमान उपयोगकर्ता डेटा स्थान: {path}'
+Settings_SetDataLocation: "[कस्टम उपयोगकर्ता डेटा स्थान सेट करें]"
+Settings_PickFolder: '{platform} फोल्डर चुनें'
+Settings_OpenFolder: '{platform} फोल्डर खोलें'
+Settings_ClearForgotten: भूल गए साफ़ करें
+Settings_ClearAccounts: अकाउंट साफ़ करें
+Settings_StreamerMode: स्ट्रीमर मोड सक्षम करें
+Settings_ExitToTray: बाहर निकलें कम से कम करने के लिए ट्रे
+Settings_DesktopShortcut: डेस्कटॉप शॉर्टकट
+Settings_StartMenu_ProgramTray: 'प्रोग्राम ट्रे (T) @ action: button'
+Settings_StartMenu_Platform: प्‍लेटफॉर्म
+Settings_Tray_StartWindows: Windows के साथ ट्रे प्रारंभ करें
+Settings_Tray_StartNow: '[Start Tray now]'
+Settings_CurrentStyle: वर्तमान शैली
+Settings_ThemeBackground: 'पृष्ठभूमि सेट [संपादित करें]'
+Settings_ThemeOpenFolder: '[ओपन थीम फ़ोल्डर]'
+Settings_Protocol: 'Tcno:\\ protocol सक्षम करें (अनुशंसित)'
+Settings_StartCentered: केंद्रित प्रोग्राम प्रारंभ करें
+Settings_WindowsAccent: विंडोज एक्सेंट रंग का उपयोग करें
+Settings_HelpTranslate: "[अनुवाद करने में मदद करें]"
+Settings_ViewTranslators: "[Credits]"
+Settings_Header_ActiveBrowser: "(उन्नत) प्रतिपादन इंजन सेट करें:"
+Settings_Header_ClosingMethod: "(उन्नत) {platform}बंद करने के लिए विधि सेट करें"
+Settings_Header_StartingMethod: "(उन्नत) {platform}आरंभ करने के लिए विधि सेट करें"
+Settings_AutoStart: "खाता स्विच पर {platform} स्वचालित रूप से प्रारंभ करें"
+Settings_NoPlatforms: वर्तमान में कोई प्लेटफ़ॉर्म सक्षम नहीं है। कृपया उन्हें सक्षम करने के लिए नीचे दिए गए वैकल्पिक प्लेटफ़ॉर्म पर टिक करें या अक्षम प्लेटफ़ॉर्म को अनचेक करें।
+Settings_MinimizeOnSwitch: खाता स्विच पर स्विचर को न्यूनतम करें
+Settings_ShowShortNotes: उपयोक्तानाम के अंतर्गत नोट पूर्वावलोकन
+Settings_Header_AppPassword: "स्विचर का उपयोग कर दूसरों को रोकें:"
+PreviewCss: सीएसएस पूर्वावलोकन करें
+Settings_PreviewCss: यह सीएसएस पूर्वावलोकन पृष्ठ है। आप कार्यक्रम में पॉप अप करने वाले कुछ तत्वों को देख सकते हैं और देख सकते हैं कि वे आपके विषय के साथ कैसा दिखते हैं। यह पृष्ठ उन विषयों बनाने के लिए उपयोगी है!
+Settings_PreviewCssHeader: सीएसएस पूर्वावलोकन पृष्ठ
+Stats_Disabled: "सांख्यिकी संग्रह अक्षम है।"
+Stats_InDepth: गहराई से आँकड़े टूटना
+Stats_ShareEnabled: "इन आँकड़ों को गुमनाम रूप से साझा किया जाता है और यहां कुल <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>जोड़ देगा।"
+Stats_ShareDisabled: "ये आँकड़े गुमनाम रूप से साझा नहीं किए जाते हैं और यहां कुल <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>में नहीं जोड़ेंगे।"
+Stats_OperatingSystem: "ऑपरेटिंग सिस्टम: "
+Stats_FirstLaunch: "पहला लॉन्च: "
+Stats_LaunchCount: "लॉन्च काउंट: "
+Stats_CrashCount: "क्रैश गणनाः "
+Stats_MostUsedPlatform: "सबसे अधिक इस्तेमाल किया मंच: "
+Stats_TotalTime: "ऐप में बिताया गया कुल समय: "
+Stats_TotalSwitches: "कुल खाता स्विच: "
+Stats_TotalGamesLaunched: "स्विचर के माध्यम से लॉन्च किए गए कुल एप्लिकेशन/गेम: "
+Stats_UniqueDaysLong: "अदला - बदली खातों के साथ अद्वितीय दिन: "
+Stats_LastUpload: "अंतिम अपलोड: "
+Stats_SwitcherStats: "स्विचर आँकड़े: "
+Stats_PageStats: "पृष्ठ आँकड़े: "
+Stats_VisitsTotalTime: "{visits} कुल यात्राओं, {hours} कुल समय"
+Stats_Accounts: "खातेः @ info: whatsthis "
+Stats_Switches: "स्विचेस: "
+Stats_FirstActive: "पहले सक्रियः "
+Stats_LastActive: "अंतिम सक्रिय: "
+Stats_UniqueDays: "अद्वितीय दिन: "
+Stats_GameShortcuts: "खेल शॉर्टकट: "
+Stats_GameShortcutsHotbar: "खेल शॉर्टकट (हॉटबार पर): "
+Stats_GamesLaunched: "लॉन्च किए गए गेम्स: "
+Stats_MetricsToShow: "प्रदर्शित मेट्रिक्स:"
+Stats_AccountId: "खाता आईडी:"
+Auth_LoginRequired: एक पासवर्ड पहले सेट किया गया था, और आवश्यक है। कृपया नीचे दिया गया पासवर्ड दर्ज करें।
+Auth_EnterPassword: "कूटशब्द दाखिल करें:"
+Auth_PassIncorrect: कूटशब्द गलत है।
+Locked: Престования
+Cleaning_Header_StartMenuShortcuts: 'स्टार्ट मेनू के लिए शॉर्टकट:'
+Cleaning_Header_General: सामान्य सफाई
+Cleaning_Header_LoginHistory: मेरे लॉगिन इतिहास को साफ करें
+Cleaning_Header_PlatformCleaning: '{platform} स्विचर'
+Cleaning_ImportantInfoHeader: 'महत्वपूर्ण जानकारी:'
+Cleaning_ImportantInfo: >
+  एक बटन पर क्लिक करने से आपके स्टीम इंस्टॉलेशन से संबंधित फ़ाइल हटा दी जाएगी।<br /> loginusers.vdf को हटाने के परिणामस्वरूप यह खाता स्विचर कोई खाता नहीं दिखाएगा।<br /> उन्हें वापस पाने के लिए आपको स्टीम का उपयोग करके उन्हें लॉगिन करना होगा।
+Cleaning_Button_KillProcess: '{platform} प्रक्रिया को मार डालो'
+Cleaning_Button_ForgottenBackups: खाता बैकअप भूल गए
+Cleaning_Understand: इन बटनों का क्या मतलब है।
+Restore_Info: >
+  यदि आप पहले किसी खाते को "भूल गए" हैं, तो आप उन्हें यहां पुनर्स्थापित कर सकते हैं।<br /> यह उन्हें आपकी loginusers.vdf फ़ाइल में वापस जोड़ता है, जिससे आप उन पर स्विच कर सकते हैं।
+Restore_Button_Restore: चयनित पुनर्स्थापित करें
+Ignored_RemoveAccounts: उपेक्षा सूची से खाते हटाएँ
+Ignored_Description: 'अगर आपने पहले किसी अकाउंट को "नज़रअंदाज़" किया है, तो आप उन्हें यहाँ फिर से दिखा सकते हैं. @ info: whatsthis'
+Ignored_Stop: चयनित की उपेक्षा करना बंद करें
+Toast_DataLocationCopying: (1/2) नए उपयोगकर्ता डेटा फ़ोल्डर में मौजूदा फ़ाइलों की प्रतिलिपि बनाना!
+Toast_DataLocationNotCopying: (1/2) Folder has already files! उपयोगकर्ता डेटा माइग्रेट नहीं करेगा।
+Toast_DataLocationSet: (2/2) नए फ़ोल्डर का उपयोग करने के लिए खाता स्विचर को पुनरारंभ करें!
+Toast_PlaceShortcutFiles: एक फोल्डर खुल रहा है। उस फ़ोल्डर में गेम शॉर्टकट रखें, और खाता स्विचर को पुनरारंभ करें।
+Toast_TrayStarted: ट्रे शुरू!
+Toast_TrayRunning: 'ट्रे पहले से ही खुला है @ info: whatsthis'
+Toast_TrayUsersMissing: कोई ट्रे उपयोक्ता सहेजा नहीं गया
+Toast_TrayFail: ट्रे अनुप्रयोग प्रारंभ नहीं कर सका!
+Toast_TrayPosition: "बाहर निकलें बटन पर क्लिक करने पर: मैं Windows ट्रे पर हो जाएगा! (स्टार्ट बार के दाईं ओर)"
+Toast_TrayHint: "संकेत: Ctrl+ क्लिक करें 'एक्स' मुझे पूरी तरह से बंद करने के लिए, या के माध्यम से ट्रे > 'Exit'"
+Toast_Copied: नक़ल किया गया
+Toast_AlreadyProcessing: पहले से ही प्रसंस्करण खाते...
+Toast_FailedRestore: 'खाते बहाल करने में विफल (कंसोल देखें) @ info: whatsthis'
+Toast_Restored: बहाल किए गए खाते!
+Toast_ProtocolEnabled: यह कार्यक्रम अब विंडोज में tcno:\\ का जवाब देगा
+Toast_ProtocolEnabledTitle: प्रोटोकॉल जोड़ा गया
+Toast_ProtocolDisabled: यह प्रोग्राम अब tcno का जवाब नहीं देगा:\\
+Toast_ProtocolDisabledTitle: प्रोटोकॉल हटाया गया
+Toast_RestartAsAdmin: कृपया Admin के रूप में शुरू करें और फिर से कोशिश करें।
+Toast_RestartAfterClose: कृपया बंद करें पर क्लिक करने के बाद कार्यक्रम को पुनरारंभ करें।
+Toast_RestartAfterCloseTitle: एक्सेंट रंग अक्षम है
+Toast_RestartRequired: परिवर्तन लागू करने के लिए पुनरारंभ करें
+Toast_LoadStylesheetFailed: स्टाइलशीट लोड करने में विफल! विवरण के लिए उपयोगकर्ता डेटा फ़ोल्डर देखें।
+Toast_LoadingStats: एक या अधिक प्रोफाइल ताज़ा आँकड़े हैं। कृपया प्रतीक्षा करें।
+Toast_ItemNotFound: "{item} नहीं मिला"
+Toast_DeletedTotal: "{files} के {totalFiles} नष्ट कर दिया. कुल: {totalSize}"
+Toast_CantChangeUsername: उपयोक्तानाम नहीं बदल सका
+Toast_CantClearLoginFiles: पुरानी लॉगइन फ़ाइल को साफ करने में विफल
+Toast_AccountIdReg: रजिस्ट्री से खाता आईडी प्राप्त करने में विफल!
+Toast_RegFailWrite: Windows Regsitry को लिखने में विफल!
+Toast_RegFailRead: Windows Regsitry से पढ़ने में विफल!
+Toast_RegFailReadSaved: सहेजे गए रजिस्ट्री प्रविष्टि को पढ़ने में विफल. अकाउंट हटाने और जोड़ने की कोशिश फिर से करें अगर असफल रहा।
+Toast_RegSaveMissing: विफल रजिस्ट्री फ़ाइलों से सहेजे गए डेटा का पता लगाएं या पढ़ें!
+Toast_DuplicateNames: स्वैप नहीं कर सका। एक ही उपयोगकर्ता नाम के साथ डुप्लिकेट खाते?
+Toast_MissingUserId: "स्वैप नहीं कर सका. उपयोक्ता आईडी गुम है. विकिपीडिया:सामान्य त्रुटियाँ (Common Errors) देखें।"
+Toast_CouldNotLocate: लॉग इन उपयोक्ता का पता नहीं लगा सका
+Toast_StreamerModeHint: Private info is hidden! - सेटिंग्स देखें
+Toast_StreamerModeTitle: स्ट्रीमर मोड
+Toast_AddAccountsFirst: सूची से प्लेटफ़ॉर्म खोलें और पहले कुछ खाते जोड़ें।
+Toast_AddAccountsFirstTitle: कोई सहेजा गया खाता नहीं
+Toast_CantFindImage: उपयोक्ता छवि ढूंढने में असफल.
+Toast_CantCreateShortcut: शॉर्टकट नहीं बना सकता है
+Toast_ShortcutCreated: शॉर्टकट बनाया गया!
+Toast_SettingsCopied: सेटिंग सफलतापूर्वक वर्तमान खाते में कॉपी की गई।
+Toast_GameDataRestored: इस खाते के लिए खेल डेटा को सफलतापूर्वक पुनर्स्थापित किया गया.
+Toast_NoValidSteamId: एक मान्य स्टीम आईडी खोजने में असमर्थ।
+Toast_FailedUpdateCheck: अपडेट की जांच करने में विफल
+Toast_UpdateVerifyFail: अद्यतनकर्ता फ़ाइलों को सत्यापित नहीं कर सकता है. नवीनतम संस्करण डाउनलोड करें और अपनी निर्देशिका में फ़ाइलों को बदलें।
+Toast_StartedGame: प्रारंभ {program}
+Toast_Steam_VacCleared: खातों के लिए VAC स्थिति साफ कर दी गई
+Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json'' को हटा नहीं सका'
+Toast_NoFindSteamUserdata: स्टीम\\ userdata फ़ोल्डर नहीं मिला
+Toast_NoFindGameBackup: इस खाते के लिए बैकअप खेल डेटा फ़ोल्डर खोजने में असमर्थ.
+Toast_GameBackupDone: "खेल डेटा फ़ोल्डर सफलतापूर्वक बैकअप लिया गया: {folderLocation}"
+Toast_Steam_VdfLast: Vdf_last से लोड करने में सक्षम था। कुछ अकाउंट गायब हो सकते हैं।
+Toast_PartiallyFixed: आंशिक रूप से तय
+Toast_Steam_FailedLoginusers: भाप/config/loginusers.vdf लोड करने में विफल
+Toast_Steam_CantLocateLoginusers: '''.../Steam/config/loginusers.vdf'' का पता नहीं लगा सकता है। पहले एक खाते में साइन इन करने का प्रयास करें।'
+Toast_CantClearImages: छवि साफ नहीं कर सका
+Toast_RefreshedImages: ताज़ा किए गए चित्र
+Toast_ClearForgottenCheck: क्या आप वाकई भूल गए खातों का बैकअप क्लियर करना चाहते हैं?
+Toast_ForgotAccount: खाता भूल गए
+Toast_ClearedPlatformSettings: "{platform} स्विचर सेटिंग को साफ कर दिया"
+Toast_ClearedImages: "चित्र साफ कर दिया"
+Toast_SavedItem: "सहेजा गया: {item}"
+Toast_ChangedUsername: बदला गया उपयोक्तानाम
+Toast_SetUsername: उपयोगकर्ता नाम सेट करें
+Toast_AlreadyLoggedIn: इस अकाउंट से पहले से लॉग इन हैं! (कोई परिवर्तन नहीं किया गया)
+Toast_BackupCopy: (1/3) एक अस्थायी स्थान पर फाइल कॉपी करना...
+Toast_BackupCompress: (2/3) Compressing files ({size}). इसमें कुछ समय लगेगा...
+Toast_BackupComplete: (3/3) समाप्त compressing! ({size} से {compressedSize})
+Toast_BackupProgress: "बैकअप प्रगति पर है (संपीडित आकार: {compressedSize})"
+Toast_BackupFail: बैकअप विफल - लॉग इन करें!
+Toast_BackupBusy: बैकअप पहले से ही प्रगति पर है!
+Toast_RestoreBusy: पुनर्स्थापना पहले से ही प्रगति पर है!
+Toast_RestoreExt: संग्रह निकालना.
+Toast_RestoreCopying: फाइल को प्लेटफॉर्म पर वापस ले जाना
+Toast_RestoreDeleting: 'अस्थाई फ़ाइलें मिटा रहा है @ info: whatsthis'
+Toast_RestoreComplete: पुनर्स्थापना समाप्त!
+Toast_FailedLoad: '{platform}लोड करने में विफल! गलती देखने के लिए मंच पर क्लिक करें।'
+Toast_FailedPlatformsLoad: Platforms.json लोड करने में विफल! कृपया सत्यापित करें कि यह फ़ाइल मौजूद है.
+Toast_FailedLoadSettings: "सेटिंग लोड करने में असफल! इसके बजाय डिफ़ॉल्ट सेटिंग्स लोड कर रहा है। मौजूदा सेटिंग फ़ाइल नाम में 'old' जोड़ना."
+Toast_FailedLoadStats: "आँकड़े लोड करने में विफल! नए सिरे से आरंभ कर रहा है."
+Toast_FailedStatsLoad: GameStats.json लोड करने में विफल! कृपया सत्यापित करें कि यह फ़ाइल मौजूद है.
+Toast_GameStatsLoadFail: "{Game}के लिए WEB से गेम आँकड़े प्राप्त करने में विफल"
+Toast_GameStatsEmpty: "कोई खेल आँकड़े {Game}के लिए वेबसाइट पर पाया। लगता है कि यह एक गलती है? उपयोगकर्ता डेटा फ़ोल्डर और 'temp\\ download -{AccoundId}-{Game}.html' की जाँच करें यह देखने के लिए कि क्या पृष्ठ में कोई त्रुटि थी!"
+Toast_FileCopyFail: फ़ाइलें नक़ल करने में असफल! अधिक जानकारी के लिए लॉग इन करें।
+Toast_UserDataLoadFail: Userdata {UserData}\\ WindowSettings.json लोड करने में विफल। बैकअप लेना और रीसेट करना! लॉग इन करने के लिए सहेजा गया त्रुटि.
+Toast_UpdateCheckFail: अपडेट की जांच करने के लिए https://tcno.co/ तक नहीं पहुंच सका। यह संदेश दिन में एक बार दिखाई देगा।
+Toast_FailedCreateIcon: प्रतीक बनाने में असफल. विवरण के लिए लॉग देखें।
+Toast_SameAccount: एक ही खाते से फाइल की नक़ल नहीं कर सकता. एक अलग खाता आज़माएँ, या अधिक जानकारी के लिए Wiki देखें।
+Toast_Steam_DownloadingAppIds: स्टीम AppId सूची डाउनलोड कर रहा है...
+Toast_Steam_DownloadingAppIdsComplete: डाउनलोड हो गया। गेम डेटा सबमेनू अपडेट किया गया है।
+Toast_SteamWebKeyInvalid: स्टीम वेब एपीआई कुंजी अमान्य लगती है। कृपया एक नया सेट करें।
+Toast_DownloadingProfileData: प्रोफ़ाइल डेटा डाउनलोड कर रहा है
+Toast_PasswordChanged: पासवर्ड बदला गया
+Toast_JsonFailModify: JSON फ़ाइल को संशोधित करने में विफल. लॉग देखें.
+Modal_Crowdin_Header: क्राउडिन अनुवादक
+Modal_Crowdin_Info: "यहाँ हर कोई है जो मदद की है इस सॉफ्टवेयर का अनुवाद.<br>उपयोगकर्ता भाषाओं के साथ उनके बगल में अनुवाद में बहुत मदद की (प्रूफरीडर भूमिका)."
+Modal_Info_Creator: TechNobo [वेस्ले पाइबर्न] द्वारा बनाया गया
+Modal_Info_Version: संस्करण (v)
+Modal_Info_ViewGitHub: GitHub पर देखें
+Modal_Info_BugReport: बग रिपोर्ट/फ़ीचर अनुरोध
+Modal_Info_VisitSite: Tcno.co पर जाएं
+Modal_Info_Disclaimer: अस्वीकरण (डिस्क्लेमर)
+Modal_Title_Info: TcNo खाता स्विचर जानकारी
+Modal_Title_ChangeUsername: उपयोक्तानाम बदलें
+Modal_Title_ConfirmAction: TcNo खाता स्विचर कार्रवाई की पुष्टि करें
+Modal_Title_LocatePlatform: कृपया {platform} निर्देशिका का पता लगाएं
+Modal_Title_AddNew: नया खाता जोड़ें {platform} Add new account
+Modal_Title_Background: पृष्ठभूमि छवि सेट करें
+Modal_Title_Userdata: उपयोगकर्ता डेटा फ़ोल्डर सेट करें
+Modal_Title_GameStats: खेल आँकड़े सक्षम/अक्षम करें
+Modal_GameStats_Header: "के लिए खेल आँकड़े सक्षम/अक्षम करें: {accountName}"
+Modal_Title_Stats: आपके आँकड़े
+Modal_Title_GameVars: "{game}के लिए इनपुट विवरण"
+Modal_GameVars_Header: "कृपया अपने खाते के लिए निम्नलिखित विवरण दर्ज करें {game} , {username} पर {platform}"
+Modal_Title_AccountNotes: "अकाउंट नोट्स: {accountName}"
+Modal_Title_SetPassword: पासवर्ड सेट करें
+Modal_SetBackground: 'एक छवि का चयन करें, या नीचे एक यूआरएल दर्ज करें।<br>खाली छोड़ दो और रीसेट करने के लिए सेट करें।<br>(अधिक उन्नत नियंत्रण के लिए विकी पर Theming देखें):'
+Modal_SetBackground_Button: पृष्ठभूमि सेट करें
+Modal_SetBackground_ChooseImage: स्थानीय छवि चुनें
+Modal_SetUserdata: नीचे एक फ़ोल्डर पथ दर्ज करें और सेट पर क्लिक करें।
+Modal_SetUserdata_ChooseFolder: एक फ़ोल्डर चुनें
+Modal_SetUserdata_Button: उपयोगकर्ता डेटा सेट करें
+Modal_ChangeUsername: कृपया अपने खाते के लिए एक नया उपयोगकर्ता नाम दर्ज करें
+Modal_ChangeUsernameType: '{platform} उपयोक्तानाम बदलें'
+Modal_SetPassword: TcNo खाता स्विचर के लिए कूटशब्द दाखिल करें
+Modal_SetPassword_Button: पासवर्ड सेट करें
+Modal_SetPassword_Info: "नोट: यह आपके खातों को एन्क्रिप्ट नहीं करता है. खातों को स्वैप करना फ़ाइलों को बदलने या फ़ाइल में उपयोगकर्ता नाम बदलने जितना सरल है। किसी फाइल में टेक्स्ट एडिट करके भी पासवर्ड रिसेट किया जा सकता है। यह सरल सुरक्षा है। यह सरल UI एक्सेस को रोकता है। आप इस एप्लिकेशन को एक हटाने योग्य यूएसबी पर रख सकते हैं, UserData फ़ोल्डर को उसी यूएसबी पर सेट कर सकते हैं और अधिक सुरक्षा के लिए इसे भौतिक रूप से हटा सकते हैं। <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">एक बाहरी ड्राइव गाइड</a><br><br>पर जा रहा है स्पष्ट करने के लिए, उपरोक्त खाली छोड़ दें और सेट पर क्लिक करें।"
+Modal_EnterDirectory: "कृपया {platform}की निर्देशिका दर्ज करें, जैसे: C:\\ Program Files\\{platform}"
+Modal_LocatePlatform: '{platformExe}का पता लगाएं'
+Modal_LocatePlatformFolder: '{platform} फोल्डर चुनें'
+Modal_ConfirmAction: कार्रवाई की पुष्टि करें
+Modal_AddNew: कृपया आपके द्वारा लॉग इन किए गए {platform} खाते के लिए एक नाम दर्ज करें।
+Modal_AddCurrentAccount: वर्तमान खाता जोड़ें {platform}
+Modal_SetImageHeader: प्रोफ़ाइल छवि सेट करें
+Modal_SetImage: छवि सेट करें
+Status_SelectedAccount: "चयनित: {name}"
+Status_Init: "स्थिति: आरंभीकरण"
+Status_ClosingPlatform: समापन {platform}
+Status_ClosingPlatformFailed: '{platform}बंद करने में विफल'
+Status_StartingPlatform: '{platform}से शुरू'
+Toast_StartingPlatformFailed: '{platform}शुरू करने में विफल! अधिक जानकारी के लिए लॉग इन करें।'
+Toast_UrlAdminErr: आप व्यवस्थापक के रूप में .url फ़ाइलें नहीं चला सकते। एक और शॉर्टकट प्रकार आज़माएं। सामान्य उपयोगकर्ता के रूप में लॉन्च करना।
+Status_UpdatingFile: "अपडेट हो रहा है {file}"
+Status_UpdatingRegistry: Windows रजिस्ट्री अद्यतन कर रहा है
+Status_FailedLog: कार्रवाई विफल रही। विवरण के लिए लॉग देखें।
+Status_WaitingForClose: "{processName} बंद होने की प्रतीक्षा में{timeLimit} {timeout}सेकंड)"
+Status_WaitingForMultipleClose: "{processName} और {count} अन्य के बंद होने की प्रतीक्षा में ({timeout}/{timeLimit} सेकंड)"
+Status_GetUniqueId: अद्वितीय उपयोगकर्ता आईडी एकत्र करना
+Status_CopyingFiles: उपयोक्ता फ़ाइल नक़ल कर रहा है...
+Status_HandlingImage: अकाउंट प्रोफ़ाइल इमेज को संभालना
+Context_SwapTo: खाते पर स्वैप करें
+Context_CreateShortcut: शॉर्टकट बनाएँ
+Context_ChangeImage: छवि बदलें
+Context_ChangeName: स्विचर नाम बदलें
+Context_LoginAsSubmenu: लॉग इन करें
+Context_UsernameSubmenu: उपयोक्ता नाम
+Context_RefreshName: नाम रिफ्रेश करें
+Context_CopySubmenu: नक़ल करें
+Context_DataSubmenu: आँकड़ा
+Context_CopyProfileSubmenu: प्रोफ़ाइल नक़ल करें
+Context_CommunityUrl: समुदाय का URL
+Context_CommunityUsername: समुदाय उपयोगकर्ता नाम
+Context_LoginUsername: उपयोगकर्ता नाम लॉगिन करें
+Context_CopySteamIdSubmenu: कॉपी SteamID
+Context_Steam_Id: 'SteamID [STEAM0: ~]'
+Context_Steam_Id3: 'SteamID3 [यू:1: ~]'
+Context_Steam_Id32: SteamID32
+Context_Steam_Id64: स्टीमआईडी 64 7656 ~
+Context_Steam_OpenUserdata: उपयोक्ता डाटा खोलें
+Context_ManageSubmenu: प्रबंधन करें
+Context_GameDataSubmenu: खेल डेटा
+Context_ManageGameStats: खेल आँकड़े प्रबंधित करें
+Context_Game_CopySettingsFrom: वर्तमान सेटिंग की नक़ल करें
+Context_Game_RestoreSettingsTo: खेल डेटा पुनर्स्थापित करें
+Context_Game_BackupData: खेल डेटा बैकअप करें
+Context_CopyOtherSubmenu: अन्य कॉपी करें
+Context_HidePlatform: प्लैटफ़ॉर्म छुपाएँ
+Context_ExportAccList: निर्यात खाता सूची
+Context_RunAdmin: व्यवस्थापक के रूप में चलाएं
+Context_Hide: छुपाएँ
+ProfileImage_ToggleText: 'खाता छवि के रूप में छवि का उपयोग करें @ info: whatsthis'
+Title_Platforms_Settings: TcNo खाता स्विचर - प्लेटफ़ॉर्म सेटिंग्स
+Title_Settings_TestCss: TcNo खाता स्विचर - टेस्ट सीएसएस स्टाइलिंग
+Title_AccountsList: TcNo खाता स्विचर - {platform}
+Title_TextEditor: TcNo खाता स्विचर - पाठ संपादक
+Title_Settings: TcNo खाता स्विचर - सेटिंग
+Title_Steam_Cleaning: TcNo खाता स्विचर - स्टीम क्लीनिंग
+Title_Steam_Settings: TcNo खाता स्विचर - स्टीम सेटिंग्स
+Title_Template_Settings: TcNo खाता स्विचर - {platformName} सेटिंग
+Title_Login: TcNo खाता स्विचर - लॉगिन
+Installer_Downloading: डाउनलोड हो रहा है {file}
+Installer_DownloadFinished: '{file}डाउनलोड हो रहा है समाप्त'
+Installer_Installing: "अधिष्ठापन: {runtime}"
+Installer_RuntimeTitle: TcNo खाता स्विचर - रनटाइम इंस्टॉलर
+Installer_Welcome: TcNo खाता स्विचर - रनटाइम इंस्टॉलर में आपका स्वागत है
+Installer_InstalledRuntimes: "वर्तमान में संस्थापित रनटाइम्स:"
+Installer_ErrorRuntime: "एक या अधिक रनटाइम स्थापित नहीं किए गए थे:"
+Installer_RuntimeNote: "[~{size1} MB +~{size2} MB इन्स्टाल करते समय]"
+Installer_TotalSize: "कुल डाउनलोड आकार: ~{size} MB"
+Installer_AnyKeyStart: डाउनलोड प्रारंभ करने के लिए कोई कुंजी दबाएँ...
+Runtime_WebView2: Microsoft WebView2 रनटाइम
+Runtime_Desktop: माइक्रोसॉफ्ट .NET 5 डेस्कटॉप रनटाइम
+Runtime_ASP: माइक्रोसॉफ्ट माइक्रोसॉफ्ट एएसपी.नेट कोर {version} रनटाइम
+Installer_FailedFolder: "फ़ोल्डर बनाने में असफलः"
+Installer_FailedWV: "Microsoft WebView2 रनटाइम को डाउनलोड और इंस्टॉल करने में विफल। डाउनलोड करने के लिए: 1. नीचे दिए गए लिंक पर क्लिक करें: {link} 2. रन सर्वर ऐप्स के तहत 'होस्टिंग बंडल डाउनलोड करें' पर क्लिक करें।"
+Installer_FailedDR: ".NET 5 डेस्कटॉप रनटाइम को डाउनलोड और इंस्टॉल करने में विफल। कृपया इसे यहां डाउनलोड करें:"
+Installed_FailedASP: "ASP.NET Core {version} रनटाइम को डाउनलोड और इंस्टॉल करने में विफल। डाउनलोड करने के लिए: 1. नीचे दिए गए लिंक पर क्लिक करें: {link} 2. रन डेस्कटॉप ऐप्स के अंतर्गत 'डाउनलोड x64' पर क्लिक करें।"
+Installer_Ready: "एक या एक से अधिक सर्वर स्थापित करने के लिए तैयार हैं। यदि और जब संकेत दिया गया है कि आप स्थापित करना चाहते हैं, तो 'Yes' पर क्लिक करें।"
+Installer_PressStart: संस्थापन प्रारंभ करने के लिए कोई कुंजी दबाएँ...
+Installer_VerifyMin: "सत्यापित करें कि आप न्यूनतम अनुशंसित आवश्यकताओं को पूरा करते हैं:"
+Installer_VerifyAlready: "ऐसा लगता है कि सब कुछ स्थापित है। सत्यापित करें कि आप न्यूनतम अनुशंसित आवश्यकताओं को पूरा करते हैं:"
+Installer_Complete: यह सब कुछ होना चाहिए। मुख्य कार्यक्रम, TcNo-Acc-Switcher.exe, ऑटो - रन होगा।
+Installer_Complete2: "यदि यह काम नहीं करता है, तो कृपया निर्देशों को स्थापित करने के लिए देखें, here: {link}"
+Global_FatalNext: "घातक त्रुटि हुई! यह क्रैशलॉग अगले लॉन्च में स्वचालित रूप से सबमिट हो जाएगा।"
+Tray_Error: ट्रे त्रुटि
+Tray_NoAccs: "कोई खाता नहीं मिला।\nपहले खातों को बदलने का प्रयास करें, या 'Tray_Users.json' का पता लगाएं"
+Tray_Switch: "पर स्विच करें: {account}"
+Tray_CantOpenExe: "मुख्य .exe खोल नहीं सका. सुनिश्चित करें कि यह मौजूद है.\n\nमैंने खोलने का प्रयास किया:"
+Tray_LaunchFail: "TcNo खाता स्विचर - ट्रे लॉन्च विफल"
+Updater_Duplicate: एक और TcNo खाता स्विचर अपडेटर उदाहरण का पता लगाया गया है।
+Updater_Unknown: "अज्ञात तर्कः {arg}"
+Updater_NeedsAdmin: इस कार्यक्रम को व्यवस्थापक के रूप में चलाया जाना चाहिए!
+Updater_StatusChecking: संस्करण की जाँच करना
+Updater_FailedVersionCheck: "संस्करण नहीं मिल सका. फ़ाइलों को अपडेट और सत्यापित करने के लिए \"सत्यापित करें\" पर क्लिक करें"
+Updater_PressBelow: नीचे दिए गए बटन को दबाएं!
+Updater_PressBelowStart: अपडेट शुरू करने के लिए नीचे दिए गए बटन पर क्लिक करें।
+Updater_PatchApplied: पैच लागू!
+Updater_UpdatingAppData: AppData में फ़ाइलों को अपडेट करना!
+Updater_Complete: सभी अद्यतन पूर्ण!
+Updater_Checking: अपडेट के लिए जाँच कर रहा है
+Updater_UpdateToVerify: फ़ाइलों को सत्यापित करने के लिए आपको पहले अपडेट करना होगा।
+Updater_ClosingTcNo: TcNo खाता स्विचर उदाहरणों को बंद करना (यदि कोई हो)।
+Updater_Downloading: "डाउनलोड हो रहा है UPDATE: {version}"
+Updater_Downloaded: डाउनलोड पूरा हुआ।
+Updater_CantExtract: अद्यतन निकालने में विफल.
+Updater_Verify: फाइल सत्यापित करें
+Updater_Verifying: सत्यापित कर रहा है...
+Updater_VerifySkip: सभी छोटे अपडेट को छोड़ने के लिए फ़ाइलों को सत्यापित करना, और बस नवीनतम पर कूदें।
+Updater_NoConnection: "फ़ाइलों को सत्यापित करने के लिए tcno.co से कनेक्ट नहीं कर सका। आप मैन्युअल रूप से GitHub पृष्ठ से इंस्टॉलर डाउनलोड करने का प्रयास कर सकते हैं, और अपडेट करने के लिए पुनर्स्थापित कर सकते हैं।\n\nत्रुटि:"
+Updater_NoServer: अद्यतन सर्वर तक नहीं पहुंच सका
+Updater_Hashlist: नवीनतम हैश सूची डाउनलोड कर रहा है...
+Updater_CantCheck: अद्यतन की जांच करने में असमर्थ
+Updater_Failed: "त्रुटि: कुछ फ़ाइलें उपयोग में हैं और अद्यतन नहीं की जा सकतीं।\n\n1. सुनिश्चित करें कि सभी TcNo प्रक्रियाएं पूरी तरह से बंद हैं\n(या अपने पीसी को पुनरारंभ करें)\n\n2. फिर नीचे सत्यापित करें पर क्लिक करें, या यदि आपने पुनरारंभ किया है:\n- इस अपडेटर को खोलें और फाइलों को सत्यापित करें\n    ('अपडेटर' फ़ोल्डर में स्थित) निर्देशिका स्थापित करें)"
+Updater_Missing: "फ़ाइल गुम है: {file}"
+Updater_FileMismatch: "फ़ाइल: {file} है MD5: {md5} अपेक्षित: {value}"
+Updater_DownloadingWeb: वेबसाइट से फ़ाइल डाउनलोड किया जा रहा है...
+Updater_UnpackingAppData: फाइल को %AppData%/TcNo खाता स्विचर में नक़ल कर रहा है... (जब तक अन्यथा सेट न किया गया हो)
+Updater_VerifyComplete: फ़ाइलें सत्यापित!
+Updater_UpdateFound: "अद्यतन मिला: {name} [{updateSize}]"
+Updater_TotalFound: "कुल अद्यतन मिला: {x}"
+Updater_TotalSize: "कुल आकार: {size}"
+Updater_AwaitingUser: उपयोक्ता इनपुट के लिए प्रतीक्षा कर रहा है...
+Updater_UpToDate: "आप अद्यतित हैं।\n:)"
+Updater_FailedDecode: यह सबसे अधिक संभावना है कि मेरे (TechNobo) एक अपडेट को धक्का दे रहा है, और एक टाइपो बना रहा है जिसने .json अपडेट फ़ाइल को तोड़ दिया है। मुझे जरूर बताइयेगा:)
+Updater_FailedDecodeTitle: अद्यतन सूची डीकोड करने में विफल
+Updater_Extracting: पैच फ़ाइल निकाल रहा है
+Updater_Applying: पैच लागू कर रहा है...
+Updater_Moving: 'फ़ाइल खिसका रहा है... @ info: whatsthis'
+Updater_Title: TcNo खाता स्विचर अपडेटर
+Updater_Started: शुरू हुआ
+Updater_Start: TcNo खाता स्विचर प्रारंभ करें
+Updater_Begin: अद्यतन प्रारंभ करें
+Updater_Exit: बाहर निकलें
+FatalError: घातक त्रुटि हुई!
+Online: 'ऑनलाइन @ item: inmenu'
+OnlineDefault: ऑनलाइन (डिफ़ॉल्ट)
+Offline: 'ऑफ़लाइन @ info: whatsthis'
+Invisible: अदृश्य
+Busy: बिजी
+Away: अवे
+Snooze: स्नूज़
+LookingToTrade: व्यापार करने के लिए देख
+LookingToPlay: खेलने के लिए खोज
+Unrecognized_EPersonaState: अपरिचित ePersonaराज्य
+Reg_DoesntExist: "{subKey} का कोई मतलब नहीं है।"
+Reg_DoesntContain: "{subKey} में {val}शामिल नहीं है।"
+Reg_Removing: '{subKey}\\{val}हटा रहा है'
+PngInvalid_Format: आवश्यक पिक्सेल प्रारूप PixelFormat.{x}है।
+PngRequired: आवश्यक छवि प्रारूप एक पोर्टेबल नेटवर्क ग्राफिक (png) है।
+PngDimensions: आयाम {MaxIconWidth}x{MaxIconHeight}से कम या उसके बराबर होना चाहिए
+ThemeSyntaxAnd: "एक वाक्यविन्यास त्रुटि का सामना करना पड़ा (नीचे अधिक विवरण!) और:"
+ThemesNotFound: "TcNo खाता स्विचर निर्देशिका में \"प्रसंग\" फ़ोल्डर नहीं मिला. यह (विशेष रूप से 'Dracula_Sian' फ़ोल्डर) इस सॉफ्टवेयर को चलाने के लिए आवश्यक है.\nआप फ़ाइलों को सत्यापित करने के लिए \"updater\" फ़ोल्डर में Updater चला सकते हैं, और इन लापता फ़ाइलों को पुनर्स्थापित कर सकते हैं."
+Yes: "हाँ @ info: whatsthis"
+No: "नहीं @ info: whatsthis"
+Save: सेव करें
+NoDefault: नहीं (तयशुदा)
+Ok: "ठीक @ item: inlistbox"
+Submit: सबमिट करें
+Forget: भूल जाओ
+Notice: सूचना
+Notes: नोटस
+Error: 'त्रुटि @ info: whatsthis'
+ErrorDetails: "त्रुटि: {ex}"
+Failed: विफल रहा
+Success: सक्सेस
+NotFound: नहीं मिला @ info
+Done: किया गया
+Edit: संपादन (E)
+Refresh: रिफ्रेश करें
+Working: काम कर रहा है...
+ForName: "उदाहरण के लिए: {name}"
+DeletedFiles: हटाई गई फ़ाइलें
+FileFoldersToClear: "साफ करने के लिए फ़ाइल/फ़ोल्डर की सूचीः @ info: whatsthis"
+CouldNotFindX: '{x}नहीं मिल सका'
+CouldNotCloseX: '{x}बंद नहीं कर सका!'
+CouldNotReadFile: '{file}पढ़ नहीं सकता!'
+DirectoryNotFound: 'निर्देशिका नहीं मिली @ info: whatsthis'
+DirectoryNotFoundFolder: "निर्देशिका नहीं मिली: {folder}"
+DeletingFile: "विलोपित कर रहा है: {file}"
+DeletingFolder: "फ़ोल्डर मिटा रहा हैः @ info: whatsthis "
+CouldntDeleteX: "त्रुटि: नष्ट नहीं कर सका: {x}"
+CouldntDeleteUndefined: "त्रुटि: अपरिभाषित फ़ाइल नहीं हटा सका"
+Prompt_RestartAsAdmin: "<h3><bold>इस कार्यक्रम के व्यवस्थापक के रूप में पुनरारंभ हो जाएगा</bold></h3><p>मारा \"हाँ\" जब व्यवस्थापक के लिए संकेत यूएसी में.</p>"
+Prompt_ForgetSteam: >
+  <h3 style='color:red'>आप एक खाता भूलने वाले हैं!</h3> <h4>इसका क्या मतलब है?</h4> <p>- स्टीम में अब बिग पिक्चर मोड में सूचीबद्ध खाता नहीं होगा और पासवर्ड याद नहीं होगा।<br/> - TcNo खाता स्विचर भी अब खाते को तब तक नहीं दिखाएगा, जब तक कि यह स्टीम के माध्यम से फिर से साइन इन न हो जाए।</p> <p>आपका खाता अछूता रहेगा। यह सिर्फ इस कंप्यूटर पर भूल गया है।</p><h4>क्या आप समझते हैं?</h4>
+Prompt_ForgetAccount: >
+  <h3 style='color:red'>आप एक खाता भूल गए हैं!</h3> <h4>इसका क्या मतलब है?</h4> <p>TcNo खाता स्विचर भी अब खाता नहीं दिखाएगा,<br/> जब तक कि यह {platform}के माध्यम से फिर से साइन इन न हो जाए, और सूची में जोड़ा जाए।</p> <p>आपका खाता अछूता रहेगा। यह सिर्फ इस कंप्यूटर पर भूल गया है।</p> <h4>क्या आप समझते हैं?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>आप अपने आंकड़े साफ़ करने वाले हैं!</h3> <p>आप इस क्रिया को पूर्ववत नहीं कर सकते।</p>
+Platform_DiscordPasteHint: Discord कंसोल में पेस्ट करें, और फिर इनपुट में परिणाम पेस्ट करें!
+Platform_ClearCache: कैश साफ करें
+Platform_ClearCacheTotal: समाशोधन {totalFileCount} फाइलें ({totalSizeMB})
+Platform_DeleteFail: कुछ फ़ाइलें मिटा नहीं सकता (Program may be running?)
+Platform_CouldNotDeleteLog: फ़ाइल हटा नहीं सका! चेक {logPath}
+Error_FileAccessDenied: फ़ाइल का उपयोग करने में विफल! जाँच {logPath}
+Error_RequiredFileVerify: एक आवश्यक फ़ाइल नहीं मिली. कृपया सुनिश्चित करें कि x64 और x86 फ़ोल्डर इंस्टॉल निर्देशिका में मौजूद हैं। यदि नहीं तो TcNo-Acc-Switcher-Updater.exe चलाएं और फ़ाइलों को सत्यापित करें।
+Tooltip_Settings: 'विन्यास (S) @ info: whatsthis'
+Tooltip_Info: 'जानकारी @ info: whatsthis'
+Tooltip_ManagePlatforms: अन्य प्लैटफ़ॉर्म दिखाएँ या छुपाएँ
+Tooltip_ExpandShortcuts: खेल और शॉर्टकट चयन का विस्तार करें
+Tooltip_ShortcutFolder: शॉर्टकट फ़ोल्डर खोलें। वहां शॉर्टकट रखें, और उन्हें देखने के लिए TcNo खाता स्विचर।
+Tooltip_Backup: बैकअप config फ़ाइलें/फ़ोल्डर, मंच सेटिंग्स में परिभाषित के रूप में.
+Tooltip_BackupAll: बैकअप सभी config फ़ाइलें/फ़ोल्डर्स, छवियों और अन्य बड़ी फ़ाइलों सहित.
+Tooltip_ClosingMethod: "संयुक्त सबसे अच्छा है। एक करीबी समारोह के माध्यम से सीधे बंद करने का प्रयास बंद करें और टास्ककिल सीएमडी का उपयोग करता है (यदि संयुक्त काम नहीं करता है तो सर्वश्रेष्ठ)"
+Tooltip_StartingMethod: "Default सबसे अच्छा है। प्रत्यक्ष व्यवस्थापक स्तर या यूएसी पर कोई नियंत्रण नहीं है। यह इस खाता स्विचर की तुलना में समान स्तर (या उच्चतर - लेकिन कम नहीं) के रूप में शुरू होगा"
+Tooltip_CurrentAccount: इस समय आप इस अकाउंट में लॉग इन हैं।
+Tooltip_Restore: एक 7z फ़ाइल का चयन करने के लिए क्लिक करें, या इसे इस बटन पर खींचें।
+Tooltip_DisabledGlobally: यह आइटम सभी खातों के लिए छिपा हुआ है। आप इसे प्लेटफ़ॉर्म सेटिंग में बदल सकते हैं।
+Discord_Status: वर्तमान में खाते बदलना।
+Discord_StatusDetails: "स्विच किए गए खाते: {number}"
+Website: वेबसाईट
+Preview_Platforms: प्लेटफ़ॉर्म का पूर्वावलोकन
+Preview_Accounts: लेखा पूर्वावलोकन
+Preview_Notifications: टोस्ट सूचनाएं पूर्वावलोकन
+Preview_Settings: सेटिंग्स पूर्वावलोकन
+Preview_Modals: मोडल पूर्वावलोकन

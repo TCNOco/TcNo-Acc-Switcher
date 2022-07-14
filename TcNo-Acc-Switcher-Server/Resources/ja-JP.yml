@@ -1,14 +1,15 @@
 ---
 Update: アップデートがあります！ここをクリックして開始します。
 Header_ChooseLanguage: '言語の選択'
-BattleNet_ShowSR: Overwatch SRを表示し、Overwatchプロフィール画像を使用します。
-Steam_ShowSteamID: SteamIDを表示
-Steam_ShowVac: VACステータスを表示する
-Steam_CheckVac: アカウントVACの状態を確認
-Steam_ShowLimited: 限定ステータスを表示
-Steam_ShowAccUsername: アカウントのユーザー名を表示
+Steam_ShowSteamID: SteamID
+Steam_ShowVac: VACステータス
+Steam_ShowLastLogin: 前回のログイン時間
+Steam_ShowLimited: リミテッドステータス
+Steam_ShowAccUsername: アカウントのユーザー名
 Steam_Tray_AccountName: アカウント名を表示 [友達名ではありません]
+Steam_CheckVac: アカウントVACの状態を確認
 Steam_OverrideDefaultState: "デフォルトのログイン状態を上書き:"
+Steam_StartSilent: "スイッチでスチームをタスクトレイに開きます（'- silent 'でスチームを開始します）"
 Button_AddNew: 新規追加
 Button_SaveCurrent: 現在の保存
 Button_SaveFile: ファイルを保存
@@ -25,32 +26,41 @@ Button_Backup: バックアップ
 Button_BackupAll: すべてをバックアップする
 Button_Restore: 戻す
 Button_OpenBackup: バックアップフォルダを開く
+Button_Back: 戻る
+Button_RestartAdmin: 管理者として再起動
+Button_SetPassword: アプリのパスワードを設定
 Settings_Shortcut: ' {platform} スイッチャーデスクトップのショートカット'
 Settings_Admin: '{platform} を管理者として実行'
 Settings_ImageExpiry: 'プロフィール画像が期限切れになるまでの日数:'
+Settings_SteamAPIKey: "Steam Web APIキー(オプション)"
+Settings_SteamAPIKey_Note: APIキーを設定すると、代わりにコミュニティ禁止のアカウントの限定インジケータ(黄色の枠線)が表示されます。
 Settings_Header_AppWide: アプリ全体の設定
 Settings_Header_GeneralSettings: 一般設定
+Settings_Header_AccountDisplay: アカウント表示設定
 Settings_Header_ExtraPlatforms: プラットフォーム設定
 Settings_Header_GeneralTools: 一般的なツール
 Settings_Header_OtherTools: その他のツール
 Settings_Header_TraySettings: トレイの設定
 Settings_Header_OpenGameFolders: ゲームフォルダを開く
 Settings_Header_BackupRestore: プラットフォーム設定のバックアップと復元
-Settings_Header_Language: 言語
-Settings_Header_System: システム
-Settings_Header_Theme: テーマ
-Settings_Header_Program: プログラム
+Settings_Header_Language: 言語(曖昧さ回避)
+Settings_Header_System: システム（ System ）
+Settings_Header_Theme: テーマ(曖昧さ回避)
+Settings_Header_Program: プログラム(曖昧さ回避)
 Settings_Header_StatsSharing: 統計と共有
 Settings_Header_Platform: "{platformName} 設定"
+Settings_Header_GameStats: グローバルゲームステータス設定
+Settings_GameStats: ここでチェックしたものは、アカウントのユーザー名の下に表示されません。ゲームの統計情報から特定のアイテムを頻繁に非表示にする場合に使用します。
 Settings_TrayMax: '覚えておくアカウントの最大数:'
-Settings_ExtraPlatformsDisabled: 無効化されたプラットフォーム。クリックして有効にします。
-Settings_ExtraPlatformsEnabled: 目に見えるプラットフォーム。クリックして無効にします。
+Settings_ExtraPlatformsDisabled: 無効なプラットフォーム。クリックして有効にします。
+Settings_ExtraPlatformsEnabled: 表示されているプラットフォーム。クリックして無効にします。
 Settings_RTL: テキストを右から左に表示
 Settings_CollectStats: 統計を収集する
-Settings_ShareStats: 統計を迷惑に共有する（推奨）
-Settings_DiscordRpc: Discord Rich Presence（RPC）
-Settings_DiscordRpcShare: 合計スイッチを共有する
-Settings_ViewStats: 統計を見る
+Settings_ShareStats: 統計情報を不快に共有する(推奨)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: 合計スイッチを共有
+Settings_ViewStats: 統計情報を表示
+Preview: プレビュー
 Settings_ClearStats: リセット
 Settings_CurrentLocation: '現在のインストール場所： {path}'
 Settings_CurrentDataLocation: '現在のユーザーデータの場所： {path}'
@@ -72,39 +82,50 @@ Settings_ThemeOpenFolder: '[テーマフォルダを開く]'
 Settings_Protocol: 'tcno:\\プロトコルを有効にする (推奨)'
 Settings_StartCentered: プログラムを中心に開始
 Settings_WindowsAccent: Windowsアクセントカラーを使用する
-Settings_HelpTranslate: "format@@0"
+Settings_HelpTranslate: "[ヘルプ翻訳]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "（詳細）レンダリングエンジンの設定："
-Settings_Header_ClosingMethod: "（詳細）メソッドを閉じる {platform}に設定"
-Settings_Header_StartingMethod: "（詳細）メソッドを {platform}から開始するように設定します"
+Settings_Header_ActiveBrowser: "(詳細)レンダリングエンジンの設定:"
+Settings_Header_ClosingMethod: "(Advanced)メソッドを閉じる {platform}に設定する"
+Settings_Header_StartingMethod: "(Advanced)メソッドを {platform}から始めるように設定します。"
 Settings_AutoStart: "アカウント切り替え時に自動的に {platform} を開始"
 Settings_NoPlatforms: 現在、有効になっているプラットフォームはありません。以下のオプションのプラットフォームにチェックマークを付けて有効にするか、無効になっているプラットフォームのチェックを外してください。
-Settings_MinimizeOnSwitch: アカウントスイッチのスイッチャーを最小化する
+Settings_MinimizeOnSwitch: アカウントスイッチの切り替えを最小限に抑える
+Settings_ShowShortNotes: ユーザー名の下にメモプレビュー
+Settings_Header_AppPassword: "他のユーザーがスイッチャーを使用しないようにします。"
+PreviewCss: CSSをプレビュー
+Settings_PreviewCss: これはCSSプレビューページです。プログラムに表示されるいくつかの要素を表示して、テーマの外観を確認できます。このページはテーマの作成に便利です。
+Settings_PreviewCssHeader: CSSプレビューページ
 Stats_Disabled: "統計収集が無効になっています。"
 Stats_InDepth: 詳細な統計の内訳
-Stats_ShareEnabled: "これらの統計は匿名で共有され、ここでは合計 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">に追加されます</a>。"
-Stats_ShareDisabled: "これらの統計は匿名で共有されることはなく、ここでは合計 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">に追加されません</a>。"
-Stats_OperatingSystem: "オペレーティング·システム： "
-Stats_FirstLaunch: "最初の起動： "
-Stats_LaunchCount: "起動カウント： "
-Stats_CrashCount: "クラッシュカウント： "
-Stats_MostUsedPlatform: "最も使用されるプラットフォーム： "
-Stats_TotalTime: "アプリ内で費やされた合計時間： "
-Stats_TotalSwitches: "アカウント切り替えの合計： "
-Stats_TotalGamesLaunched: "スイッチャーを介して起動されたアプリ/ゲームの合計： "
-Stats_UniqueDaysLong: "アカウントが切り替えられたユニークな日： "
-Stats_LastUpload: "最終アップロード： "
-Stats_SwitcherStats: "スイッチャーの統計： "
-Stats_PageStats: "ページ統計： "
-Stats_VisitsTotalTime: "合計{visits} 回の訪問、合計 {hours} 回"
-Stats_Accounts: "アカウント： "
+Stats_ShareEnabled: "これらの統計は匿名で共有され、ここでは合計 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">に加算されます</a>。"
+Stats_ShareDisabled: "これらの統計情報は匿名で共有されることはなく、ここでは合計 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">には加算されません</a>。"
+Stats_OperatingSystem: "オペレーティングシステム: "
+Stats_FirstLaunch: "最初のローンチ： "
+Stats_LaunchCount: "起動回数: "
+Stats_CrashCount: "クラッシュカウント: "
+Stats_MostUsedPlatform: "最も使用されているプラットフォーム: "
+Stats_TotalTime: "アプリ内で費やした合計時間: "
+Stats_TotalSwitches: "アカウントの切り替え合計: "
+Stats_TotalGamesLaunched: "スイッチャー経由で起動したアプリ/ゲームの合計: "
+Stats_UniqueDaysLong: "アカウントが切り替わったユニークな日数: "
+Stats_LastUpload: "最後のアップロード: "
+Stats_SwitcherStats: "スイッチャー統計: "
+Stats_PageStats: "ページ統計: "
+Stats_VisitsTotalTime: "合計訪問回数{visits} 回、合計時間 {hours} 回"
+Stats_Accounts: "アカウント: "
 Stats_Switches: "スイッチ： "
-Stats_FirstActive: "最初にアクティブ： "
-Stats_LastActive: "最後にログインした時： "
-Stats_UniqueDays: "ユニークな日： "
-Stats_GameShortcuts: "ゲームのショートカット： "
-Stats_GameShortcutsHotbar: "ゲームのショートカット（ホットバー上）： "
-Stats_GamesLaunched: "開始されたゲーム： "
+Stats_FirstActive: "最初のアクティブ: "
+Stats_LastActive: "最後のアクティブ: "
+Stats_UniqueDays: "ユニークな日数: "
+Stats_GameShortcuts: "ゲームショートカット: "
+Stats_GameShortcutsHotbar: "ゲームショートカット(ホットバー): "
+Stats_GamesLaunched: "発売されたゲーム： "
+Stats_MetricsToShow: "表示される指標:"
+Stats_AccountId: "アカウントID:"
+Auth_LoginRequired: パスワードは以前に設定されており、必須です。以下にパスワードを入力してください。
+Auth_EnterPassword: "パスワードを入力:"
+Auth_PassIncorrect: パスワードが正しくありません。
+Locked: ロックされています
 Cleaning_Header_StartMenuShortcuts: 'format@@0メニューのショートカット:'
 Cleaning_Header_General: 一般的なクリーニング
 Cleaning_Header_LoginHistory: ログイン履歴を消去
@@ -142,15 +163,9 @@ Toast_ProtocolDisabledTitle: プロトコルを削除しました
 Toast_RestartAsAdmin: 管理者として開始して、もう一度やり直してください。
 Toast_RestartAfterClose: 閉じるをクリックした後、プログラムを再起動してください。
 Toast_RestartAfterCloseTitle: アクセントカラーは無効です
-Toast_RestartRequired: 再起動して変更を適用します
-Toast_LoadStylesheetFailed: スタイルシートの読み込みに失敗しました！詳細については、ユーザーデータフォルダを参照してください。
-Toast_BNet_Private: "{BTag}のプロフィールは非公開です"
-Toast_BNet_StatsFail: "{BTag} の統計情報を取得しようとしてエラーが発生しました"
-Toast_BNet_CantSwapAccounts: アカウントを交換できませんでした（BATle.net.config ファイルが破損しています）
-Toast_BNet_CantLoadNotFound: Battle.net.config が見つかりませんでした
-Toast_BNet_CantLoadEmpty: Blizzardのアカウントファイルを読み込めませんでした(アカウントが見つかりません)
-Toast_BNet_CantLoadConfigCorrupt: Blizzardのアカウントファイルを読み込むことができませんでした(Battle.net.config ファイルが破損しています)
-Toast_BNet_NamePolicy: バトルタグはネーミングポリシーと一致しませんでした。
+Toast_RestartRequired: 変更を適用するには再起動してください
+Toast_LoadStylesheetFailed: スタイルシートの読み込みに失敗しました！詳細については、ユーザーデータフォルダーを参照してください。
+Toast_LoadingStats: 1つ以上のプロファイルが統計情報を更新しています。しばらくお待ちください。
 Toast_ItemNotFound: "{item} が見つかりませんでした"
 Toast_DeletedTotal: "{files} の {totalFiles} を削除しました。合計: {totalSize}"
 Toast_CantChangeUsername: ユーザー名を変更できませんでした
@@ -158,10 +173,10 @@ Toast_CantClearLoginFiles: 古いログインファイルの消去に失敗し�
 Toast_AccountIdReg: レジストリからアカウントIDを取得できませんでした！
 Toast_RegFailWrite: Windowsレジストリへの書き込みに失敗しました！
 Toast_RegFailRead: Windowsレジストリからの読み取りに失敗しました！
-Toast_RegFailReadSaved: 保存されたレジストリエントリの読み取りに失敗しました。失敗した場合は、アカウントを削除して再度追加してみてください。
+Toast_RegFailReadSaved: 保存されたレジストリエントリの読み取りに失敗しました。失敗した場合は、アカウントを削除して再度追加してください。
 Toast_RegSaveMissing: 保存されたレジストリファイルからのデータの検索または読み取りに失敗しました！
 Toast_DuplicateNames: 同じユーザー名でアカウントを複製できませんでしたか？
-Toast_MissingUserId: "交換できませんでした。ユーザーIDがありません。 Wikiの「一般的なエラー」を確認してください。"
+Toast_MissingUserId: "交換できませんでした。ユーザーIDがありません。Wikiの「一般的なエラー」を確認してください。"
 Toast_CouldNotLocate: ログインしているユーザーが見つかりませんでした
 Toast_StreamerModeHint: プライベート情報は非表示です! - 設定を参照してください
 Toast_StreamerModeTitle: 配信モード
@@ -170,12 +185,17 @@ Toast_AddAccountsFirstTitle: 保存されたアカウントはありません
 Toast_CantFindImage: ユーザーの画像が見つかりませんでした。
 Toast_CantCreateShortcut: ショートカットを作成できません
 Toast_ShortcutCreated: ショートカットを作成しました！
+Toast_SettingsCopied: 設定が現在のアカウントに正常にコピーされました。
+Toast_GameDataRestored: このアカウントのゲームデータの復元に成功しました。
+Toast_NoValidSteamId: 有効なSteam IDが見つかりません。
 Toast_FailedUpdateCheck: 更新の確認に失敗しました
 Toast_UpdateVerifyFail: アップデータファイルを確認できません。最新バージョンをダウンロードし、ディレクトリ内のファイルを置き換えてください。
 Toast_StartedGame: '{program} を開始'
 Toast_Steam_VacCleared: アカウントのVACステータスをクリアしました
 Toast_Steam_CantDeleteVacCache: '''LoginCache/Steam/VACCache/SteamVACCache.json'' を削除できませんでした'
 Toast_NoFindSteamUserdata: Steam\\userdata フォルダが見つかりませんでした
+Toast_NoFindGameBackup: このアカウントのバックアップゲームデータフォルダが見つかりません。
+Toast_GameBackupDone: "ゲームデータフォルダが正常にバックアップされました: {folderLocation}"
 Toast_Steam_VdfLast: vdf_lastから読み込むことができました。アカウントが不足している可能性があります。
 Toast_PartiallyFixed: 部分的に固定
 Toast_Steam_FailedLoginusers: steam/config/loginusers.vdfの読み込みに失敗しました
@@ -183,9 +203,6 @@ Toast_Steam_CantLocateLoginusers: '''.../Steam/config/loginusers.vdf'' が見つ
 Toast_CantClearImages: 画像をクリアできませんでした
 Toast_RefreshedImages: 更新された画像
 Toast_ClearForgottenCheck: 忘れたアカウントのバックアップを削除してもよろしいですか？
-Toast_BattleNet_ChangedBTag: BattleTagを変更しました
-Toast_BattleNet_DeletedBTag: BattleTagを削除しました
-Toast_FetchedRank: フェッチされたランク
 Toast_ForgotAccount: アカウントを忘れた
 Toast_ClearedPlatformSettings: "{platform} スイッチャー設定をクリア"
 Toast_ClearedImages: "クリアされた画像"
@@ -206,13 +223,22 @@ Toast_RestoreDeleting: 一時ファイルの削除
 Toast_RestoreComplete: 復元が完了しました。
 Toast_FailedLoad: '{platform}の読み込みに失敗しました！プラットフォームをクリックしてエラーを確認します。'
 Toast_FailedPlatformsLoad: Platforms.jsonの読み込みに失敗しました！このファイルが存在することを確認してください。
-Toast_FailedLoadSettings: "設定の読み込みに失敗しました！代わりにデフォルト設定をロードします。既存の設定ファイル名に「old」を追加します。"
-Toast_FailedLoadStats: "統計の読み込みに失敗しました！新しく始めます。"
+Toast_FailedLoadSettings: "設定の読み込みに失敗しました！代わりにデフォルト設定を読み込んでいます。既存の設定ファイル名に「古い」を追加します。"
+Toast_FailedLoadStats: "統計の読み込みに失敗しました。新しく開始します。"
+Toast_FailedStatsLoad: GameStats.jsonの読み込みに失敗しました！このファイルが存在することを確認してください。
+Toast_GameStatsLoadFail: "ウェブから {Game}のゲーム統計情報を取得できませんでした"
+Toast_GameStatsEmpty: "{Game}のウェブサイトにゲームの統計情報が見つかりません。エラーだと思いますか？ userdataフォルダと'temp\\ download -{AccoundId}-{Game}.html'を確認して、ページにエラーがあるかどうかを確認してください。"
 Toast_FileCopyFail: ファイルのコピーに失敗しました！詳細については、ログを参照してください。
-Toast_UserDataLoadFail: userdata {UserData}\\ WindowSettings.jsonの読み込みに失敗しました。バックアップとリセット！エラーをログに保存しました。
-Toast_UpdateCheckFail: https://tcno.co/にアクセスして更新を確認できませんでした。このメッセージは1日1回表示されます。
-Toast_FailedCreateIcon: アイコンの作成に失敗しました。詳細については、ログを参照してください。
-Tooltip_Restore: クリックして7zファイルを選択するか、このボタンにドラッグします。
+Toast_UserDataLoadFail: Userdata {UserData}\\ WindowSettings.jsonの読み込みに失敗しました。バックアップとリセット中！ログに保存されたエラー。
+Toast_UpdateCheckFail: Https://tcno.co/にアクセスして更新を確認できませんでした。このメッセージは1日1回表示されます。
+Toast_FailedCreateIcon: アイコンの作成に失敗しました。詳細はログを参照してください。
+Toast_SameAccount: 同じアカウントにファイルをコピーすることはできません。別のアカウントをお試しいただくか、Wikiで詳細をご覧ください。
+Toast_Steam_DownloadingAppIds: Steam AppIdリストをダウンロードしています...
+Toast_Steam_DownloadingAppIdsComplete: ダウンロードが完了しました。ゲームデータサブメニューが更新されました。
+Toast_SteamWebKeyInvalid: Steam Web APIキーが無効なようです。新しいものを設定してください。
+Toast_DownloadingProfileData: プロファイルデータをダウンロードしています
+Toast_PasswordChanged: パスワードが変更されました
+Toast_JsonFailModify: JSONファイルの変更に失敗しました。ログを参照してください。
 Modal_Crowdin_Header: Crowdinの翻訳者
 Modal_Crowdin_Info: "このソフトウェアの翻訳を手伝ってくれた皆さんです。<br>隣に言語があるユーザーは、翻訳に大いに役立ちました（校正者の役割）。"
 Modal_Info_Creator: TechNoboによって作成されました [Wesley Pyburn]
@@ -228,7 +254,13 @@ Modal_Title_LocatePlatform: '{platform} ディレクトリを見つけてくだ�
 Modal_Title_AddNew: 新しい {platform} アカウントを追加
 Modal_Title_Background: 背景画像を設定する
 Modal_Title_Userdata: ユーザーデータフォルダを設定する
-Modal_Title_Stats: あなたの統計
+Modal_Title_GameStats: ゲーム統計を有効/無効にする
+Modal_GameStats_Header: "ゲーム統計を有効/無効にする: {accountName}"
+Modal_Title_Stats: 統計情報
+Modal_Title_GameVars: "{game}の詳細を入力"
+Modal_GameVars_Header: "あなたの {game} アカウントの詳細を次のように入力してください。 {username} on {platform}"
+Modal_Title_AccountNotes: "次のアカウントノート: {accountName}"
+Modal_Title_SetPassword: パスワードを設定
 Modal_SetBackground: '画像を選択するか、以下にURLを入力してください。<br>空白のままにして、リセットに設定します。<br>（より高度な制御については、Wikiのテーマを参照してください）：'
 Modal_SetBackground_Button: 背景を設定する
 Modal_SetBackground_ChooseImage: ローカル画像を選択
@@ -237,6 +269,9 @@ Modal_SetUserdata_ChooseFolder: フォルダを選択します
 Modal_SetUserdata_Button: ユーザーデータを設定する
 Modal_ChangeUsername: アカウントの新しいユーザー名を入力してください
 Modal_ChangeUsernameType: '{platform} ユーザー名を変更'
+Modal_SetPassword: TcNoアカウントスイッチャーのパスワードを入力してください
+Modal_SetPassword_Button: パスワードを設定
+Modal_SetPassword_Info: "注:これはアカウントを暗号化しません。アカウントの切り替えは、ファイルの置き換えや、ファイル内のユーザー名の変更といった簡単な方法で行えます。パスワードは、ファイル内のテキストを編集することでもリセットできます。これは単純なセキュリティです。シンプルなUIアクセスを停止します。このアプリをリムーバブルUSBに置き、UserDataフォルダを同じUSBに設定し、セキュリティを強化するために物理的に削除することができます。 <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">外部ドライブガイドに移動</a><br><br>クリアするには、上記を空のままにして、[設定]をクリックします。"
 Modal_EnterDirectory: "{platform}のディレクトリを以下のように入力してください: C:\\Program Files\\{platform}"
 Modal_LocatePlatform: '{platformExe} を探します。'
 Modal_LocatePlatformFolder: '{platform} フォルダを選択'
@@ -261,114 +296,118 @@ Status_GetUniqueId: 一意のユーザーIDを収集する
 Status_CopyingFiles: ユーザーファイルをコピーしています...
 Status_HandlingImage: アカウントプロフィール画像の処理
 Context_SwapTo: アカウントに入れ替え
-Context_CreateShortcut: デスクトップのショートカットを作成
-Context_CreateShortcutSubmenu: デスクトップのショートカットを作成...
+Context_CreateShortcut: ショートカットを作成
 Context_ChangeImage: 画像の変更
-Context_BNet_SetBTag: 戦場タグを設定
-Context_BNet_DelBTag: バトルタグを削除
-Context_BNet_GetRAnk: ランクを再取得する
 Context_ChangeName: スイッチャー名の変更
-Context_LoginAsSubmenu: 'ログイン:'
-Context_UsernameSubmenu: ユーザー名...
+Context_LoginAsSubmenu: ログイン名
+Context_UsernameSubmenu: ユーザー名
 Context_RefreshName: 名前を更新
-Context_CopySubmenu: コピー...
-Context_CopyProfileSubmenu: プロファイルをコピー...
+Context_CopySubmenu: コピー(P)
+Context_DataSubmenu: データ(D)
+Context_CopyProfileSubmenu: プロフィールをコピー
 Context_CommunityUrl: コミュニティ URL
 Context_CommunityUsername: コミュニティのユーザー名
 Context_LoginUsername: ログインユーザー名
-Context_CopySteamIdSubmenu: SteamIDをコピー...
+Context_CopySteamIdSubmenu: SteamIDをコピー
 Context_Steam_Id: SteamID [STEAM0:~]
 Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: ユーザーデータを開く
-Context_CopyOtherSubmenu: 他をコピー...
+Context_ManageSubmenu: 管理(M)
+Context_GameDataSubmenu: ゲームデータ
+Context_ManageGameStats: ゲームの統計情報を管理する
+Context_Game_CopySettingsFrom: 設定を現在のものにコピー
+Context_Game_RestoreSettingsTo: ゲームデータを復元
+Context_Game_BackupData: ゲームデータのバックアップ
+Context_CopyOtherSubmenu: その他をコピー
 Context_HidePlatform: プラットフォームを非表示
 Context_ExportAccList: アカウントリストをエクスポート
 Context_RunAdmin: 管理者として実行
 Context_Hide: 隠れる
-Title_BNet_Settings: TcNoアカウント切り替え - バトルネット設定
-Title_BNet_ManageIgnored: TcNo Account Switcher - 無視されたBattleNetアカウントを管理
+ProfileImage_ToggleText: 画像をアカウント画像として使用する
 Title_Platforms_Settings: TcNoアカウントスイッチャー-プラットフォーム設定
-Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: TcNo Account Switcher - テキストエディター
-Title_Settings: TcNo Account Switcher - 設定
-Title_Steam_Cleaning: TcNo Account Switcher - Steam Cleaning
-Title_Steam_Settings: TcNo Account Switcher - Steam設定
+Title_Settings_TestCss: TcNoアカウントスイッチャー- CSSスタイルをテスト
+Title_AccountsList: TcNoアカウントスイッチャー- {platform}
+Title_TextEditor: TcNoアカウントスイッチャー-テキストエディター
+Title_Settings: TcNoアカウントスイッチャー-設定
+Title_Steam_Cleaning: TcNoアカウントスイッチャー-スチームクリーニング
+Title_Steam_Settings: TcNoアカウントスイッチャー- Steam設定
 Title_Template_Settings: TcNoアカウントスイッチャー {platformName} 設定
-Installer_Downloading: '{file} をダウンロード中'
-Installer_DownloadFinished: '{file} のダウンロードが完了しました'
+Title_Login: TcNoアカウントスイッチャー-ログイン
+Installer_Downloading: '{file}をダウンロードしています'
+Installer_DownloadFinished: '{file}のダウンロードを完了しました'
 Installer_Installing: "インストール中: {runtime}"
-Installer_RuntimeTitle: TcNo Account Switcher - ランタイムインストーラ
-Installer_Welcome: TcNo アカウントスイッチャーへようこそ - ランタイムインストーラ
+Installer_RuntimeTitle: TcNoアカウントスイッチャー-ランタイムインストーラ
+Installer_Welcome: TcNoアカウントスイッチャーへようこそ-ランタイムインストーラ
 Installer_InstalledRuntimes: "現在インストールされているランタイム:"
-Installer_ErrorRuntime: "1 つまたは複数のランタイムがインストールされていません:"
-Installer_RuntimeNote: "インストール中に[~{size1} MB + ~{size2} MB ]"
-Installer_TotalSize: "合計ダウンロードサイズ: ~{size} MB"
-Installer_AnyKeyStart: 任意のキーを押してダウンロードを開始...
-Runtime_WebView2: Microsoft WebView2 Runtime
-Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Installer_ErrorRuntime: "1つ以上のランタイムがインストールされていません:"
+Installer_RuntimeNote: "[インストール中~{size1} MB + ~{size2} MB]"
+Installer_TotalSize: "ダウンロード合計サイズ:{size} MB"
+Installer_AnyKeyStart: いずれかのキーを押してダウンロードを開始...
+Runtime_WebView2: Microsoft WebView 2ランタイム
+Runtime_Desktop: Microsoft .NET 5デスクトップランタイム
 Runtime_ASP: マイクロソフトのMicrosoft ASP.NETコア {version} ランタイム
 Installer_FailedFolder: "フォルダの作成に失敗しました:"
-Installer_FailedWV: "Microsoft WebView2 ランタイムのダウンロードとインストールに失敗しました。ダウンロードするには: 1. 以下のリンクをクリックしてください: {link} 2. サーバーアプリの実行の下の「ホスティングバンドルのダウンロード」をクリックします。"
-Installer_FailedDR: ".NET 5デスクトップランタイムのダウンロードとインストールに失敗しました。こちらからダウンロードしてください。"
+Installer_FailedWV: "Microsoft WebView 2ランタイムのダウンロードとインストールに失敗しました。ダウンロードするには: 1.以下のリンクをクリックします: {link} 2.サーバーアプリの実行の下にある[Download Hosting Bundle]をクリックします。"
+Installer_FailedDR: ".NET 5デスクトップランタイムのダウンロードとインストールに失敗しました。こちらからダウンロードしてください："
 Installed_FailedASP: "ASP.NETコアダウンロードしてインストールに失敗しました {version} ランタイムを。 {link} 。以下のリンクをクリックします：1 2. [デスクトップアプリの実行]の下の[x64のダウンロード]をクリックします。"
-Installer_Ready: "インストールの準備ができています. インストールしたい場合とプロンプトが表示されたら, クリックしてください 'はい' ."
-Installer_PressStart: 任意のキーを押してインストールを開始...
-Installer_VerifyMin: "最低限の推奨要件を満たしていることを確認してください:"
-Installer_VerifyAlready: "すべてがインストールされているようです。最低限の要件を満たしていることを確認してください:"
+Installer_Ready: "1つ以上のインストールの準備ができています。インストールする場合は、[はい]をクリックします。"
+Installer_PressStart: いずれかのキーを押してインストールを開始...
+Installer_VerifyMin: "推奨される最低要件を満たしていることを確認してください。"
+Installer_VerifyAlready: "すべてがインストールされているようです。推奨される最低要件を満たしていることを確認してください。"
 Installer_Complete: それがすべてでなければなりません。メインプログラムのTcNo-Acc-Switcher.exeが自動実行されます。
-Installer_Complete2: "動作しない場合は、ここでインストール手順を参照してください: {link}"
+Installer_Complete2: "動作しない場合は、インストール手順を参照してください： {link}"
 Global_FatalNext: "致命的なエラーが発生しました！このクラッシュログは次回の起動時に自動的に送信されます。"
 Tray_Error: トレイエラー
-Tray_NoAccs: "アカウントが見つかりませんでした。\nまずアカウントを切り替えるか、「Tray_Users.json」を選択してください。"
-Tray_Switch: "{account} に切り替える"
-Tray_CantOpenExe: "メイン .exe を開けませんでした。存在することを確認してください。\n\n開こうとしました："
-Tray_LaunchFail: "TcNo Account Switcher - トレイの起動に失敗"
-Updater_Duplicate: 別のTcNo Account Switcher Updaterインスタンスが検出されました。
+Tray_NoAccs: "アカウントが見つかりませんでした。\n最初にアカウントを切り替えるか、'Tray_Users.json'を見つけてください"
+Tray_Switch: "切り替え: {account}"
+Tray_CantOpenExe: "メイン.exeを開けませんでした。存在することを確認してください。\n\n開こうとしました:"
+Tray_LaunchFail: "TcNoアカウントスイッチャー-トレイの起動に失敗しました"
+Updater_Duplicate: 別のTcNoアカウントスイッチャーアップデーターインスタンスが検出されました。
 Updater_Unknown: "不明な引数: {arg}"
 Updater_NeedsAdmin: このプログラムは管理者として実行する必要があります！
-Updater_StatusChecking: バージョンを確認中
-Updater_FailedVersionCheck: "バージョンを取得できませんでした。「確認」をクリックしてファイルを更新して確認してください"
+Updater_StatusChecking: バージョンを確認しています
+Updater_FailedVersionCheck: "バージョンを取得できませんでした。「確認」をクリックしてファイルを更新し、確認します"
 Updater_PressBelow: 下のボタンを押してください！
 Updater_PressBelowStart: 下のボタンをクリックして更新を開始します。
 Updater_PatchApplied: パッチが適用されました！
-Updater_UpdatingAppData: AppData でファイルを更新しています！
-Updater_Complete: すべてのアップデートが完了しました！
-Updater_Checking: アップデートを確認中
-Updater_UpdateToVerify: ファイルを確認するには、最初に更新する必要があります。
-Updater_ClosingTcNo: TcNo アカウントスイッチャーインスタンス(もしあれば)を閉じます。
-Updater_Downloading: "アップデートをダウンロード中: {version}"
+Updater_UpdatingAppData: AppDataのファイルを更新しています！
+Updater_Complete: すべての更新が完了しました！
+Updater_Checking: 更新を確認しています
+Updater_UpdateToVerify: ファイルを確認するには、まず更新する必要があります。
+Updater_ClosingTcNo: TcNoアカウントスイッチャーのインスタンスを閉じます(存在する場合)。
+Updater_Downloading: "アップデートをダウンロードしています: {version}"
 Updater_Downloaded: ダウンロードが完了しました。
 Updater_CantExtract: アップデートの抽出に失敗しました。
-Updater_Verify: ファイルを確認する
+Updater_Verify: ファイルの確認
 Updater_Verifying: 確認中...
-Updater_VerifySkip: ファイルを確認して、すべての小さなアップデートをスキップし、最新のものにジャンプします。
-Updater_NoConnection: "ファイルを確認するためにtcno.coに接続できませんでした。GitHubページからインストーラを手動でダウンロードし、更新するために再インストールすることができます。\n\nエラー:"
-Updater_NoServer: 更新サーバーに到達できませんでした
+Updater_VerifySkip: ファイルを確認してすべての小さな更新をスキップし、最新の更新にジャンプします。
+Updater_NoConnection: "Tcno.coに接続してファイルを確認できませんでした。GitHubページからインストーラを手動でダウンロードし、再インストールして更新を試みることができます。\n\nエラー:"
+Updater_NoServer: アップデートサーバーにアクセスできませんでした
 Updater_Hashlist: 最新のハッシュリストをダウンロードしています...
 Updater_CantCheck: アップデートを確認できません
-Updater_Failed: "エラー：一部のファイルは使用中であり、更新できません。\n\n1.すべてのTcNoプロセスが完全に閉じていることを確認し\n（またはPCを再起動します）\n\n2.次に、下の[確認]をクリックするか、再起動した場合：\nこのアップデーターを開き、ファイルを確認します\n    （インストールディレクトリ）"
-Updater_Missing: "ファイルが見つかりません: {file}"
-Updater_FileMismatch: "File: {file} has MD5: {md5} Expected: {value}"
+Updater_Failed: "エラー:一部のファイルが使用されており、更新できません。\n\n1.すべてのTcNoプロセスが完全に閉じられていることを確認してください\n（またはPCを再起動してください）\n\n2。次に、以下の[確認]をクリックします。または、再起動した場合:\n-このアップデーターを開き、ファイルを確認します\n    (インストールディレクトリの[アップデーター]フォルダーにあります)"
+Updater_Missing: "ファイルがありません: {file}"
+Updater_FileMismatch: "ファイル: {file} にMD 5: {md5} があります: {value}"
 Updater_DownloadingWeb: ウェブサイトからファイルをダウンロードしています...
-Updater_UnpackingAppData: '%AppData%/TcNo アカウントスイッチャーにファイルをコピーしています... (設定されていない場合)'
-Updater_VerifyComplete: ファイルが検証されました！
+Updater_UnpackingAppData: '%AppData%/TcNoアカウントスイッチャーにファイルをコピーしています... (別途設定されていない限り)'
+Updater_VerifyComplete: ファイルが確認されました！
 Updater_UpdateFound: "更新が見つかりました: {name} [{updateSize}]"
-Updater_TotalFound: "合計アップデートが見つかりました: {x}"
-Updater_TotalSize: "合計サイズ: {size}"
+Updater_TotalFound: "合計更新が見つかりました: {x}"
+Updater_TotalSize: "合計サイズ： {size}"
 Updater_AwaitingUser: ユーザーの入力を待っています...
-Updater_UpToDate: "最新です。\n:)"
-Updater_FailedDecode: これは私(TechNobo)がアップデートを推進し、壊れたタイプミスを作るために最も可能性が高いです。 sonアップデートファイル。教えてください:)
+Updater_UpToDate: "最新の状態です。\n:)"
+Updater_FailedDecode: これは、私(TechNobo)がアップデートをプッシュし、.jsonアップデートファイルを破損したタイプを作成したことが原因である可能性が高いです。お知らせください:)
 Updater_FailedDecodeTitle: 更新リストのデコードに失敗しました
 Updater_Extracting: パッチファイルの抽出
-Updater_Applying: パッチを適用中...
-Updater_Moving: ファイルを移動中...
-Updater_Title: TcNo Account Switcher Updater
-Updater_Started: 開始
-Updater_Start: アカウント切替を開始する
+Updater_Applying: パッチを適用しています...
+Updater_Moving: ファイルを移動しています...
+Updater_Title: TcNoアカウントスイッチャーアップデーター
+Updater_Started: 開始しました
+Updater_Start: TcNoアカウントスイッチャーを起動
 Updater_Begin: 更新を開始
-Updater_Exit: 終了
+Updater_Exit: 出口(曖昧さ回避)
 FatalError: 致命的なエラーが発生しました！
 Online: オンライン
 OnlineDefault: Online (Default)
@@ -381,51 +420,57 @@ LookingToTrade: 取引を探し中
 LookingToPlay: プレイを探しています
 Unrecognized_EPersonaState: 認識されないePersonaState
 Reg_DoesntExist: "{subKey} は存在しません。"
-Reg_DoesntContain: "{subKey} は {val} を含んでいません"
-Reg_Removing: '{subKey}\\{val} を削除中'
-PngInvalid_Format: 必要なピクセルフォーマットはPixelFormatです。{x}.
-PngRequired: 必須画像フォーマットは、ポータブルネットワークグラフィックス(png)です。
-PngDimensions: 寸法は {MaxIconWidth}x{MaxIconHeight} 以下でなければなりません
-ThemeSyntaxAnd: "構文エラーが発生しました(詳細は以下をご覧ください):"
-ThemesNotFound: "TcNo AccountSwitcherのディレクトリに「themes」フォルダが見つかりませんでした。これ（特に「Dracula_Cyan」フォルダー）は、このソフトウェアを実行するために必要です。\n「アップデータ」フォルダでアップデータを実行してファイルを確認し、これらの不足しているファイルを復元できます。"
+Reg_DoesntContain: "{subKey} には {val}が含まれていません"
+Reg_Removing: '{subKey}\\{val}を削除しています'
+PngInvalid_Format: 必要なピクセル形式はPixelFormatです。{x}.
+PngRequired: 必要な画像フォーマットは、ポータブルネットワークグラフィック(PNG)です。
+PngDimensions: 寸法は {MaxIconWidth}x{MaxIconHeight}以下でなければなりません
+ThemeSyntaxAnd: "構文エラーが発生しました(詳細は以下を参照)。"
+ThemesNotFound: "TcNo Account Swcherのディレクトリに\"themes\"フォルダが見つかりませんでした。このソフトウェアを実行するには、このフォルダ(特に'Dracula_Cyan'フォルダ)が必要です。\n'updateater'フォルダでアップデーターを実行してファイルを検証し、これらの欠落しているファイルを復元することができます。"
 Yes: "はい"
 No: "いいえ"
-NoDefault: (デフォルト)
+Save: 保存(S)
+NoDefault: いいえ（デフォルト）
 Ok: "OK"
+Submit: 送信する
 Forget: 忘れた
 Notice: お知らせ
+Notes: ノート
 Error: エラー
 ErrorDetails: "エラー: {ex}"
 Failed: 失敗しました
 Success: 成功
 NotFound: 見つかりません
 Done: 完了
+Edit: '編集@ info: whatsthis'
+Refresh: リフレッシュ
 Working: 働く...
 ForName: "{name}"
 DeletedFiles: 削除されたファイル
 FileFoldersToClear: "クリアするファイル/フォルダのリスト："
 CouldNotFindX: '{x} が見つかりませんでした'
 CouldNotCloseX: '{x} を閉じることができませんでした!'
+CouldNotReadFile: '{file}を読み込めませんでした！'
 DirectoryNotFound: ディレクトリが見つかりません
 DirectoryNotFoundFolder: "ディレクトリが見つかりません: {folder}"
 DeletingFile: "削除中: {file}"
-DeletingFolder: "フォルダを削除中: "
-CouldntDeleteX: "エラー: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "エラー: COULDN'T 定義されていないファイルを削除"
+DeletingFolder: "フォルダの削除: "
+CouldntDeleteX: "エラー:削除できませんでした: {x}"
+CouldntDeleteUndefined: "エラー:未定義のファイルを削除できませんでした"
 Prompt_RestartAsAdmin: "<h3><bold>このプログラムは管理者として再起動します。</bold></h3><p>管理者にプロンプトが表示されたら、UACで「はい」を押してください。</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>アカウントを忘れようとしています！</h3> <h4>これはどういう意味ですか？</h4> <p>-SteamのアカウントはBigPictureモードで表示されなくなり、パスワードを記憶しなくなります。<br/> -TcNo Account Switcherは、Steamを介して再度サインインするまで、アカウントを表示しなくなります。</p> <p>は変更されません。このコンピューターでは忘れられています。</p><h4>分かりますか？</h4>
 Prompt_ForgetAccount: >
   <h3 style='color:red'>アカウントを忘れようとしています！</h3> <h4>これは何を意味するのでしょうか？</h4> <p>TcNo Account Switcherは、{platform}を介して再度サインインし、リストに追加されるまで、<br/>アカウントを表示しなくなります。</p> <p>アカウントは変更されません。 このコンピューターでは忘れられています。</p> <h4>わかりますか？</h4>
 Prompt_ClearStats: >
-  <h3 style='color:red'>統計をクリアしようとしています！</h3> このアクションを元に <p>ことはできません。</p>
+  <h3 style='color:red'>統計情報を消去しようとしています！</h3> <p>このアクションを元に戻すことはできません。</p>
 Platform_DiscordPasteHint: Discordコンソールに貼り付けて、結果を入力してください！
 Platform_ClearCache: キャッシュの消去
 Platform_ClearCacheTotal: '{totalFileCount} ファイルのクリア（{totalSizeMB}）'
 Platform_DeleteFail: 一部のファイルを削除できませんでした（プログラムが実行されている可能性がありますか？）
 Platform_CouldNotDeleteLog: ファイルを削除できませんでした！チェック {logPath}
 Error_FileAccessDenied: ファイルにアクセスできませんでした！チェック {logPath}
-Error_RequiredFileVerify: 必要なファイルが見つかりませんでした。 x64およびx86フォルダーがインストールディレクトリに存在することを確認してください。そうでない場合は、TcNo-Acc-Switcher-Updater.exeを実行し、ファイルを確認します。
+Error_RequiredFileVerify: 必要なファイルが見つかりませんでした。x 64とx 86フォルダがインストールディレクトリに存在することを確認してください。TcNo-Acc-Switcher-Updater.exeを実行してファイルを検証しない場合。
 Tooltip_Settings: 設定
 Tooltip_Info: 情報
 Tooltip_ManagePlatforms: 他のプラットフォームを表示または非表示
@@ -433,9 +478,16 @@ Tooltip_ExpandShortcuts: ゲームとショートカットの選択を展開
 Tooltip_ShortcutFolder: ショートカットフォルダを開きます。そこにショートカットを配置し、TcNoアカウントスイッチャーでそれらを表示します。
 Tooltip_Backup: プラットフォーム設定で定義されているように、構成ファイル/フォルダーをバックアップします。
 Tooltip_BackupAll: 画像やその他の大きなファイルを含む、すべての構成ファイル/フォルダーをバックアップします。
-Tooltip_ClosingMethod: "組み合わせるのが最適です。 Closeは、close関数を介して直接閉じようとし、TaskKillはCMDを使用します（組み合わせて機能しない場合に最適）"
-Tooltip_StartingMethod: "デフォルトが最適です。 Directは、管理者レベルまたはUACを制御できません。このアカウントスイッチャーと同じレベル（またはそれ以上-ただしそれ以下ではない）で開始します"
+Tooltip_ClosingMethod: "コンバインドが最適です。CLOSEはCLOSE関数を介して直接閉じようとし、TaskKillはCMDを使用します(コンバインドが機能しない場合は最適です)"
+Tooltip_StartingMethod: "デフォルトが最適です。Directは管理者レベルまたはUACを制御できません。これは、このアカウントスイッチャーと同じレベル（またはより高いレベル、ただしより低いレベルではない）で開始されます"
 Tooltip_CurrentAccount: 現在、このアカウントにログインしています。
+Tooltip_Restore: クリックして7zファイルを選択するか、このボタンにドラッグします。
+Tooltip_DisabledGlobally: このアイテムはすべてのアカウントで非表示になっています。これはプラットフォームの設定で変更できます。
 Discord_Status: 現在、アカウントを切り替えています。
-Discord_StatusDetails: "切り替えられたアカウント： {number}"
-Website: Webサイト
+Discord_StatusDetails: "切り替えられたアカウント: {number}"
+Website: ウェブサイト
+Preview_Platforms: プラットフォームプレビュー
+Preview_Accounts: アカウントのプレビュー
+Preview_Notifications: TOAST通知プレビュー
+Preview_Settings: 設定プレビュー
+Preview_Modals: モーダルプレビュー

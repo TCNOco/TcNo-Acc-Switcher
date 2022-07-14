@@ -1,40 +1,47 @@
 ---
-Update: Frissítés elérhető! Kattintson ide az indításhoz.
+Update: Frissítés elérhető! Kattintson ide az indításához.
 Header_ChooseLanguage: 'Nyelv választása:'
-BattleNet_ShowSR: Az Overwatch SR megjelenítése és az Overwatch profilkép használata.
-Steam_ShowSteamID: SteamID megjelenítése
-Steam_ShowVac: VAC állapot megjelenítése
-Steam_CheckVac: Ellenőrizze a fiók VAC állapotát
-Steam_ShowLimited: Korlátozott állapot megjelenítése
-Steam_ShowAccUsername: Fiók felhasználónevének megjelenítése
-Steam_Tray_AccountName: Fiók neve [nem barát neve] megjelenítése
-Steam_OverrideDefaultState: "Az alapértelmezett bejelentkezési állapot felülbírálása:"
+Steam_ShowSteamID: GőzID
+Steam_ShowVac: VAC állapot
+Steam_ShowLastLogin: Utolsó bejelentkezési idő
+Steam_ShowLimited: Korlátozott állapot
+Steam_ShowAccUsername: Fiók felhasználóneve
+Steam_Tray_AccountName: '[not friend name] fióknév megjelenítése'
+Steam_CheckVac: Fiók VAC állapotának ellenőrzése
+Steam_OverrideDefaultState: "Alapértelmezett bejelentkezési állapot felülbírálása:"
+Steam_StartSilent: "Nyissa ki a Gőzt a tálcára kapcsoláskor (indítsa el a Gőzt a '-silent' gombbal)"
 Button_AddNew: Új hozzáadása
-Button_SaveCurrent: Save Current
+Button_SaveCurrent: Aktuális mentése
 Button_SaveFile: Fájl mentése
-Button_Cancel: Megszünteti
-Button_Login: Belépés
+Button_Cancel: Mégse
+Button_Login: Bejelentkezés
 Button_Close: Bezárás
 Button_RefreshImages: Képek frissítése
-Button_ResetSettings: Beállítások alaphelyzetbe állítása
-Button_AdvancedCleaning: Haladó tisztítás ...
+Button_ResetSettings: Beállítások visszaállítása
+Button_AdvancedCleaning: Fejlett takarítás...
 Button_ClearLog: Napló törlése
-Button_WikiInfo: További információ (Wiki)
+Button_WikiInfo: További információk (Wiki)
 Button_ManagePlatforms: Platformok kezelése
 Button_Backup: biztonsági mentés
 Button_BackupAll: Biztonsági mentés mindenről
 Button_Restore: visszaállítás
 Button_OpenBackup: Nyissa meg a Biztonsági mentés mappát
-Settings_Shortcut: ' {platform} Switcher Desktop parancsikon'
-Settings_Admin: Futtassa a {platform} t rendszergazdaként
-Settings_ImageExpiry: 'A profilképek lejárta előtt néhány nappal:'
+Button_Back: Vissza
+Button_RestartAdmin: Újraindítás rendszergazdaként
+Button_SetPassword: Alkalmazásjelszó beállítása
+Settings_Shortcut: ' {platform} Kapcsoló Asztal parancsikon'
+Settings_Admin: '{platform} futtatása rendszergazdaként'
+Settings_ImageExpiry: 'A profilképek lejárta előtti napok száma:'
+Settings_SteamAPIKey: "Steam Web API kulcs (opcionális)"
+Settings_SteamAPIKey_Note: Beállítása API kulcs teszi a Korlátozott mutató (sárga szegély) megjelennek fiókok, amelyek a Közösség Tiltott helyett.
 Settings_Header_AppWide: Alkalmazásszintű beállítások
 Settings_Header_GeneralSettings: Általános beállítások
-Settings_Header_ExtraPlatforms: Platform beállítások
+Settings_Header_AccountDisplay: Fiók megjelenítési beállításai
+Settings_Header_ExtraPlatforms: Platformbeállítások
 Settings_Header_GeneralTools: Általános eszközök
 Settings_Header_OtherTools: Egyéb eszközök
 Settings_Header_TraySettings: Tálca beállításai
-Settings_Header_OpenGameFolders: Nyissa meg a játékmappákat
+Settings_Header_OpenGameFolders: Játékmappák megnyitása
 Settings_Header_BackupRestore: Biztonsági mentés és visszaállítás platformbeállítások
 Settings_Header_Language: Nyelv
 Settings_Header_System: Rendszer
@@ -42,150 +49,160 @@ Settings_Header_Theme: Téma
 Settings_Header_Program: Program
 Settings_Header_StatsSharing: Statisztika és megosztás
 Settings_Header_Platform: "{platformName} beállítás"
-Settings_TrayMax: 'A felejtendő fiókok maximális száma:'
+Settings_Header_GameStats: Globális játékstatisztikák beállításai
+Settings_GameStats: Bármi bejelölve NEM jelenik meg a felhasználóneved alatt egyetlen fióknál sem. Akkor használd, ha gyakran rejtegetsz bizonyos elemeket a játékstatisztikádból.
+Settings_TrayMax: 'A megjegyzendő fiókok maximális száma:'
 Settings_ExtraPlatformsDisabled: Letiltott platformok. Kattintson az engedélyezésükhöz.
-Settings_ExtraPlatformsEnabled: Látható platformok. Kattintson a letiltáshoz.
+Settings_ExtraPlatformsEnabled: Látható platformok. Kattintson a letiltásukhoz.
 Settings_RTL: Szöveg megjelenítése jobbról balra haladva
-Settings_CollectStats: Gyűjts statisztikákat
-Settings_ShareStats: Statisztikák bosszantó megosztása (ajánlott)
+Settings_CollectStats: Statisztikák gyűjtése
+Settings_ShareStats: Bosszantó módon megoszthatja a statisztikákat (ajánlott)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
-Settings_DiscordRpcShare: Ossza meg az összes kapcsolót
+Settings_DiscordRpcShare: Összes kapcsoló megosztása
 Settings_ViewStats: Statisztikák megtekintése
+Preview: Előnézet
 Settings_ClearStats: Visszaállítás
 Settings_CurrentLocation: 'Jelenlegi telepítési hely: {path}'
 Settings_CurrentDataLocation: 'Jelenlegi felhasználói adatok helye: {path}'
 Settings_SetDataLocation: "[Egyéni felhasználói adatok helyének beállítása]"
 Settings_PickFolder: Válasszon {platform} mappát
-Settings_OpenFolder: Nyissa meg a {platform} mappát
-Settings_ClearForgotten: Clear Forgotten
+Settings_OpenFolder: '{platform} mappa megnyitása'
+Settings_ClearForgotten: Elfeledett törlése
 Settings_ClearAccounts: Fiókok törlése
 Settings_StreamerMode: Streamer mód engedélyezése
-Settings_ExitToTray: A kilépés minimalizálja a tálcát
+Settings_ExitToTray: Kilépés a minimalizálásból a tálcára
 Settings_DesktopShortcut: Asztali parancsikon
-Settings_StartMenu_ProgramTray: Program és tálca
-Settings_StartMenu_Platform: Felület
-Settings_Tray_StartWindows: Indítsa el a tálcát a Windows rendszerrel
-Settings_Tray_StartNow: '[Indítsa el a tálcát most]'
-Settings_CurrentStyle: Aktuális stílus
+Settings_StartMenu_ProgramTray: Program & Tálca
+Settings_StartMenu_Platform: Platform
+Settings_Tray_StartWindows: Tálca indítása Windows rendszerrel
+Settings_Tray_StartNow: '[Tálca indítása most]'
+Settings_CurrentStyle: Jelenlegi stílus
 Settings_ThemeBackground: '[Háttér beállítása]'
 Settings_ThemeOpenFolder: '[Téma mappa megnyitása]'
 Settings_Protocol: 'A TcNo: \\ protokoll engedélyezése (ajánlott)'
-Settings_StartCentered: Indítsa el a programot középre
-Settings_WindowsAccent: Használja a Windows Kiemelő színét
-Settings_HelpTranslate: "[Segítség a fordításban]"
+Settings_StartCentered: Program indítása központilag
+Settings_WindowsAccent: A Windows kiemelőszíne
+Settings_HelpTranslate: "[Help translate]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(Speciális) Renderingmotor beállítása:"
-Settings_Header_ClosingMethod: "(Speciális) A bezárási módszer beállítása {platform}"
-Settings_Header_StartingMethod: "(Speciális) Állítsa be az indítási módszert {platform}-ra"
-Settings_AutoStart: "{platform} automatikus indítása a fiókkapcsolónál"
+Settings_Header_ActiveBrowser: "(Speciális) Renderelőmotor beállítása:"
+Settings_Header_ClosingMethod: "(Speciális) Módszer beállítása {platform}bezárására"
+Settings_Header_StartingMethod: "(Speciális) Módszer beállítása {platform}indításához"
+Settings_AutoStart: "{platform} automatikus indítása a fiókváltáskor"
 Settings_NoPlatforms: Jelenleg nincs engedélyezve platform. Kérjük, jelölje be alább az opcionális platformokat az engedélyezésükhöz, vagy törölje a letiltott platformok jelölését.
-Settings_MinimizeOnSwitch: A fiókkapcsoló kapcsolójának minimalizálása
-Stats_Disabled: "A statisztikai adatok gyűjtése le van tiltva."
+Settings_MinimizeOnSwitch: Kapcsoló minimalizálása a fiókkapcsolón
+Settings_ShowShortNotes: Megjegyzés előnézete USERNAME alatt
+Settings_Header_AppPassword: "Állítsa le a kapcsolót használó többi személyt:"
+PreviewCss: CSS előnézete
+Settings_PreviewCss: Ez a CSS előnézeti oldala. Megtekinthetsz néhány elemet, amely megjelenik a programban, és megnézheted, hogyan néznek ki a témáddal. Ez az oldal hasznos azok számára, akik témákat hoznak létre!
+Settings_PreviewCssHeader: CSS előnézeti oldal
+Stats_Disabled: "A statisztikai adatgyűjtés le van tiltva."
 Stats_InDepth: Részletes statisztikai bontás
 Stats_ShareEnabled: "Ezeket a statisztikákat névtelenül osztják meg, és hozzáadják az itt szereplő összes <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">-hoz</a>."
 Stats_ShareDisabled: "Ezeket a statisztikákat NEM osztják meg névtelenül, és NEM adják hozzá a teljes <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">-hoz itt</a>."
 Stats_OperatingSystem: "Operációs rendszer: "
 Stats_FirstLaunch: "Első indítás: "
-Stats_LaunchCount: "Indítások száma: "
-Stats_CrashCount: "Összeomlások száma: "
+Stats_LaunchCount: "Indítás száma: "
+Stats_CrashCount: "Ütközések száma: "
 Stats_MostUsedPlatform: "Leggyakrabban használt platform: "
-Stats_TotalTime: "Az alkalmazásban eltöltött teljes idő: "
-Stats_TotalSwitches: "Összes fiókváltás: "
-Stats_TotalGamesLaunched: "A váltón keresztül elindított összes alkalmazás/játék: "
-Stats_UniqueDaysLong: "Egyedi napok fiókváltással: "
+Stats_TotalTime: "Az alkalmazásban töltött teljes idő: "
+Stats_TotalSwitches: "Összes fiókkapcsoló: "
+Stats_TotalGamesLaunched: "A kapcsolóval elindított alkalmazások/játékok összesen: "
+Stats_UniqueDaysLong: "Egyedi napok váltott fiókkal: "
 Stats_LastUpload: "Utolsó feltöltés: "
-Stats_SwitcherStats: "Váltó statisztika: "
-Stats_PageStats: "Oldalstatisztikák: "
-Stats_VisitsTotalTime: "Összesen {visits} látogatás, összesen {hours} alkalommal"
+Stats_SwitcherStats: "Kapcsolási statisztika: "
+Stats_PageStats: "Oldalstatisztika: "
+Stats_VisitsTotalTime: "{visits} teljes vizit, {hours} teljes idő"
 Stats_Accounts: "Fiókok: "
 Stats_Switches: "Kapcsolók: "
 Stats_FirstActive: "Első aktív: "
-Stats_LastActive: "Utoljára aktív: "
+Stats_LastActive: "Legutóbbi aktív: "
 Stats_UniqueDays: "Egyedi napok: "
-Stats_GameShortcuts: "Játék parancsikonok: "
-Stats_GameShortcutsHotbar: "Játék parancsikonok (a hotbaron): "
-Stats_GamesLaunched: "Elindult játékok: "
+Stats_GameShortcuts: "Játékparancsikonok: "
+Stats_GameShortcutsHotbar: "Játékparancsikonok (a gyorsbillentyűn): "
+Stats_GamesLaunched: "Elindított játékok: "
+Stats_MetricsToShow: "Megjelenített mutatók:"
+Stats_AccountId: "Fiókazonosító:"
+Auth_LoginRequired: A jelszó korábban be volt állítva, és szükséges. Adja meg alább a jelszót.
+Auth_EnterPassword: "Adja meg a jelszót:"
+Auth_PassIncorrect: A jelszó helytelen.
+Locked: Zárolva
 Cleaning_Header_StartMenuShortcuts: 'A Start menü parancsikonjai:'
-Cleaning_Header_General: Általános takarítás
-Cleaning_Header_LoginHistory: Tisztítsa meg a bejelentkezési előzményeket
-Cleaning_Header_PlatformCleaning: '{platform} Váltó'
-Cleaning_ImportantInfoHeader: 'Fontos információk:'
+Cleaning_Header_General: Általános tisztítás
+Cleaning_Header_LoginHistory: Saját bejelentkezési előzmények törlése
+Cleaning_Header_PlatformCleaning: '{platform} Kapcsoló'
+Cleaning_ImportantInfoHeader: 'Fontos információ:'
 Cleaning_ImportantInfo: >
-  Egy gombra kattintva a kapcsolódó fájl (ok) törlődnek a Steam telepítéséből.<br /> loginusers.vdf fájl törlésével a fiókváltó nem jelenít meg fiókokat.<br /> A Steam használatával be kell jelentkeznie hozzájuk, hogy visszaszerezze őket.
-Cleaning_Button_KillProcess: Ölj {platform} folyamatot
-Cleaning_Button_ForgottenBackups: Elfelejtett fiókmentések
-Cleaning_Understand: Értem, mit csinálnak ezek a gombok.
+  Egy gombra kattintva törli a kapcsolódó fájl(oka) t a Steam telepítésből.<br /> A loginusers.vdf törlésével ez a fiókváltó nem jelenít meg fiókokat.<br /> A Steam használatával kell bejelentkeznie, hogy visszakapja őket.
+Cleaning_Button_KillProcess: Kill {platform} folyamat
+Cleaning_Button_ForgottenBackups: Elfelejtett fiók biztonsági mentések
+Cleaning_Understand: Tudom, mire valók ezek a gombok.
 Restore_Info: >
-  Ha korábban "elfelejtett" egy fiókot, itt visszaállíthatja azokat.<br /> Ez visszahozza őket a loginusers.vdf fájlba, lehetővé téve számukra a váltást.
-Restore_Button_Restore: Visszaállítás kiválasztva
-Ignored_RemoveAccounts: Fiókok eltávolítása az ignorálási listáról
-Ignored_Description: Ha korábban "figyelmen kívül hagyott" egy fiókot, itt újra megmutathatja őket
-Ignored_Stop: Ne hagyja figyelmen kívül a kiválasztottakat
+  Ha korábban "elfelejtett" egy fiókot, itt visszaállíthatja.<br /> Ez visszahelyezi őket a loginusers.vdf fájlba, lehetővé téve, hogy átváltson rá.
+Restore_Button_Restore: Kijelöltek visszaállítása
+Ignored_RemoveAccounts: Fiókok eltávolítása a mellőzési listáról
+Ignored_Description: Ha korábban "figyelmen kívül hagyott" egy fiókot, itt ismét megjelenítheti azt
+Ignored_Stop: Kijelöltek mellőzésének leállítása
 Toast_DataLocationCopying: (1/2) Meglévő fájlok másolása az új felhasználói adatok mappába!
 Toast_DataLocationNotCopying: (1/2) A mappában már vannak fájlok! Nem migrálja a felhasználói adatokat.
 Toast_DataLocationSet: (2/2) Indítsa újra a fiókváltót az új mappa használatához!
 Toast_PlaceShortcutFiles: Egy mappa nyílik meg. Helyezze el a játék parancsikonjait ebbe a mappába, és indítsa újra a fiókváltót.
-Toast_TrayStarted: A tálca elindult!
+Toast_TrayStarted: Tálca elindítva!
 Toast_TrayRunning: A tálca már nyitva van
-Toast_TrayUsersMissing: Nincs tálca felhasználó mentve
-Toast_TrayFail: Nem sikerült elindítani a tálca alkalmazását!
-Toast_TrayPosition: "Az Exit gombra kattintva: a Windows tálcáján leszek! (A kezdősáv jobb oldala)"
-Toast_TrayHint: "Tipp: Ctrl + Kattintson az 'X' gombra a teljes bezáráshoz, vagy a tálca> 'Kilépés'"
+Toast_TrayUsersMissing: Nincs mentett tálcafelhasználó
+Toast_TrayFail: Nem sikerült elindítani a tálcaalkalmazást!
+Toast_TrayPosition: "A Kilépés gombra kattintva: a Windows tálcán leszek! (A Start sávtól jobbra)"
+Toast_TrayHint: "Tipp: Ctrl+kattints az \"X\" -re a teljes bezáráshoz, vagy a tálcán keresztül > \"Kilépés\""
 Toast_Copied: Másolva
-Toast_AlreadyProcessing: Fiókok már feldolgozás alatt állnak ...
-Toast_FailedRestore: Nem sikerült visszaállítani a fiókokat (lásd konzol)
-Toast_Restored: Visszaállított számlák!
+Toast_AlreadyProcessing: A fiókok feldolgozása már folyamatban van...
+Toast_FailedRestore: Nem sikerült visszaállítani a fiókokat (lásd a konzolt)
+Toast_Restored: Visszaállított fiókok!
 Toast_ProtocolEnabled: 'Ez a program most reagál a TcNo: \\ fájlra a Windows rendszerben'
 Toast_ProtocolEnabledTitle: Protokoll hozzáadva
 Toast_ProtocolDisabled: 'Ez a program már nem válaszol a TcNo: \\'
-Toast_ProtocolDisabledTitle: A protokoll eltávolítva
-Toast_RestartAsAdmin: Kérjük, kezdje rendszergazdaként, és próbálja újra.
-Toast_RestartAfterClose: A Bezárás gombra kattintás után indítsa újra a programot.
-Toast_RestartAfterCloseTitle: Kiemelő szín letiltva
-Toast_RestartRequired: Indítsa újra a módosítások alkalmazásához
-Toast_LoadStylesheetFailed: Nem sikerült betölteni a stíluslapot! A részletekért lásd a felhasználói adatok mappáját.
-Toast_BNet_Private: "{BTag}profilja privát"
-Toast_BNet_StatsFail: "Hiba történt a {BTag}"
-Toast_BNet_CantSwapAccounts: Nem sikerült felcserélni a fiókokat (a Battle.net.config fájl sérült)
-Toast_BNet_CantLoadNotFound: Nem található a Battle.net.config fájl
-Toast_BNet_CantLoadEmpty: Nem sikerült betölteni a Blizzard fiókfájlját (nem található fiók)
-Toast_BNet_CantLoadConfigCorrupt: Nem sikerült betölteni a Blizzard fiókfájlját (a Battle.net.config fájl sérült)
-Toast_BNet_NamePolicy: A BattleTag nem egyezett a névadási politikával.
+Toast_ProtocolDisabledTitle: Protokoll eltávolítva
+Toast_RestartAsAdmin: Indítsa el adminisztrátorként, és próbálja újra.
+Toast_RestartAfterClose: Indítsa újra a programot, miután a Bezárás gombra kattintott.
+Toast_RestartAfterCloseTitle: Kiemelőszín letiltva
+Toast_RestartRequired: A módosítások alkalmazásához indítsa újra
+Toast_LoadStylesheetFailed: Nem sikerült betölteni a stíluslapot! Részleteket a felhasználói adatmappában talál.
+Toast_LoadingStats: Egy vagy több profil frissíti a statisztikákat. Kis türelmet.
 Toast_ItemNotFound: "{item} nem található"
-Toast_DeletedTotal: "{files} az {totalFiles} hagyni. Összesen: {totalSize}"
+Toast_DeletedTotal: "{files} / {totalFiles} törölve. Összesen: {totalSize}"
 Toast_CantChangeUsername: Nem sikerült megváltoztatni a felhasználónevet
 Toast_CantClearLoginFiles: Nem sikerült törölni a régi bejelentkezési fájlokat
 Toast_AccountIdReg: Nem sikerült lekérni a fiókazonosítót a rendszerleíró adatbázisból!
 Toast_RegFailWrite: Nem sikerült írni a Windows Regsitry-be!
 Toast_RegFailRead: Nem sikerült beolvasni a Windows Regsitry-ből!
-Toast_RegFailReadSaved: Nem sikerült beolvasni a rendszerleíró adatbázis mentett bejegyzését. Ha nem sikerül, próbálja meg eltávolítani és újra hozzáadni a fiókot.
+Toast_RegFailReadSaved: Nem sikerült olvasni a rendszerleíró adatbázis mentett bejegyzését. Próbáld meg eltávolítani és hozzáadni a fiókot, ha nem sikerül.
 Toast_RegSaveMissing: Sikertelen adatok keresése vagy olvasása a mentett rendszerleíró fájlokból!
-Toast_DuplicateNames: Nem sikerült felcserélni. Ismétlődő számlák ugyanazzal a felhasználónévvel?
-Toast_MissingUserId: "Nem sikerült cserélni. A felhasználói azonosító hiányzik. Ellenőrizze a Wiki \"Gyakori hibák\" című részét."
+Toast_DuplicateNames: Nem lehet cserélni. Duplikálja a fiókokat ugyanazzal a felhasználónévvel?
+Toast_MissingUserId: "Nem lehet cserélni. A felhasználói azonosító hiányzik. Ellenőrizze a Wiki 'Common Errors' -t."
 Toast_CouldNotLocate: Nem sikerült megtalálni a bejelentkezett felhasználót
-Toast_StreamerModeHint: A privát információk rejtve vannak! - Lásd a beállításokat
+Toast_StreamerModeHint: A privát adatok rejtve vannak! - Lásd a beállításokat
 Toast_StreamerModeTitle: Streamer mód
-Toast_AddAccountsFirst: Nyissa meg a platformot a listából, és először adjon hozzá néhány fiókot
+Toast_AddAccountsFirst: Nyissa meg a platformot a listáról, és adjon hozzá néhány fiókot
 Toast_AddAccountsFirstTitle: Nincsenek mentett fiókok
 Toast_CantFindImage: Nem sikerült megtalálni a felhasználók képét.
 Toast_CantCreateShortcut: Nem lehet parancsikont létrehozni
 Toast_ShortcutCreated: Parancsikon létrehozva!
-Toast_FailedUpdateCheck: Nem sikerült ellenőrizni a frissítéseket
-Toast_UpdateVerifyFail: Nem lehet ellenőrizni a frissítő fájlokat. Töltse le a legújabb verziót, és cserélje le a fájlokat a könyvtárában.
-Toast_StartedGame: Indult {program}
-Toast_Steam_VacCleared: A fiókok VAC-állapota törlődött
-Toast_Steam_CantDeleteVacCache: Nem sikerült törölni a 'LoginCache / Steam / VACCache / SteamVACCache.json' fájlt
-Toast_NoFindSteamUserdata: Nem található a Steam \\ userdata mappa
-Toast_Steam_VdfLast: Betölthető volt a vdf_last fájlból. Egyes fiókok hiányozhatnak.
+Toast_SettingsCopied: Beállítások sikeresen átmásolva a jelenlegi fiókba.
+Toast_GameDataRestored: Sikeresen visszaállította a fiók játékadatait.
+Toast_NoValidSteamId: Nem található érvényes Steam azonosító.
+Toast_FailedUpdateCheck: Frissítések keresése sikertelen
+Toast_UpdateVerifyFail: Nem lehet ellenőrizni a frissítőfájlokat. Töltse le a legújabb verziót, és cserélje ki a fájlokat a könyvtárban.
+Toast_StartedGame: Elkezdődött {program}
+Toast_Steam_VacCleared: Fiókok VAC állapota törölve
+Toast_Steam_CantDeleteVacCache: A 'LoginCache/Steam/VACCache/SteamVACCache.json' nem törölhető
+Toast_NoFindSteamUserdata: Nem található a Steam\\userdata mappa
+Toast_NoFindGameBackup: Nem található a fiók biztonsági mentési játékadatmappája.
+Toast_GameBackupDone: "A játék adatmappájának biztonsági mentése sikeres: {folderLocation}"
+Toast_Steam_VdfLast: A (z) vdf_last fájlból sikerült betölteni. Lehet, hogy néhány fiók hiányzik.
 Toast_PartiallyFixed: Részben rögzített
-Toast_Steam_FailedLoginusers: Nem sikerült betölteni a steam / config / loginusers.vdf fájlt
-Toast_Steam_CantLocateLoginusers: A "... / Steam / config / loginusers.vdf" nem található. Először próbáljon meg bejelentkezni egy fiókba.
+Toast_Steam_FailedLoginusers: Nem sikerült betölteni a Steam/config/loginusers.vdf fájlt
+Toast_Steam_CantLocateLoginusers: A (z) '.../Steam/config/loginusers.vdf' nem található. Előbb jelentkezzen be egy fiókba.
 Toast_CantClearImages: Nem sikerült törölni a képeket
 Toast_RefreshedImages: Frissített képek
-Toast_ClearForgottenCheck: Biztosan törli az elfelejtett fiókok biztonsági másolatait?
-Toast_BattleNet_ChangedBTag: BattleTag megváltozott
-Toast_BattleNet_DeletedBTag: BattleTag törölve
-Toast_FetchedRank: Fetched Rank
+Toast_ClearForgottenCheck: Biztosan törli az elfelejtett fiókok biztonsági mentéseit?
 Toast_ForgotAccount: Elfelejtett fiók
 Toast_ClearedPlatformSettings: "Törölve {platform} Switcher beállítások"
 Toast_ClearedImages: "Törölt képek"
@@ -197,7 +214,7 @@ Toast_BackupCopy: (1/3) Fájlok másolása ideiglenes helyre...
 Toast_BackupCompress: (2/3) Fájlok tömörítése ({size}). Ez eltart egy ideig...
 Toast_BackupComplete: (3/3) A tömörítés kész! ({size} - {compressedSize})
 Toast_BackupProgress: "Biztonsági mentés folyamatban (Tömörített méret: {compressedSize})"
-Toast_BackupFail: A biztonsági mentés nem sikerült – Lásd a naplót!
+Toast_BackupFail: A biztonsági mentés sikertelen - Lásd a Naplót!
 Toast_BackupBusy: A biztonsági mentés már folyamatban van!
 Toast_RestoreBusy: A visszaállítás már folyamatban van!
 Toast_RestoreExt: Archívum kibontása.
@@ -206,29 +223,44 @@ Toast_RestoreDeleting: Ideiglenes fájlok törlése
 Toast_RestoreComplete: A visszaállítás kész!
 Toast_FailedLoad: Nem sikerült betölteni a {platform}-t! Kattintson a platformra a hiba megtekintéséhez.
 Toast_FailedPlatformsLoad: Nem sikerült betölteni a Platforms.json fájlt! Kérjük, ellenőrizze, hogy ez a fájl létezik.
-Toast_FailedLoadSettings: "Nem sikerült betölteni a beállításokat! Ehelyett az alapértelmezett beállítások betöltése. „régi” hozzáadása a meglévő beállítások fájlnevéhez."
-Toast_FailedLoadStats: "Nem sikerült betölteni a statisztikákat! Kezdve frissen."
-Toast_FileCopyFail: Nem sikerült másolni a fájlokat! További részletekért lásd a naplót.
-Toast_UserDataLoadFail: Nem sikerült betölteni a felhasználói adatokat {UserData}\\WindowSettings.json. Biztonsági mentés és visszaállítás! Mentett hiba a naplózáshoz.
-Toast_UpdateCheckFail: Nem sikerült elérni a https://tcno.co/ webhelyet a frissítések kereséséhez. Ez az üzenet naponta egyszer jelenik meg.
-Toast_FailedCreateIcon: Nem sikerült létrehozni az ikont. A részletekért lásd a naplót.
-Tooltip_Restore: Kattintson ide egy 7z fájl kiválasztásához, vagy húzza át erre a gombra.
+Toast_FailedLoadSettings: "Nem sikerült betölteni a beállításokat! Alapértelmezett beállítások betöltése. 'Old' hozzáadása a meglévő beállítások fájlnevéhez."
+Toast_FailedLoadStats: "Nem sikerült betölteni a statisztikákat! Friss indítás."
+Toast_FailedStatsLoad: Nem sikerült betölteni a GameStats.json fájlt! Ellenőrizze, hogy létezik-e ez a fájl.
+Toast_GameStatsLoadFail: "Nem sikerült lekérni a játékstatisztikát az internetről a {Game}-hoz"
+Toast_GameStatsEmpty: "A weboldalon nem található {Game}. Szerinted ez hiba? Ellenőrizze a userdata mappát és a 'temp\\download-{AccoundId}-{Game}.html' fájlt, hátha az oldalon van hiba!"
+Toast_FileCopyFail: Nem sikerült átmásolni a fájlokat! További részletek a naplóban találhatók.
+Toast_UserDataLoadFail: Nem sikerült betölteni a {UserData}\\ WindowSettings.json felhasználóiadatokat. Biztonsági mentés és visszaállítás! Mentett hiba a naplóba.
+Toast_UpdateCheckFail: Nem sikerült elérni a https://tcno.co/ címet a frissítések kereséséhez. Ez az üzenet naponta egyszer jelenik meg.
+Toast_FailedCreateIcon: Nem sikerült létrehozni az ikont. A részleteket lásd a naplóban.
+Toast_SameAccount: Ugyanabba a fiókba/fiókból nem lehet fájlokat másolni. Próbálkozz másik fiókkal, vagy látogass el a Wiki oldalára további információkért.
+Toast_Steam_DownloadingAppIds: Steam AppId lista letöltése...
+Toast_Steam_DownloadingAppIdsComplete: Letöltés befejezve. A játékadatok almenü frissítve.
+Toast_SteamWebKeyInvalid: A Steam Web API kulcs érvénytelennek tűnik. Kérjük, állítson be egy újat.
+Toast_DownloadingProfileData: Profiladatok letöltése
+Toast_PasswordChanged: A jelszó megváltozott
+Toast_JsonFailModify: Nem sikerült módosítani a JSON-fájlt. Lásd a Naplót.
 Modal_Crowdin_Header: Crowdin fordítók
 Modal_Crowdin_Info: "Itt van mindenki, aki segített lefordítani ezt a szoftvert.<br>A mellettük lévő nyelvű felhasználók sokat segítettek a fordításban (lektori szerep)."
 Modal_Info_Creator: 'Készítette: TechNobo [Wesley Pyburn]'
-Modal_Info_Version: Változat
+Modal_Info_Version: Verzió
 Modal_Info_ViewGitHub: Megtekintés a GitHubon
-Modal_Info_BugReport: Hibajelentés / szolgáltatáskérés
+Modal_Info_BugReport: Hibajelentés/Funkciókérés
 Modal_Info_VisitSite: Látogasson el a tcno.co oldalra
 Modal_Info_Disclaimer: Jogi nyilatkozat
 Modal_Title_Info: TcNo Account Switcher Information
 Modal_Title_ChangeUsername: Felhasználónév módosítása
 Modal_Title_ConfirmAction: TcNo Account Switcher Confirm Action
-Modal_Title_LocatePlatform: Kérjük, keresse meg a {platform} könyvtárat
+Modal_Title_LocatePlatform: Keresse meg a {platform} könyvtárat
 Modal_Title_AddNew: Új {platform} fiók hozzáadása
 Modal_Title_Background: Állítson be háttérképet
 Modal_Title_Userdata: Állítsa be a felhasználói adatok mappáját
+Modal_Title_GameStats: Játékstatisztikák engedélyezése/letiltása
+Modal_GameStats_Header: "Játékstatisztikák engedélyezése/letiltása a következőhöz: {accountName}"
 Modal_Title_Stats: Az Ön statisztikái
+Modal_Title_GameVars: "Adja meg a {game}-hoz tartozó részleteket"
+Modal_GameVars_Header: "Kérjük, adja meg a következő adatokat a {game} számla, {username} a {platform}"
+Modal_Title_AccountNotes: "Számlajegyzetek: {accountName}"
+Modal_Title_SetPassword: Jelszó beállítása
 Modal_SetBackground: 'Válasszon ki egy képet, vagy írjon be egy URL-t alább.<br>Hagyja üresen, és állítsa vissza alaphelyzetbe.<br>(További vezérlésért lásd a témaválasztást a Wikin):'
 Modal_SetBackground_Button: Háttér beállítása
 Modal_SetBackground_ChooseImage: Válasszon helyi képet
@@ -237,12 +269,15 @@ Modal_SetUserdata_ChooseFolder: Válasszon ki egy mappát
 Modal_SetUserdata_Button: Felhasználói adatok beállítása
 Modal_ChangeUsername: Kérjük, adjon meg egy új felhasználónevet a fiókjához
 Modal_ChangeUsernameType: '{platform} felhasználónév módosítása'
-Modal_EnterDirectory: "Kérjük, adja meg a {platform}könyvtárát, mint ilyen: C: \\ Program Files \\{platform}"
-Modal_LocatePlatform: Keresse meg {platformExe}
-Modal_LocatePlatformFolder: Válassza a {platform} mappát
-Modal_ConfirmAction: Erősítse meg a műveletet
-Modal_AddNew: Kérjük, adjon nevet annak a {platform} fióknak, amelybe bejelentkezett.
-Modal_AddCurrentAccount: Adja hozzá a jelenlegi {platform} fiókot
+Modal_SetPassword: Adja meg a TcNo Account Switcher jelszavát
+Modal_SetPassword_Button: Jelszó beállítása
+Modal_SetPassword_Info: "MEGJEGYZÉS: Ez nem titkosítja a fiókokat. A fiókok cseréje olyan egyszerű, mint a fájlok cseréje, vagy egy fájlban lévő felhasználónév megváltoztatása. A jelszó visszaállítható egy fájlban lévő szöveg szerkesztésével is. Ez egyszerű biztonság. Megakadályozza az egyszerű felhasználói felülethez való hozzáférést. Ezt az alkalmazást egy cserélhető USB-re helyezheti, beállíthatja a UserData mappát ugyanarra az USB-re, és fizikailag eltávolíthatja a nagyobb biztonság érdekében. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Áttérés egy külső meghajtó útmutatójára</a><br><br>A törléshez hagyja üresen a fenti mezőt, és kattintson a Beállítás gombra."
+Modal_EnterDirectory: "Adja meg a {platform}könyvtárát, mint olyat: C:\\Program Files\\{platform}"
+Modal_LocatePlatform: '{platformExe}megkeresése'
+Modal_LocatePlatformFolder: '{platform} mappa kiválasztása'
+Modal_ConfirmAction: Művelet megerősítése
+Modal_AddNew: Adja meg a bejelentkezett {platform} fiók nevét.
+Modal_AddCurrentAccount: Jelenlegi {platform} fiók hozzáadása
 Modal_SetImageHeader: Profilkép beállítása
 Modal_SetImage: Kép beállítása
 Status_SelectedAccount: "Kiválasztva: {name}"
@@ -260,172 +295,182 @@ Status_WaitingForMultipleClose: "Várakozás {processName} és {count} másik be
 Status_GetUniqueId: Egyedi felhasználói azonosító gyűjtése
 Status_CopyingFiles: Felhasználói fájlok másolása...
 Status_HandlingImage: A fiók profilképének kezelése
-Context_SwapTo: Csere számlára
-Context_CreateShortcut: Asztali parancsikon létrehozása
-Context_CreateShortcutSubmenu: Asztali parancsikon létrehozása...
+Context_SwapTo: Váltás a fiókra
+Context_CreateShortcut: Parancsikon létrehozása
 Context_ChangeImage: Kép módosítása
-Context_BNet_SetBTag: Állítsa be a BattleTag-et
-Context_BNet_DelBTag: A BattleTag törlése
-Context_BNet_GetRAnk: Helyezze vissza a rangot
-Context_ChangeName: Váltás neve
-Context_LoginAsSubmenu: Bejelentkezés mint ...
-Context_UsernameSubmenu: Felhasználónév...
-Context_RefreshName: Frissítse a nevet
-Context_CopySubmenu: Másolat...
-Context_CopyProfileSubmenu: Profil másolása ...
+Context_ChangeName: Kapcsoló nevének módosítása
+Context_LoginAsSubmenu: Bejelentkezés mint
+Context_UsernameSubmenu: Felhasználónév
+Context_RefreshName: Név frissítése
+Context_CopySubmenu: Másolás
+Context_DataSubmenu: Adatok
+Context_CopyProfileSubmenu: Profil másolása
 Context_CommunityUrl: Közösségi URL
 Context_CommunityUsername: Közösségi felhasználónév
-Context_LoginUsername: Bejelentkezés felhasználóneve
-Context_CopySteamIdSubmenu: SteamID másolása ...
-Context_Steam_Id: 'SteamID [STEAM0: ~]'
-Context_Steam_Id3: 'SteamID3 [U: 1: ~]'
+Context_LoginUsername: Bejelentkezési felhasználónév
+Context_CopySteamIdSubmenu: SteamID másolása
+Context_Steam_Id: SteamID [STEAM0:~]
+Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: SteamID32
-Context_Steam_Id64: SteamID64 7656 ~
-Context_Steam_OpenUserdata: Nyissa meg a felhasználói adatokat
-Context_CopyOtherSubmenu: Más másolása ...
+Context_Steam_Id64: SteamID64 7656~
+Context_Steam_OpenUserdata: Felhasználói adatok megnyitása
+Context_ManageSubmenu: Kezelés
+Context_GameDataSubmenu: Játékadatok
+Context_ManageGameStats: Játékstatisztikák kezelése
+Context_Game_CopySettingsFrom: Beállítások másolása az aktuálisba
+Context_Game_RestoreSettingsTo: Játékadatok visszaállítása
+Context_Game_BackupData: A játék adatainak biztonsági mentése
+Context_CopyOtherSubmenu: Másolás
 Context_HidePlatform: Platform elrejtése
 Context_ExportAccList: Fióklista exportálása
 Context_RunAdmin: Futtasson rendszergazdaként
 Context_Hide: Elrejt
-Title_BNet_Settings: TcNo Account Switcher - BattleNet beállítások
-Title_BNet_ManageIgnored: TcNo Account Switcher - A figyelmen kívül hagyott BattleNet-fiókok kezelése
-Title_Platforms_Settings: TcNo fiókváltó – Platformbeállítások
-Title_AccountsList: TcNo fiókváltó - {platform}
+ProfileImage_ToggleText: Kép használata fiókképként
+Title_Platforms_Settings: TcNo Account Switcher - Platformbeállítások
+Title_Settings_TestCss: TcNo Account Switcher - CSS stílus tesztelése
+Title_AccountsList: TcNo Account Switcher - {platform}
 Title_TextEditor: TcNo Account Switcher - Szövegszerkesztő
 Title_Settings: TcNo Account Switcher - Beállítások
 Title_Steam_Cleaning: TcNo Account Switcher - Gőztisztítás
-Title_Steam_Settings: TcNo Account Switcher - Steam beállítások
+Title_Steam_Settings: TcNo Account Switcher - Gőzbeállítások
 Title_Template_Settings: TcNo Account Switcher – {platformName} beállítások
-Installer_Downloading: '{file}letöltése'
-Installer_DownloadFinished: '{file}letöltése befejeződött'
+Title_Login: TcNo Account Switcher - Bejelentkezés
+Installer_Downloading: Letöltés {file}
+Installer_DownloadFinished: A letöltés befejeződött {file}
 Installer_Installing: "Telepítés: {runtime}"
 Installer_RuntimeTitle: TcNo Account Switcher - Futásidejű telepítő
-Installer_Welcome: Üdvözöljük a TcNo Account Switcher - Runtime telepítőben
+Installer_Welcome: Üdvözli a TcNo Fiókváltó - Futásidejű telepítő
 Installer_InstalledRuntimes: "Jelenleg telepített futási idők:"
-Installer_ErrorRuntime: "Egy vagy több futásidőt nem telepítettek:"
+Installer_ErrorRuntime: "Egy vagy több futásidő nem lett telepítve:"
 Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB telepítés közben]"
 Installer_TotalSize: "Teljes letöltési méret: ~{size} MB"
-Installer_AnyKeyStart: Nyomja meg bármelyik gombot a letöltés megkezdéséhez ...
+Installer_AnyKeyStart: A letöltés indításához nyomja meg bármelyik gombot...
 Runtime_WebView2: Microsoft WebView2 futásidejű
 Runtime_Desktop: Microsoft .NET 5 asztali futásidejű
 Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
 Installer_FailedFolder: "Nem sikerült létrehozni a mappát:"
-Installer_FailedWV: "Nem sikerült letölteni és telepíteni a Microsoft WebView2 Runtime programot. Letöltés: 1. Kattintson az alábbi linkre: {link} 2. Kattintson a \"Szerveralkalmazások futtatása\" alatt a \"Tárhelycsomag letöltése\" elemre."
-Installer_FailedDR: "Nem sikerült letölteni és telepíteni a .NET 5 Desktop Runtime programot. Kérjük, töltse le itt:"
+Installer_FailedWV: "Nem sikerült letölteni és telepíteni a Microsoft WebView2 futásidejét. Letöltés: 1. Kattintson az alábbi linkre: {link} 2. Kattintson a \"Töltse le a Hosting Bundle\" alatt Run szerver alkalmazások."
+Installer_FailedDR: "Nem sikerült letölteni és telepíteni a .NET 5 Desktop Runtime programot. Töltse le innen:"
 Installed_FailedASP: "{version} Runtime letöltése és telepítése sikertelen. Letöltés: 1. Kattintson az alábbi hivatkozásra: {link} 2. Kattintson a \"Download x64\" lehetőségre az Asztali alkalmazások futtatása alatt."
-Installer_Ready: "Egy vagy több telepítésre kész. Ha és amikor a rendszer kéri, hogy telepíteni szeretné-e, kattintson az „Igen” gombra."
-Installer_PressStart: Nyomja meg bármelyik gombot a telepítés megkezdéséhez ...
+Installer_Ready: "Egy vagy több készen áll a telepítésre. Ha telepíteni szeretné a programot, kattintson az „Igen” gombra."
+Installer_PressStart: A telepítés indításához nyomja meg bármelyik gombot...
 Installer_VerifyMin: "Ellenőrizze, hogy megfelel-e az ajánlott minimumkövetelményeknek:"
-Installer_VerifyAlready: "Úgy tűnik, hogy minden telepítve van. Ellenőrizze, hogy megfelel-e az ajánlott minimumkövetelményeknek:"
+Installer_VerifyAlready: "Úgy tűnik, minden be van szerelve. Ellenőrizze, hogy megfelel-e az ajánlott minimumkövetelményeknek:"
 Installer_Complete: Ez legyen minden. A fő program, a TcNo-Acc-Switcher.exe, automatikusan elindul.
-Installer_Complete2: "Ha nem működik, olvassa el a telepítési utasításokat, itt: {link}"
-Global_FatalNext: "Végzetes hiba történt! Ez az összeomló napló automatikusan beküldik a következő indításkor."
-Tray_Error: Tálca hiba
-Tray_NoAccs: "Nem található fiók.\nElőször próbáljon meg fiókot váltani, vagy keresse meg a „Tray_Users.json” címet"
-Tray_Switch: "Váltson a következőre: {account}"
+Installer_Complete2: "Ha nem működik, kérjük, olvassa el a telepítési utasításokat, itt: {link}"
+Global_FatalNext: "Végzetes hiba történt! A rendszer automatikusan elküldi a hibajelentést a következő indításkor."
+Tray_Error: Tálcahiba
+Tray_NoAccs: "Nem található fiók.\nElőször próbáljon fiókot váltani, vagy keresse meg a 'Tray_Users.json' -t"
+Tray_Switch: "Váltás erre: {account}"
 Tray_CantOpenExe: "Nem sikerült megnyitni a fő .exe fájlt. Győződjön meg róla, hogy létezik.\n\nMegpróbáltam megnyitni:"
-Tray_LaunchFail: "TcNo Account Switcher - A tálca indítása sikertelen"
-Updater_Duplicate: Újabb TcNo fiókváltó frissítő példányt észleltünk.
+Tray_LaunchFail: "TcNo Account Switcher - a tálca indítása sikertelen"
+Updater_Duplicate: A rendszer egy másik TcNo Account Switcher Updater példányt észlelt.
 Updater_Unknown: "Ismeretlen argumentum: {arg}"
 Updater_NeedsAdmin: Ezt a programot rendszergazdaként kell futtatni!
 Updater_StatusChecking: Verzió ellenőrzése
-Updater_FailedVersionCheck: "Nem sikerült letölteni a verziót. Kattintson a \"Verify\" gombra a fájlok frissítéséhez és ellenőrzéséhez"
+Updater_FailedVersionCheck: "Nem sikerült lekérni a verziót. Kattintson az \"Ellenőrzés\" gombra a fájlok frissítéséhez és ellenőrzéséhez"
 Updater_PressBelow: Nyomja meg az alábbi gombot!
-Updater_PressBelowStart: A frissítés elindításához kattintson az alábbi gombra.
+Updater_PressBelowStart: A frissítés megkezdéséhez kattintson az alábbi gombra.
 Updater_PatchApplied: Javítás alkalmazva!
-Updater_UpdatingAppData: Fájlok frissítése az AppData alkalmazásban!
-Updater_Complete: Minden frissítés elkészült!
+Updater_UpdatingAppData: Fájlok frissítése az AppData-ban!
+Updater_Complete: Minden frissítés befejeződött!
 Updater_Checking: Frissítések keresése
 Updater_UpdateToVerify: A fájlok ellenőrzéséhez először frissítenie kell.
 Updater_ClosingTcNo: A TcNo Account Switcher példányok bezárása (ha vannak).
 Updater_Downloading: "Frissítés letöltése: {version}"
 Updater_Downloaded: Letöltés kész.
 Updater_CantExtract: Nem sikerült kibontani a frissítést.
-Updater_Verify: Ellenőrizze a fájlokat
-Updater_Verifying: Ellenőrzés ...
-Updater_VerifySkip: Fájlok ellenőrzése az összes apró frissítés kihagyásához, és csak a legfrissebbre ugrik.
-Updater_NoConnection: "Nem sikerült csatlakozni a tcno.co webhelyhez a fájlok ellenőrzéséhez. Megpróbálhatja manuálisan letölteni a telepítőt a GitHub oldalról, és újratelepíteni a frissítéshez.\n\nHiba:"
+Updater_Verify: Fájlok ellenőrzése
+Updater_Verifying: Ellenőrzés...
+Updater_VerifySkip: Fájlok ellenőrzése a kis frissítések kihagyásához, és ugrás a legújabbra.
+Updater_NoConnection: "Nem sikerült csatlakozni a tcno.co-hoz a fájlok ellenőrzéséhez. Megpróbálhatja manuálisan letölteni a telepítőt a GitHub oldalról, majd újratelepíteni a frissítéshez.\n\nHiba:"
 Updater_NoServer: Nem sikerült elérni a frissítési kiszolgálót
-Updater_Hashlist: A legújabb hash-lista letöltése ...
-Updater_CantCheck: Nem lehet ellenőrizni a frissítéseket
-Updater_Failed: "HIBA: Néhány fájl használatban van, és nem frissíthető.\n\n1. Győződjön meg arról, hogy az összes TcNo folyamat nincs teljesen lezárva\n(vagy indítsa újra a számítógépet)\n\n2. Ezután kattintson az Ellenőrzés gombra, vagy ha újraindította:\n- Nyissa meg ezt a frissítőt, és ellenőrizze a fájlokat\n    (amelyek a telepítési könyvtár)"
-Updater_Missing: "A Fájl hiányzik: {file}"
-Updater_FileMismatch: "A fájl: {file} MD5: {md5} elvárható: {value}"
-Updater_DownloadingWeb: Fájl letöltése a webhelyről ...
-Updater_UnpackingAppData: Fájlok másolása a %AppData%/ TcNo fiókváltóra ... (hacsak nincs másként beállítva)
-Updater_VerifyComplete: A fájlok ellenőrzése megtörtént!
+Updater_Hashlist: Legutóbbi hash lista letöltése...
+Updater_CantCheck: Nem lehet frissítéseket keresni
+Updater_Failed: "HIBA: Néhány fájl használatban van, ezért nem lehet frissíteni.\n\n1. Ellenőrizze, hogy az összes TcNo folyamat teljesen le van-e zárva\n(vagy indítsa újra a számítógépet)\n\n2. Ezután kattintson az Ellenőrzés gombra alább, vagy ha újraindította:\n-   Nyissa meg ezt a frissítőt, és ellenőrizze a fájlokat\n    (található a \"frissítő\" mappában a telepítési könyvtárban)"
+Updater_Missing: "HIÁNYZÓ FÁJL: {file}"
+Updater_FileMismatch: "Fájl: {file} rendelkezik MD5: {md5} VÁRHATÓ: {value}"
+Updater_DownloadingWeb: Fájl letöltése a webhelyről...
+Updater_UnpackingAppData: Fájlok másolása %AppData%/TcNincs fiókváltóba... (hacsak nincs másképp beállítva)
+Updater_VerifyComplete: Fájlok ellenőrizve!
 Updater_UpdateFound: "Frissítés található: {name} [{updateSize}]"
-Updater_TotalFound: "Összesen talált frissítések: {x}"
+Updater_TotalFound: "Talált frissítések összesen: {x}"
 Updater_TotalSize: "Teljes méret: {size}"
-Updater_AwaitingUser: Várakozás felhasználói bevitelre ...
-Updater_UpToDate: "Naprakész vagy.\n:)"
-Updater_FailedDecode: Ez nagy valószínűséggel annak köszönhető, hogy (TechNobo) egy frissítést nyomtam, és elírtam egy elírási hibát, amely megtörte a .json frissítési fájlt. Ne szólj :)
+Updater_AwaitingUser: Várakozás a felhasználói bevitelre...
+Updater_UpToDate: "Ön naprakész.\n:)"
+Updater_FailedDecode: Ez valószínűleg nekem (TechNobo) nyomja meg a frissítést, és hogy egy elírás, hogy megszakadt a .json frissítési fájl. Tudasd velem:)
 Updater_FailedDecodeTitle: Nem sikerült dekódolni a frissítési listát
-Updater_Extracting: Javító fájlok kibontása
-Updater_Applying: Alkalmazott javítás...
-Updater_Moving: Fájlok áthelyezése ...
+Updater_Extracting: Foltfájlok kibontása
+Updater_Applying: Javítás alkalmazása...
+Updater_Moving: Fájlok áthelyezése...
 Updater_Title: TcNo Account Switcher Updater
-Updater_Started: Elkezdődött
-Updater_Start: Indítsa el a TcNo fiókváltót
+Updater_Started: Elindítva
+Updater_Start: TcNo Account Switcher indítása
 Updater_Begin: Frissítés indítása
-Updater_Exit: Kijárat
+Updater_Exit: Kilépés
 FatalError: Végzetes hiba történt!
 Online: Online
 OnlineDefault: Online (alapértelmezett)
 Offline: Offline
 Invisible: Láthatatlan
-Busy: Elfoglalt
-Away: El
-Snooze: Szundikálás
-LookingToTrade: Keresi a kereskedelmet
-LookingToPlay: Játszani szeretne
+Busy: Foglalt
+Away: Távollét
+Snooze: Szundi
+LookingToTrade: Kereskedni szeretne
+LookingToPlay: Lejátszásra vár
 Unrecognized_EPersonaState: Felismeretlen ePersonaState
 Reg_DoesntExist: "{subKey} nem létezik."
-Reg_DoesntContain: "{subKey} nem tartalmaz {val}"
-Reg_Removing: '{subKey}\\{val}eltávolítása'
-PngInvalid_Format: A szükséges pixel formátum a PixelFormat.{x}.
+Reg_DoesntContain: "{subKey} nem tartalmaz {val}-et"
+Reg_Removing: '{subKey}eltávolítása\\{val}'
+PngInvalid_Format: A szükséges képpontformátum a PixelFormat.{x}.
 PngRequired: A szükséges képformátum egy hordozható hálózati grafika (png).
-PngDimensions: A méreteknek kisebbnek vagy egyenlőnek kell lenniük, mint {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "Szintaxishiba történt (további részletek alább)! ÉS:"
-ThemesNotFound: "Nem található a \"themes\" mappa a TcNo Account Switcher könyvtárában. Ez (különösen a 'Dracula_Cyan' mappa) szükséges a szoftver futtatásához.\nFuttathatja a Frissítőt az \"updater\" mappában a fájlok ellenőrzéséhez és a hiányzó fájlok visszaállításához."
-Yes: "Igen"
-No: "Nem"
+PngDimensions: A méreteknek legfeljebb {MaxIconWidth}x{MaxIconHeight}-nek kell lenniük
+ThemeSyntaxAnd: "Szintaktikai hiba történt (további részletek alább)! ÉS:"
+ThemesNotFound: "A \"témák\" mappa nem található a TcNo Account Switcher könyvtárában. Ez (különösen a 'Drakula_Cyan' mappa) szükséges a szoftver futtatásához.\nA \"Updater\" mappában futtathatja a Updater programot a fájlok ellenőrzéséhez és a hiányzó fájlok visszaállításához."
+Yes: "Igen."
+No: "Nem, nem."
+Save: Mentés
 NoDefault: Nem (alapértelmezett)
-Ok: "rendben"
-Forget: Elfelejt
-Notice: Értesítés
+Ok: "- Oké."
+Submit: Küldés
+Forget: Felejtsd el!
+Notice: Megjegyzés
+Notes: Megjegyzések
 Error: Hiba
 ErrorDetails: "HIBA: {ex}"
-Failed: nem sikerült
+Failed: Sikertelen
 Success: Siker
 NotFound: Nem található
 Done: Kész
+Edit: Szerkesztés
+Refresh: Frissítés
 Working: Dolgozó...
 ForName: "Mellette: {name}"
 DeletedFiles: Törölt fájlok
 FileFoldersToClear: "A törölni kívánt fájlok/mappák listája:"
-CouldNotFindX: Nem található {x}
-CouldNotCloseX: Nem sikerült bezárni a {x}at!
+CouldNotFindX: '{x}nem található'
+CouldNotCloseX: Nem lehetett bezárni {x}!
+CouldNotReadFile: Nem sikerült leolvasni a {file}-t!
 DirectoryNotFound: A könyvtár nem található
 DirectoryNotFoundFolder: "A könyvtár nem található: {folder}"
 DeletingFile: "Törlés: {file}"
 DeletingFolder: "Mappa törlése: "
-CouldntDeleteX: "HIBA: NEM TÖRLHETŐ: {x}"
-CouldntDeleteUndefined: "HIBA: NEM LEHET TÖRÖLNI A MEGHATÁROZOTT FÁJLOT"
-Prompt_RestartAsAdmin: "<h3><bold>Ez a program újraindul, Admin</bold></h3><p>Hit \"Igen\" UAC ha kéri admin.</p>"
+CouldntDeleteX: "HIBA: NEM SIKERÜLT TÖRÖLNI: {x}"
+CouldntDeleteUndefined: "HIBA: NEM SIKERÜLT TÖRÖLNI EGY DEFINIÁLATLAN FÁJLT"
+Prompt_RestartAsAdmin: "<h3><bold>Ez a program rendszergazdaként indul újra.</bold></h3><p>Nyomja meg az \"Igen\" gombot az UAC-ban, amikor a rendszer rendszergazdaként kéri.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Mindjárt elfelejt egy fiókot!</h3> <h4>Mit jelent ez?</h4> <p>- A Steam többé nem rendelkezik a Big Picture módban szereplő fiókkal, és nem emlékszik meg a jelszóra.<br/> – A TcNo Account Switcher szintén nem fogja megjeleníteni a fiókot, amíg újra be nem jelentkezik a Steamen keresztül.</p> <p>Fiókja érintetlen marad. Egyszerűen feledésbe merült ezen a számítógépen.</p><h4>Érted?</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>Ön egy fiók elfelejtésére készül!</h3> <h4>Mit jelent ez?</h4> <p>TcNo Account Switcher szintén nem jeleníti meg a fiókot (<br/> {platform}ig újra be nem jelentkezik és fel nem kerül a listára.</p> <p>Fiókja érintetlen marad. Csak elfelejtette ezt a számítógépet.</p> <h4>Érted?</h4>
+  <h3 style='color:red'>You are about to forget an account!</h3> <h4>Mit jelent ez?</h4> <p>TcNo Account Switcher will also not show the account,<br/> until it 's logged into again through {platform}, and added to the list.</p> <p>Fiókja érintetlen marad. Csak elfelejtették ezen a számítógépen.</p> <h4>Megértetted?</h4>
 Prompt_ClearStats: >
-  <h3 style='color:red'>A statisztikák törlésére készülsz!</h3> <p>Ez a művelet nem vonható vissza.</p>
+  <h3 style='color:red'>You are about to clear your statistics!</h3> <p>Ezt a műveletet nem vonhatja vissza.</p>
 Platform_DiscordPasteHint: Illessze be a Discord konzolba, majd illessze be az eredményt a bevitelbe!
 Platform_ClearCache: Törölje a gyorsítótárat
 Platform_ClearCacheTotal: '{totalFileCount} fájl törlése ({totalSizeMB})'
 Platform_DeleteFail: Nem sikerült törölni néhány fájlt (lehet, hogy a program fut?)
 Platform_CouldNotDeleteLog: Nem sikerült törölni a fájlt! Ellenőrizze a {logPath}
 Error_FileAccessDenied: Nem sikerült elérni a fájlt! Ellenőrizze a {logPath}
-Error_RequiredFileVerify: A szükséges fájl nem található. Győződjön meg arról, hogy az x64 és x86 mappa létezik a telepítési könyvtárban. Ha nem, futtassa a TcNo-Acc-Switcher-Updater.exe fájlt, és ellenőrizze a fájlokat.
+Error_RequiredFileVerify: A szükséges fájl nem található. Ellenőrizze, hogy az x64 és x86 mappák léteznek-e a telepítési könyvtárban. Ha nem futtatja a TcNo-Acc-Switcher-Updater.exe programot, ellenőrizze a fájlokat.
 Tooltip_Settings: Beállítások
 Tooltip_Info: Info
 Tooltip_ManagePlatforms: Más platformok megjelenítése vagy elrejtése
@@ -433,9 +478,16 @@ Tooltip_ExpandShortcuts: Bontsa ki a Játékok és parancsikonok választékát
 Tooltip_ShortcutFolder: Nyissa meg a parancsikon mappát. Helyezze el a parancsikonokat oda, és a TcNo fiókváltót, hogy megtekinthesse őket.
 Tooltip_Backup: A konfigurációs fájlok/mappák biztonsági mentése a platform beállításaiban meghatározottak szerint.
 Tooltip_BackupAll: Készítsen biztonsági másolatot az ÖSSZES konfigurációs fájlról/mappáról, beleértve a képeket és más nagy fájlokat is.
-Tooltip_ClosingMethod: "Kombinált a legjobb. A bezárás megpróbál közvetlenül bezárni egy bezárási funkción keresztül, a TaskKill pedig CMD-t használ (A legjobb, ha kombinálva nem működik)"
-Tooltip_StartingMethod: "Az alapértelmezett a legjobb. A Directnek nincs befolyása az adminisztrátori szintre vagy az UAC-ra. Ugyanazon a szinten (vagy magasabban – de nem alacsonyabban) indul, mint ez a fiókváltó"
-Tooltip_CurrentAccount: Jelenleg be vagy jelentkezve ebbe a fiókba.
-Discord_Status: Jelenleg fiókváltás folyik.
-Discord_StatusDetails: "Váltott fiókok: {number}"
-Website: Weboldal
+Tooltip_ClosingMethod: "Kombinált a legjobb. A bezárási kísérlet közvetlenül egy közeli funkción keresztül történik, és a TaskKill CMD-t használ (a legjobb, ha a kombináció nem működik)"
+Tooltip_StartingMethod: "Az alapértelmezés a legjobb. A Direct nem tudja ellenőrizni az adminisztrációs szintet vagy az UAC-t. Ugyanazon a szinten (vagy magasabb - de nem alacsonyabb) fog kezdődni, mint ez a fiókváltó"
+Tooltip_CurrentAccount: Ön jelenleg be van jelentkezve ebbe a fiókba.
+Tooltip_Restore: Kattintson ide egy 7z fájl kiválasztásához, vagy húzza át erre a gombra.
+Tooltip_DisabledGlobally: Ez az elem minden fiókban rejtve van. Ezt a platform beállításaiban módosíthatod.
+Discord_Status: Fiókváltás folyamatban.
+Discord_StatusDetails: "Átváltott fiókok: {number}"
+Website: Honlap
+Preview_Platforms: Platformok előnézete
+Preview_Accounts: Fiókok előnézete
+Preview_Notifications: Pirítósértesítések előnézete
+Preview_Settings: Beállítások előnézete
+Preview_Modals: Modális előnézet

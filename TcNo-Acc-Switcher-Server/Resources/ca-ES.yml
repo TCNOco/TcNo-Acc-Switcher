@@ -1,191 +1,208 @@
 ---
-Update: Actualització disponible! Feu clic aquí per iniciar-lo.
+Update: Actualització disponible! Feu clic aquí per començar.
 Header_ChooseLanguage: 'Trieu la llengua:'
-BattleNet_ShowSR: Mostra Overwatch SR i utilitza la imatge de perfil de Overwatch.
-Steam_ShowSteamID: Mostra SteamID
-Steam_ShowVac: Mostra l'estat VAC
-Steam_CheckVac: Comproveu l'estat de VAC del compte
-Steam_ShowLimited: Mostra l'estat limitat
-Steam_ShowAccUsername: Mostra el nom d'usuari del compte
-Steam_Tray_AccountName: Mostra el nom del compte [nom d'amic no]
-Steam_OverrideDefaultState: "Substitueix l'estat d'inici de sessió predeterminat:"
-Button_AddNew: Afegir nou
-Button_SaveCurrent: Desa actual
-Button_SaveFile: Guardar arxiu
-Button_Cancel: Cancel · lar
-Button_Login: iniciar Sessió
+Steam_ShowSteamID: SteamID
+Steam_ShowVac: Estat del VAC
+Steam_ShowLastLogin: Última hora d'inici de sessió
+Steam_ShowLimited: Estat limitat
+Steam_ShowAccUsername: Nom d'usuari del compte
+Steam_Tray_AccountName: Mostra el nom del compte [not friend name]
+Steam_CheckVac: Comprova l'estat del compte de VAC
+Steam_OverrideDefaultState: "Substitueix l'estat d'inici de sessió per defecte:"
+Steam_StartSilent: "Obriu el vapor a la safata de tasques al commutador (inicieu el vapor amb «-silenciós»)"
+Button_AddNew: Afegeix nou
+Button_SaveCurrent: Desa l'actual
+Button_SaveFile: Desa el fitxer
+Button_Cancel: Cancel·la
+Button_Login: Inicia sessió
 Button_Close: Tanca
-Button_RefreshImages: Actualitzar imatges
-Button_ResetSettings: Restableix la configuració
-Button_AdvancedCleaning: Neteja avançada ...
-Button_ClearLog: Esborra el registre
+Button_RefreshImages: Actualitza les imatges
+Button_ResetSettings: Restableix els paràmetres
+Button_AdvancedCleaning: Neteja avançada...
+Button_ClearLog: Neteja el registre
 Button_WikiInfo: Més informació (Wiki)
-Button_ManagePlatforms: Gestionar plataformes
+Button_ManagePlatforms: Gestiona les plataformes
 Button_Backup: Còpia de seguretat
 Button_BackupAll: Fes una còpia de seguretat de tot
 Button_Restore: Restaurar
 Button_OpenBackup: Obriu la carpeta de còpia de seguretat
-Settings_Shortcut: ' {platform} Drecera d''escriptori Switcher'
-Settings_Admin: Executeu {platform} com a administrador
-Settings_ImageExpiry: 'Dies abans que caduquin les imatges de perfil:'
+Button_Back: Enrere
+Button_RestartAdmin: Reinicia com a administrador
+Button_SetPassword: Estableix la contrasenya de l'aplicació
+Settings_Shortcut: ' {platform} Drecera d''escriptori del commutador'
+Settings_Admin: Executa {platform} com a administrador
+Settings_ImageExpiry: 'Dies abans que caduquin les imatges del perfil:'
+Settings_SteamAPIKey: "Clau de l'API web de Steam (opcional)"
+Settings_SteamAPIKey_Note: Si establiu una clau d'API, es mostrarà l'indicador Limitat (vora groga) per als comptes que estan bloquejats per la comunitat.
 Settings_Header_AppWide: Configuració de tota l'aplicació
-Settings_Header_GeneralSettings: Configuració general
+Settings_Header_GeneralSettings: Paràmetres generals
+Settings_Header_AccountDisplay: Configuració de la visualització del compte
 Settings_Header_ExtraPlatforms: Configuració de la plataforma
 Settings_Header_GeneralTools: Eines generals
 Settings_Header_OtherTools: Altres eines
-Settings_Header_TraySettings: Configuració de la safata
-Settings_Header_OpenGameFolders: Obrir carpetes de jocs
+Settings_Header_TraySettings: Arranjament de la safata
+Settings_Header_OpenGameFolders: Obre les carpetes del joc
 Settings_Header_BackupRestore: Còpia de seguretat i restauració de la configuració de la plataforma
-Settings_Header_Language: Llenguatge
-Settings_Header_System: Sistema
-Settings_Header_Theme: Tema
+Settings_Header_Language: Llengua
+Settings_Header_System: 'Sistema @ info: whatsthis'
+Settings_Header_Theme: TemaComment
 Settings_Header_Program: Programa
-Settings_Header_StatsSharing: Estadístiques i intercanvi
-Settings_Header_Platform: "{platformName} configuracions"
-Settings_TrayMax: 'Nombre màxim de comptes que cal recordar:'
-Settings_ExtraPlatformsDisabled: Plataformes discapacitats. Feu clic per activar-los.
-Settings_ExtraPlatformsEnabled: Plataformes visibles. Feu clic per desactivar-los.
+Settings_Header_StatsSharing: Estadístiques i compartició
+Settings_Header_Platform: "{platformName} paràmetres"
+Settings_Header_GameStats: Configuració de les estadístiques globals del joc
+Settings_GameStats: Qualsevol cosa marcada aquí NO es mostrarà sota el teu nom d'usuari per a cap compte. Utilitzeu aquesta opció si sovint oculteu elements específics de les estadístiques del joc.
+Settings_TrayMax: 'Nombre màxim de comptes a recordar:'
+Settings_ExtraPlatformsDisabled: Plataformes desactivades. Feu clic per habilitar-les.
+Settings_ExtraPlatformsEnabled: Plataformes visibles. Feu clic per desactivar-les.
 Settings_RTL: Mostra el text com a de dreta a esquerra
 Settings_CollectStats: Recull estadístiques
-Settings_ShareStats: Comparteix les estadístiques de manera molesta (recomanat)
-Settings_DiscordRpc: Presència rica de Discord (RPC)
-Settings_DiscordRpcShare: Comparteix el total d'interruptors
-Settings_ViewStats: Veure estadístiques
-Settings_ClearStats: Restableix
+Settings_ShareStats: Comparteix les estadístiques amb molèsties (recomanat)
+Settings_DiscordRpc: Presència rica en discòrdies (RPC)
+Settings_DiscordRpcShare: Comparteix els commutadors totals
+Settings_ViewStats: Mostra les estadístiques
+Preview: Vista prèvia
+Settings_ClearStats: Restablir
 Settings_CurrentLocation: 'Localització actual d''instal·lació: {path}'
 Settings_CurrentDataLocation: 'Ubicació actual de les dades de l''usuari: {path}'
 Settings_SetDataLocation: "[Estableix la ubicació personalitzada de les dades d'usuari]"
-Settings_PickFolder: Trieu {platform} carpeta
-Settings_OpenFolder: Obriu la carpeta {platform}
-Settings_ClearForgotten: Esborra oblidat
-Settings_ClearAccounts: Esborra els comptes
-Settings_StreamerMode: Activa el mode de transmissió
-Settings_ExitToTray: La sortida es minimitza a la safata
-Settings_DesktopShortcut: Drecera a l'escriptori
+Settings_PickFolder: Tria la carpeta {platform}
+Settings_OpenFolder: Obre la carpeta {platform}
+Settings_ClearForgotten: Neteja oblidat
+Settings_ClearAccounts: Neteja els comptes
+Settings_StreamerMode: Habilita el mode streamer
+Settings_ExitToTray: La sortida minimitza a la safata
+Settings_DesktopShortcut: Drecera de l'escriptori
 Settings_StartMenu_ProgramTray: Programa i safata
 Settings_StartMenu_Platform: Plataforma
-Settings_Tray_StartWindows: Inicieu la safata amb Windows
-Settings_Tray_StartNow: '[Inicieu la safata ara]'
+Settings_Tray_StartWindows: Inicia la safata amb Windows
+Settings_Tray_StartNow: '[Inicia la safata ara]'
 Settings_CurrentStyle: Estil actual
 Settings_ThemeBackground: '[Estableix fons]'
 Settings_ThemeOpenFolder: '[Obre la carpeta del tema]'
 Settings_Protocol: 'Activa el protocol TcNo: \\ (recomanat)'
 Settings_StartCentered: Inicia el programa centrat
-Settings_WindowsAccent: Utilitzeu el Windows Accent Color
+Settings_WindowsAccent: Utilitza el color accentuat de Windows
 Settings_HelpTranslate: "[Ajuda a traduir]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(Avançat) Configura el motor de renderització:"
-Settings_Header_ClosingMethod: "(Avançat) Estableix el mètode per tancar {platform}"
-Settings_Header_StartingMethod: "(Avançat) Establiu el mètode per començar {platform}"
-Settings_AutoStart: "Inicieu {platform} automàticament al canvi de compte"
+Settings_Header_ActiveBrowser: "(Avançat) Estableix el motor de representació:"
+Settings_Header_ClosingMethod: "(Avançat) Estableix el mètode a {platform}"
+Settings_Header_StartingMethod: "(Avançat) Estableix el mètode a {platform}"
+Settings_AutoStart: "Inicia automàticament {platform} en el canvi de compte"
 Settings_NoPlatforms: Actualment no hi ha plataformes habilitades. Marqueu les plataformes opcionals a continuació per activar-les o desmarqueu les plataformes desactivades.
-Settings_MinimizeOnSwitch: Minimitza el commutador al canvi de compte
-Stats_Disabled: "La recopilació d'estadístiques està desactivada."
+Settings_MinimizeOnSwitch: Minimitza el commutador en el commutador de compte
+Settings_ShowShortNotes: Previsualització de la nota sota el nom d'usuari
+Settings_Header_AppPassword: "Deixa d'utilitzar el commutador:"
+PreviewCss: Previsualitza CSS
+Settings_PreviewCss: Aquesta és la pàgina de previsualització de CSS. Podeu veure alguns elements que apareixen al programa i veure com es veuen amb el tema. Aquesta pàgina és útil per crear temes!
+Settings_PreviewCssHeader: Pàgina de previsualització CSS
+Stats_Disabled: "La recollida d'estadístiques està desactivada."
 Stats_InDepth: Desglossament estadístic en profunditat
-Stats_ShareEnabled: "Aquestes estadístiques es comparteixen de manera anònima i s'afegiran al total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aquí</a>."
-Stats_ShareDisabled: "Aquestes estadístiques NO es comparteixen de manera anònima i NO s'afegiran al total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aquí</a>."
+Stats_ShareEnabled: "Aquestes estadístiques es comparteixen de forma anònima i s'afegiran al total de <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aquí</a>."
+Stats_ShareDisabled: "Aquestes estadístiques NO es comparteixen de forma anònima i NO s'afegiran al total de <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">aquí</a>."
 Stats_OperatingSystem: "Sistema operatiu: "
 Stats_FirstLaunch: "Primer llançament: "
-Stats_LaunchCount: "Recompte de llançaments: "
-Stats_CrashCount: "Recompte d'accidents: "
+Stats_LaunchCount: "Comptador d'inici: "
+Stats_CrashCount: "Comptat d'errors: "
 Stats_MostUsedPlatform: "Plataforma més utilitzada: "
 Stats_TotalTime: "Temps total dedicat a l'aplicació: "
 Stats_TotalSwitches: "Total de canvis de compte: "
-Stats_TotalGamesLaunched: "Total d'aplicacions/jocs llançats mitjançant el commutador: "
-Stats_UniqueDaysLong: "Dies únics amb els comptes canviats: "
-Stats_LastUpload: "Última càrrega: "
+Stats_TotalGamesLaunched: "Total d'aplicacions/jocs iniciats mitjançant el commutador: "
+Stats_UniqueDaysLong: "Dies únics amb comptes canviats: "
+Stats_LastUpload: "Darrera càrrega: "
 Stats_SwitcherStats: "Estadístiques del commutador: "
-Stats_PageStats: "estadístiques de la pàgina: "
+Stats_PageStats: "Estadístiques de la pàgina: "
 Stats_VisitsTotalTime: "{visits} visites totals, {hours} temps total"
 Stats_Accounts: "Comptes: "
 Stats_Switches: "Interruptors: "
 Stats_FirstActive: "Primer actiu: "
 Stats_LastActive: "Últim actiu: "
 Stats_UniqueDays: "Dies únics: "
-Stats_GameShortcuts: "Dreceres del joc: "
-Stats_GameShortcutsHotbar: "Dreceres del joc (a la barra d'accés ràpid): "
+Stats_GameShortcuts: "Dreceres de joc: "
+Stats_GameShortcutsHotbar: "Dreceres de joc (a la barra d'accés): "
 Stats_GamesLaunched: "Jocs llançats: "
-Cleaning_Header_StartMenuShortcuts: 'Dreceres per al menú Inici:'
+Stats_MetricsToShow: "Mètriques mostrades:"
+Stats_AccountId: "Identificador del compte:"
+Auth_LoginRequired: Prèviament s'ha establert una contrasenya i és necessària. Introduïu la contrasenya a continuació.
+Auth_EnterPassword: "Introduïu la contrasenya:"
+Auth_PassIncorrect: La contrasenya és incorrecta.
+Locked: Bloquejat
+Cleaning_Header_StartMenuShortcuts: 'Dreceres per al menú d''inici:'
 Cleaning_Header_General: Neteja general
 Cleaning_Header_LoginHistory: Neteja el meu historial d'inici de sessió
-Cleaning_Header_PlatformCleaning: '{platform} Canviador'
+Cleaning_Header_PlatformCleaning: 'Commutador {platform}'
 Cleaning_ImportantInfoHeader: 'Informació important:'
 Cleaning_ImportantInfo: >
-  En fer clic a un botó, se suprimiran els fitxers relacionats de la instal·lació de Steam.<br /> Si suprimiu loginusers.vdf, aquest commutador de comptes no mostrarà cap compte.<br /> Haureu d'iniciar sessió a ells mitjançant Steam per recuperar-los.
-Cleaning_Button_KillProcess: Mata el procés {platform}
+  Si feu clic a un botó, s'esborraran els fitxers relacionats de la vostra instal·lació de Steam.<br /> Si suprimiu loginusers.vdf, aquest commutador de compte no mostrarà cap compte.<br /> Haureu d'iniciar la sessió amb Steam per recuperar-los.
+Cleaning_Button_KillProcess: Assassina el procés {platform}
 Cleaning_Button_ForgottenBackups: Còpies de seguretat del compte oblidades
 Cleaning_Understand: Entenc el que fan aquests botons.
 Restore_Info: >
-  Si anteriorment "heu oblidat" un compte, podeu restaurar-lo aquí.<br /> Això els torna a afegir al fitxer loginusers.vdf, cosa que us permetrà canviar-hi.
-Restore_Button_Restore: Restaura seleccionat
-Ignored_RemoveAccounts: Elimina els comptes de la llista d'ignorats
-Ignored_Description: Si anteriorment "ignoraves" un compte, el pots tornar a mostrar aquí
-Ignored_Stop: Deixa d'ignorar els seleccionats
+  Si prèviament heu "oblidat" un compte, podeu restaurar-lo aquí.<br /> Això els afegeix de nou al vostre fitxer loginusers.vdf, permetent-vos canviar a ells.
+Restore_Button_Restore: Restaura la selecció
+Ignored_RemoveAccounts: Elimina els comptes de la llista d'ignorància
+Ignored_Description: Si prèviament heu "ignorat" un compte, podeu tornar-lo a mostrar aquí
+Ignored_Stop: Deixa d'ignorar la selecció
 Toast_DataLocationCopying: (1/2) S'està copiant els fitxers existents a la nova carpeta de dades d'usuari!
 Toast_DataLocationNotCopying: (1/2) La carpeta ja té fitxers! No migrarà les dades d'usuari.
 Toast_DataLocationSet: (2/2) Reinicieu el commutador de comptes per utilitzar la carpeta nova!
 Toast_PlaceShortcutFiles: S'està obrint una carpeta. Col·loqueu les dreceres del joc en aquesta carpeta i reinicieu el commutador de comptes.
-Toast_TrayStarted: La safata ha començat.
+Toast_TrayStarted: Ha començat la safata!
 Toast_TrayRunning: La safata ja està oberta
 Toast_TrayUsersMissing: No s'ha desat cap usuari de safata
-Toast_TrayFail: No s'ha pogut iniciar l'aplicació de la safata.
-Toast_TrayPosition: "En fer clic al botó Surt: estaré a la safata de Windows. (Barra de la dreta de la sortida)"
-Toast_TrayHint: "Consell: Ctrl + Feu clic a la \"X\" per tancar-me completament o mitjançant la safata> \"Surt\""
+Toast_TrayFail: No s'ha pogut iniciar l'aplicació de safata!
+Toast_TrayPosition: "En fer clic al botó Surt: Estaré a la safata de Windows! (Barra dreta d'inici)"
+Toast_TrayHint: "Consell: Ctrl+Feu clic a la «X» per tancar-me completament, o bé a través de la safata > «Surt»"
 Toast_Copied: Copiat
-Toast_AlreadyProcessing: Ja s'està processant comptes ...
-Toast_FailedRestore: No s'han pogut restaurar els comptes (vegeu la consola)
-Toast_Restored: Comptes restaurats.
+Toast_AlreadyProcessing: Ja s'estan processant els comptes...
+Toast_FailedRestore: No s'ha pogut restaurar els comptes (vegeu la consola)
+Toast_Restored: Comptes restaurats!
 Toast_ProtocolEnabled: 'Aquest programa ara respondrà a TcNo: \\ al Windows'
-Toast_ProtocolEnabledTitle: S'ha afegit el protocol
+Toast_ProtocolEnabledTitle: Protocol afegit
 Toast_ProtocolDisabled: 'Aquest programa ja no respondrà a TcNo: \\'
-Toast_ProtocolDisabledTitle: S'ha suprimit el protocol
-Toast_RestartAsAdmin: Comenceu com a administrador i torneu-ho a provar.
+Toast_ProtocolDisabledTitle: S'ha eliminat el protocol
+Toast_RestartAsAdmin: Inicieu com a administrador i torneu-ho a provar.
 Toast_RestartAfterClose: Reinicieu el programa després de fer clic a Tanca.
-Toast_RestartAfterCloseTitle: S'ha desactivat el color de l'accent
-Toast_RestartRequired: Reinicieu per aplicar els canvis
-Toast_LoadStylesheetFailed: No s'ha pogut carregar el full d'estils! Consulteu la carpeta de dades d'usuari per obtenir-ne més informació.
-Toast_BNet_Private: "El perfil de {BTag}"
-Toast_BNet_StatsFail: "Error en intentar obtenir estadístiques de {BTag}"
-Toast_BNet_CantSwapAccounts: No s'han pogut canviar els comptes (el fitxer Battle.net.config està malmès)
-Toast_BNet_CantLoadNotFound: No s'ha trobat Battle.net.config
-Toast_BNet_CantLoadEmpty: No s'ha pogut carregar el fitxer de comptes de Blizzard (no s'ha trobat cap compte)
-Toast_BNet_CantLoadConfigCorrupt: No s'ha pogut carregar el fitxer de comptes de Blizzard (fitxer Battle.net.config danyat)
-Toast_BNet_NamePolicy: BattleTag no coincideix amb la política de noms.
-Toast_ItemNotFound: "{item} no s'ha trobat"
-Toast_DeletedTotal: "{files} d' {totalFiles} suprimits. Total: {totalSize}"
+Toast_RestartAfterCloseTitle: Color de l'accent inhabilitat
+Toast_RestartRequired: Reinicia per aplicar els canvis
+Toast_LoadStylesheetFailed: No s'ha pogut carregar el full d'estil! Consulteu la carpeta de dades de l'usuari per obtenir més informació.
+Toast_LoadingStats: Un o més perfils són estadístiques actualitzadores. Espereu.
+Toast_ItemNotFound: "No s'ha trobat {item}"
+Toast_DeletedTotal: "{files} d' {totalFiles} esborrat. Total: {totalSize}"
 Toast_CantChangeUsername: No s'ha pogut canviar el nom d'usuari
 Toast_CantClearLoginFiles: No s'han pogut esborrar els fitxers d'inici de sessió antics
 Toast_AccountIdReg: No s'ha pogut obtenir l'identificador del compte del registre!
 Toast_RegFailWrite: No s'ha pogut escriure al registre de Windows!
 Toast_RegFailRead: No s'ha pogut llegir des del registre de Windows!
-Toast_RegFailReadSaved: No s'ha pogut llegir l'entrada desada del registre. Proveu d'eliminar i afegir el compte de nou si no ho feu.
+Toast_RegFailReadSaved: No s'ha pogut llegir l'entrada de registre desada. Intenta eliminar el compte i afegir-lo de nou si no ho aconsegueix.
 Toast_RegSaveMissing: No s'ha pogut trobar o llegir dades dels fitxers de registre desats!
-Toast_DuplicateNames: No s'ha pogut canviar. Voleu duplicar comptes amb el mateix nom d'usuari?
-Toast_MissingUserId: "No s'ha pogut canviar. Falta l'identificador d'usuari. Comproveu la Viqui \"Errors comuns\"."
-Toast_CouldNotLocate: No s'ha pogut localitzar l'usuari connectat
-Toast_StreamerModeHint: La informació privada està oculta. - Veure configuració
-Toast_StreamerModeTitle: Mode Streamer
-Toast_AddAccountsFirst: Obriu la plataforma de la llista i afegiu-hi uns quants comptes primer
-Toast_AddAccountsFirstTitle: No hi ha comptes desats
+Toast_DuplicateNames: No s'ha pogut intercanviar. Comptes duplicats amb el mateix nom d'usuari?
+Toast_MissingUserId: "No s'ha pogut intercanviar. Falta l'identificador d'usuari. Comprova Wiki 'Errors comuns'."
+Toast_CouldNotLocate: No s'ha pogut localitzar l'usuari que ha iniciat la sessió
+Toast_StreamerModeHint: La informació privada està oculta! - Veure configuració
+Toast_StreamerModeTitle: Mode de streamer
+Toast_AddAccountsFirst: Obre la plataforma des de la llista i afegeix uns quants comptes primer
+Toast_AddAccountsFirstTitle: No s'han desat comptes
 Toast_CantFindImage: No s'ha pogut trobar la imatge dels usuaris.
-Toast_CantCreateShortcut: No es pot crear una drecera
-Toast_ShortcutCreated: S'ha creat la drecera.
-Toast_FailedUpdateCheck: No s'ha pogut comprovar si hi ha actualitzacions
-Toast_UpdateVerifyFail: No es poden verificar els fitxers d'actualització. Baixeu la versió més recent i substituïu els fitxers del directori.
-Toast_StartedGame: Va començar {program}
-Toast_Steam_VacCleared: S'ha esborrat l'estat de CAV dels comptes
-Toast_Steam_CantDeleteVacCache: No s'ha pogut suprimir "LoginCache / Steam / VACCache / SteamVACCache.json"
-Toast_NoFindSteamUserdata: No s'ha pogut trobar la carpeta Steam \\ userdata
-Toast_Steam_VdfLast: S'ha pogut carregar des de vdf_last. És possible que falten alguns comptes.
-Toast_PartiallyFixed: Parcialment fix
-Toast_Steam_FailedLoginusers: No s'ha pogut carregar steam / config / loginusers.vdf
-Toast_Steam_CantLocateLoginusers: No es pot localitzar '... / Steam / config / loginusers.vdf'. Proveu d'iniciar la sessió a un compte primer.
-Toast_CantClearImages: No s'han pogut esborrar les imatges
+Toast_CantCreateShortcut: No es pot crear la drecera
+Toast_ShortcutCreated: Drecera creada!
+Toast_SettingsCopied: La configuració s'ha copiat correctament al compte actual.
+Toast_GameDataRestored: S'han restaurat correctament les dades del joc per a aquest compte.
+Toast_NoValidSteamId: No s'ha pogut trobar un identificador de Steam vàlid.
+Toast_FailedUpdateCheck: No s'han pogut comprovar les actualitzacions
+Toast_UpdateVerifyFail: No es poden verificar els fitxers d'actualització. Descarrega la versió més recent i reemplaça els fitxers del directori.
+Toast_StartedGame: S'ha iniciat {program}
+Toast_Steam_VacCleared: S'ha netejat l'estat del VAC per als comptes
+Toast_Steam_CantDeleteVacCache: No s'ha pogut suprimir 'LoginCache/Steam/VACCache/SteamVACCache.json'
+Toast_NoFindSteamUserdata: No s'ha pogut trobar la carpeta Steam\\ userdata
+Toast_NoFindGameBackup: No s'ha pogut trobar la carpeta de dades del joc de còpia de seguretat per a aquest compte.
+Toast_GameBackupDone: "S'ha fet una còpia de seguretat de la carpeta de dades del joc amb èxit: {folderLocation}"
+Toast_Steam_VdfLast: S'ha pogut carregar des de vdf_last. És possible que faltin alguns comptes.
+Toast_PartiallyFixed: S'ha solucionat parcialment
+Toast_Steam_FailedLoginusers: No s'ha pogut carregar Steam/config/loginusers.vdf
+Toast_Steam_CantLocateLoginusers: No es pot localitzar '.../Steam/config/loginusers.vdf'. Prova d'iniciar la sessió en un compte primer.
+Toast_CantClearImages: No s'han pogut netejar les imatges
 Toast_RefreshedImages: Imatges actualitzades
-Toast_ClearForgottenCheck: Esteu segur que voleu esborrar les còpies de seguretat dels comptes oblidats?
-Toast_BattleNet_ChangedBTag: S'ha canviat BattleTag
-Toast_BattleNet_DeletedBTag: S'ha suprimit BattleTag
-Toast_FetchedRank: Rang obtingut
+Toast_ClearForgottenCheck: Esteu segur que voleu netejar les còpies de seguretat dels comptes oblidats?
 Toast_ForgotAccount: He oblidat el compte
 Toast_ClearedPlatformSettings: "S'han esborrat {platform} paràmetres del commutador"
 Toast_ClearedImages: "Imatges esborrades"
@@ -197,7 +214,7 @@ Toast_BackupCopy: (1/3) S'estan copiant fitxers a una ubicació temporal...
 Toast_BackupCompress: (2/3) Comprimint fitxers ({size}). Això trigarà un temps...
 Toast_BackupComplete: (3/3) S'ha acabat de comprimir! ({size} a {compressedSize})
 Toast_BackupProgress: "Còpia de seguretat en curs (mida comprimida: {compressedSize})"
-Toast_BackupFail: La còpia de seguretat ha fallat - Vegeu el registre!
+Toast_BackupFail: Ha fallat la còpia de seguretat - Vegeu el registre!
 Toast_BackupBusy: Còpia de seguretat ja en curs!
 Toast_RestoreBusy: La restauració ja està en curs!
 Toast_RestoreExt: Extracció de l'arxiu.
@@ -206,29 +223,44 @@ Toast_RestoreDeleting: Eliminació de fitxers temporals
 Toast_RestoreComplete: S'ha acabat la restauració!
 Toast_FailedLoad: No s'ha pogut carregar {platform}! Feu clic a la plataforma per veure l'error.
 Toast_FailedPlatformsLoad: No s'ha pogut carregar Platforms.json! Si us plau, verifiqueu que aquest fitxer existeix.
-Toast_FailedLoadSettings: "No s'ha pogut carregar la configuració! S'està carregant la configuració predeterminada. Afegint \"vell\" al nom del fitxer de configuració existent."
-Toast_FailedLoadStats: "No s'han pogut carregar les estadístiques! Començant fresc."
-Toast_FileCopyFail: No s'han pogut copiar els fitxers! Consulteu el registre per a més detalls.
-Toast_UserDataLoadFail: No s'han pogut carregar les dades d'usuari {UserData}\\WindowSettings.json. Còpia de seguretat i reinici! Error desat al registre.
-Toast_UpdateCheckFail: No s'ha pogut contactar amb https://tcno.co/ per comprovar si hi ha actualitzacions. Aquest missatge es mostrarà un cop al dia.
+Toast_FailedLoadSettings: "No s'ha pogut carregar la configuració! S'està carregant la configuració per defecte. S'està afegint «antic» al nom de fitxer de paràmetres existents."
+Toast_FailedLoadStats: "No s'han pogut carregar les estadístiques! Començant de nou."
+Toast_FailedStatsLoad: No s'ha pogut carregar GameStats.json! Comproveu que aquest fitxer existeix.
+Toast_GameStatsLoadFail: "No s'han pogut obtenir les estadístiques del joc des del web durant {Game}"
+Toast_GameStatsEmpty: "No s'han trobat estadístiques de joc al lloc web per a {Game}. Creus que és un error? Comproveu la carpeta de dades d'usuari i \"temp\\download-{AccoundId}-{Game}.html\" per veure si la pàgina tenia un error!"
+Toast_FileCopyFail: No s'han pogut copiar els fitxers! Consulteu el registre per obtenir més informació.
+Toast_UserDataLoadFail: No s'han pogut carregar les dades d'usuari {UserData}\\WindowSettings.json. Còpia de seguretat i restabliment! S'ha desat un error al registre.
+Toast_UpdateCheckFail: No s'ha pogut contactar amb https://tcno.co/ per comprovar si hi ha actualitzacions. Aquest missatge es mostrarà una vegada al dia.
 Toast_FailedCreateIcon: No s'ha pogut crear la icona. Consulteu el registre per obtenir més informació.
-Tooltip_Restore: Feu clic per seleccionar un fitxer 7z o arrossegueu-lo a aquest botó.
+Toast_SameAccount: No es poden copiar fitxers al/des del mateix compte. Prova amb un altre compte o consulta Wiki per obtenir més informació.
+Toast_Steam_DownloadingAppIds: S'està baixant la llista Steam AppId...
+Toast_Steam_DownloadingAppIdsComplete: S'ha fet la baixada. S'ha actualitzat el submenú de dades del joc.
+Toast_SteamWebKeyInvalid: Sembla que la clau de l'API web de Steam no és vàlida. Estableix-ne una de nova.
+Toast_DownloadingProfileData: S'estan baixant les dades del perfil
+Toast_PasswordChanged: S'ha canviat la contrasenya
+Toast_JsonFailModify: No s'ha pogut modificar el fitxer JSON. Vegeu el registre.
 Modal_Crowdin_Header: Traductors crowdin
 Modal_Crowdin_Info: "Aquí teniu tots els que han ajudat a traduir aquest programari.<br>Els usuaris amb idiomes al costat van ajudar molt en la traducció (rol de corrector)."
 Modal_Info_Creator: Creat per TechNobo [Wesley Pyburn]
 Modal_Info_Version: Versió
-Modal_Info_ViewGitHub: Veure a GitHub
-Modal_Info_BugReport: Informe d'errors / Sol·licitud de funcions
-Modal_Info_VisitSite: Visiteu tcno.co
-Modal_Info_Disclaimer: Exempció de responsabilitat
-Modal_Title_Info: TcNo Informació del commutador de comptes
+Modal_Info_ViewGitHub: Visualitza a GitHub
+Modal_Info_BugReport: Informe d'errors/sol·licitud de funció
+Modal_Info_VisitSite: Visita tcno.co
+Modal_Info_Disclaimer: Renuncia de responsabilitat
+Modal_Title_Info: TcNo hi ha informació del commutador de compte
 Modal_Title_ChangeUsername: Canvia el nom d'usuari
-Modal_Title_ConfirmAction: TcNo Account Switcher Confirma l'acció
-Modal_Title_LocatePlatform: Localitzeu el directori {platform}
-Modal_Title_AddNew: Afegiu un compte {platform}
+Modal_Title_ConfirmAction: TcNo Account Switcher Confirm Action
+Modal_Title_LocatePlatform: Si us plau, localitzeu el directori {platform}
+Modal_Title_AddNew: Afegeix un nou compte {platform}
 Modal_Title_Background: Estableix una imatge de fons
 Modal_Title_Userdata: Estableix la carpeta de dades de l'usuari
+Modal_Title_GameStats: Habilita/inhabilita les estadístiques del joc
+Modal_GameStats_Header: "Habilita/inhabilita les estadístiques del joc per a: {accountName}"
 Modal_Title_Stats: Les teves estadístiques
+Modal_Title_GameVars: "Dades d'entrada per a {game}"
+Modal_GameVars_Header: "Introduïu les següents dades per al vostre compte {game} , {username} sobre {platform}"
+Modal_Title_AccountNotes: "Notes del compte per a: {accountName}"
+Modal_Title_SetPassword: Estableix la contrasenya
 Modal_SetBackground: 'Seleccioneu una imatge o introduïu un URL a continuació.<br>Deixa en blanc i configura per restablir.<br>(Per a un control més avançat, vegeu la Theming a la Viqui):'
 Modal_SetBackground_Button: Estableix el fons
 Modal_SetBackground_ChooseImage: Trieu la imatge local
@@ -237,16 +269,19 @@ Modal_SetUserdata_ChooseFolder: Seleccioneu una carpeta
 Modal_SetUserdata_Button: Estableix les dades d'usuari
 Modal_ChangeUsername: Introduïu un nom d'usuari nou per al vostre compte
 Modal_ChangeUsernameType: Canvia {platform} nom d'usuari
-Modal_EnterDirectory: "Introduïu {platform}, com a tal: C: \\ Program Files \\{platform}"
+Modal_SetPassword: Introduïu una contrasenya per al commutador de comptes TcNo
+Modal_SetPassword_Button: Estableix la contrasenya
+Modal_SetPassword_Info: "NOTA: això no xifra els vostres comptes. Canviar de compte és tan senzill com substituir fitxers o canviar un nom d'usuari en un fitxer. La contrasenya també es pot restablir editant el text en un fitxer. Això és simple seguretat. Atura l'accés senzill a la IU. Podeu posar aquesta aplicació en un USB extraïble, establir la carpeta UserData en el mateix USB i eliminar-la físicament per obtenir més seguretat. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Mou't a una guia de la unitat externa</a><br><br>Per esborrar, deixeu la carpeta anterior buida i feu clic a Defineix."
+Modal_EnterDirectory: "Introduïu el directori de {platform}, com ara: C:\\ Fitxers de programa\\{platform}"
 Modal_LocatePlatform: Localitza {platformExe}
-Modal_LocatePlatformFolder: Seleccioneu {platform} carpeta
-Modal_ConfirmAction: Confirmeu l'acció
-Modal_AddNew: Introduïu un nom per al {platform} qual heu iniciat la sessió.
-Modal_AddCurrentAccount: Afegiu un compte {platform}
+Modal_LocatePlatformFolder: Seleccioneu la carpeta {platform}
+Modal_ConfirmAction: Confirma l'acció
+Modal_AddNew: Introdueix un nom per al compte {platform} al qual has iniciat la sessió.
+Modal_AddCurrentAccount: Afegeix el compte {platform} actual
 Modal_SetImageHeader: Estableix la imatge de perfil
 Modal_SetImage: Establir imatge
 Status_SelectedAccount: "Seleccionat: {name}"
-Status_Init: "Estat: inicialització"
+Status_Init: "Estat: inicialitzant"
 Status_ClosingPlatform: Tancament {platform}
 Status_ClosingPlatformFailed: No s'ha pogut tancar {platform}
 Status_StartingPlatform: Començant {platform}
@@ -261,171 +296,181 @@ Status_GetUniqueId: Recollida d'ID d'usuari únic
 Status_CopyingFiles: S'estan copiant els fitxers d'usuari...
 Status_HandlingImage: Gestió de la imatge del perfil del compte
 Context_SwapTo: Canvia al compte
-Context_CreateShortcut: Crea una drecera d'escriptori
-Context_CreateShortcutSubmenu: Crea una drecera d'escriptori ...
+Context_CreateShortcut: Crea una drecera
 Context_ChangeImage: Canvia la imatge
-Context_BNet_SetBTag: Estableix BattleTag
-Context_BNet_DelBTag: Suprimeix BattleTag
-Context_BNet_GetRAnk: Recupera la classificació
 Context_ChangeName: Canvia el nom del commutador
-Context_LoginAsSubmenu: Inicieu la sessió com a ...
-Context_UsernameSubmenu: Nom d'usuari ...
+Context_LoginAsSubmenu: Inicia la sessió com a
+Context_UsernameSubmenu: Nom d 'usuari
 Context_RefreshName: Actualitza el nom
-Context_CopySubmenu: Copia ...
-Context_CopyProfileSubmenu: Copia el perfil ...
+Context_CopySubmenu: Copia
+Context_DataSubmenu: Dades
+Context_CopyProfileSubmenu: Copia el perfil
 Context_CommunityUrl: URL de la comunitat
 Context_CommunityUsername: Nom d'usuari de la comunitat
 Context_LoginUsername: Nom d'usuari d'inici de sessió
-Context_CopySteamIdSubmenu: Copia SteamID ...
-Context_Steam_Id: 'SteamID [STEAM0: ~]'
-Context_Steam_Id3: 'SteamID3 [U: 1: ~]'
+Context_CopySteamIdSubmenu: Copia el SteamID
+Context_Steam_Id: SteamID [STEAM0:~]
+Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: SteamID32
-Context_Steam_Id64: SteamID64 7656 ~
-Context_Steam_OpenUserdata: Obre les dades d’usuari
-Context_CopyOtherSubmenu: Copia un altre ...
+Context_Steam_Id64: SteamID64 7656~
+Context_Steam_OpenUserdata: Obre les dades d 'usuari
+Context_ManageSubmenu: Gestiona
+Context_GameDataSubmenu: Dades del joc
+Context_ManageGameStats: Gestiona les estadístiques del joc
+Context_Game_CopySettingsFrom: Copia els paràmetres a l'actual
+Context_Game_RestoreSettingsTo: Restaura les dades del joc
+Context_Game_BackupData: Còpia de seguretat de les dades del joc
+Context_CopyOtherSubmenu: Còpia d'altres
 Context_HidePlatform: Amaga la plataforma
 Context_ExportAccList: Exporta la llista de comptes
 Context_RunAdmin: Executar com a administrador
 Context_Hide: Amaga
-Title_BNet_Settings: 'TcNo Account Switcher: configuració de BattleNet'
-Title_BNet_ManageIgnored: 'TcNo Account Switcher: gestioneu els comptes BattleNet ignorats'
+ProfileImage_ToggleText: Utilitza la imatge com a imatge del compte
 Title_Platforms_Settings: TcNo Account Switcher - Configuració de la plataforma
+Title_Settings_TestCss: TcNo Account Switcher - Test CSS Styling
 Title_AccountsList: TcNo Account Switcher - {platform}
-Title_TextEditor: 'TcNo Account Switcher: editor de text'
+Title_TextEditor: TcNo Account Switcher - Text Editor
 Title_Settings: TcNo Account Switcher - Configuració
-Title_Steam_Cleaning: 'TcNo Account Switcher: neteja de vapor'
-Title_Steam_Settings: 'TcNo Account Switcher: configuració de Steam'
+Title_Steam_Cleaning: TcNo Account Switcher - Neteja a vapor
+Title_Steam_Settings: TcNo Account Switcher - Configuració de Steam
 Title_Template_Settings: Commutador de comptes TcNo - {platformName} Configuració
+Title_Login: TcNo Account Switcher - Inicia sessió
 Installer_Downloading: S'està baixant {file}
-Installer_DownloadFinished: S'ha acabat de descarregar {file}
+Installer_DownloadFinished: S'ha acabat de baixar {file}
 Installer_Installing: "Instal·lació: {runtime}"
-Installer_RuntimeTitle: 'TcNo Account Switcher: instal·lador d''execució'
-Installer_Welcome: 'Benvingut al TcNo Account Switcher: instal·lador d''execució'
-Installer_InstalledRuntimes: "Temps d'execució instal·lats actualment:"
+Installer_RuntimeTitle: TcNo Account Switcher - Instal·lador en temps d'execució
+Installer_Welcome: Benvingut al TcNo Account Switcher - Instal·lador en temps d'execució
+Installer_InstalledRuntimes: "Temps d'execució instal·lat actualment:"
 Installer_ErrorRuntime: "No s'han instal·lat un o més temps d'execució:"
 Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB durant la instal·lació]"
 Installer_TotalSize: "Mida total de la baixada: ~{size} MB"
-Installer_AnyKeyStart: Premeu qualsevol tecla per començar a baixar ...
+Installer_AnyKeyStart: Premeu qualsevol tecla per iniciar la baixada...
 Runtime_WebView2: Temps d'execució de Microsoft WebView2
-Runtime_Desktop: Temps d’execució de l’escriptori Microsoft .NET 5
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
 Runtime_ASP: Temps d'execució de Microsoft Microsoft ASP.NET Core {version}
 Installer_FailedFolder: "No s'ha pogut crear la carpeta:"
-Installer_FailedWV: "No s'ha pogut descarregar i instal·lar Microsoft WebView2 Runtime. Per descarregar: 1. Feu clic a l'enllaç següent: {link} 2. Feu clic a \"Descarregar paquet d'allotjament\" a Executa aplicacions de servidor."
-Installer_FailedDR: "No s'ha pogut descarregar i instal·lar .NET 5 Desktop Runtime. Si us plau, descarregueu-lo aquí:"
+Installer_FailedWV: "No s'ha pogut descarregar i instal·lar Microsoft WebView2 Runtime. Per descarregar: 1. Feu clic a l'enllaç següent: {link} 2. Feu clic a \"Baixa el paquet d'allotjament\" a Executa les aplicacions del servidor."
+Installer_FailedDR: "No s'ha pogut descarregar i instal·lar .NET 5 Desktop Runtime. Si us plau, baixeu-lo aquí:"
 Installed_FailedASP: "No s'ha pogut descarregar i instal·lar ASP.NET Core {version} Runtime. Per descarregar: 1. Feu clic a l'enllaç següent: {link} 2. Feu clic a \"Descarrega x64\" a Executar aplicacions d'escriptori."
-Installer_Ready: "Un o més estan a punt per instal·lar-se. Si us demana si voleu instal·lar-lo, feu clic a \"Sí\"."
-Installer_PressStart: Premeu qualsevol tecla per començar a instal·lar ...
-Installer_VerifyMin: "Verifiqueu que compleixis els requisits mínims recomanats:"
-Installer_VerifyAlready: "Sembla que tot està instal·lat. Verifiqueu que compleixis els requisits mínims recomanats:"
+Installer_Ready: "Un o més estan preparats per a la instal·lació. Si i quan se us demani si voleu instal·lar-lo, feu clic a «Sí»."
+Installer_PressStart: Premeu qualsevol tecla per iniciar la instal·lació...
+Installer_VerifyMin: "Comprova que compleixes els requisits mínims recomanats:"
+Installer_VerifyAlready: "Sembla que tot està instal·lat. Comprova que compleixes els requisits mínims recomanats:"
 Installer_Complete: Això hauria de ser tot. El programa principal, TcNo-Acc-Switcher.exe, s'executarà automàticament.
-Installer_Complete2: "Si no funciona, consulteu les instruccions d'instal·lació aquí: {link}"
-Global_FatalNext: "S'ha produït un error greu. Aquest bloc d’errors s’enviarà automàticament el proper llançament."
+Installer_Complete2: "Si no funciona, consulteu les instruccions d'instal·lació, aquí: {link}"
+Global_FatalNext: "S'ha produït un error fatal! Aquest bloc d'error s'enviarà automàticament el proper inici."
 Tray_Error: Error de safata
-Tray_NoAccs: "No s'han trobat comptes.\nProveu primer de canviar de compte o localitzeu \"Tray_Users.json\""
-Tray_Switch: "Canvieu a: {account}"
-Tray_CantOpenExe: "No s'ha pogut obrir el fitxer .exe principal. Assegureu-vos que existeixi.\n\nHe intentat obrir:"
-Tray_LaunchFail: "TcNo Account Switcher: falla el llançament de la safata"
-Updater_Duplicate: S'ha detectat una altra instància TcNo Account Switcher Updater.
+Tray_NoAccs: "No s'han trobat comptes.\nProva de canviar de compte primer, o localitza 'Tray_Users.json'"
+Tray_Switch: "Canvia a: {account}"
+Tray_CantOpenExe: "No s'ha pogut obrir el .exe principal. Assegureu-vos que existeix.\n\nHe intentat obrir:"
+Tray_LaunchFail: "Commutador de compte TcNo - Error en iniciar la safata"
+Updater_Duplicate: S'ha detectat una altra instància de TcNo Account Switcher Updater.
 Updater_Unknown: "Argument desconegut: {arg}"
-Updater_NeedsAdmin: Aquest programa s'ha d'executar com a administrador.
+Updater_NeedsAdmin: Aquest programa s'ha d'executar com a administrador!
 Updater_StatusChecking: S'està comprovant la versió
-Updater_FailedVersionCheck: "No s'ha pogut obtenir la versió. Feu clic a \"Verifica\" per actualitzar i verificar fitxers"
-Updater_PressBelow: Premeu el botó següent.
-Updater_PressBelowStart: Feu clic al botó següent per iniciar l'actualització.
-Updater_PatchApplied: Pedaç aplicat
-Updater_UpdatingAppData: S'estan actualitzant fitxers a AppData.
-Updater_Complete: S'han completat totes les actualitzacions.
-Updater_Checking: S'estan cercant actualitzacions
-Updater_UpdateToVerify: Per verificar els fitxers, cal que actualitzeu primer.
-Updater_ClosingTcNo: Tancament d’instàncies TcNo Account Switcher (si n’hi ha).
+Updater_FailedVersionCheck: "No s'ha pogut obtenir la versió. Feu clic a \"Verificar\" per actualitzar i verificar els fitxers"
+Updater_PressBelow: Premeu el botó de sota!
+Updater_PressBelowStart: Feu clic al botó de sota per iniciar l'actualització.
+Updater_PatchApplied: S'ha aplicat el pedaç!
+Updater_UpdatingAppData: S'estan actualitzant els fitxers a AppData!
+Updater_Complete: S'han completat totes les actualitzacions!
+Updater_Checking: S'estan comprovant les actualitzacions
+Updater_UpdateToVerify: Per verificar els fitxers heu d'actualitzar-los primer.
+Updater_ClosingTcNo: S'estan tancant les instàncies del TcNo Account Switcher (si n'hi ha).
 Updater_Downloading: "S'està baixant l'actualització: {version}"
-Updater_Downloaded: Descàrrega completa.
+Updater_Downloaded: Baixada completa.
 Updater_CantExtract: No s'ha pogut extreure l'actualització.
-Updater_Verify: Verifiqueu els fitxers
-Updater_Verifying: S'està verificant ...
-Updater_VerifySkip: S'estan verificant els fitxers per ometre totes les petites actualitzacions i passar a l'últim.
-Updater_NoConnection: "No s'ha pogut connectar a tcno.co per verificar els fitxers. Podeu provar de descarregar manualment l’instal·lador des de la pàgina de GitHub i tornar-lo a instal·lar per actualitzar-lo.\n\nError:"
-Updater_NoServer: No s'ha pogut accedir al servidor d'actualitzacions
-Updater_Hashlist: S'està baixant la llista de hash més recent ...
-Updater_CantCheck: No es pot comprovar si hi ha actualitzacions
-Updater_Failed: "ERROR: alguns dels fitxers estan en ús i no es poden actualitzar.\n\n1. Assegureu-vos que tots els processos TcNo estan tancats per complet\n(o reiniciar el seu PC)\n\n2. A continuació, feu clic a Verifica baix, o si ha reiniciat:\n- Obrir actualitzador i verificar arxius\n    (que es troba a la carpeta 'actualitzador' al directori d'instal·lació)"
-Updater_Missing: "FALTA DEL FITXER: {file}"
+Updater_Verify: Verifica els fitxers
+Updater_Verifying: S'està verificant...
+Updater_VerifySkip: S'estan verificant els fitxers per ometre totes les petites actualitzacions i només cal que aneu a la darrera.
+Updater_NoConnection: "No s'ha pogut connectar a tcno.co per verificar els fitxers. Podeu provar de descarregar manualment l'instal·lador des de la pàgina de GitHub i reinstal·lar-lo per actualitzar-lo.\n\nError:"
+Updater_NoServer: No s'ha pogut arribar al servidor d'actualitzacions
+Updater_Hashlist: S'està baixant la darrera llista de hash...
+Updater_CantCheck: No s'han pogut comprovar les actualitzacions
+Updater_Failed: "ERROR: Alguns dels fitxers estan en ús i no es poden actualitzar.\n\n1. Assegureu-vos que tots els processos TcNo estiguin completament tancats\n(o reinicieu el vostre PC)\n\n2. A continuació, feu clic a Verifica a continuació o si heu reiniciat:\n-   Obriu aquest actualitzador i verifiqueu els fitxers\n    (situats a la carpeta 'Actualitzador' del directori d'instal·lació)"
+Updater_Missing: "FALTA EL FITXER: {file}"
 Updater_FileMismatch: "El fitxer: {file} té MD5: {md5} ESPERAT: {value}"
-Updater_DownloadingWeb: S'està baixant el fitxer del lloc web ...
-Updater_UnpackingAppData: S'estan copiant fitxers a %AppData%/ TcNo Account Switcher ... (tret que s'estableixi el contrari)
-Updater_VerifyComplete: Arxius verificats.
+Updater_DownloadingWeb: S'està baixant el fitxer des del lloc web...
+Updater_UnpackingAppData: S'estan copiant els fitxers a %AppData%/TcNo Account Switcher... (llevat que s'estableixi el contrari)
+Updater_VerifyComplete: S'han verificat els fitxers!
 Updater_UpdateFound: "Actualització trobada: {name} [{updateSize}]"
-Updater_TotalFound: "S'han trobat actualitzacions totals: {x}"
+Updater_TotalFound: "Actualitzacions totals trobades: {x}"
 Updater_TotalSize: "Mida total: {size}"
-Updater_AwaitingUser: S'està esperant l'entrada de l'usuari ...
-Updater_UpToDate: "Esteu al dia.\n:)"
-Updater_FailedDecode: Probablement, això és degut a que (TechNobo) he empès una actualització i he fet un error tipogràfic que ha trencat el fitxer d'actualització .json. Avisa'm :)
+Updater_AwaitingUser: S'està esperant l'entrada de l'usuari...
+Updater_UpToDate: "Estàs al dia.:\n)"
+Updater_FailedDecode: És molt probable que això es degui a que jo (TechNobo) vaig introduir una actualització i vaig fer un error tipogràfic que va trencar el fitxer d'actualització .json. No m'ho facis saber :)
 Updater_FailedDecodeTitle: No s'ha pogut descodificar la llista d'actualitzacions
-Updater_Extracting: Extracció de fitxers de pegats
-Updater_Applying: S'està aplicant el pedaç ...
-Updater_Moving: S'estan movent els fitxers ...
-Updater_Title: Actualitzador de TcNo Account Switcher
-Updater_Started: Començat
-Updater_Start: Inicieu TcNo Account Switcher
-Updater_Begin: Comenceu a actualitzar
+Updater_Extracting: S'estan extraient els fitxers de parxís
+Updater_Applying: S'està aplicant el pedaç...
+Updater_Moving: S'estan movent els fitxers...
+Updater_Title: TcNo Account Switcher Updater
+Updater_Started: S'ha iniciat
+Updater_Start: Inicia el commutador de comptes TcNo
+Updater_Begin: Inicia l'actualització
 Updater_Exit: Surt
-FatalError: S'ha produït un error greu.
+FatalError: S'ha produït un error fatal!
 Online: En línia
-OnlineDefault: En línia (predeterminat)
-Offline: Desconnectat
+OnlineDefault: En línia (per defecte)
+Offline: Fora de línia
 Invisible: Invisible
-Busy: Ocupat
+Busy: 'Ocupat @ info: whatsthis'
 Away: Lluny
-Snooze: Dormitar
-LookingToTrade: Mirant al comerç
-LookingToPlay: Mirant per jugar
+Snooze: Snooze
+LookingToTrade: Buscant comerç
+LookingToPlay: Teniu ganes de jugar
 Unrecognized_EPersonaState: ePersonaState no reconegut
 Reg_DoesntExist: "{subKey} no existeix."
 Reg_DoesntContain: "{subKey} no conté {val}"
 Reg_Removing: S'està suprimint {subKey}\\{val}
-PngInvalid_Format: El format de píxel obligatori és PixelFormat.{x}.
-PngRequired: El format d’imatge obligatori és un gràfic de xarxa portàtil (png).
+PngInvalid_Format: El format de píxel necessari és PixelFormat.{x}.
+PngRequired: El format d'imatge necessari és una xarxa gràfica portàtil (png).
 PngDimensions: Les dimensions han de ser inferiors o iguals a {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "S'ha produït un error de sintaxi (més detalls a continuació). I:"
-ThemesNotFound: "No s'ha pogut trobar la carpeta \"temes\" al directori de TcNo Account Switcher. Això (especialment la carpeta 'Dracula_Cyan') és necessari perquè aquest programari s'executi.\nPodeu executar l'Actualitzador a la carpeta \"actualitzador\" per verificar els fitxers i restaurar aquests fitxers que falten."
+ThemeSyntaxAnd: "S'ha trobat un error de sintaxi (més detalls a continuació) I:"
+ThemesNotFound: "No s'ha pogut trobar la carpeta \"temes\" al directori del commutador de comptes TcNo. Això (especialment la carpeta «Dracula_Cyan») és necessari perquè aquest programari s'executi.\nPodeu executar l'actualitzador a la carpeta «Actualitzador» per verificar els fitxers i restaurar els fitxers que falten."
 Yes: "Sí"
 No: "No"
-NoDefault: No (per defecte)
+Save: Desa
+NoDefault: Sense (per defecte)
 Ok: "D'acord"
-Forget: Oblida't
+Submit: Envia
+Forget: Oblida
 Notice: Avís
-Error: Error
+Notes: Notes
+Error: S'ha produït un error
 ErrorDetails: "ERROR: {ex}"
-Failed: Fracassat
+Failed: Ha fallat
 Success: Èxit
-NotFound: No trobat
+NotFound: No s'ha trobat
 Done: Fet
+Edit: 'Edita @ info: whatsthis'
+Refresh: Actualitza
 Working: Treball...
 ForName: "Per a: {name}"
 DeletedFiles: Fitxers suprimits
 FileFoldersToClear: "Llista de fitxers/carpetes a esborrar:"
 CouldNotFindX: No s'ha pogut trobar {x}
-CouldNotCloseX: No s'ha pogut tancar {x}.
+CouldNotCloseX: No s'ha pogut tancar {x}!
+CouldNotReadFile: No s'ha pogut llegir {file}!
 DirectoryNotFound: No s'ha trobat el directori
-DirectoryNotFoundFolder: "Directori no trobat: {folder}"
-DeletingFile: "Supressió: {file}"
-DeletingFolder: "Supressió de la carpeta: "
-CouldntDeleteX: "ERROR: NO ES PODIA ESBORRAR: {x}"
-CouldntDeleteUndefined: "ERROR: NO ES POT ESBORRAR EL FITXER NO DEFINIT"
-Prompt_RestartAsAdmin: "<h3><bold>Aquest programa es reiniciarà com a administrador</bold></h3><p>Premeu \"Sí\" a UAC quan se us demani l'administrador.</p>"
+DirectoryNotFoundFolder: "No s'ha trobat el directori: {folder}"
+DeletingFile: "S'està suprimint: {file}"
+DeletingFolder: "S'està suprimint la carpeta: "
+CouldntDeleteX: "ERROR: NO S'HA POGUT SUPRIMIR: {x}"
+CouldntDeleteUndefined: "S'HA PRODUÏT UN ERROR: NO S'HA POGUT SUPRIMIR EL FITXER NO DEFINIT"
+Prompt_RestartAsAdmin: "<h3><bold>Aquest programa es reiniciarà com a Admin</bold></h3><p>Premeu \"Sí\" a la UAC quan se li demani admin</p>."
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Estàs a punt d'oblidar un compte!</h3> <h4>Què vol dir això?</h4> <p>- Steam ja no tindrà el compte llistat en el mode d'imatge gran i no recordarà la contrasenya.<br/> - TcNo Account Switcher tampoc mostrarà el compte fins que no torni a iniciar la sessió a través de Steam.</p> <p>El vostre compte no es tocarà. Només s'ha oblidat en aquest ordinador.</p><h4>Ho entens?</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>Esteu a punt d'oblidar-vos d'un compte.</h3> <h4>Què significa això?</h4> <p>TcNo Account Switcher tampoc deixarà de mostrar el compte,<br/> fins que no torni a iniciar la sessió fins al {platform}i s'afegeixi a la llista.</p> <p>vostre compte es mantindrà intacte. Simplement s’oblida en aquest ordinador.</p> <h4>Ho entens?</h4>
+  <h3 style='color:red'>Estàs a punt d'oblidar un compte!</h3> <h4>Què vol dir això?</h4> <p>TcNo Account Switcher tampoc mostrarà el compte,<br/> fins que torni a iniciar la sessió a través de {platform}, i s'afegeixi a la llista.</p> <p>El teu compte romandrà intacte. S'acaba d'oblidar en aquest ordinador.</p> <h4>Ho entens?</h4>
 Prompt_ClearStats: >
-  <h3 style='color:red'>Esteu a punt d'esborrar les vostres estadístiques!</h3> <p>No podeu desfer aquesta acció.</p>
+  <h3 style='color:red'>Estàs a punt d'esborrar les teves estadístiques!</h3> <p>No pots desfer aquesta acció.</p>
 Platform_DiscordPasteHint: Enganxeu a la consola de Discord i, a continuació, enganxeu el resultat a l'entrada!
 Platform_ClearCache: Netejar memòria cau
 Platform_ClearCacheTotal: Esborrant {totalFileCount} fitxers ({totalSizeMB})
 Platform_DeleteFail: No s'han pogut suprimir alguns fitxers (el programa pot estar en execució?)
 Platform_CouldNotDeleteLog: No s'ha pogut suprimir el fitxer! Comprova {logPath}
 Error_FileAccessDenied: No s'ha pogut accedir al fitxer! Comprova {logPath}
-Error_RequiredFileVerify: No s'ha trobat cap fitxer obligatori. Assegureu-vos que les carpetes x64 i x86 existeixen al directori d'instal·lació. Si no, executeu TcNo-Acc-Switcher-Updater.exe i verifiqueu els fitxers.
+Error_RequiredFileVerify: No s'ha trobat el fitxer necessari. Assegureu-vos que les carpetes x64 i x86 existeixen al directori d'instal·lació. Si no és així, executeu TcNo-Acc-Switcher-Updater.exe i verifiqueu els fitxers.
 Tooltip_Settings: Configuració
 Tooltip_Info: Informació
 Tooltip_ManagePlatforms: Mostra o amaga altres plataformes
@@ -433,9 +478,16 @@ Tooltip_ExpandShortcuts: Amplieu la selecció de jocs i dreceres
 Tooltip_ShortcutFolder: Obre la carpeta de dreceres. Col·loqueu dreceres allà i el commutador de comptes de TcNo per veure-les.
 Tooltip_Backup: Còpia de seguretat dels fitxers/carpetes de configuració, tal com es defineix a la configuració de la plataforma.
 Tooltip_BackupAll: Feu una còpia de seguretat de TOTS els fitxers/carpetes de configuració, incloses les imatges i altres fitxers grans.
-Tooltip_ClosingMethod: "El millor és combinar. Tanca els intents de tancar directament mitjançant una funció de tancament i TaskKill utilitza CMD (el millor si es combina no funciona)"
-Tooltip_StartingMethod: "Per defecte és el millor. Direct no té control sobre el nivell d'administració o UAC. Començarà amb el mateix nivell (o superior, però no inferior) que aquest commutador de comptes"
-Tooltip_CurrentAccount: Actualment esteu connectat a aquest compte.
-Discord_Status: Actualment canviant de compte.
+Tooltip_ClosingMethod: "Combinat és millor. Tanca els intents de tancar directament a través d'una funció de tancament i TaskKill utilitza CMD (millor si combinat no funciona)"
+Tooltip_StartingMethod: "Per defecte és el millor. Direct no té control sobre el nivell d'administració ni sobre la UAC. Començarà com el mateix nivell (o superior - però no inferior) que aquest commutador de compte"
+Tooltip_CurrentAccount: En aquests moments estàs connectat a aquest compte.
+Tooltip_Restore: Feu clic per seleccionar un fitxer 7z o arrossegueu-lo a aquest botó.
+Tooltip_DisabledGlobally: Aquest element està ocult per a tots els comptes. Pots canviar-ho a la configuració de la plataforma.
+Discord_Status: Actualment s'estan canviant els comptes.
 Discord_StatusDetails: "Comptes canviats: {number}"
-Website: Lloc web
+Website: Pàgina web
+Preview_Platforms: Vista prèvia de les plataformes
+Preview_Accounts: Vista prèvia dels comptes
+Preview_Notifications: Vista prèvia de les notificacions de brindis
+Preview_Settings: Vista prèvia de la configuració
+Preview_Modals: Vista prèvia de modal
