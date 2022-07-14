@@ -1,0 +1,493 @@
+---
+Update: Pembaruan tersedia! Klik di sini untuk memulainya.
+Header_ChooseLanguage: 'Pilih Bahasa:'
+Steam_ShowSteamID: SteamID
+Steam_ShowVac: Status VAC
+Steam_ShowLastLogin: Waktu masuk terakhir
+Steam_ShowLimited: Status Terbatas
+Steam_ShowAccUsername: Nama pengguna akun
+Steam_Tray_AccountName: Tampilkan nama akun [bukan nama teman]
+Steam_CheckVac: Periksa status VAC akun
+Steam_OverrideDefaultState: "Mengganti keadaan login default:"
+Steam_StartSilent: "Buka Steam untuk mengaktifkan task tray (Mulai Steam dengan '- silent ')"
+Button_AddNew: Tambah Baru
+Button_SaveCurrent: Simpan Saat Ini
+Button_SaveFile: Simpan Berkas
+Button_Cancel: Batalkan
+Button_Login: Masuk
+Button_Close: Tutup
+Button_RefreshImages: Segarkan gambar
+Button_ResetSettings: Atur ulang pengaturan
+Button_AdvancedCleaning: Pembersihan lanjutan...
+Button_ClearLog: Hapus log
+Button_WikiInfo: Info Selengkapnya (Wiki)
+Button_ManagePlatforms: Kelola Platform
+Button_Backup: Cadangan
+Button_BackupAll: Cadangkan semuanya
+Button_Restore: Pulihkan
+Button_OpenBackup: Buka Folder Cadangan
+Button_Back: Kembali
+Button_RestartAdmin: Mulai ulang sebagai Admin
+Button_SetPassword: Atur Kata Sandi Aplikasi
+Settings_Shortcut: ' {platform} Pintasan Desktop Switcher'
+Settings_Admin: Jalankan {platform} sebagai Admin
+Settings_ImageExpiry: 'Hari sebelum gambar profil kedaluwarsa:'
+Settings_SteamAPIKey: "Kunci api Web Steam (opsional)"
+Settings_SteamAPIKey_Note: Mengatur kunci api akan membuat indikator Terbatas (batas kuning) ditampilkan untuk akun yang Diblokir Komunitas.
+Settings_Header_AppWide: Pengaturan seluruh aplikasi
+Settings_Header_GeneralSettings: Pengaturan umum
+Settings_Header_AccountDisplay: Pengaturan Tampilan Akun
+Settings_Header_ExtraPlatforms: Pengaturan Platform
+Settings_Header_GeneralTools: Alat Umum
+Settings_Header_OtherTools: Alat Lainnya
+Settings_Header_TraySettings: Pengaturan baki
+Settings_Header_OpenGameFolders: Buka folder game
+Settings_Header_BackupRestore: Cadangkan & Pulihkan pengaturan platform
+Settings_Header_Language: Bahasa
+Settings_Header_System: Sistem
+Settings_Header_Theme: Tema
+Settings_Header_Program: Program
+Settings_Header_StatsSharing: Statistik & Berbagi
+Settings_Header_Platform: "{platformName} pengaturan"
+Settings_Header_GameStats: Pengaturan statistik game global
+Settings_GameStats: Apa pun yang dicentang di sini TIDAK akan ditampilkan di bawah nama pengguna Anda untuk akun apa pun. Gunakan ini jika Anda sering menyembunyikan item tertentu dari statistik permainan Anda.
+Settings_TrayMax: 'Jumlah akun maksimum untuk diingat:'
+Settings_ExtraPlatformsDisabled: Menonaktifkan platform. Klik untuk mengaktifkannya.
+Settings_ExtraPlatformsEnabled: Platform yang terlihat. Klik untuk menonaktifkannya.
+Settings_RTL: Tampilkan teks sebagai Kanan - ke - Kiri
+Settings_CollectStats: Kumpulkan statistik
+Settings_ShareStats: Bagikan statistik dengan kesal (disarankan)
+Settings_DiscordRpc: Kehadiran Kaya Perselisihan (RPC)
+Settings_DiscordRpcShare: Bagikan total sakelar
+Settings_ViewStats: Lihat statistik
+Preview: Pratinjau
+Settings_ClearStats: Reset
+Settings_CurrentLocation: 'Lokasi pemasangan saat ini: {path}'
+Settings_CurrentDataLocation: 'Lokasi data pengguna saat ini: {path}'
+Settings_SetDataLocation: "[Tetapkan lokasi data pengguna kustom]"
+Settings_PickFolder: Pilih folder {platform}
+Settings_OpenFolder: Buka Folder {platform}
+Settings_ClearForgotten: Hapus Lupa
+Settings_ClearAccounts: Hapus Akun
+Settings_StreamerMode: Aktifkan mode pengalir
+Settings_ExitToTray: Keluar dari nampan untuk meminimalkan
+Settings_DesktopShortcut: Pintasan desktop
+Settings_StartMenu_ProgramTray: Program & Baki
+Settings_StartMenu_Platform: Platform
+Settings_Tray_StartWindows: Mulai Baki dengan Windows
+Settings_Tray_StartNow: '[Mulai Baki sekarang]'
+Settings_CurrentStyle: Gaya Saat Ini
+Settings_ThemeBackground: '[Atur latar belakang]'
+Settings_ThemeOpenFolder: '[Buka folder tema]'
+Settings_Protocol: 'Aktifkan tcno:\\ protokol (Disarankan)'
+Settings_StartCentered: Mulai program yang dipusatkan
+Settings_WindowsAccent: Gunakan Warna Aksen Windows
+Settings_HelpTranslate: "[Bantuan menerjemahkan]"
+Settings_ViewTranslators: "[Credits]"
+Settings_Header_ActiveBrowser: "(Lanjutan) Setel mesin render:"
+Settings_Header_ClosingMethod: "(Lanjutan) Atur metode untuk menutup {platform}"
+Settings_Header_StartingMethod: "(Lanjutan) Atur metode untuk memulai {platform}"
+Settings_AutoStart: "Otomatis mulai {platform} pada sakelar akun"
+Settings_NoPlatforms: Saat ini tidak ada platform yang diaktifkan. Centang platform opsional di bawah ini untuk mengaktifkannya, atau hapus centang platform yang dinonaktifkan.
+Settings_MinimizeOnSwitch: Minimalkan pengalih pada pengalih akun
+Settings_ShowShortNotes: Pratinjau catatan di bawah nama pengguna
+Settings_Header_AppPassword: "Hentikan orang lain menggunakan switcher:"
+PreviewCss: Pratinjau CSS
+Settings_PreviewCss: Ini adalah halaman pratinjau CSS. Anda dapat melihat beberapa elemen yang muncul di program dan melihat tampilannya dengan tema Anda. Halaman ini berguna untuk mereka yang membuat tema!
+Settings_PreviewCssHeader: Halaman Pratinjau CSS
+Stats_Disabled: "Pengumpulan statistik dinonaktifkan."
+Stats_InDepth: Perincian statistik mendalam
+Stats_ShareEnabled: "Statistik ini dibagikan secara anonim dan akan ditambahkan ke total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">di sini</a>."
+Stats_ShareDisabled: "Statistik ini TIDAK dibagikan secara anonim dan TIDAK akan ditambahkan ke total <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">di sini</a>."
+Stats_OperatingSystem: "Sistem operasi: "
+Stats_FirstLaunch: "Peluncuran pertama: "
+Stats_LaunchCount: "Jumlah peluncuran: "
+Stats_CrashCount: "Jumlah tabrakan: "
+Stats_MostUsedPlatform: "Platform yang paling sering digunakan: "
+Stats_TotalTime: "Total waktu yang dihabiskan dalam aplikasi: "
+Stats_TotalSwitches: "Total pengalihan akun: "
+Stats_TotalGamesLaunched: "Total aplikasi/game yang diluncurkan melalui switcher: "
+Stats_UniqueDaysLong: "Hari - hari unik dengan pergantian akun: "
+Stats_LastUpload: "Unggahan Terakhir: "
+Stats_SwitcherStats: "Statistik pengalih: "
+Stats_PageStats: "Statistik halaman: "
+Stats_VisitsTotalTime: "{visits} total kunjungan, {hours} total waktu"
+Stats_Accounts: "Akun: "
+Stats_Switches: "Sakelar: "
+Stats_FirstActive: "Aktif pertama: "
+Stats_LastActive: "Terakhir aktif: "
+Stats_UniqueDays: "Hari - hari unik: "
+Stats_GameShortcuts: "Pintasan permainan: "
+Stats_GameShortcutsHotbar: "Pintasan permainan (pada hotbar): "
+Stats_GamesLaunched: "Permainan yang diluncurkan: "
+Stats_MetricsToShow: "Metrik yang ditampilkan:"
+Stats_AccountId: "Id Akun:"
+Auth_LoginRequired: Kata sandi sebelumnya telah ditetapkan, dan diperlukan. Silakan masukkan kata sandi di bawah ini.
+Auth_EnterPassword: "Masukkan kata sandi:"
+Auth_PassIncorrect: Kata sandi salah.
+Locked: Terkunci
+Cleaning_Header_StartMenuShortcuts: 'Pintasan untuk Menu Mulai:'
+Cleaning_Header_General: Pembersihan Umum
+Cleaning_Header_LoginHistory: Bersihkan riwayat masuk saya
+Cleaning_Header_PlatformCleaning: '{platform} Pengalih'
+Cleaning_ImportantInfoHeader: 'Info penting:'
+Cleaning_ImportantInfo: >
+  Mengeklik tombol akan menghapus berkas terkait dari instalasi Steam Anda.<br /> Menghapus loginusers.vdf akan mengakibatkan pengalih akun ini tidak menampilkan akun.<br /> Anda harus login ke mereka menggunakan Steam untuk mendapatkannya kembali.
+Cleaning_Button_KillProcess: Mematikan {platform} proses
+Cleaning_Button_ForgottenBackups: Pencadangan akun yang terlupakan
+Cleaning_Understand: Aku mengerti apa yang tombol - tombol ini lakukan.
+Restore_Info: >
+  Jika Anda sebelumnya "lupa" akun, Anda dapat mengembalikannya di sini.<br /> Ini menambahkan mereka kembali ke file loginuser.vdf Anda, memungkinkan Anda untuk beralih ke mereka.
+Restore_Button_Restore: Pulihkan yang dipilih
+Ignored_RemoveAccounts: Hapus akun dari daftar abaikan
+Ignored_Description: Jika sebelumnya Anda "mengabaikan" akun, Anda dapat menunjukkannya lagi di sini
+Ignored_Stop: Berhenti mengabaikan yang dipilih
+Toast_DataLocationCopying: (1/2) Menyalin file yang ada ke dalam folder data pengguna baru!
+Toast_DataLocationNotCopying: (1/2) Folder sudah memiliki file! Tidak akan memigrasikan data pengguna.
+Toast_DataLocationSet: (2/2) Mulai ulang pengalih akun untuk menggunakan folder baru!
+Toast_PlaceShortcutFiles: Sebuah folder sedang dibuka. Tempatkan pintasan permainan di folder itu, dan mulai ulang pengalih akun.
+Toast_TrayStarted: Baki dimulai!
+Toast_TrayRunning: Baki sudah terbuka
+Toast_TrayUsersMissing: Tidak ada pengguna baki yang disimpan
+Toast_TrayFail: Tidak dapat memulai aplikasi baki!
+Toast_TrayPosition: "Saat mengklik tombol Keluar: Saya akan berada di Baki Windows! (Kanan Start Bar)"
+Toast_TrayHint: "Petunjuk: Ctrl+Klik tombol 'X' untuk menutup saya sepenuhnya, atau melalui baki > 'Keluar'"
+Toast_Copied: Disalin
+Toast_AlreadyProcessing: Sudah memproses akun...
+Toast_FailedRestore: Gagal memulihkan akun (Lihat konsol)
+Toast_Restored: Akun yang dipulihkan!
+Toast_ProtocolEnabled: Program ini sekarang akan merespons tcno:\\ di Windows
+Toast_ProtocolEnabledTitle: Protokol ditambahkan
+Toast_ProtocolDisabled: Program ini tidak akan lagi merespons tcno:\\
+Toast_ProtocolDisabledTitle: Protokol dihapus
+Toast_RestartAsAdmin: Silakan mulai sebagai Admin dan coba lagi.
+Toast_RestartAfterClose: Silakan mulai ulang program setelah mengklik Tutup.
+Toast_RestartAfterCloseTitle: Warna aksen dinonaktifkan
+Toast_RestartRequired: Mulai ulang untuk menerapkan perubahan
+Toast_LoadStylesheetFailed: Gagal memuat stylesheet! Lihat folder data pengguna untuk detailnya.
+Toast_LoadingStats: Satu profil atau lebih adalah statistik yang menyegarkan. Harap tunggu.
+Toast_ItemNotFound: "{item} tidak ditemukan"
+Toast_DeletedTotal: "{files} dari {totalFiles} dihapus. Total: {totalSize}"
+Toast_CantChangeUsername: Tidak dapat mengubah nama pengguna
+Toast_CantClearLoginFiles: Gagal menghapus berkas login lama
+Toast_AccountIdReg: Gagal mendapatkan Id Akun dari Registri!
+Toast_RegFailWrite: Gagal Menulis ke Regsitry Windows!
+Toast_RegFailRead: Gagal Membaca dari Regsitry Windows!
+Toast_RegFailReadSaved: Gagal membaca entri Registri yang disimpan. Coba hapus dan tambahkan akun lagi jika tidak berhasil.
+Toast_RegSaveMissing: Gagal Menemukan atau Membaca data dari berkas Registri yang disimpan!
+Toast_DuplicateNames: Tidak dapat bertukar. Duplikat akun dengan nama pengguna yang sama?
+Toast_MissingUserId: "Tidak dapat bertukar. ID pengguna hilang. Periksa Wiki 'Kesalahan Umum '."
+Toast_CouldNotLocate: Tidak dapat menemukan pengguna yang masuk
+Toast_StreamerModeHint: Info pribadi disembunyikan! - Lihat pengaturan
+Toast_StreamerModeTitle: Mode pengalir
+Toast_AddAccountsFirst: Buka platform dari daftar dan tambahkan beberapa akun terlebih dahulu
+Toast_AddAccountsFirstTitle: Tidak ada akun yang disimpan
+Toast_CantFindImage: Gagal menemukan gambar pengguna.
+Toast_CantCreateShortcut: Tidak dapat membuat pintasan
+Toast_ShortcutCreated: Jalan pintas dibuat!
+Toast_SettingsCopied: Pengaturan berhasil disalin ke akun saat ini.
+Toast_GameDataRestored: Berhasil memulihkan data game untuk akun ini.
+Toast_NoValidSteamId: Tidak dapat menemukan ID Steam yang valid.
+Toast_FailedUpdateCheck: Gagal memeriksa pembaruan
+Toast_UpdateVerifyFail: Tidak dapat memverifikasi file updater. Unduh versi terbaru dan ganti file di direktori Anda.
+Toast_StartedGame: Dimulai {program}
+Toast_Steam_VacCleared: Status VAC untuk akun telah dihapus
+Toast_Steam_CantDeleteVacCache: Tidak dapat menghapus 'LoginCache/Steam/VACCache/SteamVACCache.json'
+Toast_NoFindSteamUserdata: Tidak dapat menemukan folder data Steam\\ userdata
+Toast_NoFindGameBackup: Tidak dapat menemukan folder data game cadangan untuk akun ini.
+Toast_GameBackupDone: "Folder data game berhasil dicadangkan: {folderLocation}"
+Toast_Steam_VdfLast: Dapat memuat dari vdf_ last. Beberapa akun mungkin hilang.
+Toast_PartiallyFixed: Sebagian tetap
+Toast_Steam_FailedLoginusers: Gagal memuat steam/config/loginusers.vdf
+Toast_Steam_CantLocateLoginusers: Tidak dapat menemukan '.../Steam/config/loginusers.vdf '. Coba masuk ke akun terlebih dahulu.
+Toast_CantClearImages: Tidak dapat menghapus gambar
+Toast_RefreshedImages: Gambar yang disegarkan
+Toast_ClearForgottenCheck: Anda yakin ingin menghapus pencadangan akun yang terlupakan?
+Toast_ForgotAccount: Lupa akun
+Toast_ClearedPlatformSettings: "Pengaturan {platform} Switcher yang Dikosongkan"
+Toast_ClearedImages: "Gambar yang sudah dibersihkan"
+Toast_SavedItem: "Disimpan: {item}"
+Toast_ChangedUsername: Nama Pengguna yang Diubah
+Toast_SetUsername: Atur Nama Pengguna
+Toast_AlreadyLoggedIn: Sudah masuk dengan akun ini! (Tidak ada perubahan yang dilakukan)
+Toast_BackupCopy: (1/3) Menyalin berkas ke lokasi sementara...
+Toast_BackupCompress: (2/3) Mengompresi file ({size}). Ini akan memakan waktu...
+Toast_BackupComplete: (3/3) Selesai dikompres! ({size} sampai {compressedSize})
+Toast_BackupProgress: "Pencadangan sedang berlangsung (Ukuran terkompresi: {compressedSize})"
+Toast_BackupFail: Pencadangan gagal - Lihat log!
+Toast_BackupBusy: Pencadangan sudah berlangsung!
+Toast_RestoreBusy: Pemulihan sudah berlangsung!
+Toast_RestoreExt: Mengekstrak arsip.
+Toast_RestoreCopying: Memindahkan berkas kembali ke platform
+Toast_RestoreDeleting: Menghapus berkas sementara
+Toast_RestoreComplete: Pulihkan selesai!
+Toast_FailedLoad: Gagal memuat {platform}! Klik platform untuk melihat kesalahan.
+Toast_FailedPlatformsLoad: Gagal memuat Platforms.json! Harap verifikasi file ini sudah ada.
+Toast_FailedLoadSettings: "Gagal memuat pengaturan! Memuat pengaturan default saja. Menambahkan 'lama' ke nama berkas pengaturan yang ada."
+Toast_FailedLoadStats: "Gagal memuat statistik! Memulai yang baru."
+Toast_FailedStatsLoad: Gagal memuat GameStats.json! Harap verifikasi file ini sudah ada.
+Toast_GameStatsLoadFail: "Gagal mendapatkan statistik permainan dari web untuk {Game}"
+Toast_GameStatsEmpty: "Tidak ada statistik permainan yang ditemukan di situs web untuk {Game}. Kau pikir itu kesalahan? Periksa folder data pengguna dan 'temp\\download -{AccoundId}-{Game}.html' untuk melihat apakah laman mengalami galat!"
+Toast_FileCopyFail: Gagal menyalin berkas! Lihat log untuk detail lebih lanjut.
+Toast_UserDataLoadFail: Gagal memuat data pengguna {UserData}\\WindowSettings.json. Cadangkan dan atur ulang! Galat tersimpan untuk dicatat.
+Toast_UpdateCheckFail: Tidak dapat mencapai https://tcno.co/ untuk memeriksa pembaruan. Pesan ini akan ditampilkan sekali sehari.
+Toast_FailedCreateIcon: Gagal membuat ikon. Lihat log untuk detailnya.
+Toast_SameAccount: Tidak dapat menyalin file ke/dari akun yang sama. Coba akun lain, atau lihat Wiki untuk info lebih lanjut.
+Toast_Steam_DownloadingAppIds: Mengunduh daftar Steam AppId...
+Toast_Steam_DownloadingAppIdsComplete: Selesai diunduh. Submenu data game telah diperbarui.
+Toast_SteamWebKeyInvalid: Kunci api Web Steam tampaknya tidak valid. Harap atur yang baru.
+Toast_DownloadingProfileData: Mengunduh data profil
+Toast_PasswordChanged: Kata sandi berubah
+Toast_JsonFailModify: Gagal memodifikasi berkas JSON. Lihat log.
+Modal_Crowdin_Header: Penerjemah Crowdin
+Modal_Crowdin_Info: "Berikut adalah semua orang yang membantu menerjemahkan perangkat lunak ini.<br>Pengguna dengan bahasa di samping mereka banyak membantu dalam penerjemahan (peran proofreader)."
+Modal_Info_Creator: Dibuat oleh TechNobo [Wesley Pyburn]
+Modal_Info_Version: Versi
+Modal_Info_ViewGitHub: Lihat di GitHub
+Modal_Info_BugReport: Laporan kutu/Permintaan fitur
+Modal_Info_VisitSite: Kunjungi tcno.co
+Modal_Info_Disclaimer: Penafian
+Modal_Title_Info: Informasi Pengalih Akun TcNo
+Modal_Title_ChangeUsername: Ubah nama pengguna
+Modal_Title_ConfirmAction: Pengalih Akun TcNo Konfirmasi Tindakan
+Modal_Title_LocatePlatform: Silakan cari direktori {platform}
+Modal_Title_AddNew: Tambahkan {platform} akun baru
+Modal_Title_Background: Atur gambar latar belakang
+Modal_Title_Userdata: Atur folder data pengguna
+Modal_Title_GameStats: Aktifkan/Nonaktifkan statistik permainan
+Modal_GameStats_Header: "Aktifkan/Nonaktifkan statistik permainan untuk: {accountName}"
+Modal_Title_Stats: Statistik Anda
+Modal_Title_GameVars: "Detail input untuk {game}"
+Modal_GameVars_Header: "Silakan masukkan rincian berikut untuk akun {game} Anda, {username} dari {platform}"
+Modal_Title_AccountNotes: "Catatan Akun untuk: {accountName}"
+Modal_Title_SetPassword: Atur Kata Sandi
+Modal_SetBackground: 'Pilih gambar, atau masukkan URL di bawah ini.<br>Biarkan kosong dan atur ulang.<br>(Untuk kontrol lebih lanjut lihat Templat di Wiki):'
+Modal_SetBackground_Button: Atur latar belakang
+Modal_SetBackground_ChooseImage: Pilih gambar lokal
+Modal_SetUserdata: Masukkan path folder di bawah ini dan klik set.
+Modal_SetUserdata_ChooseFolder: Pilih folder
+Modal_SetUserdata_Button: Atur data pengguna
+Modal_ChangeUsername: Masukkan nama pengguna baru untuk akun Anda
+Modal_ChangeUsernameType: Ubah {platform} nama pengguna
+Modal_SetPassword: Masukkan kata sandi untuk Pengalih Akun TcNo
+Modal_SetPassword_Button: Atur kata sandi
+Modal_SetPassword_Info: "CATATAN: Ini tidak mengenkripsi akun Anda. Menukar akun semudah mengganti berkas, atau mengubah nama pengguna dalam berkas. Kata sandi dapat diatur ulang dengan mengedit teks dalam file juga. Ini adalah keamanan sederhana. Ini menghentikan akses UI sederhana. Anda dapat menempatkan aplikasi ini pada USB yang dapat dilepas, mengatur folder UserData ke USB yang sama dan secara fisik menghapusnya untuk keamanan lebih. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Memindahkan ke drive eksternal panduan</a><br><br>Untuk membersihkan, biarkan yang di atas kosong dan klik Set."
+Modal_EnterDirectory: "Masukkan direktori {platform}, seperti: C:\\Program Files\\{platform}"
+Modal_LocatePlatform: Temukan {platformExe}
+Modal_LocatePlatformFolder: Pilih {platform} folder
+Modal_ConfirmAction: Konfirmasikan tindakan
+Modal_AddNew: Masukkan nama untuk {platform} akun yang Anda masuki.
+Modal_AddCurrentAccount: Tambahkan akun {platform} saat ini
+Modal_SetImageHeader: Atur gambar profil
+Modal_SetImage: Atur Gambar
+Status_SelectedAccount: "Dipilih: {name}"
+Status_Init: "Status: Menginisialisasi"
+Status_ClosingPlatform: Penutupan {platform}
+Status_ClosingPlatformFailed: Gagal menutup {platform}
+Status_StartingPlatform: Mulai {platform}
+Toast_StartingPlatformFailed: Gagal memulai {platform}! Lihat log untuk detail lebih lanjut.
+Toast_UrlAdminErr: Anda tidak dapat menjalankan berkas .url sebagai admin. Coba jenis pintasan lain. Diluncurkan sebagai pengguna normal.
+Status_UpdatingFile: "Memperbarui {file}"
+Status_UpdatingRegistry: Memperbarui registri Windows
+Status_FailedLog: Tindakan gagal. Lihat log untuk detailnya.
+Status_WaitingForClose: "Menunggu {processName} untuk menutup ({timeout}/{timeLimit} detik)"
+Status_WaitingForMultipleClose: "Menunggu {processName} & {count} lainnya ditutup ({timeout}/{timeLimit} detik)"
+Status_GetUniqueId: Mengumpulkan ID pengguna unik
+Status_CopyingFiles: Menyalin berkas pengguna...
+Status_HandlingImage: Menangani gambar profil akun
+Context_SwapTo: Tukar ke akun
+Context_CreateShortcut: Buat Jalan Pintas
+Context_ChangeImage: Ubah gambar
+Context_ChangeName: Ubah nama pengalih
+Context_LoginAsSubmenu: Masuk sebagai
+Context_UsernameSubmenu: Nama pengguna
+Context_RefreshName: Segarkan nama
+Context_CopySubmenu: Salin
+Context_DataSubmenu: Data
+Context_CopyProfileSubmenu: Salin Profil
+Context_CommunityUrl: URL Komunitas
+Context_CommunityUsername: Nama Pengguna Komunitas
+Context_LoginUsername: Nama pengguna login
+Context_CopySteamIdSubmenu: Salin SteamID
+Context_Steam_Id: SteamID [STEAM0 :~]
+Context_Steam_Id3: SteamID3 [U:1:~]
+Context_Steam_Id32: SteamID32
+Context_Steam_Id64: SteamID64 7656~
+Context_Steam_OpenUserdata: Buka data pengguna
+Context_ManageSubmenu: Kelola
+Context_GameDataSubmenu: Data permainan
+Context_ManageGameStats: Kelola statistik permainan
+Context_Game_CopySettingsFrom: Salin pengaturan ke saat ini
+Context_Game_RestoreSettingsTo: Pulihkan data game
+Context_Game_BackupData: Cadangkan data game
+Context_CopyOtherSubmenu: Salin lainnya
+Context_HidePlatform: Sembunyikan platform
+Context_ExportAccList: Ekspor daftar akun
+Context_RunAdmin: Jalankan sebagai Admin
+Context_Hide: Sembunyikan
+ProfileImage_ToggleText: Gunakan gambar sebagai gambar akun
+Title_Platforms_Settings: Pengalih Akun TcNo - Pengaturan Platform
+Title_Settings_TestCss: Pengalih Akun TcNo - Uji Penataan CSS
+Title_AccountsList: Pengalih Akun TcNo - {platform}
+Title_TextEditor: Pengalih Akun TcNo - Penyunting Teks
+Title_Settings: Pengalih Akun TcNo - Pengaturan
+Title_Steam_Cleaning: Pengalih Akun TcNo - Pembersihan Uap
+Title_Steam_Settings: Pengalih Akun TcNo - Pengaturan Steam
+Title_Template_Settings: Pengalih Akun TcNo - {platformName} Pengaturan
+Title_Login: Pengalih Akun TcNo - Masuk
+Installer_Downloading: Mengunduh {file}
+Installer_DownloadFinished: Selesai mengunduh {file}
+Installer_Installing: "Memasang: {runtime}"
+Installer_RuntimeTitle: Pengalih Akun TcNo - Instalator Runtime
+Installer_Welcome: Selamat datang di TcNo Account Switcher - Runtime installer
+Installer_InstalledRuntimes: "Runtime yang sedang diinstal:"
+Installer_ErrorRuntime: "Satu atau lebih runtime tidak diinstal:"
+Installer_RuntimeNote: "[~{size1} MB + ~{size2} MB saat menginstal]"
+Installer_TotalSize: "Total ukuran unduhan: ~{size} MB"
+Installer_AnyKeyStart: Tekan tombol apa pun untuk mulai mengunduh...
+Runtime_WebView2: Waktu Berjalan Microsoft WebView2
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
+Installer_FailedFolder: "Gagal membuat folder:"
+Installer_FailedWV: "Gagal mengunduh dan menginstal Microsoft WebView2 Runtime. Untuk mendownload: 1. Klik link di bawah ini: {link} 2. Klik 'Unduh Paket Hosting' di bawah Jalankan aplikasi server."
+Installer_FailedDR: "Gagal mengunduh dan menginstal .NET 5 Desktop Runtime. Silahkan download di sini:"
+Installed_FailedASP: "Gagal mengunduh dan menginstal ASP.NET Core {version} Runtime. Untuk mendownload: 1. Klik link dibawah ini: {link} . 2. Klik 'Unduh x64' di bawah Jalankan aplikasi Desktop."
+Installer_Ready: "Satu atau lebih sudah siap untuk dipasang. Jika dan ketika diminta jika Anda ingin menginstal, klik 'Ya '."
+Installer_PressStart: Tekan sembarang tombol untuk memulai pemasangan...
+Installer_VerifyMin: "Verifikasi bahwa Anda memenuhi persyaratan minimum yang direkomendasikan:"
+Installer_VerifyAlready: "Sepertinya semuanya sudah terinstal. Verifikasi bahwa Anda memenuhi persyaratan minimum yang direkomendasikan:"
+Installer_Complete: Itu harus menjadi segalanya. Program utama, TcNo-Acc-Switcher.exe, akan dijalankan secara otomatis.
+Installer_Complete2: "Jika tidak berhasil, silakan lihat petunjuk instalasi, di sini: {link}"
+Global_FatalNext: "Terjadi kesalahan fatal! Crashlog ini akan dikirimkan secara otomatis pada peluncuran berikutnya."
+Tray_Error: Kesalahan Talam
+Tray_NoAccs: "Tidak ada akun yang ditemukan.\nCoba ganti akun terlebih dahulu, atau cari 'Tray_Users.json'"
+Tray_Switch: "Beralih ke: {account}"
+Tray_CantOpenExe: "Tidak dapat membuka .exe utama. Pastikan ada.\n\nSaya mencoba membuka:"
+Tray_LaunchFail: "Pengalih Akun TcNo - Peluncuran baki gagal"
+Updater_Duplicate: Instansi Pemutakhir Pengalih Akun TcNo lainnya telah terdeteksi.
+Updater_Unknown: "Argumen tidak diketahui: {arg}"
+Updater_NeedsAdmin: Program ini harus dijalankan sebagai administrator!
+Updater_StatusChecking: Memeriksa versi
+Updater_FailedVersionCheck: "Tidak bisa mendapatkan versi. Klik \"Verifikasi\" untuk memperbarui & memverifikasi file"
+Updater_PressBelow: Tekan tombol di bawah ini!
+Updater_PressBelowStart: Klik tombol di bawah ini untuk memulai pembaruan.
+Updater_PatchApplied: Patch diterapkan!
+Updater_UpdatingAppData: Memperbarui file di AppData!
+Updater_Complete: Semua pembaruan selesai!
+Updater_Checking: Memeriksa pembaruan
+Updater_UpdateToVerify: Untuk memverifikasi file, Anda perlu memperbarui terlebih dahulu.
+Updater_ClosingTcNo: Menutup contoh Pengalih Akun TcNo (jika ada).
+Updater_Downloading: "Mengunduh pembaruan: {version}"
+Updater_Downloaded: Pengunduhan selesai.
+Updater_CantExtract: Gagal mengekstrak pembaruan.
+Updater_Verify: Verifikasi file
+Updater_Verifying: Memverifikasi...
+Updater_VerifySkip: Memverifikasi berkas untuk melewatkan semua pembaruan kecil, dan hanya melompat ke yang terbaru.
+Updater_NoConnection: "Tidak dapat terhubung ke tcno.co untuk memverifikasi berkas. Anda dapat mencoba mengunduh installer secara manual dari halaman GitHub, dan menginstal ulang untuk memperbarui.\n\nKesalahan:"
+Updater_NoServer: Tidak dapat menjangkau server pembaruan
+Updater_Hashlist: Mengunduh daftar hash terbaru...
+Updater_CantCheck: Tidak dapat memeriksa pembaruan
+Updater_Failed: "GALAT: Beberapa berkas sedang digunakan dan tidak dapat diperbarui.\n\n1. Pastikan semua proses TcNo benar - benar tertutup\n(atau restart PC Anda)\n\n2. Kemudian klik Verifikasi di bawah ini, atau jika Anda memulai ulang:\n-   Buka updater ini dan verifikasi file\n    (terletak di folder 'updater' di direktori instalasi)"
+Updater_Missing: "BERKAS HILANG: {file}"
+Updater_FileMismatch: "Berkas: {file} memiliki MD5: {md5} DIHARAPKAN: {value}"
+Updater_DownloadingWeb: Mengunduh berkas dari situs web...
+Updater_UnpackingAppData: Menyalin berkas ke %AppData%/TcNo Account Switcher... (kecuali diatur lain)
+Updater_VerifyComplete: Berkas terverifikasi!
+Updater_UpdateFound: "Pembaruan ditemukan: {name} [{updateSize}]"
+Updater_TotalFound: "Total pembaruan yang ditemukan: {x}"
+Updater_TotalSize: "Ukuran total: {size}"
+Updater_AwaitingUser: Menunggu masukan pengguna...
+Updater_UpToDate: "Anda sudah diperbarui.\n:)"
+Updater_FailedDecode: Ini kemungkinan besar karena saya (TechNobo) mendorong pembaruan, dan membuat kesalahan ketik yang merusak file pembaruan .json. Do let me know :)
+Updater_FailedDecodeTitle: Gagal mendekode daftar pembaruan
+Updater_Extracting: Mengekstrak file patch
+Updater_Applying: Menerapkan patch...
+Updater_Moving: Memindahkan berkas...
+Updater_Title: Pemutakhir Pengalih Akun TcNo
+Updater_Started: Dimulai
+Updater_Start: Mulai Pengalih Akun TcNo
+Updater_Begin: Mulai pembaruan
+Updater_Exit: Keluar
+FatalError: Kesalahan fatal terjadi!
+Online: Online
+OnlineDefault: Online (Default)
+Offline: Luring
+Invisible: Halimun
+Busy: Sibuk
+Away: Away
+Snooze: Tunda
+LookingToTrade: Ingin Berdagang
+LookingToPlay: Ingin Bermain
+Unrecognized_EPersonaState: EPersonaState tidak dikenal
+Reg_DoesntExist: "{subKey} tidak ada."
+Reg_DoesntContain: "{subKey} tidak berisi {val}"
+Reg_Removing: Menghapus {subKey}\\{val}
+PngInvalid_Format: Format piksel yang diperlukan adalah PixelFormat.{x}.
+PngRequired: Format gambar yang diperlukan adalah grafis jaringan portabel (png).
+PngDimensions: Dimensi harus kurang dari atau sama dengan {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Terjadi kesalahan sintaks (detail lebih lanjut di bawah)! DAN:"
+ThemesNotFound: "Tidak dapat menemukan folder \"themes\" dalam direktori TcNo Account Switcher. Ini (terutama folder 'Dracula_Sian ') diperlukan untuk menjalankan perangkat lunak ini.\nAnda dapat menjalankan Pemutakhir dalam folder \"updater\" untuk memverifikasi berkas, dan memulihkan berkas yang hilang ini."
+Yes: "Ya"
+No: "Tidak"
+Save: Simpan
+NoDefault: Tidak (Default)
+Ok: "OK"
+Submit: Kirim
+Forget: Lupakan
+Notice: Pemberitahuan
+Notes: Catatan
+Error: Kesalahan
+ErrorDetails: "GALAT: {ex}"
+Failed: Gagal
+Success: Sukses
+NotFound: Tidak ditemukan
+Done: Selesai
+Edit: Edit
+Refresh: Segarkan
+Working: Bekerja...
+ForName: "Untuk: {name}"
+DeletedFiles: Berkas yang dihapus
+FileFoldersToClear: "Daftar berkas/folder yang akan dibersihkan:"
+CouldNotFindX: Tidak dapat menemukan {x}
+CouldNotCloseX: Tidak dapat menutup {x}!
+CouldNotReadFile: Tidak dapat membaca {file}!
+DirectoryNotFound: Direktori tidak ditemukan
+DirectoryNotFoundFolder: "Direktori tidak ditemukan: {folder}"
+DeletingFile: "Menghapus: {file}"
+DeletingFolder: "Menghapus Folder: "
+CouldntDeleteX: "GALAT: TIDAK DAPAT MENGHAPUS: {x}"
+CouldntDeleteUndefined: "GALAT: TIDAK DAPAT MENGHAPUS BERKAS YANG TIDAK TERDEFINISI"
+Prompt_RestartAsAdmin: "<h3><bold>Program ini akan dimulai ulang sebagai Admin</bold></h3><p>Tekan \"Ya\" di UAC ketika diminta untuk admin</p>."
+Prompt_ForgetSteam: >
+  <h3 style='color:red'>Anda akan melupakan akun!</h3> <h4>Apa artinya ini?</h4> <p>- Steam tidak akan lagi memiliki akun yang terdaftar dalam Mode Gambar Besar dan tidak akan Ingat Kata Sandi.<br/> - TcNo Account Switcher juga tidak akan lagi menampilkan akun, sampai masuk lagi melalui Steam.</p> <p>Akun Anda akan tetap tidak tersentuh. Itu hanya dilupakan di komputer ini.</p><h4>Apakah Anda mengerti?</h4>
+Prompt_ForgetAccount: >
+  <h3 style='color:red'>Anda akan melupakan akun!</h3> <h4>Apa artinya ini?</h4> <p>Pengalih Akun TcNo juga tidak akan lagi menampilkan akun,<br/> sampai masuk lagi melalui {platform}, dan ditambahkan ke daftar.</p> <p>Akun Anda akan tetap tidak tersentuh. Ini hanya dilupakan di komputer ini.</p> <h4>Apakah Anda mengerti?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Anda akan menghapus statistik Anda!</h3> <p>Anda tidak dapat membatalkan tindakan ini.</p>
+Platform_DiscordPasteHint: Tempelkan ke konsol Discord, lalu tempelkan hasilnya di input!
+Platform_ClearCache: Hapus Tembolok
+Platform_ClearCacheTotal: Mengosongkan {totalFileCount} file ({totalSizeMB})
+Platform_DeleteFail: Tidak dapat menghapus beberapa berkas (Program mungkin sedang berjalan?)
+Platform_CouldNotDeleteLog: Tidak dapat menghapus berkas! Periksa {logPath}
+Error_FileAccessDenied: Gagal mengakses berkas! Periksa {logPath}
+Error_RequiredFileVerify: Berkas yang diperlukan tidak ditemukan. Pastikan folder x64 dan x86 ada di direktori instalasi. Jika tidak, jalankan TcNo-Acc-Switcher-Updater.exe dan verifikasi file.
+Tooltip_Settings: Pengaturan
+Tooltip_Info: Info
+Tooltip_ManagePlatforms: Tampilkan atau Sembunyikan platform lain
+Tooltip_ExpandShortcuts: Perluas pilihan Permainan & Pintasan
+Tooltip_ShortcutFolder: Buka folder pintasan. Tempatkan pintasan di sana, dan Pengalih Akun TcNo untuk melihatnya.
+Tooltip_Backup: Backup file/folder konfigurasi, seperti yang didefinisikan dalam pengaturan platform.
+Tooltip_BackupAll: Cadangkan SEMUA file/folder konfigurasi, termasuk gambar dan file besar lainnya.
+Tooltip_ClosingMethod: "Gabungan adalah yang terbaik. Tutup upaya untuk menutup langsung melalui fungsi tutup dan TaskKill menggunakan cmd (Terbaik jika digabungkan tidak bekerja)"
+Tooltip_StartingMethod: "Default adalah yang terbaik. Direct tidak memiliki kontrol atas level admin atau UAC. Ini akan dimulai dengan level yang sama (atau lebih tinggi - tetapi tidak lebih rendah) dari pengalih akun ini"
+Tooltip_CurrentAccount: Saat ini Anda masuk ke akun ini.
+Tooltip_Restore: Klik untuk memilih berkas 7z, atau seret ke tombol ini.
+Tooltip_DisabledGlobally: Item ini disembunyikan untuk semua akun. Anda dapat mengubahnya di pengaturan platform.
+Discord_Status: Saat ini sedang berganti akun.
+Discord_StatusDetails: "Akun Beralih: {number}"
+Website: Website
+Preview_Platforms: Pratinjau platform
+Preview_Accounts: Pratinjau akun
+Preview_Notifications: Pratinjau pemberitahuan roti panggang
+Preview_Settings: Pratinjau pengaturan
+Preview_Modals: Pratinjau modals
