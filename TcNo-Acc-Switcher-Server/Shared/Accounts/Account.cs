@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
@@ -7,6 +8,8 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts;
 public class Account
 {
     public bool IsChecked { get; set; } = false;
+    public bool IsCurrent { get; set; } = false;
+    public string TitleText { get; set; } = "";
     public string Platform { get; set; } = "";
     public string ImagePath { get; set; } = "";
     public string DisplayName { get; set; } = "";

@@ -842,7 +842,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             {
                 SteamSettings.LastAccSteamId = AppData.SteamUsers.Where(x => x.SteamId == steamId).ToList()[0].SteamId;
                 SteamSettings.LastAccTimestamp = Globals.GetUnixTimeInt();
-                if (SteamSettings.LastAccSteamId != "") await AppData.InvokeVoidAsync("highlightCurrentAccount", SteamSettings.LastAccSteamId);
+                if (SteamSettings.LastAccSteamId != "")
+                    await AccountFuncs.SetCurrentAccount(SteamSettings.LastAccSteamId);
             }
             catch (Exception)
             {

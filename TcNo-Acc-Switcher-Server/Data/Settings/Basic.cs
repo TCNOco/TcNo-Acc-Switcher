@@ -160,7 +160,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             ContextMenuItems.AddRange(new MenuBuilder(
                 new []
                 {
-                    new ("Context_SwapTo", () => AppData.SwapToAccount()),
+                    new ("Context_SwapTo", new Action(async () => await AppData.SwapToAccount())),
                     new ("Context_ChangeName", "showModal('changeUsername')"),
                     new ("Context_CreateShortcut", "createShortcut()"),
                     new ("Context_ChangeImage", "changeImage(event)"),

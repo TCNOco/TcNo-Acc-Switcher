@@ -1225,6 +1225,8 @@ async function initCopyHotKey() {
     });
 }
 
+
+
 // Figures out the best place for a tooltip and returns that location
 // el MUST BE A JS VARIABLE
 function getBestOffset(el) {
@@ -1243,21 +1245,29 @@ function getBestOffset(el) {
     return bestOffset;
 }
 
-async function highlightCurrentAccount(curAcc) {
-    // Remove existing highlighted elements, if any.
+restartAsAdmin = async (args = "") => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiRestartAsAdmin", args);
+
+
+
+
+
+
+// from new system
+
+
+// Remove existing highlighted elements, if any.
+function clearAccountTooltips() {
     $(".currentAcc").each((_, e) => {
         var j = $(e);
         j.removeClass("currentAcc");
         j.parent().removeAttr("title").removeAttr("data-original-title").removeAttr("data-placement");
     });
+}
 
-    // Start adding classes
-    const tooltip = await GetLang("Tooltip_CurrentAccount");
-    const parentEl = $(`[for='${curAcc}']`).addClass("currentAcc").parent();
-    parentEl.attr("title", tooltip);
+// Sets the best data-placement attribute for the requested account
+function setBestOffset(element) {
+    const parentEl = $(`[for='${element}']`).parent();
     parentEl.attr("data-placement", getBestOffset(parentEl));
-
-    initTooltips();
 }
 
 async function showNoteTooltips() {
@@ -1274,5 +1284,3 @@ async function showNoteTooltips() {
     });
     initTooltips();
 }
-
-restartAsAdmin = async(args = "") => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiRestartAsAdmin", args);

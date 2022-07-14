@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
 
 namespace TcNo_Acc_Switcher_Server.Pages.Basic
@@ -137,7 +138,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             {
                 BasicSettings.LastAccName = accId;
                 BasicSettings.LastAccTimestamp = Globals.GetUnixTimeInt();
-                if (BasicSettings.LastAccName != "") await AppData.InvokeVoidAsync("highlightCurrentAccount", BasicSettings.LastAccName);
+                if (BasicSettings.LastAccName != "")
+                    await AccountFuncs.SetCurrentAccount(BasicSettings.LastAccName);
             }
             catch (Exception)
             {

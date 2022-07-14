@@ -176,7 +176,7 @@
         await AppData.InvokeVoidAsync("showNoteTooltips");
 
         var curAcc = await BasicSwitcherFuncs.GetCurrentAccountId();
-        if (curAcc != "") await AppData.InvokeVoidAsync("highlightCurrentAccount", curAcc);
+        if (curAcc != "") await AccountFuncs.SetCurrentAccount(curAcc);
 
         AppData.FirstLaunchCheck();
     }

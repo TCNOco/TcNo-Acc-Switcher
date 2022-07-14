@@ -325,17 +325,17 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Menu.Clear();
             var menuBuilder = new MenuBuilder(new Tuple<string, object>[]
             {
-                new ("Context_SwapTo", () => AppData.SwapToAccount()),
+                new ("Context_SwapTo", new Action(async () => await AppData.SwapToAccount())),
                 new ("Context_LoginAsSubmenu", new Tuple<string, object>[]
                     {
-                        new ("Invisible", () => AppData.SwapToAccount(7)),
-                        new ("Offline", () => AppData.SwapToAccount(0)),
-                        new ("Online", () => AppData.SwapToAccount(1)),
-                        new ("Busy", () => AppData.SwapToAccount(2)),
-                        new ("Away", () => AppData.SwapToAccount(3)),
-                        new ("Snooze", () => AppData.SwapToAccount(4)),
-                        new ("LookingToTrade", () => AppData.SwapToAccount(5)),
-                        new ("LookingToPlay", () => AppData.SwapToAccount(6)),
+                        new ("Invisible", new Action(async () => await AppData.SwapToAccount(7))),
+                        new ("Offline", new Action(async () => await AppData.SwapToAccount(0))),
+                        new ("Online", new Action(async () => await AppData.SwapToAccount(1))),
+                        new ("Busy", new Action(async () => await AppData.SwapToAccount(2))),
+                        new ("Away", new Action(async () => await AppData.SwapToAccount(3))),
+                        new ("Snooze", new Action(async () => await AppData.SwapToAccount(4))),
+                        new ("LookingToTrade", new Action(async () => await AppData.SwapToAccount(5))),
+                        new ("LookingToPlay", new Action(async () => await AppData.SwapToAccount(6))),
                     }
                 ),
                 new ("Context_CopySubmenu", new Tuple<string, object>[]

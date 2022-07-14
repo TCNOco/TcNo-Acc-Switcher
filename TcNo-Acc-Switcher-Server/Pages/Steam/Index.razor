@@ -127,7 +127,7 @@
         await AppData.InvokeVoidAsync("showNoteTooltips");
 
         var curAcc = SteamSwitcherFuncs.GetCurrentAccountId(true);
-        if (curAcc != "") await AppData.InvokeVoidAsync("highlightCurrentAccount", curAcc);
+        if (curAcc != "") await AccountFuncs.SetCurrentAccount(curAcc);
 
         AppData.FirstLaunchCheck();
     }
