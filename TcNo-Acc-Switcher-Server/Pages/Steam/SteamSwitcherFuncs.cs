@@ -958,7 +958,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             // Write changes to files.
             var tempFile = SteamSettings.LoginUsersVdf() + "_temp";
-            File.WriteAllText(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
+            await File.WriteAllTextAsync(tempFile, @"""users""" + Environment.NewLine + outJObject.ToVdf());
             if (!File.Exists(tempFile))
             {
                 File.Replace(tempFile, SteamSettings.LoginUsersVdf(), SteamSettings.LoginUsersVdf() + "_last");
@@ -974,7 +974,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 }
 
                 // Step 2: Write new info
-                File.WriteAllText(SteamSettings.LoginUsersVdf(), @"""users""" + Environment.NewLine + outJObject.ToVdf());
+                await File.WriteAllTextAsync(SteamSettings.LoginUsersVdf(), @"""users""" + Environment.NewLine + outJObject.ToVdf());
             }
             catch (Exception ex)
             {

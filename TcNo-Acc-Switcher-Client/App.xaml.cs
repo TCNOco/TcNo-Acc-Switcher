@@ -497,7 +497,7 @@ release = true;
         /// Handle logout given as arguments to the CLI
         /// </summary>
         /// <param name="arg">Argument to process</param>
-        private static void CliLogout(string arg)
+        private static async Task CliLogout(string arg)
         {
             var platform = arg.Split(':')[1];
             switch (platform.ToLowerInvariant())
@@ -506,7 +506,8 @@ release = true;
                 case "s":
                 case "steam":
                     Globals.WriteToLog("Steam logout requested");
-                    SteamSwitcherBase.NewLogin_Steam();
+                    AppData.CurrentSwitcher = "Steam";
+                    await AppData.SwapToNewAccount();
                     break;
 
                 // BASIC ACCOUNT PLATFORM
@@ -515,7 +516,8 @@ release = true;
                     // Is a basic platform!
                     BasicPlatforms.SetCurrentPlatformFromShort(platform);
                     Globals.WriteToLog(CurrentPlatform.FullName + " logout requested");
-                    BasicSwitcherBase.NewLogin_Basic();
+                    AppData.CurrentSwitcher = platform;
+                    await AppData.SwapToNewAccount();
                     break;
             }
         }

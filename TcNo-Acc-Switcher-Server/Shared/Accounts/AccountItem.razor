@@ -24,7 +24,7 @@
     public Dictionary<string, string> AccountNotes { get; set; }
 }
 
-<div class="acc_list_item" data-toggle="tooltip" @onclick="() => SetSelectedAccount(Acc)" oncontextmenu="return false;" @onmouseup="(e) => AccountRightClick(e, Acc)" @ondblclick="() => AppData.SwapTo(Acc.AccountId)">
+<div class="acc_list_item" data-toggle="tooltip" @onclick="() => SetSelectedAccount(Acc)" oncontextmenu="return false;" @onmouseup="(e) => AccountRightClick(e, Acc)" @ondblclick="() => AppData.SwapToAccount()">
     <input type="radio" id="@Acc.AccountId" DisplayName="@Acc.SafeDisplayName" class="acc @(Acc.IsChecked ? "acc_selected" : "")" name="accounts" role="checkbox">
     <label for="@Acc.AccountId" class="acc @Acc.Classes.Label">
         <img class="@Acc.Classes.Image" src="@Acc.ImagePath?@Globals.GetUnixTime()" draggable="false" alt=""/>

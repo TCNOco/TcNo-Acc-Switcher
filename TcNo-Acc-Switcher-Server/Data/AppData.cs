@@ -179,14 +179,33 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private string _currentSwitcher = "";
         public static string CurrentSwitcher { get => Instance._currentSwitcher; set => Instance._currentSwitcher = value; }
-        public static async Task SwapTo(string accountId)
+
+        /// <summary>
+        /// Swap to the current AppData.SelectedAccount.
+        /// </summary>
+        /// <param name="state">Optional profile state for Steam accounts</param>
+        public static async Task SwapToAccount(int state = -1)
         {
             if (!OperatingSystem.IsWindows()) return;
 
-            if (CurrentSwitcher == "Steam")
-                await SteamSwitcherBase.SwapToSteam(accountId, -1);
+            if (CurrentSwitcher != "Steam") BasicSwitcherFuncs.SwapBasicAccounts(SelectedAccount);
 
-            BasicSwitcherBase.SwapToBasic(accountId);
+            if (state == -1) state = Settings.Steam.OverrideState;
+            await SteamSwitcherFuncs.SwapSteamAccounts(SelectedAccount, state);
+        }
+
+        /// <summary>
+        /// Swaps to an empty account, allowing the user to sign in.
+        /// </summary>
+        /// <param name="state">Optional profile state for Steam accounts</param>
+        public static async Task SwapToNewAccount(int state = -1)
+        {
+            if (!OperatingSystem.IsWindows()) return;
+
+            if (CurrentSwitcher == "Steam") BasicSwitcherFuncs.SwapBasicAccounts("");
+
+            if (state == -1) state = Settings.Steam.OverrideState;
+            await SteamSwitcherFuncs.SwapSteamAccounts("", state);
         }
 
         #region Basic_Platforms

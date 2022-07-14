@@ -807,7 +807,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             if (CurrentPlatform.UniqueIdMethod is "CREATE_ID_FILE")
             {
-                return File.Exists(fileToRead) ? File.ReadAllText(fileToRead) : uniqueId;
+                return File.Exists(fileToRead) ? await File.ReadAllTextAsync(fileToRead) : uniqueId;
             }
 
             if (uniqueId == "" && CurrentPlatform.UniqueIdMethod.StartsWith("JSON_SELECT"))

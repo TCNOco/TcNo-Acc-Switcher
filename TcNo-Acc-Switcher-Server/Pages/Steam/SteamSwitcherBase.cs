@@ -54,29 +54,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             }
         }
 
-        /// <summary>
-        /// [Wrapper with fewer arguments]
-        /// </summary>
-        [JSInvokable]
-        [SupportedOSPlatform("windows")]
-        public static async Task SwapToSteamWithReq(string steamId, int request) => await SwapToSteam(steamId, request);
-        [JSInvokable]
-        [SupportedOSPlatform("windows")]
-        public static async Task SwapToSteam(string steamId) => await SwapToSteam(steamId, -1);
-        /// <summary>
-        /// JS function handler for swapping to another Steam account.
-        /// </summary>
-        /// <param name="steamId">Requested account's SteamID</param>
-        /// <param name="ePersonaState">(Optional) Persona State [0: Offline, 1: Online...]</param>
-        [SupportedOSPlatform("windows")]
-        public static async Task SwapToSteam(string steamId, int ePersonaState)
-        {
-            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.SwapToSteam] {(steamId.Length > 0 ? steamId.Substring(steamId.Length - 4, 4) : "")}, ePersonaState: {ePersonaState}");
-            // If just double-clicked
-            if (ePersonaState == -1) ePersonaState = Data.Settings.Steam.OverrideState;
-            await SteamSwitcherFuncs.SwapSteamAccounts(steamId, ePersonaState: ePersonaState);
-        }
-
         [JSInvokable]
         public static void SteamOpenUserdata(string steamId)
         {
@@ -156,16 +133,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
             Globals.CopyDirectory(sourceFolder, destFolder, true);
             await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_GameBackupDone", new {folderLocation = destFolder }], Lang["Success"], "toastarea");
-        }
-
-        /// <summary>
-        /// JS function handler for swapping to a new Steam account (No inputs)
-        /// </summary>
-        [JSInvokable]
-        public static async Task NewLogin_Steam()
-        {
-            Globals.DebugWriteLine(@"[JSInvoke:Steam\SteamSwitcherBase.NewLogin_Steam]");
-            await SteamSwitcherFuncs.SwapSteamAccounts();
         }
     }
 }

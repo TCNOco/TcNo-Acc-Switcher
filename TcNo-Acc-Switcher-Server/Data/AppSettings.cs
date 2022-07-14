@@ -71,7 +71,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                         SaveSettings();
                     }
 
-                    LoadStylesheetFromFile().GetAwaiter().GetResult();
+                    LoadStylesheetFromFile().ConfigureAwait(true).GetAwaiter().GetResult();
                     CheckShortcuts();
 
                     _instance._currentlyModifying = false;
@@ -379,7 +379,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 // Check if SCSS file exists.
                 var scss = StylesheetFile.Replace("css", "scss");
-                if (File.Exists(scss)) await GenCssFromScss(scss);
+                if (File.Exists(scss)) GenCssFromScss(scss);
                 else
                 {
                     ActiveTheme = "Dracula_Cyan";
@@ -387,7 +387,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     if (!File.Exists(StylesheetFile))
                     {
                         scss = StylesheetFile.Replace("css", "scss");
-                        if (File.Exists(scss)) await GenCssFromScss(scss);
+                        if (File.Exists(scss)) GenCssFromScss(scss);
                         else throw new Exception(Lang["ThemesNotFound"]);
                     }
                 }
@@ -409,7 +409,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             return true;
         }
 
-        private static async Task GenCssFromScss(string scss)
+        private static void GenCssFromScss(string scss)
         {
             ScssResult convertedScss;
             try
@@ -427,7 +427,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 if (Globals.DeleteFile(StylesheetFile))
                 {
-                    File.WriteAllText(StylesheetFile, convertedScss.Css);
+                    var text = convertedScss.Css;
+                    File.WriteAllText(StylesheetFile, text);
                     if (Globals.DeleteFile(StylesheetFile + ".map"))
                         File.WriteAllText(StylesheetFile + ".map", convertedScss.SourceMap);
                 }
@@ -436,7 +437,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             catch (Exception ex)
             {
                 // Catches generic errors, as well as not being able to overwrite file errors, etc.
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
                     "Stylesheet error", "toastarea");
                 Globals.WriteToLog($"Could not delete stylesheet file: {StylesheetFile}. Could not refresh stylesheet from scss.", ex);
             }
@@ -839,7 +840,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 Directory.SetCurrentDirectory(Globals.AppDataFolder);
                 // Download latest hash list
                 var hashFilePath = Path.Join(Globals.UserDataFolder, "hashes.json");
-                Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/hashes.json", hashFilePath);
+                await Globals.DownloadFileAsync("https://tcno.co/Projects/AccSwitcher/latest/hashes.json", hashFilePath);
 
                 // Verify updater files
                 var verifyDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(Globals.ReadAllText(hashFilePath));
@@ -858,7 +859,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     if (key == null) continue;
                     if (File.Exists(key) && value == GeneralFuncs.GetFileMd5(key))
                         continue;
-                    Globals.DownloadFile("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'), key);
+                    await Globals.DownloadFileAsync("https://tcno.co/Projects/AccSwitcher/latest/" + key.Replace('\\', '/'), key);
                 }
 
                 AutoStartUpdaterAsAdmin();

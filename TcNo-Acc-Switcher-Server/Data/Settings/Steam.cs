@@ -325,17 +325,17 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Menu.Clear();
             var menuBuilder = new MenuBuilder(new Tuple<string, object>[]
             {
-                new ("Context_SwapTo", "swapTo(-1, event)"),
+                new ("Context_SwapTo", () => AppData.SwapToAccount()),
                 new ("Context_LoginAsSubmenu", new Tuple<string, object>[]
                     {
-                        new ("Invisible", "swapTo(7, event)"),
-                        new ("Offline", "swapTo(0, event)"),
-                        new ("Online", "swapTo(1, event)"),
-                        new ("Busy", "swapTo(2, event)"),
-                        new ("Away", "swapTo(3, event)"),
-                        new ("Snooze", "swapTo(4, event)"),
-                        new ("LookingToTrade", "swapTo(5, event)"),
-                        new ("LookingToPlay", "swapTo(6, event)"),
+                        new ("Invisible", () => AppData.SwapToAccount(7)),
+                        new ("Offline", () => AppData.SwapToAccount(0)),
+                        new ("Online", () => AppData.SwapToAccount(1)),
+                        new ("Busy", () => AppData.SwapToAccount(2)),
+                        new ("Away", () => AppData.SwapToAccount(3)),
+                        new ("Snooze", () => AppData.SwapToAccount(4)),
+                        new ("LookingToTrade", () => AppData.SwapToAccount(5)),
+                        new ("LookingToPlay", () => AppData.SwapToAccount(6)),
                     }
                 ),
                 new ("Context_CopySubmenu", new Tuple<string, object>[]
