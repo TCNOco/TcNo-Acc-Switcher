@@ -1,17 +1,18 @@
 ---
-Update: Доступне оновлення! Натисніть тут, щоб почати.
+Update: Доступне оновлення! Натисніть тут, щоб розпочати.
 Header_ChooseLanguage: 'Виберіть мову:'
-BattleNet_ShowSR: Показати Overwatch SR і використовувати зображення профілю Overwatch.
-Steam_ShowSteamID: Показати SteamID
-Steam_ShowVac: Показати статус VAC
-Steam_CheckVac: Перевірити статус VAC
-Steam_ShowLimited: Показати обмежений статус
-Steam_ShowAccUsername: Показати ім'я користувача облікового запису
-Steam_Tray_AccountName: Показати ім'я аккаунту [не друг]
+Steam_ShowSteamID: Ідентифікатор пари
+Steam_ShowVac: Статус VAC
+Steam_ShowLastLogin: Час останнього входу
+Steam_ShowLimited: Обмежений статус
+Steam_ShowAccUsername: Ім 'я користувача облікового запису
+Steam_Tray_AccountName: Показати ім 'я облікового запису [не ім' я друга]
+Steam_CheckVac: Перевірка стану VAC рахунку
 Steam_OverrideDefaultState: "Перевизначити стан входу за замовчуванням:"
+Steam_StartSilent: "Відкрийте Пару, щоб увімкнути лоток завдань (Запустіть Пару за допомогою «-silent»)"
 Button_AddNew: Додати новий
 Button_SaveCurrent: Зберегти поточний
-Button_SaveFile: Зберегти
+Button_SaveFile: Зберегти файл
 Button_Cancel: Скасувати
 Button_Login: Логін
 Button_Close: Закрити
@@ -19,173 +20,189 @@ Button_RefreshImages: Оновити зображення
 Button_ResetSettings: Скинути налаштування
 Button_AdvancedCleaning: Розширене очищення...
 Button_ClearLog: Очистити журнал
-Button_WikiInfo: Більше інформації (Wiki)
-Button_ManagePlatforms: Керуйте платформами
+Button_WikiInfo: Більше інформації (Вікі)
+Button_ManagePlatforms: Керування платформами
 Button_Backup: Резервне копіювання
 Button_BackupAll: Резервне копіювання всього
 Button_Restore: Відновлення
 Button_OpenBackup: Відкрийте папку резервного копіювання
-Settings_Shortcut: ' {platform} Ярлик Перемикача на стільниці'
-Settings_Admin: Запустити {platform} як адміністратор
-Settings_ImageExpiry: 'Днів до закінчення зображення профіля закінчується:'
-Settings_Header_AppWide: Параметри розширеного додатку
+Button_Back: Назад
+Button_RestartAdmin: Перезапустити від імені адміністратора
+Button_SetPassword: Встановити пароль програми
+Settings_Shortcut: ' {platform} Ярлик на робочому столі Switcher'
+Settings_Admin: Запустіть {platform} від імені адміністратора
+Settings_ImageExpiry: 'Дні до закінчення терміну дії зображень профілю:'
+Settings_SteamAPIKey: "Ключ API Steam Web (необов 'язково)"
+Settings_SteamAPIKey_Note: Налаштування ключа API призведе до показу індикатора обмеження (жовта рамка) для облікових записів, які натомість заблоковані спільнотою.
+Settings_Header_AppWide: Налаштування для всього додатка
 Settings_Header_GeneralSettings: Загальні налаштування
+Settings_Header_AccountDisplay: Параметри відображення облікового запису
 Settings_Header_ExtraPlatforms: Налаштування платформи
 Settings_Header_GeneralTools: Загальні інструменти
 Settings_Header_OtherTools: Інші інструменти
 Settings_Header_TraySettings: Налаштування лотка
-Settings_Header_OpenGameFolders: Відкрити ігрові папки
+Settings_Header_OpenGameFolders: Відкрити теки гри
 Settings_Header_BackupRestore: Резервне копіювання та відновлення налаштувань платформи
 Settings_Header_Language: Мова
-Settings_Header_System: система
-Settings_Header_Theme: Тема
+Settings_Header_System: Система
+Settings_Header_Theme: Theme (Тема)
 Settings_Header_Program: Програма
-Settings_Header_StatsSharing: Статистика та обмін
+Settings_Header_StatsSharing: Статистика і спільний доступ
 Settings_Header_Platform: "{platformName} налаштувань"
-Settings_TrayMax: 'Максимальна кількість запам''ятовувань:'
-Settings_ExtraPlatformsDisabled: Відключені платформи. Натисніть, щоб увімкнути їх.
+Settings_Header_GameStats: Налаштування загальної ігрової статистики
+Settings_GameStats: Все, що позначено тут, НЕ буде відображатися під вашим іменем користувача для будь-якого облікового запису. Використовуйте цю функцію, якщо ви часто приховуєте певні елементи зі своєї статистики гри.
+Settings_TrayMax: 'Максимальна кількість облікових записів, які слід запам ''ятати:'
+Settings_ExtraPlatformsDisabled: Вимкнені платформи. Натисніть, щоб увімкнути їх.
 Settings_ExtraPlatformsEnabled: Видимі платформи. Натисніть, щоб вимкнути їх.
 Settings_RTL: Показати текст як справа наліво
-Settings_CollectStats: Збирати статистику
-Settings_ShareStats: Поділіться статистикою досадно (рекомендовано)
-Settings_DiscordRpc: Discord Rich Presence (RPC)
-Settings_DiscordRpcShare: Спільний перемикач
+Settings_CollectStats: Збір статистики
+Settings_ShareStats: Поширюйте статистику анонімно (рекомендовано)
+Settings_DiscordRpc: Багата на розбрат присутність (RPC)
+Settings_DiscordRpcShare: Спільний доступ до загальних перемикачів
 Settings_ViewStats: Переглянути статистику
+Preview: Попередній перегляд
 Settings_ClearStats: Скинути
 Settings_CurrentLocation: 'Поточне місце встановлення: {path}'
 Settings_CurrentDataLocation: 'Поточне розташування даних користувача: {path}'
 Settings_SetDataLocation: "[Встановити користувацьке розташування даних користувача]"
 Settings_PickFolder: Вибрати папку {platform}
 Settings_OpenFolder: Відкрити папку {platform}
-Settings_ClearForgotten: Очистити забуте
-Settings_ClearAccounts: Очистити облікові записи
-Settings_StreamerMode: Увімкнути режим трансляцій
-Settings_ExitToTray: Вийти з мінімуму до системного лотка
-Settings_DesktopShortcut: Ярлик на стільниці
-Settings_StartMenu_ProgramTray: Програма & лоток
+Settings_ClearForgotten: Очистити забуті
+Settings_ClearAccounts: Очистити рахунки
+Settings_StreamerMode: Увімкнути стримерний режим
+Settings_ExitToTray: Вихід мінімізує до лотка
+Settings_DesktopShortcut: Ярлик стільниці
+Settings_StartMenu_ProgramTray: Програма і лоток
 Settings_StartMenu_Platform: Платформа
-Settings_Tray_StartWindows: Запускати лоток з Windows
-Settings_Tray_StartNow: '[Почати лотати]'
+Settings_Tray_StartWindows: Запустити лоток з Windows
+Settings_Tray_StartNow: '[Запустити лоток зараз]'
 Settings_CurrentStyle: Поточний стиль
 Settings_ThemeBackground: '[Встановити фон]'
 Settings_ThemeOpenFolder: '[Відкрити папку теми]'
-Settings_Protocol: 'Увімкнути tcno:\\ протокол (Рекомендовано)'
-Settings_StartCentered: Запустити програму з центром
-Settings_WindowsAccent: Використовувати колір акценту Windows
-Settings_HelpTranslate: "[Допоможіть перекласти]"
+Settings_Protocol: 'Увімкнути tcno:\\ протокол (рекомендовано)'
+Settings_StartCentered: Почати програму з центром
+Settings_WindowsAccent: Використовувати колір Windows Accent
+Settings_HelpTranslate: "[Довідка з перекладу]"
 Settings_ViewTranslators: "[Credits]"
-Settings_Header_ActiveBrowser: "(Розширений) Установіть механізм візуалізації:"
-Settings_Header_ClosingMethod: "(Додатково) Встановіть метод для закриття {platform}"
-Settings_Header_StartingMethod: "(Додатково) Установіть метод для початку {platform}"
-Settings_AutoStart: "Автоматично запускати {platform} при перемиканні облікового запису"
+Settings_Header_ActiveBrowser: "(Додатково) Налаштувати рушій візуалізації:"
+Settings_Header_ClosingMethod: "(Додатково) Встановити метод закриття {platform}"
+Settings_Header_StartingMethod: "(Додатково) Встановити метод для запуску {platform}"
+Settings_AutoStart: "Автоматично запускати перемикач {platform} на обліковому записі"
 Settings_NoPlatforms: Наразі не ввімкнено жодну платформу. Будь ласка, поставте прапорці нижче додаткові платформи, щоб увімкнути їх, або зніміть прапорець біля вимкнених платформ.
-Settings_MinimizeOnSwitch: Згорніть перемикач при перемиканні облікового запису
+Settings_MinimizeOnSwitch: Мінімізувати перемикач облікового запису
+Settings_ShowShortNotes: Попередній перегляд нотаток під іменем користувача
+Settings_Header_AppPassword: "Зупиніть інші за допомогою перемикача:"
+PreviewCss: Попередній перегляд CSS
+Settings_PreviewCss: Це сторінка попереднього перегляду CSS. Ви можете переглянути деякі елементи, які спливають у програмі, і побачити, як вони виглядають у вашій темі. Ця сторінка корисна для тих, хто створює теми!
+Settings_PreviewCssHeader: Сторінка попереднього перегляду CSS
 Stats_Disabled: "Збір статистики вимкнено."
-Stats_InDepth: Поглиблена розбивка статистики
-Stats_ShareEnabled: "Ці статистичні дані надаються анонімно і додадуть до загальної кількості <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">тут</a>."
-Stats_ShareDisabled: "Ця статистика НЕ поширюється анонімно і НЕ буде додавати до загальної кількості <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">тут</a>."
+Stats_InDepth: Поглиблена статистична розбивка
+Stats_ShareEnabled: "Ці статистичні дані надаються анонімно і додаються до загальної кількості <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">тут</a>."
+Stats_ShareDisabled: "Ці статистичні дані НЕ надаються анонімно і НЕ додаються до загальної кількості <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">тут</a>."
 Stats_OperatingSystem: "Операційна система: "
 Stats_FirstLaunch: "Перший запуск: "
 Stats_LaunchCount: "Кількість запусків: "
 Stats_CrashCount: "Кількість аварій: "
 Stats_MostUsedPlatform: "Найчастіше використовувана платформа: "
-Stats_TotalTime: "Загальний час, проведений у програмі: "
-Stats_TotalSwitches: "Усього змін облікового запису: "
-Stats_TotalGamesLaunched: "Усього програм/ігор, запущених за допомогою перемикача: "
-Stats_UniqueDaysLong: "Унікальні дні із зміненими обліковими записами: "
+Stats_TotalTime: "Загальний час перебування в додатку: "
+Stats_TotalSwitches: "Загальна кількість перемикачів облікового запису: "
+Stats_TotalGamesLaunched: "Загальна кількість програм/ігор, запущених через перемикач: "
+Stats_UniqueDaysLong: "Унікальні дні з перемиканням облікових записів: "
 Stats_LastUpload: "Останнє завантаження: "
 Stats_SwitcherStats: "Статистика перемикача: "
 Stats_PageStats: "Статистика сторінки: "
-Stats_VisitsTotalTime: "{visits} всього відвідувань, {hours} загальний час"
+Stats_VisitsTotalTime: "{visits} загальних відвідувань, {hours} загальний час"
 Stats_Accounts: "Рахунки: "
 Stats_Switches: "Перемикачі: "
 Stats_FirstActive: "Перший активний: "
 Stats_LastActive: "Останній активний: "
 Stats_UniqueDays: "Унікальні дні: "
 Stats_GameShortcuts: "Ярлики гри: "
-Stats_GameShortcutsHotbar: "Ярлики гри (на гарячій панелі): "
+Stats_GameShortcutsHotbar: "Ярлики гри (на хот-барі): "
 Stats_GamesLaunched: "Запущені ігри: "
-Cleaning_Header_StartMenuShortcuts: 'Комбінації клавіш для меню запуску:'
-Cleaning_Header_General: Загальне очищення
-Cleaning_Header_LoginHistory: Очистити мою історію входу в систему
+Stats_MetricsToShow: "Відображені показники:"
+Stats_AccountId: "Ідентифікатор облікового запису:"
+Auth_LoginRequired: Попередньо було встановлено пароль, який є обов 'язковим. Введіть пароль нижче.
+Auth_EnterPassword: "Введіть пароль:"
+Auth_PassIncorrect: Пароль неправильний.
+Locked: Заблоковано
+Cleaning_Header_StartMenuShortcuts: 'Ярлики для меню «Пуск»:'
+Cleaning_Header_General: Загальне прибирання
+Cleaning_Header_LoginHistory: Очистити історію входу
 Cleaning_Header_PlatformCleaning: '{platform} Перемикач'
 Cleaning_ImportantInfoHeader: 'Важлива інформація:'
 Cleaning_ImportantInfo: >
-  Натискання кнопки призведе до видалення пов'язаних файлів з вашої інсталяції Steam.<br /> Видалення користувачів логіну. df призведе до того, що перемикач акаунтів не відображатиме жодних облікових записів.<br /> Щоб повернути їх, увійдіть до них за допомогою Steam.
-Cleaning_Button_KillProcess: Вбити процес {platform}
-Cleaning_Button_ForgottenBackups: Забуті резервні копії облікового запису
-Cleaning_Understand: Я розумію, що роблять ці кнопки.
+  Натискання кнопки видалить пов 'язані файли з вашої установки Steam.<br /> Видалення loginusers.vdf призведе до того, що цей перемикач облікового запису не покаже жодного облікового запису.<br /> Вам потрібно буде увійти до них за допомогою Steam, щоб повернути їх.
+Cleaning_Button_KillProcess: Завершити процес {platform}
+Cleaning_Button_ForgottenBackups: Резервні копії забутих облікових записів
+Cleaning_Understand: Я розумію, що ці кнопки роблять.
 Restore_Info: >
-  Якщо ви раніше "форжить" акаунт, ви зможете відновити їх тут.<br /> Це додає їх назад до вашого файлу logins.vdf, що дозволяє вам перейти до них.
-Restore_Button_Restore: Відновити обрані
-Ignored_RemoveAccounts: Видалити облікові записи зі списку ігнорування
-Ignored_Description: Якщо ви раніше "проігнорували" акаунт, ви зможете показати їх тут
-Ignored_Stop: Зупинити ігнорування вибраних
+  Якщо ви раніше "забули" обліковий запис, ви можете відновити їх тут.<br /> Це додає їх назад у ваш файл loginusers.vdf, дозволяючи вам перемкнутися на них.
+Restore_Button_Restore: Відновити вибране
+Ignored_RemoveAccounts: Вилучити облікові записи зі списку ігнорування
+Ignored_Description: Якщо ви раніше "ігнорували" обліковий запис, ви можете показати його знову тут
+Ignored_Stop: Зупинити ігнорування вибраного
 Toast_DataLocationCopying: (1/2) Копіювання наявних файлів у нову папку даних користувача!
 Toast_DataLocationNotCopying: (1/2) У папці вже є файли! Не буде переносити дані користувача.
 Toast_DataLocationSet: (2/2) Перезапустіть перемикач облікових записів, щоб використовувати нову папку!
 Toast_PlaceShortcutFiles: Відкривається папка. Помістіть ярлики гри в цю папку та перезапустіть перемикач облікових записів.
-Toast_TrayStarted: Трей розпочався!
-Toast_TrayRunning: Штриг вже відкрито
-Toast_TrayUsersMissing: Немає збережених користувачів у лотку
-Toast_TrayFail: Не вдалося запустити тайм-додаток!
-Toast_TrayPosition: "Натискаючи кнопку Вихід я буду на треї Windows (Право запуску Bar)"
-Toast_TrayHint: "Підказка: Ctrl+Натисніть кнопку 'X', щоб повністю закрити мене або через лоток > 'Вийти'"
+Toast_TrayStarted: Піднос запущено!
+Toast_TrayRunning: Лоток вже відкрито
+Toast_TrayUsersMissing: Користувачів лотка не збережено
+Toast_TrayFail: Не вдалося запустити програму лотка!
+Toast_TrayPosition: "При натисканні кнопки Вийти: я буду на панелі лотків Windows! (Праворуч від початкової панелі)"
+Toast_TrayHint: "Підказка: Ctrl+Клацніть \"X\", щоб повністю закрити мене, або через лоток > \"Вийти\""
 Toast_Copied: Скопійовано
-Toast_AlreadyProcessing: Вже обробляються облікові записи...
+Toast_AlreadyProcessing: Обробка облікових записів завершена...
 Toast_FailedRestore: Не вдалося відновити облікові записи (див. консоль)
-Toast_Restored: Відновлені облікові записи!
-Toast_ProtocolEnabled: Програма зараз реагуватиме на tcno:\\ в Windows
+Toast_Restored: Відновлено облікові записи!
+Toast_ProtocolEnabled: Тепер ця програма реагуватиме на tcno:\\ у Windows
 Toast_ProtocolEnabledTitle: Протокол додано
-Toast_ProtocolDisabled: Ця програма більше не буде відповідати на tcno:\\
+Toast_ProtocolDisabled: Ця програма більше не відповідатиме на tcno:\\
 Toast_ProtocolDisabledTitle: Протокол видалено
-Toast_RestartAsAdmin: Будь ласка, почніть як адміністратор і повторіть спробу.
-Toast_RestartAfterClose: Будь ласка, перезапустіть програму після натискання "Закрити".
+Toast_RestartAsAdmin: Почніть як адміністратор і спробуйте ще раз.
+Toast_RestartAfterClose: Перезапустіть програму після натискання кнопки Закрити.
 Toast_RestartAfterCloseTitle: Колір акценту вимкнено
 Toast_RestartRequired: Перезапустіть, щоб застосувати зміни
-Toast_LoadStylesheetFailed: Не вдалося завантажити таблицю стилів! Додаткову інформацію див. у папці даних користувача.
-Toast_BNet_Private: "Профіль {BTag}є приватним"
-Toast_BNet_StatsFail: "Помилка при спробі отримати статистику для {BTag}"
-Toast_BNet_CantSwapAccounts: Не вдалося замінити облікові записи (пошкоджений файл Battle.net.config)
-Toast_BNet_CantLoadNotFound: Не вдалося знайти Battle.net.config
-Toast_BNet_CantLoadEmpty: Не вдалося завантажити файл облікових записів для Blizzard (рахунки не знайдено)
-Toast_BNet_CantLoadConfigCorrupt: Не вдалося завантажити файл облікових записів для Blizzard (файл Battle.net.config пошкоджений)
-Toast_BNet_NamePolicy: BattleTag не відповідає політиці іменування.
+Toast_LoadStylesheetFailed: Не вдалося завантажити таблицю стилів! Докладні відомості див. у папці даних користувача.
+Toast_LoadingStats: Один або кілька профілів оновлюють статистику. Будь ласка, зачекайте.
 Toast_ItemNotFound: "{item} не знайдено"
-Toast_DeletedTotal: "{files} з {totalFiles} видалений. Всього: {totalSize}"
-Toast_CantChangeUsername: Не вдалося змінити ім'я користувача
+Toast_DeletedTotal: "Видалено {files} з {totalFiles} . Всього: {totalSize}"
+Toast_CantChangeUsername: Не вдалося змінити ім 'я користувача
 Toast_CantClearLoginFiles: Не вдалося очистити старі файли входу
 Toast_AccountIdReg: Не вдалося отримати ідентифікатор облікового запису з реєстру!
 Toast_RegFailWrite: Не вдалося записати в реєстр Windows!
 Toast_RegFailRead: Не вдалося прочитати з реєстру Windows!
-Toast_RegFailReadSaved: Не вдалося прочитати збережений запис реєстру. Спробуйте видалити та додати обліковий запис знову, якщо не вдасться.
+Toast_RegFailReadSaved: Не вдалося прочитати збережений запис реєстру. Спробуйте видалити та додати обліковий запис знову, якщо це не вдалося.
 Toast_RegSaveMissing: Не вдалося знайти або прочитати дані із збережених файлів реєстру!
-Toast_DuplicateNames: Не вдалося змахнути. Дублювати облікові записи з таким самим ім'ям користувача?
-Toast_MissingUserId: "Не вдалося поміняти. Відсутній ідентифікатор користувача. Перевірте Wiki «Поширені помилки»."
-Toast_CouldNotLocate: Не вдалося знайти авторизованого користувача
+Toast_DuplicateNames: Не вдалося замінити. Дублювати облікові записи з тим самим ім 'ям користувача?
+Toast_MissingUserId: "Не вдалося замінити. Ідентифікатор користувача відсутній. Перевірте Wiki \"Поширені помилки\"."
+Toast_CouldNotLocate: Не вдалося знайти зареєстрованого користувача
 Toast_StreamerModeHint: Приватна інформація прихована! - Переглянути налаштування
-Toast_StreamerModeTitle: Режим стрімера
-Toast_AddAccountsFirst: Відкрийте платформу зі списку та додайте спочатку кілька облікових записів
-Toast_AddAccountsFirstTitle: Немає збережених облікових записів
+Toast_StreamerModeTitle: Стрімерний режим
+Toast_AddAccountsFirst: Відкрийте платформу зі списку та спочатку додайте кілька облікових записів
+Toast_AddAccountsFirstTitle: Немає збережених акаунтів
 Toast_CantFindImage: Не вдалося знайти зображення користувача.
 Toast_CantCreateShortcut: Не вдалося створити ярлик
 Toast_ShortcutCreated: Ярлик створено!
+Toast_SettingsCopied: Налаштування успішно скопійовано до поточного облікового запису.
+Toast_GameDataRestored: Дані гри для цього облікового запису успішно відновлено.
+Toast_NoValidSteamId: Не вдалося знайти дійсний ідентифікатор Steam.
 Toast_FailedUpdateCheck: Не вдалося перевірити наявність оновлень
-Toast_UpdateVerifyFail: Неможливо перевірити файли оновлень. Завантажте останню версію і замініть файли в каталог для оновлення.
+Toast_UpdateVerifyFail: Неможливо перевірити файли оновлення. Завантажте останню версію та замініть файли у своєму каталозі.
 Toast_StartedGame: Розпочато {program}
-Toast_Steam_VacCleared: Статус VAC для облікових записів було очищено
-Toast_Steam_CantDeleteVacCache: Не вдалося видалити 'LoginCache/Steam/VACCache/SteamVACCache.json'
-Toast_NoFindSteamUserdata: Не вдалося знайти Steam\\userdata теку
-Toast_Steam_VdfLast: Помилка завантаження з vdf_last. Деякі облікові записи можуть бути відсутні.
-Toast_PartiallyFixed: Частково виправлено
-Toast_Steam_FailedLoginusers: Не вдалося завантажити steam/config/loginusers.vdf
-Toast_Steam_CantLocateLoginusers: Не вдалося знайти '.../Steam/config/logins.vdf'. Спочатку спробуйте увійти.
+Toast_Steam_VacCleared: Статус VAC для облікових записів очищено
+Toast_Steam_CantDeleteVacCache: Не вдалося видалити «LoginCache/Steam/VACCache/SteamVACCache.json»
+Toast_NoFindSteamUserdata: Не вдалося знайти теку Steam\\userdata
+Toast_NoFindGameBackup: Не вдалося знайти папку резервних ігрових даних для цього облікового запису.
+Toast_GameBackupDone: "Резервне копіювання папки даних гри успішно виконано: {folderLocation}"
+Toast_Steam_VdfLast: Вдалося завантажити з vdf_last. Деякі облікові записи можуть бути відсутні.
+Toast_PartiallyFixed: Частково закріплений
+Toast_Steam_FailedLoginusers: Не вдалося завантажити Steam/config/loginusers.vdf
+Toast_Steam_CantLocateLoginusers: Неможливо знайти «.../Steam/config/loginusers.vdf». Спочатку спробуйте увійти в обліковий запис.
 Toast_CantClearImages: Не вдалося очистити зображення
 Toast_RefreshedImages: Оновлені зображення
 Toast_ClearForgottenCheck: Ви впевнені, що хочете очистити резервні копії забутих облікових записів?
-Toast_BattleNet_ChangedBTag: Змінено BattleTag
-Toast_BattleNet_DeletedBTag: Видалено BattleTag
-Toast_FetchedRank: Отриманий ранг
 Toast_ForgotAccount: Забув обліковий запис
 Toast_ClearedPlatformSettings: "Очищено {platform} налаштувань перемикача"
 Toast_ClearedImages: "Очищені зображення"
@@ -197,7 +214,7 @@ Toast_BackupCopy: (1/3) Копіювання файлів у тимчасове 
 Toast_BackupCompress: (2/3) Стиснення файлів ({size}). Це займе деякий час...
 Toast_BackupComplete: (3/3) Стиснення закінчено! (від{size} до {compressedSize})
 Toast_BackupProgress: "Виконується резервне копіювання (стиснутий розмір: {compressedSize})"
-Toast_BackupFail: Помилка резервного копіювання – дивіться журнал!
+Toast_BackupFail: Спроба резервного копіювання зазнала невдачі - див. журнал!
 Toast_BackupBusy: Резервне копіювання вже виконується!
 Toast_RestoreBusy: Відновлення вже триває!
 Toast_RestoreExt: Розпакування архіву.
@@ -206,29 +223,44 @@ Toast_RestoreDeleting: Видалення тимчасових файлів
 Toast_RestoreComplete: Відновлення завершено!
 Toast_FailedLoad: Не вдалося завантажити {platform}! Натисніть платформу, щоб побачити помилку.
 Toast_FailedPlatformsLoad: Не вдалося завантажити Platforms.json! Будь ласка, переконайтеся, що цей файл існує.
-Toast_FailedLoadSettings: "Не вдалося завантажити налаштування! Натомість завантажуються налаштування за замовчуванням. Додавання \"старого\" до існуючої назви файлу налаштувань."
-Toast_FailedLoadStats: "Не вдалося завантажити статистику! Початок свіжого."
-Toast_FileCopyFail: Не вдалося скопіювати файли! Дивіться журнал для більш детальної інформації.
+Toast_FailedLoadSettings: "Не вдалося завантажити налаштування! Замість цього завантажуються налаштування за замовчуванням. Додавання «старого» до існуючої назви файла налаштувань."
+Toast_FailedLoadStats: "Не вдалося завантажити статистику! Почати заново."
+Toast_FailedStatsLoad: Не вдалося завантажити GameStats.json! Будь ласка, переконайтеся, що цей файл існує.
+Toast_GameStatsLoadFail: "Не вдалося отримати ігрову статистику з Інтернету для {Game}"
+Toast_GameStatsEmpty: "На веб-сайті не знайдено ігрової статистики для {Game}. Гадаєш, це помилка? Перевірте папку userdata і \"temp\\ download-{AccoundId}-{Game}.html\", щоб перевірити, чи сторінка мала помилку!"
+Toast_FileCopyFail: Не вдалося скопіювати файли! Див. журнал для отримання додаткової інформації.
 Toast_UserDataLoadFail: Не вдалося завантажити дані користувача {UserData}\\WindowSettings.json. Резервне копіювання та скидання! Помилка збережена в журналі.
-Toast_UpdateCheckFail: Не вдалося зв’язатися з https://tcno.co/, щоб перевірити наявність оновлень. Це повідомлення відображатиметься раз на день.
-Toast_FailedCreateIcon: Не вдалося створити значок. Подробиці дивіться в журналі.
-Tooltip_Restore: Натисніть, щоб вибрати файл 7z, або перетягніть його на цю кнопку.
+Toast_UpdateCheckFail: Не вдалося зв 'язатися з https://tcno.co/, щоб перевірити наявність оновлень. Це повідомлення відображатиметься раз на день.
+Toast_FailedCreateIcon: Не вдалося створити піктограму. Див. журнал для отримання детальної інформації.
+Toast_SameAccount: Неможливо скопіювати файли до/з того ж облікового запису. Спробуйте інший обліковий запис або перегляньте Вікі для отримання додаткової інформації.
+Toast_Steam_DownloadingAppIds: Завантаження списку Steam AppId...
+Toast_Steam_DownloadingAppIdsComplete: Завантаження завершено. Підменю даних гри оновлено.
+Toast_SteamWebKeyInvalid: Ключ API Steam Web, здається, недійсний. Будь ласка, встановіть новий.
+Toast_DownloadingProfileData: Завантаження даних профілю
+Toast_PasswordChanged: Пароль змінено
+Toast_JsonFailModify: Не вдалося змінити файл JSON. Див. журнал.
 Modal_Crowdin_Header: Перекладачі Crowdin
 Modal_Crowdin_Info: "Ось усі, хто допоміг перекласти це програмне забезпечення.<br>Користувачі з мовами поруч дуже допомогли в перекладі (роль коректора)."
-Modal_Info_Creator: Створено TechNobo [Wesley Pyburn]
+Modal_Info_Creator: Створений TechNobo [Веслі Пайберн]
 Modal_Info_Version: Версія
-Modal_Info_ViewGitHub: Вид на GitHub
-Modal_Info_BugReport: Звіт про помилку/функціональність
+Modal_Info_ViewGitHub: Переглянути на GitHub
+Modal_Info_BugReport: Звіт про ваду/Запит на функцію
 Modal_Info_VisitSite: Відвідати tcno.co
-Modal_Info_Disclaimer: Умови обмеженої відповідальності
-Modal_Title_Info: Перемикання облікового запису TcNo
-Modal_Title_ChangeUsername: Змінити ім'я користувача
-Modal_Title_ConfirmAction: Зміна TcNo Account Підтвердження дії
-Modal_Title_LocatePlatform: Будь ласка, знайдіть теку {platform}
+Modal_Info_Disclaimer: Відмова від відповідальності
+Modal_Title_Info: Інформація про перемикач облікового запису TcNo
+Modal_Title_ChangeUsername: Змінити ім 'я користувача
+Modal_Title_ConfirmAction: TcNo Перемикач облікового запису Підтвердити дію
+Modal_Title_LocatePlatform: Знайдіть каталог {platform}
 Modal_Title_AddNew: Додати новий обліковий запис {platform}
 Modal_Title_Background: Встановіть фонове зображення
 Modal_Title_Userdata: Встановіть папку даних користувача
+Modal_Title_GameStats: Увімкнути/Вимкнути статистику гри
+Modal_GameStats_Header: "Увімкнути/Вимкнути статистику гри для: {accountName}"
 Modal_Title_Stats: Ваша статистика
+Modal_Title_GameVars: "Деталі введення для {game}"
+Modal_GameVars_Header: "Введіть наведені нижче дані для вашого облікового запису {game} , {username} на {platform}"
+Modal_Title_AccountNotes: "Примітки до облікового запису для: {accountName}"
+Modal_Title_SetPassword: Встановити пароль
 Modal_SetBackground: 'Виберіть зображення або введіть URL-адресу нижче.<br>Залиште порожнім і встановіть скидання.<br>(Для більш розширеного керування див. Теми на Вікі):'
 Modal_SetBackground_Button: Встановити фон
 Modal_SetBackground_ChooseImage: Виберіть локальне зображення
@@ -237,11 +269,14 @@ Modal_SetUserdata_ChooseFolder: Виберіть папку
 Modal_SetUserdata_Button: Встановити дані користувача
 Modal_ChangeUsername: Будь ласка, введіть нове ім'я користувача для свого облікового запису
 Modal_ChangeUsernameType: Змінити {platform} імені користувача
-Modal_EnterDirectory: "Будь ласка, введіть теку {platform}як суму: C:\\Програмні файли\\{platform}"
+Modal_SetPassword: Введіть пароль для перемикача рахунків TcNo
+Modal_SetPassword_Button: Встановити пароль
+Modal_SetPassword_Info: "ПРИМІТКА. Це не шифрує ваші облікові записи. Заміна облікових записів проста: заміна файлів або зміна імені користувача в файлі. Пароль можна скинути, також редагувавши текст у файлі. Це проста безпека. Він зупиняє простий доступ до інтерфейсу користувача. Ви можете встановити цю програму на знімний USB-накопичувач, встановити папку UserData на той самий USB-накопичувач і фізично вилучити її для більшої безпеки. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Перейдіть до посібника для зовнішнього накопичувача</a><br><br>Щоб очистити, залиште вказане вище порожнім і натисніть кнопку Встановити."
+Modal_EnterDirectory: "Будь ласка, введіть каталог {platform}, наприклад: C:\\Program Files\\{platform}"
 Modal_LocatePlatform: Знайти {platformExe}
-Modal_LocatePlatformFolder: Виберіть папку {platform}
-Modal_ConfirmAction: Підтвердьте дію
-Modal_AddNew: Будь ласка, введіть ім'я для облікового запису {platform} , який ви увійшли.
+Modal_LocatePlatformFolder: Виберіть {platform} папку
+Modal_ConfirmAction: Підтвердити дію
+Modal_AddNew: Введіть ім 'я облікового запису {platform} , у який ви ввійшли.
 Modal_AddCurrentAccount: Додати поточний обліковий запис {platform}
 Modal_SetImageHeader: Встановити зображення профілю
 Modal_SetImage: Встановити зображення
@@ -260,163 +295,173 @@ Status_WaitingForMultipleClose: "Очікування закриття {processN
 Status_GetUniqueId: Збір унікального ідентифікатора користувача
 Status_CopyingFiles: Копіювання файлів користувача...
 Status_HandlingImage: Обробка зображення профілю облікового запису
-Context_SwapTo: Поміняти на рахунок
-Context_CreateShortcut: Створити ярлик на стілниці
-Context_CreateShortcutSubmenu: Створити ярлик на робочому столі...
+Context_SwapTo: Замінити на обліковий запис
+Context_CreateShortcut: Створити ярлик
 Context_ChangeImage: Змінити зображення
-Context_BNet_SetBTag: Встановити BattleTag
-Context_BNet_DelBTag: Видалити BattleTag
-Context_BNet_GetRAnk: Рейнджанг
-Context_ChangeName: Змінити ім'я перемикача
-Context_LoginAsSubmenu: Увійти як...
-Context_UsernameSubmenu: Ім'я користувача...
-Context_RefreshName: Назва оновлення
-Context_CopySubmenu: Копіювання...
-Context_CopyProfileSubmenu: Копіювати профіль...
-Context_CommunityUrl: Посилання на спільноту
-Context_CommunityUsername: Ім'я Спільноства
-Context_LoginUsername: Логін
-Context_CopySteamIdSubmenu: Копіювати SteamID...
+Context_ChangeName: Змінити ім 'я перемикача
+Context_LoginAsSubmenu: Увійти як
+Context_UsernameSubmenu: Ім 'я користувача
+Context_RefreshName: Оновити назву
+Context_CopySubmenu: Копіювати
+Context_DataSubmenu: Data (Дані)
+Context_CopyProfileSubmenu: Копіювати профіль
+Context_CommunityUrl: URL-адреса спільноти
+Context_CommunityUsername: Ім 'я користувача спільноти
+Context_LoginUsername: Ім 'я користувача для входу
+Context_CopySteamIdSubmenu: Скопіювати ідентифікатор пари
 Context_Steam_Id: SteamID [STEAM0:~]
 Context_Steam_Id3: SteamID3 [U:1:~]
 Context_Steam_Id32: SteamID32
 Context_Steam_Id64: SteamID64 7656~
 Context_Steam_OpenUserdata: Відкрити дані користувача
-Context_CopyOtherSubmenu: Копіювати інше...
+Context_ManageSubmenu: Керувати
+Context_GameDataSubmenu: Дані гри
+Context_ManageGameStats: Керування ігровою статистикою
+Context_Game_CopySettingsFrom: Скопіювати налаштування до поточних
+Context_Game_RestoreSettingsTo: Відновити дані гри
+Context_Game_BackupData: Резервне копіювання ігрових даних
+Context_CopyOtherSubmenu: Копіювати інші
 Context_HidePlatform: Сховати платформу
-Context_ExportAccList: Експортувати список рахунків
+Context_ExportAccList: Експортувати список облікових записів
 Context_RunAdmin: Запустити від імені адміністратора
 Context_Hide: Сховати
-Title_BNet_Settings: Перемикач TcNo рахунку - Налаштування BattleNet
-Title_BNet_ManageIgnored: Перемикання TcNo Account - Керування ігнорованими обліковими записами BattleNet
-Title_Platforms_Settings: TcNo Account Switcher - Налаштування платформи
-Title_AccountsList: Перемикання облікового запису TcNo - {platform}
-Title_TextEditor: Перемикач облікового запису TcNo - Текстовий редактор
-Title_Settings: Перемикач TcNo рахунку - Налаштування
-Title_Steam_Cleaning: Перемикач облікового запису TcNo - очищення Steam
-Title_Steam_Settings: Перемикання облікового запису TcNo - налаштування Steam
+ProfileImage_ToggleText: Використовувати зображення як зображення облікового запису
+Title_Platforms_Settings: Перемикач облікового запису TcNo - Налаштування платформи
+Title_Settings_TestCss: Перемикач облікового запису TcNo - тестовий стиль CSS
+Title_AccountsList: Перемикач рахунків TcNo - {platform}
+Title_TextEditor: Перемикач рахунків TcNo - текстовий редактор
+Title_Settings: Перемикач облікового запису TcNo - Налаштування
+Title_Steam_Cleaning: Перемикач облікового запису TcNo - очищення паром
+Title_Steam_Settings: Перемикач облікового запису TcNo - Пара налаштувань
 Title_Template_Settings: TcNo Account Switcher - {platformName} Налаштування
+Title_Login: Перемикач облікового запису TcNo - Вхід
 Installer_Downloading: Завантаження {file}
 Installer_DownloadFinished: Завершено завантаження {file}
 Installer_Installing: "Встановлення: {runtime}"
-Installer_RuntimeTitle: Перемикання облікового запису TcNo - встановлення Runtime
-Installer_Welcome: Ласкаво просимо в перемикач облікового запису TcNo - встановлення Runtime
-Installer_InstalledRuntimes: "Поточні встановлені runtims:"
-Installer_ErrorRuntime: "Один або кілька runtime не були встановлені:"
-Installer_RuntimeNote: "[~{size1} MB + ~{size2} МБ при встановленні]"
+Installer_RuntimeTitle: Перемикач облікових записів TcNo - інсталятор виконання
+Installer_Welcome: Ласкаво просимо до TcNo Account Switcher - Runtime installer
+Installer_InstalledRuntimes: "Наразі встановлені середовища виконання:"
+Installer_ErrorRuntime: "Не встановлено одну або декілька середовищ виконання:"
+Installer_RuntimeNote: "[~{size1} МБ + ~{size2} МБ під час встановлення]"
 Installer_TotalSize: "Загальний розмір завантаження: ~{size} МБ"
 Installer_AnyKeyStart: Натисніть будь-яку клавішу, щоб почати завантаження...
-Runtime_WebView2: Виконання Microsoft WebView2
-Runtime_Desktop: Середовище розробки Microsoft .NET 5
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Робочий стіл Microsoft .NET 5
 Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
-Installer_FailedFolder: "Не вдалося створити папку:"
-Installer_FailedWV: "Не вдалося завантажити і встановити Runtime Microsoft WebView2. Для завантаження: 1. Натисніть на посилання нижче: {link} 2. Натисніть кнопку \"Завантажити хостинг-Bundle\" під додатками запуску серверів."
-Installer_FailedDR: "Не вдалося завантажити та встановити .NET 5 Runtime для робочого столу. Будь ласка, завантажте його тут:"
+Installer_FailedFolder: "Не вдалося створити теку:"
+Installer_FailedWV: "Не вдалося завантажити та встановити Microsoft WebView2 Runtime. Щоб завантажити: 1. Натисніть посилання нижче: {link} 2. Натисніть \"Завантажити пакет хостингу\" у розділі \"Запустити серверні програми\"."
+Installer_FailedDR: "Не вдалося завантажити та встановити .NET 5 Desktop Runtime. Будь ласка, завантажте його тут:"
 Installed_FailedASP: "Не вдалося завантажити та встановити ASP.NET Core {version} Runtime. Щоб завантажити: 1. Натисніть посилання нижче: {link} 2. Натисніть «Завантажити x64» у розділі «Запуск програм для комп’ютера»."
-Installer_Ready: "Один або більше готові до установки. Якщо і коли ви хочете встановити їх, натисніть кнопку \"Так\"."
-Installer_PressStart: Натисніть будь-яку клавішу, щоб почати встановити...
-Installer_VerifyMin: "Підтвердіть ваш запит щодо мінімальної рекомендованої вимоги:"
-Installer_VerifyAlready: "Схоже, все інстальовано. Перевірте, чи відповідає вам мінімальні рекомендовані вимоги:"
+Installer_Ready: "Один або кілька пристроїв готові до встановлення. Якщо ви бажаєте встановити пристрій, натисніть \"Так\"."
+Installer_PressStart: Натисніть будь-яку клавішу, щоб почати встановлення...
+Installer_VerifyMin: "Переконайтеся, що ви відповідаєте мінімальним рекомендованим вимогам:"
+Installer_VerifyAlready: "Схоже, все встановлено. Переконайтеся, що ви відповідаєте мінімальним рекомендованим вимогам:"
 Installer_Complete: Це має бути все. Основна програма TcNo-Acc-Switcher.exe запуститься автоматично.
-Installer_Complete2: "Якщо це не працює, будь ласка, зверніться до інструкцій по встановленню, тут: {link}"
-Global_FatalNext: "Критична помилка! Цей журнал буде автоматично представлений після наступного запуску."
+Installer_Complete2: "Якщо це не працює, будь ласка, зверніться до інструкцій з встановлення, тут: {link}"
+Global_FatalNext: "Сталася фатальна помилка! Цей журнал аварійного завершення роботи буде автоматично надіслано наступного запуску."
 Tray_Error: Помилка лотка
-Tray_NoAccs: "Не знайдено жодного облікового запису.\nСпробуйте спочатку переключитися або знайти 'Tray_Users.json'"
-Tray_Switch: "Перейти до: {account}"
-Tray_CantOpenExe: "Не вдалося відкрити головний .ex. Переконайтеся, що він існує.\n\nСпробуйте відкрити:"
-Tray_LaunchFail: "Перемикання облікового запису TcNo - помилка запуску лотка"
-Updater_Duplicate: Виявлено інший екземпляр Перемикання Облікового Запису TcNo Account Updater.
+Tray_NoAccs: "Облікових записів не знайдено.\nСпробуйте спочатку змінити обліковий запис або знайдіть \"Tray_Users.json\""
+Tray_Switch: "Перемкнутися на: {account}"
+Tray_CantOpenExe: "Не вдалося відкрити основний файл .exe. Переконайтеся, що він існує.\n\nЯ спробував відкрити:"
+Tray_LaunchFail: "Перемикач облікового запису TcNo - не вдалося запустити лоток"
+Updater_Duplicate: Виявлено інший екземпляр інструменту оновлення перемикача облікових записів TcNo.
 Updater_Unknown: "Невідомий аргумент: {arg}"
-Updater_NeedsAdmin: Цю програму потрібно запускати в якості адміністратора!
+Updater_NeedsAdmin: Цю програму потрібно запустити як адміністратора!
 Updater_StatusChecking: Перевірка версії
 Updater_FailedVersionCheck: "Не вдалося отримати версію. Натисніть \"Перевірити\", щоб оновити та перевірити файли"
 Updater_PressBelow: Натисніть кнопку нижче!
-Updater_PressBelowStart: Натисніть на кнопку нижче, щоб розпочати оновлення.
-Updater_PatchApplied: Патч застосовано!
+Updater_PressBelowStart: Натисніть кнопку нижче, щоб розпочати оновлення.
+Updater_PatchApplied: Застосовано латку!
 Updater_UpdatingAppData: Оновлення файлів у AppData!
-Updater_Complete: Всі оновлення закінчено!
+Updater_Complete: Усі оновлення завершено!
 Updater_Checking: Перевірка наявності оновлень
-Updater_UpdateToVerify: Щоб перевірити файли потрібно спочатку оновити.
-Updater_ClosingTcNo: Закриття екземплярів перемикача облікових записів TcNo (якщо є).
+Updater_UpdateToVerify: Щоб перевірити файли, спочатку потрібно оновити.
+Updater_ClosingTcNo: Закриття екземплярів перемикача рахунків TcNo (за наявності).
 Updater_Downloading: "Завантаження оновлення: {version}"
 Updater_Downloaded: Завантаження завершено.
-Updater_CantExtract: Не вдалося витягти оновлення.
-Updater_Verify: Перевірка файлів
+Updater_CantExtract: Не вдалося витягнути оновлення.
+Updater_Verify: Перевірити файли
 Updater_Verifying: Перевірка...
-Updater_VerifySkip: Перевірка файлів, щоб пропустити всі дрібні оновлення, і тільки переключитися на останнє.
-Updater_NoConnection: "Не вдалося з'єднатися з tcno.co для перевірки файлів. Ви можете спробувати вручну завантажити інсталятор з GitHub сторінки і перевстановити для оновлення.\n\nПомилка:"
-Updater_NoServer: Не вдалося зв'язатися з сервером оновлення
-Updater_Hashlist: Завантаження останнього геш-списку...
-Updater_CantCheck: Не вдається перевірити наявність оновлень
-Updater_Failed: "ПОМИЛКА: деякі файли використовуються і не можуть бути оновлені\n\n1. Переконайтеся, що всі TcNo процеси повністю закриті\n(або перезавантажте PC)\n\n2. Потім натисніть кнопку Підтвердити нижче, або якщо ви перезапустили:\n- Відкрити це оновлення та перевірити файли\n    (розташовані в теці 'updater' у каталозі встановлення)"
-Updater_Missing: "МИЛКА ФАЙСУ: {file}"
-Updater_FileMismatch: "Файл: {file} має MD5: {md5} ОЧІКУВАННЯ: {value}"
+Updater_VerifySkip: Перевірка файлів, щоб пропустити всі невеликі оновлення, і просто перейти до останнього.
+Updater_NoConnection: "Не вдалося підключитися до tcno.co для перевірки файлів. Ви можете спробувати вручну завантажити інсталятор зі сторінки GitHub і перевстановити для оновлення.\n\nПомилка:"
+Updater_NoServer: Не вдалося досягти сервера оновлень
+Updater_Hashlist: Завантаження останнього списку хешів...
+Updater_CantCheck: Неможливо перевірити наявність оновлень
+Updater_Failed: "ПОМИЛКА: деякі файли використовуються і не можуть бути оновлені.\n\n1. Переконайтеся, що всі процеси TcNo повністю закриті\n(або перезапустіть ПК)\n\n2. Потім натисніть Перевірити нижче, або якщо ви перезапустили:\n-   Відкрийте цей засіб оновлення та перевірте файли\n    (розташовані в папці \"Засіб оновлення\" в каталозі встановлення)"
+Updater_Missing: "ВІДСУТНІЙ ФАЙЛ: {file}"
+Updater_FileMismatch: "Файл: {file} має MD5: {md5} ОЧІКУВАНО: {value}"
 Updater_DownloadingWeb: Завантаження файлу з веб-сайту...
-Updater_UnpackingAppData: Копіювання файлів в %AppData%/TcNo Account Switcher... (якщо не вказано інакше)
-Updater_VerifyComplete: Файли перевірені!
+Updater_UnpackingAppData: Копіювання файлів до %AppData%/TcNo Перемикач рахунків... (якщо не встановлено інше)
+Updater_VerifyComplete: Файли перевірено!
 Updater_UpdateFound: "Знайдено оновлення: {name} [{updateSize}]"
-Updater_TotalFound: "Знайдено всього оновлень: {x}"
+Updater_TotalFound: "Загальна кількість знайдених оновлень: {x}"
 Updater_TotalSize: "Загальний розмір: {size}"
-Updater_AwaitingUser: Очікування на вхід користувача...
-Updater_UpToDate: "Ви в актуальному стані.\n:)"
-Updater_FailedDecode: Швидше за все, це пов'язано зі мною (TechNobo) з кроком на основі оновлення і створення помилки, яка зламала їх. файл оновлення сина. Повідомте мені :)
-Updater_FailedDecodeTitle: Не вдалося декодувати список оновлень
-Updater_Extracting: Розпакування файлів патчу
-Updater_Applying: Застосування патча...
+Updater_AwaitingUser: Очікування введення користувача...
+Updater_UpToDate: "Ви в курсі.\n:)"
+Updater_FailedDecode: Найімовірніше, це пов 'язано з тим, що я (TechNobo) штовхаю оновлення і роблю помилку, яка зламала файл оновлення .json. Дай мені знати :)
+Updater_FailedDecodeTitle: Не вдалося розшифрувати список оновлень
+Updater_Extracting: Видобування файлів патчів
+Updater_Applying: Застосування латки...
 Updater_Moving: Переміщення файлів...
-Updater_Title: Оновлення облікового запису TcNo
+Updater_Title: Оновлення перемикача рахунків TcNo
 Updater_Started: Розпочато
-Updater_Start: Запуск перемикання облікового запису TcNo
+Updater_Start: Запустити перемикач рахунків TcNo
 Updater_Begin: Почати оновлення
 Updater_Exit: Вийти
-FatalError: Критична помилка!
-Online: Онлайн
-OnlineDefault: Online (Default)
-Offline: В автономному режимі
+FatalError: Сталася фатальна помилка!
+Online: В Інтернеті
+OnlineDefault: Онлайн (за замовчуванням)
+Offline: Офлайн
 Invisible: Невидимий
 Busy: Зайнятий
-Away: Відійшов
-Snooze: Повторити
-LookingToTrade: Шукаю обмін
-LookingToPlay: Дивлячись на гру
+Away: Геть
+Snooze: Вимкнути режим тиші
+LookingToTrade: Шукаємо можливість торгувати
+LookingToPlay: Шукаємо, як грати
 Unrecognized_EPersonaState: Нерозпізнаний ePersonaState
 Reg_DoesntExist: "{subKey} не існує."
 Reg_DoesntContain: "{subKey} не містить {val}"
-Reg_Removing: Видалення {subKey}\\{val}
-PngInvalid_Format: Необхідний формат пікселів рівний формату PixelFormat.{x}.
-PngRequired: Необхідний формат зображення - портативний графічний графік мережі (png).
-PngDimensions: Розміри повинні бути менші або дорівнювати {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "Синтаксична помилка виникла (детальніше нижче)! AND:"
-ThemesNotFound: "Не вдалося знайти папку \"теми\" в каталозі TcNo Account Switcher. Це (особливо папка \"Dracula_Cyan\") потрібне для запуску цього програмного забезпечення.\nВи можете запустити програму оновлення в папці \"updater\", щоб перевірити файли та відновити ці файли."
+Reg_Removing: Вилучення {subKey}\\{val}
+PngInvalid_Format: Обов 'язковий формат пікселів - PixelFormat.{x}.
+PngRequired: Обов 'язковим форматом зображення є портативна мережева графіка (png).
+PngDimensions: Розміри повинні бути меншими або рівними {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "Виявлено помилку синтаксису (докладніше нижче)! І:"
+ThemesNotFound: "Не вдалося знайти папку \"теми\" в каталозі перемикача облікових записів TcNo. Ця (особливо тека «Dracula_Cyan») потрібна для запуску цього програмного забезпечення.\nВи можете запустити Оновлення у теці «Оновлення» для перевірки файлів і відновлення цих відсутніх файлів."
 Yes: "Так"
 No: "Ні"
-NoDefault: Немає (за замовчуванням)
+Save: Зберегти
+NoDefault: Ні (за замовчуванням)
 Ok: "Гаразд"
+Submit: Надіслати
 Forget: Забути
-Notice: Примітки
+Notice: Повідомлення
+Notes: Примітки
 Error: Помилка
 ErrorDetails: "ПОМИЛКА: {ex}"
 Failed: Не вдалося
-Success: Успіх
+Success: Успішно
 NotFound: Не знайдено
-Done: Виконано
+Done: Готово
+Edit: Редагувати
+Refresh: Оновити
 Working: Працює...
-ForName: "За: {name}"
+ForName: "Для: {name}"
 DeletedFiles: Видалені файли
 FileFoldersToClear: "Список файлів/папок для очищення:"
 CouldNotFindX: Не вдалося знайти {x}
 CouldNotCloseX: Не вдалося закрити {x}!
+CouldNotReadFile: Не вдалося прочитати {file}!
 DirectoryNotFound: Каталог не знайдено
 DirectoryNotFoundFolder: "Каталог не знайдено: {folder}"
 DeletingFile: "Видалення: {file}"
-DeletingFolder: "Вилучення теки: "
-CouldntDeleteX: "ПОМИЛКА: COULDN'T DELETE: {x}"
-CouldntDeleteUndefined: "ПОМИЛКА: COULDN'T ВИДАЛЕНО ФАЙЛ"
-Prompt_RestartAsAdmin: "<h3><bold>Ця програма буде перезавантажена як Адміністратор</bold></h3><p>Натиснувши \"Так\" в ОАС при запиті адміністратора</p>"
+DeletingFolder: "Видалення папки: "
+CouldntDeleteX: "ПОМИЛКА: НЕ ВДАЛОСЯ ВИДАЛИТИ: {x}"
+CouldntDeleteUndefined: "ПОМИЛКА: НЕ ВДАЛОСЯ ВИДАЛИТИ НЕВИЗНАЧЕНИЙ ФАЙЛ"
+Prompt_RestartAsAdmin: "<h3><bold>Ця програма перезапуститься як Admin (Адміністратор)</bold></h3><p>Натисніть \"Так\" в UAC, коли буде запропоновано admin (Адміністратор).</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>Ви збираєтеся забути обліковий запис!</h3> <h4>Що це означає?</h4> <p>- Steam більше не матиме облікового запису, зазначеного в режимі Big Picture Mode, і не запам'ятовуватиме пароль.<br/> - TcNo Account Switcher також більше не показуватиме обліковий запис, доки він не ввійде знову через Steam.</p> <p>Ваш обліковий запис залишиться недоторканим. Це просто забуто на цьому комп’ютері.</p><h4>Ви розумієте?</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>Ви ось-ось забудете рахунок!</h3> <h4>Що це означає?</h4> <p>Перемикач облікового запису TcNo також більше не буде показувати обліковий запис,<br/> поки вона не ввійде знову через {platform}і не додається до списку.</p> <p>Ваш обліковий запис залишиться без дотику. Він просто забутий на цьому комп'ютері</p> <h4>Ви розумієте?</h4>
+  <h3 style='color:red'>Ви збираєтеся забути обліковий запис!</h3> <h4>Що це означає?</h4> <p>Перемикач облікових записів TcNo також більше не відображатиме обліковий запис,<br/> поки він не буде ввійшов знову до {platform}і доданий до списку.</p> <p>Ваш обліковий запис залишиться недоторканим. Це просто забувається на цьому комп 'ютері.</p> <h4>Ви розумієте?</h4>
 Prompt_ClearStats: >
   <h3 style='color:red'>Ви збираєтеся очистити свою статистику!</h3> <p>Ви не можете скасувати цю дію.</p>
 Platform_DiscordPasteHint: Вставте в консоль Discord, а потім вставте результат у вхід!
@@ -425,7 +470,7 @@ Platform_ClearCacheTotal: Очищення {totalFileCount} файлів ({total
 Platform_DeleteFail: Не вдалося видалити деякі файли (можливо, програма запущена?)
 Platform_CouldNotDeleteLog: Не вдалося видалити файл! Перевірте {logPath}
 Error_FileAccessDenied: Не вдалося отримати доступ до файлу! Перевірте {logPath}
-Error_RequiredFileVerify: Потрібний файл не знайдено. Переконайтеся, що в каталозі встановлення існують папки x64 та x86. Якщо немає, запустіть TcNo-Acc-Switcher-Updater.exe і перевірте файли.
+Error_RequiredFileVerify: Обов 'язковий файл не знайдено. Переконайтеся, що папки x64 і x86 існують у каталозі встановлення. Якщо ні, запустіть TcNo-Acc-Switcher-Updater.exe і перевірте файли.
 Tooltip_Settings: Налаштування
 Tooltip_Info: Інформація
 Tooltip_ManagePlatforms: Показати або приховати інші платформи
@@ -433,9 +478,16 @@ Tooltip_ExpandShortcuts: Розгорніть вибір гри та ярлик�
 Tooltip_ShortcutFolder: Відкрийте папку ярликів. Розмістіть туди ярлики та перемикач облікових записів TcNo, щоб побачити їх.
 Tooltip_Backup: Резервне копіювання файлів/папок конфігурації, як визначено в налаштуваннях платформи.
 Tooltip_BackupAll: Створіть резервну копію УСІХ файлів/папок конфігурації, включаючи зображення та інші великі файли.
-Tooltip_ClosingMethod: "Найкраще комбінувати. Закрити спроби закритися безпосередньо за допомогою функції закриття, і TaskKill використовує CMD (Найкраще, якщо комбінація не працює)"
-Tooltip_StartingMethod: "За замовчуванням найкраще. Direct не контролює рівень адміністратора чи UAC. Він почнеться на тому самому рівні (або вище, але не нижче), ніж цей перемикач облікових записів"
+Tooltip_ClosingMethod: "Найкраще комбінувати. Закрити спроби закриття безпосередньо за допомогою функції закриття і TaskKill використовує CMD (найкраще, якщо комбінація не працює)"
+Tooltip_StartingMethod: "За замовчуванням - найкраще. Direct не має контролю над рівнем адміністратора або UAC. Він розпочнеться з того ж рівня (або вище - але не нижче), що і цей перемикач облікового запису"
 Tooltip_CurrentAccount: Наразі ви ввійшли в цей обліковий запис.
-Discord_Status: Наразі змінюються облікові записи.
-Discord_StatusDetails: "Змінено облікових записів: {number}"
-Website: веб-сайт
+Tooltip_Restore: Натисніть, щоб вибрати файл 7z, або перетягніть його на цю кнопку.
+Tooltip_DisabledGlobally: Цей елемент приховано для всіх облікових записів. Ви можете змінити це в налаштуваннях платформи.
+Discord_Status: Наразі змінюється обліковий запис.
+Discord_StatusDetails: "Облікові записи перемкнуто: {number}"
+Website: Веб-сайт
+Preview_Platforms: Попередній перегляд платформ
+Preview_Accounts: Попередній перегляд облікових записів
+Preview_Notifications: Попередній перегляд сповіщень про тост
+Preview_Settings: Попередній перегляд налаштувань
+Preview_Modals: Попередній перегляд модалів
