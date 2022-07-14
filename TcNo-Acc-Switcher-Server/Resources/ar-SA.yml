@@ -1,19 +1,20 @@
 ---
 Update: تحديث متوفر! انقر هنا لبدء التحديث.
 Header_ChooseLanguage: 'اختر لغة:'
-BattleNet_ShowSR: استخدام صورة عرض أوفرواتش بالاضافة لاظهار الـSR.
-Steam_ShowSteamID: عرض معرف ستيم
-Steam_ShowVac: عرض حظر ستيم [VAC]
-Steam_CheckVac: تحقق من حالة VAC لحساب ستيم
-Steam_ShowLimited: إظهار حالة التقييد
-Steam_ShowAccUsername: إظهار اسم المستخدم
+Steam_ShowSteamID: معرّف البخار
+Steam_ShowVac: حالة VAC
+Steam_ShowLastLogin: آخر وقت لتسجيل الدخول
+Steam_ShowLimited: حالة محدودة
+Steam_ShowAccUsername: اسم مستخدم الحساب
 Steam_Tray_AccountName: عرض اسم الحساب [الاسم المستخدم اثناء تسجيل الدخول]
+Steam_CheckVac: تحقق من حالة VAC لحساب ستيم
 Steam_OverrideDefaultState: "حالة الحساب الافتراضية:"
-Button_AddNew: إضافة جديد
+Steam_StartSilent: "افتح Steam (البخار) لدرج المهام على المفتاح (ابدأ تشغيل البخار باستخدام '- silent ')"
+Button_AddNew: اضف حساب
 Button_SaveCurrent: حفظ الحالي
-Button_SaveFile: حفظ الملف
-Button_Cancel: إلغاء
-Button_Login: تسجيل الدخول
+Button_SaveFile: حِفْظُ المِلَفِّ
+Button_Cancel: إِلْغاءٌ
+Button_Login: تَسْجيلُ الدُّخولِ
 Button_Close: غلق
 Button_RefreshImages: تحديث الأفاتار
 Button_ResetSettings: إعادة تعيين الإعدادات الافتراضية
@@ -25,33 +26,42 @@ Button_Backup: النسخ الاحتياطي
 Button_BackupAll: النسخ الاحتياطي لكل شيء
 Button_Restore: استعادة
 Button_OpenBackup: فتح مجلد النسخ الاحتياطي
+Button_Back: رجوع
+Button_RestartAdmin: إعادة التشغيل كمسؤول
+Button_SetPassword: تعيين كلمة مرور التطبيق
 Settings_Shortcut: 'إنشاء اختصار لـ{platform} على سطح المكتب'
 Settings_Admin: تشغيل {platform} كمسؤول
 Settings_ImageExpiry: 'عدد الايام قبل تحديث صور البروفايل:'
+Settings_SteamAPIKey: "مفتاح Steam Web API ‏ (اختياري)"
+Settings_SteamAPIKey_Note: سيؤدي تعيين مفتاح واجهة برمجة التطبيقات إلى إظهار المؤشر المحدود (الحد الأصفر) للحسابات المحظورة في المجتمع بدلاً من ذلك.
 Settings_Header_AppWide: إعدادات التطبيق
 Settings_Header_GeneralSettings: إعدادات عامة
-Settings_Header_ExtraPlatforms: إعدادات النظام الأساسي
+Settings_Header_AccountDisplay: إعدادات عرض الحساب
+Settings_Header_ExtraPlatforms: إعدادات المنصة
 Settings_Header_GeneralTools: أدوات عامة
 Settings_Header_OtherTools: أخرى
 Settings_Header_TraySettings: إعدادات القائمة المخفية في شريط المهام
 Settings_Header_OpenGameFolders: مجلدات الألعاب
 Settings_Header_BackupRestore: النسخ الاحتياطي واستعادة إعدادات المنصة
-Settings_Header_Language: لغة
-Settings_Header_System: نظام
-Settings_Header_Theme: سمة
-Settings_Header_Program: برنامج
-Settings_Header_StatsSharing: الإحصاء والمشاركة
+Settings_Header_Language: اللغة
+Settings_Header_System: النظام
+Settings_Header_Theme: ثيم
+Settings_Header_Program: برنامـج
+Settings_Header_StatsSharing: الإحصائيات والمشاركة
 Settings_Header_Platform: "{platformName} إعدادات"
+Settings_Header_GameStats: إعدادات إحصائيات اللعبة العالمية
+Settings_GameStats: لن يظهر أي شيء محدد هنا تحت اسم المستخدم الخاص بك لأي حساب. استخدم هذا إذا كنت غالبًا ما تخفي عناصر محددة من إحصائيات اللعبة الخاصة بك.
 Settings_TrayMax: 'عدد الحسابات الظاهرة في قائمة:'
-Settings_ExtraPlatformsDisabled: منصات المعوقين. انقر لتمكينهم.
-Settings_ExtraPlatformsEnabled: منصات مرئية. انقر لتعطيلها.
+Settings_ExtraPlatformsDisabled: تم تعطيل المنصات. انقر لتمكينها.
+Settings_ExtraPlatformsEnabled: المنصات المرئية. انقر لتعطيلها.
 Settings_RTL: إظهار النص من اليمين إلى اليسار
-Settings_CollectStats: اجمع الإحصائيات
-Settings_ShareStats: مشاركة الإحصائيات بشكل مزعج (موصى به)
-Settings_DiscordRpc: الحضور الغني للخلاف (RPC)
-Settings_DiscordRpcShare: حصة مجموع المفاتيح
-Settings_ViewStats: عرض احصائيات
-Settings_ClearStats: إعادة ضبط
+Settings_CollectStats: جمع الإحصائيات
+Settings_ShareStats: مشاركة الإحصائيات بشكل مزعج (مستحسن)
+Settings_DiscordRpc: التواجد الغني بالخلافات (RPC)
+Settings_DiscordRpcShare: مشاركة إجمالي التبديلات
+Settings_ViewStats: عرض الإحصائيات
+Preview: معاينة
+Settings_ClearStats: إعادة الضبط
 Settings_CurrentLocation: 'مكان التثبيت الحالي: {path}'
 Settings_CurrentDataLocation: 'موقع بيانات المستخدم الحالي: {path}'
 Settings_SetDataLocation: "[تعيين موقع بيانات المستخدم المخصص]"
@@ -62,7 +72,7 @@ Settings_ClearAccounts: إزالة الحسابات
 Settings_StreamerMode: تفعيل وضح الستريمر
 Settings_ExitToTray: تصغير البرنامج إلى القائمة المخفية في شريط المهام
 Settings_DesktopShortcut: اختصار على سطح المكتب
-Settings_StartMenu_ProgramTray: البرنامج و القناة
+Settings_StartMenu_ProgramTray: صينية البرامج
 Settings_StartMenu_Platform: المنصة
 Settings_Tray_StartWindows: تشغيل في الوضع المصغر
 Settings_Tray_StartNow: '[ادخل الوضع الان]'
@@ -74,42 +84,53 @@ Settings_StartCentered: بدء البرنامج في منتصف الشاشة
 Settings_WindowsAccent: استخدام لون ثيم ويندوز
 Settings_HelpTranslate: "[ساعد في الترجمة]"
 Settings_ViewTranslators: "[الشكر]"
-Settings_Header_ActiveBrowser: "(متقدم) تعيين محرك التقديم:"
-Settings_Header_ClosingMethod: "(متقدم) اضبط الطريقة للإغلاق {platform}"
-Settings_Header_StartingMethod: "(متقدم) اضبط الطريقة على البدء {platform}"
-Settings_AutoStart: "ابدأ تلقائيًا بـ {platform} عند تبديل الحساب"
+Settings_Header_ActiveBrowser: "(متقدم) مجموعة تقديم المحرك:"
+Settings_Header_ClosingMethod: "(متقدم) تعيين طريقة لإغلاق {platform}"
+Settings_Header_StartingMethod: "(متقدم) تعيين طريقة للبدء {platform}"
+Settings_AutoStart: "بدء تشغيل {platform} تلقائيًا على مفتاح الحساب"
 Settings_NoPlatforms: لا توجد حاليا منصات تمكين. يرجى تحديد الأنظمة الأساسية الاختيارية أدناه لتمكينها ، أو إلغاء تحديد الأنظمة الأساسية المعطلة.
-Settings_MinimizeOnSwitch: تصغير الجلاد عند تبديل الحساب
-Stats_Disabled: "تم تعطيل جمع الإحصائيات."
-Stats_InDepth: تفصيل إحصائي متعمق
+Settings_MinimizeOnSwitch: تقليل المحول على مفتاح الحساب
+Settings_ShowShortNotes: معاينة الملاحظة تحت اسم المستخدم
+Settings_Header_AppPassword: "أوقف الآخرين باستخدام المحول:"
+PreviewCss: معاينة CSS
+Settings_PreviewCss: هذه هي صفحة معاينة CSS. يمكنك عرض بعض العناصر التي تظهر في البرنامج ورؤية كيف تبدو مع القالب الخاص بك. هذه الصفحة مفيدة لأولئك الذين ينشئون القوالب!
+Settings_PreviewCssHeader: صفحة معاينة CSS
+Stats_Disabled: "تم تعطيل جمع الإحصاءات."
+Stats_InDepth: تحليل متعمق للإحصاءات
 Stats_ShareEnabled: "تتم مشاركة هذه الإحصائيات بشكل مجهول وستضيف إلى المجموع <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">هنا</a>."
 Stats_ShareDisabled: "لا تتم مشاركة هذه الإحصائيات بشكل مجهول ولن تضيف إلى المجموع <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">هنا</a>."
 Stats_OperatingSystem: "نظام التشغيل: "
 Stats_FirstLaunch: "الإطلاق الأول: "
 Stats_LaunchCount: "عدد الإطلاق: "
 Stats_CrashCount: "عدد الأعطال: "
-Stats_MostUsedPlatform: "النظام الأساسي الأكثر استخدامًا: "
-Stats_TotalTime: "إجمالي الوقت المنقضي داخل التطبيق: "
-Stats_TotalSwitches: "مفاتيح تبديل الحساب الإجمالية: "
-Stats_TotalGamesLaunched: "إجمالي التطبيقات / الألعاب التي تم إطلاقها عبر المحول: "
+Stats_MostUsedPlatform: "المنصة الأكثر استخدامًا: "
+Stats_TotalTime: "إجمالي الوقت المستغرق في التطبيق: "
+Stats_TotalSwitches: "إجمالي مفاتيح الحساب: "
+Stats_TotalGamesLaunched: "إجمالي التطبيقات/الألعاب التي تم إطلاقها عبر المحول: "
 Stats_UniqueDaysLong: "أيام فريدة مع تبديل الحسابات: "
 Stats_LastUpload: "آخر تحميل: "
-Stats_SwitcherStats: "إحصائيات الجلاد: "
+Stats_SwitcherStats: "إحصائيات المحول: "
 Stats_PageStats: "إحصائيات الصفحة: "
 Stats_VisitsTotalTime: "{visits} إجمالي الزيارات ، {hours} إجمالي الوقت"
-Stats_Accounts: "حسابات: "
-Stats_Switches: "مفاتيح: "
-Stats_FirstActive: "أول نشط: "
+Stats_Accounts: "الحسابات: "
+Stats_Switches: "المفاتيح: "
+Stats_FirstActive: "أول نشاط: "
 Stats_LastActive: "آخر نشاط: "
 Stats_UniqueDays: "الأيام الفريدة: "
 Stats_GameShortcuts: "اختصارات اللعبة: "
-Stats_GameShortcutsHotbar: "اختصارات اللعبة (على hotbar): "
+Stats_GameShortcutsHotbar: "اختصارات اللعبة (على شريط الساخن): "
 Stats_GamesLaunched: "الألعاب التي تم إطلاقها: "
+Stats_MetricsToShow: "المقاييس المعروضة:"
+Stats_AccountId: "معرّف الحساب:"
+Auth_LoginRequired: تم تعيين كلمة مرور مسبقًا ، وهي مطلوبة. يرجى إدخال كلمة المرور أدناه.
+Auth_EnterPassword: "أدخل كلمة المرور:"
+Auth_PassIncorrect: كلمة المرور غير صحيحة.
+Locked: مقفل
 Cleaning_Header_StartMenuShortcuts: 'اختصارات لقائمة البدء:'
-Cleaning_Header_General: تنظيف عام
+Cleaning_Header_General: التنظيف العام
 Cleaning_Header_LoginHistory: تنظيف سجل تسجيل الدخول الخاص بي
 Cleaning_Header_PlatformCleaning: '{المِنصّة} مُبدّل'
-Cleaning_ImportantInfoHeader: 'معلومات هامة:'
+Cleaning_ImportantInfoHeader: 'معلومات مهمة:'
 Cleaning_ImportantInfo: >
   النقر على زر سيؤدي إلى حذف الملف (الملفات) من مسار تثبيت ستيم في جهازك.<br /> حذف ملف (loginusers.vdf/مستخدمي تسجيل الدخول) سيؤدّي إلى عدم إظهار أي حساب في هذا البرنامج.<br /> ستحتاج إلى تسجيل الدخول إليهم باستخدام ستيم لاستعادتهم مجدّداً.
 Cleaning_Button_KillProcess: أنهِ العملية {platform}
@@ -127,65 +148,61 @@ Toast_DataLocationSet: (2/2) أعد تشغيل مبدل الحسابات لاس�
 Toast_PlaceShortcutFiles: يتم فتح مجلد. ضع اختصارات اللعبة في هذا المجلد ، وأعد تشغيل مبدل الحساب.
 Toast_TrayStarted: تم بدء مكان التعبئة!
 Toast_TrayRunning: مكان التعبئة مفتوح مسبقاُ
-Toast_TrayUsersMissing: لم يتم حفظ أي من المستخدمين
+Toast_TrayUsersMissing: لم يتم حفظ أي مستخدم للدرج
 Toast_TrayFail: لا يمكن بدء تشغيل التطبيق المُصَغّر!
 Toast_TrayPosition: "عند النقر على زر الخروج: سأكون مصغّراً بشريط مهام ويندوز! (يمين/يسار شريط المهام, يختلف الاتجاه حسب لغة النظام)"
 Toast_TrayHint: "تلميح: اضغط Ctrl+Click 'X' لإغلاقي تماما، أو عبر الأيقونة المُصغّرة بشريط المهام > 'خروج'"
-Toast_Copied: منسوخ
-Toast_AlreadyProcessing: جارٍ بالفعل معالجة الحسابات...
+Toast_Copied: تم النسخ
+Toast_AlreadyProcessing: جارٍ معالجة الحسابات بالفعل...
 Toast_FailedRestore: فشل في استعادة الحسابات (انظر موجّه الأوامر)
 Toast_Restored: الحسابات التي تمّت استعادتها!
-Toast_ProtocolEnabled: هذا البرنامج سوف يستجيب الآن لـ tcno:\\ في Windows
-Toast_ProtocolEnabledTitle: تم إضافة البروتوكول
-Toast_ProtocolDisabled: هذا البرنامج لن يستجيب بعد الآن لـ tcno:\\
-Toast_ProtocolDisabledTitle: تم إزالة البروتوكول
+Toast_ProtocolEnabled: سيستجيب هذا البرنامج الآن لـ tcno:\\ في Windows
+Toast_ProtocolEnabledTitle: تمت إضافة البروتوكول
+Toast_ProtocolDisabled: لن يستجيب هذا البرنامج بعد الآن لـ tcno:\\
+Toast_ProtocolDisabledTitle: تم حذف البروتوكول
 Toast_RestartAsAdmin: الرجاء التشغيل كمسؤول والمحاولة مجدداً.
 Toast_RestartAfterClose: الرجاء إعادة تشغيل البرنامج بعد النقر على زر الإغلاق.
 Toast_RestartAfterCloseTitle: لون التمييز مُعطّل
 Toast_RestartRequired: أعد التشغيل لتطبيق التغييرات
-Toast_LoadStylesheetFailed: فشل تحميل ورقة الأنماط! انظر مجلد بيانات المستخدم للحصول على التفاصيل.
-Toast_BNet_Private: "الملف الشخصي {BTag}خاص"
-Toast_BNet_StatsFail: "خطأ في محاولة الحصول على إحصائيات لـ {BTag}"
-Toast_BNet_CantSwapAccounts: لا يمكن تبديل الحسابات (Battle.net.config ملف فاسد)
-Toast_BNet_CantLoadNotFound: تعذر العثور على ملف Battle.net.config
-Toast_BNet_CantLoadEmpty: تعذر تحميل ملف الحسابات لـ Blizzard (لم يتم العثور على حسابات)
-Toast_BNet_CantLoadConfigCorrupt: تعذر تحميل ملف الحسابات لـ Blizzard (Battle.net.config ملف فاسد)
-Toast_BNet_NamePolicy: علامة المعركة لا تتطابق مع سياسة التسمية.
+Toast_LoadStylesheetFailed: فشل تحميل ورقة الأنماط! راجع مجلد بيانات المستخدم للحصول على التفاصيل.
+Toast_LoadingStats: واحد أو أكثر من الملفات الشخصية هي إحصائيات التحديث. يرجى الانتظار.
 Toast_ItemNotFound: "لم يتم العثور على {item}"
-Toast_DeletedTotal: "{files} من {totalFiles} تم حذفه. المجموع: {totalSize}"
+Toast_DeletedTotal: "تم حذف {files} من {totalFiles} . المجموع: {totalSize}"
 Toast_CantChangeUsername: تعذر تغيير اسم المستخدم
-Toast_CantClearLoginFiles: فشل في مسح ملفات تسجيل الدخول القديمة
+Toast_CantClearLoginFiles: فشل مسح ملفات تسجيل الدخول القديمة
 Toast_AccountIdReg: فشل الحصول على معرف الحساب من الريجسيتري!
 Toast_RegFailWrite: فشل في الكتابة إلى ريجسيتري ويندوز!
 Toast_RegFailRead: فشل القراءة من ريجسيتري ويندوز!
-Toast_RegFailReadSaved: فشل في قراءة إدخال التسجيل المحفوظ. حاول إزالة الحساب وإضافته مرة أخرى إذا لم تنجح.
+Toast_RegFailReadSaved: فشل قراءة إدخال التسجيل المحفوظ. حاول إزالة الحساب وإضافته مرة أخرى إذا لم تنجح.
 Toast_RegSaveMissing: فشل العثور على البيانات أو قراءتها من ملفات ريجسيتري المحفوظة!
-Toast_DuplicateNames: لا يمكن المبادلة. تكرار الحسابات بنفس اسم المستخدم؟
-Toast_MissingUserId: "لا يمكن المبادلة. معرف المستخدم مفقود. تحقق من Wiki \"الأخطاء الشائعة\"."
-Toast_CouldNotLocate: تعذر تحديد موقع المستخدم المسجل
-Toast_StreamerModeHint: المعلومات الخاصة مخفية! - شاهد الإعدادات
-Toast_StreamerModeTitle: وضع البث
-Toast_AddAccountsFirst: فتح المنصة من القائمة وإضافة بعض الحسابات أولا
+Toast_DuplicateNames: تعذر التبديل. حسابات مكررة بنفس اسم المستخدم ؟
+Toast_MissingUserId: "تعذر التبديل. معرف المستخدم مفقود. تحقق من \"الأخطاء الشائعة\" في ويكي."
+Toast_CouldNotLocate: تعذر تحديد موقع المستخدم الذي قام بتسجيل الدخول
+Toast_StreamerModeHint: المعلومات الخاصة مخفية! - راجع الإعدادات
+Toast_StreamerModeTitle: وضع الدفق
+Toast_AddAccountsFirst: افتح المنصة من القائمة وأضف بعض الحسابات أولاً
 Toast_AddAccountsFirstTitle: لا توجد حسابات محفوظة
-Toast_CantFindImage: فشل في العثور على صورة المستخدمين.
+Toast_CantFindImage: فشل العثور على صورة المستخدمين.
 Toast_CantCreateShortcut: لا يمكن إنشاء اختصار
 Toast_ShortcutCreated: تم إنشاء الاختصار!
+Toast_SettingsCopied: تم نسخ الإعدادات بنجاح إلى الحساب الحالي.
+Toast_GameDataRestored: تمت استعادة بيانات اللعبة لهذا الحساب بنجاح.
+Toast_NoValidSteamId: تعذر العثور على معرف بخار صالح.
 Toast_FailedUpdateCheck: فشل التحقق من وجود تحديثات
-Toast_UpdateVerifyFail: لا يمكن التحقق من ملفات التحديث. قم بتنزيل أحدث إصدار واستبدال الملفات في الدليل الخاص بك.
+Toast_UpdateVerifyFail: لا يمكن التحقق من الملفات. قم بتنزيل أحدث إصدار واستبدال الملفات في الدليل الخاص بك.
 Toast_StartedGame: بدأ {program}
-Toast_Steam_VacCleared: تمت تصفية حالة VAC للحسابات
+Toast_Steam_VacCleared: تم مسح حالة VAC للحسابات
 Toast_Steam_CantDeleteVacCache: تعذر حذف 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: تعذر العثور على مجلد Steam \\ userdata
-Toast_Steam_VdfLast: كان قادراً على التحميل من vdf_last. قد تكون بعض الحسابات مفقودة.
-Toast_PartiallyFixed: تم اصلاحه جزئيا
+Toast_NoFindGameBackup: تعذر العثور على مجلد بيانات لعبة النسخ الاحتياطي لهذا الحساب.
+Toast_GameBackupDone: "تم نسخ مجلد بيانات اللعبة احتياطيًا بنجاح: {folderLocation}"
+Toast_Steam_VdfLast: كان قادرًا على التحميل من VDF_LAST. قد تكون بعض الحسابات مفقودة.
+Toast_PartiallyFixed: ثابت جزئياً
 Toast_Steam_FailedLoginusers: فشل تحميل steam / config / loginusers.vdf
-Toast_Steam_CantLocateLoginusers: لا يمكن تحديد '.../Steam/config/loginusers.vdf'. حاول تسجيل الدخول إلى الحساب أولا.
+Toast_Steam_CantLocateLoginusers: لا يمكن تحديد موقع '.../Steam/config/loginusers.vdf '. حاول تسجيل الدخول إلى حساب أولاً.
 Toast_CantClearImages: تعذر مسح الصور
 Toast_RefreshedImages: تم تحديث الصور
-Toast_ClearForgottenCheck: هل أنت متأكد من أنك تريد مسح النسخ الاحتياطي للحسابات المنسية؟
-Toast_BattleNet_ChangedBTag: تم تغيير ال BattleTag
-Toast_BattleNet_DeletedBTag: تم حذف ال BattleTag
-Toast_FetchedRank: الرتبة التي تم جلبها
+Toast_ClearForgottenCheck: هل أنت متأكد أنك تريد مسح النسخ الاحتياطية للحسابات المنسية ؟
 Toast_ForgotAccount: نسيت الحساب
 Toast_ClearedPlatformSettings: "تم مسح إعدادات مبدل {platform}"
 Toast_ClearedImages: "الصور الممحوّة"
@@ -207,28 +224,43 @@ Toast_RestoreComplete: انتهت الاستعادة!
 Toast_FailedLoad: فشل تحميل منصة {platform}! انقر المنصة لعرض الخطأ.
 Toast_FailedPlatformsLoad: فشل تحميل Platforms.json! يرجى التحقق من وجود هذا الملف.
 Toast_FailedLoadSettings: "فشل تحميل الإعدادات! تحميل الإعدادات الافتراضية بدلاً من ذلك. إضافة \"قديم\" إلى اسم ملف الإعدادات الموجودة."
-Toast_FailedLoadStats: "فشل تحميل الإحصائيات! البدء من جديد."
-Toast_FileCopyFail: فشل نسخ الملفات! انظر سجل لمزيد من التفاصيل.
-Toast_UserDataLoadFail: فشل تحميل بيانات المستخدم {UserData}\\ WindowSettings.json. النسخ الاحتياطي وإعادة الضبط! خطأ محفوظ في التسجيل.
+Toast_FailedLoadStats: "فشل تحميل الإحصائيات! بدءًا من جديد."
+Toast_FailedStatsLoad: فشل تحميل GameStats.json! الرجاء التحقق من وجود هذا الملف.
+Toast_GameStatsLoadFail: "فشل الحصول على إحصائيات اللعبة من الويب لـ {Game}"
+Toast_GameStatsEmpty: "لم يتم العثور على إحصائيات لعبة على موقع الويب لـ {Game}. أعتقد أنه خطأ؟ تحقق من مجلد بيانات المستخدم و \"temp \\ download-{AccoundId}-{Game}.html\" لمعرفة ما إذا كانت الصفحة بها خطأ!"
+Toast_FileCopyFail: فشل نسخ الملفات! انظر السجل لمزيد من التفاصيل.
+Toast_UserDataLoadFail: فشل تحميل userdata {UserData}\\ WindowSettings.json. النسخ الاحتياطي وإعادة الضبط! خطأ محفوظ في التسجيل.
 Toast_UpdateCheckFail: تعذر الوصول إلى https://tcno.co/ للتحقق من وجود تحديثات. ستظهر هذه الرسالة مرة واحدة في اليوم.
-Toast_FailedCreateIcon: فشل إنشاء الرمز. انظر السجل للحصول على التفاصيل.
-Tooltip_Restore: انقر لتحديد ملف 7z ، أو اسحبه إلى هذا الزر.
+Toast_FailedCreateIcon: فشل إنشاء الأيقونة. راجع السجل للحصول على التفاصيل.
+Toast_SameAccount: لا يمكن نسخ الملفات إلى/من نفس الحساب. جرب حسابًا مختلفًا ، أو اطلع على ويكي لمزيد من المعلومات.
+Toast_Steam_DownloadingAppIds: جارٍ تنزيل قائمة Steam AppId...
+Toast_Steam_DownloadingAppIdsComplete: تم التنزيل. تم تحديث القائمة الفرعية لبيانات اللعبة.
+Toast_SteamWebKeyInvalid: يبدو مفتاح واجهة برمجة تطبيقات ويب البخار غير صالح. يرجى تعيين واحد جديد.
+Toast_DownloadingProfileData: تنزيل بيانات الملف الشخصي
+Toast_PasswordChanged: تم تغيير كلمة المرور
+Toast_JsonFailModify: فشل في تعديل ملف JSON. انظر السجل.
 Modal_Crowdin_Header: مترجمين كرودين
 Modal_Crowdin_Info: "هنا كل من ساعد في ترجمة هذا البرنامج.<br>المستخدمين الذين لديهم لغات بجانبهم ساعدوا كثيرًا في الترجمة (دور المدقق اللغوي)."
-Modal_Info_Creator: تم إنشاؤها من قبل تيتشنوبو [ويسلي بيبرن]
+Modal_Info_Creator: تم إنشاؤه بواسطة TechNobo [Wesley Pyburn]
 Modal_Info_Version: الإصدار
 Modal_Info_ViewGitHub: عرض على GitHub
 Modal_Info_BugReport: تقرير الأخطاء/طلب الميزة
-Modal_Info_VisitSite: زيارة tcno.co
+Modal_Info_VisitSite: قم بزيارة tcno.co
 Modal_Info_Disclaimer: إخلاء المسؤولية
-Modal_Title_Info: معلومات مبدل حساب TcNo
+Modal_Title_Info: TcNo معلومات محول الحساب
 Modal_Title_ChangeUsername: تغيير اسم المستخدم
-Modal_Title_ConfirmAction: إجراء تأكيد مبدل حساب TcNo
+Modal_Title_ConfirmAction: تأكيد إجراء TcNo Account Switcher
 Modal_Title_LocatePlatform: الرجاء تحديد موقع الدليل {platform}
 Modal_Title_AddNew: إضافة حساب {platform} جديد
 Modal_Title_Background: قم بتعيين صورة الخلفية
 Modal_Title_Userdata: قم بتعيين مجلد بيانات المستخدم
+Modal_Title_GameStats: تمكين/تعطيل إحصاءات اللعبة
+Modal_GameStats_Header: "تمكين/تعطيل إحصاءات اللعبة لـ: {accountName}"
 Modal_Title_Stats: إحصائياتك
+Modal_Title_GameVars: "أدخِل تفاصيل عن {game}"
+Modal_GameVars_Header: "يرجى إدخال التفاصيل التالية لحساب {game} الخاص بك ، {username} على {platform}"
+Modal_Title_AccountNotes: "ملاحظات الحساب لـ: {accountName}"
+Modal_Title_SetPassword: تعيين كلمة المرور
 Modal_SetBackground: 'حدد صورة أو أدخل عنوان URL أدناه.<br>اتركه فارغا واضبطه على إعادة التعيين.<br>(لمزيد من التحكم المتقدم ، راجع Theming on the Wiki):'
 Modal_SetBackground_Button: تعيين الخلفية
 Modal_SetBackground_ChooseImage: اختر الصورة المحلية
@@ -237,15 +269,18 @@ Modal_SetUserdata_ChooseFolder: حدد مجلدًا
 Modal_SetUserdata_Button: تعيين بيانات المستخدم
 Modal_ChangeUsername: الرجاء إدخال اسم مستخدم جديد لحسابك
 Modal_ChangeUsernameType: تغيير {platform} اسم مستخدم
-Modal_EnterDirectory: "الرجاء إدخال دليل {platform}، على هذا النحو: C:\\Program files\\{platform}"
+Modal_SetPassword: أدخل كلمة مرور لمحول حساب TcNo
+Modal_SetPassword_Button: تعيين كلمة المرور
+Modal_SetPassword_Info: "ملاحظة: هذا لا يشفر حساباتك. تبديل الحسابات بسيط مثل استبدال الملفات ، أو تغيير اسم مستخدم في ملف. يمكن إعادة تعيين كلمة المرور عن طريق تحرير النص في ملف أيضًا. هذا هو الأمن البسيط. يوقف الوصول البسيط لواجهة المستخدم. يمكنك وضع هذا التطبيق على USB قابل للإزالة ، وتعيين مجلد UserData على نفس USB وإزالته فعليًا لمزيد من الأمان. <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">الانتقال إلى دليل محرك أقراص خارجي</a><br><br>للمسح ، اترك ما سبق فارغًا وانقر فوق تعيين."
+Modal_EnterDirectory: "الرجاء إدخال دليل {platform}، على هذا النحو: C:\\Program Files\\{platform}"
 Modal_LocatePlatform: تحديد موقع {platformExe}
-Modal_LocatePlatformFolder: حدد مجلد {platform}
+Modal_LocatePlatformFolder: حدد {platform} مجلد
 Modal_ConfirmAction: تأكيد الإجراء
-Modal_AddNew: الرجاء إدخال اسم لحساب {platform} الذي قمت بتسجيل دخوله.
-Modal_AddCurrentAccount: إضافة حساب {platform} الحالي
+Modal_AddNew: الرجاء إدخال اسم للحساب {platform} الذي قمت بتسجيل الدخول إليه.
+Modal_AddCurrentAccount: إضافة حساب {platform} حالي
 Modal_SetImageHeader: تعيين صورة الملف الشخصي
 Modal_SetImage: تعيين الصورة
-Status_SelectedAccount: "مختار: {name}"
+Status_SelectedAccount: "المحدد: {name}"
 Status_Init: "الحالة: جارٍ التهيئة"
 Status_ClosingPlatform: إغلاق {platform}
 Status_ClosingPlatformFailed: فشل إغلاق {platform}
@@ -261,162 +296,172 @@ Status_GetUniqueId: جمع هوية المستخدم الفريدة
 Status_CopyingFiles: جاري نسخ ملفات المستخدم ...
 Status_HandlingImage: معالجة الصورة الشخصية للحساب
 Context_SwapTo: التبديل إلى الحساب
-Context_CreateShortcut: إنشاء اختصار سطح المكتب
-Context_CreateShortcutSubmenu: إنشاء اختصار سطح المكتب...
+Context_CreateShortcut: إنشاء اختصار
 Context_ChangeImage: تغيير الصورة
-Context_BNet_SetBTag: تعيين علامة المعركة
-Context_BNet_DelBTag: حذف علامة المعركة
-Context_BNet_GetRAnk: إعادة ترتيب
-Context_ChangeName: تغيير اسم المفتاح
-Context_LoginAsSubmenu: تسجيل الدخول باسم...
-Context_UsernameSubmenu: اسم المستخدم...
+Context_ChangeName: تغيير اسم المحول
+Context_LoginAsSubmenu: تسجيل الدخول باسم
+Context_UsernameSubmenu: اسم المستخدم
 Context_RefreshName: تحديث الاسم
-Context_CopySubmenu: نسخ...
-Context_CopyProfileSubmenu: نسخ الملف الشخصي...
+Context_CopySubmenu: انسخ
+Context_DataSubmenu: البيانات
+Context_CopyProfileSubmenu: نسخ الملف الشخصي
 Context_CommunityUrl: رابط المجتمع
 Context_CommunityUsername: اسم مستخدم المجتمع
-Context_LoginUsername: اسم المستخدم لتسجيل الدخول
-Context_CopySteamIdSubmenu: نسخ SteamID...
-Context_Steam_Id: الستيم معرف [STEAM0:~]
-Context_Steam_Id3: SteamID3 [U:1:~]
-Context_Steam_Id32: البستان ID32
-Context_Steam_Id64: SteamID64 7656~
+Context_LoginUsername: اسم مستخدم تسجيل الدخول
+Context_CopySteamIdSubmenu: نسخ معرف البخار
+Context_Steam_Id: معرف البخار [STEAM 0 :~]
+Context_Steam_Id3: معرف البخار 3 [U:1 :~]
+Context_Steam_Id32: SteamID 32
+Context_Steam_Id64: SteamID 64 7656~
 Context_Steam_OpenUserdata: فتح بيانات المستخدم
-Context_CopyOtherSubmenu: نسخ آخر...
+Context_ManageSubmenu: إدارة
+Context_GameDataSubmenu: بيانات اللعبة
+Context_ManageGameStats: إدارة إحصائيات اللعبة
+Context_Game_CopySettingsFrom: نسخ الإعدادات إلى الحالي
+Context_Game_RestoreSettingsTo: استعادة بيانات اللعبة
+Context_Game_BackupData: نسخ احتياطي لبيانات اللعبة
+Context_CopyOtherSubmenu: نسخ أخرى
 Context_HidePlatform: إخفاء المنصة
 Context_ExportAccList: تصدير قائمة الحساب
 Context_RunAdmin: تشغيل كمدير
 Context_Hide: إخفاء
-Title_BNet_Settings: مفتاح حساب TcNo - إعدادات شبكة المعركة
-Title_BNet_ManageIgnored: مبدل حساب TcNo - إدارة حسابات BattleNet التي تم تجاهلها
-Title_Platforms_Settings: TcNo Account Switcher - إعدادات النظام الأساسي
-Title_AccountsList: محول حساب TcNo - {platform}
-Title_TextEditor: محول حساب TcNo - محرر النص
-Title_Settings: تبديل حساب TcNo - الإعدادات
-Title_Steam_Cleaning: TcNo حساب مبدل - تنظيف البخار
-Title_Steam_Settings: تبديل حساب TcNo - إعدادات Steam
+ProfileImage_ToggleText: استخدام الصورة كصورة حساب
+Title_Platforms_Settings: TcNo محوّل الحساب - إعدادات المنصة
+Title_Settings_TestCss: TcNo محوّل الحساب - اختبار تصميم CSS
+Title_AccountsList: TcNo محوّل الحساب - {platform}
+Title_TextEditor: TcNo تبديل الحساب - محرر النص
+Title_Settings: TcNo محوّل الحساب - الإعدادات
+Title_Steam_Cleaning: TcNo محوّل الحساب - التنظيف بالبخار
+Title_Steam_Settings: TcNo محوّل الحساب - إعدادات البخار
 Title_Template_Settings: '{platformName} إعدادات -  محول حساب TcNo '
-Installer_Downloading: جارٍ تنزيل {file}
-Installer_DownloadFinished: انتهى تنزيل {file}
+Title_Login: TcNo محوّل الحساب - تسجيل الدخول
+Installer_Downloading: تنزيل {file}
+Installer_DownloadFinished: تم الانتهاء من التنزيل {file}
 Installer_Installing: "التثبيت: {runtime}"
-Installer_RuntimeTitle: مبدل الحساب TcNo - مثبت وقت التشغيل
-Installer_Welcome: مرحبا بكم في تبديل حساب Tcno - تثبيت وقت التشغيل
-Installer_InstalledRuntimes: "التشغيل المثبت حاليا:"
-Installer_ErrorRuntime: "لم يتم تثبيت واحدة أو أكثر من التجهيزات:"
-Installer_RuntimeNote: "[~{size1} ميغابايت + ~{size2} ميغابايت أثناء التثبيت]"
+Installer_RuntimeTitle: TcNo محوّل الحساب - مثبّت وقت التشغيل
+Installer_Welcome: مرحبًا بك في TcNo محوّل الحساب - مثبت وقت التشغيل
+Installer_InstalledRuntimes: "أوقات التشغيل المثبتة حاليًا:"
+Installer_ErrorRuntime: "لم يتم تثبيت وقت تشغيل واحد أو أكثر:"
+Installer_RuntimeNote: "[~{size1} ميجابايت +~{size2} ميجابايت أثناء التثبيت]"
 Installer_TotalSize: "إجمالي حجم التنزيل: ~{size} ميغابايت"
 Installer_AnyKeyStart: اضغط على أي مفتاح لبدء التنزيل...
-Runtime_WebView2: تشغيل Microsoft WebView2
-Runtime_Desktop: مايكروسوفت. NET 5 تشغيل سطح المكتب
+Runtime_WebView2: وقت تشغيل Microsoft WebView 2
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
 Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
-Installer_FailedFolder: "فشل في إنشاء المجلد:"
-Installer_FailedWV: "فشل تنزيل وتثبيت مايكروسوفت WebView2. للتنزيل: 1. انقر على الرابط أدناه: {link} 2. انقر فوق 'تنزيل حزمة الاستضافة' تحت تطبيقات خادم التشغيل."
-Installer_FailedDR: "فشل في تنزيل وتثبيت .NET 5 تشغيل سطح المكتب. الرجاء تنزيله هنا:"
+Installer_FailedFolder: "فشل إنشاء مجلد:"
+Installer_FailedWV: "فشل تنزيل وتثبيت Microsoft WebView 2 Runtime. للتنزيل: 1. انقر على الرابط أدناه: {link} 2. انقر على \"تنزيل حزمة الاستضافة\" ضمن تشغيل تطبيقات الخادم."
+Installer_FailedDR: "فشل تنزيل وتثبيت .NET 5 Desktop Runtime. يرجى تنزيله هنا:"
 Installed_FailedASP: "فشل تنزيل وتثبيت ASP.NET Core {version} Runtime. للتنزيل: 1. انقر فوق الارتباط أدناه: {link} 2. انقر فوق \"تنزيل x64\" ضمن تشغيل تطبيقات سطح المكتب."
-Installer_Ready: "واحد أو أكثر جاهز للتثبيت. إذا تم مطالبتك إذا كنت ترغب في التثبيت، انقر فوق 'نعم'."
+Installer_Ready: "واحد أو أكثر جاهز للتثبيت. إذا ومتى تمت مطالبتك إذا كنت ترغب في التثبيت ، فانقر فوق \"نعم \"."
 Installer_PressStart: اضغط على أي مفتاح لبدء التثبيت...
 Installer_VerifyMin: "تحقق من استيفاء الحد الأدنى من المتطلبات الموصى بها:"
 Installer_VerifyAlready: "يبدو أن كل شيء مثبت. تحقق من استيفاء الحد الأدنى من المتطلبات الموصى بها:"
 Installer_Complete: يجب أن يكون كل شيء. سيتم تشغيل البرنامج الرئيسي ، TcNo-Acc-Switcher.exe تلقائيًا.
-Installer_Complete2: "إذا كان لا يعمل، يرجى الرجوع إلى تعليمات التثبيت، هنا: {link}"
-Global_FatalNext: "حدث خطأ مميت! سيتم إرسال سجل الأعطال هذا تلقائيًا إلى التشغيل التالي."
-Tray_Error: خطأ في اللعبة
-Tray_NoAccs: "لم يتم العثور على حسابات.\nحاول تبديل الحسابات أولا، أو حدد 'Tray_Users.json'"
+Installer_Complete2: "إذا لم يعمل ، يرجى الرجوع إلى تعليمات التثبيت ، هنا: {link}"
+Global_FatalNext: "حدث خطأ مميت! سيتم إرسال سجل الأعطال هذا تلقائيًا عند الإطلاق التالي."
+Tray_Error: خطأ في الدرج
+Tray_NoAccs: "لم يتم العثور على حسابات.\nحاول تبديل الحسابات أولاً ، أو حدد موقع \"Tray_Users.json\""
 Tray_Switch: "التبديل إلى: {account}"
-Tray_CantOpenExe: "لا يمكن فتح .exe. تأكد من وجودها.\n\nحاولت فتح:"
-Tray_LaunchFail: "مبدل حساب TcNo - فشل تشغيل Tray"
-Updater_Duplicate: تم اكتشاف مثيل آخر لتحديث مبدل حساب TcNo
-Updater_Unknown: "حجة غير معروفة: {arg}"
+Tray_CantOpenExe: "تعذر فتح .exe الرئيسي. تأكد من وجوده.\n\nحاولت فتحه:"
+Tray_LaunchFail: "TcNo Account Switchher - فشل إطلاق الدرج"
+Updater_Duplicate: تم اكتشاف مثيل آخر لمحول TcNo Account Switcher Updater.
+Updater_Unknown: "وسيطة غير معروفة: {arg}"
 Updater_NeedsAdmin: يجب تشغيل هذا البرنامج كمسؤول!
-Updater_StatusChecking: التحقق من الإصدار
-Updater_FailedVersionCheck: "تعذر الحصول على الإصدار. انقر فوق \"Verify\" للتحديث والتحقق من الملفات"
-Updater_PressBelow: اضغط الزر أدناه!
-Updater_PressBelowStart: انقر على الزر أدناه لبدء التحديث.
+Updater_StatusChecking: التحقق من النسخة
+Updater_FailedVersionCheck: "تعذر الحصول على الإصدار. انقر فوق \"التحقق\" لتحديث الملفات والتحقق منها"
+Updater_PressBelow: اضغط على الزر أدناه!
+Updater_PressBelowStart: انقر فوق الزر أدناه لبدء التحديث.
 Updater_PatchApplied: تم تطبيق التصحيح!
 Updater_UpdatingAppData: تحديث الملفات في AppData!
 Updater_Complete: اكتملت جميع التحديثات!
 Updater_Checking: التحقق من وجود تحديثات
-Updater_UpdateToVerify: للتحقق من الملفات تحتاج إلى التحديث أولاً.
-Updater_ClosingTcNo: إغلاق مثيلات تبديل الحساب TcNo (إن وجدت).
-Updater_Downloading: "تنزيل التحديث: {version}"
-Updater_Downloaded: اكتمل التنزيل.
-Updater_CantExtract: فشل في استخراج التحديث.
+Updater_UpdateToVerify: للتحقق من الملفات ، تحتاج إلى التحديث أولاً.
+Updater_ClosingTcNo: إغلاق مثيلات TcNo للتبديل بين الحسابات (إن وجدت).
+Updater_Downloading: "تحميل التحديث: {version}"
+Updater_Downloaded: اكتمل التحميل.
+Updater_CantExtract: فشل استخراج التحديث.
 Updater_Verify: التحقق من الملفات
-Updater_Verifying: إظهار...
-Updater_VerifySkip: التحقق من الملفات لتخطي جميع التحديثات الصغيرة، والقفز إلى آخر مرة.
-Updater_NoConnection: "تعذر الاتصال بـ tcno.co للتحقق من الملفات. يمكنك محاولة تحميل المثبت يدويا من صفحة GitHub وإعادة التثبيت للتحديث.\n\nخطأ:"
+Updater_Verifying: جارٍ التحقق...
+Updater_VerifySkip: التحقق من الملفات لتخطي جميع التحديثات الصغيرة ، والانتقال إلى الأحدث.
+Updater_NoConnection: "تعذر الاتصال بـ tcno.co للتحقق من الملفات. يمكنك محاولة تنزيل المثبت يدويًا من صفحة GitHub ، وإعادة تثبيته للتحديث.\n\nخطأ:"
 Updater_NoServer: تعذر الوصول إلى خادم التحديث
-Updater_Hashlist: تحميل أحدث قائمة تجزئة...
-Updater_CantCheck: غير قادر على التحقق من وجود تحديثات
-Updater_Failed: "خطأ: بعض الملفات قيد الاستخدام ولا يمكن تحديثها.\n\n1. تأكد من أن جميع عمليات TcNo مغلقة تماما\n(أو إعادة تشغيل جهاز الكمبيوتر الخاص بك)\n\n2. ثم انقر فوق التحقق أدناه، أو إذا قمت بإعادة التشغيل:\n- افتح هذا التحديث والتحقق من الملفات\n    (الموجودة في المجلد 'تحديث' في دليل التثبيت)"
-Updater_Missing: "حذف المهمة: {file}"
-Updater_FileMismatch: "الملف: {file} لديه MD5: {md5} خبرة {value}"
-Updater_DownloadingWeb: جاري تحميل الملف من الموقع...
-Updater_UnpackingAppData: نسخ الملفات إلى %AppData%/Tcno Switcher... (ما لم يتم تعيين خلاف ذلك)
-Updater_VerifyComplete: تم التحقق من الملف!
-Updater_UpdateFound: "تم العثور على التحديث: {name} [{updateSize}]"
-Updater_TotalFound: "مجموع التحديثات الموجودة: {x}"
+Updater_Hashlist: جارٍ تنزيل أحدث قائمة تجزئة...
+Updater_CantCheck: تعذر التحقق من وجود تحديثات
+Updater_Failed: "خطأ: بعض الملفات قيد الاستخدام ولا يمكن تحديثها.\n\n1. تأكد من أن جميع عمليات TcNo مغلقة تمامًا\n(أو أعد تشغيل جهاز الكمبيوتر الخاص بك)\n\n2. ثم انقر فوق التحقق أدناه ، أو إذا قمت بإعادة التشغيل:\n-   افتح هذا الملقم وتحقق من الملفات\n    (الموجودة في مجلد \"الملقم\" في دليل التثبيت)"
+Updater_Missing: "الملف مفقود: {file}"
+Updater_FileMismatch: "الملف: {file} يحتوي على MD 5: {md5} متوقع: {value}"
+Updater_DownloadingWeb: جارٍ تنزيل الملف من موقع الويب...
+Updater_UnpackingAppData: نسخ الملفات إلى %AppData%/TcNo محوّل الحساب... (ما لم يتم تعيين خلاف ذلك)
+Updater_VerifyComplete: تم التحقق من الملفات!
+Updater_UpdateFound: "تم العثور على تحديث: {name} [{updateSize}]"
+Updater_TotalFound: "إجمالي التحديثات التي تم العثور عليها: {x}"
 Updater_TotalSize: "الحجم الإجمالي: {size}"
 Updater_AwaitingUser: في انتظار إدخال المستخدم...
-Updater_UpToDate: "أنت حديث.\n:)"
-Updater_FailedDecode: ويرجع هذا على الأرجح إلى أنني (TechNobo) أجدد التحديث، وأصنع نموذجا يحطم. تحديث ملف الابن. اطلعني على :)
-Updater_FailedDecodeTitle: فشل فك شفرة قائمة التحديث
+Updater_UpToDate: "أنت محدث.\n:)"
+Updater_FailedDecode: ويرجع ذلك على الأرجح إلى أنني (TechNobo) قمت بدفع تحديث ، وقمت بعمل خطأ مطبعي كسر ملف تحديث .json. أعلمني :)
+Updater_FailedDecodeTitle: فشل في فك ترميز قائمة التحديثات
 Updater_Extracting: استخراج ملفات التصحيح
-Updater_Applying: جارٍ تطبيق التصحيح...
+Updater_Applying: جاري تطبيق التصحيح...
 Updater_Moving: جارٍ نقل الملفات...
-Updater_Title: تحديث مبدل الحساب TcNo
-Updater_Started: بدأ
-Updater_Start: بدء تشغيل تبديل حساب TcNo
+Updater_Title: TcNo محدث محوّل الحساب
+Updater_Started: تم البدء
+Updater_Start: بدء TcNo تبديل الحساب
 Updater_Begin: بدء التحديث
-Updater_Exit: الخروج
+Updater_Exit: مخرج ، مخرج
 FatalError: حدث خطأ مميت!
-Online: متصل
-OnlineDefault: Online (Default)
+Online: اون لاين
+OnlineDefault: متصل (افتراضي)
 Offline: غير متصل
 Invisible: غير مرئي
-Busy: مشغول
-Away: بعيدا
-Snooze: غفوة
-LookingToTrade: التطلع إلى التجارة
-LookingToPlay: التطلع إلى اللعب
+Busy: مشغولة
+Away: بعيدًا
+Snooze: قيلولة قصيرة
+LookingToTrade: نتطلع إلى التداول
+LookingToPlay: نتطلع للعب
 Unrecognized_EPersonaState: ePersonaState غير معروف
 Reg_DoesntExist: "{subKey} غير موجود."
 Reg_DoesntContain: "{subKey} لا يحتوي على {val}"
 Reg_Removing: إزالة {subKey}\\{val}
 PngInvalid_Format: تنسيق البكسل المطلوب هو PixelFormat.{x}.
-PngRequired: تنسيق الصورة المطلوب هو رسم بياني للشبكة المحمولة (png).
-PngDimensions: يجب أن تكون الأبعاد أقل من أو تساوي {MaxIconWidth}x{MaxIconHeight}
-ThemeSyntaxAnd: "حدث خطأ في بناء الجملة (المزيد من التفاصيل أدناه)! AND:"
+PngRequired: تنسيق الصورة المطلوب هو رسم شبكي محمول (png).
+PngDimensions: يجب أن تكون الأبعاد أقل من أو تساوي {MaxIconWidth}×{MaxIconHeight}
+ThemeSyntaxAnd: "حدث خطأ في بناء الجملة (مزيد من التفاصيل أدناه)! و:"
 ThemesNotFound: "تعذر العثور على مجلد \"themes\" في مجلد \"TcNo Account Switcher\". هذا المجلد مطلوب ليعمل البرنامج (خاصتًا مجلد \"Dracula_Cyan\").\nيمكنك تشغيل المحدث في مجلد \"updater\" للتحقق من الملفات واستعادة الملفات المفقودة."
-Yes: "نعم"
-No: "لا"
+Yes: "نعم."
+No: "لا ، لا ، لا"
+Save: احفظ
 NoDefault: لا (افتراضي)
-Ok: "حسناً"
-Forget: نسيت
-Notice: إشعار
-Error: خطأ
+Ok: "حسناً ، حسناً"
+Submit: ارسال
+Forget: انسى
+Notice: الإشعار
+Notes: الحواشي
+Error: خطأ ، خطأ
 ErrorDetails: "خطأ: {ex}"
 Failed: فشل
-Success: نجاح
-NotFound: غير موجود
-Done: تم
+Success: نجاح ، نجاح ، نجاح
+NotFound: لم يتم العثور على
+Done: تم التنفيذ
+Edit: تعديل
+Refresh: تحديث
 Working: جاري العمل...
-ForName: "إلى: {name}"
+ForName: "لأجل: {name}"
 DeletedFiles: الملفات المحذوفة
 FileFoldersToClear: "قائمة الملفات / المجلدات المطلوب مسحها:"
 CouldNotFindX: تعذر العثور على {x}
 CouldNotCloseX: تعذر إغلاق {x}!
-DirectoryNotFound: لم يتم العثور على الدليل
-DirectoryNotFoundFolder: "لم يتم العثور على الدليل: {folder}"
-DeletingFile: "حذف: {file}"
-DeletingFolder: "حذف المجلد: "
-CouldntDeleteX: "خطأ: {x}"
-CouldntDeleteUndefined: "خطأ: فشل الكولدن"
-Prompt_RestartAsAdmin: "<h3><bold>سيتم إعادة تشغيل هذا البرنامج كمشرف</bold></h3><p>ضرب \"نعم\" في UAC عند مطالبته بالمسؤول.</p>"
+CouldNotReadFile: لا يمكن قراءة {file}!
+DirectoryNotFound: الدليل غير موجود
+DirectoryNotFoundFolder: "الدليل غير موجود: {folder}"
+DeletingFile: "جاري الحذف: {file}"
+DeletingFolder: "جاري حذف المجلد: "
+CouldntDeleteX: "خطأ: تعذر الحذف: {x}"
+CouldntDeleteUndefined: "خطأ: تعذر حذف الملف غير المعرف"
+Prompt_RestartAsAdmin: "<h3><bold>سيتم إعادة تشغيل هذا البرنامج كمسؤول</bold></h3><p>اضغط على \"نعم\" في UAC عند مطالبتك بالمسؤول.</p>"
 Prompt_ForgetSteam: >
   <h3 style='color:red'>أنت على وشك نسيان الحساب!</h3> <h4>ماذا يعني ذلك؟</h4> <p>- لن يكون لدى Steam الحساب المدرج في وضع الصورة الكبيرة ولن يتذكر كلمة المرور.<br/> - لن يقوم مبدل حساب Tcno بعرض الحساب أيضًا حتى يتم تسجيل الدخول مرة أخرى من خلال Steam.</p> <p>سيبقى حسابك على حاله. لقد تم فقط نسيانه على هذا الكمبيوتر.</p><h4>هل تفهم؟</h4>
 Prompt_ForgetAccount: >
-  <h3 style='color:red'>أنت على وشك نسيان الحساب!</h3> <h4>ماذا يعني هذا؟</h4> <p>مبدل الحساب لن يظهر الحساب أيضًا<br/> حتى يتم تسجيل الدخول مرة أخرى من خلال {platform}، وأضيفت إلى القائمة.</p> <p>ستبقى حسابك على حاله. لقد نسيت على هذا الكمبيوتر.</p> <h4>هل تفهم؟</h4>
+  <h3 style='color:red'>أنت على وشك أن تنسى أي حساب!</h3> <h4>ماذا يعني هذا؟</h4> <p>لن يقوم TcNo Account Switcher أيضًا بإظهار الحساب ،<br/> حتى يتم تسجيل الدخول مرة أخرى من خلال {platform}، وإضافته إلى القائمة.</p> <p>سيبقى حسابك كما هو. تم نسيانه فقط على هذا الكمبيوتر.</p> <h4>هل تفهم؟</h4>
 Prompt_ClearStats: >
   <h3 style='color:red'>أنت على وشك مسح إحصائياتك!</h3> <p>لا يمكنك التراجع عن هذا الإجراء.</p>
 Platform_DiscordPasteHint: الصق في موجّه أوامر ديسكورد، ثم الصق نتيجة المعطيات!
@@ -425,7 +470,7 @@ Platform_ClearCacheTotal: مسح ملفات {totalFileCount} ({totalSizeMB})
 Platform_DeleteFail: تعذر حذف بعض الملفات (ربما يكون البرنامج قيد التشغيل؟)
 Platform_CouldNotDeleteLog: تعذر حذف الملف! تحقق من {logPath}
 Error_FileAccessDenied: فشل الوصول إلى الملف! تحقق من {logPath}
-Error_RequiredFileVerify: لم يتم العثور على الملف المطلوب. يرجى التأكد من وجود مجلدي x64 و x86 في دليل التثبيت. إذا لم يتم تشغيل TcNo-Acc-Switcher-Updater.exe وتحقق من الملفات.
+Error_RequiredFileVerify: لم يتم العثور على ملف مطلوب. يرجى التأكد من وجود مجلدي x 64 وx 86 في دليل التثبيت. إذا لم تقم بتشغيل TcNo-Acc-Switcher-Updater.exe وتحقق من الملفات.
 Tooltip_Settings: إعدادات
 Tooltip_Info: معلومات
 Tooltip_ManagePlatforms: عرض أو إخفاء المنصات الأخرى
@@ -433,9 +478,16 @@ Tooltip_ExpandShortcuts: قم بتوسيع اختيار اللعبة والاخ�
 Tooltip_ShortcutFolder: افتح مجلد الاختصار. ضع الاختصارات هناك ، و TcNo Account Switcher لرؤيتها.
 Tooltip_Backup: النسخ الاحتياطي لملفات الإعدادات/المجلدات، كما هو محدد في إعدادات المنصة.
 Tooltip_BackupAll: النسخ الاحتياطي لجميع ملفات / مجلدات التكوين ، بما في ذلك الصور والملفات الكبيرة الأخرى.
-Tooltip_ClosingMethod: "مجتمعة هو الأفضل. إغلاق محاولات الإغلاق مباشرة من خلال وظيفة الإغلاق ويستخدم TaskKill CMD (الأفضل إذا لم ينجح الجمع)"
-Tooltip_StartingMethod: "الافتراضي هو الأفضل. لا يتحكم المباشر في مستوى المسؤول أو التحكم بحساب المستخدم. سيبدأ بنفس المستوى (أو أعلى - ولكن ليس أقل) من محوّل الحساب هذا"
-Tooltip_CurrentAccount: أنت الآن مسجل الدخول إلى هذا الحساب.
-Discord_Status: يتم تبديل الحسابات حاليًا.
-Discord_StatusDetails: "تبديل الحسابات: {number}"
+Tooltip_ClosingMethod: "الجمع هو الأفضل. إغلاق المحاولات للإغلاق مباشرة من خلال وظيفة إغلاق و TaskKill يستخدم CMD (الأفضل إذا كان الجمع لا يعمل)"
+Tooltip_StartingMethod: "الافتراضي هو الأفضل. ليس لدى Direct أي سيطرة على مستوى المشرف أو UAC. ستبدأ بنفس المستوى (أو أعلى - ولكن ليس أقل) من محوّل الحساب هذا"
+Tooltip_CurrentAccount: تم تسجيل دخولك حاليًا إلى هذا الحساب.
+Tooltip_Restore: انقر لتحديد ملف 7z ، أو اسحبه إلى هذا الزر.
+Tooltip_DisabledGlobally: هذا العنصر مخفي لجميع الحسابات. يمكنك تغيير هذا في إعدادات المنصة.
+Discord_Status: جارٍ تبديل الحسابات حاليًا.
+Discord_StatusDetails: "الحسابات التي تم تبديلها: {number}"
 Website: موقع الكتروني
+Preview_Platforms: معاينة المنصات
+Preview_Accounts: معاينة الحسابات
+Preview_Notifications: معاينة إشعارات النخب
+Preview_Settings: معاينة الإعدادات
+Preview_Modals: معاينة الوحدات
