@@ -1,20 +1,21 @@
 ---
 Update: 更新可用！点击这里开始更新。
 Header_ChooseLanguage: '选择语言：'
-BattleNet_ShowSR: 显示守望先锋竞技等级并使用守望先锋个人资料头像。
-Steam_ShowSteamID: 显示 SteamID
-Steam_ShowVac: 显示 VAC 状态
+Steam_ShowSteamID: SteamID
+Steam_ShowVac: VAC状态
+Steam_ShowLastLogin: 上次登录时间
+Steam_ShowLimited: 有限状态
+Steam_ShowAccUsername: 账号用户名
+Steam_Tray_AccountName: 显示帐户名称[非朋友名称]
 Steam_CheckVac: 检查帐户 VAC 状态
-Steam_ShowLimited: 显示受限状态
-Steam_ShowAccUsername: 显示帐户用户名
-Steam_Tray_AccountName: 显示帐户名称 [非好友名称]
 Steam_OverrideDefaultState: "覆盖默认登录状态："
+Steam_StartSilent: "在开关上打开Steam到任务托盘（使用“-silent”启动Steam ）"
 Button_AddNew: 新增
 Button_SaveCurrent: 保存当前
 Button_SaveFile: 保存文件
-Button_Cancel: 取消
+Button_Cancel: 取消(C)
 Button_Login: 登录
-Button_Close: 关闭
+Button_Close: 关闭(C)
 Button_RefreshImages: 刷新图像
 Button_ResetSettings: 重置设置
 Button_AdvancedCleaning: 高级清理…
@@ -25,37 +26,46 @@ Button_Backup: 备份
 Button_BackupAll: 备份所有内容
 Button_Restore: 还原
 Button_OpenBackup: 打开备份文件夹
+Button_Back: 返回
+Button_RestartAdmin: 以管理员身份重新启动
+Button_SetPassword: 设置应用密码
 Settings_Shortcut: ' {platform} 切换器桌面快捷方式'
 Settings_Admin: 以管理员身份运行 {platform}
 Settings_ImageExpiry: '个人资料头像过期之前的天数：'
+Settings_SteamAPIKey: "Steam Web API密钥（可选）"
+Settings_SteamAPIKey_Note: 设置API密钥将使有限指示器（黄色边框）显示为社区禁用的帐户。
 Settings_Header_AppWide: 应用全局设置
 Settings_Header_GeneralSettings: 常规设置
+Settings_Header_AccountDisplay: 帐户显示设置
 Settings_Header_ExtraPlatforms: 平台设置
-Settings_Header_GeneralTools: 常规工具
+Settings_Header_GeneralTools: 通用工具
 Settings_Header_OtherTools: 其他工具
-Settings_Header_TraySettings: 托盘设置
+Settings_Header_TraySettings: 送纸器设置
 Settings_Header_OpenGameFolders: 打开游戏文件夹
 Settings_Header_BackupRestore: 备份和还原平台设置
-Settings_Header_Language: 语言
-Settings_Header_System: 系统
-Settings_Header_Theme: 主题
-Settings_Header_Program: 程序
-Settings_Header_StatsSharing: 统计与分享
-Settings_Header_Platform: "{platformName} 个设置"
+Settings_Header_Language: Language
+Settings_Header_System: 系统(S)
+Settings_Header_Theme: 主题(T)
+Settings_Header_Program: 节目
+Settings_Header_StatsSharing: 统计和分享
+Settings_Header_Platform: "{platformName} 设置"
+Settings_Header_GameStats: 全局游戏统计设置
+Settings_GameStats: 此处勾选的任何内容将不会显示在任何帐户的用户名下。如果您经常在游戏统计中隐藏特定项目，请使用此选项。
 Settings_TrayMax: '要记住的帐户数量上限：'
 Settings_ExtraPlatformsDisabled: 已禁用的平台。点击以启用它们。
 Settings_ExtraPlatformsEnabled: 可见的平台。点击以禁用它们。
 Settings_RTL: 从右到左显示文本
 Settings_CollectStats: 收集统计数据
-Settings_ShareStats: 匿名分享统计数据（推荐）
-Settings_DiscordRpc: 不和谐丰富的存在（RPC）
-Settings_DiscordRpcShare: 共享总开关
+Settings_ShareStats: 不高兴地分享统计信息（推荐）
+Settings_DiscordRpc: Discord 丰富状态（RPC）
+Settings_DiscordRpcShare: 共享总切换数
 Settings_ViewStats: 查看统计信息
-Settings_ClearStats: 重启
+Preview: 预览
+Settings_ClearStats: 重置
 Settings_CurrentLocation: '当前安装位置：{path}'
 Settings_CurrentDataLocation: '当前用户数据位置：{path}'
 Settings_SetDataLocation: "[设置自定义用户数据位置]"
-Settings_PickFolder: 选择 {platform} 文件夹
+Settings_PickFolder: 选择 {platform} 个文件夹
 Settings_OpenFolder: 打开 {platform} 文件夹
 Settings_ClearForgotten: 清空已忘记
 Settings_ClearAccounts: 清空帐户
@@ -75,39 +85,50 @@ Settings_WindowsAccent: 使用 Windows 主题色
 Settings_HelpTranslate: "[帮助翻译]"
 Settings_ViewTranslators: "[致谢]"
 Settings_Header_ActiveBrowser: "（高级）设置渲染引擎："
-Settings_Header_ClosingMethod: "（高级）设置方法关闭 {platform}"
+Settings_Header_ClosingMethod: "（高级）将方法设置为关闭 {platform}"
 Settings_Header_StartingMethod: "（高级）设置方法启动 {platform}"
 Settings_AutoStart: "帐户切换时自动启动 {platform}"
 Settings_NoPlatforms: 当前未启用任何平台。请勾选下方的可选平台来启用，或者取消勾选来禁用。      
-Settings_MinimizeOnSwitch: 最小化帐户切换时的切换器
-Stats_Disabled: "统计信息收集被禁用。"
-Stats_InDepth: 深入的统计细分
-Stats_ShareEnabled: "这些统计信息是匿名共享的，并将在此处添加到总数 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\"></a>。"
-Stats_ShareDisabled: "这些统计信息不会匿名共享，也不会添加到此处 <a onclick=\"{WebsiteLink}\" class=\"fancyLink\">的总数</a>。"
-Stats_OperatingSystem: "操作系统： "
-Stats_FirstLaunch: "首发： "
-Stats_LaunchCount: "发射次数： "
-Stats_CrashCount: "崩溃次数： "
-Stats_MostUsedPlatform: "最常用的平台： "
-Stats_TotalTime: "在应用内花费的总时间： "
-Stats_TotalSwitches: "总账户切换： "
-Stats_TotalGamesLaunched: "通过切换器启动的应用程序/游戏总数： "
-Stats_UniqueDaysLong: "帐户切换的特殊日子： "
-Stats_LastUpload: "最后上传： "
-Stats_SwitcherStats: "切换器统计： "
-Stats_PageStats: "页面统计： "
-Stats_VisitsTotalTime: "{visits} 总访问， {hours} 总时间"
-Stats_Accounts: "账户： "
-Stats_Switches: "开关： "
-Stats_FirstActive: "第一个活跃： "
-Stats_LastActive: "最后登录： "
-Stats_UniqueDays: "独特的日子： "
-Stats_GameShortcuts: "游戏快捷键： "
-Stats_GameShortcutsHotbar: "游戏快捷方式（在快捷栏上）： "
-Stats_GamesLaunched: "推出的游戏： "
+Settings_MinimizeOnSwitch: 切换帐户时最小化切换器
+Settings_ShowShortNotes: 用户名下的注释预览
+Settings_Header_AppPassword: "停止其他人使用切换器："
+PreviewCss: 预览 CSS
+Settings_PreviewCss: 这是CSS 预览页面。 你可以查看一些在程序中弹出的元素，看看它们在你的主题上看起来是什么。 这个页面对那些创建主题的人非常有用！
+Settings_PreviewCssHeader: CSS 预览页
+Stats_Disabled: "统计信息收集已禁用。"
+Stats_InDepth: 统计详情
+Stats_ShareEnabled: "这些统计信息是匿名共享的，并将添加到<a onclick=\"{WebsiteLink}\" class=\"fancyLink\">这里</a>的总数。"
+Stats_ShareDisabled: "这些统计信息不会匿名共享，也不会添加到<a onclick=\"{WebsiteLink}\" class=\"fancyLink\">这里</a>的总数。"
+Stats_OperatingSystem: "操作系统："
+Stats_FirstLaunch: "首次运行："
+Stats_LaunchCount: "运行次数："
+Stats_CrashCount: "崩溃次数："
+Stats_MostUsedPlatform: "最常用的平台："
+Stats_TotalTime: "在应用内花费的总时间："
+Stats_TotalSwitches: "总帐户切换数："
+Stats_TotalGamesLaunched: "通过切换器启动的应用/游戏总数："
+Stats_UniqueDaysLong: "切换过帐户的天数："
+Stats_LastUpload: "上次上传时间："
+Stats_SwitcherStats: "切换器统计："
+Stats_PageStats: "页面统计："
+Stats_VisitsTotalTime: "访问过 {visits} 次，花费总时间 {hours}"
+Stats_Accounts: "帐户数："
+Stats_Switches: "切换数："
+Stats_FirstActive: "首次活跃："
+Stats_LastActive: "上次活跃："
+Stats_UniqueDays: "使用天数："
+Stats_GameShortcuts: "游戏快捷方式："
+Stats_GameShortcutsHotbar: "游戏快捷方式（在快捷栏上）："
+Stats_GamesLaunched: "运行过游戏："
+Stats_MetricsToShow: "显示的指标："
+Stats_AccountId: "帐户ID ："
+Auth_LoginRequired: 密码之前已设置，并且是必需的。请在下面输入密码。
+Auth_EnterPassword: "输入密码："
+Auth_PassIncorrect: 密码不正确。
+Locked: 已锁定
 Cleaning_Header_StartMenuShortcuts: '开始菜单的快捷方式：'
-Cleaning_Header_General: 常规清理
-Cleaning_Header_LoginHistory: 清理我的登录历史
+Cleaning_Header_General: 一般清洁
+Cleaning_Header_LoginHistory: 清除我的登录历史记录
 Cleaning_Header_PlatformCleaning: '{platform} 切换器'
 Cleaning_ImportantInfoHeader: '重要信息：'
 Cleaning_ImportantInfo: >
@@ -136,25 +157,19 @@ Toast_AlreadyProcessing: 已经在处理帐户…
 Toast_FailedRestore: 恢复帐户失败（见控制台）
 Toast_Restored: 已恢复帐户！
 Toast_ProtocolEnabled: 此程序将响应 Windows 中的 tcno:\\。
-Toast_ProtocolEnabledTitle: 已添加协议
+Toast_ProtocolEnabledTitle: 方案已添加
 Toast_ProtocolDisabled: 此程序将不再响应 tcno:\\
-Toast_ProtocolDisabledTitle: 已删除协议
+Toast_ProtocolDisabledTitle: 方案已删除
 Toast_RestartAsAdmin: 请以管理员身份启动，然后重试。
-Toast_RestartAfterClose: 请点击关闭后重启程序。
+Toast_RestartAfterClose: 请在单击“关闭”后重新启动程序。
 Toast_RestartAfterCloseTitle: 已禁用主题色
 Toast_RestartRequired: 重新启动以应用更改
 Toast_LoadStylesheetFailed: 加载样式表失败！请查看用户数据文件夹了解详情。
-Toast_BNet_Private: "{BTag} 的个人资料是私密的"
-Toast_BNet_StatsFail: "尝试获取 {BTag} 的统计数据时出错"
-Toast_BNet_CantSwapAccounts: 无法交换帐户（Battle.net.config 文件损坏）
-Toast_BNet_CantLoadNotFound: 无法找到 Battle.net.config
-Toast_BNet_CantLoadEmpty: 无法为 Blizzard 加载帐户文件（未找到帐户）
-Toast_BNet_CantLoadConfigCorrupt: 无法为 Blizzard 加载帐户文件（Battle.net.config 文件损坏）
-Toast_BNet_NamePolicy: BattleTag 不匹配命名策略。
+Toast_LoadingStats: 一个或多个配置文件正在刷新统计信息。请稍候。
 Toast_ItemNotFound: "未找到 {item}"
 Toast_DeletedTotal: "{files} / {totalFiles} 个文件已删除。总计：{totalSize}"
 Toast_CantChangeUsername: 无法更改用户名
-Toast_CantClearLoginFiles: 清理旧登录文件失败
+Toast_CantClearLoginFiles: 清除旧登录文件失败
 Toast_AccountIdReg: 从注册表获取 Account Id 失败！
 Toast_RegFailWrite: 写入 Windows 注册表失败
 Toast_RegFailRead: 读取 Windows 注册表失败！
@@ -164,28 +179,30 @@ Toast_DuplicateNames: 无法交换。使用相同的用户名创建帐户副本�
 Toast_MissingUserId: "无法交换。缺少用户 ID。请检查 Wiki 上的“Common Errors”。"
 Toast_CouldNotLocate: 无法定位已登录用户
 Toast_StreamerModeHint: 私密信息已隐藏！- 见设置
-Toast_StreamerModeTitle: 主播模式
+Toast_StreamerModeTitle: Streamer模式
 Toast_AddAccountsFirst: 首先从列表中打开平台，并添加一些帐户
 Toast_AddAccountsFirstTitle: 没有已保存帐户
 Toast_CantFindImage: 查找用户图像失败。
 Toast_CantCreateShortcut: 无法创建快捷方式
 Toast_ShortcutCreated: 已创建快捷方式！
-Toast_FailedUpdateCheck: 检查更新失败
+Toast_SettingsCopied: 设置已成功复制到当前帐户。
+Toast_GameDataRestored: 已成功还原此帐户的游戏数据。
+Toast_NoValidSteamId: 找不到有效的Steam ID。
+Toast_FailedUpdateCheck: 无法检查更新
 Toast_UpdateVerifyFail: 无法验证更新程序文件。请下载最新版本并替换目录中的文件。
 Toast_StartedGame: 已启动 {program}
 Toast_Steam_VacCleared: 已清除帐户 VAC 状态
 Toast_Steam_CantDeleteVacCache: 无法删除 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: 无法找到 Steam\\userdata 文件夹
+Toast_NoFindGameBackup: 找不到此帐户的备份游戏数据文件夹。
+Toast_GameBackupDone: "游戏数据文件夹备份成功： {folderLocation}"
 Toast_Steam_VdfLast: 曾经能够从 vdf_last 加载。有些帐户可能已丢失。
 Toast_PartiallyFixed: 部分已修复
 Toast_Steam_FailedLoginusers: 加载 steam/config/loginusers.vdf 失败
 Toast_Steam_CantLocateLoginusers: 无法定位 '.../Steam/config/loginusers.vdf'。请先登录一个帐户。
 Toast_CantClearImages: 无法清除图像
-Toast_RefreshedImages: 已刷新图像
+Toast_RefreshedImages: 刷新后的图像
 Toast_ClearForgottenCheck: 您确定要清除已忘记帐户的备份吗？
-Toast_BattleNet_ChangedBTag: 已更改 BattleTag
-Toast_BattleNet_DeletedBTag: 已删除 BattleTag
-Toast_FetchedRank: 已获取等级
 Toast_ForgotAccount: 忘记帐户
 Toast_ClearedPlatformSettings: "已清除 {platform} 切换器设置"
 Toast_ClearedImages: "已清除图片"
@@ -208,18 +225,27 @@ Toast_FailedLoad: 加载 {platform} 失败！点击平台查看错误信息。
 Toast_FailedPlatformsLoad: 加载 Platforms.json 失败！请确认此文件存在。
 Toast_FailedLoadSettings: "加载设置失败！已改为加载默认设置。将“old”添加到现有设置文件名。"
 Toast_FailedLoadStats: "加载统计失败！正在重启。"
+Toast_FailedStatsLoad: 加载GameStats.json失败！请验证此文件是否存在。
+Toast_GameStatsLoadFail: "无法从网络获取 {Game}的游戏统计信息"
+Toast_GameStatsEmpty: "在网站上找不到 {Game}的游戏统计信息。你认为这是个错误吗？检查userdata文件夹和'temp\\ download-{AccoundId}-{Game}.html'以查看页面是否存在错误！"
 Toast_FileCopyFail: 复制文件失败！请查看日志了解详情。
 Toast_UserDataLoadFail: 加载用户数据 {UserData}\\WindowSettings.json 失败。请备份并重置！错误信息已保存到日志。
-Toast_UpdateCheckFail: 无法访问 https://tcno.co/ 以检查更新。此消息将每天显示一次。
+Toast_UpdateCheckFail: 无法访问https://tcno.co/以检查更新。此消息将每天显示一次。
 Toast_FailedCreateIcon: 创建图标失败。请查看日志了解详情。
-Tooltip_Restore: 点击选择一个 7z 文件，或者将它拖动到此按钮上。     
+Toast_SameAccount: 无法将文件复制到同一帐户。请尝试使用其他账号，或查看Wiki以获取更多信息。
+Toast_Steam_DownloadingAppIds: 正在下载Steam AppId列表...
+Toast_Steam_DownloadingAppIdsComplete: 下载完成。游戏数据子菜单已更新。
+Toast_SteamWebKeyInvalid: Steam Web API密钥似乎无效。请设置一个新的。
+Toast_DownloadingProfileData: 正在下载配置文件数据
+Toast_PasswordChanged: 密码已更改
+Toast_JsonFailModify: 修改JSON文件失败。请参阅日志。
 Modal_Crowdin_Header: Crowdin 译者
 Modal_Crowdin_Info: "这是帮助翻译此软件的所有人。<br>名字旁边有语言的用户在翻译方面提供了很多帮助（审核员身份）。"
 Modal_Info_Creator: 由 TechNobo [Wesley Pyburn] 创作
-Modal_Info_Version: 版本
-Modal_Info_ViewGitHub: 在 GitHub 上查看
+Modal_Info_Version: 版本(V)
+Modal_Info_ViewGitHub: 在GitHub上查看
 Modal_Info_BugReport: 错误报告/功能请求
-Modal_Info_VisitSite: 访问 tcno.co
+Modal_Info_VisitSite: 访问tcno.co
 Modal_Info_Disclaimer: 免责声明
 Modal_Title_Info: TcNo 帐户切换器信息
 Modal_Title_ChangeUsername: 更改用户名
@@ -228,7 +254,13 @@ Modal_Title_LocatePlatform: 请定位到 {platform} 目录
 Modal_Title_AddNew: 添加新的 {platform} 帐户
 Modal_Title_Background: 设置背景图片
 Modal_Title_Userdata: 设置用户数据文件夹
-Modal_Title_Stats: 您的统计数据
+Modal_Title_GameStats: 启用/禁用游戏统计
+Modal_GameStats_Header: "启用/禁用游戏统计信息： {accountName}"
+Modal_Title_Stats: 您的统计信息
+Modal_Title_GameVars: "输入 {game}的详细信息"
+Modal_GameVars_Header: "请输入您的 {game} 帐户的以下详细信息， {username} on {platform}"
+Modal_Title_AccountNotes: "帐户备注: {accountName}"
+Modal_Title_SetPassword: 设置密码
 Modal_SetBackground: '选择图片，或在下面输入 URL。<br>留空表示重置。<br>（有关更高级的控制，请参考 Wiki 上的“Theming”）：'
 Modal_SetBackground_Button: 设置背景
 Modal_SetBackground_ChooseImage: 选择本地图片
@@ -237,6 +269,9 @@ Modal_SetUserdata_ChooseFolder: 选择一个文件夹
 Modal_SetUserdata_Button: 设置 userdata
 Modal_ChangeUsername: 请为您的帐户输入新的用户名
 Modal_ChangeUsernameType: 更改 {platform} 用户名
+Modal_SetPassword: 输入TcNo帐户切换器的密码
+Modal_SetPassword_Button: 设置密码
+Modal_SetPassword_Info: "注意：这不会加密您的帐户。交换帐户就像替换文件或更改文件中的用户名一样简单。也可以通过编辑文件中的文本来重置密码。这是简单的安全。它可以停止简单的用户界面访问。您可以将此应用程序放在可移动USB上，将UserData文件夹设置为同一个USB ，然后将其物理删除，以提高安全性。 <a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">移动到外部驱动器指南</a><br><br>要清除，请将上述内容留空，然后单击“设置”。"
 Modal_EnterDirectory: "请输入 {platform} 的文件夹，例如 C:\\Program Files\\{platform}"
 Modal_LocatePlatform: 定位 {platformExe}
 Modal_LocatePlatformFolder: 选择 {platform} 文件夹
@@ -261,41 +296,45 @@ Status_GetUniqueId: 正在收集唯一用户 ID
 Status_CopyingFiles: 正在复制用户文件...
 Status_HandlingImage: 处理账户个人资料图片
 Context_SwapTo: 交换到帐户
-Context_CreateShortcut: 创建桌面快捷方式
-Context_CreateShortcutSubmenu: 创建桌面快捷方式…
-Context_ChangeImage: 更改图像
-Context_BNet_SetBTag: 设置 BattleTag
-Context_BNet_DelBTag: 删除 BattleTag
-Context_BNet_GetRAnk: 刷新等级
+Context_CreateShortcut: 创建快捷方式
+Context_ChangeImage: 更改图片
 Context_ChangeName: 更改切换器名称
-Context_LoginAsSubmenu: 登录为…
-Context_UsernameSubmenu: 用户名…
+Context_LoginAsSubmenu: 登录为
+Context_UsernameSubmenu: 用户名
 Context_RefreshName: 刷新名称
-Context_CopySubmenu: 复制…
-Context_CopyProfileSubmenu: 复制个人资料…
-Context_CommunityUrl: 社区 URL
+Context_CopySubmenu: 复制(C)
+Context_DataSubmenu: 数据(D)
+Context_CopyProfileSubmenu: 复制配置文件
+Context_CommunityUrl: 社区网址
 Context_CommunityUsername: 社区用户名
 Context_LoginUsername: 登录用户名
-Context_CopySteamIdSubmenu: 复制 SteamID…
-Context_Steam_Id: SteamID [STEAM0:~]
-Context_Steam_Id3: SteamID3 [U:1:~]
+Context_CopySteamIdSubmenu: 复制SteamID
+Context_Steam_Id: 'SteamID [STEAM0: ~]'
+Context_Steam_Id3: 'SteamID3 [U: 1: ~]'
 Context_Steam_Id32: SteamID32
-Context_Steam_Id64: SteamID64 7656~
+Context_Steam_Id64: SteamID64 7656 ~
 Context_Steam_OpenUserdata: 打开 userdata 文件夹
-Context_CopyOtherSubmenu: 复制其他…
+Context_ManageSubmenu: 管理(M)
+Context_GameDataSubmenu: 游戏数据
+Context_ManageGameStats: 管理游戏统计信息
+Context_Game_CopySettingsFrom: 将设置复制到当前
+Context_Game_RestoreSettingsTo: 还原游戏数据
+Context_Game_BackupData: 备份游戏数据
+Context_CopyOtherSubmenu: 复制其他
 Context_HidePlatform: 隐藏平台
 Context_ExportAccList: 导出帐户列表
 Context_RunAdmin: 以管理员身份运行
 Context_Hide: 隐藏
-Title_BNet_Settings: TcNo 帐户切换器 - 战网设置
-Title_BNet_ManageIgnored: TcNo 帐户切换器 - 管理已忽略的战网帐户
-Title_Platforms_Settings: TcNo 帐户切换器 - 平台设置
+ProfileImage_ToggleText: 使用图像作为帐户图像
+Title_Platforms_Settings: TcNo帐户切换器-平台设置
+Title_Settings_TestCss: Tcno 账户切换器 - 测试 CSS 样式
 Title_AccountsList: TcNo 帐户切换器 - {platform}
 Title_TextEditor: TcNo 帐户切换器 - 文本编辑器
 Title_Settings: TcNo 帐户切换器 - 设置
 Title_Steam_Cleaning: TcNo 帐户切换器 - Steam 清理
 Title_Steam_Settings: TcNo 帐户切换器 - Steam 设置
 Title_Template_Settings: TcNo 帐户切换器 - {platformName} 设置
+Title_Login: TcNo帐户切换器-登录
 Installer_Downloading: 正在下载 {file}
 Installer_DownloadFinished: 下载 {file} 完成
 Installer_Installing: "正在安装：{runtime}"
@@ -320,18 +359,18 @@ Installer_VerifyAlready: "看起来一切都已安装。请确认您已满足建
 Installer_Complete: 一切应该都已完成。主程序 TcNo-Acc-Switcher.exe 将自动运行。
 Installer_Complete2: "如果不起作用，请参考这里的安装说明：{link}"
 Global_FatalNext: "出现致命错误！此崩溃日志将在下次启动时自动提交。"
-Tray_Error: 托盘错误
+Tray_Error: 送纸器错误
 Tray_NoAccs: "未找到帐户。\n先尝试切换帐户，或定位到“Tray_Users.json”"
 Tray_Switch: "切换到：{account}"
 Tray_CantOpenExe: "无法打开主程序 .exe。请确保它存在。\n\n已尝试打开："
 Tray_LaunchFail: "TcNo 帐户切换器 - 托盘启动失败"
 Updater_Duplicate: 检测到另一个 TcNo 帐户切换器更新程序正在运行。
 Updater_Unknown: "未知参数：{arg}"
-Updater_NeedsAdmin: 此程序必须以管理员身份运行！
+Updater_NeedsAdmin: 必须以管理员身份运行此程序！
 Updater_StatusChecking: 正在检查版本
 Updater_FailedVersionCheck: "无法获取版本，点击“验证”更新并验证文件"
 Updater_PressBelow: 点击下面的按钮！
-Updater_PressBelowStart: 点击下面的按钮开始更新。
+Updater_PressBelowStart: 单击下面的按钮开始更新。
 Updater_PatchApplied: 已应用补丁！
 Updater_UpdatingAppData: 正在更新 AppData 中的文件！
 Updater_Complete: 所有更新已完成！
@@ -345,7 +384,7 @@ Updater_Verify: 验证文件
 Updater_Verifying: 正在验证…
 Updater_VerifySkip: 正在验证文件以跳过所有小更新，直接转到最新版本。
 Updater_NoConnection: "无法连接到 tcno.co 来验证文件。您可以尝试从 GitHub 页面手动下载安装程序，并重新安装以更新。\n\n错误："
-Updater_NoServer: 无法连接到更新服务器
+Updater_NoServer: 无法访问更新服务器
 Updater_Hashlist: 正在下载最新的哈希列表…
 Updater_CantCheck: 无法检查更新
 Updater_Failed: "错误：有些文件正在使用中，无法更新。\n\n1. 请确保所有的 TcNo 进程已完全关闭\n（或重启您的计算机）\n\n2. 然后点击下面的验证，或者如果您已重启计算机：\n- 打开此更新程序并验证文件\n    （位于安装目录中的“updater”文件夹中）"
@@ -365,7 +404,7 @@ Updater_Extracting: 正在解压补丁文件
 Updater_Applying: 正在应用补丁…
 Updater_Moving: 正在移动文件…
 Updater_Title: TcNo 帐户切换器更新程序
-Updater_Started: 已启动
+Updater_Started: 已开始
 Updater_Start: 启动 TcNo 帐户切换器
 Updater_Begin: 开始更新
 Updater_Exit: 退出
@@ -375,7 +414,7 @@ OnlineDefault: 在线（默认）
 Offline: 离线
 Invisible: 隐身
 Busy: 忙碌
-Away: 离开
+Away: 远走高飞
 Snooze: 打盹
 LookingToTrade: 想交易
 LookingToPlay: 想玩游戏
@@ -383,29 +422,35 @@ Unrecognized_EPersonaState: 无法识别的 ePersonaState
 Reg_DoesntExist: "{subKey} 不存在。"
 Reg_DoesntContain: "{subKey} 不包含 {val}"
 Reg_Removing: 正在删除 {subKey}\\{val}
-PngInvalid_Format: 所需像素格式是 PixelFormat。{x}。
+PngInvalid_Format: 所需的像素格式为PixelFormat。{x}.
 PngRequired: 所需的图像格式是 PNG。
 PngDimensions: 尺寸必须小于或等于 {MaxIconWidth}x{MaxIconHeight}
 ThemeSyntaxAnd: "遇到语法错误（更多细节如下） ！以及："
 ThemesNotFound: "无法在 TcNo 帐户切换器文件夹中找到“themes”主题文件夹。此软件必须有此文件夹（特别是 Dracula_Cyan 文件夹）才能运行。\n您可以运行“updater”文件夹中的更新程序来验证文件，并恢复这些缺失的文件。"
 Yes: "是"
-No: "否"
+No: "不，不"
+Save: 保存(S)
 NoDefault: 无（默认）
-Ok: "好的"
+Ok: "好啦好啦"
+Submit: 提交（ Submit ）
 Forget: 忘记
-Notice: 通知
-Error: 错误
+Notice: 注意事项
+Notes: 注释
+Error: 出错了
 ErrorDetails: "错误：{ex}"
 Failed: 失败
 Success: 成功
 NotFound: 未找到
-Done: 完成
+Done: 已完成
+Edit: 编辑(E)
+Refresh: 刷新
 Working: 正在处理……
 ForName: "为：{name}"
 DeletedFiles: 已删除文件
 FileFoldersToClear: "要清理的文件/文件夹列表："
 CouldNotFindX: 无法找到 {x}
 CouldNotCloseX: 无法关闭 {x}！
+CouldNotReadFile: 无法读取 {file}！
 DirectoryNotFound: 未找到文件夹
 DirectoryNotFoundFolder: "未找到文件夹：{folder}"
 DeletingFile: "正在删除：{file}"
@@ -435,7 +480,14 @@ Tooltip_Backup: 根据平台设置，备份配置文件/文件夹。
 Tooltip_BackupAll: 备份所有配置文件/文件夹，包括头像和其他大文件。
 Tooltip_ClosingMethod: "组合使用效果最佳。“关闭”尝试直接调用一次关闭函数，TaskKill 则使用 CMD（如果组合不起作用，则此方式效果更好）"
 Tooltip_StartingMethod: "默认效果最好。 Direct 无法控制管理员级别或 UAC。它将以与此帐户切换器相同的级别（或更高 - 但不更低）启动 "
-Tooltip_CurrentAccount: 您当前已登录此帐户。
-Discord_Status: 目前正在切换帐户。
-Discord_StatusDetails: "帐户切换： {number}"
-Website: 网站
+Tooltip_CurrentAccount: 您目前已登录此帐户。
+Tooltip_Restore: 点击选择一个 7z 文件，或者将它拖动到此按钮上。     
+Tooltip_DisabledGlobally: 此项目对所有帐户隐藏。您可以在平台设置中更改此设置。
+Discord_Status: 当前正在切换帐户。
+Discord_StatusDetails: "帐户切换次数：{number}"
+Website: 网址：
+Preview_Platforms: 平台预览
+Preview_Accounts: 帐户预览
+Preview_Notifications: Toast 通知预览
+Preview_Settings: 设置预览
+Preview_Modals: 模态预览
