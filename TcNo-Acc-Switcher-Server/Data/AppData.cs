@@ -22,7 +22,6 @@ using DiscordRPC.Logging;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
@@ -178,20 +177,14 @@ namespace TcNo_Acc_Switcher_Server.Data
             set => Instance._selectedAccount = value;
         }
 
-        public static void SetSelectedAccount(string accountId, string displayName)
-        {
-            CurrentStatus = Lang.Instance["Status_SelectedAccount", new { name = displayName }];
-            SelectedAccount = accountId;
-        }
-
         private string _currentSwitcher = "";
         public static string CurrentSwitcher { get => Instance._currentSwitcher; set => Instance._currentSwitcher = value; }
-        public static void SwapTo(string accountId)
+        public static async Task SwapTo(string accountId)
         {
             if (!OperatingSystem.IsWindows()) return;
 
             if (CurrentSwitcher == "Steam")
-                SteamSwitcherBase.SwapToSteam(accountId, -1);
+                await SteamSwitcherBase.SwapToSteam(accountId, -1);
 
             BasicSwitcherBase.SwapToBasic(accountId);
         }
@@ -237,7 +230,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public event Action OnChange;
 
-        private void NotifyDataChanged() => OnChange?.Invoke();
+        public void NotifyDataChanged() => OnChange?.Invoke();
 
         private IJSRuntime _activeIJsRuntime;
         [JsonIgnore] public static IJSRuntime ActiveIJsRuntime { get => Instance._activeIJsRuntime; set => Instance._activeIJsRuntime = value; }
@@ -265,13 +258,16 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonIgnore] public static bool TcNoClientApp { get => Instance._tcNoClientApp; set => Instance._tcNoClientApp = value; }
 
         #region JS_INTEROP
-        public static bool InvokeVoidAsync(string func)
+        /// <summary>
+        /// A general wrapper for InvokeVoidAsync, that returns true if it ran, or false if it doesn't.
+        /// </summary>
+        public static async Task<bool> InvokeVoidAsync(string func, params object?[]? args)
         {
-            Globals.WriteToLog($"JS CALL (1): {func}");
+            Globals.WriteToLog(!Globals.VerboseMode ? $"JS InvokeVoidAsync: {func}" : $"JS CALL: {func}: {args}");
             try
             {
                 if (ActiveIJsRuntime is null) return false;
-                ActiveIJsRuntime.InvokeVoidAsync(func);
+                await ActiveIJsRuntime.InvokeVoidAsync(func, args);
                 return true;
             }
             catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException
@@ -281,51 +277,21 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        public static bool InvokeVoidAsync(string func, string arg, bool showDetails = true)
+        /// <summary>
+        /// A general wrapper for InvokeVoid. This will do nothing if ActiveIJsRuntime is null.
+        /// </summary>
+        public static async Task<TValue> InvokeAsync<TValue>(string func, params object?[]? args)
         {
-            Globals.WriteToLog(!showDetails && !Globals.VerboseMode ? $"JS CALL (2): {func}..." : $"JS CALL (4): {func}, {arg}");
+            Globals.WriteToLog(!Globals.VerboseMode ? $"JS InvokeAsync: {func}" : $"JS CALL: {func}: {args}");
             try
             {
-                if (ActiveIJsRuntime is null) return false;
-                ActiveIJsRuntime.InvokeVoidAsync(func, arg);
-                return true;
+                if (ActiveIJsRuntime is null) return default;
+                return await ActiveIJsRuntime.InvokeAsync<TValue>(func, args);
             }
             catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException
                                           or ArgumentNullException or TaskCanceledException or JSDisconnectedException)
             {
-                return false;
-            }
-        }
-
-        public static bool InvokeVoidAsync(string func, object arg, bool showDetails = true)
-        {
-            Globals.WriteToLog(!showDetails && !Globals.VerboseMode ? $"JS CALL (3): {func}..." : $"JS CALL (4): {func}, {JsonConvert.SerializeObject(arg)}");
-            try
-            {
-                if (ActiveIJsRuntime is null) return false;
-                ActiveIJsRuntime.InvokeVoidAsync(func, arg);
-                return true;
-            }
-            catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException
-                                          or ArgumentNullException or TaskCanceledException or JSDisconnectedException)
-            {
-                return false;
-            }
-        }
-
-        public static bool InvokeVoidAsync(string func, string arg, string arg2, bool showDetails = true)
-        {
-            Globals.WriteToLog(!showDetails && !Globals.VerboseMode ? $"JS CALL (4): {func}..." : $"JS CALL (4): {func}, {arg}, {arg2}");
-            try
-            {
-                if (ActiveIJsRuntime is null) return false;
-                ActiveIJsRuntime.InvokeVoidAsync(func, arg, arg2);
-                return true;
-            }
-            catch (Exception e) when (e is ArgumentNullException or InvalidOperationException or TaskCanceledException
-                                          or ArgumentNullException or TaskCanceledException or JSDisconnectedException)
-            {
-                return false;
+                return default;
             }
         }
 

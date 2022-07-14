@@ -17,8 +17,6 @@
 
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
-@using System.Globalization
-@using System.IO
 @using TcNo_Acc_Switcher_Globals
 @inject IJSRuntime JsRuntime
 @{ AData.SetActiveIJsRuntime(JsRuntime); }
@@ -74,13 +72,13 @@
 
     private string _password = "";
 
-    private void CheckPassword()
+    private async Task CheckPassword()
     {
         AppSettings.PasswordCurrent = Globals.GetSha256HashString(_password);
         if (AppSettings.PasswordCurrent == AppSettings.PasswordHash)
             NavManager.NavigateTo(ReturnUrl); // Success! Redirect user back.
         else
-            _ = GeneralInvocableFuncs.ShowToast("error", Locale["Auth_PassIncorrect"]);
+            await GeneralInvocableFuncs.ShowToast("error", Locale["Auth_PassIncorrect"]);
     }
 
 	// This is run before everything is painted on, so that it can get the correct values for the CSS Block.

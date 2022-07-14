@@ -50,10 +50,10 @@ Actions will show here
         AppSettings.StreamerModeCheck();
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         AppData.WindowTitle = Lang["Title_TextEditor"];
-        _ = AppData.InvokeVoidAsync("initEditor");
+        await AppData.InvokeVoidAsync("initEditor");
     }
 
     public void SaveFile()

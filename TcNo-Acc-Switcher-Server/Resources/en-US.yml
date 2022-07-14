@@ -458,6 +458,7 @@ DeletingFolder: "Deleting Folder: "
 CouldntDeleteX: "ERROR: COULDN'T DELETE: {x}"
 CouldntDeleteUndefined: "ERROR: COULDN'T DELETE UNDEFINED FILE"
 Prompt_RestartAsAdmin: "<h3><bold>This program will restart as Admin</bold></h3><p>Hit \"Yes\" in UAC when prompted for admin.</p>"
+Prompt_AlwaysAsAdmin: Always start as Admin
 Prompt_ForgetSteam: >
   <h3 style='color:red'>You are about to forget an account!</h3> <h4>What does this mean?</h4> <p>- Steam will no longer have the account listed in Big Picture Mode and will not Remember Password.<br/> - TcNo Account Switcher will also no longer show the account, until it's signed into again through Steam.</p> <p>Your account will remain untouched. It is just forgotten on this computer.</p><h4>Do you understand?</h4>
 Prompt_ForgetAccount: >

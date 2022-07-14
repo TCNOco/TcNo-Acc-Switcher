@@ -423,7 +423,13 @@ button .caret, .button .caret {
     border: 2px dashed var(--accent);
     background: #13222f;
 }
-.gameShortcuts { /* Empty to keep compiler quiet */}
+.gameShortcuts,
+.preview_list_item,
+.streamerCensor,
+.steamId,
+.displayName,
+.paginationButton { /* Empty to keep compiler quiet */
+}
 .shortcuts {
     height: 100%;
     overflow: hidden;

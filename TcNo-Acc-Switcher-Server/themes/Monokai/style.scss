@@ -415,12 +415,12 @@ label.acc {
     }
 }
 
-input.acc:checked + label.acc.currentAcc {
+input.acc.acc_selected + label.acc.currentAcc {
     border-color: var(--accent);
     border-style: solid;
 }
 
-input.acc:checked + label.acc {
+input.acc.acc_selected + label.acc {
     border-color: var(--accent);
     background: #3e3e3e;
     border-radius: 0.8rem;

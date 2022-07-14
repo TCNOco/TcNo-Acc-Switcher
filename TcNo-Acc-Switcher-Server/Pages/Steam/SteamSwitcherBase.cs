@@ -14,8 +14,8 @@
 
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.Versioning;
+using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Converters;
@@ -59,22 +59,22 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         /// </summary>
         [JSInvokable]
         [SupportedOSPlatform("windows")]
-        public static void SwapToSteamWithReq(string steamId, int request) => SwapToSteam(steamId, request);
+        public static async Task SwapToSteamWithReq(string steamId, int request) => await SwapToSteam(steamId, request);
         [JSInvokable]
         [SupportedOSPlatform("windows")]
-        public static void SwapToSteam(string steamId) => SwapToSteam(steamId, -1);
+        public static async Task SwapToSteam(string steamId) => await SwapToSteam(steamId, -1);
         /// <summary>
         /// JS function handler for swapping to another Steam account.
         /// </summary>
         /// <param name="steamId">Requested account's SteamID</param>
         /// <param name="ePersonaState">(Optional) Persona State [0: Offline, 1: Online...]</param>
         [SupportedOSPlatform("windows")]
-        public static void SwapToSteam(string steamId, int ePersonaState)
+        public static async Task SwapToSteam(string steamId, int ePersonaState)
         {
             Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.SwapToSteam] {(steamId.Length > 0 ? steamId.Substring(steamId.Length - 4, 4) : "")}, ePersonaState: {ePersonaState}");
             // If just double-clicked
             if (ePersonaState == -1) ePersonaState = Data.Settings.Steam.OverrideState;
-            SteamSwitcherFuncs.SwapSteamAccounts(steamId, ePersonaState: ePersonaState);
+            await SteamSwitcherFuncs.SwapSteamAccounts(steamId, ePersonaState: ePersonaState);
         }
 
         [JSInvokable]
@@ -87,18 +87,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         [JSInvokable]
-        public static void CopySettingsFrom(string sourceSteamId, string gameId)
+        public static async Task CopySettingsFrom(string sourceSteamId, string gameId)
         {
             var destSteamId = SteamSwitcherFuncs.GetCurrentAccountId(true);
             if (!SteamSwitcherFuncs.VerifySteamId(sourceSteamId) || !SteamSwitcherFuncs.VerifySteamId(destSteamId))
             {
-                GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoValidSteamId"], Lang["Failed"],
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoValidSteamId"], Lang["Failed"],
                     "toastarea");
                 return;
             }
             if (destSteamId == sourceSteamId)
             {
-                GeneralInvocableFuncs.ShowToast("info", Lang["Toast_SameAccount"], Lang["Failed"],
+                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_SameAccount"], Lang["Failed"],
                     "toastarea");
                 return;
             }
@@ -109,7 +109,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             var destFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{destSteamId32}\\{gameId}");
             if (!Directory.Exists(sourceFolder))
             {
-                GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"],
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"],
                     "toastarea");
                 return;
             }
@@ -123,11 +123,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 Directory.Delete(destFolder, true);
             }
             Globals.CopyDirectory(sourceFolder, destFolder, true);
-            GeneralInvocableFuncs.ShowToast("success", Lang["Toast_SettingsCopied"], Lang["Success"], "toastarea");
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_SettingsCopied"], Lang["Success"], "toastarea");
         }
 
         [JSInvokable]
-        public static void RestoreSettingsTo(string steamId, string gameId)
+        public static async Task RestoreSettingsTo(string steamId, string gameId)
         {
             if (!SteamSwitcherFuncs.VerifySteamId(steamId)) return;
             var steamId32 = new SteamIdConvert(steamId).Id32;
@@ -136,17 +136,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             var folder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{steamId32}\\{gameId}");
             if (!Directory.Exists(backupFolder))
             {
-                GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindGameBackup"], Lang["Failed"],
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindGameBackup"], Lang["Failed"],
                     "toastarea");
                 return;
             }
             if (Directory.Exists(folder)) Directory.Delete(folder, true);
             Globals.CopyDirectory(backupFolder, folder, true);
-            GeneralInvocableFuncs.ShowToast("success", Lang["Toast_GameDataRestored"], Lang["Success"], "toastarea");
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_GameDataRestored"], Lang["Success"], "toastarea");
         }
 
         [JSInvokable]
-        public static void BackupGameData(string steamId, string gameId)
+        public static async Task BackupGameData(string steamId, string gameId)
         {
             var steamId32 = new SteamIdConvert(steamId).Id32;
             var sourceFolder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{steamId32}\\{gameId}");
@@ -155,17 +155,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             if (Directory.Exists(destFolder)) Directory.Delete(destFolder, true);
 
             Globals.CopyDirectory(sourceFolder, destFolder, true);
-            GeneralInvocableFuncs.ShowToast("success", Lang["Toast_GameBackupDone", new {folderLocation = destFolder }], Lang["Success"], "toastarea");
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_GameBackupDone", new {folderLocation = destFolder }], Lang["Success"], "toastarea");
         }
 
         /// <summary>
         /// JS function handler for swapping to a new Steam account (No inputs)
         /// </summary>
         [JSInvokable]
-        public static void NewLogin_Steam()
+        public static async Task NewLogin_Steam()
         {
             Globals.DebugWriteLine(@"[JSInvoke:Steam\SteamSwitcherBase.NewLogin_Steam]");
-            SteamSwitcherFuncs.SwapSteamAccounts();
+            await SteamSwitcherFuncs.SwapSteamAccounts();
         }
     }
 }

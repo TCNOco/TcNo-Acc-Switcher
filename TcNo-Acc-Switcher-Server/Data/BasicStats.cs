@@ -7,12 +7,8 @@ using HtmlAgilityPack;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SteamKit2.GC.CSGO.Internal;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data.Settings;
-using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
-using String = System.String;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -30,7 +26,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     if (_instance != null) return _instance;
 
                     _instance = new BasicStats();
-                    BasicStatsInit();
+                    BasicStatsInit().GetAwaiter().GetResult();
                     return _instance;
                 }
             }
@@ -119,7 +115,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     // Foreach stat
                     // Check if has icon, otherwise use just indicator string
                     var indicatorMarkup = GetIcon(availableGame, statName);
-                    if (string.IsNullOrEmpty(indicatorMarkup) && !string.IsNullOrEmpty(gameIndicator))
+                    if (string.IsNullOrEmpty(indicatorMarkup) && !string.IsNullOrEmpty(gameIndicator) && GameStats[availableGame].ToCollect[statName].SpecialType is not "ImageDownload")
                         indicatorMarkup = $"<sup>{gameIndicator}</sup>";
 
                     statValueIconDict.Add(statName, new StatValueAndIcon
@@ -164,7 +160,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static Dictionary<string, Tuple<bool, string>> GetHiddenMetrics(string game, string account)
         {
             var returnDict = new Dictionary<string, Tuple<bool, string>>();
-            foreach (var (key, value) in GameStats[game].ToCollect)
+            foreach (var (key, _) in GameStats[game].ToCollect)
             {
                 var hidden = GameStats[game].CachedStats.ContainsKey(account) && GameStats[game].CachedStats[account].HiddenMetrics.Contains(key);
                 var text = GameStats[game].ToCollect[key].ToggleText;
@@ -206,10 +202,8 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         [JSInvokable]
-        public static bool SetGameVars(string platform, string game, string accountId, Dictionary<string, string> returnDict, List<string> hiddenMetrics)
-        {
-            return GameStats[game].SetAccount(accountId, returnDict, hiddenMetrics, platform);
-        }
+        public static async Task<bool> SetGameVars(string platform, string game, string accountId, Dictionary<string, string> returnDict, List<string> hiddenMetrics) =>
+            await GameStats[game].SetAccount(accountId, returnDict, hiddenMetrics, platform);
 
         [JSInvokable]
         public static void DisableGame(string game, string accountId)
@@ -221,9 +215,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         [JSInvokable]
-        public static void RefreshAccount(string accountId, string game, string platform = "")
+        public static async Task RefreshAccount(string accountId, string game, string platform = "")
         {
-            GameStats[game].LoadStatsFromWeb(accountId, platform);
+            await GameStats[game].LoadStatsFromWeb(accountId, platform);
             GameStats[game].SaveStats();
         }
 
@@ -237,14 +231,14 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Read BasicStats.json and collect game definitions, as well as platform-game relations.
         /// </summary>
-        private static void BasicStatsInit()
+        private static async Task BasicStatsInit()
         {
             // Check if Platforms.json exists.
             // If it doesnt: Copy it from the programs' folder to the user data folder.
             if (!File.Exists(BasicStatsPath))
             {
                 // Once again verify the file exists. If it doesn't throw an error here.
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedStatsLoad"], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedStatsLoad"], renderTo: "toastarea");
                 Globals.WriteToLog("Failed to locate GameStats.json! This will cause a lot of stats to break.");
                 return;
             }
@@ -305,11 +299,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// </summary>
         public static string GetGameIdFromName(string name) => GameStats.FirstOrDefault(x => x.Key.Equals(name, StringComparison.OrdinalIgnoreCase)).Value.UniqueId;
 
-        public void RefreshAllAccounts(string game, string platform = "")
+        public async Task RefreshAllAccounts(string game, string platform = "")
         {
             foreach (var id in GameStats[game].CachedStats.Keys)
             {
-                GameStats[game].LoadStatsFromWeb(id, platform);
+                await GameStats[game].LoadStatsFromWeb(id, platform);
             }
 
             if (game != "")
@@ -322,8 +316,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Loads games and stats for requested platform
         /// </summary>
         /// <returns>If successfully loaded platform</returns>
-        public static bool SetCurrentPlatform(string platform)
+        public static async Task<bool> SetCurrentPlatform(string platform)
         {
+            AppData.CurrentSwitcher = platform;
             if (!PlatformGames.ContainsKey(platform)) return false;
 
             GameStats = new Dictionary<string, GameStat>();
@@ -331,7 +326,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             foreach (var game in GetAvailableGames(platform))
             {
                 var gs = new GameStat();
-                gs.SetGameStat(game);
+                await gs.SetGameStat(game);
                 GameStats.Add(game, gs);
             }
 
@@ -411,7 +406,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             public string Icon { get; set; } = ""; // Icon HTML markup
         }
 
-        public void SetGameStat(string game)
+        public async Task SetGameStat(string game)
         {
             if (!BasicStats.GameExists(game)) return;
 
@@ -440,7 +435,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             //    Collect.Add(k, v);
             //}
 
-            LoadStats();
+            await LoadStats();
 
             IsInit = true;
         }
@@ -448,7 +443,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Set up new accounts. Set game name if you want all accounts to save after setting values (Recommended).
         /// </summary>
-        public bool SetAccount(string accountId, Dictionary<string, string> vars, List<string> hiddenMetrics, string platform = "")
+        public async Task<bool> SetAccount(string accountId, Dictionary<string, string> vars, List<string> hiddenMetrics, string platform = "")
         {
             if (CachedStats.ContainsKey(accountId))
             {
@@ -460,9 +455,9 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (CachedStats[accountId].Collected.Count == 0 || DateTime.Now.Subtract(CachedStats[accountId].LastUpdated).Days >= 1)
             {
-                GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
                 _lastLoadingNotification = DateTime.Now;
-                return LoadStatsFromWeb(accountId, platform);
+                return await LoadStatsFromWeb(accountId, platform);
             }
             else
                 SaveStats();
@@ -487,7 +482,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Collects user statistics for account
         /// </summary>
         /// <returns>Successful or not</returns>
-        public bool LoadStatsFromWeb(string accountId, string platform = "")
+        public async Task<bool> LoadStatsFromWeb(string accountId, string platform = "")
         {
             // Check if init, and list of accounts contains Id
             if (!IsInit || !CachedStats.ContainsKey(accountId)) return false;
@@ -499,7 +494,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Notify user than an account is being loaded - >5 seconds apart.
             if (DateTime.Now.Subtract(_lastLoadingNotification).Seconds >= 5)
             {
-                GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_LoadingStats"], renderTo: "toastarea");
                 _lastLoadingNotification = DateTime.Now;
             }
 
@@ -507,7 +502,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             HtmlDocument doc = new();
             if (!Globals.GetWebHtmlDocument(ref doc, UrlSubbed(userStat), out var responseText, Cookies))
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsLoadFail", new { Game }], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsLoadFail", new { Game }], renderTo: "toastarea");
                 return false;
             }
 
@@ -554,7 +549,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 {
                     var fileName = $"{Indicator}-{itemName}-{accountId}.jpg";
                     var imgPath = Path.Join(GeneralFuncs.WwwRoot(), "img\\statsCache\\" + fileName);
-                    if (!Globals.DownloadFile(text, imgPath))
+                    if (!await Globals.DownloadFileAsync(text, imgPath))
                     {
                         continue;
                     }
@@ -571,8 +566,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!userStat.Collected.Any())
             {
                 Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "temp"));
-                File.WriteAllText(Path.Join(Globals.UserDataFolder, "temp", $"download-{Globals.GetCleanFilePath(accountId)}-{Globals.GetCleanFilePath(Game)}.html"), responseText);
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }], renderTo: "toastarea");
+                await File.WriteAllTextAsync(Path.Join(Globals.UserDataFolder, "temp", $"download-{Globals.GetCleanFilePath(accountId)}-{Globals.GetCleanFilePath(Game)}.html"), responseText);
+                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_GameStatsEmpty", new { AccoundId = Globals.GetCleanFilePath(accountId), Game = Globals.GetCleanFilePath(Game) }], renderTo: "toastarea");
                 if (CachedStats.ContainsKey(accountId))
                     CachedStats.Remove(accountId);
                 return false;
@@ -596,7 +591,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Load all game stats for all accounts on current platform
         /// </summary>
-        public void LoadStats()
+        public async Task LoadStats()
         {
             _ = Directory.CreateDirectory(_cacheFileFolder);
 
@@ -607,7 +602,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Check for outdated items, and refresh them
             foreach (var id in CachedStats.Keys.Where(id => DateTime.Now.Subtract(CachedStats[id].LastUpdated).Days >= 1))
             {
-                LoadStatsFromWeb(id);
+                await LoadStatsFromWeb(id);
             }
         }
     }

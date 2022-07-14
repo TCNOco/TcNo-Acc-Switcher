@@ -52,10 +52,10 @@
         NavManager.NavigateTo("/");
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         AppStats.NewNavigation("/Settings/");
         if (!firstRender) return;
-        _ = AppData.InvokeVoidAsync("initSavingHotKey");
+        await AppData.InvokeVoidAsync("initSavingHotKey");
     }
 }

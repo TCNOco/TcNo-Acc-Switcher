@@ -165,16 +165,15 @@
 
 @code
 {
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        BasicStats.SetCurrentPlatform(CurrentPlatform.SafeName);
+        await BasicStats.SetCurrentPlatform(CurrentPlatform.SafeName);
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         AppStats.NewNavigation($"/[{CurrentPlatform.SafeName}]/Settings");
-        if (!firstRender) return;
-        _ = AppData.InvokeVoidAsync("initSavingHotKey");
+        if (firstRender) await AppData.InvokeVoidAsync("initSavingHotKey");
     }
 
     public void SaveAndClose()

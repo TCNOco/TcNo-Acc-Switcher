@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -478,7 +479,7 @@ namespace TcNo_Acc_Switcher_Client
                     var ex = details.Value<JObject>("exception");
                     if (ex != null)
                     {
-                        expandedError = $"{Environment.NewLine}{(string)details["url"]}:{(string)details["lineNumber"]}:{(string)details["columnNumber"]} - {(string)ex["description"]}{Environment.NewLine}{Environment.NewLine}Stack Trace:{Environment.NewLine}";
+                        expandedError = $"{Environment.NewLine}{Regex.Replace((string)details["url"] ?? string.Empty, "\\?[0-9]{10}", "")}:{(string)details["lineNumber"]}:{(string)details["columnNumber"]} - {(string)ex["description"]}{Environment.NewLine}{Environment.NewLine}Stack Trace:{Environment.NewLine}";
                     }
 
                     var stackTrace = details.Value<JObject>("stackTrace");
@@ -487,7 +488,7 @@ namespace TcNo_Acc_Switcher_Client
                     {
                         foreach (var callFrame in callFrames)
                         {
-                            expandedError += $"    at {(string)callFrame["functionName"]} in {(string)details["url"]}:line {(string)callFrame["lineNumber"]}:{(string)callFrame["columnNumber"]}{Environment.NewLine}";
+                            expandedError += $"    at {(string)callFrame["functionName"]} in {Regex.Replace((string)details["url"] ?? string.Empty, "\\?[0-9]{10}", "")}:line {(string)callFrame["lineNumber"]}:{(string)callFrame["columnNumber"]}{Environment.NewLine}";
                         }
                     }
                 }

@@ -13,6 +13,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading.Tasks;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -31,19 +32,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         #region SETTINGS_GENERAL
         // BUTTON: Pick folder
-        public void PickFolder()
+        public async Task PickFolder()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.PickFolder]");
-            _ = GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
+            await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
         }
 
         // BUTTON: Check account VAC status
-        public static void ClearVacStatus()
+        public static async Task ClearVacStatus()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearVacStatus]");
-            _ = Globals.DeleteFile(Data.Settings.Steam.VacCacheFile)
-                ? GeneralInvocableFuncs.ShowToast("success", Lang["Toast_Steam_VacCleared"], renderTo: "toastarea")
-                : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_CantDeleteVacCache"], Lang["Error"],"toastarea");
+            if (Globals.DeleteFile(Data.Settings.Steam.VacCacheFile))
+                await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_Steam_VacCleared"], renderTo: "toastarea");
+            else
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_Steam_CantDeleteVacCache"], Lang["Error"],
+                    "toastarea");
         }
 
         // BUTTON: Reset settings
@@ -56,10 +59,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         }
 
         // BUTTON: Reset images
-        public static void ClearImages()
+        public static async Task ClearImages()
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearImages]");
-            SteamSwitcherFuncs.ClearImages();
+            await SteamSwitcherFuncs.ClearImages();
         }
         #endregion
     }

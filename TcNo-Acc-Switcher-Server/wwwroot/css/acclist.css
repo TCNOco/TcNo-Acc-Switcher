@@ -133,12 +133,12 @@ label.acc p {
   font-size: 0.75em;
 }
 
-input.acc:checked + label.acc.currentAcc {
+input.acc.acc_selected + label.acc.currentAcc {
   border-color: #8aff80;
   border-style: solid;
 }
 
-input.acc:checked + label.acc {
+input.acc.acc_selected + label.acc {
   border-color: #8BE9FD;
   background: #274560;
 }

@@ -41,19 +41,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         #region PROCESS_OPERATIONS
 
         //public static bool CanKillProcess(List<string> procNames) => procNames.Aggregate(true, (current, s) => current & CanKillProcess(s));
-        public static bool CanKillProcess(List<string> procNames, string closingMethod = "Combined", bool showModal = true)
+        public static async Task<bool> CanKillProcess(List<string> procNames, string closingMethod = "Combined", bool showModal = true)
         {
             var canKillAll = true;
             foreach (var procName in procNames)
             {
                 if (procName.StartsWith("SERVICE:") && closingMethod == "TaskKill") continue; // Ignore explicit services when using TaskKill - Admin isn't ALWAYS needed. Eg: Steam.
-                canKillAll = canKillAll && CanKillProcess(procName, closingMethod);
+                canKillAll = canKillAll && await CanKillProcess(procName, closingMethod);
             }
 
             return canKillAll;
         }
 
-        public static bool CanKillProcess(string processName, string closingMethod = "Combined", bool showModal = true)
+        public static async Task<bool> CanKillProcess(string processName, string closingMethod = "Combined", bool showModal = true)
         {
             if (processName.StartsWith("SERVICE:") && closingMethod == "TaskKill") return true; // Ignore explicit services when using TaskKill - Admin isn't ALWAYS needed. Eg: Steam.
             if (processName.StartsWith("SERVICE:")) // Services need admin to close (as far as I understand)
@@ -63,27 +63,27 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             // Restart self as if can't close admin.
             if (Globals.CanKillProcess(processName)) return true;
             if (showModal)
-                _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+                await GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
             return false;
         }
 
-        public static bool CloseProcesses(string procName, string closingMethod)
+        public static async Task<bool> CloseProcesses(string procName, string closingMethod)
         {
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + procName);
-            if (!CanKillProcess(procName, closingMethod)) return false;
+            if (!await CanKillProcess(procName, closingMethod)) return false;
             Globals.KillProcess(procName, closingMethod);
 
-            return WaitForClose(procName);
+            return await WaitForClose(procName);
         }
-        public static bool CloseProcesses(List<string> procNames, string closingMethod)
+        public static async Task<bool> CloseProcesses(List<string> procNames, string closingMethod)
         {
             if (!OperatingSystem.IsWindows()) return false;
             Globals.DebugWriteLine(@"Closing: " + string.Join(", ", procNames));
-            if (!CanKillProcess(procNames, closingMethod)) return false;
+            if (!await CanKillProcess(procNames, closingMethod)) return false;
             Globals.KillProcess(procNames, closingMethod);
 
-            return WaitForClose(procNames, closingMethod);
+            return await WaitForClose(procNames, closingMethod);
         }
 
         /// <summary>
@@ -91,23 +91,23 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="procName">Name of process to lookup</param>
         /// <returns>Whether it was closed before this function returns or not.</returns>
-        public static bool WaitForClose(string procName)
+        public static async Task<bool> WaitForClose(string procName)
         {
             if (!OperatingSystem.IsWindows()) return false;
             var timeout = 0;
             while (Globals.ProcessHelper.IsProcessRunning(procName) && timeout < 10)
             {
                 timeout++;
-                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForClose", new { processName = procName, timeout, timeLimit = "10" }]);
+                await AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForClose", new { processName = procName, timeout, timeLimit = "10" }]);
                 Thread.Sleep(1000);
             }
 
             if (timeout == 10)
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotCloseX", new { x = procName }], Lang["Error"], "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotCloseX", new { x = procName }], Lang["Error"], "toastarea");
 
             return timeout != 10; // Returns true if timeout wasn't reached.
         }
-        public static bool WaitForClose(List<string> procNames, string closingMethod)
+        public static async Task<bool> WaitForClose(List<string> procNames, string closingMethod)
         {
             if (!OperatingSystem.IsWindows()) return false;
             var procToClose = new List<string>(); // Make a copy to edit
@@ -143,7 +143,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     procToClose.Remove(p);
 
                 if (procToClose.Count > 0)
-                    _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForMultipleClose", new { processName = procToClose[0], count = appCount, timeout, timeLimit = "10" }]);
+                    await AppData.InvokeVoidAsync("updateStatus", Lang["Status_WaitingForMultipleClose", new { processName = procToClose[0], count = appCount, timeout, timeLimit = "10" }]);
                 if (areAnyRunning)
                     Thread.Sleep(1000);
                 else
@@ -155,7 +155,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 #pragma warning disable CA1416 // Validate platform compatibility
             var leftOvers = procNames.Where(x => !Globals.ProcessHelper.IsProcessRunning(x));
 #pragma warning restore CA1416 // Validate platform compatibility
-            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotCloseX", new { x = string.Join(", ", leftOvers.ToArray()) }], Lang["Error"], "toastarea");
+            await GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotCloseX", new { x = string.Join(", ", leftOvers.ToArray()) }], Lang["Error"], "toastarea");
             return false; // Returns true if timeout wasn't reached.
         }
         #endregion
@@ -317,56 +317,56 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
         }
 
-        public static void JsDestNewline(string jsDest)
+        public static async Task JsDestNewline(string jsDest)
         {
             if (string.IsNullOrEmpty(jsDest)) return;
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.JsDestNewline] jsDest={jsDest}");
-            _ = AppData.InvokeVoidAsync(jsDest, "<br />"); //Newline
+            await AppData.InvokeVoidAsync(jsDest, "<br />"); //Newline
         }
 
         // Overload for below
-        public static void DeleteFile(string file, string jsDest) => DeleteFile(new FileInfo(file), jsDest);
+        public static async Task DeleteFile(string file, string jsDest) => await DeleteFile(new FileInfo(file), jsDest);
 
         /// <summary>
         /// Deletes a single file
         /// </summary>
         /// <param name="f">(Optional) FileInfo of file to delete</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
-        public static void DeleteFile(FileInfo f, string jsDest)
+        public static async Task DeleteFile(FileInfo f, string jsDest)
         {
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteFile] file={f?.FullName ?? ""}{(jsDest != "" ? ", jsDest=" + jsDest : "")}");
             try
             {
-                if (f is { Exists: false } && !string.IsNullOrEmpty(jsDest)) _ = AppData.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
+                if (f is { Exists: false } && !string.IsNullOrEmpty(jsDest)) await AppData.InvokeVoidAsync(jsDest, "File not found: " + f.FullName);
                 else
                 {
                     if (f == null) return;
                     f.IsReadOnly = false;
                     f.Delete();
                     if (!string.IsNullOrEmpty(jsDest))
-                        _ = AppData.InvokeVoidAsync(jsDest, "Deleted: " + f.FullName);
+                        await AppData.InvokeVoidAsync(jsDest, "Deleted: " + f.FullName);
                 }
             }
             catch (Exception e)
             {
                 if (string.IsNullOrEmpty(jsDest)) return;
-                _ = AppData.InvokeVoidAsync(jsDest,
+                await AppData.InvokeVoidAsync(jsDest,
                     f != null ? Lang["CouldntDeleteX", new {x = f.FullName}] : Lang["CouldntDeleteUndefined"]);
-                _ = AppData.InvokeVoidAsync(jsDest, e.ToString());
-                JsDestNewline(jsDest);
+                await AppData.InvokeVoidAsync(jsDest, e.ToString());
+                await JsDestNewline(jsDest);
             }
         }
 
         // Overload for below
-        public static void ClearFolder(string folder) => ClearFolder(folder, "");
+        public static async Task ClearFolder(string folder) => await ClearFolder(folder, "");
 
         /// <summary>
         /// Shorter RecursiveDelete (Sets keep folders to true)
         /// </summary>
-        public static void ClearFolder(string folder, string jsDest)
+        public static async Task ClearFolder(string folder, string jsDest)
         {
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFolder] folder={folder}, jsDest={jsDest}");
-            RecursiveDelete(new DirectoryInfo(folder), true, jsDest);
+            await RecursiveDelete(new DirectoryInfo(folder), true, jsDest);
         }
 
         /// <summary>
@@ -375,7 +375,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="baseDir">Folder to start working inwards from (as DirectoryInfo)</param>
         /// <param name="keepFolders">Set to False to delete folders as well as files</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
-        public static void RecursiveDelete(DirectoryInfo baseDir, bool keepFolders, string jsDest)
+        public static async Task RecursiveDelete(DirectoryInfo baseDir, bool keepFolders, string jsDest)
         {
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.RecursiveDelete] baseDir={baseDir.Name}, jsDest={jsDest}");
             if (!baseDir.Exists)
@@ -383,18 +383,18 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             foreach (var dir in baseDir.EnumerateDirectories())
             {
-                RecursiveDelete(dir, keepFolders, jsDest);
+                await RecursiveDelete(dir, keepFolders, jsDest);
             }
             var files = baseDir.GetFiles();
             foreach (var file in files)
             {
-                DeleteFile(file, jsDest);
+                await DeleteFile(file, jsDest);
             }
 
             if (keepFolders) return;
             baseDir.Delete();
-            if (!string.IsNullOrEmpty(jsDest)) _ = AppData.InvokeVoidAsync(jsDest, Lang["DeletingFolder"] + baseDir.FullName);
-            JsDestNewline(jsDest);
+            if (!string.IsNullOrEmpty(jsDest)) await  AppData.InvokeVoidAsync(jsDest, Lang["DeletingFolder"] + baseDir.FullName);
+            await JsDestNewline(jsDest);
         }
 
         /// <summary>
@@ -404,20 +404,20 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="val">Value to delete</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
         [SupportedOSPlatform("windows")]
-        public static void DeleteRegKey(string subKey, string val, string jsDest)
+        public static async Task DeleteRegKey(string subKey, string val, string jsDest)
         {
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.DeleteRegKey] subKey={subKey}, val={val}, jsDest={jsDest}");
             using var key = Registry.CurrentUser.OpenSubKey(subKey, true);
             if (key == null)
-                _ = AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntExist", new { subKey }]);
+                await AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntExist", new { subKey }]);
             else if (key.GetValue(val) == null)
-                _ = AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntContain", new { subKey, val }]);
+                await AppData.InvokeVoidAsync(jsDest, Lang["Reg_DoesntContain", new { subKey, val }]);
             else
             {
-                _ = AppData.InvokeVoidAsync(jsDest, Lang["Reg_Removing", new { subKey, val }]);
+                await AppData.InvokeVoidAsync(jsDest, Lang["Reg_Removing", new { subKey, val }]);
                 key.DeleteValue(val);
             }
-            JsDestNewline(jsDest);
+            await JsDestNewline(jsDest);
         }
 
         /// <summary>
@@ -444,28 +444,28 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="extensions">Extensions of files to delete</param>
         /// <param name="so">SearchOption of where to look for files</param>
         /// <param name="jsDest">Place to send responses (if any)</param>
-        public static void ClearFilesOfType(string folder, string extensions, SearchOption so, string jsDest)
+        public static async Task ClearFilesOfType(string folder, string extensions, SearchOption so, string jsDest)
         {
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ClearFilesOfType] folder={folder}, extensions={extensions}, jsDest={jsDest}");
             if (!Directory.Exists(folder))
             {
-                _ = AppData.InvokeVoidAsync(jsDest, Lang["DirectoryNotFound", new { folder }]);
-                JsDestNewline(jsDest);
+                await AppData.InvokeVoidAsync(jsDest, Lang["DirectoryNotFound", new { folder }]);
+                await JsDestNewline(jsDest);
                 return;
             }
             foreach (var file in GetFiles(folder, extensions, so))
             {
-                _ = AppData.InvokeVoidAsync(jsDest, Lang["DeletingFile", new { file }]);
+                await AppData.InvokeVoidAsync(jsDest, Lang["DeletingFile", new { file }]);
                 try
                 {
                     Globals.DeleteFile(file);
                 }
                 catch (Exception ex)
                 {
-                    _ = AppData.InvokeVoidAsync(jsDest, Lang["ErrorDetails", new { ex = Globals.MessageFromHResult(ex.HResult) }]);
+                    await AppData.InvokeVoidAsync(jsDest, Lang["ErrorDetails", new { ex = Globals.MessageFromHResult(ex.HResult) }]);
                 }
             }
-            JsDestNewline(jsDest);
+            await JsDestNewline(jsDest);
         }
 
         /// <summary>
@@ -679,14 +679,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <summary>
         /// Read a JSON file from provided path. Returns JObject
         /// </summary>
-        public static JToken ReadJsonFile(string path)
+        public static async Task<JToken> ReadJsonFile(string path)
         {
             Globals.DebugWriteLine($@"[Func:General\GeneralFuncs.ReadJsonFile] path={path}");
             JToken jToken             = null;
 
             if (Globals.TryReadJsonFile(path, ref jToken)) return jToken;
 
-            _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotReadFile", new { file = path }], renderTo: "toastarea");
+            await GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotReadFile", new { file = path }], renderTo: "toastarea");
             return new JObject();
 
         }
@@ -733,12 +733,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
         public static async Task HandleFirstRender(bool firstRender, string platform)
         {
-            AppData.WindowTitle = Lang["Title_AccountsList", new { platform }];
             if (firstRender)
             {
+                AppData.WindowTitle = Lang["Title_AccountsList", new { platform }];
                 // Handle Streamer Mode notification
                 if (AppSettings.StreamerModeEnabled && AppSettings.StreamerModeTriggered)
-                    _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_StreamerModeHint"], Lang["Toast_StreamerModeTitle"], "toastarea");
+                    await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_StreamerModeHint"], Lang["Toast_StreamerModeTitle"], "toastarea");
 
                 // Handle loading accounts for specific platforms
                 // - Init file if it doesn't exist, or isn't fully initialised (adds missing settings when true)
@@ -753,21 +753,21 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                         break;
 
                     default:
-                        BasicSwitcherFuncs.LoadProfiles();
+                        await BasicSwitcherFuncs.LoadProfiles();
                         Data.Settings.Basic.SaveSettings();
                         break;
                 }
 
                 // Handle queries and invoke status "Ready"
-                _ = HandleQueries();
-                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
+                await HandleQueries();
+                await AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             }
         }
 
         /// <summary>
         /// For handling queries in URI
         /// </summary>
-        public static bool HandleQueries()
+        public static async Task<bool> HandleQueries()
         {
             Globals.DebugWriteLine(@"[JSInvoke:General\GeneralFuncs.HandleQueries]");
             var uri = AppData.ActiveNavMan.ToAbsoluteUri(AppData.ActiveNavMan.Uri);
@@ -777,7 +777,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
 
             //Modal
             if (queries.TryGetValue("modal", out var modalValue))
-                foreach (var stringValue in modalValue) _ = GeneralInvocableFuncs.ShowModal(Uri.UnescapeDataString(stringValue));
+                foreach (var stringValue in modalValue) await GeneralInvocableFuncs.ShowModal(Uri.UnescapeDataString(stringValue));
 
             // Toast
             if (!queries.TryGetValue("toast_type", out var toastType) ||
@@ -787,8 +787,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             {
                 try
                 {
-                    _ = GeneralInvocableFuncs.ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
-                    _ = AppData.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
+                    await GeneralInvocableFuncs.ShowToast(toastType[i], toastMessage[i], toastTitle[i], "toastarea");
+                    await AppData.InvokeVoidAsync("removeUrlArgs", "toast_type,toast_title,toast_message");
                 }
                 catch (TaskCanceledException e)
                 {

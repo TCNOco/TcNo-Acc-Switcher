@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
@@ -101,7 +102,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ShowShortNotes", Order = 9)] private bool _showShortNotes = true;
         [JsonProperty("AccountNotes", Order = 10)] private Dictionary<string, string> _accountNotes = new();
         [JsonIgnore] private bool _desktopShortcut;
-        [JsonIgnore] private int _lastAccTimestamp = 0;
+        [JsonIgnore] private int _lastAccTimestamp;
         [JsonIgnore] private string _lastAccName = "";
         [JsonIgnore] private ObservableCollection<Account> _accounts = new();
 
@@ -216,11 +217,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             StartingMethod = method;
             SaveSettings();
         }
-        public static void OpenFolder(string folder)
+        public static async Task OpenFolder(string folder)
         {
             Directory.CreateDirectory(folder); // Create if doesn't exist
             Process.Start("explorer.exe", folder);
-            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_PlaceShortcutFiles"], renderTo: "toastarea");
+            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_PlaceShortcutFiles"], renderTo: "toastarea");
         }
 
         public static void RunPlatform(string exePath, bool admin, string args, string platName, string startingMethod = "Default")
@@ -237,12 +238,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 ? GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new {platform = CurrentPlatform.SafeName}], renderTo: "toastarea")
                 : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new {platform = CurrentPlatform.SafeName}], renderTo: "toastarea");
         }
-        public static void RunPlatform()
+        public static async Task RunPlatform()
         {
             Globals.StartProgram(Exe(), Admin, CurrentPlatform.ExeExtraArgs, CurrentPlatform.StartingMethod);
-            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
+            await GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = CurrentPlatform.SafeName }], renderTo: "toastarea");
         }
-        public static void RunShortcut(string s, string shortcutFolder = "", bool admin = false, string platform = "")
+        public static async Task RunShortcut(string s, string shortcutFolder = "", bool admin = false, string platform = "")
         {
             AppStats.IncrementGameLaunches(platform);
 
@@ -266,7 +267,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 proc.StartInfo.CreateNoWindow = true;
                 proc.StartInfo.RedirectStandardInput = true;
                 proc.StartInfo.RedirectStandardOutput = true;
-                if (admin) _ = GeneralInvocableFuncs.ShowToast("warning", Lang["Toast_UrlAdminErr"], duration: 15000, renderTo: "toastarea");
+                if (admin) await GeneralInvocableFuncs.ShowToast("warning", Lang["Toast_UrlAdminErr"], duration: 15000, renderTo: "toastarea");
             }
             else if (Globals.IsAdministrator && !admin)
             {
@@ -277,18 +278,18 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             try
             {
                 proc.Start();
-                _ = GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = PlatformFuncs.RemoveShortcutExt(s) }], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new { platform = PlatformFuncs.RemoveShortcutExt(s) }], renderTo: "toastarea");
             }
             catch (Exception e)
             {
                 // Cancelled by user, or another error.
                 Globals.WriteToLog($"Tried to start \"{s}\" but failed.", e);
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Status_FailedLog"], duration: 15000, renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Status_FailedLog"], duration: 15000, renderTo: "toastarea");
             }
         }
 
         [JSInvokable]
-        public static void HandleShortcutAction(string shortcut, string action)
+        public static async Task HandleShortcutAction(string shortcut, string action)
         {
             if (shortcut == "btnStartPlat") // Start platform requested
             {
@@ -312,7 +313,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     break;
                 }
                 case "admin":
-                    RunShortcut(shortcut, admin: true);
+                    await RunShortcut(shortcut, admin: true);
                     break;
             }
         }

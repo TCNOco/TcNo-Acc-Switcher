@@ -224,13 +224,13 @@
 
 @code
 {
-    public void SetPassword()
+    public async Task SetPassword()
     {
         Globals.DebugWriteLine(@"[ButtonClicked:SharedSettings.razor/SetPassword]");
-        _ = GeneralInvocableFuncs.ShowModal("setAppPassword");
+        await GeneralInvocableFuncs.ShowModal("setAppPassword");
     }
 
-    private void TrySetUserData()
+    private async Task TrySetUserData()
     {
         // Verify that user can create file in program files folder first.
         try
@@ -239,14 +239,14 @@
             if (File.Exists(userDataFile))
                 File.Delete(userDataFile);
 
-            File.WriteAllText(userDataFile, "");
+            await File.WriteAllTextAsync(userDataFile, "");
             File.Delete(userDataFile);
 
-            GeneralInvocableFuncs.ShowModal("SetUserdata");
+            await GeneralInvocableFuncs.ShowModal("SetUserdata");
         }
         catch (Exception)
         {
-            _ = GeneralInvocableFuncs.ShowToast("info", Locale["Toast_RestartRequired"], Locale["Notice"], "toastarea");
+            await GeneralInvocableFuncs.ShowToast("info", Locale["Toast_RestartRequired"], Locale["Notice"], "toastarea");
         }
     }
 }

@@ -523,16 +523,15 @@ button#LocateProgramExe,
 }
 
 .accountHover {
-  label.acc.currentAcc {
-    border-style: solid;
-    border-color: $nordAuora3;
-    border-bottom: none;
-  }
+    label.acc.currentAcc {
+        border-style: solid;
+        border-color: $nordAuora3;
+        border-bottom: none;
+    }
 
-  input.acc:checked + label.acc {
-    border-bottom: none;
-  }
-
+    input.acc.acc_selected + label.acc {
+        border-bottom: none;
+    }
 }
 
 
@@ -561,10 +560,10 @@ button#LocateProgramExe,
     background: $nordDark0
 }
 
-input.acc:checked + label.acc {
-  border-color: $nordAuora3 !important;
-  background: $nordDark1;
-  border-radius: 0.3rem;
+input.acc.acc_selected + label.acc {
+    border-color: $nordAuora3 !important;
+    background: $nordDark1;
+    border-radius: 0.3rem;
 }
 
 label.acc.currentAcc {

@@ -27,7 +27,6 @@ using System.Windows.Media;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
-using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
@@ -145,7 +144,7 @@ namespace TcNo_Acc_Switcher_Client
                 (Keyboard.GetKeyStates(Key.Scroll) & KeyStates.Down) != 0)
             {
                 // This can be improved. Somehow ignore self, and make sure all processes are killed before self.
-                if (GeneralFuncs.CanKillProcess("TcNo"))
+                if (await GeneralFuncs.CanKillProcess("TcNo"))
                     Globals.KillProcess("TcNo");
             }
 
@@ -455,7 +454,7 @@ release = true;
         /// </summary>
         /// <param name="args">Arguments</param>
         /// <param name="i">Index of argument to process</param>
-        private static void CliSwitch(string[] args, int i)
+        private static async Task CliSwitch(string[] args, int i)
         {
             if (args.Length < i) return;
             if (args[i].StartsWith(@"tcno:\\")) // Launched through Protocol
@@ -474,8 +473,8 @@ release = true;
                     {
                         // Steam format: +s:<steamId>[:<PersonaState (0-7)>]
                         Globals.WriteToLog("Steam switch requested");
-                        if (!GeneralFuncs.CanKillProcess(TcNo_Acc_Switcher_Server.Data.Settings.Steam.Processes)) Restart(combinedArgs, true);
-                        SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
+                        if (!await GeneralFuncs.CanKillProcess(TcNo_Acc_Switcher_Server.Data.Settings.Steam.Processes)) Restart(combinedArgs, true);
+                        await SteamSwitcherFuncs.SwapSteamAccounts(account.Split(":")[0],
                             ePersonaState: command.Length > 2
                                 ? int.Parse(command[2])
                                 : -1, args: string.Join(' ', remainingArguments)); // Request has a PersonaState in it
@@ -488,7 +487,7 @@ release = true;
                     // Is a basic platform!
                     BasicPlatforms.SetCurrentPlatformFromShort(platform);
                     Globals.WriteToLog(CurrentPlatform.FullName + " switch requested");
-                    if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
+                    if (!await GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd)) Restart(combinedArgs, true);
                     BasicSwitcherFuncs.SwapBasicAccounts(account, string.Join(' ', remainingArguments));
                     break;
             }

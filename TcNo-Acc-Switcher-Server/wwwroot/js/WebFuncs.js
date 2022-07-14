@@ -710,8 +710,10 @@ async function showModal(modaltype) {
 
         let message = "";
         let header = `<h3>${modalConfirmAction}:</h3>`;
+        let extra = "";
         if (action.startsWith("RestartAsAdmin")) {
             message = await GetLang("Prompt_RestartAsAdmin");
+            extra = await GetLang("Prompt_AlwaysAsAdmin");
             action = (args !== "" ? `restartAsAdmin(${args})` : "restartAsAdmin()");
         } else {
             message = `<p>${modaltype.split(":")[2].replaceAll("_", " ")}</p>`;
@@ -1264,14 +1266,15 @@ async function showNoteTooltips() {
     const noteArr = $(".acc_note").toArray();
     if (noteArr.length === 0) return;
 
-    noteArr.forEach((e) => {
+    await noteArr.forEach((e) => {
         var j = $(e);
         var note = j.text();
         var parentEl = j.parent().parent();
         parentEl.removeAttr("title").removeAttr("data-original-title").removeAttr("data-placement");
         parentEl.attr("title", note);
         parentEl.attr("data-placement", getBestOffset(parentEl));
-    }).then(initTooltips());
+    });
+    initTooltips();
 }
 
 restartAsAdmin = async(args = "") => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiRestartAsAdmin", args);

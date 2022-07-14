@@ -92,11 +92,11 @@
             <i class="fas fa-caret-right footerIcoInline"></i>
         </button>
 
-        <button id="btnSettings" onclick="location = 'Basic/Settings'" data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
+        <button class="btnSettings" onclick="location = 'Basic/Settings'" data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
 
-        <button id="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="@(Locale["Tooltip_Info"])">
+        <button class="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="@(Locale["Tooltip_Info"])">
             <i class="fas fa-question footerIcoQuestion"></i>
         </button>
     </div>
@@ -130,9 +130,10 @@
     // https://github.com/dotnet/aspnetcore/issues/13582
     private bool _navBack;
 
+
     // This has to be here for NavManager.
     // This is run before everything is painted on, so that it can get the correct values for the CSS Block.
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         AppSettings.StreamerModeCheck();
 
@@ -154,7 +155,7 @@
             return;
         }
 
-        BasicStats.SetCurrentPlatform(CurrentPlatform.SafeName);
+        await BasicStats.SetCurrentPlatform(CurrentPlatform.SafeName);
 
     // Verify that the platform's EXE exists, otherwise go back. For shortcuts and direct navigation.
         if (File.Exists(Basic.Exe())) return;
@@ -171,11 +172,11 @@
         await GeneralFuncs.HandleFirstRender(firstRender, CurrentPlatform.FullName);
         AppStats.NewNavigation($"/[{CurrentPlatform.SafeName}]");
         if (!firstRender) return;
-        _ = AppData.InvokeVoidAsync("initCopyHotKey");
-        _ = AppData.InvokeVoidAsync("showNoteTooltips");
+        await AppData.InvokeVoidAsync("initCopyHotKey");
+        await AppData.InvokeVoidAsync("showNoteTooltips");
 
-        var curAcc = BasicSwitcherFuncs.GetCurrentAccountId();
-        if (curAcc != "") _ = AppData.InvokeVoidAsync("highlightCurrentAccount", curAcc);
+        var curAcc = await BasicSwitcherFuncs.GetCurrentAccountId();
+        if (curAcc != "") await AppData.InvokeVoidAsync("highlightCurrentAccount", curAcc);
 
         AppData.FirstLaunchCheck();
     }

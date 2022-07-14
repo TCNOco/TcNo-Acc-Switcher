@@ -33,7 +33,7 @@
     },
     "Counter-Strike: Global Offensive": {
       "UniqueId": "CSGO",
-      "Indicator": "",
+      "Indicator": "CS",
       "Url": "https://csgostats.gg/player/{SteamId}",
       "RequestCookies": "",
       "Vars": {
@@ -47,6 +47,12 @@
           "SpecialType": "ImageDownload",
           "DisplayAs": "<img src=\"%x%\" style=\"max-height:3em\"/>",
           "ToggleText": "Competitive Rank"
+        },
+        "CompWins": {
+          "XPath": ".//span[@id='competitve-wins']/span",
+          "Select": "innerText",
+          "DisplayAs": "%x% Wins",
+          "ToggleText": "Competitive Wins"
         }
       }
     },

@@ -13,6 +13,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.IO;
+using System.Threading.Tasks;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -26,30 +27,30 @@ namespace TcNo_Acc_Switcher_Server.Pages
     {
         private static readonly Lang Lang = Lang.Instance;
 
-        public void Check(string platform)
+        public async Task Check(string platform)
         {
             Globals.DebugWriteLine($@"[Func:Index.Check] platform={platform}");
             switch (platform)
             {
                 case "Steam":
-                    if (!GeneralFuncs.CanKillProcess(SteamSettings.Processes, SteamSettings.ClosingMethod)) return;
+                    if (!await GeneralFuncs.CanKillProcess(SteamSettings.Processes, SteamSettings.ClosingMethod)) return;
                     if (!Directory.Exists(SteamSettings.FolderPath) || !File.Exists(SteamSettings.Exe()))
                     {
-                        _ = GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
+                        await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
                         return;
                     }
                     if (SteamSwitcherFuncs.SteamSettingsValid()) AppData.ActiveNavMan.NavigateTo("/Steam/");
-                    else _ = GeneralInvocableFuncs.ShowModal(Lang["Toast_Steam_CantLocateLoginusers"]);
+                    else await GeneralInvocableFuncs.ShowModal(Lang["Toast_Steam_CantLocateLoginusers"]);
                     break;
 
                 default:
                     if (BasicPlatforms.PlatformExistsFromShort(platform)) // Is a basic platform!
                     {
                         BasicPlatforms.SetCurrentPlatformFromShort(platform);
-                        if (!GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return;
+                        if (!await GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return;
 
                         if (Directory.Exists(BasicSettings.FolderPath) && File.Exists(BasicSettings.Exe())) AppData.ActiveNavMan.NavigateTo("/Basic/");
-                        else _ = GeneralInvocableFuncs.ShowModal($"find:{CurrentPlatform.SafeName}:{CurrentPlatform.ExeName}:{CurrentPlatform.SafeName}");
+                        else await GeneralInvocableFuncs.ShowModal($"find:{CurrentPlatform.SafeName}:{CurrentPlatform.ExeName}:{CurrentPlatform.SafeName}");
                     }
                     break;
             }

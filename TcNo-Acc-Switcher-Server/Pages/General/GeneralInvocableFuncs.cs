@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.Versioning;
@@ -148,10 +147,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         [JSInvokable]
-        public static Task<string> GiConfirmAction(string action, bool value)
+        public static string GiConfirmAction(string action, bool value)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiConfirmAction] action={action.Split(":")[0]}, value={value}");
-            if (!value) return Task.FromResult("");
+            if (!value) return "";
 
             var split = action.Split(":");
             if (split.Length > 1)
@@ -162,14 +161,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 {
                     BasicSettings.SetForgetAcc(true);
                     _ = GeneralFuncs.ForgetAccount_Generic(accName, CurrentPlatform.SafeName, true);
-                    return Task.FromResult("refresh");
+                    return "refresh";
                 }
 
                 if (action.StartsWith("AcceptForgetSteamAcc:"))
                 {
                     SteamSettings.SetForgetAcc(true);
                     _ = SteamSwitcherFuncs.ForgetAccount(accName);
-                    return Task.FromResult("refresh");
+                    return "refresh";
                 }
             }
             switch (action)
@@ -178,10 +177,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     break;
                 case "ClearStats":
                     AppStats.ClearStats();
-                    return Task.FromResult("success");
+                    return "success";
             }
 
-            return Task.FromResult("");
+            return "";
         }
 
         [JSInvokable]
@@ -208,10 +207,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// </summary>
         /// <param name="args">Argument string, containing a command to be handled later by modal</param>
         /// <returns></returns>
-        public static bool ShowModal(string args)
+        public static async Task<bool> ShowModal(string args)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowModal] args={args}");
-            return AppData.InvokeVoidAsync("showModal", args);
+            return await AppData.InvokeVoidAsync("showModal", args);
         }
 
         /// <summary>
@@ -223,10 +222,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="renderTo">(Optional) Part of the document to append the toast to (Empty = Default, document.body)</param>
         /// <param name="duration">(Optional) Duration to show the toast before fading</param>
         /// <returns></returns>
-        public static bool ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
+        public static async Task<bool> ShowToast(string toastType, string toastMessage, string toastTitle = "", string renderTo = "body", int duration = 5000)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ShowToast] type={toastType}, message={toastMessage}, title={toastTitle}, renderTo={renderTo}, duration={duration}");
-            return AppData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
+            return await AppData.InvokeVoidAsync("window.notification.new", new { type = toastType, title = toastTitle, message = toastMessage, renderTo, duration });
         }
 
         /// <summary>
@@ -235,10 +234,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="id">Unique identifier for account</param>
         /// <param name="reqName">Requested new username</param>
         [JSInvokable]
-        public static void ChangeUsername(string id, string reqName)
+        public static async Task ChangeUsername(string id, string reqName)
         {
             Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ChangeUsername] id:hidden, reqName:hidden");
-            BasicSwitcherFuncs.ChangeUsername(id, reqName);
+            await BasicSwitcherFuncs.ChangeUsername(id, reqName);
         }
 
 
@@ -251,7 +250,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         /// <param name="args">(Optional) arguments for shortcut</param>
         [JSInvokable]
         [SupportedOSPlatform("windows")]
-        public static void CreateShortcut(string page, string accId, string accName, string args = "")
+        public static async Task CreateShortcut(string page, string accId, string accName, string args = "")
         {
             Globals.DebugWriteLine(@"[JSInvoke:General\GeneralInvocableFuncs.CreateShortcut]");
             var platform = page;
@@ -294,7 +293,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             if (!File.Exists(fgImg)) fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{page}\\{accId}.png");
             if (!File.Exists(fgImg))
             {
-                _ = ShowToast("error", Lang["Toast_CantFindImage"], Lang["Toast_CantCreateShortcut"], "toastarea");
+                await ShowToast("error", Lang["Toast_CantFindImage"], Lang["Toast_CantCreateShortcut"], "toastarea");
                 return;
             }
 
@@ -305,16 +304,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 $"+{primaryPlatformId}:{originalAccId}{args}",
                 $"Switch to {accName} [{platform}] in TcNo Account Switcher",
                 true);
-            s.CreateCombinedIcon(bgImg, fgImg, $"{accId}.ico");
+            await s.CreateCombinedIcon(bgImg, fgImg, $"{accId}.ico");
             s.TryWrite();
 
-            _ = AppSettings.StreamerModeTriggered
-                ? ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea")
-                : ShowToast("success", Lang["ForName", new { name = accName }], Lang["Toast_ShortcutCreated"], "toastarea");
+            if (AppSettings.StreamerModeTriggered)
+                await ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea");
+            else
+                await ShowToast("success", Lang["ForName", new { name = accName }], Lang["Toast_ShortcutCreated"], "toastarea");
         }
 
         [JSInvokable]
-        public static void GiCreatePlatformShortcut(string platform)
+        public static async Task GiCreatePlatformShortcut(string platform)
         {
             Globals.DebugWriteLine(@$"[Func:Pages\General\GeneralInvocableFuncs.GiCreatePlatformShortcut] platform={platform}");
             var platId = platform.ToLowerInvariant();
@@ -324,7 +324,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             _ = s.Shortcut_Platform(Shortcut.Desktop, platform, platId);
             s.ToggleShortcut(true);
 
-            _ = ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea");
+            await ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea");
         }
 
         [JSInvokable]
@@ -334,13 +334,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             platform = BasicPlatforms.PlatformFullName(platform);
             if (!Directory.Exists(Path.Join("LoginCache", platform)))
             {
-                _ = ShowToast("error", Lang["Toast_AddAccountsFirst"], Lang["Toast_AddAccountsFirstTitle"], "toastarea");
+                await ShowToast("error", Lang["Toast_AddAccountsFirst"], Lang["Toast_AddAccountsFirstTitle"], "toastarea");
                 return "";
             }
 
             var s = CultureInfo.CurrentCulture.TextInfo.ListSeparator; // Different regions use different separators in csv files.
 
-            BasicStats.SetCurrentPlatform(platform);
+            await BasicStats.SetCurrentPlatform(platform);
 
             List<string> allAccountsTable = new();
             if (platform == "Steam")
@@ -349,7 +349,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 allAccountsTable.Add($"SEP={s}");
                 allAccountsTable.Add($"Account name:{s}Community name:{s}SteamID:{s}VAC status:{s}Last login:{s}Saved profile image:{s}Stats:");
 
-                AppData.SteamUsers = SteamSwitcherFuncs.GetSteamUsers(SteamSettings.LoginUsersVdf());
+                AppData.SteamUsers = await SteamSwitcherFuncs.GetSteamUsers(SteamSettings.LoginUsersVdf());
                 // Load cached ban info
                 SteamSwitcherFuncs.LoadCachedBanInfo();
 
@@ -460,12 +460,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static string GiGetCleanFilePath(string f) => Globals.GetCleanFilePath(f);
 
         [JSInvokable]
-        public static void ImportNewImage(string o)
+        public static async Task ImportNewImage(string o)
         {
             var f = JObject.Parse(o);
             var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot", HttpUtility.UrlDecode(f.Value<string>("dest")));
             Globals.CopyFile(f.Value<string>("path"), imageDest);
-            _ = AppData.ReloadPage();
+            await AppData.ReloadPage();
         }
     }
 }

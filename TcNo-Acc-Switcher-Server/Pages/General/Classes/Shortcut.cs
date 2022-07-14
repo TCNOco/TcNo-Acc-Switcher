@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Versioning;
+using System.Threading.Tasks;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 
@@ -170,7 +171,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
         /// <param name="fgImg">Foreground image, user image</param>
         /// <param name="iconName">Filename, unique so stored without being overwritten</param>
         [SupportedOSPlatform("windows")]
-        public void CreateCombinedIcon(string bgImg, string fgImg, string iconName)
+        public async Task CreateCombinedIcon(string bgImg, string fgImg, string iconName)
         {
             Globals.DebugWriteLine($@"[Func:General\Classes\Shortcut.CreateCombinedIcon] bgImg={bgImg}, fgImg={fgImg.Substring(fgImg.Length - 6, 6)}, iconName=hidden");
             try
@@ -181,7 +182,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.General.Classes
             catch (Exception e)
             {
                 Globals.WriteToLog($"Failed to CreateIcon! '{bgImg}', '{fgImg}, '{iconName}'", e);
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedCreateIcon"]);
+                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedCreateIcon"]);
             }
         }
         #endregion

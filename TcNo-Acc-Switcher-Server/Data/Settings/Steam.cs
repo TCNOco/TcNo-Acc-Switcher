@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
@@ -212,7 +213,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         }
 
         [JSInvokable]
-        public static void HandleShortcutActionSteam(string shortcut, string action)
+        public static async Task HandleShortcutActionSteam(string shortcut, string action)
         {
             if (shortcut == "btnStartPlat") // Start platform requested
             {
@@ -236,7 +237,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     break;
                 }
                 case "admin":
-                    Basic.RunShortcut(shortcut, "LoginCache\\Steam\\Shortcuts", true, "Steam");
+                    await Basic.RunShortcut(shortcut, "LoginCache\\Steam\\Shortcuts", true, "Steam");
                     break;
             }
         }
@@ -271,15 +272,15 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("SteamWebApiKey", Order = 19)] private string _steamWebApiKey = "";
         [JsonProperty("StartSilent", Order = 20)] private bool _startSilent;
         [JsonIgnore] private bool _desktopShortcut;
-        [JsonIgnore] private int _lastAccTimestamp = 0;
-        [JsonIgnore] private string _lastAccName = "";
+        [JsonIgnore] private int _lastAccTimestamp;
+        [JsonIgnore] private string _lastSteamId = "";
         [JsonIgnore] private bool _steamWebApiWasReset;
         [JsonIgnore] public static readonly string SteamAppsListPath = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsFullListCache.json");
         [JsonIgnore] public static readonly string SteamAppsUserCache = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
         [JsonIgnore] private ObservableCollection<Account> _accounts = new();
 
         public static int LastAccTimestamp { get => Instance._lastAccTimestamp; set => Instance._lastAccTimestamp = value; }
-        public static string LastAccName { get => Instance._lastAccName; set => Instance._lastAccName = value; }
+        public static string LastAccSteamId { get => Instance._lastSteamId; set => Instance._lastSteamId = value; }
 
         public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
 
@@ -409,7 +410,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     ).ToList()
                 };
             }
-            menuBuilder.AddItem(new Tuple<string, object>("Context_ManageSubmenu", new Tuple<string, object>[]
+            menuBuilder.AddItem(new Tuple<string, object>("Context_ManageSubmenu", new[]
                 {
                     gameData is not null ?
                         new Tuple<string, object>("Context_GameDataSubmenu", gameData) : null,

@@ -43,7 +43,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Save settings with Ctrl+S Hot key
         /// </summary>
         [JSInvokable]
-        public static void GiCtrlS(string platform)
+        public static async Task GiCtrlS(string platform)
         {
             AppSettings.SaveSettings();
             switch (platform)
@@ -55,11 +55,11 @@ namespace TcNo_Acc_Switcher_Server.Data
                     Basic.SaveSettings();
                     break;
             }
-            _ = GeneralInvocableFuncs.ShowToast("success", Lang["Saved"], renderTo:"toastarea");
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Saved"], renderTo:"toastarea");
         }
 
         #region ACCOUNT SWITCHER SHARED FUNCTIONS
-        public static bool GenericLoadAccounts(string name, bool isBasic = false)
+        public static async Task<bool> GenericLoadAccounts(string name, bool isBasic = false)
         {
             var localCachePath = Path.Join(Globals.UserDataFolder, $"LoginCache\\{name}\\");
             if (!Directory.Exists(localCachePath)) return false;
@@ -68,7 +68,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             // Order
             accList = OrderAccounts(accList, $"{localCachePath}\\order.json");
 
-            InsertAccounts(accList, name, isBasic);
+            await InsertAccounts(accList, name, isBasic);
             AppStats.SetAccountCount(CurrentPlatform.SafeName, accList.Count);
             return true;
         }
@@ -121,11 +121,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Runs jQueryProcessAccListSize, initContextMenu and initAccListSortable - Final init needed for account switcher to work.
         /// </summary>
-        public static void FinaliseAccountList()
+        public static async Task FinaliseAccountList()
         {
-            _ = AppData.InvokeVoidAsync("jQueryProcessAccListSize");
-            _ = AppData.InvokeVoidAsync("initContextMenu");
-            _ = AppData.InvokeVoidAsync("initAccListSortable");
+            await AppData.InvokeVoidAsync("jQueryProcessAccListSize");
+            await AppData.InvokeVoidAsync("initContextMenu");
+            await AppData.InvokeVoidAsync("initAccListSortable");
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <param name="accList">Account list</param>
         /// <param name="platform">Platform name</param>
         /// <param name="isBasic">(Unused for now) To use Basic platform account's ID as accId)</param>
-        public static void InsertAccounts(IEnumerable accList, string platform, bool isBasic = false)
+        public static async Task InsertAccounts(IEnumerable accList, string platform, bool isBasic = false)
         {
             if (isBasic)
                 BasicSwitcherFuncs.LoadAccountIds();
@@ -191,7 +191,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     Basic.Accounts.Add(account);
                 }
             }
-            FinaliseAccountList(); // Init context menu & Sorting
+            await FinaliseAccountList(); // Init context menu & Sorting
         }
 
         /// <summary>

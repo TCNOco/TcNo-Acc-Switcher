@@ -8,6 +8,35 @@ function getCurrentPage() {
         window.location.pathname.split("/")[1]);
 }
 
+function positionAndShowMenu(event, contextMenuId) {
+    const jQueryContextMenu = $(contextMenuId);
+    //Get window size:
+    const winWidth = $(document).width();
+    const winHeight = $(document).height();
+    //Get pointer position:
+    const posX = event.pageX - 14;
+    const posY = event.pageY - 42; // Offset for header bar
+    //Get contextmenu size:
+    const menuWidth = jQueryContextMenu.width();
+    const menuHeight = jQueryContextMenu.height();
+    // Header offset + 10:
+    const hOffset = 42;
+    // Prevent page overflow:
+    const xOverflow = posX + menuWidth + hOffset - winWidth;
+    const yOverflow = posY + menuHeight + hOffset - winHeight;
+    const posLeft = posX + (xOverflow > 0 ? - menuWidth : 10) + "px";
+    const posTop = posY + (yOverflow > 0 ? - yOverflow : 10) + "px";
+
+    //Display contextmenu:
+    jQueryContextMenu.css({
+        "left": posLeft,
+        "top": posTop
+    }).show();
+
+    //Prevent browser default contextmenu.
+    return false;
+}
+
 async function initContextMenu() {
     let group = "acc";
     if (getCurrentPage() === "") {
@@ -16,161 +45,15 @@ async function initContextMenu() {
     if (getCurrentPage() === "Settings") {
         group = "preview";
     }
-    $(`.${group}_list`).on("click", () => {
-        $("input:checked").each((_, e) => {
-            $(e).prop("checked", false);
-        });
-    });
 
-    if (group === "acc" || group === "preview") {
-        // Ready accounts for double-click
-        return;
-
-        // Handle Left-clicks:
-        $(".acc_list_item").click((e) => {
-            $(e.currentTarget).children("input")[0].click();
-            hideContextMenus();
-            e.stopPropagation();
-            selectedElem = $(e.currentTarget).children("input")[0];
-        });
-    }
-
-    const selectedText = await GetLangSub("Status_SelectedAccount", { name: "XXX" });
     // Show shortcut contextmenu on Right-Click
-    $(`.HasContextMenu`).contextmenu((e) => {
-        // Set currently selected element
-        selectedElem = $(e.currentTarget);
+    $(`.HasContextMenu`).contextmenu((e) => positionAndShowMenu(e, "#Shortcuts"));
 
-        //Get window size:
-        const winWidth = $(document).width();
-        const winHeight = $(document).height();
-        //Get pointer position:
-        const posX = e.pageX - 14;
-        const posY = e.pageY - 42; // Offset for header bar
-        //Get contextmenu size:
-        const menuWidth = $("#Shortcuts").width();
-        const menuHeight = $("#Shortcuts").height();
-
-        // Header offset + 10:
-        const hOffset = 42;
-        // Prevent page overflow:
-        const xOverflow = posX + menuWidth + hOffset - winWidth;
-        const yOverflow = posY + menuHeight + hOffset - winHeight;
-        var posLeft = posX + (xOverflow > 0 ? - menuWidth : 10) + "px";
-        var posTop = posY + (yOverflow > 0 ? - yOverflow : 10) + "px";
-
-        //Display contextmenu:
-        $("#Shortcuts").css({
-            "left": posLeft,
-            "top": posTop
-        }).show();
-        //Prevent browser default contextmenu.
-        return false;
-    });
-
-    //Show contextmenu on Right-Click:
-    $(`.${group}_list_item`).contextmenu((e) => {
-        if (group === "acc" || group === "preview") {
-            // Select item that was right-clicked.
-            $(e.currentTarget).children("input").click();
-
-            // Set currently selected element
-            selectedElem = $(e.currentTarget).children("input")[0];
-
-            // Update status for element
-            let statusText = "";
-            switch (getCurrentPage()) {
-                case "Steam":
-	                statusText = $(selectedElem).attr("Line2");
-                break;
-            default:
-                break;
-            }
-            updateStatus(selectedText.replace("XXX", statusText));
-
-        } else if (group === "platform") {
-            // Set currently selected element
-            selectedElem = $(e.currentTarget).prop("id");
-        }
-
-        //Get window size:
-        const winWidth = $(document).width();
-        const winHeight = $(document).height();
-        //Get pointer position:
-        const posX = e.pageX - 14;
-        const posY = e.pageY - 42; // Offset for header bar
-        //Get contextmenu size:
-        const menuWidth = $("#AccOrPlatList").width();
-        const menuHeight = $("#AccOrPlatList").height();
-
-        // Header offset + 10:
-        const hOffset = 42;
-        // Prevent page overflow:
-        const xOverflow = posX + menuWidth + hOffset - winWidth;
-        const yOverflow = posY + menuHeight + hOffset - winHeight;
-        var posLeft = posX + (xOverflow > 0 ? - menuWidth : 10) + "px";
-        var posTop = posY + (yOverflow > 0 ? - yOverflow : 10) + "px";
-
-        //Display contextmenu:
-        $("#AccOrPlatList").css({
-            "left": posLeft,
-            "top": posTop
-        }).show();
-        //Prevent browser default contextmenu.
-        return false;
-    });
+    //Show platform/account contextmenu on Right-Click:
+    //$(`.${group}_list_item`).contextmenu((e) => positionAndShowMenu(e, "#AccOrPlatList"));
 
     //Show contextmenu on Right-Click (platform shortcut):
-    $(`#btnStartPlat`).contextmenu((e) => {
-        if (group === "acc" || group === "preview") {
-            // Select item that was right-clicked.
-            $(e.currentTarget).children("input").click();
-
-            // Set currently selected element
-            selectedElem = $(e.currentTarget);
-
-            // Update status for element
-            let statusText = "";
-            switch (getCurrentPage()) {
-                case "Steam":
-	                statusText = $(selectedElem).attr("Line2");
-                break;
-            default:
-                break;
-            }
-            updateStatus(selectedText.replace("XXX", statusText));
-
-        } else if (group === "platform") {
-            // Set currently selected element
-            selectedElem = $(e.currentTarget).prop("id").substr(8);
-        }
-
-        //Get window size:
-        const winWidth = $(document).width();
-        const winHeight = $(document).height();
-        //Get pointer position:
-        const posX = e.pageX - 14;
-        const posY = e.pageY - 42; // Offset for header bar
-        //Get contextmenu size:
-        const menuWidth = $("#Platform").width();
-        const menuHeight = $("#Platform").height();
-
-        // Header offset + 10:
-        const hOffset = 42;
-        // Prevent page overflow:
-        const xOverflow = posX + menuWidth + hOffset - winWidth;
-        const yOverflow = posY + menuHeight + hOffset - winHeight;
-        var posLeft = posX + (xOverflow > 0 ? - menuWidth : 10) + "px";
-        var posTop = posY + (yOverflow > 0 ? - yOverflow : 10) + "px";
-
-        //Display contextmenu:
-        $("#Platform").css({
-            "left": posLeft,
-            "top": posTop
-        }).show();
-        //Prevent browser default contextmenu.
-        return false;
-    });
+    $(`#btnStartPlat`).contextmenu((e) => positionAndShowMenu(e, "#Platform"));
 
     // Check element fits on page, and move if it doesn't
     // This function moves the element to the left if it doesn't fit.
@@ -217,9 +100,3 @@ document.querySelector("body").addEventListener("click", (e) => {
         hideContextMenus();
     }
 });
-
-async function selectedItemChanged() {
-    // Different function groups based on platform
-    const selectedText = await GetLangSub("Status_SelectedAccount", { name: $("input[name=accounts]:checked").siblings("label").find(".displayName").text() });
-    updateStatus(selectedText);
-}

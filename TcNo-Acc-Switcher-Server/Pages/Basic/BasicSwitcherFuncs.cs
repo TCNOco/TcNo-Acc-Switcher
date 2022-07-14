@@ -25,10 +25,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         /// Prepares HTML Elements string for insertion into the account switcher GUI.
         /// </summary>
         /// <returns>Whether account loading is successful, or a path reset is needed (invalid dir saved)</returns>
-        public static void LoadProfiles()
+        public static async Task LoadProfiles()
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.LoadProfiles] Loading Basic profiles for: " + CurrentPlatform.FullName);
-            _ = GenericFunctions.GenericLoadAccounts(CurrentPlatform.FullName, true);
+            await GenericFunctions.GenericLoadAccounts(CurrentPlatform.FullName, true);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         /// <param name="accId">(Optional) User's unique account ID</param>
         /// <param name="args">Starting arguments</param>
         [SupportedOSPlatform("windows")]
-        public static void SwapBasicAccounts(string accId = "", string args = "")
+        public static async void SwapBasicAccounts(string accId = "", string args = "")
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.SwapBasicAccounts] Swapping to: hidden.");
             // Handle args:
@@ -81,14 +81,14 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             LoadAccountIds();
             var accName = GetNameFromId(accId);
 
-            if (!KillGameProcesses())
+            if (!await KillGameProcesses())
                 return;
 
             // Add currently logged in account if there is a way of checking unique ID.
             // If saved, and has unique key: Update
             if (CurrentPlatform.UniqueIdFile is not null)
             {
-                var uniqueId = GetUniqueId();
+                var uniqueId = await GetUniqueId();
 
                 // UniqueId Found >> Save!
                 if (File.Exists(CurrentPlatform.IdsJsonPath))
@@ -97,7 +97,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     {
                         if (accId == uniqueId)
                         {
-                            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Toast_AlreadyLoggedIn"], renderTo: "toastarea");
+                            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_AlreadyLoggedIn"], renderTo: "toastarea");
                             if (BasicSettings.AutoStart)
                             {
                                 _ = Globals.StartProgram(BasicSettings.Exe(), BasicSettings.Admin, args,
@@ -105,11 +105,11 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                                     ? GeneralInvocableFuncs.ShowToast("info", Lang["Status_StartingPlatform", new {platform = CurrentPlatform.SafeName}], renderTo: "toastarea")
                                     : GeneralInvocableFuncs.ShowToast("error", Lang["Toast_StartingPlatformFailed", new {platform = CurrentPlatform.SafeName}], renderTo: "toastarea");
                             }
-                            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
+                            await AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
 
                             return;
                         }
-                        BasicAddCurrent(AccountIds[uniqueId]);
+                        await BasicAddCurrent(AccountIds[uniqueId]);
                     }
                 }
             }
@@ -120,24 +120,24 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             // Copy saved files in
             if (accName != "")
             {
-                if (!BasicCopyInAccount(accId)) return;
+                if (!await BasicCopyInAccount(accId)) return;
                 Globals.AddTrayUser(CurrentPlatform.SafeName, $"+{CurrentPlatform.PrimaryId}:" + accId, accName, BasicSettings.TrayAccNumber); // Add to Tray list, using first Identifier
             }
 
             if (BasicSettings.AutoStart)
                 BasicSettings.RunPlatform(BasicSettings.Exe(), BasicSettings.Admin, args, CurrentPlatform.FullName, CurrentPlatform.StartingMethod);
 
-            if (accName != "" && BasicSettings.AutoStart && AppSettings.MinimizeOnSwitch) _ = AppData.InvokeVoidAsync("hideWindow");
+            if (accName != "" && BasicSettings.AutoStart && AppSettings.MinimizeOnSwitch) await AppData.InvokeVoidAsync("hideWindow");
 
             NativeFuncs.RefreshTrayArea();
-            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
+            await AppData.InvokeVoidAsync("updateStatus", Lang["Done"]);
             AppStats.IncrementSwitches(CurrentPlatform.SafeName);
 
             try
             {
                 BasicSettings.LastAccName = accId;
                 BasicSettings.LastAccTimestamp = Globals.GetUnixTimeInt();
-                if (BasicSettings.LastAccName != "") _ = AppData.InvokeVoidAsync("highlightCurrentAccount", BasicSettings.LastAccName);
+                if (BasicSettings.LastAccName != "") await AppData.InvokeVoidAsync("highlightCurrentAccount", BasicSettings.LastAccName);
             }
             catch (Exception)
             {
@@ -145,7 +145,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             }
         }
 
-        public static string GetCurrentAccountId()
+        public static async Task<string> GetCurrentAccountId()
         {
             // 30 second window - For when changing accounts
             if (BasicSettings.LastAccName != "" && BasicSettings.LastAccTimestamp - Globals.GetUnixTimeInt() < 30)
@@ -153,7 +153,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             try
             {
-                var uniqueId = GetUniqueId();
+                var uniqueId = await GetUniqueId();
 
                 // UniqueId Found in saved file >> return value
                 if (File.Exists(CurrentPlatform.IdsJsonPath) && !string.IsNullOrEmpty(uniqueId) && AccountIds.ContainsKey(uniqueId))
@@ -169,13 +169,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
 
         [SupportedOSPlatform("windows")]
-        private static bool ClearCurrentLoginBasic()
+        private static void ClearCurrentLoginBasic()
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.ClearCurrentLoginBasic]");
 
             // Foreach file/folder/reg in Platform.PathListToClear
-            if (CurrentPlatform.PathListToClear.Any(accFile => !DeleteFileOrFolder(accFile)))
-                return false;
+            if (CurrentPlatform.PathListToClear.Any(accFile => !DeleteFileOrFolder(accFile).Result)) return;
 
             if (CurrentPlatform.UniqueIdMethod.StartsWith("JSON_SELECT"))
             {
@@ -184,31 +183,29 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 Globals.ReplaceVarInJsonFile(path, selector, "");
             }
 
-            if (CurrentPlatform.UniqueIdMethod != "CREATE_ID_FILE") return true;
+            if (CurrentPlatform.UniqueIdMethod != "CREATE_ID_FILE") return;
 
             // Unique ID file --> This needs to be deleted for a new instance
             var uniqueIdFile = CurrentPlatform.GetUniqueFilePath();
             Globals.DeleteFile(uniqueIdFile);
-
-            return true;
         }
 
-        public static void ClearCache()
+        public static async Task ClearCache()
         {
 
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.ClearCache]");
             var totalFiles = 0;
             var totalSize = Globals.FileLengthToString(CurrentPlatform.CachePaths.Sum(x => SizeOfFile(x, ref totalFiles)));
-            _ = GeneralInvocableFuncs.ShowToast("info", Lang["Platform_ClearCacheTotal", new { totalFileCount = totalFiles, totalSizeMB = totalSize }], Lang["Working"], "toastarea");
+            await GeneralInvocableFuncs.ShowToast("info", Lang["Platform_ClearCacheTotal", new { totalFileCount = totalFiles, totalSizeMB = totalSize }], Lang["Working"], "toastarea");
 
             // Foreach file/folder/reg in Platform.PathListToClear
-            foreach (var f in CurrentPlatform.CachePaths.Where(f => !DeleteFileOrFolder(f)))
+            foreach (var f in CurrentPlatform.CachePaths.Where(f => !DeleteFileOrFolder(f).Result))
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Platform_CouldNotDeleteLog", new { logPath = Globals.GetLogPath() }], Lang["Working"], "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Platform_CouldNotDeleteLog", new { logPath = Globals.GetLogPath() }], Lang["Working"], "toastarea");
                 Globals.WriteToLog("Could not delete: " + f);
             }
 
-            _ = GeneralInvocableFuncs.ShowToast("success", Lang["DeletedFiles"], Lang["Working"], "toastarea");
+            await GeneralInvocableFuncs.ShowToast("success", Lang["DeletedFiles"], Lang["Working"], "toastarea");
         }
 
         private static long SizeOfFile(string accFile, ref int numFiles)
@@ -267,7 +264,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             return new FileInfo(fullPath).Length;
         }
 
-        private static bool DeleteFileOrFolder(string accFile)
+        private static async Task<bool> DeleteFileOrFolder(string accFile)
         {
             // The "file" is a registry key
             if (OperatingSystem.IsWindows() && accFile.StartsWith("REG:"))
@@ -281,7 +278,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 {
                     if (Globals.SetRegistryKey(accFile[4..])) return true;
                 }
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
                 return false;
             }
 
@@ -308,7 +305,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     if (!Directory.Exists(Path.GetDirectoryName(folder)))
                         return true;
                     if (!Globals.RecursiveDelete(folder, false))
-                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Platform_DeleteFail"], Lang["Error"], "toastarea");
+                        await GeneralInvocableFuncs.ShowToast("error", Lang["Platform_DeleteFail"], Lang["Error"], "toastarea");
                     return true;
                 }
 
@@ -326,7 +323,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (Directory.Exists(fullPath))
             {
                 if (!Globals.RecursiveDelete(fullPath, true))
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Platform_DeleteFail"], Lang["Error"], "toastarea");
+                    await GeneralInvocableFuncs.ShowToast("error", Lang["Platform_DeleteFail"], Lang["Error"], "toastarea");
                 return true;
             }
 
@@ -338,7 +335,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             catch (UnauthorizedAccessException e)
             {
                 Globals.WriteToLog(e);
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Platform_DeleteFail"], Lang["Error"], "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Platform_DeleteFail"], Lang["Error"], "toastarea");
             }
             return true;
         }
@@ -409,7 +406,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             return Environment.ExpandEnvironmentVariables(path);
         }
 
-        private static bool BasicCopyInAccount(string accId)
+        private static async Task<bool> BasicCopyInAccount(string accId)
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.BasicCopyInAccount]");
             LoadAccountIds();
@@ -427,7 +424,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
                 if (!string.IsNullOrEmpty(uniqueId) && !Globals.SetRegistryKey(CurrentPlatform.UniqueIdFile, uniqueId)) // Remove "REG:" and read data
                 {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_AlreadyLoggedIn"], Lang["Error"], "toastarea");
+                    await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_AlreadyLoggedIn"], Lang["Error"], "toastarea");
                     return false;
                 }
             }
@@ -441,7 +438,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 {
                     if (!regJson.ContainsKey(accFile))
                     {
-                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailReadSaved"], Lang["Error"], "toastarea");
+                        await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailReadSaved"], Lang["Error"], "toastarea");
                         continue;
                     }
 
@@ -449,7 +446,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
                     if (!Globals.SetRegistryKey(accFile[4..], regValue)) // Remove "REG:" and read data
                     {
-                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
+                        await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RegFailWrite"], Lang["Error"], "toastarea");
                         return false;
                     }
                     continue;
@@ -464,7 +461,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     var selector = accFile.Split("::")[2];
                     if (!Globals.ReplaceVarInJsonFile(path, selector, jToken))
                     {
-                        _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_JsonFailModify"], Lang["Error"], "toastarea");
+                        await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_JsonFailModify"], Lang["Error"], "toastarea");
                         return false;
                     }
                     continue;
@@ -472,37 +469,35 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
 
                 // FILE OR FOLDER
-                HandleFileOrFolder(accFile, savedFile, localCachePath, true);
+                await HandleFileOrFolder(accFile, savedFile, localCachePath, true);
             }
 
             return true;
         }
 
-        private static bool KillGameProcesses()
+        private static async Task<bool> KillGameProcesses()
         {
             // Kill game processes
-            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = CurrentPlatform.FullName }]);
-            if (!GeneralFuncs.CloseProcesses(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod))
-            {
-                if (Globals.IsAdministrator)
-                    _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.FullName }]);
-                else
-                {
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
-                    _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
-                }
-                return false;
-            }
+            await AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatform", new { platform = CurrentPlatform.FullName }]);
+            if (await GeneralFuncs.CloseProcesses(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return true;
 
-            return true;
+            if (Globals.IsAdministrator)
+                await AppData.InvokeVoidAsync("updateStatus", Lang["Status_ClosingPlatformFailed", new { platform = CurrentPlatform.FullName }]);
+            else
+            {
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
+                await GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+            }
+            return false;
+
         }
 
         [SupportedOSPlatform("windows")]
-        public static bool BasicAddCurrent(string accName)
+        public static async Task<bool> BasicAddCurrent(string accName)
         {
             Globals.DebugWriteLine(@"[Func:Basic\BasicSwitcherFuncs.BasicAddCurrent]");
             if (CurrentPlatform.ExitBeforeInteract)
-                if (!KillGameProcesses())
+                if (!await KillGameProcesses())
                     return false;
 
             // If set to clear LoginCache for account before adding (Enabled by default):
@@ -526,16 +521,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             if (CurrentPlatform.LoginFiles == null) throw new Exception("No data in basic platform: " + CurrentPlatform.FullName);
 
             // Handle unique ID
-            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_GetUniqueId"]);
+            await AppData.InvokeVoidAsync("updateStatus", Lang["Status_GetUniqueId"]);
 
-            var uniqueId = GetUniqueId();
+            var uniqueId = await GetUniqueId();
 
             if (uniqueId == "" && CurrentPlatform.UniqueIdMethod == "CREATE_ID_FILE")
             {
                 // Unique ID file, and does not already exist: Therefore create!
                 var uniqueIdFile = CurrentPlatform.GetUniqueFilePath();
                 uniqueId = Globals.RandomString(16);
-                File.WriteAllText(uniqueIdFile, uniqueId);
+                await File.WriteAllTextAsync(uniqueIdFile, uniqueId);
             }
 
             // Handle special args in username
@@ -543,7 +538,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             var regJson = CurrentPlatform.HasRegistryFiles ? CurrentPlatform.ReadRegJson(accName) : new Dictionary<string, string>();
 
-            _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_CopyingFiles"]);
+            await AppData.InvokeVoidAsync("updateStatus", Lang["Status_CopyingFiles"]);
             foreach (var (accFile, savedFile) in CurrentPlatform.LoginFiles)
             {
                 // HANDLE REGISTRY KEY
@@ -553,10 +548,19 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
                     if (ReadRegistryKeyWithErrors(trimmedName, out var response)) // Remove "REG:                    " and read data
                     {
-                        // Write registry value to provided file
-                        if (response is string s) regJson[accFile] = s;
-                        else if (response is byte[] ba) regJson[accFile] = "(hex) " + Globals.ByteArrayToString(ba);
-                        else Globals.WriteToLog($"Unexpected registry type encountered (2)! Report to TechNobo. {response.GetType()}");
+                        switch (response)
+                        {
+                            // Write registry value to provided file
+                            case string s:
+                                regJson[accFile] = s;
+                                break;
+                            case byte[] ba:
+                                regJson[accFile] = "(hex) " + Globals.ByteArrayToString(ba);
+                                break;
+                            default:
+                                Globals.WriteToLog($"Unexpected registry type encountered (2)! Report to TechNobo. {response.GetType()}");
+                                break;
+                        }
                     }
                     continue;
                 }
@@ -566,7 +570,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 {
                     var path = accFile.Split("::")[1];
                     var selector = accFile.Split("::")[2];
-                    var js = GeneralFuncs.ReadJsonFile(path);
+                    var js = await GeneralFuncs.ReadJsonFile(path);
                     var originalValue = js.SelectToken(selector);
 
                     // Save if it's JUST getting the value
@@ -594,10 +598,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 }
 
                 // FILE OR FOLDER
-                if (HandleFileOrFolder(accFile, savedFile, localCachePath, false)) continue;
+                if (await HandleFileOrFolder(accFile, savedFile, localCachePath, false)) continue;
 
                 // Could not find file/folder
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = accFile }], Lang["DirectoryNotFound"], "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["CouldNotFindX", new { x = accFile }], Lang["DirectoryNotFound"], "toastarea");
                 return false;
 
                 // TODO: Run some action that can be specified in the Platforms.json file
@@ -609,13 +613,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             var allIds = GeneralFuncs.ReadDict(CurrentPlatform.IdsJsonPath);
             allIds[uniqueId] = accName;
-            File.WriteAllText(CurrentPlatform.IdsJsonPath, JsonConvert.SerializeObject(allIds));
+            await File.WriteAllTextAsync(CurrentPlatform.IdsJsonPath, JsonConvert.SerializeObject(allIds));
 
             // Copy in profile image from default -- As long as not already handled by special arguments
             // Or if has ProfilePicFromFile and ProfilePicRegex.
             if (!hadSpecialProperties.Contains("IMAGE|"))
             {
-                _ = AppData.InvokeVoidAsync("updateStatus", Lang["Status_HandlingImage"]);
+                await AppData.InvokeVoidAsync("updateStatus", Lang["Status_HandlingImage"]);
 
                 _ = Directory.CreateDirectory(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{CurrentPlatform.SafeName}"));
                 var profileImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{CurrentPlatform.SafeName}\\{Globals.GetCleanFilePath(uniqueId)}.jpg");
@@ -670,7 +674,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         /// <param name="toPath"></param>
         /// <param name="localCachePath"></param>
         /// <param name="reverse">FALSE: Platform -> LoginCache. TRUE: LoginCache -> J••Platform</param>
-        private static bool HandleFileOrFolder(string fromPath, string toPath, string localCachePath, bool reverse)
+        private static async Task<bool> HandleFileOrFolder(string fromPath, string toPath, string localCachePath, bool reverse)
         {
             // Expand, or join localCachePath
             var toFullPath = toPath.Contains('%')
@@ -702,7 +706,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     if (!Directory.Exists(Path.GetDirectoryName(fromPath))) return false;
                     if (Globals.CopyFilesRecursive(Path.GetDirectoryName(fromPath), toFullPath)) return true;
 
-                    _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
+                    await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
                     return false;
                 }
 
@@ -729,7 +733,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             {
                 _ = Directory.CreateDirectory(toFullPath);
                 if (Globals.CopyFilesRecursive(fullPath, toFullPath)) return true;
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
                 return false;
             }
 
@@ -779,7 +783,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             return hadSpecialProperties;
         }
 
-        public static string GetUniqueId()
+        public static async Task<string> GetUniqueId()
         {
             if (OperatingSystem.IsWindows() && CurrentPlatform.UniqueIdMethod is "REGKEY" && !string.IsNullOrEmpty(CurrentPlatform.UniqueIdFile))
             {
@@ -812,7 +816,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 string searchFor;
                 if (uniqueId == "" && CurrentPlatform.UniqueIdMethod == "JSON_SELECT")
                 {
-                    js = GeneralFuncs.ReadJsonFile(CurrentPlatform.GetUniqueFilePath().Split("::")[0]);
+                    js = await GeneralFuncs.ReadJsonFile(CurrentPlatform.GetUniqueFilePath().Split("::")[0]);
                     searchFor = CurrentPlatform.GetUniqueFilePath().Split("::")[1];
                     uniqueId = Globals.GetCleanFilePath((string)js.SelectToken(searchFor));
                     return uniqueId;
@@ -830,7 +834,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                     firstResult = false;
                 }
 
-                js = GeneralFuncs.ReadJsonFile(CurrentPlatform.GetUniqueFilePath().Split("::")[0]);
+                js = await GeneralFuncs.ReadJsonFile(CurrentPlatform.GetUniqueFilePath().Split("::")[0]);
                 searchFor = CurrentPlatform.GetUniqueFilePath().Split("::")[1];
                 var res = (string)js.SelectToken(searchFor);
                 if (res is null)
@@ -874,7 +878,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             return true;
         }
-        public static void ChangeUsername(string accId, string newName, bool reload = true)
+        public static async Task ChangeUsername(string accId, string newName, bool reload = true)
         {
             LoadAccountIds();
             var oldName = GetNameFromId(accId);
@@ -887,7 +891,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             catch (IOException e)
             {
                 Globals.WriteToLog("Failed to write to file: " + e);
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Error_FileAccessDenied", new { logPath = Globals.GetLogPath() }], Lang["Error"], "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Error_FileAccessDenied", new { logPath = Globals.GetLogPath() }], Lang["Error"], "toastarea");
                 return;
             }
 
@@ -899,7 +903,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             catch (Exception e)
             {
                 Globals.WriteToLog("Failed to change username: " + e);
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantChangeUsername"], Lang["Error"], "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantChangeUsername"], Lang["Error"], "toastarea");
                 return;
             }
 

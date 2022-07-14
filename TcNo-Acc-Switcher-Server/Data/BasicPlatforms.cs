@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data.Settings;
@@ -24,7 +25,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     if (_instance != null) return _instance;
 
                     _instance = new BasicPlatforms();
-                    BasicPlatformsInit();
+                    BasicPlatformsInit().GetAwaiter().GetResult();
                     return _instance;
                 }
             }
@@ -42,7 +43,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         private readonly SortedDictionary<string, string> _platformDict = new();
         private readonly Dictionary<string, string> _platformDictAllPossible = new();
 
-        private static JObject JData { get => Instance._jData; set => Instance._jData = value; }
+        private static JObject JData {            set => Instance._jData = value; }
         public static JToken GetPlatforms => (JObject)Instance._jData["Platforms"];
         public static SortedDictionary<string, string> PlatformDict => Instance._platformDict;
         public static Dictionary<string, string> PlatformDictAllPossible => Instance._platformDictAllPossible;
@@ -60,7 +61,9 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static void SetCurrentPlatformFromShort(string id)
         {
             CurrentPlatform.Instance = new CurrentPlatform();
-            CurrentPlatform.Instance.CurrentPlatformInit(PlatformFullName(id));
+            var fullName = PlatformFullName(id);
+            CurrentPlatform.Instance.CurrentPlatformInit(fullName);
+            AppData.CurrentSwitcher = fullName;
         }
 
         public static Dictionary<string, string> InactivePlatforms()
@@ -76,7 +79,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             return platforms;
         }
 
-        private static void BasicPlatformsInit()
+        private static async Task BasicPlatformsInit()
         {
             // Check if Platforms.json exists.
             // If it doesnt: Copy it from the programs' folder to the user data folder.
@@ -84,7 +87,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (!File.Exists(basicPlatformsPath))
             {
                 // Once again verify the file exists. If it doesn't throw an error here.
-                _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedPlatformsLoad"],
+                await GeneralInvocableFuncs.ShowToast("error", Lang.Instance["Toast_FailedPlatformsLoad"],
                     renderTo: "toastarea");
                 Globals.WriteToLog("Failed to locate Platforms.json! This will cause a lot of features to break.");
                 return;

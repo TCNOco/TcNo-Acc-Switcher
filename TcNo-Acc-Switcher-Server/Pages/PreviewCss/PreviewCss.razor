@@ -15,13 +15,12 @@
 @page "/Settings/PreviewCss/"
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
-@using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Shared.ContextMenu
 @namespace TcNo_Acc_Switcher_Server.Pages.PreviewCss
 @inject NavigationManager NavManager
 @{ AppData.SetActiveNavMan(NavManager); }
 @inject IJSRuntime JsRuntime
 @{ AppData.SetActiveIJsRuntime(JsRuntime); }
-@inject AppData AData
 @inject Lang Locale
 
 <div class="container mainblock">
@@ -76,8 +75,8 @@
             <div class="acc_list_actionbar">
                 <div>
                     <button id="btnPlatforms" onclick="location = 'Platforms'" data-toggle="tooltip" title="" data-original-title="Show or Hide other platforms"><i class="fas fa-plus footerIcoInline"></i>Manage Platforms</button>
-                    <button id="btnSettings" onclick="location = 'Settings'" data-toggle="tooltip" title="" data-original-title="Settings"><i class="fas fa-cog footerIcoSettings"></i></button>
-                    <button id="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="" data-original-title="Info"><i class="fas fa-question footerIcoQuestion"></i></button>
+                    <button class="btnSettings" onclick="location = 'Settings'" data-toggle="tooltip" title="" data-original-title="Settings"><i class="fas fa-cog footerIcoSettings"></i></button>
+                    <button class="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="" data-original-title="Info"><i class="fas fa-question footerIcoQuestion"></i></button>
                 </div>
             </div>
         </div>
@@ -88,7 +87,7 @@
     <div class="preview_element previewMain">
         <div id="acc_list" class="acc_list" style="grid-template-rows: repeat(auto-fill, 135px)" aria-dropeffect="move">
             <div class="acc_list_item preview_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false" title="" data-placement="right" data-original-title="You are currently logged into this account.">
-                <input type="radio" id="1234" displayname="Current Account" class="acc" name="accounts" username="1234" steamid64="1234" line1="testacc1" line2="Current Account" line3="1656860000" extraclasses="" onchange="selectedItemChanged()">
+                <input type="radio" id="1234" displayname="Current Account" class="acc">
                 <label for="1234" class="acc status_vac currentAcc">
                     <img class="" src="img/BasicDefault.png" draggable="false">
                     <h6>Current Account</h6>
@@ -97,7 +96,7 @@
                 </label>
             </div>
             <div class="acc_list_item preview_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false" data-original-title="" title="">
-                <input type="radio" id="4321" displayname="Account 2" class="acc" name="accounts" username="4321" steamid64="4321" line1="testacc2" line2="Account 2" line3="1656850000" extraclasses="" onchange="selectedItemChanged()">
+                <input type="radio" id="4321" displayname="Account 2" class="acc">
                 <label for="4321" class="acc ">
                     <img class="" src="img/BattleNetDefault.png" draggable="false">
                     <h6>Account 2</h6>
@@ -106,7 +105,7 @@
                 </label>
             </div>
             <div class="acc_list_item preview_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false" data-original-title="" title="">
-                <input type="radio" id="12345" displayname="Banned Account" class="acc" name="accounts" username="12345" steamid64="12345" line1="testacc3" line2="BannedAcc" line3="1656840000" extraclasses="status_vac" onchange="selectedItemChanged()">
+                <input type="radio" id="12345" displayname="Banned Account" class="acc" name="accounts">
                 <label for="12345" class="acc ">
                     <img class="status_vac" src="img/QuestionMark.jpg" draggable="false">
                     <h6>Banned Account</h6>
@@ -115,7 +114,7 @@
                 </label>
             </div>
             <div class="acc_list_item preview_list_item" data-toggle="tooltip" draggable="true" role="option" aria-grabbed="false" data-original-title="" title="">
-                <input type="radio" id="54321" displayname="Limited Account" class="acc" name="accounts" username="54321" steamid64="54321" line1="testacc4" line2="LimitedAccount" line3="1656830000" extraclasses="status_limited" onchange="selectedItemChanged()">
+                <input type="radio" id="54321" displayname="Limited Account" class="acc" name="accounts">
                 <label for="54321" class="acc ">
                     <img class="status_limited" src="img/TcNo500.png" draggable="false">
                     <h6>Limited Account</h6>
@@ -128,7 +127,7 @@
         <div class="acc_list_actionbar">
             <div class="statusBar">
                 <div></div>
-                <input id="CurrentStatus" spellcheck="false" disabled="">
+                <input id="CurrentStatus" spellcheck="false">
             </div>
             <div class="gameShortcuts">
                 <div class="shortcuts" aria-dropeffect="move">
@@ -150,10 +149,10 @@
                     <span>Login</span>
                     <i class="fas fa-caret-right footerIcoInline"></i>
                 </button>
-                <button id="btnSettings" onclick="location = 'Steam/Settings'" data-toggle="tooltip" title="" data-original-title="Settings">
+                <button class="btnSettings" onclick="location = 'Steam/Settings'" data-toggle="tooltip" title="" data-original-title="Settings">
                     <i class="fas fa-cog footerIcoSettings"></i>
                 </button>
-                <button id="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="" data-original-title="Info">
+                <button class="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="" data-original-title="Info">
                     <i class="fas fa-question footerIcoQuestion"></i>
                 </button>
             </div>
@@ -204,19 +203,19 @@
         <div class="row">
             <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
                 <div class="buttoncol">
-                    <button id="Steam_PickFolder" type="button" @onclick='() => _ = GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings")'><span>@Locale["Settings_PickFolder", new {platform = "Steam"}]</span></button>
-                    <button id="RestartAsAdmin" type="button" @onclick='() => _ = GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin")'><span>@Locale["Button_RestartAdmin"]</span></button>
+                    <button id="Steam_PickFolder" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings")'><span>@Locale["Settings_PickFolder", new {platform = "Steam"}]</span></button>
+                    <button id="RestartAsAdmin" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin")'><span>@Locale["Button_RestartAdmin"]</span></button>
                 </div>
                 <div class="buttoncol">
-                    <button id="Info" type="button" @onclick='() => _ = GeneralInvocableFuncs.ShowModal("info")'><span>@Locale["Tooltip_Info"]</span></button>
-                    <button id="crowdin" type="button" @onclick='() => _ = GeneralInvocableFuncs.ShowModal("crowdin")'><span>@Locale["Modal_Crowdin_Header"]</span></button>
+                    <button id="Info" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("info")'><span>@Locale["Tooltip_Info"]</span></button>
+                    <button id="crowdin" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("crowdin")'><span>@Locale["Modal_Crowdin_Header"]</span></button>
                 </div>
                 <div class="buttoncol">
-                    <button id="SetBackground" type="button" @onclick='() => _ = GeneralInvocableFuncs.ShowModal("SetBackground")'><span>@Locale["Modal_SetBackground_Button"]</span></button>
-                    <button id="ShowStats" type="button" @onclick='() => _ = GeneralInvocableFuncs.ShowModal("ShowStats")'><span>@Locale["Settings_ViewStats"]</span></button>
+                    <button id="SetBackground" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("SetBackground")'><span>@Locale["Modal_SetBackground_Button"]</span></button>
+                    <button id="ShowStats" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("ShowStats")'><span>@Locale["Settings_ViewStats"]</span></button>
                 </div>
                 <div class="buttoncol">
-                    <button id="changeUsername" type="button" @onclick='() => _ = GeneralInvocableFuncs.ShowModal("changeUsername")'><span>@Locale["Context_ChangeName"]</span></button>
+                    <button id="changeUsername" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("changeUsername")'><span>@Locale["Context_ChangeName"]</span></button>
                 </div>
             </div>
         </div>
@@ -288,11 +287,11 @@
 
 @code
 {
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         AppStats.NewNavigation("/Settings/PreviewCss");
-        _ = AppData.InvokeVoidAsync("initContextMenu");
-        _ = AppData.InvokeVoidAsync("initAccListSortable");
-        _ = AppData.InvokeVoidAsync("initPlatformListSortable");
+        await AppData.InvokeVoidAsync("initContextMenu");
+        await AppData.InvokeVoidAsync("initAccListSortable");
+        await AppData.InvokeVoidAsync("initPlatformListSortable");
     }
 }

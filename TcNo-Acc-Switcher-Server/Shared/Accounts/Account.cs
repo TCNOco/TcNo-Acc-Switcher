@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
@@ -7,7 +6,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts;
 
 public class Account
 {
-    private static readonly Lang Lang = Lang.Instance;
+    public bool IsChecked { get; set; } = false;
     public string Platform { get; set; } = "";
     public string ImagePath { get; set; } = "";
     public string DisplayName { get; set; } = "";

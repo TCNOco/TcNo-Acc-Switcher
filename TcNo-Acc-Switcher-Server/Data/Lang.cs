@@ -19,10 +19,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
-using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -112,7 +112,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Loads the system's language, or the user's saved language
         /// </summary>
-        public static void LoadLocalised()
+        public static void LoadLocalized()
         {
             LoadDefault();
             // If setting does not exist in settings file then load the system default
@@ -125,10 +125,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Tries to load a requested language
         /// </summary>
         /// <param name="lang">Formatted language, example: "en-US"</param>
-        public static bool LoadLang(string lang)
+        public static async Task<bool> LoadLang(string lang)
         {
             LoadDefault();
-            return Load(lang, true);
+            return await Load(lang, true);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static Dictionary<string, string> GetAvailableLanguagesDict() => GetAvailableLanguages().ToDictionary(l => new CultureInfo(l).DisplayName);
         public static KeyValuePair<string, string> GetCurrentLanguage() => new(new CultureInfo(Current).DisplayName, Current);
 
-        public static bool Load(string filename, bool save = false)
+        public static async Task<bool> Load(string filename, bool save = false)
         {
             try
             {
@@ -189,7 +189,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
             catch (Exception e)
             {
-                _ = GeneralInvocableFuncs.ShowToast("error", "Can not load language information! See log for more info!", "Stylesheet error", "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", "Can not load language information! See log for more info!", "Stylesheet error", "toastarea");
                 Globals.WriteToLog("Could not load language information!", e);
                 return false;
             }

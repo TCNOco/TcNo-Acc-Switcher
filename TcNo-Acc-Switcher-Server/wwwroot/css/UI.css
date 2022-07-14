@@ -351,7 +351,12 @@ button .caret, .button .caret {
   background: #13222f;
 }
 
-.gameShortcuts {
+.gameShortcuts,
+.preview_list_item,
+.streamerCensor,
+.steamId,
+.displayName,
+.paginationButton {
   /* Empty to keep compiler quiet */
 }
 
