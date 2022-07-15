@@ -163,46 +163,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         #region FILE_OPERATIONS
 
         /// <summary>
-        /// Remove requested account from account switcher (Generic file/ids.json operation)
-        /// </summary>
-        /// <param name="accName">Basic account name</param>
-        /// <param name="platform">Platform string (file safe)</param>
-        /// <param name="accNameIsId">Whether the accName is the unique ID in ids.json (false by default)</param>
-        public static bool ForgetAccount_Generic(string accName, string platform, bool accNameIsId = false)
-        {
-            Globals.DebugWriteLine(@"[Func:General\GeneralSwitcherFuncs.ForgetAccount_Generic] Forgetting account: hidden, Platform: " + platform);
-
-            // Remove ID from list of ids
-            var idsFile = $"LoginCache\\{platform}\\ids.json";
-            if (File.Exists(idsFile))
-            {
-                var allIds = ReadDict(idsFile);
-                if (accNameIsId)
-                {
-                    var accId = accName;
-                    accName = allIds[accName];
-                    _ = allIds.Remove(accId);
-                }
-                else
-                    _ = allIds.Remove(allIds.Single(x => x.Value == accName).Key);
-                File.WriteAllText(idsFile, JsonConvert.SerializeObject(allIds));
-            }
-
-            // Remove from Steam accounts list
-            Data.Settings.Basic.Accounts.Remove(Data.Settings.Basic.Accounts.First(x => x.AccountId == accName));
-
-            // Remove cached files
-            Globals.RecursiveDelete($"LoginCache\\{platform}\\{accName}", false);
-
-            // Remove image
-            Globals.DeleteFile(Path.Join(WwwRoot(), $"\\img\\profiles\\{platform}\\{Globals.GetCleanFilePath(accName)}.jpg"));
-
-            // Remove from Tray
-            Globals.RemoveTrayUser(platform, accName); // Add to Tray list
-            return true;
-        }
-
-        /// <summary>
         /// Read all ids from requested platform file
         /// </summary>
         /// <param name="dictPath">Full *.json file path (file safe)</param>

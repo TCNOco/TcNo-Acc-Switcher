@@ -1067,33 +1067,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             SteamSettings.AccountNotes[id] = note;
             SteamSettings.SaveSettings();
         }
-
-
-        /// <summary>
-        /// Remove requested account from loginusers.vdf
-        /// </summary>
-        /// <param name="steamId">SteamId of account to be removed</param>
-        public static async Task<bool> ForgetAccount(string steamId)
-        {
-            Globals.DebugWriteLine($@"[Func:Steam\SteamSwitcherFuncs.ForgetAccount] Forgetting account: {steamId.Substring(steamId.Length - 4, 4)}");
-            // Load and remove account that matches SteamID above.
-            var userAccounts = await GetSteamUsers(SteamSettings.LoginUsersVdf());
-            _ = userAccounts.RemoveAll(x => x.SteamId == steamId);
-
-            // Save updated loginusers.vdf file
-            await SaveSteamUsersIntoVdf(userAccounts);
-
-            // Remove from Steam accounts list
-            SteamSettings.Accounts.Remove(SteamSettings.Accounts.First(x => x.AccountId == steamId));
-
-            // Remove image
-            var img = $"{SteamSettings.SteamImagePathHtml}{steamId}.jpg";
-            Globals.DeleteFile(img);
-
-            // Remove from Tray
-            Globals.RemoveTrayUserByArg("Steam", "+s:" + steamId);
-            return true;
-        }
         #endregion
     }
 }
