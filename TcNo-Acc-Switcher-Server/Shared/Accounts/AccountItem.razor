@@ -46,7 +46,16 @@
         {
             <p class="@Acc.Classes.Line0">@Acc.Line0</p>
         }
-        <h6 class="displayName">@Acc.SafeDisplayName</h6>
+        @if (AppData.CurrentSwitcher == "Steam"
+             && Steam.CustomAccNames != null
+             && Steam.CustomAccNames.ContainsKey(Acc.AccountId))
+        {
+            <h6 class="displayName">@Steam.CustomAccNames[Acc.AccountId]</h6>
+        }
+        else
+        {
+            <h6 class="displayName">@Acc.SafeDisplayName</h6>
+        }
         @if (@Acc.Line2 != "")
         {
             <p class="@Acc.Classes.Line2">@Acc.Line2</p>

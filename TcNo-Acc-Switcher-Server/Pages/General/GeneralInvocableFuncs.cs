@@ -207,19 +207,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         /// <summary>
-        /// JS function handler for changing selected username on a platform
-        /// </summary>
-        /// <param name="id">Unique identifier for account</param>
-        /// <param name="reqName">Requested new username</param>
-        [JSInvokable]
-        public static async Task ChangeUsername(string id, string reqName)
-        {
-            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.ChangeUsername] id:hidden, reqName:hidden");
-            await BasicSwitcherFuncs.ChangeUsername(id, reqName);
-        }
-
-
-        /// <summary>
         /// Creates a shortcut to start the Account Switcher, and swap to the account related.
         /// </summary>
         /// <param name="args">(Optional) arguments for shortcut</param>
@@ -358,8 +345,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return Path.Join("Exported", platform + ".csv");
         }
 
-        [JSInvokable]
-        public static string PlatformUserModalExtraButtons() => CurrentPlatform.GetUserModalExtraButtons;
         [JSInvokable]
         public static string PlatformUserModalCopyText() => CurrentPlatform.GetUserModalCopyText;
         [JSInvokable]

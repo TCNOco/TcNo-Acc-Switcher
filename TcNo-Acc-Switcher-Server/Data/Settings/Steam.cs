@@ -272,13 +272,13 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("ShowShortNotes", Order = 17)] private bool _showShortNotes = true;
         [JsonProperty("SteamWebApiKey", Order = 19)] private string _steamWebApiKey = "";
         [JsonProperty("StartSilent", Order = 20)] private bool _startSilent;
+        [JsonProperty("CustomAccountNames", Order = 21)] private Dictionary<string, string> _customAccNames = new();
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private int _lastAccTimestamp;
         [JsonIgnore] private string _lastSteamId = "";
         [JsonIgnore] private bool _steamWebApiWasReset;
         [JsonIgnore] public static readonly string SteamAppsListPath = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsFullListCache.json");
         [JsonIgnore] public static readonly string SteamAppsUserCache = Path.Join(Globals.UserDataFolder, "LoginCache\\Steam\\AppIdsUser.json");
-        [JsonIgnore] private ObservableCollection<Account> _accounts = new();
 
         public static int LastAccTimestamp { get => Instance._lastAccTimestamp; set => Instance._lastAccTimestamp = value; }
         public static string LastAccSteamId { get => Instance._lastSteamId; set => Instance._lastSteamId = value; }
@@ -311,13 +311,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static bool DesktopShortcut { get => Instance._desktopShortcut; set => Instance._desktopShortcut = value; }
         public static string SteamWebApiKey { get => Instance._steamWebApiKey; set => Instance._steamWebApiKey = value; }
         public static bool StartSilent { get => Instance._startSilent; set => Instance._startSilent = value; }
+        public static Dictionary<string, string> CustomAccNames { get => Instance._customAccNames; set => Instance._customAccNames = value; }
         public static bool SteamWebApiWasReset { get => Instance._steamWebApiWasReset; set => Instance._steamWebApiWasReset = value; }
-
-        public static ObservableCollection<Account> Accounts
-        {
-            get => Instance._accounts;
-            set => Instance._accounts = value;
-        }
 
         // Constants
         public static readonly List<string> Processes = new() { "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
@@ -423,7 +418,8 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     BasicStats.PlatformHasAnyGames("Steam") ?
                         new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)") : null,
                     new ("Context_ChangeImage", "changeImage(event)"),
-                    new ("Context_Steam_OpenUserdata", new Action(SteamSwitcherBase.SteamOpenUserdata))
+                    new ("Context_Steam_OpenUserdata", new Action(SteamSwitcherBase.SteamOpenUserdata)),
+                    new ("Context_ChangeName", new Action(() => ModalData.ShowModal("changeUsername")))
                 }));
             Menu.AddRange(menuBuilder.Result());
         }

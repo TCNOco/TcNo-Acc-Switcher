@@ -134,7 +134,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             if (isBasic)
                 BasicSwitcherFuncs.LoadAccountIds();
 
-            Basic.Accounts.Clear();
+            AppData.BasicAccounts.Clear();
 
             foreach (var element in accList)
             {
@@ -166,7 +166,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     // Handle game stats (if any enabled and collected.)
                     account.UserStats = BasicStats.GetUserStatsAllGamesMarkup(CurrentPlatform.FullName, str);
 
-                    Basic.Accounts.Add(account);
+                    AppData.BasicAccounts.Add(account);
                     continue;
                 }
 
@@ -183,7 +183,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     account.AccountId = key;
                     account.DisplayName = value;
 
-                    Basic.Accounts.Add(account);
+                    AppData.BasicAccounts.Add(account);
                 }
             }
             await FinaliseAccountList(); // Init context menu & Sorting

@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using Index = TcNo_Acc_Switcher_Server.Pages.Steam.Index;
 
@@ -179,8 +181,18 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         private string _currentSwitcher = "";
-        public static string CurrentSwitcher { get => Instance._currentSwitcher; set => Instance._currentSwitcher = value; }
-        public static string CurrentSwitcherSafe => Globals.GetCleanFilePath(AppData.CurrentSwitcher);
+        public static string CurrentSwitcher
+        {
+            get => Instance._currentSwitcher;
+            set
+            {
+                Instance._currentSwitcher = value;
+                CurrentSwitcherSafe = Globals.GetCleanFilePath(CurrentSwitcher);
+            }
+        }
+
+        private string _currentSwitcherSafe = "";
+        public static string CurrentSwitcherSafe { get => Instance._currentSwitcherSafe; set => Instance._currentSwitcherSafe = value; }
 
         #region Basic_Platforms
 
@@ -291,6 +303,17 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static async Task ReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload");
         public static async Task CacheReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload(true);");
         #endregion
+
+
+        [JsonIgnore] private ObservableCollection<Account> _steamAccounts = new();
+        public static ObservableCollection<Account> SteamAccounts
+        {
+            get => Instance._steamAccounts;
+            set => Instance._steamAccounts = value;
+        }
+
+        [JsonIgnore] private ObservableCollection<Account> _basicAccounts = new();
+        public static ObservableCollection<Account> BasicAccounts { get => Instance._basicAccounts; set => Instance._basicAccounts = value; }
     }
     public class InitializedClasses
     {

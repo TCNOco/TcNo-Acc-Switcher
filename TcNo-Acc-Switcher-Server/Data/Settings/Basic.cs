@@ -103,7 +103,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private int _lastAccTimestamp;
         [JsonIgnore] private string _lastAccName = "";
-        [JsonIgnore] private ObservableCollection<Account> _accounts = new();
 
         public static int LastAccTimestamp { get => Instance._lastAccTimestamp; set => Instance._lastAccTimestamp = value; }
         public static string LastAccName { get => Instance._lastAccName; set => Instance._lastAccName = value; }
@@ -127,7 +126,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
         public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
         public static bool ShowShortNotes { get => Instance._showShortNotes; set => Instance._showShortNotes = value; }
-        public static ObservableCollection<Account> Accounts { get => Instance._accounts; set => Instance._accounts = value; }
+
         public static string ClosingMethod
         {
             get
@@ -160,7 +159,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 {
                     new ("Context_SwapTo", new Action(async () => await AppFuncs.SwapToAccount())),
                     new ("Context_CopyUsername", new Action(async () => await AppFuncs.CopyText(AppData.SelectedAccount.DisplayName))),
-                    new ("Context_ChangeName", "showModal('changeUsername')"),
+                    new ("Context_ChangeName", new Action(() => ModalData.ShowModal("changeUsername"))),
                     new ("Context_CreateShortcut", new Action(async () => await GeneralInvocableFuncs.CreateShortcut())),
                     new ("Context_ChangeImage", "changeImage(event)"),
                     new ("Forget", new Action(async () => await AppFuncs.ForgetAccount())),

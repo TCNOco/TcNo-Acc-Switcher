@@ -43,12 +43,12 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts
         public static void UnselectAllAccounts()
         {
             if (AppData.CurrentSwitcher == "Steam")
-                foreach (var account in Steam.Accounts)
+                foreach (var account in AppData.SteamAccounts)
                 {
                     account.IsChecked = false;
                 }
             else
-                foreach (var account in Basic.Accounts)
+                foreach (var account in AppData.BasicAccounts)
                 {
                     account.IsChecked = false;
                 }
@@ -86,7 +86,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts
             await AppData.InvokeVoidAsync("initTooltips");
         }
         public static async Task SetCurrentAccount(string accId) =>
-            await SetCurrentAccount(AppData.CurrentSwitcher == "Steam" ? Steam.Accounts.First(x => x.AccountId == accId) : Basic.Accounts.First(x => x.AccountId == accId));
+            await SetCurrentAccount(AppData.CurrentSwitcher == "Steam" ? AppData.SteamAccounts.First(x => x.AccountId == accId) : AppData.BasicAccounts.First(x => x.AccountId == accId));
 
         /// <summary>
         /// Removes "currently logged in" border from all accounts
@@ -94,12 +94,12 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts
         public static async Task UnCurrentAllAccounts()
         {
             if (AppData.CurrentSwitcher == "Steam")
-                foreach (var account in Steam.Accounts)
+                foreach (var account in AppData.SteamAccounts)
                 {
                     account.IsCurrent = false;
                 }
             else
-                foreach (var account in Basic.Accounts)
+                foreach (var account in AppData.BasicAccounts)
                 {
                     account.IsCurrent = false;
                 }

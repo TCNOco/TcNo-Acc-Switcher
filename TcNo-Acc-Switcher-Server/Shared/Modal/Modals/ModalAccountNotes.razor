@@ -51,12 +51,12 @@
         if (AppData.CurrentSwitcher == "Steam")
         {
             path = "LoginCache\\Steam\\AccountNotes.json";
-            data = Steam.Accounts.ToDictionary(s => s.AccountId, s => s.Note);
+            data = AppData.SteamAccounts.ToDictionary(s => s.AccountId, s => s.Note);
         }
         else
         {
             path = $"LoginCache\\{AppData.CurrentSwitcherSafe}\\AccountNotes.json";
-            data = Basic.Accounts.ToDictionary(s => s.AccountId, s => s.Note);
+            data = AppData.BasicAccounts.ToDictionary(s => s.AccountId, s => s.Note);
         }
 
         File.WriteAllText(path, JsonConvert.SerializeObject(data, Formatting.None));

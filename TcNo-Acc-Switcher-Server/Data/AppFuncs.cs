@@ -86,7 +86,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     trayAcc = "+s:" + AppData.SelectedAccountId;
 
                     // Remove from Steam accounts list
-                    Steam.Accounts.Remove(Steam.Accounts.First(x => x.AccountId == AppData.SelectedAccountId));
+                    AppData.SteamAccounts.Remove(AppData.SteamAccounts.First(x => x.AccountId == AppData.SelectedAccountId));
                 }
                 else
                 {
@@ -104,7 +104,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                     Globals.RecursiveDelete($"LoginCache\\{AppData.CurrentSwitcher}\\{AppData.SelectedAccountId}", false);
 
                     // Remove from Steam accounts list
-                    Basic.Accounts.Remove(Basic.Accounts.First(x => x.AccountId == AppData.SelectedAccountId));
+                    AppData.BasicAccounts.Remove(AppData.BasicAccounts.First(x => x.AccountId == AppData.SelectedAccountId));
                 }
 
                 // Remove from Tray
@@ -131,10 +131,10 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (AppData.CurrentSwitcher == "Steam")
                 foreach (var (key, val) in loaded)
-                    Steam.Accounts.First(x => x.AccountId == key).Note = val;
+                    AppData.SteamAccounts.First(x => x.AccountId == key).Note = val;
             else
                 foreach (var (key, val) in loaded)
-                    Basic.Accounts.First(x => x.AccountId == key).Note = val;
+                    AppData.BasicAccounts.First(x => x.AccountId == key).Note = val;
 
             ModalData.IsShown = false;
         }

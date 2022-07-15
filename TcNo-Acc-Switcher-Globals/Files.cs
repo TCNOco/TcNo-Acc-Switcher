@@ -101,8 +101,8 @@ namespace TcNo_Acc_Switcher_Globals
         {
             var variables = new Dictionary<string, string>
             {
-                { "%TCNO_UserData%", Globals.UserDataFolder },
-                { "%TCNO_AppData%", Globals.AppDataFolder },
+                { "%TCNO_UserData%", UserDataFolder },
+                { "%TCNO_AppData%", AppDataFolder },
                 { "%Documents%", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) },
                 { "%Music%", Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) },
                 { "%Pictures%", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) },
@@ -314,6 +314,7 @@ namespace TcNo_Acc_Switcher_Globals
         /// <returns>string of content</returns>
         public static string ReadAllText(string f)
         {
+            if (!File.Exists(f)) return "";
             using var fs = new FileStream(f, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var tr = new StreamReader(fs);
             return tr.ReadToEnd();

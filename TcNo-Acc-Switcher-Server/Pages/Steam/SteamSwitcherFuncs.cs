@@ -24,7 +24,6 @@ using System.Threading.Tasks;
 using System.Xml;
 using Gameloop.Vdf;
 using Gameloop.Vdf.JsonConverter;
-using Microsoft.JSInterop;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -90,7 +89,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 // Key was fine? Continue. If not, the non-api method will be used.
                 if (!SteamSettings.SteamWebApiWasReset)
                 {
-                    SteamSettings.Accounts.Clear();
+                    AppData.SteamAccounts.Clear();
                     foreach (var su in AppData.SteamUsers)
                     {
                         InsertAccount(su);
@@ -105,7 +104,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
                 // Load cached ban info
                 LoadCachedBanInfo();
-                SteamSettings.Accounts.Clear();
+                AppData.SteamAccounts.Clear();
 
                 foreach (var su in AppData.SteamUsers)
                 {
@@ -148,7 +147,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 Line2 = su.SteamId,
                 Line3 = UnixTimeStampToDateTime(su.LastLogin)
             };
-            SteamSettings.Accounts.Add(account);
+            AppData.SteamAccounts.Add(account);
         }
 
 
@@ -354,7 +353,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             List<string> gameIds;
             try
             {
-                var libraryFile = Path.Join(Data.Settings.Steam.FolderPath, "\\steamapps\\libraryfolders.vdf");
+                var libraryFile = Path.Join(SteamSettings.FolderPath, "\\steamapps\\libraryfolders.vdf");
                 var libraryVdf = VdfConvert.Deserialize(File.ReadAllText(libraryFile));
                 var library = new JObject { libraryVdf.ToJson() };
                 gameIds = library["libraryfolders"]!
@@ -428,6 +427,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             return true;
         }
 
+        public static async Task ChangeUsername()
+        {
+            var acc = AppData.SteamAccounts;
+            SteamSettings.CustomAccNames[AppData.SelectedAccountId] = AppData.SelectedAccount.DisplayName;
+            SteamSettings.SaveSettings();
+
+            AppData.SelectedAccount.NotifyDataChanged();
+            AppData.SteamAccounts = acc; // For some reason this needs to be here, otherwise it seems to clear...?
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ChangedUsername"], renderTo: "toastarea");
+        }
         private static string VerifyVdfText(string loginUserPath)
         {
             var original = Globals.ReadAllText(loginUserPath);

@@ -877,6 +877,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
 
             return true;
         }
+
         public static async Task ChangeUsername(string accId, string newName, bool reload = true)
         {
             LoadAccountIds();
@@ -906,9 +907,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
                 return;
             }
 
-
-            if (reload) AppData.ActiveNavMan?.NavigateTo(
-                $"/Basic/?cacheReload&toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_ChangedUsername"])}", true);
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ChangedUsername"], toastTitle: "toastarea");
         }
 
         public static Dictionary<string, string> ReadAllIds(string path = null)

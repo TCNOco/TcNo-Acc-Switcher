@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data.Settings;
@@ -449,8 +450,10 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
 
-        public static string GetUserModalExtraButtons => UsernameModalExtraButtons == "" ? "" :
-            Globals.ReadAllText(Path.Join(Globals.AppDataFolder, UsernameModalExtraButtons));
+        public static MarkupString GetUserModalExtraButtons => UsernameModalExtraButtons == ""
+            ? new MarkupString()
+            : new MarkupString(Globals.ReadAllText(Path.Join(Globals.AppDataFolder, UsernameModalExtraButtons)));
+
         public static string GetUserModalCopyText => UserModalCopyText == "" ? "" :
             Globals.ReadAllText(Path.Join(Globals.AppDataFolder, UserModalCopyText));
 

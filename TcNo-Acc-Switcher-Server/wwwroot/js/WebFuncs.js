@@ -407,37 +407,7 @@ let pathPickerRequestedFile = "";
 // Info Window
 async function showModalOld(modaltype) {
     let input, platform;
-    if (modaltype.startsWith("changeUsername")) {
-        // USAGE: "changeUsername"
-        Modal_RequestedLocated(false);
-        var platformName = getCurrentPage();
-        let extraButtons = "";
-        if (platformName === "Basic") {
-            extraButtons = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalExtraButtons");
-            platformName = await getCurrentPageFullname();
-        }
-
-        const modalChangeUsername =
-                  await GetLangSub("Modal_ChangeUsername", { platform: platformName }),
-            modalChangeUsernameType = await GetLangSub("Modal_ChangeUsernameType", { platform: platformName }),
-            modalTitleChangeUsername = await GetLang("Modal_Title_ChangeUsername");
-
-        $("#modalTitle").text(modalTitleChangeUsername);
-        $("#modal_contents").empty();
-
-        $("#modal_contents").append(`<div>
-		        <span class="modal-text">${modalChangeUsername}.</span>
-	        </div>
-	        <div class="inputAndButton">
-		        <input type="text" id="NewAccountName" style="width: 100%;padding: 8px;" autocomplete="off" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('change_username').click();">
-	        </div>
-	        <div class="settingsCol inputAndButton">
-				${extraButtons}
-		        <button class="modalOK" type="button" id="change_username" onclick="Modal_FinaliseAccNameChange()"><span>${
-            modalChangeUsernameType}</span></button>
-	        </div>`);
-        input = document.getElementById("NewAccountName");
-    } else if (modaltype.startsWith("setAppPassword")) {
+    if (modaltype.startsWith("setAppPassword")) {
         // USAGE: "changeUsername"
         const modalChangeUsername = await GetLang("Modal_SetPassword"),
             modalSetPasswordButton = await GetLang("Modal_SetPassword_Button"),
@@ -872,17 +842,6 @@ async function Modal_FinaliseUserDataFolder() {
     $(".modalBG").fadeOut();
 }
 
-async function Modal_FinaliseAccNameChange() {
-    if (window.location.href.includes("PreviewCss")) {
-        // Do nothing for CSS preview page.
-        return;
-    }
-
-    const raw = $("#NewAccountName").val();
-	const name = (raw.indexOf("TCNO:") === -1 ? raw.replace(/[<>: \.\"\/\\|?*]/g, "-") : raw); // Clean string if not a command string.
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "ChangeUsername", $(".acc:checked").attr("id"), name);
-}
-
 async function Modal_SaveNotes(accId) {
     await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Set${getCurrentPage()}Notes`, accId, $("#accNotes").val());
     location.reload(true);
@@ -1154,6 +1113,7 @@ function setBestOffset(element) {
     parentEl.attr("data-placement", getBestOffset(parentEl));
 }
 
+// Show hover tooltips for account notes.
 async function showNoteTooltips() {
     const noteArr = $(".acc_note").toArray();
     if (noteArr.length === 0) return;
@@ -1167,4 +1127,10 @@ async function showNoteTooltips() {
         parentEl.attr("data-placement", getBestOffset(parentEl));
     });
     initTooltips();
+}
+
+
+// Focus on a specific element, like an input or button
+async function focusOn(element) {
+    $(element).focus();
 }
