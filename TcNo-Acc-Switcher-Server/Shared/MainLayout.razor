@@ -15,6 +15,7 @@
 @inherits LayoutComponentBase
 
 @using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Server.Shared.Modal
 @inject IJSRuntime JsRuntime
 @{ AData.SetActiveIJsRuntime(JsRuntime); }
 @inject NavigationManager NavManager
@@ -30,7 +31,7 @@
 <div class="resizeBottomRight"></div>
 <div class="resizeBottomLeft"></div>
 <div class="programMain">
-    <Modal />
+    <ModalPopup />
     @Body
 </div>
 <DynamicStylesheet />

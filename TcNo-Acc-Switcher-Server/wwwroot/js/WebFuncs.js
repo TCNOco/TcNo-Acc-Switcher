@@ -25,7 +25,6 @@ if (winUrl.length > 1 && winUrl[1].indexOf("cacheReload") !== -1) {
 }
 
 GetLang = async(k) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocale", k);
-GetCrowdin = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCrowdinList");
 GetLangSub = async(key, obj) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocaleObj", key, obj);
 
 
@@ -34,14 +33,14 @@ async function forget(e) {
     e.preventDefault();
     const reqId = $(selectedElem).attr("id");
     const pageForgetAcc = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}ForgetAcc`);
-    if (!pageForgetAcc) showModal(`confirm:AcceptForget${getCurrentPage()}Acc:${reqId}`);
+    if (!pageForgetAcc) showModalOld(`confirm:AcceptForget${getCurrentPage()}Acc:${reqId}`);
     else await Modal_Confirm(`AcceptForget${getCurrentPage()}Acc:${reqId}`, true);
 }
 
 // Show the Notes modal for selected account
 async function showNotes(e) {
     e.preventDefault();
-    showModal(`notes:${$(selectedElem).attr("id")}`);
+    showModalOld(`notes:${$(selectedElem).attr("id")}`);
 }
 
 // Get and return note text for the requested account
@@ -416,48 +415,9 @@ OpenLinkInBrowser = async(link) => await DotNet.invokeMethodAsync("TcNo-Acc-Swit
 let pathPickerRequestedFile = "";
 
 // Info Window
-async function showModal(modaltype) {
+async function showModalOld(modaltype) {
     let input, platform;
-    if (modaltype === "info") {
-        const modalInfoCreator = await GetLang("Modal_Info_Creator"),
-            modalInfoVersion = await GetLang("Modal_Info_Version"),
-            modalInfoDisclaimer = await GetLang("Modal_Info_Disclaimer"),
-            modalInfoVisitSite = await GetLang("Modal_Info_VisitSite"),
-            modalInfoBugReport = await GetLang("Modal_Info_BugReport"),
-            modalInfoViewGitHub = await GetLang("Modal_Info_ViewGitHub"),
-            modalTitleInfo = await GetLang("Modal_Title_Info");
-
-        $("#modalTitle").text(modalTitleInfo);
-        $("#modal_contents").empty();
-
-        const currentVersion = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetVersion");
-        $("#modal_contents").append(`<div class="infoWindow">
-                <div class="imgDiv"><img width="100" margin="5" src="img/TcNo500.png" draggable="false" onclick="OpenLinkInBrowser('https://tcno.co');"></div>
-                <div class="rightContent">
-                    <h2>TcNo Account Switcher</h2>
-                    <p>${modalInfoCreator}</p>
-                    <div class="linksList">
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="GitHub" class="modalIcoGitHub"><use href="img/icons/ico_github.svg#icoGitHub"></use></svg>${modalInfoViewGitHub}</a>
-                        <a onclick="OpenLinkInBrowser('https://s.tcno.co/AccSwitcherDiscord');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="Discord" class="modalIcoDiscord"><use href="img/icons/ico_discord.svg#icoDiscord"></use></svg>${modalInfoBugReport}</a>
-                        <a onclick="OpenLinkInBrowser('https://tcno.co');return false;" href=""><svg viewBox="0 0 24 24" draggable="false" alt="Website" class="modalIcoNetworking"><use href="img/icons/ico_networking.svg#icoNetworking"></use></svg>${modalInfoVisitSite}</a>
-                        <a onclick="OpenLinkInBrowser('https://github.com/TcNobo/TcNo-Acc-Switcher/blob/master/DISCLAIMER.md');return false;" href=""><svg viewBox="0 0 2084 2084" draggable="false" alt="GitHub" class="modalIcoDoc"><use href="img/icons/ico_doc.svg#icoDoc"></use></svg>${modalInfoDisclaimer}</a>
-                    </div>
-                </div>
-                </div><div class="versionIdentifier"><span>${modalInfoVersion}: ${currentVersion}</span></div>`);
-    } else if (modaltype === "crowdin") {
-        const modalCrowdinHeader = await GetLang("Modal_Crowdin_Header"),
-            modalCrowdinInfo = await GetLang("Modal_Crowdin_Info"),
-            listUsers = await GetCrowdin();
-        $("#modalTitle").text(modalCrowdinHeader);
-        $("#modal_contents").empty();
-
-        $("#modal_contents").append(`<div class="infoWindow">
-            <div class="fullWidthContent crowdin">
-                <h2>${modalCrowdinHeader}<i class="fas fa-heart heart"></i></h2>
-                    <p>${modalCrowdinInfo}</p>
-                    <ul>${listUsers}</ul>
-            </div></div>`);
-    } else if (modaltype.startsWith("changeUsername")) {
+    if (modaltype.startsWith("changeUsername")) {
         // USAGE: "changeUsername"
         Modal_RequestedLocated(false);
         var platformName = getCurrentPage();
@@ -749,6 +709,26 @@ async function showModal(modaltype) {
         }
     });
 }
+
+async function showModal() {
+    $(".modalBG").fadeIn();
+    return;
+    //TODO: Figure how to detect what items are available. Maybe just check for most common button, then text input, etc? Maybe a defaultSelect class or something.
+    if (input === undefined) return;
+    input.focus();
+    if (input.nodeName !== "TEXTAREA") input.select();
+}
+async function hideModal() {
+    $(".modalBG").fadeOut();
+}
+
+
+
+
+
+
+
+
 
 async function getLogicalDrives() {
     var folderContent = "";

@@ -283,3 +283,16 @@
 .clearLogDiv button {
   width: 40% !important;
 }
+
+.loadingSpinnerText {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+.loadingSpinnerText i {
+  margin: 0.5em;
+}
+.loadingSpinnerText h2 {
+  margin-bottom: 0;
+}

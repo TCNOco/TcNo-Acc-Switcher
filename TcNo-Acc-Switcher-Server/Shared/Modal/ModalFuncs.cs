@@ -12,21 +12,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System.Runtime.Versioning;
-using System.Threading.Tasks;
-using Microsoft.JSInterop;
-using TcNo_Acc_Switcher_Globals;
+using Microsoft.AspNetCore.Components;
 
-namespace TcNo_Acc_Switcher_Server.Pages.Basic
+namespace TcNo_Acc_Switcher_Server.Shared.Modal
 {
-    public class BasicSwitcherBase
+    public class ModalFuncs : ComponentBase
     {
-        [JSInvokable]
-        [SupportedOSPlatform("windows")]
-        public static async Task BasicAddCurrent(string accName)
-        {
-            Globals.DebugWriteLine(@"[JSInvoke:Basic\BasicSwitcherBase.BasicAddCurrent] accName:hidden");
-            await BasicSwitcherFuncs.BasicAddCurrent(accName);
-        }
     }
 }

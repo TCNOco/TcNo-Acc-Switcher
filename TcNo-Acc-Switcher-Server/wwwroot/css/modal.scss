@@ -324,3 +324,19 @@
         width: 40% !important;
     }
 }
+
+
+.loadingSpinnerText {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+
+    i {
+        margin: 0.5em;
+    }
+
+    h2 {
+        margin-bottom: 0;
+    }
+}

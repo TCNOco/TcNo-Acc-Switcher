@@ -1,5 +1,4 @@
-﻿@using TcNo_Acc_Switcher_Server.Data
-@*TcNo Account Switcher - A Super fast account switcher
+﻿@*TcNo Account Switcher - A Super fast account switcher
     Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -13,11 +12,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
+@using TcNo_Acc_Switcher_Server.Shared.Modal
+@using TcNo_Acc_Switcher_Server.Shared.Modal.Modals
+@using TcNo_Acc_Switcher_Server.Data
+@using System.Collections.ObjectModel
+
 @inject IJSRuntime JsRuntime
 @inject AppData AData
 @inject Lang Locale
+@inherits ModalFuncs
 
 <div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">
+@*<div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">*@
     <div class="modalFG">
         <div id="window-title-modal">
             <button id="modalBtnBack" style="display: none">
@@ -28,13 +34,45 @@
             </svg>
             <span id="modalTitle">@Locale["Modal_Title_Info"]</span>
             <div id="window-controls-modal">
-                <button id="btnClose-modal" onclick="$('.modalBG').fadeOut();">
+                <button id="btnClose-modal" @onclick="() => ModalData.IsShown = false">
                     <i class="fas fa-times" draggable="false"></i>
                 </button>
             </div>
         </div>
         <div id="modal_contents">
+            @switch (ModalData.Type)
+            {
+                case "info":
+                    <ModalInfo />
+                    break;
+                case "crowdin":
+                    <ModalCrowdin />
+                    break;
+            }
+
+
+
+
 
         </div>
     </div>
 </div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        ModalData.Instance.OnChange += OnChangeHandler;
+    }
+    private async void OnChangeHandler()
+    {
+        var t2 = ModalData.Instance;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ModalData.Instance.OnChange -= OnChangeHandler;
+    }
+
+}

@@ -164,9 +164,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             return "";
         }
 
-        [JSInvokable]
-        public static Task<string> GiGetVersion() => Task.FromResult(Globals.Version);
-
         /// <summary>
         /// Opens a link in user's browser through Shell
         /// </summary>
@@ -374,38 +371,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         [JSInvokable]
         public static string GiLocaleObj(string k, object obj) => Lang.Instance[k, obj];
 
-        [JSInvokable]
-        public static string GiCrowdinList()
-        {
-            var html = new HttpClient().GetStringAsync(
-                "https://tcno.co/Projects/AccSwitcher/api/crowdin/").Result;
-            var persons = html.Split("</li><li>");
-            List<string> proofreaders = new();
-            List<string> normal = new();
-
-            // Loop once for proofreaders.
-            // Then again for those who aren't.
-            foreach (var person in persons)
-            {
-                if (person.Contains(" - ")) proofreaders.Add(GiCrowdinPersonHtml(person));
-                if (!person.Contains(" - ")) normal.Add(GiCrowdinPersonHtml(person));
-            }
-
-            proofreaders.Sort();
-            normal.Sort();
-
-            return string.Join("", proofreaders) + "<li>----------</li>" + string.Join("", normal);
-        }
-
-        private static string GiCrowdinPersonHtml(string person)
-        {
-
-            if (person.StartsWith("<li>"))
-                return $"{person}</li>";
-            if (person.EndsWith("</li>"))
-                return $"<li>{person}";
-            return $"<li>{person}</li>";
-        }
 
         [JSInvokable]
         public static string GiCurrentBasicPlatform(string platform)

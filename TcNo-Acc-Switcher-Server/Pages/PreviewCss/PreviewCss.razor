@@ -208,7 +208,7 @@
                 </div>
                 <div class="buttoncol">
                     <button id="Info" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("info")'><span>@Locale["Tooltip_Info"]</span></button>
-                    <button id="crowdin" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("crowdin")'><span>@Locale["Modal_Crowdin_Header"]</span></button>
+                    <button id="crowdin" type="button" @onclick='() => ModalData.ShowModal("crowdin")'><span>@Locale["Modal_Crowdin_Header"]</span></button>
                 </div>
                 <div class="buttoncol">
                     <button id="SetBackground" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("SetBackground")'><span>@Locale["Modal_SetBackground_Button"]</span></button>

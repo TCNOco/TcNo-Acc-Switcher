@@ -16,13 +16,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -689,6 +692,52 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 .Replace("\"", "&#34;")
                 .Replace("'", "&#39;")
                 .Replace("/", "&#47;");
+        }
+
+        public class CrowdinResponse
+        {
+            [JsonProperty("ProofReaders")]
+            public SortedDictionary<string, string> ProofReaders { get; set; }
+
+            [JsonProperty("Translators")]
+            public List<string> Translators { get; set; }
+        }
+
+
+        /// <summary>
+        /// Returns an object with a list of all translators, and proofreaders with their languages.
+        /// </summary>
+        public static CrowdinResponse CrowdinList()
+        {
+            try
+            {
+                var html = new HttpClient().GetStringAsync(
+                    "https://tcno.co/Projects/AccSwitcher/api/crowdinNew/").Result;
+                var resp = JsonConvert.DeserializeObject<CrowdinResponse>(html);
+                if (resp is null)
+                    return new CrowdinResponse();
+
+                resp.Translators.Sort();
+
+                var expandedProofreaders = new SortedDictionary<string, string>();
+                foreach (var proofReader in resp?.ProofReaders)
+                {
+                    expandedProofreaders.Add(proofReader.Key,
+                        string.Join(", ",
+                            proofReader.Value.Split(',').Select(lang => new CultureInfo(lang).DisplayName)
+                                .ToList()));
+                }
+
+                resp.ProofReaders = expandedProofreaders;
+                return resp;
+            }
+            catch (Exception e)
+            {
+                // Handle website not loading or JObject not loading properly
+                Globals.WriteToLog("Failed to load Crowdin users", e);
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Crowdin_Fail"], renderTo: "toastarea");
+                return new CrowdinResponse();
+            }
         }
         #endregion
 

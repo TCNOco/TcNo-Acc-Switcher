@@ -493,3 +493,7 @@ Preview_Accounts: Accounts preview
 Preview_Notifications: Toast notifications preview
 Preview_Settings: Settings preview
 Preview_Modals: Modals preview
+Crowdin_Fail: Failed to load Crowdin users. Check the website instead.
+Crowdin_Proofreaders: Proofreaders ({number})
+Crowdin_Translators: Translators ({number})
+Loading: Loading...
