@@ -1,0 +1,62 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@using TcNo_Acc_Switcher_Server.Shared.Modal
+@using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Data.Settings
+@using TcNo_Acc_Switcher_Server.Pages.General
+@code {
+
+    protected override void OnInitialized()
+    {
+        ModalData.Title = Lang.Instance["Modal_Title_AccountNotes", new { accountName = AppData.SelectedAccount.DisplayName }];
+    }
+}
+
+<div class="infoWindow">
+    <div class="fullWidthContent">
+        <div class="accNotesContainer">
+            <textarea id="accNotes" @bind="AppData.SelectedAccount.Note"></textarea>
+        </div>
+        <div class="YesNo">
+            <button type="button" id="modal_true" @onclick="SaveNotes"><span>@Lang.Instance["Save"]</span></button>
+            <button type="button" id="modal_false" @onclick="() => ModalData.IsShown = false"><span>@Lang.Instance["Button_Cancel"]</span></button>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    private static void SaveNotes()
+    {
+        // Modal_SaveNotes('${accId}')
+        if (AppData.CurrentSwitcher == "Steam")
+        {
+            foreach (var acc in Steam.Accounts)
+            {
+                if (acc.Note == "") continue;
+                Steam.AccountNotes[acc.AccountId] = acc.Note;
+            }
+            Steam.SaveSettings();
+        } else {
+            foreach (var acc in Basic.Accounts)
+            {
+                if (acc.Note == "") continue;
+                Basic.AccountNotes[acc.AccountId] = acc.Note;
+            }
+            Basic.SaveSettings();
+        }
+    }
+}

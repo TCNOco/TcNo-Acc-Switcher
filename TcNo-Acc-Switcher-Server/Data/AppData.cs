@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using Index = TcNo_Acc_Switcher_Server.Pages.Steam.Index;
 
 namespace TcNo_Acc_Switcher_Server.Data
@@ -168,8 +169,10 @@ namespace TcNo_Acc_Switcher_Server.Data
             set => Instance._currentStatus = value;
         }
 
-        private string _selectedAccount = "";
-        public static string SelectedAccount
+        public static string SelectedAccountId => SelectedAccount.AccountId;
+
+        private Account _selectedAccount;
+        public static Account SelectedAccount
         {
             get => Instance._selectedAccount;
             set => Instance._selectedAccount = value;

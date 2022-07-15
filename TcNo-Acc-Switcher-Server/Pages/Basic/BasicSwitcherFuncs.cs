@@ -46,16 +46,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             await GenericFunctions.GenericLoadAccounts(CurrentPlatform.FullName, true);
         }
 
-        [JSInvokable]
-        public static Task<string> GetBasicNotes(string id) => Task.FromResult(BasicSettings.AccountNotes.GetValueOrDefault(id) ?? "");
-
-        [JSInvokable]
-        public static void SetBasicNotes(string id, string note)
-        {
-            BasicSettings.AccountNotes[id] = note;
-            BasicSettings.SaveSettings();
-        }
-
         #region Account IDs
 
         public static Dictionary<string, string> AccountIds;

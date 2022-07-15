@@ -21,8 +21,6 @@
 @code {
     [Parameter]
     public ObservableCollection<Account> AccountItems { get; set; }
-    [Parameter]
-    public Dictionary<string, string> AccountNotes { get; set; }
 
     protected override void OnInitialized()
     {
@@ -33,8 +31,6 @@
     <toastarea class="toastarea"/>
     @foreach (var item in AccountItems)
     {
-        <CascadingValue Value="@AccountNotes">
-            <AccountItem Acc="@item" />
-        </CascadingValue>
+        <AccountItem Acc="@item" />
     }
 </div>

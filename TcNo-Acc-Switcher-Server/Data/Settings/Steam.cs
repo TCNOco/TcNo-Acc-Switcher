@@ -343,23 +343,23 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 {
                     new ("Context_CopyProfileSubmenu", new Tuple<string, object>[]
                     {
-                        new ("Context_CommunityUrl", new Action(async () => await AppFuncs.CopyText($"https://steamcommunity.com/profiles/{AppData.SelectedAccount}"))),
-                        new ("Context_CommunityUsername", new Action(async () => await AppFuncs.CopyText(AppFuncs.GetCurrentAccount().DisplayName))),
-                        new ("Context_LoginUsername", new Action(async () => await AppFuncs.CopyText(AppFuncs.GetCurrentAccount().LoginUsername))),
+                        new ("Context_CommunityUrl", new Action(async () => await AppFuncs.CopyText($"https://steamcommunity.com/profiles/{AppData.SelectedAccountId}"))),
+                        new ("Context_CommunityUsername", new Action(async () => await AppFuncs.CopyText(AppData.SelectedAccount.DisplayName))),
+                        new ("Context_LoginUsername", new Action(async () => await AppFuncs.CopyText(AppData.SelectedAccount.LoginUsername))),
                     }),
                     new ("Context_CopySteamIdSubmenu", new Tuple<string, object>[]
                     {
-                        new ("Context_Steam_Id", new Action(async () => await AppFuncs.CopyText(new SteamIdConvert(AppData.SelectedAccount).Id))),
-                        new ("Context_Steam_Id3", new Action(async () => await AppFuncs.CopyText(new SteamIdConvert(AppData.SelectedAccount).Id3))),
-                        new ("Context_Steam_Id32", new Action(async () => await AppFuncs.CopyText(new SteamIdConvert(AppData.SelectedAccount).Id32))),
-                        new ("Context_Steam_Id64", new Action(async () => await AppFuncs.CopyText(new SteamIdConvert(AppData.SelectedAccount).Id64))),
+                        new ("Context_Steam_Id", new Action(async () => await AppFuncs.CopyText(new SteamIdConvert(AppData.SelectedAccountId).Id))),
+                        new ("Context_Steam_Id3", new Action(async () => await AppFuncs.CopyText(new SteamIdConvert(AppData.SelectedAccountId).Id3))),
+                        new ("Context_Steam_Id32", new Action(async () => await AppFuncs.CopyText(new SteamIdConvert(AppData.SelectedAccountId).Id32))),
+                        new ("Context_Steam_Id64", new Action(async () => await AppFuncs.CopyText(new SteamIdConvert(AppData.SelectedAccountId).Id64))),
                     }),
                     new ("Context_CopyOtherSubmenu", new Tuple<string, object>[]
                     {
-                        new ("SteamRep", new Action(async () => await AppFuncs.CopyText($"https://steamrep.com/search?q={AppData.SelectedAccount}"))),
-                        new ("SteamID.uk", new Action(async () => await AppFuncs.CopyText($"https://steamid.uk/profile/{AppData.SelectedAccount}"))),
-                        new ("SteamID.io", new Action(async () => await AppFuncs.CopyText($"https://steamid.io/lookup/{AppData.SelectedAccount}"))),
-                        new ("SteamIDFinder.com", new Action(async () => await AppFuncs.CopyText($"https://steamidfinder.com/lookup/{AppData.SelectedAccount}"))),
+                        new ("SteamRep", new Action(async () => await AppFuncs.CopyText($"https://steamrep.com/search?q={AppData.SelectedAccountId}"))),
+                        new ("SteamID.uk", new Action(async () => await AppFuncs.CopyText($"https://steamid.uk/profile/{AppData.SelectedAccountId}"))),
+                        new ("SteamID.io", new Action(async () => await AppFuncs.CopyText($"https://steamid.io/lookup/{AppData.SelectedAccountId}"))),
+                        new ("SteamIDFinder.com", new Action(async () => await AppFuncs.CopyText($"https://steamidfinder.com/lookup/{AppData.SelectedAccountId}"))),
                     }),
                 }),
                 new ("Context_CreateShortcut", new Tuple<string, object>[]

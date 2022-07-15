@@ -31,7 +31,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts
         public static void SetSelectedAccount(Account acc)
         {
             AppData.CurrentStatus = Lang.Instance["Status_SelectedAccount", new { name = acc.DisplayName }];
-            AppData.SelectedAccount = acc.AccountId;
+            AppData.SelectedAccount = acc;
             UnselectAllAccounts();
             acc.IsChecked = true;
             AppData.Instance.NotifyDataChanged();

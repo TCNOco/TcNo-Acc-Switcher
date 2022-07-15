@@ -122,6 +122,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             await GenericFunctions.FinaliseAccountList();
             AppStats.SetAccountCount("Steam", AppData.SteamUsers.Count);
             AppData.SteamLoadingProfiles = false;
+
+            // Load notes
+            foreach (var acc in SteamSettings.Accounts)
+            {
+                if (SteamSettings.AccountNotes.ContainsKey(acc.AccountId))
+                    acc.Note = SteamSettings.AccountNotes[acc.AccountId];
+            }
         }
 
         private static void InsertAccount(Index.Steamuser su)
@@ -1052,21 +1059,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 7 => Lang["Invisible"],
                 _ => Lang["Unrecognized_EPersonaState"]
             };
-        }
-        #endregion
-
-        #region STEAM_SETTINGS
-        /* OTHER FUNCTIONS*/
-        // STEAM SPECIFIC -- Move to a new file in the future.
-
-        [JSInvokable]
-        public static Task<string> GetSteamNotes(string id) => Task.FromResult(SteamSettings.AccountNotes.GetValueOrDefault(id) ?? "");
-
-        [JSInvokable]
-        public static void SetSteamNotes(string id, string note)
-        {
-            SteamSettings.AccountNotes[id] = note;
-            SteamSettings.SaveSettings();
         }
         #endregion
     }

@@ -22,8 +22,6 @@
 @code {
     [Parameter]
     public Account Acc { get; set; }
-    [CascadingParameter]
-    public Dictionary<string, string> AccountNotes { get; set; }
 }
 
 <div class="acc_list_item" title="@Acc.TitleText" data-toggle="tooltip" @onclick="() => SetSelectedAccount(Acc)" oncontextmenu="return false;" @onmouseup="(e) => AccountRightClick(e, Acc)" @ondblclick="() => AppFuncs.SwapToAccount()">
@@ -43,9 +41,9 @@
         {
             <p class="@Acc.Classes.Line3">@Acc.Line3</p>
         }
-        @if (AccountNotes.ContainsKey(Acc.AccountId) && AccountNotes[Acc.AccountId] != "")
+        @if (Acc.Note != "")
         {
-            <p class="acc_note">@AccountNotes[Acc.AccountId]</p>
+            <p class="acc_note">@Acc.Note</p>
         }
         @if (Acc.UserStats.Keys.Count > 0)
         {

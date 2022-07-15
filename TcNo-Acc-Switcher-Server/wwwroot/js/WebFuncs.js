@@ -567,6 +567,12 @@ async function showModalOld(modaltype) {
         </div>`);
 
         input = document.getElementById("accNotes");
+
+
+
+
+
+
     } else if (modaltype.startsWith("notice:")) {
         // USAGE: "notice:<prompt>
         // GOAL: Runs function when OK clicked.

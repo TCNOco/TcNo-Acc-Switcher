@@ -30,7 +30,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         public static void SteamOpenUserdata()
         {
-            var steamId32 = new SteamIdConvert(AppData.SelectedAccount);
+            var steamId32 = new SteamIdConvert(AppData.SelectedAccountId);
             var folder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{steamId32.Id32}");
             if (Directory.Exists(folder)) _ = Process.Start("explorer.exe", folder);
             else _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"], "toastarea");

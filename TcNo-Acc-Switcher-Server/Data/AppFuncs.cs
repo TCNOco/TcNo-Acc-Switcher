@@ -32,17 +32,17 @@ namespace TcNo_Acc_Switcher_Server.Data
     {
         #region Account Management
         /// <summary>
-        /// Swap to the current AppData.SelectedAccount.
+        /// Swap to the current AppData.SelectedAccountId.
         /// </summary>
         /// <param name="state">Optional profile state for Steam accounts</param>
         public static async Task SwapToAccount(int state = -1)
         {
             if (!OperatingSystem.IsWindows()) return;
 
-            if (AppData.CurrentSwitcher != "Steam") BasicSwitcherFuncs.SwapBasicAccounts(AppData.SelectedAccount);
+            if (AppData.CurrentSwitcher != "Steam") BasicSwitcherFuncs.SwapBasicAccounts(AppData.SelectedAccountId);
 
             if (state == -1) state = Steam.OverrideState;
-            await SteamSwitcherFuncs.SwapSteamAccounts(AppData.SelectedAccount, state);
+            await SteamSwitcherFuncs.SwapSteamAccounts(AppData.SelectedAccountId, state);
         }
 
         /// <summary>
@@ -68,24 +68,24 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             var skipConfirm = AppData.CurrentSwitcher == "Steam" ? Steam.ForgetAccountEnabled : Basic.ForgetAccountEnabled;
             if (!skipConfirm)
-                await ShowModal($"confirm:AcceptForget{AppData.CurrentSwitcher}Acc:{AppData.SelectedAccount}");
+                await ShowModal($"confirm:AcceptForget{AppData.CurrentSwitcher}Acc:{AppData.SelectedAccountId}");
             else
             {
-                var trayAcc = AppData.SelectedAccount;
+                var trayAcc = AppData.SelectedAccountId;
                 if (AppData.CurrentSwitcher == "Steam")
                 {
                     Steam.SetForgetAcc(true);
 
                     // Load and remove account that matches SteamID above.
                     var userAccounts = await SteamSwitcherFuncs.GetSteamUsers(Steam.LoginUsersVdf());
-                    _ = userAccounts.RemoveAll(x => x.SteamId == AppData.SelectedAccount);
+                    _ = userAccounts.RemoveAll(x => x.SteamId == AppData.SelectedAccountId);
 
                     // Save updated loginusers.vdf file
                     await SteamSwitcherFuncs.SaveSteamUsersIntoVdf(userAccounts);
-                    trayAcc = "+s:" + AppData.SelectedAccount;
+                    trayAcc = "+s:" + AppData.SelectedAccountId;
 
                     // Remove from Steam accounts list
-                    Steam.Accounts.Remove(Steam.Accounts.First(x => x.AccountId == AppData.SelectedAccount));
+                    Steam.Accounts.Remove(Steam.Accounts.First(x => x.AccountId == AppData.SelectedAccountId));
                 }
                 else
                 {
@@ -95,22 +95,22 @@ namespace TcNo_Acc_Switcher_Server.Data
                     var idsFile = $"LoginCache\\{AppData.CurrentSwitcher}\\ids.json";
                     if (File.Exists(idsFile))
                     {
-                        var allIds = GeneralFuncs.ReadDict(idsFile).Remove(AppData.SelectedAccount);
+                        var allIds = GeneralFuncs.ReadDict(idsFile).Remove(AppData.SelectedAccountId);
                         await File.WriteAllTextAsync(idsFile, JsonConvert.SerializeObject(allIds));
                     }
 
                     // Remove cached files
-                    Globals.RecursiveDelete($"LoginCache\\{AppData.CurrentSwitcher}\\{AppData.SelectedAccount}", false);
+                    Globals.RecursiveDelete($"LoginCache\\{AppData.CurrentSwitcher}\\{AppData.SelectedAccountId}", false);
 
                     // Remove from Steam accounts list
-                    Basic.Accounts.Remove(Basic.Accounts.First(x => x.AccountId == AppData.SelectedAccount));
+                    Basic.Accounts.Remove(Basic.Accounts.First(x => x.AccountId == AppData.SelectedAccountId));
                 }
 
                 // Remove from Tray
                 Globals.RemoveTrayUserByArg(AppData.CurrentSwitcher, trayAcc);
 
                 // Remove image
-                Globals.DeleteFile(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{AppData.CurrentSwitcher}\\{Globals.GetCleanFilePath(AppData.SelectedAccount)}.jpg"));
+                Globals.DeleteFile(Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{AppData.CurrentSwitcher}\\{Globals.GetCleanFilePath(AppData.SelectedAccountId)}.jpg"));
 
                 AppData.Instance.NotifyDataChanged();
 
@@ -118,10 +118,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        public static Account GetCurrentAccount() =>
-            AppData.CurrentSwitcher == "Steam"
-                ? Steam.Accounts.First(x => x.AccountId == AppData.SelectedAccount)
-                : Basic.Accounts.First(x => x.AccountId == AppData.SelectedAccount);
         #endregion
 
         #region Clipboard

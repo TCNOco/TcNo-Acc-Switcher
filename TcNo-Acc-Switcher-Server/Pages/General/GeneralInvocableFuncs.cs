@@ -240,13 +240,13 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                     currentPlatformImgPathOverride = Path.Join(GeneralFuncs.WwwRoot(), "\\img\\platform\\Steam.png");
                     var ePersonaState = -1;
                     if (args.Length == 2) _ = int.TryParse(args[1].ToString(), out ePersonaState);
-                    platformName = $"Switch to {AppFuncs.GetCurrentAccount().DisplayName} {(args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "")} [{AppData.CurrentSwitcher}]";
+                    platformName = $"Switch to {AppData.SelectedAccount.DisplayName} {(args.Length > 0 ? $"({SteamSwitcherFuncs.PersonaStateToString(ePersonaState)})" : "")} [{AppData.CurrentSwitcher}]";
                     break;
                 default:
                     currentPlatformImgPath = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{CurrentPlatform.SafeName}.svg");
                     currentPlatformImgPathOverride = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\platform\\{CurrentPlatform.SafeName}.png");
                     primaryPlatformId = CurrentPlatform.PrimaryId;
-                    platformName = $"Switch to {AppFuncs.GetCurrentAccount().DisplayName} [{AppData.CurrentSwitcher}]";
+                    platformName = $"Switch to {AppData.SelectedAccount.DisplayName} [{AppData.CurrentSwitcher}]";
                     break;
             }
 
@@ -258,8 +258,8 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
                 bgImg = Path.Join(GeneralFuncs.WwwRoot(), "\\img\\BasicDefault.png");
 
 
-            var fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{AppData.CurrentSwitcherSafe}\\{AppData.SelectedAccount}.jpg");
-            if (!File.Exists(fgImg)) fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{AppData.CurrentSwitcherSafe}\\{AppData.SelectedAccount}.png");
+            var fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{AppData.CurrentSwitcherSafe}\\{AppData.SelectedAccountId}.jpg");
+            if (!File.Exists(fgImg)) fgImg = Path.Join(GeneralFuncs.WwwRoot(), $"\\img\\profiles\\{AppData.CurrentSwitcherSafe}\\{AppData.SelectedAccountId}.png");
             if (!File.Exists(fgImg))
             {
                 await ShowToast("error", Lang["Toast_CantFindImage"], Lang["Toast_CantCreateShortcut"], "toastarea");
@@ -270,16 +270,16 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             _ = s.Shortcut_Platform(
                 Shortcut.Desktop,
                 platformName,
-                $"+{primaryPlatformId}:{AppData.SelectedAccount}{args}",
-                $"Switch to {AppFuncs.GetCurrentAccount().DisplayName} [{AppData.CurrentSwitcher}] in TcNo Account Switcher",
+                $"+{primaryPlatformId}:{AppData.SelectedAccountId}{args}",
+                $"Switch to {AppData.SelectedAccount.DisplayName} [{AppData.CurrentSwitcher}] in TcNo Account Switcher",
                 true);
-            await s.CreateCombinedIcon(bgImg, fgImg, $"{AppData.SelectedAccount}.ico");
+            await s.CreateCombinedIcon(bgImg, fgImg, $"{AppData.SelectedAccountId}.ico");
             s.TryWrite();
 
             if (AppSettings.StreamerModeTriggered)
                 await ShowToast("success", Lang["Toast_ShortcutCreated"], Lang["Success"], "toastarea");
             else
-                await ShowToast("success", Lang["ForName", new { name = AppFuncs.GetCurrentAccount().DisplayName }], Lang["Toast_ShortcutCreated"], "toastarea");
+                await ShowToast("success", Lang["ForName", new { name = AppData.SelectedAccount.DisplayName }], Lang["Toast_ShortcutCreated"], "toastarea");
         }
 
         [JSInvokable]
