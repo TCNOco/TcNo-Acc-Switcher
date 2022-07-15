@@ -8,11 +8,14 @@ using TcNo_Acc_Switcher_Server.Data.Settings;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
+using TcNo_Acc_Switcher_Server.Shared.Accounts;
+using TextCopy;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
     public class AppFuncs
     {
+        #region Account Management
         /// <summary>
         /// Swap to the current AppData.SelectedAccount.
         /// </summary>
@@ -99,5 +102,17 @@ namespace TcNo_Acc_Switcher_Server.Data
                 await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Success"], renderTo: "toastarea");
             }
         }
+
+        public static Account GetCurrentAccount() =>
+            AppData.CurrentSwitcher == "Steam"
+                ? Steam.Accounts.First(x => x.AccountId == AppData.SelectedAccount)
+                : Basic.Accounts.First(x => x.AccountId == AppData.SelectedAccount);
+        #endregion
+
+        #region Clipboard
+        [JSInvokable]
+        public static async Task CopyText(string text) => await ClipboardService.SetTextAsync(text);
+
+        #endregion
     }
 }

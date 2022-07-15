@@ -31,14 +31,6 @@ namespace TcNo_Acc_Switcher_Server.Data
     {
         private static readonly Lang Lang = Lang.Instance;
 
-        [JSInvokable]
-        public static void CopyToClipboard(string toCopy)
-        {
-            Globals.DebugWriteLine(@"[JSInvoke:Data\GenericFunctions.CopyToClipboard] toCopy=hidden");
-            WindowsClipboard.SetText(toCopy);
-        }
-
-
         /// <summary>
         /// Save settings with Ctrl+S Hot key
         /// </summary>

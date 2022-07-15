@@ -305,6 +305,7 @@ Context_RefreshName: Refresh name
 Context_CopySubmenu: Copy
 Context_DataSubmenu: Data
 Context_CopyProfileSubmenu: Copy Profile
+Context_CopyUsername: Copy username
 Context_CommunityUrl: Community URL
 Context_CommunityUsername: Community Username
 Context_LoginUsername: Login username

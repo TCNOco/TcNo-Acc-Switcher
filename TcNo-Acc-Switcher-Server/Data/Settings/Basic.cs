@@ -161,6 +161,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 new []
                 {
                     new ("Context_SwapTo", new Action(async () => await AppFuncs.SwapToAccount())),
+                    new ("Context_CopyUsername", new Action(async () => await AppFuncs.CopyText(AppFuncs.GetCurrentAccount().DisplayName))),
                     new ("Context_ChangeName", "showModal('changeUsername')"),
                     new ("Context_CreateShortcut", "createShortcut()"),
                     new ("Context_ChangeImage", "changeImage(event)"),

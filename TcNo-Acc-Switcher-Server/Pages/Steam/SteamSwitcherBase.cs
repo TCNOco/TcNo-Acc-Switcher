@@ -28,36 +28,9 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
     {
         private static readonly Lang Lang = Lang.Instance;
 
-        /// <summary>
-        /// Converts input SteamID64 into the requested format, then copies it to clipboard.
-        /// </summary>
-        /// <param name="request">SteamId, SteamId3, SteamId32, SteamId64</param>
-        /// <param name="anySteamId">Any format of SteamId to convert</param>
-        [JSInvokable]
-        public static void CopySteamIdType(string request, string anySteamId)
+        public static void SteamOpenUserdata()
         {
-            Globals.DebugWriteLine($@"[JSInvoke:Steam\SteamSwitcherBase.CopySteamIdType] {anySteamId.Substring(anySteamId.Length - 4, 4)} to: {request}");
-            switch (request)
-            {
-                case "SteamId":
-                    GenericFunctions.CopyToClipboard(new SteamIdConvert(anySteamId).Id);
-                    break;
-                case "SteamId3":
-                    GenericFunctions.CopyToClipboard(new SteamIdConvert(anySteamId).Id3);
-                    break;
-                case "SteamId32":
-                    GenericFunctions.CopyToClipboard(new SteamIdConvert(anySteamId).Id32);
-                    break;
-                case "SteamId64":
-                    GenericFunctions.CopyToClipboard(new SteamIdConvert(anySteamId).Id64);
-                    break;
-            }
-        }
-
-        [JSInvokable]
-        public static void SteamOpenUserdata(string steamId)
-        {
-            var steamId32 = new SteamIdConvert(steamId);
+            var steamId32 = new SteamIdConvert(AppData.SelectedAccount);
             var folder = Path.Join(Data.Settings.Steam.FolderPath, $"userdata\\{steamId32.Id32}");
             if (Directory.Exists(folder)) _ = Process.Start("explorer.exe", folder);
             else _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"], "toastarea");

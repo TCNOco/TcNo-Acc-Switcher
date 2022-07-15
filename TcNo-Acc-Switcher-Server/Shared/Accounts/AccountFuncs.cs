@@ -8,7 +8,7 @@ using TcNo_Acc_Switcher_Server.Pages.General;
 
 namespace TcNo_Acc_Switcher_Server.Shared.Accounts
 {
-    public class AccountFuncs
+    public class AccountFuncs : ComponentBase
     {
         #region Selecting accounts
         /// <summary>

@@ -65,15 +65,16 @@
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
     <PackageReference Include="Gameloop.Vdf" Version="0.6.2" />
     <PackageReference Include="Gameloop.Vdf.JsonConverter" Version="0.2.1" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
-    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="11.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.4" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1185.39" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="11.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.7" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SharpScss" Version="2.0.0" />
     <PackageReference Include="SteamKit2" Version="2.4.1" />
-    <PackageReference Include="Svg.Skia" Version="0.5.13" />
+    <PackageReference Include="Svg.Skia" Version="0.5.14" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="TextCopy" Version="6.1.0" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
   <ItemGroup>

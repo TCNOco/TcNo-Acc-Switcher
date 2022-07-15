@@ -138,6 +138,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                     Line2 = "streamerCensor steamId",
                     Line3 = "lastLogin"
                 },
+                LoginUsername = su.AccName,
                 UserStats = BasicStats.GetUserStatsAllGamesMarkup("Steam", su.SteamId),
                 ImagePath = su.ImgUrl,
                 Line0 = SteamSettings.ShowAccUsername ? su.AccName : "",

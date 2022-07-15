@@ -13,6 +13,7 @@ public class Account
     public string Platform { get; set; } = "";
     public string ImagePath { get; set; } = "";
     public string DisplayName { get; set; } = "";
+    public string LoginUsername { get; set; } = "";
     public string SafeDisplayName => GeneralFuncs.EscapeText(DisplayName);
     public string AccountId { get; set; } = "";
     public string Line0 { get; set; } = "";

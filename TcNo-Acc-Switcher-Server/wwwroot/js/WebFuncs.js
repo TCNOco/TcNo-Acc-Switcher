@@ -16,18 +16,6 @@ async function getCurrentPageFullname() {
     return platform;
 }
 
-window.addEventListener("load",
-    () => {
-        initTooltips();
-    });
-
-function initTooltips() {
-    // I don't know of an easier way to do this.
-    $('[data-toggle="tooltip"]').tooltip();
-    setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 1000);
-    setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 2000);
-    setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 4000);
-}
 
 // Clear Cache reload:
 var winUrl = window.location.href.split("?");
@@ -40,7 +28,6 @@ GetLang = async(k) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server",
 GetCrowdin = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCrowdinList");
 GetLangSub = async(key, obj) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocaleObj", key, obj);
 
-copyToClipboard = async(str) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", str);
 
 // FORGETTING ACCOUNTS
 async function forget(e) {
@@ -60,52 +47,6 @@ async function showNotes(e) {
 // Get and return note text for the requested account
 getAccNotes = async(accId) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}Notes`, accId);
 
-async function copy(request, e) {
-    e.preventDefault();
-
-    // Different function groups based on platform
-    switch (getCurrentPage()) {
-        case "Steam":
-            steam();
-            break;
-        default:
-            await copyToClipboard(unEscapeString($(selectedElem).attr(request)));
-            break;
-    }
-    return;
-
-
-    // Steam:
-    async function steam() {
-        const steamId64 = $(selectedElem).attr("id");
-        switch (request) {
-            case "URL":
-                await copyToClipboard(`https://steamcommunity.com/profiles/${steamId64}`);
-                break;
-            case "SteamId32":
-            case "SteamId3":
-            case "SteamId":
-                await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopySteamIdType", request, steamId64);
-                break;
-
-                // Links
-            case "SteamRep":
-                await copyToClipboard(`https://steamrep.com/search?q=${steamId64}`);
-                break;
-            case "SteamID.uk":
-                await copyToClipboard(`https://steamid.uk/profile/${steamId64}`);
-                break;
-            case "SteamID.io":
-                await copyToClipboard(`https://steamid.io/lookup/${steamId64}`);
-                break;
-            case "SteamIDFinder.com":
-                await copyToClipboard(`https://steamidfinder.com/lookup/${steamId64}/`);
-                break;
-            default:
-                await copyToClipboard(unEscapeString($(selectedElem).attr(request)));
-        }
-    }
-}
 
 // Take a string that is HTML escaped, and return a normal string back.
 unEscapeString = (s) => s.replace("&lt;", "<").replace("&gt;", ">").replace("&#34;", "\"").replace("&#39;", "'").replace("&#47;", "/");
@@ -434,14 +375,6 @@ async function refreshAccount(game, accountId) {
 
 
 Modal_FinalizeImage = async(dest) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `ImportNewImage`, JSON.stringify({ dest: dest, path: $("#FolderLocation").val() }));
-
-// Open Steam\userdata\<steamID> folder
-async function openUserdata(e) {
-    if (e !== undefined && e !== null) e.preventDefault();
-    if (!getSelected()) return;
-
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SteamOpenUserdata`, selected.attr("id"));
-}
 
 // Create shortcut for selected icon
 async function createShortcut(args = "") {
@@ -1063,7 +996,7 @@ async function usernameModalCopyText() {
     const toastHintText = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformHintText", platform);
     const code = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalCopyText");
 
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", code);
+    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyText", code);
     window.notification.new({
 	    type: "success",
         title: toastTitle,
@@ -1252,8 +1185,33 @@ restartAsAdmin = async (args = "") => await DotNet.invokeMethodAsync("TcNo-Acc-S
 
 
 
-// from new system
 
+
+
+
+
+
+
+// ---------- KEEPING FROM OLD ----------
+
+copyToClipboard = async (str) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopyToClipboard", str);
+
+window.addEventListener("load",
+    () => {
+        initTooltips();
+    });
+
+// Convert title="" into a hover tooltip.
+function initTooltips() {
+    // I don't know of an easier way to do this.
+    $('[data-toggle="tooltip"]').tooltip();
+    setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 1000);
+    setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 2000);
+    setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 4000);
+}
+
+
+// --------- FROM NEW SYSTEM ----------
 
 // Remove existing highlighted elements, if any.
 function clearAccountTooltips() {

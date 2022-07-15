@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Converters;
 using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.General.Classes;
@@ -342,23 +343,23 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 {
                     new ("Context_CopyProfileSubmenu", new Tuple<string, object>[]
                     {
-                        new ("Context_CommunityUrl", "copy('URL', event)"),
-                        new ("Context_CommunityUsername", "copy('Line2', event)"),
-                        new ("Context_LoginUsername", "copy('Username', event)"),
+                        new ("Context_CommunityUrl", new Action(async () => await AppFuncs.CopyText($"https://steamcommunity.com/profiles/{AppData.SelectedAccount}"))),
+                        new ("Context_CommunityUsername", new Action(async () => await AppFuncs.CopyText(AppFuncs.GetCurrentAccount().DisplayName))),
+                        new ("Context_LoginUsername", new Action(async () => await AppFuncs.CopyText(AppFuncs.GetCurrentAccount().LoginUsername))),
                     }),
                     new ("Context_CopySteamIdSubmenu", new Tuple<string, object>[]
                     {
-                        new ("Context_Steam_Id", "copy('SteamId', event)"),
-                        new ("Context_Steam_Id3", "copy('SteamId3', event)"),
-                        new ("Context_Steam_Id32", "copy('SteamId32', event)"),
-                        new ("Context_Steam_Id64", "copy('id', event)"),
+                        new ("Context_Steam_Id", new Action(async () => await AppFuncs.CopyText(new SteamIdConvert(AppData.SelectedAccount).Id))),
+                        new ("Context_Steam_Id3", new Action(async () => await AppFuncs.CopyText(new SteamIdConvert(AppData.SelectedAccount).Id3))),
+                        new ("Context_Steam_Id32", new Action(async () => await AppFuncs.CopyText(new SteamIdConvert(AppData.SelectedAccount).Id32))),
+                        new ("Context_Steam_Id64", new Action(async () => await AppFuncs.CopyText(new SteamIdConvert(AppData.SelectedAccount).Id64))),
                     }),
                     new ("Context_CopyOtherSubmenu", new Tuple<string, object>[]
                     {
-                        new ("SteamRep", "copy('SteamRep', event)"),
-                        new ("SteamID.uk", "copy('SteamID.uk', event)"),
-                        new ("SteamID.io", "copy('SteamID.io', event)"),
-                        new ("SteamIDFinder.com", "copy('SteamIDFinder.com', event)"),
+                        new ("SteamRep", new Action(async () => await AppFuncs.CopyText($"https://steamrep.com/search?q={AppData.SelectedAccount}"))),
+                        new ("SteamID.uk", new Action(async () => await AppFuncs.CopyText($"https://steamid.uk/profile/{AppData.SelectedAccount}"))),
+                        new ("SteamID.io", new Action(async () => await AppFuncs.CopyText($"https://steamid.io/lookup/{AppData.SelectedAccount}"))),
+                        new ("SteamIDFinder.com", new Action(async () => await AppFuncs.CopyText($"https://steamidfinder.com/lookup/{AppData.SelectedAccount}"))),
                     }),
                 }),
                 new ("Context_CreateShortcut", new Tuple<string, object>[]
@@ -417,7 +418,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     BasicStats.PlatformHasAnyGames("Steam") ?
                         new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)") : null,
                     new ("Context_ChangeImage", "changeImage(event)"),
-                    new ("Context_Steam_OpenUserdata", "openUserdata(event)")
+                    new ("Context_Steam_OpenUserdata", new Action(() => SteamSwitcherBase.SteamOpenUserdata()))
                 }));
             Menu.AddRange(menuBuilder.Result());
         }
