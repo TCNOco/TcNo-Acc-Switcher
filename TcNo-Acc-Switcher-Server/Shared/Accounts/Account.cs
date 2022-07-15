@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.Data;
@@ -21,6 +22,9 @@ namespace TcNo_Acc_Switcher_Server.Shared.Accounts;
 
 public class Account
 {
+    public event Action OnChange;
+    public void NotifyDataChanged() => OnChange?.Invoke();
+
     public bool IsChecked { get; set; } = false;
     public bool IsCurrent { get; set; } = false;
     public string TitleText { get; set; } = "";

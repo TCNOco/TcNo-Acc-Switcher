@@ -17,6 +17,8 @@
 @using TcNo_Acc_Switcher_Globals
 @using TcNo_Acc_Switcher_Server.Data.Settings
 @using TcNo_Acc_Switcher_Server.Pages.General
+@using Newtonsoft.Json
+@using System.IO
 @code {
 
     protected override void OnInitialized()
@@ -39,24 +41,26 @@
 
 @code
 {
-    private static void SaveNotes()
+    private void SaveNotes()
     {
-        // Modal_SaveNotes('${accId}')
+        AppData.SelectedAccount.NotifyDataChanged();
+
+        string path;
+        Dictionary<string, string> data;
+
         if (AppData.CurrentSwitcher == "Steam")
         {
-            foreach (var acc in Steam.Accounts)
-            {
-                if (acc.Note == "") continue;
-                Steam.AccountNotes[acc.AccountId] = acc.Note;
-            }
-            Steam.SaveSettings();
-        } else {
-            foreach (var acc in Basic.Accounts)
-            {
-                if (acc.Note == "") continue;
-                Basic.AccountNotes[acc.AccountId] = acc.Note;
-            }
-            Basic.SaveSettings();
+            path = "LoginCache\\Steam\\AccountNotes.json";
+            data = Steam.Accounts.ToDictionary(s => s.AccountId, s => s.Note);
         }
+        else
+        {
+            path = $"LoginCache\\{AppData.CurrentSwitcherSafe}\\AccountNotes.json";
+            data = Basic.Accounts.ToDictionary(s => s.AccountId, s => s.Note);
+        }
+
+        File.WriteAllText(path, JsonConvert.SerializeObject(data, Formatting.None));
+
+        ModalData.IsShown = false;
     }
 }

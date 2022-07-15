@@ -13,6 +13,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -118,6 +119,25 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
+        public static void LoadNotes()
+        {
+            var filePath = AppData.CurrentSwitcher == "Steam"
+                ? "LoginCache\\Steam\\AccountNotes.json"
+                : $"LoginCache\\{AppData.CurrentSwitcherSafe}\\AccountNotes.json";
+            if (!File.Exists(filePath)) return;
+
+            var loaded = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(filePath));
+            if (loaded is null) return;
+
+            if (AppData.CurrentSwitcher == "Steam")
+                foreach (var (key, val) in loaded)
+                    Steam.Accounts.First(x => x.AccountId == key).Note = val;
+            else
+                foreach (var (key, val) in loaded)
+                    Basic.Accounts.First(x => x.AccountId == key).Note = val;
+
+            ModalData.IsShown = false;
+        }
         #endregion
 
         #region Clipboard

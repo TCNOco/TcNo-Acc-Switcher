@@ -68,9 +68,11 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         SaveSettings();
                     }
                     LoadBasicCompat(); // Add missing features in templated platforms system.
-                    // Forces lazy values to be instantiated
-                    _ = InstalledGames.Value;
-                    _ = AppIds.Value;
+
+                    //// Forces lazy values to be instantiated
+                    //_ = InstalledGames.Value;
+                    //_ = AppIds.Value;
+
                     BuildContextMenu();
                     AppData.InitializedClasses.Steam = true;
 
@@ -97,7 +99,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
             Path.Join(GetShortcutImageFolder, PlatformFuncs.RemoveShortcutExt(gameShortcutName) + ".png");
         public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
         public static bool ShowShortNotes { get => Instance._showShortNotes; set => Instance._showShortNotes = value; }
-        public static Dictionary<string, string> AccountNotes { get => Instance._accountNotes; set => Instance._accountNotes = value; }
         public static string ClosingMethod { get => Instance._closingMethod; set => Instance._closingMethod = value; }
         public static string StartingMethod { get => Instance._startingMethod; set => Instance._startingMethod = value; }
         private static string GetShortcutImageFolder => "img\\shortcuts\\Steam\\";
@@ -269,7 +270,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("StartingMethod", Order = 15)] private string _startingMethod = "Default";
         [JsonProperty("AutoStart", Order = 16)] private bool _autoStart = true;
         [JsonProperty("ShowShortNotes", Order = 17)] private bool _showShortNotes = true;
-        [JsonProperty("AccountNotes", Order = 18)] private Dictionary<string, string> _accountNotes = new();
         [JsonProperty("SteamWebApiKey", Order = 19)] private string _steamWebApiKey = "";
         [JsonProperty("StartSilent", Order = 20)] private bool _startSilent;
         [JsonIgnore] private bool _desktopShortcut;
@@ -312,7 +312,12 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static string SteamWebApiKey { get => Instance._steamWebApiKey; set => Instance._steamWebApiKey = value; }
         public static bool StartSilent { get => Instance._startSilent; set => Instance._startSilent = value; }
         public static bool SteamWebApiWasReset { get => Instance._steamWebApiWasReset; set => Instance._steamWebApiWasReset = value; }
-        public static ObservableCollection<Account> Accounts { get => Instance._accounts; set => Instance._accounts = value; }
+
+        public static ObservableCollection<Account> Accounts
+        {
+            get => Instance._accounts;
+            set => Instance._accounts = value;
+        }
 
         // Constants
         public static readonly List<string> Processes = new() { "steam.exe", "SERVICE:steamservice.exe", "steamwebhelper.exe", "GameOverlayUI.exe" };
@@ -374,7 +379,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     new ("LookingToPlay", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":6"))),
                 }),
                 new ("Forget", new Action(async () => await AppFuncs.ForgetAccount())),
-                new ("Notes", "showNotes(event)"),
+                new ("Notes", new Action(() => ModalData.ShowModal("notes"))),
             });
 
             /* Games submenu, or Game data item */

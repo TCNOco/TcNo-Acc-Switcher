@@ -64,11 +64,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             AppStats.SetAccountCount(CurrentPlatform.SafeName, accList.Count);
 
             // Load notes
-            foreach (var acc in Basic.Accounts)
-            {
-                if (Basic.AccountNotes.ContainsKey(acc.AccountId))
-                    acc.Note = Basic.AccountNotes[acc.AccountId];
-            }
+            AppFuncs.LoadNotes();
             return true;
         }
 

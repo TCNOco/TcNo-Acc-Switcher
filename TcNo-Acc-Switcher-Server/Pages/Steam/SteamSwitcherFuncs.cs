@@ -119,16 +119,12 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
                 SaveVacInfo();
             }
 
+            // Load notes
+            AppFuncs.LoadNotes();
+
             await GenericFunctions.FinaliseAccountList();
             AppStats.SetAccountCount("Steam", AppData.SteamUsers.Count);
             AppData.SteamLoadingProfiles = false;
-
-            // Load notes
-            foreach (var acc in SteamSettings.Accounts)
-            {
-                if (SteamSettings.AccountNotes.ContainsKey(acc.AccountId))
-                    acc.Note = SteamSettings.AccountNotes[acc.AccountId];
-            }
         }
 
         private static void InsertAccount(Index.Steamuser su)

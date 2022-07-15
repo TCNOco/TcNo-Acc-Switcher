@@ -91,6 +91,9 @@
   width: 1.1em;
   margin: 0 2px 2px 2px;
 }
+.infoWindow .crowdin .crowdInList {
+  background: #070a0d;
+}
 
 .infoWindow .rightContent {
   margin-left: 1em;

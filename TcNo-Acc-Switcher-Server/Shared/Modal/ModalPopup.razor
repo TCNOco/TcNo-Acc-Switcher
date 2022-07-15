@@ -48,6 +48,9 @@
                 case "crowdin":
                     <ModalCrowdin />
                     break;
+                case "notes":
+                    <ModalAccountNotes />
+                    break;
             }
 
 
@@ -66,7 +69,6 @@
     }
     private async void OnChangeHandler()
     {
-        var t2 = ModalData.Instance;
         await InvokeAsync(StateHasChanged);
     }
 

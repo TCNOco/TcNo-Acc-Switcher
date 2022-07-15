@@ -100,7 +100,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         [JsonProperty("StartingMethod", Order = 7)] private string _startingMethod = "";
         [JsonProperty("AutoStart", Order = 8)] private bool _autoStart = true;
         [JsonProperty("ShowShortNotes", Order = 9)] private bool _showShortNotes = true;
-        [JsonProperty("AccountNotes", Order = 10)] private Dictionary<string, string> _accountNotes = new();
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private int _lastAccTimestamp;
         [JsonIgnore] private string _lastAccName = "";
@@ -128,7 +127,6 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static bool ForgetAccountEnabled { get => Instance._forgetAccountEnabled; set => Instance._forgetAccountEnabled = value; }
         public static Dictionary<int, string> Shortcuts { get => Instance._shortcuts; set => Instance._shortcuts = value; }
         public static bool ShowShortNotes { get => Instance._showShortNotes; set => Instance._showShortNotes = value; }
-        public static Dictionary<string, string> AccountNotes { get => Instance._accountNotes; set => Instance._accountNotes = value; }
         public static ObservableCollection<Account> Accounts { get => Instance._accounts; set => Instance._accounts = value; }
         public static string ClosingMethod
         {
@@ -166,7 +164,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     new ("Context_CreateShortcut", new Action(async () => await GeneralInvocableFuncs.CreateShortcut())),
                     new ("Context_ChangeImage", "changeImage(event)"),
                     new ("Forget", new Action(async () => await AppFuncs.ForgetAccount())),
-                    new ("Notes", "showNotes(event)"),
+                    new ("Notes", new Action(() => ModalData.ShowModal("notes"))),
                     BasicStats.PlatformHasAnyGames(CurrentPlatform.SafeName) ?
                         new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)") : null,
                 }).Result());

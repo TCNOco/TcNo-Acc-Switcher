@@ -22,6 +22,20 @@
 @code {
     [Parameter]
     public Account Acc { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Acc.OnChange += OnChangeHandler;
+    }
+    private async void OnChangeHandler()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Acc.OnChange -= OnChangeHandler;
+    }
 }
 
 <div class="acc_list_item" title="@Acc.TitleText" data-toggle="tooltip" @onclick="() => SetSelectedAccount(Acc)" oncontextmenu="return false;" @onmouseup="(e) => AccountRightClick(e, Acc)" @ondblclick="() => AppFuncs.SwapToAccount()">

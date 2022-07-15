@@ -482,10 +482,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         public static void SaveSettings<T>(string file, T jSettings)
         {
             if (file is null) return;
+
             try
             {
                 file = file.EndsWith(".json") ? file : file + ".json";
-
                 // Create folder if it doesn't exist:
                 var folder = Path.GetDirectoryName(file);
                 if (folder != "") _ = Directory.CreateDirectory(folder ?? string.Empty);

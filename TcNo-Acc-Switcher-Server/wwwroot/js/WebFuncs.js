@@ -37,16 +37,6 @@ async function forget(e) {
     else await Modal_Confirm(`AcceptForget${getCurrentPage()}Acc:${reqId}`, true);
 }
 
-// Show the Notes modal for selected account
-async function showNotes(e) {
-    e.preventDefault();
-    showModalOld(`notes:${$(selectedElem).attr("id")}`);
-}
-
-// Get and return note text for the requested account
-getAccNotes = async(accId) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}Notes`, accId);
-
-
 // Take a string that is HTML escaped, and return a normal string back.
 unEscapeString = (s) => s.replace("&lt;", "<").replace("&gt;", ">").replace("&#34;", "\"").replace("&#39;", "'").replace("&#47;", "/");
 
@@ -541,38 +531,6 @@ async function showModalOld(modaltype) {
             </div>
         </div>
         </div>`);
-    } else if (modaltype.startsWith("notes:")) {
-        // USAGE: "notes:accId"
-        // GOAL: Display previously set accNotes, and upon SAVE click, save the new notes.
-        let accId = modaltype.slice(6);
-        if (!getSelected()) return;
-
-        $("#modalTitle").text(await GetLangSub("Modal_Title_AccountNotes", { accountName: getDisplayName() }));
-        const save = await GetLang("Save"),
-            cancel = await GetLang("Button_Cancel");
-
-        var notes = await getAccNotes(accId);
-
-        $("#modal_contents").empty();
-        $("#modal_contents").append(`<div class="infoWindow">
-        <div class="fullWidthContent">
-            <div class="accNotesContainer">
-                <textarea id="accNotes">${notes}</textarea>
-            </div>
-            <div class="YesNo">
-		        <button type="button" id="modal_true" onclick="Modal_SaveNotes('${accId}')"><span>${save}</span></button>
-		        <button type="button" id="modal_false" onclick="$('.modalBG').fadeOut();"><span>${cancel}</span></button>
-            </div>
-        </div>
-        </div>`);
-
-        input = document.getElementById("accNotes");
-
-
-
-
-
-
     } else if (modaltype.startsWith("notice:")) {
         // USAGE: "notice:<prompt>
         // GOAL: Runs function when OK clicked.

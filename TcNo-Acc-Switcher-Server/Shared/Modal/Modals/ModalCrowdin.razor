@@ -45,7 +45,7 @@
         }
         else
         {
-            <ul class="linksList">
+            <ul class="linksList crowdInList">
                 <li>@Lang.Instance["Crowdin_Proofreaders", new {number = _crowdinList.ProofReaders.Count}]</li>
                 @foreach (var (username, languages) in _crowdinList.ProofReaders)
                 {
