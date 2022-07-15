@@ -364,14 +364,14 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 }),
                 new ("Context_CreateShortcut", new Tuple<string, object>[]
                 {
-                    new ("OnlineDefault", "createShortcut()"),
-                    new ("Invisible", "createShortcut(':7')"),
-                    new ("Offline", "createShortcut(':0')"),
-                    new ("Busy", "createShortcut(':2')"),
-                    new ("Away", "createShortcut(':3')"),
-                    new ("Snooze", "createShortcut(':4')"),
-                    new ("LookingToTrade", "createShortcut(':5')"),
-                    new ("LookingToPlay", "createShortcut(':6')"),
+                    new ("OnlineDefault", new Action(async () => await GeneralInvocableFuncs.CreateShortcut())),
+                    new ("Invisible", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":7"))),
+                    new ("Offline", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":0"))),
+                    new ("Busy", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":2"))),
+                    new ("Away", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":3"))),
+                    new ("Snooze", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":4"))),
+                    new ("LookingToTrade", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":5"))),
+                    new ("LookingToPlay", new Action(async () => await GeneralInvocableFuncs.CreateShortcut(":6"))),
                 }),
                 new ("Forget", new Action(async () => await AppFuncs.ForgetAccount())),
                 new ("Notes", "showNotes(event)"),
@@ -418,7 +418,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     BasicStats.PlatformHasAnyGames("Steam") ?
                         new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)") : null,
                     new ("Context_ChangeImage", "changeImage(event)"),
-                    new ("Context_Steam_OpenUserdata", new Action(() => SteamSwitcherBase.SteamOpenUserdata()))
+                    new ("Context_Steam_OpenUserdata", new Action(SteamSwitcherBase.SteamOpenUserdata))
                 }));
             Menu.AddRange(menuBuilder.Result());
         }

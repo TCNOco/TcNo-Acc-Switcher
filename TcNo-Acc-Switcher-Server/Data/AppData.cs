@@ -180,6 +180,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         private string _currentSwitcher = "";
         public static string CurrentSwitcher { get => Instance._currentSwitcher; set => Instance._currentSwitcher = value; }
+        public static string CurrentSwitcherSafe => Globals.GetCleanFilePath(AppData.CurrentSwitcher);
 
         #region Basic_Platforms
 

@@ -372,25 +372,7 @@ async function refreshAccount(game, accountId) {
     location.reload();
 }
 
-
-
 Modal_FinalizeImage = async(dest) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `ImportNewImage`, JSON.stringify({ dest: dest, path: $("#FolderLocation").val() }));
-
-// Create shortcut for selected icon
-async function createShortcut(args = "") {
-    const selected = $(".acc:checked");
-    if (selected === "" || selected[0] === null || typeof selected[0] === "undefined") {
-        return;
-    }
-    const accId = selected.attr("id");
-
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server",
-        "CreateShortcut",
-        getCurrentPage(),
-        accId,
-        selected.attr("Username"),
-        args);
-}
 
 hidePlatform = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HidePlatform", selectedElem);
 createPlatformShortcut = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCreatePlatformShortcut", selectedElem);
