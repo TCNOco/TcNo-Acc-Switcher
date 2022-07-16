@@ -344,3 +344,24 @@
         margin-bottom: 0;
     }
 }
+
+.stat {
+    &Section {
+        display: flex;
+        flex-direction: column;
+        margin-top: 0;
+        margin-bottom: 1rem;
+        overflow: auto;
+        font-size: .875em;
+        font-family: var(--bs-font-monospace);
+        direction: ltr;
+        unicode-bidi: bidi-override;
+        margin: 1em 0px;
+
+        .statIndent {
+            display: flex;
+            flex-direction: column;
+            margin-left: 2em;
+        }
+    }
+}

@@ -612,18 +612,6 @@ async function showModalOld(modaltype) {
         pathPickerRequestedFile = "AnyFolder";
         $(".pathPicker").on("click", pathPickerClick);
         input = document.getElementById("FolderLocation");
-    } else if (modaltype === "ShowStats") {
-        let modalTitle = await GetLang("Modal_Title_Stats");
-
-        const modalText = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GetStatsString");
-
-        $("#modalTitle").text(modalTitle);
-        $("#modal_contents").empty();
-        $("#modal_contents").append(`<div class="infoWindow">
-        <div class="fullWidthContent">
-            <div style="text-align:left"><p>${modalText}</p></div>
-        </div>
-        </div>`);
     } else {
 
         const notice = await GetLang("Notice");

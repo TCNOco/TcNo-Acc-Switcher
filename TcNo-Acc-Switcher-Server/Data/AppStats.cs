@@ -101,71 +101,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             GeneralFuncs.SaveSettings(SettingsFile, Instance);
         }
 
-        [JSInvokable]
-        public static string GetStatsString()
-        {
-            if (!AppSettings.StatsEnabled) return Lang["Stats_Disabled"];
-            GenerateTotals();
-            SaveSettings();
-            var returnString = $@"<h3>TcNo Account Switcher Stats - {DateTime.Now:yyyy-MM-dd HH:mm:ss}</h3><br>" +
-                (AppSettings.StatsShare ? Lang["Stats_ShareEnabled", new { WebsiteLink = "OpenLinkInBrowser('https://tcno.co/Projects/AccSwitcher/stats/')" }] : Lang["Stats_ShareDisabled", new { WebsiteLink = "https://tcno.co/Projects/AccSwitcher/stats/" }]) +
-                @$"<pre><br>
-<b>{Lang["Stats_OperatingSystem"]}</b>{OperatingSystem}
-<b>{Lang["Stats_FirstLaunch"]}</b>{FirstLaunch.ToString("yyyy-MM-dd HH:mm:ss")}
-<b>{Lang["Stats_LaunchCount"]}</b>{LaunchCount}
-<b>{Lang["Stats_CrashCount"]}</b>{CrashCount}
-<b>{Lang["Stats_MostUsedPlatform"]}</b>{MostUsedPlatform}
-<b>{Lang["Stats_TotalTime"]}</b>{TimeSpan.FromSeconds(PageStats["_Total"].TotalTime).ToString("hh\\:mm\\:ss")}
-<b>{Lang["Stats_TotalSwitches"]}</b>{SwitcherStats["_Total"].Switches}
-<b>{Lang["Stats_TotalGamesLaunched"]}</b>{SwitcherStats["_Total"].GamesLaunched}
-<b>{Lang["Stats_UniqueDaysLong"]}</b>{SwitcherStats["_Total"].UniqueDays}
-<br></pre>";
-
-            return $"{returnString}<h4>{Lang["Stats_InDepth"]}</h4><pre><br>{GetInDepthStatsString()}</pre>";
-        }
-
-        /// <summary>
-        /// This compliments GetStatsString(), but gives an in-depth breakdown per platform, etc.
-        /// </summary>
-        private static string GetInDepthStatsString()
-        {
-            //<b>{Lang[""]}</b>{}<br>
-            if (!AppSettings.StatsEnabled) return "";
-            var returnString = $@"<b>Uuid</b>: {Uuid}<br>
-<b>{Lang["Stats_LastUpload"]}</b>{LastUpload:yyyy-MM-dd HH:mm:ss}<br>";
-
-            if (SwitcherStats.Count > 1)
-                returnString += $"<b>{Lang["Stats_SwitcherStats"]}</b><br>";
-            foreach (var switcherStat in SwitcherStats)
-            {
-                if (switcherStat.Key == "_Total") continue;
-                returnString += $@"- <b>{switcherStat.Key}: </b>
-   - <b>{Lang["Stats_Accounts"]}</b>{switcherStat.Value.Accounts}
-   - <b>{Lang["Stats_Switches"]}</b>{switcherStat.Value.Switches}
-   - <b>{Lang["Stats_FirstActive"]}</b>{switcherStat.Value.FirstActive.ToString("yyyy-MM-dd HH:mm:ss")}
-   - <b>{Lang["Stats_LastActive"]}</b>{switcherStat.Value.LastActive.ToString("yyyy-MM-dd HH:mm:ss")}
-   - <b>{Lang["Stats_UniqueDays"]}</b>{switcherStat.Value.UniqueDays}
-   - <b>{Lang["Stats_GameShortcuts"]}</b>{switcherStat.Value.GameShortcuts}
-   - <b>{Lang["Stats_GameShortcutsHotbar"]}</b>{switcherStat.Value.GameShortcutsHotbar}
-   - <b>{Lang["Stats_GamesLaunched"]}</b>{switcherStat.Value.GamesLaunched}<br>";
-            }
-
-            if (PageStats.Count > 1)
-                returnString += $"<b>{Lang["Stats_PageStats"]}</b><br>";
-            foreach (var pageStat in PageStats)
-            {
-                if (pageStat.Key == "_Total") continue;
-                returnString += $@"- <b>{pageStat.Key}: </b>{Lang["Stats_VisitsTotalTime", new
-                {
-                    visits = pageStat.Value.Visits,
-                    hours = TimeSpan.FromSeconds(pageStat.Value.TotalTime).ToString("hh\\:mm\\:ss")
-                }]}<br>";
-
-            }
-
-            return returnString;
-        }
-
 
         [JSInvokable]
         public static void ClearStats()
@@ -215,7 +150,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static DateTime LastUpload { get => Instance._lastUpload; set => Instance._lastUpload = value; }
 
         [JsonProperty("OperatingSystem", Order = 2)] private string _operatingSystem;
-        private static string OperatingSystem => Instance._operatingSystem ?? (Instance._operatingSystem = Globals.GetOsString());
+        public static string OperatingSystem => Instance._operatingSystem ?? (Instance._operatingSystem = Globals.GetOsString());
 
         #endregion
 
