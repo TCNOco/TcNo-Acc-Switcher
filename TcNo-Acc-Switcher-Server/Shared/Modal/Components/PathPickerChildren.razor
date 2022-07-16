@@ -45,7 +45,7 @@
     private string _selectedFile = "";
 }
 
-@if (!ModalData.PathPicker.LastPath.Contains(_currentFileList.FullPath))
+@if (!ModalData.PathPicker.LastPath.ToLowerInvariant().Contains(_currentFileList.FullPath.ToLowerInvariant()))
 {
     <span class="folder" @onclick="ExpandFolder">@_currentFileList.FolderName</span>
 }

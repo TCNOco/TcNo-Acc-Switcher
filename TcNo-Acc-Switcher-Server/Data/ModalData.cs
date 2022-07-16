@@ -124,6 +124,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             public string LastPath = "";
             public bool ShowFiles;
             public PathPickerElement LastElement = PathPickerElement.None;
+            public PathPickerGoal Goal;
 
             public string ModalHeader;
             public string ModalText;
@@ -135,8 +136,9 @@ namespace TcNo_Acc_Switcher_Server.Data
                 // Clear existing data, if any.
                 RequestedFile = requestedFile;
                 ShowFiles = showFiles;
+                Goal = goal;
 
-                if (goal == PathPickerGoal.FindPlatformExe)
+                if (Goal == PathPickerGoal.FindPlatformExe)
                 {
                     string platformName, platformExe;
                     if (AppData.CurrentSwitcher == "Steam")

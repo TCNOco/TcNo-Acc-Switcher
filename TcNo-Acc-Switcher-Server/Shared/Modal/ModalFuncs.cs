@@ -12,11 +12,39 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.IO;
 using Microsoft.AspNetCore.Components;
+using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Pages.General;
+using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
+using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
 
 namespace TcNo_Acc_Switcher_Server.Shared.Modal
 {
-    public class ModalFuncs : ComponentBase
+    public class ModalFuncs
     {
+        public static void UpdatePlatformFolder()
+        {
+            var path = ModalData.PathPicker.LastPath;
+
+            Globals.DebugWriteLine($@"[ModalFuncs.UpdatePlatformFolder] file={AppData.CurrentSwitcher}, path={path}");
+            var settingsFile = AppData.CurrentSwitcher == "Steam"
+                ? SteamSettings.SettingsFile
+                : CurrentPlatform.SettingsFile;
+
+            var settings = GeneralFuncs.LoadSettings(settingsFile);
+            settings["FolderPath"] = path;
+            GeneralFuncs.SaveSettings(settingsFile, settings);
+            if (!Globals.IsFolder(path))
+                path = Path.GetDirectoryName(path); // Remove .exe
+            if (!string.IsNullOrWhiteSpace(path) && path.EndsWith(".exe"))
+                path = Path.GetDirectoryName(path) ?? string.Join("\\", path.Split("\\")[..^1]);
+
+            if (AppData.CurrentSwitcher == "Steam")
+                SteamSettings.FolderPath = path;
+            else
+                BasicSettings.FolderPath = path;
+        }
     }
 }

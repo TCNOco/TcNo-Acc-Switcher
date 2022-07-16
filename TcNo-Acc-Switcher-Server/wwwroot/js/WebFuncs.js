@@ -380,48 +380,6 @@ async function showModalOld(modaltype) {
             modalSetPasswordButton}</span></button>
 	        </div>`);
         input = document.getElementById("NewAccountName");
-    } else if (modaltype.startsWith("find:")) {
-        // USAGE: "find:<Program_name>:<Program_exe>:<SettingsFile>" -- example: "find:Steam:Steam.exe:SteamSettings"
-        platform = modaltype.split(":")[1].replaceAll("_", " ");
-        var platformExe = modaltype.split(":")[2];
-        var platformSettingsPath = modaltype.split(":")[3];
-        Modal_RequestedLocated(false);
-
-        // Sub in info if this is a basic page
-        platform = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform);
-        const currentBasicPlatformExe =
-            await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatformExe", platform);
-        platformExe = platform === currentBasicPlatformExe ? platformExe : currentBasicPlatformExe;
-
-        const modalEnterDirectory = await GetLangSub("Modal_EnterDirectory", { platform: platform }),
-            modalLocatePlatformFolder = await GetLangSub("Modal_LocatePlatformFolder", { platform: platform }),
-            modalLocatePlatformTitle = await GetLangSub("Modal_Title_LocatePlatform", { platform: platform });
-
-        $("#modalTitle").text(modalLocatePlatformTitle);
-        $("#modal_contents").empty();
-        $("#modal_contents").append(`<div style="width: 80vw;">
-		        <span class="modal-text">${modalEnterDirectory}</span>
-	        </div>
-	        <div class="inputAndButton">
-		        <input type="text" id="FolderLocation" oninput="updateIndicator('')" autocomplete="off" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('select_location').click();">
-	        </div>
-	        <div class="settingsCol inputAndButton">
-		        <div class="folder_indicator notfound"><div id="folder_indicator_text"></div></div>
-		        <div class="folder_indicator_bg notfound"><span>${platformExe}</span></div>
-		        <button class="modalOK" type="button" id="select_location" onclick="Modal_Finalise('${platform}', '${
-            platformSettingsPath}')"><span>${modalLocatePlatformFolder}</span></button>
-	        </div>
-            <div class="pathPicker">
-                ${await getLogicalDrives()}
-            </div>`);
-
-        pathPickerRequestedFile = platformExe;
-        $(".pathPicker").on("click", pathPickerClick);
-        input = document.getElementById("FolderLocation");
-
-
-
-
     } else if (modaltype === "accString") {
         platform = getCurrentPage();
         const extraButtons = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalExtraButtons");
@@ -969,4 +927,20 @@ async function showNoteTooltips() {
         parentEl.attr("data-placement", getBestOffset(parentEl));
     });
     initTooltips();
+}
+
+// Scrolls the path picker modal window to the last selected element - For pasting in paths, etc.
+var lastPickerText = "";
+function pathPickerScrollToElement()
+{
+    try {
+        const curText = $(".selected-path").last().text();
+        if (lastPickerText === curText) return;
+        lastPickerText = curText;
+        $(".pathPicker").animate({
+            scrollTop: $(".selected-path").last().offset().top - ($(".pathPicker").offset().top * 1.5)
+        }, 500);
+    } catch (e) {
+        // Do nothing
+    }
 }

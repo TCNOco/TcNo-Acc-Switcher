@@ -82,39 +82,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
         }
 
         /// <summary>
-        /// JS function handler for for updates to platform's path in settings file from modal GUI
-        /// </summary>
-        /// <param name="file">Platform specific filename (has .json appended later)</param>
-        /// <param name="path">New platform path string</param>
-        [JSInvokable]
-        public static void GiUpdatePath(string file, string path)
-        {
-            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiUpdatePath] file={file}, path={path}");
-            var settingsFile = file;
-            if (BasicPlatforms.PlatformExists(file))
-            {
-                settingsFile = CurrentPlatform.SettingsFile;
-            }
-
-            var settings = GeneralFuncs.LoadSettings(settingsFile);
-            settings["FolderPath"] = path;
-            GeneralFuncs.SaveSettings(settingsFile, settings);
-            if (!Globals.IsFolder(path))
-                path = Path.GetDirectoryName(path); // Remove .exe
-            if (!string.IsNullOrWhiteSpace(path) && path.EndsWith(".exe"))
-                path = Path.GetDirectoryName(path) ?? string.Join("\\", path.Split("\\")[..^1]);
-            switch (file)
-            {
-                case "BasicSettings":
-                    BasicSettings.FolderPath = path;
-                    break;
-                case "SteamSettings":
-                    SteamSettings.FolderPath = path;
-                    break;
-            }
-        }
-
-        /// <summary>
         /// Opens a link in user's browser through Shell
         /// </summary>
         /// <param name="link">URL string</param>

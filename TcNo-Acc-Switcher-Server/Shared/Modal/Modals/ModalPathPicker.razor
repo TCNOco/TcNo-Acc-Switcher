@@ -44,7 +44,12 @@
             _found = true;
         else if (pp.LastPath.EndsWith(r)) // Specific file or folder requested and one was clicked.
             _found = true;
-
+        else if (ModalData.PathPicker.Goal == ModalData.PathPickerRequest.PathPickerGoal.FindPlatformExe
+                 && !string.IsNullOrEmpty(ModalData.PathPicker.LastPath)
+                 && !Globals.IsFile(ModalData.PathPicker.LastPath) // The path doesn't end with <app.exe>, so check to see if the folder contains it. This is accepted for FindPlatformExe.
+                 && Directory.Exists(ModalData.PathPicker.LastPath)
+                 && Directory.GetFiles(ModalData.PathPicker.LastPath).ToList().Contains(ModalData.PathPicker.RequestedFile))
+            _found = true;
         await InvokeAsync(StateHasChanged);
     }
 
@@ -66,7 +71,7 @@
     <p class="modal-text">@ModalData.PathPicker.ModalText</p>
 </div>
 <div class="inputAndButton">
-    <input type="text" id="path" autocomplete="off" style="width: 100%;padding: 8px;" @onkeyup="KeyPress" @bind="ModalData.PathPicker.LastPath">
+    <input type="text" id="path" autocomplete="off" style="width: 100%;padding: 8px;" @onkeyup="KeyPress" value="@ModalData.PathPicker.LastPath" @oninput="OnInput">
 </div>
 <div class="settingsCol inputAndButton">
     @if (_showIndicator)
@@ -82,25 +87,33 @@
 
 @code
 {
+    private async Task OnInput(ChangeEventArgs args)
+    {
+        ModalData.PathPicker.LastPath = args.Value?.ToString();
+        Update();
+        await AppData.InvokeVoidAsync("pathPickerScrollToElement");
+    }
+
     // Pressed Enter on the input
-    private async Task KeyPress(KeyboardEventArgs k)
+    private void KeyPress(KeyboardEventArgs k)
     {
         // If enter was pressed
         if (k.Key == "Enter")
         {
              Confirm();
         }
-
-        // Update dynamically as the user types.
-        ModalData.PathPickerNotifyDataChanged();
     }
+
+    // Update dynamically as the user types.
+    private void Update() => ModalData.PathPickerNotifyDataChanged();
 
 
     private void Confirm()
     {
         //AppData.SelectedAccount.NotifyDataChanged();
         // TODO: Do things here.
-
+        if (ModalData.PathPicker.Goal == ModalData.PathPickerRequest.PathPickerGoal.FindPlatformExe)
+            ModalFuncs.UpdatePlatformFolder();
 
 
 
