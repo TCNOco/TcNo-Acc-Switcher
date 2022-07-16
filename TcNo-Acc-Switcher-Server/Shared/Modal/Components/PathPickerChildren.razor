@@ -1,0 +1,87 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@using System.IO
+@using TcNo_Acc_Switcher_Server.Data
+
+@code {
+    [Parameter]
+    public string CurrentPath { get; set; }
+
+    [Parameter]
+    public int Depth { get; set; }
+
+    private Pages.General.PathPicker.FolderFileList _currentFileList;
+
+    protected override void OnInitialized()
+    {
+        _currentFileList = new Pages.General.PathPicker.FolderFileList(CurrentPath, Depth);
+        ModalData.Instance.PathPickerOnChange += OnChangeHandler;
+    }
+
+    private async void OnChangeHandler()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ModalData.Instance.PathPickerOnChange -= OnChangeHandler;
+    }
+
+    // This must be a cascading variable and a check to see if it is included somewhere in the list. This could get confusing.
+    private string _folderName = "";
+    private string _selectedFile = "";
+}
+
+@if (!ModalData.PathPicker.LastPath.Contains(_currentFileList.FullPath))
+{
+    <span class="folder" @onclick="ExpandFolder">@_currentFileList.FolderName</span>
+}
+else
+{
+    <div>
+        <span class="folder c head selected-path" path="Path">@_currentFileList.FolderName</span>
+        @foreach (var folder in _currentFileList.ChildFolders.Value)
+        {
+            <PathPickerChildren CurrentPath="@folder.FullPath" Depth="Depth + 1"/>
+        }
+
+        @if (ModalData.PathPicker.ShowFiles)
+        {
+            @foreach (var file in _currentFileList.Files.Value)
+            {
+                <span class="@(file.Contains(ModalData.PathPicker.RequestedFile) ? "suggested" : "") @(_selectedFile == file ? "selected-path" : "")" @onclick="() => SelectFile(file)">@Path.GetFileName(file)</span>
+            }
+        }
+    </div>
+}
+
+@code
+{
+    private void ExpandFolder()
+    {
+        ModalData.PathPicker.LastPath = _currentFileList.FullPath;
+        ModalData.PathPicker.LastElement = ModalData.PathPickerRequest.PathPickerElement.Folder;
+        ModalData.PathPickerNotifyDataChanged();
+    }
+
+    private void SelectFile(string file)
+    {
+        _selectedFile = file;
+        ModalData.PathPicker.LastPath = Path.Join(_currentFileList.FullPath, file);
+        ModalData.PathPicker.LastElement = ModalData.PathPickerRequest.PathPickerElement.File;
+        ModalData.PathPickerNotifyDataChanged();
+    }
+}

@@ -475,6 +475,8 @@ Platform_DeleteFail: Could not delete some files (Program may be running?)
 Platform_CouldNotDeleteLog: Could not delete file! Check {logPath}
 Error_FileAccessDenied: Failed to access file! Check {logPath}
 Error_RequiredFileVerify: A required file was not found. Please make sure the x64 and x86 folders exist in the install directory. If not run TcNo-Acc-Switcher-Updater.exe and verify files.
+PathPicker_NoLogicalDrives: Could not get list of logical drives.
+PathPicker_FailedGetFolders: "Failed to get list of folders for: {path}"
 Tooltip_Settings: Settings
 Tooltip_Info: Info
 Tooltip_ManagePlatforms: Show or Hide other platforms

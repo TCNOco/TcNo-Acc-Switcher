@@ -234,7 +234,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         #endregion
 
         public event Action OnChange;
-
         public void NotifyDataChanged() => OnChange?.Invoke();
 
         private IJSRuntime _activeIJsRuntime;

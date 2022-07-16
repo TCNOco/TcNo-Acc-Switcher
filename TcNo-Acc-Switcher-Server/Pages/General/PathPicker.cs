@@ -4,62 +4,80 @@ using System.IO;
 using System.Linq;
 using Microsoft.JSInterop;
 using TcNo_Acc_Switcher_Globals;
+using TcNo_Acc_Switcher_Server.Data;
 
 namespace TcNo_Acc_Switcher_Server.Pages.General
 {
 
     public class PathPicker
     {
-        private static readonly Dictionary<string, List<string>> ReturnObject = new()
+        public static List<string> LogicalDrivesList
         {
-            {"Folders", new List<string>()},
-            {"Files", new List<string>()}
-        };
-
-        [JSInvokable]
-        public static object GetLogicalDrives()
-        {
-            var ro = ReturnObject;
-            try
+            get
             {
-                ro["Folders"] = Directory.GetLogicalDrives().ToList();
+                try
+                {
+                    return Directory.GetLogicalDrives().ToList();
+                }
+                catch (Exception e)
+                {
+                    Globals.WriteToLog("Could not list Logical Drives.", e);
+                    _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["PathPicker_NoLogicalDrives"], renderTo: "toastarea");
+                    return new List<string>();
+                }
             }
-            catch (Exception e)
-            {
-                Globals.WriteToLog("Could not list Logical Drives.", e);
-            }
-            return ro;
         }
 
-        [JSInvokable]
-        public static object GetFoldersAndFiles(string path)
-        {
-            var ro = ReturnObject;
-            try
-            {
-                ro["Folders"] = Directory.GetDirectories(path).ToList();
-                ro["Files"] = Directory.GetFiles(path).ToList();
-            }
-            catch (Exception e)
-            {
-                Globals.WriteToLog("Could not get list of files and folders.", e);
-            }
-            return ro;
-        }
 
-        [JSInvokable]
-        public static object GetFolders(string path)
+        public class FolderFileList
         {
-            var ro = ReturnObject;
-            try
+            public int Depth { get; set; }
+            public string FullPath { get; set; }
+            public string FolderName { get; set; }
+
+            public Lazy<List<FolderFileList>> ChildFolders =>
+                new (() =>
+                {
+                    try
+                    {
+                        var childFolders = Directory.GetDirectories(FullPath).Select(x => new FolderFileList
+                        {
+                            FullPath = x,
+                            FolderName = Path.GetFileName(x)
+                        }).ToList();
+                        return childFolders;
+                    }
+                    catch (Exception e)
+                    {
+                        Globals.WriteToLog($"PathPicker: Failed to crawl path or drive: \"{FullPath}\"", e);
+                        if (Depth != 0)
+                            _ = GeneralInvocableFuncs.ShowToast("error", Lang.Instance["PathPicker_FailedGetFolders", new { path = FolderName }], renderTo: "toastarea");
+                        return new List<FolderFileList>();
+                    }
+                });
+
+            public Lazy<List<string>> Files =>
+                new(() =>
+                {
+                    try
+                    {
+                        return Directory.GetFiles(FullPath).ToList();
+                    }
+                    catch (Exception e)
+                    {
+                        Globals.WriteToLog($"PathPicker: Failed to crawl path or drive: \"{FullPath}\"", e);
+                        // This drive will be left out of the list.
+                        return new List<string>();
+                    }
+                });
+
+            public FolderFileList(){}
+            public FolderFileList(string fullPath, int depth)
             {
-                ro["Folders"] = Directory.GetDirectories(path).ToList();
+                FullPath = fullPath;
+                Depth = depth;
+                FolderName = depth == 0 ? fullPath : Path.GetFileName(fullPath);
             }
-            catch (Exception e)
-            {
-                Globals.WriteToLog("Could not get list of files and folders.", e);
-            }
-            return ro;
         }
     }
 }

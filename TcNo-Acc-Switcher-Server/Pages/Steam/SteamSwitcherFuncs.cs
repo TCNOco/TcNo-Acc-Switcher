@@ -1108,6 +1108,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_SettingsCopied"], Lang["Success"], "toastarea");
         }
 
+
         public static async Task RestoreSettingsTo(string gameId)
         {
             if (!VerifySteamId(AppData.SelectedAccountId)) return;

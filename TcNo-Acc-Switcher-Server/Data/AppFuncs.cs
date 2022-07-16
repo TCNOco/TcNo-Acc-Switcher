@@ -131,10 +131,18 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             if (AppData.CurrentSwitcher == "Steam")
                 foreach (var (key, val) in loaded)
-                    AppData.SteamAccounts.First(x => x.AccountId == key).Note = val;
+                {
+                    var acc = AppData.SteamAccounts.FirstOrDefault(x => x.AccountId == key);
+                    if (acc is null) return;
+                    acc.Note = val;
+                }
             else
                 foreach (var (key, val) in loaded)
-                    AppData.BasicAccounts.First(x => x.AccountId == key).Note = val;
+                {
+                    var acc = AppData.BasicAccounts.FirstOrDefault(x => x.AccountId == key);
+                    if (acc is null) return;
+                    acc.Note = val;
+                }
 
             ModalData.IsShown = false;
         }

@@ -36,7 +36,11 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     if (!await GeneralFuncs.CanKillProcess(SteamSettings.Processes, SteamSettings.ClosingMethod)) return;
                     if (!Directory.Exists(SteamSettings.FolderPath) || !File.Exists(SteamSettings.Exe()))
                     {
-                        await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
+                        AppData.CurrentSwitcher = "Steam";
+                        ModalData.PathPicker =
+                            new ModalData.PathPickerRequest(ModalData.PathPickerRequest.PathPickerGoal.FindPlatformExe);
+                        ModalData.ShowModal("find");
+                        //await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
                         return;
                     }
                     if (SteamSwitcherFuncs.SteamSettingsValid()) AppData.ActiveNavMan.NavigateTo("/Steam/");
@@ -47,10 +51,18 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     if (BasicPlatforms.PlatformExistsFromShort(platform)) // Is a basic platform!
                     {
                         BasicPlatforms.SetCurrentPlatformFromShort(platform);
+                        AppData.CurrentSwitcher = CurrentPlatform.FullName;
                         if (!await GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return;
 
                         if (Directory.Exists(BasicSettings.FolderPath) && File.Exists(BasicSettings.Exe())) AppData.ActiveNavMan.NavigateTo("/Basic/");
-                        else await GeneralInvocableFuncs.ShowModal($"find:{CurrentPlatform.SafeName}:{CurrentPlatform.ExeName}:{CurrentPlatform.SafeName}");
+                        else
+                        {
+                            ModalData.PathPicker =
+                                new ModalData.PathPickerRequest(ModalData.PathPickerRequest.PathPickerGoal.FindPlatformExe);
+                            ModalData.ShowModal("find");
+
+                            //await GeneralInvocableFuncs.ShowModal($"find:{CurrentPlatform.SafeName}:{CurrentPlatform.ExeName}:{CurrentPlatform.SafeName}");
+                        }
                     }
                     break;
             }
