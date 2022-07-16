@@ -196,6 +196,7 @@ Toast_Steam_VacCleared: VAC status for accounts was cleared
 Toast_Steam_CantDeleteVacCache: Could not delete 'LoginCache/Steam/VACCache/SteamVACCache.json'
 Toast_NoFindSteamUserdata: Could not find Steam\\userdata folder
 Toast_NoFindGameBackup: Unable to find backup game data folder for this account.
+Toast_NoFindGameData: Unable to find this game's data on this account.
 Toast_GameBackupDone: "Game data folder backed up successfully: {folderLocation}"
 Toast_Steam_VdfLast: Was able to load from vdf_last. Some accounts may be missing.
 Toast_PartiallyFixed: Partially fixed

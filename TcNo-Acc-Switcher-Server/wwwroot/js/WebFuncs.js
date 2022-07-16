@@ -44,46 +44,6 @@ function getSelected() {
 }
 
 // Swapping accounts
-async function swapTo(request, e) {
-    if (e !== undefined && e !== null) e.preventDefault();
-    if (!getSelected()) return;
-
-
-    if (request === -1) await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}`, selected.attr("id")); // -1 is for undefined.
-    else await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `SwapTo${getCurrentPage()}WithReq`, selected.attr("id"), request);
-}
-
-// Copies a game's folder from one userdata directory to another
-async function CopySettingsFrom(e, game) {
-    if (e !== undefined && e !== null) e.preventDefault();
-    if (!getSelected()) return;
-    if (!game) return;
-    const steamId64 = selected.attr("id");
-    console.log("Copying settings");
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "CopySettingsFrom", steamId64, game);
-}
-
-// Restores a game's userdata folder from 'backup'
-async function RestoreSettingsTo(e, game) {
-    if (e !== undefined && e !== null) e.preventDefault();
-    if (!getSelected()) return;
-    if (!game) return;
-    const steamId64 = selected.attr("id");
-    console.log("Restoring settings from backup");
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "RestoreSettingsTo", steamId64, game);
-}
-
-//  Manually backup a game's userdata folder
-async function BackupGameData(e, game) {
-    if (e !== undefined && e !== null) e.preventDefault();
-    if (!getSelected()) return;
-    if (!game) return;
-    const steamId64 = selected.attr("id");
-    console.log("Backing up settings");
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "BackupGameData", steamId64, game);
-}
-
-// Swapping accounts
 async function changeImage(e) {
     if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;

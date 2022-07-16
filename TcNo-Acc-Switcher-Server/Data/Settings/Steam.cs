@@ -331,6 +331,42 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
         public static void BuildContextMenu()
         {
             Menu.Clear();
+
+            /* Games submenu, or Game data item */
+            MenuItem gameData = null;
+            if (File.Exists(SteamAppsUserCache) && AppIds.Value.Count > 0)
+            {
+                var menuItems = new List<MenuItem>();
+                foreach (var gameId in InstalledGames.Value)
+                {
+                    menuItems.Add(new MenuItem
+                    {
+                        Text = AppIds.Value.ContainsKey(gameId) ? AppIds.Value[gameId] : gameId,
+                        Children = new List<MenuItem>{
+                            new() {
+                                Text = Lang.Instance["Context_Game_CopySettingsFrom"],
+                                MenuAction = async () => await SteamSwitcherFuncs.CopySettingsFrom(gameId)
+                            },
+                            new() {
+                                Text = Lang.Instance["Context_Game_RestoreSettingsTo"],
+                                MenuAction = async () => await SteamSwitcherFuncs.RestoreSettingsTo(gameId)
+                            },
+                            new() {
+                                Text = Lang.Instance["Context_Game_BackupData"],
+                                MenuAction = async () => await SteamSwitcherFuncs.BackupGameData(gameId)
+                            }
+                        }
+                    });
+                }
+
+                gameData = new MenuItem()
+                {
+                    Text = "Context_GameDataSubmenu",
+                    Children = menuItems
+                };
+            }
+
+            // Prepare menu
             var menuBuilder = new MenuBuilder(new Tuple<string, object>[]
             {
                 new ("Context_SwapTo", new Action(async () => await AppFuncs.SwapToAccount())),
@@ -382,52 +418,19 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                 }),
                 new ("Forget", new Action(async () => await AppFuncs.ForgetAccount())),
                 new ("Notes", new Action(() => ModalData.ShowModal("notes"))),
-            });
-
-            /* Games submenu, or Game data item */
-            MenuItem gameData = null;
-            if (File.Exists(SteamAppsUserCache) && AppIds.Value.Count > 0)
-            {
-                gameData = new MenuItem()
+                new ("Context_ManageSubmenu", new[]
                 {
-                    Text = "Context_GameDataSubmenu",
-                    Children = (
-                        from gameId in InstalledGames.Value
-                        select new MenuItem()
-                        {
-                            Text = AppIds.Value.ContainsKey(gameId) ? AppIds.Value[gameId] : gameId,
-                            Children = new List<MenuItem>()
-                            {
-                                new()
-                                {
-                                    Text = "Context_Game_CopySettingsFrom",
-                                    Content = $"CopySettingsFrom(event, '{gameId}')"
-                                },
-                                new()
-                                {
-                                    Text = "Context_Game_RestoreSettingsTo",
-                                    Content = $"RestoreSettingsTo(event, '{gameId}"
-                                },
-                                new()
-                                {
-                                    Text = "Context_Game_BackupData",
-                                    Content = $"BackupGameData(event, '{gameId}')"
-                                },
-                            }
-                        }
-                    ).ToList()
-                };
-            }
-            menuBuilder.AddItem(new Tuple<string, object>("Context_ManageSubmenu", new[]
-                {
-                    gameData is not null ?
-                        new Tuple<string, object>("Context_GameDataSubmenu", gameData) : null,
-                    BasicStats.PlatformHasAnyGames("Steam") ?
-                        new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)") : null,
+                    gameData is not null
+                        ? new Tuple<string, object>("Context_GameDataSubmenu", gameData)
+                        : null, BasicStats.PlatformHasAnyGames("Steam")
+                            ? new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)")
+                            : null,
                     new ("Context_ChangeImage", "changeImage(event)"),
                     new ("Context_Steam_OpenUserdata", new Action(SteamSwitcherBase.SteamOpenUserdata)),
                     new ("Context_ChangeName", new Action(() => ModalData.ShowModal("changeUsername")))
-                }));
+                })
+            });
+
             Menu.AddRange(menuBuilder.Result());
         }
 

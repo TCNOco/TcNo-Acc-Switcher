@@ -1064,5 +1064,85 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
             };
         }
         #endregion
+
+        #region STEAM_GAME_MANAGEMENT
+        /// <summary>
+        /// Copy settings from currently logged in account to selected game and account
+        /// </summary>
+        public static async Task CopySettingsFrom(string gameId)
+        {
+            var destSteamId = GetCurrentAccountId(true);
+            if (!VerifySteamId(AppData.SelectedAccountId) || !VerifySteamId(destSteamId))
+            {
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoValidSteamId"], Lang["Failed"],
+                    "toastarea");
+                return;
+            }
+            if (destSteamId == AppData.SelectedAccountId)
+            {
+                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_SameAccount"], Lang["Failed"],
+                    "toastarea");
+                return;
+            }
+
+            var sourceSteamId32 = new SteamIdConvert(AppData.SelectedAccountId).Id32;
+            var destSteamId32 = new SteamIdConvert(destSteamId).Id32;
+            var sourceFolder = Path.Join(SteamSettings.FolderPath, $"userdata\\{sourceSteamId32}\\{gameId}");
+            var destFolder = Path.Join(SteamSettings.FolderPath, $"userdata\\{destSteamId32}\\{gameId}");
+            if (!Directory.Exists(sourceFolder))
+            {
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindSteamUserdata"], Lang["Failed"],
+                    "toastarea");
+                return;
+            }
+
+            if (Directory.Exists(destFolder))
+            {
+                // Backup the account's data you're copying to
+                var toAccountBackup = Path.Join(Globals.UserDataFolder, $"Backups\\Steam\\{destSteamId32}\\{gameId}");
+                if (Directory.Exists(toAccountBackup)) Directory.Delete(toAccountBackup, true);
+                Globals.CopyDirectory(destFolder, toAccountBackup, true);
+                Directory.Delete(destFolder, true);
+            }
+            Globals.CopyDirectory(sourceFolder, destFolder, true);
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_SettingsCopied"], Lang["Success"], "toastarea");
+        }
+
+        public static async Task RestoreSettingsTo(string gameId)
+        {
+            if (!VerifySteamId(AppData.SelectedAccountId)) return;
+            var steamId32 = new SteamIdConvert(AppData.SelectedAccountId).Id32;
+            var backupFolder = Path.Join(Globals.UserDataFolder, $"Backups\\Steam\\{steamId32}\\{gameId}");
+
+            var folder = Path.Join(SteamSettings.FolderPath, $"userdata\\{steamId32}\\{gameId}");
+            if (!Directory.Exists(backupFolder))
+            {
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindGameBackup"], Lang["Failed"],
+                    "toastarea");
+                return;
+            }
+            if (Directory.Exists(folder)) Directory.Delete(folder, true);
+            Globals.CopyDirectory(backupFolder, folder, true);
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_GameDataRestored"], Lang["Success"], "toastarea");
+        }
+
+        public static async Task BackupGameData(string gameId)
+        {
+            var steamId32 = new SteamIdConvert(AppData.SelectedAccountId).Id32;
+            var sourceFolder = Path.Join(SteamSettings.FolderPath, $"userdata\\{steamId32}\\{gameId}");
+            if (!VerifySteamId(AppData.SelectedAccountId) || !Directory.Exists(sourceFolder))
+            {
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_NoFindGameData"], Lang["Failed"],
+                    "toastarea");
+                return;
+            }
+
+            var destFolder = Path.Join(Globals.UserDataFolder, $"Backups\\Steam\\{steamId32}\\{gameId}");
+            if (Directory.Exists(destFolder)) Directory.Delete(destFolder, true);
+
+            Globals.CopyDirectory(sourceFolder, destFolder, true);
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_GameBackupDone", new { folderLocation = destFolder }], Lang["Success"], "toastarea");
+        }
+        #endregion
     }
 }
