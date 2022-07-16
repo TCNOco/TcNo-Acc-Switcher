@@ -458,42 +458,10 @@ async function showModalOld(modaltype) {
         pathPickerRequestedFile = platformExe;
         $(".pathPicker").on("click", pathPickerClick);
         input = document.getElementById("FolderLocation");
-    } else if (modaltype.startsWith("notice:")) {
-        // USAGE: "notice:<prompt>
-        // GOAL: Runs function when OK clicked.
-        let action = modaltype.slice(7);
-        let args = "";
-        if (modaltype.split(":").length > 2) {
-            action = modaltype.slice(7).split(":")[0];
-            args = modaltype.slice(7).split(":")[1];
-        }
 
-        const modalConfirmAction = await GetLang("Modal_ConfirmAction"),
-            modalConfirmActionTitle = await GetLang("Modal_Title_ConfirmAction"),
-            ok = await GetLang("Ok");
 
-        let message = "";
-        let header = `<h3>${modalConfirmAction}:</h3>`;
-        let extra = "";
-        if (action.startsWith("RestartAsAdmin")) {
-            message = await GetLang("Prompt_RestartAsAdmin");
-            extra = await GetLang("Prompt_AlwaysAsAdmin");
-            action = (args !== "" ? `restartAsAdmin(${args})` : "restartAsAdmin()");
-        } else {
-            message = `<p>${modaltype.split(":")[2].replaceAll("_", " ")}</p>`;
-            action = action.split(":")[0];
-        }
 
-        $("#modalTitle").text(modalConfirmActionTitle);
-        $("#modal_contents").empty();
-        $("#modal_contents").append(`<div class="infoWindow">
-        <div class="fullWidthContent">${header + message}
-            <div class="YesNo">
-		        <button type="button" id="modal_true" onclick="${action}"><span>${ok}</span></button>
-            </div>
-        </div>
-        </div>`);
-        input = document.getElementById("modal_true");
+
     } else if (modaltype === "accString") {
         platform = getCurrentPage();
         const extraButtons = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalExtraButtons");
@@ -958,29 +926,6 @@ async function initCopyHotKey() {
 
 
 
-// Figures out the best place for a tooltip and returns that location
-// el MUST BE A JS VARIABLE
-function getBestOffset(el) {
-    // Because this can be placed below, and go off the screen.. Figure out where the element is.
-    const parentPos = el[0].getBoundingClientRect();
-    const parentWidth = el.width();
-
-    const parentLeft = parentPos.left;
-    const parentRight = parentLeft + parentWidth;
-
-    // Because this can be placed right or below, and go off the screen.. Figure out where the element is.
-    var bestOffset = "bottom";
-    // Too close to sides -- Basically 1 account gap
-    if (parentLeft < 100) bestOffset = "right";
-    else if (screen.width - parentRight < 100) bestOffset = "left";
-    return bestOffset;
-}
-
-restartAsAdmin = async (args = "") => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiRestartAsAdmin", args);
-
-
-
-
 
 
 
@@ -1008,6 +953,23 @@ function initTooltips() {
     setTimeout(() => $('[data-toggle="tooltip"]').tooltip(), 4000);
 }
 
+// Figures out the best place for a tooltip and returns that location
+// el MUST BE A JS VARIABLE
+function getBestOffset(el) {
+    // Because this can be placed below, and go off the screen.. Figure out where the element is.
+    const parentPos = el[0].getBoundingClientRect();
+    const parentWidth = el.width();
+
+    const parentLeft = parentPos.left;
+    const parentRight = parentLeft + parentWidth;
+
+    // Because this can be placed right or below, and go off the screen.. Figure out where the element is.
+    var bestOffset = "bottom";
+    // Too close to sides -- Basically 1 account gap
+    if (parentLeft < 100) bestOffset = "right";
+    else if (screen.width - parentRight < 100) bestOffset = "left";
+    return bestOffset;
+}
 
 // --------- FROM NEW SYSTEM ----------
 

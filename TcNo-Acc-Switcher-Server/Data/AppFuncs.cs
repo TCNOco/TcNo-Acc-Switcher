@@ -69,7 +69,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             var skipConfirm = AppData.CurrentSwitcher == "Steam" ? Steam.ForgetAccountEnabled : Basic.ForgetAccountEnabled;
             if (!skipConfirm)
-                ModalData.ShowModal("confirm:forgetAccount");
+                ModalData.ShowModal("confirm", ModalData.ExtraArg.ForgetAccount);
             else
             {
                 var trayAcc = AppData.SelectedAccountId;

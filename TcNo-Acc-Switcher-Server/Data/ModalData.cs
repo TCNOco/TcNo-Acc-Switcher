@@ -54,9 +54,18 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        private string _extraArgs;
+        public enum ExtraArg
+        {
+            None,
+            RestartAsAdmin,
+            ClearStats,
+            ForgetAccount
+        }
 
-        public static string ExtraArgs { get => Instance._extraArgs; set => Instance._extraArgs = value; }
+        private ExtraArg _extraArgs;
+        public static ExtraArg ExtraArgs { get => Instance._extraArgs; set => Instance._extraArgs = value; }
+
+
 
         private string _title;
 
@@ -73,17 +82,10 @@ namespace TcNo_Acc_Switcher_Server.Data
 
 
 
-        public static void ShowModal(string type)
+        public static void ShowModal(string type, ExtraArg arg = ExtraArg.None)
         {
-            if (type.Contains(":"))
-            {
-                Type = type.Split(":")[0];
-                ExtraArgs = type.Split(":")[1];
-                IsShown = true;
-                return;
-            }
-
             Type = type;
+            ExtraArgs = arg;
             IsShown = true;
         }
     }

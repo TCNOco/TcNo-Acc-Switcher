@@ -485,7 +485,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             else
             {
                 await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
-                await GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+                ModalData.ShowModal("confirm", ModalData.ExtraArg.RestartAsAdmin);
             }
             return false;
 

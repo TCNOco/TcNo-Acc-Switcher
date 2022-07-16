@@ -204,7 +204,7 @@
             <div class="col-md-12 col-lg-9 col-xl-8 mx-auto settingsCol">
                 <div class="buttoncol">
                     <button id="Steam_PickFolder" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings")'><span>@Locale["Settings_PickFolder", new {platform = "Steam"}]</span></button>
-                    <button id="RestartAsAdmin" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin")'><span>@Locale["Button_RestartAdmin"]</span></button>
+                    <button id="RestartAsAdmin" type="button" @onclick='() => ModalData.ShowModal("confirm", ModalData.ExtraArg.RestartAsAdmin)'><span>@Locale["Button_RestartAdmin"]</span></button>
                 </div>
                 <div class="buttoncol">
                     <button id="Info" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("info")'><span>@Locale["Tooltip_Info"]</span></button>

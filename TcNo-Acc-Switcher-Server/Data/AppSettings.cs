@@ -116,6 +116,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         [JsonProperty("DiscordRpcShareTotalSwitches", Order = 19)] private bool _discordRpcShare = true;
         [JsonProperty("PasswordHash", Order = 20)] private string _passwordHash = "";
         [JsonProperty("GloballyHiddenMetrics", Order = 21)] private Dictionary<string, Dictionary<string, bool>> _globallyHiddenMetrics = new();
+        [JsonProperty("AlwaysAdmin", Order = 22)] private bool _alwaysAdmin;
         [JsonIgnore] private bool _desktopShortcut;
         [JsonIgnore] private bool _startMenu;
         [JsonIgnore] private bool _startMenuPlatforms;
@@ -182,6 +183,12 @@ namespace TcNo_Acc_Switcher_Server.Data
         public static bool TrayStartup { get => Instance._trayStartup; set => Instance._trayStartup = value; }
         private static bool UpdateCheckRan { get =>Instance._updateCheckRan; set => Instance._updateCheckRan = value; }
         public static bool PreRenderUpdate { get =>Instance._preRenderUpdate; set => Instance._preRenderUpdate = value; }
+
+        public static bool AlwaysAdmin
+        {
+            get =>Instance._alwaysAdmin;
+            set => Instance._alwaysAdmin = value;
+        }
         public class GameSetting
         {
             public string SettingId { get; set; } = "";
@@ -642,7 +649,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             catch (UnauthorizedAccessException)
             {
                 await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_RestartAsAdmin"], Lang["Failed"], "toastarea");
-                await GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+                ModalData.ShowModal("confirm", ModalData.ExtraArg.RestartAsAdmin);
             }
         }
 
@@ -833,7 +840,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             {
                 if (Globals.InstalledToProgramFiles() && !Globals.IsAdministrator || !Globals.HasFolderAccess(Globals.AppDataFolder))
                 {
-                    await GeneralInvocableFuncs.ShowModal("notice:RestartAsAdmin");
+                    ModalData.ShowModal("confirm", ModalData.ExtraArg.RestartAsAdmin);
                     return;
                 }
 

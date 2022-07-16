@@ -60,6 +60,7 @@ Settings_ShareStats: Share stats annoymously (recommended)
 Settings_DiscordRpc: Discord Rich Presence (RPC)
 Settings_DiscordRpcShare: Share total switches
 Settings_ViewStats: View stats
+Settings_AlwaysAdmin: Always start as Admin
 Preview: Preview
 Settings_ClearStats: Reset
 Settings_CurrentLocation: 'Current install location: {path}'

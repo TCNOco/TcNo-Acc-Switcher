@@ -74,6 +74,8 @@ namespace TcNo_Acc_Switcher_Client
 
             Directory.SetCurrentDirectory(Globals.UserDataFolder);
 
+            if (AppSettings.AlwaysAdmin && !Globals.IsAdministrator) GeneralFuncs.RestartAsAdmin();
+
             // Crash handler
             AppDomain.CurrentDomain.UnhandledException += Globals.CurrentDomain_UnhandledException;
             // Upload crash logs if any, before starting program

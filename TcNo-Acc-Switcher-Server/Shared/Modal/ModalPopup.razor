@@ -32,7 +32,7 @@
             <svg draggable="false" class="modal_header_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 264" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2">
                 <use href="img/TcNo_Logo_Flat.svg#logo"></use>
             </svg>
-            <span id="modalTitle">@Locale["Modal_Title_Info"]</span>
+            <span id="modalTitle">@ModalData.Title</span>
             <div id="window-controls-modal">
                 <button id="btnClose-modal" @onclick="() => ModalData.IsShown = false">
                     <i class="fas fa-times" draggable="false"></i>
@@ -58,6 +58,7 @@
                     <ModalStats />
                     break;
                 case "confirm":
+                    @* For forgetting accounts, clearing stats & restarting as Admin *@
                     <ModalConfirmAction />
                     break;
             }

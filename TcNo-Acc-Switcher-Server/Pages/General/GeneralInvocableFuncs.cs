@@ -38,38 +38,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
     {
         private static readonly Lang Lang = Lang.Instance;
 
-        [JSInvokable]
-        public static void GiRestartAsAdmin(string args)
-        {
-            var fileName = "TcNo-Acc-Switcher_main.exe";
-            if (!AppData.TcNoClientApp) fileName = Assembly.GetEntryAssembly()?.Location.Replace(".dll", ".exe") ?? "TcNo-Acc-Switcher-Server_main.exe";
-            else
-            {
-                // Is client app, but could be developing >> No _main just yet.
-                if (!File.Exists(Path.Join(Globals.AppDataFolder, fileName)) && File.Exists(Path.Join(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe")))
-                    fileName = Path.Combine(Globals.AppDataFolder, "TcNo-Acc-Switcher.exe");
-            }
-
-            var proc = new ProcessStartInfo
-            {
-                WorkingDirectory = Globals.AppDataFolder,
-                FileName = fileName,
-                UseShellExecute = true,
-                Arguments = args,
-                Verb = "runas"
-            };
-            try
-            {
-                _ = Process.Start(proc);
-                Environment.Exit(0);
-            }
-            catch (Exception ex)
-            {
-                Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
-                Environment.Exit(0);
-            }
-        }
-
         /// <summary>
         /// JS function handler for saving settings from Settings GUI page into [Platform]Settings.json file
         /// </summary>
