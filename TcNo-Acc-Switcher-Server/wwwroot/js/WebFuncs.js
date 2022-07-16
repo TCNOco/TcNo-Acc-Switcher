@@ -28,15 +28,6 @@ GetLang = async(k) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server",
 GetLangSub = async(key, obj) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiLocaleObj", key, obj);
 
 
-// FORGETTING ACCOUNTS
-async function forget(e) {
-    e.preventDefault();
-    const reqId = $(selectedElem).attr("id");
-    const pageForgetAcc = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `Get${getCurrentPage()}ForgetAcc`);
-    if (!pageForgetAcc) showModalOld(`confirm:AcceptForget${getCurrentPage()}Acc:${reqId}`);
-    else await Modal_Confirm(`AcceptForget${getCurrentPage()}Acc:${reqId}`, true);
-}
-
 // Take a string that is HTML escaped, and return a normal string back.
 unEscapeString = (s) => s.replace("&lt;", "<").replace("&gt;", ">").replace("&#34;", "\"").replace("&#39;", "'").replace("&#47;", "/");
 
@@ -467,40 +458,6 @@ async function showModalOld(modaltype) {
         pathPickerRequestedFile = platformExe;
         $(".pathPicker").on("click", pathPickerClick);
         input = document.getElementById("FolderLocation");
-    } else if (modaltype.startsWith("confirm:")) {
-        // USAGE: "confirm:<prompt>
-        // GOAL: To return true/false
-        let action = modaltype.slice(8);
-
-        const modalConfirmAction = await GetLang("Modal_ConfirmAction");
-
-        let message = "";
-        let header = `<h3>${modalConfirmAction}:</h3>`;
-        if (action.startsWith("AcceptForgetSteamAcc")) {
-            message = await GetLang("Prompt_ForgetSteam");
-        } else if (action.startsWith("ClearStats")) {
-            message = await GetLang("Prompt_ClearStats");
-        } else {
-            message = `<p>${modaltype.split(":")[2].replaceAll("_", " ")}</p>`;
-            // The only exception to confirm:<prompt> was AcceptForgetSteamAcc, as that was confirm:AcceptForgetSteamAcc:steamId
-            // Could be more in the future.
-            action = action.split(":")[0];
-        }
-
-        const modalConfirmActionTitle = await GetLang("Modal_Title_ConfirmAction"),
-            yes = await GetLang("Yes"),
-            no = await GetLang("No");
-
-        $("#modalTitle").text(modalConfirmActionTitle);
-        $("#modal_contents").empty();
-        $("#modal_contents").append(`<div class="infoWindow">
-        <div class="fullWidthContent">${header + message}
-            <div class="YesNo">
-		        <button type="button" id="modal_true" onclick="Modal_Confirm('${action}', true)"><span>${yes}</span></button>
-		        <button type="button" id="modal_false" onclick="Modal_Confirm('${action}', false)"><span>${no}</span></button>
-            </div>
-        </div>
-        </div>`);
     } else if (modaltype.startsWith("notice:")) {
         // USAGE: "notice:<prompt>
         // GOAL: Runs function when OK clicked.
@@ -632,17 +589,6 @@ async function showModalOld(modaltype) {
     });
 }
 
-async function showModal() {
-    $(".modalBG").fadeIn();
-    return;
-    //TODO: Figure how to detect what items are available. Maybe just check for most common button, then text input, etc? Maybe a defaultSelect class or something.
-    if (input === undefined) return;
-    input.focus();
-    if (input.nodeName !== "TEXTAREA") input.select();
-}
-async function hideModal() {
-    $(".modalBG").fadeOut();
-}
 
 
 
@@ -764,27 +710,6 @@ async function Modal_Finalise(platform, platformSettingsPath) {
     $(".modalBG").fadeOut();
 
     location.reload();
-}
-
-async function Modal_Confirm(action, value) {
-    if (window.location.href.includes("PreviewCss")) {
-        // Do nothing for CSS preview page.
-        return;
-    }
-
-    const success = await GetLang("Success");
-    const confirmAction = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiConfirmAction", action, value);
-    if (confirmAction === "refresh") location.reload();
-    else if (confirmAction === "success")
-        window.notification.new({
-            type: "success",
-            title: "",
-            message: success,
-            renderTo: "toastarea",
-            duration: 3000
-        });
-
-    $(".modalBG").fadeOut();
 }
 
 async function Modal_FinaliseAccString(platform) {
@@ -1086,6 +1011,13 @@ function initTooltips() {
 
 // --------- FROM NEW SYSTEM ----------
 
+// Show and Hide modal popup window -- This allows animations.
+showModal = async () => $(".modalBG").fadeIn();
+hideModal = async () => $(".modalBG").fadeOut();
+
+// Focus on a specific element, like an input or button
+focusOn = async (element) => $(element).focus();
+
 // Remove existing highlighted elements, if any.
 function clearAccountTooltips() {
     $(".currentAcc").each((_, e) => {
@@ -1115,10 +1047,4 @@ async function showNoteTooltips() {
         parentEl.attr("data-placement", getBestOffset(parentEl));
     });
     initTooltips();
-}
-
-
-// Focus on a specific element, like an input or button
-async function focusOn(element) {
-    $(element).focus();
 }

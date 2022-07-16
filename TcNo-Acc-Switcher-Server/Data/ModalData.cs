@@ -54,6 +54,10 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
+        private string _extraArgs;
+
+        public static string ExtraArgs { get => Instance._extraArgs; set => Instance._extraArgs = value; }
+
         private string _title;
 
         public static string Title
@@ -71,6 +75,14 @@ namespace TcNo_Acc_Switcher_Server.Data
 
         public static void ShowModal(string type)
         {
+            if (type.Contains(":"))
+            {
+                Type = type.Split(":")[0];
+                ExtraArgs = type.Split(":")[1];
+                IsShown = true;
+                return;
+            }
+
             Type = type;
             IsShown = true;
         }

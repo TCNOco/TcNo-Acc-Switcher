@@ -429,12 +429,10 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
 
         public static async Task ChangeUsername()
         {
-            var acc = AppData.SteamAccounts;
             SteamSettings.CustomAccNames[AppData.SelectedAccountId] = AppData.SelectedAccount.DisplayName;
             SteamSettings.SaveSettings();
 
             AppData.SelectedAccount.NotifyDataChanged();
-            AppData.SteamAccounts = acc; // For some reason this needs to be here, otherwise it seems to clear...?
             await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ChangedUsername"], renderTo: "toastarea");
         }
         private static string VerifyVdfText(string loginUserPath)

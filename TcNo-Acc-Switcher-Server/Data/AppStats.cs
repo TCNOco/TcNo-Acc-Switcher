@@ -102,7 +102,6 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
 
-        [JSInvokable]
         public static void ClearStats()
         {
             Instance = _instance = new AppStats { _currentlyModifying = true };

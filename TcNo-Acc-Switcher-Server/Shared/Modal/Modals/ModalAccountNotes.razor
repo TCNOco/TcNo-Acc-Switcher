@@ -25,6 +25,11 @@
     {
         ModalData.Title = Lang.Instance["Modal_Title_AccountNotes", new { accountName = AppData.SelectedAccount.DisplayName }];
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await AppData.InvokeVoidAsync("focusOn", "#accNotes");
+    }
 }
 
 <div class="infoWindow">

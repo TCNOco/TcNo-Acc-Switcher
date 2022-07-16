@@ -1,0 +1,94 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@using TcNo_Acc_Switcher_Server.Shared.Modal
+@using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Data.Settings
+@using TcNo_Acc_Switcher_Server.Pages.General
+@using Newtonsoft.Json
+@using System.IO
+@using System.Text.RegularExpressions
+@using TcNo_Acc_Switcher_Server.Pages.Basic
+@using TcNo_Acc_Switcher_Server.Pages.Steam
+@code {
+    private MarkupString _message = new();
+    protected override void OnInitialized()
+    {
+        ModalData.Title = Lang.Instance["Modal_Title_ConfirmAction"];
+
+        _message = ModalData.ExtraArgs switch
+        {
+            "forgetAccount" => AppData.CurrentSwitcher == "Steam"
+                ? new MarkupString(Lang.Instance["Prompt_ForgetSteam"])
+                : new MarkupString(Lang.Instance["Prompt_ForgetAccount"]),
+            "clearStats" => new MarkupString(Lang.Instance["Prompt_ClearStats"]),
+            _ => _message
+            };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await AppData.InvokeVoidAsync("focusOn", "#modal_false");
+    }
+}
+
+<div class="infoWindow">
+    <div class="fullWidthContent"><h3>@Lang.Instance["Modal_ConfirmAction"]:</h3> @_message
+        <div class="YesNo">
+            <button type="button" id="modal_true" @onclick="ButtonYes"><span>@Lang.Instance["Yes"]</span></button>
+            <button type="button" id="modal_false" @onclick="ButtonNo"><span>@Lang.Instance["No"]</span></button>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    private async Task ButtonYes()
+    {
+        switch (ModalData.ExtraArgs)
+        {
+            case "forgetAccount":
+            {
+                if (AppData.CurrentSwitcher == "Steam")
+                {
+                    Steam.ForgetAccountEnabled = true;
+                    Steam.SaveSettings();
+                }
+                else
+                {
+                    Basic.ForgetAccountEnabled = true;
+                    Basic.SaveSettings();
+                }
+
+                await AppFuncs.ForgetAccount();
+                break;
+            }
+            case "clearStats":
+                AppStats.ClearStats();
+                break;
+        }
+
+        await GeneralInvocableFuncs.ShowToast("success", "Success", renderTo: "toastarea");
+        //AppData.Instance.NotifyDataChanged();
+        ModalData.IsShown = false;
+        ModalData.ExtraArgs = "";
+    }
+
+    private void ButtonNo()
+    {
+        ModalData.IsShown = false;
+        ModalData.ExtraArgs = "";
+    }
+}

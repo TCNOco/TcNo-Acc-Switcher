@@ -204,7 +204,7 @@
     </label>
 
     <button id="AppSett_ViewStats" type="button" @onclick='() => ModalData.ShowModal("showStats")'><span>@Locale["Settings_ViewStats"]</span></button>
-    <button id="AppSett_ClearStats" type="button" onclick='showModal("confirm:ClearStats")'><span>@Locale["Settings_ClearStats"]</span></button>
+    <button id="AppSett_ClearStats" type="button" @onclick='() => ModalData.ShowModal("confirm:clearStats")'><span>@Locale["Settings_ClearStats"]</span></button>
 </div>
 <div class="rowSetting">
     <div class="form-check">

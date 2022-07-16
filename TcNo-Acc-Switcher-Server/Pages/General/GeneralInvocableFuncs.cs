@@ -146,24 +146,6 @@ namespace TcNo_Acc_Switcher_Server.Pages.General
             }
         }
 
-        [JSInvokable]
-        public static string GiConfirmAction(string action, bool value)
-        {
-            Globals.DebugWriteLine($@"[JSInvoke:General\GeneralInvocableFuncs.GiConfirmAction] action={action.Split(":")[0]}, value={value}");
-            if (!value) return "";
-
-            switch (action)
-            {
-                case "RestartAsAdmin":
-                    break;
-                case "ClearStats":
-                    AppStats.ClearStats();
-                    return "success";
-            }
-
-            return "";
-        }
-
         /// <summary>
         /// Opens a link in user's browser through Shell
         /// </summary>
