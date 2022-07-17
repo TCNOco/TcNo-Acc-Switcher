@@ -75,15 +75,16 @@ namespace TcNo_Acc_Switcher_Server.Data
                 new Thread(AppStats.UploadStats).Start();
 
             // Discord integration
-            RefreshDiscordPresenceAsync();
+            RefreshDiscordPresenceAsync(true);
 
             // Unused. Idk if I will use these, but they are here just in-case.
             //DiscordClient.OnReady += (sender, e) => { Console.WriteLine("Received Ready from user {0}", e.User.Username); };
             //DiscordClient.OnPresenceUpdate += (sender, e) => { Console.WriteLine("Received Update! {0}", e.Presence); };
         }
 
-        public static void RefreshDiscordPresenceAsync()
+        public static void RefreshDiscordPresenceAsync(bool firstLaunch)
         {
+            if (!firstLaunch && DiscordClient.CurrentUser is null) return;
             var dThread = new Thread(RefreshDiscordPresence);
             dThread.Start();
         }
@@ -108,7 +109,7 @@ namespace TcNo_Acc_Switcher_Server.Data
 
             DiscordClient ??= new DiscordRpcClient("973188269405765682")
             {
-                Logger = new ConsoleLogger { Level = LogLevel.Warning },
+                Logger = new ConsoleLogger { Level = LogLevel.None },
             };
             if (!DiscordClient.IsInitialized) DiscordClient.Initialize();
             else timestamp = DiscordClient.CurrentPresence.Timestamps;
@@ -299,8 +300,8 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
         }
 
-        public static async Task ReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload");
-        public static async Task CacheReloadPage() => await ActiveIJsRuntime.InvokeVoidAsync("location.reload(true);");
+        public static void ReloadPage() => ActiveNavMan.NavigateTo(ActiveNavMan.Uri, forceLoad: false);
+        public static void CacheReloadPage() => ActiveNavMan.NavigateTo(ActiveNavMan.Uri, forceLoad: true);
         #endregion
 
 

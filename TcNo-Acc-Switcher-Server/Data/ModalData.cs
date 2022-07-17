@@ -13,6 +13,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.Data;
 
 namespace TcNo_Acc_Switcher_Server.Data
@@ -118,7 +119,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             }
 
             /// <summary>
-            /// This can be a filename, a folder name, or: AnyFile, AnyFolder, *
+            /// This can be a filename, a folder name, or: AnyFile, AnyFolder
             /// </summary>
             public string RequestedFile;
             public string LastPath = "";
@@ -127,7 +128,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             public PathPickerGoal Goal;
 
             public string ModalHeader;
-            public string ModalText;
+            public MarkupString ModalText;
             public string ModalButtonText;
 
             public PathPickerRequest() {}
@@ -153,9 +154,23 @@ namespace TcNo_Acc_Switcher_Server.Data
                     }
 
                     ModalHeader = Lang.Instance["Modal_Title_LocatePlatform", new { platform = platformName }];
-                    ModalText = Lang.Instance["Modal_EnterDirectory", new { platform = platformName }];
+                    ModalText = new MarkupString(Lang.Instance["Modal_EnterDirectory", new { platform = platformName }]);
                     ModalButtonText = Lang.Instance["Modal_LocatePlatformFolder", new { platform = platformName }];
                     RequestedFile = platformExe;
+                }
+                else if (Goal == PathPickerGoal.SetBackground)
+                {
+                    ModalHeader = Lang.Instance["Modal_Title_Background"];
+                    ModalText = new MarkupString(Lang.Instance["Modal_SetBackground"]);
+                    ModalButtonText = Lang.Instance["Modal_SetBackground_Button"];
+                    RequestedFile = "AnyFile";
+                }
+                else if (Goal == PathPickerGoal.SetUserdata)
+                {
+                    ModalHeader = Lang.Instance["Modal_Title_Userdata"];
+                    ModalText = new MarkupString(Lang.Instance["Modal_SetUserdata"]);
+                    ModalButtonText = Lang.Instance["Modal_SetUserdata_Button"];
+                    RequestedFile = "AnyFolder";
                 }
                 // TODO: Add remaining actions here make them actually do something in the modal window button click functions.
 

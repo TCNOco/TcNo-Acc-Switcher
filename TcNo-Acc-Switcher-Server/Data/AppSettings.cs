@@ -225,7 +225,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 DisabledPlatforms.Remove("");
 
             SaveSettings();
-            await AppData.ReloadPage();
+            AppData.ReloadPage();
         }
 
         public static async Task ShowPlatform(string platform)
@@ -239,7 +239,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             _ = DisabledPlatforms.Remove(platform);
 
             SaveSettings();
-            await AppData.ReloadPage();
+            AppData.ReloadPage();
         }
 
         private string _stylesheet;
@@ -360,7 +360,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             ActiveTheme = swapTo.Replace(" ", "_");
             try
             {
-                if (await LoadStylesheetFromFile()) await AppData.ReloadPage();
+                if (await LoadStylesheetFromFile()) AppData.ReloadPage();
                 else await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_LoadStylesheetFailed"],
                     "Stylesheet error", "toastarea");
             }
@@ -521,63 +521,11 @@ namespace TcNo_Acc_Switcher_Server.Data
         }
 
         [JSInvokable]
-        public static async Task SetBackground(string path)
-        {
-            Background = $"{path}";
-
-            if (File.Exists(path) && path != "")
-            {
-                Directory.CreateDirectory(Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\"));
-                Globals.CopyFile(path, Path.Join(Globals.UserDataFolder, "wwwroot\\img\\custom\\background" + Path.GetExtension(path)));
-                Background = $"img/custom/background{Path.GetExtension(path)}";
-                SaveSettings();
-            }
-            await AppData.CacheReloadPage();
-        }
-
-        [JSInvokable]
         public static async Task SetSwitcherPassword(string pass)
         {
             PasswordHash = Globals.GetSha256HashString(pass);
             SaveSettings();
             await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_PasswordChanged"], renderTo: "toastarea");
-        }
-
-        [JSInvokable]
-        public static async Task SetUserData(string path)
-        {
-            // Verify this is different.
-            var diOriginal = new DirectoryInfo(Globals.AppDataFolder);
-            var diNew = new DirectoryInfo(path);
-            if (diOriginal.FullName == diNew.FullName) return;
-
-            Background = $"{path}";
-
-            if (Directory.Exists(path) && path != "")
-            {
-                await File.WriteAllTextAsync(Path.Join(Globals.AppDataFolder, "userdata_path.txt"), path);
-            }
-
-            bool folderEmpty;
-            if (Directory.Exists(path))
-                folderEmpty = Globals.IsDirectoryEmpty(path);
-            else
-            {
-                folderEmpty = true;
-                Directory.CreateDirectory(path);
-            }
-
-
-            if (folderEmpty)
-            {
-                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationCopying"], renderTo: "toastarea");
-                if (!Globals.CopyFilesRecursive(Globals.AppDataFolder, path))
-                    await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FileCopyFail"], renderTo: "toastarea");
-            }
-            else
-                await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationNotCopying"], renderTo: "toastarea");
-
-            await GeneralInvocableFuncs.ShowToast("info", Lang["Toast_DataLocationSet"], renderTo: "toastarea");
         }
 
         #endregion
@@ -662,7 +610,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             else
             {
                 WindowsAccentColor = "";
-                await AppData.ReloadPage();
+                AppData.ReloadPage();
             }
         }
 
@@ -676,7 +624,7 @@ namespace TcNo_Acc_Switcher_Server.Data
             WindowsAccentColorHsl = FromRgb(r, g, b);
 
             if (userInvoked)
-                await AppData.ReloadPage();
+                AppData.ReloadPage();
         }
 
         [SupportedOSPlatform("windows")]

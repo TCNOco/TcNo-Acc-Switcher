@@ -95,12 +95,12 @@
     }
 
     // Pressed Enter on the input
-    private void KeyPress(KeyboardEventArgs k)
+    private async Task KeyPress(KeyboardEventArgs k)
     {
         // If enter was pressed
         if (k.Key == "Enter")
         {
-             Confirm();
+             await Confirm();
         }
     }
 
@@ -108,19 +108,17 @@
     private void Update() => ModalData.PathPickerNotifyDataChanged();
 
 
-    private void Confirm()
+    private async Task Confirm()
     {
-        //AppData.SelectedAccount.NotifyDataChanged();
-        // TODO: Do things here.
+        ModalData.IsShown = false;
+
         if (ModalData.PathPicker.Goal == ModalData.PathPickerRequest.PathPickerGoal.FindPlatformExe)
             ModalFuncs.UpdatePlatformFolder();
+        else if (ModalData.PathPicker.Goal == ModalData.PathPickerRequest.PathPickerGoal.SetBackground)
+            ModalFuncs.SetBackground();
+        else if (ModalData.PathPicker.Goal == ModalData.PathPickerRequest.PathPickerGoal.SetUserdata)
+            await ModalFuncs.ChangeUserdataFolder();
 
 
-
-
-
-
-
-        ModalData.IsShown = false;
     }
 }

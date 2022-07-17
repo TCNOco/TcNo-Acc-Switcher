@@ -3,6 +3,7 @@
 @using System.Diagnostics
 @using System.IO
 @using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Shared.Modal
 @*TcNo Account Switcher - A Super fast account switcher
     Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
     This program is free software: you can redistribute it and/or modify
@@ -60,7 +61,7 @@
 <div class="rowSetting listWithBars">
     <ul>
         <li>
-            <a class="fancyLink" @onclick='() => GeneralInvocableFuncs.ShowModal("SetBackground")'>@Locale["Settings_ThemeBackground"]</a>
+            <a class="fancyLink" @onclick="ModalFuncs.ShowSetBackgroundModal">@Locale["Settings_ThemeBackground"]</a>
         </li>
         <li>
             <a class="fancyLink" @onclick='() => Process.Start("explorer.exe", Path.Join(Globals.UserDataFolder, "themes"))'>@Locale["Settings_ThemeOpenFolder"]</a>
@@ -197,7 +198,7 @@
 <h2 class="SettingsHeader">@Locale["Settings_Header_StatsSharing"]</h2>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_CollectStats" @bind="AppSettings.StatsEnabled" @onclick="AppData.RefreshDiscordPresenceAsync"><label class="form-check-label" for="AppSett_CollectStats"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_CollectStats" @bind="AppSettings.StatsEnabled" @onclick="() => AppData.RefreshDiscordPresenceAsync(false)"><label class="form-check-label" for="AppSett_CollectStats"></label>
     </div>
     <label for="AppSett_CollectStats">
         @Locale["Settings_CollectStats"]<br>
@@ -215,14 +216,14 @@
 </div>
 <div class="rowSetting">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpc" @bind="AppSettings.DiscordRpc" @onclick="AppData.RefreshDiscordPresenceAsync"><label class="form-check-label" for="AppSett_DiscordRpc"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpc" @bind="AppSettings.DiscordRpc" @onclick="() => AppData.RefreshDiscordPresenceAsync(false)"><label class="form-check-label" for="AppSett_DiscordRpc"></label>
     </div>
     <label for="AppSett_DiscordRpc">
         @Locale["Settings_DiscordRpc"]<br>
     </label>
 
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpcSwitches" @bind="AppSettings.DiscordRpcShare" @onclick="AppData.RefreshDiscordPresenceAsync"><label class="form-check-label" for="AppSett_DiscordRpcSwitches"></label>
+        <input class="form-check-input" type="checkbox" id="AppSett_DiscordRpcSwitches" @bind="AppSettings.DiscordRpcShare" @onclick="() => AppData.RefreshDiscordPresenceAsync(false)"><label class="form-check-label" for="AppSett_DiscordRpcSwitches"></label>
     </div>
     <label for="AppSett_DiscordRpcSwitches">
         @Locale["Settings_DiscordRpcShare"]<br>
@@ -249,7 +250,7 @@
             await File.WriteAllTextAsync(userDataFile, "");
             File.Delete(userDataFile);
 
-            await GeneralInvocableFuncs.ShowModal("SetUserdata");
+            ModalFuncs.ShowChangeUserdataFolderModal();
         }
         catch (Exception)
         {

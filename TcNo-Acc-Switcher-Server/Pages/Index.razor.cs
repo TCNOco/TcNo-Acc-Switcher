@@ -18,6 +18,7 @@ using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 using TcNo_Acc_Switcher_Server.Pages.Steam;
+using TcNo_Acc_Switcher_Server.Shared.Modal;
 using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
 using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
 
@@ -37,10 +38,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                     if (!Directory.Exists(SteamSettings.FolderPath) || !File.Exists(SteamSettings.Exe()))
                     {
                         AppData.CurrentSwitcher = "Steam";
-                        ModalData.PathPicker =
-                            new ModalData.PathPickerRequest(ModalData.PathPickerRequest.PathPickerGoal.FindPlatformExe);
-                        ModalData.ShowModal("find");
-                        //await GeneralInvocableFuncs.ShowModal("find:Steam:Steam.exe:SteamSettings");
+                        ModalFuncs.ShowUpdatePlatformFolderModal();
                         return;
                     }
                     if (SteamSwitcherFuncs.SteamSettingsValid()) AppData.ActiveNavMan.NavigateTo("/Steam/");
@@ -54,15 +52,10 @@ namespace TcNo_Acc_Switcher_Server.Pages
                         AppData.CurrentSwitcher = CurrentPlatform.FullName;
                         if (!await GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return;
 
-                        if (Directory.Exists(BasicSettings.FolderPath) && File.Exists(BasicSettings.Exe())) AppData.ActiveNavMan.NavigateTo("/Basic/");
+                        if (Directory.Exists(BasicSettings.FolderPath) && File.Exists(BasicSettings.Exe()))
+                            AppData.ActiveNavMan.NavigateTo("/Basic/");
                         else
-                        {
-                            ModalData.PathPicker =
-                                new ModalData.PathPickerRequest(ModalData.PathPickerRequest.PathPickerGoal.FindPlatformExe);
-                            ModalData.ShowModal("find");
-
-                            //await GeneralInvocableFuncs.ShowModal($"find:{CurrentPlatform.SafeName}:{CurrentPlatform.ExeName}:{CurrentPlatform.SafeName}");
-                        }
+                            ModalFuncs.ShowUpdatePlatformFolderModal();
                     }
                     break;
             }

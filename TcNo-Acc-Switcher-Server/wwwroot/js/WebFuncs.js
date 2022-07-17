@@ -407,54 +407,6 @@ async function showModalOld(modaltype) {
             redirectLink}')"><span>${modalAddCurrentAccount}</span></button>
 	        </div>`);
         input = document.getElementById("CurrentAccountName");
-    } else if (modaltype === "SetBackground") {
-        const modalTitleBackground = await GetLang("Modal_Title_Background"),
-            modalHeading = await GetLang("Modal_SetBackground"),
-            modalSetButton = await GetLang("Modal_SetBackground_Button");
-
-        $("#modalTitle").text(modalTitleBackground);
-        $("#modal_contents").empty();
-        $("#modal_contents").append(`<div>
-		        <p class="modal-text">${modalHeading}</p>
-	        </div>
-	        <div class="inputAndButton">
-		        <input type="text" id="FolderLocation" oninput="updateIndicator('')" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
-	        </div>
-	        <div class="settingsCol inputAndButton">
-		        <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseBackground()"><span>${
-            modalSetButton}</span></button>
-	        </div>
-            <div class="pathPicker">
-                ${await getLogicalDrives()}
-            </div>`);
-
-        pathPickerRequestedFile = "AnyFile";
-        $(".pathPicker").on("click", pathPickerClick);
-        input = document.getElementById("FolderLocation");
-    } else if (modaltype === "SetUserdata") {
-        const modalTitleBackground = await GetLang("Modal_Title_Userdata"),
-            modalHeading = await GetLang("Modal_SetUserdata"),
-            modalSetButton = await GetLang("Modal_SetUserdata_Button");
-
-        $("#modalTitle").text(modalTitleBackground);
-        $("#modal_contents").empty();
-        $("#modal_contents").append(`<div>
-		        <p class="modal-text">${modalHeading}</p>
-	        </div>
-	        <div class="inputAndButton">
-		        <input type="text" id="FolderLocation" oninput="updateIndicator('')" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
-	        </div>
-	        <div class="settingsCol inputAndButton">
-                <button class="modalOK" type="button" id="set_background" onclick="Modal_FinaliseUserDataFolder()"><span>${
-            modalSetButton}</span></button>
-	        </div>
-            <div class="pathPicker">
-                ${await getLogicalDrives()}
-            </div>`);
-
-        pathPickerRequestedFile = "AnyFolder";
-        $(".pathPicker").on("click", pathPickerClick);
-        input = document.getElementById("FolderLocation");
     } else {
 
         const notice = await GetLang("Notice");
@@ -618,26 +570,9 @@ async function Modal_FinaliseAccString(platform) {
     $("#acc_list").click();
 }
 
-async function Modal_FinaliseBackground() {
-    const pathOrUrl = $("#FolderLocation").val();
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetBackground", pathOrUrl);
-    $(".modalBG").fadeOut();
-}
-
 async function Modal_FinaliseSwitcherPassword() {
     const switcherPassword = $("#SwitcherPassword").val();
     await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetSwitcherPassword", switcherPassword);
-    $(".modalBG").fadeOut();
-}
-
-async function Modal_FinaliseUserDataFolder() {
-    if (window.location.href.includes("PreviewCss")) {
-        // Do nothing for CSS preview page.
-        return;
-    }
-
-    const pathOrUrl = $("#FolderLocation").val();
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetUserData", pathOrUrl);
     $(".modalBG").fadeOut();
 }
 

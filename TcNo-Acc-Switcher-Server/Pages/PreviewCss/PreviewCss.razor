@@ -16,6 +16,7 @@
 @using TcNo_Acc_Switcher_Server.Data
 @using TcNo_Acc_Switcher_Server.Pages.General
 @using TcNo_Acc_Switcher_Server.Shared.ContextMenu
+@using TcNo_Acc_Switcher_Server.Shared.Modal
 @namespace TcNo_Acc_Switcher_Server.Pages.PreviewCss
 @inject NavigationManager NavManager
 @{ AppData.SetActiveNavMan(NavManager); }
@@ -211,7 +212,7 @@
                     <button id="crowdin" type="button" @onclick='() => ModalData.ShowModal("crowdin")'><span>@Locale["Modal_Crowdin_Header"]</span></button>
                 </div>
                 <div class="buttoncol">
-                    <button id="SetBackground" type="button" @onclick='async () => await GeneralInvocableFuncs.ShowModal("SetBackground")'><span>@Locale["Modal_SetBackground_Button"]</span></button>
+                    <button id="SetBackground" type="button" @onclick="ModalFuncs.ShowSetBackgroundModal"><span>@Locale["Modal_SetBackground_Button"]</span></button>
                     <button id="ShowStats" type="button" @onclick='() => ModalData.ShowModal("showStats")'><span>@Locale["Settings_ViewStats"]</span></button>
                 </div>
                 <div class="buttoncol">

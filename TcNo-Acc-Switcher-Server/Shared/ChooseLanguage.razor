@@ -51,6 +51,6 @@
 		if (string.IsNullOrWhiteSpace(key)) return;
 	    await Lang.LoadLang(key);
 	    AppSettings.Rtl = new CultureInfo(Lang.Current).TextInfo.IsRightToLeft;
-		await AppData.ReloadPage();
+		AppData.ReloadPage();
 	}
 }

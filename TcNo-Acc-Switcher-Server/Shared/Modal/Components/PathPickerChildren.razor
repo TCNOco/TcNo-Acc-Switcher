@@ -52,7 +52,7 @@
 else
 {
     <div>
-        <span class="folder c head selected-path" path="Path">@_currentFileList.FolderName</span>
+        <span class="folder c head selected-path" @onclick="CloseFolder">@_currentFileList.FolderName</span>
         @foreach (var folder in _currentFileList.ChildFolders.Value)
         {
             <PathPickerChildren CurrentPath="@folder.FullPath" Depth="Depth + 1"/>
@@ -77,10 +77,25 @@ else
         ModalData.PathPickerNotifyDataChanged();
     }
 
+    private void CloseFolder()
+    {
+        try
+        {
+            var parent = Path.GetDirectoryName(_currentFileList.FullPath) ?? "";
+            ModalData.PathPicker.LastPath = parent;
+            ModalData.PathPicker.LastElement = ModalData.PathPickerRequest.PathPickerElement.Folder;
+            ModalData.PathPickerNotifyDataChanged();
+        }
+        catch (Exception)
+        {
+            //
+        }
+    }
+
     private void SelectFile(string file)
     {
         _selectedFile = file;
-        ModalData.PathPicker.LastPath = Path.Join(_currentFileList.FullPath, file);
+        ModalData.PathPicker.LastPath = file;
         ModalData.PathPicker.LastElement = ModalData.PathPickerRequest.PathPickerElement.File;
         ModalData.PathPickerNotifyDataChanged();
     }
