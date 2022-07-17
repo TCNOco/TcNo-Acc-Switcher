@@ -428,7 +428,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                             : null,
                     new ("Context_ChangeImage", new Action(ModalFuncs.ShowChangeAccImageModal)),
                     new ("Context_Steam_OpenUserdata", new Action(SteamSwitcherBase.SteamOpenUserdata)),
-                    new ("Context_ChangeName", new Action(() => ModalData.ShowModal("changeUsername")))
+                    new ("Context_ChangeName", new Action(ModalFuncs.ShowChangeUsernameModal))
                 })
             });
 

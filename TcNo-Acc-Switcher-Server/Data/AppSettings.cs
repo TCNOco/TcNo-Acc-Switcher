@@ -520,14 +520,6 @@ namespace TcNo_Acc_Switcher_Server.Data
             return ((int)Math.Round(h), (int)Math.Round(s), (int)Math.Round(l));
         }
 
-        [JSInvokable]
-        public static async Task SetSwitcherPassword(string pass)
-        {
-            PasswordHash = Globals.GetSha256HashString(pass);
-            SaveSettings();
-            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_PasswordChanged"], renderTo: "toastarea");
-        }
-
         #endregion
 
         #region SHORTCUTS

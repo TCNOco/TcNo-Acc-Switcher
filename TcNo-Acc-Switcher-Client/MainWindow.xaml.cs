@@ -153,7 +153,6 @@ namespace TcNo_Acc_Switcher_Client
                     _cefView = new ChromiumWebBrowser();
                     _cefView.JavascriptMessageReceived += CefView_OnJavascriptMessageReceived;
                     _cefView.AddressChanged += CefViewOnAddressChanged;
-                    _cefView.PreviewMouseUp += MainBackgroundOnPreviewMouseUp;
                     _cefView.ConsoleMessage += CefViewOnConsoleMessage;
                     _cefView.KeyboardHandler = new CefKeyboardHandler();
                     _cefView.MenuHandler = new CefMenuHandler();
@@ -187,14 +186,6 @@ namespace TcNo_Acc_Switcher_Client
                 }
 #endif
             }
-        }
-
-        private void MainBackgroundOnPreviewMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton != MouseButton.XButton1 && e.ChangedButton != MouseButton.XButton2) return;
-            // Back
-            e.Handled = true;
-            _ = AppData.NavigateUpOne();
         }
 
         private void AddBrowser()

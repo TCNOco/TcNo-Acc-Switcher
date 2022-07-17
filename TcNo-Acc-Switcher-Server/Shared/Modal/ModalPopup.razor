@@ -50,9 +50,6 @@
                 case "notes":
                     <ModalAccountNotes />
                     break;
-                case "changeUsername":
-                    <ModalChangeUsername />
-                    break;
                 case "showStats":
                     <ModalStats />
                     break;
@@ -63,6 +60,10 @@
                 case "find":
                     @* For locating platform EXEs as well as AnyFile and AnyFolder locations *@
                     <ModalPathPicker />
+                    break;
+                case "getText":
+                    @* For entering usernames for new accounts, or setting an app password *@
+                    <ModalTextInput />
                     break;
             }
 

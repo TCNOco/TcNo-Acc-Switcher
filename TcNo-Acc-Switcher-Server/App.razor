@@ -22,7 +22,7 @@
 
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
     </Found>
     <NotFound>
         <LayoutView Layout="@typeof(MainLayout)">
@@ -51,5 +51,4 @@
     // Unsubscribe from the event when our component is disposed
         NavigationManager.LocationChanged -= LocationChanged;
     }
-
 }

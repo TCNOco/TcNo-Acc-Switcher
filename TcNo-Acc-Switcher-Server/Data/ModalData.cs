@@ -15,6 +15,7 @@
 using System;
 using Microsoft.AspNetCore.Components;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Data.Settings;
 
 namespace TcNo_Acc_Switcher_Server.Data
 {
@@ -138,25 +139,16 @@ namespace TcNo_Acc_Switcher_Server.Data
                 RequestedFile = requestedFile;
                 ShowFiles = showFiles;
                 Goal = goal;
+                LastPath = "";
 
                 if (Goal == PathPickerGoal.FindPlatformExe)
                 {
-                    string platformName, platformExe;
-                    if (AppData.CurrentSwitcher == "Steam")
-                    {
-                        platformName = "Steam";
-                        platformExe = "steam.exe";
-                    }
-                    else
-                    {
-                        platformName = CurrentPlatform.FullName;
-                        platformExe = CurrentPlatform.ExeName;
-                    }
+                    string platformName = AppData.CurrentSwitcher;
+                    RequestedFile = AppData.CurrentSwitcher == "Steam" ? "steam.exe" : CurrentPlatform.ExeName;
 
                     ModalHeader = Lang.Instance["Modal_Title_LocatePlatform", new { platform = platformName }];
                     ModalText = new MarkupString(Lang.Instance["Modal_EnterDirectory", new { platform = platformName }]);
                     ModalButtonText = Lang.Instance["Modal_LocatePlatformFolder", new { platform = platformName }];
-                    RequestedFile = platformExe;
                 }
                 else if (Goal == PathPickerGoal.SetBackground)
                 {
@@ -179,7 +171,6 @@ namespace TcNo_Acc_Switcher_Server.Data
                     ModalButtonText = Lang.Instance["Modal_SetImage"];
                     RequestedFile = "AnyFile";
                 }
-                // TODO: Add remaining actions here make them actually do something in the modal window button click functions.
 
                 PathPickerNotifyDataChanged();
             }
@@ -191,7 +182,73 @@ namespace TcNo_Acc_Switcher_Server.Data
         // These MUST be separate from the class above to refresh the element properly.
         public event Action PathPickerOnChange;
         public static void PathPickerNotifyDataChanged() => Instance.PathPickerOnChange?.Invoke();
+        #endregion
 
+        #region TextInputModal
+        public class TextInputRequest
+        {
+            public enum TextInputGoal
+            {
+                AppPassword,
+                AccString,
+                ChangeUsername
+            }
+
+            public string LastString = "";
+            public TextInputGoal Goal;
+
+            public string ModalHeader;
+            public MarkupString ModalText;
+            public MarkupString ModalSubheading = new();
+            public string ModalButtonText;
+            public MarkupString ExtraButtons = new();
+
+            public TextInputRequest() { }
+            public TextInputRequest(TextInputGoal goal)
+            {
+                // Clear existing data, if any.
+                LastString = "";
+                Goal = goal;
+
+                if (Goal == TextInputGoal.AccString)
+                {
+                    // Adding a new account, but need a DisplayName before.
+                    ModalSubheading = new MarkupString();
+
+                    ModalHeader = Lang.Instance["Modal_Title_AddNew", new { platform = AppData.CurrentSwitcher }];
+                    ModalText = new MarkupString(Lang.Instance["Modal_AddNew", new { platform = AppData.CurrentSwitcher }]);
+                    ModalButtonText = Lang.Instance["Modal_AddCurrentAccount", new { platform = AppData.CurrentSwitcher }];
+                    ExtraButtons = AppData.CurrentSwitcher == "Steam" ? new MarkupString() : CurrentPlatform.GetUserModalExtraButtons;
+                }
+                else if (Goal == TextInputGoal.AppPassword)
+                {
+                    ExtraButtons = new MarkupString();
+
+                    ModalHeader = Lang.Instance["Modal_Title_SetPassword"];
+                    ModalSubheading = new MarkupString(Lang.Instance["Modal_SetPassword"]);
+                    ModalText = new MarkupString(Lang.Instance["Modal_SetPassword_Info", new { link = "https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/FAQ---More-Info#can-i-put-this-program-on-a-usb-portable" }]);
+                    ModalButtonText = Lang.Instance["Modal_SetPassword_Button"];
+                }
+                else if (Goal == TextInputGoal.ChangeUsername)
+                {
+                    ModalSubheading = new MarkupString();
+
+                    ModalHeader = Lang.Instance["Modal_Title_ChangeUsername"];
+                    ModalText = new MarkupString(Lang.Instance["Modal_ChangeUsername", new { link = AppData.CurrentSwitcher }]);
+                    ModalButtonText = Lang.Instance["Toast_SetUsername"];
+                    ExtraButtons = AppData.CurrentSwitcher == "Steam" ? new MarkupString() : CurrentPlatform.GetUserModalExtraButtons;
+                }
+
+                TextInputNotifyDataChanged();
+            }
+        }
+
+        private TextInputRequest _textInput;
+        public static TextInputRequest TextInput { get => Instance._textInput; set => Instance._textInput = value; }
+
+        // These MUST be separate from the class above to refresh the element properly.
+        public event Action TextInputOnChange;
+        public static void TextInputNotifyDataChanged() => Instance.TextInputOnChange?.Invoke();
         #endregion
     }
 }

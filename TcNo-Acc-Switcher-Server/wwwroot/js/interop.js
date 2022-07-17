@@ -10,27 +10,6 @@ if (sortable == undefined) {
 	sortable = null;
 }
 
-$(function () {
-    /*
-     * Prevents default browser navigation (Often causes breaks in code by somehow keeping state)
-     * Can't seem to do this via the WebView2 component directly as key presses just don't reach the app...
-     * So, instead the mouse back button is handled here.
-     * Don't know where I could handle a keyboard back button... Because I can't find a JS key for it.
-     *
-     * tldr: pressing mouse back, or keyboard back often somewhat reliably causes the error in-app, and should be handled differently.
-     */
-    $(document).bind("mouseup", (e) => {
-        if (e.which === 4 || e.which === 5) { // Backward & Forward mouse button
-            e.preventDefault();
-        }
-
-        if (e.which === 4) { // Backward mouse button
-            btnBack_Click();
-            return;
-        }
-    });
-});
-
 function jQueryAppend(jQuerySelector, strToInsert) {
 	$(jQuerySelector).append(strToInsert);
 }
@@ -144,3 +123,24 @@ async function showUpdateBar() {
         }
     });
 }
+
+
+// --------- FROM NEW SYSTEM ----------
+
+$(function () {
+    /*
+     * Prevents default browser navigation (Often causes breaks in code by somehow keeping state)
+     * Can't seem to do this via the WebView2 component directly as key presses just don't reach the app...
+     * So, instead the mouse back button is handled here.
+     * Don't know where I could handle a keyboard back button... Because I can't find a JS key for it.
+     *
+     * tldr: pressing mouse back, or keyboard back often somewhat reliably causes the error in-app, and should be handled differently.
+     */
+
+    // 2022-07-17: This seems to be something that can ONLY be handled with JS - and not Blazor...
+    $(document).bind("mouseup", (e) => {
+        if (e.which === 4 || e.which === 5) { // Backward & Forward mouse button
+            e.preventDefault();
+        }
+    });
+});

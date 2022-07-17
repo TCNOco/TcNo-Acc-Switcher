@@ -1,0 +1,107 @@
+﻿@*TcNo Account Switcher - A Super fast account switcher
+    Copyright (C) 2019-2022 TechNobo (Wesley Pyburn)
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses />.*@
+
+@using TcNo_Acc_Switcher_Server.Shared.Modal
+@using TcNo_Acc_Switcher_Server.Data
+@using TcNo_Acc_Switcher_Globals
+@using TcNo_Acc_Switcher_Server.Data.Settings
+@using TcNo_Acc_Switcher_Server.Pages.General
+@using TcNo_Acc_Switcher_Server.Shared.Modal.Components
+@using Newtonsoft.Json
+@using System.IO
+@code {
+    protected override void OnInitialized()
+    {
+        ModalData.Instance.TextInputOnChange += OnChangeHandler;
+        OnChangeHandler(); // Run once just to set vars
+    }
+
+    private async void OnChangeHandler()
+    {
+        ModalData.Title = ModalData.TextInput.ModalHeader;
+        var t = ModalData.TextInput.ExtraButtons;
+        _extraButtonSet = ModalData.TextInput.ExtraButtons.Value != new MarkupString().Value;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ModalData.Instance.TextInputOnChange -= OnChangeHandler;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await AppData.InvokeVoidAsync("focusOn", "#textInput");
+    }
+
+    private bool _extraButtonSet;
+}
+
+@if (ModalData.TextInput.ModalSubheading.Value != new MarkupString().Value)
+{
+    <h3>@ModalData.TextInput.ModalSubheading</h3>
+}
+<div>
+    <span class="modal-text">@ModalData.TextInput.ModalText</span>
+</div>
+<div class="inputAndButton">
+    <input type="text" id="textInput" autocomplete="off" style="width: 100%;padding: 8px;" @onkeyup="KeyPress" value="@ModalData.TextInput.LastString" @oninput="OnInput">
+</div>
+<div class="settingsCol inputAndButton">
+    @if (_extraButtonSet)
+    {
+        @ModalData.TextInput.ExtraButtons
+    }
+    <button class="modalOK" type="button" id="set_account_name" @onclick="Confirm"><span>@ModalData.TextInput.ModalButtonText</span></button>
+</div>
+
+@code
+{
+    private void OnInput(ChangeEventArgs args)
+    {
+        if (ModalData.TextInput.LastString.Contains("TCNO:")) // The request can contain/contains special, pasted chars for extra actions
+            ModalData.TextInput.LastString = args.Value?.ToString();
+        else
+            ModalData.TextInput.LastString = Globals.GetCleanFilePath(args.Value?.ToString());
+        Update();
+    }
+
+    // Pressed Enter on the input
+    private async Task KeyPress(KeyboardEventArgs k)
+    {
+        // If enter was pressed
+        if (k.Key == "Enter")
+        {
+             await Confirm();
+        }
+    }
+
+    // Update dynamically as the user types.
+    private static void Update() => ModalData.TextInputNotifyDataChanged();
+
+
+    private static async Task Confirm()
+    {
+        ModalData.IsShown = false;
+
+        if (ModalData.TextInput.Goal == ModalData.TextInputRequest.TextInputGoal.AppPassword)
+            await ModalFuncs.SetAppPassword();
+        else if (ModalData.TextInput.Goal is
+                ModalData.TextInputRequest.TextInputGoal.AccString
+                or ModalData.TextInputRequest.TextInputGoal.ChangeUsername)
+            await ModalFuncs.SetAccountString();
+
+
+    }
+}

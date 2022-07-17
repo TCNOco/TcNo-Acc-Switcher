@@ -20,7 +20,9 @@ using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
+using TcNo_Acc_Switcher_Server.Pages.Basic;
 using TcNo_Acc_Switcher_Server.Pages.General;
+using TcNo_Acc_Switcher_Server.Pages.Steam;
 using BasicSettings = TcNo_Acc_Switcher_Server.Data.Settings.Basic;
 using SteamSettings = TcNo_Acc_Switcher_Server.Data.Settings.Steam;
 
@@ -165,6 +167,73 @@ namespace TcNo_Acc_Switcher_Server.Shared.Modal
             // Reload page.
             AppData.CacheReloadPage();
             await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Toast_UpdatedImage"], renderTo: "toastarea");
+        }
+
+        #endregion
+
+
+
+        #region TEXT INPUT MODALS
+
+        /// <summary>
+        /// Show the Set App Password modal
+        /// </summary>
+        public static void ShowSetAppPasswordModal()
+        {
+            ModalData.TextInput =
+                new ModalData.TextInputRequest(ModalData.TextInputRequest.TextInputGoal.AppPassword);
+            ModalData.ShowModal("getText");
+        }
+
+        /// <summary>
+        /// Sets the App Password, to stop simple eyes from snooping
+        /// </summary>
+        public static async Task SetAppPassword()
+        {
+            AppSettings.PasswordHash = Globals.GetSha256HashString(ModalData.TextInput.LastString);
+            AppSettings.SaveSettings();
+            await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Toast_PasswordChanged"], renderTo: "toastarea");
+        }
+
+        /// <summary>
+        /// Show the Set App Password modal
+        /// </summary>
+        public static void ShowSetAccountStringModal()
+        {
+            ModalData.TextInput =
+                new ModalData.TextInputRequest(ModalData.TextInputRequest.TextInputGoal.AccString);
+            ModalData.ShowModal("getText");
+        }
+
+        /// <summary>
+        /// Show the Set App Password modal
+        /// </summary>
+        public static void ShowChangeUsernameModal()
+        {
+            ModalData.TextInput =
+                new ModalData.TextInputRequest(ModalData.TextInputRequest.TextInputGoal.ChangeUsername);
+            ModalData.ShowModal("getText");
+        }
+
+        /// <summary>
+        /// Sets the App Password, to stop simple eyes from snooping
+        /// </summary>
+        public static async Task SetAccountString()
+        {
+            ModalData.IsShown = false;
+
+            if (AppData.CurrentSwitcher == "Steam")
+            {
+                if (ModalData.TextInput.Goal is ModalData.TextInputRequest.TextInputGoal.ChangeUsername)
+                    await SteamSwitcherFuncs.ChangeUsername();
+            }
+            else
+            {
+                if (ModalData.TextInput.Goal is ModalData.TextInputRequest.TextInputGoal.ChangeUsername)
+                    await BasicSwitcherFuncs.ChangeUsername(AppData.SelectedAccountId, ModalData.TextInput.LastString);
+                else
+                    await BasicSwitcherFuncs.BasicAddCurrent(ModalData.TextInput.LastString);
+            }
         }
 
         #endregion

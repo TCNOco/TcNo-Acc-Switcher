@@ -20,6 +20,7 @@
 @using TcNo_Acc_Switcher_Server.Shared.Accounts
 @using System.IO
 @using Microsoft.AspNetCore.WebUtilities
+@using TcNo_Acc_Switcher_Server.Shared.Modal
 @inject AppData AData
 @inject IJSRuntime JsRuntime
 @{ AData.SetActiveIJsRuntime(JsRuntime); }
@@ -83,7 +84,7 @@
             <i class="fas fa-plus footerIcoInline"></i>
             <span>@Locale["Button_AddNew"]</span>
         </button>
-        <button id="btnAddCurrent" onclick="showModal('accString');">
+        <button id="btnAddCurrent" @onclick="ModalFuncs.ShowSetAccountStringModal">
             <i class="fas fa-save footerIcoInline"></i>
             <span>@Locale["Button_SaveCurrent"]</span>
         </button>

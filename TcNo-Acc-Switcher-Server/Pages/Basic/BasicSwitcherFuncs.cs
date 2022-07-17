@@ -891,7 +891,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             catch (IOException e)
             {
                 Globals.WriteToLog("Failed to write to file: " + e);
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Error_FileAccessDenied", new { logPath = Globals.GetLogPath() }], Lang["Error"], "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Error_FileAccessDenied", new { logPath = Globals.GetLogPath() }], Lang["Error"], renderTo: "toastarea");
                 return;
             }
 
@@ -903,11 +903,17 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
             catch (Exception e)
             {
                 Globals.WriteToLog("Failed to change username: " + e);
-                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantChangeUsername"], Lang["Error"], "toastarea");
+                await GeneralInvocableFuncs.ShowToast("error", Lang["Toast_CantChangeUsername"], Lang["Error"], renderTo: "toastarea");
                 return;
             }
 
-            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ChangedUsername"], toastTitle: "toastarea");
+            if (AppData.SelectedAccount is not null)
+            {
+                AppData.SelectedAccount.DisplayName = ModalData.TextInput.LastString;
+                AppData.SelectedAccount.NotifyDataChanged();
+            }
+
+            await GeneralInvocableFuncs.ShowToast("success", Lang["Toast_ChangedUsername"], renderTo: "toastarea");
         }
 
         public static Dictionary<string, string> ReadAllIds(string path = null)

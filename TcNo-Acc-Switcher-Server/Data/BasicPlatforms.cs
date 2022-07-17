@@ -449,7 +449,6 @@ namespace TcNo_Acc_Switcher_Server.Data
                 GeneralFuncs.SaveDict(regJson, Path.Join(AccountLoginCachePath(acc), "reg.json"), true);
         }
 
-
         public static MarkupString GetUserModalExtraButtons => UsernameModalExtraButtons == ""
             ? new MarkupString()
             : new MarkupString(Globals.ReadAllText(Path.Join(Globals.AppDataFolder, UsernameModalExtraButtons)));

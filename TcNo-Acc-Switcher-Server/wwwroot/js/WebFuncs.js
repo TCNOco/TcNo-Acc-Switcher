@@ -45,58 +45,6 @@ function getSelected() {
 
 
 
-
-
-
-// Swapping accounts
-async function changeImage(e) {
-
-
-
-
-    if (e !== undefined && e !== null) e.preventDefault();
-    if (!getSelected()) return;
-
-    const path = $(".acc:checked").next("label").children("img")[0].getAttribute("src").split("?")[0];
-    
-    $("#modal_contents").append(`<div>
-		        <p class="modal-text">${modalHeading}</p>
-	        </div>
-	        <div class="inputAndButton">
-		        <input type="text" id="FolderLocation" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_background').click();"'>
-	        </div>
-	        <div class="settingsCol inputAndButton">
-                <button class="modalOK" type="button" id="set_background" onclick="Modal_FinalizeImage('${encodeURI(path)}')"><span>${modalSetButton}</span></button>
-	        </div>
-            <div class="pathPicker">
-                ${await getLogicalDrives()}
-            </div>`);
-
-    pathPickerRequestedFile = "AnyFile";
-    const input = document.getElementById("FolderLocation");
-    $(".pathPicker").on("click", pathPickerClick);
-    $(".modalBG").fadeIn(() => {
-        try {
-            if (input === undefined) return;
-            input.focus();
-            input.select();
-        }
-        catch (err) {
-
-        }
-    });
-
-
-}
-Modal_FinalizeImage = async (dest) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `ImportNewImage`, JSON.stringify({ dest: dest, path: $("#FolderLocation").val() }));
-
-
-
-
-
-
-
-
 // Open Game Stats menu 1: Enable/Disable stats for specific games
 async function ShowGameStatsSetup(e = null) {
     if (e !== undefined && e !== null) e.preventDefault();
@@ -328,8 +276,19 @@ async function refreshAccount(game, accountId) {
 hidePlatform = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HidePlatform", selectedElem);
 createPlatformShortcut = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCreatePlatformShortcut", selectedElem);
 
-var exportingAccounts = false;
 
+
+
+
+
+
+
+
+
+
+
+
+var exportingAccounts = false;
 async function exportAllAccounts() {
     if (exportingAccounts) {
 	    const toastAlreadyProcessing = await GetLang("Toast_AlreadyProcessing"),
@@ -361,6 +320,17 @@ function saveFile(fileName, urlFile) {
 	a.remove();
 }
 
+
+
+
+
+
+
+
+
+
+
+
 // Link handling
 OpenLinkInBrowser = async(link) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "OpenLinkInBrowser", link);
 
@@ -369,73 +339,13 @@ let pathPickerRequestedFile = "";
 // Info Window
 async function showModalOld(modaltype) {
     let input, platform;
-    if (modaltype.startsWith("setAppPassword")) {
-        // USAGE: "changeUsername"
-        const modalChangeUsername = await GetLang("Modal_SetPassword"),
-            modalSetPasswordButton = await GetLang("Modal_SetPassword_Button"),
-            modalTitleSetPassword = await GetLang("Modal_Title_SetPassword"),
-            modalSetPasswordInfo = await GetLangSub("Modal_SetPassword_Info", { link: "https://github.com/TcNobo/TcNo-Acc-Switcher/wiki/FAQ---More-Info#can-i-put-this-program-on-a-usb-portable" });
 
-        $("#modalTitle").text(modalTitleSetPassword);
-        $("#modal_contents").empty();
+    const notice = await GetLang("Notice");
 
-        $("#modal_contents").append(`<h3>${modalChangeUsername}</h3>
-	        <div class="inputAndButton">
-		        <input type="text" id="SwitcherPassword" style="width: 100%;padding: 8px;" autocomplete="off" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_password').click();">
-	        </div>
-            <div>
-                <span class="modal-text">${modalSetPasswordInfo}</span>
-            </div>
-	        <div class="settingsCol inputAndButton">
-		        <button class="modalOK" type="button" id="set_password" onclick="Modal_FinaliseSwitcherPassword()"><span>${
-            modalSetPasswordButton}</span></button>
-	        </div>`);
-        input = document.getElementById("NewAccountName");
-    } else if (modaltype === "accString") {
+    $("#modalTitle").text(notice);
+    $("#modal_contents").empty();
+    $("#modal_contents").append(`<div class="infoWindow"><div class="fullWidthContent">${modaltype}</div></div>`);
 
-
-
-
-
-        platform = getCurrentPage();
-        const extraButtons = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalExtraButtons");
-
-        Modal_RequestedLocated(false);
-        // Sub in info if this is a basic page
-        var redirectLink = platform;
-        platform = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCurrentBasicPlatform", platform);
-
-        const modalTitleAddNew = await GetLangSub("Modal_Title_AddNew", { platform: platform }),
-            modalAddNew = await GetLangSub("Modal_AddNew", { platform: platform }),
-            modalAddCurrentAccount = await GetLangSub("Modal_AddCurrentAccount", { platform: platform });
-
-        $("#modalTitle").text(modalTitleAddNew);
-        $("#modal_contents").empty();
-        $("#modal_contents").append(`<div>
-		        <span class="modal-text">${modalAddNew}</span>
-	        </div>
-	        <div class="inputAndButton">
-		        <input type="text" id="CurrentAccountName" autocomplete="off" style="width: 100%;padding: 8px;" onkeydown="javascript: if(event.keyCode == 13) document.getElementById('set_account_name').click();" onkeypress='return /[^<>:\\.\\"\\/\\\\|?*]/i.test(event.key)'>
-	        </div>
-	        <div class="settingsCol inputAndButton">
-				${extraButtons}
-		        <button class="modalOK" type="button" id="set_account_name" onclick="Modal_FinaliseAccString('${
-            redirectLink}')"><span>${modalAddCurrentAccount}</span></button>
-	        </div>`);
-        input = document.getElementById("CurrentAccountName");
-
-
-
-
-
-    } else {
-
-        const notice = await GetLang("Notice");
-
-        $("#modalTitle").text(notice);
-        $("#modal_contents").empty();
-        $("#modal_contents").append(`<div class="infoWindow"><div class="fullWidthContent">${modaltype}</div></div>`);
-    }
     $(".modalBG").fadeIn(() => {
         try {
             if (input === undefined) return;
@@ -551,32 +461,6 @@ function Modal_RequestedLocated(found) {
     } catch (_) {
 
     }
-}
-
-async function Modal_FinaliseAccString(platform) {
-    if (window.location.href.includes("PreviewCss")) {
-        // Do nothing for CSS preview page.
-        return;
-    }
-
-    // Supported: BASIC
-    const raw = $("#CurrentAccountName").val();
-    let name = raw;
-
-    // Clean string if not a command string.
-    if (raw.indexOf(":{") === -1) {
-        name = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiGetCleanFilePath", raw);
-    }
-
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", platform + "AddCurrent", name);
-    $(".modalBG").fadeOut();
-    $("#acc_list").click();
-}
-
-async function Modal_FinaliseSwitcherPassword() {
-    const switcherPassword = $("#SwitcherPassword").val();
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "SetSwitcherPassword", switcherPassword);
-    $(".modalBG").fadeOut();
 }
 
 async function Modal_SaveNotes(accId) {

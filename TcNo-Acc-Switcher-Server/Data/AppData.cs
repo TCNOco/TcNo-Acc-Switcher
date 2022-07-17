@@ -312,12 +312,13 @@ namespace TcNo_Acc_Switcher_Server.Data
         {
             var uri = ActiveNavMan.Uri;
             if (uri.EndsWith('/')) uri = uri[..^1];
+            uri = uri.Replace("http://", "").Replace("https://", "");
 
             // Navigate up one folder
             if (uri.Contains("/"))
             {
                 var split = uri.Split('/');
-                var newUri = string.Join("/", split.Take(split.Length - 1));
+                var newUri = "http://" + string.Join("/", split.Take(split.Length - 1));
                 ActiveNavMan.NavigateTo(newUri);
             }
             else
