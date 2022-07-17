@@ -123,6 +123,9 @@
     <None Update="Resources\el-GR.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\en-PT.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\en-US.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

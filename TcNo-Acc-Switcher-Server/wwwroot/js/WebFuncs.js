@@ -43,19 +43,22 @@ function getSelected() {
 	return true;
 }
 
+
+
+
+
+
 // Swapping accounts
 async function changeImage(e) {
+
+
+
+
     if (e !== undefined && e !== null) e.preventDefault();
     if (!getSelected()) return;
 
     const path = $(".acc:checked").next("label").children("img")[0].getAttribute("src").split("?")[0];
-
-    const modalTitleBackground = await GetLang("Modal_Title_Userdata"),
-        modalHeading = await GetLang("Modal_SetImageHeader"),
-        modalSetButton = await GetLang("Modal_SetImage");
-
-    $("#modalTitle").text(modalTitleBackground);
-    $("#modal_contents").empty();
+    
     $("#modal_contents").append(`<div>
 		        <p class="modal-text">${modalHeading}</p>
 	        </div>
@@ -82,7 +85,17 @@ async function changeImage(e) {
 
         }
     });
+
+
 }
+Modal_FinalizeImage = async (dest) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `ImportNewImage`, JSON.stringify({ dest: dest, path: $("#FolderLocation").val() }));
+
+
+
+
+
+
+
 
 // Open Game Stats menu 1: Enable/Disable stats for specific games
 async function ShowGameStatsSetup(e = null) {
@@ -312,8 +325,6 @@ async function refreshAccount(game, accountId) {
     location.reload();
 }
 
-Modal_FinalizeImage = async(dest) => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", `ImportNewImage`, JSON.stringify({ dest: dest, path: $("#FolderLocation").val() }));
-
 hidePlatform = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "HidePlatform", selectedElem);
 createPlatformShortcut = async() => await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiCreatePlatformShortcut", selectedElem);
 
@@ -381,6 +392,11 @@ async function showModalOld(modaltype) {
 	        </div>`);
         input = document.getElementById("NewAccountName");
     } else if (modaltype === "accString") {
+
+
+
+
+
         platform = getCurrentPage();
         const extraButtons = await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "PlatformUserModalExtraButtons");
 
@@ -407,6 +423,11 @@ async function showModalOld(modaltype) {
             redirectLink}')"><span>${modalAddCurrentAccount}</span></button>
 	        </div>`);
         input = document.getElementById("CurrentAccountName");
+
+
+
+
+
     } else {
 
         const notice = await GetLang("Notice");
@@ -530,24 +551,6 @@ function Modal_RequestedLocated(found) {
     } catch (_) {
 
     }
-}
-
-//function Modal_Finalise(platform, platformSettingsPath) {
-//    DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
-//    $(".modalBG").fadeOut();
-//    window.location.assign(platformSettingsPath.split("Settings")[0]);
-//}
-
-async function Modal_Finalise(platform, platformSettingsPath) {
-    if (window.location.href.includes("PreviewCss")) {
-        // Do nothing for CSS preview page.
-        return;
-    }
-
-    await DotNet.invokeMethodAsync("TcNo-Acc-Switcher-Server", "GiUpdatePath", platformSettingsPath, $("#FolderLocation").val());
-    $(".modalBG").fadeOut();
-
-    location.reload();
 }
 
 async function Modal_FinaliseAccString(platform) {

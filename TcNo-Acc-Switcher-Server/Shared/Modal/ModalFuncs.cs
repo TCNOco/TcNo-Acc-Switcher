@@ -12,9 +12,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Components;
+using Newtonsoft.Json.Linq;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
@@ -25,6 +28,7 @@ namespace TcNo_Acc_Switcher_Server.Shared.Modal
 {
     public class ModalFuncs
     {
+        #region PATH PICKER MODALS
         public static void ShowUpdatePlatformFolderModal()
         {
             ModalData.PathPicker =
@@ -134,5 +138,35 @@ namespace TcNo_Acc_Switcher_Server.Shared.Modal
 
             await GeneralInvocableFuncs.ShowToast("info", Lang.Instance["Toast_DataLocationSet"], renderTo: "toastarea");
         }
+
+        /// <summary>
+        /// Show the Username change modal
+        /// </summary>
+        public static void ShowChangeAccImageModal()
+        {
+            ModalData.PathPicker =
+                new ModalData.PathPickerRequest(ModalData.PathPickerRequest.PathPickerGoal.SetAccountImage);
+            ModalData.ShowModal("find");
+        }
+
+        /// <summary>
+        /// Update an accounts username
+        /// </summary>
+        public static async Task ChangeAccImage()
+        {
+            // Verify path exists and copy image in.
+            if (!File.Exists(ModalData.PathPicker.LastPath)) return;
+            var imageDest = Path.Join(Globals.UserDataFolder, "wwwroot\\img\\profiles\\", AppData.CurrentSwitcherSafe);
+            Globals.CopyFile(ModalData.PathPicker.LastPath, Path.Join(imageDest, AppData.SelectedAccountId + ".jpg"));
+
+            // Update file last write time, so it's not deleted and updated.
+            File.SetLastWriteTime(Path.Join(imageDest, AppData.SelectedAccountId + ".jpg"), DateTime.Now);
+
+            // Reload page.
+            AppData.CacheReloadPage();
+            await GeneralInvocableFuncs.ShowToast("success", Lang.Instance["Toast_UpdatedImage"], renderTo: "toastarea");
+        }
+
+        #endregion
     }
 }

@@ -25,7 +25,7 @@
 @*<div class="modalBG" onclick="if (event.target === this)$('.modalBG').fadeOut();" style="display: none;">*@
     <div class="modalFG">
         <div id="window-title-modal">
-            <button id="modalBtnBack" style="display: none">
+            <button id="modalBtnBack" style="display: none" @onclick="ModalBack">
                 <i class="fas fa-chevron-left icon" style="transition: transform 500ms ease-in-out" draggable="false" alt="-"></i>
             </button>
             <svg draggable="false" class="modal_header_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 264" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2">
@@ -88,6 +88,12 @@
     public void Dispose()
     {
         ModalData.Instance.OnChange -= OnChangeHandler;
+    }
+
+    // Modal back button clicked
+    private void ModalBack()
+    {
+
     }
 
 }

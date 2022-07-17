@@ -135,8 +135,18 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Get list of files in Resources folder
         /// </summary>
         public static List<string> GetAvailableLanguages() => Directory.GetFiles(Path.Join(Globals.AppDataFolder, "Resources")).Select(f => Path.GetFileName(f).Split(".yml")[0]).ToList();
-        public static Dictionary<string, string> GetAvailableLanguagesDict() => GetAvailableLanguages().ToDictionary(l => new CultureInfo(l).DisplayName);
-        public static KeyValuePair<string, string> GetCurrentLanguage() => new(new CultureInfo(Current).DisplayName, Current);
+        public static Dictionary<string, string> GetAvailableLanguagesDict() {
+            var dict = GetAvailableLanguages().ToDictionary(l => new CultureInfo(l).DisplayName);
+            dict.Remove("English (Portugal)");
+            dict["English (Pirate)"] = "en-PT";
+            return dict;
+        }
+
+        public static KeyValuePair<string, string> GetCurrentLanguage()
+        {
+            if (Current == "en-PT") return new KeyValuePair<string, string>("English (Pirate)", Current);
+            return new KeyValuePair<string, string>(new CultureInfo(Current).DisplayName, Current);
+        }
 
         public static async Task<bool> Load(string filename, bool save = false)
         {

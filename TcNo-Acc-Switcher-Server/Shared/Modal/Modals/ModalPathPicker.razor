@@ -118,6 +118,8 @@
             ModalFuncs.SetBackground();
         else if (ModalData.PathPicker.Goal == ModalData.PathPickerRequest.PathPickerGoal.SetUserdata)
             await ModalFuncs.ChangeUserdataFolder();
+        else if (ModalData.PathPicker.Goal == ModalData.PathPickerRequest.PathPickerGoal.SetAccountImage)
+            await ModalFuncs.ChangeAccImage();
 
 
     }

@@ -54,8 +54,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Steam
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Steam\Settings.razor.cs.ClearSettings]");
             Data.Settings.Steam.ResetSettings();
-            AppData.ActiveNavMan.NavigateTo(
-                $"/Steam?toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_ClearedPlatformSettings", new {platform = "Steam"}])}");
+            AppData.NavigateToWithToast("/Steam", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Steam" }]);
         }
 
         // BUTTON: Reset images

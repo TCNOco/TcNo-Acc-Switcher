@@ -12,6 +12,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses />.*@
 
+@using TcNo_Acc_Switcher_Server.Data
+@using Microsoft.JSInterop
+@inject AppData AData
+@inject IJSRuntime JsRuntime
+@{ AData.SetActiveIJsRuntime(JsRuntime); }
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+@implements IDisposable
+
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
@@ -22,3 +30,26 @@
         </LayoutView>
     </NotFound>
 </Router>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+    // Subscribe to the event
+        NavigationManager.LocationChanged += LocationChanged;
+        base.OnInitialized();
+    }
+
+    static void LocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        var navigationMethod = e.IsNavigationIntercepted ? "HTML" : "code";
+        System.Diagnostics.Debug.WriteLine($"Notified of navigation via {navigationMethod} to {e.Location}");
+    }
+
+    void IDisposable.Dispose()
+    {
+    // Unsubscribe from the event when our component is disposed
+        NavigationManager.LocationChanged -= LocationChanged;
+    }
+
+}

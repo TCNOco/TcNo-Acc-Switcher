@@ -29,6 +29,7 @@ using TcNo_Acc_Switcher_Server.Pages.Steam;
 using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
+using TcNo_Acc_Switcher_Server.Shared.Modal;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
@@ -425,7 +426,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                         : null, BasicStats.PlatformHasAnyGames("Steam")
                             ? new Tuple<string, object>("Context_ManageGameStats", "ShowGameStatsSetup(event)")
                             : null,
-                    new ("Context_ChangeImage", "changeImage(event)"),
+                    new ("Context_ChangeImage", new Action(ModalFuncs.ShowChangeAccImageModal)),
                     new ("Context_Steam_OpenUserdata", new Action(SteamSwitcherBase.SteamOpenUserdata)),
                     new ("Context_ChangeName", new Action(() => ModalData.ShowModal("changeUsername")))
                 })

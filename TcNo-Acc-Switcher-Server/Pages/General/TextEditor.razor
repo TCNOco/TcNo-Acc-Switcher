@@ -31,7 +31,7 @@ Actions will show here
         </pre>
     </div>
     <div class="d-flex justify-content-end">
-        <button id="btnCancel" onclick="btnBack_Click()">
+        <button id="btnCancel" @onclick="AppData.NavigateUpOne">
             <span>@Locale["Button_Cancel"]</span>
         </button>
         <button id="btnSave" @onclick="SaveFile">

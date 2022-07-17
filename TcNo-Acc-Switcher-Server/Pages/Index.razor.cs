@@ -41,7 +41,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                         ModalFuncs.ShowUpdatePlatformFolderModal();
                         return;
                     }
-                    if (SteamSwitcherFuncs.SteamSettingsValid()) AppData.ActiveNavMan.NavigateTo("/Steam/");
+                    if (SteamSwitcherFuncs.SteamSettingsValid()) AppData.NavigateTo("/Steam/");
                     else await GeneralInvocableFuncs.ShowModal(Lang["Toast_Steam_CantLocateLoginusers"]);
                     break;
 
@@ -53,7 +53,7 @@ namespace TcNo_Acc_Switcher_Server.Pages
                         if (!await GeneralFuncs.CanKillProcess(CurrentPlatform.ExesToEnd, BasicSettings.ClosingMethod)) return;
 
                         if (Directory.Exists(BasicSettings.FolderPath) && File.Exists(BasicSettings.Exe()))
-                            AppData.ActiveNavMan.NavigateTo("/Basic/");
+                            AppData.NavigateTo("/Basic/");
                         else
                             ModalFuncs.ShowUpdatePlatformFolderModal();
                     }

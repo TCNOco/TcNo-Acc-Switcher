@@ -65,12 +65,12 @@
         </button>*@
         @if (BasicPlatforms.PlatformDict.Count > 0)
         {
-            <button id="btnPlatforms" onclick="location = 'Platforms'" data-toggle="tooltip" title="@(Locale["Tooltip_ManagePlatforms"])">
+            <button id="btnPlatforms" @onclick='() => AppData.NavigateTo("/Platforms/")' data-toggle="tooltip" title="@(Locale["Tooltip_ManagePlatforms"])">
                 <i class="fas fa-plus footerIcoInline"></i>
                 @Lang["Button_ManagePlatforms"]
             </button>
         }
-        <button class="btnSettings" onclick="location = 'Settings'" data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
+        <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Settings/")' data-toggle="tooltip" title="@(Locale["Tooltip_Settings"])">
             <i class="fas fa-cog footerIcoSettings"></i>
         </button>
         <button class="btnHelp" @onclick='() => ModalData.ShowModal("info")' data-toggle="tooltip" title="@(Locale["Tooltip_Info"])">

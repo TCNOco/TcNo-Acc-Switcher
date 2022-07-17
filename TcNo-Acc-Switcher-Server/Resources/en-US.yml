@@ -146,6 +146,7 @@ Ignored_Stop: Stop ignoring selected
 Toast_DataLocationCopying: (1/2) Copying existing files into the new user data folder!
 Toast_DataLocationNotCopying: (1/2) Folder already has files! Will not migrate user data.
 Toast_DataLocationSet: (2/2) Restart the account switcher to use the new folder!
+Toast_UpdatedImage: Updated account image.
 Toast_PlaceShortcutFiles: A folder is opening. Place game shortcuts in that folder, and restart the account switcher.
 Toast_TrayStarted: Tray started!
 Toast_TrayRunning: Tray already open

@@ -44,7 +44,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="buttoncol col_close"><button class="btn_close" type="button" onclick="history.back()"><span>@Locale["Button_Back"]</span></button></div>
+            <div class="buttoncol col_close"><button class="btn_close" type="button" @onclick="AppData.NavigateUpOne"><span>@Locale["Button_Back"]</span></button></div>
         </div>
     </div>
 
@@ -75,9 +75,9 @@
             </div>
             <div class="acc_list_actionbar">
                 <div>
-                    <button id="btnPlatforms" onclick="location = 'Platforms'" data-toggle="tooltip" title="" data-original-title="Show or Hide other platforms"><i class="fas fa-plus footerIcoInline"></i>Manage Platforms</button>
-                    <button class="btnSettings" onclick="location = 'Settings'" data-toggle="tooltip" title="" data-original-title="Settings"><i class="fas fa-cog footerIcoSettings"></i></button>
-                    <button class="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="" data-original-title="Info"><i class="fas fa-question footerIcoQuestion"></i></button>
+                    <button id="btnPlatforms" @onclick='() => AppData.NavigateTo("/Platforms/")' data-toggle="tooltip" title="" data-original-title="Show or Hide other platforms"><i class="fas fa-plus footerIcoInline"></i>Manage Platforms</button>
+                    <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Settings/")' data-toggle="tooltip" title="" data-original-title="Settings"><i class="fas fa-cog footerIcoSettings"></i></button>
+                    <button class="btnHelp"@onclick='() => ModalData.ShowModal("info")' data-toggle="tooltip" title="" data-original-title="Info"><i class="fas fa-question footerIcoQuestion"></i></button>
                 </div>
             </div>
         </div>
@@ -150,10 +150,10 @@
                     <span>Login</span>
                     <i class="fas fa-caret-right footerIcoInline"></i>
                 </button>
-                <button class="btnSettings" onclick="location = 'Steam/Settings'" data-toggle="tooltip" title="" data-original-title="Settings">
+                <button class="btnSettings" @onclick='() => AppData.NavigateTo("/Steam/Settings/")' data-toggle="tooltip" title="" data-original-title="Settings">
                     <i class="fas fa-cog footerIcoSettings"></i>
                 </button>
-                <button class="btnHelp" onclick="showModal('info');" data-toggle="tooltip" title="" data-original-title="Info">
+                <button class="btnHelp" @onclick='() => ModalData.ShowModal("info")' data-toggle="tooltip" title="" data-original-title="Info">
                     <i class="fas fa-question footerIcoQuestion"></i>
                 </button>
             </div>

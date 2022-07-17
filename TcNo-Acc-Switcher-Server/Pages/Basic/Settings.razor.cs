@@ -49,8 +49,7 @@ namespace TcNo_Acc_Switcher_Server.Pages.Basic
         {
             Globals.DebugWriteLine(@"[ButtonClicked:Basic\Settings.razor.cs.ClearSettings]");
             Data.Settings.Basic.ResetSettings();
-            AppData.ActiveNavMan.NavigateTo(
-                $"/Basic?toast_type=success&toast_title={Uri.EscapeDataString(Lang["Success"])}&toast_message={Uri.EscapeDataString(Lang["Toast_ClearedPlatformSettings", new {platform = "Basic"}])}");
+            AppData.NavigateToWithToast("/Basic/", "success", Lang["Success"], Lang["Toast_ClearedPlatformSettings", new { platform = "Basic" }]);
         }
         #endregion
 

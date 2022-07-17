@@ -41,6 +41,21 @@ var possibleAnimations = [
     "Z"
 ];
 
+
+
+
+
+
+
+
+
+
+// Spins the back button, indicating the user can not go further back.
+function spinBackButton() {
+    $("#btnBack i").css({ "transform": "rotate" + possibleAnimations[Math.floor(Math.random() * possibleAnimations.length)] + "(360deg)", "transition": "transform 500ms ease-in-out" });
+    setTimeout(() => $("#btnBack i").css({ "transform": "", "transition": "transform 0 ease-in-out" }), 500);
+}
+
 function btnBack_Click() {
     if (window.location.pathname === "/") {
         $("#btnBack i").css({ "transform": "rotate" + possibleAnimations[Math.floor(Math.random() * possibleAnimations.length)] + "(360deg)", "transition": "transform 500ms ease-in-out" });
@@ -52,6 +67,13 @@ function btnBack_Click() {
     }
 }
 
+
+
+
+
+
+
+
 function hideWindow() {
     // Used in hide window on account switch
     if (navigator.appVersion.indexOf("TcNo") === -1) return;
@@ -60,10 +82,6 @@ function hideWindow() {
 }
 
 function handleWindowControls() {
-    document.getElementById("btnBack").addEventListener("click", () => {
-        btnBack_Click();
-    });
-
     if (navigator.appVersion.indexOf("TcNo") === -1) return;
 
     if (navigator.appVersion.indexOf("TcNo-CEF") !== -1) {

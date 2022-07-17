@@ -172,6 +172,13 @@ namespace TcNo_Acc_Switcher_Server.Data
                     ModalButtonText = Lang.Instance["Modal_SetUserdata_Button"];
                     RequestedFile = "AnyFolder";
                 }
+                else if (Goal == PathPickerGoal.SetAccountImage)
+                {
+                    ModalHeader = Lang.Instance["Modal_Title_Userdata"];
+                    ModalText = new MarkupString(Lang.Instance["Modal_SetImageHeader"]);
+                    ModalButtonText = Lang.Instance["Modal_SetImage"];
+                    RequestedFile = "AnyFile";
+                }
                 // TODO: Add remaining actions here make them actually do something in the modal window button click functions.
 
                 PathPickerNotifyDataChanged();

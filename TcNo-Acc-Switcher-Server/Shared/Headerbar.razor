@@ -19,7 +19,7 @@
 
 <div id="window-title">
     <div class="resizeTop"></div>
-    <button id="btnBack">
+    <button id="btnBack" @onclick="async () => await AppData.NavigateUpOne()">
         <div class="resizeTop"></div>
         <div class="resizeTopLeft"></div>
         <div class="resizeLeft"></div>

@@ -27,6 +27,7 @@ using TcNo_Acc_Switcher_Server.Pages.General.Classes;
 using TcNo_Acc_Switcher_Server.Shared;
 using TcNo_Acc_Switcher_Server.Shared.Accounts;
 using TcNo_Acc_Switcher_Server.Shared.ContextMenu;
+using TcNo_Acc_Switcher_Server.Shared.Modal;
 
 namespace TcNo_Acc_Switcher_Server.Data.Settings
 {
@@ -167,7 +168,7 @@ namespace TcNo_Acc_Switcher_Server.Data.Settings
                     new ("Context_CopyUsername", new Action(async () => await AppFuncs.CopyText(AppData.SelectedAccount.DisplayName))),
                     new ("Context_ChangeName", new Action(() => ModalData.ShowModal("changeUsername"))),
                     new ("Context_CreateShortcut", new Action(async () => await GeneralInvocableFuncs.CreateShortcut())),
-                    new ("Context_ChangeImage", "changeImage(event)"),
+                    new ("Context_ChangeImage", new Action(ModalFuncs.ShowChangeAccImageModal)),
                     new ("Forget", new Action(async () => await AppFuncs.ForgetAccount())),
                     new ("Notes", new Action(() => ModalData.ShowModal("notes"))),
                     BasicStats.PlatformHasAnyGames(CurrentPlatform.SafeName) ?

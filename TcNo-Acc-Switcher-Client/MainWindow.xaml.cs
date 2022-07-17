@@ -194,7 +194,7 @@ namespace TcNo_Acc_Switcher_Client
             if (e.ChangedButton != MouseButton.XButton1 && e.ChangedButton != MouseButton.XButton2) return;
             // Back
             e.Handled = true;
-            _cefView.ExecuteScriptAsync("btnBack_Click()");
+            _ = AppData.NavigateUpOne();
         }
 
         private void AddBrowser()

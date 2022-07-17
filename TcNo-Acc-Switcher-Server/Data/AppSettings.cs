@@ -866,14 +866,14 @@ namespace TcNo_Acc_Switcher_Server.Data
             try
             {
                 _ = Process.Start(proc);
-                AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
+                AppData.NavigateTo("EXIT_APP", true);
             }
             catch (Exception ex)
             {
                 Globals.WriteToLog(@"This program must be run as an administrator!" + Environment.NewLine + ex);
                 try
                 {
-                    AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
+                    AppData.NavigateTo("EXIT_APP", true);
                 }
                 catch (Exception e)
                 {
@@ -895,7 +895,7 @@ namespace TcNo_Acc_Switcher_Server.Data
                 _ = Process.Start(new ProcessStartInfo(Path.Join(Globals.AppDataFolder, @"updater\\TcNo-Acc-Switcher-Updater.exe")) { UseShellExecute = true, Arguments = args });
                 try
                 {
-                    AppData.ActiveNavMan.NavigateTo("EXIT_APP", true);
+                    AppData.NavigateTo("EXIT_APP", true);
                 }
                 catch (NullReferenceException)
                 {
