@@ -1,0 +1,493 @@
+---
+Update: Update available! Jab here t' start it.
+Header_ChooseLanguage: 'Pick yer Language:'
+Steam_ShowSteamID: SteamID
+Steam_ShowVac: VAC status
+Steam_ShowLastLogin: Last login time
+Steam_ShowLimited: Limited Status
+Steam_ShowAccUsername: Yer username
+Steam_Tray_AccountName: Show account name [nah yer matey name]
+Steam_CheckVac: Check yer VAC status
+Steam_OverrideDefaultState: "Override default boardin' state:"
+Steam_StartSilent: "Open Steam t' task tray on switch (Start Steam wit' '-silent')"
+Button_AddNew: Add New Cap'n
+Button_SaveCurrent: Save Cap'n
+Button_SaveFile: Save File
+Button_Cancel: Scuttle
+Button_Login: Board!
+Button_Close: Banish
+Button_RefreshImages: Refresh paintin's
+Button_ResetSettings: Begin anew
+Button_AdvancedCleaning: Advanced swabbin'...
+Button_ClearLog: Clear Cap'n's log
+Button_WikiInfo: More Info (Wiki)
+Button_ManagePlatforms: Manage Platforms
+Button_Backup: Backup
+Button_BackupAll: Backup everythin'
+Button_Restore: Bring her back
+Button_OpenBackup: Open Backup Folder
+Button_Back: Turn back
+Button_RestartAdmin: Restart as Admin
+Button_SetPassword: Set App Password
+Settings_Shortcut: ' {platform} Switcher Desktop shortcut'
+Settings_Admin: Run {platform} as Admin
+Settings_ImageExpiry: 'Days afore yer profile paintin'' expire:'
+Settings_SteamAPIKey: "Steam Web API key (optional)"
+Settings_SteamAPIKey_Note: Settin' an API key will make the Limited indicator (yellow border) show fer Cap'n's that are Community Banished instead.
+Settings_Header_AppWide: App-wide settings
+Settings_Header_GeneralSettings: General settings
+Settings_Header_AccountDisplay: Cap'n Display settings
+Settings_Header_ExtraPlatforms: Port Settings
+Settings_Header_GeneralTools: General Tools
+Settings_Header_OtherTools: Other Tools
+Settings_Header_TraySettings: Tray settings
+Settings_Header_OpenGameFolders: Open game folders
+Settings_Header_BackupRestore: Backup & Restore port settings
+Settings_Header_Language: Language
+Settings_Header_System: System
+Settings_Header_Theme: Paint
+Settings_Header_Program: Program
+Settings_Header_StatsSharing: Statistics & Sharing
+Settings_Header_Platform: "{platformName} settings"
+Settings_Header_GameStats: Global game stats settings
+Settings_GameStats: Anythin' ticked here will NAH show under yer username fer any Cap'n. Use this if ye often hide specific items from yer game statistics.
+Settings_TrayMax: 'Max number o'' accounts t'' remember:'
+Settings_ExtraPlatformsDisabled: Disabled platforms. Jab t' enable 'em.
+Settings_ExtraPlatformsEnabled: Visible ports. Jab t' disable 'em.
+Settings_RTL: Show text as Right-t'-Left
+Settings_CollectStats: Collect statistics
+Settings_ShareStats: Share stats annoymously (recommended)
+Settings_DiscordRpc: Discord Rich Presence (RPC)
+Settings_DiscordRpcShare: Share total switches
+Settings_ViewStats: View stats
+Preview: Gander
+Settings_ClearStats: Reset
+Settings_CurrentLocation: 'Current install location: {path}'
+Settings_CurrentDataLocation: 'Current user data location: {path}'
+Settings_SetDataLocation: "[Pick yer own user data location]"
+Settings_PickFolder: Pick {platform} folder
+Settings_OpenFolder: Open {platform} Folder
+Settings_ClearForgotten: Clear Forgotten
+Settings_ClearAccounts: Clear Cap'n's
+Settings_StreamerMode: Yer' a streamer ey?
+Settings_ExitToTray: Banish t' tray on exit
+Settings_DesktopShortcut: Desktop shortcut
+Settings_StartMenu_ProgramTray: Program & Tray
+Settings_StartMenu_Platform: Platform
+Settings_Tray_StartWindows: Start Tray wit' Windows
+Settings_Tray_StartNow: '[Start Tray now]'
+Settings_CurrentStyle: Current Style
+Settings_ThemeBackground: '[Set background]'
+Settings_ThemeOpenFolder: '[Open paint folder]'
+Settings_Protocol: 'Enable tcno:\\ protocol (Recommended)'
+Settings_StartCentered: Start program centered
+Settings_WindowsAccent: Use the Windows Accent Colour
+Settings_HelpTranslate: "[Help translate]"
+Settings_ViewTranslators: "[Thanks t']"
+Settings_Header_ActiveBrowser: "(Advanced) Set renderin' engine:"
+Settings_Header_ClosingMethod: "(Advanced) Set method t' close {platform}"
+Settings_Header_StartingMethod: "(Advanced) Set method t' start {platform}"
+Settings_AutoStart: "Automatically start {platform} on account switch"
+Settings_NoPlatforms: Thar are currently no platforms enabled. Please tick optional platforms below t' enable 'em, or uncheck disabled platforms.
+Settings_MinimizeOnSwitch: Banish switcher on Cap'n switch
+Settings_ShowShortNotes: Log under ye' username
+Settings_Header_AppPassword: "Stop scallywags usin' yer switcher:"
+PreviewCss: Preview CSS
+Settings_PreviewCss: '''tis the CSS preview page. Ye can view some elements that elder up in the program ''n see wha'' they look like wit'' yer theme. This page be useful fer those creatin'' new paint!'
+Settings_PreviewCssHeader: CSS Preview Page
+Stats_Disabled: "Statistics collection be disabled."
+Stats_InDepth: In-depth statistics breakdown
+Stats_ShareEnabled: "These statistics are shared anonymously 'n will add t' the total <a onclick=\"{WebsiteLink}\" crew=\"fancyLink\">here</a>."
+Stats_ShareDisabled: "These statistics are NAH shared anonymously 'n will NAH add t' the total <a onclick=\"{WebsiteLink}\" crew=\"fancyLink\">here</a>."
+Stats_OperatingSystem: "Operatin' system: "
+Stats_FirstLaunch: "First time aboard: "
+Stats_LaunchCount: "Times boarded: "
+Stats_CrashCount: "Ships run aground: "
+Stats_MostUsedPlatform: "Yer' favourite platform: "
+Stats_TotalTime: "Total time spent onboard: "
+Stats_TotalSwitches: "Total Cap'n switches: "
+Stats_TotalGamesLaunched: "Total apps/games launched via switcher: "
+Stats_UniqueDaysLong: "Unique days wit' accounts switched: "
+Stats_LastUpload: "Last Upload: "
+Stats_SwitcherStats: "Switcher statistics: "
+Stats_PageStats: "Page statistics: "
+Stats_VisitsTotalTime: "{visits} total visits, {hours} total time"
+Stats_Accounts: "Cap'n's: "
+Stats_Switches: "Switches: "
+Stats_FirstActive: "First boardin': "
+Stats_LastActive: "Last boardin': "
+Stats_UniqueDays: "Unique days: "
+Stats_GameShortcuts: "Game shortcuts: "
+Stats_GameShortcutsHotbar: "Game shortcuts (on hotbar): "
+Stats_GamesLaunched: "Games launched: "
+Stats_MetricsToShow: "Displayed metrics:"
+Stats_AccountId: "Cap'n's Id:"
+Auth_LoginRequired: A password was previously set, 'n be required. Please enter yer password below.
+Auth_EnterPassword: "Enter ye password:"
+Auth_PassIncorrect: Password be incorrect.
+Locked: Locked
+Cleaning_Header_StartMenuShortcuts: 'Shortcuts fer Start Menu:'
+Cleaning_Header_General: General Swabbin'
+Cleaning_Header_LoginHistory: Swab me boardin' history
+Cleaning_Header_PlatformCleaning: '{platform} Switcher'
+Cleaning_ImportantInfoHeader: 'Important info:'
+Cleaning_ImportantInfo: >
+  Skewerin' a button will scuttle the related file(s) from yer Steam installation.<br /> Scuttlin' loginusers.vdf will result in this Cap'n switcher showin' no Cap'ns.<br /> Ye will needs t' login t' 'em usin' Steam t' get 'em back.
+Cleaning_Button_KillProcess: Scuttle {platform} process
+Cleaning_Button_ForgottenBackups: Forgotten Cap'n backups
+Cleaning_Understand: I understand wha' these buttons do.
+Restore_Info: >
+  If ye previously "forgot" a Cap'n, ye can restore 'em here.<br /> This adds 'em back into yer loginusers.vdf file, allowin' ye t' switch t' 'em.
+Restore_Button_Restore: Bring back selected
+Ignored_RemoveAccounts: Scuttle Cap'n's from ignore list
+Ignored_Description: If ye previously "ignored" an Cap'n, ye can show 'em again here
+Ignored_Stop: Stop ignorin' selected
+Toast_DataLocationCopying: (1/2) Copyin' existin' files into the new user data folder!
+Toast_DataLocationNotCopying: (1/2) Folder already has files! Will nah migrate ye user data.
+Toast_DataLocationSet: (2/2) Restart the Cap'n switcher t' use the new folder!
+Toast_PlaceShortcutFiles: A folder be openin'. Galleon game shortcuts in that folder, 'n restart the Cap'n switcher.
+Toast_TrayStarted: Tray started!
+Toast_TrayRunning: Tray be open
+Toast_TrayUsersMissing: No tray users saved
+Toast_TrayFail: Could nah start tray application!
+Toast_TrayPosition: "On jabbin' the Exit button: I'll be on the Windows Tray! (Right o' Start Bar)"
+Toast_TrayHint: "Hint: Ctrl Jab the 'X' t' close me completely, or via the Tray > 'Exit'"
+Toast_Copied: Copied
+Toast_AlreadyProcessing: Already processin' Cap'ns...
+Toast_FailedRestore: Failed t' restore Cap'ns (See console)
+Toast_Restored: Restored Cap'ns!
+Toast_ProtocolEnabled: This program will now respond t' tcno:\\ in Windows
+Toast_ProtocolEnabledTitle: Protocol added
+Toast_ProtocolDisabled: This program will no longer respond t' tcno:\\
+Toast_ProtocolDisabledTitle: Protocol scuttled
+Toast_RestartAsAdmin: Please start as Admin 'n try again.
+Toast_RestartAfterClose: Please restart the program aft skewerin' Close.
+Toast_RestartAfterCloseTitle: Accent color disabled
+Toast_RestartRequired: Restart t' apply changes
+Toast_LoadStylesheetFailed: Failed t' load stylesheet! See user data folder fer details.
+Toast_LoadingStats: One or more profiles are refreshin' stats. Please wait.
+Toast_ItemNotFound: "{item} was nah found"
+Toast_DeletedTotal: "{files} o' {totalFiles} scuttled. Total: {totalSize}"
+Toast_CantChangeUsername: Could nah change username
+Toast_CantClearLoginFiles: Failed t' clear ole boardin' files
+Toast_AccountIdReg: Failed t' get Cap'n's Id from Registry!
+Toast_RegFailWrite: Failed t' Write t' Windows Regsitry!
+Toast_RegFailRead: Failed t' Read from Windows Regsitry!
+Toast_RegFailReadSaved: Failed t' Read saved Registry entry. Try scuttlin' 'n addin' the account again if unsuccessful.
+Toast_RegSaveMissing: Failed Find or Read data from yer' saved Registry files!
+Toast_DuplicateNames: Could nah swap. Duplicate accounts wit' same username?
+Toast_MissingUserId: "Could nah swap. User ID be missin'. Check Wiki 'Common Errors'."
+Toast_CouldNotLocate: Could nah locate logged in user
+Toast_StreamerModeHint: Private info be hidden! - See settings
+Toast_StreamerModeTitle: Streamer mode
+Toast_AddAccountsFirst: Open the platform from the list 'n add a few Cap'n's first
+Toast_AddAccountsFirstTitle: Who be ye?
+Toast_CantFindImage: Failed t' find users' image.
+Toast_CantCreateShortcut: Can nah create shortcut
+Toast_ShortcutCreated: Shortcut created!
+Toast_SettingsCopied: Settings successfully copied t' current account.
+Toast_GameDataRestored: Successfully restored game data fer this account.
+Toast_NoValidSteamId: Unable t' find a valid Steam ID.
+Toast_FailedUpdateCheck: Failed t' check fer updates
+Toast_UpdateVerifyFail: Can nah verify updater files. Download latest version 'n replace files in yer directory.
+Toast_StartedGame: Started {program}
+Toast_Steam_VacCleared: VAC status fer accounts was cleared
+Toast_Steam_CantDeleteVacCache: Could nah scuttle 'LoginCache/Steam/VACCache/SteamVACCache.json'
+Toast_NoFindSteamUserdata: Could nah find Steam\\userdata folder
+Toast_NoFindGameBackup: Unable t' find backup game data folder fer this account.
+Toast_GameBackupDone: "Game data folder backed up successfully: {folderLocation}"
+Toast_Steam_VdfLast: Was able t' load from vdf_last. Some Cap'ns may be missin'.
+Toast_PartiallyFixed: Partially fixed
+Toast_Steam_FailedLoginusers: Failed t' load steam/config/loginusers.vdf
+Toast_Steam_CantLocateLoginusers: Can nah locate '.../Steam/config/loginusers.vdf'. Try boardin' a new Cap'n first.
+Toast_CantClearImages: Could nah clear paintin's
+Toast_RefreshedImages: Refreshed paintin's
+Toast_ClearForgottenCheck: Are ye sure ye wants t' clear backups o' long forgotten Cap'ns?
+Toast_ForgotAccount: Forgot Cap'n
+Toast_ClearedPlatformSettings: "Cleared {platform} Switcher settings"
+Toast_ClearedImages: "Cleared paintin's"
+Toast_SavedItem: "Saved: {item}"
+Toast_ChangedUsername: Changed ye name
+Toast_SetUsername: Set ye name
+Toast_AlreadyLoggedIn: Already logged in wit' this Cap'n! (No changes performed)
+Toast_BackupCopy: (1/3) Copyin' files t' a temporary location...
+Toast_BackupCompress: (2/3) Compressin' files ({size}). This will take some time...
+Toast_BackupComplete: (3/3) Finished compressin'! ({size} t' {compressedSize})
+Toast_BackupProgress: "Backup in progress (Compressed size: {compressedSize})"
+Toast_BackupFail: Backup failed - See Cap'n's log!
+Toast_BackupBusy: Thar be a backup runnin' already!
+Toast_RestoreBusy: Thar be a restore runnin' already!
+Toast_RestoreExt: Extractin' chest.
+Toast_RestoreCopying: Movin' files back into port
+Toast_RestoreDeleting: Scuttlin' temporary files
+Toast_RestoreComplete: She be back!
+Toast_FailedLoad: Failed t' load {platform}! Skewer the platform t' see the error.
+Toast_FailedPlatformsLoad: Failed t' load Platforms.json! Please verify this file exists.
+Toast_FailedLoadSettings: "Failed t' load settings! Loadin' default settings instead. Addin' 'ole' t' existin' settings file name."
+Toast_FailedLoadStats: "Failed t' load statistics! Startin' fresh."
+Toast_FailedStatsLoad: Failed t' load GameStats.json! Please verify this file exists.
+Toast_GameStatsLoadFail: "Failed t' get game stats from web fer {Game}"
+Toast_GameStatsEmpty: "No game stats found on website fer {Game}. Reckon 'tis an error? Check the userdata folder 'n 'temp\\download-{AccoundId}-{Game}.html' t' see if the page had an error!"
+Toast_FileCopyFail: Failed t' copy files! See Cap'n's log fer more details.
+Toast_UserDataLoadFail: Failed t' load userdata {UserData}\\WindowSettings.json. Backin' up 'n resettin'! Saved error t' Cap'n's log.
+Toast_UpdateCheckFail: Could nah reach https://tcno.co/ t' check fer updates. This message will show once a day.
+Toast_FailedCreateIcon: Failed t' create icon. See Cap'n's log fer details.
+Toast_SameAccount: Can nah copy files t'/from the same Cap'n. Try a different Cap'n, or see Wiki fer more info.
+Toast_Steam_DownloadingAppIds: Downloadin' Steam AppId list...
+Toast_Steam_DownloadingAppIdsComplete: Done downloadin'. Game data submenu has been updated.
+Toast_SteamWebKeyInvalid: Steam Web API key seems t' be invalid. Please set a new one.
+Toast_DownloadingProfileData: Downloadin' profile data
+Toast_PasswordChanged: Password changed
+Toast_JsonFailModify: Failed t' modify JSON file. See Cap'n's log.
+Modal_Crowdin_Header: Crowdin translators
+Modal_Crowdin_Info: "Here's everyone who helped translate this software.<br>Users wit' languages next t' 'em helped a lot in translation (proofreader role)."
+Modal_Info_Creator: Created by TechNobo [Wesley Pyburn]
+Modal_Info_Version: Version
+Modal_Info_ViewGitHub: View on GitHub
+Modal_Info_BugReport: Bug report/Feature request
+Modal_Info_VisitSite: Visit tcno.co
+Modal_Info_Disclaimer: Disclaimer
+Modal_Title_Info: TcNo Cap'n Switcher Information
+Modal_Title_ChangeUsername: Change yer name
+Modal_Title_ConfirmAction: TcNo Cap'n Switcher Confirm Action
+Modal_Title_LocatePlatform: Please locate the {platform} directory
+Modal_Title_AddNew: Add new {platform} Cap'n
+Modal_Title_Background: Set a background paintin'
+Modal_Title_Userdata: Set the user data folder
+Modal_Title_GameStats: Enable/Disable game statistics
+Modal_GameStats_Header: "Enable/Disable game statistics fer: {accountName}"
+Modal_Title_Stats: Yer statistics
+Modal_Title_GameVars: "Input details fer {game}"
+Modal_GameVars_Header: "Enter the followin' details fer yer {game} Cap'n, {username} on {platform}"
+Modal_Title_AccountNotes: "Cap'n's Log fer: {accountName}"
+Modal_Title_SetPassword: Set Password
+Modal_SetBackground: 'Select an paintin'', or enter a URL below.<br>Leave blank ''n set t'' reset.<br>(Fer more advanced control see the Themin'' on the Wiki):'
+Modal_SetBackground_Button: Set background
+Modal_SetBackground_ChooseImage: Choose local paintin'
+Modal_SetUserdata: Enter a folder path below 'n skewer set.
+Modal_SetUserdata_ChooseFolder: Select a folder
+Modal_SetUserdata_Button: Set user data
+Modal_ChangeUsername: Enter a new name fer yer Cap'n
+Modal_ChangeUsernameType: Change {platform} username
+Modal_SetPassword: Enter a password fer the TcNo Cap'n Switcher
+Modal_SetPassword_Button: Set password
+Modal_SetPassword_Info: "NOTE: This does nah encrypt yer accounts. Swappin' accounts be as simple as replacin' files, or changin' a username in a file. The password can be reset by editin' text in a file too. 'tis simple security. It stops simple UI access. Ye can put this app on a removable USB, set the UserData folder t' the same USB 'n physically scuttle it fer more security.<a class=\"fancyLink\" onclick=\"OpenLinkInBrowser('{link}');return false;\" href=\"\">Movin' t' an external drive guide</a><br><br>T' clear, leave the above empty 'n skewer Set."
+Modal_EnterDirectory: "Please enter {platform}'s directory, as such: C:\\Program Files\\{platform}"
+Modal_LocatePlatform: Locate {platformExe}
+Modal_LocatePlatformFolder: Select {platform} folder
+Modal_ConfirmAction: Confirm action
+Modal_AddNew: Please enter a name fer the {platform} Cap'n ye're logged into.
+Modal_AddCurrentAccount: Add current {platform} Cap'n
+Modal_SetImageHeader: Set profile paintin'
+Modal_SetImage: Set Paintin'
+Status_SelectedAccount: "Ye be: {name}"
+Status_Init: "Status: Initialisin'"
+Status_ClosingPlatform: Banishin' {platform}
+Status_ClosingPlatformFailed: Failed t' banish {platform}
+Status_StartingPlatform: Startin' {platform}
+Toast_StartingPlatformFailed: Failed t' start {platform}! See Cap'n's log fer more details.
+Toast_UrlAdminErr: Ye can nah run .url files as admin. Try another shortcut type. Launchin' as normal user.
+Status_UpdatingFile: "Updatin' {file}"
+Status_UpdatingRegistry: Updatin' Windows registry
+Status_FailedLog: Action failed. See Cap'n's log fer details.
+Status_WaitingForClose: "Waitin' fer {processName} t' close ({timeout}/{timeLimit} seconds)"
+Status_WaitingForMultipleClose: "Waitin' fer {processName} & {count} others to scuttle ({timeout}/{timeLimit} seconds)"
+Status_GetUniqueId: Collectin' unique user ID
+Status_CopyingFiles: Copyin' user files...
+Status_HandlingImage: Handlin' Cap'n profile image
+Context_SwapTo: Swap t' Cap'n
+Context_CreateShortcut: Create Shortcut
+Context_ChangeImage: Change paintin'
+Context_ChangeName: Change switcher name
+Context_LoginAsSubmenu: Board as
+Context_UsernameSubmenu: Name
+Context_RefreshName: Refresh name
+Context_CopySubmenu: Copy
+Context_DataSubmenu: Data
+Context_CopyProfileSubmenu: Copy Profile
+Context_CommunityUrl: Community URL
+Context_CommunityUsername: Community Name
+Context_LoginUsername: Cap'n's username
+Context_CopySteamIdSubmenu: Copy SteamID
+Context_Steam_Id: SteamID [STEAM0:~]
+Context_Steam_Id3: SteamID3 [U:1:~]
+Context_Steam_Id32: SteamID32
+Context_Steam_Id64: SteamID64 7656~
+Context_Steam_OpenUserdata: Open userdata
+Context_ManageSubmenu: Manage
+Context_GameDataSubmenu: Game data
+Context_ManageGameStats: Manage game stats
+Context_Game_CopySettingsFrom: Copy settings t' current
+Context_Game_RestoreSettingsTo: Bring back game data
+Context_Game_BackupData: Backup game data
+Context_CopyOtherSubmenu: Copy other
+Context_HidePlatform: Hide port
+Context_ExportAccList: Export Cap'ns log
+Context_RunAdmin: Run as Admin
+Context_Hide: Hide
+ProfileImage_ToggleText: Use image as Cap'n's image
+Title_Platforms_Settings: TcNo Cap'n Switcher - Platform Settings
+Title_Settings_TestCss: TcNo Cap'n Switcher - Test CSS Styling
+Title_AccountsList: TcNo Cap'n Switcher - {platform}
+Title_TextEditor: TcNo Cap'n Switcher - Text Editor
+Title_Settings: TcNo Cap'n Switcher - Settings
+Title_Steam_Cleaning: TcNo Cap'n Switcher - Steam Swabbin'
+Title_Steam_Settings: TcNo Cap'n Switcher - Steam Settings
+Title_Template_Settings: TcNo Cap'n Switcher - {platformName} Settings
+Title_Login: TcNo Cap'n Switcher - Login
+Installer_Downloading: Downloadin' {file}
+Installer_DownloadFinished: Finished downloadin' {file}
+Installer_Installing: "Installin': {runtime}"
+Installer_RuntimeTitle: TcNo Cap'n Switcher - Runtime installer
+Installer_Welcome: Ahoy t' the TcNo Cap'n Switcher - Runtime installer
+Installer_InstalledRuntimes: "Currently installed runtimes:"
+Installer_ErrorRuntime: "One or more runtimes we be nah installed:"
+Installer_RuntimeNote: "[~{size1} MB   ~{size2} MB while installin']"
+Installer_TotalSize: "Total download size: ~{size} MB"
+Installer_AnyKeyStart: Press any key t' start download...
+Runtime_WebView2: Microsoft WebView2 Runtime
+Runtime_Desktop: Microsoft .NET 5 Desktop Runtime
+Runtime_ASP: Microsoft Microsoft ASP.NET Core {version} Runtime
+Installer_FailedFolder: "Failed t' create folder:"
+Installer_FailedWV: "Failed t' download 'n install Microsoft WebView2 Runtime. T' download: 1. Jab the link below: {link} 2. Jab 'Download Hostin' Bundle' under Run server apps."
+Installer_FailedDR: "Failed t' download 'n install .NET 5 Desktop Runtime. Please download it here:"
+Installed_FailedASP: "Failed t' download 'n install ASP.NET Core {version} Runtime. T' download: 1. Skewer the link below: {link} 2. Skewer 'Download x64' under Run Desktop apps."
+Installer_Ready: "One or more are ready fer install. If 'n when prompted if ye would like t' install, jab 'Aye'."
+Installer_PressStart: Press any key t' start install...
+Installer_VerifyMin: "Verify ye meet the minimum recommended requirements:"
+Installer_VerifyAlready: "It looks like everythin' be installed. Verify ye meet the minimum recommended requirements:"
+Installer_Complete: That best be everythin'. The main program, TcNo-Acc-Switcher.exe, will auto-run.
+Installer_Complete2: "If it doesn't work, please refer t' install instructions, here: {link}"
+Global_FatalNext: "Fatal error occurred! This crashlog will be automatically submitted next launch."
+Tray_Error: Tray Error
+Tray_NoAccs: "Thar we be no Cap'ns found.\nTry switchin' Cap'n first, or locate 'Tray_Users.json'"
+Tray_Switch: "Switch t': {account}"
+Tray_CantOpenExe: "Could nah open the main .exe. Make sure it exists.\n\nI attempted t' open:"
+Tray_LaunchFail: "TcNo Cap'n Switcher - Tray launch fail"
+Updater_Duplicate: Another TcNo Cap'n Switcher Updater instance has been detected.
+Updater_Unknown: "Unknown argument: {arg}"
+Updater_NeedsAdmin: This program must be run as an administrator!
+Updater_StatusChecking: Checkin' version
+Updater_FailedVersionCheck: "Could nah get version. Skewer \"Verify\" t' update & verify files"
+Updater_PressBelow: Press button below!
+Updater_PressBelowStart: Jab the button below t' start the update.
+Updater_PatchApplied: Patch applied!
+Updater_UpdatingAppData: Updatin' files in AppData!
+Updater_Complete: All updates complete!
+Updater_Checking: Checkin' fer updates
+Updater_UpdateToVerify: T' verify files ye needs t' update first.
+Updater_ClosingTcNo: Closin' TcNo Cap'n Switcher instances (if any).
+Updater_Downloading: "Downloadin' update: {version}"
+Updater_Downloaded: Download complete.
+Updater_CantExtract: Failed t' extract update.
+Updater_Verify: Verify files
+Updater_Verifying: Verifyin'...
+Updater_VerifySkip: Verifyin' files t' skip all wee updates, 'n jus' jump t' latest.
+Updater_NoConnection: "Could nah connect t' tcno.co t' verify files. Ye can try manually downloadin' the installer from the GitHub page, 'n reinstallin' t' update.\n\nError:"
+Updater_NoServer: Could nah reach update server
+Updater_Hashlist: Downloadin' latest hash list...
+Updater_CantCheck: Unable t' check fer updates
+Updater_Failed: "ERROR: Some o' the files are in use 'n can nah be updated.\n\n1. Make sure all TcNo processes are completely closed\n(or restart yer PC)\n\n2. Then jab Verify below, or if ye restarted:\n-   Open this updater 'n verify files\n    (located in the 'updater' folder in the install directory)"
+Updater_Missing: "FILE MISSIN': {file}"
+Updater_FileMismatch: "File: {file} has MD5: {md5} EXPECTED: {value}"
+Updater_DownloadingWeb: Downloadin' file from website...
+Updater_UnpackingAppData: Copyin' files t' %AppData%/TcNo Account Switcher... (unless set otherwise)
+Updater_VerifyComplete: Files verified!
+Updater_UpdateFound: "Update found: {name} [{updateSize}]"
+Updater_TotalFound: "Total updates found: {x}"
+Updater_TotalSize: "Total size: {size}"
+Updater_AwaitingUser: Waitin' fer yer mark...
+Updater_UpToDate: "Ye're up t' date.\n:)"
+Updater_FailedDecode: '''tis most likely due t'' me (TechNobo) pushin'' an update, ''n makin'' a typo that broke the .json update file. Do let me know :)'
+Updater_FailedDecodeTitle: Failed t' decode update list
+Updater_Extracting: Extractin' patch files
+Updater_Applying: Applyin' patch...
+Updater_Moving: Movin' files...
+Updater_Title: TcNo Cap'n Switcher Updater
+Updater_Started: Started
+Updater_Start: Start ye olde TcNo Cap'n Switcher
+Updater_Begin: Start update
+Updater_Exit: Exit
+FatalError: Fatal error occurred!
+Online: Online
+OnlineDefault: Online (Default)
+Offline: Buried
+Invisible: Hidin'
+Busy: Busy
+Away: Away
+Snooze: Snooze
+LookingToTrade: Lookin' t' Trade
+LookingToPlay: Lookin' t' Play
+Unrecognized_EPersonaState: Unrecognized ePersonaState
+Reg_DoesntExist: "{subKey} does nah exist."
+Reg_DoesntContain: "{subKey} does nah contain {val}"
+Reg_Removing: Scuttlin' {subKey}\\{val}
+PngInvalid_Format: Required pixel format be PixelFormat.{x}.
+PngRequired: Required paintin' format be a portable network (g)paintin' (png).
+PngDimensions: Dimensions must be less than or equal t' {MaxIconWidth}x{MaxIconHeight}
+ThemeSyntaxAnd: "A syntax error was encountered (more details below)! 'N:"
+ThemesNotFound: "Could nah find \"themes\" folder in TcNo Cap'n Switcher's directory. This (especially the 'Dracula_Cyan' folder) be required fer this software t' run.\nYe can run the Updater in the \"updater\" folder t' verify files, 'n restore these missin' files."
+Yes: "Aye"
+No: "No"
+Save: Save
+NoDefault: No (Default)
+Ok: "OK"
+Submit: Submit
+Forget: Forget
+Notice: Notice
+Notes: Logs
+Error: Error
+ErrorDetails: "ERROR: {ex}"
+Failed: Failed
+Success: Success
+NotFound: Nah found
+Done: Done
+Edit: Edit
+Refresh: Check again
+Working: Workin'...
+ForName: "Fer: {name}"
+DeletedFiles: Scuttled files
+FileFoldersToClear: "List o' files/folders t' clear:"
+CouldNotFindX: Could nah find {x}
+CouldNotCloseX: Could nah close {x}!
+CouldNotReadFile: Could nah read {file}!
+DirectoryNotFound: Directory nah found
+DirectoryNotFoundFolder: "Directory nah found: {folder}"
+DeletingFile: "Scuttlin': {file}"
+DeletingFolder: "Scuttlin' Folder: "
+CouldntDeleteX: "ERROR: COULDN'T SCUTTLE: {x}"
+CouldntDeleteUndefined: "ERROR: COULDN'T SCUTTLE UNDEFINED FILE"
+Prompt_RestartAsAdmin: "<h3><bold>This program will restart as Admin</bold></h3><p>Hit \"Aye\" in UAC when prompted fer admin.</p>"
+Prompt_ForgetSteam: >
+  <h3 style='color:red'>Ye be about t' forget a Cap'n!</h3> <h4>Wha' does this mean?</h4> <p>- Steam will no longer 'ave the Cap'n listed in Big Picture Mode 'n will nah Remember Password.<br/> - TcNo Cap'n Switcher will also no longer show the account, 'til it's signed into again through Steam.</p> <p>Yer account will remain untouched. 'tis jus' forgotten on this computer.</p><h4>Do ye understand?</h4>
+Prompt_ForgetAccount: >
+  <h3 style='color:red'>Ye be about t' forget yer Cap'n!</h3> <h4>Wha' does this mean?</h4> <p>TcNo Cap'n Switcher will also no longer show the Cap'n,<br/> 'til it's signed into again through {platform}, 'n added t' the list.</p> <p>Yer Cap'n will remain untouched. 'tis jus' forgotten on this computer.</p> <h4>Do ye understand?</h4>
+Prompt_ClearStats: >
+  <h3 style='color:red'>Ye be about t' clear yer statistics!</h3> <p>Ye can nah undo this action.</p>
+Platform_DiscordPasteHint: Paste into Discord console, 'n then paste result in input!
+Platform_ClearCache: Forget Cache
+Platform_ClearCacheTotal: Clearin' {totalFileCount} files ({totalSizeMB})
+Platform_DeleteFail: Could nah scuttle some files (Port may be runnin'?)
+Platform_CouldNotDeleteLog: Could nah scuttle file! Check {logPath}
+Error_FileAccessDenied: Failed t' access file! Check {logPath}
+Error_RequiredFileVerify: A required file was nah found. Please make sure the x64 'n x86 folders exist in the install directory. If nah run TcNo-Acc-Switcher-Updater.exe 'n verify files.
+Tooltip_Settings: Settings
+Tooltip_Info: Info
+Tooltip_ManagePlatforms: Show or Hide other ports
+Tooltip_ExpandShortcuts: Expand Game & Shortcut selection
+Tooltip_ShortcutFolder: Open shortcut folder. Ship shortcuts in thar, 'n the TcNo Cap'n Switcher t' see 'em.
+Tooltip_Backup: Backup config files/folders, as defined in port settings.
+Tooltip_BackupAll: Backup ALL ye config files/folders, includin' paintin's 'n other large files.
+Tooltip_ClosingMethod: "Combined be best. Close attempts t' close directly through a close function 'n TaskKill uses CMD (Best if combined doesn't work)"
+Tooltip_StartingMethod: "Default be the best. Direct has no control o'er admin level or UAC. 'twill start as the same level (or higher - but nah lower) than this Cap'n switcher"
+Tooltip_CurrentAccount: Ye be this Cap'n already.
+Tooltip_Restore: Skewer t' select a 7z file, or drag it onto this button.
+Tooltip_DisabledGlobally: This item be hidden fer all Cap'ns. Ye can change this in the platform settings.
+Discord_Status: Currently switchin' Cap'ns.
+Discord_StatusDetails: "Cap'ns Switched: {number}"
+Website: Website
+Preview_Platforms: Port's preview
+Preview_Accounts: Cap'n's preview
+Preview_Notifications: Toast notifications preview
+Preview_Settings: Settings preview
+Preview_Modals: Modals preview
