@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -43,56 +44,25 @@ namespace TcNo_Acc_Switcher_Server.Data
         // - Unique days platform switcher used (For switches/day stats, for each platform)
         // - First and Last active days
 
-        private static AppStats _instance = new();
-
-        private static readonly object LockObj = new();
-
-        public static AppStats Instance
+        private readonly bool _isInit;
+        public AppStats()
         {
-            get
+            if (!_isInit) return;
+            try
             {
-                lock (LockObj)
-                {
-                    // Load settings if have changed, or not set
-                    if (_instance is { _currentlyModifying: true }) return _instance;
-                    if (_instance != new AppStats() && Globals.GetFileMd5(SettingsFile) == _instance._lastHash) return _instance;
-
-                    _instance = new AppStats { _currentlyModifying = true };
-
-                    if (File.Exists(SettingsFile))
-                    {
-                        _instance = JsonConvert.DeserializeObject<AppStats>(File.ReadAllText(SettingsFile), new JsonSerializerSettings());
-                        if (_instance == null)
-                        {
-                            _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadStats"]);
-                            if (File.Exists(SettingsFile))
-                                Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"));
-                            _instance = new AppStats { _currentlyModifying = true };
-                        }
-                        _instance._lastHash = Globals.GetFileMd5(SettingsFile);
-                    }
-                    else
-                    {
-                        SaveSettings();
-                    }
-
-                    _instance._currentlyModifying = false;
-
-                    return _instance;
-                }
+                JsonConvert.PopulateObject(File.ReadAllText(SettingsFile), this);
+                _isInit = true;
+                //_instance = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(SettingsFile), new JsonSerializerSettings());
             }
-            set
+            catch (Exception e)
             {
-                lock (LockObj)
-                {
-                    _instance = value;
-                }
+                _ = GeneralInvocableFuncs.ShowToast("error", Lang["Toast_FailedLoadStats"]);
+                if (File.Exists(SettingsFile))
+                    Globals.CopyFile(SettingsFile, SettingsFile.Replace(".json", ".old.json"));
             }
         }
 
         private static readonly Lang Lang = Lang.Instance;
-        private string _lastHash = "";
-        private bool _currentlyModifying;
         public static readonly string SettingsFile = "Statistics.json";
 
         public static void SaveSettings()

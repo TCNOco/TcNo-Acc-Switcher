@@ -17,16 +17,20 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using TcNo_Acc_Switcher_Globals;
 using TcNo_Acc_Switcher_Server.Data;
 using TcNo_Acc_Switcher_Server.Pages.General;
 
+
 namespace TcNo_Acc_Switcher_Server
 {
     public class Program
     {
+        [Inject] private IAppSettings AppSettings { get; set; }
+
         public static void Main(string[] args)
         {
             // Empty

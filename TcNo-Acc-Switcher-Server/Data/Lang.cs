@@ -31,33 +31,8 @@ namespace TcNo_Acc_Switcher_Server.Data
 {
     public class Lang
     {
-        private static Lang _instance = new();
-
-        private static readonly object LockObj = new();
-
-        public static Lang Instance
-        {
-            get
-            {
-                lock (LockObj)
-                {
-                    return _instance ??= new Lang();
-                }
-            }
-            set
-            {
-                lock (LockObj)
-                {
-                    _instance = value;
-                }
-            }
-        }
-
-        private Dictionary<string, string> _strings = new();
-        private string _current = "";
-
-        public static Dictionary<string, string> Strings { get => Instance._strings; set => Instance._strings = value; }
-        public static string Current { get => Instance._current; set => Instance._current = value; }
+        public Dictionary<string, string> Strings { get; set; }
+        public string Current { get; set; }
 
         /// <summary>
         /// Get a string
@@ -104,7 +79,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Loads the programs default language: English.
         /// </summary>
-        public static void LoadDefault()
+        public void LoadDefault()
         {
             _ = Load("en-US");
         }
@@ -112,7 +87,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Loads the system's language, or the user's saved language
         /// </summary>
-        public static void LoadLocalized()
+        public void LoadLocalized()
         {
             LoadDefault();
             // If setting does not exist in settings file then load the system default
@@ -125,7 +100,7 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// Tries to load a requested language
         /// </summary>
         /// <param name="lang">Formatted language, example: "en-US"</param>
-        public static async Task<bool> LoadLang(string lang)
+        public async Task<bool> LoadLang(string lang)
         {
             LoadDefault();
             return await Load(lang, true);
@@ -134,21 +109,21 @@ namespace TcNo_Acc_Switcher_Server.Data
         /// <summary>
         /// Get list of files in Resources folder
         /// </summary>
-        public static List<string> GetAvailableLanguages() => Directory.GetFiles(Path.Join(Globals.AppDataFolder, "Resources")).Select(f => Path.GetFileName(f).Split(".yml")[0]).ToList();
-        public static Dictionary<string, string> GetAvailableLanguagesDict() {
+        public List<string> GetAvailableLanguages() => Directory.GetFiles(Path.Join(Globals.AppDataFolder, "Resources")).Select(f => Path.GetFileName(f).Split(".yml")[0]).ToList();
+        public Dictionary<string, string> GetAvailableLanguagesDict() {
             var dict = GetAvailableLanguages().ToDictionary(l => new CultureInfo(l).DisplayName);
             dict.Remove("English (Portugal)");
             dict["English (Pirate)"] = "en-PT";
             return dict;
         }
 
-        public static KeyValuePair<string, string> GetCurrentLanguage()
+        public KeyValuePair<string, string> GetCurrentLanguage()
         {
             if (Current == "en-PT") return new KeyValuePair<string, string>("English (Pirate)", Current);
             return new KeyValuePair<string, string>(new CultureInfo(Current).DisplayName, Current);
         }
 
-        public static async Task<bool> Load(string filename, bool save = false)
+        public async Task<bool> Load(string filename, bool save = false)
         {
             try
             {

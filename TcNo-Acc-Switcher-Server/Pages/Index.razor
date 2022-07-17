@@ -24,8 +24,8 @@
 @inject NavigationManager NavManager
 @{ AData.SetActiveNavMan(NavManager); }
 @inject AppData AData
-
 @inject Lang Locale
+@inject IAppSettings AppSettings
 
 @if (AppSettings.PreRenderUpdate)
 {
